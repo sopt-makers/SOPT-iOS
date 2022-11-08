@@ -14,5 +14,6 @@ let project = Project.makeModule(
     dependencies: [
         .Project.Network,
         .Project.Domain
-    ]
+    ],
+    hasTest: true
 )

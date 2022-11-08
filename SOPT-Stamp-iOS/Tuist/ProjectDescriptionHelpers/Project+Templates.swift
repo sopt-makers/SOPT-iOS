@@ -97,7 +97,7 @@ public extension Project {
             deploymentTarget: Environment.deploymentTarget,
             infoPlist: .default,
             sources: ["Tests/**"],
-            dependencies: [.target(name: name)]
+            dependencies: [.target(name: name), .SPM.Nimble, .SPM.Quick]
         )
     }
 }
