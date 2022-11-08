@@ -30,7 +30,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         didDiscardSceneSessions sceneSessions: Set<UISceneSession>
     ) {}
 }
-
-extension AppDelegate: UNUserNotificationCenterDelegate {
-    
-}

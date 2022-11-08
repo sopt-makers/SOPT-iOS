@@ -28,16 +28,14 @@ public extension Project {
     }
 }
 
-// Environment.organizationName / Environment.deploymentTarget
-
 public extension Project {
     static func project(
         name: String,
         platform: Platform,
         product: Product,
-        organizationName: String = "SOPT-Stamp-iOS",
+        organizationName: String = Environment.organizationName,
         packages: [Package] = [],
-        deploymentTarget: DeploymentTarget? = .iOS(targetVersion: "14.0", devices: [.iphone, .ipad]),
+        deploymentTarget: DeploymentTarget? = Environment.deploymentTarget,
         dependencies: [TargetDependency] = [],
         sources: SourceFilesList,
         resources: ResourceFileElements? = nil,
@@ -55,7 +53,9 @@ public extension Project {
                 .setProvisioningAppstore(),
             defaultSettings: .recommended)
         
-        let bundleId = (name == "SOPT-Stamp-iOS") ? "com.sopt-stamp-iOS.release" : "\(organizationName).\(name)"
+        let bundleId = (name == "SOPT-Stamp-iOS")
+        ? Environment.appBundleId
+        : "\(organizationName).\(name)"
         
         let appTarget = Target(
             name: name,
@@ -93,47 +93,13 @@ public extension Project {
             name: "\(name)Tests",
             platform: .iOS,
             product: .unitTests,
-            bundleId: "SOPT-Stamp-iOS.\(name)Tests",
-            deploymentTarget: .iOS(targetVersion: "14.0", devices: [.iphone, .ipad]),
+            bundleId: "\(Environment.organizationName)\(name)Tests",
+            deploymentTarget: Environment.deploymentTarget,
             infoPlist: .default,
             sources: ["Tests/**"],
             dependencies: [.target(name: name)]
         )
     }
-    
-    static let baseinfoPlist: [String: InfoPlist.Value] = [
-            "CFBundleShortVersionString": "1.0.0",
-            "CFBundleVersion": "1",
-            "CFBundleIdentifier": "com.sopt-stamp-iOS.release",
-            "CFBundleDisplayName": "SOPT-Stamp",
-            "UILaunchStoryboardName": "LaunchScreen",
-            "UIApplicationSceneManifest": [
-                "UIApplicationSupportsMultipleScenes": false,
-                "UISceneConfigurations": [
-                    "UIWindowSceneSessionRoleApplication": [
-                        [
-                            "UISceneConfigurationName": "Default Configuration",
-                            "UISceneDelegateClassName": "$(PRODUCT_MODULE_NAME).SceneDelegate"
-                        ],
-                    ]
-                ]
-            ],
-            "UIAppFonts": [
-                // FIXME: - 폰트 추가 후 수정
-//                "Item 0": "Pretendard-Black.otf",
-//                "Item 1": "Pretendard-Bold.otf",
-//                "Item 2": "Pretendard-ExtraBold.otf",
-//                "Item 3": "Pretendard-ExtraLight.otf",
-//                "Item 4": "Pretendard-Light.otf",
-//                "Item 5": "Pretendard-Medium.otf",
-//                "Item 6": "Pretendard-Regular.otf",
-//                "Item 7": "Pretendard-SemiBold.otf",
-//                "Item 8": "Pretendard-Thin.otf"
-            ],
-            "App Transport Security Settings": ["Allow Arbitrary Loads": true],
-            "NSAppTransportSecurity": ["NSAllowsArbitraryLoads": true],
-            "ITSAppUsesNonExemptEncryption": false
-        ]
 }
 
 extension Scheme {
