@@ -1,36 +1,60 @@
 import ProjectDescription
 import UtilityPlugin
+import Foundation
 
 public extension Project {
     static func makeModule(
         name: String,
         platform: Platform = .iOS,
         product: Product,
+        packages: [Package] = [],
+        dependencies: [TargetDependency] = [],
+        sources: SourceFilesList = ["Sources/**"],
+        resources: ResourceFileElements? = nil,
+        infoPlist: InfoPlist = .default,
+        hasTest: Bool = false
+    ) -> Project {
+        return project(
+            name: name,
+            platform: platform,
+            product: product,
+            packages: packages,
+            dependencies: dependencies,
+            sources: sources,
+            resources: resources,
+            infoPlist: infoPlist,
+            hasTest: hasTest
+        )
+    }
+}
+
+// Environment.organizationName / Environment.deploymentTarget
+
+public extension Project {
+    static func project(
+        name: String,
+        platform: Platform,
+        product: Product,
         organizationName: String = "SOPT-Stamp-iOS",
         packages: [Package] = [],
         deploymentTarget: DeploymentTarget? = .iOS(targetVersion: "14.0", devices: [.iphone, .ipad]),
         dependencies: [TargetDependency] = [],
-        sources: SourceFilesList = ["Sources/**"],
+        sources: SourceFilesList,
         resources: ResourceFileElements? = nil,
-        infoPlist: InfoPlist = .default
+        infoPlist: InfoPlist,
+        hasTest: Bool = false
     ) -> Project {
         
-        /// Settings
-        /// - base: custom을 원하면, key-value 형태로 추가 가능
-        /// - configurations: project의 configurations 설정
-        /// - defaultSettings: xcconfig 사용하는 경우 .none으로 하는게 편함
         let settings: Settings = .settings(
-            base:
-                product == .app ? .init().setCodeSignManualForApp() : .init().setCodeSignManual(),
+            base: product == .app
+                ? .init().setCodeSignManualForApp()
+                : .init().setCodeSignManual(),
             debug: .init()
                 .setProvisioningDevelopment(),
             release: .init()
                 .setProvisioningAppstore(),
             defaultSettings: .recommended)
         
-        /// Targets
-        /// - test 용으로 TestTarget 정의 후, appTarget에 대한 dependency 설정
-        ///
         let bundleId = (name == "SOPT-Stamp-iOS") ? "com.sopt-stamp-iOS.release" : "\(organizationName).\(name)"
         
         let appTarget = Target(
@@ -45,21 +69,13 @@ public extension Project {
             scripts: [.SwiftLintString],
             dependencies: dependencies
         )
-        
-//        let testTarget = Target(
-//            name: "\(name)Tests",
-//            platform: platform,
-//            product: .unitTests,
-//            bundleId: "\(organizationName).\(name)Tests",
-//            deploymentTarget: deploymentTarget,
-//            infoPlist: .default,
-//            sources: ["Tests/**"],
-//            dependencies: [.target(name: name)] // appTarget에 대한 dependency
-//        )
-        
-        let targets: [Target] = [appTarget]
+
         let schemes: [Scheme] = [.makeScheme(target: .debug, name: name)]
         
+        let targets: [Target] = hasTest
+        ? [appTarget, makeTestTarget(name: name)]
+        : [appTarget]
+
         return Project(
             name: name,
             organizationName: organizationName,
@@ -67,6 +83,21 @@ public extension Project {
             settings: settings,
             targets: targets,
             schemes: schemes
+        )
+    }
+}
+
+public extension Project {
+    static func makeTestTarget(name: String) -> Target {
+        return Target(
+            name: "\(name)Tests",
+            platform: .iOS,
+            product: .unitTests,
+            bundleId: "SOPT-Stamp-iOS.\(name)Tests",
+            deploymentTarget: .iOS(targetVersion: "14.0", devices: [.iphone, .ipad]),
+            infoPlist: .default,
+            sources: ["Tests/**"],
+            dependencies: [.target(name: name)]
         )
     }
     
@@ -112,6 +143,11 @@ extension Scheme {
             name: name,
             shared: true,
             buildAction: .buildAction(targets: ["\(name)"]),
+            testAction: .targets(
+                ["\(name)Tests"],
+                configuration: target,
+                options: .options(coverage: true, codeCoverageTargets: ["\(name)"])
+            ),
             runAction: .runAction(configuration: target),
             archiveAction: .archiveAction(configuration: target),
             profileAction: .profileAction(configuration: target),
