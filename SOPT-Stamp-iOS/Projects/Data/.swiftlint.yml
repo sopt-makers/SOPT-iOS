@@ -1,0 +1,12 @@
+disabled_rules:
+- trailing_whitespace
+- identifier_name
+- type_name
+- force_cast
+- shorthand_operator
+- line_length
+
+excluded:
+- Sources/Application/AppDelegate.swift
+- Sources/Application/SceneDelegate.swift
+- "Tuist"
