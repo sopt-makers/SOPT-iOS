@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct UserDefaultKeyList{
+public struct UserDefaultKeyList {
     public struct Auth {
         @UserDefaultWrapper<String>(key: "deviceToken") public static var deviceToken
         

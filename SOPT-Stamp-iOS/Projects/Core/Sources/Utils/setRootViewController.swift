@@ -5,6 +5,9 @@
 //  Copyright © 2022 SOPT-Stamp-iOS. All rights reserved.
 //
 
+import Foundation
+import UIKit
+
 /**
 
   - Description:
@@ -12,10 +15,6 @@
           RootViewController를 만들어주는 유틸입니다. SnapShot을 찍어서 전환합니다.
           
 */
-
-import Foundation
-import UIKit
-
 public enum ViewControllerUtils {
     static func setRootViewController(window: UIWindow, viewController: UIViewController, withAnimation: Bool) {
         if !withAnimation {

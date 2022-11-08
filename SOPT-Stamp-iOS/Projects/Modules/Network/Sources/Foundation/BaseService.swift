@@ -132,7 +132,7 @@ extension BaseService {
                 do {
                     let decoder = JSONDecoder()
                     let body = try decoder.decode([T].self, from: value.data)
-                    completion(.success(body ?? []))
+                    completion(.success(body))
                 } catch let error {
                     completion(.failure(error))
                 }

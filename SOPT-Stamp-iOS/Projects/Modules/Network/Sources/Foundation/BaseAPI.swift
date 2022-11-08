@@ -39,7 +39,7 @@ extension BaseAPI {
         return url
     }
     
-    public var headers: [String : String]? {
+    public var headers: [String: String]? {
         return ["Content-Type": "application/json"]
     }
 }

@@ -15,8 +15,9 @@ import Foundation
         }
         
         set {
-            if newValue == nil { UserDefaults.standard.removeObject(forKey: key) }
-            else { UserDefaults.standard.setValue(newValue, forKey: key) }
+            if newValue == nil {
+                UserDefaults.standard.removeObject(forKey: key)
+            } else { UserDefaults.standard.setValue(newValue, forKey: key) }
         }
     }
     

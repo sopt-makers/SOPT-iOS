@@ -45,11 +45,11 @@ extension AuthAPI: BaseAPI {
         return params
     }
     
-    private var parameterEncoding : ParameterEncoding{
+    private var parameterEncoding: ParameterEncoding {
         switch self {
         case .sample:
             return URLEncoding.init(destination: .queryString, arrayEncoding: .noBrackets, boolEncoding: .literal)
-        default :
+        default:
             return JSONEncoding.default
         }
     }

@@ -10,18 +10,18 @@ import UIKit
 
 public extension UIViewController {
     
-    public func addToolbar(textfields: [UITextField]) {
+    func addToolbar(textfields: [UITextField]) {
         let toolBarKeyboard = UIToolbar()
         toolBarKeyboard.sizeToFit()
         let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let btnDoneBar = UIBarButtonItem(title: "완료", style: .done, target: self, action: #selector(self.dismissKeyBoard))
         toolBarKeyboard.items = [flexSpace, btnDoneBar]
-        for (_, item) in textfields.enumerated() {
-            item.inputAccessoryView = toolBarKeyboard
+        textfields.forEach {
+            $0.inputAccessoryView = toolBarKeyboard
         }
     }
     
-    public func addToolBar(textView: UITextView) {
+    func addToolBar(textView: UITextView) {
         let toolBarKeyboard = UIToolbar()
         toolBarKeyboard.sizeToFit()
         let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
@@ -35,7 +35,7 @@ public extension UIViewController {
         self.view.endEditing(true)
     }
     
-    public func addTapGesture() {
+    func addTapGesture() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyBoard))
         self.view.addGestureRecognizer(tap)
     }

@@ -56,11 +56,11 @@ extension AlertAPI: BaseAPI {
     ///  query문을 사용하는 경우 URLEncoding 을 사용해야 합니다
     ///  나머지는 그냥 전부 다 default 처리.
     ///
-    private var parameterEncoding : ParameterEncoding{
+    private var parameterEncoding: ParameterEncoding {
         switch self {
         case .postUserPushPartList:
             return URLEncoding.init(destination: .httpBody, arrayEncoding: .brackets, boolEncoding: .literal)
-        default :
+        default:
             return JSONEncoding.default
         }
     }
@@ -72,7 +72,6 @@ extension AlertAPI: BaseAPI {
     public var task: Task {
         switch self {
         case .postUserPushPartList:
-            // TODO: - 추후 유저 아이디 받아오면 수정
             var params: Parameters = [:]
             params["user_id"] = 3
             return .requestCompositeParameters(bodyParameters: bodyParameters ?? [:], bodyEncoding: parameterEncoding, urlParameters: params)

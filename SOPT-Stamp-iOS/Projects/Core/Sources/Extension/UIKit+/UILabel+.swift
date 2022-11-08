@@ -82,13 +82,12 @@ public extension UILabel {
         }
         do {
             return try NSAttributedString(data: data,
-                                          options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding:String.Encoding.utf8.rawValue],
+                                          options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding: String.Encoding.utf8.rawValue],
                                           documentAttributes: nil)
         } catch {
             return NSAttributedString()
         }
     }
-    
     
     func setAttributedText(targetFontList: [String: UIFont],
                            targetColorList: [String: UIColor]) {

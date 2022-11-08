@@ -46,11 +46,11 @@ extension NoticeAPI: BaseAPI {
         return params
     }
     
-    private var parameterEncoding : ParameterEncoding{
+    private var parameterEncoding: ParameterEncoding {
         switch self {
         case .fetchNotcieDetail:
             return URLEncoding.init(destination: .queryString, arrayEncoding: .noBrackets, boolEncoding: .literal)
-        default :
+        default:
             return JSONEncoding.default
         }
     }

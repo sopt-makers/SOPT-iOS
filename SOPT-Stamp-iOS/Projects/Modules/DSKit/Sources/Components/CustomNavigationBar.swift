@@ -11,7 +11,6 @@ import UIKit
 import SnapKit
 
 import Core
-import DSKit
 
 @frozen
 enum naviType {
