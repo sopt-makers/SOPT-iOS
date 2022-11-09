@@ -1,9 +1,9 @@
 ---
-name: Issue Template - Junho
+name: Issue Template
 about: 기본 이슈 템플릿입니다.
 title: "[Feat] 이슈 제목"
-labels: "\U0001F331Duno\U0001F331, ✨Feat"
-assignees: L-j-h-c
+labels:
+assignees:
 
 ---
 
