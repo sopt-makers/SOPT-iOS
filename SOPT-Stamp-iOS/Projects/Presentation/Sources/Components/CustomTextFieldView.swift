@@ -39,9 +39,39 @@ enum TextFieldType {
     case none
 }
 
+@frozen
+enum TextFieldViewState {
+    case normal
+    case editing
+    case alert
+    
+    var backgroundColor: UIColor {
+        switch self {
+        case .normal:
+            return DSKitAsset.Colors.gray50.color
+        case .editing:
+            return DSKitAsset.Colors.white.color
+        case .alert:
+            return DSKitAsset.Colors.error100.color
+        }
+    }
+    
+    var borderColor: CGColor? {
+        switch self {
+        case .normal:
+            return nil
+        case .editing:
+            return DSKitAsset.Colors.purple300.color.cgColor
+        case .alert:
+            return DSKitAsset.Colors.error200.color.cgColor
+        }
+    }
+}
+
 class CustomTextFieldView: UIView {
     
     // MARK: - Properties
+    
     private typealias SoptampColor = DSKitAsset.Colors
     
     private var type: TextFieldViewType!
@@ -68,6 +98,7 @@ class CustomTextFieldView: UIView {
         self.type = type
         self.setUI()
         self.setLayout(type)
+        self.setDelegate()
     }
     
     required init?(coder: NSCoder) {
@@ -75,7 +106,7 @@ class CustomTextFieldView: UIView {
     }
 }
 
-// MARK: - UI & Layout
+// MARK: - Methods
 
 extension CustomTextFieldView {
     @discardableResult
@@ -133,7 +164,6 @@ extension CustomTextFieldView {
             make.top.equalTo(textFieldContainerView.snp.bottom).offset(12)
             make.leading.equalToSuperview()
         }
-        
         return self
     }
     
@@ -141,6 +171,21 @@ extension CustomTextFieldView {
     func setAlertLabel(_ alertText: String) -> Self {
         self.alertlabel.text = alertText
         return self
+    }
+    
+    private func setDelegate() {
+        self.textField.delegate = self
+    }
+    
+    func setTextFieldViewState(_ state: TextFieldViewState) {
+        textFieldContainerView.backgroundColor = state.backgroundColor
+        
+        if let borderColor = state.borderColor {
+            textFieldContainerView.layer.borderWidth = 1
+            textFieldContainerView.layer.borderColor = borderColor
+        } else {
+            textFieldContainerView.layer.borderWidth = 0
+        }
     }
 }
 
@@ -260,5 +305,17 @@ extension CustomTextFieldView {
         textField.snp.makeConstraints { make in
             make.edges.equalToSuperview().inset(16)
         }
+    }
+}
+
+// MARK: - UITextFieldDelegate
+
+extension CustomTextFieldView: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        self.setTextFieldViewState(.editing)
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        self.setTextFieldViewState(.normal)
     }
 }

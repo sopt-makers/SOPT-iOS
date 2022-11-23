@@ -13,6 +13,7 @@ public class TestVC: UIViewController {
     let tf1 = CustomTextFieldView(type: .plain)
         .setCornerRadius(10)
         .setPlaceholder("영문, 숫자, 특수문자 포함 N자 이상 입력해주세요.")
+        .setTextFieldType(.password)
     
     let tf2 = CustomTextFieldView(type: .subTitle)
         .setCornerRadius(12)
