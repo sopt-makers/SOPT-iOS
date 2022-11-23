@@ -121,18 +121,21 @@ class CustomTextFieldView: UIView {
 // MARK: - Methods
 
 extension CustomTextFieldView {
+    /// 버튼의 타이틀 변경
     @discardableResult
     func setTitle(_ titleText: String) -> Self {
         self.titleLabel.text = titleText
         return self
     }
     
+    /// textContainerView 내부의 subTitle text 변경
     @discardableResult
     func setSubTitle(_ subTitleText: String) -> Self {
         self.subTitleLabel.text = subTitleText
         return self
     }
     
+    /// placeholder text 변경
     @discardableResult
     func setPlaceholder(_ placeholderText: String) -> Self {
         self.textField.attributedPlaceholder = NSAttributedString(
@@ -145,6 +148,7 @@ extension CustomTextFieldView {
         return self
     }
     
+    /// cornerRadius 설정
     @discardableResult
     func setCornerRadius(_ radius: CGFloat) -> Self {
         self.textFieldContainerView.layer.cornerRadius = radius
@@ -152,6 +156,7 @@ extension CustomTextFieldView {
         return self
     }
     
+    /// TextFieldType에 맞는 키보드, 텍스트 필드 보안 처리 (이메일, 비밀번호 등)
     @discardableResult
     func setTextFieldType(_ type: TextFieldType) -> Self {
         switch type {
@@ -165,6 +170,7 @@ extension CustomTextFieldView {
         return self
     }
     
+    /// 하단에 경고 문구 라벨 생성
     @discardableResult
     func setAlertLabelEnabled() -> Self {
         self.snp.updateConstraints { make in
@@ -179,6 +185,7 @@ extension CustomTextFieldView {
         return self
     }
     
+    /// 경고 문구 라벨의 text 설정
     @discardableResult
     func setAlertLabel(_ alertText: String) -> Self {
         self.alertlabel.text = alertText
@@ -189,6 +196,7 @@ extension CustomTextFieldView {
         self.textField.delegate = self
     }
     
+    /// textTield의 state를 지정하여 자동으로 배경색과 테두리 색이 바뀌도록 설정
     func setTextFieldViewState(_ state: TextFieldViewState) {
         textFieldContainerView.backgroundColor = state.backgroundColor
         
