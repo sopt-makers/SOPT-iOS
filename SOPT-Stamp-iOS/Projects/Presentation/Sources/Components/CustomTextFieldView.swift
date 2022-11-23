@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 import SnapKit
 import Then
@@ -82,6 +83,16 @@ class CustomTextFieldView: UIView {
             .asDriver()
     }
     
+    public var textChanged: Driver<String?> {
+        textField.publisher(for: .editingChanged)
+            .map { _ in
+                self.textField.text
+            }
+            .asDriver()
+    }
+    
+    private var cancelBag = CancelBag()
+
     // MARK: - UI Component
     
     private let titleLabel = UILabel()
@@ -99,6 +110,7 @@ class CustomTextFieldView: UIView {
         self.setUI()
         self.setLayout(type)
         self.setDelegate()
+        self.bindUI()
     }
     
     required init?(coder: NSCoder) {
@@ -186,6 +198,17 @@ extension CustomTextFieldView {
         } else {
             textFieldContainerView.layer.borderWidth = 0
         }
+    }
+    
+    private func bindUI() {
+        textChanged
+            .replaceNil(with: "")
+            .sink { text in
+                self.rightButton.isEnabled = !text.isEmpty
+                if text.isEmpty {
+                    self.setAlertLabel("")
+                }
+            }.store(in: cancelBag)
     }
 }
 
