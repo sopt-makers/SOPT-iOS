@@ -196,7 +196,7 @@ extension CustomTextFieldView {
         self.textField.delegate = self
     }
     
-    /// textTield의 state를 지정하여 자동으로 배경색과 테두리 색이 바뀌도록 설정
+    /// textField의 state를 지정하여 자동으로 배경색과 테두리 색이 바뀌도록 설정
     func setTextFieldViewState(_ state: TextFieldViewState) {
         textFieldContainerView.backgroundColor = state.backgroundColor
         
