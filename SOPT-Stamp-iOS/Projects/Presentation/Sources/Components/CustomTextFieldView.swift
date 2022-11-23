@@ -21,10 +21,11 @@ enum TextFieldViewType {
     case titleWithRightButton
 }
 
-// 1. subLabel 넣는 함수
-// 2. cornerRadius 주는 함수
-// 3. textField placeholder 텍스트 입력 받는 함수
-// 4. textField타입 설정하는 함수 (이메일, 비밀번호)
+@frozen
+enum TextFieldType {
+    case email
+    case password
+}
 
 class CustomTextFieldView: UIView {
     
@@ -59,16 +60,61 @@ class CustomTextFieldView: UIView {
     }
 }
 
-// MARK: - Method
+// MARK: - UI & Layout
+
+extension CustomTextFieldView {
+    @discardableResult
+    func setTitle(_ title: String) -> Self {
+        self.titleLabel.text = title
+        return self
+    }
+    
+    @discardableResult
+    func setSubTitle(_ subTitle: String) -> Self {
+        self.subTitleLabel.text = subTitle
+        return self
+    }
+    
+    @discardableResult
+    func setPlaceholder(_ placeholder: String) -> Self {
+        self.textField.attributedPlaceholder = NSAttributedString(
+            string: placeholder,
+            attributes: [
+                .foregroundColor: SoptampColor.gray600.color,
+                .font: UIFont.caption1
+            ]
+        )
+        return self
+    }
+    
+    @discardableResult
+    func setCornerRadius(_ radius: CGFloat) -> Self {
+        self.textFieldContainerView.layer.cornerRadius = radius
+        self.rightButton.layer.cornerRadius = radius
+        return self
+    }
+    
+    @discardableResult
+    func setTextFieldType(_ type: TextFieldType) -> Self {
+        switch type {
+        case .email:
+            self.textField.keyboardType = .emailAddress
+        case .password:
+            self.textField.isSecureTextEntry = true
+        }
+        return self
+    }
+}
+
+// MARK: - UI & Layout
 
 extension CustomTextFieldView {
     private func setUI(_ type: TextFieldViewType) {
-        self.clipsToBounds = true
-        
         titleLabel.font = UIFont.subtitle1
         titleLabel.textColor = SoptampColor.gray900.color
         
         textFieldContainerView.backgroundColor = SoptampColor.gray50.color
+        textFieldContainerView.clipsToBounds = true
 
         subTitleLabel.textAlignment = .left
         subTitleLabel.font = UIFont.id
@@ -77,16 +123,11 @@ extension CustomTextFieldView {
         textField.backgroundColor = .clear
         textField.textColor = .black
         textField.font = UIFont.caption1
-        textField.attributedPlaceholder = NSAttributedString(
-            string: "",
-            attributes: [
-                .foregroundColor: SoptampColor.gray600.color,
-                .font: UIFont.caption1
-            ]
-        )
         
         alertlabel.font = UIFont.caption3
         alertlabel.textColor = SoptampColor.error300.color
+        
+        rightButton.clipsToBounds = true
         
         rightButton.setBackgroundColor(
             SoptampColor.purple200.color,
@@ -118,6 +159,10 @@ extension CustomTextFieldView {
     }
     
     private func setPlainLayout() {
+        self.snp.makeConstraints { make in
+            make.height.equalTo(48)
+        }
+        
         textFieldContainerView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
@@ -129,6 +174,10 @@ extension CustomTextFieldView {
     }
     
     private func setSubTitleLayout() {
+        self.snp.makeConstraints { make in
+            make.height.equalTo(60)
+        }
+        
         textFieldContainerView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
@@ -146,6 +195,10 @@ extension CustomTextFieldView {
     }
     
     private func setTitleWithRightButtonLayout() {
+        self.snp.makeConstraints { make in
+            make.height.equalTo(83)
+        }
+        
         self.addSubviews(titleLabel, rightButton)
         titleLabel.snp.makeConstraints { make in
             make.leading.top.equalToSuperview()

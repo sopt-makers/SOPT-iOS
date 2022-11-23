@@ -19,25 +19,23 @@ public class TestVC: UIViewController {
         view.backgroundColor = .white
         
         view.addSubviews(tf1, tf2, tf3)
+        tf1.backgroundColor = .gray
+        tf2.backgroundColor = .gray
+        tf3.backgroundColor = .gray
         
         tf1.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).inset(50)
             make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(16)
-            make.height.equalTo(48)
         }
         
         tf2.snp.makeConstraints { make in
             make.top.equalTo(tf1.snp.bottom).offset(50)
             make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(16)
-            make.height.equalTo(60)
         }
         
         tf3.snp.makeConstraints { make in
             make.top.equalTo(tf2.snp.bottom).offset(50)
             make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(16)
-            make.height.equalTo(83)
         }
-        
-        
     }
 }
