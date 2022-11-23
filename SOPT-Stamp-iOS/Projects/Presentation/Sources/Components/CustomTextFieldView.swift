@@ -24,6 +24,7 @@ enum TextFieldViewType {
 // 1. subLabel 넣는 함수
 // 2. cornerRadius 주는 함수
 // 3. textField placeholder 텍스트 입력 받는 함수
+// 4. textField타입 설정하는 함수 (이메일, 비밀번호)
 
 class CustomTextFieldView: UIView {
     
@@ -51,7 +52,6 @@ class CustomTextFieldView: UIView {
         super.init(frame: .zero)
         self.setUI(type)
         self.setLayout(type)
-        self.setAddTarget()
     }
     
     required init?(coder: NSCoder) {
@@ -69,11 +69,14 @@ extension CustomTextFieldView {
         titleLabel.textColor = SoptampColor.gray900.color
         
         textFieldContainerView.backgroundColor = SoptampColor.gray50.color
+
         subTitleLabel.textAlignment = .left
         subTitleLabel.font = UIFont.id
         subTitleLabel.textColor = SoptampColor.gray400.color
         
         textField.backgroundColor = .clear
+        textField.textColor = .black
+        textField.font = UIFont.caption1
         textField.attributedPlaceholder = NSAttributedString(
             string: "",
             attributes: [
@@ -152,7 +155,7 @@ extension CustomTextFieldView {
             make.top.equalTo(titleLabel.snp.bottom).offset(16)
             make.leading.equalToSuperview()
             make.height.equalTo(48)
-            make.trailing.equalTo(rightButton.snp.leading).offset(4)
+            make.trailing.equalTo(rightButton.snp.leading).inset(-4)
         }
         
         rightButton.snp.makeConstraints { make in
@@ -160,9 +163,10 @@ extension CustomTextFieldView {
             make.trailing.equalToSuperview()
             make.width.equalTo(60)
         }
-    }
-    
-    private func setAddTarget() {
         
+        textFieldContainerView.addSubview(textField)
+        textField.snp.makeConstraints { make in
+            make.edges.equalToSuperview().inset(16)
+        }
     }
 }
