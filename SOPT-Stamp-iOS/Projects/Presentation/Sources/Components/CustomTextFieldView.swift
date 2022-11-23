@@ -271,7 +271,8 @@ extension CustomTextFieldView {
         }
         
         textFieldContainerView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.leading.top.trailing.equalToSuperview()
+            make.height.equalTo(type.height)
         }
         
         textFieldContainerView.addSubviews(textField)
@@ -286,7 +287,8 @@ extension CustomTextFieldView {
         }
         
         textFieldContainerView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.leading.top.trailing.equalToSuperview()
+            make.height.equalTo(type.height)
         }
         
         textFieldContainerView.addSubviews(subTitleLabel, textField)

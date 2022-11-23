@@ -19,7 +19,9 @@ public class TestVC: UIViewController {
         .setCornerRadius(12)
         .setSubTitle("ID")
         .setPlaceholder("영문, 숫자, 특수문자 포함 N자 이상 입력해주세요.")
-    
+        .setAlertLabelEnabled()
+        .setAlertLabel("사용 중인 이름입니다.")
+
     let tf3 = CustomTextFieldView(type: .titleWithRightButton)
         .setCornerRadius(10)
         .setTitle("닉네임")
@@ -32,9 +34,6 @@ public class TestVC: UIViewController {
         view.backgroundColor = .white
         
         view.addSubviews(tf1, tf2, tf3)
-//        tf1.backgroundColor = .gray
-//        tf2.backgroundColor = .gray
-//        tf3.backgroundColor = .gray
         
         tf1.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).inset(50)
