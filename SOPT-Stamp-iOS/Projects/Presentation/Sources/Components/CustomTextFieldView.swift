@@ -69,7 +69,7 @@ enum TextFieldViewState {
     }
 }
 
-class CustomTextFieldView: UIView {
+final class CustomTextFieldView: UIView {
     
     // MARK: - Properties
     

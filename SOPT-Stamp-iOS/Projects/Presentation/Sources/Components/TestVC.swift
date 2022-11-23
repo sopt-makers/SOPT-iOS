@@ -29,11 +29,14 @@ public class TestVC: UIViewController {
         .setAlertLabelEnabled()
         .setAlertLabel("사용 중인 이름입니다.")
     
+    let btn = CustomButton(title: "로그인")
+        .setEnabled(true)
+        
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         
-        view.addSubviews(tf1, tf2, tf3)
+        view.addSubviews(tf1, tf2, tf3, btn)
         
         tf1.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).inset(50)
@@ -48,6 +51,12 @@ public class TestVC: UIViewController {
         tf3.snp.makeConstraints { make in
             make.top.equalTo(tf2.snp.bottom).offset(50)
             make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(16)
+        }
+        
+        btn.snp.makeConstraints { make in
+            make.top.equalTo(tf3.snp.bottom).offset(50)
+            make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
+            make.height.equalTo(56)
         }
     }
 }
