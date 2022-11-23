@@ -19,18 +19,32 @@ enum TextFieldViewType {
     case plain
     case subTitle
     case titleWithRightButton
+    
+    var height: Float {
+        switch self {
+        case .plain:
+            return 48
+        case .subTitle:
+            return 60
+        case .titleWithRightButton:
+            return 83
+        }
+    }
 }
 
 @frozen
 enum TextFieldType {
     case email
     case password
+    case none
 }
 
 class CustomTextFieldView: UIView {
     
     // MARK: - Properties
     private typealias SoptampColor = DSKitAsset.Colors
+    
+    private var type: TextFieldViewType!
     
     public var rightButtonTapped: Driver<Void> {
         rightButton.publisher(for: .touchUpInside)
@@ -51,7 +65,8 @@ class CustomTextFieldView: UIView {
     
     init(type: TextFieldViewType) {
         super.init(frame: .zero)
-        self.setUI(type)
+        self.type = type
+        self.setUI()
         self.setLayout(type)
     }
     
@@ -64,21 +79,21 @@ class CustomTextFieldView: UIView {
 
 extension CustomTextFieldView {
     @discardableResult
-    func setTitle(_ title: String) -> Self {
-        self.titleLabel.text = title
+    func setTitle(_ titleText: String) -> Self {
+        self.titleLabel.text = titleText
         return self
     }
     
     @discardableResult
-    func setSubTitle(_ subTitle: String) -> Self {
-        self.subTitleLabel.text = subTitle
+    func setSubTitle(_ subTitleText: String) -> Self {
+        self.subTitleLabel.text = subTitleText
         return self
     }
     
     @discardableResult
-    func setPlaceholder(_ placeholder: String) -> Self {
+    func setPlaceholder(_ placeholderText: String) -> Self {
         self.textField.attributedPlaceholder = NSAttributedString(
-            string: placeholder,
+            string: placeholderText,
             attributes: [
                 .foregroundColor: SoptampColor.gray600.color,
                 .font: UIFont.caption1
@@ -101,7 +116,30 @@ extension CustomTextFieldView {
             self.textField.keyboardType = .emailAddress
         case .password:
             self.textField.isSecureTextEntry = true
+        case .none:
+            break
         }
+        return self
+    }
+    
+    @discardableResult
+    func setAlertLabelEnabled() -> Self {
+        self.snp.updateConstraints { make in
+            make.height.equalTo(self.type.height + 26)
+        }
+        
+        self.addSubview(alertlabel)
+        alertlabel.snp.makeConstraints { make in
+            make.top.equalTo(textFieldContainerView.snp.bottom).offset(12)
+            make.leading.equalToSuperview()
+        }
+        
+        return self
+    }
+    
+    @discardableResult
+    func setAlertLabel(_ alertText: String) -> Self {
+        self.alertlabel.text = alertText
         return self
     }
 }
@@ -109,7 +147,7 @@ extension CustomTextFieldView {
 // MARK: - UI & Layout
 
 extension CustomTextFieldView {
-    private func setUI(_ type: TextFieldViewType) {
+    private func setUI() {
         titleLabel.font = UIFont.subtitle1
         titleLabel.textColor = SoptampColor.gray900.color
         
@@ -128,6 +166,7 @@ extension CustomTextFieldView {
         alertlabel.textColor = SoptampColor.error300.color
         
         rightButton.clipsToBounds = true
+        rightButton.isEnabled = false
         
         rightButton.setBackgroundColor(
             SoptampColor.purple200.color,
@@ -160,7 +199,7 @@ extension CustomTextFieldView {
     
     private func setPlainLayout() {
         self.snp.makeConstraints { make in
-            make.height.equalTo(48)
+            make.height.equalTo(self.type.height)
         }
         
         textFieldContainerView.snp.makeConstraints { make in
@@ -175,7 +214,7 @@ extension CustomTextFieldView {
     
     private func setSubTitleLayout() {
         self.snp.makeConstraints { make in
-            make.height.equalTo(60)
+            make.height.equalTo(self.type.height)
         }
         
         textFieldContainerView.snp.makeConstraints { make in
@@ -196,7 +235,7 @@ extension CustomTextFieldView {
     
     private func setTitleWithRightButtonLayout() {
         self.snp.makeConstraints { make in
-            make.height.equalTo(83)
+            make.height.equalTo(self.type.height)
         }
         
         self.addSubviews(titleLabel, rightButton)
