@@ -14,6 +14,10 @@ public struct I18N {
         public static let networkError = "네트워크 오류가 발생했습니다."
     }
     
+    public struct TextFieldView {
+        public static let verify = "확인"
+    }
+    
     public struct Navi {
         public static let post = "공지"
     }
