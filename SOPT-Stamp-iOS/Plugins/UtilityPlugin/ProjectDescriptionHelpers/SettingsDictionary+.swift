@@ -57,14 +57,14 @@ public extension SettingsDictionary {
     }
     
     func setProvisioningDevelopment() -> SettingsDictionary {
-        merging(["PROVISIONING_PROFILE_SPECIFIER": SettingValue(stringLiteral: "SOPT iOS Debug")])
-            .merging(["PROVISIONING_PROFILE": SettingValue(stringLiteral: "SOPT Stamp iOS Debug")])
+        merging(["PROVISIONING_PROFILE_SPECIFIER": SettingValue(stringLiteral: "SOPTAMP Debug")])
+            .merging(["PROVISIONING_PROFILE": SettingValue(stringLiteral: "SOPTAMP Debug")])
     }
     
     func setProvisioningAppstore() -> SettingsDictionary {
-        merging(["PROVISIONING_PROFILE_SPECIFIER": SettingValue(stringLiteral: "SOPT iOS Release")])
+        merging(["PROVISIONING_PROFILE_SPECIFIER": SettingValue(stringLiteral: "SOPTAMP Release")])
             .merging(["CODE_SIGN_IDENTITY[sdk=iphoneos*]": SettingValue(stringLiteral: "iPhone Distribution")])
-            .merging(["PROVISIONING_PROFILE": SettingValue(stringLiteral: "SOPT Stamp iOS Release")])
+            .merging(["PROVISIONING_PROFILE": SettingValue(stringLiteral: "SOPTAMP Release")])
     }
 }
 
