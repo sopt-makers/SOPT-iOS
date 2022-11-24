@@ -172,7 +172,7 @@ extension CustomTextFieldView {
     
     /// 하단에 경고 문구 라벨 생성
     @discardableResult
-    func setAlertLabelEnabled() -> Self {
+    func setAlertLabelEnabled(_ alertText: String) -> Self {
         self.snp.updateConstraints { make in
             make.height.equalTo(self.type.height + 26)
         }
@@ -182,14 +182,14 @@ extension CustomTextFieldView {
             make.top.equalTo(textFieldContainerView.snp.bottom).offset(12)
             make.leading.equalToSuperview()
         }
+        
+        alertlabel.text = alertText
         return self
     }
     
     /// 경고 문구 라벨의 text 설정
-    @discardableResult
-    func setAlertLabel(_ alertText: String) -> Self {
+    func changeAlertLabelText(_ alertText: String) {
         self.alertlabel.text = alertText
-        return self
     }
     
     private func setDelegate() {
@@ -214,7 +214,7 @@ extension CustomTextFieldView {
             .sink { text in
                 self.rightButton.isEnabled = !text.isEmpty
                 if text.isEmpty {
-                    self.setAlertLabel("")
+                    self.changeAlertLabelText("")
                 }
             }.store(in: cancelBag)
     }
@@ -287,6 +287,8 @@ extension CustomTextFieldView {
         textField.snp.makeConstraints { make in
             make.edges.equalToSuperview().inset(16)
         }
+        
+        setCornerRadius(10)
     }
     
     private func setSubTitleLayout() {
@@ -309,6 +311,8 @@ extension CustomTextFieldView {
             make.top.equalTo(subTitleLabel.snp.bottom).offset(6)
             make.leading.bottom.trailing.equalToSuperview().inset(16)
         }
+        
+        setCornerRadius(12)
     }
     
     private func setTitleWithRightButtonLayout() {
@@ -338,6 +342,8 @@ extension CustomTextFieldView {
         textField.snp.makeConstraints { make in
             make.edges.equalToSuperview().inset(16)
         }
+        
+        setCornerRadius(10)
     }
 }
 
