@@ -12,6 +12,7 @@ public extension Project {
         sources: SourceFilesList = ["Sources/**"],
         resources: ResourceFileElements? = nil,
         infoPlist: InfoPlist = .default,
+        resourceSynthesizers: [ResourceSynthesizer] = .default,
         hasTest: Bool = false,
         hasDemoApp: Bool = false
     ) -> Project {
@@ -24,6 +25,7 @@ public extension Project {
             sources: sources,
             resources: resources,
             infoPlist: infoPlist,
+            resourceSynthesizers: resourceSynthesizers,
             hasTest: hasTest,
             hasDemoApp: hasDemoApp
         )
@@ -42,6 +44,7 @@ public extension Project {
         sources: SourceFilesList,
         resources: ResourceFileElements? = nil,
         infoPlist: InfoPlist,
+        resourceSynthesizers: [ResourceSynthesizer] = .default,
         hasTest: Bool = false,
         hasDemoApp: Bool = false
     ) -> Project {
@@ -74,8 +77,9 @@ public extension Project {
         )
         
         let demoAppTarget: Target = {
-            let demoSource: SourceFilesList = ["Demo/Sources/**", "Derived/Sources/**"]
-            let demoSources: SourceFilesList = SourceFilesList(globs: sources.globs + demoSource.globs)
+            let demoSource: SourceFilesList = ["Demo/Sources/**"]
+            let demoGlobs: [SourceFileGlob] = [.glob("Sources/**", excluding: ["Sources/UIFont+.swift"])]
+            let demoSources: SourceFilesList = SourceFilesList(globs: demoGlobs + demoSource.globs)
             let demoResources: ResourceFileElements = ["Demo/Resources/**", "Resources/**"]
             return makeDemoAppTarget(name: name, sources: demoSources, resources: demoResources)
         }()
@@ -102,7 +106,8 @@ public extension Project {
             packages: packages,
             settings: settings,
             targets: targets,
-            schemes: schemes
+            schemes: schemes,
+            resourceSynthesizers: resourceSynthesizers
         )
     }
 }
