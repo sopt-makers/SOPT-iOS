@@ -37,8 +37,16 @@ extension UIFont {
         return DSKitFontFamily.Pretendard.regular.font(size: 14)
     }
     
+    @nonobjc public class var caption1D: UIFont {
+        return DSKitFontFamily.Pretendard.medium.font(size: 14)
+    }
+    
     @nonobjc public class var caption2: UIFont {
         return DSKitFontFamily.Pretendard.medium.font(size: 12)
+    }
+    
+    @nonobjc public class var caption2D: UIFont {
+        return DSKitFontFamily.Pretendard.regular.font(size: 12)
     }
     
     @nonobjc public class var caption3: UIFont {
