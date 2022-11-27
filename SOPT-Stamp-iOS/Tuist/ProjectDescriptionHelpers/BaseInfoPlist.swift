@@ -32,6 +32,7 @@ public extension Project {
         ],
         "App Transport Security Settings": ["Allow Arbitrary Loads": true],
         "NSAppTransportSecurity": ["NSAllowsArbitraryLoads": true],
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "UIUserInterfaceStyle": "Light"
     ]
 }
