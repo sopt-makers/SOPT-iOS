@@ -13,13 +13,19 @@ import SnapKit
 import Core
 
 @frozen
-enum naviType {
-    case leftTitle
-    case leftTitleWithLeftButton
-    case onlyRightButton
+public enum naviType {
+    case title /// 좌측 타이틀 + 우측 버튼 (미션 리스트 뷰)
+    case titleWithLeftButton /// 좌측 뒤로가기 버튼 + 좌측 타이틀 (랭킹, 글 작성 등)
 }
 
-class CustomNavigationBar: UIView {
+@frozen
+public enum rightButtonType {
+    case none
+    case addRecord
+    case delete
+}
+
+public class CustomNavigationBar: UIView {
     
     // MARK: - UI Component
     
@@ -27,12 +33,10 @@ class CustomNavigationBar: UIView {
     private let titleLabel = UILabel()
     private let leftButton = UIButton()
     private let rightButton = UIButton()
-    private let otherRightButton = UIButton()
     
     // MARK: - Properties
     
     private var rightButtonClosure: (() -> Void)?
-    private var otherRightButtonClosure: (() -> Void)?
     public var rightButtonTapped: Driver<Void> {
         rightButton.publisher(for: .touchUpInside)
             .map { _ in () }
@@ -41,7 +45,7 @@ class CustomNavigationBar: UIView {
     
     // MARK: - Initialize
     
-    init(_ vc: UIViewController, type: naviType) {
+    public init(_ vc: UIViewController, type: naviType) {
         super.init(frame: .zero)
         self.vc = vc
         self.setUI(type)
@@ -57,11 +61,11 @@ class CustomNavigationBar: UIView {
 // MARK: - Method
 
 extension CustomNavigationBar {
-    func hideNaviBar(_ isHidden: Bool) {
+    public func hideNaviBar(_ isHidden: Bool) {
         UIView.animate(withDuration: 0.1,
                        delay: 0,
                        options: .curveEaseInOut) {
-            [self.titleLabel, self.leftButton, self.rightButton, self.otherRightButton].forEach { $0.alpha = isHidden ? 0 : 1 }
+            [self.titleLabel, self.leftButton, self.rightButton].forEach { $0.alpha = isHidden ? 0 : 1 }
         }
     }
     
@@ -70,28 +74,36 @@ extension CustomNavigationBar {
     }
     
     @discardableResult
-    func setTitle(_ title: String) -> Self {
+    public func setTitle(_ title: String) -> Self {
         self.titleLabel.text = title
         return self
     }
     
     @discardableResult
-    func setRightButtonTitle(_ title: String) -> Self {
+    public func setRightButtonTitle(_ title: String) -> Self {
         self.rightButton.setTitle(title, for: .normal)
         return self
     }
     
     @discardableResult
-    func rightButtonAction(_ closure: (() -> Void)? = nil) -> Self {
-        self.rightButtonClosure = closure
-        self.rightButton.addTarget(self, action: #selector(touchupRightButton), for: .touchUpInside)
+    public func setRightButton(_ type: rightButtonType) -> Self {
+        switch type {
+        case .none:
+            self.rightButton.isHidden = true
+        case .addRecord:
+            self.rightButton.isHidden = false
+            self.rightButton.setImage(UIImage(asset: DSKitAsset.Assets.icAddRecord), for: .normal)
+        case .delete:
+            self.rightButton.isHidden = false
+            self.rightButton.setImage(UIImage(asset: DSKitAsset.Assets.icDelete), for: .normal)
+        }
         return self
     }
     
     @discardableResult
-    func otherRightButtonAction(_ closure: (() -> Void)? = nil) -> Self {
-        self.otherRightButtonClosure = closure
-        self.otherRightButton.addTarget(self, action: #selector(touchupOtherRightButton), for: .touchUpInside)
+    public func rightButtonAction(_ closure: (() -> Void)? = nil) -> Self {
+        self.rightButtonClosure = closure
+        self.rightButton.addTarget(self, action: #selector(touchupRightButton), for: .touchUpInside)
         return self
     }
 }
@@ -108,30 +120,26 @@ extension CustomNavigationBar {
     private func touchupRightButton() {
         self.rightButtonClosure?()
     }
-    
-    @objc
-    private func touchupOtherRightButton() {
-        self.otherRightButtonClosure?()
-    }
 }
 
 // MARK: - UI & Layout
 
 extension CustomNavigationBar {
     private func setUI(_ type: naviType) {
-//        leftButton.setImage(UIImage(asset: DSKitAsset.Assets.icBack), for: .normal)
-//        
-//        titleLabel.setTypoStyle(.h5)
-//        titleLabel.textColor = DSKitAsset.Colors.gray900.color
-//        
-//        switch type {
-//        case .leftTitle:
-//            rightButton.setImage(UIImage(asset: DSKitAsset.Assets.icSetting), for: .normal)
-//            otherRightButton.setImage(UIImage(asset: DSKitAsset.Assets.icSearch), for: .normal)
-//        case .leftTitleWithLeftButton, .onlyRightButton:
-//            rightButton.setTitleColor(DSKitAsset.Colors.blue500.color, for: .normal)
-//            rightButton.titleLabel?.setTypoStyle(.body1)
-//        }
+        leftButton.setImage(UIImage(asset: DSKitAsset.Assets.icArrow), for: .normal)
+        
+        titleLabel.setTypoStyle(.h2)
+        titleLabel.textColor = DSKitAsset.Colors.black.color
+        
+        switch type {
+        case .title:
+            rightButton.isHidden = false
+            rightButton.setImage(UIImage(asset: DSKitAsset.Assets.icAddRecord), for: .normal)
+        case .titleWithLeftButton:
+            rightButton.isHidden = true
+            leftButton.setImage(UIImage(asset: DSKitAsset.Assets.icArrow), for: .normal)
+            rightButton.setImage(UIImage(asset: DSKitAsset.Assets.icAddRecord), for: .normal)
+        }
     }
     
     private func setLayout(_ type: naviType) {
@@ -140,59 +148,46 @@ extension CustomNavigationBar {
         }
         
         switch type {
-        case .leftTitle:
-            self.setLeftTitleLayout()
-        case .leftTitleWithLeftButton:
-            self.setLeftTitleWithButtonLayout()
-            self.setRightButtonLayout()
-        case .onlyRightButton:
-            self.setRightButtonLayout()
+        case .title:
+            self.setTitleLayout()
+        case .titleWithLeftButton:
+            self.setTitleWithLeftButton()
         }
     }
     
-    private func setLeftTitleLayout() {
-        self.addSubviews(titleLabel, rightButton, otherRightButton)
+    private func setTitleLayout() {
+        self.addSubviews(titleLabel, rightButton)
         
         titleLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalToSuperview().inset(16)
+            make.leading.equalToSuperview().inset(20)
         }
         
         rightButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().inset(8)
-            make.width.height.equalTo(40)
-        }
-        
-        otherRightButton.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.trailing.equalTo(rightButton.snp.leading)
-            make.width.height.equalTo(40)
+            make.trailing.equalToSuperview().inset(20)
+            make.width.height.equalTo(32)
         }
     }
     
-    private func setLeftTitleWithButtonLayout() {
-        self.addSubviews(leftButton, titleLabel)
+    private func setTitleWithLeftButton() {
+        self.addSubviews(leftButton, titleLabel, rightButton)
         
         leftButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalToSuperview().inset(8)
-            make.width.height.equalTo(40)
+            make.leading.equalToSuperview().inset(20)
+            make.width.height.equalTo(32)
         }
         
         titleLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalTo(leftButton.snp.trailing)
+            make.leading.equalTo(leftButton.snp.trailing).offset(2)
         }
-    }
-    
-    private func setRightButtonLayout() {
-        self.addSubviews(rightButton)
         
         rightButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().inset(16)
-            make.height.equalTo(40)
+            make.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(32)
         }
     }
 }
