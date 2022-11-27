@@ -14,5 +14,6 @@ let project = Project.makeModule(
     dependencies: [
         .Project.Core
     ],
-    resources: ["Resources/**"]
+    resources: ["Resources/**"],
+    hasDemoApp: true
 )

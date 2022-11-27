@@ -12,7 +12,9 @@ public extension Project {
         sources: SourceFilesList = ["Sources/**"],
         resources: ResourceFileElements? = nil,
         infoPlist: InfoPlist = .default,
-        hasTest: Bool = false
+        resourceSynthesizers: [ResourceSynthesizer] = .default,
+        hasTest: Bool = false,
+        hasDemoApp: Bool = false
     ) -> Project {
         return project(
             name: name,
@@ -23,7 +25,9 @@ public extension Project {
             sources: sources,
             resources: resources,
             infoPlist: infoPlist,
-            hasTest: hasTest
+            resourceSynthesizers: resourceSynthesizers,
+            hasTest: hasTest,
+            hasDemoApp: hasDemoApp
         )
     }
 }
@@ -40,13 +44,15 @@ public extension Project {
         sources: SourceFilesList,
         resources: ResourceFileElements? = nil,
         infoPlist: InfoPlist,
-        hasTest: Bool = false
+        resourceSynthesizers: [ResourceSynthesizer] = .default,
+        hasTest: Bool = false,
+        hasDemoApp: Bool = false
     ) -> Project {
         
         let settings: Settings = .settings(
             base: product == .app
-                ? .init().setCodeSignManualForApp()
-                : .init().setCodeSignManual(),
+            ? .init().setCodeSignManualForApp()
+            : .init().setCodeSignManual(),
             debug: .init()
                 .setProvisioningDevelopment(),
             release: .init()
@@ -69,26 +75,48 @@ public extension Project {
             scripts: [.SwiftLintString],
             dependencies: dependencies
         )
-
-        let schemes: [Scheme] = [.makeScheme(target: .debug, name: name)]
         
-        let targets: [Target] = hasTest
-        ? [appTarget, makeTestTarget(name: name)]
-        : [appTarget]
-
+        let demoAppTarget: Target = {
+            let demoSource: SourceFilesList = ["Demo/Sources/**"]
+            let demoGlobs: [SourceFileGlob] = [.glob("Sources/**", excluding: ["Sources/UIFont+.swift"])]
+            let demoSources: SourceFilesList = SourceFilesList(globs: demoGlobs + demoSource.globs)
+            let demoResources: ResourceFileElements = ["Demo/Resources/**", "Resources/**"]
+            return makeDemoAppTarget(name: name, sources: demoSources, resources: demoResources)
+        }()
+        
+        let schemes: [Scheme] = hasDemoApp
+        ? [.makeScheme(target: .debug, name: name), .makeDemoScheme(target: .debug, name: name)]
+        : [.makeScheme(target: .debug, name: name)]
+        
+        var targets: [Target]
+        switch (hasTest, hasDemoApp) {
+        case (true, true):
+            targets = [appTarget, makeTestTarget(name: name, isDemo: true), demoAppTarget]
+        case (true, false):
+            targets = [appTarget, makeTestTarget(name: name)]
+        case (false, true):
+            targets = [appTarget, demoAppTarget]
+        case (false, false):
+            targets = [appTarget]
+        }
+        
         return Project(
             name: name,
             organizationName: organizationName,
             packages: packages,
             settings: settings,
             targets: targets,
-            schemes: schemes
+            schemes: schemes,
+            resourceSynthesizers: resourceSynthesizers
         )
     }
 }
 
 public extension Project {
-    static func makeTestTarget(name: String) -> Target {
+    static func makeTestTarget(name: String, isDemo: Bool = false) -> Target {
+        let testTargetDependencies: [TargetDependency] = isDemo
+        ? [.target(name: "\(name)DemoApp"), .SPM.Nimble, .SPM.Quick]
+        : [.target(name: name), .SPM.Nimble, .SPM.Quick]
         return Target(
             name: "\(name)Tests",
             platform: .iOS,
@@ -97,7 +125,24 @@ public extension Project {
             deploymentTarget: Environment.deploymentTarget,
             infoPlist: .default,
             sources: ["Tests/**"],
-            dependencies: [.target(name: name), .SPM.Nimble, .SPM.Quick]
+            dependencies: testTargetDependencies
+        )
+    }
+    
+    static func makeDemoAppTarget(name: String, sources: SourceFilesList, resources: ResourceFileElements) -> Target {
+        return Target(
+            name: "\(name)DemoApp",
+            platform: .iOS,
+            product: .app,
+            bundleId: "\(Environment.organizationName).\(name)DemoApp",
+            deploymentTarget: Environment.deploymentTarget,
+            infoPlist: .extendingDefault(with: baseinfoPlist),
+            sources: sources,
+            resources: resources,
+            scripts: [.SwiftLintString],
+            dependencies: [
+                .target(name: name)
+            ]
         )
     }
 }
@@ -113,6 +158,23 @@ extension Scheme {
                 ["\(name)Tests"],
                 configuration: target,
                 options: .options(coverage: true, codeCoverageTargets: ["\(name)"])
+            ),
+            runAction: .runAction(configuration: target),
+            archiveAction: .archiveAction(configuration: target),
+            profileAction: .profileAction(configuration: target),
+            analyzeAction: .analyzeAction(configuration: target)
+        )
+    }
+    
+    static func makeDemoScheme(target: ConfigurationName, name: String) -> Scheme {
+        return Scheme(
+            name: name,
+            shared: true,
+            buildAction: .buildAction(targets: ["\(name)DemoApp"]),
+            testAction: .targets(
+                ["\(name)Tests"],
+                configuration: target,
+                options: .options(coverage: true, codeCoverageTargets: ["\(name)DemoApp"])
             ),
             runAction: .runAction(configuration: target),
             archiveAction: .archiveAction(configuration: target),

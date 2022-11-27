@@ -10,6 +10,7 @@ import ProjectDescription
 let workspace = Workspace(
     name: "SOPT-Stamp-iOS",
     projects: [
-    "Projects/SOPT-Stamp-iOS"
+    "Projects/SOPT-Stamp-iOS",
+    "Projects/Demo/SOPT-Stamp-Demo"
     ]
 )

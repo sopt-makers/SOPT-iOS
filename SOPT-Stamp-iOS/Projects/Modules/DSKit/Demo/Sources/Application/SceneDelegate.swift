@@ -7,8 +7,6 @@
 
 import UIKit
 
-import Presentation
-
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
@@ -20,9 +18,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(frame: scene.coordinateSpace.bounds)
         window?.windowScene = scene
-//        let vc = UIViewController()
-        let vc = TestVC()
-//        vc.view.backgroundColor = .gray
+        let vc = UIViewController()
+        vc.view.backgroundColor = .gray
         window?.rootViewController = UINavigationController(rootViewController: vc)
         window?.makeKeyAndVisible()
     }
