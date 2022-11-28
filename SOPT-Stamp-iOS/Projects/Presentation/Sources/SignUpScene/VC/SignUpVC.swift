@@ -63,7 +63,9 @@ public class SignUpVC: UIViewController {
         self.bindViewModels()
         self.setUI()
         self.setLayout()
+        self.setTapGesture()
     }
+    
 }
 
 // MARK: - Methods
@@ -136,5 +138,15 @@ extension SignUpVC {
             make.height.equalTo(56)
             make.bottom.equalToSuperview().inset(32)
         }
+    }
+}
+
+// MARK: - Methods
+
+extension SignUpVC {
+    private func setTapGesture() {
+        let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
     }
 }
