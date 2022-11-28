@@ -106,6 +106,12 @@ extension CustomNavigationBar {
         self.rightButton.addTarget(self, action: #selector(touchupRightButton), for: .touchUpInside)
         return self
     }
+    
+    @discardableResult
+    public func setTitleTypoStyle(_ font: UIFont) -> Self {
+        titleLabel.setTypoStyle(font)
+        return self
+    }
 }
 
 // MARK: - @objc
