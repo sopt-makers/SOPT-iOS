@@ -18,6 +18,7 @@ import Core
 public enum TextFieldViewType {
     case plain
     case subTitle
+    case title
     case titleWithRightButton
     
     var height: Float {
@@ -26,7 +27,7 @@ public enum TextFieldViewType {
             return 48
         case .subTitle:
             return 60
-        case .titleWithRightButton:
+        case .title, .titleWithRightButton:
             return 83
         }
     }
@@ -267,6 +268,8 @@ extension CustomTextFieldView {
             self.setPlainLayout()
         case .subTitle:
             self.setSubTitleLayout()
+        case .title:
+            self.setTitleLayout()
         case .titleWithRightButton:
             self.setTitleWithRightButtonLayout()
         }
@@ -312,6 +315,30 @@ extension CustomTextFieldView {
         }
         
         setCornerRadius(12)
+    }
+    
+    private func setTitleLayout() {
+        self.snp.makeConstraints { make in
+            make.height.equalTo(self.type.height)
+        }
+        
+        self.addSubview(titleLabel)
+        titleLabel.snp.makeConstraints { make in
+            make.leading.top.equalToSuperview()
+        }
+        
+        textFieldContainerView.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(16)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(type.height)
+        }
+        
+        textFieldContainerView.addSubviews(textField)
+        textField.snp.makeConstraints { make in
+            make.edges.equalToSuperview().inset(16)
+        }
+        
+        setCornerRadius(10)
     }
     
     private func setTitleWithRightButtonLayout() {
