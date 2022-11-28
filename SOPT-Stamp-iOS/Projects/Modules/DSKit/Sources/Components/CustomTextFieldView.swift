@@ -240,6 +240,7 @@ extension CustomTextFieldView {
         
         alertlabel.font = UIFont.caption3
         alertlabel.textColor = SoptampColor.error300.color
+        alertlabel.isHidden = true
         
         rightButton.clipsToBounds = true
         rightButton.isEnabled = false
@@ -330,7 +331,7 @@ extension CustomTextFieldView {
         textFieldContainerView.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(16)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(type.height)
+            make.height.equalTo(48)
         }
         
         textFieldContainerView.addSubviews(textField)

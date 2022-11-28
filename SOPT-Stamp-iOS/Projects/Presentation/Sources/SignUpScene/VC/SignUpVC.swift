@@ -35,11 +35,27 @@ public class SignUpVC: UIViewController {
     private let nickNameTextFieldView = CustomTextFieldView(type: .titleWithRightButton)
         .setTitle(I18N.SignUp.nickname)
         .setPlaceholder(I18N.SignUp.nicknameTextFieldPlaceholder)
+        .setAlertLabelEnabled(I18N.SignUp.duplicatedNickname)
     
     private let emailTextFieldView = CustomTextFieldView(type: .titleWithRightButton)
         .setTitle(I18N.SignUp.email)
         .setPlaceholder(I18N.SignUp.emailTextFieldPlaceholder)
-      
+        .setTextFieldType(.email)
+        .setAlertLabelEnabled(I18N.SignUp.invalidEmailForm)
+    
+    private let passwordTextFieldView = CustomTextFieldView(type: .title)
+        .setTitle(I18N.SignUp.password)
+        .setTextFieldType(.password)
+        .setPlaceholder(I18N.SignUp.passwordTextFieldPlaceholder)
+    
+    private let passwordCheckTextFieldView = CustomTextFieldView(type: .plain)
+        .setPlaceholder(I18N.SignUp.passwordCheckTextFieldPlaceholder)
+        .setTextFieldType(.password)
+        .setAlertLabelEnabled(I18N.SignUp.invalidPasswordForm)
+    
+    private let registerButton = CustomButton(title: I18N.SignUp.register)
+        .setEnabled(false)
+
     // MARK: - View Life Cycle
     
     public override func viewDidLoad() {
@@ -72,7 +88,14 @@ extension SignUpVC {
     private func setLayout() {
         self.view.addSubview(scrollView)
         scrollView.addSubview(containerView)
-        containerView.addSubviews(naviBar, nickNameTextFieldView, emailTextFieldView)
+        containerView.addSubviews(
+            naviBar,
+            nickNameTextFieldView,
+            emailTextFieldView,
+            passwordTextFieldView,
+            passwordCheckTextFieldView,
+            registerButton
+        )
 
         scrollView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
@@ -93,8 +116,25 @@ extension SignUpVC {
         }
         
         emailTextFieldView.snp.makeConstraints { make in
-            make.top.equalTo(nickNameTextFieldView.snp.bottom).offset(72)
+            make.top.equalTo(nickNameTextFieldView.snp.bottom).offset(46)
             make.leading.trailing.equalToSuperview().inset(20)
+        }
+        
+        passwordTextFieldView.snp.makeConstraints { make in
+            make.top.equalTo(emailTextFieldView.snp.bottom).offset(46)
+            make.leading.trailing.equalToSuperview().inset(20)
+        }
+        
+        passwordCheckTextFieldView.snp.makeConstraints { make in
+            make.top.equalTo(passwordTextFieldView.snp.bottom).offset(12)
+            make.leading.trailing.equalToSuperview().inset(20)
+        }
+        
+        registerButton.snp.makeConstraints { make in
+            make.top.equalTo(passwordCheckTextFieldView.snp.bottom).offset(64)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(56)
+            make.bottom.equalToSuperview().inset(32)
         }
     }
 }
