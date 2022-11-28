@@ -288,7 +288,8 @@ extension CustomTextFieldView {
         
         textFieldContainerView.addSubviews(textField)
         textField.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(16)
+            make.top.bottom.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(16)
         }
         
         setCornerRadius(10)
@@ -336,7 +337,8 @@ extension CustomTextFieldView {
         
         textFieldContainerView.addSubviews(textField)
         textField.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(16)
+            make.top.bottom.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(16)
         }
         
         setCornerRadius(10)
@@ -367,7 +369,8 @@ extension CustomTextFieldView {
         
         textFieldContainerView.addSubview(textField)
         textField.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(16)
+            make.top.bottom.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(16)
         }
         
         setCornerRadius(10)
