@@ -117,7 +117,8 @@ extension SignUpVC {
                 self.passwordTextFieldView.setTextFieldViewState(.alert) :
                 self.passwordCheckTextFieldView.setTextFieldViewState(.alert)
             } else {
-                self.passwordCheckTextFieldView.setTextFieldViewState(.editing)
+                self.passwordTextFieldView.setTextFieldViewState(.normal)
+                self.passwordCheckTextFieldView.setTextFieldViewState(.normal)
             }
         }.store(in: cancelBag)
         
