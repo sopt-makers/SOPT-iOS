@@ -21,6 +21,18 @@ public class ModuleFactory {
 }
 
 extension ModuleFactory: ModuleFactoryInterface {
+    public func makeSplashVC() -> Presentation.SplashVC {
+        let splashVC = SplashVC()
+        splashVC.factory = self
+        return splashVC
+    }
+    
+    public func makeOnboardingVC() -> Presentation.OnboardingVC {
+        let onboardingVC = OnboardingVC()
+        onboardingVC.factory = self
+        return onboardingVC
+    }
+    
     public func makeSignUpVC() -> Presentation.SignUpVC {
         let repository = SignUpRepository(service: authService)
         let useCase = DefaultSignUpUseCase(repository: repository)

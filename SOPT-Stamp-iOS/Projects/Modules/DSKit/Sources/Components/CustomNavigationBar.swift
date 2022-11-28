@@ -1,6 +1,6 @@
 //
 //  CustomNavigationBar.swift
-//  Presentation
+//  DSKit
 //
 //  Created by 양수빈 on 2022/10/20.
 //  Copyright © 2022 SOPT-Stamp-iOS. All rights reserved.

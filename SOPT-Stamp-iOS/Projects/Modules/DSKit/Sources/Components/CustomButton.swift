@@ -1,6 +1,6 @@
 //
 //  CustomButton.swift
-//  Presentation
+//  DSKit
 //
 //  Created by sejin on 2022/11/23.
 //  Copyright © 2022 SOPT-Stamp-iOS. All rights reserved.
@@ -9,13 +9,12 @@
 import UIKit
 
 import Core
-import DSKit
 
-final class CustomButton: UIButton {
+public class CustomButton: UIButton {
     
     // MARK: - Initialize
 
-    init(title: String) {
+    public init(title: String) {
         super.init(frame: .zero)
         self.setUI(title)
     }
@@ -30,14 +29,14 @@ final class CustomButton: UIButton {
 extension CustomButton {
     /// 버튼의 enable 여부 설정
     @discardableResult
-    func setEnabled(_ isEnabled: Bool) -> Self {
+    public func setEnabled(_ isEnabled: Bool) -> Self {
         self.isEnabled = isEnabled
         return self
     }
     
     /// 버튼의 Title 변경
     @discardableResult
-    func changeTitle(attributedString: NSAttributedString) -> Self {
+    public func changeTitle(attributedString: NSAttributedString) -> Self {
         self.setAttributedTitle(attributedString, for: .normal)
         return self
     }
