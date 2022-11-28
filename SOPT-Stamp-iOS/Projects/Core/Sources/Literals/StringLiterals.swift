@@ -29,4 +29,12 @@ public struct I18N {
         public static let enterSearch = "검색어를 입력해 주세요."
         public static let noSearchData = "등록된 게시물이 없습니다"
     }
+    
+    public struct ListDetail {
+        public static let imagePlaceHolder = "달성 사진을 올려주세요"
+        public static let memoPlaceHolder = "메모를 작성해주세요"
+        public static let mission = "미션"
+        public static let missionComplete = "미션 완료"
+        public static let editComplte = "수정 완료"
+    }
 }
