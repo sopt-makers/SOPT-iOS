@@ -192,6 +192,7 @@ extension CustomTextFieldView {
     /// 경고 문구 라벨의 text 설정
     public func changeAlertLabelText(_ alertText: String) {
         self.alertlabel.text = alertText
+        self.alertlabel.isHidden = false
     }
     
     private func setDelegate() {

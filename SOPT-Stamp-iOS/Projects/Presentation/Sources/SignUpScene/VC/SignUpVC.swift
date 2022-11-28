@@ -73,8 +73,47 @@ public class SignUpVC: UIViewController {
 extension SignUpVC {
   
     private func bindViewModels() {
-        let input = SignUpViewModel.Input()
+        let registerButtonTapped = registerButton
+            .publisher(for: .touchUpInside)
+            .map { _ in () }
+            .asDriver()
+        
+        let input = SignUpViewModel.Input(
+            nicknameCheckButtonTapped: nickNameTextFieldView.rightButtonTapped,
+            emailCheckButtonTapped: emailTextFieldView.rightButtonTapped,
+            passwordTextChanged: passwordTextFieldView.textChanged,
+            passwordCheckTextChanged: passwordCheckTextFieldView.textChanged,
+            registerButtonTapped: registerButtonTapped)
+        
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.nicknameAlert.sink { event in
+            print("event: \(event)")
+        } receiveValue: { [weak self] alertText in
+            guard let self = self else { return }
+            self.nickNameTextFieldView.changeAlertLabelText(alertText)
+        }.store(in: cancelBag)
+        
+        output.emailAlert.sink { event in
+            print("event: \(event)")
+        } receiveValue: { [weak self] alertText in
+            guard let self = self else { return }
+            self.emailTextFieldView.changeAlertLabelText(alertText)
+        }.store(in: cancelBag)
+        
+        output.passwordAlert.sink { event in
+            print("event: \(event)")
+        } receiveValue: { [weak self] alertText in
+            guard let self = self else { return }
+            self.passwordCheckTextFieldView.changeAlertLabelText(alertText)
+        }.store(in: cancelBag)
+        
+        output.isValidForm.sink { event in
+            print("event: \(event)")
+        } receiveValue: { [weak self] isValidForm in
+            guard let self = self else { return }
+            self.registerButton.setEnabled(isValidForm)
+        }.store(in: cancelBag)
     }
 }
 
