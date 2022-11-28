@@ -1,6 +1,6 @@
 //
 //  CustomButton.swift
-//  Presentation
+//  DSKit
 //
 //  Created by sejin on 2022/11/23.
 //  Copyright © 2022 SOPT-Stamp-iOS. All rights reserved.
