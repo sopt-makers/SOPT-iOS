@@ -77,9 +77,11 @@ public class CustomTextFieldView: UIView {
     
     private var type: TextFieldViewType!
     
-    public var rightButtonTapped: Driver<Void> {
+    public var rightButtonTapped: Driver<String?> {
         rightButton.publisher(for: .touchUpInside)
-            .map { _ in () }
+            .map { _ in
+                self.textField.text
+            }
             .asDriver()
     }
     
@@ -385,6 +387,8 @@ extension CustomTextFieldView: UITextFieldDelegate {
     }
     
     public func textFieldDidEndEditing(_ textField: UITextField) {
-        self.setTextFieldViewState(.normal)
+        if let isEmpty = textField.text?.isEmpty {
+            isEmpty ? self.setTextFieldViewState(.normal) : self.setTextFieldViewState(.editing)
+        }
     }
 }
