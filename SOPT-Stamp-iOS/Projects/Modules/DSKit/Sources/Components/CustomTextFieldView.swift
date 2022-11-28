@@ -1,6 +1,6 @@
 //
 //  CustomTextFieldView.swift
-//  PresentationTests
+//  DSKit
 //
 //  Created by sejin on 2022/11/23.
 //  Copyright © 2022 SOPT-Stamp-iOS. All rights reserved.
@@ -13,10 +13,9 @@ import SnapKit
 import Then
 
 import Core
-import DSKit
 
 @frozen
-enum TextFieldViewType {
+public enum TextFieldViewType {
     case plain
     case subTitle
     case titleWithRightButton
@@ -34,14 +33,14 @@ enum TextFieldViewType {
 }
 
 @frozen
-enum TextFieldType {
+public enum TextFieldType {
     case email
     case password
     case none
 }
 
 @frozen
-enum TextFieldViewState {
+public enum TextFieldViewState {
     case normal
     case editing
     case alert
@@ -69,7 +68,7 @@ enum TextFieldViewState {
     }
 }
 
-final class CustomTextFieldView: UIView {
+public class CustomTextFieldView: UIView {
     
     // MARK: - Properties
     
@@ -104,7 +103,7 @@ final class CustomTextFieldView: UIView {
 
     // MARK: - Initialize
     
-    init(type: TextFieldViewType) {
+    public init(type: TextFieldViewType) {
         super.init(frame: .zero)
         self.type = type
         self.setUI()
@@ -123,21 +122,21 @@ final class CustomTextFieldView: UIView {
 extension CustomTextFieldView {
     /// 버튼의 타이틀 변경
     @discardableResult
-    func setTitle(_ titleText: String) -> Self {
+    public func setTitle(_ titleText: String) -> Self {
         self.titleLabel.text = titleText
         return self
     }
     
     /// textContainerView 내부의 subTitle text 변경
     @discardableResult
-    func setSubTitle(_ subTitleText: String) -> Self {
+    public func setSubTitle(_ subTitleText: String) -> Self {
         self.subTitleLabel.text = subTitleText
         return self
     }
     
     /// placeholder text 변경
     @discardableResult
-    func setPlaceholder(_ placeholderText: String) -> Self {
+    public func setPlaceholder(_ placeholderText: String) -> Self {
         self.textField.attributedPlaceholder = NSAttributedString(
             string: placeholderText,
             attributes: [
@@ -150,7 +149,7 @@ extension CustomTextFieldView {
     
     /// cornerRadius 설정
     @discardableResult
-    func setCornerRadius(_ radius: CGFloat) -> Self {
+    public func setCornerRadius(_ radius: CGFloat) -> Self {
         self.textFieldContainerView.layer.cornerRadius = radius
         self.rightButton.layer.cornerRadius = radius
         return self
@@ -158,7 +157,7 @@ extension CustomTextFieldView {
     
     /// TextFieldType에 맞는 키보드, 텍스트 필드 보안 처리 (이메일, 비밀번호 등)
     @discardableResult
-    func setTextFieldType(_ type: TextFieldType) -> Self {
+    public func setTextFieldType(_ type: TextFieldType) -> Self {
         switch type {
         case .email:
             self.textField.keyboardType = .emailAddress
@@ -172,7 +171,7 @@ extension CustomTextFieldView {
     
     /// 하단에 경고 문구 라벨 생성
     @discardableResult
-    func setAlertLabelEnabled(_ alertText: String) -> Self {
+    public func setAlertLabelEnabled(_ alertText: String) -> Self {
         self.snp.updateConstraints { make in
             make.height.equalTo(self.type.height + 26)
         }
@@ -188,7 +187,7 @@ extension CustomTextFieldView {
     }
     
     /// 경고 문구 라벨의 text 설정
-    func changeAlertLabelText(_ alertText: String) {
+    public func changeAlertLabelText(_ alertText: String) {
         self.alertlabel.text = alertText
     }
     
@@ -197,7 +196,7 @@ extension CustomTextFieldView {
     }
     
     /// textField의 state를 지정하여 자동으로 배경색과 테두리 색이 바뀌도록 설정
-    func setTextFieldViewState(_ state: TextFieldViewState) {
+    public func setTextFieldViewState(_ state: TextFieldViewState) {
         textFieldContainerView.backgroundColor = state.backgroundColor
         
         if let borderColor = state.borderColor {
@@ -350,11 +349,11 @@ extension CustomTextFieldView {
 // MARK: - UITextFieldDelegate
 
 extension CustomTextFieldView: UITextFieldDelegate {
-    func textFieldDidBeginEditing(_ textField: UITextField) {
+    public func textFieldDidBeginEditing(_ textField: UITextField) {
         self.setTextFieldViewState(.editing)
     }
     
-    func textFieldDidEndEditing(_ textField: UITextField) {
+    public func textFieldDidEndEditing(_ textField: UITextField) {
         self.setTextFieldViewState(.normal)
     }
 }

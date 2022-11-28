@@ -20,9 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(frame: scene.coordinateSpace.bounds)
         window?.windowScene = scene
-//        let vc = UIViewController()
-        let vc = TestVC()
-//        vc.view.backgroundColor = .gray
+        let vc = ModuleFactory.shared.makeSplashVC()
         window?.rootViewController = UINavigationController(rootViewController: vc)
         window?.makeKeyAndVisible()
     }
