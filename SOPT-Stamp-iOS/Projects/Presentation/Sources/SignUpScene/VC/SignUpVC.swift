@@ -226,7 +226,7 @@ extension SignUpVC {
         let contentInset = UIEdgeInsets(
             top: 0.0,
             left: 0.0,
-            bottom: keyboardFrame.size.height,
+            bottom: keyboardFrame.size.height + 90,
             right: 0.0)
         scrollView.contentInset = contentInset
         scrollView.scrollIndicatorInsets = contentInset
