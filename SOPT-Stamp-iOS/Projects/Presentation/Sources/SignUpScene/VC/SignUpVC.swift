@@ -17,7 +17,7 @@ import Core
 public class SignUpVC: UIViewController {
     
     // MARK: - Properties
-    
+    public var factory: ModuleFactoryInterface!
     public var viewModel: SignUpViewModel!
     private var cancelBag = CancelBag()
   

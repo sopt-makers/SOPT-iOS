@@ -20,10 +20,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(frame: scene.coordinateSpace.bounds)
         window?.windowScene = scene
-//        let vc = UIViewController()
-        let vc = TestVC()
-//        vc.view.backgroundColor = .gray
-        window?.rootViewController = UINavigationController(rootViewController: vc)
+        let rootVC = ModuleFactory.shared.makeSignUpVC()
+        window?.rootViewController = UINavigationController(rootViewController: rootVC)
         window?.makeKeyAndVisible()
     }
 
