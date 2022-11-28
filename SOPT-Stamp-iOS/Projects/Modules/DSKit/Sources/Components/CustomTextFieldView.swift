@@ -13,7 +13,6 @@ import SnapKit
 import Then
 
 import Core
-import DSKit
 
 @frozen
 enum TextFieldViewType {
