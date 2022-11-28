@@ -92,6 +92,9 @@ extension SignUpVC {
         } receiveValue: { [weak self] alertText in
             guard let self = self else { return }
             self.nickNameTextFieldView.changeAlertLabelText(alertText)
+            if !alertText.isEmpty {
+                self.nickNameTextFieldView.setTextFieldViewState(.alert)
+            }
         }.store(in: cancelBag)
         
         output.emailAlert.sink { event in
@@ -99,6 +102,9 @@ extension SignUpVC {
         } receiveValue: { [weak self] alertText in
             guard let self = self else { return }
             self.emailTextFieldView.changeAlertLabelText(alertText)
+            if !alertText.isEmpty {
+                self.emailTextFieldView.setTextFieldViewState(.alert)
+            }
         }.store(in: cancelBag)
         
         output.passwordAlert.sink { event in
@@ -106,6 +112,11 @@ extension SignUpVC {
         } receiveValue: { [weak self] alertText in
             guard let self = self else { return }
             self.passwordCheckTextFieldView.changeAlertLabelText(alertText)
+            if !alertText.isEmpty {
+                alertText == I18N.SignUp.invalidPasswordForm ? self.passwordTextFieldView.setTextFieldViewState(.alert) : self.passwordCheckTextFieldView.setTextFieldViewState(.alert)
+            } else {
+                self.passwordCheckTextFieldView.setTextFieldViewState(.editing)
+            }
         }.store(in: cancelBag)
         
         output.isValidForm.sink { event in
