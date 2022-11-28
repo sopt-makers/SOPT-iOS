@@ -31,4 +31,13 @@ extension ModuleFactory: ModuleFactoryInterface {
         return onboardingVC
     }
     
+    public func makeListDetailVC() -> ListDetailVC {
+        let repository = ListDetailRepository()
+        let useCase = DefaultListDetailUseCase(repository: repository)
+        let viewModel = ListDetailViewModel(useCase: useCase)
+        let listDetailVC = ListDetailVC()
+        listDetailVC.viewModel = viewModel
+        listDetailVC.factory = self
+        return listDetailVC
+    }
 }
