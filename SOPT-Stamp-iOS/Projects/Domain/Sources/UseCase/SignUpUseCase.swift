@@ -9,6 +9,8 @@
 import Foundation
 import Combine
 
+import Core
+
 public protocol SignUpUseCase {
     func checkNickname(nickname: String)
     func checkEmail(email: String)
@@ -19,20 +21,23 @@ public protocol SignUpUseCase {
     var isEmailFormValid: CurrentValueSubject<Bool, Error> { get set }
     var isPasswordFormValid: CurrentValueSubject<Bool, Error> { get set }
     var isAccordPassword: CurrentValueSubject<Bool, Error> { get set }
+    var isValidForm: CurrentValueSubject<Bool, Error> { get set }
 }
 
 public class DefaultSignUpUseCase {
   
     private let repository: SignUpRepositoryInterface
-    private var cancelBag = Set<AnyCancellable>()
+    private var cancelBag = CancelBag()
     
     public var isNicknameValid = CurrentValueSubject<Bool, Error>(false)
     public var isEmailFormValid = CurrentValueSubject<Bool, Error>(false)
     public var isPasswordFormValid = CurrentValueSubject<Bool, Error>(false)
     public var isAccordPassword = CurrentValueSubject<Bool, Error>(false)
-  
+    public var isValidForm = CurrentValueSubject<Bool, Error>(false)
+    
     public init(repository: SignUpRepositoryInterface) {
         self.repository = repository
+        self.bindFormValid()
     }
 }
 
@@ -62,6 +67,21 @@ extension DefaultSignUpUseCase: SignUpUseCase {
 // MARK: - Methods
 
 extension DefaultSignUpUseCase {
+    func bindFormValid() {
+        isNicknameValid.combineLatest(
+            isEmailFormValid,
+            isPasswordFormValid,
+            isAccordPassword)
+        .map { (isNicknameValid, isEmailValid, isPasswordValid, isAccordPassword) in
+            (isNicknameValid && isEmailValid && isPasswordValid && isAccordPassword)
+        }
+        .sink { event in
+            print("SignUpUseCase - completion: \(event)")
+        } receiveValue: { isValid in
+            self.isValidForm.send(isValid)
+        }.store(in: cancelBag)
+    }
+    
     func checkNicknameForm(nickname: String) -> Bool {
         isNicknameValid.send(true)
         return true
@@ -76,7 +96,7 @@ extension DefaultSignUpUseCase {
     }
     
     func checkPasswordForm(password: String) {
-        let passwordRegEx = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=-]).{8,16}" // 8자리 ~ 16자리 영어+숫자+특수문자
+        let passwordRegEx = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=-]).{8,15}" // 8자리 ~ 15자리 영어+숫자+특수문자
         let passwordTest = NSPredicate(format: "SELF MATCHES %@", passwordRegEx)
         let isValid = passwordTest.evaluate(with: password)
         isPasswordFormValid.send(isValid)

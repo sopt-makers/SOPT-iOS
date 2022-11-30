@@ -101,18 +101,11 @@ extension SignUpViewModel {
                 output.passwordAlert.send("")
             }
         }.store(in: cancelBag)
-
-        useCase.isNicknameValid.combineLatest(
-            useCase.isEmailFormValid,
-            useCase.isPasswordFormValid,
-            useCase.isAccordPassword)
-        .map { (isNicknameValid, isEmailValid, isPasswordValid, isAccordPassword) in
-            (isNicknameValid && isEmailValid && isPasswordValid && isAccordPassword)
-        }
-        .sink { event in
+        
+        useCase.isValidForm.sink { event in
             print("SignUpViewModel - completion: \(event)")
-        } receiveValue: { isValid in
-            output.isValidForm.send(isValid)
+        } receiveValue: { isValidForm in
+            output.isValidForm.send(isValidForm)
         }.store(in: cancelBag)
     }
 }
