@@ -34,7 +34,7 @@ public class ListDetailVC: UIViewController {
     public var viewModel: ListDetailViewModel!
     public var factory: ModuleFactoryInterface!
     private var cancelBag = CancelBag()
-    public var viewType: listDetailType! = listDetailType.none
+    public var viewType: listDetailType! = listDetailType.edit
   
     // MARK: - UI Components
     
@@ -111,6 +111,26 @@ extension ListDetailVC: UITextViewDelegate {
         }
         return true
     }
+    
+    public func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+        if textView.text == I18N.ListDetail.memoPlaceHolder {
+            self.textView.text = .none
+            setTextView(.active)
+        }
+        return true
+    }
+    
+    public func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
+        if textView.text == "" {
+            self.textView.text = I18N.ListDetail.memoPlaceHolder
+            setTextView(.inactive)
+        }
+        return true
+    }
+    
+    public func textViewDidChange(_ textView: UITextView) {
+        self.bottomButton.setEnabled(textView.hasText)
+    }
 }
 
 // MARK: - UI & Layout
@@ -158,7 +178,7 @@ extension ListDetailVC {
         case .none, .edit:
             self.missionView.backgroundColor = DSKitAsset.Colors.gray50.color
             self.setTextView(.inactive)
-            self.imagePlaceholderLabel.isHidden = false
+            self.imagePlaceholderLabel.isHidden = missionImageView.image == nil ? false : true
             self.bottomButton.isHidden = false
             self.dateLabel.isHidden = true
         case .completed:
