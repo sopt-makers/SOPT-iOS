@@ -87,25 +87,15 @@ extension SignUpVC {
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
-        output.nicknameAlert.sink { event in
-            print("event: \(event)")
-        } receiveValue: { [weak self] alertText in
-            guard let self = self else { return }
-            self.nickNameTextFieldView.changeAlertLabelText(alertText)
-            if !alertText.isEmpty {
-                self.nickNameTextFieldView.setTextFieldViewState(.alert)
-            }
-        }.store(in: cancelBag)
+        output.nicknameAlert
+            .assign(to: nickNameTextFieldView.bindableInput(.alert),
+                    on: nickNameTextFieldView)
+            .store(in: cancelBag)
         
-        output.emailAlert.sink { event in
-            print("event: \(event)")
-        } receiveValue: { [weak self] alertText in
-            guard let self = self else { return }
-            self.emailTextFieldView.changeAlertLabelText(alertText)
-            if !alertText.isEmpty {
-                self.emailTextFieldView.setTextFieldViewState(.alert)
-            }
-        }.store(in: cancelBag)
+        output.emailAlert
+            .assign(to: emailTextFieldView.bindableInput(.alert),
+                    on: emailTextFieldView)
+            .store(in: cancelBag)
         
         output.passwordAlert.sink { event in
             print("event: \(event)")
@@ -122,12 +112,9 @@ extension SignUpVC {
             }
         }.store(in: cancelBag)
         
-        output.isValidForm.sink { event in
-            print("event: \(event)")
-        } receiveValue: { [weak self] isValidForm in
-            guard let self = self else { return }
-            self.registerButton.setEnabled(isValidForm)
-        }.store(in: cancelBag)
+        output.isValidForm
+            .assign(to: \.isEnabled, on: registerButton)
+            .store(in: cancelBag)
     }
 }
 

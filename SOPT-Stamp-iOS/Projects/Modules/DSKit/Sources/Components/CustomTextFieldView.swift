@@ -228,6 +228,38 @@ extension CustomTextFieldView {
     }
 }
 
+// MARK: - Input Binding
+
+extension CustomTextFieldView {
+    var alertText: String {
+        get { return alertlabel.text ?? "" }
+        set { bindAlertText(newValue) }
+    }
+    
+    private func bindAlertText(_ alertText: String) {
+        self.changeAlertLabelText(alertText)
+        if !alertText.isEmpty {
+            self.setTextFieldViewState(.alert)
+        }
+    }
+    
+    public enum InputCase {
+         case alert
+         case passwordAlert
+         
+         var keyPath: AnyKeyPath {
+             switch self {
+             case .alert: return \CustomTextFieldView.alertText
+             case .passwordAlert: return \CustomTextFieldView.textChanged
+             }
+         }
+     }
+    
+    public func bindableInput<T>(_ input: InputCase) -> ReferenceWritableKeyPath<CustomTextFieldView, T> {
+        return input.keyPath as! ReferenceWritableKeyPath<CustomTextFieldView, T>
+    }
+}
+
 // MARK: - UI & Layout
 
 extension CustomTextFieldView {

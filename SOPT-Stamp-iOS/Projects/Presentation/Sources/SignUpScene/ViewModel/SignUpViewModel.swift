@@ -29,10 +29,10 @@ public class SignUpViewModel: ViewModelType {
     // MARK: - Outputs
     
     public struct Output {
-        var nicknameAlert = PassthroughSubject<String, Error>()
-        var emailAlert = PassthroughSubject<String, Error>()
-        var passwordAlert = PassthroughSubject<String, Error>()
-        var isValidForm = PassthroughSubject<Bool, Error>()
+        var nicknameAlert = PassthroughSubject<String, Never>()
+        var emailAlert = PassthroughSubject<String, Never>()
+        var passwordAlert = PassthroughSubject<String, Never>()
+        var isValidForm = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - init
