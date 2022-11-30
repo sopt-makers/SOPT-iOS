@@ -34,7 +34,7 @@ public class ListDetailVC: UIViewController {
     public var viewModel: ListDetailViewModel!
     public var factory: ModuleFactoryInterface!
     private var cancelBag = CancelBag()
-    public var viewType: listDetailType! = listDetailType.completed
+    public var viewType: listDetailType! = listDetailType.none
   
     // MARK: - UI Components
     
@@ -65,14 +65,62 @@ public class ListDetailVC: UIViewController {
         self.setStackView()
         self.setDefaultUI()
         self.setUI(viewType)
+        self.setAddTarget()
+    }
+}
+
+// MARK: - Methods
+
+extension ListDetailVC {
+    private func bindViewModels() {
+        let input = ListDetailViewModel.Input()
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
     }
     
-    // MARK: - UI & Layout
+    private func setAddTarget() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
     
+    // MARK: - @objc
+    
+    @objc
+    private func keyboardWillShow(_ notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            UIView.animate(withDuration: 0.3, animations: {
+                [self.contentStackView, self.bottomButton, self.imagePlaceholderLabel].forEach {
+                    $0.transform = CGAffineTransform(translationX: 0, y: -keyboardSize.height + 40)
+                }
+            })
+        }
+    }
+    
+    @objc
+    private func keyboardWillHide(_ notification: NSNotification) {
+        [self.contentStackView, self.bottomButton, self.imagePlaceholderLabel].forEach {
+            $0.transform = .identity }
+    }
+}
+
+// MARK: - UITextFieldDelegate
+
+extension ListDetailVC: UITextViewDelegate {
+    public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if (text == "\n") {
+            textView.resignFirstResponder()
+        }
+        return true
+    }
+}
+
+// MARK: - UI & Layout
+
+extension ListDetailVC {
     private func setDefaultUI() {
         self.navigationController?.navigationBar.isHidden = true
         
         self.view.backgroundColor = .white
+        self.setStatusBarBackgroundColor(.white)
         self.missionImageView.backgroundColor = DSKitAsset.Colors.gray50.color
         
         self.missionView.layer.cornerRadius = 9
@@ -96,6 +144,9 @@ public class ListDetailVC: UIViewController {
         self.imagePlaceholderLabel.text = I18N.ListDetail.imagePlaceHolder
         self.textView.text = I18N.ListDetail.memoPlaceHolder
         self.dateLabel.text = "2022.10.25"
+        
+        self.textView.delegate = self
+        self.textView.returnKeyType = .done
     }
     
     private func setUI(_ type: listDetailType) {
@@ -149,24 +200,9 @@ public class ListDetailVC: UIViewController {
         self.starStackView.distribution = .fillEqually
         self.starStackView.spacing = 10
     }
-}
-
-// MARK: - Methods
-
-extension ListDetailVC {
-    private func bindViewModels() {
-        let input = ListDetailViewModel.Input()
-        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
-    }
-
-}
-
-// MARK: - Layout
-
-extension ListDetailVC {
     private func setLayout() {
-        self.view.addSubviews([naviBar, contentStackView, dateLabel,
-                               imagePlaceholderLabel, bottomButton])
+        self.view.addSubviews([contentStackView, dateLabel,
+                               imagePlaceholderLabel, bottomButton, naviBar])
         
         naviBar.snp.makeConstraints { make in
             make.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)

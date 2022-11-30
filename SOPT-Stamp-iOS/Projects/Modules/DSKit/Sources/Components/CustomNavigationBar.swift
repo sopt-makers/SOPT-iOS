@@ -126,6 +126,8 @@ extension CustomNavigationBar {
 
 extension CustomNavigationBar {
     private func setUI(_ type: naviType) {
+        self.backgroundColor = .white
+        
         leftButton.setImage(UIImage(asset: DSKitAsset.Assets.icArrow), for: .normal)
         
         titleLabel.setTypoStyle(.h2)
