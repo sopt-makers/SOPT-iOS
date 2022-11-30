@@ -9,6 +9,7 @@
 import UIKit
 
 import Combine
+import PhotosUI
 import SnapKit
 import Then
 
@@ -34,7 +35,8 @@ public class ListDetailVC: UIViewController {
     public var viewModel: ListDetailViewModel!
     public var factory: ModuleFactoryInterface!
     private var cancelBag = CancelBag()
-    public var viewType: listDetailType! = listDetailType.edit
+    public var viewType: listDetailType! = listDetailType.none
+    private let picker = UIImagePickerController()
   
     // MARK: - UI Components
     
@@ -66,6 +68,7 @@ public class ListDetailVC: UIViewController {
         self.setDefaultUI()
         self.setUI(viewType)
         self.setAddTarget()
+        self.setDelegate()
     }
 }
 
@@ -80,6 +83,13 @@ extension ListDetailVC {
     private func setAddTarget() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(openLibrary))
+        missionImageView.addGestureRecognizer(tapGesture)
+    }
+    
+    private func setDelegate() {
+        self.textView.delegate = self
     }
     
     // MARK: - @objc
@@ -99,6 +109,39 @@ extension ListDetailVC {
     private func keyboardWillHide(_ notification: NSNotification) {
         [self.contentStackView, self.bottomButton, self.imagePlaceholderLabel].forEach {
             $0.transform = .identity }
+    }
+    
+    @objc
+    private func openLibrary() {
+        var configuration = PHPickerConfiguration()
+        configuration.selectionLimit = 1
+        configuration.filter = .any(of: [.images, .livePhotos])
+        
+        let picker = PHPickerViewController(configuration: configuration)
+        picker.delegate = self
+        
+        self.present(picker, animated: true)
+    }
+}
+
+// MARK: - PHPickerViewControllerDelegate
+
+extension ListDetailVC: PHPickerViewControllerDelegate {
+    public func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        
+        self.dismiss(animated: true)
+        
+        let itemProvider = results.first?.itemProvider
+        if let itemProvider = itemProvider,
+           itemProvider.canLoadObject(ofClass: UIImage.self) {
+            itemProvider.loadObject(ofClass: UIImage.self) { image, error in
+                DispatchQueue.main.async {
+                    guard let selectedImage = image as? UIImage else { return }
+                    self.missionImageView.image = selectedImage
+                    self.imagePlaceholderLabel.isHidden = true
+                }
+            }
+        }
     }
 }
 
@@ -142,6 +185,8 @@ extension ListDetailVC {
         self.view.backgroundColor = .white
         self.setStatusBarBackgroundColor(.white)
         self.missionImageView.backgroundColor = DSKitAsset.Colors.gray50.color
+        self.missionImageView.layer.masksToBounds = true
+        self.missionImageView.contentMode = .scaleAspectFill
         
         self.missionView.layer.cornerRadius = 9
         self.missionImageView.layer.cornerRadius = 9
@@ -165,7 +210,6 @@ extension ListDetailVC {
         self.textView.text = I18N.ListDetail.memoPlaceHolder
         self.dateLabel.text = "2022.10.25"
         
-        self.textView.delegate = self
         self.textView.returnKeyType = .done
     }
     
@@ -181,6 +225,7 @@ extension ListDetailVC {
             self.imagePlaceholderLabel.isHidden = missionImageView.image == nil ? false : true
             self.bottomButton.isHidden = false
             self.dateLabel.isHidden = true
+            self.missionImageView.isUserInteractionEnabled = true
         case .completed:
             self.naviBar.setRightButton(.addRecord)
             self.missionView.backgroundColor = DSKitAsset.Colors.purple100.color
@@ -188,6 +233,7 @@ extension ListDetailVC {
             self.imagePlaceholderLabel.isHidden = true
             self.bottomButton.isHidden = true
             self.dateLabel.isHidden = false
+            self.missionImageView.isUserInteractionEnabled = false
         }
     }
     
