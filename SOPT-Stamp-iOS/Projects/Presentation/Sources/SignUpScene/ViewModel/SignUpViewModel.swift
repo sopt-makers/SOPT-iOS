@@ -88,18 +88,20 @@ extension SignUpViewModel {
             isEmailValid ? output.emailAlert.send("") : output.emailAlert.send(I18N.SignUp.invalidEmailForm)
         }.store(in: cancelBag)
         
-        useCase.isPasswordFormValid.sink { event in
+        useCase.isPasswordFormValid.combineLatest(useCase.isAccordPassword).sink { event in
             print("SignUpViewModel - completion: \(event)")
-        } receiveValue: { isPasswordValid in
-            isPasswordValid ? output.passwordAlert.send("") : output.passwordAlert.send(I18N.SignUp.invalidPasswordForm)
+        } receiveValue: { (isFormValid, isAccordValid) in
+            if !isFormValid && !isAccordValid {
+                output.passwordAlert.send(I18N.SignUp.invalidPasswordForm)
+            } else if !isFormValid && isAccordValid {
+                output.passwordAlert.send(I18N.SignUp.invalidPasswordForm)
+            } else if isFormValid && !isAccordValid {
+                output.passwordAlert.send(I18N.SignUp.passwordNotAccord)
+            } else {
+                output.passwordAlert.send("")
+            }
         }.store(in: cancelBag)
 
-        useCase.isAccordPassword.sink { event in
-            print("SignUpViewModel - completion: \(event)")
-        } receiveValue: { isPasswordValid in
-            isPasswordValid ? output.passwordAlert.send("") : output.passwordAlert.send(I18N.SignUp.passwordNotAccord)
-        }.store(in: cancelBag)
-        
         useCase.isNicknameValid.combineLatest(
             useCase.isEmailFormValid,
             useCase.isPasswordFormValid,

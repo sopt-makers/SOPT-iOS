@@ -15,10 +15,10 @@ public protocol SignUpUseCase {
     func checkPassword(password: String)
     func checkAccordPassword(firstPassword: String, secondPassword: String)
     
-    var isNicknameValid: PassthroughSubject<Bool, Error> { get set }
-    var isEmailFormValid: PassthroughSubject<Bool, Error> { get set }
-    var isPasswordFormValid: PassthroughSubject<Bool, Error> { get set }
-    var isAccordPassword: PassthroughSubject<Bool, Error> { get set }
+    var isNicknameValid: CurrentValueSubject<Bool, Error> { get set }
+    var isEmailFormValid: CurrentValueSubject<Bool, Error> { get set }
+    var isPasswordFormValid: CurrentValueSubject<Bool, Error> { get set }
+    var isAccordPassword: CurrentValueSubject<Bool, Error> { get set }
 }
 
 public class DefaultSignUpUseCase {
@@ -26,10 +26,10 @@ public class DefaultSignUpUseCase {
     private let repository: SignUpRepositoryInterface
     private var cancelBag = Set<AnyCancellable>()
     
-    public var isNicknameValid = PassthroughSubject<Bool, Error>()
-    public var isEmailFormValid = PassthroughSubject<Bool, Error>()
-    public var isPasswordFormValid = PassthroughSubject<Bool, Error>()
-    public var isAccordPassword = PassthroughSubject<Bool, Error>()
+    public var isNicknameValid = CurrentValueSubject<Bool, Error>(false)
+    public var isEmailFormValid = CurrentValueSubject<Bool, Error>(false)
+    public var isPasswordFormValid = CurrentValueSubject<Bool, Error>(false)
+    public var isAccordPassword = CurrentValueSubject<Bool, Error>(false)
   
     public init(repository: SignUpRepositoryInterface) {
         self.repository = repository

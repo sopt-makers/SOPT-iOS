@@ -37,12 +37,12 @@ public struct I18N {
         public static let email = "이메일"
         public static let emailTextFieldPlaceholder = "이메일을 입력해주세요."
         public static let password = "비밀번호"
-        public static let passwordTextFieldPlaceholder = "영문, 숫자, 특수문자 포함 N자 이상 입력해주세요."
+        public static let passwordTextFieldPlaceholder = "영문, 숫자, 특수문자 포함 8-15자로 입력해주세요."
         public static let passwordCheckTextFieldPlaceholder = "확인을 위해 비밀번호를 한 번 더 입력해주세요."
         public static let register = "가입하기"
         public static let duplicatedNickname = "사용 중인 이름입니다."
         public static let invalidEmailForm = "잘못된 이메일 형식입니다."
-        public static let invalidPasswordForm = "영문, 숫자, 특수문자 포함 N자 이상이어야 합니다."
+        public static let invalidPasswordForm = "영문, 숫자, 특수문자 포함 8-15자로 입력해주세요."
         public static let passwordNotAccord = "비밀번호가 일치하지 않습니다."
     }
 }
