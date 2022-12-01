@@ -18,6 +18,7 @@ import Core
 public enum TextFieldViewType {
     case plain
     case subTitle
+    case title
     case titleWithRightButton
     
     var height: Float {
@@ -26,7 +27,7 @@ public enum TextFieldViewType {
             return 48
         case .subTitle:
             return 60
-        case .titleWithRightButton:
+        case .title, .titleWithRightButton:
             return 83
         }
     }
@@ -76,9 +77,11 @@ public class CustomTextFieldView: UIView {
     
     private var type: TextFieldViewType!
     
-    public var rightButtonTapped: Driver<Void> {
+    public var rightButtonTapped: Driver<String?> {
         rightButton.publisher(for: .touchUpInside)
-            .map { _ in () }
+            .map { _ in
+                self.textField.text
+            }
             .asDriver()
     }
     
@@ -189,6 +192,7 @@ extension CustomTextFieldView {
     /// 경고 문구 라벨의 text 설정
     public func changeAlertLabelText(_ alertText: String) {
         self.alertlabel.text = alertText
+        self.alertlabel.isHidden = false
     }
     
     private func setDelegate() {
@@ -197,6 +201,12 @@ extension CustomTextFieldView {
     
     /// textField의 state를 지정하여 자동으로 배경색과 테두리 색이 바뀌도록 설정
     public func setTextFieldViewState(_ state: TextFieldViewState) {
+        
+        var state = state
+        if state == .normal && (textField.isEditing || !textField.isEmpty) {
+            state = .editing
+        }
+        
         textFieldContainerView.backgroundColor = state.backgroundColor
         
         if let borderColor = state.borderColor {
@@ -216,6 +226,38 @@ extension CustomTextFieldView {
                     self.changeAlertLabelText("")
                 }
             }.store(in: cancelBag)
+    }
+}
+
+// MARK: - Input Binding
+
+extension CustomTextFieldView {
+    var alertText: String {
+        get { return alertlabel.text ?? "" }
+        set { bindAlertText(newValue) }
+    }
+    
+    private func bindAlertText(_ alertText: String) {
+        self.changeAlertLabelText(alertText)
+        if !alertText.isEmpty {
+            self.setTextFieldViewState(.alert)
+        }
+    }
+    
+    public enum InputCase {
+         case alert
+         case passwordAlert
+         
+         var keyPath: AnyKeyPath {
+             switch self {
+             case .alert: return \CustomTextFieldView.alertText
+             case .passwordAlert: return \CustomTextFieldView.textChanged
+             }
+         }
+     }
+    
+    public func bindableInput<T>(_ input: InputCase) -> ReferenceWritableKeyPath<CustomTextFieldView, T> {
+        return input.keyPath as! ReferenceWritableKeyPath<CustomTextFieldView, T>
     }
 }
 
@@ -239,6 +281,7 @@ extension CustomTextFieldView {
         
         alertlabel.font = UIFont.caption3
         alertlabel.textColor = SoptampColor.error300.color
+        alertlabel.isHidden = true
         
         rightButton.clipsToBounds = true
         rightButton.isEnabled = false
@@ -267,6 +310,8 @@ extension CustomTextFieldView {
             self.setPlainLayout()
         case .subTitle:
             self.setSubTitleLayout()
+        case .title:
+            self.setTitleLayout()
         case .titleWithRightButton:
             self.setTitleWithRightButtonLayout()
         }
@@ -284,7 +329,8 @@ extension CustomTextFieldView {
         
         textFieldContainerView.addSubviews(textField)
         textField.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(16)
+            make.top.bottom.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(16)
         }
         
         setCornerRadius(10)
@@ -314,6 +360,31 @@ extension CustomTextFieldView {
         setCornerRadius(12)
     }
     
+    private func setTitleLayout() {
+        self.snp.makeConstraints { make in
+            make.height.equalTo(self.type.height)
+        }
+        
+        self.addSubview(titleLabel)
+        titleLabel.snp.makeConstraints { make in
+            make.leading.top.equalToSuperview()
+        }
+        
+        textFieldContainerView.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(16)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(48)
+        }
+        
+        textFieldContainerView.addSubviews(textField)
+        textField.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(16)
+        }
+        
+        setCornerRadius(10)
+    }
+    
     private func setTitleWithRightButtonLayout() {
         self.snp.makeConstraints { make in
             make.height.equalTo(self.type.height)
@@ -339,7 +410,8 @@ extension CustomTextFieldView {
         
         textFieldContainerView.addSubview(textField)
         textField.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(16)
+            make.top.bottom.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(16)
         }
         
         setCornerRadius(10)
@@ -354,6 +426,8 @@ extension CustomTextFieldView: UITextFieldDelegate {
     }
     
     public func textFieldDidEndEditing(_ textField: UITextField) {
-        self.setTextFieldViewState(.normal)
+        if let isEmpty = textField.text?.isEmpty {
+            isEmpty ? self.setTextFieldViewState(.normal) : self.setTextFieldViewState(.editing)
+        }
     }
 }

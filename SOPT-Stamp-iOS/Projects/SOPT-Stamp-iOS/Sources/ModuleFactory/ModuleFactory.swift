@@ -16,6 +16,8 @@ import Data
 public class ModuleFactory {
     static let shared = ModuleFactory()
     private init() { }
+    
+    lazy var authService = DefaultAuthService()
 }
 
 extension ModuleFactory: ModuleFactoryInterface {
@@ -31,4 +33,13 @@ extension ModuleFactory: ModuleFactoryInterface {
         return onboardingVC
     }
     
+    public func makeSignUpVC() -> Presentation.SignUpVC {
+        let repository = SignUpRepository(service: authService)
+        let useCase = DefaultSignUpUseCase(repository: repository)
+        let viewModel = SignUpViewModel(useCase: useCase)
+        let signUpVC = SignUpVC()
+        signUpVC.factory = self
+        signUpVC.viewModel = viewModel
+        return signUpVC
+    }
 }
