@@ -15,12 +15,76 @@ import DSKit
 
 import SnapKit
 
+// MARK: MissionListCellType
+
 @frozen
 enum MissionListCellType {
     case levelOne(completed: Bool)
     case levelTwo(completed: Bool)
     case levelThree(completed: Bool)
+    
+    var isCompleted: Bool {
+        switch self {
+        case .levelOne(let completed):
+            return completed
+        case .levelTwo(let completed):
+            return completed
+        case .levelThree(let completed):
+            return completed
+        }
+    }
 }
+
+// MARK: - Metrics
+
+extension MissionListCellType {
+    
+    var stampTop: CGFloat {
+        switch self {
+        case .levelOne:
+            return 47.adjustedH
+        case .levelTwo:
+            return 40.adjustedH
+        case .levelThree:
+            return 26.adjustedH
+        }
+    }
+    
+    var stampWidth: CGFloat {
+        switch self {
+        case .levelOne:
+            return 135.adjusted
+        case .levelTwo:
+            return 104.adjusted
+        case .levelThree:
+            return 135.adjusted
+        }
+    }
+    
+    var stampHeight: CGFloat {
+        switch self {
+        case .levelOne:
+            return 81.adjusted
+        case .levelTwo:
+            return 90.adjusted
+        case .levelThree:
+            return 104.adjusted
+        }
+    }
+    
+    var stampLabelSpacing: CGFloat {
+        switch self {
+        case .levelOne:
+            return 16.adjustedH
+        case .levelTwo:
+            return 13.adjustedH
+        case .levelThree:
+            return 12.adjustedH
+        }
+    }
+}
+
+// MARK: MissionListCVC
 
 final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     
@@ -31,6 +95,14 @@ final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     
     // MARK: - UI Components
     
+    private let backgroundImageView: UIImageView = {
+        let iv = UIImageView()
+        iv.contentMode = .scaleAspectFit
+        iv.image = DSKitAsset.Assets.missionBackground.image.withRenderingMode(.alwaysTemplate)
+        iv.clipsToBounds = true
+        return iv
+    }()
+    
     private let stampImageView: UIImageView = {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFit
@@ -39,11 +111,15 @@ final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     
     private let starView: UIView = {
         let view = UIView()
+        view.backgroundColor = .black
         return view
     }()
     
     private let purposeLabel: UILabel = {
         let label = UILabel()
+        label.text = "세미나 끝나고 2시까지 달리기"
+        label.numberOfLines = 2
+        label.lineBreakMode = .byWordWrapping
         return label
     }()
     
@@ -70,30 +146,59 @@ final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
 extension MissionListCVC {
     
     private func setUI() {
+        guard cellType.isCompleted else { return }
         
-    }
-    
-    private func setLayout() {
         switch cellType {
-        case .levelOne(completed: let completed):
-            self.setLevelOneLayout(completed)
-        case .levelTwo(completed: let completed):
-            self.setLevelTwoLayout(completed)
-        case .levelThree(completed: let completed):
-            self.setLevelThreeLayout(completed)
+        case .levelOne:
+            backgroundImageView.tintColor = DSKitAsset.Colors.pink100.color
+        case .levelTwo:
+            backgroundImageView.tintColor = DSKitAsset.Colors.purple100.color
+        case .levelThree:
+            backgroundImageView.tintColor = DSKitAsset.Colors.mint100.color
         }
     }
     
-    private func setLevelOneLayout(_ completed: Bool) {
-
+    private func setLayout() {
+        self.addSubview(backgroundImageView)
+        
+        backgroundImageView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        self.cellType.isCompleted
+        ? self.setCompletedLayout()
+        : self.setOnGoingLayout()
     }
     
-    private func setLevelTwoLayout(_ completed: Bool) {
+    private func setOnGoingLayout() {
+        self.backgroundImageView.addSubviews(starView, purposeLabel)
         
+        starView.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(70.adjustedH)
+            make.centerX.equalToSuperview()
+            make.height.equalTo(15.adjustedH)
+        }
+        
+        purposeLabel.snp.makeConstraints { make in
+            make.top.equalTo(starView.snp.bottom).inset(16.adjustedH)
+            make.centerX.equalToSuperview()
+        }
     }
     
-    private func setLevelThreeLayout(_ completed: Bool) {
+    private func setCompletedLayout() {
+        self.backgroundImageView.addSubviews(stampImageView, purposeLabel)
         
+        stampImageView.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(cellType.stampTop)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(cellType.stampWidth)
+            make.height.equalTo(cellType.stampHeight)
+        }
+        
+        purposeLabel.snp.makeConstraints { make in
+            make.top.equalTo(stampImageView.snp.bottom).inset(cellType.stampLabelSpacing)
+            make.centerX.equalToSuperview()
+        }
     }
 }
 

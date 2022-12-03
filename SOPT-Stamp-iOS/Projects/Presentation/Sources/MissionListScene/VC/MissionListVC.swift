@@ -67,6 +67,12 @@ extension MissionListVC {
         naviBar.snp.makeConstraints { make in
             make.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)
         }
+        
+        imageView.snp.makeConstraints { make in
+            make.top.equalTo(naviBar.snp.bottom)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(400)
+        }
     }
 }
 
