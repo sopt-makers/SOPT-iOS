@@ -52,6 +52,18 @@ public class MissionListVC: UIViewController {
         return cv
     }()
     
+    private lazy var rankingFloatingButton: UIButton = {
+        let bt = UIButton()
+        bt.layer.cornerRadius = 27.adjustedH
+        bt.backgroundColor = DSKitAsset.Colors.purple300.color
+        bt.setTitle("랭킹 보기", for: .normal)
+        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .highlighted)
+        bt.tintColor = .white
+        bt.titleLabel?.setTypoStyle(.h2)
+        return bt
+    }()
+    
     // MARK: - View Life Cycle
     
     public override func viewDidLoad() {
@@ -85,7 +97,18 @@ extension MissionListVC {
         missionListCollectionView.snp.makeConstraints { make in
             make.top.equalTo(naviBar.snp.bottom).offset(30)
             make.leading.trailing.equalToSuperview()
-            make.bottom.equalTo(view.safeAreaLayoutGuide)
+            make.bottom.equalToSuperview()
+        }
+        
+        if case .default = sceneType {
+            self.view.addSubview(rankingFloatingButton)
+            
+            rankingFloatingButton.snp.makeConstraints { make in
+                make.width.equalTo(143.adjusted)
+                make.height.equalTo(54.adjustedH)
+                make.bottom.equalTo(view.safeAreaLayoutGuide)
+                make.centerX.equalToSuperview()
+            }
         }
     }
 }
