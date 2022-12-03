@@ -33,6 +33,17 @@ enum MissionListCellType {
             return completed
         }
     }
+    
+    var starLevel: StarViewLevel {
+        switch self {
+        case .levelOne:
+            return .levelOne
+        case .levelTwo:
+            return .levelTwo
+        case .levelThree:
+            return .levelThree
+        }
+    }
 }
 
 // MARK: - Metrics
@@ -119,9 +130,8 @@ final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
         return iv
     }()
     
-    private let starView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .black
+    private lazy var starView: StarView = {
+        let view = StarView(starScale: 15.adjusted, spacing: 10.adjusted, level: cellType.starLevel)
         return view
     }()
     
@@ -157,9 +167,11 @@ final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
 extension MissionListCVC {
     
     public func setUI(_ type: MissionListCellType) {
-        backgroundImageView.tintColor = DSKitAsset.Colors.gray50.color
-        
-        guard cellType.isCompleted else { return }
+        guard cellType.isCompleted else {
+            backgroundImageView.tintColor = DSKitAsset.Colors.gray50.color
+            starView.changeStarLevel(level: cellType.starLevel)
+            return
+        }
         
         switch cellType {
         case .levelOne:
