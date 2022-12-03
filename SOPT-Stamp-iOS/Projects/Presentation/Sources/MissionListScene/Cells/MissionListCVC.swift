@@ -92,12 +92,22 @@ final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     
     static var isFromNib: Bool = false
     private var cellType: MissionListCellType = .levelOne(completed: false)
+    public var initCellType: MissionListCellType {
+        get { return self.cellType }
+        set {
+            DispatchQueue.main.async {
+                self.cellType = newValue
+                self.setUI(newValue)
+                self.setLayout()
+            }
+        }
+    }
     
     // MARK: - UI Components
     
     private let backgroundImageView: UIImageView = {
         let iv = UIImageView()
-        iv.contentMode = .scaleAspectFit
+        iv.contentMode = .scaleAspectFill
         iv.image = DSKitAsset.Assets.missionBackground.image.withRenderingMode(.alwaysTemplate)
         iv.clipsToBounds = true
         return iv
@@ -117,27 +127,28 @@ final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     
     private let purposeLabel: UILabel = {
         let label = UILabel()
-        label.text = "세미나 끝나고 2시까지 달리기"
+        label.text = "세미나 끝나고 뒷풀이 2시까지 달리기"
+        label.setTypoStyle(.caption1D)
         label.numberOfLines = 2
         label.lineBreakMode = .byWordWrapping
+        label.textAlignment = .center
         return label
     }()
     
     // MARK: - View Life Cycles
     
-    convenience init(_ type: MissionListCellType) {
-        self.init()
-        self.cellType = type
-    }
-    
     private override init(frame: CGRect) {
         super.init(frame: frame)
-        self.setUI()
-        self.setLayout()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        self.prepareCell()
     }
 }
 
@@ -145,15 +156,20 @@ final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
 
 extension MissionListCVC {
     
-    private func setUI() {
+    public func setUI(_ type: MissionListCellType) {
+        backgroundImageView.tintColor = DSKitAsset.Colors.gray50.color
+        
         guard cellType.isCompleted else { return }
         
         switch cellType {
         case .levelOne:
+            stampImageView.image = DSKitAsset.Assets.levelOneStamp.image
             backgroundImageView.tintColor = DSKitAsset.Colors.pink100.color
         case .levelTwo:
+            stampImageView.image = DSKitAsset.Assets.levelTwoStamp.image
             backgroundImageView.tintColor = DSKitAsset.Colors.purple100.color
         case .levelThree:
+            stampImageView.image = DSKitAsset.Assets.levelThreeStamp.image
             backgroundImageView.tintColor = DSKitAsset.Colors.mint100.color
         }
     }
@@ -180,8 +196,9 @@ extension MissionListCVC {
         }
         
         purposeLabel.snp.makeConstraints { make in
-            make.top.equalTo(starView.snp.bottom).inset(16.adjustedH)
+            make.top.equalTo(starView.snp.bottom).offset(16.adjustedH)
             make.centerX.equalToSuperview()
+            make.width.equalTo(116.adjusted)
         }
     }
     
@@ -196,8 +213,19 @@ extension MissionListCVC {
         }
         
         purposeLabel.snp.makeConstraints { make in
-            make.top.equalTo(stampImageView.snp.bottom).inset(cellType.stampLabelSpacing)
+            make.top.equalTo(stampImageView.snp.bottom).offset(cellType.stampLabelSpacing)
             make.centerX.equalToSuperview()
+            make.width.equalTo(116.adjusted)
+        }
+    }
+    
+    private func prepareCell() {
+        self.backgroundImageView.subviews.forEach {
+            $0.removeFromSuperview()
+        }
+        
+        self.subviews.forEach {
+            $0.removeFromSuperview()
         }
     }
 }
@@ -210,4 +238,3 @@ extension MissionListCVC {
         
     }
 }
-

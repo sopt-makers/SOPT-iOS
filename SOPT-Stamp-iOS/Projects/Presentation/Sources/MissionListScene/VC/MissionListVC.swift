@@ -26,6 +26,8 @@ public class MissionListVC: UIViewController {
     }
     private var cancelBag = CancelBag()
     
+    lazy var dataSource: UICollectionViewDiffableDataSource<MissionListSection, AnyHashable>! = nil
+    
     // MARK: - UI Components
     
     lazy var naviBar: CustomNavigationBar = {
@@ -42,13 +44,25 @@ public class MissionListVC: UIViewController {
         }
     }()
     
+    private lazy var missionListCollectionView: UICollectionView = {
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
+        cv.showsVerticalScrollIndicator = true
+        cv.backgroundColor = .white
+        cv.bounces = false
+        return cv
+    }()
+    
     // MARK: - View Life Cycle
     
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.setUI()
         self.setLayout()
+        self.setDelegate()
+        self.registerCells()
         self.bindViewModels()
+        self.setDataSource()
+        self.applySnapshot()
     }
 }
 
@@ -62,16 +76,16 @@ extension MissionListVC {
     }
     
     private func setLayout() {
-        self.view.addSubviews(naviBar)
+        self.view.addSubviews(naviBar, missionListCollectionView)
         
         naviBar.snp.makeConstraints { make in
             make.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)
         }
         
-        imageView.snp.makeConstraints { make in
-            make.top.equalTo(naviBar.snp.bottom)
+        missionListCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(naviBar.snp.bottom).offset(30)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(400)
+            make.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
 }
@@ -84,5 +98,61 @@ extension MissionListVC {
         let input = MissionListViewModel.Input()
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
     }
+    
+    private func setDelegate() {
+        missionListCollectionView.delegate = self
+    }
+    
+    private func registerCells() {
+        MissionListCVC.register(target: missionListCollectionView)
+    }
+    
+    private func setDataSource() {
+        dataSource = UICollectionViewDiffableDataSource(collectionView: missionListCollectionView, cellProvider: { collectionView, indexPath, itemIdentifier in
+            switch MissionListSection.type(indexPath.section) {
+            case .sentence:
+                guard let sentenceCell = collectionView.dequeueReusableCell(withReuseIdentifier: MissionListCVC.className, for: indexPath) as? MissionListCVC else { return UICollectionViewCell() }
+                
+                sentenceCell.initCellType = .levelOne(completed: true)
+                return sentenceCell
+                
+            case .missionList:
+                guard let missionListCell = collectionView.dequeueReusableCell(withReuseIdentifier: MissionListCVC.className, for: indexPath) as? MissionListCVC else { return UICollectionViewCell() }
+                guard let index = itemIdentifier as? Int else { return UICollectionViewCell() }
+                switch index % 6 {
+                case 0:
+                    missionListCell.initCellType = .levelOne(completed: true)
+                case 1:
+                    missionListCell.initCellType = .levelOne(completed: false)
+                case 2:
+                    missionListCell.initCellType = .levelTwo(completed: false)
+                case 3:
+                    missionListCell.initCellType = .levelTwo(completed: true)
+                case 4:
+                    missionListCell.initCellType = .levelThree(completed: true)
+                default:
+                    missionListCell.initCellType = .levelThree(completed: false)
+                }
+                return missionListCell
+            }
+        })
+    }
+    
+    func applySnapshot() {
+        var snapshot = NSDiffableDataSourceSnapshot<MissionListSection, AnyHashable>()
+        snapshot.appendSections([.sentence, .missionList])
+        var tempItems: [Int] = []
+        for i in 0..<50 {
+            tempItems.append(i)
+        }
+        snapshot.appendItems(tempItems, toSection: .missionList)
+        dataSource.apply(snapshot, animatingDifferences: false)
+        self.view.setNeedsLayout()
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+
+extension MissionListVC: UICollectionViewDelegate {
     
 }
