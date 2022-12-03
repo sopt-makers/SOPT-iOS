@@ -11,10 +11,20 @@ import Combine
 import Core
 import Domain
 
+@frozen
+public enum MissionListSceneType {
+    case `default`
+    case ranking(userName: String)
+}
+
 public class MissionListViewModel: ViewModelType {
 
     private let useCase: MissionListUseCase
-    private var cancelBag = Set<AnyCancellable>()
+    private var cancelBag = CancelBag()
+    private var missionListsceneType: MissionListSceneType!
+    public var sceneType: MissionListSceneType {
+        return self.missionListsceneType
+    }
   
     // MARK: - Inputs
     
@@ -30,8 +40,9 @@ public class MissionListViewModel: ViewModelType {
     
     // MARK: - init
   
-    public init(useCase: MissionListUseCase) {
+    public init(useCase: MissionListUseCase, sceneType: MissionListSceneType) {
         self.useCase = useCase
+        self.missionListsceneType = sceneType
     }
 }
 

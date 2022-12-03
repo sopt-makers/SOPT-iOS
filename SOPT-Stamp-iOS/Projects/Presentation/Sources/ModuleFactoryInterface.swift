@@ -13,4 +13,5 @@ public protocol ModuleFactoryInterface {
     func makeOnboardingVC() -> OnboardingVC
 
     func makeSignUpVC() -> SignUpVC
+    func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListVC
 }
