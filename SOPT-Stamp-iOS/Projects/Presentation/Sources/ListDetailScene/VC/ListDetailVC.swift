@@ -35,7 +35,7 @@ public class ListDetailVC: UIViewController {
     public var viewModel: ListDetailViewModel!
     public var factory: ModuleFactoryInterface!
     private var cancelBag = CancelBag()
-    public var viewType: listDetailType! = listDetailType.none
+    public var viewType: listDetailType! = listDetailType.completed
     private let picker = UIImagePickerController()
   
     // MARK: - UI Components
@@ -78,6 +78,12 @@ extension ListDetailVC {
     private func bindViewModels() {
         let input = ListDetailViewModel.Input()
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        naviBar.rightButtonTapped
+            .compactMap({ $0 })
+            .sink { _ in
+                self.setRightButtonAction()
+            }.store(in: self.cancelBag)
     }
     
     private func setAddTarget() {
@@ -86,6 +92,18 @@ extension ListDetailVC {
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(openLibrary))
         missionImageView.addGestureRecognizer(tapGesture)
+    }
+    
+    private func setRightButtonAction() {
+        switch viewType {
+        case .completed:
+            self.viewType = .edit
+        case .edit:
+            self.viewType = .completed
+        default:
+            break
+        }
+        self.setUI(viewType)
     }
     
     private func setDelegate() {
@@ -139,6 +157,7 @@ extension ListDetailVC: PHPickerViewControllerDelegate {
                     guard let selectedImage = image as? UIImage else { return }
                     self.missionImageView.image = selectedImage
                     self.imagePlaceholderLabel.isHidden = true
+                    if self.textView.hasText && self.textView.text != I18N.ListDetail.memoPlaceHolder { self.bottomButton.setEnabled(true) }
                 }
             }
         }
@@ -172,7 +191,7 @@ extension ListDetailVC: UITextViewDelegate {
     }
     
     public func textViewDidChange(_ textView: UITextView) {
-        self.bottomButton.setEnabled(textView.hasText)
+        self.bottomButton.setEnabled(textView.hasText && missionImageView.image != nil)
     }
 }
 
@@ -223,9 +242,9 @@ extension ListDetailVC {
             self.missionView.backgroundColor = DSKitAsset.Colors.gray50.color
             self.setTextView(.inactive)
             self.imagePlaceholderLabel.isHidden = missionImageView.image == nil ? false : true
+            self.missionImageView.isUserInteractionEnabled = true
             self.bottomButton.isHidden = false
             self.dateLabel.isHidden = true
-            self.missionImageView.isUserInteractionEnabled = true
         case .completed:
             self.naviBar.setRightButton(.addRecord)
             self.missionView.backgroundColor = DSKitAsset.Colors.purple100.color
@@ -233,6 +252,7 @@ extension ListDetailVC {
             self.imagePlaceholderLabel.isHidden = true
             self.bottomButton.isHidden = true
             self.dateLabel.isHidden = false
+            self.missionImageView.image = DSKitAsset.Assets.splashImg2.image
             self.missionImageView.isUserInteractionEnabled = false
         }
     }
