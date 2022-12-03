@@ -21,15 +21,19 @@ public class MissionListVC: UIViewController {
     
     public var factory: ModuleFactoryInterface!
     public var viewModel: MissionListViewModel!
+    public var sceneType: MissionListSceneType {
+        return self.viewModel.missionListsceneType
+    }
     private var cancelBag = CancelBag()
     
     // MARK: - UI Components
     
     lazy var naviBar: CustomNavigationBar = {
-        switch viewModel.sceneType {
+        switch sceneType {
         case .default:
             return CustomNavigationBar(self, type: .title)
-                .setTitle("미완료 미션")
+                .setTitle("전체 미션")
+                .setTitleTypoStyle(.h2)
         case .ranking(let username):
             return CustomNavigationBar(self, type: .titleWithLeftButton)
                 .setTitle(username)

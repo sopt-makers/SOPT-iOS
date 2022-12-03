@@ -21,10 +21,7 @@ public class MissionListViewModel: ViewModelType {
 
     private let useCase: MissionListUseCase
     private var cancelBag = CancelBag()
-    private var missionListsceneType: MissionListSceneType!
-    public var sceneType: MissionListSceneType {
-        return self.missionListsceneType
-    }
+    public var missionListsceneType: MissionListSceneType!
   
     // MARK: - Inputs
     
