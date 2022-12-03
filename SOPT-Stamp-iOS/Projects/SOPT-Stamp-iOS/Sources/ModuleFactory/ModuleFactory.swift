@@ -18,6 +18,10 @@ public class ModuleFactory {
     private init() { }
     
     lazy var authService = DefaultAuthService()
+    lazy var userService = DefaultUserService()
+    lazy var rankService = DefaultRankService()
+    lazy var missionService = DefaultMissionService()
+    lazy var stampService = DefaultStampService()
 }
 
 extension ModuleFactory: ModuleFactoryInterface {
