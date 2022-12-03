@@ -38,6 +38,7 @@ public class MissionListVC: UIViewController {
             return CustomNavigationBar(self, type: .titleWithLeftButton)
                 .setTitle(username)
                 .setRightButton(.none)
+                .setTitleTypoStyle(.h2)
         }
     }()
     
