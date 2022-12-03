@@ -1,29 +1,28 @@
 //
-//  NoticeAPI.swift
+//  UserAPI.swift
 //  Network
 //
-//  Created by Junho Lee on 2022/10/16.
+//  Created by Junho Lee on 2022/12/03.
 //  Copyright © 2022 SOPT-Stamp-iOS. All rights reserved.
 //
 
 import Foundation
-import UIKit
 
 import Alamofire
 import Moya
 
-public enum NoticeAPI {
-    case fetchNotcieDetail(noticeId: Int)
+public enum UserAPI {
+    case sample(provider: String)
 }
 
-extension NoticeAPI: BaseAPI {
+extension UserAPI: BaseAPI {
     
-    public static var apiType: APIType = .notice
+    public static var apiType: APIType = .auth
     
     // MARK: - Path
     public var path: String {
         switch self {
-        default:
+        case .sample:
             return ""
         }
     }
@@ -31,8 +30,8 @@ extension NoticeAPI: BaseAPI {
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        default:
-            return .get
+        case .sample:
+            return .post
         }
     }
     
@@ -40,15 +39,15 @@ extension NoticeAPI: BaseAPI {
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
-        case .fetchNotcieDetail(let noticeId):
-            params["notice_id"] = noticeId
+        case .sample(let provider):
+            params["platform"] = provider
         }
         return params
     }
     
     private var parameterEncoding: ParameterEncoding {
         switch self {
-        case .fetchNotcieDetail:
+        case .sample:
             return URLEncoding.init(destination: .queryString, arrayEncoding: .noBrackets, boolEncoding: .literal)
         default:
             return JSONEncoding.default
@@ -57,6 +56,8 @@ extension NoticeAPI: BaseAPI {
     
     public var task: Task {
         switch self {
+        case .sample:
+            return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain
         }
