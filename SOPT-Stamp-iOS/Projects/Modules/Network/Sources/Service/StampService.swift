@@ -21,4 +21,3 @@ public protocol StampService {
 extension DefaultStampService: StampService {
     
 }
-

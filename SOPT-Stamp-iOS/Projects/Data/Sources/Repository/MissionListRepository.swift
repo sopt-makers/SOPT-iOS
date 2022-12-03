@@ -13,10 +13,10 @@ import Network
 
 public class MissionListRepository {
     
-    private let networkService: NoticeService
+    private let networkService: MissionService
     private let cancelBag = Set<AnyCancellable>()
     
-    public init(service: NoticeService) {
+    public init(service: MissionService) {
         self.networkService = service
     }
 }

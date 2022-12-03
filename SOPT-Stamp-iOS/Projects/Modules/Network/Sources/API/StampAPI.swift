@@ -63,4 +63,3 @@ extension StampAPI: BaseAPI {
         }
     }
 }
-

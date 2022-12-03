@@ -21,4 +21,3 @@ public protocol MissionService {
 extension DefaultMissionService: MissionService {
     
 }
-

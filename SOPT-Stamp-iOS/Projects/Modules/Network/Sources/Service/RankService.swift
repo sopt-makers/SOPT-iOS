@@ -21,4 +21,3 @@ public protocol RankService {
 extension DefaultRankService: RankService {
     
 }
-
