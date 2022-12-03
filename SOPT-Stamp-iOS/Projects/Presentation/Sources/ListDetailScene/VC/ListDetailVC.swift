@@ -92,6 +92,10 @@ extension ListDetailVC {
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(openLibrary))
         missionImageView.addGestureRecognizer(tapGesture)
+        
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeDownGesture))
+        swipeDown.direction = UISwipeGestureRecognizer.Direction.down
+        self.view.addGestureRecognizer(swipeDown)
     }
     
     private func setRightButtonAction() {
@@ -127,6 +131,15 @@ extension ListDetailVC {
     private func keyboardWillHide(_ notification: NSNotification) {
         [self.contentStackView, self.bottomButton, self.imagePlaceholderLabel].forEach {
             $0.transform = .identity }
+    }
+    
+    @objc
+    private func respondToSwipeDownGesture(_ gesture: UIGestureRecognizer) {
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+            if swipeGesture.direction == UISwipeGestureRecognizer.Direction.down {
+                self.view.endEditing(true)
+            }
+        }
     }
     
     @objc
