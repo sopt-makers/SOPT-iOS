@@ -35,8 +35,7 @@ public class ListDetailVC: UIViewController {
     public var viewModel: ListDetailViewModel!
     public var factory: ModuleFactoryInterface!
     private var cancelBag = CancelBag()
-    public var viewType: listDetailType! = listDetailType.none
-    private let picker = UIImagePickerController()
+    public var viewType: listDetailType! = listDetailType.completed
     
     // MARK: - UI Components
     
@@ -44,19 +43,13 @@ public class ListDetailVC: UIViewController {
         .setTitle(I18N.ListDetail.mission)
         .setRightButton(.none)
     private let contentStackView = UIStackView()
-    
-    private let missionView = UIView()
-    private let starStackView = UIStackView()
-    private let firstStarImageView = UIImageView()
-    private let secondStarImageView = UIImageView()
-    private let thirdStarImageView = UIImageView()
-    private let missionLabel = UILabel()
-    
+    private let missionView = MissionView(level: .levelTwo, mission: "미션주세요미션미션미션미션")
     private let missionImageView = UIImageView()
     private let imagePlaceholderLabel = UILabel()
     private let textView = UITextView()
     private let dateLabel = UILabel()
-    private let bottomButton = CustomButton(title: I18N.ListDetail.missionComplete).setEnabled(false)
+    private let bottomButton = CustomButton(title: I18N.ListDetail.missionComplete)
+        .setEnabled(false)
     
     // MARK: - View Life Cycle
     
@@ -67,7 +60,8 @@ public class ListDetailVC: UIViewController {
         self.setStackView()
         self.setDefaultUI()
         self.setUI(viewType)
-        self.setAddTarget()
+        self.setObserver()
+        self.setGesture()
         self.setDelegate()
     }
 }
@@ -86,10 +80,12 @@ extension ListDetailVC {
             }.store(in: self.cancelBag)
     }
     
-    private func setAddTarget() {
+    private func setObserver() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-        
+    }
+    
+    private func setGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(requestPhotoLibrary))
         missionImageView.addGestureRecognizer(tapGesture)
         
@@ -119,10 +115,10 @@ extension ListDetailVC {
         configuration.selectionLimit = 1
         configuration.filter = .any(of: [.images, .livePhotos])
         
-        let picker = PHPickerViewController(configuration: configuration)
-        picker.delegate = self
+        let pickerVC = PHPickerViewController(configuration: configuration)
+        pickerVC.delegate = self
         
-        self.present(picker, animated: true)
+        self.present(pickerVC, animated: true)
     }
     
     private func moveToSetting() {
@@ -260,28 +256,23 @@ extension ListDetailVC {
         
         self.view.backgroundColor = .white
         self.setStatusBarBackgroundColor(.white)
+        
         self.missionImageView.backgroundColor = DSKitAsset.Colors.gray50.color
         self.missionImageView.layer.masksToBounds = true
         self.missionImageView.contentMode = .scaleAspectFill
-        
-        self.missionView.layer.cornerRadius = 9
         self.missionImageView.layer.cornerRadius = 9
+        
         self.textView.layer.cornerRadius = 12
         self.textView.layer.borderColor = DSKitAsset.Colors.purple300.color.cgColor
         self.textView.textContainerInset = UIEdgeInsets(top: 14, left: 14, bottom: 14, right: 14)
         
-        self.missionLabel.textColor = DSKitAsset.Colors.gray900.color
         self.imagePlaceholderLabel.textColor = DSKitAsset.Colors.gray500.color
         self.dateLabel.textColor = DSKitAsset.Colors.gray600.color
         
-        self.missionLabel.setTypoStyle(.subtitle1)
         self.imagePlaceholderLabel.setTypoStyle(.subtitle2)
         self.textView.setTypoStyle(.caption1)
         self.dateLabel.setTypoStyle(.number3)
         
-        [self.firstStarImageView, self.secondStarImageView, self.thirdStarImageView].forEach { $0.backgroundColor = DSKitAsset.Colors.purple300.color }
-        
-        self.missionLabel.text = "앱잼 팀원 다 함께 바다 보고 오기"
         self.imagePlaceholderLabel.text = I18N.ListDetail.imagePlaceHolder
         self.textView.text = I18N.ListDetail.memoPlaceHolder
         self.dateLabel.text = "2022.10.25"
@@ -338,11 +329,8 @@ extension ListDetailVC {
         self.contentStackView.axis = .vertical
         self.contentStackView.distribution = .fill
         self.contentStackView.spacing = 16
-        
-        self.starStackView.axis = .horizontal
-        self.starStackView.distribution = .fillEqually
-        self.starStackView.spacing = 10
     }
+    
     private func setLayout() {
         self.view.addSubviews([contentStackView, dateLabel,
                                imagePlaceholderLabel, bottomButton, naviBar])
@@ -386,32 +374,6 @@ extension ListDetailVC {
         
         imagePlaceholderLabel.snp.makeConstraints { make in
             make.center.equalTo(missionImageView.snp.center)
-        }
-        
-        missionView.addSubviews([starStackView, missionLabel])
-        
-        starStackView.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalToSuperview().inset(12)
-        }
-        
-        missionLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(starStackView.snp.bottom).offset(8)
-        }
-        
-        starStackView.addArrangedSubviews([firstStarImageView, secondStarImageView, thirdStarImageView])
-        
-        firstStarImageView.snp.makeConstraints { make in
-            make.width.height.equalTo(14)
-        }
-        
-        secondStarImageView.snp.makeConstraints { make in
-            make.width.height.equalTo(14)
-        }
-        
-        thirdStarImageView.snp.makeConstraints { make in
-            make.width.height.equalTo(14)
         }
     }
 }
