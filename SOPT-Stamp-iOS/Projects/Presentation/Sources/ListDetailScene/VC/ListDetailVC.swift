@@ -256,6 +256,7 @@ extension ListDetailVC: UITextViewDelegate {
 extension ListDetailVC {
     private func setDefaultUI() {
         self.navigationController?.navigationBar.isHidden = true
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
         
         self.view.backgroundColor = .white
         self.setStatusBarBackgroundColor(.white)
