@@ -46,4 +46,14 @@ extension ModuleFactory: ModuleFactoryInterface {
         signUpVC.viewModel = viewModel
         return signUpVC
     }
+    
+    public func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListVC {
+        let repository = MissionListRepository(service: missionService)
+        let useCase = DefaultMissionListUseCase(repository: repository)
+        let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType)
+        let missionListVC = MissionListVC()
+        missionListVC.factory = self
+        missionListVC.viewModel = viewModel
+        return missionListVC
+    }
 }
