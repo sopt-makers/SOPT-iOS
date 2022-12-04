@@ -107,6 +107,7 @@ extension RankingVC {
             switch RankingSection.type(indexPath.section) {
             case .chart:
                 guard let chartCell = collectionView.dequeueReusableCell(withReuseIdentifier: RankingChartCVC.className, for: indexPath) as? RankingChartCVC else { return UICollectionViewCell() }
+                chartCell.setData(model: "")
                 
                 return chartCell
                 

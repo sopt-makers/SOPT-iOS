@@ -35,7 +35,7 @@ public class ChartRectangleView: UIView {
     
     // MARK: - Properties
     
-    var viewLevel = RectangleViewLevel.levelOne
+    public var viewLevel = RectangleViewLevel.levelOne
     
     // MARK: - UI Components
     
@@ -170,5 +170,11 @@ extension ChartRectangleView {
             make.bottom.equalToSuperview()
             make.width.lessThanOrEqualToSuperview()
         }
+    }
+}
+
+extension ChartRectangleView {
+    static func ==(left: ChartRectangleView, right: ChartRectangleView) -> Bool {
+        return left.viewLevel == right.viewLevel
     }
 }

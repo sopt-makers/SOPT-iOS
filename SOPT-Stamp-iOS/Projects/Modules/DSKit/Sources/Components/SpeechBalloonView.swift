@@ -84,7 +84,7 @@ extension SpeechBalloonView {
             
             let standardSize = calculateLabelSize(sentence: sentence)
             if standardSize < 108.adjusted {
-                make.width.equalTo(108.adjusted)
+                make.width.equalTo(108.adjusted + 20)
             } else if standardSize < 266.adjusted {
                 make.width.equalTo(standardSize + 40)
             } else {
@@ -119,7 +119,7 @@ extension SpeechBalloonView {
     }
     
     private func calculateLabelSize(sentence: String) -> CGFloat {
-        var tempLabel = BalloonPaddingLabel()
+        let tempLabel = BalloonPaddingLabel()
         tempLabel.text = sentence
         tempLabel.sizeToFit()
         tempLabel.setTypoStyle(.subtitle3)
