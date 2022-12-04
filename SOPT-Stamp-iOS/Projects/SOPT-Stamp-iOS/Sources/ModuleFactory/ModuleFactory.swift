@@ -56,10 +56,10 @@ extension ModuleFactory: ModuleFactoryInterface {
         missionListVC.viewModel = viewModel
         return missionListVC
     }
-    public func makeListDetailVC() -> ListDetailVC {
+    public func makeListDetailVC(sceneType: ListDetailSceneType) -> ListDetailVC {
         let repository = ListDetailRepository()
         let useCase = DefaultListDetailUseCase(repository: repository)
-        let viewModel = ListDetailViewModel(useCase: useCase)
+        let viewModel = ListDetailViewModel(useCase: useCase, sceneType: sceneType)
         let listDetailVC = ListDetailVC()
         listDetailVC.viewModel = viewModel
         listDetailVC.factory = self

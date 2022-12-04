@@ -11,11 +11,18 @@ import Combine
 import Core
 import Domain
 
+@frozen
+public enum ListDetailSceneType {
+    case none // 작성 전
+    case completed // 작성 완료
+    case edit // 수정
+}
+
 public class ListDetailViewModel: ViewModelType {
     
-
     private let useCase: ListDetailUseCase
     private var cancelBag = Set<AnyCancellable>()
+    public var listDetailType: ListDetailSceneType!
   
     // MARK: - Inputs
     
@@ -31,8 +38,9 @@ public class ListDetailViewModel: ViewModelType {
     
     // MARK: - init
   
-    public init(useCase: ListDetailUseCase) {
+    public init(useCase: ListDetailUseCase, sceneType: ListDetailSceneType) {
         self.useCase = useCase
+        self.listDetailType = sceneType
     }
 }
 

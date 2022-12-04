@@ -16,13 +16,7 @@ import Then
 import Core
 import DSKit
 
-public enum listDetailType {
-    case none // 작성 전
-    case completed // 작성 완료
-    case edit // 수정
-}
-
-public enum textViewState {
+public enum TextViewState {
     case inactive // 비활성화(키보드X, placeholder)
     case active // 활성화(키보드O, 텍스트 입력 상태)
     case completed // 작성 완료
@@ -35,7 +29,13 @@ public class ListDetailVC: UIViewController {
     public var viewModel: ListDetailViewModel!
     public var factory: ModuleFactoryInterface!
     private var cancelBag = CancelBag()
-    public var viewType: listDetailType! = listDetailType.completed
+    private var sceneType: ListDetailSceneType {
+        get {
+            return self.viewModel.listDetailType
+        } set(type) {
+            self.viewModel.listDetailType = type
+        }
+    }
     
     // MARK: - UI Components
     
@@ -59,7 +59,7 @@ public class ListDetailVC: UIViewController {
         self.setLayout()
         self.setStackView()
         self.setDefaultUI()
-        self.setUI(viewType)
+        self.setUI(sceneType)
         self.setObserver()
         self.setGesture()
         self.setDelegate()
@@ -95,15 +95,15 @@ extension ListDetailVC {
     }
     
     private func setRightButtonAction() {
-        switch viewType {
+        switch sceneType {
         case .completed:
-            self.viewType = .edit
+            self.sceneType = .edit
         case .edit:
-            self.viewType = .completed
+            self.sceneType = .completed
         default:
             break
         }
-        self.setUI(viewType)
+        self.setUI(sceneType)
     }
     
     private func setDelegate() {
@@ -280,7 +280,7 @@ extension ListDetailVC {
         self.textView.returnKeyType = .done
     }
     
-    private func setUI(_ type: listDetailType) {
+    private func setUI(_ type: ListDetailSceneType) {
         if type == .edit {
             self.naviBar.setRightButton(.delete)
         }
@@ -305,7 +305,7 @@ extension ListDetailVC {
         }
     }
     
-    private func setTextView(_ state: textViewState) {
+    private func setTextView(_ state: TextViewState) {
         switch state {
         case .inactive:
             self.textView.backgroundColor = DSKitAsset.Colors.gray50.color
