@@ -247,7 +247,8 @@ extension ListDetailVC: UITextViewDelegate {
     }
     
     public func textViewDidChange(_ textView: UITextView) {
-        self.bottomButton.setEnabled(textView.hasText && missionImageView.image != nil)
+        let missionImageViewFilled = missionImageView.image != nil
+        self.bottomButton.setEnabled(textView.hasText && missionImageViewFilled)
     }
 }
 
@@ -370,7 +371,7 @@ extension ListDetailVC {
             make.height.equalTo(56)
         }
         
-        contentStackView.addArrangedSubviews([missionView, missionImageView, textView])
+        contentStackView.addArrangedSubviews(missionView, missionImageView, textView)
         
         missionView.snp.makeConstraints { make in
             make.leading.top.trailing.equalToSuperview()
