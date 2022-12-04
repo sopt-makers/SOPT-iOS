@@ -16,6 +16,12 @@ import Data
 public class ModuleFactory {
     static let shared = ModuleFactory()
     private init() { }
+    
+    lazy var authService = DefaultAuthService()
+    lazy var userService = DefaultUserService()
+    lazy var rankService = DefaultRankService()
+    lazy var missionService = DefaultMissionService()
+    lazy var stampService = DefaultStampService()
 }
 
 extension ModuleFactory: ModuleFactoryInterface {
@@ -31,6 +37,25 @@ extension ModuleFactory: ModuleFactoryInterface {
         return onboardingVC
     }
     
+    public func makeSignUpVC() -> Presentation.SignUpVC {
+        let repository = SignUpRepository(service: authService)
+        let useCase = DefaultSignUpUseCase(repository: repository)
+        let viewModel = SignUpViewModel(useCase: useCase)
+        let signUpVC = SignUpVC()
+        signUpVC.factory = self
+        signUpVC.viewModel = viewModel
+        return signUpVC
+    }
+    
+    public func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListVC {
+        let repository = MissionListRepository(service: missionService)
+        let useCase = DefaultMissionListUseCase(repository: repository)
+        let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType)
+        let missionListVC = MissionListVC()
+        missionListVC.factory = self
+        missionListVC.viewModel = viewModel
+        return missionListVC
+    }
     public func makeListDetailVC() -> ListDetailVC {
         let repository = ListDetailRepository()
         let useCase = DefaultListDetailUseCase(repository: repository)
