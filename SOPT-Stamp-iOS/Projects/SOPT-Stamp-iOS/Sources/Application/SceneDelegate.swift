@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(frame: scene.coordinateSpace.bounds)
         window?.windowScene = scene
-        let vc = ModuleFactory.shared.makeListDetailVC(sceneType: .completed)
+        let vc = ModuleFactory.shared.makeListDetailVC(sceneType: .completed, starLevel: .levelThree)
         window?.rootViewController = UINavigationController(rootViewController: vc)
 //        let rootVC = ModuleFactory.shared.makeMissionListVC(sceneType: .default)
         window?.makeKeyAndVisible()

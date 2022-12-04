@@ -36,6 +36,9 @@ public class ListDetailVC: UIViewController {
             self.viewModel.listDetailType = type
         }
     }
+    private var starLevel: StarViewLevel {
+        return self.viewModel.starLevel
+    }
     
     // MARK: - UI Components
     
@@ -43,7 +46,7 @@ public class ListDetailVC: UIViewController {
         .setTitle(I18N.ListDetail.mission)
         .setRightButton(.none)
     private let contentStackView = UIStackView()
-    private let missionView = MissionView(level: .levelTwo, mission: "미션주세요미션미션미션미션")
+    private lazy var missionView = MissionView(level: starLevel, mission: "미션주세요미션미션미션미션")
     private let missionImageView = UIImageView()
     private let imagePlaceholderLabel = UILabel()
     private let textView = UITextView()
@@ -295,13 +298,24 @@ extension ListDetailVC {
             self.dateLabel.isHidden = true
         case .completed:
             self.naviBar.setRightButton(.addRecord)
-            self.missionView.backgroundColor = DSKitAsset.Colors.purple100.color
+            self.missionView.backgroundColor = setLevelColor()
             self.setTextView(.completed)
             self.imagePlaceholderLabel.isHidden = true
             self.bottomButton.isHidden = true
             self.dateLabel.isHidden = false
             self.missionImageView.image = DSKitAsset.Assets.splashImg2.image
             self.missionImageView.isUserInteractionEnabled = false
+        }
+    }
+    
+    private func setLevelColor() -> UIColor {
+        switch starLevel {
+        case .levelOne:
+            return DSKitAsset.Colors.pink100.color
+        case .levelTwo:
+            return DSKitAsset.Colors.purple100.color
+        case .levelThree:
+            return DSKitAsset.Colors.mint100.color
         }
     }
     

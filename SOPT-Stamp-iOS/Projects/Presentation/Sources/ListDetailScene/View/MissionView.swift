@@ -11,6 +11,7 @@ import UIKit
 import Combine
 import SnapKit
 
+import Core
 import DSKit
 
 class MissionView: UIView {

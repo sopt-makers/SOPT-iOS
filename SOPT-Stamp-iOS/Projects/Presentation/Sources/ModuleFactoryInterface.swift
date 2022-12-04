@@ -8,10 +8,12 @@
 
 import Foundation
 
+import Core
+
 public protocol ModuleFactoryInterface {
     func makeSplashVC() -> SplashVC
     func makeOnboardingVC() -> OnboardingVC
     func makeSignUpVC() -> SignUpVC
     func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListVC
-    func makeListDetailVC(sceneType: ListDetailSceneType) -> ListDetailVC
+    func makeListDetailVC(sceneType: ListDetailSceneType, starLevel: StarViewLevel) -> ListDetailVC
 }

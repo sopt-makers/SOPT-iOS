@@ -23,6 +23,7 @@ public class ListDetailViewModel: ViewModelType {
     private let useCase: ListDetailUseCase
     private var cancelBag = Set<AnyCancellable>()
     public var listDetailType: ListDetailSceneType!
+    public var starLevel: StarViewLevel!
   
     // MARK: - Inputs
     
@@ -38,9 +39,10 @@ public class ListDetailViewModel: ViewModelType {
     
     // MARK: - init
   
-    public init(useCase: ListDetailUseCase, sceneType: ListDetailSceneType) {
+    public init(useCase: ListDetailUseCase, sceneType: ListDetailSceneType, starLevel: StarViewLevel) {
         self.useCase = useCase
         self.listDetailType = sceneType
+        self.starLevel = starLevel
     }
 }
 
