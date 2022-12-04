@@ -35,9 +35,9 @@ public class ListDetailVC: UIViewController {
     public var viewModel: ListDetailViewModel!
     public var factory: ModuleFactoryInterface!
     private var cancelBag = CancelBag()
-    public var viewType: listDetailType! = listDetailType.completed
+    public var viewType: listDetailType! = listDetailType.none
     private let picker = UIImagePickerController()
-  
+    
     // MARK: - UI Components
     
     private lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
@@ -57,7 +57,7 @@ public class ListDetailVC: UIViewController {
     private let textView = UITextView()
     private let dateLabel = UILabel()
     private let bottomButton = CustomButton(title: I18N.ListDetail.missionComplete).setEnabled(false)
-  
+    
     // MARK: - View Life Cycle
     
     public override func viewDidLoad() {
@@ -90,7 +90,7 @@ extension ListDetailVC {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(openLibrary))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(requestPhotoLibrary))
         missionImageView.addGestureRecognizer(tapGesture)
         
         let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeDownGesture))
@@ -112,6 +112,35 @@ extension ListDetailVC {
     
     private func setDelegate() {
         self.textView.delegate = self
+    }
+    
+    private func openLibrary() {
+        var configuration = PHPickerConfiguration()
+        configuration.selectionLimit = 1
+        configuration.filter = .any(of: [.images, .livePhotos])
+        
+        let picker = PHPickerViewController(configuration: configuration)
+        picker.delegate = self
+        
+        self.present(picker, animated: true)
+    }
+    
+    private func moveToSetting() {
+        let alertController = UIAlertController(title: "앨범 접근 권한 거부", message: "앨범 접근이 거부되었습니다. 앱의 일부 기능을 사용할 수 없습니다.", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "권한 설정으로 이동하기", style: .default) { action in
+            guard let settingURL = URL(string: UIApplication.openSettingsURLString) else { return }
+            if UIApplication.shared.canOpenURL(settingURL) {
+                UIApplication.shared.open(settingURL)
+            }
+        }
+        let cancelAction = UIAlertAction(title: "확인", style: .cancel)
+        
+        alertController.addAction(okAction)
+        alertController.addAction(cancelAction)
+        
+        makeVibrate()
+        
+        self.present(alertController, animated: true)
     }
     
     // MARK: - @objc
@@ -143,15 +172,30 @@ extension ListDetailVC {
     }
     
     @objc
-    private func openLibrary() {
-        var configuration = PHPickerConfiguration()
-        configuration.selectionLimit = 1
-        configuration.filter = .any(of: [.images, .livePhotos])
-        
-        let picker = PHPickerViewController(configuration: configuration)
-        picker.delegate = self
-        
-        self.present(picker, animated: true)
+    private func requestPhotoLibrary() {
+        switch PHPhotoLibrary.authorizationStatus(for: .readWrite) {
+        case .authorized, .limited:
+            openLibrary()
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization(for: .readWrite) { newStatus in
+                switch newStatus {
+                case .authorized, .limited :
+                    self.openLibrary()
+                case .denied:
+                    DispatchQueue.main.async {
+                        self.moveToSetting()
+                    }
+                default:
+                    break
+                }
+            }
+        case .denied:
+            DispatchQueue.main.async {
+                self.moveToSetting()
+            }
+        default:
+            print("권한 설정이 이상하게 되었어요")
+        }
     }
 }
 

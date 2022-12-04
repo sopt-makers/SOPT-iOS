@@ -33,6 +33,7 @@ public extension Project {
         "App Transport Security Settings": ["Allow Arbitrary Loads": true],
         "NSAppTransportSecurity": ["NSAllowsArbitraryLoads": true],
         "ITSAppUsesNonExemptEncryption": false,
-        "UIUserInterfaceStyle": "Light"
+        "UIUserInterfaceStyle": "Light",
+        "NSPhotoLibraryUsageDescription": "권한 !!!!!!!1"
     ]
 }
