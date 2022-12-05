@@ -29,12 +29,15 @@ public class ListDetailViewModel: ViewModelType {
     
     public struct Input {
         let bottomButtonTapped: Driver<ListDetailRequestModel>
+        let rightButtonTapped: Driver<ListDetailSceneType>
     }
     
     // MARK: - Outputs
     
     public struct Output {
         var successed = PassthroughSubject<Bool, Never>()
+        var changeToEdit = PassthroughSubject<Bool, Never>()
+        var deleteSuccess = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - init
@@ -57,6 +60,19 @@ extension ListDetailViewModel {
                 print("✅requestModel:", requestModel)
                 // TODO: - useCase
                 output.successed.send(true)
+            }.store(in: self.cancelBag)
+        
+        input.rightButtonTapped
+            .sink { sceneType in
+                switch sceneType {
+                case .completed:
+                    output.changeToEdit.send(true)
+                case .edit:
+                    // TODO: - useCase
+                    output.deleteSuccess.send(false)
+                default:
+                    break
+                }
             }.store(in: self.cancelBag)
     
         return output

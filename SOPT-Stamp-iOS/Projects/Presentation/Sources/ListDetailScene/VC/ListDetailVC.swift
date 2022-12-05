@@ -76,11 +76,9 @@ public class ListDetailVC: UIViewController {
 
 extension ListDetailVC {
     private func bindViewModels() {
-        naviBar.rightButtonTapped
-            .compactMap({ $0 })
-            .sink { _ in
-                self.setRightButtonAction()
-            }.store(in: self.cancelBag)
+        let rightButtonTapped = naviBar.rightButtonTapped
+            .map { self.sceneType }
+            .asDriver()
         
         let bottomButtonTapped = bottomButton
             .publisher(for: .touchUpInside)
@@ -89,13 +87,29 @@ extension ListDetailVC {
             }
             .asDriver()
         
-        let input = ListDetailViewModel.Input(bottomButtonTapped: bottomButtonTapped)
+        let input = ListDetailViewModel.Input(bottomButtonTapped: bottomButtonTapped, rightButtonTapped: rightButtonTapped)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.successed
             .sink { successed in
                 self.presentCompletedVC(level: self.starLevel) {
                     print("ssss")
+                }
+            }.store(in: self.cancelBag)
+        
+        output.changeToEdit
+            .sink { edit in
+                if edit {
+                    self.tappedEditButton()
+                }
+            }.store(in: self.cancelBag)
+        
+        output.deleteSuccess
+            .sink { success in
+                if success {
+                    self.navigationController?.popViewController(animated: true)
+                } else {
+                    self.makeAlert(title: "에러 발생", message: "삭제에 문제가 생겼습니다.")
                 }
             }.store(in: self.cancelBag)
     }
@@ -114,15 +128,8 @@ extension ListDetailVC {
         self.view.addGestureRecognizer(swipeDown)
     }
     
-    private func setRightButtonAction() {
-        switch sceneType {
-        case .completed:
-            self.sceneType = .edit
-        case .edit:
-            self.sceneType = .completed
-        default:
-            break
-        }
+    private func tappedEditButton() {
+        self.sceneType = .edit
         self.setUI(sceneType)
     }
     
