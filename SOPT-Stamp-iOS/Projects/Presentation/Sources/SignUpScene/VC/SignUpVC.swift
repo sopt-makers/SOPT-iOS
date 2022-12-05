@@ -79,7 +79,7 @@ public class SignUpVC: UIViewController {
     }
 }
 
-// MARK: - Methods
+// MARK: - Binding
 
 extension SignUpVC {
   
