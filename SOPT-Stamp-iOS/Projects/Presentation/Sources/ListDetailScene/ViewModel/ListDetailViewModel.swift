@@ -21,20 +21,20 @@ public enum ListDetailSceneType {
 public class ListDetailViewModel: ViewModelType {
     
     private let useCase: ListDetailUseCase
-    private var cancelBag = Set<AnyCancellable>()
+    private var cancelBag = CancelBag()
     public var listDetailType: ListDetailSceneType!
     public var starLevel: StarViewLevel!
   
     // MARK: - Inputs
     
     public struct Input {
-    
+        let bottomButtonTapped: Driver<ListDetailRequestModel>
     }
     
     // MARK: - Outputs
     
     public struct Output {
-    
+        var successed = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - init
@@ -51,7 +51,13 @@ extension ListDetailViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
-        // input,output 상관관계 작성
+        
+        input.bottomButtonTapped
+            .sink { requestModel in
+                print("✅requestModel:", requestModel)
+                // TODO: - useCase
+                output.successed.send(true)
+            }.store(in: self.cancelBag)
     
         return output
     }

@@ -14,6 +14,7 @@ import SnapKit
 import Then
 
 import Core
+import Domain
 import DSKit
 
 import Lottie
@@ -53,7 +54,7 @@ public class ListDetailVC: UIViewController {
     private let imagePlaceholderLabel = UILabel()
     private let textView = UITextView()
     private let dateLabel = UILabel()
-    private let bottomButton = CustomButton(title: I18N.ListDetail.missionComplete)
+    private lazy var bottomButton = CustomButton(title: sceneType == .none ?  I18N.ListDetail.missionComplete : I18N.ListDetail.editComplte)
         .setEnabled(false)
     
     // MARK: - View Life Cycle
@@ -75,13 +76,27 @@ public class ListDetailVC: UIViewController {
 
 extension ListDetailVC {
     private func bindViewModels() {
-        let input = ListDetailViewModel.Input()
-        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
-        
         naviBar.rightButtonTapped
             .compactMap({ $0 })
             .sink { _ in
                 self.setRightButtonAction()
+            }.store(in: self.cancelBag)
+        
+        let bottomButtonTapped = bottomButton
+            .publisher(for: .touchUpInside)
+            .map { _ in
+                ListDetailRequestModel(imgURL: self.missionImageView.image ?? UIImage(), content: self.textView.text)
+            }
+            .asDriver()
+        
+        let input = ListDetailViewModel.Input(bottomButtonTapped: bottomButtonTapped)
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.successed
+            .sink { successed in
+                self.presentCompletedVC(level: self.starLevel) {
+                    print("ssss")
+                }
             }.store(in: self.cancelBag)
     }
     
@@ -142,6 +157,17 @@ extension ListDetailVC {
         makeVibrate()
         
         self.present(alertController, animated: true)
+    }
+    
+    private func presentCompletedVC(level: StarViewLevel, _ completion: @escaping (() -> Void)) {
+        let missionCompletedVC = MissionCompletedVC()
+            .setLevel(level)
+        missionCompletedVC.completionHandler = {
+            self.navigationController?.popViewController(animated: true)
+        }
+        missionCompletedVC.modalPresentationStyle = .overFullScreen
+        missionCompletedVC.modalTransitionStyle = .crossDissolve
+        self.present(missionCompletedVC, animated: true)
     }
     
     // MARK: - @objc
