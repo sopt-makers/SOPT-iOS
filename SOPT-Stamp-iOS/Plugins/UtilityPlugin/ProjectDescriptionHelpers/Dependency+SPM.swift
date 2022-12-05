@@ -19,4 +19,5 @@ public extension TargetDependency.SPM {
     static let CombineMoya = TargetDependency.external(name: "CombineMoya")
     static let Nimble = TargetDependency.external(name: "Nimble")
     static let Quick = TargetDependency.external(name: "Quick")
+    static let lottie = TargetDependency.external(name: "Lottie")
 }

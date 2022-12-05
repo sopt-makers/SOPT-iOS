@@ -16,6 +16,8 @@ import Then
 import Core
 import DSKit
 
+import Lottie
+
 public enum TextViewState {
     case inactive // 비활성화(키보드X, placeholder)
     case active // 활성화(키보드O, 텍스트 입력 상태)
