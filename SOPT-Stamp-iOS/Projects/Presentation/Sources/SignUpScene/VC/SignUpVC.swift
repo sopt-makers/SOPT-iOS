@@ -116,12 +116,16 @@ extension SignUpVC {
             guard let self = self else { return }
             self.passwordCheckTextFieldView.changeAlertLabelText(alertText)
             if !alertText.isEmpty {
-                alertText == I18N.SignUp.invalidPasswordForm ?
-                self.passwordTextFieldView.setTextFieldViewState(.warningAlert) :
-                self.passwordCheckTextFieldView.setTextFieldViewState(.warningAlert)
+                self.passwordCheckTextFieldView.changeAlertLabelTextColor(toWarning: true)
+                if alertText == I18N.SignUp.invalidPasswordForm {
+                    self.passwordTextFieldView.alertType = .invalidInput(text: "")
+                } else {
+                    self.passwordTextFieldView.alertType = .validInput(text: "")
+                    self.passwordCheckTextFieldView.alertType = .invalidInput(text: alertText)
+                }
             } else {
-                self.passwordTextFieldView.setTextFieldViewState(.normal)
-                self.passwordCheckTextFieldView.setTextFieldViewState(.normal)
+                self.passwordTextFieldView.alertType = .validInput(text: "")
+                self.passwordCheckTextFieldView.alertType = .validInput(text: "")
             }
         }.store(in: cancelBag)
         

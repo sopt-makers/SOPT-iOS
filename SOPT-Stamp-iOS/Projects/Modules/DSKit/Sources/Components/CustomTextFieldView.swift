@@ -132,7 +132,7 @@ public class CustomTextFieldView: UIView {
             .asDriver()
     }
     
-    var alertType: TextFieldAlertType = .none {
+    public var alertType: TextFieldAlertType = .none {
         didSet {
             bindAlertType(alertType)
         }
@@ -240,18 +240,13 @@ extension CustomTextFieldView {
         self.alertlabel.isHidden = false
     }
     
-    private func setDelegate() {
-        self.textField.delegate = self
+    /// 경고 문구 라벨의 컬러 설정
+    public func changeAlertLabelTextColor(toWarning: Bool) {
+        alertlabel.textColor = toWarning ? SoptampColor.error300.color : SoptampColor.access300.color
     }
     
     /// textField의 state를 지정하여 자동으로 배경색과 테두리 색이 바뀌도록 설정
     public func setTextFieldViewState(_ state: TextFieldViewState) {
-        
-        var state = state
-        if state == .normal && (textField.isEditing || !textField.isEmpty) {
-            state = .editing
-        }
-        
         textFieldContainerView.backgroundColor = state.backgroundColor
         
         if let borderColor = state.borderColor {
@@ -264,6 +259,10 @@ extension CustomTextFieldView {
         if state == .confirmAlert || state == .warningAlert {
             alertlabel.textColor = state.alertTextColor
         }
+    }
+    
+    private func setDelegate() {
+        self.textField.delegate = self
     }
     
     private func bindUI() {
@@ -288,9 +287,7 @@ extension CustomTextFieldView {
     
     private func bindAlertType(_ alertType: TextFieldAlertType) {
         self.changeAlertLabelText(alertType.alertText)
-        if !alertType.alertText.isEmpty {
-            self.setTextFieldViewState(alertType.textFieldSate)
-        }
+        self.setTextFieldViewState(alertType.textFieldSate)
     }
     
     public enum InputCase {
@@ -473,8 +470,13 @@ extension CustomTextFieldView: UITextFieldDelegate {
     }
     
     public func textFieldDidEndEditing(_ textField: UITextField) {
-        if let isEmpty = textField.text?.isEmpty {
-            isEmpty ? self.setTextFieldViewState(.normal) : self.setTextFieldViewState(.editing)
+        if textField.isEmpty {
+            self.setTextFieldViewState(.normal)
+        } else {
+            if case .invalidInput = alertType {
+                return
+            }
+            self.setTextFieldViewState(.editing)
         }
     }
 }
