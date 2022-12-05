@@ -42,6 +42,8 @@ public class ListDetailVC: UIViewController {
     private var starLevel: StarViewLevel {
         return self.viewModel.starLevel
     }
+    private var originImage: UIImage = UIImage()
+    private var originText: String = ""
     
     // MARK: - UI Components
     
@@ -288,6 +290,50 @@ extension ListDetailVC: UITextViewDelegate {
 // MARK: - UI & Layout
 
 extension ListDetailVC {
+    private func setUI(_ type: ListDetailSceneType) {
+        if type == .edit {
+            self.naviBar
+                .setRightButton(.delete)
+                .resetLeftButtonAction {
+                    self.sceneType = .completed
+                    self.setUI(self.sceneType)
+                }
+            self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+            originText = textView.text
+            originImage = missionImageView.image ?? UIImage()
+        } else {
+            // TODO: - 변경된 사진이나 텍스트가 있으면 원래대로 되돌려주기
+            if textView.text != I18N.ListDetail.memoPlaceHolder && textView.text != originText {
+                textView.text = originText
+            }
+            
+            if missionImageView.image != originImage {
+                missionImageView.image = originImage
+            }
+            self.naviBar.resetLeftButtonAction()
+            self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        }
+        
+        switch type {
+        case .none, .edit:
+            self.missionView.backgroundColor = DSKitAsset.Colors.gray50.color
+            self.setTextView(.inactive)
+            self.imagePlaceholderLabel.isHidden = missionImageView.image == nil ? false : true
+            self.missionImageView.isUserInteractionEnabled = true
+            self.bottomButton.isHidden = false
+            self.dateLabel.isHidden = true
+        case .completed:
+            self.naviBar.setRightButton(.addRecord)
+            self.missionView.backgroundColor = setLevelColor()
+            self.setTextView(.completed)
+            self.imagePlaceholderLabel.isHidden = true
+            self.bottomButton.isHidden = true
+            self.dateLabel.isHidden = false
+            self.missionImageView.image = DSKitAsset.Assets.splashImg2.image
+            self.missionImageView.isUserInteractionEnabled = false
+        }
+    }
+    
     private func setDefaultUI() {
         self.navigationController?.navigationBar.isHidden = true
         self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
@@ -316,40 +362,6 @@ extension ListDetailVC {
         self.dateLabel.text = "2022.10.25"
         
         self.textView.returnKeyType = .done
-    }
-    
-    private func setUI(_ type: ListDetailSceneType) {
-        if type == .edit {
-            self.naviBar
-                .setRightButton(.delete)
-                .resetLeftButtonAction {
-                    self.sceneType = .completed
-                    self.setUI(self.sceneType)
-                }
-            self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-        } else {
-            self.naviBar.resetLeftButtonAction()
-            self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-        }
-        
-        switch type {
-        case .none, .edit:
-            self.missionView.backgroundColor = DSKitAsset.Colors.gray50.color
-            self.setTextView(.inactive)
-            self.imagePlaceholderLabel.isHidden = missionImageView.image == nil ? false : true
-            self.missionImageView.isUserInteractionEnabled = true
-            self.bottomButton.isHidden = false
-            self.dateLabel.isHidden = true
-        case .completed:
-            self.naviBar.setRightButton(.addRecord)
-            self.missionView.backgroundColor = setLevelColor()
-            self.setTextView(.completed)
-            self.imagePlaceholderLabel.isHidden = true
-            self.bottomButton.isHidden = true
-            self.dateLabel.isHidden = false
-            self.missionImageView.image = DSKitAsset.Assets.splashImg2.image
-            self.missionImageView.isUserInteractionEnabled = false
-        }
     }
     
     private func setLevelColor() -> UIColor {
