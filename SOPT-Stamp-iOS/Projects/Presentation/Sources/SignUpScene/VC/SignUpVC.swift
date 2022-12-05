@@ -110,24 +110,27 @@ extension SignUpVC {
                     on: emailTextFieldView)
             .store(in: cancelBag)
         
-        output.passwordAlert.sink { event in
-            print("event: \(event)")
-        } receiveValue: { [weak self] alertText in
-            guard let self = self else { return }
-            self.passwordCheckTextFieldView.changeAlertLabelText(alertText)
-            if !alertText.isEmpty {
-                self.passwordCheckTextFieldView.changeAlertLabelTextColor(toWarning: true)
-                if alertText == I18N.SignUp.invalidPasswordForm {
-                    self.passwordTextFieldView.alertType = .invalidInput(text: "")
+        output.passwordAlert
+            .map { $0.convertToTextFieldAlertType() }
+            .sink { event in
+                print("event: \(event)")
+            } receiveValue: { [weak self] alertType in
+                guard let self = self else { return }
+                let alertText = alertType.alertText
+                self.passwordCheckTextFieldView.changeAlertLabelText(alertText)
+                if !alertText.isEmpty {
+                    self.passwordCheckTextFieldView.changeAlertLabelTextColor(toWarning: true)
+                    if alertText == I18N.SignUp.invalidPasswordForm {
+                        self.passwordTextFieldView.alertType = .invalidInput(text: "")
+                    } else {
+                        self.passwordTextFieldView.alertType = .validInput(text: "")
+                        self.passwordCheckTextFieldView.alertType = .invalidInput(text: alertText)
+                    }
                 } else {
                     self.passwordTextFieldView.alertType = .validInput(text: "")
-                    self.passwordCheckTextFieldView.alertType = .invalidInput(text: alertText)
+                    self.passwordCheckTextFieldView.alertType = .validInput(text: "")
                 }
-            } else {
-                self.passwordTextFieldView.alertType = .validInput(text: "")
-                self.passwordCheckTextFieldView.alertType = .validInput(text: "")
-            }
-        }.store(in: cancelBag)
+            }.store(in: cancelBag)
         
         output.isValidForm
             .assign(to: \.isEnabled, on: registerButton)

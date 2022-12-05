@@ -87,7 +87,7 @@ public enum TextFieldAlertType {
     case invalidInput(text: String)
     case none
     
-    var alertText: String {
+    public var alertText: String {
         switch self {
         case .validInput(let text), .invalidInput(let text):
             return text
@@ -96,7 +96,7 @@ public enum TextFieldAlertType {
         }
     }
     
-    var textFieldSate: TextFieldViewState {
+    public var textFieldSate: TextFieldViewState {
         switch self {
         case .validInput:
             return .confirmAlert

@@ -38,7 +38,7 @@ public class SignUpViewModel: ViewModelType {
     public struct Output {
         var nicknameAlert = PassthroughSubject<SignUpFormValidateResult, Never>()
         var emailAlert = PassthroughSubject<SignUpFormValidateResult, Never>()
-        var passwordAlert = PassthroughSubject<String, Never>()
+        var passwordAlert = PassthroughSubject<SignUpFormValidateResult, Never>()
         var isValidForm = PassthroughSubject<Bool, Never>()
     }
     
@@ -99,13 +99,13 @@ extension SignUpViewModel {
             print("SignUpViewModel - completion: \(event)")
         } receiveValue: { (isFormValid, isAccordValid) in
             if !isFormValid && !isAccordValid {
-                output.passwordAlert.send(I18N.SignUp.invalidPasswordForm)
+                output.passwordAlert.send(.invalid(text: I18N.SignUp.invalidPasswordForm))
             } else if !isFormValid && isAccordValid {
-                output.passwordAlert.send(I18N.SignUp.invalidPasswordForm)
+                output.passwordAlert.send(.invalid(text: I18N.SignUp.invalidPasswordForm))
             } else if isFormValid && !isAccordValid {
-                output.passwordAlert.send(I18N.SignUp.passwordNotAccord)
+                output.passwordAlert.send(.invalid(text: (I18N.SignUp.passwordNotAccord)))
             } else {
-                output.passwordAlert.send("")
+                output.passwordAlert.send(.valid(text: ""))
             }
         }.store(in: cancelBag)
         
