@@ -92,9 +92,7 @@ extension ListDetailVC {
         
         output.successed
             .sink { successed in
-                self.presentCompletedVC(level: self.starLevel) {
-                    print("ssss")
-                }
+                self.presentCompletedVC(level: self.starLevel)
             }.store(in: self.cancelBag)
         
         output.changeToEdit
@@ -166,7 +164,7 @@ extension ListDetailVC {
         self.present(alertController, animated: true)
     }
     
-    private func presentCompletedVC(level: StarViewLevel, _ completion: @escaping (() -> Void)) {
+    private func presentCompletedVC(level: StarViewLevel) {
         let missionCompletedVC = MissionCompletedVC()
             .setLevel(level)
         missionCompletedVC.completionHandler = {
@@ -322,7 +320,16 @@ extension ListDetailVC {
     
     private func setUI(_ type: ListDetailSceneType) {
         if type == .edit {
-            self.naviBar.setRightButton(.delete)
+            self.naviBar
+                .setRightButton(.delete)
+                .resetLeftButtonAction {
+                    self.sceneType = .completed
+                    self.setUI(self.sceneType)
+                }
+            self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+        } else {
+            self.naviBar.resetLeftButtonAction()
+            self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
         }
         
         switch type {
