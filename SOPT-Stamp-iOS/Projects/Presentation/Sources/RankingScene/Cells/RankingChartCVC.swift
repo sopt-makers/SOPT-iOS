@@ -58,7 +58,7 @@ extension RankingChartCVC {
     private func setChartViews() {
         self.addSubviews(chartStackView)
         
-        [RectangleViewLevel.levelTwo, RectangleViewLevel.levelOne, RectangleViewLevel.levelThree].forEach { level in
+        [RectangleViewRank.rankTwo, RectangleViewRank.rankOne, RectangleViewRank.rankThree].forEach { level in
             let rectangleView = ChartRectangleView.init(level: level)
             rectangleView.snp.makeConstraints { make in
                 make.width.equalTo(90.adjusted)
@@ -105,12 +105,12 @@ extension RankingChartCVC {
         for (index, sentence) in ["안녕하세요", "제가 일등일 수도 있습니다 하하", "그래"].enumerated() {
             var baloonView: SpeechBalloonView
             if index == 0 {
-                baloonView = SpeechBalloonView.init(level: .levelTwo, sentence: sentence)
+                baloonView = SpeechBalloonView.init(level: .rankTwo, sentence: sentence)
                 baloonView.isHidden = true
             } else if index == 1 {
-                baloonView = SpeechBalloonView.init(level: .levelOne, sentence: sentence)
+                baloonView = SpeechBalloonView.init(level: .rankOne, sentence: sentence)
             } else {
-                baloonView = SpeechBalloonView.init(level: .levelThree, sentence: sentence)
+                baloonView = SpeechBalloonView.init(level: .rankThree, sentence: sentence)
                 baloonView.isHidden = true
             }
             baloonViews.append(baloonView)

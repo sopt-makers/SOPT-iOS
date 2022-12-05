@@ -16,7 +16,7 @@ public class SpeechBalloonView: UIView {
     
     // MARK: - Properties
     
-    var viewLevel = RectangleViewLevel.levelOne
+    var viewLevel = RectangleViewRank.rankOne
     
     // MARK: - UI Components
     
@@ -40,7 +40,7 @@ public class SpeechBalloonView: UIView {
     
     // MARK: View Life Cycle
     
-    public convenience init(level: RectangleViewLevel, sentence: String) {
+    public init(level: RectangleViewRank, sentence: String) {
         self.init()
         
         self.viewLevel = level
@@ -64,13 +64,13 @@ extension SpeechBalloonView {
     
     private func setUI() {
         switch viewLevel {
-        case .levelOne:
+        case .rankOne:
             sentenceLabel.backgroundColor = DSKitAsset.Colors.purple300.color
             baloonTailImageView.tintColor = DSKitAsset.Colors.purple300.color
-        case .levelTwo:
+        case .rankTwo:
             sentenceLabel.backgroundColor = DSKitAsset.Colors.pink300.color
             baloonTailImageView.tintColor = DSKitAsset.Colors.pink300.color
-        case .levelThree:
+        case .rankThree:
             sentenceLabel.backgroundColor = DSKitAsset.Colors.mint300.color
             baloonTailImageView.tintColor = DSKitAsset.Colors.mint300.color
         }
@@ -93,11 +93,11 @@ extension SpeechBalloonView {
             }
             
             switch viewLevel {
-            case .levelOne:
+            case .rankOne:
                 make.centerX.equalToSuperview()
-            case .levelTwo:
+            case .rankTwo:
                 make.leading.equalToSuperview()
-            case .levelThree:
+            case .rankThree:
                 make.trailing.equalToSuperview()
             }
         }
@@ -107,11 +107,11 @@ extension SpeechBalloonView {
             make.height.equalTo(11.5)
             make.width.equalTo(10)
             switch viewLevel {
-            case .levelOne:
+            case .rankOne:
                 make.centerX.equalTo(sentenceLabel)
-            case .levelTwo:
+            case .rankTwo:
                 make.centerX.equalTo(sentenceLabel.snp.leading).offset(45.adjusted)
-            case .levelThree:
+            case .rankThree:
                 make.centerX.equalTo(sentenceLabel.snp.trailing).offset(-45.adjusted)
             }
             make.bottom.equalToSuperview()

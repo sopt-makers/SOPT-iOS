@@ -12,20 +12,20 @@ import Core
 
 import SnapKit
 
-public enum RectangleViewLevel {
-    case levelOne
-    case levelTwo
-    case levelThree
+public enum RectangleViewRank {
+    case rankOne
+    case rankTwo
+    case rankThree
 }
 
-extension RectangleViewLevel {
+extension RectangleViewRank {
     var rectangleHeight: CGFloat {
         switch self {
-        case .levelOne:
+        case .rankOne:
             return 150.adjustedH
-        case .levelTwo:
+        case .rankTwo:
             return 110.adjustedH
-        case .levelThree:
+        case .rankThree:
             return 70.adjustedH
         }
     }
@@ -35,7 +35,7 @@ public class ChartRectangleView: UIView {
     
     // MARK: - Properties
     
-    public var viewLevel = RectangleViewLevel.levelOne
+    public var viewLevel = RectangleViewRank.rankOne
     
     // MARK: - UI Components
     
@@ -78,7 +78,7 @@ public class ChartRectangleView: UIView {
     
     // MARK: View Life Cycle
     
-    public convenience init(level: RectangleViewLevel) {
+    public init(level: RectangleViewRank) {
         self.init()
         
         self.viewLevel = level
@@ -103,17 +103,17 @@ extension ChartRectangleView {
     
     private func setUI() {
         switch viewLevel {
-        case .levelOne:
+        case .rankOne:
             rankLabel.text = "1"
             rankLabel.textColor = DSKitAsset.Colors.purple300.color
             rectangleView.backgroundColor = DSKitAsset.Colors.purple200.color
             setScoreLabel(by: DSKitAsset.Colors.purple300.color)
-        case .levelTwo:
+        case .rankTwo:
             rankLabel.text = "2"
             rankLabel.textColor = DSKitAsset.Colors.pink300.color
             rectangleView.backgroundColor = DSKitAsset.Colors.pink200.color
             setScoreLabel(by: DSKitAsset.Colors.pink300.color)
-        case .levelThree:
+        case .rankThree:
             rankLabel.text = "3"
             rankLabel.textColor = DSKitAsset.Colors.mint300.color
             rectangleView.backgroundColor = DSKitAsset.Colors.mint200.color
@@ -127,7 +127,7 @@ extension ChartRectangleView {
     
     private func setLayout() {
         
-        if case .levelOne = viewLevel {
+        if case .rankOne = viewLevel {
             self.addSubviews(starRankView, rectangleView, usernameLabel)
             
             starRankView.addSubview(rankLabel)
