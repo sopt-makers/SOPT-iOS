@@ -11,8 +11,15 @@ import Combine
 import Core
 import Domain
 
+public enum SignUpFormValidateResult {
+    case valid(text: String)
+    case invalid(text: String)
+}
+
 public class SignUpViewModel: ViewModelType {
 
+    // MARK: - Properties
+    
     private let useCase: SignUpUseCase
     private var cancelBag = CancelBag()
   
@@ -29,8 +36,8 @@ public class SignUpViewModel: ViewModelType {
     // MARK: - Outputs
     
     public struct Output {
-        var nicknameAlert = PassthroughSubject<String, Never>()
-        var emailAlert = PassthroughSubject<String, Never>()
+        var nicknameAlert = PassthroughSubject<SignUpFormValidateResult, Never>()
+        var emailAlert = PassthroughSubject<SignUpFormValidateResult, Never>()
         var passwordAlert = PassthroughSubject<String, Never>()
         var isValidForm = PassthroughSubject<Bool, Never>()
     }
@@ -79,13 +86,13 @@ extension SignUpViewModel {
         useCase.isNicknameValid.sink { event in
             print("SignUpViewModel - completion: \(event)")
         } receiveValue: { isNicknameValid in
-            isNicknameValid ? output.nicknameAlert.send("") : output.nicknameAlert.send(I18N.SignUp.duplicatedNickname)
+            isNicknameValid ? output.nicknameAlert.send(.valid(text: I18N.SignUp.validNickname)) : output.nicknameAlert.send(.invalid(text: I18N.SignUp.duplicatedNickname))
         }.store(in: cancelBag)
         
         useCase.isEmailFormValid.sink { event in
             print("SignUpViewModel - completion: \(event)")
         } receiveValue: { isEmailValid in
-            isEmailValid ? output.emailAlert.send("") : output.emailAlert.send(I18N.SignUp.invalidEmailForm)
+            isEmailValid ? output.emailAlert.send(.valid(text: I18N.SignUp.validEmail)) : output.emailAlert.send(.invalid(text: I18N.SignUp.invalidEmailForm))
         }.store(in: cancelBag)
         
         useCase.isPasswordFormValid.combineLatest(useCase.isAccordPassword).sink { event in

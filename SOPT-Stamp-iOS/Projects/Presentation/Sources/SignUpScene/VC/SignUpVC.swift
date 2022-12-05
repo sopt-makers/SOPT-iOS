@@ -15,6 +15,17 @@ import Then
 import Core
 import DSKit
 
+extension SignUpFormValidateResult {
+    func convertToTextFieldAlertType() -> TextFieldAlertType {
+        switch self {
+        case .valid(let text):
+            return .validInput(text: text)
+        case .invalid(let text):
+            return .invalidInput(text: text)
+        }
+    }
+}
+
 public class SignUpVC: UIViewController {
     
     // MARK: - Properties
@@ -88,11 +99,13 @@ extension SignUpVC {
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.nicknameAlert
+            .map { $0.convertToTextFieldAlertType() }
             .assign(to: nickNameTextFieldView.bindableInput(.alert),
                     on: nickNameTextFieldView)
             .store(in: cancelBag)
         
         output.emailAlert
+            .map { $0.convertToTextFieldAlertType() }
             .assign(to: emailTextFieldView.bindableInput(.alert),
                     on: emailTextFieldView)
             .store(in: cancelBag)
@@ -104,8 +117,8 @@ extension SignUpVC {
             self.passwordCheckTextFieldView.changeAlertLabelText(alertText)
             if !alertText.isEmpty {
                 alertText == I18N.SignUp.invalidPasswordForm ?
-                self.passwordTextFieldView.setTextFieldViewState(.alert) :
-                self.passwordCheckTextFieldView.setTextFieldViewState(.alert)
+                self.passwordTextFieldView.setTextFieldViewState(.warningAlert) :
+                self.passwordCheckTextFieldView.setTextFieldViewState(.warningAlert)
             } else {
                 self.passwordTextFieldView.setTextFieldViewState(.normal)
                 self.passwordCheckTextFieldView.setTextFieldViewState(.normal)

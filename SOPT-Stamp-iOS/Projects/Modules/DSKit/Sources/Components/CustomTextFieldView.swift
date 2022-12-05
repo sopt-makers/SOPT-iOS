@@ -44,15 +44,16 @@ public enum TextFieldType {
 public enum TextFieldViewState {
     case normal
     case editing
-    case alert
+    case warningAlert
+    case confirmAlert
     
     var backgroundColor: UIColor {
         switch self {
         case .normal:
             return DSKitAsset.Colors.gray50.color
-        case .editing:
+        case .editing, .confirmAlert:
             return DSKitAsset.Colors.white.color
-        case .alert:
+        case .warningAlert:
             return DSKitAsset.Colors.error100.color
         }
     }
@@ -61,10 +62,48 @@ public enum TextFieldViewState {
         switch self {
         case .normal:
             return nil
-        case .editing:
+        case .editing, .confirmAlert:
             return DSKitAsset.Colors.purple300.color.cgColor
-        case .alert:
+        case .warningAlert:
             return DSKitAsset.Colors.error200.color.cgColor
+        }
+    }
+    
+    var alertTextColor: UIColor? {
+        switch self {
+        case .normal, .editing:
+            return nil
+        case .confirmAlert:
+            return DSKitAsset.Colors.access300.color
+        case .warningAlert:
+            return DSKitAsset.Colors.error300.color
+        }
+    }
+}
+
+@frozen
+public enum TextFieldAlertType {
+    case validInput(text: String)
+    case invalidInput(text: String)
+    case none
+    
+    var alertText: String {
+        switch self {
+        case .validInput(let text), .invalidInput(let text):
+            return text
+        case .none:
+            return ""
+        }
+    }
+    
+    var textFieldSate: TextFieldViewState {
+        switch self {
+        case .validInput:
+            return .confirmAlert
+        case .invalidInput:
+            return .warningAlert
+        case .none:
+            return .normal
         }
     }
 }
@@ -91,6 +130,12 @@ public class CustomTextFieldView: UIView {
                 self.textField.text
             }
             .asDriver()
+    }
+    
+    var alertType: TextFieldAlertType = .none {
+        didSet {
+            bindAlertType(alertType)
+        }
     }
     
     private var cancelBag = CancelBag()
@@ -215,6 +260,10 @@ extension CustomTextFieldView {
         } else {
             textFieldContainerView.layer.borderWidth = 0
         }
+        
+        if state == .confirmAlert || state == .warningAlert {
+            alertlabel.textColor = state.alertTextColor
+        }
     }
     
     private func bindUI() {
@@ -232,26 +281,24 @@ extension CustomTextFieldView {
 // MARK: - Input Binding
 
 extension CustomTextFieldView {
+    
     var alertText: String {
-        get { return alertlabel.text ?? "" }
-        set { bindAlertText(newValue) }
+        return alertlabel.text ?? ""
     }
     
-    private func bindAlertText(_ alertText: String) {
-        self.changeAlertLabelText(alertText)
-        if !alertText.isEmpty {
-            self.setTextFieldViewState(.alert)
+    private func bindAlertType(_ alertType: TextFieldAlertType) {
+        self.changeAlertLabelText(alertType.alertText)
+        if !alertType.alertText.isEmpty {
+            self.setTextFieldViewState(alertType.textFieldSate)
         }
     }
     
     public enum InputCase {
          case alert
-         case passwordAlert
          
          var keyPath: AnyKeyPath {
              switch self {
-             case .alert: return \CustomTextFieldView.alertText
-             case .passwordAlert: return \CustomTextFieldView.textChanged
+             case .alert: return \CustomTextFieldView.alertType
              }
          }
      }
