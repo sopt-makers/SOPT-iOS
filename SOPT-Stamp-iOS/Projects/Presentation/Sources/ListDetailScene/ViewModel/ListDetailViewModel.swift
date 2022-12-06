@@ -30,7 +30,7 @@ public class ListDetailViewModel: ViewModelType {
     public struct Input {
         let bottomButtonTapped: Driver<ListDetailRequestModel>
         let rightButtonTapped: Driver<ListDetailSceneType>
-        var deletTapped: Driver<Bool>
+        let deleteButtonTapped: Driver<Bool>
     }
     
     // MARK: - Outputs
@@ -76,7 +76,7 @@ extension ListDetailViewModel {
                 }
             }.store(in: self.cancelBag)
         
-        input.deletTapped
+        input.deleteButtonTapped
             .sink { _ in
                 // TODO: - useCase
                 output.deleteSuccessed.send(false)

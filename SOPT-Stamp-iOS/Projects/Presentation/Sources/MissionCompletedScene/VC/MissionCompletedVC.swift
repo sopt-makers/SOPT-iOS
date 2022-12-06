@@ -41,7 +41,7 @@ public class MissionCompletedVC: UIViewController {
     // MARK: - UI Components
     
     private lazy var visualEffectView = UIVisualEffectView(effect: blurEffect)
-    private lazy var lottieView = LottieAnimationView(name: starLevel.lottieName)
+    private lazy var lottieView = LottieAnimationView(name: starLevel.lottieName, bundle: DSKitResources.bundle, configuration: LottieConfiguration(renderingEngine: .automatic))
   
     // MARK: - View Life Cycle
     
@@ -60,17 +60,10 @@ public class MissionCompletedVC: UIViewController {
     }
     
     private func setLottie() {
-        // FIXME: - lottie json 파일을 찾지 못하는 문제
-        lottieView.backgroundColor = .yellow
         lottieView.center = view.center
         lottieView.loopMode = .playOnce
         lottieView.contentMode = .scaleAspectFit
-        
-        self.lottieView.play { _ in
-            self.lottieView.stop()
-            print("zdjlskgjdlk")
-            self.dismiss(animated: true)
-        }
+        lottieView.play()
         
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 3.0) {
             self.dismiss(animated: true) {

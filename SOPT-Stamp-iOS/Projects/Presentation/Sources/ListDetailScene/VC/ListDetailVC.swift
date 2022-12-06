@@ -139,7 +139,7 @@ extension ListDetailVC {
         
         let input = ListDetailViewModel.Input(bottomButtonTapped: bottomButtonTapped,
                                               rightButtonTapped: rightButtonTapped,
-                                              deletTapped: deleteButtonTapped.asDriver())
+                                              deleteButtonTapped: deleteButtonTapped.asDriver())
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.postSuccessed
