@@ -307,12 +307,12 @@ extension ListDetailVC {
             originText = textView.text
             originImage = missionImageView.image ?? UIImage()
         } else {
-            // TODO: - 변경된 사진이나 텍스트가 있으면 원래대로 되돌려주기
             if textView.text != I18N.ListDetail.memoPlaceHolder && textView.text != originText {
                 textView.text = originText
             }
             
-            if missionImageView.image != originImage {
+            if let image = missionImageView.image,
+               image != originImage {
                 missionImageView.image = originImage
             }
             self.naviBar.resetLeftButtonAction()
