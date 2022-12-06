@@ -82,4 +82,14 @@ extension ModuleFactory: ModuleFactoryInterface {
         alertVC.modalTransitionStyle = .crossDissolve
         return alertVC
     }
+    
+    public func makeRankingVC() -> RankingVC {
+        let repository = RankingRepository(service: rankService)
+        let useCase = DefaultRankingUseCase(repository: repository)
+        let viewModel = RankingViewModel(useCase: useCase)
+        let rankingVC = RankingVC()
+        rankingVC.factory = self
+        rankingVC.viewModel = viewModel
+        return rankingVC
+    }
 }
