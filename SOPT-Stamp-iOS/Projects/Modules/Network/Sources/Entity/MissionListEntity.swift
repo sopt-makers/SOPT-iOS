@@ -8,8 +8,6 @@
 
 import Foundation
 
-import Domain
-
 public struct MissionListEntity {
 
 }

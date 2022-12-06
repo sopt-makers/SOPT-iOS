@@ -32,7 +32,7 @@ public class StarView: UIView {
     
     // MARK: View Life Cycle
     
-    public convenience init(starScale: CGFloat, spacing: CGFloat = 0, level: StarViewLevel) {
+    public init(starScale: CGFloat, spacing: CGFloat = 0, level: StarViewLevel) {
         self.init()
         
         self.starScale = starScale
