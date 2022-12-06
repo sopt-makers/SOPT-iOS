@@ -74,11 +74,10 @@ extension ModuleFactory: ModuleFactoryInterface {
         return missionCompletedVC
     }
     
-    public func makeAlertVC(title: String, customButtonTitle: String, customButtonAction: @escaping (() -> Void)) -> AlertVC {
+    public func makeAlertVC(title: String, customButtonTitle: String) -> AlertVC {
         let alertVC = AlertVC()
             .setTitle(title)
             .setCustomButtonTitle(customButtonTitle)
-            .setCustomButtonAction(customButtonAction)
         alertVC.modalPresentationStyle = .overFullScreen
         alertVC.modalTransitionStyle = .crossDissolve
         return alertVC

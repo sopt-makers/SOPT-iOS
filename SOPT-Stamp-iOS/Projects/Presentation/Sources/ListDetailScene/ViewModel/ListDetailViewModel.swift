@@ -30,15 +30,15 @@ public class ListDetailViewModel: ViewModelType {
     public struct Input {
         let bottomButtonTapped: Driver<ListDetailRequestModel>
         let rightButtonTapped: Driver<ListDetailSceneType>
+        var deletTapped: Driver<Bool>
     }
     
     // MARK: - Outputs
     
     public struct Output {
-        // TODO: - 수정
-        var successed = PassthroughSubject<Bool, Never>()
-        var changeToEdit = PassthroughSubject<Bool, Never>()
-        var deleteSuccess = PassthroughSubject<Bool, Never>()
+        var postSuccessed = PassthroughSubject<Bool, Never>()
+        var showDeleteAlert = PassthroughSubject<Bool, Never>()
+        var deleteSuccessed = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - init
@@ -60,20 +60,26 @@ extension ListDetailViewModel {
             .sink { requestModel in
                 print("✅requestModel:", requestModel)
                 // TODO: - useCase
-                output.successed.send(true)
+                // + sceneType(edit / none)
+                output.postSuccessed.send(true)
             }.store(in: self.cancelBag)
         
         input.rightButtonTapped
             .sink { sceneType in
                 switch sceneType {
                 case .completed:
-                    output.changeToEdit.send(true)
+                    output.showDeleteAlert.send(false)
                 case .edit:
-                    // TODO: - useCase
-                    output.deleteSuccess.send(false)
+                    output.showDeleteAlert.send(true)
                 default:
                     break
                 }
+            }.store(in: self.cancelBag)
+        
+        input.deletTapped
+            .sink { _ in
+                // TODO: - useCase
+                output.deleteSuccessed.send(false)
             }.store(in: self.cancelBag)
     
         return output

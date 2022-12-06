@@ -17,7 +17,7 @@ public class AlertVC: UIViewController {
     
     // MARK: - Properties
     
-    private var closure: (() -> Void)?
+    public var customAction: (() -> Void)?
     
     // MARK: - UI Components
     
@@ -51,12 +51,6 @@ public class AlertVC: UIViewController {
         return self
     }
     
-    @discardableResult
-    public func setCustomButtonAction(_ closure: @escaping (() -> Void)) -> Self {
-        self.closure = closure
-        return self
-    }
-    
     private func setAddTarget() {
         self.cancelButton.addTarget(self, action: #selector(dismissCurrentVC), for: .touchUpInside)
         self.customButton.addTarget(self, action: #selector(tappedCustomButton), for: .touchUpInside)
@@ -74,7 +68,9 @@ public class AlertVC: UIViewController {
     
     @objc
     private func tappedCustomButton() {
-        closure?()
+        self.dismiss(animated: true) {
+            self.customAction?()
+        }
     }
 }
 

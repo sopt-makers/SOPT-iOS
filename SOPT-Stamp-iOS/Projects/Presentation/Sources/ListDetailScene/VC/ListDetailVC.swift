@@ -44,6 +44,7 @@ public class ListDetailVC: UIViewController {
     }
     private var originImage: UIImage = UIImage()
     private var originText: String = ""
+    private let deleteButtonTapped = PassthroughSubject<Bool, Never>()
     
     // MARK: - UI Components
     
@@ -81,7 +82,6 @@ extension ListDetailVC {
         let rightButtonTapped = naviBar.rightButtonTapped
             .map { self.sceneType }
             .asDriver()
-        // TODO: - input, output 정리 (alert tapped action)
         
         let bottomButtonTapped = bottomButton
             .publisher(for: .touchUpInside)
@@ -90,32 +90,31 @@ extension ListDetailVC {
             }
             .asDriver()
         
-        let input = ListDetailViewModel.Input(bottomButtonTapped: bottomButtonTapped, rightButtonTapped: rightButtonTapped)
+        let input = ListDetailViewModel.Input(bottomButtonTapped: bottomButtonTapped,
+                                              rightButtonTapped: rightButtonTapped,
+                                              deletTapped: deleteButtonTapped.asDriver())
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
-        output.successed
+        output.postSuccessed
             .sink { successed in
                 self.presentCompletedVC(level: self.starLevel)
             }.store(in: self.cancelBag)
         
-        output.changeToEdit
-            .sink { edit in
-                if edit {
+        output.showDeleteAlert
+            .sink { delete in
+                if delete {
+                    self.presentDeleteAlertVC()
+                } else {
                     self.tappedEditButton()
                 }
             }.store(in: self.cancelBag)
-        
-        output.deleteSuccess
+        output.deleteSuccessed
             .sink { success in
-                let alertVC = self.factory.makeAlertVC(
-                    title: I18N.ListDetail.deleteTitle,
-                    customButtonTitle: I18N.Default.delete) {
-                        print("삭제 서버 통신")
-                        self.dismiss(animated: true) {
-                            self.navigationController?.popViewController(animated: true)
-                        }
-                    }
-                self.present(alertVC, animated: true)
+                if success {
+                    self.navigationController?.popViewController(animated: true)
+                } else {
+                    self.makeAlert(title: I18N.Default.error, message: I18N.Default.networkError)
+                }
             }.store(in: self.cancelBag)
     }
     
@@ -169,6 +168,15 @@ extension ListDetailVC {
         makeVibrate()
         
         self.present(alertController, animated: true)
+    }
+    
+    private func presentDeleteAlertVC() {
+        let alertVC = self.factory.makeAlertVC(title: I18N.ListDetail.deleteTitle, customButtonTitle: I18N.Default.delete)
+        alertVC.customAction = {
+            self.deleteButtonTapped.send(true)
+        }
+        
+        self.present(alertVC, animated: true)
     }
     
     private func presentCompletedVC(level: StarViewLevel) {
