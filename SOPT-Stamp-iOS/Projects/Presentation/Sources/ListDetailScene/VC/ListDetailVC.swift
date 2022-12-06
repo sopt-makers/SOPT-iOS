@@ -380,7 +380,7 @@ extension ListDetailVC {
         
         missionImageView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(self.missionImageView.snp.width).multipliedBy(1.0)
+            make.height.equalTo(self.missionImageView.snp.width)
         }
         
         textView.snp.makeConstraints { make in
