@@ -12,12 +12,6 @@ import Core
 
 import SnapKit
 
-public enum StarViewLevel {
-    case levelOne
-    case levelTwo
-    case levelThree
-}
-
 public class StarView: UIView {
     
     // MARK: - Properties
