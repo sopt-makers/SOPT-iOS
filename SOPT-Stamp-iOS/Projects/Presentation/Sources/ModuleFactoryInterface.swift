@@ -17,4 +17,5 @@ public protocol ModuleFactoryInterface {
     func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListVC
     func makeListDetailVC(sceneType: ListDetailSceneType, starLevel: StarViewLevel) -> ListDetailVC
     func makeMissionCompletedVC(starLevel: StarViewLevel) -> MissionCompletedVC
+    func makeAlertVC(title: String, customButtonTitle: String, customButtonAction: @escaping (() -> Void)) -> AlertVC
 }

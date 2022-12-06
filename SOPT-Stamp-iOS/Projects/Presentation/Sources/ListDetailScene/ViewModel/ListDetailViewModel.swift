@@ -35,6 +35,7 @@ public class ListDetailViewModel: ViewModelType {
     // MARK: - Outputs
     
     public struct Output {
+        // TODO: - 수정
         var successed = PassthroughSubject<Bool, Never>()
         var changeToEdit = PassthroughSubject<Bool, Never>()
         var deleteSuccess = PassthroughSubject<Bool, Never>()

@@ -81,6 +81,7 @@ extension ListDetailVC {
         let rightButtonTapped = naviBar.rightButtonTapped
             .map { self.sceneType }
             .asDriver()
+        // TODO: - input, output 정리 (alert tapped action)
         
         let bottomButtonTapped = bottomButton
             .publisher(for: .touchUpInside)
@@ -106,11 +107,15 @@ extension ListDetailVC {
         
         output.deleteSuccess
             .sink { success in
-                if success {
-                    self.navigationController?.popViewController(animated: true)
-                } else {
-                    self.makeAlert(title: "에러 발생", message: "삭제에 문제가 생겼습니다.")
-                }
+                let alertVC = self.factory.makeAlertVC(
+                    title: I18N.ListDetail.deleteTitle,
+                    customButtonTitle: I18N.Default.delete) {
+                        print("삭제 서버 통신")
+                        self.dismiss(animated: true) {
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                    }
+                self.present(alertVC, animated: true)
             }.store(in: self.cancelBag)
     }
     

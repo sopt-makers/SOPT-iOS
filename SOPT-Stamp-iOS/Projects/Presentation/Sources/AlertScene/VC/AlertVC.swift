@@ -13,11 +13,11 @@ import SnapKit
 import Core
 import DSKit
 
-class AlertVC: UIViewController {
+public class AlertVC: UIViewController {
     
     // MARK: - Properties
     
-    var closure: (() -> Void)?
+    private var closure: (() -> Void)?
     
     // MARK: - UI Components
     
@@ -30,7 +30,7 @@ class AlertVC: UIViewController {
     
     // MARK: - View Life Cycles
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
         setLayout()
@@ -39,8 +39,22 @@ class AlertVC: UIViewController {
     
     // MARK: - Custom Method
     
-    public func setCustomButtonTitle(_ title: String) {
+    @discardableResult
+    public func setTitle(_ title: String) -> Self {
+        self.titleLabel.text = title
+        return self
+    }
+    
+    @discardableResult
+    public func setCustomButtonTitle(_ title: String) -> Self {
         self.customButton.setTitle(title, for: .normal)
+        return self
+    }
+    
+    @discardableResult
+    public func setCustomButtonAction(_ closure: @escaping (() -> Void)) -> Self {
+        self.closure = closure
+        return self
     }
     
     private func setAddTarget() {
@@ -81,7 +95,6 @@ extension AlertVC {
         self.cancelButton.titleLabel?.textColor = DSKitAsset.Colors.gray700.color
         self.customButton.titleLabel?.textColor = DSKitAsset.Colors.white.color
         
-        self.titleLabel.text = I18N.ListDetail.deleteTitle
         self.cancelButton.setTitle(I18N.Default.cancel, for: .normal)
         
         self.alertView.layer.cornerRadius = 10
