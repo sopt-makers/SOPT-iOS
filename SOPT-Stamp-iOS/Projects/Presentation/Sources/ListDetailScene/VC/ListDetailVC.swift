@@ -25,6 +25,50 @@ public enum TextViewState {
     case completed // 작성 완료
 }
 
+extension StarViewLevel {
+    var buttonTitleColor: UIColor {
+        switch self {
+        case .levelOne, .levelTwo:
+            return DSKitAsset.Colors.white.color
+        case .levelThree:
+            return DSKitAsset.Colors.gray700.color
+        }
+    }
+    
+    var pointColor: UIColor {
+        switch self {
+        case .levelOne:
+            return DSKitAsset.Colors.pink300.color
+        case .levelTwo:
+            return DSKitAsset.Colors.purple300.color
+        case .levelThree:
+            return DSKitAsset.Colors.mint300.color
+        }
+    }
+    
+    var disableColor: UIColor {
+        switch self {
+        case .levelOne:
+            return DSKitAsset.Colors.pink200.color
+        case .levelTwo:
+            return DSKitAsset.Colors.purple200.color
+        case .levelThree:
+            return DSKitAsset.Colors.mint200.color
+        }
+    }
+    
+    var bgColor: UIColor {
+        switch self {
+        case .levelOne:
+            return DSKitAsset.Colors.pink100.color
+        case .levelTwo:
+            return DSKitAsset.Colors.purple100.color
+        case .levelThree:
+            return DSKitAsset.Colors.mint100.color
+        }
+    }
+}
+
 public class ListDetailVC: UIViewController {
     
     // MARK: - Properties
@@ -57,8 +101,11 @@ public class ListDetailVC: UIViewController {
     private let imagePlaceholderLabel = UILabel()
     private let textView = UITextView()
     private let dateLabel = UILabel()
-    private lazy var bottomButton = CustomButton(title: sceneType == .none ?  I18N.ListDetail.missionComplete : I18N.ListDetail.editComplte)
+    private lazy var bottomButton = CustomButton(title: sceneType == .none ? I18N.ListDetail.missionComplete : I18N.ListDetail.editComplte)
         .setEnabled(false)
+        .setColor(bgColor: starLevel.pointColor,
+                     disableColor: starLevel.disableColor,
+                     starLevel.buttonTitleColor)
     
     // MARK: - View Life Cycle
     
@@ -337,7 +384,7 @@ extension ListDetailVC {
             self.dateLabel.isHidden = true
         case .completed:
             self.naviBar.setRightButton(.addRecord)
-            self.missionView.backgroundColor = setLevelColor()
+            self.missionView.backgroundColor = starLevel.bgColor
             self.setTextView(.completed)
             self.imagePlaceholderLabel.isHidden = true
             self.bottomButton.isHidden = true
@@ -360,7 +407,7 @@ extension ListDetailVC {
         self.missionImageView.layer.cornerRadius = 9
         
         self.textView.layer.cornerRadius = 12
-        self.textView.layer.borderColor = DSKitAsset.Colors.purple300.color.cgColor
+        self.textView.layer.borderColor = starLevel.pointColor.cgColor
         self.textView.textContainerInset = UIEdgeInsets(top: 14, left: 14, bottom: 14, right: 14)
         
         self.imagePlaceholderLabel.textColor = DSKitAsset.Colors.gray500.color
@@ -375,17 +422,6 @@ extension ListDetailVC {
         self.dateLabel.text = "2022.10.25"
         
         self.textView.returnKeyType = .done
-    }
-    
-    private func setLevelColor() -> UIColor {
-        switch starLevel {
-        case .levelOne:
-            return DSKitAsset.Colors.pink100.color
-        case .levelTwo:
-            return DSKitAsset.Colors.purple100.color
-        case .levelThree:
-            return DSKitAsset.Colors.mint100.color
-        }
     }
     
     private func setTextView(_ state: TextViewState) {
