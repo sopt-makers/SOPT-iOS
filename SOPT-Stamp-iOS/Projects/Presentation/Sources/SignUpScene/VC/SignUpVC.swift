@@ -16,6 +16,33 @@ import Core
 import DSKit
 
 extension SignUpFormValidateResult {
+    
+    var passwordAlertType: TextFieldAlertType {
+        switch self {
+        case .valid:
+            return .validInput(text: "")
+        case .invalid(let text):
+            if text == I18N.SignUp.invalidPasswordForm {
+                return .invalidInput(text: text)
+            }
+            return .validInput(text: "")
+        }
+    }
+    
+    var passwordCheckAlertType: TextFieldAlertType {
+        switch self {
+        case .valid:
+            return .validInput(text: "")
+        case .invalid(let text):
+            if text == I18N.SignUp.passwordNotAccord {
+                return.invalidInput(text: text)
+            } else if text == I18N.SignUp.invalidPasswordForm {
+                return .invalidInput(text: text)
+            }
+            return .validInput(text: "")
+        }
+    }
+    
     func convertToTextFieldAlertType() -> TextFieldAlertType {
         switch self {
         case .valid(let text):
@@ -111,25 +138,16 @@ extension SignUpVC {
             .store(in: cancelBag)
         
         output.passwordAlert
-            .map { $0.convertToTextFieldAlertType() }
             .sink { event in
                 print("event: \(event)")
-            } receiveValue: { [weak self] alertType in
+            } receiveValue: { [weak self] signUpFormValidateResult in
                 guard let self = self else { return }
-                let alertText = alertType.alertText
+                let alertText = signUpFormValidateResult.convertToTextFieldAlertType().alertText
+                let needWarning = !alertText.isEmpty
                 self.passwordCheckTextFieldView.changeAlertLabelText(alertText)
-                if !alertText.isEmpty {
-                    self.passwordCheckTextFieldView.changeAlertLabelTextColor(toWarning: true)
-                    if alertText == I18N.SignUp.invalidPasswordForm {
-                        self.passwordTextFieldView.alertType = .invalidInput(text: "")
-                    } else {
-                        self.passwordTextFieldView.alertType = .validInput(text: "")
-                        self.passwordCheckTextFieldView.alertType = .invalidInput(text: alertText)
-                    }
-                } else {
-                    self.passwordTextFieldView.alertType = .validInput(text: "")
-                    self.passwordCheckTextFieldView.alertType = .validInput(text: "")
-                }
+                self.passwordCheckTextFieldView.changeAlertLabelTextColor(toWarning: needWarning)
+                self.passwordTextFieldView.alertType = signUpFormValidateResult.passwordAlertType
+                self.passwordCheckTextFieldView.alertType = signUpFormValidateResult.passwordCheckAlertType
             }.store(in: cancelBag)
         
         output.isValidForm
