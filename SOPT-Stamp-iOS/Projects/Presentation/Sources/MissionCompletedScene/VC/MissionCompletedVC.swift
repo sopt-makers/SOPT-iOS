@@ -60,6 +60,8 @@ public class MissionCompletedVC: UIViewController {
     }
     
     private func setLottie() {
+        // FIXME: - lottie json 파일을 찾지 못하는 문제
+        lottieView.backgroundColor = .yellow
         lottieView.center = view.center
         lottieView.loopMode = .playOnce
         lottieView.contentMode = .scaleAspectFit
