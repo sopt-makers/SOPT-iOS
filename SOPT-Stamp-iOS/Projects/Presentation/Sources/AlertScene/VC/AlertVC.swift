@@ -21,8 +21,7 @@ public class AlertVC: UIViewController {
     
     // MARK: - UI Components
     
-    private let blurEffect = UIBlurEffect(style: .dark)
-    private lazy var visualEffectView = UIVisualEffectView(effect: blurEffect)
+    private lazy var backgroundDimmerView = CustomDimmerView(self)
     private let alertView = UIView()
     private let titleLabel = UILabel()
     private let cancelButton = UIButton()
@@ -56,7 +55,7 @@ public class AlertVC: UIViewController {
         self.customButton.addTarget(self, action: #selector(tappedCustomButton), for: .touchUpInside)
         
         let gesture = UITapGestureRecognizer(target: self, action: #selector(dismissCurrentVC))
-        self.visualEffectView.addGestureRecognizer(gesture)
+        self.backgroundDimmerView.addGestureRecognizer(gesture)
     }
     
     // MARK: - @objc
@@ -78,7 +77,7 @@ public class AlertVC: UIViewController {
 
 extension AlertVC {
     private func setUI() {
-        self.view.backgroundColor = .black.withAlphaComponent(0.6)
+        self.view.backgroundColor = .clear//.black.withAlphaComponent(0.6)
         self.alertView.backgroundColor = .white
         self.cancelButton.backgroundColor = DSKitAsset.Colors.gray300.color
         self.customButton.backgroundColor = DSKitAsset.Colors.error200.color
@@ -98,9 +97,9 @@ extension AlertVC {
     }
     
     private func setLayout() {
-        self.view.addSubviews(visualEffectView, alertView)
+        self.view.addSubviews(backgroundDimmerView, alertView)
         
-        visualEffectView.snp.makeConstraints { make in
+        backgroundDimmerView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
         

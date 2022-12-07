@@ -35,12 +35,11 @@ public class MissionCompletedVC: UIViewController {
     
     private var starLevel: StarViewLevel!
     private var cancelBag = CancelBag()
-    private let blurEffect = UIBlurEffect(style: .dark)
     var completionHandler: (() -> Void)?
   
     // MARK: - UI Components
     
-    private lazy var visualEffectView = UIVisualEffectView(effect: blurEffect)
+    private lazy var backgroundDimmerView = CustomDimmerView(self)
     private lazy var lottieView = LottieAnimationView(name: starLevel.lottieName, bundle: DSKitResources.bundle, configuration: LottieConfiguration(renderingEngine: .automatic))
   
     // MARK: - View Life Cycle
@@ -82,9 +81,9 @@ extension MissionCompletedVC {
     }
     
     private func setLayout() {
-        self.view.addSubviews(visualEffectView, lottieView)
+        self.view.addSubviews(backgroundDimmerView, lottieView)
         
-        visualEffectView.snp.makeConstraints { make in
+        backgroundDimmerView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
         
