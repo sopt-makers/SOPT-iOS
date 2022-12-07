@@ -17,7 +17,7 @@ import Core
 import DSKit
 
 extension StarViewLevel {
-    var lottieName: String {
+    fileprivate var lottieName: String {
         switch self {
         case .levelOne:
             return "pinkstamps"
