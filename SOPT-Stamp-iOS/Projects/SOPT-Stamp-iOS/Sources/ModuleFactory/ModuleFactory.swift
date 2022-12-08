@@ -48,6 +48,12 @@ extension ModuleFactory: ModuleFactoryInterface {
         return signUpVC
     }
     
+    public func makeSignUpCompleteVC() -> SignUpCompleteVC {
+        let signUpCompleteVC = SignUpCompleteVC()
+        signUpCompleteVC.factory = self
+        return signUpCompleteVC
+    }
+    
     public func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListVC {
         let repository = MissionListRepository(service: missionService)
         let useCase = DefaultMissionListUseCase(repository: repository)

@@ -40,10 +40,15 @@ public struct I18N {
         public static let passwordTextFieldPlaceholder = "영문, 숫자, 특수문자 포함 8-15자로 입력해주세요."
         public static let passwordCheckTextFieldPlaceholder = "확인을 위해 비밀번호를 한 번 더 입력해주세요."
         public static let register = "가입하기"
+        public static let validNickname = "사용 가능한 이름입니다."
         public static let duplicatedNickname = "사용 중인 이름입니다."
+        public static let validEmail = "사용 가능한 이메일입니다."
         public static let invalidEmailForm = "잘못된 이메일 형식입니다."
         public static let invalidPasswordForm = "영문, 숫자, 특수문자 포함 8-15자로 입력해주세요."
         public static let passwordNotAccord = "비밀번호가 일치하지 않습니다."
+        public static let signUpComplete = "가입 완료"
+        public static let welcome = "SOPTAMP에 오신 것을 환영합니다"
+        public static let start = "시작하기"
     }
     
     public struct ListDetail {
