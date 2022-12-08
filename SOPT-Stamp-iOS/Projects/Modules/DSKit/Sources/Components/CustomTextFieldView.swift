@@ -302,20 +302,6 @@ extension CustomTextFieldView {
         self.changeAlertLabelText(alertType.alertText)
         self.setTextFieldViewState(alertType.textFieldSate)
     }
-    
-    public enum InputCase {
-         case alert
-         
-         var keyPath: AnyKeyPath {
-             switch self {
-             case .alert: return \CustomTextFieldView.alertType
-             }
-         }
-     }
-    
-    public func bindableInput<T>(_ input: InputCase) -> ReferenceWritableKeyPath<CustomTextFieldView, T> {
-        return input.keyPath as! ReferenceWritableKeyPath<CustomTextFieldView, T>
-    }
 }
 
 // MARK: - UI & Layout

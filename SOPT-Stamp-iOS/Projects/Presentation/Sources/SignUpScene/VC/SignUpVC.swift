@@ -101,25 +101,25 @@ extension SignUpVC {
         
         output.nicknameAlert
             .map { $0.convertToTextFieldAlertType() }
-            .assign(to: nickNameTextFieldView.bindableInput(.alert),
+            .assign(to: nickNameTextFieldView.kf.alertType,
                     on: nickNameTextFieldView)
             .store(in: cancelBag)
         
         output.emailAlert
             .map { $0.convertToTextFieldAlertType() }
-            .assign(to: emailTextFieldView.bindableInput(.alert),
+            .assign(to: emailTextFieldView.kf.alertType,
                     on: emailTextFieldView)
             .store(in: cancelBag)
         
         output.passwordAlert
             .map { $0.convertToTextFieldAlertType() }
-            .assign(to: passwordTextFieldView.bindableInput(.alert),
+            .assign(to: passwordTextFieldView.kf.alertType,
                     on: passwordTextFieldView)
             .store(in: cancelBag)
         
         output.passwordAccordAlert
             .map { $0.convertToTextFieldAlertType() }
-            .assign(to: passwordCheckTextFieldView.bindableInput(.alert),
+            .assign(to: passwordTextFieldView.kf.alertType,
                     on: passwordCheckTextFieldView)
             .store(in: cancelBag)
         
