@@ -11,5 +11,5 @@ import Foundation
 public protocol ModuleFactoryInterface {
     func makeSplashVC() -> SplashVC
     func makeOnboardingVC() -> OnboardingVC
-
+    func makeSignInVC() -> SignInVC
 }

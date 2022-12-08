@@ -69,7 +69,8 @@ public class OnboardingVC: UIViewController {
     
     @objc
     private func startButtonDidTap() {
-        print("start btn did tap")
+        let vc = self.factory.makeSignInVC()
+        self.navigationController?.pushViewController(vc, animated: true)
     }
 }
 

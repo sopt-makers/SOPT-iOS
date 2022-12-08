@@ -39,4 +39,15 @@ public struct I18N {
         public static let caption3 = "완료된 미션을 확인하며\n추억을 감상할 수 있어요"
         public static let start = "시작하기"
     }
+    
+    public struct SignIn {
+        public static let id = "ID"
+        public static let enterID = "이메일을 입력해주세요."
+        public static let password = "Password"
+        public static let enterPW = "비밀번호를 입력해주세요."
+        public static let checkAccount = "정보를 다시 확인해 주세요."
+        public static let findAccount = "계정 찾기"
+        public static let signIn = "로그인"
+        public static let signUp = "회원가입"
+    }
 }
