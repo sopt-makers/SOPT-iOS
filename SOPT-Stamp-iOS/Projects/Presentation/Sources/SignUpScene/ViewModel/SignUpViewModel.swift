@@ -87,13 +87,15 @@ extension SignUpViewModel {
         useCase.isNicknameValid.sink { event in
             print("SignUpViewModel - completion: \(event)")
         } receiveValue: { isNicknameValid in
-            isNicknameValid ? output.nicknameAlert.send(.valid(text: I18N.SignUp.validNickname)) : output.nicknameAlert.send(.invalid(text: I18N.SignUp.duplicatedNickname))
+            output.nicknameAlert.send(isNicknameValid ?
+                .valid(text: I18N.SignUp.validNickname) : .invalid(text: I18N.SignUp.duplicatedNickname))
         }.store(in: cancelBag)
         
         useCase.isEmailFormValid.sink { event in
             print("SignUpViewModel - completion: \(event)")
         } receiveValue: { isEmailValid in
-            isEmailValid ? output.emailAlert.send(.valid(text: I18N.SignUp.validEmail)) : output.emailAlert.send(.invalid(text: I18N.SignUp.invalidEmailForm))
+            output.emailAlert.send(isEmailValid ?
+                .valid(text: I18N.SignUp.validEmail) : .invalid(text: I18N.SignUp.invalidEmailForm))
         }.store(in: cancelBag)
         
         useCase.isPasswordFormValid.combineLatest(useCase.isAccordPassword).sink { event in
