@@ -62,9 +62,8 @@ public class MissionCompletedVC: UIViewController {
         lottieView.center = view.center
         lottieView.loopMode = .playOnce
         lottieView.contentMode = .scaleAspectFit
-        lottieView.play()
-        
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 3.0) {
+        lottieView.play {_ in
+            self.lottieView.stop()
             self.dismiss(animated: true) {
                 self.completionHandler?()
             }
