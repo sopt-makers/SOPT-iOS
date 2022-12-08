@@ -15,6 +15,17 @@ import Then
 import Core
 import DSKit
 
+extension SignUpFormValidateResult {
+    func convertToTextFieldAlertType() -> TextFieldAlertType {
+        switch self {
+        case .valid(let text):
+            return .validInput(text: text)
+        case .invalid(let text):
+            return .invalidInput(text: text)
+        }
+    }
+}
+
 public class SignUpVC: UIViewController {
     
     // MARK: - Properties
@@ -43,12 +54,13 @@ public class SignUpVC: UIViewController {
         .setTextFieldType(.email)
         .setAlertLabelEnabled(I18N.SignUp.invalidEmailForm)
     
-    private let passwordTextFieldView = CustomTextFieldView(type: .title)
+    private lazy var passwordTextFieldView = CustomTextFieldView(type: .title)
         .setTitle(I18N.SignUp.password)
         .setTextFieldType(.password)
         .setPlaceholder(I18N.SignUp.passwordTextFieldPlaceholder)
+        .setAlertDelegate(passwordCheckTextFieldView)
     
-    private let passwordCheckTextFieldView = CustomTextFieldView(type: .plain)
+    private lazy var passwordCheckTextFieldView = CustomTextFieldView(type: .plain)
         .setPlaceholder(I18N.SignUp.passwordCheckTextFieldPlaceholder)
         .setTextFieldType(.password)
         .setAlertLabelEnabled(I18N.SignUp.invalidPasswordForm)
@@ -68,7 +80,7 @@ public class SignUpVC: UIViewController {
     }
 }
 
-// MARK: - Methods
+// MARK: - Binding
 
 extension SignUpVC {
   
@@ -88,29 +100,28 @@ extension SignUpVC {
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.nicknameAlert
-            .assign(to: nickNameTextFieldView.bindableInput(.alert),
+            .map { $0.convertToTextFieldAlertType() }
+            .assign(to: nickNameTextFieldView.kf.alertType,
                     on: nickNameTextFieldView)
             .store(in: cancelBag)
         
         output.emailAlert
-            .assign(to: emailTextFieldView.bindableInput(.alert),
+            .map { $0.convertToTextFieldAlertType() }
+            .assign(to: emailTextFieldView.kf.alertType,
                     on: emailTextFieldView)
             .store(in: cancelBag)
         
-        output.passwordAlert.sink { event in
-            print("event: \(event)")
-        } receiveValue: { [weak self] alertText in
-            guard let self = self else { return }
-            self.passwordCheckTextFieldView.changeAlertLabelText(alertText)
-            if !alertText.isEmpty {
-                alertText == I18N.SignUp.invalidPasswordForm ?
-                self.passwordTextFieldView.setTextFieldViewState(.alert) :
-                self.passwordCheckTextFieldView.setTextFieldViewState(.alert)
-            } else {
-                self.passwordTextFieldView.setTextFieldViewState(.normal)
-                self.passwordCheckTextFieldView.setTextFieldViewState(.normal)
-            }
-        }.store(in: cancelBag)
+        output.passwordAlert
+            .map { $0.convertToTextFieldAlertType() }
+            .assign(to: passwordTextFieldView.kf.alertType,
+                    on: passwordTextFieldView)
+            .store(in: cancelBag)
+        
+        output.passwordAccordAlert
+            .map { $0.convertToTextFieldAlertType() }
+            .assign(to: passwordTextFieldView.kf.alertType,
+                    on: passwordCheckTextFieldView)
+            .store(in: cancelBag)
         
         output.isValidForm
             .assign(to: \.isEnabled, on: registerButton)
