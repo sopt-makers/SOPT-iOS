@@ -236,6 +236,7 @@ extension CustomTextFieldView {
         textField.backgroundColor = .clear
         textField.textColor = .black
         textField.font = UIFont.caption1
+        textField.returnKeyType = .done
         
         alertlabel.font = UIFont.caption3
         alertlabel.textColor = SoptampColor.error300.color
@@ -355,5 +356,10 @@ extension CustomTextFieldView: UITextFieldDelegate {
     
     public func textFieldDidEndEditing(_ textField: UITextField) {
         self.setTextFieldViewState(.normal)
+    }
+    
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
