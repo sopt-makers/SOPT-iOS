@@ -108,6 +108,10 @@ public enum TextFieldAlertType {
     }
 }
 
+public protocol CustomTextFieldViewAlertDelegate: AnyObject {
+    func changeAlertLabelText(_ alertText: String)
+}
+
 public class CustomTextFieldView: UIView {
     
     // MARK: - Properties
@@ -139,7 +143,7 @@ public class CustomTextFieldView: UIView {
     }
     
     /// alert Label을 다른 CustomTextField에 보여주기 위한 delegate
-    weak var alertDelegate: CustomTextFieldView?
+    weak var alertDelegate: CustomTextFieldViewAlertDelegate?
     
     private var cancelBag = CancelBag()
 
@@ -238,7 +242,7 @@ extension CustomTextFieldView {
     }
     
     /// alertText를 다른 TextField에 보여주기 위한 delegate 설정
-    public func setAlertDelegate(_ textView: CustomTextFieldView) -> Self {
+    public func setAlertDelegate(_ textView: CustomTextFieldViewAlertDelegate) -> Self {
         self.alertDelegate = textView
         return self
     }
@@ -251,11 +255,6 @@ extension CustomTextFieldView {
         }
         self.alertlabel.text = alertText
         self.alertlabel.isHidden = false
-    }
-    
-    /// 경고 문구 라벨의 컬러 설정
-    public func changeAlertLabelTextColor(toWarning: Bool) {
-        alertlabel.textColor = toWarning ? SoptampColor.error300.color : SoptampColor.access300.color
     }
     
     /// textField의 state를 지정하여 자동으로 배경색과 테두리 색이 바뀌도록 설정
@@ -477,5 +476,14 @@ extension CustomTextFieldView: UITextFieldDelegate {
             }
             self.setTextFieldViewState(.editing)
         }
+    }
+}
+
+// MARK: - CustomTextFieldViewAlertDelegate
+
+extension CustomTextFieldView: CustomTextFieldViewAlertDelegate {
+    /// 경고 문구 라벨의 컬러 설정
+    public func changeAlertLabelTextColor(toWarning: Bool) {
+        alertlabel.textColor = toWarning ? SoptampColor.error300.color : SoptampColor.access300.color
     }
 }
