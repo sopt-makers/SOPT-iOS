@@ -50,4 +50,12 @@ public struct I18N {
         public static let welcome = "SOPTAMP에 오신 것을 환영합니다"
         public static let start = "시작하기"
     }
+    
+    public struct ListDetail {
+        public static let imagePlaceHolder = "달성 사진을 올려주세요"
+        public static let memoPlaceHolder = "메모를 작성해주세요"
+        public static let mission = "미션"
+        public static let missionComplete = "미션 완료"
+        public static let editComplte = "수정 완료"
+    }
 }

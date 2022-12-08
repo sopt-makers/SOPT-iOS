@@ -8,6 +8,7 @@
 
 import Foundation
 
+import Core
 import Presentation
 import Network
 import Domain
@@ -61,6 +62,15 @@ extension ModuleFactory: ModuleFactoryInterface {
         missionListVC.factory = self
         missionListVC.viewModel = viewModel
         return missionListVC
+    }
+    public func makeListDetailVC(sceneType: ListDetailSceneType, starLevel: StarViewLevel) -> ListDetailVC {
+        let repository = ListDetailRepository()
+        let useCase = DefaultListDetailUseCase(repository: repository)
+        let viewModel = ListDetailViewModel(useCase: useCase, sceneType: sceneType, starLevel: starLevel)
+        let listDetailVC = ListDetailVC()
+        listDetailVC.viewModel = viewModel
+        listDetailVC.factory = self
+        return listDetailVC
     }
     
     public func makeRankingVC() -> RankingVC {

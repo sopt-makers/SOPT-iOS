@@ -177,5 +177,8 @@ extension MissionListVC {
 // MARK: - UICollectionViewDelegate
 
 extension MissionListVC: UICollectionViewDelegate {
-    
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let detailVC = factory.makeListDetailVC(sceneType: .none, starLevel: .levelThree)
+        self.navigationController?.pushViewController(detailVC, animated: true)
+    }
 }
