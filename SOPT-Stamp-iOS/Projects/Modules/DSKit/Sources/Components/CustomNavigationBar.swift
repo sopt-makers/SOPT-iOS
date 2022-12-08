@@ -39,6 +39,7 @@ public class CustomNavigationBar: UIView {
     
     private var naviType: NaviType!
     private var rightButtonClosure: (() -> Void)?
+    private var leftButtonClosure: (() -> Void)?
     public var rightButtonTapped: Driver<Void> {
         rightButton.publisher(for: .touchUpInside)
             .map { _ in () }
@@ -115,7 +116,20 @@ extension CustomNavigationBar {
     @discardableResult
     public func rightButtonAction(_ closure: (() -> Void)? = nil) -> Self {
         self.rightButtonClosure = closure
-        self.rightButton.addTarget(self, action: #selector(touchupRightButton), for: .touchUpInside)
+        self.rightButton.addTarget(self, action: #selector(tappedRightButton), for: .touchUpInside)
+        return self
+    }
+    
+    
+    @discardableResult
+    public func resetLeftButtonAction(_ closure: (() -> Void)? = nil) -> Self {
+        self.leftButtonClosure = closure
+        self.leftButton.removeTarget(self, action: nil, for: .touchUpInside)
+        if closure != nil {
+            self.leftButton.addTarget(self, action: #selector(tappedLeftButton), for: .touchUpInside)
+        } else {
+            self.setAddTarget()
+        }
         return self
     }
     
@@ -136,8 +150,13 @@ extension CustomNavigationBar {
     }
     
     @objc
-    private func touchupRightButton() {
+    private func tappedRightButton() {
         self.rightButtonClosure?()
+    }
+    
+    @objc
+    private func tappedLeftButton() {
+        self.leftButtonClosure?()
     }
 }
 

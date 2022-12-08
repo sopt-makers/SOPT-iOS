@@ -21,20 +21,24 @@ public enum ListDetailSceneType {
 public class ListDetailViewModel: ViewModelType {
     
     private let useCase: ListDetailUseCase
-    private var cancelBag = Set<AnyCancellable>()
+    private var cancelBag = CancelBag()
     public var listDetailType: ListDetailSceneType!
     public var starLevel: StarViewLevel!
   
     // MARK: - Inputs
     
     public struct Input {
-    
+        let bottomButtonTapped: Driver<ListDetailRequestModel>
+        let rightButtonTapped: Driver<ListDetailSceneType>
+        let deleteButtonTapped: Driver<Bool>
     }
     
     // MARK: - Outputs
     
     public struct Output {
-    
+        var postSuccessed = PassthroughSubject<Bool, Never>()
+        var showDeleteAlert = PassthroughSubject<Bool, Never>()
+        var deleteSuccessed = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - init
@@ -51,7 +55,32 @@ extension ListDetailViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
-        // input,output 상관관계 작성
+        
+        input.bottomButtonTapped
+            .sink { requestModel in
+                print("✅requestModel:", requestModel)
+                // TODO: - useCase
+                // + sceneType(edit / none)
+                output.postSuccessed.send(true)
+            }.store(in: self.cancelBag)
+        
+        input.rightButtonTapped
+            .sink { sceneType in
+                switch sceneType {
+                case .completed:
+                    output.showDeleteAlert.send(false)
+                case .edit:
+                    output.showDeleteAlert.send(true)
+                default:
+                    break
+                }
+            }.store(in: self.cancelBag)
+        
+        input.deleteButtonTapped
+            .sink { _ in
+                // TODO: - useCase
+                output.deleteSuccessed.send(false)
+            }.store(in: self.cancelBag)
     
         return output
     }

@@ -40,6 +40,20 @@ extension CustomButton {
         self.setAttributedTitle(attributedString, for: .normal)
         return self
     }
+    
+    /// 버튼의 backgroundColor, textColor 변경
+    @discardableResult
+    public func setColor(bgColor: UIColor, disableColor: UIColor, _ textColor: UIColor = .white) -> Self {
+        self.setBackgroundColor(bgColor, for: .normal)
+        self.setBackgroundColor(disableColor, for: .disabled)
+        self.setAttributedTitle(
+            NSAttributedString(
+                string: self.titleLabel?.text ?? "",
+                attributes: [.font: UIFont.h2, .foregroundColor: textColor]),
+            for: .normal)
+        
+        return self
+    }
 }
 
 // MARK: - UI & Layout
