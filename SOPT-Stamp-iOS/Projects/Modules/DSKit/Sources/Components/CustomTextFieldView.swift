@@ -44,15 +44,16 @@ public enum TextFieldType {
 public enum TextFieldViewState {
     case normal
     case editing
-    case alert
+    case warningAlert
+    case confirmAlert
     
     var backgroundColor: UIColor {
         switch self {
         case .normal:
             return DSKitAsset.Colors.gray50.color
-        case .editing:
+        case .editing, .confirmAlert:
             return DSKitAsset.Colors.white.color
-        case .alert:
+        case .warningAlert:
             return DSKitAsset.Colors.error100.color
         }
     }
@@ -61,12 +62,54 @@ public enum TextFieldViewState {
         switch self {
         case .normal:
             return nil
-        case .editing:
+        case .editing, .confirmAlert:
             return DSKitAsset.Colors.purple300.color.cgColor
-        case .alert:
+        case .warningAlert:
             return DSKitAsset.Colors.error200.color.cgColor
         }
     }
+    
+    var alertTextColor: UIColor? {
+        switch self {
+        case .normal, .editing:
+            return nil
+        case .confirmAlert:
+            return DSKitAsset.Colors.access300.color
+        case .warningAlert:
+            return DSKitAsset.Colors.error300.color
+        }
+    }
+}
+
+@frozen
+public enum TextFieldAlertType {
+    case validInput(text: String)
+    case invalidInput(text: String)
+    case none
+    
+    public var alertText: String {
+        switch self {
+        case .validInput(let text), .invalidInput(let text):
+            return text
+        case .none:
+            return ""
+        }
+    }
+    
+    public var textFieldSate: TextFieldViewState {
+        switch self {
+        case .validInput:
+            return .confirmAlert
+        case .invalidInput:
+            return .warningAlert
+        case .none:
+            return .normal
+        }
+    }
+}
+
+public protocol CustomTextFieldViewAlertDelegate: AnyObject {
+    func changeAlertLabelText(_ alertText: String)
 }
 
 public class CustomTextFieldView: UIView {
@@ -92,6 +135,15 @@ public class CustomTextFieldView: UIView {
             }
             .asDriver()
     }
+    
+    public var alertType: TextFieldAlertType = .none {
+        didSet {
+            bindAlertType(alertType)
+        }
+    }
+    
+    /// alert Label을 다른 CustomTextField에 보여주기 위한 delegate
+    weak var alertDelegate: CustomTextFieldViewAlertDelegate?
     
     private var cancelBag = CancelBag()
 
@@ -189,24 +241,24 @@ extension CustomTextFieldView {
         return self
     }
     
+    /// alertText를 다른 TextField에 보여주기 위한 delegate 설정
+    public func setAlertDelegate(_ textView: CustomTextFieldViewAlertDelegate) -> Self {
+        self.alertDelegate = textView
+        return self
+    }
+    
     /// 경고 문구 라벨의 text 설정
     public func changeAlertLabelText(_ alertText: String) {
+        if let alertDelegate = alertDelegate {
+            alertDelegate.changeAlertLabelText(alertText)
+            return
+        }
         self.alertlabel.text = alertText
         self.alertlabel.isHidden = false
     }
     
-    private func setDelegate() {
-        self.textField.delegate = self
-    }
-    
     /// textField의 state를 지정하여 자동으로 배경색과 테두리 색이 바뀌도록 설정
     public func setTextFieldViewState(_ state: TextFieldViewState) {
-        
-        var state = state
-        if state == .normal && (textField.isEditing || !textField.isEmpty) {
-            state = .editing
-        }
-        
         textFieldContainerView.backgroundColor = state.backgroundColor
         
         if let borderColor = state.borderColor {
@@ -215,6 +267,14 @@ extension CustomTextFieldView {
         } else {
             textFieldContainerView.layer.borderWidth = 0
         }
+        
+        if state == .confirmAlert || state == .warningAlert {
+            alertlabel.textColor = state.alertTextColor
+        }
+    }
+    
+    private func setDelegate() {
+        self.textField.delegate = self
     }
     
     private func bindUI() {
@@ -232,32 +292,14 @@ extension CustomTextFieldView {
 // MARK: - Input Binding
 
 extension CustomTextFieldView {
+    
     var alertText: String {
-        get { return alertlabel.text ?? "" }
-        set { bindAlertText(newValue) }
+        return alertlabel.text ?? ""
     }
     
-    private func bindAlertText(_ alertText: String) {
-        self.changeAlertLabelText(alertText)
-        if !alertText.isEmpty {
-            self.setTextFieldViewState(.alert)
-        }
-    }
-    
-    public enum InputCase {
-         case alert
-         case passwordAlert
-         
-         var keyPath: AnyKeyPath {
-             switch self {
-             case .alert: return \CustomTextFieldView.alertText
-             case .passwordAlert: return \CustomTextFieldView.textChanged
-             }
-         }
-     }
-    
-    public func bindableInput<T>(_ input: InputCase) -> ReferenceWritableKeyPath<CustomTextFieldView, T> {
-        return input.keyPath as! ReferenceWritableKeyPath<CustomTextFieldView, T>
+    private func bindAlertType(_ alertType: TextFieldAlertType) {
+        self.changeAlertLabelText(alertType.alertText)
+        self.setTextFieldViewState(alertType.textFieldSate)
     }
 }
 
@@ -427,13 +469,27 @@ extension CustomTextFieldView: UITextFieldDelegate {
     }
     
     public func textFieldDidEndEditing(_ textField: UITextField) {
-        if let isEmpty = textField.text?.isEmpty {
-            isEmpty ? self.setTextFieldViewState(.normal) : self.setTextFieldViewState(.editing)
+        if textField.isEmpty {
+            self.setTextFieldViewState(.normal)
+        } else {
+            if case .invalidInput = alertType {
+                return
+            }
+            self.setTextFieldViewState(.editing)
         }
     }
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+}
+
+// MARK: - CustomTextFieldViewAlertDelegate
+
+extension CustomTextFieldView: CustomTextFieldViewAlertDelegate {
+    /// 경고 문구 라벨의 컬러 설정
+    public func changeAlertLabelTextColor(toWarning: Bool) {
+        alertlabel.textColor = toWarning ? SoptampColor.error300.color : SoptampColor.access300.color
     }
 }

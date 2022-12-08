@@ -15,7 +15,10 @@ public protocol ModuleFactoryInterface {
     func makeOnboardingVC() -> OnboardingVC
     func makeSignInVC() -> SignInVC
     func makeSignUpVC() -> SignUpVC
+    func makeSignUpCompleteVC() -> SignUpCompleteVC
     func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListVC
     func makeListDetailVC(sceneType: ListDetailSceneType, starLevel: StarViewLevel) -> ListDetailVC
+    func makeMissionCompletedVC(starLevel: StarViewLevel) -> MissionCompletedVC
+    func makeAlertVC(title: String, customButtonTitle: String) -> AlertVC
     func makeRankingVC() -> RankingVC
 }

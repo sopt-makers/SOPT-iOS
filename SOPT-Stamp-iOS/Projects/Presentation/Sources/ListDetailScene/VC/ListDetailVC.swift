@@ -14,12 +14,59 @@ import SnapKit
 import Then
 
 import Core
+import Domain
 import DSKit
+
+import Lottie
 
 public enum TextViewState {
     case inactive // 비활성화(키보드X, placeholder)
     case active // 활성화(키보드O, 텍스트 입력 상태)
     case completed // 작성 완료
+}
+
+extension StarViewLevel {
+    var buttonTitleColor: UIColor {
+        switch self {
+        case .levelOne, .levelTwo:
+            return DSKitAsset.Colors.white.color
+        case .levelThree:
+            return DSKitAsset.Colors.gray700.color
+        }
+    }
+    
+    var pointColor: UIColor {
+        switch self {
+        case .levelOne:
+            return DSKitAsset.Colors.pink300.color
+        case .levelTwo:
+            return DSKitAsset.Colors.purple300.color
+        case .levelThree:
+            return DSKitAsset.Colors.mint300.color
+        }
+    }
+    
+    var disableColor: UIColor {
+        switch self {
+        case .levelOne:
+            return DSKitAsset.Colors.pink200.color
+        case .levelTwo:
+            return DSKitAsset.Colors.purple200.color
+        case .levelThree:
+            return DSKitAsset.Colors.mint200.color
+        }
+    }
+    
+    var bgColor: UIColor {
+        switch self {
+        case .levelOne:
+            return DSKitAsset.Colors.pink100.color
+        case .levelTwo:
+            return DSKitAsset.Colors.purple100.color
+        case .levelThree:
+            return DSKitAsset.Colors.mint100.color
+        }
+    }
 }
 
 public class ListDetailVC: UIViewController {
@@ -39,6 +86,9 @@ public class ListDetailVC: UIViewController {
     private var starLevel: StarViewLevel {
         return self.viewModel.starLevel
     }
+    private var originImage: UIImage = UIImage()
+    private var originText: String = ""
+    private let deleteButtonTapped = PassthroughSubject<Bool, Never>()
     
     // MARK: - UI Components
     
@@ -51,8 +101,11 @@ public class ListDetailVC: UIViewController {
     private let imagePlaceholderLabel = UILabel()
     private let textView = UITextView()
     private let dateLabel = UILabel()
-    private let bottomButton = CustomButton(title: I18N.ListDetail.missionComplete)
+    private lazy var bottomButton = CustomButton(title: sceneType == .none ? I18N.ListDetail.missionComplete : I18N.ListDetail.editComplte)
         .setEnabled(false)
+        .setColor(bgColor: starLevel.pointColor,
+                     disableColor: starLevel.disableColor,
+                     starLevel.buttonTitleColor)
     
     // MARK: - View Life Cycle
     
@@ -73,13 +126,42 @@ public class ListDetailVC: UIViewController {
 
 extension ListDetailVC {
     private func bindViewModels() {
-        let input = ListDetailViewModel.Input()
+        let rightButtonTapped = naviBar.rightButtonTapped
+            .map { self.sceneType }
+            .asDriver()
+        
+        let bottomButtonTapped = bottomButton
+            .publisher(for: .touchUpInside)
+            .map { _ in
+                ListDetailRequestModel(imgURL: self.missionImageView.image ?? UIImage(), content: self.textView.text)
+            }
+            .asDriver()
+        
+        let input = ListDetailViewModel.Input(bottomButtonTapped: bottomButtonTapped,
+                                              rightButtonTapped: rightButtonTapped,
+                                              deleteButtonTapped: deleteButtonTapped.asDriver())
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
-        naviBar.rightButtonTapped
-            .compactMap({ $0 })
-            .sink { _ in
-                self.setRightButtonAction()
+        output.postSuccessed
+            .sink { successed in
+                self.presentCompletedVC(level: self.starLevel)
+            }.store(in: self.cancelBag)
+        
+        output.showDeleteAlert
+            .sink { delete in
+                if delete {
+                    self.presentDeleteAlertVC()
+                } else {
+                    self.tappedEditButton()
+                }
+            }.store(in: self.cancelBag)
+        output.deleteSuccessed
+            .sink { success in
+                if success {
+                    self.navigationController?.popViewController(animated: true)
+                } else {
+                    self.makeAlert(title: I18N.Default.error, message: I18N.Default.networkError)
+                }
             }.store(in: self.cancelBag)
     }
     
@@ -97,15 +179,8 @@ extension ListDetailVC {
         self.view.addGestureRecognizer(swipeDown)
     }
     
-    private func setRightButtonAction() {
-        switch sceneType {
-        case .completed:
-            self.sceneType = .edit
-        case .edit:
-            self.sceneType = .completed
-        default:
-            break
-        }
+    private func tappedEditButton() {
+        self.sceneType = .edit
         self.setUI(sceneType)
     }
     
@@ -140,6 +215,26 @@ extension ListDetailVC {
         makeVibrate()
         
         self.present(alertController, animated: true)
+    }
+    
+    private func presentDeleteAlertVC() {
+        let alertVC = self.factory.makeAlertVC(title: I18N.ListDetail.deleteTitle, customButtonTitle: I18N.Default.delete)
+        alertVC.customAction = {
+            self.deleteButtonTapped.send(true)
+        }
+        
+        self.present(alertVC, animated: true)
+    }
+    
+    private func presentCompletedVC(level: StarViewLevel) {
+        let missionCompletedVC = MissionCompletedVC()
+            .setLevel(level)
+        missionCompletedVC.completionHandler = {
+            self.navigationController?.popViewController(animated: true)
+        }
+        missionCompletedVC.modalPresentationStyle = .overFullScreen
+        missionCompletedVC.modalTransitionStyle = .crossDissolve
+        self.present(missionCompletedVC, animated: true)
     }
     
     // MARK: - @objc
@@ -255,6 +350,50 @@ extension ListDetailVC: UITextViewDelegate {
 // MARK: - UI & Layout
 
 extension ListDetailVC {
+    private func setUI(_ type: ListDetailSceneType) {
+        if type == .edit {
+            self.naviBar
+                .setRightButton(.delete)
+                .resetLeftButtonAction {
+                    self.sceneType = .completed
+                    self.setUI(self.sceneType)
+                }
+            self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+            originText = textView.text
+            originImage = missionImageView.image ?? UIImage()
+        } else {
+            if textView.text != I18N.ListDetail.memoPlaceHolder && textView.text != originText {
+                textView.text = originText
+            }
+            
+            if let image = missionImageView.image,
+               image != originImage {
+                missionImageView.image = originImage
+            }
+            self.naviBar.resetLeftButtonAction()
+            self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        }
+        
+        switch type {
+        case .none, .edit:
+            self.missionView.backgroundColor = DSKitAsset.Colors.gray50.color
+            self.setTextView(.inactive)
+            self.imagePlaceholderLabel.isHidden = missionImageView.image == nil ? false : true
+            self.missionImageView.isUserInteractionEnabled = true
+            self.bottomButton.isHidden = false
+            self.dateLabel.isHidden = true
+        case .completed:
+            self.naviBar.setRightButton(.addRecord)
+            self.missionView.backgroundColor = starLevel.bgColor
+            self.setTextView(.completed)
+            self.imagePlaceholderLabel.isHidden = true
+            self.bottomButton.isHidden = true
+            self.dateLabel.isHidden = false
+            self.missionImageView.image = DSKitAsset.Assets.splashImg2.image
+            self.missionImageView.isUserInteractionEnabled = false
+        }
+    }
+    
     private func setDefaultUI() {
         self.navigationController?.navigationBar.isHidden = true
         self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
@@ -268,7 +407,7 @@ extension ListDetailVC {
         self.missionImageView.layer.cornerRadius = 9
         
         self.textView.layer.cornerRadius = 12
-        self.textView.layer.borderColor = DSKitAsset.Colors.purple300.color.cgColor
+        self.textView.layer.borderColor = starLevel.pointColor.cgColor
         self.textView.textContainerInset = UIEdgeInsets(top: 14, left: 14, bottom: 14, right: 14)
         
         self.imagePlaceholderLabel.textColor = DSKitAsset.Colors.gray500.color
@@ -283,42 +422,6 @@ extension ListDetailVC {
         self.dateLabel.text = "2022.10.25"
         
         self.textView.returnKeyType = .done
-    }
-    
-    private func setUI(_ type: ListDetailSceneType) {
-        if type == .edit {
-            self.naviBar.setRightButton(.delete)
-        }
-        
-        switch type {
-        case .none, .edit:
-            self.missionView.backgroundColor = DSKitAsset.Colors.gray50.color
-            self.setTextView(.inactive)
-            self.imagePlaceholderLabel.isHidden = missionImageView.image == nil ? false : true
-            self.missionImageView.isUserInteractionEnabled = true
-            self.bottomButton.isHidden = false
-            self.dateLabel.isHidden = true
-        case .completed:
-            self.naviBar.setRightButton(.addRecord)
-            self.missionView.backgroundColor = setLevelColor()
-            self.setTextView(.completed)
-            self.imagePlaceholderLabel.isHidden = true
-            self.bottomButton.isHidden = true
-            self.dateLabel.isHidden = false
-            self.missionImageView.image = DSKitAsset.Assets.splashImg2.image
-            self.missionImageView.isUserInteractionEnabled = false
-        }
-    }
-    
-    private func setLevelColor() -> UIColor {
-        switch starLevel {
-        case .levelOne:
-            return DSKitAsset.Colors.pink100.color
-        case .levelTwo:
-            return DSKitAsset.Colors.purple100.color
-        case .levelThree:
-            return DSKitAsset.Colors.mint100.color
-        }
     }
     
     private func setTextView(_ state: TextViewState) {

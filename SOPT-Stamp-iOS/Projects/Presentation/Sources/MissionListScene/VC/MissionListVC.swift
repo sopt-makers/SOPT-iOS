@@ -178,7 +178,20 @@ extension MissionListVC {
 
 extension MissionListVC: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let detailVC = factory.makeListDetailVC(sceneType: .none, starLevel: .levelThree)
+        
+        // TODO: - 확인용
+        var sceneType: ListDetailSceneType = .none
+        var level: StarViewLevel = .levelOne
+        if indexPath.item % 2 == 0 {
+            sceneType = .completed
+        }
+        
+        if indexPath.item % 3 == 0 {
+            level = .levelTwo
+        } else if indexPath.item % 3 == 1 {
+            level = .levelThree
+        }
+        let detailVC = factory.makeListDetailVC(sceneType: sceneType, starLevel: level)
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }
