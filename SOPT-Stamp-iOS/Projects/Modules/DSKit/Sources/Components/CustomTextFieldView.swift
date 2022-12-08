@@ -138,6 +138,9 @@ public class CustomTextFieldView: UIView {
         }
     }
     
+    /// alert Label을 다른 CustomTextField에 보여주기 위한 delegate
+    weak var alertDelegate: CustomTextFieldView?
+    
     private var cancelBag = CancelBag()
 
     // MARK: - UI Component
@@ -234,8 +237,18 @@ extension CustomTextFieldView {
         return self
     }
     
+    /// alertText를 다른 TextField에 보여주기 위한 delegate 설정
+    public func setAlertDelegate(_ textView: CustomTextFieldView) -> Self {
+        self.alertDelegate = textView
+        return self
+    }
+    
     /// 경고 문구 라벨의 text 설정
     public func changeAlertLabelText(_ alertText: String) {
+        if let alertDelegate = alertDelegate {
+            alertDelegate.changeAlertLabelText(alertText)
+            return
+        }
         self.alertlabel.text = alertText
         self.alertlabel.isHidden = false
     }

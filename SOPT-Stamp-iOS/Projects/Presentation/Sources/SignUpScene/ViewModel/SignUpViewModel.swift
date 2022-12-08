@@ -39,6 +39,7 @@ public class SignUpViewModel: ViewModelType {
         var nicknameAlert = PassthroughSubject<SignUpFormValidateResult, Never>()
         var emailAlert = PassthroughSubject<SignUpFormValidateResult, Never>()
         var passwordAlert = PassthroughSubject<SignUpFormValidateResult, Never>()
+        var passwordAccordAlert = PassthroughSubject<SignUpFormValidateResult, Never>()
         var isValidForm = PassthroughSubject<Bool, Never>()
     }
     
@@ -98,14 +99,14 @@ extension SignUpViewModel {
         useCase.isPasswordFormValid.combineLatest(useCase.isAccordPassword).sink { event in
             print("SignUpViewModel - completion: \(event)")
         } receiveValue: { (isFormValid, isAccordValid) in
-            if !isFormValid && !isAccordValid {
-                output.passwordAlert.send(.invalid(text: I18N.SignUp.invalidPasswordForm))
-            } else if !isFormValid && isAccordValid {
+            if !isFormValid {
                 output.passwordAlert.send(.invalid(text: I18N.SignUp.invalidPasswordForm))
             } else if isFormValid && !isAccordValid {
-                output.passwordAlert.send(.invalid(text: (I18N.SignUp.passwordNotAccord)))
+                output.passwordAlert.send(.valid(text: ""))
+                output.passwordAccordAlert.send(.invalid(text: (I18N.SignUp.passwordNotAccord)))
             } else {
                 output.passwordAlert.send(.valid(text: ""))
+                output.passwordAccordAlert.send(.valid(text: ""))
             }
         }.store(in: cancelBag)
         
