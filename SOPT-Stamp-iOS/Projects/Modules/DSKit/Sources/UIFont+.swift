@@ -64,4 +64,8 @@ extension UIFont {
     @nonobjc public class var number2: UIFont {
         return DSKitFontFamily.Montserrat.regular.font(size: 30)
     }
+    
+    @nonobjc public class var number3: UIFont {
+        return DSKitFontFamily.Montserrat.medium.font(size: 10)
+    }
 }
