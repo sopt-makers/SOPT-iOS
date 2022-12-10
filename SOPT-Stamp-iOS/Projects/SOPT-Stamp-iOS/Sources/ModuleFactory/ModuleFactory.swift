@@ -38,6 +38,16 @@ extension ModuleFactory: ModuleFactoryInterface {
         return onboardingVC
     }
     
+    public func makeSignInVC() -> Presentation.SignInVC {
+        let repository = SignInRepository(service: authService)
+        let useCase = DefaultSignInUseCase(repository: repository)
+        let viewModel = SignInViewModel(useCase: useCase)
+        let signinVC = SignInVC()
+        signinVC.factory = self
+        signinVC.viewModel = viewModel
+        return signinVC
+    }
+    
     public func makeSignUpVC() -> Presentation.SignUpVC {
         let repository = SignUpRepository(service: authService)
         let useCase = DefaultSignUpUseCase(repository: repository)
@@ -98,4 +108,5 @@ extension ModuleFactory: ModuleFactoryInterface {
         rankingVC.viewModel = viewModel
         return rankingVC
     }
+    
 }
