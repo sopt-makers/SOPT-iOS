@@ -439,7 +439,7 @@ extension ListDetailVC {
     private func setStackView() {
         self.contentStackView.axis = .vertical
         self.contentStackView.distribution = .fill
-        self.contentStackView.spacing = UIDevice.current.hasNotch ? 16 : 12
+        self.contentStackView.spacing = UIDevice.current.hasNotch ? 16 : 14
     }
     
     private func setLayout() {
@@ -500,7 +500,7 @@ extension ListDetailVC {
         
         dateLabel.snp.makeConstraints { make in
             make.trailing.equalToSuperview().inset(22)
-            make.top.equalTo(contentStackView.snp.bottom).offset(UIDevice.current.hasNotch ? 12 : 8)
+            make.top.equalTo(contentStackView.snp.bottom).offset(12)
         }
         
         bottomButton.snp.makeConstraints { make in
