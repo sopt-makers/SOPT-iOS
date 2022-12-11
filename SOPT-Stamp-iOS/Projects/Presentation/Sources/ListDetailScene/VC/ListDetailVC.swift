@@ -95,6 +95,8 @@ public class ListDetailVC: UIViewController {
     private lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
         .setTitle(I18N.ListDetail.mission)
         .setRightButton(.none)
+    private let scrollView = UIScrollView()
+    private let contentView = UIView()
     private let contentStackView = UIStackView()
     private lazy var missionView = MissionView(level: starLevel, mission: "미션주세요미션미션미션미션")
     private let missionImageView = UIImageView()
@@ -173,10 +175,6 @@ extension ListDetailVC {
     private func setGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(requestPhotoLibrary))
         missionImageView.addGestureRecognizer(tapGesture)
-        
-        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeDownGesture))
-        swipeDown.direction = UISwipeGestureRecognizer.Direction.down
-        self.view.addGestureRecognizer(swipeDown)
     }
     
     private func tappedEditButton() {
@@ -242,27 +240,14 @@ extension ListDetailVC {
     @objc
     private func keyboardWillShow(_ notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            UIView.animate(withDuration: 0.3, animations: {
-                [self.contentStackView, self.bottomButton, self.imagePlaceholderLabel].forEach {
-                    $0.transform = CGAffineTransform(translationX: 0, y: -keyboardSize.height + 40)
-                }
-            })
+            let scrollPosition = CGPoint(x: 0, y: keyboardSize.height + (UIDevice.current.hasNotch ? -40 : 66))
+            self.scrollView.setContentOffset(scrollPosition, animated: true)
         }
     }
     
     @objc
     private func keyboardWillHide(_ notification: NSNotification) {
-        [self.contentStackView, self.bottomButton, self.imagePlaceholderLabel].forEach {
-            $0.transform = .identity }
-    }
-    
-    @objc
-    private func respondToSwipeDownGesture(_ gesture: UIGestureRecognizer) {
-        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
-            if swipeGesture.direction == UISwipeGestureRecognizer.Direction.down {
-                self.view.endEditing(true)
-            }
-        }
+        self.scrollView.setContentOffset(.zero, animated: true)
     }
     
     @objc
@@ -376,6 +361,7 @@ extension ListDetailVC {
         
         switch type {
         case .none, .edit:
+            self.scrollView.isScrollEnabled = true
             self.missionView.backgroundColor = DSKitAsset.Colors.gray50.color
             self.setTextView(.inactive)
             self.imagePlaceholderLabel.isHidden = missionImageView.image == nil ? false : true
@@ -383,6 +369,8 @@ extension ListDetailVC {
             self.bottomButton.isHidden = false
             self.dateLabel.isHidden = true
         case .completed:
+            self.scrollView.isScrollEnabled = false
+            self.scrollView.setContentOffset(.zero, animated: true)
             self.naviBar.setRightButton(.addRecord)
             self.missionView.backgroundColor = starLevel.bgColor
             self.setTextView(.completed)
@@ -400,6 +388,10 @@ extension ListDetailVC {
         
         self.view.backgroundColor = .white
         self.setStatusBarBackgroundColor(.white)
+        
+        self.scrollView.keyboardDismissMode = .onDrag
+        self.scrollView.showsVerticalScrollIndicator = false
+        self.scrollView.contentInset = UIEdgeInsets(top: 7, left: 0, bottom: 32, right: 0)
         
         self.missionImageView.backgroundColor = DSKitAsset.Colors.gray50.color
         self.missionImageView.layer.masksToBounds = true
@@ -447,33 +439,25 @@ extension ListDetailVC {
     private func setStackView() {
         self.contentStackView.axis = .vertical
         self.contentStackView.distribution = .fill
-        self.contentStackView.spacing = 16
+        self.contentStackView.spacing = UIDevice.current.hasNotch ? 16 : 14
     }
     
     private func setLayout() {
-        self.view.addSubviews([contentStackView, dateLabel,
-                               imagePlaceholderLabel, bottomButton, naviBar])
+        self.setScrollViewLayout()
+        self.view.addSubviews(scrollView, naviBar)
         
         naviBar.snp.makeConstraints { make in
             make.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)
         }
         
-        contentStackView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(20)
+        scrollView.snp.makeConstraints { make in
             make.top.equalTo(naviBar.snp.bottom).offset(7)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.bottom.equalToSuperview()
         }
-        
-        dateLabel.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(22)
-            make.top.equalTo(contentStackView.snp.bottom).offset(12)
-        }
-        
-        bottomButton.snp.makeConstraints { make in
-            make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(32)
-            make.height.equalTo(56)
-        }
-        
+    }
+    
+    private func setStackViewLayout() {
         contentStackView.addArrangedSubviews(missionView, missionImageView, textView)
         
         missionView.snp.makeConstraints { make in
@@ -491,8 +475,38 @@ extension ListDetailVC {
             make.height.equalTo(self.contentStackView.snp.width).multipliedBy(0.39)
         }
         
+        contentStackView.addSubview(imagePlaceholderLabel)
+        
         imagePlaceholderLabel.snp.makeConstraints { make in
             make.center.equalTo(missionImageView.snp.center)
+        }
+    }
+    
+    private func setScrollViewLayout() {
+        self.setStackViewLayout()
+        
+        self.scrollView.addSubviews(contentView)
+        
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalToSuperview()
+        }
+        
+        self.contentView.addSubviews(contentStackView, dateLabel, bottomButton)
+        
+        contentStackView.snp.makeConstraints { make in
+            make.leading.top.trailing.equalToSuperview()
+        }
+        
+        dateLabel.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(22)
+            make.top.equalTo(contentStackView.snp.bottom).offset(12)
+        }
+        
+        bottomButton.snp.makeConstraints { make in
+            make.leading.trailing.bottom.equalToSuperview()
+            make.top.equalTo(contentStackView.snp.bottom).offset(UIDevice.current.hasNotch ? 30 : 20)
+            make.height.equalTo(56)
         }
     }
 }
