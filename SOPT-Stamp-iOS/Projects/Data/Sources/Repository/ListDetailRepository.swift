@@ -32,6 +32,20 @@ extension ListDetailRepository: ListDetailRepositoryInterface {
         // TODO: - networkService.
         return makeMockListDetailEntity()
     }
+    
+    public func putStamp(missionId: Int, stampData: ListDetailRequestModel) -> Driver<[String : Int]> {
+        // TODO: - networkService
+        return Just(["stampId": 11])
+            .setFailureType(to: Error.self)
+            .asDriver()
+    }
+    
+    public func deleteStamp(stampId: Int) -> Driver<Bool> {
+        // TODO: - networkService
+        return Just(Bool.random())
+            .setFailureType(to: Error.self)
+            .asDriver()
+    }
 }
 
 extension ListDetailRepository {

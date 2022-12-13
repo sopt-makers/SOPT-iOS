@@ -40,17 +40,18 @@ public class ListDetailViewModel: ViewModelType {
     
     public class Output {
         @Published var listDetailModel: ListDetailModel?
-        var postSuccessed = PassthroughSubject<Bool, Never>()
+        var editSuccessed = PassthroughSubject<Bool, Never>()
         var showDeleteAlert = PassthroughSubject<Bool, Never>()
         var deleteSuccessed = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - init
   
-    public init(useCase: ListDetailUseCase, sceneType: ListDetailSceneType, starLevel: StarViewLevel, missionTitle: String) {
+    public init(useCase: ListDetailUseCase, sceneType: ListDetailSceneType, starLevel: StarViewLevel, missionId: Int, missionTitle: String) {
         self.useCase = useCase
         self.sceneType = sceneType
         self.starLevel = starLevel
+        self.missionId = missionId
         self.missionTitle = missionTitle
     }
 }
@@ -70,11 +71,10 @@ extension ListDetailViewModel {
         
         input.bottomButtonTapped
             .sink { requestModel in
-                print("✅requestModel:", requestModel, self.sceneType)
                 if self.sceneType == ListDetailSceneType.none {
-                    self.useCase.postStamp(missionId: 3, stampData: requestModel)
+                    self.useCase.postStamp(missionId: self.missionId, stampData: requestModel)
                 } else {
-                    // 수정 put
+                    self.useCase.putStamp(missionId: self.missionId, stampData: requestModel)
                 }
             }.store(in: self.cancelBag)
         
@@ -93,7 +93,7 @@ extension ListDetailViewModel {
         input.deleteButtonTapped
             .sink { _ in
                 // TODO: - useCase 삭제 연결
-                output.deleteSuccessed.send(false)
+                self.useCase.deleteStamp(stampId: self.missionId)
             }.store(in: self.cancelBag)
     
         return output
@@ -101,10 +101,22 @@ extension ListDetailViewModel {
   
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         let listDetailModel = useCase.listDetailModel
+        let editSuccess = useCase.editSuccess
+        let deleteSuccess = useCase.deleteSuccess
         
         listDetailModel.asDriver()
             .compactMap { $0 }
             .assign(to: \.self.listDetailModel, on: output)
             .store(in: self.cancelBag)
+        
+        editSuccess.asDriver()
+            .sink { success in
+                output.editSuccessed.send(success)
+            }.store(in: self.cancelBag)
+        
+        deleteSuccess.asDriver()
+            .sink { success in
+                output.deleteSuccessed.send(success)
+            }.store(in: self.cancelBag)
     }
 }
