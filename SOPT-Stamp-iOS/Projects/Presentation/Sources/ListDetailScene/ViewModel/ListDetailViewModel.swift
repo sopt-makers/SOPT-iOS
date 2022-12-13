@@ -24,10 +24,13 @@ public class ListDetailViewModel: ViewModelType {
     private var cancelBag = CancelBag()
     public var listDetailType: ListDetailSceneType!
     public var starLevel: StarViewLevel!
+    public var missionId: Int!
+    public var missionTitle: String!
   
     // MARK: - Inputs
     
     public struct Input {
+        let viewDidLoad: Driver<Void>
         let bottomButtonTapped: Driver<ListDetailRequestModel>
         let rightButtonTapped: Driver<ListDetailSceneType>
         let deleteButtonTapped: Driver<Bool>
@@ -35,7 +38,8 @@ public class ListDetailViewModel: ViewModelType {
     
     // MARK: - Outputs
     
-    public struct Output {
+    public class Output {
+        @Published var listDetailModel: ListDetailModel?
         var postSuccessed = PassthroughSubject<Bool, Never>()
         var showDeleteAlert = PassthroughSubject<Bool, Never>()
         var deleteSuccessed = PassthroughSubject<Bool, Never>()
@@ -43,10 +47,11 @@ public class ListDetailViewModel: ViewModelType {
     
     // MARK: - init
   
-    public init(useCase: ListDetailUseCase, sceneType: ListDetailSceneType, starLevel: StarViewLevel) {
+    public init(useCase: ListDetailUseCase, sceneType: ListDetailSceneType, starLevel: StarViewLevel, missionTitle: String) {
         self.useCase = useCase
         self.listDetailType = sceneType
         self.starLevel = starLevel
+        self.missionTitle = missionTitle
     }
 }
 
@@ -55,6 +60,13 @@ extension ListDetailViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
+        
+        input.viewDidLoad
+            .sink {
+                if self.listDetailType == .completed {
+                    self.useCase.fetchListDetail(missionId: 3)
+                }
+            }.store(in: self.cancelBag)
         
         input.bottomButtonTapped
             .sink { requestModel in
@@ -86,6 +98,11 @@ extension ListDetailViewModel {
     }
   
     private func bindOutput(output: Output, cancelBag: CancelBag) {
-    
+        let listDetailModel = useCase.listDetailModel
+        
+        listDetailModel.asDriver()
+            .compactMap { $0 }
+            .assign(to: \.self.listDetailModel, on: output)
+            .store(in: self.cancelBag)
     }
 }

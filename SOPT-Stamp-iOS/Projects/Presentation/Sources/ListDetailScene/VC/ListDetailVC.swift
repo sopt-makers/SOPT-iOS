@@ -12,6 +12,7 @@ import Combine
 import PhotosUI
 import SnapKit
 import Then
+import Kingfisher
 
 import Core
 import Domain
@@ -86,6 +87,9 @@ public class ListDetailVC: UIViewController {
     private var starLevel: StarViewLevel {
         return self.viewModel.starLevel
     }
+    private var missionTitle: String {
+        return self.viewModel.missionTitle
+    }
     private var originImage: UIImage = UIImage()
     private var originText: String = ""
     private let deleteButtonTapped = PassthroughSubject<Bool, Never>()
@@ -98,7 +102,7 @@ public class ListDetailVC: UIViewController {
     private let scrollView = UIScrollView()
     private let contentView = UIView()
     private let contentStackView = UIStackView()
-    private lazy var missionView = MissionView(level: starLevel, mission: "미션주세요미션미션미션미션")
+    private lazy var missionView = MissionView(level: starLevel, mission: missionTitle)
     private let missionImageView = UIImageView()
     private let imagePlaceholderLabel = UILabel()
     private let textView = UITextView()
@@ -139,10 +143,19 @@ extension ListDetailVC {
             }
             .asDriver()
         
-        let input = ListDetailViewModel.Input(bottomButtonTapped: bottomButtonTapped,
-                                              rightButtonTapped: rightButtonTapped,
-                                              deleteButtonTapped: deleteButtonTapped.asDriver())
+        let input = ListDetailViewModel.Input(
+            viewDidLoad: Driver.just(()),
+            bottomButtonTapped: bottomButtonTapped,
+            rightButtonTapped: rightButtonTapped,
+            deleteButtonTapped: deleteButtonTapped.asDriver())
+        
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.$listDetailModel
+            .compactMap { $0 }
+            .sink { model in
+                self.setData(model)
+            }.store(in: self.cancelBag)
         
         output.postSuccessed
             .sink { successed in
@@ -157,6 +170,7 @@ extension ListDetailVC {
                     self.tappedEditButton()
                 }
             }.store(in: self.cancelBag)
+        
         output.deleteSuccessed
             .sink { success in
                 if success {
@@ -165,6 +179,14 @@ extension ListDetailVC {
                     self.makeAlert(title: I18N.Default.error, message: I18N.Default.networkError)
                 }
             }.store(in: self.cancelBag)
+    }
+    
+    private func setData(_ model: ListDetailModel) {
+        if let imageURL = URL(string: model.image) {
+            self.missionImageView.kf.setImage(with: imageURL)
+        }
+        self.textView.text = model.content
+        self.dateLabel.text = model.date
     }
     
     private func setObserver() {
