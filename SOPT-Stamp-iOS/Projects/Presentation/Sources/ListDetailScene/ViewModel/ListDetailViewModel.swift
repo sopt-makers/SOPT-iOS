@@ -22,7 +22,7 @@ public class ListDetailViewModel: ViewModelType {
     
     private let useCase: ListDetailUseCase
     private var cancelBag = CancelBag()
-    public var listDetailType: ListDetailSceneType!
+    public var sceneType: ListDetailSceneType!
     public var starLevel: StarViewLevel!
     public var missionId: Int!
     public var missionTitle: String!
@@ -49,7 +49,7 @@ public class ListDetailViewModel: ViewModelType {
   
     public init(useCase: ListDetailUseCase, sceneType: ListDetailSceneType, starLevel: StarViewLevel, missionTitle: String) {
         self.useCase = useCase
-        self.listDetailType = sceneType
+        self.sceneType = sceneType
         self.starLevel = starLevel
         self.missionTitle = missionTitle
     }
@@ -63,17 +63,19 @@ extension ListDetailViewModel {
         
         input.viewDidLoad
             .sink {
-                if self.listDetailType == .completed {
+                if self.sceneType == .completed {
                     self.useCase.fetchListDetail(missionId: 3)
                 }
             }.store(in: self.cancelBag)
         
         input.bottomButtonTapped
             .sink { requestModel in
-                print("✅requestModel:", requestModel)
-                // TODO: - useCase
-                // + sceneType(edit / none)
-                output.postSuccessed.send(true)
+                print("✅requestModel:", requestModel, self.sceneType)
+                if self.sceneType == ListDetailSceneType.none {
+                    self.useCase.postStamp(missionId: 3, stampData: requestModel)
+                } else {
+                    // 수정 put
+                }
             }.store(in: self.cancelBag)
         
         input.rightButtonTapped
@@ -90,7 +92,7 @@ extension ListDetailViewModel {
         
         input.deleteButtonTapped
             .sink { _ in
-                // TODO: - useCase
+                // TODO: - useCase 삭제 연결
                 output.deleteSuccessed.send(false)
             }.store(in: self.cancelBag)
     

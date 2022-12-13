@@ -12,7 +12,9 @@ import Combine
 
 public protocol ListDetailUseCase {
     func fetchListDetail(missionId: Int)
+    func postStamp(missionId: Int, stampData: ListDetailRequestModel)
     var listDetailModel: PassthroughSubject<ListDetailModel, Error> { get set }
+    
 }
 
 public class DefaultListDetailUseCase {
@@ -30,6 +32,13 @@ public class DefaultListDetailUseCase {
 extension DefaultListDetailUseCase: ListDetailUseCase {
     public func fetchListDetail(missionId: Int) {
         repository.fetchListDetail(missionId: missionId)
+            .sink { model in
+                self.listDetailModel.send(model)
+            }.store(in: self.cancelBag)
+    }
+    
+    public func postStamp(missionId: Int, stampData: ListDetailRequestModel) {
+        repository.postStamp(missionId: missionId, stampData: stampData)
             .sink { model in
                 self.listDetailModel.send(model)
             }.store(in: self.cancelBag)

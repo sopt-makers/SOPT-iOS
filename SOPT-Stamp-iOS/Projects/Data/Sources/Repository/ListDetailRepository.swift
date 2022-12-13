@@ -24,6 +24,12 @@ public class ListDetailRepository {
 
 extension ListDetailRepository: ListDetailRepositoryInterface {
     public func fetchListDetail(missionId: Int) -> Driver<ListDetailModel> {
+        // TODO: - networkService.
+        return makeMockListDetailEntity()
+    }
+    
+    public func postStamp(missionId: Int, stampData: ListDetailRequestModel) -> Driver<ListDetailModel> {
+        // TODO: - networkService.
         return makeMockListDetailEntity()
     }
 }

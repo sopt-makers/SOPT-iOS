@@ -12,4 +12,5 @@ import Combine
 
 public protocol ListDetailRepositoryInterface {
     func fetchListDetail(missionId: Int) -> Driver<ListDetailModel>
+    func postStamp(missionId: Int, stampData: ListDetailRequestModel) -> Driver<ListDetailModel>
 }

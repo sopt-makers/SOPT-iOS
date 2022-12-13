@@ -79,9 +79,9 @@ public class ListDetailVC: UIViewController {
     private var cancelBag = CancelBag()
     private var sceneType: ListDetailSceneType {
         get {
-            return self.viewModel.listDetailType
+            return self.viewModel.sceneType
         } set(type) {
-            self.viewModel.listDetailType = type
+            self.viewModel.sceneType = type
         }
     }
     private var starLevel: StarViewLevel {
@@ -155,11 +155,18 @@ extension ListDetailVC {
             .compactMap { $0 }
             .sink { model in
                 self.setData(model)
+                if self.sceneType == .none {
+                    self.presentCompletedVC(level: self.starLevel)
+                } else {
+                    self.reloadData(.completed)
+                }
             }.store(in: self.cancelBag)
         
+        // TODO: - 수정 put만 별도로 분리
         output.postSuccessed
             .sink { successed in
-                self.presentCompletedVC(level: self.starLevel)
+                // TODO: - 수정 완료 -> completed로 바꾸고 변경된 데이터로 수정
+                self.reloadData(.completed)
             }.store(in: self.cancelBag)
         
         output.showDeleteAlert
@@ -167,7 +174,7 @@ extension ListDetailVC {
                 if delete {
                     self.presentDeleteAlertVC()
                 } else {
-                    self.tappedEditButton()
+                    self.reloadData(.edit)
                 }
             }.store(in: self.cancelBag)
         
@@ -189,6 +196,23 @@ extension ListDetailVC {
         self.dateLabel.text = model.date
     }
     
+    private func reloadData(_ scenetype: ListDetailSceneType) {
+        self.sceneType = scenetype
+        self.setUI(self.sceneType)
+    }
+    
+    private func resetData() {
+        if textView.text != I18N.ListDetail.memoPlaceHolder && textView.text != originText {
+            textView.text = originText
+        }
+
+        if let image = missionImageView.image {
+            if image != originImage {
+                missionImageView.image = originImage
+            }
+        }
+    }
+    
     private func setObserver() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -197,11 +221,6 @@ extension ListDetailVC {
     private func setGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(requestPhotoLibrary))
         missionImageView.addGestureRecognizer(tapGesture)
-    }
-    
-    private func tappedEditButton() {
-        self.sceneType = .edit
-        self.setUI(sceneType)
     }
     
     private func setDelegate() {
@@ -220,14 +239,14 @@ extension ListDetailVC {
     }
     
     private func moveToSetting() {
-        let alertController = UIAlertController(title: "앨범 접근 권한 거부", message: "앨범 접근이 거부되었습니다. 앱의 일부 기능을 사용할 수 없습니다.", preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "권한 설정으로 이동하기", style: .default) { action in
+        let alertController = UIAlertController(title: I18N.Photo.authTitle, message: I18N.Photo.authMessage, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: I18N.Photo.moveToSetting, style: .default) { action in
             guard let settingURL = URL(string: UIApplication.openSettingsURLString) else { return }
             if UIApplication.shared.canOpenURL(settingURL) {
                 UIApplication.shared.open(settingURL)
             }
         }
-        let cancelAction = UIAlertAction(title: "확인", style: .cancel)
+        let cancelAction = UIAlertAction(title: I18N.Default.ok, style: .cancel)
         
         alertController.addAction(okAction)
         alertController.addAction(cancelAction)
@@ -249,9 +268,6 @@ extension ListDetailVC {
     private func presentCompletedVC(level: StarViewLevel) {
         let missionCompletedVC = MissionCompletedVC()
             .setLevel(level)
-        missionCompletedVC.completionHandler = {
-            self.navigationController?.popViewController(animated: true)
-        }
         missionCompletedVC.modalPresentationStyle = .overFullScreen
         missionCompletedVC.modalTransitionStyle = .crossDissolve
         self.present(missionCompletedVC, animated: true)
@@ -295,7 +311,7 @@ extension ListDetailVC {
                 self.moveToSetting()
             }
         default:
-            print("권한 설정이 이상하게 되었어요")
+            break
         }
     }
 }
@@ -362,21 +378,13 @@ extension ListDetailVC {
             self.naviBar
                 .setRightButton(.delete)
                 .resetLeftButtonAction {
-                    self.sceneType = .completed
-                    self.setUI(self.sceneType)
+                    self.resetData()
+                    self.reloadData(.completed)
                 }
             self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-            originText = textView.text
-            originImage = missionImageView.image ?? UIImage()
+            self.originText = textView.text
+            self.originImage = self.missionImageView.image ?? UIImage()
         } else {
-            if textView.text != I18N.ListDetail.memoPlaceHolder && textView.text != originText {
-                textView.text = originText
-            }
-            
-            if let image = missionImageView.image,
-               image != originImage {
-                missionImageView.image = originImage
-            }
             self.naviBar.resetLeftButtonAction()
             self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
         }
@@ -399,7 +407,6 @@ extension ListDetailVC {
             self.imagePlaceholderLabel.isHidden = true
             self.bottomButton.isHidden = true
             self.dateLabel.isHidden = false
-            self.missionImageView.image = DSKitAsset.Assets.splashImg2.image
             self.missionImageView.isUserInteractionEnabled = false
         }
     }
@@ -433,7 +440,6 @@ extension ListDetailVC {
         
         self.imagePlaceholderLabel.text = I18N.ListDetail.imagePlaceHolder
         self.textView.text = I18N.ListDetail.memoPlaceHolder
-        self.dateLabel.text = "2022.10.25"
         
         self.textView.returnKeyType = .done
     }
