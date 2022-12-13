@@ -6,16 +6,21 @@
 //  Copyright © 2022 SOPT-Stamp-iOS. All rights reserved.
 //
 
+import Core
+
 import Combine
 
 public protocol ListDetailUseCase {
-
+    func fetchListDetail(missionId: Int)
+    var listDetailModel: PassthroughSubject<ListDetailModel, Error> { get set }
 }
 
 public class DefaultListDetailUseCase {
   
     private let repository: ListDetailRepositoryInterface
-    private var cancelBag = Set<AnyCancellable>()
+    private var cancelBag = CancelBag()
+    
+    public var listDetailModel = PassthroughSubject<ListDetailModel, Error>()
   
     public init(repository: ListDetailRepositoryInterface) {
         self.repository = repository
@@ -23,5 +28,10 @@ public class DefaultListDetailUseCase {
 }
 
 extension DefaultListDetailUseCase: ListDetailUseCase {
-  
+    public func fetchListDetail(missionId: Int) {
+        repository.fetchListDetail(missionId: missionId)
+            .sink { model in
+                self.listDetailModel.send(model)
+            }.store(in: self.cancelBag)
+    }
 }
