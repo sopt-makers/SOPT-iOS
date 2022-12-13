@@ -21,9 +21,9 @@ import DSKit
 import Lottie
 
 public enum TextViewState {
-    case inactive // 비활성화(키보드X, placeholder)
-    case active // 활성화(키보드O, 텍스트 입력 상태)
-    case completed // 작성 완료
+    case inactive
+    case active
+    case completed
 }
 
 extension StarViewLevel {
@@ -162,10 +162,8 @@ extension ListDetailVC {
                 }
             }.store(in: self.cancelBag)
         
-        // TODO: - 수정 put만 별도로 분리
         output.editSuccessed
             .sink { successed in
-                // TODO: - 수정 완료 -> completed로 바꾸고 변경된 데이터로 수정
                 self.reloadData(.completed)
             }.store(in: self.cancelBag)
         
