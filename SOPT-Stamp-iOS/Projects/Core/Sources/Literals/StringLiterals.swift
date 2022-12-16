@@ -79,4 +79,20 @@ public struct I18N {
 
         public static let deleteTitle = "달성한 미션을 삭제하시겠습니까?"
     }
+    
+    public struct Setting {
+        public static let setting = "설정"
+        public static let myinfo = "내 정보"
+        public static let bioEdit = "한 마디 편집"
+        public static let passwordEdit = "비밀번호 편집"
+        public static let nicknameEdit = "닉네임 변경"
+        public static let serviceUsagePolicy = "서비스 이용방침"
+        public static let personalInfoPolicy = "개인정보처리방침"
+        public static let serviceTerm = "서비스 이용 약관"
+        public static let suggestion = "서비스 의견 제안"
+        public static let mission = "미션"
+        public static let resetMission = "미션 초기화"
+        public static let logout = "로그아웃"
+        public static let withdraw = "탈퇴하기"
+    }
 }

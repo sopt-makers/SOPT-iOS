@@ -13,7 +13,7 @@ public protocol UICollectionViewRegisterable {
     static func register(target: UICollectionView)
 }
 
-public protocol UIICollectionReusableViewRegisterable {
+public protocol UICollectionReusableViewRegisterable {
     static var isFromNib: Bool { get }
     static func register(target: UICollectionView, isHeader: Bool)
 }
@@ -28,7 +28,7 @@ extension UICollectionViewRegisterable where Self: UICollectionViewCell {
     }
 }
 
-extension UIICollectionReusableViewRegisterable where Self: UICollectionReusableView {
+extension UICollectionReusableViewRegisterable where Self: UICollectionReusableView {
     public static func register(target: UICollectionView, isHeader: Bool) {
         if self.isFromNib {
             if isHeader {
