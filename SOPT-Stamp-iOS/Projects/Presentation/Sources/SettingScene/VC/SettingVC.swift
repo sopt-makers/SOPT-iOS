@@ -172,12 +172,14 @@ extension SettingVC: UICollectionViewDataSource {
         let titleList = viewModel.settingList[indexPath.section]
         if indexPath.row == 1 { cell.setLines() }
         if indexPath.row == 2 { cell.setRadius() }
-        if indexPath.section == 2 || indexPath.section == 3 {
+        if indexPath.section == 2 {
             cell.removeArrow()
                 .setRadius()
         }
+        
         if indexPath.section == 3 {
             cell.changeTextColor(DSKitAsset.Colors.access300.color)
+                .setRadius(false)
         }
         cell.setData(titleList[indexPath.row])
         return cell
