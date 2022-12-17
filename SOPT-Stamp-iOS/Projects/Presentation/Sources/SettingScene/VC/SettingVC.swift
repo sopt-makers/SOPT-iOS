@@ -90,12 +90,46 @@ extension SettingVC {
     }
 }
 
+extension SettingVC: WithdrawButtonDelegate {
+    func withdrawButtonTapped() {
+        print("회원 탈퇴")
+    }
+}
+
 // MARK: - UICollectionView
 
 extension SettingVC: UICollectionViewDelegate {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        switch indexPath.section {
+        case 0:
+            switch indexPath.row {
+            case 0:
+                print("한마디 편집")
+            case 1:
+                print("비밀번호 변경")
+            default:
+                print("닉네임 변경")
+            }
+        case 1:
+            switch indexPath.row {
+            case 0:
+                print("개인정보처리방침")
+            case 1:
+                print("서비스 이용 약관")
+            default:
+                print("서비스 의견 제안")
+            }
+        case 2:
+            print("미션 초기화")
+        default:
+            print("로그아웃")
+        }
+    }
+    
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 4
     }
+    
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = self.collectionView.frame.width
         let height = width*50/335
@@ -158,6 +192,7 @@ extension SettingVC: UICollectionViewDataSource {
             return header
         case UICollectionView.elementKindSectionFooter:
             guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: SettingFooterView.className, for: indexPath) as? SettingFooterView else { return UICollectionReusableView() }
+            footer.buttonDelegate = self
             return footer
         default:
             return UICollectionReusableView()

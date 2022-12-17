@@ -13,11 +13,16 @@ import SnapKit
 import Core
 import DSKit
 
+protocol WithdrawButtonDelegate: AnyObject {
+    func withdrawButtonTapped()
+}
+
 class SettingFooterView: UICollectionReusableView, UICollectionReusableViewRegisterable {
     
     // MARK: - Properties
     
     static var isFromNib: Bool = false
+    public var buttonDelegate: WithdrawButtonDelegate?
     
     // MARK: - UI Components
     
@@ -29,6 +34,7 @@ class SettingFooterView: UICollectionReusableView, UICollectionReusableViewRegis
         super.init(frame: frame)
         self.setUI()
         self.setLayout()
+        self.setAddTarget()
     }
     
     required init?(coder: NSCoder) {
@@ -61,4 +67,15 @@ class SettingFooterView: UICollectionReusableView, UICollectionReusableViewRegis
     }
     
     // MARK: - Methods
+    
+    private func setAddTarget() {
+        self.withdrawButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+    }
+    
+    // MARK: - @objc
+    
+    @objc
+    private func buttonTapped() {
+        self.buttonDelegate?.withdrawButtonTapped()
+    }
 }
