@@ -55,6 +55,7 @@ extension SettingVC {
     private func setRegister() {
         SettingCVC.register(target: collectionView)
         SettingHeaderView.register(target: collectionView, isHeader: true)
+        SettingFooterView.register(target: collectionView, isHeader: false)
     }
     
     private func setDelegate() {
@@ -117,6 +118,13 @@ extension SettingVC: UICollectionViewDelegateFlowLayout {
         let height = width*35/335
         return CGSize(width: width, height: height)
     }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        if section != 3 { return .zero }
+        let width = self.collectionView.frame.width
+        let height = width*23/335
+        return CGSize(width: width, height: height)
+    }
 }
 
 extension SettingVC: UICollectionViewDataSource {
@@ -142,9 +150,17 @@ extension SettingVC: UICollectionViewDataSource {
     }
     
     public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SettingHeaderView.className, for: indexPath) as? SettingHeaderView else { return UICollectionReusableView() }
-        let headerList = viewModel.sectionList
-        header.setData(headerList[indexPath.section])
-        return header
+        switch kind {
+        case UICollectionView.elementKindSectionHeader:
+            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: SettingHeaderView.className, for: indexPath) as? SettingHeaderView else { return UICollectionReusableView() }
+            let headerList = viewModel.sectionList
+            header.setData(headerList[indexPath.section])
+            return header
+        case UICollectionView.elementKindSectionFooter:
+            guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: SettingFooterView.className, for: indexPath) as? SettingFooterView else { return UICollectionReusableView() }
+            return footer
+        default:
+            return UICollectionReusableView()
+        }
     }
 }
