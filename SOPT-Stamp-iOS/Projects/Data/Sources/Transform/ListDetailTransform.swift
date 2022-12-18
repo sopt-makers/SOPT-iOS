@@ -12,8 +12,10 @@ import Domain
 import Network
 
 extension ListDetailEntity {
-
     public func toDomain() -> ListDetailModel {
-        return ListDetailModel.init()
+        // TODO: - date 형식 확인하고 변형
+        return ListDetailModel.init(image: self.images.first ?? "",
+                                    content: self.contents,
+                                    date: self.updatedAt ?? self.createdAt)
     }
 }

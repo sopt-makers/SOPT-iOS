@@ -10,7 +10,11 @@ import Foundation
 
 public struct ListDetailModel {
 
-    public init() {
-        
+    public let image, content, date: String
+
+    public init(image: String, content: String, date: String) {
+        self.image = image
+        self.content = content
+        self.date = date
     }
 }

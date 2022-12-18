@@ -22,12 +22,15 @@ public class ListDetailViewModel: ViewModelType {
     
     private let useCase: ListDetailUseCase
     private var cancelBag = CancelBag()
-    public var listDetailType: ListDetailSceneType!
+    public var sceneType: ListDetailSceneType!
     public var starLevel: StarViewLevel!
+    public var missionId: Int!
+    public var missionTitle: String!
   
     // MARK: - Inputs
     
     public struct Input {
+        let viewDidLoad: Driver<Void>
         let bottomButtonTapped: Driver<ListDetailRequestModel>
         let rightButtonTapped: Driver<ListDetailSceneType>
         let deleteButtonTapped: Driver<Bool>
@@ -35,18 +38,21 @@ public class ListDetailViewModel: ViewModelType {
     
     // MARK: - Outputs
     
-    public struct Output {
-        var postSuccessed = PassthroughSubject<Bool, Never>()
+    public class Output {
+        @Published var listDetailModel: ListDetailModel?
+        var editSuccessed = PassthroughSubject<Bool, Never>()
         var showDeleteAlert = PassthroughSubject<Bool, Never>()
         var deleteSuccessed = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - init
   
-    public init(useCase: ListDetailUseCase, sceneType: ListDetailSceneType, starLevel: StarViewLevel) {
+    public init(useCase: ListDetailUseCase, sceneType: ListDetailSceneType, starLevel: StarViewLevel, missionId: Int, missionTitle: String) {
         self.useCase = useCase
-        self.listDetailType = sceneType
+        self.sceneType = sceneType
         self.starLevel = starLevel
+        self.missionId = missionId
+        self.missionTitle = missionTitle
     }
 }
 
@@ -56,12 +62,20 @@ extension ListDetailViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
+        input.viewDidLoad
+            .sink {
+                if self.sceneType == .completed {
+                    self.useCase.fetchListDetail(missionId: 3)
+                }
+            }.store(in: self.cancelBag)
+        
         input.bottomButtonTapped
             .sink { requestModel in
-                print("✅requestModel:", requestModel)
-                // TODO: - useCase
-                // + sceneType(edit / none)
-                output.postSuccessed.send(true)
+                if self.sceneType == ListDetailSceneType.none {
+                    self.useCase.postStamp(missionId: self.missionId, stampData: requestModel)
+                } else {
+                    self.useCase.putStamp(missionId: self.missionId, stampData: requestModel)
+                }
             }.store(in: self.cancelBag)
         
         input.rightButtonTapped
@@ -78,14 +92,31 @@ extension ListDetailViewModel {
         
         input.deleteButtonTapped
             .sink { _ in
-                // TODO: - useCase
-                output.deleteSuccessed.send(false)
+                // TODO: - useCase 삭제 연결
+                self.useCase.deleteStamp(stampId: self.missionId)
             }.store(in: self.cancelBag)
     
         return output
     }
   
     private func bindOutput(output: Output, cancelBag: CancelBag) {
-    
+        let listDetailModel = useCase.listDetailModel
+        let editSuccess = useCase.editSuccess
+        let deleteSuccess = useCase.deleteSuccess
+        
+        listDetailModel.asDriver()
+            .compactMap { $0 }
+            .assign(to: \.self.listDetailModel, on: output)
+            .store(in: self.cancelBag)
+        
+        editSuccess.asDriver()
+            .sink { success in
+                output.editSuccessed.send(success)
+            }.store(in: self.cancelBag)
+        
+        deleteSuccess.asDriver()
+            .sink { success in
+                output.deleteSuccessed.send(success)
+            }.store(in: self.cancelBag)
     }
 }

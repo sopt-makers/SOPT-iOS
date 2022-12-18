@@ -191,7 +191,7 @@ extension MissionListVC: UICollectionViewDelegate {
         } else if indexPath.item % 3 == 1 {
             level = .levelThree
         }
-        let detailVC = factory.makeListDetailVC(sceneType: sceneType, starLevel: level)
+        let detailVC = factory.makeListDetailVC(sceneType: sceneType, starLevel: level, missionId: 3, missionTitle: "타이틀도 주세요 ..")
         self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }
