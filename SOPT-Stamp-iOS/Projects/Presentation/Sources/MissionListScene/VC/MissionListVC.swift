@@ -118,6 +118,12 @@ extension MissionListVC {
 extension MissionListVC {
     
     private func bindViewModels() {
+        naviBar.rightButtonTapped
+            .asDriver()
+            .sink { _ in
+                self.pushToSettingVC()
+            }.store(in: self.cancelBag)
+        
         let input = MissionListViewModel.Input()
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
     }
@@ -171,6 +177,11 @@ extension MissionListVC {
         snapshot.appendItems(tempItems, toSection: .missionList)
         dataSource.apply(snapshot, animatingDifferences: false)
         self.view.setNeedsLayout()
+    }
+    
+    private func pushToSettingVC() {
+        let settingVC = self.factory.makeSettingVC()
+        self.navigationController?.pushViewController(settingVC, animated: true)
     }
 }
 
