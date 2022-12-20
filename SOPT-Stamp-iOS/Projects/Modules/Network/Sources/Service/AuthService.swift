@@ -15,9 +15,11 @@ import Moya
 public typealias DefaultAuthService = BaseService<AuthAPI>
 
 public protocol AuthService {
-    
+    func getNicknameAvailable(nickname: String) -> AnyPublisher<Int, Error>
 }
 
 extension DefaultAuthService: AuthService {
-    
+    public func getNicknameAvailable(nickname: String) -> AnyPublisher<Int, Error> {
+        return requestObjectInCombineNoResult(.getNicknameAvailable(nickname: nickname))
+    }
 }

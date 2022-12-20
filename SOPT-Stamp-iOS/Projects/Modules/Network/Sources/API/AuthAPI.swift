@@ -12,7 +12,7 @@ import Alamofire
 import Moya
 
 public enum AuthAPI {
-    case sample(provider: String)
+    case getNicknameAvailable(nickname: String)
 }
 
 extension AuthAPI: BaseAPI {
@@ -22,7 +22,7 @@ extension AuthAPI: BaseAPI {
     // MARK: - Path
     public var path: String {
         switch self {
-        case .sample:
+        case .getNicknameAvailable:
             return ""
         }
     }
@@ -30,8 +30,8 @@ extension AuthAPI: BaseAPI {
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .sample:
-            return .post
+        case .getNicknameAvailable:
+            return .get
         }
     }
     
@@ -39,16 +39,16 @@ extension AuthAPI: BaseAPI {
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
-        case .sample(let provider):
-            params["platform"] = provider
+        case .getNicknameAvailable(_):
+            break
         }
         return params
     }
     
     private var parameterEncoding: ParameterEncoding {
         switch self {
-        case .sample:
-            return URLEncoding.init(destination: .queryString, arrayEncoding: .noBrackets, boolEncoding: .literal)
+        case .getNicknameAvailable:
+            return JSONEncoding.default
         default:
             return JSONEncoding.default
         }
@@ -56,8 +56,8 @@ extension AuthAPI: BaseAPI {
     
     public var task: Task {
         switch self {
-        case .sample:
-            return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
+        case .getNicknameAvailable(let nickname):
+            return .requestParameters(parameters: ["nickname": nickname], encoding: URLEncoding.queryString)
         default:
             return .requestPlain
         }

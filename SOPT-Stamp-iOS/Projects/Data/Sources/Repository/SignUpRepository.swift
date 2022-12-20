@@ -8,13 +8,14 @@
 
 import Combine
 
+import Core
 import Domain
 import Network
 
 public class SignUpRepository {
     
     private let networkService: AuthService
-    private let cancelBag = Set<AnyCancellable>()
+    private let cancelBag = CancelBag()
     
     public init(service: AuthService) {
         self.networkService = service
@@ -22,5 +23,7 @@ public class SignUpRepository {
 }
 
 extension SignUpRepository: SignUpRepositoryInterface {
-    
+    public func getNicknameAvailable(nickname: String) -> AnyPublisher<Int, Error> {
+        return networkService.getNicknameAvailable(nickname: nickname)
+    }
 }
