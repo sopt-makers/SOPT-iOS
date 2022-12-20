@@ -13,6 +13,7 @@ import Moya
 
 public enum AuthAPI {
     case getNicknameAvailable(nickname: String)
+    case getEmailAvailable(email: String)
 }
 
 extension AuthAPI: BaseAPI {
@@ -24,6 +25,8 @@ extension AuthAPI: BaseAPI {
         switch self {
         case .getNicknameAvailable:
             return ""
+        case .getEmailAvailable:
+            return ""
         }
     }
     
@@ -32,6 +35,8 @@ extension AuthAPI: BaseAPI {
         switch self {
         case .getNicknameAvailable:
             return .get
+        case .getEmailAvailable:
+            return .get
         }
     }
     
@@ -39,7 +44,7 @@ extension AuthAPI: BaseAPI {
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
-        case .getNicknameAvailable(_):
+        case .getNicknameAvailable, .getEmailAvailable:
             break
         }
         return params
@@ -47,8 +52,6 @@ extension AuthAPI: BaseAPI {
     
     private var parameterEncoding: ParameterEncoding {
         switch self {
-        case .getNicknameAvailable:
-            return JSONEncoding.default
         default:
             return JSONEncoding.default
         }
@@ -58,6 +61,8 @@ extension AuthAPI: BaseAPI {
         switch self {
         case .getNicknameAvailable(let nickname):
             return .requestParameters(parameters: ["nickname": nickname], encoding: URLEncoding.queryString)
+        case .getEmailAvailable(let email):
+            return .requestParameters(parameters: ["email": email], encoding: URLEncoding.queryString)
         default:
             return .requestPlain
         }

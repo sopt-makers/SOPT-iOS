@@ -16,10 +16,15 @@ public typealias DefaultAuthService = BaseService<AuthAPI>
 
 public protocol AuthService {
     func getNicknameAvailable(nickname: String) -> AnyPublisher<Int, Error>
+    func getEmailAvailable(email: String) -> AnyPublisher<Int, Error>
 }
 
 extension DefaultAuthService: AuthService {
     public func getNicknameAvailable(nickname: String) -> AnyPublisher<Int, Error> {
         return requestObjectInCombineNoResult(.getNicknameAvailable(nickname: nickname))
+    }
+    
+    public func getEmailAvailable(email: String) -> AnyPublisher<Int, Error> {
+        return requestObjectInCombineNoResult(.getEmailAvailable(email: email))
     }
 }
