@@ -46,17 +46,26 @@ extension DefaultSignUpUseCase: SignUpUseCase {
         repository.getNicknameAvailable(nickname: nickname)
             .map { statusCode in statusCode == 200 }
             .sink { event in
-                print("SignUpUseCase: \(event)")
+                print("SignUpUseCase nickname: \(event)")
             } receiveValue: { isValid in
-                print(isValid)
                 self.isNicknameValid.send(isValid)
             }.store(in: cancelBag)
     }
     
     public func checkEmail(email: String) {
         let isValid = checkEmailForm(email: email)
-        guard isValid else { return }
-        // 서버 통신
+        guard isValid else {
+            self.isEmailFormValid.send(isValid)
+            return
+        }
+        
+        repository.getEmailAvailable(email: email)
+            .map { statusCode in statusCode == 200 }
+            .sink { event in
+                print("SignUpUseCase email: \(event)")
+            } receiveValue: { isValid in
+                self.isEmailFormValid.send(isValid)
+            }.store(in: cancelBag)
     }
     
     public func checkPassword(password: String) {
@@ -90,7 +99,6 @@ extension DefaultSignUpUseCase {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailTest = NSPredicate(format: "SELF MATCHES %@", emailRegEx)
         let isValid = emailTest.evaluate(with: email)
-        isEmailFormValid.send(isValid)
         return isValid
     }
     
