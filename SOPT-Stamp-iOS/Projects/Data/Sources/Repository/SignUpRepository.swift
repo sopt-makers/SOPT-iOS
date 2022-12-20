@@ -15,10 +15,12 @@ import Network
 public class SignUpRepository {
     
     private let networkService: AuthService
+    private let userService: UserService
     private let cancelBag = CancelBag()
     
-    public init(service: AuthService) {
+    public init(service: AuthService, userService: UserService) {
         self.networkService = service
+        self.userService = userService
     }
 }
 
@@ -29,5 +31,11 @@ extension SignUpRepository: SignUpRepositoryInterface {
     
     public func getEmailAvailable(email: String) -> AnyPublisher<Int, Error> {
         return networkService.getEmailAvailable(email: email)
+    }
+    
+    public func postSignUp(signUpModel: SignUpModel) -> AnyPublisher<Int, Error> {
+        return userService.postSignUp(signUpEntity: SignUpEntity(nickname: signUpModel.nickname,
+                                                          email: signUpModel.email,
+                                                          password: signUpModel.password))
     }
 }
