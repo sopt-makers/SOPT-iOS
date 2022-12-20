@@ -52,7 +52,7 @@ public struct I18N {
     public struct SignUp {
         public static let signUp = "회원가입"
         public static let nickname = "닉네임"
-        public static let nicknameTextFieldPlaceholder = "한글/영문 10자로 입력해주세요."
+        public static let nicknameTextFieldPlaceholder = "한글/영문 10자 이하로 입력해주세요."
         public static let email = "이메일"
         public static let emailTextFieldPlaceholder = "이메일을 입력해주세요."
         public static let password = "비밀번호"
