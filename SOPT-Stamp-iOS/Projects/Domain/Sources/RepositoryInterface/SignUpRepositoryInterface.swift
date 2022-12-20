@@ -9,5 +9,5 @@
 import Combine
 
 public protocol SignUpRepositoryInterface {
-  
+    func getNicknameAvailable(nickname: String) -> AnyPublisher<Int, Error>
 }

@@ -43,10 +43,14 @@ public class DefaultSignUpUseCase {
 
 extension DefaultSignUpUseCase: SignUpUseCase {
     public func checkNickname(nickname: String) {
-        // 닉네임 글자 수 정해지면 로직 추가
-        let isValid = checkNicknameForm(nickname: nickname)
-        guard isValid else { return }
-        // 서버 통신
+        repository.getNicknameAvailable(nickname: nickname)
+            .map { statusCode in statusCode == 200 }
+            .sink { event in
+                print("SignUpUseCase: \(event)")
+            } receiveValue: { isValid in
+                print(isValid)
+                self.isNicknameValid.send(isValid)
+            }.store(in: cancelBag)
     }
     
     public func checkEmail(email: String) {
@@ -80,11 +84,6 @@ extension DefaultSignUpUseCase {
         } receiveValue: { isValid in
             self.isValidForm.send(isValid)
         }.store(in: cancelBag)
-    }
-    
-    func checkNicknameForm(nickname: String) -> Bool {
-        isNicknameValid.send(true)
-        return true
     }
     
     func checkEmailForm(email: String) -> Bool {
