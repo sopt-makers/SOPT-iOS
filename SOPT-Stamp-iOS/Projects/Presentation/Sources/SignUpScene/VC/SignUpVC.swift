@@ -13,6 +13,7 @@ import SnapKit
 import Then
 
 import Core
+import Domain
 import DSKit
 
 extension SignUpFormValidateResult {
@@ -88,7 +89,11 @@ extension SignUpVC {
     private func bindViewModels() {
         let registerButtonTapped = registerButton
             .publisher(for: .touchUpInside)
-            .map { _ in () }
+            .map { _ in
+                SignUpModel(nickname: self.nickNameTextFieldView.text,
+                            email: self.emailTextFieldView.text,
+                            password: self.passwordTextFieldView.text)
+            }
             .asDriver()
         
         let input = SignUpViewModel.Input(
@@ -127,6 +132,12 @@ extension SignUpVC {
         output.isValidForm
             .assign(to: \.isEnabled, on: registerButton)
             .store(in: cancelBag)
+        
+        output.signUpSuccessed
+            .sink { [weak self] isSuccess in
+                guard let self = self else { return }
+                isSuccess ? self.presentSignUpCompleteView() : print("회원가입 실패")
+            }.store(in: cancelBag)
     }
 }
 
@@ -235,5 +246,11 @@ extension SignUpVC {
         let contentInset = UIEdgeInsets.zero
         scrollView.contentInset = contentInset
         scrollView.scrollIndicatorInsets = contentInset
+    }
+    
+    private func presentSignUpCompleteView() {
+        let signUpCompleteVC = factory.makeSignUpCompleteVC()
+        signUpCompleteVC.modalPresentationStyle = .fullScreen
+        self.present(signUpCompleteVC, animated: true)
     }
 }
