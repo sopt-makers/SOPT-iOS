@@ -45,6 +45,7 @@ public class SignUpVC: UIViewController {
     
     private let nickNameTextFieldView = CustomTextFieldView(type: .titleWithRightButton)
         .setTitle(I18N.SignUp.nickname)
+        .setMaxLength(10)
         .setPlaceholder(I18N.SignUp.nicknameTextFieldPlaceholder)
         .setAlertLabelEnabled(I18N.SignUp.duplicatedNickname)
     
