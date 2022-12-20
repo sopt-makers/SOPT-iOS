@@ -36,12 +36,27 @@ public class MissionListVC: UIViewController {
             return CustomNavigationBar(self, type: .title)
                 .setTitle("전체 미션")
                 .setTitleTypoStyle(.h2)
-        case .ranking(let username):
+        case .ranking(let username, _):
             return CustomNavigationBar(self, type: .titleWithLeftButton)
                 .setTitle(username)
                 .setRightButton(.none)
                 .setTitleTypoStyle(.h2)
         }
+    }()
+    
+    private lazy var sentenceLabel: UILabel = {
+        let lb = UILabel()
+        if case let .ranking(_, sentence) = sceneType {
+            lb.text = sentence
+        }
+        lb.setTypoStyle(.subtitle2)
+        lb.textColor = DSKitAsset.Colors.gray900.color
+        lb.numberOfLines = 2
+        lb.textAlignment = .center
+        lb.backgroundColor = DSKitAsset.Colors.purple100.color
+        lb.layer.cornerRadius = 9.adjustedH
+        lb.clipsToBounds = true
+        return lb
     }()
     
     private lazy var missionListCollectionView: UICollectionView = {
@@ -100,7 +115,8 @@ extension MissionListVC {
             make.bottom.equalToSuperview()
         }
         
-        if case .default = sceneType {
+        switch sceneType {
+        case .default:
             self.view.addSubview(rankingFloatingButton)
             
             rankingFloatingButton.snp.makeConstraints { make in
@@ -108,6 +124,20 @@ extension MissionListVC {
                 make.height.equalTo(54.adjustedH)
                 make.bottom.equalTo(view.safeAreaLayoutGuide)
                 make.centerX.equalToSuperview()
+            }
+        case .ranking:
+            self.view.addSubview(sentenceLabel)
+            
+            sentenceLabel.snp.makeConstraints { make in
+                make.top.equalTo(naviBar.snp.bottom).offset(16.adjustedH)
+                make.leading.trailing.equalToSuperview().inset(20.adjusted)
+                make.height.equalTo(64.adjustedH)
+            }
+            
+            missionListCollectionView.snp.remakeConstraints { make in
+                make.top.equalTo(sentenceLabel.snp.bottom).offset(16.adjustedH)
+                make.leading.trailing.equalToSuperview()
+                make.bottom.equalToSuperview()
             }
         }
     }

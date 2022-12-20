@@ -14,7 +14,7 @@ import Domain
 @frozen
 public enum MissionListSceneType {
     case `default`
-    case ranking(userName: String)
+    case ranking(userName: String, sentence: String)
 }
 
 public class MissionListViewModel: ViewModelType {
