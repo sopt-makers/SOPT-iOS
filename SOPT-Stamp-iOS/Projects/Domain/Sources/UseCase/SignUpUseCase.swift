@@ -16,12 +16,14 @@ public protocol SignUpUseCase {
     func checkEmail(email: String)
     func checkPassword(password: String)
     func checkAccordPassword(firstPassword: String, secondPassword: String)
+    func signUp(signUpModel: SignUpModel)
     
     var isNicknameValid: CurrentValueSubject<Bool, Error> { get set }
     var isEmailFormValid: CurrentValueSubject<Bool, Error> { get set }
     var isPasswordFormValid: CurrentValueSubject<Bool, Error> { get set }
     var isAccordPassword: CurrentValueSubject<Bool, Error> { get set }
     var isValidForm: CurrentValueSubject<Bool, Error> { get set }
+    var signUpSuccess: CurrentValueSubject<Bool, Error> { get set }
 }
 
 public class DefaultSignUpUseCase {
@@ -34,6 +36,7 @@ public class DefaultSignUpUseCase {
     public var isPasswordFormValid = CurrentValueSubject<Bool, Error>(false)
     public var isAccordPassword = CurrentValueSubject<Bool, Error>(false)
     public var isValidForm = CurrentValueSubject<Bool, Error>(false)
+    public var signUpSuccess = CurrentValueSubject<Bool, Error>(false)
     
     public init(repository: SignUpRepositoryInterface) {
         self.repository = repository
@@ -74,6 +77,16 @@ extension DefaultSignUpUseCase: SignUpUseCase {
     
     public func checkAccordPassword(firstPassword: String, secondPassword: String) {
         checkAccordPasswordForm(firstPassword: firstPassword, secondPassword: secondPassword)
+    }
+    
+    public func signUp(signUpModel: SignUpModel) {
+        repository.postSignUp(signUpModel: signUpModel)
+            .map { statusCode in statusCode == 200 }
+            .sink { event in
+                print("SignUpUseCase signUp: \(event)")
+            } receiveValue: { isValid in
+                self.signUpSuccess.send(isValid)
+            }.store(in: cancelBag)
     }
 }
 

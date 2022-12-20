@@ -10,7 +10,13 @@ import Foundation
 
 public struct SignUpModel {
 
-    public init() {
-        
+    public let nickname, email, password: String
+    public let osType = "iOS"
+    public let clientToken: String? = nil
+
+    public init(nickname: String, email: String, password: String) {
+        self.nickname = nickname
+        self.email = email
+        self.password = password
     }
 }
