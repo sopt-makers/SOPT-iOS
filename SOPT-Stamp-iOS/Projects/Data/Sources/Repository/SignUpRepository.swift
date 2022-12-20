@@ -26,4 +26,8 @@ extension SignUpRepository: SignUpRepositoryInterface {
     public func getNicknameAvailable(nickname: String) -> AnyPublisher<Int, Error> {
         return networkService.getNicknameAvailable(nickname: nickname)
     }
+    
+    public func getEmailAvailable(email: String) -> AnyPublisher<Int, Error> {
+        return networkService.getEmailAvailable(email: email)
+    }
 }
