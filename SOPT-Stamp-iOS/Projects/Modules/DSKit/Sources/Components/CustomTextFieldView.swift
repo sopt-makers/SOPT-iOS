@@ -144,6 +144,10 @@ public class CustomTextFieldView: UIView {
     
     public var maxLength: Int?
     
+    public var text: String {
+        self.textField.text ?? ""
+    }
+    
     /// alert Label을 다른 CustomTextField에 보여주기 위한 delegate
     weak var alertDelegate: CustomTextFieldViewAlertDelegate?
     
