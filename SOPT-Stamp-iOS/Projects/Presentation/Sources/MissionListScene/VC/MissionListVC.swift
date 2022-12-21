@@ -153,6 +153,12 @@ extension MissionListVC {
             .sink { _ in
                 self.pushToSettingVC()
             }.store(in: self.cancelBag)
+        
+        rankingFloatingButton.publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.pushToRankingVC()
+            }.store(in: self.cancelBag)
     }
     
     private func bindViewModels() {
@@ -168,6 +174,19 @@ extension MissionListVC {
                 self.applySnapshot(model: model)
             }.store(in: self.cancelBag)
     }
+
+    private func pushToSettingVC() {
+        let settingVC = self.factory.makeSettingVC()
+        self.navigationController?.pushViewController(settingVC, animated: true)
+    }
+    
+    private func pushToRankingVC() {
+        let rankingVC = self.factory.makeRankingVC()
+        self.navigationController?.pushViewController(rankingVC, animated: true)
+    }
+}
+
+extension MissionListVC {
     
     private func setDelegate() {
         missionListCollectionView.delegate = self
@@ -203,31 +222,28 @@ extension MissionListVC {
         dataSource.apply(snapshot, animatingDifferences: false)
         self.view.setNeedsLayout()
     }
-    
-    private func pushToSettingVC() {
-        let settingVC = self.factory.makeSettingVC()
-        self.navigationController?.pushViewController(settingVC, animated: true)
-    }
 }
 
 // MARK: - UICollectionViewDelegate
 
 extension MissionListVC: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-        // TODO: - 확인용
-        var sceneType: ListDetailSceneType = .none
-        var level: StarViewLevel = .levelOne
-        if indexPath.item % 2 == 0 {
-            sceneType = .completed
+        switch indexPath.section {
+        case 0:
+            return
+        case 1:
+            guard let tappedCell = collectionView.cellForItem(at: indexPath) as? MissionListCVC,
+                  let model = tappedCell.model,
+                  let starLevel = StarViewLevel.init(rawValue: model.level)else { return }
+            let sceneType = model.toListDetailSceneType()
+            
+            let detailVC = factory.makeListDetailVC(sceneType: sceneType,
+                                                    starLevel: starLevel,
+                                                    missionId: model.id,
+                                                    missionTitle: model.title)
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        default:
+            return
         }
-        
-        if indexPath.item % 3 == 0 {
-            level = .levelTwo
-        } else if indexPath.item % 3 == 1 {
-            level = .levelThree
-        }
-        let detailVC = factory.makeListDetailVC(sceneType: sceneType, starLevel: level, missionId: 3, missionTitle: "타이틀도 주세요 ..")
-        self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }
