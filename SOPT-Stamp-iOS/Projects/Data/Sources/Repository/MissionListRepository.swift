@@ -23,18 +23,21 @@ public class MissionListRepository {
 }
 
 extension MissionListRepository: MissionListRepositoryInterface {
-    public func fetchMissionList(type: MissionListFetchType) -> AnyPublisher<[MissionListModel], Error> {
+    public func fetchMissionList(type: MissionListFetchType, userId: Int?) -> AnyPublisher<[MissionListModel], Error> {
+        let userId: Int = (userId != nil)
+        ? userId!
+        : 1
         switch type {
         case .all:
-            return missionService.fetchAllMissionList(userId: 1)
+            return missionService.fetchAllMissionList(userId: userId)
                 .map { $0.toDomain() }
                 .eraseToAnyPublisher()
         case .complete:
-            return missionService.fetchCompleteMissionList(userId: 1)
+            return missionService.fetchCompleteMissionList(userId: userId)
                 .map { $0.toDomain() }
                 .eraseToAnyPublisher()
         case .incomplete:
-            return missionService.fetchIncompleteMissionList(userId: 1)
+            return missionService.fetchIncompleteMissionList(userId: userId)
                 .map { $0.toDomain() }
                 .eraseToAnyPublisher()
         }

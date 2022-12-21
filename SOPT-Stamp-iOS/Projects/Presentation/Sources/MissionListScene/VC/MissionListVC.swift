@@ -37,7 +37,7 @@ public class MissionListVC: UIViewController {
             return CustomNavigationBar(self, type: .title)
                 .setTitle("전체 미션")
                 .setTitleTypoStyle(.h2)
-        case .ranking(let username, _):
+        case .ranking(let username, _, _):
             return CustomNavigationBar(self, type: .titleWithLeftButton)
                 .setTitle(username)
                 .setRightButton(.none)
@@ -47,7 +47,7 @@ public class MissionListVC: UIViewController {
     
     private lazy var sentenceLabel: UILabel = {
         let lb = UILabel()
-        if case let .ranking(_, sentence) = sceneType {
+        if case let .ranking(_, sentence, _) = sceneType {
             lb.text = sentence
         }
         lb.setTypoStyle(.subtitle2)
@@ -227,6 +227,22 @@ extension MissionListVC {
 // MARK: - UICollectionViewDelegate
 
 extension MissionListVC: UICollectionViewDelegate {
+    public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        switch indexPath.section {
+        case 0:
+            return false
+        case 1:
+            switch self.sceneType {
+            case .default:
+                return true
+            case .ranking:
+                return false
+            }
+        default:
+            return false
+        }
+    }
+    
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch indexPath.section {
         case 0:

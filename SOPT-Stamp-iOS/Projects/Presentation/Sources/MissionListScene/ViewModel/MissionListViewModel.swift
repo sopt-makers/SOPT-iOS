@@ -15,7 +15,7 @@ import Domain
 @frozen
 public enum MissionListSceneType {
     case `default`
-    case ranking(userName: String, sentence: String)
+    case ranking(userName: String, sentence: String, userId: Int)
 }
 
 public class MissionListViewModel: ViewModelType {
@@ -51,8 +51,14 @@ extension MissionListViewModel {
         self.bindOutput(output: output, cancelBag: cancelBag)
         
         input.viewDidLoad
-            .sink {
-                self.useCase.fetchMissionList(type: .all)
+            .withUnretained(self)
+            .sink { owner, _ in
+                switch owner.missionListsceneType {
+                case .ranking(_, _, let userId):
+                    owner.useCase.fetchOtherUserMissionList(type: .all, userId: userId)
+                default:
+                    owner.useCase.fetchMissionList(type: .all)
+                }
             }.store(in: cancelBag)
         
         return output
