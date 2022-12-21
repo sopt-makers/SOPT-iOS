@@ -9,6 +9,7 @@
 import UIKit
 
 import Core
+import Domain
 import DSKit
 
 import Combine
@@ -26,7 +27,7 @@ public class MissionListVC: UIViewController {
     }
     private var cancelBag = CancelBag()
     
-    lazy var dataSource: UICollectionViewDiffableDataSource<MissionListSection, AnyHashable>! = nil
+    lazy var dataSource: UICollectionViewDiffableDataSource<MissionListSection, MissionListModel>! = nil
     
     // MARK: - UI Components
     
@@ -87,9 +88,9 @@ public class MissionListVC: UIViewController {
         self.setLayout()
         self.setDelegate()
         self.registerCells()
-        self.bindViewModels()
         self.setDataSource()
-        self.applySnapshot()
+        self.bindViews()
+        self.bindViewModels()
     }
 }
 
@@ -146,16 +147,26 @@ extension MissionListVC {
 // MARK: - Methods
 
 extension MissionListVC {
-    
-    private func bindViewModels() {
+    private func bindViews() {
         naviBar.rightButtonTapped
             .asDriver()
             .sink { _ in
                 self.pushToSettingVC()
             }.store(in: self.cancelBag)
+    }
+    
+    private func bindViewModels() {
         
-        let input = MissionListViewModel.Input()
+        let input = MissionListViewModel.Input(viewDidLoad: Driver.just(()),
+                                               viewWillAppear: Driver.just(()))
+        
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.$missionListModel
+            .compactMap { $0 }
+            .sink { model in
+                self.applySnapshot(model: model)
+            }.store(in: self.cancelBag)
     }
     
     private func setDelegate() {
@@ -177,34 +188,18 @@ extension MissionListVC {
                 
             case .missionList:
                 guard let missionListCell = collectionView.dequeueReusableCell(withReuseIdentifier: MissionListCVC.className, for: indexPath) as? MissionListCVC else { return UICollectionViewCell() }
-                guard let index = itemIdentifier as? Int else { return UICollectionViewCell() }
-                switch index % 6 {
-                case 0:
-                    missionListCell.initCellType = .levelOne(completed: true)
-                case 1:
-                    missionListCell.initCellType = .levelOne(completed: false)
-                case 2:
-                    missionListCell.initCellType = .levelTwo(completed: false)
-                case 3:
-                    missionListCell.initCellType = .levelTwo(completed: true)
-                case 4:
-                    missionListCell.initCellType = .levelThree(completed: true)
-                default:
-                    missionListCell.initCellType = .levelThree(completed: false)
-                }
+                let missionListModel = itemIdentifier
+                missionListCell.initCellType = missionListModel.toCellType()
+                missionListCell.setData(model: missionListModel)
                 return missionListCell
             }
         })
     }
     
-    func applySnapshot() {
-        var snapshot = NSDiffableDataSourceSnapshot<MissionListSection, AnyHashable>()
+    func applySnapshot(model: [MissionListModel]) {
+        var snapshot = NSDiffableDataSourceSnapshot<MissionListSection, MissionListModel>()
         snapshot.appendSections([.sentence, .missionList])
-        var tempItems: [Int] = []
-        for i in 0..<50 {
-            tempItems.append(i)
-        }
-        snapshot.appendItems(tempItems, toSection: .missionList)
+        snapshot.appendItems(model, toSection: .missionList)
         dataSource.apply(snapshot, animatingDifferences: false)
         self.view.setNeedsLayout()
     }

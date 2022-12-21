@@ -8,6 +8,8 @@
 
 import Foundation
 
+import Core
+
 import Alamofire
 import Moya
 
@@ -20,7 +22,7 @@ extension MissionAPI: BaseAPI {
     public static var apiType: APIType = .mission
     
     // MARK: - Header
-    public var headers: [String : String]? {
+    public var headers: [String: String]? {
         switch self {
         case .fetchMissionList(_, let userId):
             return HeaderType.userId(userId: userId).value
@@ -64,18 +66,6 @@ extension MissionAPI: BaseAPI {
         switch self {
         default:
             return .requestPlain
-        }
-    }
-}
-
-extension MissionAPI {
-    public enum MissionListFetchType: String {
-        case all
-        case complete
-        case incomplete
-        
-        public var path: String {
-            return self.rawValue
         }
     }
 }

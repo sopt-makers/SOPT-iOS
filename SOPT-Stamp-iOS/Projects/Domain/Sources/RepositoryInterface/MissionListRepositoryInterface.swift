@@ -8,6 +8,8 @@
 
 import Combine
 
+import Core
+
 public protocol MissionListRepositoryInterface {
-  
+    func fetchMissionList(type: MissionListFetchType) -> AnyPublisher<[MissionListModel], Error>
 }
