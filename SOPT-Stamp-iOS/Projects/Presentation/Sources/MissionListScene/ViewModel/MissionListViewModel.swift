@@ -29,6 +29,7 @@ public class MissionListViewModel: ViewModelType {
     public struct Input {
         let viewDidLoad: Driver<Void>
         let viewWillAppear: Driver<Void>
+        let missionTypeSelected: Driver<MissionListFetchType>
     }
     
     // MARK: - Outputs
@@ -58,6 +59,17 @@ extension MissionListViewModel {
                     owner.useCase.fetchOtherUserMissionList(type: .all, userId: userId)
                 default:
                     owner.useCase.fetchMissionList(type: .all)
+                }
+            }.store(in: cancelBag)
+        
+        input.missionTypeSelected
+            .withUnretained(self)
+            .sink { owner, fetchType in
+                switch owner.missionListsceneType {
+                case .ranking(_, _, let userId):
+                    owner.useCase.fetchOtherUserMissionList(type: fetchType, userId: userId)
+                default:
+                    owner.useCase.fetchMissionList(type: fetchType)
                 }
             }.store(in: cancelBag)
         

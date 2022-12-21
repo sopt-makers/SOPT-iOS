@@ -27,6 +27,8 @@ public class MissionListVC: UIViewController {
     }
     private var cancelBag = CancelBag()
     
+    private var missionTypeMenuSelected = CurrentValueSubject<MissionListFetchType, Error>(.all)
+    
     lazy var dataSource: UICollectionViewDiffableDataSource<MissionListSection, MissionListModel>! = nil
     
     // MARK: - UI Components
@@ -37,12 +39,27 @@ public class MissionListVC: UIViewController {
             return CustomNavigationBar(self, type: .title)
                 .setTitle("전체 미션")
                 .setTitleTypoStyle(.h2)
+                .setTitleButtonMenu(menuItems: self.menuItems)
         case .ranking(let username, _, _):
             return CustomNavigationBar(self, type: .titleWithLeftButton)
                 .setTitle(username)
                 .setRightButton(.none)
                 .setTitleTypoStyle(.h2)
         }
+    }()
+    
+    private lazy var menuItems: [UIAction] = {
+        var menuItems: [UIAction] = []
+        [("전체 미션", MissionListFetchType.all),
+         ("완료 미션", MissionListFetchType.complete),
+         ("미완료 미션", MissionListFetchType.incomplete)].forEach { menuTitle, fetchType in
+            menuItems.append(UIAction(title: menuTitle,
+                                      handler: { _ in
+                self.missionTypeMenuSelected.send(fetchType)
+                self.naviBar.setTitle(menuTitle)
+            }))
+        }
+        return menuItems
     }()
     
     private lazy var sentenceLabel: UILabel = {
@@ -148,10 +165,21 @@ extension MissionListVC {
 
 extension MissionListVC {
     private func bindViews() {
+        
+        if case MissionListSceneType.ranking = sceneType {
+            naviBar.rightButtonTapped
+                .asDriver()
+                .withUnretained(self)
+                .sink { owner, _ in
+                    owner.pushToSettingVC()
+                }.store(in: self.cancelBag)
+        }
+        
         naviBar.rightButtonTapped
             .asDriver()
-            .sink { _ in
-                self.pushToSettingVC()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.pushToSettingVC()
             }.store(in: self.cancelBag)
         
         rankingFloatingButton.publisher(for: .touchUpInside)
@@ -164,7 +192,8 @@ extension MissionListVC {
     private func bindViewModels() {
         
         let input = MissionListViewModel.Input(viewDidLoad: Driver.just(()),
-                                               viewWillAppear: Driver.just(()))
+                                               viewWillAppear: Driver.just(()),
+                                               missionTypeSelected: missionTypeMenuSelected.asDriver())
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
@@ -174,7 +203,7 @@ extension MissionListVC {
                 self.applySnapshot(model: model)
             }.store(in: self.cancelBag)
     }
-
+    
     private func pushToSettingVC() {
         let settingVC = self.factory.makeSettingVC()
         self.navigationController?.pushViewController(settingVC, animated: true)
