@@ -13,7 +13,7 @@ import Network
 
 extension RankingEntity {
     
-    public func toDomain() -> RankingModel {
-        return RankingModel.init()
-    }
+//    public func toDomain() -> RankingModel {
+//        return RankingModel.init()
+//    }
 }
