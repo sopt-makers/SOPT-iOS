@@ -147,3 +147,9 @@ extension RankingChartCVC {
         }
     }
 }
+
+extension RankingChartCVC: RankingListTappble {
+    func getModelItem() -> RankingListTapItem? {
+        return RankingListTapItem.init(username: "유저", sentence: "한마디", userId: 1)
+    }
+}

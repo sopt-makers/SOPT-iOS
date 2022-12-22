@@ -152,14 +152,15 @@ extension RankingVC {
 
 extension RankingVC: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        guard let tappedCell = collectionView.cellForItem(at: indexPath) as? MissionListCVC,
-//              let model = tappedCell.model,
-//              let starLevel = StarViewLevel.init(rawValue: model.level)else { return }
-//        let sceneType = model.toListDetailSceneType()
-        
-        let otherUserMissionListVC = factory.makeMissionListVC(sceneType: .ranking(userName: "유저",
-                                                                                   sentence: "한마디입니다",
-                                                                                   userId: 2))
+        guard let tappedCell = collectionView.cellForItem(at: indexPath) as? RankingListTappble,
+              let item = tappedCell.getModelItem() else { return }
+        self.pushToOtherUserMissionListVC(item: item)
+    }
+    
+    private func pushToOtherUserMissionListVC(item: RankingListTapItem) {
+        let otherUserMissionListVC = factory.makeMissionListVC(sceneType: .ranking(userName: item.username,
+                                                                                   sentence: item.sentence,
+                                                                                   userId: item.userId))
         self.navigationController?.pushViewController(otherUserMissionListVC, animated: true)
     }
 }
