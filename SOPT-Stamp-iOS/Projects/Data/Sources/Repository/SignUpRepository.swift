@@ -25,17 +25,21 @@ public class SignUpRepository {
 }
 
 extension SignUpRepository: SignUpRepositoryInterface {
-    public func getNicknameAvailable(nickname: String) -> AnyPublisher<Int, Error> {
-        return networkService.getNicknameAvailable(nickname: nickname)
+    public func getNicknameAvailable(nickname: String) -> AnyPublisher<Bool, Error> {
+        return networkService.getNicknameAvailable(nickname: nickname).map { statusCode in
+            statusCode == 200
+        }.eraseToAnyPublisher()
     }
     
-    public func getEmailAvailable(email: String) -> AnyPublisher<Int, Error> {
-        return networkService.getEmailAvailable(email: email)
+    public func getEmailAvailable(email: String) -> AnyPublisher<Bool, Error> {
+        return networkService.getEmailAvailable(email: email).map { statusCode in
+            statusCode == 200
+        }.eraseToAnyPublisher()
     }
     
-    public func postSignUp(signUpModel: SignUpModel) -> AnyPublisher<Int, Error> {
-        return userService.postSignUp(signUpEntity: SignUpEntity(nickname: signUpModel.nickname,
-                                                          email: signUpModel.email,
-                                                          password: signUpModel.password))
+    public func postSignUp(signUpModel: SignUpModel) -> AnyPublisher<Bool, Error> {
+        return userService.postSignUp(signUpModel: signUpModel).map { statusCode in
+            statusCode == 200
+        }.eraseToAnyPublisher()
     }
 }

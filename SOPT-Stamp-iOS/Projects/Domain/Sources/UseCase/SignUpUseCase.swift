@@ -47,7 +47,6 @@ public class DefaultSignUpUseCase {
 extension DefaultSignUpUseCase: SignUpUseCase {
     public func checkNickname(nickname: String) {
         repository.getNicknameAvailable(nickname: nickname)
-            .map { statusCode in statusCode == 200 }
             .sink { event in
                 print("SignUpUseCase nickname: \(event)")
             } receiveValue: { isValid in
@@ -63,7 +62,6 @@ extension DefaultSignUpUseCase: SignUpUseCase {
         }
         
         repository.getEmailAvailable(email: email)
-            .map { statusCode in statusCode == 200 }
             .sink { event in
                 print("SignUpUseCase email: \(event)")
             } receiveValue: { isValid in
@@ -81,7 +79,6 @@ extension DefaultSignUpUseCase: SignUpUseCase {
     
     public func signUp(signUpModel: SignUpModel) {
         repository.postSignUp(signUpModel: signUpModel)
-            .map { statusCode in statusCode == 200 }
             .sink { event in
                 print("SignUpUseCase signUp: \(event)")
             } receiveValue: { isValid in

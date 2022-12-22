@@ -10,19 +10,20 @@ import Foundation
 import Combine
 
 import Alamofire
+import Domain
 import Moya
 
 public typealias DefaultUserService = BaseService<UserAPI>
 
 public protocol UserService {
-    func postSignUp(signUpEntity: SignUpEntity) -> AnyPublisher<Int, Error>
+    func postSignUp(signUpModel: SignUpModel) -> AnyPublisher<Int, Error>
 }
 
 extension DefaultUserService: UserService {
-    public func postSignUp(signUpEntity: SignUpEntity) -> AnyPublisher<Int, Error> {
-        requestObjectInCombineNoResult(.signUp(nickname: signUpEntity.nickname,
-                                               email: signUpEntity.email,
-                                               password: signUpEntity.password)
+    public func postSignUp(signUpModel: SignUpModel) -> AnyPublisher<Int, Error> {
+        requestObjectInCombineNoResult(.signUp(nickname: signUpModel.nickname,
+                                               email: signUpModel.email,
+                                               password: signUpModel.password)
         )
     }
 }
