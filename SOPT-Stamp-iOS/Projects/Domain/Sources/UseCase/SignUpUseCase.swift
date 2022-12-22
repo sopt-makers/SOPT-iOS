@@ -16,7 +16,7 @@ public protocol SignUpUseCase {
     func checkEmail(email: String)
     func checkPassword(password: String)
     func checkAccordPassword(firstPassword: String, secondPassword: String)
-    func signUp(signUpModel: SignUpModel)
+    func signUp(signUpRequest: SignUpModel)
     
     var isNicknameValid: CurrentValueSubject<Bool, Error> { get set }
     var isEmailFormValid: CurrentValueSubject<Bool, Error> { get set }
@@ -77,8 +77,8 @@ extension DefaultSignUpUseCase: SignUpUseCase {
         checkAccordPasswordForm(firstPassword: firstPassword, secondPassword: secondPassword)
     }
     
-    public func signUp(signUpModel: SignUpModel) {
-        repository.postSignUp(signUpModel: signUpModel)
+    public func signUp(signUpRequest: SignUpModel) {
+        repository.postSignUp(signUpRequest: signUpRequest)
             .sink { event in
                 print("SignUpUseCase signUp: \(event)")
             } receiveValue: { isValid in

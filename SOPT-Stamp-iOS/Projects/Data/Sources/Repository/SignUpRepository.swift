@@ -37,8 +37,8 @@ extension SignUpRepository: SignUpRepositoryInterface {
         }.eraseToAnyPublisher()
     }
     
-    public func postSignUp(signUpModel: SignUpModel) -> AnyPublisher<Bool, Error> {
-        return userService.postSignUp(signUpModel: signUpModel).map { statusCode in
+    public func postSignUp(signUpRequest: SignUpModel) -> AnyPublisher<Bool, Error> {
+        return userService.postSignUp(nickname: signUpRequest.nickname, email: signUpRequest.email, password: signUpRequest.password).map { statusCode in
             statusCode == 200
         }.eraseToAnyPublisher()
     }

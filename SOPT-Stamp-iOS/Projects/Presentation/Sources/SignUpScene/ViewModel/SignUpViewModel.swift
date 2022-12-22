@@ -82,8 +82,8 @@ extension SignUpViewModel {
             }.store(in: self.cancelBag)
         
         input.registerButtonTapped
-            .sink { signUpModel in
-                self.useCase.signUp(signUpModel: signUpModel)
+            .sink { signUpRequest in
+                self.useCase.signUp(signUpRequest: signUpRequest)
             }.store(in: self.cancelBag)
             
         return output
