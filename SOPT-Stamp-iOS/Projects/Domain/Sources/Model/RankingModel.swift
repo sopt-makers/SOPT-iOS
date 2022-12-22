@@ -8,9 +8,24 @@
 
 import Foundation
 
-public struct RankingModel {
+public struct RankingModel: Hashable {
+    public let username: String
+    public let usreId: Int
+    public let score: Int
+    public let sentence: String
+    
+    public init(username: String, usreId: Int, score: Int, sentence: String) {
+        self.username = username
+        self.usreId = usreId
+        self.score = score
+        self.sentence = sentence
+    }
+}
 
-    public init() {
-        
+public struct RankingChartModel: Hashable {
+    public let ranking: [RankingModel]
+    
+    public init(ranking: [RankingModel]) {
+        self.ranking = ranking
     }
 }

@@ -9,6 +9,7 @@
 import UIKit
 
 import Core
+import Domain
 import DSKit
 
 import Combine
@@ -56,7 +57,6 @@ public class RankingVC: UIViewController {
         self.registerCells()
         self.bindViewModels()
         self.setDataSource()
-        self.applySnapshot()
     }
 }
 
@@ -106,29 +106,30 @@ extension RankingVC {
         dataSource = UICollectionViewDiffableDataSource(collectionView: rankingCollectionView, cellProvider: { collectionView, indexPath, itemIdentifier in
             switch RankingSection.type(indexPath.section) {
             case .chart:
-                guard let chartCell = collectionView.dequeueReusableCell(withReuseIdentifier: RankingChartCVC.className, for: indexPath) as? RankingChartCVC else { return UICollectionViewCell() }
-                chartCell.setData(model: "")
+                guard let chartCell = collectionView.dequeueReusableCell(withReuseIdentifier: RankingChartCVC.className, for: indexPath) as? RankingChartCVC,
+                      let chartCellModel = itemIdentifier as? RankingChartModel else { return UICollectionViewCell() }
+                chartCell.setData(model: chartCellModel)
                 
                 return chartCell
                 
             case .list:
-                guard let rankingListCell = collectionView.dequeueReusableCell(withReuseIdentifier: RankingListCVC.className, for: indexPath) as? RankingListCVC else { return UICollectionViewCell() }
-                guard let index = itemIdentifier as? Int else { return UICollectionViewCell() }
+                guard let rankingListCell = collectionView.dequeueReusableCell(withReuseIdentifier: RankingListCVC.className, for: indexPath) as? RankingListCVC,
+                      let rankingListCellModel = itemIdentifier as? RankingModel else { return UICollectionViewCell() }
+                rankingListCell.setData(model: rankingListCellModel, rank: indexPath.row + 1)
                 
                 return rankingListCell
             }
         })
     }
     
-    func applySnapshot() {
+    func applySnapshot(model: [RankingModel]) {
         var snapshot = NSDiffableDataSourceSnapshot<RankingSection, AnyHashable>()
         snapshot.appendSections([.chart, .list])
-        snapshot.appendItems([-1], toSection: .chart)
-        var tempItems: [Int] = []
-        for i in 0..<50 {
-            tempItems.append(i)
-        }
-        snapshot.appendItems(tempItems, toSection: .list)
+        guard let chartCellModels = Array(model[0...2]) as? [RankingModel],
+              let rankingListModel = Array(model[3...model.count-1]) as? [RankingModel] else { return }
+        let chartCellModel = RankingChartModel.init(ranking: chartCellModels)
+        snapshot.appendItems([chartCellModel], toSection: .chart)
+        snapshot.appendItems(rankingListModel, toSection: .list)
         dataSource.apply(snapshot, animatingDifferences: false)
         self.view.setNeedsLayout()
     }

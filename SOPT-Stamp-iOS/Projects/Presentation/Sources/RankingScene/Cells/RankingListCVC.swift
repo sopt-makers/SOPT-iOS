@@ -116,7 +116,12 @@ extension RankingListCVC {
 
 extension RankingListCVC {
     
-    public func setData(model: String) {
-        
+    public func setData(model: RankingModel, rank: Int) {
+        rankLabel.text = String(rank)
+        usernameLabel.text = model.username
+        sentenceLabel.text = model.sentence
+        scoreLabel.text = "\(model.score)점"
+        scoreLabel.partFontChange(targetString: "점",
+                                  font: DSKitFontFamily.Pretendard.medium.font(size: 12))
     }
 }

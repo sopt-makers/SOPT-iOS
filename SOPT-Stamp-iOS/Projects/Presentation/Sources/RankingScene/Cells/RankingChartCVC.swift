@@ -100,9 +100,11 @@ extension RankingChartCVC {
         baloonViews.removeAll()
     }
     
-    public func setData(model: String) {
+    public func setData(model: RankingChartModel) {
         
-        for (index, sentence) in ["안녕하세요", "제가 일등일 수도 있습니다 하하", "그래"].enumerated() {
+        let sentences = model.ranking.map { $0.sentence }
+        
+        for (index, sentence) in sentences.enumerated() {
             var baloonView: SpeechBalloonView
             if index == 0 {
                 baloonView = SpeechBalloonView.init(level: .rankTwo, sentence: sentence)
