@@ -23,9 +23,7 @@ extension AuthAPI: BaseAPI {
     // MARK: - Path
     public var path: String {
         switch self {
-        case .getNicknameAvailable:
-            return ""
-        case .getEmailAvailable:
+        case .getNicknameAvailable, .getEmailAvailable:
             return ""
         }
     }
@@ -33,9 +31,7 @@ extension AuthAPI: BaseAPI {
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .getNicknameAvailable:
-            return .get
-        case .getEmailAvailable:
+        case .getNicknameAvailable, .getEmailAvailable:
             return .get
         }
     }
