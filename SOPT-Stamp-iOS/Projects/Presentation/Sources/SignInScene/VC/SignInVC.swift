@@ -92,7 +92,8 @@ public class SignInVC: UIViewController {
     
     @objc
     private func signUpButtonDidTap() {
-        print("sign up btn did tap")
+        let signUpVC = self.factory.makeSignUpVC()
+        self.navigationController?.pushViewController(signUpVC, animated: true)
     }
 
 }
