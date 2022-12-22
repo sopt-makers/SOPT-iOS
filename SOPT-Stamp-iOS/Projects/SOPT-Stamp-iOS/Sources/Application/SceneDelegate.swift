@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(frame: scene.coordinateSpace.bounds)
         window?.windowScene = scene
-        let rootVC = ModuleFactory.shared.makeMissionListVC(sceneType: .ranking(userName: "솝트", sentence: "나는 잘해볼게"))
+        let rootVC = ModuleFactory.shared.makeSignUpVC()
         window?.rootViewController = UINavigationController(rootViewController: rootVC)
         window?.makeKeyAndVisible()
     }
