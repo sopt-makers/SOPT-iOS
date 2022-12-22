@@ -9,5 +9,7 @@
 import Combine
 
 public protocol SignUpRepositoryInterface {
-  
+    func getNicknameAvailable(nickname: String) -> AnyPublisher<Bool, Error>
+    func getEmailAvailable(email: String) -> AnyPublisher<Bool, Error>
+    func postSignUp(signUpRequest: SignUpModel) -> AnyPublisher<Bool, Error>
 }

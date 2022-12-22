@@ -8,19 +8,38 @@
 
 import Combine
 
+import Core
 import Domain
 import Network
 
 public class SignUpRepository {
     
     private let networkService: AuthService
-    private let cancelBag = Set<AnyCancellable>()
+    private let userService: UserService
+    private let cancelBag = CancelBag()
     
-    public init(service: AuthService) {
+    public init(service: AuthService, userService: UserService) {
         self.networkService = service
+        self.userService = userService
     }
 }
 
 extension SignUpRepository: SignUpRepositoryInterface {
+    public func getNicknameAvailable(nickname: String) -> AnyPublisher<Bool, Error> {
+        return networkService.getNicknameAvailable(nickname: nickname).map { statusCode in
+            statusCode == 200
+        }.eraseToAnyPublisher()
+    }
     
+    public func getEmailAvailable(email: String) -> AnyPublisher<Bool, Error> {
+        return networkService.getEmailAvailable(email: email).map { statusCode in
+            statusCode == 200
+        }.eraseToAnyPublisher()
+    }
+    
+    public func postSignUp(signUpRequest: SignUpModel) -> AnyPublisher<Bool, Error> {
+        return userService.postSignUp(nickname: signUpRequest.nickname, email: signUpRequest.email, password: signUpRequest.password).map { statusCode in
+            statusCode == 200
+        }.eraseToAnyPublisher()
+    }
 }
