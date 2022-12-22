@@ -152,8 +152,10 @@ extension SignInVC {
 extension SignInVC {
   
     private func bindViewModels() {
-//        let input = SignInViewModel.Input()
-//        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        let input = SignInViewModel.Input(emailTextChanged: emailTextField.textChanged, passwordTextChanged: passwordTextField.textChanged)
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.isFilledForm.assign(to: \.isEnabled, on: self.signInButton).store(in: self.cancelBag)
     }
     
     private func setTapGesture() {
