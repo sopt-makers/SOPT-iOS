@@ -20,6 +20,7 @@ public class RankingViewModel: ViewModelType {
     
     public struct Input {
         let viewDidLoad: Driver<Void>
+        let refreshStarted: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -40,7 +41,7 @@ extension RankingViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
-        input.viewDidLoad
+        input.viewDidLoad.merge(with: input.refreshStarted)
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.fetchRankingList()

@@ -38,7 +38,6 @@ public class RankingVC: UIViewController {
         cv.showsVerticalScrollIndicator = true
         cv.backgroundColor = .white
         cv.refreshControl = refresher
-        refresher.addTarget(self, action: #selector(fetchData(_:)), for: .valueChanged)
         return cv
     }()
     
@@ -89,7 +88,13 @@ extension RankingVC {
 extension RankingVC {
     
     private func bindViewModels() {
-        let input = RankingViewModel.Input(viewDidLoad: Driver.just(()))
+        let refreshStarted = refresher.publisher(for: .valueChanged)
+            .map { _ in () }
+            .eraseToAnyPublisher()
+            .asDriver()
+        
+        let input = RankingViewModel.Input(viewDidLoad: Driver.just(()),
+                                           refreshStarted: refreshStarted)
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
@@ -98,6 +103,7 @@ extension RankingVC {
             .withUnretained(self)
             .sink { owner, model in
                 owner.applySnapshot(model: model)
+                owner.endRefresh()
             }.store(in: self.cancelBag)
     }
     
@@ -142,11 +148,8 @@ extension RankingVC {
         self.view.setNeedsLayout()
     }
     
-    @objc
-    private func fetchData(_ sender: Any) {
-        DispatchQueue.main.asyncAfter(deadline: .now()+1.5) {
-            self.refresher.endRefreshing()
-        }
+    private func endRefresh() {
+        self.refresher.endRefreshing()
     }
 }
 
