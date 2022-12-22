@@ -14,6 +14,6 @@ import Network
 extension SignUpEntity {
 
     public func toDomain() -> SignUpModel {
-        return SignUpModel.init()
+        return SignUpModel.init(nickname: nickname, email: email, password: password)
     }
 }

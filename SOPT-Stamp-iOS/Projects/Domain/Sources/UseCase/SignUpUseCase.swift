@@ -16,12 +16,14 @@ public protocol SignUpUseCase {
     func checkEmail(email: String)
     func checkPassword(password: String)
     func checkAccordPassword(firstPassword: String, secondPassword: String)
+    func signUp(signUpRequest: SignUpModel)
     
     var isNicknameValid: CurrentValueSubject<Bool, Error> { get set }
     var isEmailFormValid: CurrentValueSubject<Bool, Error> { get set }
     var isPasswordFormValid: CurrentValueSubject<Bool, Error> { get set }
     var isAccordPassword: CurrentValueSubject<Bool, Error> { get set }
     var isValidForm: CurrentValueSubject<Bool, Error> { get set }
+    var signUpSuccess: CurrentValueSubject<Bool, Error> { get set }
 }
 
 public class DefaultSignUpUseCase {
@@ -34,6 +36,7 @@ public class DefaultSignUpUseCase {
     public var isPasswordFormValid = CurrentValueSubject<Bool, Error>(false)
     public var isAccordPassword = CurrentValueSubject<Bool, Error>(false)
     public var isValidForm = CurrentValueSubject<Bool, Error>(false)
+    public var signUpSuccess = CurrentValueSubject<Bool, Error>(false)
     
     public init(repository: SignUpRepositoryInterface) {
         self.repository = repository
@@ -43,16 +46,27 @@ public class DefaultSignUpUseCase {
 
 extension DefaultSignUpUseCase: SignUpUseCase {
     public func checkNickname(nickname: String) {
-        // 닉네임 글자 수 정해지면 로직 추가
-        let isValid = checkNicknameForm(nickname: nickname)
-        guard isValid else { return }
-        // 서버 통신
+        repository.getNicknameAvailable(nickname: nickname)
+            .sink { event in
+                print("SignUpUseCase nickname: \(event)")
+            } receiveValue: { isValid in
+                self.isNicknameValid.send(isValid)
+            }.store(in: cancelBag)
     }
     
     public func checkEmail(email: String) {
         let isValid = checkEmailForm(email: email)
-        guard isValid else { return }
-        // 서버 통신
+        guard isValid else {
+            self.isEmailFormValid.send(isValid)
+            return
+        }
+        
+        repository.getEmailAvailable(email: email)
+            .sink { event in
+                print("SignUpUseCase email: \(event)")
+            } receiveValue: { isValid in
+                self.isEmailFormValid.send(isValid)
+            }.store(in: cancelBag)
     }
     
     public func checkPassword(password: String) {
@@ -61,6 +75,15 @@ extension DefaultSignUpUseCase: SignUpUseCase {
     
     public func checkAccordPassword(firstPassword: String, secondPassword: String) {
         checkAccordPasswordForm(firstPassword: firstPassword, secondPassword: secondPassword)
+    }
+    
+    public func signUp(signUpRequest: SignUpModel) {
+        repository.postSignUp(signUpRequest: signUpRequest)
+            .sink { event in
+                print("SignUpUseCase signUp: \(event)")
+            } receiveValue: { isValid in
+                self.signUpSuccess.send(isValid)
+            }.store(in: cancelBag)
     }
 }
 
@@ -82,16 +105,10 @@ extension DefaultSignUpUseCase {
         }.store(in: cancelBag)
     }
     
-    func checkNicknameForm(nickname: String) -> Bool {
-        isNicknameValid.send(true)
-        return true
-    }
-    
     func checkEmailForm(email: String) -> Bool {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailTest = NSPredicate(format: "SELF MATCHES %@", emailRegEx)
         let isValid = emailTest.evaluate(with: email)
-        isEmailFormValid.send(isValid)
         return isValid
     }
     

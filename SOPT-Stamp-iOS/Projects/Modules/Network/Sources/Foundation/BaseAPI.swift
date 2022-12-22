@@ -14,6 +14,7 @@ public enum APIType {
     case notice
     case auth
     case alert
+    case user
 }
 
 public protocol BaseAPI: TargetType {
@@ -26,11 +27,13 @@ extension BaseAPI {
         
         switch Self.apiType {
         case .alert:
-            base += "alert"
+            base += "/alert"
         case .notice:
-            base += "notice"
+            base += "/notice"
         case .auth:
-            base += "auth"
+            base += "/auth"
+        case .user:
+            base += "/user"
         }
         
         guard let url = URL(string: base) else {

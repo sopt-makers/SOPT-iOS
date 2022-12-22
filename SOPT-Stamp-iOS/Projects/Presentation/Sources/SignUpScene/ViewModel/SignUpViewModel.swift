@@ -30,7 +30,7 @@ public class SignUpViewModel: ViewModelType {
         let emailCheckButtonTapped: Driver<String?>
         let passwordTextChanged: Driver<String?>
         let passwordCheckTextChanged: Driver<String?>
-        let registerButtonTapped: Driver<Void>
+        let registerButtonTapped: Driver<SignUpModel>
     }
     
     // MARK: - Outputs
@@ -41,6 +41,7 @@ public class SignUpViewModel: ViewModelType {
         var passwordAlert = PassthroughSubject<SignUpFormValidateResult, Never>()
         var passwordAccordAlert = PassthroughSubject<SignUpFormValidateResult, Never>()
         var isValidForm = PassthroughSubject<Bool, Never>()
+        var signUpSuccessed = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - init
@@ -79,6 +80,11 @@ extension SignUpViewModel {
             .sink { (firstPassword, secondPassword) in
                 self.useCase.checkAccordPassword(firstPassword: firstPassword, secondPassword: secondPassword)
             }.store(in: self.cancelBag)
+        
+        input.registerButtonTapped
+            .sink { signUpRequest in
+                self.useCase.signUp(signUpRequest: signUpRequest)
+            }.store(in: self.cancelBag)
             
         return output
     }
@@ -116,6 +122,12 @@ extension SignUpViewModel {
             print("SignUpViewModel - completion: \(event)")
         } receiveValue: { isValidForm in
             output.isValidForm.send(isValidForm)
+        }.store(in: cancelBag)
+        
+        useCase.signUpSuccess.sink { event in
+            print("SignUpViewModel - completion: \(event)")
+        } receiveValue: { isSuccess in
+            output.signUpSuccessed.send(isSuccess)
         }.store(in: cancelBag)
     }
 }
