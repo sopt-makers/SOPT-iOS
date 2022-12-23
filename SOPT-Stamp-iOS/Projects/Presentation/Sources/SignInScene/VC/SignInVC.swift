@@ -12,6 +12,8 @@ import DSKit
 
 import Core
 
+import Domain
+
 import Combine
 import SnapKit
 import Then
@@ -152,7 +154,12 @@ extension SignInVC {
 extension SignInVC {
   
     private func bindViewModels() {
-        let input = SignInViewModel.Input(emailTextChanged: emailTextField.textChanged, passwordTextChanged: passwordTextField.textChanged)
+        
+        let signInButtonTapped = signInButton.publisher(for: .touchUpInside).map { _ in
+            SignInModel(email: emailTextField.text, password: passwordTextField.text)
+        }
+        
+        let input = SignInViewModel.Input(emailTextChanged: emailTextField.textChanged, passwordTextChanged: passwordTextField.textChanged, signInButtonTapped: <#T##Driver<SignInModel>#>)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.isFilledForm.assign(to: \.isEnabled, on: self.signInButton).store(in: self.cancelBag)

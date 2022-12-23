@@ -21,6 +21,7 @@ public class SignInViewModel: ViewModelType {
     public struct Input {
         let emailTextChanged: Driver<String?>
         let passwordTextChanged: Driver<String?>
+        let signInButtonTapped: Driver<SignInModel>
     }
     
     // MARK: - Outputs
