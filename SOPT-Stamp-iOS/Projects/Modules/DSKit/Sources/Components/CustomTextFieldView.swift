@@ -142,6 +142,12 @@ public class CustomTextFieldView: UIView {
         }
     }
     
+    public var maxLength: Int?
+    
+    public var text: String {
+        self.textField.text ?? ""
+    }
+    
     /// alert Label을 다른 CustomTextField에 보여주기 위한 delegate
     weak var alertDelegate: CustomTextFieldViewAlertDelegate?
     
@@ -241,6 +247,12 @@ extension CustomTextFieldView {
         return self
     }
     
+    @discardableResult
+    public func setMaxLength(_ length: Int) -> Self {
+        self.maxLength = length
+        return self
+    }
+    
     /// alertText를 다른 TextField에 보여주기 위한 delegate 설정
     public func setAlertDelegate(_ textView: CustomTextFieldViewAlertDelegate) -> Self {
         self.alertDelegate = textView
@@ -281,6 +293,12 @@ extension CustomTextFieldView {
         textChanged
             .replaceNil(with: "")
             .sink { text in
+                if let maxLength = self.maxLength, text.count > maxLength {
+                    let index = text.index(text.startIndex, offsetBy: maxLength)
+                    let newString = text[text.startIndex..<index]
+                    self.textField.text = String(newString)
+                }
+                
                 self.rightButton.isEnabled = !text.isEmpty
                 if text.isEmpty {
                     self.changeAlertLabelText("")
@@ -464,6 +482,7 @@ extension CustomTextFieldView {
 // MARK: - UITextFieldDelegate
 
 extension CustomTextFieldView: UITextFieldDelegate {
+    
     public func textFieldDidBeginEditing(_ textField: UITextField) {
         self.setTextFieldViewState(.editing)
     }

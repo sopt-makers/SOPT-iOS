@@ -12,7 +12,8 @@ import Alamofire
 import Moya
 
 public enum AuthAPI {
-    case sample(provider: String)
+    case getNicknameAvailable(nickname: String)
+    case getEmailAvailable(email: String)
 }
 
 extension AuthAPI: BaseAPI {
@@ -22,7 +23,7 @@ extension AuthAPI: BaseAPI {
     // MARK: - Path
     public var path: String {
         switch self {
-        case .sample:
+        case .getNicknameAvailable, .getEmailAvailable:
             return ""
         }
     }
@@ -30,8 +31,8 @@ extension AuthAPI: BaseAPI {
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .sample:
-            return .post
+        case .getNicknameAvailable, .getEmailAvailable:
+            return .get
         }
     }
     
@@ -39,16 +40,14 @@ extension AuthAPI: BaseAPI {
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
-        case .sample(let provider):
-            params["platform"] = provider
+        case .getNicknameAvailable, .getEmailAvailable:
+            break
         }
         return params
     }
     
     private var parameterEncoding: ParameterEncoding {
         switch self {
-        case .sample:
-            return URLEncoding.init(destination: .queryString, arrayEncoding: .noBrackets, boolEncoding: .literal)
         default:
             return JSONEncoding.default
         }
@@ -56,8 +55,10 @@ extension AuthAPI: BaseAPI {
     
     public var task: Task {
         switch self {
-        case .sample:
-            return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
+        case .getNicknameAvailable(let nickname):
+            return .requestParameters(parameters: ["nickname": nickname], encoding: URLEncoding.queryString)
+        case .getEmailAvailable(let email):
+            return .requestParameters(parameters: ["email": email], encoding: URLEncoding.queryString)
         default:
             return .requestPlain
         }
