@@ -139,6 +139,17 @@ extension CustomNavigationBar {
         titleLabel.setTypoStyle(font)
         return self
     }
+    
+    @discardableResult
+    public func setTitleButtonMenu(menuItems: [UIAction]) -> Self {
+        titleButton.menu = UIMenu(title: "",
+                                  image: nil,
+                                  identifier: nil,
+                                  options: [.displayInline],
+                                  children: menuItems)
+        titleButton.showsMenuAsPrimaryAction = true
+        return self
+    }
 }
 
 // MARK: - @objc

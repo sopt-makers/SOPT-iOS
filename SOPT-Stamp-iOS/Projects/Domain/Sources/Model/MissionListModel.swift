@@ -8,9 +8,16 @@
 
 import Foundation
 
-public struct MissionListModel {
-
-    public init() {
-        
+public struct MissionListModel: Codable, Hashable {
+    public let id: Int
+    public let title: String
+    public let level: Int
+    public let isCompleted: Bool
+    
+    public init(id: Int, title: String, level: Int, isCompleted: Bool) {
+        self.id = id
+        self.title = title
+        self.level = level
+        self.isCompleted = isCompleted
     }
 }

@@ -8,8 +8,8 @@
 
 import Foundation
 
-public enum StarViewLevel {
-    case levelOne
-    case levelTwo
-    case levelThree
+public enum StarViewLevel: Int {
+    case levelOne = 1
+    case levelTwo = 2
+    case levelThree = 3
 }

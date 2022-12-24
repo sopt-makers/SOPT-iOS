@@ -9,6 +9,7 @@
 import UIKit
 
 import Core
+import Domain
 import DSKit
 
 import Combine
@@ -26,7 +27,9 @@ public class MissionListVC: UIViewController {
     }
     private var cancelBag = CancelBag()
     
-    lazy var dataSource: UICollectionViewDiffableDataSource<MissionListSection, AnyHashable>! = nil
+    private var missionTypeMenuSelected = CurrentValueSubject<MissionListFetchType, Error>(.all)
+    
+    lazy var dataSource: UICollectionViewDiffableDataSource<MissionListSection, MissionListModel>! = nil
     
     // MARK: - UI Components
     
@@ -36,12 +39,42 @@ public class MissionListVC: UIViewController {
             return CustomNavigationBar(self, type: .title)
                 .setTitle("전체 미션")
                 .setTitleTypoStyle(.h2)
-        case .ranking(let username):
+                .setTitleButtonMenu(menuItems: self.menuItems)
+        case .ranking(let username, _, _):
             return CustomNavigationBar(self, type: .titleWithLeftButton)
                 .setTitle(username)
                 .setRightButton(.none)
                 .setTitleTypoStyle(.h2)
         }
+    }()
+    
+    private lazy var menuItems: [UIAction] = {
+        var menuItems: [UIAction] = []
+        [("전체 미션", MissionListFetchType.all),
+         ("완료 미션", MissionListFetchType.complete),
+         ("미완료 미션", MissionListFetchType.incomplete)].forEach { menuTitle, fetchType in
+            menuItems.append(UIAction(title: menuTitle,
+                                      handler: { _ in
+                self.missionTypeMenuSelected.send(fetchType)
+                self.naviBar.setTitle(menuTitle)
+            }))
+        }
+        return menuItems
+    }()
+    
+    private lazy var sentenceLabel: UILabel = {
+        let lb = UILabel()
+        if case let .ranking(_, sentence, _) = sceneType {
+            lb.text = sentence
+        }
+        lb.setTypoStyle(.subtitle2)
+        lb.textColor = DSKitAsset.Colors.gray900.color
+        lb.numberOfLines = 2
+        lb.textAlignment = .center
+        lb.backgroundColor = DSKitAsset.Colors.purple100.color
+        lb.layer.cornerRadius = 9.adjustedH
+        lb.clipsToBounds = true
+        return lb
     }()
     
     private lazy var missionListCollectionView: UICollectionView = {
@@ -72,9 +105,9 @@ public class MissionListVC: UIViewController {
         self.setLayout()
         self.setDelegate()
         self.registerCells()
-        self.bindViewModels()
         self.setDataSource()
-        self.applySnapshot()
+        self.bindViews()
+        self.bindViewModels()
     }
 }
 
@@ -100,7 +133,8 @@ extension MissionListVC {
             make.bottom.equalToSuperview()
         }
         
-        if case .default = sceneType {
+        switch sceneType {
+        case .default:
             self.view.addSubview(rankingFloatingButton)
             
             rankingFloatingButton.snp.makeConstraints { make in
@@ -109,6 +143,20 @@ extension MissionListVC {
                 make.bottom.equalTo(view.safeAreaLayoutGuide)
                 make.centerX.equalToSuperview()
             }
+        case .ranking:
+            self.view.addSubview(sentenceLabel)
+            
+            sentenceLabel.snp.makeConstraints { make in
+                make.top.equalTo(naviBar.snp.bottom).offset(16.adjustedH)
+                make.leading.trailing.equalToSuperview().inset(20.adjusted)
+                make.height.equalTo(64.adjustedH)
+            }
+            
+            missionListCollectionView.snp.remakeConstraints { make in
+                make.top.equalTo(sentenceLabel.snp.bottom).offset(16.adjustedH)
+                make.leading.trailing.equalToSuperview()
+                make.bottom.equalToSuperview()
+            }
         }
     }
 }
@@ -116,17 +164,58 @@ extension MissionListVC {
 // MARK: - Methods
 
 extension MissionListVC {
-    
-    private func bindViewModels() {
+    private func bindViews() {
+        
+        if case MissionListSceneType.ranking = sceneType {
+            naviBar.rightButtonTapped
+                .asDriver()
+                .withUnretained(self)
+                .sink { owner, _ in
+                    owner.pushToSettingVC()
+                }.store(in: self.cancelBag)
+        }
+        
         naviBar.rightButtonTapped
             .asDriver()
-            .sink { _ in
-                self.pushToSettingVC()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.pushToSettingVC()
             }.store(in: self.cancelBag)
         
-        let input = MissionListViewModel.Input()
-        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        rankingFloatingButton.publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.pushToRankingVC()
+            }.store(in: self.cancelBag)
     }
+    
+    private func bindViewModels() {
+        
+        let input = MissionListViewModel.Input(viewDidLoad: Driver.just(()),
+                                               viewWillAppear: Driver.just(()),
+                                               missionTypeSelected: missionTypeMenuSelected.asDriver())
+        
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.$missionListModel
+            .compactMap { $0 }
+            .sink { model in
+                self.applySnapshot(model: model)
+            }.store(in: self.cancelBag)
+    }
+    
+    private func pushToSettingVC() {
+        let settingVC = self.factory.makeSettingVC()
+        self.navigationController?.pushViewController(settingVC, animated: true)
+    }
+    
+    private func pushToRankingVC() {
+        let rankingVC = self.factory.makeRankingVC()
+        self.navigationController?.pushViewController(rankingVC, animated: true)
+    }
+}
+
+extension MissionListVC {
     
     private func setDelegate() {
         missionListCollectionView.delegate = self
@@ -147,62 +236,59 @@ extension MissionListVC {
                 
             case .missionList:
                 guard let missionListCell = collectionView.dequeueReusableCell(withReuseIdentifier: MissionListCVC.className, for: indexPath) as? MissionListCVC else { return UICollectionViewCell() }
-                guard let index = itemIdentifier as? Int else { return UICollectionViewCell() }
-                switch index % 6 {
-                case 0:
-                    missionListCell.initCellType = .levelOne(completed: true)
-                case 1:
-                    missionListCell.initCellType = .levelOne(completed: false)
-                case 2:
-                    missionListCell.initCellType = .levelTwo(completed: false)
-                case 3:
-                    missionListCell.initCellType = .levelTwo(completed: true)
-                case 4:
-                    missionListCell.initCellType = .levelThree(completed: true)
-                default:
-                    missionListCell.initCellType = .levelThree(completed: false)
-                }
+                let missionListModel = itemIdentifier
+                missionListCell.initCellType = missionListModel.toCellType()
+                missionListCell.setData(model: missionListModel)
                 return missionListCell
             }
         })
     }
     
-    func applySnapshot() {
-        var snapshot = NSDiffableDataSourceSnapshot<MissionListSection, AnyHashable>()
+    func applySnapshot(model: [MissionListModel]) {
+        var snapshot = NSDiffableDataSourceSnapshot<MissionListSection, MissionListModel>()
         snapshot.appendSections([.sentence, .missionList])
-        var tempItems: [Int] = []
-        for i in 0..<50 {
-            tempItems.append(i)
-        }
-        snapshot.appendItems(tempItems, toSection: .missionList)
+        snapshot.appendItems(model, toSection: .missionList)
         dataSource.apply(snapshot, animatingDifferences: false)
         self.view.setNeedsLayout()
-    }
-    
-    private func pushToSettingVC() {
-        let settingVC = self.factory.makeSettingVC()
-        self.navigationController?.pushViewController(settingVC, animated: true)
     }
 }
 
 // MARK: - UICollectionViewDelegate
 
 extension MissionListVC: UICollectionViewDelegate {
+    public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        switch indexPath.section {
+        case 0:
+            return false
+        case 1:
+            switch self.sceneType {
+            case .default:
+                return true
+            case .ranking:
+                return false
+            }
+        default:
+            return false
+        }
+    }
+    
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-        // TODO: - 확인용
-        var sceneType: ListDetailSceneType = .none
-        var level: StarViewLevel = .levelOne
-        if indexPath.item % 2 == 0 {
-            sceneType = .completed
+        switch indexPath.section {
+        case 0:
+            return
+        case 1:
+            guard let tappedCell = collectionView.cellForItem(at: indexPath) as? MissionListCVC,
+                  let model = tappedCell.model,
+                  let starLevel = StarViewLevel.init(rawValue: model.level)else { return }
+            let sceneType = model.toListDetailSceneType()
+            
+            let detailVC = factory.makeListDetailVC(sceneType: sceneType,
+                                                    starLevel: starLevel,
+                                                    missionId: model.id,
+                                                    missionTitle: model.title)
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        default:
+            return
         }
-        
-        if indexPath.item % 3 == 0 {
-            level = .levelTwo
-        } else if indexPath.item % 3 == 1 {
-            level = .levelThree
-        }
-        let detailVC = factory.makeListDetailVC(sceneType: sceneType, starLevel: level, missionId: 3, missionTitle: "타이틀도 주세요 ..")
-        self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }

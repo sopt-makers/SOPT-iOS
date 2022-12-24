@@ -11,9 +11,10 @@ import Moya
 import Foundation
 
 public enum APIType {
-    case notice
     case auth
-    case alert
+    case mission
+    case rank
+    case stamp
     case user
 }
 
@@ -26,12 +27,14 @@ extension BaseAPI {
         var base = Config.Network.baseURL
         
         switch Self.apiType {
-        case .alert:
-            base += "/alert"
-        case .notice:
-            base += "/notice"
         case .auth:
             base += "/auth"
+        case .mission:
+            base += "/mission"
+        case .rank:
+            base += "/rank"
+        case .stamp:
+            base += "/stamp"
         case .user:
             base += "/user"
         }
@@ -39,10 +42,29 @@ extension BaseAPI {
         guard let url = URL(string: base) else {
             fatalError("baseURL could not be configured")
         }
+        
         return url
     }
     
     public var headers: [String: String]? {
         return ["Content-Type": "application/json"]
+    }
+}
+
+public enum HeaderType {
+    case json
+    case jsonUserId(userId: Int)
+    case userId(userId: Int)
+    
+    public var value: [String: String] {
+        switch self {
+        case .json:
+            return ["Content-Type": "application/json"]
+        case .jsonUserId(let userId):
+            return ["Content-Type": "application/json",
+                    "userId": String(userId)]
+        case .userId(let userId):
+            return ["userId": String(userId)]
+        }
     }
 }
