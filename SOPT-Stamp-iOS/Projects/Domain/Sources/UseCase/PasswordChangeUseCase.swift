@@ -48,7 +48,12 @@ extension DefaultPasswordChangeUseCase: PasswordChangeUseCase {
     }
     
     public func changePassword(password: String) {
-        // repository 연결
+        repository.changePassword(password: password)
+            .sink { event in
+                print("PasswordChangeUseCase: \(event)")
+            } receiveValue: { isSuccess in
+                self.passwordChangeSuccess.send(isSuccess)
+            }.store(in: cancelBag)
     }
 }
 

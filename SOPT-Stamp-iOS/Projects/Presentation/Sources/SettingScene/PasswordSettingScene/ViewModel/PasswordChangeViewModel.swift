@@ -61,8 +61,8 @@ extension PasswordChangeViewModel {
             }.store(in: self.cancelBag)
         
         input.passwordChangeButtonTapped
-            .sink { signUpRequest in
-                // 버튼 클릭 액션
+            .sink { password in
+                self.useCase.changePassword(password: password)
             }.store(in: self.cancelBag)
     
         return output
@@ -87,6 +87,12 @@ extension PasswordChangeViewModel {
             print("PasswordChangeViewModel - completion: \(event)")
         } receiveValue: { isValidForm in
             output.isValidForm.send(isValidForm)
+        }.store(in: cancelBag)
+        
+        useCase.passwordChangeSuccess.sink { event in
+            print("PasswordChangeViewModel - completion: \(event)")
+        } receiveValue: { isSuccess in
+            output.passwordChangeSuccessed.send(isSuccess)
         }.store(in: cancelBag)
     }
 }
