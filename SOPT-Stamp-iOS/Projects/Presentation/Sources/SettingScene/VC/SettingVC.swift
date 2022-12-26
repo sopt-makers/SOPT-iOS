@@ -29,8 +29,7 @@ public class SettingVC: UIViewController {
         .setTitle(I18N.Setting.setting)
     private let collectionViewFlowlayout = UICollectionViewFlowLayout()
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewFlowlayout)
-    
-  
+     
     // MARK: - View Life Cycle
     
     public override func viewDidLoad() {
@@ -61,6 +60,19 @@ extension SettingVC {
     private func setDelegate() {
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
+    }
+    
+    private func showPasswordChangeView() {
+        let passwordChangeVC = self.factory.makePasswordChangeVC()
+        passwordChangeVC.$passwordChangeSuccessed
+            .sink { [weak self] isSuccess in
+                guard let self = self else { return }
+                if isSuccess {
+                    self.showToast(message: I18N.Setting.passwordEditSuccess)
+                }
+            }.store(in: cancelBag)
+        
+        navigationController?.pushViewController(passwordChangeVC, animated: true)
     }
 }
 
@@ -106,7 +118,7 @@ extension SettingVC: UICollectionViewDelegate {
             case 0:
                 print("한마디 편집")
             case 1:
-                print("비밀번호 변경")
+               showPasswordChangeView()
             default:
                 print("닉네임 변경")
             }

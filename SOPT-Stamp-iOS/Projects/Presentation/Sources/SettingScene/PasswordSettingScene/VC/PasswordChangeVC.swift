@@ -23,6 +23,8 @@ public class PasswordChangeVC: UIViewController {
     public var factory: ModuleFactoryInterface!
     public var viewModel: PasswordChangeViewModel!
     private var cancelBag = CancelBag()
+    
+    @Published public var passwordChangeSuccessed = false
   
     // MARK: - UI Components
     
@@ -89,7 +91,12 @@ extension PasswordChangeVC {
         
         output.passwordChangeSuccessed.sink { [weak self] isSuccess in
             guard let self = self else { return }
-            print(isSuccess)
+            self.passwordChangeSuccessed = isSuccess
+            if isSuccess {
+                self.navigationController?.popViewController(animated: true)
+            } else {
+                self.showToast(message: I18N.Setting.passwordEditFail)
+            }
         }.store(in: cancelBag)
     }
 }
