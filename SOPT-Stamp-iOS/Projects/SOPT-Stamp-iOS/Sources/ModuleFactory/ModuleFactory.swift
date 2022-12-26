@@ -118,4 +118,14 @@ extension ModuleFactory: ModuleFactoryInterface {
         settingVC.viewModel = viewModel
         return settingVC
     }
+    
+    public func makePasswordChangeVC() -> PasswordChangeVC {
+        let repository = SettingRepository(service: authService)
+        let useCase = DefaultPasswordChangeUseCase(repository: repository)
+        let viewModel = PasswordChangeViewModel(useCase: useCase)
+        let passwordChangeVC = PasswordChangeVC()
+        passwordChangeVC.factory = self
+        passwordChangeVC.viewModel = viewModel
+        return passwordChangeVC
+    }
 }
