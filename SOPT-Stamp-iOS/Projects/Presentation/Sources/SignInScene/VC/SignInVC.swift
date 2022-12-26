@@ -74,6 +74,7 @@ public class SignInVC: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         self.addKeyboardObserver()
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
     
     deinit {
