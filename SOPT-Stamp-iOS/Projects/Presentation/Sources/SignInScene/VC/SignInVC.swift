@@ -54,9 +54,6 @@ public class SignInVC: UIViewController {
     }
     
     private lazy var signInButton = CustomButton(title: I18N.SignIn.signIn).setEnabled(false)
-//        .then {
-//        $0.addTarget(self, action: #selector(signInButtonDidTap), for: .touchUpInside)
-//    }
     
     private lazy var signUpButton = UIButton(type: .system).then {
         $0.setTitle(I18N.SignIn.signUp, for: .normal)
@@ -90,13 +87,6 @@ public class SignInVC: UIViewController {
         print("find account btn did tap")
         // 화면전환
     }
-//
-//    @objc
-//    private func signInButtonDidTap() {
-//        print("sign in btn did tap")
-//
-//        // 화면 전환
-//    }
     
     @objc
     private func signUpButtonDidTap() {
