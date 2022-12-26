@@ -27,5 +27,8 @@ extension SettingRepository: SettingRepositoryInterface {
 }
 
 extension SettingRepository: PasswordChangeRepositoryInterface {
-    
+    public func changePassword(password: String) -> AnyPublisher<Bool, Error> {
+        networkService.changePassword(password: password, userId: 12).map { statusCode in statusCode == 200 }
+            .eraseToAnyPublisher()
+    }
 }

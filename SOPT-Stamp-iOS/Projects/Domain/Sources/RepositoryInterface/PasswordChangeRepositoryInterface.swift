@@ -9,5 +9,5 @@
 import Combine
 
 public protocol PasswordChangeRepositoryInterface {
-  
+    func changePassword(password: String) -> AnyPublisher<Bool, Error>
 }
