@@ -59,8 +59,38 @@ public class PasswordChangeVC: UIViewController {
 extension PasswordChangeVC {
   
     private func bindViewModels() {
-        let input = PasswordChangeViewModel.Input()
+        let passwordChangeButtonTapped = passwordChangeButton
+            .publisher(for: .touchUpInside)
+            .map { _ in self.passwordTextFieldView.text }
+            .asDriver()
+        
+        let input = PasswordChangeViewModel.Input(
+            passwordTextChanged: passwordTextFieldView.textChanged,
+            passwordCheckTextChanged: passwordCheckTextFieldView.textChanged,
+            passwordChangeButtonTapped: passwordChangeButtonTapped)
+        
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.passwordAlert
+            .map { $0.convertToTextFieldAlertType() }
+            .assign(to: passwordTextFieldView.kf.alertType,
+                    on: passwordTextFieldView)
+            .store(in: cancelBag)
+        
+        output.passwordAccordAlert
+            .map { $0.convertToTextFieldAlertType() }
+            .assign(to: passwordTextFieldView.kf.alertType,
+                    on: passwordCheckTextFieldView)
+            .store(in: cancelBag)
+        
+        output.isValidForm
+            .assign(to: \.isEnabled, on: passwordChangeButton)
+            .store(in: cancelBag)
+        
+        output.passwordChangeSuccessed.sink { [weak self] isSuccess in
+            guard let self = self else { return }
+            print(isSuccess)
+        }.store(in: cancelBag)
     }
 
 }
