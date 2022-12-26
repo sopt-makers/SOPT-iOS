@@ -15,9 +15,11 @@ import Moya
 public typealias DefaultStampService = BaseService<StampAPI>
 
 public protocol StampService {
-    
+    func fetchStampListDetail(userId: Int, missionId: Int) -> AnyPublisher<ListDetailEntity, Error>
 }
 
 extension DefaultStampService: StampService {
-    
+    public func fetchStampListDetail(userId: Int, missionId: Int) -> AnyPublisher<ListDetailEntity, Error> {
+        requestObjectInCombine(StampAPI.fetchStampListDetail(userId: userId, missionId: missionId))
+    }
 }

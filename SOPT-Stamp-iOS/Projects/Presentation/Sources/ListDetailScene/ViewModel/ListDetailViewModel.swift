@@ -63,11 +63,12 @@ extension ListDetailViewModel {
         self.bindOutput(output: output, cancelBag: cancelBag)
         
         input.viewDidLoad
-            .sink {
-                if self.sceneType == .completed {
-                    self.useCase.fetchListDetail(missionId: 3)
+            .withUnretained(self)
+            .sink { owner, _ in
+                if owner.sceneType == .completed {
+                    owner.useCase.fetchListDetail(missionId: owner.missionId)
                 }
-            }.store(in: self.cancelBag)
+            }.store(in: cancelBag)
         
         input.bottomButtonTapped
             .sink { requestModel in

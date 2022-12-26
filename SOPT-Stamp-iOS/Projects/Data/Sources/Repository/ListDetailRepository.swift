@@ -14,18 +14,21 @@ import Network
 
 public class ListDetailRepository {
     
-    private let networkService: MissionService
+    private let stampService: StampService
     private let cancelBag = CancelBag()
 
-    public init(service: MissionService) {
-        self.networkService = service
+    public init(service: StampService) {
+        self.stampService = service
     }
 }
 
 extension ListDetailRepository: ListDetailRepositoryInterface {
     public func fetchListDetail(missionId: Int) -> Driver<ListDetailModel> {
-        // TODO: - networkService.
-        return makeMockListDetailEntity()
+        // TODO: - userdefault에서 userId 연결
+        let userId: Int = 7
+        return stampService.fetchStampListDetail(userId: userId, missionId: missionId)
+            .map { $0.toDomain() }
+            .asDriver()
     }
     
     public func postStamp(missionId: Int, stampData: ListDetailRequestModel) -> Driver<ListDetailModel> {
