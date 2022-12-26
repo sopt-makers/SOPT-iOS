@@ -6,6 +6,8 @@
 //  Copyright © 2022 SOPT-Stamp-iOS. All rights reserved.
 //
 
+import Foundation
+
 import Combine
 
 import Core
@@ -27,8 +29,8 @@ extension SignInRepository: SignInRepositoryInterface {
     
     public func requestSignIn(request: SignInRequest) -> AnyPublisher<SignInModel, Error> {
         networkService.requestSignIn(email: request.email, password: request.password).map { entity in
-            entity.toDomain()
+            UserDefaults.standard.set(entity.userId, forKey: "userId")
+            return entity.toDomain()
         }.eraseToAnyPublisher()
     }
-    
 }
