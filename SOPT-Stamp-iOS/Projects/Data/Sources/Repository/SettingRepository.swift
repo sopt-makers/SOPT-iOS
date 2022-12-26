@@ -25,3 +25,7 @@ public class SettingRepository {
 extension SettingRepository: SettingRepositoryInterface {
     
 }
+
+extension SettingRepository: PasswordChangeRepositoryInterface {
+    
+}
