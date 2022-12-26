@@ -95,6 +95,20 @@ extension MissionListCellType {
     }
 }
 
+extension MissionListModel {
+    func toCellType() -> MissionListCellType {
+        switch self.level {
+        case 1: return .levelOne(completed: self.isCompleted)
+        case 2: return .levelTwo(completed: self.isCompleted)
+        default: return .levelThree(completed: self.isCompleted)
+        }
+    }
+    
+    func toListDetailSceneType() -> ListDetailSceneType {
+        return (self.isCompleted == true) ? .edit : .none
+    }
+}
+
 // MARK: MissionListCVC
 
 final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
@@ -102,6 +116,8 @@ final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     // MARK: - Properties
     
     static var isFromNib: Bool = false
+    
+    public var model: MissionListModel?
     private var cellType: MissionListCellType = .levelOne(completed: false)
     public var initCellType: MissionListCellType {
         get { return self.cellType }
@@ -246,7 +262,8 @@ extension MissionListCVC {
 
 extension MissionListCVC {
     
-    public func setData(model: String) {
-        
+    public func setData(model: MissionListModel) {
+        self.purposeLabel.text = model.title
+        self.model = model
     }
 }

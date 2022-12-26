@@ -8,6 +8,12 @@
 
 import Foundation
 
-public struct MissionListEntity {
-
+public struct MissionListEntityElement: Codable {
+    public let id: Int
+    public let title: String
+    public let level: Int
+    public let profileImage: [String]?
+    public let isCompleted: Bool
 }
+
+public typealias MissionListEntity = [MissionListEntityElement]
