@@ -66,7 +66,7 @@ public extension BaseService {
 // MARK: - MakeRequests
 
 extension BaseService {
-    func requestObjectInCombine<T: Decodable>(_ target: API) -> AnyPublisher<T?, Error> {
+    func requestObjectInCombine<T: Decodable>(_ target: API) -> AnyPublisher<T, Error> {
         return Future { promise in
             self.provider.request(target) { response in
                 switch response {

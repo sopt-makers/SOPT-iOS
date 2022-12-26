@@ -1,6 +1,6 @@
 //
 //  SignInTransform.swift
-//  Presentation
+//  Data
 //
 //  Created by devxsby on 2022/12/01.
 //  Copyright © 2022 SOPT-Stamp-iOS. All rights reserved.
@@ -14,6 +14,6 @@ import Network
 extension SignInEntity {
 
     public func toDomain() -> SignInModel {
-        return SignInModel.init()
+        return SignInModel.init(userId: self.userId, message: self.message)
     }
 }

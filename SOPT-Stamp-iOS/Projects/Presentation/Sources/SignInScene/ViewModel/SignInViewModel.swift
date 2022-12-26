@@ -21,13 +21,14 @@ public class SignInViewModel: ViewModelType {
     public struct Input {
         let emailTextChanged: Driver<String?>
         let passwordTextChanged: Driver<String?>
-        let signInButtonTapped: Driver<SignInModel>
+        let signInButtonTapped: Driver<SignInRequest>
     }
     
     // MARK: - Outputs
     
     public struct Output {
         var isFilledForm = PassthroughSubject<Bool, Never>()
+        var isSignInSuccess = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - init
@@ -48,10 +49,21 @@ extension SignInViewModel {
             .sink { (email, password) in
                 output.isFilledForm.send(!(email.isEmpty || password.isEmpty))
             }.store(in: self.cancelBag)
+        
+        input.signInButtonTapped
+            .sink { signInRequest in
+                self.useCase.requestSignIn(signInRequest: signInRequest)
+            }.store(in: self.cancelBag)
         return output
     }
   
     private func bindOutput(output: Output, cancelBag: CancelBag) {
-    
+        
+        useCase.signInSuccess
+            .sink { event in
+                print("SignInViewModel: \(event)")
+            } receiveValue: { isSignInSuccess in
+                output.isSignInSuccess.send(isSignInSuccess)
+            }.store(in: self.cancelBag)
     }
 }
