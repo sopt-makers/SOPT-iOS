@@ -14,10 +14,10 @@ import Network
 
 public class SettingRepository {
     
-    private let networkService: UserService
+    private let networkService: AuthService
     private let cancelBag = CancelBag()
     
-    public init(service: UserService) {
+    public init(service: AuthService) {
         self.networkService = service
     }
 }

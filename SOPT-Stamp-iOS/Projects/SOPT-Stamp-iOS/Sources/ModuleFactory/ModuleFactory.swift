@@ -110,7 +110,7 @@ extension ModuleFactory: ModuleFactoryInterface {
     }
     
     public func makeSettingVC() -> SettingVC {
-        let repository = SettingRepository(service: userService)
+        let repository = SettingRepository(service: authService)
         let useCase = DefaultSettingUseCase(repository: repository)
         let viewModel = SettingViewModel(useCase: useCase)
         let settingVC = SettingVC()
