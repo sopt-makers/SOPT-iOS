@@ -156,7 +156,9 @@ extension SignInVC {
             SignInRequest(email: self.emailTextField.text, password: self.passwordTextField.text)
         }.asDriver()
         
-        let input = SignInViewModel.Input(emailTextChanged: emailTextField.textChanged, passwordTextChanged: passwordTextField.textChanged, signInButtonTapped: signInButtonTapped)
+        let input = SignInViewModel.Input(emailTextChanged: emailTextField.textChanged,
+                                          passwordTextChanged: passwordTextField.textChanged,
+                                          signInButtonTapped: signInButtonTapped)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.isFilledForm.assign(to: \.isEnabled, on: self.signInButton).store(in: self.cancelBag)
@@ -190,7 +192,6 @@ extension SignInVC {
     @objc func keyboardUp(notification: NSNotification) {
         if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
             let keyboardRectangle = keyboardFrame.cgRectValue
-//            let safeHeight = self.view.safeAreaInsets.bottom
             
             UIView.animate(
                 withDuration: 0.3,
