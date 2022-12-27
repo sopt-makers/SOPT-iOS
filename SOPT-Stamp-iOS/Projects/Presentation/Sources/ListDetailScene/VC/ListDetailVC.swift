@@ -141,7 +141,7 @@ extension ListDetailVC {
             .map { _ in
                 let image = self.missionImageView.image ?? UIImage()
                 let content = self.textView.text
-                return ListDetailRequestModel(imgURL: image.jpegData(compressionQuality: 1.0) ?? Data(), content: content ?? "")
+                return ListDetailRequestModel(imgURL: image.jpegData(compressionQuality: 0.5) ?? Data(), content: content ?? "")
             }
             .asDriver()
         
