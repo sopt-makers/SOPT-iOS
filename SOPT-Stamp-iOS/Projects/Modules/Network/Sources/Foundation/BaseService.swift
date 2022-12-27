@@ -73,8 +73,6 @@ extension BaseService {
                 case .success(let value):
                     do {
                         let decoder = JSONDecoder()
-                        print("🍊", value)
-                        dump(value)
                         let body = try decoder.decode(T.self, from: value.data)
                         promise(.success(body))
                     } catch let error {

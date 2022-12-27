@@ -77,20 +77,19 @@ extension StampAPI: BaseAPI {
                 .putStamp(_, _, let requestModel):
             var multipartData: [Moya.MultipartFormData] = []
             
-            let imageData = MultipartFormData(provider: .data(requestModel.imgURL ?? Data()), name: "imgUrl", fileName: "imgUrl.jpeg", mimeType: "image/jpg")
+            let fileName = (self.method == .post) ? ".jpg" : ".png"
+            let imageData = MultipartFormData(provider: .data(requestModel.imgURL ?? Data()), name: "imgUrl", fileName: fileName, mimeType: "image/jpg")
             multipartData.append(imageData)
         
             do {
                 let content = try JSONSerialization.data(withJSONObject: ["contents": requestModel.content], options: .withoutEscapingSlashes)
                 
-                print("💡", String(data: content, encoding: .utf8))
                 let formData = MultipartFormData(provider: .data(content), name: "stampContent", mimeType: "application/json")
                 multipartData.append(formData)
             } catch {
                 print(error.localizedDescription)
             }
             
-            print("❓ ", multipartData)
             return .uploadMultipart(multipartData)
         default:
             return .requestPlain
