@@ -24,9 +24,11 @@ public class MissionListRepository {
 
 extension MissionListRepository: MissionListRepositoryInterface {
     public func fetchMissionList(type: MissionListFetchType, userId: Int?) -> AnyPublisher<[MissionListModel], Error> {
-        let userId: Int = (userId != nil)
-        ? userId!
-        : 1
+        // TODO: - userId 수정
+//        let userId: Int = (userId != nil)
+//        ? userId!
+//        : 1
+        let userId = 7
         switch type {
         case .all:
             return missionService.fetchAllMissionList(userId: userId)

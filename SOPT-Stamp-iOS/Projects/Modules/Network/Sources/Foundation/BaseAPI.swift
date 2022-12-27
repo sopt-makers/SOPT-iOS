@@ -55,6 +55,7 @@ public enum HeaderType {
     case json
     case jsonUserId(userId: Int)
     case userId(userId: Int)
+    case multipart(userId: Int)
     
     public var value: [String: String] {
         switch self {
@@ -65,6 +66,9 @@ public enum HeaderType {
                     "userId": String(userId)]
         case .userId(let userId):
             return ["userId": String(userId)]
+        case .multipart(let userId):
+            return ["Content-Type": "multipart/form-data",
+                    "userId": String(userId)]
         }
     }
 }

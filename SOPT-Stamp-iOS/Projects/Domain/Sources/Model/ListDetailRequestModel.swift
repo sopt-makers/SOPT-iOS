@@ -9,10 +9,10 @@
 import UIKit
 
 public struct ListDetailRequestModel {
-    let imgURL: UIImage
-    let content: String
+    public let imgURL: Data?
+    public let content: String
     
-    public init(imgURL: UIImage, content: String) {
+    public init(imgURL: Data, content: String) {
         self.imgURL = imgURL
         self.content = content
     }

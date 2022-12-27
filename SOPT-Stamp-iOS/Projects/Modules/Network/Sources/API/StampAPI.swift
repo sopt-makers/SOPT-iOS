@@ -11,8 +11,12 @@ import Foundation
 import Alamofire
 import Moya
 
+import Domain
+
 public enum StampAPI {
     case fetchStampListDetail(userId: Int, missionId: Int)
+    case postStamp(userId: Int, missionId: Int, requestModel: ListDetailRequestModel)
+    case putStamp(userId: Int, missionId: Int, requestModel: ListDetailRequestModel)
 }
 
 extension StampAPI: BaseAPI {
@@ -24,22 +28,29 @@ extension StampAPI: BaseAPI {
         switch self {
         case .fetchStampListDetail(let userId, _):
             return HeaderType.userId(userId: userId).value
-        default: return HeaderType.json.value
+        case .postStamp(let userId, _, _),
+                .putStamp(let userId, _, _):
+            return HeaderType.multipart(userId: userId).value
         }
     }
     
     // MARK: - Path
     public var path: String {
         switch self {
-        case .fetchStampListDetail(_, let missionId):
+        case .fetchStampListDetail(_, let missionId),
+                .postStamp(_ , let missionId, _),
+                .putStamp(_ , let missionId, _):
             return "/\(missionId)"
-        default: return ""
         }
     }
     
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
+        case .postStamp:
+            return .post
+        case .putStamp:
+            return .put
         default: return .get
         }
     }
@@ -62,6 +73,25 @@ extension StampAPI: BaseAPI {
     
     public var task: Task {
         switch self {
+        case .postStamp(_ , _, let requestModel),
+                .putStamp(_, _, let requestModel):
+            var multipartData: [Moya.MultipartFormData] = []
+            
+            let imageData = MultipartFormData(provider: .data(requestModel.imgURL ?? Data()), name: "imgUrl", fileName: "imgUrl", mimeType: "image/jpeg")
+            multipartData.append(imageData)
+        
+            do {
+                let content = try JSONSerialization.data(withJSONObject: ["contents": requestModel.content], options: .withoutEscapingSlashes)
+                
+//                print("💡", String(data: content, encoding: .utf8))
+                let formData = MultipartFormData(provider: .data(content), name: "stampContent", mimeType: "application/json")
+                multipartData.append(formData)
+            } catch {
+                print(error.localizedDescription)
+            }
+            
+//            print("❓ ", multipartData)
+            return .uploadMultipart(multipartData)
         default:
             return .requestPlain
         }

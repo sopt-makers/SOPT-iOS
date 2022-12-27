@@ -139,7 +139,9 @@ extension ListDetailVC {
         let bottomButtonTapped = bottomButton
             .publisher(for: .touchUpInside)
             .map { _ in
-                ListDetailRequestModel(imgURL: self.missionImageView.image ?? UIImage(), content: self.textView.text)
+                let image = self.missionImageView.image ?? UIImage()
+                let content = self.textView.text
+                return ListDetailRequestModel(imgURL: image.jpegData(compressionQuality: 1.0) ?? Data(), content: content ?? "")
             }
             .asDriver()
         
