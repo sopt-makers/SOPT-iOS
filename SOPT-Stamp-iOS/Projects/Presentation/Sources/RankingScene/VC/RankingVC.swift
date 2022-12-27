@@ -9,6 +9,7 @@
 import UIKit
 
 import Core
+import Domain
 import DSKit
 
 import Combine
@@ -37,7 +38,6 @@ public class RankingVC: UIViewController {
         cv.showsVerticalScrollIndicator = true
         cv.backgroundColor = .white
         cv.refreshControl = refresher
-        refresher.addTarget(self, action: #selector(fetchData(_:)), for: .valueChanged)
         return cv
     }()
     
@@ -56,7 +56,6 @@ public class RankingVC: UIViewController {
         self.registerCells()
         self.bindViewModels()
         self.setDataSource()
-        self.applySnapshot()
     }
 }
 
@@ -89,8 +88,23 @@ extension RankingVC {
 extension RankingVC {
     
     private func bindViewModels() {
-        let input = RankingViewModel.Input()
+        let refreshStarted = refresher.publisher(for: .valueChanged)
+            .map { _ in () }
+            .eraseToAnyPublisher()
+            .asDriver()
+        
+        let input = RankingViewModel.Input(viewDidLoad: Driver.just(()),
+                                           refreshStarted: refreshStarted)
+        
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.$rankingListModel
+            .dropFirst()
+            .withUnretained(self)
+            .sink { owner, model in
+                owner.applySnapshot(model: model)
+                owner.endRefresh()
+            }.store(in: self.cancelBag)
     }
     
     private func setDelegate() {
@@ -106,51 +120,50 @@ extension RankingVC {
         dataSource = UICollectionViewDiffableDataSource(collectionView: rankingCollectionView, cellProvider: { collectionView, indexPath, itemIdentifier in
             switch RankingSection.type(indexPath.section) {
             case .chart:
-                guard let chartCell = collectionView.dequeueReusableCell(withReuseIdentifier: RankingChartCVC.className, for: indexPath) as? RankingChartCVC else { return UICollectionViewCell() }
-                chartCell.setData(model: "")
+                guard let chartCell = collectionView.dequeueReusableCell(withReuseIdentifier: RankingChartCVC.className, for: indexPath) as? RankingChartCVC,
+                      let chartCellModel = itemIdentifier as? RankingChartModel else { return UICollectionViewCell() }
+                chartCell.setData(model: chartCellModel)
                 
                 return chartCell
                 
             case .list:
-                guard let rankingListCell = collectionView.dequeueReusableCell(withReuseIdentifier: RankingListCVC.className, for: indexPath) as? RankingListCVC else { return UICollectionViewCell() }
-                guard let index = itemIdentifier as? Int else { return UICollectionViewCell() }
+                guard let rankingListCell = collectionView.dequeueReusableCell(withReuseIdentifier: RankingListCVC.className, for: indexPath) as? RankingListCVC,
+                      let rankingListCellModel = itemIdentifier as? RankingModel else { return UICollectionViewCell() }
+                rankingListCell.setData(model: rankingListCellModel, rank: indexPath.row + 1 + 3)
                 
                 return rankingListCell
             }
         })
     }
     
-    func applySnapshot() {
+    func applySnapshot(model: [RankingModel]) {
         var snapshot = NSDiffableDataSourceSnapshot<RankingSection, AnyHashable>()
         snapshot.appendSections([.chart, .list])
-        snapshot.appendItems([-1], toSection: .chart)
-        var tempItems: [Int] = []
-        for i in 0..<50 {
-            tempItems.append(i)
-        }
-        snapshot.appendItems(tempItems, toSection: .list)
+        guard let chartCellModels = Array(model[0...2]) as? [RankingModel],
+              let rankingListModel = Array(model[3...model.count-1]) as? [RankingModel] else { return }
+        let chartCellModel = RankingChartModel.init(ranking: chartCellModels)
+        snapshot.appendItems([chartCellModel], toSection: .chart)
+        snapshot.appendItems(rankingListModel, toSection: .list)
         dataSource.apply(snapshot, animatingDifferences: false)
         self.view.setNeedsLayout()
     }
     
-    @objc
-    private func fetchData(_ sender: Any) {
-        DispatchQueue.main.asyncAfter(deadline: .now()+1.5) {
-            self.refresher.endRefreshing()
-        }
+    private func endRefresh() {
+        self.refresher.endRefreshing()
     }
 }
 
 extension RankingVC: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        guard let tappedCell = collectionView.cellForItem(at: indexPath) as? MissionListCVC,
-//              let model = tappedCell.model,
-//              let starLevel = StarViewLevel.init(rawValue: model.level)else { return }
-//        let sceneType = model.toListDetailSceneType()
-        
-        let otherUserMissionListVC = factory.makeMissionListVC(sceneType: .ranking(userName: "유저",
-                                                                                   sentence: "한마디입니다",
-                                                                                   userId: 2))
+        guard let tappedCell = collectionView.cellForItem(at: indexPath) as? RankingListTappble,
+              let item = tappedCell.getModelItem() else { return }
+        self.pushToOtherUserMissionListVC(item: item)
+    }
+    
+    private func pushToOtherUserMissionListVC(item: RankingListTapItem) {
+        let otherUserMissionListVC = factory.makeMissionListVC(sceneType: .ranking(userName: item.username,
+                                                                                   sentence: item.sentence,
+                                                                                   userId: item.userId))
         self.navigationController?.pushViewController(otherUserMissionListVC, animated: true)
     }
 }

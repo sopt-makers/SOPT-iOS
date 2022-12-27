@@ -9,5 +9,5 @@
 import Combine
 
 public protocol RankingRepositoryInterface {
-  
+    func fetchRankingListModel() -> AnyPublisher<[RankingModel], Error>
 }

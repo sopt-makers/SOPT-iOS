@@ -174,7 +174,16 @@ extension ChartRectangleView {
 }
 
 extension ChartRectangleView {
-    static func ==(left: ChartRectangleView, right: ChartRectangleView) -> Bool {
+    public func setData(score: Int, username: String) {
+        self.usernameLabel.text = username
+        self.scoreLabel.text = "\(score)점"
+        self.scoreLabel.partFontChange(targetString: "점",
+                                       font: DSKitFontFamily.Pretendard.medium.font(size: 12))
+    }
+}
+
+extension ChartRectangleView {
+    static func == (left: ChartRectangleView, right: ChartRectangleView) -> Bool {
         return left.viewLevel == right.viewLevel
     }
 }
