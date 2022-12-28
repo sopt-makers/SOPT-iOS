@@ -78,7 +78,9 @@ extension StampAPI: BaseAPI {
             var multipartData: [Moya.MultipartFormData] = []
             
             let fileName = (self.method == .post) ? ".jpg" : ".png"
-            let imageData = MultipartFormData(provider: .data(requestModel.imgURL ?? Data()), name: "imgUrl", fileName: fileName, mimeType: "image/jpg")
+            let mimeType = (self.method == .post) ? "image/jpeg" : "image/png"
+            
+            let imageData = MultipartFormData(provider: .data(requestModel.imgURL ?? Data()), name: "imgUrl", fileName: fileName, mimeType: mimeType)
             multipartData.append(imageData)
         
             do {
