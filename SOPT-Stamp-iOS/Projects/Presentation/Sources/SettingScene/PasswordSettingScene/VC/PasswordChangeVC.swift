@@ -92,7 +92,7 @@ extension PasswordChangeVC {
             if isSuccess {
                 self.navigationController?.popViewController(animated: true)
                 let window = self.view.window!
-                Toast.showInView(message: I18N.Setting.passwordEditSuccess, view: window)
+                Toast.show(message: I18N.Setting.passwordEditSuccess, view: window, safeAreaBottomInset: self.safeAreaBottomInset())
             } else {
                 self.showToast(message: I18N.Setting.passwordEditFail)
             }
