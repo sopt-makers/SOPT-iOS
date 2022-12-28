@@ -44,9 +44,8 @@ extension ListDetailRepository: ListDetailRepositoryInterface {
     }
     
     public func deleteStamp(stampId: Int) -> Driver<Bool> {
-        // TODO: - networkService
-        return Just(Bool.random())
-            .setFailureType(to: Error.self)
+        return stampService.deleteStamp(stampId: stampId)
+            .map { $0 == 200 }
             .asDriver()
     }
 }

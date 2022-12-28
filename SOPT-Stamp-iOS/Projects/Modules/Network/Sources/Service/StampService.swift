@@ -20,6 +20,7 @@ public protocol StampService {
     func fetchStampListDetail(userId: Int, missionId: Int) -> AnyPublisher<ListDetailEntity, Error>
     func postStamp(userId: Int, missionId: Int, requestModel: ListDetailRequestModel) -> AnyPublisher<ListDetailEntity, Error>
     func putStamp(userId: Int, missionId: Int, requestModel: ListDetailRequestModel) -> AnyPublisher<StampEntity, Error>
+    func deleteStamp(stampId: Int) -> AnyPublisher<Int, Error>
 }
 
 extension DefaultStampService: StampService {
@@ -33,5 +34,15 @@ extension DefaultStampService: StampService {
     
     public func putStamp(userId: Int, missionId: Int, requestModel: ListDetailRequestModel) -> AnyPublisher<StampEntity, Error> {
         requestObjectInCombine(StampAPI.putStamp(userId: userId, missionId: missionId, requestModel: requestModel))
+    }
+    
+    public func deleteStamp(stampId: Int) -> AnyPublisher<Int, Error> {
+        let subject = PassthroughSubject<Int, Error>()
+        requestObjectWithNoResult(StampAPI.deleteStamp(stampId: stampId)) { result in
+            result.success { statusCode in
+                subject.send(statusCode ?? 0)
+            }
+        }
+        return subject.eraseToAnyPublisher()
     }
 }

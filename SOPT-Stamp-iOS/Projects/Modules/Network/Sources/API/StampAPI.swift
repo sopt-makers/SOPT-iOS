@@ -17,6 +17,7 @@ public enum StampAPI {
     case fetchStampListDetail(userId: Int, missionId: Int)
     case postStamp(userId: Int, missionId: Int, requestModel: ListDetailRequestModel)
     case putStamp(userId: Int, missionId: Int, requestModel: ListDetailRequestModel)
+    case deleteStamp(stampId: Int)
 }
 
 extension StampAPI: BaseAPI {
@@ -31,6 +32,8 @@ extension StampAPI: BaseAPI {
         case .postStamp(let userId, _, _),
                 .putStamp(let userId, _, _):
             return HeaderType.multipart(userId: userId).value
+        case .deleteStamp:
+            return HeaderType.json.value
         }
     }
     
@@ -41,6 +44,8 @@ extension StampAPI: BaseAPI {
                 .postStamp(_ , let missionId, _),
                 .putStamp(_ , let missionId, _):
             return "/\(missionId)"
+        case .deleteStamp(let stampId):
+            return "/\(stampId)"
         }
     }
     
@@ -51,6 +56,8 @@ extension StampAPI: BaseAPI {
             return .post
         case .putStamp:
             return .put
+        case .deleteStamp:
+            return .delete
         default: return .get
         }
     }
