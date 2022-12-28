@@ -75,8 +75,8 @@ public struct I18N {
         public static let memoPlaceHolder = "메모를 작성해주세요"
         public static let mission = "미션"
         public static let missionComplete = "미션 완료"
-        public static let editComplte = "수정 완료"
-
+        public static let editComplete = "수정 완료"
+        public static let editCompletedToast = "수정 완료되었습니다."
         public static let deleteTitle = "달성한 미션을 삭제하시겠습니까?"
     }
     
