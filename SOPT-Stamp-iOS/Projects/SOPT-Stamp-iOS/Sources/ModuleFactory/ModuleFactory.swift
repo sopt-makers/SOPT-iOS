@@ -39,7 +39,7 @@ extension ModuleFactory: ModuleFactoryInterface {
     }
     
     public func makeSignInVC() -> Presentation.SignInVC {
-        let repository = SignInRepository(service: authService)
+        let repository = SignInRepository(service: userService)
         let useCase = DefaultSignInUseCase(repository: repository)
         let viewModel = SignInViewModel(useCase: useCase)
         let signinVC = SignInVC()
