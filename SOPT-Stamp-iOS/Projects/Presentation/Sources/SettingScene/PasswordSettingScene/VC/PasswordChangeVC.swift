@@ -23,9 +23,7 @@ public class PasswordChangeVC: UIViewController {
     public var factory: ModuleFactoryInterface!
     public var viewModel: PasswordChangeViewModel!
     private var cancelBag = CancelBag()
-    
-    @Published public var passwordChangeSuccessed = false
-  
+      
     // MARK: - UI Components
     
     private lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
@@ -91,9 +89,10 @@ extension PasswordChangeVC {
         
         output.passwordChangeSuccessed.sink { [weak self] isSuccess in
             guard let self = self else { return }
-            self.passwordChangeSuccessed = isSuccess
             if isSuccess {
                 self.navigationController?.popViewController(animated: true)
+                let window = self.view.window!
+                Toast.showInView(message: I18N.Setting.passwordEditSuccess, view: window)
             } else {
                 self.showToast(message: I18N.Setting.passwordEditFail)
             }

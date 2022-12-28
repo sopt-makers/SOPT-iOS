@@ -64,14 +64,6 @@ extension SettingVC {
     
     private func showPasswordChangeView() {
         let passwordChangeVC = self.factory.makePasswordChangeVC()
-        passwordChangeVC.$passwordChangeSuccessed
-            .sink { [weak self] isSuccess in
-                guard let self = self else { return }
-                if isSuccess {
-                    self.showToast(message: I18N.Setting.passwordEditSuccess)
-                }
-            }.store(in: cancelBag)
-        
         navigationController?.pushViewController(passwordChangeVC, animated: true)
     }
 }
