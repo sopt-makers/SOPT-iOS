@@ -107,7 +107,7 @@ public class ListDetailVC: UIViewController {
     private let imagePlaceholderLabel = UILabel()
     private let textView = UITextView()
     private let dateLabel = UILabel()
-    private lazy var bottomButton = CustomButton(title: sceneType == .none ? I18N.ListDetail.missionComplete : I18N.ListDetail.editComplte)
+    private lazy var bottomButton = CustomButton(title: sceneType == .none ? I18N.ListDetail.missionComplete : I18N.ListDetail.editComplete)
         .setEnabled(false)
         .setColor(bgColor: starLevel.pointColor,
                      disableColor: starLevel.disableColor,
@@ -167,6 +167,7 @@ extension ListDetailVC {
         output.editSuccessed
             .sink { successed in
                 self.reloadData(.completed)
+                self.showToast(message: I18N.ListDetail.editCompletedToast)
             }.store(in: self.cancelBag)
         
         output.showDeleteAlert

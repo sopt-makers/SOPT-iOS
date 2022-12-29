@@ -14,13 +14,13 @@ import Network
 
 public class ListDetailRepository {
     
-    // TODO: - userdefault에서 userId 연결
-    private let userId: Int = 7
+    private let userId: Int = UserDefaultKeyList.Auth.userId ?? 0
     private let stampService: StampService
     private let cancelBag = CancelBag()
 
     public init(service: StampService) {
         self.stampService = service
+        print("listdetailrepository", userId)
     }
 }
 

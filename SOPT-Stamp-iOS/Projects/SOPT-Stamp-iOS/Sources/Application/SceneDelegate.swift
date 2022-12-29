@@ -7,6 +7,7 @@
 
 import UIKit
 
+import Core
 import Presentation
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -20,7 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(frame: scene.coordinateSpace.bounds)
         window?.windowScene = scene
-        let rootVC = ModuleFactory.shared.makeMissionListVC(sceneType: .default)
+        let rootVC = ModuleFactory.shared.makeSplashVC()
         window?.rootViewController = UINavigationController(rootViewController: rootVC)
         window?.makeKeyAndVisible()
     }

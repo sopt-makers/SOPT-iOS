@@ -39,7 +39,7 @@ extension ModuleFactory: ModuleFactoryInterface {
     }
     
     public func makeSignInVC() -> Presentation.SignInVC {
-        let repository = SignInRepository(service: authService)
+        let repository = SignInRepository(service: userService)
         let useCase = DefaultSignInUseCase(repository: repository)
         let viewModel = SignInViewModel(useCase: useCase)
         let signinVC = SignInVC()
@@ -118,12 +118,22 @@ extension ModuleFactory: ModuleFactoryInterface {
     }
     
     public func makeSettingVC() -> SettingVC {
-        let repository = SettingRepository(service: userService)
+        let repository = SettingRepository(service: authService)
         let useCase = DefaultSettingUseCase(repository: repository)
         let viewModel = SettingViewModel(useCase: useCase)
         let settingVC = SettingVC()
         settingVC.factory = self
         settingVC.viewModel = viewModel
         return settingVC
+    }
+    
+    public func makePasswordChangeVC() -> PasswordChangeVC {
+        let repository = SettingRepository(service: authService)
+        let useCase = DefaultPasswordChangeUseCase(repository: repository)
+        let viewModel = PasswordChangeViewModel(useCase: useCase)
+        let passwordChangeVC = PasswordChangeVC()
+        passwordChangeVC.factory = self
+        passwordChangeVC.viewModel = viewModel
+        return passwordChangeVC
     }
 }
