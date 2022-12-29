@@ -96,6 +96,7 @@ public struct I18N {
         public static let resetMissionTitle = "스탬프를 초기화 하시겠습니까?"
         public static let resetMissionDescription = "사진, 메모가 삭제되고\n 전체 미션이 미완료상태로 초기화됩니다."
         public static let reset = "초기화"
+        public static let resetSuccess = "초기화 되었습니다"
         public static let logout = "로그아웃"
         public static let withdraw = "탈퇴하기"
         public static let passwordEditSuccess = "비밀번호가 변경되었습니다."

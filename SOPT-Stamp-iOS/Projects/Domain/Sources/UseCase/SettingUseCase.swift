@@ -8,14 +8,19 @@
 
 import Combine
 
-public protocol SettingUseCase {
+import Core
 
+public protocol SettingUseCase {
+    func resetStamp()
+    var resetSuccess: PassthroughSubject<Bool, Error> { get set }
 }
 
 public class DefaultSettingUseCase {
   
     private let repository: SettingRepositoryInterface
-    private var cancelBag = Set<AnyCancellable>()
+    private var cancelBag = CancelBag()
+    
+    public var resetSuccess = PassthroughSubject<Bool, Error>()
   
     public init(repository: SettingRepositoryInterface) {
         self.repository = repository
@@ -23,5 +28,10 @@ public class DefaultSettingUseCase {
 }
 
 extension DefaultSettingUseCase: SettingUseCase {
-  
+    public func resetStamp() {
+        repository.resetStamp()
+            .sink { success in
+                self.resetSuccess.send(success)
+            }.store(in: self.cancelBag)
+    }
 }

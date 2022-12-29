@@ -21,6 +21,7 @@ public protocol StampService {
     func postStamp(userId: Int, missionId: Int, requestModel: ListDetailRequestModel) -> AnyPublisher<ListDetailEntity, Error>
     func putStamp(userId: Int, missionId: Int, requestModel: ListDetailRequestModel) -> AnyPublisher<StampEntity, Error>
     func deleteStamp(stampId: Int) -> AnyPublisher<Int, Error>
+    func resetStamp(userId: Int) -> AnyPublisher<Int, Error>
 }
 
 extension DefaultStampService: StampService {
@@ -44,5 +45,10 @@ extension DefaultStampService: StampService {
             }
         }
         return subject.eraseToAnyPublisher()
+//        return requestObjectInCombineNoResult(StampAPI.deleteStamp(stampId: stampId))
+    }
+    
+    public func resetStamp(userId: Int) -> AnyPublisher<Int, Error> {
+        return requestObjectInCombineNoResult(StampAPI.resetStamp(userId: userId))
     }
 }

@@ -48,8 +48,16 @@ public class SettingVC: UIViewController {
 extension SettingVC {
   
     private func bindViewModels() {
-        let input = SettingViewModel.Input()
+        let input = SettingViewModel.Input(
+            resetButtonTapped: resetButtonTapped.asDriver())
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.resetSuccessed
+            .sink { success in
+                if success {
+                    self.showToast(message: I18N.Setting.resetSuccess)
+                }
+            }.store(in: self.cancelBag)
     }
     
     private func setRegister() {
@@ -64,14 +72,12 @@ extension SettingVC {
     }
     
     private func presentResetAlertVC() {
-        let alertVC = self.factory.makeAlertVC(
-            type: .titleWithDesciption,
-            title: I18N.Setting.resetMissionTitle,
-            description: I18N.Setting.resetMissionDescription,
-            customButtonTitle: I18N.Setting.reset)
+        let alertVC = self.factory.makeAlertVC(type: .titleWithDesciption,
+                                               title: I18N.Setting.resetMissionTitle,
+                                               description: I18N.Setting.resetMissionDescription,
+                                               customButtonTitle: I18N.Setting.reset)
         alertVC.customAction = {
             self.resetButtonTapped.send(true)
-            print("resetButtonTapped")
         }
         
         self.present(alertVC, animated: true)

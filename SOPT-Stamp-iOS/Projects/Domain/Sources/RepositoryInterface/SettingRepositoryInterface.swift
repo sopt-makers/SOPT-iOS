@@ -6,8 +6,10 @@
 //  Copyright © 2022 SOPT-Stamp-iOS. All rights reserved.
 //
 
+import Core
+
 import Combine
 
 public protocol SettingRepositoryInterface {
-  
+    func resetStamp() -> Driver<Bool>
 }
