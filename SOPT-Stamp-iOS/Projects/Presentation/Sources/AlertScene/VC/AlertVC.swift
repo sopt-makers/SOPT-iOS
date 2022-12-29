@@ -15,7 +15,7 @@ import DSKit
 
 public enum AlertType {
     case title
-    case titleWithDesciption
+    case titleDescription
     case networkErr
 }
 
@@ -162,7 +162,7 @@ extension AlertVC {
         alertView.addSubviews(cancelButton)
         
         switch type {
-        case .title, .titleWithDesciption:
+        case .title, .titleDescription:
             alertView.addSubviews(customButton)
             
             cancelButton.snp.makeConstraints { make in
