@@ -22,4 +22,5 @@ public protocol ModuleFactoryInterface {
     func makeAlertVC(title: String, customButtonTitle: String) -> AlertVC
     func makeRankingVC() -> RankingVC
     func makeSettingVC() -> SettingVC
+    func makePasswordChangeVC() -> PasswordChangeVC
 }

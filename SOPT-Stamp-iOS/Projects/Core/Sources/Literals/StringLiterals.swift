@@ -84,7 +84,7 @@ public struct I18N {
         public static let setting = "설정"
         public static let myinfo = "내 정보"
         public static let bioEdit = "한 마디 편집"
-        public static let passwordEdit = "비밀번호 편집"
+        public static let passwordEdit = "비밀번호 변경"
         public static let nicknameEdit = "닉네임 변경"
         public static let serviceUsagePolicy = "서비스 이용방침"
         public static let personalInfoPolicy = "개인정보처리방침"
@@ -94,5 +94,7 @@ public struct I18N {
         public static let resetMission = "미션 초기화"
         public static let logout = "로그아웃"
         public static let withdraw = "탈퇴하기"
+        public static let passwordEditSuccess = "비밀번호가 변경되었습니다."
+        public static let passwordEditFail = "비밀번호 변경 실패"
     }
 }
