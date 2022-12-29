@@ -83,10 +83,15 @@ extension SpeechBalloonView {
             make.top.equalToSuperview()
             
             let standardSize = calculateLabelSize(sentence: sentence)
-            if standardSize < 108.adjusted {
-                make.width.equalTo(108.adjusted + 20)
+            let smallBalloonMinimumWidth: CGFloat = 108
+            let smallBalloonCompensates: CGFloat = 10
+            let smallBalloonWidth = smallBalloonMinimumWidth - smallBalloonCompensates
+            let largeBalloonCompensates: CGFloat = 30 * standardSize / 266.adjusted
+            
+            if standardSize < smallBalloonWidth.adjusted {
+                make.width.equalTo(smallBalloonWidth.adjusted + smallBalloonCompensates)
             } else if standardSize < 266.adjusted {
-                make.width.equalTo(standardSize + 40)
+                make.width.equalTo(standardSize + largeBalloonCompensates)
             } else {
                 make.width.lessThanOrEqualToSuperview()
                 sentenceLabel.lineBreakMode = .byTruncatingTail
@@ -121,9 +126,9 @@ extension SpeechBalloonView {
     private func calculateLabelSize(sentence: String) -> CGFloat {
         let tempLabel = BalloonPaddingLabel()
         tempLabel.text = sentence
-        tempLabel.sizeToFit()
         tempLabel.setTypoStyle(.subtitle3)
-        return tempLabel.frame.width
+        tempLabel.sizeToFit()
+        return tempLabel.intrinsicContentSize.width
     }
 }
 

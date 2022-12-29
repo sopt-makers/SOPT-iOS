@@ -8,6 +8,7 @@
 
 import Foundation
 
-public struct SignInEntity {
-    
+public struct SignInEntity: Codable {
+    public let userId: Int?
+    public let message: String?
 }

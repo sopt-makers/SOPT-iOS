@@ -1,15 +1,16 @@
 //
-//  SignInModel.swift
-//  Presentation
+//  SignInRequest.swift
+//  Domain
 //
 //  Created by devxsby on 2022/12/01.
 //  Copyright © 2022 SOPT-Stamp-iOS. All rights reserved.
 //
 
-import Foundation
+import Combine
 
-public struct SignInModel {
+import Core
 
+public struct SignInRequest {
     public let email: String
     public let password: String
     

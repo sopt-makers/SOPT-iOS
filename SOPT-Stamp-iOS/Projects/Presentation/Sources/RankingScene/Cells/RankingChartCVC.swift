@@ -100,9 +100,20 @@ extension RankingChartCVC {
         baloonViews.removeAll()
     }
     
-    public func setData(model: String) {
+    public func setData(model: RankingChartModel) {
         
-        for (index, sentence) in ["안녕하세요", "제가 일등일 수도 있습니다 하하", "그래"].enumerated() {
+        // 데이터 바인딩을 위한 모델 순서 재정렬
+        let arrangedModel = [model.ranking[1], model.ranking[0], model.ranking[2]]
+        let sentences = arrangedModel.map { $0.sentence }
+        
+        self.setSpeechBalloonViews(sentences: sentences)
+        self.setChartData(chartRectangleModel: arrangedModel)
+    }
+    
+    private func setSpeechBalloonViews(sentences: [String]) {
+        
+        // 말풍선 text 설정
+        for (index, sentence) in sentences.enumerated() {
             var baloonView: SpeechBalloonView
             if index == 0 {
                 baloonView = SpeechBalloonView.init(level: .rankTwo, sentence: sentence)
@@ -126,5 +137,19 @@ extension RankingChartCVC {
                 make.centerX.equalToSuperview()
             }
         }
+    }
+    
+    private func setChartData(chartRectangleModel: [RankingModel]) {
+        for (index, rectangle) in chartStackView.subviews.enumerated() {
+            guard let chartRectangle = rectangle as? ChartRectangleView else { return }
+            chartRectangle.setData(score: chartRectangleModel[index].score,
+                                   username: chartRectangleModel[index].username)
+        }
+    }
+}
+
+extension RankingChartCVC: RankingListTappble {
+    func getModelItem() -> RankingListTapItem? {
+        return RankingListTapItem.init(username: "유저", sentence: "한마디", userId: 1)
     }
 }

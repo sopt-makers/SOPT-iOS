@@ -103,11 +103,17 @@ public class MissionListVC: UIViewController {
         super.viewDidLoad()
         self.setUI()
         self.setLayout()
+        self.changeRootViewController()
         self.setDelegate()
         self.registerCells()
         self.setDataSource()
         self.bindViews()
         self.bindViewModels()
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
 }
 
@@ -217,6 +223,13 @@ extension MissionListVC {
 
 extension MissionListVC {
     
+    private func changeRootViewController() {
+        guard let uWindow = self.view.window else { return }
+        uWindow.rootViewController = self
+        uWindow.makeKey()
+        UIView.transition(with: uWindow, duration: 0.5, options: [.transitionCrossDissolve], animations: {}, completion: nil)
+    }
+    
     private func setDelegate() {
         missionListCollectionView.delegate = self
     }
@@ -290,5 +303,11 @@ extension MissionListVC: UICollectionViewDelegate {
         default:
             return
         }
+    }
+}
+
+extension MissionListVC: UIGestureRecognizerDelegate {
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return false
     }
 }

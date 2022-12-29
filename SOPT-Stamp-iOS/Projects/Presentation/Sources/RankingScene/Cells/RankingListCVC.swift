@@ -21,6 +21,8 @@ final class RankingListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     
     static var isFromNib: Bool = false
     
+    private var model: RankingModel?
+    
     // MARK: - UI Components
     
     private let rankLabel: UILabel = {
@@ -116,7 +118,22 @@ extension RankingListCVC {
 
 extension RankingListCVC {
     
-    public func setData(model: String) {
-        
+    public func setData(model: RankingModel, rank: Int) {
+        self.model = model
+        rankLabel.text = String(rank)
+        usernameLabel.text = model.username
+        sentenceLabel.text = model.sentence
+        scoreLabel.text = "\(model.score)점"
+        scoreLabel.partFontChange(targetString: "점",
+                                  font: DSKitFontFamily.Pretendard.medium.font(size: 12))
+    }
+}
+
+extension RankingListCVC: RankingListTappble {
+    func getModelItem() -> RankingListTapItem? {
+        guard let model = model else { return nil }
+        return RankingListTapItem.init(username: model.username,
+                                       sentence: model.sentence,
+                                       userId: model.userId)
     }
 }

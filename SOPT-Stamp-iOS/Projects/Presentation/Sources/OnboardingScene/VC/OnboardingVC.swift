@@ -64,6 +64,11 @@ public class OnboardingVC: UIViewController {
         self.setCollectionViewCell()
         self.setOnboardingData()
     }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+    }
 
     // MARK: - @objc Function
     
