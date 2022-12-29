@@ -29,7 +29,7 @@ extension SignInRepository: SignInRepositoryInterface {
     
     public func requestSignIn(request: SignInRequest) -> AnyPublisher<SignInModel, Error> {
         networkService.requestSignIn(email: request.email, password: request.password).map { entity in
-            UserDefaults.standard.set(entity.userId, forKey: "userId")
+            UserDefaultKeyList.Auth.userId = entity.userId
             return entity.toDomain()
         }.eraseToAnyPublisher()
     }
