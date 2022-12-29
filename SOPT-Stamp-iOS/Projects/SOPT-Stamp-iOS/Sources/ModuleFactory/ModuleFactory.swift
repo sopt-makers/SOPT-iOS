@@ -90,10 +90,18 @@ extension ModuleFactory: ModuleFactoryInterface {
         return missionCompletedVC
     }
     
-    public func makeAlertVC(title: String, customButtonTitle: String) -> AlertVC {
-        let alertVC = AlertVC()
-            .setTitle(title)
+    public func makeAlertVC(type: AlertType, title: String, description: String = "", customButtonTitle: String) -> AlertVC {
+        let alertVC = AlertVC(alertType: type)
+            .setTitle(title, description)
             .setCustomButtonTitle(customButtonTitle)
+        alertVC.modalPresentationStyle = .overFullScreen
+        alertVC.modalTransitionStyle = .crossDissolve
+        return alertVC
+    }
+    
+    public func makeNetworkAlertVC() -> AlertVC {
+        let alertVC = AlertVC(alertType: .networkErr)
+            .setTitle(I18N.Default.networkError, I18N.Default.networkErrorDescription)
         alertVC.modalPresentationStyle = .overFullScreen
         alertVC.modalTransitionStyle = .crossDissolve
         return alertVC

@@ -257,7 +257,11 @@ extension ListDetailVC {
     }
     
     private func presentDeleteAlertVC() {
-        let alertVC = self.factory.makeAlertVC(title: I18N.ListDetail.deleteTitle, customButtonTitle: I18N.Default.delete)
+        let alertVC = self.factory.makeAlertVC(
+            type: .titleWithDesciption,
+            title: I18N.ListDetail.deleteTitle,
+            description: "",
+            customButtonTitle: I18N.Default.delete)
         alertVC.customAction = {
             self.deleteButtonTapped.send(true)
         }

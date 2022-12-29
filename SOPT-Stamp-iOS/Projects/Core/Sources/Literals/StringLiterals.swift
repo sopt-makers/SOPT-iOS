@@ -11,7 +11,8 @@ import Foundation
 public struct I18N {
     public struct Default {
         public static let error = "에러"
-        public static let networkError = "네트워크 오류가 발생했습니다."
+        public static let networkError = "네트워크가 원활하지 않습니다."
+        public static let networkErrorDescription = "인터넷 연결을 확인하고 다시 시도해 주세요."
         public static let delete = "삭제"
         public static let cancel = "취소"
         public static let ok = "확인"
@@ -92,6 +93,9 @@ public struct I18N {
         public static let suggestion = "서비스 의견 제안"
         public static let mission = "미션"
         public static let resetMission = "미션 초기화"
+        public static let resetMissionTitle = "스탬프를 초기화 하시겠습니까?"
+        public static let resetMissionDescription = "사진, 메모가 삭제되고\n 전체 미션이 미완료상태로 초기화됩니다."
+        public static let reset = "초기화"
         public static let logout = "로그아웃"
         public static let withdraw = "탈퇴하기"
     }

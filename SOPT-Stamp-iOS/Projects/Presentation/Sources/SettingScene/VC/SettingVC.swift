@@ -22,6 +22,7 @@ public class SettingVC: UIViewController {
     public var viewModel: SettingViewModel!
     private var cancelBag = CancelBag()
     public var factory: ModuleFactoryInterface!
+    private let resetButtonTapped = PassthroughSubject<Bool, Never>()
   
     // MARK: - UI Components
     
@@ -61,6 +62,20 @@ extension SettingVC {
     private func setDelegate() {
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
+    }
+    
+    private func presentResetAlertVC() {
+        let alertVC = self.factory.makeAlertVC(
+            type: .titleWithDesciption,
+            title: I18N.Setting.resetMissionTitle,
+            description: I18N.Setting.resetMissionDescription,
+            customButtonTitle: I18N.Setting.reset)
+        alertVC.customAction = {
+            self.resetButtonTapped.send(true)
+            print("resetButtonTapped")
+        }
+        
+        self.present(alertVC, animated: true)
     }
 }
 
@@ -120,7 +135,7 @@ extension SettingVC: UICollectionViewDelegate {
                 print("서비스 의견 제안")
             }
         case 2:
-            print("미션 초기화")
+            self.presentResetAlertVC()
         default:
             print("로그아웃")
         }
