@@ -230,10 +230,12 @@ extension ListDetailVC {
         configuration.selectionLimit = 1
         configuration.filter = .any(of: [.images, .livePhotos])
         
-        let pickerVC = PHPickerViewController(configuration: configuration)
-        pickerVC.delegate = self
-        
-        self.present(pickerVC, animated: true)
+        DispatchQueue.main.async {
+            let pickerVC = PHPickerViewController(configuration: configuration)
+            pickerVC.delegate = self
+            
+            self.present(pickerVC, animated: true)
+        }
     }
     
     private func moveToSetting() {
