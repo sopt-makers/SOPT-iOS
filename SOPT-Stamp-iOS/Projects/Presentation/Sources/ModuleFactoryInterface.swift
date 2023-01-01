@@ -14,6 +14,7 @@ public protocol ModuleFactoryInterface {
     func makeSplashVC() -> SplashVC
     func makeOnboardingVC() -> OnboardingVC
     func makeSignInVC() -> SignInVC
+    func makeFindAccountVC() -> FindAccountVC
     func makeSignUpVC() -> SignUpVC
     func makeSignUpCompleteVC() -> SignUpCompleteVC
     func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListVC

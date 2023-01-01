@@ -48,6 +48,12 @@ extension ModuleFactory: ModuleFactoryInterface {
         return signinVC
     }
     
+    public func makeFindAccountVC() -> Presentation.FindAccountVC {
+        let findAccountVC = FindAccountVC()
+        findAccountVC.factory = self
+        return findAccountVC
+    }
+    
     public func makeSignUpVC() -> Presentation.SignUpVC {
         let repository = SignUpRepository(service: authService, userService: userService)
         let useCase = DefaultSignUpUseCase(repository: repository)
