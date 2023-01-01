@@ -159,9 +159,9 @@ extension ListDetailVC {
                 self.setData(model)
                 if self.sceneType == .none {
                     self.presentCompletedVC(level: self.starLevel)
-                } else {
-                    self.reloadData(.completed)
                 }
+                self.sceneType = .completed
+                self.reloadData(self.sceneType)
             }.store(in: self.cancelBag)
         
         output.editSuccessed
