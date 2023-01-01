@@ -16,7 +16,8 @@ extension ListDetailEntity {
         
         return ListDetailModel.init(image: self.images.first ?? "",
                                     content: self.contents,
-                                    date: changeDateformat(self.updatedAt ?? self.createdAt))
+                                    date: changeDateformat(self.updatedAt ?? self.createdAt),
+                                    stampId: self.id)
     }
     
     private func changeDateformat(_ date: String) -> String {
