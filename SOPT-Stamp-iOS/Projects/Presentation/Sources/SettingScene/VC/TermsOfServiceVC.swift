@@ -16,10 +16,6 @@ import Then
 
 public class TermsOfServiceVC: UIViewController {
     
-    // MARK: - Properties
-    
-    public var factory: ModuleFactoryInterface!
-    
     // MARK: - UI Components
     
     private lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
@@ -39,7 +35,7 @@ public class TermsOfServiceVC: UIViewController {
         super.viewDidLoad()
         self.setUI()
         self.setLayout()
-        self.setDelegate()
+//        self.setDelegate()
     }
 }
 
