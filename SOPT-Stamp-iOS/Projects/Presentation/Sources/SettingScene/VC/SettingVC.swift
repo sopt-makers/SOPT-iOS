@@ -53,10 +53,9 @@ extension SettingVC {
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.resetSuccessed
-            .sink { success in
-                if success {
-                    self.showToast(message: I18N.Setting.resetSuccess)
-                }
+            .filter({ $0 })
+            .sink { _ in
+                self.showToast(message: I18N.Setting.resetSuccess)
             }.store(in: self.cancelBag)
     }
     

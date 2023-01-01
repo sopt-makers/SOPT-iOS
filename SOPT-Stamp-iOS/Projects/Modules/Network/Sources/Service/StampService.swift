@@ -38,14 +38,7 @@ extension DefaultStampService: StampService {
     }
     
     public func deleteStamp(stampId: Int) -> AnyPublisher<Int, Error> {
-        let subject = PassthroughSubject<Int, Error>()
-        requestObjectWithNoResult(StampAPI.deleteStamp(stampId: stampId)) { result in
-            result.success { statusCode in
-                subject.send(statusCode ?? 0)
-            }
-        }
-        return subject.eraseToAnyPublisher()
-//        return requestObjectInCombineNoResult(StampAPI.deleteStamp(stampId: stampId))
+        return requestObjectInCombineNoResult(StampAPI.deleteStamp(stampId: stampId))
     }
     
     public func resetStamp(userId: Int) -> AnyPublisher<Int, Error> {
