@@ -46,6 +46,18 @@ public class RankingVC: UIViewController {
         return rf
     }()
     
+    private lazy var showMyRankingFloatingButton: UIButton = {
+        let bt = UIButton()
+        bt.layer.cornerRadius = 27.adjustedH
+        bt.backgroundColor = DSKitAsset.Colors.purple300.color
+        bt.setTitle("내 랭킹 보기", for: .normal)
+        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .highlighted)
+        bt.tintColor = .white
+        bt.titleLabel?.setTypoStyle(.h2)
+        return bt
+    }()
+    
     // MARK: - View Life Cycle
     
     public override func viewDidLoad() {
@@ -69,7 +81,7 @@ extension RankingVC {
     }
     
     private func setLayout() {
-        self.view.addSubviews(naviBar, rankingCollectionView)
+        self.view.addSubviews(naviBar, rankingCollectionView, showMyRankingFloatingButton)
         
         naviBar.snp.makeConstraints { make in
             make.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)
@@ -80,6 +92,13 @@ extension RankingVC {
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
+        
+        showMyRankingFloatingButton.snp.makeConstraints { make in
+            make.width.equalTo(143.adjusted)
+            make.height.equalTo(54.adjustedH)
+            make.bottom.equalTo(view.safeAreaLayoutGuide)
+            make.centerX.equalToSuperview()
+        }
     }
 }
 
@@ -89,21 +108,34 @@ extension RankingVC {
     
     private func bindViewModels() {
         let refreshStarted = refresher.publisher(for: .valueChanged)
-            .map { _ in () }
-            .eraseToAnyPublisher()
+            .mapVoid()
+            .asDriver()
+        
+        let showRankingButtonTapped = self.showMyRankingFloatingButton
+            .publisher(for: .touchUpInside)
+            .mapVoid()
             .asDriver()
         
         let input = RankingViewModel.Input(viewDidLoad: Driver.just(()),
-                                           refreshStarted: refreshStarted)
+                                           refreshStarted: refreshStarted,
+                                           showMyRankingButtonTapped: showRankingButtonTapped)
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.$rankingListModel
-            .dropFirst()
+            .dropFirst(2)
             .withUnretained(self)
             .sink { owner, model in
                 owner.applySnapshot(model: model)
                 owner.endRefresh()
+            }.store(in: self.cancelBag)
+        
+        output.$myRanking
+            .dropFirst()
+            .map { IndexPath(item: $0.item, section: $0.section)}
+            .withUnretained(self)
+            .sink { owner, indexPath in
+                owner.rankingCollectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
             }.store(in: self.cancelBag)
     }
     
