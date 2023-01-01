@@ -35,7 +35,7 @@ public class TermsOfServiceVC: UIViewController {
         super.viewDidLoad()
         self.setUI()
         self.setLayout()
-//        self.setDelegate()
+        self.setDelegate()
     }
 }
 
