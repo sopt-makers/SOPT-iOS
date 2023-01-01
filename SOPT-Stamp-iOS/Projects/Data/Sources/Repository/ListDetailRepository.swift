@@ -14,29 +14,32 @@ import Network
 
 public class ListDetailRepository {
     
-    private let networkService: MissionService
+    private let userId: Int = UserDefaultKeyList.Auth.userId ?? 0
+    private let stampService: StampService
     private let cancelBag = CancelBag()
 
-    public init(service: MissionService) {
-        self.networkService = service
+    public init(service: StampService) {
+        self.stampService = service
+        print("listdetailrepository", userId)
     }
 }
 
 extension ListDetailRepository: ListDetailRepositoryInterface {
     public func fetchListDetail(missionId: Int) -> Driver<ListDetailModel> {
-        // TODO: - networkService.
-        return makeMockListDetailEntity()
+        return stampService.fetchStampListDetail(userId: userId, missionId: missionId)
+            .map { $0.toDomain() }
+            .asDriver()
     }
     
     public func postStamp(missionId: Int, stampData: ListDetailRequestModel) -> Driver<ListDetailModel> {
-        // TODO: - networkService.
-        return makeMockListDetailEntity()
+        return stampService.postStamp(userId: userId, missionId: missionId, requestModel: stampData)
+            .map { $0.toDomain() }
+            .asDriver()
     }
     
-    public func putStamp(missionId: Int, stampData: ListDetailRequestModel) -> Driver<[String : Int]> {
-        // TODO: - networkService
-        return Just(["stampId": 11])
-            .setFailureType(to: Error.self)
+    public func putStamp(missionId: Int, stampData: ListDetailRequestModel) -> Driver<Int> {
+        return stampService.putStamp(userId: userId, missionId: missionId, requestModel: stampData)
+            .map { $0.toDomain() }
             .asDriver()
     }
     

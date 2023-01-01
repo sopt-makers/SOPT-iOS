@@ -13,9 +13,19 @@ import Network
 
 extension ListDetailEntity {
     public func toDomain() -> ListDetailModel {
-        // TODO: - date 형식 확인하고 변형
+        
         return ListDetailModel.init(image: self.images.first ?? "",
                                     content: self.contents,
-                                    date: self.updatedAt ?? self.createdAt)
+                                    date: changeDateformat(self.updatedAt ?? self.createdAt))
+    }
+    
+    private func changeDateformat(_ date: String) -> String {
+        return date.split(separator: "-").joined(separator: ".")
+    }
+}
+
+extension StampEntity {
+    public func toDomain() -> Int {
+        return self.stampId
     }
 }

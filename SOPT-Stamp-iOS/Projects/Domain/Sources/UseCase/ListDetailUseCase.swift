@@ -52,7 +52,7 @@ extension DefaultListDetailUseCase: ListDetailUseCase {
     public func putStamp(missionId: Int, stampData: ListDetailRequestModel) {
         repository.putStamp(missionId: missionId, stampData: stampData)
             .sink { result in
-                self.editSuccess.send(result.isEmpty ? false : true)
+                self.editSuccess.send(true)
             }.store(in: self.cancelBag)
     }
     
