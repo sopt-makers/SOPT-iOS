@@ -123,7 +123,11 @@ extension RankingVC {
                 guard let chartCell = collectionView.dequeueReusableCell(withReuseIdentifier: RankingChartCVC.className, for: indexPath) as? RankingChartCVC,
                       let chartCellModel = itemIdentifier as? RankingChartModel else { return UICollectionViewCell() }
                 chartCell.setData(model: chartCellModel)
-                
+                chartCell.balloonTapped = { [weak self] balloonModel in
+                    guard let self = self else { return }
+                    let item = balloonModel.toRankingListTapItem()
+                    self.pushToOtherUserMissionListVC(item: item)
+                }
                 return chartCell
                 
             case .list:
@@ -155,7 +159,9 @@ extension RankingVC {
 
 extension RankingVC: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let tappedCell = collectionView.cellForItem(at: indexPath) as? RankingListTappble,
+        guard indexPath.section >= 1 else { return }
+        
+        guard let tappedCell = collectionView.cellForItem(at: indexPath) as? RankingListTappable,
               let item = tappedCell.getModelItem() else { return }
         self.pushToOtherUserMissionListVC(item: item)
     }
