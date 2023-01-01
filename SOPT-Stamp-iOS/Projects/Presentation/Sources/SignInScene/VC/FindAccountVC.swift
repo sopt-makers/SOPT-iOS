@@ -49,12 +49,12 @@ public class FindAccountVC: UIViewController {
     
     @objc
     private func findEmailButtonDidTap() {
-        self.openExternalLink(urlStr: "https://forms.gle/XkVFMUPsWWV1DXU38")
+        self.openExternalLink(urlStr: ExternalURL.GoogleForms.findEmail)
     }
     
     @objc
     private func findPasswordButtonDidTap() {
-        self.openExternalLink(urlStr: "https://forms.gle/bUgTG9ooRVgPZ8K39")
+        self.openExternalLink(urlStr: ExternalURL.GoogleForms.findPassword)
     }
 }
 

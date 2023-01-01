@@ -105,7 +105,9 @@ public struct I18N {
         public static let passwordEditSuccess = "비밀번호가 변경되었습니다."
         public static let passwordEditFail = "비밀번호 변경 실패"
     }
+}
     
+extension I18N {
     public struct serviceUsagePolicy {
         public static let termsOfService = """
         제 1장 총칙
