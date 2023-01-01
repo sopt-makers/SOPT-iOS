@@ -136,4 +136,14 @@ extension ModuleFactory: ModuleFactoryInterface {
         passwordChangeVC.viewModel = viewModel
         return passwordChangeVC
     }
+    
+    public func makePrivacyPolicyVC() -> Presentation.PrivacyPolicyVC {
+        let privacyPolicyVC = PrivacyPolicyVC()
+        return privacyPolicyVC
+    }
+    
+    public func makeTermsOfServiceVC() -> Presentation.TermsOfServiceVC {
+        let termsOfServiceVC = TermsOfServiceVC()
+        return termsOfServiceVC
+    }
 }

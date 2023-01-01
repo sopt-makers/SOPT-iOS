@@ -86,6 +86,16 @@ extension SettingVC {
         let passwordChangeVC = self.factory.makePasswordChangeVC()
         navigationController?.pushViewController(passwordChangeVC, animated: true)
     }
+    
+    private func showPrivacyPolicyView() {
+        let privacyPolicyVC = self.factory.makePrivacyPolicyVC()
+        navigationController?.pushViewController(privacyPolicyVC, animated: true)
+    }
+    
+    private func showTermsOfServieView() {
+        let termsOfServiceVC = self.factory.makeTermsOfServiceVC()
+        navigationController?.pushViewController(termsOfServiceVC, animated: true)
+    }
 }
 
 // MARK: - UI & Layout
@@ -137,9 +147,9 @@ extension SettingVC: UICollectionViewDelegate {
         case 1:
             switch indexPath.row {
             case 0:
-                print("개인정보처리방침")
+                showPrivacyPolicyView()
             case 1:
-                print("서비스 이용 약관")
+                showTermsOfServieView()
             default:
                 print("서비스 의견 제안")
             }
