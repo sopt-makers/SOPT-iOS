@@ -50,7 +50,6 @@ extension ModuleFactory: ModuleFactoryInterface {
     
     public func makeFindAccountVC() -> Presentation.FindAccountVC {
         let findAccountVC = FindAccountVC()
-        findAccountVC.factory = self
         return findAccountVC
     }
     

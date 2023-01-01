@@ -13,10 +13,6 @@ import Core
 
 public class FindAccountVC: UIViewController {
     
-    // MARK: - Properties
-    
-    public var factory: ModuleFactoryInterface!
-    
     // MARK: - UI Components
 
     private lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
