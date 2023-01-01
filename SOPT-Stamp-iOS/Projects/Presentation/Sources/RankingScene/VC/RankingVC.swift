@@ -113,6 +113,7 @@ extension RankingVC {
         
         let showRankingButtonTapped = self.showMyRankingFloatingButton
             .publisher(for: .touchUpInside)
+            .filter { _ in self.rankingCollectionView.indexPathsForVisibleItems.count > 5 }
             .mapVoid()
             .asDriver()
         
@@ -175,6 +176,7 @@ extension RankingVC {
     func applySnapshot(model: [RankingModel]) {
         var snapshot = NSDiffableDataSourceSnapshot<RankingSection, AnyHashable>()
         snapshot.appendSections([.chart, .list])
+        guard model.count >= 4 else { return }
         guard let chartCellModels = Array(model[0...2]) as? [RankingModel],
               let rankingListModel = Array(model[3...model.count-1]) as? [RankingModel] else { return }
         let chartCellModel = RankingChartModel.init(ranking: chartCellModels)
