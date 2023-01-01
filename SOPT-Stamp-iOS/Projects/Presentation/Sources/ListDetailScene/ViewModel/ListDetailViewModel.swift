@@ -93,7 +93,6 @@ extension ListDetailViewModel {
         
         input.deleteButtonTapped
             .sink { _ in
-                // TODO: - useCase 삭제 연결
                 self.useCase.deleteStamp(stampId: self.missionId)
             }.store(in: self.cancelBag)
     

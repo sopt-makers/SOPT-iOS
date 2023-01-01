@@ -20,7 +20,6 @@ public class ListDetailRepository {
 
     public init(service: StampService) {
         self.stampService = service
-        print("listdetailrepository", userId)
     }
 }
 
