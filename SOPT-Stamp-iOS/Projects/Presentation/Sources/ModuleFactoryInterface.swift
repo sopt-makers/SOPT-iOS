@@ -25,4 +25,6 @@ public protocol ModuleFactoryInterface {
     func makeRankingVC() -> RankingVC
     func makeSettingVC() -> SettingVC
     func makePasswordChangeVC() -> PasswordChangeVC
+    func makePrivacyPolicyVC() -> PrivacyPolicyVC
+    func makeTermsOfServiceVC() -> TermsOfServiceVC
 }
