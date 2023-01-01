@@ -22,6 +22,7 @@ public class SettingVC: UIViewController {
     public var viewModel: SettingViewModel!
     private var cancelBag = CancelBag()
     public var factory: ModuleFactoryInterface!
+    private let resetButtonTapped = PassthroughSubject<Bool, Never>()
   
     // MARK: - UI Components
     
@@ -47,8 +48,15 @@ public class SettingVC: UIViewController {
 extension SettingVC {
   
     private func bindViewModels() {
-        let input = SettingViewModel.Input()
+        let input = SettingViewModel.Input(
+            resetButtonTapped: resetButtonTapped.asDriver())
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.resetSuccessed
+            .filter({ $0 })
+            .sink { _ in
+                self.showToast(message: I18N.Setting.resetSuccess)
+            }.store(in: self.cancelBag)
     }
     
     private func setRegister() {
@@ -60,6 +68,18 @@ extension SettingVC {
     private func setDelegate() {
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
+    }
+    
+    private func presentResetAlertVC() {
+        let alertVC = self.factory.makeAlertVC(type: .titleDescription,
+                                               title: I18N.Setting.resetMissionTitle,
+                                               description: I18N.Setting.resetMissionDescription,
+                                               customButtonTitle: I18N.Setting.reset)
+        alertVC.customAction = {
+            self.resetButtonTapped.send(true)
+        }
+        
+        self.present(alertVC, animated: true)
     }
     
     private func showPasswordChangeView() {
@@ -124,7 +144,7 @@ extension SettingVC: UICollectionViewDelegate {
                 print("서비스 의견 제안")
             }
         case 2:
-            print("미션 초기화")
+            self.presentResetAlertVC()
         default:
             print("로그아웃")
         }

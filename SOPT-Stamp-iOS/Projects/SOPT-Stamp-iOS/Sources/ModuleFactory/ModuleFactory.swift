@@ -90,10 +90,18 @@ extension ModuleFactory: ModuleFactoryInterface {
         return missionCompletedVC
     }
     
-    public func makeAlertVC(title: String, customButtonTitle: String) -> AlertVC {
-        let alertVC = AlertVC()
-            .setTitle(title)
+    public func makeAlertVC(type: AlertType, title: String, description: String = "", customButtonTitle: String) -> AlertVC {
+        let alertVC = AlertVC(alertType: type)
+            .setTitle(title, description)
             .setCustomButtonTitle(customButtonTitle)
+        alertVC.modalPresentationStyle = .overFullScreen
+        alertVC.modalTransitionStyle = .crossDissolve
+        return alertVC
+    }
+    
+    public func makeNetworkAlertVC() -> AlertVC {
+        let alertVC = AlertVC(alertType: .networkErr)
+            .setTitle(I18N.Default.networkError, I18N.Default.networkErrorDescription)
         alertVC.modalPresentationStyle = .overFullScreen
         alertVC.modalTransitionStyle = .crossDissolve
         return alertVC
@@ -110,7 +118,7 @@ extension ModuleFactory: ModuleFactoryInterface {
     }
     
     public func makeSettingVC() -> SettingVC {
-        let repository = SettingRepository(service: authService)
+        let repository = SettingRepository(authService: authService, stampService: stampService)
         let useCase = DefaultSettingUseCase(repository: repository)
         let viewModel = SettingViewModel(useCase: useCase)
         let settingVC = SettingVC()
@@ -120,7 +128,7 @@ extension ModuleFactory: ModuleFactoryInterface {
     }
     
     public func makePasswordChangeVC() -> PasswordChangeVC {
-        let repository = SettingRepository(service: authService)
+        let repository = SettingRepository(authService: authService, stampService: stampService)
         let useCase = DefaultPasswordChangeUseCase(repository: repository)
         let viewModel = PasswordChangeViewModel(useCase: useCase)
         let passwordChangeVC = PasswordChangeVC()

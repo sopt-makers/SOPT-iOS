@@ -26,6 +26,7 @@ public class ListDetailViewModel: ViewModelType {
     public var starLevel: StarViewLevel!
     public var missionId: Int!
     public var missionTitle: String!
+    public var stampId: Int!
   
     // MARK: - Inputs
     
@@ -93,7 +94,7 @@ extension ListDetailViewModel {
         
         input.deleteButtonTapped
             .sink { _ in
-                self.useCase.deleteStamp(stampId: self.missionId)
+                self.useCase.deleteStamp(stampId: self.stampId)
             }.store(in: self.cancelBag)
     
         return output
@@ -105,7 +106,10 @@ extension ListDetailViewModel {
         let deleteSuccess = useCase.deleteSuccess
         
         listDetailModel.asDriver()
-            .compactMap { $0 }
+            .compactMap {
+                self.stampId = $0.stampId
+                return $0
+            }
             .assign(to: \.self.listDetailModel, on: output)
             .store(in: self.cancelBag)
         

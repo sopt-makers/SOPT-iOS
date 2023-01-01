@@ -233,10 +233,12 @@ extension ListDetailVC {
         configuration.selectionLimit = 1
         configuration.filter = .any(of: [.images, .livePhotos])
         
-        let pickerVC = PHPickerViewController(configuration: configuration)
-        pickerVC.delegate = self
-        
-        self.present(pickerVC, animated: true)
+        DispatchQueue.main.async {
+            let pickerVC = PHPickerViewController(configuration: configuration)
+            pickerVC.delegate = self
+            
+            self.present(pickerVC, animated: true)
+        }
     }
     
     private func moveToSetting() {
@@ -258,7 +260,11 @@ extension ListDetailVC {
     }
     
     private func presentDeleteAlertVC() {
-        let alertVC = self.factory.makeAlertVC(title: I18N.ListDetail.deleteTitle, customButtonTitle: I18N.Default.delete)
+        let alertVC = self.factory.makeAlertVC(
+            type: .title,
+            title: I18N.ListDetail.deleteTitle,
+            description: "",
+            customButtonTitle: I18N.Default.delete)
         alertVC.customAction = {
             self.deleteButtonTapped.send(true)
         }
