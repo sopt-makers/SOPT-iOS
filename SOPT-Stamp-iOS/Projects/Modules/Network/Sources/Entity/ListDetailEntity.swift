@@ -32,3 +32,7 @@ public struct ListDetailEntity: Codable {
         self.missionID = missionID
     }
 }
+
+public struct StampEntity: Codable {
+    public let stampId: Int
+}

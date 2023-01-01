@@ -12,6 +12,8 @@ import DSKit
 import SnapKit
 import Then
 
+import Core
+
 public class SplashVC: UIViewController {
     
     // MARK: - Properties
@@ -67,7 +69,7 @@ extension SplashVC {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             
             var nextVC = UIViewController()
-            if UserDefaults.standard.string(forKey: "userId") != nil {
+            if UserDefaultKeyList.Auth.userId != nil {
                 nextVC = self.factory.makeMissionListVC(sceneType: .default)
             } else {
                 nextVC = self.factory.makeOnboardingVC()
