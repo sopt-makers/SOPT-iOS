@@ -48,6 +48,9 @@ public struct I18N {
         public static let findAccount = "계정 찾기"
         public static let signIn = "로그인"
         public static let signUp = "회원가입"
+        public static let findDescription = "아래 구글 폼을 제출해 주시면\n평일 기준 3-5일 이내로\n아이디 / 임시 비밀번호를 전송 드립니다."
+        public static let findEmail = "이메일 찾기"
+        public static let findPassword = "비밀번호 찾기"
     }
     
     public struct SignUp {
@@ -102,7 +105,9 @@ public struct I18N {
         public static let passwordEditSuccess = "비밀번호가 변경되었습니다."
         public static let passwordEditFail = "비밀번호 변경 실패"
     }
+}
     
+extension I18N {
     public struct serviceUsagePolicy {
         public static let termsOfService = """
         제 1장 총칙

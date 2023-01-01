@@ -85,8 +85,8 @@ public class SignInVC: UIViewController {
     
     @objc
     private func findAccountButtonDidTap() {
-        print("find account btn did tap")
-        // 화면전환
+        let findAccountVC = self.factory.makeFindAccountVC()
+        self.navigationController?.pushViewController(findAccountVC, animated: true)
     }
     
     @objc
