@@ -60,8 +60,30 @@ public class SentenceEditVC: UIViewController {
 extension SentenceEditVC {
     
     private func bindViewModels() {
-        let input = SentenceEditViewModel.Input()
+        let textViewTextChanged = NotificationCenter.default
+            .publisher(for: UITextView.textDidChangeNotification, object: self.textView)
+            .dropFirst()
+            .map { ($0.object as? UITextView)?.text }
+            .compactMap { $0 }
+            .eraseToAnyPublisher()
+            .asDriver()
+        
+        let saveButtonTapped = self.saveButton
+            .publisher(for: .touchUpInside)
+            .map { _ in () }
+            .asDriver()
+        
+        let input = SentenceEditViewModel.Input(textChanged: textViewTextChanged,
+                                                saveButtonTapped: saveButtonTapped)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.$saveButtonEnabled
+            .assign(to: self.saveButton.kf.isEnabled, on: self.saveButton)
+            .store(in: self.cancelBag)
+        
+        output.$defaultText
+            .assign(to: self.textView.kf.text, on: self.textView)
+            .store(in: self.cancelBag)
     }
     
 }

@@ -19,13 +19,16 @@ public class SentenceEditViewModel: ViewModelType {
     // MARK: - Inputs
     
     public struct Input {
-    
+        let textChanged: Driver<String>
+        let saveButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs
     
-    public struct Output {
-    
+    public class Output {
+        @Published var saveButtonEnabled = false
+        @Published var defaultText = ""
+        let editSuccessed = PassthroughSubject<Void, Never>()
     }
     
     // MARK: - init
@@ -39,12 +42,24 @@ extension SentenceEditViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
-        // input,output 상관관계 작성
+        
+        input.textChanged
+            .withUnretained(self)
+            .sink { owner, text in
+                print(text)
+                owner.useCase.validateSentence(text: text)
+            }.store(in: self.cancelBag)
     
         return output
     }
   
     private func bindOutput(output: Output, cancelBag: CancelBag) {
-    
+        self.useCase.saveButtonEnabled
+            .asDriver()
+            .sink { isEnabled in
+                output.saveButtonEnabled = isEnabled
+            }.store(in: self.cancelBag)
+        
+        output.defaultText = self.useCase.originSentenceText
     }
 }
