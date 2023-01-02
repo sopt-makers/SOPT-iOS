@@ -113,6 +113,10 @@ public struct I18N {
             public static let sentenceEdit = "한 마디 편집"
             public static let save = "저장"
         }
+        
+        public struct NicknameEdit {
+            public static let nicknameEdit = "닉네임 변경"
+        }
     }
 }
     

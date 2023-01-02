@@ -43,6 +43,13 @@ extension SettingRepository: SettingRepositoryInterface {
             .replaceError(with: false)
             .eraseToAnyPublisher()
     }
+    
+    public func editNickname(nickname: String) -> AnyPublisher<Bool, Never> {
+        return authService.changeNickname(userId: userId, nickname: nickname)
+            .map { _ in true }
+            .replaceError(with: false)
+            .eraseToAnyPublisher()
+    }
 }
 
 extension SettingRepository: PasswordChangeRepositoryInterface {
