@@ -87,6 +87,11 @@ extension SettingVC {
         navigationController?.pushViewController(editSentenceVC, animated: true)
     }
     
+    private func showEditNicknameView() {
+        let editNicknameVC = self.factory.makeNicknameEditVC()
+        navigationController?.pushViewController(editNicknameVC, animated: true)
+    }
+    
     private func showPasswordChangeView() {
         let passwordChangeVC = self.factory.makePasswordChangeVC()
         navigationController?.pushViewController(passwordChangeVC, animated: true)
@@ -147,7 +152,7 @@ extension SettingVC: UICollectionViewDelegate {
             case 1:
                 showPasswordChangeView()
             default:
-                print("닉네임 변경")
+                showEditNicknameView()
             }
         case 1:
             switch indexPath.row {
