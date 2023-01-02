@@ -12,14 +12,17 @@ import Core
 
 public protocol RankingUseCase {
     func fetchRankingList()
-    var rankingListModelFetched: PassthroughSubject<[RankingModel], Error> { get }
+    func findMyRanking()
+    var rankingListModelFetched: CurrentValueSubject<[RankingModel], Error> { get }
+    var myRanking: PassthroughSubject<(section: Int, item: Int), Error> { get set }
 }
 
 public class DefaultRankingUseCase {
     
     private let repository: RankingRepositoryInterface
     private var cancelBag = CancelBag()
-    public var rankingListModelFetched = PassthroughSubject<[RankingModel], Error>()
+    public var rankingListModelFetched = CurrentValueSubject<[RankingModel], Error>([])
+    public var myRanking = PassthroughSubject<(section: Int, item: Int), Error>()
     
     public init(repository: RankingRepositoryInterface) {
         self.repository = repository
@@ -35,5 +38,18 @@ extension DefaultRankingUseCase: RankingUseCase {
             } receiveValue: { owner, model in
                 owner.rankingListModelFetched.send(model)
             }.store(in: self.cancelBag)
+    }
+    
+    public func findMyRanking() {
+        let myUserId = UserDefaultKeyList.Auth.userId ?? 1
+        let index = rankingListModelFetched.value.firstIndex { model in
+            model.userId == myUserId
+        } ?? 0
+        
+        if index > 3 {
+            myRanking.send((1, index - 4))
+        } else {
+            myRanking.send((0, 0))
+        }
     }
 }

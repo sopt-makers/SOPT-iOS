@@ -12,26 +12,34 @@ import Alamofire
 import Moya
 
 public enum RankAPI {
-    case sample(provider: String)
+    case rank(userId: Int)
 }
 
 extension RankAPI: BaseAPI {
     
-    public static var apiType: APIType = .auth
+    public static var apiType: APIType = .rank
+    
+    // MARK: - Header
+    public var headers: [String: String]? {
+        switch self {
+        case .rank(let userId):
+            return HeaderType.userId(userId: userId).value
+        default: return HeaderType.json.value
+        }
+    }
     
     // MARK: - Path
     public var path: String {
         switch self {
-        case .sample:
-            return ""
+        case .rank:
+            return "/rank"
         }
     }
     
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .sample:
-            return .post
+        default: return .get
         }
     }
     
@@ -39,16 +47,13 @@ extension RankAPI: BaseAPI {
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
-        case .sample(let provider):
-            params["platform"] = provider
+        default: break
         }
         return params
     }
     
     private var parameterEncoding: ParameterEncoding {
         switch self {
-        case .sample:
-            return URLEncoding.init(destination: .queryString, arrayEncoding: .noBrackets, boolEncoding: .literal)
         default:
             return JSONEncoding.default
         }
@@ -56,8 +61,6 @@ extension RankAPI: BaseAPI {
     
     public var task: Task {
         switch self {
-        case .sample:
-            return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain
         }

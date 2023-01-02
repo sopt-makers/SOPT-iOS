@@ -74,6 +74,10 @@ public struct I18N {
         public static let start = "시작하기"
     }
     
+    public struct RankingList {
+        public static let noSentenceText = "설정된 한 마디가 없습니다."
+    }
+    
     public struct ListDetail {
         public static let imagePlaceHolder = "달성 사진을 올려주세요"
         public static let memoPlaceHolder = "메모를 작성해주세요"

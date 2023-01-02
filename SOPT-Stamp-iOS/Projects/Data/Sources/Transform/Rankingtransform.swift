@@ -8,12 +8,16 @@
 
 import Foundation
 
+import Core
 import Domain
 import Network
 
 extension RankingEntity {
     
-//    public func toDomain() -> RankingModel {
-//        return RankingModel.init()
-//    }
+    public func toDomain() -> RankingModel {
+        return .init(username: self.nickname,
+                     usreId: self.userID,
+                     score: self.point,
+                     sentence: self.profileMessage ?? I18N.RankingList.noSentenceText)
+    }
 }

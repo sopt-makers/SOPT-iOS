@@ -25,4 +25,9 @@ public extension Publisher {
     static func empty() -> Driver<Output> {
         return Empty().eraseToAnyPublisher()
     }
+    
+    func mapVoid() -> AnyPublisher<Void, Failure> {
+        return self.map { _ in () }
+            .eraseToAnyPublisher()
+    }
 }
