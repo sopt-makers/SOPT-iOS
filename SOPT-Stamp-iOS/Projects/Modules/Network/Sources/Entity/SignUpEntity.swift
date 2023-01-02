@@ -9,5 +9,13 @@
 import Foundation
 
 public struct SignUpEntity {
+    public let nickname: String
+    public let email: String
+    public let password: String
     
+    public init(nickname: String, email: String, password: String) {
+        self.nickname = nickname
+        self.email = email
+        self.password = password
+    }
 }

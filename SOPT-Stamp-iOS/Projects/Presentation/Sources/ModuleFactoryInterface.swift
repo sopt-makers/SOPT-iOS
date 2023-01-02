@@ -14,12 +14,17 @@ public protocol ModuleFactoryInterface {
     func makeSplashVC() -> SplashVC
     func makeOnboardingVC() -> OnboardingVC
     func makeSignInVC() -> SignInVC
+    func makeFindAccountVC() -> FindAccountVC
     func makeSignUpVC() -> SignUpVC
     func makeSignUpCompleteVC() -> SignUpCompleteVC
     func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListVC
     func makeListDetailVC(sceneType: ListDetailSceneType, starLevel: StarViewLevel, missionId: Int, missionTitle: String) -> ListDetailVC
     func makeMissionCompletedVC(starLevel: StarViewLevel) -> MissionCompletedVC
-    func makeAlertVC(title: String, customButtonTitle: String) -> AlertVC
+    func makeAlertVC(type: AlertType, title: String, description: String, customButtonTitle: String) -> AlertVC
+    func makeNetworkAlertVC() -> AlertVC
     func makeRankingVC() -> RankingVC
     func makeSettingVC() -> SettingVC
+    func makePasswordChangeVC() -> PasswordChangeVC
+    func makePrivacyPolicyVC() -> PrivacyPolicyVC
+    func makeTermsOfServiceVC() -> TermsOfServiceVC
 }

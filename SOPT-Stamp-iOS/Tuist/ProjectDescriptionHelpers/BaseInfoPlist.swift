@@ -34,6 +34,6 @@ public extension Project {
         "NSAppTransportSecurity": ["NSAllowsArbitraryLoads": true],
         "ITSAppUsesNonExemptEncryption": false,
         "UIUserInterfaceStyle": "Light",
-        "NSPhotoLibraryUsageDescription": "권한 !!!!!!!1"
+        "NSPhotoLibraryUsageDescription": "미션과 관련된 사진을 업로드하기 위해 갤러리 권한이 필요합니다."
     ]
 }

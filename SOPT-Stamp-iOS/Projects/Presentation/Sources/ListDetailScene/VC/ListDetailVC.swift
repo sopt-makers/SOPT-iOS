@@ -107,7 +107,7 @@ public class ListDetailVC: UIViewController {
     private let imagePlaceholderLabel = UILabel()
     private let textView = UITextView()
     private let dateLabel = UILabel()
-    private lazy var bottomButton = CustomButton(title: sceneType == .none ? I18N.ListDetail.missionComplete : I18N.ListDetail.editComplte)
+    private lazy var bottomButton = CustomButton(title: sceneType == .none ? I18N.ListDetail.missionComplete : I18N.ListDetail.editComplete)
         .setEnabled(false)
         .setColor(bgColor: starLevel.pointColor,
                      disableColor: starLevel.disableColor,
@@ -139,7 +139,9 @@ extension ListDetailVC {
         let bottomButtonTapped = bottomButton
             .publisher(for: .touchUpInside)
             .map { _ in
-                ListDetailRequestModel(imgURL: self.missionImageView.image ?? UIImage(), content: self.textView.text)
+                let image = self.missionImageView.image ?? UIImage()
+                let content = self.textView.text
+                return ListDetailRequestModel(imgURL: image.jpegData(compressionQuality: 0.5) ?? Data(), content: content ?? "")
             }
             .asDriver()
         
@@ -157,14 +159,15 @@ extension ListDetailVC {
                 self.setData(model)
                 if self.sceneType == .none {
                     self.presentCompletedVC(level: self.starLevel)
-                } else {
-                    self.reloadData(.completed)
                 }
+                self.sceneType = .completed
+                self.reloadData(self.sceneType)
             }.store(in: self.cancelBag)
         
         output.editSuccessed
             .sink { successed in
                 self.reloadData(.completed)
+                self.showToast(message: I18N.ListDetail.editCompletedToast)
             }.store(in: self.cancelBag)
         
         output.showDeleteAlert
@@ -230,10 +233,12 @@ extension ListDetailVC {
         configuration.selectionLimit = 1
         configuration.filter = .any(of: [.images, .livePhotos])
         
-        let pickerVC = PHPickerViewController(configuration: configuration)
-        pickerVC.delegate = self
-        
-        self.present(pickerVC, animated: true)
+        DispatchQueue.main.async {
+            let pickerVC = PHPickerViewController(configuration: configuration)
+            pickerVC.delegate = self
+            
+            self.present(pickerVC, animated: true)
+        }
     }
     
     private func moveToSetting() {
@@ -255,7 +260,11 @@ extension ListDetailVC {
     }
     
     private func presentDeleteAlertVC() {
-        let alertVC = self.factory.makeAlertVC(title: I18N.ListDetail.deleteTitle, customButtonTitle: I18N.Default.delete)
+        let alertVC = self.factory.makeAlertVC(
+            type: .title,
+            title: I18N.ListDetail.deleteTitle,
+            description: "",
+            customButtonTitle: I18N.Default.delete)
         alertVC.customAction = {
             self.deleteButtonTapped.send(true)
         }

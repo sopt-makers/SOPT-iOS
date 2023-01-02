@@ -105,7 +105,7 @@ extension MissionListModel {
     }
     
     func toListDetailSceneType() -> ListDetailSceneType {
-        return (self.isCompleted == true) ? .edit : .none
+        return (self.isCompleted == true) ? .completed : .none
     }
 }
 

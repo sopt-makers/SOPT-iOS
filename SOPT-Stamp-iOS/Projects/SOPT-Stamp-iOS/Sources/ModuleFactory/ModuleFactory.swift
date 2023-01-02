@@ -39,7 +39,7 @@ extension ModuleFactory: ModuleFactoryInterface {
     }
     
     public func makeSignInVC() -> Presentation.SignInVC {
-        let repository = SignInRepository(service: authService)
+        let repository = SignInRepository(service: userService)
         let useCase = DefaultSignInUseCase(repository: repository)
         let viewModel = SignInViewModel(useCase: useCase)
         let signinVC = SignInVC()
@@ -48,8 +48,13 @@ extension ModuleFactory: ModuleFactoryInterface {
         return signinVC
     }
     
+    public func makeFindAccountVC() -> Presentation.FindAccountVC {
+        let findAccountVC = FindAccountVC()
+        return findAccountVC
+    }
+    
     public func makeSignUpVC() -> Presentation.SignUpVC {
-        let repository = SignUpRepository(service: authService)
+        let repository = SignUpRepository(service: authService, userService: userService)
         let useCase = DefaultSignUpUseCase(repository: repository)
         let viewModel = SignUpViewModel(useCase: useCase)
         let signUpVC = SignUpVC()
@@ -75,7 +80,7 @@ extension ModuleFactory: ModuleFactoryInterface {
     }
     
     public func makeListDetailVC(sceneType: ListDetailSceneType, starLevel: StarViewLevel, missionId: Int, missionTitle: String) -> ListDetailVC {
-        let repository = ListDetailRepository(service: missionService)
+        let repository = ListDetailRepository(service: stampService)
         let useCase = DefaultListDetailUseCase(repository: repository)
         let viewModel = ListDetailViewModel(useCase: useCase, sceneType: sceneType, starLevel: starLevel, missionId: missionId, missionTitle: missionTitle)
         let listDetailVC = ListDetailVC()
@@ -90,10 +95,18 @@ extension ModuleFactory: ModuleFactoryInterface {
         return missionCompletedVC
     }
     
-    public func makeAlertVC(title: String, customButtonTitle: String) -> AlertVC {
-        let alertVC = AlertVC()
-            .setTitle(title)
+    public func makeAlertVC(type: AlertType, title: String, description: String = "", customButtonTitle: String) -> AlertVC {
+        let alertVC = AlertVC(alertType: type)
+            .setTitle(title, description)
             .setCustomButtonTitle(customButtonTitle)
+        alertVC.modalPresentationStyle = .overFullScreen
+        alertVC.modalTransitionStyle = .crossDissolve
+        return alertVC
+    }
+    
+    public func makeNetworkAlertVC() -> AlertVC {
+        let alertVC = AlertVC(alertType: .networkErr)
+            .setTitle(I18N.Default.networkError, I18N.Default.networkErrorDescription)
         alertVC.modalPresentationStyle = .overFullScreen
         alertVC.modalTransitionStyle = .crossDissolve
         return alertVC
@@ -110,12 +123,32 @@ extension ModuleFactory: ModuleFactoryInterface {
     }
     
     public func makeSettingVC() -> SettingVC {
-        let repository = SettingRepository(service: userService)
+        let repository = SettingRepository(authService: authService, stampService: stampService)
         let useCase = DefaultSettingUseCase(repository: repository)
         let viewModel = SettingViewModel(useCase: useCase)
         let settingVC = SettingVC()
         settingVC.factory = self
         settingVC.viewModel = viewModel
         return settingVC
+    }
+    
+    public func makePasswordChangeVC() -> PasswordChangeVC {
+        let repository = SettingRepository(authService: authService, stampService: stampService)
+        let useCase = DefaultPasswordChangeUseCase(repository: repository)
+        let viewModel = PasswordChangeViewModel(useCase: useCase)
+        let passwordChangeVC = PasswordChangeVC()
+        passwordChangeVC.factory = self
+        passwordChangeVC.viewModel = viewModel
+        return passwordChangeVC
+    }
+    
+    public func makePrivacyPolicyVC() -> Presentation.PrivacyPolicyVC {
+        let privacyPolicyVC = PrivacyPolicyVC()
+        return privacyPolicyVC
+    }
+    
+    public func makeTermsOfServiceVC() -> Presentation.TermsOfServiceVC {
+        let termsOfServiceVC = TermsOfServiceVC()
+        return termsOfServiceVC
     }
 }

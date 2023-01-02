@@ -5,19 +5,18 @@
 //  Copyright © 2022 SOPT-Stamp-iOS. All rights reserved.
 //
 
-
 import UIKit
 
 import SnapKit
 
 public extension UIViewController {
     func showToast(message: String) {
-        Toast.show(message: message, controller: self)
+        Toast.show(message: message, view: self.view, safeAreaBottomInset: self.safeAreaBottomInset())
     }
 }
 
 public class Toast {
-    static func show(message: String, controller: UIViewController) {
+    public static func show(message: String, view: UIView, safeAreaBottomInset: CGFloat = 0) {
         
         let toastContainer = UIView()
         let toastLabel = UILabel()
@@ -37,11 +36,11 @@ public class Toast {
         toastLabel.sizeToFit()
         
         toastContainer.addSubview(toastLabel)
-        controller.view.addSubview(toastContainer)
+        view.addSubview(toastContainer)
         
         toastContainer.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(controller.safeAreaBottomInset()).inset(40)
+            $0.bottom.equalToSuperview().inset(safeAreaBottomInset+40)
             $0.width.equalTo(213)
             $0.height.equalTo(44)
         }

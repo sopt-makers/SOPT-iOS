@@ -14,53 +14,37 @@ import Network
 
 public class ListDetailRepository {
     
-    private let networkService: MissionService
+    private let userId: Int = UserDefaultKeyList.Auth.userId ?? 0
+    private let stampService: StampService
     private let cancelBag = CancelBag()
 
-    public init(service: MissionService) {
-        self.networkService = service
+    public init(service: StampService) {
+        self.stampService = service
     }
 }
 
 extension ListDetailRepository: ListDetailRepositoryInterface {
     public func fetchListDetail(missionId: Int) -> Driver<ListDetailModel> {
-        // TODO: - networkService.
-        return makeMockListDetailEntity()
+        return stampService.fetchStampListDetail(userId: userId, missionId: missionId)
+            .map { $0.toDomain() }
+            .asDriver()
     }
     
     public func postStamp(missionId: Int, stampData: ListDetailRequestModel) -> Driver<ListDetailModel> {
-        // TODO: - networkService.
-        return makeMockListDetailEntity()
+        return stampService.postStamp(userId: userId, missionId: missionId, requestModel: stampData)
+            .map { $0.toDomain() }
+            .asDriver()
     }
     
-    public func putStamp(missionId: Int, stampData: ListDetailRequestModel) -> Driver<[String : Int]> {
-        // TODO: - networkService
-        return Just(["stampId": 11])
-            .setFailureType(to: Error.self)
+    public func putStamp(missionId: Int, stampData: ListDetailRequestModel) -> Driver<Int> {
+        return stampService.putStamp(userId: userId, missionId: missionId, requestModel: stampData)
+            .map { $0.toDomain() }
             .asDriver()
     }
     
     public func deleteStamp(stampId: Int) -> Driver<Bool> {
-        // TODO: - networkService
-        return Just(Bool.random())
-            .setFailureType(to: Error.self)
-            .asDriver()
-    }
-}
-
-extension ListDetailRepository {
-    private func makeMockListDetailEntity() -> Driver<ListDetailModel> {
-        let mockData = ListDetailEntity.init(
-            createdAt: "2022-01-22",
-            updatedAt: "2022-02-01",
-            id: 1,
-            contents: "안녕하세요",
-            images: ["https://avatars.githubusercontent.com/u/81167570?v=4"],
-            userID: 3,
-            missionID: 2)
-        let date = mockData.toDomain()
-        return Just(date)
-            .setFailureType(to: Error.self)
+        return stampService.deleteStamp(stampId: stampId)
+            .map { $0 == 200 }
             .asDriver()
     }
 }

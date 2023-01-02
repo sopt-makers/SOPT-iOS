@@ -12,6 +12,8 @@ import DSKit
 
 import Core
 
+import Domain
+
 import Combine
 import SnapKit
 import Then
@@ -36,11 +38,13 @@ public class SignInVC: UIViewController {
         .setTextFieldType(.email)
         .setSubTitle(I18N.SignIn.id)
         .setPlaceholder(I18N.SignIn.enterID)
+        .setAlertDelegate(passwordTextField)
 
     private lazy var passwordTextField = CustomTextFieldView(type: .subTitle)
         .setTextFieldType(.password)
         .setSubTitle(I18N.SignIn.password)
         .setPlaceholder(I18N.SignIn.enterPW)
+        .setAlertLabelEnabled(I18N.SignIn.checkAccount)
     
     private lazy var findAccountButton = UIButton(type: .system).then {
         $0.setTitle(I18N.SignIn.findAccount, for: .normal)
@@ -49,9 +53,7 @@ public class SignInVC: UIViewController {
         $0.addTarget(self, action: #selector(findAccountButtonDidTap), for: .touchUpInside)
     }
     
-    private lazy var signInButton = CustomButton(title: I18N.SignIn.signIn).setEnabled(false).then {
-        $0.addTarget(self, action: #selector(signInButtonDidTap), for: .touchUpInside)
-    }
+    private lazy var signInButton = CustomButton(title: I18N.SignIn.signIn).setEnabled(false)
     
     private lazy var signUpButton = UIButton(type: .system).then {
         $0.setTitle(I18N.SignIn.signUp, for: .normal)
@@ -72,6 +74,7 @@ public class SignInVC: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         self.addKeyboardObserver()
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
     
     deinit {
@@ -82,17 +85,14 @@ public class SignInVC: UIViewController {
     
     @objc
     private func findAccountButtonDidTap() {
-        print("find account btn did tap")
-    }
-    
-    @objc
-    private func signInButtonDidTap() {
-        print("sign in btn did tap")
+        let findAccountVC = self.factory.makeFindAccountVC()
+        self.navigationController?.pushViewController(findAccountVC, animated: true)
     }
     
     @objc
     private func signUpButtonDidTap() {
-        print("sign up btn did tap")
+        let signUpVC = self.factory.makeSignUpVC()
+        self.navigationController?.pushViewController(signUpVC, animated: true)
     }
 
 }
@@ -151,8 +151,27 @@ extension SignInVC {
 extension SignInVC {
   
     private func bindViewModels() {
-//        let input = SignInViewModel.Input()
-//        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        let signInButtonTapped = signInButton.publisher(for: .touchUpInside).map { _ in
+            SignInRequest(email: self.emailTextField.text, password: self.passwordTextField.text)
+        }.asDriver()
+        
+        let input = SignInViewModel.Input(emailTextChanged: emailTextField.textChanged,
+                                          passwordTextChanged: passwordTextField.textChanged,
+                                          signInButtonTapped: signInButtonTapped)
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.isFilledForm.assign(to: \.isEnabled, on: self.signInButton).store(in: self.cancelBag)
+        
+        output.isSignInSuccess.sink { isSignInSuccess in
+            if isSignInSuccess {
+                let missionListVC = self.factory.makeMissionListVC(sceneType: .default)
+                self.navigationController?.pushViewController(missionListVC, animated: true)
+            } else {
+                self.emailTextField.alertType = .invalidInput(text: "")
+                self.passwordTextField.alertType = .invalidInput(text: I18N.SignIn.checkAccount)
+            }
+        }.store(in: self.cancelBag)
     }
     
     private func setTapGesture() {
@@ -173,7 +192,6 @@ extension SignInVC {
     @objc func keyboardUp(notification: NSNotification) {
         if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
             let keyboardRectangle = keyboardFrame.cgRectValue
-//            let safeHeight = self.view.safeAreaInsets.bottom
             
             UIView.animate(
                 withDuration: 0.3,

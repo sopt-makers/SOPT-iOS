@@ -22,6 +22,7 @@ public class SettingVC: UIViewController {
     public var viewModel: SettingViewModel!
     private var cancelBag = CancelBag()
     public var factory: ModuleFactoryInterface!
+    private let resetButtonTapped = PassthroughSubject<Bool, Never>()
   
     // MARK: - UI Components
     
@@ -29,8 +30,7 @@ public class SettingVC: UIViewController {
         .setTitle(I18N.Setting.setting)
     private let collectionViewFlowlayout = UICollectionViewFlowLayout()
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewFlowlayout)
-    
-  
+     
     // MARK: - View Life Cycle
     
     public override func viewDidLoad() {
@@ -48,8 +48,15 @@ public class SettingVC: UIViewController {
 extension SettingVC {
   
     private func bindViewModels() {
-        let input = SettingViewModel.Input()
+        let input = SettingViewModel.Input(
+            resetButtonTapped: resetButtonTapped.asDriver())
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.resetSuccessed
+            .filter({ $0 })
+            .sink { _ in
+                self.showToast(message: I18N.Setting.resetSuccess)
+            }.store(in: self.cancelBag)
     }
     
     private func setRegister() {
@@ -61,6 +68,33 @@ extension SettingVC {
     private func setDelegate() {
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
+    }
+    
+    private func presentResetAlertVC() {
+        let alertVC = self.factory.makeAlertVC(type: .titleDescription,
+                                               title: I18N.Setting.resetMissionTitle,
+                                               description: I18N.Setting.resetMissionDescription,
+                                               customButtonTitle: I18N.Setting.reset)
+        alertVC.customAction = {
+            self.resetButtonTapped.send(true)
+        }
+        
+        self.present(alertVC, animated: true)
+    }
+    
+    private func showPasswordChangeView() {
+        let passwordChangeVC = self.factory.makePasswordChangeVC()
+        navigationController?.pushViewController(passwordChangeVC, animated: true)
+    }
+    
+    private func showPrivacyPolicyView() {
+        let privacyPolicyVC = self.factory.makePrivacyPolicyVC()
+        navigationController?.pushViewController(privacyPolicyVC, animated: true)
+    }
+    
+    private func showTermsOfServieView() {
+        let termsOfServiceVC = self.factory.makeTermsOfServiceVC()
+        navigationController?.pushViewController(termsOfServiceVC, animated: true)
     }
 }
 
@@ -106,21 +140,21 @@ extension SettingVC: UICollectionViewDelegate {
             case 0:
                 print("한마디 편집")
             case 1:
-                print("비밀번호 변경")
+               showPasswordChangeView()
             default:
                 print("닉네임 변경")
             }
         case 1:
             switch indexPath.row {
             case 0:
-                print("개인정보처리방침")
+                showPrivacyPolicyView()
             case 1:
-                print("서비스 이용 약관")
+                showTermsOfServieView()
             default:
                 print("서비스 의견 제안")
             }
         case 2:
-            print("미션 초기화")
+            self.presentResetAlertVC()
         default:
             print("로그아웃")
         }

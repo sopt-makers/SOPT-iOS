@@ -12,25 +12,28 @@ import Alamofire
 import Moya
 
 public enum UserAPI {
-    case sample(provider: String)
+    case signUp(nickname: String, email: String, password: String)
+    case signIn(email: String, password: String)
 }
 
 extension UserAPI: BaseAPI {
     
-    public static var apiType: APIType = .auth
+    public static var apiType: APIType = .user
     
     // MARK: - Path
     public var path: String {
         switch self {
-        case .sample:
-            return ""
+        case .signUp:
+            return "signup"
+        case .signIn:
+            return "login"
         }
     }
     
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .sample:
+        case .signUp, .signIn:
             return .post
         }
     }
@@ -39,16 +42,19 @@ extension UserAPI: BaseAPI {
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
-        case .sample(let provider):
-            params["platform"] = provider
+        case .signUp(let nickname, let email, let password):
+            params["nickname"] = nickname
+            params["email"] = email
+            params["password"] = password
+        case .signIn(let email, let password):
+            params["email"] = email
+            params["password"] = password
         }
         return params
     }
     
     private var parameterEncoding: ParameterEncoding {
         switch self {
-        case .sample:
-            return URLEncoding.init(destination: .queryString, arrayEncoding: .noBrackets, boolEncoding: .literal)
         default:
             return JSONEncoding.default
         }
@@ -56,7 +62,7 @@ extension UserAPI: BaseAPI {
     
     public var task: Task {
         switch self {
-        case .sample:
+        case .signUp, .signIn:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain

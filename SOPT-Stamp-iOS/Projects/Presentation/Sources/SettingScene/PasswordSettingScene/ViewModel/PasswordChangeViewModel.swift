@@ -1,72 +1,51 @@
 //
-//  SignUpViewModel.swift
+//  PasswordChangeViewModel.swift
 //  Presentation
 //
-//  Created by sejin on 2022/11/28.
+//  Created by sejin on 2022/12/26.
 //  Copyright © 2022 SOPT-Stamp-iOS. All rights reserved.
 //
+
+import Foundation
 
 import Combine
 
 import Core
 import Domain
 
-public enum SignUpFormValidateResult {
-    case valid(text: String)
-    case invalid(text: String)
-}
+public class PasswordChangeViewModel: ViewModelType {
 
-public class SignUpViewModel: ViewModelType {
-
-    // MARK: - Properties
-    
-    private let useCase: SignUpUseCase
+    private let useCase: PasswordChangeUseCase
     private var cancelBag = CancelBag()
   
     // MARK: - Inputs
     
     public struct Input {
-        let nicknameCheckButtonTapped: Driver<String?>
-        let emailCheckButtonTapped: Driver<String?>
         let passwordTextChanged: Driver<String?>
         let passwordCheckTextChanged: Driver<String?>
-        let registerButtonTapped: Driver<SignUpModel>
+        let passwordChangeButtonTapped: Driver<String>
     }
     
     // MARK: - Outputs
     
     public struct Output {
-        var nicknameAlert = PassthroughSubject<SignUpFormValidateResult, Never>()
-        var emailAlert = PassthroughSubject<SignUpFormValidateResult, Never>()
         var passwordAlert = PassthroughSubject<SignUpFormValidateResult, Never>()
         var passwordAccordAlert = PassthroughSubject<SignUpFormValidateResult, Never>()
         var isValidForm = PassthroughSubject<Bool, Never>()
-        var signUpSuccessed = PassthroughSubject<Bool, Never>()
+        var passwordChangeSuccessed = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - init
   
-    public init(useCase: SignUpUseCase) {
+    public init(useCase: PasswordChangeUseCase) {
         self.useCase = useCase
     }
 }
 
-extension SignUpViewModel {
+extension PasswordChangeViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
-        
-        input.nicknameCheckButtonTapped
-            .compactMap({ $0 })
-            .sink { nickname in
-                self.useCase.checkNickname(nickname: nickname)
-            }.store(in: self.cancelBag)
-        
-        input.emailCheckButtonTapped
-            .compactMap({ $0 })
-            .sink { email in
-                self.useCase.checkEmail(email: email)
-            }.store(in: self.cancelBag)
         
         input.passwordTextChanged
             .compactMap({ $0 })
@@ -81,31 +60,17 @@ extension SignUpViewModel {
                 self.useCase.checkAccordPassword(firstPassword: firstPassword, secondPassword: secondPassword)
             }.store(in: self.cancelBag)
         
-        input.registerButtonTapped
-            .sink { signUpRequest in
-                self.useCase.signUp(signUpRequest: signUpRequest)
+        input.passwordChangeButtonTapped
+            .sink { password in
+                self.useCase.changePassword(password: password)
             }.store(in: self.cancelBag)
-            
+    
         return output
     }
   
     private func bindOutput(output: Output, cancelBag: CancelBag) {
-        useCase.isNicknameValid.sink { event in
-            print("SignUpViewModel - completion: \(event)")
-        } receiveValue: { isNicknameValid in
-            output.nicknameAlert.send(isNicknameValid ?
-                .valid(text: I18N.SignUp.validNickname) : .invalid(text: I18N.SignUp.duplicatedNickname))
-        }.store(in: cancelBag)
-        
-        useCase.isEmailFormValid.sink { event in
-            print("SignUpViewModel - completion: \(event)")
-        } receiveValue: { isEmailValid in
-            output.emailAlert.send(isEmailValid ?
-                .valid(text: I18N.SignUp.validEmail) : .invalid(text: I18N.SignUp.invalidEmailForm))
-        }.store(in: cancelBag)
-        
         useCase.isPasswordFormValid.combineLatest(useCase.isAccordPassword).sink { event in
-            print("SignUpViewModel - completion: \(event)")
+            print("PasswordChangeViewModel - completion: \(event)")
         } receiveValue: { (isFormValid, isAccordValid) in
             if !isFormValid {
                 output.passwordAlert.send(.invalid(text: I18N.SignUp.invalidPasswordForm))
@@ -119,15 +84,15 @@ extension SignUpViewModel {
         }.store(in: cancelBag)
         
         useCase.isValidForm.sink { event in
-            print("SignUpViewModel - completion: \(event)")
+            print("PasswordChangeViewModel - completion: \(event)")
         } receiveValue: { isValidForm in
             output.isValidForm.send(isValidForm)
         }.store(in: cancelBag)
         
-        useCase.signUpSuccess.sink { event in
-            print("SignUpViewModel - completion: \(event)")
+        useCase.passwordChangeSuccess.sink { event in
+            print("PasswordChangeViewModel - completion: \(event)")
         } receiveValue: { isSuccess in
-            output.signUpSuccessed.send(isSuccess)
+            output.passwordChangeSuccessed.send(isSuccess)
         }.store(in: cancelBag)
     }
 }

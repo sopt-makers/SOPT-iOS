@@ -12,26 +12,41 @@ import Alamofire
 import Moya
 
 public enum AuthAPI {
-    case sample(provider: String)
+    case getNicknameAvailable(nickname: String)
+    case getEmailAvailable(email: String)
+    case changePassword(password: String, userId: Int)
 }
 
 extension AuthAPI: BaseAPI {
     
     public static var apiType: APIType = .auth
     
+    // MARK: - Header
+    public var headers: [String: String]? {
+        switch self {
+        case .changePassword(_, let userId):
+            return HeaderType.userId(userId: userId).value
+        default: return HeaderType.json.value
+        }
+    }
+    
     // MARK: - Path
     public var path: String {
         switch self {
-        case .sample:
+        case .getNicknameAvailable, .getEmailAvailable:
             return ""
+        case .changePassword:
+            return "password"
         }
     }
     
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .sample:
-            return .post
+        case .getNicknameAvailable, .getEmailAvailable:
+            return .get
+        case .changePassword:
+            return .put
         }
     }
     
@@ -39,16 +54,16 @@ extension AuthAPI: BaseAPI {
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
-        case .sample(let provider):
-            params["platform"] = provider
+        case .getNicknameAvailable, .getEmailAvailable:
+            break
+        case .changePassword(let password, _):
+            params["password"] = password
         }
         return params
     }
     
     private var parameterEncoding: ParameterEncoding {
         switch self {
-        case .sample:
-            return URLEncoding.init(destination: .queryString, arrayEncoding: .noBrackets, boolEncoding: .literal)
         default:
             return JSONEncoding.default
         }
@@ -56,7 +71,11 @@ extension AuthAPI: BaseAPI {
     
     public var task: Task {
         switch self {
-        case .sample:
+        case .getNicknameAvailable(let nickname):
+            return .requestParameters(parameters: ["nickname": nickname], encoding: URLEncoding.queryString)
+        case .getEmailAvailable(let email):
+            return .requestParameters(parameters: ["email": email], encoding: URLEncoding.queryString)
+        case .changePassword:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain
