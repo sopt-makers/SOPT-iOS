@@ -83,11 +83,19 @@ extension NicknameEditVC {
             .withUnretained(self)
             .sink { owner, isSuccessed in
                 if isSuccessed {
-                    owner.navigationController?.popViewController(animated: true)
+                    owner.showToastAndPopView()
                 } else {
                     owner.showNetworkAlert()
                 }
             }.store(in: self.cancelBag)
+    }
+    
+    private func showToastAndPopView() {
+        self.navigationController?.popViewController(animated: true)
+        let window = self.view.window!
+        Toast.show(message: I18N.Setting.NicknameEdit.nicknameEditSuccess,
+                   view: window,
+                   safeAreaBottomInset: self.safeAreaBottomInset())
     }
     
     public func showNetworkAlert() {

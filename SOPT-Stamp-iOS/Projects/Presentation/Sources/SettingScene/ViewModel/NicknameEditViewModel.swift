@@ -74,11 +74,11 @@ extension NicknameEditViewModel {
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         nicknameCheckUseCase.isNicknameValid
             .asDriver()
-            .sink { isNicknameValid in
+            .sink { isNicknameValid, alertText in
                 output.editButtonEnabled = isNicknameValid
                 output.nicknameAlert.send(isNicknameValid
-                                          ? .valid(text: I18N.SignUp.validNickname)
-                                          : .invalid(text: I18N.SignUp.duplicatedNickname))
+                                          ? .valid(text: alertText)
+                                          : .invalid(text: alertText))
             }.store(in: self.cancelBag)
         
         editPostUseCase.editNicknameSuccess
