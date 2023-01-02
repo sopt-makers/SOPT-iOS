@@ -52,10 +52,44 @@ public class NicknameEditVC: UIViewController {
 extension NicknameEditVC {
     
     private func bindViewModels() {
+        let nicknameTextChanged = nicknameTextFieldView
+            .textChanged
+            .compactMap { $0 }
+            .eraseToAnyPublisher()
+            .asDriver()
+        
+        let editNicknameButtonTapped = self.editNicknameButton
+            .publisher(for: .touchUpInside)
+            .compactMap { _ in self.nicknameTextFieldView.text }
+            .filter { !$0.isEmpty }
+            .asDriver()
         
         let input = NicknameEditViewModel.Input(nicknameTextChanged: nicknameTextChanged,
                                                 editButtonTapped: editNicknameButtonTapped)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.nicknameAlert
+            .dropFirst()
+            .map { $0.convertToTextFieldAlertType() }
+            .assign(to: nicknameTextFieldView.kf.alertType,
+                    on: nicknameTextFieldView)
+            .store(in: cancelBag)
+        
+        output.$editButtonEnabled
+            .assign(to: self.editNicknameButton.kf.isEnabled, on: self.editNicknameButton)
+            .store(in: self.cancelBag)
+        
+        output.editNicknameSuccessed
+            .withUnretained(self)
+            .sink { owner, isSuccessed in
+                if isSuccessed {
+                    owner.navigationController?.popViewController(animated: true)
+                } else {
+                    owner.showNetworkAlert()
+                }
+            }.store(in: self.cancelBag)
+    }
+    
     public func showNetworkAlert() {
         let alertVC = AlertVC(alertType: .networkErr)
             .setTitle(I18N.Default.networkError, I18N.Default.networkErrorDescription)

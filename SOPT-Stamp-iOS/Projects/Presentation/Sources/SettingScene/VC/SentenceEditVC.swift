@@ -91,7 +91,6 @@ extension SentenceEditVC {
             .sink { owner, isSuccessed in
                 if isSuccessed {
                     owner.navigationController?.popViewController(animated: true)
-                    print("성공")
                 } else {
                     owner.showNetworkAlert()
                 }

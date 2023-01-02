@@ -46,6 +46,13 @@ public class DefaultSignUpUseCase {
 
 extension DefaultSignUpUseCase: SignUpUseCase {
     public func checkNickname(nickname: String) {
+        let nicknameRegEx = "[가-힣A-Za-z]{1,10}"
+        let pred = NSPredicate(format: "SELF MATCHES %@", nicknameRegEx)
+        guard pred.evaluate(with: nickname) else {
+            self.isNicknameValid.send(false)
+            return
+        }
+        
         repository.getNicknameAvailable(nickname: nickname)
             .sink { event in
                 print("SignUpUseCase nickname: \(event)")
