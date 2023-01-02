@@ -23,14 +23,14 @@ public class SettingVC: UIViewController {
     private var cancelBag = CancelBag()
     public var factory: ModuleFactoryInterface!
     private let resetButtonTapped = PassthroughSubject<Bool, Never>()
-  
+    
     // MARK: - UI Components
     
     private lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
         .setTitle(I18N.Setting.setting)
     private let collectionViewFlowlayout = UICollectionViewFlowLayout()
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewFlowlayout)
-     
+    
     // MARK: - View Life Cycle
     
     public override func viewDidLoad() {
@@ -46,7 +46,7 @@ public class SettingVC: UIViewController {
 // MARK: - Methods
 
 extension SettingVC {
-  
+    
     private func bindViewModels() {
         let input = SettingViewModel.Input(
             resetButtonTapped: resetButtonTapped.asDriver())
@@ -80,6 +80,11 @@ extension SettingVC {
         }
         
         self.present(alertVC, animated: true)
+    }
+    
+    private func showEditSentenceView() {
+        let editSentenceVC = self.factory.makeSentenceEditVC()
+        navigationController?.pushViewController(editSentenceVC, animated: true)
     }
     
     private func showPasswordChangeView() {
@@ -138,9 +143,9 @@ extension SettingVC: UICollectionViewDelegate {
         case 0:
             switch indexPath.row {
             case 0:
-                print("한마디 편집")
+                showEditSentenceView()
             case 1:
-               showPasswordChangeView()
+                showPasswordChangeView()
             default:
                 print("닉네임 변경")
             }

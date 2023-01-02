@@ -20,7 +20,7 @@ public class SentenceEditViewModel: ViewModelType {
     
     public struct Input {
         let textChanged: Driver<String>
-        let saveButtonTapped: Driver<Void>
+        let saveButtonTapped: Driver<String>
     }
     
     // MARK: - Outputs
@@ -28,7 +28,7 @@ public class SentenceEditViewModel: ViewModelType {
     public class Output {
         @Published var saveButtonEnabled = false
         @Published var defaultText = ""
-        let editSuccessed = PassthroughSubject<Void, Never>()
+        let editSuccessed = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - init
@@ -46,8 +46,13 @@ extension SentenceEditViewModel {
         input.textChanged
             .withUnretained(self)
             .sink { owner, text in
-                print(text)
                 owner.useCase.validateSentence(text: text)
+            }.store(in: self.cancelBag)
+        
+        input.saveButtonTapped
+            .withUnretained(self)
+            .sink { owner, sentence in
+                owner.useCase.editSentence(sentence: sentence)
             }.store(in: self.cancelBag)
     
         return output
@@ -61,5 +66,11 @@ extension SentenceEditViewModel {
             }.store(in: self.cancelBag)
         
         output.defaultText = self.useCase.originSentenceText
+        
+        self.useCase.editSentenceSuccessed
+            .asDriver()
+            .sink { isSuccessed in
+                output.editSuccessed.send(isSuccessed)
+            }.store(in: self.cancelBag)
     }
 }

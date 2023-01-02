@@ -123,7 +123,7 @@ extension ModuleFactory: ModuleFactoryInterface {
     }
     
     public func makeSettingVC() -> SettingVC {
-        let repository = SettingRepository(authService: authService, stampService: stampService)
+        let repository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
         let useCase = DefaultSettingUseCase(repository: repository)
         let viewModel = SettingViewModel(useCase: useCase)
         let settingVC = SettingVC()
@@ -133,7 +133,7 @@ extension ModuleFactory: ModuleFactoryInterface {
     }
     
     public func makeSentenceEditVC() -> SentenceEditVC {
-        let repository = SettingRepository(authService: authService, stampService: stampService)
+        let repository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
         let useCase = DefaultSentenceEditUseCase(repository: repository)
         let viewModel = SentenceEditViewModel(useCase: useCase)
         let sentenceEditVC = SentenceEditVC()
@@ -142,7 +142,7 @@ extension ModuleFactory: ModuleFactoryInterface {
     }
     
     public func makePasswordChangeVC() -> PasswordChangeVC {
-        let repository = SettingRepository(authService: authService, stampService: stampService)
+        let repository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
         let useCase = DefaultPasswordChangeUseCase(repository: repository)
         let viewModel = PasswordChangeViewModel(useCase: useCase)
         let passwordChangeVC = PasswordChangeVC()

@@ -70,7 +70,8 @@ extension SentenceEditVC {
         
         let saveButtonTapped = self.saveButton
             .publisher(for: .touchUpInside)
-            .map { _ in () }
+            .compactMap { _ in self.textView.text }
+            .filter { !$0.isEmpty }
             .asDriver()
         
         let input = SentenceEditViewModel.Input(textChanged: textViewTextChanged,
@@ -84,8 +85,26 @@ extension SentenceEditVC {
         output.$defaultText
             .assign(to: self.textView.kf.text, on: self.textView)
             .store(in: self.cancelBag)
+        
+        output.editSuccessed
+            .withUnretained(self)
+            .sink { owner, isSuccessed in
+                if isSuccessed {
+                    owner.navigationController?.popViewController(animated: true)
+                    print("성공")
+                } else {
+                    owner.showNetworkAlert()
+                }
+            }.store(in: self.cancelBag)
     }
     
+    public func showNetworkAlert() {
+        let alertVC = AlertVC(alertType: .networkErr)
+            .setTitle(I18N.Default.networkError, I18N.Default.networkErrorDescription)
+        alertVC.modalPresentationStyle = .overFullScreen
+        alertVC.modalTransitionStyle = .crossDissolve
+        self.present(alertVC, animated: true)
+    }
 }
 
 // MARK: - UI & Layout
