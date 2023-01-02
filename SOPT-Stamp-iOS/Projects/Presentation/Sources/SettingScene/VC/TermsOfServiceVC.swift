@@ -23,7 +23,7 @@ public class TermsOfServiceVC: UIViewController {
         .setRightButton(.none)
 
     private let textView = UITextView().then {
-        $0.text = I18N.serviceUsagePolicy.termsOfService
+        $0.text = I18N.ServiceUsagePolicy.termsOfService
         $0.isEditable = false
         $0.showsVerticalScrollIndicator = false
         $0.setLineSpacing(lineSpacing: 5)

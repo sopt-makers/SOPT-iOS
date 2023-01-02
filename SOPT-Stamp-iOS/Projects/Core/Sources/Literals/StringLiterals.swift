@@ -108,7 +108,7 @@ public struct I18N {
 }
     
 extension I18N {
-    public struct serviceUsagePolicy {
+    public struct ServiceUsagePolicy {
         public static let termsOfService = """
         제 1장 총칙
         제 1조
