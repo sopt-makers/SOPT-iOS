@@ -132,6 +132,15 @@ extension ModuleFactory: ModuleFactoryInterface {
         return settingVC
     }
     
+    public func makeSentenceEditVC() -> SentenceEditVC {
+        let repository = SettingRepository(authService: authService, stampService: stampService)
+        let useCase = DefaultSentenceEditUseCase(repository: repository)
+        let viewModel = SentenceEditViewModel(useCase: useCase)
+        let sentenceEditVC = SentenceEditVC()
+        sentenceEditVC.viewModel = viewModel
+        return sentenceEditVC
+    }
+    
     public func makePasswordChangeVC() -> PasswordChangeVC {
         let repository = SettingRepository(authService: authService, stampService: stampService)
         let useCase = DefaultPasswordChangeUseCase(repository: repository)
