@@ -20,7 +20,7 @@ public class SpeechBalloonView: UIView {
     
     // MARK: - UI Components
     
-    private let baloonTailImageView: UIImageView = {
+    private let balloonTailImageView: UIImageView = {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFit
         iv.image = DSKitAsset.Assets.balloonTail.image.withRenderingMode(.alwaysTemplate)
@@ -36,6 +36,13 @@ public class SpeechBalloonView: UIView {
         label.clipsToBounds = true
         label.sizeToFit()
         return label
+    }()
+    
+    private let leftArrowImage: UIImageView = {
+        let iv = UIImageView()
+        iv.contentMode = .scaleAspectFit
+        iv.image = DSKitAsset.Assets.icLeftArrow.image.withRenderingMode(.alwaysTemplate)
+        return iv
     }()
     
     // MARK: View Life Cycle
@@ -66,18 +73,24 @@ extension SpeechBalloonView {
         switch viewLevel {
         case .rankOne:
             sentenceLabel.backgroundColor = DSKitAsset.Colors.purple300.color
-            baloonTailImageView.tintColor = DSKitAsset.Colors.purple300.color
+            sentenceLabel.textColor = DSKitAsset.Colors.white.color
+            leftArrowImage.tintColor = .white
+            balloonTailImageView.tintColor = DSKitAsset.Colors.purple300.color
         case .rankTwo:
             sentenceLabel.backgroundColor = DSKitAsset.Colors.pink300.color
-            baloonTailImageView.tintColor = DSKitAsset.Colors.pink300.color
+            sentenceLabel.textColor = DSKitAsset.Colors.white.color
+            leftArrowImage.tintColor = .white
+            balloonTailImageView.tintColor = DSKitAsset.Colors.pink300.color
         case .rankThree:
             sentenceLabel.backgroundColor = DSKitAsset.Colors.mint300.color
-            baloonTailImageView.tintColor = DSKitAsset.Colors.mint300.color
+            sentenceLabel.textColor = DSKitAsset.Colors.black.color
+            leftArrowImage.tintColor = .black
+            balloonTailImageView.tintColor = DSKitAsset.Colors.mint300.color
         }
     }
     
     private func setLayout(sentence: String) {
-        self.addSubviews(sentenceLabel, baloonTailImageView)
+        self.addSubviews(sentenceLabel, balloonTailImageView)
         
         sentenceLabel.snp.makeConstraints { make in
             make.top.equalToSuperview()
@@ -107,7 +120,7 @@ extension SpeechBalloonView {
             }
         }
         
-        baloonTailImageView.snp.makeConstraints { make in
+        balloonTailImageView.snp.makeConstraints { make in
             make.top.equalTo(sentenceLabel.snp.bottom).offset(-3).priority(.high)
             make.height.equalTo(11.5)
             make.width.equalTo(10)
@@ -120,6 +133,14 @@ extension SpeechBalloonView {
                 make.centerX.equalTo(sentenceLabel.snp.trailing).offset(-45.adjusted)
             }
             make.bottom.equalToSuperview()
+        }
+        
+        sentenceLabel.addSubview(leftArrowImage)
+        
+        leftArrowImage.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.size.equalTo(32)
+            make.trailing.equalToSuperview()
         }
     }
     

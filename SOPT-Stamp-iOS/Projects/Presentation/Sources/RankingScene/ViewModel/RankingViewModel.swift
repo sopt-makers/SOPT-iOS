@@ -21,12 +21,14 @@ public class RankingViewModel: ViewModelType {
     public struct Input {
         let viewDidLoad: Driver<Void>
         let refreshStarted: Driver<Void>
+        let showMyRankingButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs
     
     public class Output {
         @Published var rankingListModel = [RankingModel]()
+        @Published var myRanking = (section: 0, item: 0)
     }
     
     // MARK: - init
@@ -39,12 +41,19 @@ public class RankingViewModel: ViewModelType {
 extension RankingViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
+        
         self.bindOutput(output: output, cancelBag: cancelBag)
         
         input.viewDidLoad.merge(with: input.refreshStarted)
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.fetchRankingList()
+            }.store(in: self.cancelBag)
+        
+        input.showMyRankingButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.useCase.findMyRanking()
             }.store(in: self.cancelBag)
         
         return output
@@ -56,6 +65,13 @@ extension RankingViewModel {
         fetchedRankingList.asDriver()
             .sink(receiveValue: { model in
                 output.rankingListModel = model
+            })
+            .store(in: self.cancelBag)
+        
+        self.useCase.myRanking
+            .asDriver()
+            .sink(receiveValue: { indexPath in
+                output.myRanking = indexPath
             })
             .store(in: self.cancelBag)
     }

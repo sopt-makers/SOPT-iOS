@@ -20,10 +20,12 @@ final class RankingChartCVC: UICollectionViewCell, UICollectionViewRegisterable 
     // MARK: - Properties
     
     static var isFromNib: Bool = false
+    public var balloonTapped: ((RankingModel) -> Void)?
+    public var models: [RankingModel] = []
     
     // MARK: - UI Components
     
-    private var baloonViews: [SpeechBalloonView] = []
+    private var balloonViews: [SpeechBalloonView] = []
     
     private let chartStackView: UIStackView = {
         let st = UIStackView()
@@ -82,7 +84,7 @@ extension RankingChartCVC {
     @objc
     private func showBalloonForView(_ sender: UITapGestureRecognizer) {
         guard let senderView = sender.view as? ChartRectangleView else { return }
-        for (chart, balloon) in zip(chartStackView.arrangedSubviews, baloonViews) {
+        for (chart, balloon) in zip(chartStackView.arrangedSubviews, balloonViews) {
             guard let chartView = chart as? ChartRectangleView else { return }
             balloon.isHidden = (chartView != senderView)
         }
@@ -94,40 +96,41 @@ extension RankingChartCVC {
 extension RankingChartCVC {
     
     private func prepareCell() {
-        baloonViews.forEach {
+        balloonViews.forEach {
             $0.removeFromSuperview()
         }
-        baloonViews.removeAll()
+        balloonViews.removeAll()
     }
     
     public func setData(model: RankingChartModel) {
         
         // 데이터 바인딩을 위한 모델 순서 재정렬
         let arrangedModel = [model.ranking[1], model.ranking[0], model.ranking[2]]
-        let sentences = arrangedModel.map { $0.sentence }
+        self.models = arrangedModel
         
-        self.setSpeechBalloonViews(sentences: sentences)
+        self.setSpeechBalloonViews(balloonModels: arrangedModel)
         self.setChartData(chartRectangleModel: arrangedModel)
     }
     
-    private func setSpeechBalloonViews(sentences: [String]) {
+    private func setSpeechBalloonViews(balloonModels: [RankingModel]) {
         
         // 말풍선 text 설정
-        for (index, sentence) in sentences.enumerated() {
-            var baloonView: SpeechBalloonView
+        for (index, model) in balloonModels.enumerated() {
+            var balloonView: SpeechBalloonView
             if index == 0 {
-                baloonView = SpeechBalloonView.init(level: .rankTwo, sentence: sentence)
-                baloonView.isHidden = true
+                balloonView = SpeechBalloonView.init(level: .rankTwo, sentence: model.sentence)
+                balloonView.isHidden = true
             } else if index == 1 {
-                baloonView = SpeechBalloonView.init(level: .rankOne, sentence: sentence)
+                balloonView = SpeechBalloonView.init(level: .rankOne, sentence: model.sentence)
             } else {
-                baloonView = SpeechBalloonView.init(level: .rankThree, sentence: sentence)
-                baloonView.isHidden = true
+                balloonView = SpeechBalloonView.init(level: .rankThree, sentence: model.sentence)
+                balloonView.isHidden = true
             }
-            baloonViews.append(baloonView)
+            balloonViews.append(balloonView)
+            self.setBalloonGesture(balloonView)
         }
         
-        baloonViews.forEach {
+        balloonViews.forEach {
             self.addSubview($0)
             
             $0.snp.makeConstraints { make in
@@ -139,17 +142,24 @@ extension RankingChartCVC {
         }
     }
     
+    private func setBalloonGesture(_ view: SpeechBalloonView) {
+        let tap = UITapGestureRecognizer.init(target: self, action: #selector(tappedGetBalloonModel(_:)))
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc
+    private func tappedGetBalloonModel(_ sender: UITapGestureRecognizer) {
+        guard let senderView = sender.view as? SpeechBalloonView,
+              let balloonIndex = balloonViews.firstIndex(of: senderView) else { return }
+        let model = models[balloonIndex]
+        _ = self.balloonTapped?(model)
+    }
+    
     private func setChartData(chartRectangleModel: [RankingModel]) {
         for (index, rectangle) in chartStackView.subviews.enumerated() {
             guard let chartRectangle = rectangle as? ChartRectangleView else { return }
             chartRectangle.setData(score: chartRectangleModel[index].score,
                                    username: chartRectangleModel[index].username)
         }
-    }
-}
-
-extension RankingChartCVC: RankingListTappble {
-    func getModelItem() -> RankingListTapItem? {
-        return RankingListTapItem.init(username: "유저", sentence: "한마디", userId: 1)
     }
 }
