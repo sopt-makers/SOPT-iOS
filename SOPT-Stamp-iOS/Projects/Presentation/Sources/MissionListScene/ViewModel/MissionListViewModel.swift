@@ -54,26 +54,32 @@ extension MissionListViewModel {
         input.viewDidLoad
             .withUnretained(self)
             .sink { owner, _ in
-                switch owner.missionListsceneType {
-                case .ranking(_, _, let userId):
-                    owner.useCase.fetchOtherUserMissionList(type: .all, userId: userId)
-                default:
-                    owner.useCase.fetchMissionList(type: .all)
-                }
+                owner.fetchMissionList()
+            }.store(in: cancelBag)
+        
+        input.viewWillAppear
+            .dropFirst()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.fetchMissionList()
             }.store(in: cancelBag)
         
         input.missionTypeSelected
             .withUnretained(self)
             .sink { owner, fetchType in
-                switch owner.missionListsceneType {
-                case .ranking(_, _, let userId):
-                    owner.useCase.fetchOtherUserMissionList(type: fetchType, userId: userId)
-                default:
-                    owner.useCase.fetchMissionList(type: fetchType)
-                }
+                owner.useCase.fetchMissionList(type: fetchType)
             }.store(in: cancelBag)
         
         return output
+    }
+    
+    private func fetchMissionList() {
+        switch self.missionListsceneType {
+        case .ranking(_, _, let userId):
+            self.useCase.fetchOtherUserMissionList(type: .all, userId: userId)
+        default:
+            self.useCase.fetchMissionList(type: .all)
+        }
     }
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
