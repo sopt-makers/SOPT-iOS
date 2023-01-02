@@ -28,6 +28,7 @@ public class MissionListVC: UIViewController {
     private var cancelBag = CancelBag()
     
     private var missionTypeMenuSelected = CurrentValueSubject<MissionListFetchType, Error>(.all)
+    private var viewWillAppear = PassthroughSubject<Void, Error>()
     
     lazy var dataSource: UICollectionViewDiffableDataSource<MissionListSection, MissionListModel>! = nil
     
@@ -113,6 +114,7 @@ public class MissionListVC: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.viewWillAppear.send(())
         self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
 }
@@ -198,7 +200,7 @@ extension MissionListVC {
     private func bindViewModels() {
         
         let input = MissionListViewModel.Input(viewDidLoad: Driver.just(()),
-                                               viewWillAppear: Driver.just(()),
+                                               viewWillAppear: viewWillAppear.asDriver(),
                                                missionTypeSelected: missionTypeMenuSelected.asDriver())
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
