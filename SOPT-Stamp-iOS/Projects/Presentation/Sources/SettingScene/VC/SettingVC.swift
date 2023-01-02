@@ -163,7 +163,7 @@ extension SettingVC: UICollectionViewDelegate {
             case 1:
                 showTermsOfServieView()
             default:
-                print("서비스 의견 제안")
+                openExternalLink(urlStr: ExternalURL.GoogleForms.serviceProposal)
             }
         case 2:
             self.presentResetAlertVC()
