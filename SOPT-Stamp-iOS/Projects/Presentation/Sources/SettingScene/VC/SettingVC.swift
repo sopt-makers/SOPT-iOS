@@ -96,6 +96,18 @@ extension SettingVC {
         let termsOfServiceVC = self.factory.makeTermsOfServiceVC()
         navigationController?.pushViewController(termsOfServiceVC, animated: true)
     }
+    
+    private func logout() {
+        UserDefaultKeyList.Auth.userId = nil
+        self.changeRootViewController()
+    }
+    
+    private func changeRootViewController() {
+        guard let uWindow = self.view.window else { return }
+        uWindow.rootViewController = self.factory.makeSignInVC()
+        uWindow.makeKey()
+        UIView.transition(with: uWindow, duration: 0.5, options: [.transitionCrossDissolve], animations: {}, completion: nil)
+    }
 }
 
 // MARK: - UI & Layout
@@ -151,12 +163,12 @@ extension SettingVC: UICollectionViewDelegate {
             case 1:
                 showTermsOfServieView()
             default:
-                print("서비스 의견 제안")
+                openExternalLink(urlStr: ExternalURL.GoogleForms.serviceProposal)
             }
         case 2:
             self.presentResetAlertVC()
         default:
-            print("로그아웃")
+            logout()
         }
     }
     
