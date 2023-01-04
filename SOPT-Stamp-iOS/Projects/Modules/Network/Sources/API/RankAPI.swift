@@ -54,7 +54,6 @@ extension RankAPI: BaseAPI {
         switch self {
         case .editSentence(_, let sentence):
             params["profileMessage"] = sentence
-            print(params)
         default: break
         }
         return params
