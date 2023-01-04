@@ -11,12 +11,10 @@ import Foundation
 import Alamofire
 import Moya
 
-import Domain
-
 public enum StampAPI {
     case fetchStampListDetail(userId: Int, missionId: Int)
-    case postStamp(userId: Int, missionId: Int, requestModel: ListDetailRequestModel)
-    case putStamp(userId: Int, missionId: Int, requestModel: ListDetailRequestModel)
+    case postStamp(userId: Int, missionId: Int, requestModel: [Any])
+    case putStamp(userId: Int, missionId: Int, requestModel: [Any])
     case deleteStamp(stampId: Int)
     case resetStamp(userId: Int)
 }
@@ -91,11 +89,11 @@ extension StampAPI: BaseAPI {
             let fileName = (self.method == .post) ? ".jpg" : ".png"
             let mimeType = (self.method == .post) ? "image/jpeg" : "image/png"
             
-            let imageData = MultipartFormData(provider: .data(requestModel.imgURL ?? Data()), name: "imgUrl", fileName: fileName, mimeType: mimeType)
+            let imageData = MultipartFormData(provider: .data(requestModel[0] as! Data), name: "imgUrl", fileName: fileName, mimeType: mimeType)
             multipartData.append(imageData)
         
             do {
-                let content = try JSONSerialization.data(withJSONObject: ["contents": requestModel.content], options: .withoutEscapingSlashes)
+                let content = try JSONSerialization.data(withJSONObject: ["contents": requestModel[1]], options: .withoutEscapingSlashes)
                 
                 let formData = MultipartFormData(provider: .data(content), name: "stampContent", mimeType: "application/json")
                 multipartData.append(formData)

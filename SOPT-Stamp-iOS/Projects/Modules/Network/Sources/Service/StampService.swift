@@ -12,14 +12,12 @@ import Combine
 import Alamofire
 import Moya
 
-import Domain
-
 public typealias DefaultStampService = BaseService<StampAPI>
 
 public protocol StampService {
     func fetchStampListDetail(userId: Int, missionId: Int) -> AnyPublisher<ListDetailEntity, Error>
-    func postStamp(userId: Int, missionId: Int, requestModel: ListDetailRequestModel) -> AnyPublisher<ListDetailEntity, Error>
-    func putStamp(userId: Int, missionId: Int, requestModel: ListDetailRequestModel) -> AnyPublisher<StampEntity, Error>
+    func postStamp(userId: Int, missionId: Int, requestModel: [Any]) -> AnyPublisher<ListDetailEntity, Error>
+    func putStamp(userId: Int, missionId: Int, requestModel: [Any]) -> AnyPublisher<StampEntity, Error>
     func deleteStamp(stampId: Int) -> AnyPublisher<Int, Error>
     func resetStamp(userId: Int) -> AnyPublisher<Int, Error>
 }
@@ -29,11 +27,11 @@ extension DefaultStampService: StampService {
         requestObjectInCombine(StampAPI.fetchStampListDetail(userId: userId, missionId: missionId))
     }
     
-    public func postStamp(userId: Int, missionId: Int, requestModel: ListDetailRequestModel) -> AnyPublisher<ListDetailEntity, Error> {
+    public func postStamp(userId: Int, missionId: Int, requestModel: [Any]) -> AnyPublisher<ListDetailEntity, Error> {
         requestObjectInCombine(StampAPI.postStamp(userId: userId, missionId: missionId, requestModel: requestModel))
     }
     
-    public func putStamp(userId: Int, missionId: Int, requestModel: ListDetailRequestModel) -> AnyPublisher<StampEntity, Error> {
+    public func putStamp(userId: Int, missionId: Int, requestModel: [Any]) -> AnyPublisher<StampEntity, Error> {
         requestObjectInCombine(StampAPI.putStamp(userId: userId, missionId: missionId, requestModel: requestModel))
     }
     

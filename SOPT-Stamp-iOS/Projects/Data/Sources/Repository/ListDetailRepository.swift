@@ -30,13 +30,13 @@ extension ListDetailRepository: ListDetailRepositoryInterface {
             .asDriver()
     }
     
-    public func postStamp(missionId: Int, stampData: ListDetailRequestModel) -> Driver<ListDetailModel> {
+    public func postStamp(missionId: Int, stampData: [Any]) -> Driver<ListDetailModel> {
         return stampService.postStamp(userId: userId, missionId: missionId, requestModel: stampData)
             .map { $0.toDomain() }
             .asDriver()
     }
     
-    public func putStamp(missionId: Int, stampData: ListDetailRequestModel) -> Driver<Int> {
+    public func putStamp(missionId: Int, stampData: [Any]) -> Driver<Int> {
         return stampService.putStamp(userId: userId, missionId: missionId, requestModel: stampData)
             .map { $0.toDomain() }
             .asDriver()

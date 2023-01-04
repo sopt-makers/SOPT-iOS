@@ -10,7 +10,6 @@ import Foundation
 import Combine
 
 import Alamofire
-import Domain
 import Moya
 
 public typealias DefaultUserService = BaseService<UserAPI>
