@@ -23,7 +23,7 @@ public class PrivacyPolicyVC: UIViewController {
         .setRightButton(.none)
     
     private let textView = UITextView().then {
-        $0.text = I18N.serviceUsagePolicy.privacyPolicy
+        $0.text = I18N.ServiceUsagePolicy.privacyPolicy
         $0.isEditable = false
         $0.showsVerticalScrollIndicator = false
         $0.setLineSpacing(lineSpacing: 5)
