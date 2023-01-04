@@ -23,14 +23,14 @@ public class SettingVC: UIViewController {
     private var cancelBag = CancelBag()
     public var factory: ModuleFactoryInterface!
     private let resetButtonTapped = PassthroughSubject<Bool, Never>()
-  
+    
     // MARK: - UI Components
     
     private lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
         .setTitle(I18N.Setting.setting)
     private let collectionViewFlowlayout = UICollectionViewFlowLayout()
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewFlowlayout)
-     
+    
     // MARK: - View Life Cycle
     
     public override func viewDidLoad() {
@@ -46,7 +46,7 @@ public class SettingVC: UIViewController {
 // MARK: - Methods
 
 extension SettingVC {
-  
+    
     private func bindViewModels() {
         let input = SettingViewModel.Input(
             resetButtonTapped: resetButtonTapped.asDriver())
@@ -82,6 +82,16 @@ extension SettingVC {
         self.present(alertVC, animated: true)
     }
     
+    private func showEditSentenceView() {
+        let editSentenceVC = self.factory.makeSentenceEditVC()
+        navigationController?.pushViewController(editSentenceVC, animated: true)
+    }
+    
+    private func showEditNicknameView() {
+        let editNicknameVC = self.factory.makeNicknameEditVC()
+        navigationController?.pushViewController(editNicknameVC, animated: true)
+    }
+    
     private func showPasswordChangeView() {
         let passwordChangeVC = self.factory.makePasswordChangeVC()
         navigationController?.pushViewController(passwordChangeVC, animated: true)
@@ -104,7 +114,8 @@ extension SettingVC {
     
     private func changeRootViewController() {
         guard let uWindow = self.view.window else { return }
-        uWindow.rootViewController = self.factory.makeSignInVC()
+        let navigation = UINavigationController(rootViewController: self.factory.makeSignInVC())
+        uWindow.rootViewController = navigation
         uWindow.makeKey()
         UIView.transition(with: uWindow, duration: 0.5, options: [.transitionCrossDissolve], animations: {}, completion: nil)
     }
@@ -150,11 +161,11 @@ extension SettingVC: UICollectionViewDelegate {
         case 0:
             switch indexPath.row {
             case 0:
-                print("한마디 편집")
+                showEditSentenceView()
             case 1:
-               showPasswordChangeView()
+                showPasswordChangeView()
             default:
-                print("닉네임 변경")
+                showEditNicknameView()
             }
         case 1:
             switch indexPath.row {

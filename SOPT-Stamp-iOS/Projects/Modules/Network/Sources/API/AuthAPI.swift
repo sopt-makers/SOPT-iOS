@@ -15,6 +15,7 @@ public enum AuthAPI {
     case getNicknameAvailable(nickname: String)
     case getEmailAvailable(email: String)
     case changePassword(password: String, userId: Int)
+    case changeNickname(userId: Int, nickname: String)
 }
 
 extension AuthAPI: BaseAPI {
@@ -24,7 +25,7 @@ extension AuthAPI: BaseAPI {
     // MARK: - Header
     public var headers: [String: String]? {
         switch self {
-        case .changePassword(_, let userId):
+        case .changePassword(_, let userId), .changeNickname(let userId, _):
             return HeaderType.userId(userId: userId).value
         default: return HeaderType.json.value
         }
@@ -37,6 +38,8 @@ extension AuthAPI: BaseAPI {
             return ""
         case .changePassword:
             return "password"
+        case .changeNickname:
+            return "nickname"
         }
     }
     
@@ -45,7 +48,7 @@ extension AuthAPI: BaseAPI {
         switch self {
         case .getNicknameAvailable, .getEmailAvailable:
             return .get
-        case .changePassword:
+        case .changePassword, .changeNickname:
             return .put
         }
     }
@@ -58,6 +61,8 @@ extension AuthAPI: BaseAPI {
             break
         case .changePassword(let password, _):
             params["password"] = password
+        case .changeNickname(_, let nickname):
+            params["nickname"] = nickname
         }
         return params
     }
@@ -75,7 +80,7 @@ extension AuthAPI: BaseAPI {
             return .requestParameters(parameters: ["nickname": nickname], encoding: URLEncoding.queryString)
         case .getEmailAvailable(let email):
             return .requestParameters(parameters: ["email": email], encoding: URLEncoding.queryString)
-        case .changePassword:
+        case .changePassword, .changeNickname:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain

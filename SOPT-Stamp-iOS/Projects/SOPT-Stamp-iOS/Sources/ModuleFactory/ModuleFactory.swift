@@ -25,7 +25,9 @@ public class ModuleFactory {
     lazy var stampService = DefaultStampService()
 }
 
-extension ModuleFactory: ModuleFactoryInterface {
+// MARK: - Onboarding / Auth
+
+extension ModuleFactory {
     public func makeSplashVC() -> Presentation.SplashVC {
         let splashVC = SplashVC()
         splashVC.factory = self
@@ -68,6 +70,11 @@ extension ModuleFactory: ModuleFactoryInterface {
         signUpCompleteVC.factory = self
         return signUpCompleteVC
     }
+}
+
+// MARK: - Main Flow
+
+extension ModuleFactory: ModuleFactoryInterface {
     
     public func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListVC {
         let repository = MissionListRepository(service: missionService)
@@ -95,23 +102,6 @@ extension ModuleFactory: ModuleFactoryInterface {
         return missionCompletedVC
     }
     
-    public func makeAlertVC(type: AlertType, title: String, description: String = "", customButtonTitle: String) -> AlertVC {
-        let alertVC = AlertVC(alertType: type)
-            .setTitle(title, description)
-            .setCustomButtonTitle(customButtonTitle)
-        alertVC.modalPresentationStyle = .overFullScreen
-        alertVC.modalTransitionStyle = .crossDissolve
-        return alertVC
-    }
-    
-    public func makeNetworkAlertVC() -> AlertVC {
-        let alertVC = AlertVC(alertType: .networkErr)
-            .setTitle(I18N.Default.networkError, I18N.Default.networkErrorDescription)
-        alertVC.modalPresentationStyle = .overFullScreen
-        alertVC.modalTransitionStyle = .crossDissolve
-        return alertVC
-    }
-    
     public func makeRankingVC() -> RankingVC {
         let repository = RankingRepository(service: rankService)
         let useCase = DefaultRankingUseCase(repository: repository)
@@ -121,9 +111,13 @@ extension ModuleFactory: ModuleFactoryInterface {
         rankingVC.viewModel = viewModel
         return rankingVC
     }
-    
+}
+
+// MARK: - Settings
+
+extension ModuleFactory {
     public func makeSettingVC() -> SettingVC {
-        let repository = SettingRepository(authService: authService, stampService: stampService)
+        let repository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
         let useCase = DefaultSettingUseCase(repository: repository)
         let viewModel = SettingViewModel(useCase: useCase)
         let settingVC = SettingVC()
@@ -132,8 +126,30 @@ extension ModuleFactory: ModuleFactoryInterface {
         return settingVC
     }
     
+    public func makeNicknameEditVC() -> Presentation.NicknameEditVC {
+        let settingRepository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
+        let settingUseCase = DefaultSettingUseCase(repository: settingRepository)
+        
+        let signUpRepository = SignUpRepository(service: self.authService, userService: self.userService)
+        let signUpUseCase = DefaultSignUpUseCase(repository: signUpRepository)
+        
+        let viewModel = NicknameEditViewModel(nicknameUseCase: signUpUseCase, editPostUseCase: settingUseCase)
+        let nicknameEdit = NicknameEditVC()
+        nicknameEdit.viewModel = viewModel
+        return nicknameEdit
+    }
+    
+    public func makeSentenceEditVC() -> SentenceEditVC {
+        let repository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
+        let useCase = DefaultSentenceEditUseCase(repository: repository)
+        let viewModel = SentenceEditViewModel(useCase: useCase)
+        let sentenceEditVC = SentenceEditVC()
+        sentenceEditVC.viewModel = viewModel
+        return sentenceEditVC
+    }
+    
     public func makePasswordChangeVC() -> PasswordChangeVC {
-        let repository = SettingRepository(authService: authService, stampService: stampService)
+        let repository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
         let useCase = DefaultPasswordChangeUseCase(repository: repository)
         let viewModel = PasswordChangeViewModel(useCase: useCase)
         let passwordChangeVC = PasswordChangeVC()
@@ -150,5 +166,26 @@ extension ModuleFactory: ModuleFactoryInterface {
     public func makeTermsOfServiceVC() -> Presentation.TermsOfServiceVC {
         let termsOfServiceVC = TermsOfServiceVC()
         return termsOfServiceVC
+    }
+}
+
+// MARK: - Utility
+
+extension ModuleFactory {
+    public func makeAlertVC(type: AlertType, title: String, description: String = "", customButtonTitle: String) -> AlertVC {
+        let alertVC = AlertVC(alertType: type)
+            .setTitle(title, description)
+            .setCustomButtonTitle(customButtonTitle)
+        alertVC.modalPresentationStyle = .overFullScreen
+        alertVC.modalTransitionStyle = .crossDissolve
+        return alertVC
+    }
+    
+    public func makeNetworkAlertVC() -> AlertVC {
+        let alertVC = AlertVC(alertType: .networkErr)
+            .setTitle(I18N.Default.networkError, I18N.Default.networkErrorDescription)
+        alertVC.modalPresentationStyle = .overFullScreen
+        alertVC.modalTransitionStyle = .crossDissolve
+        return alertVC
     }
 }

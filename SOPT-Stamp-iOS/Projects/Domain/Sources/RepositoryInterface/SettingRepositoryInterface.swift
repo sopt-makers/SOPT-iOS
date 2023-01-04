@@ -12,4 +12,6 @@ import Combine
 
 public protocol SettingRepositoryInterface {
     func resetStamp() -> Driver<Bool>
+    func editSentence(sentence: String) -> AnyPublisher<Bool, Never>
+    func editNickname(nickname: String) -> AnyPublisher<Bool, Never>
 }

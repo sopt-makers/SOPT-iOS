@@ -18,7 +18,7 @@ public protocol SignUpUseCase {
     func checkAccordPassword(firstPassword: String, secondPassword: String)
     func signUp(signUpRequest: SignUpModel)
     
-    var isNicknameValid: CurrentValueSubject<Bool, Error> { get set }
+    var isNicknameValid: CurrentValueSubject<(Bool, String), Error> { get set }
     var isEmailFormValid: CurrentValueSubject<Bool, Error> { get set }
     var isPasswordFormValid: CurrentValueSubject<Bool, Error> { get set }
     var isAccordPassword: CurrentValueSubject<Bool, Error> { get set }
@@ -27,11 +27,11 @@ public protocol SignUpUseCase {
 }
 
 public class DefaultSignUpUseCase {
-  
+    
     private let repository: SignUpRepositoryInterface
     private var cancelBag = CancelBag()
     
-    public var isNicknameValid = CurrentValueSubject<Bool, Error>(false)
+    public var isNicknameValid = CurrentValueSubject<(Bool, String), Error>((false, ""))
     public var isEmailFormValid = CurrentValueSubject<Bool, Error>(false)
     public var isPasswordFormValid = CurrentValueSubject<Bool, Error>(false)
     public var isAccordPassword = CurrentValueSubject<Bool, Error>(false)
@@ -46,11 +46,24 @@ public class DefaultSignUpUseCase {
 
 extension DefaultSignUpUseCase: SignUpUseCase {
     public func checkNickname(nickname: String) {
+        let nicknameRegEx = "[가-힣ㄱ-ㅣA-Za-z\\s]{1,10}"
+        let pred = NSPredicate(format: "SELF MATCHES %@", nicknameRegEx)
+        let isValidForRegex = pred.evaluate(with: nickname)
+        let isEmptyNickname = nickname.replacingOccurrences(of: " ", with: "").count == 0
+        guard isValidForRegex && !isEmptyNickname else {
+            self.isNicknameValid.send((false, I18N.SignUp.nicknameTextFieldPlaceholder))
+            return
+        }
+        
         repository.getNicknameAvailable(nickname: nickname)
             .sink { event in
                 print("SignUpUseCase nickname: \(event)")
             } receiveValue: { isValid in
-                self.isNicknameValid.send(isValid)
+                if isValid {
+                    self.isNicknameValid.send((true, I18N.SignUp.validNickname))
+                } else {
+                    self.isNicknameValid.send((false, I18N.SignUp.duplicatedNickname))
+                }
             }.store(in: cancelBag)
     }
     
@@ -91,18 +104,19 @@ extension DefaultSignUpUseCase: SignUpUseCase {
 
 extension DefaultSignUpUseCase {
     func bindFormValid() {
-        isNicknameValid.combineLatest(
-            isEmailFormValid,
-            isPasswordFormValid,
-            isAccordPassword)
-        .map { (isNicknameValid, isEmailValid, isPasswordValid, isAccordPassword) in
-            (isNicknameValid && isEmailValid && isPasswordValid && isAccordPassword)
-        }
-        .sink { event in
-            print("SignUpUseCase - completion: \(event)")
-        } receiveValue: { isValid in
-            self.isValidForm.send(isValid)
-        }.store(in: cancelBag)
+        isNicknameValid
+            .map { $0.0 }
+            .combineLatest(isEmailFormValid,
+                           isPasswordFormValid,
+                           isAccordPassword)
+            .map { (isNicknameValid, isEmailValid, isPasswordValid, isAccordPassword) in
+                (isNicknameValid && isEmailValid && isPasswordValid && isAccordPassword)
+            }
+            .sink { event in
+                print("SignUpUseCase - completion: \(event)")
+            } receiveValue: { isValid in
+                self.isValidForm.send(isValid)
+            }.store(in: cancelBag)
     }
     
     func checkEmailForm(email: String) -> Bool {

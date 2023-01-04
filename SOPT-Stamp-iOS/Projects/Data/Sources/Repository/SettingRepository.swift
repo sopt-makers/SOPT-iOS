@@ -17,11 +17,13 @@ public class SettingRepository {
     private let userId: Int = UserDefaultKeyList.Auth.userId ?? 0
     private let authService: AuthService
     private let stampService: StampService
+    private let rankService: RankService
     private let cancelBag = CancelBag()
     
-    public init(authService: AuthService, stampService: StampService) {
+    public init(authService: AuthService, stampService: StampService, rankService: RankService) {
         self.authService = authService
         self.stampService = stampService
+        self.rankService = rankService
     }
 }
 
@@ -31,11 +33,28 @@ extension SettingRepository: SettingRepositoryInterface {
             .map { $0 == 200 }
             .asDriver()
     }
+    
+    public func editSentence(sentence: String) -> AnyPublisher<Bool, Never> {
+        return rankService.editSentence(userId: userId, sentence: sentence)
+            .handleEvents(receiveOutput: { entity in
+                UserDefaultKeyList.User.sentence = entity.toDomain()
+            })
+            .map { _ in true }
+            .replaceError(with: false)
+            .eraseToAnyPublisher()
+    }
+    
+    public func editNickname(nickname: String) -> AnyPublisher<Bool, Never> {
+        return authService.changeNickname(userId: userId, nickname: nickname)
+            .map { _ in true }
+            .replaceError(with: false)
+            .eraseToAnyPublisher()
+    }
 }
 
 extension SettingRepository: PasswordChangeRepositoryInterface {
     public func changePassword(password: String) -> AnyPublisher<Bool, Error> {
-        authService.changePassword(password: password, userId: 12).map { statusCode in statusCode == 200 }
+        authService.changePassword(password: password, userId: userId).map { statusCode in statusCode == 200 }
             .eraseToAnyPublisher()
     }
 }

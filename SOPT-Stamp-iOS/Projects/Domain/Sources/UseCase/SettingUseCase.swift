@@ -12,6 +12,8 @@ import Core
 
 public protocol SettingUseCase {
     func resetStamp()
+    func editNickname(nickname: String)
+    var editNicknameSuccess: PassthroughSubject<Bool, Error> { get set }
     var resetSuccess: PassthroughSubject<Bool, Error> { get set }
 }
 
@@ -21,6 +23,7 @@ public class DefaultSettingUseCase {
     private var cancelBag = CancelBag()
     
     public var resetSuccess = PassthroughSubject<Bool, Error>()
+    public var editNicknameSuccess = PassthroughSubject<Bool, Error>()
   
     public init(repository: SettingRepositoryInterface) {
         self.repository = repository
@@ -28,6 +31,14 @@ public class DefaultSettingUseCase {
 }
 
 extension DefaultSettingUseCase: SettingUseCase {
+    public func editNickname(nickname: String) {
+        self.repository.editNickname(nickname: nickname)
+            .withUnretained(self)
+            .sink { owner, editSuccessed in
+                owner.editNicknameSuccess.send(editSuccessed)
+            }.store(in: self.cancelBag)
+    }
+    
     public func resetStamp() {
         repository.resetStamp()
             .sink { success in

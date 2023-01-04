@@ -12,8 +12,13 @@ import Domain
 import Network
 
 extension SettingEntity {
-
     public func toDomain() -> SettingModel {
         return SettingModel.init()
+    }
+}
+
+extension EditSentenceEntity {
+    public func toDomain() -> String {
+        return profileMessage
     }
 }

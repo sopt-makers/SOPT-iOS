@@ -14,4 +14,8 @@ public struct UserDefaultKeyList {
         @UserDefaultWrapper<String>(key: "endpointArnForSNS") public static var endpointArnForSNS
         @UserDefaultWrapper<Int>(key: "userId") public static var userId
     }
+    
+    public struct User {
+        @UserDefaultWrapper<String>(key: "sentence") public static var sentence
+    }
 }
