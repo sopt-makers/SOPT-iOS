@@ -43,14 +43,16 @@ extension DefaultListDetailUseCase: ListDetailUseCase {
     }
     
     public func postStamp(missionId: Int, stampData: ListDetailRequestModel) {
-        repository.postStamp(missionId: missionId, stampData: stampData)
+        let data = [stampData.imgURL as Any, stampData.content] as [Any]
+        repository.postStamp(missionId: missionId, stampData: data)
             .sink { model in
                 self.listDetailModel.send(model)
             }.store(in: self.cancelBag)
     }
     
     public func putStamp(missionId: Int, stampData: ListDetailRequestModel) {
-        repository.putStamp(missionId: missionId, stampData: stampData)
+        let data = [stampData.imgURL as Any, stampData.content] as [Any]
+        repository.putStamp(missionId: missionId, stampData: data)
             .sink { result in
                 self.editSuccess.send(true)
             }.store(in: self.cancelBag)
