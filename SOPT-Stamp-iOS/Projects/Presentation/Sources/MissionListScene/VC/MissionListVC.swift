@@ -199,8 +199,7 @@ extension MissionListVC {
     
     private func bindViewModels() {
         
-        let input = MissionListViewModel.Input(viewDidLoad: Driver.just(()),
-                                               viewWillAppear: viewWillAppear.asDriver(),
+        let input = MissionListViewModel.Input(viewWillAppear: viewWillAppear.asDriver(),
                                                missionTypeSelected: missionTypeMenuSelected.asDriver())
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
