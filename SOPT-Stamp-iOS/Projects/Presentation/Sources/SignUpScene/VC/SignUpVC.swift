@@ -250,7 +250,9 @@ extension SignUpVC {
     
     private func presentSignUpCompleteView() {
         let signUpCompleteVC = factory.makeSignUpCompleteVC()
-        signUpCompleteVC.modalPresentationStyle = .fullScreen
-        self.present(signUpCompleteVC, animated: true)
+        let nav = UINavigationController(rootViewController: signUpCompleteVC)
+        nav.modalPresentationStyle = .fullScreen
+        nav.navigationBar.isHidden = true
+        self.present(nav, animated: true)
     }
 }
