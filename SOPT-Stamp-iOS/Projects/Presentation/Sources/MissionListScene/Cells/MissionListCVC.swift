@@ -123,6 +123,7 @@ final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
         get { return self.cellType }
         set {
             DispatchQueue.main.async {
+                self.prepareForReuse()
                 self.cellType = newValue
                 self.setUI(newValue)
                 self.setLayout()
@@ -250,10 +251,12 @@ extension MissionListCVC {
     private func prepareCell() {
         self.backgroundImageView.subviews.forEach {
             $0.removeFromSuperview()
+            $0.snp.removeConstraints()
         }
         
         self.subviews.forEach {
             $0.removeFromSuperview()
+            $0.snp.removeConstraints()
         }
     }
 }
