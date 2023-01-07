@@ -12,7 +12,9 @@ import Combine
 import Core
 
 public protocol SignUpUseCase {
+    func resetNicknameValidation()
     func checkNickname(nickname: String)
+    func resetEmailValidation()
     func checkEmail(email: String)
     func checkPassword(password: String)
     func checkAccordPassword(firstPassword: String, secondPassword: String)
@@ -47,6 +49,14 @@ public class DefaultSignUpUseCase {
 }
 
 extension DefaultSignUpUseCase: SignUpUseCase {
+    public func resetNicknameValidation() {
+        self.isValidForm.send(false)
+    }
+    
+    public func resetEmailValidation() {
+        self.isValidForm.send(false)
+    }
+    
     public func checkNickname(nickname: String) {
         let nicknameRegEx = "[가-힣ㄱ-ㅣA-Za-z\\s]{1,10}"
         let pred = NSPredicate(format: "SELF MATCHES %@", nicknameRegEx)

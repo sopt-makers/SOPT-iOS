@@ -26,7 +26,9 @@ public class SignUpViewModel: ViewModelType {
     // MARK: - Inputs
     
     public struct Input {
+        let nicknameTextChanged: Driver<String?>
         let nicknameCheckButtonTapped: Driver<String?>
+        let emailTextChanged: Driver<String?>
         let emailCheckButtonTapped: Driver<String?>
         let passwordTextChanged: Driver<String?>
         let passwordCheckTextChanged: Driver<String?>
@@ -56,10 +58,22 @@ extension SignUpViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
+        input.nicknameTextChanged
+            .compactMap({ $0 })
+            .sink { _ in
+                self.useCase.resetNicknameValidation()
+            }.store(in: self.cancelBag)
+        
         input.nicknameCheckButtonTapped
             .compactMap({ $0 })
             .sink { nickname in
                 self.useCase.checkNickname(nickname: nickname)
+            }.store(in: self.cancelBag)
+        
+        input.emailTextChanged
+            .compactMap({ $0 })
+            .sink { _ in
+                self.useCase.resetEmailValidation()
             }.store(in: self.cancelBag)
         
         input.emailCheckButtonTapped

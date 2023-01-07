@@ -97,7 +97,9 @@ extension SignUpVC {
             .asDriver()
         
         let input = SignUpViewModel.Input(
+            nicknameTextChanged: nickNameTextFieldView.textChanged,
             nicknameCheckButtonTapped: nickNameTextFieldView.rightButtonTapped,
+            emailTextChanged: emailTextFieldView.textChanged,
             emailCheckButtonTapped: emailTextFieldView.rightButtonTapped,
             passwordTextChanged: passwordTextFieldView.textChanged,
             passwordCheckTextChanged: passwordCheckTextFieldView.textChanged,
