@@ -51,8 +51,6 @@ public class RankingVC: UIViewController {
         bt.layer.cornerRadius = 27.adjustedH
         bt.backgroundColor = DSKitAsset.Colors.purple300.color
         bt.setTitle("내 랭킹 보기", for: .normal)
-        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .highlighted)
         bt.tintColor = .white
         bt.titleLabel?.setTypoStyle(.h2)
         return bt
