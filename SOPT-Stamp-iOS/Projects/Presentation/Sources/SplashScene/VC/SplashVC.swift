@@ -67,14 +67,14 @@ extension SplashVC {
     
     private func setDelay() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            
-            var nextVC = UIViewController()
-            if UserDefaultKeyList.Auth.userId != nil {
-                nextVC = self.factory.makeMissionListVC(sceneType: .default)
+            let needAuth = UserDefaultKeyList.Auth.userId == nil
+            if !needAuth {
+                let navigation = UINavigationController(rootViewController: self.factory.makeMissionListVC(sceneType: .default))
+                ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
             } else {
-                nextVC = self.factory.makeOnboardingVC()
+                let nextVC = self.factory.makeOnboardingVC()
+                self.navigationController?.pushViewController(nextVC, animated: true)
             }
-            self.navigationController?.pushViewController(nextVC, animated: true)
         }
     }
 }

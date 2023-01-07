@@ -63,8 +63,8 @@ public class MissionListVC: UIViewController {
         return menuItems
     }()
     
-    private lazy var sentenceLabel: UILabel = {
-        let lb = UILabel()
+    private lazy var sentenceLabel: SentencePaddingLabel = {
+        let lb = SentencePaddingLabel()
         if case let .ranking(_, sentence, _) = sceneType {
             lb.text = sentence
         }
@@ -104,8 +104,8 @@ public class MissionListVC: UIViewController {
         super.viewDidLoad()
         self.setUI()
         self.setLayout()
-        self.changeRootViewController()
         self.setDelegate()
+        self.setGesture()
         self.registerCells()
         self.setDataSource()
         self.bindViews()
@@ -136,7 +136,7 @@ extension MissionListVC {
         }
         
         missionListCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(naviBar.snp.bottom).offset(30)
+            make.top.equalTo(naviBar.snp.bottom).offset(20.adjustedH)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
@@ -155,7 +155,7 @@ extension MissionListVC {
             self.view.addSubview(sentenceLabel)
             
             sentenceLabel.snp.makeConstraints { make in
-                make.top.equalTo(naviBar.snp.bottom).offset(16.adjustedH)
+                make.top.equalTo(naviBar.snp.bottom).offset(10.adjustedH)
                 make.leading.trailing.equalToSuperview().inset(20.adjusted)
                 make.height.equalTo(64.adjustedH)
             }
@@ -199,8 +199,7 @@ extension MissionListVC {
     
     private func bindViewModels() {
         
-        let input = MissionListViewModel.Input(viewDidLoad: Driver.just(()),
-                                               viewWillAppear: viewWillAppear.asDriver(),
+        let input = MissionListViewModel.Input(viewWillAppear: viewWillAppear.asDriver(),
                                                missionTypeSelected: missionTypeMenuSelected.asDriver())
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -225,15 +224,25 @@ extension MissionListVC {
 
 extension MissionListVC {
     
-    private func changeRootViewController() {
-        guard let uWindow = self.view.window else { return }
-        uWindow.rootViewController = self
-        uWindow.makeKey()
-        UIView.transition(with: uWindow, duration: 0.5, options: [.transitionCrossDissolve], animations: {}, completion: nil)
-    }
-    
     private func setDelegate() {
         missionListCollectionView.delegate = self
+    }
+
+    private func setGesture() {
+        let swipeGesture = UIPanGestureRecognizer(target: self, action: #selector(swipeBack(_:)))
+        swipeGesture.delegate = self
+        self.missionListCollectionView.addGestureRecognizer(swipeGesture)
+    }
+    
+    @objc
+    private func swipeBack(_ sender: UIPanGestureRecognizer) {
+        let velocity = sender.velocity(in: missionListCollectionView)
+        let velocityMinimum: CGFloat = 1000
+        guard let navigation = self.navigationController else { return }
+        if velocity.x >= velocityMinimum && navigation.viewControllers.count >= 2 {
+            self.missionListCollectionView.isScrollEnabled = false
+            self.navigationController?.popViewController(animated: true)
+        }
     }
     
     private func registerCells() {
@@ -309,7 +318,7 @@ extension MissionListVC: UICollectionViewDelegate {
 }
 
 extension MissionListVC: UIGestureRecognizerDelegate {
-    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        return false
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }
