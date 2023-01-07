@@ -534,7 +534,7 @@ extension ListDetailVC {
         }
         
         dateLabel.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(22)
+            make.trailing.equalToSuperview()
             make.top.equalTo(contentStackView.snp.bottom).offset(12)
         }
         
