@@ -140,7 +140,7 @@ extension SettingVC {
         }
         
         collectionView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(16)
+            make.leading.trailing.equalToSuperview().inset(20)
             make.top.equalTo(naviBar.snp.bottom)
             make.bottom.equalTo(view.safeAreaLayoutGuide)
         }
@@ -189,7 +189,11 @@ extension SettingVC: UICollectionViewDelegate {
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = self.collectionView.frame.width
-        let height = width*50/335
+        var height = width*42/335
+        
+        if indexPath.row == 2 || indexPath.section == 2 || indexPath.section == 3 {
+            height = width*49/335
+        }
         return CGSize(width: width, height: height)
     }
 }
@@ -237,6 +241,7 @@ extension SettingVC: UICollectionViewDataSource {
         if indexPath.section == 3 {
             cell.changeTextColor(DSKitAsset.Colors.access300.color)
                 .setRadius(false)
+                .removeArrow()
         }
         cell.setData(titleList[indexPath.row])
         return cell
