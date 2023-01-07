@@ -99,7 +99,7 @@ public struct I18N {
         public static let serviceTerm = "서비스 이용 약관"
         public static let suggestion = "서비스 의견 제안"
         public static let mission = "미션"
-        public static let resetMission = "미션 초기화"
+        public static let resetStamp = "스탬프 초기화"
         public static let resetMissionTitle = "스탬프를 초기화 하시겠습니까?"
         public static let resetMissionDescription = "사진, 메모가 삭제되고\n 전체 미션이 미완료상태로 초기화됩니다."
         public static let reset = "초기화"
