@@ -103,6 +103,12 @@ extension SpeechBalloonView {
             leftArrowImage.tintColor = .black
             balloonTailImageView.tintColor = DSKitAsset.Colors.mint300.color
         }
+        
+        guard self.sentenceLabel.text == I18N.RankingList.noSentenceText else { return }
+        self.sentenceLabel.textColor = DSKitAsset.Colors.gray500.color
+        self.backgroundView.backgroundColor = DSKitAsset.Colors.gray100.color
+        self.leftArrowImage.tintColor = DSKitAsset.Colors.gray500.color
+        self.balloonTailImageView.tintColor = DSKitAsset.Colors.gray100.color
     }
     
     private func setLayout(sentence: String) {
