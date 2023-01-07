@@ -26,10 +26,18 @@ extension DefaultMissionService: MissionService {
     }
     
     public func fetchCompleteMissionList(userId: Int) -> AnyPublisher<MissionListEntity, Error> {
-        requestObjectInCombine(MissionAPI.fetchMissionList(type: .complete, userId: userId))
+        let response: AnyPublisher<MissionListEntity, Error> = requestObjectInCombine(MissionAPI.fetchMissionList(type: .complete, userId: userId))
+        return response.map { entity in
+            var newEntity = entity
+            return newEntity.assignCompleteFetchType(true)
+        }.eraseToAnyPublisher()
     }
     
     public func fetchIncompleteMissionList(userId: Int) -> AnyPublisher<MissionListEntity, Error> {
-        requestObjectInCombine(MissionAPI.fetchMissionList(type: .incomplete, userId: userId))
+        let response: AnyPublisher<MissionListEntity, Error> = requestObjectInCombine(MissionAPI.fetchMissionList(type: .incomplete, userId: userId))
+        return response.map { entity in
+            var newEntity = entity
+            return newEntity.assignCompleteFetchType(false)
+        }.eraseToAnyPublisher()
     }
 }

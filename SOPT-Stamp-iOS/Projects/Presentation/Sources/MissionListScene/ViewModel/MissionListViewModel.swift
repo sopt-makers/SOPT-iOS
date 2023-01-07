@@ -16,6 +16,13 @@ import Domain
 public enum MissionListSceneType {
     case `default`
     case ranking(userName: String, sentence: String, userId: Int)
+    
+    var isRankingView: Bool {
+        switch self {
+        case .default: return false
+        case .ranking: return true
+        }
+    }
 }
 
 public class MissionListViewModel: ViewModelType {
@@ -27,7 +34,6 @@ public class MissionListViewModel: ViewModelType {
     // MARK: - Inputs
     
     public struct Input {
-        let viewDidLoad: Driver<Void>
         let viewWillAppear: Driver<Void>
         let missionTypeSelected: Driver<MissionListFetchType>
     }
@@ -51,20 +57,14 @@ extension MissionListViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
-        input.viewDidLoad
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.fetchMissionList()
-            }.store(in: cancelBag)
-        
         input.viewWillAppear
-            .dropFirst()
             .withUnretained(self)
             .sink { owner, _ in
                 owner.fetchMissionList()
             }.store(in: cancelBag)
         
         input.missionTypeSelected
+            .dropFirst()
             .withUnretained(self)
             .sink { owner, fetchType in
                 owner.useCase.fetchMissionList(type: fetchType)
@@ -76,7 +76,7 @@ extension MissionListViewModel {
     private func fetchMissionList() {
         switch self.missionListsceneType {
         case .ranking(_, _, let userId):
-            self.useCase.fetchOtherUserMissionList(type: .all, userId: userId)
+            self.useCase.fetchOtherUserMissionList(type: .complete, userId: userId)
         default:
             self.useCase.fetchMissionList(type: .all)
         }
