@@ -100,10 +100,17 @@ extension SignUpViewModel {
         useCase.isEmailFormValid.sink { event in
             print("SignUpViewModel - completion: \(event)")
         } receiveValue: { isEmailValid in
-            output.emailAlert.send(isEmailValid ?
-                .valid(text: I18N.SignUp.validEmail) : .invalid(text: I18N.SignUp.invalidEmailForm))
+            if !isEmailValid {
+                output.emailAlert.send(.invalid(text: I18N.SignUp.invalidEmailForm))
+            }
         }.store(in: cancelBag)
         
+        useCase.isDuplicateEmail.sink { event in
+            print("SignUpViewModel - completion: \(event)")
+        } receiveValue: { isDuplicateEmail in
+            output.emailAlert.send(isDuplicateEmail ? .invalid(text: I18N.SignUp.duplicatedEmail) : .valid(text: I18N.SignUp.validEmail))
+        }.store(in: cancelBag)
+
         useCase.isPasswordFormValid.combineLatest(useCase.isAccordPassword).sink { event in
             print("SignUpViewModel - completion: \(event)")
         } receiveValue: { (isFormValid, isAccordValid) in
