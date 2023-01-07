@@ -139,6 +139,9 @@ extension ListDetailVC {
         let bottomButtonTapped = bottomButton
             .publisher(for: .touchUpInside)
             .map { _ in
+                if self.sceneType == .edit {
+                    self.bottomButton.setEnabled(false)
+                }
                 let image = self.missionImageView.image ?? UIImage()
                 let content = self.textView.text
                 return ListDetailRequestModel(imgURL: image.jpegData(compressionQuality: 0.5) ?? Data(), content: content ?? "")
@@ -391,9 +394,11 @@ extension ListDetailVC {
             self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
             self.originText = textView.text
             self.originImage = self.missionImageView.image ?? UIImage()
+            self.bottomButton.setTitle(I18N.ListDetail.editComplete, for: .normal)
         } else {
             self.naviBar.resetLeftButtonAction()
             self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+            self.bottomButton.setTitle(I18N.ListDetail.missionComplete, for: .normal)
         }
         
         switch type {
