@@ -49,7 +49,7 @@ extension AuthAPI: BaseAPI {
         case .getNicknameAvailable, .getEmailAvailable:
             return .get
         case .changePassword, .changeNickname:
-            return .put
+            return .patch
         }
     }
     
