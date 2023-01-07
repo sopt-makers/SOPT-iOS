@@ -136,7 +136,7 @@ extension MissionListVC {
         }
         
         missionListCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(naviBar.snp.bottom).offset(30)
+            make.top.equalTo(naviBar.snp.bottom).offset(20.adjustedH)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
@@ -155,7 +155,7 @@ extension MissionListVC {
             self.view.addSubview(sentenceLabel)
             
             sentenceLabel.snp.makeConstraints { make in
-                make.top.equalTo(naviBar.snp.bottom).offset(16.adjustedH)
+                make.top.equalTo(naviBar.snp.bottom).offset(10.adjustedH)
                 make.leading.trailing.equalToSuperview().inset(20.adjusted)
                 make.height.equalTo(64.adjustedH)
             }
