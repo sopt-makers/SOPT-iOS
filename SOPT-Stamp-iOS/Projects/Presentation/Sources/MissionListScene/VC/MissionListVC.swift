@@ -63,8 +63,8 @@ public class MissionListVC: UIViewController {
         return menuItems
     }()
     
-    private lazy var sentenceLabel: UILabel = {
-        let lb = UILabel()
+    private lazy var sentenceLabel: SentencePaddingLabel = {
+        let lb = SentencePaddingLabel()
         if case let .ranking(_, sentence, _) = sceneType {
             lb.text = sentence
         }
