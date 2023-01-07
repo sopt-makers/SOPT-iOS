@@ -214,7 +214,7 @@ extension CustomNavigationBar {
         self.addSubviews(titleButton, rightButton)
         
         titleButton.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
+            make.centerY.equalToSuperview().offset(1)
             make.leading.equalToSuperview().inset(20)
         }
         
@@ -229,7 +229,7 @@ extension CustomNavigationBar {
         self.addSubviews(leftButton, titleLabel, rightButton)
         
         leftButton.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
+            make.centerY.equalToSuperview().offset(1)
             make.leading.equalToSuperview().inset(20)
             make.width.height.equalTo(32)
         }
