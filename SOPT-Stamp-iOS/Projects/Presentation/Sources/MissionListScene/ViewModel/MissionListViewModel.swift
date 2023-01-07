@@ -76,7 +76,7 @@ extension MissionListViewModel {
     private func fetchMissionList() {
         switch self.missionListsceneType {
         case .ranking(_, _, let userId):
-            self.useCase.fetchOtherUserMissionList(type: .all, userId: userId)
+            self.useCase.fetchOtherUserMissionList(type: .complete, userId: userId)
         default:
             self.useCase.fetchMissionList(type: .all)
         }
