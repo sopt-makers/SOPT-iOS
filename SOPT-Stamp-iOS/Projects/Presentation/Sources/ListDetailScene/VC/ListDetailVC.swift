@@ -358,8 +358,8 @@ extension ListDetailVC: UITextViewDelegate {
     public func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         if textView.text == I18N.ListDetail.memoPlaceHolder {
             self.textView.text = .none
-            setTextView(.active)
         }
+        setTextView(.active)
         return true
     }
     
