@@ -71,6 +71,7 @@ public struct I18N {
         public static let invalidPasswordForm = "영문, 숫자, 특수문자 포함 8-15자로 입력해주세요."
         public static let passwordNotAccord = "비밀번호가 일치하지 않습니다."
         public static let signUpComplete = "가입 완료"
+        public static let signUpFail = "회원가입 실패"
         public static let welcome = "SOPTAMP에 오신 것을 환영합니다"
         public static let start = "시작하기"
     }

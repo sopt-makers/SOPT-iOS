@@ -138,7 +138,7 @@ extension SignUpVC {
         output.signUpSuccessed
             .sink { [weak self] isSuccess in
                 guard let self = self else { return }
-                isSuccess ? self.presentSignUpCompleteView() : print("회원가입 실패")
+                isSuccess ? self.presentSignUpCompleteView() : self.showToast(message: I18N.SignUp.signUpFail)
             }.store(in: cancelBag)
     }
 }
