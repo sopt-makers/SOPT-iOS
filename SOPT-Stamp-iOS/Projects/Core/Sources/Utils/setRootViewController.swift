@@ -16,6 +16,7 @@ import UIKit
           
 */
 public enum ViewControllerUtils {
+    public
     static func setRootViewController(window: UIWindow, viewController: UIViewController, withAnimation: Bool) {
         if !withAnimation {
             window.rootViewController = viewController
