@@ -282,7 +282,9 @@ extension ListDetailVC {
     private func presentCompletedVC(level: StarViewLevel) {
         let missionCompletedVC = factory.makeMissionCompletedVC(starLevel: level)
         missionCompletedVC.completionHandler = {
-            UIView.animate(withDuration: 0.2, delay: 0) {
+            UIView.animate(withDuration: 0.2, delay: 0, animations: {
+                self.backgroundDimmerView.alpha = 0
+            }) { _ in
                 self.backgroundDimmerView.removeFromSuperview()
             }
         }
@@ -290,10 +292,16 @@ extension ListDetailVC {
     }
     
     private func showDimmerView() {
+        self.backgroundDimmerView.alpha = 0
+        
         self.view.addSubview(backgroundDimmerView)
         
         backgroundDimmerView.snp.makeConstraints { make in
             make.edges.greaterThanOrEqualToSuperview()
+        }
+        
+        UIView.animate(withDuration: 0.2, delay: 0) {
+            self.backgroundDimmerView.alpha = 1
         }
     }
     
