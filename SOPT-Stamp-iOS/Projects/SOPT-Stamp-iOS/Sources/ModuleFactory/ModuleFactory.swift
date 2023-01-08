@@ -86,10 +86,10 @@ extension ModuleFactory: ModuleFactoryInterface {
         return missionListVC
     }
     
-    public func makeListDetailVC(sceneType: ListDetailSceneType, starLevel: StarViewLevel, missionId: Int, missionTitle: String) -> ListDetailVC {
+    public func makeListDetailVC(sceneType: ListDetailSceneType, starLevel: StarViewLevel, missionId: Int, missionTitle: String, otherUserId: Int?) -> ListDetailVC {
         let repository = ListDetailRepository(service: stampService)
         let useCase = DefaultListDetailUseCase(repository: repository)
-        let viewModel = ListDetailViewModel(useCase: useCase, sceneType: sceneType, starLevel: starLevel, missionId: missionId, missionTitle: missionTitle)
+        let viewModel = ListDetailViewModel(useCase: useCase, sceneType: sceneType, starLevel: starLevel, missionId: missionId, missionTitle: missionTitle, otherUserId: otherUserId)
         let listDetailVC = ListDetailVC()
         listDetailVC.viewModel = viewModel
         listDetailVC.factory = self

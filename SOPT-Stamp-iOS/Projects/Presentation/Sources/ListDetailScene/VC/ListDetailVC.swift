@@ -421,6 +421,10 @@ extension ListDetailVC {
             self.dateLabel.isHidden = false
             self.missionImageView.isUserInteractionEnabled = false
         }
+        
+        if viewModel.otherUserId != nil {
+            self.naviBar.hideRightButton()
+        }
     }
     
     private func setDefaultUI() {

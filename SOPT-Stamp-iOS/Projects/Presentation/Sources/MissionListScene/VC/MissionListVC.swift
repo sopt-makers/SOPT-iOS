@@ -289,7 +289,7 @@ extension MissionListVC: UICollectionViewDelegate {
             case .default:
                 return true
             case .ranking:
-                return false
+                return true
             }
         default:
             return false
@@ -309,7 +309,8 @@ extension MissionListVC: UICollectionViewDelegate {
             let detailVC = factory.makeListDetailVC(sceneType: sceneType,
                                                     starLevel: starLevel,
                                                     missionId: model.id,
-                                                    missionTitle: model.title)
+                                                    missionTitle: model.title,
+                                                    otherUserId: viewModel.otherUserId)
             self.navigationController?.pushViewController(detailVC, animated: true)
         default:
             return

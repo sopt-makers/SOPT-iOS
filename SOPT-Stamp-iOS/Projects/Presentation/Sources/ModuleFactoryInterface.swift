@@ -23,7 +23,7 @@ public protocol ModuleFactoryInterface {
     // MARK: - Main Flow
     
     func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListVC
-    func makeListDetailVC(sceneType: ListDetailSceneType, starLevel: StarViewLevel, missionId: Int, missionTitle: String) -> ListDetailVC
+    func makeListDetailVC(sceneType: ListDetailSceneType, starLevel: StarViewLevel, missionId: Int, missionTitle: String, otherUserId: Int?) -> ListDetailVC
     func makeMissionCompletedVC(starLevel: StarViewLevel) -> MissionCompletedVC
     func makeRankingVC() -> RankingVC
     
