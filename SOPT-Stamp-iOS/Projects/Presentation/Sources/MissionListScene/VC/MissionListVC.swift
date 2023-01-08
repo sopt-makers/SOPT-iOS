@@ -99,6 +99,8 @@ public class MissionListVC: UIViewController {
         attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
         attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.white, range: NSMakeRange(0, attributedStr.length))
         bt.setAttributedTitle(attributedStr, for: .normal)
+        bt.contentEdgeInsets = UIEdgeInsets(top: 0, left: -15, bottom: 0, right: 0)
+        bt.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
         return bt
     }()
     

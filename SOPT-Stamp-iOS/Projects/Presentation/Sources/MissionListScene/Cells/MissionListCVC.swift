@@ -66,7 +66,7 @@ extension MissionListCellType {
         case .levelOne:
             return 135.adjusted
         case .levelTwo:
-            return 104.adjusted
+            return 125.adjusted
         case .levelThree:
             return 135.adjusted
         }
