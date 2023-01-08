@@ -36,8 +36,9 @@ extension CustomButton {
     
     /// 버튼의 Title 변경
     @discardableResult
-    public func changeTitle(attributedString: NSAttributedString) -> Self {
-        self.setAttributedTitle(attributedString, for: .normal)
+    public func changeTitle(attributedString: String) -> Self {
+        let string = NSAttributedString(string: attributedString, attributes: [.font: UIFont.h2, .foregroundColor: self.titleLabel?.textColor ?? .white])
+        self.setAttributedTitle(string, for: .normal)
         return self
     }
     

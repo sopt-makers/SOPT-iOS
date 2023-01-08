@@ -376,7 +376,7 @@ extension ListDetailVC: UITextViewDelegate {
     
     public func textViewDidChange(_ textView: UITextView) {
         let missionImageViewFilled = missionImageView.image != nil
-        self.bottomButton.setEnabled(textView.hasText && missionImageViewFilled)
+        self.bottomButton.setEnabled(textView.hasText && missionImageViewFilled && textView.text != originText)
     }
 }
 
@@ -394,11 +394,12 @@ extension ListDetailVC {
             self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
             self.originText = textView.text
             self.originImage = self.missionImageView.image ?? UIImage()
-            self.bottomButton.setTitle(I18N.ListDetail.editComplete, for: .normal)
+            self.bottomButton.changeTitle(attributedString: I18N.ListDetail.editComplete)
+                .setEnabled(false)
         } else {
             self.naviBar.resetLeftButtonAction()
             self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-            self.bottomButton.setTitle(I18N.ListDetail.missionComplete, for: .normal)
+            self.bottomButton.changeTitle(attributedString: I18N.ListDetail.missionComplete)
         }
         
         switch type {
