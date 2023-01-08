@@ -12,6 +12,7 @@ import Combine
 
 public protocol ListDetailUseCase {
     func fetchListDetail(missionId: Int)
+    func fetchOtherListDetail(userId: Int, missionId: Int)
     func postStamp(missionId: Int, stampData: ListDetailRequestModel)
     func putStamp(missionId: Int, stampData: ListDetailRequestModel)
     func deleteStamp(stampId: Int)
@@ -36,7 +37,14 @@ public class DefaultListDetailUseCase {
 
 extension DefaultListDetailUseCase: ListDetailUseCase {
     public func fetchListDetail(missionId: Int) {
-        repository.fetchListDetail(missionId: missionId)
+        repository.fetchListDetail(missionId: missionId, userId: nil)
+            .sink { model in
+                self.listDetailModel.send(model)
+            }.store(in: self.cancelBag)
+    }
+    
+    public func fetchOtherListDetail(userId: Int, missionId: Int) {
+        repository.fetchListDetail(missionId: missionId, userId: userId)
             .sink { model in
                 self.listDetailModel.send(model)
             }.store(in: self.cancelBag)

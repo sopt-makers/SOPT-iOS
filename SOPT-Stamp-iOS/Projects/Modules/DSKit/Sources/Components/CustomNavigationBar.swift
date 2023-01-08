@@ -77,6 +77,10 @@ extension CustomNavigationBar {
         }
     }
     
+    public func hideRightButton(_ isHidden: Bool = true) {
+        self.rightButton.isHidden = isHidden
+    }
+    
     private func setAddTarget() {
         self.leftButton.addTarget(self, action: #selector(popToPreviousVC), for: .touchUpInside)
     }

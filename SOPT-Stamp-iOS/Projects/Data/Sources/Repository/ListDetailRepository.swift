@@ -14,7 +14,7 @@ import Network
 
 public class ListDetailRepository {
     
-    private let userId: Int = UserDefaultKeyList.Auth.userId ?? 0
+    private let userId: Int = UserDefaultKeyList.Auth.userId ?? 1
     private let stampService: StampService
     private let cancelBag = CancelBag()
 
@@ -24,8 +24,9 @@ public class ListDetailRepository {
 }
 
 extension ListDetailRepository: ListDetailRepositoryInterface {
-    public func fetchListDetail(missionId: Int) -> Driver<ListDetailModel> {
-        return stampService.fetchStampListDetail(userId: userId, missionId: missionId)
+    public func fetchListDetail(missionId: Int, userId: Int?) -> Driver<ListDetailModel> {
+        let targetUserId = userId ?? (self.userId)
+        return stampService.fetchStampListDetail(userId: targetUserId, missionId: missionId)
             .map { $0.toDomain() }
             .asDriver()
     }
