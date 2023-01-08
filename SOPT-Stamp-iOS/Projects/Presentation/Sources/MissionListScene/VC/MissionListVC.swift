@@ -254,8 +254,6 @@ extension MissionListVC {
             switch MissionListSection.type(indexPath.section) {
             case .sentence:
                 guard let sentenceCell = collectionView.dequeueReusableCell(withReuseIdentifier: MissionListCVC.className, for: indexPath) as? MissionListCVC else { return UICollectionViewCell() }
-                
-                sentenceCell.initCellType = .levelOne(completed: true)
                 return sentenceCell
                 
             case .missionList:

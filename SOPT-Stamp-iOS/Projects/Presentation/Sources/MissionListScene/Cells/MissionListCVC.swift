@@ -157,8 +157,6 @@ final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
         label.text = "세미나 끝나고 뒷풀이 2시까지 달리기"
         label.setTypoStyle(.caption1D)
         label.numberOfLines = 2
-        label.lineBreakMode = .byWordWrapping
-        label.textAlignment = .center
         return label
     }()
     
@@ -227,7 +225,7 @@ extension MissionListCVC {
         purposeLabel.snp.makeConstraints { make in
             make.top.equalTo(starView.snp.bottom).offset(16.adjustedH)
             make.centerX.equalToSuperview()
-            make.width.equalTo(116.adjusted)
+            make.width.lessThanOrEqualTo(116.adjusted)
         }
     }
     
@@ -266,7 +264,19 @@ extension MissionListCVC {
 extension MissionListCVC {
     
     public func setData(model: MissionListModel) {
-        self.purposeLabel.text = model.title
+        self.setAttributedTextForPurpose(text: model.title)
         self.model = model
+    }
+    
+    private func setAttributedTextForPurpose(text: String) {
+        let attributedStr = NSMutableAttributedString(string: text)
+        let style = NSMutableParagraphStyle()
+        style.lineHeightMultiple = 1.2
+        style.alignment = .center
+        style.lineBreakMode = .byWordWrapping
+        style.lineBreakStrategy = .hangulWordPriority
+        attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
+        attributedStr.addAttribute(NSAttributedString.Key.paragraphStyle, value: style, range: NSMakeRange(0, attributedStr.length))
+        self.purposeLabel.attributedText = attributedStr
     }
 }
