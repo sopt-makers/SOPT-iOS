@@ -27,8 +27,8 @@ public class PasswordChangeVC: UIViewController {
     // MARK: - UI Components
     
     private lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
+        .setTitleTypoStyle(.h2)
         .setTitle(I18N.Setting.passwordEdit)
-        .setTitleTypoStyle(.h1)
     
     private lazy var passwordTextFieldView = CustomTextFieldView(type: .plain)
         .setTextFieldType(.password)

@@ -49,6 +49,7 @@ final class RankingListCVC: UICollectionViewCell, UICollectionViewRegisterable {
         label.setTypoStyle(.h3)
         label.textColor = DSKitAsset.Colors.gray800.color
         label.lineBreakMode = .byTruncatingTail
+        label.setCharacterSpacing(0)
         return label
     }()
     
@@ -58,6 +59,7 @@ final class RankingListCVC: UICollectionViewCell, UICollectionViewRegisterable {
         label.setTypoStyle(.caption1)
         label.textColor = DSKitAsset.Colors.gray700.color
         label.lineBreakMode = .byTruncatingTail
+        label.setCharacterSpacing(0)
         return label
     }()
     

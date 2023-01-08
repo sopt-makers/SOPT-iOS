@@ -90,11 +90,15 @@ public class MissionListVC: UIViewController {
         let bt = UIButton()
         bt.layer.cornerRadius = 27.adjustedH
         bt.backgroundColor = DSKitAsset.Colors.purple300.color
-        bt.setTitle("랭킹 보기", for: .normal)
         bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .normal)
         bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .highlighted)
         bt.tintColor = .white
         bt.titleLabel?.setTypoStyle(.h2)
+        let attributedStr = NSMutableAttributedString(string: "랭킹 보기")
+        let style = NSMutableParagraphStyle()
+        attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
+        attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.white, range: NSMakeRange(0, attributedStr.length))
+        bt.setAttributedTitle(attributedStr, for: .normal)
         return bt
     }()
     
@@ -148,7 +152,7 @@ extension MissionListVC {
             rankingFloatingButton.snp.makeConstraints { make in
                 make.width.equalTo(143.adjusted)
                 make.height.equalTo(54.adjustedH)
-                make.bottom.equalTo(view.safeAreaLayoutGuide)
+                make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-18.adjustedH)
                 make.centerX.equalToSuperview()
             }
         case .ranking:
