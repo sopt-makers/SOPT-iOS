@@ -97,7 +97,9 @@ extension SignUpVC {
             .asDriver()
         
         let input = SignUpViewModel.Input(
+            nicknameTextChanged: nickNameTextFieldView.textChanged,
             nicknameCheckButtonTapped: nickNameTextFieldView.rightButtonTapped,
+            emailTextChanged: emailTextFieldView.textChanged,
             emailCheckButtonTapped: emailTextFieldView.rightButtonTapped,
             passwordTextChanged: passwordTextFieldView.textChanged,
             passwordCheckTextChanged: passwordCheckTextFieldView.textChanged,
@@ -136,7 +138,7 @@ extension SignUpVC {
         output.signUpSuccessed
             .sink { [weak self] isSuccess in
                 guard let self = self else { return }
-                isSuccess ? self.presentSignUpCompleteView() : print("회원가입 실패")
+                isSuccess ? self.presentSignUpCompleteView() : self.showToast(message: I18N.SignUp.signUpFail)
             }.store(in: cancelBag)
     }
 }
@@ -250,7 +252,9 @@ extension SignUpVC {
     
     private func presentSignUpCompleteView() {
         let signUpCompleteVC = factory.makeSignUpCompleteVC()
-        signUpCompleteVC.modalPresentationStyle = .fullScreen
-        self.present(signUpCompleteVC, animated: true)
+        let nav = UINavigationController(rootViewController: signUpCompleteVC)
+        nav.modalPresentationStyle = .fullScreen
+        nav.navigationBar.isHidden = true
+        self.present(nav, animated: true)
     }
 }

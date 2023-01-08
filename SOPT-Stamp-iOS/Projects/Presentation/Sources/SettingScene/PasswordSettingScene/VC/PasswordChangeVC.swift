@@ -30,8 +30,7 @@ public class PasswordChangeVC: UIViewController {
         .setTitle(I18N.Setting.passwordEdit)
         .setTitleTypoStyle(.h1)
     
-    private lazy var passwordTextFieldView = CustomTextFieldView(type: .title)
-        .setTitle(I18N.SignUp.password)
+    private lazy var passwordTextFieldView = CustomTextFieldView(type: .plain)
         .setTextFieldType(.password)
         .setPlaceholder(I18N.SignUp.passwordTextFieldPlaceholder)
         .setAlertDelegate(passwordCheckTextFieldView)

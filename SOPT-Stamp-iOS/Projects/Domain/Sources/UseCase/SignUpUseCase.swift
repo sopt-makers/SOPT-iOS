@@ -12,7 +12,9 @@ import Combine
 import Core
 
 public protocol SignUpUseCase {
+    func resetNicknameValidation()
     func checkNickname(nickname: String)
+    func resetEmailValidation()
     func checkEmail(email: String)
     func checkPassword(password: String)
     func checkAccordPassword(firstPassword: String, secondPassword: String)
@@ -20,6 +22,7 @@ public protocol SignUpUseCase {
     
     var isNicknameValid: CurrentValueSubject<(Bool, String), Error> { get set }
     var isEmailFormValid: CurrentValueSubject<Bool, Error> { get set }
+    var isDuplicateEmail: CurrentValueSubject<Bool, Error> { get set }
     var isPasswordFormValid: CurrentValueSubject<Bool, Error> { get set }
     var isAccordPassword: CurrentValueSubject<Bool, Error> { get set }
     var isValidForm: CurrentValueSubject<Bool, Error> { get set }
@@ -33,6 +36,7 @@ public class DefaultSignUpUseCase {
     
     public var isNicknameValid = CurrentValueSubject<(Bool, String), Error>((false, ""))
     public var isEmailFormValid = CurrentValueSubject<Bool, Error>(false)
+    public var isDuplicateEmail = CurrentValueSubject<Bool, Error>(false)
     public var isPasswordFormValid = CurrentValueSubject<Bool, Error>(false)
     public var isAccordPassword = CurrentValueSubject<Bool, Error>(false)
     public var isValidForm = CurrentValueSubject<Bool, Error>(false)
@@ -45,6 +49,14 @@ public class DefaultSignUpUseCase {
 }
 
 extension DefaultSignUpUseCase: SignUpUseCase {
+    public func resetNicknameValidation() {
+        self.isValidForm.send(false)
+    }
+    
+    public func resetEmailValidation() {
+        self.isValidForm.send(false)
+    }
+    
     public func checkNickname(nickname: String) {
         let nicknameRegEx = "[가-힣ㄱ-ㅣA-Za-z\\s]{1,10}"
         let pred = NSPredicate(format: "SELF MATCHES %@", nicknameRegEx)
@@ -69,16 +81,15 @@ extension DefaultSignUpUseCase: SignUpUseCase {
     
     public func checkEmail(email: String) {
         let isValid = checkEmailForm(email: email)
-        guard isValid else {
-            self.isEmailFormValid.send(isValid)
-            return
-        }
-        
+        self.isEmailFormValid.send(isValid)
+
+        guard isValid else { return }
+
         repository.getEmailAvailable(email: email)
             .sink { event in
                 print("SignUpUseCase email: \(event)")
             } receiveValue: { isValid in
-                self.isEmailFormValid.send(isValid)
+                self.isDuplicateEmail.send(!isValid)
             }.store(in: cancelBag)
     }
     
@@ -104,19 +115,21 @@ extension DefaultSignUpUseCase: SignUpUseCase {
 
 extension DefaultSignUpUseCase {
     func bindFormValid() {
-        isNicknameValid
+        let nickNameAndEmailValid = isNicknameValid
             .map { $0.0 }
-            .combineLatest(isEmailFormValid,
-                           isPasswordFormValid,
-                           isAccordPassword)
-            .map { (isNicknameValid, isEmailValid, isPasswordValid, isAccordPassword) in
-                (isNicknameValid && isEmailValid && isPasswordValid && isAccordPassword)
-            }
-            .sink { event in
-                print("SignUpUseCase - completion: \(event)")
-            } receiveValue: { isValid in
-                self.isValidForm.send(isValid)
-            }.store(in: cancelBag)
+            .combineLatest(isEmailFormValid, isDuplicateEmail)
+        
+        let passwordValid = isPasswordFormValid
+            .combineLatest(isAccordPassword)
+        
+        nickNameAndEmailValid.combineLatest(passwordValid)
+        .sink { event in
+            print("SignUpUseCase signUp: \(event)")
+        } receiveValue: { validList in
+            let isNickNamdAndEmailValid = (validList.0.0 && validList.0.1 && !validList.0.2)
+            let isPasswordValid = (validList.1.0 && validList.1.1)
+            self.isValidForm.send(isNickNamdAndEmailValid && isPasswordValid)
+        }.store(in: cancelBag)
     }
     
     func checkEmailForm(email: String) -> Bool {

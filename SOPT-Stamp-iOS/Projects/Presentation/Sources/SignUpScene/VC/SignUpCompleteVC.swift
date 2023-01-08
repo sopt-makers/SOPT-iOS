@@ -48,13 +48,25 @@ public class SignUpCompleteVC: UIViewController {
         super.viewDidLoad()
         self.setUI()
         self.setLayout()
+        self.setAddTarget()
     }
 }
 
 // MARK: - Methods
 
 extension SignUpCompleteVC {
-    
+    private func setAddTarget() {
+        startButton.addTarget(self, action: #selector(startButtonDidTap), for: .touchUpInside)
+    }
+}
+
+// MARK: - @objc Function
+
+extension SignUpCompleteVC {
+    @objc private func startButtonDidTap() {
+        let missionListVC = self.factory.makeMissionListVC(sceneType: .default)
+        self.navigationController?.pushViewController(missionListVC, animated: true)
+    }
 }
 
 // MARK: - UI & Layout

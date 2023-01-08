@@ -51,8 +51,6 @@ public class RankingVC: UIViewController {
         bt.layer.cornerRadius = 27.adjustedH
         bt.backgroundColor = DSKitAsset.Colors.purple300.color
         bt.setTitle("내 랭킹 보기", for: .normal)
-        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .highlighted)
         bt.tintColor = .white
         bt.titleLabel?.setTypoStyle(.h2)
         return bt
@@ -65,6 +63,7 @@ public class RankingVC: UIViewController {
         self.setUI()
         self.setLayout()
         self.setDelegate()
+        self.setGesture()
         self.registerCells()
         self.bindViewModels()
         self.setDataSource()
@@ -144,6 +143,22 @@ extension RankingVC {
         rankingCollectionView.delegate = self
     }
     
+    private func setGesture() {
+        let swipeGesture = UIPanGestureRecognizer(target: self, action: #selector(swipeBack(_:)))
+        swipeGesture.delegate = self
+        self.rankingCollectionView.addGestureRecognizer(swipeGesture)
+    }
+    
+    @objc
+    private func swipeBack(_ sender: UIPanGestureRecognizer) {
+        let velocity = sender.velocity(in: rankingCollectionView)
+        let velocityMinimum: CGFloat = 1000
+        if velocity.x >= velocityMinimum {
+            self.rankingCollectionView.isScrollEnabled = false
+            self.navigationController?.popViewController(animated: true)
+        }
+    }
+    
     private func registerCells() {
         RankingChartCVC.register(target: rankingCollectionView)
         RankingListCVC.register(target: rankingCollectionView)
@@ -205,5 +220,11 @@ extension RankingVC: UICollectionViewDelegate {
                                                                                    sentence: item.sentence,
                                                                                    userId: item.userId))
         self.navigationController?.pushViewController(otherUserMissionListVC, animated: true)
+    }
+}
+
+extension RankingVC: UIGestureRecognizerDelegate {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        true
     }
 }

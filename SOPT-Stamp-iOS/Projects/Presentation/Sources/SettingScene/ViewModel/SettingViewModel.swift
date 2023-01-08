@@ -25,7 +25,7 @@ public class SettingViewModel: ViewModelType {
                                           [I18N.Setting.personalInfoPolicy,
                                            I18N.Setting.serviceTerm,
                                            I18N.Setting.suggestion],
-                                          [I18N.Setting.resetMission],
+                                          [I18N.Setting.resetStamp],
                                           [I18N.Setting.logout]
     ]
     

@@ -13,9 +13,18 @@ import Network
 
 public extension MissionListEntity {
     func toDomain() -> [MissionListModel] {
-        return self.map { .init(id: $0.id,
-                                title: $0.title,
-                                level: $0.level,
-                                isCompleted: $0.isCompleted) }
+        self.map {
+            if let isComplete = $0.isCompleted {
+                return .init(id: $0.id,
+                             title: $0.title,
+                             level: $0.level,
+                             isCompleted: isComplete)
+            } else {
+                return .init(id: $0.id,
+                             title: $0.title,
+                             level: $0.level,
+                             isCompleted: $0.fetchTypeHandler!)
+            }
+        }
     }
 }
