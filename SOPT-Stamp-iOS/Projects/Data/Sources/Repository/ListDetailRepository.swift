@@ -31,10 +31,10 @@ extension ListDetailRepository: ListDetailRepositoryInterface {
             .asDriver()
     }
     
-    public func postStamp(missionId: Int, stampData: [Any]) -> Driver<ListDetailModel> {
+    public func postStamp(missionId: Int, stampData: [Any]) -> AnyPublisher<ListDetailModel, Error> {
         return stampService.postStamp(userId: userId, missionId: missionId, requestModel: stampData)
             .map { $0.toDomain() }
-            .asDriver()
+            .eraseToAnyPublisher()
     }
     
     public func putStamp(missionId: Int, stampData: [Any]) -> Driver<Int> {
