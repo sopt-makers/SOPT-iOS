@@ -88,23 +88,23 @@ extension OnboardingVC {
     }
     
     private func setLayout() {
-        view.addSubviews(onboardingCollectionView, pageControl, startButton)
+        view.addSubviews(onboardingCollectionView, startButton, pageControl)
         
         onboardingCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(40.adjustedH)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(70.adjustedH)
             make.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-            make.height.equalTo(450.adjusted)
+            make.height.equalTo(460.adjustedH)
+        }
+        
+        startButton.snp.makeConstraints { make in
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(70.adjustedH)
+            make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
+            make.height.equalTo(56)
         }
         
         pageControl.snp.makeConstraints { make in
-            make.top.equalTo(onboardingCollectionView.snp.bottom).offset(14.adjustedH)
+            make.top.equalTo(startButton).offset(-80.adjustedH)
             make.centerX.equalToSuperview()
-        }
-    
-        startButton.snp.makeConstraints { make in
-            make.top.equalTo(pageControl.snp.bottom).offset(50.adjustedH)
-            make.leading.trailing.equalTo(view.safeAreaInsets).inset(20)
-            make.height.equalTo(56)
         }
     }
 }
@@ -161,7 +161,7 @@ extension OnboardingVC: UICollectionViewDelegateFlowLayout {
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let length = self.view.frame.size.width
-        return CGSize(width: length, height: 450.adjustedH)
+        return CGSize(width: length, height: 460.adjustedH)
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
