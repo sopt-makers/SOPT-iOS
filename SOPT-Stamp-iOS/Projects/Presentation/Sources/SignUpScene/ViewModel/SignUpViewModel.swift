@@ -22,6 +22,9 @@ public class SignUpViewModel: ViewModelType {
     
     private let useCase: SignUpUseCase
     private var cancelBag = CancelBag()
+    
+    private var passwordText: String = ""
+    private var passwordCheckText: String = ""
   
     // MARK: - Inputs
     
@@ -85,6 +88,7 @@ extension SignUpViewModel {
         input.passwordTextChanged
             .compactMap({ $0 })
             .sink { password in
+                self.passwordText = password
                 self.useCase.checkPassword(password: password)
             }.store(in: self.cancelBag)
         
@@ -92,6 +96,7 @@ extension SignUpViewModel {
             .compactMap({ $0 })
             .combineLatest(input.passwordCheckTextChanged.compactMap({ $0 }))
             .sink { (firstPassword, secondPassword) in
+                self.passwordCheckText = secondPassword
                 self.useCase.checkAccordPassword(firstPassword: firstPassword, secondPassword: secondPassword)
             }.store(in: self.cancelBag)
         
@@ -132,7 +137,9 @@ extension SignUpViewModel {
                 output.passwordAlert.send(.invalid(text: I18N.SignUp.invalidPasswordForm))
             } else if isFormValid && !isAccordValid {
                 output.passwordAlert.send(.valid(text: ""))
-                output.passwordAccordAlert.send(.invalid(text: (I18N.SignUp.passwordNotAccord)))
+                if !self.passwordCheckText.isEmpty {
+                    output.passwordAccordAlert.send(.invalid(text: (I18N.SignUp.passwordNotAccord)))
+                }
             } else {
                 output.passwordAlert.send(.valid(text: ""))
                 output.passwordAccordAlert.send(.valid(text: ""))
