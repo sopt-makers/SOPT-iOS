@@ -25,8 +25,8 @@ public class NicknameEditVC: UIViewController {
     // MARK: - UI Components
     
     private lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
+        .setTitleTypoStyle(.h2)
         .setTitle(I18N.Setting.NicknameEdit.nicknameEdit)
-        .setTitleTypoStyle(.h1)
     
     private let nicknameTextFieldView = CustomTextFieldView(type: .plain)
         .setTitle(I18N.SignUp.nickname)

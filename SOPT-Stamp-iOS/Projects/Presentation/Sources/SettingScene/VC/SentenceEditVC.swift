@@ -25,8 +25,8 @@ public class SentenceEditVC: UIViewController {
     // MARK: - UI Components
     
     private lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
+        .setTitleTypoStyle(.h2)
         .setTitle(I18N.Setting.SentenceEdit.sentenceEdit)
-        .setTitleTypoStyle(.h1)
     
     private lazy var textView: UITextView = {
         let tv = UITextView()
