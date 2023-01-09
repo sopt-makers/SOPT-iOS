@@ -68,12 +68,12 @@ extension OnboardingCVC {
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(imageView.snp.bottom).offset(40)
+            make.top.equalTo(imageView.snp.bottom).offset(45)
             make.centerX.equalToSuperview()
         }
         
         captionLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(20)
+            make.top.equalTo(titleLabel.snp.bottom).offset(16)
             make.centerX.equalToSuperview()
         }
     }
