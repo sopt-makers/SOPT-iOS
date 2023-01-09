@@ -73,6 +73,7 @@ public class ChartRectangleView: UIView {
         label.setTypoStyle(.h3)
         label.textColor = .black
         label.lineBreakMode = .byTruncatingTail
+        label.setCharacterSpacing(0)
         return label
     }()
     

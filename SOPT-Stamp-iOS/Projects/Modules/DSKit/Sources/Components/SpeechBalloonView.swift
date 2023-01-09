@@ -35,6 +35,7 @@ public class SpeechBalloonView: UIView {
         label.layer.cornerRadius = 8
         label.clipsToBounds = true
         label.sizeToFit()
+        label.setCharacterSpacing(0)
         return label
     }()
     

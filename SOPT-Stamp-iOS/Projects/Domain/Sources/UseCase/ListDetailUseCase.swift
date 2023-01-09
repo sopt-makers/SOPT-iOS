@@ -53,7 +53,9 @@ extension DefaultListDetailUseCase: ListDetailUseCase {
     public func postStamp(missionId: Int, stampData: ListDetailRequestModel) {
         let data = [stampData.imgURL as Any, stampData.content] as [Any]
         repository.postStamp(missionId: missionId, stampData: data)
-            .sink { model in
+            .sink { event in
+                print("completion: \(event)")
+            } receiveValue: { model in
                 self.listDetailModel.send(model)
             }.store(in: self.cancelBag)
     }

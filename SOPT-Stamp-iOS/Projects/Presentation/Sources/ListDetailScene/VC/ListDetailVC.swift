@@ -112,6 +112,7 @@ public class ListDetailVC: UIViewController {
         .setColor(bgColor: starLevel.pointColor,
                      disableColor: starLevel.disableColor,
                      starLevel.buttonTitleColor)
+    private lazy var backgroundDimmerView = CustomDimmerView(self)
     
     // MARK: - View Life Cycle
     
@@ -141,6 +142,9 @@ extension ListDetailVC {
             .map { _ in
                 if self.sceneType == .edit {
                     self.bottomButton.setEnabled(false)
+                }
+                if self.sceneType == .none {
+                    self.showDimmerView()
                 }
                 let image = self.missionImageView.image ?? UIImage()
                 let content = self.textView.text
@@ -276,11 +280,29 @@ extension ListDetailVC {
     }
     
     private func presentCompletedVC(level: StarViewLevel) {
-        let missionCompletedVC = MissionCompletedVC()
-            .setLevel(level)
-        missionCompletedVC.modalPresentationStyle = .overFullScreen
-        missionCompletedVC.modalTransitionStyle = .crossDissolve
+        let missionCompletedVC = factory.makeMissionCompletedVC(starLevel: level)
+        missionCompletedVC.completionHandler = {
+            UIView.animate(withDuration: 0.2, delay: 0, animations: {
+                self.backgroundDimmerView.alpha = 0
+            }) { _ in
+                self.backgroundDimmerView.removeFromSuperview()
+            }
+        }
         self.present(missionCompletedVC, animated: true)
+    }
+    
+    private func showDimmerView() {
+        self.backgroundDimmerView.alpha = 0
+        
+        self.view.addSubview(backgroundDimmerView)
+        
+        backgroundDimmerView.snp.makeConstraints { make in
+            make.edges.greaterThanOrEqualToSuperview()
+        }
+        
+        UIView.animate(withDuration: 0.2, delay: 0) {
+            self.backgroundDimmerView.alpha = 1
+        }
     }
     
     // MARK: - @objc
@@ -433,7 +455,6 @@ extension ListDetailVC {
         self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
         
         self.view.backgroundColor = .white
-        self.setStatusBarBackgroundColor(.white)
         
         self.scrollView.keyboardDismissMode = .onDrag
         self.scrollView.showsVerticalScrollIndicator = false
