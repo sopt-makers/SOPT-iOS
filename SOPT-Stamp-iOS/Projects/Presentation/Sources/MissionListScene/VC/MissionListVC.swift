@@ -68,13 +68,14 @@ public class MissionListVC: UIViewController {
         if case let .ranking(_, sentence, _) = sceneType {
             lb.text = sentence
         }
-        lb.setTypoStyle(.subtitle2)
+        lb.setTypoStyle(.subtitle1)
         lb.textColor = DSKitAsset.Colors.gray900.color
         lb.numberOfLines = 2
         lb.textAlignment = .center
         lb.backgroundColor = DSKitAsset.Colors.purple100.color
         lb.layer.cornerRadius = 9.adjustedH
         lb.clipsToBounds = true
+        lb.setCharacterSpacing(0)
         return lb
     }()
     
