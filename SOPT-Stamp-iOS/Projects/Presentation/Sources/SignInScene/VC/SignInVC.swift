@@ -78,7 +78,7 @@ public class SignInVC: UIViewController {
     }
     
     deinit {
-        self.removeKeyboardObserver()
+        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - @objc Function
@@ -185,8 +185,8 @@ extension SignInVC {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    private func removeKeyboardObserver() {
-        NotificationCenter.default.removeObserver(self)
+    @objc func keyboardUp(notification: NSNotification) {
+        guard let userInfo = notification.userInfo,
     }
     
     @objc func keyboardUp(notification: NSNotification) {
