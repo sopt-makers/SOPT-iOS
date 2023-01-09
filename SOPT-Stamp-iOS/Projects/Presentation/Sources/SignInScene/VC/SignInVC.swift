@@ -111,13 +111,13 @@ extension SignInVC {
         self.view.addSubviews(logoImageView, emailTextField, passwordTextField, findAccountButton, signInButton, signUpButton)
         
         logoImageView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(100.adjustedH)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(115.adjustedH)
             make.centerX.equalToSuperview()
             make.width.equalToSuperview().multipliedBy(0.7)
         }
         
         emailTextField.snp.makeConstraints { make in
-            make.top.equalTo(logoImageView.snp.bottom).offset(90.adjustedH)
+            make.top.equalTo(logoImageView.snp.bottom).offset(95.adjustedH)
             make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(16)
         }
         
@@ -127,12 +127,12 @@ extension SignInVC {
         }
         
         findAccountButton.snp.makeConstraints { make in
-            make.top.equalTo(passwordTextField.snp.bottom).offset(12.adjustedH)
+            make.top.equalTo(passwordTextField.snp.bottom).offset(-20.adjustedH)
             make.trailing.equalTo(view.safeAreaLayoutGuide).inset(22)
         }
         
         signInButton.snp.makeConstraints { make in
-            make.top.equalTo(findAccountButton.snp.bottom).offset(55.adjustedH)
+            make.top.equalTo(findAccountButton.snp.bottom).offset(48.adjustedH)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(56)
         }
