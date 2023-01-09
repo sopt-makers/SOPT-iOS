@@ -5,7 +5,7 @@ public extension Project {
         "CFBundleShortVersionString": "1.0.0",
         "CFBundleVersion": "1",
         "CFBundleIdentifier": "com.sopt-stamp-iOS.release",
-        "CFBundleDisplayName": "SOPT-Stamp",
+        "CFBundleDisplayName": "SOPTAMP",
         "UILaunchStoryboardName": "LaunchScreen",
         "UIApplicationSceneManifest": [
             "UIApplicationSupportsMultipleScenes": false,
