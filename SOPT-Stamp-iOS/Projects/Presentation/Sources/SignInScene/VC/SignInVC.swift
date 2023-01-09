@@ -186,10 +186,6 @@ extension SignInVC {
     }
     
     @objc func keyboardUp(notification: NSNotification) {
-        guard let userInfo = notification.userInfo,
-    }
-    
-    @objc func keyboardUp(notification: NSNotification) {
         if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
             let keyboardRectangle = keyboardFrame.cgRectValue
             
