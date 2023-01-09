@@ -98,7 +98,9 @@ extension ModuleFactory: ModuleFactoryInterface {
     
     public func makeMissionCompletedVC(starLevel: StarViewLevel) -> MissionCompletedVC {
         let missionCompletedVC = MissionCompletedVC()
-            .setLevel(.levelThree)
+            .setLevel(starLevel)
+        missionCompletedVC.modalPresentationStyle = .overFullScreen
+        missionCompletedVC.modalTransitionStyle = .crossDissolve
         return missionCompletedVC
     }
     
