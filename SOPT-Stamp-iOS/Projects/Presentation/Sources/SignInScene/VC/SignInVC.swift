@@ -113,7 +113,7 @@ extension SignInVC {
         logoImageView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(115.adjustedH)
             make.centerX.equalToSuperview()
-            make.width.equalToSuperview().multipliedBy(0.7)
+            make.width.equalToSuperview().multipliedBy(0.7.adjusted)
         }
         
         emailTextField.snp.makeConstraints { make in
@@ -133,7 +133,7 @@ extension SignInVC {
         
         signInButton.snp.makeConstraints { make in
             make.top.equalTo(findAccountButton.snp.bottom).offset(48.adjustedH)
-            make.leading.trailing.equalToSuperview().inset(20)
+            make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
             make.height.equalTo(56)
         }
         
