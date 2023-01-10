@@ -29,9 +29,9 @@ public class RankingVC: UIViewController {
     // MARK: - UI Components
     
     lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
+        .setTitleTypoStyle(.h2)
         .setTitle("랭킹")
         .setRightButton(.none)
-        .setTitleTypoStyle(.h2)
     
     private lazy var rankingCollectionView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
@@ -50,9 +50,12 @@ public class RankingVC: UIViewController {
         let bt = UIButton()
         bt.layer.cornerRadius = 27.adjustedH
         bt.backgroundColor = DSKitAsset.Colors.purple300.color
-        bt.setTitle("내 랭킹 보기", for: .normal)
-        bt.tintColor = .white
         bt.titleLabel?.setTypoStyle(.h2)
+        let attributedStr = NSMutableAttributedString(string: "내 랭킹 보기")
+        let style = NSMutableParagraphStyle()
+        attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
+        attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.white, range: NSMakeRange(0, attributedStr.length))
+        bt.setAttributedTitle(attributedStr, for: .normal)
         return bt
     }()
     
@@ -95,7 +98,7 @@ extension RankingVC {
         showMyRankingFloatingButton.snp.makeConstraints { make in
             make.width.equalTo(143.adjusted)
             make.height.equalTo(54.adjustedH)
-            make.bottom.equalTo(view.safeAreaLayoutGuide)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-18.adjustedH)
             make.centerX.equalToSuperview()
         }
     }
