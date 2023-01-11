@@ -14,11 +14,18 @@ public struct RankingModel: Hashable {
     public let score: Int
     public let sentence: String
     
+    public var isMyRanking: Bool = false
+    
     public init(username: String, usreId: Int, score: Int, sentence: String) {
         self.username = username
         self.userId = usreId
         self.score = score
         self.sentence = sentence
+    }
+    
+    public
+    mutating func setMyRanking(_ isMyRanking: Bool) {
+        self.isMyRanking = isMyRanking
     }
 }
 

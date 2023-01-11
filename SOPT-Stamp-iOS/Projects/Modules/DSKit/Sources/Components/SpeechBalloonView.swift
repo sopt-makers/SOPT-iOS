@@ -123,7 +123,8 @@ extension SpeechBalloonView {
         }
         
         sentenceLabelStackView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+            make.centerY.equalToSuperview()
+            make.centerX.equalToSuperview().offset(10)
             make.width.lessThanOrEqualTo(273.adjusted)
         }
         
