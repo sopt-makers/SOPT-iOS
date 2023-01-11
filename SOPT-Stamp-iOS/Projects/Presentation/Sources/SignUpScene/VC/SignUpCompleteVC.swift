@@ -64,8 +64,8 @@ extension SignUpCompleteVC {
 
 extension SignUpCompleteVC {
     @objc private func startButtonDidTap() {
-        let missionListVC = self.factory.makeMissionListVC(sceneType: .default)
-        self.navigationController?.pushViewController(missionListVC, animated: true)
+        let navigation = UINavigationController(rootViewController: self.factory.makeMissionListVC(sceneType: .default))
+        ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
     }
 }
 
