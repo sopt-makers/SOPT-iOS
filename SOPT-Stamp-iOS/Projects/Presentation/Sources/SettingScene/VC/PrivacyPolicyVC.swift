@@ -24,6 +24,7 @@ public class PrivacyPolicyVC: UIViewController {
     
     private let textView = UITextView().then {
         $0.text = I18N.ServiceUsagePolicy.privacyPolicy
+        $0.setTypoStyle(.subtitle3)
         $0.isEditable = false
         $0.showsVerticalScrollIndicator = false
         $0.setLineSpacing(lineSpacing: 5)
