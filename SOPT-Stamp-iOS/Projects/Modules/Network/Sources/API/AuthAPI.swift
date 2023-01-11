@@ -16,6 +16,7 @@ public enum AuthAPI {
     case getEmailAvailable(email: String)
     case changePassword(password: String, userId: Int)
     case changeNickname(userId: Int, nickname: String)
+    case withdrawal(userId: Int)
 }
 
 extension AuthAPI: BaseAPI {
@@ -25,7 +26,7 @@ extension AuthAPI: BaseAPI {
     // MARK: - Header
     public var headers: [String: String]? {
         switch self {
-        case .changePassword(_, let userId), .changeNickname(let userId, _):
+        case .changePassword(_, let userId), .changeNickname(let userId, _), .withdrawal(let userId):
             return HeaderType.userId(userId: userId).value
         default: return HeaderType.json.value
         }
@@ -40,6 +41,8 @@ extension AuthAPI: BaseAPI {
             return "password"
         case .changeNickname:
             return "nickname"
+        case .withdrawal:
+            return "withdraw"
         }
     }
     
@@ -50,6 +53,8 @@ extension AuthAPI: BaseAPI {
             return .get
         case .changePassword, .changeNickname:
             return .patch
+        case .withdrawal:
+            return .delete
         }
     }
     
@@ -57,12 +62,12 @@ extension AuthAPI: BaseAPI {
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
-        case .getNicknameAvailable, .getEmailAvailable:
-            break
         case .changePassword(let password, _):
             params["password"] = password
         case .changeNickname(_, let nickname):
             params["nickname"] = nickname
+        default:
+            break
         }
         return params
     }
