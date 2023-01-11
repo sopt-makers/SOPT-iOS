@@ -13,6 +13,12 @@ import Core
 
 public class WithdrawalVC: UIViewController {
     
+    // MARK: - Properties
+    
+    public var viewModel: WithdrawalViewModel!
+    public var factory: ModuleFactoryInterface!
+    private let cancelBag = CancelBag()
+    
     // MARK: - UI Components
 
     private lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
@@ -58,6 +64,7 @@ public class WithdrawalVC: UIViewController {
         super.viewDidLoad()
         self.setUI()
         self.setLayout()
+        self.bindViewModels()
     }
 }
 
@@ -104,5 +111,43 @@ extension WithdrawalVC {
 
 extension WithdrawalVC {
     
+    private func bindViewModels() {
+        
+        let withdrawalButtonTapped = self.withdrawalButton
+            .publisher(for: .touchUpInside)
+            .mapVoid()
+            .asDriver()
+        
+        let input = WithdrawalViewModel.Input(withdrawalButtonTapped: withdrawalButtonTapped)
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.withdrawalSuccessed
+            .withUnretained(self)
+            .sink { owner, isSuccessed in
+                if isSuccessed {
+                    owner.showToastAndChangeRootView()
+                } else {
+                    owner.showNetworkAlert()
+                }
+            }.store(in: self.cancelBag)
+    }
+    
+    private func showToastAndChangeRootView() {
+        let window = self.view.window!
+        let navigation = UINavigationController(rootViewController: self.factory.makeSignInVC())
+        navigation.isNavigationBarHidden = true
+        ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true) { newWindow in
+            Toast.show(message: I18N.Setting.Withdrawal.withdrawalSuccess,
+                       view: newWindow,
+                       safeAreaBottomInset: self.safeAreaBottomInset())
+        }
+    }
+    
+    public func showNetworkAlert() {
+        let alertVC = AlertVC(alertType: .networkErr)
+            .setTitle(I18N.Default.networkError, I18N.Default.networkErrorDescription)
+        alertVC.modalPresentationStyle = .overFullScreen
+        alertVC.modalTransitionStyle = .crossDissolve
+        self.present(alertVC, animated: true)
+    }
 }
-

@@ -13,8 +13,10 @@ import Core
 public protocol SettingUseCase {
     func resetStamp()
     func editNickname(nickname: String)
+    func withdrawal()
     var editNicknameSuccess: PassthroughSubject<Bool, Error> { get set }
     var resetSuccess: PassthroughSubject<Bool, Error> { get set }
+    var withdrawalSuccess: PassthroughSubject<Bool, Error> { get set }
 }
 
 public class DefaultSettingUseCase {
@@ -24,13 +26,22 @@ public class DefaultSettingUseCase {
     
     public var resetSuccess = PassthroughSubject<Bool, Error>()
     public var editNicknameSuccess = PassthroughSubject<Bool, Error>()
-  
+    public var withdrawalSuccess = PassthroughSubject<Bool, Error>()
+    
     public init(repository: SettingRepositoryInterface) {
         self.repository = repository
     }
 }
 
 extension DefaultSettingUseCase: SettingUseCase {
+    public func withdrawal() {
+        self.repository.withdrawal()
+            .withUnretained(self)
+            .sink { owner, withdrawalSuccessed in
+                owner.withdrawalSuccess.send(withdrawalSuccessed)
+            }.store(in: self.cancelBag)
+    }
+    
     public func editNickname(nickname: String) {
         self.repository.editNickname(nickname: nickname)
             .withUnretained(self)

@@ -131,6 +131,7 @@ public struct I18N {
             public static let caution = "탈퇴 시 유의사항"
             public static let guide1 = "회원 탈퇴를 신청하시면 해당 이메일은 즉시 탈퇴 처리됩니다."
             public static let guide2 = "탈퇴 처리 시 계정 내에서 입력했던 정보 (미션 정보 등)는 영구적으로 삭제되며, 복구가 어렵습니다."
+            public static let withdrawalSuccess = "탈퇴처리 되었습니다"
         }
     }
 }
