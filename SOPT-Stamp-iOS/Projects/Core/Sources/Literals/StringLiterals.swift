@@ -76,6 +76,10 @@ public struct I18N {
         public static let start = "시작하기"
     }
     
+    public struct MissionList {
+        public static let noMission = "아직 완료한 미션이 없습니다!"
+    }
+    
     public struct RankingList {
         public static let noSentenceText = "설정된 한 마디가 없습니다."
     }
