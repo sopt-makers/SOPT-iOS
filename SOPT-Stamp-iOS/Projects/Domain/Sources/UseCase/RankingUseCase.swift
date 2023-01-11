@@ -32,6 +32,12 @@ public class DefaultRankingUseCase {
 extension DefaultRankingUseCase: RankingUseCase {
     public func fetchRankingList() {
         self.repository.fetchRankingListModel()
+            .map { model in
+                var newModel = model
+                let myRankingIndex = self.findMyRankingIndex(model: model)
+                newModel[myRankingIndex].setMyRanking(true)
+                return newModel
+            }
             .withUnretained(self)
             .sink { completion in
                 print(completion)
@@ -41,15 +47,20 @@ extension DefaultRankingUseCase: RankingUseCase {
     }
     
     public func findMyRanking() {
-        let myUserId = UserDefaultKeyList.Auth.userId ?? 1
-        let index = rankingListModelFetched.value.firstIndex { model in
-            model.userId == myUserId
-        } ?? 0
+        let myRankingIndex = self.findMyRankingIndex(model: rankingListModelFetched.value)
         
-        if index > 3 {
-            myRanking.send((1, index - 4))
+        if myRankingIndex > 3 {
+            myRanking.send((1, myRankingIndex - 4))
         } else {
             myRanking.send((0, 0))
         }
+    }
+    
+    private func findMyRankingIndex(model: [RankingModel]) -> Int {
+        let myUserId = UserDefaultKeyList.Auth.userId ?? 1
+        let index = model.firstIndex { model in
+            model.userId == myUserId
+        } ?? 0
+        return index
     }
 }

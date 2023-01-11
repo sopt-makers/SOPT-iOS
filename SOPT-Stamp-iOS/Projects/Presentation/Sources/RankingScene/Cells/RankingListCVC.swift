@@ -128,6 +128,26 @@ extension RankingListCVC {
         scoreLabel.text = "\(model.score)점"
         scoreLabel.partFontChange(targetString: "점",
                                   font: DSKitFontFamily.Pretendard.medium.font(size: 12))
+        
+        return model.isMyRanking
+        ? setMyRanking()
+        : setDefaultRanking()
+    }
+    
+    private func setMyRanking() {
+        self.backgroundColor = DSKitAsset.Colors.purple100.color
+        self.layer.borderColor = DSKitAsset.Colors.purple300.color.cgColor
+        self.layer.borderWidth = 2
+        rankLabel.textColor = DSKitAsset.Colors.purple300.color
+        scoreLabel.textColor = DSKitAsset.Colors.purple300.color
+    }
+    
+    private func setDefaultRanking() {
+        self.backgroundColor = DSKitAsset.Colors.gray50.color
+        self.layer.borderColor = nil
+        self.layer.borderWidth = 0
+        rankLabel.textColor = DSKitAsset.Colors.gray500.color
+        scoreLabel.textColor = DSKitAsset.Colors.gray400.color
     }
 }
 

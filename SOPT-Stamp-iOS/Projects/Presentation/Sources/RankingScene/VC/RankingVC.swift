@@ -156,9 +156,14 @@ extension RankingVC {
     private func swipeBack(_ sender: UIPanGestureRecognizer) {
         let velocity = sender.velocity(in: rankingCollectionView)
         let velocityMinimum: CGFloat = 1000
-        if velocity.x >= velocityMinimum {
+        guard let navigation = self.navigationController else { return }
+        let isScrollY: Bool = abs(velocity.x) > abs(velocity.y) + 200
+        let isNotRootView = navigation.viewControllers.count >= 2
+        if velocity.x >= velocityMinimum
+            && isNotRootView
+            && isScrollY {
             self.rankingCollectionView.isScrollEnabled = false
-            self.navigationController?.popViewController(animated: true)
+            navigation.popViewController(animated: true)
         }
     }
     
@@ -184,7 +189,8 @@ extension RankingVC {
             case .list:
                 guard let rankingListCell = collectionView.dequeueReusableCell(withReuseIdentifier: RankingListCVC.className, for: indexPath) as? RankingListCVC,
                       let rankingListCellModel = itemIdentifier as? RankingModel else { return UICollectionViewCell() }
-                rankingListCell.setData(model: rankingListCellModel, rank: indexPath.row + 1 + 3)
+                rankingListCell.setData(model: rankingListCellModel,
+                                        rank: indexPath.row + 1 + 3)
                 
                 return rankingListCell
             }

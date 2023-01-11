@@ -27,12 +27,28 @@ public class SpeechBalloonView: UIView {
         return iv
     }()
     
-    private let sentenceLabel: BalloonPaddingLabel = {
-        let label = BalloonPaddingLabel()
+    private let backgroundView: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 8
+        view.clipsToBounds = true
+        return view
+    }()
+    
+    private lazy var sentenceLabelStackView: UIStackView = {
+        let st = UIStackView()
+        st.axis = .horizontal
+        st.distribution = .equalCentering
+        st.alignment = .center
+        st.spacing = 0
+        st.addArrangedSubviews(sentenceLabel, leftArrowImage)
+        return st
+    }()
+    
+    private let sentenceLabel: UILabel = {
+        let label = UILabel()
         label.setTypoStyle(.subtitle3)
         label.textColor = DSKitAsset.Colors.black.color
         label.textAlignment = .center
-        label.layer.cornerRadius = 8
         label.clipsToBounds = true
         label.sizeToFit()
         label.setCharacterSpacing(0)
@@ -73,108 +89,66 @@ extension SpeechBalloonView {
     private func setUI() {
         switch viewLevel {
         case .rankOne:
-            sentenceLabel.backgroundColor = DSKitAsset.Colors.purple300.color
+            backgroundView.backgroundColor = DSKitAsset.Colors.purple300.color
             sentenceLabel.textColor = DSKitAsset.Colors.white.color
             leftArrowImage.tintColor = .white
             balloonTailImageView.tintColor = DSKitAsset.Colors.purple300.color
         case .rankTwo:
-            sentenceLabel.backgroundColor = DSKitAsset.Colors.pink300.color
+            backgroundView.backgroundColor = DSKitAsset.Colors.pink300.color
             sentenceLabel.textColor = DSKitAsset.Colors.white.color
             leftArrowImage.tintColor = .white
             balloonTailImageView.tintColor = DSKitAsset.Colors.pink300.color
         case .rankThree:
-            sentenceLabel.backgroundColor = DSKitAsset.Colors.mint300.color
+            backgroundView.backgroundColor = DSKitAsset.Colors.mint300.color
             sentenceLabel.textColor = DSKitAsset.Colors.black.color
             leftArrowImage.tintColor = .black
             balloonTailImageView.tintColor = DSKitAsset.Colors.mint300.color
         }
+        
+        guard self.sentenceLabel.text == I18N.RankingList.noSentenceText else { return }
+        self.sentenceLabel.textColor = DSKitAsset.Colors.gray500.color
+        self.backgroundView.backgroundColor = DSKitAsset.Colors.gray100.color
+        self.leftArrowImage.tintColor = DSKitAsset.Colors.gray500.color
+        self.balloonTailImageView.tintColor = DSKitAsset.Colors.gray100.color
     }
     
     private func setLayout(sentence: String) {
-        self.addSubviews(sentenceLabel, balloonTailImageView)
+        self.addSubviews(backgroundView, balloonTailImageView)
+        
+        self.backgroundView.addSubview(sentenceLabelStackView)
+        
+        backgroundView.snp.makeConstraints { make in
+            make.height.equalTo(37.adjustedH)
+            make.leading.trailing.equalToSuperview()
+        }
+        
+        sentenceLabelStackView.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.centerX.equalToSuperview().offset(10)
+            make.width.lessThanOrEqualTo(273.adjusted)
+        }
         
         sentenceLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            
-            let standardSize = calculateLabelSize(sentence: sentence)
-            let smallBalloonMinimumWidth: CGFloat = 108
-            let smallBalloonCompensates: CGFloat = 10
-            let smallBalloonWidth = smallBalloonMinimumWidth - smallBalloonCompensates
-            let largeBalloonCompensates: CGFloat = 30 * standardSize / 266.adjusted
-            
-            if standardSize < smallBalloonWidth.adjusted {
-                make.width.equalTo(smallBalloonWidth.adjusted + smallBalloonCompensates)
-            } else if standardSize < 266.adjusted {
-                make.width.equalTo(standardSize + largeBalloonCompensates)
-            } else {
-                make.width.lessThanOrEqualToSuperview()
-                sentenceLabel.lineBreakMode = .byTruncatingTail
-            }
-            
-            switch viewLevel {
-            case .rankOne:
-                make.centerX.equalToSuperview()
-            case .rankTwo:
-                make.leading.equalToSuperview()
-            case .rankThree:
-                make.trailing.equalToSuperview()
-            }
+            make.width.lessThanOrEqualTo(241.adjusted)
+        }
+        
+        leftArrowImage.snp.makeConstraints { make in
+            make.size.equalTo(32.adjusted)
         }
         
         balloonTailImageView.snp.makeConstraints { make in
-            make.top.equalTo(sentenceLabel.snp.bottom).offset(-3).priority(.high)
+            make.top.equalTo(backgroundView.snp.bottom).offset(-3).priority(.high)
             make.height.equalTo(11.5)
             make.width.equalTo(10)
             switch viewLevel {
             case .rankOne:
-                make.centerX.equalTo(sentenceLabel)
+                make.centerX.equalTo(backgroundView)
             case .rankTwo:
-                make.centerX.equalTo(sentenceLabel.snp.leading).offset(45.adjusted)
+                make.centerX.equalTo(backgroundView.snp.leading).offset(45.adjusted)
             case .rankThree:
-                make.centerX.equalTo(sentenceLabel.snp.trailing).offset(-45.adjusted)
+                make.centerX.equalTo(backgroundView.snp.trailing).offset(-45.adjusted)
             }
             make.bottom.equalToSuperview()
-        }
-        
-        sentenceLabel.addSubview(leftArrowImage)
-        
-        leftArrowImage.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.size.equalTo(32)
-            make.trailing.equalToSuperview()
-        }
-    }
-    
-    private func calculateLabelSize(sentence: String) -> CGFloat {
-        let tempLabel = BalloonPaddingLabel()
-        tempLabel.text = sentence
-        tempLabel.setTypoStyle(.subtitle3)
-        tempLabel.sizeToFit()
-        return tempLabel.intrinsicContentSize.width
-    }
-}
-
-@IBDesignable class BalloonPaddingLabel: UILabel {
-
-    @IBInspectable var topInset: CGFloat = 7.0
-    @IBInspectable var bottomInset: CGFloat = 7.0
-    @IBInspectable var leftInset: CGFloat = 32.0
-    @IBInspectable var rightInset: CGFloat = 32.0
-
-    override func drawText(in rect: CGRect) {
-        let insets = UIEdgeInsets(top: topInset, left: leftInset, bottom: bottomInset, right: rightInset)
-        super.drawText(in: rect.inset(by: insets))
-    }
-
-    override var intrinsicContentSize: CGSize {
-        let size = super.intrinsicContentSize
-        return CGSize(width: size.width + leftInset + rightInset,
-                      height: size.height + topInset + bottomInset)
-    }
-
-    override var bounds: CGRect {
-        didSet {
-            preferredMaxLayoutWidth = bounds.width - (leftInset + rightInset)
         }
     }
 }

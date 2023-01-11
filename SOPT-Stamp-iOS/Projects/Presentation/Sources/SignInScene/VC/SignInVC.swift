@@ -165,8 +165,8 @@ extension SignInVC {
         
         output.isSignInSuccess.sink { isSignInSuccess in
             if isSignInSuccess {
-                let missionListVC = self.factory.makeMissionListVC(sceneType: .default)
-                self.navigationController?.pushViewController(missionListVC, animated: true)
+                let navigation = UINavigationController(rootViewController: self.factory.makeMissionListVC(sceneType: .default))
+                ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
             } else {
                 self.emailTextField.alertType = .invalidInput(text: "")
                 self.passwordTextField.alertType = .invalidInput(text: I18N.SignIn.checkAccount)
