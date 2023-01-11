@@ -89,16 +89,16 @@ extension CustomNavigationBar {
     public func setTitle(_ title: String) -> Self {
         switch self.naviType {
         case .title:
-            self.titleButton.setTitle(title, for: .normal)
+            self.titleButton.setAttributedTitle(title.zeroKernString(), for: .normal)
         default:
-            self.titleLabel.text = title
+            self.titleLabel.attributedText = title.zeroKernString()
         }
         return self
     }
     
     @discardableResult
     public func setRightButtonTitle(_ title: String) -> Self {
-        self.rightButton.setTitle(title, for: .normal)
+        self.rightButton.setAttributedTitle(title.zeroKernString(), for: .normal)
         return self
     }
     
@@ -123,7 +123,6 @@ extension CustomNavigationBar {
         self.rightButton.addTarget(self, action: #selector(tappedRightButton), for: .touchUpInside)
         return self
     }
-    
     
     @discardableResult
     public func resetLeftButtonAction(_ closure: (() -> Void)? = nil) -> Self {

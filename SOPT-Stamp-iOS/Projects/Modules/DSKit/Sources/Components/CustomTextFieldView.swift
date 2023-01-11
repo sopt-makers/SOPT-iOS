@@ -110,6 +110,7 @@ public enum TextFieldAlertType {
 
 public protocol CustomTextFieldViewAlertDelegate: AnyObject {
     func changeAlertLabelText(_ alertText: String)
+    func changeAlertLabelTextColor(state: TextFieldViewState)
 }
 
 public class CustomTextFieldView: UIView {
@@ -263,6 +264,7 @@ extension CustomTextFieldView {
     public func changeAlertLabelText(_ alertText: String) {
         if let alertDelegate = alertDelegate {
             alertDelegate.changeAlertLabelText(alertText)
+            
             return
         }
         self.alertlabel.text = alertText
@@ -281,6 +283,7 @@ extension CustomTextFieldView {
         }
         
         if state == .confirmAlert || state == .warningAlert {
+            alertDelegate?.changeAlertLabelTextColor(state: state)
             alertlabel.textColor = state.alertTextColor
         }
     }
@@ -508,7 +511,7 @@ extension CustomTextFieldView: UITextFieldDelegate {
 
 extension CustomTextFieldView: CustomTextFieldViewAlertDelegate {
     /// 경고 문구 라벨의 컬러 설정
-    public func changeAlertLabelTextColor(toWarning: Bool) {
-        alertlabel.textColor = toWarning ? SoptampColor.error300.color : SoptampColor.access300.color
+    public func changeAlertLabelTextColor(state: TextFieldViewState) {
+        alertlabel.textColor = state.alertTextColor
     }
 }

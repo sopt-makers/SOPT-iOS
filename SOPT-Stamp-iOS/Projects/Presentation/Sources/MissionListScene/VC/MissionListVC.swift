@@ -68,13 +68,14 @@ public class MissionListVC: UIViewController {
         if case let .ranking(_, sentence, _) = sceneType {
             lb.text = sentence
         }
-        lb.setTypoStyle(.subtitle2)
+        lb.setTypoStyle(.subtitle1)
         lb.textColor = DSKitAsset.Colors.gray900.color
         lb.numberOfLines = 2
         lb.textAlignment = .center
         lb.backgroundColor = DSKitAsset.Colors.purple100.color
         lb.layer.cornerRadius = 9.adjustedH
         lb.clipsToBounds = true
+        lb.setCharacterSpacing(0)
         return lb
     }()
     
@@ -90,11 +91,17 @@ public class MissionListVC: UIViewController {
         let bt = UIButton()
         bt.layer.cornerRadius = 27.adjustedH
         bt.backgroundColor = DSKitAsset.Colors.purple300.color
-        bt.setTitle("랭킹 보기", for: .normal)
         bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .normal)
         bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .highlighted)
         bt.tintColor = .white
         bt.titleLabel?.setTypoStyle(.h2)
+        let attributedStr = NSMutableAttributedString(string: "랭킹 보기")
+        let style = NSMutableParagraphStyle()
+        attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
+        attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.white, range: NSMakeRange(0, attributedStr.length))
+        bt.setAttributedTitle(attributedStr, for: .normal)
+        bt.contentEdgeInsets = UIEdgeInsets(top: 0, left: -15, bottom: 0, right: 0)
+        bt.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
         return bt
     }()
     
@@ -148,7 +155,7 @@ extension MissionListVC {
             rankingFloatingButton.snp.makeConstraints { make in
                 make.width.equalTo(143.adjusted)
                 make.height.equalTo(54.adjustedH)
-                make.bottom.equalTo(view.safeAreaLayoutGuide)
+                make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-18.adjustedH)
                 make.centerX.equalToSuperview()
             }
         case .ranking:
@@ -254,8 +261,6 @@ extension MissionListVC {
             switch MissionListSection.type(indexPath.section) {
             case .sentence:
                 guard let sentenceCell = collectionView.dequeueReusableCell(withReuseIdentifier: MissionListCVC.className, for: indexPath) as? MissionListCVC else { return UICollectionViewCell() }
-                
-                sentenceCell.initCellType = .levelOne(completed: true)
                 return sentenceCell
                 
             case .missionList:

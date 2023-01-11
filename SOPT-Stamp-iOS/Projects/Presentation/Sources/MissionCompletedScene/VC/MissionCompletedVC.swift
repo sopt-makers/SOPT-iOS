@@ -39,7 +39,6 @@ public class MissionCompletedVC: UIViewController {
   
     // MARK: - UI Components
     
-    private lazy var backgroundDimmerView = CustomDimmerView(self)
     private lazy var lottieView = LottieAnimationView(name: starLevel.lottieName, bundle: DSKitResources.bundle, configuration: LottieConfiguration(renderingEngine: .automatic))
   
     // MARK: - View Life Cycle
@@ -80,11 +79,7 @@ extension MissionCompletedVC {
     }
     
     private func setLayout() {
-        self.view.addSubviews(backgroundDimmerView, lottieView)
-        
-        backgroundDimmerView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
+        self.view.addSubviews(lottieView)
         
         lottieView.snp.makeConstraints { make in
             make.center.equalToSuperview()
