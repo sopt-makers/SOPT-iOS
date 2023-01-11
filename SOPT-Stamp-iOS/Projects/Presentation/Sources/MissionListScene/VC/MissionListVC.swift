@@ -29,6 +29,7 @@ public class MissionListVC: UIViewController {
     
     private var missionTypeMenuSelected = CurrentValueSubject<MissionListFetchType, Error>(.all)
     private var viewWillAppear = PassthroughSubject<Void, Error>()
+    private let swipeHandler = PassthroughSubject<Void, Never>()
     
     lazy var dataSource: UICollectionViewDiffableDataSource<MissionListSection, MissionListModel>! = nil
     
@@ -86,6 +87,8 @@ public class MissionListVC: UIViewController {
         cv.bounces = false
         return cv
     }()
+    
+    private let missionListEmptyView = MissionListEmptyView()
     
     private lazy var rankingFloatingButton: UIButton = {
         let bt = UIButton()
@@ -202,19 +205,24 @@ extension MissionListVC {
             .sink { owner, _ in
                 owner.pushToRankingVC()
             }.store(in: self.cancelBag)
+        
+        swipeHandler
+            .first()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.navigationController?.popViewController(animated: true)
+            }.store(in: self.cancelBag)
     }
     
     private func bindViewModels() {
-        
         let input = MissionListViewModel.Input(viewWillAppear: viewWillAppear.asDriver(),
                                                missionTypeSelected: missionTypeMenuSelected.asDriver())
-        
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.$missionListModel
             .compactMap { $0 }
             .sink { model in
-                self.applySnapshot(model: model)
+                self.setCollectionView(model: model)
             }.store(in: self.cancelBag)
     }
     
@@ -234,21 +242,30 @@ extension MissionListVC {
     private func setDelegate() {
         missionListCollectionView.delegate = self
     }
-
+    
     private func setGesture() {
+        self.setGesture(to: missionListCollectionView)
+        self.setGesture(to: missionListEmptyView)
+    }
+    
+    private func setGesture(to view: UIView) {
         let swipeGesture = UIPanGestureRecognizer(target: self, action: #selector(swipeBack(_:)))
         swipeGesture.delegate = self
-        self.missionListCollectionView.addGestureRecognizer(swipeGesture)
+        view.addGestureRecognizer(swipeGesture)
     }
     
     @objc
     private func swipeBack(_ sender: UIPanGestureRecognizer) {
-        let velocity = sender.velocity(in: missionListCollectionView)
+        let velocity = sender.velocity(in: self.view)
         let velocityMinimum: CGFloat = 1000
         guard let navigation = self.navigationController else { return }
-        if velocity.x >= velocityMinimum && navigation.viewControllers.count >= 2 {
+        let isScrollY: Bool = abs(velocity.x) > abs(velocity.y) + 200
+        let isNotRootView = navigation.viewControllers.count >= 2
+        if velocity.x >= velocityMinimum
+            && isNotRootView
+            && isScrollY {
             self.missionListCollectionView.isScrollEnabled = false
-            self.navigationController?.popViewController(animated: true)
+            swipeHandler.send(())
         }
     }
     

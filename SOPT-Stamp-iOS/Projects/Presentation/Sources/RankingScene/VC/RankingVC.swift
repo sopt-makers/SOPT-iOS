@@ -156,9 +156,14 @@ extension RankingVC {
     private func swipeBack(_ sender: UIPanGestureRecognizer) {
         let velocity = sender.velocity(in: rankingCollectionView)
         let velocityMinimum: CGFloat = 1000
-        if velocity.x >= velocityMinimum {
+        guard let navigation = self.navigationController else { return }
+        let isScrollY: Bool = abs(velocity.x) > abs(velocity.y) + 200
+        let isNotRootView = navigation.viewControllers.count >= 2
+        if velocity.x >= velocityMinimum
+            && isNotRootView
+            && isScrollY {
             self.rankingCollectionView.isScrollEnabled = false
-            self.navigationController?.popViewController(animated: true)
+            navigation.popViewController(animated: true)
         }
     }
     
