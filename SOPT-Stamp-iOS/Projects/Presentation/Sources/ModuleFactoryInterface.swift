@@ -35,6 +35,7 @@ public protocol ModuleFactoryInterface {
     func makeNicknameEditVC() -> NicknameEditVC
     func makePrivacyPolicyVC() -> PrivacyPolicyVC
     func makeTermsOfServiceVC() -> TermsOfServiceVC
+    func makeWithdrawalVC() -> WithdrawalVC
     
     // MARK: - Utility
     

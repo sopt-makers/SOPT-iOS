@@ -150,7 +150,8 @@ extension SettingVC {
 
 extension SettingVC: WithdrawButtonDelegate {
     func withdrawButtonTapped() {
-        print("회원 탈퇴")
+        let withdrawalVC = self.factory.makeWithdrawalVC()
+        navigationController?.pushViewController(withdrawalVC, animated: true)
     }
 }
 

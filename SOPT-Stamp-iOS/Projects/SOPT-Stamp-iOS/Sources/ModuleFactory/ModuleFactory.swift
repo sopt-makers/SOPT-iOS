@@ -169,6 +169,11 @@ extension ModuleFactory {
         let termsOfServiceVC = TermsOfServiceVC()
         return termsOfServiceVC
     }
+    
+    public func makeWithdrawalVC() -> Presentation.WithdrawalVC {
+        let withdrawalVC = WithdrawalVC()
+        return withdrawalVC
+    }
 }
 
 // MARK: - Utility
