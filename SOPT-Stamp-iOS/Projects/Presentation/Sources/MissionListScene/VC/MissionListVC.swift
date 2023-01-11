@@ -273,7 +273,31 @@ extension MissionListVC {
         })
     }
     
-    func applySnapshot(model: [MissionListModel]) {
+    func setCollectionView(model: [MissionListModel]) {
+        if model.isEmpty {
+            self.missionListCollectionView.isHidden = true
+            self.missionListEmptyView.isHidden = false
+            self.setEmptyView()
+        } else {
+            self.missionListCollectionView.isHidden = false
+            self.missionListEmptyView.isHidden = true
+            self.applySnapshot(model: model)
+        }
+    }
+    
+    private func setEmptyView() {
+        missionListEmptyView.snp.removeConstraints()
+        missionListEmptyView.removeFromSuperview()
+        self.view.addSubviews(missionListEmptyView)
+        missionListEmptyView.snp.makeConstraints { make in
+            make.top.equalTo(naviBar.snp.bottom).offset(145.adjustedH)
+            make.centerX.equalToSuperview()
+            make.width.equalToSuperview()
+            make.bottom.equalToSuperview().priority(.low)
+        }
+    }
+    
+    private func applySnapshot(model: [MissionListModel]) {
         var snapshot = NSDiffableDataSourceSnapshot<MissionListSection, MissionListModel>()
         snapshot.appendSections([.sentence, .missionList])
         snapshot.appendItems(model, toSection: .missionList)
