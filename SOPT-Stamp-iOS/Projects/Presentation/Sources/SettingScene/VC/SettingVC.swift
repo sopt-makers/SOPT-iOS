@@ -115,6 +115,7 @@ extension SettingVC {
     private func changeRootViewController() {
         guard let uWindow = self.view.window else { return }
         let navigation = UINavigationController(rootViewController: self.factory.makeSignInVC())
+        navigation.isNavigationBarHidden = true
         uWindow.rootViewController = navigation
         uWindow.makeKey()
         UIView.transition(with: uWindow, duration: 0.5, options: [.transitionCrossDissolve], animations: {}, completion: nil)
