@@ -38,8 +38,11 @@ extension SignUpRepository: SignUpRepositoryInterface {
     }
     
     public func postSignUp(signUpRequest: SignUpModel) -> AnyPublisher<Bool, Error> {
-        return userService.postSignUp(nickname: signUpRequest.nickname, email: signUpRequest.email, password: signUpRequest.password).map { statusCode in
-            statusCode == 200
-        }.eraseToAnyPublisher()
+        return userService.postSignUp(nickname: signUpRequest.nickname, email: signUpRequest.email, password: signUpRequest.password)
+            .map { entity in
+                guard let userId = entity?.userId else { return false }
+                UserDefaultKeyList.Auth.userId = userId
+                return true
+            }.eraseToAnyPublisher()
     }
 }

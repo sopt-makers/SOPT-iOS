@@ -176,7 +176,8 @@ extension SignInVC {
         
         let signInButtonTapped = signInButton
             .publisher(for: .touchUpInside)
-            .handleEvents(receiveOutput: { _ in
+            .handleEvents(receiveOutput: { [weak self] _ in
+                guard let self = self else { return }
                 self.showLoading()
             })
             .map { _ in
@@ -190,7 +191,8 @@ extension SignInVC {
         
         output.isFilledForm.assign(to: \.isEnabled, on: self.signInButton).store(in: self.cancelBag)
         
-        output.isSignInSuccess.sink { isSignInSuccess in
+        output.isSignInSuccess.sink { [weak self] isSignInSuccess in
+            guard let self = self else { return }
             self.stopLoading()
             if isSignInSuccess {
                 let navigation = UINavigationController(rootViewController: self.factory.makeMissionListVC(sceneType: .default))
