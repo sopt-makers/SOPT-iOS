@@ -28,6 +28,7 @@ public class SettingRepository {
 }
 
 extension SettingRepository: SettingRepositoryInterface {
+    
     public func resetStamp() -> Driver<Bool> {
         stampService.resetStamp(userId: userId)
             .map { $0 == 200 }
@@ -47,6 +48,19 @@ extension SettingRepository: SettingRepositoryInterface {
     public func editNickname(nickname: String) -> AnyPublisher<Bool, Never> {
         return authService.changeNickname(userId: userId, nickname: nickname)
             .map { _ in true }
+            .replaceError(with: false)
+            .eraseToAnyPublisher()
+    }
+    
+    public func withdrawal() -> AnyPublisher<Bool, Never> {
+        return authService.withdrawal(userId: userId)
+            .handleEvents(receiveOutput: { status in
+                if status == 200 {
+                    UserDefaultKeyList.Auth.userId = nil
+                    UserDefaultKeyList.User.sentence = nil
+                }
+            })
+            .map { _ in true}
             .replaceError(with: false)
             .eraseToAnyPublisher()
     }

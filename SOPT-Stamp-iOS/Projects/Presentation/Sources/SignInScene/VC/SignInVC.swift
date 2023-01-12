@@ -28,6 +28,10 @@ public class SignInVC: UIViewController {
   
     // MARK: - UI Components
     
+    private let scrollView = UIScrollView()
+    
+    private let containerView = UIView()
+    
     private let logoImageView = UIImageView().then {
         $0.image = DSKitAsset.Assets.logo.image
         $0.contentMode = .scaleAspectFit
@@ -78,7 +82,7 @@ public class SignInVC: UIViewController {
     }
     
     deinit {
-        self.removeKeyboardObserver()
+        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - @objc Function
@@ -108,31 +112,49 @@ extension SignInVC {
     }
     
     private func setLayout() {
-        self.view.addSubviews(logoImageView, emailTextField, passwordTextField, findAccountButton, signInButton, signUpButton)
+        self.view.addSubview(scrollView)
+        scrollView.addSubview(containerView)
+        containerView.addSubviews(logoImageView, emailTextField, passwordTextField,
+                                  findAccountButton, signInButton, signUpButton)
+
+        scrollView.snp.makeConstraints { make in
+            make.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+
+        containerView.snp.makeConstraints { make in
+            let bottomInset = UIApplication.shared.windows.first!.safeAreaInsets.bottom
+            let topInset = abs(calculateTopInset())
+            make.edges.equalTo(scrollView.contentLayoutGuide)
+            make.width.equalTo(scrollView.snp.width)
+            make.height.equalTo(UIScreen.main.bounds.height
+                                - bottomInset
+                                - topInset
+                                + 1)
+        }
         
         logoImageView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(100.adjustedH)
+            make.top.equalToSuperview().offset(115.adjustedH)
             make.centerX.equalToSuperview()
-            make.width.equalToSuperview().multipliedBy(0.7)
+            make.width.equalToSuperview().multipliedBy(0.7.adjusted)
         }
         
         emailTextField.snp.makeConstraints { make in
-            make.top.equalTo(logoImageView.snp.bottom).offset(90.adjustedH)
-            make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(16)
+            make.top.equalTo(logoImageView.snp.bottom).offset(95.adjustedH)
+            make.leading.trailing.equalToSuperview().inset(16)
         }
         
         passwordTextField.snp.makeConstraints { make in
             make.top.equalTo(emailTextField.snp.bottom).offset(12.adjustedH)
-            make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(16)
+            make.leading.trailing.equalToSuperview().inset(16)
         }
         
         findAccountButton.snp.makeConstraints { make in
-            make.top.equalTo(passwordTextField.snp.bottom).offset(12.adjustedH)
-            make.trailing.equalTo(view.safeAreaLayoutGuide).inset(22)
+            make.top.equalTo(passwordTextField.snp.bottom).offset(-20.adjustedH)
+            make.trailing.equalToSuperview().inset(22)
         }
         
         signInButton.snp.makeConstraints { make in
-            make.top.equalTo(findAccountButton.snp.bottom).offset(55.adjustedH)
+            make.top.equalTo(findAccountButton.snp.bottom).offset(48.adjustedH)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(56)
         }
@@ -185,25 +207,28 @@ extension SignInVC {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    private func removeKeyboardObserver() {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
     @objc func keyboardUp(notification: NSNotification) {
         if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
             let keyboardRectangle = keyboardFrame.cgRectValue
             
             UIView.animate(
-                withDuration: 0.3,
+                withDuration: 0.1,
                 animations: {
-                    self.view.transform =
-                    CGAffineTransform(translationX: 0, y: -(keyboardRectangle.height))
+                    let contentInset = UIEdgeInsets(
+                        top: 0.0,
+                        left: 0.0,
+                        bottom: keyboardRectangle.size.height,
+                        right: 0.0)
+                    self.scrollView.contentInset = contentInset
+                    self.scrollView.scrollIndicatorInsets = contentInset
                 }
             )
         }
     }
     
     @objc func keyboardDown() {
-        self.view.transform = .identity
+        let contentInset = UIEdgeInsets.zero
+        self.scrollView.contentInset = contentInset
+        self.scrollView.scrollIndicatorInsets = contentInset
     }
 }

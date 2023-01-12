@@ -80,6 +80,10 @@ public class SignUpVC: UIViewController {
         self.setTapGesture()
         self.setKeyboardNotification()
     }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 }
 
 // MARK: - Binding

@@ -99,8 +99,7 @@ extension NicknameEditVC {
     }
     
     public func showNetworkAlert() {
-        let alertVC = AlertVC(alertType: .networkErr)
-            .setTitle(I18N.Default.networkError, I18N.Default.networkErrorDescription)
+        let alertVC = factory.makeNetworkAlertVC()
         alertVC.modalPresentationStyle = .overFullScreen
         alertVC.modalTransitionStyle = .crossDissolve
         self.present(alertVC, animated: true)
