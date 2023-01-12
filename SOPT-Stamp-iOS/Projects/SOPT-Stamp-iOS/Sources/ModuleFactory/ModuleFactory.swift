@@ -169,6 +169,16 @@ extension ModuleFactory {
         let termsOfServiceVC = TermsOfServiceVC()
         return termsOfServiceVC
     }
+    
+    public func makeWithdrawalVC() -> Presentation.WithdrawalVC {
+        let withdrawalVC = WithdrawalVC()
+        let repository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
+        let useCase = DefaultSettingUseCase(repository: repository)
+        let viewModel = WithdrawalViewModel(useCase: useCase)
+        withdrawalVC.viewModel = viewModel
+        withdrawalVC.factory = self
+        return withdrawalVC
+    }
 }
 
 // MARK: - Utility

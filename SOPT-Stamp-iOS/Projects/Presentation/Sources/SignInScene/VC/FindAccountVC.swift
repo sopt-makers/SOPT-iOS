@@ -29,11 +29,13 @@ public class FindAccountVC: UIViewController {
     
     private lazy var findEmailButton = UIButton(type: .system).then {
         $0.setTitle(I18N.SignIn.findEmail, for: .normal)
+        $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: 0)
         $0.addTarget(self, action: #selector(findEmailButtonDidTap), for: .touchUpInside)
     }
     
     private lazy var findPasswordButton = UIButton(type: .system).then {
         $0.setTitle(I18N.SignIn.findPassword, for: .normal)
+        $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: 0)
         $0.addTarget(self, action: #selector(findPasswordButtonDidTap), for: .touchUpInside)
     }
     
@@ -84,6 +86,21 @@ extension FindAccountVC {
         descriptionLabel.snp.makeConstraints { make in
             make.top.equalTo(naviBar.snp.bottom).offset(24)
             make.leading.equalToSuperview().offset(20)
+        }
+        
+        [findEmailButton, findPasswordButton].forEach {
+            let arrowImageView = UIImageView().then {
+                $0.contentMode = .scaleAspectFit
+                $0.image = DSKitAsset.Assets.icLeftArrow.image.withRenderingMode(.alwaysTemplate)
+                $0.tintColor = DSKitAsset.Colors.purple300.color
+            }
+            
+            $0.addSubview(arrowImageView)
+            arrowImageView.snp.makeConstraints { make in
+                make.centerY.equalToSuperview()
+                make.trailing.equalToSuperview().inset(4)
+                make.size.equalTo(32)
+            }
         }
         
         findEmailButton.snp.makeConstraints { make in
