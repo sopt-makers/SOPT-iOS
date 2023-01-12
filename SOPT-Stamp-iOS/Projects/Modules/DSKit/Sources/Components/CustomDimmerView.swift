@@ -13,7 +13,7 @@ import Core
 public class CustomDimmerView: UIView {
     
     // MARK: - Properties
-    private var vc: UIViewController?
+    private var view: UIView?
     
     // MARK: - UI Component
     private let blurEffect = UIBlurEffect(style: .light)
@@ -24,7 +24,13 @@ public class CustomDimmerView: UIView {
     
     public init(_ vc: UIViewController) {
         super.init(frame: .zero)
-        self.vc = vc
+        self.view = vc.view
+        setViews()
+    }
+    
+    public init(_ view: UIView) {
+        super.init(frame: .zero)
+        self.view = view
         setViews()
     }
     
@@ -36,8 +42,8 @@ public class CustomDimmerView: UIView {
 extension CustomDimmerView {
     private func setViews() {
         dimmerView.backgroundColor = .black.withAlphaComponent(0.55)
-        dimmerView.frame = self.vc?.view.frame ?? CGRect()
-        blurEffectView.frame = self.vc?.view.frame ?? CGRect()
+        dimmerView.frame = self.view?.frame ?? CGRect()
+        blurEffectView.frame = self.view?.frame ?? CGRect()
         self.addSubviews(blurEffectView, dimmerView)
     }
 }
