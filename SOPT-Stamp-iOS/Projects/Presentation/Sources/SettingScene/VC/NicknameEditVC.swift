@@ -20,6 +20,7 @@ public class NicknameEditVC: UIViewController {
     // MARK: - Properties
     
     public var viewModel: NicknameEditViewModel!
+    public var factory: ModuleFactoryInterface!
     private var cancelBag = CancelBag()
     
     // MARK: - UI Components

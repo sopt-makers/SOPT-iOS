@@ -20,6 +20,7 @@ public class SentenceEditVC: UIViewController {
     // MARK: - Properties
     
     public var viewModel: SentenceEditViewModel!
+    public var factory: ModuleFactoryInterface!
     private var cancelBag = CancelBag()
     
     // MARK: - UI Components

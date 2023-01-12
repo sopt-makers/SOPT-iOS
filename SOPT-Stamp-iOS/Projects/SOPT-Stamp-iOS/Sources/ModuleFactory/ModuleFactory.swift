@@ -137,6 +137,7 @@ extension ModuleFactory {
         
         let viewModel = NicknameEditViewModel(nicknameUseCase: signUpUseCase, editPostUseCase: settingUseCase)
         let nicknameEdit = NicknameEditVC()
+        nicknameEdit.factory = self
         nicknameEdit.viewModel = viewModel
         return nicknameEdit
     }
@@ -147,6 +148,7 @@ extension ModuleFactory {
         let viewModel = SentenceEditViewModel(useCase: useCase)
         let sentenceEditVC = SentenceEditVC()
         sentenceEditVC.viewModel = viewModel
+        sentenceEditVC.factory = self
         return sentenceEditVC
     }
     
