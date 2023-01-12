@@ -210,8 +210,10 @@ extension ListDetailVC {
     }
     
     private func setData(_ model: ListDetailModel) {
-        if let imageURL = URL(string: model.image) {
-            self.missionImageView.kf.setImage(with: imageURL)
+        if self.sceneType != .none {
+            if let imageURL = URL(string: model.image) {
+                self.missionImageView.kf.setImage(with: imageURL)
+            }
         }
         self.textView.text = model.content
         self.dateLabel.text = model.date
