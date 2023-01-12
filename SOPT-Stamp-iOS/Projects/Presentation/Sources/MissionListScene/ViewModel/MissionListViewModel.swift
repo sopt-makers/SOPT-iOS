@@ -36,7 +36,7 @@ public class MissionListViewModel: ViewModelType {
     
     public struct Input {
         let viewWillAppear: Driver<Void>
-        let missionTypeSelected: Driver<MissionListFetchType>
+        let missionTypeSelected: CurrentValueSubject<MissionListFetchType, Never>
     }
     
     // MARK: - Outputs
@@ -61,7 +61,7 @@ extension MissionListViewModel {
         input.viewWillAppear
             .withUnretained(self)
             .sink { owner, _ in
-                owner.fetchMissionList()
+                owner.fetchMissionList(type: input.missionTypeSelected.value)
             }.store(in: cancelBag)
         
         input.missionTypeSelected
@@ -74,13 +74,13 @@ extension MissionListViewModel {
         return output
     }
     
-    private func fetchMissionList() {
+    private func fetchMissionList(type: MissionListFetchType) {
         switch self.missionListsceneType {
         case .ranking(_, _, let userId):
             self.otherUserId = userId
             self.useCase.fetchOtherUserMissionList(type: .complete, userId: userId)
         default:
-            self.useCase.fetchMissionList(type: .all)
+            self.useCase.fetchMissionList(type: type)
         }
     }
     
