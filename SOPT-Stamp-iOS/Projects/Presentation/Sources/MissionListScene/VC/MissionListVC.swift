@@ -27,8 +27,8 @@ public class MissionListVC: UIViewController {
     }
     private var cancelBag = CancelBag()
     
-    private var missionTypeMenuSelected = CurrentValueSubject<MissionListFetchType, Error>(.all)
-    private var viewWillAppear = PassthroughSubject<Void, Error>()
+    private var missionTypeMenuSelected = CurrentValueSubject<MissionListFetchType, Never>(.all)
+    private var viewWillAppear = PassthroughSubject<Void, Never>()
     private let swipeHandler = PassthroughSubject<Void, Never>()
     
     lazy var dataSource: UICollectionViewDiffableDataSource<MissionListSection, MissionListModel>! = nil
@@ -216,7 +216,7 @@ extension MissionListVC {
     
     private func bindViewModels() {
         let input = MissionListViewModel.Input(viewWillAppear: viewWillAppear.asDriver(),
-                                               missionTypeSelected: missionTypeMenuSelected.asDriver())
+                                               missionTypeSelected: missionTypeMenuSelected)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.$missionListModel

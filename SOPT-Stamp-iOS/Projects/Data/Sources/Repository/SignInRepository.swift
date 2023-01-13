@@ -30,6 +30,7 @@ extension SignInRepository: SignInRepositoryInterface {
     public func requestSignIn(request: SignInRequest) -> AnyPublisher<SignInModel, Error> {
         networkService.requestSignIn(email: request.email, password: request.password).map { entity in
             UserDefaultKeyList.Auth.userId = entity.userId
+            UserDefaultKeyList.User.sentence = entity.message
             return entity.toDomain()
         }.eraseToAnyPublisher()
     }

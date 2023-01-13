@@ -174,9 +174,15 @@ extension SignInVC {
   
     private func bindViewModels() {
         
-        let signInButtonTapped = signInButton.publisher(for: .touchUpInside).map { _ in
-            SignInRequest(email: self.emailTextField.text, password: self.passwordTextField.text)
-        }.asDriver()
+        let signInButtonTapped = signInButton
+            .publisher(for: .touchUpInside)
+            .handleEvents(receiveOutput: { [weak self] _ in
+                guard let self = self else { return }
+                self.showLoading()
+            })
+            .map { _ in
+            SignInRequest(email: self.emailTextField.text, password: self.passwordTextField.text) }
+            .asDriver()
         
         let input = SignInViewModel.Input(emailTextChanged: emailTextField.textChanged,
                                           passwordTextChanged: passwordTextField.textChanged,
@@ -185,7 +191,9 @@ extension SignInVC {
         
         output.isFilledForm.assign(to: \.isEnabled, on: self.signInButton).store(in: self.cancelBag)
         
-        output.isSignInSuccess.sink { isSignInSuccess in
+        output.isSignInSuccess.sink { [weak self] isSignInSuccess in
+            guard let self = self else { return }
+            self.stopLoading()
             if isSignInSuccess {
                 let navigation = UINavigationController(rootViewController: self.factory.makeMissionListVC(sceneType: .default))
                 ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)

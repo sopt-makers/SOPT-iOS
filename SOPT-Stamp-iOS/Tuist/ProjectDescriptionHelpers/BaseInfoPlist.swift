@@ -3,9 +3,10 @@ import ProjectDescription
 public extension Project {
     static let baseinfoPlist: [String: InfoPlist.Value] = [
         "CFBundleShortVersionString": "1.0.0",
+        "CFBundleDevelopmentRegion": "ko",
         "CFBundleVersion": "1",
         "CFBundleIdentifier": "com.sopt-stamp-iOS.release",
-        "CFBundleDisplayName": "SOPTAMP",
+        "CFBundleDisplayName": "SOPT",
         "UILaunchStoryboardName": "LaunchScreen",
         "UIApplicationSceneManifest": [
             "UIApplicationSupportsMultipleScenes": false,
