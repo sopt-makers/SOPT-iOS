@@ -23,11 +23,27 @@ public class NoticePopUpVC: UIViewController {
     
     private lazy var backgroundDimmerView = CustomDimmerView(self)
     
-    private let noticeView = UIView()
+    private let noticeView = UIView().then {
+        $0.backgroundColor = .white
+    }
     
     private let noticeTitleLabel = UILabel().then {
         $0.text = I18N.Notice.notice
+        $0.font = .subtitle3
+        $0.textColor = DSKitAsset.Colors.purple300.color
+        $0.backgroundColor = DSKitAsset.Colors.purple100.color
+        $0.textAlignment = .center
+        $0.layer.cornerRadius = 4
     }
+    
+    private let noticeContentLabel = UILabel().then {
+        $0.numberOfLines = 0
+        $0.font = .caption3
+        $0.textColor = DSKitAsset.Colors.gray900.color
+        $0.textAlignment = .center
+    }
+    
+    private let
     
     // MARK: - View Life Cycle
     
