@@ -13,6 +13,7 @@ import Core
 
 public protocol AppNoticeUseCase {
     func getAppNotice()
+    func storeCheckedRecommendUpdateVersion(version: String)
     
     var appNoticeModel: PassthroughSubject<AppNoticeModel?, Error> { get set }
 }
@@ -36,7 +37,7 @@ extension DefaultAppNoticeUseCase: AppNoticeUseCase {
         } receiveValue: { appNoticeModel in
             guard let currentAppVersion = Bundle.appVersion else { return }
             var appNoticeModel = appNoticeModel
-            let checkedAppVersion = UserDefaultKeyList.AppNotice.checkedAppVersion ?? "1.0.0"
+            let checkedAppVersion = self.repository.getCheckedRecommendUpdateVersion() ?? "1.0.0"
 
             let versionCompare = currentAppVersion.compare(appNoticeModel.forceUpdateVersion, options: .numeric)
             
@@ -54,5 +55,9 @@ extension DefaultAppNoticeUseCase: AppNoticeUseCase {
             }
             
         }.store(in: cancelBag)
+    }
+    
+    public func storeCheckedRecommendUpdateVersion(version: String) {
+        repository.storeCheckedRecommendUpdateVersion(version: version)
     }
 }

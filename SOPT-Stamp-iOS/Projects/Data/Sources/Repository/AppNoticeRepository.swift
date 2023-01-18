@@ -6,6 +6,7 @@
 //  Copyright © 2023 SOPT-Stamp-iOS. All rights reserved.
 //
 
+import Foundation
 import Combine
 
 import Core
@@ -27,5 +28,13 @@ extension AppNoticeRepository: AppNoticeRepositoryInterface {
         firebaseService.getAppNotice().map { appNoticeEntity in
             appNoticeEntity.toDomain()
         }.eraseToAnyPublisher()
+    }
+    
+    public func storeCheckedRecommendUpdateVersion(version: String) {
+        UserDefaultKeyList.AppNotice.checkedAppVersion = version
+    }
+    
+    public func getCheckedRecommendUpdateVersion() -> String? {
+        return UserDefaultKeyList.AppNotice.checkedAppVersion
     }
 }

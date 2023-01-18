@@ -26,7 +26,7 @@ public class NoticePopUpVC: UIViewController {
     
     public var factory: ModuleFactoryInterface!
     
-    public var closeButtonTappedWithCheck = CurrentValueSubject<Bool, Never>(false)
+    public var closeButtonTappedWithCheck = PassthroughSubject<Bool, Never>()
     
     private var type: NoticePopUpType?
     

@@ -21,6 +21,7 @@ public class SplashViewModel: ViewModelType {
     
     public struct Input {
         let viewDidLoad: Driver<Void>
+        let recommendUpdateVersionChecked: PassthroughSubject<String?, Never>
     }
     
     // MARK: - Outputs
@@ -43,6 +44,11 @@ extension SplashViewModel {
         
         input.viewDidLoad.sink { _ in
             self.useCase.getAppNotice()
+        }.store(in: cancelBag)
+        
+        input.recommendUpdateVersionChecked.sink { version in
+            guard let version = version else { return }
+            self.useCase.storeCheckedRecommendUpdateVersion(version: version)
         }.store(in: cancelBag)
   
         return output

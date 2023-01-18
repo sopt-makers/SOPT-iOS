@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 import DSKit
@@ -23,6 +24,8 @@ public class SplashVC: UIViewController {
     public var viewModel: SplashViewModel!
     
     private var cancelBag = CancelBag()
+    
+    private var recommendUpdateVersionChecked = PassthroughSubject<String?, Never>()
     
     // MARK: - UI Components
     
@@ -71,11 +74,18 @@ extension SplashVC {
     
     private func presentNoticePopUp(model: AppNoticeModel) {
         guard let isForcedUpdate = model.isForced else { return }
-        let popUp = factory.makeNoticePopUpVC()
-        popUp.modalPresentationStyle = .overFullScreen
+        let noticePopUpVC = factory.makeNoticePopUpVC()
+        noticePopUpVC.modalPresentationStyle = .overFullScreen
         let popUpType: NoticePopUpType = isForcedUpdate ? .forceUpdate : .recommendUpdate
-        popUp.setData(type: popUpType, content: model.notice)
-        self.present(popUp, animated: false)
+        noticePopUpVC.setData(type: popUpType, content: model.notice)
+        
+        noticePopUpVC.closeButtonTappedWithCheck.sink { [weak self] didCheck in
+            self?.recommendUpdateVersionChecked.send(didCheck ? model.recommendVersion : nil)
+            noticePopUpVC.dismiss(animated: false)
+            self?.setDelay()
+        }.store(in: cancelBag)
+        
+        self.present(noticePopUpVC, animated: false)
     }
     
     private func setDelay() {
@@ -92,7 +102,8 @@ extension SplashVC {
     }
     
     private func bindViewModels() {
-        let input = SplashViewModel.Input(viewDidLoad: Driver.just(()))
+        let input = SplashViewModel.Input(viewDidLoad: Driver.just(()),
+                                          recommendUpdateVersionChecked: self.recommendUpdateVersionChecked)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.appNoticeModel.sink { [weak self] appNoticeModel in
