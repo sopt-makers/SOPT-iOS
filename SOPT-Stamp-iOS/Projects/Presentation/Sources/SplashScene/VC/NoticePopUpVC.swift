@@ -7,17 +7,28 @@
 //
 
 import UIKit
+import Combine
+
 import Core
 import DSKit
 
 import SnapKit
 import Then
 
+public enum NoticePopUpType {
+    case forceUpdate
+    case recommendUpdate
+}
+
 public class NoticePopUpVC: UIViewController {
     
     // MARK: - Properties
     
     public var factory: ModuleFactoryInterface!
+    
+    public var closeButtonTappedWithCheck = CurrentValueSubject<Bool, Never>(false)
+    
+    private var type: NoticePopUpType?
     
     // MARK: - UI Components
     
@@ -53,7 +64,7 @@ public class NoticePopUpVC: UIViewController {
                                                     .foregroundColor: DSKitAsset.Colors.gray600.color]),
                               for: .normal)
         $0.imageEdgeInsets = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 0)
-        $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+        $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
     }
 
     private let updateButton = CustomButton(title: I18N.Notice.goToUpdate)
@@ -79,10 +90,54 @@ public class NoticePopUpVC: UIViewController {
         super.viewDidLoad()
         self.setUI()
         self.setLayout()
+        self.setAddTarget()
     }
 }
 
 // MARK: - Methods
+
+extension NoticePopUpVC {
+    
+    public func setData(type: NoticePopUpType, content: String) {
+        self.type = type
+        self.noticeContentLabel.text = content
+        self.changeLayout(with: type)
+    }
+    
+    private func setAddTarget() {
+        self.checkBoxButton.addTarget(self, action: #selector(checkBoxButtonDitTap), for: .touchUpInside)
+        self.updateButton.addTarget(self, action: #selector(updateButtonDidTap), for: .touchUpInside)
+        self.closeButton.addTarget(self, action: #selector(closeButtonDidTap), for: .touchUpInside)
+    }
+}
+
+// MARK: - @objc Function
+
+extension NoticePopUpVC {
+    @objc private func checkBoxButtonDitTap() {
+        self.checkBoxButton.isSelected.toggle()
+    }
+    
+    @objc private func updateButtonDidTap() {
+        if let url = URL(string: ExternalURL.AppStore.appStoreLink) {
+            UIApplication.shared.open(url as URL, options: [:], completionHandler: nil)
+        }
+    }
+    
+    @objc private func closeButtonDidTap() {
+        guard let type = self.type else { return }
+        
+        switch type {
+        case .forceUpdate:
+            UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                exit(0)
+            }
+        case .recommendUpdate:
+            self.closeButtonTappedWithCheck.send(self.checkBoxButton.isSelected)
+        }
+    }
+}
 
 // MARK: - UI & Layout
 
@@ -115,13 +170,13 @@ extension NoticePopUpVC {
         }
         
         buttonStackView.snp.makeConstraints { make in
-            make.top.equalTo(noticeContentLabel.snp.bottom).offset(10)
+            make.top.equalTo(noticeContentLabel.snp.bottom).offset(12)
             make.leading.trailing.equalToSuperview().inset(24)
             make.bottom.equalToSuperview().inset(24)
         }
         
         checkBoxButton.snp.makeConstraints { make in
-            make.width.equalTo(90)
+            make.width.equalTo(95)
         }
         
         updateButton.snp.makeConstraints { make in
@@ -131,6 +186,15 @@ extension NoticePopUpVC {
         
         closeButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
+        }
+    }
+    
+    private func changeLayout(with type: NoticePopUpType) {
+        switch type {
+        case .forceUpdate:
+            self.checkBoxButton.isHidden = true
+        case .recommendUpdate:
+            self.checkBoxButton.isHidden = false
         }
     }
 }
