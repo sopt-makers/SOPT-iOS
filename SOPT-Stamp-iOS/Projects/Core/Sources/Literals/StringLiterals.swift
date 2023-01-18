@@ -18,6 +18,13 @@ public struct I18N {
         public static let ok = "확인"
     }
     
+    public struct Notice {
+        public static let notice = "공지사항"
+        public static let didCheck = "확인했어요!"
+        public static let goToUpdate = "업데이트 하기"
+        public static let close = "닫기"
+    }
+    
     public struct Photo {
         public static let authTitle = "앨범 접근 권한 거부"
         public static let authMessage = "앨범 접근이 거부되었습니다. 앱의 일부 기능을 사용할 수 없습니다."
