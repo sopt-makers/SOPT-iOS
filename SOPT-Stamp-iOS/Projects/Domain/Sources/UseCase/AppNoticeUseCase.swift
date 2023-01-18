@@ -34,6 +34,8 @@ extension DefaultAppNoticeUseCase: AppNoticeUseCase {
         repository.getAppNotice().sink { event in
             print("AppNoticeUseCase : \(event)")
         } receiveValue: { appNoticeModel in
+            var appNoticeModel = appNoticeModel
+            appNoticeModel.setForcedUpdateNotice(isForce: false)
             self.appNoticeModel.send(appNoticeModel)
         }.store(in: cancelBag)
     }

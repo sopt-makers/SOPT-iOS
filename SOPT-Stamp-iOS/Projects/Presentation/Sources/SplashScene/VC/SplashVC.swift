@@ -7,12 +7,13 @@
 //
 
 import UIKit
+
+import Core
 import DSKit
+import Domain
 
 import SnapKit
 import Then
-
-import Core
 
 public class SplashVC: UIViewController {
     
@@ -68,11 +69,13 @@ extension SplashVC {
         self.navigationController?.navigationBar.isHidden = true
     }
     
-    private func presentNoticePopUp() {
+    private func presentNoticePopUp(model: AppNoticeModel) {
+        guard let isForcedUpdate = model.isForced else { return }
         let popUp = factory.makeNoticePopUpVC()
         popUp.modalPresentationStyle = .overFullScreen
-        popUp.setData(type: .recommendUpdate, content: "공지 내용")
-        self.present(popUp, animated: true)
+        let popUpType: NoticePopUpType = isForcedUpdate ? .forceUpdate : .recommendUpdate
+        popUp.setData(type: popUpType, content: model.notice)
+        self.present(popUp, animated: false)
     }
     
     private func setDelay() {
@@ -91,5 +94,14 @@ extension SplashVC {
     private func bindViewModels() {
         let input = SplashViewModel.Input(viewDidLoad: Driver.just(()))
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.appNoticeModel.sink { [weak self] appNoticeModel in
+            guard let self = self else { return }
+            guard let appNoticeModel = appNoticeModel else {
+                self.setDelay()
+                return
+            }
+            self.presentNoticePopUp(model: appNoticeModel)
+        }.store(in: self.cancelBag)
     }
 }
