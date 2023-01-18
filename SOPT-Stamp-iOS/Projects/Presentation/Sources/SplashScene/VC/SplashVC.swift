@@ -89,7 +89,7 @@ extension SplashVC {
     }
     
     private func bindViewModels() {
-        let input = SplashViewModel.Input()
+        let input = SplashViewModel.Input(viewDidLoad: Driver.just(()))
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
     }
 }
