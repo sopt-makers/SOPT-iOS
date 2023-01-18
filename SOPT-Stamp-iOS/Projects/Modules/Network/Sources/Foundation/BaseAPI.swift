@@ -16,6 +16,7 @@ public enum APIType {
     case rank
     case stamp
     case user
+    case firebase
 }
 
 public protocol BaseAPI: TargetType {
@@ -37,6 +38,8 @@ extension BaseAPI {
             base += "/stamp"
         case .user:
             base += "/user"
+        case .firebase:
+            base += "/firebase"
         }
         
         guard let url = URL(string: base) else {
