@@ -15,9 +15,11 @@ import Moya
 public typealias DefaultFirebaseService = BaseService<FirebaseAPI>
 
 public protocol FirebaseService {
-
+    func getAppNotice() -> AnyPublisher<AppNoticeEntity, Error>
 }
 
 extension DefaultFirebaseService: FirebaseService {
-    
+    public func getAppNotice() -> AnyPublisher<AppNoticeEntity, Error> {
+        requestObjectInCombine(.getAppNotice)
+    }
 }

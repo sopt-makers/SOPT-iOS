@@ -6,8 +6,8 @@
 //  Copyright © 2023 SOPT-Stamp-iOS. All rights reserved.
 //
 
-import Foundation
+import Combine
 
 public protocol AppNoticeRepositoryInterface {
- 
+    func getAppNotice() -> AnyPublisher<AppNoticeModel, Error>
 }

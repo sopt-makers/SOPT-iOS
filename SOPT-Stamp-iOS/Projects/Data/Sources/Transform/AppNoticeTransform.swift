@@ -12,8 +12,7 @@ import Domain
 import Network
 
 extension AppNoticeEntity {
-
     public func toDomain() -> AppNoticeModel {
-        return AppNoticeModel.init()
+        return AppNoticeModel.init(notice: self.notice, forceUpdateVersion: self.iOSForceUpdateVersion, recommendVersion: self.iOSAppVersion, imgURL: self.imgURL)
     }
 }

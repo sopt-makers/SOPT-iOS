@@ -9,7 +9,13 @@
 import Foundation
 
 public struct AppNoticeModel {
-    public init() {
-        
+    let notice, forceUpdateVersion, recommendVersion: String
+    let imgURL: String?
+    
+    public init(notice: String, forceUpdateVersion: String, recommendVersion: String, imgURL: String?) {
+        self.notice = notice
+        self.forceUpdateVersion = forceUpdateVersion
+        self.recommendVersion = recommendVersion
+        self.imgURL = imgURL
     }
 }

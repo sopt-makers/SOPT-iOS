@@ -14,14 +14,18 @@ import Network
 
 public class AppNoticeRepository {
     
-    private let rankService: FirebaseService
+    private let firebaseService: FirebaseService
     private let cancelBag = CancelBag()
     
     public init(service: FirebaseService) {
-        self.rankService = service
+        self.firebaseService = service
     }
 }
 
 extension AppNoticeRepository: AppNoticeRepositoryInterface {
-
+    public func getAppNotice() -> AnyPublisher<AppNoticeModel, Error> {
+        firebaseService.getAppNotice().map { appNoticeEntity in
+            appNoticeEntity.toDomain()
+        }.eraseToAnyPublisher()
+    }
 }
