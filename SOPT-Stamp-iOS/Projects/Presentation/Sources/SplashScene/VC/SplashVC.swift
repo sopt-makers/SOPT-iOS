@@ -19,6 +19,9 @@ public class SplashVC: UIViewController {
     // MARK: - Properties
     
     public var factory: ModuleFactoryInterface!
+    public var viewModel: SplashViewModel!
+    
+    private var cancelBag = CancelBag()
     
     // MARK: - UI Components
     
@@ -35,6 +38,7 @@ public class SplashVC: UIViewController {
         self.setUI()
         self.setLayout()
         self.setNavigationBar()
+        self.bindViewModels()
     }
 }
 
@@ -82,5 +86,10 @@ extension SplashVC {
                 self.navigationController?.pushViewController(nextVC, animated: true)
             }
         }
+    }
+    
+    private func bindViewModels() {
+        let input = SplashViewModel.Input()
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
     }
 }

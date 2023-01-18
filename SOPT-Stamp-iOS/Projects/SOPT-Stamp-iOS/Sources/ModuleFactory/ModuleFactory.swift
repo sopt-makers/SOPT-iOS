@@ -23,14 +23,19 @@ public class ModuleFactory {
     lazy var rankService = DefaultRankService()
     lazy var missionService = DefaultMissionService()
     lazy var stampService = DefaultStampService()
+    lazy var firebaseService = DefaultFirebaseService()
 }
 
 // MARK: - Onboarding / Auth
 
 extension ModuleFactory {
     public func makeSplashVC() -> Presentation.SplashVC {
+        let repository = AppNoticeRepository(service: firebaseService)
+        let useCase = DefaultAppNoticeUseCase(repository: repository)
+        let viewModel = SplashViewModel(useCase: useCase)
         let splashVC = SplashVC()
         splashVC.factory = self
+        splashVC.viewModel = viewModel
         return splashVC
     }
     

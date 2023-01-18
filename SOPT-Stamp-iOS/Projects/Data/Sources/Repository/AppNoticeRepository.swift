@@ -14,10 +14,10 @@ import Network
 
 public class AppNoticeRepository {
     
-    private let rankService: RankService
+    private let rankService: FirebaseService
     private let cancelBag = CancelBag()
     
-    public init(service: RankService) {
+    public init(service: FirebaseService) {
         self.rankService = service
     }
 }
