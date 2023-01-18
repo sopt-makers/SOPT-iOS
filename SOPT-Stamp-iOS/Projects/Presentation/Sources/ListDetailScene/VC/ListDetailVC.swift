@@ -110,8 +110,8 @@ public class ListDetailVC: UIViewController {
     private lazy var bottomButton = CustomButton(title: sceneType == .none ? I18N.ListDetail.missionComplete : I18N.ListDetail.editComplete)
         .setEnabled(false)
         .setColor(bgColor: starLevel.pointColor,
-                     disableColor: starLevel.disableColor,
-                     starLevel.buttonTitleColor)
+                  disableColor: starLevel.disableColor,
+                  textColor: starLevel.buttonTitleColor)
     private lazy var backgroundDimmerView = CustomDimmerView(self)
     
     // MARK: - View Life Cycle

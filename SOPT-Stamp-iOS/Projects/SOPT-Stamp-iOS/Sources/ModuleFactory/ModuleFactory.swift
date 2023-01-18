@@ -34,6 +34,12 @@ extension ModuleFactory {
         return splashVC
     }
     
+    public func makeNoticePopUpVC() -> NoticePopUpVC {
+        let noticePopUpVC = NoticePopUpVC()
+        noticePopUpVC.factory = self
+        return noticePopUpVC
+    }
+    
     public func makeOnboardingVC() -> Presentation.OnboardingVC {
         let onboardingVC = OnboardingVC()
         onboardingVC.factory = self

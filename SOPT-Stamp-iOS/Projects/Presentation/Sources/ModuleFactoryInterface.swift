@@ -13,7 +13,9 @@ import Core
 public protocol ModuleFactoryInterface {
     
     // MARK: - Onboarding / Auth
+    
     func makeSplashVC() -> SplashVC
+    func makeNoticePopUpVC() -> NoticePopUpVC
     func makeOnboardingVC() -> OnboardingVC
     func makeSignInVC() -> SignInVC
     func makeFindAccountVC() -> FindAccountVC

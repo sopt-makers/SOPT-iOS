@@ -66,15 +66,19 @@ extension SplashVC {
     }
     
     private func setDelay() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            let needAuth = UserDefaultKeyList.Auth.userId == nil
-            if !needAuth {
-                let navigation = UINavigationController(rootViewController: self.factory.makeMissionListVC(sceneType: .default))
-                ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
-            } else {
-                let nextVC = self.factory.makeOnboardingVC()
-                self.navigationController?.pushViewController(nextVC, animated: true)
-            }
-        }
+        let popUp = factory.makeNoticePopUpVC()
+        popUp.modalPresentationStyle = .overFullScreen
+        self.present(popUp, animated: true)
+        
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//            let needAuth = UserDefaultKeyList.Auth.userId == nil
+//            if !needAuth {
+//                let navigation = UINavigationController(rootViewController: self.factory.makeMissionListVC(sceneType: .default))
+//                ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
+//            } else {
+//                let nextVC = self.factory.makeOnboardingVC()
+//                self.navigationController?.pushViewController(nextVC, animated: true)
+//            }
+//        }
     }
 }
