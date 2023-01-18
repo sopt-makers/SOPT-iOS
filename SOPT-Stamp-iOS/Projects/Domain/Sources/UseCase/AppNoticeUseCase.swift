@@ -34,9 +34,25 @@ extension DefaultAppNoticeUseCase: AppNoticeUseCase {
         repository.getAppNotice().sink { event in
             print("AppNoticeUseCase : \(event)")
         } receiveValue: { appNoticeModel in
+            guard let currentAppVersion = Bundle.appVersion else { return }
             var appNoticeModel = appNoticeModel
-            appNoticeModel.setForcedUpdateNotice(isForce: false)
-            self.appNoticeModel.send(appNoticeModel)
+            let checkedAppVersion = UserDefaultKeyList.AppNotice.checkedAppVersion ?? "1.0.0"
+
+            let versionCompare = currentAppVersion.compare(appNoticeModel.forceUpdateVersion, options: .numeric)
+            
+            let recommendUpdate = checkedAppVersion.compare(appNoticeModel.recommendVersion, options: .numeric) == .orderedAscending && currentAppVersion.compare(appNoticeModel.recommendVersion, options: .numeric) == .orderedAscending
+            
+            switch (versionCompare, recommendUpdate) {
+            case (.orderedAscending, _):
+                appNoticeModel.setForcedUpdateNotice(isForce: true)
+                self.appNoticeModel.send(appNoticeModel)
+            case (_, true):
+                appNoticeModel.setForcedUpdateNotice(isForce: false)
+                self.appNoticeModel.send(appNoticeModel)
+            default:
+                self.appNoticeModel.send(nil)
+            }
+            
         }.store(in: cancelBag)
     }
 }

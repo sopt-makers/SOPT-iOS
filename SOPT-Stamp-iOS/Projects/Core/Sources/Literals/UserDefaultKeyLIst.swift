@@ -18,4 +18,8 @@ public struct UserDefaultKeyList {
     public struct User {
         @UserDefaultWrapper<String>(key: "sentence") public static var sentence
     }
+    
+    public struct AppNotice {
+        @UserDefaultWrapper<String>(key: "checkedAppVersion") public static var checkedAppVersion
+    }
 }
