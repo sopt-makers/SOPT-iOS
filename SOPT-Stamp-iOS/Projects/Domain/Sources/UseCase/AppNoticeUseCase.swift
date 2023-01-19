@@ -33,7 +33,12 @@ public class DefaultAppNoticeUseCase {
 extension DefaultAppNoticeUseCase: AppNoticeUseCase {
     public func getAppNotice() {
         repository.getAppNotice().sink { event in
-            print("AppNoticeUseCase : \(event)")
+            switch event {
+            case .failure(let error):
+                self.appNoticeModel.send(completion: .failure(error))
+            case .finished:
+                print("AppNoticeUseCase : \(event)")
+            }
         } receiveValue: { appNoticeModel in
             guard let currentAppVersion = Bundle.appVersion else { return }
             var appNoticeModel = appNoticeModel
@@ -41,9 +46,9 @@ extension DefaultAppNoticeUseCase: AppNoticeUseCase {
 
             let needForceUpdate = currentAppVersion.compare(appNoticeModel.forceUpdateVersion,
                                                             options: .numeric) == .orderedAscending
-            
+
             let needRecommendUpdate = checkedAppVersion.compare(appNoticeModel.recommendVersion, options: .numeric) == .orderedAscending && currentAppVersion.compare(appNoticeModel.recommendVersion, options: .numeric) == .orderedAscending
-            
+
             switch (needForceUpdate, needRecommendUpdate) {
             case (true, _):
                 appNoticeModel.setForcedUpdateNotice(isForce: true)
@@ -54,7 +59,6 @@ extension DefaultAppNoticeUseCase: AppNoticeUseCase {
             default:
                 self.appNoticeModel.send(nil)
             }
-            
         }.store(in: cancelBag)
     }
     

@@ -106,7 +106,17 @@ extension SplashVC {
                                           recommendUpdateVersionChecked: self.recommendUpdateVersionChecked)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
-        output.appNoticeModel.sink { [weak self] appNoticeModel in
+        output.appNoticeModel
+        .retry(3)
+        .sink { event in
+            switch event {
+            case .failure(let error):
+                print(error.localizedDescription)
+                self.setDelay()
+            case .finished:
+                print("SplashVC: \(event)")
+            }
+        } receiveValue: { [weak self] appNoticeModel in
             guard let self = self else { return }
             guard let appNoticeModel = appNoticeModel else {
                 self.setDelay()
