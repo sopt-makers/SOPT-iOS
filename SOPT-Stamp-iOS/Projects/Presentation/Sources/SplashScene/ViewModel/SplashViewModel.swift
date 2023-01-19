@@ -20,7 +20,7 @@ public class SplashViewModel: ViewModelType {
     // MARK: - Inputs
     
     public struct Input {
-        let viewDidLoad: Driver<Void>
+        let requestAppNotice: PassthroughSubject<Void, Never>
         let recommendUpdateVersionChecked: PassthroughSubject<String?, Never>
     }
     
@@ -42,7 +42,7 @@ extension SplashViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
-        input.viewDidLoad.sink { _ in
+        input.requestAppNotice.sink { _ in
             self.useCase.getAppNotice()
         }.store(in: cancelBag)
         

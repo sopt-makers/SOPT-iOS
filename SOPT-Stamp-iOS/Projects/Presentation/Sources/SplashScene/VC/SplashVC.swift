@@ -25,6 +25,7 @@ public class SplashVC: UIViewController {
     
     private var cancelBag = CancelBag()
     
+    private var requestAppNotice = PassthroughSubject<Void, Never>()
     private var recommendUpdateVersionChecked = PassthroughSubject<String?, Never>()
     
     // MARK: - UI Components
@@ -84,7 +85,6 @@ extension SplashVC {
             self?.setDelay()
         }.store(in: cancelBag)
         
-        noticePopUpVC.modalPresentationStyle = .overFullScreen
         self.present(noticePopUpVC, animated: false)
     }
     
@@ -102,17 +102,18 @@ extension SplashVC {
     }
     
     private func bindViewModels() {
-        let input = SplashViewModel.Input(viewDidLoad: Driver.just(()),
+        let input = SplashViewModel.Input(requestAppNotice: self.requestAppNotice,
                                           recommendUpdateVersionChecked: self.recommendUpdateVersionChecked)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
+        self.requestAppNotice.send()
+        
         output.appNoticeModel
-        .retry(3)
         .sink { event in
             switch event {
             case .failure(let error):
                 print(error.localizedDescription)
-                self.setDelay()
+                self.presentNetworkAlertVC()
             case .finished:
                 print("SplashVC: \(event)")
             }
@@ -124,5 +125,16 @@ extension SplashVC {
             }
             self.presentNoticePopUp(model: appNoticeModel)
         }.store(in: self.cancelBag)
+    }
+    
+    private func presentNetworkAlertVC() {
+        let networkAlertVC = self.factory.makeAlertVC(type: .titleDescription,
+                                                      title: I18N.Default.networkError,
+                                                      description: I18N.Default.networkErrorDescription,
+                                                      customButtonTitle: I18N.Default.ok)
+        networkAlertVC.customAction = {
+            self.requestAppNotice.send()
+        }
+        self.present(networkAlertVC, animated: false)
     }
 }

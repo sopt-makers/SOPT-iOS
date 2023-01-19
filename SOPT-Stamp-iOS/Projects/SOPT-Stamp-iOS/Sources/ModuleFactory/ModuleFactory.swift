@@ -43,6 +43,7 @@ extension ModuleFactory {
         let noticePopUpVC = NoticePopUpVC()
         noticePopUpVC.factory = self
         noticePopUpVC.setData(type: noticeType, content: content)
+        noticePopUpVC.modalPresentationStyle = .overFullScreen
         return noticePopUpVC
     }
     
