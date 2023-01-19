@@ -20,7 +20,7 @@ public class SplashViewModel: ViewModelType {
     // MARK: - Inputs
     
     public struct Input {
-        let requestAppNotice: PassthroughSubject<Void, Never>
+        let requestAppNotice: CurrentValueSubject<Void, Never>
         let recommendUpdateVersionChecked: PassthroughSubject<String?, Never>
     }
     

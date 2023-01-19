@@ -25,7 +25,7 @@ public class SplashVC: UIViewController {
     
     private var cancelBag = CancelBag()
     
-    private var requestAppNotice = PassthroughSubject<Void, Never>()
+    private var requestAppNotice = CurrentValueSubject<Void, Never>(())
     private var recommendUpdateVersionChecked = PassthroughSubject<String?, Never>()
     
     // MARK: - UI Components
@@ -105,9 +105,7 @@ extension SplashVC {
         let input = SplashViewModel.Input(requestAppNotice: self.requestAppNotice,
                                           recommendUpdateVersionChecked: self.recommendUpdateVersionChecked)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
-        
-        self.requestAppNotice.send()
-        
+                
         output.appNoticeModel
         .sink { event in
             switch event {
@@ -132,8 +130,8 @@ extension SplashVC {
                                                       title: I18N.Default.networkError,
                                                       description: I18N.Default.networkErrorDescription,
                                                       customButtonTitle: I18N.Default.ok)
-        networkAlertVC.customAction = {
-            self.requestAppNotice.send()
+        networkAlertVC.customAction = { [weak self] in
+            self?.requestAppNotice.send()
         }
         self.present(networkAlertVC, animated: false)
     }
