@@ -56,12 +56,7 @@ extension SplashViewModel {
   
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         useCase.appNoticeModel.sink { event in
-            switch event {
-            case .failure(let error):
-                output.appNoticeModel.send(completion: .failure(error))
-            case .finished:
-                print("SplashViewModel - completion: \(event)")
-            }
+            print("SplashViewModel - completion: \(event)")
         } receiveValue: { appNoticeModel in
             guard let appNoticeModel = appNoticeModel else {
                 output.appNoticeModel.send(nil)

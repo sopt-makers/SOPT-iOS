@@ -108,17 +108,15 @@ extension SplashVC {
                 
         output.appNoticeModel
         .sink { event in
-            switch event {
-            case .failure(let error):
-                print(error.localizedDescription)
-                self.presentNetworkAlertVC()
-            case .finished:
-                print("SplashVC: \(event)")
-            }
+            print("SplashVC: \(event)")
         } receiveValue: { [weak self] appNoticeModel in
             guard let self = self else { return }
             guard let appNoticeModel = appNoticeModel else {
                 self.setDelay()
+                return
+            }
+            guard appNoticeModel.withError == false else {
+                self.presentNetworkAlertVC()
                 return
             }
             self.presentNoticePopUp(model: appNoticeModel)

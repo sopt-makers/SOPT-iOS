@@ -32,14 +32,18 @@ public class DefaultAppNoticeUseCase {
 
 extension DefaultAppNoticeUseCase: AppNoticeUseCase {
     public func getAppNotice() {
-        repository.getAppNotice().sink { event in
-            switch event {
-            case .failure(let error):
-                self.appNoticeModel.send(completion: .failure(error))
-            case .finished:
-                print("AppNoticeUseCase : \(event)")
-            }
+        repository.getAppNotice()
+        .catch({ error in
+            print(error.localizedDescription)
+            return Just(AppNoticeModel(withError: true))
+        })
+        .sink { event in
+            print("AppNoticeUseCase : \(event)")
         } receiveValue: { appNoticeModel in
+            guard appNoticeModel.withError == false else {
+                self.appNoticeModel.send(appNoticeModel)
+                return
+            }
             guard let currentAppVersion = Bundle.appVersion else { return }
             var appNoticeModel = appNoticeModel
             let checkedAppVersion = self.repository.getCheckedRecommendUpdateVersion() ?? "1.0.0"
