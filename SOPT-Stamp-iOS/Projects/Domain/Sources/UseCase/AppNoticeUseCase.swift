@@ -39,12 +39,13 @@ extension DefaultAppNoticeUseCase: AppNoticeUseCase {
             var appNoticeModel = appNoticeModel
             let checkedAppVersion = self.repository.getCheckedRecommendUpdateVersion() ?? "1.0.0"
 
-            let versionCompare = currentAppVersion.compare(appNoticeModel.forceUpdateVersion, options: .numeric)
+            let needForceUpdate = currentAppVersion.compare(appNoticeModel.forceUpdateVersion,
+                                                            options: .numeric) == .orderedAscending
             
-            let recommendUpdate = checkedAppVersion.compare(appNoticeModel.recommendVersion, options: .numeric) == .orderedAscending && currentAppVersion.compare(appNoticeModel.recommendVersion, options: .numeric) == .orderedAscending
+            let needRecommendUpdate = checkedAppVersion.compare(appNoticeModel.recommendVersion, options: .numeric) == .orderedAscending && currentAppVersion.compare(appNoticeModel.recommendVersion, options: .numeric) == .orderedAscending
             
-            switch (versionCompare, recommendUpdate) {
-            case (.orderedAscending, _):
+            switch (needForceUpdate, needRecommendUpdate) {
+            case (true, _):
                 appNoticeModel.setForcedUpdateNotice(isForce: true)
                 self.appNoticeModel.send(appNoticeModel)
             case (_, true):
