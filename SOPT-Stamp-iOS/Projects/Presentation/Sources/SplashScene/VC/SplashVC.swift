@@ -74,17 +74,17 @@ extension SplashVC {
     
     private func presentNoticePopUp(model: AppNoticeModel) {
         guard let isForcedUpdate = model.isForced else { return }
-        let noticePopUpVC = factory.makeNoticePopUpVC()
-        noticePopUpVC.modalPresentationStyle = .overFullScreen
         let popUpType: NoticePopUpType = isForcedUpdate ? .forceUpdate : .recommendUpdate
-        noticePopUpVC.setData(type: popUpType, content: model.notice)
         
+        let noticePopUpVC = factory.makeNoticePopUpVC(noticeType: popUpType, content: model.notice)
+
         noticePopUpVC.closeButtonTappedWithCheck.sink { [weak self] didCheck in
             self?.recommendUpdateVersionChecked.send(didCheck ? model.recommendVersion : nil)
             noticePopUpVC.dismiss(animated: false)
             self?.setDelay()
         }.store(in: cancelBag)
         
+        noticePopUpVC.modalPresentationStyle = .overFullScreen
         self.present(noticePopUpVC, animated: false)
     }
     

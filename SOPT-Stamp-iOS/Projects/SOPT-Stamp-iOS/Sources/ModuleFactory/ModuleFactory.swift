@@ -39,9 +39,10 @@ extension ModuleFactory {
         return splashVC
     }
     
-    public func makeNoticePopUpVC() -> NoticePopUpVC {
+    public func makeNoticePopUpVC(noticeType: NoticePopUpType, content: String) -> NoticePopUpVC {
         let noticePopUpVC = NoticePopUpVC()
         noticePopUpVC.factory = self
+        noticePopUpVC.setData(type: noticeType, content: content)
         return noticePopUpVC
     }
     

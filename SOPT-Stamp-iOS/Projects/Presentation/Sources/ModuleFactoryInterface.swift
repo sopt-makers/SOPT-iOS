@@ -15,7 +15,7 @@ public protocol ModuleFactoryInterface {
     // MARK: - Onboarding / Auth
     
     func makeSplashVC() -> SplashVC
-    func makeNoticePopUpVC() -> NoticePopUpVC
+    func makeNoticePopUpVC(noticeType: NoticePopUpType, content: String) -> NoticePopUpVC
     func makeOnboardingVC() -> OnboardingVC
     func makeSignInVC() -> SignInVC
     func makeFindAccountVC() -> FindAccountVC
