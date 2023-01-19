@@ -8,9 +8,7 @@
 
 import Foundation
 
-import Foundation
-
-public struct SignUpResponse: Codable{
+public struct SignUpResponse: Codable {
     public let userId: Int
     
     init(userId: Int) {
