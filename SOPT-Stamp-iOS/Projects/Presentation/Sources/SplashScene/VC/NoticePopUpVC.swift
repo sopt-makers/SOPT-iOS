@@ -48,9 +48,9 @@ public class NoticePopUpVC: UIViewController {
         $0.layer.cornerRadius = 4
     }
     
-    private let noticeContentLabel = UILabel().then {
+    private let noticeContentTextView = UITextView().then {
         $0.text = I18N.Notice.notice
-        $0.numberOfLines = 0
+        $0.isEditable = false
         $0.font = .caption3
         $0.textColor = DSKitAsset.Colors.gray900.color
         $0.textAlignment = .center
@@ -100,7 +100,7 @@ extension NoticePopUpVC {
     
     public func setData(type: NoticePopUpType, content: String) {
         self.type = type
-        self.noticeContentLabel.text = content
+        self.noticeContentTextView.text = content
         self.changeLayout(with: type)
     }
     
@@ -148,7 +148,7 @@ extension NoticePopUpVC {
     
     private func setLayout() {
         view.addSubviews(backgroundDimmerView, noticeView)
-        noticeView.addSubviews(noticeTitleLabel, noticeContentLabel, buttonStackView)
+        noticeView.addSubviews(noticeTitleLabel, noticeContentTextView, buttonStackView)
         
         backgroundDimmerView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -164,13 +164,14 @@ extension NoticePopUpVC {
             make.height.equalTo(34)
         }
         
-        noticeContentLabel.snp.makeConstraints { make in
+        noticeContentTextView.snp.makeConstraints { make in
             make.top.equalTo(noticeTitleLabel.snp.bottom).offset(12)
+            make.height.equalTo(283)
             make.leading.trailing.equalToSuperview().inset(24)
         }
         
         buttonStackView.snp.makeConstraints { make in
-            make.top.equalTo(noticeContentLabel.snp.bottom).offset(12)
+            make.top.equalTo(noticeContentTextView.snp.bottom).offset(12)
             make.leading.trailing.equalToSuperview().inset(24)
             make.bottom.equalToSuperview().inset(24)
         }
