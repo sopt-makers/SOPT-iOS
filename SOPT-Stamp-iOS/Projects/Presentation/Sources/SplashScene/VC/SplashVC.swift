@@ -43,7 +43,7 @@ public class SplashVC: UIViewController {
         self.setUI()
         self.setLayout()
         self.setNavigationBar()
-        self.bindViewModels()
+        self.setDelay()
     }
 }
 
@@ -73,31 +73,9 @@ extension SplashVC {
         self.navigationController?.navigationBar.isHidden = true
     }
     
-    private func presentNoticePopUp(model: AppNoticeModel) {
-        guard let isForcedUpdate = model.isForced else { return }
-        let popUpType: NoticePopUpType = isForcedUpdate ? .forceUpdate : .recommendUpdate
-        
-        let noticePopUpVC = factory.makeNoticePopUpVC(noticeType: popUpType, content: model.notice)
-
-        noticePopUpVC.closeButtonTappedWithCheck.sink { [weak self] didCheck in
-            self?.recommendUpdateVersionChecked.send(didCheck ? model.recommendVersion : nil)
-            noticePopUpVC.dismiss(animated: false)
-            self?.setDelay()
-        }.store(in: cancelBag)
-        
-        self.present(noticePopUpVC, animated: false)
-    }
-    
     private func setDelay() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            let needAuth = UserDefaultKeyList.Auth.userId == nil
-            if !needAuth {
-                let navigation = UINavigationController(rootViewController: self.factory.makeMissionListVC(sceneType: .default))
-                ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
-            } else {
-                let nextVC = self.factory.makeOnboardingVC()
-                self.navigationController?.pushViewController(nextVC, animated: true)
-            }
+            self.bindViewModels()
         }
     }
     
@@ -112,7 +90,7 @@ extension SplashVC {
         } receiveValue: { [weak self] appNoticeModel in
             guard let self = self else { return }
             guard let appNoticeModel = appNoticeModel else {
-                self.setDelay()
+                self.checkDidSignIn()
                 return
             }
             guard appNoticeModel.withError == false else {
@@ -121,6 +99,32 @@ extension SplashVC {
             }
             self.presentNoticePopUp(model: appNoticeModel)
         }.store(in: self.cancelBag)
+    }
+    
+    private func presentNoticePopUp(model: AppNoticeModel) {
+        guard let isForcedUpdate = model.isForced else { return }
+        let popUpType: NoticePopUpType = isForcedUpdate ? .forceUpdate : .recommendUpdate
+        
+        let noticePopUpVC = factory.makeNoticePopUpVC(noticeType: popUpType, content: model.notice)
+
+        noticePopUpVC.closeButtonTappedWithCheck.sink { [weak self] didCheck in
+            self?.recommendUpdateVersionChecked.send(didCheck ? model.recommendVersion : nil)
+            noticePopUpVC.dismiss(animated: false)
+            self?.checkDidSignIn()
+        }.store(in: cancelBag)
+        
+        self.present(noticePopUpVC, animated: false)
+    }
+    
+    private func checkDidSignIn() {
+        let needAuth = UserDefaultKeyList.Auth.userId == nil
+        if !needAuth {
+            let navigation = UINavigationController(rootViewController: self.factory.makeMissionListVC(sceneType: .default))
+            ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
+        } else {
+            let nextVC = self.factory.makeOnboardingVC()
+            self.navigationController?.pushViewController(nextVC, animated: true)
+        }
     }
     
     private func presentNetworkAlertVC() {
