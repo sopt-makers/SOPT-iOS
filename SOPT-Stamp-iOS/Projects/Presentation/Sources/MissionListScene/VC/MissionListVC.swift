@@ -312,6 +312,15 @@ extension MissionListVC {
             make.width.equalToSuperview()
             make.bottom.equalToSuperview().priority(.low)
         }
+        bringRankingFloatingButtonToFront()
+    }
+    
+    private func bringRankingFloatingButtonToFront() {
+        self.view.subviews.forEach { view in
+            if view == self.rankingFloatingButton {
+                self.view.bringSubviewToFront(rankingFloatingButton)
+            }
+        }
     }
     
     private func applySnapshot(model: [MissionListModel]) {
