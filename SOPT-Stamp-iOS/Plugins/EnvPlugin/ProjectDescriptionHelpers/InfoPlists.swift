@@ -1,7 +1,7 @@
 import ProjectDescription
 
 public extension Project {
-    static let baseinfoPlist: [String: InfoPlist.Value] = [
+    static let appInfoPlist: [String: InfoPlist.Value] = [
         "CFBundleShortVersionString": "1.0.0",
         "CFBundleDevelopmentRegion": "ko",
         "CFBundleVersion": "1",
@@ -36,5 +36,12 @@ public extension Project {
         "ITSAppUsesNonExemptEncryption": false,
         "UIUserInterfaceStyle": "Light",
         "NSPhotoLibraryUsageDescription": "미션과 관련된 사진을 업로드하기 위해 갤러리 권한이 필요합니다."
+    ]
+    
+    static let demoInfoPlist: [String: InfoPlist.Value] = [
+        "UIMainStoryboardFile": "",
+        "UILaunchStoryboardName": "LaunchScreen",
+        "LSSupportsOpeningDocumentsInPlace": true,
+        "UIFileSharingEnabled": true,
     ]
 }
