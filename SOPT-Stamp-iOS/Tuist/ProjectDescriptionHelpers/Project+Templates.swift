@@ -16,7 +16,6 @@ public extension Project {
     ) -> Project {
         
         let hasDynamicFramework = targets.contains(.dynamicFramework)
-        let configurationName: ConfigurationName = "Debug"
         let deploymentTarget = Environment.deploymentTarget
         let platform = Environment.platform
         
@@ -151,9 +150,9 @@ public extension Project {
         // MARK: - Schemes
         
         let additionalSchemes = targets.contains(.demo)
-        ? [Scheme.makeScheme(target: configurationName, name: name),
-           Scheme.makeDemoScheme(target: configurationName, name: name)]
-        : [Scheme.makeScheme(target: configurationName, name: name)]
+        ? [Scheme.makeScheme(target: .debug, name: name),
+           Scheme.makeDemoScheme(target: .debug, name: name)]
+        : [Scheme.makeScheme(target: .debug, name: name)]
         schemes += additionalSchemes
         
         return Project(
