@@ -7,12 +7,12 @@
 
 import ProjectDescription
 import ProjectDescriptionHelpers
+import DependencyPlugin
 
 let project = Project.makeModule(
     name: "Network",
-    product: .staticFramework,
-    dependencies: [
-        .Project.Core
-    ],
-    hasTest: true
+    targets: [.unitTest, .staticFramework],
+    internalDependencies: [
+        .core
+    ]
 )
