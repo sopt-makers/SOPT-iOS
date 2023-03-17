@@ -1,5 +1,5 @@
 //
-//  ViewRepresentable.swift
+//  BaseFeatureInterface.swift
 //  BaseFeatureDependency
 //
 //  Created by 김영인 on 2023/03/16.
@@ -8,11 +8,11 @@
 
 import UIKit
 
-public protocol ViewRepresentable {
+public protocol BaseFeatureInterface {
     var viewController: UIViewController { get }
 }
 
-public extension ViewRepresentable where Self: UIViewController {
+public extension BaseFeatureInterface where Self: UIViewController {
     var viewController: UIViewController {
         return self
     }

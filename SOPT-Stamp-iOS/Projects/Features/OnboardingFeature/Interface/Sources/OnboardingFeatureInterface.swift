@@ -8,7 +8,7 @@
 
 import BaseFeatureDependency
 
-public protocol OnboardingFeatureInterface: ViewRepresentable { }
+public protocol OnboardingFeatureInterface: BaseFeatureInterface { }
 
 public protocol OnboardingFeature {
     func makeOnboardingVC() -> OnboardingFeatureInterface

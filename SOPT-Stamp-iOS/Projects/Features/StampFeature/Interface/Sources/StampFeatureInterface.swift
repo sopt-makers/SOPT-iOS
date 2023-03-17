@@ -9,7 +9,7 @@
 import Core
 import BaseFeatureDependency
 
-public protocol StampFeatureInterface: ViewRepresentable { }
+public protocol StampFeatureInterface: BaseFeatureInterface { }
 
 public protocol StampFeature {
     func makeMissionListVC(sceneType: MissionListSceneType) -> StampFeatureInterface

@@ -9,7 +9,7 @@
 import Core
 import BaseFeatureDependency
 
-public protocol SplashFeatureInterface: ViewRepresentable { }
+public protocol SplashFeatureInterface: BaseFeatureInterface { }
 
 public protocol SplashFeature {
     func makeSplashVC() -> SplashFeatureInterface

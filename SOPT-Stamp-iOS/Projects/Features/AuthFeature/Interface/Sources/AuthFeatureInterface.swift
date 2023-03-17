@@ -8,7 +8,7 @@
 
 import BaseFeatureDependency
 
-public protocol AuthFeatureInterface: ViewRepresentable { }
+public protocol AuthFeatureInterface: BaseFeatureInterface { }
 
 public protocol AuthFeature {
     func makeSignInVC() -> AuthFeatureInterface
