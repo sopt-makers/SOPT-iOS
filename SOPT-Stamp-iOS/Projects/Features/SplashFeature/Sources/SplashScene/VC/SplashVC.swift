@@ -110,7 +110,9 @@ extension SplashVC {
         guard let isForcedUpdate = model.isForced else { return }
         let popUpType: NoticePopUpType = isForcedUpdate ? .forceUpdate : .recommendUpdate
         
-        let noticePopUpVC = factory.makeNoticePopUpVC(noticeType: popUpType, content: model.notice).viewController as! NoticePopUpVC
+        guard let noticePopUpVC = factory.makeNoticePopUpVC(noticeType: popUpType, content: model.notice).viewController as? NoticePopUpVC else {
+            return
+        }
         
         noticePopUpVC.closeButtonTappedWithCheck.sink { [weak self] didCheck in
             self?.recommendUpdateVersionChecked.send(didCheck ? model.recommendVersion : nil)
