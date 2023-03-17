@@ -34,7 +34,7 @@ public extension Project {
         
         // MARK: - App
         
-        if name.contains(Environment.workspaceName) {
+        if targets.contains(.app) {
             let bundleSuffix = name.contains("Demo") ? "demo" : "release"
             let infoPlist = name.contains("Demo") ? Project.demoInfoPlist : Project.appInfoPlist
             
