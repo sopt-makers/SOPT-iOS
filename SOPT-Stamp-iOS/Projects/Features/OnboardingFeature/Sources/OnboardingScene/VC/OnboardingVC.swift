@@ -20,7 +20,7 @@ import Then
 import OnboardingFeatureInterface
 import AuthFeatureInterface
 
-public class OnboardingVC: UIViewController, OnboardingFeatureViewControllable {
+public class OnboardingVC: UIViewController, OnboardingViewControllable {
     
     // MARK: - Properties
     

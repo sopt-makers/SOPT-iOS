@@ -18,7 +18,7 @@ import Then
 import SettingFeatureInterface
 import StampFeatureInterface
 
-public class NicknameEditVC: UIViewController, SettingFeatureViewControllable {
+public class NicknameEditVC: UIViewController, NicknameEditViewControllable {
     
     // MARK: - Properties
     

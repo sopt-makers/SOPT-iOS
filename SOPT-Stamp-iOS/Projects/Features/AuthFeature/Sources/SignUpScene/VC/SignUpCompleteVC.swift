@@ -16,7 +16,7 @@ import DSKit
 import AuthFeatureInterface
 import StampFeatureInterface
 
-public class SignUpCompleteVC: UIViewController, AuthFeatureViewControllable {
+public class SignUpCompleteVC: UIViewController, SignUpCompleteViewControllable {
     
     // MARK: - Properties
     

@@ -72,7 +72,7 @@ extension StarViewLevel {
     }
 }
 
-public class ListDetailVC: UIViewController, StampFeatureViewControllable {
+public class ListDetailVC: UIViewController, ListDetailViewControllable {
     
     // MARK: - Properties
     

@@ -19,7 +19,7 @@ import AuthFeatureInterface
 import SettingFeatureInterface
 import StampFeatureInterface
 
-public class SettingVC: UIViewController, SettingFeatureViewControllable {
+public class SettingVC: UIViewController, SettingViewControllable {
     
     // MARK: - Properties
     

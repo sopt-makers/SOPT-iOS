@@ -9,21 +9,29 @@
 import Core
 import BaseFeatureDependency
 
-public protocol StampFeatureViewControllable: ViewControllable { }
+public protocol MissionListViewControllable: ViewControllable { }
+
+public protocol ListDetailViewControllable: ViewControllable { }
+
+public protocol MissionCompletedViewControllable: ViewControllable { }
+
+public protocol RankingViewControllable: ViewControllable { }
+
+public protocol AlertViewControllable: ViewControllable { }
 
 public protocol StampFeatureViewBuildable {
-    func makeMissionListVC(sceneType: MissionListSceneType) -> StampFeatureViewControllable
+    func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListViewControllable
     func makeListDetailVC(sceneType: ListDetailSceneType,
                           starLevel: StarViewLevel,
                           missionId: Int,
                           missionTitle: String,
-                          otherUserId: Int?) -> StampFeatureViewControllable
-    func makeMissionCompletedVC(starLevel: StarViewLevel, completionHandler: (() -> Void)?) -> StampFeatureViewControllable
-    func makeRankingVC() -> StampFeatureViewControllable
+                          otherUserId: Int?) -> ListDetailViewControllable
+    func makeMissionCompletedVC(starLevel: StarViewLevel, completionHandler: (() -> Void)?) -> MissionCompletedViewControllable
+    func makeRankingVC() -> RankingViewControllable
     func makeAlertVC(type: AlertType,
                      title: String,
                      description: String,
                      customButtonTitle: String,
-                     customAction: (() -> Void)?) -> StampFeatureViewControllable
-    func makeNetworkAlertVC() -> StampFeatureViewControllable
+                     customAction: (() -> Void)?) -> AlertViewControllable
+    func makeNetworkAlertVC() -> AlertViewControllable
 }

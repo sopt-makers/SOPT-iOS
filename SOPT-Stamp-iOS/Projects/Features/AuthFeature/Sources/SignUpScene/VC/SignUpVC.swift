@@ -18,7 +18,7 @@ import DSKit
 
 import AuthFeatureInterface
 
-public class SignUpVC: UIViewController, AuthFeatureViewControllable {
+public class SignUpVC: UIViewController, SignUpViewControllable {
     
     // MARK: - Properties
     

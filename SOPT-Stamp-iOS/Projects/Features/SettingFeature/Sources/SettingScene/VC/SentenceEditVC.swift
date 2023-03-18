@@ -18,7 +18,7 @@ import Then
 import SettingFeatureInterface
 import StampFeatureInterface
 
-public class SentenceEditVC: UIViewController, SettingFeatureViewControllable {
+public class SentenceEditVC: UIViewController, SentenceEditViewControllable {
     
     // MARK: - Properties
     

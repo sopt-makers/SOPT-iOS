@@ -15,7 +15,7 @@ import DSKit
 
 import StampFeatureInterface
 
-public class AlertVC: UIViewController, StampFeatureViewControllable {
+public class AlertVC: UIViewController, AlertViewControllable {
     
     // MARK: - Properties
     

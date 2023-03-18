@@ -13,7 +13,7 @@ import Core
 
 import AuthFeatureInterface
 
-public class FindAccountVC: UIViewController, AuthFeatureViewControllable {
+public class FindAccountVC: UIViewController, FindAccountViewControllable {
     
     // MARK: - UI Components
 

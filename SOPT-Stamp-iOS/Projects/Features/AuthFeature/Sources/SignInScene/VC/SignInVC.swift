@@ -21,7 +21,7 @@ import Then
 import AuthFeatureInterface
 import StampFeatureInterface
 
-public class SignInVC: UIViewController, AuthFeatureViewControllable {
+public class SignInVC: UIViewController, SignInViewControllable {
     
     // MARK: - Properties
     

@@ -8,8 +8,8 @@
 
 import BaseFeatureDependency
 
-public protocol OnboardingFeatureViewControllable: ViewControllable { }
+public protocol OnboardingViewControllable: ViewControllable { }
 
 public protocol OnboardingFeatureViewBuildable {
-    func makeOnboardingVC() -> OnboardingFeatureViewControllable
+    func makeOnboardingVC() -> OnboardingViewControllable
 }

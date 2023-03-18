@@ -18,7 +18,7 @@ import Then
 
 import StampFeatureInterface
 
-public class RankingVC: UIViewController, StampFeatureViewControllable {
+public class RankingVC: UIViewController, RankingViewControllable {
     
     // MARK: - Properties
     

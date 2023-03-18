@@ -37,7 +37,7 @@ extension DIContainer: Features {
     
     // MARK: - SplashFeature
     
-    func makeSplashVC() -> SplashFeatureViewControllable {
+    func makeSplashVC() -> SplashViewControllable {
         let repository = AppNoticeRepository(service: firebaseService)
         let useCase = DefaultAppNoticeUseCase(repository: repository)
         let viewModel = SplashViewModel(useCase: useCase)
@@ -47,7 +47,7 @@ extension DIContainer: Features {
         return splashVC
     }
     
-    func makeNoticePopUpVC(noticeType: NoticePopUpType, content: String) -> SplashFeatureViewControllable {
+    func makeNoticePopUpVC(noticeType: NoticePopUpType, content: String) -> NoticePopUpViewControllable {
         let noticePopUpVC = NoticePopUpVC()
         noticePopUpVC.setData(type: noticeType, content: content)
         noticePopUpVC.modalPresentationStyle = .overFullScreen
@@ -56,7 +56,7 @@ extension DIContainer: Features {
     
     // MARK: - OnboardingFeature
     
-    func makeOnboardingVC() -> OnboardingFeatureViewControllable {
+    func makeOnboardingVC() -> OnboardingViewControllable {
         let onboardingVC = OnboardingVC()
         onboardingVC.factory = self
         return onboardingVC
@@ -64,7 +64,7 @@ extension DIContainer: Features {
     
     // MARK: - AuthFeature
     
-    func makeSignInVC() -> AuthFeatureViewControllable {
+    func makeSignInVC() -> SignInViewControllable {
         let repository = SignInRepository(service: userService)
         let useCase = DefaultSignInUseCase(repository: repository)
         let viewModel = SignInViewModel(useCase: useCase)
@@ -74,12 +74,12 @@ extension DIContainer: Features {
         return signinVC
     }
     
-    func makeFindAccountVC() -> AuthFeatureViewControllable {
+    func makeFindAccountVC() -> FindAccountViewControllable {
         let findAccountVC = FindAccountVC()
         return findAccountVC
     }
     
-    func makeSignUpVC() -> AuthFeatureViewControllable {
+    func makeSignUpVC() -> SignUpViewControllable {
         let repository = SignUpRepository(service: authService, userService: userService)
         let useCase = DefaultSignUpUseCase(repository: repository)
         let viewModel = SignUpViewModel(useCase: useCase)
@@ -89,7 +89,7 @@ extension DIContainer: Features {
         return signUpVC
     }
     
-    public func makeSignUpCompleteVC() -> AuthFeatureViewControllable {
+    public func makeSignUpCompleteVC() -> SignUpCompleteViewControllable {
         let signUpCompleteVC = SignUpCompleteVC()
         signUpCompleteVC.factory = self
         return signUpCompleteVC
@@ -97,7 +97,7 @@ extension DIContainer: Features {
     
     // MARK: - StampFeature
     
-    func makeMissionListVC(sceneType: MissionListSceneType) -> StampFeatureViewControllable {
+    func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListViewControllable {
         let repository = MissionListRepository(service: missionService)
         let useCase = DefaultMissionListUseCase(repository: repository)
         let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType)
@@ -111,7 +111,7 @@ extension DIContainer: Features {
                           starLevel: StarViewLevel,
                           missionId: Int,
                           missionTitle: String,
-                          otherUserId: Int?) -> StampFeatureViewControllable {
+                          otherUserId: Int?) -> ListDetailViewControllable {
         let repository = ListDetailRepository(service: stampService)
         let useCase = DefaultListDetailUseCase(repository: repository)
         let viewModel = ListDetailViewModel(useCase: useCase,
@@ -126,7 +126,7 @@ extension DIContainer: Features {
         return listDetailVC
     }
     
-    func makeMissionCompletedVC(starLevel: StarViewLevel, completionHandler: (() -> Void)?) -> StampFeatureViewControllable {
+    func makeMissionCompletedVC(starLevel: StarViewLevel, completionHandler: (() -> Void)?) -> MissionCompletedViewControllable {
         let missionCompletedVC = MissionCompletedVC()
             .setLevel(starLevel)
         missionCompletedVC.completionHandler = completionHandler
@@ -135,7 +135,7 @@ extension DIContainer: Features {
         return missionCompletedVC
     }
     
-    func makeRankingVC() -> StampFeatureViewControllable {
+    func makeRankingVC() -> RankingViewControllable {
         let repository = RankingRepository(service: rankService)
         let useCase = DefaultRankingUseCase(repository: repository)
         let viewModel = RankingViewModel(useCase: useCase)
@@ -149,7 +149,7 @@ extension DIContainer: Features {
                      title: String,
                      description: String = "",
                      customButtonTitle: String,
-                     customAction: (() -> Void)? = nil) -> StampFeatureViewControllable {
+                     customAction: (() -> Void)? = nil) -> AlertViewControllable {
         let alertVC = AlertVC(alertType: type)
             .setTitle(title, description)
             .setCustomButtonTitle(customButtonTitle)
@@ -159,7 +159,7 @@ extension DIContainer: Features {
         return alertVC
     }
     
-    func makeNetworkAlertVC() -> StampFeatureViewControllable {
+    func makeNetworkAlertVC() -> AlertViewControllable {
         let alertVC = AlertVC(alertType: .networkErr)
             .setTitle(I18N.Default.networkError, I18N.Default.networkErrorDescription)
         alertVC.modalPresentationStyle = .overFullScreen
@@ -169,7 +169,7 @@ extension DIContainer: Features {
     
     // MARK: - SettingFeature
     
-    func makeSettingVC() -> SettingFeatureViewControllable {
+    func makeSettingVC() -> SettingViewControllable {
         let repository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
         let useCase = DefaultSettingUseCase(repository: repository)
         let viewModel = SettingViewModel(useCase: useCase)
@@ -179,7 +179,7 @@ extension DIContainer: Features {
         return settingVC
     }
     
-    func makeNicknameEditVC() -> SettingFeatureViewControllable {
+    func makeNicknameEditVC() -> NicknameEditViewControllable {
         let settingRepository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
         let settingUseCase = DefaultSettingUseCase(repository: settingRepository)
 
@@ -193,7 +193,7 @@ extension DIContainer: Features {
         return nicknameEdit
     }
     
-    func makeSentenceEditVC() -> SettingFeatureViewControllable {
+    func makeSentenceEditVC() -> SentenceEditViewControllable {
         let repository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
         let useCase = DefaultSentenceEditUseCase(repository: repository)
         let viewModel = SentenceEditViewModel(useCase: useCase)
@@ -203,7 +203,7 @@ extension DIContainer: Features {
         return sentenceEditVC
     }
     
-    func makePasswordChangeVC() -> SettingFeatureViewControllable {
+    func makePasswordChangeVC() -> PasswordChangeViewControllable {
         let repository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
         let useCase = DefaultPasswordChangeUseCase(repository: repository)
         let viewModel = PasswordChangeViewModel(useCase: useCase)
@@ -213,17 +213,17 @@ extension DIContainer: Features {
         return passwordChangeVC
     }
     
-    func makePrivacyPolicyVC() -> SettingFeatureViewControllable {
+    func makePrivacyPolicyVC() -> PrivacyPolicyViewControllable {
         let privacyPolicyVC = PrivacyPolicyVC()
         return privacyPolicyVC
     }
     
-    func makeTermsOfServiceVC() -> SettingFeatureViewControllable {
+    func makeTermsOfServiceVC() -> TermsOfServiceViewControllable {
         let termsOfServiceVC = TermsOfServiceVC()
         return termsOfServiceVC
     }
     
-    func makeWithdrawalVC() -> SettingFeatureViewControllable {
+    func makeWithdrawalVC() -> WithdrawalViewControllable {
         let withdrawalVC = WithdrawalVC()
         let repository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
         let useCase = DefaultSettingUseCase(repository: repository)

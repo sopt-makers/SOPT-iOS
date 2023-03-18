@@ -18,7 +18,7 @@ import DSKit
 
 import SettingFeatureInterface
 
-public class PasswordChangeVC: UIViewController, SettingFeatureViewControllable {
+public class PasswordChangeVC: UIViewController, PasswordChangeViewControllable {
     
     // MARK: - Properties
     

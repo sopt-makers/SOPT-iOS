@@ -16,7 +16,7 @@ import Then
 
 import SettingFeatureInterface
 
-public class PrivacyPolicyVC: UIViewController, SettingFeatureViewControllable {
+public class PrivacyPolicyVC: UIViewController, PrivacyPolicyViewControllable {
         
     // MARK: - UI Components
     

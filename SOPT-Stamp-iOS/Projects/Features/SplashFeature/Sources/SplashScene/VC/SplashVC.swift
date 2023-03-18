@@ -21,7 +21,7 @@ import OnboardingFeatureInterface
 import AuthFeatureInterface
 import StampFeatureInterface
 
-public class SplashVC: UIViewController, SplashFeatureViewControllable {
+public class SplashVC: UIViewController, SplashViewControllable {
     
     // MARK: - Properties
     
@@ -110,11 +110,10 @@ extension SplashVC {
         guard let isForcedUpdate = model.isForced else { return }
         let popUpType: NoticePopUpType = isForcedUpdate ? .forceUpdate : .recommendUpdate
         
-        guard let noticePopUpVC = factory.makeNoticePopUpVC(noticeType: popUpType, content: model.notice).viewController as? NoticePopUpVC else {
-            return
-        }
+        let noticePopUpScene = factory.makeNoticePopUpVC(noticeType: popUpType, content: model.notice)
+        let noticePopUpVC = noticePopUpScene.viewController
         
-        noticePopUpVC.closeButtonTappedWithCheck.sink { [weak self] didCheck in
+        noticePopUpScene.closeButtonTappedWithCheck.sink { [weak self] didCheck in
             self?.recommendUpdateVersionChecked.send(didCheck ? model.recommendVersion : nil)
             noticePopUpVC.dismiss(animated: false)
             self?.checkDidSignIn()

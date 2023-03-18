@@ -16,7 +16,7 @@ import Then
 
 import SettingFeatureInterface
 
-public class TermsOfServiceVC: UIViewController, SettingFeatureViewControllable {
+public class TermsOfServiceVC: UIViewController, TermsOfServiceViewControllable {
     
     // MARK: - UI Components
     

@@ -8,11 +8,17 @@
 
 import BaseFeatureDependency
 
-public protocol AuthFeatureViewControllable: ViewControllable { }
+public protocol SignInViewControllable: ViewControllable { }
+
+public protocol FindAccountViewControllable: ViewControllable { }
+
+public protocol SignUpViewControllable: ViewControllable { }
+
+public protocol SignUpCompleteViewControllable: ViewControllable { }
 
 public protocol AuthFeatureViewBuildable {
-    func makeSignInVC() -> AuthFeatureViewControllable
-    func makeFindAccountVC() -> AuthFeatureViewControllable
-    func makeSignUpVC() -> AuthFeatureViewControllable
-    func makeSignUpCompleteVC() -> AuthFeatureViewControllable
+    func makeSignInVC() -> SignInViewControllable
+    func makeFindAccountVC() -> FindAccountViewControllable
+    func makeSignUpVC() -> SignUpViewControllable
+    func makeSignUpCompleteVC() -> SignUpCompleteViewControllable
 }

@@ -15,7 +15,7 @@ import AuthFeatureInterface
 import SettingFeatureInterface
 import StampFeatureInterface
 
-public class WithdrawalVC: UIViewController, SettingFeatureViewControllable {
+public class WithdrawalVC: UIViewController, WithdrawalViewControllable {
     
     // MARK: - Properties
     
