@@ -15,12 +15,15 @@ import Combine
 import SnapKit
 import Then
 
-public class SentenceEditVC: UIViewController {
+import SettingFeatureInterface
+import StampFeatureInterface
+
+public class SentenceEditVC: UIViewController, SettingFeatureViewControllable {
     
     // MARK: - Properties
     
     public var viewModel: SentenceEditViewModel!
-    public var factory: ModuleFactoryInterface!
+    public var factory: StampFeatureViewBuildable!
     private var cancelBag = CancelBag()
     
     // MARK: - UI Components
@@ -107,7 +110,7 @@ extension SentenceEditVC {
     }
     
     public func showNetworkAlert() {
-        let alertVC = factory.makeNetworkAlertVC()
+        let alertVC = factory.makeNetworkAlertVC().viewController
         alertVC.modalPresentationStyle = .overFullScreen
         alertVC.modalTransitionStyle = .crossDissolve
         self.present(alertVC, animated: true)

@@ -16,22 +16,13 @@ import Core
 import Domain
 import DSKit
 
-extension SignUpFormValidateResult {
-    func convertToTextFieldAlertType() -> TextFieldAlertType {
-        switch self {
-        case .valid(let text):
-            return .validInput(text: text)
-        case .invalid(let text):
-            return .invalidInput(text: text)
-        }
-    }
-}
+import AuthFeatureInterface
 
-public class SignUpVC: UIViewController {
+public class SignUpVC: UIViewController, AuthFeatureViewControllable {
     
     // MARK: - Properties
     
-    public var factory: ModuleFactoryInterface!
+    public var factory: AuthFeatureViewBuildable!
     public var viewModel: SignUpViewModel!
     private var cancelBag = CancelBag()
   
@@ -255,7 +246,7 @@ extension SignUpVC {
     }
     
     private func presentSignUpCompleteView() {
-        let signUpCompleteVC = factory.makeSignUpCompleteVC()
+        let signUpCompleteVC = factory.makeSignUpCompleteVC().viewController
         let nav = UINavigationController(rootViewController: signUpCompleteVC)
         nav.modalPresentationStyle = .fullScreen
         nav.navigationBar.isHidden = true

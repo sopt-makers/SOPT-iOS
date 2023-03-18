@@ -16,6 +16,8 @@ import Then
 import Core
 import DSKit
 
+import StampFeatureInterface
+
 extension StarViewLevel {
     fileprivate var lottieName: String {
         switch self {
@@ -29,13 +31,13 @@ extension StarViewLevel {
     }
 }
 
-public class MissionCompletedVC: UIViewController {
+public class MissionCompletedVC: UIViewController, StampFeatureViewControllable {
     
     // MARK: - Properties
     
     private var starLevel: StarViewLevel!
     private var cancelBag = CancelBag()
-    var completionHandler: (() -> Void)?
+    public var completionHandler: (() -> Void)?
   
     // MARK: - UI Components
     

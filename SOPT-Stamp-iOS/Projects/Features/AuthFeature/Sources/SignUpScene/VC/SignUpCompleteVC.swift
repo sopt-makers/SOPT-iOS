@@ -13,11 +13,14 @@ import Combine
 import Core
 import DSKit
 
-public class SignUpCompleteVC: UIViewController {
+import AuthFeatureInterface
+import StampFeatureInterface
+
+public class SignUpCompleteVC: UIViewController, AuthFeatureViewControllable {
     
     // MARK: - Properties
     
-    public var factory: ModuleFactoryInterface!
+    public var factory: StampFeatureViewBuildable!
     
     // MARK: - UI Components
     
@@ -64,7 +67,7 @@ extension SignUpCompleteVC {
 
 extension SignUpCompleteVC {
     @objc private func startButtonDidTap() {
-        let navigation = UINavigationController(rootViewController: self.factory.makeMissionListVC(sceneType: .default))
+        let navigation = UINavigationController(rootViewController: factory.makeMissionListVC(sceneType: .default).viewController)
         ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
     }
 }

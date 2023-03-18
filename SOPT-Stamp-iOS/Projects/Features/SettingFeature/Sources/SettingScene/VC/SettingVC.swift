@@ -15,13 +15,17 @@ import Then
 import Core
 import DSKit
 
-public class SettingVC: UIViewController {
+import AuthFeatureInterface
+import SettingFeatureInterface
+import StampFeatureInterface
+
+public class SettingVC: UIViewController, SettingFeatureViewControllable {
     
     // MARK: - Properties
     
     public var viewModel: SettingViewModel!
     private var cancelBag = CancelBag()
-    public var factory: ModuleFactoryInterface!
+    public var factory: (AuthFeatureViewBuildable & SettingFeatureViewBuildable & StampFeatureViewBuildable)!
     private let resetButtonTapped = PassthroughSubject<Bool, Never>()
     
     // MARK: - UI Components
@@ -71,39 +75,40 @@ extension SettingVC {
     }
     
     private func presentResetAlertVC() {
-        let alertVC = self.factory.makeAlertVC(type: .titleDescription,
-                                               title: I18N.Setting.resetMissionTitle,
-                                               description: I18N.Setting.resetMissionDescription,
-                                               customButtonTitle: I18N.Setting.reset)
-        alertVC.customAction = {
-            self.resetButtonTapped.send(true)
-        }
+        let alertVC = factory.makeAlertVC(
+            type: .titleDescription,
+            title: I18N.Setting.resetMissionTitle,
+            description: I18N.Setting.resetMissionDescription,
+            customButtonTitle: I18N.Setting.reset,
+            customAction: { [weak self] in
+                self?.resetButtonTapped.send(true)
+            }).viewController
         
         self.present(alertVC, animated: true)
     }
     
     private func showEditSentenceView() {
-        let editSentenceVC = self.factory.makeSentenceEditVC()
+        let editSentenceVC = factory.makeSentenceEditVC().viewController
         navigationController?.pushViewController(editSentenceVC, animated: true)
     }
     
     private func showEditNicknameView() {
-        let editNicknameVC = self.factory.makeNicknameEditVC()
+        let editNicknameVC = factory.makeNicknameEditVC().viewController
         navigationController?.pushViewController(editNicknameVC, animated: true)
     }
     
     private func showPasswordChangeView() {
-        let passwordChangeVC = self.factory.makePasswordChangeVC()
+        let passwordChangeVC = factory.makePasswordChangeVC().viewController
         navigationController?.pushViewController(passwordChangeVC, animated: true)
     }
     
     private func showPrivacyPolicyView() {
-        let privacyPolicyVC = self.factory.makePrivacyPolicyVC()
+        let privacyPolicyVC = factory.makePrivacyPolicyVC().viewController
         navigationController?.pushViewController(privacyPolicyVC, animated: true)
     }
     
     private func showTermsOfServieView() {
-        let termsOfServiceVC = self.factory.makeTermsOfServiceVC()
+        let termsOfServiceVC = factory.makeTermsOfServiceVC().viewController
         navigationController?.pushViewController(termsOfServiceVC, animated: true)
     }
     
@@ -114,7 +119,7 @@ extension SettingVC {
     
     private func changeRootViewController() {
         guard let uWindow = self.view.window else { return }
-        let navigation = UINavigationController(rootViewController: self.factory.makeSignInVC())
+        let navigation = UINavigationController(rootViewController: factory.makeSignInVC().viewController)
         navigation.isNavigationBarHidden = true
         uWindow.rootViewController = navigation
         uWindow.makeKey()
@@ -150,7 +155,7 @@ extension SettingVC {
 
 extension SettingVC: WithdrawButtonDelegate {
     func withdrawButtonTapped() {
-        let withdrawalVC = self.factory.makeWithdrawalVC()
+        let withdrawalVC = factory.makeWithdrawalVC().viewController
         navigationController?.pushViewController(withdrawalVC, animated: true)
     }
 }

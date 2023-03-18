@@ -16,13 +16,15 @@ import Combine
 import SnapKit
 import Then
 
-public class RankingVC: UIViewController {
+import StampFeatureInterface
+
+public class RankingVC: UIViewController, StampFeatureViewControllable {
     
     // MARK: - Properties
     
     public var viewModel: RankingViewModel!
     private var cancelBag = CancelBag()
-    public var factory: ModuleFactoryInterface!
+    public var factory: StampFeatureViewBuildable!
     
     lazy var dataSource: UICollectionViewDiffableDataSource<RankingSection, AnyHashable>! = nil
     
@@ -227,7 +229,7 @@ extension RankingVC: UICollectionViewDelegate {
     private func pushToOtherUserMissionListVC(item: RankingListTapItem) {
         let otherUserMissionListVC = factory.makeMissionListVC(sceneType: .ranking(userName: item.username,
                                                                                    sentence: item.sentence,
-                                                                                   userId: item.userId))
+                                                                                   userId: item.userId)).viewController
         self.navigationController?.pushViewController(otherUserMissionListVC, animated: true)
     }
 }

@@ -21,11 +21,11 @@ import OnboardingFeatureInterface
 import AuthFeatureInterface
 import StampFeatureInterface
 
-public class SplashVC: UIViewController, SplashFeatureInterface {
+public class SplashVC: UIViewController, SplashFeatureViewControllable {
     
     // MARK: - Properties
     
-    public var factory: (SplashFeature & OnboardingFeature & AuthFeature & StampFeature)!
+    public var factory: (SplashFeatureViewBuildable & OnboardingFeatureViewBuildable & AuthFeatureViewBuildable & StampFeatureViewBuildable)!
     public var viewModel: SplashViewModel!
     
     private var cancelBag = CancelBag()
@@ -126,8 +126,8 @@ extension SplashVC {
     private func checkDidSignIn() {
         let needAuth = UserDefaultKeyList.Auth.userId == nil
         if !needAuth {
-            //            let navigation = UINavigationController(rootViewController: self.factory.makeMissionListVC(sceneType: .default))
-            //            ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
+            let navigation = UINavigationController(rootViewController: factory.makeMissionListVC(sceneType: .default).viewController)
+            ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
         } else {
             let nextVC = factory.makeOnboardingVC().viewController
             self.navigationController?.pushViewController(nextVC, animated: true)
@@ -135,13 +135,15 @@ extension SplashVC {
     }
     
     private func presentNetworkAlertVC() {
-        //        let networkAlertVC = self.factory.makeAlertVC(type: .titleDescription,
-        //                                                      title: I18N.Default.networkError,
-        //                                                      description: I18N.Default.networkErrorDescription,
-        //                                                      customButtonTitle: I18N.Default.ok)
-        //        networkAlertVC.customAction = { [weak self] in
-        //            self?.requestAppNotice.send()
-        //        }
-        //        self.present(networkAlertVC, animated: false)
+        let networkAlertVC = factory.makeAlertVC(
+            type: .titleDescription,
+            title: I18N.Default.networkError,
+            description: I18N.Default.networkErrorDescription,
+            customButtonTitle: I18N.Default.ok,
+            customAction:{ [weak self] in
+                self?.requestAppNotice.send()
+            }).viewController
+        
+        self.present(networkAlertVC, animated: false)
     }
 }

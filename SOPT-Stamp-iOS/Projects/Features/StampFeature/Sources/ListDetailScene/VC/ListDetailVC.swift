@@ -20,6 +20,8 @@ import DSKit
 
 import Lottie
 
+import StampFeatureInterface
+
 public enum TextViewState {
     case inactive
     case active
@@ -70,12 +72,12 @@ extension StarViewLevel {
     }
 }
 
-public class ListDetailVC: UIViewController {
+public class ListDetailVC: UIViewController, StampFeatureViewControllable {
     
     // MARK: - Properties
     
     public var viewModel: ListDetailViewModel!
-    public var factory: ModuleFactoryInterface!
+    public var factory: StampFeatureViewBuildable!
     private var cancelBag = CancelBag()
     private var sceneType: ListDetailSceneType {
         get {
@@ -164,7 +166,7 @@ extension ListDetailVC {
             .compactMap { $0 }
             .sink { model in
                 if model.image.isEmpty {
-                    let networkAlert = self.factory.makeNetworkAlertVC()
+                    let networkAlert = self.factory.makeNetworkAlertVC().viewController
                     self.present(networkAlert, animated: true) {
                         self.backgroundDimmerView.removeFromSuperview()
                     }
@@ -184,7 +186,7 @@ extension ListDetailVC {
                     self.reloadData(.completed)
                     self.showToast(message: I18N.ListDetail.editCompletedToast)
                 } else {
-                    let networkAlert = self.factory.makeNetworkAlertVC()
+                    let networkAlert = self.factory.makeNetworkAlertVC().viewController
                     self.present(networkAlert, animated: true)
                 }
             }.store(in: self.cancelBag)
@@ -203,7 +205,7 @@ extension ListDetailVC {
                 if success {
                     self.navigationController?.popViewController(animated: true)
                 } else {
-                    let networkAlert = self.factory.makeNetworkAlertVC()
+                    let networkAlert = self.factory.makeNetworkAlertVC().viewController
                     self.present(networkAlert, animated: true)
                 }
             }.store(in: self.cancelBag)
@@ -228,7 +230,7 @@ extension ListDetailVC {
         if textView.text != I18N.ListDetail.memoPlaceHolder && textView.text != originText {
             textView.text = originText
         }
-
+        
         if let image = missionImageView.image {
             if image != originImage {
                 missionImageView.image = originImage
@@ -282,27 +284,29 @@ extension ListDetailVC {
     }
     
     private func presentDeleteAlertVC() {
-        let alertVC = self.factory.makeAlertVC(
+        let alertVC = factory.makeAlertVC(
             type: .title,
             title: I18N.ListDetail.deleteTitle,
             description: "",
-            customButtonTitle: I18N.Default.delete)
-        alertVC.customAction = {
-            self.deleteButtonTapped.send(true)
-        }
+            customButtonTitle: I18N.Default.delete,
+            customAction: {
+                self.deleteButtonTapped.send(true)
+            }).viewController
         
         self.present(alertVC, animated: true)
     }
     
     private func presentCompletedVC(level: StarViewLevel) {
-        let missionCompletedVC = factory.makeMissionCompletedVC(starLevel: level)
-        missionCompletedVC.completionHandler = {
-            UIView.animate(withDuration: 0.2, delay: 0, animations: {
-                self.backgroundDimmerView.alpha = 0
-            }) { _ in
-                self.backgroundDimmerView.removeFromSuperview()
-            }
-        }
+        let missionCompletedVC = factory.makeMissionCompletedVC(
+            starLevel: level,
+            completionHandler: {
+                UIView.animate(withDuration: 0.2, delay: 0, animations: {
+                    self.backgroundDimmerView.alpha = 0
+                }) { _ in
+                    self.backgroundDimmerView.removeFromSuperview()
+                }
+            }).viewController
+        
         self.present(missionCompletedVC, animated: true)
     }
     

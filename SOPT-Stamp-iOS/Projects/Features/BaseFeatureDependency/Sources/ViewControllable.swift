@@ -1,5 +1,5 @@
 //
-//  BaseFeatureInterface.swift
+//  ViewControllable.swift
 //  BaseFeatureDependency
 //
 //  Created by 김영인 on 2023/03/16.
@@ -8,11 +8,11 @@
 
 import UIKit
 
-public protocol BaseFeatureInterface {
+public protocol ViewControllable {
     var viewController: UIViewController { get }
 }
 
-public extension BaseFeatureInterface where Self: UIViewController {
+public extension ViewControllable where Self: UIViewController {
     var viewController: UIViewController {
         return self
     }

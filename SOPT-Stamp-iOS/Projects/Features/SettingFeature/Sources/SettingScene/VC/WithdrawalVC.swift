@@ -11,12 +11,16 @@ import DSKit
 
 import Core
 
-public class WithdrawalVC: UIViewController {
+import AuthFeatureInterface
+import SettingFeatureInterface
+import StampFeatureInterface
+
+public class WithdrawalVC: UIViewController, SettingFeatureViewControllable {
     
     // MARK: - Properties
     
     public var viewModel: WithdrawalViewModel!
-    public var factory: ModuleFactoryInterface!
+    public var factory: (AuthFeatureViewBuildable & StampFeatureViewBuildable)!
     private let cancelBag = CancelBag()
     
     // MARK: - UI Components
@@ -134,7 +138,7 @@ extension WithdrawalVC {
     
     private func showToastAndChangeRootView() {
         let window = self.view.window!
-        let navigation = UINavigationController(rootViewController: self.factory.makeSignInVC())
+        let navigation = UINavigationController(rootViewController: factory.makeSignInVC().viewController)
         navigation.isNavigationBarHidden = true
         ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true) { newWindow in
             Toast.show(message: I18N.Setting.Withdrawal.withdrawalSuccess,
@@ -144,7 +148,7 @@ extension WithdrawalVC {
     }
     
     public func showNetworkAlert() {
-        let alertVC = factory.makeNetworkAlertVC()
+        let alertVC = factory.makeNetworkAlertVC().viewController
         alertVC.modalPresentationStyle = .overFullScreen
         alertVC.modalTransitionStyle = .crossDissolve
         self.present(alertVC, animated: true)

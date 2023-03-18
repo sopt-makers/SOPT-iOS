@@ -16,14 +16,15 @@ import Combine
 import SnapKit
 import Then
 
+import SettingFeatureInterface
 import StampFeatureInterface
 
-public class MissionListVC: UIViewController, StampFeatureInterface {
+public class MissionListVC: UIViewController, StampFeatureViewControllable {
     
     // MARK: - Properties
     
-    public var factory: StampFeature!
     public var viewModel: MissionListViewModel!
+    public var factory: (SettingFeatureViewBuildable & StampFeatureViewBuildable)!
     public var sceneType: MissionListSceneType {
         return self.viewModel.missionListsceneType
     }
@@ -229,12 +230,12 @@ extension MissionListVC {
     }
     
     private func pushToSettingVC() {
-        let settingVC = self.factory.makeSettingVC()
+        let settingVC = factory.makeSettingVC().viewController
         self.navigationController?.pushViewController(settingVC, animated: true)
     }
     
     private func pushToRankingVC() {
-        let rankingVC = self.factory.makeRankingVC()
+        let rankingVC = factory.makeRankingVC().viewController
         self.navigationController?.pushViewController(rankingVC, animated: true)
     }
 }
@@ -367,7 +368,7 @@ extension MissionListVC: UICollectionViewDelegate {
                                                     starLevel: starLevel,
                                                     missionId: model.id,
                                                     missionTitle: model.title,
-                                                    otherUserId: viewModel.otherUserId)
+                                                    otherUserId: viewModel.otherUserId).viewController
             self.navigationController?.pushViewController(detailVC, animated: true)
         default:
             return

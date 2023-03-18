@@ -16,11 +16,13 @@ import Core
 import Domain
 import DSKit
 
-public class PasswordChangeVC: UIViewController {
+import SettingFeatureInterface
+
+public class PasswordChangeVC: UIViewController, SettingFeatureViewControllable {
     
     // MARK: - Properties
     
-    public var factory: ModuleFactoryInterface!
+    public var factory: SettingFeatureViewBuildable!
     public var viewModel: PasswordChangeViewModel!
     private var cancelBag = CancelBag()
       

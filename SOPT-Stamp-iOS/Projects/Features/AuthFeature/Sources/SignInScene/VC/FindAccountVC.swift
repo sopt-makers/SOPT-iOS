@@ -11,7 +11,9 @@ import DSKit
 
 import Core
 
-public class FindAccountVC: UIViewController {
+import AuthFeatureInterface
+
+public class FindAccountVC: UIViewController, AuthFeatureViewControllable {
     
     // MARK: - UI Components
 

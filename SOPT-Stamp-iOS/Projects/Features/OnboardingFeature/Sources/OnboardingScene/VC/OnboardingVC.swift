@@ -18,8 +18,9 @@ import SnapKit
 import Then
 
 import OnboardingFeatureInterface
+import AuthFeatureInterface
 
-public class OnboardingVC: UIViewController, OnboardingFeatureInterface {
+public class OnboardingVC: UIViewController, OnboardingFeatureViewControllable {
     
     // MARK: - Properties
     
@@ -32,8 +33,7 @@ public class OnboardingVC: UIViewController, OnboardingFeatureInterface {
         }
     }
     
-    // TODO: - 이거 바꿔라
-    public var factory: OnboardingFeature!
+    public var factory: AuthFeatureViewBuildable!
   
     // MARK: - UI Components
     
@@ -77,8 +77,7 @@ public class OnboardingVC: UIViewController, OnboardingFeatureInterface {
     
     @objc
     private func startButtonDidTap() {
-        //let vc = self.factory.makeSignInVC()
-        let vc = UIViewController()
+        let vc = factory.makeSignInVC().viewController
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }

@@ -19,12 +19,13 @@ import SnapKit
 import Then
 
 import AuthFeatureInterface
+import StampFeatureInterface
 
-public class SignInVC: UIViewController, AuthFeatureInterface {
+public class SignInVC: UIViewController, AuthFeatureViewControllable {
     
     // MARK: - Properties
     
-    public var factory: AuthFeature!
+    public var factory: (AuthFeatureViewBuildable & StampFeatureViewBuildable)!
     public var viewModel: SignInViewModel!
     private var cancelBag = CancelBag()
   
@@ -91,13 +92,13 @@ public class SignInVC: UIViewController, AuthFeatureInterface {
     
     @objc
     private func findAccountButtonDidTap() {
-        let findAccountVC = self.factory.makeFindAccountVC()
+        let findAccountVC = self.factory.makeFindAccountVC().viewController
         self.navigationController?.pushViewController(findAccountVC, animated: true)
     }
     
     @objc
     private func signUpButtonDidTap() {
-        let signUpVC = self.factory.makeSignUpVC()
+        let signUpVC = self.factory.makeSignUpVC().viewController
         self.navigationController?.pushViewController(signUpVC, animated: true)
     }
 
@@ -197,7 +198,7 @@ extension SignInVC {
             guard let self = self else { return }
             self.stopLoading()
             if isSignInSuccess {
-                let navigation = UINavigationController(rootViewController: self.factory.makeMissionListVC(sceneType: .default))
+                let navigation = UINavigationController(rootViewController: self.factory.makeMissionListVC(sceneType: .default).viewController)
                 ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
             } else {
                 self.emailTextField.alertType = .invalidInput(text: "")

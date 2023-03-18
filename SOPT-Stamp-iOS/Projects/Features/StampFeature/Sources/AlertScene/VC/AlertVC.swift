@@ -13,13 +13,9 @@ import SnapKit
 import Core
 import DSKit
 
-public enum AlertType {
-    case title
-    case titleDescription
-    case networkErr
-}
+import StampFeatureInterface
 
-public class AlertVC: UIViewController {
+public class AlertVC: UIViewController, StampFeatureViewControllable {
     
     // MARK: - Properties
     

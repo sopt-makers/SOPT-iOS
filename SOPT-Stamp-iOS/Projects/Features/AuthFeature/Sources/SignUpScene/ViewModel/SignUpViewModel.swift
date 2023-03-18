@@ -11,11 +11,6 @@ import Combine
 import Core
 import Domain
 
-public enum SignUpFormValidateResult {
-    case valid(text: String)
-    case invalid(text: String)
-}
-
 public class SignUpViewModel: ViewModelType {
 
     // MARK: - Properties

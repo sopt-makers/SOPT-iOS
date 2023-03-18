@@ -14,7 +14,9 @@ import Core
 import SnapKit
 import Then
 
-public class PrivacyPolicyVC: UIViewController {
+import SettingFeatureInterface
+
+public class PrivacyPolicyVC: UIViewController, SettingFeatureViewControllable {
         
     // MARK: - UI Components
     

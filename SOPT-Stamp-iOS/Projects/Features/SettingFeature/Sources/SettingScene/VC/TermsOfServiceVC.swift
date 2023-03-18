@@ -14,7 +14,9 @@ import Core
 import SnapKit
 import Then
 
-public class TermsOfServiceVC: UIViewController {
+import SettingFeatureInterface
+
+public class TermsOfServiceVC: UIViewController, SettingFeatureViewControllable {
     
     // MARK: - UI Components
     
