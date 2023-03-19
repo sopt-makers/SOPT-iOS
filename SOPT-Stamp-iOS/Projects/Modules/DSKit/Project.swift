@@ -7,13 +7,13 @@
 
 import ProjectDescription
 import ProjectDescriptionHelpers
+import DependencyPlugin
 
 let project = Project.makeModule(
     name: "DSKit",
-    product: .staticFramework,
-    dependencies: [
-        .Project.Core
+    targets: [.unitTest, .demo, .dynamicFramework],
+    internalDependencies: [
+        .core
     ],
-    resources: ["Resources/**"],
-    hasDemoApp: true
+    hasResources: true
 )

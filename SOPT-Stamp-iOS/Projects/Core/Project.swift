@@ -7,12 +7,12 @@
 
 import ProjectDescription
 import ProjectDescriptionHelpers
-import UtilityPlugin
+import DependencyPlugin
 
 let project = Project.makeModule(
     name: "Core",
-    product: .staticFramework,
-    dependencies: [
-        .Project.ThirdPartyLib
+    targets: [.unitTest, .dynamicFramework, .demo],
+    internalDependencies: [
+        .Modules.thirdPartyLibs
     ]
 )

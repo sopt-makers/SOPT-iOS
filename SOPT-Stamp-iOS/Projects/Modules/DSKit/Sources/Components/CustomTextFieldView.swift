@@ -108,6 +108,17 @@ public enum TextFieldAlertType {
     }
 }
 
+extension SignUpFormValidateResult {
+    public func convertToTextFieldAlertType() -> TextFieldAlertType {
+        switch self {
+        case .valid(let text):
+            return .validInput(text: text)
+        case .invalid(let text):
+            return .invalidInput(text: text)
+        }
+    }
+}
+
 public protocol CustomTextFieldViewAlertDelegate: AnyObject {
     func changeAlertLabelText(_ alertText: String)
     func changeAlertLabelTextColor(state: TextFieldViewState)
