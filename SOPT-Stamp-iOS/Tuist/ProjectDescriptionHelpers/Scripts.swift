@@ -16,7 +16,7 @@ fi
 export PATH
 
 if which swiftlint > /dev/null; then
-    swiftlint
+    swiftlint autocorrect && swiftlint
 else
     echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
 fi
