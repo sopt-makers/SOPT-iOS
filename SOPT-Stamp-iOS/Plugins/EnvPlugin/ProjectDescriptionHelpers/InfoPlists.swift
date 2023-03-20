@@ -43,5 +43,19 @@ public extension Project {
         "UILaunchStoryboardName": "LaunchScreen",
         "LSSupportsOpeningDocumentsInPlace": true,
         "UIFileSharingEnabled": true,
+        "UIApplicationSceneManifest": [
+            "UIApplicationSupportsMultipleScenes": false,
+            "UISceneConfigurations": [
+                "UIWindowSceneSessionRoleApplication": [
+                    [
+                        "UISceneConfigurationName": "Default Configuration",
+                        "UISceneDelegateClassName": "$(PRODUCT_MODULE_NAME).SceneDelegate"
+                    ],
+                ]
+            ]
+        ],
+        "NSPhotoLibraryUsageDescription": "미션과 관련된 사진을 업로드하기 위해 갤러리 권한이 필요합니다.",
+        "App Transport Security Settings": ["Allow Arbitrary Loads": true],
+        "NSAppTransportSecurity": ["NSAllowsArbitraryLoads": true],
     ]
 }
