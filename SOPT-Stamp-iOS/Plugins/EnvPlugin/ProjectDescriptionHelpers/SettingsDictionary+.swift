@@ -8,6 +8,19 @@
 import ProjectDescription
 
 public extension SettingsDictionary {
+    static let allLoadSettings: Self = [
+        "OTHER_LDFLAGS" : [
+            "$(inherited) -all_load",
+            "-Xlinker -interposable"
+        ]
+    ]
+    
+    static let baseSettings: Self = [
+        "OTHER_LDFLAGS" : [
+            "-Xlinker -interposable"
+        ]
+    ]
+    
     func setProductBundleIdentifier(_ value: String = "com.iOS$(BUNDLE_ID_SUFFIX)") -> SettingsDictionary {
         merging(["PRODUCT_BUNDLE_IDENTIFIER": SettingValue(stringLiteral: value)])
     }
@@ -45,12 +58,6 @@ public extension SettingsDictionary {
     }
     
     func setCodeSignManual() -> SettingsDictionary {
-        merging(["CODE_SIGN_STYLE": SettingValue(stringLiteral: "Manual")])
-            .merging(["DEVELOPMENT_TEAM": SettingValue(stringLiteral: "9K86FQHDLU")])
-            .merging(["CODE_SIGN_IDENTITY": SettingValue(stringLiteral: "iPhone Developer")])
-    }
-    
-    func setCodeSignManualForApp() -> SettingsDictionary {
         merging(["CODE_SIGN_STYLE": SettingValue(stringLiteral: "Manual")])
             .merging(["DEVELOPMENT_TEAM": SettingValue(stringLiteral: "9K86FQHDLU")])
             .merging(["CODE_SIGN_IDENTITY": SettingValue(stringLiteral: "iPhone Developer")])

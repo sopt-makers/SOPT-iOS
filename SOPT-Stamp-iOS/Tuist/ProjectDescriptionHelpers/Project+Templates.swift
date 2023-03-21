@@ -19,10 +19,12 @@ public extension Project {
         let deploymentTarget = Environment.deploymentTarget
         let platform = Environment.platform
         
+        let baseSettings: SettingsDictionary = hasDynamicFramework
+        ? .allLoadSettings
+        : .baseSettings
+        
         let settings: Settings = .settings(
-            base: name.contains(Environment.workspaceName)
-            ? .init().setCodeSignManualForApp()
-            : .init().setCodeSignManual(),
+            base: baseSettings.setCodeSignManual(),
             debug: .init()
                 .setProvisioningDevelopment(),
             release: .init()
@@ -49,8 +51,12 @@ public extension Project {
                 resources: [.glob(pattern: "Resources/**", excluding: [])],
                 dependencies: [
                     internalDependencies,
-                    externalDependencies
-                ].flatMap { $0 }
+                    externalDependencies,
+                    [
+                        .SPM.Inject
+                    ]
+                ].flatMap { $0 },
+                settings: settings
             )
             
             projectTargets.append(target)
@@ -67,7 +73,8 @@ public extension Project {
                 deploymentTarget: deploymentTarget,
                 infoPlist: .default,
                 sources: ["Interface/Sources/**/*.swift"],
-                dependencies: interfaceDependencies
+                dependencies: interfaceDependencies,
+                settings: settings
             )
             
             projectTargets.append(target)
@@ -89,7 +96,8 @@ public extension Project {
                 infoPlist: .default,
                 sources: ["Sources/**/*.swift"],
                 resources: hasResources ? [.glob(pattern: "Resources/**", excluding: [])] : [],
-                dependencies: deps + internalDependencies + externalDependencies
+                dependencies: deps + internalDependencies + externalDependencies,
+                settings: settings
             )
             
             projectTargets.append(target)
@@ -112,9 +120,11 @@ public extension Project {
                 dependencies: [
                     deps,
                     [
-                        .SPM.FLEX
+                        .SPM.FLEX,
+                        .SPM.Inject
                     ]
-                ].flatMap { $0 }
+                ].flatMap { $0 },
+                settings: settings
             )
             
             projectTargets.append(target)
