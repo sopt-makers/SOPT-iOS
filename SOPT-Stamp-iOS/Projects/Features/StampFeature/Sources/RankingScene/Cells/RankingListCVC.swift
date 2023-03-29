@@ -29,7 +29,7 @@ final class RankingListCVC: UICollectionViewCell, UICollectionViewRegisterable {
         let label = UILabel()
         label.text = "4"
         label.font = DSKitFontFamily.Montserrat.bold.font(size: 30.adjusted)
-        label.textColor = DSKitAsset.Colors.gray500.color
+        label.textColor = DSKitAsset.Colors.soptampGray500.color
         label.textAlignment = .center
         return label
     }()
@@ -47,7 +47,7 @@ final class RankingListCVC: UICollectionViewCell, UICollectionViewRegisterable {
         let label = UILabel()
         label.text = "해롱이"
         label.setTypoStyle(.SoptampFont.h3)
-        label.textColor = DSKitAsset.Colors.gray800.color
+        label.textColor = DSKitAsset.Colors.soptampGray800.color
         label.lineBreakMode = .byTruncatingTail
         label.setCharacterSpacing(0)
         return label
@@ -57,7 +57,7 @@ final class RankingListCVC: UICollectionViewCell, UICollectionViewRegisterable {
         let label = UILabel()
         label.text = "한마디 하겠습니다"
         label.setTypoStyle(.SoptampFont.caption1)
-        label.textColor = DSKitAsset.Colors.gray700.color
+        label.textColor = DSKitAsset.Colors.soptampGray700.color
         label.lineBreakMode = .byTruncatingTail
         label.setCharacterSpacing(0)
         return label
@@ -68,7 +68,7 @@ final class RankingListCVC: UICollectionViewCell, UICollectionViewRegisterable {
         label.text = "100점"
         label.setTypoStyle(.SoptampFont.number2)
         label.partFontChange(targetString: "점", font: DSKitFontFamily.Pretendard.medium.font(size: 12))
-        label.textColor = DSKitAsset.Colors.gray400.color
+        label.textColor = DSKitAsset.Colors.soptampGray400.color
         return label
     }()
     
@@ -90,7 +90,7 @@ final class RankingListCVC: UICollectionViewCell, UICollectionViewRegisterable {
 extension RankingListCVC {
     
     public func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.gray50.color
+        self.backgroundColor = DSKitAsset.Colors.soptampGray50.color
         self.layer.cornerRadius = 8
     }
     
@@ -135,19 +135,19 @@ extension RankingListCVC {
     }
     
     private func setMyRanking() {
-        self.backgroundColor = DSKitAsset.Colors.purple100.color
-        self.layer.borderColor = DSKitAsset.Colors.purple300.color.cgColor
+        self.backgroundColor = DSKitAsset.Colors.soptampPurple100.color
+        self.layer.borderColor = DSKitAsset.Colors.soptampPurple300.color.cgColor
         self.layer.borderWidth = 2
-        rankLabel.textColor = DSKitAsset.Colors.purple300.color
-        scoreLabel.textColor = DSKitAsset.Colors.purple300.color
+        rankLabel.textColor = DSKitAsset.Colors.soptampPurple300.color
+        scoreLabel.textColor = DSKitAsset.Colors.soptampPurple300.color
     }
     
     private func setDefaultRanking() {
-        self.backgroundColor = DSKitAsset.Colors.gray50.color
+        self.backgroundColor = DSKitAsset.Colors.soptampGray50.color
         self.layer.borderColor = nil
         self.layer.borderWidth = 0
-        rankLabel.textColor = DSKitAsset.Colors.gray500.color
-        scoreLabel.textColor = DSKitAsset.Colors.gray400.color
+        rankLabel.textColor = DSKitAsset.Colors.soptampGray500.color
+        scoreLabel.textColor = DSKitAsset.Colors.soptampGray400.color
     }
 }
 

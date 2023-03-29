@@ -63,8 +63,8 @@ extension CustomButton {
     private func setUI(_ title: String) {
         self.layer.cornerRadius = 9
         
-        self.setBackgroundColor(DSKitAsset.Colors.purple300.color, for: .normal)
-        self.setBackgroundColor(DSKitAsset.Colors.purple200.color, for: .disabled)
+        self.setBackgroundColor(DSKitAsset.Colors.soptampPurple300.color, for: .normal)
+        self.setBackgroundColor(DSKitAsset.Colors.soptampPurple200.color, for: .disabled)
         self.setAttributedTitle(
             NSAttributedString(
                 string: title,

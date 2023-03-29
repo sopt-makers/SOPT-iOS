@@ -51,7 +51,7 @@ public class RankingVC: UIViewController, RankingViewControllable {
     private lazy var showMyRankingFloatingButton: UIButton = {
         let bt = UIButton()
         bt.layer.cornerRadius = 27.adjustedH
-        bt.backgroundColor = DSKitAsset.Colors.purple300.color
+        bt.backgroundColor = DSKitAsset.Colors.soptampPurple300.color
         bt.titleLabel?.setTypoStyle(.SoptampFont.h2)
         let attributedStr = NSMutableAttributedString(string: "내 랭킹 보기")
         let style = NSMutableParagraphStyle()

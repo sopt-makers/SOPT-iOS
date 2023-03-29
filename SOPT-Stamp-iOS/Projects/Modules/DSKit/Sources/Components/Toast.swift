@@ -21,7 +21,7 @@ public class Toast {
         let toastContainer = UIView()
         let toastLabel = UILabel()
         
-        toastContainer.backgroundColor = DSKitAsset.Colors.gray600.color
+        toastContainer.backgroundColor = DSKitAsset.Colors.soptampGray600.color
         toastContainer.alpha = 1
         toastContainer.layer.cornerRadius = 9
         toastContainer.clipsToBounds = true

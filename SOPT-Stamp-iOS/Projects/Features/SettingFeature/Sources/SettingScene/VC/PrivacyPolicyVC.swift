@@ -47,7 +47,7 @@ public class PrivacyPolicyVC: UIViewController, PrivacyPolicyViewControllable {
 extension PrivacyPolicyVC {
     
     private func setUI() {
-        self.view.backgroundColor = DSKitAsset.Colors.white.color
+        self.view.backgroundColor = DSKitAsset.Colors.soptampWhite.color
     }
     
     private func setLayout() {

@@ -19,7 +19,7 @@ public class StarView: UIView {
     private var spacing: CGFloat = 0
     private var starScale: CGFloat = 15
     private var starImageArray: [UIImageView] = []
-    private var starDefaultColor = DSKitAsset.Colors.gray300.color
+    private var starDefaultColor = DSKitAsset.Colors.soptampGray300.color
     
     // MARK: - UI Components
     
@@ -75,11 +75,11 @@ extension StarView {
             starImageArray.append(imageView)
             
             if level == .levelOne && starNumber <= 1 {
-                imageView.tintColor = DSKitAsset.Colors.pink300.color
+                imageView.tintColor = DSKitAsset.Colors.soptampPink300.color
             } else if level == .levelTwo && starNumber <= 2 {
-                imageView.tintColor =  DSKitAsset.Colors.purple300.color
+                imageView.tintColor =  DSKitAsset.Colors.soptampPurple300.color
             } else if level == .levelThree {
-                imageView.tintColor = DSKitAsset.Colors.mint300.color
+                imageView.tintColor = DSKitAsset.Colors.soptampMint300.color
             } else {
                 imageView.tintColor = starDefaultColor
             }
@@ -89,11 +89,11 @@ extension StarView {
     public func changeStarLevel(level: StarViewLevel) {
         for starNumber in 1...3 {
             if level == .levelOne && starNumber <= 1 {
-                self.starImageArray[starNumber-1].tintColor = DSKitAsset.Colors.pink300.color
+                self.starImageArray[starNumber-1].tintColor = DSKitAsset.Colors.soptampPink300.color
             } else if level == .levelTwo && starNumber <= 2 {
-                self.starImageArray[starNumber-1].tintColor =  DSKitAsset.Colors.purple300.color
+                self.starImageArray[starNumber-1].tintColor =  DSKitAsset.Colors.soptampPurple300.color
             } else if level == .levelThree {
-                self.starImageArray[starNumber-1].tintColor = DSKitAsset.Colors.mint300.color
+                self.starImageArray[starNumber-1].tintColor = DSKitAsset.Colors.soptampMint300.color
             } else {
                 self.starImageArray[starNumber-1].tintColor = starDefaultColor
             }

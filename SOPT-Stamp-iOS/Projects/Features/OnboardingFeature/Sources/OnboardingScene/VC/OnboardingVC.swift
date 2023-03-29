@@ -48,8 +48,8 @@ public class OnboardingVC: UIViewController, OnboardingViewControllable {
     }()
     
     private lazy var pageControl = UIPageControl().then {
-        $0.pageIndicatorTintColor = DSKitAsset.Colors.purple200.color
-        $0.currentPageIndicatorTintColor = DSKitAsset.Colors.purple300.color
+        $0.pageIndicatorTintColor = DSKitAsset.Colors.soptampPurple200.color
+        $0.currentPageIndicatorTintColor = DSKitAsset.Colors.soptampPurple300.color
         $0.numberOfPages = 3
         $0.isUserInteractionEnabled = false
     }
@@ -87,7 +87,7 @@ public class OnboardingVC: UIViewController, OnboardingViewControllable {
 extension OnboardingVC {
     
     private func setUI() {
-        self.view.backgroundColor = DSKitAsset.Colors.white.color
+        self.view.backgroundColor = DSKitAsset.Colors.soptampWhite.color
     }
     
     private func setLayout() {

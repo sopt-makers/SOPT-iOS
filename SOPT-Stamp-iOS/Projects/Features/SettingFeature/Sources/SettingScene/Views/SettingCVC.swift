@@ -45,14 +45,14 @@ class SettingCVC: UICollectionViewCell, UICollectionViewRegisterable {
     // MARK: - UI & Layout
     
     private func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.gray50.color
+        self.backgroundColor = DSKitAsset.Colors.soptampGray50.color
         
         titleLabel.setTypoStyle(.SoptampFont.subtitle1)
-        titleLabel.textColor = DSKitAsset.Colors.black.color        
+        titleLabel.textColor = DSKitAsset.Colors.soptampBlack.color        
         arrowImageView.image = UIImage(asset: DSKitAsset.Assets.icLeftArrow)
         
-        topLineView.backgroundColor = DSKitAsset.Colors.gray100.color
-        bottomLineView.backgroundColor = DSKitAsset.Colors.gray100.color
+        topLineView.backgroundColor = DSKitAsset.Colors.soptampGray100.color
+        bottomLineView.backgroundColor = DSKitAsset.Colors.soptampGray100.color
     }
     
     private func setLayout() {

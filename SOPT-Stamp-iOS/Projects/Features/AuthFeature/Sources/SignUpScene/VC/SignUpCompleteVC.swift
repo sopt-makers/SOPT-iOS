@@ -32,13 +32,13 @@ public class SignUpCompleteVC: UIViewController, SignUpCompleteViewControllable 
     
     private let signUpCompleteLabel = UILabel().then {
         $0.text = I18N.SignUp.signUpComplete
-        $0.textColor = DSKitAsset.Colors.gray900.color
+        $0.textColor = DSKitAsset.Colors.soptampGray900.color
         $0.font = UIFont.SoptampFont.h1
     }
     
     private let welcomeLabel = UILabel().then {
         $0.text = I18N.SignUp.welcome
-        $0.textColor = DSKitAsset.Colors.gray500.color
+        $0.textColor = DSKitAsset.Colors.soptampGray500.color
         $0.font = UIFont.SoptampFont.subtitle2
     }
     

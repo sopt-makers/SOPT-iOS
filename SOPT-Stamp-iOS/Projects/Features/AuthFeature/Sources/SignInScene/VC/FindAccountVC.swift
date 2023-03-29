@@ -22,7 +22,7 @@ public class FindAccountVC: UIViewController, FindAccountViewControllable {
     
     private let descriptionLabel = UILabel().then {
         $0.text = I18N.SignIn.findDescription
-        $0.textColor = DSKitAsset.Colors.gray700.color
+        $0.textColor = DSKitAsset.Colors.soptampGray700.color
         $0.textAlignment = .left
         $0.numberOfLines = 3
         $0.font = UIFont.SoptampFont.subtitle3
@@ -70,8 +70,8 @@ extension FindAccountVC {
         self.view.backgroundColor = .white
         [findEmailButton, findPasswordButton].forEach {
             $0.layer.cornerRadius = 9
-            $0.backgroundColor = DSKitAsset.Colors.purple200.color
-            $0.setTitleColor(DSKitAsset.Colors.purple300.color, for: .normal)
+            $0.backgroundColor = DSKitAsset.Colors.soptampPurple200.color
+            $0.setTitleColor(DSKitAsset.Colors.soptampPurple300.color, for: .normal)
             $0.contentHorizontalAlignment = .left
             $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
             $0.titleLabel!.setTypoStyle(.SoptampFont.h3)
@@ -94,7 +94,7 @@ extension FindAccountVC {
             let arrowImageView = UIImageView().then {
                 $0.contentMode = .scaleAspectFit
                 $0.image = DSKitAsset.Assets.icLeftArrow.image.withRenderingMode(.alwaysTemplate)
-                $0.tintColor = DSKitAsset.Colors.purple300.color
+                $0.tintColor = DSKitAsset.Colors.soptampPurple300.color
             }
             
             $0.addSubview(arrowImageView)

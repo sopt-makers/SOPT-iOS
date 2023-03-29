@@ -183,7 +183,7 @@ extension MissionListCVC {
     
     public func setUI(_ type: MissionListCellType) {
         guard cellType.isCompleted else {
-            backgroundImageView.tintColor = DSKitAsset.Colors.gray50.color
+            backgroundImageView.tintColor = DSKitAsset.Colors.soptampGray50.color
             starView.changeStarLevel(level: cellType.starLevel)
             return
         }
@@ -191,13 +191,13 @@ extension MissionListCVC {
         switch cellType {
         case .levelOne:
             stampImageView.image = DSKitAsset.Assets.levelOneStamp.image
-            backgroundImageView.tintColor = DSKitAsset.Colors.pink100.color
+            backgroundImageView.tintColor = DSKitAsset.Colors.soptampPink100.color
         case .levelTwo:
             stampImageView.image = DSKitAsset.Assets.levelTwoStamp.image
-            backgroundImageView.tintColor = DSKitAsset.Colors.purple100.color
+            backgroundImageView.tintColor = DSKitAsset.Colors.soptampPurple100.color
         case .levelThree:
             stampImageView.image = DSKitAsset.Assets.levelThreeStamp.image
-            backgroundImageView.tintColor = DSKitAsset.Colors.mint100.color
+            backgroundImageView.tintColor = DSKitAsset.Colors.soptampMint100.color
         }
     }
     

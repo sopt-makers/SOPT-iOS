@@ -184,7 +184,7 @@ extension CustomNavigationBar {
         leftButton.setImage(UIImage(asset: DSKitAsset.Assets.icArrow), for: .normal)
         
         titleLabel.setTypoStyle(.SoptampFont.h2)
-        titleLabel.textColor = DSKitAsset.Colors.black.color
+        titleLabel.textColor = DSKitAsset.Colors.soptampBlack.color
         
         switch type {
         case .title:

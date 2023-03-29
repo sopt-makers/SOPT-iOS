@@ -38,8 +38,8 @@ class SettingHeaderView: UICollectionReusableView, UICollectionReusableViewRegis
     // MARK: - UI & Layout
     
     private func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.gray50.color
-        self.titleLabel.textColor = DSKitAsset.Colors.gray500.color
+        self.backgroundColor = DSKitAsset.Colors.soptampGray50.color
+        self.titleLabel.textColor = DSKitAsset.Colors.soptampGray500.color
         self.titleLabel.setTypoStyle(.SoptampFont.caption1)
         self.titleLabel.text = "내 정보"
         self.layer.cornerRadius = 12

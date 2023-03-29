@@ -246,7 +246,7 @@ extension SettingVC: UICollectionViewDataSource {
         }
         
         if indexPath.section == 3 {
-            cell.changeTextColor(DSKitAsset.Colors.access300.color)
+            cell.changeTextColor(DSKitAsset.Colors.soptampAccess300.color)
                 .setRadius(false)
                 .removeArrow()
         }

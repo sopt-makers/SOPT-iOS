@@ -32,42 +32,42 @@ extension StarViewLevel {
     var buttonTitleColor: UIColor {
         switch self {
         case .levelOne, .levelTwo:
-            return DSKitAsset.Colors.white.color
+            return DSKitAsset.Colors.soptampWhite.color
         case .levelThree:
-            return DSKitAsset.Colors.gray700.color
+            return DSKitAsset.Colors.soptampGray700.color
         }
     }
     
     var pointColor: UIColor {
         switch self {
         case .levelOne:
-            return DSKitAsset.Colors.pink300.color
+            return DSKitAsset.Colors.soptampPink300.color
         case .levelTwo:
-            return DSKitAsset.Colors.purple300.color
+            return DSKitAsset.Colors.soptampPurple300.color
         case .levelThree:
-            return DSKitAsset.Colors.mint300.color
+            return DSKitAsset.Colors.soptampMint300.color
         }
     }
     
     var disableColor: UIColor {
         switch self {
         case .levelOne:
-            return DSKitAsset.Colors.pink200.color
+            return DSKitAsset.Colors.soptampPink200.color
         case .levelTwo:
-            return DSKitAsset.Colors.purple200.color
+            return DSKitAsset.Colors.soptampPurple200.color
         case .levelThree:
-            return DSKitAsset.Colors.mint200.color
+            return DSKitAsset.Colors.soptampMint200.color
         }
     }
     
     var bgColor: UIColor {
         switch self {
         case .levelOne:
-            return DSKitAsset.Colors.pink100.color
+            return DSKitAsset.Colors.soptampPink100.color
         case .levelTwo:
-            return DSKitAsset.Colors.purple100.color
+            return DSKitAsset.Colors.soptampPurple100.color
         case .levelThree:
-            return DSKitAsset.Colors.mint100.color
+            return DSKitAsset.Colors.soptampMint100.color
         }
     }
 }
@@ -446,7 +446,7 @@ extension ListDetailVC {
         switch type {
         case .none, .edit:
             self.scrollView.isScrollEnabled = true
-            self.missionView.backgroundColor = DSKitAsset.Colors.gray50.color
+            self.missionView.backgroundColor = DSKitAsset.Colors.soptampGray50.color
             self.setTextView(.inactive)
             self.imagePlaceholderLabel.isHidden = missionImageView.image == nil ? false : true
             self.missionImageView.isUserInteractionEnabled = true
@@ -479,7 +479,7 @@ extension ListDetailVC {
         self.scrollView.showsVerticalScrollIndicator = false
         self.scrollView.contentInset = UIEdgeInsets(top: 7, left: 0, bottom: 32, right: 0)
         
-        self.missionImageView.backgroundColor = DSKitAsset.Colors.gray50.color
+        self.missionImageView.backgroundColor = DSKitAsset.Colors.soptampGray50.color
         self.missionImageView.layer.masksToBounds = true
         self.missionImageView.contentMode = .scaleAspectFill
         self.missionImageView.layer.cornerRadius = 9
@@ -488,8 +488,8 @@ extension ListDetailVC {
         self.textView.layer.borderColor = starLevel.pointColor.cgColor
         self.textView.textContainerInset = UIEdgeInsets(top: 14, left: 14, bottom: 14, right: 14)
         
-        self.imagePlaceholderLabel.textColor = DSKitAsset.Colors.gray500.color
-        self.dateLabel.textColor = DSKitAsset.Colors.gray600.color
+        self.imagePlaceholderLabel.textColor = DSKitAsset.Colors.soptampGray500.color
+        self.dateLabel.textColor = DSKitAsset.Colors.soptampGray600.color
         
         self.imagePlaceholderLabel.setTypoStyle(.SoptampFont.subtitle2)
         self.textView.setTypoStyle(.SoptampFont.caption1)
@@ -504,18 +504,18 @@ extension ListDetailVC {
     private func setTextView(_ state: TextViewState) {
         switch state {
         case .inactive:
-            self.textView.backgroundColor = DSKitAsset.Colors.gray50.color
-            self.textView.textColor = DSKitAsset.Colors.gray600.color
+            self.textView.backgroundColor = DSKitAsset.Colors.soptampGray50.color
+            self.textView.textColor = DSKitAsset.Colors.soptampGray600.color
             self.textView.layer.borderWidth = .zero
             self.textView.isEditable = true
         case .active:
-            self.textView.backgroundColor = DSKitAsset.Colors.white.color
-            self.textView.textColor = DSKitAsset.Colors.gray900.color
+            self.textView.backgroundColor = DSKitAsset.Colors.soptampWhite.color
+            self.textView.textColor = DSKitAsset.Colors.soptampGray900.color
             self.textView.layer.borderWidth = 1
             self.textView.isEditable = true
         case .completed:
-            self.textView.backgroundColor = DSKitAsset.Colors.gray50.color
-            self.textView.textColor = DSKitAsset.Colors.gray900.color
+            self.textView.backgroundColor = DSKitAsset.Colors.soptampGray50.color
+            self.textView.textColor = DSKitAsset.Colors.soptampGray900.color
             self.textView.layer.borderWidth = .zero
             self.textView.isEditable = false
         }

@@ -26,12 +26,12 @@ public class OnboardingCVC: UICollectionViewCell {
     
     private let titleLabel = UILabel().then {
         $0.setTypoStyle(.SoptampFont.h1)
-        $0.textColor = DSKitAsset.Colors.gray900.color
+        $0.textColor = DSKitAsset.Colors.soptampGray900.color
     }
     
     private let captionLabel = UILabel().then {
         $0.textAlignment = .center
-        $0.textColor = DSKitAsset.Colors.gray500.color
+        $0.textColor = DSKitAsset.Colors.soptampGray500.color
         $0.text = " "
         $0.numberOfLines = 2
         $0.setTypoStyle(.SoptampFont.subtitle2)
@@ -56,7 +56,7 @@ public class OnboardingCVC: UICollectionViewCell {
 extension OnboardingCVC {
     
     private func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.white.color
+        self.backgroundColor = DSKitAsset.Colors.soptampWhite.color
     }
     
     private func setLayout() {

@@ -73,10 +73,10 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
             lb.text = sentence
         }
         lb.setTypoStyle(.SoptampFont.subtitle1)
-        lb.textColor = DSKitAsset.Colors.gray900.color
+        lb.textColor = DSKitAsset.Colors.soptampGray900.color
         lb.numberOfLines = 2
         lb.textAlignment = .center
-        lb.backgroundColor = DSKitAsset.Colors.purple100.color
+        lb.backgroundColor = DSKitAsset.Colors.soptampPurple100.color
         lb.layer.cornerRadius = 9.adjustedH
         lb.clipsToBounds = true
         lb.setCharacterSpacing(0)
@@ -96,7 +96,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
     private lazy var rankingFloatingButton: UIButton = {
         let bt = UIButton()
         bt.layer.cornerRadius = 27.adjustedH
-        bt.backgroundColor = DSKitAsset.Colors.purple300.color
+        bt.backgroundColor = DSKitAsset.Colors.soptampPurple300.color
         bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .normal)
         bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .highlighted)
         bt.tintColor = .white
