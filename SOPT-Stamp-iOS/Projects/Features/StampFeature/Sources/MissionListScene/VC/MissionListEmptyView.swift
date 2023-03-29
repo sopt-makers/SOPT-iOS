@@ -27,7 +27,7 @@ class MissionListEmptyView: UIView {
     private let noMissionLabel: UILabel = {
         let label = UILabel()
         label.text = I18N.MissionList.noMission
-        label.setTypoStyle(.subtitle2)
+        label.setTypoStyle(.SoptampFont.subtitle2)
         label.textColor = DSKitAsset.Colors.gray500.color
         return label
     }()

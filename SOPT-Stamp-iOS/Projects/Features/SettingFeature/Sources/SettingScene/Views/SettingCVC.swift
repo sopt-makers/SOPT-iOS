@@ -47,7 +47,7 @@ class SettingCVC: UICollectionViewCell, UICollectionViewRegisterable {
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.gray50.color
         
-        titleLabel.setTypoStyle(.subtitle1)
+        titleLabel.setTypoStyle(.SoptampFont.subtitle1)
         titleLabel.textColor = DSKitAsset.Colors.black.color        
         arrowImageView.image = UIImage(asset: DSKitAsset.Assets.icLeftArrow)
         

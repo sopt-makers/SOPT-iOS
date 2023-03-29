@@ -33,7 +33,7 @@ public class WithdrawalVC: UIViewController, WithdrawalViewControllable {
         $0.textColor = DSKitAsset.Colors.gray900.color
         $0.textAlignment = .left
         $0.numberOfLines = 3
-        $0.setTypoStyle(.subtitle1)
+        $0.setTypoStyle(.SoptampFont.subtitle1)
         $0.setLineSpacing(lineSpacing: 10)
     }
     
@@ -41,7 +41,7 @@ public class WithdrawalVC: UIViewController, WithdrawalViewControllable {
         $0.text = I18N.Setting.Withdrawal.guide1
         $0.textColor = DSKitAsset.Colors.gray600.color
         $0.textAlignment = .left
-        $0.setTypoStyle(.caption1)
+        $0.setTypoStyle(.SoptampFont.caption1)
         $0.setLineSpacing(lineSpacing: 10)
     }
     
@@ -50,14 +50,14 @@ public class WithdrawalVC: UIViewController, WithdrawalViewControllable {
         $0.textColor = DSKitAsset.Colors.gray600.color
         $0.textAlignment = .left
         $0.numberOfLines = 2
-        $0.setTypoStyle(.caption1)
+        $0.setTypoStyle(.SoptampFont.caption1)
         $0.setLineSpacing(lineSpacing: 10)
     }
     
     private lazy var withdrawalButton = UIButton(type: .system).then {
         $0.setTitle(I18N.Setting.Withdrawal.withdrawal, for: .normal)
         $0.setTitleColor(UIColor.white, for: .normal)
-        $0.titleLabel?.setTypoStyle(.h2)
+        $0.titleLabel?.setTypoStyle(.SoptampFont.h2)
         $0.layer.cornerRadius = 9
         $0.backgroundColor = DSKitAsset.Colors.purple300.color
     }

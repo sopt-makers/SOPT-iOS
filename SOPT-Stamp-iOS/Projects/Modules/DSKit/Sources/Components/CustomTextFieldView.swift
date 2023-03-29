@@ -214,7 +214,7 @@ extension CustomTextFieldView {
             string: placeholderText,
             attributes: [
                 .foregroundColor: SoptampColor.gray600.color,
-                .font: UIFont.caption1
+                .font: UIFont.SoptampFont.caption1
             ]
         )
         return self
@@ -339,22 +339,22 @@ extension CustomTextFieldView {
 
 extension CustomTextFieldView {
     private func setUI() {
-        titleLabel.font = UIFont.subtitle1
+        titleLabel.font = UIFont.SoptampFont.subtitle1
         titleLabel.textColor = SoptampColor.gray900.color
         
         textFieldContainerView.backgroundColor = SoptampColor.gray50.color
         textFieldContainerView.clipsToBounds = true
 
         subTitleLabel.textAlignment = .left
-        subTitleLabel.font = UIFont.id
+        subTitleLabel.font = UIFont.SoptampFont.id
         subTitleLabel.textColor = SoptampColor.gray400.color
         
         textField.backgroundColor = .clear
         textField.textColor = .black
-        textField.font = UIFont.caption1
+        textField.font = UIFont.SoptampFont.caption1
         textField.returnKeyType = .done
         
-        alertlabel.font = UIFont.caption3
+        alertlabel.font = UIFont.SoptampFont.caption3
         alertlabel.textColor = SoptampColor.error300.color
         alertlabel.isHidden = true
         
@@ -373,7 +373,7 @@ extension CustomTextFieldView {
         
         rightButton.setAttributedTitle(
             NSAttributedString(string: I18N.TextFieldView.verify,
-                               attributes: [.foregroundColor: SoptampColor.white.color, .font: UIFont.subtitle3]),
+                               attributes: [.foregroundColor: SoptampColor.white.color, .font: UIFont.SoptampFont.subtitle3]),
             for: .normal
         )
     }

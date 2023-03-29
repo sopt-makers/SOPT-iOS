@@ -46,7 +46,7 @@ class MissionView: UIView {
     private func setUI() {
         self.layer.cornerRadius = 9
         self.missionLabel.textColor = DSKitAsset.Colors.gray900.color
-        self.missionLabel.setTypoStyle(.subtitle1)
+        self.missionLabel.setTypoStyle(.SoptampFont.subtitle1)
     }
     
     private func setLayout() {

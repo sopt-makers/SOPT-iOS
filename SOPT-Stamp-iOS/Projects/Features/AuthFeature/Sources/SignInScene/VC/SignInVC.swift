@@ -56,7 +56,7 @@ public class SignInVC: UIViewController, SignInViewControllable {
     private lazy var findAccountButton = UIButton(type: .system).then {
         $0.setTitle(I18N.SignIn.findAccount, for: .normal)
         $0.setTitleColor(DSKitAsset.Colors.gray500.color, for: .normal)
-        $0.titleLabel!.setTypoStyle(.caption2)
+        $0.titleLabel!.setTypoStyle(.SoptampFont.caption2)
         $0.addTarget(self, action: #selector(findAccountButtonDidTap), for: .touchUpInside)
     }
     
@@ -65,7 +65,7 @@ public class SignInVC: UIViewController, SignInViewControllable {
     private lazy var signUpButton = UIButton(type: .system).then {
         $0.setTitle(I18N.SignIn.signUp, for: .normal)
         $0.setTitleColor(DSKitAsset.Colors.gray900.color, for: .normal)
-        $0.titleLabel!.setTypoStyle(.caption1)
+        $0.titleLabel!.setTypoStyle(.SoptampFont.caption1)
         $0.addTarget(self, action: #selector(signUpButtonDidTap), for: .touchUpInside)
     }
     

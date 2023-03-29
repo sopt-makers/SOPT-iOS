@@ -25,7 +25,7 @@ public class FindAccountVC: UIViewController, FindAccountViewControllable {
         $0.textColor = DSKitAsset.Colors.gray700.color
         $0.textAlignment = .left
         $0.numberOfLines = 3
-        $0.font = UIFont.subtitle3
+        $0.font = UIFont.SoptampFont.subtitle3
         $0.setLineSpacing(lineSpacing: 10)
     }
     
@@ -74,7 +74,7 @@ extension FindAccountVC {
             $0.setTitleColor(DSKitAsset.Colors.purple300.color, for: .normal)
             $0.contentHorizontalAlignment = .left
             $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
-            $0.titleLabel!.setTypoStyle(.h3)
+            $0.titleLabel!.setTypoStyle(.SoptampFont.h3)
         }
     }
     

@@ -29,7 +29,7 @@ public class Toast {
         
         toastLabel.textColor = .white
         toastLabel.textAlignment = .center
-        toastLabel.setTypoStyle(.caption1)
+        toastLabel.setTypoStyle(.SoptampFont.caption1)
         toastLabel.text = message
         toastLabel.clipsToBounds = true
         toastLabel.numberOfLines = 0

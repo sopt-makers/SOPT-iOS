@@ -25,7 +25,7 @@ public class OnboardingCVC: UICollectionViewCell {
     }
     
     private let titleLabel = UILabel().then {
-        $0.setTypoStyle(.h1)
+        $0.setTypoStyle(.SoptampFont.h1)
         $0.textColor = DSKitAsset.Colors.gray900.color
     }
     
@@ -34,7 +34,7 @@ public class OnboardingCVC: UICollectionViewCell {
         $0.textColor = DSKitAsset.Colors.gray500.color
         $0.text = " "
         $0.numberOfLines = 2
-        $0.setTypoStyle(.subtitle2)
+        $0.setTypoStyle(.SoptampFont.subtitle2)
         $0.setLineSpacing(lineSpacing: 8)
         $0.textAlignment = .center
     }

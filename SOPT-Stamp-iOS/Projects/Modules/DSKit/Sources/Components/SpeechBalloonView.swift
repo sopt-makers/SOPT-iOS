@@ -46,7 +46,7 @@ public class SpeechBalloonView: UIView {
     
     private let sentenceLabel: UILabel = {
         let label = UILabel()
-        label.setTypoStyle(.subtitle3)
+        label.setTypoStyle(.SoptampFont.subtitle3)
         label.textColor = DSKitAsset.Colors.black.color
         label.textAlignment = .center
         label.clipsToBounds = true

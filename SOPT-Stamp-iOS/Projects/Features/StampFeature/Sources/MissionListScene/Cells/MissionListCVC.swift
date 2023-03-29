@@ -155,7 +155,7 @@ final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     private let purposeLabel: UILabel = {
         let label = UILabel()
         label.text = "세미나 끝나고 뒷풀이 2시까지 달리기"
-        label.setTypoStyle(.caption1D)
+        label.setTypoStyle(.SoptampFont.caption1D)
         label.numberOfLines = 2
         return label
     }()

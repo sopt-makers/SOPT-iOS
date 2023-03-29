@@ -491,9 +491,9 @@ extension ListDetailVC {
         self.imagePlaceholderLabel.textColor = DSKitAsset.Colors.gray500.color
         self.dateLabel.textColor = DSKitAsset.Colors.gray600.color
         
-        self.imagePlaceholderLabel.setTypoStyle(.subtitle2)
-        self.textView.setTypoStyle(.caption1)
-        self.dateLabel.setTypoStyle(.number3)
+        self.imagePlaceholderLabel.setTypoStyle(.SoptampFont.subtitle2)
+        self.textView.setTypoStyle(.SoptampFont.caption1)
+        self.dateLabel.setTypoStyle(.SoptampFont.number3)
         
         self.imagePlaceholderLabel.text = I18N.ListDetail.imagePlaceHolder
         self.textView.text = I18N.ListDetail.memoPlaceHolder

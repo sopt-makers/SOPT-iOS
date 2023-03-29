@@ -31,7 +31,7 @@ public class RankingVC: UIViewController, RankingViewControllable {
     // MARK: - UI Components
     
     lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
-        .setTitleTypoStyle(.h2)
+        .setTitleTypoStyle(.SoptampFont.h2)
         .setTitle("랭킹")
         .setRightButton(.none)
     
@@ -52,7 +52,7 @@ public class RankingVC: UIViewController, RankingViewControllable {
         let bt = UIButton()
         bt.layer.cornerRadius = 27.adjustedH
         bt.backgroundColor = DSKitAsset.Colors.purple300.color
-        bt.titleLabel?.setTypoStyle(.h2)
+        bt.titleLabel?.setTypoStyle(.SoptampFont.h2)
         let attributedStr = NSMutableAttributedString(string: "내 랭킹 보기")
         let style = NSMutableParagraphStyle()
         attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))

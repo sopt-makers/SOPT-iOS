@@ -26,7 +26,7 @@ public class TermsOfServiceVC: UIViewController, TermsOfServiceViewControllable 
 
     private let textView = UITextView().then {
         $0.text = I18N.ServiceUsagePolicy.termsOfService
-        $0.setTypoStyle(.caption1)
+        $0.setTypoStyle(.SoptampFont.caption1)
         $0.isEditable = false
         $0.showsVerticalScrollIndicator = false
         $0.setLineSpacing(lineSpacing: 5)

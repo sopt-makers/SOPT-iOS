@@ -36,7 +36,7 @@ public class NoticePopUpVC: UIViewController, NoticePopUpViewControllable {
     
     private let noticeTitleLabel = UILabel().then {
         $0.text = I18N.Notice.notice
-        $0.font = .subtitle3
+        $0.font = .SoptampFont.subtitle3
         $0.textColor = DSKitAsset.Colors.purple300.color
         $0.backgroundColor = DSKitAsset.Colors.purple100.color
         $0.textAlignment = .center
@@ -46,7 +46,7 @@ public class NoticePopUpVC: UIViewController, NoticePopUpViewControllable {
     private let noticeContentTextView = UITextView().then {
         $0.text = I18N.Notice.notice
         $0.isEditable = false
-        $0.font = .caption3
+        $0.font = .SoptampFont.caption3
         $0.textColor = DSKitAsset.Colors.gray900.color
         $0.textAlignment = .center
     }
@@ -55,7 +55,7 @@ public class NoticePopUpVC: UIViewController, NoticePopUpViewControllable {
         $0.setImage(DSKitAsset.Assets.icCheckBox.image, for: .normal)
         $0.setImage(DSKitAsset.Assets.icCheckBoxFill.image, for: .selected)
         $0.setAttributedTitle(NSAttributedString(string: I18N.Notice.didCheck,
-                                                 attributes: [.font: UIFont.caption3,
+                                                 attributes: [.font: UIFont.SoptampFont.caption3,
                                                     .foregroundColor: DSKitAsset.Colors.gray600.color]),
                               for: .normal)
         $0.imageEdgeInsets = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 0)
@@ -66,7 +66,7 @@ public class NoticePopUpVC: UIViewController, NoticePopUpViewControllable {
     
     private let closeButton = UIButton(type: .system).then {
         $0.setAttributedTitle(NSAttributedString(string: I18N.Notice.close,
-                                                 attributes: [.font: UIFont.h3,
+                                                 attributes: [.font: UIFont.SoptampFont.h3,
                                                               .foregroundColor: DSKitAsset.Colors.gray500.color]), for: .normal)
         $0.backgroundColor = .white
     }

@@ -98,10 +98,10 @@ extension AlertVC {
         self.cancelButton.backgroundColor = (self.alertType == .networkErr) ? DSKitAsset.Colors.error200.color : DSKitAsset.Colors.gray300.color
         self.customButton.backgroundColor = DSKitAsset.Colors.error200.color
         
-        self.titleLabel.setTypoStyle(.subtitle1)
-        self.descriptionLabel.setTypoStyle(.caption3)
-        self.cancelButton.titleLabel?.setTypoStyle(.subtitle1)
-        self.customButton.titleLabel?.setTypoStyle(.subtitle1)
+        self.titleLabel.setTypoStyle(.SoptampFont.subtitle1)
+        self.descriptionLabel.setTypoStyle(.SoptampFont.caption3)
+        self.cancelButton.titleLabel?.setTypoStyle(.SoptampFont.subtitle1)
+        self.customButton.titleLabel?.setTypoStyle(.SoptampFont.subtitle1)
         
         self.titleLabel.textColor = DSKitAsset.Colors.gray900.color
         self.descriptionLabel.textColor = DSKitAsset.Colors.gray500.color

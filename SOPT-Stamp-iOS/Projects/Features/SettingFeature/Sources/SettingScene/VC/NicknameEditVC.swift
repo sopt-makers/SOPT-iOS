@@ -29,7 +29,7 @@ public class NicknameEditVC: UIViewController, NicknameEditViewControllable {
     // MARK: - UI Components
     
     private lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
-        .setTitleTypoStyle(.h2)
+        .setTitleTypoStyle(.SoptampFont.h2)
         .setTitle(I18N.Setting.NicknameEdit.nicknameEdit)
     
     private let nicknameTextFieldView = CustomTextFieldView(type: .plain)
