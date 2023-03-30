@@ -46,8 +46,8 @@ public class SpeechBalloonView: UIView {
     
     private let sentenceLabel: UILabel = {
         let label = UILabel()
-        label.setTypoStyle(.subtitle3)
-        label.textColor = DSKitAsset.Colors.black.color
+        label.setTypoStyle(.SoptampFont.subtitle3)
+        label.textColor = DSKitAsset.Colors.soptampBlack.color
         label.textAlignment = .center
         label.clipsToBounds = true
         label.sizeToFit()
@@ -89,27 +89,27 @@ extension SpeechBalloonView {
     private func setUI() {
         switch viewLevel {
         case .rankOne:
-            backgroundView.backgroundColor = DSKitAsset.Colors.purple300.color
-            sentenceLabel.textColor = DSKitAsset.Colors.white.color
+            backgroundView.backgroundColor = DSKitAsset.Colors.soptampPurple300.color
+            sentenceLabel.textColor = DSKitAsset.Colors.soptampWhite.color
             leftArrowImage.tintColor = .white
-            balloonTailImageView.tintColor = DSKitAsset.Colors.purple300.color
+            balloonTailImageView.tintColor = DSKitAsset.Colors.soptampPurple300.color
         case .rankTwo:
-            backgroundView.backgroundColor = DSKitAsset.Colors.pink300.color
-            sentenceLabel.textColor = DSKitAsset.Colors.white.color
+            backgroundView.backgroundColor = DSKitAsset.Colors.soptampPink300.color
+            sentenceLabel.textColor = DSKitAsset.Colors.soptampWhite.color
             leftArrowImage.tintColor = .white
-            balloonTailImageView.tintColor = DSKitAsset.Colors.pink300.color
+            balloonTailImageView.tintColor = DSKitAsset.Colors.soptampPink300.color
         case .rankThree:
-            backgroundView.backgroundColor = DSKitAsset.Colors.mint300.color
-            sentenceLabel.textColor = DSKitAsset.Colors.black.color
+            backgroundView.backgroundColor = DSKitAsset.Colors.soptampMint300.color
+            sentenceLabel.textColor = DSKitAsset.Colors.soptampBlack.color
             leftArrowImage.tintColor = .black
-            balloonTailImageView.tintColor = DSKitAsset.Colors.mint300.color
+            balloonTailImageView.tintColor = DSKitAsset.Colors.soptampMint300.color
         }
         
         guard self.sentenceLabel.text == I18N.RankingList.noSentenceText else { return }
-        self.sentenceLabel.textColor = DSKitAsset.Colors.gray500.color
-        self.backgroundView.backgroundColor = DSKitAsset.Colors.gray100.color
-        self.leftArrowImage.tintColor = DSKitAsset.Colors.gray500.color
-        self.balloonTailImageView.tintColor = DSKitAsset.Colors.gray100.color
+        self.sentenceLabel.textColor = DSKitAsset.Colors.soptampGray500.color
+        self.backgroundView.backgroundColor = DSKitAsset.Colors.soptampGray100.color
+        self.leftArrowImage.tintColor = DSKitAsset.Colors.soptampGray500.color
+        self.balloonTailImageView.tintColor = DSKitAsset.Colors.soptampGray100.color
     }
     
     private func setLayout(sentence: String) {

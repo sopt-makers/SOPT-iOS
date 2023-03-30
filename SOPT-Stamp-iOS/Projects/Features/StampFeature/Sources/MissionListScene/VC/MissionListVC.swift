@@ -43,13 +43,13 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
         case .default:
             return CustomNavigationBar(self, type: .title)
                 .setTitle("전체 미션")
-                .setTitleTypoStyle(.h2)
+                .setTitleTypoStyle(.SoptampFont.h2)
                 .setTitleButtonMenu(menuItems: self.menuItems)
         case .ranking(let username, _, _):
             return CustomNavigationBar(self, type: .titleWithLeftButton)
                 .setTitle(username)
                 .setRightButton(.none)
-                .setTitleTypoStyle(.h2)
+                .setTitleTypoStyle(.SoptampFont.h2)
         }
     }()
     
@@ -72,11 +72,11 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
         if case let .ranking(_, sentence, _) = sceneType {
             lb.text = sentence
         }
-        lb.setTypoStyle(.subtitle1)
-        lb.textColor = DSKitAsset.Colors.gray900.color
+        lb.setTypoStyle(.SoptampFont.subtitle1)
+        lb.textColor = DSKitAsset.Colors.soptampGray900.color
         lb.numberOfLines = 2
         lb.textAlignment = .center
-        lb.backgroundColor = DSKitAsset.Colors.purple100.color
+        lb.backgroundColor = DSKitAsset.Colors.soptampPurple100.color
         lb.layer.cornerRadius = 9.adjustedH
         lb.clipsToBounds = true
         lb.setCharacterSpacing(0)
@@ -96,11 +96,11 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
     private lazy var rankingFloatingButton: UIButton = {
         let bt = UIButton()
         bt.layer.cornerRadius = 27.adjustedH
-        bt.backgroundColor = DSKitAsset.Colors.purple300.color
+        bt.backgroundColor = DSKitAsset.Colors.soptampPurple300.color
         bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .normal)
         bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .highlighted)
         bt.tintColor = .white
-        bt.titleLabel?.setTypoStyle(.h2)
+        bt.titleLabel?.setTypoStyle(.SoptampFont.h2)
         let attributedStr = NSMutableAttributedString(string: "랭킹 보기")
         let style = NSMutableParagraphStyle()
         attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))

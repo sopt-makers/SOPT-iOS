@@ -33,7 +33,7 @@ public class SignUpVC: UIViewController, SignUpViewControllable {
     
     private lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
         .setTitle(I18N.SignUp.signUp)
-        .setTitleTypoStyle(.h1)
+        .setTitleTypoStyle(.SoptampFont.h1)
     
     private let nickNameTextFieldView = CustomTextFieldView(type: .titleWithRightButton)
         .setTitle(I18N.SignUp.nickname)

@@ -26,7 +26,7 @@ public class PrivacyPolicyVC: UIViewController, PrivacyPolicyViewControllable {
     
     private let textView = UITextView().then {
         $0.text = I18N.ServiceUsagePolicy.privacyPolicy
-        $0.setTypoStyle(.subtitle3)
+        $0.setTypoStyle(.SoptampFont.subtitle3)
         $0.isEditable = false
         $0.showsVerticalScrollIndicator = false
         $0.setLineSpacing(lineSpacing: 5)
@@ -47,7 +47,7 @@ public class PrivacyPolicyVC: UIViewController, PrivacyPolicyViewControllable {
 extension PrivacyPolicyVC {
     
     private func setUI() {
-        self.view.backgroundColor = DSKitAsset.Colors.white.color
+        self.view.backgroundColor = DSKitAsset.Colors.soptampWhite.color
     }
     
     private func setLayout() {

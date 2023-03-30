@@ -21,7 +21,7 @@ public class Toast {
         let toastContainer = UIView()
         let toastLabel = UILabel()
         
-        toastContainer.backgroundColor = DSKitAsset.Colors.gray600.color
+        toastContainer.backgroundColor = DSKitAsset.Colors.soptampGray600.color
         toastContainer.alpha = 1
         toastContainer.layer.cornerRadius = 9
         toastContainer.clipsToBounds = true
@@ -29,7 +29,7 @@ public class Toast {
         
         toastLabel.textColor = .white
         toastLabel.textAlignment = .center
-        toastLabel.setTypoStyle(.caption1)
+        toastLabel.setTypoStyle(.SoptampFont.caption1)
         toastLabel.text = message
         toastLabel.clipsToBounds = true
         toastLabel.numberOfLines = 0

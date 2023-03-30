@@ -45,10 +45,10 @@ class SettingFooterView: UICollectionReusableView, UICollectionReusableViewRegis
     
     private func setUI() {
         self.withdrawButton.setTitle(I18N.Setting.withdraw, for: .normal)
-        self.withdrawButton.setTitleColor(DSKitAsset.Colors.gray400.color, for: .normal)
-        self.withdrawButton.titleLabel?.setTypoStyle(.caption1D)
+        self.withdrawButton.setTitleColor(DSKitAsset.Colors.soptampGray400.color, for: .normal)
+        self.withdrawButton.titleLabel?.setTypoStyle(.SoptampFont.caption1D)
         
-        self.underLineView.backgroundColor = DSKitAsset.Colors.gray400.color
+        self.underLineView.backgroundColor = DSKitAsset.Colors.soptampGray400.color
     }
     
     private func setLayout() {

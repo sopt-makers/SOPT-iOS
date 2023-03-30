@@ -57,7 +57,7 @@ public class SplashVC: UIViewController, SplashViewControllable {
 extension SplashVC {
     
     private func setUI() {
-        self.view.backgroundColor = DSKitAsset.Colors.white.color
+        self.view.backgroundColor = DSKitAsset.Colors.soptampWhite.color
     }
     
     private func setLayout() {

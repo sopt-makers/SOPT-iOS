@@ -43,7 +43,7 @@ public class ChartRectangleView: UIView {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFit
         iv.image = DSKitAsset.Assets.icStar.image.withRenderingMode(.alwaysTemplate)
-        iv.tintColor = DSKitAsset.Colors.purple100.color
+        iv.tintColor = DSKitAsset.Colors.soptampPurple100.color
         return iv
     }()
     
@@ -62,7 +62,7 @@ public class ChartRectangleView: UIView {
     private let scoreLabel: UILabel = {
         let label = UILabel()
         label.text = "100점"
-        label.setTypoStyle(.number2)
+        label.setTypoStyle(.SoptampFont.number2)
         label.partFontChange(targetString: "점", font: DSKitFontFamily.Pretendard.medium.font(size: 12))
         return label
     }()
@@ -70,7 +70,7 @@ public class ChartRectangleView: UIView {
     private let usernameLabel: UILabel = {
         let label = UILabel()
         label.text = "뉴비"
-        label.setTypoStyle(.h3)
+        label.setTypoStyle(.SoptampFont.h3)
         label.textColor = .black
         label.lineBreakMode = .byTruncatingTail
         label.setCharacterSpacing(0)
@@ -106,19 +106,19 @@ extension ChartRectangleView {
         switch viewLevel {
         case .rankOne:
             rankLabel.text = "1"
-            rankLabel.textColor = DSKitAsset.Colors.purple300.color
-            rectangleView.backgroundColor = DSKitAsset.Colors.purple200.color
-            setScoreLabel(by: DSKitAsset.Colors.purple300.color)
+            rankLabel.textColor = DSKitAsset.Colors.soptampPurple300.color
+            rectangleView.backgroundColor = DSKitAsset.Colors.soptampPurple200.color
+            setScoreLabel(by: DSKitAsset.Colors.soptampPurple300.color)
         case .rankTwo:
             rankLabel.text = "2"
-            rankLabel.textColor = DSKitAsset.Colors.pink300.color
-            rectangleView.backgroundColor = DSKitAsset.Colors.pink200.color
-            setScoreLabel(by: DSKitAsset.Colors.pink300.color)
+            rankLabel.textColor = DSKitAsset.Colors.soptampPink300.color
+            rectangleView.backgroundColor = DSKitAsset.Colors.soptampPink200.color
+            setScoreLabel(by: DSKitAsset.Colors.soptampPink300.color)
         case .rankThree:
             rankLabel.text = "3"
-            rankLabel.textColor = DSKitAsset.Colors.mint300.color
-            rectangleView.backgroundColor = DSKitAsset.Colors.mint200.color
-            setScoreLabel(by: DSKitAsset.Colors.mint300.color)
+            rankLabel.textColor = DSKitAsset.Colors.soptampMint300.color
+            rectangleView.backgroundColor = DSKitAsset.Colors.soptampMint200.color
+            setScoreLabel(by: DSKitAsset.Colors.soptampMint300.color)
         }
     }
     

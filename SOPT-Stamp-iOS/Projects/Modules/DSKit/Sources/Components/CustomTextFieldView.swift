@@ -50,11 +50,11 @@ public enum TextFieldViewState {
     var backgroundColor: UIColor {
         switch self {
         case .normal:
-            return DSKitAsset.Colors.gray50.color
+            return DSKitAsset.Colors.soptampGray50.color
         case .editing, .confirmAlert:
-            return DSKitAsset.Colors.white.color
+            return DSKitAsset.Colors.soptampWhite.color
         case .warningAlert:
-            return DSKitAsset.Colors.error100.color
+            return DSKitAsset.Colors.soptampError100.color
         }
     }
     
@@ -63,9 +63,9 @@ public enum TextFieldViewState {
         case .normal:
             return nil
         case .editing, .confirmAlert:
-            return DSKitAsset.Colors.purple300.color.cgColor
+            return DSKitAsset.Colors.soptampPurple300.color.cgColor
         case .warningAlert:
-            return DSKitAsset.Colors.error200.color.cgColor
+            return DSKitAsset.Colors.soptampError200.color.cgColor
         }
     }
     
@@ -74,9 +74,9 @@ public enum TextFieldViewState {
         case .normal, .editing:
             return nil
         case .confirmAlert:
-            return DSKitAsset.Colors.access300.color
+            return DSKitAsset.Colors.soptampAccess300.color
         case .warningAlert:
-            return DSKitAsset.Colors.error300.color
+            return DSKitAsset.Colors.soptampError300.color
         }
     }
 }
@@ -213,8 +213,8 @@ extension CustomTextFieldView {
         self.textField.attributedPlaceholder = NSAttributedString(
             string: placeholderText,
             attributes: [
-                .foregroundColor: SoptampColor.gray600.color,
-                .font: UIFont.caption1
+                .foregroundColor: SoptampColor.soptampGray600.color,
+                .font: UIFont.SoptampFont.caption1
             ]
         )
         return self
@@ -339,41 +339,41 @@ extension CustomTextFieldView {
 
 extension CustomTextFieldView {
     private func setUI() {
-        titleLabel.font = UIFont.subtitle1
-        titleLabel.textColor = SoptampColor.gray900.color
+        titleLabel.font = UIFont.SoptampFont.subtitle1
+        titleLabel.textColor = SoptampColor.soptampGray900.color
         
-        textFieldContainerView.backgroundColor = SoptampColor.gray50.color
+        textFieldContainerView.backgroundColor = SoptampColor.soptampGray50.color
         textFieldContainerView.clipsToBounds = true
 
         subTitleLabel.textAlignment = .left
-        subTitleLabel.font = UIFont.id
-        subTitleLabel.textColor = SoptampColor.gray400.color
+        subTitleLabel.font = UIFont.SoptampFont.id
+        subTitleLabel.textColor = SoptampColor.soptampGray400.color
         
         textField.backgroundColor = .clear
         textField.textColor = .black
-        textField.font = UIFont.caption1
+        textField.font = UIFont.SoptampFont.caption1
         textField.returnKeyType = .done
         
-        alertlabel.font = UIFont.caption3
-        alertlabel.textColor = SoptampColor.error300.color
+        alertlabel.font = UIFont.SoptampFont.caption3
+        alertlabel.textColor = SoptampColor.soptampError300.color
         alertlabel.isHidden = true
         
         rightButton.clipsToBounds = true
         rightButton.isEnabled = false
         
         rightButton.setBackgroundColor(
-            SoptampColor.purple200.color,
+            SoptampColor.soptampPurple200.color,
             for: .disabled
         )
         
         rightButton.setBackgroundColor(
-            SoptampColor.purple300.color,
+            SoptampColor.soptampPurple300.color,
             for: .normal
         )
         
         rightButton.setAttributedTitle(
             NSAttributedString(string: I18N.TextFieldView.verify,
-                               attributes: [.foregroundColor: SoptampColor.white.color, .font: UIFont.subtitle3]),
+                               attributes: [.foregroundColor: SoptampColor.soptampWhite.color, .font: UIFont.SoptampFont.subtitle3]),
             for: .normal
         )
     }

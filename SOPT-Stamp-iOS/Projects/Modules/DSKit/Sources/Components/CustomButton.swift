@@ -37,7 +37,7 @@ extension CustomButton {
     /// 버튼의 Title 변경
     @discardableResult
     public func changeTitle(attributedString: String) -> Self {
-        let string = NSAttributedString(string: attributedString, attributes: [.font: UIFont.h2, .foregroundColor: self.titleLabel?.textColor ?? .white])
+        let string = NSAttributedString(string: attributedString, attributes: [.font: UIFont.SoptampFont.h2, .foregroundColor: self.titleLabel?.textColor ?? .white])
         self.setAttributedTitle(string, for: .normal)
         return self
     }
@@ -50,7 +50,7 @@ extension CustomButton {
         self.setAttributedTitle(
             NSAttributedString(
                 string: self.titleLabel?.text ?? "",
-                attributes: [.font: UIFont.h2, .foregroundColor: textColor]),
+                attributes: [.font: UIFont.SoptampFont.h2, .foregroundColor: textColor]),
             for: .normal)
         
         return self
@@ -63,12 +63,12 @@ extension CustomButton {
     private func setUI(_ title: String) {
         self.layer.cornerRadius = 9
         
-        self.setBackgroundColor(DSKitAsset.Colors.purple300.color, for: .normal)
-        self.setBackgroundColor(DSKitAsset.Colors.purple200.color, for: .disabled)
+        self.setBackgroundColor(DSKitAsset.Colors.soptampPurple300.color, for: .normal)
+        self.setBackgroundColor(DSKitAsset.Colors.soptampPurple200.color, for: .disabled)
         self.setAttributedTitle(
             NSAttributedString(
                 string: title,
-                attributes: [.font: UIFont.h2, .foregroundColor: UIColor.white]
+                attributes: [.font: UIFont.SoptampFont.h2, .foregroundColor: UIColor.white]
             ),
             for: .normal
         )

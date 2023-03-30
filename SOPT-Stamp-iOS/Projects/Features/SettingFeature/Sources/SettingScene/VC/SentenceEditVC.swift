@@ -29,17 +29,17 @@ public class SentenceEditVC: UIViewController, SentenceEditViewControllable {
     // MARK: - UI Components
     
     private lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
-        .setTitleTypoStyle(.h2)
+        .setTitleTypoStyle(.SoptampFont.h2)
         .setTitle(I18N.Setting.SentenceEdit.sentenceEdit)
     
     private lazy var textView: UITextView = {
         let tv = UITextView()
-        tv.backgroundColor = DSKitAsset.Colors.white.color
-        tv.textColor = DSKitAsset.Colors.gray900.color
-        tv.setTypoStyle(.subtitle1)
+        tv.backgroundColor = DSKitAsset.Colors.soptampWhite.color
+        tv.textColor = DSKitAsset.Colors.soptampGray900.color
+        tv.setTypoStyle(.SoptampFont.subtitle1)
         tv.layer.cornerRadius = 9.adjustedH
         tv.layer.borderWidth = 1.adjustedH
-        tv.layer.borderColor = DSKitAsset.Colors.purple300.color.cgColor
+        tv.layer.borderColor = DSKitAsset.Colors.soptampPurple300.color.cgColor
         tv.isEditable = true
         tv.textContainerInset = UIEdgeInsets(top: 13, left: 16, bottom: 13, right: 16)
         tv.delegate = self
