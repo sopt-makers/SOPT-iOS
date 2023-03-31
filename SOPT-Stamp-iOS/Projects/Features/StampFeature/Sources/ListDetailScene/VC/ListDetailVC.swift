@@ -98,7 +98,7 @@ public class ListDetailVC: UIViewController, ListDetailViewControllable {
     
     // MARK: - UI Components
     
-    private lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
+    private lazy var naviBar = STNavigationBar(self, type: .titleWithLeftButton)
         .setTitle(I18N.ListDetail.mission)
         .setRightButton(.none)
     private let scrollView = UIScrollView()
@@ -109,7 +109,7 @@ public class ListDetailVC: UIViewController, ListDetailViewControllable {
     private let imagePlaceholderLabel = UILabel()
     private let textView = UITextView()
     private let dateLabel = UILabel()
-    private lazy var bottomButton = CustomButton(title: sceneType == .none ? I18N.ListDetail.missionComplete : I18N.ListDetail.editComplete)
+    private lazy var bottomButton = STCustomButton(title: sceneType == .none ? I18N.ListDetail.missionComplete : I18N.ListDetail.editComplete)
         .setEnabled(false)
         .setColor(bgColor: starLevel.pointColor,
                   disableColor: starLevel.disableColor,

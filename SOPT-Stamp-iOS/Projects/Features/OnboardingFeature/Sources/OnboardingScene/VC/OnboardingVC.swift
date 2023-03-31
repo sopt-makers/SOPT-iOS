@@ -54,7 +54,7 @@ public class OnboardingVC: UIViewController, OnboardingViewControllable {
         $0.isUserInteractionEnabled = false
     }
     
-    private lazy var startButton = CustomButton(title: I18N.Onboarding.start).setEnabled(false).then {
+    private lazy var startButton = STCustomButton(title: I18N.Onboarding.start).setEnabled(false).then {
         $0.addTarget(self, action: #selector(startButtonDidTap), for: .touchUpInside)
     }
 

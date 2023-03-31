@@ -25,7 +25,7 @@ final class RankingChartCVC: UICollectionViewCell, UICollectionViewRegisterable 
     
     // MARK: - UI Components
     
-    private var balloonViews: [SpeechBalloonView] = []
+    private var balloonViews: [STSpeechBalloonView] = []
     
     private let chartStackView: UIStackView = {
         let st = UIStackView()
@@ -61,7 +61,7 @@ extension RankingChartCVC {
         self.addSubviews(chartStackView)
         
         [RectangleViewRank.rankTwo, RectangleViewRank.rankOne, RectangleViewRank.rankThree].forEach { level in
-            let rectangleView = ChartRectangleView.init(level: level)
+            let rectangleView = STChartRectangleView.init(level: level)
             rectangleView.snp.makeConstraints { make in
                 make.width.equalTo(90.adjusted)
             }
@@ -76,16 +76,16 @@ extension RankingChartCVC {
         }
     }
     
-    private func setGesture(_ view: ChartRectangleView) {
+    private func setGesture(_ view: STChartRectangleView) {
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(showBalloonForView(_:)))
         view.addGestureRecognizer(tap)
     }
     
     @objc
     private func showBalloonForView(_ sender: UITapGestureRecognizer) {
-        guard let senderView = sender.view as? ChartRectangleView else { return }
+        guard let senderView = sender.view as? STChartRectangleView else { return }
         for (chart, balloon) in zip(chartStackView.arrangedSubviews, balloonViews) {
-            guard let chartView = chart as? ChartRectangleView else { return }
+            guard let chartView = chart as? STChartRectangleView else { return }
             balloon.isHidden = (chartView != senderView)
         }
     }
@@ -116,14 +116,14 @@ extension RankingChartCVC {
         
         // 말풍선 text 설정
         for (index, model) in balloonModels.enumerated() {
-            var balloonView: SpeechBalloonView
+            var balloonView: STSpeechBalloonView
             if index == 0 {
-                balloonView = SpeechBalloonView.init(level: .rankTwo, sentence: model.sentence)
+                balloonView = STSpeechBalloonView.init(level: .rankTwo, sentence: model.sentence)
                 balloonView.isHidden = true
             } else if index == 1 {
-                balloonView = SpeechBalloonView.init(level: .rankOne, sentence: model.sentence)
+                balloonView = STSpeechBalloonView.init(level: .rankOne, sentence: model.sentence)
             } else {
-                balloonView = SpeechBalloonView.init(level: .rankThree, sentence: model.sentence)
+                balloonView = STSpeechBalloonView.init(level: .rankThree, sentence: model.sentence)
                 balloonView.isHidden = true
             }
             balloonViews.append(balloonView)
@@ -142,14 +142,14 @@ extension RankingChartCVC {
         }
     }
     
-    private func setBalloonGesture(_ view: SpeechBalloonView) {
+    private func setBalloonGesture(_ view: STSpeechBalloonView) {
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(tappedGetBalloonModel(_:)))
         view.addGestureRecognizer(tap)
     }
     
     @objc
     private func tappedGetBalloonModel(_ sender: UITapGestureRecognizer) {
-        guard let senderView = sender.view as? SpeechBalloonView,
+        guard let senderView = sender.view as? STSpeechBalloonView,
               let balloonIndex = balloonViews.firstIndex(of: senderView) else { return }
         let model = models[balloonIndex]
         _ = self.balloonTapped?(model)
@@ -157,7 +157,7 @@ extension RankingChartCVC {
     
     private func setChartData(chartRectangleModel: [RankingModel]) {
         for (index, rectangle) in chartStackView.subviews.enumerated() {
-            guard let chartRectangle = rectangle as? ChartRectangleView else { return }
+            guard let chartRectangle = rectangle as? STChartRectangleView else { return }
             chartRectangle.setData(score: chartRectangleModel[index].score,
                                    username: chartRectangleModel[index].username)
         }

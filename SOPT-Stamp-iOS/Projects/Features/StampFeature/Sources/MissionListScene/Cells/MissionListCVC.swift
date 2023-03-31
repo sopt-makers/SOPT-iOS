@@ -147,8 +147,8 @@ final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
         return iv
     }()
     
-    private lazy var starView: StarView = {
-        let view = StarView(starScale: 15.adjusted, spacing: 10.adjusted, level: cellType.starLevel)
+    private lazy var starView: STStarView = {
+        let view = STStarView(starScale: 15.adjusted, spacing: 10.adjusted, level: cellType.starLevel)
         return view
     }()
     

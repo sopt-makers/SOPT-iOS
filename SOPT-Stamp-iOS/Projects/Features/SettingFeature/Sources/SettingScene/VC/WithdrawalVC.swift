@@ -25,7 +25,7 @@ public class WithdrawalVC: UIViewController, WithdrawalViewControllable {
     
     // MARK: - UI Components
 
-    private lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
+    private lazy var naviBar = STNavigationBar(self, type: .titleWithLeftButton)
         .setTitle(I18N.Setting.Withdrawal.withdrawal)
     
     private let cautionLabel = UILabel().then {

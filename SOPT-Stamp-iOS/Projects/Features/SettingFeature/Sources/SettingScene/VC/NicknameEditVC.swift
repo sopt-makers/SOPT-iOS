@@ -28,17 +28,17 @@ public class NicknameEditVC: UIViewController, NicknameEditViewControllable {
     
     // MARK: - UI Components
     
-    private lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
+    private lazy var naviBar = STNavigationBar(self, type: .titleWithLeftButton)
         .setTitleTypoStyle(.SoptampFont.h2)
         .setTitle(I18N.Setting.NicknameEdit.nicknameEdit)
     
-    private let nicknameTextFieldView = CustomTextFieldView(type: .plain)
+    private let nicknameTextFieldView = STTextFieldView(type: .plain)
         .setTitle(I18N.SignUp.nickname)
         .setMaxLength(10)
         .setPlaceholder(I18N.SignUp.nicknameTextFieldPlaceholder)
         .setAlertLabelEnabled(I18N.SignUp.duplicatedNickname)
     
-    private let editNicknameButton = CustomButton(title: I18N.Setting.NicknameEdit.nicknameEdit)
+    private let editNicknameButton = STCustomButton(title: I18N.Setting.NicknameEdit.nicknameEdit)
         .setEnabled(false)
     
     // MARK: - View Life Cycle

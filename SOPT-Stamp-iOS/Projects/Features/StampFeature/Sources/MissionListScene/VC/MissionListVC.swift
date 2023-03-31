@@ -38,15 +38,15 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
     
     // MARK: - UI Components
     
-    lazy var naviBar: CustomNavigationBar = {
+    lazy var naviBar: STNavigationBar = {
         switch sceneType {
         case .default:
-            return CustomNavigationBar(self, type: .title)
+            return STNavigationBar(self, type: .title)
                 .setTitle("전체 미션")
                 .setTitleTypoStyle(.SoptampFont.h2)
                 .setTitleButtonMenu(menuItems: self.menuItems)
         case .ranking(let username, _, _):
-            return CustomNavigationBar(self, type: .titleWithLeftButton)
+            return STNavigationBar(self, type: .titleWithLeftButton)
                 .setTitle(username)
                 .setRightButton(.none)
                 .setTitleTypoStyle(.SoptampFont.h2)

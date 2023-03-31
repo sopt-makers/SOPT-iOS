@@ -12,7 +12,7 @@ import Core
 
 import SnapKit
 
-public class StarView: UIView {
+public class STStarView: UIView {
     
     // MARK: - Properties
     
@@ -52,7 +52,7 @@ public class StarView: UIView {
 
 // MARK: - Methods
 
-extension StarView {
+extension STStarView {
     
     private func setLayout() {
         self.addSubviews(starStackView)
