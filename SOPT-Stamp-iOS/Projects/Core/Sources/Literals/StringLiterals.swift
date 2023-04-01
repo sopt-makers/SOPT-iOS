@@ -147,6 +147,18 @@ public struct I18N {
         public static let active = "기 활동 중"
         public static let inactive = "기 수료"
         public static let visitorGuide = "SOPT를 더 알고 싶다면, 둘러보세요"
+        public static let officialHomePage = "Sopt/n공식홈페이지"
+        public static let review = "활동후기"
+        public static let project = "프로젝트"
+        public static let faq = "FAQ"
+        public static let youtube = "YOUTUBE"
+        public static let attendance = "SOPT 출석"
+        public static let attend = "출석 인증하기"
+        public static let member = "멤버"
+        public static let notice = "SOPT 공지"
+        public static let checkGeneralNotice = "전체 공지 확인하기"
+        public static let generalNotice = "전체 공지"
+        public static let crew = "크루"
     }
 }
     
