@@ -16,7 +16,7 @@ extension MainVC {
             switch MainViewSectionLayoutKind.type(sectionIndex) {
             case .userHistory: return self.createUserInfoSection()
             case .mainService: return self.createMainServiceSection()
-            case .otherService: return self.createMainServiceSection()
+            case .otherService: return self.createOtherServiceSection()
             case .appService: return self.createMainServiceSection()
             }
         }
@@ -63,7 +63,21 @@ extension MainVC {
         containerGroup.interItemSpacing = .fixed(12)
         
         let section = NSCollectionLayoutSection(group: containerGroup)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 16, leading: 20, bottom: 16, trailing: 20)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 16, leading: 20, bottom: 12, trailing: 20)
+        
+        return section
+    }
+    
+    private func createOtherServiceSection() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(218), heightDimension: .fractionalHeight(1.0))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(230), heightDimension: .absolute(90))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 16, trailing: 0)
+        section.orthogonalScrollingBehavior = .groupPaging
         
         return section
     }

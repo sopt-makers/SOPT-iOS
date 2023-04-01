@@ -84,21 +84,25 @@ extension MainServiceCVC {
 // MARK: - Methods
 
 extension MainServiceCVC {
-    func initCell(serviceType: ServiceType, isMainService: Bool) {
+    func initCell(serviceType: ServiceType, isMainFirstService: Bool, isOtherService: Bool) {
         serviceIcon.image = serviceType.icon
         serviceTitleLabel.text = serviceType.title
         
         if let description = serviceType.description {
             serviceDescriptionLabel.isHidden = false
             serviceDescriptionLabel.text = description
+            containerStackView.setCustomSpacing(4, after: serviceTitleLabel)
         } else {
             serviceDescriptionLabel.isHidden = true
+            containerStackView.setCustomSpacing(0, after: serviceTitleLabel)
         }
         
-        if isMainService {
+        if isMainFirstService {
             self.backgroundColor = DSKitAsset.Colors.purple100.color
         } else {
             self.backgroundColor = DSKitAsset.Colors.black60.color
         }
+        
+        serviceDescriptionLabel.isHidden = isOtherService
     }
 }

@@ -136,7 +136,7 @@ extension MainVC: UICollectionViewDataSource {
         switch section {
         case 0: return 1
         case 1: return 4
-        case 2: return 0
+        case 2: return 3
         case 3: return 0
         default: return 0
         }
@@ -159,7 +159,11 @@ extension MainVC: UICollectionViewDataSource {
                 return cell
             }
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className, for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }
-            cell.initCell(serviceType: serviceList[indexPath.item-1], isMainService: indexPath.item==1)
+            cell.initCell(serviceType: serviceList[indexPath.item-1], isMainFirstService: indexPath.item==1, isOtherService: false)
+            return cell
+        case 2:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className, for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }
+            cell.initCell(serviceType: serviceList[indexPath.item], isMainFirstService: false, isOtherService: true)
             return cell
         default:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className, for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }
