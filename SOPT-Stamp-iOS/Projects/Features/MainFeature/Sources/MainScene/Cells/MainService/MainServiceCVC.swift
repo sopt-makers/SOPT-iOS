@@ -27,6 +27,7 @@ final class MainServiceCVC: UICollectionViewCell {
         label.font = UIFont.Main.headline2
         label.textColor = DSKitAsset.Colors.white100.color
         label.textAlignment = .left
+        label.numberOfLines = 2
         return label
     }()
     

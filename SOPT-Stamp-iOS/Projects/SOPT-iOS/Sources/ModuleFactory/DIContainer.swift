@@ -42,11 +42,10 @@ extension DIContainer: Features {
     func makeMainVC(userType: Core.UserType) -> MainFeatureInterface.MainViewControllable {
         let repository = MainRepository(service: userService)
         let useCase = DefaultMainUseCase(repository: repository)
-        let viewModel = MainViewModel(useCase: useCase)
+        let viewModel = MainViewModel(useCase: useCase, userType: userType)
         let mainVC = MainVC()
         mainVC.factory = self
         mainVC.viewModel = viewModel
-        mainVC.userType = userType
         return mainVC
     }
     

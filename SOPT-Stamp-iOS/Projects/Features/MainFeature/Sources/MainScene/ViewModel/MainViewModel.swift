@@ -13,8 +13,14 @@ import Domain
 
 public class MainViewModel: ViewModelType {
 
+    // MARK: - Properties
+    
     private let useCase: MainUseCase
     private var cancelBag = CancelBag()
+    
+    var userType: UserType = .visitor
+    var mainServiceList: [ServiceType] = [.officialHomepage, .review, .project]
+    var otherServiceList: [ServiceType] = [.faq, .youtube]
   
     // MARK: - Inputs
     
@@ -30,10 +36,14 @@ public class MainViewModel: ViewModelType {
     
     // MARK: - init
   
-    public init(useCase: MainUseCase) {
+    public init(useCase: MainUseCase, userType: UserType) {
         self.useCase = useCase
+        self.userType = userType
+        setServiceList(with: userType)
     }
 }
+
+// MARK: - Methods
 
 extension MainViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
@@ -46,5 +56,19 @@ extension MainViewModel {
   
     private func bindOutput(output: Output, cancelBag: CancelBag) {
     
+    }
+    
+    private func setServiceList(with userType: UserType) {
+        switch userType {
+        case .visitor:
+            self.mainServiceList = [.officialHomepage, .review, .project]
+            self.otherServiceList = [.faq, .youtube]
+        case .active:
+            self.mainServiceList = [.attendance, .member, .project]
+            self.otherServiceList = [.notice, .crew]
+        case .inactive:
+            self.mainServiceList = [.notice, .member, .project]
+            self.otherServiceList = [.crew, .officialHomepage]
+        }
     }
 }

@@ -22,16 +22,10 @@ public class MainVC: UIViewController, MainViewControllable {
     
     // MARK: - Properties
     
-    // 테스트용 임시 변수
-    private let serviceList: [ServiceType] = [.attendance, .member, .project]
-    // 서버 연결 시 지울 것
-    
     public var viewModel: MainViewModel!
     public var factory: StampFeatureViewBuildable!
     private var cancelBag = CancelBag()
     
-    public var userType: UserType = .visitor
-  
     // MARK: - UI Components
     
     private let naviBar = MainNavigationBar()
@@ -125,7 +119,7 @@ extension MainVC: UICollectionViewDataSource {
                                                   withReuseIdentifier: UserHistoryHeaderView.className,
                                                   for: indexPath) as? UserHistoryHeaderView
             else { return UICollectionReusableView() }
-            headerView.initCell(userType: userType, name: "이솝트", days: "1234")
+            headerView.initCell(userType: viewModel.userType, name: "이솝트", days: "1234")
             return headerView
         default:
             return UICollectionReusableView()
@@ -135,8 +129,8 @@ extension MainVC: UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
         case 0: return 1
-        case 1: return 4
-        case 2: return 3
+        case 1: return viewModel.mainServiceList.count + 1 // 상단 한줄 공지 Cell을 위해 +1
+        case 2: return viewModel.otherServiceList.count
         case 3: return 0
         default: return 0
         }
@@ -148,22 +142,22 @@ extension MainVC: UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UserHistoryCVC.className,
                                                                 for: indexPath) as? UserHistoryCVC
             else { return UICollectionViewCell() }
-            cell.initCell(userType: self.userType, recentHistory: 32, allHistory: [31, 30, 29, 28, 27, 26, 25])
+            cell.initCell(userType: viewModel.userType, recentHistory: 32, allHistory: [31, 30, 29, 28, 27, 26, 25])
             return cell
         case 1:
             if indexPath.item == 0 {
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BriefNoticeCVC.className,
                                                                     for: indexPath) as? BriefNoticeCVC
                 else { return UICollectionViewCell() }
-                cell.initCell(userType: userType, text: "SOPT 세미나 공지")
+                cell.initCell(userType: viewModel.userType, text: "SOPT 세미나 공지")
                 return cell
             }
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className, for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }
-            cell.initCell(serviceType: serviceList[indexPath.item-1], isMainFirstService: indexPath.item==1, isOtherService: false)
+            cell.initCell(serviceType: viewModel.mainServiceList[indexPath.item-1], isMainFirstService: indexPath.item==1, isOtherService: false)
             return cell
         case 2:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className, for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }
-            cell.initCell(serviceType: serviceList[indexPath.item], isMainFirstService: false, isOtherService: true)
+            cell.initCell(serviceType: viewModel.otherServiceList[indexPath.item], isMainFirstService: false, isOtherService: true)
             return cell
         default:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className, for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }
