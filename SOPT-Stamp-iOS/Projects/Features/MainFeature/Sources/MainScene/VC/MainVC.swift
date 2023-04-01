@@ -15,11 +15,16 @@ import Combine
 import SnapKit
 import Then
 
-public class MainVC: UIViewController {
+import MainFeatureInterface
+import StampFeatureInterface
+
+public class MainVC: UIViewController, MainViewControllable {
     
     // MARK: - Properties
     
     public var viewModel: MainViewModel!
+    public var factory: StampFeatureViewBuildable!
+    
     private var cancelBag = CancelBag()
   
     // MARK: - UI Components
@@ -29,16 +34,28 @@ public class MainVC: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.bindViewModels()
+        self.setUI()
+        self.setLayout()
+    }
+}
+
+// MARK: - UI & Layout
+
+extension MainVC {
+    private func setUI() {
+        view.backgroundColor = .green
+    }
+    
+    private func setLayout() {
+        
     }
 }
 
 // MARK: - Methods
 
 extension MainVC {
-  
     private func bindViewModels() {
         let input = MainViewModel.Input()
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
     }
-
 }
