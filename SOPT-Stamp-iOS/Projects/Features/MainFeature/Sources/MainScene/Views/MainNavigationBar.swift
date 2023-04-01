@@ -66,7 +66,7 @@ extension MainNavigationBar {
         logoImageView.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
             make.leading.equalToSuperview().inset(20)
-            make.width.equalTo(logoImageView.snp.height)
+            make.width.equalTo(72)
         }
         
         rightItemsStackView.snp.makeConstraints { make in

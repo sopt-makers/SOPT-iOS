@@ -36,7 +36,7 @@ public class MainVC: UIViewController, MainViewControllable {
       cv.isScrollEnabled = true
       cv.showsHorizontalScrollIndicator = false
       cv.showsVerticalScrollIndicator = false
-      cv.contentInset = .zero
+      cv.contentInset = UIEdgeInsets(top: 16, left: 0, bottom: 0, right: 0)
       cv.backgroundColor = .clear
       return cv
     }()
@@ -127,7 +127,7 @@ extension MainVC: UICollectionViewDataSource {
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
-        case 0: return 2
+        case 0: return 1
         case 1: return 4
         case 2: return 4
         case 3: return 4
