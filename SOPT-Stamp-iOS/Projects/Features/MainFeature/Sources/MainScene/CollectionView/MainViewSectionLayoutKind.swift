@@ -9,7 +9,12 @@
 import Foundation
 
 enum MainViewSectionLayoutKind: Int, CaseIterable {
-    case userInfo
+    case userHistory
     case mainService
+    case otherService
     case appService
+    
+    static func type(_ index: Int) -> MainViewSectionLayoutKind {
+        return self.allCases[index]
+    }
 }

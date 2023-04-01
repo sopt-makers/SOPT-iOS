@@ -32,7 +32,7 @@ public class MainVC: UIViewController, MainViewControllable {
     private let naviBar = MainNavigationBar()
     
     private lazy var collectionView: UICollectionView = {
-      let cv = UICollectionView(frame: .zero, collectionViewLayout: self.getLayout())
+      let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
       cv.isScrollEnabled = true
       cv.showsHorizontalScrollIndicator = false
       cv.showsVerticalScrollIndicator = false
@@ -62,16 +62,16 @@ extension MainVC {
     }
     
     private func setLayout() {
-        view.addSubviews(naviBar)
+        view.addSubviews(naviBar, collectionView)
+        
         naviBar.snp.makeConstraints { make in
             make.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)
         }
-    }
-    
-    private func getLayout() -> UICollectionViewCompositionalLayout {
-        UICollectionViewCompositionalLayout(sectionProvider: { sectionIndex, env in
-            return NSCollectionLayoutSection()
-        })
+        
+        collectionView.snp.makeConstraints { make in
+            make.top.equalTo(naviBar.snp.bottom)
+            make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
+        }
     }
 }
 
@@ -89,6 +89,9 @@ extension MainVC {
     }
     
     private func registerCells() {
+        self.collectionView.register(UserHistoryHeaderView.self,
+                                     forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                     withReuseIdentifier: UserHistoryHeaderView.className)
         self.collectionView.register(MainServiceCVC.self, forCellWithReuseIdentifier: MainServiceCVC.className)
     }
 }
@@ -106,11 +109,34 @@ extension MainVC: UICollectionViewDataSource {
         return 4
     }
     
+    public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard kind == UICollectionView.elementKindSectionHeader else { return UICollectionReusableView() }
+        switch indexPath.section {
+        case 0:
+            guard let headerView = collectionView
+                .dequeueReusableSupplementaryView(ofKind: kind,
+                                                  withReuseIdentifier: UserHistoryHeaderView.className,
+                                                  for: indexPath) as? UserHistoryHeaderView
+            else { return UICollectionReusableView() }
+            headerView.initCell(name: "이솝트", days: "1234")
+            return headerView
+        default:
+            return UICollectionReusableView()
+        }
+    }
+    
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
+        switch section {
+        case 0: return 2
+        case 1: return 4
+        case 2: return 4
+        case 3: return 4
+        default: return 1
+        }
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        return UICollectionViewCell()
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className, for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }
+        return cell
     }
 }
