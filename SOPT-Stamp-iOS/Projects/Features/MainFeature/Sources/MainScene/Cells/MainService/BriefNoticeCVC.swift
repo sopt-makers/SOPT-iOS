@@ -69,6 +69,7 @@ extension BriefNoticeCVC {
         
         containerView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+            make.height.equalTo(44)
         }
         
         noticeIconImageView.snp.makeConstraints { make in
@@ -88,5 +89,12 @@ extension BriefNoticeCVC {
             make.trailing.equalToSuperview()
             make.width.equalTo(moreNoticeButton.snp.height)
         }
+    }
+}
+
+// MARK: - Methods
+extension BriefNoticeCVC {
+    func initCell(text: String) {
+        self.noticeLabel.text = text
     }
 }

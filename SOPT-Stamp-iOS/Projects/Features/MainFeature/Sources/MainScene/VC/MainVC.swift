@@ -94,6 +94,7 @@ extension MainVC {
                                      forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                      withReuseIdentifier: UserHistoryHeaderView.className)
         self.collectionView.register(UserHistoryCVC.self, forCellWithReuseIdentifier: UserHistoryCVC.className)
+        self.collectionView.register(BriefNoticeCVC.self, forCellWithReuseIdentifier: BriefNoticeCVC.className)
         self.collectionView.register(MainServiceCVC.self, forCellWithReuseIdentifier: MainServiceCVC.className)
     }
 }
@@ -131,17 +132,29 @@ extension MainVC: UICollectionViewDataSource {
         switch section {
         case 0: return 1
         case 1: return 4
-        case 2: return 4
-        case 3: return 4
-        default: return 1
+        case 2: return 0
+        case 3: return 0
+        default: return 0
         }
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch indexPath.section {
         case 0:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UserHistoryCVC.className, for: indexPath) as? UserHistoryCVC else { return UICollectionViewCell() }
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UserHistoryCVC.className,
+                                                                for: indexPath) as? UserHistoryCVC
+            else { return UICollectionViewCell() }
             cell.initCell(userType: self.userType, recentHistory: 32, allHistory: [31, 30, 29, 28, 27, 26, 25])
+            return cell
+        case 1:
+            if indexPath.item == 0 {
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BriefNoticeCVC.className,
+                                                                    for: indexPath) as? BriefNoticeCVC
+                else { return UICollectionViewCell() }
+                cell.initCell(text: "SOPT 세미나 공지")
+                return cell
+            }
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className, for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }
             return cell
         default:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className, for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }
