@@ -151,7 +151,7 @@ extension MainVC: UICollectionViewDataSource {
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BriefNoticeCVC.className,
                                                                     for: indexPath) as? BriefNoticeCVC
                 else { return UICollectionViewCell() }
-                cell.initCell(text: "SOPT 세미나 공지")
+                cell.initCell(userType: userType, text: "SOPT 세미나 공지")
                 return cell
             }
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className, for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }

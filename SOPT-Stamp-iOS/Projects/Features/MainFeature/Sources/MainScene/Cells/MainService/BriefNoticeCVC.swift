@@ -15,6 +15,15 @@ final class BriefNoticeCVC: UICollectionViewCell {
     
     // MARK: - UI Components
     
+    private let guideForVisitorLabel: UILabel = {
+        let label = UILabel()
+        label.text = I18N.Main.visitorGuide
+        label.font = UIFont.Main.headline1
+        label.textColor = DSKitAsset.Colors.white100.color
+        label.textAlignment = .left
+        return label
+    }()
+    
     private let containerView: UIView = {
         let view = UIView()
         view.backgroundColor = DSKitAsset.Colors.black60.color
@@ -48,7 +57,6 @@ final class BriefNoticeCVC: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.setUI()
-        self.setLayout()
     }
     
     required init?(coder: NSCoder) {
@@ -90,11 +98,30 @@ extension BriefNoticeCVC {
             make.width.equalTo(moreNoticeButton.snp.height)
         }
     }
+    
+    private func setLayoutForVisitor() {
+        self.subviews.forEach {
+            $0.removeFromSuperview()
+        }
+        
+        self.addSubviews(guideForVisitorLabel)
+        
+        guideForVisitorLabel.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.height.equalTo(25)
+        }
+    }
 }
 
 // MARK: - Methods
+
 extension BriefNoticeCVC {
-    func initCell(text: String) {
+    func initCell(userType: UserType, text: String) {
+        guard userType != .visitor else {
+            setLayoutForVisitor()
+            return
+        }
+        self.setLayout()
         self.noticeLabel.text = text
     }
 }
