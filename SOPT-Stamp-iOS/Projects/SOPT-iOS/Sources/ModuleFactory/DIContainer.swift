@@ -46,6 +46,7 @@ extension DIContainer: Features {
         let mainVC = MainVC()
         mainVC.factory = self
         mainVC.viewModel = viewModel
+        mainVC.userType = userType
         return mainVC
     }
     

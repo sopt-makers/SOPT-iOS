@@ -24,8 +24,9 @@ public class MainVC: UIViewController, MainViewControllable {
     
     public var viewModel: MainViewModel!
     public var factory: StampFeatureViewBuildable!
-    
     private var cancelBag = CancelBag()
+    
+    public var userType: UserType = .visitor
   
     // MARK: - UI Components
     
@@ -92,6 +93,7 @@ extension MainVC {
         self.collectionView.register(UserHistoryHeaderView.self,
                                      forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                      withReuseIdentifier: UserHistoryHeaderView.className)
+        self.collectionView.register(UserHistoryCVC.self, forCellWithReuseIdentifier: UserHistoryCVC.className)
         self.collectionView.register(MainServiceCVC.self, forCellWithReuseIdentifier: MainServiceCVC.className)
     }
 }
@@ -118,7 +120,7 @@ extension MainVC: UICollectionViewDataSource {
                                                   withReuseIdentifier: UserHistoryHeaderView.className,
                                                   for: indexPath) as? UserHistoryHeaderView
             else { return UICollectionReusableView() }
-            headerView.initCell(name: "이솝트", days: "1234")
+            headerView.initCell(userType: userType, name: "이솝트", days: "1234")
             return headerView
         default:
             return UICollectionReusableView()
@@ -136,7 +138,14 @@ extension MainVC: UICollectionViewDataSource {
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className, for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }
-        return cell
+        switch indexPath.section {
+        case 0:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UserHistoryCVC.className, for: indexPath) as? UserHistoryCVC else { return UICollectionViewCell() }
+            cell.initCell(userType: self.userType, recentHistory: 32, allHistory: [31, 30, 29, 28, 27, 26, 25])
+            return cell
+        default:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className, for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }
+            return cell
+        }
     }
 }

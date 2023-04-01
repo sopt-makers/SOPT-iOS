@@ -52,17 +52,27 @@ extension UserHistoryHeaderView {
         }
     }
     
-    func initCell(name: String, days: String) {
+    func initCell(userType: UserType, name: String, days: String) {
         let text = NSMutableAttributedString(string: name,
                                              attributes: [
                                                 .foregroundColor: DSKitAsset.Colors.white100.color,
                                                 .font: UIFont.Main.display1
                                              ])
-        text.append(NSAttributedString(string: " 님은 \nSopt와 D+\(days)일째",
-                                       attributes: [
-                                        .foregroundColor: DSKitAsset.Colors.white100.color,
-                                            .font: UIFont.Main.display1]
-                                      ))
+        
+        if userType == .visitor {
+            text.append(NSAttributedString(string: " 님, \nSopt의 열정이 되어주세요!",
+                                           attributes: [
+                                            .foregroundColor: DSKitAsset.Colors.white100.color,
+                                                .font: UIFont.Main.display1]
+                                          ))
+        } else {
+            text.append(NSAttributedString(string: " 님은 \nSopt와 D+\(days)일째",
+                                           attributes: [
+                                            .foregroundColor: DSKitAsset.Colors.white100.color,
+                                                .font: UIFont.Main.display1]
+                                          ))
+        }
+
         self.userInfoLabel.attributedText = text
     }
 }

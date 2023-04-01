@@ -8,6 +8,32 @@
 
 import UIKit
 
-class AppServiceCVC: UICollectionViewCell {
+import Core
+import DSKit
+
+final class AppServiceCVC: UICollectionViewCell {
     
+    // MARK: - initialization
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.setUI()
+        self.setLayout()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+// MARK: - UI & Layouts
+
+extension AppServiceCVC {
+    private func setUI() {
+        self.backgroundColor = .clear
+    }
+    
+    private func setLayout() {
+        
+    }
 }

@@ -141,6 +141,12 @@ public struct I18N {
             public static let withdrawalSuccess = "탈퇴처리 되었습니다"
         }
     }
+    
+    public struct Main {
+        public static let visitor = "비회원"
+        public static let active = "기 활동 중"
+        public static let inactive = "기 수료"
+    }
 }
     
 extension I18N {
