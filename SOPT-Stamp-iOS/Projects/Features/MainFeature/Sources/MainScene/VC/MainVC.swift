@@ -28,6 +28,8 @@ public class MainVC: UIViewController, MainViewControllable {
     private var cancelBag = CancelBag()
   
     // MARK: - UI Components
+    
+    private let naviBar = MainNavigationBar()
   
     // MARK: - View Life Cycle
     
@@ -43,11 +45,15 @@ public class MainVC: UIViewController, MainViewControllable {
 
 extension MainVC {
     private func setUI() {
-        view.backgroundColor = .green
+        self.navigationController?.isNavigationBarHidden = true
+        view.backgroundColor = DSKitAsset.Colors.black100.color
     }
     
     private func setLayout() {
-        
+        view.addSubviews(naviBar)
+        naviBar.snp.makeConstraints { make in
+            make.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)
+        }
     }
 }
 
