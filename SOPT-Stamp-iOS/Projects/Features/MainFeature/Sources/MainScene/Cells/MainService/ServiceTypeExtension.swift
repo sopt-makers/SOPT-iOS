@@ -34,4 +34,38 @@ extension ServiceType {
             return DSKitAsset.Assets.icCrew.image
         }
     }
+    
+    var title: String {
+        switch self {
+        case .officialHomepage:
+            return I18N.Main.officialHomePage
+        case .review:
+            return I18N.Main.review
+        case .project:
+            return I18N.Main.project
+        case .faq:
+            return I18N.Main.faq
+        case .youtube:
+            return I18N.Main.youtube
+        case .attendance:
+            return I18N.Main.attendance
+        case .member:
+            return I18N.Main.member
+        case .notice:
+            return I18N.Main.notice
+        case .crew:
+            return I18N.Main.crew
+        }
+    }
+    
+    var description: String? {
+        switch self {
+        case .attendance:
+            return I18N.Main.attend
+        case .notice:
+            return I18N.Main.checkGeneralNotice
+        default:
+            return nil
+        }
+    }
 }

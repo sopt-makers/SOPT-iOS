@@ -22,6 +22,10 @@ public class MainVC: UIViewController, MainViewControllable {
     
     // MARK: - Properties
     
+    // 테스트용 임시 변수
+    private let serviceList: [ServiceType] = [.attendance, .member, .project]
+    // 서버 연결 시 지울 것
+    
     public var viewModel: MainViewModel!
     public var factory: StampFeatureViewBuildable!
     private var cancelBag = CancelBag()
@@ -155,6 +159,7 @@ extension MainVC: UICollectionViewDataSource {
                 return cell
             }
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className, for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }
+            cell.initCell(serviceType: serviceList[indexPath.item-1], isMainService: indexPath.item==1)
             return cell
         default:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className, for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }
