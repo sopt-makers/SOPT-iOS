@@ -94,6 +94,9 @@ extension MainVC {
         self.collectionView.register(UserHistoryCVC.self, forCellWithReuseIdentifier: UserHistoryCVC.className)
         self.collectionView.register(BriefNoticeCVC.self, forCellWithReuseIdentifier: BriefNoticeCVC.className)
         self.collectionView.register(MainServiceCVC.self, forCellWithReuseIdentifier: MainServiceCVC.className)
+        self.collectionView.register(AppServiceHeaderView.self,
+                                     forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                     withReuseIdentifier: AppServiceHeaderView.className)
     }
 }
 
@@ -121,6 +124,14 @@ extension MainVC: UICollectionViewDataSource {
             else { return UICollectionReusableView() }
             headerView.initCell(userType: viewModel.userType, name: "이솝트", days: "1234")
             return headerView
+        case 3:
+            guard let headerView = collectionView
+                .dequeueReusableSupplementaryView(ofKind: kind,
+                                                  withReuseIdentifier: AppServiceHeaderView.className,
+                                                  for: indexPath) as? AppServiceHeaderView
+            else { return UICollectionReusableView() }
+            headerView.initCell(userType: viewModel.userType)
+            return headerView
         default:
             return UICollectionReusableView()
         }
@@ -131,7 +142,7 @@ extension MainVC: UICollectionViewDataSource {
         case 0: return 1
         case 1: return viewModel.mainServiceList.count + 1 // 상단 한줄 공지 Cell을 위해 +1
         case 2: return viewModel.otherServiceList.count
-        case 3: return 0
+        case 3: return 4
         default: return 0
         }
     }

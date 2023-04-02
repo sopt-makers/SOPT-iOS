@@ -11,13 +11,14 @@ import UIKit
 import Core
 
 extension MainVC {
+    
     func createLayout() -> UICollectionViewCompositionalLayout {
         return UICollectionViewCompositionalLayout { sectionIndex, env in
             switch MainViewSectionLayoutKind.type(sectionIndex) {
             case .userHistory: return self.createUserInfoSection()
             case .mainService: return self.createMainServiceSection()
             case .otherService: return self.createOtherServiceSection()
-            case .appService: return self.createMainServiceSection()
+            case .appService: return self.createAppServiceSection()
             }
         }
     }
@@ -76,8 +77,31 @@ extension MainVC {
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 16, trailing: 0)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 32, trailing: 0)
         section.orthogonalScrollingBehavior = .groupPaging
+        
+        return section
+    }
+    
+    private func createAppServiceSection() -> NSCollectionLayoutSection {
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(44))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+        
+        let sideInset = 20.0
+        let itemSpacing = 12
+        let itemWidth = (UIScreen.main.bounds.width - sideInset*2 - 12) / 2
+        
+        let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(itemWidth), heightDimension: .fractionalHeight(1.0))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(120))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        group.interItemSpacing = .fixed(12)
+
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 20, bottom: 0, trailing: 20)
+        section.boundarySupplementaryItems = [header]
+        section.interGroupSpacing = 12
         
         return section
     }

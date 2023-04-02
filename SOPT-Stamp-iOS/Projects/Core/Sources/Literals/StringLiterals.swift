@@ -159,6 +159,8 @@ public struct I18N {
         public static let checkGeneralNotice = "전체 공지 확인하기"
         public static let generalNotice = "전체 공지"
         public static let crew = "크루"
+        public static let appServiceIntroduction = "SOPT를 알차게 즐기고 싶다면?"
+        public static let recommendSopt = "SOPT 회원이 되어 다양한 서비스를 즐겨보세요"
     }
 }
     
