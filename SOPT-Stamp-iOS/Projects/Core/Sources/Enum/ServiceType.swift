@@ -19,3 +19,7 @@ public enum ServiceType {
     case notice
     case crew
 }
+
+public enum AppServiceType {
+    case soptamp
+}

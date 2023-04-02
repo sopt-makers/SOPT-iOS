@@ -161,6 +161,10 @@ public struct I18N {
         public static let crew = "크루"
         public static let appServiceIntroduction = "SOPT를 알차게 즐기고 싶다면?"
         public static let recommendSopt = "SOPT 회원이 되어 다양한 서비스를 즐겨보세요"
+        
+        public struct AppService {
+            public static let soptamp = "SOPT AMP!"
+        }
     }
 }
     

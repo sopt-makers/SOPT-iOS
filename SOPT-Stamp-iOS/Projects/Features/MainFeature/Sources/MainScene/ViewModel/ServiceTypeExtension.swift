@@ -69,3 +69,27 @@ extension ServiceType {
         }
     }
 }
+
+
+extension AppServiceType {
+    var image: UIImage {
+        switch self {
+        case .soptamp:
+            return DSKitAsset.Assets.logo.image
+        }
+    }
+    
+    var title: String {
+        switch self {
+        case .soptamp:
+            return I18N.Main.AppService.soptamp
+        }
+    }
+    
+    var backgroundColor: UIColor {
+        switch self {
+        case .soptamp:
+            return DSKitAsset.Colors.white.color
+        }
+    }
+}
