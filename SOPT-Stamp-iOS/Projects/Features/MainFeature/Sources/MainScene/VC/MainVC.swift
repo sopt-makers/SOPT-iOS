@@ -143,7 +143,7 @@ extension MainVC: UICollectionViewDataSource {
         case 0: return 1
         case 1: return viewModel.mainServiceList.count + 1 // 상단 한줄 공지 Cell을 위해 +1
         case 2: return viewModel.otherServiceList.count
-        case 3: return 4
+        case 3: return viewModel.appServiceList.count
         default: return 0
         }
     }
@@ -161,7 +161,7 @@ extension MainVC: UICollectionViewDataSource {
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BriefNoticeCVC.className,
                                                                     for: indexPath) as? BriefNoticeCVC
                 else { return UICollectionViewCell() }
-                cell.initCell(userType: viewModel.userType, text: "SOPT 세미나 공지")
+                cell.initCell(userType: viewModel.userType, text: viewModel.briefNotice)
                 return cell
             }
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className, for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }
@@ -173,7 +173,7 @@ extension MainVC: UICollectionViewDataSource {
             return cell
         case 3:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AppServiceCVC.className, for: indexPath) as? AppServiceCVC else { return UICollectionViewCell() }
-            cell.initCell(serviceType: .soptamp)
+            cell.initCell(serviceType: viewModel.appServiceList[indexPath.item])
             return cell
         default:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className, for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }

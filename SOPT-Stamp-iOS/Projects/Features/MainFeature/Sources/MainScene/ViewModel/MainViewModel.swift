@@ -21,6 +21,8 @@ public class MainViewModel: ViewModelType {
     var userType: UserType = .visitor
     var mainServiceList: [ServiceType] = [.officialHomepage, .review, .project]
     var otherServiceList: [ServiceType] = [.faq, .youtube]
+    var appServiceList: [AppServiceType] = [.soptamp, .soptamp, .soptamp, .soptamp, .soptamp, .soptamp]
+    var briefNotice: String = "SOPT 세미나 공지"
   
     // MARK: - Inputs
     
