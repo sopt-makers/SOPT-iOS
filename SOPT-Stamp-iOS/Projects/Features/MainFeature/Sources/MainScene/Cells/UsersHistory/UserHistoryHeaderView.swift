@@ -66,7 +66,7 @@ extension UserHistoryHeaderView {
                                                 .font: UIFont.Main.display1]
                                           ))
         } else {
-            text.append(NSAttributedString(string: " 님은 \nSopt와 D+\(days)일째",
+            text.append(NSAttributedString(string: " 님은 \nSOPT와 D+\(days)일째",
                                            attributes: [
                                             .foregroundColor: DSKitAsset.Colors.white100.color,
                                                 .font: UIFont.Main.display1]

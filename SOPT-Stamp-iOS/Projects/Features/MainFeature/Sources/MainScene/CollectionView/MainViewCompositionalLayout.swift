@@ -88,15 +88,15 @@ extension MainVC {
         let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
         
         let sideInset = 20.0
-        let itemSpacing = 12
-        let itemWidth = (UIScreen.main.bounds.width - sideInset*2 - 12) / 2
+        let itemSpacing: Double = 12.0
+        let itemWidth = (UIScreen.main.bounds.width - sideInset*2 - itemSpacing) / 2
         
         let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(itemWidth), heightDimension: .fractionalHeight(1.0))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(120))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        group.interItemSpacing = .fixed(12)
+        group.interItemSpacing = .fixed(itemSpacing)
 
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 20, bottom: 0, trailing: 20)
