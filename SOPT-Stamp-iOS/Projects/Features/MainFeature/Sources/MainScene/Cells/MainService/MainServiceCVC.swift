@@ -89,7 +89,15 @@ extension MainServiceCVC {
         serviceIcon.image = serviceType.icon
         serviceTitleLabel.text = serviceType.title
         
-        if let description = serviceType.description {
+        setDescription(description: serviceType.description)
+        
+        setMainServiceUI(serviceType: serviceType, isMainFirstService: isMainFirstService)
+        
+        serviceDescriptionLabel.isHidden = isOtherService
+    }
+    
+    private func setDescription(description: String?) {
+        if let description = description {
             serviceDescriptionLabel.isHidden = false
             serviceDescriptionLabel.text = description
             containerStackView.setCustomSpacing(4, after: serviceTitleLabel)
@@ -97,13 +105,19 @@ extension MainServiceCVC {
             serviceDescriptionLabel.isHidden = true
             containerStackView.setCustomSpacing(0, after: serviceTitleLabel)
         }
-        
+    }
+    
+    private func setMainServiceUI(serviceType: ServiceType, isMainFirstService: Bool) {
         if isMainFirstService {
             self.backgroundColor = DSKitAsset.Colors.purple100.color
+            serviceTitleLabel.font = UIFont.Main.headline1
         } else {
             self.backgroundColor = DSKitAsset.Colors.black60.color
+            serviceTitleLabel.font = UIFont.Main.headline2
+
+            if let alternativeTitle = serviceType.alternativeTitle {
+                serviceTitleLabel.text = alternativeTitle
+            }
         }
-        
-        serviceDescriptionLabel.isHidden = isOtherService
     }
 }
