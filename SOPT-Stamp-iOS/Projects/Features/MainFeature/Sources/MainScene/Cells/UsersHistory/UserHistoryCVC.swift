@@ -96,6 +96,10 @@ extension UserHistoryCVC {
         
         guard userType != .visitor else { return }
         
+        historyStackView.arrangedSubviews.forEach { view in
+            view.removeFromSuperview()
+        }
+        
         // 활동 기수들 내역 나열한다.
         guard let allHistory = allHistory else { return }
         for (index, history) in allHistory.enumerated() {
