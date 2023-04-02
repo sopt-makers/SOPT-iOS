@@ -38,32 +38,43 @@ extension ServiceType {
     var title: String {
         switch self {
         case .officialHomepage:
-            return I18N.Main.officialHomePage
+            return I18N.Main.MainService.officialHomePage
         case .review:
-            return I18N.Main.review
+            return I18N.Main.MainService.review
         case .project:
-            return I18N.Main.project
+            return I18N.Main.MainService.project
         case .faq:
-            return I18N.Main.faq
+            return I18N.Main.MainService.faq
         case .youtube:
-            return I18N.Main.youtube
+            return I18N.Main.MainService.youtube
         case .attendance:
-            return I18N.Main.attendance
+            return I18N.Main.MainService.attendance
         case .member:
-            return I18N.Main.member
+            return I18N.Main.MainService.member
         case .notice:
-            return I18N.Main.notice
+            return I18N.Main.MainService.notice
         case .crew:
-            return I18N.Main.crew
+            return I18N.Main.MainService.crew
         }
     }
     
     var description: String? {
         switch self {
         case .attendance:
-            return I18N.Main.attend
+            return I18N.Main.MainService.attend
         case .notice:
-            return I18N.Main.checkGeneralNotice
+            return I18N.Main.MainService.checkGeneralNotice
+        default:
+            return nil
+        }
+    }
+    
+    var alternativeTitle: String? {
+        switch self {
+        case .officialHomepage:
+            return I18N.Main.MainService.AlternativeService.officialHomePage
+        case .notice:
+            return I18N.Main.MainService.AlternativeService.notice
         default:
             return nil
         }

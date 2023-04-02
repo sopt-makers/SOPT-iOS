@@ -20,7 +20,7 @@ final class AppServiceHeaderView: UICollectionReusableView {
         label.font = .Main.headline1
         label.textColor = DSKitAsset.Colors.white100.color
         label.textAlignment = .left
-        label.text = I18N.Main.appServiceIntroduction
+        label.text = I18N.Main.AppService.appServiceIntroduction
         return label
     }()
     
@@ -29,7 +29,7 @@ final class AppServiceHeaderView: UICollectionReusableView {
         label.font = .Main.caption1
         label.textColor = DSKitAsset.Colors.gray80.color
         label.textAlignment = .left
-        label.text = I18N.Main.recommendSopt
+        label.text = I18N.Main.AppService.recommendSopt
         return label
     }()
     

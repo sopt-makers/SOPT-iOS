@@ -17,7 +17,7 @@ final class BriefNoticeCVC: UICollectionViewCell {
     
     private let guideForVisitorLabel: UILabel = {
         let label = UILabel()
-        label.text = I18N.Main.visitorGuide
+        label.text = I18N.Main.MainService.visitorGuide
         label.font = UIFont.Main.headline1
         label.textColor = DSKitAsset.Colors.white100.color
         label.textAlignment = .left
