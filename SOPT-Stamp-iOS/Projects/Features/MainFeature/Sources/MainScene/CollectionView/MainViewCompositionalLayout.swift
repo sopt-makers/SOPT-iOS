@@ -14,7 +14,9 @@ extension MainVC {
     
     func createLayout() -> UICollectionViewCompositionalLayout {
         return UICollectionViewCompositionalLayout { sectionIndex, env in
-            switch MainViewSectionLayoutKind.type(sectionIndex) {
+            guard let sectionKind = MainViewSectionLayoutKind.type(sectionIndex)
+            else { return self.createEmptySection() }
+            switch sectionKind {
             case .userHistory: return self.createUserInfoSection()
             case .mainService: return self.createMainServiceSection()
             case .otherService: return self.createOtherServiceSection()
@@ -104,5 +106,9 @@ extension MainVC {
         section.interGroupSpacing = 12
         
         return section
+    }
+    
+    private func createEmptySection() -> NSCollectionLayoutSection {
+        NSCollectionLayoutSection(group: NSCollectionLayoutGroup(layoutSize: .init(widthDimension: .absolute(0), heightDimension: .absolute(0))))
     }
 }

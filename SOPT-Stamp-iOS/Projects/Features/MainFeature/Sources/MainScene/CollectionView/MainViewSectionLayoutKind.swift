@@ -14,7 +14,7 @@ enum MainViewSectionLayoutKind: Int, CaseIterable {
     case otherService
     case appService
     
-    static func type(_ index: Int) -> MainViewSectionLayoutKind {
-        return self.allCases[index]
+    static func type(_ index: Int) -> MainViewSectionLayoutKind? {
+        return self.allCases[safe: index]
     }
 }

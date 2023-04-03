@@ -123,7 +123,7 @@ extension UserHistoryCVC {
     private func makeHistoryView(index: Int, history: String) -> UILabel {
         let label = UILabel()
         label.backgroundColor = DSKitAsset.Colors.black40.color
-        label.layer.opacity = historyOpacityScale[index]
+        label.layer.opacity = historyOpacityScale[safe: index] ?? 1.0
         label.font = UIFont.Main.caption1
         label.textColor = DSKitAsset.Colors.white100.color
         label.textAlignment = .center
