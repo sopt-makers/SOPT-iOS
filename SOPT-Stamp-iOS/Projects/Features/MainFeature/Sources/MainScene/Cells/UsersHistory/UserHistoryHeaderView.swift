@@ -63,13 +63,13 @@ extension UserHistoryHeaderView {
             text.append(NSAttributedString(string: " 님, \nSopt의 열정이 되어주세요!",
                                            attributes: [
                                             .foregroundColor: DSKitAsset.Colors.white100.color,
-                                                .font: UIFont.Main.display1]
+                                                .font: UIFont.Main.display2]
                                           ))
         } else {
             text.append(NSAttributedString(string: " 님은 \nSOPT와 D+\(days)일째",
                                            attributes: [
                                             .foregroundColor: DSKitAsset.Colors.white100.color,
-                                                .font: UIFont.Main.display1]
+                                                .font: UIFont.Main.display2]
                                           ))
         }
 
