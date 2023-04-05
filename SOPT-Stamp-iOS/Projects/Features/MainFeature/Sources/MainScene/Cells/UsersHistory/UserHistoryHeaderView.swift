@@ -53,26 +53,17 @@ extension UserHistoryHeaderView {
     }
     
     func initCell(userType: UserType, name: String, days: String) {
-        let text = NSMutableAttributedString(string: name,
-                                             attributes: [
-                                                .foregroundColor: DSKitAsset.Colors.white100.color,
-                                                .font: UIFont.Main.display1
-                                             ])
-        
-        if userType == .visitor {
-            text.append(NSAttributedString(string: " 님, \nSopt의 열정이 되어주세요!",
-                                           attributes: [
-                                            .foregroundColor: DSKitAsset.Colors.white100.color,
-                                                .font: UIFont.Main.display2]
-                                          ))
-        } else {
-            text.append(NSAttributedString(string: " 님은 \nSOPT와 D+\(days)일째",
-                                           attributes: [
-                                            .foregroundColor: DSKitAsset.Colors.white100.color,
-                                                .font: UIFont.Main.display2]
-                                          ))
-        }
+        let text = (userType == .visitor) ? "\(name) 님, \nSopt의 열정이 되어주세요!" : "\(name) 님은 \nSOPT와 D+\(days)일째"
 
-        self.userInfoLabel.attributedText = text
+        let attributedText = NSMutableAttributedString(string: text,
+                                                      attributes: [
+                                                         .foregroundColor: DSKitAsset.Colors.white100.color,
+                                                         .font: UIFont.Main.display2
+                                                      ])
+        attributedText.addAttribute(.font,
+                                     value: UIFont.Main.display1,
+                                     range: (text as NSString).range(of:"\(name)"))
+
+        self.userInfoLabel.attributedText = attributedText
     }
 }
