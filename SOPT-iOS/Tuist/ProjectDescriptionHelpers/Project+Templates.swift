@@ -2,6 +2,7 @@ import Foundation
 import ProjectDescription
 import DependencyPlugin
 import EnvPlugin
+import ConfigPlugin
 
 public extension Project {
     static func makeModule(
@@ -15,21 +16,14 @@ public extension Project {
         hasResources: Bool = false
     ) -> Project {
         
+        let configurationName: ConfigurationName = "Development"
         let hasDynamicFramework = targets.contains(.dynamicFramework)
         let deploymentTarget = Environment.deploymentTarget
         let platform = Environment.platform
         
         let baseSettings: SettingsDictionary = hasDynamicFramework
-        ? .allLoadSettings
-        : .baseSettings
-        
-        let settings: Settings = .settings(
-            base: baseSettings.setCodeSignManual(),
-            debug: .init()
-                .setProvisioningDevelopment(),
-            release: .init()
-                .setProvisioningAppstore(),
-            defaultSettings: .recommended)
+        ? .allLoadSettings.setCodeSignManual()
+        : .baseSettings.setCodeSignManual()
         
         var projectTargets: [Target] = []
         var schemes: [Scheme] = []
@@ -39,6 +33,7 @@ public extension Project {
         if targets.contains(.app) {
             let bundleSuffix = name.contains("Demo") ? "demo" : "release"
             let infoPlist = name.contains("Demo") ? Project.demoInfoPlist : Project.appInfoPlist
+            let settings = baseSettings.setProvisioning()
             
             let target = Target(
                 name: name,
@@ -56,7 +51,7 @@ public extension Project {
                         .SPM.Inject
                     ]
                 ].flatMap { $0 },
-                settings: settings
+                settings: .settings(base: settings, configurations: XCConfig.project)
             )
             
             projectTargets.append(target)
@@ -65,6 +60,8 @@ public extension Project {
         // MARK: - Feature Interface
         
         if targets.contains(.interface) {
+            let settings = baseSettings
+            
             let target = Target(
                 name: "\(name)Interface",
                 platform: platform,
@@ -74,7 +71,7 @@ public extension Project {
                 infoPlist: .default,
                 sources: ["Interface/Sources/**/*.swift"],
                 dependencies: interfaceDependencies,
-                settings: settings
+                settings: .settings(base: settings, configurations: XCConfig.framework)
             )
             
             projectTargets.append(target)
@@ -86,6 +83,7 @@ public extension Project {
             let deps: [TargetDependency] = targets.contains(.interface)
             ? [.target(name: "\(name)Interface")]
             : []
+            let settings = baseSettings
             
             let target = Target(
                 name: name,
@@ -97,7 +95,7 @@ public extension Project {
                 sources: ["Sources/**/*.swift"],
                 resources: hasResources ? [.glob(pattern: "Resources/**", excluding: [])] : [],
                 dependencies: deps + internalDependencies + externalDependencies,
-                settings: settings
+                settings: .settings(base: settings, configurations: XCConfig.framework)
             )
             
             projectTargets.append(target)
@@ -124,7 +122,7 @@ public extension Project {
                         .SPM.Inject
                     ]
                 ].flatMap { $0 },
-                settings: settings
+                settings: .settings(base: baseSettings, configurations: XCConfig.demo)
             )
             
             projectTargets.append(target)
@@ -151,7 +149,8 @@ public extension Project {
                         .SPM.Nimble,
                         .SPM.Quick
                     ]
-                ].flatMap { $0 }
+                ].flatMap { $0 },
+                settings: .settings(base: SettingsDictionary().setCodeSignManual(), configurations: XCConfig.tests)
             )
             
             projectTargets.append(target)
@@ -160,55 +159,99 @@ public extension Project {
         // MARK: - Schemes
         
         let additionalSchemes = targets.contains(.demo)
-        ? [Scheme.makeScheme(target: .debug, name: name),
-           Scheme.makeDemoScheme(target: .debug, name: name)]
-        : [Scheme.makeScheme(target: .debug, name: name)]
+        ? [Scheme.makeScheme(configs: configurationName, name: name),
+           Scheme.makeDemoScheme(configs: configurationName, name: name)]
+        : [Scheme.makeScheme(configs: configurationName, name: name)]
         schemes += additionalSchemes
+        
+        let scheme = targets.contains(.app)
+        ? appSchemes
+        : schemes
         
         return Project(
             name: name,
             organizationName: Environment.workspaceName,
             packages: packages,
-            settings: settings,
+            settings: .settings(configurations: XCConfig.project),
             targets: projectTargets,
-            schemes: schemes
+            schemes: scheme
         )
     }
 }
 
 extension Scheme {
     /// Scheme 생성하는 method
-    static func makeScheme(target: ConfigurationName, name: String) -> Scheme {
+    static func makeScheme(configs: ConfigurationName, name: String) -> Scheme {
         return Scheme(
             name: name,
             shared: true,
             buildAction: .buildAction(targets: ["\(name)"]),
             testAction: .targets(
                 ["\(name)Tests"],
-                configuration: target,
+                configuration: configs,
                 options: .options(coverage: true, codeCoverageTargets: ["\(name)"])
             ),
-            runAction: .runAction(configuration: target),
-            archiveAction: .archiveAction(configuration: target),
-            profileAction: .profileAction(configuration: target),
-            analyzeAction: .analyzeAction(configuration: target)
+            runAction: .runAction(configuration: configs),
+            archiveAction: .archiveAction(configuration: configs),
+            profileAction: .profileAction(configuration: configs),
+            analyzeAction: .analyzeAction(configuration: configs)
         )
     }
-    
-    static func makeDemoScheme(target: ConfigurationName, name: String) -> Scheme {
+    static func makeDemoScheme(configs: ConfigurationName, name: String) -> Scheme {
         return Scheme(
             name: "\(name)Demo",
             shared: true,
             buildAction: .buildAction(targets: ["\(name)Demo"]),
             testAction: .targets(
-                ["\(name)Demo"],
-                configuration: target,
+                ["\(name)Tests"],
+                configuration: configs,
                 options: .options(coverage: true, codeCoverageTargets: ["\(name)Demo"])
             ),
-            runAction: .runAction(configuration: target),
-            archiveAction: .archiveAction(configuration: target),
-            profileAction: .profileAction(configuration: target),
-            analyzeAction: .analyzeAction(configuration: target)
+            runAction: .runAction(configuration: configs),
+            archiveAction: .archiveAction(configuration: configs),
+            profileAction: .profileAction(configuration: configs),
+            analyzeAction: .analyzeAction(configuration: configs)
         )
     }
+}
+
+extension Project {
+    static let appSchemes: [Scheme] = [
+        .init(
+            name: "\(Environment.workspaceName)-DEV",
+            shared: true,
+            buildAction: .buildAction(targets: ["\(Environment.workspaceName)"]),
+            runAction: .runAction(configuration: "Development"),
+            archiveAction: .archiveAction(configuration: "Development"),
+            profileAction: .profileAction(configuration: "Development"),
+            analyzeAction: .analyzeAction(configuration: "Development")
+        ),
+        .init(
+            name: "\(Environment.workspaceName)-Test",
+            shared: true,
+            buildAction: .buildAction(targets: ["\(Environment.workspaceName)"]),
+            runAction: .runAction(configuration: "Test"),
+            archiveAction: .archiveAction(configuration: "Test"),
+            profileAction: .profileAction(configuration: "Test"),
+            analyzeAction: .analyzeAction(configuration: "Test")
+        ),
+        .init(
+            name: "\(Environment.workspaceName)-QA",
+            shared: true,
+            buildAction: .buildAction(targets: ["\(Environment.workspaceName)"]),
+            runAction: .runAction(configuration: "QA"),
+            archiveAction: .archiveAction(configuration: "QA"),
+            profileAction: .profileAction(configuration: "QA"),
+            analyzeAction: .analyzeAction(configuration: "QA")
+        ),
+        .init(
+            name: "\(Environment.workspaceName)-PROD",
+            shared: true,
+            buildAction: .buildAction(targets: ["\(Environment.workspaceName)"]),
+            runAction: .runAction(configuration: "PROD"),
+            archiveAction: .archiveAction(configuration: "PROD"),
+            profileAction: .profileAction(configuration: "PROD"),
+            analyzeAction: .analyzeAction(configuration: "PROD")
+        )
+    ]
 }
