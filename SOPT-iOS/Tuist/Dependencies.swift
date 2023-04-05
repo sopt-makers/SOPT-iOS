@@ -8,6 +8,8 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
 
+import ConfigPlugin
+
 let spm = SwiftPackageManagerDependencies([
     .remote(url: "https://github.com/SnapKit/SnapKit.git", requirement: .upToNextMinor(from: "5.0.0")),
     .remote(url: "https://github.com/Moya/Moya.git", requirement: .upToNextMajor(from: "15.0.0")),
@@ -18,7 +20,9 @@ let spm = SwiftPackageManagerDependencies([
     .remote(url: "https://github.com/Quick/Quick.git", requirement: .upToNextMajor(from: "5.0.0")),
     .remote(url: "https://github.com/Quick/Nimble.git", requirement: .upToNextMajor(from: "10.0.0")),
     .remote(url: "https://github.com/airbnb/lottie-ios", requirement: .upToNextMajor(from: "3.0.0"))
-])
+], baseSettings: Settings.settings(
+    configurations: XCConfig.framework
+))
 
 let dependencies = Dependencies(
     carthage: [],
