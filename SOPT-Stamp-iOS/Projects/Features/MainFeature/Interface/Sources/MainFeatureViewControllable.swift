@@ -7,7 +7,10 @@
 //
 
 import BaseFeatureDependency
+import Core
 
-public protocol MainFeatureViewControllable: ViewControllable { }
+public protocol MainViewControllable: ViewControllable { }
 
-public protocol MainFeatureViewBuildable { }
+public protocol MainFeatureViewBuildable {
+    func makeMainVC(userType: UserType) -> MainViewControllable
+}

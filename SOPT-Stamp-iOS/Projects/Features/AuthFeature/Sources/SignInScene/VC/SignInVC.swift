@@ -41,13 +41,13 @@ public class SignInVC: UIViewController, SignInViewControllable {
         $0.layer.masksToBounds = true
     }
     
-    private lazy var emailTextField = CustomTextFieldView(type: .subTitle)
+    private lazy var emailTextField = STTextFieldView(type: .subTitle)
         .setTextFieldType(.email)
         .setSubTitle(I18N.SignIn.id)
         .setPlaceholder(I18N.SignIn.enterID)
         .setAlertDelegate(passwordTextField)
 
-    private lazy var passwordTextField = CustomTextFieldView(type: .subTitle)
+    private lazy var passwordTextField = STTextFieldView(type: .subTitle)
         .setTextFieldType(.password)
         .setSubTitle(I18N.SignIn.password)
         .setPlaceholder(I18N.SignIn.enterPW)
@@ -60,7 +60,7 @@ public class SignInVC: UIViewController, SignInViewControllable {
         $0.addTarget(self, action: #selector(findAccountButtonDidTap), for: .touchUpInside)
     }
     
-    private lazy var signInButton = CustomButton(title: I18N.SignIn.signIn).setEnabled(false)
+    private lazy var signInButton = STCustomButton(title: I18N.SignIn.signIn).setEnabled(false)
     
     private lazy var signUpButton = UIButton(type: .system).then {
         $0.setTitle(I18N.SignIn.signUp, for: .normal)

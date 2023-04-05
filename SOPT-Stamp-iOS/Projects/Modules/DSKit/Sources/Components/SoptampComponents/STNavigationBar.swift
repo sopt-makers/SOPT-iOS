@@ -25,7 +25,7 @@ public enum RightButtonType {
     case delete
 }
 
-public class CustomNavigationBar: UIView {
+public class STNavigationBar: UIView {
     
     // MARK: - UI Component
     
@@ -68,7 +68,7 @@ public class CustomNavigationBar: UIView {
 
 // MARK: - Method
 
-extension CustomNavigationBar {
+extension STNavigationBar {
     public func hideNaviBar(_ isHidden: Bool) {
         UIView.animate(withDuration: 0.1,
                        delay: 0,
@@ -157,7 +157,7 @@ extension CustomNavigationBar {
 
 // MARK: - @objc
 
-extension CustomNavigationBar {
+extension STNavigationBar {
     @objc
     private func popToPreviousVC() {
         self.vc?.navigationController?.popViewController(animated: true)
@@ -176,7 +176,7 @@ extension CustomNavigationBar {
 
 // MARK: - UI & Layout
 
-extension CustomNavigationBar {
+extension STNavigationBar {
     private func setUI(_ type: NaviType) {
         self.naviType = type
         

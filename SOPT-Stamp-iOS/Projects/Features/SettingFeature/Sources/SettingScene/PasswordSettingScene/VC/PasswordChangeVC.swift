@@ -28,21 +28,21 @@ public class PasswordChangeVC: UIViewController, PasswordChangeViewControllable 
       
     // MARK: - UI Components
     
-    private lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
+    private lazy var naviBar = STNavigationBar(self, type: .titleWithLeftButton)
         .setTitleTypoStyle(.SoptampFont.h2)
         .setTitle(I18N.Setting.passwordEdit)
     
-    private lazy var passwordTextFieldView = CustomTextFieldView(type: .plain)
+    private lazy var passwordTextFieldView = STTextFieldView(type: .plain)
         .setTextFieldType(.password)
         .setPlaceholder(I18N.SignUp.passwordTextFieldPlaceholder)
         .setAlertDelegate(passwordCheckTextFieldView)
     
-    private lazy var passwordCheckTextFieldView = CustomTextFieldView(type: .plain)
+    private lazy var passwordCheckTextFieldView = STTextFieldView(type: .plain)
         .setPlaceholder(I18N.SignUp.passwordCheckTextFieldPlaceholder)
         .setTextFieldType(.password)
         .setAlertLabelEnabled(I18N.SignUp.invalidPasswordForm)
     
-    private let passwordChangeButton = CustomButton(title: I18N.Setting.passwordEdit)
+    private let passwordChangeButton = STCustomButton(title: I18N.Setting.passwordEdit)
         .setEnabled(false)
   
     // MARK: - View Life Cycle

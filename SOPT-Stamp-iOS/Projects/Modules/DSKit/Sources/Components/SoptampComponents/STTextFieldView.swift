@@ -124,7 +124,7 @@ public protocol CustomTextFieldViewAlertDelegate: AnyObject {
     func changeAlertLabelTextColor(state: TextFieldViewState)
 }
 
-public class CustomTextFieldView: UIView {
+public class STTextFieldView: UIView {
     
     // MARK: - Properties
     
@@ -192,7 +192,7 @@ public class CustomTextFieldView: UIView {
 
 // MARK: - Methods
 
-extension CustomTextFieldView {
+extension STTextFieldView {
     /// 버튼의 타이틀 변경
     @discardableResult
     public func setTitle(_ titleText: String) -> Self {
@@ -323,7 +323,7 @@ extension CustomTextFieldView {
 
 // MARK: - Input Binding
 
-extension CustomTextFieldView {
+extension STTextFieldView {
     
     var alertText: String {
         return alertlabel.text ?? ""
@@ -337,7 +337,7 @@ extension CustomTextFieldView {
 
 // MARK: - UI & Layout
 
-extension CustomTextFieldView {
+extension STTextFieldView {
     private func setUI() {
         titleLabel.font = UIFont.SoptampFont.subtitle1
         titleLabel.textColor = SoptampColor.soptampGray900.color
@@ -495,7 +495,7 @@ extension CustomTextFieldView {
 
 // MARK: - UITextFieldDelegate
 
-extension CustomTextFieldView: UITextFieldDelegate {
+extension STTextFieldView: UITextFieldDelegate {
     
     public func textFieldDidBeginEditing(_ textField: UITextField) {
         self.setTextFieldViewState(.editing)
@@ -520,7 +520,7 @@ extension CustomTextFieldView: UITextFieldDelegate {
 
 // MARK: - CustomTextFieldViewAlertDelegate
 
-extension CustomTextFieldView: CustomTextFieldViewAlertDelegate {
+extension STTextFieldView: CustomTextFieldViewAlertDelegate {
     /// 경고 문구 라벨의 컬러 설정
     public func changeAlertLabelTextColor(state: TextFieldViewState) {
         alertlabel.textColor = state.alertTextColor

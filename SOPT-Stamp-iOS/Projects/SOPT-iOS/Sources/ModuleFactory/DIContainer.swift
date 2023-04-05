@@ -11,6 +11,8 @@ import Network
 import Domain
 import Data
 
+import MainFeatureInterface
+import MainFeature
 import SplashFeatureInterface
 import SplashFeature
 import OnboardingFeatureInterface
@@ -22,7 +24,7 @@ import SettingFeature
 import StampFeatureInterface
 import StampFeature
 
-typealias Features = SplashFeatureViewBuildable & OnboardingFeatureViewBuildable & AuthFeatureViewBuildable & StampFeatureViewBuildable & SettingFeatureViewBuildable
+typealias Features = SplashFeatureViewBuildable & OnboardingFeatureViewBuildable & AuthFeatureViewBuildable & StampFeatureViewBuildable & SettingFeatureViewBuildable & MainFeatureViewBuildable
 
 final class DIContainer {
     lazy var authService = DefaultAuthService()
@@ -34,6 +36,18 @@ final class DIContainer {
 }
 
 extension DIContainer: Features {
+    
+    // MARK: - MainFeature
+    
+    func makeMainVC(userType: Core.UserType) -> MainFeatureInterface.MainViewControllable {
+        let repository = MainRepository(service: userService)
+        let useCase = DefaultMainUseCase(repository: repository)
+        let viewModel = MainViewModel(useCase: useCase, userType: userType)
+        let mainVC = MainVC()
+        mainVC.factory = self
+        mainVC.viewModel = viewModel
+        return mainVC
+    }
     
     // MARK: - SplashFeature
     

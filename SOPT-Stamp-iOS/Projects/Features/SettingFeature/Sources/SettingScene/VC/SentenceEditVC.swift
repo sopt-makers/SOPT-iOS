@@ -28,7 +28,7 @@ public class SentenceEditVC: UIViewController, SentenceEditViewControllable {
     
     // MARK: - UI Components
     
-    private lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
+    private lazy var naviBar = STNavigationBar(self, type: .titleWithLeftButton)
         .setTitleTypoStyle(.SoptampFont.h2)
         .setTitle(I18N.Setting.SentenceEdit.sentenceEdit)
     
@@ -46,7 +46,7 @@ public class SentenceEditVC: UIViewController, SentenceEditViewControllable {
         return tv
     }()
     
-    private let saveButton = CustomButton(title: I18N.Setting.SentenceEdit.save)
+    private let saveButton = STCustomButton(title: I18N.Setting.SentenceEdit.save)
         .setEnabled(false)
     
     // MARK: - View Life Cycle

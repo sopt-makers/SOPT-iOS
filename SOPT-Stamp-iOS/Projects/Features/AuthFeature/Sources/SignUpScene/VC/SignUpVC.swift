@@ -31,34 +31,34 @@ public class SignUpVC: UIViewController, SignUpViewControllable {
     private let scrollView = UIScrollView()
     private let containerView = UIView()
     
-    private lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
+    private lazy var naviBar = STNavigationBar(self, type: .titleWithLeftButton)
         .setTitle(I18N.SignUp.signUp)
         .setTitleTypoStyle(.SoptampFont.h1)
     
-    private let nickNameTextFieldView = CustomTextFieldView(type: .titleWithRightButton)
+    private let nickNameTextFieldView = STTextFieldView(type: .titleWithRightButton)
         .setTitle(I18N.SignUp.nickname)
         .setMaxLength(10)
         .setPlaceholder(I18N.SignUp.nicknameTextFieldPlaceholder)
         .setAlertLabelEnabled(I18N.SignUp.duplicatedNickname)
     
-    private let emailTextFieldView = CustomTextFieldView(type: .titleWithRightButton)
+    private let emailTextFieldView = STTextFieldView(type: .titleWithRightButton)
         .setTitle(I18N.SignUp.email)
         .setPlaceholder(I18N.SignUp.emailTextFieldPlaceholder)
         .setTextFieldType(.email)
         .setAlertLabelEnabled(I18N.SignUp.invalidEmailForm)
     
-    private lazy var passwordTextFieldView = CustomTextFieldView(type: .title)
+    private lazy var passwordTextFieldView = STTextFieldView(type: .title)
         .setTitle(I18N.SignUp.password)
         .setTextFieldType(.password)
         .setPlaceholder(I18N.SignUp.passwordTextFieldPlaceholder)
         .setAlertDelegate(passwordCheckTextFieldView)
     
-    private lazy var passwordCheckTextFieldView = CustomTextFieldView(type: .plain)
+    private lazy var passwordCheckTextFieldView = STTextFieldView(type: .plain)
         .setPlaceholder(I18N.SignUp.passwordCheckTextFieldPlaceholder)
         .setTextFieldType(.password)
         .setAlertLabelEnabled(I18N.SignUp.invalidPasswordForm)
     
-    private let registerButton = CustomButton(title: I18N.SignUp.register)
+    private let registerButton = STCustomButton(title: I18N.SignUp.register)
         .setEnabled(false)
 
     // MARK: - View Life Cycle

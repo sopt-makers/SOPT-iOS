@@ -62,7 +62,7 @@ public class NoticePopUpVC: UIViewController, NoticePopUpViewControllable {
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
     }
 
-    private let updateButton = CustomButton(title: I18N.Notice.goToUpdate)
+    private let updateButton = STCustomButton(title: I18N.Notice.goToUpdate)
     
     private let closeButton = UIButton(type: .system).then {
         $0.setAttributedTitle(NSAttributedString(string: I18N.Notice.close,

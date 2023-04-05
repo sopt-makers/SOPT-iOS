@@ -17,7 +17,7 @@ import DSKit
 class MissionView: UIView {
     // MARK: - UI Component
     
-    private let starView = StarView(starScale: 14, spacing: 10, level: .levelOne)
+    private let starView = STStarView(starScale: 14, spacing: 10, level: .levelOne)
     private let missionLabel = UILabel()
     
     // MARK: - Properties

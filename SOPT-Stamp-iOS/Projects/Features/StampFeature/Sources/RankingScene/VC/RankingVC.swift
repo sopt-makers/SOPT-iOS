@@ -30,7 +30,7 @@ public class RankingVC: UIViewController, RankingViewControllable {
     
     // MARK: - UI Components
     
-    lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
+    lazy var naviBar = STNavigationBar(self, type: .titleWithLeftButton)
         .setTitleTypoStyle(.SoptampFont.h2)
         .setTitle("랭킹")
         .setRightButton(.none)

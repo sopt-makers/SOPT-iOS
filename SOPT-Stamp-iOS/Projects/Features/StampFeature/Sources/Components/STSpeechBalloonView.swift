@@ -9,10 +9,11 @@
 import UIKit
 
 import Core
+import DSKit
 
 import SnapKit
 
-public class SpeechBalloonView: UIView {
+public class STSpeechBalloonView: UIView {
     
     // MARK: - Properties
     
@@ -84,7 +85,7 @@ public class SpeechBalloonView: UIView {
 
 // MARK: - UI & Layouts
 
-extension SpeechBalloonView {
+extension STSpeechBalloonView {
     
     private func setUI() {
         switch viewLevel {

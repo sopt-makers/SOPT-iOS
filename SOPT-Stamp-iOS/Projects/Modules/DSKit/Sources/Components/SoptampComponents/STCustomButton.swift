@@ -10,7 +10,7 @@ import UIKit
 
 import Core
 
-public class CustomButton: UIButton {
+public class STCustomButton: UIButton {
     
     // MARK: - Initialize
 
@@ -26,7 +26,7 @@ public class CustomButton: UIButton {
 
 // MARK: - Methods
 
-extension CustomButton {
+extension STCustomButton {
     /// 버튼의 enable 여부 설정
     @discardableResult
     public func setEnabled(_ isEnabled: Bool) -> Self {
@@ -59,7 +59,7 @@ extension CustomButton {
 
 // MARK: - UI & Layout
 
-extension CustomButton {
+extension STCustomButton {
     private func setUI(_ title: String) {
         self.layer.cornerRadius = 9
         

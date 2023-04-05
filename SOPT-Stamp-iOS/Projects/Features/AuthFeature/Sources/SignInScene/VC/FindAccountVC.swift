@@ -17,7 +17,7 @@ public class FindAccountVC: UIViewController, FindAccountViewControllable {
     
     // MARK: - UI Components
 
-    private lazy var naviBar = CustomNavigationBar(self, type: .titleWithLeftButton)
+    private lazy var naviBar = STNavigationBar(self, type: .titleWithLeftButton)
         .setTitle(I18N.SignIn.findAccount)
     
     private let descriptionLabel = UILabel().then {

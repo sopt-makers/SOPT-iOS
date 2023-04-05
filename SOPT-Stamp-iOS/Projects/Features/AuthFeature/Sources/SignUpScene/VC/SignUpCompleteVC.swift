@@ -42,7 +42,7 @@ public class SignUpCompleteVC: UIViewController, SignUpCompleteViewControllable 
         $0.font = UIFont.SoptampFont.subtitle2
     }
     
-    private let startButton = CustomButton(title: I18N.SignUp.start)
+    private let startButton = STCustomButton(title: I18N.SignUp.start)
         .setEnabled(true)
     
     // MARK: - View Life Cycle

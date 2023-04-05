@@ -9,6 +9,7 @@
 import UIKit
 
 import Core
+import DSKit
 
 import SnapKit
 
@@ -31,7 +32,7 @@ extension RectangleViewRank {
     }
 }
 
-public class ChartRectangleView: UIView {
+public class STChartRectangleView: UIView {
     
     // MARK: - Properties
     
@@ -100,7 +101,7 @@ public class ChartRectangleView: UIView {
 
 // MARK: - UI & Layouts
 
-extension ChartRectangleView {
+extension STChartRectangleView {
     
     private func setUI() {
         switch viewLevel {
@@ -174,7 +175,7 @@ extension ChartRectangleView {
     }
 }
 
-extension ChartRectangleView {
+extension STChartRectangleView {
     public func setData(score: Int, username: String) {
         self.usernameLabel.text = username
         self.scoreLabel.text = "\(score)점"
@@ -183,8 +184,8 @@ extension ChartRectangleView {
     }
 }
 
-extension ChartRectangleView {
-    static func == (left: ChartRectangleView, right: ChartRectangleView) -> Bool {
+extension STChartRectangleView {
+    static func == (left: STChartRectangleView, right: STChartRectangleView) -> Bool {
         return left.viewLevel == right.viewLevel
     }
 }
