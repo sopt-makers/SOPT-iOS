@@ -12,6 +12,12 @@ import Core
 
 extension MainVC {
     
+    private enum Metric {
+        static let collectionViewDefaultSideInset: Double = 20
+        static let defaultItemSpacing: Double = 12
+        static let defaultLineSpacing: Double = 12
+    }
+    
     func createLayout() -> UICollectionViewCompositionalLayout {
         return UICollectionViewCompositionalLayout { sectionIndex, env in
             guard let sectionKind = MainViewSectionLayoutKind.type(sectionIndex)
@@ -37,7 +43,7 @@ extension MainVC {
         
         let section = NSCollectionLayoutSection(group: group)
         section.boundarySupplementaryItems = [header]
-        section.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 20, bottom: 16, trailing: 20)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: Metric.collectionViewDefaultSideInset, bottom: 16, trailing: Metric.collectionViewDefaultSideInset)
         return section
     }
     
@@ -55,7 +61,7 @@ extension MainVC {
         
         let trailingGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1.0))
         let trailingGroup = NSCollectionLayoutGroup.vertical(layoutSize: trailingGroupSize, repeatingSubitem: trailingItem, count: 2)
-        trailingGroup.interItemSpacing = .fixed(12)
+        trailingGroup.interItemSpacing = .fixed(Metric.defaultItemSpacing)
         trailingGroup.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 6, bottom: 0, trailing: 0)
         
         let horizontalGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(192))
@@ -63,10 +69,10 @@ extension MainVC {
 
         let containerGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(237))
         let containerGroup = NSCollectionLayoutGroup.vertical(layoutSize: containerGroupSize, subitems: [topItem, horizontalGroup])
-        containerGroup.interItemSpacing = .fixed(12)
+        containerGroup.interItemSpacing = .fixed(Metric.defaultItemSpacing)
         
         let section = NSCollectionLayoutSection(group: containerGroup)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 16, leading: 20, bottom: 12, trailing: 20)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 16, leading: Metric.collectionViewDefaultSideInset, bottom: 12, trailing: Metric.collectionViewDefaultSideInset)
         
         return section
     }
@@ -79,7 +85,7 @@ extension MainVC {
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 32, trailing: 0)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: Metric.collectionViewDefaultSideInset, bottom: 32, trailing: 0)
         section.orthogonalScrollingBehavior = .groupPaging
         
         return section
@@ -89,8 +95,8 @@ extension MainVC {
         let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(44))
         let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
         
-        let sideInset = 20.0
-        let itemSpacing: Double = 12.0
+        let sideInset = Metric.collectionViewDefaultSideInset
+        let itemSpacing: Double = Metric.defaultItemSpacing
         let itemWidth = (UIScreen.main.bounds.width - sideInset*2 - itemSpacing) / 2
         
         let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(itemWidth), heightDimension: .fractionalHeight(1.0))
@@ -101,9 +107,9 @@ extension MainVC {
         group.interItemSpacing = .fixed(itemSpacing)
 
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 20, bottom: 0, trailing: 20)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: Metric.collectionViewDefaultSideInset, bottom: 0, trailing: Metric.collectionViewDefaultSideInset)
         section.boundarySupplementaryItems = [header]
-        section.interGroupSpacing = 12
+        section.interGroupSpacing = Metric.defaultLineSpacing
         
         return section
     }
