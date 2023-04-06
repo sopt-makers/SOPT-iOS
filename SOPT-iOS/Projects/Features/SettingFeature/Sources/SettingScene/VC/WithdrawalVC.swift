@@ -140,7 +140,7 @@ extension WithdrawalVC {
         let window = self.view.window!
         let navigation = UINavigationController(rootViewController: factory.makeSignInVC().viewController)
         navigation.isNavigationBarHidden = true
-        ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true) { newWindow in
+        ViewControllerUtils.setRootViewController(window: window, viewController: navigation, withAnimation: true) { newWindow in
             Toast.show(message: I18N.Setting.Withdrawal.withdrawalSuccess,
                        view: newWindow,
                        safeAreaBottomInset: self.safeAreaBottomInset())
