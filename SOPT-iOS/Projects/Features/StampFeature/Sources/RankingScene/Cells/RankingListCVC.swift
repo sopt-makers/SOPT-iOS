@@ -100,7 +100,7 @@ extension RankingListCVC {
         rankLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().inset(16.adjusted)
-            make.width.equalTo(53.adjusted)
+            make.width.greaterThanOrEqualTo(53.adjusted)
         }
         
         userSentenceStackView.snp.makeConstraints { make in
