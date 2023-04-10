@@ -11,6 +11,7 @@ import Network
 import Domain
 import Data
 
+import BaseFeatureDependency
 import MainFeatureInterface
 import MainFeature
 import SplashFeatureInterface
@@ -22,7 +23,7 @@ import SettingFeature
 import StampFeatureInterface
 import StampFeature
 
-typealias Features = SplashFeatureViewBuildable & AuthFeatureViewBuildable & StampFeatureViewBuildable & SettingFeatureViewBuildable & MainFeatureViewBuildable
+typealias Features = SplashFeatureViewBuildable & AuthFeatureViewBuildable & StampFeatureViewBuildable & SettingFeatureViewBuildable & MainFeatureViewBuildable & AlertViewBuildable
 
 final class DIContainer {
     lazy var authService = DefaultAuthService()

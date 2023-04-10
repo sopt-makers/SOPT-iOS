@@ -17,8 +17,6 @@ public protocol MissionCompletedViewControllable: ViewControllable { }
 
 public protocol RankingViewControllable: ViewControllable { }
 
-public protocol AlertViewControllable: ViewControllable { }
-
 public protocol StampGuideViewControllable: ViewControllable { }
 
 public protocol StampFeatureViewBuildable {
@@ -30,11 +28,5 @@ public protocol StampFeatureViewBuildable {
                           otherUserId: Int?) -> ListDetailViewControllable
     func makeMissionCompletedVC(starLevel: StarViewLevel, completionHandler: (() -> Void)?) -> MissionCompletedViewControllable
     func makeRankingVC() -> RankingViewControllable
-    func makeAlertVC(type: AlertType,
-                     title: String,
-                     description: String,
-                     customButtonTitle: String,
-                     customAction: (() -> Void)?) -> AlertViewControllable
-    func makeNetworkAlertVC() -> AlertViewControllable
     func makeStampGuideVC() -> StampGuideViewControllable
 }

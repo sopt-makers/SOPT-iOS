@@ -11,16 +11,16 @@ import DSKit
 
 import Core
 
+import BaseFeatureDependency
 import AuthFeatureInterface
 import SettingFeatureInterface
-import StampFeatureInterface
 
 public class WithdrawalVC: UIViewController, WithdrawalViewControllable {
     
     // MARK: - Properties
     
     public var viewModel: WithdrawalViewModel!
-    public var factory: (AuthFeatureViewBuildable & StampFeatureViewBuildable)!
+    public var factory: (AuthFeatureViewBuildable & AlertViewBuildable)!
     private let cancelBag = CancelBag()
     
     // MARK: - UI Components

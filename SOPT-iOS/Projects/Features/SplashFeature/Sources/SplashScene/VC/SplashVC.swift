@@ -16,15 +16,16 @@ import Domain
 import SnapKit
 import Then
 
+import BaseFeatureDependency
 import SplashFeatureInterface
 import AuthFeatureInterface
-import StampFeatureInterface
+import MainFeatureInterface
 
 public class SplashVC: UIViewController, SplashViewControllable {
     
     // MARK: - Properties
     
-    public var factory: (SplashFeatureViewBuildable & AuthFeatureViewBuildable & StampFeatureViewBuildable)!
+    public var factory: (SplashFeatureViewBuildable & AuthFeatureViewBuildable & MainFeatureViewBuildable & AlertViewBuildable)!
     public var viewModel: SplashViewModel!
     
     private var cancelBag = CancelBag()
@@ -35,7 +36,7 @@ public class SplashVC: UIViewController, SplashViewControllable {
     // MARK: - UI Components
     
     private let logoImage = UIImageView().then {
-        $0.image = DSKitAsset.Assets.imgLogoBig.image.withRenderingMode(.alwaysOriginal)
+        $0.image = DSKitAsset.Assets.imgLogo.image.withRenderingMode(.alwaysOriginal)
         $0.contentMode = .scaleAspectFit
         $0.clipsToBounds = true
     }
@@ -124,11 +125,11 @@ extension SplashVC {
     private func checkDidSignIn() {
         let needAuth = UserDefaultKeyList.Auth.userId == nil
         if !needAuth {
-            let navigation = UINavigationController(rootViewController: factory.makeMissionListVC(sceneType: .default).viewController)
+            let navigation = UINavigationController(rootViewController: factory.makeMainVC(userType: .active).viewController)
             ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
         } else {
-//            let nextVC = factory.makeStampGuideVC().viewController
-//            self.navigationController?.pushViewController(nextVC, animated: true)
+            let nextVC = factory.makeSignInVC().viewController
+            self.navigationController?.pushViewController(nextVC, animated: true)
         }
     }
     
