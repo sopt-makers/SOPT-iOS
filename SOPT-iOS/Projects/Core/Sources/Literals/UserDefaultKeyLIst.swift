@@ -13,6 +13,8 @@ public struct UserDefaultKeyList {
         @UserDefaultWrapper<String>(key: "deviceToken") public static var deviceToken
         @UserDefaultWrapper<String>(key: "endpointArnForSNS") public static var endpointArnForSNS
         @UserDefaultWrapper<Int>(key: "userId") public static var userId
+        @UserDefaultWrapper<Int>(key: "appAccessToken") public static var appAccessToken
+        @UserDefaultWrapper<Bool>(key: "isActiveUser") public static var isActiveUser
     }
     
     public struct User {
