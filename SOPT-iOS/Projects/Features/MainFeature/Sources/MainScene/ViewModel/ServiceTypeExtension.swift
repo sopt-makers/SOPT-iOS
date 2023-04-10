@@ -86,7 +86,7 @@ extension AppServiceType {
     var image: UIImage {
         switch self {
         case .soptamp:
-            return DSKitAsset.Assets.logo.image
+            return DSKitAsset.Assets.soptampLogo.image
         }
     }
     

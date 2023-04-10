@@ -36,7 +36,7 @@ public class SignInVC: UIViewController, SignInViewControllable {
     private let containerView = UIView()
     
     private let logoImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.logo.image
+        $0.image = DSKitAsset.Assets.soptampLogo.image
         $0.contentMode = .scaleAspectFit
         $0.layer.masksToBounds = true
     }
