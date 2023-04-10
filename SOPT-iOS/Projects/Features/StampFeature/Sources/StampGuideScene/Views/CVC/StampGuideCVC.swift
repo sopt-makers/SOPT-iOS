@@ -1,5 +1,5 @@
 //
-//  OnboardingCVC.swift
+//  StampGuideCVC.swift
 //  Presentation
 //
 //  Created by devxsby on 2022/12/01.
@@ -15,7 +15,7 @@ import Domain
 import SnapKit
 import Then
 
-public class OnboardingCVC: UICollectionViewCell {
+public class StampGuideCVC: UICollectionViewCell {
     
     // MARK: - UI Components
     
@@ -53,7 +53,7 @@ public class OnboardingCVC: UICollectionViewCell {
 
 // MARK: - UI & Layout
 
-extension OnboardingCVC {
+extension StampGuideCVC {
     
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.soptampWhite.color
@@ -81,9 +81,9 @@ extension OnboardingCVC {
 
 // MARK: - Methods
 
-extension OnboardingCVC {
+extension StampGuideCVC {
 
-    func setOnboardingSlides(_ slides: OnboardingDataModel) {
+    func setStampGuideSlides(_ slides: StampGuideDataModel) {
         imageView.image = slides.image
         titleLabel.text = slides.title
         captionLabel.text = slides.caption

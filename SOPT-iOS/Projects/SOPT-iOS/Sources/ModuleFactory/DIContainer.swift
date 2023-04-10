@@ -15,8 +15,6 @@ import MainFeatureInterface
 import MainFeature
 import SplashFeatureInterface
 import SplashFeature
-import OnboardingFeatureInterface
-import OnboardingFeature
 import AuthFeatureInterface
 import AuthFeature
 import SettingFeatureInterface
@@ -24,7 +22,7 @@ import SettingFeature
 import StampFeatureInterface
 import StampFeature
 
-typealias Features = SplashFeatureViewBuildable & OnboardingFeatureViewBuildable & AuthFeatureViewBuildable & StampFeatureViewBuildable & SettingFeatureViewBuildable & MainFeatureViewBuildable
+typealias Features = SplashFeatureViewBuildable & AuthFeatureViewBuildable & StampFeatureViewBuildable & SettingFeatureViewBuildable & MainFeatureViewBuildable
 
 final class DIContainer {
     lazy var authService = DefaultAuthService()
@@ -68,12 +66,11 @@ extension DIContainer: Features {
         return noticePopUpVC
     }
     
-    // MARK: - OnboardingFeature
+    // MARK: - StampGuideFeature
     
-    func makeOnboardingVC() -> OnboardingViewControllable {
-        let onboardingVC = OnboardingVC()
-        onboardingVC.factory = self
-        return onboardingVC
+    func makeStampGuideVC() -> StampGuideViewControllable {
+        let stampGuideVC = StampGuideVC()
+        return stampGuideVC
     }
     
     // MARK: - AuthFeature

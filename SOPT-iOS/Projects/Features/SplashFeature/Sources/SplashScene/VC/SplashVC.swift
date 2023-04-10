@@ -127,7 +127,7 @@ extension SplashVC {
             let navigation = UINavigationController(rootViewController: factory.makeMissionListVC(sceneType: .default).viewController)
             ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
         } else {
-//            let nextVC = factory.makeOnboardingVC().viewController
+//            let nextVC = factory.makeStampGuideVC().viewController
 //            self.navigationController?.pushViewController(nextVC, animated: true)
         }
     }

@@ -15,7 +15,6 @@ let project = Project.makeModule(
     internalDependencies: [
         .Features.Main.Feature,
         .Features.Spalsh.Feature,
-        .Features.Onboarding.Feature,
         .Features.Auth.Feature,
         .Features.Setting.Feature,
         .Features.Stamp.Feature,

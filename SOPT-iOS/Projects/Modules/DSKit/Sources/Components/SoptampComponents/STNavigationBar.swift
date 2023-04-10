@@ -189,7 +189,7 @@ extension STNavigationBar {
         switch type {
         case .title:
             rightButton.isHidden = false
-            rightButton.setImage(UIImage(asset: DSKitAsset.Assets.icSetting), for: .normal)
+            rightButton.setImage(DSKitAsset.Assets.stampGuide.image, for: .normal)
             titleButton.setImage(DSKitAsset.Assets.icDownArrow.image, for: .normal)
             titleButton.setTitleColor(.black, for: .normal)
             titleButton.semanticContentAttribute = .forceRightToLeft

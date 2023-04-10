@@ -19,6 +19,8 @@ public protocol RankingViewControllable: ViewControllable { }
 
 public protocol AlertViewControllable: ViewControllable { }
 
+public protocol StampGuideViewControllable: ViewControllable { }
+
 public protocol StampFeatureViewBuildable {
     func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListViewControllable
     func makeListDetailVC(sceneType: ListDetailSceneType,
@@ -34,4 +36,5 @@ public protocol StampFeatureViewBuildable {
                      customButtonTitle: String,
                      customAction: (() -> Void)?) -> AlertViewControllable
     func makeNetworkAlertVC() -> AlertViewControllable
+    func makeStampGuideVC() -> StampGuideViewControllable
 }
