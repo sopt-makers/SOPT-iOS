@@ -1,5 +1,5 @@
 //
-//  OnboardingDataModel.swift
+//  StampGuideDataModel.swift
 //  Domain
 //
 //  Created by devxsby on 2022/12/01.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-public struct OnboardingDataModel {
+public struct StampGuideDataModel {
     public var image: UIImage
     public var title, caption: String
     

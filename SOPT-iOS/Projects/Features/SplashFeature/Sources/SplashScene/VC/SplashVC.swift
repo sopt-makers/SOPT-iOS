@@ -17,7 +17,6 @@ import SnapKit
 import Then
 
 import SplashFeatureInterface
-import OnboardingFeatureInterface
 import AuthFeatureInterface
 import StampFeatureInterface
 
@@ -25,7 +24,7 @@ public class SplashVC: UIViewController, SplashViewControllable {
     
     // MARK: - Properties
     
-    public var factory: (SplashFeatureViewBuildable & OnboardingFeatureViewBuildable & AuthFeatureViewBuildable & StampFeatureViewBuildable)!
+    public var factory: (SplashFeatureViewBuildable & AuthFeatureViewBuildable & StampFeatureViewBuildable)!
     public var viewModel: SplashViewModel!
     
     private var cancelBag = CancelBag()
@@ -36,7 +35,7 @@ public class SplashVC: UIViewController, SplashViewControllable {
     // MARK: - UI Components
     
     private let logoImage = UIImageView().then {
-        $0.image = DSKitAsset.Assets.logo.image.withRenderingMode(.alwaysOriginal)
+        $0.image = DSKitAsset.Assets.imgLogoBig.image.withRenderingMode(.alwaysOriginal)
         $0.contentMode = .scaleAspectFit
         $0.clipsToBounds = true
     }
@@ -57,7 +56,7 @@ public class SplashVC: UIViewController, SplashViewControllable {
 extension SplashVC {
     
     private func setUI() {
-        self.view.backgroundColor = DSKitAsset.Colors.soptampWhite.color
+        self.view.backgroundColor = DSKitAsset.Colors.soptampBlack.color
     }
     
     private func setLayout() {
@@ -128,8 +127,8 @@ extension SplashVC {
             let navigation = UINavigationController(rootViewController: factory.makeMissionListVC(sceneType: .default).viewController)
             ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
         } else {
-            let nextVC = factory.makeOnboardingVC().viewController
-            self.navigationController?.pushViewController(nextVC, animated: true)
+//            let nextVC = factory.makeStampGuideVC().viewController
+//            self.navigationController?.pushViewController(nextVC, animated: true)
         }
     }
     

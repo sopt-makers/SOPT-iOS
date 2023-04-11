@@ -15,8 +15,6 @@ import MainFeatureInterface
 import MainFeature
 import SplashFeatureInterface
 import SplashFeature
-import OnboardingFeatureInterface
-import OnboardingFeature
 import AttendanceFeature
 import AttendanceFeatureInterface
 import AuthFeatureInterface
@@ -26,7 +24,7 @@ import SettingFeature
 import StampFeatureInterface
 import StampFeature
 
-typealias Features = SplashFeatureViewBuildable & OnboardingFeatureViewBuildable & AttendanceFeatureViewBuildable & AuthFeatureViewBuildable & StampFeatureViewBuildable & SettingFeatureViewBuildable & MainFeatureViewBuildable
+typealias Features = SplashFeatureViewBuildable & AttendanceFeatureViewBuildable & AuthFeatureViewBuildable & StampFeatureViewBuildable & SettingFeatureViewBuildable & MainFeatureViewBuildable
 
 final class DIContainer {
     lazy var attendanceService = DefaultAttendanceService()
@@ -71,12 +69,11 @@ extension DIContainer: Features {
         return noticePopUpVC
     }
     
-    // MARK: - OnboardingFeature
+    // MARK: - StampGuideFeature
     
-    func makeOnboardingVC() -> OnboardingViewControllable {
-        let onboardingVC = OnboardingVC()
-        onboardingVC.factory = self
-        return onboardingVC
+    func makeStampGuideVC() -> StampGuideViewControllable {
+        let stampGuideVC = StampGuideVC()
+        return stampGuideVC
     }
     
     // MARK: - AttendanceFeature

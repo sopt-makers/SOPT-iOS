@@ -11,7 +11,6 @@ public extension Dep {
     struct Features {
         public struct Main {}
         public struct Spalsh {}
-        public struct Onboarding {}
         public struct Auth {}
         public struct Setting {}
         public struct Stamp {}
@@ -61,13 +60,6 @@ public extension Dep.Features.Main {
 
 public extension Dep.Features.Spalsh {
     static let group = "Splash"
-    
-    static let Feature = Dep.Features.project(name: "Feature", group: group)
-    static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))
-}
-
-public extension Dep.Features.Onboarding {
-    static let group = "Onboarding"
     
     static let Feature = Dep.Features.project(name: "Feature", group: group)
     static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))

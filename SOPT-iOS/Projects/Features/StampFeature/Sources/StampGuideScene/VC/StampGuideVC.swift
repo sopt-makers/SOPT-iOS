@@ -1,5 +1,5 @@
 //
-//  OnboardingVC.swift
+//  StampGuideVC.swift
 //  Presentation
 //
 //  Created by devxsby on 2022/11/28.
@@ -17,14 +17,13 @@ import Core
 import SnapKit
 import Then
 
-import OnboardingFeatureInterface
-import AuthFeatureInterface
+import StampFeatureInterface
 
-public class OnboardingVC: UIViewController, OnboardingViewControllable {
+public class StampGuideVC: UIViewController, StampGuideViewControllable {
     
     // MARK: - Properties
     
-    private var onboardingData: [OnboardingDataModel] = []
+    private var stampGuideData: [StampGuideDataModel] = []
     
     private var currentPage: Int = 0 {
         didSet {
@@ -33,11 +32,12 @@ public class OnboardingVC: UIViewController, OnboardingViewControllable {
         }
     }
     
-    public var factory: AuthFeatureViewBuildable!
-  
     // MARK: - UI Components
     
-    private lazy var onboardingCollectionView: UICollectionView = {
+    private lazy var naviBar = STNavigationBar(self, type: .titleWithLeftButton)
+        .setTitle(I18N.StampGuide.guide)
+    
+    private lazy var stampGuideCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -54,10 +54,10 @@ public class OnboardingVC: UIViewController, OnboardingViewControllable {
         $0.isUserInteractionEnabled = false
     }
     
-    private lazy var startButton = STCustomButton(title: I18N.Onboarding.start).setEnabled(false).then {
+    private lazy var startButton = STCustomButton(title: I18N.StampGuide.okay).setEnabled(false).then {
         $0.addTarget(self, action: #selector(startButtonDidTap), for: .touchUpInside)
     }
-
+    
     // MARK: - View Life Cycle
     
     public override func viewDidLoad() {
@@ -65,35 +65,39 @@ public class OnboardingVC: UIViewController, OnboardingViewControllable {
         self.setUI()
         self.setLayout()
         self.setCollectionViewCell()
-        self.setOnboardingData()
+        self.setStampGuideData()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
-
+    
     // MARK: - @objc Function
     
     @objc
     private func startButtonDidTap() {
-        let vc = factory.makeSignInVC().viewController
-        self.navigationController?.pushViewController(vc, animated: true)
+        self.navigationController?.popViewController(animated: true)
     }
 }
 
 // MARK: - UI & Layout
 
-extension OnboardingVC {
+extension StampGuideVC {
     
     private func setUI() {
         self.view.backgroundColor = DSKitAsset.Colors.soptampWhite.color
     }
     
     private func setLayout() {
-        view.addSubviews(onboardingCollectionView, startButton, pageControl)
+        view.addSubviews(naviBar, stampGuideCollectionView, startButton,
+                         pageControl)
         
-        onboardingCollectionView.snp.makeConstraints { make in
+        naviBar.snp.makeConstraints { make in
+            make.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)
+        }
+        
+        stampGuideCollectionView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(70.adjustedH)
             make.leading.trailing.equalTo(view.safeAreaLayoutGuide)
             make.height.equalTo(460.adjustedH)
@@ -114,41 +118,41 @@ extension OnboardingVC {
 
 // MARK: - Methods
 
-extension OnboardingVC {
+extension StampGuideVC {
     
     private func setCollectionViewCell() {
-        onboardingCollectionView.delegate = self
-        onboardingCollectionView.dataSource = self
+        stampGuideCollectionView.delegate = self
+        stampGuideCollectionView.dataSource = self
         
-        onboardingCollectionView.register(OnboardingCVC.self, forCellWithReuseIdentifier: OnboardingCVC.className)
+        stampGuideCollectionView.register(StampGuideCVC.self, forCellWithReuseIdentifier: StampGuideCVC.className)
     }
     
-    private func setOnboardingData() {
-        onboardingData.append(contentsOf: [
-            OnboardingDataModel(image: DSKitAsset.Assets.splashImg1.image,
-                                title: I18N.Onboarding.title1,
-                                caption: I18N.Onboarding.caption1),
-            OnboardingDataModel(image: DSKitAsset.Assets.splashImg2.image,
-                                title: I18N.Onboarding.title2,
-                                caption: I18N.Onboarding.caption2),
-            OnboardingDataModel(image: DSKitAsset.Assets.splashImg3.image,
-                                title: I18N.Onboarding.title3,
-                                caption: I18N.Onboarding.caption3)
+    private func setStampGuideData() {
+        stampGuideData.append(contentsOf: [
+            StampGuideDataModel(image: DSKitAsset.Assets.splashImg1.image,
+                                title: I18N.StampGuide.title1,
+                                caption: I18N.StampGuide.caption1),
+            StampGuideDataModel(image: DSKitAsset.Assets.splashImg2.image,
+                                title: I18N.StampGuide.title2,
+                                caption: I18N.StampGuide.caption2),
+            StampGuideDataModel(image: DSKitAsset.Assets.splashImg3.image,
+                                title: I18N.StampGuide.title3,
+                                caption: I18N.StampGuide.caption3)
         ])
     }
 }
 
 // MARK: - CollectionView Delegate, DataSource
 
-extension OnboardingVC: UICollectionViewDelegate, UICollectionViewDataSource {
+extension StampGuideVC: UICollectionViewDelegate, UICollectionViewDataSource {
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return onboardingData.count
+        return stampGuideData.count
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = onboardingCollectionView.dequeueReusableCell(withReuseIdentifier: OnboardingCVC.className, for: indexPath) as? OnboardingCVC else { return UICollectionViewCell() }
-        cell.setOnboardingSlides(onboardingData[indexPath.row])
+        guard let cell = stampGuideCollectionView.dequeueReusableCell(withReuseIdentifier: StampGuideCVC.className, for: indexPath) as? StampGuideCVC else { return UICollectionViewCell() }
+        cell.setStampGuideSlides(stampGuideData[indexPath.row])
         return cell
     }
     
@@ -160,7 +164,7 @@ extension OnboardingVC: UICollectionViewDelegate, UICollectionViewDataSource {
 
 // MARK: - CollectionView DelegateFlowLayout
 
-extension OnboardingVC: UICollectionViewDelegateFlowLayout {
+extension StampGuideVC: UICollectionViewDelegateFlowLayout {
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let length = self.view.frame.size.width

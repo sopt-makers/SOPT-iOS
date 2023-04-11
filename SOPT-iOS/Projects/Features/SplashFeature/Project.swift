@@ -13,7 +13,6 @@ let project = Project.makeModule(
     name: "SplashFeature",
     targets: [.unitTest, .staticFramework, .demo, .interface],
     internalDependencies: [
-        .Features.Onboarding.Interface,
         .Features.Stamp.Interface
         //.Features.Main.Interface
     ],
