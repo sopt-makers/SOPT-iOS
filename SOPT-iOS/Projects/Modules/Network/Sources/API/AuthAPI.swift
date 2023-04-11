@@ -13,10 +13,9 @@ import Moya
 
 public enum AuthAPI {
     case getNicknameAvailable(nickname: String)
-    case getEmailAvailable(email: String)
-    case changePassword(password: String, userId: Int)
     case changeNickname(userId: Int, nickname: String)
     case withdrawal(userId: Int)
+    case signIn(token: String)
 }
 
 extension AuthAPI: BaseAPI {
@@ -26,7 +25,7 @@ extension AuthAPI: BaseAPI {
     // MARK: - Header
     public var headers: [String: String]? {
         switch self {
-        case .changePassword(_, let userId), .changeNickname(let userId, _), .withdrawal(let userId):
+        case .changeNickname(let userId, _), .withdrawal(let userId):
             return HeaderType.userId(userId: userId).value
         default: return HeaderType.json.value
         }
@@ -35,26 +34,28 @@ extension AuthAPI: BaseAPI {
     // MARK: - Path
     public var path: String {
         switch self {
-        case .getNicknameAvailable, .getEmailAvailable:
+        case .getNicknameAvailable:
             return ""
-        case .changePassword:
-            return "password"
         case .changeNickname:
             return "nickname"
         case .withdrawal:
             return "withdraw"
+        case .signIn:
+            return "playground"
         }
     }
     
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .getNicknameAvailable, .getEmailAvailable:
+        case .getNicknameAvailable:
             return .get
-        case .changePassword, .changeNickname:
+        case .changeNickname:
             return .patch
         case .withdrawal:
             return .delete
+        case .signIn:
+            return .post
         }
     }
     
@@ -62,10 +63,10 @@ extension AuthAPI: BaseAPI {
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
-        case .changePassword(let password, _):
-            params["password"] = password
         case .changeNickname(_, let nickname):
             params["nickname"] = nickname
+        case .signIn(let token):
+            params["code"] = token
         default:
             break
         }
@@ -83,9 +84,7 @@ extension AuthAPI: BaseAPI {
         switch self {
         case .getNicknameAvailable(let nickname):
             return .requestParameters(parameters: ["nickname": nickname], encoding: URLEncoding.queryString)
-        case .getEmailAvailable(let email):
-            return .requestParameters(parameters: ["email": email], encoding: URLEncoding.queryString)
-        case .changePassword, .changeNickname:
+        case .changeNickname, .signIn:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain

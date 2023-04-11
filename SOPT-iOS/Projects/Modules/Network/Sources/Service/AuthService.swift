@@ -16,23 +16,15 @@ public typealias DefaultAuthService = BaseService<AuthAPI>
 
 public protocol AuthService {
     func getNicknameAvailable(nickname: String) -> AnyPublisher<Int, Error>
-    func getEmailAvailable(email: String) -> AnyPublisher<Int, Error>
-    func changePassword(password: String, userId: Int) -> AnyPublisher<Int, Error>
     func changeNickname(userId: Int, nickname: String) -> AnyPublisher<Int, Error>
     func withdrawal(userId: Int) -> AnyPublisher<Int, Error>
+    func signIn(token: String) -> AnyPublisher<SignInEntity, Error>
 }
 
 extension DefaultAuthService: AuthService {
+    
     public func getNicknameAvailable(nickname: String) -> AnyPublisher<Int, Error> {
         return requestObjectInCombineNoResult(.getNicknameAvailable(nickname: nickname))
-    }
-    
-    public func getEmailAvailable(email: String) -> AnyPublisher<Int, Error> {
-        return requestObjectInCombineNoResult(.getEmailAvailable(email: email))
-    }
-    
-    public func changePassword(password: String, userId: Int) -> AnyPublisher<Int, Error> {
-        return requestObjectInCombineNoResult(.changePassword(password: password, userId: userId))
     }
     
     public func changeNickname(userId: Int, nickname: String) -> AnyPublisher<Int, Error> {
@@ -41,5 +33,9 @@ extension DefaultAuthService: AuthService {
     
     public func withdrawal(userId: Int) -> AnyPublisher<Int, Error> {
         return requestObjectInCombineNoResult(.withdrawal(userId: userId))
+    }
+    
+    public func signIn(token: String) -> AnyPublisher<SignInEntity, Error> {
+        return requestObjectInCombine(.signIn(token: token))
     }
 }

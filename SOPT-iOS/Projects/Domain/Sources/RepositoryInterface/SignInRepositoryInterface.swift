@@ -9,5 +9,5 @@
 import Combine
 
 public protocol SignInRepositoryInterface {
-    func requestSignIn(request: SignInRequest) -> AnyPublisher<SignInModel, Error>
+    func requestSignIn(token: String) -> AnyPublisher<Bool, Never>
 }

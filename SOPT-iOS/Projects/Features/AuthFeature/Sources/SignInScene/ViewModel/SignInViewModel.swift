@@ -19,7 +19,7 @@ public class SignInViewModel: ViewModelType {
     // MARK: - Inputs
     
     public struct Input {
-        let signInButtonTapped: Driver<Void>
+        let playgroundSignInFinished: Driver<String>
     }
     
     // MARK: - Outputs
@@ -40,9 +40,10 @@ extension SignInViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
-        input.signInButtonTapped
-            .sink { _ in
-                // TODO: - 로그인 로직 구현
+        input.playgroundSignInFinished
+            .withUnretained(self)
+            .sink { owner, token in
+                owner.useCase.requestSignIn(token: token)
             }.store(in: self.cancelBag)
         return output
     }

@@ -15,19 +15,9 @@ import Moya
 public typealias DefaultUserService = BaseService<UserAPI>
 
 public protocol UserService {
-    func postSignUp(nickname: String, email: String, password: String) -> AnyPublisher<SignUpResponse?, Error>
-    func requestSignIn(email: String, password: String) -> AnyPublisher<SignInEntity, Error>
+    
 }
 
 extension DefaultUserService: UserService {
     
-    public func postSignUp(nickname: String, email: String, password: String) -> AnyPublisher<SignUpResponse?, Error> {
-        requestObjectInCombine(.signUp(nickname: nickname,
-                                               email: email,
-                                               password: password))
-    }
-    
-    public func requestSignIn(email: String, password: String) -> AnyPublisher<SignInEntity, Error> {
-        requestObjectInCombine(.signIn(email: email, password: password))
-    }
 }
