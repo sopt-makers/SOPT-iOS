@@ -187,20 +187,11 @@ extension MissionListVC {
 extension MissionListVC {
     private func bindViews() {
         
-        if case MissionListSceneType.ranking = sceneType {
-            naviBar.rightButtonTapped
-                .asDriver()
-                .withUnretained(self)
-                .sink { owner, _ in
-                    owner.pushToSettingVC()
-                }.store(in: self.cancelBag)
-        }
-        
         naviBar.rightButtonTapped
             .asDriver()
             .withUnretained(self)
             .sink { owner, _ in
-                owner.pushToSettingVC()
+                owner.pushToGuideVC()
             }.store(in: self.cancelBag)
         
         rankingFloatingButton.publisher(for: .touchUpInside)
@@ -229,9 +220,10 @@ extension MissionListVC {
             }.store(in: self.cancelBag)
     }
     
-    private func pushToSettingVC() {
-        let settingVC = factory.makeSettingVC().viewController
-        self.navigationController?.pushViewController(settingVC, animated: true)
+    private func pushToGuideVC() {
+//        let settingVC = factory.makeSettingVC().viewController
+        let guideVC = factory.makeStampGuideVC().viewController
+        self.navigationController?.pushViewController(guideVC, animated: true)
     }
     
     private func pushToRankingVC() {
