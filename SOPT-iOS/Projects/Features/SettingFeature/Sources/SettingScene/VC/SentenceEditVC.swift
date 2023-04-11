@@ -15,6 +15,7 @@ import Combine
 import SnapKit
 import Then
 
+import BaseFeatureDependency
 import SettingFeatureInterface
 import StampFeatureInterface
 
@@ -23,7 +24,7 @@ public class SentenceEditVC: UIViewController, SentenceEditViewControllable {
     // MARK: - Properties
     
     public var viewModel: SentenceEditViewModel!
-    public var factory: StampFeatureViewBuildable!
+    public var factory: (StampFeatureViewBuildable & AlertViewBuildable)!
     private var cancelBag = CancelBag()
     
     // MARK: - UI Components

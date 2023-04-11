@@ -15,15 +15,15 @@ import Combine
 import SnapKit
 import Then
 
+import BaseFeatureDependency
 import SettingFeatureInterface
-import StampFeatureInterface
 
 public class NicknameEditVC: UIViewController, NicknameEditViewControllable {
     
     // MARK: - Properties
     
     public var viewModel: NicknameEditViewModel!
-    public var factory: StampFeatureViewBuildable!
+    public var factory: AlertViewBuildable!
     private var cancelBag = CancelBag()
     
     // MARK: - UI Components

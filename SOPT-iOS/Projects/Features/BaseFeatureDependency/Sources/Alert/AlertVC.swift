@@ -1,9 +1,9 @@
 //
 //  AlertVC.swift
-//  Presentation
+//  BaseFeatureDependency
 //
-//  Created by 양수빈 on 2022/12/05.
-//  Copyright © 2022 SOPT-Stamp-iOS. All rights reserved.
+//  Created by Junho Lee on 2023/04/11.
+//  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
 import UIKit
@@ -12,8 +12,6 @@ import SnapKit
 
 import Core
 import DSKit
-
-import StampFeatureInterface
 
 public class AlertVC: UIViewController, AlertViewControllable {
     

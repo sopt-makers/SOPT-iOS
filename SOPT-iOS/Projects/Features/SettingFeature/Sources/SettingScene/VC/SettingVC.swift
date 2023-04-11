@@ -15,6 +15,7 @@ import Then
 import Core
 import DSKit
 
+import BaseFeatureDependency
 import AuthFeatureInterface
 import SettingFeatureInterface
 import StampFeatureInterface
@@ -25,7 +26,7 @@ public class SettingVC: UIViewController, SettingViewControllable {
     
     public var viewModel: SettingViewModel!
     private var cancelBag = CancelBag()
-    public var factory: (AuthFeatureViewBuildable & SettingFeatureViewBuildable & StampFeatureViewBuildable)!
+    public var factory: (AuthFeatureViewBuildable & SettingFeatureViewBuildable & StampFeatureViewBuildable & AlertViewBuildable)!
     private let resetButtonTapped = PassthroughSubject<Bool, Never>()
     
     // MARK: - UI Components
