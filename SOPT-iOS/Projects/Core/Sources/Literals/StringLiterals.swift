@@ -174,6 +174,28 @@ public struct I18N {
             public static let soptamp = "SOPT AMP!"
         }
     }
+    
+    public struct Attendance {
+        public static let attendace = "출석"
+        public static let absent = "결석"
+        public static let tardy = "지각"
+        public static let leaveEarly = "조퇴"
+        public static let participation = "참여"
+        
+        public static let today = "오늘은"
+        public static let dayIs = "날이에요"
+        public static let unscheduledDay = "일정이 없는"
+        public static let notCheckedDay = "출석점수를 체크하지 않습니다"
+        public static let currentAttendanceScore = "현재 출석점수는"
+        public static let scoreIs = "입니다!"
+        public static let myAttendance = "나의 출결 현황"
+        public static let count = "회"
+        
+        public static let takeAttendance = "출석하기"
+        public static let beforeAttendance = "출석 전"
+        public static let completeAttendacne = "출석완료"
+        public static let giveFeedback = "세션 피드백하기"
+    }
 }
     
 extension I18N {
