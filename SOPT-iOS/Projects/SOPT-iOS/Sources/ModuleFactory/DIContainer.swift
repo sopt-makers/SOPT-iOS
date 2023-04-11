@@ -194,16 +194,6 @@ extension DIContainer: Features {
         return sentenceEditVC
     }
     
-    func makePasswordChangeVC() -> PasswordChangeViewControllable {
-        let repository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
-        let useCase = DefaultPasswordChangeUseCase(repository: repository)
-        let viewModel = PasswordChangeViewModel(useCase: useCase)
-        let passwordChangeVC = PasswordChangeVC()
-        passwordChangeVC.factory = self
-        passwordChangeVC.viewModel = viewModel
-        return passwordChangeVC
-    }
-    
     func makePrivacyPolicyVC() -> PrivacyPolicyViewControllable {
         let privacyPolicyVC = PrivacyPolicyVC()
         return privacyPolicyVC

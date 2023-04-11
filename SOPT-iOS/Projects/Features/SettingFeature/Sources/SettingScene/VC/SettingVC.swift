@@ -99,8 +99,7 @@ extension SettingVC {
     }
     
     private func showPasswordChangeView() {
-        let passwordChangeVC = factory.makePasswordChangeVC().viewController
-        navigationController?.pushViewController(passwordChangeVC, animated: true)
+        // Ver 2 : 삭제된 뷰
     }
     
     private func showPrivacyPolicyView() {

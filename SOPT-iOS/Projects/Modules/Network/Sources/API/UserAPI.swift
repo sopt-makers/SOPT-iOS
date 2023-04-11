@@ -12,7 +12,6 @@ import Alamofire
 import Moya
 
 public enum UserAPI {
-    case signUp(nickname: String, email: String, password: String)
     case signIn(email: String, password: String)
 }
 
@@ -23,8 +22,6 @@ extension UserAPI: BaseAPI {
     // MARK: - Path
     public var path: String {
         switch self {
-        case .signUp:
-            return "signup"
         case .signIn:
             return "login"
         }
@@ -33,7 +30,7 @@ extension UserAPI: BaseAPI {
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .signUp, .signIn:
+        case .signIn:
             return .post
         }
     }
@@ -42,10 +39,6 @@ extension UserAPI: BaseAPI {
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
-        case .signUp(let nickname, let email, let password):
-            params["nickname"] = nickname
-            params["email"] = email
-            params["password"] = password
         case .signIn(let email, let password):
             params["email"] = email
             params["password"] = password
@@ -62,7 +55,7 @@ extension UserAPI: BaseAPI {
     
     public var task: Task {
         switch self {
-        case .signUp, .signIn:
+        case .signIn:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain

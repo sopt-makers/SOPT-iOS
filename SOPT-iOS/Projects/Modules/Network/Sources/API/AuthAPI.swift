@@ -13,7 +13,6 @@ import Moya
 
 public enum AuthAPI {
     case getNicknameAvailable(nickname: String)
-    case changePassword(password: String, userId: Int)
     case changeNickname(userId: Int, nickname: String)
     case withdrawal(userId: Int)
 }
@@ -25,7 +24,7 @@ extension AuthAPI: BaseAPI {
     // MARK: - Header
     public var headers: [String: String]? {
         switch self {
-        case .changePassword(_, let userId), .changeNickname(let userId, _), .withdrawal(let userId):
+        case .changeNickname(let userId, _), .withdrawal(let userId):
             return HeaderType.userId(userId: userId).value
         default: return HeaderType.json.value
         }
@@ -36,8 +35,6 @@ extension AuthAPI: BaseAPI {
         switch self {
         case .getNicknameAvailable:
             return ""
-        case .changePassword:
-            return "password"
         case .changeNickname:
             return "nickname"
         case .withdrawal:
@@ -50,7 +47,7 @@ extension AuthAPI: BaseAPI {
         switch self {
         case .getNicknameAvailable:
             return .get
-        case .changePassword, .changeNickname:
+        case .changeNickname:
             return .patch
         case .withdrawal:
             return .delete
@@ -61,8 +58,6 @@ extension AuthAPI: BaseAPI {
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
-        case .changePassword(let password, _):
-            params["password"] = password
         case .changeNickname(_, let nickname):
             params["nickname"] = nickname
         default:
@@ -82,7 +77,7 @@ extension AuthAPI: BaseAPI {
         switch self {
         case .getNicknameAvailable(let nickname):
             return .requestParameters(parameters: ["nickname": nickname], encoding: URLEncoding.queryString)
-        case .changePassword, .changeNickname:
+        case .changeNickname:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain

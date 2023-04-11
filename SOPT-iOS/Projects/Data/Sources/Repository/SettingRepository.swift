@@ -65,10 +65,3 @@ extension SettingRepository: SettingRepositoryInterface {
             .eraseToAnyPublisher()
     }
 }
-
-extension SettingRepository: PasswordChangeRepositoryInterface {
-    public func changePassword(password: String) -> AnyPublisher<Bool, Error> {
-        authService.changePassword(password: password, userId: userId).map { statusCode in statusCode == 200 }
-            .eraseToAnyPublisher()
-    }
-}
