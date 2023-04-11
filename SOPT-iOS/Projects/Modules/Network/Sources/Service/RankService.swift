@@ -15,16 +15,22 @@ import Moya
 public typealias DefaultRankService = BaseService<RankAPI>
 
 public protocol RankService {
-    func fetchRankingList(userId: Int) -> AnyPublisher<[RankingEntity], Error>
-    func editSentence(userId: Int, sentence: String) -> AnyPublisher<EditSentenceEntity, Error>
+    func fetchRankingList() -> AnyPublisher<[RankingEntity], Error>
+    func fetchRankDetail(userName: String) -> AnyPublisher<RankDetailEntity, Error>
+    func editSentence(sentence: String) -> AnyPublisher<EditSentenceEntity, Error>
 }
 
 extension DefaultRankService: RankService {
-    public func fetchRankingList(userId: Int) -> AnyPublisher<[RankingEntity], Error> {
-        requestObjectInCombine(RankAPI.rank(userId: userId))
+
+    public func fetchRankingList() -> AnyPublisher<[RankingEntity], Error> {
+        requestObjectInCombine(RankAPI.rank)
     }
     
-    public func editSentence(userId: Int, sentence: String) -> AnyPublisher<EditSentenceEntity, Error> {
-        requestObjectInCombine(RankAPI.editSentence(userId: userId, sentence: sentence))
+    public func fetchRankDetail(userName: String) -> AnyPublisher<RankDetailEntity, Error> {
+        requestObjectInCombine(RankAPI.rankDetail(userName: userName))
+    }
+    
+    public func editSentence(sentence: String) -> AnyPublisher<EditSentenceEntity, Error> {
+        requestObjectInCombine(RankAPI.editSentence(sentence: sentence))
     }
 }

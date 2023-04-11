@@ -25,7 +25,7 @@ public class RankingRepository {
 extension RankingRepository: RankingRepositoryInterface {
     public func fetchRankingListModel() -> AnyPublisher<[Domain.RankingModel], Error> {
         return self.rankService
-            .fetchRankingList(userId: UserDefaultKeyList.Auth.userId ?? 1)
+            .fetchRankingList()
             .map({ entity in
                 entity.map { $0.toDomain() }
             })

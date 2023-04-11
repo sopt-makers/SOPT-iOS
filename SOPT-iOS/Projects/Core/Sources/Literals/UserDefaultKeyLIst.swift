@@ -12,7 +12,6 @@ public struct UserDefaultKeyList {
     public struct Auth {
         @UserDefaultWrapper<String>(key: "deviceToken") public static var deviceToken
         @UserDefaultWrapper<String>(key: "endpointArnForSNS") public static var endpointArnForSNS
-        @UserDefaultWrapper<Int>(key: "userId") public static var userId
         @UserDefaultWrapper<String>(key: "appAccessToken") public static var appAccessToken
         @UserDefaultWrapper<String>(key: "appRefreshToken") public static var appRefreshToken
         @UserDefaultWrapper<String>(key: "playgroundToken") public static var playgroundToken

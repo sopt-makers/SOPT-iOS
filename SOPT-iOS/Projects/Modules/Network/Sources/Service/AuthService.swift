@@ -16,8 +16,8 @@ public typealias DefaultAuthService = BaseService<AuthAPI>
 
 public protocol AuthService {
     func getNicknameAvailable(nickname: String) -> AnyPublisher<Int, Error>
-    func changeNickname(userId: Int, nickname: String) -> AnyPublisher<Int, Error>
-    func withdrawal(userId: Int) -> AnyPublisher<Int, Error>
+    func changeNickname(nickname: String) -> AnyPublisher<Int, Error>
+    func withdrawal() -> AnyPublisher<Int, Error>
     func signIn(token: String) -> AnyPublisher<SignInEntity, Error>
 }
 
@@ -27,12 +27,12 @@ extension DefaultAuthService: AuthService {
         return requestObjectInCombineNoResult(.getNicknameAvailable(nickname: nickname))
     }
     
-    public func changeNickname(userId: Int, nickname: String) -> AnyPublisher<Int, Error> {
-        return requestObjectInCombineNoResult(.changeNickname(userId: userId, nickname: nickname))
+    public func changeNickname(nickname: String) -> AnyPublisher<Int, Error> {
+        return requestObjectInCombineNoResult(.changeNickname(nickname: nickname))
     }
     
-    public func withdrawal(userId: Int) -> AnyPublisher<Int, Error> {
-        return requestObjectInCombineNoResult(.withdrawal(userId: userId))
+    public func withdrawal() -> AnyPublisher<Int, Error> {
+        return requestObjectInCombineNoResult(.withdrawal)
     }
     
     public func signIn(token: String) -> AnyPublisher<SignInEntity, Error> {

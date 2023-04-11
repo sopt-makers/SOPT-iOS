@@ -99,11 +99,22 @@ extension MainVC {
                                      withReuseIdentifier: AppServiceHeaderView.className)
         self.collectionView.register(AppServiceCVC.self, forCellWithReuseIdentifier: AppServiceCVC.className)
     }
+    
+    private func pushSoptampFeature() {
+        let vc = factory.makeMissionListVC(sceneType: .default).viewController
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
 
 // MARK: - UICollectionViewDelegate
 
 extension MainVC: UICollectionViewDelegate {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // TODO: - 디버깅을 위한 임시 솝탬프 피쳐 연결
+        if indexPath.section == 3 {
+            pushSoptampFeature()
+        }
+    }
 }
 
 // MARK: - UICollectionViewDataSource

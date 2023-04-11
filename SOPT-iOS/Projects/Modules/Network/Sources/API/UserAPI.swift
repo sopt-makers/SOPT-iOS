@@ -12,7 +12,7 @@ import Alamofire
 import Moya
 
 public enum UserAPI {
-    case signIn(email: String, password: String)
+    case fetchUser
 }
 
 extension UserAPI: BaseAPI {
@@ -22,16 +22,16 @@ extension UserAPI: BaseAPI {
     // MARK: - Path
     public var path: String {
         switch self {
-        case .signIn:
-            return "login"
+        case .fetchUser:
+            return ""
         }
     }
     
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .signIn:
-            return .post
+        case .fetchUser:
+            return .get
         }
     }
     
@@ -39,9 +39,7 @@ extension UserAPI: BaseAPI {
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
-        case .signIn(let email, let password):
-            params["email"] = email
-            params["password"] = password
+        default: break
         }
         return params
     }
@@ -55,8 +53,6 @@ extension UserAPI: BaseAPI {
     
     public var task: Task {
         switch self {
-        case .signIn:
-            return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain
         }

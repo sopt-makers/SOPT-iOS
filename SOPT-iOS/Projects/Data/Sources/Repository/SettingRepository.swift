@@ -14,7 +14,6 @@ import Network
 
 public class SettingRepository {
     
-    private let userId: Int = UserDefaultKeyList.Auth.userId ?? 0
     private let authService: AuthService
     private let stampService: StampService
     private let rankService: RankService
@@ -30,13 +29,13 @@ public class SettingRepository {
 extension SettingRepository: SettingRepositoryInterface {
     
     public func resetStamp() -> Driver<Bool> {
-        stampService.resetStamp(userId: userId)
+        stampService.resetStamp()
             .map { $0 == 200 }
             .asDriver()
     }
     
     public func editSentence(sentence: String) -> AnyPublisher<Bool, Never> {
-        return rankService.editSentence(userId: userId, sentence: sentence)
+        return rankService.editSentence(sentence: sentence)
             .handleEvents(receiveOutput: { entity in
                 UserDefaultKeyList.User.sentence = entity.toDomain()
             })
@@ -46,17 +45,19 @@ extension SettingRepository: SettingRepositoryInterface {
     }
     
     public func editNickname(nickname: String) -> AnyPublisher<Bool, Never> {
-        return authService.changeNickname(userId: userId, nickname: nickname)
+        return authService.changeNickname(nickname: nickname)
             .map { _ in true }
             .replaceError(with: false)
             .eraseToAnyPublisher()
     }
     
     public func withdrawal() -> AnyPublisher<Bool, Never> {
-        return authService.withdrawal(userId: userId)
+        return authService.withdrawal()
             .handleEvents(receiveOutput: { status in
                 if status == 200 {
-                    UserDefaultKeyList.Auth.userId = nil
+                    UserDefaultKeyList.Auth.appAccessToken = nil
+                    UserDefaultKeyList.Auth.appRefreshToken = nil
+                    UserDefaultKeyList.Auth.playgroundToken = nil
                     UserDefaultKeyList.User.sentence = nil
                 }
             })

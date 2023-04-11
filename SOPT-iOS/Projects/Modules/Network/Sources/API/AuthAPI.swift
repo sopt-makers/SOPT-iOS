@@ -13,8 +13,8 @@ import Moya
 
 public enum AuthAPI {
     case getNicknameAvailable(nickname: String)
-    case changeNickname(userId: Int, nickname: String)
-    case withdrawal(userId: Int)
+    case changeNickname(nickname: String)
+    case withdrawal
     case signIn(token: String)
 }
 
@@ -25,8 +25,8 @@ extension AuthAPI: BaseAPI {
     // MARK: - Header
     public var headers: [String: String]? {
         switch self {
-        case .changeNickname(let userId, _), .withdrawal(let userId):
-            return HeaderType.userId(userId: userId).value
+        case .changeNickname, .withdrawal:
+            return HeaderType.jsonWithToken.value
         default: return HeaderType.json.value
         }
     }
@@ -63,7 +63,7 @@ extension AuthAPI: BaseAPI {
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
-        case .changeNickname(_, let nickname):
+        case .changeNickname(let nickname):
             params["nickname"] = nickname
         case .signIn(let token):
             params["code"] = token

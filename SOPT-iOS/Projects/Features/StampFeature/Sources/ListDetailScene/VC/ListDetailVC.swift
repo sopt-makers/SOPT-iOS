@@ -465,7 +465,7 @@ extension ListDetailVC {
             self.missionImageView.isUserInteractionEnabled = false
         }
         
-        if viewModel.otherUserId != nil {
+        if viewModel.isOtherUser {
             self.naviBar.hideRightButton()
         }
     }

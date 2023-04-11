@@ -45,7 +45,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
                 .setTitle("전체 미션")
                 .setTitleTypoStyle(.SoptampFont.h2)
                 .setTitleButtonMenu(menuItems: self.menuItems)
-        case .ranking(let username, _, _):
+        case .ranking(let username, _):
             return STNavigationBar(self, type: .titleWithLeftButton)
                 .setTitle(username)
                 .setRightButton(.none)
@@ -69,7 +69,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
     
     private lazy var sentenceLabel: SentencePaddingLabel = {
         let lb = SentencePaddingLabel()
-        if case let .ranking(_, sentence, _) = sceneType {
+        if case let .ranking(_, sentence) = sceneType {
             lb.text = sentence
         }
         lb.setTypoStyle(.SoptampFont.subtitle1)
@@ -360,7 +360,7 @@ extension MissionListVC: UICollectionViewDelegate {
                                                     starLevel: starLevel,
                                                     missionId: model.id,
                                                     missionTitle: model.title,
-                                                    otherUserId: viewModel.otherUserId).viewController
+                                                    isOtherUser: true).viewController
             self.navigationController?.pushViewController(detailVC, animated: true)
         default:
             return

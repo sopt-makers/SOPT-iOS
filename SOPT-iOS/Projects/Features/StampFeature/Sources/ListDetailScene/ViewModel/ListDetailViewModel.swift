@@ -20,8 +20,8 @@ public class ListDetailViewModel: ViewModelType {
     public var missionId: Int!
     public var missionTitle: String!
     public var stampId: Int!
-    public var otherUserId: Int!
-  
+    public var isOtherUser: Bool
+    
     // MARK: - Inputs
     
     public struct Input {
@@ -41,14 +41,14 @@ public class ListDetailViewModel: ViewModelType {
     }
     
     // MARK: - init
-  
-    public init(useCase: ListDetailUseCase, sceneType: ListDetailSceneType, starLevel: StarViewLevel, missionId: Int, missionTitle: String, otherUserId: Int?) {
+    
+    public init(useCase: ListDetailUseCase, sceneType: ListDetailSceneType, starLevel: StarViewLevel, missionId: Int, missionTitle: String, isOtherUser: Bool) {
         self.useCase = useCase
         self.sceneType = sceneType
         self.starLevel = starLevel
         self.missionId = missionId
         self.missionTitle = missionTitle
-        self.otherUserId = otherUserId
+        self.isOtherUser = isOtherUser
     }
 }
 
@@ -62,11 +62,7 @@ extension ListDetailViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 if owner.sceneType == .completed {
-                    if let otherUserId = self.otherUserId {
-                        owner.useCase.fetchOtherListDetail(userId: otherUserId, missionId: owner.missionId)
-                    } else {
-                        owner.useCase.fetchListDetail(missionId: owner.missionId)
-                    }
+                    owner.useCase.fetchListDetail(missionId: owner.missionId)
                 }
             }.store(in: cancelBag)
         
@@ -95,10 +91,10 @@ extension ListDetailViewModel {
             .sink { _ in
                 self.useCase.deleteStamp(stampId: self.stampId)
             }.store(in: self.cancelBag)
-    
+        
         return output
     }
-  
+    
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         let listDetailModel = useCase.listDetailModel
         let editSuccess = useCase.editSuccess

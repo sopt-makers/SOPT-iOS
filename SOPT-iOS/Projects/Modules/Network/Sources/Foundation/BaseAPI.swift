@@ -9,6 +9,7 @@
 import Alamofire
 import Moya
 import Foundation
+import Core
 
 public enum APIType {
     case auth
@@ -50,28 +51,25 @@ extension BaseAPI {
     }
     
     public var headers: [String: String]? {
-        return ["Content-Type": "application/json"]
+        return HeaderType.jsonWithToken.value
     }
 }
 
 public enum HeaderType {
     case json
-    case jsonUserId(userId: Int)
-    case userId(userId: Int)
-    case multipart(userId: Int)
+    case jsonWithToken
+    case multipartWithToken
     
     public var value: [String: String] {
         switch self {
         case .json:
             return ["Content-Type": "application/json"]
-        case .jsonUserId(let userId):
+        case .jsonWithToken:
             return ["Content-Type": "application/json",
-                    "userId": String(userId)]
-        case .userId(let userId):
-            return ["userId": String(userId)]
-        case .multipart(let userId):
+                    "Authorization": UserDefaultKeyList.Auth.appAccessToken ?? "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzb3B0LW1ha2VycyIsImlhdCI6MTY4MTIwMTkwNywic3ViIjoiMiIsImV4cCI6MTY4MTI4ODMwNywiaWQiOjIsInJvbGVzIjoiVVNFUiJ9.X-b45sMMQeUiyDnZEHdKEowor_g0wH_YlugeuAhWqYk"]
+        case .multipartWithToken:
             return ["Content-Type": "multipart/form-data",
-                    "userId": String(userId)]
+                    "Authorization": UserDefaultKeyList.Auth.appAccessToken ?? "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzb3B0LW1ha2VycyIsImlhdCI6MTY4MTIwMTkwNywic3ViIjoiMiIsImV4cCI6MTY4MTI4ODMwNywiaWQiOjIsInJvbGVzIjoiVVNFUiJ9.X-b45sMMQeUiyDnZEHdKEowor_g0wH_YlugeuAhWqYk"]
         }
     }
 }

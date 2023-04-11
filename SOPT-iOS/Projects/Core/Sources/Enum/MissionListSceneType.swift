@@ -9,7 +9,7 @@
 @frozen
 public enum MissionListSceneType {
     case `default`
-    case ranking(userName: String, sentence: String, userId: Int)
+    case ranking(userName: String, sentence: String)
     
     var isRankingView: Bool {
         switch self {

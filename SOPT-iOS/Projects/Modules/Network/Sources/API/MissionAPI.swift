@@ -14,7 +14,7 @@ import Alamofire
 import Moya
 
 public enum MissionAPI {
-    case fetchMissionList(type: MissionListFetchType, userId: Int)
+    case fetchMissionList(type: MissionListFetchType)
 }
 
 extension MissionAPI: BaseAPI {
@@ -24,8 +24,8 @@ extension MissionAPI: BaseAPI {
     // MARK: - Header
     public var headers: [String: String]? {
         switch self {
-        case .fetchMissionList(_, let userId):
-            return HeaderType.userId(userId: userId).value
+        case .fetchMissionList:
+            return HeaderType.jsonWithToken.value
         default: return HeaderType.json.value
         }
     }
@@ -33,7 +33,7 @@ extension MissionAPI: BaseAPI {
     // MARK: - Path
     public var path: String {
         switch self {
-        case .fetchMissionList(let type, _):
+        case .fetchMissionList(let type):
             return "/\(type.path)"
         default: return ""
         }

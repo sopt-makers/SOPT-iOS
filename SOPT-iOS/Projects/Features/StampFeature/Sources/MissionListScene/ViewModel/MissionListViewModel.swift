@@ -17,7 +17,6 @@ public class MissionListViewModel: ViewModelType {
     private let useCase: MissionListUseCase
     private var cancelBag = CancelBag()
     public var missionListsceneType: MissionListSceneType!
-    public var otherUserId: Int?
     
     // MARK: - Inputs
     
@@ -63,9 +62,8 @@ extension MissionListViewModel {
     
     private func fetchMissionList(type: MissionListFetchType) {
         switch self.missionListsceneType {
-        case .ranking(_, _, let userId):
-            self.otherUserId = userId
-            self.useCase.fetchOtherUserMissionList(type: .complete, userId: userId)
+        case .ranking(let userName, _):
+            self.useCase.fetchOtherUserMissionList(userName: userName)
         default:
             self.useCase.fetchMissionList(type: type)
         }

@@ -89,7 +89,7 @@ extension DIContainer: Features {
     // MARK: - StampFeature
     
     func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListViewControllable {
-        let repository = MissionListRepository(service: missionService)
+        let repository = MissionListRepository(missionService: missionService, rankService: rankService)
         let useCase = DefaultMissionListUseCase(repository: repository)
         let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType)
         let missionListVC = MissionListVC()
@@ -102,7 +102,7 @@ extension DIContainer: Features {
                           starLevel: StarViewLevel,
                           missionId: Int,
                           missionTitle: String,
-                          otherUserId: Int?) -> ListDetailViewControllable {
+                          isOtherUser: Bool) -> ListDetailViewControllable {
         let repository = ListDetailRepository(service: stampService)
         let useCase = DefaultListDetailUseCase(repository: repository)
         let viewModel = ListDetailViewModel(useCase: useCase,
@@ -110,7 +110,7 @@ extension DIContainer: Features {
                                             starLevel: starLevel,
                                             missionId: missionId,
                                             missionTitle: missionTitle,
-                                            otherUserId: otherUserId)
+                                            isOtherUser: isOtherUser)
         let listDetailVC = ListDetailVC()
         listDetailVC.viewModel = viewModel
         listDetailVC.factory = self
