@@ -86,27 +86,6 @@ extension DIContainer: Features {
         return signinVC
     }
     
-    func makeFindAccountVC() -> FindAccountViewControllable {
-        let findAccountVC = FindAccountVC()
-        return findAccountVC
-    }
-    
-    func makeSignUpVC() -> SignUpViewControllable {
-        let repository = SignUpRepository(service: authService, userService: userService)
-        let useCase = DefaultSignUpUseCase(repository: repository)
-        let viewModel = SignUpViewModel(useCase: useCase)
-        let signUpVC = SignUpVC()
-        signUpVC.factory = self
-        signUpVC.viewModel = viewModel
-        return signUpVC
-    }
-    
-    public func makeSignUpCompleteVC() -> SignUpCompleteViewControllable {
-        let signUpCompleteVC = SignUpCompleteVC()
-        signUpCompleteVC.factory = self
-        return signUpCompleteVC
-    }
-    
     // MARK: - StampFeature
     
     func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListViewControllable {
@@ -195,7 +174,7 @@ extension DIContainer: Features {
         let settingRepository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
         let settingUseCase = DefaultSettingUseCase(repository: settingRepository)
 
-        let signUpRepository = SignUpRepository(service: self.authService, userService: self.userService)
+        let signUpRepository = SignUpRepository(service: self.authService)
         let signUpUseCase = DefaultSignUpUseCase(repository: signUpRepository)
 
         let viewModel = NicknameEditViewModel(nicknameUseCase: signUpUseCase, editPostUseCase: settingUseCase)

@@ -13,7 +13,6 @@ import Moya
 
 public enum AuthAPI {
     case getNicknameAvailable(nickname: String)
-    case getEmailAvailable(email: String)
     case changePassword(password: String, userId: Int)
     case changeNickname(userId: Int, nickname: String)
     case withdrawal(userId: Int)
@@ -35,7 +34,7 @@ extension AuthAPI: BaseAPI {
     // MARK: - Path
     public var path: String {
         switch self {
-        case .getNicknameAvailable, .getEmailAvailable:
+        case .getNicknameAvailable:
             return ""
         case .changePassword:
             return "password"
@@ -49,7 +48,7 @@ extension AuthAPI: BaseAPI {
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .getNicknameAvailable, .getEmailAvailable:
+        case .getNicknameAvailable:
             return .get
         case .changePassword, .changeNickname:
             return .patch
@@ -83,8 +82,6 @@ extension AuthAPI: BaseAPI {
         switch self {
         case .getNicknameAvailable(let nickname):
             return .requestParameters(parameters: ["nickname": nickname], encoding: URLEncoding.queryString)
-        case .getEmailAvailable(let email):
-            return .requestParameters(parameters: ["email": email], encoding: URLEncoding.queryString)
         case .changePassword, .changeNickname:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
