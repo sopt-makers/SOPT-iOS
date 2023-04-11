@@ -14,7 +14,6 @@ import Moya
 public enum RankAPI {
     case rank
     case rankDetail(userName: String)
-    case editSentence(sentence: String)
 }
 
 extension RankAPI: BaseAPI {
@@ -24,7 +23,7 @@ extension RankAPI: BaseAPI {
     // MARK: - Header
     public var headers: [String: String]? {
         switch self {
-        case .rank, .editSentence, .rankDetail:
+        case .rank, .rankDetail:
             return HeaderType.jsonWithToken.value
         default: return HeaderType.json.value
         }
@@ -37,16 +36,12 @@ extension RankAPI: BaseAPI {
             return ""
         case .rankDetail:
             return "/detail"
-        case .editSentence:
-            return "/profileMessage"
         }
     }
     
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .editSentence:
-            return .post
         default: return .get
         }
     }
@@ -57,8 +52,6 @@ extension RankAPI: BaseAPI {
         switch self {
         case .rankDetail(let userName):
             params["nickname"] = userName
-        case .editSentence(let sentence):
-            params["profileMessage"] = sentence
         default: break
         }
         return params
@@ -77,8 +70,6 @@ extension RankAPI: BaseAPI {
         switch self {
         case .rankDetail:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
-        case .editSentence:
-            return .requestParameters(parameters: self.bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain
         }

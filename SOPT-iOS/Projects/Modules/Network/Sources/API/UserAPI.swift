@@ -13,6 +13,9 @@ import Moya
 
 public enum UserAPI {
     case fetchUser
+    case editSentence(sentence: String)
+    case getNicknameAvailable(nickname: String)
+    case changeNickname(nickname: String)
 }
 
 extension UserAPI: BaseAPI {
@@ -24,14 +27,22 @@ extension UserAPI: BaseAPI {
         switch self {
         case .fetchUser:
             return ""
+        case .editSentence:
+            return "profile-message"
+        case .changeNickname:
+            return "nickname"
+        case .getNicknameAvailable(let nickname):
+            return "nickname/\(nickname)"
         }
     }
     
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .fetchUser:
+        case .fetchUser, .getNicknameAvailable:
             return .get
+        case .editSentence, .changeNickname:
+            return .patch
         }
     }
     
@@ -39,6 +50,10 @@ extension UserAPI: BaseAPI {
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
+        case .changeNickname(let nickname):
+            params["nickname"] = nickname
+        case .editSentence(let sentence):
+            params["profileMessage"] = sentence
         default: break
         }
         return params
@@ -53,6 +68,8 @@ extension UserAPI: BaseAPI {
     
     public var task: Task {
         switch self {
+        case .changeNickname, .editSentence:
+            return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain
         }

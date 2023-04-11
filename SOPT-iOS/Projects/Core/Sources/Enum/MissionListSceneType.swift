@@ -11,7 +11,7 @@ public enum MissionListSceneType {
     case `default`
     case ranking(userName: String, sentence: String)
     
-    var isRankingView: Bool {
+    public var isRankingView: Bool {
         switch self {
         case .default: return false
         case .ranking: return true

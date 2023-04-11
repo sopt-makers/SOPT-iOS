@@ -17,7 +17,6 @@ public typealias DefaultRankService = BaseService<RankAPI>
 public protocol RankService {
     func fetchRankingList() -> AnyPublisher<[RankingEntity], Error>
     func fetchRankDetail(userName: String) -> AnyPublisher<RankDetailEntity, Error>
-    func editSentence(sentence: String) -> AnyPublisher<EditSentenceEntity, Error>
 }
 
 extension DefaultRankService: RankService {
@@ -28,9 +27,5 @@ extension DefaultRankService: RankService {
     
     public func fetchRankDetail(userName: String) -> AnyPublisher<RankDetailEntity, Error> {
         requestObjectInCombine(RankAPI.rankDetail(userName: userName))
-    }
-    
-    public func editSentence(sentence: String) -> AnyPublisher<EditSentenceEntity, Error> {
-        requestObjectInCombine(RankAPI.editSentence(sentence: sentence))
     }
 }

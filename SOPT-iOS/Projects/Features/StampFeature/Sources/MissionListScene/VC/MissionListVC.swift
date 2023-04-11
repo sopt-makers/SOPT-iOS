@@ -354,13 +354,13 @@ extension MissionListVC: UICollectionViewDelegate {
             guard let tappedCell = collectionView.cellForItem(at: indexPath) as? MissionListCVC,
                   let model = tappedCell.model,
                   let starLevel = StarViewLevel.init(rawValue: model.level)else { return }
-            let sceneType = model.toListDetailSceneType()
+            let detailSceneType = model.toListDetailSceneType()
             
-            let detailVC = factory.makeListDetailVC(sceneType: sceneType,
+            let detailVC = factory.makeListDetailVC(sceneType: detailSceneType,
                                                     starLevel: starLevel,
                                                     missionId: model.id,
                                                     missionTitle: model.title,
-                                                    isOtherUser: true).viewController
+                                                    isOtherUser: sceneType.isRankingView).viewController
             self.navigationController?.pushViewController(detailVC, animated: true)
         default:
             return

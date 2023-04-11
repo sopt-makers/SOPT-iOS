@@ -14,10 +14,10 @@ import Network
 
 public class SignUpRepository {
     
-    private let networkService: AuthService
+    private let networkService: UserService
     private let cancelBag = CancelBag()
     
-    public init(service: AuthService) {
+    public init(service: UserService) {
         self.networkService = service
     }
 }

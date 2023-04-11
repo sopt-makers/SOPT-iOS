@@ -16,13 +16,13 @@ public class SettingRepository {
     
     private let authService: AuthService
     private let stampService: StampService
-    private let rankService: RankService
+    private let userService: UserService
     private let cancelBag = CancelBag()
     
-    public init(authService: AuthService, stampService: StampService, rankService: RankService) {
+    public init(authService: AuthService, stampService: StampService, userService: UserService) {
         self.authService = authService
         self.stampService = stampService
-        self.rankService = rankService
+        self.userService = userService
     }
 }
 
@@ -35,7 +35,7 @@ extension SettingRepository: SettingRepositoryInterface {
     }
     
     public func editSentence(sentence: String) -> AnyPublisher<Bool, Never> {
-        return rankService.editSentence(sentence: sentence)
+        return userService.editSentence(sentence: sentence)
             .handleEvents(receiveOutput: { entity in
                 UserDefaultKeyList.User.sentence = entity.toDomain()
             })
@@ -45,7 +45,7 @@ extension SettingRepository: SettingRepositoryInterface {
     }
     
     public func editNickname(nickname: String) -> AnyPublisher<Bool, Never> {
-        return authService.changeNickname(nickname: nickname)
+        return userService.changeNickname(nickname: nickname)
             .map { _ in true }
             .replaceError(with: false)
             .eraseToAnyPublisher()
