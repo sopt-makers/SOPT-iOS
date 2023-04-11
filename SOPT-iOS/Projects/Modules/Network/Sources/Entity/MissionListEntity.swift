@@ -14,7 +14,6 @@ public struct MissionListEntityElement: Codable {
     public let level: Int
     public let profileImage: [String]?
     public let isCompleted: Bool?
-    public let display: Bool?
     
     public var fetchTypeHandler: Bool? = false
     

@@ -227,9 +227,12 @@ extension RankingVC: UICollectionViewDelegate {
     }
     
     private func pushToOtherUserMissionListVC(item: RankingListTapItem) {
-        let otherUserMissionListVC = factory.makeMissionListVC(sceneType: .ranking(userName: item.username,
-                                                                                   sentence: item.sentence,
-                                                                                   userId: item.userId)).viewController
+        let otherUserMissionListVC = factory.makeMissionListVC(
+            sceneType: .ranking(
+                userName: item.username,
+                sentence: item.sentence
+            )
+        ).viewController
         self.navigationController?.pushViewController(otherUserMissionListVC, animated: true)
     }
 }

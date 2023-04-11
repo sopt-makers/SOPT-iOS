@@ -89,7 +89,7 @@ extension DIContainer: Features {
     // MARK: - StampFeature
     
     func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListViewControllable {
-        let repository = MissionListRepository(service: missionService)
+        let repository = MissionListRepository(missionService: missionService, rankService: rankService)
         let useCase = DefaultMissionListUseCase(repository: repository)
         let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType)
         let missionListVC = MissionListVC()
@@ -102,7 +102,7 @@ extension DIContainer: Features {
                           starLevel: StarViewLevel,
                           missionId: Int,
                           missionTitle: String,
-                          otherUserId: Int?) -> ListDetailViewControllable {
+                          isOtherUser: Bool) -> ListDetailViewControllable {
         let repository = ListDetailRepository(service: stampService)
         let useCase = DefaultListDetailUseCase(repository: repository)
         let viewModel = ListDetailViewModel(useCase: useCase,
@@ -110,7 +110,7 @@ extension DIContainer: Features {
                                             starLevel: starLevel,
                                             missionId: missionId,
                                             missionTitle: missionTitle,
-                                            otherUserId: otherUserId)
+                                            isOtherUser: isOtherUser)
         let listDetailVC = ListDetailVC()
         listDetailVC.viewModel = viewModel
         listDetailVC.factory = self
@@ -161,7 +161,7 @@ extension DIContainer: Features {
     // MARK: - SettingFeature
     
     func makeSettingVC() -> SettingViewControllable {
-        let repository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
+        let repository = SettingRepository(authService: authService, stampService: stampService, userService: userService)
         let useCase = DefaultSettingUseCase(repository: repository)
         let viewModel = SettingViewModel(useCase: useCase)
         let settingVC = SettingVC()
@@ -171,10 +171,10 @@ extension DIContainer: Features {
     }
     
     func makeNicknameEditVC() -> NicknameEditViewControllable {
-        let settingRepository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
+        let settingRepository = SettingRepository(authService: authService, stampService: stampService, userService: userService)
         let settingUseCase = DefaultSettingUseCase(repository: settingRepository)
 
-        let signUpRepository = SignUpRepository(service: self.authService)
+        let signUpRepository = SignUpRepository(service: userService)
         let signUpUseCase = DefaultSignUpUseCase(repository: signUpRepository)
 
         let viewModel = NicknameEditViewModel(nicknameUseCase: signUpUseCase, editPostUseCase: settingUseCase)
@@ -185,7 +185,7 @@ extension DIContainer: Features {
     }
     
     func makeSentenceEditVC() -> SentenceEditViewControllable {
-        let repository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
+        let repository = SettingRepository(authService: authService, stampService: stampService, userService: userService)
         let useCase = DefaultSentenceEditUseCase(repository: repository)
         let viewModel = SentenceEditViewModel(useCase: useCase)
         let sentenceEditVC = SentenceEditVC()
@@ -206,7 +206,7 @@ extension DIContainer: Features {
     
     func makeWithdrawalVC() -> WithdrawalViewControllable {
         let withdrawalVC = WithdrawalVC()
-        let repository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
+        let repository = SettingRepository(authService: authService, stampService: stampService, userService: userService)
         let useCase = DefaultSettingUseCase(repository: repository)
         let viewModel = WithdrawalViewModel(useCase: useCase)
         withdrawalVC.viewModel = viewModel

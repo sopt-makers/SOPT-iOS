@@ -17,13 +17,14 @@ import Then
 
 import MainFeatureInterface
 import StampFeatureInterface
+import SettingFeatureInterface
 
 public class MainVC: UIViewController, MainViewControllable {
     
     // MARK: - Properties
     
     public var viewModel: MainViewModel!
-    public var factory: StampFeatureViewBuildable!
+    public var factory: (StampFeatureViewBuildable & SettingFeatureViewBuildable)!
     private var cancelBag = CancelBag()
     
     // MARK: - UI Components
@@ -45,6 +46,7 @@ public class MainVC: UIViewController, MainViewControllable {
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.bindViewModels()
+        self.bindViews()
         self.setUI()
         self.setLayout()
         self.setDelegate()
@@ -82,6 +84,15 @@ extension MainVC {
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
     }
     
+    private func bindViews() {
+        // FIXME: - 디버깅을 위한 임시 바인딩
+        naviBar.myPageButton.publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.pushSettingFeature()
+            }.store(in: self.cancelBag)
+    }
+    
     private func setDelegate() {
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
@@ -99,11 +110,27 @@ extension MainVC {
                                      withReuseIdentifier: AppServiceHeaderView.className)
         self.collectionView.register(AppServiceCVC.self, forCellWithReuseIdentifier: AppServiceCVC.className)
     }
+    
+    private func pushSoptampFeature() {
+        let vc = factory.makeMissionListVC(sceneType: .default).viewController
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    private func pushSettingFeature() {
+        let vc = factory.makeSettingVC().viewController
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
 
 // MARK: - UICollectionViewDelegate
 
 extension MainVC: UICollectionViewDelegate {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // TODO: - 디버깅을 위한 임시 솝탬프 피쳐 연결
+        if indexPath.section == 3 {
+            pushSoptampFeature()
+        }
+    }
 }
 
 // MARK: - UICollectionViewDataSource

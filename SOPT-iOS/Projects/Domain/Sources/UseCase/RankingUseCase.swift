@@ -57,9 +57,10 @@ extension DefaultRankingUseCase: RankingUseCase {
     }
     
     private func findMyRankingIndex(model: [RankingModel]) -> Int {
-        let myUserId = UserDefaultKeyList.Auth.userId ?? 1
+        // TODO: 랭킹 Index 로직 수정
+        let myUserName = ""
         let index = model.firstIndex { model in
-            model.userId == myUserId
+            model.username == myUserName
         } ?? 0
         return index
     }

@@ -12,8 +12,8 @@ import Alamofire
 import Moya
 
 public enum RankAPI {
-    case rank(userId: Int)
-    case editSentence(userId: Int, sentence: String)
+    case rank
+    case rankDetail(userName: String)
 }
 
 extension RankAPI: BaseAPI {
@@ -23,8 +23,8 @@ extension RankAPI: BaseAPI {
     // MARK: - Header
     public var headers: [String: String]? {
         switch self {
-        case .rank(let userId), .editSentence(let userId, _):
-            return HeaderType.userId(userId: userId).value
+        case .rank, .rankDetail:
+            return HeaderType.jsonWithToken.value
         default: return HeaderType.json.value
         }
     }
@@ -34,16 +34,14 @@ extension RankAPI: BaseAPI {
         switch self {
         case .rank:
             return ""
-        case .editSentence:
-            return "/profileMessage"
+        case .rankDetail:
+            return "/detail"
         }
     }
     
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .editSentence:
-            return .post
         default: return .get
         }
     }
@@ -52,8 +50,8 @@ extension RankAPI: BaseAPI {
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
-        case .editSentence(_, let sentence):
-            params["profileMessage"] = sentence
+        case .rankDetail(let userName):
+            params["nickname"] = userName
         default: break
         }
         return params
@@ -61,6 +59,8 @@ extension RankAPI: BaseAPI {
     
     private var parameterEncoding: ParameterEncoding {
         switch self {
+        case .rankDetail:
+            return URLEncoding.default
         default:
             return JSONEncoding.default
         }
@@ -68,8 +68,8 @@ extension RankAPI: BaseAPI {
     
     public var task: Task {
         switch self {
-        case .editSentence:
-            return .requestParameters(parameters: self.bodyParameters ?? [:], encoding: parameterEncoding)
+        case .rankDetail:
+            return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain
         }

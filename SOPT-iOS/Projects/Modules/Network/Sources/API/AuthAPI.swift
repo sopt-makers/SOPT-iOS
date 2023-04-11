@@ -12,9 +12,7 @@ import Alamofire
 import Moya
 
 public enum AuthAPI {
-    case getNicknameAvailable(nickname: String)
-    case changeNickname(userId: Int, nickname: String)
-    case withdrawal(userId: Int)
+    case withdrawal
     case signIn(token: String)
 }
 
@@ -25,8 +23,8 @@ extension AuthAPI: BaseAPI {
     // MARK: - Header
     public var headers: [String: String]? {
         switch self {
-        case .changeNickname(let userId, _), .withdrawal(let userId):
-            return HeaderType.userId(userId: userId).value
+        case .withdrawal:
+            return HeaderType.jsonWithToken.value
         default: return HeaderType.json.value
         }
     }
@@ -34,10 +32,6 @@ extension AuthAPI: BaseAPI {
     // MARK: - Path
     public var path: String {
         switch self {
-        case .getNicknameAvailable:
-            return ""
-        case .changeNickname:
-            return "nickname"
         case .withdrawal:
             return "withdraw"
         case .signIn:
@@ -48,10 +42,6 @@ extension AuthAPI: BaseAPI {
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .getNicknameAvailable:
-            return .get
-        case .changeNickname:
-            return .patch
         case .withdrawal:
             return .delete
         case .signIn:
@@ -63,8 +53,6 @@ extension AuthAPI: BaseAPI {
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
-        case .changeNickname(_, let nickname):
-            params["nickname"] = nickname
         case .signIn(let token):
             params["code"] = token
         default:
@@ -82,9 +70,7 @@ extension AuthAPI: BaseAPI {
     
     public var task: Task {
         switch self {
-        case .getNicknameAvailable(let nickname):
-            return .requestParameters(parameters: ["nickname": nickname], encoding: URLEncoding.queryString)
-        case .changeNickname, .signIn:
+        case .signIn:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain

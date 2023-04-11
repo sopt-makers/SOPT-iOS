@@ -12,11 +12,11 @@ import Alamofire
 import Moya
 
 public enum StampAPI {
-    case fetchStampListDetail(userId: Int, missionId: Int)
-    case postStamp(userId: Int, missionId: Int, requestModel: [Any])
-    case putStamp(userId: Int, missionId: Int, requestModel: [Any])
+    case fetchStampListDetail(missionId: Int)
+    case postStamp(missionId: Int, requestModel: [Any])
+    case putStamp(missionId: Int, requestModel: [Any])
     case deleteStamp(stampId: Int)
-    case resetStamp(userId: Int)
+    case resetStamp
 }
 
 extension StampAPI: BaseAPI {
@@ -26,23 +26,21 @@ extension StampAPI: BaseAPI {
     // MARK: - Header
     public var headers: [String : String]? {
         switch self {
-        case .fetchStampListDetail(let userId, _),
-                .resetStamp(let userId):
-            return HeaderType.userId(userId: userId).value
-        case .postStamp(let userId, _, _),
-                .putStamp(let userId, _, _):
-            return HeaderType.multipart(userId: userId).value
+        case .fetchStampListDetail, .resetStamp:
+            return HeaderType.jsonWithToken.value
+        case .postStamp, .putStamp:
+            return HeaderType.multipartWithToken.value
         case .deleteStamp:
-            return HeaderType.json.value
+            return HeaderType.jsonWithToken.value
         }
     }
     
     // MARK: - Path
     public var path: String {
         switch self {
-        case .fetchStampListDetail(_, let missionId),
-                .postStamp(_ , let missionId, _),
-                .putStamp(_ , let missionId, _):
+        case .fetchStampListDetail(let missionId),
+                .postStamp(let missionId, _),
+                .putStamp(let missionId, _):
             return "/\(missionId)"
         case .deleteStamp(let stampId):
             return "/\(stampId)"
@@ -82,8 +80,7 @@ extension StampAPI: BaseAPI {
     
     public var task: Task {
         switch self {
-        case .postStamp(_ , _, let requestModel),
-                .putStamp(_, _, let requestModel):
+        case .postStamp(_, let requestModel), .putStamp(_, let requestModel):
             var multipartData: [Moya.MultipartFormData] = []
             
             let fileName = (self.method == .post) ? ".jpg" : ".png"

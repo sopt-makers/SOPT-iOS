@@ -113,7 +113,7 @@ extension SettingVC {
     }
     
     private func logout() {
-        UserDefaultKeyList.Auth.userId = nil
+        UserDefaultKeyList.Auth.appAccessToken = nil
         self.changeRootViewController()
     }
     

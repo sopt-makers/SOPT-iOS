@@ -17,13 +17,11 @@ protocol RankingListTappable {
 public struct RankingListTapItem {
     public let username: String
     public let sentence: String
-    public let userId: Int
 }
 
 extension RankingModel {
     func toRankingListTapItem() -> RankingListTapItem {
         .init(username: self.username,
-              sentence: self.sentence,
-              userId: self.userId)
+              sentence: self.sentence)
     }
 }

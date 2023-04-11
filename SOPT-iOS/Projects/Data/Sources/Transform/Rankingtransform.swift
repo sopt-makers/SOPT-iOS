@@ -16,7 +16,6 @@ extension RankingEntity {
     
     public func toDomain() -> RankingModel {
         return .init(username: self.nickname,
-                     usreId: self.userID,
                      score: self.point,
                      sentence: self.profileMessage ?? I18N.RankingList.noSentenceText)
     }

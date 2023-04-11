@@ -73,6 +73,7 @@ public class SignInVC: UIViewController, SignInViewControllable {
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.bindViewModels()
+        self.bindViews()
         self.setUI()
         self.setLayout()
     }
@@ -151,7 +152,7 @@ extension SignInVC {
     
     private func bindViewModels() {
         
-        let input = SignInViewModel.Input(playgroundSignInFinished: Driver.just(""))
+        let input = SignInViewModel.Input(playgroundSignInFinished: Driver.just("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyNiIsImV4cCI6MTY4MTE5OTY1NH0.wlceN1uUoQZYL5Uz4lOiomwLTNK2YxQ-dlv3rtZHUZM"))
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.isSignInSuccess.sink { [weak self] isSignInSuccess in
@@ -167,5 +168,14 @@ extension SignInVC {
         let userType = UserDefaultKeyList.Auth.getUserType()
         let navigation = UINavigationController(rootViewController: factory.makeMainVC(userType: userType).viewController)
         ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
+    }
+    
+    private func bindViews() {
+        // TODO: - 플그 로그인으로 연결
+        signInButton.publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.setRootViewToMain()
+            }.store(in: self.cancelBag)
     }
 }
