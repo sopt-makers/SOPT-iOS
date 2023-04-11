@@ -17,6 +17,8 @@ import SplashFeatureInterface
 import SplashFeature
 import OnboardingFeatureInterface
 import OnboardingFeature
+import AttendanceFeature
+import AttendanceFeatureInterface
 import AuthFeatureInterface
 import AuthFeature
 import SettingFeatureInterface
@@ -24,9 +26,10 @@ import SettingFeature
 import StampFeatureInterface
 import StampFeature
 
-typealias Features = SplashFeatureViewBuildable & OnboardingFeatureViewBuildable & AuthFeatureViewBuildable & StampFeatureViewBuildable & SettingFeatureViewBuildable & MainFeatureViewBuildable
+typealias Features = SplashFeatureViewBuildable & OnboardingFeatureViewBuildable & AttendanceFeatureViewBuildable & AuthFeatureViewBuildable & StampFeatureViewBuildable & SettingFeatureViewBuildable & MainFeatureViewBuildable
 
 final class DIContainer {
+    lazy var attendanceService = DefaultAttendanceService()
     lazy var authService = DefaultAuthService()
     lazy var userService = DefaultUserService()
     lazy var rankService = DefaultRankService()
@@ -74,6 +77,16 @@ extension DIContainer: Features {
         let onboardingVC = OnboardingVC()
         onboardingVC.factory = self
         return onboardingVC
+    }
+    
+    // MARK: - AttendanceFeature
+    
+    func makeShowAttendanceVC() -> ShowAttendanceViewControllable {
+        let repository = ShowAttendanceRepository(service: attendanceService)
+        let useCase = DefaultShowAttendanceUseCase(repository: repository)
+        let viewModel = ShowAttendanceViewModel(useCase: useCase)
+        let showAttendanceVC = ShowAttendanceVC(viewModel: viewModel, factory: self)
+        return showAttendanceVC
     }
     
     // MARK: - AuthFeature

@@ -11,6 +11,7 @@ import Moya
 import Foundation
 
 public enum APIType {
+    case attendance
     case auth
     case mission
     case rank
@@ -26,8 +27,11 @@ public protocol BaseAPI: TargetType {
 extension BaseAPI {
     public var baseURL: URL {
         var base = Config.Network.baseURL
+        let operationBaseURL = Config.Network.operationBaseURL
         
         switch Self.apiType {
+        case .attendance:
+            base = operationBaseURL
         case .auth:
             base += "/auth"
         case .mission:
@@ -59,6 +63,7 @@ public enum HeaderType {
     case jsonUserId(userId: Int)
     case userId(userId: Int)
     case multipart(userId: Int)
+    case authorization(accessToken: String)
     
     public var value: [String: String] {
         switch self {
@@ -72,6 +77,9 @@ public enum HeaderType {
         case .multipart(let userId):
             return ["Content-Type": "multipart/form-data",
                     "userId": String(userId)]
+        case .authorization(let accessToken):
+            return ["Content-Type": "application/json",
+                    "Authorization": accessToken]
         }
     }
 }
