@@ -134,9 +134,7 @@ extension SplashVC {
     }
     
     private func setRootViewToMain() {
-        let userType = UserDefaultKeyList.Auth.isActiveUser ?? false
-        ? UserType.active
-        : UserType.inactive
+        let userType = UserDefaultKeyList.Auth.getUserType()
         let navigation = UINavigationController(rootViewController: factory.makeMainVC(userType: userType).viewController)
         ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
     }

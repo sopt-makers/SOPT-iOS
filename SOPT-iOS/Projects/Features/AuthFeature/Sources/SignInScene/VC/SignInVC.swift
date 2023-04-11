@@ -19,13 +19,13 @@ import SnapKit
 import Then
 
 import AuthFeatureInterface
-import StampFeatureInterface
+import MainFeatureInterface
 
 public class SignInVC: UIViewController, SignInViewControllable {
     
     // MARK: - Properties
     
-    public var factory: (AuthFeatureViewBuildable & StampFeatureViewBuildable)!
+    public var factory: (AuthFeatureViewBuildable & MainFeatureViewBuildable)!
     public var viewModel: SignInViewModel!
     private var cancelBag = CancelBag()
     
@@ -151,25 +151,21 @@ extension SignInVC {
     
     private func bindViewModels() {
         
-        let signInButtonTapped = signInButton
-            .publisher(for: .touchUpInside)
-            .handleEvents(receiveOutput: { [weak self] _ in
-                guard let self = self else { return }
-                // TODO: - 임시로 Token 저장 메인 뷰로 이동
-                
-            })
-            .mapVoid()
-            .asDriver()
-        
-        let input = SignInViewModel.Input(signInButtonTapped: signInButtonTapped)
+        let input = SignInViewModel.Input(playgroundSignInFinished: Driver.just(""))
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.isSignInSuccess.sink { [weak self] isSignInSuccess in
             guard let self = self else { return }
             self.stopLoading()
             if isSignInSuccess {
-                // TODO: - 메인 뷰로 이동
+                self.setRootViewToMain()
             }
         }.store(in: self.cancelBag)
+    }
+    
+    private func setRootViewToMain() {
+        let userType = UserDefaultKeyList.Auth.getUserType()
+        let navigation = UINavigationController(rootViewController: factory.makeMainVC(userType: userType).viewController)
+        ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
     }
 }

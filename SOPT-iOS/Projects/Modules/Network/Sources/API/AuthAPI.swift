@@ -15,6 +15,7 @@ public enum AuthAPI {
     case getNicknameAvailable(nickname: String)
     case changeNickname(userId: Int, nickname: String)
     case withdrawal(userId: Int)
+    case signIn(token: String)
 }
 
 extension AuthAPI: BaseAPI {
@@ -39,6 +40,8 @@ extension AuthAPI: BaseAPI {
             return "nickname"
         case .withdrawal:
             return "withdraw"
+        case .signIn:
+            return "playground"
         }
     }
     
@@ -51,6 +54,8 @@ extension AuthAPI: BaseAPI {
             return .patch
         case .withdrawal:
             return .delete
+        case .signIn:
+            return .post
         }
     }
     
@@ -60,6 +65,8 @@ extension AuthAPI: BaseAPI {
         switch self {
         case .changeNickname(_, let nickname):
             params["nickname"] = nickname
+        case .signIn(let token):
+            params["code"] = token
         default:
             break
         }
@@ -77,7 +84,7 @@ extension AuthAPI: BaseAPI {
         switch self {
         case .getNicknameAvailable(let nickname):
             return .requestParameters(parameters: ["nickname": nickname], encoding: URLEncoding.queryString)
-        case .changeNickname:
+        case .changeNickname, .signIn:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain

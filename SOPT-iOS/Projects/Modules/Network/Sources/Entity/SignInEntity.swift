@@ -9,6 +9,5 @@
 import Foundation
 
 public struct SignInEntity: Codable {
-    public let userId: Int?
-    public let message: String?
+    public let accessToken, refreshToken, playgroundToken: String
 }

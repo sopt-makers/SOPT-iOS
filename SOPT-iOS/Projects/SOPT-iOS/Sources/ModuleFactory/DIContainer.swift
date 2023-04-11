@@ -77,7 +77,7 @@ extension DIContainer: Features {
     // MARK: - AuthFeature
     
     func makeSignInVC() -> SignInViewControllable {
-        let repository = SignInRepository(service: userService)
+        let repository = SignInRepository(authService: authService, userService: userService)
         let useCase = DefaultSignInUseCase(repository: repository)
         let viewModel = SignInViewModel(useCase: useCase)
         let signinVC = SignInVC()

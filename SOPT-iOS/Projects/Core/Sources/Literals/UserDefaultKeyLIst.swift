@@ -13,7 +13,9 @@ public struct UserDefaultKeyList {
         @UserDefaultWrapper<String>(key: "deviceToken") public static var deviceToken
         @UserDefaultWrapper<String>(key: "endpointArnForSNS") public static var endpointArnForSNS
         @UserDefaultWrapper<Int>(key: "userId") public static var userId
-        @UserDefaultWrapper<Int>(key: "appAccessToken") public static var appAccessToken
+        @UserDefaultWrapper<String>(key: "appAccessToken") public static var appAccessToken
+        @UserDefaultWrapper<String>(key: "appRefreshToken") public static var appRefreshToken
+        @UserDefaultWrapper<String>(key: "playgroundToken") public static var playgroundToken
         @UserDefaultWrapper<Bool>(key: "isActiveUser") public static var isActiveUser
     }
     
@@ -23,5 +25,21 @@ public struct UserDefaultKeyList {
     
     public struct AppNotice {
         @UserDefaultWrapper<String>(key: "checkedAppVersion") public static var checkedAppVersion
+    }
+}
+
+extension UserDefaultKeyList.Auth {
+    public static func getUserType() -> UserType {
+        guard appAccessToken != nil else {
+            return UserType.visitor
+        }
+        
+        return getUserActivation()
+        ? UserType.active
+        : UserType.inactive
+    }
+    
+    public static func getUserActivation() -> Bool {
+        UserDefaultKeyList.Auth.isActiveUser ?? false
     }
 }

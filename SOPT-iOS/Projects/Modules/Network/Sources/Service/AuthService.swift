@@ -18,9 +18,11 @@ public protocol AuthService {
     func getNicknameAvailable(nickname: String) -> AnyPublisher<Int, Error>
     func changeNickname(userId: Int, nickname: String) -> AnyPublisher<Int, Error>
     func withdrawal(userId: Int) -> AnyPublisher<Int, Error>
+    func signIn(token: String) -> AnyPublisher<SignInEntity, Error>
 }
 
 extension DefaultAuthService: AuthService {
+    
     public func getNicknameAvailable(nickname: String) -> AnyPublisher<Int, Error> {
         return requestObjectInCombineNoResult(.getNicknameAvailable(nickname: nickname))
     }
@@ -31,5 +33,9 @@ extension DefaultAuthService: AuthService {
     
     public func withdrawal(userId: Int) -> AnyPublisher<Int, Error> {
         return requestObjectInCombineNoResult(.withdrawal(userId: userId))
+    }
+    
+    public func signIn(token: String) -> AnyPublisher<SignInEntity, Error> {
+        return requestObjectInCombine(.signIn(token: token))
     }
 }
