@@ -177,7 +177,7 @@ public struct I18N {
     }
     
     public struct Attendance {
-        public static let attendace = "출석"
+        public static let attendance = "출석"
         public static let absent = "결석"
         public static let tardy = "지각"
         public static let leaveEarly = "조퇴"
