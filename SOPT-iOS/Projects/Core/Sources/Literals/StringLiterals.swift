@@ -183,6 +183,14 @@ public struct I18N {
         public static let leaveEarly = "조퇴"
         public static let participation = "참여"
         
+        
+        public static let planPart = "기획파트"
+        public static let designPart = "디자인파트"
+        public static let webPart = "웹파트"
+        public static let iosPart = "iOS파트"
+        public static let aosPart = "안드로이드파트"
+        public static let serverPart = "서버파트"
+        
         public static let today = "오늘은"
         public static let dayIs = "날이에요"
         public static let unscheduledDay = "일정이 없는"
