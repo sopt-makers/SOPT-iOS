@@ -12,8 +12,10 @@ import Alamofire
 import Moya
 
 public enum UserAPI {
-    case signUp(nickname: String, email: String, password: String)
-    case signIn(email: String, password: String)
+    case fetchUser
+    case editSentence(sentence: String)
+    case getNicknameAvailable(nickname: String)
+    case changeNickname(nickname: String)
 }
 
 extension UserAPI: BaseAPI {
@@ -23,18 +25,24 @@ extension UserAPI: BaseAPI {
     // MARK: - Path
     public var path: String {
         switch self {
-        case .signUp:
-            return "signup"
-        case .signIn:
-            return "login"
+        case .fetchUser:
+            return ""
+        case .editSentence:
+            return "profile-message"
+        case .changeNickname:
+            return "nickname"
+        case .getNicknameAvailable(let nickname):
+            return "nickname/\(nickname)"
         }
     }
     
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .signUp, .signIn:
-            return .post
+        case .fetchUser, .getNicknameAvailable:
+            return .get
+        case .editSentence, .changeNickname:
+            return .patch
         }
     }
     
@@ -42,13 +50,11 @@ extension UserAPI: BaseAPI {
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
-        case .signUp(let nickname, let email, let password):
+        case .changeNickname(let nickname):
             params["nickname"] = nickname
-            params["email"] = email
-            params["password"] = password
-        case .signIn(let email, let password):
-            params["email"] = email
-            params["password"] = password
+        case .editSentence(let sentence):
+            params["profileMessage"] = sentence
+        default: break
         }
         return params
     }
@@ -62,7 +68,7 @@ extension UserAPI: BaseAPI {
     
     public var task: Task {
         switch self {
-        case .signUp, .signIn:
+        case .changeNickname, .editSentence:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain

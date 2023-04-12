@@ -15,19 +15,28 @@ import Moya
 public typealias DefaultUserService = BaseService<UserAPI>
 
 public protocol UserService {
-    func postSignUp(nickname: String, email: String, password: String) -> AnyPublisher<SignUpResponse?, Error>
-    func requestSignIn(email: String, password: String) -> AnyPublisher<SignInEntity, Error>
+    // TODO: - UserEntity 관련 변경사항 적용하기
+    func fetchUser() -> AnyPublisher<SignInEntity, Error>
+    
+    func editSentence(sentence: String) -> AnyPublisher<EditSentenceEntity, Error>
+    func getNicknameAvailable(nickname: String) -> AnyPublisher<Int, Error>
+    func changeNickname(nickname: String) -> AnyPublisher<Int, Error>
 }
 
 extension DefaultUserService: UserService {
-    
-    public func postSignUp(nickname: String, email: String, password: String) -> AnyPublisher<SignUpResponse?, Error> {
-        requestObjectInCombine(.signUp(nickname: nickname,
-                                               email: email,
-                                               password: password))
+    public func fetchUser() -> AnyPublisher<SignInEntity, Error> {
+        requestObjectInCombine(.fetchUser)
     }
     
-    public func requestSignIn(email: String, password: String) -> AnyPublisher<SignInEntity, Error> {
-        requestObjectInCombine(.signIn(email: email, password: password))
+    public func editSentence(sentence: String) -> AnyPublisher<EditSentenceEntity, Error> {
+        requestObjectInCombine(.editSentence(sentence: sentence))
+    }
+    
+    public func getNicknameAvailable(nickname: String) -> AnyPublisher<Int, Error> {
+        requestObjectInCombineNoResult(.getNicknameAvailable(nickname: nickname))
+    }
+    
+    public func changeNickname(nickname: String) -> AnyPublisher<Int, Error> {
+        requestObjectInCombineNoResult(.changeNickname(nickname: nickname))
     }
 }

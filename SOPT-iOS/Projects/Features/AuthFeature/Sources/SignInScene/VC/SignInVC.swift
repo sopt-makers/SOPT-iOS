@@ -19,16 +19,16 @@ import SnapKit
 import Then
 
 import AuthFeatureInterface
-import StampFeatureInterface
+import MainFeatureInterface
 
 public class SignInVC: UIViewController, SignInViewControllable {
     
     // MARK: - Properties
     
-    public var factory: (AuthFeatureViewBuildable & StampFeatureViewBuildable)!
+    public var factory: (AuthFeatureViewBuildable & MainFeatureViewBuildable)!
     public var viewModel: SignInViewModel!
     private var cancelBag = CancelBag()
-  
+    
     // MARK: - UI Components
     
     private let scrollView = UIScrollView()
@@ -36,37 +36,36 @@ public class SignInVC: UIViewController, SignInViewControllable {
     private let containerView = UIView()
     
     private let logoImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.soptampLogo.image
+        $0.image = DSKitAsset.Assets.imgLogoBig.image
         $0.contentMode = .scaleAspectFit
-        $0.layer.masksToBounds = true
     }
     
-    private lazy var emailTextField = STTextFieldView(type: .subTitle)
-        .setTextFieldType(.email)
-        .setSubTitle(I18N.SignIn.id)
-        .setPlaceholder(I18N.SignIn.enterID)
-        .setAlertDelegate(passwordTextField)
-
-    private lazy var passwordTextField = STTextFieldView(type: .subTitle)
-        .setTextFieldType(.password)
-        .setSubTitle(I18N.SignIn.password)
-        .setPlaceholder(I18N.SignIn.enterPW)
-        .setAlertLabelEnabled(I18N.SignIn.checkAccount)
-    
-    private lazy var findAccountButton = UIButton(type: .system).then {
-        $0.setTitle(I18N.SignIn.findAccount, for: .normal)
-        $0.setTitleColor(DSKitAsset.Colors.soptampGray500.color, for: .normal)
-        $0.titleLabel!.setTypoStyle(.SoptampFont.caption2)
-        $0.addTarget(self, action: #selector(findAccountButtonDidTap), for: .touchUpInside)
+    private lazy var signInButton = STCustomButton(title: I18N.SignIn.signIn).then {
+        $0.setColor(
+            bgColor: DSKitAsset.Colors.purple100.color,
+            disableColor: DSKitAsset.Colors.purple100.color
+        )
+        $0.alpha = 0
+        $0.setAttributedTitle(
+            NSAttributedString(
+                string: I18N.SignIn.signIn,
+                attributes: [.font: UIFont.Main.body1, .foregroundColor: UIColor.white]
+            ),
+            for: .normal
+        )
     }
     
-    private lazy var signInButton = STCustomButton(title: I18N.SignIn.signIn).setEnabled(false)
-    
-    private lazy var signUpButton = UIButton(type: .system).then {
-        $0.setTitle(I18N.SignIn.signUp, for: .normal)
-        $0.setTitleColor(DSKitAsset.Colors.soptampGray900.color, for: .normal)
+    private lazy var notMemberButton = UIButton(type: .system).then {
+        $0.setTitle(I18N.SignIn.notMember, for: .normal)
+        $0.setTitleColor(DSKitAsset.Colors.purple100.color, for: .normal)
         $0.titleLabel!.setTypoStyle(.SoptampFont.caption1)
-        $0.addTarget(self, action: #selector(signUpButtonDidTap), for: .touchUpInside)
+        $0.alpha = 0
+    }
+    
+    private let bottomLogoImageView = UIImageView().then {
+        $0.image = DSKitAsset.Assets.imgBottomLogo.image
+        $0.contentMode = .scaleAspectFit
+        $0.alpha = 0
     }
     
     // MARK: - View Life Cycle
@@ -74,172 +73,109 @@ public class SignInVC: UIViewController, SignInViewControllable {
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.bindViewModels()
+        self.bindViews()
         self.setUI()
         self.setLayout()
-        self.setTapGesture()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
-        self.addKeyboardObserver()
         self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
     
-    deinit {
-        NotificationCenter.default.removeObserver(self)
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.showAnimation()
     }
-    
-    // MARK: - @objc Function
-    
-    @objc
-    private func findAccountButtonDidTap() {
-        let findAccountVC = self.factory.makeFindAccountVC().viewController
-        self.navigationController?.pushViewController(findAccountVC, animated: true)
-    }
-    
-    @objc
-    private func signUpButtonDidTap() {
-        let signUpVC = self.factory.makeSignUpVC().viewController
-        self.navigationController?.pushViewController(signUpVC, animated: true)
-    }
-
 }
 
 // MARK: - UI & Layout
 
 extension SignInVC {
     
+    private enum Metric {
+        static let topInset = 151.adjustedH + logoMutableY
+        static let logoWidth = 184.adjusted
+        static let logoMutableY = 137.adjustedH
+        static let logoRatio = 114 / 184
+    }
+    
     private func setUI() {
-        self.view.backgroundColor = DSKitAsset.Colors.soptampWhite.color
-        self.findAccountButton.setUnderline()
-        self.signUpButton.setUnderline()
+        self.view.backgroundColor = DSKitAsset.Colors.soptampBlack.color
+        self.notMemberButton.setUnderline()
     }
     
     private func setLayout() {
-        self.view.addSubview(scrollView)
-        scrollView.addSubview(containerView)
-        containerView.addSubviews(logoImageView, emailTextField, passwordTextField,
-                                  findAccountButton, signInButton, signUpButton)
-
-        scrollView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide)
-        }
-
-        containerView.snp.makeConstraints { make in
-            let bottomInset = UIApplication.shared.windows.first!.safeAreaInsets.bottom
-            let topInset = abs(calculateTopInset())
-            make.edges.equalTo(scrollView.contentLayoutGuide)
-            make.width.equalTo(scrollView.snp.width)
-            make.height.equalTo(UIScreen.main.bounds.height
-                                - bottomInset
-                                - topInset
-                                + 1)
-        }
+        self.view.addSubviews(logoImageView, signInButton, notMemberButton,
+                              bottomLogoImageView)
         
         logoImageView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(115.adjustedH)
+            make.top.equalTo(view.safeAreaLayoutGuide).inset(Metric.topInset)
             make.centerX.equalToSuperview()
-            make.width.equalToSuperview().multipliedBy(0.7.adjusted)
-        }
-        
-        emailTextField.snp.makeConstraints { make in
-            make.top.equalTo(logoImageView.snp.bottom).offset(95.adjustedH)
-            make.leading.trailing.equalToSuperview().inset(16)
-        }
-        
-        passwordTextField.snp.makeConstraints { make in
-            make.top.equalTo(emailTextField.snp.bottom).offset(12.adjustedH)
-            make.leading.trailing.equalToSuperview().inset(16)
-        }
-        
-        findAccountButton.snp.makeConstraints { make in
-            make.top.equalTo(passwordTextField.snp.bottom).offset(-20.adjustedH)
-            make.trailing.equalToSuperview().inset(22)
+            make.width.equalTo(Metric.logoWidth)
+            make.height.equalTo(Metric.logoWidth).multipliedBy(Metric.logoRatio)
         }
         
         signInButton.snp.makeConstraints { make in
-            make.top.equalTo(findAccountButton.snp.bottom).offset(48.adjustedH)
             make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(56)
+            make.height.equalTo(56.adjustedH)
+            make.bottom.equalTo(notMemberButton.snp.top).offset(-20.adjustedH)
         }
         
-        signUpButton.snp.makeConstraints { make in
-            make.top.equalTo(signInButton.snp.bottom).offset(15.adjustedH)
+        notMemberButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.width.equalTo(100)
-            make.height.equalTo(20)
+            make.height.equalTo(20.adjustedH)
+            make.bottom.equalTo(bottomLogoImageView.snp.top).offset(-75.adjustedH)
         }
+        
+        bottomLogoImageView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.width.greaterThanOrEqualTo(100)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(30.adjustedH)
+        }
+    }
+    
+    private func showAnimation() {
+        UIView.animate(withDuration: 0.7, delay: 0, options: .curveEaseInOut, animations: {
+            self.logoImageView.transform = CGAffineTransform(translationX: 0, y: -Metric.logoMutableY)
+        })
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
+            [self.signInButton, self.notMemberButton, self.bottomLogoImageView].forEach {
+                $0.alpha = 1
+            }
+        })
     }
 }
 
 // MARK: - Methods
 
 extension SignInVC {
-  
+    
     private func bindViewModels() {
         
-        let signInButtonTapped = signInButton
-            .publisher(for: .touchUpInside)
-            .handleEvents(receiveOutput: { [weak self] _ in
-                guard let self = self else { return }
-                self.showLoading()
-            })
-            .map { _ in
-            SignInRequest(email: self.emailTextField.text, password: self.passwordTextField.text) }
-            .asDriver()
-        
-        let input = SignInViewModel.Input(emailTextChanged: emailTextField.textChanged,
-                                          passwordTextChanged: passwordTextField.textChanged,
-                                          signInButtonTapped: signInButtonTapped)
+        let input = SignInViewModel.Input(playgroundSignInFinished: Driver.just("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyNiIsImV4cCI6MTY4MTE5OTY1NH0.wlceN1uUoQZYL5Uz4lOiomwLTNK2YxQ-dlv3rtZHUZM"))
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
-        
-        output.isFilledForm.assign(to: \.isEnabled, on: self.signInButton).store(in: self.cancelBag)
         
         output.isSignInSuccess.sink { [weak self] isSignInSuccess in
             guard let self = self else { return }
             self.stopLoading()
             if isSignInSuccess {
-                let navigation = UINavigationController(rootViewController: self.factory.makeMissionListVC(sceneType: .default).viewController)
-                ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
-            } else {
-                self.emailTextField.alertType = .invalidInput(text: "")
-                self.passwordTextField.alertType = .invalidInput(text: I18N.SignIn.checkAccount)
+                self.setRootViewToMain()
             }
         }.store(in: self.cancelBag)
     }
     
-    private func setTapGesture() {
-        let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
-        tap.cancelsTouchesInView = false
-        view.addGestureRecognizer(tap)
+    private func setRootViewToMain() {
+        let userType = UserDefaultKeyList.Auth.getUserType()
+        let navigation = UINavigationController(rootViewController: factory.makeMainVC(userType: userType).viewController)
+        ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
     }
     
-    private func addKeyboardObserver() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    @objc func keyboardUp(notification: NSNotification) {
-        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-            let keyboardRectangle = keyboardFrame.cgRectValue
-            
-            UIView.animate(
-                withDuration: 0.1,
-                animations: {
-                    let contentInset = UIEdgeInsets(
-                        top: 0.0,
-                        left: 0.0,
-                        bottom: keyboardRectangle.size.height,
-                        right: 0.0)
-                    self.scrollView.contentInset = contentInset
-                    self.scrollView.scrollIndicatorInsets = contentInset
-                }
-            )
-        }
-    }
-    
-    @objc func keyboardDown() {
-        let contentInset = UIEdgeInsets.zero
-        self.scrollView.contentInset = contentInset
-        self.scrollView.scrollIndicatorInsets = contentInset
+    private func bindViews() {
+        // TODO: - 플그 로그인으로 연결
+        signInButton.publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.setRootViewToMain()
+            }.store(in: self.cancelBag)
     }
 }

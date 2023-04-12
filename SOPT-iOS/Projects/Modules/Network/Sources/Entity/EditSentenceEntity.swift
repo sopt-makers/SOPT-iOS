@@ -10,12 +10,5 @@ import Foundation
 
 // MARK: - EditSentenceEntity
 public struct EditSentenceEntity: Codable {
-    let createdAt: String?
-    let updatedAt: String
-    let id: Int
-    let nickname, email, password: String
-    let clientToken: String?
     public let profileMessage: String
-    let points: Int?
-    let osType: String?
 }

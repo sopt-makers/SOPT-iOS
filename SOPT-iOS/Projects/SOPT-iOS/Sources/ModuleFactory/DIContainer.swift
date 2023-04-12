@@ -11,6 +11,7 @@ import Network
 import Domain
 import Data
 
+import BaseFeatureDependency
 import MainFeatureInterface
 import MainFeature
 import SplashFeatureInterface
@@ -24,7 +25,7 @@ import SettingFeature
 import StampFeatureInterface
 import StampFeature
 
-typealias Features = SplashFeatureViewBuildable & AttendanceFeatureViewBuildable & AuthFeatureViewBuildable & StampFeatureViewBuildable & SettingFeatureViewBuildable & MainFeatureViewBuildable
+typealias Features = SplashFeatureViewBuildable & AttendanceFeatureViewBuildable & AuthFeatureViewBuildable & StampFeatureViewBuildable & SettingFeatureViewBuildable & MainFeatureViewBuildable & AlertViewBuildable
 
 final class DIContainer {
     lazy var attendanceService = DefaultAttendanceService()
@@ -89,7 +90,7 @@ extension DIContainer: Features {
     // MARK: - AuthFeature
     
     func makeSignInVC() -> SignInViewControllable {
-        let repository = SignInRepository(service: userService)
+        let repository = SignInRepository(authService: authService, userService: userService)
         let useCase = DefaultSignInUseCase(repository: repository)
         let viewModel = SignInViewModel(useCase: useCase)
         let signinVC = SignInVC()
@@ -98,31 +99,10 @@ extension DIContainer: Features {
         return signinVC
     }
     
-    func makeFindAccountVC() -> FindAccountViewControllable {
-        let findAccountVC = FindAccountVC()
-        return findAccountVC
-    }
-    
-    func makeSignUpVC() -> SignUpViewControllable {
-        let repository = SignUpRepository(service: authService, userService: userService)
-        let useCase = DefaultSignUpUseCase(repository: repository)
-        let viewModel = SignUpViewModel(useCase: useCase)
-        let signUpVC = SignUpVC()
-        signUpVC.factory = self
-        signUpVC.viewModel = viewModel
-        return signUpVC
-    }
-    
-    public func makeSignUpCompleteVC() -> SignUpCompleteViewControllable {
-        let signUpCompleteVC = SignUpCompleteVC()
-        signUpCompleteVC.factory = self
-        return signUpCompleteVC
-    }
-    
     // MARK: - StampFeature
     
     func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListViewControllable {
-        let repository = MissionListRepository(service: missionService)
+        let repository = MissionListRepository(missionService: missionService, rankService: rankService)
         let useCase = DefaultMissionListUseCase(repository: repository)
         let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType)
         let missionListVC = MissionListVC()
@@ -135,7 +115,7 @@ extension DIContainer: Features {
                           starLevel: StarViewLevel,
                           missionId: Int,
                           missionTitle: String,
-                          otherUserId: Int?) -> ListDetailViewControllable {
+                          isOtherUser: Bool) -> ListDetailViewControllable {
         let repository = ListDetailRepository(service: stampService)
         let useCase = DefaultListDetailUseCase(repository: repository)
         let viewModel = ListDetailViewModel(useCase: useCase,
@@ -143,7 +123,7 @@ extension DIContainer: Features {
                                             starLevel: starLevel,
                                             missionId: missionId,
                                             missionTitle: missionTitle,
-                                            otherUserId: otherUserId)
+                                            isOtherUser: isOtherUser)
         let listDetailVC = ListDetailVC()
         listDetailVC.viewModel = viewModel
         listDetailVC.factory = self
@@ -194,7 +174,7 @@ extension DIContainer: Features {
     // MARK: - SettingFeature
     
     func makeSettingVC() -> SettingViewControllable {
-        let repository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
+        let repository = SettingRepository(authService: authService, stampService: stampService, userService: userService)
         let useCase = DefaultSettingUseCase(repository: repository)
         let viewModel = SettingViewModel(useCase: useCase)
         let settingVC = SettingVC()
@@ -204,10 +184,10 @@ extension DIContainer: Features {
     }
     
     func makeNicknameEditVC() -> NicknameEditViewControllable {
-        let settingRepository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
+        let settingRepository = SettingRepository(authService: authService, stampService: stampService, userService: userService)
         let settingUseCase = DefaultSettingUseCase(repository: settingRepository)
 
-        let signUpRepository = SignUpRepository(service: self.authService, userService: self.userService)
+        let signUpRepository = SignUpRepository(service: userService)
         let signUpUseCase = DefaultSignUpUseCase(repository: signUpRepository)
 
         let viewModel = NicknameEditViewModel(nicknameUseCase: signUpUseCase, editPostUseCase: settingUseCase)
@@ -218,23 +198,13 @@ extension DIContainer: Features {
     }
     
     func makeSentenceEditVC() -> SentenceEditViewControllable {
-        let repository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
+        let repository = SettingRepository(authService: authService, stampService: stampService, userService: userService)
         let useCase = DefaultSentenceEditUseCase(repository: repository)
         let viewModel = SentenceEditViewModel(useCase: useCase)
         let sentenceEditVC = SentenceEditVC()
         sentenceEditVC.viewModel = viewModel
         sentenceEditVC.factory = self
         return sentenceEditVC
-    }
-    
-    func makePasswordChangeVC() -> PasswordChangeViewControllable {
-        let repository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
-        let useCase = DefaultPasswordChangeUseCase(repository: repository)
-        let viewModel = PasswordChangeViewModel(useCase: useCase)
-        let passwordChangeVC = PasswordChangeVC()
-        passwordChangeVC.factory = self
-        passwordChangeVC.viewModel = viewModel
-        return passwordChangeVC
     }
     
     func makePrivacyPolicyVC() -> PrivacyPolicyViewControllable {
@@ -249,7 +219,7 @@ extension DIContainer: Features {
     
     func makeWithdrawalVC() -> WithdrawalViewControllable {
         let withdrawalVC = WithdrawalVC()
-        let repository = SettingRepository(authService: authService, stampService: stampService, rankService: rankService)
+        let repository = SettingRepository(authService: authService, stampService: stampService, userService: userService)
         let useCase = DefaultSettingUseCase(repository: repository)
         let viewModel = WithdrawalViewModel(useCase: useCase)
         withdrawalVC.viewModel = viewModel

@@ -19,15 +19,12 @@ public class SignInViewModel: ViewModelType {
     // MARK: - Inputs
     
     public struct Input {
-        let emailTextChanged: Driver<String?>
-        let passwordTextChanged: Driver<String?>
-        let signInButtonTapped: Driver<SignInRequest>
+        let playgroundSignInFinished: Driver<String>
     }
     
     // MARK: - Outputs
     
     public struct Output {
-        var isFilledForm = PassthroughSubject<Bool, Never>()
         var isSignInSuccess = PassthroughSubject<Bool, Never>()
     }
     
@@ -43,16 +40,10 @@ extension SignInViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
-        input.emailTextChanged
-            .compactMap({ $0 })
-            .combineLatest(input.passwordTextChanged.compactMap({ $0 }))
-            .sink { (email, password) in
-                output.isFilledForm.send(!(email.isEmpty || password.isEmpty))
-            }.store(in: self.cancelBag)
-        
-        input.signInButtonTapped
-            .sink { signInRequest in
-                self.useCase.requestSignIn(signInRequest: signInRequest)
+        input.playgroundSignInFinished
+            .withUnretained(self)
+            .sink { owner, token in
+                owner.useCase.requestSignIn(token: token)
             }.store(in: self.cancelBag)
         return output
     }

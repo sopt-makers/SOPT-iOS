@@ -8,6 +8,8 @@
 
 import Combine
 
+// TODO: - User 유형 설정 방식 생각하기
+
 public protocol SignInRepositoryInterface {
-    func requestSignIn(request: SignInRequest) -> AnyPublisher<SignInModel, Error>
+    func requestSignIn(token: String) -> AnyPublisher<Bool, Never>
 }

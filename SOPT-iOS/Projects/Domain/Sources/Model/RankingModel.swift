@@ -10,15 +10,13 @@ import Foundation
 
 public struct RankingModel: Hashable {
     public let username: String
-    public let userId: Int
     public let score: Int
     public let sentence: String
     
     public var isMyRanking: Bool = false
     
-    public init(username: String, usreId: Int, score: Int, sentence: String) {
+    public init(username: String, score: Int, sentence: String) {
         self.username = username
-        self.userId = usreId
         self.score = score
         self.sentence = sentence
     }

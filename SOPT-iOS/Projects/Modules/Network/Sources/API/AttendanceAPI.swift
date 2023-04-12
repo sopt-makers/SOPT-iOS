@@ -25,7 +25,7 @@ extension AttendanceAPI: BaseAPI {
     public var headers: [String: String]? {
         switch self {
         case .lecture, .score, .total:
-            return HeaderType.authorization(accessToken: "accessToken").value
+            return HeaderType.jsonWithToken.value
         default: return HeaderType.json.value
         }
     }

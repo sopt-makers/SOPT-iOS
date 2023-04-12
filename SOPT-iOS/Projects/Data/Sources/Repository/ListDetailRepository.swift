@@ -14,7 +14,6 @@ import Network
 
 public class ListDetailRepository {
     
-    private let userId: Int = UserDefaultKeyList.Auth.userId ?? 1
     private let stampService: StampService
     private let cancelBag = CancelBag()
 
@@ -24,21 +23,20 @@ public class ListDetailRepository {
 }
 
 extension ListDetailRepository: ListDetailRepositoryInterface {
-    public func fetchListDetail(missionId: Int, userId: Int?) -> Driver<ListDetailModel> {
-        let targetUserId = userId ?? (self.userId)
-        return stampService.fetchStampListDetail(userId: targetUserId, missionId: missionId)
+    public func fetchListDetail(missionId: Int) -> Driver<ListDetailModel> {
+        return stampService.fetchStampListDetail(missionId: missionId)
             .map { $0.toDomain() }
             .asDriver()
     }
     
     public func postStamp(missionId: Int, stampData: [Any]) -> AnyPublisher<ListDetailModel, Error> {
-        return stampService.postStamp(userId: userId, missionId: missionId, requestModel: stampData)
+        return stampService.postStamp(missionId: missionId, requestModel: stampData)
             .map { $0.toDomain() }
             .eraseToAnyPublisher()
     }
     
     public func putStamp(missionId: Int, stampData: [Any]) -> Driver<Int> {
-        return stampService.putStamp(userId: userId, missionId: missionId, requestModel: stampData)
+        return stampService.putStamp(missionId: missionId, requestModel: stampData)
             .map { $0.toDomain() }
             .asDriver()
     }

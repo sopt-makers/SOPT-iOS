@@ -20,6 +20,7 @@ import DSKit
 
 import Lottie
 
+import BaseFeatureDependency
 import StampFeatureInterface
 
 public enum TextViewState {
@@ -77,7 +78,7 @@ public class ListDetailVC: UIViewController, ListDetailViewControllable {
     // MARK: - Properties
     
     public var viewModel: ListDetailViewModel!
-    public var factory: StampFeatureViewBuildable!
+    public var factory: (AlertViewBuildable & StampFeatureViewBuildable)!
     private var cancelBag = CancelBag()
     private var sceneType: ListDetailSceneType {
         get {
@@ -464,7 +465,7 @@ extension ListDetailVC {
             self.missionImageView.isUserInteractionEnabled = false
         }
         
-        if viewModel.otherUserId != nil {
+        if viewModel.isOtherUser {
             self.naviBar.hideRightButton()
         }
     }

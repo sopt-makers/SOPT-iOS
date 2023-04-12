@@ -14,13 +14,11 @@ import Network
 
 public class SignUpRepository {
     
-    private let networkService: AuthService
-    private let userService: UserService
+    private let networkService: UserService
     private let cancelBag = CancelBag()
     
-    public init(service: AuthService, userService: UserService) {
+    public init(service: UserService) {
         self.networkService = service
-        self.userService = userService
     }
 }
 
@@ -29,20 +27,5 @@ extension SignUpRepository: SignUpRepositoryInterface {
         return networkService.getNicknameAvailable(nickname: nickname).map { statusCode in
             statusCode == 200
         }.eraseToAnyPublisher()
-    }
-    
-    public func getEmailAvailable(email: String) -> AnyPublisher<Bool, Error> {
-        return networkService.getEmailAvailable(email: email).map { statusCode in
-            statusCode == 200
-        }.eraseToAnyPublisher()
-    }
-    
-    public func postSignUp(signUpRequest: SignUpModel) -> AnyPublisher<Bool, Error> {
-        return userService.postSignUp(nickname: signUpRequest.nickname, email: signUpRequest.email, password: signUpRequest.password)
-            .map { entity in
-                guard let userId = entity?.userId else { return false }
-                UserDefaultKeyList.Auth.userId = userId
-                return true
-            }.eraseToAnyPublisher()
     }
 }

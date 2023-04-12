@@ -48,14 +48,14 @@ public struct I18N {
     }
     
     public struct SignIn {
+        public static let signIn = "SOPT Playground로 로그인"
+        public static let notMember = "SOPT 회원이 아니에요"
         public static let id = "ID"
         public static let enterID = "이메일을 입력해주세요."
         public static let password = "Password"
         public static let enterPW = "비밀번호를 입력해주세요."
         public static let checkAccount = "정보를 다시 확인해 주세요."
         public static let findAccount = "계정 찾기"
-        public static let signIn = "로그인"
-        public static let signUp = "회원가입"
         public static let findDescription = "아래 구글 폼을 제출해 주시면\n평일 기준 3-5일 이내로\n아이디 / 임시 비밀번호를 전송 드립니다."
         public static let findEmail = "이메일 찾기"
         public static let findPassword = "비밀번호 찾기"

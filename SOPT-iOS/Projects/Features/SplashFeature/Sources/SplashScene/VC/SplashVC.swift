@@ -16,15 +16,16 @@ import Domain
 import SnapKit
 import Then
 
+import BaseFeatureDependency
 import SplashFeatureInterface
 import AuthFeatureInterface
-import StampFeatureInterface
+import MainFeatureInterface
 
 public class SplashVC: UIViewController, SplashViewControllable {
     
     // MARK: - Properties
     
-    public var factory: (SplashFeatureViewBuildable & AuthFeatureViewBuildable & StampFeatureViewBuildable)!
+    public var factory: (SplashFeatureViewBuildable & AuthFeatureViewBuildable & MainFeatureViewBuildable & AlertViewBuildable)!
     public var viewModel: SplashViewModel!
     
     private var cancelBag = CancelBag()
@@ -35,9 +36,8 @@ public class SplashVC: UIViewController, SplashViewControllable {
     // MARK: - UI Components
     
     private let logoImage = UIImageView().then {
-        $0.image = DSKitAsset.Assets.imgLogoBig.image.withRenderingMode(.alwaysOriginal)
+        $0.image = DSKitAsset.Assets.splashLogo.image.withRenderingMode(.alwaysOriginal)
         $0.contentMode = .scaleAspectFit
-        $0.clipsToBounds = true
     }
     
     // MARK: - View Life Cycle
@@ -55,6 +55,11 @@ public class SplashVC: UIViewController, SplashViewControllable {
 
 extension SplashVC {
     
+    private enum Metric {
+        static let logoWidth = 184.adjusted
+        static let topInset = 151.adjustedH + 137.adjustedH + 5.adjustedH
+    }
+    
     private func setUI() {
         self.view.backgroundColor = DSKitAsset.Colors.soptampBlack.color
     }
@@ -63,8 +68,10 @@ extension SplashVC {
         self.view.addSubviews(logoImage)
         
         logoImage.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(70)
+            make.top.equalTo(view.safeAreaLayoutGuide).inset(Metric.topInset)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(Metric.logoWidth)
+            make.height.equalTo(Metric.logoWidth).multipliedBy(114 / 184)
         }
     }
 }
@@ -122,14 +129,21 @@ extension SplashVC {
     }
     
     private func checkDidSignIn() {
-        let needAuth = UserDefaultKeyList.Auth.userId == nil
-        if !needAuth {
-            let navigation = UINavigationController(rootViewController: factory.makeMissionListVC(sceneType: .default).viewController)
-            ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
-        } else {
-//            let nextVC = factory.makeStampGuideVC().viewController
-//            self.navigationController?.pushViewController(nextVC, animated: true)
-        }
+        let needAuth = UserDefaultKeyList.Auth.appAccessToken == nil
+        needAuth ? presentSignInVC() : setRootViewToMain()
+    }
+    
+    private func setRootViewToMain() {
+        let userType = UserDefaultKeyList.Auth.getUserType()
+        let navigation = UINavigationController(rootViewController: factory.makeMainVC(userType: userType).viewController)
+        ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
+    }
+    
+    private func presentSignInVC() {
+        let nextVC = factory.makeSignInVC().viewController
+        nextVC.modalPresentationStyle = .fullScreen
+        nextVC.modalTransitionStyle = .crossDissolve
+        self.present(nextVC, animated: true)
     }
     
     private func presentNetworkAlertVC() {

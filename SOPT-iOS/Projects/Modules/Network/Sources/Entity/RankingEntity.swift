@@ -9,14 +9,13 @@
 import Foundation
 
 public struct RankingEntity: Codable {
-    public let rank, userID: Int
+    public let rank: Int
     public let nickname: String
     public let point: Int
     public let profileMessage: String?
 
     enum CodingKeys: String, CodingKey {
         case rank
-        case userID = "userId"
         case nickname, point, profileMessage
     }
 }

@@ -17,21 +17,27 @@ import Network
 
 public class SignInRepository {
     
-    private let networkService: UserService
+    private let authService: AuthService
+    private let userService: UserService
     private let cancelBag = CancelBag()
     
-    public init(service: UserService) {
-        self.networkService = service
+    public init(authService: AuthService, userService: UserService) {
+        self.authService = authService
+        self.userService = userService
     }
 }
 
 extension SignInRepository: SignInRepositoryInterface {
     
-    public func requestSignIn(request: SignInRequest) -> AnyPublisher<SignInModel, Error> {
-        networkService.requestSignIn(email: request.email, password: request.password).map { entity in
-            UserDefaultKeyList.Auth.userId = entity.userId
-            UserDefaultKeyList.User.sentence = entity.message
-            return entity.toDomain()
-        }.eraseToAnyPublisher()
+    public func requestSignIn(token: String) -> AnyPublisher<Bool, Never> {
+        authService.signIn(token: token)
+            .map { entity in
+                UserDefaultKeyList.Auth.appAccessToken = entity.accessToken
+                UserDefaultKeyList.Auth.appRefreshToken = entity.refreshToken
+                UserDefaultKeyList.Auth.playgroundToken = entity.playgroundToken
+                return true
+            }
+            .replaceError(with: false)
+            .eraseToAnyPublisher()
     }
 }

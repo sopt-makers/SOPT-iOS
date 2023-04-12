@@ -12,7 +12,7 @@ import Core
 
 public protocol MissionListUseCase {
     func fetchMissionList(type: MissionListFetchType)
-    func fetchOtherUserMissionList(type: MissionListFetchType, userId: Int)
+    func fetchOtherUserMissionList(userName: String)
     var missionListModelsFetched: PassthroughSubject<[MissionListModel], Error> { get set }
 }
 
@@ -28,8 +28,8 @@ public class DefaultMissionListUseCase {
 }
 
 extension DefaultMissionListUseCase: MissionListUseCase {
-    public func fetchOtherUserMissionList(type: MissionListFetchType, userId: Int) {
-        repository.fetchMissionList(type: type, userId: userId)
+    public func fetchMissionList(type: MissionListFetchType) {
+        repository.fetchMissionList(type: type, userName: nil)
             .sink(receiveCompletion: { event in
                 print("completion: \(event)")
             }, receiveValue: { model in
@@ -38,8 +38,8 @@ extension DefaultMissionListUseCase: MissionListUseCase {
             .store(in: cancelBag)
     }
     
-    public func fetchMissionList(type: MissionListFetchType) {
-        repository.fetchMissionList(type: type, userId: nil)
+    public func fetchOtherUserMissionList(userName: String) {
+        repository.fetchMissionList(type: .complete, userName: userName)
             .sink(receiveCompletion: { event in
                 print("completion: \(event)")
             }, receiveValue: { model in

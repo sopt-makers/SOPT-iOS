@@ -44,7 +44,11 @@ extension STCustomButton {
     
     /// 버튼의 backgroundColor, textColor 변경
     @discardableResult
-    public func setColor(bgColor: UIColor, disableColor: UIColor, textColor: UIColor = .white) -> Self {
+    public func setColor(
+        bgColor: UIColor,
+        disableColor: UIColor = DSKitAsset.Colors.gray100.color,
+        textColor: UIColor = .white
+    ) -> Self {
         self.setBackgroundColor(bgColor, for: .normal)
         self.setBackgroundColor(disableColor, for: .disabled)
         self.setAttributedTitle(

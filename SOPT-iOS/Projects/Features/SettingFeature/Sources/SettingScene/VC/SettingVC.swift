@@ -15,6 +15,7 @@ import Then
 import Core
 import DSKit
 
+import BaseFeatureDependency
 import AuthFeatureInterface
 import SettingFeatureInterface
 import StampFeatureInterface
@@ -25,7 +26,7 @@ public class SettingVC: UIViewController, SettingViewControllable {
     
     public var viewModel: SettingViewModel!
     private var cancelBag = CancelBag()
-    public var factory: (AuthFeatureViewBuildable & SettingFeatureViewBuildable & StampFeatureViewBuildable)!
+    public var factory: (AuthFeatureViewBuildable & SettingFeatureViewBuildable & StampFeatureViewBuildable & AlertViewBuildable)!
     private let resetButtonTapped = PassthroughSubject<Bool, Never>()
     
     // MARK: - UI Components
@@ -98,8 +99,7 @@ extension SettingVC {
     }
     
     private func showPasswordChangeView() {
-        let passwordChangeVC = factory.makePasswordChangeVC().viewController
-        navigationController?.pushViewController(passwordChangeVC, animated: true)
+        // Ver 2 : 삭제된 뷰
     }
     
     private func showPrivacyPolicyView() {
@@ -113,7 +113,7 @@ extension SettingVC {
     }
     
     private func logout() {
-        UserDefaultKeyList.Auth.userId = nil
+        UserDefaultKeyList.Auth.appAccessToken = nil
         self.changeRootViewController()
     }
     

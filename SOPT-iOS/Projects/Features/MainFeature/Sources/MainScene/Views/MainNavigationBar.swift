@@ -24,7 +24,7 @@ final class MainNavigationBar: UIView {
         $0.setImage(DSKitAsset.Assets.btnNotice.image, for: .normal)
     }
     
-    private let myPageButton = UIButton(type: .custom).then {
+    public let myPageButton = UIButton(type: .custom).then {
         $0.setImage(DSKitAsset.Assets.btnMypage.image, for: .normal)
         $0.layer.cornerRadius = 22
         $0.backgroundColor = DSKitAsset.Colors.black60.color
