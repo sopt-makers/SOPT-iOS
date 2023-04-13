@@ -192,7 +192,7 @@ public struct I18N {
         public static let serverPart = "서버파트"
         
         public static let today = "오늘은 "
-        public static let dayIs = "날이에요"
+        public static let dayIs = " 날이에요"
         public static let unscheduledDay = "일정이 없는"
         public static let notCheckedDay = "출석점수를 체크하지 않습니다"
         public static let currentAttendanceScore = "현재 출석점수는 "

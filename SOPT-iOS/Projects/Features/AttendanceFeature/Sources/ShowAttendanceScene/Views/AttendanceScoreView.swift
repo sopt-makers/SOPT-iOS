@@ -42,16 +42,14 @@ final class AttendanceScoreView: UIView {
     }()
     
     /// 3. 나의 출결 현황 영역
-    ///
+    
     private let attedncanceStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.spacing = 20
+        stackView.spacing = 15
         return stackView
     }()
-    
-//    private let singleAttendanceStateView = MyAttendanceStateView()
-    
+        
     private let attendanceScoreDescriptiopnLabel: UILabel = {
         let label = UILabel()
         label.font = .Main.body2
