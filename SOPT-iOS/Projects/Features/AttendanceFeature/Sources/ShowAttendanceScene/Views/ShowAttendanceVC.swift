@@ -26,9 +26,20 @@ public class ShowAttendanceVC: UIViewController, ShowAttendanceViewControllable 
   
     // MARK: - UI Components
     
+    private let containerScrollView = UIScrollView()
+    private lazy var navibar = OPNavigationBar(self, type: .bothButtons)
+        .addMiddleLabel(title: I18N.Attendance.attendance)
+        .addRightButtonAction {
+            self.refreshButtonDidTap()
+        }
+    
+    private let headerScheduleView = TodayScheduleView(type: .scheduledDay)
+    private let attendanceScoreView = AttendanceScoreView()
+    
     // MARK: - Initialization
     
-    public init(viewModel: ShowAttendanceViewModel, factory: AttendanceFeatureViewBuildable) {
+    public init(viewModel: ShowAttendanceViewModel,
+                factory: AttendanceFeatureViewBuildable) {
         self.viewModel = viewModel
         self.factory = factory
         super.init(nibName: nil, bundle: nil)
@@ -45,18 +56,55 @@ public class ShowAttendanceVC: UIViewController, ShowAttendanceViewControllable 
         self.bindViewModels()
         self.setUI()
         self.setLayout()
+        self.dummy()
     }
 }
 
 // MARK: - UI & Layout
 
 extension ShowAttendanceVC {
+    
     private func setUI() {
+        self.navigationController?.navigationBar.isHidden = true
         self.view.backgroundColor = .black
+        containerScrollView.backgroundColor = .black
     }
     
     private func setLayout() {
+        view.addSubviews(navibar, containerScrollView)
         
+        containerScrollView.addSubviews(headerScheduleView, attendanceScoreView)
+        
+        navibar.snp.makeConstraints {
+            $0.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+        }
+        
+        containerScrollView.snp.makeConstraints {
+            $0.top.equalTo(navibar.snp.bottom)
+            $0.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
+        }
+        
+        headerScheduleView.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(15)
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
+        }
+
+        attendanceScoreView.snp.makeConstraints {
+            $0.top.equalTo(headerScheduleView.snp.bottom).offset(20)
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
+        }
+    }
+    
+    private func dummy() {
+        headerScheduleView.setData(date: "3월 23일 토요일 14:00 - 18:00",
+                                   place: "건국대학교 꽥꽥오리관",
+                                   todaySchedule: "2차 세미나",
+                                   description: nil)
+    }
+    
+    @objc
+    private func refreshButtonDidTap() {
+        print("refresh button did tap")
     }
 }
 
