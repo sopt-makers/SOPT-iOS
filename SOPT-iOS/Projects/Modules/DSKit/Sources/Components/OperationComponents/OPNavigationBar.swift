@@ -31,8 +31,7 @@ public final class OPNavigationBar: UIView {
     private let titleLabel = UILabel()
     private let leftButton = UIButton(type: .system)
     private let rightButton = UIButton(type: .system)
-    private let underlineView = UIView()
-    
+
     // MARK: - initialization
     
     public init(_ vc: UIViewController, type: OPNaviType, backgroundColor: UIColor = .black) {
