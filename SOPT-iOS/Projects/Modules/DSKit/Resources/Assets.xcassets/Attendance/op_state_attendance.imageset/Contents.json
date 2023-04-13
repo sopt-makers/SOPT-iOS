@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "op_refresh.png",
+      "filename" : "op_state_attendance.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "op_refresh@2x.png",
+      "filename" : "op_state_attendance@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "op_refresh@3x.png",
+      "filename" : "op_state_attendance@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
