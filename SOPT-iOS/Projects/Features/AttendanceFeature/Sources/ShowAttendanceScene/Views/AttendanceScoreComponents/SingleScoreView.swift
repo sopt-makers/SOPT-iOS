@@ -19,7 +19,7 @@ public enum AttendanceStateType {
 }
 
 /*
- 전체, 출석, 지각, 결석 횟수를 보여주는 부분입니다.
+ (전체: 00회)를 표현하는 단일 영역 뷰입니다. 
  */
 
 final class SingleScoreView: UIView {

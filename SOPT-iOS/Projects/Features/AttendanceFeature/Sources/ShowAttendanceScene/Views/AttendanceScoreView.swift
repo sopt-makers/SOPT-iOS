@@ -25,9 +25,9 @@ final class AttendanceScoreView: UIView {
     
     /// 2. 전체 출결 점수 영역
     
-    private let allScoreView = SingleScoreView(type: .all, count: 5)
-    private let attendanceScoreView = SingleScoreView(type: .attendance, count: 4)
-    private let tardyScoreView = SingleScoreView(type: .tardy, count: 1)
+    private let allScoreView = SingleScoreView(type: .all, count: 1)
+    private let attendanceScoreView = SingleScoreView(type: .attendance, count: 1)
+    private let tardyScoreView = SingleScoreView(type: .tardy)
     private let absentScoreView = SingleScoreView(type: .absent)
     
     private lazy var myScoreContainerStackView: UIStackView = {
@@ -42,8 +42,15 @@ final class AttendanceScoreView: UIView {
     }()
     
     /// 3. 나의 출결 현황 영역
+    ///
+    private let attedncanceStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 20
+        return stackView
+    }()
     
-    private let singleAttendanceStateView = MyAttendanceStateView()
+//    private let singleAttendanceStateView = MyAttendanceStateView()
     
     private let attendanceScoreDescriptiopnLabel: UILabel = {
         let label = UILabel()
@@ -54,14 +61,14 @@ final class AttendanceScoreView: UIView {
     }()
     
     private lazy var myAttendanceStateContainerStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [attendanceScoreDescriptiopnLabel, singleAttendanceStateView])
+        let stackView = UIStackView(arrangedSubviews: [attendanceScoreDescriptiopnLabel, attedncanceStackView])
         stackView.axis = .vertical
         stackView.spacing = 20
         stackView.alignment = .leading
         return stackView
     }()
     
-    /// 4. 전채 묶음 스택뷰
+    /// 4. 전체 묶음
     
     private lazy var containerStackView: UIStackView = {
        let stackView = UIStackView(arrangedSubviews: [myInfoContainerView, myScoreContainerStackView, myAttendanceStateContainerStackView])
@@ -127,8 +134,19 @@ extension AttendanceScoreView {
     }
     
     private func myAttendanceStateContainerViewLayout() {
-        myAttendanceStateContainerStackView.addSubviews(attendanceScoreDescriptiopnLabel, singleAttendanceStateView)
+        myAttendanceStateContainerStackView.addSubviews(attendanceScoreDescriptiopnLabel, attedncanceStackView)
         
+        // 반복문을 통해 뷰 생성 후 스택뷰에 추가
+        for _ in 0..<3 {
+            let singleAttendanceStateView = MyAttendanceStateView()
+            
+            attedncanceStackView.addArrangedSubview(singleAttendanceStateView)
+            
+            singleAttendanceStateView.snp.makeConstraints {
+                $0.leading.trailing.equalToSuperview()
+                $0.height.equalTo(30)
+            }
+        }
         
         myAttendanceStateContainerStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
@@ -138,9 +156,8 @@ extension AttendanceScoreView {
             $0.top.leading.equalToSuperview()
         }
         
-        singleAttendanceStateView.snp.makeConstraints {
+        attedncanceStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(30)
         }
     }
 }

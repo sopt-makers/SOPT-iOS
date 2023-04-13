@@ -133,6 +133,7 @@ extension TodayScheduleView {
     private func setLayout(_ type: TodayScheduleType) {
         
         addSubview(containerStackView)
+        
         containerStackView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
@@ -148,7 +149,6 @@ extension TodayScheduleView {
     private func setUnscheduledDayLayout() {
         
         dateAndPlaceStackView.isHidden = true
-        
         addSubview(titleLabel)
                 
         titleLabel.snp.makeConstraints {
@@ -171,7 +171,7 @@ extension TodayScheduleView {
     func setData(date: String, place: String, todaySchedule: String, description: String?) {
         dateLabel.text = date
         placeLabel.text = place
-        titleLabel.text = I18N.Attendance.today + " " + todaySchedule + " " + I18N.Attendance.dayIs
+        titleLabel.text = I18N.Attendance.today + todaySchedule + I18N.Attendance.dayIs
         titleLabel.partFontChange(targetString: todaySchedule,
                                   font: DSKitFontFamily.Suit.bold.font(size: 18))
         subtitleLabel.text = description

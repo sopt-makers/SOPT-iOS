@@ -11,6 +11,10 @@ import UIKit
 import Core
 import DSKit
 
+/*
+ 상단 이름, 현재 출석 점수, 인포 버튼이 있는 뷰입니다.
+ */
+
 final class MyInformationWithScoreView: UIView {
     
     // MARK: - UI Components

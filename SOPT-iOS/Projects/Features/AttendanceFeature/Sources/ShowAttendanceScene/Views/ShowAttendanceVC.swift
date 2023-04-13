@@ -98,13 +98,8 @@ extension ShowAttendanceVC {
     private func dummy() {
         headerScheduleView.setData(date: "3월 23일 토요일 14:00 - 18:00",
                                    place: "건국대학교 꽥꽥오리관",
-                                   todaySchedule: "2차 세미나",
+                                   todaySchedule: "1차 행사",
                                    description: "행사도 참여하고, 출석점수도 받고, 일석이조!")
-    }
-    
-    @objc
-    private func refreshButtonDidTap() {
-        print("refresh button did tap")
     }
 }
 
@@ -116,5 +111,10 @@ extension ShowAttendanceVC {
         let input = ShowAttendanceViewModel.Input()
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
     }
-
+    
+    
+    @objc
+    private func refreshButtonDidTap() {
+        print("refresh button did tap")
+    }
 }
