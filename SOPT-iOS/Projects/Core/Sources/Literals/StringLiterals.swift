@@ -182,7 +182,7 @@ public struct I18N {
         public static let tardy = "지각"
         public static let leaveEarly = "조퇴"
         public static let participation = "참여"
-        
+        public static let all = "전체"
         
         public static let planPart = "기획파트"
         public static let designPart = "디자인파트"
@@ -191,12 +191,12 @@ public struct I18N {
         public static let aosPart = "안드로이드파트"
         public static let serverPart = "서버파트"
         
-        public static let today = "오늘은"
+        public static let today = "오늘은 "
         public static let dayIs = "날이에요"
         public static let unscheduledDay = "일정이 없는"
         public static let notCheckedDay = "출석점수를 체크하지 않습니다"
-        public static let currentAttendanceScore = "현재 출석점수는"
-        public static let scoreIs = "입니다!"
+        public static let currentAttendanceScore = "현재 출석점수는 "
+        public static let scoreIs = " 입니다!"
         public static let myAttendance = "나의 출결 현황"
         public static let count = "회"
         
