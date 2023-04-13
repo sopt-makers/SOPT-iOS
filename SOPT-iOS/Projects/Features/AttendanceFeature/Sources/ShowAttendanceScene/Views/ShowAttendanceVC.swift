@@ -99,7 +99,7 @@ extension ShowAttendanceVC {
         headerScheduleView.setData(date: "3월 23일 토요일 14:00 - 18:00",
                                    place: "건국대학교 꽥꽥오리관",
                                    todaySchedule: "2차 세미나",
-                                   description: nil)
+                                   description: "행사도 참여하고, 출석점수도 받고, 일석이조!")
     }
     
     @objc

@@ -13,8 +13,12 @@ import DSKit
 
 public enum TodayScheduleType {
     case unscheduledDay /// 일정 없는 날
-    case scheduledDay /// 세미나 일정
+    case scheduledDay /// 일정(세미나, 행사) 있는 날
 }
+
+/*
+ 출석 조회하기 뷰의 상단 오늘의 일정을 보여주는 뷰 입니다.
+ */
 
 final class TodayScheduleView: UIView {
     
@@ -51,7 +55,7 @@ final class TodayScheduleView: UIView {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .white
-        label.text = I18N.Attendance.today + " " + I18N.Attendance.unscheduledDay + I18N.Attendance.dayIs
+        label.text = I18N.Attendance.today + I18N.Attendance.unscheduledDay + I18N.Attendance.dayIs
         label.font = .Main.headline2
         return label
     }()

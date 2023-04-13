@@ -11,83 +11,45 @@ import UIKit
 import Core
 import DSKit
 
+/*
+ 출석 조회하기 뷰의 하단 출석 점수 현황을 보여주는 뷰 입니다.
+ */
+
 final class AttendanceScoreView: UIView {
     
     // MARK: - UI Components
     
-    private let myInfoContainerView = UIView()
-
-    private let nameLabel: UILabel = {
-        let label = UILabel()
-        label.text = "32기 디자인파트 김솝트"
-        label.font = .Main.body2
-        label.textColor = DSKitAsset.Colors.gray60.color
-        return label
+    /// 1. 나의 정보 및 현재 출석 점수 영역
+    
+    private let myInfoContainerView = MyInformationWithScoreView()
+    
+    /// 2. 전체 출결 점수 영역
+    
+    private let allScoreView = SingleScoreView(type: .all, count: 5)
+    private let attendanceScoreView = SingleScoreView(type: .attendance, count: 4)
+    private let tardyScoreView = SingleScoreView(type: .tardy, count: 1)
+    private let absentScoreView = SingleScoreView(type: .absent)
+    
+    private lazy var myScoreContainerStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [allScoreView, attendanceScoreView, tardyScoreView, absentScoreView])
+        stackView.backgroundColor = DSKitAsset.Colors.black40.color
+        stackView.clipsToBounds = true
+        stackView.layer.cornerRadius = 8
+        stackView.axis = .horizontal
+        stackView.spacing = -10
+        stackView.distribution = .fillEqually
+        return stackView
     }()
     
-    private let currentScoreLabel: UILabel = {
-        let label = UILabel()
-        label.text = I18N.Attendance.currentAttendanceScore + " 1점 " + I18N.Attendance.scoreIs
-        label.font = .Main.body0
-        label.textColor = .white
-        return label
-    }()
+    /// 3. 나의 출결 현황 영역
     
-    private lazy var infoButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(DSKitAsset.Assets.opInfo.image, for: .normal)
-        button.addTarget(self, action: #selector(infoButtonDidTap), for: .touchUpInside)
-        return button
-    }()
-    
-    private let myTotalScoreContainerPreView: UIView = {
-        let view = UIView()
-        view.backgroundColor = DSKitAsset.Colors.black40.color
-        view.clipsToBounds = true
-        view.layer.cornerRadius = 8
-        return view
-    }()
-    
-    private let myScoreContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = DSKitAsset.Colors.black40.color
-        view.clipsToBounds = true
-        view.layer.cornerRadius = 8
-        return view
-    }()
-    
-    
-    /// 추가하기
-    
-        
-    private let singleAttendanceStateView = UIView()
+    private let singleAttendanceStateView = MyAttendanceStateView()
     
     private let attendanceScoreDescriptiopnLabel: UILabel = {
         let label = UILabel()
         label.font = .Main.body2
         label.text = I18N.Attendance.myAttendance
         label.textColor = DSKitAsset.Colors.gray60.color
-        return label
-    }()
-    
-    private let attendanceStateButton: UIButton = {
-        var configuration = UIButton.Configuration.plain()
-        configuration.title = "1차 세미나"
-        configuration.baseForegroundColor = .white
-        configuration.attributedTitle?.font = DSKitFontFamily.Suit.bold.font(size: 15)
-        configuration.image = DSKitAsset.Assets.opStateAttendance.image
-        configuration.imagePadding = 10
-        configuration.titleAlignment = .leading
-        let button = UIButton(configuration: configuration)
-        button.isUserInteractionEnabled = false
-        return button
-    }()
-    
-    private let attendanceStateDateLabel: UILabel = {
-        let label = UILabel()
-        label.font = .Main.body2
-        label.text = "00월 00일"
-        label.textColor = DSKitAsset.Colors.gray30.color
         return label
     }()
     
@@ -99,8 +61,10 @@ final class AttendanceScoreView: UIView {
         return stackView
     }()
     
+    /// 4. 전채 묶음 스택뷰
+    
     private lazy var containerStackView: UIStackView = {
-       let stackView = UIStackView(arrangedSubviews: [myInfoContainerView, myTotalScoreContainerPreView, myAttendanceStateContainerStackView])
+       let stackView = UIStackView(arrangedSubviews: [myInfoContainerView, myScoreContainerStackView, myAttendanceStateContainerStackView])
         stackView.axis = .vertical
         stackView.spacing = 24
         stackView.alignment = .leading
@@ -120,7 +84,7 @@ final class AttendanceScoreView: UIView {
     }
 }
 
-// MARK: - Methods
+// MARK: - UI & Layout
 
 extension AttendanceScoreView {
     
@@ -132,7 +96,8 @@ extension AttendanceScoreView {
     
     private func setLayout() {
         addSubview(containerStackView)
-        containerStackView.addSubviews(myInfoContainerView, myScoreContainerView, myAttendanceStateContainerStackView)
+        
+        containerStackView.addSubviews(myInfoContainerView, myScoreContainerStackView, myAttendanceStateContainerStackView)
         
         containerStackView.snp.makeConstraints {
             $0.edges.equalToSuperview().inset(32)
@@ -141,45 +106,29 @@ extension AttendanceScoreView {
         myInfoContainerViewLayout()
         myScoreContainerViewLayout()
         myAttendanceStateContainerViewLayout()
-        
-        
     }
     
     private func myInfoContainerViewLayout () {
-        myInfoContainerView.addSubviews(nameLabel, currentScoreLabel, infoButton)
-
+        
         myInfoContainerView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(50)
-        }
-        
-        nameLabel.snp.makeConstraints {
-            $0.top.leading.equalToSuperview()
-        }
-        
-        currentScoreLabel.snp.makeConstraints {
-            $0.top.equalTo(nameLabel.snp.bottom).offset(8)
-            $0.leading.equalToSuperview()
-        }
-        
-        infoButton.snp.makeConstraints {
-            $0.trailing.bottom.equalToSuperview()
         }
     }
     
     private func myScoreContainerViewLayout() {
         
-        myTotalScoreContainerPreView.snp.makeConstraints {
+        myScoreContainerStackView.addSubviews(allScoreView, attendanceScoreView, tardyScoreView, absentScoreView)
+        
+        myScoreContainerStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(88)
         }
     }
     
     private func myAttendanceStateContainerViewLayout() {
-        
         myAttendanceStateContainerStackView.addSubviews(attendanceScoreDescriptiopnLabel, singleAttendanceStateView)
         
-        singleAttendanceStateView.addSubviews(attendanceStateButton, attendanceStateDateLabel)
         
         myAttendanceStateContainerStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
@@ -193,19 +142,14 @@ extension AttendanceScoreView {
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(30)
         }
-
-        attendanceStateButton.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(-10)
-            $0.centerY.equalToSuperview()
-        }
-
-        attendanceStateDateLabel.snp.makeConstraints {
-            $0.trailing.centerY.equalToSuperview()
-        }
     }
+}
+
+// MARK: - Methods
+
+extension AttendanceScoreView {
     
-    @objc
-    private func infoButtonDidTap() {
-        print("info button did tap")
+    func setData() {
+        
     }
 }
