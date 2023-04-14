@@ -150,7 +150,7 @@ extension MainVC: UICollectionViewDataSource {
                                                   withReuseIdentifier: UserHistoryHeaderView.className,
                                                   for: indexPath) as? UserHistoryHeaderView
             else { return UICollectionReusableView() }
-            headerView.initCell(userType: viewModel.userType, name: "이솝트", days: "1234")
+            headerView.initCell(userType: viewModel.userType, name: "이솝트", months: "6")
             return headerView
         case 3:
             guard let headerView = collectionView

@@ -147,6 +147,7 @@ public struct I18N {
         public static let visitor = "비회원"
         public static let active = "기 활동 중"
         public static let inactive = "기 수료"
+        public static let inactiveMember = "비활동"
         
         public struct MainService {
             public static let visitorGuide = "SOPT를 더 알고 싶다면, 둘러보세요"

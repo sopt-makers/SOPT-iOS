@@ -21,7 +21,7 @@ final class UserHistoryHeaderView: UICollectionReusableView {
         label.font = UIFont.Main.display2
         label.numberOfLines = 2
         label.textAlignment = .left
-        label.text = "OOO님은\nSOPT와 D+1234일째"
+        label.text = "OOO님은\nSOPT와 N개월째"
         return label
     }()
     
@@ -52,18 +52,49 @@ extension UserHistoryHeaderView {
         }
     }
     
-    func initCell(userType: UserType, name: String, days: String) {
-        let text = (userType == .visitor) ? "\(name) 님, \nSopt의 열정이 되어주세요!" : "\(name) 님은 \nSOPT와 D+\(days)일째"
+    func initCell(userType: UserType, name: String?, months: String?) {
+        // 회원 타입에 따른 분기 처리 (추후 플그 기수 입력이 필수가 되면 변경 예정)
+        if let name = name, let months = months {
+            let text = (userType == .visitor) ? "안녕하세요, \nSOPT의 열정이 되어주세요!" : "\(name) 님은 \nSOPT와 \(months)개월째"
 
-        let attributedText = NSMutableAttributedString(string: text,
-                                                      attributes: [
-                                                         .foregroundColor: DSKitAsset.Colors.white100.color,
-                                                         .font: UIFont.Main.display2
-                                                      ])
-        attributedText.addAttribute(.font,
-                                     value: UIFont.Main.display1,
-                                     range: (text as NSString).range(of:"\(name)"))
+            let attributedText = NSMutableAttributedString(string: text,
+                                                          attributes: [
+                                                             .foregroundColor: DSKitAsset.Colors.white100.color,
+                                                             .font: UIFont.Main.display2
+                                                          ])
+            attributedText.addAttribute(.font,
+                                         value: UIFont.Main.display1,
+                                         range: (text as NSString).range(of:"\(name)"))
+            
+            attributedText.addAttribute(.font,
+                                         value: UIFont.Main.display1,
+                                         range: (text as NSString).range(of:"안녕하세요"))
 
-        self.userInfoLabel.attributedText = attributedText
+            self.userInfoLabel.attributedText = attributedText
+        } else {
+            if userType == .visitor {
+                let text = "안녕하세요, \nSOPT의 열정이 되어주세요!"
+                let attributedText = NSMutableAttributedString(string: text,
+                                                              attributes: [
+                                                                 .foregroundColor: DSKitAsset.Colors.white100.color,
+                                                                 .font: UIFont.Main.display2
+                                                              ])
+                attributedText.addAttribute(.font,
+                                             value: UIFont.Main.display1,
+                                             range: (text as NSString).range(of:"안녕하세요"))
+                self.userInfoLabel.attributedText = attributedText
+            } else if userType == .inactive {
+                let text = "안녕하세요, \nSOPT에 오신 것을 환영합니다!"
+                let attributedText = NSMutableAttributedString(string: text,
+                                                              attributes: [
+                                                                 .foregroundColor: DSKitAsset.Colors.white100.color,
+                                                                 .font: UIFont.Main.display2
+                                                              ])
+                attributedText.addAttribute(.font,
+                                             value: UIFont.Main.display1,
+                                             range: (text as NSString).range(of:"안녕하세요"))
+                self.userInfoLabel.attributedText = attributedText
+            }
+        }
     }
 }

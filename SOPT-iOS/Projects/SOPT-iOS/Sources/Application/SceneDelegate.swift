@@ -23,8 +23,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(frame: scene.coordinateSpace.bounds)
         window?.windowScene = scene
-        let rootVC = container.makeSplashVC().viewController
-//        let rootVC = container.makeMainVC(userType: .active).viewController
+//        let rootVC = container.makeSplashVC().viewController
+        let rootVC = container.makeMainVC(userType: .visitor).viewController
         window?.rootViewController = UINavigationController(rootViewController: rootVC)
         window?.makeKeyAndVisible()
     }
