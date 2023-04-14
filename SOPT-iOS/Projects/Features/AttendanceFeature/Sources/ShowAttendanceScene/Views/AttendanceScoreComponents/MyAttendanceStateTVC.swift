@@ -18,21 +18,17 @@ import DSKit
 final class MyAttendanceStateTVC: UITableViewCell {
     
     // MARK: - UI Components
-
-    private let attendanceStateButton: UIButton = {
-        var configuration = UIButton.Configuration.plain()
-        configuration.title = ""
-        configuration.baseForegroundColor = .white
-        configuration.attributedTitle?.font = DSKitFontFamily.Suit.bold.font(size: 15)
-        configuration.image = DSKitAsset.Assets.opStateAttendance.image
-        configuration.imagePadding = 10
-        configuration.titleAlignment = .leading
-        let button = UIButton(configuration: configuration)
-        button.isUserInteractionEnabled = false
-        return button
+    
+    private let stateImageView = UIImageView()
+    
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = DSKitFontFamily.Suit.bold.font(size: 15)
+        label.textColor = .white
+        return label
     }()
     
-    private let attendanceStateDateLabel: UILabel = {
+    private let dateLabel: UILabel = {
         let label = UILabel()
         label.font = .Main.body2
         label.textColor = DSKitAsset.Colors.gray30.color
@@ -61,14 +57,20 @@ extension MyAttendanceStateTVC {
     }
     
     private func setLayout() {
-        addSubviews(attendanceStateButton, attendanceStateDateLabel)
+        addSubviews(stateImageView, titleLabel, dateLabel)
         
-        attendanceStateButton.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(-10)
+        stateImageView.snp.makeConstraints {
+            $0.leading.centerY.equalToSuperview()
+            $0.width.equalTo(34)
+            $0.height.equalTo(20)
+        }
+        
+        titleLabel.snp.makeConstraints {
+            $0.leading.equalTo(stateImageView.snp.trailing).offset(8)
             $0.centerY.equalToSuperview()
         }
         
-        attendanceStateDateLabel.snp.makeConstraints {
+        dateLabel.snp.makeConstraints {
             $0.trailing.centerY.equalToSuperview()
         }
     }
@@ -79,12 +81,8 @@ extension MyAttendanceStateTVC {
 extension MyAttendanceStateTVC {
     
     func setData(title: String, image: UIImage, date: String) {
-        
-        attendanceStateButton.configuration?.title? = title
-        attendanceStateButton.configuration?.image = image
-        attendanceStateDateLabel.text = date
-        
-        attendanceStateButton.configuration?.attributedTitle?.font = DSKitFontFamily.Suit.bold.font(size: 15)
-        attendanceStateButton.configuration?.attributedTitle?.foregroundColor = .white
+        stateImageView.image = image
+        titleLabel.text = title
+        dateLabel.text = date
     }
 }

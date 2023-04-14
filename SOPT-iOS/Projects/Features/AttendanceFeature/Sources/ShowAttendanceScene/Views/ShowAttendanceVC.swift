@@ -27,6 +27,8 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     // MARK: - UI Components
     
     private let containerScrollView = UIScrollView()
+    private let contentView = UIView()
+    
     private lazy var navibar = OPNavigationBar(self, type: .bothButtons)
         .addMiddleLabel(title: I18N.Attendance.attendance)
         .addRightButtonAction {
@@ -72,8 +74,8 @@ extension ShowAttendanceVC {
     
     private func setLayout() {
         view.addSubviews(navibar, containerScrollView)
-        
-        containerScrollView.addSubviews(headerScheduleView, attendanceScoreView)
+        containerScrollView.addSubview(contentView)
+        contentView.addSubviews(headerScheduleView, attendanceScoreView)
         
         navibar.snp.makeConstraints {
             $0.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
@@ -82,6 +84,10 @@ extension ShowAttendanceVC {
         containerScrollView.snp.makeConstraints {
             $0.top.equalTo(navibar.snp.bottom)
             $0.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
+        }
+        
+        contentView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
         }
         
         headerScheduleView.snp.makeConstraints {
