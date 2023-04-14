@@ -11,11 +11,11 @@ import UIKit
 import Core
 import DSKit
 
-public enum AttendanceStateType {
-    case all
-    case attendance
-    case tardy
-    case absent
+public enum AttendanceStateType: String, CaseIterable {
+    case all = "전체"
+    case attendance = "출석"
+    case tardy = "지각"
+    case absent = "결석"
 }
 
 /*
@@ -59,16 +59,7 @@ final class SingleScoreView: UIView {
 extension SingleScoreView {
     
     private func updateScoreTypeLabel(_ type: AttendanceStateType) {
-        let typeToString = [
-            AttendanceStateType.all: I18N.Attendance.all,
-            AttendanceStateType.attendance: I18N.Attendance.attendance,
-            AttendanceStateType.tardy: I18N.Attendance.tardy,
-            AttendanceStateType.absent: I18N.Attendance.absent
-        ]
-        
-        if let typeString = typeToString[type] {
-            singleScoreTitleLabel.text = typeString
-        }
+        singleScoreTitleLabel.text = type.rawValue
     }
     
     private func setLayout(_ type: AttendanceStateType) {
