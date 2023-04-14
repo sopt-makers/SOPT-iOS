@@ -54,6 +54,7 @@ final class MainNavigationBar: UIView {
 extension MainNavigationBar {
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.black100.color
+        self.noticeButton.isHidden = true // 추후 알림 기능 생기면 hidden 해제
     }
     
     private func setLayout() {

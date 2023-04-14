@@ -36,7 +36,7 @@ public class MainVC: UIViewController, MainViewControllable {
       cv.isScrollEnabled = true
       cv.showsHorizontalScrollIndicator = false
       cv.showsVerticalScrollIndicator = false
-      cv.contentInset = UIEdgeInsets(top: 16, left: 0, bottom: 0, right: 0)
+      cv.contentInset = UIEdgeInsets(top: 7, left: 0, bottom: 0, right: 0)
       cv.backgroundColor = .clear
       return cv
     }()
@@ -70,7 +70,7 @@ extension MainVC {
         }
         
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(naviBar.snp.bottom)
+            make.top.equalTo(naviBar.snp.bottom).offset(7)
             make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
