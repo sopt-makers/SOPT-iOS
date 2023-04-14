@@ -86,12 +86,3 @@ extension SingleScoreView {
         }
     }
 }
-
-// MARK: - Methods
-
-extension SingleScoreView {
-    
-    func setData(_ count: Int) {
-        singleScoreCountLabel.text = "\(count)회"
-    }
-}

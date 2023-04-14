@@ -41,13 +41,6 @@ final class MyAttendanceStateTVC: UITableViewCell {
     
     // MARK: - Initialization
     
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        attendanceStateDateLabel.text = nil
-//        attendanceStateButton.titleLabel?.text = nil
-//        attendanceStateButton.imageView?.image = nil
-    }
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setUI()

@@ -101,8 +101,4 @@ extension MyInformationWithScoreView {
             UIApplication.shared.open(url)
         }
     }
-    
-    func setData() {
-        
-    }
 }

@@ -113,7 +113,6 @@ extension ShowAttendanceVC {
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
     }
     
-    
     @objc
     private func refreshButtonDidTap() {
         print("refresh button did tap")

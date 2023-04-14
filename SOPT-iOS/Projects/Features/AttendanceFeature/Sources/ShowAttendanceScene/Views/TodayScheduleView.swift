@@ -155,7 +155,6 @@ extension TodayScheduleView {
             $0.top.bottom.equalToSuperview().inset(32)
             $0.leading.equalToSuperview().offset(32)
         }
-        
     }
     
     private func setSeminarDayLayout() {
