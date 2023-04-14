@@ -92,21 +92,22 @@ final class TodayScheduleView: UIView {
     }()
     
     private lazy var todayInfoStackView: UIStackView = {
-       let stackView = UIStackView(arrangedSubviews: [dateAndPlaceStackView, titleLabel])
+        let stackView = UIStackView(arrangedSubviews: [placeStackView, dateAndPlaceStackView, titleLabel])
         stackView.axis = .vertical
-        stackView.spacing = 16
+        stackView.spacing = 8
         stackView.alignment = .leading
+        stackView.setCustomSpacing(15, after: dateAndPlaceStackView)
         return stackView
     }()
     
     private lazy var containerStackView: UIStackView = {
-       let stackView = UIStackView(arrangedSubviews: [todayInfoStackView, subtitleLabel])
+        let stackView = UIStackView(arrangedSubviews: [todayInfoStackView, subtitleLabel])
         stackView.axis = .vertical
         stackView.spacing = 24
         stackView.alignment = .leading
         return stackView
     }()
-
+    
     // MARK: - Initialization
 
     init(type: TodayScheduleType) {
@@ -131,36 +132,20 @@ extension TodayScheduleView {
     }
     
     private func setLayout(_ type: TodayScheduleType) {
-        
         addSubview(containerStackView)
         
         containerStackView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-        
-        switch type {
-        case .unscheduledDay:
-            self.setUnscheduledDayLayout()
-        case .scheduledDay:
-            self.setSeminarDayLayout()
-        }
-    }
-    
-    private func setUnscheduledDayLayout() {
-        
-        dateAndPlaceStackView.isHidden = true
-        addSubview(titleLabel)
-                
-        titleLabel.snp.makeConstraints {
-            $0.top.bottom.equalToSuperview().inset(32)
-            $0.leading.equalToSuperview().offset(32)
-        }
-    }
-    
-    private func setSeminarDayLayout() {
-        
-        containerStackView.snp.updateConstraints {
             $0.edges.equalToSuperview().inset(32)
+        }
+        
+        if case .unscheduledDay = type {
+            todayInfoStackView.isHidden = true
+            
+            addSubview(titleLabel)
+            titleLabel.snp.makeConstraints {
+                $0.top.bottom.equalToSuperview().inset(32)
+                $0.leading.equalToSuperview().offset(32)
+            }
         }
     }
 }
