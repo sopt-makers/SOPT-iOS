@@ -117,6 +117,9 @@ extension AlertVC {
         
         self.alertView.layer.cornerRadius = 10
         self.alertView.layer.masksToBounds = true
+        
+        self.cancelButton.layer.cornerRadius = 10
+        self.customButton.layer.cornerRadius = 10
     }
     
     private func setLayout(_ type: AlertType) {
@@ -161,23 +164,24 @@ extension AlertVC {
         switch type {
         case .title, .titleDescription:
             alertView.addSubviews(customButton)
+            let buttonSpacing: Float = 7
             
             cancelButton.snp.makeConstraints { make in
-                make.leading.bottom.equalToSuperview()
-                make.width.equalTo(alertView.snp.width).multipliedBy(0.5)
-                make.height.equalTo(cancelButton.snp.width).multipliedBy(0.347)
+                make.leading.bottom.equalToSuperview().inset(buttonSpacing)
+                make.width.equalTo(customButton.snp.width)
+                make.height.equalTo(38)
             }
             
             customButton.snp.makeConstraints { make in
-                make.trailing.bottom.equalToSuperview()
-                make.leading.equalTo(cancelButton.snp.trailing)
-                make.top.equalTo(cancelButton.snp.top)
+                make.trailing.bottom.equalToSuperview().inset(buttonSpacing)
+                make.leading.equalTo(cancelButton.snp.trailing).offset(buttonSpacing)
+                make.height.equalTo(cancelButton.snp.height)
             }
         case .networkErr:
             cancelButton.snp.makeConstraints { make in
-                make.leading.trailing.bottom.equalToSuperview()
-                make.width.equalTo(alertView.snp.width)
-                make.height.equalTo(cancelButton.snp.width).multipliedBy(0.17)
+                make.leading.trailing.bottom.equalToSuperview().inset(7)
+//                make.width.equalTo(alertView.snp.width)
+                make.height.equalTo(38)
             }
         }
     }
