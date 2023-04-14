@@ -94,7 +94,6 @@ extension AttendanceScoreView {
     private func setLayout() {
         
         addSubviews(myInfoContainerView, myScoreContainerStackView, myAttendanceStateContainerView)
-        myScoreContainerStackView.addSubviews(allScoreView, attendanceScoreView, tardyScoreView, absentScoreView)
         myAttendanceStateContainerView.addSubviews(attendanceScoreDescriptiopnLabel, attendanceTableView)
         
         myInfoContainerView.snp.makeConstraints {
