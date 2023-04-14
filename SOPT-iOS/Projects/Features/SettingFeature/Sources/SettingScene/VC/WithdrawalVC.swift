@@ -148,7 +148,7 @@ extension WithdrawalVC {
     }
     
     public func showNetworkAlert() {
-        let alertVC = factory.makeNetworkAlertVC().viewController
+        let alertVC = factory.makeNetworkAlertVC(theme: .main).viewController
         alertVC.modalPresentationStyle = .overFullScreen
         alertVC.modalTransitionStyle = .crossDissolve
         self.present(alertVC, animated: true)

@@ -24,7 +24,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: scene.coordinateSpace.bounds)
         window?.windowScene = scene
 //        let rootVC = container.makeSplashVC().viewController
-        let rootVC = container.makeMainVC(userType: .inactive).viewController
+        let rootVC = container.makeAlertVC(type: .titleDescription, theme: .soptamp ,title: "sdf",description: "sadfsf" ,customButtonTitle: "초기화").viewController
+//        let rootVC = container.makeNetworkAlertVC(theme: .soptamp).viewController
         window?.rootViewController = UINavigationController(rootViewController: rootVC)
         window?.makeKeyAndVisible()
     }

@@ -78,6 +78,7 @@ extension SettingVC {
     private func presentResetAlertVC() {
         let alertVC = factory.makeAlertVC(
             type: .titleDescription,
+            theme: .main,
             title: I18N.Setting.resetMissionTitle,
             description: I18N.Setting.resetMissionDescription,
             customButtonTitle: I18N.Setting.reset,

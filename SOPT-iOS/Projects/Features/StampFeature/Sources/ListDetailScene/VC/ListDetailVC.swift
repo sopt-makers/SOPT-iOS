@@ -167,7 +167,7 @@ extension ListDetailVC {
             .compactMap { $0 }
             .sink { model in
                 if model.image.isEmpty {
-                    let networkAlert = self.factory.makeNetworkAlertVC().viewController
+                    let networkAlert = self.factory.makeNetworkAlertVC(theme: .soptamp).viewController
                     self.present(networkAlert, animated: true) {
                         self.backgroundDimmerView.removeFromSuperview()
                     }
@@ -187,7 +187,7 @@ extension ListDetailVC {
                     self.reloadData(.completed)
                     self.showToast(message: I18N.ListDetail.editCompletedToast)
                 } else {
-                    let networkAlert = self.factory.makeNetworkAlertVC().viewController
+                    let networkAlert = self.factory.makeNetworkAlertVC(theme: .soptamp).viewController
                     self.present(networkAlert, animated: true)
                 }
             }.store(in: self.cancelBag)
@@ -206,7 +206,7 @@ extension ListDetailVC {
                 if success {
                     self.navigationController?.popViewController(animated: true)
                 } else {
-                    let networkAlert = self.factory.makeNetworkAlertVC().viewController
+                    let networkAlert = self.factory.makeNetworkAlertVC(theme: .soptamp).viewController
                     self.present(networkAlert, animated: true)
                 }
             }.store(in: self.cancelBag)
@@ -287,6 +287,7 @@ extension ListDetailVC {
     private func presentDeleteAlertVC() {
         let alertVC = factory.makeAlertVC(
             type: .title,
+            theme: .soptamp,
             title: I18N.ListDetail.deleteTitle,
             description: "",
             customButtonTitle: I18N.Default.delete,

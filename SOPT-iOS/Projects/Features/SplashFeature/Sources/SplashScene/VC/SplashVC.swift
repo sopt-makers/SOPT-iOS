@@ -149,6 +149,7 @@ extension SplashVC {
     private func presentNetworkAlertVC() {
         let networkAlertVC = factory.makeAlertVC(
             type: .titleDescription,
+            theme: .main,
             title: I18N.Default.networkError,
             description: I18N.Default.networkErrorDescription,
             customButtonTitle: I18N.Default.ok,
