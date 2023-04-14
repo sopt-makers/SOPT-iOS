@@ -181,7 +181,7 @@ public struct I18N {
         public static let absent = "결석"
         public static let tardy = "지각"
         public static let leaveEarly = "조퇴"
-        public static let participation = "참여"
+        public static let participate = "참여"
         public static let all = "전체"
         
         public static let planPart = "기획파트"

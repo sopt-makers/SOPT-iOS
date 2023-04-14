@@ -30,10 +30,10 @@ final class AttendanceScoreView: UIView {
     
     /// 2. 전체 출결 점수 영역
     
-    private let allScoreView = SingleScoreView(type: .all, count: 1)
-    private let attendanceScoreView = SingleScoreView(type: .attendance, count: 1)
-    private let tardyScoreView = SingleScoreView(type: .tardy)
-    private let absentScoreView = SingleScoreView(type: .absent)
+    private let allScoreView = SingleScoreView(type: .all, count: 5)
+    private let attendanceScoreView = SingleScoreView(type: .attendance, count: 3)
+    private let tardyScoreView = SingleScoreView(type: .tardy, count: 1)
+    private let absentScoreView = SingleScoreView(type: .absent, count: 1)
     
     private lazy var myScoreContainerStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [allScoreView, attendanceScoreView, tardyScoreView, absentScoreView])
@@ -159,9 +159,24 @@ extension AttendanceScoreView: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MyAttendanceStateTVC.className, for: indexPath) as? MyAttendanceStateTVC else { return UITableViewCell() }
         cell.selectionStyle = .none
         updateTableviewHeight()
-        cell.setData(title: "\(indexPath.row+1)차 세미나",
-                     image: DSKitAsset.Assets.opStateAttendance.image,
-                     date: "4월 \(indexPath.row+1)일")
+        if indexPath.row == 2 {
+            cell.setData(title: "\(indexPath.row+1)차 세미나",
+                         image: DSKitAsset.Assets.opStateTardy.image,
+                         date: "4월 \(indexPath.row*7+1)일")
+        } else if indexPath.row == 0 {
+            cell.setData(title: "\(indexPath.row+1)차 세미나",
+                         image: DSKitAsset.Assets.opStateAttendance.image,
+                         date: "4월 \(indexPath.row*7+1)일")
+            
+        } else if indexPath.row == 3 {
+            cell.setData(title: "\(indexPath.row+1)차 세미나",
+                         image: DSKitAsset.Assets.opStateAbsent.image,
+                         date: "4월 \(indexPath.row*7+1)일")
+        } else {
+            cell.setData(title: "\(indexPath.row+1)차 세미나",
+                         image: DSKitAsset.Assets.opStateAttendance.image,
+                         date: "4월 \(indexPath.row*7+1)일")
+        }
         return cell
     }
 }

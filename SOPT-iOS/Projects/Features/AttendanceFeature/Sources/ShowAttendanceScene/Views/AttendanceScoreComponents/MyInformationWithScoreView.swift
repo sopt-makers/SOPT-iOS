@@ -30,7 +30,7 @@ final class MyInformationWithScoreView: UIView {
     private let currentScoreLabel: UILabel = {
         let label = UILabel()
         let mainText = I18N.Attendance.currentAttendanceScore
-        let pointText = "1점"
+        let pointText = "1.5점"
         let subText = I18N.Attendance.scoreIs
         let attributedString = NSMutableAttributedString(string: mainText + pointText + subText)
         
