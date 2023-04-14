@@ -21,7 +21,7 @@ public class MainViewModel: ViewModelType {
     var userType: UserType = .visitor
     var mainServiceList: [ServiceType] = [.officialHomepage, .review, .project]
     var otherServiceList: [ServiceType] = [.faq, .youtube]
-    var appServiceList: [AppServiceType] = [.soptamp, .soptamp, .soptamp, .soptamp, .soptamp, .soptamp]
+    var appServiceList: [AppServiceType] = [.soptamp]
     var briefNotice: String = ""
   
     // MARK: - Inputs
