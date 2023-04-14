@@ -16,7 +16,7 @@ import DSKit
 import SnapKit
 import AttendanceFeatureInterface
 
-public class ShowAttendanceVC: UIViewController, ShowAttendanceViewControllable {
+public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControllable {
     
     // MARK: - Properties
     
