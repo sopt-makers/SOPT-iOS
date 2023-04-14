@@ -151,6 +151,7 @@ public struct I18N {
         
         public struct MainService {
             public static let visitorGuide = "SOPT를 더 알고 싶다면, 둘러보세요"
+            public static let memberGuide = "더욱 편리해진 SOPT를 이용해보세요!"
             public static let officialHomePage = "SOPT \n공식홈페이지"
             public static let review = "활동후기"
             public static let project = "프로젝트"
