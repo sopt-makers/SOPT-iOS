@@ -92,12 +92,20 @@ extension UIFont {
             return DSKitFontFamily.Suit.medium.font(size: 16)
         }
         
+        @nonobjc public static var body2: UIFont {
+            return DSKitFontFamily.Suit.medium.font(size: 14)
+        }
+        
         @nonobjc public static var caption1: UIFont {
             return DSKitFontFamily.Suit.medium.font(size: 12)
         }
         
         @nonobjc public static var caption2: UIFont {
             return DSKitFontFamily.Suit.medium.font(size: 10)
+        }
+        
+        @nonobjc public static var caption3: UIFont {
+            return DSKitFontFamily.Suit.regular.font(size: 14)
         }
     }
 }
