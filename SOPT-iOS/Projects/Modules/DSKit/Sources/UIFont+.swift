@@ -88,6 +88,10 @@ extension UIFont {
             return DSKitFontFamily.Suit.bold.font(size: 16)
         }
         
+        @nonobjc public static var body0: UIFont {
+            return DSKitFontFamily.Suit.medium.font(size: 18)
+        }
+        
         @nonobjc public static var body1: UIFont {
             return DSKitFontFamily.Suit.medium.font(size: 16)
         }

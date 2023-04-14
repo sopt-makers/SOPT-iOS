@@ -12,6 +12,7 @@ import Foundation
 import Core
 
 public enum APIType {
+    case attendance
     case auth
     case mission
     case rank
@@ -27,8 +28,11 @@ public protocol BaseAPI: TargetType {
 extension BaseAPI {
     public var baseURL: URL {
         var base = Config.Network.baseURL
+        let operationBaseURL = Config.Network.operationBaseURL
         
         switch Self.apiType {
+        case .attendance:
+            base = operationBaseURL
         case .auth:
             base += "/auth"
         case .mission:
