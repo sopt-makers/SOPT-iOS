@@ -92,6 +92,7 @@ extension ShowAttendanceVC {
         attendanceScoreView.snp.makeConstraints {
             $0.top.equalTo(headerScheduleView.snp.bottom).offset(20)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
+            $0.bottom.equalToSuperview()
         }
     }
     

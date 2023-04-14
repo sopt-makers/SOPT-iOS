@@ -21,7 +21,7 @@ final class MyAttendanceStateTVC: UITableViewCell {
 
     private let attendanceStateButton: UIButton = {
         var configuration = UIButton.Configuration.plain()
-        configuration.title = "1차 세미나"
+        configuration.title = ""
         configuration.baseForegroundColor = .white
         configuration.attributedTitle?.font = DSKitFontFamily.Suit.bold.font(size: 15)
         configuration.image = DSKitAsset.Assets.opStateAttendance.image
@@ -35,7 +35,6 @@ final class MyAttendanceStateTVC: UITableViewCell {
     private let attendanceStateDateLabel: UILabel = {
         let label = UILabel()
         label.font = .Main.body2
-        label.text = "00월 00일"
         label.textColor = DSKitAsset.Colors.gray30.color
         return label
     }()
@@ -51,6 +50,7 @@ final class MyAttendanceStateTVC: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setUI()
         setLayout()
     }
 
@@ -62,6 +62,10 @@ final class MyAttendanceStateTVC: UITableViewCell {
 // MARK: - UI & Layout
 
 extension MyAttendanceStateTVC {
+    
+    private func setUI() {
+        backgroundColor = .clear
+    }
     
     private func setLayout() {
         addSubviews(attendanceStateButton, attendanceStateDateLabel)
@@ -81,4 +85,13 @@ extension MyAttendanceStateTVC {
 
 extension MyAttendanceStateTVC {
     
+    func setData(title: String, image: UIImage, date: String) {
+        
+        attendanceStateButton.configuration?.title? = title
+        attendanceStateButton.configuration?.image = image
+        attendanceStateDateLabel.text = date
+        
+        attendanceStateButton.configuration?.attributedTitle?.font = DSKitFontFamily.Suit.bold.font(size: 15)
+        attendanceStateButton.configuration?.attributedTitle?.foregroundColor = .white
+    }
 }

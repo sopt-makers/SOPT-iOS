@@ -17,6 +17,11 @@ import DSKit
 
 final class AttendanceScoreView: UIView {
     
+    // MARK: - Properties
+
+    private let tableViewHeight: CGFloat = 40
+    private var tableViewDataSourceCount: Int = 5
+    
     // MARK: - UI Components
     
     /// 1. 나의 정보 및 현재 출석 점수 영역
@@ -55,8 +60,9 @@ final class AttendanceScoreView: UIView {
     
     private lazy var attendanceTableView: UITableView = {
         let tableView = UITableView()
-        tableView.showsVerticalScrollIndicator = true
-        tableView.backgroundColor = .yellow
+        tableView.isScrollEnabled = false
+        tableView.backgroundColor = .clear
+        tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
         return tableView
     }()
@@ -113,8 +119,9 @@ extension AttendanceScoreView {
         }
         
         attendanceTableView.snp.makeConstraints {
-            $0.top.equalTo(attendanceScoreDescriptiopnLabel.snp.bottom).offset(20)
+            $0.top.equalTo(attendanceScoreDescriptiopnLabel.snp.bottom).offset(10)
             $0.leading.trailing.bottom.equalToSuperview()
+            $0.height.equalTo(1)
         }
     }
 }
@@ -128,21 +135,33 @@ extension AttendanceScoreView {
         attendanceTableView.dataSource = self
         attendanceTableView.register(MyAttendanceStateTVC.self, forCellReuseIdentifier: MyAttendanceStateTVC.className)
     }
+    
+    func updateTableviewHeight() {
+        
+        attendanceTableView.snp.updateConstraints {
+            $0.height.equalTo(tableViewDataSourceCount * Int(tableViewHeight))
+        }
+    }
+    
 }
 
 extension AttendanceScoreView: UITableViewDelegate, UITableViewDataSource {
-    
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        30
+        tableViewHeight
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        10
+        tableViewDataSourceCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MyAttendanceStateTVC.className, for: indexPath) as? MyAttendanceStateTVC else { return UITableViewCell() }
-//        cell.setData(model: model[safe: indexPath.row]!)
+        cell.selectionStyle = .none
+        updateTableviewHeight()
+        cell.setData(title: "\(indexPath.row+1)차 세미나",
+                     image: DSKitAsset.Assets.opStateAttendance.image,
+                     date: "4월 \(indexPath.row+1)일")
         return cell
     }
 }
