@@ -43,13 +43,8 @@ final class AttendanceScoreView: UIView {
     
     /// 3. 나의 출결 현황 영역
     
-    private let attedncanceStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 15
-        return stackView
-    }()
-        
+    private lazy var myAttendanceStateContainerView = UIView()
+    
     private let attendanceScoreDescriptiopnLabel: UILabel = {
         let label = UILabel()
         label.font = .Main.body2
@@ -58,29 +53,20 @@ final class AttendanceScoreView: UIView {
         return label
     }()
     
-    private lazy var myAttendanceStateContainerStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [attendanceScoreDescriptiopnLabel, attedncanceStackView])
-        stackView.axis = .vertical
-        stackView.spacing = 20
-        stackView.alignment = .leading
-        return stackView
+    private lazy var attendanceTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.showsVerticalScrollIndicator = true
+        tableView.backgroundColor = .yellow
+        tableView.showsVerticalScrollIndicator = false
+        return tableView
     }()
     
-    /// 4. 전체 묶음
-    
-    private lazy var containerStackView: UIStackView = {
-       let stackView = UIStackView(arrangedSubviews: [myInfoContainerView, myScoreContainerStackView, myAttendanceStateContainerStackView])
-        stackView.axis = .vertical
-        stackView.spacing = 24
-        stackView.alignment = .leading
-        return stackView
-    }()
-
     // MARK: - Initialization
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureContentView()
+        registerCells()
         setLayout()
     }
 
@@ -100,62 +86,35 @@ extension AttendanceScoreView {
     }
     
     private func setLayout() {
-        addSubview(containerStackView)
         
-        containerStackView.addSubviews(myInfoContainerView, myScoreContainerStackView, myAttendanceStateContainerStackView)
-        
-        containerStackView.snp.makeConstraints {
-            $0.edges.equalToSuperview().inset(32)
-        }
-        
-        myInfoContainerViewLayout()
-        myScoreContainerViewLayout()
-        myAttendanceStateContainerViewLayout()
-    }
-    
-    private func myInfoContainerViewLayout () {
+        addSubviews(myInfoContainerView, myScoreContainerStackView, myAttendanceStateContainerView)
+        myScoreContainerStackView.addSubviews(allScoreView, attendanceScoreView, tardyScoreView, absentScoreView)
+        myAttendanceStateContainerView.addSubviews(attendanceScoreDescriptiopnLabel, attendanceTableView)
         
         myInfoContainerView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview()
+            $0.top.equalToSuperview().offset(32)
+            $0.leading.trailing.equalToSuperview().inset(32)
             $0.height.equalTo(50)
         }
-    }
-    
-    private func myScoreContainerViewLayout() {
-        
-        myScoreContainerStackView.addSubviews(allScoreView, attendanceScoreView, tardyScoreView, absentScoreView)
         
         myScoreContainerStackView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview()
+            $0.top.equalTo(myInfoContainerView.snp.bottom).offset(32)
+            $0.leading.trailing.equalToSuperview().inset(32)
             $0.height.equalTo(88)
         }
-    }
-    
-    private func myAttendanceStateContainerViewLayout() {
-        myAttendanceStateContainerStackView.addSubviews(attendanceScoreDescriptiopnLabel, attedncanceStackView)
         
-        // 반복문을 통해 뷰 생성 후 스택뷰에 추가
-        for _ in 0..<3 {
-            let singleAttendanceStateView = MyAttendanceStateView()
-            
-            attedncanceStackView.addArrangedSubview(singleAttendanceStateView)
-            
-            singleAttendanceStateView.snp.makeConstraints {
-                $0.leading.trailing.equalToSuperview()
-                $0.height.equalTo(30)
-            }
-        }
-        
-        myAttendanceStateContainerStackView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview()
+        myAttendanceStateContainerView.snp.makeConstraints {
+            $0.top.equalTo(myScoreContainerStackView.snp.bottom).offset(32)
+            $0.leading.trailing.bottom.equalToSuperview().inset(32)
         }
         
         attendanceScoreDescriptiopnLabel.snp.makeConstraints {
             $0.top.leading.equalToSuperview()
         }
         
-        attedncanceStackView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview()
+        attendanceTableView.snp.makeConstraints {
+            $0.top.equalTo(attendanceScoreDescriptiopnLabel.snp.bottom).offset(20)
+            $0.leading.trailing.bottom.equalToSuperview()
         }
     }
 }
@@ -164,7 +123,26 @@ extension AttendanceScoreView {
 
 extension AttendanceScoreView {
     
-    func setData() {
-        
+    private func registerCells() {
+        attendanceTableView.delegate = self
+        attendanceTableView.dataSource = self
+        attendanceTableView.register(MyAttendanceStateTVC.self, forCellReuseIdentifier: MyAttendanceStateTVC.className)
+    }
+}
+
+extension AttendanceScoreView: UITableViewDelegate, UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        30
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        10
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: MyAttendanceStateTVC.className, for: indexPath) as? MyAttendanceStateTVC else { return UITableViewCell() }
+//        cell.setData(model: model[safe: indexPath.row]!)
+        return cell
     }
 }

@@ -12,10 +12,10 @@ import Core
 import DSKit
 
 /*
- 나의 출결 현황 스택뷰에 1줄짜리 상태(출석, 1차 세미나, 00월 00일)를 나타내는 뷰입니다.
+ 나의 출결 현황 스택뷰에 1줄짜리 상태(출석, 1차 세미나, 00월 00일)를 나타내는 테이블뷰 셀입니다.
  */
 
-final class MyAttendanceStateView: UIView {
+final class MyAttendanceStateTVC: UITableViewCell {
     
     // MARK: - UI Components
 
@@ -41,9 +41,16 @@ final class MyAttendanceStateView: UIView {
     }()
     
     // MARK: - Initialization
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        attendanceStateDateLabel.text = nil
+//        attendanceStateButton.titleLabel?.text = nil
+//        attendanceStateButton.imageView?.image = nil
+    }
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         setLayout()
     }
 
@@ -54,7 +61,7 @@ final class MyAttendanceStateView: UIView {
 
 // MARK: - UI & Layout
 
-extension MyAttendanceStateView {
+extension MyAttendanceStateTVC {
     
     private func setLayout() {
         addSubviews(attendanceStateButton, attendanceStateDateLabel)
@@ -68,4 +75,10 @@ extension MyAttendanceStateView {
             $0.trailing.centerY.equalToSuperview()
         }
     }
+}
+
+// MARK: - Methods
+
+extension MyAttendanceStateTVC {
+    
 }
