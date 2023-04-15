@@ -17,6 +17,7 @@ public enum UserAPI {
     case getNicknameAvailable(nickname: String)
     case changeNickname(nickname: String)
     case getUserMainInfo
+    case withdrawal
 }
 
 extension UserAPI: BaseAPI {
@@ -36,6 +37,8 @@ extension UserAPI: BaseAPI {
             return "nickname/\(nickname)"
         case .getUserMainInfo:
             return "/main"
+        case .withdrawal:
+            return ""
         }
     }
     
@@ -46,6 +49,8 @@ extension UserAPI: BaseAPI {
             return .get
         case .editSentence, .changeNickname:
             return .patch
+        case .withdrawal:
+            return .delete
         }
     }
     

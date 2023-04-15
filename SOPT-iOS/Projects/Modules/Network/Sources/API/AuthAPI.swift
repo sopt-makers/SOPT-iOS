@@ -12,7 +12,6 @@ import Alamofire
 import Moya
 
 public enum AuthAPI {
-    case withdrawal
     case signIn(token: String)
 }
 
@@ -23,8 +22,6 @@ extension AuthAPI: BaseAPI {
     // MARK: - Header
     public var headers: [String: String]? {
         switch self {
-        case .withdrawal:
-            return HeaderType.jsonWithToken.value
         default: return HeaderType.json.value
         }
     }
@@ -32,8 +29,6 @@ extension AuthAPI: BaseAPI {
     // MARK: - Path
     public var path: String {
         switch self {
-        case .withdrawal:
-            return "withdraw"
         case .signIn:
             return "playground"
         }
@@ -42,8 +37,6 @@ extension AuthAPI: BaseAPI {
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .withdrawal:
-            return .delete
         case .signIn:
             return .post
         }
@@ -55,8 +48,6 @@ extension AuthAPI: BaseAPI {
         switch self {
         case .signIn(let token):
             params["code"] = token
-        default:
-            break
         }
         return params
     }
@@ -72,8 +63,6 @@ extension AuthAPI: BaseAPI {
         switch self {
         case .signIn:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
-        default:
-            return .requestPlain
         }
     }
 }

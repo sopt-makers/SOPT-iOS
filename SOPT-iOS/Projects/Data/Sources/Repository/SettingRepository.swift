@@ -52,7 +52,7 @@ extension SettingRepository: SettingRepositoryInterface {
     }
     
     public func withdrawal() -> AnyPublisher<Bool, Never> {
-        return authService.withdrawal()
+        return userService.withdrawal()
             .handleEvents(receiveOutput: { status in
                 if status == 200 {
                     UserDefaultKeyList.Auth.appAccessToken = nil
