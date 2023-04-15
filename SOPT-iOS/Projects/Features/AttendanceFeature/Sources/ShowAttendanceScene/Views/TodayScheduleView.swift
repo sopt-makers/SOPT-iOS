@@ -143,6 +143,18 @@ extension TodayScheduleView {
             }
         }
     }
+    
+    func updateLayout(_ type: AttendanceScheduleType) {
+        if case .unscheduledDay = type {
+            todayInfoStackView.isHidden = true
+            
+            addSubview(titleLabel)
+            titleLabel.snp.makeConstraints {
+                $0.top.bottom.equalToSuperview().inset(32)
+                $0.leading.equalToSuperview().offset(32)
+            }
+        }
+    }
 }
 
 extension TodayScheduleView {

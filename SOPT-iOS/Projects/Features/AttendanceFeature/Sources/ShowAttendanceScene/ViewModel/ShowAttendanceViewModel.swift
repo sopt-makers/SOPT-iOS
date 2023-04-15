@@ -12,6 +12,12 @@ import Core
 import Domain
 import Foundation
 
+public enum SessionType: String, CaseIterable {
+    case noSession = "NO_SESSION"
+    case hasAttendance = "HAS_ATTENDANCE"
+    case noAttendance = "NO_ATTENDANCE"
+}
+
 public final class ShowAttendanceViewModel: ViewModelType {
 
     // MARK: - Properties
@@ -64,17 +70,23 @@ extension ShowAttendanceViewModel {
         
         fetchedSchedule.asDriver()
             .sink(receiveValue: { model in
-                guard let convertedStartDate = self.convertDateString(model.startDate),
-                      let convertedEndDate = self.convertDateString(model.endDate) else { return }
+                if model.type != SessionType.noSession.rawValue {
+                    self.sceneType = .scheduledDay
+                    guard let convertedStartDate = self.convertDateString(model.startDate),
+                          let convertedEndDate = self.convertDateString(model.endDate) else { return }
 
-                let newModel = AttendanceScheduleModel(type: model.type,
-                                                       location: model.location,
-                                                       name: model.name,
-                                                       startDate: convertedStartDate,
-                                                       endDate: convertedEndDate,
-                                                       message: model.message,
-                                                       attendances: model.attendances)
-                output.scheduleModel = newModel
+                    let newModel = AttendanceScheduleModel(type: model.type,
+                                                           location: model.location,
+                                                           name: model.name,
+                                                           startDate: convertedStartDate,
+                                                           endDate: convertedEndDate,
+                                                           message: model.message,
+                                                           attendances: model.attendances)
+                    output.scheduleModel = newModel
+                } else {
+                    self.sceneType = .unscheduledDay
+                    output.scheduleModel = model
+                }
             })
             .store(in: cancelBag)
         

@@ -26,12 +26,28 @@ public class ShowAttendanceRepository {
 extension ShowAttendanceRepository: ShowAttendanceRepositoryInterface {
     public func fetchAttendanceScheduleModel() -> AnyPublisher<AttendanceScheduleModel, Error> {
         return Future<AttendanceScheduleModel, Error> { promise in
+//            promise(.success(AttendanceScheduleModel(type: "HAS_ATTENDANCE",
+//                                                     location: "단국대학교 혜당관",
+//                                                     name: "3차 세미나",
+//                                                     startDate: "2023-04-06T14:14:00", endDate: "2023-04-06T18:00:00", message: "",
+//                                                     attendances: [TodayAttendanceModel(status: "ATTENDANCE", attendedAt: "2023-04-13T14:12:09"),
+//                                                                   TodayAttendanceModel(status: "ABSENT", attendedAt:
+//            "2023-04-13T14:10:04")])))
+            
             promise(.success(AttendanceScheduleModel(type: "HAS_ATTENDANCE",
-                                                     location: "단국대학교 혜당관",
-                                                     name: "3차 세미나",
-                                                     startDate: "2023-04-06T14:13:51", endDate: "2023-04-06T18:13:51", message: "",
+                                                     location: "한국대학교 혜당관",
+                                                     name: "2차 행사",
+                                                     startDate: "2023-04-06T14:14:00", endDate: "2023-04-06T18:00:00",
+                                                     message: "행사도 참여하고, 출석점수도 받고, 일석이조!",
                                                      attendances: [TodayAttendanceModel(status: "ATTENDANCE", attendedAt: "2023-04-13T14:12:09"),
                                                                    TodayAttendanceModel(status: "ABSENT", attendedAt: "2023-04-13T14:10:04")])))
+
+//            promise(.success(AttendanceScheduleModel(type: "NO_SESSION",
+//                                                     location: "",
+//                                                     name: "",
+//                                                     startDate: "", endDate: "", message: "",
+//                                                     attendances: [TodayAttendanceModel(status: "", attendedAt: ""),
+//                                                                   TodayAttendanceModel(status: "", attendedAt: "")])))
         }
         .eraseToAnyPublisher()
 //        return self.attendanceService.fetchAttendanceSchedule()

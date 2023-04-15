@@ -17,12 +17,6 @@ import DSKit
 import SnapKit
 import AttendanceFeatureInterface
 
-private enum SessionType: String, CaseIterable {
-    case noSession = "NO_SESSION"
-    case hasAttendance = "HAS_ATTENDANCE"
-    case noAttendance = "NO_ATTENDANCE"
-}
-
 public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControllable {
     
     // MARK: - Properties
@@ -32,8 +26,13 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     private var cancelBag = CancelBag()
     
     public var sceneType: AttendanceScheduleType {
-        return self.viewModel.sceneType ?? .scheduledDay
+        get {
+            return self.viewModel.sceneType ?? .scheduledDay
+        } set(type) {
+            self.viewModel.sceneType = type
+        }
     }
+    
     private var viewdidload = PassthroughSubject<Void, Never>()
   
     // MARK: - UI Components
@@ -137,7 +136,7 @@ extension ShowAttendanceVC {
                 owner.refreshButtonDidTap()
             }.store(in: self.cancelBag)
     }
-  
+    
     private func bindViewModels() {
         
         let input = ShowAttendanceViewModel.Input(viewDidLoad: viewdidload.asDriver(),
@@ -145,16 +144,19 @@ extension ShowAttendanceVC {
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.$scheduleModel
-            .compactMap { $0 }
-            .sink { model in
-                if model.type == "NO_SESSION" {
-                    self.viewModel.sceneType = .unscheduledDay
+            .sink(receiveValue: { [weak self] model in
+                guard let self, let model else { return }
+                
+                if self.viewModel.sceneType == .scheduledDay {
+                    self.sceneType = .scheduledDay
+                    self.setScheduledData(model)
+                    headerScheduleView.updateLayout(.scheduledDay)
                 } else {
-                    self.viewModel.sceneType = .scheduledDay
-                    self.setData(model)
+                    self.sceneType = .unscheduledDay
+                    headerScheduleView.updateLayout(.unscheduledDay)
                 }
-//                print("스케쥴 데이터가 잘 넘어왓을까요?", model)
-            }.store(in: self.cancelBag)
+            })
+            .store(in: self.cancelBag)
         
         output.$scoreModel
             .sink { model in
@@ -167,7 +169,8 @@ extension ShowAttendanceVC {
         print("refresh button did tap")
     }
     
-    private func setData(_ model: AttendanceScheduleModel) {
+    private func setScheduledData(_ model: AttendanceScheduleModel) {
+        
         if self.sceneType == .scheduledDay {
             guard let date = viewModel.formatTimeInterval(startDate: model.startDate, endDate: model.endDate) else { return }
             headerScheduleView.setData(date: date,
@@ -176,6 +179,4 @@ extension ShowAttendanceVC {
                                        description: model.message)
         }
     }
-    
-    
 }
