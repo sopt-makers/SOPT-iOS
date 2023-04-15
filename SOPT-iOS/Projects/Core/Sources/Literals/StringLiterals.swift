@@ -147,13 +147,23 @@ public struct I18N {
         public static let visitor = "비회원"
         public static let active = "기 활동 중"
         public static let inactive = "기 수료"
+        public static let inactiveMember = "비활동"
+        public static let encourage = "안녕하세요, \nSOPT의 열정이 되어주세요!"
+        public static let hello = "안녕하세요"
+        public static let welcome = "안녕하세요, \nSOPT에 오신 것을 환영합니다!"
+        
+        public static func userHistory(name: String, months: String) -> String {
+            return "\(name) 님은 \nSOPT와 \(months)개월째"
+        }
         
         public struct MainService {
             public static let visitorGuide = "SOPT를 더 알고 싶다면, 둘러보세요"
+            public static let memberGuide = "더욱 편리해진 SOPT를 이용해보세요!"
             public static let officialHomePage = "SOPT \n공식홈페이지"
             public static let review = "활동후기"
             public static let project = "프로젝트"
             public static let faq = "FAQ"
+            public static let inquire = "SOPT 문의하기"
             public static let youtube = "YOUTUBE"
             public static let attendance = "SOPT 출석"
             public static let attend = "출석 인증하기"

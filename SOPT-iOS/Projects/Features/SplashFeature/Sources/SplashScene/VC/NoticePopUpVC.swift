@@ -30,15 +30,15 @@ public class NoticePopUpVC: UIViewController, NoticePopUpViewControllable {
     private lazy var backgroundDimmerView = CustomDimmerView(self)
     
     private let noticeView = UIView().then {
-        $0.backgroundColor = .white
+        $0.backgroundColor = DSKitAsset.Colors.black60.color
         $0.layer.cornerRadius = 10
     }
     
     private let noticeTitleLabel = UILabel().then {
         $0.text = I18N.Notice.notice
-        $0.font = .SoptampFont.subtitle3
-        $0.textColor = DSKitAsset.Colors.soptampPurple300.color
-        $0.backgroundColor = DSKitAsset.Colors.soptampPurple100.color
+        $0.font = .Main.headline2
+        $0.textColor = DSKitAsset.Colors.white100.color
+        $0.backgroundColor = DSKitAsset.Colors.black60.color
         $0.textAlignment = .center
         $0.layer.cornerRadius = 4
     }
@@ -46,37 +46,51 @@ public class NoticePopUpVC: UIViewController, NoticePopUpViewControllable {
     private let noticeContentTextView = UITextView().then {
         $0.text = I18N.Notice.notice
         $0.isEditable = false
-        $0.font = .SoptampFont.caption3
-        $0.textColor = DSKitAsset.Colors.soptampGray900.color
+        $0.font = .Main.body1
+        $0.textColor = DSKitAsset.Colors.white100.color
+        $0.backgroundColor = .clear
         $0.textAlignment = .center
     }
     
     private let checkBoxButton = UIButton(type: .custom).then {
-        $0.setImage(DSKitAsset.Assets.icCheckBox.image, for: .normal)
-        $0.setImage(DSKitAsset.Assets.icCheckBoxFill.image, for: .selected)
+        $0.setImage(DSKitAsset.Assets.btnCheckInactive.image, for: .normal)
+        $0.setImage(DSKitAsset.Assets.btnCheckActive.image, for: .selected)
         $0.setAttributedTitle(NSAttributedString(string: I18N.Notice.didCheck,
                                                  attributes: [.font: UIFont.SoptampFont.caption3,
-                                                    .foregroundColor: DSKitAsset.Colors.soptampGray600.color]),
+                                                              .foregroundColor: DSKitAsset.Colors.white.color]),
                               for: .normal)
-        $0.imageEdgeInsets = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 0)
-        $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
     }
 
-    private let updateButton = STCustomButton(title: I18N.Notice.goToUpdate)
+    private let updateButton = UIButton(type: .custom).then {
+        $0.setAttributedTitle(NSAttributedString(
+            string: I18N.Notice.goToUpdate,
+            attributes: [.font: UIFont.Main.caption3, .foregroundColor: DSKitAsset.Colors.gray10.color]
+        ), for: .normal)
+        
+        $0.backgroundColor = DSKitAsset.Colors.purple100.color
+        $0.layer.cornerRadius = 10
+    }
     
     private let closeButton = UIButton(type: .system).then {
         $0.setAttributedTitle(NSAttributedString(string: I18N.Notice.close,
-                                                 attributes: [.font: UIFont.SoptampFont.h3,
-                                                              .foregroundColor: DSKitAsset.Colors.soptampGray500.color]), for: .normal)
-        $0.backgroundColor = .white
+                                                 attributes: [.font: UIFont.Main.caption3,
+                                                              .foregroundColor: DSKitAsset.Colors.gray60.color]), for: .normal)
+        $0.backgroundColor = DSKitAsset.Colors.black40.color
+        $0.layer.cornerRadius = 10
+    }
+    
+    private lazy var bottomButtonStackView = UIStackView(arrangedSubviews: [closeButton, updateButton]).then {
+        $0.axis = .horizontal
+        $0.distribution = .fillEqually
+        $0.spacing = 7
     }
     
     private lazy var buttonStackView = UIStackView(
-        arrangedSubviews: [checkBoxButton, updateButton, closeButton])
+        arrangedSubviews: [checkBoxButton, bottomButtonStackView])
         .then {
             $0.axis = .vertical
             $0.alignment = .leading
-            $0.spacing = 12
+            $0.spacing = 10
         }
     
     // MARK: - View Life Cycle
@@ -165,23 +179,18 @@ extension NoticePopUpVC {
             make.leading.trailing.equalToSuperview().inset(24)
         }
         
-        buttonStackView.snp.makeConstraints { make in
-            make.top.equalTo(noticeContentTextView.snp.bottom).offset(12)
-            make.leading.trailing.equalToSuperview().inset(24)
-            make.bottom.equalToSuperview().inset(24)
+        bottomButtonStackView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
         }
         
-        checkBoxButton.snp.makeConstraints { make in
-            make.width.equalTo(95)
+        buttonStackView.snp.makeConstraints { make in
+            make.top.equalTo(noticeContentTextView.snp.bottom).offset(12)
+            make.leading.trailing.equalToSuperview().inset(7)
+            make.bottom.equalToSuperview().inset(12)
         }
         
         updateButton.snp.makeConstraints { make in
-            make.width.equalToSuperview()
-            make.height.equalTo(48)
-        }
-        
-        closeButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
+            make.height.equalTo(40)
         }
     }
     

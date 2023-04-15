@@ -150,11 +150,12 @@ extension DIContainer: Features {
     }
     
     func makeAlertVC(type: AlertType,
+                     theme: AlertVC.AlertTheme = .main,
                      title: String,
                      description: String = "",
                      customButtonTitle: String,
                      customAction: (() -> Void)? = nil) -> AlertViewControllable {
-        let alertVC = AlertVC(alertType: type)
+        let alertVC = AlertVC(alertType: type, alertTheme: theme)
             .setTitle(title, description)
             .setCustomButtonTitle(customButtonTitle)
         alertVC.customAction = customAction
@@ -163,8 +164,8 @@ extension DIContainer: Features {
         return alertVC
     }
     
-    func makeNetworkAlertVC() -> AlertViewControllable {
-        let alertVC = AlertVC(alertType: .networkErr)
+    func makeNetworkAlertVC(theme: AlertVC.AlertTheme = .main) -> AlertViewControllable {
+        let alertVC = AlertVC(alertType: .networkErr, alertTheme: theme)
             .setTitle(I18N.Default.networkError, I18N.Default.networkErrorDescription)
         alertVC.modalPresentationStyle = .overFullScreen
         alertVC.modalTransitionStyle = .crossDissolve

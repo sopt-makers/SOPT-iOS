@@ -12,9 +12,10 @@ public protocol AlertViewControllable: ViewControllable { }
 
 public protocol AlertViewBuildable {
     func makeAlertVC(type: AlertType,
+                     theme: AlertVC.AlertTheme,
                      title: String,
                      description: String,
                      customButtonTitle: String,
                      customAction: (() -> Void)?) -> AlertViewControllable
-    func makeNetworkAlertVC() -> AlertViewControllable
+    func makeNetworkAlertVC(theme: AlertVC.AlertTheme) -> AlertViewControllable
 }

@@ -107,5 +107,9 @@ extension UIFont {
         @nonobjc public static var caption2: UIFont {
             return DSKitFontFamily.Suit.medium.font(size: 10)
         }
+        
+        @nonobjc public static var caption3: UIFont {
+            return DSKitFontFamily.Suit.regular.font(size: 14)
+        }
     }
 }

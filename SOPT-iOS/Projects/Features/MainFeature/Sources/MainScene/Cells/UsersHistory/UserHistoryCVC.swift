@@ -94,6 +94,17 @@ extension UserHistoryCVC {
             self.userTypeLabel.backgroundColor = DSKitAsset.Colors.purple100.color
         }
         
+        // 플그에 기수 정보 입력 안한 비활동 회원 대응 (추후 제거)
+        if userType == .inactive {
+            if allHistory == nil {
+                self.userTypeLabel.text = I18N.Main.inactiveMember
+            }
+            
+            if let isEmptyHistory = allHistory?.isEmpty, isEmptyHistory {
+                self.userTypeLabel.text = I18N.Main.inactiveMember
+            }
+        }
+        
         guard userType != .visitor else { return }
         
         historyStackView.arrangedSubviews.forEach { view in
