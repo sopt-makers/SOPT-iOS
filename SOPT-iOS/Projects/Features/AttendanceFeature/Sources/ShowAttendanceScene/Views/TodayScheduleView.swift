@@ -164,7 +164,7 @@ extension TodayScheduleView {
         placeLabel.text = place
         titleLabel.text = I18N.Attendance.today + todaySchedule + I18N.Attendance.dayIs
         titleLabel.partFontChange(targetString: todaySchedule,
-                                  font: DSKitFontFamily.Suit.bold.font(size: 18))
+                                  font: DSKitFontFamily.Suit.bold.font(size: 17))
         subtitleLabel.text = description
         subtitleLabel.isHidden = ((description?.isEmpty) == nil || description == "")
     }
