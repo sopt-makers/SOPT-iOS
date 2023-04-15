@@ -60,6 +60,7 @@ extension MainViewModel {
     
     }
     
+    /// 메인 뷰에 보여줄 카드들 종류 설정
     private func setServiceList(with userType: UserType) {
         switch userType {
         case .visitor:
@@ -67,9 +68,9 @@ extension MainViewModel {
             self.otherServiceList = [.faq, .youtube]
         case .active:
             self.mainServiceList = [.attendance, .member, .project]
-            self.otherServiceList = [.notice, .crew]
+            self.otherServiceList = [.officialHomepage, .crew]
         case .inactive:
-            self.mainServiceList = [.notice, .member, .project]
+            self.mainServiceList = [.faq, .member, .project]
             self.otherServiceList = [.crew, .officialHomepage]
         }
     }

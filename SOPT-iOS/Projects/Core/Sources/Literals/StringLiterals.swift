@@ -156,6 +156,7 @@ public struct I18N {
             public static let review = "활동후기"
             public static let project = "프로젝트"
             public static let faq = "FAQ"
+            public static let inquire = "SOPT 문의하기"
             public static let youtube = "YOUTUBE"
             public static let attendance = "SOPT 출석"
             public static let attend = "출석 인증하기"
