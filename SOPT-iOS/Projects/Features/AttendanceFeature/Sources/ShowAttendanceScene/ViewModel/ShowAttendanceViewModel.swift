@@ -17,17 +17,21 @@ public final class ShowAttendanceViewModel: ViewModelType {
     
     private let useCase: ShowAttendanceUseCase
     private var cancelBag = CancelBag()
+    public var sceneType: AttendanceScheduleType?
     
     // MARK: - Inputs
     
     public struct Input {
-    
+        let viewDidLoad: Driver<Void>
+        let refreshButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs
     
-    public struct Output {
-    
+    public class Output {
+        @Published var scheduleModel: AttendanceScheduleModel?
+        @Published var scoreModel: AttendanceScoreModel?
+
     }
     
     // MARK: - init
@@ -41,13 +45,38 @@ extension ShowAttendanceViewModel {
     
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
+        
         self.bindOutput(output: output, cancelBag: cancelBag)
-        // input,output 상관관계 작성
+       
+        input.viewDidLoad.merge(with: input.refreshButtonTapped)
+            .withUnretained(self)
+            .sink { owner, _ in
+//                if owner.sceneType == .unscheduledDay {
+//                    owner.useCase.
+//                } else {
+//
+//                }
+                owner.useCase.fetchAttendanceSchedule()
+                owner.useCase.fetchAttendanceScore()
+            }.store(in: cancelBag)
     
         return output
     }
   
     private func bindOutput(output: Output, cancelBag: CancelBag) {
-    
+        let fetchedSchedule = self.useCase.attendanceScheduleFetched
+        let fetchedScore = self.useCase.attendanceScoreFetched
+        
+        fetchedSchedule.asDriver()
+            .sink(receiveValue: { model in
+                output.scheduleModel = model
+            })
+            .store(in: cancelBag)
+        
+        fetchedScore.asDriver()
+            .sink(receiveValue: { model in
+                output.scoreModel = model
+            })
+            .store(in: cancelBag)
     }
 }

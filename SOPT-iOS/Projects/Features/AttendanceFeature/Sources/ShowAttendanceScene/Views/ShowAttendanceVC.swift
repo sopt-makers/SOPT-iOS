@@ -23,6 +23,11 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     public var viewModel: ShowAttendanceViewModel
     public var factory: AttendanceFeatureViewBuildable
     private var cancelBag = CancelBag()
+    
+    public var sceneType: AttendanceScheduleType {
+        return self.viewModel.sceneType ?? .unscheduledDay
+    }
+    private var viewdidload = PassthroughSubject<Void, Never>()
   
     // MARK: - UI Components
     
@@ -35,7 +40,15 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
             self.refreshButtonDidTap()
         }
     
-    private let headerScheduleView = TodayScheduleView(type: .scheduledDay)
+    private lazy var headerScheduleView: TodayScheduleView = {
+        switch sceneType {
+        case .unscheduledDay:
+            return TodayScheduleView(type: .unscheduledDay)
+        case .scheduledDay:
+            return TodayScheduleView(type: .scheduledDay)
+        }
+    }()
+    
     private let attendanceScoreView = AttendanceScoreView()
     
     // MARK: - Initialization
@@ -56,9 +69,11 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.bindViewModels()
+        self.bindViews()
         self.setUI()
         self.setLayout()
-        self.dummy()
+        self.viewdidload.send(())
+//        self.dummy()
     }
 }
 
@@ -113,10 +128,32 @@ extension ShowAttendanceVC {
 // MARK: - Methods
 
 extension ShowAttendanceVC {
+    
+    private func bindViews() {
+        
+        navibar.rightButtonTapped
+            .asDriver()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.refreshButtonDidTap()
+            }.store(in: self.cancelBag)
+    }
   
     private func bindViewModels() {
-        let input = ShowAttendanceViewModel.Input()
+        
+        let input = ShowAttendanceViewModel.Input(viewDidLoad: viewdidload.asDriver(),
+                                                  refreshButtonTapped: navibar.rightButtonTapped)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.$scheduleModel
+            .sink { model in
+                print("스케쥴 데이터가 잘 넘어왓을까요?", model)
+            }.store(in: self.cancelBag)
+        
+        output.$scoreModel
+            .sink { model in
+                print("스코어 데이터가 잘 넘어왔을까여?]", model)
+            }.store(in: self.cancelBag)
     }
     
     @objc
