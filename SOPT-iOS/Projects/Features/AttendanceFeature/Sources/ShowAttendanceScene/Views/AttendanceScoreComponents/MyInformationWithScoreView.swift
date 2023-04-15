@@ -84,7 +84,7 @@ extension MyInformationWithScoreView {
     
     func setData(name: String, part: String, generation: Int, count: Double) {
         nameLabel.text = "\(generation)기 \(part)파트 \(name)"
-        chageFontAndColor(with: "\(String(count))점")
+        chageFontAndColor(with: "\(countFormatter(count))점")
     }
     
     private func chageFontAndColor(with pointedText: String) {
@@ -106,5 +106,13 @@ extension MyInformationWithScoreView {
                                        range: NSRange(location: mainText.count + pointedText.count, length: subText.count))
         
         currentScoreLabel.attributedText = attributedString
+    }
+    
+    private func countFormatter(_ number: Double) -> String {
+        if number.truncatingRemainder(dividingBy: 1) == 0 {
+            return(String(format: "%.0f", number))
+        } else {
+            return(String(format: "%.1f", number))
+        }
     }
 }
