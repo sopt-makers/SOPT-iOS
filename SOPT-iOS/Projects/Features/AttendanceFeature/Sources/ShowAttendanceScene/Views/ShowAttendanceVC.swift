@@ -150,17 +150,18 @@ extension ShowAttendanceVC {
                 if self.viewModel.sceneType == .scheduledDay {
                     self.sceneType = .scheduledDay
                     self.setScheduledData(model)
-                    headerScheduleView.updateLayout(.scheduledDay)
+                    self.headerScheduleView.updateLayout(.scheduledDay)
                 } else {
                     self.sceneType = .unscheduledDay
-                    headerScheduleView.updateLayout(.unscheduledDay)
+                    self.headerScheduleView.updateLayout(.unscheduledDay)
                 }
             })
             .store(in: self.cancelBag)
         
         output.$scoreModel
             .sink { model in
-//                print("스코어 데이터가 잘 넘어왔을까여?]", model)
+                guard let model else { return }
+                self.setScoreData(model)
             }.store(in: self.cancelBag)
     }
     
@@ -178,5 +179,12 @@ extension ShowAttendanceVC {
                                        todaySchedule: model.name,
                                        description: model.message)
         }
+    }
+    
+    private func setScoreData(_ model: AttendanceScoreModel) {
+        attendanceScoreView.setMyInfoData(name: model.name, part: model.part, generation: model.generation,
+                                          count: model.score)
+        attendanceScoreView.setMyTotalScoreData(attendance: model.total.attendance, tardy: model.total.tardy, absent: model.total.absent)
+        attendanceScoreView.setMyAttendanceTableData(model.attendances)
     }
 }
