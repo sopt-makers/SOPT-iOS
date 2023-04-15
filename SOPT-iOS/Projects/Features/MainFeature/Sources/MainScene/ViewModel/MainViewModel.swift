@@ -87,7 +87,7 @@ extension MainViewModel {
     
     func calculateMonths() -> String? {
         guard let userMainInfo = userMainInfo else { return nil }
-        if userMainInfo.status == "ACTIVE" {
+        if userMainInfo.status == "ACTIVE" && userMainInfo.historyList.count > 0 {
             guard var currentMonth = getCurrentMonth() else {
                 return String(userMainInfo.historyList.count * 5)
             }
