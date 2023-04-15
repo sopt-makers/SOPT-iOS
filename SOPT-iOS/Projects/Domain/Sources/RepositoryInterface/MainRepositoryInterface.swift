@@ -11,5 +11,5 @@ import Core
 import Combine
 
 public protocol MainRepositoryInterface {
-  func getUserMainInfo() -> AnyPublisher<MainModel?, Error>
+  func getUserMainInfo() -> AnyPublisher<UserMainInfoModel?, Error>
 }

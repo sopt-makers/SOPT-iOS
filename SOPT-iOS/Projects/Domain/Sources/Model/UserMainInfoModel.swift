@@ -1,5 +1,5 @@
 //
-//  MainModel.swift
+//  MainUserInfoModel.swift
 //  MainFeature
 //
 //  Created by sejin on 2023/04/01.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct MainModel {
+public struct UserMainInfoModel {
     public let status, name, profileImage: String
     public let historyList: [Int]
     public let attendanceScore: Float

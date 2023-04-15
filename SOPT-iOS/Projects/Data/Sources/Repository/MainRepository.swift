@@ -23,7 +23,7 @@ public class MainRepository {
 }
 
 extension MainRepository: MainRepositoryInterface {
-    public func getUserMainInfo() -> AnyPublisher<Domain.MainModel?, Error> {
+    public func getUserMainInfo() -> AnyPublisher<Domain.UserMainInfoModel?, Error> {
         userService.getUserMainInfo()
             .map { $0.toDomain() }
             .eraseToAnyPublisher()
