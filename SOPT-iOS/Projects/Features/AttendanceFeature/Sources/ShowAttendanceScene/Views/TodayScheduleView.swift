@@ -105,7 +105,7 @@ final class TodayScheduleView: UIView {
     
     // MARK: - Initialization
 
-    init(type: TodayScheduleType) {
+    init(type: AttendanceScheduleType) {
         super.init(frame: .zero)
         confiureContentView()
         setLayout(type)
@@ -126,7 +126,7 @@ extension TodayScheduleView {
         self.layer.cornerRadius = 16
     }
     
-    private func setLayout(_ type: TodayScheduleType) {
+    private func setLayout(_ type: AttendanceScheduleType) {
         addSubview(containerStackView)
         
         containerStackView.snp.makeConstraints {
