@@ -15,6 +15,7 @@ import Combine
 import SnapKit
 import Then
 
+import AuthFeatureInterface
 import MainFeatureInterface
 import StampFeatureInterface
 import SettingFeatureInterface
@@ -24,7 +25,7 @@ public class MainVC: UIViewController, MainViewControllable {
     // MARK: - Properties
     
     public var viewModel: MainViewModel!
-    public var factory: (StampFeatureViewBuildable & SettingFeatureViewBuildable)!
+    public var factory: (AuthFeatureViewBuildable & StampFeatureViewBuildable & SettingFeatureViewBuildable)!
     private var cancelBag = CancelBag()
     
     // MARK: - UI Components
@@ -60,6 +61,10 @@ extension MainVC {
     private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = DSKitAsset.Colors.black100.color
+        
+        if viewModel.userType == .visitor {
+            self.naviBar.setRightButtonImage(image: DSKitAsset.Assets.btnLogout.image)
+        }
     }
     
     private func setLayout() {
@@ -86,9 +91,13 @@ extension MainVC {
     
     private func bindViews() {
         // FIXME: - 디버깅을 위한 임시 바인딩
-        naviBar.myPageButton.publisher(for: .touchUpInside)
+        naviBar.rightButton.publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
+                if owner.viewModel.userType == .visitor {
+                    owner.setRootViewToSignIn()
+                    return
+                }
                 owner.pushSettingFeature()
             }.store(in: self.cancelBag)
     }
@@ -120,6 +129,11 @@ extension MainVC {
         let vc = factory.makeSettingVC().viewController
         navigationController?.pushViewController(vc, animated: true)
     }
+    
+    private func setRootViewToSignIn() {
+        let navigation = UINavigationController(rootViewController: factory.makeSignInVC().viewController)
+        ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -128,6 +142,7 @@ extension MainVC: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // TODO: - 디버깅을 위한 임시 솝탬프 피쳐 연결
         if indexPath.section == 3 {
+            guard viewModel.userType != .visitor else { return }
             pushSoptampFeature()
         }
     }
