@@ -57,7 +57,9 @@ extension MainViewModel {
         input.viewDidLoad
             .sink { [weak self] _ in
                 guard let self = self else { return }
-                self.useCase.getUserMainInfo()
+                if userType != .visitor {
+                    self.useCase.getUserMainInfo()
+                }
                 self.useCase.getServiceState()
             }.store(in: cancelBag)
     
