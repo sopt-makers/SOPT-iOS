@@ -8,6 +8,24 @@
 
 import Foundation
 
-public struct MainEntity {
-    
+public struct MainEntity: Codable {
+    public let user: UserInfo?
+    public let operation: Operation?
+    public let statusCode, responseMessage: String?
 }
+
+// MARK: - User
+
+public struct UserInfo: Codable {
+    public let status, name, profileImage: String
+    public let generationList: [Int]
+}
+
+// MARK: - Operation
+
+public struct Operation: Codable {
+    public let attendanceScore: Int
+    public let announcement: String
+}
+
+
