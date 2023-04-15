@@ -9,5 +9,6 @@
 import Combine
 
 public protocol ShowAttendanceRepositoryInterface {
-  
+    func fetchAttendanceScheduleModel() -> AnyPublisher<AttendanceScheduleModel, Error>
+    func fetchAttendanceScoreModel() -> AnyPublisher<AttendanceScoreModel, Error>
 }

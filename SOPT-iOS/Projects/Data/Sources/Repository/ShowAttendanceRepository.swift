@@ -15,14 +15,24 @@ import Network
 
 public class ShowAttendanceRepository {
     
-    private let networkService: AttendanceService
+    private let attendanceService: AttendanceService
     private let cancelBag = CancelBag()
     
     public init(service: AttendanceService) {
-        self.networkService = service
+        self.attendanceService = service
     }
 }
 
 extension ShowAttendanceRepository: ShowAttendanceRepositoryInterface {
+    public func fetchAttendanceScheduleModel() -> AnyPublisher<AttendanceScheduleModel, Error> {
+        return self.attendanceService.fetchAttendanceSchedule()
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
     
+    public func fetchAttendanceScoreModel() -> AnyPublisher<Domain.AttendanceScoreModel, Error> {
+        return self.attendanceService.fetchAttendanceScore()
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
 }
