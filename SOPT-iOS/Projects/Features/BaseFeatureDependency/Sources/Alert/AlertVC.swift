@@ -28,11 +28,13 @@ public class AlertVC: UIViewController, AlertViewControllable {
     private let cancelButton = UIButton()
     private let customButton = UIButton()
     private var alertType: AlertType!
+    private var alertTheme: AlertTheme = .main
     
     // MARK: - Init
     
-    public init(alertType: AlertType) {
+    public init(alertType: AlertType, alertTheme: AlertTheme = .main) {
         self.alertType = alertType
+        self.alertTheme = alertTheme
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -92,19 +94,20 @@ public class AlertVC: UIViewController, AlertViewControllable {
 extension AlertVC {
     private func setUI() {
         self.view.backgroundColor = .clear
-        self.alertView.backgroundColor = .white
-        self.cancelButton.backgroundColor = (self.alertType == .networkErr) ? DSKitAsset.Colors.soptampError200.color : DSKitAsset.Colors.soptampGray300.color
-        self.customButton.backgroundColor = DSKitAsset.Colors.soptampError200.color
+        self.alertView.backgroundColor = alertTheme.backgroundColor
+        self.cancelButton.backgroundColor = alertTheme.cancelButtonColor(isNetworkErr: self.alertType == .networkErr)
+        self.customButton.backgroundColor = alertTheme.customButtonColor
         
-        self.titleLabel.setTypoStyle(.SoptampFont.subtitle1)
-        self.descriptionLabel.setTypoStyle(.SoptampFont.caption3)
-        self.cancelButton.titleLabel?.setTypoStyle(.SoptampFont.subtitle1)
-        self.customButton.titleLabel?.setTypoStyle(.SoptampFont.subtitle1)
+        self.titleLabel.setTypoStyle(.Main.headline2)
+        self.descriptionLabel.setTypoStyle(.Main.body2)
+        self.cancelButton.titleLabel?.setTypoStyle(.Main.caption3)
+        self.customButton.titleLabel?.setTypoStyle(.Main.caption3)
         
-        self.titleLabel.textColor = DSKitAsset.Colors.soptampGray900.color
-        self.descriptionLabel.textColor = DSKitAsset.Colors.soptampGray500.color
-        self.cancelButton.titleLabel?.textColor = DSKitAsset.Colors.soptampGray700.color
-        self.customButton.titleLabel?.textColor = DSKitAsset.Colors.soptampWhite.color
+        self.titleLabel.textColor = alertTheme.titleColor
+        self.descriptionLabel.textColor = alertTheme.descriptionColor
+        self.cancelButton.titleLabel?.textColor = alertTheme.cancelButtonTitleColor(isNetworkErr: self.alertType == .networkErr)
+        
+        self.customButton.titleLabel?.textColor = DSKitAsset.Colors.gray10.color
         
         self.descriptionLabel.textAlignment = .center
         self.descriptionLabel.numberOfLines = 2
@@ -114,6 +117,9 @@ extension AlertVC {
         
         self.alertView.layer.cornerRadius = 10
         self.alertView.layer.masksToBounds = true
+        
+        self.cancelButton.layer.cornerRadius = 10
+        self.customButton.layer.cornerRadius = 10
     }
     
     private func setLayout(_ type: AlertType) {
@@ -158,23 +164,24 @@ extension AlertVC {
         switch type {
         case .title, .titleDescription:
             alertView.addSubviews(customButton)
+            let buttonSpacing: Float = 7
             
             cancelButton.snp.makeConstraints { make in
-                make.leading.bottom.equalToSuperview()
-                make.width.equalTo(alertView.snp.width).multipliedBy(0.5)
-                make.height.equalTo(cancelButton.snp.width).multipliedBy(0.347)
+                make.leading.bottom.equalToSuperview().inset(buttonSpacing)
+                make.width.equalTo(customButton.snp.width)
+                make.height.equalTo(38)
             }
             
             customButton.snp.makeConstraints { make in
-                make.trailing.bottom.equalToSuperview()
-                make.leading.equalTo(cancelButton.snp.trailing)
-                make.top.equalTo(cancelButton.snp.top)
+                make.trailing.bottom.equalToSuperview().inset(buttonSpacing)
+                make.leading.equalTo(cancelButton.snp.trailing).offset(buttonSpacing)
+                make.height.equalTo(cancelButton.snp.height)
             }
         case .networkErr:
             cancelButton.snp.makeConstraints { make in
-                make.leading.trailing.bottom.equalToSuperview()
-                make.width.equalTo(alertView.snp.width)
-                make.height.equalTo(cancelButton.snp.width).multipliedBy(0.17)
+                make.leading.trailing.bottom.equalToSuperview().inset(7)
+//                make.width.equalTo(alertView.snp.width)
+                make.height.equalTo(38)
             }
         }
     }

@@ -24,13 +24,13 @@ final class MainNavigationBar: UIView {
         $0.setImage(DSKitAsset.Assets.btnNotice.image, for: .normal)
     }
     
-    public let myPageButton = UIButton(type: .custom).then {
+    public let rightButton = UIButton(type: .custom).then {
         $0.setImage(DSKitAsset.Assets.btnMypage.image, for: .normal)
         $0.layer.cornerRadius = 22
         $0.backgroundColor = DSKitAsset.Colors.black60.color
     }
     
-    private lazy var rightItemsStackView = UIStackView(arrangedSubviews: [noticeButton, myPageButton]).then {
+    private lazy var rightItemsStackView = UIStackView(arrangedSubviews: [noticeButton, rightButton]).then {
         $0.axis = .horizontal
         $0.spacing = 4
         $0.distribution = .fillEqually
@@ -49,11 +49,22 @@ final class MainNavigationBar: UIView {
     }
 }
 
+// MARK: - Methods
+
+extension MainNavigationBar {
+    @discardableResult
+    public func setRightButtonImage(image: UIImage) -> Self {
+        self.rightButton.setImage(image, for: .normal)
+        return self
+    }
+}
+
 // MARK: - UI & Layout
 
 extension MainNavigationBar {
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.black100.color
+        self.noticeButton.isHidden = true // 추후 알림 기능 생기면 hidden 해제
     }
     
     private func setLayout() {

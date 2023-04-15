@@ -64,6 +64,8 @@ extension ServiceType {
             return I18N.Main.MainService.attend
         case .notice:
             return I18N.Main.MainService.checkGeneralNotice
+        case .faq:
+            return I18N.Main.MainService.inquire
         default:
             return nil
         }

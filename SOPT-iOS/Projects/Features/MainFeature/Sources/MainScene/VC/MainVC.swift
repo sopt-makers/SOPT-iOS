@@ -15,6 +15,7 @@ import Combine
 import SnapKit
 import Then
 
+import AuthFeatureInterface
 import MainFeatureInterface
 import StampFeatureInterface
 import SettingFeatureInterface
@@ -24,7 +25,7 @@ public class MainVC: UIViewController, MainViewControllable {
     // MARK: - Properties
     
     public var viewModel: MainViewModel!
-    public var factory: (StampFeatureViewBuildable & SettingFeatureViewBuildable)!
+    public var factory: (AuthFeatureViewBuildable & StampFeatureViewBuildable & SettingFeatureViewBuildable)!
     private var cancelBag = CancelBag()
     
     // MARK: - UI Components
@@ -36,7 +37,7 @@ public class MainVC: UIViewController, MainViewControllable {
       cv.isScrollEnabled = true
       cv.showsHorizontalScrollIndicator = false
       cv.showsVerticalScrollIndicator = false
-      cv.contentInset = UIEdgeInsets(top: 16, left: 0, bottom: 0, right: 0)
+      cv.contentInset = UIEdgeInsets(top: 7, left: 0, bottom: 0, right: 0)
       cv.backgroundColor = .clear
       return cv
     }()
@@ -60,6 +61,10 @@ extension MainVC {
     private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = DSKitAsset.Colors.black100.color
+        
+        if viewModel.userType == .visitor {
+            self.naviBar.setRightButtonImage(image: DSKitAsset.Assets.btnLogout.image)
+        }
     }
     
     private func setLayout() {
@@ -70,7 +75,7 @@ extension MainVC {
         }
         
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(naviBar.snp.bottom)
+            make.top.equalTo(naviBar.snp.bottom).offset(7)
             make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
@@ -86,9 +91,13 @@ extension MainVC {
     
     private func bindViews() {
         // FIXME: - 디버깅을 위한 임시 바인딩
-        naviBar.myPageButton.publisher(for: .touchUpInside)
+        naviBar.rightButton.publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
+                if owner.viewModel.userType == .visitor {
+                    owner.setRootViewToSignIn()
+                    return
+                }
                 owner.pushSettingFeature()
             }.store(in: self.cancelBag)
     }
@@ -120,6 +129,11 @@ extension MainVC {
         let vc = factory.makeSettingVC().viewController
         navigationController?.pushViewController(vc, animated: true)
     }
+    
+    private func setRootViewToSignIn() {
+        let navigation = UINavigationController(rootViewController: factory.makeSignInVC().viewController)
+        ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -128,6 +142,7 @@ extension MainVC: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // TODO: - 디버깅을 위한 임시 솝탬프 피쳐 연결
         if indexPath.section == 3 {
+            guard viewModel.userType != .visitor else { return }
             pushSoptampFeature()
         }
     }
@@ -150,7 +165,7 @@ extension MainVC: UICollectionViewDataSource {
                                                   withReuseIdentifier: UserHistoryHeaderView.className,
                                                   for: indexPath) as? UserHistoryHeaderView
             else { return UICollectionReusableView() }
-            headerView.initCell(userType: viewModel.userType, name: "이솝트", days: "1234")
+            headerView.initCell(userType: viewModel.userType, name: "이솝트", months: "6")
             return headerView
         case 3:
             guard let headerView = collectionView
