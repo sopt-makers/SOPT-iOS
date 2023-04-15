@@ -95,6 +95,11 @@ extension MainVC {
             .sink { [weak self] _ in
                 self?.collectionView.reloadData()
             }.store(in: self.cancelBag)
+        
+        output.isServiceAvailable
+            .sink { [weak self] isServiceAvailable in
+                print("현재 앱 서비스 사용 가능(심사 X)?: \(isServiceAvailable)")
+            }.store(in: self.cancelBag)
     }
     
     private func bindViews() {

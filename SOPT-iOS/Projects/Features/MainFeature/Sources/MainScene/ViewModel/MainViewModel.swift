@@ -35,6 +35,7 @@ public class MainViewModel: ViewModelType {
     
     public struct Output {
         var getUserMainInfoDidComplete = PassthroughSubject<Void, Never>()
+        var isServiceAvailable = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - init
@@ -57,6 +58,7 @@ extension MainViewModel {
             .sink { [weak self] _ in
                 guard let self = self else { return }
                 self.useCase.getUserMainInfo()
+                self.useCase.getServiceState()
             }.store(in: cancelBag)
     
         return output
@@ -67,6 +69,11 @@ extension MainViewModel {
             .sink { [weak self] userMainInfo in
                 self?.userMainInfo = userMainInfo
                 output.getUserMainInfoDidComplete.send()
+            }.store(in: self.cancelBag)
+        
+        useCase.serviceState.asDriver()
+            .sink { [weak self] serviceState in
+                output.isServiceAvailable.send(serviceState.isAvailable)
             }.store(in: self.cancelBag)
     }
     
