@@ -11,10 +11,17 @@ import UIKit
 import Combine
 
 import Core
+import Domain
 import DSKit
 
 import SnapKit
 import AttendanceFeatureInterface
+
+private enum SessionType: String, CaseIterable {
+    case noSession = "NO_SESSION"
+    case hasAttendance = "HAS_ATTENDANCE"
+    case noAttendance = "NO_ATTENDANCE"
+}
 
 public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControllable {
     
@@ -25,7 +32,7 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     private var cancelBag = CancelBag()
     
     public var sceneType: AttendanceScheduleType {
-        return self.viewModel.sceneType ?? .unscheduledDay
+        return self.viewModel.sceneType ?? .scheduledDay
     }
     private var viewdidload = PassthroughSubject<Void, Never>()
   
@@ -73,7 +80,6 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
         self.setUI()
         self.setLayout()
         self.viewdidload.send(())
-//        self.dummy()
     }
 }
 
@@ -116,13 +122,6 @@ extension ShowAttendanceVC {
             $0.bottom.equalToSuperview()
         }
     }
-    
-    private func dummy() {
-        headerScheduleView.setData(date: "3월 23일 토요일 14:00 - 18:00",
-                                   place: "건국대학교 꽥꽥오리관",
-                                   todaySchedule: "1차 행사",
-                                   description: "행사도 참여하고, 출석점수도 받고, 일석이조!")
-    }
 }
 
 // MARK: - Methods
@@ -146,13 +145,20 @@ extension ShowAttendanceVC {
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.$scheduleModel
+            .compactMap { $0 }
             .sink { model in
-                print("스케쥴 데이터가 잘 넘어왓을까요?", model)
+                if model.type == "NO_SESSION" {
+                    self.viewModel.sceneType = .unscheduledDay
+                } else {
+                    self.viewModel.sceneType = .scheduledDay
+                    self.setData(model)
+                }
+//                print("스케쥴 데이터가 잘 넘어왓을까요?", model)
             }.store(in: self.cancelBag)
         
         output.$scoreModel
             .sink { model in
-                print("스코어 데이터가 잘 넘어왔을까여?]", model)
+//                print("스코어 데이터가 잘 넘어왔을까여?]", model)
             }.store(in: self.cancelBag)
     }
     
@@ -160,4 +166,16 @@ extension ShowAttendanceVC {
     private func refreshButtonDidTap() {
         print("refresh button did tap")
     }
+    
+    private func setData(_ model: AttendanceScheduleModel) {
+        if self.sceneType == .scheduledDay {
+            guard let date = viewModel.formatTimeInterval(startDate: model.startDate, endDate: model.endDate) else { return }
+            headerScheduleView.setData(date: date,
+                                       place: model.location,
+                                       todaySchedule: model.name,
+                                       description: model.message)
+        }
+    }
+    
+    
 }

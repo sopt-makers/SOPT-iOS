@@ -154,6 +154,6 @@ extension TodayScheduleView {
         titleLabel.partFontChange(targetString: todaySchedule,
                                   font: DSKitFontFamily.Suit.bold.font(size: 18))
         subtitleLabel.text = description
-        subtitleLabel.isHidden = ((description?.isEmpty) == nil)
+        subtitleLabel.isHidden = ((description?.isEmpty) == nil || description == "")
     }
 }

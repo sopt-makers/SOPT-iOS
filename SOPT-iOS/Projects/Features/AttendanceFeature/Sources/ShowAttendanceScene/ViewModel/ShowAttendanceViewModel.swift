@@ -10,6 +10,7 @@ import Combine
 
 import Core
 import Domain
+import Foundation
 
 public final class ShowAttendanceViewModel: ViewModelType {
 
@@ -31,7 +32,6 @@ public final class ShowAttendanceViewModel: ViewModelType {
     public class Output {
         @Published var scheduleModel: AttendanceScheduleModel?
         @Published var scoreModel: AttendanceScoreModel?
-
     }
     
     // MARK: - init
@@ -51,11 +51,6 @@ extension ShowAttendanceViewModel {
         input.viewDidLoad.merge(with: input.refreshButtonTapped)
             .withUnretained(self)
             .sink { owner, _ in
-//                if owner.sceneType == .unscheduledDay {
-//                    owner.useCase.
-//                } else {
-//
-//                }
                 owner.useCase.fetchAttendanceSchedule()
                 owner.useCase.fetchAttendanceScore()
             }.store(in: cancelBag)
@@ -69,7 +64,17 @@ extension ShowAttendanceViewModel {
         
         fetchedSchedule.asDriver()
             .sink(receiveValue: { model in
-                output.scheduleModel = model
+                guard let convertedStartDate = self.convertDateString(model.startDate),
+                      let convertedEndDate = self.convertDateString(model.endDate) else { return }
+
+                let newModel = AttendanceScheduleModel(type: model.type,
+                                                       location: model.location,
+                                                       name: model.name,
+                                                       startDate: convertedStartDate,
+                                                       endDate: convertedEndDate,
+                                                       message: model.message,
+                                                       attendances: model.attendances)
+                output.scheduleModel = newModel
             })
             .store(in: cancelBag)
         
@@ -78,5 +83,31 @@ extension ShowAttendanceViewModel {
                 output.scoreModel = model
             })
             .store(in: cancelBag)
+    }
+    
+    private func convertDateString(_ dateString: String) -> String? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        guard let date = dateFormatter.date(from: dateString) else { return nil }
+        
+        dateFormatter.dateFormat = "M월 d일 EEEE H:mm"
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
+        return dateFormatter.string(from: date)
+    }
+    
+    func formatTimeInterval(startDate: String, endDate: String) -> String? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "M월 d일 EEEE HH:mm"
+        
+        guard let startDateObject = dateFormatter.date(from: startDate),
+              let endDateObject = dateFormatter.date(from: endDate) else { return nil }
+        
+        let formattedStartDate = dateFormatter.string(from: startDateObject)
+        
+        dateFormatter.dateFormat = "HH:mm"
+        let formattedEndDate = dateFormatter.string(from: endDateObject)
+        
+        return "\(formattedStartDate) ~ \(formattedEndDate)"
     }
 }
