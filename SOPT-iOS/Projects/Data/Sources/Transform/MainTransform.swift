@@ -13,7 +13,8 @@ import Network
 
 extension MainEntity {
 
-    public func toDomain() -> MainModel {
-        return MainModel.init()
+    public func toDomain() -> MainModel? {
+        guard let user = user, let operation = operation else { return nil }
+        return MainModel.init(status: user.status, name: user.name, profileImage: user.profileImage, historyList: user.historyList, attendanceScore: operation.attendanceScore, announcement: operation.announcement)
     }
 }

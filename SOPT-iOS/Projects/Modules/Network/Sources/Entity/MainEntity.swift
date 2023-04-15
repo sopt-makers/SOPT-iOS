@@ -10,21 +10,26 @@ import Foundation
 
 public struct MainEntity: Codable {
     public let user: UserInfo?
-    public let operation: Operation?
+    public let operation: OperationInfo?
     public let statusCode, responseMessage: String?
 }
 
-// MARK: - User
+// MARK: - UserInfo
 
 public struct UserInfo: Codable {
     public let status, name, profileImage: String
-    public let generationList: [Int]
+    public let historyList: [Int]
+    
+    enum CodingKeys: String, CodingKey {
+        case historyList = "generationList"
+        case status, name, profileImage
+    }
 }
 
-// MARK: - Operation
+// MARK: - OperationInfo
 
-public struct Operation: Codable {
-    public let attendanceScore: Int
+public struct OperationInfo: Codable {
+    public let attendanceScore: Float
     public let announcement: String
 }
 
