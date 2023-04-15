@@ -6,6 +6,7 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
+import Foundation
 import Combine
 
 import Core
@@ -86,6 +87,35 @@ extension MainViewModel {
     
     func calculateMonths() -> String? {
         guard let userMainInfo = userMainInfo else { return nil }
-        return String(userMainInfo.historyList.count * 6)
+        if userMainInfo.status == "ACTIVE" {
+            guard var currentMonth = getCurrentMonth() else {
+                return String(userMainInfo.historyList.count * 5)
+            }
+
+            // 짝수 기수 -> 상반기
+            if let recent = userMainInfo.historyList.first {
+                var currentGenerationTime = 0
+                if recent % 2 == 0 {
+                    // 기수 시작 3월 기준으로 계산
+                    currentGenerationTime = currentMonth - 3 + 1
+                } else {
+                    // 현재 1월 일 때
+                    if currentMonth < 3 {
+                        currentMonth += 12
+                    }
+                    currentGenerationTime = currentMonth - 9 + 1
+                }
+                return String((userMainInfo.historyList.count-1)*5 + currentGenerationTime)
+            }
+        }
+        return String(userMainInfo.historyList.count * 5)
+    }
+    
+    private func getCurrentMonth() -> Int? {
+        let date = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "M"
+        let monthString = dateFormatter.string(from: date)
+        return Int(monthString)
     }
 }
