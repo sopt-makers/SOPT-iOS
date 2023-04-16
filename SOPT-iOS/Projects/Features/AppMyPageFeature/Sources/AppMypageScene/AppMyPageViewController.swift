@@ -36,10 +36,8 @@ public final class AppMyPageViewController: UIViewController, AppMyPageViewContr
     private let resetButtonTapped = PassthroughSubject<Bool, Never>()
 
     // MARK: - Views
-    private lazy var navigationBar = AppNavigationBar(
-        title: I18N.MyPage.navigationTitle,
-        frame: self.view.frame
-    )
+    private lazy var navigationBar = OPNavigationBar(self, type: .oneLeftButton)
+        .addMiddleLabel(title: I18N.MyPage.navigationTitle)
     
     private let scrollView = UIScrollView()
     private let contentStackView = UIStackView().then {
@@ -177,10 +175,6 @@ extension AppMyPageViewController {
 
     // TODO: - (@승호): 적절히 객체에 위임하기
     private func addTabGestureOnListItems() {
-        self.navigationBar.leftChevronButton.addTapGestureRecognizer {
-            self.navigationController?.popViewController(animated: true)
-        }
-
         self.servicePolicySectionGroup.addTapGestureRecognizer {
             let viewController = self.factory.makePrivacyPolicyVC().viewController
             self.navigationController?.pushViewController(viewController, animated: true)

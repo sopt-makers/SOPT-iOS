@@ -29,25 +29,24 @@ public class SentenceEditVC: UIViewController, SentenceEditViewControllable {
     
     // MARK: - UI Components
     
-    private lazy var naviBar = STNavigationBar(self, type: .titleWithLeftButton)
-        .setTitleTypoStyle(.SoptampFont.h2)
-        .setTitle(I18N.Setting.SentenceEdit.sentenceEdit)
+    private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton)
+        .addMiddleLabel(title: I18N.Setting.SentenceEdit.sentenceEdit)
     
     private lazy var textView: UITextView = {
         let tv = UITextView()
-        tv.backgroundColor = DSKitAsset.Colors.soptampWhite.color
-        tv.textColor = DSKitAsset.Colors.soptampGray900.color
-        tv.setTypoStyle(.SoptampFont.subtitle1)
+        tv.backgroundColor = DSKitAsset.Colors.black80.color
+        tv.textColor = DSKitAsset.Colors.white.color
+        tv.setTypoStyle(DSKitFontFamily.Suit.medium.font(size: 16))
         tv.layer.cornerRadius = 9.adjustedH
         tv.layer.borderWidth = 1.adjustedH
-        tv.layer.borderColor = DSKitAsset.Colors.soptampPurple300.color.cgColor
+        tv.layer.borderColor = DSKitAsset.Colors.purple100.color.cgColor
         tv.isEditable = true
         tv.textContainerInset = UIEdgeInsets(top: 13, left: 16, bottom: 13, right: 16)
         tv.delegate = self
         return tv
     }()
     
-    private let saveButton = STCustomButton(title: I18N.Setting.SentenceEdit.save)
+    private let saveButton = AppCustomButton(title: I18N.Setting.SentenceEdit.save)
         .setEnabled(false)
     
     // MARK: - View Life Cycle
@@ -122,7 +121,7 @@ extension SentenceEditVC {
 
 extension SentenceEditVC {
     private func setUI() {
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = DSKitAsset.Colors.black100.color
         self.navigationController?.navigationBar.isHidden = true
     }
     

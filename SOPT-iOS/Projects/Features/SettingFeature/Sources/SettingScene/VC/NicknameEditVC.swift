@@ -28,17 +28,16 @@ public class NicknameEditVC: UIViewController, NicknameEditViewControllable {
     
     // MARK: - UI Components
     
-    private lazy var naviBar = STNavigationBar(self, type: .titleWithLeftButton)
-        .setTitleTypoStyle(.SoptampFont.h2)
-        .setTitle(I18N.Setting.NicknameEdit.nicknameEdit)
+    private lazy var navigationBar = OPNavigationBar(self, type: .oneLeftButton)
+        .addMiddleLabel(title: I18N.Setting.NicknameEdit.nicknameEdit)
     
-    private let nicknameTextFieldView = STTextFieldView(type: .plain)
+    private let nicknameTextFieldView = AppTextFieldView(type: .plain)
         .setTitle(I18N.SignUp.nickname)
         .setMaxLength(10)
         .setPlaceholder(I18N.SignUp.nicknameTextFieldPlaceholder)
         .setAlertLabelEnabled(I18N.SignUp.duplicatedNickname)
     
-    private let editNicknameButton = STCustomButton(title: I18N.Setting.NicknameEdit.nicknameEdit)
+    private let editNicknameButton = AppCustomButton(title: I18N.Setting.NicknameEdit.nicknameEdit)
         .setEnabled(false)
     
     // MARK: - View Life Cycle
@@ -114,19 +113,19 @@ extension NicknameEditVC {
 
 extension NicknameEditVC {
     private func setUI() {
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = DSKitAsset.Colors.black100.color
         self.navigationController?.navigationBar.isHidden = true
     }
     
     private func setLayout() {
-        self.view.addSubviews(naviBar, nicknameTextFieldView, editNicknameButton)
+        self.view.addSubviews(navigationBar, nicknameTextFieldView, editNicknameButton)
         
-        naviBar.snp.makeConstraints { make in
+        navigationBar.snp.makeConstraints { make in
             make.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)
         }
         
         nicknameTextFieldView.snp.makeConstraints { make in
-            make.top.equalTo(naviBar.snp.bottom).offset(12.adjustedH)
+            make.top.equalTo(navigationBar.snp.bottom).offset(12.adjustedH)
             make.leading.trailing.equalToSuperview().inset(20.adjusted)
         }
         

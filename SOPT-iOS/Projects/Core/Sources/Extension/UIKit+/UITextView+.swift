@@ -44,11 +44,19 @@ public extension UITextView {
     /// 행간 조정 메서드
     func setLineSpacing(lineSpacing: CGFloat) {
         if let text = self.text {
-            let attributeString = NSMutableAttributedString(string: text)
+            let color = self.textColor
             let style = NSMutableParagraphStyle()
             style.lineSpacing = lineSpacing
-            attributeString.addAttribute(NSAttributedString.Key.paragraphStyle, value: style, range: NSMakeRange(0, attributeString.length))
-            self.attributedText = attributeString
+        
+            let attributes: [NSAttributedString.Key: Any] = [
+                .foregroundColor: color ?? .white,
+                .paragraphStyle: style
+            ]
+
+            let attrText = NSMutableAttributedString(string: text)
+            attrText.addAttributes(attributes, range: NSRange(location: 0, length: text.count))
+            
+            self.attributedText = attrText
         }
     }
 }
