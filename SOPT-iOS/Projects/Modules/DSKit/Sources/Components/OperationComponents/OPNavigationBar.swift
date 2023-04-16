@@ -25,6 +25,11 @@ public final class OPNavigationBar: UIView {
     
     private var vc: UIViewController?
     private var rightButtonClosure: (() -> Void)?
+    public var rightButtonTapped: Driver<Void> {
+        rightButton.publisher(for: .touchUpInside)
+            .map { _ in () }
+            .asDriver()
+    }
     
     // MARK: - UI Components
     

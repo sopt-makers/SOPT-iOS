@@ -11,13 +11,6 @@ import UIKit
 import Core
 import DSKit
 
-public enum AttendanceStateType: String, CaseIterable {
-    case all = "전체"
-    case attendance = "출석"
-    case tardy = "지각"
-    case absent = "결석"
-}
-
 /*
  (전체: 00회)를 표현하는 단일 영역 뷰입니다. 
  */

@@ -21,32 +21,12 @@ final class MyInformationWithScoreView: UIView {
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "32기 디자인파트 김솝트"
         label.font = .Main.body2
         label.textColor = DSKitAsset.Colors.gray60.color
         return label
     }()
     
-    private let currentScoreLabel: UILabel = {
-        let label = UILabel()
-        let mainText = I18N.Attendance.currentAttendanceScore
-        let pointText = "1.5점"
-        let subText = I18N.Attendance.scoreIs
-        let attributedString = NSMutableAttributedString(string: mainText + pointText + subText)
-        
-        attributedString.addAttributes([NSAttributedString.Key.font: UIFont.Main.body0,
-                                        NSAttributedString.Key.foregroundColor: UIColor.white],
-                                       range: NSRange(location: 0, length: mainText.count))
-        attributedString.addAttributes([NSAttributedString.Key.font: UIFont.Main.headline1,
-                                        NSAttributedString.Key.foregroundColor: DSKitAsset.Colors.purple40.color],
-                                       range: NSRange(location: mainText.count, length: pointText.count))
-        attributedString.addAttributes([NSAttributedString.Key.font: UIFont.Main.body0,
-                                        NSAttributedString.Key.foregroundColor: UIColor.white],
-                                       range: NSRange(location: mainText.count + pointText.count, length: subText.count))
-        
-        label.attributedText = attributedString
-        return label
-    }()
+    private let currentScoreLabel = UILabel()
     
     private lazy var infoButton: UIButton = {
         let button = UIButton(type: .system)
@@ -56,12 +36,12 @@ final class MyInformationWithScoreView: UIView {
     }()
     
     // MARK: - Initialization
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setLayout()
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -99,6 +79,40 @@ extension MyInformationWithScoreView {
     private func infoButtonDidTap() {
         if let url = URL(string: "https://sopt.org/rules") {
             UIApplication.shared.open(url)
+        }
+    }
+    
+    func setData(name: String, part: String, generation: Int, count: Double) {
+        nameLabel.text = "\(generation)기 \(part)파트 \(name)"
+        chageFontAndColor(with: "\(doubleToString(count))점")
+    }
+    
+    private func chageFontAndColor(with pointedText: String) {
+        let mainText = I18N.Attendance.currentAttendanceScore
+        let subText = I18N.Attendance.scoreIs
+        
+        let attributedString = NSMutableAttributedString(string: mainText + pointedText + subText)
+        
+        attributedString.addAttributes([NSAttributedString.Key.font: UIFont.Main.body0,
+                                        NSAttributedString.Key.foregroundColor: UIColor.white],
+                                       range: NSRange(location: 0, length: mainText.count))
+        
+        attributedString.addAttributes([NSAttributedString.Key.font: UIFont.Main.headline1,
+                                        NSAttributedString.Key.foregroundColor: DSKitAsset.Colors.purple40.color],
+                                       range: NSRange(location: mainText.count, length: pointedText.count))
+        
+        attributedString.addAttributes([NSAttributedString.Key.font: UIFont.Main.body0,
+                                        NSAttributedString.Key.foregroundColor: UIColor.white],
+                                       range: NSRange(location: mainText.count + pointedText.count, length: subText.count))
+        
+        currentScoreLabel.attributedText = attributedString
+    }
+    
+    private func doubleToString(_ number: Double) -> String {
+        if number.truncatingRemainder(dividingBy: 1) == 0 {
+            return(String(format: "%.0f", number))
+        } else {
+            return(String(format: "%.1f", number))
         }
     }
 }
