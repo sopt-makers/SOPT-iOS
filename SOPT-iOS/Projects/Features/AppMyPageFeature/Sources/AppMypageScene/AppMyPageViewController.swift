@@ -15,6 +15,7 @@ import Then
 import Core
 import DSKit
 import BaseFeatureDependency
+import AuthFeatureInterface
 import SettingFeatureInterface
 import AppMyPageFeatureInterface
 
@@ -30,10 +31,11 @@ public final class AppMyPageViewController: UIViewController, AppMyPageViewContr
     
     // MARK: - Local Variables
     private let viewModel: AppMyPageViewModel
-    private let factory: SettingFeatureViewBuildable & AlertViewBuildable
+    private let factory: SettingFeatureViewBuildable & AlertViewBuildable & AuthFeatureViewBuildable
 
     // MARK: Combine
     private let resetButtonTapped = PassthroughSubject<Bool, Never>()
+    private let cancelBag = CancelBag()
 
     // MARK: - Views
     private lazy var navigationBar = OPNavigationBar(self, type: .oneLeftButton)
@@ -119,7 +121,7 @@ public final class AppMyPageViewController: UIViewController, AppMyPageViewContr
     
     public init(
         viewModel: AppMyPageViewModel,
-        factory: SettingFeatureViewBuildable & AlertViewBuildable
+        factory: SettingFeatureViewBuildable & AlertViewBuildable & AuthFeatureViewBuildable
     ) {
         self.viewModel = viewModel
         self.factory = factory
@@ -167,9 +169,10 @@ extension AppMyPageViewController {
             $0.leading.trailing.bottom.equalToSuperview()
         }
         self.contentStackView.snp.makeConstraints {
-            $0.width.equalToSuperview()
+            $0.width.equalTo(self.view.frame.width - Metric.sectionGroupLeadingTrailing * 2)
             $0.top.equalToSuperview().inset(Metric.firstSectionGroupTop)
-            $0.leading.trailing.bottom.equalToSuperview()
+            $0.leading.trailing.equalToSuperview().inset(Metric.sectionGroupLeadingTrailing)
+            $0.bottom.equalToSuperview()
         }
     }
 
@@ -203,9 +206,9 @@ extension AppMyPageViewController {
             let alertVC = self.factory.makeAlertVC(
                 type: .titleDescription,
                 theme: .main,
-                title: I18N.Setting.resetMissionTitle,
-                description: I18N.Setting.resetMissionDescription,
-                customButtonTitle: I18N.Setting.reset
+                title: I18N.MyPage.resetMissionTitle,
+                description: I18N.MyPage.resetMissionDescription,
+                customButtonTitle: I18N.MyPage.reset
             ) { [weak self] in
                 self?.resetButtonTapped.send(true)
             }.viewController
@@ -214,12 +217,49 @@ extension AppMyPageViewController {
         }
         
         self.logoutListItem.addTapGestureRecognizer {
-
+            let alertVC = self.factory.makeAlertVC(
+                type: .titleDescription,
+                theme: .main,
+                title: I18N.MyPage.logoutDialogTitle,
+                description: I18N.MyPage.logoutDialogDescription,
+                customButtonTitle: I18N.MyPage.logoutDialogGrantButtonTitle
+            ) { [weak self] in
+                self?.logoutAndShowRootViewController()
+            }.viewController
+            
+            self.present(alertVC, animated: true)
         }
         
         self.withDrawalListItem.addTapGestureRecognizer {
-            // 다 머가 있더라. 다 대체해주자.
-            // loginViewController로 내리면 됨니다?
+            let viewController = self.factory.makeWithdrawalVC().viewController
+            self.navigationController?.pushViewController(viewController, animated: true)
         }
+    }
+}
+
+extension AppMyPageViewController {
+    private func bindViewModels() {
+        let input = AppMyPageViewModel.Input(
+            resetButtonTapped: resetButtonTapped.asDriver())
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.resetSuccessed
+            .filter { $0 }
+            .sink { [weak self] _ in
+                self?.showToast(message: I18N.MyPage.resetSuccess)
+            }.store(in: self.cancelBag)
+    }
+}
+
+extension AppMyPageViewController {
+    private func logoutAndShowRootViewController() {
+        UserDefaultKeyList.Auth.appAccessToken = nil
+        UserDefaultKeyList.Auth.appRefreshToken = nil
+        UserDefaultKeyList.Auth.playgroundToken = nil
+        
+        guard let window = self.view.window else { return }
+        let navigation = UINavigationController(rootViewController: factory.makeSignInVC().viewController)
+        navigation.isNavigationBarHidden = true
+        ViewControllerUtils.setRootViewController(window: window, viewController: navigation, withAnimation: true)
     }
 }

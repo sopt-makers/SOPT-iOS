@@ -25,42 +25,37 @@ public class WithdrawalVC: UIViewController, WithdrawalViewControllable {
     
     // MARK: - UI Components
 
-    private lazy var naviBar = STNavigationBar(self, type: .titleWithLeftButton)
-        .setTitle(I18N.Setting.Withdrawal.withdrawal)
+    private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton)
+        .addMiddleLabel(title: I18N.Setting.Withdrawal.withdrawal)
     
     private let cautionLabel = UILabel().then {
         $0.text = I18N.Setting.Withdrawal.caution
-        $0.textColor = DSKitAsset.Colors.soptampGray900.color
+        $0.textColor = DSKitAsset.Colors.white100.color
         $0.textAlignment = .left
         $0.numberOfLines = 3
-        $0.setTypoStyle(.SoptampFont.subtitle1)
+        $0.setTypoStyle(DSKitFontFamily.Suit.bold.font(size: 16))
         $0.setLineSpacing(lineSpacing: 10)
     }
     
     private let guideLabel = UILabel().then {
         $0.text = I18N.Setting.Withdrawal.guide1
-        $0.textColor = DSKitAsset.Colors.soptampGray600.color
+        $0.textColor = DSKitAsset.Colors.gray60.color
         $0.textAlignment = .left
-        $0.setTypoStyle(.SoptampFont.caption1)
+        $0.setTypoStyle(DSKitFontFamily.Suit.regular.font(size: 14))
         $0.setLineSpacing(lineSpacing: 10)
     }
     
     private let secondGuideLabel = UILabel().then {
         $0.text = I18N.Setting.Withdrawal.guide2
-        $0.textColor = DSKitAsset.Colors.soptampGray600.color
+        $0.textColor = DSKitAsset.Colors.gray60.color
         $0.textAlignment = .left
         $0.numberOfLines = 2
-        $0.setTypoStyle(.SoptampFont.caption1)
+        $0.setTypoStyle(DSKitFontFamily.Suit.regular.font(size: 14))
         $0.setLineSpacing(lineSpacing: 10)
     }
     
-    private lazy var withdrawalButton = UIButton(type: .system).then {
-        $0.setTitle(I18N.Setting.Withdrawal.withdrawal, for: .normal)
-        $0.setTitleColor(UIColor.white, for: .normal)
-        $0.titleLabel?.setTypoStyle(.SoptampFont.h2)
-        $0.layer.cornerRadius = 9
-        $0.backgroundColor = DSKitAsset.Colors.soptampPurple300.color
-    }
+    private lazy var withdrawalButton = AppCustomButton(title: I18N.Setting.Withdrawal.withdrawal)
+        .setEnabled(true)
     
     // MARK: - View Life Cycle
     
@@ -77,7 +72,7 @@ public class WithdrawalVC: UIViewController, WithdrawalViewControllable {
 extension WithdrawalVC {
     
     private func setUI() {
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = DSKitAsset.Colors.black100.color
     }
     
     private func setLayout() {
@@ -103,10 +98,10 @@ extension WithdrawalVC {
         }
         
         withdrawalButton.snp.makeConstraints { make in
-            make.top.equalTo(secondGuideLabel.snp.bottom).offset(32)
             make.centerX.equalToSuperview()
             make.height.equalTo(56.adjusted)
             make.width.equalTo(335.adjusted)
+            make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
         }
     }
 }

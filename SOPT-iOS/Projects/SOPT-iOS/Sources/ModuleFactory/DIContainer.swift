@@ -238,9 +238,10 @@ extension DIContainer: Features {
     }
     
     func makeAppMyPageVC() -> AppMyPageViewControllerable {
-        let viewModel = AppMyPageViewModel()
+        let repository = AppMyPageRepository(stampService: self.stampService)
+        let useCase = DefaultAppMyPageUseCase(repository: repository)
+        let viewModel = AppMyPageViewModel(useCase: useCase)
         let appMyPageViewController = AppMyPageViewController(viewModel: viewModel, factory: self)
-        
         
         return appMyPageViewController
     }
