@@ -11,11 +11,6 @@ import UIKit
 import Core
 import DSKit
 
-public enum TodayScheduleType {
-    case unscheduledDay /// 일정 없는 날
-    case scheduledDay /// 일정(세미나, 행사) 있는 날
-}
-
 /*
  출석 조회하기 뷰의 상단 오늘의 일정을 보여주는 뷰 입니다.
  */
@@ -110,7 +105,7 @@ final class TodayScheduleView: UIView {
     
     // MARK: - Initialization
 
-    init(type: TodayScheduleType) {
+    init(type: AttendanceScheduleType) {
         super.init(frame: .zero)
         confiureContentView()
         setLayout(type)
@@ -131,13 +126,25 @@ extension TodayScheduleView {
         self.layer.cornerRadius = 16
     }
     
-    private func setLayout(_ type: TodayScheduleType) {
+    private func setLayout(_ type: AttendanceScheduleType) {
         addSubview(containerStackView)
         
         containerStackView.snp.makeConstraints {
             $0.edges.equalToSuperview().inset(32)
         }
         
+        if case .unscheduledDay = type {
+            todayInfoStackView.isHidden = true
+            
+            addSubview(titleLabel)
+            titleLabel.snp.makeConstraints {
+                $0.top.bottom.equalToSuperview().inset(32)
+                $0.leading.equalToSuperview().offset(32)
+            }
+        }
+    }
+    
+    func updateLayout(_ type: AttendanceScheduleType) {
         if case .unscheduledDay = type {
             todayInfoStackView.isHidden = true
             
@@ -157,8 +164,8 @@ extension TodayScheduleView {
         placeLabel.text = place
         titleLabel.text = I18N.Attendance.today + todaySchedule + I18N.Attendance.dayIs
         titleLabel.partFontChange(targetString: todaySchedule,
-                                  font: DSKitFontFamily.Suit.bold.font(size: 18))
+                                  font: DSKitFontFamily.Suit.bold.font(size: 17))
         subtitleLabel.text = description
-        subtitleLabel.isHidden = ((description?.isEmpty) == nil)
+        subtitleLabel.isHidden = ((description?.isEmpty) == nil || description == "")
     }
 }
