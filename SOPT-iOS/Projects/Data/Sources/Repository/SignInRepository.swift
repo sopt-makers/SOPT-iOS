@@ -31,6 +31,9 @@ extension SignInRepository: SignInRepositoryInterface {
     
     public func requestSignIn(token: String) -> AnyPublisher<Bool, Never> {
         authService.signIn(token: token)
+            .catch({ error in
+                self.userService.reissuance()
+            })
             .map { entity in
                 UserDefaultKeyList.Auth.appAccessToken = entity.accessToken
                 UserDefaultKeyList.Auth.appRefreshToken = entity.refreshToken
@@ -40,13 +43,13 @@ extension SignInRepository: SignInRepositoryInterface {
                 : false
                 return true
             }
+            .replaceError(with: false)
             .handleEvents(receiveOutput: { isSuccessed in
                 guard isSuccessed else {
                     self.fetchSoptampUser()
                     return
                 }
             })
-            .replaceError(with: false)
             .eraseToAnyPublisher()
     }
     

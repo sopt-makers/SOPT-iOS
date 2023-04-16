@@ -10,6 +10,7 @@ import Foundation
 
 import Alamofire
 import Moya
+import Core
 
 public enum UserAPI {
     case fetchUser
@@ -17,6 +18,7 @@ public enum UserAPI {
     case editSentence(sentence: String)
     case getNicknameAvailable(nickname: String)
     case changeNickname(nickname: String)
+    case reissuance
 }
 
 extension UserAPI: BaseAPI {
@@ -36,6 +38,8 @@ extension UserAPI: BaseAPI {
             return "nickname"
         case .getNicknameAvailable(let nickname):
             return "nickname/\(nickname)"
+        case .reissuance:
+            return "refresh"
         }
     }
     
@@ -44,7 +48,7 @@ extension UserAPI: BaseAPI {
         switch self {
         case .fetchUser, .getNicknameAvailable, .fetchSoptampUser:
             return .get
-        case .editSentence, .changeNickname:
+        case .editSentence, .changeNickname, .reissuance:
             return .patch
         }
     }
@@ -57,6 +61,8 @@ extension UserAPI: BaseAPI {
             params["nickname"] = nickname
         case .editSentence(let sentence):
             params["profileMessage"] = sentence
+        case .reissuance:
+            params["refreshToken"] = UserDefaultKeyList.Auth.appRefreshToken
         default: break
         }
         return params
@@ -71,7 +77,7 @@ extension UserAPI: BaseAPI {
     
     public var task: Task {
         switch self {
-        case .changeNickname, .editSentence:
+        case .changeNickname, .editSentence, .reissuance:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain
