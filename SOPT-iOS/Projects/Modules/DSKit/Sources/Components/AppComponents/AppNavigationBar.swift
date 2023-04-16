@@ -8,31 +8,35 @@
 
 import UIKit
 
-import DSKit
-
 import Then
 import SnapKit
 
-final class AppMyPageNavigationBar: UIView {
+public final class AppNavigationBar: UIView {
     private enum Metric {
         static let leftChevronSize = 44.f
+        static let leftChevronLeading = 20.f
         static let navigationBarMinHeight = 44.f
         static let navigationBarLeadingTrailingCompansateFactor = 16.f
     }
     
     private let contentView = UIView()
     
-    private(set) var leftChevronButton = UIButton(type: .custom).then {
+    // TODO: (@승호) 임시 구조임, 네비게이션 구조 잡기.
+    public private(set) var leftChevronButton = UIButton(type: .custom).then {
         $0.setImage(DSKitAsset.Assets.btnArrowLeft.image, for: .normal)
     }
     
     private let titleLabel = UILabel().then {
         $0.font = DSKitFontFamily.Suit.medium.font(size: 16)
         $0.textColor = DSKitAsset.Colors.white100.color
-        $0.text = "마이페이지"
     }
     
-    override init(frame: CGRect) {
+    public init(
+        title: String,
+        frame: CGRect
+    ) {
+        self.titleLabel.text = title
+        
         super.init(frame: frame)
         
         self.setupLayouts()
@@ -44,7 +48,7 @@ final class AppMyPageNavigationBar: UIView {
     }
 }
 
-extension AppMyPageNavigationBar {
+extension AppNavigationBar {
     private func setupLayouts() {
         self.addSubview(self.contentView)
         self.contentView.addSubviews(self.leftChevronButton, self.titleLabel)
@@ -60,6 +64,7 @@ extension AppMyPageNavigationBar {
         }
         
         self.leftChevronButton.snp.makeConstraints {
+            $0.leading.equalToSuperview().inset(Metric.leftChevronLeading)
             $0.size.equalTo(Metric.leftChevronSize)
             $0.centerY.equalToSuperview()
         }

@@ -239,8 +239,7 @@ extension DIContainer: Features {
     
     func makeAppMyPageVC() -> AppMyPageViewControllerable {
         let viewModel = AppMyPageViewModel()
-        let appMyPageViewController = AppMyPageViewController(viewModel: viewModel)
-        
+        let appMyPageViewController = AppMyPageViewController(viewModel: viewModel, factory: self)
         
         
         return appMyPageViewController

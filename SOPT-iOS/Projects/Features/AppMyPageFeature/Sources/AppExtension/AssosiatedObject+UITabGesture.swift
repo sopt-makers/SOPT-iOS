@@ -17,10 +17,7 @@ extension UIView {
     
     private var tapGestureRecognizerHandler: GestureHandler? {
         get {
-            return objc_getAssociatedObject(
-                self,
-                &GestureAssociatedKey.tapGestureKey
-            ) as? GestureHandler
+            return objc_getAssociatedObject(self, &GestureAssociatedKey.tapGestureKey) as? GestureHandler
         }
         set {
             if let newValue = newValue {

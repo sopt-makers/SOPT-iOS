@@ -8,29 +8,38 @@
 
 import UIKit
 
-import Core
-import DSKit
-
 import Combine
 import SnapKit
 import Then
 
+import Core
+import DSKit
+import BaseFeatureDependency
+import SettingFeatureInterface
 import AppMyPageFeatureInterface
 
 public final class AppMyPageViewController: UIViewController, AppMyPageViewControllerable {
+    // MARK: - Metric
     private enum Metric {
+        static let navigationbarHeight = 44.f
         static let firstSectionGroupTop = 13.f
         static let sectionGroupLeadingTrailing = 20.f
         
         static let sectionGroupSpacing = 16.f
     }
     
-    
+    // MARK: - Local Variables
     private let viewModel: AppMyPageViewModel
-//    private let factory  // factory
-    
+    private let factory: SettingFeatureViewBuildable & AlertViewBuildable
+
+    // MARK: Combine
+    private let resetButtonTapped = PassthroughSubject<Bool, Never>()
+
     // MARK: - Views
-    private var navigationBar: AppMyPageNavigationBar?
+    private lazy var navigationBar = AppNavigationBar(
+        title: I18N.MyPage.navigationTitle,
+        frame: self.view.frame
+    )
     
     private let scrollView = UIScrollView()
     private let contentStackView = UIStackView().then {
@@ -40,7 +49,7 @@ public final class AppMyPageViewController: UIViewController, AppMyPageViewContr
     
     // MARK: ServicePolicy
     private lazy var servicePolicySectionGroup = MypageSectionGroupView(
-        headerTitle: "서비스 이용 방침",
+        headerTitle: I18N.MyPage.servicePolicySectionTitle,
         subviews: [
             self.privacyPolicyListItem,
             self.termsOfUseListItem,
@@ -50,23 +59,23 @@ public final class AppMyPageViewController: UIViewController, AppMyPageViewContr
     )
     
     private lazy var privacyPolicyListItem = MyPageSectionListItemView(
-        title: "개인정보 처리 방침",
+        title: I18N.MyPage.privacyPolicy,
         frame: self.view.frame
     )
     
     private lazy var termsOfUseListItem = MyPageSectionListItemView(
-        title: "서비스 이용 약관",
+        title: I18N.MyPage.termsOfUse,
         frame: self.view.frame
     )
     
     private lazy var sendFeedbackListItem = MyPageSectionListItemView(
-        title: "의견 보내기",
+        title: I18N.MyPage.sendFeedback,
         frame: self.view.frame
     )
     
     // MARK: Soptamp
     private lazy var soptampSectionGroup = MypageSectionGroupView(
-        headerTitle: "솝탬프 설정",
+        headerTitle: I18N.MyPage.soptampSectionTitle,
         subviews: [
             self.editOnelineSentenceListItem,
             self.editNickNameListItem,
@@ -76,23 +85,23 @@ public final class AppMyPageViewController: UIViewController, AppMyPageViewContr
     )
     
     private lazy var editOnelineSentenceListItem = MyPageSectionListItemView(
-        title: "한 마디 편집",
+        title: I18N.MyPage.editOnlineSentence,
         frame: self.view.frame
     )
     
     private lazy var editNickNameListItem = MyPageSectionListItemView(
-        title: "닉네임 변경",
+        title:  I18N.MyPage.editNickname,
         frame: self.view.frame
     )
     
     private lazy var resetStampListItem = MyPageSectionListItemView(
-        title: "스탬프 초기화",
+        title:  I18N.MyPage.resetStamp,
         frame: self.view.frame
     )
     
     // MARK: Etcs
     private lazy var etcSectionGroup = MypageSectionGroupView(
-        headerTitle: "기타",
+        headerTitle: I18N.MyPage.etcSectionGroupTitle,
         subviews: [
             self.logoutListItem,
             self.withDrawalListItem,
@@ -101,17 +110,21 @@ public final class AppMyPageViewController: UIViewController, AppMyPageViewContr
     )
     
     private lazy var logoutListItem = MyPageSectionListItemView(
-        title: "로그아웃",
+        title: I18N.MyPage.logout,
         frame: self.view.frame
     )
     
     private lazy var withDrawalListItem = MyPageSectionListItemView(
-        title: "탈퇴하기",
+        title: I18N.MyPage.withdrawal,
         frame: self.view.frame
     )
     
-    public init(viewModel: AppMyPageViewModel) {
+    public init(
+        viewModel: AppMyPageViewModel,
+        factory: SettingFeatureViewBuildable & AlertViewBuildable
+    ) {
         self.viewModel = viewModel
+        self.factory = factory
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -124,7 +137,8 @@ public final class AppMyPageViewController: UIViewController, AppMyPageViewContr
 extension AppMyPageViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
-        
+ 
+        self.navigationController?.navigationBar.isHidden = true
         self.view.backgroundColor = DSKitAsset.Colors.black100.color
         
         self.setupLayouts()
@@ -135,10 +149,7 @@ extension AppMyPageViewController {
 
 extension AppMyPageViewController {
     private func setupLayouts() {
-        self.navigationBar = AppMyPageNavigationBar(frame: self.view.frame)
-        self.navigationItem.titleView = self.navigationBar
-        
-        self.view.addSubview(self.scrollView)
+        self.view.addSubviews(self.navigationBar, self.scrollView)
         self.scrollView.addSubview(self.contentStackView)
         self.contentStackView.addArrangedSubviews(
             self.servicePolicySectionGroup,
@@ -148,49 +159,73 @@ extension AppMyPageViewController {
     }
     
     private func setupConstraints() {
-        self.scrollView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        self.navigationBar.snp.makeConstraints {
+            $0.height.equalTo(Metric.navigationbarHeight)
+            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+            $0.leading.trailing.equalToSuperview()
+        }
+        self.scrollView.snp.makeConstraints {
+            $0.top.equalTo(self.navigationBar.snp.bottom)
+            $0.leading.trailing.bottom.equalToSuperview()
+        }
         self.contentStackView.snp.makeConstraints {
             $0.width.equalToSuperview()
             $0.top.equalToSuperview().inset(Metric.firstSectionGroupTop)
             $0.leading.trailing.bottom.equalToSuperview()
         }
     }
-    
+
+    // TODO: - (@승호): 적절히 객체에 위임하기
     private func addTabGestureOnListItems() {
-        self.navigationBar?.leftChevronButton.addTapGestureRecognizer {
-            
+        self.navigationBar.leftChevronButton.addTapGestureRecognizer {
+            self.navigationController?.popViewController(animated: true)
         }
 
         self.servicePolicySectionGroup.addTapGestureRecognizer {
-
+            let viewController = self.factory.makePrivacyPolicyVC().viewController
+            self.navigationController?.pushViewController(viewController, animated: true)
         }
         
         self.termsOfUseListItem.addTapGestureRecognizer {
-            
+            let viewController = self.factory.makeTermsOfServiceVC().viewController
+            self.navigationController?.pushViewController(viewController, animated: true)
         }
         
-        self.termsOfUseListItem.addTapGestureRecognizer {
-                
+        self.sendFeedbackListItem.addTapGestureRecognizer {
+            openExternalLink(urlStr: ExternalURL.GoogleForms.serviceProposal)
         }
         
         self.editOnelineSentenceListItem.addTapGestureRecognizer {
-            
+            let viewController = self.factory.makeSentenceEditVC().viewController
+            self.navigationController?.pushViewController(viewController, animated: true)
         }
         
         self.editNickNameListItem.addTapGestureRecognizer {
-            
+            let viewController = self.factory.makeNicknameEditVC().viewController
+            self.navigationController?.pushViewController(viewController, animated: true)
         }
         
         self.resetStampListItem.addTapGestureRecognizer {
+            let alertVC = self.factory.makeAlertVC(
+                type: .titleDescription,
+                theme: .main,
+                title: I18N.Setting.resetMissionTitle,
+                description: I18N.Setting.resetMissionDescription,
+                customButtonTitle: I18N.Setting.reset
+            ) { [weak self] in
+                self?.resetButtonTapped.send(true)
+            }.viewController
             
+            self.present(alertVC, animated: true)
         }
         
         self.logoutListItem.addTapGestureRecognizer {
-            
+
         }
         
         self.withDrawalListItem.addTapGestureRecognizer {
-            
+            // 다 머가 있더라. 다 대체해주자.
+            // loginViewController로 내리면 됨니다?
         }
     }
 }
