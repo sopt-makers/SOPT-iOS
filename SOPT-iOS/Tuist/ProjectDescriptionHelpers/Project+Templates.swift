@@ -21,9 +21,7 @@ public extension Project {
         let deploymentTarget = Environment.deploymentTarget
         let platform = Environment.platform
         
-        let baseSettings: SettingsDictionary = hasDynamicFramework
-        ? .allLoadSettings.setCodeSignManual()
-        : .baseSettings.setCodeSignManual()
+        let baseSettings: SettingsDictionary = .baseSettings.setCodeSignManual()
         
         var projectTargets: [Target] = []
         var schemes: [Scheme] = []
