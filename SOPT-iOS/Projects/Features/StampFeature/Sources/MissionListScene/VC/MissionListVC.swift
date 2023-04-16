@@ -45,6 +45,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
                 .setTitle("전체 미션")
                 .setTitleTypoStyle(.SoptampFont.h2)
                 .setTitleButtonMenu(menuItems: self.menuItems)
+                .addLeftButtonToTitleMenu()
         case .ranking(let username, _):
             return STNavigationBar(self, type: .titleWithLeftButton)
                 .setTitle(username)
@@ -193,6 +194,14 @@ extension MissionListVC {
             .sink { owner, _ in
                 owner.pushToGuideVC()
             }.store(in: self.cancelBag)
+        
+        if case .default = sceneType {
+            naviBar.leftButtonTapped
+                .withUnretained(self)
+                .sink { owner, _ in
+                    owner.dismiss(animated: true)
+                }.store(in: self.cancelBag)
+        }
         
         rankingFloatingButton.publisher(for: .touchUpInside)
             .withUnretained(self)
