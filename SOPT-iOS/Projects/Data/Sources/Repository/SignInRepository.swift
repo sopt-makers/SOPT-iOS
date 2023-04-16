@@ -35,9 +35,32 @@ extension SignInRepository: SignInRepositoryInterface {
                 UserDefaultKeyList.Auth.appAccessToken = entity.accessToken
                 UserDefaultKeyList.Auth.appRefreshToken = entity.refreshToken
                 UserDefaultKeyList.Auth.playgroundToken = entity.playgroundToken
+                UserDefaultKeyList.Auth.isActiveUser = entity.status == "ACTIVE"
+                ? true
+                : false
                 return true
             }
+            .handleEvents(receiveOutput: { isSuccessed in
+                guard isSuccessed else {
+                    self.fetchSoptampUser()
+                    return
+                }
+            })
             .replaceError(with: false)
             .eraseToAnyPublisher()
+    }
+    
+    private func fetchSoptampUser() {
+        userService.fetchSoptampUser()
+            .replaceError(
+                with: .init(
+                    nickname: "닉네임 설정 오류",
+                    profileMessage: "설정된 한 마디가 없습니다.",
+                    points: 0
+                ))
+            .sink { entity in
+                UserDefaultKeyList.User.soptampName = entity.nickname
+                UserDefaultKeyList.User.sentence = entity.profileMessage ?? "설정된 한 마디가 없습니다."
+            }.store(in: cancelBag)
     }
 }

@@ -10,4 +10,5 @@ import Foundation
 
 public struct SignInEntity: Codable {
     public let accessToken, refreshToken, playgroundToken: String
+    public let status: String
 }

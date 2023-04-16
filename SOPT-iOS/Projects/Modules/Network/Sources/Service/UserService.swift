@@ -17,6 +17,7 @@ public typealias DefaultUserService = BaseService<UserAPI>
 public protocol UserService {
     // TODO: - UserEntity 관련 변경사항 적용하기
     func fetchUser() -> AnyPublisher<SignInEntity, Error>
+    func fetchSoptampUser() -> AnyPublisher<SoptampUserEntity, Error>
     
     func editSentence(sentence: String) -> AnyPublisher<EditSentenceEntity, Error>
     func getNicknameAvailable(nickname: String) -> AnyPublisher<Int, Error>
@@ -26,6 +27,10 @@ public protocol UserService {
 extension DefaultUserService: UserService {
     public func fetchUser() -> AnyPublisher<SignInEntity, Error> {
         requestObjectInCombine(.fetchUser)
+    }
+    
+    public func fetchSoptampUser() -> AnyPublisher<SoptampUserEntity, Error> {
+        requestObjectInCombine(.fetchSoptampUser)
     }
     
     public func editSentence(sentence: String) -> AnyPublisher<EditSentenceEntity, Error> {

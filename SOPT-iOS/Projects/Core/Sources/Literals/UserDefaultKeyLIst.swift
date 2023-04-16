@@ -20,6 +20,7 @@ public struct UserDefaultKeyList {
     
     public struct User {
         @UserDefaultWrapper<String>(key: "sentence") public static var sentence
+        @UserDefaultWrapper<String>(key: "soptampName") public static var soptampName
     }
     
     public struct AppNotice {

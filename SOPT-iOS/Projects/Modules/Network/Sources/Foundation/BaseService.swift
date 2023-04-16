@@ -90,6 +90,8 @@ extension BaseService {
     func requestObjectInCombineNoResult(_ target: API) -> AnyPublisher<Int, Error> {
         return Future { promise in
             self.provider.request(target) { response in
+                print("리스폰스")
+                dump(response)
                 switch response {
                 case .success(let value):
                     promise(.success(value.statusCode))

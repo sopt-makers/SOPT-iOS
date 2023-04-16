@@ -7,3 +7,15 @@
 //
 
 import Foundation
+
+public struct SoptampUserEntity: Codable {
+    public let nickname: String
+    public let profileMessage: String?
+    public let points: Int
+    
+    public init(nickname: String, profileMessage: String?, points: Int) {
+        self.nickname = nickname
+        self.profileMessage = profileMessage
+        self.points = points
+    }
+}
