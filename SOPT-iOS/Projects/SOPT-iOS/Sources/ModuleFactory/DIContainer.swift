@@ -34,6 +34,7 @@ typealias Features = SplashFeatureViewBuildable
     & SettingFeatureViewBuildable
     & MainFeatureViewBuildable
     & AlertViewBuildable
+    & AppMyPageFeatureViewBuildable
 
 final class DIContainer {
     lazy var attendanceService = DefaultAttendanceService()
@@ -237,12 +238,12 @@ extension DIContainer: Features {
         return withdrawalVC
     }
     
-    func makeAppMyPageVC() -> AppMyPageViewControllerable {
+    func makeAppMyPageVC(userType: UserType) -> AppMyPageViewControllable {
         let repository = AppMyPageRepository(stampService: self.stampService)
         let useCase = DefaultAppMyPageUseCase(repository: repository)
         let viewModel = AppMyPageViewModel(useCase: useCase)
-        let appMyPageViewController = AppMyPageViewController(viewModel: viewModel, factory: self)
+        let AppMyPageVC = AppMyPageVC(userType: userType, viewModel: viewModel, factory: self)
         
-        return appMyPageViewController
+        return AppMyPageVC
     }
 }

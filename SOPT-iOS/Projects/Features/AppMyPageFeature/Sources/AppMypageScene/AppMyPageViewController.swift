@@ -1,5 +1,5 @@
 //
-//  AppMyPageViewController.swift
+//  AppMyPageVC.swift
 //  AppMypageFeature
 //
 //  Created by Ian on 2023/04/15.
@@ -19,7 +19,7 @@ import AuthFeatureInterface
 import SettingFeatureInterface
 import AppMyPageFeatureInterface
 
-public final class AppMyPageViewController: UIViewController, AppMyPageViewControllerable {
+public final class AppMyPageVC: UIViewController, AppMyPageViewControllable {
     // MARK: - Metric
     private enum Metric {
         static let navigationbarHeight = 44.f
@@ -32,6 +32,7 @@ public final class AppMyPageViewController: UIViewController, AppMyPageViewContr
     // MARK: - Local Variables
     private let viewModel: AppMyPageViewModel
     private let factory: SettingFeatureViewBuildable & AlertViewBuildable & AuthFeatureViewBuildable
+    private let userType: UserType
 
     // MARK: Combine
     private let resetButtonTapped = PassthroughSubject<Bool, Never>()
@@ -119,10 +120,26 @@ public final class AppMyPageViewController: UIViewController, AppMyPageViewContr
         frame: self.view.frame
     )
     
+    // MARK: For Visitors
+    private lazy var etcForVisitorsSectionGroup = MypageSectionGroupView(
+        headerTitle: I18N.MyPage.etcSectionGroupTitle,
+        subviews: [
+            self.loginListItem,
+        ],
+        frame: self.view.frame
+    )
+    
+    private lazy var loginListItem = MyPageSectionListItemView(
+        title: I18N.MyPage.login,
+        frame: self.view.frame
+    )
+    
     public init(
+        userType: UserType,
         viewModel: AppMyPageViewModel,
         factory: SettingFeatureViewBuildable & AlertViewBuildable & AuthFeatureViewBuildable
     ) {
+        self.userType = userType
         self.viewModel = viewModel
         self.factory = factory
         
@@ -134,7 +151,7 @@ public final class AppMyPageViewController: UIViewController, AppMyPageViewContr
     }
 }
 
-extension AppMyPageViewController {
+extension AppMyPageVC {
     public override func viewDidLoad() {
         super.viewDidLoad()
  
@@ -144,18 +161,28 @@ extension AppMyPageViewController {
         self.setupLayouts()
         self.setupConstraints()
         self.addTabGestureOnListItems()
+        self.bindViewModels()
     }
 }
 
-extension AppMyPageViewController {
+extension AppMyPageVC {
     private func setupLayouts() {
         self.view.addSubviews(self.navigationBar, self.scrollView)
         self.scrollView.addSubview(self.contentStackView)
-        self.contentStackView.addArrangedSubviews(
-            self.servicePolicySectionGroup,
-            self.soptampSectionGroup,
-            self.etcSectionGroup
-        )
+        
+        switch self.userType {
+        case .active, .inactive:
+            self.contentStackView.addArrangedSubviews(
+                self.servicePolicySectionGroup,
+                self.soptampSectionGroup,
+                self.etcSectionGroup
+            )
+        case .visitor:
+            self.contentStackView.addArrangedSubviews(
+                self.servicePolicySectionGroup,
+                self.etcForVisitorsSectionGroup
+            )
+        }
     }
     
     private func setupConstraints() {
@@ -224,7 +251,8 @@ extension AppMyPageViewController {
                 description: I18N.MyPage.logoutDialogDescription,
                 customButtonTitle: I18N.MyPage.logoutDialogGrantButtonTitle
             ) { [weak self] in
-                self?.logoutAndShowRootViewController()
+                self?.logout()
+                self?.showLoginViewController()
             }.viewController
             
             self.present(alertVC, animated: true)
@@ -234,10 +262,14 @@ extension AppMyPageViewController {
             let viewController = self.factory.makeWithdrawalVC().viewController
             self.navigationController?.pushViewController(viewController, animated: true)
         }
+        
+        self.loginListItem.addTapGestureRecognizer {
+            self.showLoginViewController()
+        }
     }
 }
 
-extension AppMyPageViewController {
+extension AppMyPageVC {
     private func bindViewModels() {
         let input = AppMyPageViewModel.Input(
             resetButtonTapped: resetButtonTapped.asDriver())
@@ -251,12 +283,15 @@ extension AppMyPageViewController {
     }
 }
 
-extension AppMyPageViewController {
-    private func logoutAndShowRootViewController() {
+extension AppMyPageVC {
+    private func logout() {
         UserDefaultKeyList.Auth.appAccessToken = nil
         UserDefaultKeyList.Auth.appRefreshToken = nil
         UserDefaultKeyList.Auth.playgroundToken = nil
         
+    }
+    
+    private func showLoginViewController() {
         guard let window = self.view.window else { return }
         let navigation = UINavigationController(rootViewController: factory.makeSignInVC().viewController)
         navigation.isNavigationBarHidden = true

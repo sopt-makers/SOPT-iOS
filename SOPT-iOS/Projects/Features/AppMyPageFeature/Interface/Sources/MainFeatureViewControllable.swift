@@ -9,8 +9,8 @@
 import BaseFeatureDependency
 import Core
 
-public protocol AppMyPageViewControllerable: ViewControllable { }
+public protocol AppMyPageViewControllable: ViewControllable { }
 
 public protocol AppMyPageFeatureViewBuildable {
-    func makeAppMyPageViewController() -> AppMyPageViewControllerable
+    func makeAppMyPageVC(userType: UserType) -> AppMyPageViewControllable
 }
