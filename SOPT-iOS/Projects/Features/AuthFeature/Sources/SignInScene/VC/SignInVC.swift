@@ -172,6 +172,12 @@ extension SignInVC {
             .sink { owner, _ in
                 owner.openPlaygroundURL()
             }.store(in: self.cancelBag)
+        
+        notMemberButton.publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.setRootViewToMain()
+            }.store(in: self.cancelBag)
     }
     
     private func bindViewModels() {

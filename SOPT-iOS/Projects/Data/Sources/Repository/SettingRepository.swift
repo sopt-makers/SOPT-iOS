@@ -59,10 +59,7 @@ extension SettingRepository: SettingRepositoryInterface {
         return authService.withdrawal()
             .handleEvents(receiveOutput: { status in
                 if status == 200 {
-                    UserDefaultKeyList.Auth.appAccessToken = nil
-                    UserDefaultKeyList.Auth.appRefreshToken = nil
-                    UserDefaultKeyList.Auth.playgroundToken = nil
-                    UserDefaultKeyList.User.sentence = nil
+                    UserDefaultKeyList.clearAllUserData()
                 }
             })
             .map { _ in true}
