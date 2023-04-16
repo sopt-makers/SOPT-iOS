@@ -8,7 +8,11 @@
 
 import BaseFeatureDependency
 
-public protocol SignInViewControllable: ViewControllable { }
+public protocol SignInViewControllable: ViewControllable {
+    var skipAnimation: Bool { get set }
+    var accessCode: String? { get set }
+    var requestState: String? { get set }
+}
 
 public protocol AuthFeatureViewBuildable {
     func makeSignInVC() -> SignInViewControllable

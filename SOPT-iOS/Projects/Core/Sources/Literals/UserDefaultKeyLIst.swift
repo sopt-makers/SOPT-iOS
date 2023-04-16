@@ -16,6 +16,8 @@ public struct UserDefaultKeyList {
         @UserDefaultWrapper<String>(key: "appRefreshToken") public static var appRefreshToken
         @UserDefaultWrapper<String>(key: "playgroundToken") public static var playgroundToken
         @UserDefaultWrapper<Bool>(key: "isActiveUser") public static var isActiveUser
+        
+        @UserDefaultWrapper<String>(key: "requestState") public static var requestState
     }
     
     public struct User {

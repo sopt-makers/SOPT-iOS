@@ -27,6 +27,9 @@ public class SignInVC: UIViewController, SignInViewControllable {
     
     public var factory: (AuthFeatureViewBuildable & MainFeatureViewBuildable)!
     public var viewModel: SignInViewModel!
+    public var skipAnimation: Bool = false
+    public var accessCode: String? = nil
+    public var requestState: String? = nil
     private var cancelBag = CancelBag()
     
     // MARK: - UI Components
@@ -84,7 +87,7 @@ public class SignInVC: UIViewController, SignInViewControllable {
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self.showAnimation()
+        self.performAnimation()
     }
 }
 
@@ -134,15 +137,28 @@ extension SignInVC {
         }
     }
     
-    private func showAnimation() {
+    private func performAnimation() {
+        guard !skipAnimation else {
+            retrieveAlpha()
+            updateLogoY()
+            return
+        }
         UIView.animate(withDuration: 0.7, delay: 0, options: .curveEaseInOut, animations: {
-            self.logoImageView.transform = CGAffineTransform(translationX: 0, y: -Metric.logoMutableY)
+            self.updateLogoY()
         })
         UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
-            [self.signInButton, self.notMemberButton, self.bottomLogoImageView].forEach {
-                $0.alpha = 1
-            }
+            self.retrieveAlpha()
         })
+    }
+    
+    private func updateLogoY() {
+        logoImageView.transform = CGAffineTransform(translationX: 0, y: -Metric.logoMutableY)
+    }
+    
+    private func retrieveAlpha() {
+        [signInButton, notMemberButton, bottomLogoImageView].forEach {
+            $0.alpha = 1
+        }
     }
 }
 
@@ -150,15 +166,32 @@ extension SignInVC {
 
 extension SignInVC {
     
+    private func bindViews() {
+        signInButton.publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.openPlaygroundURL()
+            }.store(in: self.cancelBag)
+    }
+    
     private func bindViewModels() {
+        let signInFinished = Driver.just(accessCode)
+            .drop { [weak self] code in
+                return code == nil
+                || self?.requestState != UserDefaultKeyList.Auth.requestState
+            }
+            .replaceNil(with: "")
+            .eraseToAnyPublisher()
+            .asDriver()
         
-        let input = SignInViewModel.Input(playgroundSignInFinished: Driver.just("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyNiIsImV4cCI6MTY4MTE5OTY1NH0.wlceN1uUoQZYL5Uz4lOiomwLTNK2YxQ-dlv3rtZHUZM"))
-        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        let input = SignInViewModel.Input(
+            playgroundSignInFinished: signInFinished
+        )
+        let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
         
-        output.isSignInSuccess.sink { [weak self] isSignInSuccess in
+        output.isSignInSuccess.sink { [weak self] isSuccessed in
             guard let self = self else { return }
-            self.stopLoading()
-            if isSignInSuccess {
+            if isSuccessed {
                 self.setRootViewToMain()
             }
         }.store(in: self.cancelBag)
@@ -170,12 +203,13 @@ extension SignInVC {
         ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
     }
     
-    private func bindViews() {
-        // TODO: - 플그 로그인으로 연결
-        signInButton.publisher(for: .touchUpInside)
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.setRootViewToMain()
-            }.store(in: self.cancelBag)
+    private func openPlaygroundURL() {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMddHHmmss"
+        let state = dateFormatter.string(from: Date())
+        UserDefaultKeyList.Auth.requestState = state
+        openExternalLink(urlStr: ExternalURL.Playground.login(state: state)) {
+            print("플레이그라운드 Open URL")
+        }
     }
 }
