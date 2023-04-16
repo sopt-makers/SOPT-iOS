@@ -48,6 +48,10 @@ extension SettingRepository: SettingRepositoryInterface {
         return userService.changeNickname(nickname: nickname)
             .map { _ in true }
             .replaceError(with: false)
+            .handleEvents(receiveOutput: { isSuccessed in
+                guard isSuccessed else { return }
+                UserDefaultKeyList.User.soptampName = nickname
+            })
             .eraseToAnyPublisher()
     }
     
