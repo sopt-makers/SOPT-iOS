@@ -24,8 +24,16 @@ import SettingFeatureInterface
 import SettingFeature
 import StampFeatureInterface
 import StampFeature
+import AppMyPageFeatureInterface
+import AppMyPageFeature
 
-typealias Features = SplashFeatureViewBuildable & AttendanceFeatureViewBuildable & AuthFeatureViewBuildable & StampFeatureViewBuildable & SettingFeatureViewBuildable & MainFeatureViewBuildable & AlertViewBuildable
+typealias Features = SplashFeatureViewBuildable
+    & AttendanceFeatureViewBuildable
+    & AuthFeatureViewBuildable
+    & StampFeatureViewBuildable
+    & SettingFeatureViewBuildable
+    & MainFeatureViewBuildable
+    & AlertViewBuildable
 
 final class DIContainer {
     lazy var attendanceService = DefaultAttendanceService()
@@ -227,5 +235,14 @@ extension DIContainer: Features {
         withdrawalVC.viewModel = viewModel
         withdrawalVC.factory = self
         return withdrawalVC
+    }
+    
+    func makeAppMyPageVC() -> AppMyPageViewControllerable {
+        let viewModel = AppMyPageViewModel()
+        let appMyPageViewController = AppMyPageViewController(viewModel: viewModel)
+        
+        
+        
+        return appMyPageViewController
     }
 }
