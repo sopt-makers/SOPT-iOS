@@ -161,7 +161,7 @@ extension STNavigationBar {
     
     @discardableResult
     public func addLeftButtonToTitleMenu() -> Self {
-        leftButton.setImage(DSKitAsset.Assets.btnArrowLeft.image, for: .normal)
+        leftButton.setImage(DSKitAsset.Assets.icClose.image, for: .normal)
         leftButtonLayoutForMenu()
         return self
     }
