@@ -45,6 +45,11 @@ public class STNavigationBar: UIView {
             .map { _ in () }
             .asDriver()
     }
+    public var leftButtonTapped: Driver<Void> {
+        leftButton.publisher(for: .touchUpInside)
+            .map { _ in () }
+            .asDriver()
+    }
     public var titleButtonTapped: Driver<Void> {
         titleButton.publisher(for: .touchUpInside)
             .map { _ in () }
@@ -152,6 +157,28 @@ extension STNavigationBar {
                                   children: menuItems)
         titleButton.showsMenuAsPrimaryAction = true
         return self
+    }
+    
+    @discardableResult
+    public func addLeftButtonToTitleMenu() -> Self {
+        leftButton.setImage(DSKitAsset.Assets.icClose.image, for: .normal)
+        leftButtonLayoutForMenu()
+        return self
+    }
+    
+    private func leftButtonLayoutForMenu() {
+        self.addSubview(leftButton)
+        
+        leftButton.snp.makeConstraints { make in
+            make.centerY.equalToSuperview().offset(1)
+            make.leading.equalToSuperview().inset(20)
+            make.width.height.equalTo(32)
+        }
+        
+        titleButton.snp.remakeConstraints { make in
+            make.centerY.equalToSuperview().offset(1)
+            make.leading.equalTo(leftButton.snp.trailing).offset(12)
+        }
     }
 }
 

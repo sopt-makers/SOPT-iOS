@@ -11,6 +11,7 @@ import UIKit
 import Combine
 
 import Core
+import Domain
 import DSKit
 
 import SnapKit
@@ -23,6 +24,16 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     public var viewModel: ShowAttendanceViewModel
     public var factory: AttendanceFeatureViewBuildable
     private var cancelBag = CancelBag()
+    
+    public var sceneType: AttendanceScheduleType {
+        get {
+            return self.viewModel.sceneType ?? .scheduledDay
+        } set(type) {
+            self.viewModel.sceneType = type
+        }
+    }
+    
+    private var viewdidload = PassthroughSubject<Void, Never>()
   
     // MARK: - UI Components
     
@@ -35,7 +46,15 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
             self.refreshButtonDidTap()
         }
     
-    private let headerScheduleView = TodayScheduleView(type: .scheduledDay)
+    private lazy var headerScheduleView: TodayScheduleView = {
+        switch sceneType {
+        case .unscheduledDay:
+            return TodayScheduleView(type: .unscheduledDay)
+        case .scheduledDay:
+            return TodayScheduleView(type: .scheduledDay)
+        }
+    }()
+    
     private let attendanceScoreView = AttendanceScoreView()
     
     // MARK: - Initialization
@@ -56,9 +75,10 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.bindViewModels()
+        self.bindViews()
         self.setUI()
         self.setLayout()
-        self.dummy()
+        self.viewdidload.send(())
     }
 }
 
@@ -101,26 +121,70 @@ extension ShowAttendanceVC {
             $0.bottom.equalToSuperview()
         }
     }
-    
-    private func dummy() {
-        headerScheduleView.setData(date: "3월 23일 토요일 14:00 - 18:00",
-                                   place: "건국대학교 꽥꽥오리관",
-                                   todaySchedule: "1차 행사",
-                                   description: "행사도 참여하고, 출석점수도 받고, 일석이조!")
-    }
 }
 
 // MARK: - Methods
 
 extension ShowAttendanceVC {
-  
+    
+    private func bindViews() {
+        
+        navibar.rightButtonTapped
+            .asDriver()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.refreshButtonDidTap()
+            }.store(in: self.cancelBag)
+    }
+    
     private func bindViewModels() {
-        let input = ShowAttendanceViewModel.Input()
+        
+        let input = ShowAttendanceViewModel.Input(viewDidLoad: viewdidload.asDriver(),
+                                                  refreshButtonTapped: navibar.rightButtonTapped)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.$scheduleModel
+            .sink(receiveValue: { [weak self] model in
+                guard let self, let model else { return }
+                
+                if self.viewModel.sceneType == .scheduledDay {
+                    self.sceneType = .scheduledDay
+                    self.setScheduledData(model)
+                    self.headerScheduleView.updateLayout(.scheduledDay)
+                } else {
+                    self.sceneType = .unscheduledDay
+                    self.headerScheduleView.updateLayout(.unscheduledDay)
+                }
+            })
+            .store(in: self.cancelBag)
+        
+        output.$scoreModel
+            .sink { model in
+                guard let model else { return }
+                self.setScoreData(model)
+            }.store(in: self.cancelBag)
     }
     
     @objc
     private func refreshButtonDidTap() {
         print("refresh button did tap")
+    }
+    
+    private func setScheduledData(_ model: AttendanceScheduleModel) {
+        
+        if self.sceneType == .scheduledDay {
+            guard let date = viewModel.formatTimeInterval(startDate: model.startDate, endDate: model.endDate) else { return }
+            headerScheduleView.setData(date: date,
+                                       place: model.location,
+                                       todaySchedule: model.name,
+                                       description: model.message)
+        }
+    }
+    
+    private func setScoreData(_ model: AttendanceScoreModel) {
+        attendanceScoreView.setMyInfoData(name: model.name, part: model.part, generation: model.generation,
+                                          count: model.score)
+        attendanceScoreView.setMyTotalScoreData(attendance: model.total.attendance, tardy: model.total.tardy, absent: model.total.absent)
+        attendanceScoreView.setMyAttendanceTableData(model.attendances)
     }
 }

@@ -10,6 +10,7 @@ import UIKit
 
 import Core
 import DSKit
+import Domain
 
 /*
  나의 출결 현황 스택뷰에 1줄짜리 상태(출석, 1차 세미나, 00월 00일)를 나타내는 테이블뷰 셀입니다.
@@ -80,9 +81,19 @@ extension MyAttendanceStateTVC {
 
 extension MyAttendanceStateTVC {
     
-    func setData(title: String, image: UIImage, date: String) {
-        stateImageView.image = image
-        titleLabel.text = title
-        dateLabel.text = date
+    func setData(model: AttendanceModel) {
+
+        if model.status == "ATTENDANCE" {
+            stateImageView.image = DSKitAsset.Assets.opStateAttendance.image
+        } else if model.status == "ABSENT" {
+            stateImageView.image = DSKitAsset.Assets.opStateAbsent.image
+        } else if model.status == "TARDY" {
+            stateImageView.image = DSKitAsset.Assets.opStateTardy.image
+        } else {
+            stateImageView.image = DSKitAsset.Assets.opStateParticipate.image
+        }
+        
+        titleLabel.text = model.name
+        dateLabel.text = model.date
     }
 }

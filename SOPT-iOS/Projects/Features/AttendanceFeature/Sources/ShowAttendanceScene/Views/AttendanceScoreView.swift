@@ -10,6 +10,7 @@ import UIKit
 
 import Core
 import DSKit
+import Domain
 
 /*
  출석 조회하기 뷰의 하단 출석 점수 현황을 보여주는 뷰 입니다.
@@ -19,8 +20,7 @@ final class AttendanceScoreView: UIView {
     
     // MARK: - Properties
 
-    private let tableViewHeight: CGFloat = 40
-    private var tableViewDataSourceCount: Int = 5
+    private var attendanceModelList = [AttendanceModel]()
     
     // MARK: - UI Components
     
@@ -30,8 +30,8 @@ final class AttendanceScoreView: UIView {
     
     /// 2. 전체 출결 점수 영역
     
-    private let allScoreView = SingleScoreView(type: .all, count: 5)
-    private let attendanceScoreView = SingleScoreView(type: .attendance, count: 5)
+    private let allScoreView = SingleScoreView(type: .all)
+    private let attendanceScoreView = SingleScoreView(type: .attendance)
     private let tardyScoreView = SingleScoreView(type: .tardy)
     private let absentScoreView = SingleScoreView(type: .absent)
     
@@ -138,8 +138,25 @@ extension AttendanceScoreView {
     func updateTableviewHeight() {
         
         attendanceTableView.snp.updateConstraints {
-            $0.height.equalTo(tableViewDataSourceCount * Int(tableViewHeight))
+            $0.height.equalTo(attendanceModelList.count * 40)
         }
+    }
+    
+    func setMyInfoData(name: String, part: String, generation: Int, count: Double) {
+        myInfoContainerView.setData(name: name, part: part, generation: generation, count: count)
+    }
+    
+    func setMyTotalScoreData(attendance: Int, tardy: Int, absent: Int) {
+        allScoreView.setData(attendance + tardy + absent)
+        attendanceScoreView.setData(attendance)
+        tardyScoreView.setData(tardy)
+        absentScoreView.setData(absent)
+    }
+    
+    func setMyAttendanceTableData(_ model: [AttendanceModel]) {
+        attendanceModelList = model
+        updateTableviewHeight()
+        attendanceTableView.reloadData()
     }
     
 }
@@ -149,20 +166,17 @@ extension AttendanceScoreView {
 extension AttendanceScoreView: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        tableViewHeight
+        return 40
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        tableViewDataSourceCount
+        attendanceModelList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MyAttendanceStateTVC.className, for: indexPath) as? MyAttendanceStateTVC else { return UITableViewCell() }
         cell.selectionStyle = .none
-        cell.setData(title: "\(indexPath.row+1)차 세미나",
-                     image: DSKitAsset.Assets.opStateAttendance.image,
-                     date: "4월 \(indexPath.row*7+1)일")
-        updateTableviewHeight()
+        cell.setData(model: attendanceModelList[safe: indexPath.row]!)
         return cell
     }
 }
