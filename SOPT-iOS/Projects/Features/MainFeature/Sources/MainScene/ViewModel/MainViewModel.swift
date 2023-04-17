@@ -28,7 +28,7 @@ public class MainViewModel: ViewModelType {
     // MARK: - Inputs
     
     public struct Input {
-        let viewDidLoad: Driver<Void>
+        let requestUserInfo: CurrentValueSubject<Void, Never>
     }
     
     // MARK: - Outputs
@@ -54,7 +54,7 @@ extension MainViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
-        input.viewDidLoad
+        input.requestUserInfo
             .sink { [weak self] _ in
                 guard let self = self else { return }
                 if self.userType != .visitor {
