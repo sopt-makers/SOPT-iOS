@@ -20,13 +20,18 @@ import AuthFeatureInterface
 import MainFeatureInterface
 import StampFeatureInterface
 import SettingFeatureInterface
+import AppMyPageFeatureInterface
 
 public class MainVC: UIViewController, MainViewControllable {
+    public typealias factoryType = AuthFeatureViewBuildable
+    & StampFeatureViewBuildable
+    & SettingFeatureViewBuildable
+    & AppMyPageFeatureViewBuildable
     
     // MARK: - Properties
     
     public var viewModel: MainViewModel!
-    public var factory: (AuthFeatureViewBuildable & StampFeatureViewBuildable & SettingFeatureViewBuildable)!
+    public var factory: factoryType!
     private var cancelBag = CancelBag()
     
     private var userMainInfo: UserMainInfoModel?
@@ -107,11 +112,14 @@ extension MainVC {
         naviBar.rightButton.publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
-                if owner.viewModel.userType == .visitor {
-                    owner.setRootViewToSignIn()
-                    return
-                }
-                owner.pushSettingFeature()
+                let viewController = owner.factory.makeAppMyPageVC(userType: owner.viewModel.userType).viewController
+                owner.navigationController?.pushViewController(viewController, animated: true)
+              
+//                if owner.viewModel.userType == .visitor {
+//                    owner.setRootViewToSignIn()
+//                    return
+//                }
+//                owner.pushSettingFeature()
             }.store(in: self.cancelBag)
     }
     
