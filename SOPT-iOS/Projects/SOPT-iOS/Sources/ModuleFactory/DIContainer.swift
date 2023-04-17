@@ -87,6 +87,14 @@ extension DIContainer: Features {
         return showAttendanceVC
     }
     
+    func makeAttendanceVC() -> AttendanceViewControllable {
+        let repository = AttendanceRepository(service: attendanceService)
+        let useCase = DefaultAttendanceUseCase(repository: repository)
+        let viewModel = AttendanceViewModel(useCase: useCase)
+        let attendanceVC = AttendanceVC(viewModel: viewModel, factory: self)
+        return attendanceVC
+    }
+    
     // MARK: - AuthFeature
     
     func makeSignInVC() -> SignInViewControllable {
