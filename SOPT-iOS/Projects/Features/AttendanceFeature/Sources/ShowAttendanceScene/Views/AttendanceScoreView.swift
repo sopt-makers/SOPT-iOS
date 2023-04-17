@@ -135,8 +135,7 @@ extension AttendanceScoreView {
         attendanceTableView.register(MyAttendanceStateTVC.self, forCellReuseIdentifier: MyAttendanceStateTVC.className)
     }
     
-    func updateTableviewHeight() {
-        
+    private func updateTableviewHeight() {
         attendanceTableView.snp.updateConstraints {
             $0.height.equalTo(attendanceModelList.count * 40)
         }
@@ -158,7 +157,6 @@ extension AttendanceScoreView {
         updateTableviewHeight()
         attendanceTableView.reloadData()
     }
-    
 }
 
 // MARK: - UITableViewDelegate, UITableViewDataSource
