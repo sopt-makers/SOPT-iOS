@@ -15,15 +15,10 @@ import Moya
 public typealias DefaultAuthService = BaseService<AuthAPI>
 
 public protocol AuthService {
-    func withdrawal() -> AnyPublisher<Int, Error>
     func signIn(token: String) -> AnyPublisher<SignInEntity, Error>
 }
 
 extension DefaultAuthService: AuthService {
-    public func withdrawal() -> AnyPublisher<Int, Error> {
-        return requestObjectInCombineNoResult(.withdrawal)
-    }
-    
     public func signIn(token: String) -> AnyPublisher<SignInEntity, Error> {
         return requestObjectInCombine(.signIn(token: token))
     }

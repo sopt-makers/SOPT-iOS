@@ -23,6 +23,8 @@ public protocol UserService {
     func editSentence(sentence: String) -> AnyPublisher<EditSentenceEntity, Error>
     func getNicknameAvailable(nickname: String) -> AnyPublisher<Int, Error>
     func changeNickname(nickname: String) -> AnyPublisher<Int, Error>
+    func getUserMainInfo() -> AnyPublisher<MainEntity, Error>
+    func withdrawal() -> AnyPublisher<Int, Error>
     
     func reissuance(completion: @escaping ((Bool) -> Void))
     func reissuance() -> AnyPublisher<SignInEntity, Error>
@@ -49,6 +51,12 @@ extension DefaultUserService: UserService {
         requestObjectInCombineNoResult(.changeNickname(nickname: nickname))
     }
     
+    public func getUserMainInfo() -> AnyPublisher<MainEntity, Error> {
+        requestObjectInCombine(.getUserMainInfo)
+    }
+    
+    public func withdrawal() -> AnyPublisher<Int, Error> {
+        return requestObjectInCombineNoResult(.withdrawal)
     public func reissuance(completion: @escaping ((Bool) -> Void)) {
         provider.request(.reissuance) { response in
             switch response {

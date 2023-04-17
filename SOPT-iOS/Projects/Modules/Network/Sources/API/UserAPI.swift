@@ -19,6 +19,8 @@ public enum UserAPI {
     case getNicknameAvailable(nickname: String)
     case changeNickname(nickname: String)
     case reissuance
+    case getUserMainInfo
+    case withdrawal
 }
 
 extension UserAPI: BaseAPI {
@@ -40,16 +42,22 @@ extension UserAPI: BaseAPI {
             return "nickname/\(nickname)"
         case .reissuance:
             return "refresh"
+        case .getUserMainInfo:
+            return "/main"
+        case .withdrawal:
+            return ""
         }
     }
     
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .fetchUser, .getNicknameAvailable, .fetchSoptampUser:
+        case .fetchUser, .getNicknameAvailable, .getUserMainInfo:
             return .get
         case .editSentence, .changeNickname, .reissuance:
             return .patch
+        case .withdrawal:
+            return .delete
         }
     }
     

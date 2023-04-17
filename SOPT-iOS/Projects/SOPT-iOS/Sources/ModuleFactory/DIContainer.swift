@@ -35,6 +35,7 @@ final class DIContainer {
     lazy var missionService = DefaultMissionService()
     lazy var stampService = DefaultStampService()
     lazy var firebaseService = DefaultFirebaseService()
+    lazy var configService = DefaultConfigService()
 }
 
 extension DIContainer: Features {
@@ -42,7 +43,7 @@ extension DIContainer: Features {
     // MARK: - MainFeature
     
     func makeMainVC(userType: Core.UserType) -> MainFeatureInterface.MainViewControllable {
-        let repository = MainRepository(service: userService)
+        let repository = MainRepository(userService: userService, configService: configService)
         let useCase = DefaultMainUseCase(repository: repository)
         let viewModel = MainViewModel(useCase: useCase, userType: userType)
         let mainVC = MainVC()
