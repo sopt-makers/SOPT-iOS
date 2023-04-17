@@ -33,7 +33,7 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
     public func fetchAttendanceSchedule() {
         self.repository.fetchAttendanceScheduleModel()
             .sink(receiveCompletion: { event in
-                print("completion: \(event)")
+                print("completion: fetchAttendanceSchedule \(event)")
             }, receiveValue: { model in
                 self.attendanceScheduleFetched.send(model)
             })
@@ -43,7 +43,7 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
     public func fetchAttendanceScore() {
         self.repository.fetchAttendanceScoreModel()
             .sink(receiveCompletion: { event in
-                print("completion: \(event)")
+                print("completion: fetchAttendanceScore \(event)")
             }, receiveValue: { model in
                 self.attendanceScoreFetched.send(model)
             })
