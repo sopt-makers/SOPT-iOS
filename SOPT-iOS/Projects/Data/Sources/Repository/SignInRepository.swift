@@ -31,39 +31,44 @@ extension SignInRepository: SignInRepositoryInterface {
     
     public func requestSignIn(token: String) -> AnyPublisher<Bool, Never> {
         authService.signIn(token: token)
-            .catch({ error in
-                self.userService.reissuance()
+            .catch({ _ in
+                return self.userService.reissuance()
             })
             .map { entity in
                 UserDefaultKeyList.Auth.appAccessToken = entity.accessToken
                 UserDefaultKeyList.Auth.appRefreshToken = entity.refreshToken
                 UserDefaultKeyList.Auth.playgroundToken = entity.playgroundToken
-                UserDefaultKeyList.Auth.isActiveUser = entity.status == "ACTIVE"
+                UserDefaultKeyList.Auth.isActiveUser = entity.status == .active
                 ? true
                 : false
                 return true
             }
             .replaceError(with: false)
-            .handleEvents(receiveOutput: { isSuccessed in
+            .withUnretained(self)
+            .flatMap { owner, isSuccessed in
                 guard isSuccessed else {
-                    self.fetchSoptampUser()
-                    return
+                    return Driver(Just(false))
                 }
-            })
+                return owner.fetchSoptampUser()
+            }
             .eraseToAnyPublisher()
     }
     
-    private func fetchSoptampUser() {
-        userService.fetchSoptampUser()
+    private func fetchSoptampUser() -> AnyPublisher<Bool, Never> {
+        return userService.fetchSoptampUser()
             .replaceError(
                 with: .init(
                     nickname: "닉네임 설정 오류",
                     profileMessage: "설정된 한 마디가 없습니다.",
                     points: 0
                 ))
-            .sink { entity in
+            .handleEvents(receiveOutput: { entity in
                 UserDefaultKeyList.User.soptampName = entity.nickname
                 UserDefaultKeyList.User.sentence = entity.profileMessage ?? "설정된 한 마디가 없습니다."
-            }.store(in: cancelBag)
+            })
+            .map { _ in
+                return true
+            }
+            .eraseToAnyPublisher()
     }
 }

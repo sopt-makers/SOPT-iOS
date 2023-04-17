@@ -13,7 +13,6 @@ import Moya
 import Core
 
 public enum UserAPI {
-    case fetchUser
     case fetchSoptampUser
     case editSentence(sentence: String)
     case getNicknameAvailable(nickname: String)
@@ -30,8 +29,6 @@ extension UserAPI: BaseAPI {
     // MARK: - Path
     public var path: String {
         switch self {
-        case .fetchUser:
-            return ""
         case .fetchSoptampUser:
             return "soptamp"
         case .editSentence:
@@ -52,7 +49,7 @@ extension UserAPI: BaseAPI {
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .fetchUser, .getNicknameAvailable, .getUserMainInfo:
+        case .getNicknameAvailable, .getUserMainInfo, .fetchSoptampUser:
             return .get
         case .editSentence, .changeNickname, .reissuance:
             return .patch

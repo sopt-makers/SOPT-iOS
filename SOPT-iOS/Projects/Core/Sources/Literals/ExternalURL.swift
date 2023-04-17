@@ -20,8 +20,14 @@ public struct ExternalURL {
     }
     
     public struct Playground {
+        #if DEV || PROD
+        public static let main = "https://playground.sopt.org"
+        #else
+        public static let main = "https://sopt-internal-dev.pages.dev"
+        #endif
+        
         public static func login(state: String = "") -> String {
-            return "https://sopt-internal-dev.pages.dev/auth/oauth?redirect_uri=sopt-makers://org.sopt.makers.iOS/oauth2redirect&state=\(state)"
+            return "\(main)/auth/oauth?redirect_uri=sopt-makers://org.sopt.makers.iOS/oauth2redirect&state=\(state)"
         }
     }
 }

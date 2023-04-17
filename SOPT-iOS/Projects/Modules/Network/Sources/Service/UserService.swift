@@ -16,8 +16,6 @@ import Core
 public typealias DefaultUserService = BaseService<UserAPI>
 
 public protocol UserService {
-    // TODO: - UserEntity 관련 변경사항 적용하기
-    func fetchUser() -> AnyPublisher<SignInEntity, Error>
     func fetchSoptampUser() -> AnyPublisher<SoptampUserEntity, Error>
     
     func editSentence(sentence: String) -> AnyPublisher<EditSentenceEntity, Error>
@@ -31,9 +29,6 @@ public protocol UserService {
 }
 
 extension DefaultUserService: UserService {
-    public func fetchUser() -> AnyPublisher<SignInEntity, Error> {
-        requestObjectInCombine(.fetchUser)
-    }
     
     public func fetchSoptampUser() -> AnyPublisher<SoptampUserEntity, Error> {
         requestObjectInCombine(.fetchSoptampUser)
@@ -57,6 +52,8 @@ extension DefaultUserService: UserService {
     
     public func withdrawal() -> AnyPublisher<Int, Error> {
         return requestObjectInCombineNoResult(.withdrawal)
+    }
+    
     public func reissuance(completion: @escaping ((Bool) -> Void)) {
         provider.request(.reissuance) { response in
             switch response {
@@ -67,7 +64,7 @@ extension DefaultUserService: UserService {
                     UserDefaultKeyList.Auth.appAccessToken = body.accessToken
                     UserDefaultKeyList.Auth.appRefreshToken = body.refreshToken
                     UserDefaultKeyList.Auth.playgroundToken = body.playgroundToken
-                    UserDefaultKeyList.Auth.isActiveUser = body.status == "ACTIVE"
+                    UserDefaultKeyList.Auth.isActiveUser = body.status == .active
                     ? true
                     : false
                     completion(true)
