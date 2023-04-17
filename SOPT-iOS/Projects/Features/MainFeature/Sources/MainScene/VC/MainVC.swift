@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SafariServices
 
 import Core
 import Domain
@@ -21,12 +22,14 @@ import MainFeatureInterface
 import StampFeatureInterface
 import SettingFeatureInterface
 import AppMyPageFeatureInterface
+import AttendanceFeatureInterface
 
 public class MainVC: UIViewController, MainViewControllable {
     public typealias factoryType = AuthFeatureViewBuildable
     & StampFeatureViewBuildable
     & SettingFeatureViewBuildable
     & AppMyPageFeatureViewBuildable
+    & AttendanceFeatureViewBuildable
     
     // MARK: - Properties
     
@@ -163,10 +166,31 @@ extension MainVC {
 
 extension MainVC: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.section == 3 {
-            guard viewModel.userType != .visitor else { return }
-            presentSoptampFeature()
-        }
+      switch (indexPath.section, indexPath.row) {
+      case (0, _): break
+      case (1, _):
+          guard let service = viewModel.mainServiceList[safe: indexPath.item - 1] else { return }
+          
+          guard service != .attendance else {
+              let viewController = factory.makeShowAttendanceVC().viewController
+              self.navigationController?.pushViewController(viewController, animated: true)
+              return
+          }
+
+          let safariViewController = SFSafariViewController(url: URL(string: service.serviceDomainLink)!)
+          self.present(safariViewController, animated: true)
+  
+      case (2, _):
+          guard let service = viewModel.otherServiceList[safe: indexPath.item] else { return }
+          
+          let safariViewController = SFSafariViewController(url: URL(string: service.serviceDomainLink)!)
+          self.present(safariViewController, animated: true)
+      case(3, _):
+          guard viewModel.userType != .visitor else { return }
+          
+          presentSoptampFeature()
+      default: break
+      }
     }
 }
 

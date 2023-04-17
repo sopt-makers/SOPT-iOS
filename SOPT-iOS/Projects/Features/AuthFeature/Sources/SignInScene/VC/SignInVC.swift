@@ -195,7 +195,9 @@ extension SignInVC {
         )
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
         
-        output.isSignInSuccess.sink { [weak self] isSuccessed in
+        output.isSignInSuccess
+            .removeDuplicates()
+            .sink { [weak self] isSuccessed in
             guard let self = self else { return }
             if isSuccessed {
                 self.setRootViewToMain()
