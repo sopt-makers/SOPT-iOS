@@ -15,6 +15,8 @@ public enum AttendanceAPI {
     case lecture
     case score
     case total
+    case lectureRound(lectureId: Int)
+    case attend(lectureRoundId: Int, code: Int)
 }
 
 extension AttendanceAPI: BaseAPI {
@@ -39,22 +41,33 @@ extension AttendanceAPI: BaseAPI {
             return "score"
         case .total:
             return "total"
+        case .lectureRound(let lectureId):
+            return "lecture/round/\(lectureId)"
+        case .attend:
+            return "attend"
         }
     }
     
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .lecture, .score, .total:
+        case .lecture, .score, .total, .lectureRound:
             return .get
+        case .attend:
+            return .post
         }
     }
     
     // MARK: - Parameters
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
+        
         switch self {
-        default: break
+        case let .attend(lectureRoundId: id, code: code):
+            params["subLectureId"] = id
+            params["code"] = code
+        default:
+            break
         }
         return params
     }

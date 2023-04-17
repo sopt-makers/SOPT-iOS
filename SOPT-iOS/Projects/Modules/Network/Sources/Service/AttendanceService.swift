@@ -17,6 +17,8 @@ public typealias DefaultAttendanceService = BaseService<AttendanceAPI>
 public protocol AttendanceService {
     func fetchAttendanceSchedule() -> AnyPublisher<AttendanceScheduleEntity, Error>
     func fetchAttendanceScore() -> AnyPublisher<AttendanceScoreEntity, Error>
+    func fetchAttendanceRound(lectureId: Int) -> AnyPublisher<BaseEntity<AttendanceRoundEntity>, Error>
+    func postAttendance(lectureRoundId: Int, code: Int) -> AnyPublisher<BaseEntity<Int>, Error>
 }
 
 extension DefaultAttendanceService: AttendanceService {
@@ -27,5 +29,13 @@ extension DefaultAttendanceService: AttendanceService {
     
     public func fetchAttendanceScore() -> AnyPublisher<AttendanceScoreEntity, Error> {
         requestObjectInCombine(AttendanceAPI.lecture)
+    }
+    
+    public func fetchAttendanceRound(lectureId: Int) -> AnyPublisher<BaseEntity<AttendanceRoundEntity>, Error> {
+        requestObjectInCombine(AttendanceAPI.lectureRound(lectureId: lectureId))
+    }
+    
+    public func postAttendance(lectureRoundId: Int, code: Int) -> AnyPublisher<BaseEntity<Int>, Error> {
+        requestObjectInCombine(AttendanceAPI.attend(lectureRoundId: lectureRoundId, code: code))
     }
 }
