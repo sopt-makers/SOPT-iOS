@@ -10,12 +10,16 @@ import Foundation
 
 import Alamofire
 import Moya
+import Core
 
 public enum UserAPI {
-    case fetchUser
+    case fetchSoptampUser
     case editSentence(sentence: String)
     case getNicknameAvailable(nickname: String)
     case changeNickname(nickname: String)
+    case reissuance
+    case getUserMainInfo
+    case withdrawal
 }
 
 extension UserAPI: BaseAPI {
@@ -25,24 +29,32 @@ extension UserAPI: BaseAPI {
     // MARK: - Path
     public var path: String {
         switch self {
-        case .fetchUser:
-            return ""
+        case .fetchSoptampUser:
+            return "soptamp"
         case .editSentence:
             return "profile-message"
         case .changeNickname:
             return "nickname"
         case .getNicknameAvailable(let nickname):
             return "nickname/\(nickname)"
+        case .reissuance:
+            return "refresh"
+        case .getUserMainInfo:
+            return "/main"
+        case .withdrawal:
+            return ""
         }
     }
     
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .fetchUser, .getNicknameAvailable:
+        case .getNicknameAvailable, .getUserMainInfo, .fetchSoptampUser:
             return .get
-        case .editSentence, .changeNickname:
+        case .editSentence, .changeNickname, .reissuance:
             return .patch
+        case .withdrawal:
+            return .delete
         }
     }
     
@@ -54,6 +66,8 @@ extension UserAPI: BaseAPI {
             params["nickname"] = nickname
         case .editSentence(let sentence):
             params["profileMessage"] = sentence
+        case .reissuance:
+            params["refreshToken"] = UserDefaultKeyList.Auth.appRefreshToken
         default: break
         }
         return params
@@ -68,7 +82,7 @@ extension UserAPI: BaseAPI {
     
     public var task: Task {
         switch self {
-        case .changeNickname, .editSentence:
+        case .changeNickname, .editSentence, .reissuance:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain

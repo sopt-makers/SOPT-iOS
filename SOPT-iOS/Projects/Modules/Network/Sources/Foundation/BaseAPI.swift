@@ -19,6 +19,7 @@ public enum APIType {
     case stamp
     case user
     case firebase
+    case config
 }
 
 public protocol BaseAPI: TargetType {
@@ -45,6 +46,8 @@ extension BaseAPI {
             base += "/user"
         case .firebase:
             base += "/firebase"
+        case .config:
+            base += "/config"
         }
         
         guard let url = URL(string: base) else {
@@ -70,10 +73,10 @@ public enum HeaderType {
             return ["Content-Type": "application/json"]
         case .jsonWithToken:
             return ["Content-Type": "application/json",
-                    "Authorization": UserDefaultKeyList.Auth.appAccessToken ?? "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzb3B0LW1ha2VycyIsImlhdCI6MTY4MTIwMTkwNywic3ViIjoiMiIsImV4cCI6MTY4MTI4ODMwNywiaWQiOjIsInJvbGVzIjoiVVNFUiJ9.X-b45sMMQeUiyDnZEHdKEowor_g0wH_YlugeuAhWqYk"]
+                    "Authorization": UserDefaultKeyList.Auth.appAccessToken ?? ""]
         case .multipartWithToken:
             return ["Content-Type": "multipart/form-data",
-                    "Authorization": UserDefaultKeyList.Auth.appAccessToken ?? "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzb3B0LW1ha2VycyIsImlhdCI6MTY4MTIwMTkwNywic3ViIjoiMiIsImV4cCI6MTY4MTI4ODMwNywiaWQiOjIsInJvbGVzIjoiVVNFUiJ9.X-b45sMMQeUiyDnZEHdKEowor_g0wH_YlugeuAhWqYk"]
+                    "Authorization": UserDefaultKeyList.Auth.appAccessToken ?? ""]
         }
     }
 }

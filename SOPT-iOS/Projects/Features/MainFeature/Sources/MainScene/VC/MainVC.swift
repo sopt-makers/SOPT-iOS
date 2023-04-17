@@ -9,6 +9,7 @@
 import UIKit
 
 import Core
+import Domain
 import DSKit
 
 import Combine
@@ -27,6 +28,8 @@ public class MainVC: UIViewController, MainViewControllable {
     public var viewModel: MainViewModel!
     public var factory: (AuthFeatureViewBuildable & StampFeatureViewBuildable & SettingFeatureViewBuildable)!
     private var cancelBag = CancelBag()
+    
+    private var userMainInfo: UserMainInfoModel?
     
     // MARK: - UI Components
     
@@ -85,8 +88,18 @@ extension MainVC {
 
 extension MainVC {
     private func bindViewModels() {
-        let input = MainViewModel.Input()
+        let input = MainViewModel.Input(viewDidLoad: Driver.just(()))
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.getUserMainInfoDidComplete
+            .sink { [weak self] _ in
+                self?.collectionView.reloadData()
+            }.store(in: self.cancelBag)
+        
+        output.isServiceAvailable
+            .sink { [weak self] isServiceAvailable in
+                print("현재 앱 서비스 사용 가능(심사 X)?: \(isServiceAvailable)")
+            }.store(in: self.cancelBag)
     }
     
     private func bindViews() {
@@ -120,9 +133,11 @@ extension MainVC {
         self.collectionView.register(AppServiceCVC.self, forCellWithReuseIdentifier: AppServiceCVC.className)
     }
     
-    private func pushSoptampFeature() {
+    private func presentSoptampFeature() {
         let vc = factory.makeMissionListVC(sceneType: .default).viewController
-        navigationController?.pushViewController(vc, animated: true)
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true)
     }
     
     private func pushSettingFeature() {
@@ -140,10 +155,9 @@ extension MainVC {
 
 extension MainVC: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // TODO: - 디버깅을 위한 임시 솝탬프 피쳐 연결
         if indexPath.section == 3 {
             guard viewModel.userType != .visitor else { return }
-            pushSoptampFeature()
+            presentSoptampFeature()
         }
     }
 }
@@ -165,7 +179,7 @@ extension MainVC: UICollectionViewDataSource {
                                                   withReuseIdentifier: UserHistoryHeaderView.className,
                                                   for: indexPath) as? UserHistoryHeaderView
             else { return UICollectionReusableView() }
-            headerView.initCell(userType: viewModel.userType, name: "이솝트", months: "6")
+            headerView.initCell(userType: viewModel.userType, name: viewModel.userMainInfo?.name, months: viewModel.calculateMonths())
             return headerView
         case 3:
             guard let headerView = collectionView
@@ -196,14 +210,16 @@ extension MainVC: UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UserHistoryCVC.className,
                                                                 for: indexPath) as? UserHistoryCVC
             else { return UICollectionViewCell() }
-            cell.initCell(userType: viewModel.userType, recentHistory: 32, allHistory: [31, 30, 29, 28, 27, 26, 25])
+            cell.initCell(userType: viewModel.userType,
+                          recentHistory: viewModel.userMainInfo?.historyList.first,
+                          allHistory: viewModel.userMainInfo?.historyList)
             return cell
         case 1:
             if indexPath.item == 0 {
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BriefNoticeCVC.className,
                                                                     for: indexPath) as? BriefNoticeCVC
                 else { return UICollectionViewCell() }
-                cell.initCell(userType: viewModel.userType, text: viewModel.briefNotice)
+                cell.initCell(userType: viewModel.userType, text: viewModel.userMainInfo?.announcement ?? "")
                 return cell
             }
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className, for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }

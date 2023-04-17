@@ -23,10 +23,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(frame: scene.coordinateSpace.bounds)
         window?.windowScene = scene
-        let rootVC = container.makeShowAttendanceVC().viewController
-//        let rootVC = container.makeMainVC(userType: .active).viewController
+//        let rootVC = container.makeShowAttendanceVC().viewController
+        let rootVC = container.makeSplashVC().viewController
         window?.rootViewController = UINavigationController(rootViewController: rootVC)
         window?.makeKeyAndVisible()
+    }
+    
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        parseContexts(openURLContexts: URLContexts)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {}

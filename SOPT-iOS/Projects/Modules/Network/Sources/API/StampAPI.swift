@@ -38,8 +38,9 @@ extension StampAPI: BaseAPI {
     // MARK: - Path
     public var path: String {
         switch self {
-        case .fetchStampListDetail(let missionId),
-                .postStamp(let missionId, _),
+        case .fetchStampListDetail(let missionId):
+            return "mission/\(missionId)"
+        case .postStamp(let missionId, _),
                 .putStamp(let missionId, _):
             return "/\(missionId)"
         case .deleteStamp(let stampId):
