@@ -29,7 +29,11 @@ public class SentenceEditVC: UIViewController, SentenceEditViewControllable {
     
     // MARK: - UI Components
     
-    private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton)
+    private lazy var naviBar = OPNavigationBar(
+            self,
+            type: .oneLeftButton,
+            backgroundColor: DSKitAsset.Colors.black100.color
+        )
         .addMiddleLabel(title: I18N.Setting.SentenceEdit.sentenceEdit)
     
     private lazy var textView: UITextView = {

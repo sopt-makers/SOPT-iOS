@@ -39,7 +39,11 @@ public final class AppMyPageVC: UIViewController, AppMyPageViewControllable {
     private let cancelBag = CancelBag()
 
     // MARK: - Views
-    private lazy var navigationBar = OPNavigationBar(self, type: .oneLeftButton)
+    private lazy var navigationBar = OPNavigationBar(
+            self,
+            type: .oneLeftButton,
+            backgroundColor: DSKitAsset.Colors.black100.color
+        )
         .addMiddleLabel(title: I18N.MyPage.navigationTitle)
     
     private let scrollView = UIScrollView()

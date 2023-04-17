@@ -25,7 +25,11 @@ public class WithdrawalVC: UIViewController, WithdrawalViewControllable {
     
     // MARK: - UI Components
 
-    private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton)
+    private lazy var naviBar = OPNavigationBar(
+            self,
+            type: .oneLeftButton,
+            backgroundColor: DSKitAsset.Colors.black100.color
+        )
         .addMiddleLabel(title: I18N.Setting.Withdrawal.withdrawal)
     
     private let cautionLabel = UILabel().then {

@@ -28,7 +28,11 @@ public class NicknameEditVC: UIViewController, NicknameEditViewControllable {
     
     // MARK: - UI Components
     
-    private lazy var navigationBar = OPNavigationBar(self, type: .oneLeftButton)
+    private lazy var navigationBar = OPNavigationBar(
+            self,
+            type: .oneLeftButton,
+            backgroundColor: DSKitAsset.Colors.black100.color
+        )
         .addMiddleLabel(title: I18N.Setting.NicknameEdit.nicknameEdit)
     
     private let nicknameTextFieldView = AppTextFieldView(type: .plain)

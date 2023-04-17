@@ -20,7 +20,11 @@ public class TermsOfServiceVC: UIViewController, TermsOfServiceViewControllable 
     
     // MARK: - UI Components
     
-    private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton)
+    private lazy var naviBar = OPNavigationBar(
+            self,
+            type: .oneLeftButton,
+            backgroundColor: DSKitAsset.Colors.black100.color
+        )
         .addMiddleLabel(title: I18N.Setting.serviceTerm)
 
     private let textView = UITextView().then {

@@ -20,7 +20,11 @@ public class PrivacyPolicyVC: UIViewController, PrivacyPolicyViewControllable {
         
     // MARK: - UI Components
     
-    private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton)
+    private lazy var naviBar = OPNavigationBar(
+            self,
+            type: .oneLeftButton,
+            backgroundColor: DSKitAsset.Colors.black100.color
+        )
         .addMiddleLabel(title: I18N.Setting.personalInfoPolicy)
     
     private let textView = UITextView().then {
