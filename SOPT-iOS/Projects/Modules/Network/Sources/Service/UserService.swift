@@ -28,7 +28,6 @@ public protocol UserService {
 }
 
 extension DefaultUserService: UserService {
-    
     public func fetchSoptampUser() -> AnyPublisher<SoptampUserEntity, Error> {
         requestObjectInCombine(.fetchSoptampUser)
     }
@@ -44,7 +43,11 @@ extension DefaultUserService: UserService {
     public func changeNickname(nickname: String) -> AnyPublisher<Int, Error> {
         requestObjectInCombineNoResult(.changeNickname(nickname: nickname))
     }
-    
+  
+    public func getUserMainInfo() -> AnyPublisher<MainEntity, Error> {
+        requestObjectInCombine(.getUserMainInfo)
+    }
+  
     public func withdraw() -> AnyPublisher<Int, Error> {
         requestObjectInCombineNoResult(.withdrawal)
     }

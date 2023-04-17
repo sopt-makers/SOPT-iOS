@@ -112,13 +112,14 @@ extension MainVC {
         naviBar.rightButton.publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
-//                let viewController = owner.factory.makeAppMyPageVC(userType: owner.viewModel.userType).viewController
-//                owner.navigationController?.pushViewController(viewController, animated: true)
-                if owner.viewModel.userType == .visitor {
-                    owner.setRootViewToSignIn()
-                    return
-                }
-                owner.pushSettingFeature()
+                let viewController = owner.factory.makeAppMyPageVC(userType: owner.viewModel.userType).viewController
+                owner.navigationController?.pushViewController(viewController, animated: true)
+              
+//                if owner.viewModel.userType == .visitor {
+//                    owner.setRootViewToSignIn()
+//                    return
+//                }
+//                owner.pushSettingFeature()
             }.store(in: self.cancelBag)
     }
     
