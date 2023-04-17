@@ -18,6 +18,7 @@ import SnapKit
 import Then
 
 import AuthFeatureInterface
+import BaseFeatureDependency
 import MainFeatureInterface
 import StampFeatureInterface
 import SettingFeatureInterface
@@ -30,6 +31,7 @@ public class MainVC: UIViewController, MainViewControllable {
     & SettingFeatureViewBuildable
     & AppMyPageFeatureViewBuildable
     & AttendanceFeatureViewBuildable
+    & AlertViewBuildable
     
     // MARK: - Properties
     
@@ -37,8 +39,8 @@ public class MainVC: UIViewController, MainViewControllable {
     public var factory: factoryType!
     private var cancelBag = CancelBag()
     
-    private var userMainInfo: UserMainInfoModel?
-    
+    private var requestUserInfo = CurrentValueSubject<Void, Never>(())
+
     // MARK: - UI Components
     
     private let naviBar = MainNavigationBar()
@@ -96,16 +98,20 @@ extension MainVC {
 
 extension MainVC {
     private func bindViewModels() {
-        let input = MainViewModel.Input(viewDidLoad: Driver.just(()))
+        let input = MainViewModel.Input(requestUserInfo: self.requestUserInfo)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.getUserMainInfoDidComplete
             .sink { [weak self] _ in
+                guard let userMainInfo = self?.viewModel.userMainInfo, userMainInfo.withError == false else {
+                    self?.presentNetworkAlertVC()
+                    return
+                }
                 self?.collectionView.reloadData()
             }.store(in: self.cancelBag)
         
         output.isServiceAvailable
-            .sink { [weak self] isServiceAvailable in
+            .sink { isServiceAvailable in
                 print("현재 앱 서비스 사용 가능(심사 X)?: \(isServiceAvailable)")
             }.store(in: self.cancelBag)
     }
@@ -117,12 +123,6 @@ extension MainVC {
             .sink { owner, _ in
                 let viewController = owner.factory.makeAppMyPageVC(userType: owner.viewModel.userType).viewController
                 owner.navigationController?.pushViewController(viewController, animated: true)
-              
-//                if owner.viewModel.userType == .visitor {
-//                    owner.setRootViewToSignIn()
-//                    return
-//                }
-//                owner.pushSettingFeature()
             }.store(in: self.cancelBag)
     }
     
@@ -159,6 +159,20 @@ extension MainVC {
     private func setRootViewToSignIn() {
         let navigation = UINavigationController(rootViewController: factory.makeSignInVC().viewController)
         ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
+    }
+    
+    private func presentNetworkAlertVC() {
+        let networkAlertVC = factory.makeAlertVC(
+            type: .titleDescription,
+            theme: .main,
+            title: I18N.Default.networkError,
+            description: I18N.Default.networkErrorDescription,
+            customButtonTitle: I18N.Default.ok,
+            customAction:{ [weak self] in
+                self?.requestUserInfo.send()
+            }).viewController
+        
+        self.present(networkAlertVC, animated: false)
     }
 }
 
