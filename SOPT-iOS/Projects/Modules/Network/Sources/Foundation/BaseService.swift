@@ -22,10 +22,14 @@ open class BaseService<Target: TargetType> {
     
     var cancelBag = CancelBag()
     
-    private lazy var provider = self.defaultProvider
+    lazy var provider = self.defaultProvider
     
     private lazy var defaultProvider: MoyaProvider<API> = {
-        let provider = MoyaProvider<API>(endpointClosure: endpointClosure, session: DefaultAlamofireManager.shared)
+        let provider = MoyaProvider<API>(
+            endpointClosure: endpointClosure,
+            session: DefaultAlamofireManager.shared,
+            plugins: [NetworkLoggerPlugin(verbose: true)]
+        )
         return provider
     }()
     
@@ -76,11 +80,9 @@ extension BaseService {
                         let body = try decoder.decode(T.self, from: value.data)
                         promise(.success(body))
                     } catch let error {
-                        dump(error)
                         promise(.failure(error))
                     }
                 case .failure(let error):
-                    dump(error)
                     promise(.failure(error))
                 }
             }
@@ -94,7 +96,6 @@ extension BaseService {
                 case .success(let value):
                     promise(.success(value.statusCode))
                 case .failure(let error):
-                    dump(error)
                     promise(.failure(error))
                 }
             }

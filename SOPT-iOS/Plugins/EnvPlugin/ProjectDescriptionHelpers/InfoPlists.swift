@@ -35,7 +35,14 @@ public extension Project {
         "NSAppTransportSecurity": ["NSAllowsArbitraryLoads": true],
         "ITSAppUsesNonExemptEncryption": false,
         "UIUserInterfaceStyle": "Light",
-        "NSPhotoLibraryUsageDescription": "미션과 관련된 사진을 업로드하기 위해 갤러리 권한이 필요합니다."
+        "NSPhotoLibraryUsageDescription": "미션과 관련된 사진을 업로드하기 위해 갤러리 권한이 필요합니다.",
+        "CFBundleURLTypes": [
+            [
+                "CFBundleTypeRole": "Editor",
+                "CFBundleURLName": "sopt-makers",
+                "CFBundleURLSchemes": ["sopt-makers"]
+            ]
+        ]
     ]
     
     static let demoInfoPlist: [String: InfoPlist.Value] = [

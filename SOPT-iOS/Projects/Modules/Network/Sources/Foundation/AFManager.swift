@@ -16,7 +16,8 @@ public class DefaultAlamofireManager: Alamofire.Session {
         configuration.timeoutIntervalForRequest = 10
         configuration.timeoutIntervalForResource = 10
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
-        
-        return DefaultAlamofireManager(configuration: configuration)
+        let interceptor = AlamoInterceptor()
+        let session = DefaultAlamofireManager(configuration: configuration, interceptor: interceptor)
+        return session
     }()
 }

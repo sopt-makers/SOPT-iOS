@@ -20,13 +20,18 @@ import AuthFeatureInterface
 import MainFeatureInterface
 import StampFeatureInterface
 import SettingFeatureInterface
+import AppMyPageFeatureInterface
 
 public class MainVC: UIViewController, MainViewControllable {
+    public typealias factoryType = AuthFeatureViewBuildable
+    & StampFeatureViewBuildable
+    & SettingFeatureViewBuildable
+    & AppMyPageFeatureViewBuildable
     
     // MARK: - Properties
     
     public var viewModel: MainViewModel!
-    public var factory: (AuthFeatureViewBuildable & StampFeatureViewBuildable & SettingFeatureViewBuildable)!
+    public var factory: factoryType!
     private var cancelBag = CancelBag()
     
     private var userMainInfo: UserMainInfoModel?
@@ -107,11 +112,14 @@ extension MainVC {
         naviBar.rightButton.publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
-                if owner.viewModel.userType == .visitor {
-                    owner.setRootViewToSignIn()
-                    return
-                }
-                owner.pushSettingFeature()
+                let viewController = owner.factory.makeAppMyPageVC(userType: owner.viewModel.userType).viewController
+                owner.navigationController?.pushViewController(viewController, animated: true)
+              
+//                if owner.viewModel.userType == .visitor {
+//                    owner.setRootViewToSignIn()
+//                    return
+//                }
+//                owner.pushSettingFeature()
             }.store(in: self.cancelBag)
     }
     
@@ -133,9 +141,11 @@ extension MainVC {
         self.collectionView.register(AppServiceCVC.self, forCellWithReuseIdentifier: AppServiceCVC.className)
     }
     
-    private func pushSoptampFeature() {
+    private func presentSoptampFeature() {
         let vc = factory.makeMissionListVC(sceneType: .default).viewController
-        navigationController?.pushViewController(vc, animated: true)
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true)
     }
     
     private func pushSettingFeature() {
@@ -153,10 +163,9 @@ extension MainVC {
 
 extension MainVC: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // TODO: - 디버깅을 위한 임시 솝탬프 피쳐 연결
         if indexPath.section == 3 {
             guard viewModel.userType != .visitor else { return }
-            pushSoptampFeature()
+            presentSoptampFeature()
         }
     }
 }

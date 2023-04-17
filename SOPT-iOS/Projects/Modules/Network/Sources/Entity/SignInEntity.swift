@@ -10,4 +10,11 @@ import Foundation
 
 public struct SignInEntity: Codable {
     public let accessToken, refreshToken, playgroundToken: String
+    public let status: UserStatus
+}
+
+public enum UserStatus: String, Codable {
+    case active = "ACTIVE"
+    case inactive = "INACTIVE"
+    case visitor = "UNAUTHENTICATED"
 }

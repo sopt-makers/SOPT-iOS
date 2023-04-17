@@ -16,7 +16,8 @@ let project = Project.makeModule(
         .Features.Stamp.Interface,
         .Features.Attendance.Interface,
         .Features.Notice.Interface,
-        .Features.Setting.Interface
+        .Features.Setting.Interface,
+        .Features.AppMyPage.Interface
     ],
     interfaceDependencies: [
         .Features.BaseFeatureDependency
