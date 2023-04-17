@@ -105,7 +105,7 @@ extension MainViewModel {
     // 파라미터로 넣은 기수의 시작 날짜를 리턴
     private func calculateJoinDateWithFirstHistory(history: Int) -> Date? {
         let yearDifference = history / 2
-        var month = (history % 2 == 0) ? 3 : 9 // 짝수 기수는 3월, 홀수 기수는 9월 시작
+        let month = (history % 2 == 0) ? 3 : 9 // 짝수 기수는 3월, 홀수 기수는 9월 시작
         // 1기를 2007년으로 계산
         return Date.from(year: yearDifference + 2007, month: month, day: 1)
     }
