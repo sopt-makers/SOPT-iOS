@@ -215,6 +215,31 @@ public struct I18N {
         public static let completeAttendacne = "출석완료"
         public static let giveFeedback = "세션 피드백하기"
     }
+    
+    public struct MyPage {
+        public static let navigationTitle = "마이페이지"
+        public static let servicePolicySectionTitle = "서비스 이용 방침"
+        public static let privacyPolicy = "개인정보 처리 방침"
+        public static let termsOfUse = "서비스 이용 약관"
+        public static let sendFeedback = "의견 보내기"
+        public static let soptampSectionTitle = "솝탬프 설정"
+        public static let editOnlineSentence = "한 마디 편집"
+        public static let editNickname = "닉네임 변경"
+        public static let resetStamp = "스탬프 초기화"
+        public static let etcSectionGroupTitle = "기타"
+        public static let logout = "로그아웃"
+        public static let resetMissionTitle = "미션을 초기화 하실건가요?"
+        public static let resetMissionDescription = "사진, 메모가 삭제되고\n 전체 미션이 미완료상태로 초기화됩니다."
+        public static let reset = "초기화"
+        public static let resetSuccess = "초기화 되었습니다"
+        public static let logoutDialogTitle = "로그아웃"
+        public static let logoutDialogDescription = "정말 로그아웃을 하실 건가요?"
+        public static let logoutDialogGrantButtonTitle = "로그아웃"
+        public static let login = "로그인"
+
+
+        public static let withdrawal = "탈퇴하기"
+    }
 }
     
 extension I18N {

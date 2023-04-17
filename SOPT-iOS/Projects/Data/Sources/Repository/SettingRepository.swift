@@ -56,7 +56,7 @@ extension SettingRepository: SettingRepositoryInterface {
     }
     
     public func withdrawal() -> AnyPublisher<Bool, Never> {
-        return userService.withdrawal()
+        return userService.withdraw()
             .handleEvents(receiveOutput: { status in
                 if status == 200 {
                     UserDefaultKeyList.clearAllUserData()

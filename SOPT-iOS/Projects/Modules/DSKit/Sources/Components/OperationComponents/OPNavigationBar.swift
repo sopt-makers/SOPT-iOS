@@ -23,7 +23,7 @@ public final class OPNavigationBar: UIView {
     
     // MARK: - Properties
     
-    private var vc: UIViewController?
+    private weak var vc: UIViewController?
     private var rightButtonClosure: (() -> Void)?
     public var rightButtonTapped: Driver<Void> {
         rightButton.publisher(for: .touchUpInside)

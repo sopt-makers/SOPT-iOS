@@ -25,7 +25,11 @@ open class BaseService<Target: TargetType> {
     lazy var provider = self.defaultProvider
     
     private lazy var defaultProvider: MoyaProvider<API> = {
-        let provider = MoyaProvider<API>(endpointClosure: endpointClosure, session: DefaultAlamofireManager.shared, plugins: [MoyaLoggingPlugin()])
+        let provider = MoyaProvider<API>(
+            endpointClosure: endpointClosure,
+            session: DefaultAlamofireManager.shared,
+            plugins: [NetworkLoggerPlugin(verbose: true)]
+        )
         return provider
     }()
     

@@ -20,13 +20,18 @@ public class PrivacyPolicyVC: UIViewController, PrivacyPolicyViewControllable {
         
     // MARK: - UI Components
     
-    private lazy var naviBar = STNavigationBar(self, type: .titleWithLeftButton)
-        .setTitle(I18N.Setting.personalInfoPolicy)
-        .setRightButton(.none)
+    private lazy var naviBar = OPNavigationBar(
+            self,
+            type: .oneLeftButton,
+            backgroundColor: DSKitAsset.Colors.black100.color
+        )
+        .addMiddleLabel(title: I18N.Setting.personalInfoPolicy)
     
     private let textView = UITextView().then {
         $0.text = I18N.ServiceUsagePolicy.privacyPolicy
-        $0.setTypoStyle(.SoptampFont.subtitle3)
+        $0.setTypoStyle(DSKitFontFamily.Suit.regular.font(size: 14))
+        $0.backgroundColor = DSKitAsset.Colors.black100.color
+        $0.textColor = DSKitAsset.Colors.white100.color
         $0.isEditable = false
         $0.showsVerticalScrollIndicator = false
         $0.setLineSpacing(lineSpacing: 5)
@@ -47,7 +52,7 @@ public class PrivacyPolicyVC: UIViewController, PrivacyPolicyViewControllable {
 extension PrivacyPolicyVC {
     
     private func setUI() {
-        self.view.backgroundColor = DSKitAsset.Colors.soptampWhite.color
+        self.view.backgroundColor = DSKitAsset.Colors.black100.color
     }
     
     private func setLayout() {
