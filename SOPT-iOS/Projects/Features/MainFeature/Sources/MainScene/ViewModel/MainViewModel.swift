@@ -74,7 +74,7 @@ extension MainViewModel {
             }.store(in: self.cancelBag)
         
         useCase.serviceState.asDriver()
-            .sink { [weak self] serviceState in
+            .sink { serviceState in
                 output.isServiceAvailable.send(serviceState.isAvailable)
             }.store(in: self.cancelBag)
     }
@@ -94,37 +94,31 @@ extension MainViewModel {
         }
     }
     
+    /// 최초 솝트 가입일로부터 몇달이 지났는지 계산
     func calculateMonths() -> String? {
-        guard let userMainInfo = userMainInfo else { return nil }
-        if userMainInfo.status == "ACTIVE" && userMainInfo.historyList.count > 0 {
-            guard var currentMonth = getCurrentMonth() else {
-                return String(userMainInfo.historyList.count * 5)
-            }
-
-            // 짝수 기수 -> 상반기
-            if let recent = userMainInfo.historyList.first {
-                var currentGenerationTime = 0
-                if recent % 2 == 0 {
-                    // 기수 시작 3월 기준으로 계산
-                    currentGenerationTime = currentMonth - 3 + 1
-                } else {
-                    // 현재 1월 일 때
-                    if currentMonth < 3 {
-                        currentMonth += 12
-                    }
-                    currentGenerationTime = currentMonth - 9 + 1
-                }
-                return String((userMainInfo.historyList.count-1)*5 + currentGenerationTime)
-            }
-        }
-        return String(userMainInfo.historyList.count * 5)
+        guard let userMainInfo = userMainInfo, let firstHistory = userMainInfo.historyList.last else { return nil }
+        guard let joinDate = calculateJoinDateWithFirstHistory(history: firstHistory), let monthDifference = calculateMonthDifference(since: joinDate) else { return nil }
+        
+        return String(monthDifference)
     }
     
-    private func getCurrentMonth() -> Int? {
-        let date = Date()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "M"
-        let monthString = dateFormatter.string(from: date)
-        return Int(monthString)
+    // 파라미터로 넣은 기수의 시작 날짜를 리턴
+    private func calculateJoinDateWithFirstHistory(history: Int) -> Date? {
+        let yearDifference = history / 2
+        var month = (history % 2 == 0) ? 3 : 9 // 짝수 기수는 3월, 홀수 기수는 9월 시작
+        // 1기를 2007년으로 계산
+        return Date.from(year: yearDifference + 2007, month: month, day: 1)
+    }
+
+    // 파라미터로 넣은 날짜로 부터 현재 몇달이 지났는지 계산
+    private func calculateMonthDifference(since startDate: Date) -> Int? {
+        let calendar = Calendar.current
+
+        let components = calendar.dateComponents([.month], from: startDate, to: .now)
+        guard let month = components.month else {
+            return nil
+        }
+        
+        return month >= 0 ? month + 1 : nil
     }
 }
