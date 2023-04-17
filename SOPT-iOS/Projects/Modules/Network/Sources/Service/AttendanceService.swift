@@ -15,17 +15,17 @@ import Moya
 public typealias DefaultAttendanceService = BaseService<AttendanceAPI>
 
 public protocol AttendanceService {
-    func fetchAttendanceSchedule() -> AnyPublisher<AttendanceScheduleEntity, Error>
-    func fetchAttendanceScore() -> AnyPublisher<AttendanceScoreEntity, Error>
+    func fetchAttendanceSchedule() -> AnyPublisher<BaseEntity<AttendanceScheduleEntity>, Error>
+    func fetchAttendanceScore() -> AnyPublisher<BaseEntity<AttendanceScoreEntity>, Error>
 }
 
 extension DefaultAttendanceService: AttendanceService {
     
-    public func fetchAttendanceSchedule() -> AnyPublisher<AttendanceScheduleEntity, Error> {
-        requestObjectInCombine(AttendanceAPI.score)
+    public func fetchAttendanceSchedule() -> AnyPublisher<BaseEntity<AttendanceScheduleEntity>, Error> {
+        requestObjectInCombine(AttendanceAPI.lecture)
     }
     
-    public func fetchAttendanceScore() -> AnyPublisher<AttendanceScoreEntity, Error> {
-        requestObjectInCombine(AttendanceAPI.lecture)
+    public func fetchAttendanceScore() -> AnyPublisher<BaseEntity<AttendanceScoreEntity>, Error> {
+        requestObjectInCombine(AttendanceAPI.total)
     }
 }
