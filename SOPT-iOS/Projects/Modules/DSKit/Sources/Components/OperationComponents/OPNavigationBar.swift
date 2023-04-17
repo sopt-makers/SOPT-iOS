@@ -39,7 +39,7 @@ public final class OPNavigationBar: UIView {
 
     // MARK: - initialization
     
-    public init(_ vc: UIViewController, type: OPNaviType, backgroundColor: UIColor = .black) {
+    public init(_ vc: UIViewController, type: OPNaviType, backgroundColor: UIColor = DSKitAsset.Colors.black100.color) {
         super.init(frame: .zero)
         self.vc = vc
         self.setUI(type, backgroundColor: backgroundColor)

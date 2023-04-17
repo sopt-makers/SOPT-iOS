@@ -88,8 +88,8 @@ extension ShowAttendanceVC {
     
     private func setUI() {
         self.navigationController?.navigationBar.isHidden = true
-        self.view.backgroundColor = .black
-        containerScrollView.backgroundColor = .black
+        self.view.backgroundColor = DSKitAsset.Colors.black100.color
+        containerScrollView.backgroundColor = DSKitAsset.Colors.black100.color
     }
     
     private func setLayout() {
