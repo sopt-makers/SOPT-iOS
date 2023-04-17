@@ -73,10 +73,10 @@ public enum HeaderType {
             return ["Content-Type": "application/json"]
         case .jsonWithToken:
             return ["Content-Type": "application/json",
-                    "Authorization": UserDefaultKeyList.Auth.appAccessToken ?? "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzb3B0LW1ha2VycyIsImlhdCI6MTY4MTU0NDk2Mywic3ViIjoiMSIsImV4cCI6MTY4MTYzMTM2MywiaWQiOjEsInBsYXlncm91bmRJZCI6MjIsInJvbGVzIjoiVVNFUiJ9.aMr_m2QzoWKoUwnAHntQMCwHppk0UjubfsILem9NI-I"]
+                    "Authorization": UserDefaultKeyList.Auth.appAccessToken ?? ""]
         case .multipartWithToken:
             return ["Content-Type": "multipart/form-data",
-                    "Authorization": UserDefaultKeyList.Auth.appAccessToken ?? "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzb3B0LW1ha2VycyIsImlhdCI6MTY4MTIwMTkwNywic3ViIjoiMiIsImV4cCI6MTY4MTI4ODMwNywiaWQiOjIsInJvbGVzIjoiVVNFUiJ9.X-b45sMMQeUiyDnZEHdKEowor_g0wH_YlugeuAhWqYk"]
+                    "Authorization": UserDefaultKeyList.Auth.appAccessToken ?? ""]
         }
     }
 }

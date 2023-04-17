@@ -48,6 +48,10 @@ extension SettingRepository: SettingRepositoryInterface {
         return userService.changeNickname(nickname: nickname)
             .map { _ in true }
             .replaceError(with: false)
+            .handleEvents(receiveOutput: { isSuccessed in
+                guard isSuccessed else { return }
+                UserDefaultKeyList.User.soptampName = nickname
+            })
             .eraseToAnyPublisher()
     }
     
@@ -55,10 +59,7 @@ extension SettingRepository: SettingRepositoryInterface {
         return userService.withdrawal()
             .handleEvents(receiveOutput: { status in
                 if status == 200 {
-                    UserDefaultKeyList.Auth.appAccessToken = nil
-                    UserDefaultKeyList.Auth.appRefreshToken = nil
-                    UserDefaultKeyList.Auth.playgroundToken = nil
-                    UserDefaultKeyList.User.sentence = nil
+                    UserDefaultKeyList.clearAllUserData()
                 }
             })
             .map { _ in true}
