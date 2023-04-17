@@ -103,7 +103,8 @@ extension ShowAttendanceVC {
         
         containerScrollView.snp.makeConstraints {
             $0.top.equalTo(navibar.snp.bottom)
-            $0.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            $0.bottom.equalToSuperview()
         }
         
         contentView.snp.makeConstraints {
