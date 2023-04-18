@@ -14,6 +14,19 @@ import Core
 import Alamofire
 import Moya
 
+
+public enum SOPTAPPError: Error {
+    case network(statusCode: Int)
+    case unknown
+    
+    init(error: Error, statusCode: Int? = 0) {
+        guard let statusCode else { self = .unknown ; return }
+        
+        self = .network(statusCode: statusCode)
+    }
+}
+
+
 open class BaseService<Target: TargetType> {
     
     typealias API = Target
@@ -79,6 +92,35 @@ extension BaseService {
                         let decoder = JSONDecoder()
                         let body = try decoder.decode(T.self, from: value.data)
                         promise(.success(body))
+                    } catch let error {
+                        promise(.failure(error))
+                    }
+                case .failure(let error):
+                    promise(.failure(error))
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
+
+    func requestObjectWithNetworkErrorInCombine<T: Decodable>(_ target: API) -> AnyPublisher<T, Error> {
+        return Future { promise in
+            self.provider.request(target) { response in
+                switch response {
+                case .success(let value):
+                    do {
+                        guard let response = value.response else { throw NSError(domain: "이 경우는 생각 업씀", code: -1000) }
+
+                        switch response.statusCode {
+                        case 200...399:
+                            let decoder = JSONDecoder()
+                            let body = try decoder.decode(T.self, from: value.data)
+                            promise(.success(body))
+                        case 400...599:
+                            // NOTE: (@승호) 여기에서 서버와 에러 처리 핸들링 해서 Error도 json Decode 해야 함
+                            // 임시로 Error 처리
+                            throw SOPTAPPError(error: NSError(domain: "임시에러", code: -1001), statusCode: response.statusCode)
+                        default: break
+                        }
                     } catch let error {
                         promise(.failure(error))
                     }

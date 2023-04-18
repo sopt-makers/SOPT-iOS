@@ -28,11 +28,18 @@ public class SignInRepository {
 }
 
 extension SignInRepository: SignInRepositoryInterface {
-    
-    public func requestSignIn(token: String) -> AnyPublisher<Bool, Never> {
+    public func requestSignIn(token: String) -> AnyPublisher<Bool, Error> {
         authService.signIn(token: token)
-            .catch({ _ in
-                return self.userService.reissuance()
+            .catch ({ error in
+                guard
+                    let error = error as? SOPTAPPError,
+                    case .network(let statusCode) = error,
+                    statusCode == 400
+                else {
+                    return self.userService.reissuance()
+                }
+                
+                return Fail(error: error).eraseToAnyPublisher()
             })
             .map { entity in
                 UserDefaultKeyList.Auth.appAccessToken = entity.accessToken
@@ -43,7 +50,6 @@ extension SignInRepository: SignInRepositoryInterface {
                 : false
                 return true
             }
-            .replaceError(with: false)
             .withUnretained(self)
             .flatMap { owner, isSuccessed in
                 guard isSuccessed else {
