@@ -9,6 +9,7 @@
 import UIKit
 
 import Combine
+import SafariServices
 import SnapKit
 import Then
 
@@ -33,17 +34,17 @@ public final class AppMyPageVC: UIViewController, AppMyPageViewControllable {
     private let viewModel: AppMyPageViewModel
     private let factory: SettingFeatureViewBuildable & AlertViewBuildable & AuthFeatureViewBuildable
     private let userType: UserType
-
+    
     // MARK: Combine
     private let resetButtonTapped = PassthroughSubject<Bool, Never>()
     private let cancelBag = CancelBag()
-
+    
     // MARK: - Views
     private lazy var navigationBar = OPNavigationBar(
-            self,
-            type: .oneLeftButton,
-            backgroundColor: DSKitAsset.Colors.black100.color
-        )
+        self,
+        type: .oneLeftButton,
+        backgroundColor: DSKitAsset.Colors.black100.color
+    )
         .addMiddleLabel(title: I18N.MyPage.navigationTitle)
     
     private let scrollView = UIScrollView()
@@ -158,7 +159,7 @@ public final class AppMyPageVC: UIViewController, AppMyPageViewControllable {
 extension AppMyPageVC {
     public override func viewDidLoad() {
         super.viewDidLoad()
- 
+        
         self.navigationController?.navigationBar.isHidden = true
         self.view.backgroundColor = DSKitAsset.Colors.black100.color
         
@@ -206,7 +207,7 @@ extension AppMyPageVC {
             $0.bottom.equalToSuperview()
         }
     }
-
+    
     // TODO: - (@승호): 적절히 객체에 위임하기
     private func addTabGestureOnListItems() {
         self.servicePolicySectionGroup.addTapGestureRecognizer {
@@ -292,7 +293,7 @@ extension AppMyPageVC {
         UserDefaultKeyList.Auth.appAccessToken = nil
         UserDefaultKeyList.Auth.appRefreshToken = nil
         UserDefaultKeyList.Auth.playgroundToken = nil
-        
+        SFSafariViewController.DataStore.default.clearWebsiteData()
     }
     
     private func showLoginViewController() {
