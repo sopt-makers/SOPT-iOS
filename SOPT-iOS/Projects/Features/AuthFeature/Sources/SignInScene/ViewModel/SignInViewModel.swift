@@ -25,7 +25,7 @@ public class SignInViewModel: ViewModelType {
     // MARK: - Outputs
     
     public struct Output {
-        var isSignInSuccess = PassthroughSubject<Bool, Never>()
+        var isSignInSuccess = PassthroughSubject<SiginInHandleableType, Never>()
     }
     
     // MARK: - init
