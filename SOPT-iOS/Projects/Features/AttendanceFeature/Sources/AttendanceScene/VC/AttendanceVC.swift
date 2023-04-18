@@ -199,8 +199,63 @@ extension AttendanceVC {
     
     private func bindViewModels() {
         
-        let input = AttendanceViewModel.Input()
+        closeButton.publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.dismiss(animated: true)
+            }
+            .store(in: self.cancelBag)
+        
+        let codeTextsChanged = attendanceCodeView.codeTextFields
+            .map { $0.textChanged }
+
+        let codeTextChanged = Publishers.MergeMany(codeTextsChanged)
+            .eraseToAnyPublisher()
+            .asDriver()
+        
+        let input = AttendanceViewModel.Input(
+            codeTextChanged: codeTextChanged
+        )
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
+        
+        output.codeTextFieldInfo
+            .withUnretained(self)
+            .sink { owner, code in
+                let (cur, nxt) = code
+                
+                [cur, nxt].forEach {
+                    owner.attendanceCodeView.codeTextFields[$0.idx]
+                        .updateUI(text: $0.text)
+                }
+                
+                owner.attendanceCodeView.codeTextFields[nxt.idx]
+                    .becomeFirstResponder()
+            }
+            .store(in: self.cancelBag)
+        
+        output.isAttendanceButtonEnabled
+            .withUnretained(self)
+            .sink { owner, isEnabled in
+                owner.attendanceButton.isEnabled = isEnabled
+            }
+            .store(in: self.cancelBag)
+    }
+    
+    private func setObserver() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    // MARK: - @objc
+    
+    @objc
+    private func keyboardWillShow(_ notification: NSNotification) {
+        self.view.window?.frame.origin.y = -(Metric.keyboardBottomOffset + self.safeAreaBottomInset())
+    }
+    
+    @objc
+    private func keyboardWillHide(_ notification: NSNotification) {
+        self.view.window?.frame.origin.y = (Metric.keyboardBottomOffset - self.safeAreaBottomInset())
     }
 }
