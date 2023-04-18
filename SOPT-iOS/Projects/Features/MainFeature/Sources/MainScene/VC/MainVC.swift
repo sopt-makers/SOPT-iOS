@@ -228,7 +228,7 @@ extension MainVC: UICollectionViewDelegate {
           safariViewController.playgroundStyle()
           self.present(safariViewController, animated: true)
       case(3, _):
-          guard viewModel.userType != .visitor else { return }
+          guard viewModel.userType != .visitor && viewModel.userType != .unregisteredInactive else { return }
           
           presentSoptampFeature()
       default: break
