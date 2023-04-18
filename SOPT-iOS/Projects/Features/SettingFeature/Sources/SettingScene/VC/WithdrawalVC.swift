@@ -8,6 +8,7 @@
 
 import UIKit
 import DSKit
+import SafariServices
 
 import Core
 
@@ -139,6 +140,7 @@ extension WithdrawalVC {
         let window = self.view.window!
         let navigation = UINavigationController(rootViewController: factory.makeSignInVC().viewController)
         navigation.isNavigationBarHidden = true
+        SFSafariViewController.DataStore.default.clearWebsiteData()
         ViewControllerUtils.setRootViewController(window: window, viewController: navigation, withAnimation: true) { newWindow in
             Toast.show(message: I18N.Setting.Withdrawal.withdrawalSuccess,
                        view: newWindow,

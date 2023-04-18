@@ -33,6 +33,7 @@ public class DefaultMainUseCase {
 extension DefaultMainUseCase: MainUseCase {
     public func getUserMainInfo() {
         repository.getUserMainInfo()
+            .replaceError(with: UserMainInfoModel.init(withError: true))
             .sink { event in
                 print("MainUseCase: \(event)")
             } receiveValue: { [weak self] userMainInfoModel in
