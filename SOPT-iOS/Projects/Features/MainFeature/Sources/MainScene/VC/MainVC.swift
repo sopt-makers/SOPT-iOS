@@ -192,12 +192,14 @@ extension MainVC: UICollectionViewDelegate {
           }
 
           let safariViewController = SFSafariViewController(url: URL(string: service.serviceDomainLink)!)
+          safariViewController.playgroundStyle()
           self.present(safariViewController, animated: true)
   
       case (2, _):
           guard let service = viewModel.otherServiceList[safe: indexPath.item] else { return }
           
           let safariViewController = SFSafariViewController(url: URL(string: service.serviceDomainLink)!)
+          safariViewController.playgroundStyle()
           self.present(safariViewController, animated: true)
       case(3, _):
           guard viewModel.userType != .visitor else { return }
