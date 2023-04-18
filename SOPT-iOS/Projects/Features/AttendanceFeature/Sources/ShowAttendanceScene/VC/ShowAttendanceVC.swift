@@ -33,18 +33,21 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
         }
     }
     
-    private var viewdidload = PassthroughSubject<Void, Never>()
+    private var viewWillAppear = PassthroughSubject<Void, Never>()
   
     // MARK: - UI Components
     
-    private let containerScrollView = UIScrollView()
+    private lazy var containerScrollView: UIScrollView = {
+        let sv = UIScrollView()
+        sv.showsVerticalScrollIndicator = false
+        sv.refreshControl = refresher
+        return sv
+    }()
+    
     private let contentView = UIView()
     
-    private lazy var navibar = OPNavigationBar(self, type: .bothButtons)
+    private lazy var navibar = OPNavigationBar(self, type: .oneLeftButton)
         .addMiddleLabel(title: I18N.Attendance.attendance)
-        .addRightButtonAction {
-            self.refreshButtonDidTap()
-        }
     
     private lazy var headerScheduleView: TodayScheduleView = {
         switch sceneType {
@@ -56,6 +59,12 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     }()
     
     private let attendanceScoreView = AttendanceScoreView()
+    
+    private let refresher: UIRefreshControl = {
+        let rf = UIRefreshControl()
+        rf.tintColor = .gray
+        return rf
+    }()
     
     // MARK: - Initialization
     
@@ -75,10 +84,13 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.bindViewModels()
-        self.bindViews()
         self.setUI()
         self.setLayout()
-        self.viewdidload.send(())
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.viewWillAppear.send(())
     }
 }
 
@@ -128,25 +140,20 @@ extension ShowAttendanceVC {
 
 extension ShowAttendanceVC {
     
-    private func bindViews() {
-        
-        navibar.rightButtonTapped
-            .asDriver()
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.refreshButtonDidTap()
-            }.store(in: self.cancelBag)
-    }
-    
     private func bindViewModels() {
         
-        let input = ShowAttendanceViewModel.Input(viewDidLoad: viewdidload.asDriver(),
-                                                  refreshButtonTapped: navibar.rightButtonTapped)
+        let refreshStarted = refresher.publisher(for: .valueChanged)
+            .mapVoid()
+            .asDriver()
+        
+        let input = ShowAttendanceViewModel.Input(viewWillAppear: viewWillAppear.asDriver(),
+                                                  refreshStarted: refreshStarted)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.$scheduleModel
             .sink(receiveValue: { [weak self] model in
                 guard let self, let model else { return }
+                self.endRefresh()
                 
                 if self.viewModel.sceneType == .scheduledDay {
                     self.sceneType = .scheduledDay
@@ -162,13 +169,13 @@ extension ShowAttendanceVC {
         output.$scoreModel
             .sink { model in
                 guard let model else { return }
+                self.endRefresh()
                 self.setScoreData(model)
             }.store(in: self.cancelBag)
     }
     
-    @objc
-    private func refreshButtonDidTap() {
-        print("refresh button did tap")
+    private func endRefresh() {
+        self.refresher.endRefreshing()
     }
     
     private func setScheduledData(_ model: AttendanceScheduleModel) {
@@ -185,7 +192,7 @@ extension ShowAttendanceVC {
     private func setScoreData(_ model: AttendanceScoreModel) {
         attendanceScoreView.setMyInfoData(name: model.name, part: model.part, generation: model.generation,
                                           count: model.score)
-        attendanceScoreView.setMyTotalScoreData(attendance: model.total.attendance, tardy: model.total.tardy, absent: model.total.absent)
+        attendanceScoreView.setMyTotalScoreData(attendance: model.total.attendance, tardy: model.total.tardy, absent: model.total.absent, participate: model.total.participate)
         attendanceScoreView.setMyAttendanceTableData(model.attendances)
     }
 }

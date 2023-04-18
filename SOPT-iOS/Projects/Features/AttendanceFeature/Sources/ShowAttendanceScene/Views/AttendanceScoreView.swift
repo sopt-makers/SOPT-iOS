@@ -30,13 +30,13 @@ final class AttendanceScoreView: UIView {
     
     /// 2. 전체 출결 점수 영역
     
-    private let allScoreView = SingleScoreView(type: .all)
     private let attendanceScoreView = SingleScoreView(type: .attendance)
     private let tardyScoreView = SingleScoreView(type: .tardy)
     private let absentScoreView = SingleScoreView(type: .absent)
+    private let participateScoreView = SingleScoreView(type: .participate)
     
     private lazy var myScoreContainerStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [allScoreView, attendanceScoreView, tardyScoreView, absentScoreView])
+        let stackView = UIStackView(arrangedSubviews: [attendanceScoreView, tardyScoreView, absentScoreView, participateScoreView])
         stackView.backgroundColor = DSKitAsset.Colors.black40.color
         stackView.clipsToBounds = true
         stackView.layer.cornerRadius = 8
@@ -145,11 +145,11 @@ extension AttendanceScoreView {
         myInfoContainerView.setData(name: name, part: part, generation: generation, count: count)
     }
     
-    func setMyTotalScoreData(attendance: Int, tardy: Int, absent: Int) {
-        allScoreView.setData(attendance + tardy + absent)
+    func setMyTotalScoreData(attendance: Int, tardy: Int, absent: Int, participate: Int) {
         attendanceScoreView.setData(attendance)
         tardyScoreView.setData(tardy)
         absentScoreView.setData(absent)
+        participateScoreView.setData(participate)
     }
     
     func setMyAttendanceTableData(_ model: [AttendanceModel]) {
