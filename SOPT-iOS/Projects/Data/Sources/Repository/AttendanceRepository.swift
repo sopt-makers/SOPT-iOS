@@ -27,7 +27,7 @@ extension AttendanceRepository: AttendanceRepositoryInterface {
     public func fetchLectureRound(lectureId: Int) -> AnyPublisher<Int, Error> {
         return self.attendanceService
             .fetchAttendanceRound(lectureId: lectureId)
-            .map { $0.data.round }
+            .compactMap { $0.data?.round }
             .eraseToAnyPublisher()
     }
     
