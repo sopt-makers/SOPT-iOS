@@ -103,7 +103,12 @@ extension MainVC {
         
         output.getUserMainInfoDidComplete
             .sink { [weak self] _ in
-                guard let userMainInfo = self?.viewModel.userMainInfo, userMainInfo.withError == false else {
+                guard let userMainInfo = self?.viewModel.userMainInfo else {
+                    self?.collectionView.reloadData()
+                    return
+                }
+                
+                guard userMainInfo.withError == false else {
                     self?.presentNetworkAlertVC()
                     return
                 }
