@@ -74,7 +74,7 @@ public class AttendanceVC: UIViewController, AttendanceViewControllable {
     /// 출석 제목
     private let titleLabel: UILabel = {
         let label = UILabel()
-        #warning("서버 붙인 후 text 변경")
+#warning("서버 붙인 후 text 변경")
         label.text = "1차 출석하기"
         label.textColor = DSKitAsset.Colors.white100.color
         label.setTypoStyle(.Attendance.h1)
@@ -103,6 +103,13 @@ public class AttendanceVC: UIViewController, AttendanceViewControllable {
         return stackView
     }()
     
+    /// 출석 코드 터치 못하게 하기 위한 뷰
+    private let frontView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        return view
+    }()
+    
     private let attendanceCodeView: AttendanceCodeView = .init()
     
     private let alertLabel: UILabel = {
@@ -121,7 +128,7 @@ public class AttendanceVC: UIViewController, AttendanceViewControllable {
         button.titleLabel!.setTypoStyle(.Attendance.h2)
         return button
     }()
-
+    
     
     // MARK: - Init
     
@@ -160,6 +167,8 @@ extension AttendanceVC {
     }
     
     private func setLayout() {
+        attattendanceCodeStackView.addSubview(frontView)
+        
         attendanceStackView.addArrangedSubviews(
             topStackView,
             titleLabel,
@@ -167,7 +176,7 @@ extension AttendanceVC {
             attattendanceCodeStackView,
             attendanceButton
         )
-    
+        
         view.addSubviews(attendanceStackView)
         
         topStackView.snp.makeConstraints {
@@ -177,6 +186,10 @@ extension AttendanceVC {
         closeButton.snp.makeConstraints {
             $0.height.equalTo(Metric.closeButtonSize)
             $0.width.equalTo(Metric.closeButtonSize)
+        }
+        
+        frontView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
         }
         
         attendanceStackView.setCustomSpacing(32, after: attattendanceCodeStackView)
@@ -208,13 +221,18 @@ extension AttendanceVC {
         
         let codeTextsChanged = attendanceCodeView.codeTextFields
             .map { $0.textChanged }
-
+        
         let codeTextChanged = Publishers.MergeMany(codeTextsChanged)
             .eraseToAnyPublisher()
             .asDriver()
         
+        let attendanceButtonDidTap = attendanceButton.publisher(for: .touchUpInside)
+            .mapVoid()
+            .asDriver()
+        
         let input = AttendanceViewModel.Input(
-            codeTextChanged: codeTextChanged
+            codeTextChanged: codeTextChanged,
+            attendanceButtonDidTap: attendanceButtonDidTap
         )
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
@@ -225,11 +243,11 @@ extension AttendanceVC {
                 let (cur, nxt) = code
                 
                 [cur, nxt].forEach {
-                    owner.attendanceCodeView.codeTextFields[$0.idx]
+                    owner.attendanceCodeView.codeTextFields[safe: $0.idx]?
                         .updateUI(text: $0.text)
                 }
                 
-                owner.attendanceCodeView.codeTextFields[nxt.idx]
+                owner.attendanceCodeView.codeTextFields[safe: nxt.idx]?
                     .becomeFirstResponder()
             }
             .store(in: self.cancelBag)

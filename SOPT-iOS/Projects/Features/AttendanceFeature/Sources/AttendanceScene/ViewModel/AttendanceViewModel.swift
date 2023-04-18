@@ -15,16 +15,20 @@ public class AttendanceViewModel: ViewModelType {
     
     // MARK: - Properties
     
+    public enum Constant {
+        static let codeTextCount = 5
+    }
+    
     private let useCase: AttendanceUseCase
     private var cancelBag = CancelBag()
     
-    private let (firstIdx, lastIdx) = (0, 4)
     private var codeText: String = ""
     
     // MARK: - Input
     
     public struct Input {
         let codeTextChanged: Driver<AttendanceCodeInfo>
+        let attendanceButtonDidTap: Driver<Void>
     }
     
     // MARK: - Output
@@ -54,6 +58,15 @@ extension AttendanceViewModel {
             }
             .store(in: self.cancelBag)
         
+        input.attendanceButtonDidTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                #warning("차수 서버값 넘겨주기")
+                let code = Int(owner.codeText) ?? 0
+                owner.useCase.postAttendance(lectureRoundId: 0, code: code)
+            }
+            .store(in: self.cancelBag)
+        
         return output
     }
     
@@ -64,30 +77,33 @@ extension AttendanceViewModel {
     private func updateCodeText(_ code: AttendanceCodeInfo) -> (AttendanceCodeInfo, AttendanceCodeInfo) {
         var (curCode, nxtCode) = (code, code)
         
-        if let text = curCode.text {
-            // 숫자 지워진 경우
-            if text.isEmpty {
-                if curCode.idx == firstIdx {
-                    codeText = ""
-                } else {
-                    nxtCode.idx -= 1
-                    codeText.removeLast()
-                    nxtCode.text = String(codeText.last!)
-                }
+        guard let text = curCode.text else {
+            return (curCode, nxtCode)
+        }
+        
+        /// 숫자 제거
+        if text.isEmpty {
+            /// 지울 숫자가 있는 경우
+            if !codeText.isEmpty {
+                nxtCode.idx -= 1
+                codeText.removeLast()
+                nxtCode.text = codeText.getLast()
+            }
+            return (curCode, nxtCode)
+        }
+        /// 숫자 입력
+        else {
+            /// 전부 입력된 경우
+            if codeText.count >= Constant.codeTextCount {
+                nxtCode.text = codeText.getLast()
                 return (curCode, nxtCode)
             }
-            // 숫자 입력된 경우
-            else {
-                if curCode.idx == lastIdx {
-                    nxtCode.text = String(codeText.last!)
-                    return (curCode, nxtCode)
-                } else {
-                    if text.count == 2 {
-                        nxtCode.idx += 1
-                        curCode.text = String(text.first!)
-                        nxtCode.text = String(text.last!)
-                    }
-                }
+            /// 숫자 다음칸으로 이동
+            else if text.count == 2 {
+                curCode.text = text.getFirst()
+                
+                nxtCode.idx += 1
+                nxtCode.text = text.getLast()
             }
         }
         
