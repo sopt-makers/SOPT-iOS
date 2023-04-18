@@ -22,7 +22,6 @@ final class TodayScheduleView: UIView {
     private let dateImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleToFill
-        imageView.image = DSKitAsset.Assets.opDate.image
         return imageView
     }()
     
@@ -36,7 +35,6 @@ final class TodayScheduleView: UIView {
     private let placeImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleToFill
-        imageView.image = DSKitAsset.Assets.opPlace.image
         return imageView
     }()
     
@@ -50,7 +48,6 @@ final class TodayScheduleView: UIView {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .white
-        label.text = I18N.Attendance.today + I18N.Attendance.unscheduledDay + I18N.Attendance.dayIs
         label.font = .Main.headline2
         return label
     }()
@@ -148,6 +145,7 @@ extension TodayScheduleView {
         if case .unscheduledDay = type {
             todayInfoStackView.isHidden = true
             
+            titleLabel.text = I18N.Attendance.today + I18N.Attendance.unscheduledDay + I18N.Attendance.dayIs
             addSubview(titleLabel)
             titleLabel.snp.makeConstraints {
                 $0.top.bottom.equalToSuperview().inset(32)
@@ -155,11 +153,19 @@ extension TodayScheduleView {
             }
         }
     }
+    
+    private func setDefaultLayout() {
+        dateImageView.image = DSKitAsset.Assets.opDate.image
+        placeImageView.image = DSKitAsset.Assets.opPlace.image
+    }
 }
+
+// MARK: - Methods
 
 extension TodayScheduleView {
     
     func setData(date: String, place: String, todaySchedule: String, description: String?) {
+        setDefaultLayout()
         dateLabel.text = date
         placeLabel.text = place
         titleLabel.text = I18N.Attendance.today + todaySchedule + I18N.Attendance.dayIs

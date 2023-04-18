@@ -8,9 +8,18 @@
 
 import Foundation
 
-public enum AttendanceStateType: String, CaseIterable {
-    case attendance = "출석"
-    case tardy = "지각"
-    case absent = "결석"
-    case participate = "참여"
+public enum AttendanceStateType: String {
+    case attendance
+    case tardy
+    case absent
+    case participate
+    
+    public var korean: String {
+        switch self {
+        case .attendance: return "출석"
+        case .tardy: return "지각"
+        case .absent: return "결석"
+        case .participate: return "참여"
+        }
+    }
 }

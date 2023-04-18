@@ -53,7 +53,6 @@ final class AttendanceScoreView: UIView {
     private let attendanceScoreDescriptiopnLabel: UILabel = {
         let label = UILabel()
         label.font = .Main.body2
-        label.text = I18N.Attendance.myAttendance
         label.textColor = DSKitAsset.Colors.gray60.color
         return label
     }()
@@ -146,13 +145,15 @@ extension AttendanceScoreView {
     }
     
     func setMyTotalScoreData(attendance: Int, tardy: Int, absent: Int, participate: Int) {
-        attendanceScoreView.setData(attendance)
-        tardyScoreView.setData(tardy)
-        absentScoreView.setData(absent)
-        participateScoreView.setData(participate)
+        attendanceScoreView.setData(attendance, .attendance)
+        tardyScoreView.setData(tardy, .tardy)
+        absentScoreView.setData(absent, .absent)
+        participateScoreView.setData(participate, .participate)
     }
     
     func setMyAttendanceTableData(_ model: [AttendanceModel]) {
+        attendanceScoreDescriptiopnLabel.text = I18N.Attendance.myAttendance
+
         attendanceModelList = model
         updateTableviewHeight()
         attendanceTableView.reloadData()

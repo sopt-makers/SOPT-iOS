@@ -30,7 +30,6 @@ final class MyInformationWithScoreView: UIView {
     
     private lazy var infoButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(DSKitAsset.Assets.opInfo.image, for: .normal)
         button.addTarget(self, action: #selector(infoButtonDidTap), for: .touchUpInside)
         return button
     }()
@@ -83,6 +82,8 @@ extension MyInformationWithScoreView {
     }
     
     func setData(name: String, part: String, generation: Int, count: Double) {
+        infoButton.setImage(DSKitAsset.Assets.opInfo.image, for: .normal)
+        
         nameLabel.text = "\(generation)기 \(part)파트 \(name)"
         chageFontAndColor(with: "\(doubleToString(count))점")
     }
