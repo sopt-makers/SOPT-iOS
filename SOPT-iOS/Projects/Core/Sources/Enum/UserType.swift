@@ -9,10 +9,10 @@
 import Foundation
 
 public enum UserType: String {
-    case visitor = "VISITOR" // 비회원
+    case visitor = "UNAUTHENTICATED" // 비회원
     case active = "ACTIVE" // 활동 회원
     case inactive = "INACTIVE" // 비활동 회원
-    case unregisteredInactive // 비활동 회원 + 플그 프로필 미등록
+    case unregisteredInactive = "UNREGISTERED" // 비활동 회원 + 플그 프로필 미등록
     
     public func makeDescription(recentHistory: Int) -> String {
         switch self {

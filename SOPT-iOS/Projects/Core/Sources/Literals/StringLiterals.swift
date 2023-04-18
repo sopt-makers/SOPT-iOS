@@ -151,6 +151,8 @@ public struct I18N {
         public static let encourage = "안녕하세요, \nSOPT의 열정이 되어주세요!"
         public static let hello = "안녕하세요"
         public static let welcome = "안녕하세요, \nSOPT에 오신 것을 환영합니다!"
+        public static let failedToGetUserInfo = "활동 정보를 가져올 수 없어요."
+        public static let needToRegisterPlayground = "플레이그라운드에서 프로필을 업데이트하면\n 서비스를 원활하게 사용할 수 있어요."
         
         public static func userHistory(name: String, months: String) -> String {
             return "\(name) 님은 \nSOPT와 \(months)개월째"

@@ -109,10 +109,18 @@ extension MainVC {
                 }
                 self?.collectionView.reloadData()
             }.store(in: self.cancelBag)
-        
+   
         output.isServiceAvailable
             .sink { isServiceAvailable in
                 print("현재 앱 서비스 사용 가능(심사 X)?: \(isServiceAvailable)")
+            }.store(in: self.cancelBag)
+        
+        // 플그 프로필 미등록 유저 알림
+        output.needPlaygroundProfileRegistration
+            .sink { [weak self] needRegistration in
+                if needRegistration {
+                    self?.presentPlaygroundRegisterationAlertVC()
+                }
             }.store(in: self.cancelBag)
     }
     
@@ -173,6 +181,19 @@ extension MainVC {
             }).viewController
         
         self.present(networkAlertVC, animated: false)
+    }
+    
+    private func presentPlaygroundRegisterationAlertVC() {
+        let alertVC = self.factory.makeAlertVC(
+            type: .networkErr,
+            theme: .main,
+            title: I18N.Main.failedToGetUserInfo,
+            description: I18N.Main.needToRegisterPlayground,
+            customButtonTitle: "",
+            customAction: nil)
+            .viewController
+        
+        self.present(alertVC, animated: false)
     }
 }
 

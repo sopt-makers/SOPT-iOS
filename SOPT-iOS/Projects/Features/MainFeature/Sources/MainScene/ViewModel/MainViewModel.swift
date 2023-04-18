@@ -70,10 +70,12 @@ extension MainViewModel {
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         useCase.userMainInfo.asDriver()
             .sink { [weak self] userMainInfo in
-                self?.userMainInfo = userMainInfo
-                self?.userType = userMainInfo?.userType ?? .unregisteredInactive
+                guard let self = self else { return }
+                self.userMainInfo = userMainInfo
+                self.userType = userMainInfo?.userType ?? .unregisteredInactive
+                self.setServiceList(with: self.userType)
                 output.getUserMainInfoDidComplete.send()
-                if self?.userType == .unregisteredInactive {
+                if self.userType == .unregisteredInactive {
                     output.needPlaygroundProfileRegistration.send(true)
                 }
             }.store(in: self.cancelBag)
