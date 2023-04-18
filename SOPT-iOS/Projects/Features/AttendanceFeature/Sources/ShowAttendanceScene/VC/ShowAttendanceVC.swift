@@ -59,7 +59,7 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     
     private let attendanceButton: OPCustomButton = {
         let button = OPCustomButton()
-        button.titleLabel!.setTypoStyle(DSKitFontFamily.Suit.bold.font(size: 18))
+        button.titleLabel!.setTypoStyle(.Attendance.h1)
         return button
     }()
     
@@ -158,7 +158,7 @@ extension ShowAttendanceVC {
                 let vc = owner.factory.makeAttendanceVC().viewController
                 vc.modalTransitionStyle = .crossDissolve
                 vc.modalPresentationStyle = .overFullScreen
-                owner.present(vc, animated: false)
+                owner.present(vc, animated: true)
             }
             .store(in: self.cancelBag)
         
