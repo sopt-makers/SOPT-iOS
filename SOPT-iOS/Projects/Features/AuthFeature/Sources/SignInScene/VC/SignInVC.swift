@@ -218,6 +218,6 @@ extension SignInVC {
         let safari = SFSafariViewController(url: URL(string: ExternalURL.Playground.login(state: state))!)
         safari.modalPresentationStyle = .fullScreen
         safari.playgroundStyle()
-        self.present(safari, animated: false)
+        self.present(safari, animated: true)
     }
 }
