@@ -36,6 +36,7 @@ public class MainViewModel: ViewModelType {
     public struct Output {
         var getUserMainInfoDidComplete = PassthroughSubject<Void, Never>()
         var isServiceAvailable = PassthroughSubject<Bool, Never>()
+        var needPlaygroundProfileRegistration = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - init
@@ -70,7 +71,11 @@ extension MainViewModel {
         useCase.userMainInfo.asDriver()
             .sink { [weak self] userMainInfo in
                 self?.userMainInfo = userMainInfo
+                self?.userType = userMainInfo?.userType ?? .unregisteredInactive
                 output.getUserMainInfoDidComplete.send()
+                if self?.userType == .unregisteredInactive {
+                    output.needPlaygroundProfileRegistration.send(true)
+                }
             }.store(in: self.cancelBag)
         
         useCase.serviceState.asDriver()
@@ -88,7 +93,7 @@ extension MainViewModel {
         case .active:
             self.mainServiceList = [.attendance, .member, .project]
             self.otherServiceList = [.officialHomepage, .crew]
-        case .inactive:
+        case .inactive, .unregisteredInactive:
             self.mainServiceList = [.faq, .member, .project]
             self.otherServiceList = [.crew, .officialHomepage]
         }
