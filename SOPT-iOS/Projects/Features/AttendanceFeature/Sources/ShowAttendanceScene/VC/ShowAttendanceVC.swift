@@ -214,7 +214,7 @@ extension ShowAttendanceVC {
     }
     
     /// 하단 출석하기 버튼 (비)활성화
-    private func setAttendanceButton(isEnabled: Bool, title: String? = "") {
+    private func setAttendanceButton(isEnabled: Bool, title: String? = nil) {
         attendanceButton.isEnabled = isEnabled
         attendanceButton.setTitle(title, for: .normal)
     }

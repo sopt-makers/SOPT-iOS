@@ -153,6 +153,12 @@ public class AttendanceVC: UIViewController, AttendanceViewControllable {
         self.bindViewModels()
         self.setObserver()
     }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        NotificationCenter.default.removeObserver(self)
+    }
 }
 
 // MARK: - UI & Layouts
