@@ -30,13 +30,13 @@ final class AttendanceScoreView: UIView {
     
     /// 2. 전체 출결 점수 영역
     
-    private let allScoreView = SingleScoreView(type: .all)
     private let attendanceScoreView = SingleScoreView(type: .attendance)
     private let tardyScoreView = SingleScoreView(type: .tardy)
     private let absentScoreView = SingleScoreView(type: .absent)
+    private let participateScoreView = SingleScoreView(type: .participate)
     
     private lazy var myScoreContainerStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [allScoreView, attendanceScoreView, tardyScoreView, absentScoreView])
+        let stackView = UIStackView(arrangedSubviews: [attendanceScoreView, tardyScoreView, absentScoreView, participateScoreView])
         stackView.backgroundColor = DSKitAsset.Colors.black40.color
         stackView.clipsToBounds = true
         stackView.layer.cornerRadius = 8
@@ -53,7 +53,6 @@ final class AttendanceScoreView: UIView {
     private let attendanceScoreDescriptiopnLabel: UILabel = {
         let label = UILabel()
         label.font = .Main.body2
-        label.text = I18N.Attendance.myAttendance
         label.textColor = DSKitAsset.Colors.gray60.color
         return label
     }()
@@ -135,8 +134,7 @@ extension AttendanceScoreView {
         attendanceTableView.register(MyAttendanceStateTVC.self, forCellReuseIdentifier: MyAttendanceStateTVC.className)
     }
     
-    func updateTableviewHeight() {
-        
+    private func updateTableviewHeight() {
         attendanceTableView.snp.updateConstraints {
             $0.height.equalTo(attendanceModelList.count * 40)
         }
@@ -146,19 +144,20 @@ extension AttendanceScoreView {
         myInfoContainerView.setData(name: name, part: part, generation: generation, count: count)
     }
     
-    func setMyTotalScoreData(attendance: Int, tardy: Int, absent: Int) {
-        allScoreView.setData(attendance + tardy + absent)
-        attendanceScoreView.setData(attendance)
-        tardyScoreView.setData(tardy)
-        absentScoreView.setData(absent)
+    func setMyTotalScoreData(attendance: Int, tardy: Int, absent: Int, participate: Int) {
+        attendanceScoreView.setData(attendance, .attendance)
+        tardyScoreView.setData(tardy, .tardy)
+        absentScoreView.setData(absent, .absent)
+        participateScoreView.setData(participate, .participate)
     }
     
     func setMyAttendanceTableData(_ model: [AttendanceModel]) {
+        attendanceScoreDescriptiopnLabel.text = I18N.Attendance.myAttendance
+
         attendanceModelList = model
         updateTableviewHeight()
         attendanceTableView.reloadData()
     }
-    
 }
 
 // MARK: - UITableViewDelegate, UITableViewDataSource

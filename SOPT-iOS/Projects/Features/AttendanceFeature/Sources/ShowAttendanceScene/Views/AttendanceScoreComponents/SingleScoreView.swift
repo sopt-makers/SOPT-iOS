@@ -37,9 +37,7 @@ final class SingleScoreView: UIView {
 
     init(type: AttendanceStateType, count: Int = 0) {
         super.init(frame: .zero)
-        updateScoreTypeLabel(type)
         setLayout(type)
-        setData(count)
     }
     
     required init?(coder: NSCoder) {
@@ -50,10 +48,6 @@ final class SingleScoreView: UIView {
 // MARK: - UI & Layout
 
 extension SingleScoreView {
-    
-    private func updateScoreTypeLabel(_ type: AttendanceStateType) {
-        singleScoreTitleLabel.text = type.rawValue
-    }
     
     private func setLayout(_ type: AttendanceStateType) {
         
@@ -69,13 +63,22 @@ extension SingleScoreView {
             $0.centerX.equalToSuperview()
         }
     }
+    
+    private func setDefaultLayout(_ type: AttendanceStateType) {
+        updateScoreTypeLabel(type)
+    }
+    
+    private func updateScoreTypeLabel(_ type: AttendanceStateType) {
+        singleScoreTitleLabel.text = type.korean
+    }
 }
 
 // MARK: - Methods
 
 extension SingleScoreView {
     
-    func setData(_ count: Int) {
+    func setData(_ count: Int, _ type: AttendanceStateType) {
+        setDefaultLayout(type)
         singleScoreCountLabel.text = "\(count)회"
     }
 }
