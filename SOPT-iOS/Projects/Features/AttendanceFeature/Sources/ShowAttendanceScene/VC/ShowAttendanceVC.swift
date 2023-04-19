@@ -153,7 +153,6 @@ extension ShowAttendanceVC {
         output.$scheduleModel
             .sink(receiveValue: { [weak self] model in
                 guard let self, let model else { return }
-                self.endRefresh()
                 
                 if self.viewModel.sceneType == .scheduledDay {
                     self.sceneType = .scheduledDay
@@ -163,14 +162,15 @@ extension ShowAttendanceVC {
                     self.sceneType = .unscheduledDay
                     self.headerScheduleView.updateLayout(.unscheduledDay)
                 }
+                self.endRefresh()
             })
             .store(in: self.cancelBag)
         
         output.$scoreModel
             .sink { model in
                 guard let model else { return }
-                self.endRefresh()
                 self.setScoreData(model)
+                self.endRefresh()
             }.store(in: self.cancelBag)
     }
     
