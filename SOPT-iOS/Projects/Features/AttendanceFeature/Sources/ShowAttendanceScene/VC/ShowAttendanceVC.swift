@@ -93,6 +93,7 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
         self.bindViewModels()
         self.setUI()
         self.setLayout()
+        self.swipeRecognizer()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -157,11 +158,12 @@ extension ShowAttendanceVC {
     
     private func bindViewModels() {
         
+        let viewWillAppear = viewWillAppear.asDriver()
         let refreshStarted = refresher.publisher(for: .valueChanged)
             .mapVoid()
             .asDriver()
         
-        let input = ShowAttendanceViewModel.Input(viewWillAppear: viewWillAppear.asDriver(),
+        let input = ShowAttendanceViewModel.Input(viewWillAppear: viewWillAppear,
                                                   refreshStarted: refreshStarted)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
@@ -214,9 +216,17 @@ extension ShowAttendanceVC {
     
     @objc
     private func infoButtonDidTap() {
-        print("터치터치")
         if let url = URL(string: "https://sopt.org/rules") {
             UIApplication.shared.open(url)
         }
+    }
+}
+
+// MARK: - UIGestureRecognizerDelegate
+
+extension ShowAttendanceVC: UIGestureRecognizerDelegate {
+    
+    private func swipeRecognizer() {
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
 }
