@@ -28,12 +28,6 @@ final class MyInformationWithScoreView: UIView {
     
     private let currentScoreLabel = UILabel()
     
-    private lazy var infoButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.addTarget(self, action: #selector(infoButtonDidTap), for: .touchUpInside)
-        return button
-    }()
-    
     // MARK: - Initialization
     
     override init(frame: CGRect) {
@@ -52,7 +46,7 @@ extension MyInformationWithScoreView {
     
     private func setLayout() {
         
-        addSubviews(nameLabel, currentScoreLabel, infoButton)
+        addSubviews(nameLabel, currentScoreLabel)
         
         nameLabel.snp.makeConstraints {
             $0.top.leading.equalToSuperview()
@@ -62,28 +56,14 @@ extension MyInformationWithScoreView {
             $0.top.equalTo(nameLabel.snp.bottom).offset(8)
             $0.leading.equalToSuperview()
         }
-        
-        infoButton.snp.makeConstraints {
-            $0.trailing.bottom.equalToSuperview()
-        }
     }
 }
-
 
 // MARK: - Methods
 
 extension MyInformationWithScoreView {
     
-    @objc
-    private func infoButtonDidTap() {
-        if let url = URL(string: "https://sopt.org/rules") {
-            UIApplication.shared.open(url)
-        }
-    }
-    
     func setData(name: String, part: String, generation: Int, count: Double) {
-        infoButton.setImage(DSKitAsset.Assets.opInfo.image, for: .normal)
-        
         nameLabel.text = "\(generation)기 \(part)파트 \(name)"
         chageFontAndColor(with: "\(doubleToString(count))점")
     }

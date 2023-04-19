@@ -41,6 +41,7 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
         let sv = UIScrollView()
         sv.showsVerticalScrollIndicator = false
         sv.refreshControl = refresher
+        sv.isExclusiveTouch = true
         return sv
     }()
     
@@ -64,6 +65,12 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
         let rf = UIRefreshControl()
         rf.tintColor = .gray
         return rf
+    }()
+    
+    private lazy var infoButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.addTarget(self, action: #selector(infoButtonDidTap), for: .touchUpInside)
+        return button
     }()
     
     // MARK: - Initialization
@@ -108,6 +115,7 @@ extension ShowAttendanceVC {
         view.addSubviews(navibar, containerScrollView)
         containerScrollView.addSubview(contentView)
         contentView.addSubviews(headerScheduleView, attendanceScoreView)
+        attendanceScoreView.addSubview(infoButton)
         
         navibar.snp.makeConstraints {
             $0.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
@@ -133,6 +141,12 @@ extension ShowAttendanceVC {
             $0.top.equalTo(headerScheduleView.snp.bottom).offset(20)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
             $0.bottom.equalToSuperview()
+        }
+        
+        infoButton.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(58)
+            $0.trailing.equalToSuperview().inset(32)
+            $0.width.height.equalTo(24)
         }
     }
 }
@@ -170,6 +184,7 @@ extension ShowAttendanceVC {
         output.$scoreModel
             .sink { model in
                 guard let model else { return }
+                self.infoButton.setImage(DSKitAsset.Assets.opInfo.image, for: .normal)
                 self.setScoreData(model)
                 self.endRefresh()
             }.store(in: self.cancelBag)
@@ -195,5 +210,13 @@ extension ShowAttendanceVC {
                                           count: model.score)
         attendanceScoreView.setMyTotalScoreData(attendance: model.total.attendance, tardy: model.total.tardy, absent: model.total.absent, participate: model.total.participate)
         attendanceScoreView.setMyAttendanceTableData(model.attendances)
+    }
+    
+    @objc
+    private func infoButtonDidTap() {
+        print("터치터치")
+        if let url = URL(string: "https://sopt.org/rules") {
+            UIApplication.shared.open(url)
+        }
     }
 }
