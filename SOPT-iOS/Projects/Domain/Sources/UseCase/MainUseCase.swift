@@ -33,9 +33,11 @@ public class DefaultMainUseCase {
 extension DefaultMainUseCase: MainUseCase {
     public func getUserMainInfo() {
         repository.getUserMainInfo()
+            .replaceError(with: UserMainInfoModel.init(withError: true))
             .sink { event in
                 print("MainUseCase: \(event)")
             } receiveValue: { [weak self] userMainInfoModel in
+                self?.setUserType(with: userMainInfoModel?.userType)
                 self?.userMainInfo.send(userMainInfoModel)
             }.store(in: self.cancelBag)
     }
@@ -47,5 +49,16 @@ extension DefaultMainUseCase: MainUseCase {
             } receiveValue: { [weak self] serviceStateModel in
                 self?.serviceState.send(serviceStateModel)
             }.store(in: self.cancelBag)
+    }
+    
+    private func setUserType(with userType: UserType?) {
+        switch userType {
+        case .none, .unregisteredInactive, .inactive: // nil인 경우도 플그 미등록 유저로 취급
+            UserDefaultKeyList.Auth.isActiveUser = false
+        case .active:
+            UserDefaultKeyList.Auth.isActiveUser = true
+        default:
+            UserDefaultKeyList.Auth.isActiveUser = false
+        }
     }
 }

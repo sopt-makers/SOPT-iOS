@@ -153,7 +153,7 @@ extension AlertVC {
             descriptionLabel.snp.makeConstraints { make in
                 make.centerX.equalToSuperview()
                 make.centerY.equalToSuperview().offset(-6)
-                make.leading.trailing.equalToSuperview().inset(30)
+                make.leading.trailing.equalToSuperview().inset(7)
             }
         }
     }

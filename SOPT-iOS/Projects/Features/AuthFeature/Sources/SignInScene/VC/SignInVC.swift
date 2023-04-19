@@ -7,19 +7,18 @@
 //
 
 import UIKit
+import Combine
+import SafariServices
 
 import DSKit
-
 import Core
-
 import Domain
-
-import Combine
-import SnapKit
-import Then
 
 import AuthFeatureInterface
 import MainFeatureInterface
+
+import SnapKit
+import Then
 
 public class SignInVC: UIViewController, SignInViewControllable {
     
@@ -216,8 +215,9 @@ extension SignInVC {
         dateFormatter.dateFormat = "yyyyMMddHHmmss"
         let state = dateFormatter.string(from: Date())
         UserDefaultKeyList.Auth.requestState = state
-        openExternalLink(urlStr: ExternalURL.Playground.login(state: state)) {
-            print("플레이그라운드 Open URL")
-        }
+        let safari = SFSafariViewController(url: URL(string: ExternalURL.Playground.login(state: state))!)
+        safari.modalPresentationStyle = .fullScreen
+        safari.playgroundStyle()
+        self.present(safari, animated: true)
     }
 }
