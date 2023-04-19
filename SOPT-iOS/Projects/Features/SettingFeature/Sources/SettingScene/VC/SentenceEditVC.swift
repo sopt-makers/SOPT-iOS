@@ -60,6 +60,7 @@ public class SentenceEditVC: UIViewController, SentenceEditViewControllable {
         self.bindViewModels()
         self.setUI()
         self.setLayout()
+        self.hideKeyboard()
     }
 }
 
