@@ -182,7 +182,7 @@ extension AppMyPageVC {
                 self.soptampSectionGroup,
                 self.etcSectionGroup
             )
-        case .visitor:
+        case .visitor, .unregisteredInactive:
             self.contentStackView.addArrangedSubviews(
                 self.servicePolicySectionGroup,
                 self.etcForVisitorsSectionGroup
