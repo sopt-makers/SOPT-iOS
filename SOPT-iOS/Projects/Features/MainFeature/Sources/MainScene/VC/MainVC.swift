@@ -216,23 +216,28 @@ extension MainVC: UICollectionViewDelegate {
               self.navigationController?.pushViewController(viewController, animated: true)
               return
           }
-
-          let safariViewController = SFSafariViewController(url: URL(string: service.serviceDomainLink)!)
-          safariViewController.playgroundStyle()
-          self.present(safariViewController, animated: true)
-  
+          
+          var needOfficialProject = service == .project && viewModel.userType == .visitor
+          let serviceDomainURL = needOfficialProject
+          ? ExternalURL.SOPT.project
+          : service.serviceDomainLink
+          showSafariVC(url: serviceDomainURL)
       case (2, _):
           guard let service = viewModel.otherServiceList[safe: indexPath.item] else { return }
           
-          let safariViewController = SFSafariViewController(url: URL(string: service.serviceDomainLink)!)
-          safariViewController.playgroundStyle()
-          self.present(safariViewController, animated: true)
+          showSafariVC(url: service.serviceDomainLink)
       case(3, _):
           guard viewModel.userType != .visitor && viewModel.userType != .unregisteredInactive else { return }
           
           presentSoptampFeature()
       default: break
       }
+    }
+    
+    private func showSafariVC(url: String) {
+        let safariViewController = SFSafariViewController(url: URL(string: url)!)
+        safariViewController.playgroundStyle()
+        self.present(safariViewController, animated: true)
     }
 }
 
