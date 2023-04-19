@@ -29,8 +29,8 @@ public final class ShowAttendanceViewModel: ViewModelType {
     // MARK: - Inputs
     
     public struct Input {
-        let viewDidLoad: Driver<Void>
-        let refreshButtonTapped: Driver<Void>
+        let viewWillAppear: Driver<Void>
+        let refreshStarted: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -54,7 +54,7 @@ extension ShowAttendanceViewModel {
         
         self.bindOutput(output: output, cancelBag: cancelBag)
        
-        input.viewDidLoad.merge(with: input.refreshButtonTapped)
+        input.viewWillAppear.merge(with: input.refreshStarted)
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.fetchAttendanceSchedule()
