@@ -228,13 +228,14 @@ extension DIContainer: Features {
         return termsOfServiceVC
     }
     
-    func makeWithdrawalVC() -> WithdrawalViewControllable {
+    func makeWithdrawalVC(userType: UserType) -> WithdrawalViewControllable {
         let withdrawalVC = WithdrawalVC()
         let repository = SettingRepository(authService: authService, stampService: stampService, userService: userService)
         let useCase = DefaultSettingUseCase(repository: repository)
         let viewModel = WithdrawalViewModel(useCase: useCase)
         withdrawalVC.viewModel = viewModel
         withdrawalVC.factory = self
+        withdrawalVC.userType = userType
         return withdrawalVC
     }
     
