@@ -9,6 +9,7 @@
 import UIKit
 import DSKit
 import SafariServices
+import Combine
 
 import Core
 
@@ -23,6 +24,7 @@ public class WithdrawalVC: UIViewController, WithdrawalViewControllable {
     public var viewModel: WithdrawalViewModel!
     public var factory: (AuthFeatureViewBuildable & AlertViewBuildable)!
     private let cancelBag = CancelBag()
+    public var userType: UserType = .active
     
     // MARK: - UI Components
 
@@ -119,6 +121,18 @@ extension WithdrawalVC {
         
         let withdrawalButtonTapped = self.withdrawalButton
             .publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .filter({ owner, _ in
+                guard owner.userType != .unregisteredInactive else {
+                    owner.showLoading()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                        owner.showToastAndChangeRootView()
+                        owner.stopLoading()
+                    }
+                    return false
+                }
+                return true
+            })
             .mapVoid()
             .asDriver()
         
