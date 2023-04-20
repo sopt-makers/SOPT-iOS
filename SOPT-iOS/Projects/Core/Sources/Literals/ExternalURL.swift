@@ -19,6 +19,10 @@ public struct ExternalURL {
         public static let findEmail = "https://forms.gle/XkVFMUPsWWV1DXU38"
     }
     
+    public struct SOPT {
+        public static let project = "https://sopt.org/project"
+    }
+    
     public struct Playground {
         #if DEV || PROD
         public static let main = "https://playground.sopt.org"

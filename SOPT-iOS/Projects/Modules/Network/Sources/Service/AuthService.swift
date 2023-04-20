@@ -20,6 +20,6 @@ public protocol AuthService {
 
 extension DefaultAuthService: AuthService {
     public func signIn(token: String) -> AnyPublisher<SignInEntity, Error> {
-        return requestObjectInCombine(.signIn(token: token))
+        return requestObjectWithNetworkErrorInCombine(.signIn(token: token))
     }
 }

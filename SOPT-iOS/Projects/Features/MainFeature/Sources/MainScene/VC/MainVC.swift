@@ -103,16 +103,29 @@ extension MainVC {
         
         output.getUserMainInfoDidComplete
             .sink { [weak self] _ in
-                guard let userMainInfo = self?.viewModel.userMainInfo, userMainInfo.withError == false else {
+                guard let userMainInfo = self?.viewModel.userMainInfo else {
+                    self?.collectionView.reloadData()
+                    return
+                }
+                
+                guard userMainInfo.withError == false else {
                     self?.presentNetworkAlertVC()
                     return
                 }
                 self?.collectionView.reloadData()
             }.store(in: self.cancelBag)
-        
+   
         output.isServiceAvailable
             .sink { isServiceAvailable in
                 print("현재 앱 서비스 사용 가능(심사 X)?: \(isServiceAvailable)")
+            }.store(in: self.cancelBag)
+        
+        // 플그 프로필 미등록 유저 알림
+        output.needPlaygroundProfileRegistration
+            .sink { [weak self] needRegistration in
+                if needRegistration {
+                    self?.presentPlaygroundRegisterationAlertVC()
+                }
             }.store(in: self.cancelBag)
     }
     
@@ -174,6 +187,19 @@ extension MainVC {
         
         self.present(networkAlertVC, animated: false)
     }
+    
+    private func presentPlaygroundRegisterationAlertVC() {
+        let alertVC = self.factory.makeAlertVC(
+            type: .networkErr,
+            theme: .main,
+            title: I18N.Main.failedToGetUserInfo,
+            description: I18N.Main.needToRegisterPlayground,
+            customButtonTitle: "",
+            customAction: nil)
+            .viewController
+        
+        self.present(alertVC, animated: false)
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -190,23 +216,28 @@ extension MainVC: UICollectionViewDelegate {
               self.navigationController?.pushViewController(viewController, animated: true)
               return
           }
-
-          let safariViewController = SFSafariViewController(url: URL(string: service.serviceDomainLink)!)
-          safariViewController.playgroundStyle()
-          self.present(safariViewController, animated: true)
-  
+          
+          var needOfficialProject = service == .project && viewModel.userType == .visitor
+          let serviceDomainURL = needOfficialProject
+          ? ExternalURL.SOPT.project
+          : service.serviceDomainLink
+          showSafariVC(url: serviceDomainURL)
       case (2, _):
           guard let service = viewModel.otherServiceList[safe: indexPath.item] else { return }
           
-          let safariViewController = SFSafariViewController(url: URL(string: service.serviceDomainLink)!)
-          safariViewController.playgroundStyle()
-          self.present(safariViewController, animated: true)
+          showSafariVC(url: service.serviceDomainLink)
       case(3, _):
-          guard viewModel.userType != .visitor else { return }
+          guard viewModel.userType != .visitor && viewModel.userType != .unregisteredInactive else { return }
           
           presentSoptampFeature()
       default: break
       }
+    }
+    
+    private func showSafariVC(url: String) {
+        let safariViewController = SFSafariViewController(url: URL(string: url)!)
+        safariViewController.playgroundStyle()
+        self.present(safariViewController, animated: true)
     }
 }
 

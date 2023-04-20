@@ -6,6 +6,8 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
+import Core
+
 import BaseFeatureDependency
 
 public protocol SettingViewControllable: ViewControllable { }
@@ -18,7 +20,9 @@ public protocol PrivacyPolicyViewControllable: ViewControllable { }
 
 public protocol TermsOfServiceViewControllable: ViewControllable { }
 
-public protocol WithdrawalViewControllable: ViewControllable { }
+public protocol WithdrawalViewControllable: ViewControllable {
+    var userType: UserType { get set }
+}
 
 public protocol SettingFeatureViewBuildable {
     func makeSettingVC() -> SettingViewControllable
@@ -26,5 +30,5 @@ public protocol SettingFeatureViewBuildable {
     func makeSentenceEditVC() -> SentenceEditViewControllable
     func makePrivacyPolicyVC() -> PrivacyPolicyViewControllable
     func makeTermsOfServiceVC() -> TermsOfServiceViewControllable
-    func makeWithdrawalVC() -> WithdrawalViewControllable
+    func makeWithdrawalVC(userType: UserType) -> WithdrawalViewControllable
 }

@@ -62,7 +62,7 @@ extension UserHistoryHeaderView {
             if userType == .visitor {
                 let text = I18N.Main.encourage
                 setAttributedTextToUserInfoLabel(text: text, name: nil)
-            } else if userType == .inactive {
+            } else if userType == .inactive || userType == .unregisteredInactive {
                 let text = I18N.Main.welcome
                 setAttributedTextToUserInfoLabel(text: text, name: nil)
             }

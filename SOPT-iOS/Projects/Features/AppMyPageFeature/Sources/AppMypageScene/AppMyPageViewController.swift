@@ -139,6 +139,17 @@ public final class AppMyPageVC: UIViewController, AppMyPageViewControllable {
         frame: self.view.frame
     )
     
+    // MARK: For UnregisteredInActive
+    
+    private lazy var etcForUnregisteredInActiveSectionGroup = MypageSectionGroupView(
+        headerTitle: I18N.MyPage.etcSectionGroupTitle,
+        subviews: [
+            self.logoutListItem,
+            self.withDrawalListItem
+        ],
+        frame: self.view.frame
+    )
+    
     public init(
         userType: UserType,
         viewModel: AppMyPageViewModel,
@@ -186,6 +197,12 @@ extension AppMyPageVC {
             self.contentStackView.addArrangedSubviews(
                 self.servicePolicySectionGroup,
                 self.etcForVisitorsSectionGroup
+            )
+            
+        case .unregisteredInactive:
+            self.contentStackView.addArrangedSubviews(
+                self.servicePolicySectionGroup,
+                self.etcForUnregisteredInActiveSectionGroup
             )
         }
     }
@@ -264,7 +281,9 @@ extension AppMyPageVC {
         }
         
         self.withDrawalListItem.addTapGestureRecognizer {
-            let viewController = self.factory.makeWithdrawalVC().viewController
+            let viewController = self.factory.makeWithdrawalVC(
+                userType: self.userType
+            ).viewController
             self.navigationController?.pushViewController(viewController, animated: true)
         }
         

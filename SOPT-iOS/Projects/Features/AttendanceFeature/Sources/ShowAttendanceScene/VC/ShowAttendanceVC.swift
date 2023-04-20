@@ -33,18 +33,22 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
         }
     }
     
-    private var viewdidload = PassthroughSubject<Void, Never>()
-    
+    private var viewWillAppear = PassthroughSubject<Void, Never>()
+  
     // MARK: - UI Components
     
-    private let containerScrollView = UIScrollView()
+    private lazy var containerScrollView: UIScrollView = {
+        let sv = UIScrollView()
+        sv.showsVerticalScrollIndicator = false
+        sv.refreshControl = refresher
+        sv.isExclusiveTouch = true
+        return sv
+    }()
+    
     private let contentView = UIView()
     
-    private lazy var navibar = OPNavigationBar(self, type: .bothButtons)
+    private lazy var navibar = OPNavigationBar(self, type: .oneLeftButton)
         .addMiddleLabel(title: I18N.Attendance.attendance)
-        .addRightButtonAction {
-            self.refreshButtonDidTap()
-        }
     
     private lazy var headerScheduleView: TodayScheduleView = {
         switch sceneType {
@@ -60,6 +64,18 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     private let attendanceButton: OPCustomButton = {
         let button = OPCustomButton()
         button.titleLabel!.setTypoStyle(.Attendance.h1)
+        return button
+    }()
+    
+    private let refresher: UIRefreshControl = {
+        let rf = UIRefreshControl()
+        rf.tintColor = .gray
+        return rf
+    }()
+    
+    private lazy var infoButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.addTarget(self, action: #selector(infoButtonDidTap), for: .touchUpInside)
         return button
     }()
     
@@ -81,10 +97,14 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.bindViewModels()
-        self.bindViews()
         self.setUI()
         self.setLayout()
-        self.viewdidload.send(())
+        self.swipeRecognizer()
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.viewWillAppear.send(())
     }
 }
 
@@ -94,14 +114,15 @@ extension ShowAttendanceVC {
     
     private func setUI() {
         self.navigationController?.navigationBar.isHidden = true
-        self.view.backgroundColor = .black
-        containerScrollView.backgroundColor = .black
+        self.view.backgroundColor = DSKitAsset.Colors.black100.color
+        containerScrollView.backgroundColor = DSKitAsset.Colors.black100.color
     }
     
     private func setLayout() {
         view.addSubviews(navibar, containerScrollView, attendanceButton)
         containerScrollView.addSubview(contentView)
         contentView.addSubviews(headerScheduleView, attendanceScoreView)
+        attendanceScoreView.addSubview(infoButton)
         
         navibar.snp.makeConstraints {
             $0.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
@@ -115,6 +136,7 @@ extension ShowAttendanceVC {
         
         contentView.snp.makeConstraints {
             $0.edges.equalToSuperview()
+            $0.width.equalToSuperview()
         }
         
         headerScheduleView.snp.makeConstraints {
@@ -133,6 +155,12 @@ extension ShowAttendanceVC {
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
             $0.height.equalTo(56)
         }
+        
+        infoButton.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(58)
+            $0.trailing.equalToSuperview().inset(32)
+            $0.width.height.equalTo(24)
+        }
     }
 }
 
@@ -140,17 +168,12 @@ extension ShowAttendanceVC {
 
 extension ShowAttendanceVC {
     
-    private func bindViews() {
-        
-        navibar.rightButtonTapped
-            .asDriver()
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.refreshButtonDidTap()
-            }.store(in: self.cancelBag)
-    }
-    
     private func bindViewModels() {
+        
+        let viewWillAppear = viewWillAppear.asDriver()
+        let refreshStarted = refresher.publisher(for: .valueChanged)
+            .mapVoid()
+            .asDriver()
         
         attendanceButton.publisher(for: .touchUpInside)
             .withUnretained(self)
@@ -162,8 +185,8 @@ extension ShowAttendanceVC {
             }
             .store(in: self.cancelBag)
         
-        let input = ShowAttendanceViewModel.Input(viewDidLoad: viewdidload.asDriver(),
-                                                  refreshButtonTapped: navibar.rightButtonTapped)
+        let input = ShowAttendanceViewModel.Input(viewWillAppear: viewWillAppear,
+                                                  refreshStarted: refreshStarted)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.$scheduleModel
@@ -180,19 +203,21 @@ extension ShowAttendanceVC {
                     self.headerScheduleView.updateLayout(.unscheduledDay)
                     self.setAttendanceButton(isEnabled: false)
                 }
+                self.endRefresh()
             })
             .store(in: self.cancelBag)
         
         output.$scoreModel
             .sink { model in
                 guard let model else { return }
+                self.infoButton.setImage(DSKitAsset.Assets.opInfo.image, for: .normal)
                 self.setScoreData(model)
+                self.endRefresh()
             }.store(in: self.cancelBag)
     }
     
-    @objc
-    private func refreshButtonDidTap() {
-        print("refresh button did tap")
+    private func endRefresh() {
+        self.refresher.endRefreshing()
     }
     
     private func setScheduledData(_ model: AttendanceScheduleModel) {
@@ -209,7 +234,7 @@ extension ShowAttendanceVC {
     private func setScoreData(_ model: AttendanceScoreModel) {
         attendanceScoreView.setMyInfoData(name: model.name, part: model.part, generation: model.generation,
                                           count: model.score)
-        attendanceScoreView.setMyTotalScoreData(attendance: model.total.attendance, tardy: model.total.tardy, absent: model.total.absent)
+        attendanceScoreView.setMyTotalScoreData(attendance: model.total.attendance, tardy: model.total.tardy, absent: model.total.absent, participate: model.total.participate)
         attendanceScoreView.setMyAttendanceTableData(model.attendances)
     }
     
@@ -217,5 +242,21 @@ extension ShowAttendanceVC {
     private func setAttendanceButton(isEnabled: Bool, title: String? = nil) {
         attendanceButton.isEnabled = isEnabled
         attendanceButton.setTitle(title, for: .normal)
+    }
+    
+    @objc
+    private func infoButtonDidTap() {
+        if let url = URL(string: "https://sopt.org/rules") {
+            UIApplication.shared.open(url)
+        }
+    }
+}
+
+// MARK: - UIGestureRecognizerDelegate
+
+extension ShowAttendanceVC: UIGestureRecognizerDelegate {
+    
+    private func swipeRecognizer() {
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
 }

@@ -25,6 +25,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = scene
 //        let rootVC = container.makeShowAttendanceVC().viewController
         let rootVC = container.makeSplashVC().viewController
+//                let rootVC = container.makeMainVC(userType: .active).viewController
+
         window?.rootViewController = UINavigationController(rootViewController: rootVC)
         window?.makeKeyAndVisible()
     }

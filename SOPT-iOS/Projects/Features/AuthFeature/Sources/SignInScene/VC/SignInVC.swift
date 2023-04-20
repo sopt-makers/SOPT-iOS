@@ -196,16 +196,21 @@ extension SignInVC {
         
         output.isSignInSuccess
             .removeDuplicates()
-            .sink { [weak self] isSuccessed in
-            guard let self = self else { return }
-            if isSuccessed {
-                self.setRootViewToMain()
-            }
-        }.store(in: self.cancelBag)
+            .sink { [weak self] type in
+                guard let self = self else { return }
+                
+                switch type {
+                case .loginSuccess:
+                    self.setRootViewToMain()
+                case .unregistedProfile:
+                    self.setRootViewToMain(isInActiveUser: true)
+                case .loginFailure: break
+                }
+            }.store(in: self.cancelBag)
     }
     
-    private func setRootViewToMain() {
-        let userType = UserDefaultKeyList.Auth.getUserType()
+    private func setRootViewToMain(isInActiveUser: Bool = false) {
+        let userType = isInActiveUser ? .unregisteredInactive : UserDefaultKeyList.Auth.getUserType()
         let navigation = UINavigationController(rootViewController: factory.makeMainVC(userType: userType).viewController)
         ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
     }
