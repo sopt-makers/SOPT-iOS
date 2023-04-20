@@ -17,7 +17,7 @@ public extension SettingsDictionary {
     
     static let baseSettings: Self = [
         "OTHER_LDFLAGS" : [
-            "-Xlinker -interposable"
+            "$(inherited)"
         ]
     ]
     

@@ -139,6 +139,16 @@ public final class AppMyPageVC: UIViewController, AppMyPageViewControllable {
         frame: self.view.frame
     )
     
+    // MARK: For UnregisteredInActive
+    
+    private lazy var etcForUnregisteredInActiveSectionGroup = MypageSectionGroupView(
+        headerTitle: I18N.MyPage.etcSectionGroupTitle,
+        subviews: [
+            self.logoutListItem,
+        ],
+        frame: self.view.frame
+    )
+    
     public init(
         userType: UserType,
         viewModel: AppMyPageViewModel,
@@ -182,10 +192,16 @@ extension AppMyPageVC {
                 self.soptampSectionGroup,
                 self.etcSectionGroup
             )
-        case .visitor, .unregisteredInactive:
+        case .visitor:
             self.contentStackView.addArrangedSubviews(
                 self.servicePolicySectionGroup,
                 self.etcForVisitorsSectionGroup
+            )
+            
+        case .unregisteredInactive:
+            self.contentStackView.addArrangedSubviews(
+                self.servicePolicySectionGroup,
+                self.etcForUnregisteredInActiveSectionGroup
             )
         }
     }
