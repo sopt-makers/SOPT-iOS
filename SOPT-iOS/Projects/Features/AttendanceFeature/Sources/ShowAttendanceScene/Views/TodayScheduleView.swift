@@ -166,6 +166,7 @@ extension TodayScheduleView {
             todayInfoStackView.isHidden = true
             
             titleLabel.text = I18N.Attendance.today + I18N.Attendance.unscheduledDay + I18N.Attendance.dayIs
+            titleLabel.setTypoStyle(DSKitFontFamily.Suit.medium.font(size: 16))
             addSubview(titleLabel)
             titleLabel.snp.makeConstraints {
                 $0.top.bottom.equalToSuperview().inset(32)
