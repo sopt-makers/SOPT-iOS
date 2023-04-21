@@ -37,10 +37,19 @@ open class BaseService<Target: TargetType> {
     
     lazy var provider = self.defaultProvider
     
+    private var session: Session = {
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 10
+        configuration.timeoutIntervalForResource = 10
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        let interceptor = AlamoInterceptor()
+        return Session(configuration: configuration, interceptor: interceptor)
+    }()
+    
     private lazy var defaultProvider: MoyaProvider<API> = {
         let provider = MoyaProvider<API>(
             endpointClosure: endpointClosure,
-            session: DefaultAlamofireManager.shared,
+            session: session,
             plugins: [NetworkLoggerPlugin(verbose: true)]
         )
         return provider

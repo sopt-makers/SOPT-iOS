@@ -88,4 +88,12 @@ extension UserAPI: BaseAPI {
             return .requestPlain
         }
     }
+    
+    public var validationType: ValidationType {
+        switch self {
+        case .reissuance:
+            return .none
+        default : return .successCodes
+        }
+    }
 }
