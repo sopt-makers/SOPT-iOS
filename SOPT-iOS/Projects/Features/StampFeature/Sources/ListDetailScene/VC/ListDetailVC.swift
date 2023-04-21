@@ -129,6 +129,7 @@ public class ListDetailVC: UIViewController, ListDetailViewControllable {
         self.setObserver()
         self.setGesture()
         self.setDelegate()
+        self.hideKeyboard()
     }
 }
 

@@ -145,6 +145,7 @@ public final class AppMyPageVC: UIViewController, AppMyPageViewControllable {
         headerTitle: I18N.MyPage.etcSectionGroupTitle,
         subviews: [
             self.logoutListItem,
+            self.withDrawalListItem
         ],
         frame: self.view.frame
     )
@@ -280,7 +281,9 @@ extension AppMyPageVC {
         }
         
         self.withDrawalListItem.addTapGestureRecognizer {
-            let viewController = self.factory.makeWithdrawalVC().viewController
+            let viewController = self.factory.makeWithdrawalVC(
+                userType: self.userType
+            ).viewController
             self.navigationController?.pushViewController(viewController, animated: true)
         }
         
