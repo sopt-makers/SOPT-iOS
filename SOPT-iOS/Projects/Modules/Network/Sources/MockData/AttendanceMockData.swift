@@ -30,6 +30,25 @@ extension  AttendanceAPI {
             """.utf8
             )
         
+        static let beforeAttendance = Data(
+            """
+            {
+              "success": true,
+              "message": "세미나 조회 성공",
+              "data": {
+                    "type": "HAS_ATTENDANCE",
+                    "id": 1,
+                    "location": "건국대학교 경영관",
+                    "name":"2차 세미나",
+                    "startDate": "2023-04-06T14:13:51",
+                    "endDate": "2023-04-06T18:13:51",
+                    "message": "",
+                    "attendances": []
+                }
+            }
+            """.utf8
+            )
+        
         static let absentCaseOne = Data(
             """
             {
@@ -42,7 +61,7 @@ extension  AttendanceAPI {
                     "name":"2차 세미나",
                     "startDate": "2023-04-06T14:13:51",
                     "endDate": "2023-04-06T18:13:51",
-                "message": "",
+                    "message": "",
                     "attendances": [
                         {
                             "status": "ABSENT",
@@ -78,6 +97,34 @@ extension  AttendanceAPI {
                   },
                   {
                     "status": "ABSENT",
+                    "attendedAt": "2023-04-13T14:10:04"
+                  }
+                ]
+              }
+            }
+            """.utf8
+            )
+        
+        static let tardy = Data(
+            """
+            {
+              "success": true,
+              "message": "세션 조회 성공",
+              "data": {
+                "type": "HAS_ATTENDANCE",
+                    "id": 1,
+                "location": "아름교육관",
+                "name": "서버 1차 세미나",
+                "startDate": "2023-04-13T14:00:00",
+                "endDate": "2023-04-13T18:00:00",
+                "message": "",
+                "attendances": [
+                  {
+                    "status": "ABSENT",
+                    "attendedAt": "2023-04-13T14:12:09"
+                  },
+                  {
+                    "status": "ATTENDANCE",
                     "attendedAt": "2023-04-13T14:10:04"
                   }
                 ]
@@ -166,8 +213,10 @@ extension  AttendanceAPI {
         switch self {
         case .lecture:
 //            let data = SampleData.noSession
+//            let data = SampleData.beforeAttendance
 //            let data = SampleData.absentCaseOne
-            let data = SampleData.absenctCaseTwo
+//            let data = SampleData.absenctCaseTwo
+//            let data = SampleData.tardy
 //            let data = SampleData.attendanceComplete
 //            let data = SampleData.eventSession
 //            let data = SampleData.noAttendanceSession
