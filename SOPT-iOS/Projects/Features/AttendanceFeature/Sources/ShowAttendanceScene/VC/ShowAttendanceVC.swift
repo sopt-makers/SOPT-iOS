@@ -197,11 +197,11 @@ extension ShowAttendanceVC {
                     self.sceneType = .scheduledDay
                     self.setScheduledData(model)
                     self.headerScheduleView.updateLayout(.scheduledDay)
-                    self.setAttendanceButton(isHidden: true, title: "\(model.name) \(I18N.Attendance.takeAttendance)")
+                    self.setAttendanceButton(isHidden: false, title: "\(model.name) \(I18N.Attendance.takeAttendance)")
                 } else {
                     self.sceneType = .unscheduledDay
                     self.headerScheduleView.updateLayout(.unscheduledDay)
-                    self.setAttendanceButton(isHidden: false)
+                    self.setAttendanceButton(isHidden: true)
                 }
                 self.endRefresh()
             })
@@ -246,7 +246,6 @@ extension ShowAttendanceVC {
         attendanceScoreView.setMyAttendanceTableData(model.attendances)
     }
     
-    /// 하단 출석하기 버튼 (비)활성화
     private func setAttendanceButton(isHidden: Bool, title: String? = nil) {
         attendanceButton.isHidden = isHidden
         attendanceButton.setTitle(title, for: .normal)
