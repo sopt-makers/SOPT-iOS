@@ -36,7 +36,7 @@ public class SplashVC: UIViewController, SplashViewControllable {
     // MARK: - UI Components
     
     private let logoImage = UIImageView().then {
-        $0.image = DSKitAsset.Assets.splashLogo.image.withRenderingMode(.alwaysOriginal)
+        $0.image = DSKitAsset.Assets.imgLogoBig.image.withRenderingMode(.alwaysOriginal)
         $0.contentMode = .scaleAspectFit
     }
     
@@ -57,7 +57,7 @@ extension SplashVC {
     
     private enum Metric {
         static let logoWidth = 184.adjusted
-        static let topInset = 151.adjustedH + 137.adjustedH + 5.adjustedH
+        static let topInset = 151.adjustedH + 137.adjustedH
     }
     
     private func setUI() {
@@ -143,7 +143,7 @@ extension SplashVC {
         let nextVC = factory.makeSignInVC().viewController
         nextVC.modalPresentationStyle = .fullScreen
         nextVC.modalTransitionStyle = .crossDissolve
-        self.present(nextVC, animated: true)
+        self.present(nextVC, animated: false)
     }
     
     private func presentNetworkAlertVC() {
