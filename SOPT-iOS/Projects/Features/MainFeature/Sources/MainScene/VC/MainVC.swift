@@ -130,7 +130,6 @@ extension MainVC {
     }
     
     private func bindViews() {
-        // FIXME: - 디버깅을 위한 임시 바인딩
         naviBar.rightButton.publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
@@ -217,7 +216,7 @@ extension MainVC: UICollectionViewDelegate {
               return
           }
           
-          var needOfficialProject = service == .project && viewModel.userType == .visitor
+          let needOfficialProject = service == .project && viewModel.userType == .visitor
           let serviceDomainURL = needOfficialProject
           ? ExternalURL.SOPT.project
           : service.serviceDomainLink

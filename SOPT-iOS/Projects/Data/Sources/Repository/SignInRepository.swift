@@ -32,7 +32,7 @@ extension SignInRepository: SignInRepositoryInterface {
         authService.signIn(token: token)
             .catch ({ error in
                 guard
-                    let error = error as? SOPTAPPError,
+                    let error = error as? APIError,
                     case .network(let statusCode) = error,
                     statusCode == 400
                 else {
