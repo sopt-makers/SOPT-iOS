@@ -8,7 +8,7 @@
 
 import UIKit
 
-public class AttendanceCodeView: UIView {
+final class AttendanceCodeView: UIView {
     private enum Metric {
         static let itemHeight = 60.f
         static let itemWidth = 42.f

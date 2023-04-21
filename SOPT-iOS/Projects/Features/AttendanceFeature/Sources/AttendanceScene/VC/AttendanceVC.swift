@@ -17,7 +17,7 @@ import Then
 
 import AttendanceFeatureInterface
 
-public class AttendanceVC: UIViewController, AttendanceViewControllable {
+public final class AttendanceVC: UIViewController, AttendanceViewControllable {
     private enum Metric {
         static let baseInset = 20.f
         static let contentInset = 16.f
