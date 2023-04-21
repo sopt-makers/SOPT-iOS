@@ -64,4 +64,14 @@ public extension String {
             return dateFormatter.string(from: self.toDate())
         }
     }
+    
+    /// 맨 앞 문자열 가져오는 메서드
+    func getFirst() -> String? {
+        return map({String($0)}).first
+    }
+    
+    /// 맨 뒤 문자열 가져오는 메서트
+    func getLast() -> String? {
+        return map({String($0)}).last
+    }
 }

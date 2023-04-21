@@ -51,6 +51,7 @@ public class NicknameEditVC: UIViewController, NicknameEditViewControllable {
         self.bindViewModels()
         self.setUI()
         self.setLayout()
+        self.hideKeyboard()
     }
 }
 

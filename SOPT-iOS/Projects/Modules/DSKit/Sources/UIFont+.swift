@@ -112,4 +112,14 @@ extension UIFont {
             return DSKitFontFamily.Suit.regular.font(size: 14)
         }
     }
+    
+    public struct Attendance {
+        @nonobjc public static var h1: UIFont {
+            return DSKitFontFamily.Suit.bold.font(size: 18)
+        }
+        
+        @nonobjc public static var h2: UIFont {
+            return DSKitFontFamily.Suit.bold.font(size: 14)
+        }
+    }
 }

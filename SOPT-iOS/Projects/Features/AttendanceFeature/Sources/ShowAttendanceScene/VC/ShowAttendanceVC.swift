@@ -61,6 +61,12 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     
     private let attendanceScoreView = AttendanceScoreView()
     
+    private let attendanceButton: OPCustomButton = {
+        let button = OPCustomButton()
+        button.titleLabel!.setTypoStyle(.Attendance.h1)
+        return button
+    }()
+    
     private let refresher: UIRefreshControl = {
         let rf = UIRefreshControl()
         rf.tintColor = .gray
@@ -113,7 +119,7 @@ extension ShowAttendanceVC {
     }
     
     private func setLayout() {
-        view.addSubviews(navibar, containerScrollView)
+        view.addSubviews(navibar, containerScrollView, attendanceButton)
         containerScrollView.addSubview(contentView)
         contentView.addSubviews(headerScheduleView, attendanceScoreView)
         attendanceScoreView.addSubview(infoButton)
@@ -124,8 +130,8 @@ extension ShowAttendanceVC {
         
         containerScrollView.snp.makeConstraints {
             $0.top.equalTo(navibar.snp.bottom)
-            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-            $0.bottom.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(attendanceButton.snp.top)
         }
         
         contentView.snp.makeConstraints {
@@ -141,7 +147,13 @@ extension ShowAttendanceVC {
         attendanceScoreView.snp.makeConstraints {
             $0.top.equalTo(headerScheduleView.snp.bottom).offset(20)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalToSuperview().offset(-13)
+        }
+        
+        attendanceButton.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.height.equalTo(56)
         }
         
         infoButton.snp.makeConstraints {
@@ -163,6 +175,16 @@ extension ShowAttendanceVC {
             .mapVoid()
             .asDriver()
         
+        attendanceButton.publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                let vc = owner.factory.makeAttendanceVC().viewController
+                vc.modalTransitionStyle = .crossDissolve
+                vc.modalPresentationStyle = .overFullScreen
+                owner.present(vc, animated: true)
+            }
+            .store(in: self.cancelBag)
+        
         let input = ShowAttendanceViewModel.Input(viewWillAppear: viewWillAppear,
                                                   refreshStarted: refreshStarted)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -175,9 +197,11 @@ extension ShowAttendanceVC {
                     self.sceneType = .scheduledDay
                     self.setScheduledData(model)
                     self.headerScheduleView.updateLayout(.scheduledDay)
+                    self.setAttendanceButton(isEnabled: true, title: "\(model.name) \(I18N.Attendance.takeAttendance)")
                 } else {
                     self.sceneType = .unscheduledDay
                     self.headerScheduleView.updateLayout(.unscheduledDay)
+                    self.setAttendanceButton(isEnabled: false)
                 }
                 self.endRefresh()
             })
@@ -212,6 +236,12 @@ extension ShowAttendanceVC {
                                           count: model.score)
         attendanceScoreView.setMyTotalScoreData(attendance: model.total.attendance, tardy: model.total.tardy, absent: model.total.absent, participate: model.total.participate)
         attendanceScoreView.setMyAttendanceTableData(model.attendances)
+    }
+    
+    /// 하단 출석하기 버튼 (비)활성화
+    private func setAttendanceButton(isEnabled: Bool, title: String? = nil) {
+        attendanceButton.isEnabled = isEnabled
+        attendanceButton.setTitle(title, for: .normal)
     }
     
     @objc

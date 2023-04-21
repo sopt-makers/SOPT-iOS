@@ -10,6 +10,9 @@ import BaseFeatureDependency
 
 public protocol ShowAttendanceViewControllable: ViewControllable { }
 
+public protocol AttendanceViewControllable: ViewControllable { }
+
 public protocol AttendanceFeatureViewBuildable {
     func makeShowAttendanceVC() -> ShowAttendanceViewControllable
+    func makeAttendanceVC() -> AttendanceViewControllable
 }

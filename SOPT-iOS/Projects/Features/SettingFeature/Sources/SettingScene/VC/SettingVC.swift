@@ -156,7 +156,7 @@ extension SettingVC {
 
 extension SettingVC: WithdrawButtonDelegate {
     func withdrawButtonTapped() {
-        let withdrawalVC = factory.makeWithdrawalVC().viewController
+        let withdrawalVC = factory.makeWithdrawalVC(userType: .visitor).viewController
         navigationController?.pushViewController(withdrawalVC, animated: true)
     }
 }
