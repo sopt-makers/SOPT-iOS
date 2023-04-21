@@ -12,12 +12,6 @@ import Core
 import Domain
 import Foundation
 
-public enum SessionType: String, CaseIterable {
-    case noSession = "NO_SESSION"
-    case hasAttendance = "HAS_ATTENDANCE"
-    case noAttendance = "NO_ATTENDANCE"
-}
-
 public final class ShowAttendanceViewModel: ViewModelType {
 
     // MARK: - Properties
@@ -38,6 +32,7 @@ public final class ShowAttendanceViewModel: ViewModelType {
     public class Output {
         @Published var scheduleModel: AttendanceScheduleModel?
         @Published var scoreModel: AttendanceScoreModel?
+        @Published var todayAttendances: [AttendanceStepModel]?
     }
     
     // MARK: - init
@@ -67,6 +62,7 @@ extension ShowAttendanceViewModel {
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         let fetchedSchedule = self.useCase.attendanceScheduleFetched
         let fetchedScore = self.useCase.attendanceScoreFetched
+        let todayAttendances = self.useCase.todayAttendances
         
         fetchedSchedule.asDriver()
             .sink(receiveValue: { model in
@@ -90,11 +86,19 @@ extension ShowAttendanceViewModel {
             })
             .store(in: cancelBag)
         
+        
+        
         fetchedScore.asDriver()
             .sink(receiveValue: { model in
                 output.scoreModel = model
             })
             .store(in: cancelBag)
+        
+        todayAttendances
+            .sink { attendances in
+                output.todayAttendances = attendances
+            }
+            .store(in: self.cancelBag)
     }
     
     private func convertDateString(_ dateString: String) -> String? {

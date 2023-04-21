@@ -9,6 +9,7 @@
 import UIKit
 
 import Core
+import Domain
 import DSKit
 
 /*
@@ -16,6 +17,10 @@ import DSKit
  */
 
 final class TodayScheduleView: UIView {
+    
+    private enum Metric {
+        static let todayAttendanceHeight = 51.f
+    }
     
     // MARK: - UI Components
 
@@ -48,7 +53,7 @@ final class TodayScheduleView: UIView {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .white
-        label.font = .Main.headline2
+        label.font = DSKitFontFamily.Suit.regular.font(size: 18)
         return label
     }()
     
@@ -92,8 +97,18 @@ final class TodayScheduleView: UIView {
         return stackView
     }()
     
+    private let todayAttendanceView: TodayAttendanceView = {
+        let view = TodayAttendanceView()
+        view.isHidden = true
+        return view
+    }()
+    
     private lazy var containerStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [todayInfoStackView, subtitleLabel])
+        let stackView = UIStackView(arrangedSubviews: [
+            todayInfoStackView,
+            subtitleLabel,
+            todayAttendanceView
+        ])
         stackView.axis = .vertical
         stackView.spacing = 24
         stackView.alignment = .leading
@@ -104,6 +119,7 @@ final class TodayScheduleView: UIView {
 
     init(type: AttendanceScheduleType) {
         super.init(frame: .zero)
+        
         confiureContentView()
         setLayout(type)
     }
@@ -125,6 +141,10 @@ extension TodayScheduleView {
     
     private func setLayout(_ type: AttendanceScheduleType) {
         addSubview(containerStackView)
+        
+        todayAttendanceView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+        }
         
         containerStackView.snp.makeConstraints {
             $0.edges.equalToSuperview().inset(32)
@@ -170,8 +190,13 @@ extension TodayScheduleView {
         placeLabel.text = place
         titleLabel.text = I18N.Attendance.today + todaySchedule + I18N.Attendance.dayIs
         titleLabel.partFontChange(targetString: todaySchedule,
-                                  font: DSKitFontFamily.Suit.bold.font(size: 17))
+                                  font: DSKitFontFamily.Suit.bold.font(size: 18))
         subtitleLabel.text = description
         subtitleLabel.isHidden = ((description?.isEmpty) == nil || description == "")
+    }
+    
+    func setAttendanceInfo(_ attendances: [AttendanceStepModel], _ hasAttendance: Bool) {
+        todayAttendanceView.setTodayAttendances(attendances)
+        todayAttendanceView.isHidden = !hasAttendance
     }
 }
