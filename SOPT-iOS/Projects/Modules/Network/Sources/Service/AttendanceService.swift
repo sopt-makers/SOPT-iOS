@@ -12,7 +12,8 @@ import Combine
 import Alamofire
 import Moya
 
-public typealias DefaultAttendanceService = BaseService<AttendanceAPI>
+//public typealias DefaultAttendanceService = BaseService<AttendanceAPI>
+public typealias DefaultAttendanceService = MockService<AttendanceAPI>
 
 public protocol AttendanceService {
     func fetchAttendanceSchedule() -> AnyPublisher<BaseEntity<AttendanceScheduleEntity>, Error>
