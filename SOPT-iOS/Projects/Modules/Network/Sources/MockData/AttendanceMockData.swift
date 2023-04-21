@@ -217,7 +217,7 @@ extension  AttendanceAPI {
 //            let data = SampleData.absentCaseOne
 //            let data = SampleData.absenctCaseTwo
 //            let data = SampleData.tardy
-//            let data = SampleData.attendanceComplete
+            let data = SampleData.attendanceComplete
 //            let data = SampleData.eventSession
 //            let data = SampleData.noAttendanceSession
             return data
