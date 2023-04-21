@@ -13,9 +13,7 @@ import Domain
 import DSKit
 
 /*
-각각의 출석현황을 나타내는 뷰입니다.
- ex.   O
-    1차 출석
+ 각각의 출석현황을 나타내는 뷰입니다.
  */
 
 extension AttendanceStepType {
@@ -39,6 +37,15 @@ extension AttendanceStepType {
             return DSKitAsset.Colors.gray100.color
         case .check, .tardy, .done:
             return DSKitAsset.Colors.purple40.color
+        }
+    }
+    
+    var shadow: Bool {
+        switch self {
+        case .none:
+            return false
+        default:
+            return true
         }
     }
 }
@@ -99,9 +106,19 @@ final class OPAttendanceStepView: UIView {
 
 extension OPAttendanceStepView {
     private func setUI() {
-        stepImageView.image = type.image
         stepTitleLabel.textColor = type.textColor
         stepTitleLabel.text = title
+        stepImageView.image = type.image
+        if type.shadow {
+            stepImageView.layer.applyShadow(
+                color: DSKitAsset.Colors.purple40.color,
+                alpha: 0.3,
+                x: 0,
+                y: 0,
+                blur: 16,
+                spread: 0
+            )
+        }
     }
     
     private func setLayout() {
