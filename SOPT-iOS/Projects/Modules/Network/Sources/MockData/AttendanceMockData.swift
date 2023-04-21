@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension  AttendanceAPI {
+extension AttendanceAPI {
     
     private enum SampleData {
         static let noSession = Data(

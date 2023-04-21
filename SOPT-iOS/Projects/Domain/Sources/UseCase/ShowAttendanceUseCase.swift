@@ -11,13 +11,7 @@ import Core
 
 enum TodayAttendanceType: String {
     case attendance = "ATTENDANCE"
-    case absendt = "ABSENT"
-}
-
-public enum SessionType: String, CaseIterable {
-    case noSession = "NO_SESSION"
-    case hasAttendance = "HAS_ATTENDANCE"
-    case noAttendance = "NO_ATTENDANCE"
+    case absent = "ABSENT"
 }
 
 public protocol ShowAttendanceUseCase {

@@ -12,7 +12,7 @@ import Combine
 import Alamofire
 import Moya
 
-open class MockService<Target: TargetType> {
+public class MockService<Target: TargetType> {
     
     typealias API = Target
     
