@@ -8,6 +8,7 @@
 
 import Foundation
 
+import Core
 import Domain
 import Network
 
@@ -28,6 +29,6 @@ extension TodayAttendance {
     
     public func toDomain() -> TodayAttendanceModel {
         return .init(status: self.status,
-                     attendedAt: self.attendedAt)
+                     attendedAt: self.attendedAt.setDateFormat(dateString: "HH:mm"))
     }
 }
