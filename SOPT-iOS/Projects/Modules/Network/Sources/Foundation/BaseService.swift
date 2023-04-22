@@ -44,10 +44,25 @@ open class BaseService<Target: TargetType> {
         return testingProvider
     }()
     
+    private lazy var testingProviderWithError: MoyaProvider<API> = {
+        let testingProvider = MoyaProvider<API>(endpointClosure: endpointClosureWithError, stubClosure: MoyaProvider.immediatelyStub)
+        return testingProvider
+    }()
+    
     private let endpointClosure = { (target: API) -> Endpoint in
         let url = target.baseURL.appendingPathComponent(target.path).absoluteString
         var endpoint: Endpoint = Endpoint(url: url,
                                           sampleResponseClosure: {.networkResponse(200, target.sampleData)},
+                                          method: target.method,
+                                          task: target.task,
+                                          httpHeaderFields: target.headers)
+        return endpoint
+    }
+    
+    private let endpointClosureWithError = { (target: API) -> Endpoint in
+        let url = target.baseURL.appendingPathComponent(target.path).absoluteString
+        var endpoint: Endpoint = Endpoint(url: url,
+                                          sampleResponseClosure: {.networkResponse(400, target.sampleData)},
                                           method: target.method,
                                           task: target.task,
                                           httpHeaderFields: target.headers)
@@ -69,6 +84,11 @@ public extension BaseService {
     
     var test: BaseService {
         self.provider = self.testingProvider
+        return self
+    }
+    
+    var testWithError: BaseService {
+        self.provider = self.testingProviderWithError
         return self
     }
 }
@@ -101,7 +121,7 @@ extension BaseService {
             }
         }.eraseToAnyPublisher()
     }
-
+    
     func requestObjectWithNetworkErrorInCombine<T: Decodable>(_ target: API) -> AnyPublisher<T, Error> {
         return Future { promise in
             self.provider.request(target) { response in
@@ -109,7 +129,7 @@ extension BaseService {
                 case .success(let value):
                     do {
                         guard let response = value.response else { throw NSError(domain: "이 경우는 생각 업씀", code: -1000) }
-
+                        
                         switch response.statusCode {
                         case 200...399:
                             let decoder = JSONDecoder()
