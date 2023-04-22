@@ -17,9 +17,12 @@ enum TodayAttendanceType: String {
 public protocol ShowAttendanceUseCase {
     func fetchAttendanceSchedule()
     func fetchAttendanceScore()
+    func fetchLectureRound(lectureId: Int)
     var attendanceScheduleFetched: PassthroughSubject<AttendanceScheduleModel, Error> { get set }
     var todayAttendances: PassthroughSubject<[AttendanceStepModel], Never> { get set }
     var attendanceScoreFetched: PassthroughSubject<AttendanceScoreModel, Error> { get set }
+    var lectureRound: PassthroughSubject<AttendanceRoundModel?, Never> { get set }
+    var lectureRoundErrorTitle: PassthroughSubject<String, Never> { get set }
 }
 
 public class DefaultShowAttendanceUseCase {
@@ -40,6 +43,8 @@ public class DefaultShowAttendanceUseCase {
     public var attendanceScheduleFetched = PassthroughSubject<AttendanceScheduleModel, Error>()
     public var todayAttendances = PassthroughSubject<[AttendanceStepModel], Never>()
     public var attendanceScoreFetched = PassthroughSubject<AttendanceScoreModel, Error>()
+    public var lectureRound = PassthroughSubject<AttendanceRoundModel?, Never>()
+    public var lectureRoundErrorTitle = PassthroughSubject<String, Never>()
     
     // MARK: - Init
   
@@ -54,12 +59,18 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
     
     public func fetchAttendanceSchedule() {
         self.repository.fetchAttendanceScheduleModel()
+            .withUnretained(self)
             .sink(receiveCompletion: { event in
                 print("completion: fetchAttendanceSchedule \(event)")
-            }, receiveValue: { model in
-                self.attendanceScheduleFetched.send(model)
+            }, receiveValue: { owner, model in
+                owner.attendanceScheduleFetched.send(model)
+                /// 출석 점수 반영되는 날만 출석 프로그레스바 정보 필요
                 if model.type == SessionType.hasAttendance.rawValue {
-                    self.setAttendances(model.attendances)
+                    owner.self.setAttendances(model.attendances)
+                }
+                /// 출석하는 날(세미나, 행사, 솝커톤, 데모데이)에 출석버튼 보이게
+                if model.type != SessionType.noSession.rawValue {
+                    owner.fetchLectureRound(lectureId: model.id)
                 }
             })
             .store(in: cancelBag)
@@ -75,7 +86,28 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
             .store(in: cancelBag)
     }
     
-    /// [1차 출석 , 2차 출석, 출석] 각각 상태 및 타이틀 가지는 배열
+    public func fetchLectureRound(lectureId: Int) {
+        repository.fetchLectureRound(lectureId: lectureId)
+            .catch({ error in
+                if let error = error as? OPAPIError {
+                    var errorMsg = error.errorDescription ?? ""
+                    self.setLectureRoundErrorTitle(&errorMsg)
+                    self.lectureRoundErrorTitle.send(errorMsg)
+                }
+                
+                return Just<AttendanceRoundModel?>(nil)
+            })
+            .sink(receiveCompletion: { event in
+                print("completion: fetchLectureRound \(event)")
+            }, receiveValue: { result in
+                self.lectureRound.send(result)
+            })
+            .store(in: cancelBag)
+    }
+    
+    /*
+     각 출석 상태 나타내는 배열로 바꿔주는 메서드
+     */
     private func setAttendances(_ attendanceData: [TodayAttendanceModel]) {
         var attendances: [AttendanceStepModel] = []
         
@@ -116,5 +148,18 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
         }
         
         self.todayAttendances.send(attendances)
+    }
+    
+    
+    /*
+     에러 메세지를 하단 출석하기 버튼 타이틀로 바꿔주는 메서드
+     */
+    private func setLectureRoundErrorTitle(_ errorMsg: inout String) {
+        AttendanceErrorMsgType.allCases.forEach {
+            if $0.rawValue == errorMsg {
+                errorMsg = $0.title
+                return
+            }
+        }
     }
 }
