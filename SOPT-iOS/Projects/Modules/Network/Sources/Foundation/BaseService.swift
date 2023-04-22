@@ -131,6 +131,42 @@ extension BaseService {
         }.eraseToAnyPublisher()
     }
     
+    func opRequestObjectInCombine<T: Decodable>(_ target: API) -> AnyPublisher<T, Error> {
+        return Future { promise in
+            self.provider.request(target) { response in
+                switch response {
+                case .success(let value):
+                    do {
+                        let decoder = JSONDecoder()
+                        let body = try decoder.decode(T.self, from: value.data)
+                        promise(.success(body))
+                    } catch let error {
+                        promise(.failure(error))
+                    }
+                case .failure(let error):
+                    // NOTE: 에러 메세지 받아서 보여주기 위함
+                    do {
+                        let decoder = JSONDecoder()
+                        let errorData = try decoder.decode(BaseEntity<Data>.self, from: error.response?.data ?? Data())
+                        throw OPAPIError.attendanceError(errorData)
+                    } catch let error {
+                        promise(.failure(error))
+                    }
+                    
+                    if case MoyaError.underlying(let error, _) = error,
+                       case AFError.requestRetryFailed(let retryError, _) = error,
+                       let retryError = retryError as? APIError,
+                       retryError == APIError.tokenReissuanceFailed {
+                        promise(.failure(retryError))
+                    } else {
+                        promise(.failure(error))
+                    }
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
+
+    
     func requestObjectInCombineNoResult(_ target: API) -> AnyPublisher<Int, Error> {
         return Future { promise in
             self.provider.request(target) { response in

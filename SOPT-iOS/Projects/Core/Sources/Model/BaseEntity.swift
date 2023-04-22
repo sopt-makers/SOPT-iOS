@@ -1,8 +1,8 @@
 //
 //  BaseEntity.swift
-//  Network
+//  Core
 //
-//  Created by 김영인 on 2023/04/16.
+//  Created by 김영인 on 2023/04/22.
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
