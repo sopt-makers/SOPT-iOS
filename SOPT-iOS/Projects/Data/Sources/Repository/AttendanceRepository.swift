@@ -23,15 +23,8 @@ public class AttendanceRepository {
 }
 
 extension AttendanceRepository: AttendanceRepositoryInterface {
-
-    public func fetchLectureRound(lectureId: Int) -> AnyPublisher<Int, Error> {
-        return self.attendanceService
-            .fetchAttendanceRound(lectureId: lectureId)
-            .compactMap { $0.data?.round }
-            .eraseToAnyPublisher()
-    }
     
-    public func postAttendance(lectureRoundId: Int, code: Int) -> AnyPublisher<Bool, Error> {
+    public func postAttendance(lectureRoundId: Int, code: String) -> AnyPublisher<Bool, Error> {
         return self.attendanceService
             .postAttendance(lectureRoundId: lectureRoundId, code: code)
             .map { $0.success }
