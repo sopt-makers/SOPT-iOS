@@ -218,11 +218,18 @@ public struct I18N {
         public static let myAttendance = "나의 출결 현황"
         public static let count = "회"
         
-        public static let takeAttendance = "출석하기"
-        public static let giveFeedback = "세션 피드백하기"
+        public static let beforeFirstAttendance = "1차 출석 시작 전"
+        public static func afterNthAttendance(_ idx: Int) -> String {
+            return "\(idx)차 출석 종료"
+        }
+        public static func takeNthAttendance(_ idx: Int) -> String {
+            return "\(idx)차 출석 인증하기"
+        }
+        public static let giveFeedback = "피드백 남기기"
         
         public static let inputCodeDescription = "출석 코드 다섯 자리를 입력해 주세요."
         public static let codeMismatch = "코드가 일치하지 않아요!"
+        public static let takeAttendance = "출석하기"
     }
     
     public struct MyPage {
