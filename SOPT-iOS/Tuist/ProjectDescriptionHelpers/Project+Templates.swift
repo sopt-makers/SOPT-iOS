@@ -154,35 +154,6 @@ public extension Project {
             projectTargets.append(target)
         }
         
-        // MARK: - App Test
-        
-        if targets.contains(.appTest) {
-            let bundleSuffix = name.contains("Demo") ? "demo" : "test"
-            let infoPlist = name.contains("Demo") ? Project.demoInfoPlist : Project.appTestInfoPlist
-            let settings = baseSettings.setProvisioning()
-            
-            let target = Target(
-                name: "\(name)AppTest",
-                platform: platform,
-                product: .app,
-                bundleId: "\(Environment.bundlePrefix).\(bundleSuffix)",
-                deploymentTarget: deploymentTarget,
-                infoPlist: .extendingDefault(with: infoPlist),
-                sources: ["Sources/**/*.swift"],
-                resources: [.glob(pattern: "Resources/**", excluding: [])],
-                dependencies: [
-                    internalDependencies,
-                    externalDependencies,
-                    [
-                        .SPM.Inject
-                    ]
-                ].flatMap { $0 },
-                settings: .settings(base: settings, configurations: XCConfig.project)
-            )
-            
-            projectTargets.append(target)
-        }
-        
         // MARK: - Schemes
         
         let additionalSchemes = targets.contains(.demo)
@@ -224,6 +195,7 @@ extension Scheme {
             analyzeAction: .analyzeAction(configuration: configs)
         )
     }
+  
     static func makeDemoScheme(configs: ConfigurationName, name: String) -> Scheme {
         return Scheme(
             name: "\(name)Demo",
@@ -265,7 +237,7 @@ extension Project {
         .init(
             name: "\(Environment.workspaceName)-QA",
             shared: true,
-            buildAction: .buildAction(targets: ["\(Environment.workspaceName)AppTest"]),
+            buildAction: .buildAction(targets: ["\(Environment.workspaceName)"]),
             runAction: .runAction(configuration: "QA"),
             archiveAction: .archiveAction(configuration: "QA"),
             profileAction: .profileAction(configuration: "QA"),
