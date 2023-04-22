@@ -162,9 +162,14 @@ public extension Project {
         : [Scheme.makeScheme(configs: configurationName, name: name)]
         schemes += additionalSchemes
         
-        let scheme = targets.contains(.app)
+        var scheme = targets.contains(.app)
         ? appSchemes
         : schemes
+        
+        if name.contains("Demo") {
+            let testAppScheme = Scheme.makeScheme(configs: "QA", name: name)
+            scheme.append(testAppScheme)
+        }
         
         return Project(
             name: name,
