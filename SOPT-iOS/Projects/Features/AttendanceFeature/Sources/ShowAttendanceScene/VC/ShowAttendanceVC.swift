@@ -64,6 +64,8 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     private let attendanceButton: OPCustomButton = {
         let button = OPCustomButton()
         button.titleLabel!.setTypoStyle(.Attendance.h1)
+        button.isHidden = true
+        button.isEnabled = true
         return button
     }()
     
@@ -178,7 +180,7 @@ extension ShowAttendanceVC {
         attendanceButton.publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
-                let vc = owner.factory.makeAttendanceVC().viewController
+                let vc = owner.factory.makeAttendanceVC(lectureRound: owner.viewModel.lectureRound).viewController
                 vc.modalTransitionStyle = .crossDissolve
                 vc.modalPresentationStyle = .overFullScreen
                 owner.present(vc, animated: true)
@@ -197,11 +199,11 @@ extension ShowAttendanceVC {
                     self.sceneType = .scheduledDay
                     self.setScheduledData(model)
                     self.headerScheduleView.updateLayout(.scheduledDay)
-                    self.setAttendanceButton(isHidden: false, title: "\(model.name) \(I18N.Attendance.takeAttendance)")
+                    self.attendanceButton.isHidden = false
                 } else {
                     self.sceneType = .unscheduledDay
                     self.headerScheduleView.updateLayout(.unscheduledDay)
-                    self.setAttendanceButton(isHidden: true)
+                    self.attendanceButton.isHidden = true
                 }
                 self.endRefresh()
             })
@@ -220,6 +222,13 @@ extension ShowAttendanceVC {
             .sink { owner, model in
                 guard let model else { return }
                 owner.headerScheduleView.setAttendanceInfo(model, true)
+            }
+            .store(in: self.cancelBag)
+        
+        output.attendanceButtonInfo
+            .withUnretained(self)
+            .sink { owner, info in
+                owner.setAttendanceButton(title: info.title, isEnabled: info.isEnalbed)
             }
             .store(in: self.cancelBag)
     }
@@ -246,9 +255,9 @@ extension ShowAttendanceVC {
         attendanceScoreView.setMyAttendanceTableData(model.attendances)
     }
     
-    private func setAttendanceButton(isHidden: Bool, title: String? = nil) {
-        attendanceButton.isHidden = isHidden
-        attendanceButton.setTitle(title, for: .normal)
+    private func setAttendanceButton(title: String, isEnabled: Bool) {
+        attendanceButton.isEnabled = isEnabled
+        isEnabled ? attendanceButton.setTitle(title, for: .normal) : attendanceButton.setTitle(title, for: .disabled)
     }
     
     @objc

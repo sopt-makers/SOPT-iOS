@@ -12,6 +12,11 @@ import Core
 import Domain
 import Foundation
 
+struct AttendanceButtonInfo {
+    let title: String
+    let isEnalbed: Bool
+}
+
 public final class ShowAttendanceViewModel: ViewModelType {
 
     // MARK: - Properties
@@ -19,6 +24,7 @@ public final class ShowAttendanceViewModel: ViewModelType {
     private let useCase: ShowAttendanceUseCase
     private var cancelBag = CancelBag()
     public var sceneType: AttendanceScheduleType?
+    public var lectureRound: AttendanceRoundModel = .EMPTY
     
     // MARK: - Inputs
     
@@ -33,6 +39,7 @@ public final class ShowAttendanceViewModel: ViewModelType {
         @Published var scheduleModel: AttendanceScheduleModel?
         @Published var scoreModel: AttendanceScoreModel?
         @Published var todayAttendances: [AttendanceStepModel]?
+        var attendanceButtonInfo = PassthroughSubject<AttendanceButtonInfo, Never>()
     }
     
     // MARK: - init
@@ -63,6 +70,8 @@ extension ShowAttendanceViewModel {
         let fetchedSchedule = self.useCase.attendanceScheduleFetched
         let fetchedScore = self.useCase.attendanceScoreFetched
         let todayAttendances = self.useCase.todayAttendances
+        let lectureRound = self.useCase.lectureRound
+        let lectureRoundErrorTitle = self.useCase.lectureRoundErrorTitle
         
         fetchedSchedule.asDriver()
             .sink(receiveValue: { model in
@@ -72,6 +81,7 @@ extension ShowAttendanceViewModel {
                           let convertedEndDate = self.convertDateString(model.endDate) else { return }
 
                     let newModel = AttendanceScheduleModel(type: model.type,
+                                                           id: model.id,
                                                            location: model.location,
                                                            name: model.name,
                                                            startDate: convertedStartDate,
@@ -86,8 +96,6 @@ extension ShowAttendanceViewModel {
             })
             .store(in: cancelBag)
         
-        
-        
         fetchedScore.asDriver()
             .sink(receiveValue: { model in
                 output.scoreModel = model
@@ -97,6 +105,24 @@ extension ShowAttendanceViewModel {
         todayAttendances
             .sink { attendances in
                 output.todayAttendances = attendances
+            }
+            .store(in: self.cancelBag)
+        
+        lectureRound
+            .compactMap { $0 }
+            .withUnretained(self)
+            .sink { owner, lectureRound in
+                owner.lectureRound = lectureRound
+                let buttonInfo = AttendanceButtonInfo(title: I18N.Attendance.takeNthAttendance(lectureRound.round), isEnalbed: true)
+                output.attendanceButtonInfo.send(buttonInfo)
+            }
+            .store(in: self.cancelBag)
+        
+        lectureRoundErrorTitle
+            .withUnretained(self)
+            .sink { owner, title in
+                let buttonInfo = AttendanceButtonInfo(title: title, isEnalbed: false)
+                output.attendanceButtonInfo.send(buttonInfo)
             }
             .store(in: self.cancelBag)
     }
