@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 
+import Core
 import Alamofire
 import Moya
 
@@ -18,24 +19,24 @@ public protocol AttendanceService {
     func fetchAttendanceSchedule() -> AnyPublisher<BaseEntity<AttendanceScheduleEntity>, Error>
     func fetchAttendanceScore() -> AnyPublisher<BaseEntity<AttendanceScoreEntity>, Error>
     func fetchAttendanceRound(lectureId: Int) -> AnyPublisher<BaseEntity<AttendanceRoundEntity>, Error>
-    func postAttendance(lectureRoundId: Int, code: Int) -> AnyPublisher<BaseEntity<Int>, Error>
+    func postAttendance(lectureRoundId: Int, code: String) -> AnyPublisher<BaseEntity<String>, Error>
 }
 
 extension DefaultAttendanceService: AttendanceService {
     
     public func fetchAttendanceSchedule() -> AnyPublisher<BaseEntity<AttendanceScheduleEntity>, Error> {
-        test.requestObjectInCombine(AttendanceAPI.lecture)
+        opRequestObjectInCombine(AttendanceAPI.lecture)
     }
     
     public func fetchAttendanceScore() -> AnyPublisher<BaseEntity<AttendanceScoreEntity>, Error> {
-        requestObjectInCombine(AttendanceAPI.total)
+        opRequestObjectInCombine(AttendanceAPI.total)
     }
     
     public func fetchAttendanceRound(lectureId: Int) -> AnyPublisher<BaseEntity<AttendanceRoundEntity>, Error> {
-        requestObjectInCombine(AttendanceAPI.lectureRound(lectureId: lectureId))
+        opRequestObjectInCombine(AttendanceAPI.lectureRound(lectureId: lectureId))
     }
     
-    public func postAttendance(lectureRoundId: Int, code: Int) -> AnyPublisher<BaseEntity<Int>, Error> {
-        requestObjectInCombine(AttendanceAPI.attend(lectureRoundId: lectureRoundId, code: code))
+    public func postAttendance(lectureRoundId: Int, code: String) -> AnyPublisher<BaseEntity<String>, Error> {
+        opRequestObjectInCombine(AttendanceAPI.attend(lectureRoundId: lectureRoundId, code: code))
     }
 }
