@@ -60,6 +60,10 @@ extension BaseAPI {
     public var headers: [String: String]? {
         return HeaderType.jsonWithToken.value
     }
+    
+    public var validationType: ValidationType {
+        return .successCodes
+    }
 }
 
 public enum HeaderType {

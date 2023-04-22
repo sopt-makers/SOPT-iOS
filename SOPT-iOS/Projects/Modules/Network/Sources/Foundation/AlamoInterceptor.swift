@@ -34,7 +34,7 @@ public class AlamoInterceptor: RequestInterceptor {
                 completion(.retry)
             } else {
                 print("토큰 갱신 실패: ", request.request?.url)
-                completion(.doNotRetryWithError(error))
+                completion(.doNotRetryWithError(APIError.tokenReissuanceFailed))
             }
         }
     }

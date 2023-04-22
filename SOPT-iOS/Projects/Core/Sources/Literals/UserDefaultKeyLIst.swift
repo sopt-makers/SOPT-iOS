@@ -49,6 +49,10 @@ extension UserDefaultKeyList.Auth {
             return UserType.visitor
         }
         
+        guard appAccessToken != "" else {
+            return UserType.unregisteredInactive
+        }
+        
         return getUserActivation()
         ? UserType.active
         : UserType.inactive

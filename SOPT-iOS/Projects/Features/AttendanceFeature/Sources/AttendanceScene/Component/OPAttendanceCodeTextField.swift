@@ -41,7 +41,7 @@ public struct AttendanceCodeInfo {
     var text: String?
 }
 
-public class OPAttendanceCodeTextField: UITextField {
+final class OPAttendanceCodeTextField: UITextField {
     
     // MARK: - Init
     

@@ -189,6 +189,12 @@ public struct I18N {
     }
     
     public struct Attendance {
+        public static func nthAttendance(_ idx: Int) -> String {
+            return "\(idx)차 출석"
+        }
+        public static let beforeAttendance = "출석 전"
+        public static let completeAttendance = "출석완료!"
+        
         public static let attendance = "출석"
         public static let absent = "결석"
         public static let tardy = "지각"
@@ -213,8 +219,6 @@ public struct I18N {
         public static let count = "회"
         
         public static let takeAttendance = "출석하기"
-        public static let beforeAttendance = "출석 전"
-        public static let completeAttendacne = "출석완료"
         public static let giveFeedback = "세션 피드백하기"
         
         public static let inputCodeDescription = "출석 코드 다섯 자리를 입력해 주세요."

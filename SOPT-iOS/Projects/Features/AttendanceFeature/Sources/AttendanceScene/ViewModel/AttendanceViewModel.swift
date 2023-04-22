@@ -11,7 +11,7 @@ import Combine
 import Core
 import Domain
 
-public class AttendanceViewModel: ViewModelType {
+public final class AttendanceViewModel: ViewModelType {
     
     // MARK: - Properties
     

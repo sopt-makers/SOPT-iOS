@@ -32,13 +32,15 @@ extension SignInRepository: SignInRepositoryInterface {
         authService.signIn(token: token)
             .catch ({ error in
                 guard
-                    let error = error as? SOPTAPPError,
+                    let error = error as? APIError,
                     case .network(let statusCode) = error,
                     statusCode == 400
                 else {
                     return self.userService.reissuance()
                 }
-                
+                // NOTE: (@준호) 플그 미등록 + 비활동 유저의 경우 임시로 accessToken 빈 스트링 부여
+                // 자동로그인 시 활용하기 위함
+                UserDefaultKeyList.Auth.appAccessToken = ""
                 return Fail(error: error).eraseToAnyPublisher()
             })
             .map { entity in
