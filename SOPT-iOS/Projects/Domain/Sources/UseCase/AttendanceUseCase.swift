@@ -14,7 +14,7 @@ import Network
 public protocol AttendanceUseCase {
     func postAttendance(lectureRoundId: Int, code: String)
     var attendSuccess: PassthroughSubject<Bool, Never> { get set }
-    var attendErrorMsg: PassthroughSubject<String, Never>{ get set }
+    var attendErrorMsg: PassthroughSubject<String, Never> { get set }
 }
 
 public class DefaultAttendanceUseCase {

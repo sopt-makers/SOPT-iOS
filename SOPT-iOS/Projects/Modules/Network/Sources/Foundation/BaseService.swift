@@ -165,21 +165,19 @@ extension BaseService {
                     }
                 case .failure(let error):
                     // NOTE: 에러 메세지 받아서 보여주기 위함
-                    do {
-                        let decoder = JSONDecoder()
-                        let errorData = try decoder.decode(BaseEntity<Data>.self, from: error.response?.data ?? Data())
-                        throw OPAPIError.attendanceError(errorData)
-                    } catch let error {
-                        promise(.failure(error))
-                    }
-                    
                     if case MoyaError.underlying(let error, _) = error,
                        case AFError.requestRetryFailed(let retryError, _) = error,
                        let retryError = retryError as? APIError,
                        retryError == APIError.tokenReissuanceFailed {
                         promise(.failure(retryError))
                     } else {
-                        promise(.failure(error))
+                        do {
+                            let decoder = JSONDecoder()
+                            let errorData = try decoder.decode(BaseEntity<Data>.self, from: error.response?.data ?? Data())
+                            throw OPAPIError.attendanceError(errorData)
+                        } catch let error {
+                            promise(.failure(error))
+                        }
                     }
                 }
             }

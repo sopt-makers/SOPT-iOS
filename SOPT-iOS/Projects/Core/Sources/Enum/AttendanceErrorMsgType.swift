@@ -25,4 +25,15 @@ public enum AttendanceErrorMsgType: String, CaseIterable {
             return I18N.Attendance.afterNthAttendance(2)
         }
     }
+ 
+    /*
+     에러 메세지를 하단 출석하기 버튼 타이틀로 바꿔주는 메서드
+     */
+    public static func getTitle(for error: Error) -> String? {
+        guard let errorMsg = (error as? OPAPIError)?.errorDescription else {
+            return nil
+        }
+        
+        return Self.allCases.first { $0.rawValue == errorMsg }?.title
+    }
 }

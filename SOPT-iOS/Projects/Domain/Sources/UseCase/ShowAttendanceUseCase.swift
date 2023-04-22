@@ -66,7 +66,7 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
                 owner.attendanceScheduleFetched.send(model)
                 /// 출석 점수 반영되는 날만 출석 프로그레스바 정보 필요
                 if model.type == SessionType.hasAttendance.rawValue {
-                    owner.self.setAttendances(model.attendances)
+                    owner.setAttendances(model.attendances)
                 }
                 /// 출석하는 날(세미나, 행사, 솝커톤, 데모데이)에 출석버튼 보이게
                 if model.type != SessionType.noSession.rawValue {
@@ -89,9 +89,7 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
     public func fetchLectureRound(lectureId: Int) {
         repository.fetchLectureRound(lectureId: lectureId)
             .catch({ error in
-                if let error = error as? OPAPIError {
-                    var errorMsg = error.errorDescription ?? ""
-                    self.setLectureRoundErrorTitle(&errorMsg)
+                if let errorMsg = AttendanceErrorMsgType.getTitle(for: error) {
                     self.lectureRoundErrorTitle.send(errorMsg)
                 }
                 
@@ -148,18 +146,5 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
         }
         
         self.todayAttendances.send(attendances)
-    }
-    
-    
-    /*
-     에러 메세지를 하단 출석하기 버튼 타이틀로 바꿔주는 메서드
-     */
-    private func setLectureRoundErrorTitle(_ errorMsg: inout String) {
-        AttendanceErrorMsgType.allCases.forEach {
-            if $0.rawValue == errorMsg {
-                errorMsg = $0.title
-                return
-            }
-        }
     }
 }
