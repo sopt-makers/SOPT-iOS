@@ -36,11 +36,11 @@ extension AttendanceAPI: BaseAPI {
     public var path: String {
         switch self {
         case .lecture:
-            return "lecture"
+            return "lectures"
         case .score:
             return "members/score"
         case .total:
-            return "total"
+            return "members/attendances"
         case .lectureRound(let lectureId):
             return "lectures/round/\(lectureId)"
         case .attend:
