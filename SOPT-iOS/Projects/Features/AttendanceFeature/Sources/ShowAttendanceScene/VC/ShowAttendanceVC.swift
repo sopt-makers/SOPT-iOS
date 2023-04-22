@@ -246,6 +246,8 @@ extension ShowAttendanceVC {
                                        todaySchedule: model.name,
                                        description: model.message)
         }
+        
+        self.headerScheduleView.layoutIfNeeded()
     }
     
     private func setScoreData(_ model: AttendanceScoreModel) {
