@@ -26,8 +26,8 @@ public class DefaultShowAttendanceUseCase {
     
     private enum Default {
         static let before: [AttendanceStepModel] = [
-            .init(type: .none, title: I18N.Attendance.firstAttendance),
-            .init(type: .none, title: I18N.Attendance.secondAttendance),
+            .init(type: .none, title: I18N.Attendance.nthAttendance(1)),
+            .init(type: .none, title: I18N.Attendance.nthAttendance(2)),
             .init(type: .none, title: I18N.Attendance.beforeAttendance)
         ]
     }
@@ -87,7 +87,7 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
         else {
             for (idx, attendance) in attendanceData.enumerated() {
                 let type: AttendanceStepType = (attendance.status == TodayAttendanceType.attendance.rawValue) ? .check : .none
-                let title: String = (type == .none) ? "\(idx+1)" + I18N.Attendance.nthAttendance : attendance.attendedAt
+                let title: String = (type == .none) ? I18N.Attendance.nthAttendance(idx+1) : attendance.attendedAt
                 
                 attendances.append(AttendanceStepModel(type: type, title: title))
             }
@@ -95,7 +95,7 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
         
         /// 1차 출석 후
         if attendances.count == 1 {
-            attendances.append(AttendanceStepModel(type: .none, title: I18N.Attendance.secondAttendance))
+            attendances.append(AttendanceStepModel(type: .none, title: I18N.Attendance.nthAttendance(2)))
             attendances.append(AttendanceStepModel(type: .none, title: I18N.Attendance.beforeAttendance))
         }
         /// 2차 출석 후

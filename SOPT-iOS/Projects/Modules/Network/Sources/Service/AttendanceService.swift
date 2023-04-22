@@ -12,8 +12,7 @@ import Combine
 import Alamofire
 import Moya
 
-//public typealias DefaultAttendanceService = BaseService<AttendanceAPI>
-public typealias DefaultAttendanceService = MockService<AttendanceAPI>
+public typealias DefaultAttendanceService = BaseService<AttendanceAPI>
 
 public protocol AttendanceService {
     func fetchAttendanceSchedule() -> AnyPublisher<BaseEntity<AttendanceScheduleEntity>, Error>
@@ -25,7 +24,7 @@ public protocol AttendanceService {
 extension DefaultAttendanceService: AttendanceService {
     
     public func fetchAttendanceSchedule() -> AnyPublisher<BaseEntity<AttendanceScheduleEntity>, Error> {
-        requestObjectInCombine(AttendanceAPI.lecture)
+        test.requestObjectInCombine(AttendanceAPI.lecture)
     }
     
     public func fetchAttendanceScore() -> AnyPublisher<BaseEntity<AttendanceScoreEntity>, Error> {

@@ -189,9 +189,9 @@ public struct I18N {
     }
     
     public struct Attendance {
-        public static let firstAttendance = "1차 출석"
-        public static let secondAttendance = "2차 출석"
-        public static let nthAttendance = "차 출석"
+        public static func nthAttendance(_ idx: Int) -> String {
+            return "\(idx)차 출석"
+        }
         public static let beforeAttendance = "출석 전"
         public static let completeAttendance = "출석완료!"
         
