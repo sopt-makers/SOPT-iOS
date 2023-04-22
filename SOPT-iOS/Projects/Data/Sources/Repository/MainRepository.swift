@@ -25,9 +25,19 @@ public class MainRepository {
 }
 
 extension MainRepository: MainRepositoryInterface {
-    public func getUserMainInfo() -> AnyPublisher<Domain.UserMainInfoModel?, Error> {
+    public func getUserMainInfo() -> AnyPublisher<Domain.UserMainInfoModel?, Never> {
         userService.getUserMainInfo()
             .map { $0.toDomain() }
+            .catch({ error in
+                var model: UserMainInfoModel?
+                if let error = error as? APIError,
+                   case .tokenReissuanceFailed = error {
+                    model = UserMainInfoModel(withError: false)
+                } else {
+                    model = UserMainInfoModel(withError: true)
+                }
+                return Just(model)
+            })
             .eraseToAnyPublisher()
     }
     

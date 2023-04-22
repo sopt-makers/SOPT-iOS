@@ -65,4 +65,8 @@ extension AuthAPI: BaseAPI {
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         }
     }
+    
+    public var validationType: ValidationType {
+        return .none
+    }
 }

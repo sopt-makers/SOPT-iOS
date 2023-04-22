@@ -29,7 +29,7 @@ public enum ServiceType {
         case .attendance: return ""
         case .member: return "https://playground.sopt.org/members"
         case .notice: return ""
-        case .crew: return "https://playground.sopt.org/group"
+        case .crew: return "https://playground.sopt.org/group?utm_source=playground_group&utm_medium=app_button&utm_campaign=app"
         }
     }
 }

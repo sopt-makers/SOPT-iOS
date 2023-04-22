@@ -14,19 +14,6 @@ import Core
 import Alamofire
 import Moya
 
-
-public enum SOPTAPPError: Error {
-    case network(statusCode: Int)
-    case unknown
-    
-    init(error: Error, statusCode: Int? = 0) {
-        guard let statusCode else { self = .unknown ; return }
-        
-        self = .network(statusCode: statusCode)
-    }
-}
-
-
 open class BaseService<Target: TargetType> {
     
     typealias API = Target
@@ -38,9 +25,15 @@ open class BaseService<Target: TargetType> {
     lazy var provider = self.defaultProvider
     
     private lazy var defaultProvider: MoyaProvider<API> = {
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 10
+        configuration.timeoutIntervalForResource = 10
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        let interceptor = AlamoInterceptor()
+        let session = Session(configuration: configuration, interceptor: interceptor)
         let provider = MoyaProvider<API>(
             endpointClosure: endpointClosure,
-            session: DefaultAlamofireManager.shared,
+            session: session,
             plugins: [NetworkLoggerPlugin(verbose: true)]
         )
         return provider
@@ -96,7 +89,14 @@ extension BaseService {
                         promise(.failure(error))
                     }
                 case .failure(let error):
-                    promise(.failure(error))
+                    if case MoyaError.underlying(let error, _) = error,
+                       case AFError.requestRetryFailed(let retryError, _) = error,
+                       let retryError = retryError as? APIError,
+                       retryError == APIError.tokenReissuanceFailed {
+                        promise(.failure(retryError))
+                    } else {
+                        promise(.failure(error))
+                    }
                 }
             }
         }.eraseToAnyPublisher()
@@ -118,7 +118,7 @@ extension BaseService {
                         case 400...599:
                             // NOTE: (@승호) 여기에서 서버와 에러 처리 핸들링 해서 Error도 json Decode 해야 함
                             // 임시로 Error 처리
-                            throw SOPTAPPError(error: NSError(domain: "임시에러", code: -1001), statusCode: response.statusCode)
+                            throw APIError(error: NSError(domain: "임시에러", code: -1001), statusCode: response.statusCode)
                         default: break
                         }
                     } catch let error {
