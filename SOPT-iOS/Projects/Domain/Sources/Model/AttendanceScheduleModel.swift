@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct AttendanceScheduleModel: Codable, Hashable {
+public struct AttendanceScheduleModel {
     public let type: String
     public let location, name, startDate, endDate: String
     public let message: String
@@ -25,7 +25,7 @@ public struct AttendanceScheduleModel: Codable, Hashable {
     }
 }
 
-public struct TodayAttendanceModel: Codable, Hashable {
+public struct TodayAttendanceModel {
     public let status, attendedAt: String
     
     public init(status: String, attendedAt: String) {
