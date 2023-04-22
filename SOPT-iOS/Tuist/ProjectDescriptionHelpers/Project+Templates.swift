@@ -29,7 +29,7 @@ public extension Project {
         // MARK: - App
         
         if targets.contains(.app) {
-            let bundleSuffix = name.contains("Demo") ? "demo" : "release"
+            let bundleSuffix = name.contains("Demo") ? "test" : "release"
             let infoPlist = name.contains("Demo") ? Project.demoInfoPlist : Project.appInfoPlist
             let settings = baseSettings.setProvisioning()
             
