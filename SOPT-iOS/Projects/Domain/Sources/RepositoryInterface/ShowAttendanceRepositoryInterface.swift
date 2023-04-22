@@ -8,7 +8,10 @@
 
 import Combine
 
+import Core
+
 public protocol ShowAttendanceRepositoryInterface {
     func fetchAttendanceScheduleModel() -> AnyPublisher<AttendanceScheduleModel, Error>
     func fetchAttendanceScoreModel() -> AnyPublisher<AttendanceScoreModel, Error>
+    func fetchLectureRound(lectureId: Int) -> AnyPublisher<AttendanceRoundModel?, Error>
 }

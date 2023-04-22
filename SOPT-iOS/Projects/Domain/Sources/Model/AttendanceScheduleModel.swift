@@ -10,12 +10,14 @@ import Foundation
 
 public struct AttendanceScheduleModel {
     public let type: String
+    public let id: Int
     public let location, name, startDate, endDate: String
     public let message: String
     public let attendances: [TodayAttendanceModel]
     
-    public init(type: String, location: String, name: String, startDate: String, endDate: String, message: String, attendances: [TodayAttendanceModel]) {
+    public init(type: String, id: Int, location: String, name: String, startDate: String, endDate: String, message: String, attendances: [TodayAttendanceModel]) {
         self.type = type
+        self.id = id
         self.location = location
         self.name = name
         self.startDate = startDate

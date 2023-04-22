@@ -16,6 +16,7 @@ extension AttendanceScheduleEntity {
 
     public func toDomain() -> AttendanceScheduleModel {
         return .init(type: self.type,
+                     id: self.id,
                      location: self.location,
                      name: self.name,
                      startDate: self.startDate,
