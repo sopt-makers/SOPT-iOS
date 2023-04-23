@@ -9,9 +9,9 @@
 import Foundation
 
 public enum AttendanceErrorMsgType: String, CaseIterable {
-    case beforeAttendance = "출석 시작 전입니다"
-    case beforeFirstAttendance = "1차 출석 시작 전입니다"
-    case beforeSecondAttendance = "2차 출석 시작 전입니다"
+    case beforeAttendance = "출석 시작 전입니다."
+    case beforeFirstAttendance = "1차 출석 시작 전입니다."
+    case beforeSecondAttendance = "2차 출석 시작 전입니다."
     case afterFirstAttendance = "1차 출석이 이미 종료되었습니다."
     case afterSecondAttendance = "2차 출석이 이미 종료되었습니다."
     
