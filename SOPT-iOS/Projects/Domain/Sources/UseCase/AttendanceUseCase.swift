@@ -9,7 +9,6 @@
 import Combine
 
 import Core
-import Network
 
 public protocol AttendanceUseCase {
     func postAttendance(lectureRoundId: Int, code: String)
