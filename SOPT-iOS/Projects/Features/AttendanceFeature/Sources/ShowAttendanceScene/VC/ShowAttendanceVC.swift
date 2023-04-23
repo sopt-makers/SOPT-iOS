@@ -192,16 +192,11 @@ extension ShowAttendanceVC {
                                                   refreshStarted: refreshStarted)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
-        output.isLoading
+        output.$todayAttendances
             .withUnretained(self)
-            .sink { owner, isLoading in
-                if isLoading {
-                    owner.showLoading()
-                    owner.containerScrollView.isHidden = true
-                } else {
-                    owner.stopLoading()
-                    owner.containerScrollView.isHidden = false
-                }
+            .sink { owner, model in
+                guard let model else { return }
+                owner.headerScheduleView.setAttendanceInfo(model, true)
             }
             .store(in: self.cancelBag)
         
@@ -209,10 +204,12 @@ extension ShowAttendanceVC {
             .sink(receiveValue: { [weak self] model in
                 guard let self, let model else { return }
                 
+                self.headerScheduleView.layoutIfNeeded()
+                
                 if self.viewModel.sceneType == .scheduledDay {
                     self.sceneType = .scheduledDay
-                    self.setScheduledData(model)
                     self.headerScheduleView.updateLayout(.scheduledDay)
+                    self.setScheduledData(model)
                     self.attendanceButton.isHidden = false
                 } else {
                     self.sceneType = .unscheduledDay
@@ -230,21 +227,26 @@ extension ShowAttendanceVC {
                 self.setScoreData(model)
                 self.endRefresh()
             }.store(in: self.cancelBag)
-        
-        output.$todayAttendances
-            .withUnretained(self)
-            .sink { owner, model in
-                guard let model else { return }
-                owner.headerScheduleView.setAttendanceInfo(model, true)
-            }
-            .store(in: self.cancelBag)
-        
+       
         output.attendanceButtonInfo
             .withUnretained(self)
             .sink { owner, info in
                 owner.setAttendanceButton(title: info.title, isEnabled: info.isEnalbed)
             }
             .store(in: self.cancelBag)
+        
+//        output.isLoading
+//            .withUnretained(self)
+//            .sink { owner, isLoading in
+//                if isLoading {
+//                    owner.showLoading()
+//                    owner.containerScrollView.isHidden = true
+//                } else {
+//                    owner.stopLoading()
+//                    owner.containerScrollView.isHidden = false
+//                }
+//            }
+//            .store(in: self.cancelBag)
     }
     
     private func endRefresh() {
@@ -260,8 +262,6 @@ extension ShowAttendanceVC {
                                        todaySchedule: model.name,
                                        description: model.message)
         }
-        
-        self.headerScheduleView.layoutIfNeeded()
     }
     
     private func setScoreData(_ model: AttendanceScoreModel) {
