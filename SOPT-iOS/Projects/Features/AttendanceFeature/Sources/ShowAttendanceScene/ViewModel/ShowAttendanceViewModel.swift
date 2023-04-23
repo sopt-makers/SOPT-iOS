@@ -99,6 +99,7 @@ extension ShowAttendanceViewModel {
                 } else {
                     self.sceneType = .unscheduledDay
                     output.scheduleModel = model
+                    output.isLoading.send(false)
                 }
             })
             .store(in: cancelBag)
