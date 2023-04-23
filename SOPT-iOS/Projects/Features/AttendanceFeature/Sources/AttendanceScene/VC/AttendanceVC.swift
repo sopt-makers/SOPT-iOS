@@ -37,7 +37,6 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
     public var factory: AttendanceFeatureViewBuildable
     
     private var viewWillAppear = PassthroughSubject<Void, Never>()
-    
     // MARK: - UI Components
     
     /// 출석하기 모달 뷰
@@ -204,7 +203,7 @@ extension AttendanceVC {
             $0.edges.equalToSuperview()
         }
         
-        attendanceStackView.setCustomSpacing(32, after: attattendanceCodeStackView)
+        attendanceStackView.setCustomSpacing(Metric.customSpacing, after: attattendanceCodeStackView)
         
         attendanceButton.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(Metric.contentInset)
@@ -213,7 +212,7 @@ extension AttendanceVC {
         
         attendanceStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(Metric.baseInset)
-            $0.centerY.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(Metric.keyboardBottomOffset)
         }
     }
 }
@@ -308,11 +307,15 @@ extension AttendanceVC {
     
     @objc
     private func keyboardWillShow(_ notification: NSNotification) {
-        self.view.window?.frame.origin.y = -(Metric.keyboardBottomOffset + self.safeAreaBottomInset())
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            self.view.window?.frame.origin.y = -keyboardSize.height
+            self.view.layoutIfNeeded()
+        }
     }
     
     @objc
     private func keyboardWillHide(_ notification: NSNotification) {
-        self.view.window?.frame.origin.y = (Metric.keyboardBottomOffset - self.safeAreaBottomInset())
+        self.view.window?.frame.origin.y = 0
+        self.view.layoutIfNeeded()
     }
 }
