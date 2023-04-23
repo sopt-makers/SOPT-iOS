@@ -2,9 +2,9 @@ import ProjectDescription
 
 public extension Project {
     static let appInfoPlist: [String: InfoPlist.Value] = [
-        "CFBundleShortVersionString": "1.0.0",
+        "CFBundleShortVersionString": "$(MARKETING_VERSION)",
         "CFBundleDevelopmentRegion": "ko",
-        "CFBundleVersion": "1",
+        "CFBundleVersion": "$(CURRENT_PROJECT_VERSION)",
         "CFBundleIdentifier": "com.sopt-stamp-iOS.release",
         "CFBundleDisplayName": "SOPT",
         "UILaunchStoryboardName": "LaunchScreen",
@@ -46,9 +46,9 @@ public extension Project {
     ]
     
     static let demoInfoPlist: [String: InfoPlist.Value] = [
-      "CFBundleShortVersionString": "1.0.0",
+      "CFBundleShortVersionString": "$(MARKETING_VERSION)",
       "CFBundleDevelopmentRegion": "ko",
-      "CFBundleVersion": "1",
+      "CFBundleVersion": "$(CURRENT_PROJECT_VERSION)",
       "CFBundleIdentifier": "com.sopt-stamp-iOS.test",
       "CFBundleDisplayName": "SOPT-Test",
       "UILaunchStoryboardName": "LaunchScreen",

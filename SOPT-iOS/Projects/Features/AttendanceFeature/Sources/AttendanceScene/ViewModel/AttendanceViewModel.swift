@@ -22,11 +22,13 @@ public final class AttendanceViewModel: ViewModelType {
     private let useCase: AttendanceUseCase
     private var cancelBag = CancelBag()
     
+    private var lectureRound: AttendanceRoundModel = .EMPTY
     private var codeText: String = ""
     
     // MARK: - Input
     
     public struct Input {
+        let viewWillAppear: Driver<Void>
         let codeTextChanged: Driver<AttendanceCodeInfo>
         let attendanceButtonDidTap: Driver<Void>
     }
@@ -34,12 +36,16 @@ public final class AttendanceViewModel: ViewModelType {
     // MARK: - Output
     
     public struct Output {
+        let attendanceTitle = PassthroughSubject<String, Never>()
         let codeTextFieldInfo = PassthroughSubject<(AttendanceCodeInfo, AttendanceCodeInfo), Never>()
         let isAttendanceButtonEnabled = CurrentValueSubject<Bool, Never>(false)
+        let attendSuccess = PassthroughSubject<Bool, Never>()
+        let attendErrorMsg = PassthroughSubject<String, Never>()
     }
     
-    public init(useCase: AttendanceUseCase) {
+    public init(useCase: AttendanceUseCase, lectureRound: AttendanceRoundModel) {
         self.useCase = useCase
+        self.lectureRound = lectureRound
     }
 }
 
@@ -48,6 +54,13 @@ extension AttendanceViewModel {
         let output = Output()
         
         self.bindOutput(output: output, cancelBag: cancelBag)
+
+        input.viewWillAppear
+            .withUnretained(self)
+            .sink { owner, _ in
+                output.attendanceTitle.send(I18N.Attendance.nthAttendance(owner.lectureRound.round))
+            }
+            .store(in: self.cancelBag)
         
         input.codeTextChanged
             .withUnretained(self)
@@ -61,9 +74,9 @@ extension AttendanceViewModel {
         input.attendanceButtonDidTap
             .withUnretained(self)
             .sink { owner, _ in
-                #warning("차수 서버값 넘겨주기")
-                let code = Int(owner.codeText) ?? 0
-                owner.useCase.postAttendance(lectureRoundId: 0, code: code)
+                let lectureRoundId = owner.lectureRound.subLectureId
+                let code = owner.codeText
+                owner.useCase.postAttendance(lectureRoundId: lectureRoundId, code: code)
             }
             .store(in: self.cancelBag)
         
@@ -71,7 +84,23 @@ extension AttendanceViewModel {
     }
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
+        let attendSuccess = self.useCase.attendSuccess
+        let attendErrorMsg = self.useCase.attendErrorMsg
         
+        attendSuccess.asDriver()
+            .sink { isSuccess in
+                output.attendSuccess.send(isSuccess)
+            }
+            .store(in: self.cancelBag)
+        
+        attendErrorMsg.asDriver()
+            .withUnretained(self)
+            .sink { owner, errorMsg in
+                output.attendErrorMsg.send(errorMsg)
+                output.isAttendanceButtonEnabled.send(false)
+                owner.codeText = ""
+            }
+            .store(in: self.cancelBag)
     }
     
     private func updateCodeText(_ code: AttendanceCodeInfo) -> (AttendanceCodeInfo, AttendanceCodeInfo) {

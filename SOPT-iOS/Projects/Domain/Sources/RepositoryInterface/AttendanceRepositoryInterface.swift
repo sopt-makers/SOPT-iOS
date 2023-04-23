@@ -11,6 +11,5 @@ import Combine
 import Core
 
 public protocol AttendanceRepositoryInterface {
-    func fetchLectureRound(lectureId: Int) -> AnyPublisher<Int, Error>
-    func postAttendance(lectureRoundId: Int, code: Int) -> AnyPublisher<Bool, Error>
+    func postAttendance(lectureRoundId: Int, code: String) -> AnyPublisher<Bool, Error>
 }

@@ -70,4 +70,12 @@ extension AttendanceCodeView {
             $0.edges.equalToSuperview()
         }
     }
+    
+    /// 숫자 코드 초기화하는 메서드
+    func setCodeTextFieldEmpty() {
+        codeTextFields.forEach {
+            $0.updateUI(text: "")
+        }
+        codeTextFields[safe: 0]?.becomeFirstResponder()
+    }
 }

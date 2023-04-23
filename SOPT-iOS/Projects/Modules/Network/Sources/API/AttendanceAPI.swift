@@ -16,7 +16,7 @@ public enum AttendanceAPI {
     case score
     case total
     case lectureRound(lectureId: Int)
-    case attend(lectureRoundId: Int, code: Int)
+    case attend(lectureRoundId: Int, code: String)
 }
 
 extension AttendanceAPI: BaseAPI {
@@ -26,7 +26,7 @@ extension AttendanceAPI: BaseAPI {
     // MARK: - Header
     public var headers: [String: String]? {
         switch self {
-        case .lecture, .score, .total:
+        case .lecture, .score, .total, .lectureRound, .attend:
             return HeaderType.jsonWithToken.value
         default: return HeaderType.json.value
         }
@@ -36,15 +36,15 @@ extension AttendanceAPI: BaseAPI {
     public var path: String {
         switch self {
         case .lecture:
-            return "lecture"
+            return "lectures"
         case .score:
-            return "score"
+            return "members/score"
         case .total:
-            return "total"
+            return "members/attendances"
         case .lectureRound(let lectureId):
-            return "lecture/round/\(lectureId)"
+            return "lectures/round/\(lectureId)"
         case .attend:
-            return "attend"
+            return "attendances/attend"
         }
     }
     
@@ -81,6 +81,8 @@ extension AttendanceAPI: BaseAPI {
     
     public var task: Task {
         switch self {
+        case .attend:
+            return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain
         }

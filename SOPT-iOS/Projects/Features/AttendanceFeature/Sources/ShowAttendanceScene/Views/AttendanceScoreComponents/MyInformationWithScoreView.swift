@@ -64,7 +64,7 @@ extension MyInformationWithScoreView {
 extension MyInformationWithScoreView {
     
     func setData(name: String, part: String, generation: Int, count: Double) {
-        nameLabel.text = "\(generation)기 \(part)파트 \(name)"
+        nameLabel.text = "\(generation)기 \(part) \(name)"
         chageFontAndColor(with: "\(doubleToString(count))점")
     }
     

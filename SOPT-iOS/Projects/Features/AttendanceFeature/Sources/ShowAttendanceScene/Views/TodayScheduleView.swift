@@ -54,6 +54,7 @@ final class TodayScheduleView: UIView {
         let label = UILabel()
         label.textColor = .white
         label.font = DSKitFontFamily.Suit.regular.font(size: 18)
+        label.numberOfLines = 0
         return label
     }()
     

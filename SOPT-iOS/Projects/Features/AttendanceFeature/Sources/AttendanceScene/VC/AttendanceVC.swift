@@ -36,6 +36,7 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
     private var cancelBag = CancelBag()
     public var factory: AttendanceFeatureViewBuildable
     
+    private var viewWillAppear = PassthroughSubject<Void, Never>()
     // MARK: - UI Components
     
     /// 출석하기 모달 뷰
@@ -74,8 +75,6 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
     /// 출석 제목
     private let titleLabel: UILabel = {
         let label = UILabel()
-#warning("서버 붙인 후 text 변경")
-        label.text = "1차 출석하기"
         label.textColor = DSKitAsset.Colors.white100.color
         label.setTypoStyle(.Attendance.h1)
         return label
@@ -154,6 +153,12 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
         self.setObserver()
     }
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.viewWillAppear.send(())
+    }
+    
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -198,7 +203,7 @@ extension AttendanceVC {
             $0.edges.equalToSuperview()
         }
         
-        attendanceStackView.setCustomSpacing(32, after: attattendanceCodeStackView)
+        attendanceStackView.setCustomSpacing(Metric.customSpacing, after: attattendanceCodeStackView)
         
         attendanceButton.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(Metric.contentInset)
@@ -207,7 +212,7 @@ extension AttendanceVC {
         
         attendanceStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(Metric.baseInset)
-            $0.centerY.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(Metric.keyboardBottomOffset)
         }
     }
 }
@@ -237,15 +242,25 @@ extension AttendanceVC {
             .asDriver()
         
         let input = AttendanceViewModel.Input(
+            viewWillAppear: viewWillAppear.asDriver(),
             codeTextChanged: codeTextChanged,
             attendanceButtonDidTap: attendanceButtonDidTap
         )
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
         
+        output.attendanceTitle
+            .withUnretained(self)
+            .sink { owner, title in
+                owner.titleLabel.text = title
+            }
+            .store(in: self.cancelBag)
+        
         output.codeTextFieldInfo
             .withUnretained(self)
             .sink { owner, code in
+                owner.alertLabel.isHidden = true
+                
                 let (cur, nxt) = code
                 
                 [cur, nxt].forEach {
@@ -264,6 +279,23 @@ extension AttendanceVC {
                 owner.attendanceButton.isEnabled = isEnabled
             }
             .store(in: self.cancelBag)
+        
+        output.attendSuccess
+            .filter { $0 }
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.dismiss(animated: true)
+            }
+            .store(in: self.cancelBag)
+        
+        output.attendErrorMsg
+            .withUnretained(self)
+            .sink { owner, errorMsg in
+                owner.alertLabel.text = errorMsg
+                owner.alertLabel.isHidden = false
+                owner.attendanceCodeView.setCodeTextFieldEmpty()
+            }
+            .store(in: self.cancelBag)
     }
     
     private func setObserver() {
@@ -275,11 +307,15 @@ extension AttendanceVC {
     
     @objc
     private func keyboardWillShow(_ notification: NSNotification) {
-        self.view.window?.frame.origin.y = -(Metric.keyboardBottomOffset + self.safeAreaBottomInset())
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            self.view.window?.frame.origin.y = -keyboardSize.height
+            self.view.layoutIfNeeded()
+        }
     }
     
     @objc
     private func keyboardWillHide(_ notification: NSNotification) {
-        self.view.window?.frame.origin.y = (Metric.keyboardBottomOffset - self.safeAreaBottomInset())
+        self.view.window?.frame.origin.y = 0
+        self.view.layoutIfNeeded()
     }
 }
