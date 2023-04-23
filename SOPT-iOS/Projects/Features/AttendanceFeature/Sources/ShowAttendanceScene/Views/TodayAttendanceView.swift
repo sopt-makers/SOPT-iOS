@@ -74,11 +74,14 @@ extension TodayAttendanceView {
     }
     
     func setTodayAttendances(_ attendances: [AttendanceStepModel]) {
+        
+        print("setTodayAttendances 스케쥴 들어옴")
+        
         todayAttendanceStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
         for attendance in attendances {
             let attendanceStepView = OPAttendanceStepView(step: attendance)
-            todayAttendanceStackView.addArrangedSubviews(attendanceStepView)
+            todayAttendanceStackView.addArrangedSubview(attendanceStepView)
             attendanceStepView.snp.makeConstraints {
                 $0.height.equalTo(Metric.attendanceStepHeight)
                 $0.width.equalTo(Metric.attendanceStepWidth)

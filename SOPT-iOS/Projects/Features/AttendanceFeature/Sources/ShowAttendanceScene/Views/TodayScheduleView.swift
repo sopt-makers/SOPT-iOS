@@ -98,11 +98,7 @@ final class TodayScheduleView: UIView {
         return stackView
     }()
     
-    private let todayAttendanceView: TodayAttendanceView = {
-        let view = TodayAttendanceView()
-        view.isHidden = true
-        return view
-    }()
+    private let todayAttendanceView = TodayAttendanceView()
     
     private lazy var containerStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
@@ -141,38 +137,44 @@ extension TodayScheduleView {
     }
     
     private func setLayout(_ type: AttendanceScheduleType) {
+        print("setLayout: 스케쥴 기본 레이아웃")
+
         addSubview(containerStackView)
-        
-        todayAttendanceView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview()
-        }
         
         containerStackView.snp.makeConstraints {
             $0.edges.equalToSuperview().inset(32)
         }
         
+        todayAttendanceView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+        }
+        
         if case .unscheduledDay = type {
-            todayInfoStackView.isHidden = true
+            print("setLayout: 스케쥴 X 버전으로")
             
-            addSubview(titleLabel)
-            titleLabel.snp.makeConstraints {
-                $0.top.bottom.equalToSuperview().inset(32)
-                $0.leading.equalToSuperview().offset(32)
-            }
+            dateAndPlaceStackView.isHidden = true
+            subtitleLabel.isHidden = true
+            todayAttendanceView.isHidden = true
         }
     }
     
     func updateLayout(_ type: AttendanceScheduleType) {
         if case .unscheduledDay = type {
-            todayInfoStackView.isHidden = true
+            print("updateLayout: 스케쥴 X --------------------","\n")
+            
+            dateAndPlaceStackView.isHidden = true
+            todayAttendanceView.isHidden = true
+            subtitleLabel.isHidden = true
             
             titleLabel.text = I18N.Attendance.today + I18N.Attendance.unscheduledDay + I18N.Attendance.dayIs
             titleLabel.setTypoStyle(DSKitFontFamily.Suit.medium.font(size: 16))
-            addSubview(titleLabel)
-            titleLabel.snp.makeConstraints {
-                $0.top.bottom.equalToSuperview().inset(32)
-                $0.leading.equalToSuperview().offset(32)
-            }
+            
+        } else {
+            print("updateLayout: 스케쥴 O --------------------","\n")
+            
+            dateAndPlaceStackView.isHidden = false
+            todayAttendanceView.isHidden = false
+            subtitleLabel.isHidden = false
         }
     }
     
@@ -187,6 +189,8 @@ extension TodayScheduleView {
 extension TodayScheduleView {
     
     func setData(date: String, place: String, todaySchedule: String, description: String?) {
+        print("스케쥴 setData 들어옴")
+        
         setDefaultLayout()
         dateLabel.text = date
         placeLabel.text = place
@@ -195,6 +199,10 @@ extension TodayScheduleView {
                                   font: DSKitFontFamily.Suit.bold.font(size: 18))
         subtitleLabel.text = description
         subtitleLabel.isHidden = ((description?.isEmpty) == nil || description == "")
+        
+        if subtitleLabel.text == "출석 점수가 반영되지 않아요." {
+            todayAttendanceView.isHidden = true
+        }
     }
     
     func setAttendanceInfo(_ attendances: [AttendanceStepModel], _ hasAttendance: Bool) {
