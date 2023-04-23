@@ -27,11 +27,7 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     private var cancelBag = CancelBag()
     
     public var sceneType: AttendanceScheduleType {
-        get {
-            return self.viewModel.sceneType ?? .scheduledDay
-        } set(type) {
-            self.viewModel.sceneType = type
-        }
+        return self.viewModel.sceneType ?? .unscheduledDay
     }
     
     private var viewWillAppear = PassthroughSubject<Void, Never>()
@@ -206,14 +202,12 @@ extension ShowAttendanceVC {
                 
                 self.headerScheduleView.layoutIfNeeded()
                 
-                if self.viewModel.sceneType == .scheduledDay {
-                    self.sceneType = .scheduledDay
-                    self.headerScheduleView.updateLayout(.scheduledDay)
+                if self.sceneType == .scheduledDay {
+                    self.headerScheduleView.scheduleType = .scheduledDay
                     self.setScheduledData(model)
                     self.attendanceButton.isHidden = false
                 } else {
-                    self.sceneType = .unscheduledDay
-                    self.headerScheduleView.updateLayout(.unscheduledDay)
+                    self.headerScheduleView.scheduleType = .unscheduledDay
                     self.attendanceButton.isHidden = true
                 }
                 self.endRefresh()

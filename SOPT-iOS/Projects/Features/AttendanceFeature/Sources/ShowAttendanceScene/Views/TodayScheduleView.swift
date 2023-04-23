@@ -22,6 +22,14 @@ final class TodayScheduleView: UIView {
         static let todayAttendanceHeight = 51.f
     }
     
+    // MARK: - Properties
+    
+    var scheduleType: AttendanceScheduleType = .scheduledDay {
+        didSet {
+            updateLayout(scheduleType)
+        }
+    }
+    
     // MARK: - UI Components
 
     private let dateImageView: UIImageView = {
@@ -117,8 +125,8 @@ final class TodayScheduleView: UIView {
     init(type: AttendanceScheduleType) {
         super.init(frame: .zero)
         
-        confiureContentView()
-        setLayout(type)
+        initContentView()
+        initLayout(type)
     }
 
     required init?(coder: NSCoder) {
@@ -126,19 +134,17 @@ final class TodayScheduleView: UIView {
     }
 }
 
-// MARK: - Methods
+// MARK: - UI & Layout
 
 extension TodayScheduleView {
     
-    private func confiureContentView() {
+    private func initContentView() {
         self.backgroundColor = DSKitAsset.Colors.black60.color
         self.clipsToBounds = true
         self.layer.cornerRadius = 16
     }
     
-    private func setLayout(_ type: AttendanceScheduleType) {
-        print("setLayout: 스케쥴 기본 레이아웃")
-
+    private func initLayout(_ type: AttendanceScheduleType) {
         addSubview(containerStackView)
         
         containerStackView.snp.makeConstraints {
@@ -150,37 +156,23 @@ extension TodayScheduleView {
         }
         
         if case .unscheduledDay = type {
-            print("setLayout: 스케쥴 X 버전으로")
-            
-            dateAndPlaceStackView.isHidden = true
-            subtitleLabel.isHidden = true
-            todayAttendanceView.isHidden = true
+            isHiddenScheduledLayout(true)
         }
     }
     
-    func updateLayout(_ type: AttendanceScheduleType) {
+    private func updateLayout(_ type: AttendanceScheduleType) {
         if case .unscheduledDay = type {
-            print("updateLayout: 스케쥴 X --------------------","\n")
-            
-            dateAndPlaceStackView.isHidden = true
-            todayAttendanceView.isHidden = true
-            subtitleLabel.isHidden = true
-            
-            titleLabel.text = I18N.Attendance.today + I18N.Attendance.unscheduledDay + I18N.Attendance.dayIs
-            titleLabel.setTypoStyle(DSKitFontFamily.Suit.medium.font(size: 16))
-            
+            isHiddenScheduledLayout(true)
+            addUnscheduledTitle()
         } else {
-            print("updateLayout: 스케쥴 O --------------------","\n")
-            
-            dateAndPlaceStackView.isHidden = false
-            todayAttendanceView.isHidden = false
-            subtitleLabel.isHidden = false
+            isHiddenScheduledLayout(false)
         }
     }
     
-    private func setDefaultLayout() {
-        dateImageView.image = DSKitAsset.Assets.opDate.image
-        placeImageView.image = DSKitAsset.Assets.opPlace.image
+    private func isHiddenScheduledLayout(_ bool: Bool) {
+        dateAndPlaceStackView.isHidden = bool
+        todayAttendanceView.isHidden = bool
+        subtitleLabel.isHidden = bool
     }
 }
 
@@ -189,9 +181,9 @@ extension TodayScheduleView {
 extension TodayScheduleView {
     
     func setData(date: String, place: String, todaySchedule: String, description: String?) {
-        print("스케쥴 setData 들어옴")
         
         setDefaultLayout()
+        
         dateLabel.text = date
         placeLabel.text = place
         titleLabel.text = I18N.Attendance.today + todaySchedule + I18N.Attendance.dayIs
@@ -200,13 +192,27 @@ extension TodayScheduleView {
         subtitleLabel.text = description
         subtitleLabel.isHidden = ((description?.isEmpty) == nil || description == "")
         
-        if subtitleLabel.text == "출석 점수가 반영되지 않아요." {
-            todayAttendanceView.isHidden = true
-        }
+        checkNoAttendanceSession()
     }
     
     func setAttendanceInfo(_ attendances: [AttendanceStepModel], _ hasAttendance: Bool) {
         todayAttendanceView.setTodayAttendances(attendances)
         todayAttendanceView.isHidden = !hasAttendance
+    }
+    
+    private func addUnscheduledTitle() {
+        titleLabel.text = I18N.Attendance.today + I18N.Attendance.unscheduledDay + I18N.Attendance.dayIs
+        titleLabel.setTypoStyle(DSKitFontFamily.Suit.medium.font(size: 16))
+    }
+        
+    private func setDefaultLayout() {
+        dateImageView.image = DSKitAsset.Assets.opDate.image
+        placeImageView.image = DSKitAsset.Assets.opPlace.image
+    }
+    
+    private func checkNoAttendanceSession() {
+        if subtitleLabel.text == I18N.Attendance.noAttendanceSession {
+            todayAttendanceView.isHidden = true
+        }
     }
 }

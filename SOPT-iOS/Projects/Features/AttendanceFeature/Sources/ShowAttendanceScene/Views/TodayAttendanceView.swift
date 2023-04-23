@@ -74,9 +74,7 @@ extension TodayAttendanceView {
     }
     
     func setTodayAttendances(_ attendances: [AttendanceStepModel]) {
-        
-        print("setTodayAttendances 스케쥴 들어옴")
-        
+                
         todayAttendanceStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
         for attendance in attendances {
