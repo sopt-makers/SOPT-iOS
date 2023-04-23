@@ -74,10 +74,6 @@ extension MainVC {
     private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = DSKitAsset.Colors.black100.color
-        
-        if viewModel.userType == .visitor {
-            self.naviBar.setRightButtonImage(image: DSKitAsset.Assets.btnLogout.image)
-        }
     }
     
     private func setLayout() {
