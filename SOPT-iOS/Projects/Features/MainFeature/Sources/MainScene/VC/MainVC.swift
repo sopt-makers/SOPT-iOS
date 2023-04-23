@@ -39,7 +39,7 @@ public class MainVC: UIViewController, MainViewControllable {
     public var factory: factoryType!
     private var cancelBag = CancelBag()
     
-    private var requestUserInfo = CurrentValueSubject<Void, Never>(())
+    private var requestUserInfo = PassthroughSubject<Void, Never>()
 
     // MARK: - UI Components
     
@@ -65,6 +65,11 @@ public class MainVC: UIViewController, MainViewControllable {
         self.setLayout()
         self.setDelegate()
         self.registerCells()
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.requestUserInfo.send(())
     }
 }
 
@@ -122,6 +127,11 @@ extension MainVC {
                 if needRegistration {
                     self?.presentPlaygroundRegisterationAlertVC()
                 }
+            }.store(in: self.cancelBag)
+        
+        output.isLoading
+            .sink { [weak self] isLoading in
+                isLoading ? self?.showLoading() : self?.stopLoading()
             }.store(in: self.cancelBag)
     }
     
