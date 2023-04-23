@@ -16,6 +16,7 @@ import DSKit
 
 import SnapKit
 import AttendanceFeatureInterface
+import SafariServices
 
 public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControllable {
     
@@ -277,9 +278,9 @@ extension ShowAttendanceVC {
     
     @objc
     private func infoButtonDidTap() {
-        if let url = URL(string: "https://sopt.org/rules") {
-            UIApplication.shared.open(url)
-        }
+        let safariViewController = SFSafariViewController(url: URL(string: "https://sopt.org/rules")!)
+        safariViewController.playgroundStyle()
+        self.present(safariViewController, animated: true)
     }
 }
 
