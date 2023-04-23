@@ -44,6 +44,7 @@ public class StampGuideVC: UIViewController, StampGuideViewControllable {
         collectionView.isScrollEnabled = true
         collectionView.isPagingEnabled = true
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.backgroundColor = .clear
         return collectionView
     }()
     
