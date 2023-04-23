@@ -65,7 +65,7 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
         let button = OPCustomButton()
         button.titleLabel!.setTypoStyle(.Attendance.h1)
         button.isHidden = true
-        button.isEnabled = true
+        button.isEnabled = false
         return button
     }()
     
@@ -190,6 +190,19 @@ extension ShowAttendanceVC {
         let input = ShowAttendanceViewModel.Input(viewWillAppear: viewWillAppear,
                                                   refreshStarted: refreshStarted)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.isLoading
+            .withUnretained(self)
+            .sink { owner, isLoading in
+                if isLoading {
+                    owner.showLoading()
+                    owner.containerScrollView.isHidden = true
+                } else {
+                    owner.stopLoading()
+                    owner.containerScrollView.isHidden = false
+                }
+            }
+            .store(in: self.cancelBag)
         
         output.$scheduleModel
             .sink(receiveValue: { [weak self] model in

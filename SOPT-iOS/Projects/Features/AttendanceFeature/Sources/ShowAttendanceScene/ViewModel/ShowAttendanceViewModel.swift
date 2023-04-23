@@ -40,6 +40,7 @@ public final class ShowAttendanceViewModel: ViewModelType {
         @Published var scoreModel: AttendanceScoreModel?
         @Published var todayAttendances: [AttendanceStepModel]?
         var attendanceButtonInfo = PassthroughSubject<AttendanceButtonInfo, Never>()
+        var isLoading = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - init
@@ -61,6 +62,7 @@ extension ShowAttendanceViewModel {
             .sink { owner, _ in
                 owner.useCase.fetchAttendanceSchedule()
                 owner.useCase.fetchAttendanceScore()
+                output.isLoading.send(true)
             }.store(in: cancelBag)
     
         return output
@@ -115,6 +117,7 @@ extension ShowAttendanceViewModel {
                 owner.lectureRound = lectureRound
                 let buttonInfo = AttendanceButtonInfo(title: I18N.Attendance.takeNthAttendance(lectureRound.round), isEnalbed: true)
                 output.attendanceButtonInfo.send(buttonInfo)
+                output.isLoading.send(false)
             }
             .store(in: self.cancelBag)
         
@@ -123,6 +126,7 @@ extension ShowAttendanceViewModel {
             .sink { owner, title in
                 let buttonInfo = AttendanceButtonInfo(title: title, isEnalbed: false)
                 output.attendanceButtonInfo.send(buttonInfo)
+                output.isLoading.send(false)
             }
             .store(in: self.cancelBag)
     }
