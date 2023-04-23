@@ -25,8 +25,8 @@ public protocol AttendanceService {
 extension DefaultAttendanceService: AttendanceService {
     
     public func fetchAttendanceSchedule() -> AnyPublisher<BaseEntity<AttendanceScheduleEntity>, Error> {
-//        opRequestObjectInCombine(AttendanceAPI.lecture)
-        test.requestObjectInCombine(AttendanceAPI.lecture)
+        opRequestObjectInCombine(AttendanceAPI.lecture)
+//        test.requestObjectInCombine(AttendanceAPI.lecture)
     }
     
     public func fetchAttendanceScore() -> AnyPublisher<BaseEntity<AttendanceScoreEntity>, Error> {

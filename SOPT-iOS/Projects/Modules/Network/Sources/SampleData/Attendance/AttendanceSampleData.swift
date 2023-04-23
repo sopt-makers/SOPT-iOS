@@ -21,11 +21,8 @@ extension AttendanceAPI {
 //            return SampleData.Lecture.eventSession
 //            return SampleData.Lecture.noAttendanceSession
             let lectureCases = [SampleData.Lecture.noSession, SampleData.Lecture.noAttendanceSession,
-                                SampleData.Lecture.absenctCaseTwo, SampleData.Lecture.eventSession]
-
-//            let lectureCases = [SampleData.Lecture.noSession, SampleData.Lecture.noAttendanceSession,
-//                                SampleData.Lecture.beforeAttendance, SampleData.Lecture.absentCaseOne, SampleData.Lecture.absenctCaseTwo,
-//                                SampleData.Lecture.tardy, SampleData.Lecture.eventSession]
+                                SampleData.Lecture.beforeAttendance, SampleData.Lecture.absentCaseOne, SampleData.Lecture.absenctCaseTwo,
+                                SampleData.Lecture.tardy, SampleData.Lecture.eventSession]
             let randomIndex = Int.random(in: 0..<lectureCases.count)
             return lectureCases[randomIndex]
 //            return SampleData.Lecture.attendanceComplete
