@@ -133,7 +133,7 @@ extension ShowAttendanceVC {
         containerScrollView.snp.makeConstraints {
             $0.top.equalTo(navibar.snp.bottom)
             $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalTo(attendanceButton.snp.top)
+            $0.bottom.equalTo(attendanceButton.snp.top).offset(-13)
         }
         
         contentView.snp.makeConstraints {
@@ -149,7 +149,7 @@ extension ShowAttendanceVC {
         attendanceScoreView.snp.makeConstraints {
             $0.top.equalTo(headerScheduleView.snp.bottom).offset(20)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
-            $0.bottom.equalToSuperview().offset(-13)
+            $0.bottom.equalToSuperview()
         }
         
         attendanceButton.snp.makeConstraints {
