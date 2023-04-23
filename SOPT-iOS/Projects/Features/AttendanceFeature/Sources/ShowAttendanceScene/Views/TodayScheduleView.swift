@@ -90,7 +90,7 @@ final class TodayScheduleView: UIView {
     }()
     
     private lazy var todayInfoStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [placeStackView, dateAndPlaceStackView, titleLabel])
+        let stackView = UIStackView(arrangedSubviews: [dateAndPlaceStackView, titleLabel])
         stackView.axis = .vertical
         stackView.spacing = 8
         stackView.alignment = .leading
