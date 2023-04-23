@@ -15,6 +15,12 @@ enum TodayAttendanceType: String {
     case absent = "ABSENT"
 }
 
+enum TakenAttendanceType: Int, CaseIterable {
+    case notYet = 0
+    case first = 1
+    case second = 2
+}
+
 public protocol ShowAttendanceUseCase {
     func fetchAttendanceSchedule()
     func fetchAttendanceScore()
@@ -40,6 +46,8 @@ public class DefaultShowAttendanceUseCase {
   
     private let repository: ShowAttendanceRepositoryInterface
     private var cancelBag = CancelBag()
+    
+    private var takenAttendance: TakenAttendanceType = .notYet
     
     public var attendanceScheduleFetched = PassthroughSubject<AttendanceScheduleModel, Error>()
     public var todayAttendances = PassthroughSubject<[AttendanceStepModel], Never>()
@@ -99,7 +107,12 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
             .sink(receiveCompletion: { event in
                 print("completion: fetchLectureRound \(event)")
             }, receiveValue: { result in
-                self.lectureRound.send(result)
+                if self.takenAttendance != .notYet {
+                    let n = self.takenAttendance.rawValue
+                    self.lectureRoundErrorTitle.send(I18N.Attendance.afterNthAttendance(n))
+                } else {
+                    self.lectureRound.send(result)
+                }
             })
             .store(in: cancelBag)
     }
@@ -147,5 +160,12 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
         }
         
         self.todayAttendances.send(attendances)
+    }
+    
+    /*
+     출석 열린 상태에서 출석 완료한 경우 "n차 출석종료"
+     */
+    private func setTakenAttendance(_ model: [TodayAttendanceModel]) {
+        takenAttendance = TakenAttendanceType.allCases.first { $0.rawValue == model.count } ?? .notYet
     }
 }
