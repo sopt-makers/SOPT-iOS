@@ -29,7 +29,7 @@ public extension Project {
         // MARK: - App
         
         if targets.contains(.app) {
-            let bundleSuffix = name.contains("Demo") ? "demo" : "release"
+            let bundleSuffix = name.contains("Demo") ? "test" : "release"
             let infoPlist = name.contains("Demo") ? Project.demoInfoPlist : Project.appInfoPlist
             let settings = baseSettings.setProvisioning()
             
@@ -162,9 +162,14 @@ public extension Project {
         : [Scheme.makeScheme(configs: configurationName, name: name)]
         schemes += additionalSchemes
         
-        let scheme = targets.contains(.app)
+        var scheme = targets.contains(.app)
         ? appSchemes
         : schemes
+        
+        if name.contains("Demo") {
+            let testAppScheme = Scheme.makeScheme(configs: "QA", name: name)
+            scheme.append(testAppScheme)
+        }
         
         return Project(
             name: name,
@@ -195,6 +200,7 @@ extension Scheme {
             analyzeAction: .analyzeAction(configuration: configs)
         )
     }
+  
     static func makeDemoScheme(configs: ConfigurationName, name: String) -> Scheme {
         return Scheme(
             name: "\(name)Demo",
