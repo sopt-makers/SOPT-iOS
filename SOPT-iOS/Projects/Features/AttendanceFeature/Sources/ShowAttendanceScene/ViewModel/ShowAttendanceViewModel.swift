@@ -57,12 +57,17 @@ extension ShowAttendanceViewModel {
         
         self.bindOutput(output: output, cancelBag: cancelBag)
        
+        input.viewWillAppear
+            .sink {
+                output.isLoading.send(true)
+            }
+            .store(in: cancelBag)
+        
         input.viewWillAppear.merge(with: input.refreshStarted)
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.fetchAttendanceSchedule()
                 owner.useCase.fetchAttendanceScore()
-                output.isLoading.send(true)
             }.store(in: cancelBag)
     
         return output
