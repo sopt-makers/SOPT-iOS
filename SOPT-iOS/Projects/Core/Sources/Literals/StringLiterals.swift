@@ -212,7 +212,7 @@ public struct I18N {
         public static let today = "오늘은 "
         public static let dayIs = " 날이에요"
         public static let unscheduledDay = "일정이 없는"
-        public static let notCheckedDay = "출석점수를 체크하지 않습니다"
+        public static let noAttendanceSession = "출석 점수가 반영되지 않아요."
         public static let currentAttendanceScore = "현재 출석점수는 "
         public static let scoreIs = " 입니다!"
         public static let myAttendance = "나의 출결 현황"
