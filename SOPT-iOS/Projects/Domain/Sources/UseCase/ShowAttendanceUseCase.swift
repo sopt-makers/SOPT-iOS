@@ -79,7 +79,9 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
                 }
                 /// 출석하는 날(세미나, 행사, 솝커톤, 데모데이)에 출석버튼 보이게
                 if model.type != SessionType.noSession.rawValue {
-                    owner.fetchLectureRound(lectureId: model.id)
+                    owner.setTakenAttendance(model.attendances) { [weak self] in
+                        self?.fetchLectureRound(lectureId: model.id)
+                    }
                 }
             })
             .store(in: cancelBag)
@@ -107,10 +109,13 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
             .sink(receiveCompletion: { event in
                 print("completion: fetchLectureRound \(event)")
             }, receiveValue: { result in
+                /// 출석 진행중인데 이미 출석 완료한 경우
                 if self.takenAttendance != .notYet {
                     let n = self.takenAttendance.rawValue
                     self.lectureRoundErrorTitle.send(I18N.Attendance.afterNthAttendance(n))
-                } else {
+                }
+                /// 출석 진행중인데 출석 아직 안한 경우
+                else {
                     self.lectureRound.send(result)
                 }
             })
@@ -165,7 +170,9 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
     /*
      출석 열린 상태에서 출석 완료한 경우 "n차 출석종료"
      */
-    private func setTakenAttendance(_ model: [TodayAttendanceModel]) {
+    private func setTakenAttendance(_ model: [TodayAttendanceModel],
+                                    completion: @escaping () -> Void) {
         takenAttendance = TakenAttendanceType.allCases.first { $0.rawValue == model.count } ?? .notYet
+        completion()
     }
 }
