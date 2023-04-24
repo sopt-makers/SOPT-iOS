@@ -48,6 +48,54 @@ enum SampleData {
         """.utf8
         )
         
+        static let firstAbsentCaseOne = Data(
+        """
+        {
+          "success": true,
+          "message": "세미나 조회 성공",
+          "data": {
+                "type": "HAS_ATTENDANCE",
+                "id": 1,
+                "location": "건국대학교 경영관",
+                "name":"2차 세미나",
+                "startDate": "2023-04-06T14:13:51",
+                "endDate": "2023-04-06T18:13:51",
+                "message": "",
+                "attendances": [
+                    {
+                        "status": "ABSENT",
+                      "attendedAt": "2023-04-07T14:12:09"
+                    }
+                ]
+            }
+        }
+        """.utf8
+        )
+        
+        static let firstAttendanceCaseOne = Data(
+        """
+        {
+          "success": true,
+          "message": "세미나 조회 성공",
+          "data": {
+                "type": "HAS_ATTENDANCE",
+                "id": 1,
+                "location": "건국대학교 경영관",
+                "name":"2차 세미나",
+                "startDate": "2023-04-06T14:13:51",
+                "endDate": "2023-04-06T18:13:51",
+                "message": "",
+                "attendances": [
+                    {
+                        "status": "ATTENDANCE",
+                      "attendedAt": "2023-04-07T14:12:09"
+                    }
+                ]
+            }
+        }
+        """.utf8
+        )
+        
         static let absentCaseOne = Data(
         """
         {
