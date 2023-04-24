@@ -79,6 +79,7 @@ extension SentenceEditVC {
         let saveButtonTapped = self.saveButton
             .publisher(for: .touchUpInside)
             .compactMap { _ in self.textView.text }
+            .filter { !$0.isEmpty }
             .asDriver()
         
         let input = SentenceEditViewModel.Input(textChanged: textViewTextChanged,
