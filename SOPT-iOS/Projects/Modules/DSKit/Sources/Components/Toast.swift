@@ -23,7 +23,7 @@ public class Toast {
         
         toastContainer.backgroundColor = DSKitAsset.Colors.soptampGray600.color
         toastContainer.alpha = 1
-        toastContainer.layer.cornerRadius = 9
+        toastContainer.layer.cornerRadius = 10
         toastContainer.clipsToBounds = true
         toastContainer.isUserInteractionEnabled = false
         

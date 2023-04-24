@@ -16,6 +16,7 @@ import DSKit
 
 import SnapKit
 import AttendanceFeatureInterface
+import SafariServices
 
 public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControllable {
     
@@ -26,11 +27,7 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     private var cancelBag = CancelBag()
     
     public var sceneType: AttendanceScheduleType {
-        get {
-            return self.viewModel.sceneType ?? .scheduledDay
-        } set(type) {
-            self.viewModel.sceneType = type
-        }
+        return self.viewModel.sceneType ?? .unscheduledDay
     }
     
     private var viewWillAppear = PassthroughSubject<Void, Never>()
@@ -172,7 +169,7 @@ extension ShowAttendanceVC {
     
     private func bindViewModels() {
         
-        let viewWillAppear = viewWillAppear.asDriver()
+        let viewWillAppear = Driver.just(())
         let refreshStarted = refresher.publisher(for: .valueChanged)
             .mapVoid()
             .asDriver()
@@ -191,45 +188,6 @@ extension ShowAttendanceVC {
                                                   refreshStarted: refreshStarted)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
-        output.isLoading
-            .withUnretained(self)
-            .sink { owner, isLoading in
-                if isLoading {
-                    owner.showLoading()
-                    owner.containerScrollView.isHidden = true
-                } else {
-                    owner.stopLoading()
-                    owner.containerScrollView.isHidden = false
-                }
-            }
-            .store(in: self.cancelBag)
-        
-        output.$scheduleModel
-            .sink(receiveValue: { [weak self] model in
-                guard let self, let model else { return }
-                
-                if self.viewModel.sceneType == .scheduledDay {
-                    self.sceneType = .scheduledDay
-                    self.setScheduledData(model)
-                    self.headerScheduleView.updateLayout(.scheduledDay)
-                    self.attendanceButton.isHidden = false
-                } else {
-                    self.sceneType = .unscheduledDay
-                    self.headerScheduleView.updateLayout(.unscheduledDay)
-                    self.attendanceButton.isHidden = true
-                }
-                self.endRefresh()
-            })
-            .store(in: self.cancelBag)
-        
-        output.$scoreModel
-            .sink { model in
-                guard let model else { return }
-                self.infoButton.setImage(DSKitAsset.Assets.opInfo.image, for: .normal)
-                self.setScoreData(model)
-                self.endRefresh()
-            }.store(in: self.cancelBag)
-        
         output.$todayAttendances
             .withUnretained(self)
             .sink { owner, model in
@@ -238,12 +196,51 @@ extension ShowAttendanceVC {
             }
             .store(in: self.cancelBag)
         
+        output.$scheduleModel
+            .sink(receiveValue: { [weak self] model in
+                guard let self, let model else { return }
+                
+                self.headerScheduleView.layoutIfNeeded()
+                
+                if self.sceneType == .scheduledDay {
+                    self.headerScheduleView.scheduleType = .scheduledDay
+                    self.setScheduledData(model)
+                    self.attendanceButton.isHidden = false
+                } else {
+                    self.headerScheduleView.scheduleType = .unscheduledDay
+                    self.attendanceButton.isHidden = true
+                }
+                self.endRefresh()
+            })
+            .store(in: self.cancelBag)
+        
+        output.$scoreModel
+            .sink { [weak self] model in
+                guard let self, let model else { return }
+                self.infoButton.setImage(DSKitAsset.Assets.opInfo.image, for: .normal)
+                self.setScoreData(model)
+                self.endRefresh()
+            }.store(in: self.cancelBag)
+       
         output.attendanceButtonInfo
             .withUnretained(self)
             .sink { owner, info in
                 owner.setAttendanceButton(title: info.title, isEnabled: info.isEnalbed)
             }
             .store(in: self.cancelBag)
+        
+//        output.isLoading
+//            .withUnretained(self)
+//            .sink { owner, isLoading in
+//                if isLoading {
+//                    owner.showLoading()
+//                    owner.containerScrollView.isHidden = true
+//                } else {
+//                    owner.stopLoading()
+//                    owner.containerScrollView.isHidden = false
+//                }
+//            }
+//            .store(in: self.cancelBag)
     }
     
     private func endRefresh() {
@@ -253,20 +250,24 @@ extension ShowAttendanceVC {
     private func setScheduledData(_ model: AttendanceScheduleModel) {
         
         if self.sceneType == .scheduledDay {
-            guard let date = viewModel.formatTimeInterval(startDate: model.startDate, endDate: model.endDate) else { return }
+            guard let date = viewModel.formatTimeInterval(startDate: model.startDate,
+                                                          endDate: model.endDate) else { return }
             headerScheduleView.setData(date: date,
                                        place: model.location,
                                        todaySchedule: model.name,
                                        description: model.message)
         }
-        
-        self.headerScheduleView.layoutIfNeeded()
     }
     
     private func setScoreData(_ model: AttendanceScoreModel) {
-        attendanceScoreView.setMyInfoData(name: model.name, part: model.part, generation: model.generation,
+        attendanceScoreView.setMyInfoData(name: model.name,
+                                          part: model.part,
+                                          generation: model.generation,
                                           count: model.score)
-        attendanceScoreView.setMyTotalScoreData(attendance: model.total.attendance, tardy: model.total.tardy, absent: model.total.absent, participate: model.total.participate)
+        attendanceScoreView.setMyTotalScoreData(attendance: model.total.attendance,
+                                                tardy: model.total.tardy,
+                                                absent: model.total.absent,
+                                                participate: model.total.participate)
         attendanceScoreView.setMyAttendanceTableData(model.attendances)
     }
     
@@ -277,8 +278,13 @@ extension ShowAttendanceVC {
     
     @objc
     private func infoButtonDidTap() {
-        if let url = URL(string: "https://sopt.org/rules") {
-            UIApplication.shared.open(url)
+        
+        showToast(message: I18N.Attendance.infoButtonToastMessage)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            let safariViewController = SFSafariViewController(url: URL(string: "https://sopt.org/rules")!)
+            safariViewController.playgroundStyle()
+            self?.present(safariViewController, animated: true)
         }
     }
 }
