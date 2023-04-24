@@ -169,7 +169,7 @@ extension ShowAttendanceVC {
     
     private func bindViewModels() {
         
-        let viewWillAppear = viewWillAppear.asDriver()
+        let viewWillAppear = Driver.just(())
         let refreshStarted = refresher.publisher(for: .valueChanged)
             .mapVoid()
             .asDriver()
@@ -215,8 +215,8 @@ extension ShowAttendanceVC {
             .store(in: self.cancelBag)
         
         output.$scoreModel
-            .sink { model in
-                guard let model else { return }
+            .sink { [weak self] model in
+                guard let self, let model else { return }
                 self.infoButton.setImage(DSKitAsset.Assets.opInfo.image, for: .normal)
                 self.setScoreData(model)
                 self.endRefresh()
@@ -250,7 +250,8 @@ extension ShowAttendanceVC {
     private func setScheduledData(_ model: AttendanceScheduleModel) {
         
         if self.sceneType == .scheduledDay {
-            guard let date = viewModel.formatTimeInterval(startDate: model.startDate, endDate: model.endDate) else { return }
+            guard let date = viewModel.formatTimeInterval(startDate: model.startDate,
+                                                          endDate: model.endDate) else { return }
             headerScheduleView.setData(date: date,
                                        place: model.location,
                                        todaySchedule: model.name,
@@ -259,9 +260,14 @@ extension ShowAttendanceVC {
     }
     
     private func setScoreData(_ model: AttendanceScoreModel) {
-        attendanceScoreView.setMyInfoData(name: model.name, part: model.part, generation: model.generation,
+        attendanceScoreView.setMyInfoData(name: model.name,
+                                          part: model.part,
+                                          generation: model.generation,
                                           count: model.score)
-        attendanceScoreView.setMyTotalScoreData(attendance: model.total.attendance, tardy: model.total.tardy, absent: model.total.absent, participate: model.total.participate)
+        attendanceScoreView.setMyTotalScoreData(attendance: model.total.attendance,
+                                                tardy: model.total.tardy,
+                                                absent: model.total.absent,
+                                                participate: model.total.participate)
         attendanceScoreView.setMyAttendanceTableData(model.attendances)
     }
     
@@ -272,9 +278,14 @@ extension ShowAttendanceVC {
     
     @objc
     private func infoButtonDidTap() {
-        let safariViewController = SFSafariViewController(url: URL(string: "https://sopt.org/rules")!)
-        safariViewController.playgroundStyle()
-        self.present(safariViewController, animated: true)
+        
+        showToast(message: I18N.Attendance.infoButtonToastMessage)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            let safariViewController = SFSafariViewController(url: URL(string: "https://sopt.org/rules")!)
+            safariViewController.playgroundStyle()
+            self?.present(safariViewController, animated: true)
+        }
     }
 }
 
