@@ -74,7 +74,7 @@ extension AttendanceViewModel {
         
         input.attendanceButtonDidTap
             .withUnretained(self)
-            .throttle(for: 0.5, scheduler: RunLoop.main, latest: true)
+            .throttle(for: 0.5, scheduler: RunLoop.main, latest: false)
             .sink { owner, _ in
                 let lectureRoundId = owner.lectureRound.subLectureId
                 let code = owner.codeText

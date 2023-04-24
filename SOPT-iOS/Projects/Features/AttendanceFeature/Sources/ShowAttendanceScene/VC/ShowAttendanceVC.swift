@@ -34,7 +34,7 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     }
     
     private var viewWillAppear = PassthroughSubject<Void, Never>()
-  
+    
     // MARK: - UI Components
     
     private lazy var containerScrollView: UIScrollView = {
@@ -145,7 +145,7 @@ extension ShowAttendanceVC {
             $0.top.equalToSuperview().offset(15)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
-
+        
         attendanceScoreView.snp.makeConstraints {
             $0.top.equalTo(headerScheduleView.snp.bottom).offset(20)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
@@ -180,7 +180,11 @@ extension ShowAttendanceVC {
         attendanceButton.publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
-                let vc = owner.factory.makeAttendanceVC(lectureRound: owner.viewModel.lectureRound).viewController
+                let vc = owner.factory.makeAttendanceVC(
+                    lectureRound: owner.viewModel.lectureRound,
+                    dismissCompletion: { [weak self] in
+                        self?.viewWillAppear.send(())
+                    }).viewController
                 vc.modalTransitionStyle = .crossDissolve
                 vc.modalPresentationStyle = .overFullScreen
                 owner.present(vc, animated: true)
