@@ -70,8 +70,11 @@ extension MainViewModel {
     }
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
-        useCase.userMainInfo.asDriver()
-            .sink { [weak self] userMainInfo in
+        useCase.userMainInfo
+            .sink { event in
+                print("MainViewModel: \(event)")
+                output.isLoading.send(false)
+            } receiveValue: { [weak self] userMainInfo in
                 output.isLoading.send(false)
                 guard let self = self else { return }
                 self.userMainInfo = userMainInfo
@@ -83,8 +86,11 @@ extension MainViewModel {
                 }
             }.store(in: self.cancelBag)
         
-        useCase.serviceState.asDriver()
-            .sink { serviceState in
+        useCase.serviceState
+            .sink { event in
+                print("MainViewModel: \(event)")
+                output.isLoading.send(false)
+            } receiveValue: { serviceState in
                 output.isLoading.send(false)
                 output.isServiceAvailable.send(serviceState.isAvailable)
             }.store(in: self.cancelBag)

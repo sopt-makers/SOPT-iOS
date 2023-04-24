@@ -35,6 +35,7 @@ extension DefaultMainUseCase: MainUseCase {
         repository.getUserMainInfo()
             .sink { event in
                 print("MainUseCase: \(event)")
+                self.userMainInfo.send(completion: .finished)
             } receiveValue: { [weak self] userMainInfoModel in
                 self?.setUserType(with: userMainInfoModel?.userType)
                 self?.userMainInfo.send(userMainInfoModel)
@@ -45,6 +46,7 @@ extension DefaultMainUseCase: MainUseCase {
         repository.getServiceState()
             .sink { event in
                 print("MainUseCase: \(event)")
+                self.serviceState.send(completion: .finished)
             } receiveValue: { [weak self] serviceStateModel in
                 self?.serviceState.send(serviceStateModel)
             }.store(in: self.cancelBag)
