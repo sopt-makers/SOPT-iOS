@@ -7,6 +7,7 @@
 //
 
 import Combine
+import Foundation
 
 import Core
 import Domain
@@ -73,6 +74,7 @@ extension AttendanceViewModel {
         
         input.attendanceButtonDidTap
             .withUnretained(self)
+            .throttle(for: 0.5, scheduler: RunLoop.main, latest: true)
             .sink { owner, _ in
                 let lectureRoundId = owner.lectureRound.subLectureId
                 let code = owner.codeText
