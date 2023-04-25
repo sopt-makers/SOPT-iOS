@@ -16,9 +16,9 @@ enum TodayAttendanceType: String {
 }
 
 enum TakenAttendanceType: Int, CaseIterable {
-    case notYet = 0
-    case first = 1
-    case second = 2
+    case notYet
+    case first
+    case second
 }
 
 public protocol ShowAttendanceUseCase {
