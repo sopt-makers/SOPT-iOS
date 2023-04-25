@@ -22,6 +22,14 @@ final class TodayScheduleView: UIView {
         static let todayAttendanceHeight = 51.f
     }
     
+    // MARK: - Properties
+    
+    var scheduleType: AttendanceScheduleType = .scheduledDay {
+        didSet {
+            updateLayout(scheduleType)
+        }
+    }
+    
     // MARK: - UI Components
 
     private let dateImageView: UIImageView = {
@@ -90,7 +98,7 @@ final class TodayScheduleView: UIView {
     }()
     
     private lazy var todayInfoStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [placeStackView, dateAndPlaceStackView, titleLabel])
+        let stackView = UIStackView(arrangedSubviews: [dateAndPlaceStackView, titleLabel])
         stackView.axis = .vertical
         stackView.spacing = 8
         stackView.alignment = .leading
@@ -98,11 +106,7 @@ final class TodayScheduleView: UIView {
         return stackView
     }()
     
-    private let todayAttendanceView: TodayAttendanceView = {
-        let view = TodayAttendanceView()
-        view.isHidden = true
-        return view
-    }()
+    private let todayAttendanceView = TodayAttendanceView()
     
     private lazy var containerStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
@@ -121,8 +125,8 @@ final class TodayScheduleView: UIView {
     init(type: AttendanceScheduleType) {
         super.init(frame: .zero)
         
-        confiureContentView()
-        setLayout(type)
+        initContentView()
+        initLayout(type)
     }
 
     required init?(coder: NSCoder) {
@@ -130,55 +134,45 @@ final class TodayScheduleView: UIView {
     }
 }
 
-// MARK: - Methods
+// MARK: - UI & Layout
 
 extension TodayScheduleView {
     
-    private func confiureContentView() {
+    private func initContentView() {
         self.backgroundColor = DSKitAsset.Colors.black60.color
         self.clipsToBounds = true
         self.layer.cornerRadius = 16
     }
     
-    private func setLayout(_ type: AttendanceScheduleType) {
+    private func initLayout(_ type: AttendanceScheduleType) {
         addSubview(containerStackView)
-        
-        todayAttendanceView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview()
-        }
         
         containerStackView.snp.makeConstraints {
             $0.edges.equalToSuperview().inset(32)
         }
         
+        todayAttendanceView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+        }
+        
         if case .unscheduledDay = type {
-            todayInfoStackView.isHidden = true
-            
-            addSubview(titleLabel)
-            titleLabel.snp.makeConstraints {
-                $0.top.bottom.equalToSuperview().inset(32)
-                $0.leading.equalToSuperview().offset(32)
-            }
+            isHiddenScheduledLayout(true)
         }
     }
     
-    func updateLayout(_ type: AttendanceScheduleType) {
+    private func updateLayout(_ type: AttendanceScheduleType) {
         if case .unscheduledDay = type {
-            todayInfoStackView.isHidden = true
-            
-            titleLabel.text = I18N.Attendance.today + I18N.Attendance.unscheduledDay + I18N.Attendance.dayIs
-            titleLabel.setTypoStyle(DSKitFontFamily.Suit.medium.font(size: 16))
-            addSubview(titleLabel)
-            titleLabel.snp.makeConstraints {
-                $0.top.bottom.equalToSuperview().inset(32)
-                $0.leading.equalToSuperview().offset(32)
-            }
+            isHiddenScheduledLayout(true)
+            addUnscheduledTitle()
+        } else {
+            isHiddenScheduledLayout(false)
         }
     }
     
-    private func setDefaultLayout() {
-        dateImageView.image = DSKitAsset.Assets.opDate.image
-        placeImageView.image = DSKitAsset.Assets.opPlace.image
+    private func isHiddenScheduledLayout(_ bool: Bool) {
+        dateAndPlaceStackView.isHidden = bool
+        todayAttendanceView.isHidden = bool
+        subtitleLabel.isHidden = bool
     }
 }
 
@@ -187,7 +181,9 @@ extension TodayScheduleView {
 extension TodayScheduleView {
     
     func setData(date: String, place: String, todaySchedule: String, description: String?) {
+        
         setDefaultLayout()
+        
         dateLabel.text = date
         placeLabel.text = place
         titleLabel.text = I18N.Attendance.today + todaySchedule + I18N.Attendance.dayIs
@@ -195,10 +191,28 @@ extension TodayScheduleView {
                                   font: DSKitFontFamily.Suit.bold.font(size: 18))
         subtitleLabel.text = description
         subtitleLabel.isHidden = ((description?.isEmpty) == nil || description == "")
+        
+        checkNoAttendanceSession()
     }
     
     func setAttendanceInfo(_ attendances: [AttendanceStepModel], _ hasAttendance: Bool) {
         todayAttendanceView.setTodayAttendances(attendances)
         todayAttendanceView.isHidden = !hasAttendance
+    }
+    
+    private func addUnscheduledTitle() {
+        titleLabel.text = I18N.Attendance.today + I18N.Attendance.unscheduledDay + I18N.Attendance.dayIs
+        titleLabel.setTypoStyle(DSKitFontFamily.Suit.medium.font(size: 16))
+    }
+        
+    private func setDefaultLayout() {
+        dateImageView.image = DSKitAsset.Assets.opDate.image
+        placeImageView.image = DSKitAsset.Assets.opPlace.image
+    }
+    
+    private func checkNoAttendanceSession() {
+        if subtitleLabel.text == I18N.Attendance.noAttendanceSession {
+            todayAttendanceView.isHidden = true
+        }
     }
 }

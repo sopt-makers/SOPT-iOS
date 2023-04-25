@@ -43,7 +43,6 @@ public class SentenceEditVC: UIViewController, SentenceEditViewControllable {
         tv.setTypoStyle(DSKitFontFamily.Suit.medium.font(size: 16))
         tv.layer.cornerRadius = 9.adjustedH
         tv.layer.borderWidth = 1.adjustedH
-        tv.layer.borderColor = DSKitAsset.Colors.purple100.color.cgColor
         tv.isEditable = true
         tv.textContainerInset = UIEdgeInsets(top: 13, left: 16, bottom: 13, right: 16)
         tv.delegate = self
@@ -155,8 +154,17 @@ extension SentenceEditVC {
 
 extension SentenceEditVC: UITextViewDelegate {
     public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        guard text != "\n" else { return false }
         guard let str = textView.text else { return true }
         let newLength = str.count + text.count - range.length
         return newLength <= 42
+    }
+    
+    public func textViewDidBeginEditing(_ textView: UITextView) {
+        textView.layer.borderColor = DSKitAsset.Colors.purple100.color.cgColor
+    }
+    
+    public func textViewDidEndEditing(_ textView: UITextView) {
+        textView.layer.borderColor = nil
     }
 }

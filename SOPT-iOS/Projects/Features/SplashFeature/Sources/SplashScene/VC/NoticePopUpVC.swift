@@ -59,6 +59,7 @@ public class NoticePopUpVC: UIViewController, NoticePopUpViewControllable {
                                                  attributes: [.font: UIFont.SoptampFont.caption3,
                                                               .foregroundColor: DSKitAsset.Colors.white.color]),
                               for: .normal)
+        $0.titleLabel?.adjustsFontSizeToFitWidth = true
     }
 
     private let updateButton = UIButton(type: .custom).then {

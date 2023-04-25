@@ -84,17 +84,7 @@ extension MyAttendanceStateTVC {
     func setData(model: AttendanceModel) {
         guard let status = AttendanceStateType(rawValue: model.status.lowercased()) else { return }
         
-        switch status {
-        case .attendance:
-            stateImageView.image = DSKitAsset.Assets.opStateAttendance.image
-        case .absent:
-            stateImageView.image = DSKitAsset.Assets.opStateAbsent.image
-        case .tardy:
-            stateImageView.image = DSKitAsset.Assets.opStateTardy.image
-        case .participate:
-            stateImageView.image = DSKitAsset.Assets.opStateParticipate.image
-        }
-        
+        stateImageView.image = status.image
         titleLabel.text = model.name
         dateLabel.text = model.date
     }

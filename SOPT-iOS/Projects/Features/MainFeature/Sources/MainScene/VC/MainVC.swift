@@ -39,7 +39,7 @@ public class MainVC: UIViewController, MainViewControllable {
     public var factory: factoryType!
     private var cancelBag = CancelBag()
     
-    private var requestUserInfo = CurrentValueSubject<Void, Never>(())
+    private var requestUserInfo = PassthroughSubject<Void, Never>()
 
     // MARK: - UI Components
     
@@ -65,6 +65,7 @@ public class MainVC: UIViewController, MainViewControllable {
         self.setLayout()
         self.setDelegate()
         self.registerCells()
+        self.requestUserInfo.send(())
     }
 }
 
@@ -74,10 +75,6 @@ extension MainVC {
     private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = DSKitAsset.Colors.black100.color
-        
-        if viewModel.userType == .visitor {
-            self.naviBar.setRightButtonImage(image: DSKitAsset.Assets.btnLogout.image)
-        }
     }
     
     private func setLayout() {
@@ -126,6 +123,11 @@ extension MainVC {
                 if needRegistration {
                     self?.presentPlaygroundRegisterationAlertVC()
                 }
+            }.store(in: self.cancelBag)
+        
+        output.isLoading
+            .sink { [weak self] isLoading in
+                isLoading ? self?.showLoading() : self?.stopLoading()
             }.store(in: self.cancelBag)
     }
     

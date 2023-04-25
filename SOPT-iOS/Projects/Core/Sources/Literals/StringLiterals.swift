@@ -212,7 +212,7 @@ public struct I18N {
         public static let today = "오늘은 "
         public static let dayIs = " 날이에요"
         public static let unscheduledDay = "일정이 없는"
-        public static let notCheckedDay = "출석점수를 체크하지 않습니다"
+        public static let noAttendanceSession = "출석 점수가 반영되지 않아요."
         public static let currentAttendanceScore = "현재 출석점수는 "
         public static let scoreIs = " 입니다!"
         public static let myAttendance = "나의 출결 현황"
@@ -230,6 +230,8 @@ public struct I18N {
         public static let inputCodeDescription = "출석 코드 다섯 자리를 입력해 주세요."
         public static let codeMismatch = "코드가 일치하지 않아요!"
         public static let takeAttendance = "출석하기"
+        
+        public static let infoButtonToastMessage = "제2장 제10조(출석)를 확인해주세요"
     }
     
     public struct MyPage {

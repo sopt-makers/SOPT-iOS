@@ -220,6 +220,7 @@ extension STNavigationBar {
             titleButton.setImage(DSKitAsset.Assets.icDownArrow.image, for: .normal)
             titleButton.setTitleColor(.black, for: .normal)
             titleButton.semanticContentAttribute = .forceRightToLeft
+            titleButton.titleLabel?.adjustsFontSizeToFitWidth = true
         case .titleWithLeftButton:
             rightButton.isHidden = true
             leftButton.setImage(UIImage(asset: DSKitAsset.Assets.icArrow), for: .normal)

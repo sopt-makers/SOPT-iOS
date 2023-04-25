@@ -28,7 +28,7 @@ public class MainViewModel: ViewModelType {
     // MARK: - Inputs
     
     public struct Input {
-        let requestUserInfo: CurrentValueSubject<Void, Never>
+        let requestUserInfo: PassthroughSubject<Void, Never>
     }
     
     // MARK: - Outputs
@@ -37,6 +37,7 @@ public class MainViewModel: ViewModelType {
         var getUserMainInfoDidComplete = PassthroughSubject<Void, Never>()
         var isServiceAvailable = PassthroughSubject<Bool, Never>()
         var needPlaygroundProfileRegistration = PassthroughSubject<Bool, Never>()
+        var isLoading = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - init
@@ -57,6 +58,7 @@ extension MainViewModel {
         
         input.requestUserInfo
             .sink { [weak self] _ in
+                output.isLoading.send(true)
                 guard let self = self else { return }
                 if self.userType != .visitor {
                     self.useCase.getUserMainInfo()
@@ -68,8 +70,12 @@ extension MainViewModel {
     }
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
-        useCase.userMainInfo.asDriver()
-            .sink { [weak self] userMainInfo in
+        useCase.userMainInfo
+            .sink { event in
+                print("MainViewModel: \(event)")
+                output.isLoading.send(false)
+            } receiveValue: { [weak self] userMainInfo in
+                output.isLoading.send(false)
                 guard let self = self else { return }
                 self.userMainInfo = userMainInfo
                 self.userType = userMainInfo?.userType ?? .unregisteredInactive
@@ -80,8 +86,12 @@ extension MainViewModel {
                 }
             }.store(in: self.cancelBag)
         
-        useCase.serviceState.asDriver()
-            .sink { serviceState in
+        useCase.serviceState
+            .sink { event in
+                print("MainViewModel: \(event)")
+                output.isLoading.send(false)
+            } receiveValue: { serviceState in
+                output.isLoading.send(false)
                 output.isServiceAvailable.send(serviceState.isAvailable)
             }.store(in: self.cancelBag)
     }
