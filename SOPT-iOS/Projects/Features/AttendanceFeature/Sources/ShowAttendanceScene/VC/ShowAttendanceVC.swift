@@ -178,7 +178,7 @@ extension ShowAttendanceVC {
     
     private func bindViewModels() {
         
-        let viewWillAppear = Driver.just(())
+        let viewWillAppear = viewWillAppear.asDriver()
         let refreshStarted = refresher.publisher(for: .valueChanged)
             .mapVoid()
             .asDriver()
