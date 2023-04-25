@@ -31,7 +31,7 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     }
     
     private var viewWillAppear = PassthroughSubject<Void, Never>()
-  
+    
     // MARK: - UI Components
     
     private lazy var containerScrollView: UIScrollView = {
@@ -57,6 +57,12 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     }()
     
     private let attendanceScoreView = AttendanceScoreView()
+    
+    private lazy var attendanceButtonStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.addArrangedSubview(attendanceButton)
+        return stackView
+    }()
     
     private let attendanceButton: OPCustomButton = {
         let button = OPCustomButton()
@@ -118,7 +124,7 @@ extension ShowAttendanceVC {
     }
     
     private func setLayout() {
-        view.addSubviews(navibar, containerScrollView, attendanceButton)
+        view.addSubviews(navibar, containerScrollView, attendanceButtonStackView)
         containerScrollView.addSubview(contentView)
         contentView.addSubviews(headerScheduleView, attendanceScoreView)
         attendanceScoreView.addSubview(infoButton)
@@ -130,7 +136,7 @@ extension ShowAttendanceVC {
         containerScrollView.snp.makeConstraints {
             $0.top.equalTo(navibar.snp.bottom)
             $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalTo(attendanceButton.snp.top)
+            $0.bottom.equalTo(attendanceButtonStackView.snp.top).offset(-13)
         }
         
         contentView.snp.makeConstraints {
@@ -142,16 +148,19 @@ extension ShowAttendanceVC {
             $0.top.equalToSuperview().offset(15)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
-
+        
         attendanceScoreView.snp.makeConstraints {
             $0.top.equalTo(headerScheduleView.snp.bottom).offset(20)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
-            $0.bottom.equalToSuperview().offset(-13)
+            $0.bottom.equalToSuperview()
+        }
+        
+        attendanceButtonStackView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
         
         attendanceButton.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(20)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide)
             $0.height.equalTo(56)
         }
         
@@ -169,7 +178,7 @@ extension ShowAttendanceVC {
     
     private func bindViewModels() {
         
-        let viewWillAppear = Driver.just(())
+        let viewWillAppear = viewWillAppear.asDriver()
         let refreshStarted = refresher.publisher(for: .valueChanged)
             .mapVoid()
             .asDriver()
@@ -177,7 +186,11 @@ extension ShowAttendanceVC {
         attendanceButton.publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
-                let vc = owner.factory.makeAttendanceVC(lectureRound: owner.viewModel.lectureRound).viewController
+                let vc = owner.factory.makeAttendanceVC(
+                    lectureRound: owner.viewModel.lectureRound,
+                    dismissCompletion: { [weak self] in
+                        self?.viewWillAppear.send(())
+                    }).viewController
                 vc.modalTransitionStyle = .crossDissolve
                 vc.modalPresentationStyle = .overFullScreen
                 owner.present(vc, animated: true)
@@ -229,18 +242,18 @@ extension ShowAttendanceVC {
             }
             .store(in: self.cancelBag)
         
-//        output.isLoading
-//            .withUnretained(self)
-//            .sink { owner, isLoading in
-//                if isLoading {
-//                    owner.showLoading()
-//                    owner.containerScrollView.isHidden = true
-//                } else {
-//                    owner.stopLoading()
-//                    owner.containerScrollView.isHidden = false
-//                }
-//            }
-//            .store(in: self.cancelBag)
+        output.isLoading
+            .withUnretained(self)
+            .sink { owner, isLoading in
+                if isLoading {
+                    owner.showLoading()
+                    owner.containerScrollView.isHidden = true
+                } else {
+                    owner.stopLoading()
+                    owner.containerScrollView.isHidden = false
+                }
+            }
+            .store(in: self.cancelBag)
     }
     
     private func endRefresh() {

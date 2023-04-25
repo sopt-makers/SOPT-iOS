@@ -36,7 +36,11 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
     private var cancelBag = CancelBag()
     public var factory: AttendanceFeatureViewBuildable
     
+    public var dismissCompletion: (() -> Void)?
+    
     private var viewWillAppear = PassthroughSubject<Void, Never>()
+    
+    
     // MARK: - UI Components
     
     /// 출석하기 모달 뷰
@@ -284,7 +288,9 @@ extension AttendanceVC {
             .filter { $0 }
             .withUnretained(self)
             .sink { owner, _ in
-                owner.dismiss(animated: true)
+                owner.dismiss(animated: true) {
+                    owner.dismissCompletion?()
+                }
             }
             .store(in: self.cancelBag)
         

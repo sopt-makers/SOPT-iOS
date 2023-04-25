@@ -15,6 +15,12 @@ enum TodayAttendanceType: String {
     case absent = "ABSENT"
 }
 
+enum TakenAttendanceType: Int, CaseIterable {
+    case notYet
+    case first
+    case second
+}
+
 public protocol ShowAttendanceUseCase {
     func fetchAttendanceSchedule()
     func fetchAttendanceScore()
@@ -40,6 +46,8 @@ public class DefaultShowAttendanceUseCase {
   
     private let repository: ShowAttendanceRepositoryInterface
     private var cancelBag = CancelBag()
+    
+    private var takenAttendance: TakenAttendanceType = .notYet
     
     public var attendanceScheduleFetched = PassthroughSubject<AttendanceScheduleModel, Error>()
     public var todayAttendances = PassthroughSubject<[AttendanceStepModel], Never>()
@@ -71,6 +79,7 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
                 }
                 /// 출석하는 날(세미나, 행사, 솝커톤, 데모데이)에 출석버튼 보이게
                 if model.type != SessionType.noSession.rawValue {
+                    owner.setTakenAttendance(model.attendances)
                     owner.fetchLectureRound(lectureId: model.id)
                 }
             })
@@ -99,7 +108,15 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
             .sink(receiveCompletion: { event in
                 print("completion: fetchLectureRound \(event)")
             }, receiveValue: { result in
-                self.lectureRound.send(result)
+                /// 출석 진행중인데 이미 출석 완료한 경우
+                if self.takenAttendance.rawValue == result?.round {
+                    let n = self.takenAttendance.rawValue
+                    self.lectureRoundErrorTitle.send(I18N.Attendance.afterNthAttendance(n))
+                }
+                /// 출석 진행중인데 출석 아직 안한 경우
+                else {
+                    self.lectureRound.send(result)
+                }
             })
             .store(in: cancelBag)
     }
@@ -147,5 +164,12 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
         }
         
         self.todayAttendances.send(attendances)
+    }
+    
+    /*
+     출석 열린 상태에서 출석 완료한 경우 "n차 출석종료"
+     */
+    private func setTakenAttendance(_ model: [TodayAttendanceModel]) {
+        takenAttendance = TakenAttendanceType.allCases.first { $0.rawValue == model.count } ?? .notYet
     }
 }

@@ -16,5 +16,5 @@ public protocol AttendanceViewControllable: ViewControllable { }
 
 public protocol AttendanceFeatureViewBuildable {
     func makeShowAttendanceVC() -> ShowAttendanceViewControllable
-    func makeAttendanceVC(lectureRound: AttendanceRoundModel) -> AttendanceViewControllable
+    func makeAttendanceVC(lectureRound: AttendanceRoundModel, dismissCompletion: (() -> Void)?) -> AttendanceViewControllable
 }
