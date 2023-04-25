@@ -79,9 +79,8 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
                 }
                 /// 출석하는 날(세미나, 행사, 솝커톤, 데모데이)에 출석버튼 보이게
                 if model.type != SessionType.noSession.rawValue {
-                    owner.setTakenAttendance(model.attendances) { [weak self] in
-                        self?.fetchLectureRound(lectureId: model.id)
-                    }
+                    owner.setTakenAttendance(model.attendances)
+                    owner.fetchLectureRound(lectureId: model.id)
                 }
             })
             .store(in: cancelBag)
@@ -170,9 +169,7 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
     /*
      출석 열린 상태에서 출석 완료한 경우 "n차 출석종료"
      */
-    private func setTakenAttendance(_ model: [TodayAttendanceModel],
-                                    completion: @escaping () -> Void) {
+    private func setTakenAttendance(_ model: [TodayAttendanceModel]) {
         takenAttendance = TakenAttendanceType.allCases.first { $0.rawValue == model.count } ?? .notYet
-        completion()
     }
 }
