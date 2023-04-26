@@ -1,148 +1,140 @@
+@testable import Domain
 
 import XCTest
 import Combine
 import Core
-@testable import Domain
+import Nimble
+import Quick
 
-final class DefaultRankingUseCaseTests: XCTestCase {
-    private var useCase: DefaultRankingUseCase!
-    private var repository: MockRankingRepository!
-
-    override func setUp() {
-        super.setUp()
-        repository = MockRankingRepository()
-        useCase = DefaultRankingUseCase(repository: repository)
-    }
-
-    override func tearDown() {
-        useCase = nil
-        repository = nil
-        super.tearDown()
-    }
-
-    func test_fetchRankingList() {
-        // Given
-        let expectation = XCTestExpectation(description: "Fetching ranking list")
-
-        let myUsername = "user2"
-        var rankingModel = findRankingModel
-        rankingModel[1].setMyRanking(true)
-        repository.fetchRankingListModelResponse = .success(rankingModel)
-        UserDefaultKeyList.User.soptampName = myUsername
-        
-        // When
-        useCase.rankingListModelFetched
-            .dropFirst()
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    XCTFail("Error: \(error)")
-                }
-            } receiveValue: { model in
-                // Then
-                XCTAssertEqual(model, rankingModel)
-                expectation.fulfill()
+final
+class DefaultRankingUseCaseTests: QuickSpec {
+    override func spec() {
+        describe("DefaultRankingUseCase") {
+            var useCase: DefaultRankingUseCase!
+            var repository: MockRankingRepository!
+            
+            beforeEach {
+                repository = MockRankingRepository()
+                useCase = DefaultRankingUseCase(repository: repository)
             }
-            .store(in: repository.cancelBag)
-
-        useCase.fetchRankingList()
-
-        wait(for: [expectation], timeout: 0.5)
-    }
-    
-    func test_findMyRanking_index0() {
-        // Given
-        let expectation = XCTestExpectation(description: "Finding my ranking")
-        
-        let myUserName = "user1"
-        UserDefaultKeyList.User.soptampName = myUserName
-        repository.fetchRankingListModelResponse = .success(findRankingModel)
-        
-        // When
-        useCase.myRanking
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    XCTFail("Error: \(error)")
-                }
-            } receiveValue: { (section, item) in
-                // Then
-                XCTAssertEqual(section, 0)
-                XCTAssertEqual(item, 0)
-                expectation.fulfill()
+            
+            afterEach {
+                useCase = nil
+                repository = nil
             }
-            .store(in: repository.cancelBag)
-        
-        useCase.fetchRankingList()
-        useCase.findMyRanking()
-        
-        wait(for: [expectation], timeout: 0.5)
-    }
-    
-    func test_findMyRanking_index2() {
-        // Given
-        let expectation = XCTestExpectation(description: "Finding my ranking")
-        
-        let myUserName = "user3"
-        UserDefaultKeyList.User.soptampName = myUserName
-        repository.fetchRankingListModelResponse = .success(findRankingModel)
-        
-        // When
-        useCase.myRanking
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    XCTFail("Error: \(error)")
+            
+            context("fetch ranking list") {
+                it("returns a list of rankings") {
+                    // Given
+                    let myUsername = "user2"
+                    var rankingModel = self.findRankingModel
+                    rankingModel[1].setMyRanking(true)
+                    repository.fetchRankingListModelResponse = .success(rankingModel)
+                    UserDefaultKeyList.User.soptampName = myUsername
+                    
+                    // When
+                    useCase.fetchRankingList()
+                    
+                    // Then
+                    expect(useCase.rankingListModelFetched.value).toEventually(equal(rankingModel))
                 }
-            } receiveValue: { (section, item) in
-                // Then
-                XCTAssertEqual(section, 0)
-                XCTAssertEqual(item, 0)
-                expectation.fulfill()
             }
-            .store(in: repository.cancelBag)
-        
-        useCase.fetchRankingList()
-        useCase.findMyRanking()
-        
-        wait(for: [expectation], timeout: 0.5)
-    }
-    
-    func test_findMyRanking_indexOver3() {
-        // Given
-        let expectation = XCTestExpectation(description: "Finding my ranking")
-        
-        let myUserName = "user4"
-        UserDefaultKeyList.User.soptampName = myUserName
-        repository.fetchRankingListModelResponse = .success(findRankingModel)
-        
-        // When
-        useCase.myRanking
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    XCTFail("Error: \(error)")
+            
+            context("findMyRanking") {
+                context("myUsername의 인덱스가 4 미만이면") {
+                    it("(0, 0) 반환") {
+                        // Given
+                        let myUsername = "user3"
+                        let rankingModel = self.findRankingModel
+                        repository.fetchRankingListModelResponse = .success(rankingModel)
+                        UserDefaultKeyList.User.soptampName = myUsername
+                        useCase.rankingListModelFetched.send(rankingModel)
+                        
+                        // When
+                        defer { useCase.findMyRanking() }
+                        
+                        // Then
+                        useCase.myRanking
+                            .sink(
+                                receiveCompletion: { completion in
+                                    switch completion {
+                                    case .finished:
+                                        break
+                                    case .failure(let error):
+                                        fail("Error: \(error)")
+                                    }
+                                },
+                                receiveValue: { section, item in
+                                    expect(section).to(equal(0))
+                                    expect(item).to(equal(0))
+                                }
+                            ).store(in: repository.cancelBag)
+                    }
                 }
-            } receiveValue: { (section, item) in
-                // Then
-                XCTAssertEqual(section, 1)
-                XCTAssertEqual(item, 0)
-                expectation.fulfill()
+                
+                context("myUsername의 인덱스가 4이면") {
+                    it("(1, 0) 반환") {
+                        // Given
+                        let myUsername = "user4"
+                        let rankingModel = self.findRankingModel
+                        repository.fetchRankingListModelResponse = .success(rankingModel)
+                        UserDefaultKeyList.User.soptampName = myUsername
+                        useCase.rankingListModelFetched.send(rankingModel)
+                        
+                        // When
+                        defer { useCase.findMyRanking() }
+                        
+                        // Then
+                        useCase.myRanking
+                            .sink(
+                                receiveCompletion: { completion in
+                                    switch completion {
+                                    case .finished:
+                                        break
+                                    case .failure(let error):
+                                        fail("Error: \(error)")
+                                    }
+                                },
+                                receiveValue: { section, item in
+                                    expect(section).to(equal(1))
+                                    expect(item).to(equal(0))
+                                }
+                            ).store(in: repository.cancelBag)
+                    }
+                }
+                
+                context("myUsername의 인덱스가 4 초과이면") {
+                    it("section: 1, item: index - 3 반환") {
+                        // Given
+                        let myUsername = "user6"
+                        let rankingModel = self.findRankingModel
+                        repository.fetchRankingListModelResponse = .success(rankingModel)
+                        UserDefaultKeyList.User.soptampName = myUsername
+                        useCase.rankingListModelFetched.send(rankingModel)
+                        
+                        // When
+                        defer { useCase.findMyRanking() }
+                        
+                        // Then
+                        useCase.myRanking
+                            .sink(
+                                receiveCompletion: { completion in
+                                    switch completion {
+                                    case .finished:
+                                        break
+                                    case .failure(let error):
+                                        fail("Error: \(error)")
+                                    }
+                                },
+                                receiveValue: { section, item in
+                                    expect(section).to(equal(1))
+                                    expect(item).to(equal(2))
+                                }
+                            ).store(in: repository.cancelBag)
+                    }
+                }
             }
-            .store(in: repository.cancelBag)
-        
-        useCase.fetchRankingList()
-        useCase.findMyRanking()
-        
-        wait(for: [expectation], timeout: 0.5)
+        }
     }
 }
 
