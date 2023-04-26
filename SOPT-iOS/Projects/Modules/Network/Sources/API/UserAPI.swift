@@ -17,7 +17,6 @@ public enum UserAPI {
     case editSentence(sentence: String)
     case getNicknameAvailable(nickname: String)
     case changeNickname(nickname: String)
-    case reissuance
     case getUserMainInfo
     case withdrawal
 }
@@ -37,8 +36,6 @@ extension UserAPI: BaseAPI {
             return "nickname"
         case .getNicknameAvailable(let nickname):
             return "nickname/\(nickname)"
-        case .reissuance:
-            return "refresh"
         case .getUserMainInfo:
             return "/main"
         case .withdrawal:
@@ -51,7 +48,7 @@ extension UserAPI: BaseAPI {
         switch self {
         case .getNicknameAvailable, .getUserMainInfo, .fetchSoptampUser:
             return .get
-        case .editSentence, .changeNickname, .reissuance:
+        case .editSentence, .changeNickname:
             return .patch
         case .withdrawal:
             return .delete
@@ -66,8 +63,6 @@ extension UserAPI: BaseAPI {
             params["nickname"] = nickname
         case .editSentence(let sentence):
             params["profileMessage"] = sentence
-        case .reissuance:
-            params["refreshToken"] = UserDefaultKeyList.Auth.appRefreshToken
         default: break
         }
         return params
@@ -82,7 +77,7 @@ extension UserAPI: BaseAPI {
     
     public var task: Task {
         switch self {
-        case .changeNickname, .editSentence, .reissuance:
+        case .changeNickname, .editSentence:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain
@@ -91,8 +86,6 @@ extension UserAPI: BaseAPI {
     
     public var validationType: ValidationType {
         switch self {
-        case .reissuance:
-            return .none
         default : return .successCodes
         }
     }
