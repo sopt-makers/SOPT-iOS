@@ -10,9 +10,11 @@ import Foundation
 
 import Alamofire
 import Moya
+import Core
 
 public enum AuthAPI {
     case signIn(token: String)
+    case reissuance
 }
 
 extension AuthAPI: BaseAPI {
@@ -22,7 +24,10 @@ extension AuthAPI: BaseAPI {
     // MARK: - Header
     public var headers: [String: String]? {
         switch self {
-        default: return HeaderType.json.value
+        case .signIn:
+            return HeaderType.json.value
+        case .reissuance:
+            return HeaderType.jsonWithToken.value
         }
     }
     
@@ -31,6 +36,8 @@ extension AuthAPI: BaseAPI {
         switch self {
         case .signIn:
             return "playground"
+        case .reissuance:
+            return "refresh"
         }
     }
     
@@ -39,6 +46,8 @@ extension AuthAPI: BaseAPI {
         switch self {
         case .signIn:
             return .post
+        case .reissuance:
+            return .patch
         }
     }
     
@@ -48,6 +57,8 @@ extension AuthAPI: BaseAPI {
         switch self {
         case .signIn(let token):
             params["code"] = token
+        case .reissuance:
+            params["refreshToken"] = UserDefaultKeyList.Auth.appRefreshToken
         }
         return params
     }
@@ -61,7 +72,7 @@ extension AuthAPI: BaseAPI {
     
     public var task: Task {
         switch self {
-        case .signIn:
+        case .signIn, .reissuance:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         }
     }
