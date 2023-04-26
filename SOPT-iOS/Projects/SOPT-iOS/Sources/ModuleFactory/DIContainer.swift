@@ -97,11 +97,12 @@ extension DIContainer: Features {
         return showAttendanceVC
     }
     
-    func makeAttendanceVC(lectureRound: AttendanceRoundModel) -> AttendanceViewControllable {
+    func makeAttendanceVC(lectureRound: AttendanceRoundModel, dismissCompletion: (() -> Void)?) -> AttendanceViewControllable {
         let repository = AttendanceRepository(service: attendanceService)
         let useCase = DefaultAttendanceUseCase(repository: repository)
         let viewModel = AttendanceViewModel(useCase: useCase, lectureRound: lectureRound)
         let attendanceVC = AttendanceVC(viewModel: viewModel, factory: self)
+        attendanceVC.dismissCompletion = dismissCompletion
         return attendanceVC
     }
     
