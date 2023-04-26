@@ -49,8 +49,8 @@ extension DefaultRankingUseCase: RankingUseCase {
     public func findMyRanking() {
         let myRankingIndex = self.findMyRankingIndex(model: rankingListModelFetched.value)
         
-        if myRankingIndex > 3 {
-            myRanking.send((1, myRankingIndex - 4))
+        if myRankingIndex > 2 {
+            myRanking.send((1, myRankingIndex - 3))
         } else {
             myRanking.send((0, 0))
         }
