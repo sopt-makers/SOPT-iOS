@@ -23,8 +23,8 @@ class DefaultRankingUseCaseTests: QuickSpec {
                 repository = nil
             }
             
-            context("fetch ranking list") {
-                it("returns a list of rankings") {
+            context("fetchRankingList") {
+                it("랭킹 리스트 및 내 래킹 유무를 가져옴") {
                     // Given
                     let myUsername = "user2"
                     var rankingModel = self.findRankingModel
