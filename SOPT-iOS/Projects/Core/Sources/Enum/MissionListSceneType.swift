@@ -17,4 +17,12 @@ public enum MissionListSceneType {
         case .ranking: return true
         }
     }
+    
+    public var usrename: String? {
+        switch self {
+        case .default: return nil
+        case .ranking(let username, _):
+            return username
+        }
+    }
 }

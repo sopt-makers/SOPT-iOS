@@ -25,7 +25,7 @@ public protocol StampFeatureViewBuildable {
                           starLevel: StarViewLevel,
                           missionId: Int,
                           missionTitle: String,
-                          isOtherUser: Bool) -> ListDetailViewControllable
+                          otherUserName: String?) -> ListDetailViewControllable
     func makeMissionCompletedVC(starLevel: StarViewLevel, completionHandler: (() -> Void)?) -> MissionCompletedViewControllable
     func makeRankingVC() -> RankingViewControllable
     func makeStampGuideVC() -> StampGuideViewControllable

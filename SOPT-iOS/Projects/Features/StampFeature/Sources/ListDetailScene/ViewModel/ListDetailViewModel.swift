@@ -21,6 +21,7 @@ public class ListDetailViewModel: ViewModelType {
     public var missionTitle: String!
     public var stampId: Int!
     public var isOtherUser: Bool
+    public var otherUserName: String!
     
     // MARK: - Inputs
     
@@ -42,13 +43,14 @@ public class ListDetailViewModel: ViewModelType {
     
     // MARK: - init
     
-    public init(useCase: ListDetailUseCase, sceneType: ListDetailSceneType, starLevel: StarViewLevel, missionId: Int, missionTitle: String, isOtherUser: Bool) {
+    public init(useCase: ListDetailUseCase, sceneType: ListDetailSceneType, starLevel: StarViewLevel, missionId: Int, missionTitle: String, otherUsername: String?) {
         self.useCase = useCase
         self.sceneType = sceneType
         self.starLevel = starLevel
         self.missionId = missionId
         self.missionTitle = missionTitle
-        self.isOtherUser = isOtherUser
+        self.isOtherUser = !(otherUsername == nil)
+        self.otherUserName = otherUsername
     }
 }
 
@@ -60,10 +62,13 @@ extension ListDetailViewModel {
         
         input.viewDidLoad
             .withUnretained(self)
+            .filter { owner, _ in
+                owner.sceneType == .completed
+            }
             .sink { owner, _ in
-                if owner.sceneType == .completed {
-                    owner.useCase.fetchListDetail(missionId: owner.missionId)
-                }
+                owner.isOtherUser
+                ? owner.useCase.fetchListDetail(missionId: owner.missionId, username: owner.otherUserName)
+                : owner.useCase.fetchListDetail(missionId: owner.missionId, username: nil)
             }.store(in: cancelBag)
         
         input.bottomButtonTapped
