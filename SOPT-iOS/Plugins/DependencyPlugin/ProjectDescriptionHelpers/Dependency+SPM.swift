@@ -9,6 +9,7 @@ import ProjectDescription
 
 public extension TargetDependency {
     enum SPM {}
+    enum Carthage {}
 }
 
 public extension TargetDependency.SPM {
@@ -22,4 +23,8 @@ public extension TargetDependency.SPM {
     static let Nimble = TargetDependency.external(name: "Nimble")
     static let Quick = TargetDependency.external(name: "Quick")
     static let lottie = TargetDependency.external(name: "Lottie")
+}
+
+public extension TargetDependency.Carthage {
+    static let Sentry = TargetDependency.external(name: "Sentry")
 }

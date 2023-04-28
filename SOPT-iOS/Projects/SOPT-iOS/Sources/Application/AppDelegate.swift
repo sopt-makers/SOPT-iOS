@@ -7,13 +7,16 @@
 
 import UIKit
 
+import Sentry
+
 import Core
+import Network
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application( _ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
+        configureSentry()
         return true
     }
     
@@ -33,4 +36,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application( _ application: UIApplication,
         didDiscardSceneSessions sceneSessions: Set<UISceneSession>
     ) {}
+}
+
+extension AppDelegate {
+    private func configureSentry() {
+        SentrySDK.start { options in
+            options.dsn = Config.Sentry.DSN
+            #if DEV || TEST
+            options.debug = true
+            #endif
+            options.enableCaptureFailedRequests = true
+            options.attachScreenshot = true
+            options.enableUserInteractionTracing = true
+            options.attachViewHierarchy = true
+            options.enableUIViewControllerTracing = true
+        }
+    }
 }
