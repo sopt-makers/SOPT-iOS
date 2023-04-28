@@ -24,10 +24,8 @@ extension AuthAPI: BaseAPI {
     // MARK: - Header
     public var headers: [String: String]? {
         switch self {
-        case .signIn:
+        case .signIn, .reissuance:
             return HeaderType.json.value
-        case .reissuance:
-            return HeaderType.jsonWithToken.value
         }
     }
     
