@@ -12,7 +12,7 @@ import Alamofire
 import Moya
 
 public enum StampAPI {
-    case fetchStampListDetail(missionId: Int)
+    case fetchStampListDetail(missionId: Int, username: String)
     case postStamp(missionId: Int, requestModel: [Any])
     case putStamp(missionId: Int, requestModel: [Any])
     case deleteStamp(stampId: Int)
@@ -38,8 +38,8 @@ extension StampAPI: BaseAPI {
     // MARK: - Path
     public var path: String {
         switch self {
-        case .fetchStampListDetail(let missionId):
-            return "mission/\(missionId)"
+        case .fetchStampListDetail:
+            return ""
         case .postStamp(let missionId, _),
                 .putStamp(let missionId, _):
             return "/\(missionId)"
@@ -67,6 +67,9 @@ extension StampAPI: BaseAPI {
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
+        case .fetchStampListDetail(let missionId, let username):
+            params["missionId"] = missionId
+            params["nickname"] = username
         default: break
         }
         return params
@@ -74,6 +77,8 @@ extension StampAPI: BaseAPI {
     
     private var parameterEncoding: ParameterEncoding {
         switch self {
+        case .fetchStampListDetail:
+            return URLEncoding.default
         default:
             return JSONEncoding.default
         }
@@ -81,6 +86,8 @@ extension StampAPI: BaseAPI {
     
     public var task: Task {
         switch self {
+        case .fetchStampListDetail:
+            return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         case .postStamp(_, let requestModel), .putStamp(_, let requestModel):
             var multipartData: [Moya.MultipartFormData] = []
             

@@ -134,7 +134,8 @@ extension DIContainer: Features {
                           starLevel: StarViewLevel,
                           missionId: Int,
                           missionTitle: String,
-                          isOtherUser: Bool) -> ListDetailViewControllable {
+                          otherUserName: String?
+    ) -> ListDetailViewControllable {
         let repository = ListDetailRepository(service: stampService)
         let useCase = DefaultListDetailUseCase(repository: repository)
         let viewModel = ListDetailViewModel(useCase: useCase,
@@ -142,7 +143,7 @@ extension DIContainer: Features {
                                             starLevel: starLevel,
                                             missionId: missionId,
                                             missionTitle: missionTitle,
-                                            isOtherUser: isOtherUser)
+                                            otherUsername: otherUserName)
         let listDetailVC = ListDetailVC()
         listDetailVC.viewModel = viewModel
         listDetailVC.factory = self

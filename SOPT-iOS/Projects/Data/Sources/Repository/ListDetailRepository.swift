@@ -7,6 +7,7 @@
 //
 
 import Combine
+import Foundation
 
 import Core
 import Domain
@@ -23,10 +24,14 @@ public class ListDetailRepository {
 }
 
 extension ListDetailRepository: ListDetailRepositoryInterface {
-    public func fetchListDetail(missionId: Int) -> Driver<ListDetailModel> {
-        return stampService.fetchStampListDetail(missionId: missionId)
+    public func fetchListDetail(missionId: Int, username: String?) -> AnyPublisher<ListDetailModel, Error> {
+        let username = username ?? UserDefaultKeyList.User.soptampName
+        guard let username else {
+            return Fail(error: NSError()).eraseToAnyPublisher()
+        }
+        return stampService.fetchStampListDetail(missionId: missionId, username: username)
             .map { $0.toDomain() }
-            .asDriver()
+            .eraseToAnyPublisher()
     }
     
     public func postStamp(missionId: Int, stampData: [Any]) -> AnyPublisher<ListDetailModel, Error> {
