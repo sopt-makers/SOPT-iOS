@@ -53,4 +53,11 @@ extension ConfigAPI: BaseAPI {
             return .requestPlain
         }
     }
+    
+    public var headers: [String : String]? {
+        switch self {
+        default:
+            return HeaderType.json.value
+        }
+    }
 }

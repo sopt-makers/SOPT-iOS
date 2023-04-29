@@ -41,7 +41,6 @@ extension MainRepository: MainRepositoryInterface {
                     }
                     return MainError.networkError
                 case .tokenReissuanceFailed:
-                    
                     guard let appAccessToken = UserDefaultKeyList.Auth.appAccessToken else {
                         return MainError.authFailed
                     }
@@ -55,8 +54,12 @@ extension MainRepository: MainRepositoryInterface {
             .eraseToAnyPublisher()
     }
     
-    public func getServiceState() -> AnyPublisher<ServiceStateModel, Error> {
+    public func getServiceState() -> AnyPublisher<ServiceStateModel, MainError> {
         configService.getServiceAvailability()
+            .mapError { error in
+                print(error)
+                return MainError.networkError
+            }
             .map { $0.toDomain() }
             .eraseToAnyPublisher()
     }

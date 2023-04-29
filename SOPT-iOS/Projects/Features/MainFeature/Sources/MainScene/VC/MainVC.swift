@@ -186,6 +186,8 @@ extension MainVC {
     }
     
     private func presentNetworkAlertVC() {
+        guard self.presentedViewController == nil else { return }
+        
         let networkAlertVC = factory.makeAlertVC(
             type: .titleDescription,
             theme: .main,

@@ -12,5 +12,5 @@ import Combine
 
 public protocol MainRepositoryInterface {
     func getUserMainInfo() -> AnyPublisher<UserMainInfoModel?, MainError>
-    func getServiceState() -> AnyPublisher<ServiceStateModel, Error>
+    func getServiceState() -> AnyPublisher<ServiceStateModel, MainError>
 }

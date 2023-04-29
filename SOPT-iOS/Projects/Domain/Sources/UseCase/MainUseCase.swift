@@ -59,8 +59,11 @@ extension DefaultMainUseCase: MainUseCase {
     
     public func getServiceState() {
         repository.getServiceState()
-            .sink { event in
+            .sink { [weak self] event in
                 print("MainUseCase getServiceState: \(event)")
+                if case Subscribers.Completion.failure(let _) = event {
+                    self?.networkErrorOccured.send()
+                }
             } receiveValue: { [weak self] serviceStateModel in
                 self?.serviceState.send(serviceStateModel)
             }.store(in: self.cancelBag)
