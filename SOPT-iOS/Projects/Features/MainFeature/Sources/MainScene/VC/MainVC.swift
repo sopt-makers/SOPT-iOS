@@ -105,10 +105,6 @@ extension MainVC {
                     return
                 }
                 
-                guard userMainInfo.withError == false else {
-                    self?.presentNetworkAlertVC()
-                    return
-                }
                 self?.collectionView.reloadData()
             }.store(in: self.cancelBag)
    
@@ -119,10 +115,18 @@ extension MainVC {
         
         // 플그 프로필 미등록 유저 알림
         output.needPlaygroundProfileRegistration
-            .sink { [weak self] needRegistration in
-                if needRegistration {
-                    self?.presentPlaygroundRegisterationAlertVC()
-                }
+            .sink { [weak self] in
+                self?.presentPlaygroundRegisterationAlertVC()
+            }.store(in: self.cancelBag)
+        
+        output.needNetworkAlert
+            .sink { [weak self] in
+                self?.presentNetworkAlertVC()
+            }.store(in: self.cancelBag)
+        
+        output.needSignIn
+            .sink { [weak self] in
+                self?.setRootViewToSignIn()
             }.store(in: self.cancelBag)
         
         output.isLoading
@@ -171,8 +175,10 @@ extension MainVC {
     }
     
     private func setRootViewToSignIn() {
+        guard let window = self.view.window else { return }
         let navigation = UINavigationController(rootViewController: factory.makeSignInVC().viewController)
-        ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
+        navigation.isNavigationBarHidden = true
+        ViewControllerUtils.setRootViewController(window: window, viewController: navigation, withAnimation: true)
     }
     
     private func presentNetworkAlertVC() {

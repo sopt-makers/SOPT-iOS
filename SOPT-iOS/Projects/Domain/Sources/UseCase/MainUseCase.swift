@@ -11,8 +11,11 @@ import Core
 import Combine
 
 public protocol MainUseCase {
-    var userMainInfo: PassthroughSubject<UserMainInfoModel?, Error> { get set }
-    var serviceState: PassthroughSubject<ServiceStateModel, Error> { get set }
+    var userMainInfo: PassthroughSubject<UserMainInfoModel?, Never> { get set }
+    var serviceState: PassthroughSubject<ServiceStateModel, Never> { get set }
+    var needSignIn: PassthroughSubject<Void, Never> { get set }
+    var networkErrorOccured: PassthroughSubject<Void, Never> { get set }
+    var unregisteredUserFound: PassthroughSubject<Void, Never> { get set }
     func getUserMainInfo()
     func getServiceState()
 }
@@ -22,8 +25,11 @@ public class DefaultMainUseCase {
     private let repository: MainRepositoryInterface
     private var cancelBag = CancelBag()
     
-    public var userMainInfo = PassthroughSubject<UserMainInfoModel?, Error>()
-    public var serviceState = PassthroughSubject<ServiceStateModel, Error>()
+    public var userMainInfo = PassthroughSubject<UserMainInfoModel?, Never>()
+    public var serviceState = PassthroughSubject<ServiceStateModel, Never>()
+    public var needSignIn = PassthroughSubject<Void, Never>()
+    public var networkErrorOccured = PassthroughSubject<Void, Never>()
+    public var unregisteredUserFound = PassthroughSubject<Void, Never>()
   
     public init(repository: MainRepositoryInterface) {
         self.repository = repository
@@ -33,9 +39,18 @@ public class DefaultMainUseCase {
 extension DefaultMainUseCase: MainUseCase {
     public func getUserMainInfo() {
         repository.getUserMainInfo()
-            .sink { event in
+            .sink { [weak self] event in
                 print("MainUseCase getUserMainInfo: \(event)")
-                self.userMainInfo.send(completion: .finished)
+                if case Subscribers.Completion.failure(let error) = event {
+                    switch error {
+                    case .networkError:
+                        self?.networkErrorOccured.send()
+                    case .authFailed:
+                        self?.needSignIn.send()
+                    case .unregisteredUser:
+                        self?.unregisteredUserFound.send()
+                    }
+                }
             } receiveValue: { [weak self] userMainInfoModel in
                 self?.setUserType(with: userMainInfoModel?.userType)
                 self?.userMainInfo.send(userMainInfoModel)
@@ -46,7 +61,6 @@ extension DefaultMainUseCase: MainUseCase {
         repository.getServiceState()
             .sink { event in
                 print("MainUseCase getServiceState: \(event)")
-                self.serviceState.send(completion: .finished)
             } receiveValue: { [weak self] serviceStateModel in
                 self?.serviceState.send(serviceStateModel)
             }.store(in: self.cancelBag)
