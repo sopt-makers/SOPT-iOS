@@ -34,7 +34,7 @@ extension DefaultMainUseCase: MainUseCase {
     public func getUserMainInfo() {
         repository.getUserMainInfo()
             .sink { event in
-                print("MainUseCase: \(event)")
+                print("MainUseCase getUserMainInfo: \(event)")
                 self.userMainInfo.send(completion: .finished)
             } receiveValue: { [weak self] userMainInfoModel in
                 self?.setUserType(with: userMainInfoModel?.userType)
@@ -45,7 +45,7 @@ extension DefaultMainUseCase: MainUseCase {
     public func getServiceState() {
         repository.getServiceState()
             .sink { event in
-                print("MainUseCase: \(event)")
+                print("MainUseCase getServiceState: \(event)")
                 self.serviceState.send(completion: .finished)
             } receiveValue: { [weak self] serviceStateModel in
                 self?.serviceState.send(serviceStateModel)
