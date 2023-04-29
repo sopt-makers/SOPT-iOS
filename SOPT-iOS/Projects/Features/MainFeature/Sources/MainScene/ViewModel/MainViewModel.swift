@@ -79,16 +79,12 @@ extension MainViewModel {
                 self.userType = userMainInfo?.userType ?? .unregisteredInactive
                 self.setServiceList(with: self.userType)
                 output.getUserMainInfoDidComplete.send()
-                if self.userType == .unregisteredInactive {
-                    output.needPlaygroundProfileRegistration.send()
-                }
             }.store(in: self.cancelBag)
         
         useCase.serviceState
             .sink { serviceState in
                 output.isServiceAvailable.send(serviceState.isAvailable)
             }.store(in: self.cancelBag)
-        
         
         // 모든 API 통신 완료되면 로딩뷰 숨기기
         Publishers.Zip(useCase.userMainInfo, useCase.serviceState)
