@@ -17,7 +17,6 @@ public struct UserMainInfoModel {
     public let attendanceScore: Float?
     public let announcement: String?
     public let responseMessage: String?
-    public var withError: Bool = false
     
     public var userType: UserType {
         switch status {
@@ -40,10 +39,5 @@ public struct UserMainInfoModel {
         self.attendanceScore = attendanceScore
         self.announcement = announcement
         self.responseMessage = responseMessage
-    }
-    
-    public init(withError: Bool) {
-        self.init(status: "", name: "", profileImage: nil, historyList: [], attendanceScore: nil, announcement: nil, responseMessage: nil)
-        self.withError = withError
     }
 }
