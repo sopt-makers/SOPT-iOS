@@ -10,7 +10,6 @@ import UIKit
 import Sentry
 
 import Core
-import Network
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
