@@ -12,6 +12,8 @@ import Combine
 import Core
 import Domain
 
+import Sentry
+
 public class MainViewModel: ViewModelType {
 
     // MARK: - Properties
@@ -80,6 +82,7 @@ extension MainViewModel {
                 self.userMainInfo = userMainInfo
                 self.userType = userMainInfo?.userType ?? .unregisteredInactive
                 self.setServiceList(with: self.userType)
+                self.setSentryUser()
                 output.getUserMainInfoDidComplete.send()
                 if self.userType == .unregisteredInactive {
                     output.needPlaygroundProfileRegistration.send(true)
@@ -137,5 +140,13 @@ extension MainViewModel {
         }
         
         return month >= 0 ? month + 1 : nil
+    }
+}
+
+extension MainViewModel {
+    private func setSentryUser() {
+        SentrySDK.setUser(User(
+            userId: "\(self.userType.rawValue)_\(userMainInfo?.name ?? "비회원")"
+        ))
     }
 }
