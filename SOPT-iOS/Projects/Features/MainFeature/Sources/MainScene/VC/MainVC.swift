@@ -65,6 +65,10 @@ public class MainVC: UIViewController, MainViewControllable {
         self.setLayout()
         self.setDelegate()
         self.registerCells()
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         self.requestUserInfo.send(())
     }
 }
@@ -104,11 +108,7 @@ extension MainVC {
                     self?.collectionView.reloadData()
                     return
                 }
-                
-                guard userMainInfo.withError == false else {
-                    self?.presentNetworkAlertVC()
-                    return
-                }
+                print("MainVC User 모델: \(userMainInfo)")
                 self?.collectionView.reloadData()
             }.store(in: self.cancelBag)
    
@@ -119,10 +119,18 @@ extension MainVC {
         
         // 플그 프로필 미등록 유저 알림
         output.needPlaygroundProfileRegistration
-            .sink { [weak self] needRegistration in
-                if needRegistration {
-                    self?.presentPlaygroundRegisterationAlertVC()
-                }
+            .sink { [weak self] in
+                self?.presentPlaygroundRegisterationAlertVC()
+            }.store(in: self.cancelBag)
+        
+        output.needNetworkAlert
+            .sink { [weak self] in
+                self?.presentNetworkAlertVC()
+            }.store(in: self.cancelBag)
+        
+        output.needSignIn
+            .sink { [weak self] in
+                self?.setRootViewToSignIn()
             }.store(in: self.cancelBag)
         
         output.isLoading
@@ -171,11 +179,15 @@ extension MainVC {
     }
     
     private func setRootViewToSignIn() {
+        guard let window = self.view.window else { return }
         let navigation = UINavigationController(rootViewController: factory.makeSignInVC().viewController)
-        ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
+        navigation.isNavigationBarHidden = true
+        ViewControllerUtils.setRootViewController(window: window, viewController: navigation, withAnimation: true)
     }
     
     private func presentNetworkAlertVC() {
+        guard self.presentedViewController == nil else { return }
+        
         let networkAlertVC = factory.makeAlertVC(
             type: .titleDescription,
             theme: .main,

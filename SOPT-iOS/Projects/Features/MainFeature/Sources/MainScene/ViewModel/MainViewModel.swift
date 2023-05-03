@@ -38,7 +38,9 @@ public class MainViewModel: ViewModelType {
     public struct Output {
         var getUserMainInfoDidComplete = PassthroughSubject<Void, Never>()
         var isServiceAvailable = PassthroughSubject<Bool, Never>()
-        var needPlaygroundProfileRegistration = PassthroughSubject<Bool, Never>()
+        var needPlaygroundProfileRegistration = PassthroughSubject<Void, Never>()
+        var needNetworkAlert = PassthroughSubject<Void, Never>()
+        var needSignIn = PassthroughSubject<Void, Never>()
         var isLoading = PassthroughSubject<Bool, Never>()
     }
     
@@ -60,12 +62,12 @@ extension MainViewModel {
         
         input.requestUserInfo
             .sink { [weak self] _ in
-                output.isLoading.send(true)
                 guard let self = self else { return }
                 if self.userType != .visitor {
+                    output.isLoading.send(true)
                     self.useCase.getUserMainInfo()
+                    self.useCase.getServiceState()
                 }
-                self.useCase.getServiceState()
             }.store(in: cancelBag)
     
         return output
@@ -73,29 +75,37 @@ extension MainViewModel {
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         useCase.userMainInfo
-            .sink { event in
-                print("MainViewModel: \(event)")
-                output.isLoading.send(false)
-            } receiveValue: { [weak self] userMainInfo in
-                output.isLoading.send(false)
+            .sink { [weak self] userMainInfo in
                 guard let self = self else { return }
                 self.userMainInfo = userMainInfo
                 self.userType = userMainInfo?.userType ?? .unregisteredInactive
                 self.setServiceList(with: self.userType)
                 self.setSentryUser()
                 output.getUserMainInfoDidComplete.send()
-                if self.userType == .unregisteredInactive {
-                    output.needPlaygroundProfileRegistration.send(true)
-                }
             }.store(in: self.cancelBag)
         
         useCase.serviceState
-            .sink { event in
-                print("MainViewModel: \(event)")
-                output.isLoading.send(false)
-            } receiveValue: { serviceState in
-                output.isLoading.send(false)
+            .sink { serviceState in
                 output.isServiceAvailable.send(serviceState.isAvailable)
+            }.store(in: self.cancelBag)
+        
+        // 모든 API 통신 완료되면 로딩뷰 숨기기
+        Publishers.Zip(useCase.userMainInfo, useCase.serviceState)
+            .sink { _ in
+                output.isLoading.send(false)
+            }.store(in: self.cancelBag)
+        
+        useCase.mainErrorOccurred
+            .sink { error in
+                output.isLoading.send(false)
+                switch error {
+                case .networkError:
+                    output.needNetworkAlert.send()
+                case .authFailed:
+                    output.needSignIn.send()
+                case .unregisteredUser:
+                    output.needPlaygroundProfileRegistration.send()
+                }
             }.store(in: self.cancelBag)
     }
     
