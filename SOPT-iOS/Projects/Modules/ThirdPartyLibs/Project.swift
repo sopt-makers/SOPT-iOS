@@ -18,6 +18,7 @@ let project = Project.makeModule(
         .SPM.Then,
         .SPM.Moya,
         .SPM.CombineMoya,
-        .SPM.lottie
+        .SPM.lottie,
+        .Carthage.Sentry
     ]
 )
