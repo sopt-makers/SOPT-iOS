@@ -42,6 +42,7 @@ public extension Project {
                 infoPlist: .extendingDefault(with: infoPlist),
                 sources: ["Sources/**/*.swift"],
                 resources: [.glob(pattern: "Resources/**", excluding: [])],
+                scripts: [.Sentry],
                 dependencies: [
                     internalDependencies,
                     externalDependencies,
