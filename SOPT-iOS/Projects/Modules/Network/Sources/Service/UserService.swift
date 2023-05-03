@@ -43,7 +43,7 @@ extension DefaultUserService: UserService {
     }
   
     public func getUserMainInfo() -> AnyPublisher<MainEntity, Error> {
-        requestObjectInCombine(.getUserMainInfo)
+        requestObjectWithNetworkErrorInCombine(.getUserMainInfo)
     }
   
     public func withdraw() -> AnyPublisher<Int, Error> {

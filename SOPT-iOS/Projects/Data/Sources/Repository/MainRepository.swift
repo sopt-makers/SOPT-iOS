@@ -25,24 +25,41 @@ public class MainRepository {
 }
 
 extension MainRepository: MainRepositoryInterface {
-    public func getUserMainInfo() -> AnyPublisher<Domain.UserMainInfoModel?, Never> {
-        userService.getUserMainInfo()
-            .map { $0.toDomain() }
-            .catch({ error in
-                var model: UserMainInfoModel?
-                if let error = error as? APIError,
-                   case .tokenReissuanceFailed = error {
-                    model = UserMainInfoModel(withError: false)
-                } else {
-                    model = UserMainInfoModel(withError: true)
+    public func getUserMainInfo() -> AnyPublisher<Domain.UserMainInfoModel?, MainError> {
+        return userService.getUserMainInfo()
+            .mapError { error -> MainError in
+                guard let error = error as? APIError else {
+                    return MainError.networkError
                 }
-                return Just(model)
-            })
+                
+                switch error {
+                case .network(let statusCode):
+                    if statusCode == 400 {
+                        return MainError.unregisteredUser
+                    } else if statusCode == 401 {
+                        return MainError.authFailed
+                    }
+                    return MainError.networkError
+                case .tokenReissuanceFailed:
+                    guard let appAccessToken = UserDefaultKeyList.Auth.appAccessToken else {
+                        return MainError.authFailed
+                    }
+                    // accessToken이 빈 스트링인 경우는 플그 미등록 상태 / accessToken이 있지만 인증에 실패한 경우는 로그인 뷰로 보내기
+                    return appAccessToken.isEmpty ? MainError.unregisteredUser : MainError.authFailed
+                default:
+                    return MainError.networkError
+                }
+            }
+            .map { $0.toDomain() }
             .eraseToAnyPublisher()
     }
     
-    public func getServiceState() -> AnyPublisher<ServiceStateModel, Error> {
+    public func getServiceState() -> AnyPublisher<ServiceStateModel, MainError> {
         configService.getServiceAvailability()
+            .mapError { error in
+                print(error)
+                return MainError.networkError
+            }
             .map { $0.toDomain() }
             .eraseToAnyPublisher()
     }

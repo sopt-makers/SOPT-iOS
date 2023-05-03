@@ -145,7 +145,14 @@ extension BaseService {
                         promise(.failure(error))
                     }
                 case .failure(let error):
-                    promise(.failure(error))
+                    if case MoyaError.underlying(let error, _) = error,
+                       case AFError.requestRetryFailed(let retryError, _) = error,
+                       let retryError = retryError as? APIError,
+                       retryError == APIError.tokenReissuanceFailed {
+                        promise(.failure(retryError))
+                    } else {
+                        promise(.failure(error))
+                    }
                 }
             }
         }.eraseToAnyPublisher()
