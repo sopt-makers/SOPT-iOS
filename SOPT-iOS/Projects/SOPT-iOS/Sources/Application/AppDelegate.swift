@@ -42,14 +42,15 @@ extension AppDelegate {
     private func configureSentry() {
         SentrySDK.start { options in
             options.dsn = Config.Sentry.DSN
-            #if DEV || TEST
-            options.debug = true
-            #endif
             options.enableCaptureFailedRequests = true
             options.attachScreenshot = true
             options.enableUserInteractionTracing = true
             options.attachViewHierarchy = true
             options.enableUIViewControllerTracing = true
+            options.enableNetworkBreadcrumbs = true
+            let httpStatusCodeRange = HttpStatusCodeRange(min: 400, max: 599)
+            options.failedRequestStatusCodes = [ httpStatusCodeRange ]
+            options.enableAutoBreadcrumbTracking = true
         }
     }
 }
