@@ -108,7 +108,7 @@ extension MainVC {
                     self?.collectionView.reloadData()
                     return
                 }
-                
+                print("MainVC User 모델: \(userMainInfo)")
                 self?.collectionView.reloadData()
             }.store(in: self.cancelBag)
    

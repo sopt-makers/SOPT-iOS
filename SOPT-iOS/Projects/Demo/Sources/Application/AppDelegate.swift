@@ -9,6 +9,7 @@ import UIKit
 
 import Sentry
 
+import Network
 import Core
 
 @main
