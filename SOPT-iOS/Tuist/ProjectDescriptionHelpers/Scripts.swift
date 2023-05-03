@@ -29,7 +29,7 @@ if which sentry-cli >/dev/null; then
 export SENTRY_ORG=sopt-1a
 export SENTRY_PROJECT=sopt-ios
 export SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
-ERROR=$(sentry-cli upload-dif "$DWARF_DSYM_FOLDER_PATH" --force-foreground 2>&1 >/dev/null)
+ERROR=$(sentry-cli upload-dif --include-sources "$DWARF_DSYM_FOLDER_PATH" --force-foreground 2>&1 >/dev/null)
 if [ ! $? -eq 0 ]; then
 echo "error: sentry-cli - $ERROR"
 fi
