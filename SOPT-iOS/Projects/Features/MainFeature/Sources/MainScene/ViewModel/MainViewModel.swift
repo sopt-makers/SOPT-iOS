@@ -95,22 +95,17 @@ extension MainViewModel {
                 output.isLoading.send(false)
             }.store(in: self.cancelBag)
         
-        useCase.needSignIn
-            .sink { _ in
+        useCase.mainErrorOccurred
+            .sink { error in
                 output.isLoading.send(false)
-                output.needSignIn.send()
-            }.store(in: self.cancelBag)
-        
-        useCase.networkErrorOccured
-            .sink { _ in
-                output.isLoading.send(false)
-                output.needNetworkAlert.send()
-            }.store(in: self.cancelBag)
-        
-        useCase.unregisteredUserFound
-            .sink { _ in
-                output.isLoading.send(false)
-                output.needPlaygroundProfileRegistration.send()
+                switch error {
+                case .networkError:
+                    output.needNetworkAlert.send()
+                case .authFailed:
+                    output.needSignIn.send()
+                case .unregisteredUser:
+                    output.needPlaygroundProfileRegistration.send()
+                }
             }.store(in: self.cancelBag)
     }
     

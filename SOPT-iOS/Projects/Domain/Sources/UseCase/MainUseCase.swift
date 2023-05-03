@@ -13,9 +13,7 @@ import Combine
 public protocol MainUseCase {
     var userMainInfo: PassthroughSubject<UserMainInfoModel?, Never> { get set }
     var serviceState: PassthroughSubject<ServiceStateModel, Never> { get set }
-    var needSignIn: PassthroughSubject<Void, Never> { get set }
-    var networkErrorOccured: PassthroughSubject<Void, Never> { get set }
-    var unregisteredUserFound: PassthroughSubject<Void, Never> { get set }
+    var mainErrorOccurred: PassthroughSubject<MainError, Never> { get set }
     func getUserMainInfo()
     func getServiceState()
 }
@@ -27,9 +25,7 @@ public class DefaultMainUseCase {
     
     public var userMainInfo = PassthroughSubject<UserMainInfoModel?, Never>()
     public var serviceState = PassthroughSubject<ServiceStateModel, Never>()
-    public var needSignIn = PassthroughSubject<Void, Never>()
-    public var networkErrorOccured = PassthroughSubject<Void, Never>()
-    public var unregisteredUserFound = PassthroughSubject<Void, Never>()
+    public var mainErrorOccurred = PassthroughSubject<MainError, Never>()
   
     public init(repository: MainRepositoryInterface) {
         self.repository = repository
@@ -39,19 +35,12 @@ public class DefaultMainUseCase {
 extension DefaultMainUseCase: MainUseCase {
     public func getUserMainInfo() {
         repository.getUserMainInfo()
-            .sink { [weak self] event in
-                print("MainUseCase getUserMainInfo: \(event)")
-                if case Subscribers.Completion.failure(let error) = event {
-                    switch error {
-                    case .networkError:
-                        self?.networkErrorOccured.send()
-                    case .authFailed:
-                        self?.needSignIn.send()
-                    case .unregisteredUser:
-                        self?.unregisteredUserFound.send()
-                    }
-                }
-            } receiveValue: { [weak self] userMainInfoModel in
+            .catch { [weak self] error in
+                print("MainUseCase getUserMainInfo error occurred: \(error)")
+                self?.mainErrorOccurred.send(error)
+                return Just<UserMainInfoModel?>(nil).eraseToAnyPublisher()
+            }
+            .sink { [weak self] userMainInfoModel in
                 self?.setUserType(with: userMainInfoModel?.userType)
                 self?.userMainInfo.send(userMainInfoModel)
             }.store(in: self.cancelBag)
@@ -61,8 +50,8 @@ extension DefaultMainUseCase: MainUseCase {
         repository.getServiceState()
             .sink { [weak self] event in
                 print("MainUseCase getServiceState: \(event)")
-                if case Subscribers.Completion.failure(let _) = event {
-                    self?.networkErrorOccured.send()
+                if case Subscribers.Completion.failure = event {
+                    self?.mainErrorOccurred.send(.networkError)
                 }
             } receiveValue: { [weak self] serviceStateModel in
                 self?.serviceState.send(serviceStateModel)
