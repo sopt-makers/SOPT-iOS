@@ -10,6 +10,25 @@ import Foundation
 
 enum SampleData {
     enum Lecture {
+        static let errorSession = Data(
+        """
+        {
+          "success": true,
+          "message": "세미나 조회 성공",
+          "data": {
+                "type": "HAS_ATTENDANCE",
+                "id": 1,
+                "location": "건국대학교 경영관",
+                "name":"2차 세미나",
+                "startDate": "2023-04-06T14:13:51",
+                "endDate": "",
+                "message": "",
+                "attendances": []
+            }
+        }
+        """.utf8
+        )
+        
         static let noSession = Data(
         """
         {
