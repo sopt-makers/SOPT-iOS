@@ -263,8 +263,8 @@ extension ShowAttendanceVC {
     private func setScheduledData(_ model: AttendanceScheduleModel) {
         
         if self.sceneType == .scheduledDay {
-            guard let date = viewModel.formatTimeInterval(startDate: model.startDate,
-                                                          endDate: model.endDate) else { return }
+            let date = viewModel.formatTimeInterval(startDate: model.startDate,
+                                                          endDate: model.endDate)
             headerScheduleView.setData(date: date,
                                        place: model.location,
                                        todaySchedule: model.name,

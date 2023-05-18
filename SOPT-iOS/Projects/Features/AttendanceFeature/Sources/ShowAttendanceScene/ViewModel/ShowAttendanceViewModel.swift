@@ -88,8 +88,9 @@ extension ShowAttendanceViewModel {
             .sink(receiveValue: { model in
                 if model.type != SessionType.noSession.rawValue {
                     self.sceneType = .scheduledDay
-                    guard let convertedStartDate = self.convertDateString(model.startDate),
-                          let convertedEndDate = self.convertDateString(model.endDate) else { return }
+                    
+                    let convertedStartDate = self.convertDateString(model.startDate)
+                    let convertedEndDate = self.convertDateString(model.endDate)
 
                     let newModel = AttendanceScheduleModel(type: model.type,
                                                            id: model.id,
@@ -141,10 +142,10 @@ extension ShowAttendanceViewModel {
             .store(in: self.cancelBag)
     }
     
-    private func convertDateString(_ dateString: String) -> String? {
+    private func convertDateString(_ dateString: String) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-        guard let date = dateFormatter.date(from: dateString) else { return nil }
+        guard let date = dateFormatter.date(from: dateString) else { return "" }
         
         dateFormatter.dateFormat = "M월 d일 EEEE H:mm"
         dateFormatter.locale = Locale(identifier: "ko_KR")
@@ -152,12 +153,12 @@ extension ShowAttendanceViewModel {
         return dateFormatter.string(from: date)
     }
     
-    func formatTimeInterval(startDate: String, endDate: String) -> String? {
+    func formatTimeInterval(startDate: String, endDate: String) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "M월 d일 EEEE HH:mm"
-        
+    
         guard let startDateObject = dateFormatter.date(from: startDate),
-              let endDateObject = dateFormatter.date(from: endDate) else { return nil }
+              let endDateObject = dateFormatter.date(from: endDate) else { return "" }
         
         let formattedStartDate = dateFormatter.string(from: startDateObject)
         
