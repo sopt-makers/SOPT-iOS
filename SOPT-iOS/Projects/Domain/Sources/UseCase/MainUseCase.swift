@@ -51,7 +51,7 @@ extension DefaultMainUseCase: MainUseCase {
             .sink { [weak self] event in
                 print("MainUseCase getServiceState: \(event)")
                 if case Subscribers.Completion.failure = event {
-                    self?.mainErrorOccurred.send(.networkError)
+                    self?.mainErrorOccurred.send(.networkError(message: "GetServiceState 실패"))
                 }
             } receiveValue: { [weak self] serviceStateModel in
                 self?.serviceState.send(serviceStateModel)

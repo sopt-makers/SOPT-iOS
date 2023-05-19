@@ -98,6 +98,7 @@ extension MainViewModel {
         useCase.mainErrorOccurred
             .sink { error in
                 output.isLoading.send(false)
+                SentrySDK.capture(error: error)
                 switch error {
                 case .networkError:
                     output.needNetworkAlert.send()
