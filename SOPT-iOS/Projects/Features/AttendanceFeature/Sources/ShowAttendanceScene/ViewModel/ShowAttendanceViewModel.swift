@@ -145,17 +145,20 @@ extension ShowAttendanceViewModel {
     private func convertDateString(_ dateString: String) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
+        
         guard let date = dateFormatter.date(from: dateString) else { return "" }
         
         dateFormatter.dateFormat = "M월 d일 EEEE H:mm"
-        dateFormatter.locale = Locale(identifier: "ko_KR")
-        dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
         return dateFormatter.string(from: date)
     }
     
     func formatTimeInterval(startDate: String, endDate: String) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "M월 d일 EEEE HH:mm"
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
     
         guard let startDateObject = dateFormatter.date(from: startDate),
               let endDateObject = dateFormatter.date(from: endDate) else { return "" }
