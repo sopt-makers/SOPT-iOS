@@ -29,7 +29,7 @@ extension MainRepository: MainRepositoryInterface {
         return userService.getUserMainInfo()
             .mapError { error -> MainError in
                 guard let error = error as? APIError else {
-                    return MainError.networkError
+                    return MainError.networkError(message: "Moya 에러")
                 }
                 
                 switch error {
@@ -39,7 +39,7 @@ extension MainRepository: MainRepositoryInterface {
                     } else if statusCode == 401 {
                         return MainError.authFailed
                     }
-                    return MainError.networkError
+                    return MainError.networkError(message: "\(statusCode) 네트워크 에러")
                 case .tokenReissuanceFailed:
                     guard let appAccessToken = UserDefaultKeyList.Auth.appAccessToken else {
                         return MainError.authFailed
@@ -47,7 +47,7 @@ extension MainRepository: MainRepositoryInterface {
                     // accessToken이 빈 스트링인 경우는 플그 미등록 상태 / accessToken이 있지만 인증에 실패한 경우는 로그인 뷰로 보내기
                     return appAccessToken.isEmpty ? MainError.unregisteredUser : MainError.authFailed
                 default:
-                    return MainError.networkError
+                    return MainError.networkError(message: "API 에러 디폴트")
                 }
             }
             .map { $0.toDomain() }
@@ -58,7 +58,7 @@ extension MainRepository: MainRepositoryInterface {
         configService.getServiceAvailability()
             .mapError { error in
                 print(error)
-                return MainError.networkError
+                return MainError.networkError(message: "GetServiceState 에러")
             }
             .map { $0.toDomain() }
             .eraseToAnyPublisher()

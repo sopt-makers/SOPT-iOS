@@ -13,6 +13,7 @@ import Core
 
 import Alamofire
 import Moya
+import Sentry
 
 open class BaseService<Target: TargetType> {
     
@@ -142,6 +143,7 @@ extension BaseService {
                         default: break
                         }
                     } catch let error {
+                        SentrySDK.capture(message: "디코딩 에러")
                         promise(.failure(error))
                     }
                 case .failure(let error):
