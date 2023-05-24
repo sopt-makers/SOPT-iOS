@@ -15,10 +15,10 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## iOS
 
-### ios set_version
+### ios set_version_demo
 
 ```sh
-[bundle exec] fastlane ios set_version
+[bundle exec] fastlane ios set_version_demo
 ```
 
 Set Marketing and Build version
@@ -30,6 +30,22 @@ Set Marketing and Build version
 ```
 
 Demo App Testflight Upload
+
+### ios set_version
+
+```sh
+[bundle exec] fastlane ios set_version
+```
+
+Set Marketing and Build version
+
+### ios upload_testflight
+
+```sh
+[bundle exec] fastlane ios upload_testflight
+```
+
+Prod App Testflight Upload
 
 ----
 

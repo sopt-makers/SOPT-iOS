@@ -16,23 +16,7 @@ for_platform :ios do
         app_identifier 'com.sopt-stamp-iOS.test'
     end
   
-    for_lane :renew_codesign_demo do
-      app_identifier 'com.sopt-stamp-iOS.test'
-    end
-  
-    for_lane :sync_codesign_demo do
-      app_identifier 'com.sopt-stamp-iOS.test'
-    end
-  
     # release
-
-    for_lane :renew_codesign_release do
-        app_identifier 'com.sopt-stamp-iOS.release'
-    end
-
-    for_lane :sync_codesign_release do
-      app_identifier 'com.sopt-stamp-iOS.release'
-    end
 
     for_lane :upload_testflight do
         app_identifier 'com.sopt-stamp-iOS.release'
