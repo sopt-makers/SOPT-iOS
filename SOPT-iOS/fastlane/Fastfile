@@ -17,20 +17,20 @@ default_platform(:ios)
 
 platform :ios do
 
+  # Demo
+
   desc 'Set Marketing and Build version'
-  lane :set_version do |version|
+  lane :set_version_demo do |version|
     increment_version_number(
       version_number: version[:version],
-      xcodeproj: "./Projects/SOPT-iOS/SOPT-iOS.xcodeproj"
+      xcodeproj: "./Projects/Demo/SOPT-iOS-Demo.xcodeproj"
     )
   
     increment_build_number(
       build_number: Time.new.strftime("%Y.%m%d.%H%M"), # 2023.0524.2100
-      xcodeproj: "./Projects/SOPT-iOS/SOPT-iOS.xcodeproj"
+      xcodeproj: "./Projects/Demo/SOPT-iOS-Demo.xcodeproj"
     )
   end
-
-  # Demo
 
   desc "Demo App Testflight Upload"
   lane :upload_testflight_demo do
@@ -43,6 +43,19 @@ platform :ios do
   end
 
   # Release
+
+  desc 'Set Marketing and Build version'
+  lane :set_version do |version|
+    increment_version_number(
+      version_number: version[:version],
+      xcodeproj: "./Projects/SOPT-iOS/SOPT-iOS.xcodeproj"
+    )
+  
+    increment_build_number(
+      build_number: Time.new.strftime("%Y.%m%d.%H%M"), # 2023.0524.2100
+      xcodeproj: "./Projects/SOPT-iOS/SOPT-iOS.xcodeproj"
+    )
+  end
 
   desc "Prod App Testflight Upload"
   lane :upload_testflight do
