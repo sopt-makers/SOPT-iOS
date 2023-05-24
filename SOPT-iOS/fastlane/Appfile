@@ -8,6 +8,10 @@ team_id("9K86FQHDLU") # Developer Portal Team ID
 for_platform :ios do
 
     # demo
+    for_lane :set_version_demo do
+      app_identifier 'com.sopt-stamp-iOS.test'
+    end
+
     for_lane :upload_testflight_demo do
         app_identifier 'com.sopt-stamp-iOS.test'
     end
