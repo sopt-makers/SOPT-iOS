@@ -16,8 +16,42 @@
 default_platform(:ios)
 
 platform :ios do
-  desc "Description of what the lane does"
-  lane :custom_lane do
-    # add actions here: https://docs.fastlane.tools/actions
+
+  desc 'Set Marketing and Build version'
+  lane :set_version do |version|
+    increment_version_number(
+      version_number: version[:version],
+      xcodeproj: "./Projects/SOPT-iOS/SOPT-iOS.xcodeproj"
+    )
+  
+    increment_build_number(
+      build_number: Time.new.strftime("%Y.%m%d.%H%M"), # 2023.0524.2100
+      xcodeproj: "./Projects/SOPT-iOS/SOPT-iOS.xcodeproj"
+    )
   end
+
+  # Demo
+
+  desc "Demo App Testflight Upload"
+  lane :upload_testflight_demo do
+    increment_build_number(
+      build_number: Time.new.strftime("%Y.%m%d.%H%M"), # 2023.0524.2100
+      xcodeproj: "./Projects/Demo/SOPT-iOS-Demo.xcodeproj"
+    )
+    build_app(scheme: "SOPT-iOS-Demo")
+    upload_to_testflight(skip_waiting_for_build_processing: true)
+  end
+
+  # Release
+
+  desc "Prod App Testflight Upload"
+  lane :upload_testflight do
+    increment_build_number(
+      build_number: Time.new.strftime("%Y.%m%d.%H%M"), # 2023.0524.2100
+      xcodeproj: "./Projects/SOPT-iOS/SOPT-iOS.xcodeproj"
+    )
+    build_app(scheme: "SOPT-iOS-PROD")
+    upload_to_testflight(skip_waiting_for_build_processing: true)
+  end
+
 end
