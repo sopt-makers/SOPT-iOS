@@ -93,3 +93,5 @@ Tuist/Dependencies
 # Fastlane.swift runner binary
 **/fastlane/FastlaneRunner
 **/fastlane/.env
+
+**Gemfile.lock
