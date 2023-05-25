@@ -20,6 +20,7 @@ let spm = SwiftPackageManagerDependencies([
     .remote(url: "https://github.com/Quick/Quick.git", requirement: .upToNextMajor(from: "5.0.0")),
     .remote(url: "https://github.com/Quick/Nimble.git", requirement: .upToNextMajor(from: "10.0.0")),
     .remote(url: "https://github.com/airbnb/lottie-ios", requirement: .upToNextMajor(from: "4.1.3")),
+    .remote(url: "https://github.com/firebase/firebase-ios-sdk.git", requirement: .upToNextMajor(from: "10.10.0")),
 ], baseSettings: Settings.settings(
     configurations: XCConfig.framework
 ))
