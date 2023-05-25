@@ -45,7 +45,10 @@ platform :ios do
       xcodeproj: "./Projects/Demo/SOPT-iOS-Demo.xcodeproj"
     )
 
-    build_app(scheme: "SOPT-iOS-Demo")
+    build_app(
+    output_directory:"./BuildOutputs/Demo",
+    scheme: "SOPT-iOS-Demo"
+    )
     upload_to_testflight(skip_waiting_for_build_processing: true)
   end
 
@@ -77,7 +80,10 @@ platform :ios do
       xcodeproj: "./Projects/SOPT-iOS/SOPT-iOS.xcodeproj"
     )
 
-    build_app(scheme: "SOPT-iOS-PROD")
+    build_app(
+    output_directory:"./BuildOutputs/Prod",
+    scheme: "SOPT-iOS-PROD"
+    )
     upload_to_testflight(skip_waiting_for_build_processing: true)
   end
 
