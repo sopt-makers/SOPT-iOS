@@ -33,22 +33,31 @@ platform :ios do
   end
 
   desc "Demo App Testflight Upload"
-  lane :upload_testflight_demo do
+  lane :upload_testflight_demo do |version|
+    version = version[:version]
+
     sync_code_signing(
       type: "appstore",
       app_identifier: 'com.sopt-stamp-iOS.test',
       readonly: true
     )
 
-    increment_build_number(
-      build_number: Time.new.strftime("%Y.%m%d.%H%M"), # 2023.0524.2100
-      xcodeproj: "./Projects/Demo/SOPT-iOS-Demo.xcodeproj"
-    )
+    if version
+      puts "버전 정보: #{version}"
+      set_version_demo(version: version)
+    else 
+      puts "버전 입력 X"
+      increment_build_number(
+        build_number: Time.new.strftime("%Y.%m%d.%H%M"), # 2023.0524.2100
+        xcodeproj: "./Projects/Demo/SOPT-iOS-Demo.xcodeproj"
+      )
+    end
 
     build_app(
       output_directory:"./BuildOutputs/Demo",
       scheme: "SOPT-iOS-Demo"
     )
+
     upload_to_testflight(skip_waiting_for_build_processing: true)
   end
 
@@ -68,22 +77,31 @@ platform :ios do
   end
 
   desc "Prod App Testflight Upload"
-  lane :upload_testflight do
+  lane :upload_testflight do |version|
+    version = version[:version]
+
     sync_code_signing(
       type: "appstore",
       app_identifier: 'com.sopt-stamp-iOS.release',
       readonly: true
     )
 
-    increment_build_number(
-      build_number: Time.new.strftime("%Y.%m%d.%H%M"), # 2023.0524.2100
-      xcodeproj: "./Projects/SOPT-iOS/SOPT-iOS.xcodeproj"
-    )
+    if version
+      puts "버전 정보: #{version}"
+      set_version(version: version)
+    else 
+      puts "버전 입력 X"
+      increment_build_number(
+        build_number: Time.new.strftime("%Y.%m%d.%H%M"), # 2023.0524.2100
+        xcodeproj: "./Projects/SOPT-iOS/SOPT-iOS.xcodeproj"
+      )
+    end
 
     build_app(
       output_directory:"./BuildOutputs/Prod",
       scheme: "SOPT-iOS-PROD"
     )
+
     upload_to_testflight(skip_waiting_for_build_processing: true)
 
     sentry_upload_dif(
@@ -96,11 +114,11 @@ platform :ios do
 
   desc "Register Devices"
   lane :register_new_device do  |options|
-      device_name = prompt(text: "Enter the device name: ")
-      device_udid = prompt(text: "Enter the device UDID: ")
-      device_hash = {}
-      device_hash[device_name] = device_udid
-      register_devices(devices: device_hash)
+    device_name = prompt(text: "Enter the device name: ")
+    device_udid = prompt(text: "Enter the device UDID: ")
+    device_hash = {}
+    device_hash[device_name] = device_udid
+    register_devices(devices: device_hash)
     refresh_profiles
   end
 
