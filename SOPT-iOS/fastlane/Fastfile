@@ -1,0 +1,125 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  
+  # Demo
+
+  desc 'Set Marketing and Build version'
+  lane :set_version_demo do |version|
+    increment_version_number(
+      version_number: version[:version],
+      xcodeproj: "./Projects/Demo/SOPT-iOS-Demo.xcodeproj"
+    )
+  
+    increment_build_number(
+      build_number: Time.new.strftime("%Y.%m%d.%H%M"), # 2023.0524.2100
+      xcodeproj: "./Projects/Demo/SOPT-iOS-Demo.xcodeproj"
+    )
+  end
+
+  desc "Demo App Testflight Upload"
+  lane :upload_testflight_demo do |version|
+    version = version[:version]
+
+    sync_code_signing(
+      type: "appstore",
+      app_identifier: 'com.sopt-stamp-iOS.test',
+      readonly: true
+    )
+
+    if version
+      puts "버전 정보: #{version}"
+      set_version_demo(version: version)
+    else 
+      puts "버전 입력 X"
+      increment_build_number(
+        build_number: Time.new.strftime("%Y.%m%d.%H%M"), # 2023.0524.2100
+        xcodeproj: "./Projects/Demo/SOPT-iOS-Demo.xcodeproj"
+      )
+    end
+
+    build_app(
+      output_directory:"./BuildOutputs/Demo",
+      scheme: "SOPT-iOS-Demo"
+    )
+
+    upload_to_testflight(skip_waiting_for_build_processing: true)
+  end
+
+  # Release
+
+  desc 'Set Marketing and Build version'
+  lane :set_version do |version|
+    increment_version_number(
+      version_number: version[:version],
+      xcodeproj: "./Projects/SOPT-iOS/SOPT-iOS.xcodeproj"
+    )
+  
+    increment_build_number(
+      build_number: Time.new.strftime("%Y.%m%d.%H%M"), # 2023.0524.2100
+      xcodeproj: "./Projects/SOPT-iOS/SOPT-iOS.xcodeproj"
+    )
+  end
+
+  desc "Prod App Testflight Upload"
+  lane :upload_testflight do |version|
+    version = version[:version]
+
+    sync_code_signing(
+      type: "appstore",
+      app_identifier: 'com.sopt-stamp-iOS.release',
+      readonly: true
+    )
+
+    if version
+      puts "버전 정보: #{version}"
+      set_version(version: version)
+    else 
+      puts "버전 입력 X"
+      increment_build_number(
+        build_number: Time.new.strftime("%Y.%m%d.%H%M"), # 2023.0524.2100
+        xcodeproj: "./Projects/SOPT-iOS/SOPT-iOS.xcodeproj"
+      )
+    end
+
+    build_app(
+      output_directory:"./BuildOutputs/Prod",
+      scheme: "SOPT-iOS-PROD"
+    )
+
+    upload_to_testflight(skip_waiting_for_build_processing: true)
+
+    sentry_upload_dif(
+      auth_token: ENV["SENTRY_AUTH_TOKEN"], # Do not use if using api_key
+      org_slug: 'sopt-1a',
+      project_slug: 'sopt-ios',
+      path: './BuildOutputs/Prod' # Optional. Defaults to '.' when no value is provided. Path(s) can be a string, a comma-separated string, or an array of strings.
+    )
+  end
+
+  desc "Register Devices"
+  lane :register_new_device do  |options|
+    device_name = prompt(text: "Enter the device name: ")
+    device_udid = prompt(text: "Enter the device UDID: ")
+    device_hash = {}
+    device_hash[device_name] = device_udid
+    register_devices(devices: device_hash)
+    refresh_profiles
+  end
+
+end
