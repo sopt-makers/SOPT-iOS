@@ -103,11 +103,11 @@ extension TodayAttendanceView {
         /// 1차 출석까지 한 경우 첫 번째 라인 색 변경
         if attendanceType != .notYet {
             firstLineView.setColor(type: .check)
-            
-            /// 2차 출석까지 한 경우 두 번째 라인 색까지 변경
-            if attendanceType == .second {
-                secondLineView.setColor(type: .check)
-            }
+        }
+        
+        /// 2차 출석까지 한 경우 두 번째 라인 색까지 변경
+        if attendanceType == .second {
+            secondLineView.setColor(type: .check)
         }
     }
 }
