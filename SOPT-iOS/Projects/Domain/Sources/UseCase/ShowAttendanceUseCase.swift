@@ -132,10 +132,11 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
             self.todayAttendances.send(Default.before)
             return
         }
+        /// 출석 후 해당 정보 담기 (ex. ✓, 🅧)
         else {
-            for (idx, attendance) in attendanceData.enumerated() {
-                let type: AttendanceStepType = (attendance.status == TodayAttendanceType.attendance.rawValue) ? .check : .none
-                let title: String = (type == .none) ? I18N.Attendance.nthAttendance(idx+1) : attendance.attendedAt
+            for attendance in attendanceData {
+                let type: AttendanceStepType = (attendance.status == TodayAttendanceType.attendance.rawValue) ? .check : .unCheck
+                let title: String = (type == .unCheck) ? I18N.Attendance.unCheckAttendance : attendance.attendedAt
                 
                 attendances.append(AttendanceStepModel(type: type, title: title))
             }
@@ -149,11 +150,11 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
         /// 2차 출석 후
         else {
             /// 2차 출석 안한 경우, 결석
-            if attendances[safe: 1]?.type == AttendanceStepType.none {
-                attendances.append(AttendanceStepModel(type: .none, title: I18N.Attendance.absent))
+            if attendances[safe: 1]?.type == AttendanceStepType.unCheck {
+                attendances.append(AttendanceStepModel(type: .absent, title: I18N.Attendance.absent))
             } else {
                 /// 1차 출석 안하고, 2차 출석한 경우 지각
-                if attendances[safe: 0]?.type == AttendanceStepType.none {
+                if attendances[safe: 0]?.type == AttendanceStepType.unCheck {
                     attendances.append(AttendanceStepModel(type: .tardy, title: I18N.Attendance.tardy))
                 }
                 /// 1차 출석, 2차 출석 모두 한 경우 출석완료

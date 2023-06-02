@@ -11,6 +11,8 @@ import Foundation
 public enum AttendanceStepType {
     case none
     case check
+    case unCheck
     case tardy
     case done
+    case absent
 }
