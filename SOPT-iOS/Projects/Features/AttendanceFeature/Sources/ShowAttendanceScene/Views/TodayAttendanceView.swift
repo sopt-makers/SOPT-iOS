@@ -25,6 +25,8 @@ final class TodayAttendanceView: UIView {
         
         static let attendanceStepHeight = 51.f
         static let attendanceStepWidth = 47.f
+        
+        static let screenWidth = UIScreen.main.bounds.width
     }
     
     // MARK: - UI Components
@@ -37,11 +39,16 @@ final class TodayAttendanceView: UIView {
         return stackView
     }()
     
-    private var lineView: UIView = {
-        let view = UIView()
-        view.backgroundColor = DSKitAsset.Colors.gray80.color
-        return view
+    private let lineStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.distribution = .equalSpacing
+        return stackView
     }()
+    
+    private var firstLineView = OPLineView()
+    private var secondLineView = OPLineView()
     
     // MARK: - Init
     
@@ -61,11 +68,18 @@ final class TodayAttendanceView: UIView {
 extension TodayAttendanceView {
     
     private func setLayout() {
-        addSubviews(lineView, todayAttendanceStackView)
+        lineStackView.addArrangedSubviews(firstLineView, secondLineView)
+        addSubviews(lineStackView, todayAttendanceStackView)
         
-        lineView.snp.makeConstraints {
+        [firstLineView, secondLineView].forEach {
+            $0.snp.makeConstraints {
+                $0.width.equalToSuperview().dividedBy(2)
+                $0.height.equalTo(Metric.lineHeight)
+            }
+        }
+        
+        lineStackView.snp.makeConstraints {
             $0.top.leading.trailing.equalToSuperview().inset(Metric.lineInset)
-            $0.height.equalTo(Metric.lineHeight)
         }
         
         todayAttendanceStackView.snp.makeConstraints {
@@ -73,9 +87,9 @@ extension TodayAttendanceView {
         }
     }
     
-    func setTodayAttendances(_ attendances: [AttendanceStepModel]) {
-                
+    func setTodayAttendances(_ attendances: [AttendanceStepModel], attendanceType: TakenAttendanceType) {
         todayAttendanceStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        [firstLineView, secondLineView].forEach { $0.setColor(type: .unCheck) }
         
         for attendance in attendances {
             let attendanceStepView = OPAttendanceStepView(step: attendance)
@@ -84,6 +98,16 @@ extension TodayAttendanceView {
                 $0.height.equalTo(Metric.attendanceStepHeight)
                 $0.width.equalTo(Metric.attendanceStepWidth)
             }
+        }
+        
+        /// 1차 출석까지 한 경우 첫 번째 라인 색 변경
+        if attendanceType != .notYet {
+            firstLineView.setColor(type: .check)
+        }
+        
+        /// 2차 출석까지 한 경우 두 번째 라인 색까지 변경
+        if attendanceType == .second {
+            secondLineView.setColor(type: .check)
         }
     }
 }

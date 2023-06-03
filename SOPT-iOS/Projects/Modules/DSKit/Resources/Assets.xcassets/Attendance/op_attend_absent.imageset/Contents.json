@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "op_attend_no.png",
+      "filename" : "op_attend_absent.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "op_attend_no@2x.png",
+      "filename" : "op_attend_absent@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "op_attend_no@3x.png",
+      "filename" : "op_attend_absent@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
