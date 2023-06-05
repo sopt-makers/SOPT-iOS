@@ -15,18 +15,19 @@ extension AttendanceAPI {
         case .lecture:
 //            return SampleData.Lecture.noSession
 //            return SampleData.Lecture.beforeAttendance
+//            return SampleData.Lecture.firstAbsentCaseOne
 //            return SampleData.Lecture.absentCaseOne
 //            return SampleData.Lecture.absenctCaseTwo
 //            return SampleData.Lecture.tardy
 //            return SampleData.Lecture.eventSession
 //            return SampleData.Lecture.noAttendanceSession
-//            let lectureCases = [SampleData.Lecture.noSession, SampleData.Lecture.noAttendanceSession,
-//                                SampleData.Lecture.beforeAttendance, SampleData.Lecture.absentCaseOne, SampleData.Lecture.absenctCaseTwo,
-//                                SampleData.Lecture.tardy, SampleData.Lecture.eventSession]
-//            let randomIndex = Int.random(in: 0..<lectureCases.count)
-//            return lectureCases[randomIndex]
+            let lectureCases = [SampleData.Lecture.noSession, SampleData.Lecture.noAttendanceSession,
+                                SampleData.Lecture.beforeAttendance, SampleData.Lecture.absentCaseOne, SampleData.Lecture.absenctCaseTwo,
+                                SampleData.Lecture.tardy, SampleData.Lecture.eventSession, SampleData.Lecture.firstAbsentCaseOne]
+            let randomIndex = Int.random(in: 0..<lectureCases.count)
+            return lectureCases[randomIndex]
 //            return SampleData.Lecture.attendanceComplete
-            return SampleData.Lecture.errorSession
+//            return SampleData.Lecture.errorSession
         case .total:
             return SampleData.Total.success
         case .lectureRound:

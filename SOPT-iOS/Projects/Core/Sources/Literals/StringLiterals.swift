@@ -194,6 +194,7 @@ public struct I18N {
         }
         public static let beforeAttendance = "출석 전"
         public static let completeAttendance = "출석완료!"
+        public static let unCheckAttendance = "-"
         
         public static let attendance = "출석"
         public static let absent = "결석"
