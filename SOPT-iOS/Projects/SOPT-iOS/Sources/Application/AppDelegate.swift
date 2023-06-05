@@ -19,21 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application( _ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         configureSentry()
-        
-        // FCM
-        FirebaseApp.configure()
-        Messaging.messaging().delegate = self
-        
-        UNUserNotificationCenter.current().delegate = self
-        
-        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
-        UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { granted, error in
-            if let error = error {
-                print(error)
-            }
-            
-            granted ? print("FCM-알림 등록 완료") : print("FCM-알림 등록 실패")
-        }
+        configureFCM()
         application.registerForRemoteNotifications()
         return true
     }
@@ -56,6 +42,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ) {}
 }
 
+// MARK: - Sentry & FCM
+
 extension AppDelegate {
     private func configureSentry() {
         SentrySDK.start { options in
@@ -69,6 +57,22 @@ extension AppDelegate {
             let httpStatusCodeRange = HttpStatusCodeRange(min: 400, max: 599)
             options.failedRequestStatusCodes = [ httpStatusCodeRange ]
             options.enableAutoBreadcrumbTracking = true
+        }
+    }
+  
+    private func configureFCM() {
+        FirebaseApp.configure()
+        Messaging.messaging().delegate = self
+        
+        UNUserNotificationCenter.current().delegate = self
+        
+        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+        UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { granted, error in
+            if let error = error {
+                print(error)
+            }
+            
+            granted ? print("FCM-알림 등록 완료") : print("FCM-알림 등록 실패")
         }
     }
 }
