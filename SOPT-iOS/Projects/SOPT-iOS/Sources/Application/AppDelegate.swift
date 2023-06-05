@@ -81,7 +81,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
     }
     
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        print("FCM-Token 서버로 전달 필요: \(fcmToken ?? "토큰을 받지 못함.."))")
+        print("FCM-Token 서버로 전달 필요: \(fcmToken ?? "토큰을 받지 못함..")")
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
