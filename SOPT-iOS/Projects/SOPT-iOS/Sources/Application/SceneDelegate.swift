@@ -14,7 +14,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     
-    let container = DIContainer()
+    let container = DependencyManager()
 
     func scene(_ scene: UIScene,
         willConnectTo session: UISceneSession,

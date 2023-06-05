@@ -36,7 +36,7 @@ typealias Features = SplashFeatureViewBuildable
     & AlertViewBuildable
     & AppMyPageFeatureViewBuildable
 
-final class DIContainer {
+final class DependencyManager {
     lazy var attendanceService = DefaultAttendanceService()
     lazy var authService = DefaultAuthService()
     lazy var userService = DefaultUserService()
@@ -47,7 +47,7 @@ final class DIContainer {
     lazy var configService = DefaultConfigService()
 }
 
-extension DIContainer: Features {
+extension DependencyManager: Features {
     
     // MARK: - MainFeature
     
