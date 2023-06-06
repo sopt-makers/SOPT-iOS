@@ -42,7 +42,8 @@ public extension Project {
                 "CFBundleURLName": "sopt-makers",
                 "CFBundleURLSchemes": ["sopt-makers"]
             ]
-        ]
+        ],
+        "UIBackgroundModes": ["remote-notification"]
     ]
     
     static let demoInfoPlist: [String: InfoPlist.Value] = [
@@ -86,6 +87,7 @@ public extension Project {
               "CFBundleURLName": "sopt-makers",
               "CFBundleURLSchemes": ["sopt-makers"]
           ]
-      ]
+      ],
+      "UIBackgroundModes": ["remote-notification"]
   ]
 }
