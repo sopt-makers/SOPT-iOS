@@ -131,8 +131,7 @@ public extension Project {
         // MARK: - Unit Tests
         
         if targets.contains(.unitTest) {
-            let deps: [TargetDependency] = targets.contains(.demo)
-            ? [.target(name: name), .target(name: "\(name)Demo")] : [.target(name: name)]
+            let deps: [TargetDependency] = [.target(name: name)]
             
             let target = Target(
                 name: "\(name)Tests",
@@ -147,7 +146,8 @@ public extension Project {
                     deps,
                     [
                         .SPM.Nimble,
-                        .SPM.Quick
+                        .SPM.Quick,
+                        .Modules.testCore
                     ]
                 ].flatMap { $0 },
                 settings: .settings(base: SettingsDictionary().setCodeSignManual(), configurations: XCConfig.tests)
@@ -171,7 +171,10 @@ public extension Project {
                 infoPlist: .default,
                 sources: ["UITests/Sources/**/*.swift"],
                 dependencies: [
-                    deps
+                    deps,
+                    [
+                        .Modules.testCore
+                    ]
                 ].flatMap { $0 },
                 settings: .settings(base: SettingsDictionary().setCodeSignManual(), configurations: XCConfig.tests)
             )
