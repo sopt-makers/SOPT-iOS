@@ -156,6 +156,29 @@ public extension Project {
             projectTargets.append(target)
         }
         
+        // MARK: - UI Tests
+        
+        if targets.contains(.uiTest) {
+            let deps: [TargetDependency] = targets.contains(.demo)
+            ? [.target(name: name), .target(name: "\(name)Demo")] : [.target(name: name)]
+            
+            let target = Target(
+                name: "\(name)UITests",
+                platform: platform,
+                product: .uiTests,
+                bundleId: "\(Environment.bundlePrefix).\(name)UITests",
+                deploymentTarget: deploymentTarget,
+                infoPlist: .default,
+                sources: ["UITests/Sources/**/*.swift"],
+                dependencies: [
+                    deps
+                ].flatMap { $0 },
+                settings: .settings(base: SettingsDictionary().setCodeSignManual(), configurations: XCConfig.tests)
+            )
+            
+            projectTargets.append(target)
+        }
+        
         // MARK: - Schemes
         
         let additionalSchemes = targets.contains(.demo)
