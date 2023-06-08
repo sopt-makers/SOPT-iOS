@@ -29,11 +29,17 @@ BASE_URL=https://raw.githubusercontent.com/sopt-makers/SOPT-iOS-Private/main
 download-privates:
 
 	# Get Github Access Token
-	
 	@if [ ! -f .env ]; then \
 		read -p "Enter your GitHub access token: " token; \
 		echo "GITHUB_ACCESS_TOKEN=$$token" > .env; \
+	else \
+		/bin/bash -c "source .env; make _download-privates"; \
+		exit 0; \
 	fi
+	
+	make _download-privates
+
+_download-privates:
 	
 	$(eval export $(shell cat .env))
 	
@@ -76,3 +82,16 @@ download-privates:
 	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o xcconfigs/targets/iOS-Framework.xcconfig $(BASE_URL)/xcconfigs/targets/iOS-Framework.xcconfig
 	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o xcconfigs/targets/iOS-StaticFramework.xcconfig $(BASE_URL)/xcconfigs/targets/iOS-StaticFramework.xcconfig
 	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o xcconfigs/targets/iOS-Tests.xcconfig $(BASE_URL)/xcconfigs/targets/iOS-Tests.xcconfig
+	
+	# GoogleService-info
+
+	@if [ ! -d Projects/SOPT-iOS/Resources ]; then \
+		mkdir -p Projects/SOPT-iOS/Resources; \
+	fi
+	
+	@if [ ! -d Projects/Demo/Resources ]; then \
+		mkdir -p Projects/Demo/Resources; \
+	fi
+	
+	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o Projects/SOPT-iOS/Resources/GoogleService-Info.plist $(BASE_URL)/Projects/SOPT-iOS/Resources/GoogleService-Info.plist
+	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o Projects/Demo/Resources/GoogleService-Info.plist $(BASE_URL)/Projects/Demo/Resources/GoogleService-Info.plist
