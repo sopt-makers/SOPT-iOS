@@ -112,6 +112,8 @@ platform :ios do
     )
   end
 
+  # Device Management
+
   desc "Register Devices"
   lane :register_new_device do  |options|
     device_name = prompt(text: "Enter the device name: ")
@@ -122,4 +124,82 @@ platform :ios do
     refresh_profiles
   end
 
+  # Test
+
+  lane :test_scheme do |options|
+    run_tests(
+      scheme: options[:scheme],
+      device: "iPhone 14 Pro",
+      code_coverage: true
+    )
+  end
+
+  desc "Run unit/ui tests for App"
+  lane :test_app do
+    run_tests(
+      scheme: "SOPT-iOS-DEV",
+      device: "iPhone 14 Pro",
+      code_coverage: true
+    )
+  end
+
+  desc "Run unit/ui tests for demo App"
+  lane :test_demoApp do
+    run_tests(
+      scheme: "SOPT-iOS-Test",
+      device: "iPhone 14 Pro",
+      code_coverage: true
+    )
+  end
+
+  desc "Run tests for feature schemes"
+  lane :test_features do
+
+    schemes = [
+      "MainFeature", "StampFeature", "AuthFeature", "SplashFeature", "AppMyPageFeature", "SettingFeature",
+      "AttendanceFeature"
+    ]
+
+    test_results = []
+
+    schemes.each do |scheme|
+      begin
+        run_tests(
+          scheme: scheme,
+          device: "iPhone 14 Pro",
+          code_coverage: true
+        )
+        # 테스트 성공 결과 저장
+        test_results << {scheme: scheme, status: "Success"}
+      rescue => ex
+        # 테스트 실패 결과 저장
+        test_results << {scheme: scheme, status: "Failed", error: ex}
+      end
+    end
+
+    # 모든 테스트가 완료된 후 결과 출력
+    puts "Test Results:"
+    test_results.each do |result|
+      status = result[:status]
+      scheme = result[:scheme]
+      if status == "Success"
+        puts "#{scheme}: #{status}"
+      else
+        puts "#{scheme}: #{status} - #{result[:error]}"
+      end
+    end
+  end
+
+  # Projects
+
+  desc "Regenerate tuist Projects with the specified version"
+  lane :regenerate do |version|
+
+    Dir.chdir("../") do
+      sh("make regenerate")
+    end
+
+    set_version(version: version[:version])
+    set_version_demo(version: version[:version])
+  end
 end

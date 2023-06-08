@@ -55,6 +55,46 @@ Prod App Testflight Upload
 
 Register Devices
 
+### ios test_scheme
+
+```sh
+[bundle exec] fastlane ios test_scheme
+```
+
+
+
+### ios test_app
+
+```sh
+[bundle exec] fastlane ios test_app
+```
+
+Run unit/ui tests for App
+
+### ios test_demoApp
+
+```sh
+[bundle exec] fastlane ios test_demoApp
+```
+
+Run unit/ui tests for demo App
+
+### ios test_features
+
+```sh
+[bundle exec] fastlane ios test_features
+```
+
+Build and Run tests for multiple schemes
+
+### ios regenerate
+
+```sh
+[bundle exec] fastlane ios regenerate
+```
+
+Regenerate tuist Projects with the specified version
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.

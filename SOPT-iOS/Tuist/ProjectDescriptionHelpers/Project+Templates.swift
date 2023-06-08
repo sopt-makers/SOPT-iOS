@@ -228,7 +228,7 @@ extension Scheme {
             analyzeAction: .analyzeAction(configuration: configs)
         )
     }
-  
+    
     static func makeDemoScheme(configs: ConfigurationName, name: String) -> Scheme {
         return Scheme(
             name: "\(name)Demo",
@@ -249,24 +249,37 @@ extension Scheme {
 
 extension Project {
     static let appSchemes: [Scheme] = [
+        // PROD API, debug scheme
         .init(
             name: "\(Environment.workspaceName)-DEV",
             shared: true,
             buildAction: .buildAction(targets: ["\(Environment.workspaceName)"]),
+            testAction: .targets(
+                ["\(Environment.workspaceName)Tests", "\(Environment.workspaceName)UITests"],
+                configuration: "Development",
+                options: .options(coverage: true, codeCoverageTargets: ["\(Environment.workspaceName)"])
+            ),
             runAction: .runAction(configuration: "Development"),
             archiveAction: .archiveAction(configuration: "Development"),
             profileAction: .profileAction(configuration: "Development"),
             analyzeAction: .analyzeAction(configuration: "Development")
         ),
+        // Test API, debug scheme
         .init(
             name: "\(Environment.workspaceName)-Test",
             shared: true,
             buildAction: .buildAction(targets: ["\(Environment.workspaceName)"]),
+            testAction: .targets(
+                ["\(Environment.workspaceName)Tests", "\(Environment.workspaceName)UITests"],
+                configuration: "Test",
+                options: .options(coverage: true, codeCoverageTargets: ["\(Environment.workspaceName)"])
+            ),
             runAction: .runAction(configuration: "Test"),
             archiveAction: .archiveAction(configuration: "Test"),
             profileAction: .profileAction(configuration: "Test"),
             analyzeAction: .analyzeAction(configuration: "Test")
         ),
+        // Test API, release scheme
         .init(
             name: "\(Environment.workspaceName)-QA",
             shared: true,
@@ -276,6 +289,7 @@ extension Project {
             profileAction: .profileAction(configuration: "QA"),
             analyzeAction: .analyzeAction(configuration: "QA")
         ),
+        // PROD API, release scheme
         .init(
             name: "\(Environment.workspaceName)-PROD",
             shared: true,
