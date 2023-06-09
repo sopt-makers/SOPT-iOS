@@ -2,6 +2,7 @@ import XCTest
 import Core
 import TestCore
 
+final
 class AppUITests: XCTestCase {
     
     let app = XCUIApplication()
@@ -50,5 +51,14 @@ class AppUITests: XCTestCase {
         
         expectation(for: exists, evaluatedWith: webView, handler: nil)
         waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    // TODO: - InactiveFlow 작성
+    func testInactiveFlow() throws {
+
+        UserDefaultKeyList.clearAllUserData()
+        UserDefaultKeyList.setInactiveUserForTest()
+
+        app.alertAllowButton.tapIfExist()
     }
 }
