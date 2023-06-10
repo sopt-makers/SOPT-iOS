@@ -85,7 +85,7 @@ Run unit/ui tests for demo App
 [bundle exec] fastlane ios test_features
 ```
 
-Build and Run tests for multiple schemes
+Run tests for feature schemes
 
 ### ios regenerate
 
