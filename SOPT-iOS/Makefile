@@ -26,9 +26,30 @@ regenerate:
 
 BASE_URL=https://raw.githubusercontent.com/sopt-makers/SOPT-iOS-Private/main
 
+XCCONFIG_PATHS = \
+    xcconfigs/Base Common.xcconfig \
+    xcconfigs/Base/Projects Project-Development.xcconfig \
+    xcconfigs/Base/Projects Project-PROD.xcconfig \
+    xcconfigs/Base/Projects Project-QA.xcconfig \
+    xcconfigs/Base/Projects Project-Test.xcconfig \
+    xcconfigs/Base/Projects Shared.xcconfig \
+    xcconfigs/Base/Targets Application.xcconfig \
+    xcconfigs/Base/Targets Extension.xcconfig \
+    xcconfigs/Base/Targets Framework.xcconfig \
+    xcconfigs/Base/Targets StaticLibrary.xcconfig \
+    xcconfigs/targets iOS-Demo.xcconfig \
+    xcconfigs/targets iOS-Framework.xcconfig \
+    xcconfigs/targets iOS-StaticFramework.xcconfig \
+    xcconfigs/targets iOS-Tests.xcconfig
+    
+define download_file
+	mkdir -p $(1)
+	curl -H "Authorization: token $(2)" -o $(1)/$(3) $(BASE_URL)/$(1)/$(3)
+endef
+
 download-privates:
 
-	# Get Github Access Token
+	# Get GitHub Access Token
 	@if [ ! -f .env ]; then \
 		read -p "Enter your GitHub access token: " token; \
 		echo "GITHUB_ACCESS_TOKEN=$$token" > .env; \
@@ -45,53 +66,26 @@ _download-privates:
 	
 	# fastlane .env
 
-	@if [ ! -d fastlane ]; then \
-		mkdir -p fastlane; \
-	fi
-	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o fastlane/.env $(BASE_URL)/fastlane/.env
+	$(call download_file,fastlane,$$GITHUB_ACCESS_TOKEN,.env)
 	
 	# Config.swift
 	
-	@if [ ! -d Projects/Modules/Network/Sources ]; then \
-		mkdir -p Projects/Modules/Network/Sources; \
-	fi
-	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o Projects/Modules/Network/Sources/Config.swift $(BASE_URL)/Projects/Modules/Network/Sources/Config.swift
+	$(call download_file,Projects/Modules/Network/Sources,$$GITHUB_ACCESS_TOKEN,Config.swift)
 	
 	# Xcconfigs
 
-	@if [ ! -d xcconfigs/Base ]; then \
-		mkdir -p xcconfigs/Base/Projects; \
-		mkdir -p xcconfigs/Base/Targets; \
-	fi
-
-	@if [ ! -d xcconfigs/targets ]; then \
-		mkdir -p xcconfigs/targets; \
-	fi
-	
-	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o xcconfigs/Base/Common.xcconfig $(BASE_URL)/xcconfigs/Base/Common.xcconfig
-	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o xcconfigs/Base/Projects/Project-Development.xcconfig $(BASE_URL)/xcconfigs/Base/Projects/Project-Development.xcconfig
-	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o xcconfigs/Base/Projects/Project-PROD.xcconfig $(BASE_URL)/xcconfigs/Base/Projects/Project-PROD.xcconfig
-	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o xcconfigs/Base/Projects/Project-QA.xcconfig $(BASE_URL)/xcconfigs/Base/Projects/Project-QA.xcconfig
-	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o xcconfigs/Base/Projects/Project-Test.xcconfig $(BASE_URL)/xcconfigs/Base/Projects/Project-Test.xcconfig
-	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o xcconfigs/Base/Projects/Shared.xcconfig $(BASE_URL)/xcconfigs/Base/Projects/Shared.xcconfig
-	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o xcconfigs/Base/Targets/Application.xcconfig $(BASE_URL)/xcconfigs/Base/Targets/Application.xcconfig
-	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o xcconfigs/Base/Targets/Extension.xcconfig $(BASE_URL)/xcconfigs/Base/Targets/Extension.xcconfig
-	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o xcconfigs/Base/Targets/Framework.xcconfig $(BASE_URL)/xcconfigs/Base/Targets/Framework.xcconfig
-	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o xcconfigs/Base/Targets/StaticLibrary.xcconfig $(BASE_URL)/xcconfigs/Base/Targets/StaticLibrary.xcconfig
-	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o xcconfigs/targets/iOS-Demo.xcconfig $(BASE_URL)/xcconfigs/targets/iOS-Demo.xcconfig
-	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o xcconfigs/targets/iOS-Framework.xcconfig $(BASE_URL)/xcconfigs/targets/iOS-Framework.xcconfig
-	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o xcconfigs/targets/iOS-StaticFramework.xcconfig $(BASE_URL)/xcconfigs/targets/iOS-StaticFramework.xcconfig
-	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o xcconfigs/targets/iOS-Tests.xcconfig $(BASE_URL)/xcconfigs/targets/iOS-Tests.xcconfig
+	$(eval TOTAL_ITEMS = $(words $(XCCONFIG_PATHS)))
+	$(foreach index, $(shell seq 1 2 $(TOTAL_ITEMS)), \
+		$(eval DIR = $(word $(index), $(XCCONFIG_PATHS))) \
+		$(eval FILE = $(word $(shell expr $(index) + 1), $(XCCONFIG_PATHS))) \
+		$(call download_file,$(DIR),$$GITHUB_ACCESS_TOKEN,$(FILE)); \
+	)
 	
 	# GoogleService-info
-
-	@if [ ! -d Projects/SOPT-iOS/Resources ]; then \
-		mkdir -p Projects/SOPT-iOS/Resources; \
-	fi
 	
-	@if [ ! -d Projects/Demo/Resources ]; then \
-		mkdir -p Projects/Demo/Resources; \
-	fi
+	$(call download_file,Projects/SOPT-iOS/Resources,$$GITHUB_ACCESS_TOKEN,GoogleService-Info.plist)
+	$(call download_file,Projects/Demo/Resources,$$GITHUB_ACCESS_TOKEN,GoogleService-Info.plist)
 	
-	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o Projects/SOPT-iOS/Resources/GoogleService-Info.plist $(BASE_URL)/Projects/SOPT-iOS/Resources/GoogleService-Info.plist
-	curl -H "Authorization: token $$GITHUB_ACCESS_TOKEN" -o Projects/Demo/Resources/GoogleService-Info.plist $(BASE_URL)/Projects/Demo/Resources/GoogleService-Info.plist
+	# TestConfig.swift
+	
+	$(call download_file,Projects/Modules/TestCore/Sources,$$GITHUB_ACCESS_TOKEN,TestConfig.swift)
