@@ -2,7 +2,7 @@
 //  Project.swift
 //  ProjectDescriptionHelpers
 //
-//  Created by 김영인 on 2023/03/15.
+//  Created by sejin on 2023/06/12.
 //
 
 import ProjectDescription
@@ -10,15 +10,9 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let project = Project.makeModule(
-    name: "MainFeature",
+    name: "NotificationFeature",
     targets: [.unitTest, .staticFramework, .demo, .interface],
     internalDependencies: [
-        .Features.Stamp.Interface,
-        .Features.Attendance.Interface,
-        .Features.Notice.Interface,
-        .Features.Setting.Interface,
-        .Features.AppMyPage.Interface,
-        .Features.Notification.Interface
     ],
     interfaceDependencies: [
         .Features.BaseFeatureDependency
