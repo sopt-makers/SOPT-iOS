@@ -40,6 +40,8 @@ public extension Dep.Modules {
     static let network = Dep.project(target: "Network", path: .relativeToModules("Network"))
     
     static let thirdPartyLibs = Dep.project(target: "ThirdPartyLibs", path: .relativeToModules("ThirdPartyLibs"))
+    
+    static let testCore = Dep.project(target: "TestCore", path: .relativeToModules("TestCore"))
 }
 
 // MARK: - Features

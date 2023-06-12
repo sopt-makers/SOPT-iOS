@@ -8,14 +8,12 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
 import DependencyPlugin
-import EnvPlugin
 
 let project = Project.makeModule(
-    name: Environment.workspaceName,
-    targets: [.app, .unitTest, .uiTest],
+    name: "TestCore",
+    targets: [.dynamicFramework],
     internalDependencies: [
-        .data,
-        .Features.RootFeature,
-        .SPM.FirebaseMessaging
+        .core,
+        .sdk(name: "XCTest", type: .framework, status: .required)
     ]
 )
