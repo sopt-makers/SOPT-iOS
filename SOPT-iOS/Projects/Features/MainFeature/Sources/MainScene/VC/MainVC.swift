@@ -24,6 +24,7 @@ import StampFeatureInterface
 import SettingFeatureInterface
 import AppMyPageFeatureInterface
 import AttendanceFeatureInterface
+import NotificationFeatureInterface
 
 public class MainVC: UIViewController, MainViewControllable {
     public typealias factoryType = AuthFeatureViewBuildable
@@ -31,6 +32,7 @@ public class MainVC: UIViewController, MainViewControllable {
     & SettingFeatureViewBuildable
     & AppMyPageFeatureViewBuildable
     & AttendanceFeatureViewBuildable
+    & NotificationFeatureViewBuildable
     & AlertViewBuildable
     
     // MARK: - Properties
@@ -140,7 +142,14 @@ extension MainVC {
     }
     
     private func bindViews() {
-        naviBar.rightButton.publisher(for: .touchUpInside)
+        naviBar.noticeButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                let notificationListVC = owner.factory.makeNotificationListVC().viewController
+                owner.navigationController?.pushViewController(notificationListVC, animated: true)
+            }.store(in: self.cancelBag)
+        
+        naviBar.rightButtonTap
             .withUnretained(self)
             .sink { owner, _ in
                 let viewController = owner.factory.makeAppMyPageVC(userType: owner.viewModel.userType).viewController
