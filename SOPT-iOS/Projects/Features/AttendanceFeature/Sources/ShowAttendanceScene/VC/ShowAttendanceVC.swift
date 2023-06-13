@@ -202,10 +202,11 @@ extension ShowAttendanceVC {
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.$todayAttendances
+            .combineLatest(output.$takenAttendanceType)
             .withUnretained(self)
             .sink { owner, model in
-                guard let model else { return }
-                owner.headerScheduleView.setAttendanceInfo(model, true)
+                guard let attendances = model.0, let type = model.1 else { return }
+                owner.headerScheduleView.setAttendanceInfo(attendances, true, attendanceType: type)
             }
             .store(in: self.cancelBag)
         

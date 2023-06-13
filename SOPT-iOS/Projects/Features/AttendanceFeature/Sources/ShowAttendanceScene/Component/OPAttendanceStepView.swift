@@ -21,13 +21,17 @@ extension AttendanceStepType {
     var image: UIImage {
         switch self {
         case .none:
-            return DSKitAsset.Assets.opAttendNo.image
+            return DSKitAsset.Assets.opAttendBefore.image
         case .check:
             return DSKitAsset.Assets.opAttendYes.image
+        case .unCheck:
+            return DSKitAsset.Assets.opAttendNo.image
         case .tardy:
             return DSKitAsset.Assets.opAttendLate.image
         case .done:
             return DSKitAsset.Assets.opAttendDone.image
+        case .absent:
+            return DSKitAsset.Assets.opAttendAbsent.image
         }
     }
     
@@ -35,7 +39,7 @@ extension AttendanceStepType {
         switch self {
         case .none:
             return DSKitAsset.Colors.gray100.color
-        case .check, .tardy, .done:
+        case .check, .unCheck, .tardy, .done, .absent:
             return DSKitAsset.Colors.purple40.color
         }
     }

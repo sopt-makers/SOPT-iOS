@@ -7,6 +7,7 @@ public enum FeatureTarget {
     case dynamicFramework
     case staticFramework
     case unitTest   // Unit Test
+    case uiTest // UI Test
     case demo   // Feature Excutable Test
 
     public var hasFramework: Bool {

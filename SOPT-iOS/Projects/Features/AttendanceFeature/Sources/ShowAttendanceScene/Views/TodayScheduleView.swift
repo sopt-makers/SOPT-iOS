@@ -195,8 +195,8 @@ extension TodayScheduleView {
         checkNoAttendanceSession()
     }
     
-    func setAttendanceInfo(_ attendances: [AttendanceStepModel], _ hasAttendance: Bool) {
-        todayAttendanceView.setTodayAttendances(attendances)
+    func setAttendanceInfo(_ attendances: [AttendanceStepModel], _ hasAttendance: Bool, attendanceType: TakenAttendanceType) {
+        todayAttendanceView.setTodayAttendances(attendances, attendanceType: attendanceType)
         todayAttendanceView.isHidden = !hasAttendance
     }
     

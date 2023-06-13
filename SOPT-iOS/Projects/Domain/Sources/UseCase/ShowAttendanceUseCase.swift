@@ -15,7 +15,7 @@ enum TodayAttendanceType: String {
     case absent = "ABSENT"
 }
 
-enum TakenAttendanceType: Int, CaseIterable {
+public enum TakenAttendanceType: Int, CaseIterable {
     case notYet
     case first
     case second
@@ -27,6 +27,7 @@ public protocol ShowAttendanceUseCase {
     func fetchLectureRound(lectureId: Int)
     var attendanceScheduleFetched: PassthroughSubject<AttendanceScheduleModel, Error> { get set }
     var todayAttendances: PassthroughSubject<[AttendanceStepModel], Never> { get set }
+    var takenAttendanceType: PassthroughSubject<TakenAttendanceType, Never> { get set }
     var attendanceScoreFetched: PassthroughSubject<AttendanceScoreModel, Error> { get set }
     var lectureRound: PassthroughSubject<AttendanceRoundModel?, Never> { get set }
     var lectureRoundErrorTitle: PassthroughSubject<String, Never> { get set }
@@ -51,6 +52,7 @@ public class DefaultShowAttendanceUseCase {
     
     public var attendanceScheduleFetched = PassthroughSubject<AttendanceScheduleModel, Error>()
     public var todayAttendances = PassthroughSubject<[AttendanceStepModel], Never>()
+    public var takenAttendanceType = PassthroughSubject<TakenAttendanceType, Never>()
     public var attendanceScoreFetched = PassthroughSubject<AttendanceScoreModel, Error>()
     public var lectureRound = PassthroughSubject<AttendanceRoundModel?, Never>()
     public var lectureRoundErrorTitle = PassthroughSubject<String, Never>()
@@ -73,13 +75,16 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
                 print("completion: fetchAttendanceSchedule \(event)")
             }, receiveValue: { owner, model in
                 owner.attendanceScheduleFetched.send(model)
+                
+                /// 몇차 출석까지 했는지 확인
+                owner.setTakenAttendance(model.attendances)
+                
                 /// 출석 점수 반영되는 날만 출석 프로그레스바 정보 필요
                 if model.type == SessionType.hasAttendance.rawValue {
                     owner.setAttendances(model.attendances)
                 }
                 /// 출석하는 날(세미나, 행사, 솝커톤, 데모데이)에 출석버튼 보이게
                 if model.type != SessionType.noSession.rawValue {
-                    owner.setTakenAttendance(model.attendances)
                     owner.fetchLectureRound(lectureId: model.id)
                 }
             })
@@ -130,12 +135,14 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
         /// 출석 전
         if attendanceData.isEmpty {
             self.todayAttendances.send(Default.before)
+            self.takenAttendanceType.send(takenAttendance)
             return
         }
+        /// 출석 후 해당 정보 담기 (ex. ✓, 🅧)
         else {
-            for (idx, attendance) in attendanceData.enumerated() {
-                let type: AttendanceStepType = (attendance.status == TodayAttendanceType.attendance.rawValue) ? .check : .none
-                let title: String = (type == .none) ? I18N.Attendance.nthAttendance(idx+1) : attendance.attendedAt
+            for attendance in attendanceData {
+                let type: AttendanceStepType = (attendance.status == TodayAttendanceType.attendance.rawValue) ? .check : .unCheck
+                let title: String = (type == .unCheck) ? I18N.Attendance.unCheckAttendance : attendance.attendedAt
                 
                 attendances.append(AttendanceStepModel(type: type, title: title))
             }
@@ -149,11 +156,11 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
         /// 2차 출석 후
         else {
             /// 2차 출석 안한 경우, 결석
-            if attendances[safe: 1]?.type == AttendanceStepType.none {
-                attendances.append(AttendanceStepModel(type: .none, title: I18N.Attendance.absent))
+            if attendances[safe: 1]?.type == AttendanceStepType.unCheck {
+                attendances.append(AttendanceStepModel(type: .absent, title: I18N.Attendance.absent))
             } else {
                 /// 1차 출석 안하고, 2차 출석한 경우 지각
-                if attendances[safe: 0]?.type == AttendanceStepType.none {
+                if attendances[safe: 0]?.type == AttendanceStepType.unCheck {
                     attendances.append(AttendanceStepModel(type: .tardy, title: I18N.Attendance.tardy))
                 }
                 /// 1차 출석, 2차 출석 모두 한 경우 출석완료
@@ -164,6 +171,7 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
         }
         
         self.todayAttendances.send(attendances)
+        self.takenAttendanceType.send(takenAttendance)
     }
     
     /*

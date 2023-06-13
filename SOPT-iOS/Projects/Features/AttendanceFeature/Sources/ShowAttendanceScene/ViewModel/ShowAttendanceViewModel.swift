@@ -39,6 +39,7 @@ public final class ShowAttendanceViewModel: ViewModelType {
         @Published var scheduleModel: AttendanceScheduleModel?
         @Published var scoreModel: AttendanceScoreModel?
         @Published var todayAttendances: [AttendanceStepModel]?
+        @Published var takenAttendanceType: TakenAttendanceType?
         var attendanceButtonInfo = PassthroughSubject<AttendanceButtonInfo, Never>()
         var isLoading = PassthroughSubject<Bool, Never>()
     }
@@ -81,6 +82,7 @@ extension ShowAttendanceViewModel {
         let fetchedSchedule = self.useCase.attendanceScheduleFetched
         let fetchedScore = self.useCase.attendanceScoreFetched
         let todayAttendances = self.useCase.todayAttendances
+        let takenAttendanceType = self.useCase.takenAttendanceType
         let lectureRound = self.useCase.lectureRound
         let lectureRoundErrorTitle = self.useCase.lectureRoundErrorTitle
         
@@ -118,6 +120,12 @@ extension ShowAttendanceViewModel {
         todayAttendances
             .sink { attendances in
                 output.todayAttendances = attendances
+            }
+            .store(in: self.cancelBag)
+        
+        takenAttendanceType
+            .sink { attendanceType in
+                output.takenAttendanceType = attendanceType
             }
             .store(in: self.cancelBag)
         
