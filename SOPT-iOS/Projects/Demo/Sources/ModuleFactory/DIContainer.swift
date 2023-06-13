@@ -26,6 +26,8 @@ import StampFeatureInterface
 import StampFeature
 import AppMyPageFeatureInterface
 import AppMyPageFeature
+import NotificationFeatureInterface
+import NotificationFeature
 
 typealias Features = SplashFeatureViewBuildable
     & AttendanceFeatureViewBuildable
@@ -35,6 +37,7 @@ typealias Features = SplashFeatureViewBuildable
     & MainFeatureViewBuildable
     & AlertViewBuildable
     & AppMyPageFeatureViewBuildable
+    & NotificationFeatureViewBuildable
 
 final class DIContainer {
     lazy var attendanceService = DefaultAttendanceService()
@@ -249,6 +252,8 @@ extension DIContainer: Features {
         return withdrawalVC
     }
     
+    // MARK: - AppMyPageFeature
+    
     func makeAppMyPageVC(userType: UserType) -> AppMyPageViewControllable {
         let repository = AppMyPageRepository(stampService: self.stampService)
         let useCase = DefaultAppMyPageUseCase(repository: repository)
@@ -256,5 +261,13 @@ extension DIContainer: Features {
         let AppMyPageVC = AppMyPageVC(userType: userType, viewModel: viewModel, factory: self)
         
         return AppMyPageVC
+    }
+    
+    // MARK: - NotificationFeature
+    
+    func makeNotificationListVC() -> NotificationListViewControllable {
+        let notificationListVC = NotificationListVC()
+        
+        return notificationListVC
     }
 }
