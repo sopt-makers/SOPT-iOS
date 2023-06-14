@@ -8,9 +8,14 @@
 
 import UIKit
 
+import Core
 import DSKit
 
 final class NotificationFilterCVC: UICollectionViewCell {
+    
+    // MARK: - Properties
+    
+    var filterType: NotificationFilterType?
     
     // MARK: - UI Components
     
@@ -56,7 +61,8 @@ extension NotificationFilterCVC {
 // MARK: - Methods
 
 extension NotificationFilterCVC {
-    func initCell(title: String) {
-        self.titleLabel.text = title
+    func initCell(type: NotificationFilterType) {
+        self.titleLabel.text = type.rawValue
+        self.filterType = type
     }
 }

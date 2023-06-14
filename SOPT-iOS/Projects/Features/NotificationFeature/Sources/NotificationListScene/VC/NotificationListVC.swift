@@ -99,7 +99,7 @@ extension NotificationListVC {
     
     private func registerCells() {
         self.notificationFilterCollectionView.register(NotificationFilterCVC.self, forCellWithReuseIdentifier: NotificationFilterCVC.className)
-        self.notificationListCollectionView.register(NotificationFilterCVC.self, forCellWithReuseIdentifier: NotificationFilterCVC.className)
+        self.notificationListCollectionView.register(NotificationListCVC.self, forCellWithReuseIdentifier: NotificationListCVC.className)
     }
 }
 
@@ -126,15 +126,28 @@ extension NotificationListVC: UICollectionViewDataSource {
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        if collectionView == self.notificationFilterCollectionView {
+            return viewModel.filterList.count
+        } else {
+            return 10
+        }
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NotificationFilterCVC.className,
-                                                            for: indexPath) as? NotificationFilterCVC
-        else { return UICollectionViewCell() }
-        let titles = ["모든 알림", "전체 알림", "파트별 알림", "소식"]
-        cell.initCell(title: titles[0])
-        return cell
+        if collectionView == self.notificationFilterCollectionView {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NotificationFilterCVC.className,
+                                                                for: indexPath) as? NotificationFilterCVC
+            else { return UICollectionViewCell() }
+            
+            cell.initCell(type: viewModel.filterList[indexPath.item])
+            return cell
+        } else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NotificationListCVC.className,
+                                                                for: indexPath) as? NotificationListCVC
+            else { return UICollectionViewCell() }
+            
+            cell.initCell(title: "[GO SOPT] 32기 전체 회계 공지", time: "1주일 전", description: "안녕하세요. 안녕하세요. 안녕하세요. 안녕하세요. 안녕하세요. 안녕하세요.", isUnread: true)
+            return cell
+        }
     }
 }

@@ -18,6 +18,8 @@ public class NotificationListViewModel: ViewModelType {
     
     private let useCase: NotificationListUseCase
     private var cancelBag = CancelBag()
+    
+    let filterList: [NotificationFilterType] = [.all, .entireTarget, .partTarget, .news]
   
     // MARK: - Inputs
     
