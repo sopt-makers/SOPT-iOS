@@ -69,10 +69,10 @@ extension OPNavigationBar {
     }
     
     @discardableResult
-    public func addRightButton(with title: String?) -> Self {
+    public func addRightButton(with title: String?, titleColor: UIColor? = UIColor.white) -> Self {
         self.rightButton.setTitle(title, for: .normal)
         self.rightButton.titleLabel?.font = UIFont.Main.body1
-        self.rightButton.setTitleColor(.white, for: .normal)
+        self.rightButton.setTitleColor(titleColor, for: .normal)
         return self
     }
 
@@ -86,6 +86,12 @@ extension OPNavigationBar {
     public func addRightButtonAction(_ closure: (() -> Void)? = nil) -> Self {
         self.rightButtonClosure = closure
         self.rightButton.addTarget(self, action: #selector(touchupRightButton), for: .touchUpInside)
+        return self
+    }
+    
+    @discardableResult
+    public func hideRightButton(wantsToHide: Bool) -> Self {
+        self.rightButton.isHidden = wantsToHide
         return self
     }
 }

@@ -30,6 +30,10 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
     
     // MARK: - UI Components
     
+    lazy var naviBar = OPNavigationBar(self, type: .bothButtons)
+        .addRightButton(with: nil)
+        .addRightButton(with: "모두 읽음", titleColor: DSKitAsset.Colors.purple100.color)
+    
     // MARK: - View Life Cycle
     
     public override func viewDidLoad() {
@@ -44,10 +48,15 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
 
 extension NotificationListVC {
     private func setUI() {
-        view.backgroundColor = .brown
+        view.backgroundColor = DSKitAsset.Colors.black100.color
     }
     
     private func setLayout() {
+        self.view.addSubviews(naviBar)
+        
+        naviBar.snp.makeConstraints { make in
+            make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+        }
     }
 }
 
