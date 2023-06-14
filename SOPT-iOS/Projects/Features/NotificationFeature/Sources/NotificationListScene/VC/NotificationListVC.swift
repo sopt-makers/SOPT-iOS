@@ -36,7 +36,7 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
     
     private lazy var notificationFilterCollectionView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createFilterCollectionViewLayout())
-        cv.isScrollEnabled = true
+        cv.isScrollEnabled = false
         cv.showsHorizontalScrollIndicator = false
         cv.showsVerticalScrollIndicator = false
         cv.backgroundColor = .clear
