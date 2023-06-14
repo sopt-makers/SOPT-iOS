@@ -45,7 +45,7 @@ public class MainVC: UIViewController, MainViewControllable {
 
     // MARK: - UI Components
     
-    private let naviBar = MainNavigationBar()
+    private let naviBar = MainNavigationBar().hideNoticeButton(wantsToHide: true)
     
     private lazy var collectionView: UICollectionView = {
       let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
@@ -112,6 +112,7 @@ extension MainVC {
                 }
                 print("MainVC User 모델: \(userMainInfo)")
                 self?.collectionView.reloadData()
+                self?.naviBar.hideNoticeButton(wantsToHide: self?.viewModel.userType == .visitor )
             }.store(in: self.cancelBag)
    
         output.isServiceAvailable

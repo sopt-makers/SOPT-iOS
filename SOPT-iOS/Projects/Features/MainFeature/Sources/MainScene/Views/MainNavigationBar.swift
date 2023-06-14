@@ -63,6 +63,12 @@ extension MainNavigationBar {
         self.rightButton.setImage(image, for: .normal)
         return self
     }
+    
+    @discardableResult
+    public func hideNoticeButton(wantsToHide: Bool) -> Self {
+        self.noticeButton.isHidden = wantsToHide
+        return self
+    }
 }
 
 // MARK: - UI & Layout
