@@ -17,6 +17,12 @@ final class NotificationFilterCVC: UICollectionViewCell {
     
     var filterType: NotificationFilterType?
     
+    override var isSelected: Bool {
+        didSet {
+            self.setSelectionStyle(isSelected: isSelected)
+        }
+    }
+    
     // MARK: - UI Components
     
     private let titleLabel: UILabel = {
@@ -55,6 +61,10 @@ extension NotificationFilterCVC {
             make.leading.trailing.equalToSuperview().inset(8)
             make.centerY.equalToSuperview()
         }
+    }
+    
+    func setSelectionStyle(isSelected: Bool) {
+        self.backgroundColor = isSelected ? DSKitAsset.Colors.purple100.color : DSKitAsset.Colors.black60.color
     }
 }
 

@@ -60,7 +60,7 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
         self.setLayout()
         self.bindViewModels()
         self.setDelegate()
-        self.registerCells()
+        self.setCollectionViews()
     }
 }
 
@@ -95,6 +95,14 @@ extension NotificationListVC {
             collectionView.delegate = self
             collectionView.dataSource = self
         }
+    }
+    
+    private func setCollectionViews() {
+        registerCells()
+        // 초기 값으로 "모든 알림"을 선택한다.
+        notificationFilterCollectionView.selectItem(at: IndexPath(row: 0, section: 0),
+                                                    animated: false,
+                                                    scrollPosition: .left)
     }
     
     private func registerCells() {
