@@ -176,7 +176,7 @@ extension SignInVC {
         notMemberButton.publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
-                owner.setRootViewToMain()
+                owner.setRootViewToMain(isVisitor: true)
             }.store(in: self.cancelBag)
     }
     
@@ -210,8 +210,11 @@ extension SignInVC {
             }.store(in: self.cancelBag)
     }
     
-    private func setRootViewToMain(isInActiveUser: Bool = false) {
-        let userType = isInActiveUser ? .unregisteredInactive : UserDefaultKeyList.Auth.getUserType()
+    private func setRootViewToMain(isInActiveUser: Bool = false, isVisitor: Bool = false) {
+        var userType = isInActiveUser ? .unregisteredInactive : UserDefaultKeyList.Auth.getUserType()
+        
+        if isVisitor { userType = .visitor }
+        
         let navigation = UINavigationController(rootViewController: factory.makeMainVC(userType: userType).viewController)
         ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
     }
