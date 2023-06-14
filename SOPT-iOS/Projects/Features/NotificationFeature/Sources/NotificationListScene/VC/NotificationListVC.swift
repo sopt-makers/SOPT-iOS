@@ -34,6 +34,24 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
         .addRightButton(with: nil)
         .addRightButton(with: "모두 읽음", titleColor: DSKitAsset.Colors.purple100.color)
     
+    private lazy var notificationFilterCollectionView: UICollectionView = {
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createFilterCollectionViewLayout())
+        cv.isScrollEnabled = true
+        cv.showsHorizontalScrollIndicator = false
+        cv.showsVerticalScrollIndicator = false
+        cv.backgroundColor = .clear
+        return cv
+    }()
+    
+    private lazy var notificationListCollectionView: UICollectionView = {
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createListCollectionViewLayout())
+        cv.isScrollEnabled = true
+        cv.showsHorizontalScrollIndicator = false
+        cv.showsVerticalScrollIndicator = false
+        cv.backgroundColor = .clear
+        return cv
+    }()
+    
     // MARK: - View Life Cycle
     
     public override func viewDidLoad() {
@@ -41,6 +59,8 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
         self.setUI()
         self.setLayout()
         self.bindViewModels()
+        self.setDelegate()
+        self.registerCells()
     }
 }
 
@@ -52,11 +72,34 @@ extension NotificationListVC {
     }
     
     private func setLayout() {
-        self.view.addSubviews(naviBar)
+        self.view.addSubviews(naviBar, notificationFilterCollectionView, notificationListCollectionView)
         
         naviBar.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
         }
+        
+        notificationFilterCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(naviBar.snp.bottom)
+            make.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            make.height.equalTo(46)
+        }
+        
+        notificationListCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(notificationFilterCollectionView.snp.bottom)
+            make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
+        }
+    }
+    
+    private func setDelegate() {
+        [notificationFilterCollectionView, notificationListCollectionView].forEach { collectionView in
+            collectionView.delegate = self
+            collectionView.dataSource = self
+        }
+    }
+    
+    private func registerCells() {
+        self.notificationFilterCollectionView.register(NotificationFilterCVC.self, forCellWithReuseIdentifier: NotificationFilterCVC.className)
+        self.notificationListCollectionView.register(NotificationFilterCVC.self, forCellWithReuseIdentifier: NotificationFilterCVC.className)
     }
 }
 
@@ -64,5 +107,34 @@ extension NotificationListVC {
 
 extension NotificationListVC {
     private func bindViewModels() {
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+
+extension NotificationListVC: UICollectionViewDelegate {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print(indexPath)
+    }
+}
+
+// MARK: - UICollectionViewDataSource
+
+extension NotificationListVC: UICollectionViewDataSource {
+    public func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 10
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NotificationFilterCVC.className,
+                                                            for: indexPath) as? NotificationFilterCVC
+        else { return UICollectionViewCell() }
+        let titles = ["모든 알림", "전체 알림", "파트별 알림", "소식"]
+        cell.initCell(title: titles[0])
+        return cell
     }
 }
