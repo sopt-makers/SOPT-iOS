@@ -52,6 +52,12 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
         return cv
     }()
     
+    private let emptyView: NotificationEmptyView = {
+        let view = NotificationEmptyView()
+        view.isHidden = true
+        return view
+    }()
+    
     // MARK: - View Life Cycle
     
     public override func viewDidLoad() {
@@ -87,6 +93,12 @@ extension NotificationListVC {
         notificationListCollectionView.snp.makeConstraints { make in
             make.top.equalTo(notificationFilterCollectionView.snp.bottom)
             make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
+        }
+        
+        notificationListCollectionView.addSubviews(emptyView)
+        
+        emptyView.snp.makeConstraints { make in
+            make.center.equalTo(view.safeAreaLayoutGuide)
         }
     }
     
