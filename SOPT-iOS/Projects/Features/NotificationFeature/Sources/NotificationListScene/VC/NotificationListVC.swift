@@ -30,7 +30,8 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
     
     // MARK: - UI Components
     
-    lazy var naviBar = OPNavigationBar(self, type: .bothButtons)
+    private lazy var naviBar = OPNavigationBar(self, type: .bothButtons)
+        .addMiddleLabel(title: I18N.Notification.notification)
         .addRightButton(with: nil)
         .addRightButton(with: I18N.Notification.readAll, titleColor: DSKitAsset.Colors.purple100.color)
     
@@ -147,7 +148,11 @@ extension NotificationListVC {
 
 extension NotificationListVC: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(indexPath)
+        
+        if collectionView == notificationListCollectionView {
+            let notificationDetailVC = factory.makeNotificationDetailVC().viewController
+            self.navigationController?.pushViewController(notificationDetailVC, animated: true)
+        }
     }
 }
 

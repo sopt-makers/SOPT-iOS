@@ -30,6 +30,8 @@ public final class NotificationDetailVC: UIViewController, NotificationDetailVie
   
     // MARK: - UI Components
     
+    private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton)
+        .addMiddleLabel(title: I18N.Notification.notification)
     
     // MARK: - initialization
     
@@ -57,11 +59,15 @@ public final class NotificationDetailVC: UIViewController, NotificationDetailVie
 
 extension NotificationDetailVC {
     private func setUI() {
-        
+        view.backgroundColor = DSKitAsset.Colors.black100.color
     }
     
     private func setLayout() {
+        self.view.addSubviews(naviBar)
         
+        naviBar.snp.makeConstraints { make in
+            make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+        }
     }
 }
 
