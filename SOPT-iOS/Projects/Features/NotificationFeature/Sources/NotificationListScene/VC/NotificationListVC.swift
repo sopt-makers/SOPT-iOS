@@ -24,8 +24,8 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
 
     // MARK: - Properties
     
-    public var viewModel: NotificationListViewModel!
-    public var factory: factoryType!
+    public var viewModel: NotificationListViewModel
+    public var factory: factoryType
     private var cancelBag = CancelBag()
     
     // MARK: - UI Components
@@ -57,6 +57,19 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
         view.isHidden = true
         return view
     }()
+    
+    
+    // MARK: - initialization
+    
+    public init(viewModel: NotificationListViewModel, factory: factoryType) {
+        self.viewModel = viewModel
+        self.factory = factory
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - View Life Cycle
     

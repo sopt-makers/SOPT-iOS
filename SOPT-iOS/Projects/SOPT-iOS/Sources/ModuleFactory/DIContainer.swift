@@ -266,12 +266,10 @@ extension DIContainer: Features {
     // MARK: - NotificationFeature
     
     func makeNotificationListVC() -> NotificationListViewControllable {
-        let notificationListVC = NotificationListVC()
         let repository = NotificationListRepository(service: userService)
         let useCase = DefaultNotificationListUseCase(repository: repository)
         let viewModel = NotificationListViewModel(useCase: useCase)
-        notificationListVC.viewModel = viewModel
-        notificationListVC.factory = self
+        let notificationListVC = NotificationListVC(viewModel: viewModel, factory: self)
         
         return notificationListVC
     }
