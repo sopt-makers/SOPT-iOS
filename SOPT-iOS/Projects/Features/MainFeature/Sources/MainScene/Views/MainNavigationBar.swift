@@ -13,6 +13,12 @@ import DSKit
 
 final class MainNavigationBar: UIView {
     
+    // MARK: - Properties
+    
+    public lazy var noticeButtonTap = noticeButton.publisher(for: .touchUpInside)
+    
+    public lazy var rightButtonTap = rightButton.publisher(for: .touchUpInside)
+    
     // MARK: - UI Components
     
     private let logoImageView = UIImageView().then {
@@ -24,7 +30,7 @@ final class MainNavigationBar: UIView {
         $0.setImage(DSKitAsset.Assets.btnNotice.image, for: .normal)
     }
     
-    public let rightButton = UIButton(type: .custom).then {
+    private let rightButton = UIButton(type: .custom).then {
         $0.setImage(DSKitAsset.Assets.btnMypage.image, for: .normal)
         $0.layer.cornerRadius = 22
         $0.backgroundColor = DSKitAsset.Colors.black60.color
@@ -57,6 +63,12 @@ extension MainNavigationBar {
         self.rightButton.setImage(image, for: .normal)
         return self
     }
+    
+    @discardableResult
+    public func hideNoticeButton(wantsToHide: Bool) -> Self {
+        self.noticeButton.isHidden = wantsToHide
+        return self
+    }
 }
 
 // MARK: - UI & Layout
@@ -64,7 +76,6 @@ extension MainNavigationBar {
 extension MainNavigationBar {
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.black100.color
-        self.noticeButton.isHidden = true // 추후 알림 기능 생기면 hidden 해제
     }
     
     private func setLayout() {
