@@ -110,6 +110,7 @@ public final class NotificationDetailVC: UIViewController, NotificationDetailVie
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.bindViewModels()
+        self.bindViews()
         self.setUI()
         self.setLayout()
     }
@@ -184,5 +185,13 @@ extension NotificationDetailVC {
     private func bindViewModels() {
         let input = NotificationDetailViewModel.Input()
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+    }
+    
+    private func bindViews() {
+        self.shortCutButton.publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                print("바로가기 버튼 터치: \(owner)")
+            }.store(in: cancelBag)
     }
 }
