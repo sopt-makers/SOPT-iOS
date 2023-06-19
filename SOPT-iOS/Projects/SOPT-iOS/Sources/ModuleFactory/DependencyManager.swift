@@ -26,6 +26,8 @@ import StampFeatureInterface
 import StampFeature
 import AppMyPageFeatureInterface
 import AppMyPageFeature
+import NotificationFeatureInterface
+import NotificationFeature
 
 typealias Features = SplashFeatureViewBuildable
     & AttendanceFeatureViewBuildable
@@ -35,6 +37,7 @@ typealias Features = SplashFeatureViewBuildable
     & MainFeatureViewBuildable
     & AlertViewBuildable
     & AppMyPageFeatureViewBuildable
+    & NotificationFeatureViewBuildable
 
 final class DependencyManager {
     lazy var attendanceService = DefaultAttendanceService()
@@ -249,6 +252,8 @@ extension DependencyManager: Features {
         return withdrawalVC
     }
     
+    // MARK: - AppMyPageFeature
+    
     func makeAppMyPageVC(userType: UserType) -> AppMyPageViewControllable {
         let repository = AppMyPageRepository(stampService: self.stampService)
         let useCase = DefaultAppMyPageUseCase(repository: repository)
@@ -256,5 +261,18 @@ extension DependencyManager: Features {
         let AppMyPageVC = AppMyPageVC(userType: userType, viewModel: viewModel, factory: self)
         
         return AppMyPageVC
+    }
+    
+    // MARK: - NotificationFeature
+    
+    func makeNotificationListVC() -> NotificationListViewControllable {
+        let notificationListVC = NotificationListVC()
+        let repository = NotificationListRepository(service: userService) // 임시로 aut
+        let useCase = DefaultNotificationListUseCase(repository: repository)
+        let viewModel = NotificationListViewModel(useCase: useCase)
+        notificationListVC.viewModel = viewModel
+        notificationListVC.factory = self
+        
+        return notificationListVC
     }
 }

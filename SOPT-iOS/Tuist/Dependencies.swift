@@ -29,7 +29,7 @@ let dependencies = Dependencies(
     carthage: [
         .github(
             path: "https://github.com/getsentry/sentry-cocoa",
-            requirement: .upToNext("8.5.0")
+            requirement: .upToNext("8.7.0")
         )
     ],
     swiftPackageManager: spm,

@@ -259,6 +259,11 @@ public struct I18N {
 
         public static let withdrawal = "탈퇴하기"
     }
+    
+    public struct Notification {
+        public static let readAll = "모두 읽음"
+        public static let emptyNotification = "아직 도착한 알림이 없어요."
+    }
 }
     
 extension I18N {

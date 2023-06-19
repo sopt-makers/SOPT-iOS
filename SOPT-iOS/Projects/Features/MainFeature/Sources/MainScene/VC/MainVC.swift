@@ -24,6 +24,7 @@ import StampFeatureInterface
 import SettingFeatureInterface
 import AppMyPageFeatureInterface
 import AttendanceFeatureInterface
+import NotificationFeatureInterface
 
 public class MainVC: UIViewController, MainViewControllable {
     public typealias factoryType = AuthFeatureViewBuildable
@@ -31,6 +32,7 @@ public class MainVC: UIViewController, MainViewControllable {
     & SettingFeatureViewBuildable
     & AppMyPageFeatureViewBuildable
     & AttendanceFeatureViewBuildable
+    & NotificationFeatureViewBuildable
     & AlertViewBuildable
     
     // MARK: - Properties
@@ -43,7 +45,7 @@ public class MainVC: UIViewController, MainViewControllable {
 
     // MARK: - UI Components
     
-    private let naviBar = MainNavigationBar()
+    private let naviBar = MainNavigationBar().hideNoticeButton(wantsToHide: true)
     
     private lazy var collectionView: UICollectionView = {
       let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
@@ -110,6 +112,7 @@ extension MainVC {
                 }
                 print("MainVC User 모델: \(userMainInfo)")
                 self?.collectionView.reloadData()
+                self?.naviBar.hideNoticeButton(wantsToHide: self?.viewModel.userType == .visitor )
             }.store(in: self.cancelBag)
    
         output.isServiceAvailable
@@ -140,7 +143,14 @@ extension MainVC {
     }
     
     private func bindViews() {
-        naviBar.rightButton.publisher(for: .touchUpInside)
+        naviBar.noticeButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                let notificationListVC = owner.factory.makeNotificationListVC().viewController
+                owner.navigationController?.pushViewController(notificationListVC, animated: true)
+            }.store(in: self.cancelBag)
+        
+        naviBar.rightButtonTap
             .withUnretained(self)
             .sink { owner, _ in
                 let viewController = owner.factory.makeAppMyPageVC(userType: owner.viewModel.userType).viewController
