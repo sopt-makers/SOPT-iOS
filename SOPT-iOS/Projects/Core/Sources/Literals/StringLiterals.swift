@@ -261,8 +261,10 @@ public struct I18N {
     }
     
     public struct Notification {
+        public static let notification = "알림"
         public static let readAll = "모두 읽음"
         public static let emptyNotification = "아직 도착한 알림이 없어요."
+        public static let shortcut = "바로가기"
     }
 }
     

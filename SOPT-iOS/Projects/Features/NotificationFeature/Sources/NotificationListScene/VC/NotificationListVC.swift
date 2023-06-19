@@ -24,13 +24,14 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
 
     // MARK: - Properties
     
-    public var viewModel: NotificationListViewModel!
-    public var factory: factoryType!
+    public var viewModel: NotificationListViewModel
+    public var factory: factoryType
     private var cancelBag = CancelBag()
     
     // MARK: - UI Components
     
-    lazy var naviBar = OPNavigationBar(self, type: .bothButtons)
+    private lazy var naviBar = OPNavigationBar(self, type: .bothButtons)
+        .addMiddleLabel(title: I18N.Notification.notification)
         .addRightButton(with: nil)
         .addRightButton(with: I18N.Notification.readAll, titleColor: DSKitAsset.Colors.purple100.color)
     
@@ -57,6 +58,19 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
         view.isHidden = true
         return view
     }()
+    
+    
+    // MARK: - initialization
+    
+    public init(viewModel: NotificationListViewModel, factory: factoryType) {
+        self.viewModel = viewModel
+        self.factory = factory
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - View Life Cycle
     
@@ -134,7 +148,11 @@ extension NotificationListVC {
 
 extension NotificationListVC: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(indexPath)
+        
+        if collectionView == notificationListCollectionView {
+            let notificationDetailVC = factory.makeNotificationDetailVC().viewController
+            self.navigationController?.pushViewController(notificationDetailVC, animated: true)
+        }
     }
 }
 
