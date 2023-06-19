@@ -10,6 +10,9 @@ import Core
 
 public protocol NotificationListViewControllable: ViewControllable { }
 
+public protocol NotificationDetailViewControllable: ViewControllable { }
+
 public protocol NotificationFeatureViewBuildable {
     func makeNotificationListVC() -> NotificationListViewControllable
+    func makeNotificationDetailVC() -> NotificationDetailViewControllable
 }
