@@ -43,5 +43,14 @@ extension AppDelegate {
                 )
             }
         )
+        
+        container.register(
+            interface: AppMyPageRepositoryInterface.self,
+            implement: {
+                AppMyPageRepository(
+                    stampService: DefaultStampService()
+                )
+            }
+        )
     }
 }

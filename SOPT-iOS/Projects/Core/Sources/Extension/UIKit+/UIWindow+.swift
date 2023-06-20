@@ -19,4 +19,10 @@ public extension UIWindow {
             return UIApplication.shared.keyWindow
         }
     }
+    
+    static var getTopNavigationController: UINavigationController {
+        return keyWindowGetter?.rootViewController as? UINavigationController ?? UINavigationController(
+            rootViewController: UIViewController()
+        )
+    }
 }

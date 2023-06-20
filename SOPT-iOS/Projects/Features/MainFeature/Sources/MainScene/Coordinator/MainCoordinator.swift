@@ -9,9 +9,22 @@
 import BaseFeatureDependency
 import Core
 
+public enum MainCoordinatorDestination {
+    case notice
+    case myPage(UserType)
+    case attendance
+    case stamp
+}
+public protocol MainCoordinatorOutput {
+    var finishFlow: (() -> Void)? { get set }
+    var requestCoordinating: ((MainCoordinatorDestination) -> Void)? { get set }
+}
+public typealias DefaultMainCoordinator = BaseCoordinator & MainCoordinatorOutput
+
 public
-final class MainCoordinator: DefaultCoordinator {
-    
+final class MainCoordinator: DefaultMainCoordinator {
+        
+    public var requestCoordinating: ((MainCoordinatorDestination) -> Void)?
     public var finishFlow: (() -> Void)?
     
     private let factory: MainFeatureViewBuildable
@@ -25,7 +38,13 @@ final class MainCoordinator: DefaultCoordinator {
     }
     
     public override func start() {
-        let main = factory.makeMain(userType: userType)
+        var main = factory.makeMain(userType: userType)
+        main.vm.onNoticeButtonTap = { [weak self] in
+            self?.requestCoordinating?(.notice)
+        }
+        main.vm.onMyPageButtonTap = { [weak self] userType in
+            self?.requestCoordinating?(.myPage(userType))
+        }
         router.setRootWindow(module: main.vc, withAnimation: true)
     }
 }

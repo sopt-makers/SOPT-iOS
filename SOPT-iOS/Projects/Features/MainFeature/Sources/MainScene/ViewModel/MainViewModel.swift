@@ -31,7 +31,9 @@ public class MainViewModel: MainViewModelType {
     // MARK: - Inputs
     
     public struct Input {
-        let requestUserInfo: PassthroughSubject<Void, Never>
+        let requestUserInfo: Driver<Void>
+        let noticeButtonTapped: Driver<Void>
+        let myPageButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -44,6 +46,11 @@ public class MainViewModel: MainViewModelType {
         var needSignIn = PassthroughSubject<Void, Never>()
         var isLoading = PassthroughSubject<Bool, Never>()
     }
+    
+    // MARK: - MainCoordinatable
+    
+    public var onNoticeButtonTap: (() -> Void)?
+    public var onMyPageButtonTap: ((UserType) -> Void)?
     
     // MARK: - init
   
@@ -60,6 +67,18 @@ extension MainViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
+        
+        input.noticeButtonTapped
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                self.onNoticeButtonTap?()
+            }.store(in: cancelBag)
+        
+        input.myPageButtonTapped
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                self.onMyPageButtonTap?(self.userType)
+            }.store(in: cancelBag)
         
         input.requestUserInfo
             .sink { [weak self] _ in

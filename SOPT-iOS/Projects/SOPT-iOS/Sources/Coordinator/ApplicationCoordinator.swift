@@ -13,6 +13,7 @@ import BaseFeatureDependency
 import SplashFeature
 import AuthFeature
 import MainFeature
+import AppMyPageFeature
 
 final class ApplicationCoordinator: BaseCoordinator {
     
@@ -54,9 +55,40 @@ final class ApplicationCoordinator: BaseCoordinator {
     
     private func runMainFlow(type: UserType? = nil) {
         let userType = type ?? UserDefaultKeyList.Auth.getUserType()
-        let coordinator = MainCoordinator(router: router, factory: MainBuilder(), userType: userType)
+        let coordinator = MainCoordinator(
+            router: router,
+            factory: MainBuilder(),
+            userType: userType
+        )
         coordinator.finishFlow = { [weak self, weak coordinator] in
             self?.runMainFlow()
+            self?.removeDependency(coordinator)
+        }
+        coordinator.requestCoordinating = { [weak self] destination in
+            switch destination {
+            case .myPage(let userType):
+                self?.runMyPageFlow(of: userType)
+            case .notice:
+                break
+            case .attendance:
+                break
+            case .stamp:
+                break
+            }
+        }
+        addDependency(coordinator)
+        coordinator.start()
+    }
+    
+    private func runMyPageFlow(of userType: UserType) {
+        let coordinator = MyPageCoordinator(
+            router: Router(
+                rootController: UIWindow.getTopNavigationController
+            ),
+            factory: MyPageBuilder(),
+            userType: userType
+        )
+        coordinator.finishFlow = { [weak self, weak coordinator] in
             self?.removeDependency(coordinator)
         }
         addDependency(coordinator)

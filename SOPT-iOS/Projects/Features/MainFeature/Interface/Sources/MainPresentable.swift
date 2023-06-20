@@ -10,6 +10,9 @@ import BaseFeatureDependency
 import Core
 
 public protocol MainViewControllable: ViewControllable { }
-public protocol MainCoordinatable { }
+public protocol MainCoordinatable {
+    var onNoticeButtonTap: (() -> Void)? { get set }
+    var onMyPageButtonTap: ((UserType) -> Void)? { get set }
+}
 public typealias MainViewModelType = ViewModelType & MainCoordinatable
 public typealias MainPresentable = (vc: MainViewControllable, vm: any MainViewModelType)

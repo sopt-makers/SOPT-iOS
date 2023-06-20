@@ -10,12 +10,15 @@ import Combine
 
 import Core
 import Domain
+import AppMyPageFeatureInterface
 
-public final class AppMyPageViewModel: ViewModelType {
+public final class AppMyPageViewModel: MyPageViewModelType {
+    
     // MARK: - Inputs
     
     public struct Input {
         let resetButtonTapped: Driver<Bool>
+        let naviBackButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -23,6 +26,10 @@ public final class AppMyPageViewModel: ViewModelType {
     public struct Output {
         var resetSuccessed = PassthroughSubject<Bool, Never>()
     }
+    
+    // MARK: - MyPageCoordinatable
+    
+    public var onNaviBackButtonTap: (() -> Void)?
     
     private let useCase: AppMyPageUseCase
     
@@ -35,6 +42,12 @@ extension AppMyPageViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
+        
+        input.naviBackButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNaviBackButtonTap?()
+            }.store(in: cancelBag)
         
         input.resetButtonTapped
             .withUnretained(self)

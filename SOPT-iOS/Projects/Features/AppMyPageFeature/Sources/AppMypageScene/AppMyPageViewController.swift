@@ -16,11 +16,8 @@ import Then
 import Core
 import DSKit
 import BaseFeatureDependency
-import AuthFeatureInterface
-import SettingFeatureInterface
-import AppMyPageFeatureInterface
 
-public final class AppMyPageVC: UIViewController, AppMyPageViewControllable {
+public final class AppMyPageVC: UIViewController, MyPageViewControllable {
     // MARK: - Metric
     private enum Metric {
         static let navigationbarHeight = 44.f
@@ -32,7 +29,6 @@ public final class AppMyPageVC: UIViewController, AppMyPageViewControllable {
     
     // MARK: - Local Variables
     private let viewModel: AppMyPageViewModel
-    private let factory: SettingFeatureViewBuildable & AlertViewBuildable & AuthFeatureViewBuildable
     private let userType: UserType
     
     // MARK: Combine
@@ -43,7 +39,8 @@ public final class AppMyPageVC: UIViewController, AppMyPageViewControllable {
     private lazy var navigationBar = OPNavigationBar(
         self,
         type: .oneLeftButton,
-        backgroundColor: DSKitAsset.Colors.black100.color
+        backgroundColor: DSKitAsset.Colors.black100.color,
+        ignoreLeftButtonAction: true
     )
         .addMiddleLabel(title: I18N.MyPage.navigationTitle)
     
@@ -152,12 +149,10 @@ public final class AppMyPageVC: UIViewController, AppMyPageViewControllable {
     
     public init(
         userType: UserType,
-        viewModel: AppMyPageViewModel,
-        factory: SettingFeatureViewBuildable & AlertViewBuildable & AuthFeatureViewBuildable
+        viewModel: AppMyPageViewModel
     ) {
         self.userType = userType
         self.viewModel = viewModel
-        self.factory = factory
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -227,65 +222,65 @@ extension AppMyPageVC {
     
     // TODO: - (@승호): 적절히 객체에 위임하기
     private func addTabGestureOnListItems() {
-        self.servicePolicySectionGroup.addTapGestureRecognizer {
-            let viewController = self.factory.makePrivacyPolicyVC().viewController
-            self.navigationController?.pushViewController(viewController, animated: true)
-        }
-        
-        self.termsOfUseListItem.addTapGestureRecognizer {
-            let viewController = self.factory.makeTermsOfServiceVC().viewController
-            self.navigationController?.pushViewController(viewController, animated: true)
-        }
-        
-        self.sendFeedbackListItem.addTapGestureRecognizer {
-            openExternalLink(urlStr: ExternalURL.GoogleForms.serviceProposal)
-        }
-        
-        self.editOnelineSentenceListItem.addTapGestureRecognizer {
-            let viewController = self.factory.makeSentenceEditVC().viewController
-            self.navigationController?.pushViewController(viewController, animated: true)
-        }
-        
-        self.editNickNameListItem.addTapGestureRecognizer {
-            let viewController = self.factory.makeNicknameEditVC().viewController
-            self.navigationController?.pushViewController(viewController, animated: true)
-        }
-        
-        self.resetStampListItem.addTapGestureRecognizer {
-            let alertVC = self.factory.makeAlertVC(
-                type: .titleDescription,
-                theme: .main,
-                title: I18N.MyPage.resetMissionTitle,
-                description: I18N.MyPage.resetMissionDescription,
-                customButtonTitle: I18N.MyPage.reset
-            ) { [weak self] in
-                self?.resetButtonTapped.send(true)
-            }.viewController
-            
-            self.present(alertVC, animated: true)
-        }
-        
-        self.logoutListItem.addTapGestureRecognizer {
-            let alertVC = self.factory.makeAlertVC(
-                type: .titleDescription,
-                theme: .main,
-                title: I18N.MyPage.logoutDialogTitle,
-                description: I18N.MyPage.logoutDialogDescription,
-                customButtonTitle: I18N.MyPage.logoutDialogGrantButtonTitle
-            ) { [weak self] in
-                self?.logout()
-                self?.showLoginViewController()
-            }.viewController
-            
-            self.present(alertVC, animated: true)
-        }
-        
-        self.withDrawalListItem.addTapGestureRecognizer {
-            let viewController = self.factory.makeWithdrawalVC(
-                userType: self.userType
-            ).viewController
-            self.navigationController?.pushViewController(viewController, animated: true)
-        }
+//        self.servicePolicySectionGroup.addTapGestureRecognizer {
+//            let viewController = self.factory.makePrivacyPolicyVC().viewController
+//            self.navigationController?.pushViewController(viewController, animated: true)
+//        }
+//
+//        self.termsOfUseListItem.addTapGestureRecognizer {
+//            let viewController = self.factory.makeTermsOfServiceVC().viewController
+//            self.navigationController?.pushViewController(viewController, animated: true)
+//        }
+//
+//        self.sendFeedbackListItem.addTapGestureRecognizer {
+//            openExternalLink(urlStr: ExternalURL.GoogleForms.serviceProposal)
+//        }
+//
+//        self.editOnelineSentenceListItem.addTapGestureRecognizer {
+//            let viewController = self.factory.makeSentenceEditVC().viewController
+//            self.navigationController?.pushViewController(viewController, animated: true)
+//        }
+//
+//        self.editNickNameListItem.addTapGestureRecognizer {
+//            let viewController = self.factory.makeNicknameEditVC().viewController
+//            self.navigationController?.pushViewController(viewController, animated: true)
+//        }
+//
+//        self.resetStampListItem.addTapGestureRecognizer {
+//            let alertVC = self.factory.makeAlertVC(
+//                type: .titleDescription,
+//                theme: .main,
+//                title: I18N.MyPage.resetMissionTitle,
+//                description: I18N.MyPage.resetMissionDescription,
+//                customButtonTitle: I18N.MyPage.reset
+//            ) { [weak self] in
+//                self?.resetButtonTapped.send(true)
+//            }.viewController
+//
+//            self.present(alertVC, animated: true)
+//        }
+//
+//        self.logoutListItem.addTapGestureRecognizer {
+//            let alertVC = self.factory.makeAlertVC(
+//                type: .titleDescription,
+//                theme: .main,
+//                title: I18N.MyPage.logoutDialogTitle,
+//                description: I18N.MyPage.logoutDialogDescription,
+//                customButtonTitle: I18N.MyPage.logoutDialogGrantButtonTitle
+//            ) { [weak self] in
+//                self?.logout()
+//                self?.showLoginViewController()
+//            }.viewController
+//
+//            self.present(alertVC, animated: true)
+//        }
+//
+//        self.withDrawalListItem.addTapGestureRecognizer {
+//            let viewController = self.factory.makeWithdrawalVC(
+//                userType: self.userType
+//            ).viewController
+//            self.navigationController?.pushViewController(viewController, animated: true)
+//        }
         
         self.loginListItem.addTapGestureRecognizer {
             self.showLoginViewController()
@@ -296,7 +291,9 @@ extension AppMyPageVC {
 extension AppMyPageVC {
     private func bindViewModels() {
         let input = AppMyPageViewModel.Input(
-            resetButtonTapped: resetButtonTapped.asDriver())
+            resetButtonTapped: resetButtonTapped.asDriver(),
+            naviBackButtonTapped: navigationBar.leftButtonTapped
+        )
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.resetSuccessed
@@ -316,9 +313,9 @@ extension AppMyPageVC {
     }
     
     private func showLoginViewController() {
-        guard let window = self.view.window else { return }
-        let navigation = UINavigationController(rootViewController: factory.makeSignIn().vc.viewController)
-        navigation.isNavigationBarHidden = true
-        ViewControllerUtils.setRootViewController(window: window, viewController: navigation, withAnimation: true)
+//        guard let window = self.view.window else { return }
+//        let navigation = UINavigationController(rootViewController: factory.makeSignIn().vc.viewController)
+//        navigation.isNavigationBarHidden = true
+//        ViewControllerUtils.setRootViewController(window: window, viewController: navigation, withAnimation: true)
     }
 }

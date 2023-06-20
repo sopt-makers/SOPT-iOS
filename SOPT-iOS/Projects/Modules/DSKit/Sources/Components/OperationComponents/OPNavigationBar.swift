@@ -30,6 +30,11 @@ public final class OPNavigationBar: UIView {
             .map { _ in () }
             .asDriver()
     }
+    public var leftButtonTapped: Driver<Void> {
+        leftButton.publisher(for: .touchUpInside)
+            .mapVoid()
+            .asDriver()
+    }
     
     // MARK: - UI Components
     
@@ -39,11 +44,12 @@ public final class OPNavigationBar: UIView {
 
     // MARK: - initialization
     
-    public init(_ vc: UIViewController, type: OPNaviType, backgroundColor: UIColor = DSKitAsset.Colors.black100.color) {
+    public init(_ vc: UIViewController, type: OPNaviType, backgroundColor: UIColor = DSKitAsset.Colors.black100.color, ignoreLeftButtonAction: Bool = false) {
         super.init(frame: .zero)
         self.vc = vc
         self.setUI(type, backgroundColor: backgroundColor)
         self.setLayout(type)
+        guard !ignoreLeftButtonAction else { return }
         self.setLeftBackButtonAction()
     }
     

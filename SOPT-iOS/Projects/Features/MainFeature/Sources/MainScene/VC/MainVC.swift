@@ -47,7 +47,6 @@ public class MainVC: UIViewController, MainViewControllable {
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.bindViewModels()
-        self.bindViews()
         self.setUI()
         self.setLayout()
         self.setDelegate()
@@ -86,7 +85,20 @@ extension MainVC {
 
 extension MainVC {
     private func bindViewModels() {
-        let input = MainViewModel.Input(requestUserInfo: self.requestUserInfo)
+        
+        let noticeButtonTapped = naviBar.noticeButtonTap
+            .mapVoid()
+            .asDriver()
+        
+        let myPageButtonTapped = naviBar.rightButtonTap
+            .mapVoid()
+            .asDriver()
+        
+        let input = MainViewModel.Input(
+            requestUserInfo: requestUserInfo.asDriver(),
+            noticeButtonTapped: noticeButtonTapped,
+            myPageButtonTapped: myPageButtonTapped
+        )
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.getUserMainInfoDidComplete
@@ -124,22 +136,6 @@ extension MainVC {
         output.isLoading
             .sink { [weak self] isLoading in
                 isLoading ? self?.showLoading() : self?.stopLoading()
-            }.store(in: self.cancelBag)
-    }
-    
-    private func bindViews() {
-        naviBar.noticeButtonTap
-            .withUnretained(self)
-            .sink { owner, _ in
-                //                let notificationListVC = owner.factory.makeNotificationListVC().viewController
-                //                owner.navigationController?.pushViewController(notificationListVC, animated: true)
-            }.store(in: self.cancelBag)
-        
-        naviBar.rightButtonTap
-            .withUnretained(self)
-            .sink { owner, _ in
-                //                let viewController = owner.factory.makeAppMyPageVC(userType: owner.viewModel.userType).viewController
-                //                owner.navigationController?.pushViewController(viewController, animated: true)
             }.store(in: self.cancelBag)
     }
     
