@@ -8,16 +8,16 @@
 
 import Foundation
 
-class BaseCoordinator: Coordinator {
+open class BaseCoordinator: Coordinator {
     
     // MARK: - Vars & Lets
     
-    var childCoordinators = [Coordinator]()
+    public var childCoordinators = [Coordinator]()
     
     // MARK: - Public methods
     
     /// 자식 코디네이터의 의존성을 추가하여 메모리에서 해제되지 않도록 합니다.
-    func addDependency(_ coordinator: Coordinator) {
+    public func addDependency(_ coordinator: Coordinator) {
         for element in childCoordinators {
             if element === coordinator { return }
         }
@@ -25,7 +25,7 @@ class BaseCoordinator: Coordinator {
     }
     
     /// 자식 코디네이터의 의존성을 제거하여 메모리에서 해제되도록 합니다.
-    func removeDependency(_ coordinator: Coordinator?) {
+    public func removeDependency(_ coordinator: Coordinator?) {
         guard childCoordinators.isEmpty == false, let coordinator = coordinator else { return }
         
         for (index, element) in childCoordinators.enumerated() {
@@ -38,11 +38,19 @@ class BaseCoordinator: Coordinator {
     
     // MARK: - Coordinator
     
-    func start() {
+    open func start() {
         start(with: nil)
     }
     
-    func start(with option: DeepLinkOption?) {
+    open func start(with option: DeepLinkOption?) {
         
+    }
+    
+    open func start(by style: CoordinatorStartingOption) {
+        
+    }
+    
+    public init(childCoordinators: [Coordinator] = [Coordinator]()) {
+        self.childCoordinators = childCoordinators
     }
 }

@@ -8,29 +8,20 @@
 
 import UIKit
 
-protocol Presentable {
-    func toPresent() -> UIViewController?
-}
-
-extension UIViewController: Presentable {
-    
-    func toPresent() -> UIViewController? {
-        return self
-    }
-}
+import Core
 
 /// RouterProtocol은 Coordinator에서 화면전환의 종류를 지정합니다.
-protocol RouterProtocol: Presentable {
+public protocol RouterProtocol: ViewControllable {
     
-    func present(_ module: Presentable?)
-    func present(_ module: Presentable?, animated: Bool)
-    func present(_ module: Presentable?, animated: Bool, modalPresentationSytle: UIModalPresentationStyle)
-    func present(_ module: Presentable?, animated: Bool, completion: (() -> Void)?)
+    func present(_ module: ViewControllable?)
+    func present(_ module: ViewControllable?, animated: Bool)
+    func present(_ module: ViewControllable?, animated: Bool, modalPresentationSytle: UIModalPresentationStyle)
+    func present(_ module: ViewControllable?, animated: Bool, completion: (() -> Void)?)
     
-    func push(_ module: Presentable?)
-    func push(_ module: Presentable?, transition: UIViewControllerAnimatedTransitioning?)
-    func push(_ module: Presentable?, transition: UIViewControllerAnimatedTransitioning?, animated: Bool)
-    func push(_ module: Presentable?, transition: UIViewControllerAnimatedTransitioning?, animated: Bool, completion: (() -> Void)?)
+    func push(_ module: ViewControllable?)
+    func push(_ module: ViewControllable?, transition: UIViewControllerAnimatedTransitioning?)
+    func push(_ module: ViewControllable?, transition: UIViewControllerAnimatedTransitioning?, animated: Bool)
+    func push(_ module: ViewControllable?, transition: UIViewControllerAnimatedTransitioning?, animated: Bool, completion: (() -> Void)?)
     
     func popModule()
     func popModule(transition: UIViewControllerAnimatedTransitioning?)
@@ -39,93 +30,126 @@ protocol RouterProtocol: Presentable {
     func dismissModule()
     func dismissModule(animated: Bool, completion: (() -> Void)?)
     
-    func setRootModule(_ module: Presentable?, animated: Bool)
-    func setRootModule(_ module: Presentable?, hideBar: Bool, animated: Bool)
+    func setRootModule(_ module: ViewControllable?, animated: Bool)
+    func setRootModule(_ module: ViewControllable?, hideBar: Bool, animated: Bool)
+    
+    func setRootWindow(module: ViewControllable, withAnimation: Bool, completion: ((UIWindow) -> Void)?)
     
     func popToRootModule(animated: Bool)
-    func popToModule(module: Presentable?, animated: Bool)
+    func popToModule(module: ViewControllable?, animated: Bool)
     
     func showTitles()
     func hideTitles()
+    
+    func presentAlertVC(
+        type: AlertType,
+        theme: AlertVC.AlertTheme,
+        title: String,
+        description: String,
+        customButtonTitle: String,
+        customAction: (() -> Void)?,
+        animated: Bool,
+        completion: (() -> Void)?
+    )
+    
+    func presentNetworkAlertVC(
+        theme: AlertVC.AlertTheme,
+        animated: Bool,
+        completion: (() -> Void)?
+    )
 }
 
 /// RouterProtocol을 채택하여 Coordinator가 모르는 화면전환의 기능을 수행합니다. RootController를 가지고 다양한 기능을 수행합니다.
+public
 final class Router: NSObject, RouterProtocol {
     
     // MARK: - Vars & Lets
     
     private weak var rootController: UINavigationController?
     private var completions: [UIViewController : () -> Void]
+    private var transition: UIViewControllerAnimatedTransitioning?
     
-    // MARK: - Presentable
+    // MARK: - ViewControllable
     
-    func toPresent() -> UIViewController? {
-        return self.rootController
+    public var viewController: UIViewController {
+        return self.rootController ?? UIViewController()
     }
     
     // MARK: - RouterProtocol
     
-    func present(_ module: Presentable?) {
+    public func present(_ module: ViewControllable?) {
         self.present(module, animated: true)
     }
     
-    func present(_ module: Presentable?, animated: Bool) {
-        guard let controller = module?.toPresent() else { return }
+    public func present(_ module: ViewControllable?, animated: Bool) {
+        guard let controller = module?.viewController else { return }
         self.rootController?.present(controller, animated: animated, completion: nil)
     }
     
-    func present(_ module: Presentable?, animated: Bool, modalPresentationSytle: UIModalPresentationStyle) {
-        guard let controller = module?.toPresent() else { return }
+    public func present(_ module: ViewControllable?, animated: Bool, modalPresentationSytle: UIModalPresentationStyle) {
+        guard let controller = module?.viewController else { return }
         controller.modalPresentationStyle = modalPresentationSytle
         self.rootController?.present(controller, animated: animated, completion: nil)
     }
     
-    func present(_ module: Presentable?, animated: Bool, completion: (() -> Void)?) {
-        guard let controller = module?.toPresent() else { return }
+    public func present(_ module: ViewControllable?, animated: Bool, modalPresentationSytle: UIModalPresentationStyle, modalTransitionStyle: UIModalTransitionStyle) {
+        guard let controller = module?.viewController else { return }
+        controller.modalPresentationStyle = modalPresentationSytle
+        controller.modalTransitionStyle = modalTransitionStyle
+        self.rootController?.present(controller, animated: animated, completion: nil)
+    }
+    
+    public func present(_ module: ViewControllable?, animated: Bool, completion: (() -> Void)?) {
+        guard let controller = module?.viewController else { return }
         self.rootController?.present(controller, animated: animated, completion: completion)
     }
     
-    func push(_ module: Presentable?)  {
+    public func push(_ module: ViewControllable?)  {
         self.push(module, transition: nil)
     }
     
-    func push(_ module: Presentable?, transition: UIViewControllerAnimatedTransitioning?) {
+    public func push(_ module: ViewControllable?, transition: UIViewControllerAnimatedTransitioning?) {
         self.push(module, transition: transition, animated: true)
     }
     
-    func push(_ module: Presentable?, transition: UIViewControllerAnimatedTransitioning?, animated: Bool)  {
+    public func push(_ module: ViewControllable?, transition: UIViewControllerAnimatedTransitioning?, animated: Bool)  {
         self.push(module, transition: transition, animated: animated, completion: nil)
     }
     
-//    func push(_ module: Presentable?, transition: UIViewControllerAnimatedTransitioning?, animated: Bool, completion: (() -> Void)?) {
-//        self.rootController?.setTransition(transition: transition)
-//
-//        guard let controller = module?.toPresent(),
-//            (controller is UINavigationController == false)
-//            else { assertionFailure("Deprecated push UINavigationController."); return }
-//
-//        if let completion = completion {
-//            self.completions[controller] = completion
-//        }
-//        self.rootController?.pushViewController(controller, animated: animated)
-//    }
+    public func push(_ module: ViewControllable?, transition: UIViewControllerAnimatedTransitioning?, animated: Bool, completion: (() -> Void)?) {
+        self.transition = transition
+        
+        guard let controller = module?.viewController,
+              (controller is UINavigationController == false)
+        else { assertionFailure("Deprecated push UINavigationController."); return }
+        
+        if let completion = completion {
+            self.completions[controller] = completion
+        }
+        self.rootController?.pushViewController(controller, animated: animated)
+        
+        self.transition = nil
+    }
     
-    func popModule()  {
+    public func popModule()  {
         self.popModule(transition: nil)
     }
     
-    func popModule(transition: UIViewControllerAnimatedTransitioning?) {
+    public func popModule(transition: UIViewControllerAnimatedTransitioning?) {
         self.popModule(transition: transition, animated: true)
     }
     
-//    func popModule(transition: UIViewControllerAnimatedTransitioning?, animated: Bool) {
-//        self.rootController?.setTransition(transition: transition)
-//        if let controller = rootController?.popViewController(animated: animated) {
-//            self.runCompletion(for: controller)
-//        }
-//    }
+    public func popModule(transition: UIViewControllerAnimatedTransitioning?, animated: Bool) {
+        self.transition = transition
+        
+        if let controller = rootController?.popViewController(animated: animated) {
+            self.runCompletion(for: controller)
+        }
+        
+        self.transition = nil
+    }
     
-    func popToModule(module: Presentable?, animated: Bool = true) {
+    public func popToModule(module: ViewControllable?, animated: Bool = true) {
         if let controllers = self.rootController?.viewControllers , let module = module {
             for controller in controllers {
                 if controller == module as! UIViewController {
@@ -137,25 +161,51 @@ final class Router: NSObject, RouterProtocol {
         }
     }
     
-    func dismissModule() {
+    public func dismissModule() {
         self.dismissModule(animated: true, completion: nil)
     }
     
-    func dismissModule(animated: Bool, completion: (() -> Void)?) {
+    public func dismissModule(animated: Bool, completion: (() -> Void)?) {
         self.rootController?.dismiss(animated: animated, completion: completion)
     }
     
-    func setRootModule(_ module: Presentable?, animated: Bool) {
+    public func setRootModule(_ module: ViewControllable?, animated: Bool) {
         self.setRootModule(module, hideBar: false, animated: animated)
     }
     
-    func setRootModule(_ module: Presentable?, hideBar: Bool, animated: Bool) {
-        guard let controller = module?.toPresent() else { return }
+    public func setRootModule(_ module: ViewControllable?, hideBar: Bool, animated: Bool) {
+        guard let controller = module?.viewController else { return }
         self.rootController?.setViewControllers([controller], animated: animated)
         self.rootController?.isNavigationBarHidden = hideBar
     }
     
-    func popToRootModule(animated: Bool) {
+    public func setRootWindow(module: ViewControllable, withAnimation: Bool, completion: ((UIWindow) -> Void)? = nil) {
+        let viewController = module.viewController
+        let window = UIWindow.keyWindowGetter!
+        let navigation = UINavigationController(rootViewController: viewController)
+        
+        if !withAnimation {
+            window.rootViewController = navigation
+            window.makeKeyAndVisible()
+            return
+        }
+
+        if let snapshot = window.snapshotView(afterScreenUpdates: true) {
+            viewController.view.addSubview(snapshot)
+            window.rootViewController = navigation
+            window.makeKeyAndVisible()
+            
+            completion?(window)
+            
+            UIView.animate(withDuration: 0.4, animations: {
+                snapshot.layer.opacity = 0
+            }, completion: { _ in
+                snapshot.removeFromSuperview()
+            })
+        }
+    }
+    
+    public func popToRootModule(animated: Bool) {
         if let controllers = self.rootController?.popToRootViewController(animated: animated) {
             controllers.forEach { controller in
                 self.runCompletion(for: controller)
@@ -163,13 +213,13 @@ final class Router: NSObject, RouterProtocol {
         }
     }
     
-    func showTitles() {
+    public func showTitles() {
         self.rootController?.isNavigationBarHidden = false
         self.rootController?.navigationBar.prefersLargeTitles = true
         self.rootController?.navigationBar.tintColor = UIColor.black
     }
     
-    func hideTitles() {
+    public func hideTitles() {
         self.rootController?.isNavigationBarHidden = true
     }
     
@@ -183,10 +233,50 @@ final class Router: NSObject, RouterProtocol {
     
     // MARK: - Init methods
     
-    init(rootController: UINavigationController) {
+    public init(rootController: UINavigationController) {
         self.rootController = rootController
         self.completions = [:]
         super.init()
     }
 }
 
+// MARK: - Alert
+
+extension Router {
+    public func presentAlertVC(
+        type: AlertType,
+        theme: AlertVC.AlertTheme = .main,
+        title: String,
+        description: String = "",
+        customButtonTitle: String,
+        customAction: (() -> Void)? = nil,
+        animated: Bool = false,
+        completion: (() -> Void)? = nil
+    ) {
+        let alertVC = AlertVC(alertType: type, alertTheme: theme)
+            .setTitle(title, description)
+            .setCustomButtonTitle(customButtonTitle)
+        alertVC.customAction = customAction
+        alertVC.modalPresentationStyle = .overFullScreen
+        alertVC.modalTransitionStyle = .crossDissolve
+        present(alertVC, animated: animated, completion: completion)
+    }
+    
+    public func presentNetworkAlertVC(
+        theme: AlertVC.AlertTheme = .main,
+        animated: Bool = false,
+        completion: (() -> Void)? = nil
+    ) {
+        let alertVC = AlertVC(alertType: .networkErr, alertTheme: theme)
+            .setTitle(I18N.Default.networkError, I18N.Default.networkErrorDescription)
+        alertVC.modalPresentationStyle = .overFullScreen
+        alertVC.modalTransitionStyle = .crossDissolve
+        present(alertVC, animated: animated, completion: completion)
+    }
+}
+
+extension Router: UINavigationControllerDelegate {
+    public func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return self.transition
+    }
+}
