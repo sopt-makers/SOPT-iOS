@@ -10,10 +10,16 @@ import Core
 import BaseFeatureDependency
 import AppMyPageFeatureInterface
 
+public protocol MyPageCoordinatorFinishOutput {
+    var finishFlow: (() -> Void)? { get set }
+    var rootToSignIn: (() -> Void)? { get set }
+}
+public typealias DefaultCoordinator = BaseCoordinator & MyPageCoordinatorFinishOutput
 public
 final class MyPageCoordinator: DefaultCoordinator {
-    
+        
     public var finishFlow: (() -> Void)?
+    public var rootToSignIn: (() -> Void)?
     
     private let factory: MyPageFeatureBuildable
     private let router: Router
@@ -27,10 +33,33 @@ final class MyPageCoordinator: DefaultCoordinator {
     
     public override func start() {
         var myPage = factory.makeAppMyPage(userType: userType)
-        myPage.vm.onNaviBackButtonTap = { [weak self] in
+        myPage.onNaviBackButtonTap = { [weak self] in
             self?.router.popModule()
             self?.finishFlow?()
         }
-        router.push(myPage.vc)
+        myPage.onShowLogin = { [weak self] in
+            self?.rootToSignIn?()
+        }
+        myPage.onPolicyItemTap = { [weak self] in
+            let policyVC = self?.factory.makePrivacyPolicyVC()
+            self?.router.push(policyVC)
+        }
+        myPage.onTermsOfUseItemTap = { [weak self] in
+            let termsVC = self?.factory.makeTermsOfServiceVC()
+            self?.router.push(termsVC)
+        }
+        myPage.onEditNicknameItemTap = { [weak self] in
+            let nicknameEditVC = self?.factory.makeNicknameEditVC()
+            self?.router.push(nicknameEditVC)
+        }
+        myPage.onEditOnelineSentenceItemTap = { [weak self] in
+            let sentenceEditVC = self?.factory.makeSentenceEditVC()
+            self?.router.push(sentenceEditVC)
+        }
+        myPage.onWithdrawalItemTap = { [weak self] userType in
+            let withdrawalVC = self?.factory.makeWithdrawalVC(userType: userType)
+            self?.router.push(withdrawalVC)
+        }
+        router.push(myPage)
     }
 }

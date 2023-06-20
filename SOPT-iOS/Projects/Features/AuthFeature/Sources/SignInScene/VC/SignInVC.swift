@@ -15,7 +15,6 @@ import Core
 import Domain
 
 import AuthFeatureInterface
-import MainFeatureInterface
 
 import SnapKit
 import Then

@@ -63,8 +63,10 @@ final class AuthCoordinator: DefaultAuthCoordinator {
             )
         case .root:
             router.setRootModule(signIn.vc, animated: true)
-        case .rootWindow:
-            router.setRootWindow(signIn.vc)
+        case .rootWindow(let animated):
+            animated
+            ? router.replaceRootWindow(signIn.vc, withAnimation: true)
+            : router.setRootWindow(signIn.vc)
         case .push: break
         }
     }

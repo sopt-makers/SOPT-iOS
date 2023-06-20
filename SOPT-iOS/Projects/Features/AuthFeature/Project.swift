@@ -12,10 +12,6 @@ import DependencyPlugin
 let project = Project.makeModule(
     name: "AuthFeature",
     targets: [.unitTest, .staticFramework, .demo, .interface],
-    internalDependencies: [
-        .Features.Stamp.Interface,
-        //.Features.Main.Interface
-    ],
     interfaceDependencies: [
         .Features.BaseFeatureDependency
     ]

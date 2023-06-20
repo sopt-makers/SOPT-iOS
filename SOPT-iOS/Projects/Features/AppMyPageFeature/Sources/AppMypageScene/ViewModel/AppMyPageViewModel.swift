@@ -18,7 +18,6 @@ public final class AppMyPageViewModel: MyPageViewModelType {
     
     public struct Input {
         let resetButtonTapped: Driver<Bool>
-        let naviBackButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -42,12 +41,6 @@ extension AppMyPageViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
-        
-        input.naviBackButtonTapped
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onNaviBackButtonTap?()
-            }.store(in: cancelBag)
         
         input.resetButtonTapped
             .withUnretained(self)

@@ -12,5 +12,5 @@ public enum CoordinatorStartingOption {
     case root
     case modal
     case push
-    case rootWindow
+    case rootWindow(animated: Bool)
 }

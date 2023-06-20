@@ -18,6 +18,7 @@ import DSKit
 import BaseFeatureDependency
 
 public final class AppMyPageVC: UIViewController, MyPageViewControllable {
+
     // MARK: - Metric
     private enum Metric {
         static let navigationbarHeight = 44.f
@@ -30,6 +31,17 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
     // MARK: - Local Variables
     private let viewModel: AppMyPageViewModel
     private let userType: UserType
+    
+    // MARK: - MyPageCoordinatable
+    
+    public var onNaviBackButtonTap: (() -> Void)?
+    public var onPolicyItemTap: (() -> Void)?
+    public var onTermsOfUseItemTap: (() -> Void)?
+    public var onEditOnelineSentenceItemTap: (() -> Void)?
+    public var onEditNicknameItemTap: (() -> Void)?
+    public var onWithdrawalItemTap: ((UserType) -> Void)?
+    public var onLoginItemTap: (() -> Void)?
+    public var onShowLogin: (() -> Void)?
     
     // MARK: Combine
     private let resetButtonTapped = PassthroughSubject<Bool, Never>()
@@ -172,6 +184,7 @@ extension AppMyPageVC {
         self.setupLayouts()
         self.setupConstraints()
         self.addTabGestureOnListItems()
+        self.bindViews()
         self.bindViewModels()
     }
 }
@@ -222,78 +235,76 @@ extension AppMyPageVC {
     
     // TODO: - (@승호): 적절히 객체에 위임하기
     private func addTabGestureOnListItems() {
-//        self.servicePolicySectionGroup.addTapGestureRecognizer {
-//            let viewController = self.factory.makePrivacyPolicyVC().viewController
-//            self.navigationController?.pushViewController(viewController, animated: true)
-//        }
-//
-//        self.termsOfUseListItem.addTapGestureRecognizer {
-//            let viewController = self.factory.makeTermsOfServiceVC().viewController
-//            self.navigationController?.pushViewController(viewController, animated: true)
-//        }
-//
-//        self.sendFeedbackListItem.addTapGestureRecognizer {
-//            openExternalLink(urlStr: ExternalURL.GoogleForms.serviceProposal)
-//        }
-//
-//        self.editOnelineSentenceListItem.addTapGestureRecognizer {
-//            let viewController = self.factory.makeSentenceEditVC().viewController
-//            self.navigationController?.pushViewController(viewController, animated: true)
-//        }
-//
-//        self.editNickNameListItem.addTapGestureRecognizer {
-//            let viewController = self.factory.makeNicknameEditVC().viewController
-//            self.navigationController?.pushViewController(viewController, animated: true)
-//        }
-//
-//        self.resetStampListItem.addTapGestureRecognizer {
-//            let alertVC = self.factory.makeAlertVC(
-//                type: .titleDescription,
-//                theme: .main,
-//                title: I18N.MyPage.resetMissionTitle,
-//                description: I18N.MyPage.resetMissionDescription,
-//                customButtonTitle: I18N.MyPage.reset
-//            ) { [weak self] in
-//                self?.resetButtonTapped.send(true)
-//            }.viewController
-//
-//            self.present(alertVC, animated: true)
-//        }
-//
-//        self.logoutListItem.addTapGestureRecognizer {
-//            let alertVC = self.factory.makeAlertVC(
-//                type: .titleDescription,
-//                theme: .main,
-//                title: I18N.MyPage.logoutDialogTitle,
-//                description: I18N.MyPage.logoutDialogDescription,
-//                customButtonTitle: I18N.MyPage.logoutDialogGrantButtonTitle
-//            ) { [weak self] in
-//                self?.logout()
-//                self?.showLoginViewController()
-//            }.viewController
-//
-//            self.present(alertVC, animated: true)
-//        }
-//
-//        self.withDrawalListItem.addTapGestureRecognizer {
-//            let viewController = self.factory.makeWithdrawalVC(
-//                userType: self.userType
-//            ).viewController
-//            self.navigationController?.pushViewController(viewController, animated: true)
-//        }
+        self.servicePolicySectionGroup.addTapGestureRecognizer {
+            self.onPolicyItemTap?()
+        }
+
+        self.termsOfUseListItem.addTapGestureRecognizer {
+            self.onTermsOfUseItemTap?()
+        }
+
+        self.sendFeedbackListItem.addTapGestureRecognizer {
+            openExternalLink(urlStr: ExternalURL.GoogleForms.serviceProposal)
+        }
+
+        self.editOnelineSentenceListItem.addTapGestureRecognizer {
+            self.onEditOnelineSentenceItemTap?()
+        }
+
+        self.editNickNameListItem.addTapGestureRecognizer {
+            self.onEditNicknameItemTap?()
+        }
+
+        self.resetStampListItem.addTapGestureRecognizer {
+            AlertUtils.presentAlertVC(
+                type: .titleDescription,
+                theme: .main,
+                title: I18N.MyPage.resetMissionTitle,
+                description: I18N.MyPage.resetMissionDescription,
+                customButtonTitle: I18N.MyPage.reset,
+                customAction: { [weak self] in
+                    self?.resetButtonTapped.send(true)
+                },
+                animated: true
+            )
+        }
+
+        self.logoutListItem.addTapGestureRecognizer {
+            AlertUtils.presentAlertVC(
+                type: .titleDescription,
+                theme: .main,
+                title: I18N.MyPage.logoutDialogTitle,
+                description: I18N.MyPage.logoutDialogDescription,
+                customButtonTitle: I18N.MyPage.logoutDialogGrantButtonTitle,
+                customAction: { [weak self] in
+                    self?.logout()
+                    self?.onShowLogin?()
+                },
+                animated: true
+            )
+        }
+
+        self.withDrawalListItem.addTapGestureRecognizer {
+            self.onWithdrawalItemTap?(self.userType)
+        }
         
         self.loginListItem.addTapGestureRecognizer {
-            self.showLoginViewController()
+            self.onShowLogin?()
         }
     }
 }
 
 extension AppMyPageVC {
+    private func bindViews() {
+        navigationBar.leftButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNaviBackButtonTap?()
+            }.store(in: cancelBag)
+    }
+    
     private func bindViewModels() {
-        let input = AppMyPageViewModel.Input(
-            resetButtonTapped: resetButtonTapped.asDriver(),
-            naviBackButtonTapped: navigationBar.leftButtonTapped
-        )
+        let input = AppMyPageViewModel.Input(resetButtonTapped: resetButtonTapped.asDriver())
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.resetSuccessed
@@ -310,12 +321,5 @@ extension AppMyPageVC {
         UserDefaultKeyList.Auth.appRefreshToken = nil
         UserDefaultKeyList.Auth.playgroundToken = nil
         SFSafariViewController.DataStore.default.clearWebsiteData()
-    }
-    
-    private func showLoginViewController() {
-//        guard let window = self.view.window else { return }
-//        let navigation = UINavigationController(rootViewController: factory.makeSignIn().vc.viewController)
-//        navigation.isNavigationBarHidden = true
-//        ViewControllerUtils.setRootViewController(window: window, viewController: navigation, withAnimation: true)
     }
 }

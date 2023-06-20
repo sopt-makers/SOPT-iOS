@@ -16,15 +16,13 @@ import SnapKit
 import Then
 
 import BaseFeatureDependency
-import SettingFeatureInterface
-import StampFeatureInterface
+import AppMyPageFeatureInterface
 
 public class SentenceEditVC: UIViewController, SentenceEditViewControllable {
     
     // MARK: - Properties
     
     public var viewModel: SentenceEditViewModel!
-    public var factory: (StampFeatureViewBuildable & AlertViewBuildable)!
     private var cancelBag = CancelBag()
     
     // MARK: - UI Components
@@ -114,10 +112,10 @@ extension SentenceEditVC {
     }
     
     public func showNetworkAlert() {
-        let alertVC = factory.makeNetworkAlertVC(theme: .soptamp).viewController
-        alertVC.modalPresentationStyle = .overFullScreen
-        alertVC.modalTransitionStyle = .crossDissolve
-        self.present(alertVC, animated: true)
+//        let alertVC = factory.makeNetworkAlertVC(theme: .soptamp).viewController
+//        alertVC.modalPresentationStyle = .overFullScreen
+//        alertVC.modalTransitionStyle = .crossDissolve
+//        self.present(alertVC, animated: true)
     }
 }
 

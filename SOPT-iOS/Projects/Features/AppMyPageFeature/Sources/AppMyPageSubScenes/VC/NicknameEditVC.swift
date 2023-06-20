@@ -16,14 +16,12 @@ import SnapKit
 import Then
 
 import BaseFeatureDependency
-import SettingFeatureInterface
 
 public class NicknameEditVC: UIViewController, NicknameEditViewControllable {
     
     // MARK: - Properties
     
     public var viewModel: NicknameEditViewModel!
-    public var factory: AlertViewBuildable!
     private var cancelBag = CancelBag()
     
     // MARK: - UI Components
@@ -107,10 +105,10 @@ extension NicknameEditVC {
     }
     
     public func showNetworkAlert() {
-        let alertVC = factory.makeNetworkAlertVC(theme: .main).viewController
-        alertVC.modalPresentationStyle = .overFullScreen
-        alertVC.modalTransitionStyle = .crossDissolve
-        self.present(alertVC, animated: true)
+//        let alertVC = factory.makeNetworkAlertVC(theme: .main).viewController
+//        alertVC.modalPresentationStyle = .overFullScreen
+//        alertVC.modalTransitionStyle = .crossDissolve
+//        self.present(alertVC, animated: true)
     }
 }
 

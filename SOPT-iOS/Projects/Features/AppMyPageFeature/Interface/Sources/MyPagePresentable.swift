@@ -9,9 +9,14 @@
 import BaseFeatureDependency
 import Core
 
-public protocol MyPageViewControllable: ViewControllable { }
+public protocol MyPageViewControllable: ViewControllable & MyPageCoordinatable { }
 public protocol MyPageCoordinatable {
     var onNaviBackButtonTap: (() -> Void)? { get set }
+    var onPolicyItemTap: (() -> Void)? { get set }
+    var onTermsOfUseItemTap: (() -> Void)? { get set }
+    var onEditOnelineSentenceItemTap: (() -> Void)? { get set }
+    var onEditNicknameItemTap: (() -> Void)? { get set }
+    var onWithdrawalItemTap: ((UserType) -> Void)? { get set }
+    var onShowLogin: (() -> Void)? { get set }
 }
-public typealias MyPageViewModelType = ViewModelType & MyPageCoordinatable
-public typealias MyPagePresentable = (vc: MyPageViewControllable, vm: any MyPageViewModelType)
+public typealias MyPageViewModelType = ViewModelType

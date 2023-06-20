@@ -66,5 +66,23 @@ extension AppDelegate {
                 )
             }
         )
+        container.register(
+            interface: SettingRepositoryInterface.self,
+            implement: {
+                SettingRepository(
+                    authService: DefaultAuthService(),
+                    stampService: DefaultStampService(),
+                    userService: DefaultUserService()
+                )
+            }
+        )
+        container.register(
+            interface: SignUpRepositoryInterface.self,
+            implement: {
+                SignUpRepository(
+                    service: DefaultUserService()
+                )
+            }
+        )
     }
 }

@@ -14,15 +14,13 @@ import Combine
 import Core
 
 import BaseFeatureDependency
-import AuthFeatureInterface
-import SettingFeatureInterface
+import AppMyPageFeatureInterface
 
 public class WithdrawalVC: UIViewController, WithdrawalViewControllable {
     
     // MARK: - Properties
     
     public var viewModel: WithdrawalViewModel!
-    public var factory: (AuthFeatureViewBuildable & AlertViewBuildable)!
     private let cancelBag = CancelBag()
     public var userType: UserType = .active
     
@@ -151,21 +149,21 @@ extension WithdrawalVC {
     }
     
     private func showToastAndChangeRootView() {
-        let window = self.view.window!
-        let navigation = UINavigationController(rootViewController: factory.makeSignIn().vc.viewController)
-        navigation.isNavigationBarHidden = true
-        SFSafariViewController.DataStore.default.clearWebsiteData()
-        ViewControllerUtils.setRootViewController(window: window, viewController: navigation, withAnimation: true) { newWindow in
-            Toast.show(message: I18N.Setting.Withdrawal.withdrawalSuccess,
-                       view: newWindow,
-                       safeAreaBottomInset: self.safeAreaBottomInset())
-        }
+//        let window = self.view.window!
+//        let navigation = UINavigationController(rootViewController: factory.makeSignIn().vc.viewController)
+//        navigation.isNavigationBarHidden = true
+//        SFSafariViewController.DataStore.default.clearWebsiteData()
+//        ViewControllerUtils.setRootViewController(window: window, viewController: navigation, withAnimation: true) { newWindow in
+//            Toast.show(message: I18N.Setting.Withdrawal.withdrawalSuccess,
+//                       view: newWindow,
+//                       safeAreaBottomInset: self.safeAreaBottomInset())
+//        }
     }
     
     public func showNetworkAlert() {
-        let alertVC = factory.makeNetworkAlertVC(theme: .main).viewController
-        alertVC.modalPresentationStyle = .overFullScreen
-        alertVC.modalTransitionStyle = .crossDissolve
-        self.present(alertVC, animated: true)
+//        let alertVC = factory.makeNetworkAlertVC(theme: .main).viewController
+//        alertVC.modalPresentationStyle = .overFullScreen
+//        alertVC.modalTransitionStyle = .crossDissolve
+//        self.present(alertVC, animated: true)
     }
 }

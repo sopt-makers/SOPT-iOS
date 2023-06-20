@@ -18,8 +18,6 @@ import Then
 
 import BaseFeatureDependency
 import SplashFeatureInterface
-import AuthFeatureInterface
-import MainFeatureInterface
 
 public class SplashVC: UIViewController, SplashViewControllable {
     

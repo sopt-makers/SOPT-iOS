@@ -130,7 +130,7 @@ extension MainVC {
         
         output.needSignIn
             .sink { [weak self] in
-//                self?.setRootViewToSignIn()
+                //                self?.setRootViewToSignIn()
             }.store(in: self.cancelBag)
         
         output.isLoading
@@ -174,7 +174,7 @@ extension MainVC {
     //        let navigation = UINavigationController(rootViewController: factory.makeSignIn().vc.viewController)
     //        navigation.isNavigationBarHidden = true
     //        ViewControllerUtils.setRootViewController(window: window, viewController: navigation, withAnimation: true)
-    //    }
+    //}
     
     private func presentNetworkAlertVC() {
         guard self.presentedViewController == nil else { return }
@@ -213,8 +213,8 @@ extension MainVC: UICollectionViewDelegate {
             guard let service = viewModel.mainServiceList[safe: indexPath.item - 1] else { return }
             
             guard service != .attendance else {
-//                let viewController = factory.makeShowAttendanceVC().viewController
-//                self.navigationController?.pushViewController(viewController, animated: true)
+                //                let viewController = factory.makeShowAttendanceVC().viewController
+                //                self.navigationController?.pushViewController(viewController, animated: true)
                 return
             }
             
