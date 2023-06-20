@@ -13,7 +13,6 @@ import Core
 
 public protocol AppNoticeUseCase {
     func getAppNotice()
-    func storeCheckedRecommendUpdateVersion(version: String)
     
     var appNoticeModel: PassthroughSubject<AppNoticeModel?, Error> { get set }
 }
@@ -64,9 +63,5 @@ extension DefaultAppNoticeUseCase: AppNoticeUseCase {
                 self.appNoticeModel.send(nil)
             }
         }.store(in: cancelBag)
-    }
-    
-    public func storeCheckedRecommendUpdateVersion(version: String) {
-        repository.storeCheckedRecommendUpdateVersion(version: version)
     }
 }

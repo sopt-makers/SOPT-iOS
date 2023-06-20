@@ -11,10 +11,11 @@ import Combine
 
 import Core
 import Domain
+import MainFeatureInterface
 
 import Sentry
 
-public class MainViewModel: ViewModelType {
+public class MainViewModel: MainViewModelType {
 
     // MARK: - Properties
     

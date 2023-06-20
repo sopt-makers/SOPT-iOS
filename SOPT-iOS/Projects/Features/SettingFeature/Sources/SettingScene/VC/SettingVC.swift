@@ -26,7 +26,7 @@ public class SettingVC: UIViewController, SettingViewControllable {
     
     public var viewModel: SettingViewModel!
     private var cancelBag = CancelBag()
-    public var factory: (AuthFeatureViewBuildable & SettingFeatureViewBuildable & StampFeatureViewBuildable & AlertViewBuildable)!
+    public var factory: (AuthFeatureViewBuildable & SettingFeatureViewBuildable & AlertViewBuildable)!
     private let resetButtonTapped = PassthroughSubject<Bool, Never>()
     
     // MARK: - UI Components
@@ -120,7 +120,7 @@ extension SettingVC {
     
     private func changeRootViewController() {
         guard let uWindow = self.view.window else { return }
-        let navigation = UINavigationController(rootViewController: factory.makeSignInVC().viewController)
+        let navigation = UINavigationController(rootViewController: factory.makeSignIn().vc.viewController)
         navigation.isNavigationBarHidden = true
         uWindow.rootViewController = navigation
         uWindow.makeKey()

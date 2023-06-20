@@ -9,7 +9,7 @@
 import UIKit
 
 import Core
-import AuthFeatureInterface
+import AuthFeature
 
 // MARK: Handle URLs
 
@@ -62,7 +62,8 @@ extension SceneDelegate {
     }
     
     func redirectSignInVC(url: String) {
-        var signInControllable = container.makeSignInVC()
+        // FIXME: - Coordinator 이용한 방식으로 변경
+        var signInControllable = AuthBuilder().makeSignIn().vc
         signInControllable.skipAnimation = true
         for item in parseParameter(url: url) {
             if item.query == "state" {

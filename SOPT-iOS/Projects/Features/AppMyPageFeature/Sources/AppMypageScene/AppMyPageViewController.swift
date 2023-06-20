@@ -317,7 +317,7 @@ extension AppMyPageVC {
     
     private func showLoginViewController() {
         guard let window = self.view.window else { return }
-        let navigation = UINavigationController(rootViewController: factory.makeSignInVC().viewController)
+        let navigation = UINavigationController(rootViewController: factory.makeSignIn().vc.viewController)
         navigation.isNavigationBarHidden = true
         ViewControllerUtils.setRootViewController(window: window, viewController: navigation, withAnimation: true)
     }

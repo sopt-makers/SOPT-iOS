@@ -25,7 +25,6 @@ public class SignInVC: UIViewController, SignInViewControllable {
     
     // MARK: - Properties
     
-    public var factory: (AuthFeatureViewBuildable & MainFeatureViewBuildable)!
     public var viewModel: SignInViewModel!
     public var skipAnimation: Bool = false
     public var accessCode: String? = nil
@@ -172,12 +171,6 @@ extension SignInVC {
             .sink { owner, _ in
                 owner.openPlaygroundURL()
             }.store(in: self.cancelBag)
-        
-        notMemberButton.publisher(for: .touchUpInside)
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.setRootViewToMain(isVisitor: true)
-            }.store(in: self.cancelBag)
     }
     
     private func bindViewModels() {
@@ -190,33 +183,16 @@ extension SignInVC {
             .eraseToAnyPublisher()
             .asDriver()
         
+        let visitorButtonTapped = self.notMemberButton
+            .publisher(for: .touchUpInside)
+            .compactMap { _ in () }
+            .asDriver()
+        
         let input = SignInViewModel.Input(
-            playgroundSignInFinished: signInFinished
+            playgroundSignInFinished: signInFinished,
+            visitorButtonTapped: visitorButtonTapped
         )
-        let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
-        
-        output.isSignInSuccess
-            .removeDuplicates()
-            .sink { [weak self] type in
-                guard let self = self else { return }
-                
-                switch type {
-                case .loginSuccess:
-                    self.setRootViewToMain()
-                case .unregistedProfile:
-                    self.setRootViewToMain(isInActiveUser: true)
-                case .loginFailure: break
-                }
-            }.store(in: self.cancelBag)
-    }
-    
-    private func setRootViewToMain(isInActiveUser: Bool = false, isVisitor: Bool = false) {
-        var userType = isInActiveUser ? .unregisteredInactive : UserDefaultKeyList.Auth.getUserType()
-        
-        if isVisitor { userType = .visitor }
-        
-        let navigation = UINavigationController(rootViewController: factory.makeMainVC(userType: userType).viewController)
-        ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
+        let _ = self.viewModel.transform(from: input, cancelBag: cancelBag)
     }
     
     private func openPlaygroundURL() {

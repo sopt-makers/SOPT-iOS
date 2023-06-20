@@ -25,13 +25,8 @@ public class SplashVC: UIViewController, SplashViewControllable {
     
     // MARK: - Properties
     
-    public var factory: (SplashFeatureViewBuildable & AuthFeatureViewBuildable & MainFeatureViewBuildable & AlertViewBuildable)!
     public var viewModel: SplashViewModel!
-    
     private var cancelBag = CancelBag()
-    
-    private var requestAppNotice = CurrentValueSubject<Void, Never>(())
-    private var recommendUpdateVersionChecked = PassthroughSubject<String?, Never>()
     
     // MARK: - UI Components
     
@@ -91,72 +86,7 @@ extension SplashVC {
     }
     
     private func bindViewModels() {
-        let input = SplashViewModel.Input(requestAppNotice: self.requestAppNotice,
-                                          recommendUpdateVersionChecked: self.recommendUpdateVersionChecked)
-        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
-        
-        output.appNoticeModel
-            .sink { event in
-                print("SplashVC: \(event)")
-            } receiveValue: { [weak self] appNoticeModel in
-                guard let self = self else { return }
-                guard let appNoticeModel = appNoticeModel else {
-                    self.checkDidSignIn()
-                    return
-                }
-                guard appNoticeModel.withError == false else {
-                    self.presentNetworkAlertVC()
-                    return
-                }
-                self.presentNoticePopUp(model: appNoticeModel)
-            }.store(in: self.cancelBag)
-    }
-    
-    private func presentNoticePopUp(model: AppNoticeModel) {
-        guard let isForcedUpdate = model.isForced else { return }
-        let popUpType: NoticePopUpType = isForcedUpdate ? .forceUpdate : .recommendUpdate
-        
-        let noticePopUpScene = factory.makeNoticePopUpVC(noticeType: popUpType, content: model.notice)
-        let noticePopUpVC = noticePopUpScene.viewController
-        
-        noticePopUpScene.closeButtonTappedWithCheck.sink { [weak self] didCheck in
-            self?.recommendUpdateVersionChecked.send(didCheck ? model.recommendVersion : nil)
-            noticePopUpVC.dismiss(animated: false)
-            self?.checkDidSignIn()
-        }.store(in: cancelBag)
-        
-        self.present(noticePopUpVC, animated: false)
-    }
-    
-    private func checkDidSignIn() {
-        let needAuth = UserDefaultKeyList.Auth.appAccessToken == nil
-        needAuth ? presentSignInVC() : setRootViewToMain()
-    }
-    
-    private func setRootViewToMain() {
-        let userType = UserDefaultKeyList.Auth.getUserType()
-        let navigation = UINavigationController(rootViewController: factory.makeMainVC(userType: userType).viewController)
-        ViewControllerUtils.setRootViewController(window: self.view.window!, viewController: navigation, withAnimation: true)
-    }
-    
-    private func presentSignInVC() {
-        let nextVC = factory.makeSignInVC().viewController
-        nextVC.modalPresentationStyle = .fullScreen
-        nextVC.modalTransitionStyle = .crossDissolve
-        self.present(nextVC, animated: false)
-    }
-    
-    private func presentNetworkAlertVC() {
-        let networkAlertVC = factory.makeAlertVC(
-            type: .titleDescription,
-            theme: .main,
-            title: I18N.Default.networkError,
-            description: I18N.Default.networkErrorDescription,
-            customButtonTitle: I18N.Default.ok,
-            customAction:{ [weak self] in
-                self?.requestAppNotice.send()
-            }).viewController
-        
-        self.present(networkAlertVC, animated: false)
+        let input = SplashViewModel.Input()
+        let _ = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
     }
 }

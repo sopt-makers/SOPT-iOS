@@ -8,42 +8,45 @@
 import UIKit
 
 import Core
-import MainFeature
+import BaseFeatureDependency
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-
+    
     var window: UIWindow?
     
-    let container = DependencyManager()
-
+    var rootController: UINavigationController {
+        return self.window!.rootViewController as? UINavigationController ?? UINavigationController(rootViewController: UIViewController())
+    }
+    
+    lazy var appCoordinator: ApplicationCoordinator = ApplicationCoordinator(
+        router: Router(rootController: rootController)
+    )
+    
     func scene(_ scene: UIScene,
-        willConnectTo session: UISceneSession,
-        options connectionOptions: UIScene.ConnectionOptions) {
+               willConnectTo session: UISceneSession,
+               options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
         
-        window = UIWindow(frame: scene.coordinateSpace.bounds)
-        window?.windowScene = scene
-//        let rootVC = container.makeShowAttendanceVC().viewController
-        let rootVC = container.makeSplashVC().viewController
-//                let rootVC = container.makeMainVC(userType: .active).viewController
-
-        window?.rootViewController = UINavigationController(rootViewController: rootVC)
+        window = UIWindow(windowScene: scene)
+        window?.rootViewController = rootController
         window?.makeKeyAndVisible()
+        
+        self.appCoordinator.start()
     }
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         parseContexts(openURLContexts: URLContexts)
     }
-
+    
     func sceneDidDisconnect(_ scene: UIScene) {}
-
+    
     func sceneDidBecomeActive(_ scene: UIScene) {
         UIApplication.shared.applicationIconBadgeNumber = 0
     }
-
+    
     func sceneWillResignActive(_ scene: UIScene) {}
-
+    
     func sceneWillEnterForeground(_ scene: UIScene) {}
-
+    
     func sceneDidEnterBackground(_ scene: UIScene) {}
 }

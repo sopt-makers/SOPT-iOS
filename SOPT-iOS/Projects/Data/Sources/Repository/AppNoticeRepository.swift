@@ -30,10 +30,6 @@ extension AppNoticeRepository: AppNoticeRepositoryInterface {
         }.eraseToAnyPublisher()
     }
     
-    public func storeCheckedRecommendUpdateVersion(version: String) {
-        UserDefaultKeyList.AppNotice.checkedAppVersion = version
-    }
-    
     public func getCheckedRecommendUpdateVersion() -> String? {
         return UserDefaultKeyList.AppNotice.checkedAppVersion
     }

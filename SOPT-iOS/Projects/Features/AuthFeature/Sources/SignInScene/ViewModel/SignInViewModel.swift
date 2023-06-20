@@ -11,8 +11,10 @@ import Combine
 import Core
 import Domain
 
-public class SignInViewModel: ViewModelType {
+import AuthFeatureInterface
 
+public class SignInViewModel: SignInViewModelType {
+    
     private let useCase: SignInUseCase
     private var cancelBag = CancelBag()
   
@@ -20,13 +22,18 @@ public class SignInViewModel: ViewModelType {
     
     public struct Input {
         let playgroundSignInFinished: Driver<String>
+        let visitorButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs
     
     public struct Output {
-        var isSignInSuccess = PassthroughSubject<SiginInHandleableType, Never>()
     }
+    
+    // MARK: - SignInCoordinating
+    
+    public var onSignInSuccess: ((SiginInHandleableType) -> Void)?
+    public var onVisitorButtonTapped: (() -> Void)?
     
     // MARK: - init
   
@@ -40,6 +47,12 @@ extension SignInViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
+        input.visitorButtonTapped
+            .withUnretained(self)
+            .sink { owner, token in
+                owner.onVisitorButtonTapped?()
+            }.store(in: self.cancelBag)
+        
         input.playgroundSignInFinished
             .withUnretained(self)
             .sink { owner, token in
@@ -49,12 +62,13 @@ extension SignInViewModel {
     }
   
     private func bindOutput(output: Output, cancelBag: CancelBag) {
-        
         useCase.signInSuccess
+            .removeDuplicates()
+            .withUnretained(self)
             .sink { event in
                 print("SignInViewModel: \(event)")
-            } receiveValue: { isSignInSuccess in
-                output.isSignInSuccess.send(isSignInSuccess)
+            } receiveValue: { (owner, isSignInSuccess) in
+                owner.onSignInSuccess?(isSignInSuccess)
             }.store(in: self.cancelBag)
     }
 }

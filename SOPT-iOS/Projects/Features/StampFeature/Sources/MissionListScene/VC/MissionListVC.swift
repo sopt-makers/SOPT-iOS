@@ -24,7 +24,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
     // MARK: - Properties
     
     public var viewModel: MissionListViewModel!
-    public var factory: (SettingFeatureViewBuildable & StampFeatureViewBuildable)!
+    public var factory: StampFeatureViewBuildable!
     public var sceneType: MissionListSceneType {
         return self.viewModel.missionListsceneType
     }

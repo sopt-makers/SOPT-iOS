@@ -152,7 +152,7 @@ extension WithdrawalVC {
     
     private func showToastAndChangeRootView() {
         let window = self.view.window!
-        let navigation = UINavigationController(rootViewController: factory.makeSignInVC().viewController)
+        let navigation = UINavigationController(rootViewController: factory.makeSignIn().vc.viewController)
         navigation.isNavigationBarHidden = true
         SFSafariViewController.DataStore.default.clearWebsiteData()
         ViewControllerUtils.setRootViewController(window: window, viewController: navigation, withAnimation: true) { newWindow in

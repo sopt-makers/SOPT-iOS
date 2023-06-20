@@ -10,6 +10,5 @@ import Combine
 
 public protocol AppNoticeRepositoryInterface {
     func getAppNotice() -> AnyPublisher<AppNoticeModel, Error>
-    func storeCheckedRecommendUpdateVersion(version: String)
     func getCheckedRecommendUpdateVersion() -> String?
 }

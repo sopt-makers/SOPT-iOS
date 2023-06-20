@@ -17,46 +17,31 @@ import Combine
 import SnapKit
 import Then
 
-import AuthFeatureInterface
 import BaseFeatureDependency
-import MainFeatureInterface
-import StampFeatureInterface
-import SettingFeatureInterface
-import AppMyPageFeatureInterface
-import AttendanceFeatureInterface
-import NotificationFeatureInterface
 
 public class MainVC: UIViewController, MainViewControllable {
-    public typealias factoryType = AuthFeatureViewBuildable
-    & StampFeatureViewBuildable
-    & SettingFeatureViewBuildable
-    & AppMyPageFeatureViewBuildable
-    & AttendanceFeatureViewBuildable
-    & NotificationFeatureViewBuildable
-    & AlertViewBuildable
     
     // MARK: - Properties
     
     public var viewModel: MainViewModel!
-    public var factory: factoryType!
     private var cancelBag = CancelBag()
     
     private var requestUserInfo = PassthroughSubject<Void, Never>()
-
+    
     // MARK: - UI Components
     
     private let naviBar = MainNavigationBar().hideNoticeButton(wantsToHide: true)
     
     private lazy var collectionView: UICollectionView = {
-      let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
-      cv.isScrollEnabled = true
-      cv.showsHorizontalScrollIndicator = false
-      cv.showsVerticalScrollIndicator = false
-      cv.contentInset = UIEdgeInsets(top: 7, left: 0, bottom: 0, right: 0)
-      cv.backgroundColor = .clear
-      return cv
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
+        cv.isScrollEnabled = true
+        cv.showsHorizontalScrollIndicator = false
+        cv.showsVerticalScrollIndicator = false
+        cv.contentInset = UIEdgeInsets(top: 7, left: 0, bottom: 0, right: 0)
+        cv.backgroundColor = .clear
+        return cv
     }()
-  
+    
     // MARK: - View Life Cycle
     
     public override func viewDidLoad() {
@@ -114,7 +99,7 @@ extension MainVC {
                 self?.collectionView.reloadData()
                 self?.naviBar.hideNoticeButton(wantsToHide: self?.viewModel.userType == .visitor )
             }.store(in: self.cancelBag)
-   
+        
         output.isServiceAvailable
             .sink { isServiceAvailable in
                 print("현재 앱 서비스 사용 가능(심사 X)?: \(isServiceAvailable)")
@@ -133,7 +118,7 @@ extension MainVC {
         
         output.needSignIn
             .sink { [weak self] in
-                self?.setRootViewToSignIn()
+//                self?.setRootViewToSignIn()
             }.store(in: self.cancelBag)
         
         output.isLoading
@@ -146,15 +131,15 @@ extension MainVC {
         naviBar.noticeButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                let notificationListVC = owner.factory.makeNotificationListVC().viewController
-                owner.navigationController?.pushViewController(notificationListVC, animated: true)
+                //                let notificationListVC = owner.factory.makeNotificationListVC().viewController
+                //                owner.navigationController?.pushViewController(notificationListVC, animated: true)
             }.store(in: self.cancelBag)
         
         naviBar.rightButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                let viewController = owner.factory.makeAppMyPageVC(userType: owner.viewModel.userType).viewController
-                owner.navigationController?.pushViewController(viewController, animated: true)
+                //                let viewController = owner.factory.makeAppMyPageVC(userType: owner.viewModel.userType).viewController
+                //                owner.navigationController?.pushViewController(viewController, animated: true)
             }.store(in: self.cancelBag)
     }
     
@@ -177,28 +162,28 @@ extension MainVC {
     }
     
     private func presentSoptampFeature() {
-        let vc = factory.makeMissionListVC(sceneType: .default).viewController
-        let nav = UINavigationController(rootViewController: vc)
-        nav.modalPresentationStyle = .fullScreen
-        present(nav, animated: true)
+        //        let vc = factory.makeMissionListVC(sceneType: .default).viewController
+        //        let nav = UINavigationController(rootViewController: vc)
+        //        nav.modalPresentationStyle = .fullScreen
+        //        present(nav, animated: true)
     }
     
     private func pushSettingFeature() {
-        let vc = factory.makeSettingVC().viewController
-        navigationController?.pushViewController(vc, animated: true)
+        //        let vc = factory.makeSettingVC().viewController
+        //        navigationController?.pushViewController(vc, animated: true)
     }
     
-    private func setRootViewToSignIn() {
-        guard let window = self.view.window else { return }
-        let navigation = UINavigationController(rootViewController: factory.makeSignInVC().viewController)
-        navigation.isNavigationBarHidden = true
-        ViewControllerUtils.setRootViewController(window: window, viewController: navigation, withAnimation: true)
-    }
+    //    private func setRootViewToSignIn() {
+    //        guard let window = self.view.window else { return }
+    //        let navigation = UINavigationController(rootViewController: factory.makeSignIn().vc.viewController)
+    //        navigation.isNavigationBarHidden = true
+    //        ViewControllerUtils.setRootViewController(window: window, viewController: navigation, withAnimation: true)
+    //    }
     
     private func presentNetworkAlertVC() {
         guard self.presentedViewController == nil else { return }
         
-        let networkAlertVC = factory.makeAlertVC(
+        AlertUtils.presentAlertVC(
             type: .titleDescription,
             theme: .main,
             title: I18N.Default.networkError,
@@ -206,22 +191,19 @@ extension MainVC {
             customButtonTitle: I18N.Default.ok,
             customAction:{ [weak self] in
                 self?.requestUserInfo.send()
-            }).viewController
-        
-        self.present(networkAlertVC, animated: false)
+            }
+        )
     }
     
     private func presentPlaygroundRegisterationAlertVC() {
-        let alertVC = self.factory.makeAlertVC(
+        AlertUtils.presentAlertVC(
             type: .networkErr,
             theme: .main,
             title: I18N.Main.failedToGetUserInfo,
             description: I18N.Main.needToRegisterPlayground,
             customButtonTitle: "",
-            customAction: nil)
-            .viewController
-        
-        self.present(alertVC, animated: false)
+            customAction: nil
+        )
     }
 }
 
@@ -229,32 +211,32 @@ extension MainVC {
 
 extension MainVC: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-      switch (indexPath.section, indexPath.row) {
-      case (0, _): break
-      case (1, _):
-          guard let service = viewModel.mainServiceList[safe: indexPath.item - 1] else { return }
-          
-          guard service != .attendance else {
-              let viewController = factory.makeShowAttendanceVC().viewController
-              self.navigationController?.pushViewController(viewController, animated: true)
-              return
-          }
-          
-          let needOfficialProject = service == .project && viewModel.userType == .visitor
-          let serviceDomainURL = needOfficialProject
-          ? ExternalURL.SOPT.project
-          : service.serviceDomainLink
-          showSafariVC(url: serviceDomainURL)
-      case (2, _):
-          guard let service = viewModel.otherServiceList[safe: indexPath.item] else { return }
-          
-          showSafariVC(url: service.serviceDomainLink)
-      case(3, _):
-          guard viewModel.userType != .visitor && viewModel.userType != .unregisteredInactive else { return }
-          
-          presentSoptampFeature()
-      default: break
-      }
+        switch (indexPath.section, indexPath.row) {
+        case (0, _): break
+        case (1, _):
+            guard let service = viewModel.mainServiceList[safe: indexPath.item - 1] else { return }
+            
+            guard service != .attendance else {
+//                let viewController = factory.makeShowAttendanceVC().viewController
+//                self.navigationController?.pushViewController(viewController, animated: true)
+                return
+            }
+            
+            let needOfficialProject = service == .project && viewModel.userType == .visitor
+            let serviceDomainURL = needOfficialProject
+            ? ExternalURL.SOPT.project
+            : service.serviceDomainLink
+            showSafariVC(url: serviceDomainURL)
+        case (2, _):
+            guard let service = viewModel.otherServiceList[safe: indexPath.item] else { return }
+            
+            showSafariVC(url: service.serviceDomainLink)
+        case(3, _):
+            guard viewModel.userType != .visitor && viewModel.userType != .unregisteredInactive else { return }
+            
+            presentSoptampFeature()
+        default: break
+        }
     }
     
     private func showSafariVC(url: String) {
@@ -267,7 +249,7 @@ extension MainVC: UICollectionViewDelegate {
 // MARK: - UICollectionViewDataSource
 
 extension MainVC: UICollectionViewDataSource {
-
+    
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 4
     }

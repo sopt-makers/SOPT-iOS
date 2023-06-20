@@ -7,13 +7,17 @@
 //
 
 import BaseFeatureDependency
+import Core
+import Domain
 
 public protocol SignInViewControllable: ViewControllable {
     var skipAnimation: Bool { get set }
     var accessCode: String? { get set }
     var requestState: String? { get set }
 }
-
-public protocol AuthFeatureViewBuildable {
-    func makeSignInVC() -> SignInViewControllable
+public protocol SignInCoordinatable {
+    var onSignInSuccess: ((SiginInHandleableType) -> Void)? { get set }
+    var onVisitorButtonTapped: (() -> Void)? { get set }
 }
+public typealias SignInViewModelType = ViewModelType & SignInCoordinatable
+public typealias SignInPresentable = (vc: SignInViewControllable, vm: any SignInViewModelType)
