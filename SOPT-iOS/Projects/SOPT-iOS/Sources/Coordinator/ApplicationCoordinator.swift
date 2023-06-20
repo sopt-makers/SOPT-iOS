@@ -14,6 +14,7 @@ import SplashFeature
 import AuthFeature
 import MainFeature
 import AppMyPageFeature
+import NotificationFeature
 
 final class ApplicationCoordinator: BaseCoordinator {
     
@@ -34,11 +35,15 @@ final class ApplicationCoordinator: BaseCoordinator {
             runSplashFlow()
         }
     }
-    
+}
+
+// MARK: - SplashFlow
+
+extension ApplicationCoordinator {
     private func runSplashFlow() {
         let coordinator = SplashCoordinator(router: router, factory: SplashBuilder())
         coordinator.finishFlow = { [weak self, weak coordinator] in
-            self?.runSignInFlow(by: .modal)
+            self?.checkDidSignIn()
             self?.removeDependency(coordinator)
         }
         addDependency(coordinator)
@@ -49,7 +54,11 @@ final class ApplicationCoordinator: BaseCoordinator {
         let needAuth = UserDefaultKeyList.Auth.appAccessToken == nil
         needAuth ? runSignInFlow(by: .modal) : runMainFlow()
     }
-    
+}
+
+// MARK: - SignInFlow
+
+extension ApplicationCoordinator {
     private func runSignInFlow(by style: CoordinatorStartingOption) {
         let coordinator = AuthCoordinator(router: router, factory: AuthBuilder())
         coordinator.finishFlow = { [weak self, weak coordinator] userType in
@@ -60,6 +69,21 @@ final class ApplicationCoordinator: BaseCoordinator {
         coordinator.start(by: style)
     }
     
+    private func runSignInSuccessFlow(with url: String) {
+        childCoordinators = []
+        let coordinator = AuthCoordinator(router: router, factory: AuthBuilder(), url: url)
+        coordinator.finishFlow = { [weak self, weak coordinator] userType in
+            self?.runMainFlow(type: userType)
+            self?.removeDependency(coordinator)
+        }
+        addDependency(coordinator)
+        coordinator.start(by: .rootWindow)
+    }
+}
+
+// MARK: - MainFlow
+
+extension ApplicationCoordinator {
     private func runMainFlow(type: UserType? = nil) {
         let userType = type ?? UserDefaultKeyList.Auth.getUserType()
         let coordinator = MainCoordinator(
@@ -75,8 +99,8 @@ final class ApplicationCoordinator: BaseCoordinator {
             switch destination {
             case .myPage(let userType):
                 self?.runMyPageFlow(of: userType)
-            case .notice:
-                break
+            case .notification:
+                self?.runNotificationFlow()
             case .attendance:
                 break
             case .stamp:
@@ -101,17 +125,18 @@ final class ApplicationCoordinator: BaseCoordinator {
         addDependency(coordinator)
         coordinator.start()
     }
-}
-
-extension ApplicationCoordinator {
-    private func runSignInSuccessFlow(with url: String) {
-        childCoordinators = []
-        let coordinator = AuthCoordinator(router: router, factory: AuthBuilder(), url: url)
-        coordinator.finishFlow = { [weak self, weak coordinator] userType in
-            self?.runMainFlow(type: userType)
+    
+    private func runNotificationFlow() {
+        let coordinator = NotificationCoordinator(
+            router: Router(
+                rootController: UIWindow.getTopNavigationController
+            ),
+            factory: NotificationBuilder()
+        )
+        coordinator.finishFlow = { [weak self, weak coordinator] in
             self?.removeDependency(coordinator)
         }
         addDependency(coordinator)
-        coordinator.start(by: .rootWindow)
+        coordinator.start()
     }
 }

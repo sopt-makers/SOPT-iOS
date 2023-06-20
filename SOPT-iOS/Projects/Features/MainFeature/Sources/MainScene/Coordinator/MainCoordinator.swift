@@ -10,7 +10,7 @@ import BaseFeatureDependency
 import Core
 
 public enum MainCoordinatorDestination {
-    case notice
+    case notification
     case myPage(UserType)
     case attendance
     case stamp
@@ -40,7 +40,7 @@ final class MainCoordinator: DefaultMainCoordinator {
     public override func start() {
         var main = factory.makeMain(userType: userType)
         main.vm.onNoticeButtonTap = { [weak self] in
-            self?.requestCoordinating?(.notice)
+            self?.requestCoordinating?(.notification)
         }
         main.vm.onMyPageButtonTap = { [weak self] userType in
             self?.requestCoordinating?(.myPage(userType))

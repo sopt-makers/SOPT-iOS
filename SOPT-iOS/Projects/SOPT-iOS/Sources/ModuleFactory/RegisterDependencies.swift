@@ -33,7 +33,6 @@ extension AppDelegate {
                 AppNoticeRepository(service: DefaultFirebaseService())
             }
         )
-        
         container.register(
             interface: MainRepositoryInterface.self,
             implement: {
@@ -43,12 +42,27 @@ extension AppDelegate {
                 )
             }
         )
-        
         container.register(
             interface: AppMyPageRepositoryInterface.self,
             implement: {
                 AppMyPageRepository(
                     stampService: DefaultStampService()
+                )
+            }
+        )
+        container.register(
+            interface: NotificationListRepositoryInterface.self,
+            implement: {
+                NotificationListRepository(
+                    service: DefaultUserService()
+                )
+            }
+        )
+        container.register(
+            interface: NotificationDetailRepositoryInterface.self,
+            implement: {
+                NotificationDetailRepository(
+                    service: DefaultUserService()
                 )
             }
         )
