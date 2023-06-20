@@ -112,10 +112,10 @@ extension SentenceEditVC {
     }
     
     public func showNetworkAlert() {
-//        let alertVC = factory.makeNetworkAlertVC(theme: .soptamp).viewController
-//        alertVC.modalPresentationStyle = .overFullScreen
-//        alertVC.modalTransitionStyle = .crossDissolve
-//        self.present(alertVC, animated: true)
+        AlertUtils.presentNetworkAlertVC(
+            theme: .main,
+            animated: true
+        )
     }
 }
 

@@ -10,16 +10,20 @@ import Core
 import BaseFeatureDependency
 import AppMyPageFeatureInterface
 
+public enum MyPageCoordinatorDestination {
+    case signIn
+    case signInWithToast
+}
 public protocol MyPageCoordinatorFinishOutput {
     var finishFlow: (() -> Void)? { get set }
-    var rootToSignIn: (() -> Void)? { get set }
+    var requestCoordinating: ((MyPageCoordinatorDestination) -> Void)? { get set }
 }
 public typealias DefaultCoordinator = BaseCoordinator & MyPageCoordinatorFinishOutput
 public
 final class MyPageCoordinator: DefaultCoordinator {
         
     public var finishFlow: (() -> Void)?
-    public var rootToSignIn: (() -> Void)?
+    public var requestCoordinating: ((MyPageCoordinatorDestination) -> Void)?
     
     private let factory: MyPageFeatureBuildable
     private let router: Router
@@ -38,7 +42,7 @@ final class MyPageCoordinator: DefaultCoordinator {
             self?.finishFlow?()
         }
         myPage.onShowLogin = { [weak self] in
-            self?.rootToSignIn?()
+            self?.requestCoordinating?(.signIn)
         }
         myPage.onPolicyItemTap = { [weak self] in
             let policyVC = self?.factory.makePrivacyPolicyVC()
@@ -57,9 +61,16 @@ final class MyPageCoordinator: DefaultCoordinator {
             self?.router.push(sentenceEditVC)
         }
         myPage.onWithdrawalItemTap = { [weak self] userType in
-            let withdrawalVC = self?.factory.makeWithdrawalVC(userType: userType)
-            self?.router.push(withdrawalVC)
+            self?.showWithdrawal(userType: userType)
         }
         router.push(myPage)
+    }
+    
+    private func showWithdrawal(userType: UserType) {
+        var withdrawalVC = self.factory.makeWithdrawalVC(userType: userType)
+        withdrawalVC.onWithdrawal = { [weak self] in
+            self?.requestCoordinating?(.signInWithToast)
+        }
+        self.router.push(withdrawalVC)
     }
 }

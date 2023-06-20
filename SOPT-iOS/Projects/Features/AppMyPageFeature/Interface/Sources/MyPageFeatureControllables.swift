@@ -13,6 +13,9 @@ public protocol NicknameEditViewControllable: ViewControllable { }
 public protocol SentenceEditViewControllable: ViewControllable { }
 public protocol PrivacyPolicyViewControllable: ViewControllable { }
 public protocol TermsOfServiceViewControllable: ViewControllable { }
-public protocol WithdrawalViewControllable: ViewControllable {
+public protocol WithdrawalViewControllable: ViewControllable & WithdrawalViewCoordinatable {
     var userType: UserType { get set }
+}
+public protocol WithdrawalViewCoordinatable {
+    var onWithdrawal: (() -> Void)? { get set }
 }

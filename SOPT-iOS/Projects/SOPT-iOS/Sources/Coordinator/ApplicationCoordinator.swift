@@ -77,7 +77,7 @@ extension ApplicationCoordinator {
             self?.removeDependency(coordinator)
         }
         addDependency(coordinator)
-        coordinator.start(by: .rootWindow(animated: false))
+        coordinator.start(by: .rootWindow(animated: false, message: nil))
     }
 }
 
@@ -122,10 +122,15 @@ extension ApplicationCoordinator {
         coordinator.finishFlow = { [weak self, weak coordinator] in
             self?.removeDependency(coordinator)
         }
-        coordinator.rootToSignIn = { [weak self, weak coordinator] in
+        coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
             self?.removeDependency(coordinator)
             self?.childCoordinators = []
-            self?.runSignInFlow(by: .rootWindow(animated: true))
+            switch destination {
+            case .signIn:
+                self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
+            case .signInWithToast:
+                self?.runSignInFlow(by: .rootWindow(animated: true, message: I18N.Setting.Withdrawal.withdrawalSuccess))
+            }
         }
         addDependency(coordinator)
         coordinator.start()

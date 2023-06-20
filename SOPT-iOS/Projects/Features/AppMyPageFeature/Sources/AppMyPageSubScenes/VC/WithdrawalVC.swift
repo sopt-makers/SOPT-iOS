@@ -24,6 +24,10 @@ public class WithdrawalVC: UIViewController, WithdrawalViewControllable {
     private let cancelBag = CancelBag()
     public var userType: UserType = .active
     
+    // MARK: - WithdrawalViewCoordiatable
+    
+    public var onWithdrawal: (() -> Void)?
+    
     // MARK: - UI Components
 
     private lazy var naviBar = OPNavigationBar(
@@ -149,21 +153,14 @@ extension WithdrawalVC {
     }
     
     private func showToastAndChangeRootView() {
-//        let window = self.view.window!
-//        let navigation = UINavigationController(rootViewController: factory.makeSignIn().vc.viewController)
-//        navigation.isNavigationBarHidden = true
-//        SFSafariViewController.DataStore.default.clearWebsiteData()
-//        ViewControllerUtils.setRootViewController(window: window, viewController: navigation, withAnimation: true) { newWindow in
-//            Toast.show(message: I18N.Setting.Withdrawal.withdrawalSuccess,
-//                       view: newWindow,
-//                       safeAreaBottomInset: self.safeAreaBottomInset())
-//        }
+        SFSafariViewController.DataStore.default.clearWebsiteData()
+        onWithdrawal?()
     }
     
     public func showNetworkAlert() {
-//        let alertVC = factory.makeNetworkAlertVC(theme: .main).viewController
-//        alertVC.modalPresentationStyle = .overFullScreen
-//        alertVC.modalTransitionStyle = .crossDissolve
-//        self.present(alertVC, animated: true)
+        AlertUtils.presentNetworkAlertVC(
+            theme: .main,
+            animated: true
+        )
     }
 }

@@ -11,6 +11,7 @@ import Foundation
 import BaseFeatureDependency
 import AuthFeatureInterface
 import Core
+import DSKit
 
 public protocol AuthCoordinatorFinishOutput {
     var finishFlow: ((UserType) -> Void)? { get set }
@@ -63,10 +64,23 @@ final class AuthCoordinator: DefaultAuthCoordinator {
             )
         case .root:
             router.setRootModule(signIn.vc, animated: true)
-        case .rootWindow(let animated):
-            animated
-            ? router.replaceRootWindow(signIn.vc, withAnimation: true)
-            : router.setRootWindow(signIn.vc)
+        case .rootWindow(let animated, let message):
+            guard !animated else {
+                router.setRootWindow(signIn.vc)
+                return
+            }
+            
+            guard let message else {
+                router.replaceRootWindow(signIn.vc, withAnimation: true)
+                return
+            }
+            
+            router.replaceRootWindow(signIn.vc, withAnimation: true) { newWindow in
+                Toast.show(
+                    message: message,
+                    view: newWindow
+                )
+            }
         case .push: break
         }
     }
