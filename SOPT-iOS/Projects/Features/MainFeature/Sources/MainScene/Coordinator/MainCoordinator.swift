@@ -45,6 +45,6 @@ final class MainCoordinator: DefaultMainCoordinator {
         main.vm.onMyPageButtonTap = { [weak self] userType in
             self?.requestCoordinating?(.myPage(userType))
         }
-        router.setRootWindow(module: main.vc, withAnimation: true)
+        router.replaceRootWindow(main.vc, withAnimation: true)
     }
 }

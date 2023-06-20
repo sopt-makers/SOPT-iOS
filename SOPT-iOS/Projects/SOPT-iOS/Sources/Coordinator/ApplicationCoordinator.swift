@@ -25,7 +25,14 @@ final class ApplicationCoordinator: BaseCoordinator {
     }
     
     override func start(with option: DeepLinkOption?) {
-        runSplashFlow()
+        if let option {
+            switch option {
+            case .signInSuccess(let url):
+                runSignInSuccessFlow(with: url)
+            }
+        } else {
+            runSplashFlow()
+        }
     }
     
     private func runSplashFlow() {
@@ -93,5 +100,18 @@ final class ApplicationCoordinator: BaseCoordinator {
         }
         addDependency(coordinator)
         coordinator.start()
+    }
+}
+
+extension ApplicationCoordinator {
+    private func runSignInSuccessFlow(with url: String) {
+        childCoordinators = []
+        let coordinator = AuthCoordinator(router: router, factory: AuthBuilder(), url: url)
+        coordinator.finishFlow = { [weak self, weak coordinator] userType in
+            self?.runMainFlow(type: userType)
+            self?.removeDependency(coordinator)
+        }
+        addDependency(coordinator)
+        coordinator.start(by: .rootWindow)
     }
 }

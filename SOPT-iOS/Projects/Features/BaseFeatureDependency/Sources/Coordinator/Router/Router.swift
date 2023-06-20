@@ -33,7 +33,7 @@ public protocol RouterProtocol: ViewControllable {
     func setRootModule(_ module: ViewControllable?, animated: Bool)
     func setRootModule(_ module: ViewControllable?, hideBar: Bool, animated: Bool)
     
-    func setRootWindow(module: ViewControllable, withAnimation: Bool, completion: ((UIWindow) -> Void)?)
+    func replaceRootWindow(_ module: ViewControllable, withAnimation: Bool, completion: ((UIWindow) -> Void)?)
     
     func popToRootModule(animated: Bool)
     func popToModule(module: ViewControllable?, animated: Bool)
@@ -179,7 +179,7 @@ final class Router: NSObject, RouterProtocol {
         self.rootController?.isNavigationBarHidden = hideBar
     }
     
-    public func setRootWindow(module: ViewControllable, withAnimation: Bool, completion: ((UIWindow) -> Void)? = nil) {
+    public func replaceRootWindow(_ module: ViewControllable, withAnimation: Bool, completion: ((UIWindow) -> Void)? = nil) {
         let viewController = module.viewController
         let window = UIWindow.keyWindowGetter!
         let navigation = UINavigationController(rootViewController: viewController)
@@ -189,7 +189,7 @@ final class Router: NSObject, RouterProtocol {
             window.makeKeyAndVisible()
             return
         }
-
+        
         if let snapshot = window.snapshotView(afterScreenUpdates: true) {
             viewController.view.addSubview(snapshot)
             window.rootViewController = navigation
@@ -203,6 +203,15 @@ final class Router: NSObject, RouterProtocol {
                 snapshot.removeFromSuperview()
             })
         }
+    }
+    
+    public func setRootWindow(_ module: ViewControllable) {
+        let viewController = module.viewController
+        let window = UIWindow.keyWindowGetter!
+        let navigation = UINavigationController(rootViewController: viewController)
+        
+        window.rootViewController = navigation
+        window.makeKeyAndVisible()
     }
     
     public func popToRootModule(animated: Bool) {
