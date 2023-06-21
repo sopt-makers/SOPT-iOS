@@ -9,6 +9,7 @@
 import UIKit
 
 import Core
+import SafariServices
 
 /// RouterProtocol은 Coordinator에서 화면전환의 종류를 지정합니다.
 public protocol RouterProtocol: ViewControllable {
@@ -17,6 +18,7 @@ public protocol RouterProtocol: ViewControllable {
     func present(_ module: ViewControllable?, animated: Bool)
     func present(_ module: ViewControllable?, animated: Bool, modalPresentationSytle: UIModalPresentationStyle)
     func present(_ module: ViewControllable?, animated: Bool, completion: (() -> Void)?)
+    func presentSafari(url: String)
     
     func push(_ module: ViewControllable?)
     func push(_ module: ViewControllable?, transition: UIViewControllerAnimatedTransitioning?)
@@ -102,6 +104,13 @@ final class Router: NSObject, RouterProtocol {
     public func present(_ module: ViewControllable?, animated: Bool, completion: (() -> Void)?) {
         guard let controller = module?.viewController else { return }
         self.rootController?.present(controller, animated: animated, completion: completion)
+    }
+    
+    public func presentSafari(url: String) {
+        let safariViewController = SFSafariViewController(url: URL(string: url)!)
+        safariViewController.playgroundStyle()
+        // NOTE: (@준호) 최상단 뷰컨에 present. 검토 필요.
+        UIApplication.getMostTopViewController()?.present(safariViewController, animated: true)
     }
     
     public func push(_ module: ViewControllable?)  {

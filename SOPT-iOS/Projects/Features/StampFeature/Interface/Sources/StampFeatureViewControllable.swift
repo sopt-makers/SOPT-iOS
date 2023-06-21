@@ -18,15 +18,3 @@ public protocol MissionCompletedViewControllable: ViewControllable { }
 public protocol RankingViewControllable: ViewControllable { }
 
 public protocol StampGuideViewControllable: ViewControllable { }
-
-public protocol StampFeatureViewBuildable {
-    func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListViewControllable
-    func makeListDetailVC(sceneType: ListDetailSceneType,
-                          starLevel: StarViewLevel,
-                          missionId: Int,
-                          missionTitle: String,
-                          otherUserName: String?) -> ListDetailViewControllable
-    func makeMissionCompletedVC(starLevel: StarViewLevel, completionHandler: (() -> Void)?) -> MissionCompletedViewControllable
-    func makeRankingVC() -> RankingViewControllable
-    func makeStampGuideVC() -> StampGuideViewControllable
-}

@@ -34,6 +34,7 @@ public class MainViewModel: MainViewModelType {
         let requestUserInfo: Driver<Void>
         let noticeButtonTapped: Driver<Void>
         let myPageButtonTapped: Driver<Void>
+        let cellTapped: Driver<IndexPath>
     }
     
     // MARK: - Outputs
@@ -43,7 +44,6 @@ public class MainViewModel: MainViewModelType {
         var isServiceAvailable = PassthroughSubject<Bool, Never>()
         var needPlaygroundProfileRegistration = PassthroughSubject<Void, Never>()
         var needNetworkAlert = PassthroughSubject<Void, Never>()
-        var needSignIn = PassthroughSubject<Void, Never>()
         var isLoading = PassthroughSubject<Bool, Never>()
     }
     
@@ -51,6 +51,10 @@ public class MainViewModel: MainViewModelType {
     
     public var onNoticeButtonTap: (() -> Void)?
     public var onMyPageButtonTap: ((UserType) -> Void)?
+    public var onSafari: ((String) -> Void)?
+    public var onAttendance: (() -> Void)?
+    public var onSoptamp: (() -> Void)?
+    public var onNeedSignIn: (() -> Void)?
     
     // MARK: - init
   
@@ -80,6 +84,12 @@ extension MainViewModel {
                 self.onMyPageButtonTap?(self.userType)
             }.store(in: cancelBag)
         
+        input.cellTapped
+            .sink { [weak self] indexPath in
+                guard let self = self else { return }
+                self.bindCellAction(indexPath)
+            }.store(in: cancelBag)
+        
         input.requestUserInfo
             .sink { [weak self] _ in
                 guard let self = self else { return }
@@ -92,7 +102,7 @@ extension MainViewModel {
     
         return output
     }
-    
+
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         useCase.userMainInfo
             .sink { [weak self] userMainInfo in
@@ -116,18 +126,48 @@ extension MainViewModel {
             }.store(in: self.cancelBag)
         
         useCase.mainErrorOccurred
-            .sink { error in
+            .sink { [weak self] error in
+                guard let self else { return }
                 output.isLoading.send(false)
                 SentrySDK.capture(error: error)
                 switch error {
                 case .networkError:
                     output.needNetworkAlert.send()
                 case .authFailed:
-                    output.needSignIn.send()
+                    self.onNeedSignIn?()
                 case .unregisteredUser:
                     output.needPlaygroundProfileRegistration.send()
                 }
             }.store(in: self.cancelBag)
+    }
+    
+    private func bindCellAction(_ indexPath: IndexPath) {
+        switch (indexPath.section, indexPath.row) {
+        case (0, _): break
+        case (1, _):
+            guard let service = mainServiceList[safe: indexPath.item - 1] else { return }
+            
+            guard service != .attendance else {
+                onAttendance?()
+                return
+            }
+            
+            let needOfficialProject = service == .project && userType == .visitor
+            let serviceDomainURL = needOfficialProject
+            ? ExternalURL.SOPT.project
+            : service.serviceDomainLink
+            onSafari?(serviceDomainURL)
+            
+        case (2, _):
+            guard let service = otherServiceList[safe: indexPath.item] else { return }
+            
+            onSafari?(service.serviceDomainLink)
+        case(3, _):
+            guard userType != .visitor && userType != .unregisteredInactive else { return }
+            
+            onSoptamp?()
+        default: break
+        }
     }
     
     /// 메인 뷰에 보여줄 카드들 종류 설정

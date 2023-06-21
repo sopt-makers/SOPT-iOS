@@ -91,24 +91,31 @@ extension ApplicationCoordinator {
             factory: MainBuilder(),
             userType: userType
         )
-        coordinator.finishFlow = { [weak self, weak coordinator] in
-            self?.runMainFlow()
-            self?.removeDependency(coordinator)
-        }
-        coordinator.requestCoordinating = { [weak self] destination in
+        coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
             switch destination {
             case .myPage(let userType):
                 self?.runMyPageFlow(of: userType)
             case .notification:
                 self?.runNotificationFlow()
             case .attendance:
-                break
+                self?.runAttendanceFlow()
             case .stamp:
-                break
+                self?.runStampFlow()
+            case .signIn:
+                self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
+                self?.removeDependency(coordinator)
             }
         }
         addDependency(coordinator)
         coordinator.start()
+    }
+    
+    private func runAttendanceFlow() {
+        
+    }
+    
+    private func runStampFlow() {
+        
     }
     
     private func runMyPageFlow(of userType: UserType) {
