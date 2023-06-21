@@ -18,9 +18,9 @@ public protocol MyPageCoordinatorFinishOutput {
     var finishFlow: (() -> Void)? { get set }
     var requestCoordinating: ((MyPageCoordinatorDestination) -> Void)? { get set }
 }
-public typealias DefaultCoordinator = BaseCoordinator & MyPageCoordinatorFinishOutput
+public typealias DefaultMyPageCoordinator = BaseCoordinator & MyPageCoordinatorFinishOutput
 public
-final class MyPageCoordinator: DefaultCoordinator {
+final class MyPageCoordinator: DefaultMyPageCoordinator {
         
     public var finishFlow: (() -> Void)?
     public var requestCoordinating: ((MyPageCoordinatorDestination) -> Void)?

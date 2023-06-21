@@ -65,6 +65,8 @@ public protocol RouterProtocol: ViewControllable {
 public
 final class Router: NSObject, RouterProtocol {
     
+    
+    
     // MARK: - Vars & Lets
     
     private weak var rootController: UINavigationController?
@@ -75,6 +77,9 @@ final class Router: NSObject, RouterProtocol {
     
     public var viewController: UIViewController {
         return self.rootController ?? UIViewController()
+    }
+    public var asNavigationController: UINavigationController {
+        return rootController ?? UINavigationController(rootViewController: viewController)
     }
     
     // MARK: - RouterProtocol

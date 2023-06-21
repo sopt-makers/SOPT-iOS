@@ -84,5 +84,30 @@ extension AppDelegate {
                 )
             }
         )
+        container.register(
+            interface: MissionListRepositoryInterface.self,
+            implement: {
+                MissionListRepository(
+                    missionService: DefaultMissionService(),
+                    rankService: DefaultRankService()
+                )
+            }
+        )
+        container.register(
+            interface: RankingRepositoryInterface.self,
+            implement: {
+                RankingRepository(
+                    service: DefaultRankService()
+                )
+            }
+        )
+        container.register(
+            interface: ListDetailRepositoryInterface.self,
+            implement: {
+                ListDetailRepository(
+                    service: DefaultStampService()
+                )
+            }
+        )
     }
 }

@@ -15,6 +15,7 @@ import AuthFeature
 import MainFeature
 import AppMyPageFeature
 import NotificationFeature
+import StampFeature
 
 final class ApplicationCoordinator: BaseCoordinator {
     
@@ -115,13 +116,24 @@ extension ApplicationCoordinator {
     }
     
     private func runStampFlow() {
-        
+        let coordinator = StampCoordinator(
+            router: Router(
+                rootController: UIWindow.getRootNavigationController
+            ),
+            factory: StampBuilder()
+        )
+        coordinator.finishFlow = { [weak self, weak coordinator] in
+            coordinator?.childCoordinators = []
+            self?.removeDependency(coordinator)
+        }
+        addDependency(coordinator)
+        coordinator.start()
     }
     
     private func runMyPageFlow(of userType: UserType) {
         let coordinator = MyPageCoordinator(
             router: Router(
-                rootController: UIWindow.getTopNavigationController
+                rootController: UIWindow.getRootNavigationController
             ),
             factory: MyPageBuilder(),
             userType: userType
@@ -146,7 +158,7 @@ extension ApplicationCoordinator {
     private func runNotificationFlow() {
         let coordinator = NotificationCoordinator(
             router: Router(
-                rootController: UIWindow.getTopNavigationController
+                rootController: UIWindow.getRootNavigationController
             ),
             factory: NotificationBuilder()
         )

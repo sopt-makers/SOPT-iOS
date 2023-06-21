@@ -20,7 +20,7 @@ public extension UIWindow {
         }
     }
     
-    static var getTopNavigationController: UINavigationController {
+    static var getRootNavigationController: UINavigationController {
         return keyWindowGetter?.rootViewController as? UINavigationController ?? UINavigationController(
             rootViewController: UIViewController()
         )

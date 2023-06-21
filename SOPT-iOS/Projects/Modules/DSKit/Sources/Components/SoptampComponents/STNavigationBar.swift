@@ -58,12 +58,12 @@ public class STNavigationBar: UIView {
     
     // MARK: - Initialize
     
-    public init(_ vc: UIViewController, type: NaviType) {
+    public init(_ vc: UIViewController, type: NaviType, ignorePopAction: Bool = false) {
         super.init(frame: .zero)
         self.vc = vc
         self.setUI(type)
         self.setLayout(type)
-        self.setAddTarget()
+        self.setAddTarget(ignorePopAction)
     }
     
     required init?(coder: NSCoder) {
@@ -86,7 +86,8 @@ extension STNavigationBar {
         self.rightButton.isHidden = isHidden
     }
     
-    private func setAddTarget() {
+    private func setAddTarget(_ ignorePopAction: Bool = false) {
+        guard !ignorePopAction else { return }
         self.leftButton.addTarget(self, action: #selector(popToPreviousVC), for: .touchUpInside)
     }
     
