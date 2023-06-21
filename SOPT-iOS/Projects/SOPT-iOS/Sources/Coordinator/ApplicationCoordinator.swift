@@ -16,6 +16,7 @@ import MainFeature
 import AppMyPageFeature
 import NotificationFeature
 import StampFeature
+import AttendanceFeature
 
 final class ApplicationCoordinator: BaseCoordinator {
     
@@ -112,7 +113,17 @@ extension ApplicationCoordinator {
     }
     
     private func runAttendanceFlow() {
-        
+        let coordinator = AttendanceCoordinator(
+            router: Router(
+                rootController: UIWindow.getRootNavigationController
+            ),
+            factory: AttendanceBuilder()
+        )
+        coordinator.finishFlow = { [weak self, weak coordinator] in
+            self?.removeDependency(coordinator)
+        }
+        addDependency(coordinator)
+        coordinator.start()
     }
     
     private func runStampFlow() {

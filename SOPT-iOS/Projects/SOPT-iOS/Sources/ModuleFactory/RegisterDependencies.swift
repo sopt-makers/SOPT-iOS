@@ -109,5 +109,21 @@ extension AppDelegate {
                 )
             }
         )
+        container.register(
+            interface: AttendanceRepositoryInterface.self,
+            implement: {
+                AttendanceRepository(
+                    service: DefaultAttendanceService()
+                )
+            }
+        )
+        container.register(
+            interface: ShowAttendanceRepositoryInterface.self,
+            implement: {
+                ShowAttendanceRepository(
+                    service: DefaultAttendanceService()
+                )
+            }
+        )
     }
 }

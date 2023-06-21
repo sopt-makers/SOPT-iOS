@@ -10,11 +10,9 @@ import BaseFeatureDependency
 
 import Domain
 
-public protocol ShowAttendanceViewControllable: ViewControllable { }
-
-public protocol AttendanceViewControllable: ViewControllable { }
-
-public protocol AttendanceFeatureViewBuildable {
-    func makeShowAttendanceVC() -> ShowAttendanceViewControllable
-    func makeAttendanceVC(lectureRound: AttendanceRoundModel, dismissCompletion: (() -> Void)?) -> AttendanceViewControllable
+public protocol ShowAttendanceViewControllable: ViewControllable & ShowAttendanceCoordinatable { }
+public protocol ShowAttendanceCoordinatable {
+    var onAttendanceButtonTap: ((AttendanceRoundModel, (() -> Void)?) -> Void)? { get set }
+    var onNaviBackTap: (() -> Void)? { get set }
 }
+public protocol AttendanceViewControllable: ViewControllable { }
