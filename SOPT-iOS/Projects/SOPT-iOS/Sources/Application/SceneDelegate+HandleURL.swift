@@ -9,7 +9,6 @@
 import UIKit
 
 import Core
-import AuthFeature
 
 // MARK: Handle URLs
 

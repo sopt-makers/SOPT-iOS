@@ -1,8 +1,8 @@
 //
-//  ApplicationCoordinator.swift
-//  SOPT-iOS
+//  RootFeature.swift
+//  RootFeature
 //
-//  Created by Junho Lee on 2023/06/20.
+//  Created by 김영인 on 2023/03/15.
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
@@ -18,16 +18,17 @@ import NotificationFeature
 import StampFeature
 import AttendanceFeature
 
+public
 final class ApplicationCoordinator: BaseCoordinator {
     
     //  private let coordinatorFactory: CoordinatorFactory
     private let router: Router
     
-    init(router: Router) {
+    public init(router: Router) {
         self.router = router
     }
     
-    override func start(with option: DeepLinkOption?) {
+    public override func start(with option: DeepLinkOption?) {
         if let option {
             switch option {
             case .signInSuccess(let url):
