@@ -56,7 +56,6 @@ final class StampCoordinator: DefaultCoordinator {
             router: Router(rootController: rootController!),
             factory: factory
         )
-        addDependency(guideCoordinator)
         guideCoordinator.start()
     }
     
