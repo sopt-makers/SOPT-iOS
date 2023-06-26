@@ -23,7 +23,6 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     // MARK: - Properties
     
     public var viewModel: ShowAttendanceViewModel
-    public var factory: AttendanceFeatureViewBuildable
     private var cancelBag = CancelBag()
     
     public var sceneType: AttendanceScheduleType {
@@ -31,6 +30,10 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     }
     
     private var viewWillAppear = PassthroughSubject<Void, Never>()
+    
+    // MARK: - ShowAttendanceCoordinatable
+    public var onAttendanceButtonTap: ((AttendanceRoundModel, (() -> Void)?) -> Void)?
+    public var onNaviBackTap: (() -> Void)?
     
     // MARK: - UI Components
     
@@ -44,7 +47,7 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     
     private let contentView = UIView()
     
-    private lazy var navibar = OPNavigationBar(self, type: .oneLeftButton)
+    private lazy var navibar = OPNavigationBar(self, type: .oneLeftButton, ignoreLeftButtonAction: true)
         .addMiddleLabel(title: I18N.Attendance.attendance)
     
     private lazy var headerScheduleView: TodayScheduleView = {
@@ -86,10 +89,8 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     
     // MARK: - Initialization
     
-    public init(viewModel: ShowAttendanceViewModel,
-                factory: AttendanceFeatureViewBuildable) {
+    public init(viewModel: ShowAttendanceViewModel) {
         self.viewModel = viewModel
-        self.factory = factory
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -101,6 +102,7 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.bindViews()
         self.bindViewModels()
         self.setUI()
         self.setLayout()
@@ -176,6 +178,14 @@ extension ShowAttendanceVC {
 
 extension ShowAttendanceVC {
     
+    private func bindViews() {
+        navibar.leftButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNaviBackTap?()
+            }.store(in: cancelBag)
+    }
+    
     private func bindViewModels() {
         
         let viewWillAppear = viewWillAppear.asDriver()
@@ -186,14 +196,9 @@ extension ShowAttendanceVC {
         attendanceButton.publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
-                let vc = owner.factory.makeAttendanceVC(
-                    lectureRound: owner.viewModel.lectureRound,
-                    dismissCompletion: { [weak self] in
-                        self?.viewWillAppear.send(())
-                    }).viewController
-                vc.modalTransitionStyle = .crossDissolve
-                vc.modalPresentationStyle = .overFullScreen
-                owner.present(vc, animated: true)
+                owner.onAttendanceButtonTap?(owner.viewModel.lectureRound) {
+                    owner.viewWillAppear.send(())
+                }
             }
             .store(in: self.cancelBag)
         

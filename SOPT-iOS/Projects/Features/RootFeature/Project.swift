@@ -16,7 +16,6 @@ let project = Project.makeModule(
         .Features.Main.Feature,
         .Features.Spalsh.Feature,
         .Features.Auth.Feature,
-        .Features.Setting.Feature,
         .Features.Stamp.Feature,
         .Features.Attendance.Feature,
         .Features.Notice.Feature,

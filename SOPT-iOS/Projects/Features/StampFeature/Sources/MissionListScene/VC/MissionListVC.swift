@@ -16,7 +16,6 @@ import Combine
 import SnapKit
 import Then
 
-import SettingFeatureInterface
 import StampFeatureInterface
 
 public class MissionListVC: UIViewController, MissionListViewControllable {
@@ -24,7 +23,6 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
     // MARK: - Properties
     
     public var viewModel: MissionListViewModel!
-    public var factory: (SettingFeatureViewBuildable & StampFeatureViewBuildable)!
     public var sceneType: MissionListSceneType {
         return self.viewModel.missionListsceneType
     }
@@ -35,6 +33,14 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
     private let swipeHandler = PassthroughSubject<Void, Never>()
     
     lazy var dataSource: UICollectionViewDiffableDataSource<MissionListSection, MissionListModel>! = nil
+    
+    // MARK: - MissionListCoordinatable
+    
+    public var onSwiped: (() -> Void)?
+    public var onNaviBackTap: (() -> Void)?
+    public var onRankingButtonTap: (() -> Void)?
+    public var onGuideTap: (() -> Void)?
+    public var onCellTap: ((MissionListModel, String?) -> Void)?
     
     // MARK: - UI Components
     
@@ -192,28 +198,28 @@ extension MissionListVC {
             .asDriver()
             .withUnretained(self)
             .sink { owner, _ in
-                owner.pushToGuideVC()
+                owner.onGuideTap?()
             }.store(in: self.cancelBag)
         
         if case .default = sceneType {
             naviBar.leftButtonTapped
                 .withUnretained(self)
                 .sink { owner, _ in
-                    owner.dismiss(animated: true)
+                    owner.onNaviBackTap?()
                 }.store(in: self.cancelBag)
         }
         
         rankingFloatingButton.publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
-                owner.pushToRankingVC()
+                owner.onRankingButtonTap?()
             }.store(in: self.cancelBag)
         
         swipeHandler
             .first()
             .withUnretained(self)
             .sink { owner, _ in
-                owner.navigationController?.popViewController(animated: true)
+                owner.onSwiped?()
             }.store(in: self.cancelBag)
     }
     
@@ -227,17 +233,6 @@ extension MissionListVC {
             .sink { model in
                 self.setCollectionView(model: model)
             }.store(in: self.cancelBag)
-    }
-    
-    private func pushToGuideVC() {
-//        let settingVC = factory.makeSettingVC().viewController
-        let guideVC = factory.makeStampGuideVC().viewController
-        self.navigationController?.pushViewController(guideVC, animated: true)
-    }
-    
-    private func pushToRankingVC() {
-        let rankingVC = factory.makeRankingVC().viewController
-        self.navigationController?.pushViewController(rankingVC, animated: true)
     }
 }
 
@@ -361,16 +356,8 @@ extension MissionListVC: UICollectionViewDelegate {
             return
         case 1:
             guard let tappedCell = collectionView.cellForItem(at: indexPath) as? MissionListCVC,
-                  let model = tappedCell.model,
-                  let starLevel = StarViewLevel.init(rawValue: model.level) else { return }
-            let detailSceneType = model.toListDetailSceneType()
-            
-            let detailVC = factory.makeListDetailVC(sceneType: detailSceneType,
-                                                    starLevel: starLevel,
-                                                    missionId: model.id,
-                                                    missionTitle: model.title,
-                                                    otherUserName: sceneType.usrename).viewController
-            self.navigationController?.pushViewController(detailVC, animated: true)
+                  let model = tappedCell.model else { return }
+            onCellTap?(model, sceneType.usrename)
         default:
             return
         }

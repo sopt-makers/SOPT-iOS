@@ -11,17 +11,17 @@ import Combine
 
 import Core
 import Domain
+import BaseFeatureDependency
+import SplashFeatureInterface
 
-public class SplashViewModel: ViewModelType {
-
+public class SplashViewModel: SplashViewModelType {
+    
     private let useCase: AppNoticeUseCase
     private var cancelBag = CancelBag()
-  
+    
     // MARK: - Inputs
     
     public struct Input {
-        let requestAppNotice: CurrentValueSubject<Void, Never>
-        let recommendUpdateVersionChecked: PassthroughSubject<String?, Never>
     }
     
     // MARK: - Outputs
@@ -30,8 +30,13 @@ public class SplashViewModel: ViewModelType {
         var appNoticeModel = PassthroughSubject<AppNoticeModel?, Error>()
     }
     
+    // MARK: - SignInCoordinatable
+    
+    public var onNoticeSkipped: (() -> Void)?
+    public var onNoticeExist: ((AppNoticeModel) -> Void)?
+    
     // MARK: - init
-  
+    
     public init(useCase: AppNoticeUseCase) {
         self.useCase = useCase
     }
@@ -40,29 +45,41 @@ public class SplashViewModel: ViewModelType {
 extension SplashViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
-        self.bindOutput(output: output, cancelBag: cancelBag)
-        
-        input.requestAppNotice.sink { _ in
-            self.useCase.getAppNotice()
-        }.store(in: cancelBag)
-        
-        input.recommendUpdateVersionChecked.sink { version in
-            guard let version = version else { return }
-            self.useCase.storeCheckedRecommendUpdateVersion(version: version)
-        }.store(in: cancelBag)
-  
+        bindOutput(output: output, cancelBag: cancelBag)
+        useCase.getAppNotice()
         return output
     }
-  
+    
     private func bindOutput(output: Output, cancelBag: CancelBag) {
-        useCase.appNoticeModel.sink { event in
-            print("SplashViewModel - completion: \(event)")
-        } receiveValue: { appNoticeModel in
-            guard let appNoticeModel = appNoticeModel else {
-                output.appNoticeModel.send(nil)
-                return
+        useCase.appNoticeModel
+            .withUnretained(self)
+            .sink { event in
+                print("SplashViewModel - completion: \(event)")
+            } receiveValue: { owner, appNoticeModel in
+                guard let appNoticeModel = appNoticeModel else {
+                    owner.onNoticeSkipped?()
+                    return
+                }
+                
+                guard appNoticeModel.withError == false else {
+                    owner.showNetworkAlert()
+                    return
+                }
+                
+                owner.onNoticeExist?(appNoticeModel)
+            }.store(in: cancelBag)
+    }
+
+    private func showNetworkAlert() {
+        AlertUtils.presentAlertVC(
+            type: .titleDescription,
+            theme: .main,
+            title: I18N.Default.networkError,
+            description: I18N.Default.networkErrorDescription,
+            customButtonTitle: I18N.Default.ok,
+            customAction:{ [weak self] in
+                self?.useCase.getAppNotice()
             }
-            output.appNoticeModel.send(appNoticeModel)
-        }.store(in: cancelBag)
+        )
     }
 }

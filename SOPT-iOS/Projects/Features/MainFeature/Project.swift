@@ -12,14 +12,6 @@ import DependencyPlugin
 let project = Project.makeModule(
     name: "MainFeature",
     targets: [.unitTest, .staticFramework, .demo, .interface],
-    internalDependencies: [
-        .Features.Stamp.Interface,
-        .Features.Attendance.Interface,
-        .Features.Notice.Interface,
-        .Features.Setting.Interface,
-        .Features.AppMyPage.Interface,
-        .Features.Notification.Interface
-    ],
     interfaceDependencies: [
         .Features.BaseFeatureDependency
     ]

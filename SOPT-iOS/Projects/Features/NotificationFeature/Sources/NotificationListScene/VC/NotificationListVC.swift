@@ -18,19 +18,16 @@ import BaseFeatureDependency
 import NotificationFeatureInterface
 
 public final class NotificationListVC: UIViewController, NotificationListViewControllable {
-    
-    public typealias factoryType = NotificationFeatureViewBuildable
-    & AlertViewBuildable
 
     // MARK: - Properties
     
     public var viewModel: NotificationListViewModel
-    public var factory: factoryType
     private var cancelBag = CancelBag()
+    private var cellTapped = PassthroughSubject<Void, Never>()
     
     // MARK: - UI Components
     
-    private lazy var naviBar = OPNavigationBar(self, type: .bothButtons)
+    private lazy var naviBar = OPNavigationBar(self, type: .bothButtons, ignoreLeftButtonAction: true)
         .addMiddleLabel(title: I18N.Notification.notification)
         .addRightButton(with: nil)
         .addRightButton(with: I18N.Notification.readAll, titleColor: DSKitAsset.Colors.purple100.color)
@@ -62,9 +59,8 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
     
     // MARK: - initialization
     
-    public init(viewModel: NotificationListViewModel, factory: factoryType) {
+    public init(viewModel: NotificationListViewModel) {
         self.viewModel = viewModel
-        self.factory = factory
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -141,6 +137,11 @@ extension NotificationListVC {
 
 extension NotificationListVC {
     private func bindViewModels() {
+        let input = NotificationListViewModel.Input(
+            naviBackButtonTapped: naviBar.leftButtonTapped,
+            cellTapped: cellTapped.asDriver()
+        )
+        let _ = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
     }
 }
 
@@ -150,8 +151,7 @@ extension NotificationListVC: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         if collectionView == notificationListCollectionView {
-            let notificationDetailVC = factory.makeNotificationDetailVC().viewController
-            self.navigationController?.pushViewController(notificationDetailVC, animated: true)
+            cellTapped.send()
         }
     }
 }

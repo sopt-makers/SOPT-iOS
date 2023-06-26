@@ -24,13 +24,18 @@ public class RankingVC: UIViewController, RankingViewControllable {
     
     public var viewModel: RankingViewModel!
     private var cancelBag = CancelBag()
-    public var factory: StampFeatureViewBuildable!
     
     lazy var dataSource: UICollectionViewDiffableDataSource<RankingSection, AnyHashable>! = nil
     
+    // MARK: - RankingCoordinatable
+    
+    public var onCellTap: ((String, String) -> Void)?
+    public var onSwiped: (() -> Void)?
+    public var onNaviBackTap: (() -> Void)?
+    
     // MARK: - UI Components
     
-    lazy var naviBar = STNavigationBar(self, type: .titleWithLeftButton)
+    lazy var naviBar = STNavigationBar(self, type: .titleWithLeftButton, ignorePopAction: true)
         .setTitleTypoStyle(.SoptampFont.h2)
         .setTitle("랭킹")
         .setRightButton(.none)
@@ -70,6 +75,7 @@ public class RankingVC: UIViewController, RankingViewControllable {
         self.setDelegate()
         self.setGesture()
         self.registerCells()
+        self.bindViews()
         self.bindViewModels()
         self.setDataSource()
     }
@@ -110,6 +116,14 @@ extension RankingVC {
 
 extension RankingVC {
     
+    private func bindViews() {
+        naviBar.leftButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNaviBackTap?()
+            }.store(in: cancelBag)
+    }
+    
     private func bindViewModels() {
         let refreshStarted = refresher.publisher(for: .valueChanged)
             .mapVoid()
@@ -121,9 +135,11 @@ extension RankingVC {
             .mapVoid()
             .asDriver()
         
-        let input = RankingViewModel.Input(viewDidLoad: Driver.just(()),
-                                           refreshStarted: refreshStarted,
-                                           showMyRankingButtonTapped: showRankingButtonTapped)
+        let input = RankingViewModel.Input(
+            viewDidLoad: Driver.just(()),
+            refreshStarted: refreshStarted,
+            showMyRankingButtonTapped: showRankingButtonTapped
+        )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
@@ -165,7 +181,7 @@ extension RankingVC {
             && isNotRootView
             && isScrollY {
             self.rankingCollectionView.isScrollEnabled = false
-            navigation.popViewController(animated: true)
+            self.onSwiped?()
         }
     }
     
@@ -184,7 +200,7 @@ extension RankingVC {
                 chartCell.balloonTapped = { [weak self] balloonModel in
                     guard let self = self else { return }
                     let item = balloonModel.toRankingListTapItem()
-                    self.pushToOtherUserMissionListVC(item: item)
+                    self.onCellTap?(item.username, item.sentence)
                 }
                 return chartCell
                 
@@ -223,17 +239,7 @@ extension RankingVC: UICollectionViewDelegate {
         
         guard let tappedCell = collectionView.cellForItem(at: indexPath) as? RankingListTappable,
               let item = tappedCell.getModelItem() else { return }
-        self.pushToOtherUserMissionListVC(item: item)
-    }
-    
-    private func pushToOtherUserMissionListVC(item: RankingListTapItem) {
-        let otherUserMissionListVC = factory.makeMissionListVC(
-            sceneType: .ranking(
-                userName: item.username,
-                sentence: item.sentence
-            )
-        ).viewController
-        self.navigationController?.pushViewController(otherUserMissionListVC, animated: true)
+        self.onCellTap?(item.username, item.sentence)
     }
 }
 

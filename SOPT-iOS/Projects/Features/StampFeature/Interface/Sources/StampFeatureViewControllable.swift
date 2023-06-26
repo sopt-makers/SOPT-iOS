@@ -8,25 +8,25 @@
 
 import Core
 import BaseFeatureDependency
+import Domain
 
-public protocol MissionListViewControllable: ViewControllable { }
-
-public protocol ListDetailViewControllable: ViewControllable { }
-
-public protocol MissionCompletedViewControllable: ViewControllable { }
-
-public protocol RankingViewControllable: ViewControllable { }
-
-public protocol StampGuideViewControllable: ViewControllable { }
-
-public protocol StampFeatureViewBuildable {
-    func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListViewControllable
-    func makeListDetailVC(sceneType: ListDetailSceneType,
-                          starLevel: StarViewLevel,
-                          missionId: Int,
-                          missionTitle: String,
-                          otherUserName: String?) -> ListDetailViewControllable
-    func makeMissionCompletedVC(starLevel: StarViewLevel, completionHandler: (() -> Void)?) -> MissionCompletedViewControllable
-    func makeRankingVC() -> RankingViewControllable
-    func makeStampGuideVC() -> StampGuideViewControllable
+public protocol MissionListViewControllable: ViewControllable & MissionListCoordinatable { }
+public protocol MissionListCoordinatable {
+    var onSwiped: (() -> Void)? { get set }
+    var onNaviBackTap: (() -> Void)? { get set }
+    var onRankingButtonTap: (() -> Void)? { get set }
+    var onGuideTap: (() -> Void)? { get set }
+    var onCellTap: ((MissionListModel, _ username: String?) -> Void)? { get set }
 }
+public protocol ListDetailViewControllable: ViewControllable & ListDetailCoordinatable { }
+public protocol ListDetailCoordinatable {
+    var onComplete: ((StarViewLevel, (() -> Void)?) -> Void)? { get set }
+}
+public protocol MissionCompletedViewControllable: ViewControllable { }
+public protocol RankingViewControllable: ViewControllable & RankingCoordinatable { }
+public protocol RankingCoordinatable {
+    var onCellTap: ((_ username: String, _ sentence: String) -> Void)? { get set }
+    var onSwiped: (() -> Void)? { get set }
+    var onNaviBackTap: (() -> Void)? { get set }
+}
+public protocol StampGuideViewControllable: ViewControllable { }

@@ -20,12 +20,9 @@ import NotificationFeatureInterface
 
 public final class NotificationDetailVC: UIViewController, NotificationDetailViewControllable {
     
-    public typealias factoryType = AlertViewBuildable
-    
     // MARK: - Properties
     
     public var viewModel: NotificationDetailViewModel
-    public var factory: factoryType
     private var cancelBag = CancelBag()
   
     // MARK: - UI Components
@@ -95,9 +92,8 @@ public final class NotificationDetailVC: UIViewController, NotificationDetailVie
     
     // MARK: - initialization
     
-    public init(viewModel: NotificationDetailViewModel, factory: factoryType) {
+    public init(viewModel: NotificationDetailViewModel) {
         self.viewModel = viewModel
-        self.factory = factory
         super.init(nibName: nil, bundle: nil)
     }
     

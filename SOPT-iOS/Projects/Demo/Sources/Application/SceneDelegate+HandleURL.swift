@@ -9,7 +9,6 @@
 import UIKit
 
 import Core
-import AuthFeatureInterface
 
 // MARK: Handle URLs
 
@@ -62,35 +61,6 @@ extension SceneDelegate {
     }
     
     func redirectSignInVC(url: String) {
-        var signInControllable = container.makeSignInVC()
-        signInControllable.skipAnimation = true
-        for item in parseParameter(url: url) {
-            if item.query == "state" {
-                signInControllable.requestState = item.value
-                continue
-            }
-            
-            if item.query == "code" {
-                signInControllable.accessCode = item.value
-                continue
-            }
-        }
-        self.window?.rootViewController = signInControllable.viewController
-        self.window?.makeKeyAndVisible()
+        appCoordinator.start(with: .signInSuccess(url: url))
     }
 }
-
-extension SceneDelegate {
-    func parseParameter(url: String) -> [(query: String, value: String)] {
-        let components = URLComponents(string: url)
-        let params = components?.query ?? ""
-        guard params.count > 0 && params != "",
-              let items = components?.queryItems else {
-            return []
-        }
-        return items.map {
-            ($0.name, $0.value ?? "")
-        }
-    }
-}
-

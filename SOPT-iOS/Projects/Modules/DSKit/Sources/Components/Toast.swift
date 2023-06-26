@@ -16,7 +16,11 @@ public extension UIViewController {
 }
 
 public class Toast {
-    public static func show(message: String, view: UIView, safeAreaBottomInset: CGFloat = 0) {
+    public static func show(
+        message: String,
+        view: UIView,
+        safeAreaBottomInset: CGFloat = UIWindow.keyWindowGetter?.safeAreaInsets.bottom ?? 0
+    ) {
         
         let toastContainer = UIView()
         let toastLabel = UILabel()

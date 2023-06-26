@@ -12,9 +12,6 @@ import DependencyPlugin
 let project = Project.makeModule(
     name: "NoticeFeature",
     targets: [.unitTest, .staticFramework, .demo, .interface],
-    internalDependencies: [
-        
-    ],
     interfaceDependencies: [
         .Features.BaseFeatureDependency
     ]

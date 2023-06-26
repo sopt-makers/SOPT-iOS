@@ -34,7 +34,6 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
     
     public var viewModel: AttendanceViewModel
     private var cancelBag = CancelBag()
-    public var factory: AttendanceFeatureViewBuildable
     
     public var dismissCompletion: (() -> Void)?
     
@@ -135,9 +134,8 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
     
     // MARK: - Init
     
-    public init(viewModel: AttendanceViewModel, factory: AttendanceFeatureViewBuildable) {
+    public init(viewModel: AttendanceViewModel) {
         self.viewModel = viewModel
-        self.factory = factory
         
         super.init(nibName: nil, bundle: nil)
     }

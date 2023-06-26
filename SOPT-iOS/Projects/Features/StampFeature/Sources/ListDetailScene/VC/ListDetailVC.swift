@@ -78,7 +78,6 @@ public class ListDetailVC: UIViewController, ListDetailViewControllable {
     // MARK: - Properties
     
     public var viewModel: ListDetailViewModel!
-    public var factory: (AlertViewBuildable & StampFeatureViewBuildable)!
     private var cancelBag = CancelBag()
     private var sceneType: ListDetailSceneType {
         get {
@@ -96,6 +95,10 @@ public class ListDetailVC: UIViewController, ListDetailViewControllable {
     private var originImage: UIImage = UIImage()
     private var originText: String = ""
     private let deleteButtonTapped = PassthroughSubject<Bool, Never>()
+    
+    // MARK: - ListDetailCoordinatable
+    
+    public var onComplete: ((StarViewLevel, (() -> Void)?) -> Void)?
     
     // MARK: - UI Components
     
@@ -168,14 +171,19 @@ extension ListDetailVC {
             .compactMap { $0 }
             .sink { model in
                 if model.image.isEmpty {
-                    let networkAlert = self.factory.makeNetworkAlertVC(theme: .soptamp).viewController
-                    self.present(networkAlert, animated: true) {
+                    AlertUtils.presentNetworkAlertVC(theme: .soptamp,animated: true) {
                         self.backgroundDimmerView.removeFromSuperview()
                     }
                 } else {
                     self.setData(model)
                     if self.sceneType == .none {
-                        self.presentCompletedVC(level: self.starLevel)
+                        self.onComplete?(self.starLevel) {
+                            UIView.animate(withDuration: 0.2, delay: 0, animations: {
+                                self.backgroundDimmerView.alpha = 0
+                            }) { _ in
+                                self.backgroundDimmerView.removeFromSuperview()
+                            }
+                        }
                     }
                     self.sceneType = .completed
                     self.reloadData(self.sceneType)
@@ -188,8 +196,7 @@ extension ListDetailVC {
                     self.reloadData(.completed)
                     self.showToast(message: I18N.ListDetail.editCompletedToast)
                 } else {
-                    let networkAlert = self.factory.makeNetworkAlertVC(theme: .soptamp).viewController
-                    self.present(networkAlert, animated: true)
+                    AlertUtils.presentNetworkAlertVC(theme: .soptamp, animated: true)
                 }
             }.store(in: self.cancelBag)
         
@@ -207,8 +214,7 @@ extension ListDetailVC {
                 if success {
                     self.navigationController?.popViewController(animated: true)
                 } else {
-                    let networkAlert = self.factory.makeNetworkAlertVC(theme: .soptamp).viewController
-                    self.present(networkAlert, animated: true)
+                    AlertUtils.presentNetworkAlertVC(theme: .soptamp, animated: true)
                 }
             }.store(in: self.cancelBag)
     }
@@ -286,7 +292,7 @@ extension ListDetailVC {
     }
     
     private func presentDeleteAlertVC() {
-        let alertVC = factory.makeAlertVC(
+        AlertUtils.presentAlertVC(
             type: .title,
             theme: .soptamp,
             title: I18N.ListDetail.deleteTitle,
@@ -294,23 +300,8 @@ extension ListDetailVC {
             customButtonTitle: I18N.Default.delete,
             customAction: {
                 self.deleteButtonTapped.send(true)
-            }).viewController
-        
-        self.present(alertVC, animated: true)
-    }
-    
-    private func presentCompletedVC(level: StarViewLevel) {
-        let missionCompletedVC = factory.makeMissionCompletedVC(
-            starLevel: level,
-            completionHandler: {
-                UIView.animate(withDuration: 0.2, delay: 0, animations: {
-                    self.backgroundDimmerView.alpha = 0
-                }) { _ in
-                    self.backgroundDimmerView.removeFromSuperview()
-                }
-            }).viewController
-        
-        self.present(missionCompletedVC, animated: true)
+            }
+        )
     }
     
     private func showDimmerView() {
