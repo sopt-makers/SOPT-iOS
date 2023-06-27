@@ -12,7 +12,7 @@ import Domain
 
 public
 final class SplashBuilder {
-    @Injected public var repository: AppNoticeRepositoryInterface
+    @Injected public var repository: SplashRepositoryInterface
     
     public init() { }
 }

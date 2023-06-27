@@ -19,12 +19,12 @@ public protocol SplashUseCase {
 
 public class DefaultSplashUseCase {
   
-    private let repository: AppNoticeRepositoryInterface
+    private let repository: SplashRepositoryInterface
     private var cancelBag = CancelBag()
 
     public var appNoticeModel = PassthroughSubject<AppNoticeModel?, Error>()
     
-    public init(repository: AppNoticeRepositoryInterface) {
+    public init(repository: SplashRepositoryInterface) {
         self.repository = repository
     }
 }

@@ -1,5 +1,5 @@
 //
-//  AppNoticeRepository.swift
+//  SplashRepository.swift
 //  Data
 //
 //  Created by sejin on 2023/01/18.
@@ -13,7 +13,7 @@ import Core
 import Domain
 import Network
 
-public class AppNoticeRepository {
+public class SplashRepository {
     
     private let firebaseService: FirebaseService
     private let cancelBag = CancelBag()
@@ -23,7 +23,7 @@ public class AppNoticeRepository {
     }
 }
 
-extension AppNoticeRepository: AppNoticeRepositoryInterface {
+extension SplashRepository: SplashRepositoryInterface {
     public func getAppNotice() -> AnyPublisher<AppNoticeModel, Error> {
         firebaseService.getAppNotice().map { appNoticeEntity in
             appNoticeEntity.toDomain()
