@@ -21,6 +21,7 @@ public struct UserDefaultKeyList {
     public struct User {
         @UserDefaultWrapper<String>(key: "sentence") public static var sentence
         @UserDefaultWrapper<String>(key: "soptampName") public static var soptampName
+        @UserDefaultWrapper<String>(key: "pushToken") public static var pushToken
     }
     
     public struct AppNotice {
@@ -34,6 +35,7 @@ extension UserDefaultKeyList {
         UserDefaultKeyList.Auth.appRefreshToken = nil
         UserDefaultKeyList.Auth.playgroundToken = nil
         UserDefaultKeyList.Auth.isActiveUser = false
+        UserDefaultKeyList.User.pushToken = nil
         clearSoptampUserData()
     }
 

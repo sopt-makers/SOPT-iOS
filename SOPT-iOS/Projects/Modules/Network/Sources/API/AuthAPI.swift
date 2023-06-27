@@ -13,7 +13,7 @@ import Moya
 import Core
 
 public enum AuthAPI {
-    case signIn(token: String)
+    case signIn(token: String, pushToken: String)
     case reissuance
 }
 
@@ -53,8 +53,11 @@ extension AuthAPI: BaseAPI {
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
-        case .signIn(let token):
+        case .signIn(let token, let pushToken):
             params["code"] = token
+            #if TEST || QA
+            params["pushToken"] = pushToken
+            #endif
         case .reissuance:
             params["refreshToken"] = UserDefaultKeyList.Auth.appRefreshToken
         }
