@@ -13,6 +13,7 @@ import Core
 
 public protocol SplashUseCase {
     func getAppNotice()
+    func registerPushToken()
     
     var appNoticeModel: PassthroughSubject<AppNoticeModel?, Error> { get set }
 }
@@ -37,7 +38,7 @@ extension DefaultSplashUseCase: SplashUseCase {
             return Just(AppNoticeModel(withError: true))
         })
         .sink { event in
-            print("AppNoticeUseCase : \(event)")
+            print("DefaultSplashUseCase : \(event)")
         } receiveValue: { appNoticeModel in
             guard appNoticeModel.withError == false else {
                 self.appNoticeModel.send(appNoticeModel)
@@ -63,5 +64,16 @@ extension DefaultSplashUseCase: SplashUseCase {
                 self.appNoticeModel.send(nil)
             }
         }.store(in: cancelBag)
+    }
+    
+    public func registerPushToken() {
+        guard let pushToken = UserDefaultKeyList.User.pushToken, !pushToken.isEmpty else { return }
+
+        repository.registerPushToken(with: pushToken)
+            .sink { event in
+                print("DefaultSplashUseCase : \(event)")
+            } receiveValue: { didSucceed in
+                print("푸시 토큰 등록 결과: \(didSucceed)")
+            }.store(in: cancelBag)
     }
 }

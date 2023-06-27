@@ -11,4 +11,5 @@ import Combine
 public protocol SplashRepositoryInterface {
     func getAppNotice() -> AnyPublisher<AppNoticeModel, Error>
     func getCheckedRecommendUpdateVersion() -> String?
+    func registerPushToken(with token: String) -> AnyPublisher<Bool, Error>
 }
