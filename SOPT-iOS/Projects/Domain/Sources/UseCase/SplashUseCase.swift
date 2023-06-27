@@ -1,5 +1,5 @@
 //
-//  AppNoticeUseCase.swift
+//  SplashUseCase.swift
 //  Domain
 //
 //  Created by sejin on 2023/01/18.
@@ -11,13 +11,13 @@ import Combine
 
 import Core
 
-public protocol AppNoticeUseCase {
+public protocol SplashUseCase {
     func getAppNotice()
     
     var appNoticeModel: PassthroughSubject<AppNoticeModel?, Error> { get set }
 }
 
-public class DefaultAppNoticeUseCase {
+public class DefaultSplashUseCase {
   
     private let repository: AppNoticeRepositoryInterface
     private var cancelBag = CancelBag()
@@ -29,7 +29,7 @@ public class DefaultAppNoticeUseCase {
     }
 }
 
-extension DefaultAppNoticeUseCase: AppNoticeUseCase {
+extension DefaultSplashUseCase: SplashUseCase {
     public func getAppNotice() {
         repository.getAppNotice()
         .catch({ error in

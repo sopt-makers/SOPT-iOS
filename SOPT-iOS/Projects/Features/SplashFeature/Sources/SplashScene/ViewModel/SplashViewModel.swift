@@ -16,7 +16,7 @@ import SplashFeatureInterface
 
 public class SplashViewModel: SplashViewModelType {
     
-    private let useCase: AppNoticeUseCase
+    private let useCase: SplashUseCase
     private var cancelBag = CancelBag()
     
     // MARK: - Inputs
@@ -37,7 +37,7 @@ public class SplashViewModel: SplashViewModelType {
     
     // MARK: - init
     
-    public init(useCase: AppNoticeUseCase) {
+    public init(useCase: SplashUseCase) {
         self.useCase = useCase
     }
 }
