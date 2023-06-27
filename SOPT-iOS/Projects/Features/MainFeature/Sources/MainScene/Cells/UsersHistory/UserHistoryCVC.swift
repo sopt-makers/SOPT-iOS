@@ -113,9 +113,11 @@ extension UserHistoryCVC {
         }
         
         // 활동 기수들 내역 나열한다.
-        guard let allHistory = allHistory else { return }
+        guard var allHistory = allHistory, !allHistory.isEmpty else { return }
+        allHistory.removeFirst()
+        
         for (index, history) in allHistory.enumerated() {
-            if index >= numberOfHistoryToShow { break }
+            if self.historyStackView.arrangedSubviews.count >= numberOfHistoryToShow { break }
             let historyView = self.makeHistoryView(index: index, history: String(history))
             self.historyStackView.addArrangedSubview(historyView)
         }
