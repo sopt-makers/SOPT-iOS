@@ -17,7 +17,7 @@ default_platform(:ios)
 
 platform :ios do
   
-  # Demo
+  ### Demo
 
   desc 'Set Marketing and Build version'
   lane :set_version_demo do |version|
@@ -61,7 +61,7 @@ platform :ios do
     upload_to_testflight(skip_waiting_for_build_processing: true)
   end
 
-  # Release
+  ### Release
 
   desc 'Set Marketing and Build version'
   lane :set_version do |version|
@@ -112,7 +112,7 @@ platform :ios do
     )
   end
 
-  # Device Management
+  ### Device Management
 
   desc "Register Devices"
   lane :register_new_device do  |options|
@@ -124,7 +124,7 @@ platform :ios do
     refresh_profiles
   end
 
-  # Test
+  ### Test
 
   lane :test_scheme do |options|
     run_tests(
@@ -190,7 +190,7 @@ platform :ios do
     end
   end
 
-  # Projects
+  ### Projects
 
   desc "Regenerate tuist Projects with the specified version"
   lane :regenerate do |version|
@@ -216,15 +216,22 @@ platform :ios do
 
     regenerate(version: version[:version])
 
+    matchReadOnly
+  end
+
+  ### Match
+
+  desc "Match all code signing"
+  lane :matchReadOnly do
     sync_code_signing(
       type: "appstore",
-      app_identifier: 'com.sopt-stamp-iOS.test',
+      app_identifier: ['com.sopt-stamp-iOS.test', 'com.sopt-stamp-iOS.release'],
       readonly: true
     )
 
     sync_code_signing(
-      type: "appstore",
-      app_identifier: 'com.sopt-stamp-iOS.release',
+      type: "development",
+      app_identifier: ['com.sopt-stamp-iOS.test', 'com.sopt-stamp-iOS.release'],
       readonly: true
     )
   end
