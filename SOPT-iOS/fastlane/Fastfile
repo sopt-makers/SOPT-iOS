@@ -202,4 +202,30 @@ platform :ios do
     set_version(version: version[:version])
     set_version_demo(version: version[:version])
   end
+
+  desc "Initial Setting For Projects"
+  lane :start_project do |version|
+
+    Dir.chdir("../") do
+      github_access_token = prompt(text: "Enter your GitHub access token: ")
+      sh("make download-privates token=#{github_access_token}")
+      apple_id = prompt(text: "Enter your Apple ID: ")
+      sh("make update_apple_id email=#{apple_id}")
+      sh("tuist fetch")
+    end
+
+    regenerate(version: version[:version])
+
+    sync_code_signing(
+      type: "appstore",
+      app_identifier: 'com.sopt-stamp-iOS.test',
+      readonly: true
+    )
+
+    sync_code_signing(
+      type: "appstore",
+      app_identifier: 'com.sopt-stamp-iOS.release',
+      readonly: true
+    )
+  end
 end

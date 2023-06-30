@@ -95,6 +95,14 @@ Run tests for feature schemes
 
 Regenerate tuist Projects with the specified version
 
+### ios start_project
+
+```sh
+[bundle exec] fastlane ios start_project
+```
+
+Initial Setting For Projects
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
