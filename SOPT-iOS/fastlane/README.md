@@ -95,14 +95,6 @@ Run tests for feature schemes
 
 Regenerate tuist Projects with the specified version
 
-### ios matchReadOnly
-
-```sh
-[bundle exec] fastlane ios matchReadOnly
-```
-
-Match all code signing
-
 ### ios start_project
 
 ```sh
@@ -110,6 +102,14 @@ Match all code signing
 ```
 
 Initial Setting For Projects
+
+### ios matchReadOnly
+
+```sh
+[bundle exec] fastlane ios matchReadOnly
+```
+
+Match all code signing
 
 ----
 

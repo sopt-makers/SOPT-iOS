@@ -212,8 +212,9 @@ platform :ios do
       apple_id = prompt(text: "Enter your Apple ID: ")
       sh("make update_apple_id email=#{apple_id}")
       sh("tuist fetch")
+      sh("fastlane install_plugins")
     end
-
+    
     regenerate(version: version[:version])
 
     matchReadOnly
