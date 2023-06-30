@@ -89,3 +89,16 @@ _download-privates:
 	# TestConfig.swift
 	
 	$(call download_file,Projects/Modules/TestCore/Sources,$$GITHUB_ACCESS_TOKEN,TestConfig.swift)
+
+update_apple_id:
+	# Update Apple ID in fastlane/.env
+	@if [ -f fastlane/.env ]; then \
+		if [ -z "$$email" ]; then \
+			read -p "Enter your Apple ID: " email; \
+		fi; \
+        sed -i '' '1s/.*/APPLE_ID="'"$$email"'"/' fastlane/.env; \
+        echo "애플 아이디가 저장되었습니다."; \
+		cat fastlane/.env; \
+    else \
+        echo "fastlane/.env 파일이 존재하지 않습니다."; \
+    fi
