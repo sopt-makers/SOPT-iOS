@@ -51,7 +51,9 @@ download-privates:
 
 	# Get GitHub Access Token
 	@if [ ! -f .env ]; then \
-		read -p "Enter your GitHub access token: " token; \
+		if [ -z "$$token" ]; then \
+			read -p "Enter your GitHub access token: " token; \
+		fi; \
 		echo "GITHUB_ACCESS_TOKEN=$$token" > .env; \
 	else \
 		/bin/bash -c "source .env; make _download-privates"; \
