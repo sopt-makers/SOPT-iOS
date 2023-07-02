@@ -1,4 +1,5 @@
-git_url("git@github.com:sopt-makers/fastlane-match-iOS.git")
+git_url("git@github.com:lsj8706/fastlane-match.git")
+git_branch("master")
 
 storage_mode("git")
 
