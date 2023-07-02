@@ -82,7 +82,7 @@ platform :ios do
 
     match(
       type: "appstore",
-      app_identifier: 'com.sopt-stamp-iOS.release',
+      app_identifier: ['com.sopt-stamp-iOS.release', 'com.sopt-stamp-iOS.release.WidgetExtension'],
       readonly: true
     )
 
@@ -226,13 +226,13 @@ platform :ios do
   lane :match_read_only do
     match(
       type: "appstore",
-      app_identifier: ['com.sopt-stamp-iOS.test', 'com.sopt-stamp-iOS.release'],
+      app_identifier: ['com.sopt-stamp-iOS.test', 'com.sopt-stamp-iOS.release', 'com.sopt-stamp-iOS.release.WidgetExtension'],
       readonly: true
     )
 
     match(
       type: "development",
-      app_identifier: ['com.sopt-stamp-iOS.test', 'com.sopt-stamp-iOS.release'],
+      app_identifier: ['com.sopt-stamp-iOS.test', 'com.sopt-stamp-iOS.release', 'com.sopt-stamp-iOS.release.WidgetExtension'],
       readonly: true
     )
   end
