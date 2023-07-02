@@ -103,10 +103,10 @@ Regenerate tuist Projects with the specified version
 
 Initial Setting For Projects
 
-### ios matchReadOnly
+### ios match_read_only
 
 ```sh
-[bundle exec] fastlane ios matchReadOnly
+[bundle exec] fastlane ios match_read_only
 ```
 
 Match all code signing

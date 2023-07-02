@@ -36,7 +36,7 @@ platform :ios do
   lane :upload_testflight_demo do |version|
     version = version[:version]
 
-    sync_code_signing(
+    match(
       type: "appstore",
       app_identifier: 'com.sopt-stamp-iOS.test',
       readonly: true
@@ -80,7 +80,7 @@ platform :ios do
   lane :upload_testflight do |version|
     version = version[:version]
 
-    sync_code_signing(
+    match(
       type: "appstore",
       app_identifier: 'com.sopt-stamp-iOS.release',
       readonly: true
@@ -223,14 +223,14 @@ platform :ios do
   ### Match
 
   desc "Match all code signing"
-  lane :matchReadOnly do
-    sync_code_signing(
+  lane :match_read_only do
+    match(
       type: "appstore",
       app_identifier: ['com.sopt-stamp-iOS.test', 'com.sopt-stamp-iOS.release'],
       readonly: true
     )
 
-    sync_code_signing(
+    match(
       type: "development",
       app_identifier: ['com.sopt-stamp-iOS.test', 'com.sopt-stamp-iOS.release'],
       readonly: true
