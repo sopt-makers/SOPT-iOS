@@ -210,14 +210,15 @@ platform :ios do
       github_access_token = prompt(text: "Enter your GitHub access token: ")
       sh("make download-privates token=#{github_access_token}")
       apple_id = prompt(text: "Enter your Apple ID: ")
-      sh("make update_apple_id email=#{apple_id}")
+      app_password = prompt(text: "Enter your App Password")
+      sh("make update_apple_id email=#{apple_id} app_password=#{app_password}")
       sh("tuist fetch")
       sh("fastlane install_plugins")
     end
     
     regenerate(version: version[:version])
 
-    matchReadOnly
+    match_read_only
   end
 
   ### Match

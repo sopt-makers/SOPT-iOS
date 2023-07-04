@@ -100,6 +100,11 @@ update_apple_id:
 		fi; \
         sed -i '' '1s/.*/APPLE_ID="'"$$email"'"/' fastlane/.env; \
         echo "애플 아이디가 저장되었습니다."; \
+		if [ -z "$$app_password" ]; then \
+			read -p "Enter your App Password: " app_password; \
+		fi; \
+        sed -i '' '2s/.*/FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD="'"$$app_password"'"/' fastlane/.env; \
+        echo "앱 암호가 저장되었습니다."; \
 		cat fastlane/.env; \
     else \
         echo "fastlane/.env 파일이 존재하지 않습니다."; \
