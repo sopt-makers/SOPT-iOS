@@ -1,10 +1,11 @@
-git_url("git@github.com:sopt-makers/fastlane-match-iOS.git")
+git_url("git@github.com:lsj8706/fastlane-match.git")
+git_branch("master")
 
 storage_mode("git")
 
 type("appstore") # The default type, can be: appstore, adhoc, enterprise or development
 
-app_identifier(["com.sopt-stamp-iOS.release", "com.sopt-stamp-iOS.test"])
+app_identifier(["com.sopt-stamp-iOS.release", "com.sopt-stamp-iOS.test", "com.sopt-stamp-iOS.release.WidgetExtension"])
 # username("user@fastlane.tools") # Your Apple Developer Portal username
 
 # For all available options run `fastlane match --help`
