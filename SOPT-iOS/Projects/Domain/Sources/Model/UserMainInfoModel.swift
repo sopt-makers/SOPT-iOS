@@ -10,7 +10,7 @@ import Foundation
 
 import Core
 
-public struct UserMainInfoModel {
+public struct UserMainInfoModel: Equatable {
     public let status, name: String
     public let profileImage: String?
     public let historyList: [Int]
