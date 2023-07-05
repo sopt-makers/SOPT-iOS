@@ -61,24 +61,27 @@ final class MainViewModelTests: QuickSpec {
                     
                     requestUserInfo.send(())
                     
+                    expect(viewModel.userMainInfo).toEventually(equal(UserMainInfoModel.dummyUserInfoModel[0]))
                     expect(result).toEventually(beVoid())
                 }
             }
             
             context("SOPT 가입일로부터 현재까지의 기간(월) 계산") {
+                let userInfoModel = UserMainInfoModel.dummyUserInfoModel
+                
                 it("userInfoModel이 nil이기 때문에 월 계산도 nil을 반환한다.") {
                     let months = viewModel.calculateMonths()
                     expect(months).to(beNil())
                 }
 
                 it("사용자의 32기부터 현재까지의 기간이 계산된다.") {
-                    viewModel.userMainInfo = self.userInfoModel[0]
+                    viewModel.userMainInfo = userInfoModel[0]
                     let months = viewModel.calculateMonths()!
                     expect(months).to(equal("5"))
                 }
                 
                 it("사용자의 31기부터 현재까지의 기간이 계산된다.") {
-                    viewModel.userMainInfo = self.userInfoModel[1]
+                    viewModel.userMainInfo = userInfoModel[1]
                     let months = viewModel.calculateMonths()!
                     expect(months).to(equal("23"))
                 }
@@ -87,8 +90,8 @@ final class MainViewModelTests: QuickSpec {
     }
 }
 
-extension MainViewModelTests {
-    var userInfoModel: [UserMainInfoModel] {
+extension UserMainInfoModel {
+   static var dummyUserInfoModel: [UserMainInfoModel] {
         return [UserMainInfoModel(status: "ACTIVE",
                                  name: "김솝트",
                                  profileImage: nil,

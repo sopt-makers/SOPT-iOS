@@ -19,12 +19,7 @@ final class MockMainUseCase: MainUseCase {
     var mainErrorOccurred = PassthroughSubject<Domain.MainError, Never>()
     
     func getUserMainInfo() {
-        self.userMainInfo.send(UserMainInfoModel(status: "ACTIVC",
-                                                 name: "솝트",
-                                                 profileImage: nil,
-                                                 historyList: [],
-                                                 attendanceScore: nil,
-                                                 announcement: nil))
+        self.userMainInfo.send(UserMainInfoModel.dummyUserInfoModel[0])
     }
     
     func getServiceState() {
