@@ -51,7 +51,9 @@ download-privates:
 
 	# Get GitHub Access Token
 	@if [ ! -f .env ]; then \
-		read -p "Enter your GitHub access token: " token; \
+		if [ -z "$$token" ]; then \
+			read -p "Enter your GitHub access token: " token; \
+		fi; \
 		echo "GITHUB_ACCESS_TOKEN=$$token" > .env; \
 	else \
 		/bin/bash -c "source .env; make _download-privates"; \
@@ -89,3 +91,21 @@ _download-privates:
 	# TestConfig.swift
 	
 	$(call download_file,Projects/Modules/TestCore/Sources,$$GITHUB_ACCESS_TOKEN,TestConfig.swift)
+
+update_apple_id:
+	# Update Apple ID in fastlane/.env
+	@if [ -f fastlane/.env ]; then \
+		if [ -z "$$email" ]; then \
+			read -p "Enter your Apple ID: " email; \
+		fi; \
+        sed -i '' '1s/.*/APPLE_ID="'"$$email"'"/' fastlane/.env; \
+        echo "애플 아이디가 저장되었습니다."; \
+		if [ -z "$$app_password" ]; then \
+			read -p "Enter your App Password: " app_password; \
+		fi; \
+        sed -i '' '2s/.*/FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD="'"$$app_password"'"/' fastlane/.env; \
+        echo "앱 암호가 저장되었습니다."; \
+		cat fastlane/.env; \
+    else \
+        echo "fastlane/.env 파일이 존재하지 않습니다."; \
+    fi

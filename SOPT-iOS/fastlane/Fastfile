@@ -17,7 +17,7 @@ default_platform(:ios)
 
 platform :ios do
   
-  # Demo
+  ### Demo
 
   desc 'Set Marketing and Build version'
   lane :set_version_demo do |version|
@@ -36,7 +36,7 @@ platform :ios do
   lane :upload_testflight_demo do |version|
     version = version[:version]
 
-    sync_code_signing(
+    match(
       type: "appstore",
       app_identifier: 'com.sopt-stamp-iOS.test',
       readonly: true
@@ -61,7 +61,7 @@ platform :ios do
     upload_to_testflight(skip_waiting_for_build_processing: true)
   end
 
-  # Release
+  ### Release
 
   desc 'Set Marketing and Build version'
   lane :set_version do |version|
@@ -80,9 +80,9 @@ platform :ios do
   lane :upload_testflight do |version|
     version = version[:version]
 
-    sync_code_signing(
+    match(
       type: "appstore",
-      app_identifier: 'com.sopt-stamp-iOS.release',
+      app_identifier: ['com.sopt-stamp-iOS.release', 'com.sopt-stamp-iOS.release.WidgetExtension'],
       readonly: true
     )
 
@@ -112,7 +112,7 @@ platform :ios do
     )
   end
 
-  # Device Management
+  ### Device Management
 
   desc "Register Devices"
   lane :register_new_device do  |options|
@@ -121,10 +121,10 @@ platform :ios do
     device_hash = {}
     device_hash[device_name] = device_udid
     register_devices(devices: device_hash)
-    refresh_profiles
+    match(type: "development", force_for_new_devices: true)
   end
 
-  # Test
+  ### Test
 
   lane :test_scheme do |options|
     run_tests(
@@ -190,7 +190,7 @@ platform :ios do
     end
   end
 
-  # Projects
+  ### Projects
 
   desc "Regenerate tuist Projects with the specified version"
   lane :regenerate do |version|
@@ -201,5 +201,40 @@ platform :ios do
 
     set_version(version: version[:version])
     set_version_demo(version: version[:version])
+  end
+
+  desc "Initial Setting For Projects"
+  lane :start_project do |version|
+
+    Dir.chdir("../") do
+      github_access_token = prompt(text: "Enter your GitHub access token: ")
+      sh("make download-privates token=#{github_access_token}")
+      apple_id = prompt(text: "Enter your Apple ID: ")
+      app_password = prompt(text: "Enter your App Password")
+      sh("make update_apple_id email=#{apple_id} app_password=#{app_password}")
+      sh("tuist fetch")
+      sh("fastlane install_plugins")
+    end
+    
+    regenerate(version: version[:version])
+
+    match_read_only
+  end
+
+  ### Match
+
+  desc "Match all code signing"
+  lane :match_read_only do
+    match(
+      type: "appstore",
+      app_identifier: ['com.sopt-stamp-iOS.test', 'com.sopt-stamp-iOS.release', 'com.sopt-stamp-iOS.release.WidgetExtension'],
+      readonly: true
+    )
+
+    match(
+      type: "development",
+      app_identifier: ['com.sopt-stamp-iOS.test', 'com.sopt-stamp-iOS.release', 'com.sopt-stamp-iOS.release.WidgetExtension'],
+      readonly: true
+    )
   end
 end
