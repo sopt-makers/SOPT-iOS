@@ -16,7 +16,6 @@ public struct UserMainInfoModel: Equatable {
     public let historyList: [Int]
     public let attendanceScore: Float?
     public let announcement: String?
-    public let responseMessage: String?
     
     public var userType: UserType {
         switch status {
@@ -31,13 +30,12 @@ public struct UserMainInfoModel: Equatable {
         }
     }
     
-    public init(status: String, name: String, profileImage: String?, historyList: [Int], attendanceScore: Float?, announcement: String?, responseMessage: String?) {
+    public init(status: String, name: String, profileImage: String?, historyList: [Int], attendanceScore: Float?, announcement: String?) {
         self.status = status
         self.name = name
         self.profileImage = profileImage
         self.historyList = historyList
         self.attendanceScore = attendanceScore
         self.announcement = announcement
-        self.responseMessage = responseMessage
     }
 }
