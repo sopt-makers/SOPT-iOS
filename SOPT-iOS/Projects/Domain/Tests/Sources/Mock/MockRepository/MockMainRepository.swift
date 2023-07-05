@@ -7,10 +7,10 @@
 //
 
 import Combine
-import Core
 import XCTest
 
-@testable import Domain
+import Core
+import Domain
 
 final class MockMainRepository: MainRepositoryInterface {
     
