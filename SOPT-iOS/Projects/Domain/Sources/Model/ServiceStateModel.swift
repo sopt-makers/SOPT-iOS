@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct ServiceStateModel {
+public struct ServiceStateModel: Equatable {
     public let isAvailable: Bool
     
     public init(isAvailable: Bool) {

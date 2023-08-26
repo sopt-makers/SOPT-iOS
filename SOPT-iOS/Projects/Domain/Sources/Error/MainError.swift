@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum MainError: Error {
+public enum MainError: Error, Equatable {
     case networkError(message: String?)
     case unregisteredUser // 플그 미동록 유저
     case authFailed // 토큰 재발급 실패 등 인증 에러
