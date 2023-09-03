@@ -31,7 +31,8 @@ open class BaseService<Target: TargetType> {
         configuration.timeoutIntervalForResource = 10
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
         let interceptor = AlamoInterceptor()
-        let session = Session(configuration: configuration, interceptor: interceptor)
+        let sessionDelegate = BaseSessionDelegate()
+        let session = Session(configuration: configuration, delegate: sessionDelegate, interceptor: interceptor)
         let provider = MoyaProvider<API>(
             endpointClosure: endpointClosure,
             session: session,
