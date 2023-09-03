@@ -245,6 +245,24 @@ extension Scheme {
             analyzeAction: .analyzeAction(configuration: configs)
         )
     }
+    
+    static func makeDemoAppTestScheme() -> Scheme {
+        let targetName = "\(Environment.workspaceName)-Demo"
+        return Scheme(
+          name: "\(targetName)-Test",
+          shared: true,
+          buildAction: .buildAction(targets: ["\(targetName)"]),
+          testAction: .targets(
+              ["\(targetName)Tests"],
+              configuration: "Test",
+              options: .options(coverage: true, codeCoverageTargets: ["\(targetName)"])
+          ),
+          runAction: .runAction(configuration: "Test"),
+          archiveAction: .archiveAction(configuration: "Test"),
+          profileAction: .profileAction(configuration: "Test"),
+          analyzeAction: .analyzeAction(configuration: "Test")
+        )
+    }
 }
 
 extension Project {
@@ -298,6 +316,8 @@ extension Project {
             archiveAction: .archiveAction(configuration: "PROD"),
             profileAction: .profileAction(configuration: "PROD"),
             analyzeAction: .analyzeAction(configuration: "PROD")
-        )
+        ),
+        // Test API, debug scheme, Demo App Target
+        .makeDemoAppTestScheme()
     ]
 }
