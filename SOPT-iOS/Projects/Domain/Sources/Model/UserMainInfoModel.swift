@@ -16,6 +16,7 @@ public struct UserMainInfoModel: Equatable {
     public let historyList: [Int]
     public let attendanceScore: Float?
     public let announcement: String?
+    public let exists: Bool?
     
     public var userType: UserType {
         switch status {
@@ -30,12 +31,13 @@ public struct UserMainInfoModel: Equatable {
         }
     }
     
-    public init(status: String, name: String, profileImage: String?, historyList: [Int], attendanceScore: Float?, announcement: String?) {
+    public init(status: String, name: String, profileImage: String?, historyList: [Int], attendanceScore: Float?, announcement: String?, exists: Bool?) {
         self.status = status
         self.name = name
         self.profileImage = profileImage
         self.historyList = historyList
         self.attendanceScore = attendanceScore
         self.announcement = announcement
+        self.exists = exists
     }
 }

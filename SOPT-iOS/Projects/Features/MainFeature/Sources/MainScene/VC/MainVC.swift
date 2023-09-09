@@ -109,8 +109,7 @@ extension MainVC {
                     return
                 }
                 print("MainVC User 모델: \(userMainInfo)")
-                self?.collectionView.reloadData()
-                self?.naviBar.hideNoticeButton(wantsToHide: self?.viewModel.userType == .visitor )
+                self?.updateUI(with: userMainInfo)
             }.store(in: self.cancelBag)
         
         output.isServiceAvailable
@@ -151,6 +150,15 @@ extension MainVC {
                                      forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                      withReuseIdentifier: AppServiceHeaderView.className)
         self.collectionView.register(AppServiceCVC.self, forCellWithReuseIdentifier: AppServiceCVC.className)
+    }
+    
+    private func updateUI(with model: UserMainInfoModel) {
+        if let notificationExists = model.exists {
+            self.naviBar.changeNoticeButtonStyle(isActive: notificationExists)
+        }
+        
+        self.naviBar.hideNoticeButton(wantsToHide: self.viewModel.userType == .visitor)
+        self.collectionView.reloadData()
     }
     
     private func presentNetworkAlertVC() {
