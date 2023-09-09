@@ -24,6 +24,7 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
     public var viewModel: NotificationListViewModel
     private var cancelBag = CancelBag()
     private var cellTapped = PassthroughSubject<Void, Never>()
+    private var requestNotificationList = CurrentValueSubject<Void, Never>(())
     
     // MARK: - UI Components
     
@@ -138,9 +139,10 @@ extension NotificationListVC {
 extension NotificationListVC {
     private func bindViewModels() {
         let input = NotificationListViewModel.Input(
-            naviBackButtonTapped: naviBar.leftButtonTapped,
+            requestNotificationList: requestNotificationList.asDriver(), naviBackButtonTapped: naviBar.leftButtonTapped,
             cellTapped: cellTapped.asDriver()
         )
+        
         let _ = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
     }
 }
