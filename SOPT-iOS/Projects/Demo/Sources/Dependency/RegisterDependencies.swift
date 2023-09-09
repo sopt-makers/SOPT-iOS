@@ -54,7 +54,7 @@ extension AppDelegate {
             interface: NotificationListRepositoryInterface.self,
             implement: {
                 NotificationListRepository(
-                    service: DefaultUserService()
+                    service: DefaultNotificationService()
                 )
             }
         )
