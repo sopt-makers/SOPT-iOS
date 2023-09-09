@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct NotificationListEntity {
+public struct NotificationListEntity: Codable {
     public let id: Int
     public let userId: Int
     public let title: String

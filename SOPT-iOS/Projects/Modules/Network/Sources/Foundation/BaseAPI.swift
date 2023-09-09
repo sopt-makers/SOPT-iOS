@@ -20,6 +20,7 @@ public enum APIType {
     case user
     case firebase
     case config
+    case notification
 }
 
 public protocol BaseAPI: TargetType {
@@ -48,6 +49,8 @@ extension BaseAPI {
             base += "/firebase"
         case .config:
             base += "/config"
+        case .notification:
+            base += "/notification"
         }
         
         guard let url = URL(string: base) else {
