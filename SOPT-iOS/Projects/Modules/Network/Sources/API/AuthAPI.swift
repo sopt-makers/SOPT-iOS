@@ -55,9 +55,7 @@ extension AuthAPI: BaseAPI {
         switch self {
         case .signIn(let token, let pushToken):
             params["code"] = token
-            #if TEST || QA
             params["pushToken"] = pushToken
-            #endif
         case .reissuance:
             params["refreshToken"] = UserDefaultKeyList.Auth.appRefreshToken
         }
