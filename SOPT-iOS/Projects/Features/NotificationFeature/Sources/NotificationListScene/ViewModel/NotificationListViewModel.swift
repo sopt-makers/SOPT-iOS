@@ -22,6 +22,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
     private var cancelBag = CancelBag()
     
     let filterList: [NotificationFilterType] = [.all, .entireTarget, .partTarget, .news]
+    var notifications: [NotificationListModel] = []
     
     var page = 0
     
@@ -30,7 +31,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
     public struct Input {
         let requestNotifications: Driver<Void>
         let naviBackButtonTapped: Driver<Void>
-        let cellTapped: Driver<Void>
+        let cellTapped: Driver<Int>
     }
     
     // MARK: - Outputs
@@ -43,7 +44,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
     // MARK: - NotificationCoordinatable
     
     public var onNaviBackButtonTap: (() -> Void)?
-    public var onNotificationTap: (() -> Void)?
+    public var onNotificationTap: ((NotificationListModel) -> Void)?
     
     // MARK: - init
     
@@ -73,8 +74,9 @@ extension NotificationListViewModel {
         
         input.cellTapped
             .withUnretained(self)
-            .sink { owner, _ in
-                owner.onNotificationTap?()
+            .sink { owner, index in
+                let notification = owner.notifications[index]
+                owner.onNotificationTap?(notification)
             }.store(in: cancelBag)
         
         return output
@@ -84,8 +86,9 @@ extension NotificationListViewModel {
         useCase.notificationList
             .sink { [weak self] notificationList in
                 guard let self = self else { return }
+                self.notifications = notificationList
                 output.filterList.send(filterList)
-                output.notificationList.send(notificationList)
+                output.notificationList.send(notifications)
             }.store(in: cancelBag)
     }
 }

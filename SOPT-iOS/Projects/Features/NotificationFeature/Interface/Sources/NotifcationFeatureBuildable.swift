@@ -8,7 +8,9 @@
 
 import Foundation
 
+import Domain
+
 public protocol NotificationFeatureBuildable {
     func makeNotificationList() -> NotificationListPresentable
-    func makeNotificationDetailVC() -> NotificationDetailViewControllable
+    func makeNotificationDetailVC(notification: NotificationListModel) -> NotificationDetailViewControllable
 }

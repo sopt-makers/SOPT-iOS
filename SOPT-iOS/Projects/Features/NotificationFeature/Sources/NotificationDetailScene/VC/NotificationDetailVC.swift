@@ -10,6 +10,7 @@ import UIKit
 
 import Core
 import DSKit
+import Domain
 
 import Combine
 import SnapKit
@@ -117,10 +118,6 @@ public final class NotificationDetailVC: UIViewController, NotificationDetailVie
 extension NotificationDetailVC {
     private func setUI() {
         view.backgroundColor = DSKitAsset.Colors.black100.color
-        
-        // 임시 텍스트
-        titleLabel.text = "[GO SOPT] 32기 전체 회계 공지"
-        textView.text = I18N.ServiceUsagePolicy.termsOfService
     }
     
     private func setLayout() {
@@ -179,8 +176,13 @@ extension NotificationDetailVC {
 extension NotificationDetailVC {
   
     private func bindViewModels() {
-        let input = NotificationDetailViewModel.Input()
+        let input = NotificationDetailViewModel.Input(viewDidLoad: Just(()).asDriver())
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.notification
+            .sink { [weak self] notification in
+                self?.setData(with: notification)
+            }.store(in: cancelBag)
     }
     
     private func bindViews() {
@@ -189,5 +191,10 @@ extension NotificationDetailVC {
             .sink { owner, _ in
                 print("바로가기 버튼 터치: \(owner)")
             }.store(in: cancelBag)
+    }
+    
+    private func setData(with notification: NotificationListModel) {
+        self.titleLabel.text = notification.title
+        self.textView.text = notification.content
     }
 }

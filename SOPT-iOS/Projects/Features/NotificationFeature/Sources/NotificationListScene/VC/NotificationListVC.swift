@@ -23,7 +23,7 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
     
     public var viewModel: NotificationListViewModel
     private var cancelBag = CancelBag()
-    private var cellTapped = PassthroughSubject<Void, Never>()
+    private var cellTapped = PassthroughSubject<Int, Never>()
     private var requestNotifications = CurrentValueSubject<Void, Never>(())
     
     private var notificationFilterDataSource: UICollectionViewDiffableDataSource<Int, NotificationFilterType>!
@@ -214,7 +214,7 @@ extension NotificationListVC: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         if collectionView == notificationListCollectionView {
-            cellTapped.send()
+            cellTapped.send(indexPath.item)
         }
     }
 }

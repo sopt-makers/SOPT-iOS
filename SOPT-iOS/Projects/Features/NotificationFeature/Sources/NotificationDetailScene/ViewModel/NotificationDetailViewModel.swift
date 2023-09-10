@@ -18,23 +18,26 @@ public class NotificationDetailViewModel: ViewModelType {
     
     private let useCase: NotificationDetailUseCase
     private var cancelBag = CancelBag()
+    
+    private var notification: NotificationListModel
   
     // MARK: - Inputs
     
     public struct Input {
-    
+        let viewDidLoad: Driver<Void>
     }
     
     // MARK: - Outputs
     
     public struct Output {
-    
+        var notification = PassthroughSubject<NotificationListModel, Never>()
     }
     
     // MARK: - init
   
-    public init(useCase: NotificationDetailUseCase) {
+    public init(useCase: NotificationDetailUseCase, notification: NotificationListModel) {
         self.useCase = useCase
+        self.notification = notification
     }
 }
 
@@ -44,7 +47,12 @@ extension NotificationDetailViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
-        // input,output 상관관계 작성
+        
+        input.viewDidLoad
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                output.notification.send(notification)
+            }.store(in: cancelBag)
     
         return output
     }
