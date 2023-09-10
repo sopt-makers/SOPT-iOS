@@ -57,7 +57,6 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
         return view
     }()
     
-    
     // MARK: - initialization
     
     public init(viewModel: NotificationListViewModel) {
@@ -143,7 +142,12 @@ extension NotificationListVC {
             cellTapped: cellTapped.asDriver()
         )
         
-        let _ = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.notificationList
+            .sink { notificationList in
+                print(notificationList)
+            }.store(in: self.cancelBag)
     }
 }
 
