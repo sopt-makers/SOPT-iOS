@@ -62,7 +62,7 @@ extension AppDelegate {
             interface: NotificationDetailRepositoryInterface.self,
             implement: {
                 NotificationDetailRepository(
-                    service: DefaultUserService()
+                    service: DefaultNotificationService()
                 )
             }
         )
