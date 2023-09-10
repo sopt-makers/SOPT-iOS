@@ -11,5 +11,5 @@ import Core
 import Combine
 
 public protocol NotificationDetailRepositoryInterface {
-    func readNotification(notificationId: Int) -> Driver<Bool>
+    func readNotification(notificationId: Int) -> AnyPublisher<Bool, Error>
 }

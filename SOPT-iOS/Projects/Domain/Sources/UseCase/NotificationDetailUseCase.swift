@@ -32,8 +32,10 @@ extension DefaultNotificationDetailUseCase: NotificationDetailUseCase {
     
     public func readNotification(notificationId: Int) {
         repository.readNotification(notificationId: notificationId)
-            .sink { [weak self] readSuccess in
+            .sink { event in
+                print("ReadNotification State: \(event)")
+            } receiveValue: { [weak self] readSuccess in
                 self?.readSuccess.send(readSuccess)
-            }.store(in: cancelBag)
+            }.store(in: self.cancelBag)
     }
 }

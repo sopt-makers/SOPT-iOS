@@ -23,9 +23,9 @@ public class NotificationDetailRepository {
 }
 
 extension NotificationDetailRepository: NotificationDetailRepositoryInterface {
-    public func readNotification(notificationId: Int) -> Core.Driver<Bool> {
+    public func readNotification(notificationId: Int) -> AnyPublisher<Bool, Error> {
         service.readNotification(notificationId: notificationId)
             .map { $0 == 200 }
-            .asDriver()
+            .eraseToAnyPublisher()
     }
 }
