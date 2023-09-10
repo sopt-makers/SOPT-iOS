@@ -189,8 +189,10 @@ extension NotificationListVC {
 extension NotificationListVC {
     private func bindViewModels() {
         let input = NotificationListViewModel.Input(
-            requestNotifications: requestNotifications.asDriver(), naviBackButtonTapped: naviBar.leftButtonTapped,
-            cellTapped: cellTapped.asDriver()
+            requestNotifications: requestNotifications.asDriver(),
+            naviBackButtonTapped: naviBar.leftButtonTapped,
+            cellTapped: cellTapped.asDriver(),
+            readAllButtonTapped: naviBar.rightButtonTapped
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)

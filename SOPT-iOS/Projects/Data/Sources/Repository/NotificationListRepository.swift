@@ -28,4 +28,10 @@ extension NotificationListRepository: NotificationListRepositoryInterface {
             .map { $0.map { $0.toDomain() } }
             .eraseToAnyPublisher()
     }
+    
+    public func readAllNotifications() -> AnyPublisher<Bool, Error> {
+        service.readNotification(notificationId: 0)
+            .map { $0 == 200 }
+            .eraseToAnyPublisher()
+    }
 }

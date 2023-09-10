@@ -32,6 +32,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
         let requestNotifications: Driver<Void>
         let naviBackButtonTapped: Driver<Void>
         let cellTapped: Driver<Int>
+        let readAllButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -79,16 +80,38 @@ extension NotificationListViewModel {
                 owner.onNotificationTap?(notification)
             }.store(in: cancelBag)
         
+        input.readAllButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.useCase.readAllNotifications()
+            }.store(in: cancelBag)
+        
         return output
     }
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         useCase.notificationList
+            .asDriver()
             .sink { [weak self] notificationList in
                 guard let self = self else { return }
                 self.notifications = notificationList
                 output.filterList.send(filterList)
                 output.notificationList.send(notifications)
+            }.store(in: cancelBag)
+        
+        useCase.readSuccess
+            .asDriver()
+            .sink { [weak self] readSuccess in
+                guard let self = self else { return }
+                print("모든 알림 읽음 처리: \(readSuccess)")
+                if readSuccess {
+                    self.notifications = self.notifications.map {
+                        var notification = $0
+                        notification.isRead = true
+                        return notification
+                    }
+                    output.notificationList.send(self.notifications)
+                }
             }.store(in: cancelBag)
     }
 }
