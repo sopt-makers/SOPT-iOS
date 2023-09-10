@@ -28,7 +28,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
     // MARK: - Inputs
     
     public struct Input {
-        let requestNotificationList: Driver<Void>
+        let requestNotifications: Driver<Void>
         let naviBackButtonTapped: Driver<Void>
         let cellTapped: Driver<Void>
     }
@@ -37,6 +37,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
     
     public struct Output {
         var notificationList = PassthroughSubject<[NotificationListModel], Never>()
+        var filterList = PassthroughSubject<[NotificationFilterType], Never>()
     }
     
     // MARK: - NotificationCoordinatable
@@ -58,7 +59,7 @@ extension NotificationListViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
-        input.requestNotificationList
+        input.requestNotifications
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.getNotificationList(page: owner.page)
@@ -81,7 +82,9 @@ extension NotificationListViewModel {
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         useCase.notificationList
-            .sink { notificationList in
+            .sink { [weak self] notificationList in
+                guard let self = self else { return }
+                output.filterList.send(filterList)
                 output.notificationList.send(notificationList)
             }.store(in: cancelBag)
     }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct NotificationListModel {
+public struct NotificationListModel: Hashable {
     public let id: Int
     public let userId: Int
     public let title: String

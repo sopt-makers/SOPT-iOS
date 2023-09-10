@@ -24,7 +24,11 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
     public var viewModel: NotificationListViewModel
     private var cancelBag = CancelBag()
     private var cellTapped = PassthroughSubject<Void, Never>()
-    private var requestNotificationList = CurrentValueSubject<Void, Never>(())
+    private var requestNotifications = CurrentValueSubject<Void, Never>(())
+    
+    private var notificationFilterDataSource: UICollectionViewDiffableDataSource<Int, NotificationFilterType>!
+    
+    private var notificationListdataSource: UICollectionViewDiffableDataSource<Int, NotificationListModel>!
     
     // MARK: - UI Components
     
@@ -76,6 +80,7 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
         self.setLayout()
         self.bindViewModels()
         self.setDelegate()
+        self.setDataSource()
         self.setCollectionViews()
     }
 }
@@ -115,21 +120,67 @@ extension NotificationListVC {
     private func setDelegate() {
         [notificationFilterCollectionView, notificationListCollectionView].forEach { collectionView in
             collectionView.delegate = self
-            collectionView.dataSource = self
         }
+    }
+    
+    private func setDataSource() {
+        self.notificationFilterDataSource = UICollectionViewDiffableDataSource(collectionView: notificationFilterCollectionView, cellProvider: { collectionView, indexPath, itemIdentifier in
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NotificationFilterCVC.className,
+                                                                for: indexPath) as? NotificationFilterCVC
+            else { return UICollectionViewCell() }
+            
+            cell.initCell(type: itemIdentifier)
+            return cell
+        })
+        
+        
+        self.notificationListdataSource = UICollectionViewDiffableDataSource(collectionView: notificationListCollectionView, cellProvider: { collectionView, indexPath, itemIdentifier in
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NotificationListCVC.className,
+                                                                for: indexPath) as? NotificationListCVC
+            else { return UICollectionViewCell() }
+            
+            let notification = itemIdentifier
+            
+            cell.initCell(title: notification.title,
+                          time: notification.createdAt,
+                          description: notification.content,
+                          isUnread: notification.isRead)
+            return cell
+        })
+    }
+    
+    private func applyNotificationFilterSnapshot(model: [NotificationFilterType]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Int, NotificationFilterType>()
+        
+        snapshot.appendSections([0])
+        snapshot.appendItems(model)
+        notificationFilterDataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+    private func applyNotificationListSnapshot(model: [NotificationListModel]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Int, NotificationListModel>()
+        
+        snapshot.appendSections([0])
+        snapshot.appendItems(model)
+        notificationListdataSource.apply(snapshot, animatingDifferences: true)
     }
     
     private func setCollectionViews() {
         registerCells()
-        // 초기 값으로 "모든 알림"을 선택한다.
-        notificationFilterCollectionView.selectItem(at: IndexPath(row: 0, section: 0),
-                                                    animated: false,
-                                                    scrollPosition: .left)
     }
     
     private func registerCells() {
         self.notificationFilterCollectionView.register(NotificationFilterCVC.self, forCellWithReuseIdentifier: NotificationFilterCVC.className)
         self.notificationListCollectionView.register(NotificationListCVC.self, forCellWithReuseIdentifier: NotificationListCVC.className)
+    }
+    
+    /// 초기 값으로 "모든 알림"을 선택한다.
+    private func selectDefaultFilter() {
+        guard notificationFilterCollectionView.numberOfSections >= 1 else { return }
+        
+        notificationFilterCollectionView.selectItem(at: IndexPath(row: 0, section: 0),
+                                                        animated: false,
+                                                        scrollPosition: .left)
     }
 }
 
@@ -138,15 +189,21 @@ extension NotificationListVC {
 extension NotificationListVC {
     private func bindViewModels() {
         let input = NotificationListViewModel.Input(
-            requestNotificationList: requestNotificationList.asDriver(), naviBackButtonTapped: naviBar.leftButtonTapped,
+            requestNotifications: requestNotifications.asDriver(), naviBackButtonTapped: naviBar.leftButtonTapped,
             cellTapped: cellTapped.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
+        output.filterList
+            .sink { [weak self] filterList in
+                self?.applyNotificationFilterSnapshot(model: filterList)
+                self?.selectDefaultFilter()
+            }.store(in: self.cancelBag)
+        
         output.notificationList
-            .sink { notificationList in
-                print(notificationList)
+            .sink { [weak self] notificationList in
+                self?.applyNotificationListSnapshot(model: notificationList)
             }.store(in: self.cancelBag)
     }
 }
@@ -158,40 +215,6 @@ extension NotificationListVC: UICollectionViewDelegate {
         
         if collectionView == notificationListCollectionView {
             cellTapped.send()
-        }
-    }
-}
-
-// MARK: - UICollectionViewDataSource
-
-extension NotificationListVC: UICollectionViewDataSource {
-    public func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if collectionView == self.notificationFilterCollectionView {
-            return viewModel.filterList.count
-        } else {
-            return 10
-        }
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if collectionView == self.notificationFilterCollectionView {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NotificationFilterCVC.className,
-                                                                for: indexPath) as? NotificationFilterCVC
-            else { return UICollectionViewCell() }
-            
-            cell.initCell(type: viewModel.filterList[indexPath.item])
-            return cell
-        } else {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NotificationListCVC.className,
-                                                                for: indexPath) as? NotificationListCVC
-            else { return UICollectionViewCell() }
-            
-            cell.initCell(title: "[GO SOPT] 32기 전체 회계 공지", time: "1주일 전", description: "안녕하세요. 안녕하세요. 안녕하세요. 안녕하세요. 안녕하세요. 안녕하세요.", isUnread: true)
-            return cell
         }
     }
 }
