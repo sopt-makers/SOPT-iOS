@@ -95,6 +95,6 @@ extension NotificationListCVC {
         self.titleLabel.text = title
         self.timeLabel.text = time
         self.descriptionLabel.text = description
-        self.backgroundColor = isUnread ? DSKitAsset.Colors.black80.color : DSKitAsset.Colors.black100.color
+        self.backgroundColor = isUnread ? DSKitAsset.Colors.black100.color : DSKitAsset.Colors.black80.color
     }
 }

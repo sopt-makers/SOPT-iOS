@@ -52,12 +52,22 @@ extension NotificationDetailViewModel {
             .sink { [weak self] _ in
                 guard let self = self else { return }
                 output.notification.send(notification)
+                if notification.isRead == false {
+                    useCase.readNotification(notificationId: notification.id)
+                }
             }.store(in: cancelBag)
     
         return output
     }
   
     private func bindOutput(output: Output, cancelBag: CancelBag) {
-    
+        useCase.readSuccess
+            .asDriver()
+            .sink { [weak self] readSuccess in
+                print("읽음 처리: \(readSuccess)")
+                if readSuccess {
+                    self?.notification.isRead = true
+                }
+            }.store(in: cancelBag)
     }
 }

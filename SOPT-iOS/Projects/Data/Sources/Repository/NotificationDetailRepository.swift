@@ -23,8 +23,9 @@ public class NotificationDetailRepository {
 }
 
 extension NotificationDetailRepository: NotificationDetailRepositoryInterface {
-    public func readNotification(notificationId: Int) -> Core.Driver<Int> {
+    public func readNotification(notificationId: Int) -> Core.Driver<Bool> {
         service.readNotification(notificationId: notificationId)
+            .map { $0 == 200 }
             .asDriver()
     }
 }

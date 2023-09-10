@@ -14,7 +14,7 @@ public struct NotificationListModel: Hashable {
     public let title: String
     public let content: String
     public let type: String?
-    public let isRead: Bool
+    public var isRead: Bool
     public let createdAt: String
     public let updatedAt: String?
 
