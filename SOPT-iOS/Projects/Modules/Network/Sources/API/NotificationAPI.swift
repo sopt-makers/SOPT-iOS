@@ -13,6 +13,7 @@ import Moya
 
 public enum NotificationAPI {
     case getNotificationList(page: Int)
+    case readNotification(notificationId: Int)
 }
 
 extension NotificationAPI: BaseAPI {
@@ -20,6 +21,8 @@ extension NotificationAPI: BaseAPI {
     
     public var path: String {
         switch self {
+        case .readNotification(let notificationId):
+            return "/\(notificationId)"
         default:
             return ""
         }
@@ -27,6 +30,8 @@ extension NotificationAPI: BaseAPI {
     
     public var method: Moya.Method {
         switch self {
+        case .readNotification:
+            return .patch
         default:
             return .get
         }
@@ -36,6 +41,8 @@ extension NotificationAPI: BaseAPI {
         switch self {
         case .getNotificationList(let page):
             return .requestParameters(parameters: ["page": page], encoding: URLEncoding.queryString)
+        default:
+            return .requestPlain
         }
     }
 }
