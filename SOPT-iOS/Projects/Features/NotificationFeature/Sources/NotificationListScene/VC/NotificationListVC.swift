@@ -219,4 +219,17 @@ extension NotificationListVC: UICollectionViewDelegate {
             cellTapped.send(indexPath.item)
         }
     }
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let height = scrollView.frame.height
+        
+        guard offsetY > 0 else { return }
+        
+        if height > contentHeight - offsetY && !viewModel.isPaging {
+            viewModel.startPaging()
+            requestNotifications.send(())
+        }
+    }
 }

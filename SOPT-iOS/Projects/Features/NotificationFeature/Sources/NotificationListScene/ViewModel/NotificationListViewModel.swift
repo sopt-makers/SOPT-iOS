@@ -25,6 +25,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
     var notifications: [NotificationListModel] = []
     
     var page = 0
+    var isPaging = false
     
     // MARK: - Inputs
     
@@ -95,9 +96,10 @@ extension NotificationListViewModel {
             .asDriver()
             .sink { [weak self] notificationList in
                 guard let self = self else { return }
-                self.notifications = notificationList
+                self.notifications.append(contentsOf: notificationList)
                 output.filterList.send(filterList)
                 output.notificationList.send(notifications)
+                self.endPaging(isEmptyResponse: notificationList.isEmpty)
             }.store(in: cancelBag)
         
         useCase.readSuccess
@@ -114,5 +116,17 @@ extension NotificationListViewModel {
                     output.notificationList.send(self.notifications)
                 }
             }.store(in: cancelBag)
+    }
+    
+    func startPaging() {
+        self.isPaging = true
+        self.page += 1
+    }
+    
+    private func endPaging(isEmptyResponse: Bool) {
+        self.isPaging = false
+        if isEmptyResponse && self.page > 0 {
+            self.page -= 1
+        }
     }
 }
