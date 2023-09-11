@@ -52,13 +52,13 @@ public extension String {
             let displayDay = displayHour / 24
             
             if displayDay >= 1 {
-                return dateFormatter.string(from: self.toDate())
+                return "\(displayDay)일 전"
             } else if displayHour >= 1 {
                 return "\(displayHour)시간 전"
             } else if displayMin >= 1 {
                 return "\(displayMin)분 전"
             } else {
-                return "1분 전"
+                return "방금"
             }
         case .forDefault:
             return dateFormatter.string(from: self.toDate())

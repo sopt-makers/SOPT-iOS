@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Core
 
 public struct NotificationListModel: Hashable {
     public let id: Int
@@ -17,6 +18,9 @@ public struct NotificationListModel: Hashable {
     public var isRead: Bool
     public let createdAt: String
     public let updatedAt: String?
+    public var formattedCreatedAt: String {
+        self.createdAt.serverTimeToString(forUse: .forNotification)
+    }
 
     public init(id: Int, userId: Int, title: String, content: String, type: String?, isRead: Bool, createdAt: String, updatedAt: String?) {
         self.id = id

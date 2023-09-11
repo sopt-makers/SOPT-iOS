@@ -142,7 +142,7 @@ extension NotificationListVC {
             let notification = itemIdentifier
             
             cell.initCell(title: notification.title,
-                          time: notification.createdAt,
+                          time: notification.formattedCreatedAt,
                           description: notification.content,
                           isUnread: notification.isRead)
             return cell
