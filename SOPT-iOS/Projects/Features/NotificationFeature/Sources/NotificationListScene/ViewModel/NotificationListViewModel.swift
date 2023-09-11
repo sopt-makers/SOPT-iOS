@@ -81,6 +81,7 @@ extension NotificationListViewModel {
             }.store(in: cancelBag)
         
         input.readAllButtonTapped
+            .throttle(for: 1, scheduler: DispatchQueue.main, latest: true)
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.readAllNotifications()
