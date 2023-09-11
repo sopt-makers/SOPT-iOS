@@ -205,6 +205,7 @@ extension NotificationListVC {
         
         output.notificationList
             .sink { [weak self] notificationList in
+                self?.emptyView.isHidden = !notificationList.isEmpty
                 self?.applyNotificationListSnapshot(model: notificationList)
             }.store(in: self.cancelBag)
     }
