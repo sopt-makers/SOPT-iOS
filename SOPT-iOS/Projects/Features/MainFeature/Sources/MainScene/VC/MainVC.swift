@@ -135,6 +135,7 @@ extension MainVC {
     }
     
     private func setDelegate() {
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
     }
@@ -185,6 +186,13 @@ extension MainVC {
             customButtonTitle: "",
             customAction: nil
         )
+    }
+}
+
+extension MainVC: UIGestureRecognizerDelegate {
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard let viewControllers = self.navigationController?.viewControllers else { return false }
+        return viewControllers.count > 1
     }
 }
 
