@@ -145,7 +145,7 @@ extension MainViewModel {
         switch (indexPath.section, indexPath.row) {
         case (0, _): break
         case (1, _):
-            guard let service = mainServiceList[safe: indexPath.item - 1] else { return }
+            guard let service = mainServiceList[safe: indexPath.item] else { return }
             
             guard service != .attendance else {
                 onAttendance?()
