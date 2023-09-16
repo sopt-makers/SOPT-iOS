@@ -122,7 +122,7 @@ extension BriefNoticeCVC {
             self.guideForVisitorLabel.text = I18N.Main.MainService.memberGuide
         }
         
-// 추후 운영팀의 공지 기능이 출시되면 적용
+// TODO: 운영팀의 공지 기능이 출시되면 적용
 //        guard userType != .visitor else {
 //            setLayoutForVisitor()
 //            return

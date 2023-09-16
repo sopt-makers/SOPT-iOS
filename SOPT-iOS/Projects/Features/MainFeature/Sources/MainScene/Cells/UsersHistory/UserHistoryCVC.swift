@@ -91,7 +91,8 @@ extension UserHistoryCVC {
         // 현재 활동 기수 여부 뷰 설정
         self.userTypeLabel.text = userType.makeDescription(recentHistory: recentHistory ?? 0)
         if userType == .active {
-            self.userTypeLabel.backgroundColor = DSKitAsset.Colors.purple100.color
+            self.userTypeLabel.backgroundColor = DSKitAsset.Colors.orange100.color
+            self.userTypeLabel.textColor = DSKitAsset.Colors.black100.color
         }
         
         // 플그에 기수 정보 입력 안한 비활동 회원 대응 (추후 제거)
