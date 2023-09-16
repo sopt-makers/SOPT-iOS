@@ -48,8 +48,8 @@ extension MainVC {
     }
     
     private func createMainServiceSection() -> NSCollectionLayoutSection {
-        let topItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(25))
-        let topItem = NSCollectionLayoutItem(layoutSize: topItemSize)
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(44))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
         
         let leadingItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1.0))
         let leadingItem = NSCollectionLayoutItem(layoutSize: leadingItemSize)
@@ -66,13 +66,10 @@ extension MainVC {
         
         let horizontalGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(192))
         let horizontalGroup = NSCollectionLayoutGroup.horizontal(layoutSize: horizontalGroupSize, subitems: [leadingItem, trailingGroup])
-
-        let containerGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(237))
-        let containerGroup = NSCollectionLayoutGroup.vertical(layoutSize: containerGroupSize, subitems: [topItem, horizontalGroup])
-        containerGroup.interItemSpacing = .fixed(Metric.defaultItemSpacing)
         
-        let section = NSCollectionLayoutSection(group: containerGroup)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 16, leading: Metric.collectionViewDefaultSideInset, bottom: 12, trailing: Metric.collectionViewDefaultSideInset)
+        let section = NSCollectionLayoutSection(group: horizontalGroup)
+        section.boundarySupplementaryItems = [header]
+        section.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: Metric.collectionViewDefaultSideInset, bottom: 12, trailing: Metric.collectionViewDefaultSideInset)
         
         return section
     }
