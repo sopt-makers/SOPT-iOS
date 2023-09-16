@@ -24,7 +24,7 @@ final class AppServiceCVC: UICollectionViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = .Main.headline2
-        label.textColor = DSKitAsset.Colors.black100.color
+        label.textColor = DSKitAsset.Colors.white100.color
         label.textAlignment = .center
         return label
     }()
@@ -67,11 +67,12 @@ extension AppServiceCVC {
         }
                 
         containerStackView.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview().inset(9)
+            make.top.bottom.equalToSuperview().inset(13)
             make.leading.trailing.equalToSuperview().inset(13)
         }
     }
 }
+
 
 // MARK: - Methods
 

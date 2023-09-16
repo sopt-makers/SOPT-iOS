@@ -108,7 +108,7 @@ extension AppServiceType {
     var image: UIImage {
         switch self {
         case .soptamp:
-            return DSKitAsset.Assets.soptampLogo.image
+            return DSKitAsset.Assets.imgSoptamp.image
         }
     }
     
@@ -122,7 +122,7 @@ extension AppServiceType {
     var backgroundColor: UIColor {
         switch self {
         case .soptamp:
-            return DSKitAsset.Colors.white.color
+            return DSKitAsset.Colors.black60.color
         }
     }
 }
