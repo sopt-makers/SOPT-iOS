@@ -26,9 +26,9 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
     private var cellTapped = PassthroughSubject<Int, Never>()
     private var requestNotifications = CurrentValueSubject<Void, Never>(())
     
-    private var notificationFilterDataSource: UICollectionViewDiffableDataSource<Int, NotificationFilterType>!
+    private lazy var notificationFilterDataSource: UICollectionViewDiffableDataSource<Int, NotificationFilterType>! = nil
     
-    private var notificationListdataSource: UICollectionViewDiffableDataSource<Int, NotificationListModel>!
+    private lazy var notificationListdataSource: UICollectionViewDiffableDataSource<Int, NotificationListModel>! = nil
     
     // MARK: - UI Components
     
