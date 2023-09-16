@@ -36,6 +36,7 @@ final class ProductCVC: UICollectionViewCell {
         label.font = UIFont.Main.caption1
         label.textColor = DSKitAsset.Colors.gray30.color
         label.textAlignment = .left
+        label.numberOfLines = 2
         return label
     }()
     
