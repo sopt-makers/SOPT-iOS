@@ -181,15 +181,29 @@ public struct I18N {
             }
             
             public struct Description {
-                public static let officialHomePage = "솝트 홈페이지 바로가기"
-                public static let review = "'진짜' 후기가\n 궁금하다면?"
-                public static let project = "지난 프로젝트 보기"
-                public static let faq = "자주 묻는 질문"
-                public static let youtube = "SOPT 활동 구경하기"
-                public static let attendance = "아 맞다, 출석!"
-                public static let member = "궁금한 사람 찾아보기"
-                public static let group = "지금 열린 모임은?"
-                public static let instagram = "SOPT 소식 빠르게 확인하기"
+                public struct Default {
+                    public static let officialHomePage = "솝트 홈페이지 바로가기"
+                    public static let review = "'진짜' 후기가\n 궁금하다면?"
+                    public static let project = "역대 프로젝트 보기"
+                    public static let faq = "자주 묻는 질문"
+                    public static let youtube = "SOPT 활동 구경하기"
+                    public static let attendance = "아 맞다, 출석!"
+                    public static let member = "궁금한 사람 찾아보기"
+                    public static let group = "지금 열린 모임은?"
+                    public static let instagram = "SOPT 소식 빠르게 확인하기"
+                }
+
+                public struct ActiveUser {
+                    public static let project = "역대 프로젝트 모아보기"
+                }
+                
+                public struct InactiveUser {
+                    public static let project = "지난 프로젝트 보기"
+                }
+                
+                public struct Visitor {
+                    public static let project = "SOPT에서\n 탄생한 프로젝트"
+                }
             }
         }
 

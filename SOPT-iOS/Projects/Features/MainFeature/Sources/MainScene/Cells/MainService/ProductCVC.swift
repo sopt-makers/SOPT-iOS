@@ -94,10 +94,10 @@ extension ProductCVC {
 // MARK: - Methods
 
 extension ProductCVC {
-    func initCell(serviceType: ServiceType) {
+    func initCell(serviceType: ServiceType, userType: UserType) {
         serviceIcon.image = serviceType.icon
         serviceTitleLabel.text = serviceType.title
-        setDescription(description: serviceType.description)
+        setDescription(description: serviceType.description(for: userType))
     }
     
     private func setDescription(description: String?) {

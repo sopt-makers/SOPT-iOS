@@ -84,10 +84,10 @@ extension MainServiceCVC {
 // MARK: - Methods
 
 extension MainServiceCVC {
-    func initCell(serviceType: ServiceType) {
+    func initCell(serviceType: ServiceType, userType: UserType) {
         serviceIcon.image = serviceType.icon.withRenderingMode(.alwaysTemplate)
         serviceTitleLabel.text = serviceType.mainTitle
-        setDescription(description: serviceType.description)
+        setDescription(description: serviceType.description(for: userType))
     }
     
     private func setDescription(description: String?) {

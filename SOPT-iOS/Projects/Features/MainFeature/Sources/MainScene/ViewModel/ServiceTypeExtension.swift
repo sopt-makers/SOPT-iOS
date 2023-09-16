@@ -58,30 +58,6 @@ extension ServiceType {
         }
     }
     
-    var description: String {
-        switch self {
-        case .officialHomepage:
-            return I18N.Main.MainService.Description.officialHomePage
-        case .review:
-            return I18N.Main.MainService.Description.review
-        case .project:
-            return I18N.Main.MainService.Description.project
-        case .faq:
-            return I18N.Main.MainService.Description.faq
-        case .youtube:
-            return I18N.Main.MainService.Description.youtube
-        case .attendance:
-            return I18N.Main.MainService.Description.attendance
-        case .member:
-            return I18N.Main.MainService.Description.member
-        case .group:
-            return I18N.Main.MainService.Description.group
-        case .instagram:
-            return I18N.Main.MainService.Description.instagram
-        }
-    }
-    
-    
     var mainTitle: String? {
         switch self {
         case .officialHomepage:
@@ -92,6 +68,38 @@ extension ServiceType {
             return I18N.Main.MainService.MainTitle.group
         default:
             return nil
+        }
+    }
+    
+    func description(for userType: UserType) -> String? {
+        switch self {
+        case .officialHomepage:
+            return userType == .visitor ? nil : I18N.Main.MainService.Description.Default.officialHomePage
+        case .review:
+            return I18N.Main.MainService.Description.Default.review
+        case .project:
+            switch userType {
+            case .active:
+                return I18N.Main.MainService.Description.ActiveUser.project
+            case .inactive:
+                return I18N.Main.MainService.Description.InactiveUser.project
+            case .visitor:
+                return I18N.Main.MainService.Description.Visitor.project
+            default:
+                return nil
+            }
+        case .faq:
+            return I18N.Main.MainService.Description.Default.faq
+        case .youtube:
+            return I18N.Main.MainService.Description.Default.youtube
+        case .attendance:
+            return I18N.Main.MainService.Description.Default.attendance
+        case .member:
+            return I18N.Main.MainService.Description.Default.member
+        case .group:
+            return I18N.Main.MainService.Description.Default.group
+        case .instagram:
+            return I18N.Main.MainService.Description.Default.instagram
         }
     }
 }
