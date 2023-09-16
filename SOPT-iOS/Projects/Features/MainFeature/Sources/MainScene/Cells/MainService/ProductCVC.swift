@@ -43,7 +43,7 @@ final class ProductCVC: UICollectionViewCell {
     private lazy var labelStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [serviceTitleLabel, serviceDescriptionLabel])
         stackView.axis = .vertical
-        stackView.spacing = 0
+        stackView.spacing = 2
         stackView.alignment = .leading
         return stackView
     }()

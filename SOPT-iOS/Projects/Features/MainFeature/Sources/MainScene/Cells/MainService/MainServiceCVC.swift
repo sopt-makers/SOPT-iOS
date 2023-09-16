@@ -41,7 +41,7 @@ final class MainServiceCVC: UICollectionViewCell {
     private lazy var containerStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [serviceIcon, serviceTitleLabel, serviceDescriptionLabel])
         stackView.axis = .vertical
-        stackView.spacing = 4
+        stackView.spacing = 8
         stackView.alignment = .leading
         return stackView
     }()
@@ -94,8 +94,10 @@ extension MainServiceCVC {
         if let description = description {
             serviceDescriptionLabel.isHidden = false
             serviceDescriptionLabel.text = description
+            containerStackView.setCustomSpacing(4, after: serviceTitleLabel)
         } else {
             serviceDescriptionLabel.isHidden = true
+            containerStackView.setCustomSpacing(0, after: serviceTitleLabel)
         }
     }
 }

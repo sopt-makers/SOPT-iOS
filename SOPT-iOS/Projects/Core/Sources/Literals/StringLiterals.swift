@@ -202,7 +202,7 @@ public struct I18N {
                 }
                 
                 public struct Visitor {
-                    public static let project = "SOPT에서\n 탄생한 프로젝트"
+                    public static let project = "SOPT에서\n탄생한 프로젝트"
                 }
             }
         }
