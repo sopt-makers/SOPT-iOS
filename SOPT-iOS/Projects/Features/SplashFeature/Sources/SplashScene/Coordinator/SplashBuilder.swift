@@ -12,14 +12,14 @@ import Domain
 
 public
 final class SplashBuilder {
-    @Injected public var repository: AppNoticeRepositoryInterface
+    @Injected public var repository: SplashRepositoryInterface
     
     public init() { }
 }
 
 extension SplashBuilder: SplashFeatureViewBuildable {
     public func makeSplash() -> SplashPresentable {
-        let useCase = DefaultAppNoticeUseCase(repository: repository)
+        let useCase = DefaultSplashUseCase(repository: repository)
         let vm = SplashViewModel(useCase: useCase)
         let vc = SplashVC()
         vc.viewModel = vm

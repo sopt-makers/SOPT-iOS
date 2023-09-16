@@ -14,14 +14,18 @@ import Network
 
 public class NotificationDetailRepository {
     
-    private let networkService: UserService
+    private let service: NotificationService
     private let cancelBag = CancelBag()
     
-    public init(service: UserService) {
-        self.networkService = service
+    public init(service: NotificationService) {
+        self.service = service
     }
 }
 
 extension NotificationDetailRepository: NotificationDetailRepositoryInterface {
-    
+    public func readNotification(notificationId: Int) -> AnyPublisher<Bool, Error> {
+        service.readNotification(notificationId: notificationId)
+            .map { $0 == 200 }
+            .eraseToAnyPublisher()
+    }
 }

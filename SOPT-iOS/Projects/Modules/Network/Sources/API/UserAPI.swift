@@ -19,6 +19,7 @@ public enum UserAPI {
     case changeNickname(nickname: String)
     case getUserMainInfo
     case withdrawal
+    case registerPushToken(token: String)
 }
 
 extension UserAPI: BaseAPI {
@@ -40,6 +41,8 @@ extension UserAPI: BaseAPI {
             return "/main"
         case .withdrawal:
             return ""
+        case .registerPushToken:
+            return "/push-token"
         }
     }
     
@@ -52,6 +55,8 @@ extension UserAPI: BaseAPI {
             return .patch
         case .withdrawal:
             return .delete
+        case .registerPushToken:
+           return .post
         }
     }
     
@@ -63,6 +68,8 @@ extension UserAPI: BaseAPI {
             params["nickname"] = nickname
         case .editSentence(let sentence):
             params["profileMessage"] = sentence
+        case .registerPushToken(let pushToken):
+            params["pushToken"] = pushToken
         default: break
         }
         return params
@@ -77,7 +84,7 @@ extension UserAPI: BaseAPI {
     
     public var task: Task {
         switch self {
-        case .changeNickname, .editSentence:
+        case .changeNickname, .editSentence, .registerPushToken:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain

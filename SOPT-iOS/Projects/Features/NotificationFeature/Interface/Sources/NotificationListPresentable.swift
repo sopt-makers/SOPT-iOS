@@ -8,11 +8,12 @@
 
 import BaseFeatureDependency
 import Core
+import Domain
 
 public protocol NotificationListViewControllable: ViewControllable { }
 public protocol NotificationListCoordinatable {
     var onNaviBackButtonTap: (() -> Void)? { get set }
-    var onNotificationTap: (() -> Void)? { get set }
+    var onNotificationTap: ((NotificationListModel) -> Void)? { get set }
 }
 public typealias NotificationListViewModelType = ViewModelType & NotificationListCoordinatable
 public typealias NotificationListPresentable = (vc: NotificationListViewControllable, vm: any NotificationListViewModelType)

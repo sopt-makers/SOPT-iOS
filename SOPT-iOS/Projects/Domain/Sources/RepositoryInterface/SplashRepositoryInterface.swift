@@ -1,5 +1,5 @@
 //
-//  AppNoticeRepositoryInterface.swift
+//  SplashRepositoryInterface.swift
 //  Domain
 //
 //  Created by sejin on 2023/01/18.
@@ -8,7 +8,8 @@
 
 import Combine
 
-public protocol AppNoticeRepositoryInterface {
+public protocol SplashRepositoryInterface {
     func getAppNotice() -> AnyPublisher<AppNoticeModel, Error>
     func getCheckedRecommendUpdateVersion() -> String?
+    func registerPushToken(with token: String) -> AnyPublisher<Bool, Error>
 }

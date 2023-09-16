@@ -9,6 +9,7 @@
 import Core
 import BaseFeatureDependency
 import NotificationFeatureInterface
+import Domain
 
 public
 final class NotificationCoordinator: DefaultCoordinator {
@@ -33,14 +34,14 @@ final class NotificationCoordinator: DefaultCoordinator {
             self?.router.popModule()
             self?.finishFlow?()
         }
-        notificiationList.vm.onNotificationTap = { [weak self] in
-            self?.showNotificationDetail()
+        notificiationList.vm.onNotificationTap = { [weak self] notification in
+            self?.showNotificationDetail(notification: notification)
         }
         router.push(notificiationList.vc)
     }
     
-    private func showNotificationDetail() {
-        var notificationDetail = factory.makeNotificationDetailVC()
+    private func showNotificationDetail(notification: NotificationListModel) {
+        let notificationDetail = factory.makeNotificationDetailVC(notification: notification)
         router.push(notificationDetail)
     }
 }

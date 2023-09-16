@@ -69,7 +69,7 @@ extension AppDelegate {
                 print(error)
             }
             
-            granted ? print("FCM-알림 등록 완료") : print("FCM-알림 등록 실패")
+            granted ? print("APNs-알림 등록 완료") : print("APNs-알림 등록 실패")
         }
     }
 }
@@ -86,6 +86,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
         let token = tokenParts.joined()
+        UserDefaultKeyList.User.pushToken = token
         print("APNs Device Token: \(token)")
     }
     

@@ -27,7 +27,7 @@ final class MainNavigationBar: UIView {
     }
     
     private let noticeButton = UIButton(type: .custom).then {
-        $0.setImage(DSKitAsset.Assets.btnNotice.image, for: .normal)
+        $0.setImage(DSKitAsset.Assets.btnNoticeActive.image, for: .normal)
     }
     
     private let rightButton = UIButton(type: .custom).then {
@@ -67,6 +67,14 @@ extension MainNavigationBar {
     @discardableResult
     public func hideNoticeButton(wantsToHide: Bool) -> Self {
         self.noticeButton.isHidden = wantsToHide
+        return self
+    }
+    
+    @discardableResult
+    public func changeNoticeButtonStyle(isActive: Bool) -> Self {
+        let activeImage = DSKitAsset.Assets.btnNoticeActive.image
+        let inactiveImage = DSKitAsset.Assets.btnNoticeInactive.image
+        self.noticeButton.setImage(isActive ? activeImage : inactiveImage, for: .normal)
         return self
     }
 }

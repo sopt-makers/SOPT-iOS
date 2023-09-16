@@ -28,9 +28,9 @@ extension AppDelegate {
             }
         )
         container.register(
-            interface: AppNoticeRepositoryInterface.self,
+            interface: SplashRepositoryInterface.self,
             implement: {
-                AppNoticeRepository(service: DefaultFirebaseService())
+                SplashRepository(service: DefaultFirebaseService(), userService: DefaultUserService())
             }
         )
         container.register(

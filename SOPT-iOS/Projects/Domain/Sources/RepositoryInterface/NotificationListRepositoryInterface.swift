@@ -9,5 +9,6 @@
 import Combine
 
 public protocol NotificationListRepositoryInterface {
-  
+    func getNotificationList(page: Int) -> AnyPublisher<[NotificationListModel], Error>
+    func readAllNotifications() -> AnyPublisher<Bool, Error>
 }

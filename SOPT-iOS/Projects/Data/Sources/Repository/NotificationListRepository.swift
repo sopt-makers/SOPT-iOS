@@ -14,14 +14,24 @@ import Network
 
 public class NotificationListRepository {
     
-    private let networkService: UserService
+    private let service: NotificationService
     private let cancelBag = CancelBag()
     
-    public init(service: UserService) {
-        self.networkService = service
+    public init(service: NotificationService) {
+        self.service = service
     }
 }
 
 extension NotificationListRepository: NotificationListRepositoryInterface {
+    public func getNotificationList(page: Int) -> AnyPublisher<[Domain.NotificationListModel], Error> {
+        service.getNotificationList(page: page)
+            .map { $0.map { $0.toDomain() } }
+            .eraseToAnyPublisher()
+    }
     
+    public func readAllNotifications() -> AnyPublisher<Bool, Error> {
+        service.readNotification(notificationId: 0)
+            .map { $0 == 200 }
+            .eraseToAnyPublisher()
+    }
 }

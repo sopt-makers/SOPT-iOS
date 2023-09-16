@@ -28,9 +28,9 @@ extension AppDelegate {
             }
         )
         container.register(
-            interface: AppNoticeRepositoryInterface.self,
+            interface: SplashRepositoryInterface.self,
             implement: {
-                AppNoticeRepository(service: DefaultFirebaseService())
+                SplashRepository(service: DefaultFirebaseService(), userService: DefaultUserService())
             }
         )
         container.register(
@@ -54,7 +54,7 @@ extension AppDelegate {
             interface: NotificationListRepositoryInterface.self,
             implement: {
                 NotificationListRepository(
-                    service: DefaultUserService()
+                    service: DefaultNotificationService()
                 )
             }
         )
@@ -62,7 +62,7 @@ extension AppDelegate {
             interface: NotificationDetailRepositoryInterface.self,
             implement: {
                 NotificationDetailRepository(
-                    service: DefaultUserService()
+                    service: DefaultNotificationService()
                 )
             }
         )

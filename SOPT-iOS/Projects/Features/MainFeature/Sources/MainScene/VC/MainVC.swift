@@ -109,8 +109,7 @@ extension MainVC {
                     return
                 }
                 print("MainVC User 모델: \(userMainInfo)")
-                self?.collectionView.reloadData()
-                self?.naviBar.hideNoticeButton(wantsToHide: self?.viewModel.userType == .visitor )
+                self?.updateUI(with: userMainInfo)
             }.store(in: self.cancelBag)
         
         output.isServiceAvailable
@@ -136,6 +135,7 @@ extension MainVC {
     }
     
     private func setDelegate() {
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
     }
@@ -151,6 +151,15 @@ extension MainVC {
                                      forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                      withReuseIdentifier: AppServiceHeaderView.className)
         self.collectionView.register(AppServiceCVC.self, forCellWithReuseIdentifier: AppServiceCVC.className)
+    }
+    
+    private func updateUI(with model: UserMainInfoModel) {
+        if let notificationExists = model.exists {
+            self.naviBar.changeNoticeButtonStyle(isActive: notificationExists)
+        }
+        
+        self.naviBar.hideNoticeButton(wantsToHide: self.viewModel.userType == .visitor)
+        self.collectionView.reloadData()
     }
     
     private func presentNetworkAlertVC() {
@@ -177,6 +186,13 @@ extension MainVC {
             customButtonTitle: "",
             customAction: nil
         )
+    }
+}
+
+extension MainVC: UIGestureRecognizerDelegate {
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard let viewControllers = self.navigationController?.viewControllers else { return false }
+        return viewControllers.count > 1
     }
 }
 

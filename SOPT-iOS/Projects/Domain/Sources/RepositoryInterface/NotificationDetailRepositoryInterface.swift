@@ -6,8 +6,10 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
+import Core
+
 import Combine
 
 public protocol NotificationDetailRepositoryInterface {
-  
+    func readNotification(notificationId: Int) -> AnyPublisher<Bool, Error>
 }

@@ -11,6 +11,7 @@ import Foundation
 public struct MainEntity: Codable {
     public let user: UserInfo?
     public let operation: OperationInfo?
+    public let exists: Bool?
 }
 
 // MARK: - UserInfo
