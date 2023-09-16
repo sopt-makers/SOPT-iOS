@@ -17,7 +17,6 @@ final class MainServiceCVC: UICollectionViewCell {
     
     private let serviceIcon: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = DSKitAsset.Assets.icnAttendance.image
         imageView.tintColor = DSKitAsset.Colors.orange100.color
         return imageView
     }()
@@ -86,7 +85,7 @@ extension MainServiceCVC {
 
 extension MainServiceCVC {
     func initCell(serviceType: ServiceType) {
-        serviceIcon.image = serviceType.icon
+        serviceIcon.image = serviceType.icon.withRenderingMode(.alwaysTemplate)
         serviceTitleLabel.text = serviceType.mainTitle
         setDescription(description: serviceType.description)
     }
