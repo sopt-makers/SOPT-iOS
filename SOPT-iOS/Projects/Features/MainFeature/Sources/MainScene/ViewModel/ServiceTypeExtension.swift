@@ -31,7 +31,7 @@ extension ServiceType {
         case .group:
             return DSKitAsset.Assets.icCrew.image
         case .instagram:
-            return DSKitAsset.Assets.icCrew.image
+            return DSKitAsset.Assets.icnInstagram.image
         }
     }
     
