@@ -268,7 +268,7 @@ extension MainVC: UICollectionViewDataSource {
             
             if indexPath.item == 1 {
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className, for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }
-                cell.initCell(serviceType: viewModel.mainServiceList[indexPath.item-1], isMainFirstService: true, isOtherService: false)
+                cell.initCell(serviceType: viewModel.mainServiceList[indexPath.item-1])
                 return cell
             }
             

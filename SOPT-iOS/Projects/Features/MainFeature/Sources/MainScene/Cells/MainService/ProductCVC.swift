@@ -33,7 +33,7 @@ final class ProductCVC: UICollectionViewCell {
     
     private let serviceDescriptionLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.Main.body1
+        label.font = UIFont.Main.caption1
         label.textColor = DSKitAsset.Colors.gray30.color
         label.textAlignment = .left
         return label

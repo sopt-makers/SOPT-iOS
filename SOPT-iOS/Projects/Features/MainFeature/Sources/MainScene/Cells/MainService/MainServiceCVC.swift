@@ -18,13 +18,13 @@ final class MainServiceCVC: UICollectionViewCell {
     private let serviceIcon: UIImageView = {
         let imageView = UIImageView()
         imageView.image = DSKitAsset.Assets.icnAttendance.image
-        imageView.tintColor = DSKitAsset.Colors.white.color
+        imageView.tintColor = DSKitAsset.Colors.orange100.color
         return imageView
     }()
     
     private let serviceTitleLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.Main.headline2
+        label.font = UIFont.Main.headline1
         label.textColor = DSKitAsset.Colors.white100.color
         label.textAlignment = .left
         label.numberOfLines = 2
@@ -85,39 +85,18 @@ extension MainServiceCVC {
 // MARK: - Methods
 
 extension MainServiceCVC {
-    func initCell(serviceType: ServiceType, isMainFirstService: Bool, isOtherService: Bool) {
+    func initCell(serviceType: ServiceType) {
         serviceIcon.image = serviceType.icon
-        serviceTitleLabel.text = serviceType.title
-        
+        serviceTitleLabel.text = serviceType.mainTitle
         setDescription(description: serviceType.description)
-        
-        setMainServiceUI(serviceType: serviceType, isMainFirstService: isMainFirstService)
-        
-        serviceDescriptionLabel.isHidden = isOtherService
     }
     
     private func setDescription(description: String?) {
         if let description = description {
             serviceDescriptionLabel.isHidden = false
             serviceDescriptionLabel.text = description
-            containerStackView.setCustomSpacing(4, after: serviceTitleLabel)
         } else {
             serviceDescriptionLabel.isHidden = true
-            containerStackView.setCustomSpacing(0, after: serviceTitleLabel)
-        }
-    }
-    
-    private func setMainServiceUI(serviceType: ServiceType, isMainFirstService: Bool) {
-        if isMainFirstService {
-            self.backgroundColor = DSKitAsset.Colors.purple100.color
-            serviceTitleLabel.font = UIFont.Main.headline1
-        } else {
-            self.backgroundColor = DSKitAsset.Colors.black60.color
-            serviceTitleLabel.font = UIFont.Main.headline2
-
-            if let alternativeTitle = serviceType.alternativeTitle {
-                serviceTitleLabel.text = alternativeTitle
-            }
         }
     }
 }

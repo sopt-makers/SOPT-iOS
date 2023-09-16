@@ -178,10 +178,10 @@ extension MainViewModel {
             self.otherServiceList = [.faq, .youtube]
         case .active:
             self.mainServiceList = [.attendance, .member, .project]
-            self.otherServiceList = [.officialHomepage, .crew]
+            self.otherServiceList = [.officialHomepage, .group]
         case .inactive, .unregisteredInactive:
             self.mainServiceList = [.faq, .member, .project]
-            self.otherServiceList = [.crew, .officialHomepage]
+            self.otherServiceList = [.group, .officialHomepage]
         }
     }
     

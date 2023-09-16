@@ -28,9 +28,9 @@ extension ServiceType {
             return DSKitAsset.Assets.icnAttendance.image
         case .member:
             return DSKitAsset.Assets.icMember.image
-        case .notice:
-            return DSKitAsset.Assets.icnNotice.image
-        case .crew:
+        case .group:
+            return DSKitAsset.Assets.icCrew.image
+        case .instagram:
             return DSKitAsset.Assets.icCrew.image
         }
     }
@@ -38,52 +38,64 @@ extension ServiceType {
     var title: String {
         switch self {
         case .officialHomepage:
-            return I18N.Main.MainService.officialHomePage
+            return I18N.Main.MainService.Title.officialHomePage
         case .review:
-            return I18N.Main.MainService.review
+            return I18N.Main.MainService.Title.review
         case .project:
-            return I18N.Main.MainService.project
+            return I18N.Main.MainService.Title.project
         case .faq:
-            return I18N.Main.MainService.faq
+            return I18N.Main.MainService.Title.faq
         case .youtube:
-            return I18N.Main.MainService.youtube
+            return I18N.Main.MainService.Title.youtube
         case .attendance:
-            return I18N.Main.MainService.attendance
+            return I18N.Main.MainService.Title.attendance
         case .member:
-            return I18N.Main.MainService.member
-        case .notice:
-            return I18N.Main.MainService.notice
-        case .crew:
-            return I18N.Main.MainService.crew
+            return I18N.Main.MainService.Title.member
+        case .group:
+            return I18N.Main.MainService.Title.group
+        case .instagram:
+            return I18N.Main.MainService.Title.instagram
         }
     }
     
-    var description: String? {
-        switch self {
-        case .attendance:
-            return I18N.Main.MainService.attend
-        case .notice:
-            return I18N.Main.MainService.checkGeneralNotice
-        case .faq:
-            return I18N.Main.MainService.inquire
-        default:
-            return nil
-        }
-    }
-    
-    var alternativeTitle: String? {
+    var description: String {
         switch self {
         case .officialHomepage:
-            return I18N.Main.MainService.AlternativeService.officialHomePage
-        case .notice:
-            return I18N.Main.MainService.AlternativeService.notice
+            return I18N.Main.MainService.Description.officialHomePage
+        case .review:
+            return I18N.Main.MainService.Description.review
+        case .project:
+            return I18N.Main.MainService.Description.project
+        case .faq:
+            return I18N.Main.MainService.Description.faq
+        case .youtube:
+            return I18N.Main.MainService.Description.youtube
+        case .attendance:
+            return I18N.Main.MainService.Description.attendance
+        case .member:
+            return I18N.Main.MainService.Description.member
+        case .group:
+            return I18N.Main.MainService.Description.group
+        case .instagram:
+            return I18N.Main.MainService.Description.instagram
+        }
+    }
+    
+    
+    var mainTitle: String? {
+        switch self {
+        case .officialHomepage:
+            return I18N.Main.MainService.MainTitle.officialHomePage
+        case .attendance:
+            return I18N.Main.MainService.MainTitle.attendance
+        case .group:
+            return I18N.Main.MainService.MainTitle.group
         default:
             return nil
         }
     }
 }
-
-
+    
 extension AppServiceType {
     var image: UIImage {
         switch self {
@@ -106,3 +118,4 @@ extension AppServiceType {
         }
     }
 }
+

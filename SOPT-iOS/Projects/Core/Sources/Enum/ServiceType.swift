@@ -16,8 +16,8 @@ public enum ServiceType {
     case youtube
     case attendance
     case member
-    case notice
-    case crew
+    case group
+    case instagram
     
     public var serviceDomainLink: String {
         switch self {
@@ -28,8 +28,8 @@ public enum ServiceType {
         case .youtube: return "https://m.youtube.com/@SOPTMEDIA"
         case .attendance: return ""
         case .member: return "https://playground.sopt.org/members"
-        case .notice: return ""
-        case .crew: return "https://playground.sopt.org/group?utm_source=playground_group&utm_medium=app_button&utm_campaign=app"
+        case .group: return "https://playground.sopt.org/group?utm_source=playground_group&utm_medium=app_button&utm_campaign=app"
+        case .instagram: return "https://www.instagram.com/sopt_official"
         }
     }
 }
