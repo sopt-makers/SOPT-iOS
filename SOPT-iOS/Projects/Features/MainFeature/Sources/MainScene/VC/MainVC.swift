@@ -232,7 +232,7 @@ extension MainVC: UICollectionViewDataSource {
                                                   withReuseIdentifier: MainServiceHeaderView.className,
                                                   for: indexPath) as? MainServiceHeaderView
             else { return UICollectionReusableView() }
-            headerView.initCell(title: I18N.Main.MainService.memberGuide)
+            headerView.initCell(title: nil)
             return headerView
         case 3:
             guard let headerView = collectionView

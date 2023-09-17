@@ -20,7 +20,7 @@ final class MainServiceHeaderView: UICollectionReusableView {
         label.font = .Main.headline1
         label.textColor = DSKitAsset.Colors.white100.color
         label.textAlignment = .left
-        label.text = I18N.Main.MainService.memberGuide
+        label.text = I18N.Main.MainService.visitorGuide
         return label
     }()
     
@@ -55,8 +55,10 @@ extension MainServiceHeaderView {
 // MARK: - Methods
 
 extension MainServiceHeaderView {
-    func initCell(title: String) {
-        self.titleLabel.text = title
+    func initCell(title: String?) {
+        if let title = title {
+            self.titleLabel.text = title
+        }
     }
 }
 
