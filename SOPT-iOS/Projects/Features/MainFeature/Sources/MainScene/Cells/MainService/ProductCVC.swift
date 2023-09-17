@@ -1,8 +1,8 @@
 //
-//  MainServiceCVC.swift
+//  ProductCVC.swift
 //  MainFeature
 //
-//  Created by sejin on 2023/04/01.
+//  Created by sejin on 2023/09/16.
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
@@ -11,19 +11,20 @@ import UIKit
 import Core
 import DSKit
 
-final class MainServiceCVC: UICollectionViewCell {
+final class ProductCVC: UICollectionViewCell {
     
     // MARK: - UI Components
     
     private let serviceIcon: UIImageView = {
         let imageView = UIImageView()
-        imageView.tintColor = DSKitAsset.Colors.orange100.color
+        imageView.image = DSKitAsset.Assets.icnAttendance.image
+        imageView.tintColor = DSKitAsset.Colors.white.color
         return imageView
     }()
     
     private let serviceTitleLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.Main.headline1
+        label.font = UIFont.Main.headline2
         label.textColor = DSKitAsset.Colors.white100.color
         label.textAlignment = .left
         label.numberOfLines = 2
@@ -32,17 +33,26 @@ final class MainServiceCVC: UICollectionViewCell {
     
     private let serviceDescriptionLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.Main.body1
+        label.font = UIFont.Main.caption1
         label.textColor = DSKitAsset.Colors.gray30.color
         label.textAlignment = .left
+        label.numberOfLines = 2
         return label
     }()
     
-    private lazy var containerStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [serviceIcon, serviceTitleLabel, serviceDescriptionLabel])
+    private lazy var labelStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [serviceTitleLabel, serviceDescriptionLabel])
         stackView.axis = .vertical
-        stackView.spacing = 8
+        stackView.spacing = 2
         stackView.alignment = .leading
+        return stackView
+    }()
+    
+    private lazy var containerStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [serviceIcon, labelStackView])
+        stackView.axis = .horizontal
+        stackView.spacing = 8
+        stackView.alignment = .center
         return stackView
     }()
     
@@ -61,7 +71,7 @@ final class MainServiceCVC: UICollectionViewCell {
 
 // MARK: - UI & Layouts
 
-extension MainServiceCVC {
+extension ProductCVC {
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.black60.color
         self.layer.cornerRadius = 15
@@ -83,10 +93,10 @@ extension MainServiceCVC {
 
 // MARK: - Methods
 
-extension MainServiceCVC {
+extension ProductCVC {
     func initCell(serviceType: ServiceType, userType: UserType) {
-        serviceIcon.image = serviceType.icon.withRenderingMode(.alwaysTemplate)
-        serviceTitleLabel.text = serviceType.mainTitle
+        serviceIcon.image = serviceType.icon
+        serviceTitleLabel.text = serviceType.title
         setDescription(description: serviceType.description(for: userType))
     }
     
@@ -94,10 +104,9 @@ extension MainServiceCVC {
         if let description = description {
             serviceDescriptionLabel.isHidden = false
             serviceDescriptionLabel.text = description
-            containerStackView.setCustomSpacing(4, after: serviceTitleLabel)
         } else {
             serviceDescriptionLabel.isHidden = true
-            containerStackView.setCustomSpacing(0, after: serviceTitleLabel)
         }
     }
 }
+

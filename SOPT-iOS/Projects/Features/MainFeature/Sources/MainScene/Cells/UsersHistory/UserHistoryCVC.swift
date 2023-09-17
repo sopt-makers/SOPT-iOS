@@ -89,43 +89,45 @@ extension UserHistoryCVC {
     
     func initCell(userType: UserType, recentHistory: Int?, allHistory: [Int]?) {
         // 현재 활동 기수 여부 뷰 설정
-        self.userTypeLabel.text = userType.makeDescription(recentHistory: recentHistory ?? 0)
-        if userType == .active {
-            self.userTypeLabel.backgroundColor = DSKitAsset.Colors.purple100.color
-        }
+        let userTypeText = userType.makeDescription(recentHistory: recentHistory ?? 0)
         
-        // 플그에 기수 정보 입력 안한 비활동 회원 대응 (추후 제거)
-        if userType == .inactive || userType == .unregisteredInactive {
-            self.userTypeLabel.backgroundColor = DSKitAsset.Colors.black40.color
-            if allHistory == nil {
-                self.userTypeLabel.text = I18N.Main.inactiveMember
-            }
-            
-            if let isEmptyHistory = allHistory?.isEmpty, isEmptyHistory {
-                self.userTypeLabel.text = I18N.Main.inactiveMember
-            }
-        }
+        setUserTypeLabel(with: userType, text: userTypeText)
         
         guard userType != .visitor else { return }
         
+        resetHistoryView()
+        makeHistoryView(allHistory: allHistory)
+    }
+    
+    private func setUserTypeLabel(with userType: UserType, text: String) {
+        self.userTypeLabel.text = text
+        
+        self.userTypeLabel.textColor = userType == .active ? DSKitAsset.Colors.black100.color : DSKitAsset.Colors.white100.color
+        
+        self.userTypeLabel.backgroundColor = userType == .active ? DSKitAsset.Colors.orange100.color : DSKitAsset.Colors.black40.color
+    }
+    
+    private func resetHistoryView() {
         historyStackView.arrangedSubviews.forEach { view in
             view.removeFromSuperview()
         }
-        
+    }
+    
+    private func makeHistoryView(allHistory: [Int]?) {
         // 활동 기수들 내역 나열한다.
         guard var allHistory = allHistory, !allHistory.isEmpty else { return }
         allHistory.removeFirst()
         
         for (index, history) in allHistory.enumerated() {
             if self.historyStackView.arrangedSubviews.count >= numberOfHistoryToShow { break }
-            let historyView = self.makeHistoryView(index: index, history: String(history))
+            let historyView = self.makeEachHistoryView(index: index, history: String(history))
             self.historyStackView.addArrangedSubview(historyView)
         }
         
         // 5개 이상의 기수를 활동한 경우 +n 으로 나타낸다.
         let remaining = allHistory.count - numberOfHistoryToShow
         if remaining > 0 {
-            let remainingView = makeHistoryView(index: 0, history: "+\(remaining)")
+            let remainingView = makeEachHistoryView(index: 0, history: "+\(remaining)")
             remainingView.backgroundColor = DSKitAsset.Colors.black80.color
             self.historyStackView.addArrangedSubview(remainingView)
         }
@@ -134,7 +136,7 @@ extension UserHistoryCVC {
         resizeHistoryStackSubviews()
     }
     
-    private func makeHistoryView(index: Int, history: String) -> UILabel {
+    private func makeEachHistoryView(index: Int, history: String) -> UILabel {
         let label = UILabel()
         label.backgroundColor = DSKitAsset.Colors.black40.color
         label.layer.opacity = historyOpacityScale[safe: index] ?? 1.0

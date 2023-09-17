@@ -161,30 +161,56 @@ public struct I18N {
         public struct MainService {
             public static let visitorGuide = "SOPT를 더 알고 싶다면, 둘러보세요"
             public static let memberGuide = "더욱 편리해진 SOPT를 이용해보세요!"
-            public static let officialHomePage = "SOPT \n공식홈페이지"
-            public static let review = "활동후기"
-            public static let project = "프로젝트"
-            public static let faq = "FAQ"
-            public static let inquire = "SOPT 문의하기"
-            public static let youtube = "YOUTUBE"
-            public static let attendance = "SOPT 출석"
-            public static let attend = "출석 인증하기"
-            public static let member = "멤버"
-            public static let notice = "SOPT 공지"
-            public static let checkGeneralNotice = "전체 공지 확인하기"
-            public static let generalNotice = "전체 공지"
-            public static let crew = "크루"
             
-            public struct AlternativeService {
-                public static let officialHomePage = "공식홈페이지"
-                public static let notice = "전체 공지"
+            public struct MainTitle {
+                public static let attendance = "출석하기"
+                public static let group = "모임/스터디"
+                public static let officialHomePage = "SOPT\n공식홈페이지"
+            }
+
+            public struct Title {
+                public static let officialHomePage = "공식 홈페이지"
+                public static let review = "활동 후기"
+                public static let project = "프로젝트"
+                public static let faq = "FAQ"
+                public static let youtube = "Youtube"
+                public static let attendance = "출석하기"
+                public static let member = "멤버"
+                public static let group = "모임/스터디"
+                public static let instagram = "Instagram"
+            }
+            
+            public struct Description {
+                public struct Default {
+                    public static let officialHomePage = "솝트 홈페이지 바로가기"
+                    public static let review = "'진짜' 후기가\n 궁금하다면?"
+                    public static let project = "역대 프로젝트 보기"
+                    public static let faq = "자주 묻는 질문"
+                    public static let youtube = "SOPT 활동 구경하기"
+                    public static let attendance = "아 맞다, 출석!"
+                    public static let member = "궁금한 사람 찾아보기"
+                    public static let group = "지금 열린 모임은?"
+                    public static let instagram = "SOPT 소식 빠르게 확인하기"
+                }
+
+                public struct ActiveUser {
+                    public static let project = "역대 프로젝트 모아보기"
+                }
+                
+                public struct InactiveUser {
+                    public static let project = "지난 프로젝트 보기"
+                }
+                
+                public struct Visitor {
+                    public static let project = "SOPT에서\n탄생한 프로젝트"
+                }
             }
         }
 
         public struct AppService {
             public static let appServiceIntroduction = "SOPT를 알차게 즐기고 싶다면?"
             public static let recommendSopt = "SOPT 회원이 되어 다양한 서비스를 즐겨보세요"
-            public static let soptamp = "SOPT AMP!"
+            public static let soptamp = "SOPT-AMP!"
         }
     }
     

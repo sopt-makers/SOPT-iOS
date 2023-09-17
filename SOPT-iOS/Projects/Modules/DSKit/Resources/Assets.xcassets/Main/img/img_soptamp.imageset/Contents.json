@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "btn_notification.png",
+      "filename" : "img_soptamp.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "btn_notification@2x.png",
+      "filename" : "img_soptamp@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "btn_notification@3x.png",
+      "filename" : "img_soptamp@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

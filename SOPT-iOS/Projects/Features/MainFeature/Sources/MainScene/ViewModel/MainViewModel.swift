@@ -24,7 +24,7 @@ public class MainViewModel: MainViewModelType {
     
     var userType: UserType = .visitor
     var mainServiceList: [ServiceType] = [.officialHomepage, .review, .project]
-    var otherServiceList: [ServiceType] = [.faq, .youtube]
+    var otherServiceList: [ServiceType] = [.instagram, .youtube, .faq]
     var appServiceList: [AppServiceType] = [.soptamp]
     var userMainInfo: UserMainInfoModel?
   
@@ -145,7 +145,7 @@ extension MainViewModel {
         switch (indexPath.section, indexPath.row) {
         case (0, _): break
         case (1, _):
-            guard let service = mainServiceList[safe: indexPath.item - 1] else { return }
+            guard let service = mainServiceList[safe: indexPath.item] else { return }
             
             guard service != .attendance else {
                 onAttendance?()
@@ -175,13 +175,13 @@ extension MainViewModel {
         switch userType {
         case .visitor:
             self.mainServiceList = [.officialHomepage, .review, .project]
-            self.otherServiceList = [.faq, .youtube]
+            self.otherServiceList = [.instagram, .youtube, .faq]
         case .active:
-            self.mainServiceList = [.attendance, .member, .project]
-            self.otherServiceList = [.officialHomepage, .crew]
+            self.mainServiceList = [.attendance, .group, .member]
+            self.otherServiceList = [.project, .officialHomepage]
         case .inactive, .unregisteredInactive:
-            self.mainServiceList = [.faq, .member, .project]
-            self.otherServiceList = [.crew, .officialHomepage]
+            self.mainServiceList = [.group, .member, .project]
+            self.otherServiceList = [.officialHomepage, .instagram, .youtube]
         }
     }
     

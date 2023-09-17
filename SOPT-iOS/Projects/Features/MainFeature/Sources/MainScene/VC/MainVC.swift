@@ -145,8 +145,11 @@ extension MainVC {
                                      forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                      withReuseIdentifier: UserHistoryHeaderView.className)
         self.collectionView.register(UserHistoryCVC.self, forCellWithReuseIdentifier: UserHistoryCVC.className)
-        self.collectionView.register(BriefNoticeCVC.self, forCellWithReuseIdentifier: BriefNoticeCVC.className)
+        self.collectionView.register(MainServiceHeaderView.self,
+                                     forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                     withReuseIdentifier: MainServiceHeaderView.className)
         self.collectionView.register(MainServiceCVC.self, forCellWithReuseIdentifier: MainServiceCVC.className)
+        self.collectionView.register(ProductCVC.self, forCellWithReuseIdentifier: ProductCVC.className)
         self.collectionView.register(AppServiceHeaderView.self,
                                      forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                      withReuseIdentifier: AppServiceHeaderView.className)
@@ -223,6 +226,14 @@ extension MainVC: UICollectionViewDataSource {
             else { return UICollectionReusableView() }
             headerView.initCell(userType: viewModel.userType, name: viewModel.userMainInfo?.name, months: viewModel.calculateMonths())
             return headerView
+        case 1:
+            guard let headerView = collectionView
+                .dequeueReusableSupplementaryView(ofKind: kind,
+                                                  withReuseIdentifier: MainServiceHeaderView.className,
+                                                  for: indexPath) as? MainServiceHeaderView
+            else { return UICollectionReusableView() }
+            headerView.initCell(title: nil)
+            return headerView
         case 3:
             guard let headerView = collectionView
                 .dequeueReusableSupplementaryView(ofKind: kind,
@@ -239,7 +250,7 @@ extension MainVC: UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
         case 0: return 1
-        case 1: return viewModel.mainServiceList.count + 1 // 상단 한줄 공지 Cell을 위해 +1
+        case 1: return viewModel.mainServiceList.count
         case 2: return viewModel.otherServiceList.count
         case 3: return viewModel.appServiceList.count
         default: return 0
@@ -258,18 +269,17 @@ extension MainVC: UICollectionViewDataSource {
             return cell
         case 1:
             if indexPath.item == 0 {
-                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BriefNoticeCVC.className,
-                                                                    for: indexPath) as? BriefNoticeCVC
-                else { return UICollectionViewCell() }
-                cell.initCell(userType: viewModel.userType, text: viewModel.userMainInfo?.announcement ?? "")
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className, for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }
+                cell.initCell(serviceType: viewModel.mainServiceList[indexPath.item], userType: viewModel.userType)
                 return cell
             }
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className, for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }
-            cell.initCell(serviceType: viewModel.mainServiceList[indexPath.item-1], isMainFirstService: indexPath.item==1, isOtherService: false)
+            
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductCVC.className, for: indexPath) as? ProductCVC else { return UICollectionViewCell() }
+            cell.initCell(serviceType: viewModel.mainServiceList[indexPath.item], userType: viewModel.userType)
             return cell
         case 2:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className, for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }
-            cell.initCell(serviceType: viewModel.otherServiceList[indexPath.item], isMainFirstService: false, isOtherService: true)
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductCVC.className, for: indexPath) as? ProductCVC else { return UICollectionViewCell() }
+            cell.initCell(serviceType: viewModel.otherServiceList[indexPath.item], userType: viewModel.userType)
             return cell
         case 3:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AppServiceCVC.className, for: indexPath) as? AppServiceCVC else { return UICollectionViewCell() }
