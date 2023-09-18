@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Property 1=No.png",
+      "filename" : "op_attend_before.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Property 1=No@2x.png",
+      "filename" : "op_attend_before@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Property 1=No@3x.png",
+      "filename" : "op_attend_before@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
