@@ -15,6 +15,7 @@ import DSKit
 import SnapKit
 import Then
 
+import BaseFeatureDependency
 import SplashFeatureInterface
 
 public class NoticePopUpVC: UIViewController, NoticePopUpViewControllable {
@@ -57,25 +58,29 @@ public class NoticePopUpVC: UIViewController, NoticePopUpViewControllable {
         $0.setImage(DSKitAsset.Assets.btnCheckActive.image, for: .selected)
         $0.setAttributedTitle(NSAttributedString(string: I18N.Notice.didCheck,
                                                  attributes: [.font: UIFont.SoptampFont.caption3,
-                                                              .foregroundColor: DSKitAsset.Colors.white.color]),
+                                                              .foregroundColor: DSKitAsset.Colors.gray40.color]),
                               for: .normal)
+        $0.setAttributedTitle(NSAttributedString(string: I18N.Notice.didCheck,
+                                                 attributes: [.font: UIFont.SoptampFont.caption3,
+                                                              .foregroundColor: DSKitAsset.Colors.white.color]),
+                              for: .selected)
         $0.titleLabel?.adjustsFontSizeToFitWidth = true
     }
 
     private let updateButton = UIButton(type: .custom).then {
         $0.setAttributedTitle(NSAttributedString(
             string: I18N.Notice.goToUpdate,
-            attributes: [.font: UIFont.Main.caption3, .foregroundColor: DSKitAsset.Colors.gray10.color]
+            attributes: [.font: UIFont.Main.caption3, .foregroundColor: DSKitAsset.Colors.black100.color]
         ), for: .normal)
         
-        $0.backgroundColor = DSKitAsset.Colors.purple100.color
+        $0.backgroundColor = DSKitAsset.Colors.white100.color
         $0.layer.cornerRadius = 10
     }
     
     private let closeButton = UIButton(type: .system).then {
         $0.setAttributedTitle(NSAttributedString(string: I18N.Notice.close,
                                                  attributes: [.font: UIFont.Main.caption3,
-                                                              .foregroundColor: DSKitAsset.Colors.gray60.color]), for: .normal)
+                                                              .foregroundColor: DSKitAsset.Colors.white100.color]), for: .normal)
         $0.backgroundColor = DSKitAsset.Colors.black40.color
         $0.layer.cornerRadius = 10
     }
