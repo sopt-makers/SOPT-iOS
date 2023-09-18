@@ -180,7 +180,6 @@ extension AlertVC {
         case .networkErr:
             cancelButton.snp.makeConstraints { make in
                 make.leading.trailing.bottom.equalToSuperview().inset(7)
-//                make.width.equalTo(alertView.snp.width)
                 make.height.equalTo(38)
             }
         }
