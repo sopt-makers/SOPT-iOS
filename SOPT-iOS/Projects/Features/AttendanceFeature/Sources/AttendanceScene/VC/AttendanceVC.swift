@@ -70,7 +70,7 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
     private let closeButton: UIButton = {
         let button = UIButton()
         var config = UIButton.Configuration.plain()
-        config.image = DSKitAsset.Assets.opClose.image
+        config.image = DSKitAsset.Assets.opClose.image.withTintColor(DSKitAsset.Colors.gray60.color)
         button.configuration = config
         return button
     }()
@@ -174,7 +174,7 @@ extension AttendanceVC {
     
     private func setUI() {
         view.backgroundColor = .black.withAlphaComponent(0.85)
-        attendanceStackView.backgroundColor = DSKitAsset.Colors.black80.color
+        attendanceStackView.backgroundColor = DSKitAsset.Colors.black60.color
         attendanceStackView.layer.cornerRadius = 10
         attendanceCodeView.codeTextFields.first?.becomeFirstResponder()
     }
@@ -205,6 +205,9 @@ extension AttendanceVC {
             $0.edges.equalToSuperview()
         }
         
+        attendanceStackView.setCustomSpacing(-Metric.contentInset, after: topStackView)
+        attendanceStackView.setCustomSpacing(Metric.baseInset / 2, after: titleLabel)
+        attendanceStackView.setCustomSpacing(Metric.baseInset, after: subtitleLabel)
         attendanceStackView.setCustomSpacing(Metric.customSpacing, after: attattendanceCodeStackView)
         
         attendanceButton.snp.makeConstraints {
