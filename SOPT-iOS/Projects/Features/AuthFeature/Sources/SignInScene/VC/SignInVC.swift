@@ -41,19 +41,11 @@ public class SignInVC: UIViewController, SignInViewControllable {
         $0.contentMode = .scaleAspectFit
     }
     
-    private lazy var signInButton = STCustomButton(title: I18N.SignIn.signIn).then {
-        $0.setColor(
-            bgColor: DSKitAsset.Colors.purple100.color,
-            disableColor: DSKitAsset.Colors.purple100.color
-        )
-        $0.alpha = 0
-        $0.setAttributedTitle(
-            NSAttributedString(
-                string: I18N.SignIn.signIn,
-                attributes: [.font: UIFont.Main.body1, .foregroundColor: UIColor.white]
-            ),
-            for: .normal
-        )
+    private lazy var signInButton = AppCustomButton(title: I18N.SignIn.signIn).then {
+        $0.setAttributedTitle(NSAttributedString(
+            string: I18N.SignIn.signIn,
+            attributes: [.font: UIFont.Main.body1, .foregroundColor: DSKitAsset.Colors.black100.color]
+        ), for: .normal)
     }
     
     private lazy var notMemberButton = UIButton(type: .system).then {
