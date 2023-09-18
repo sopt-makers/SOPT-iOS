@@ -27,7 +27,7 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
         static let bottomButtonHeight = 48.f
         
         static let customSpacing = 32.f
-        static let keyboardBottomOffset = 40.f
+        static let keyboardBottomOffset = 34.f // 피그마에 40인데 수정했음
     }
     
     // MARK: - Properties
@@ -117,7 +117,7 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
     private let alertLabel: UILabel = {
         let label = UILabel()
         label.text = I18N.Attendance.codeMismatch
-        label.textColor = DSKitAsset.Colors.red100.color
+        label.textColor = UIColor(red: 228/256, green: 86/256, blue: 86/256, alpha: 1) // 운영프로덕트 sub/red 컬러
         label.setTypoStyle(.Main.body2)
         label.isHidden = true
         return label
@@ -174,7 +174,7 @@ extension AttendanceVC {
     
     private func setUI() {
         view.backgroundColor = .black.withAlphaComponent(0.85)
-        attendanceStackView.backgroundColor = DSKitAsset.Colors.black60.color
+        attendanceStackView.backgroundColor = DSKitAsset.Colors.black80.color
         attendanceStackView.layer.cornerRadius = 10
         attendanceCodeView.codeTextFields.first?.becomeFirstResponder()
     }
@@ -254,7 +254,7 @@ extension AttendanceVC {
         output.attendanceTitle
             .withUnretained(self)
             .sink { owner, title in
-                owner.titleLabel.text = title
+                owner.titleLabel.text = title + "하기"
             }
             .store(in: self.cancelBag)
         

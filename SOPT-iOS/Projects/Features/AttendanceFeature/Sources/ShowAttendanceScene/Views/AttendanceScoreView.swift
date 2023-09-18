@@ -37,7 +37,7 @@ final class AttendanceScoreView: UIView {
     
     private lazy var myScoreContainerStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [attendanceScoreView, tardyScoreView, absentScoreView, participateScoreView])
-        stackView.backgroundColor = DSKitAsset.Colors.black40.color
+        stackView.backgroundColor = DSKitAsset.Colors.black60.color
         stackView.clipsToBounds = true
         stackView.layer.cornerRadius = 8
         stackView.axis = .horizontal
@@ -85,7 +85,7 @@ final class AttendanceScoreView: UIView {
 extension AttendanceScoreView {
     
     private func configureContentView() {
-        self.backgroundColor = DSKitAsset.Colors.black60.color
+        self.backgroundColor = DSKitAsset.Colors.black80.color
         self.clipsToBounds = true
         self.layer.cornerRadius = 16
     }

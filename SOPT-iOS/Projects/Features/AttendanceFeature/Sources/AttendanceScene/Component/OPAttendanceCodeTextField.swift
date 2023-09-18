@@ -19,7 +19,7 @@ public enum AttendanceCodeState {
     var backgroundColor: UIColor {
         switch self {
         case .empty:
-            return DSKitAsset.Colors.black40.color
+            return DSKitAsset.Colors.black60.color
         case .fill:
             return DSKitAsset.Colors.black80.color
         }
@@ -28,9 +28,9 @@ public enum AttendanceCodeState {
     var borderColor: CGColor {
         switch self {
         case .empty:
-            return DSKitAsset.Colors.black40.color.cgColor
+            return DSKitAsset.Colors.black60.color.cgColor
         case .fill:
-            return DSKitAsset.Colors.purple40.color.cgColor
+            return DSKitAsset.Colors.gray40.color.cgColor
         }
     }
 }
@@ -92,7 +92,7 @@ extension OPAttendanceCodeTextField {
     private func setUI() {
         backgroundColor = AttendanceCodeState.empty.backgroundColor
         
-        textColor = DSKitAsset.Colors.purple40.color
+        textColor = DSKitAsset.Colors.gray40.color
         font = .Main.headline2
         textAlignment = .center
         tintColor = .clear
