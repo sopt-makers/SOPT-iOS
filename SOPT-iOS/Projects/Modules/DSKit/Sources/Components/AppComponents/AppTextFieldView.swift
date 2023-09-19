@@ -74,7 +74,7 @@ public enum AppTextFieldViewState {
         case .normal, .editing:
             return nil
         case .confirmAlert:
-            return DSKitAsset.Colors.purple100.color // 이건 어디서 쓰는건지 피그마에 안 나와있네
+            return DSKitAsset.Colors.purple100.color
         case .warningAlert:
             return DSKitAsset.Colors.red100.color
         }
@@ -175,7 +175,6 @@ public class AppTextFieldView: UIView {
     private let subTitleLabel = UILabel()
     private let textField = UITextField()
     
-    // 얘도 없어진거 아녀유? (@승호) 확인하고 이 주석 지우겟음
     private let rightButton = UIButton()
     private let alertlabel = UILabel()
 
