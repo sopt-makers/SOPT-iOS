@@ -43,6 +43,7 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
         cv.showsHorizontalScrollIndicator = false
         cv.showsVerticalScrollIndicator = false
         cv.backgroundColor = .clear
+        cv.isHidden = true
         return cv
     }()
     
@@ -98,20 +99,20 @@ extension NotificationListVC {
     }
     
     private func setLayout() {
-        self.view.addSubviews(naviBar, notificationFilterCollectionView, notificationListCollectionView)
+        self.view.addSubviews(naviBar, notificationListCollectionView)
         
         naviBar.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
         }
         
-        notificationFilterCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(naviBar.snp.bottom)
-            make.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-            make.height.equalTo(46)
-        }
+//        notificationFilterCollectionView.snp.makeConstraints { make in
+//            make.top.equalTo(naviBar.snp.bottom)
+//            make.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+//            make.height.equalTo(46)
+//        }
         
         notificationListCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(notificationFilterCollectionView.snp.bottom)
+            make.top.equalTo(naviBar.snp.bottom)
             make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
         }
         
