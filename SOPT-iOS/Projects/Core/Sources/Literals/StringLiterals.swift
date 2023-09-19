@@ -257,6 +257,7 @@ public struct I18N {
         public static let inputCodeDescription = "출석 코드 다섯 자리를 입력해주세요."
         public static let codeMismatch = "코드가 일치하지 않아요!"
         public static let takeAttendance = "출석하기"
+        public static let take = "하기"
         
         public static let infoButtonToastMessage = "제2장 제10조(출석)를 확인해주세요"
     }

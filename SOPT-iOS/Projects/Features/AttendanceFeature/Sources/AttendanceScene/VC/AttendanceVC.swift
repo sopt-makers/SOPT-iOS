@@ -257,7 +257,7 @@ extension AttendanceVC {
         output.attendanceTitle
             .withUnretained(self)
             .sink { owner, title in
-                owner.titleLabel.text = title + "하기"
+                owner.titleLabel.text = title + I18N.Attendance.take
             }
             .store(in: self.cancelBag)
         
