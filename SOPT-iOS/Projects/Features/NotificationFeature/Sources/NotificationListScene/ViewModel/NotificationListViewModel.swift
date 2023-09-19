@@ -79,6 +79,8 @@ extension NotificationListViewModel {
             .sink { owner, index in
                 let notification = owner.notifications[index]
                 owner.onNotificationTap?(notification)
+                owner.read(index: index)
+                output.notificationList.send(self.notifications)
             }.store(in: cancelBag)
         
         input.readAllButtonTapped
@@ -128,5 +130,9 @@ extension NotificationListViewModel {
         if isEmptyResponse && self.page > 0 {
             self.page -= 1
         }
+    }
+    
+    private func read(index: Int) {
+        self.notifications[index].isRead = true
     }
 }

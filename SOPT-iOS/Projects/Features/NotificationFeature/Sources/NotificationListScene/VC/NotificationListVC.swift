@@ -83,6 +83,11 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
         self.setDataSource()
         self.setCollectionViews()
     }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.notificationListCollectionView.reloadData()
+    }
 }
 
 // MARK: - UI & Layout
