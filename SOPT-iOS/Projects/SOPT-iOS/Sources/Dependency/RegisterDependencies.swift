@@ -30,7 +30,7 @@ extension AppDelegate {
         container.register(
             interface: SplashRepositoryInterface.self,
             implement: {
-                SplashRepository(service: DefaultFirebaseService(), userService: DefaultUserService())
+                SplashRepository(service: DefaultFirebaseService())
             }
         )
         container.register(

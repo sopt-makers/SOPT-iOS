@@ -18,6 +18,7 @@ public protocol MainUseCase {
     func getUserMainInfo()
     func getServiceState()
     func getMainViewDescription()
+    func registerPushToken()
 }
 
 public class DefaultMainUseCase {
@@ -71,6 +72,17 @@ extension DefaultMainUseCase: MainUseCase {
             } receiveValue: { [weak self] mainDescriptionModel in
                 self?.mainDescription.send(mainDescriptionModel)
             }.store(in: self.cancelBag)
+    }
+    
+    public func registerPushToken() {
+        guard let pushToken = UserDefaultKeyList.User.pushToken, !pushToken.isEmpty else { return }
+
+        repository.registerPushToken(with: pushToken)
+            .sink { event in
+                print("DefaultSplashUseCase : \(event)")
+            } receiveValue: { didSucceed in
+                print("푸시 토큰 등록 결과: \(didSucceed)")
+            }.store(in: cancelBag)
     }
     
     private func setUserType(with userType: UserType?) {

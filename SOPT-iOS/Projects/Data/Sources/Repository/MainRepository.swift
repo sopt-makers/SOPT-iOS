@@ -69,4 +69,12 @@ extension MainRepository: MainRepositoryInterface {
             .map { $0.toDomain() }
             .eraseToAnyPublisher()
     }
+    
+    public func registerPushToken(with token: String) -> AnyPublisher<Bool, Error> {
+        userService.registerPushToken(with: token)
+            .map {
+                return 200..<300 ~= $0
+            }
+            .eraseToAnyPublisher()
+    }
 }

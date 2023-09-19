@@ -33,6 +33,7 @@ public class MainViewModel: MainViewModelType {
     
     public struct Input {
         let requestUserInfo: Driver<Void>
+        let registerPushToken: Driver<Void>
         let noticeButtonTapped: Driver<Void>
         let myPageButtonTapped: Driver<Void>
         let cellTapped: Driver<IndexPath>
@@ -99,6 +100,13 @@ extension MainViewModel {
                     self.useCase.getServiceState()
                     self.useCase.getMainViewDescription()
                 }
+            }.store(in: cancelBag)
+        
+        input.registerPushToken
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                guard self.userType != .visitor else { return }
+                self.useCase.registerPushToken()
             }.store(in: cancelBag)
     
         return output
