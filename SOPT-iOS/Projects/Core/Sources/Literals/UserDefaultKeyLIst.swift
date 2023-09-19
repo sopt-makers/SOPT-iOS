@@ -59,4 +59,11 @@ extension UserDefaultKeyList.Auth {
     public static func getUserActivation() -> Bool {
         UserDefaultKeyList.Auth.isActiveUser ?? false
     }
+    
+    public static func hasAccessToken() -> Bool {
+        guard let appAccessToken = appAccessToken, !appAccessToken.isEmpty else {
+            return false
+        }
+        return true
+    }
 }
