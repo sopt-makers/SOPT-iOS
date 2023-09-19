@@ -218,8 +218,10 @@ extension MainViewModel {
 
 extension MainViewModel {
     private func setSentryUser() {
-        SentrySDK.setUser(User(
+        let user = User(
             userId: "\(self.userType.rawValue)_\(userMainInfo?.name ?? "비회원")"
-        ))
+        )
+        user.data = ["accessToken": UserDefaultKeyList.Auth.appAccessToken ?? "EmptyAppAccessToken"]
+        SentrySDK.setUser(user)
     }
 }
