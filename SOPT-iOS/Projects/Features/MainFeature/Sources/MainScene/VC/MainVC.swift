@@ -51,6 +51,7 @@ public class MainVC: UIViewController, MainViewControllable {
         self.setLayout()
         self.setDelegate()
         self.registerCells()
+        self.requestAuthorizationForNotification()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -172,6 +173,18 @@ extension MainVC {
                 self?.requestUserInfo.send()
             }
         )
+    }
+    
+    private func requestAuthorizationForNotification() {
+        // APNS 권한 허용 알림
+        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+        UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { granted, error in
+            if let error = error {
+                print(error)
+            }
+            
+            granted ? print("APNs-알림 권한 허용") : print("APNs-알림 권한 거절")
+        }
     }
 }
 

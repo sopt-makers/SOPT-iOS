@@ -62,16 +62,6 @@ extension AppDelegate {
     
     private func configureAPNs() {
         UNUserNotificationCenter.current().delegate = self
-        
-        // APNS 권한 허용 알림
-        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
-        UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { granted, error in
-            if let error = error {
-                print(error)
-            }
-            
-            granted ? print("APNs-알림 등록 완료") : print("APNs-알림 등록 실패")
-        }
     }
 }
 
