@@ -95,39 +95,6 @@ final class DefaultMainUseCaseTests: XCTestCase {
         XCTAssertFalse(userType)
     }
     
-    func test_getUserMainInfo_unregisteredUser() {
-        // Given
-        let expectation = XCTestExpectation(description: "GetUserMainInfo")
-        
-        let userMainInfo = unregisteredUserInfoModel
-        repository.userInfoModelResponse = .success(userMainInfo)
-        var result: UserMainInfoModel!
-
-        // When
-        useCase.userMainInfo
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    XCTFail("Error: \(error)")
-                }
-            } receiveValue: { model in
-                result = model
-                expectation.fulfill()
-            }
-            .store(in: repository.cancelBag)
-        
-        useCase.getUserMainInfo()
-        
-        wait(for: [expectation], timeout: 0.5)
-        
-        // Then
-        XCTAssertEqual(result, userMainInfo)
-        let userType = UserDefaultKeyList.Auth.isActiveUser!
-        XCTAssertFalse(userType)
-    }
-    
     func test_getUserMainInfo_ErrorOccurred() {
         // Given
         let expectation = XCTestExpectation(description: "GetUserMainInfo")
@@ -226,7 +193,8 @@ extension DefaultMainUseCaseTests {
                                  profileImage: nil,
                                  historyList: [32, 25],
                                  attendanceScore: 2.0,
-                                 announcement: nil)
+                                 announcement: nil,
+                                 exists: true)
     }
     
     var inactiveUserInfoModel: UserMainInfoModel {
@@ -235,15 +203,7 @@ extension DefaultMainUseCaseTests {
                                  profileImage: nil,
                                  historyList: [32, 25],
                                  attendanceScore: 2.0,
-                                 announcement: nil)
-    }
-    
-    var unregisteredUserInfoModel: UserMainInfoModel {
-        return UserMainInfoModel(status: "",
-                                 name: "",
-                                 profileImage: nil,
-                                 historyList: [],
-                                 attendanceScore: nil,
-                                 announcement: nil)
+                                 announcement: nil,
+                                 exists: true)
     }
 }
