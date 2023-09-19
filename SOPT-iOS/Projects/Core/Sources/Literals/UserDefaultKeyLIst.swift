@@ -67,3 +67,12 @@ extension UserDefaultKeyList.Auth {
         return true
     }
 }
+
+extension UserDefaultKeyList.User {
+    public static func hasPushToken() -> Bool {
+        guard let pushToken = pushToken, !pushToken.isEmpty else {
+            return false
+        }
+        return true
+    }
+}

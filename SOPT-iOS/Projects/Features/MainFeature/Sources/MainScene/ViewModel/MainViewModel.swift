@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import UserNotifications
 
 import Core
 import Domain
@@ -33,7 +34,7 @@ public class MainViewModel: MainViewModelType {
     
     public struct Input {
         let requestUserInfo: Driver<Void>
-        let registerPushToken: Driver<Void>
+        let viewDidLoad: Driver<Void>
         let noticeButtonTapped: Driver<Void>
         let myPageButtonTapped: Driver<Void>
         let cellTapped: Driver<IndexPath>
@@ -102,11 +103,10 @@ extension MainViewModel {
                 }
             }.store(in: cancelBag)
         
-        input.registerPushToken
+        input.viewDidLoad
             .sink { [weak self] _ in
                 guard let self = self else { return }
-                guard self.userType != .visitor else { return }
-                self.useCase.registerPushToken()
+                self.requestAuthorizationForNotification()
             }.store(in: cancelBag)
     
         return output
@@ -184,6 +184,27 @@ extension MainViewModel {
             
             onSoptamp?()
         default: break
+        }
+    }
+    
+    private func requestAuthorizationForNotification() {
+        guard self.userType != .visitor,
+              UserDefaultKeyList.Auth.hasAccessToken(),
+              UserDefaultKeyList.User.hasPushToken()
+        else { return }
+        
+        // APNS 권한 허용 확인
+        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+        UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { granted, error in
+            if let error = error {
+                print(error)
+            }
+            
+            print("APNs-알림 권한 허용 유무 \(granted)")
+            
+            if granted {
+                self.useCase.registerPushToken()
+            }
         }
     }
     

@@ -27,7 +27,6 @@ public class MainVC: UIViewController, MainViewControllable {
     
     private var requestUserInfo = PassthroughSubject<Void, Never>()
     private var cellTapped = PassthroughSubject<IndexPath, Never>()
-    private var updatePushToken = PassthroughSubject<Void, Never>()
     
     // MARK: - UI Components
     
@@ -52,7 +51,6 @@ public class MainVC: UIViewController, MainViewControllable {
         self.setLayout()
         self.setDelegate()
         self.registerCells()
-        self.requestAuthorizationForNotification()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -98,11 +96,12 @@ extension MainVC {
         
         let input = MainViewModel.Input(
             requestUserInfo: requestUserInfo.asDriver(),
-            registerPushToken: updatePushToken.asDriver(),
+            viewDidLoad: Just<Void>(()).asDriver(),
             noticeButtonTapped: noticeButtonTapped,
             myPageButtonTapped: myPageButtonTapped,
             cellTapped: cellTapped.asDriver()
         )
+        
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.getUserMainInfoDidComplete
@@ -175,24 +174,6 @@ extension MainVC {
                 self?.requestUserInfo.send()
             }
         )
-    }
-    
-    private func requestAuthorizationForNotification() {
-        guard viewModel.userType != .visitor else { return }
-        
-        // APNS 권한 허용 알림
-        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]        
-        UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { granted, error in
-            if let error = error {
-                print(error)
-            }
-            
-            granted ? print("APNs-알림 권한 허용") : print("APNs-알림 권한 거절")
-            
-            if granted {
-                self.updatePushToken.send()
-            }
-        }
     }
 }
 
