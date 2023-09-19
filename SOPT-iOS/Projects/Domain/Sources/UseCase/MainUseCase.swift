@@ -13,9 +13,11 @@ import Combine
 public protocol MainUseCase {
     var userMainInfo: PassthroughSubject<UserMainInfoModel?, Never> { get set }
     var serviceState: PassthroughSubject<ServiceStateModel, Never> { get set }
+    var mainDescription: PassthroughSubject<MainDescriptionModel, Never> { get set }
     var mainErrorOccurred: PassthroughSubject<MainError, Never> { get set }
     func getUserMainInfo()
     func getServiceState()
+    func getMainViewDescription()
 }
 
 public class DefaultMainUseCase {
@@ -25,6 +27,7 @@ public class DefaultMainUseCase {
     
     public var userMainInfo = PassthroughSubject<UserMainInfoModel?, Never>()
     public var serviceState = PassthroughSubject<ServiceStateModel, Never>()
+    public var mainDescription = PassthroughSubject<MainDescriptionModel, Never>()
     public var mainErrorOccurred = PassthroughSubject<MainError, Never>()
   
     public init(repository: MainRepositoryInterface) {
@@ -55,6 +58,18 @@ extension DefaultMainUseCase: MainUseCase {
                 }
             } receiveValue: { [weak self] serviceStateModel in
                 self?.serviceState.send(serviceStateModel)
+            }.store(in: self.cancelBag)
+    }
+    
+    public func getMainViewDescription() {
+        repository.getMainViewDescription()
+            .sink { [weak self] event in
+                print("MainUseCase getMainViewDescription: \(event)")
+                if case Subscribers.Completion.failure = event {
+                    self?.mainErrorOccurred.send(.networkError(message: "GetMainViewDescription 실패"))
+                }
+            } receiveValue: { [weak self] mainDescriptionModel in
+                self?.mainDescription.send(mainDescriptionModel)
             }.store(in: self.cancelBag)
     }
     
