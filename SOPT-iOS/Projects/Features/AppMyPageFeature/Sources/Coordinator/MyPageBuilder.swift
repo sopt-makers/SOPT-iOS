@@ -15,12 +15,12 @@ final class MyPageBuilder {
     @Injected public var appMyPageRepository: AppMyPageRepositoryInterface
     @Injected public var settingRepository: SettingRepositoryInterface
     @Injected public var signUpRepository: SignUpRepositoryInterface
+    @Injected public var notificationSettingsRepository: NotificationSettingRepositoryInterface
     
     public init() { }
 }
 
 extension MyPageBuilder: MyPageFeatureBuildable {
-
     public func makeNicknameEditVC() -> NicknameEditViewControllable {
         let settingUseCase = DefaultSettingUseCase(repository: settingRepository)
         let signUpUseCase = DefaultSignUpUseCase(repository: signUpRepository)
@@ -64,5 +64,11 @@ extension MyPageBuilder: MyPageFeatureBuildable {
         let vc = AppMyPageVC(userType: userType, viewModel: vm)
         return vc
     }
-}
     
+    public func makeAlertSettingByFeatures() -> NotificationSettingByFeaturesViewControllable {
+        let usecase = DefaultNotificationSettingByFeaturesUsecase(repository: self.notificationSettingsRepository)
+        let viewModel = NotificationSettingByFeaturesViewModel(usecase: usecase)
+        let vc = NotificationSettingByFeaturesVC(viewModel: viewModel)
+        return vc
+    }
+}

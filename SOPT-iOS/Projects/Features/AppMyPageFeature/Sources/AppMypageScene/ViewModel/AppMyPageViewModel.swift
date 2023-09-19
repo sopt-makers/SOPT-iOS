@@ -28,8 +28,6 @@ public final class AppMyPageViewModel: MyPageViewModelType {
     
     // MARK: - MyPageCoordinatable
     
-    public var onNaviBackButtonTap: (() -> Void)?
-    
     private let useCase: AppMyPageUseCase
     
     public init(useCase: AppMyPageUseCase) {

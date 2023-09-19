@@ -21,6 +21,7 @@ public enum UserAPI {
     case withdrawal
     case registerPushToken(token: String)
     case fetchActiveGenerationStatus
+    case optInPushNotification(notificationSettings: NotificationOptInEntity)
 }
 
 extension UserAPI: BaseAPI {
@@ -46,6 +47,8 @@ extension UserAPI: BaseAPI {
             return "/push-token"
         case .fetchActiveGenerationStatus:
             return "/generation"
+        case .optInPushNotification:
+            return "/opt-in"
         }
     }
     
@@ -54,7 +57,7 @@ extension UserAPI: BaseAPI {
         switch self {
         case .getNicknameAvailable, .getUserMainInfo, .fetchSoptampUser, .fetchActiveGenerationStatus:
             return .get
-        case .editSentence, .changeNickname:
+        case .editSentence, .changeNickname, .optInPushNotification:
             return .patch
         case .withdrawal:
             return .delete
@@ -73,7 +76,8 @@ extension UserAPI: BaseAPI {
             params["profileMessage"] = sentence
         case .registerPushToken(let pushToken):
             params["pushToken"] = pushToken
-            params["platform"] = "iOS"
+        case .optInPushNotification(let optInDTO):
+            params = optInDTO.toDictionary()
         default: break
         }
         return params
@@ -88,7 +92,7 @@ extension UserAPI: BaseAPI {
     
     public var task: Task {
         switch self {
-        case .changeNickname, .editSentence, .registerPushToken:
+        case .changeNickname, .editSentence, .registerPushToken, .optInPushNotification:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain
