@@ -15,4 +15,5 @@ public protocol MyPageFeatureBuildable {
     func makePrivacyPolicyVC() -> PrivacyPolicyViewControllable
     func makeTermsOfServiceVC() -> TermsOfServiceViewControllable
     func makeWithdrawalVC(userType: UserType) -> WithdrawalViewControllable
+    func makeAlertSettingByFeatures() -> NotificationSettingByFeaturesViewControllable
 }
