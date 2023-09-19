@@ -18,7 +18,6 @@ import DSKit
 import BaseFeatureDependency
 
 public final class AppMyPageVC: UIViewController, MyPageViewControllable {
-
     // MARK: - Metric
     private enum Metric {
         static let navigationbarHeight = 44.f
@@ -42,6 +41,7 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
     public var onWithdrawalItemTap: ((UserType) -> Void)?
     public var onLoginItemTap: (() -> Void)?
     public var onShowLogin: (() -> Void)?
+    public var onAlertSettingByFeaturesItemTap: (() -> Void)?
     
     // MARK: Combine
     private let resetButtonTapped = PassthroughSubject<Bool, Never>()
@@ -88,6 +88,29 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
         frame: self.view.frame
     )
     
+    // MARK: Alert
+    private lazy var alertSectionGroup = MypageSectionGroupView(
+        headerTitle: I18N.MyPage.alertSectionTitle,
+        subviews: [
+            self.alertListItem,
+            self.alertByFeaturesListItem,
+        ],
+        frame: self.view.frame
+    )
+    
+    private lazy var alertListItem = MyPageSectionListItemView(
+        title: I18N.MyPage.alertListItemTitle,
+        rightItemType: .switch(isOn: false),
+        frame: self.view.frame
+    )
+    
+    private lazy var alertByFeaturesListItem = MyPageSectionListItemView(
+        title: I18N.MyPage.alertByFeaturesListItemTitle,
+        frame: self.view.frame
+    ).then {
+        $0.isHidden = true
+    }
+
     // MARK: Soptamp
     private lazy var soptampSectionGroup = MypageSectionGroupView(
         headerTitle: I18N.MyPage.soptampSectionTitle,
@@ -187,6 +210,7 @@ extension AppMyPageVC {
         case .active, .inactive:
             self.contentStackView.addArrangedSubviews(
                 self.servicePolicySectionGroup,
+                self.alertSectionGroup,
                 self.soptampSectionGroup,
                 self.etcSectionGroup
             )
@@ -274,16 +298,32 @@ extension AppMyPageVC {
         self.loginListItem.addTapGestureRecognizer {
             self.onShowLogin?()
         }
+        
+        self.alertByFeaturesListItem.addTapGestureRecognizer {
+            self.onAlertSettingByFeaturesItemTap?()
+        }
     }
 }
 
 extension AppMyPageVC {
     private func bindViews() {
-        navigationBar.leftButtonTapped
+        self.alertListItem
+            .signalForRightSwitchClick()
+            .sink { [weak self] isOn in
+                self?.alertByFeaturesListItem.isHidden = !isOn
+                
+                print("[+---------+ \(#line)번째 줄, \(#function):] +---------+]")
+                print("+---------+ \(isOn) +---------+")
+                print("[+------------------------- END -------------------------+", "\n")
+            }
+            .store(in: self.cancelBag)
+        
+        self.navigationBar
+            .leftButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNaviBackButtonTap?()
-            }.store(in: cancelBag)
+            }.store(in: self.cancelBag)
     }
     
     private func bindViewModels() {
