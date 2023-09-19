@@ -34,7 +34,7 @@ extension UserDefaultKeyList {
         UserDefaultKeyList.Auth.appAccessToken = nil
         UserDefaultKeyList.Auth.appRefreshToken = nil
         UserDefaultKeyList.Auth.playgroundToken = nil
-        UserDefaultKeyList.Auth.isActiveUser = false
+        UserDefaultKeyList.Auth.isActiveUser = nil
         UserDefaultKeyList.User.pushToken = nil
         clearSoptampUserData()
     }
@@ -47,12 +47,8 @@ extension UserDefaultKeyList {
 
 extension UserDefaultKeyList.Auth {
     public static func getUserType() -> UserType {
-        guard appAccessToken != nil else {
+        guard appAccessToken != nil, appAccessToken != "" else {
             return UserType.visitor
-        }
-        
-        guard appAccessToken != "" else {
-            return UserType.unregisteredInactive
         }
         
         return getUserActivation()

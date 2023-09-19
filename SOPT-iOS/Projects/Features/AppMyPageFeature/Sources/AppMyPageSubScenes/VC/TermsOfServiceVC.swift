@@ -15,6 +15,7 @@ import SnapKit
 import Then
 
 import AppMyPageFeatureInterface
+import BaseFeatureDependency
 
 public class TermsOfServiceVC: UIViewController, TermsOfServiceViewControllable {
     

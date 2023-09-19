@@ -34,18 +34,12 @@ extension MainRepository: MainRepositoryInterface {
                 
                 switch error {
                 case .network(let statusCode):
-                    if statusCode == 400 {
-                        return MainError.unregisteredUser
-                    } else if statusCode == 401 {
+                    if statusCode == 401 {
                         return MainError.authFailed
                     }
                     return MainError.networkError(message: "\(statusCode) 네트워크 에러")
                 case .tokenReissuanceFailed:
-                    guard let appAccessToken = UserDefaultKeyList.Auth.appAccessToken else {
-                        return MainError.authFailed
-                    }
-                    // accessToken이 빈 스트링인 경우는 플그 미등록 상태 / accessToken이 있지만 인증에 실패한 경우는 로그인 뷰로 보내기
-                    return appAccessToken.isEmpty ? MainError.unregisteredUser : MainError.authFailed
+                    return MainError.authFailed
                 default:
                     return MainError.networkError(message: "API 에러 디폴트")
                 }

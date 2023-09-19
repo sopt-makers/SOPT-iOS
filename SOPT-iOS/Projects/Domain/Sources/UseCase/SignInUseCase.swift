@@ -10,11 +10,9 @@ import Combine
 
 import Core
 
-// NOTE: unregistered 없어지면 당장 삭제할거임
 public enum SiginInHandleableType {
     case loginSuccess
     case loginFailure
-    case unregistedProfile
 }
 
 public protocol SignInUseCase {
@@ -42,8 +40,8 @@ extension DefaultSignInUseCase: SignInUseCase {
                     // NOTE: signin에서 400이 날아오는 경우는 현재 기준 한가지 경우.
                     // 4월 19일 기준으로 대응됨. 만약 다르게 날아오거나 에러스펙을 새로 정의하는 경우 다시 리팩토링 해야 함.
                     // @승호. 2023 04 19
-                    
-                    self.signInSuccess.send(.unregistedProfile)
+                    print(error)
+                    self.signInSuccess.send(.loginFailure)
                 case .finished:
                     print("SignInUseCase: \(event)")
                 }

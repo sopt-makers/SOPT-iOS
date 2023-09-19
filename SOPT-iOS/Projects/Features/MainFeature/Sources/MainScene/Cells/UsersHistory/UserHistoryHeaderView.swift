@@ -53,16 +53,14 @@ extension UserHistoryHeaderView {
     }
     
     func initCell(userType: UserType, name: String?, months: String?) {
-        // 회원 타입에 따른 분기 처리 (추후 플그 기수 입력이 필수가 되면 변경 예정)
         if let name = name, let months = months {
             let text = (userType == .visitor) ? I18N.Main.encourage : I18N.Main.userHistory(name: name, months: months)
-
             setAttributedTextToUserInfoLabel(text: text, name: name)
         } else {
             if userType == .visitor {
                 let text = I18N.Main.encourage
                 setAttributedTextToUserInfoLabel(text: text, name: nil)
-            } else if userType == .inactive || userType == .unregisteredInactive {
+            } else if userType == .inactive {
                 let text = I18N.Main.welcome
                 setAttributedTextToUserInfoLabel(text: text, name: nil)
             }

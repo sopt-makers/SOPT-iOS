@@ -124,17 +124,6 @@ extension WithdrawalVC {
         let withdrawalButtonTapped = self.withdrawalButton
             .publisher(for: .touchUpInside)
             .withUnretained(self)
-            .filter({ owner, _ in
-                guard owner.userType != .unregisteredInactive else {
-                    owner.showLoading()
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                        owner.showToastAndChangeRootView()
-                        owner.stopLoading()
-                    }
-                    return false
-                }
-                return true
-            })
             .mapVoid()
             .asDriver()
         

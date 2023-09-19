@@ -44,8 +44,6 @@ final class AuthCoordinator: DefaultAuthCoordinator {
             case .loginSuccess:
                 let userType = UserDefaultKeyList.Auth.getUserType()
                 self?.finishFlow?(userType)
-            case .unregistedProfile:
-                self?.finishFlow?(.unregisteredInactive)
             case .loginFailure: break
             }
         }

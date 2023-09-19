@@ -20,8 +20,6 @@ public struct UserMainInfoModel: Equatable {
     
     public var userType: UserType {
         switch status {
-        case "": // 플그 미등록인 경우
-            return .unregisteredInactive
         case UserType.active.rawValue:
             return .active
         case UserType.inactive.rawValue:

@@ -206,12 +206,6 @@ extension AppMyPageVC {
                 self.servicePolicySectionGroup,
                 self.etcForVisitorsSectionGroup
             )
-            
-        case .unregisteredInactive:
-            self.contentStackView.addArrangedSubviews(
-                self.servicePolicySectionGroup,
-                self.etcForUnregisteredInActiveSectionGroup
-            )
         }
     }
     
