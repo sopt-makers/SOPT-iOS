@@ -109,6 +109,7 @@ extension MainViewModel {
                 guard let userMainInfo = userMainInfo else {
                     SentrySDK.capture(message: "메인 뷰 조회 실패")
                     output.needNetworkAlert.send()
+                    output.getUserMainInfoDidComplete.send()
                     return
                 }
                 self.userMainInfo = userMainInfo
