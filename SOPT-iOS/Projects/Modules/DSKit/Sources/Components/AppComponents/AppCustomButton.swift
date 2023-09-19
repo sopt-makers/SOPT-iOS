@@ -45,10 +45,10 @@ extension AppCustomButton {
     /// 버튼의 backgroundColor, textColor 변경
     @discardableResult
     public func setColor(
-        bgColor: UIColor = DSKitAsset.Colors.purple100.color,
+        bgColor: UIColor = DSKitAsset.Colors.white100.color,
         disableColor: UIColor = DSKitAsset.Colors.black40.color,
         disabledTextColor: UIColor = DSKitAsset.Colors.gray60.color,
-        enabledTextColor: UIColor = DSKitAsset.Colors.white100.color
+        enabledTextColor: UIColor = DSKitAsset.Colors.black100.color
     ) -> Self {
         self.setBackgroundColor(bgColor, for: .normal)
         self.setBackgroundColor(disableColor, for: .disabled)
@@ -75,14 +75,14 @@ extension AppCustomButton {
     private func setUI(_ title: String) {
         self.layer.cornerRadius = 10
         
-        self.setBackgroundColor(DSKitAsset.Colors.purple100.color, for: .normal)
+        self.setBackgroundColor(DSKitAsset.Colors.white100.color, for: .normal)
         self.setBackgroundColor(DSKitAsset.Colors.black40.color, for: .disabled)
         self.setAttributedTitle(
             NSAttributedString(
                 string: title,
                 attributes: [
                     .font: DSKitFontFamily.Suit.bold.font(size: 18),
-                    .foregroundColor: UIColor.white
+                    .foregroundColor: DSKitAsset.Colors.black100.color
                 ]
             ),
             for: .normal

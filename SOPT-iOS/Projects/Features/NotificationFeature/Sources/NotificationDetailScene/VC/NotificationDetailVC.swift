@@ -75,15 +75,15 @@ public final class NotificationDetailVC: UIViewController, NotificationDetailVie
     
     private let shortCutButton: UIButton = {
         var config = UIButton.Configuration.filled()
-        config.baseBackgroundColor = DSKitAsset.Colors.purple100.color
-        config.image = DSKitAsset.Assets.btnArrowRight.image.withTintColor(DSKitAsset.Colors.gray10.color)
+        config.baseBackgroundColor = DSKitAsset.Colors.white100.color
+        config.image = DSKitAsset.Assets.btnArrowRight.image.withTintColor(DSKitAsset.Colors.black100.color)
         config.background.cornerRadius = 10
         config.imagePlacement = .trailing
         config.contentInsets = .init(top: 0, leading: 16, bottom: 0, trailing: 0)
         
         var attributeContainer = AttributeContainer()
-        attributeContainer.font = UIFont.Attendance.h1
-        attributeContainer.foregroundColor = DSKitAsset.Colors.gray10.color
+        attributeContainer.font = DSKitFontFamily.Suit.bold.font(size: 18)
+        attributeContainer.foregroundColor = DSKitAsset.Colors.black100.color
         
         config.attributedTitle = AttributedString(I18N.Notification.shortcut, attributes: attributeContainer)
         
