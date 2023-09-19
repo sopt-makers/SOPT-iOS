@@ -27,7 +27,7 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
         static let bottomButtonHeight = 48.f
         
         static let customSpacing = 32.f
-        static let keyboardBottomOffset = 40.f
+        static let keyboardBottomOffset = 34.f // 피그마에 40인데 수정했음
     }
     
     // MARK: - Properties
@@ -70,7 +70,7 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
     private let closeButton: UIButton = {
         let button = UIButton()
         var config = UIButton.Configuration.plain()
-        config.image = DSKitAsset.Assets.opClose.image
+        config.image = DSKitAsset.Assets.opClose.image.withTintColor(DSKitAsset.Colors.gray60.color)
         button.configuration = config
         return button
     }()
@@ -117,7 +117,7 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
     private let alertLabel: UILabel = {
         let label = UILabel()
         label.text = I18N.Attendance.codeMismatch
-        label.textColor = DSKitAsset.Colors.red100.color
+        label.textColor = DSKitAsset.Colors.subRed.color
         label.setTypoStyle(.Main.body2)
         label.isHidden = true
         return label
@@ -205,6 +205,9 @@ extension AttendanceVC {
             $0.edges.equalToSuperview()
         }
         
+        attendanceStackView.setCustomSpacing(-Metric.contentInset, after: topStackView)
+        attendanceStackView.setCustomSpacing(Metric.baseInset / 2, after: titleLabel)
+        attendanceStackView.setCustomSpacing(Metric.baseInset, after: subtitleLabel)
         attendanceStackView.setCustomSpacing(Metric.customSpacing, after: attattendanceCodeStackView)
         
         attendanceButton.snp.makeConstraints {
@@ -254,7 +257,7 @@ extension AttendanceVC {
         output.attendanceTitle
             .withUnretained(self)
             .sink { owner, title in
-                owner.titleLabel.text = title
+                owner.titleLabel.text = title + I18N.Attendance.take
             }
             .store(in: self.cancelBag)
         

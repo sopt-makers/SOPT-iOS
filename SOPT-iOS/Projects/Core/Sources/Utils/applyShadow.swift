@@ -24,13 +24,14 @@ public extension CALayer {
         x: CGFloat = 0,
         y: CGFloat = 2,
         blur: CGFloat = 4,
-        spread: CGFloat = 0) {
+        spread: CGFloat = 0,
+        radius: CGFloat = 2.0) {
             
             masksToBounds = false
             shadowColor = color.cgColor
             shadowOpacity = alpha
             shadowOffset = CGSize(width: x, height: y)
-            shadowRadius = blur / 2.0
+            shadowRadius = blur / radius
             if spread == 0 {
                 shadowPath = nil
             } else {

@@ -139,7 +139,7 @@ final class TodayScheduleView: UIView {
 extension TodayScheduleView {
     
     private func initContentView() {
-        self.backgroundColor = DSKitAsset.Colors.black60.color
+        self.backgroundColor = DSKitAsset.Colors.black80.color
         self.clipsToBounds = true
         self.layer.cornerRadius = 16
     }

@@ -123,6 +123,7 @@ extension ShowAttendanceVC {
         self.navigationController?.navigationBar.isHidden = true
         self.view.backgroundColor = DSKitAsset.Colors.black100.color
         containerScrollView.backgroundColor = DSKitAsset.Colors.black100.color
+        attendanceButtonStackView.layer.applyShadow(color: .black, alpha: 1, x: 0, y: -8, blur: 250, spread: 0, radius: 8.0) // 버튼 위쪽 그라데이션 추가
     }
     
     private func setLayout() {
@@ -138,7 +139,7 @@ extension ShowAttendanceVC {
         containerScrollView.snp.makeConstraints {
             $0.top.equalTo(navibar.snp.bottom)
             $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalTo(attendanceButtonStackView.snp.top).offset(-13)
+            $0.bottom.equalTo(attendanceButtonStackView.snp.top).offset(-2)
         }
         
         contentView.snp.makeConstraints {

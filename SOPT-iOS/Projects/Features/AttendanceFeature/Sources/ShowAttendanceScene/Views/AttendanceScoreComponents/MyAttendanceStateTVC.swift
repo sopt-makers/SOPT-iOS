@@ -24,7 +24,7 @@ final class MyAttendanceStateTVC: UITableViewCell {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = DSKitFontFamily.Suit.bold.font(size: 15)
+        label.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
         label.textColor = .white
         return label
     }()
