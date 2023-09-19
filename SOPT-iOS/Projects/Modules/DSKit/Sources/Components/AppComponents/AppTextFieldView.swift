@@ -63,7 +63,7 @@ public enum AppTextFieldViewState {
         case .normal:
             return nil
         case .editing, .confirmAlert:
-            return DSKitAsset.Colors.purple100.color.cgColor
+            return DSKitAsset.Colors.white100.color.cgColor
         case .warningAlert:
             return DSKitAsset.Colors.red100.color.cgColor
         }
