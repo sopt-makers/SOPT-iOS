@@ -42,7 +42,6 @@ public class MainViewModel: MainViewModelType {
     public struct Output {
         var getUserMainInfoDidComplete = PassthroughSubject<Void, Never>()
         var isServiceAvailable = PassthroughSubject<Bool, Never>()
-        var needPlaygroundProfileRegistration = PassthroughSubject<Void, Never>()
         var needNetworkAlert = PassthroughSubject<Void, Never>()
         var isLoading = PassthroughSubject<Bool, Never>()
     }
@@ -107,8 +106,14 @@ extension MainViewModel {
         useCase.userMainInfo
             .sink { [weak self] userMainInfo in
                 guard let self = self else { return }
+                guard let userMainInfo = userMainInfo else {
+                    SentrySDK.capture(message: "메인 뷰 조회 실패")
+                    output.needNetworkAlert.send()
+                    output.getUserMainInfoDidComplete.send()
+                    return
+                }
                 self.userMainInfo = userMainInfo
-                self.userType = userMainInfo?.userType ?? .unregisteredInactive
+                self.userType = userMainInfo.userType
                 self.setServiceList(with: self.userType)
                 self.setSentryUser()
                 output.getUserMainInfoDidComplete.send()
@@ -135,8 +140,6 @@ extension MainViewModel {
                     output.needNetworkAlert.send()
                 case .authFailed:
                     self.onNeedSignIn?()
-                case .unregisteredUser:
-                    output.needPlaygroundProfileRegistration.send()
                 }
             }.store(in: self.cancelBag)
     }
@@ -163,7 +166,7 @@ extension MainViewModel {
             
             onSafari?(service.serviceDomainLink)
         case(3, _):
-            guard userType != .visitor && userType != .unregisteredInactive else { return }
+            guard userType != .visitor else { return }
             
             onSoptamp?()
         default: break
@@ -179,7 +182,7 @@ extension MainViewModel {
         case .active:
             self.mainServiceList = [.attendance, .group, .member]
             self.otherServiceList = [.project, .officialHomepage]
-        case .inactive, .unregisteredInactive:
+        case .inactive:
             self.mainServiceList = [.group, .member, .project]
             self.otherServiceList = [.officialHomepage, .instagram, .youtube]
         }
@@ -216,8 +219,10 @@ extension MainViewModel {
 
 extension MainViewModel {
     private func setSentryUser() {
-        SentrySDK.setUser(User(
+        let user = User(
             userId: "\(self.userType.rawValue)_\(userMainInfo?.name ?? "비회원")"
-        ))
+        )
+        user.data = ["accessToken": UserDefaultKeyList.Auth.appAccessToken ?? "EmptyAppAccessToken"]
+        SentrySDK.setUser(user)
     }
 }

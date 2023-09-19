@@ -85,8 +85,6 @@ extension ServiceType {
                 return I18N.Main.MainService.Description.InactiveUser.project
             case .visitor:
                 return I18N.Main.MainService.Description.Visitor.project
-            default:
-                return nil
             }
         case .faq:
             return I18N.Main.MainService.Description.Default.faq

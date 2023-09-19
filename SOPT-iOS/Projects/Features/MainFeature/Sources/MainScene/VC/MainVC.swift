@@ -117,12 +117,6 @@ extension MainVC {
                 print("현재 앱 서비스 사용 가능(심사 X)?: \(isServiceAvailable)")
             }.store(in: self.cancelBag)
         
-        // 플그 프로필 미등록 유저 알림
-        output.needPlaygroundProfileRegistration
-            .sink { [weak self] in
-                self?.presentPlaygroundRegisterationAlertVC()
-            }.store(in: self.cancelBag)
-        
         output.needNetworkAlert
             .sink { [weak self] in
                 self?.presentNetworkAlertVC()
@@ -177,17 +171,6 @@ extension MainVC {
             customAction:{ [weak self] in
                 self?.requestUserInfo.send()
             }
-        )
-    }
-    
-    private func presentPlaygroundRegisterationAlertVC() {
-        AlertUtils.presentAlertVC(
-            type: .networkErr,
-            theme: .main,
-            title: I18N.Main.failedToGetUserInfo,
-            description: I18N.Main.needToRegisterPlayground,
-            customButtonTitle: "",
-            customAction: nil
         )
     }
 }
