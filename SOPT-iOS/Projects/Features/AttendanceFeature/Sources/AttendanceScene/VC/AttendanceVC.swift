@@ -117,7 +117,7 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
     private let alertLabel: UILabel = {
         let label = UILabel()
         label.text = I18N.Attendance.codeMismatch
-        label.textColor = UIColor(red: 228/256, green: 86/256, blue: 86/256, alpha: 1) // 운영프로덕트 sub/red 컬러
+        label.textColor = DSKitAsset.Colors.subRed.color
         label.setTypoStyle(.Main.body2)
         label.isHidden = true
         return label
