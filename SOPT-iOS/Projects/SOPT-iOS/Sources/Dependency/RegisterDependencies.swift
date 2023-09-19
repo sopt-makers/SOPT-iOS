@@ -127,5 +127,13 @@ extension AppDelegate {
                 )
             }
         )
+        container.register(
+            interface: NotificationSettingRepositoryInterface.self,
+            implement: {
+                NotificationSettingRepository(
+                    userService: DefaultUserService()
+                )
+            }
+        )
     }
 }
