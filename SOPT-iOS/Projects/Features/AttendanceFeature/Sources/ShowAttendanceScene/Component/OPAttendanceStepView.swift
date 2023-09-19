@@ -40,7 +40,7 @@ extension AttendanceStepType {
         case .none:
             return DSKitAsset.Colors.gray100.color
         case .check, .unCheck, .tardy, .done, .absent:
-            return DSKitAsset.Colors.purple40.color
+            return DSKitAsset.Colors.white100.color
         }
     }
     
@@ -115,7 +115,7 @@ extension OPAttendanceStepView {
         stepImageView.image = type.image
         if type.shadow {
             stepImageView.layer.applyShadow(
-                color: UIColor.init(red: 158, green: 0, blue: 255),
+                color: .white,
                 alpha: 0.3,
                 x: 0,
                 y: 0,

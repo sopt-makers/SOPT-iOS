@@ -79,7 +79,7 @@ extension MyInformationWithScoreView {
                                        range: NSRange(location: 0, length: mainText.count))
         
         attributedString.addAttributes([NSAttributedString.Key.font: UIFont.Main.headline1,
-                                        NSAttributedString.Key.foregroundColor: DSKitAsset.Colors.purple40.color],
+                                        NSAttributedString.Key.foregroundColor: DSKitAsset.Colors.orange100.color],
                                        range: NSRange(location: mainText.count, length: pointedText.count))
         
         attributedString.addAttributes([NSAttributedString.Key.font: UIFont.Main.body0,

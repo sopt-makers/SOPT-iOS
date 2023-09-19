@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Property 1=Late.png",
+      "filename" : "op_attend_late.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Property 1=Late@2x.png",
+      "filename" : "op_attend_late@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Property 1=Late@3x.png",
+      "filename" : "op_attend_late@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

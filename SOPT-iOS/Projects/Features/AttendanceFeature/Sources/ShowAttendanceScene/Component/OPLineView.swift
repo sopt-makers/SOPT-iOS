@@ -17,7 +17,7 @@ public enum LineType {
     var color: UIColor {
         switch self {
         case .check:
-            return DSKitAsset.Colors.purple40.color
+            return DSKitAsset.Colors.white100.color
         case .unCheck:
             return DSKitAsset.Colors.gray80.color
         }
