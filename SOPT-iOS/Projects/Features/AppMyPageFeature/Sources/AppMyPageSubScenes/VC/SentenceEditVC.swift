@@ -159,10 +159,12 @@ extension SentenceEditVC: UITextViewDelegate {
     }
     
     public func textViewDidBeginEditing(_ textView: UITextView) {
-        textView.layer.borderColor = DSKitAsset.Colors.purple100.color.cgColor
+        textView.layer.borderColor = DSKitAsset.Colors.white100.color.cgColor
+        textView.backgroundColor = DSKitAsset.Colors.black100.color
     }
     
     public func textViewDidEndEditing(_ textView: UITextView) {
+        textView.backgroundColor = DSKitAsset.Colors.black80.color
         textView.layer.borderColor = nil
     }
 }
