@@ -16,11 +16,13 @@ public class MainRepository {
     
     private let userService: UserService
     private let configService: ConfigService
+    private let descriptionService: DescriptionService
     private let cancelBag = CancelBag()
     
-    public init(userService: UserService, configService: ConfigService) {
+    public init(userService: UserService, configService: ConfigService, descriptionService: DescriptionService) {
         self.userService = userService
         self.configService = configService
+        self.descriptionService = descriptionService
     }
 }
 
@@ -53,6 +55,16 @@ extension MainRepository: MainRepositoryInterface {
             .mapError { error in
                 print(error)
                 return MainError.networkError(message: "GetServiceState 에러")
+            }
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
+    
+    public func getMainViewDescription() -> AnyPublisher<MainDescriptionModel, MainError> {
+        descriptionService.getMainViewDescription()
+            .mapError { error in
+                print(error)
+                return MainError.networkError(message: "GetMainViewDescription 에러")
             }
             .map { $0.toDomain() }
             .eraseToAnyPublisher()

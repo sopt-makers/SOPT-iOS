@@ -38,7 +38,8 @@ extension AppDelegate {
             implement: {
                 MainRepository(
                     userService: DefaultUserService(),
-                    configService: DefaultConfigService()
+                    configService: DefaultConfigService(),
+                    descriptionService: DefaultDescriptionService()
                 )
             }
         )
