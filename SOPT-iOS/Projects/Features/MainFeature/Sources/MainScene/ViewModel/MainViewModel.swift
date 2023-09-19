@@ -43,7 +43,7 @@ public class MainViewModel: MainViewModelType {
     // MARK: - Outputs
     
     public struct Output {
-        var getUserMainInfoDidComplete = PassthroughSubject<Void, Never>()
+        var needToReload = PassthroughSubject<Void, Never>()
         var isServiceAvailable = PassthroughSubject<Bool, Never>()
         var needNetworkAlert = PassthroughSubject<Void, Never>()
         var isLoading = PassthroughSubject<Bool, Never>()
@@ -98,7 +98,6 @@ extension MainViewModel {
                 if self.userType != .visitor {
                     output.isLoading.send(true)
                     self.useCase.getUserMainInfo()
-                    self.useCase.getServiceState()
                     self.useCase.getMainViewDescription()
                 }
             }.store(in: cancelBag)
@@ -107,6 +106,7 @@ extension MainViewModel {
             .sink { [weak self] _ in
                 guard let self = self else { return }
                 self.requestAuthorizationForNotification()
+                self.useCase.getServiceState()
             }.store(in: cancelBag)
     
         return output
@@ -125,6 +125,7 @@ extension MainViewModel {
                 self.userType = userMainInfo.userType
                 self.setServiceList(with: self.userType)
                 self.setSentryUser()
+                output.needToReload.send()
             }.store(in: self.cancelBag)
         
         useCase.serviceState
@@ -135,13 +136,13 @@ extension MainViewModel {
         useCase.mainDescription
             .sink { mainDescription in
                 self.mainDescription = mainDescription
+                output.needToReload.send()
             }.store(in: self.cancelBag)
         
         // 모든 API 통신 완료되면 로딩뷰 숨기기
-        Publishers.Zip3(useCase.userMainInfo, useCase.serviceState, useCase.mainDescription)
+        Publishers.Zip(useCase.userMainInfo, useCase.mainDescription)
             .sink { _ in
                 output.isLoading.send(false)
-                output.getUserMainInfoDidComplete.send()
             }.store(in: self.cancelBag)
         
         useCase.mainErrorOccurred

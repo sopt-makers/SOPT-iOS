@@ -30,7 +30,7 @@ public class MainVC: UIViewController, MainViewControllable {
     
     // MARK: - UI Components
     
-    private let naviBar = MainNavigationBar().hideNoticeButton(wantsToHide: true)
+    private lazy var naviBar = MainNavigationBar().hideNoticeButton(wantsToHide: self.viewModel.userType == .visitor)
     
     private lazy var collectionView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
@@ -104,7 +104,7 @@ extension MainVC {
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
-        output.getUserMainInfoDidComplete
+        output.needToReload
             .sink { [weak self] _ in
                 guard let userMainInfo = self?.viewModel.userMainInfo else {
                     self?.collectionView.reloadData()
