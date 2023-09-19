@@ -40,11 +40,10 @@ extension DefaultSplashUseCase: SplashUseCase {
         .sink { event in
             print("DefaultSplashUseCase : \(event)")
         } receiveValue: { appNoticeModel in
-#if DEV
+#if DEV || TEST
             self.appNoticeModel.send(nil)
             return
 #endif
-          
             guard appNoticeModel.withError == false else {
                 self.appNoticeModel.send(appNoticeModel)
                 return
