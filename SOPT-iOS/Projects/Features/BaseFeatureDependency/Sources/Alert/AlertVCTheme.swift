@@ -48,16 +48,25 @@ extension AlertVC.AlertTheme {
     var customButtonColor: UIColor {
         switch self {
         case .main:
-            return DSKitAsset.Colors.purple100.color
+            return DSKitAsset.Colors.white100.color
         case .soptamp:
             return DSKitAsset.Colors.soptampError200.color
+        }
+    }
+    
+    var customButtonTitleColor: UIColor {
+        switch self {
+        case .main:
+            return DSKitAsset.Colors.black100.color
+        case .soptamp:
+            return DSKitAsset.Colors.gray10.color
         }
     }
     
     func cancelButtonColor(isNetworkErr: Bool) -> UIColor {
         switch self {
         case .main:
-            return isNetworkErr ? DSKitAsset.Colors.purple100.color : DSKitAsset.Colors.black40.color
+            return isNetworkErr ? DSKitAsset.Colors.white100.color : DSKitAsset.Colors.black40.color
         case .soptamp:
             return isNetworkErr ? DSKitAsset.Colors.soptampError200.color : DSKitAsset.Colors.soptampGray300.color
         }
@@ -66,7 +75,7 @@ extension AlertVC.AlertTheme {
     func cancelButtonTitleColor(isNetworkErr: Bool) -> UIColor {
         switch self {
         case .main:
-            return isNetworkErr ? DSKitAsset.Colors.gray10.color : DSKitAsset.Colors.gray60.color
+            return isNetworkErr ? DSKitAsset.Colors.black100.color : DSKitAsset.Colors.white100.color
         case .soptamp:
             return isNetworkErr ? DSKitAsset.Colors.white.color : DSKitAsset.Colors.black100.color
         }

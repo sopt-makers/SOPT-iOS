@@ -105,9 +105,9 @@ extension AlertVC {
         
         self.titleLabel.textColor = alertTheme.titleColor
         self.descriptionLabel.textColor = alertTheme.descriptionColor
-        self.cancelButton.titleLabel?.textColor = alertTheme.cancelButtonTitleColor(isNetworkErr: self.alertType == .networkErr)
-        
-        self.customButton.titleLabel?.textColor = DSKitAsset.Colors.gray10.color
+        self.cancelButton.setTitleColor(alertTheme.cancelButtonTitleColor(isNetworkErr: self.alertType == .networkErr),
+                                        for: .normal)
+        self.customButton.setTitleColor(alertTheme.customButtonTitleColor, for: .normal)
         
         self.descriptionLabel.textAlignment = .center
         self.descriptionLabel.numberOfLines = 2
@@ -180,7 +180,6 @@ extension AlertVC {
         case .networkErr:
             cancelButton.snp.makeConstraints { make in
                 make.leading.trailing.bottom.equalToSuperview().inset(7)
-//                make.width.equalTo(alertView.snp.width)
                 make.height.equalTo(38)
             }
         }

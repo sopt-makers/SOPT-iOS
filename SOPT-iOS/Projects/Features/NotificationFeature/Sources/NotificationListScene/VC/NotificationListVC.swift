@@ -35,7 +35,7 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
     private lazy var naviBar = OPNavigationBar(self, type: .bothButtons, ignoreLeftButtonAction: true)
         .addMiddleLabel(title: I18N.Notification.notification)
         .addRightButton(with: nil)
-        .addRightButton(with: I18N.Notification.readAll, titleColor: DSKitAsset.Colors.purple100.color)
+        .addRightButton(with: I18N.Notification.readAll, titleColor: DSKitAsset.Colors.orange100.color)
     
     private lazy var notificationFilterCollectionView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createFilterCollectionViewLayout())

@@ -64,7 +64,8 @@ extension NotificationFilterCVC {
     }
     
     func setSelectionStyle(isSelected: Bool) {
-        self.backgroundColor = isSelected ? DSKitAsset.Colors.purple100.color : DSKitAsset.Colors.black60.color
+        self.backgroundColor = isSelected ? DSKitAsset.Colors.white100.color : DSKitAsset.Colors.black60.color
+        self.titleLabel.textColor = isSelected ? DSKitAsset.Colors.black100.color : DSKitAsset.Colors.white100.color
     }
 }
 
