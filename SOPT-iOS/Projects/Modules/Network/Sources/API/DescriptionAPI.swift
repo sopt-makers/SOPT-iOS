@@ -21,7 +21,7 @@ extension DescriptionAPI: BaseAPI {
     public var path: String {
         switch self {
         default:
-            return ""
+            return "/main"
         }
     }
     

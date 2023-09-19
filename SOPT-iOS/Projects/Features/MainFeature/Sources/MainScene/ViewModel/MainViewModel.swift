@@ -27,6 +27,7 @@ public class MainViewModel: MainViewModelType {
     var otherServiceList: [ServiceType] = [.instagram, .youtube, .faq]
     var appServiceList: [AppServiceType] = [.soptamp]
     var userMainInfo: UserMainInfoModel?
+    var mainDescription: MainDescriptionModel = .defaultDescription
   
     // MARK: - Inputs
     
@@ -96,6 +97,7 @@ extension MainViewModel {
                     output.isLoading.send(true)
                     self.useCase.getUserMainInfo()
                     self.useCase.getServiceState()
+                    self.useCase.getMainViewDescription()
                 }
             }.store(in: cancelBag)
     
@@ -109,14 +111,12 @@ extension MainViewModel {
                 guard let userMainInfo = userMainInfo else {
                     SentrySDK.capture(message: "메인 뷰 조회 실패")
                     output.needNetworkAlert.send()
-                    output.getUserMainInfoDidComplete.send()
                     return
                 }
                 self.userMainInfo = userMainInfo
                 self.userType = userMainInfo.userType
                 self.setServiceList(with: self.userType)
                 self.setSentryUser()
-                output.getUserMainInfoDidComplete.send()
             }.store(in: self.cancelBag)
         
         useCase.serviceState
@@ -124,10 +124,16 @@ extension MainViewModel {
                 output.isServiceAvailable.send(serviceState.isAvailable)
             }.store(in: self.cancelBag)
         
+        useCase.mainDescription
+            .sink { mainDescription in
+                self.mainDescription = mainDescription
+            }.store(in: self.cancelBag)
+        
         // 모든 API 통신 완료되면 로딩뷰 숨기기
-        Publishers.Zip(useCase.userMainInfo, useCase.serviceState)
+        Publishers.Zip3(useCase.userMainInfo, useCase.serviceState, useCase.mainDescription)
             .sink { _ in
                 output.isLoading.send(false)
+                output.getUserMainInfoDidComplete.send()
             }.store(in: self.cancelBag)
         
         useCase.mainErrorOccurred

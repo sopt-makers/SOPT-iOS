@@ -19,3 +19,11 @@ public struct MainDescriptionModel {
         self.bottomDescription = bottomDescription
     }
 }
+
+
+extension MainDescriptionModel {
+    public static var defaultDescription: Self {
+        return MainDescriptionModel(topDescription: I18N.Main.MainService.visitorGuide,
+                                    bottomDescription: I18N.Main.AppService.appServiceIntroduction)
+    }
+}

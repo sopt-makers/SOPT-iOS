@@ -215,7 +215,7 @@ extension MainVC: UICollectionViewDataSource {
                                                   withReuseIdentifier: MainServiceHeaderView.className,
                                                   for: indexPath) as? MainServiceHeaderView
             else { return UICollectionReusableView() }
-            headerView.initCell(title: nil)
+            headerView.initCell(title: viewModel.mainDescription.topDescription)
             return headerView
         case 3:
             guard let headerView = collectionView
@@ -223,7 +223,7 @@ extension MainVC: UICollectionViewDataSource {
                                                   withReuseIdentifier: AppServiceHeaderView.className,
                                                   for: indexPath) as? AppServiceHeaderView
             else { return UICollectionReusableView() }
-            headerView.initCell(userType: viewModel.userType)
+            headerView.initCell(userType: viewModel.userType, title: viewModel.mainDescription.bottomDescription)
             return headerView
         default:
             return UICollectionReusableView()
