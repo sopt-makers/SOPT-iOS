@@ -10,11 +10,14 @@ import Combine
 
 import Core
 import Domain
+import StampFeatureInterface
 
 public class RankingViewModel: ViewModelType {
     
     private let useCase: RankingUseCase
     private var cancelBag = CancelBag()
+    
+    private let rankingViewType: RankingViewType
     
     // MARK: - Inputs
     
@@ -33,7 +36,11 @@ public class RankingViewModel: ViewModelType {
     
     // MARK: - init
     
-    public init(useCase: RankingUseCase) {
+    public init(
+        rankingViewType: RankingViewType,
+        useCase: RankingUseCase
+    ) {
+        self.rankingViewType = rankingViewType
         self.useCase = useCase
     }
 }
@@ -47,7 +54,10 @@ extension RankingViewModel {
         input.viewDidLoad.merge(with: input.refreshStarted)
             .withUnretained(self)
             .sink { owner, _ in
-                owner.useCase.fetchRankingList()
+                switch self.rankingViewType {
+                case .all: owner.useCase.fetchRankingList(isCurrentGeneration: false)
+                case .currentGeneration: owner.useCase.fetchRankingList(isCurrentGeneration: true)
+                }
             }.store(in: self.cancelBag)
         
         input.showMyRankingButtonTapped

@@ -11,7 +11,7 @@ import Combine
 import Core
 
 public protocol RankingUseCase {
-    func fetchRankingList()
+    func fetchRankingList(isCurrentGeneration: Bool)
     func findMyRanking()
     var rankingListModelFetched: CurrentValueSubject<[RankingModel], Error> { get }
     var myRanking: PassthroughSubject<(section: Int, item: Int), Error> { get set }
@@ -30,8 +30,9 @@ public class DefaultRankingUseCase {
 }
 
 extension DefaultRankingUseCase: RankingUseCase {
-    public func fetchRankingList() {
-        self.repository.fetchRankingListModel()
+    public func fetchRankingList(isCurrentGeneration: Bool) {
+        self.repository
+            .fetchRankingListModel(isCurrentGeneration: isCurrentGeneration)
             .map { model in
                 var newModel = model
                 let myRankingIndex = self.findMyRankingIndex(model: model)

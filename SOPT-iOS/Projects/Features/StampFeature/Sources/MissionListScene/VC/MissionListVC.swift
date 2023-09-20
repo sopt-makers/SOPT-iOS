@@ -118,7 +118,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
         bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .highlighted)
         bt.tintColor = .white
         bt.titleLabel?.setTypoStyle(.SoptampFont.h2)
-        let attributedStr = NSMutableAttributedString(string: "랭킹 보기")
+        let attributedStr = NSMutableAttributedString(string: "전체 랭킹")
         let style = NSMutableParagraphStyle()
         attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
         attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.white, range: NSMakeRange(0, attributedStr.length))

@@ -7,7 +7,13 @@
 //
 
 import Core
+import Domain
 import BaseFeatureDependency
+
+public enum RankingViewType {
+    case all
+    case currentGeneration(info: UsersActiveGenerationStatusViewResponse)
+}
 
 public protocol StampFeatureViewBuildable {
     func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListViewControllable
@@ -22,6 +28,6 @@ public protocol StampFeatureViewBuildable {
         starLevel: StarViewLevel,
         completionHandler: (() -> Void)?
     ) -> MissionCompletedViewControllable
-    func makeRankingVC() -> RankingViewControllable
+    func makeRankingVC(rankingViewType: RankingViewType) -> RankingViewControllable
     func makeStampGuideVC() -> StampGuideViewControllable
 }
