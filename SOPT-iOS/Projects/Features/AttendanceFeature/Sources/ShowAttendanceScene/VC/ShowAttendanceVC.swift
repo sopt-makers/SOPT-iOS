@@ -15,7 +15,9 @@ import Domain
 import DSKit
 
 import SnapKit
+
 import AttendanceFeatureInterface
+import BaseFeatureDependency
 import SafariServices
 
 public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControllable {
@@ -66,6 +68,8 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
         stackView.addArrangedSubview(attendanceButton)
         return stackView
     }()
+    
+    private let attendanceGradientView = UIView(frame: CGRect(x: 0, y: 0, width: 500, height: 200))
     
     private let attendanceButton: OPCustomButton = {
         let button = OPCustomButton()
@@ -123,11 +127,11 @@ extension ShowAttendanceVC {
         self.navigationController?.navigationBar.isHidden = true
         self.view.backgroundColor = DSKitAsset.Colors.black100.color
         containerScrollView.backgroundColor = DSKitAsset.Colors.black100.color
-        attendanceButtonStackView.layer.applyShadow(color: .black, alpha: 1, x: 0, y: -8, blur: 250, spread: 0, radius: 8.0) // 버튼 위쪽 그라데이션 추가
+        attendanceGradientView.createGradientLayer(colors: [.clear, .black], direction: .vertical)
     }
     
     private func setLayout() {
-        view.addSubviews(navibar, containerScrollView, attendanceButtonStackView)
+        view.addSubviews(navibar, containerScrollView, attendanceGradientView, attendanceButtonStackView)
         containerScrollView.addSubview(contentView)
         contentView.addSubviews(headerScheduleView, attendanceScoreView)
         attendanceScoreView.addSubview(infoButton)
@@ -156,6 +160,12 @@ extension ShowAttendanceVC {
             $0.top.equalTo(headerScheduleView.snp.bottom).offset(20)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
             $0.bottom.equalToSuperview()
+        }
+        
+        attendanceGradientView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.height.equalTo(200)
         }
         
         attendanceButtonStackView.snp.makeConstraints {
@@ -226,9 +236,11 @@ extension ShowAttendanceVC {
                     self.headerScheduleView.scheduleType = .scheduledDay
                     self.setScheduledData(model)
                     self.attendanceButton.isHidden = false
+                    self.attendanceGradientView.isHidden = false
                 } else {
                     self.headerScheduleView.scheduleType = .unscheduledDay
                     self.attendanceButton.isHidden = true
+                    self.attendanceGradientView.isHidden = true
                 }
                 self.endRefresh()
             })
@@ -241,7 +253,7 @@ extension ShowAttendanceVC {
                 self.setScoreData(model)
                 self.endRefresh()
             }.store(in: self.cancelBag)
-       
+        
         output.attendanceButtonInfo
             .withUnretained(self)
             .sink { owner, info in
@@ -271,7 +283,7 @@ extension ShowAttendanceVC {
         
         if self.sceneType == .scheduledDay {
             let date = viewModel.formatTimeInterval(startDate: model.startDate,
-                                                          endDate: model.endDate)
+                                                    endDate: model.endDate)
             headerScheduleView.setData(date: date,
                                        place: model.location,
                                        todaySchedule: model.name,
