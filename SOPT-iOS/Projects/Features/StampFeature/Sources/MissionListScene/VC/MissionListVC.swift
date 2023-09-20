@@ -38,9 +38,12 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
     
     public var onSwiped: (() -> Void)?
     public var onNaviBackTap: (() -> Void)?
-    public var onRankingButtonTap: (() -> Void)?
+    public var onRankingButtonTap: ((RankingViewType) -> Void)?
+    public var onCurrentGenerationRankingButtonTap: ((RankingViewType) -> Void)?
     public var onGuideTap: (() -> Void)?
     public var onCellTap: ((MissionListModel, String?) -> Void)?
+    
+    private var usersActiveGenerationStatus: UsersActiveGenerationStatusViewResponse?
     
     // MARK: - UI Components
     
@@ -100,10 +103,17 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
     
     private let missionListEmptyView = MissionListEmptyView()
     
+    private lazy var floatingButtonStackView = UIStackView(frame: self.view.frame).then {
+        $0.axis = .horizontal
+        $0.spacing = 0.f
+        $0.addArrangedSubviews(self.rankingFloatingButton)
+    }
+    
     private lazy var rankingFloatingButton: UIButton = {
         let bt = UIButton()
         bt.layer.cornerRadius = 27.adjustedH
-        bt.backgroundColor = DSKitAsset.Colors.soptampPurple300.color
+        bt.setBackgroundColor(DSKitAsset.Colors.soptampPurple300.color, for: .normal)
+        bt.setBackgroundColor(DSKitAsset.Colors.soptampPurple300.color.withAlphaComponent(0.2), for: .selected)
         bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .normal)
         bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .highlighted)
         bt.tintColor = .white
@@ -117,7 +127,22 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
         bt.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
         return bt
     }()
-    
+        
+    private lazy var currentGenerationRankFloatingButton: UIButton = {
+        let bt = UIButton()
+        bt.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner]
+        bt.layer.cornerRadius = 27.adjustedH
+        bt.setBackgroundColor(DSKitAsset.Colors.soptampPink300.color, for: .normal)
+        bt.setBackgroundColor(DSKitAsset.Colors.soptampPink300.color.withAlphaComponent(0.2), for: .selected)
+        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .highlighted)
+        bt.tintColor = .white
+        bt.titleLabel?.setTypoStyle(.SoptampFont.h2)
+        bt.contentEdgeInsets = UIEdgeInsets(top: 0, left: -15, bottom: 0, right: 0)
+        bt.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+        return bt
+    }()
+
     // MARK: - View Life Cycle
     
     public override func viewDidLoad() {
@@ -163,14 +188,24 @@ extension MissionListVC {
         
         switch sceneType {
         case .default:
-            self.view.addSubview(rankingFloatingButton)
+            self.view.addSubview(self.floatingButtonStackView)
+            self.floatingButtonStackView.addArrangedSubview(self.rankingFloatingButton)
             
-            rankingFloatingButton.snp.makeConstraints { make in
-                make.width.equalTo(143.adjusted)
-                make.height.equalTo(54.adjustedH)
+            self.floatingButtonStackView.snp.makeConstraints { make in
                 make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-18.adjustedH)
                 make.centerX.equalToSuperview()
             }
+            
+            self.rankingFloatingButton.snp.makeConstraints {
+                $0.width.equalTo(143.adjusted)
+                $0.height.equalTo(54.adjustedH)
+            }
+
+            self.currentGenerationRankFloatingButton.snp.makeConstraints {
+                $0.width.equalTo(143.adjusted)
+                $0.height.equalTo(54.adjustedH)
+            }
+
         case .ranking:
             self.view.addSubview(sentenceLabel)
             
@@ -212,7 +247,15 @@ extension MissionListVC {
         rankingFloatingButton.publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onRankingButtonTap?()
+                owner.onRankingButtonTap?(.all)
+            }.store(in: self.cancelBag)
+        
+        currentGenerationRankFloatingButton.publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                guard let usersActiveGenerationStatus = owner.usersActiveGenerationStatus else { return }
+                
+                owner.onCurrentGenerationRankingButtonTap?(.currentGeneration(info: usersActiveGenerationStatus))
             }.store(in: self.cancelBag)
         
         swipeHandler
@@ -230,8 +273,18 @@ extension MissionListVC {
         
         output.$missionListModel
             .compactMap { $0 }
-            .sink { model in
-                self.setCollectionView(model: model)
+            .sink { [weak self] model in
+                self?.setCollectionView(model: model)
+            }.store(in: self.cancelBag)
+        
+        output.$usersActivateGenerationStatus
+            .compactMap { $0 }
+            .sink { [weak self] generationStatus in
+                guard generationStatus.status == .ACTIVE else { return }
+                
+                self?.usersActiveGenerationStatus = generationStatus
+                self?.remakeButtonConstraint()
+                self?.configureCurrentGenerationButton(with: String(describing: generationStatus.currentGeneration))
             }.store(in: self.cancelBag)
     }
 }
@@ -328,6 +381,22 @@ extension MissionListVC {
         snapshot.appendItems(model, toSection: .missionList)
         dataSource.apply(snapshot, animatingDifferences: false)
         self.view.setNeedsLayout()
+    }
+    
+    private func remakeButtonConstraint() {
+        self.rankingFloatingButton.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
+        self.rankingFloatingButton.layer.cornerRadius = 27.f
+        self.rankingFloatingButton.layoutIfNeeded()
+        
+        self.floatingButtonStackView.addArrangedSubview(self.currentGenerationRankFloatingButton)
+    }
+    
+    private func configureCurrentGenerationButton(with generation: String) {
+        let attributedStr = NSMutableAttributedString(string: "\(generation)기 랭킹")
+        let style = NSMutableParagraphStyle()
+        attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
+        attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.white, range: NSMakeRange(0, attributedStr.length))
+        self.currentGenerationRankFloatingButton.setAttributedTitle(attributedStr, for: .normal)
     }
 }
 

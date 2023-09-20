@@ -14,7 +14,8 @@ public protocol MissionListViewControllable: ViewControllable & MissionListCoord
 public protocol MissionListCoordinatable {
     var onSwiped: (() -> Void)? { get set }
     var onNaviBackTap: (() -> Void)? { get set }
-    var onRankingButtonTap: (() -> Void)? { get set }
+    var onRankingButtonTap: ((RankingViewType) -> Void)? { get set }
+    var onCurrentGenerationRankingButtonTap: ((RankingViewType) -> Void)? { get set }
     var onGuideTap: (() -> Void)? { get set }
     var onCellTap: ((MissionListModel, _ username: String?) -> Void)? { get set }
 }

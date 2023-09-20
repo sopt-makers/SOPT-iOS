@@ -29,6 +29,7 @@ public class MissionListViewModel: ViewModelType {
     
     public class Output: NSObject {
         @Published var missionListModel: [MissionListModel]?
+        @Published var usersActivateGenerationStatus: UsersActiveGenerationStatusViewResponse?
     }
     
     // MARK: - init
@@ -48,6 +49,7 @@ extension MissionListViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.fetchMissionList(type: input.missionTypeSelected.value)
+                owner.useCase.fetchIsActiveGenerationUser()
             }.store(in: cancelBag)
         
         input.missionTypeSelected
@@ -66,7 +68,14 @@ extension MissionListViewModel {
             self.useCase.fetchOtherUserMissionList(userName: userName)
         default:
             self.useCase.fetchMissionList(type: type)
+            
         }
+    }
+    
+    private func fetchIsActiveGerationUser(type: MissionListFetchType) {
+        guard case .default = self.missionListsceneType else { return }
+        
+        self.useCase.fetchIsActiveGenerationUser()
     }
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
@@ -77,5 +86,12 @@ extension MissionListViewModel {
                 output.missionListModel = model
             })
             .store(in: self.cancelBag)
+        
+        self.useCase
+            .usersActiveGenerationInfo
+            .asDriver()
+            .sink { usersActivateGenerationStatus in
+                output.usersActivateGenerationStatus = usersActivateGenerationStatus
+            }.store(in: self.cancelBag)
     }
 }

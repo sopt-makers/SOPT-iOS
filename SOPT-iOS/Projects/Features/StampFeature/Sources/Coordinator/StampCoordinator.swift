@@ -41,8 +41,11 @@ final class StampCoordinator: DefaultCoordinator {
         missionList.onGuideTap = { [weak self] in
             self?.showGuide()
         }
-        missionList.onRankingButtonTap = { [weak self] in
-            self?.runRankingFlow()
+        missionList.onRankingButtonTap = { [weak self] rankingViewType in
+            self?.runRankingFlow(rankingViewType: rankingViewType)
+        }
+        missionList.onCurrentGenerationRankingButtonTap = { [weak self] rankingViewType in
+            self?.runRankingFlow(rankingViewType: rankingViewType)
         }
         missionList.onCellTap = { [weak self] model, username in
             self?.runMissionDetailFlow(model, username)
