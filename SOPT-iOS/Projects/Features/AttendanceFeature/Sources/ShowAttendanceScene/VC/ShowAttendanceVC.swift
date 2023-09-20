@@ -163,8 +163,7 @@ extension ShowAttendanceVC {
         }
         
         attendanceGradientView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
             $0.height.equalTo(200)
         }
         
