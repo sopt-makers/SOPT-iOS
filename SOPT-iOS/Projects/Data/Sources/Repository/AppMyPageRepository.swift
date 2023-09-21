@@ -14,17 +14,36 @@ import Network
  
 public final class AppMyPageRepository {
     private let stampService: StampService
+    private let userService: UserService
 
-    public init(stampService: StampService) {
+    public init(
+        stampService: StampService,
+        userService: UserService
+    ) {
         self.stampService = stampService
+        self.userService = userService
     }
 }
 
 extension AppMyPageRepository: AppMyPageRepositoryInterface {
     public func resetStamp() -> Driver<Bool> {
-        stampService
+        self.stampService
             .resetStamp()
             .map { $0 == 200 }
+            .asDriver()
+    }
+    
+    public func getNotificationIsAllowed() -> Driver<Bool> {
+        self.userService
+            .getNotificationIsAllowed()
+            .map(\.isOptIn)
+            .asDriver()
+    }
+    
+    public func optInPushNotificationInGeneral(to isOn: Bool) -> Driver<Bool> {
+        self.userService
+            .optInPushNotificationInGeneral(to: isOn)
+            .map(\.isOptIn)
             .asDriver()
     }
 }

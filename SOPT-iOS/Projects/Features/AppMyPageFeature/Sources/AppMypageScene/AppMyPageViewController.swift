@@ -18,7 +18,6 @@ import DSKit
 import BaseFeatureDependency
 
 public final class AppMyPageVC: UIViewController, MyPageViewControllable {
-
     // MARK: - Metric
     private enum Metric {
         static let navigationbarHeight = 44.f
@@ -42,9 +41,12 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
     public var onWithdrawalItemTap: ((UserType) -> Void)?
     public var onLoginItemTap: (() -> Void)?
     public var onShowLogin: (() -> Void)?
+    public var onAlertSettingByFeaturesItemTap: (() -> Void)?
     
     // MARK: Combine
+    private let viewWillAppear = PassthroughSubject<Void, Never>()
     private let resetButtonTapped = PassthroughSubject<Bool, Never>()
+    private let alertSwitchTapped = PassthroughSubject<Bool, Never>()
     private let cancelBag = CancelBag()
     
     // MARK: - Views
@@ -88,6 +90,29 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
         frame: self.view.frame
     )
     
+    // MARK: Alert
+    private lazy var alertSectionGroup = MypageSectionGroupView(
+        headerTitle: I18N.MyPage.alertSectionTitle,
+        subviews: [
+            self.alertListItem,
+            self.alertByFeaturesListItem,
+        ],
+        frame: self.view.frame
+    )
+    
+    private lazy var alertListItem = MyPageSectionListItemView(
+        title: I18N.MyPage.alertListItemTitle,
+        rightItemType: .switch(isOn: false),
+        frame: self.view.frame
+    )
+    
+    private lazy var alertByFeaturesListItem = MyPageSectionListItemView(
+        title: I18N.MyPage.alertByFeaturesListItemTitle,
+        frame: self.view.frame
+    ).then {
+        $0.isHidden = true
+    }
+
     // MARK: Soptamp
     private lazy var soptampSectionGroup = MypageSectionGroupView(
         headerTitle: I18N.MyPage.soptampSectionTitle,
@@ -176,6 +201,12 @@ extension AppMyPageVC {
         self.bindViews()
         self.bindViewModels()
     }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.viewWillAppear.send(())
+    }
 }
 
 extension AppMyPageVC {
@@ -187,6 +218,7 @@ extension AppMyPageVC {
         case .active, .inactive:
             self.contentStackView.addArrangedSubviews(
                 self.servicePolicySectionGroup,
+                self.alertSectionGroup,
                 self.soptampSectionGroup,
                 self.etcSectionGroup
             )
@@ -274,21 +306,50 @@ extension AppMyPageVC {
         self.loginListItem.addTapGestureRecognizer {
             self.onShowLogin?()
         }
+        
+        self.alertByFeaturesListItem.addTapGestureRecognizer {
+            self.onAlertSettingByFeaturesItemTap?()
+        }
     }
 }
 
 extension AppMyPageVC {
     private func bindViews() {
-        navigationBar.leftButtonTapped
+        self.alertListItem
+            .signalForRightSwitchClick()
+            .throttle(for: 0.3, scheduler: RunLoop.main, latest: true)
+            .sink { [weak self] isOn in
+                self?.alertSwitchTapped.send(isOn)
+            }
+            .store(in: self.cancelBag)
+        
+        self.navigationBar
+            .leftButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNaviBackButtonTap?()
-            }.store(in: cancelBag)
+            }.store(in: self.cancelBag)
     }
     
     private func bindViewModels() {
-        let input = AppMyPageViewModel.Input(resetButtonTapped: resetButtonTapped.asDriver())
+        let input = AppMyPageViewModel.Input(
+            viewWillAppear: self.viewWillAppear.asDriver(),
+            alertSwitchTapped: self.alertSwitchTapped.asDriver(),
+            resetButtonTapped: self.resetButtonTapped.asDriver()
+        )
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.originNotificationIsAllowed
+            .sink { [weak self] isAllowed in
+                self?.alertListItem.configureSwitch(to: isAllowed)
+                self?.alertByFeaturesListItem.isHidden = !isAllowed
+            }.store(in: self.cancelBag)
+        
+        output.alertSettingOptInEditedResult
+            .sink { [weak self] isAllowed in
+                self?.alertListItem.configureSwitch(to: isAllowed)
+                self?.alertByFeaturesListItem.isHidden = !isAllowed
+            }.store(in: self.cancelBag)
         
         output.resetSuccessed
             .filter { $0 }

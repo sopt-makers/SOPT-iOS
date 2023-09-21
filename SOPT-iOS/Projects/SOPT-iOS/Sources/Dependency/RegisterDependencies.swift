@@ -47,7 +47,8 @@ extension AppDelegate {
             interface: AppMyPageRepositoryInterface.self,
             implement: {
                 AppMyPageRepository(
-                    stampService: DefaultStampService()
+                    stampService: DefaultStampService(),
+                    userService: DefaultUserService()
                 )
             }
         )
@@ -124,6 +125,14 @@ extension AppDelegate {
             implement: {
                 ShowAttendanceRepository(
                     service: DefaultAttendanceService()
+                )
+            }
+        )
+        container.register(
+            interface: NotificationSettingRepositoryInterface.self,
+            implement: {
+                NotificationSettingRepository(
+                    userService: DefaultUserService()
                 )
             }
         )

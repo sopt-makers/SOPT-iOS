@@ -17,18 +17,20 @@ public final class AppMyPageViewModel: MyPageViewModelType {
     // MARK: - Inputs
     
     public struct Input {
+        let viewWillAppear: Driver<Void>
+        let alertSwitchTapped: Driver<Bool>
         let resetButtonTapped: Driver<Bool>
     }
     
     // MARK: - Outputs
     
     public struct Output {
-        var resetSuccessed = PassthroughSubject<Bool, Never>()
+        let resetSuccessed = PassthroughSubject<Bool, Never>()
+        let originNotificationIsAllowed = PassthroughSubject<Bool, Never>()
+        let alertSettingOptInEditedResult = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - MyPageCoordinatable
-    
-    public var onNaviBackButtonTap: (() -> Void)?
     
     private let useCase: AppMyPageUseCase
     
@@ -41,7 +43,19 @@ extension AppMyPageViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
+
+        input.viewWillAppear
+            .withUnretained(self)
+            .sink { owner, _ in
+                self.useCase.fetchUserNotificationIsAllowed()
+            }.store(in: cancelBag)
         
+        input.alertSwitchTapped
+            .withUnretained(self)
+            .sink { owner, isOn in
+                owner.useCase.optInPushNotificationInGeneral(to: isOn)
+            }.store(in: cancelBag)
+
         input.resetButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
@@ -52,11 +66,25 @@ extension AppMyPageViewModel {
     }
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
-        let resetSuccess = useCase.resetSuccess
+        self.useCase
+            .originUserNotificationIsAllowedStatus
+            .asDriver()
+            .sink { isAllowed in
+                output.originNotificationIsAllowed.send(isAllowed)
+            }.store(in: cancelBag)
         
-        resetSuccess.asDriver()
+        self.useCase
+            .resetSuccess
+            .asDriver()
             .sink { success in
                 output.resetSuccessed.send(success)
+            }.store(in: cancelBag)
+        
+        self.useCase
+            .optInPushNotificationResult
+            .asDriver()
+            .sink { isOn in
+                output.alertSettingOptInEditedResult.send(isOn)
             }.store(in: cancelBag)
     }
 }
