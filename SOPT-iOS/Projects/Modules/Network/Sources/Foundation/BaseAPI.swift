@@ -80,16 +80,13 @@ public enum HeaderType {
     public var value: [String: String] {
         switch self {
         case .json:
-            return ["Content-Type": "application/json",
-                    "platform": "iOS"]
+            return ["Content-Type": "application/json"]
         case .jsonWithToken:
             return ["Content-Type": "application/json",
-                    "Authorization": UserDefaultKeyList.Auth.appAccessToken ?? "",
-                    "platform": "iOS"]
+                    "Authorization": UserDefaultKeyList.Auth.appAccessToken ?? ""]
         case .multipartWithToken:
             return ["Content-Type": "multipart/form-data",
-                    "Authorization": UserDefaultKeyList.Auth.appAccessToken ?? "",
-                    "platform": "iOS"]
+                    "Authorization": UserDefaultKeyList.Auth.appAccessToken ?? ""]
         }
     }
 }
