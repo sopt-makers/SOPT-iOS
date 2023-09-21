@@ -15,7 +15,6 @@ let project = Project.makeModule(
     targets: [.app, .unitTest, .uiTest],
     internalDependencies: [
         .data,
-        .Features.RootFeature,
-        .SPM.FirebaseMessaging
+        .Features.RootFeature
     ]
 )
