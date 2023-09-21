@@ -15,7 +15,7 @@ public struct ExternalURL {
     }
     
     public struct GoogleForms {
-        public static let serviceProposal = "https://forms.gle/L2HpRCvFMh9VvcA57"
+        public static let serviceProposal = "https://forms.gle/mB59JD4F1FpKiXBAA"
         public static let findEmail = "https://forms.gle/XkVFMUPsWWV1DXU38"
     }
     
