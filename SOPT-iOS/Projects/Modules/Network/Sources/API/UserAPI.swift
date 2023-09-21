@@ -20,6 +20,7 @@ public enum UserAPI {
     case getUserMainInfo
     case withdrawal
     case registerPushToken(token: String)
+    case deregisterPushToken(token: String)
     case fetchActiveGenerationStatus
     case getNotificationIsAllowed
     case optInPushNotificationInGeneral(isOn: Bool)
@@ -46,7 +47,7 @@ extension UserAPI: BaseAPI {
             return "/main"
         case .withdrawal:
             return ""
-        case .registerPushToken:
+        case .registerPushToken, .deregisterPushToken:
             return "/push-token"
         case .fetchActiveGenerationStatus:
             return "/generation"
@@ -73,6 +74,8 @@ extension UserAPI: BaseAPI {
             return .delete
         case .registerPushToken:
            return .post
+        case .deregisterPushToken:
+            return .delete
         }
     }
     
@@ -85,6 +88,10 @@ extension UserAPI: BaseAPI {
         case .editSentence(let sentence):
             params["profileMessage"] = sentence
         case .registerPushToken(let pushToken):
+            params["platform"] = "iOS"
+            params["pushToken"] = pushToken
+        case .deregisterPushToken(let pushToken):
+            params["platform"] = "iOS"
             params["pushToken"] = pushToken
         case .optInPushNotificationInGeneral(let isOn):
             params["isOptIn"] = isOn
@@ -105,7 +112,7 @@ extension UserAPI: BaseAPI {
     public var task: Task {
         switch self {
         case .changeNickname, .editSentence, .registerPushToken,
-                .optInPushNotificationInGeneral, .optInPushNotificationInDetail:
+                .optInPushNotificationInGeneral, .optInPushNotificationInDetail, .deregisterPushToken:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain

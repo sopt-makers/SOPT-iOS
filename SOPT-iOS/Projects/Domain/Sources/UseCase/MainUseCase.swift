@@ -64,12 +64,8 @@ extension DefaultMainUseCase: MainUseCase {
     
     public func getMainViewDescription() {
         repository.getMainViewDescription()
-            .sink { [weak self] event in
-                print("MainUseCase getMainViewDescription: \(event)")
-                if case Subscribers.Completion.failure = event {
-                    self?.mainErrorOccurred.send(.networkError(message: "GetMainViewDescription 실패"))
-                }
-            } receiveValue: { [weak self] mainDescriptionModel in
+            .replaceError(with: .defaultDescription)
+            .sink { [weak self] mainDescriptionModel in
                 self?.mainDescription.send(mainDescriptionModel)
             }.store(in: self.cancelBag)
     }

@@ -23,6 +23,7 @@ public protocol UserService {
     func getUserMainInfo() -> AnyPublisher<MainEntity, Error>
     func withdraw() -> AnyPublisher<Int, Error>
     func registerPushToken(with token: String) -> AnyPublisher<Int, Error>
+    func deregisterPushToken(with token: String) -> AnyPublisher<Int, Error>
     func fetchActiveGenerationStatus() -> AnyPublisher<UsersActiveGenerationStatusEntity, Error>
     func getNotificationIsAllowed() -> AnyPublisher<GeneralNotificationOptInEntity, Error>
     func optInPushNotificationInGeneral(to isOn: Bool) -> AnyPublisher<GeneralNotificationOptInEntity, Error>
@@ -57,6 +58,10 @@ extension DefaultUserService: UserService {
     
     public func registerPushToken(with token: String) -> AnyPublisher<Int, Error> {
         requestObjectInCombineNoResult(.registerPushToken(token: token))
+    }
+    
+    public func deregisterPushToken(with token: String) -> AnyPublisher<Int, Error> {
+        requestObjectInCombineNoResult(.deregisterPushToken(token: token))
     }
     
     public func fetchNotificationSettings() -> AnyPublisher<DetailNotificationOptInEntity, Error> {

@@ -14,10 +14,12 @@ public protocol AppMyPageUseCase {
     func resetStamp()
     func fetchUserNotificationIsAllowed()
     func optInPushNotificationInGeneral(to isOn: Bool)
+    func deregisterPushToken()
     
     var resetSuccess: PassthroughSubject<Bool, Error> { get }
     var originUserNotificationIsAllowedStatus: PassthroughSubject<Bool, Error> { get }
     var optInPushNotificationResult: PassthroughSubject<Bool, Error> { get }
+    var deregisterPushTokenSuccess: PassthroughSubject<Bool, Never> { get }
 }
 
 public final class DefaultAppMyPageUseCase {
@@ -26,6 +28,7 @@ public final class DefaultAppMyPageUseCase {
     public let resetSuccess = PassthroughSubject<Bool, Error>()
     public let originUserNotificationIsAllowedStatus = PassthroughSubject<Bool, Error>()
     public let optInPushNotificationResult = PassthroughSubject<Bool, Error>()
+    public let deregisterPushTokenSuccess = PassthroughSubject<Bool, Never>()
 
     private let cancelBag = CancelBag()
     
@@ -56,6 +59,18 @@ extension DefaultAppMyPageUseCase: AppMyPageUseCase {
             .optInPushNotificationInGeneral(to: isOn)
             .sink { isOn in
                 self.optInPushNotificationResult.send(isOn)
+            }.store(in: self.cancelBag)
+    }
+    
+    public func deregisterPushToken() {
+        guard let pushToken = UserDefaultKeyList.User.pushToken, !pushToken.isEmpty else { return }
+        
+        self.repository
+            .deregisterPushToken(with: pushToken)
+            .catch { _ in
+                return Just(false)
+            }.sink { [weak self] didSucceed in
+                self?.deregisterPushTokenSuccess.send(didSucceed)
             }.store(in: self.cancelBag)
     }
 }
