@@ -21,10 +21,17 @@ public final class NotificationSettingRepository {
 }
 
 extension NotificationSettingRepository: NotificationSettingRepositoryInterface {
-    public func updateNotificationSettings(with notificationSettings: NotificationOptInModel) -> Driver<Bool> {
+    public func getNotificationSettingsInDetail() -> Driver<NotificationOptInModel> {
+        self.userService
+            .getNotificationSettingsInDetail()
+            .map { $0.toDomain() }
+            .asDriver()
+    }
+    
+    public func updateNotificationSettings(with notificationSettings: NotificationOptInModel) -> Driver<NotificationOptInModel> {
         self.userService
             .optInPushNotificationInDetail(notificationSettings: notificationSettings.toEntity())
-            .map { $0 == 200 }
+            .map { $0.toDomain() }
             .asDriver()
     }
 }

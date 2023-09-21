@@ -7,6 +7,7 @@
 //
 
 import Combine
+import Foundation
 
 import Core
 import Domain
@@ -16,6 +17,7 @@ public final class NotificationSettingByFeaturesViewModel: NotificationSettingBy
     // MARK: - Inputs
     
     public struct Input {
+        let viewWillAppear: Driver<Void>
         let allOptInTapped: Driver<Bool>
         let partOptInTapped: Driver<Bool>
         let infoOptInTapped: Driver<Bool>
@@ -24,7 +26,8 @@ public final class NotificationSettingByFeaturesViewModel: NotificationSettingBy
     // MARK: - Outputs
     
     public struct Output {
-        let updateSuccessed = PassthroughSubject<Bool, Never>()
+        let firstFetchedNotificationModel = PassthroughSubject<NotificationOptInModel, Never>()
+        let updateSuccessed = PassthroughSubject<NotificationOptInModel, Never>()
     }
     
     private let usecase: NotificationSettingByFeaturesUsecase
@@ -39,13 +42,21 @@ extension NotificationSettingByFeaturesViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
+        input.viewWillAppear
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.usecase.fetchNotificationSettings()
+            }.store(in: cancelBag)
+
         input.allOptInTapped
+            .throttle(for: 0.3, scheduler: RunLoop.main, latest: true)
             .withUnretained(self)
             .sink { owner, isOn in
                 owner.usecase.updateNotificationSettings(with: NotificationOptInModel(allOptIn: isOn))
             }.store(in: cancelBag)
         
         input.partOptInTapped
+            .throttle(for: 0.3, scheduler: RunLoop.main, latest: true)
             .withUnretained(self)
             .sink { owner, isOn in
                 owner.usecase.updateNotificationSettings(with: NotificationOptInModel(partOptIn: isOn))
@@ -53,6 +64,7 @@ extension NotificationSettingByFeaturesViewModel {
 
         
         input.infoOptInTapped
+            .throttle(for: 0.3, scheduler: RunLoop.main, latest: true)
             .withUnretained(self)
             .sink { owner, isOn in
                 owner.usecase.updateNotificationSettings(with: NotificationOptInModel(newsOptIn: isOn))
@@ -62,12 +74,18 @@ extension NotificationSettingByFeaturesViewModel {
     }
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
-        let updateSuccess = self.usecase.updateSuccess
-        
-        updateSuccess
+        self.usecase
+            .originNotificationInDetail
             .asDriver()
-            .sink { isSuccced in
-                output.updateSuccessed.send(isSuccced)
+            .sink { notifcationOptInModel in
+                output.firstFetchedNotificationModel.send(notifcationOptInModel)
+            }.store(in: cancelBag)
+        
+        self.usecase
+            .updateSuccess
+            .asDriver()
+            .sink { notifcationOptInModel in
+                output.updateSuccessed.send(notifcationOptInModel)
             }.store(in: cancelBag)
     }
 }

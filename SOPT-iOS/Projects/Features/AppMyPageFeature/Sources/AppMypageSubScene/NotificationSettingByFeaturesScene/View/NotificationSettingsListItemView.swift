@@ -57,6 +57,10 @@ extension NotificationSettingsListItemView {
             .map(\.isOn)
             .eraseToAnyPublisher()
     }
+    
+    public func configureRightSwitch(to isOn: Bool?) {
+        self.rightSwitch.isOn = isOn ?? false
+    }
 }
 
 // MARK: - Private functions

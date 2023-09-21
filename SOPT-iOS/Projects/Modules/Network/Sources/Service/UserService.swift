@@ -27,7 +27,7 @@ public protocol UserService {
     func getNotificationIsAllowed() -> AnyPublisher<GeneralNotificationOptInEntity, Error>
     func optInPushNotificationInGeneral(to isOn: Bool) -> AnyPublisher<GeneralNotificationOptInEntity, Error>
     func getNotificationSettingsInDetail() -> AnyPublisher<DetailNotificationOptInEntity, Error>
-    func optInPushNotificationInDetail(notificationSettings: DetailNotificationOptInEntity) -> AnyPublisher<Int, Error>
+    func optInPushNotificationInDetail(notificationSettings: DetailNotificationOptInEntity) -> AnyPublisher<DetailNotificationOptInEntity, Error>
 }
 
 extension DefaultUserService: UserService {
@@ -59,6 +59,14 @@ extension DefaultUserService: UserService {
         requestObjectInCombineNoResult(.registerPushToken(token: token))
     }
     
+    public func fetchNotificationSettings() -> AnyPublisher<DetailNotificationOptInEntity, Error> {
+        requestObjectInCombine(.getNotificationSettingsInDetail)
+    }
+    
+    public func fetchActiveGenerationStatus() -> AnyPublisher<UsersActiveGenerationStatusEntity, Error> {
+        requestObjectInCombine(.fetchActiveGenerationStatus)
+    }
+
     public func getNotificationIsAllowed() -> AnyPublisher<GeneralNotificationOptInEntity, Error> {
         requestObjectInCombine(.getNotificationIsAllowed)
     }
@@ -71,7 +79,7 @@ extension DefaultUserService: UserService {
         requestObjectInCombine(.getNotificationSettingsInDetail)
     }
 
-    public func optInPushNotificationInDetail(notificationSettings: DetailNotificationOptInEntity) -> AnyPublisher<Int, Error> {
+    public func optInPushNotificationInDetail(notificationSettings: DetailNotificationOptInEntity) -> AnyPublisher<DetailNotificationOptInEntity, Error> {
         requestObjectInCombine(.optInPushNotificationInDetail(notificationSettings: notificationSettings))
     }
 }

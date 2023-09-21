@@ -20,3 +20,13 @@ extension NotificationOptInModel {
         )
     }
 }
+
+extension DetailNotificationOptInEntity {
+    public func toDomain() -> NotificationOptInModel {
+        return NotificationOptInModel(
+            allOptIn: self.allOptIn,
+            partOptIn: self.partOptIn,
+            newsOptIn: self.newsOptIn
+        )
+    }
+}

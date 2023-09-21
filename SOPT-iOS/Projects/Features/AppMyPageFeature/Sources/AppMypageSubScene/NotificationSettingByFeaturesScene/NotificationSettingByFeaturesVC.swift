@@ -68,6 +68,8 @@ public final class NotificationSettingByFeaturesVC: UIViewController, Notificati
     
     // MARK: - Variables
     private let cancelBag = CancelBag()
+    private let willAppearSubject = PassthroughSubject<Void, Never>()
+    
     private let allOptInTapped = PassthroughSubject<Bool, Never>()
     private let partOptInTapped = PassthroughSubject<Bool, Never>()
     private let infoOptInTapped = PassthroughSubject<Bool, Never>()
@@ -78,10 +80,18 @@ public final class NotificationSettingByFeaturesVC: UIViewController, Notificati
         self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: nil)
-      
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    public override func viewDidLoad() {
+        super.viewDidLoad()
+                
         self.navigationController?.navigationBar.isHidden = true
         self.view.backgroundColor = DSKitAsset.Colors.black100.color
-
+        
         self.setupLayouts()
         self.setupConstraints()
         
@@ -89,8 +99,10 @@ public final class NotificationSettingByFeaturesVC: UIViewController, Notificati
         self.bindViewModels()
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.willAppearSubject.send(())
     }
 }
 
@@ -142,9 +154,6 @@ extension NotificationSettingByFeaturesVC {
             .signalForRightSwitchClick()
             .sink { [weak self] isOn in
                 self?.allOptInTapped.send(isOn)
-                print("[+---------+ \(#line)번째 줄, \(#function):] +---------+]")
-                print("+---------+ \(isOn) +---------+")
-                print("[+------------------------- END -------------------------+", "\n")
             }
             .store(in: self.cancelBag)
         
@@ -152,9 +161,6 @@ extension NotificationSettingByFeaturesVC {
             .signalForRightSwitchClick()
             .sink { [weak self] isOn in
                 self?.partOptInTapped.send(isOn)
-                print("[+---------+ \(#line)번째 줄, \(#function):] +---------+]")
-                print("+---------+ \(isOn) +---------+")
-                print("[+------------------------- END -------------------------+", "\n")
             }
             .store(in: self.cancelBag)
 
@@ -162,15 +168,13 @@ extension NotificationSettingByFeaturesVC {
             .signalForRightSwitchClick()
             .sink { [weak self] isOn in
                 self?.infoOptInTapped.send(isOn)
-                print("[+---------+ \(#line)번째 줄, \(#function):] +---------+]")
-                print("+---------+ \(isOn) +---------+")
-                print("[+------------------------- END -------------------------+", "\n")
             }
             .store(in: self.cancelBag)
     }
     
     private func bindViewModels() {
         let input = NotificationSettingByFeaturesViewModel.Input(
+            viewWillAppear: self.willAppearSubject.asDriver(),
             allOptInTapped: self.allOptInTapped.asDriver(),
             partOptInTapped: self.partOptInTapped.asDriver(),
             infoOptInTapped: self.infoOptInTapped.asDriver()
@@ -178,12 +182,19 @@ extension NotificationSettingByFeaturesVC {
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output
+            .firstFetchedNotificationModel
+            .sink { [weak self] notifcationOptInModel in
+                self?.allNotificationListItem.configureRightSwitch(to: notifcationOptInModel.allOptIn)
+                self?.notificaitonByPartListItem.configureRightSwitch(to: notifcationOptInModel.partOptIn)
+                self?.infoNotificationListItem.configureRightSwitch(to: notifcationOptInModel.newsOptIn)
+            }.store(in: self.cancelBag)
+
+        output
             .updateSuccessed
-            .sink { [weak self] isSuccecced in
-                print("[+---------+ \(#line)번째 줄, \(#function):] +---------+]")
-                print("+---------+ \(isSuccecced) +---------+")
-                print("[+------------------------- END -------------------------+", "\n")
+            .sink { [weak self] notifcationOptInModel in
+                self?.allNotificationListItem.configureRightSwitch(to: notifcationOptInModel.allOptIn)
+                self?.notificaitonByPartListItem.configureRightSwitch(to: notifcationOptInModel.partOptIn)
+                self?.infoNotificationListItem.configureRightSwitch(to: notifcationOptInModel.newsOptIn)
             }.store(in: self.cancelBag)
     }
 }
-

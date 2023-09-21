@@ -10,5 +10,6 @@ import Combine
 import Core
 
 public protocol NotificationSettingRepositoryInterface {
-    func updateNotificationSettings(with notificationSettings: NotificationOptInModel) -> Driver<Bool>
+    func getNotificationSettingsInDetail() -> Driver<NotificationOptInModel>
+    func updateNotificationSettings(with notificationSettings: NotificationOptInModel) -> Driver<NotificationOptInModel>
 }

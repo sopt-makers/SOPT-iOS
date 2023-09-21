@@ -50,6 +50,8 @@ extension UserAPI: BaseAPI {
             return "/push-token"
         case .fetchActiveGenerationStatus:
             return "/generation"
+        case .getNotificationIsAllowed:
+            return "/opt-in"
         case .optInPushNotificationInGeneral:
             return "/opt-in"
         case .getNotificationSettingsInDetail:
@@ -62,7 +64,7 @@ extension UserAPI: BaseAPI {
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .getNicknameAvailable, .getUserMainInfo, .fetchSoptampUser, .fetchActiveGenerationStatus:
+        case .getNicknameAvailable, .getUserMainInfo, .fetchSoptampUser, .fetchActiveGenerationStatus,
                 .getNotificationIsAllowed, .getNotificationSettingsInDetail:
             return .get
         case .editSentence, .changeNickname, .optInPushNotificationInGeneral, .optInPushNotificationInDetail:

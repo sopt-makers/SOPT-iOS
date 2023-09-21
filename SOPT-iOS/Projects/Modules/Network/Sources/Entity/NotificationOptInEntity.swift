@@ -7,9 +7,9 @@
 //
 
 public struct DetailNotificationOptInEntity: Codable {
-    let allOptIn: Bool?
-    let partOptIn: Bool?
-    let newsOptIn: Bool?
+    public let allOptIn: Bool?
+    public let partOptIn: Bool?
+    public let newsOptIn: Bool?
     
     public init(
         allOptIn: Bool?,
