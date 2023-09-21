@@ -44,7 +44,9 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
     public var onAlertSettingByFeaturesItemTap: (() -> Void)?
     
     // MARK: Combine
+    private let viewWillAppear = PassthroughSubject<Void, Never>()
     private let resetButtonTapped = PassthroughSubject<Bool, Never>()
+    private let alertSwitchTapped = PassthroughSubject<Bool, Never>()
     private let cancelBag = CancelBag()
     
     // MARK: - Views
@@ -199,6 +201,12 @@ extension AppMyPageVC {
         self.bindViews()
         self.bindViewModels()
     }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.viewWillAppear.send(())
+    }
 }
 
 extension AppMyPageVC {
@@ -309,12 +317,9 @@ extension AppMyPageVC {
     private func bindViews() {
         self.alertListItem
             .signalForRightSwitchClick()
+            .throttle(for: 0.3, scheduler: RunLoop.main, latest: true)
             .sink { [weak self] isOn in
-                self?.alertByFeaturesListItem.isHidden = !isOn
-                
-                print("[+---------+ \(#line)번째 줄, \(#function):] +---------+]")
-                print("+---------+ \(isOn) +---------+")
-                print("[+------------------------- END -------------------------+", "\n")
+                self?.alertSwitchTapped.send(isOn)
             }
             .store(in: self.cancelBag)
         
@@ -327,8 +332,24 @@ extension AppMyPageVC {
     }
     
     private func bindViewModels() {
-        let input = AppMyPageViewModel.Input(resetButtonTapped: resetButtonTapped.asDriver())
+        let input = AppMyPageViewModel.Input(
+            viewWillAppear: self.viewWillAppear.asDriver(),
+            alertSwitchTapped: self.alertSwitchTapped.asDriver(),
+            resetButtonTapped: self.resetButtonTapped.asDriver()
+        )
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.originNotificationIsAllowed
+            .sink { [weak self] isAllowed in
+                self?.alertListItem.configureSwitch(to: isAllowed)
+                self?.alertByFeaturesListItem.isHidden = !isAllowed
+            }.store(in: self.cancelBag)
+        
+        output.alertSettingOptInEditedResult
+            .sink { [weak self] isAllowed in
+                self?.alertListItem.configureSwitch(to: isAllowed)
+                self?.alertByFeaturesListItem.isHidden = !isAllowed
+            }.store(in: self.cancelBag)
         
         output.resetSuccessed
             .filter { $0 }

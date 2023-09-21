@@ -1,12 +1,12 @@
 //
-//  NotificationOptInEntity.swift
+//  DetailNotificationOptInEntity.swift
 //  Network
 //
 //  Created by Ian on 2023/09/17.
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
-public struct NotificationOptInEntity: Encodable {
+public struct DetailNotificationOptInEntity: Codable {
     let allOptIn: Bool?
     let partOptIn: Bool?
     let newsOptIn: Bool?

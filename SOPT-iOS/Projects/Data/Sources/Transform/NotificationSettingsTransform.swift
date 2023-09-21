@@ -12,8 +12,8 @@ import Domain
 import Network
 
 extension NotificationOptInModel {
-    public func toEntity() -> NotificationOptInEntity {
-        return NotificationOptInEntity(
+    public func toEntity() -> DetailNotificationOptInEntity {
+        return DetailNotificationOptInEntity(
             allOptIn: self.allOptIn,
             partOptIn: self.partOptIn,
             newsOptIn: self.newsOptIn

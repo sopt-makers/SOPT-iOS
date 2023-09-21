@@ -23,7 +23,7 @@ public final class NotificationSettingRepository {
 extension NotificationSettingRepository: NotificationSettingRepositoryInterface {
     public func updateNotificationSettings(with notificationSettings: NotificationOptInModel) -> Driver<Bool> {
         self.userService
-            .optInPushNotification(notificationSettings: notificationSettings.toEntity())
+            .optInPushNotificationInDetail(notificationSettings: notificationSettings.toEntity())
             .map { $0 == 200 }
             .asDriver()
     }

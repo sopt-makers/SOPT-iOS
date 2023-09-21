@@ -105,6 +105,10 @@ extension MyPageSectionListItemView {
             .map(\.isOn)
             .eraseToAnyPublisher()
     }
+    
+    public func configureSwitch(to isOn: Bool) {
+        self.rightSwitch.isOn = isOn
+    }
 }
 
 // MARK: - Private functions

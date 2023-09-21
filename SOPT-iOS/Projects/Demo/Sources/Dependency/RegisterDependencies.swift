@@ -47,7 +47,8 @@ extension AppDelegate {
             interface: AppMyPageRepositoryInterface.self,
             implement: {
                 AppMyPageRepository(
-                    stampService: DefaultStampService()
+                    stampService: DefaultStampService(),
+                    userService: DefaultUserService()
                 )
             }
         )
