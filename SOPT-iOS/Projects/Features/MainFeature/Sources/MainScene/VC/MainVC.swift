@@ -51,6 +51,8 @@ public class MainVC: UIViewController, MainViewControllable {
         self.setLayout()
         self.setDelegate()
         self.registerCells()
+        
+        AmplitudeInstance.shared.track(event: .main, userType: .active)
     }
     
     public override func viewWillAppear(_ animated: Bool) {
