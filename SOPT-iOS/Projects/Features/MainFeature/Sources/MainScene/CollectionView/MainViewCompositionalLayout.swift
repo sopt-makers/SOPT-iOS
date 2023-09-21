@@ -16,6 +16,7 @@ extension MainVC {
         static let collectionViewDefaultSideInset: Double = 20
         static let defaultItemSpacing: Double = 12
         static let defaultLineSpacing: Double = 12
+        static let collectionViewDefaultRightSideInset: Double = 8
     }
     
     func createLayout() -> UICollectionViewCompositionalLayout {
@@ -82,7 +83,7 @@ extension MainVC {
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: Metric.collectionViewDefaultSideInset, bottom: 32, trailing: 0)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: Metric.collectionViewDefaultSideInset, bottom: 32, trailing: Metric.collectionViewDefaultRightSideInset)
         section.orthogonalScrollingBehavior = .groupPaging
         
         return section

@@ -90,22 +90,5 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
         let userInfo = response.notification.request.content.userInfo
         print("APNs 푸시 알림 페이로드: \(userInfo)")
-        parseUserInfo(userInfo)
-    }
-    
-    func parseUserInfo(_ userInfo: [AnyHashable: Any]) {
-        let userInfo = userInfo as! [String: Any]
-        print(userInfo)
-        openURL(url: userInfo["webLink"] as? String)
-    }
-    
-    func openURL(url: String?) {
-        guard let url = url else { return }
-        if let url = URL(string: url) {
-            let safiariVC = SFSafariViewController(url: url)
-            UIApplication.getMostTopViewController()?.present(safiariVC, animated: true)
-        } else {
-            print("url 변환 실패")
-        }
     }
 }
