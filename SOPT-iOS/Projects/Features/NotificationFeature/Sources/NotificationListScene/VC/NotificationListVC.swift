@@ -58,7 +58,7 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
     
     private let emptyView: NotificationEmptyView = {
         let view = NotificationEmptyView()
-        view.isHidden = true
+        view.isHidden = false
         return view
     }()
     
