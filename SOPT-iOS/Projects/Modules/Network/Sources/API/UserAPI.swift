@@ -112,7 +112,7 @@ extension UserAPI: BaseAPI {
     public var task: Task {
         switch self {
         case .changeNickname, .editSentence, .registerPushToken,
-                .optInPushNotificationInGeneral, .optInPushNotificationInDetail:
+                .optInPushNotificationInGeneral, .optInPushNotificationInDetail, .deregisterPushToken:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain
