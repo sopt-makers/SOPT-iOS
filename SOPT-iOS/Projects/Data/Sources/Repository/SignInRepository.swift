@@ -29,8 +29,7 @@ public class SignInRepository {
 
 extension SignInRepository: SignInRepositoryInterface {
     public func requestSignIn(token: String) -> AnyPublisher<Bool, Error> {
-        let pushToken = UserDefaultKeyList.User.pushToken ?? ""
-        return authService.signIn(token: token, pushToken: pushToken)
+        return authService.signIn(token: token)
             .catch ({ error in
                 guard
                     let error = error as? APIError,

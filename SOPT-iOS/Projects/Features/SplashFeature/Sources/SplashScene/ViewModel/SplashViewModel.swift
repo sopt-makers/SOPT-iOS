@@ -47,7 +47,6 @@ extension SplashViewModel {
         let output = Output()
         bindOutput(output: output, cancelBag: cancelBag)
         useCase.getAppNotice()
-        useCase.registerPushToken()
         return output
     }
     

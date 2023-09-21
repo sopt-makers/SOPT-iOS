@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import UserNotifications
 
 import Core
 import Domain
@@ -27,11 +28,13 @@ public class MainViewModel: MainViewModelType {
     var otherServiceList: [ServiceType] = [.instagram, .youtube, .faq]
     var appServiceList: [AppServiceType] = [.soptamp]
     var userMainInfo: UserMainInfoModel?
+    var mainDescription: MainDescriptionModel = .defaultDescription
   
     // MARK: - Inputs
     
     public struct Input {
         let requestUserInfo: Driver<Void>
+        let viewDidLoad: Driver<Void>
         let noticeButtonTapped: Driver<Void>
         let myPageButtonTapped: Driver<Void>
         let cellTapped: Driver<IndexPath>
@@ -40,7 +43,7 @@ public class MainViewModel: MainViewModelType {
     // MARK: - Outputs
     
     public struct Output {
-        var getUserMainInfoDidComplete = PassthroughSubject<Void, Never>()
+        var needToReload = PassthroughSubject<Void, Never>()
         var isServiceAvailable = PassthroughSubject<Bool, Never>()
         var needNetworkAlert = PassthroughSubject<Void, Never>()
         var isLoading = PassthroughSubject<Bool, Never>()
@@ -95,8 +98,15 @@ extension MainViewModel {
                 if self.userType != .visitor {
                     output.isLoading.send(true)
                     self.useCase.getUserMainInfo()
-                    self.useCase.getServiceState()
+                    self.useCase.getMainViewDescription()
                 }
+            }.store(in: cancelBag)
+        
+        input.viewDidLoad
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                self.requestAuthorizationForNotification()
+                self.useCase.getServiceState()
             }.store(in: cancelBag)
     
         return output
@@ -109,14 +119,13 @@ extension MainViewModel {
                 guard let userMainInfo = userMainInfo else {
                     SentrySDK.capture(message: "메인 뷰 조회 실패")
                     output.needNetworkAlert.send()
-                    output.getUserMainInfoDidComplete.send()
                     return
                 }
                 self.userMainInfo = userMainInfo
                 self.userType = userMainInfo.userType
                 self.setServiceList(with: self.userType)
                 self.setSentryUser()
-                output.getUserMainInfoDidComplete.send()
+                output.needToReload.send()
             }.store(in: self.cancelBag)
         
         useCase.serviceState
@@ -124,8 +133,14 @@ extension MainViewModel {
                 output.isServiceAvailable.send(serviceState.isAvailable)
             }.store(in: self.cancelBag)
         
+        useCase.mainDescription
+            .sink { mainDescription in
+                self.mainDescription = mainDescription
+                output.needToReload.send()
+            }.store(in: self.cancelBag)
+        
         // 모든 API 통신 완료되면 로딩뷰 숨기기
-        Publishers.Zip(useCase.userMainInfo, useCase.serviceState)
+        Publishers.Zip(useCase.userMainInfo, useCase.mainDescription)
             .sink { _ in
                 output.isLoading.send(false)
             }.store(in: self.cancelBag)
@@ -170,6 +185,27 @@ extension MainViewModel {
             
             onSoptamp?()
         default: break
+        }
+    }
+    
+    private func requestAuthorizationForNotification() {
+        guard self.userType != .visitor,
+              UserDefaultKeyList.Auth.hasAccessToken(),
+              UserDefaultKeyList.User.hasPushToken()
+        else { return }
+        
+        // APNS 권한 허용 확인
+        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+        UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { granted, error in
+            if let error = error {
+                print(error)
+            }
+            
+            print("APNs-알림 권한 허용 유무 \(granted)")
+            
+            if granted {
+                self.useCase.registerPushToken()
+            }
         }
     }
     

@@ -16,14 +16,14 @@ import Core
 public typealias DefaultAuthService = BaseService<AuthAPI>
 
 public protocol AuthService {
-    func signIn(token: String, pushToken: String) -> AnyPublisher<SignInEntity, Error>
+    func signIn(token: String) -> AnyPublisher<SignInEntity, Error>
     func reissuance(completion: @escaping ((Bool) -> Void))
     func reissuance() -> AnyPublisher<SignInEntity, Error>
 }
 
 extension DefaultAuthService: AuthService {
-    public func signIn(token: String, pushToken: String) -> AnyPublisher<SignInEntity, Error> {
-        return requestObjectWithNetworkErrorInCombine(.signIn(token: token, pushToken: pushToken))
+    public func signIn(token: String) -> AnyPublisher<SignInEntity, Error> {
+        return requestObjectWithNetworkErrorInCombine(.signIn(token: token))
     }
     
     public func reissuance(completion: @escaping ((Bool) -> Void)) {

@@ -47,7 +47,7 @@ final class MainViewModelTests: QuickSpec {
                     
                     var result: Void? = nil
 
-                    output.getUserMainInfoDidComplete
+                    output.needToReload
                         .sink { completion in
                             switch completion {
                             case .finished:

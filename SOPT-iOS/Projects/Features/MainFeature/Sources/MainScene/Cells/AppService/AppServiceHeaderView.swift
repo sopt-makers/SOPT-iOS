@@ -73,7 +73,8 @@ extension AppServiceHeaderView {
 // MARK: - Methods
 
 extension AppServiceHeaderView {
-    func initCell(userType: UserType) {
+    func initCell(userType: UserType, title: String) {
         descriptionLabel.isHidden = userType != .visitor
+        titleLabel.text = title
     }
 }

@@ -30,7 +30,7 @@ public class MainVC: UIViewController, MainViewControllable {
     
     // MARK: - UI Components
     
-    private let naviBar = MainNavigationBar().hideNoticeButton(wantsToHide: true)
+    private lazy var naviBar = MainNavigationBar().hideNoticeButton(wantsToHide: self.viewModel.userType == .visitor)
     
     private lazy var collectionView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
@@ -55,7 +55,7 @@ public class MainVC: UIViewController, MainViewControllable {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.requestUserInfo.send(())
+        self.requestUserInfo.send()
     }
 }
 
@@ -96,13 +96,15 @@ extension MainVC {
         
         let input = MainViewModel.Input(
             requestUserInfo: requestUserInfo.asDriver(),
+            viewDidLoad: Just<Void>(()).asDriver(),
             noticeButtonTapped: noticeButtonTapped,
             myPageButtonTapped: myPageButtonTapped,
             cellTapped: cellTapped.asDriver()
         )
+        
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
-        output.getUserMainInfoDidComplete
+        output.needToReload
             .sink { [weak self] _ in
                 guard let userMainInfo = self?.viewModel.userMainInfo else {
                     self?.collectionView.reloadData()
@@ -215,7 +217,7 @@ extension MainVC: UICollectionViewDataSource {
                                                   withReuseIdentifier: MainServiceHeaderView.className,
                                                   for: indexPath) as? MainServiceHeaderView
             else { return UICollectionReusableView() }
-            headerView.initCell(title: nil)
+            headerView.initCell(title: viewModel.mainDescription.topDescription)
             return headerView
         case 3:
             guard let headerView = collectionView
@@ -223,7 +225,7 @@ extension MainVC: UICollectionViewDataSource {
                                                   withReuseIdentifier: AppServiceHeaderView.className,
                                                   for: indexPath) as? AppServiceHeaderView
             else { return UICollectionReusableView() }
-            headerView.initCell(userType: viewModel.userType)
+            headerView.initCell(userType: viewModel.userType, title: viewModel.mainDescription.bottomDescription)
             return headerView
         default:
             return UICollectionReusableView()
