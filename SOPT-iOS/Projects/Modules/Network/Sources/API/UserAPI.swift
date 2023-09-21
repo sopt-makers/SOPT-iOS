@@ -70,6 +70,7 @@ extension UserAPI: BaseAPI {
             params["profileMessage"] = sentence
         case .registerPushToken(let pushToken):
             params["pushToken"] = pushToken
+            params["platform"] = "iOS"
         default: break
         }
         return params
