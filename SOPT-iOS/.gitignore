@@ -62,7 +62,7 @@ DerivedData/
 ### Projects ###
 *.xcodeproj
 *.xcworkspace
-/Projects/Modules/Network/Sources/Config.swift
+/Projects/Core/Sources/Config.swift
 /Projects/Modules/TestCore/Sources/TestConfig.swift
 /Projects/SOPT-iOS/Resources/GoogleService-Info.plist
 /Projects/Demo/Resources/GoogleService-Info.plist
