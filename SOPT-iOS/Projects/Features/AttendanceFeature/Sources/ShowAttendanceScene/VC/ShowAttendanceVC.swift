@@ -127,7 +127,7 @@ extension ShowAttendanceVC {
         self.navigationController?.navigationBar.isHidden = true
         self.view.backgroundColor = DSKitAsset.Colors.black100.color
         containerScrollView.backgroundColor = DSKitAsset.Colors.black100.color
-        attendanceGradientView.createGradientLayer(colors: [.clear, .black], direction: .vertical)
+//        attendanceGradientView.createGradientLayer(colors: [.clear, .black], direction: .vertical)
     }
     
     private func setLayout() {
