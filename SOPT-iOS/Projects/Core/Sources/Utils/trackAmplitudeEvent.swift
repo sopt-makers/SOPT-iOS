@@ -9,7 +9,8 @@
 import UIKit
 
 public extension UIViewController {
-    func track(event: AmplitudeEventType, userType: UserType, otherProperties: [String: Any]? = nil) {
+    func track(event: AmplitudeEventType, otherProperties: [String: Any]? = nil) {
+        let userType = UserDefaultKeyList.Auth.getUserType()
         AmplitudeInstance.shared.track(event: event, userType: userType, otherProperties: otherProperties)
     }
 }

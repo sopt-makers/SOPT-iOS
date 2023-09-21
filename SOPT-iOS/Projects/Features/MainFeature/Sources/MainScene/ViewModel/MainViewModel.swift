@@ -78,12 +78,14 @@ extension MainViewModel {
             .sink { [weak self] _ in
                 guard let self = self else { return }
                 self.onNoticeButtonTap?()
+                self.trackAmplitude(event: .alarm)
             }.store(in: cancelBag)
         
         input.myPageButtonTapped
             .sink { [weak self] _ in
                 guard let self = self else { return }
                 self.onMyPageButtonTap?(self.userType)
+                self.trackAmplitude(event: .myPage)
             }.store(in: cancelBag)
         
         input.cellTapped
@@ -107,6 +109,7 @@ extension MainViewModel {
                 guard let self = self else { return }
                 self.requestAuthorizationForNotification()
                 self.useCase.getServiceState()
+                self.trackAmplitude(event: .main)
             }.store(in: cancelBag)
     
         return output
@@ -164,6 +167,7 @@ extension MainViewModel {
         case (0, _): break
         case (1, _):
             guard let service = mainServiceList[safe: indexPath.item] else { return }
+            self.trackAmplitude(event: service.toAmplitudeEventType)
             
             guard service != .attendance else {
                 onAttendance?()
@@ -175,13 +179,15 @@ extension MainViewModel {
             ? ExternalURL.SOPT.project
             : service.serviceDomainLink
             onSafari?(serviceDomainURL)
-            
         case (2, _):
             guard let service = otherServiceList[safe: indexPath.item] else { return }
+            self.trackAmplitude(event: service.toAmplitudeEventType)
             
             onSafari?(service.serviceDomainLink)
         case(3, _):
             guard userType != .visitor else { return }
+            guard let service = appServiceList[safe: indexPath.item] else { return }
+            self.trackAmplitude(event: service.toAmplitudeEventType)
             
             onSoptamp?()
         default: break
@@ -260,5 +266,9 @@ extension MainViewModel {
         )
         user.data = ["accessToken": UserDefaultKeyList.Auth.appAccessToken ?? "EmptyAppAccessToken"]
         SentrySDK.setUser(user)
+    }
+    
+    private func trackAmplitude(event: AmplitudeEventType) {
+        AmplitudeInstance.shared.trackWithUserType(event: event)
     }
 }

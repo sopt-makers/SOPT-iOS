@@ -51,7 +51,6 @@ public class MainVC: UIViewController, MainViewControllable {
         self.setLayout()
         self.setDelegate()
         self.registerCells()
-        self.track(event: .main, userType: viewModel.userType)
     }
     
     public override func viewWillAppear(_ animated: Bool) {

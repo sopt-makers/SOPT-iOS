@@ -28,4 +28,12 @@ public extension Amplitude {
 
         AmplitudeInstance.shared.track(eventType: eventType, eventProperties: eventProperties, options: nil)
     }
+    
+    func trackWithUserType(event: AmplitudeEventType) {
+        let eventType: String = event.rawValue
+        let userType = UserDefaultKeyList.Auth.getUserType()
+        var eventProperties: [String: Any] = ["view_type": userType.rawValue.lowercased()]
+        
+        AmplitudeInstance.shared.track(eventType: eventType, eventProperties: eventProperties, options: nil)
+    }
 }
