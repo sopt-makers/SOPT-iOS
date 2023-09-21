@@ -23,7 +23,7 @@ public extension TargetDependency.SPM {
     static let Nimble = TargetDependency.external(name: "Nimble")
     static let Quick = TargetDependency.external(name: "Quick")
     static let lottie = TargetDependency.external(name: "Lottie")
-    static let FirebaseMessaging = TargetDependency.external(name: "FirebaseMessaging")
+    static let Amplitude = TargetDependency.external(name: "AmplitudeSwift")
 }
 
 public extension TargetDependency.Carthage {

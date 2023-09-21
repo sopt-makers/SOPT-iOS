@@ -72,7 +72,7 @@ _download-privates:
 	
 	# Config.swift
 	
-	$(call download_file,Projects/Modules/Network/Sources,$$GITHUB_ACCESS_TOKEN,Config.swift)
+	$(call download_file,Projects/Core/Sources,$$GITHUB_ACCESS_TOKEN,Config.swift)
 	
 	# Xcconfigs
 

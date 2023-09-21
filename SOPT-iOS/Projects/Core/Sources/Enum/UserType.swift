@@ -9,7 +9,7 @@
 import Foundation
 
 public enum UserType: String {
-    case visitor = "UNAUTHENTICATED" // 비회원
+    case visitor = "VISITOR" // 비회원
     case active = "ACTIVE" // 활동 회원
     case inactive = "INACTIVE" // 비활동 회원
     
