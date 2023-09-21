@@ -46,4 +46,12 @@ extension AppMyPageRepository: AppMyPageRepositoryInterface {
             .map(\.isOptIn)
             .asDriver()
     }
+    
+    public func deregisterPushToken(with token: String) -> AnyPublisher<Bool, Error> {
+        self.userService.deregisterPushToken(with: token)
+            .map {
+                return 200..<300 ~= $0
+            }
+            .eraseToAnyPublisher()
+    }
 }

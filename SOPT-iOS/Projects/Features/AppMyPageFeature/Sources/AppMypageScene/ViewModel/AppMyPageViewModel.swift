@@ -20,6 +20,7 @@ public final class AppMyPageViewModel: MyPageViewModelType {
         let viewWillAppear: Driver<Void>
         let alertSwitchTapped: Driver<Bool>
         let resetButtonTapped: Driver<Bool>
+        let logoutButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -28,6 +29,7 @@ public final class AppMyPageViewModel: MyPageViewModelType {
         let resetSuccessed = PassthroughSubject<Bool, Never>()
         let originNotificationIsAllowed = PassthroughSubject<Bool, Never>()
         let alertSettingOptInEditedResult = PassthroughSubject<Bool, Never>()
+        let deregisterPushTokenSuccess = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - MyPageCoordinatable
@@ -62,6 +64,12 @@ extension AppMyPageViewModel {
                 owner.useCase.resetStamp()
             }.store(in: cancelBag)
         
+        input.logoutButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.useCase.deregisterPushToken()
+            }.store(in: cancelBag)
+        
         return output
     }
     
@@ -85,6 +93,13 @@ extension AppMyPageViewModel {
             .asDriver()
             .sink { isOn in
                 output.alertSettingOptInEditedResult.send(isOn)
+            }.store(in: cancelBag)
+        
+        self.useCase
+            .deregisterPushTokenSuccess
+            .asDriver()
+            .sink { success in
+                output.deregisterPushTokenSuccess.send(success)
             }.store(in: cancelBag)
     }
 }

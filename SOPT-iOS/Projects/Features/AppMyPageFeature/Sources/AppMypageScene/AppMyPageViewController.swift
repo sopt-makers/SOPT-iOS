@@ -47,6 +47,7 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
     private let viewWillAppear = PassthroughSubject<Void, Never>()
     private let resetButtonTapped = PassthroughSubject<Bool, Never>()
     private let alertSwitchTapped = PassthroughSubject<Bool, Never>()
+    private let logoutButtonTapped = PassthroughSubject<Void, Never>()
     private let cancelBag = CancelBag()
     
     // MARK: - Views
@@ -292,8 +293,7 @@ extension AppMyPageVC {
                 description: I18N.MyPage.logoutDialogDescription,
                 customButtonTitle: I18N.MyPage.logoutDialogGrantButtonTitle,
                 customAction: { [weak self] in
-                    self?.logout()
-                    self?.onShowLogin?()
+                    self?.logoutButtonTapped.send()
                 },
                 animated: true
             )
@@ -335,7 +335,8 @@ extension AppMyPageVC {
         let input = AppMyPageViewModel.Input(
             viewWillAppear: self.viewWillAppear.asDriver(),
             alertSwitchTapped: self.alertSwitchTapped.asDriver(),
-            resetButtonTapped: self.resetButtonTapped.asDriver()
+            resetButtonTapped: self.resetButtonTapped.asDriver(),
+            logoutButtonTapped: self.logoutButtonTapped.asDriver()
         )
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
@@ -355,6 +356,12 @@ extension AppMyPageVC {
             .filter { $0 }
             .sink { [weak self] _ in
                 self?.showToast(message: I18N.MyPage.resetSuccess)
+            }.store(in: self.cancelBag)
+        
+        output.deregisterPushTokenSuccess
+            .sink { [weak self] success in
+                self?.logout()
+                self?.onShowLogin?()
             }.store(in: self.cancelBag)
     }
 }
