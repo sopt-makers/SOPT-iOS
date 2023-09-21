@@ -90,7 +90,8 @@ extension AppDelegate {
             implement: {
                 MissionListRepository(
                     missionService: DefaultMissionService(),
-                    rankService: DefaultRankService()
+                    rankService: DefaultRankService(),
+                    userService: DefaultUserService()
                 )
             }
         )

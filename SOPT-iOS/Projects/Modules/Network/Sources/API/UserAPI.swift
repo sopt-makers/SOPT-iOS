@@ -20,6 +20,7 @@ public enum UserAPI {
     case getUserMainInfo
     case withdrawal
     case registerPushToken(token: String)
+    case fetchActiveGenerationStatus
 }
 
 extension UserAPI: BaseAPI {
@@ -43,13 +44,15 @@ extension UserAPI: BaseAPI {
             return ""
         case .registerPushToken:
             return "/push-token"
+        case .fetchActiveGenerationStatus:
+            return "/generation"
         }
     }
     
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .getNicknameAvailable, .getUserMainInfo, .fetchSoptampUser:
+        case .getNicknameAvailable, .getUserMainInfo, .fetchSoptampUser, .fetchActiveGenerationStatus:
             return .get
         case .editSentence, .changeNickname:
             return .patch

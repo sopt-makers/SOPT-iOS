@@ -18,10 +18,16 @@ final class RankingCoordinator: DefaultCoordinator {
     
     private let factory: StampFeatureViewBuildable
     private let router: Router
+    private let rankingViewType: RankingViewType
     
-    public init(router: Router, factory: StampFeatureViewBuildable) {
+    public init(
+        router: Router,
+        factory: StampFeatureViewBuildable,
+        rankingViewType: RankingViewType
+    ) {
         self.factory = factory
         self.router = router
+        self.rankingViewType = rankingViewType
     }
     
     public override func start() {
@@ -29,7 +35,7 @@ final class RankingCoordinator: DefaultCoordinator {
     }
     
     private func showRanking() {
-        var ranking = factory.makeRankingVC()
+        var ranking = factory.makeRankingVC(rankingViewType: self.rankingViewType)
         ranking.onSwiped = { [weak self] in
             self?.router.popModule()
         }

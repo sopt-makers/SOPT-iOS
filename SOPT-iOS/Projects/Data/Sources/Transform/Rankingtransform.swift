@@ -13,7 +13,6 @@ import Domain
 import Network
 
 extension RankingEntity {
-    
     public func toDomain() -> RankingModel {
         return .init(username: self.nickname,
                      score: self.point,
