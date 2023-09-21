@@ -268,6 +268,9 @@ public struct I18N {
         public static let privacyPolicy = "개인정보 처리 방침"
         public static let termsOfUse = "서비스 이용 약관"
         public static let sendFeedback = "의견 보내기"
+        public static let alertSectionTitle = "알림 설정"
+        public static let alertListItemTitle = "알림"
+        public static let alertByFeaturesListItemTitle = "기능별 알림"
         public static let soptampSectionTitle = "솝탬프 설정"
         public static let editOnlineSentence = "한 마디 편집"
         public static let editNickname = "닉네임 변경"
@@ -283,8 +286,15 @@ public struct I18N {
         public static let logoutDialogGrantButtonTitle = "로그아웃"
         public static let login = "로그인"
 
-
         public static let withdrawal = "탈퇴하기"
+    }
+    
+    public struct NotificationSettingsByFeature {
+        public static let navigationTitle = "기능 별 알림"
+        public static let notificationSectionDescrition = "필요한 기능을 선택하면 알림을 보내드려요."
+        public static let allNotificationListItemTitle = "전체 알림"
+        public static let notificaitonByPartListItemTitle = "파트별 알림"
+        public static let infoNotificationListItemTitle = "소식 알림"
     }
     
     public struct Notification {

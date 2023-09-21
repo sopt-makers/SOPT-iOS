@@ -7,22 +7,39 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 
 import DSKit
 
-public class MyPageSectionListItemView: UIView {
+public final class MyPageSectionListItemView: UIView {
+    public enum RightItemType: Equatable {
+        case chevron
+        case `switch`(isOn: Bool)
+        
+        public static func == (lhs: Self, rhs: Self) -> Bool {
+            switch (lhs, rhs) {
+            case (.chevron, .chevron): return true
+            case (.switch(let leftParam), .switch(let rightParam)): return leftParam == rightParam
+            default: return false
+            }
+        }
+    }
+
     private enum Metric {
         static let itemHeight = 32.f
         static let rightButtonSize = 32.f
+        
+        static let rightItemSpacing = 0.f
                 
         static let baseViewLeading = 16.f
         static let baseViewTrailing = 8.f
+        static let switchViewTrailing = 18.f
         static let baseViewTopBottom = 5.f
     }
     
-    private let contentStackView = UIStackView().then {
+    private lazy var contentStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.distribution = .fill
         $0.backgroundColor = DSKitAsset.Colors.black80.color
@@ -33,14 +50,40 @@ public class MyPageSectionListItemView: UIView {
         $0.font = DSKitFontFamily.Suit.medium.font(size: 16)
     }
     
-    private let rightChevronButton = UIImageView().then {
-        $0.image = DSKitAsset.Assets.btnArrowRight.image
+    private let rightItemStackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.spacing = Metric.rightItemSpacing
+        $0.distribution = .fill
     }
     
-    init(title: String, frame: CGRect) {
+    private lazy var rightSwitch = AppSwitchView(isEnabled: false, frame: self.frame).then {
+        $0.isHidden = true
+    }
+    
+    private lazy var rightChevronView = UIImageView().then {
+        $0.image = DSKitAsset.Assets.btnArrowRight.image
+        $0.isHidden = true
+    }
+    
+    private let rightItemType: RightItemType
+    
+    init(
+        title: String,
+        rightItemType: RightItemType = .chevron,
+        frame: CGRect
+    ) {
         self.titleLabel.text = title
-        
+        self.rightItemType = rightItemType
+
         super.init(frame: frame)
+        
+        switch rightItemType {
+        case .chevron:
+            self.rightChevronView.isHidden = false
+        case .switch(let isOn):
+            self.rightSwitch.isOn = isOn
+            self.rightSwitch.isHidden = false
+        }
         
         self.backgroundColor = DSKitAsset.Colors.black80.color
 
@@ -53,24 +96,47 @@ public class MyPageSectionListItemView: UIView {
     }
 }
 
+
+// MARK: - Public functions
+extension MyPageSectionListItemView {
+    public func signalForRightSwitchClick() -> AnyPublisher<Bool, Never> {
+        return self.rightSwitch
+            .publisher(for: .touchUpInside)
+            .map(\.isOn)
+            .eraseToAnyPublisher()
+    }
+    
+    public func configureSwitch(to isOn: Bool) {
+        self.rightSwitch.isOn = isOn
+    }
+}
+
+// MARK: - Private functions
 extension MyPageSectionListItemView {
     private func setupLayouts() {
         self.addSubview(self.contentStackView)
         self.contentStackView.addArrangedSubviews(
             self.titleLabel,
-            self.rightChevronButton
+            self.rightItemStackView
+        )
+        self.rightItemStackView.addArrangedSubviews(
+            self.rightChevronView,
+            self.rightSwitch
         )
     }
     
     private func setupConstraint() {
         self.contentStackView.snp.makeConstraints {
             $0.leading.equalToSuperview().inset(Metric.baseViewLeading)
-            $0.trailing.equalToSuperview().inset(Metric.baseViewTrailing)
+            $0.trailing.equalToSuperview().inset(
+                self.rightItemType == .chevron
+                ? Metric.baseViewTrailing : Metric.switchViewTrailing
+            )
             $0.top.bottom.equalToSuperview().inset(Metric.baseViewTopBottom)
             $0.height.equalTo(Metric.itemHeight)
         }
         
-        self.rightChevronButton.snp.makeConstraints {
+        self.rightChevronView.snp.makeConstraints {
             $0.size.equalTo(Metric.rightButtonSize)
         }
     }

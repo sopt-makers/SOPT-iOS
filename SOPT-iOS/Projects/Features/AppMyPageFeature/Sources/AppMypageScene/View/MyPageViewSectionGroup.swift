@@ -15,7 +15,7 @@ import Core
 import SnapKit
 import Then
 
-public class MypageSectionGroupView: UIView {
+public final class MypageSectionGroupView: UIView {
     private enum Metric {
         static let headerLabelLeading = 16.f
         static let headerLabelTop = 16.f
@@ -31,14 +31,13 @@ public class MypageSectionGroupView: UIView {
         $0.backgroundColor = DSKitAsset.Colors.black80.color
         $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         $0.layer.cornerRadius = Metric.sectionGroupCornerRadius
-
     }
     private let headerLabel = UILabel().then {
         $0.textColor = DSKitAsset.Colors.gray80.color
         $0.font = DSKitFontFamily.Suit.medium.font(size: 12)
     }
 
-    private let MyPageSectionListItemView: [MyPageSectionListItemView]
+    private let myPageSectionListItemView: [MyPageSectionListItemView]
     private lazy var stackView = UIStackView(frame: self.frame).then {
         $0.axis = .vertical
         $0.distribution = .fill
@@ -56,7 +55,7 @@ public class MypageSectionGroupView: UIView {
         frame: CGRect
     ) {
         self.headerLabel.text = headerTitle
-        self.MyPageSectionListItemView = subviews
+        self.myPageSectionListItemView = subviews
         
         super.init(frame: frame)
         
@@ -73,7 +72,7 @@ extension MypageSectionGroupView {
     private func setupLayouts() {
         self.addSubview(self.stackView)
         self.stackView.addArrangedSubview(self.headerView)
-        self.MyPageSectionListItemView.forEach { self.stackView.addArrangedSubview($0) }
+        self.myPageSectionListItemView.forEach { self.stackView.addArrangedSubview($0) }
         self.stackView.addArrangedSubview(self.bottomInsetView)
         
         self.headerView.addSubview(self.headerLabel)

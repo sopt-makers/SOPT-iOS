@@ -21,6 +21,10 @@ public enum UserAPI {
     case withdrawal
     case registerPushToken(token: String)
     case fetchActiveGenerationStatus
+    case getNotificationIsAllowed
+    case optInPushNotificationInGeneral(isOn: Bool)
+    case getNotificationSettingsInDetail
+    case optInPushNotificationInDetail(notificationSettings: DetailNotificationOptInEntity)
 }
 
 extension UserAPI: BaseAPI {
@@ -46,15 +50,24 @@ extension UserAPI: BaseAPI {
             return "/push-token"
         case .fetchActiveGenerationStatus:
             return "/generation"
+        case .getNotificationIsAllowed:
+            return "/opt-in"
+        case .optInPushNotificationInGeneral:
+            return "/opt-in"
+        case .getNotificationSettingsInDetail:
+            return "/opt-in/detail"
+        case .optInPushNotificationInDetail:
+            return "/opt-in/detail"
         }
     }
     
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .getNicknameAvailable, .getUserMainInfo, .fetchSoptampUser, .fetchActiveGenerationStatus:
+        case .getNicknameAvailable, .getUserMainInfo, .fetchSoptampUser, .fetchActiveGenerationStatus,
+                .getNotificationIsAllowed, .getNotificationSettingsInDetail:
             return .get
-        case .editSentence, .changeNickname:
+        case .editSentence, .changeNickname, .optInPushNotificationInGeneral, .optInPushNotificationInDetail:
             return .patch
         case .withdrawal:
             return .delete
@@ -73,7 +86,10 @@ extension UserAPI: BaseAPI {
             params["profileMessage"] = sentence
         case .registerPushToken(let pushToken):
             params["pushToken"] = pushToken
-            params["platform"] = "iOS"
+        case .optInPushNotificationInGeneral(let isOn):
+            params["isOptIn"] = isOn
+        case .optInPushNotificationInDetail(let optInDTO):
+            params = optInDTO.toDictionary()
         default: break
         }
         return params
@@ -88,7 +104,8 @@ extension UserAPI: BaseAPI {
     
     public var task: Task {
         switch self {
-        case .changeNickname, .editSentence, .registerPushToken:
+        case .changeNickname, .editSentence, .registerPushToken,
+                .optInPushNotificationInGeneral, .optInPushNotificationInDetail:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain

@@ -18,5 +18,6 @@ public protocol MyPageCoordinatable {
     var onEditNicknameItemTap: (() -> Void)? { get set }
     var onWithdrawalItemTap: ((UserType) -> Void)? { get set }
     var onShowLogin: (() -> Void)? { get set }
+    var onAlertSettingByFeaturesItemTap: (() -> Void)? { get set }
 }
 public typealias MyPageViewModelType = ViewModelType
