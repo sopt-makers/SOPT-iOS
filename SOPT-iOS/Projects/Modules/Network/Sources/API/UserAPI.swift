@@ -85,6 +85,7 @@ extension UserAPI: BaseAPI {
         case .editSentence(let sentence):
             params["profileMessage"] = sentence
         case .registerPushToken(let pushToken):
+            params["platform"] = "iOS"
             params["pushToken"] = pushToken
         case .optInPushNotificationInGeneral(let isOn):
             params["isOptIn"] = isOn
