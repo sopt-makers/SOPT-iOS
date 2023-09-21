@@ -41,8 +41,11 @@ final class StampCoordinator: DefaultCoordinator {
         missionList.onGuideTap = { [weak self] in
             self?.showGuide()
         }
-        missionList.onRankingButtonTap = { [weak self] in
-            self?.runRankingFlow()
+        missionList.onRankingButtonTap = { [weak self] rankingViewType in
+            self?.runRankingFlow(rankingViewType: rankingViewType)
+        }
+        missionList.onCurrentGenerationRankingButtonTap = { [weak self] rankingViewType in
+            self?.runRankingFlow(rankingViewType: rankingViewType)
         }
         missionList.onCellTap = { [weak self] model, username in
             self?.runMissionDetailFlow(model, username)
@@ -59,10 +62,11 @@ final class StampCoordinator: DefaultCoordinator {
         guideCoordinator.start()
     }
     
-    private func runRankingFlow() {
+    private func runRankingFlow(rankingViewType: RankingViewType) {
         let rankingCoordinator = RankingCoordinator(
             router: Router(rootController: rootController!),
-            factory: factory
+            factory: factory,
+            rankingViewType: rankingViewType
         )
         rankingCoordinator.finishFlow = { [weak self, weak rankingCoordinator] in
             self?.removeDependency(rankingCoordinator)

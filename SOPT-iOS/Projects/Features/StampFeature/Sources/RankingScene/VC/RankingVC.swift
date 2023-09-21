@@ -67,6 +67,22 @@ public class RankingVC: UIViewController, RankingViewControllable {
     }()
     
     // MARK: - View Life Cycle
+    private let rankingViewType: RankingViewType
+    
+    init(rankingViewType: RankingViewType) {
+        self.rankingViewType = rankingViewType
+
+        super.init(nibName: nil, bundle: nil)
+
+        guard case .currentGeneration(let info) = rankingViewType else { return }
+        
+        let navigationTitle = String(describing: info.currentGeneration) + "기 랭킹"
+        self.naviBar.setTitle(navigationTitle)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()

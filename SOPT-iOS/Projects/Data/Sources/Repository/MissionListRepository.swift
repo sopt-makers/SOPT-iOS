@@ -16,11 +16,17 @@ public class MissionListRepository {
     
     private let missionService: MissionService
     private let rankService: RankService
+    private let userService: UserService
     private let cancelBag = CancelBag()
     
-    public init(missionService: MissionService, rankService: RankService) {
+    public init(
+        missionService: MissionService,
+        rankService: RankService,
+        userService: UserService
+    ) {
         self.missionService = missionService
         self.rankService = rankService
+        self.userService = userService
     }
 }
 
@@ -31,6 +37,13 @@ extension MissionListRepository: MissionListRepositoryInterface {
         }
         
         return fetchRankDetail(userName: userName)
+    }
+    
+    public func fetchIsActiveGenerationUser() -> AnyPublisher<UsersActiveGenerationStatusViewResponse, Error> {
+        self.userService
+            .fetchActiveGenerationStatus()
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher()
     }
 }
 

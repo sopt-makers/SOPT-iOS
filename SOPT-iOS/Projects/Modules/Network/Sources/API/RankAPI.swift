@@ -13,6 +13,7 @@ import Moya
 
 public enum RankAPI {
     case rank
+    case currentRank
     case rankDetail(userName: String)
 }
 
@@ -34,6 +35,8 @@ extension RankAPI: BaseAPI {
         switch self {
         case .rank:
             return ""
+        case .currentRank:
+            return "/current"
         case .rankDetail:
             return "/detail"
         }

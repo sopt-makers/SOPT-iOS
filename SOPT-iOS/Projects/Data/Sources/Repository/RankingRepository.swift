@@ -23,9 +23,9 @@ public class RankingRepository {
 }
 
 extension RankingRepository: RankingRepositoryInterface {
-    public func fetchRankingListModel() -> AnyPublisher<[Domain.RankingModel], Error> {
+    public func fetchRankingListModel(isCurrentGeneration: Bool) -> AnyPublisher<[Domain.RankingModel], Error> {
         return self.rankService
-            .fetchRankingList()
+            .fetchRankingList(isCurrentGeneration: isCurrentGeneration)
             .map({ entity in
                 entity.map { $0.toDomain() }
             })

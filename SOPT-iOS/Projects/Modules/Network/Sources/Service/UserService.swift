@@ -23,6 +23,7 @@ public protocol UserService {
     func getUserMainInfo() -> AnyPublisher<MainEntity, Error>
     func withdraw() -> AnyPublisher<Int, Error>
     func registerPushToken(with token: String) -> AnyPublisher<Int, Error>
+    func fetchActiveGenerationStatus() -> AnyPublisher<UsersActiveGenerationStatusEntity, Error>
 }
 
 extension DefaultUserService: UserService {
@@ -52,5 +53,9 @@ extension DefaultUserService: UserService {
  
     public func registerPushToken(with token: String) -> AnyPublisher<Int, Error> {
         requestObjectInCombineNoResult(.registerPushToken(token: token))
+    }
+    
+    public func fetchActiveGenerationStatus() -> AnyPublisher<UsersActiveGenerationStatusEntity, Error> {
+        requestObjectInCombine(.fetchActiveGenerationStatus)
     }
 }
