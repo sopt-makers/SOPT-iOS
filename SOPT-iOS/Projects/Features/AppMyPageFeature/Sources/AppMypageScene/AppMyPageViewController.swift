@@ -41,7 +41,6 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
     public var onWithdrawalItemTap: ((UserType) -> Void)?
     public var onLoginItemTap: (() -> Void)?
     public var onShowLogin: (() -> Void)?
-    public var onAlertSettingByFeaturesItemTap: (() -> Void)?
     
     // MARK: Combine
     private let viewWillAppear = PassthroughSubject<Void, Never>()
@@ -95,8 +94,7 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
     private lazy var alertSectionGroup = MypageSectionGroupView(
         headerTitle: I18N.MyPage.alertSectionTitle,
         subviews: [
-            self.alertListItem,
-            self.alertByFeaturesListItem,
+            self.alertListItem
         ],
         frame: self.view.frame
     )
@@ -106,13 +104,6 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
         rightItemType: .switch(isOn: false),
         frame: self.view.frame
     )
-    
-    private lazy var alertByFeaturesListItem = MyPageSectionListItemView(
-        title: I18N.MyPage.alertByFeaturesListItemTitle,
-        frame: self.view.frame
-    ).then {
-        $0.isHidden = true
-    }
 
     // MARK: Soptamp
     private lazy var soptampSectionGroup = MypageSectionGroupView(
@@ -306,10 +297,6 @@ extension AppMyPageVC {
         self.loginListItem.addTapGestureRecognizer {
             self.onShowLogin?()
         }
-        
-        self.alertByFeaturesListItem.addTapGestureRecognizer {
-            self.onAlertSettingByFeaturesItemTap?()
-        }
     }
 }
 
@@ -343,13 +330,11 @@ extension AppMyPageVC {
         output.originNotificationIsAllowed
             .sink { [weak self] isAllowed in
                 self?.alertListItem.configureSwitch(to: isAllowed)
-                self?.alertByFeaturesListItem.isHidden = !isAllowed
             }.store(in: self.cancelBag)
         
         output.alertSettingOptInEditedResult
             .sink { [weak self] isAllowed in
                 self?.alertListItem.configureSwitch(to: isAllowed)
-                self?.alertByFeaturesListItem.isHidden = !isAllowed
             }.store(in: self.cancelBag)
         
         output.resetSuccessed

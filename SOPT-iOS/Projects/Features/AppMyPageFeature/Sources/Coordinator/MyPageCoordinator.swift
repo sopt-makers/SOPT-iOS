@@ -63,11 +63,7 @@ final class MyPageCoordinator: DefaultMyPageCoordinator {
         myPage.onWithdrawalItemTap = { [weak self] userType in
             self?.showWithdrawal(userType: userType)
         }
-        
-        myPage.onAlertSettingByFeaturesItemTap = { [weak self] in
-            let onNotificationSettingByFeaturesVC = self?.factory.makeAlertSettingByFeatures()
-            self?.router.push(onNotificationSettingByFeaturesVC)
-        }
+
         router.push(myPage)
     }
     
