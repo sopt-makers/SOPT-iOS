@@ -21,7 +21,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
     private let useCase: NotificationListUseCase
     private var cancelBag = CancelBag()
     
-    let filterList: [NotificationFilterType] = [.all, .entireTarget, .partTarget, .news]
+    let filterList: [NotificationFilterType] = [.all, .notice, .news]
     var notifications: [NotificationListModel] = []
     
     var page = 0

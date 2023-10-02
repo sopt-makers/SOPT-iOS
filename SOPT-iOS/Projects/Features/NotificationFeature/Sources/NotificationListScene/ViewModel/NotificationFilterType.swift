@@ -9,8 +9,7 @@
 import Foundation
 
 enum NotificationFilterType: String {
-    case all = "모든 알림"
-    case entireTarget = "전체 알림"
-    case partTarget = "파트별 알림"
+    case all = "전체 알림"
+    case notice = "공지"
     case news = "소식"
 }

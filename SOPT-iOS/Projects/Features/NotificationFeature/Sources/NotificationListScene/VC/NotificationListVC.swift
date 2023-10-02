@@ -43,7 +43,6 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
         cv.showsHorizontalScrollIndicator = false
         cv.showsVerticalScrollIndicator = false
         cv.backgroundColor = .clear
-        cv.isHidden = true
         return cv
     }()
     
@@ -99,20 +98,20 @@ extension NotificationListVC {
     }
     
     private func setLayout() {
-        self.view.addSubviews(naviBar, notificationListCollectionView)
+        self.view.addSubviews(naviBar, notificationFilterCollectionView, notificationListCollectionView)
         
         naviBar.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
         }
         
-//        notificationFilterCollectionView.snp.makeConstraints { make in
-//            make.top.equalTo(naviBar.snp.bottom)
-//            make.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-//            make.height.equalTo(46)
-//        }
+        notificationFilterCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(naviBar.snp.bottom)
+            make.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            make.height.equalTo(46)
+        }
         
         notificationListCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(naviBar.snp.bottom)
+            make.top.equalTo(notificationFilterCollectionView.snp.bottom)
             make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
         }
         
@@ -232,7 +231,7 @@ extension NotificationListVC: UICollectionViewDelegate {
         let contentHeight = scrollView.contentSize.height
         let height = scrollView.frame.height
         
-        guard offsetY > 0 else { return }
+        guard offsetY > 0 , contentHeight > 0 else { return }
         
         if height > contentHeight - offsetY && !viewModel.isPaging {
             viewModel.startPaging()
