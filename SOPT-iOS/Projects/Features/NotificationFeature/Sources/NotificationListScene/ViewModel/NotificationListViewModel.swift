@@ -46,7 +46,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
     // MARK: - NotificationCoordinatable
     
     public var onNaviBackButtonTap: (() -> Void)?
-    public var onNotificationTap: ((NotificationListModel) -> Void)?
+    public var onNotificationTap: ((Int) -> Void)?
     
     // MARK: - init
     
@@ -78,7 +78,7 @@ extension NotificationListViewModel {
             .withUnretained(self)
             .sink { owner, index in
                 let notification = owner.notifications[index]
-                owner.onNotificationTap?(notification)
+                owner.onNotificationTap?(notification.notificationId)
                 owner.read(index: index)
                 output.notificationList.send(self.notifications)
             }.store(in: cancelBag)

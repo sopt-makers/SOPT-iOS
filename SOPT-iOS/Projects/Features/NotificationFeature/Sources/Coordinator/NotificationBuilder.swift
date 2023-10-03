@@ -26,9 +26,9 @@ extension NotificationBuilder: NotificationFeatureBuildable {
         return (vc, vm)
     }
     
-    public func makeNotificationDetailVC(notification: NotificationListModel) -> NotificationDetailViewControllable {
+    public func makeNotificationDetailVC(notificationId: Int) -> NotificationDetailViewControllable {
         let useCase = DefaultNotificationDetailUseCase(repository: notificationDetailRepository)
-        let viewModel = NotificationDetailViewModel(useCase: useCase, notification: notification)
+        let viewModel = NotificationDetailViewModel(useCase: useCase, notificationId: notificationId)
         let notificationDetailVC = NotificationDetailVC(viewModel: viewModel)
         
         return notificationDetailVC
