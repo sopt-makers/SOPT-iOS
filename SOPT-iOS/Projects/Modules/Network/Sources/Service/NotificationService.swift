@@ -15,7 +15,7 @@ public typealias DefaultNotificationService = BaseService<NotificationAPI>
 
 public protocol NotificationService {
     func getNotificationList(page: Int) -> AnyPublisher<[NotificationListEntity], Error>
-    func readNotification(notificationId: Int) -> AnyPublisher<Int, Error>
+    func readNotification(notificationId: Int?) -> AnyPublisher<Int, Error>
 }
 
 extension DefaultNotificationService: NotificationService {
@@ -24,7 +24,7 @@ extension DefaultNotificationService: NotificationService {
         requestObjectInCombine(.getNotificationList(page: page))
     }
     
-    public func readNotification(notificationId: Int) -> AnyPublisher<Int, Error> {
+    public func readNotification(notificationId: Int?) -> AnyPublisher<Int, Error> {
         requestObjectInCombineNoResult(.readNotification(notificationId: notificationId))
     }
 }
