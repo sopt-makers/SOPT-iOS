@@ -154,7 +154,7 @@ extension MainVC {
     
     private func updateUI(with model: UserMainInfoModel) {
         if let isAllConfirm = model.isAllConfirm {
-            self.naviBar.changeNoticeButtonStyle(isActive: isAllConfirm)
+            self.naviBar.changeNoticeButtonStyle(isActive: !isAllConfirm)
         }
         
         self.naviBar.hideNoticeButton(wantsToHide: self.viewModel.userType == .visitor)
