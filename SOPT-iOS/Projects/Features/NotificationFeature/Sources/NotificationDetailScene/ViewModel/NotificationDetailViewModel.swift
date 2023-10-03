@@ -53,7 +53,7 @@ extension NotificationDetailViewModel {
                 guard let self = self else { return }
                 output.notification.send(notification)
                 if notification.isRead == false {
-                    useCase.readNotification(notificationId: notification.id)
+                    useCase.readNotification(notificationId: notification.notificationId)
                 }
             }.store(in: cancelBag)
     

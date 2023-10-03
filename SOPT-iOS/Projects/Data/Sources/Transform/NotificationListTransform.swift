@@ -13,13 +13,12 @@ import Network
 
 extension NotificationListEntity {
     public func toDomain() -> NotificationListModel {
-        return NotificationListModel.init(id: id,
+        return NotificationListModel.init(notificationId: notificationId,
                                           userId: userId,
                                           title: title,
                                           content: content,
-                                          type: type,
+                                          category: category,
                                           isRead: isRead,
-                                          createdAt: createdAt,
-                                          updatedAt: updatedAt)
+                                          createdAt: createdAt)
     }
 }

@@ -10,26 +10,24 @@ import Foundation
 import Core
 
 public struct NotificationListModel: Hashable {
-    public let id: Int
+    public let notificationId: Int
     public let userId: Int
     public let title: String
     public let content: String
-    public let type: String?
+    public let category: String?
     public var isRead: Bool
     public let createdAt: String
-    public let updatedAt: String?
     public var formattedCreatedAt: String {
         self.createdAt.serverTimeToString(forUse: .forNotification)
     }
 
-    public init(id: Int, userId: Int, title: String, content: String, type: String?, isRead: Bool, createdAt: String, updatedAt: String?) {
-        self.id = id
+    public init(notificationId: Int, userId: Int, title: String, content: String, category: String?, isRead: Bool, createdAt: String) {
+        self.notificationId = notificationId
         self.userId = userId
         self.title = title
         self.content = content
-        self.type = type
+        self.category = category
         self.isRead = isRead
         self.createdAt = createdAt
-        self.updatedAt = updatedAt
     }
 }
