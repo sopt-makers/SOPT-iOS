@@ -25,6 +25,7 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
     private var cancelBag = CancelBag()
     private var cellTapped = PassthroughSubject<Int, Never>()
     private var requestNotifications = CurrentValueSubject<Void, Never>(())
+    private var categoryCellTapped = PassthroughSubject<Int, Never>()
     
     private lazy var notificationFilterDataSource: UICollectionViewDiffableDataSource<Int, NotificationFilterType>! = nil
     
@@ -194,10 +195,12 @@ extension NotificationListVC {
 extension NotificationListVC {
     private func bindViewModels() {
         let input = NotificationListViewModel.Input(
+            viewDidLoad: Just<Void>(()).asDriver(),
             requestNotifications: requestNotifications.asDriver(),
             naviBackButtonTapped: naviBar.leftButtonTapped,
             cellTapped: cellTapped.asDriver(),
-            readAllButtonTapped: naviBar.rightButtonTapped
+            readAllButtonTapped: naviBar.rightButtonTapped,
+            categoryCellTapped: categoryCellTapped.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -220,6 +223,9 @@ extension NotificationListVC {
 
 extension NotificationListVC: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView == notificationFilterCollectionView {
+            categoryCellTapped.send(indexPath.item)
+        }
         
         if collectionView == notificationListCollectionView {
             cellTapped.send(indexPath.item)
