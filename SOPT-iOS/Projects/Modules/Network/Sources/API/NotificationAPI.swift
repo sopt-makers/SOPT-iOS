@@ -14,6 +14,7 @@ import Moya
 public enum NotificationAPI {
     case getNotificationList(page: Int)
     case readNotification(notificationId: Int?)
+    case getNotificationDetail(notificationId: Int)
 }
 
 extension NotificationAPI: BaseAPI {
@@ -23,6 +24,8 @@ extension NotificationAPI: BaseAPI {
         switch self {
         case .readNotification(let notificationId):
             guard let notificationId = notificationId else { return "" }
+            return "/\(notificationId)"
+        case .getNotificationDetail(let notificationId):
             return "/\(notificationId)"
         default:
             return ""
