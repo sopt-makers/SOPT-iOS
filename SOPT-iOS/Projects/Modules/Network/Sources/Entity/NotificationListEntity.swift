@@ -12,7 +12,7 @@ public struct NotificationListEntity: Codable {
     public let notificationId: Int
     public let userId: Int
     public let title: String
-    public let content: String
+    public let content: String?
     public let category: String?
     public let isRead: Bool
     public let createdAt: String
