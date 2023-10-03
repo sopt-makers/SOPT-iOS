@@ -28,4 +28,10 @@ extension NotificationDetailRepository: NotificationDetailRepositoryInterface {
             .map { $0 == 200 }
             .eraseToAnyPublisher()
     }
+    
+    public func getNotificationDetail(notificationId: Int) -> AnyPublisher<NotificationDetailModel, Error> {
+        service.getNotificationDetail(notificationId: notificationId)
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
 }
