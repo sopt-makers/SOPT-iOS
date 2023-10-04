@@ -27,7 +27,7 @@ final class MainNavigationBar: UIView {
     }
     
     private let noticeButton = UIButton(type: .custom).then {
-        $0.setImage(DSKitAsset.Assets.btnNoticeActive.image, for: .normal)
+        $0.setImage(DSKitAsset.Assets.btnNoticeInactive.image, for: .normal)
     }
     
     private let rightButton = UIButton(type: .custom).then {
