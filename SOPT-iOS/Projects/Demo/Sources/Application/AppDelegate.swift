@@ -12,6 +12,7 @@ import Sentry
 import Network
 import Core
 import SafariServices
+import RootFeature
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -42,7 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ) {}
 }
 
-// MARK: - Sentry & FCM
+// MARK: - Sentry & APNs
 
 extension AppDelegate {
     private func configureSentry() {
@@ -61,13 +62,9 @@ extension AppDelegate {
     }
     
     private func configureAPNs() {
-        UNUserNotificationCenter.current().delegate = self
+        UNUserNotificationCenter.current().delegate = NotificationHandler.shared
     }
-}
-
-// MARK: - APNs
-
-extension AppDelegate: UNUserNotificationCenterDelegate {
+    
     /// APNs 등록 실패할 경우 호출되는 메서드
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         print("APNs Failed to register for notifications: \(error.localizedDescription)")
@@ -79,16 +76,5 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         let token = tokenParts.joined()
         UserDefaultKeyList.User.pushToken = token
         print("APNs Device Token: \(token)")
-    }
-    
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
-        let userInfo = notification.request.content.userInfo
-        print("APNs 푸시 알림 페이로드: \(userInfo)")
-        return([.badge, .banner, .list, .sound])
-    }
-    
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
-        let userInfo = response.notification.request.content.userInfo
-        print("APNs 푸시 알림 페이로드: \(userInfo)")
     }
 }
