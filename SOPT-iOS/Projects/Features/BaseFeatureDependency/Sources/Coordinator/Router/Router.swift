@@ -114,8 +114,7 @@ final class Router: NSObject, RouterProtocol {
     public func presentSafari(url: String) {
         let safariViewController = SFSafariViewController(url: URL(string: url)!)
         safariViewController.playgroundStyle()
-        // NOTE: (@준호) 최상단 뷰컨에 present. 검토 필요.
-        UIApplication.getMostTopViewController()?.present(safariViewController, animated: true)
+        self.rootController?.present(safariViewController, animated: true)
     }
     
     public func push(_ module: ViewControllable?)  {
@@ -197,6 +196,8 @@ final class Router: NSObject, RouterProtocol {
         let viewController = module.viewController
         let window = UIWindow.keyWindowGetter!
         let navigation = UINavigationController(rootViewController: viewController)
+        
+        self.rootController = navigation
         
         if !withAnimation {
             window.rootViewController = navigation
