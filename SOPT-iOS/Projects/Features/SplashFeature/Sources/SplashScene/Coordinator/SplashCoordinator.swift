@@ -54,7 +54,7 @@ final class SplashCoordinator: DefaultCoordinator {
             if didCheck {
                 UserDefaultKeyList.AppNotice.checkedAppVersion = model.recommendVersion
             }
-            self?.router.dismissModule()
+            self?.router.dismissModule(animated: true)
             self?.finishFlow?()
         }.store(in: cancelBag)
         

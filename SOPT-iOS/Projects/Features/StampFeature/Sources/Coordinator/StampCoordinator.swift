@@ -35,7 +35,7 @@ final class StampCoordinator: DefaultCoordinator {
     private func showMissionList(sceneType: MissionListSceneType) {
         var missionList = factory.makeMissionListVC(sceneType: sceneType)
         missionList.onNaviBackTap = { [weak self] in
-            self?.router.dismissModule()
+            self?.router.dismissModule(animated: true)
             self?.finishFlow?()
         }
         missionList.onGuideTap = { [weak self] in

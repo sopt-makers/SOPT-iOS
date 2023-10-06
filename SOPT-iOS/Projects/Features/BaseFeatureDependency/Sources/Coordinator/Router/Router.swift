@@ -29,7 +29,7 @@ public protocol RouterProtocol: ViewControllable {
     func popModule(transition: UIViewControllerAnimatedTransitioning?)
     func popModule(transition: UIViewControllerAnimatedTransitioning?, animated: Bool)
     
-    func dismissModule()
+    func dismissModule(animated: Bool)
     func dismissModule(animated: Bool, completion: (() -> Void)?)
     
     func setRootModule(_ module: ViewControllable?, animated: Bool)
@@ -175,8 +175,8 @@ final class Router: NSObject, RouterProtocol {
         }
     }
     
-    public func dismissModule() {
-        self.dismissModule(animated: true, completion: nil)
+    public func dismissModule(animated: Bool) {
+        self.dismissModule(animated: animated, completion: nil)
     }
     
     public func dismissModule(animated: Bool, completion: (() -> Void)?) {
