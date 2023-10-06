@@ -9,7 +9,7 @@
 import Foundation
 
 import Domain
-import Network
+import Networks
 
 extension MainDescriptionEntity {
     public func toDomain() -> MainDescriptionModel {

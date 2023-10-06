@@ -10,7 +10,7 @@ import Combine
 
 import Core
 import Domain
-import Network
+import Networks
 
 public final class NotificationSettingRepository {
     private let userService: UserService

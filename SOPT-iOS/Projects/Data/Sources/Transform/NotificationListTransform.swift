@@ -9,7 +9,7 @@
 import Foundation
 
 import Domain
-import Network
+import Networks
 
 extension NotificationListEntity {
     public func toDomain() -> NotificationListModel {

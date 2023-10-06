@@ -9,7 +9,7 @@
 import Foundation
 
 import Domain
-import Network
+import Networks
 
 extension NotificationOptInModel {
     public func toEntity() -> DetailNotificationOptInEntity {

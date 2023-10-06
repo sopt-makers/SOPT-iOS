@@ -9,7 +9,7 @@
 import Foundation
 
 import Domain
-import Network
+import Networks
 
 public extension MissionListEntity {
     func toDomain() -> [MissionListModel] {

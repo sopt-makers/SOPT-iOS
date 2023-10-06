@@ -11,7 +11,7 @@ import Foundation
 
 import Core
 import Domain
-import Network
+import Networks
 
 public class ListDetailRepository {
     
