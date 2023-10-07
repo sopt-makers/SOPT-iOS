@@ -23,9 +23,12 @@ final class ApplicationCoordinator: BaseCoordinator {
     
     //  private let coordinatorFactory: CoordinatorFactory
     private let router: Router
+    private var cancelBag = CancelBag()
+    private let notificationHandler: NotificationHandler
     
-    public init(router: Router) {
+    public init(router: Router, notificationHandler: NotificationHandler) {
         self.router = router
+        self.notificationHandler = notificationHandler
     }
     
     public override func start(with option: DeepLinkOption?) {
@@ -33,6 +36,8 @@ final class ApplicationCoordinator: BaseCoordinator {
             switch option {
             case .signInSuccess(let url):
                 runSignInSuccessFlow(with: url)
+            default:
+                runSplashFlow()
             }
         } else {
             runSplashFlow()
@@ -88,6 +93,8 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     private func runMainFlow(type: UserType? = nil) {
+        cancelBag.cancel()
+        
         let userType = type ?? UserDefaultKeyList.Auth.getUserType()
         let coordinator = MainCoordinator(
             router: router,
@@ -111,6 +118,17 @@ extension ApplicationCoordinator {
         }
         addDependency(coordinator)
         coordinator.start()
+        
+        // 이 코드를 함수로 분리
+        self.notificationHandler.$notificationId
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] id in
+                guard let self = self, let id = Int(id) else { return }
+                self.router.dismissModule(animated: false)
+                self.runNotificationFlow(with: .notificationDetail(notificationId: id))
+                self.notificationHandler.notificationId = nil
+            }.store(in: cancelBag)
     }
     
     private func runAttendanceFlow() {
@@ -167,7 +185,7 @@ extension ApplicationCoordinator {
         coordinator.start()
     }
     
-    private func runNotificationFlow() {
+    private func runNotificationFlow(with option: DeepLinkOption? = nil) {
         let coordinator = NotificationCoordinator(
             router: Router(
                 rootController: UIWindow.getRootNavigationController
@@ -178,6 +196,6 @@ extension ApplicationCoordinator {
             self?.removeDependency(coordinator)
         }
         addDependency(coordinator)
-        coordinator.start()
+        coordinator.start(with: option)
     }
 }

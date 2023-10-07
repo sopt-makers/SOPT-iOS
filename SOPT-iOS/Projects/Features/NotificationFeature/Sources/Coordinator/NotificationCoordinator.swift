@@ -28,6 +28,13 @@ final class NotificationCoordinator: DefaultCoordinator {
         showNotifcationList()
     }
     
+    public override func start(with option: DeepLinkOption?) {
+        start()
+        if case .notificationDetail(let id) = option {
+                showNotificationDetail(notificationId: id)
+        }
+    }
+    
     private func showNotifcationList() {
         var notificiationList = factory.makeNotificationList()
         notificiationList.vm.onNaviBackButtonTap = { [weak self] in
@@ -40,7 +47,7 @@ final class NotificationCoordinator: DefaultCoordinator {
         router.push(notificiationList.vc)
     }
     
-    private func showNotificationDetail(notificationId: Int) {
+    public func showNotificationDetail(notificationId: Int) {
         let notificationDetail = factory.makeNotificationDetailVC(notificationId: notificationId)
         router.push(notificationDetail)
     }
