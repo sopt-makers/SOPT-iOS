@@ -14,6 +14,6 @@ let project = Project.makeModule(
     targets: [.unitTest, .staticFramework],
     internalDependencies: [
         .domain,
-        .Modules.network
+        .Modules.networks
     ]
 )

@@ -9,7 +9,7 @@
 import Foundation
 
 import Domain
-import Network
+import Networks
 
 extension ListDetailEntity {
     public func toDomain() -> ListDetailModel {

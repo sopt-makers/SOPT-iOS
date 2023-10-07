@@ -10,7 +10,7 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let project = Project.makeModule(
-    name: "Network",
+    name: "Networks",
     targets: [.unitTest, .staticFramework],
     internalDependencies: [
         .core

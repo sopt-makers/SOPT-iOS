@@ -9,7 +9,7 @@ import UIKit
 
 import Sentry
 
-import Network
+import Networks
 import Core
 import SafariServices
 import RootFeature
