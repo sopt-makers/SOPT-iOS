@@ -9,7 +9,7 @@
 import Foundation
 
 import Domain
-import Network
+import Networks
 
 extension AttendanceRoundEntity {
     public func toDomain() -> AttendanceRoundModel {

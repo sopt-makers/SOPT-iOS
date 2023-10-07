@@ -10,7 +10,7 @@ import Core
 
 import Domain
 import Data
-import Network
+import Networks
 
 extension AppDelegate {
     var container: DIContainer {

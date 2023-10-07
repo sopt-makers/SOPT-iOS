@@ -8,8 +8,7 @@
 
 import Foundation
 
-import Presentation
-import Network
+import Networks
 import Domain
 import Data
 
@@ -18,6 +17,3 @@ public class ModuleFactory {
     private init() { }
 }
 
-extension ModuleFactory: ModuleFactoryInterface {
-    
-}

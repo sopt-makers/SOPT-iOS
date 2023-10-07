@@ -7,7 +7,7 @@
 //
 
 import Domain
-import Network
+import Networks
 
 extension UsersActiveGenerationStatusEntity {
     func toDomain() -> UsersActiveGenerationStatusViewResponse {
@@ -18,7 +18,7 @@ extension UsersActiveGenerationStatusEntity {
     }
 }
 
-extension Network.UsersActivationState {
+extension Networks.UsersActivationState {
     func toDomain() -> Domain.UsersActivationState {
         switch self {
         case .ACTIVE: return .ACTIVE

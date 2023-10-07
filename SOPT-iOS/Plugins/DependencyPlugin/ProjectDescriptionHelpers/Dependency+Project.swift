@@ -37,7 +37,7 @@ public extension Dep {
 public extension Dep.Modules {
     static let dsKit = Dep.project(target: "DSKit", path: .relativeToModules("DSKit"))
     
-    static let network = Dep.project(target: "Network", path: .relativeToModules("Network"))
+    static let networks = Dep.project(target: "Networks", path: .relativeToModules("Networks"))
     
     static let thirdPartyLibs = Dep.project(target: "ThirdPartyLibs", path: .relativeToModules("ThirdPartyLibs"))
     

@@ -10,7 +10,7 @@ import Foundation
 
 import Core
 import Domain
-import Network
+import Networks
 
 enum PartType: String, CaseIterable {
     case planPart = "PLAN"
