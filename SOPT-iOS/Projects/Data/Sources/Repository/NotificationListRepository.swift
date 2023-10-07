@@ -30,7 +30,7 @@ extension NotificationListRepository: NotificationListRepositoryInterface {
     }
     
     public func readAllNotifications() -> AnyPublisher<Bool, Error> {
-        service.readNotification(notificationId: 0)
+        service.readNotification(notificationId: nil)
             .map { $0 == 200 }
             .eraseToAnyPublisher()
     }

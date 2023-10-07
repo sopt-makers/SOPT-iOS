@@ -34,14 +34,14 @@ final class NotificationCoordinator: DefaultCoordinator {
             self?.router.popModule()
             self?.finishFlow?()
         }
-        notificiationList.vm.onNotificationTap = { [weak self] notification in
-            self?.showNotificationDetail(notification: notification)
+        notificiationList.vm.onNotificationTap = { [weak self] notificationId in
+            self?.showNotificationDetail(notificationId: notificationId)
         }
         router.push(notificiationList.vc)
     }
     
-    private func showNotificationDetail(notification: NotificationListModel) {
-        let notificationDetail = factory.makeNotificationDetailVC(notification: notification)
+    private func showNotificationDetail(notificationId: Int) {
+        let notificationDetail = factory.makeNotificationDetailVC(notificationId: notificationId)
         router.push(notificationDetail)
     }
 }

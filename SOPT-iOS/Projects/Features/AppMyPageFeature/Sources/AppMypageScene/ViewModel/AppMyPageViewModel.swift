@@ -18,7 +18,6 @@ public final class AppMyPageViewModel: MyPageViewModelType {
     
     public struct Input {
         let viewWillAppear: Driver<Void>
-        let alertSwitchTapped: Driver<Bool>
         let resetButtonTapped: Driver<Bool>
         let logoutButtonTapped: Driver<Void>
     }
@@ -52,12 +51,6 @@ extension AppMyPageViewModel {
                 self.useCase.fetchUserNotificationIsAllowed()
             }.store(in: cancelBag)
         
-        input.alertSwitchTapped
-            .withUnretained(self)
-            .sink { owner, isOn in
-                owner.useCase.optInPushNotificationInGeneral(to: isOn)
-            }.store(in: cancelBag)
-
         input.resetButtonTapped
             .withUnretained(self)
             .sink { owner, _ in

@@ -41,12 +41,11 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
     public var onWithdrawalItemTap: ((UserType) -> Void)?
     public var onLoginItemTap: (() -> Void)?
     public var onShowLogin: (() -> Void)?
-    public var onAlertSettingByFeaturesItemTap: (() -> Void)?
-    
+    public var onAlertButtonTap: ((String) -> Void)?
+
     // MARK: Combine
     private let viewWillAppear = PassthroughSubject<Void, Never>()
     private let resetButtonTapped = PassthroughSubject<Bool, Never>()
-    private let alertSwitchTapped = PassthroughSubject<Bool, Never>()
     private let logoutButtonTapped = PassthroughSubject<Void, Never>()
     private let cancelBag = CancelBag()
     
@@ -95,24 +94,15 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
     private lazy var alertSectionGroup = MypageSectionGroupView(
         headerTitle: I18N.MyPage.alertSectionTitle,
         subviews: [
-            self.alertListItem,
-            self.alertByFeaturesListItem,
+            self.alertListItem
         ],
         frame: self.view.frame
     )
     
     private lazy var alertListItem = MyPageSectionListItemView(
         title: I18N.MyPage.alertListItemTitle,
-        rightItemType: .switch(isOn: false),
         frame: self.view.frame
     )
-    
-    private lazy var alertByFeaturesListItem = MyPageSectionListItemView(
-        title: I18N.MyPage.alertByFeaturesListItemTitle,
-        frame: self.view.frame
-    ).then {
-        $0.isHidden = true
-    }
 
     // MARK: Soptamp
     private lazy var soptampSectionGroup = MypageSectionGroupView(
@@ -262,6 +252,10 @@ extension AppMyPageVC {
         self.sendFeedbackListItem.addTapGestureRecognizer {
             openExternalLink(urlStr: ExternalURL.GoogleForms.serviceProposal)
         }
+        
+        self.alertListItem.addTapGestureRecognizer {
+            self.onAlertButtonTap?(UIApplication.openSettingsURLString)
+        }
 
         self.editOnelineSentenceListItem.addTapGestureRecognizer {
             self.onEditOnelineSentenceItemTap?()
@@ -306,23 +300,11 @@ extension AppMyPageVC {
         self.loginListItem.addTapGestureRecognizer {
             self.onShowLogin?()
         }
-        
-        self.alertByFeaturesListItem.addTapGestureRecognizer {
-            self.onAlertSettingByFeaturesItemTap?()
-        }
     }
 }
 
 extension AppMyPageVC {
     private func bindViews() {
-        self.alertListItem
-            .signalForRightSwitchClick()
-            .throttle(for: 0.3, scheduler: RunLoop.main, latest: true)
-            .sink { [weak self] isOn in
-                self?.alertSwitchTapped.send(isOn)
-            }
-            .store(in: self.cancelBag)
-        
         self.navigationBar
             .leftButtonTapped
             .withUnretained(self)
@@ -334,7 +316,6 @@ extension AppMyPageVC {
     private func bindViewModels() {
         let input = AppMyPageViewModel.Input(
             viewWillAppear: self.viewWillAppear.asDriver(),
-            alertSwitchTapped: self.alertSwitchTapped.asDriver(),
             resetButtonTapped: self.resetButtonTapped.asDriver(),
             logoutButtonTapped: self.logoutButtonTapped.asDriver()
         )
@@ -343,13 +324,11 @@ extension AppMyPageVC {
         output.originNotificationIsAllowed
             .sink { [weak self] isAllowed in
                 self?.alertListItem.configureSwitch(to: isAllowed)
-                self?.alertByFeaturesListItem.isHidden = !isAllowed
             }.store(in: self.cancelBag)
         
         output.alertSettingOptInEditedResult
             .sink { [weak self] isAllowed in
                 self?.alertListItem.configureSwitch(to: isAllowed)
-                self?.alertByFeaturesListItem.isHidden = !isAllowed
             }.store(in: self.cancelBag)
         
         output.resetSuccessed

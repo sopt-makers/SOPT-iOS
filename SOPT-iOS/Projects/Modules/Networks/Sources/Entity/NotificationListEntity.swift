@@ -9,12 +9,11 @@
 import Foundation
 
 public struct NotificationListEntity: Codable {
-    public let id: Int
+    public let notificationId: Int
     public let userId: Int
     public let title: String
-    public let content: String
-    public let type: String?
+    public let content: String?
+    public let category: String?
     public let isRead: Bool
     public let createdAt: String
-    public let updatedAt: String?
 }

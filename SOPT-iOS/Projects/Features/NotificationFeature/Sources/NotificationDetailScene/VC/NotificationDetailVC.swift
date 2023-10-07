@@ -194,7 +194,7 @@ extension NotificationDetailVC {
             }.store(in: cancelBag)
     }
     
-    private func setData(with notification: NotificationListModel) {
+    private func setData(with notification: NotificationDetailModel) {
         self.titleLabel.text = notification.title
         self.textView.text = notification.content
     }

@@ -14,6 +14,13 @@ import Networks
 extension NotificationDetailEntity {
 
     public func toDomain() -> NotificationDetailModel {
-        return NotificationDetailModel.init()
+        return NotificationDetailModel.init(notificationId: notificationId,
+                                            userId: userId,
+                                            title: title,
+                                            content: content,
+                                            deepLink: deepLink,
+                                            webLink: webLink,
+                                            createdAt: createdAt,
+                                            updatedAt: updatedAt)
     }
 }

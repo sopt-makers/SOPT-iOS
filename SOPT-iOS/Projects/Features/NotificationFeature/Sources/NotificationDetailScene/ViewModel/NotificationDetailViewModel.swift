@@ -19,7 +19,7 @@ public class NotificationDetailViewModel: ViewModelType {
     private let useCase: NotificationDetailUseCase
     private var cancelBag = CancelBag()
     
-    private var notification: NotificationListModel
+    private var notificationId: Int
   
     // MARK: - Inputs
     
@@ -30,14 +30,14 @@ public class NotificationDetailViewModel: ViewModelType {
     // MARK: - Outputs
     
     public struct Output {
-        var notification = PassthroughSubject<NotificationListModel, Never>()
+        var notification = PassthroughSubject<NotificationDetailModel, Never>()
     }
     
     // MARK: - init
   
-    public init(useCase: NotificationDetailUseCase, notification: NotificationListModel) {
+    public init(useCase: NotificationDetailUseCase, notificationId: Int) {
         self.useCase = useCase
-        self.notification = notification
+        self.notificationId = notificationId
     }
 }
 
@@ -51,23 +51,24 @@ extension NotificationDetailViewModel {
         input.viewDidLoad
             .sink { [weak self] _ in
                 guard let self = self else { return }
-                output.notification.send(notification)
-                if notification.isRead == false {
-                    useCase.readNotification(notificationId: notification.id)
-                }
+                useCase.getNotificationDetail(notificationId: notificationId)
             }.store(in: cancelBag)
     
         return output
     }
   
     private func bindOutput(output: Output, cancelBag: CancelBag) {
+        useCase.notificationDetail
+            .sink { [weak self] notificationDetail in
+                guard let self = self else { return }
+                output.notification.send(notificationDetail)
+                self.useCase.readNotification(notificationId: self.notificationId)
+            }.store(in: cancelBag)
+        
         useCase.readSuccess
             .asDriver()
-            .sink { [weak self] readSuccess in
+            .sink { readSuccess in
                 print("읽음 처리: \(readSuccess)")
-                if readSuccess {
-                    self?.notification.isRead = true
-                }
             }.store(in: cancelBag)
     }
 }
