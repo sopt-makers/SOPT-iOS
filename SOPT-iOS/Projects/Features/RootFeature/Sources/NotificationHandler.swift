@@ -12,15 +12,13 @@ import Core
 
 public final class NotificationHandler: NSObject, UNUserNotificationCenterDelegate {
     
-    public static let shared = NotificationHandler()
-    
     @Published var notificationId: String?
     
     var hasNotificationId: Bool {
         notificationId != nil
     }
     
-    private override init() {}
+    public override init() {}
     
     public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
         let userInfo = notification.request.content.userInfo
@@ -31,6 +29,6 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
     public func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
         let userInfo = response.notification.request.content.userInfo
         print("APNs 푸시 알림 페이로드: \(userInfo)")
-        notificationId = "알림 아이디"
+        notificationId = "498"
     }
 }

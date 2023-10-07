@@ -19,7 +19,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application( _ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         configureSentry()
-        configureAPNs()
         registerDependencies()
         application.registerForRemoteNotifications()
         return true
@@ -59,10 +58,6 @@ extension AppDelegate {
             options.failedRequestStatusCodes = [ httpStatusCodeRange ]
             options.enableAutoBreadcrumbTracking = true
         }
-    }
-    
-    private func configureAPNs() {
-        UNUserNotificationCenter.current().delegate = NotificationHandler.shared
     }
     
     /// APNs 등록 실패할 경우 호출되는 메서드
