@@ -45,6 +45,23 @@ final class ApplicationCoordinator: BaseCoordinator {
     }
 }
 
+// MARK: - Push Notification Binding
+
+extension ApplicationCoordinator {
+    private func bindNotification() {
+        cancelBag.cancel()
+        self.notificationHandler.$notificationId
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] id in
+                guard let self = self, let id = Int(id) else { return }
+                self.router.dismissModule(animated: false)
+                self.runNotificationFlow(with: .notificationDetail(notificationId: id))
+                self.notificationHandler.notificationId = nil
+            }.store(in: cancelBag)
+    }
+}
+
 // MARK: - SplashFlow
 
 extension ApplicationCoordinator {
@@ -93,7 +110,9 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     private func runMainFlow(type: UserType? = nil) {
-        cancelBag.cancel()
+        defer {
+            bindNotification()
+        }
         
         let userType = type ?? UserDefaultKeyList.Auth.getUserType()
         let coordinator = MainCoordinator(
@@ -118,17 +137,6 @@ extension ApplicationCoordinator {
         }
         addDependency(coordinator)
         coordinator.start()
-        
-        // 이 코드를 함수로 분리
-        self.notificationHandler.$notificationId
-            .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] id in
-                guard let self = self, let id = Int(id) else { return }
-                self.router.dismissModule(animated: false)
-                self.runNotificationFlow(with: .notificationDetail(notificationId: id))
-                self.notificationHandler.notificationId = nil
-            }.store(in: cancelBag)
     }
     
     private func runAttendanceFlow() {
