@@ -64,10 +64,10 @@ final class MyPageCoordinator: DefaultMyPageCoordinator {
             self?.showWithdrawal(userType: userType)
         }
         
-        myPage.onAlertSettingByFeaturesItemTap = { [weak self] in
-            let onNotificationSettingByFeaturesVC = self?.factory.makeAlertSettingByFeatures()
-            self?.router.push(onNotificationSettingByFeaturesVC)
+        myPage.onAlertButtonTap = { [weak self] url in
+            self?.showAlertSetting(url: url)
         }
+
         router.push(myPage)
     }
     
@@ -77,5 +77,9 @@ final class MyPageCoordinator: DefaultMyPageCoordinator {
             self?.requestCoordinating?(.signInWithToast)
         }
         self.router.push(withdrawalVC)
+    }
+    
+    private func showAlertSetting(url: String) {
+        openExternalLink(urlStr: url)
     }
 }

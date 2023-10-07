@@ -269,7 +269,7 @@ public struct I18N {
         public static let termsOfUse = "서비스 이용 약관"
         public static let sendFeedback = "의견 보내기"
         public static let alertSectionTitle = "알림 설정"
-        public static let alertListItemTitle = "알림"
+        public static let alertListItemTitle = "알림 설정하기"
         public static let alertByFeaturesListItemTitle = "기능별 알림"
         public static let soptampSectionTitle = "솝탬프 설정"
         public static let editOnlineSentence = "한 마디 편집"

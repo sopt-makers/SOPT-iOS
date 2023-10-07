@@ -8,6 +8,13 @@
 
 import Foundation
 
-public struct NotificationDetailEntity {
-    
+public struct NotificationDetailEntity: Decodable {
+    public let notificationId: Int
+    public let userId: Int
+    public let title: String
+    public let content: String?
+    public let deepLink: String?
+    public let webLink: String?
+    public let createdAt: String
+    public let updatedAt: String?
 }

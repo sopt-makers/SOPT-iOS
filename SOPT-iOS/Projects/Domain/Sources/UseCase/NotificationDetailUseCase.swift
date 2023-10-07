@@ -12,8 +12,10 @@ import Core
 
 public protocol NotificationDetailUseCase {
     var readSuccess: PassthroughSubject<Bool, Error> { get }
+    var notificationDetail: PassthroughSubject<NotificationDetailModel, Never> { get }
     
     func readNotification(notificationId: Int)
+    func getNotificationDetail(notificationId: Int)
 }
 
 public class DefaultNotificationDetailUseCase {
@@ -22,6 +24,7 @@ public class DefaultNotificationDetailUseCase {
     private var cancelBag = CancelBag()
     
     public let readSuccess = PassthroughSubject<Bool, Error>()
+    public let notificationDetail = PassthroughSubject<NotificationDetailModel, Never>()
   
     public init(repository: NotificationDetailRepositoryInterface) {
         self.repository = repository
@@ -37,5 +40,15 @@ extension DefaultNotificationDetailUseCase: NotificationDetailUseCase {
             } receiveValue: { [weak self] readSuccess in
                 self?.readSuccess.send(readSuccess)
             }.store(in: self.cancelBag)
+    }
+    
+    public func getNotificationDetail(notificationId: Int) {
+        repository.getNotificationDetail(notificationId: notificationId)
+            .sink { event in
+                print("ReadNotification State: \(event)")
+            } receiveValue: { [weak self] notificationDetail in
+                self?.notificationDetail.send(notificationDetail)
+            }.store(in: self.cancelBag)
+
     }
 }

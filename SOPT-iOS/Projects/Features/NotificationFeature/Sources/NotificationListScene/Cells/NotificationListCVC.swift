@@ -91,7 +91,7 @@ extension NotificationListCVC {
 // MARK: - Methods
 
 extension NotificationListCVC {
-    func initCell(title: String, time: String, description: String, isUnread: Bool) {
+    func initCell(title: String, time: String, description: String?, isUnread: Bool) {
         self.titleLabel.text = title
         self.timeLabel.text = time
         self.descriptionLabel.text = description

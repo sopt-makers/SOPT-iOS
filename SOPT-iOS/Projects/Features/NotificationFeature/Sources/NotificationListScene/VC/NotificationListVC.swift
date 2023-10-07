@@ -25,6 +25,7 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
     private var cancelBag = CancelBag()
     private var cellTapped = PassthroughSubject<Int, Never>()
     private var requestNotifications = CurrentValueSubject<Void, Never>(())
+    private var categoryCellTapped = PassthroughSubject<Int, Never>()
     
     private lazy var notificationFilterDataSource: UICollectionViewDiffableDataSource<Int, NotificationFilterType>! = nil
     
@@ -43,7 +44,6 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
         cv.showsHorizontalScrollIndicator = false
         cv.showsVerticalScrollIndicator = false
         cv.backgroundColor = .clear
-        cv.isHidden = true
         return cv
     }()
     
@@ -104,12 +104,6 @@ extension NotificationListVC {
         naviBar.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
         }
-        
-//        notificationFilterCollectionView.snp.makeConstraints { make in
-//            make.top.equalTo(naviBar.snp.bottom)
-//            make.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-//            make.height.equalTo(46)
-//        }
         
         notificationListCollectionView.snp.makeConstraints { make in
             make.top.equalTo(naviBar.snp.bottom)
@@ -195,10 +189,12 @@ extension NotificationListVC {
 extension NotificationListVC {
     private func bindViewModels() {
         let input = NotificationListViewModel.Input(
+            viewDidLoad: Just<Void>(()).asDriver(),
             requestNotifications: requestNotifications.asDriver(),
             naviBackButtonTapped: naviBar.leftButtonTapped,
             cellTapped: cellTapped.asDriver(),
-            readAllButtonTapped: naviBar.rightButtonTapped
+            readAllButtonTapped: naviBar.rightButtonTapped,
+            categoryCellTapped: categoryCellTapped.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -221,6 +217,9 @@ extension NotificationListVC {
 
 extension NotificationListVC: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView == notificationFilterCollectionView {
+            categoryCellTapped.send(indexPath.item)
+        }
         
         if collectionView == notificationListCollectionView {
             cellTapped.send(indexPath.item)
@@ -232,7 +231,7 @@ extension NotificationListVC: UICollectionViewDelegate {
         let contentHeight = scrollView.contentSize.height
         let height = scrollView.frame.height
         
-        guard offsetY > 0 else { return }
+        guard offsetY > 0 , contentHeight > 0 else { return }
         
         if height > contentHeight - offsetY && !viewModel.isPaging {
             viewModel.startPaging()

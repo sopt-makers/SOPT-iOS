@@ -21,7 +21,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
     private let useCase: NotificationListUseCase
     private var cancelBag = CancelBag()
     
-    let filterList: [NotificationFilterType] = [.all, .entireTarget, .partTarget, .news]
+    let filterList: [NotificationFilterType] = [.all, .notice, .news]
     var notifications: [NotificationListModel] = []
     
     var page = 0
@@ -30,10 +30,12 @@ public class NotificationListViewModel: NotificationListViewModelType {
     // MARK: - Inputs
     
     public struct Input {
+        let viewDidLoad: Driver<Void>
         let requestNotifications: Driver<Void>
         let naviBackButtonTapped: Driver<Void>
         let cellTapped: Driver<Int>
         let readAllButtonTapped: Driver<Void>
+        let categoryCellTapped: Driver<Int>
     }
     
     // MARK: - Outputs
@@ -46,7 +48,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
     // MARK: - NotificationCoordinatable
     
     public var onNaviBackButtonTap: (() -> Void)?
-    public var onNotificationTap: ((NotificationListModel) -> Void)?
+    public var onNotificationTap: ((Int) -> Void)?
     
     // MARK: - init
     
@@ -61,6 +63,12 @@ extension NotificationListViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
+        
+        input.viewDidLoad
+            .withUnretained(self)
+            .sink { owner, _ in
+                output.filterList.send(owner.filterList)
+            }.store(in: cancelBag)
         
         input.requestNotifications
             .withUnretained(self)
@@ -78,7 +86,7 @@ extension NotificationListViewModel {
             .withUnretained(self)
             .sink { owner, index in
                 let notification = owner.notifications[index]
-                owner.onNotificationTap?(notification)
+                owner.onNotificationTap?(notification.notificationId)
                 owner.read(index: index)
                 output.notificationList.send(self.notifications)
             }.store(in: cancelBag)
@@ -90,6 +98,13 @@ extension NotificationListViewModel {
                 owner.useCase.readAllNotifications()
             }.store(in: cancelBag)
         
+        input.categoryCellTapped
+            .removeDuplicates()
+            .withUnretained(self)
+            .sink { owner, index in
+                print(index)
+            }.store(in: cancelBag)
+        
         return output
     }
     
@@ -99,7 +114,6 @@ extension NotificationListViewModel {
             .sink { [weak self] notificationList in
                 guard let self = self else { return }
                 self.notifications.append(contentsOf: notificationList)
-                output.filterList.send(filterList)
                 output.notificationList.send(notifications)
                 self.endPaging(isEmptyResponse: notificationList.isEmpty)
             }.store(in: cancelBag)
