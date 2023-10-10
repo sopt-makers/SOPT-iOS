@@ -29,6 +29,8 @@ final class ApplicationCoordinator: BaseCoordinator {
     public init(router: Router, notificationHandler: NotificationHandler) {
         self.router = router
         self.notificationHandler = notificationHandler
+        super.init()
+        self.bindNotification()
     }
     
     public override func start(with option: DeepLinkOption?) {
@@ -49,15 +51,21 @@ final class ApplicationCoordinator: BaseCoordinator {
 
 extension ApplicationCoordinator {
     private func bindNotification() {
-        cancelBag.cancel()
         self.notificationHandler.$notificationId
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] id in
-                guard let self = self, let id = Int(id) else { return }
+                guard let self = self,
+                        let id = Int(id),
+                        self.childCoordinators.contains(where: { $0 is MainCoordinator })
+                else {
+                    self?.notificationHandler.clearNotificationRecord()
+                    return
+                }
+
                 self.router.dismissModule(animated: false)
                 self.runNotificationFlow(with: .notificationDetail(notificationId: id))
-                self.notificationHandler.notificationId = nil
+                self.notificationHandler.clearNotificationRecord()
             }.store(in: cancelBag)
     }
 }
@@ -110,10 +118,6 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     private func runMainFlow(type: UserType? = nil) {
-        defer {
-            bindNotification()
-        }
-        
         let userType = type ?? UserDefaultKeyList.Auth.getUserType()
         let coordinator = MainCoordinator(
             router: router,

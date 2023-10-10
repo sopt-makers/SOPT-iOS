@@ -32,3 +32,9 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
         notificationId = "498"
     }
 }
+
+extension NotificationHandler {
+    public func clearNotificationRecord() {
+        self.notificationId = nil
+    }
+}
