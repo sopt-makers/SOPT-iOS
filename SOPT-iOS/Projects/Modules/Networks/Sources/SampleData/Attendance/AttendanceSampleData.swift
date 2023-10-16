@@ -39,9 +39,9 @@ extension AttendanceAPI {
             return SampleData.LectureRound.secondAttendance
 //            return SampleData.LectureRound.afterSecondAttendance
         case .attend:
-//            return SampleData.Attend.success
+            return SampleData.Attend.success
 //            return SampleData.Attend.notCorrect
-            return SampleData.Attend.afterFirstAttendance
+//            return SampleData.Attend.afterFirstAttendance
         default:
             return Data()
         }

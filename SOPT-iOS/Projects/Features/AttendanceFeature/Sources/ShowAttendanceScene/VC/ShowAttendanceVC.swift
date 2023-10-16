@@ -34,6 +34,7 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     private var viewWillAppear = PassthroughSubject<Void, Never>()
     
     // MARK: - ShowAttendanceCoordinatable
+    
     public var onAttendanceButtonTap: ((AttendanceRoundModel, (() -> Void)?) -> Void)?
     public var onNaviBackTap: (() -> Void)?
     
@@ -221,7 +222,9 @@ extension ShowAttendanceVC {
             .withUnretained(self)
             .sink { owner, model in
                 guard let attendances = model.0, let type = model.1 else { return }
-                owner.headerScheduleView.setAttendanceInfo(attendances, true, attendanceType: type)
+                UIView.animate(withDuration: 0.3) {
+                    owner.headerScheduleView.setAttendanceInfo(attendances, true, attendanceType: type)
+                }
             }
             .store(in: self.cancelBag)
         

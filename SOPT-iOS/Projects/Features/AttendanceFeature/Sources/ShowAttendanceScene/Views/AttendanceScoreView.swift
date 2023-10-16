@@ -59,7 +59,6 @@ final class AttendanceScoreView: UIView {
     
     private lazy var attendanceTableView: UITableView = {
         let tableView = UITableView()
-        tableView.isScrollEnabled = false
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
