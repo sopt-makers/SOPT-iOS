@@ -32,6 +32,8 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
         
         let model = NotificationPayload(dictionary: userInfo)
         print("성공\(model)")
+        
+        self.notificationId = "498"
     }
 }
 
