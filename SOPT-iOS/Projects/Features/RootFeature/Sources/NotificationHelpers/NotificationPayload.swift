@@ -10,7 +10,18 @@ import Foundation
 import Sentry
 
 public struct NotificationPayload: Codable {
-    let aps: APS
+    public let aps: APS
+    
+    public var hasLink: Bool {
+        self.aps.deepLink != nil || self.aps.webLink != nil
+    }
+    
+    public var hasWebLink: Bool {
+        guard let webLink = aps.webLink, !webLink.isEmpty else {
+            return false
+        }
+        return true
+    }
     
     public init?(dictionary: [AnyHashable: Any]) {
         do {
@@ -22,14 +33,14 @@ public struct NotificationPayload: Codable {
     }
 }
 
-struct APS: Codable {
-    let alert: Alert
-    let category: String
-    let deepLink: String?
-    let webLink: String?
+public struct APS: Codable {
+    public let alert: Alert
+    public let category: String
+    public let deepLink: String?
+    public let webLink: String?
 }
 
-struct Alert: Codable {
-    let body: String
-    let title: String
+public struct Alert: Codable {
+    public let body: String
+    public let title: String
 }
