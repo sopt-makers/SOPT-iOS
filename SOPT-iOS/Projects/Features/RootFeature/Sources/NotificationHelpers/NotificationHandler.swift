@@ -30,10 +30,15 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
         let userInfo = response.notification.request.content.userInfo
         print("APNs 푸시 알림 페이로드: \(userInfo)")
         
-        let model = NotificationPayload(dictionary: userInfo)
+        guard let model = NotificationPayload(dictionary: userInfo) else { return }
         print("성공\(model)")
+        guard model.hasLink else { return }
         
-        self.notificationId = "498"
+        let parser = DeepLinkParser()
+        if let deepLink = model.aps.deepLink {
+            let destination = parser.parse(with: deepLink)
+            print("디버그", destination)
+        }
     }
 }
 
