@@ -13,11 +13,18 @@ public struct NotificationPayload: Codable {
     public let aps: APS
     
     public var hasLink: Bool {
-        self.aps.deepLink != nil || self.aps.webLink != nil
+        self.hasWebLink || self.hasDeepLink
     }
     
     public var hasWebLink: Bool {
         guard let webLink = aps.webLink, !webLink.isEmpty else {
+            return false
+        }
+        return true
+    }
+    
+    public var hasDeepLink: Bool {
+        guard let deepLink = aps.deepLink, !deepLink.isEmpty else {
             return false
         }
         return true

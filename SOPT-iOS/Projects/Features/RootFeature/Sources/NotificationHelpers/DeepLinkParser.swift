@@ -10,11 +10,13 @@ import Foundation
 import BaseFeatureDependency
 import Sentry
 
-public struct DeepLinkParser {
-    public func parse(with link: String) -> DeepLinkOption {
+typealias DeepLinkURLData = (views: [DeepLinkViewable], queryItems: [URLQueryItem]?)
+
+struct DeepLinkParser {
+    func parse(with link: String) -> DeepLinkURLData {
         guard let components = URLComponents(string: link) else {
             SentrySDK.capture(message: "푸시 알림 DeepLink Parse 에러: \(link)")
-            return .deepLinkView(view: [DeepLinkViewKind.home], query: nil)
+            return ([DeepLinkViewKind.home], nil)
         }
         
         let pathComponents = components.path.split(separator: "/").map { String($0) }
@@ -22,7 +24,7 @@ public struct DeepLinkParser {
         
         let viewList = makeViewList(with: pathComponents)
         
-        return .deepLinkView(view: viewList, query: queryItems)
+        return (viewList, queryItems)
     }
     
     private func makeViewList(with pathComponents: [String]) -> [DeepLinkViewable] {
