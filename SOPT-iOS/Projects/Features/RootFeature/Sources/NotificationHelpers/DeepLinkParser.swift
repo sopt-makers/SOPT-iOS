@@ -10,7 +10,7 @@ import Foundation
 import BaseFeatureDependency
 import Sentry
 
-typealias DeepLinkURLData = (views: [DeepLinkViewable], queryItems: [URLQueryItem]?)
+typealias DeepLinkURLData = (views: [DeepLinkViewKind], queryItems: [URLQueryItem]?)
 
 struct DeepLinkParser {
     func parse(with link: String) -> DeepLinkURLData {
@@ -27,8 +27,8 @@ struct DeepLinkParser {
         return (viewList, queryItems)
     }
     
-    private func makeViewList(with pathComponents: [String]) -> [DeepLinkViewable] {
-        var views = [DeepLinkViewable]()
+    private func makeViewList(with pathComponents: [String]) -> [DeepLinkViewKind] {
+        var views = [DeepLinkViewKind]()
         
         for component in pathComponents {
             if views.isEmpty {

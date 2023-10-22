@@ -11,5 +11,5 @@ import Foundation
 /// Coordinator에서 DeepLinkOption의 종류를 지정하는 enum입니다.
 public enum DeepLinkOption {
     case signInSuccess(url: String)
-    case deepLinkView(views: [DeepLinkViewable], query: [URLQueryItem]?)
+    case deepLinkView(views: [DeepLinkViewKind], query: [URLQueryItem]?)
 }

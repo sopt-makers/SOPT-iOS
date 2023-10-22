@@ -7,13 +7,12 @@
 //
 
 import Foundation
-import BaseFeatureDependency
 
-struct DeepLinkViewKind: DeepLinkViewable {
-    let name: String
-    private let children: [DeepLinkViewable]
+public struct DeepLinkViewKind {
+    public let name: String
+    private let children: [DeepLinkViewKind]
     
-    func findChild(name: String) -> DeepLinkViewable? {
+    public func findChild(name: String) -> DeepLinkViewKind? {
         for child in children {
             if child.name == name {
                 return child
@@ -23,7 +22,7 @@ struct DeepLinkViewKind: DeepLinkViewable {
         return nil
     }
     
-    static func findRoot(name: String) -> DeepLinkViewable? {
+    public static func findRoot(name: String) -> DeepLinkViewKind? {
         // deepLink URL에서 첫 번째 인덱스가 "home"이 아닌 케이스가 생기면 여기서 분기 처리 하세요!
         if name == "home" {
             return DeepLinkViewKind.home
@@ -33,13 +32,13 @@ struct DeepLinkViewKind: DeepLinkViewable {
     }
 }
 
-extension DeepLinkViewKind: CustomStringConvertible {
-    var description: String {
+extension DeepLinkViewKind: CustomStringConvertible, Equatable {
+    public var description: String {
         return "\(self.name)"
     }
 }
 
-extension DeepLinkViewKind {
+public extension DeepLinkViewKind {
     static let home = DeepLinkViewKind(name: "home", children: [Home.notification, Home.mypage, Home.attendance, Home.soptamp])
     
     struct Home {

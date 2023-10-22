@@ -8,8 +8,3 @@
 
 import Foundation
 
-public protocol DeepLinkViewable {
-    var name: String { get }
-    
-    func findChild(name: String) -> DeepLinkViewable?
-}
