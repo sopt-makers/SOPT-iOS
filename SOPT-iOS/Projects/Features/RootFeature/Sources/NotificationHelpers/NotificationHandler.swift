@@ -51,9 +51,9 @@ extension NotificationHandler {
 
         let parser = DeepLinkParser()
         let deepLinkData = parser.parse(with: deepLink)
-        self.deepLink.send(.deepLinkView(views: deepLinkData.views, query: deepLinkData.queryItems))
+        let deepLinkComponent = DeepLinkComponents(views: deepLinkData.views, queryItems: deepLinkData.queryItems)
+        self.deepLink.send(.deepLinkView(components: deepLinkComponent))
     }
-    
     
     public func clearNotificationRecord() {
         self.notificationId = nil

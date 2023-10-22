@@ -30,9 +30,9 @@ final class NotificationCoordinator: DefaultCoordinator {
     
     public override func start(with option: DeepLinkOption?) {
         start()
-        if case .notificationDetail(let id) = option {
-                showNotificationDetail(notificationId: id)
-        }
+//        if case .notificationDetail(let id) = option {
+//                showNotificationDetail(notificationId: id)
+//        }
     }
     
     private func showNotifcationList() {
