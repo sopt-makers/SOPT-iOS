@@ -53,6 +53,7 @@ extension ApplicationCoordinator {
         self.cancelBag.cancel()
 
         self.notificationHandler.deepLink
+            .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .filter { _ in
                 self.childCoordinators.contains(where: { $0 is MainCoordinator })
@@ -60,6 +61,7 @@ extension ApplicationCoordinator {
             .sink {[weak self] deepLinkOption in
                 guard let self = self else { return }
                 self.handleDeepLinkView(option: deepLinkOption)
+                self.notificationHandler.clearNotificationRecord()
             }.store(in: cancelBag)
     }
     

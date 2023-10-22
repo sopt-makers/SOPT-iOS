@@ -15,7 +15,7 @@ import Core
 
 public final class NotificationHandler: NSObject, UNUserNotificationCenterDelegate {
     
-    public let deepLink = PassthroughSubject<DeepLinkOption, Never>()
+    public let deepLink = CurrentValueSubject<DeepLinkOption?, Never>(nil)
     @Published var notificationId: String?
     
     var hasNotificationId: Bool {
@@ -57,5 +57,6 @@ extension NotificationHandler {
     
     public func clearNotificationRecord() {
         self.notificationId = nil
+        self.deepLink.send(nil)
     }
 }
