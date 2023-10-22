@@ -30,4 +30,16 @@ public class DeepLinkComponents {
         if views.isEmpty { return nil }
         return views.removeFirst()
     }
+    
+    public func getQueryItemValue(name: String) -> String? {
+        guard let queryItems else { return nil }
+        
+        for item in queryItems {
+            if item.name == name {
+                return item.value
+            }
+        }
+        
+        return nil
+    }
 }
