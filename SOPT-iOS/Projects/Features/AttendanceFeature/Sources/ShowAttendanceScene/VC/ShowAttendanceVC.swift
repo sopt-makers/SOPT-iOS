@@ -34,6 +34,7 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     private var viewWillAppear = PassthroughSubject<Void, Never>()
     
     // MARK: - ShowAttendanceCoordinatable
+    
     public var onAttendanceButtonTap: ((AttendanceRoundModel, (() -> Void)?) -> Void)?
     public var onNaviBackTap: (() -> Void)?
     
@@ -65,11 +66,12 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     
     private lazy var attendanceButtonStackView: UIStackView = {
         let stackView = UIStackView()
+        stackView.backgroundColor = DSKitAsset.Colors.gray900.color
         stackView.addArrangedSubview(attendanceButton)
         return stackView
     }()
     
-    private let attendanceGradientView = UIView(frame: CGRect(x: 0, y: 0, width: 500, height: 200))
+    private let attendanceGradientView: AttendanceGradientView = .init(frame: CGRect(x: 0, y: 0, width: 500, height: 200))
     
     private let attendanceButton: OPCustomButton = {
         let button = OPCustomButton()
@@ -125,9 +127,8 @@ extension ShowAttendanceVC {
     
     private func setUI() {
         self.navigationController?.navigationBar.isHidden = true
-        self.view.backgroundColor = DSKitAsset.Colors.black100.color
-        containerScrollView.backgroundColor = DSKitAsset.Colors.black100.color
-//        attendanceGradientView.createGradientLayer(colors: [.clear, .black], direction: .vertical)
+        self.view.backgroundColor = DSKitAsset.Colors.gray900.color
+        containerScrollView.backgroundColor = DSKitAsset.Colors.gray900.color
     }
     
     private func setLayout() {
@@ -163,8 +164,9 @@ extension ShowAttendanceVC {
         }
         
         attendanceGradientView.snp.makeConstraints {
-            $0.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
-            $0.height.equalTo(200)
+            $0.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(13)
+            $0.height.equalTo(229)
         }
         
         attendanceButtonStackView.snp.makeConstraints {
@@ -221,7 +223,9 @@ extension ShowAttendanceVC {
             .withUnretained(self)
             .sink { owner, model in
                 guard let attendances = model.0, let type = model.1 else { return }
-                owner.headerScheduleView.setAttendanceInfo(attendances, true, attendanceType: type)
+                UIView.animate(withDuration: 0.3) {
+                    owner.headerScheduleView.setAttendanceInfo(attendances, true, attendanceType: type)
+                }
             }
             .store(in: self.cancelBag)
         

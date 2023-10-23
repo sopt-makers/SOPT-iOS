@@ -231,7 +231,9 @@ extension AttendanceVC {
         closeButton.publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
-                owner.dismiss(animated: true)
+                UIView.animate(withDuration: 0.3) {
+                    owner.dismiss(animated: true)
+                }
             }
             .store(in: self.cancelBag)
         
@@ -289,8 +291,10 @@ extension AttendanceVC {
             .filter { $0 }
             .withUnretained(self)
             .sink { owner, _ in
-                owner.dismiss(animated: true) {
-                    owner.dismissCompletion?()
+                UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseOut) {
+                    owner.dismiss(animated: true) { [weak self] in
+                        self?.dismissCompletion?()
+                    }
                 }
             }
             .store(in: self.cancelBag)

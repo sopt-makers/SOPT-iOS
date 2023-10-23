@@ -19,7 +19,7 @@ import Domain
 final class AttendanceScoreView: UIView {
     
     // MARK: - Properties
-
+    
     private var attendanceModelList = [AttendanceModel]()
     
     // MARK: - UI Components
@@ -48,7 +48,12 @@ final class AttendanceScoreView: UIView {
     
     /// 3. 나의 출결 현황 영역
     
-    private lazy var myAttendanceStateContainerView = UIView()
+    private lazy var myAttendanceStateStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [attendanceScoreDescriptiopnLabel, attendanceTableView])
+        stackView.axis = .vertical
+        stackView.spacing = 10
+        return stackView
+    }()
     
     private let attendanceScoreDescriptiopnLabel: UILabel = {
         let label = UILabel()
@@ -91,9 +96,7 @@ extension AttendanceScoreView {
     }
     
     private func setLayout() {
-        
-        addSubviews(myInfoContainerView, myScoreContainerStackView, myAttendanceStateContainerView)
-        myAttendanceStateContainerView.addSubviews(attendanceScoreDescriptiopnLabel, attendanceTableView)
+        addSubviews(myInfoContainerView, myScoreContainerStackView, myAttendanceStateStackView)
         
         myInfoContainerView.snp.makeConstraints {
             $0.top.equalToSuperview().offset(32)
@@ -107,19 +110,9 @@ extension AttendanceScoreView {
             $0.height.equalTo(88)
         }
         
-        myAttendanceStateContainerView.snp.makeConstraints {
+        myAttendanceStateStackView.snp.makeConstraints {
             $0.top.equalTo(myScoreContainerStackView.snp.bottom).offset(32)
             $0.leading.trailing.bottom.equalToSuperview().inset(32)
-        }
-        
-        attendanceScoreDescriptiopnLabel.snp.makeConstraints {
-            $0.top.leading.equalToSuperview()
-        }
-        
-        attendanceTableView.snp.makeConstraints {
-            $0.top.equalTo(attendanceScoreDescriptiopnLabel.snp.bottom).offset(10)
-            $0.leading.trailing.bottom.equalToSuperview()
-            $0.height.equalTo(1)
         }
     }
 }
