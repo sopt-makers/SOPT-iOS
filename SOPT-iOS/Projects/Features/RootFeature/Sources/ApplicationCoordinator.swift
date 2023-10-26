@@ -80,6 +80,8 @@ extension ApplicationCoordinator {
         switch secondView {
         case .Home.notification:
             self.runNotificationFlow(with: option)
+        case .Home.mypage:
+            self.runMyPageFlow(of: .inactive, with: option)
         default:
             return
         }
@@ -194,7 +196,7 @@ extension ApplicationCoordinator {
         coordinator.start()
     }
     
-    private func runMyPageFlow(of userType: UserType) {
+    private func runMyPageFlow(of userType: UserType, with option: DeepLinkOption? = nil) {
         let coordinator = MyPageCoordinator(
             router: Router(
                 rootController: UIWindow.getRootNavigationController
@@ -216,7 +218,7 @@ extension ApplicationCoordinator {
             }
         }
         addDependency(coordinator)
-        coordinator.start()
+        coordinator.start(with: option)
     }
     
     private func runNotificationFlow(with option: DeepLinkOption? = nil) {

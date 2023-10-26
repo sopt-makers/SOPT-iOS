@@ -71,6 +71,10 @@ final class MyPageCoordinator: DefaultMyPageCoordinator {
         router.push(myPage)
     }
     
+    public override func start(with option: DeepLinkOption?) {
+        self.start()
+    }
+    
     private func showWithdrawal(userType: UserType) {
         var withdrawalVC = self.factory.makeWithdrawalVC(userType: userType)
         withdrawalVC.onWithdrawal = { [weak self] in
