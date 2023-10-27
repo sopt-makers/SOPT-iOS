@@ -9,7 +9,7 @@
 import Foundation
 
 public protocol DeepLinkable {
-    func execute(with coordinator: Coordinator, components: DeepLinkComponents)
+    func execute(with coordinator: Coordinator, components: DeepLinkComponentsExecutable)
 }
 
 public typealias DeepLinkData = (deepLinks: [DeepLinkable], queryItems: [URLQueryItem]?)

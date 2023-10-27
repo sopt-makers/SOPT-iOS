@@ -12,7 +12,7 @@ import BaseFeatureDependency
 public struct NotificationDetailDeepLink: DeepLinkable {
     public init() {}
     
-    public func execute(with coordinator: Coordinator, components: DeepLinkComponents) {
+    public func execute(with coordinator: Coordinator, components: DeepLinkComponentsExecutable) {
         guard let coordinator = coordinator as? NotificationCoordinator else { return }
         guard let id = components.getQueryItemValue(name: "id"),
               let notificationId = Int(id) else { return }
