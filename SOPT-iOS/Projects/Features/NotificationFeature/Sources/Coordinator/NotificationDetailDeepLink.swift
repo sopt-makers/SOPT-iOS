@@ -9,7 +9,7 @@
 import Foundation
 import BaseFeatureDependency
 
-public struct NotificationDetailDeeplink: Deeplinkable {
+public struct NotificationDetailDeepLink: DeepLinkable {
     public init() {}
     
     public func execute(with coordinator: Coordinator, components: DeepLinkComponents) {

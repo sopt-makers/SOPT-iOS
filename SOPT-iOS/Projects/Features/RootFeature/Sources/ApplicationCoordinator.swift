@@ -60,14 +60,14 @@ extension ApplicationCoordinator {
             }
             .sink {[weak self] deepLinkComponent in
                 guard let self = self else { return }
-                self.handleDeepLink(deeplink: deepLinkComponent)
+                self.handleDeepLink(deepLink: deepLinkComponent)
                 self.notificationHandler.clearNotificationRecord()
             }.store(in: cancelBag)
     }
     
-    private func handleDeepLink(deeplink: DeepLinkComponents) {
+    private func handleDeepLink(deepLink: DeepLinkComponents) {
         self.router.dismissModule(animated: false)
-        deeplink.execute(coordinator: self)
+        deepLink.execute(coordinator: self)
     }
 }
 
@@ -179,7 +179,7 @@ extension ApplicationCoordinator {
         coordinator.start()
     }
     
-    private func runMyPageFlow(of userType: UserType, with option: DeepLinkOption? = nil) {
+    private func runMyPageFlow(of userType: UserType) {
         let coordinator = MyPageCoordinator(
             router: Router(
                 rootController: UIWindow.getRootNavigationController
@@ -201,11 +201,11 @@ extension ApplicationCoordinator {
             }
         }
         addDependency(coordinator)
-        coordinator.start(with: option)
+        coordinator.start()
     }
     
     @discardableResult
-    internal func runNotificationFlow(with option: DeepLinkOption? = nil) -> NotificationCoordinator {
+    internal func runNotificationFlow() -> NotificationCoordinator {
         let coordinator = NotificationCoordinator(
             router: Router(
                 rootController: UIWindow.getRootNavigationController

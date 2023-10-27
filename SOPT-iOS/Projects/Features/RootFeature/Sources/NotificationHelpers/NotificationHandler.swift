@@ -50,9 +50,9 @@ extension NotificationHandler {
         guard let deepLink else { return }
 
         let parser = DeepLinkParser()
-        let deeplinkData = parser.parse(with: deepLink)
-        let deeplinkComponents = DeepLinkComponents(deeplinkData: deeplinkData)
-        self.deepLink.send(deeplinkComponents)
+        let deepLinkData = parser.parse(with: deepLink)
+        let deepLinkComponents = DeepLinkComponents(deepLinkData: deepLinkData)
+        self.deepLink.send(deepLinkComponents)
     }
     
     public func clearNotificationRecord() {

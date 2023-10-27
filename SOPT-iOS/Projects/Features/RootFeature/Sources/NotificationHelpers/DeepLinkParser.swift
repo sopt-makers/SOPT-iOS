@@ -13,41 +13,41 @@ import NotificationFeature
 import Sentry
 
 struct DeepLinkParser {
-    private var defaultDeeplinks: [Deeplinkable] {
-        return [HomeDeeplink()]
+    private var defaultDeepLinks: [DeepLinkable] {
+        return [HomeDeepLink()]
     }
     
-    func parse(with link: String) -> DeeplinkData {
+    func parse(with link: String) -> DeepLinkData {
         guard let components = URLComponents(string: link) else {
             SentrySDK.capture(message: "푸시 알림 DeepLink Parse 에러: \(link)")
-            return (defaultDeeplinks, nil)
+            return (defaultDeepLinks, nil)
         }
         
         let pathComponents = components.path.split(separator: "/").map { String($0) }
         let queryItems = components.queryItems
         
-        let deeplinkList = makeDeeplinkList(with: pathComponents)
+        let deepLinkList = makeDeepLinkList(with: pathComponents)
         
-        return (deeplinkList, queryItems)
+        return (deepLinkList, queryItems)
     }
     
-    private func makeDeeplinkList(with pathComponents: [String]) -> [Deeplinkable] {
-        var deeplinks = [Deeplinkable]()
+    private func makeDeepLinkList(with pathComponents: [String]) -> [DeepLinkable] {
+        var deepLinks = [DeepLinkable]()
         
         for component in pathComponents {
             switch component {
             case "home":
-                deeplinks.append(HomeDeeplink())
+                deepLinks.append(HomeDeepLink())
             case "notification":
-                deeplinks.append(NotificationDeeplink())
+                deepLinks.append(NotificationDeepLink())
             case "detail":
-                deeplinks.append(NotificationDetailDeeplink())
+                deepLinks.append(NotificationDetailDeepLink())
             default:
                 break
             }
         }
         
-        return deeplinks
+        return deepLinks
     }
 }
 

@@ -9,31 +9,31 @@
 import Foundation
 
 public class DeepLinkComponents {
-    private var deeplinks: [Deeplinkable]
+    private var deepLinks: [DeepLinkable]
     public let queryItems: [URLQueryItem]?
     
     public var isEmpty: Bool {
-        self.deeplinks.isEmpty
+        self.deepLinks.isEmpty
     }
     
-    public init(deeplinkData: DeeplinkData) {
-        self.deeplinks = deeplinkData.deeplinks
-        self.queryItems = deeplinkData.queryItems
+    public init(deepLinkData: DeepLinkData) {
+        self.deepLinks = deepLinkData.deepLinks
+        self.queryItems = deepLinkData.queryItems
     }
     
     public func execute(coordinator: Coordinator) {
-        guard let deeplink = popFirstDeeplink() else { return }
+        guard let deeplink = popFirstDeepLink() else { return }
         deeplink.execute(with: coordinator, components: self)
     }
     
-    public func addDeeplink(_ deeplink: Deeplinkable) {
-        self.deeplinks.append(deeplink)
+    public func addDeepLink(_ deepLink: DeepLinkable) {
+        self.deepLinks.append(deepLink)
     }
     
     @discardableResult
-    private func popFirstDeeplink() -> Deeplinkable? {
-        if deeplinks.isEmpty { return nil }
-        return deeplinks.removeFirst()
+    private func popFirstDeepLink() -> DeepLinkable? {
+        if deepLinks.isEmpty { return nil }
+        return deepLinks.removeFirst()
     }
     
     public func getQueryItemValue(name: String) -> String? {
