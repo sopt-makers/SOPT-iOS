@@ -58,33 +58,16 @@ extension ApplicationCoordinator {
             .filter { _ in
                 self.childCoordinators.contains(where: { $0 is MainCoordinator })
             }
-            .sink {[weak self] deepLinkOption in
+            .sink {[weak self] deepLinkComponent in
                 guard let self = self else { return }
-                self.handleDeepLinkView(option: deepLinkOption)
+                self.handleDeepLink(deeplink: deepLinkComponent)
                 self.notificationHandler.clearNotificationRecord()
             }.store(in: cancelBag)
     }
     
-    private func handleDeepLinkView(option: DeepLinkOption) {
-        guard case .deepLinkView(let components) = option else { return }
-        guard let firstView = components.popFirstView() else { return }
-        
+    private func handleDeepLink(deeplink: DeepLinkComponents) {
         self.router.dismissModule(animated: false)
-
-        if firstView == .home && components.isEmpty {
-            self.runMainFlow()
-            return
-        }
-        
-        guard let secondView = components.popFirstView() else { return }
-        switch secondView {
-        case .Home.notification:
-            self.runNotificationFlow(with: option)
-        case .Home.mypage:
-            self.runMyPageFlow(of: .inactive, with: option)
-        default:
-            return
-        }
+        deeplink.execute(coordinator: self)
     }
 }
 
@@ -135,7 +118,7 @@ extension ApplicationCoordinator {
 // MARK: - MainFlow
 
 extension ApplicationCoordinator {
-    private func runMainFlow(type: UserType? = nil) {
+    internal func runMainFlow(type: UserType? = nil) {
         defer {
             bindNotification()
         }
@@ -221,7 +204,8 @@ extension ApplicationCoordinator {
         coordinator.start(with: option)
     }
     
-    private func runNotificationFlow(with option: DeepLinkOption? = nil) {
+    @discardableResult
+    internal func runNotificationFlow(with option: DeepLinkOption? = nil) -> NotificationCoordinator {
         let coordinator = NotificationCoordinator(
             router: Router(
                 rootController: UIWindow.getRootNavigationController
@@ -232,6 +216,8 @@ extension ApplicationCoordinator {
             self?.removeDependency(coordinator)
         }
         addDependency(coordinator)
-        coordinator.start(with: option)
+        coordinator.start()
+        
+        return coordinator
     }
 }

@@ -8,42 +8,46 @@
 
 import Foundation
 import BaseFeatureDependency
+import NotificationFeature
+
 import Sentry
 
-typealias DeepLinkURLData = (views: [DeepLinkViewKind], queryItems: [URLQueryItem]?)
-
 struct DeepLinkParser {
-    func parse(with link: String) -> DeepLinkURLData {
+    private var defaultDeeplinks: [Deeplinkable] {
+        return [HomeDeeplink()]
+    }
+    
+    func parse(with link: String) -> DeeplinkData {
         guard let components = URLComponents(string: link) else {
             SentrySDK.capture(message: "푸시 알림 DeepLink Parse 에러: \(link)")
-            return ([DeepLinkViewKind.home], nil)
+            return (defaultDeeplinks, nil)
         }
         
         let pathComponents = components.path.split(separator: "/").map { String($0) }
         let queryItems = components.queryItems
         
-        let viewList = makeViewList(with: pathComponents)
+        let deeplinkList = makeDeeplinkList(with: pathComponents)
         
-        return (viewList, queryItems)
+        return (deeplinkList, queryItems)
     }
     
-    private func makeViewList(with pathComponents: [String]) -> [DeepLinkViewKind] {
-        var views = [DeepLinkViewKind]()
+    private func makeDeeplinkList(with pathComponents: [String]) -> [Deeplinkable] {
+        var deeplinks = [Deeplinkable]()
         
         for component in pathComponents {
-            if views.isEmpty {
-                guard let root = DeepLinkViewKind.findRoot(name: component) else { return [DeepLinkViewKind.home] }
-                views.append(root)
-                continue
-            }
-            
-            if let lastView = views.last {
-                guard let nextView = lastView.findChild(name: component) else { return views }
-                views.append(nextView)
+            switch component {
+            case "home":
+                deeplinks.append(HomeDeeplink())
+            case "notification":
+                deeplinks.append(NotificationDeeplink())
+            case "detail":
+                deeplinks.append(NotificationDetailDeeplink())
+            default:
+                break
             }
         }
         
-        return views
+        return deeplinks
     }
 }
 

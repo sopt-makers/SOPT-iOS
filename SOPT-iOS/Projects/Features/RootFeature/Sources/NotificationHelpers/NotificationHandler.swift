@@ -15,7 +15,7 @@ import Core
 
 public final class NotificationHandler: NSObject, UNUserNotificationCenterDelegate {
     
-    public let deepLink = CurrentValueSubject<DeepLinkOption?, Never>(nil)
+    public let deepLink = CurrentValueSubject<DeepLinkComponents?, Never>(nil)
     @Published var notificationId: String?
     
     var hasNotificationId: Bool {
@@ -50,9 +50,9 @@ extension NotificationHandler {
         guard let deepLink else { return }
 
         let parser = DeepLinkParser()
-        let deepLinkData = parser.parse(with: deepLink)
-        let deepLinkComponent = DeepLinkComponents(views: deepLinkData.views, queryItems: deepLinkData.queryItems)
-        self.deepLink.send(.deepLinkView(components: deepLinkComponent))
+        let deeplinkData = parser.parse(with: deepLink)
+        let deeplinkComponents = DeepLinkComponents(deeplinkData: deeplinkData)
+        self.deepLink.send(deeplinkComponents)
     }
     
     public func clearNotificationRecord() {
