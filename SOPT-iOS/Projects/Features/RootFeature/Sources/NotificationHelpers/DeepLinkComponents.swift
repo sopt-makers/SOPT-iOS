@@ -10,7 +10,7 @@ import Foundation
 import BaseFeatureDependency
 
 public class DeepLinkComponents: DeepLinkComponentsExecutable {
-    private var deepLinks: [DeepLinkable]
+    private var deepLinks: [DeepLinkExecutable]
     public let queryItems: [URLQueryItem]?
     
     public var isEmpty: Bool {
@@ -27,12 +27,12 @@ public class DeepLinkComponents: DeepLinkComponentsExecutable {
         deeplink.execute(with: coordinator, components: self)
     }
     
-    public func addDeepLink(_ deepLink: DeepLinkable) {
+    public func addDeepLink(_ deepLink: DeepLinkExecutable) {
         self.deepLinks.append(deepLink)
     }
     
     @discardableResult
-    private func popFirstDeepLink() -> DeepLinkable? {
+    private func popFirstDeepLink() -> DeepLinkExecutable? {
         if deepLinks.isEmpty { return nil }
         return deepLinks.removeFirst()
     }

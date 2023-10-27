@@ -12,6 +12,6 @@ public protocol DeepLinkComponentsExecutable {
     var queryItems: [URLQueryItem]? { get }
     var isEmpty: Bool { get }
     func execute(coordinator: Coordinator)
-    func addDeepLink(_ deepLink: DeepLinkable)
+    func addDeepLink(_ deepLink: DeepLinkExecutable)
     func getQueryItemValue(name: String) -> String?
 }

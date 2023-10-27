@@ -13,7 +13,7 @@ import NotificationFeature
 import Sentry
 
 struct DeepLinkParser {
-    private var defaultDeepLinks: [DeepLinkable] {
+    private var defaultDeepLinks: [DeepLinkExecutable] {
         return [HomeDeepLink()]
     }
     
@@ -31,8 +31,8 @@ struct DeepLinkParser {
         return (deepLinkList, queryItems)
     }
     
-    private func makeDeepLinkList(with pathComponents: [String]) -> [DeepLinkable] {
-        var deepLinks = [DeepLinkable]()
+    private func makeDeepLinkList(with pathComponents: [String]) -> [DeepLinkExecutable] {
+        var deepLinks = [DeepLinkExecutable]()
         
         for component in pathComponents {
             switch component {

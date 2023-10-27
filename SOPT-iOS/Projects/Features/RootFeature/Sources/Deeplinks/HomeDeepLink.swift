@@ -9,7 +9,7 @@
 import Foundation
 import BaseFeatureDependency
 
-public struct HomeDeepLink: DeepLinkable {
+public struct HomeDeepLink: DeepLinkExecutable {
     public func execute(with coordinator: Coordinator, components: DeepLinkComponentsExecutable) {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return }
         if components.isEmpty { // MainFlow(홈 뷰)가 실행되는 경우는 다음 도착지 뷰가 없는 경우이다.

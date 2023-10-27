@@ -8,8 +8,8 @@
 
 import Foundation
 
-public protocol DeepLinkable {
+public protocol DeepLinkExecutable {
     func execute(with coordinator: Coordinator, components: DeepLinkComponentsExecutable)
 }
 
-public typealias DeepLinkData = (deepLinks: [DeepLinkable], queryItems: [URLQueryItem]?)
+public typealias DeepLinkData = (deepLinks: [DeepLinkExecutable], queryItems: [URLQueryItem]?)

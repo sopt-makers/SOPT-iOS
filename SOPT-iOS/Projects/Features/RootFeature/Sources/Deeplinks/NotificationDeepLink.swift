@@ -9,7 +9,7 @@
 import Foundation
 import BaseFeatureDependency
 
-public struct NotificationDeepLink: DeepLinkable {
+public struct NotificationDeepLink: DeepLinkExecutable {
     public func execute(with coordinator: Coordinator, components: DeepLinkComponentsExecutable) {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return }
         let notificationCoordinator = coordinator.runNotificationFlow()
