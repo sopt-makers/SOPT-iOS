@@ -28,20 +28,6 @@ final class NotificationCoordinator: DefaultCoordinator {
         showNotifcationList()
     }
     
-    public override func start(with option: DeepLinkOption?) {
-        start()
-        if case .deepLinkView(let components) = option {
-            guard let targetView = components.popFirstView() else { return }
-            switch targetView {
-            case .Home.Notification.detail:
-                guard let id = components.getQueryItemValue(name: "id"), let notificationId = Int(id) else { return }
-                showNotificationDetail(notificationId: notificationId)
-            default:
-                return
-            }
-        }
-    }
-    
     private func showNotifcationList() {
         var notificiationList = factory.makeNotificationList()
         notificiationList.vm.onNaviBackButtonTap = { [weak self] in
