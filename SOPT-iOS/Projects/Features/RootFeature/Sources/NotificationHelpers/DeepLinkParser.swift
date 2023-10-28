@@ -35,19 +35,30 @@ struct DeepLinkParser {
         var deepLinks = [DeepLinkExecutable]()
         
         for component in pathComponents {
-            switch component {
-            case "home":
-                deepLinks.append(HomeDeepLink())
-            case "notification":
-                deepLinks.append(NotificationDeepLink())
-            case "detail":
-                deepLinks.append(NotificationDetailDeepLink())
-            default:
+            if deepLinks.isEmpty {
+                guard let root = findRootDeepLink(name: component) else {
+                    break
+                }
+                deepLinks.append(root)
+                continue
+            }
+            
+            guard let parent = deepLinks.last, let child = parent.findChild(name: component) else {
                 break
             }
+            
+            deepLinks.append(child)
         }
         
         return deepLinks
     }
+    
+    private func findRootDeepLink(name: String) -> DeepLinkExecutable? {
+        switch name {
+        case "home":
+            return HomeDeepLink()
+        default:
+            return nil
+        }
+    }
 }
-
