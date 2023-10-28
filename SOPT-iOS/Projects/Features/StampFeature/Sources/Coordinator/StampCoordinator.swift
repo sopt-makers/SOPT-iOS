@@ -62,7 +62,7 @@ final class StampCoordinator: DefaultCoordinator {
         guideCoordinator.start()
     }
     
-    private func runRankingFlow(rankingViewType: RankingViewType) {
+    internal func runRankingFlow(rankingViewType: RankingViewType) {
         let rankingCoordinator = RankingCoordinator(
             router: Router(rootController: rootController!),
             factory: factory,

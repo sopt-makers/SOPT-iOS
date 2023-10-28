@@ -164,7 +164,8 @@ extension ApplicationCoordinator {
         coordinator.start()
     }
     
-    private func runStampFlow() {
+    @discardableResult
+    internal func runStampFlow() -> StampCoordinator {
         let coordinator = StampCoordinator(
             router: Router(
                 rootController: UIWindow.getRootNavigationController
@@ -177,6 +178,8 @@ extension ApplicationCoordinator {
         }
         addDependency(coordinator)
         coordinator.start()
+        
+        return coordinator
     }
     
     private func runMyPageFlow(of userType: UserType) {
