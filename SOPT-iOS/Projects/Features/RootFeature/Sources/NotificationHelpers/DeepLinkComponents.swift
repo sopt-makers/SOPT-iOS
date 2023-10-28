@@ -22,6 +22,13 @@ public class DeepLinkComponents: DeepLinkComponentsExecutable {
         self.queryItems = deepLinkData.queryItems
     }
     
+    public convenience init?(deepLinkData: DeepLinkData?) {
+        guard let deepLinkData = deepLinkData else {
+            return nil
+        }
+        self.init(deepLinkData: deepLinkData)
+    }
+    
     public func execute(coordinator: Coordinator) {
         guard let deeplink = popFirstDeepLink() else { return }
         deeplink.execute(with: coordinator, components: self)

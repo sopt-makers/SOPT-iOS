@@ -50,15 +50,23 @@ extension NotificationHandler {
     private func parseDeepLink(with deepLink: String?) {
         guard let deepLink else { return }
 
-        let parser = DeepLinkParser()
-        let deepLinkData = parser.parse(with: deepLink)
-        let deepLinkComponents = DeepLinkComponents(deepLinkData: deepLinkData)
-        self.deepLink.send(deepLinkComponents)
+        do {
+            let parser = DeepLinkParser()
+            let deepLinkData = try parser.parse(with: deepLink)
+            let deepLinkComponents = DeepLinkComponents(deepLinkData: deepLinkData)
+            self.deepLink.send(deepLinkComponents)
+        } catch {
+            DispatchQueue.main.async {
+                AlertUtils.presentAlertVC(type: .networkErr, title: I18N.DeepLink.updateAlertTitle,
+                                          description: I18N.DeepLink.updateAlertDescription,
+                                          customButtonTitle: I18N.DeepLink.updateAlertButtonTitle)
+            }
+        }
     }
     
-    private func makeComponentsForEmptyLink(notificationId: String) -> DeepLinkComponents {
+    private func makeComponentsForEmptyLink(notificationId: String) -> DeepLinkComponents? {
         let parser = DeepLinkParser()
-        let deepLinkData = parser.parse(with: "home/notification/detail?id=\(notificationId)")
+        let deepLinkData = try? parser.parse(with: "home/notification/detail?id=\(notificationId)")
         return DeepLinkComponents(deepLinkData: deepLinkData)
     }
     

@@ -303,6 +303,12 @@ public struct I18N {
         public static let emptyNotification = "아직 도착한 알림이 없어요."
         public static let shortcut = "바로가기"
     }
+    
+    public struct DeepLink {
+        public static let updateAlertTitle = "업데이트 안내"
+        public static let updateAlertDescription = "현재 버전에서는 이동할 수 없는 링크에요.\nSOPT 앱을 최신 버전으로 업데이트해 주세요."
+        public static let updateAlertButtonTitle = "확인"
+    }
 }
     
 extension I18N {

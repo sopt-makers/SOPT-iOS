@@ -17,7 +17,7 @@ struct DeepLinkParser {
         return [HomeDeepLink()]
     }
     
-    func parse(with link: String) -> DeepLinkData {
+    func parse(with link: String) throws -> DeepLinkData {
         guard let components = URLComponents(string: link) else {
             SentrySDK.capture(message: "푸시 알림 DeepLink Parse 에러: \(link)")
             return (defaultDeepLinks, nil)
@@ -26,18 +26,18 @@ struct DeepLinkParser {
         let pathComponents = components.path.split(separator: "/").map { String($0) }
         let queryItems = components.queryItems
         
-        let deepLinkList = makeDeepLinkList(with: pathComponents)
+        let deepLinkList = try makeDeepLinkList(with: pathComponents)
         
         return (deepLinkList, queryItems)
     }
     
-    private func makeDeepLinkList(with pathComponents: [String]) -> [DeepLinkExecutable] {
+    private func makeDeepLinkList(with pathComponents: [String]) throws -> [DeepLinkExecutable] {
         var deepLinks = [DeepLinkExecutable]()
         
         for component in pathComponents {
             if deepLinks.isEmpty {
                 guard let root = findRootDeepLink(name: component) else {
-                    break
+                    throw DeepLinkError.linkNotFound
                 }
                 deepLinks.append(root)
                 continue
