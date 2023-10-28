@@ -36,9 +36,10 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
         
         guard let payload = NotificationPayload(dictionary: userInfo) else { return }
         guard payload.hasLink else {
-            // 알림 디테일 뷰로 보내기
+            self.deepLink.send(makeComponentsForEmptyLink(notificationId: ""))  // TODO: 푸시 알림 페이로드에 notificationId가 생기면 여기에 넣기
             return
         }
+        
         if payload.hasDeepLink {
             self.parseDeepLink(with: payload.aps.deepLink)
         }
@@ -53,6 +54,12 @@ extension NotificationHandler {
         let deepLinkData = parser.parse(with: deepLink)
         let deepLinkComponents = DeepLinkComponents(deepLinkData: deepLinkData)
         self.deepLink.send(deepLinkComponents)
+    }
+    
+    private func makeComponentsForEmptyLink(notificationId: String) -> DeepLinkComponents {
+        let parser = DeepLinkParser()
+        let deepLinkData = parser.parse(with: "home/notification/detail?id=\(notificationId)")
+        return DeepLinkComponents(deepLinkData: deepLinkData)
     }
     
     public func clearNotificationRecord() {
