@@ -150,7 +150,8 @@ extension ApplicationCoordinator {
         coordinator.start()
     }
     
-    private func runAttendanceFlow() {
+    @discardableResult
+    internal func runAttendanceFlow() -> AttendanceCoordinator {
         let coordinator = AttendanceCoordinator(
             router: Router(
                 rootController: UIWindow.getRootNavigationController
@@ -162,6 +163,8 @@ extension ApplicationCoordinator {
         }
         addDependency(coordinator)
         coordinator.start()
+        
+        return coordinator
     }
     
     @discardableResult
@@ -182,7 +185,8 @@ extension ApplicationCoordinator {
         return coordinator
     }
     
-    private func runMyPageFlow(of userType: UserType) {
+    @discardableResult
+    internal func runMyPageFlow(of userType: UserType) -> MyPageCoordinator {
         let coordinator = MyPageCoordinator(
             router: Router(
                 rootController: UIWindow.getRootNavigationController
@@ -205,6 +209,8 @@ extension ApplicationCoordinator {
         }
         addDependency(coordinator)
         coordinator.start()
+        
+        return coordinator
     }
     
     @discardableResult
