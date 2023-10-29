@@ -65,7 +65,7 @@ extension ApplicationCoordinator {
             }.store(in: cancelBag)
     }
     
-    private func handleDeepLink(deepLink: DeepLinkComponents) {
+    private func handleDeepLink(deepLink: DeepLinkComponentsExecutable) {
         self.router.dismissModule(animated: false)
         deepLink.execute(coordinator: self)
     }
