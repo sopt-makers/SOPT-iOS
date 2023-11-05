@@ -12,5 +12,5 @@ import Domain
 
 public protocol NotificationFeatureBuildable {
     func makeNotificationList() -> NotificationListPresentable
-    func makeNotificationDetailVC(notificationId: Int) -> NotificationDetailViewControllable
+    func makeNotificationDetailVC(notificationId: Int) -> NotificationDetailPresentable
 }

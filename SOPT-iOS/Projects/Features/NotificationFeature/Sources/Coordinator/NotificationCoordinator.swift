@@ -41,7 +41,11 @@ final class NotificationCoordinator: DefaultCoordinator {
     }
     
     public func showNotificationDetail(notificationId: Int) {
-        let notificationDetail = factory.makeNotificationDetailVC(notificationId: notificationId)
-        router.push(notificationDetail)
+        var notificationDetail = factory.makeNotificationDetailVC(notificationId: notificationId)
+        notificationDetail.vm.onShortCutButtonTap = { [weak self] data in
+            print(data)
+        }
+        
+        router.push(notificationDetail.vc)
     }
 }

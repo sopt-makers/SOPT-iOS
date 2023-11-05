@@ -44,7 +44,7 @@ extension NotificationAPI: BaseAPI {
     public var task: Moya.Task {
         switch self {
         case .getNotificationList(let page):
-            return .requestParameters(parameters: ["page": page], encoding: URLEncoding.queryString)
+            return .requestParameters(parameters: ["page": page, "size": 20], encoding: URLEncoding.queryString)
         default:
             return .requestPlain
         }

@@ -88,7 +88,6 @@ public final class NotificationDetailVC: UIViewController, NotificationDetailVie
         config.attributedTitle = AttributedString(I18N.Notification.shortcut, attributes: attributeContainer)
         
         let button = UIButton(configuration: config)
-        button.isHidden = true
         return button
     }()
     
@@ -108,7 +107,6 @@ public final class NotificationDetailVC: UIViewController, NotificationDetailVie
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.bindViewModels()
-        self.bindViews()
         self.setUI()
         self.setLayout()
     }
@@ -177,7 +175,11 @@ extension NotificationDetailVC {
 extension NotificationDetailVC {
   
     private func bindViewModels() {
-        let input = NotificationDetailViewModel.Input(viewDidLoad: Just(()).asDriver())
+        let input = NotificationDetailViewModel.Input(
+            viewDidLoad: Just(()).asDriver(),
+            shortCutButtonTap: shortCutButton.publisher(for: .touchUpInside).mapVoid().asDriver()
+        )
+        
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.notification
@@ -186,16 +188,9 @@ extension NotificationDetailVC {
             }.store(in: cancelBag)
     }
     
-    private func bindViews() {
-        self.shortCutButton.publisher(for: .touchUpInside)
-            .withUnretained(self)
-            .sink { owner, _ in
-                print("바로가기 버튼 터치: \(owner)")
-            }.store(in: cancelBag)
-    }
-    
     private func setData(with notification: NotificationDetailModel) {
         self.titleLabel.text = notification.title
         self.textView.text = notification.content
+        self.shortCutButton.isHidden = !notification.hasLink
     }
 }
