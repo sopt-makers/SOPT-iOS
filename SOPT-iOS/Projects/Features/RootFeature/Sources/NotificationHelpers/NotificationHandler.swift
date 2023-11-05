@@ -39,11 +39,11 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
         }
         
         if payload.hasDeepLink {
-            self.parseDeepLink(with: payload.aps.deepLink)
+            self.parseDeepLink(with: payload.deepLink)
         }
         
         if payload.hasWebLink {
-            self.handleWebLink(with: payload.aps.webLink)
+            self.handleWebLink(with: payload.webLink)
         }
     }
     

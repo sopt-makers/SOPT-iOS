@@ -11,20 +11,23 @@ import Sentry
 
 public struct NotificationPayload: Codable {
     public let aps: APS
+    public let category: String?
+    public let deepLink: String?
+    public let webLink: String?
     
     public var hasLink: Bool {
         self.hasWebLink || self.hasDeepLink
     }
     
     public var hasWebLink: Bool {
-        guard let webLink = aps.webLink, !webLink.isEmpty else {
+        guard let webLink, !webLink.isEmpty else {
             return false
         }
         return true
     }
     
     public var hasDeepLink: Bool {
-        guard let deepLink = aps.deepLink, !deepLink.isEmpty else {
+        guard let deepLink, !deepLink.isEmpty else {
             return false
         }
         return true
@@ -42,9 +45,6 @@ public struct NotificationPayload: Codable {
 
 public struct APS: Codable {
     public let alert: Alert
-    public let category: String
-    public let deepLink: String?
-    public let webLink: String?
 }
 
 public struct Alert: Codable {
