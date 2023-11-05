@@ -221,6 +221,16 @@ extension ApplicationCoordinator {
             ),
             factory: NotificationBuilder()
         )
+        
+        coordinator.requestCoordinating = { [weak self] destination in
+            switch destination {
+            case .deepLink(let url):
+                self?.notificationHandler.receive(deepLink: url)
+            case .webLink(let url):
+                print("웹링크")
+            }
+        }
+        
         coordinator.finishFlow = { [weak self, weak coordinator] in
             self?.removeDependency(coordinator)
         }
