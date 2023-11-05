@@ -15,11 +15,12 @@ public struct SoptampEntireRankingDeepLink: DeepLinkExecutable {
     
     public init() {}
     
-    public func execute(with coordinator: Coordinator, components: DeepLinkComponentsExecutable) {
-        guard let coordinator = coordinator as? StampCoordinator else { return }
+    public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
+        guard let coordinator = coordinator as? StampCoordinator else { return nil }
         
         coordinator.runRankingFlow(rankingViewType: .all)
-        components.execute(coordinator: coordinator)
+        
+        return coordinator
     }
 }
 

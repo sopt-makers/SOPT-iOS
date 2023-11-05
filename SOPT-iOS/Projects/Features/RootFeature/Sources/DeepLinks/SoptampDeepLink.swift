@@ -14,10 +14,10 @@ public struct SoptampDeepLink: DeepLinkExecutable {
     public let name = "soptamp"
     public let children: [DeepLinkExecutable] = [SoptampEntireRankingDeepLink()]
     
-    public func execute(with coordinator: Coordinator, components: DeepLinkComponentsExecutable) {
-        guard let coordinator = coordinator as? ApplicationCoordinator else { return }
+    public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
+        guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
         
         let stampCoordinator = coordinator.runStampFlow()
-        components.execute(coordinator: stampCoordinator)
+        return stampCoordinator
     }
 }

@@ -14,10 +14,11 @@ public struct AttendanceDeepLink: DeepLinkExecutable {
     public let name = "attendance"
     public let children: [DeepLinkExecutable] = []
     
-    public func execute(with coordinator: Coordinator, components: DeepLinkComponentsExecutable) {
-        guard let coordinator = coordinator as? ApplicationCoordinator else { return }
+    public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
+        guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
         
-        coordinator.runAttendanceFlow()
+        let attendanceCoordinator = coordinator.runAttendanceFlow()
+        return attendanceCoordinator
     }
 }
 

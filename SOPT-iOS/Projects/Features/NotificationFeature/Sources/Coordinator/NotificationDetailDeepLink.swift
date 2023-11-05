@@ -15,11 +15,13 @@ public struct NotificationDetailDeepLink: DeepLinkExecutable {
     
     public init() {}
     
-    public func execute(with coordinator: Coordinator, components: DeepLinkComponentsExecutable) {
-        guard let coordinator = coordinator as? NotificationCoordinator else { return }
-        guard let id = components.getQueryItemValue(name: "id"),
-              let notificationId = Int(id) else { return }
+    public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
+        guard let coordinator = coordinator as? NotificationCoordinator else { return nil }
+        guard let id = queryItems?.first(where: { $0.name == "id" })?.value,
+              let notificationId = Int(id) else { return nil }
         
         coordinator.showNotificationDetail(notificationId: notificationId)
+        
+        return nil
     }
 }

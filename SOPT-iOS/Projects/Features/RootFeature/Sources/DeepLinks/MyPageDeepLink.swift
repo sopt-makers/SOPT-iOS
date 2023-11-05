@@ -15,10 +15,11 @@ public struct MyPageDeepLink: DeepLinkExecutable {
     public let name = "mypage"
     public let children: [DeepLinkExecutable] = []
     
-    public func execute(with coordinator: Coordinator, components: DeepLinkComponentsExecutable) {
-        guard let coordinator = coordinator as? ApplicationCoordinator else { return }
+    public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
+        guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
         
         let userType = UserDefaultKeyList.Auth.getUserType()
-        coordinator.runMyPageFlow(of: userType)
+        let myPageCoordinator = coordinator.runMyPageFlow(of: userType)
+        return myPageCoordinator
     }
 }
