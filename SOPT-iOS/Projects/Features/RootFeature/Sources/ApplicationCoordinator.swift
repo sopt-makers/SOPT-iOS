@@ -226,8 +226,6 @@ extension ApplicationCoordinator {
             switch destination {
             case .deepLink(let url):
                 self?.notificationHandler.receive(deepLink: url)
-            case .webLink(let url):
-                print("웹링크")
             }
         }
         

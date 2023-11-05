@@ -12,7 +12,6 @@ import NotificationFeatureInterface
 import Domain
 
 public enum NotificationCoordinatorDestination {
-    case webLink(url: String)
     case deepLink(url: String)
 }
 
@@ -57,8 +56,14 @@ final class NotificationCoordinator: DefaultNotificationCoordinator {
         var notificationDetail = factory.makeNotificationDetailVC(notificationId: notificationId)
         notificationDetail.vm.onShortCutButtonTap = { [weak self] link in
             let url = link.url
-            let destination: NotificationCoordinatorDestination = link.isDeepLink ? .deepLink(url: url) : .webLink(url: url)
-            self?.requestCoordinating?(destination)
+            
+            if link.isDeepLink {
+                let destination: NotificationCoordinatorDestination = .deepLink(url: url)
+                self?.requestCoordinating?(destination)
+                return
+            }
+            
+            self?.router.presentSafari(url: url)
         }
         
         router.push(notificationDetail.vc)
