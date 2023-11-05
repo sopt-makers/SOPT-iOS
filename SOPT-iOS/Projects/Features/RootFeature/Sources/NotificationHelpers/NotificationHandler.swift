@@ -16,6 +16,8 @@ import Core
 public final class NotificationHandler: NSObject, UNUserNotificationCenterDelegate {
     
     public let deepLink = CurrentValueSubject<DeepLinkComponentsExecutable?, Never>(nil)
+    public let webLink = CurrentValueSubject<String?, Never>(nil)
+    
     private let parser = DeepLinkParser()
     
     public override init() {}
@@ -39,6 +41,10 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
         if payload.hasDeepLink {
             self.parseDeepLink(with: payload.aps.deepLink)
         }
+        
+        if payload.hasWebLink {
+            self.handleWebLink(with: payload.aps.webLink)
+        }
     }
     
     public func receive(deepLink: String) {
@@ -49,7 +55,7 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
 extension NotificationHandler {
     private func parseDeepLink(with deepLink: String?) {
         guard let deepLink else { return }
-
+        
         do {
             let deepLinkData = try parser.parse(with: deepLink)
             let deepLinkComponents = DeepLinkComponents(deepLinkData: deepLinkData)
@@ -68,7 +74,16 @@ extension NotificationHandler {
         return DeepLinkComponents(deepLinkData: deepLinkData)
     }
     
+    private func handleWebLink(with webLink: String?) {
+        guard let webLink else { return }
+        
+        if webLink.starts(with: "https") || webLink.starts(with: "http") {
+            self.webLink.send(webLink)
+        }
+    }
+    
     public func clearNotificationRecord() {
         self.deepLink.send(nil)
+        self.webLink.send(nil)
     }
 }

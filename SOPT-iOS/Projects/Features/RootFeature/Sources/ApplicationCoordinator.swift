@@ -37,8 +37,6 @@ final class ApplicationCoordinator: BaseCoordinator {
             switch option {
             case .signInSuccess(let url):
                 runSignInSuccessFlow(with: url)
-            default:
-                runSplashFlow()
             }
         } else {
             runSplashFlow()
@@ -58,16 +56,30 @@ extension ApplicationCoordinator {
             .filter { _ in
                 self.childCoordinators.contains(where: { $0 is MainCoordinator })
             }
-            .sink {[weak self] deepLinkComponent in
+            .sink { [weak self] deepLinkComponent in
                 guard let self = self else { return }
                 self.handleDeepLink(deepLink: deepLinkComponent)
                 self.notificationHandler.clearNotificationRecord()
+            }.store(in: cancelBag)
+        
+        self.notificationHandler.webLink
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .filter { _ in
+                self.childCoordinators.contains(where: { $0 is MainCoordinator })
+            }.sink { [weak self] url in
+                self?.handleWebLink(webLink: url)
             }.store(in: cancelBag)
     }
     
     private func handleDeepLink(deepLink: DeepLinkComponentsExecutable) {
         self.router.dismissModule(animated: false)
         deepLink.execute(coordinator: self)
+    }
+    
+    private func handleWebLink(webLink: String) {
+        self.router.dismissModule(animated: false)
+        self.router.presentSafari(url: webLink)
     }
 }
 
