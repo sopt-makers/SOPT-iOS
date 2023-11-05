@@ -16,12 +16,7 @@ import Core
 public final class NotificationHandler: NSObject, UNUserNotificationCenterDelegate {
     
     public let deepLink = CurrentValueSubject<DeepLinkComponentsExecutable?, Never>(nil)
-    @Published var notificationId: String?
     private let parser = DeepLinkParser()
-    
-    var hasNotificationId: Bool {
-        notificationId != nil
-    }
     
     public override init() {}
     
@@ -70,7 +65,6 @@ extension NotificationHandler {
     }
     
     public func clearNotificationRecord() {
-        self.notificationId = nil
         self.deepLink.send(nil)
     }
 }
