@@ -28,6 +28,7 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
         return([.badge, .banner, .list, .sound])
     }
     
+    @MainActor
     public func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
         let userInfo = response.notification.request.content.userInfo
         print("APNs 푸시 알림 페이로드: \(userInfo)")
