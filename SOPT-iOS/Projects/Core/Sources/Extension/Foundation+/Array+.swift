@@ -13,3 +13,9 @@ public extension Array {
         return indices ~= index ? self[index] : nil
     }
 }
+
+public extension Array<URLQueryItem> {
+    func getQueryValue(key: String) -> String? {
+        return self.first(where: { $0.name == key })?.value
+    }
+}

@@ -12,7 +12,7 @@ import StampFeature
 
 public struct SoptampDeepLink: DeepLinkExecutable {
     public let name = "soptamp"
-    public let children: [DeepLinkExecutable] = [SoptampEntireRankingDeepLink()]
+    public let children: [DeepLinkExecutable] = [SoptampEntireRankingDeepLink(), SoptampCurrentGenerationRankingDeepLink()]
     
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }

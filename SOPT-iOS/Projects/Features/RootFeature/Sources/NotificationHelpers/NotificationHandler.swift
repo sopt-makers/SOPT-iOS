@@ -35,7 +35,7 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
         
         guard let payload = NotificationPayload(dictionary: userInfo) else { return }
         guard payload.hasLink else {
-            self.deepLink.send(makeComponentsForEmptyLink(notificationId: ""))  // TODO: 푸시 알림 페이로드에 notificationId가 생기면 여기에 넣기
+            self.deepLink.send(makeComponentsForEmptyLink(notificationId: payload.id))
             return
         }
         
