@@ -57,9 +57,8 @@ extension ApplicationCoordinator {
                 self.childCoordinators.contains(where: { $0 is MainCoordinator })
             }
             .sink { [weak self] deepLinkComponent in
-                guard let self = self else { return }
-                self.handleDeepLink(deepLink: deepLinkComponent)
-                self.notificationHandler.clearNotificationRecord()
+                self?.handleDeepLink(deepLink: deepLinkComponent)
+                self?.notificationHandler.clearNotificationRecord()
             }.store(in: cancelBag)
         
         self.notificationHandler.webLink
@@ -69,6 +68,7 @@ extension ApplicationCoordinator {
                 self.childCoordinators.contains(where: { $0 is MainCoordinator })
             }.sink { [weak self] url in
                 self?.handleWebLink(webLink: url)
+                self?.notificationHandler.clearNotificationRecord()
             }.store(in: cancelBag)
     }
     

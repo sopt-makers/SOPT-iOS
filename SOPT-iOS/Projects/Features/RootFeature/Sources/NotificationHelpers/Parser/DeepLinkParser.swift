@@ -8,11 +8,12 @@
 
 import Foundation
 import BaseFeatureDependency
+import Core
 import NotificationFeature
 
 import Sentry
 
-struct DeepLinkParser {
+struct DeepLinkParser: NotificationLinkParser {
     private var defaultDeepLinks: [DeepLinkExecutable] {
         return [HomeDeepLink()]
     }
@@ -26,6 +27,10 @@ struct DeepLinkParser {
         let pathComponents = components.path.split(separator: "/").map { String($0) }
         let queryItems = components.queryItems
         
+        if isExpiredLink(queryItems: queryItems) {
+            throw NotificationLinkError.expiredLink
+        }
+        
         let deepLinkList = try makeDeepLinkList(with: pathComponents)
         
         return (deepLinkList, queryItems)
@@ -37,8 +42,9 @@ struct DeepLinkParser {
         for component in pathComponents {
             if deepLinks.isEmpty {
                 guard let root = findRootDeepLink(name: component) else {
-                    throw DeepLinkError.linkNotFound
+                    throw NotificationLinkError.linkNotFound
                 }
+                
                 deepLinks.append(root)
                 continue
             }

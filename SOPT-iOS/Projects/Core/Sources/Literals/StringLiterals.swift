@@ -307,6 +307,8 @@ public struct I18N {
     public struct DeepLink {
         public static let updateAlertTitle = "업데이트 안내"
         public static let updateAlertDescription = "현재 버전에서는 이동할 수 없는 링크에요.\nSOPT 앱을 최신 버전으로 업데이트해 주세요."
+        public static let expiredLinkTitle = "만료된 링크"
+        public static let expiredLinkDesription = "기간 만료된 링크입니다."
         public static let updateAlertButtonTitle = "확인"
     }
 }

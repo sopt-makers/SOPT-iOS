@@ -1,5 +1,5 @@
 //
-//  DeepLinkError.swift
+//  NotificationLinkError.swift
 //  RootFeature
 //
 //  Created by sejin on 2023/10/28.
@@ -8,6 +8,9 @@
 
 import Foundation
 
-public enum DeepLinkError: Error {
+public enum NotificationLinkError: Error {
+    case invalidLink
     case linkNotFound
+    case expiredLink
+    case invalidScheme
 }

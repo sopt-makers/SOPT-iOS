@@ -18,7 +18,8 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
     public let deepLink = CurrentValueSubject<DeepLinkComponentsExecutable?, Never>(nil)
     public let webLink = CurrentValueSubject<String?, Never>(nil)
     
-    private let parser = DeepLinkParser()
+    private let deepLinkParser = DeepLinkParser()
+    private let webLinkParser = WebLinkParser()
     
     public override init() {}
     
@@ -58,28 +59,45 @@ extension NotificationHandler {
         guard let deepLink else { return }
         
         do {
-            let deepLinkData = try parser.parse(with: deepLink)
+            let deepLinkData = try deepLinkParser.parse(with: deepLink)
             let deepLinkComponents = DeepLinkComponents(deepLinkData: deepLinkData)
             self.deepLink.send(deepLinkComponents)
         } catch {
-            DispatchQueue.main.async {
-                AlertUtils.presentAlertVC(type: .networkErr, title: I18N.DeepLink.updateAlertTitle,
-                                          description: I18N.DeepLink.updateAlertDescription,
-                                          customButtonTitle: I18N.DeepLink.updateAlertButtonTitle)
-            }
+            self.handleLinkError(error: error)
         }
     }
     
     private func makeComponentsForEmptyLink(notificationId: String) -> DeepLinkComponents? {
-        let deepLinkData = try? parser.parse(with: "home/notification/detail?id=\(notificationId)")
+        let deepLinkData = try? deepLinkParser.parse(with: "home/notification/detail?id=\(notificationId)")
         return DeepLinkComponents(deepLinkData: deepLinkData)
     }
     
     private func handleWebLink(with webLink: String?) {
         guard let webLink else { return }
+        do {
+            let url = try webLinkParser.parse(with: webLink)
+            self.webLink.send(url)
+        } catch {
+            self.handleLinkError(error: error)
+        }
+    }
+    
+    private func handleLinkError(error: Error) {
+        guard let error = error as? NotificationLinkError else { return }
         
-        if webLink.starts(with: "https") || webLink.starts(with: "http") {
-            self.webLink.send(webLink)
+        DispatchQueue.main.async {
+            switch error {
+            case NotificationLinkError.linkNotFound:
+                AlertUtils.presentAlertVC(type: .networkErr, title: I18N.DeepLink.updateAlertTitle,
+                                          description: I18N.DeepLink.updateAlertDescription,
+                                          customButtonTitle: I18N.DeepLink.updateAlertButtonTitle)
+            case NotificationLinkError.expiredLink:
+                AlertUtils.presentAlertVC(type: .networkErr, title: I18N.DeepLink.expiredLinkTitle,
+                                          description: I18N.DeepLink.expiredLinkDesription,
+                                          customButtonTitle: I18N.DeepLink.updateAlertButtonTitle)
+            default:
+                break
+            }
         }
     }
     
