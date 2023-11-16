@@ -11,8 +11,20 @@ import BaseFeatureDependency
 import NotificationFeatureInterface
 import Domain
 
+public enum NotificationCoordinatorDestination {
+    case deepLink(url: String)
+}
+
+public protocol NotificationCoordinatorOutput {
+    var requestCoordinating: ((NotificationCoordinatorDestination) -> Void)? { get set }
+}
+
+public typealias DefaultNotificationCoordinator = DefaultCoordinator & NotificationCoordinatorOutput
+
 public
-final class NotificationCoordinator: DefaultCoordinator {
+final class NotificationCoordinator: DefaultNotificationCoordinator {
+    
+    public var requestCoordinating: ((NotificationCoordinatorDestination) -> Void)?
     
     public var finishFlow: (() -> Void)?
     
@@ -40,8 +52,20 @@ final class NotificationCoordinator: DefaultCoordinator {
         router.push(notificiationList.vc)
     }
     
-    private func showNotificationDetail(notificationId: Int) {
-        let notificationDetail = factory.makeNotificationDetailVC(notificationId: notificationId)
-        router.push(notificationDetail)
+    public func showNotificationDetail(notificationId: Int) {
+        var notificationDetail = factory.makeNotificationDetailVC(notificationId: notificationId)
+        notificationDetail.vm.onShortCutButtonTap = { [weak self] link in
+            let url = link.url
+            
+            if link.isDeepLink {
+                let destination: NotificationCoordinatorDestination = .deepLink(url: url)
+                self?.requestCoordinating?(destination)
+                return
+            }
+            
+            self?.router.presentSafari(url: url)
+        }
+        
+        router.push(notificationDetail.vc)
     }
 }

@@ -40,7 +40,7 @@ final class AttendanceCoordinator: DefaultCoordinator {
         router.push(showAttendance)
     }
     
-    private func showAttendance(_ lectureRound: AttendanceRoundModel, _ dismissCompletion: (() -> Void)?) {
+    internal func showAttendance(_ lectureRound: AttendanceRoundModel, _ dismissCompletion: (() -> Void)?) {
         let attendance = factory.makeAttendanceVC(
             lectureRound: lectureRound, dismissCompletion: dismissCompletion
         )

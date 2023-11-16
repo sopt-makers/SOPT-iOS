@@ -12,7 +12,9 @@ import Combine
 import Core
 import Domain
 
-public class NotificationDetailViewModel: ViewModelType {
+import NotificationFeatureInterface
+
+public class NotificationDetailViewModel: NotificationDetailViewModelType {
 
     // MARK: - Properties
     
@@ -20,11 +22,13 @@ public class NotificationDetailViewModel: ViewModelType {
     private var cancelBag = CancelBag()
     
     private var notificationId: Int
+    private var notification: NotificationDetailModel?
   
     // MARK: - Inputs
     
     public struct Input {
         let viewDidLoad: Driver<Void>
+        let shortCutButtonTap: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -32,6 +36,10 @@ public class NotificationDetailViewModel: ViewModelType {
     public struct Output {
         var notification = PassthroughSubject<NotificationDetailModel, Never>()
     }
+    
+    // MARK: - NotificationCoordinatable
+    
+    public var onShortCutButtonTap: ((ShortCutLink) -> Void)?
     
     // MARK: - init
   
@@ -53,6 +61,13 @@ extension NotificationDetailViewModel {
                 guard let self = self else { return }
                 useCase.getNotificationDetail(notificationId: notificationId)
             }.store(in: cancelBag)
+        
+        input.shortCutButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                guard let shortCutLink = owner.makeShortCutLink() else { return }
+                owner.onShortCutButtonTap?(shortCutLink)
+            }.store(in: cancelBag)
     
         return output
     }
@@ -62,6 +77,7 @@ extension NotificationDetailViewModel {
             .sink { [weak self] notificationDetail in
                 guard let self = self else { return }
                 output.notification.send(notificationDetail)
+                self.notification = notificationDetail
                 self.useCase.readNotification(notificationId: self.notificationId)
             }.store(in: cancelBag)
         
@@ -70,5 +86,19 @@ extension NotificationDetailViewModel {
             .sink { readSuccess in
                 print("읽음 처리: \(readSuccess)")
             }.store(in: cancelBag)
+    }
+    
+    private func makeShortCutLink() -> ShortCutLink? {
+        guard let notification else { return nil }
+        
+        if let webLink = notification.webLink, !webLink.isEmpty {
+            return (url: webLink, isDeepLink: false)
+        }
+        
+        if let deepLink = notification.deepLink, !deepLink.isEmpty {
+            return (url: deepLink, isDeepLink: true)
+        }
+        
+        return nil
     }
 }

@@ -23,9 +23,13 @@ final class ApplicationCoordinator: BaseCoordinator {
     
     //  private let coordinatorFactory: CoordinatorFactory
     private let router: Router
+    private var cancelBag = CancelBag()
+    private let notificationHandler: NotificationHandler
     
-    public init(router: Router) {
+    public init(router: Router, notificationHandler: NotificationHandler) {
         self.router = router
+        self.notificationHandler = notificationHandler
+        super.init()
     }
     
     public override func start(with option: DeepLinkOption?) {
@@ -37,6 +41,45 @@ final class ApplicationCoordinator: BaseCoordinator {
         } else {
             runSplashFlow()
         }
+    }
+}
+
+// MARK: - Push Notification Binding
+
+extension ApplicationCoordinator {
+    private func bindNotification() {
+        self.cancelBag.cancel()
+
+        self.notificationHandler.deepLink
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .filter { _ in
+                self.childCoordinators.contains(where: { $0 is MainCoordinator })
+            }
+            .sink { [weak self] deepLinkComponent in
+                self?.handleDeepLink(deepLink: deepLinkComponent)
+                self?.notificationHandler.clearNotificationRecord()
+            }.store(in: cancelBag)
+        
+        self.notificationHandler.webLink
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .filter { _ in
+                self.childCoordinators.contains(where: { $0 is MainCoordinator })
+            }.sink { [weak self] url in
+                self?.handleWebLink(webLink: url)
+                self?.notificationHandler.clearNotificationRecord()
+            }.store(in: cancelBag)
+    }
+    
+    private func handleDeepLink(deepLink: DeepLinkComponentsExecutable) {
+        self.router.dismissModule(animated: false)
+        deepLink.execute(coordinator: self)
+    }
+    
+    private func handleWebLink(webLink: String) {
+        self.router.dismissModule(animated: false)
+        self.router.presentSafari(url: webLink)
     }
 }
 
@@ -87,7 +130,13 @@ extension ApplicationCoordinator {
 // MARK: - MainFlow
 
 extension ApplicationCoordinator {
-    private func runMainFlow(type: UserType? = nil) {
+    internal func runMainFlow(type: UserType? = nil) {
+        defer {
+            bindNotification()
+        }
+        
+        self.childCoordinators = []
+        
         let userType = type ?? UserDefaultKeyList.Auth.getUserType()
         let coordinator = MainCoordinator(
             router: router,
@@ -113,7 +162,8 @@ extension ApplicationCoordinator {
         coordinator.start()
     }
     
-    private func runAttendanceFlow() {
+    @discardableResult
+    internal func runAttendanceFlow() -> AttendanceCoordinator {
         let coordinator = AttendanceCoordinator(
             router: Router(
                 rootController: UIWindow.getRootNavigationController
@@ -125,9 +175,12 @@ extension ApplicationCoordinator {
         }
         addDependency(coordinator)
         coordinator.start()
+        
+        return coordinator
     }
     
-    private func runStampFlow() {
+    @discardableResult
+    internal func runStampFlow() -> StampCoordinator {
         let coordinator = StampCoordinator(
             router: Router(
                 rootController: UIWindow.getRootNavigationController
@@ -140,9 +193,12 @@ extension ApplicationCoordinator {
         }
         addDependency(coordinator)
         coordinator.start()
+        
+        return coordinator
     }
     
-    private func runMyPageFlow(of userType: UserType) {
+    @discardableResult
+    internal func runMyPageFlow(of userType: UserType) -> MyPageCoordinator {
         let coordinator = MyPageCoordinator(
             router: Router(
                 rootController: UIWindow.getRootNavigationController
@@ -165,19 +221,32 @@ extension ApplicationCoordinator {
         }
         addDependency(coordinator)
         coordinator.start()
+        
+        return coordinator
     }
     
-    private func runNotificationFlow() {
+    @discardableResult
+    internal func runNotificationFlow() -> NotificationCoordinator {
         let coordinator = NotificationCoordinator(
             router: Router(
                 rootController: UIWindow.getRootNavigationController
             ),
             factory: NotificationBuilder()
         )
+        
+        coordinator.requestCoordinating = { [weak self] destination in
+            switch destination {
+            case .deepLink(let url):
+                self?.notificationHandler.receive(deepLink: url)
+            }
+        }
+        
         coordinator.finishFlow = { [weak self, weak coordinator] in
             self?.removeDependency(coordinator)
         }
         addDependency(coordinator)
         coordinator.start()
+        
+        return coordinator
     }
 }

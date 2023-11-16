@@ -7,5 +7,16 @@
 //
 
 import BaseFeatureDependency
+import Core
+import Domain
 
 public protocol NotificationDetailViewControllable: ViewControllable { }
+
+public protocol NotificationDetailCoordinatable {
+    var onShortCutButtonTap: ((ShortCutLink) -> Void)? { get set }
+}
+
+public typealias ShortCutLink = (url: String, isDeepLink: Bool)
+
+public typealias NotificationDetailViewModelType = ViewModelType & NotificationDetailCoordinatable
+public typealias NotificationDetailPresentable = (vc: NotificationDetailViewControllable, vm: any NotificationDetailViewModelType)

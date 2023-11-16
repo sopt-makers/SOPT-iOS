@@ -194,7 +194,7 @@ extension DefaultMainUseCaseTests {
                                  historyList: [32, 25],
                                  attendanceScore: 2.0,
                                  announcement: nil,
-                                 exists: true)
+                                 isAllConfirm: true)
     }
     
     var inactiveUserInfoModel: UserMainInfoModel {
@@ -204,6 +204,6 @@ extension DefaultMainUseCaseTests {
                                  historyList: [32, 25],
                                  attendanceScore: 2.0,
                                  announcement: nil,
-                                 exists: true)
+                                 isAllConfirm: true)
     }
 }
