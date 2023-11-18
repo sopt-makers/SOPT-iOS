@@ -19,14 +19,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         return self.window!.rootViewController as? UINavigationController ?? UINavigationController(rootViewController: UIViewController())
     }
     
+    let notificationHandler = NotificationHandler()
+    
     lazy var appCoordinator: ApplicationCoordinator = ApplicationCoordinator(
-        router: Router(rootController: rootController)
+        router: Router(rootController: rootController), notificationHandler: self.notificationHandler
     )
     
     func scene(_ scene: UIScene,
                willConnectTo session: UISceneSession,
                options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
+        
+        configureAPNs()
         
         window = UIWindow(windowScene: scene)
         window?.rootViewController = rootController
@@ -50,4 +54,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {}
     
     func sceneDidEnterBackground(_ scene: UIScene) {}
+    
+    private func configureAPNs() {
+        UNUserNotificationCenter.current().delegate = self.notificationHandler
+    }
 }
