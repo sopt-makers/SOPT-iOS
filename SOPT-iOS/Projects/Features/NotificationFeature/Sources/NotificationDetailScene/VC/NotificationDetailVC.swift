@@ -88,6 +88,7 @@ public final class NotificationDetailVC: UIViewController, NotificationDetailVie
         config.attributedTitle = AttributedString(I18N.Notification.shortcut, attributes: attributeContainer)
         
         let button = UIButton(configuration: config)
+        button.isHidden = true
         return button
     }()
     
