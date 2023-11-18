@@ -17,6 +17,7 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
     
     public let deepLink = CurrentValueSubject<DeepLinkComponentsExecutable?, Never>(nil)
     public let webLink = CurrentValueSubject<String?, Never>(nil)
+    public let notificationLinkError = CurrentValueSubject<NotificationLinkError?, Never>(nil)
     
     private let deepLinkParser = DeepLinkParser()
     private let webLinkParser = WebLinkParser()
@@ -84,25 +85,12 @@ extension NotificationHandler {
     
     private func handleLinkError(error: Error) {
         guard let error = error as? NotificationLinkError else { return }
-        
-        DispatchQueue.main.async {
-            switch error {
-            case NotificationLinkError.linkNotFound:
-                AlertUtils.presentAlertVC(type: .networkErr, title: I18N.DeepLink.updateAlertTitle,
-                                          description: I18N.DeepLink.updateAlertDescription,
-                                          customButtonTitle: I18N.DeepLink.updateAlertButtonTitle)
-            case NotificationLinkError.expiredLink:
-                AlertUtils.presentAlertVC(type: .networkErr, title: I18N.DeepLink.expiredLinkTitle,
-                                          description: I18N.DeepLink.expiredLinkDesription,
-                                          customButtonTitle: I18N.DeepLink.updateAlertButtonTitle)
-            default:
-                break
-            }
-        }
+        self.notificationLinkError.send(error)
     }
     
     public func clearNotificationRecord() {
         self.deepLink.send(nil)
         self.webLink.send(nil)
+        self.notificationLinkError.send(nil)
     }
 }

@@ -46,5 +46,5 @@ public struct NotificationDetailModel {
         self.webLink = webLink
         self.createdAt = createdAt
         self.updatedAt = updatedAt
-    } 
+    }
 }

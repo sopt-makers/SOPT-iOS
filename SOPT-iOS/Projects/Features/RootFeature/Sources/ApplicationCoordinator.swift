@@ -49,7 +49,7 @@ final class ApplicationCoordinator: BaseCoordinator {
 extension ApplicationCoordinator {
     private func bindNotification() {
         self.cancelBag.cancel()
-
+        
         self.notificationHandler.deepLink
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
@@ -70,6 +70,16 @@ extension ApplicationCoordinator {
                 self?.handleWebLink(webLink: url)
                 self?.notificationHandler.clearNotificationRecord()
             }.store(in: cancelBag)
+        
+        self.notificationHandler.notificationLinkError
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .filter { _ in
+                self.childCoordinators.contains(where: { $0 is MainCoordinator })
+            }.sink { [weak self] error in
+                self?.handleNotificationLinkError(error: error)
+                self?.notificationHandler.clearNotificationRecord()
+            }.store(in: cancelBag)
     }
     
     private func handleDeepLink(deepLink: DeepLinkComponentsExecutable) {
@@ -80,6 +90,21 @@ extension ApplicationCoordinator {
     private func handleWebLink(webLink: String) {
         self.router.dismissModule(animated: false)
         self.router.presentSafari(url: webLink)
+    }
+    
+    private func handleNotificationLinkError(error: NotificationLinkError) {
+        switch error {
+        case NotificationLinkError.linkNotFound:
+            AlertUtils.presentAlertVC(type: .networkErr, title: I18N.DeepLink.updateAlertTitle,
+                                      description: I18N.DeepLink.updateAlertDescription,
+                                      customButtonTitle: I18N.DeepLink.updateAlertButtonTitle)
+        case NotificationLinkError.expiredLink:
+            AlertUtils.presentAlertVC(type: .networkErr, title: I18N.DeepLink.expiredLinkTitle,
+                                      description: I18N.DeepLink.expiredLinkDesription,
+                                      customButtonTitle: I18N.DeepLink.updateAlertButtonTitle)
+        default:
+            break
+        }
     }
 }
 
