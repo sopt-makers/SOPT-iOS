@@ -48,7 +48,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
     // MARK: - NotificationCoordinatable
     
     public var onNaviBackButtonTap: (() -> Void)?
-    public var onNotificationTap: ((Int) -> Void)?
+    public var onNotificationTap: ((String) -> Void)?
     
     // MARK: - init
     

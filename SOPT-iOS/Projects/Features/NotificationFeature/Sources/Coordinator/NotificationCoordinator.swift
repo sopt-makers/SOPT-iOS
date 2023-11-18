@@ -52,7 +52,7 @@ final class NotificationCoordinator: DefaultNotificationCoordinator {
         router.push(notificiationList.vc)
     }
     
-    public func showNotificationDetail(notificationId: Int) {
+    public func showNotificationDetail(notificationId: String) {
         var notificationDetail = factory.makeNotificationDetailVC(notificationId: notificationId)
         notificationDetail.vm.onShortCutButtonTap = { [weak self] link in
             let url = link.url

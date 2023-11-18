@@ -11,6 +11,6 @@ import Core
 import Combine
 
 public protocol NotificationDetailRepositoryInterface {
-    func readNotification(notificationId: Int) -> AnyPublisher<Bool, Error>
-    func getNotificationDetail(notificationId: Int) -> AnyPublisher<NotificationDetailModel, Error>
+    func readNotification(notificationId: String) -> AnyPublisher<Bool, Error>
+    func getNotificationDetail(notificationId: String) -> AnyPublisher<NotificationDetailModel, Error>
 }

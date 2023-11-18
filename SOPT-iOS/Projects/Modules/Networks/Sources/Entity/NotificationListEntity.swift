@@ -9,7 +9,7 @@
 import Foundation
 
 public struct NotificationListEntity: Codable {
-    public let notificationId: Int
+    public let notificationId: String
     public let userId: Int
     public let title: String
     public let content: String?

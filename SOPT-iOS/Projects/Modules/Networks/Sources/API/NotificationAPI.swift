@@ -13,8 +13,8 @@ import Moya
 
 public enum NotificationAPI {
     case getNotificationList(page: Int)
-    case readNotification(notificationId: Int?)
-    case getNotificationDetail(notificationId: Int)
+    case readNotification(notificationId: String?)
+    case getNotificationDetail(notificationId: String)
 }
 
 extension NotificationAPI: BaseAPI {
