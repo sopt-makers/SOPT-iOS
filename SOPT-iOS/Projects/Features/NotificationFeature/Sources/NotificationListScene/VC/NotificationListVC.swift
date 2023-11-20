@@ -47,12 +47,15 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
         return cv
     }()
     
+    private let refreshControl = UIRefreshControl()
+    
     private lazy var notificationListCollectionView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createListCollectionViewLayout())
         cv.isScrollEnabled = true
         cv.showsHorizontalScrollIndicator = false
         cv.showsVerticalScrollIndicator = false
         cv.backgroundColor = .clear
+        cv.refreshControl = self.refreshControl
         return cv
     }()
     
@@ -194,7 +197,8 @@ extension NotificationListVC {
             naviBackButtonTapped: naviBar.leftButtonTapped,
             cellTapped: cellTapped.asDriver(),
             readAllButtonTapped: naviBar.rightButtonTapped,
-            categoryCellTapped: categoryCellTapped.asDriver()
+            categoryCellTapped: categoryCellTapped.asDriver(),
+            refreshRequest: refreshControl.publisher(for: .valueChanged).mapVoid().asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -210,6 +214,12 @@ extension NotificationListVC {
                 self?.emptyView.isHidden = !notificationList.isEmpty
                 self?.applyNotificationListSnapshot(model: notificationList)
             }.store(in: self.cancelBag)
+        
+        output.refreshLoading
+            .sink { [weak self] needLoading in
+                needLoading ? self?.refreshControl.beginRefreshing() : self?.refreshControl.endRefreshing()
+            }
+            .store(in: cancelBag)
     }
 }
 

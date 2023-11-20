@@ -36,6 +36,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
         let cellTapped: Driver<Int>
         let readAllButtonTapped: Driver<Void>
         let categoryCellTapped: Driver<Int>
+        let refreshRequest: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -43,6 +44,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
     public struct Output {
         var notificationList = PassthroughSubject<[NotificationListModel], Never>()
         var filterList = PassthroughSubject<[NotificationFilterType], Never>()
+        var refreshLoading = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - NotificationCoordinatable
@@ -105,6 +107,19 @@ extension NotificationListViewModel {
                 print(index)
             }.store(in: cancelBag)
         
+        input.refreshRequest
+            .throttle(for: 1, scheduler: DispatchQueue.main, latest: true)
+            .withUnretained(self)
+            .sink { owner, _ in
+                if !owner.isPaging {
+                    owner.notifications.removeAll()
+                    owner.page = 0
+                    owner.useCase.getNotificationList(page: owner.page)
+                    return
+                }
+                output.refreshLoading.send(false)
+            }.store(in: cancelBag)
+        
         return output
     }
     
@@ -116,6 +131,7 @@ extension NotificationListViewModel {
                 self.notifications.append(contentsOf: notificationList)
                 output.notificationList.send(notifications)
                 self.endPaging(isEmptyResponse: notificationList.isEmpty)
+                output.refreshLoading.send(false)
             }.store(in: cancelBag)
         
         useCase.readSuccess
