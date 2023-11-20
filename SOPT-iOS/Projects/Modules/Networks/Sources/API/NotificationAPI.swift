@@ -22,13 +22,13 @@ extension NotificationAPI: BaseAPI {
     
     public var path: String {
         switch self {
+        case .getNotificationList:
+            return "/all"
         case .readNotification(let notificationId):
             guard let notificationId = notificationId else { return "" }
-            return "/\(notificationId)"
+            return "/read/\(notificationId)"
         case .getNotificationDetail(let notificationId):
-            return "/\(notificationId)"
-        default:
-            return ""
+            return "/detail/\(notificationId)"
         }
     }
     
