@@ -80,7 +80,7 @@ extension ServiceType {
     func description(for userType: UserType) -> String? {
         switch self {
         case .officialHomepage:
-            return userType == .visitor ? nil : I18N.Main.MainService.Description.Default.officialHomePage
+            return userType == .active ? I18N.Main.MainService.Description.Default.officialHomePage : nil
         case .review:
             return I18N.Main.MainService.Description.Default.review
         case .project:
@@ -95,7 +95,7 @@ extension ServiceType {
         case .faq:
             return I18N.Main.MainService.Description.Default.faq
         case .youtube:
-            return I18N.Main.MainService.Description.Default.youtube
+            return userType == .inactive ? nil : I18N.Main.MainService.Description.Default.youtube
         case .attendance:
             return I18N.Main.MainService.Description.Default.attendance
         case .member:
@@ -103,7 +103,7 @@ extension ServiceType {
         case .group:
             return I18N.Main.MainService.Description.Default.group
         case .instagram:
-            return I18N.Main.MainService.Description.Default.instagram
+            return userType == .inactive ? nil : I18N.Main.MainService.Description.Default.instagram
         case .playgroundCommunity:
             return userType == .active ?
             I18N.Main.MainService.Description.ActiveUser.playgroundCommunity : I18N.Main.MainService.Description.InactiveUser.playgroundCommunity
