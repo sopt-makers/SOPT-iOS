@@ -129,7 +129,7 @@ extension AppServiceType {
     var backgroundColor: UIColor {
         switch self {
         case .soptamp:
-            return DSKitAsset.Colors.black60.color
+            return DSKitAsset.Colors.gray800.color
         }
     }
 }

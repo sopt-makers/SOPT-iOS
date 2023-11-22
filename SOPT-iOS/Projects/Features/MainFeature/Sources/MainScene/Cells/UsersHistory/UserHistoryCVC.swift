@@ -14,8 +14,17 @@ import DSKit
 final class UserHistoryCVC: UICollectionViewCell {
     
     // MARK: - Properties
+    private let historyViewColors: [UIColor] = [DSKitAsset.Colors.gray600.color,
+                                                DSKitAsset.Colors.gray700.color,
+                                                DSKitAsset.Colors.gray800.color,
+                                                DSKitAsset.Colors.gray800.color,
+                                                DSKitAsset.Colors.gray800.color]
+    private let historyViewTextColor: [UIColor] = [DSKitAsset.Colors.white.color,
+                                                   DSKitAsset.Colors.gray10.color,
+                                                   DSKitAsset.Colors.gray100.color,
+                                                   DSKitAsset.Colors.gray200.color,
+                                                   DSKitAsset.Colors.gray300.color]
     
-    private let historyOpacityScale: [Float] = [1.0, 0.7, 0.5, 0.3, 0.2]
     private let numberOfHistoryToShow: Int = 5
     
     // MARK: - UI Components
@@ -128,7 +137,7 @@ extension UserHistoryCVC {
         let remaining = allHistory.count - numberOfHistoryToShow
         if remaining > 0 {
             let remainingView = makeEachHistoryView(index: 0, history: "+\(remaining)")
-            remainingView.backgroundColor = DSKitAsset.Colors.black80.color
+            remainingView.backgroundColor = DSKitAsset.Colors.gray800.color
             self.historyStackView.addArrangedSubview(remainingView)
         }
         
@@ -138,10 +147,9 @@ extension UserHistoryCVC {
     
     private func makeEachHistoryView(index: Int, history: String) -> UILabel {
         let label = UILabel()
-        label.backgroundColor = DSKitAsset.Colors.black40.color
-        label.layer.opacity = historyOpacityScale[safe: index] ?? 1.0
+        label.backgroundColor = historyViewColors[safe: index]
         label.font = UIFont.Main.caption1
-        label.textColor = DSKitAsset.Colors.white100.color
+        label.textColor = historyViewTextColor[safe: index]
         label.textAlignment = .center
         label.clipsToBounds = true
         label.layer.cornerRadius = 12

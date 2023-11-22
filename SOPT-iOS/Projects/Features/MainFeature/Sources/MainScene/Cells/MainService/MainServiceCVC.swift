@@ -63,7 +63,7 @@ final class MainServiceCVC: UICollectionViewCell {
 
 extension MainServiceCVC {
     private func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.black60.color
+        self.backgroundColor = DSKitAsset.Colors.gray800.color
         self.layer.cornerRadius = 15
     }
     
