@@ -18,6 +18,7 @@ public enum ServiceType {
     case member
     case group
     case instagram
+    case playgroundCommunity
     
     public var serviceDomainLink: String {
         switch self {
@@ -30,6 +31,7 @@ public enum ServiceType {
         case .member: return "https://playground.sopt.org/members"
         case .group: return "https://playground.sopt.org/group?utm_source=playground_group&utm_medium=app_button&utm_campaign=app"
         case .instagram: return "https://www.instagram.com/sopt_official"
+        case .playgroundCommunity: return "https://playground.sopt.org"
         }
     }
 }

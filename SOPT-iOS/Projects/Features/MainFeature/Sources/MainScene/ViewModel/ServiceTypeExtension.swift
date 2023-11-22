@@ -32,6 +32,8 @@ extension ServiceType {
             return DSKitAsset.Assets.icCrew.image
         case .instagram:
             return DSKitAsset.Assets.icnInstagram.image
+        case .playgroundCommunity:
+            return DSKitAsset.Assets.icMember.image
         }
     }
     
@@ -55,6 +57,8 @@ extension ServiceType {
             return I18N.Main.MainService.Title.group
         case .instagram:
             return I18N.Main.MainService.Title.instagram
+        case .playgroundCommunity:
+            return I18N.Main.MainService.Title.playgroundCommunity
         }
     }
     
@@ -66,6 +70,8 @@ extension ServiceType {
             return I18N.Main.MainService.MainTitle.attendance
         case .group:
             return I18N.Main.MainService.MainTitle.group
+        case .playgroundCommunity:
+            return I18N.Main.MainService.MainTitle.playgroundCommunity
         default:
             return nil
         }
@@ -98,6 +104,9 @@ extension ServiceType {
             return I18N.Main.MainService.Description.Default.group
         case .instagram:
             return I18N.Main.MainService.Description.Default.instagram
+        case .playgroundCommunity:
+            return userType == .active ?
+            I18N.Main.MainService.Description.ActiveUser.playgroundCommunity : I18N.Main.MainService.Description.InactiveUser.playgroundCommunity
         }
     }
 }
