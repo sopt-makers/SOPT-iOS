@@ -22,7 +22,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
     private var cancelBag = CancelBag()
     
     let filterList: [NotificationFilterType] = [.all, .notice, .news]
-    var notifications: [NotificationListModel] = []
+    var notifications: [NotificationListModel] = [] // 리스트 뷰에서 snapshot을 사용하기 때문에 중복된 모델이 있으면 안 된다.
     
     var page = 0
     var isPaging = false
@@ -128,8 +128,8 @@ extension NotificationListViewModel {
             .asDriver()
             .sink { [weak self] notificationList in
                 guard let self = self else { return }
-                self.notifications.append(contentsOf: notificationList)
-                output.notificationList.send(notifications)
+                self.removeDuplicatesAndUpdateNotifications(contentsOf: notificationList)
+                output.notificationList.send(self.notifications)
                 self.endPaging(isEmptyResponse: notificationList.isEmpty)
                 output.refreshLoading.send(false)
             }.store(in: cancelBag)
@@ -148,6 +148,11 @@ extension NotificationListViewModel {
                     output.notificationList.send(self.notifications)
                 }
             }.store(in: cancelBag)
+    }
+    
+    private func removeDuplicatesAndUpdateNotifications(contentsOf notifications: [NotificationListModel]) {
+        let temp = self.notifications + notifications
+        self.notifications = temp.uniqued()
     }
     
     func startPaging() {
