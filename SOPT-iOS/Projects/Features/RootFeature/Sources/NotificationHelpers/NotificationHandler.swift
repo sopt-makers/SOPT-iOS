@@ -53,6 +53,10 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
     public func receive(deepLink: String) {
         self.parseDeepLink(with: deepLink)
     }
+    
+    public func receive(webLink: String) {
+        self.handleWebLink(with: webLink)
+    }
 }
 
 extension NotificationHandler {

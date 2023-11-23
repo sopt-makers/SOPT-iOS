@@ -13,6 +13,7 @@ import Domain
 
 public enum NotificationCoordinatorDestination {
     case deepLink(url: String)
+    case webLink(url: String)
 }
 
 public protocol NotificationCoordinatorOutput {
@@ -57,13 +58,8 @@ final class NotificationCoordinator: DefaultNotificationCoordinator {
         notificationDetail.vm.onShortCutButtonTap = { [weak self] link in
             let url = link.url
             
-            if link.isDeepLink {
-                let destination: NotificationCoordinatorDestination = .deepLink(url: url)
-                self?.requestCoordinating?(destination)
-                return
-            }
-            
-            self?.router.presentSafari(url: url)
+            let destination: NotificationCoordinatorDestination = link.isDeepLink ? .deepLink(url: url) : .webLink(url: url)
+            self?.requestCoordinating?(destination)
         }
         
         router.push(notificationDetail.vc)
