@@ -166,6 +166,7 @@ public struct I18N {
                 public static let attendance = "출석하기"
                 public static let group = "모임/스터디"
                 public static let officialHomePage = "SOPT\n공식홈페이지"
+                public static let playgroundCommunity = "Playground"
             }
 
             public struct Title {
@@ -178,6 +179,7 @@ public struct I18N {
                 public static let member = "멤버"
                 public static let group = "모임/스터디"
                 public static let instagram = "Instagram"
+                public static let playgroundCommunity = "Playground"
             }
             
             public struct Description {
@@ -191,14 +193,17 @@ public struct I18N {
                     public static let member = "궁금한 사람 찾아보기"
                     public static let group = "지금 열린 모임은?"
                     public static let instagram = "SOPT 소식 빠르게 확인하기"
+                    public static let playgroundCommunity = "가장 HOT한 글은?"
                 }
 
                 public struct ActiveUser {
                     public static let project = "역대 프로젝트 모아보기"
+                    public static let playgroundCommunity = "가장 HOT한 글은?"
                 }
                 
                 public struct InactiveUser {
                     public static let project = "지난 프로젝트 보기"
+                    public static let playgroundCommunity = "모든 솝트와 소통하기"
                 }
                 
                 public struct Visitor {
