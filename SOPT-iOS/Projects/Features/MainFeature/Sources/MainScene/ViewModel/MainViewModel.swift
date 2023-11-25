@@ -221,11 +221,11 @@ extension MainViewModel {
             self.mainServiceList = [.officialHomepage, .review, .project]
             self.otherServiceList = [.instagram, .youtube, .faq]
         case .active:
-            self.mainServiceList = [.attendance, .group, .member]
-            self.otherServiceList = [.project, .officialHomepage]
+            self.mainServiceList = [.attendance, .group, .playgroundCommunity]
+            self.otherServiceList = [.member, .project, .officialHomepage]
         case .inactive:
-            self.mainServiceList = [.group, .member, .project]
-            self.otherServiceList = [.officialHomepage, .instagram, .youtube]
+            self.mainServiceList = [.playgroundCommunity, .group, .member]
+            self.otherServiceList = [.project, .officialHomepage, .instagram, .youtube]
         }
     }
     

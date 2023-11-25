@@ -64,7 +64,7 @@ public class MainVC: UIViewController, MainViewControllable {
 extension MainVC {
     private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
-        view.backgroundColor = DSKitAsset.Colors.black100.color
+        view.backgroundColor = DSKitAsset.Colors.gray950.color
     }
     
     private func setLayout() {

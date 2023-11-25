@@ -20,6 +20,7 @@ public extension ServiceType {
             case .member: return .member
             case .group: return .group
             case .instagram: return .instagram
+            case .playgroundCommunity: return .playgroundCommunity
         }
     }
 }

@@ -33,7 +33,7 @@ final class MainNavigationBar: UIView {
     private let rightButton = UIButton(type: .custom).then {
         $0.setImage(DSKitAsset.Assets.btnMypage.image, for: .normal)
         $0.layer.cornerRadius = 22
-        $0.backgroundColor = DSKitAsset.Colors.black60.color
+        $0.backgroundColor = DSKitAsset.Colors.gray800.color
     }
     
     private lazy var rightItemsStackView = UIStackView(arrangedSubviews: [noticeButton, rightButton]).then {

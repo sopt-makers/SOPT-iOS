@@ -73,7 +73,7 @@ final class ProductCVC: UICollectionViewCell {
 
 extension ProductCVC {
     private func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.black60.color
+        self.backgroundColor = DSKitAsset.Colors.gray800.color
         self.layer.cornerRadius = 15
     }
     
