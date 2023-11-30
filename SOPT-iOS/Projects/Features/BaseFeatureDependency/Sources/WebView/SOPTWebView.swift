@@ -88,7 +88,7 @@ extension SOPTWebView {
         self.navigationBar
             .signalForClickLeftButton()
             .sink { [weak self] _ in
-                self?.dismiss(animated: true)
+                self?.navigationController?.popViewController(animated: true)
             }.store(in: self.cancelbag)
         
         self.navigationBar
