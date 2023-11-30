@@ -15,9 +15,14 @@ import Core
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
+    private var appLifecycleAdapter = AppLifecycleAdapter()
+    
     func application( _ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         configureSentry()
         registerDependencies()
+
+        appLifecycleAdapter.prepare()
+        
         application.registerForRemoteNotifications()
         return true
     }
@@ -37,7 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application( _ application: UIApplication,
         didDiscardSceneSessions sceneSessions: Set<UISceneSession>
-    ) {}
+    ) { }
 }
 
 // MARK: - Sentry & FCM
