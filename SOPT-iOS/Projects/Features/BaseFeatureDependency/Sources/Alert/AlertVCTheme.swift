@@ -21,7 +21,7 @@ extension AlertVC.AlertTheme {
     var backgroundColor: UIColor {
         switch self {
         case .main:
-            return DSKitAsset.Colors.black60.color
+            return DSKitAsset.Colors.gray700.color
         case .soptamp:
             return DSKitAsset.Colors.white.color
         }
@@ -66,7 +66,7 @@ extension AlertVC.AlertTheme {
     func cancelButtonColor(isNetworkErr: Bool) -> UIColor {
         switch self {
         case .main:
-            return isNetworkErr ? DSKitAsset.Colors.white100.color : DSKitAsset.Colors.black40.color
+            return isNetworkErr ? DSKitAsset.Colors.white100.color : DSKitAsset.Colors.gray600.color
         case .soptamp:
             return isNetworkErr ? DSKitAsset.Colors.soptampError200.color : DSKitAsset.Colors.soptampGray300.color
         }

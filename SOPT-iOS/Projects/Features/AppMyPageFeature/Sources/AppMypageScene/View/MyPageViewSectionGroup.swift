@@ -28,7 +28,7 @@ public final class MypageSectionGroupView: UIView {
     }
     
     private let headerView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.black80.color
+        $0.backgroundColor = DSKitAsset.Colors.gray900.color
         $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         $0.layer.cornerRadius = Metric.sectionGroupCornerRadius
     }
@@ -44,7 +44,7 @@ public final class MypageSectionGroupView: UIView {
     }
     
     private let bottomInsetView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.black80.color
+        $0.backgroundColor = DSKitAsset.Colors.gray900.color
         $0.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         $0.layer.cornerRadius = Metric.sectionGroupCornerRadius
     }

@@ -46,7 +46,7 @@ extension AppCustomButton {
     @discardableResult
     public func setColor(
         bgColor: UIColor = DSKitAsset.Colors.white100.color,
-        disableColor: UIColor = DSKitAsset.Colors.black40.color,
+        disableColor: UIColor = DSKitAsset.Colors.gray600.color,
         disabledTextColor: UIColor = DSKitAsset.Colors.gray60.color,
         enabledTextColor: UIColor = DSKitAsset.Colors.black100.color
     ) -> Self {
@@ -76,7 +76,7 @@ extension AppCustomButton {
         self.layer.cornerRadius = 10
         
         self.setBackgroundColor(DSKitAsset.Colors.white100.color, for: .normal)
-        self.setBackgroundColor(DSKitAsset.Colors.black40.color, for: .disabled)
+        self.setBackgroundColor(DSKitAsset.Colors.gray600.color, for: .disabled)
         self.setAttributedTitle(
             NSAttributedString(
                 string: title,
