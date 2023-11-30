@@ -19,18 +19,9 @@ public enum AttendanceCodeState {
     var backgroundColor: UIColor {
         switch self {
         case .empty:
-            return DSKitAsset.Colors.black40.color
+            return DSKitAsset.Colors.gray700.color
         case .fill:
-            return DSKitAsset.Colors.black80.color
-        }
-    }
-    
-    var borderColor: CGColor {
-        switch self {
-        case .empty:
-            return DSKitAsset.Colors.gray100.color.cgColor
-        case .fill:
-            return DSKitAsset.Colors.gray40.color.cgColor
+            return DSKitAsset.Colors.gray600.color
         }
     }
 }
@@ -75,7 +66,6 @@ extension OPAttendanceCodeTextField {
         let state: AttendanceCodeState = (text == "") ? .empty : .fill
         
         backgroundColor = state.backgroundColor
-        layer.borderColor = state.borderColor
         self.text = text
     }
     
@@ -92,14 +82,12 @@ extension OPAttendanceCodeTextField {
     private func setUI() {
         backgroundColor = AttendanceCodeState.empty.backgroundColor
         
-        textColor = DSKitAsset.Colors.gray20.color
+        textColor = DSKitAsset.Colors.gray50.color
         font = .Main.headline2
         textAlignment = .center
         tintColor = .clear
         
         layer.cornerRadius = 8
-        layer.borderWidth = 1
-        layer.borderColor = AttendanceCodeState.empty.borderColor
         
         keyboardType = .numberPad
         textContentType = .oneTimeCode

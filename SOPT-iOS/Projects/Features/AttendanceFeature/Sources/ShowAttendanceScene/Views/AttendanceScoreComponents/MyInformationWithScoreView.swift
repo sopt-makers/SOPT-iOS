@@ -22,7 +22,7 @@ final class MyInformationWithScoreView: UIView {
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.font = .Main.body2
-        label.textColor = DSKitAsset.Colors.gray60.color
+        label.textColor = DSKitAsset.Colors.gray300.color
         return label
     }()
     
@@ -75,15 +75,15 @@ extension MyInformationWithScoreView {
         let attributedString = NSMutableAttributedString(string: mainText + pointedText + subText)
         
         attributedString.addAttributes([NSAttributedString.Key.font: UIFont.Main.body0,
-                                        NSAttributedString.Key.foregroundColor: UIColor.white],
+                                        NSAttributedString.Key.foregroundColor: DSKitAsset.Colors.gray10.color],
                                        range: NSRange(location: 0, length: mainText.count))
         
         attributedString.addAttributes([NSAttributedString.Key.font: UIFont.Main.headline1,
-                                        NSAttributedString.Key.foregroundColor: DSKitAsset.Colors.orange100.color],
+                                        NSAttributedString.Key.foregroundColor: DSKitAsset.Colors.secondary.color],
                                        range: NSRange(location: mainText.count, length: pointedText.count))
         
         attributedString.addAttributes([NSAttributedString.Key.font: UIFont.Main.body0,
-                                        NSAttributedString.Key.foregroundColor: UIColor.white],
+                                        NSAttributedString.Key.foregroundColor: DSKitAsset.Colors.gray10.color],
                                        range: NSRange(location: mainText.count + pointedText.count, length: subText.count))
         
         currentScoreLabel.attributedText = attributedString

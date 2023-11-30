@@ -29,11 +29,11 @@ public class OPCustomButton: UIButton {
 
 extension OPCustomButton {
     public func setUI() {
-        self.setTitleColor(DSKitAsset.Colors.black100.color, for: .normal)
-        self.setTitleColor(DSKitAsset.Colors.gray60.color, for: .disabled)
+        self.setTitleColor(DSKitAsset.Colors.gray950.color, for: .normal)
+        self.setTitleColor(DSKitAsset.Colors.gray300.color, for: .disabled)
         
-        self.setBackgroundColor(DSKitAsset.Colors.white100.color, for: .normal)
-        self.setBackgroundColor(DSKitAsset.Colors.black40.color, for: .disabled)
+        self.setBackgroundColor(DSKitAsset.Colors.gray10.color, for: .normal)
+        self.setBackgroundColor(DSKitAsset.Colors.gray600.color, for: .disabled)
         
         self.layer.cornerRadius = 10
     }
