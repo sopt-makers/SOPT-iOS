@@ -45,7 +45,7 @@ final class MainCoordinator: DefaultMainCoordinator {
             self?.requestCoordinating?(.myPage(userType))
         }
         main.vm.onSafari = { [weak self] url in
-            self?.router.presentSafari(url: url)
+            self?.router.presentSOPTWebView(url: url)
         }
         main.vm.onNeedSignIn = { [weak self] in
             self?.requestCoordinating?(.signIn)

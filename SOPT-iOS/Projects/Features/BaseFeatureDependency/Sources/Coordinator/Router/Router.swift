@@ -18,6 +18,7 @@ public protocol RouterProtocol: ViewControllable {
     func present(_ module: ViewControllable?, animated: Bool)
     func present(_ module: ViewControllable?, animated: Bool, modalPresentationSytle: UIModalPresentationStyle)
     func present(_ module: ViewControllable?, animated: Bool, completion: (() -> Void)?)
+    func presentSOPTWebView(url: String)
     func presentSafari(url: String)
     
     func push(_ module: ViewControllable?)
@@ -110,6 +111,13 @@ final class Router: NSObject, RouterProtocol {
         guard let controller = module?.viewController else { return }
         self.rootController?.present(controller, animated: animated, completion: completion)
     }
+    
+    public func presentSOPTWebView(url: String) {
+        let webView = SOPTWebView(startWith: URL(string: url)!)
+        webView.modalPresentationStyle = .fullScreen
+        UIApplication.getMostTopViewController()?.present(webView, animated: true)
+    }
+
     
     public func presentSafari(url: String) {
         let safariViewController = SFSafariViewController(url: URL(string: url)!)
