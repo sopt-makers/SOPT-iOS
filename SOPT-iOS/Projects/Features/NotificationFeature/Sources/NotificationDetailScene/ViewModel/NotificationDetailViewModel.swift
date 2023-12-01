@@ -21,7 +21,7 @@ public class NotificationDetailViewModel: NotificationDetailViewModelType {
     private let useCase: NotificationDetailUseCase
     private var cancelBag = CancelBag()
     
-    private var notificationId: Int
+    private var notificationId: String
     private var notification: NotificationDetailModel?
   
     // MARK: - Inputs
@@ -43,7 +43,7 @@ public class NotificationDetailViewModel: NotificationDetailViewModelType {
     
     // MARK: - init
   
-    public init(useCase: NotificationDetailUseCase, notificationId: Int) {
+    public init(useCase: NotificationDetailUseCase, notificationId: String) {
         self.useCase = useCase
         self.notificationId = notificationId
     }

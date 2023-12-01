@@ -11,8 +11,6 @@ import Sentry
 
 import Networks
 import Core
-import SafariServices
-import RootFeature
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {

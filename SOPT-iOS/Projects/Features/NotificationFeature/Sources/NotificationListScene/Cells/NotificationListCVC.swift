@@ -18,7 +18,7 @@ final class NotificationListCVC: UICollectionViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = .Main.body1
-        label.textColor = DSKitAsset.Colors.gray30.color
+        label.textColor = DSKitAsset.Colors.gray100.color
         label.textAlignment = .left
         return label
     }()
@@ -91,10 +91,10 @@ extension NotificationListCVC {
 // MARK: - Methods
 
 extension NotificationListCVC {
-    func initCell(title: String, time: String, description: String?, isUnread: Bool) {
+    func initCell(title: String, time: String, description: String?, isRead: Bool) {
         self.titleLabel.text = title
         self.timeLabel.text = time
         self.descriptionLabel.text = description
-        self.backgroundColor = isUnread ? DSKitAsset.Colors.black100.color : DSKitAsset.Colors.black80.color
+        self.backgroundColor = isRead ? DSKitAsset.Colors.gray950.color : DSKitAsset.Colors.gray800.color
     }
 }

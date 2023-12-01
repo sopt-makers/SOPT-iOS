@@ -21,6 +21,7 @@ public class SignInViewModel: SignInViewModelType {
     // MARK: - Inputs
     
     public struct Input {
+        let viewDidLoad: Driver<Void>
         let playgroundSignInFinished: Driver<String>
         let visitorButtonTapped: Driver<Void>
     }
@@ -46,6 +47,11 @@ extension SignInViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
+        
+        input.viewDidLoad
+            .sink { _ in
+                UserDefaultKeyList.clearUserData()
+            }.store(in: self.cancelBag)
         
         input.visitorButtonTapped
             .withUnretained(self)
