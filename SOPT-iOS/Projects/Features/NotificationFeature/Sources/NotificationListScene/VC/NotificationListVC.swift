@@ -98,7 +98,7 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
 
 extension NotificationListVC {
     private func setUI() {
-        view.backgroundColor = DSKitAsset.Colors.black100.color
+        view.backgroundColor = DSKitAsset.Colors.gray950.color
     }
     
     private func setLayout() {
@@ -147,7 +147,7 @@ extension NotificationListVC {
             cell.initCell(title: notification.title,
                           time: notification.formattedCreatedAt,
                           description: notification.content,
-                          isUnread: notification.isRead)
+                          isRead: notification.isRead)
             return cell
         })
     }
