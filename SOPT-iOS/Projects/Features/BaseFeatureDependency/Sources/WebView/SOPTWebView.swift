@@ -88,13 +88,18 @@ extension SOPTWebView {
         self.navigationBar
             .signalForClickLeftButton()
             .sink { [weak self] _ in
-                self?.navigationController?.popViewController(animated: true)
+                guard self?.wkwebView.canGoBack == true else {
+                    self?.navigationController?.popViewController(animated: true)
+                    return
+                }
+                    
+                self?.wkwebView.goBack()
             }.store(in: self.cancelbag)
         
         self.navigationBar
             .signalForClickRightButton()
             .sink { [weak self] _ in
-                self?.wkwebView.reload()
+                self?.navigationController?.popViewController(animated: true)
             }.store(in: self.cancelbag)
     }
 }

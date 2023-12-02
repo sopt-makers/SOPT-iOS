@@ -7,6 +7,7 @@
 //
 
 import Core
+import DSKit
 
 import UIKit
 
@@ -21,7 +22,8 @@ internal final class WebViewNavigationBar: UIView {
     
     // MARK: LeftButton
     private let leftButton = UIButton().then {
-        $0.setTitle(I18N.WebView.close, for: .normal)
+        let image = UIImage(asset: DSKitAsset.Assets.btnArrowLeft)?.withRenderingMode(.alwaysTemplate)
+        $0.setImage(image, for: .normal)
         $0.tintColor = .white
     }
     
@@ -31,7 +33,7 @@ internal final class WebViewNavigationBar: UIView {
     
     // MARK: RightButton
     private let rightButton = UIButton().then {
-        $0.setImage(UIImage(systemName: "arrow.clockwise"), for: .normal)
+        $0.setTitle(I18N.WebView.close, for: .normal)
         $0.tintColor = .white
     }
     
