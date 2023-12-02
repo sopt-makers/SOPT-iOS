@@ -9,8 +9,9 @@ import UIKit
 
 import Sentry
 
-import Networks
+import BaseFeatureDependency
 import Core
+import Networks
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {

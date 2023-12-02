@@ -1,8 +1,8 @@
 //
 //  AppLifecycleAdapter.swift
-//  SOPT-iOS
+//  BaseFeatureDependency
 //
-//  Created by Ian on 12/1/23.
+//  Created by Ian on 12/2/23.
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
@@ -15,7 +15,7 @@ final public class AppLifecycleAdapter {
     private let authService: AuthService
     private let cancelBag = CancelBag()
 
-    init() {
+    public init() {
         self.authService = DefaultAuthService()
     }
 }
@@ -51,3 +51,4 @@ extension AppLifecycleAdapter {
         self.authService.reissuance { _  in }
     }
 }
+
