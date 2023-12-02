@@ -20,6 +20,7 @@ let project = Project.makeModule(
         .Features.Attendance.Feature,
         .Features.Notice.Feature,
         .Features.AppMyPage.Feature,
-        .Features.Notification.Feature
+        .Features.Notification.Feature,
+        .Features.Poke.Feature
     ]
 )
