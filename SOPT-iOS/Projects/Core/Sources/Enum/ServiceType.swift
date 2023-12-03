@@ -22,16 +22,16 @@ public enum ServiceType {
     
     public var serviceDomainLink: String {
         switch self {
-        case .officialHomepage: return "https://sopt.org"
-        case .review: return "https://sopt.org/review"
-        case .project: return "https://playground.sopt.org/projects"
-        case .faq: return "https://sopt.org/FAQ"
-        case .youtube: return "https://m.youtube.com/@SOPTMEDIA"
+        case .officialHomepage: return ExternalURL.SOPT.officialHomepage
+        case .review: return ExternalURL.SOPT.review
+        case .project: return ExternalURL.Playground.project
+        case .faq: return ExternalURL.SOPT.faq
+        case .youtube: return ExternalURL.SNS.youtube
         case .attendance: return ""
-        case .member: return "https://playground.sopt.org/members"
-        case .group: return "https://playground.sopt.org/group?utm_source=playground_group&utm_medium=app_button&utm_campaign=app"
-        case .instagram: return "https://www.instagram.com/sopt_official"
-        case .playgroundCommunity: return "https://playground.sopt.org"
+        case .member: return ExternalURL.Playground.member
+        case .group: return ExternalURL.Playground.group
+        case .instagram: return ExternalURL.SNS.instagram
+        case .playgroundCommunity: return ExternalURL.Playground.playgroundCommunity
         }
     }
 }
