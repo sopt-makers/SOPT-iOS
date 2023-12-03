@@ -26,6 +26,7 @@ final public class PokeBottomSheetMessageView: UIView {
         static let contentNormalStateBackgroundColor = DSKitAsset.Colors.gray800.color
     }
     
+    // MARK: - Private variables
     private let containerStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 0.f
@@ -40,8 +41,11 @@ final public class PokeBottomSheetMessageView: UIView {
         $0.numberOfLines = 1
     }
     
+    // MARK: Combine
+    // MARK: Local variables
     private var cancelBag = CancelBag()
-
+    private var message: String?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -74,6 +78,10 @@ final public class PokeBottomSheetMessageView: UIView {
 extension PokeBottomSheetMessageView {
     public func configure(with message: String) {
         self.leftTitleLabel.text = message
+    }
+    
+    public func signalForClick() ->Driver<String> {
+        return self.gesture().map { [weak self] _ in self?.message }.compactMap { $0 }.asDriver()
     }
 }
 
