@@ -1,5 +1,5 @@
 //
-//  PokeButton.swift
+//  PokeKokButton.swift
 //  PokeFeature
 //
 //  Created by sejin on 12/3/23.
@@ -11,7 +11,7 @@ import UIKit
 import DSKit
 import Core
 
-public final class KokButton: UIButton {
+public final class PokeKokButton: UIButton {
     
     // MARK: - Properties
     

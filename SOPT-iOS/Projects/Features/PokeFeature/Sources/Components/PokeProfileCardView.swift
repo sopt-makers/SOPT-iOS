@@ -1,5 +1,5 @@
 //
-//  ProfileCardView.swift
+//  PokeProfileCardView.swift
 //  PokeFeature
 //
 //  Created by sejin on 12/3/23.
@@ -11,7 +11,7 @@ import UIKit
 import DSKit
 import Core
 
-public final class ProfileCardView: UIView {
+public final class PokeProfileCardView: UIView {
     
     // MARK: - Properties
     
@@ -27,7 +27,7 @@ public final class ProfileCardView: UIView {
         return imageView
     }()
     
-    private let kokButton = KokButton()
+    private let kokButton = PokeKokButton()
     
     private let nameLabel: UILabel = {
         let label = UILabel()

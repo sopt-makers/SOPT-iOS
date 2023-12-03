@@ -1,5 +1,5 @@
 //
-//  ProfileListView.swift
+//  PokeProfileListView.swift
 //  PokeFeature
 //
 //  Created by sejin on 12/3/23.
@@ -11,7 +11,7 @@ import UIKit
 import DSKit
 import Core
 
-public final class ProfileListView: UIView {
+public final class PokeProfileListView: UIView {
     
     // MARK: - Properties
     
@@ -29,7 +29,7 @@ public final class ProfileListView: UIView {
         return imageView
     }()
     
-    private let kokButton = KokButton()
+    private let kokButton = PokeKokButton()
     
     private let nameLabel: UILabel = {
         let label = UILabel()
@@ -200,7 +200,7 @@ public final class ProfileListView: UIView {
     }
 }
 
-extension ProfileListView {
+extension PokeProfileListView {
     enum ProfileListType {
         case main
         case `default`
