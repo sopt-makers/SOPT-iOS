@@ -17,13 +17,13 @@ import BaseFeatureDependency
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private var appLifecycleAdapter = AppLifecycleAdapter()
-    
+
     func application( _ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         configureSentry()
+        configureAppLifecycleAdapter()
         registerDependencies()
         application.registerForRemoteNotifications()
         
-        appLifecycleAdapter.prepare()
         return true
     }
     
@@ -63,6 +63,10 @@ extension AppDelegate {
         }
     }
     
+    private func configureAppLifecycleAdapter() {
+        self.appLifecycleAdapter.prepare()
+    }
+
     /// APNs 등록 실패할 경우 호출되는 메서드
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         print("APNs Failed to register for notifications: \(error.localizedDescription)")
