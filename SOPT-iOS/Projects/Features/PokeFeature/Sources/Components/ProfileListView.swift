@@ -17,11 +17,12 @@ public final class ProfileListView: UIView {
     
     lazy var kokButtonTap: Driver<Void> = kokButton.tap
     
+    var viewType: ProfileListType
+    
     // MARK: - UI Components
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.layer.cornerRadius = 25
         imageView.backgroundColor = DSKitAsset.Colors.gray700.color
         imageView.clipsToBounds = true
         return imageView
@@ -52,8 +53,10 @@ public final class ProfileListView: UIView {
     
     // MARK: - initialization
     
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(viewType: ProfileListType) {
+        self.viewType = viewType
+        super.init(frame: .zero)
+        self.setUI()
         self.setLayout()
     }
     
@@ -63,17 +66,62 @@ public final class ProfileListView: UIView {
     
     // MARK: - UI & Layout
     
+    private func setUI() {
+        self.profileImageView.layer.cornerRadius = self.viewType == .main ? 20 : 25
+    }
+    
     private func setLayout() {
         self.addSubviews(profileImageView, nameLabel, partLabel, kokCountLabel, kokButton)
         
+        self.viewType == .main ? setLayoutWithMainType() : setLayoutWithDefaultType()
+    }
+    
+    private func setLayoutWithMainType() {
         self.snp.makeConstraints { make in
-            make.width.equalTo(335)
-            make.height.equalTo(50)
+            make.width.equalTo(311)
+            make.height.equalTo(44)
         }
         
         profileImageView.snp.makeConstraints { make in
             make.top.leading.bottom.equalToSuperview()
+            make.width.equalTo(40)
+        }
+        
+        nameLabel.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.leading.equalTo(profileImageView.snp.trailing).offset(8)
+        }
+        
+        partLabel.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.leading.equalTo(nameLabel.snp.trailing).offset(4)
+        }
+        
+        kokCountLabel.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.leading.greaterThanOrEqualTo(partLabel.snp.trailing).offset(8)
+            make.trailing.equalTo(kokButton.snp.leading).offset(-12)
+        }
+        
+        kokCountLabel.snp.contentCompressionResistanceHorizontalPriority = 1000
+        
+        kokButton.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.trailing.equalToSuperview()
+        }
+    }
+    
+    private func setLayoutWithDefaultType() {
+        self.snp.makeConstraints { make in
+            make.width.equalTo(375)
+            make.height.equalTo(70)
+        }
+        
+        profileImageView.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.leading.equalToSuperview().inset(20)
             make.width.equalTo(50)
+            make.height.equalTo(50)
         }
         
         nameLabel.snp.makeConstraints { make in
@@ -92,9 +140,11 @@ public final class ProfileListView: UIView {
             make.trailing.equalTo(kokButton.snp.leading).offset(-14)
         }
         
+        kokCountLabel.snp.contentCompressionResistanceHorizontalPriority = 1000
+        
         kokButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview()
+            make.trailing.equalToSuperview().inset(20)
         }
     }
     
@@ -114,5 +164,18 @@ public final class ProfileListView: UIView {
     func setButtonIsEnabled(to isEnabled: Bool) -> Self {
         self.kokButton.isEnabled = isEnabled
         return self
+    }
+    
+    @discardableResult
+    func setBackgroundColor(with color: UIColor) -> Self {
+        self.backgroundColor = color
+        return self
+    }
+}
+
+extension ProfileListView {
+    enum ProfileListType {
+        case main
+        case `default`
     }
 }

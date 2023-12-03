@@ -109,4 +109,10 @@ public final class ProfileCardView: UIView {
         self.kokButton.isEnabled = isEnabled
         return self
     }
+    
+    @discardableResult
+    func setBackgroundColor(with color: UIColor) -> Self {
+        self.backgroundColor = color
+        return self
+    }
 }
