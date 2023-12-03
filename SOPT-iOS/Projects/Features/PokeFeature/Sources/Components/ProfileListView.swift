@@ -52,6 +52,13 @@ public final class ProfileListView: UIView {
         return label
     }()
     
+    private let dividerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = DSKitAsset.Colors.gray800.color
+        view.isHidden = true
+        return view
+    }()
+    
     // MARK: - initialization
     
     init(viewType: ProfileListType) {
@@ -72,7 +79,7 @@ public final class ProfileListView: UIView {
     }
     
     private func setLayout() {
-        self.addSubviews(profileImageView, nameLabel, partLabel, kokCountLabel, kokButton)
+        self.addSubviews(profileImageView, nameLabel, partLabel, kokCountLabel, kokButton, dividerView)
         
         self.viewType == .main ? setLayoutWithMainType() : setLayoutWithDefaultType()
     }
@@ -112,6 +119,11 @@ public final class ProfileListView: UIView {
             make.centerY.equalToSuperview()
             make.trailing.equalToSuperview()
         }
+        
+        dividerView.snp.makeConstraints { make in
+            make.leading.bottom.trailing.equalToSuperview()
+            make.height.equalTo(1)
+        }
     }
     
     private func setLayoutWithDefaultType() {
@@ -149,6 +161,11 @@ public final class ProfileListView: UIView {
             make.centerY.equalToSuperview()
             make.trailing.equalToSuperview().inset(20)
         }
+        
+        dividerView.snp.makeConstraints { make in
+            make.leading.bottom.trailing.equalToSuperview()
+            make.height.equalTo(1)
+        }
     }
     
     // MARK: - Methods
@@ -173,6 +190,12 @@ public final class ProfileListView: UIView {
     @discardableResult
     func setBackgroundColor(with color: UIColor) -> Self {
         self.backgroundColor = color
+        return self
+    }
+    
+    @discardableResult
+    func setDividerViewIsHidden(to isHidden: Bool) -> Self {
+        self.dividerView.isHidden = isHidden
         return self
     }
 }
