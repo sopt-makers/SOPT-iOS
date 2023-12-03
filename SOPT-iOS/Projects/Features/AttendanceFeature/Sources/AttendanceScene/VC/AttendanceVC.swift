@@ -16,6 +16,7 @@ import SnapKit
 import Then
 
 import AttendanceFeatureInterface
+import BaseFeatureDependency
 
 public final class AttendanceVC: UIViewController, AttendanceViewControllable {
     private enum Metric {
@@ -70,7 +71,7 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
     private let closeButton: UIButton = {
         let button = UIButton()
         var config = UIButton.Configuration.plain()
-        config.image = DSKitAsset.Assets.opClose.image.withTintColor(DSKitAsset.Colors.gray60.color)
+        config.image = DSKitAsset.Assets.opClose.image.withTintColor(DSKitAsset.Colors.gray300.color)
         button.configuration = config
         return button
     }()
@@ -78,7 +79,7 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
     /// 출석 제목
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = DSKitAsset.Colors.white100.color
+        label.textColor = DSKitAsset.Colors.gray10.color
         label.setTypoStyle(.Attendance.h1)
         return label
     }()
@@ -87,7 +88,7 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
     private let subtitleLabel: UILabel = {
         let label = UILabel()
         label.text = I18N.Attendance.inputCodeDescription
-        label.textColor = DSKitAsset.Colors.gray60.color
+        label.textColor = DSKitAsset.Colors.gray300.color
         label.setTypoStyle(.Main.caption1)
         return label
     }()
@@ -117,7 +118,7 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
     private let alertLabel: UILabel = {
         let label = UILabel()
         label.text = I18N.Attendance.codeMismatch
-        label.textColor = DSKitAsset.Colors.subRed.color
+        label.textColor = DSKitAsset.Colors.error.color
         label.setTypoStyle(.Main.body2)
         label.isHidden = true
         return label
@@ -174,7 +175,7 @@ extension AttendanceVC {
     
     private func setUI() {
         view.backgroundColor = .black.withAlphaComponent(0.85)
-        attendanceStackView.backgroundColor = DSKitAsset.Colors.black60.color
+        attendanceStackView.backgroundColor = DSKitAsset.Colors.gray800.color
         attendanceStackView.layer.cornerRadius = 10
         attendanceCodeView.codeTextFields.first?.becomeFirstResponder()
     }

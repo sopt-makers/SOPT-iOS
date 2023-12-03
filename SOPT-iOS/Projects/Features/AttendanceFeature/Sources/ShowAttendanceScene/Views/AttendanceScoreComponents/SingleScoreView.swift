@@ -22,14 +22,14 @@ final class SingleScoreView: UIView {
     private let singleScoreTitleLabel: UILabel = {
         let label = UILabel()
         label.font = .Main.caption1
-        label.textColor = DSKitAsset.Colors.gray60.color
+        label.textColor = DSKitAsset.Colors.gray300.color
         return label
     }()
     
     private let singleScoreCountLabel: UILabel = {
         let label = UILabel()
         label.font = .Main.body2
-        label.textColor = DSKitAsset.Colors.gray30.color
+        label.textColor = DSKitAsset.Colors.gray50.color
         return label
     }()
     

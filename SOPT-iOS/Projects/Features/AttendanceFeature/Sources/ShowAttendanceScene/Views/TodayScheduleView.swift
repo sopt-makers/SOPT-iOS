@@ -41,7 +41,7 @@ final class TodayScheduleView: UIView {
     private let dateLabel: UILabel = {
         let label = UILabel()
         label.font = .Main.body2
-        label.textColor = DSKitAsset.Colors.gray60.color
+        label.textColor = DSKitAsset.Colors.gray300.color
         return label
     }()
     
@@ -53,14 +53,14 @@ final class TodayScheduleView: UIView {
     
     private let placeLabel: UILabel = {
         let label = UILabel()
-        label.textColor = DSKitAsset.Colors.gray60.color
+        label.textColor = DSKitAsset.Colors.gray300.color
         label.font = .Main.body2
         return label
     }()
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .white
+        label.textColor = DSKitAsset.Colors.gray10.color
         label.font = DSKitFontFamily.Suit.regular.font(size: 18)
         label.numberOfLines = 0
         return label
@@ -68,7 +68,7 @@ final class TodayScheduleView: UIView {
     
     private let subtitleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = DSKitAsset.Colors.gray30.color
+        label.textColor = DSKitAsset.Colors.gray100.color
         label.font = .Main.body2
         return label
     }()
@@ -139,7 +139,7 @@ final class TodayScheduleView: UIView {
 extension TodayScheduleView {
     
     private func initContentView() {
-        self.backgroundColor = DSKitAsset.Colors.black80.color
+        self.backgroundColor = DSKitAsset.Colors.gray800.color
         self.clipsToBounds = true
         self.layer.cornerRadius = 16
     }

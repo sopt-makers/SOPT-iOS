@@ -13,7 +13,7 @@ import Domain
 import DSKit
 
 /*
- 각각의 출석현황을 나타내는 뷰입니다.
+ 오늘의 n차 출석현황 프로그래스 뷰 내부의 단일 출석여부를 나타내는 뷰입니다.
  */
 
 extension AttendanceStepType {
@@ -38,9 +38,9 @@ extension AttendanceStepType {
     var textColor: UIColor {
         switch self {
         case .none:
-            return DSKitAsset.Colors.gray100.color
+            return DSKitAsset.Colors.gray500.color
         case .check, .unCheck, .tardy, .done, .absent:
-            return DSKitAsset.Colors.white100.color
+            return DSKitAsset.Colors.gray10.color
         }
     }
     
