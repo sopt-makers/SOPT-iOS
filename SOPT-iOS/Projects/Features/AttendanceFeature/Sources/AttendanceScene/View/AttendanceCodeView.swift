@@ -8,6 +8,10 @@
 
 import UIKit
 
+/*
+ 5자리 출석 숫자코드 입력 부분 뷰
+ */
+
 final class AttendanceCodeView: UIView {
     private enum Metric {
         static let itemHeight = 60.f

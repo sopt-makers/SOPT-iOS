@@ -14,7 +14,7 @@ import DSKit
 
 /*
  출석 조회하기 뷰의 상단 오늘의 일정 중
- 오늘의 출석현황을 보여주는 뷰 입니다.
+ 오늘의 n차 출석현황을 보여주는 프로그래스 뷰 입니다.
  */
 
 final class TodayAttendanceView: UIView {

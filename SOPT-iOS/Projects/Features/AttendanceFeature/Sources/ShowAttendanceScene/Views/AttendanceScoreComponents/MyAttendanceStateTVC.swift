@@ -25,14 +25,14 @@ final class MyAttendanceStateTVC: UITableViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
-        label.textColor = .white
+        label.textColor = DSKitAsset.Colors.gray10.color
         return label
     }()
     
     private let dateLabel: UILabel = {
         let label = UILabel()
         label.font = .Main.body2
-        label.textColor = DSKitAsset.Colors.gray30.color
+        label.textColor = DSKitAsset.Colors.gray100.color
         return label
     }()
     

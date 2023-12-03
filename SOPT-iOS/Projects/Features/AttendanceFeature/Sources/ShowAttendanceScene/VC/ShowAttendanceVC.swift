@@ -66,7 +66,7 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     
     private lazy var attendanceButtonStackView: UIStackView = {
         let stackView = UIStackView()
-        stackView.backgroundColor = DSKitAsset.Colors.gray900.color
+//        stackView.backgroundColor = DSKitAsset.Colors.gray900.color // 안쓰는거같음
         stackView.addArrangedSubview(attendanceButton)
         return stackView
     }()
@@ -127,8 +127,8 @@ extension ShowAttendanceVC {
     
     private func setUI() {
         self.navigationController?.navigationBar.isHidden = true
-        self.view.backgroundColor = DSKitAsset.Colors.gray900.color
-        containerScrollView.backgroundColor = DSKitAsset.Colors.gray900.color
+        self.view.backgroundColor = DSKitAsset.Colors.gray950.color
+        containerScrollView.backgroundColor = DSKitAsset.Colors.gray950.color
     }
     
     private func setLayout() {
