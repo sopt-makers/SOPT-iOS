@@ -29,7 +29,7 @@ public final class PokeProfileListView: UIView {
         return imageView
     }()
     
-    private let kokButton = PokeKokButton()
+    private lazy var kokButton = PokeKokButton()
     
     private let nameLabel: UILabel = {
         let label = UILabel()
@@ -196,6 +196,12 @@ public final class PokeProfileListView: UIView {
     @discardableResult
     func setDividerViewIsHidden(to isHidden: Bool) -> Self {
         self.dividerView.isHidden = isHidden
+        return self
+    }
+    
+    @discardableResult
+    func setIsFriend(to isFriend: Bool) -> Self {
+        self.kokButton.isFriend = isFriend
         return self
     }
 }

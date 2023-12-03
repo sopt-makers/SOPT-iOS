@@ -15,6 +15,12 @@ public final class PokeKokButton: UIButton {
     
     // MARK: - Properties
     
+    public var isFriend: Bool {
+        didSet {
+            setIcon()
+        }
+    }
+    
     public lazy var tap: Driver<Void> = self.publisher(for: .touchUpInside)
         .mapVoid()
         .asDriver()
@@ -31,8 +37,9 @@ public final class PokeKokButton: UIButton {
     
     // MARK: - initialization
     
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
+    public init(isFriend: Bool = true) {
+        self.isFriend = isFriend
+        super.init(frame: .zero)
         self.setUI()
     }
     
@@ -43,8 +50,7 @@ public final class PokeKokButton: UIButton {
     // MARK: - UI & Layout
     
     private func setUI() {
-        self.setImage(DSKitAsset.Assets.iconKok.image.withTintColor(DSKitAsset.Colors.black.color), for: .normal)
-        self.setImage(DSKitAsset.Assets.iconKok.image.withTintColor(DSKitAsset.Colors.gray500.color), for: .disabled)
+        self.setIcon()
         self.layer.cornerRadius = 18
         self.changeUI(with: self.isEnabled)
     }
@@ -52,5 +58,11 @@ public final class PokeKokButton: UIButton {
     private func changeUI(with isEnabled: Bool) {
         let backgroundColor = isEnabled ? DSKitAsset.Colors.gray10.color : DSKitAsset.Colors.gray700.color
         self.backgroundColor = backgroundColor
+    }
+    
+    private func setIcon() {
+        let icon = self.isFriend ? DSKitAsset.Assets.iconKok.image : DSKitAsset.Assets.iconEyes.image
+        self.setImage(icon.withTintColor(DSKitAsset.Colors.black.color), for: .normal)
+        self.setImage(icon.withTintColor(DSKitAsset.Colors.gray500.color), for: .disabled)
     }
 }
