@@ -1,5 +1,5 @@
 //
-//  ProfileCardView.swift
+//  ProfileListView.swift
 //  PokeFeature
 //
 //  Created by sejin on 12/3/23.
@@ -11,7 +11,7 @@ import UIKit
 import DSKit
 import Core
 
-public final class ProfileCardView: UIView {
+public final class ProfileListView: UIView {
     
     // MARK: - Properties
     
@@ -21,7 +21,7 @@ public final class ProfileCardView: UIView {
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.layer.cornerRadius = 60
+        imageView.layer.cornerRadius = 25
         imageView.backgroundColor = DSKitAsset.Colors.gray700.color
         imageView.clipsToBounds = true
         return imageView
@@ -32,7 +32,7 @@ public final class ProfileCardView: UIView {
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.textColor = DSKitAsset.Colors.gray30.color
-        label.font = UIFont.MDS.body3
+        label.font = UIFont.MDS.heading7
         return label
     }()
     
@@ -43,20 +43,11 @@ public final class ProfileCardView: UIView {
         return label
     }()
     
-    private lazy var labelStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [nameLabel, partLabel])
-        stackView.axis = .vertical
-        stackView.spacing = 2
-        stackView.alignment = .center
-        return stackView
-    }()
-    
-    private lazy var containerStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [profileImageView, labelStackView])
-        stackView.axis = .vertical
-        stackView.spacing = 8
-        stackView.alignment = .center
-        return stackView
+    private let kokCountLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = DSKitAsset.Colors.gray30.color
+        label.font = UIFont.MDS.heading7
+        return label
     }()
     
     // MARK: - initialization
@@ -73,33 +64,48 @@ public final class ProfileCardView: UIView {
     // MARK: - UI & Layout
     
     private func setLayout() {
-        self.addSubviews(containerStackView, kokButton)
+        self.addSubviews(profileImageView, nameLabel, partLabel, kokCountLabel, kokButton)
         
-        profileImageView.snp.makeConstraints { make in
-            make.height.equalTo(120)
-            make.width.equalTo(120)
+        self.snp.makeConstraints { make in
+            make.width.equalTo(335)
+            make.height.equalTo(50)
         }
         
-        containerStackView.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(4)
-            make.bottom.equalToSuperview().inset(4)
-            make.leading.equalToSuperview().inset(5)
-            make.trailing.equalToSuperview().inset(5)
+        profileImageView.snp.makeConstraints { make in
+            make.top.leading.bottom.equalToSuperview()
+            make.width.equalTo(50)
+        }
+        
+        nameLabel.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.leading.equalTo(profileImageView.snp.trailing).offset(10)
+        }
+        
+        partLabel.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.leading.equalTo(nameLabel.snp.trailing).offset(8)
+        }
+        
+        kokCountLabel.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.leading.greaterThanOrEqualTo(partLabel.snp.trailing).offset(8)
+            make.trailing.equalTo(kokButton.snp.leading).offset(-14)
         }
         
         kokButton.snp.makeConstraints { make in
-            make.bottom.equalTo(profileImageView.snp.bottom)
-            make.trailing.equalTo(profileImageView.snp.trailing).offset(4)
+            make.centerY.equalToSuperview()
+            make.trailing.equalToSuperview()
         }
     }
     
     // MARK: - Methods
     
     @discardableResult
-    func setData(image: UIImage, name: String, part: String) -> Self {
+    func setData(image: UIImage, name: String, part: String, kokCount: Int) -> Self {
         self.profileImageView.image = image
         self.nameLabel.text = name
         self.partLabel.text = part
+        self.kokCountLabel.text = "\(kokCount)콕"
         
         return self
     }
