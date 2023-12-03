@@ -316,6 +316,10 @@ public struct I18N {
         public static let expiredLinkDesription = "해당 링크의 유효기간이 만료되어\n더 이상 내용을 확인할 수 없어요."
         public static let updateAlertButtonTitle = "확인"
     }
+    
+    public struct WebView {
+        public static let close = "닫기"
+    }
 }
     
 extension I18N {

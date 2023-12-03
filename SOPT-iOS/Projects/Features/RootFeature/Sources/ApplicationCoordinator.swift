@@ -89,7 +89,7 @@ extension ApplicationCoordinator {
     
     private func handleWebLink(webLink: String) {
         self.router.dismissModule(animated: false)
-        self.router.presentSafari(url: webLink)
+        self.router.pushSOPTWebView(url: webLink)
     }
     
     private func handleNotificationLinkError(error: NotificationLinkError) {

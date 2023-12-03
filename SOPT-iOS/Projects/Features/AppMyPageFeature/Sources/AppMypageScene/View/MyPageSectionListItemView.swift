@@ -42,7 +42,6 @@ public final class MyPageSectionListItemView: UIView {
     private lazy var contentStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.distribution = .fill
-        $0.backgroundColor = DSKitAsset.Colors.black80.color
     }
     
     private let titleLabel = UILabel().then {
@@ -85,7 +84,7 @@ public final class MyPageSectionListItemView: UIView {
             self.rightSwitch.isHidden = false
         }
         
-        self.backgroundColor = DSKitAsset.Colors.black80.color
+        self.backgroundColor = DSKitAsset.Colors.gray900.color
 
         self.setupLayouts()
         self.setupConstraint()
