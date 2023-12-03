@@ -25,6 +25,7 @@ public final class ProfileListView: UIView {
         let imageView = UIImageView()
         imageView.backgroundColor = DSKitAsset.Colors.gray700.color
         imageView.clipsToBounds = true
+        imageView.layer.borderWidth = 2
         return imageView
     }()
     
@@ -83,8 +84,10 @@ public final class ProfileListView: UIView {
         }
         
         profileImageView.snp.makeConstraints { make in
-            make.top.leading.bottom.equalToSuperview()
+            make.leading.equalToSuperview()
+            make.centerY.equalToSuperview()
             make.width.equalTo(40)
+            make.height.equalTo(40)
         }
         
         nameLabel.snp.makeConstraints { make in
@@ -151,8 +154,9 @@ public final class ProfileListView: UIView {
     // MARK: - Methods
     
     @discardableResult
-    func setData(image: UIImage, name: String, part: String, kokCount: Int) -> Self {
+    func setData(image: UIImage, relation: PokeRelation, name: String, part: String, kokCount: Int) -> Self {
         self.profileImageView.image = image
+        self.profileImageView.layer.borderColor = relation.color.cgColor
         self.nameLabel.text = name
         self.partLabel.text = part
         self.kokCountLabel.text = "\(kokCount)콕"
