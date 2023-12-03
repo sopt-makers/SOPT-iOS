@@ -181,6 +181,7 @@ extension SignInVC {
             .asDriver()
         
         let input = SignInViewModel.Input(
+            viewDidLoad: Just<Void>(()).asDriver(),
             playgroundSignInFinished: signInFinished,
             visitorButtonTapped: visitorButtonTapped
         )

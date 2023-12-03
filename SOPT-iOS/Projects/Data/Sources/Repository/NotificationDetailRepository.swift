@@ -23,13 +23,13 @@ public class NotificationDetailRepository {
 }
 
 extension NotificationDetailRepository: NotificationDetailRepositoryInterface {
-    public func readNotification(notificationId: Int) -> AnyPublisher<Bool, Error> {
+    public func readNotification(notificationId: String) -> AnyPublisher<Bool, Error> {
         service.readNotification(notificationId: notificationId)
             .map { $0 == 200 }
             .eraseToAnyPublisher()
     }
     
-    public func getNotificationDetail(notificationId: Int) -> AnyPublisher<NotificationDetailModel, Error> {
+    public func getNotificationDetail(notificationId: String) -> AnyPublisher<NotificationDetailModel, Error> {
         service.getNotificationDetail(notificationId: notificationId)
             .map { $0.toDomain() }
             .eraseToAnyPublisher()

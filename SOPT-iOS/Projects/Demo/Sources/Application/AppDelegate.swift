@@ -11,16 +11,19 @@ import Sentry
 
 import Networks
 import Core
-import SafariServices
-import RootFeature
+import BaseFeatureDependency
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    
+    private var appLifecycleAdapter = AppLifecycleAdapter()
     
     func application( _ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         configureSentry()
         registerDependencies()
         application.registerForRemoteNotifications()
+        
+        appLifecycleAdapter.prepare()
         return true
     }
     

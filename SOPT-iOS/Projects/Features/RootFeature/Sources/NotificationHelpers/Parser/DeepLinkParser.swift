@@ -50,7 +50,7 @@ struct DeepLinkParser: NotificationLinkParser {
             }
             
             guard let parent = deepLinks.last, let child = parent.findChild(name: component) else {
-                break
+                throw NotificationLinkError.linkNotFound
             }
             
             deepLinks.append(child)

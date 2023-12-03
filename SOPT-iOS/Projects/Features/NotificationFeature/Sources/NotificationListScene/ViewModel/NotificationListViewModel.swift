@@ -22,7 +22,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
     private var cancelBag = CancelBag()
     
     let filterList: [NotificationFilterType] = [.all, .notice, .news]
-    var notifications: [NotificationListModel] = []
+    var notifications: [NotificationListModel] = [] // 리스트 뷰에서 snapshot을 사용하기 때문에 중복된 모델이 있으면 안 된다.
     
     var page = 0
     var isPaging = false
@@ -36,6 +36,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
         let cellTapped: Driver<Int>
         let readAllButtonTapped: Driver<Void>
         let categoryCellTapped: Driver<Int>
+        let refreshRequest: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -43,12 +44,13 @@ public class NotificationListViewModel: NotificationListViewModelType {
     public struct Output {
         var notificationList = PassthroughSubject<[NotificationListModel], Never>()
         var filterList = PassthroughSubject<[NotificationFilterType], Never>()
+        var refreshLoading = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - NotificationCoordinatable
     
     public var onNaviBackButtonTap: (() -> Void)?
-    public var onNotificationTap: ((Int) -> Void)?
+    public var onNotificationTap: ((String) -> Void)?
     
     // MARK: - init
     
@@ -105,6 +107,19 @@ extension NotificationListViewModel {
                 print(index)
             }.store(in: cancelBag)
         
+        input.refreshRequest
+            .throttle(for: 1, scheduler: DispatchQueue.main, latest: true)
+            .withUnretained(self)
+            .sink { owner, _ in
+                if !owner.isPaging {
+                    owner.notifications.removeAll()
+                    owner.page = 0
+                    owner.useCase.getNotificationList(page: owner.page)
+                    return
+                }
+                output.refreshLoading.send(false)
+            }.store(in: cancelBag)
+        
         return output
     }
     
@@ -113,9 +128,10 @@ extension NotificationListViewModel {
             .asDriver()
             .sink { [weak self] notificationList in
                 guard let self = self else { return }
-                self.notifications.append(contentsOf: notificationList)
-                output.notificationList.send(notifications)
+                self.removeDuplicatesAndUpdateNotifications(contentsOf: notificationList)
+                output.notificationList.send(self.notifications)
                 self.endPaging(isEmptyResponse: notificationList.isEmpty)
+                output.refreshLoading.send(false)
             }.store(in: cancelBag)
         
         useCase.readSuccess
@@ -132,6 +148,11 @@ extension NotificationListViewModel {
                     output.notificationList.send(self.notifications)
                 }
             }.store(in: cancelBag)
+    }
+    
+    private func removeDuplicatesAndUpdateNotifications(contentsOf notifications: [NotificationListModel]) {
+        let temp = self.notifications + notifications
+        self.notifications = temp.uniqued()
     }
     
     func startPaging() {

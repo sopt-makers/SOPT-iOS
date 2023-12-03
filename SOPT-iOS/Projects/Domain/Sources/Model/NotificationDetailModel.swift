@@ -9,7 +9,7 @@
 import Foundation
 
 public struct NotificationDetailModel {
-    public let notificationId: Int
+    public let notificationId: String
     public let userId: Int
     public let title: String
     public let content: String?
@@ -36,7 +36,7 @@ public struct NotificationDetailModel {
         return true
     }
     
-    public init(notificationId: Int, userId: Int, title: String, content: String?,
+    public init(notificationId: String, userId: Int, title: String, content: String?,
                 deepLink: String?, webLink: String?, createdAt: String, updatedAt: String?) {
         self.notificationId = notificationId
         self.userId = userId

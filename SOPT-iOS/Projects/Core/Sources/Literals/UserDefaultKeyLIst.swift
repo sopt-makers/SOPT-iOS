@@ -31,12 +31,20 @@ public struct UserDefaultKeyList {
 
 extension UserDefaultKeyList {
     public static func clearAllUserData() {
+        clearUserData()
+        clearPushToken()
+        clearSoptampUserData()
+    }
+    
+    public static func clearUserData() {
         UserDefaultKeyList.Auth.appAccessToken = nil
         UserDefaultKeyList.Auth.appRefreshToken = nil
         UserDefaultKeyList.Auth.playgroundToken = nil
         UserDefaultKeyList.Auth.isActiveUser = nil
+    }
+    
+    public static func clearPushToken() {
         UserDefaultKeyList.User.pushToken = nil
-        clearSoptampUserData()
     }
 
     public static func clearSoptampUserData() {

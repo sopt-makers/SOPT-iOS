@@ -9,16 +9,21 @@ import UIKit
 
 import Sentry
 
-import Networks
+import BaseFeatureDependency
 import Core
+import Networks
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
+    private var appLifecycleAdapter = AppLifecycleAdapter()
+    
     func application( _ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         configureSentry()
-        configureAPNs()
         registerDependencies()
+
+        appLifecycleAdapter.prepare()
+        
         application.registerForRemoteNotifications()
         return true
     }
@@ -38,7 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application( _ application: UIApplication,
         didDiscardSceneSessions sceneSessions: Set<UISceneSession>
-    ) {}
+    ) { }
 }
 
 // MARK: - Sentry & FCM
@@ -58,10 +63,6 @@ extension AppDelegate {
             options.enableAutoBreadcrumbTracking = true
         }
     }
-  
-    private func configureAPNs() {
-        UNUserNotificationCenter.current().delegate = self
-    }
 }
 
 // MARK: - APNs
@@ -78,16 +79,5 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         let token = tokenParts.joined()
         UserDefaultKeyList.User.pushToken = token
         print("APNs Device Token: \(token)")
-    }
-    
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
-        let userInfo = notification.request.content.userInfo
-        print("APNs 푸시 알림 페이로드: \(userInfo)")
-        return([.badge, .banner, .list, .sound])
-    }
-    
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
-        let userInfo = response.notification.request.content.userInfo
-        print("APNs 푸시 알림 페이로드: \(userInfo)")
     }
 }
