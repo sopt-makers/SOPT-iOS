@@ -20,9 +20,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application( _ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         configureSentry()
+        configureAppLifecycleAdapter()
         registerDependencies()
-
-        appLifecycleAdapter.prepare()
         
         application.registerForRemoteNotifications()
         return true
@@ -62,6 +61,10 @@ extension AppDelegate {
             options.failedRequestStatusCodes = [ httpStatusCodeRange ]
             options.enableAutoBreadcrumbTracking = true
         }
+    }
+    
+    private func configureAppLifecycleAdapter() {
+        self.appLifecycleAdapter.prepare()
     }
 }
 
