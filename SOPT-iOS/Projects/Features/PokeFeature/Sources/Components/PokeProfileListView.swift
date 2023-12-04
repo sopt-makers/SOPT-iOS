@@ -86,7 +86,6 @@ public final class PokeProfileListView: UIView {
     
     private func setLayoutWithMainType() {
         self.snp.makeConstraints { make in
-            make.width.equalTo(311)
             make.height.equalTo(44)
         }
         
@@ -106,6 +105,8 @@ public final class PokeProfileListView: UIView {
             make.centerY.equalToSuperview()
             make.leading.equalTo(nameLabel.snp.trailing).offset(4)
         }
+        
+        partLabel.snp.contentCompressionResistanceHorizontalPriority = 249
         
         kokCountLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
@@ -128,7 +129,6 @@ public final class PokeProfileListView: UIView {
     
     private func setLayoutWithDefaultType() {
         self.snp.makeConstraints { make in
-            make.width.equalTo(375)
             make.height.equalTo(70)
         }
         
@@ -148,6 +148,8 @@ public final class PokeProfileListView: UIView {
             make.centerY.equalToSuperview()
             make.leading.equalTo(nameLabel.snp.trailing).offset(8)
         }
+        
+        partLabel.snp.contentCompressionResistanceHorizontalPriority = 249
         
         kokCountLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
