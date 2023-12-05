@@ -21,13 +21,7 @@ public final class PokeProfileListView: UIView {
     
     // MARK: - UI Components
     
-    private let profileImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.backgroundColor = DSKitAsset.Colors.gray700.color
-        imageView.clipsToBounds = true
-        imageView.layer.borderWidth = 2
-        return imageView
-    }()
+    private let profileImageView = PokeProfileImageView()
     
     private lazy var kokButton = PokeKokButton()
     
@@ -75,7 +69,7 @@ public final class PokeProfileListView: UIView {
     // MARK: - UI & Layout
     
     private func setUI() {
-        self.profileImageView.layer.cornerRadius = self.viewType == .main ? 20 : 25
+        self.backgroundColor = .clear
     }
     
     private func setLayout() {
@@ -173,9 +167,8 @@ public final class PokeProfileListView: UIView {
     // MARK: - Methods
     
     @discardableResult
-    func setData(image: UIImage, relation: PokeRelation, name: String, part: String, kokCount: Int) -> Self {
-        self.profileImageView.image = image
-        self.profileImageView.layer.borderColor = relation.color.cgColor
+    func setData(imageURL: String, relation: PokeRelation, name: String, part: String, kokCount: Int) -> Self {
+        self.profileImageView.setImage(with: imageURL, relation: relation)
         self.nameLabel.text = name
         self.partLabel.text = part
         self.kokCountLabel.text = "\(kokCount)콕"

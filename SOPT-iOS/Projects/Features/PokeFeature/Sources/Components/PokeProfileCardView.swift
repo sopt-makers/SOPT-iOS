@@ -96,8 +96,8 @@ public final class PokeProfileCardView: UIView {
     // MARK: - Methods
     
     @discardableResult
-    func setData(image: UIImage, name: String, part: String) -> Self {
-        self.profileImageView.image = image
+    func setData(imageURL: String, name: String, part: String) -> Self {
+        self.profileImageView.setImage(with: imageURL)
         self.nameLabel.text = name
         self.partLabel.text = part
         
