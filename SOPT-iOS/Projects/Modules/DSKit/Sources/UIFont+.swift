@@ -9,6 +9,112 @@
 import UIKit
 
 extension UIFont {
+    public struct MDS {
+        @nonobjc public static var heading1: UIFont {
+            return DSKitFontFamily.Suit.bold.font(size: 48)
+        }
+        
+        @nonobjc public static var heading2: UIFont {
+            return DSKitFontFamily.Suit.bold.font(size: 32)
+        }
+        
+        @nonobjc public static var heading3: UIFont {
+            return DSKitFontFamily.Suit.bold.font(size: 28)
+        }
+        
+        @nonobjc public static var heading4: UIFont {
+            return DSKitFontFamily.Suit.bold.font(size: 24)
+        }
+        
+        @nonobjc public static var heading5: UIFont {
+            return DSKitFontFamily.Suit.bold.font(size: 20)
+        }
+        
+        @nonobjc public static var heading6: UIFont {
+            return DSKitFontFamily.Suit.bold.font(size: 18)
+        }
+        
+        @nonobjc public static var heading7: UIFont {
+            return DSKitFontFamily.Suit.bold.font(size: 16)
+        }
+        
+        @nonobjc public static var title1: UIFont {
+            return DSKitFontFamily.Suit.semiBold.font(size: 32)
+        }
+        
+        @nonobjc public static var title2: UIFont {
+            return DSKitFontFamily.Suit.semiBold.font(size: 28)
+        }
+        
+        @nonobjc public static var title3: UIFont {
+            return DSKitFontFamily.Suit.semiBold.font(size: 24)
+        }
+        
+        @nonobjc public static var title4: UIFont {
+            return DSKitFontFamily.Suit.semiBold.font(size: 20)
+        }
+        
+        @nonobjc public static var title5: UIFont {
+            return DSKitFontFamily.Suit.semiBold.font(size: 18)
+        }
+        
+        @nonobjc public static var title6: UIFont {
+            return DSKitFontFamily.Suit.semiBold.font(size: 16)
+        }
+        
+        @nonobjc public static var title7: UIFont {
+            return DSKitFontFamily.Suit.semiBold.font(size: 14)
+        }
+        
+        @nonobjc public static var body1: UIFont {
+            return DSKitFontFamily.Suit.medium.font(size: 18)
+        }
+        
+        @nonobjc public static var body2: UIFont {
+            return DSKitFontFamily.Suit.medium.font(size: 16)
+        }
+        
+        @nonobjc public static var body2R: UIFont {
+            return DSKitFontFamily.Suit.regular.font(size: 16)
+        }
+        
+        @nonobjc public static var body3: UIFont {
+            return DSKitFontFamily.Suit.medium.font(size: 14)
+        }
+        
+        @nonobjc public static var body3R: UIFont {
+            return DSKitFontFamily.Suit.regular.font(size: 14)
+        }
+        
+        @nonobjc public static var body4: UIFont {
+            return DSKitFontFamily.Suit.medium.font(size: 13)
+        }
+        
+        @nonobjc public static var body4R: UIFont {
+            return DSKitFontFamily.Suit.regular.font(size: 13)
+        }
+        
+        @nonobjc public static var label1: UIFont {
+            return DSKitFontFamily.Suit.semiBold.font(size: 18)
+        }
+        
+        @nonobjc public static var label2: UIFont {
+            return DSKitFontFamily.Suit.semiBold.font(size: 16)
+        }
+        
+        @nonobjc public static var label3: UIFont {
+            return DSKitFontFamily.Suit.semiBold.font(size: 14)
+        }
+        
+        @nonobjc public static var label4: UIFont {
+            return DSKitFontFamily.Suit.semiBold.font(size: 12)
+        }
+        
+        @nonobjc public static var label5: UIFont {
+            return DSKitFontFamily.Suit.semiBold.font(size: 11)
+        }
+    }
+    
     public struct SoptampFont {
         @nonobjc public static var h1: UIFont {
             return DSKitFontFamily.Pretendard.bold.font(size: 20)
