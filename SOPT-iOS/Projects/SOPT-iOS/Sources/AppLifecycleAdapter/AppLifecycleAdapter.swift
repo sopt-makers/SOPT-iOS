@@ -1,8 +1,8 @@
 //
 //  AppLifecycleAdapter.swift
-//  BaseFeatureDependency
+//  SOPT-iOS
 //
-//  Created by Ian on 12/2/23.
+//  Created by Ian on 12/3/23.
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
@@ -12,24 +12,18 @@ import Networks
 import UIKit
 
 final public class AppLifecycleAdapter {
-    private let authService: AuthService
     private let cancelBag = CancelBag()
-
-    public init() {
-        self.authService = DefaultAuthService()
-    }
+    private let authService = DefaultAuthService()
 }
 
-// MARK: - Public functions
+// MARK: - Private functions
 extension AppLifecycleAdapter {
     public func prepare() {
         self.onWillEnterForeground()
         self.onWillEnterBackground()
     }
-}
 
-// MARK: - Lifecycle Usecases
-extension AppLifecycleAdapter {
+    //MARK: - Usecases
     private func onWillEnterForeground() {
         NotificationCenter.default
             .publisher(for: UIApplication.willEnterForegroundNotification)
@@ -39,7 +33,7 @@ extension AppLifecycleAdapter {
                 self?.reissureTokens()
             }).store(in: self.cancelBag)
     }
-
+    
     private func onWillEnterBackground() { }
 }
 
@@ -47,8 +41,7 @@ extension AppLifecycleAdapter {
 extension AppLifecycleAdapter {
     private func reissureTokens() {
         guard UserDefaultKeyList.Auth.appAccessToken != nil else { return }
-
+        
         self.authService.reissuance { _  in }
     }
 }
-
