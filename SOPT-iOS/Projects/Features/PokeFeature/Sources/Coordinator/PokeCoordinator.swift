@@ -6,6 +6,8 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
+
 import Core
 import BaseFeatureDependency
 import PokeFeatureInterface
@@ -17,9 +19,21 @@ final class PokeCoordinator: DefaultCoordinator {
     
     private let factory: PokeFeatureBuildable
     private let router: Router
+    private weak var rootController: UINavigationController?
     
     public init(router: Router, factory: PokeFeatureBuildable) {
         self.router = router
         self.factory = factory
+    }
+    
+    public override func start() {
+        showPokeMain()
+    }
+    
+    private func showPokeMain() {
+        let pokeMain = factory.makePokeMainVC()
+        
+        rootController = pokeMain.asNavigationController
+        router.present(rootController, animated: true, modalPresentationSytle: .overFullScreen)
     }
 }

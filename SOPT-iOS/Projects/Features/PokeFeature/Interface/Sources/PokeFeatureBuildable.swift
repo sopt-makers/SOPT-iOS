@@ -11,4 +11,5 @@ import Foundation
 import Domain
 
 public protocol PokeFeatureBuildable {
+    func makePokeMainVC() -> PokeMainViewControllable
 }
