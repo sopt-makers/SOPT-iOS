@@ -23,6 +23,30 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
     public var viewModel: PokeMainViewModel
     private var cancelBag = CancelBag()
     
+    // MARK: - UI Components
+    
+    private let backButton: UIButton = {
+        let button = UIButton()
+        button.setImage(DSKitAsset.Assets.xMark.image.withTintColor(DSKitAsset.Colors.gray30.color), for: .normal)
+        return button
+    }()
+    
+    private let serviceTitleLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.MDS.heading6
+        label.textColor = DSKitAsset.Colors.gray30.color
+        label.text = I18N.Poke.poke
+        return label
+    }()
+    
+    private lazy var navigationView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [backButton, serviceTitleLabel])
+        stackView.axis = .horizontal
+        stackView.spacing = 2
+        stackView.alignment = .center
+        return stackView
+    }()
+    
     // MARK: - initialization
     
     public init(viewModel: PokeMainViewModel) {
@@ -48,10 +72,23 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
 
 extension PokeMainVC {
     private func setUI() {
-        view.backgroundColor = .red
+        self.navigationController?.isNavigationBarHidden = true
+        view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
     }
     
     private func setLayout() {
+        self.view.addSubviews(navigationView)
+        
+        backButton.snp.makeConstraints { make in
+            make.width.equalTo(40)
+            make.height.equalTo(40)
+        }
+        
+        navigationView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(8)
+            make.height.equalTo(44)
+        }
     }
 }
 

@@ -320,6 +320,10 @@ public struct I18N {
     public struct WebView {
         public static let close = "닫기"
     }
+    
+    public struct Poke {
+        public static let poke = "콕 찌르기"
+    }
 }
     
 extension I18N {
