@@ -26,7 +26,7 @@ public class MainViewModel: MainViewModelType {
     var userType: UserType = .visitor
     var mainServiceList: [ServiceType] = [.officialHomepage, .review, .project]
     var otherServiceList: [ServiceType] = [.instagram, .youtube, .faq]
-    var appServiceList: [AppServiceType] = [.soptamp]
+    var appServiceList: [AppServiceType] = [.soptamp, .poke]
     var userMainInfo: UserMainInfoModel?
     var mainDescription: MainDescriptionModel = .defaultDescription
   
@@ -56,6 +56,7 @@ public class MainViewModel: MainViewModelType {
     public var onSafari: ((String) -> Void)?
     public var onAttendance: (() -> Void)?
     public var onSoptamp: (() -> Void)?
+    public var onPoke: (() -> Void)?
     public var onNeedSignIn: (() -> Void)?
     
     // MARK: - init
@@ -187,8 +188,10 @@ extension MainViewModel {
             guard userType != .visitor else { return }
             guard let service = appServiceList[safe: indexPath.item] else { return }
             self.trackAmplitude(event: service.toAmplitudeEventType)
-            
-            onSoptamp?()
+            switch service {
+            case .soptamp: onSoptamp?()
+            case .poke: onPoke?()
+            }
         default: break
         }
     }

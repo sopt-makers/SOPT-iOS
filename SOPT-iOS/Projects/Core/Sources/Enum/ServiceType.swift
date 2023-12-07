@@ -38,4 +38,5 @@ public enum ServiceType {
 
 public enum AppServiceType {
     case soptamp
+    case poke
 }

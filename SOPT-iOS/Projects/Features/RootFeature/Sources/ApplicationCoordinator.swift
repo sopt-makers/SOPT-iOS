@@ -16,6 +16,7 @@ import MainFeature
 import AppMyPageFeature
 import NotificationFeature
 import StampFeature
+import PokeFeature
 import AttendanceFeature
 
 public
@@ -178,6 +179,8 @@ extension ApplicationCoordinator {
                 self?.runAttendanceFlow()
             case .stamp:
                 self?.runStampFlow()
+            case .poke:
+                self?.runPokeFlow()
             case .signIn:
                 self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
                 self?.removeDependency(coordinator)
@@ -216,6 +219,24 @@ extension ApplicationCoordinator {
             coordinator?.childCoordinators = []
             self?.removeDependency(coordinator)
         }
+        addDependency(coordinator)
+        coordinator.start()
+        
+        return coordinator
+    }
+    
+    @discardableResult
+    internal func runPokeFlow() -> PokeCoordinator {
+        let coordinator = PokeCoordinator(
+            router: Router(rootController: UIWindow.getRootNavigationController),
+            factory: PokeBuilder()
+        )
+        
+        coordinator.finishFlow = { [weak self, weak coordinator] in
+            coordinator?.childCoordinators = []
+            self?.removeDependency(coordinator)
+        }
+        
         addDependency(coordinator)
         coordinator.start()
         
