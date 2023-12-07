@@ -13,6 +13,7 @@ import Domain
 public protocol PokeMainViewControllable: ViewControllable { }
 
 public protocol PokeMainCoordinatable {
+    var onNaviBackTap: (() -> Void)? { get set }
 }
 
 public typealias PokeMainViewModelType = ViewModelType & PokeMainCoordinatable

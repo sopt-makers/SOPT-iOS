@@ -15,9 +15,9 @@ public final class PokeBuilder {
 }
 
 extension PokeBuilder: PokeFeatureBuildable {
-    public func makePokeMainVC() -> PokeFeatureInterface.PokeMainViewControllable {
+    public func makePokeMain() -> PokeFeatureInterface.NotificationDetailPresentable {
         let viewModel = PokeMainViewModel()
         let pokeMainVC = PokeMainVC(viewModel: viewModel)
-        return pokeMainVC
+        return (pokeMainVC, viewModel)
     }
 }

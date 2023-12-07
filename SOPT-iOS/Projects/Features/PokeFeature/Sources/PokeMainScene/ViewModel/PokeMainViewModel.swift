@@ -17,6 +17,8 @@ import PokeFeatureInterface
 public class PokeMainViewModel:
     PokeMainViewModelType {
     
+    public var onNaviBackTap: (() -> Void)?
+    
     // MARK: - Properties
     
     private var cancelBag = CancelBag()
@@ -24,6 +26,7 @@ public class PokeMainViewModel:
     // MARK: - Inputs
     
     public struct Input {
+        let naviBackButtonTap: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -42,6 +45,11 @@ extension PokeMainViewModel {
     public func transform(from input: Input, cancelBag: Core.CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
+        
+        input.naviBackButtonTap
+            .sink { [weak self] _ in
+                self?.onNaviBackTap?()
+            }.store(in: cancelBag)
         
         return output
     }

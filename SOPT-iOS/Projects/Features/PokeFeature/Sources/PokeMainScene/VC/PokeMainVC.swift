@@ -152,5 +152,13 @@ extension PokeMainVC {
 
 extension PokeMainVC {
     private func bindViewModel() {
+        let input = PokeMainViewModel
+            .Input(
+                naviBackButtonTap: self.backButton
+                    .publisher(for: .touchUpInside)
+                    .mapVoid().asDriver()
+            )
+        
+        let output = viewModel.transform(from: input, cancelBag: cancelBag)
     }
 }

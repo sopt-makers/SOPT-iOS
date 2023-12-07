@@ -31,9 +31,14 @@ final class PokeCoordinator: DefaultCoordinator {
     }
     
     private func showPokeMain() {
-        let pokeMain = factory.makePokeMainVC()
+        var pokeMain = factory.makePokeMain()
         
-        rootController = pokeMain.asNavigationController
+        pokeMain.vm.onNaviBackTap = { [weak self] in
+            self?.router.dismissModule(animated: true)
+            self?.finishFlow?()
+        }
+        
+        rootController = pokeMain.vc.asNavigationController
         router.present(rootController, animated: true, modalPresentationSytle: .overFullScreen)
     }
 }
