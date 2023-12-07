@@ -323,6 +323,8 @@ public struct I18N {
     
     public struct Poke {
         public static let poke = "콕 찌르기"
+        public static let someonePokedMe = "누가 나를 찔렀어요"
+        public static let pokeMyFriends = "내 친구를 찔러보세요"
     }
 }
     

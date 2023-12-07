@@ -29,8 +29,10 @@ public final class PokeMainSectionHeaderView: UIView {
     // MARK: - initialization
     
     init(title: String) {
+        self.titleLabel.text = title
         super.init(frame: .zero)
         self.setUI()
+        self.setLayout()
     }
     
     required init?(coder: NSCoder) {

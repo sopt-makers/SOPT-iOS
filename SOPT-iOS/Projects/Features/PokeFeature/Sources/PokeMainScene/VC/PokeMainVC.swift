@@ -43,13 +43,24 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
         $0.alignment = .center
     }
     
-    private let scrollView = UIScrollView()
+    private let scrollView = UIScrollView().then {
+        $0.showsVerticalScrollIndicator = false
+        $0.showsHorizontalScrollIndicator = false
+    }
     
     private let contentStackView = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 12
     }
     
+    private let pokedSectionHeaderView = PokeMainSectionHeaderView(title: I18N.Poke.someonePokedMe)
+    private let pokedUserContentView = PokeNotificationListContentView(frame: .zero)
+    private lazy var pokedSectionGroupView = self.makeSectionGroupView(header: pokedSectionHeaderView, content: pokedUserContentView)
+    
+    private let friendSectionHeaderView = PokeMainSectionHeaderView(title: I18N.Poke.pokeMyFriends)
+    private let friendSectionContentView = PokeProfileListView(viewType: .main)
+    private lazy var friendSectionGroupView = self.makeSectionGroupView(header: friendSectionHeaderView, content: friendSectionContentView)
+
     // MARK: - initialization
     
     public init(viewModel: PokeMainViewModel) {
@@ -66,6 +77,7 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.setUI()
+        self.setStackView()
         self.setLayout()
         self.bindViewModel()
     }
@@ -77,6 +89,29 @@ extension PokeMainVC {
     private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+    }
+    
+    private func setStackView() {
+        self.contentStackView.addArrangedSubviews(pokedSectionGroupView, friendSectionGroupView)
+    }
+    
+    private func makeSectionGroupView(header: PokeMainSectionHeaderView, content: UIView) -> UIView {
+        let view = UIView()
+        view.backgroundColor = DSKitAsset.Colors.gray900.color
+        view.addSubviews(header, content)
+        view.layer.cornerRadius = 12
+        
+        header.snp.makeConstraints { make in
+            make.top.leading.trailing.equalToSuperview()
+        }
+        
+        content.snp.makeConstraints { make in
+            make.top.equalTo(header.snp.bottom).offset(8)
+            make.leading.trailing.equalToSuperview().inset(12)
+            make.bottom.equalToSuperview().inset(8)
+        }
+        
+        return view
     }
     
     private func setLayout() {
