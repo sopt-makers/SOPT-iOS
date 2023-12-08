@@ -60,6 +60,12 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
     private let friendSectionHeaderView = PokeMainSectionHeaderView(title: I18N.Poke.pokeMyFriends)
     private let friendSectionContentView = PokeProfileListView(viewType: .main)
     private lazy var friendSectionGroupView = self.makeSectionGroupView(header: friendSectionHeaderView, content: friendSectionContentView)
+    
+    private let recommendPokeLabel = UILabel().then {
+        $0.text = I18N.Poke.pokeNearbyFriends
+        $0.textColor = DSKitAsset.Colors.gray30.color
+        $0.font = UIFont.MDS.title5
+    }
 
     // MARK: - initialization
     
@@ -92,7 +98,9 @@ extension PokeMainVC {
     }
     
     private func setStackView() {
-        self.contentStackView.addArrangedSubviews(pokedSectionGroupView, friendSectionGroupView)
+        self.contentStackView.addArrangedSubviews(pokedSectionGroupView, friendSectionGroupView, recommendPokeLabel)
+        
+        contentStackView.setCustomSpacing(28, after: friendSectionGroupView)
     }
     
     private func makeSectionGroupView(header: PokeMainSectionHeaderView, content: UIView) -> UIView {

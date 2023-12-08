@@ -15,9 +15,13 @@ public final class PokeProfileListView: UIView {
     
     // MARK: - Properties
     
-    lazy var kokButtonTap: Driver<Void> = kokButton.tap
+    typealias UserId = String
+    
+    lazy var kokButtonTap: Driver<UserId?> = kokButton.tap.map { self.userId }.asDriver()
     
     var viewType: ProfileListType
+    
+    var userId: String?
     
     // MARK: - UI Components
     
@@ -167,12 +171,12 @@ public final class PokeProfileListView: UIView {
     // MARK: - Methods
     
     @discardableResult
-    func setData(imageURL: String, relation: PokeRelation, name: String, part: String, kokCount: Int) -> Self {
-        self.profileImageView.setImage(with: imageURL, relation: relation)
-        self.nameLabel.text = name
-        self.partLabel.text = part
-        self.kokCountLabel.text = "\(kokCount)콕"
-        
+    func setData(with model: ProfileListContentModel) -> Self {
+        self.userId = model.userId
+        self.profileImageView.setImage(with: model.avatarUrl, relation: model.relation)
+        self.nameLabel.text = model.name
+        self.partLabel.text = model.partInfomation
+        self.kokCountLabel.text = "\(model.pokeCount)콕"
         return self
     }
     
