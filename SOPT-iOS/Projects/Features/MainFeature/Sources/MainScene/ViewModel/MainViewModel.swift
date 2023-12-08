@@ -26,7 +26,7 @@ public class MainViewModel: MainViewModelType {
     var userType: UserType = .visitor
     var mainServiceList: [ServiceType] = [.officialHomepage, .review, .project]
     var otherServiceList: [ServiceType] = [.instagram, .youtube, .faq]
-    var appServiceList: [AppServiceType] = [.soptamp, .poke]
+    var appServiceList: [AppServiceType] = [.poke, .soptamp]
     var userMainInfo: UserMainInfoModel?
     var mainDescription: MainDescriptionModel = .defaultDescription
   

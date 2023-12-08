@@ -117,7 +117,7 @@ extension AppServiceType {
         case .soptamp:
             return DSKitAsset.Assets.imgSoptamp.image
         case .poke:
-            return DSKitAsset.Assets.iconKok.image
+            return DSKitAsset.Assets.imgPoke.image
         }
     }
     
@@ -126,7 +126,7 @@ extension AppServiceType {
         case .soptamp:
             return I18N.Main.AppService.soptamp
         case .poke:
-            return "콕 찌르기(임시)"
+            return I18N.Poke.poke
         }
     }
     
