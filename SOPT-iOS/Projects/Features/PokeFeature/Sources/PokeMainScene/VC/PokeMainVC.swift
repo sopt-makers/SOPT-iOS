@@ -74,6 +74,14 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
     
     private let secondProfileCardGroupView = ProfileCardGroupView(frame: .zero)
     
+    // 리프레시
+    private let refreshGuideLabel = UILabel().then {
+        $0.font = UIFont.MDS.title7
+        $0.textColor = DSKitAsset.Colors.gray200.color
+        $0.text = I18N.Poke.refreshGuide
+        $0.textAlignment = .center
+        $0.numberOfLines = 2
+    }
 
     // MARK: - initialization
     
@@ -106,9 +114,15 @@ extension PokeMainVC {
     }
     
     private func setStackView() {
-        self.contentStackView.addArrangedSubviews(pokedSectionGroupView, friendSectionGroupView, recommendPokeLabel, firstProfileCardGroupView, secondProfileCardGroupView)
+        self.contentStackView.addArrangedSubviews(pokedSectionGroupView, 
+                                                  friendSectionGroupView,
+                                                  recommendPokeLabel,
+                                                  firstProfileCardGroupView,
+                                                  secondProfileCardGroupView,
+                                                  refreshGuideLabel)
         
         contentStackView.setCustomSpacing(28, after: friendSectionGroupView)
+        contentStackView.setCustomSpacing(12, after: secondProfileCardGroupView)
     }
     
     private func makeSectionGroupView(header: PokeMainSectionHeaderView, content: UIView) -> UIView {

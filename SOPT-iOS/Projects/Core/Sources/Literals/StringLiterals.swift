@@ -327,6 +327,7 @@ public struct I18N {
         public static let pokeMyFriends = "내 친구를 찔러보세요"
         public static let pokeNearbyFriends = "내 친구의 친구를 찔러보세요"
         public static let emptyFriendDescription = "아직 없어요 T.T\n내 친구가 더 많은 친구가 생길 때까지 기다려주세요"
+        public static let refreshGuide = "화면을 밑으로 당기면\n다른 친구를 볼 수 있어요"
     }
 }
     
