@@ -53,19 +53,27 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
         $0.spacing = 12
     }
     
+    // 누가 나를 찔렀어요 부분
     private let pokedSectionHeaderView = PokeMainSectionHeaderView(title: I18N.Poke.someonePokedMe)
     private let pokedUserContentView = PokeNotificationListContentView(frame: .zero)
     private lazy var pokedSectionGroupView = self.makeSectionGroupView(header: pokedSectionHeaderView, content: pokedUserContentView)
     
+    // 내 친구를 찔러보세요 부분
     private let friendSectionHeaderView = PokeMainSectionHeaderView(title: I18N.Poke.pokeMyFriends)
     private let friendSectionContentView = PokeProfileListView(viewType: .main)
     private lazy var friendSectionGroupView = self.makeSectionGroupView(header: friendSectionHeaderView, content: friendSectionContentView)
     
+    // 내 친구의 친구를 찔러보세요 부분
     private let recommendPokeLabel = UILabel().then {
         $0.text = I18N.Poke.pokeNearbyFriends
         $0.textColor = DSKitAsset.Colors.gray30.color
         $0.font = UIFont.MDS.title5
     }
+    
+    private let firstProfileCardGroupView = ProfileCardGroupView(frame: .zero)
+    
+    private let secondProfileCardGroupView = ProfileCardGroupView(frame: .zero)
+    
 
     // MARK: - initialization
     
@@ -98,7 +106,7 @@ extension PokeMainVC {
     }
     
     private func setStackView() {
-        self.contentStackView.addArrangedSubviews(pokedSectionGroupView, friendSectionGroupView, recommendPokeLabel)
+        self.contentStackView.addArrangedSubviews(pokedSectionGroupView, friendSectionGroupView, recommendPokeLabel, firstProfileCardGroupView, secondProfileCardGroupView)
         
         contentStackView.setCustomSpacing(28, after: friendSectionGroupView)
     }
@@ -168,5 +176,7 @@ extension PokeMainVC {
             )
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
+        
+        self.firstProfileCardGroupView.setProfileCard(with: [.init(userId: "1234", avatarUrl: "1234", name: "이세진", partInfomation: "30기 iOS")], friendName: "이승호")
     }
 }

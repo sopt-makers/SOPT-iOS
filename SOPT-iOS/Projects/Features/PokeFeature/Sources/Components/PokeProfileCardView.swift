@@ -84,6 +84,10 @@ public final class PokeProfileCardView: UIView {
             make.width.equalTo(120)
         }
         
+        labelStackView.snp.makeConstraints { make in
+            make.height.equalTo(38)
+        }
+        
         containerStackView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(4)
             make.bottom.equalToSuperview().inset(4)
@@ -99,21 +103,11 @@ public final class PokeProfileCardView: UIView {
     
     // MARK: - Methods
     
-    @discardableResult
-    func setData(imageURL: String, name: String, part: String) -> Self {
-        self.profileImageView.setImage(with: imageURL)
-        self.nameLabel.text = name
-        self.partLabel.text = part
-        return self
-    }
-    
-    @discardableResult
-    func setData(with model: ProfileCardContentModel) -> Self {
+    func setData(with model: ProfileCardContentModel) {
         self.userId = model.userId
         self.profileImageView.setImage(with: model.avatarUrl)
         self.nameLabel.text = model.name
         self.partLabel.text = model.partInfomation
-        return self
     }
     
     @discardableResult
