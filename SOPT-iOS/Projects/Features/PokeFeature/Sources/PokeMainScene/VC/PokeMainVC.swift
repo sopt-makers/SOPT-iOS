@@ -43,7 +43,8 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
         $0.alignment = .center
     }
     
-    private let scrollView = UIScrollView().then {
+    private lazy var scrollView = UIScrollView().then {
+        $0.refreshControl = self.refreshControl
         $0.showsVerticalScrollIndicator = false
         $0.showsHorizontalScrollIndicator = false
     }
@@ -82,6 +83,8 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
         $0.textAlignment = .center
         $0.numberOfLines = 2
     }
+    
+    private let refreshControl = UIRefreshControl()
 
     // MARK: - initialization
     
@@ -173,7 +176,7 @@ extension PokeMainVC {
             make.width.equalTo(self.view.frame.width - 20 * 2)
             make.top.equalToSuperview().inset(8)
             make.leading.trailing.equalToSuperview().inset(20)
-            make.bottom.equalToSuperview()
+            make.bottom.equalToSuperview().inset(20)
         }
     }
 }
@@ -186,9 +189,32 @@ extension PokeMainVC {
             .Input(
                 naviBackButtonTap: self.backButton
                     .publisher(for: .touchUpInside)
-                    .mapVoid().asDriver()
+                    .mapVoid().asDriver(),
+                pokedSectionHeaderButtonTap: pokedSectionHeaderView
+                    .rightButtonTap,
+                friendSectionHeaderButtonTap: friendSectionHeaderView
+                    .rightButtonTap,
+                pokedSectionKokButtonTap: PassthroughSubject<String?, Never>()
+                    .asDriver(),
+                friendSectionKokButtonTap: friendSectionContentView
+                    .kokButtonTap,
+                nearbyFriendsSectionKokButtonTap: firstProfileCardGroupView
+                    .kokButtonTap
+                    .merge(with: secondProfileCardGroupView.kokButtonTap)
+                    .asDriver(),
+                refreshRequest: refreshControl.publisher(for: .valueChanged).mapVoid().asDriver()
             )
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
+        
+        // 테스트를 위해 더미 데이터를 넣도록 임시 세팅
+        pokedSectionHeaderView.rightButtonTap
+            .sink { _ in
+                self.friendSectionContentView.setData(with: .init(userId: "1234aa", avatarUrl: "sdafasdf", name: "test1", partInfomation: "ios", pokeCount: 3, relation: .bestFriend))
+                
+                self.firstProfileCardGroupView.setProfileCard(with: [.init(userId: "777", avatarUrl: "sdafds", name: "test2", partInfomation: "server"), .init(userId: "999", avatarUrl: "", name: "test3", partInfomation: "pm")], friendName: "someone")
+                
+                self.secondProfileCardGroupView.setProfileCard(with: [.init(userId: "001", avatarUrl: "sdafds", name: "test4", partInfomation: "server")], friendName: "aaa")
+            }.store(in: cancelBag)
     }
 }

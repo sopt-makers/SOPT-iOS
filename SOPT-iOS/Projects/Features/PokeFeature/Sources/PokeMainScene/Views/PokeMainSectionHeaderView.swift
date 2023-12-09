@@ -14,6 +14,10 @@ import Core
 
 public final class PokeMainSectionHeaderView: UIView {
     
+    // MARK: - Properties
+    
+    public lazy var rightButtonTap: Driver<Void> = rightButton.publisher(for: .touchUpInside).mapVoid().asDriver()
+    
     // MARK: - UI Components
     
     private let titleLabel = UILabel().then {
