@@ -176,7 +176,5 @@ extension PokeMainVC {
             )
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
-        
-        self.firstProfileCardGroupView.setProfileCard(with: [.init(userId: "1234", avatarUrl: "1234", name: "이세진", partInfomation: "30기 iOS")], friendName: "이승호")
     }
 }

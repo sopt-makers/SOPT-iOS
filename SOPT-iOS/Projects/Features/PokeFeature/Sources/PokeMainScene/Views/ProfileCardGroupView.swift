@@ -37,15 +37,29 @@ public final class ProfileCardGroupView: UIView {
         $0.font = UIFont.MDS.title7
     }
     
-    private let leftProfileCardView = PokeProfileCardView(frame: .zero)
+    private let emptyFriendImageView = UIImageView(image: DSKitAsset.Assets.emptyGraphic.image)
     
-    private let rightProfileCardView = PokeProfileCardView(frame: .zero)
+    private let emptyFriendDescriptionLabel = UILabel().then {
+        $0.font = UIFont.MDS.label4
+        $0.textColor = DSKitAsset.Colors.gray300.color
+        $0.text = I18N.Poke.emptyFriendDescription
+        $0.numberOfLines = 2
+        $0.textAlignment = .center
+    }
     
-    private lazy var profileCardStackView = UIStackView().then {
-        $0.addArrangedSubviews(leftProfileCardView, rightProfileCardView)
-        $0.axis = .horizontal
-        $0.spacing = 32.adjusted
-        $0.distribution = .fillEqually
+    private lazy var emptyFriendView = UIStackView().then {
+        $0.addArrangedSubviews(emptyFriendImageView, emptyFriendDescriptionLabel)
+        $0.axis = .vertical
+        $0.spacing = 14
+        $0.alignment = .center
+    }
+    
+    private let leftProfileCardView = PokeProfileCardView(frame: .zero).then {
+        $0.isHidden = true
+    }
+    
+    private let rightProfileCardView = PokeProfileCardView(frame: .zero).then {
+        $0.isHidden = true
     }
     
     // MARK: - initialization
@@ -70,7 +84,7 @@ extension ProfileCardGroupView {
     }
     
     private func setLayout() {
-        self.addSubviews(friendProfileImageView, friendNameLabel, profileCardStackView)
+        self.addSubviews(friendProfileImageView, friendNameLabel, emptyFriendView, leftProfileCardView, rightProfileCardView)
         
         friendProfileImageView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(8)
@@ -85,13 +99,27 @@ extension ProfileCardGroupView {
             make.trailing.greaterThanOrEqualToSuperview().inset(8)
         }
         
-        leftProfileCardView.snp.makeConstraints { make in
-            make.width.equalTo(130)
+        emptyFriendImageView.snp.makeConstraints { make in
+            make.width.equalTo(64)
+            make.height.equalTo(62)
         }
         
-        profileCardStackView.snp.makeConstraints { make in
-            make.top.equalTo(friendProfileImageView.snp.bottom)
+        emptyFriendView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
+            make.top.equalTo(friendProfileImageView.snp.bottom).offset(32)
+        }
+        
+        leftProfileCardView.snp.makeConstraints { make in
+            make.width.equalTo(130)
+            make.top.equalTo(friendProfileImageView.snp.bottom)
+            make.centerX.equalToSuperview().multipliedBy(0.55)
+            make.bottom.equalToSuperview().inset(8)
+        }
+        
+        rightProfileCardView.snp.makeConstraints { make in
+            make.width.equalTo(130)
+            make.top.equalTo(friendProfileImageView.snp.bottom)
+            make.centerX.equalToSuperview().multipliedBy(1.45)
             make.bottom.equalToSuperview().inset(8)
         }
     }
@@ -102,10 +130,18 @@ extension ProfileCardGroupView {
 extension ProfileCardGroupView {
     func setProfileCard(with models: [ProfileCardContentModel], friendName: String) {
         self.friendNameLabel.text = friendName
-        
         let models = models.prefix(2)
+        
+        handleProfileCardCount(count: models.count)
+        
         for (index, model) in models.enumerated() {
             index == 0 ? leftProfileCardView.setData(with: model) : rightProfileCardView.setData(with: model)
         }
+    }
+    
+    private func handleProfileCardCount(count: Int) {
+        emptyFriendView.isHidden = count != 0
+        leftProfileCardView.isHidden = count < 1
+        rightProfileCardView.isHidden = count < 2
     }
 }
