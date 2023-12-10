@@ -15,6 +15,7 @@ final public class PokeNotificationListContentView: UIView {
     private enum Metrics {
         static let contentDefaultSpacing = 8.f
         static let leftToCenterContentPadding = 12.f
+        static let profileAvatarLength = 50.f
         
         static let centerToRightContentPadding = 8.f
         static let centerTopContentPadding = 8.f
@@ -37,14 +38,8 @@ final public class PokeNotificationListContentView: UIView {
     }
     
     // MARK: Left:
-    // To be replaced
-    private let profileImageView = UIImageView().then {
-        $0.layer.cornerRadius = 25.f
-        $0.image = UIImage(asset: DSKitAsset.Assets.imgNotificationNon)
-        $0.layer.borderWidth = 2.f
-        $0.layer.borderColor = UIColor.systemBlue.withAlphaComponent(0.4).cgColor
-    }
-    
+    private let profileImageView = PokeProfileImageView()
+
     // MARK: Center:
     private lazy var centerContentsStackView = UIStackView().then {
         $0.axis = .vertical
@@ -78,12 +73,9 @@ final public class PokeNotificationListContentView: UIView {
     private lazy var pokeChipView = PokeChipView(frame: self.frame)
     
     // MARK: Right:
-    // To be replaced
-    private let rightButton = UIImageView().then {
-        $0.layer.cornerRadius = 18.f
-        $0.image = UIImage(asset: DSKitAsset.Assets.icnYoutube)?.withRenderingMode(.alwaysTemplate)
-    }
+    private let pokeKokButton = PokeKokButton()
     
+    // NOTE: NotifcationDetailView에서는 description의 numberOfLine Value가 2에요
     private let isDetailView: Bool
     
     // MARK: - View Lifecycle
@@ -110,7 +102,7 @@ extension PokeNotificationListContentView {
         self.contentStackView.addArrangedSubviews(
             self.profileImageView,
             self.centerContentsStackView,
-            self.rightButton
+            self.pokeKokButton
         )
         
         self.centerContentsStackView.addArrangedSubviews(
@@ -140,26 +132,26 @@ extension PokeNotificationListContentView {
 
         self.centerTopContentsStackView.snp.makeConstraints { $0.height.equalTo(Metrics.centerSeperateContentsMinHeight) }
         self.descriptionLabel.snp.makeConstraints { $0.height.greaterThanOrEqualTo(Metrics.centerSeperateContentsMinHeight) }
-        self.profileImageView.snp.makeConstraints { $0.size.equalTo(50.f) }
-        self.rightButton.snp.makeConstraints { $0.size.equalTo(50.f) }
+        self.profileImageView.snp.makeConstraints { $0.size.equalTo(Metrics.profileAvatarLength) }
     }
 }
 
 extension PokeNotificationListContentView {
     public func configure(with model: NotificationListContentModel) {
-        if let url = URL(string: model.avatarUrl) {
-            self.profileImageView.kf.setImage(with: url)
-        }
-        
+        self.profileImageView.setImage(with: model.avatarUrl, relation: model.pokeRelation)
         self.nameLabel.text = model.name
         self.partInfoLabel.text = model.partInfomation
         self.descriptionLabel.attributedText = model.description.applyMDSFont()
         self.pokeChipView.configure(with: model.chipInfo)
-        self.rightButton.tintColor = model.isPoked ? .systemGray : .systemBrown
+        self.pokeKokButton.isEnabled = !model.isPoked
     }
     
     public func poked() {
         // TBD
+    }
+    
+    public func signalForPokeButtonClicked() -> Driver<Void> {
+        self.pokeKokButton.tap
     }
 }
 
