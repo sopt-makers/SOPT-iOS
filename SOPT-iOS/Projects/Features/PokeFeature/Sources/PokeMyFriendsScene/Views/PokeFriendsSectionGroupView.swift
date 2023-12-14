@@ -16,21 +16,31 @@ public final class PokeFriendsSectionGroupView: UIView {
     
     // MARK: - Properties
     
-    public lazy var rightButtonTap: Driver<PokeRelation> = headerView.rightButtonTap.map { self.relation }.asDriver()
+    typealias UserId = String
+    
+    lazy var headerRightButtonTap: Driver<PokeRelation> = headerView.rightButtonTap.map { self.relation }.asDriver()
+    lazy var kokButtonTap = PassthroughSubject<UserId?, Never>()
     
     private let relation: PokeRelation
+    private let maxContentsCount: Int
     
     // MARK: - UI Components
     
     private let headerView = PokeFriendsSectionHeaderView()
     
+    private let contentStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.distribution = .fillEqually
+    }
+    
     // MARK: - initialization
     
     init(pokeRelation: PokeRelation, maxContentsCount: Int) {
         self.relation = pokeRelation
+        self.maxContentsCount = maxContentsCount
         super.init(frame: .zero)
         self.setUI()
-        self.makeContents(count: maxContentsCount)
+        self.makeContents()
         self.setLayout()
     }
     
@@ -44,16 +54,27 @@ extension PokeFriendsSectionGroupView {
         self.backgroundColor = .clear
     }
     
-    private func makeContents(count: Int) {
-        // 셀 넣기
+    private func makeContents() {
+        guard self.maxContentsCount > 0 else { return }
+        for _ in 0..<self.maxContentsCount {
+            let profileListView = PokeProfileListView(viewType: .default).setDividerViewIsHidden(to: false)
+            profileListView.isHidden = true
+            self.contentStackView.addArrangedSubview(profileListView)
+        }
     }
     
     private func setLayout() {
-        self.addSubviews(headerView)
+        self.addSubviews(headerView, contentStackView)
         
         headerView.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
             make.height.equalTo(48)
+        }
+        
+        contentStackView.snp.makeConstraints { make in
+            make.top.equalTo(headerView.snp.bottom)
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview().inset(10)
         }
     }
 }
@@ -64,5 +85,24 @@ extension PokeFriendsSectionGroupView {
         self.headerView.setTitle(title)
         self.headerView.setDescription(description)
         return self
+    }
+    
+    public func setData(friendsCount: Int, models: [ProfileListContentModel]) {
+        self.headerView.setFriendsCount(friendsCount)
+        
+        let models = Array(models.prefix(maxContentsCount))
+        
+        let contentSubviews = contentStackView.arrangedSubviews.compactMap {
+           $0 as? PokeProfileListView
+        }
+        
+        for (index, profileListView) in contentSubviews.enumerated() {
+            if let model = models[safe: index] {
+                profileListView.setData(with: model)
+                profileListView.isHidden = false
+            } else {
+                profileListView.isHidden = true
+            }
+        }
     }
 }
