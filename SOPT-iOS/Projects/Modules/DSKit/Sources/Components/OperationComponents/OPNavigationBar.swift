@@ -67,9 +67,9 @@ extension OPNavigationBar {
     }
     
     @discardableResult
-    public func addMiddleLabel(title: String?) -> Self {
+    public func addMiddleLabel(title: String?, font: UIFont = UIFont.Main.body1) -> Self {
         self.titleLabel.text = title
-        self.titleLabel.font = UIFont.Main.body1
+        self.titleLabel.font = font
         self.titleLabel.textColor = .white
         return self
     }

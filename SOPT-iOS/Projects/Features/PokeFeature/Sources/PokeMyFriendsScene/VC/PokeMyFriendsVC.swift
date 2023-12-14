@@ -24,6 +24,11 @@ public final class PokeMyFriendsVC: UIViewController, PokeMyFriendsViewControlla
     
     public var viewModel: PokeMyFriendsViewModel
     private var cancelBag = CancelBag()
+    
+    // MARK: - UI Components
+    
+    private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton)
+        .addMiddleLabel(title: I18N.Poke.MyFriends.myFriends, font: UIFont.MDS.body2)
  
     
     // MARK: - initialization
@@ -47,14 +52,20 @@ public final class PokeMyFriendsVC: UIViewController, PokeMyFriendsViewControlla
     }
 }
 
+// MARK: - UI & Layout
+
 extension PokeMyFriendsVC {
     private func setUI() {
-        self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
     }
     
 
     private func setLayout() {
+        self.view.addSubviews(naviBar)
+        
+        naviBar.snp.makeConstraints { make in
+            make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+        }
     }
 }
 
