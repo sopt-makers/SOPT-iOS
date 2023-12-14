@@ -11,5 +11,6 @@ import Foundation
 import Domain
 
 public protocol PokeFeatureBuildable {
-    func makePokeMain() -> NotificationDetailPresentable
+    func makePokeMain() -> PokeMainPresentable
+    func makePokeMyFriends() -> PokeMyFriendsPresentable
 }

@@ -16,10 +16,11 @@ import PokeFeatureInterface
 
 public class PokeMainViewModel:
     PokeMainViewModelType {
-    
+ 
     typealias UserId = String
     
     public var onNaviBackTap: (() -> Void)?
+    public var onMyFriendsTap: (() -> Void)?
     
     // MARK: - Properties
     
@@ -65,8 +66,8 @@ extension PokeMainViewModel {
             }.store(in: cancelBag)
         
         input.friendSectionHeaderButtonTap
-            .sink { _ in
-                print("내 친구 뷰로 이동")
+            .sink { [weak self] _ in
+                self?.onMyFriendsTap?()
             }.store(in: cancelBag)
         
         input.pokedSectionKokButtonTap

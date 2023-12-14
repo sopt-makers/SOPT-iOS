@@ -14,7 +14,8 @@ public protocol PokeMainViewControllable: ViewControllable { }
 
 public protocol PokeMainCoordinatable {
     var onNaviBackTap: (() -> Void)? { get set }
+    var onMyFriendsTap: (() -> Void)? { get set }
 }
 
 public typealias PokeMainViewModelType = ViewModelType & PokeMainCoordinatable
-public typealias NotificationDetailPresentable = (vc: PokeMainViewControllable, vm: any PokeMainViewModelType)
+public typealias PokeMainPresentable = (vc: PokeMainViewControllable, vm: any PokeMainViewModelType)

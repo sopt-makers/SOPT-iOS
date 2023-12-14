@@ -17,6 +17,7 @@ import SnapKit
 import Then
 
 import StampFeatureInterface
+import BaseFeatureDependency
 
 public class MissionListVC: UIViewController, MissionListViewControllable {
     
