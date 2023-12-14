@@ -59,5 +59,10 @@ extension PokeFriendsSectionGroupView {
 }
 
 extension PokeFriendsSectionGroupView {
-
+    @discardableResult
+    public func fillHeader(title: String, description: String) -> Self {
+        self.headerView.setTitle(title)
+        self.headerView.setDescription(description)
+        return self
+    }
 }

@@ -30,6 +30,18 @@ public final class PokeMyFriendsVC: UIViewController, PokeMyFriendsViewControlla
     private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton)
         .addMiddleLabel(title: I18N.Poke.MyFriends.myFriends, font: UIFont.MDS.body2)
  
+    private lazy var scrollView = UIScrollView().then {
+        $0.showsVerticalScrollIndicator = false
+        $0.showsHorizontalScrollIndicator = false
+    }
+    
+    private let contentStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 8
+    }
+    
+    private let newFriendsSectionView = PokeFriendsSectionGroupView(pokeRelation: .newFriend, maxContentsCount: 2)
+        .fillHeader(title: I18N.Poke.MyFriends.newFriends, description: I18N.Poke.MyFriends.friendsBaseline(2))
     
     // MARK: - initialization
     
@@ -47,6 +59,7 @@ public final class PokeMyFriendsVC: UIViewController, PokeMyFriendsViewControlla
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.setUI()
+        self.setStackView()
         self.setLayout()
         self.bindViewModel()
     }
@@ -59,12 +72,33 @@ extension PokeMyFriendsVC {
         view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
     }
     
+    private func setStackView() {
+        self.contentStackView.addArrangedSubviews(newFriendsSectionView)
+    }
 
     private func setLayout() {
-        self.view.addSubviews(naviBar)
+        self.view.addSubviews(naviBar, scrollView)
         
         naviBar.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+        }
+        
+        setScrollViewLayout()
+    }
+    
+    private func setScrollViewLayout() {
+        self.scrollView.addSubviews(contentStackView)
+        
+        scrollView.snp.makeConstraints { make in
+            make.top.equalTo(naviBar.snp.bottom)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        contentStackView.snp.makeConstraints { make in
+            make.width.equalTo(self.view.frame.width)
+            make.top.equalToSuperview()
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview().inset(20)
         }
     }
 }

@@ -334,6 +334,9 @@ public struct I18N {
             public static let newFriends = "나랑 친한친구"
             public static let bestFriend = "나랑 단짝친구"
             public static let soulmate = "나랑 천생연분"
+            public static func friendsBaseline(_ count: Int) -> String {
+                return "\(count)번 이상 찌르면 될 수 있어요"
+            }
         }
     }
 }
