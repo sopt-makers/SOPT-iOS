@@ -15,7 +15,11 @@ public final class PokeProfileCardView: UIView {
     
     // MARK: - Properties
     
-    lazy var kokButtonTap: Driver<Void> = kokButton.tap
+    typealias UserId = String
+    
+    lazy var kokButtonTap: Driver<UserId?> = kokButton.tap.map { self.userId }.asDriver()
+    
+    var userId: String?
     
     // MARK: - UI Components
     
@@ -80,6 +84,10 @@ public final class PokeProfileCardView: UIView {
             make.width.equalTo(120)
         }
         
+        labelStackView.snp.makeConstraints { make in
+            make.height.equalTo(38)
+        }
+        
         containerStackView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(4)
             make.bottom.equalToSuperview().inset(4)
@@ -95,13 +103,11 @@ public final class PokeProfileCardView: UIView {
     
     // MARK: - Methods
     
-    @discardableResult
-    func setData(imageURL: String, name: String, part: String) -> Self {
-        self.profileImageView.setImage(with: imageURL)
-        self.nameLabel.text = name
-        self.partLabel.text = part
-        
-        return self
+    func setData(with model: ProfileCardContentModel) {
+        self.userId = model.userId
+        self.profileImageView.setImage(with: model.avatarUrl)
+        self.nameLabel.text = model.name
+        self.partLabel.text = model.partInfomation
     }
     
     @discardableResult

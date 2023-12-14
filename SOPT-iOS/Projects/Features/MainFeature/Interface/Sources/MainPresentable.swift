@@ -16,6 +16,7 @@ public protocol MainCoordinatable {
     var onNoticeButtonTap: (() -> Void)? { get set }
     var onMyPageButtonTap: ((UserType) -> Void)? { get set }
     var onSoptamp: (() -> Void)? { get set }
+    var onPoke: (() -> Void)? { get set }
     var onSafari: ((String) -> Void)? { get set }
     var onAttendance: (() -> Void)? { get set }
     var onNeedSignIn: (() -> Void)? { get set }

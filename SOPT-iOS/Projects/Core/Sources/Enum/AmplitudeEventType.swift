@@ -24,4 +24,5 @@ public enum AmplitudeEventType: String {
     case review = "click_review"
     case faq = "click_faq"
     case playgroundCommunity = "click_playground_community"
+    case poke = "click_poke"
 }

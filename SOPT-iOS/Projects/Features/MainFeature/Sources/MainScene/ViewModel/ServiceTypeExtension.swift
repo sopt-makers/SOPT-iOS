@@ -116,6 +116,8 @@ extension AppServiceType {
         switch self {
         case .soptamp:
             return DSKitAsset.Assets.imgSoptamp.image
+        case .poke:
+            return DSKitAsset.Assets.imgPoke.image
         }
     }
     
@@ -123,12 +125,16 @@ extension AppServiceType {
         switch self {
         case .soptamp:
             return I18N.Main.AppService.soptamp
+        case .poke:
+            return I18N.Poke.poke
         }
     }
     
     var backgroundColor: UIColor {
         switch self {
         case .soptamp:
+            return DSKitAsset.Colors.gray800.color
+        case .poke:
             return DSKitAsset.Colors.gray800.color
         }
     }

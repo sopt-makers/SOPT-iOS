@@ -14,6 +14,7 @@ public enum MainCoordinatorDestination {
     case myPage(UserType)
     case attendance
     case stamp
+    case poke
     case signIn
 }
 public protocol MainCoordinatorOutput {
@@ -52,6 +53,9 @@ final class MainCoordinator: DefaultMainCoordinator {
         }
         main.vm.onSoptamp = { [weak self] in
             self?.requestCoordinating?(.stamp)
+        }
+        main.vm.onPoke = { [weak self] in
+            self?.requestCoordinating?(.poke)
         }
         main.vm.onAttendance = { [weak self] in
             self?.requestCoordinating?(.attendance)

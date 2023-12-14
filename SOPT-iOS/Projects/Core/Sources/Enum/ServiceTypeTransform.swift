@@ -29,6 +29,7 @@ public extension AppServiceType {
     var toAmplitudeEventType: AmplitudeEventType {
         switch self {
         case .soptamp: return .soptamp
+        case .poke: return .poke
         }
     }
 }
