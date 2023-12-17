@@ -108,6 +108,6 @@ extension PokeMyFriendsVC {
 extension PokeMyFriendsVC {
     private func bindViewModel() {
         
-        self.newFriendsSectionView.setData(friendsCount: 84, models: [.init(userId: "", avatarUrl: "", name: "가나다", partInfomation: "33기 안드로이드", pokeCount: 4, relation: .newFriend)])
+        self.newFriendsSectionView.setData(friendsCount: 84, models: [.init(userId: "", avatarUrl: "", name: "가나다", partInfomation: "33기 안드로이드", pokeCount: 4, relation: .newFriend), .init(userId: "", avatarUrl: "", name: "가나다", partInfomation: "33기 안드로이드", pokeCount: 4, relation: .newFriend)])
     }
 }

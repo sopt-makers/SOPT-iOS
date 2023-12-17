@@ -33,6 +33,10 @@ public final class PokeFriendsSectionGroupView: UIView {
         $0.distribution = .fillEqually
     }
     
+    private let emptyView = PokeEmptyView().setText(with: I18N.Poke.MyFriends.emptyViewDescription).then {
+        $0.isHidden = true
+    }
+    
     // MARK: - initialization
     
     init(pokeRelation: PokeRelation, maxContentsCount: Int) {
@@ -64,7 +68,7 @@ extension PokeFriendsSectionGroupView {
     }
     
     private func setLayout() {
-        self.addSubviews(headerView, contentStackView)
+        self.addSubviews(headerView, contentStackView, emptyView)
         
         headerView.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
@@ -74,7 +78,13 @@ extension PokeFriendsSectionGroupView {
         contentStackView.snp.makeConstraints { make in
             make.top.equalTo(headerView.snp.bottom)
             make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().inset(10)
+            make.bottom.lessThanOrEqualToSuperview().inset(10)
+        }
+        
+        emptyView.snp.makeConstraints { make in
+            make.top.equalTo(headerView.snp.bottom).offset(19)
+            make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview().inset(23)
         }
     }
 }
@@ -92,10 +102,12 @@ extension PokeFriendsSectionGroupView {
         
         let models = Array(models.prefix(maxContentsCount))
         
+        self.emptyView.isHidden = !models.isEmpty
+        
         let contentSubviews = contentStackView.arrangedSubviews.compactMap {
            $0 as? PokeProfileListView
         }
-        
+                
         for (index, profileListView) in contentSubviews.enumerated() {
             if let model = models[safe: index] {
                 profileListView.setData(with: model)

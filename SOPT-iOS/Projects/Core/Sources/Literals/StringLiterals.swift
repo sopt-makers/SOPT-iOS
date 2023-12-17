@@ -337,6 +337,7 @@ public struct I18N {
             public static func friendsBaseline(_ count: Int) -> String {
                 return "\(count)번 이상 찌르면 될 수 있어요"
             }
+            public static let emptyViewDescription = "아직 없어요 T.T\n더 많은 찌르기로 달성해보세요"
         }
     }
 }

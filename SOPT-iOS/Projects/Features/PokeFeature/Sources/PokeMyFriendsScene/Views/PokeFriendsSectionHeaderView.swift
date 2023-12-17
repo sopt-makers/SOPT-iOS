@@ -74,7 +74,7 @@ extension PokeFriendsSectionHeaderView {
         friendsCountLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.greaterThanOrEqualTo(descriptionLabel.snp.trailing).offset(4)
-            make.trailing.equalTo(rightButton.snp.leading).offset(8)
+            make.trailing.equalTo(rightButton.snp.leading).offset(-8)
         }
         
         rightButton.snp.makeConstraints { make in
