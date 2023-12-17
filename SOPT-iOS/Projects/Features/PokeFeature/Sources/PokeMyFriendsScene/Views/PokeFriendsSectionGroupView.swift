@@ -19,10 +19,12 @@ public final class PokeFriendsSectionGroupView: UIView {
     typealias UserId = String
     
     lazy var headerRightButtonTap: Driver<PokeRelation> = headerView.rightButtonTap.map { self.relation }.asDriver()
-    lazy var kokButtonTap = PassthroughSubject<UserId?, Never>()
+    let kokButtonTap = PassthroughSubject<UserId?, Never>()
     
     private let relation: PokeRelation
     private let maxContentsCount: Int
+    
+    let cancelBag = CancelBag()
     
     // MARK: - UI Components
     
@@ -63,6 +65,9 @@ extension PokeFriendsSectionGroupView {
         for _ in 0..<self.maxContentsCount {
             let profileListView = PokeProfileListView(viewType: .default).setDividerViewIsHidden(to: false)
             profileListView.isHidden = true
+            profileListView.kokButtonTap.sink { [weak self] userId in
+                self?.kokButtonTap.send(userId)
+            }.store(in: cancelBag)
             self.contentStackView.addArrangedSubview(profileListView)
         }
     }
