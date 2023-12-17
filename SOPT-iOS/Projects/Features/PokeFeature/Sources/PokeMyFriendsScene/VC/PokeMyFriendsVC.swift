@@ -36,12 +36,19 @@ public final class PokeMyFriendsVC: UIViewController, PokeMyFriendsViewControlla
     }
     
     private let contentStackView = UIStackView().then {
+        $0.backgroundColor = DSKitAsset.Colors.gray900.color
         $0.axis = .vertical
         $0.spacing = 8
     }
     
     private let newFriendsSectionView = PokeFriendsSectionGroupView(pokeRelation: .newFriend, maxContentsCount: 2)
         .fillHeader(title: I18N.Poke.MyFriends.newFriends, description: I18N.Poke.MyFriends.friendsBaseline(2))
+    
+    private let bestFriendsSectionView = PokeFriendsSectionGroupView(pokeRelation: .bestFriend, maxContentsCount: 2)
+        .fillHeader(title: I18N.Poke.MyFriends.bestFriend, description: I18N.Poke.MyFriends.friendsBaseline(5))
+    
+    private let soulmateSectionView = PokeFriendsSectionGroupView(pokeRelation: .soulmate, maxContentsCount: 2)
+        .fillHeader(title: I18N.Poke.MyFriends.soulmate, description: I18N.Poke.MyFriends.friendsBaseline(11))
     
     // MARK: - initialization
     
@@ -73,7 +80,7 @@ extension PokeMyFriendsVC {
     }
     
     private func setStackView() {
-        self.contentStackView.addArrangedSubviews(newFriendsSectionView)
+        self.contentStackView.addArrangedSubviews(newFriendsSectionView, bestFriendsSectionView, soulmateSectionView)
     }
 
     private func setLayout() {
@@ -109,5 +116,9 @@ extension PokeMyFriendsVC {
     private func bindViewModel() {
         
         self.newFriendsSectionView.setData(friendsCount: 84, models: [.init(userId: "", avatarUrl: "", name: "가나다", partInfomation: "33기 안드로이드", pokeCount: 4, relation: .newFriend), .init(userId: "", avatarUrl: "", name: "가나다", partInfomation: "33기 안드로이드", pokeCount: 4, relation: .newFriend)])
+        
+        self.bestFriendsSectionView.setData(friendsCount: 100, models: [.init(userId: "", avatarUrl: "", name: "가나다", partInfomation: "33기 안드로이드", pokeCount: 4, relation: .newFriend), .init(userId: "", avatarUrl: "", name: "가나다", partInfomation: "33기 서버", pokeCount: 4, relation: .newFriend)])
+        
+        self.soulmateSectionView.setData(friendsCount: 2, models: [])
     }
 }

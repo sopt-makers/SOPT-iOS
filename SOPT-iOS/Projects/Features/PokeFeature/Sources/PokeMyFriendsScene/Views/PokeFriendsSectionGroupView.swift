@@ -57,13 +57,13 @@ public final class PokeFriendsSectionGroupView: UIView {
 
 extension PokeFriendsSectionGroupView {
     private func setUI() {
-        self.backgroundColor = .clear
+        self.backgroundColor = DSKitAsset.Colors.gray950.color
     }
     
     private func makeContents() {
         guard self.maxContentsCount > 0 else { return }
-        for _ in 0..<self.maxContentsCount {
-            let profileListView = PokeProfileListView(viewType: .default).setDividerViewIsHidden(to: false)
+        for i in 0..<self.maxContentsCount {
+            let profileListView = PokeProfileListView(viewType: .default).setDividerViewIsHidden(to: i == maxContentsCount-1)
             profileListView.isHidden = true
             profileListView.kokButtonTap.sink { [weak self] userId in
                 self?.kokButtonTap.send(userId)
