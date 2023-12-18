@@ -39,8 +39,8 @@ public final class OPNavigationBar: UIView {
     // MARK: - UI Components
     
     private let titleLabel = UILabel()
-    private let leftButton = UIButton(type: .system)
-    private let rightButton = UIButton(type: .system)
+    private let leftButton = UIButton(type: .custom)
+    private let rightButton = UIButton(type: .custom)
 
     // MARK: - initialization
     
@@ -64,6 +64,12 @@ extension OPNavigationBar {
     
     private func setLeftBackButtonAction() {
         self.leftButton.addTarget(self, action: #selector(popToPreviousVC), for: .touchUpInside)
+    }
+    
+    @discardableResult
+    public func setLeftButtonImage(_ image: UIImage, for state: UIControl.State = .normal) -> Self {
+        self.leftButton.setImage(image, for: state)
+        return self
     }
     
     @discardableResult

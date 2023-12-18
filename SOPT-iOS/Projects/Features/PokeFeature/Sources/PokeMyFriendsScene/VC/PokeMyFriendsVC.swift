@@ -29,6 +29,7 @@ public final class PokeMyFriendsVC: UIViewController, PokeMyFriendsViewControlla
     
     private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton)
         .addMiddleLabel(title: I18N.Poke.MyFriends.myFriends, font: UIFont.MDS.body2)
+        .setLeftButtonImage(DSKitAsset.Assets.arrowLeft.image.withTintColor(DSKitAsset.Colors.gray30.color))
  
     private lazy var scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
