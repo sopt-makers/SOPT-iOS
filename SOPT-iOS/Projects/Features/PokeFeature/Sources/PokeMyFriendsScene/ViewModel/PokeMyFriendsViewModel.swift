@@ -24,6 +24,7 @@ public class PokeMyFriendsViewModel:
     // MARK: - Inputs
     
     public struct Input {
+        let moreFriendListButtonTap: Driver<PokeRelation>
     }
     
     // MARK: - Outputs
@@ -42,6 +43,11 @@ extension PokeMyFriendsViewModel {
     public func transform(from input: Input, cancelBag: Core.CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
+        
+        input.moreFriendListButtonTap.sink { relation in
+            print("\(relation) 친구 리스트 바텀 시트 보여주기")
+        }.store(in: cancelBag)
+        
         return output
     }
     
