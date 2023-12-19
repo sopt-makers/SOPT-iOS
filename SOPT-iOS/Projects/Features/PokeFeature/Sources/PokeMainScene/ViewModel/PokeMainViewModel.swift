@@ -24,12 +24,13 @@ public class PokeMainViewModel:
     
     // MARK: - Properties
     
-    private let userCase: PokeMainUseCase
+    private let useCase: PokeMainUseCase
     private var cancelBag = CancelBag()
     
     // MARK: - Inputs
     
     public struct Input {
+        let viewDidLoad: Driver<Void>
         let naviBackButtonTap: Driver<Void>
         let pokedSectionHeaderButtonTap: Driver<Void>
         let friendSectionHeaderButtonTap: Driver<Void>
@@ -42,12 +43,13 @@ public class PokeMainViewModel:
     // MARK: - Outputs
     
     public struct Output {
+        let pokedToMeUser = PassthroughSubject<NotificationListContentModel, Never>()
     }
     
     // MARK: - initialization
     
     public init(useCase: PokeMainUseCase) {
-        self.userCase = useCase
+        self.useCase = useCase
     }
 }
     
@@ -55,6 +57,11 @@ extension PokeMainViewModel {
     public func transform(from input: Input, cancelBag: Core.CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
+        
+        input.viewDidLoad
+            .sink { [weak self] _ in
+                self?.useCase.getWhoPokedToMe()
+            }.store(in: cancelBag)
         
         input.naviBackButtonTap
             .sink { [weak self] _ in
@@ -98,5 +105,25 @@ extension PokeMainViewModel {
     }
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
+        useCase.pokedToMeUser.sink { [weak self] pokeUserModel in
+            guard let self = self else { return }
+            print("모델: \(pokeUserModel)")
+            let notificationListContentModel = NotificationListContentModel(avatarUrl: pokeUserModel.profileImage,
+                                                                            pokeRelation: PokeRelation(rawValue: pokeUserModel.relationName)!,
+                                                                            name: pokeUserModel.name,
+                                                                            partInfomation: pokeUserModel.part,
+                                                                            description: pokeUserModel.message,
+                                                                            chipInfo: self.makeChipInfo(with: pokeUserModel),
+                                                                            isPoked: pokeUserModel.isAlreadyPoke)
+            output.pokedToMeUser.send(notificationListContentModel)
+        }.store(in: cancelBag)
+    }
+    
+    private func makeChipInfo(with model: PokeUserModel) -> PokeChipView.ChipType {
+        if model.isFirstMeet { // 친구가 아닌 경우
+            return .acquaintance(friendname: model.mutual.first ?? "", relationCount: "\(model.mutual.count)명")
+        }
+        
+        return .withPokeCount(relation: model.relationName, pokeCount: String(model.pokeNum))
     }
 }

@@ -14,11 +14,11 @@ import Moya
 public typealias DefaultPokeService = BaseService<PokeAPI>
 
 public protocol PokeService {
-    func getWhoPokedToMe() -> AnyPublisher<PokeUserEntity, Error>
+    func getWhoPokedToMe() -> AnyPublisher<PokeUserEntity?, Error>
 }
 
 extension DefaultPokeService: PokeService {
-    public func getWhoPokedToMe() -> AnyPublisher<PokeUserEntity, Error> {
+    public func getWhoPokedToMe() -> AnyPublisher<PokeUserEntity?, Error> {
         requestObjectInCombine(.getWhoPokedToMe)
     }
 }

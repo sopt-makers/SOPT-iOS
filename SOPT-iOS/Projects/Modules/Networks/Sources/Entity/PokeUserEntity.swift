@@ -16,7 +16,7 @@ public struct PokeUserEntity: Codable {
     public let part: String
     public let pokeNum: Int
     public let message: String
-    public let relationName: String?
+    public let relationName: String
     public let mutual: [String]
     public let isFirstMeet, isAlreadyPoke: Bool
 }

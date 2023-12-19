@@ -187,6 +187,7 @@ extension PokeMainVC {
     private func bindViewModel() {
         let input = PokeMainViewModel
             .Input(
+                viewDidLoad: Just(()).asDriver(),
                 naviBackButtonTap: self.backButton
                     .publisher(for: .touchUpInside)
                     .mapVoid().asDriver(),
@@ -206,6 +207,11 @@ extension PokeMainVC {
             )
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
+        
+        output.pokedToMeUser
+            .sink { [weak self] model in
+                self?.pokedUserContentView.configure(with: model)
+            }.store(in: cancelBag)
         
         // 테스트를 위해 더미 데이터를 넣도록 임시 세팅
         pokedSectionHeaderView.rightButtonTap
