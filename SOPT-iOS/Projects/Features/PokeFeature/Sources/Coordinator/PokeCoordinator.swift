@@ -38,7 +38,23 @@ final class PokeCoordinator: DefaultCoordinator {
             self?.finishFlow?()
         }
         
+        pokeMain.vm.onMyFriendsTap = { [weak self] in
+            self?.runPokeMyFriendsFlow()
+        }
+        
         rootController = pokeMain.vc.asNavigationController
         router.present(rootController, animated: true, modalPresentationSytle: .overFullScreen)
+    }
+    
+    private func runPokeMyFriendsFlow() {
+        let pokeMyFriendsCoordinator = PokeMyFriendsCoordinator(factory: factory
+                                                                , router: Router(rootController: rootController!))
+        
+        pokeMyFriendsCoordinator.finishFlow = { [weak self, weak pokeMyFriendsCoordinator] in
+            self?.removeDependency(pokeMyFriendsCoordinator)
+        }
+        
+        addDependency(pokeMyFriendsCoordinator)
+        pokeMyFriendsCoordinator.start()
     }
 }

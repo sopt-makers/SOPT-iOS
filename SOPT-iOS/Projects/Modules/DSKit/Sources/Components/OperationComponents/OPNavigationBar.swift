@@ -39,8 +39,8 @@ public final class OPNavigationBar: UIView {
     // MARK: - UI Components
     
     private let titleLabel = UILabel()
-    private let leftButton = UIButton(type: .system)
-    private let rightButton = UIButton(type: .system)
+    private let leftButton = UIButton(type: .custom)
+    private let rightButton = UIButton(type: .custom)
 
     // MARK: - initialization
     
@@ -67,9 +67,15 @@ extension OPNavigationBar {
     }
     
     @discardableResult
-    public func addMiddleLabel(title: String?) -> Self {
+    public func setLeftButtonImage(_ image: UIImage, for state: UIControl.State = .normal) -> Self {
+        self.leftButton.setImage(image, for: state)
+        return self
+    }
+    
+    @discardableResult
+    public func addMiddleLabel(title: String?, font: UIFont = UIFont.Main.body1) -> Self {
         self.titleLabel.text = title
-        self.titleLabel.font = UIFont.Main.body1
+        self.titleLabel.font = font
         self.titleLabel.textColor = .white
         return self
     }

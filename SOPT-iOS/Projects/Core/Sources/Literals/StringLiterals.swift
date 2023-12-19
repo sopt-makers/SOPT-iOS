@@ -328,6 +328,17 @@ public struct I18N {
         public static let pokeNearbyFriends = "내 친구의 친구를 찔러보세요"
         public static let emptyFriendDescription = "아직 없어요 T.T\n내 친구가 더 많은 친구가 생길 때까지 기다려주세요"
         public static let refreshGuide = "화면을 밑으로 당기면\n다른 친구를 볼 수 있어요"
+        
+        public struct MyFriends {
+            public static let myFriends = "내 친구"
+            public static let newFriends = "나랑 친한친구"
+            public static let bestFriend = "나랑 단짝친구"
+            public static let soulmate = "나랑 천생연분"
+            public static func friendsBaseline(_ count: Int) -> String {
+                return "\(count)번 이상 찌르면 될 수 있어요"
+            }
+            public static let emptyViewDescription = "아직 없어요 T.T\n더 많은 찌르기로 달성해보세요"
+        }
     }
 }
     

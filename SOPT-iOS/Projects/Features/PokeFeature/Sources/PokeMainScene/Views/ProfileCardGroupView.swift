@@ -37,22 +37,8 @@ public final class ProfileCardGroupView: UIView {
         $0.font = UIFont.MDS.title7
     }
     
-    private let emptyFriendImageView = UIImageView(image: DSKitAsset.Assets.emptyGraphic.image)
     
-    private let emptyFriendDescriptionLabel = UILabel().then {
-        $0.font = UIFont.MDS.label4
-        $0.textColor = DSKitAsset.Colors.gray300.color
-        $0.text = I18N.Poke.emptyFriendDescription
-        $0.numberOfLines = 2
-        $0.textAlignment = .center
-    }
-    
-    private lazy var emptyFriendView = UIStackView().then {
-        $0.addArrangedSubviews(emptyFriendImageView, emptyFriendDescriptionLabel)
-        $0.axis = .vertical
-        $0.spacing = 14
-        $0.alignment = .center
-    }
+    private let emptyFriendView = PokeEmptyView().setText(with: I18N.Poke.emptyFriendDescription)
     
     private let leftProfileCardView = PokeProfileCardView(frame: .zero).then {
         $0.isHidden = true
@@ -97,11 +83,6 @@ extension ProfileCardGroupView {
             make.centerY.equalTo(friendProfileImageView)
             make.leading.equalTo(friendProfileImageView.snp.trailing).offset(8)
             make.trailing.greaterThanOrEqualToSuperview().inset(8)
-        }
-        
-        emptyFriendImageView.snp.makeConstraints { make in
-            make.width.equalTo(64)
-            make.height.equalTo(62)
         }
         
         emptyFriendView.snp.makeConstraints { make in

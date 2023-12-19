@@ -15,9 +15,16 @@ public final class PokeBuilder {
 }
 
 extension PokeBuilder: PokeFeatureBuildable {
-    public func makePokeMain() -> PokeFeatureInterface.NotificationDetailPresentable {
+    public func makePokeMain() -> PokeFeatureInterface.PokeMainPresentable {
         let viewModel = PokeMainViewModel()
         let pokeMainVC = PokeMainVC(viewModel: viewModel)
         return (pokeMainVC, viewModel)
+    }
+    
+    public func makePokeMyFriends() -> PokeFeatureInterface.PokeMyFriendsPresentable {
+        let viewModel = PokeMyFriendsViewModel()
+        let pokeMyFriendsVC = PokeMyFriendsVC(viewModel: viewModel)
+        
+        return (pokeMyFriendsVC, viewModel)
     }
 }
