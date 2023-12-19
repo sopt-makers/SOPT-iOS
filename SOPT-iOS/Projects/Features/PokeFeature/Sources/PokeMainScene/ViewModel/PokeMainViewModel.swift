@@ -17,7 +17,7 @@ import PokeFeatureInterface
 public class PokeMainViewModel:
     PokeMainViewModelType {
  
-    typealias UserId = String
+    typealias UserId = Int
     
     public var onNaviBackTap: (() -> Void)?
     public var onMyFriendsTap: (() -> Void)?
@@ -108,7 +108,8 @@ extension PokeMainViewModel {
         useCase.pokedToMeUser.sink { [weak self] pokeUserModel in
             guard let self = self else { return }
             print("모델: \(pokeUserModel)")
-            let notificationListContentModel = NotificationListContentModel(avatarUrl: pokeUserModel.profileImage,
+            let notificationListContentModel = NotificationListContentModel(userId: pokeUserModel.userId,
+                                                                            avatarUrl: pokeUserModel.profileImage,
                                                                             pokeRelation: PokeRelation(rawValue: pokeUserModel.relationName) ?? .newFriend,
                                                                             name: pokeUserModel.name,
                                                                             partInfomation: pokeUserModel.part,

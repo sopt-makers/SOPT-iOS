@@ -16,7 +16,7 @@ public final class ProfileCardGroupView: UIView {
     
     // MARK: - Properties
     
-    typealias UserId = String
+    typealias UserId = Int
     
     lazy var kokButtonTap: Driver<UserId?> = leftProfileCardView.kokButtonTap
         .merge(with: rightProfileCardView.kokButtonTap)

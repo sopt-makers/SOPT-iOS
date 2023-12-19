@@ -195,8 +195,8 @@ extension PokeMainVC {
                     .rightButtonTap,
                 friendSectionHeaderButtonTap: friendSectionHeaderView
                     .rightButtonTap,
-                pokedSectionKokButtonTap: PassthroughSubject<String?, Never>()
-                    .asDriver(),
+                pokedSectionKokButtonTap: pokedUserContentView
+                    .signalForPokeButtonClicked(),
                 friendSectionKokButtonTap: friendSectionContentView
                     .kokButtonTap,
                 nearbyFriendsSectionKokButtonTap: firstProfileCardGroupView
@@ -216,11 +216,11 @@ extension PokeMainVC {
         // 테스트를 위해 더미 데이터를 넣도록 임시 세팅
         pokedSectionHeaderView.rightButtonTap
             .sink { _ in
-                self.friendSectionContentView.setData(with: .init(userId: "1234aa", avatarUrl: "sdafasdf", name: "test1", partInfomation: "ios", pokeCount: 3, relation: .bestFriend))
+                self.friendSectionContentView.setData(with: .init(userId: 1234, avatarUrl: "sdafasdf", name: "test1", partInfomation: "ios", pokeCount: 3, relation: .bestFriend))
                 
-                self.firstProfileCardGroupView.setProfileCard(with: [.init(userId: "777", avatarUrl: "sdafds", name: "test2", partInfomation: "server"), .init(userId: "999", avatarUrl: "", name: "test3", partInfomation: "pm")], friendName: "someone")
+                self.firstProfileCardGroupView.setProfileCard(with: [.init(userId: 77, avatarUrl: "sdafds", name: "test2", partInfomation: "server"), .init(userId: 999, avatarUrl: "", name: "test3", partInfomation: "pm")], friendName: "someone")
                 
-                self.secondProfileCardGroupView.setProfileCard(with: [.init(userId: "001", avatarUrl: "sdafds", name: "test4", partInfomation: "server")], friendName: "aaa")
+                self.secondProfileCardGroupView.setProfileCard(with: [.init(userId: 1, avatarUrl: "sdafds", name: "test4", partInfomation: "server")], friendName: "aaa")
             }.store(in: cancelBag)
     }
 }

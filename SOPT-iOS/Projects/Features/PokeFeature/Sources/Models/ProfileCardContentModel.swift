@@ -9,7 +9,7 @@
 import Foundation
 
 public struct ProfileCardContentModel {
-    let userId: String
+    let userId: Int
     let avatarUrl: String
     let name: String
     let partInfomation: String

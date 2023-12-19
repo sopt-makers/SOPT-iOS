@@ -7,6 +7,7 @@
 //
 
 public struct NotificationListContentModel {
+    let userId: Int
     let avatarUrl: String
     let pokeRelation: PokeRelation
     let name: String

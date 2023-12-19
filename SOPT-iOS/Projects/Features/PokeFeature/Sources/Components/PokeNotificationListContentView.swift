@@ -78,6 +78,8 @@ final public class PokeNotificationListContentView: UIView {
     // NOTE: NotifcationDetailView에서는 description의 numberOfLine Value가 2에요
     private let isDetailView: Bool
     
+    private var userId: Int?
+    
     // MARK: - View Lifecycle
     public init(
         isDetailView: Bool = true,
@@ -138,6 +140,7 @@ extension PokeNotificationListContentView {
 
 extension PokeNotificationListContentView {
     public func configure(with model: NotificationListContentModel) {
+        self.userId = model.userId
         self.profileImageView.setImage(with: model.avatarUrl, relation: model.pokeRelation)
         self.nameLabel.text = model.name
         self.partInfoLabel.text = model.partInfomation
@@ -151,8 +154,8 @@ extension PokeNotificationListContentView {
         // TBD
     }
     
-    public func signalForPokeButtonClicked() -> Driver<Void> {
-        self.pokeKokButton.tap
+    public func signalForPokeButtonClicked() -> Driver<Int?> {
+        self.pokeKokButton.tap.map { self.userId }.asDriver()
     }
 }
 

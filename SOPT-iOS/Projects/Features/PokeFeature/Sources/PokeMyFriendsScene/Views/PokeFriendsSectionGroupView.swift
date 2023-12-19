@@ -16,7 +16,7 @@ public final class PokeFriendsSectionGroupView: UIView {
     
     // MARK: - Properties
     
-    typealias UserId = String
+    typealias UserId = Int
     
     lazy var headerRightButtonTap: Driver<PokeRelation> = headerView.rightButtonTap.map { self.relation }.asDriver()
     let kokButtonTap = PassthroughSubject<UserId?, Never>()

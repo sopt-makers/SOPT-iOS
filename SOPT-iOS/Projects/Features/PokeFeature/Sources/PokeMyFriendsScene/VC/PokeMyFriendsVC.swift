@@ -124,9 +124,9 @@ extension PokeMyFriendsVC {
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
         
         // TODO: 임시로 데이터를 넣기 위한 코드 -> 서버 연결 후 제거 예정
-        self.newFriendsSectionView.setData(friendsCount: 84, models: [.init(userId: "", avatarUrl: "", name: "가나다", partInfomation: "33기 안드로이드", pokeCount: 4, relation: .newFriend), .init(userId: "", avatarUrl: "", name: "가나다", partInfomation: "33기 안드로이드", pokeCount: 4, relation: .newFriend)])
+        self.newFriendsSectionView.setData(friendsCount: 84, models: [.init(userId: 1, avatarUrl: "", name: "가나다", partInfomation: "33기 안드로이드", pokeCount: 4, relation: .newFriend), .init(userId: 2, avatarUrl: "", name: "가나다", partInfomation: "33기 안드로이드", pokeCount: 4, relation: .newFriend)])
         
-        self.bestFriendsSectionView.setData(friendsCount: 100, models: [.init(userId: "", avatarUrl: "", name: "가나다", partInfomation: "33기 안드로이드", pokeCount: 4, relation: .newFriend), .init(userId: "", avatarUrl: "", name: "가나다", partInfomation: "33기 서버", pokeCount: 4, relation: .newFriend)])
+        self.bestFriendsSectionView.setData(friendsCount: 100, models: [.init(userId: 3, avatarUrl: "", name: "가나다", partInfomation: "33기 안드로이드", pokeCount: 4, relation: .newFriend), .init(userId: 4, avatarUrl: "", name: "가나다", partInfomation: "33기 서버", pokeCount: 4, relation: .newFriend)])
         
         self.soulmateSectionView.setData(friendsCount: 2, models: [])
     }
