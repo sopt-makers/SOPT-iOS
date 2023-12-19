@@ -24,6 +24,7 @@ public class PokeMainViewModel:
     
     // MARK: - Properties
     
+    private let userCase: PokeMainUseCase
     private var cancelBag = CancelBag()
     
     // MARK: - Inputs
@@ -45,8 +46,8 @@ public class PokeMainViewModel:
     
     // MARK: - initialization
     
-    public init() {
-        
+    public init(useCase: PokeMainUseCase) {
+        self.userCase = useCase
     }
 }
     
