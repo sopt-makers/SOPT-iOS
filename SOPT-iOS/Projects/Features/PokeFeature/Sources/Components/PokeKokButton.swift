@@ -60,6 +60,10 @@ public final class PokeKokButton: UIButton {
         self.backgroundColor = backgroundColor
     }
     
+    public func setIsFriend(with isFriend: Bool) {
+        self.isFriend = isFriend
+    }
+    
     private func setIcon() {
         let icon = self.isFriend ? DSKitAsset.Assets.iconKok.image : DSKitAsset.Assets.iconEyes.image
         self.setImage(icon.withTintColor(DSKitAsset.Colors.black.color), for: .normal)

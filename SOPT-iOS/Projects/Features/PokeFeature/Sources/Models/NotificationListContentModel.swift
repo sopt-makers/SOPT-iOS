@@ -14,4 +14,5 @@ public struct NotificationListContentModel {
     let description: String
     let chipInfo: PokeChipView.ChipType
     let isPoked: Bool
+    let isFirstMeet: Bool
 }

@@ -109,12 +109,13 @@ extension PokeMainViewModel {
             guard let self = self else { return }
             print("모델: \(pokeUserModel)")
             let notificationListContentModel = NotificationListContentModel(avatarUrl: pokeUserModel.profileImage,
-                                                                            pokeRelation: PokeRelation(rawValue: pokeUserModel.relationName)!,
+                                                                            pokeRelation: PokeRelation(rawValue: pokeUserModel.relationName) ?? .newFriend,
                                                                             name: pokeUserModel.name,
                                                                             partInfomation: pokeUserModel.part,
                                                                             description: pokeUserModel.message,
                                                                             chipInfo: self.makeChipInfo(with: pokeUserModel),
-                                                                            isPoked: pokeUserModel.isAlreadyPoke)
+                                                                            isPoked: pokeUserModel.isAlreadyPoke,
+                                                                            isFirstMeet: pokeUserModel.isFirstMeet)
             output.pokedToMeUser.send(notificationListContentModel)
         }.store(in: cancelBag)
     }
