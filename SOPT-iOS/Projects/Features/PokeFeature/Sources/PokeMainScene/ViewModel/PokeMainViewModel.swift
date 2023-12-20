@@ -47,6 +47,7 @@ public class PokeMainViewModel:
         let pokedUserSectionWillBeHidden = PassthroughSubject<Bool, Never>()
         let myFriend = PassthroughSubject<PokeUserModel, Never>()
         let friendsSectionWillBeHidden = PassthroughSubject<Bool, Never>()
+        let friendRandomUsers = PassthroughSubject<[PokeFriendRandomUserModel], Never>()
     }
     
     // MARK: - initialization
@@ -65,6 +66,7 @@ extension PokeMainViewModel {
             .sink { [weak self] _ in
                 self?.useCase.getWhoPokedToMe()
                 self?.useCase.getFriend()
+                self?.useCase.getFriendRandomUser()
             }.store(in: cancelBag)
         
         input.naviBackButtonTap
@@ -131,6 +133,11 @@ extension PokeMainViewModel {
         useCase.myFriend
             .map { $0.isEmpty }
             .subscribe(output.friendsSectionWillBeHidden)
+            .store(in: cancelBag)
+        
+        useCase.friendRandomUsers
+            .prefix(2)
+            .subscribe(output.friendRandomUsers)
             .store(in: cancelBag)
     }
 }

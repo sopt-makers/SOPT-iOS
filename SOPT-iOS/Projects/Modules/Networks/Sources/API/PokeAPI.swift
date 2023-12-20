@@ -15,6 +15,7 @@ import Core
 public enum PokeAPI {
     case getWhoPokedToMe
     case getFriend
+    case getFriendRandomUser
 }
 
 extension PokeAPI: BaseAPI {
@@ -26,12 +27,14 @@ extension PokeAPI: BaseAPI {
             return "/to/me"
         case .getFriend:
             return "/friend"
+        case .getFriendRandomUser:
+            return "/friend/random-user"
         }
     }
     
     public var method: Moya.Method {
         switch self {
-        case .getWhoPokedToMe, .getFriend:
+        case .getWhoPokedToMe, .getFriend, .getFriendRandomUser:
             return .get
         }
     }

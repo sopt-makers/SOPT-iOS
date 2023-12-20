@@ -11,4 +11,5 @@ import Combine
 public protocol PokeMainRepositoryInterface {
     func getWhoPokeToMe() -> AnyPublisher<PokeUserModel?, Error>
     func getFriend() -> AnyPublisher<[PokeUserModel], Error>
+    func getFriendRandomUser() -> AnyPublisher<[PokeFriendRandomUserModel], Error>
 }

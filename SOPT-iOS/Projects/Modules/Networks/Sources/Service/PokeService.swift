@@ -16,6 +16,7 @@ public typealias DefaultPokeService = BaseService<PokeAPI>
 public protocol PokeService {
     func getWhoPokedToMe() -> AnyPublisher<PokeUserEntity?, Error>
     func getFriend() -> AnyPublisher<[PokeUserEntity], Error>
+    func getFriendRandomUser() -> AnyPublisher<[PokeFriendRandomUserEntity], Error>
 }
 
 extension DefaultPokeService: PokeService {
@@ -25,5 +26,9 @@ extension DefaultPokeService: PokeService {
     
     public func getFriend() -> AnyPublisher<[PokeUserEntity], Error> {
         requestObjectInCombine(.getFriend)
+    }
+    
+    public func getFriendRandomUser() -> AnyPublisher<[PokeFriendRandomUserEntity], Error> {
+        requestObjectInCombine(.getFriendRandomUser)
     }
 }

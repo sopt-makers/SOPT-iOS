@@ -211,8 +211,9 @@ extension PokeMainVC {
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
         
         output.pokedToMeUser
-            .sink { [weak self] model in
-                self?.pokedUserContentView.configure(with: model)
+            .withUnretained(self)
+            .sink { owner, model in
+                owner.pokedUserContentView.configure(with: model)
             }.store(in: cancelBag)
         
         output.pokedUserSectionWillBeHidden
@@ -220,20 +221,27 @@ extension PokeMainVC {
             .store(in: cancelBag)
         
         output.myFriend
-            .sink { model in
-                self.friendSectionContentView.setData(with: model)
+            .withUnretained(self)
+            .sink { owner, model in
+                owner.friendSectionContentView.setData(with: model)
             }.store(in: cancelBag)
         
         output.friendsSectionWillBeHidden
             .assign(to: \.isHidden, onWeak: friendSectionGroupView)
             .store(in: cancelBag)
         
-        // 테스트를 위해 더미 데이터를 넣도록 임시 세팅
-        pokedSectionHeaderView.rightButtonTap
-            .sink { _ in
-                self.firstProfileCardGroupView.setProfileCard(with: [.init(userId: 77, avatarUrl: "sdafds", name: "test2", partInfomation: "server"), .init(userId: 999, avatarUrl: "", name: "test3", partInfomation: "pm")], friendName: "someone")
+        output.friendRandomUsers
+            .withUnretained(self)
+            .sink { owner, randomUsers in
+                let profileCardGroupViews = [owner.firstProfileCardGroupView, owner.secondProfileCardGroupView]
                 
-                self.secondProfileCardGroupView.setProfileCard(with: [.init(userId: 1, avatarUrl: "sdafds", name: "test4", partInfomation: "server")], friendName: "aaa")
+                for (i, profileCardGroupView) in profileCardGroupViews.enumerated() {
+                    let randomUser = randomUsers[safe: i]
+                    profileCardGroupView.isHidden = (randomUser == nil)
+                    if let randomUser {
+                        profileCardGroupView.setData(with: randomUser)
+                    }
+                }
             }.store(in: cancelBag)
     }
 }
