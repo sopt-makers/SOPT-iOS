@@ -8,7 +8,6 @@
 
 import Foundation
 
-// MARK: - Empty
 public struct PokeUserEntity: Codable {
     public let userId: Int
     public let profileImage, name: String

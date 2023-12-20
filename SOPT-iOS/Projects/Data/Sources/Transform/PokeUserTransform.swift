@@ -13,6 +13,16 @@ import Networks
 
 extension PokeUserEntity {
     public func toDomain() -> PokeUserModel {
-        return PokeUserModel(userId: userId, profileImage: profileImage, name: name, generation: generation, part: part, pokeNum: pokeNum, message: message, relationName: relationName, mutual: mutual, isFirstMeet: isFirstMeet, isAlreadyPoke: isAlreadyPoke)
+        return PokeUserModel(userId: userId,
+                             profileImage: profileImage,
+                             name: name,
+                             generation: generation,
+                             part: part,
+                             pokeNum: pokeNum,
+                             message: message,
+                             relationName: relationName,
+                             mutual: mutual,
+                             isFirstMeet: isFirstMeet,
+                             isAlreadyPoke: isAlreadyPoke)
     }
 }
