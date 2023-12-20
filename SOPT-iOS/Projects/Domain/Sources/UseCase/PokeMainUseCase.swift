@@ -11,7 +11,7 @@ import Combine
 import Core
 
 public protocol PokeMainUseCase {
-    var pokedToMeUser: PassthroughSubject<PokeUserModel, Never> { get }
+    var pokedToMeUser: PassthroughSubject<PokeUserModel?, Never> { get }
     
     func getWhoPokedToMe()
 }
@@ -20,7 +20,7 @@ public class DefaultPokeMainUseCase {
     public let repository: PokeMainRepositoryInterface
     public let cancelBag = CancelBag()
     
-    public let pokedToMeUser = PassthroughSubject<PokeUserModel, Never>()
+    public let pokedToMeUser = PassthroughSubject<PokeUserModel?, Never>()
 
     public init(repository: PokeMainRepositoryInterface) {
         self.repository = repository
@@ -30,6 +30,9 @@ public class DefaultPokeMainUseCase {
 extension DefaultPokeMainUseCase: PokeMainUseCase {
     public func getWhoPokedToMe() {
         repository.getWhoPokeToMe()
+            .catch { _ in
+                Just<PokeUserModel?>(nil)
+            }
             .sink { event in
                 print("GetPokedToMe State: \(event)")
             } receiveValue: { [weak self] pokeUser in

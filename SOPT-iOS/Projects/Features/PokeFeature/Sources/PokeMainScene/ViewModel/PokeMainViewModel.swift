@@ -16,7 +16,7 @@ import PokeFeatureInterface
 
 public class PokeMainViewModel:
     PokeMainViewModelType {
- 
+    
     typealias UserId = Int
     
     public var onNaviBackTap: (() -> Void)?
@@ -44,6 +44,7 @@ public class PokeMainViewModel:
     
     public struct Output {
         let pokedToMeUser = PassthroughSubject<NotificationListContentModel, Never>()
+        let pokedUserSectionWillBeHidden = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - initialization
@@ -52,7 +53,7 @@ public class PokeMainViewModel:
         self.useCase = useCase
     }
 }
-    
+
 extension PokeMainViewModel {
     public func transform(from input: Input, cancelBag: Core.CancelBag) -> Output {
         let output = Output()
@@ -83,7 +84,7 @@ extension PokeMainViewModel {
             .sink { userId in
                 print("찌르기 - \(userId)")
             }.store(in: cancelBag)
-
+        
         input.friendSectionKokButtonTap
             .compactMap { $0 }
             .sink { userId in
@@ -105,20 +106,27 @@ extension PokeMainViewModel {
     }
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
-        useCase.pokedToMeUser.sink { [weak self] pokeUserModel in
-            guard let self = self else { return }
-            print("모델: \(pokeUserModel)")
-            let notificationListContentModel = NotificationListContentModel(userId: pokeUserModel.userId,
-                                                                            avatarUrl: pokeUserModel.profileImage,
-                                                                            pokeRelation: PokeRelation(rawValue: pokeUserModel.relationName) ?? .newFriend,
-                                                                            name: pokeUserModel.name,
-                                                                            partInfomation: pokeUserModel.part,
-                                                                            description: pokeUserModel.message,
-                                                                            chipInfo: self.makeChipInfo(with: pokeUserModel),
-                                                                            isPoked: pokeUserModel.isAlreadyPoke,
-                                                                            isFirstMeet: pokeUserModel.isFirstMeet)
-            output.pokedToMeUser.send(notificationListContentModel)
-        }.store(in: cancelBag)
+        useCase.pokedToMeUser
+            .compactMap { $0 }
+            .sink { [weak self] pokeUserModel in
+                guard let self = self else { return }
+                
+                let notificationListContentModel = NotificationListContentModel(userId: pokeUserModel.userId,
+                                                                                avatarUrl: pokeUserModel.profileImage,
+                                                                                pokeRelation: PokeRelation(rawValue: pokeUserModel.relationName) ?? .newFriend,
+                                                                                name: pokeUserModel.name,
+                                                                                partInfomation: pokeUserModel.part,
+                                                                                description: pokeUserModel.message,
+                                                                                chipInfo: self.makeChipInfo(with: pokeUserModel),
+                                                                                isPoked: pokeUserModel.isAlreadyPoke,
+                                                                                isFirstMeet: pokeUserModel.isFirstMeet)
+                output.pokedToMeUser.send(notificationListContentModel)
+            }.store(in: cancelBag)
+        
+        useCase.pokedToMeUser
+            .sink { pokeUserModel in
+                output.pokedUserSectionWillBeHidden.send(pokeUserModel == nil)
+            }.store(in: cancelBag)
     }
     
     private func makeChipInfo(with model: PokeUserModel) -> PokeChipView.ChipType {

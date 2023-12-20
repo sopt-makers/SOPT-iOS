@@ -213,6 +213,10 @@ extension PokeMainVC {
                 self?.pokedUserContentView.configure(with: model)
             }.store(in: cancelBag)
         
+        output.pokedUserSectionWillBeHidden
+            .assign(to: \.isHidden, onWeak: pokedSectionGroupView)
+            .store(in: cancelBag)
+        
         // 테스트를 위해 더미 데이터를 넣도록 임시 세팅
         pokedSectionHeaderView.rightButtonTap
             .sink { _ in

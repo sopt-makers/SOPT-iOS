@@ -9,5 +9,5 @@
 import Combine
 
 public protocol PokeMainRepositoryInterface {
-    func getWhoPokeToMe() -> AnyPublisher<PokeUserModel, Error>
+    func getWhoPokeToMe() -> AnyPublisher<PokeUserModel?, Error>
 }

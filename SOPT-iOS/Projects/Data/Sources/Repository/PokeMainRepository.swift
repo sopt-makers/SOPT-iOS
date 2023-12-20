@@ -23,10 +23,9 @@ public class PokeMainRepository {
 }
 
 extension PokeMainRepository: PokeMainRepositoryInterface {
-    public func getWhoPokeToMe() -> AnyPublisher<Domain.PokeUserModel, Error> {
+    public func getWhoPokeToMe() -> AnyPublisher<Domain.PokeUserModel?, Error> {
         pokeService.getWhoPokedToMe()
-            .compactMap { $0 }
-            .map { $0.toDomain() }
+            .map { $0?.toDomain() }
             .eraseToAnyPublisher()
     }
 }
