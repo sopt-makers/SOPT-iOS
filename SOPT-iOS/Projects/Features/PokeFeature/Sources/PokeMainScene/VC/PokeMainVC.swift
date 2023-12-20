@@ -57,7 +57,9 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
     // 누가 나를 찔렀어요 부분
     private let pokedSectionHeaderView = PokeMainSectionHeaderView(title: I18N.Poke.someonePokedMe)
     private let pokedUserContentView = PokeNotificationListContentView(frame: .zero)
-    private lazy var pokedSectionGroupView = self.makeSectionGroupView(header: pokedSectionHeaderView, content: pokedUserContentView)
+    private lazy var pokedSectionGroupView = self.makeSectionGroupView(header: pokedSectionHeaderView, content: pokedUserContentView).then {
+        $0.isHidden = true
+    }
     
     // 내 친구를 찔러보세요 부분
     private let friendSectionHeaderView = PokeMainSectionHeaderView(title: I18N.Poke.pokeMyFriends)
@@ -217,11 +219,18 @@ extension PokeMainVC {
             .assign(to: \.isHidden, onWeak: pokedSectionGroupView)
             .store(in: cancelBag)
         
+        output.myFriend
+            .sink { model in
+                self.friendSectionContentView.setData(with: model)
+            }.store(in: cancelBag)
+        
+        output.friendsSectionWillBeHidden
+            .assign(to: \.isHidden, onWeak: friendSectionGroupView)
+            .store(in: cancelBag)
+        
         // 테스트를 위해 더미 데이터를 넣도록 임시 세팅
         pokedSectionHeaderView.rightButtonTap
             .sink { _ in
-                self.friendSectionContentView.setData(with: .init(userId: 1234, avatarUrl: "sdafasdf", name: "test1", partInfomation: "ios", pokeCount: 3, relation: .bestFriend))
-                
                 self.firstProfileCardGroupView.setProfileCard(with: [.init(userId: 77, avatarUrl: "sdafds", name: "test2", partInfomation: "server"), .init(userId: 999, avatarUrl: "", name: "test3", partInfomation: "pm")], friendName: "someone")
                 
                 self.secondProfileCardGroupView.setProfileCard(with: [.init(userId: 1, avatarUrl: "sdafds", name: "test4", partInfomation: "server")], friendName: "aaa")

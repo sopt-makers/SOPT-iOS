@@ -10,6 +10,7 @@ import UIKit
 
 import DSKit
 import Core
+import Domain
 
 public final class PokeProfileListView: UIView {
     
@@ -171,12 +172,12 @@ public final class PokeProfileListView: UIView {
     // MARK: - Methods
     
     @discardableResult
-    func setData(with model: ProfileListContentModel) -> Self {
+    func setData(with model: PokeUserModel) -> Self {
         self.userId = model.userId
-        self.profileImageView.setImage(with: model.avatarUrl, relation: model.relation)
+        self.profileImageView.setImage(with: model.profileImage, relation: model.pokeRelation)
         self.nameLabel.text = model.name
-        self.partLabel.text = model.partInfomation
-        self.kokCountLabel.text = "\(model.pokeCount)콕"
+        self.partLabel.text = model.part
+        self.kokCountLabel.text = "\(model.pokeNum)콕"
         return self
     }
     

@@ -8,6 +8,7 @@
 
 import UIKit
 import DSKit
+import Domain
 
 public enum PokeRelation: String {
     case newFriend = "친한친구"
@@ -25,5 +26,11 @@ extension PokeRelation {
         case .soulmate:
             return DSKitAsset.Colors.secondary.color
         }
+    }
+}
+
+extension PokeUserModel {
+    var pokeRelation: PokeRelation {
+        return PokeRelation(rawValue: self.relationName) ?? .newFriend
     }
 }

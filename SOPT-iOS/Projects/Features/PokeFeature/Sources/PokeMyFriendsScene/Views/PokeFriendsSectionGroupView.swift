@@ -11,6 +11,7 @@ import Combine
 
 import DSKit
 import Core
+import Domain
 
 public final class PokeFriendsSectionGroupView: UIView {
     
@@ -102,7 +103,7 @@ extension PokeFriendsSectionGroupView {
         return self
     }
     
-    public func setData(friendsCount: Int, models: [ProfileListContentModel]) {
+    public func setData(friendsCount: Int, models: [PokeUserModel]) {
         self.headerView.setFriendsCount(friendsCount)
         
         let models = Array(models.prefix(maxContentsCount))

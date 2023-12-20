@@ -45,6 +45,8 @@ public class PokeMainViewModel:
     public struct Output {
         let pokedToMeUser = PassthroughSubject<NotificationListContentModel, Never>()
         let pokedUserSectionWillBeHidden = PassthroughSubject<Bool, Never>()
+        let myFriend = PassthroughSubject<PokeUserModel, Never>()
+        let friendsSectionWillBeHidden = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - initialization
@@ -62,6 +64,7 @@ extension PokeMainViewModel {
         input.viewDidLoad
             .sink { [weak self] _ in
                 self?.useCase.getWhoPokedToMe()
+                self?.useCase.getFriend()
             }.store(in: cancelBag)
         
         input.naviBackButtonTap
@@ -108,25 +111,43 @@ extension PokeMainViewModel {
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         useCase.pokedToMeUser
             .compactMap { $0 }
-            .sink { [weak self] pokeUserModel in
-                guard let self = self else { return }
-                
-                let notificationListContentModel = NotificationListContentModel(userId: pokeUserModel.userId,
-                                                                                avatarUrl: pokeUserModel.profileImage,
-                                                                                pokeRelation: PokeRelation(rawValue: pokeUserModel.relationName) ?? .newFriend,
-                                                                                name: pokeUserModel.name,
-                                                                                partInfomation: pokeUserModel.part,
-                                                                                description: pokeUserModel.message,
-                                                                                chipInfo: self.makeChipInfo(with: pokeUserModel),
-                                                                                isPoked: pokeUserModel.isAlreadyPoke,
-                                                                                isFirstMeet: pokeUserModel.isFirstMeet)
-                output.pokedToMeUser.send(notificationListContentModel)
-            }.store(in: cancelBag)
+            .withUnretained(self)
+            .map { owner, pokeUserModel in
+                owner.makeNotificationListContentModel(with: pokeUserModel)
+            }
+            .subscribe(output.pokedToMeUser)
+            .store(in: cancelBag)
         
         useCase.pokedToMeUser
-            .sink { pokeUserModel in
-                output.pokedUserSectionWillBeHidden.send(pokeUserModel == nil)
-            }.store(in: cancelBag)
+            .map { $0 == nil }
+            .subscribe(output.pokedUserSectionWillBeHidden)
+            .store(in: cancelBag)
+        
+        useCase.myFriend
+            .compactMap { $0.first }
+            .subscribe(output.myFriend)
+            .store(in: cancelBag)
+        
+        useCase.myFriend
+            .map { $0.isEmpty }
+            .subscribe(output.friendsSectionWillBeHidden)
+            .store(in: cancelBag)
+    }
+}
+
+// MARK: - Methods
+
+extension PokeMainViewModel {
+    private func makeNotificationListContentModel(with model: PokeUserModel) -> NotificationListContentModel {
+        return NotificationListContentModel(userId: model.userId,
+                                            avatarUrl: model.profileImage,
+                                            pokeRelation: PokeRelation(rawValue: model.relationName) ?? .newFriend,
+                                            name: model.name,
+                                            partInfomation: model.part,
+                                            description: model.message,
+                                            chipInfo: self.makeChipInfo(with: model),
+                                            isPoked: model.isAlreadyPoke,
+                                            isFirstMeet: model.isFirstMeet)
     }
     
     private func makeChipInfo(with model: PokeUserModel) -> PokeChipView.ChipType {
