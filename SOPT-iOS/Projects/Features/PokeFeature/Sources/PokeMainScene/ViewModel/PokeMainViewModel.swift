@@ -48,6 +48,7 @@ public class PokeMainViewModel:
         let myFriend = PassthroughSubject<PokeUserModel, Never>()
         let friendsSectionWillBeHidden = PassthroughSubject<Bool, Never>()
         let friendRandomUsers = PassthroughSubject<[PokeFriendRandomUserModel], Never>()
+        let endRefreshLoading = PassthroughSubject<Void, Never>()
     }
     
     // MARK: - initialization
@@ -62,7 +63,7 @@ extension PokeMainViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
-        input.viewDidLoad
+        Publishers.Merge(input.viewDidLoad, input.refreshRequest)
             .sink { [weak self] _ in
                 self?.useCase.getWhoPokedToMe()
                 self?.useCase.getFriend()
@@ -102,11 +103,6 @@ extension PokeMainViewModel {
                 print("찌르기 - \(userId)")
             }.store(in: cancelBag)
         
-        input.refreshRequest
-            .sink { _ in
-                print("리프레시 요청")
-            }.store(in: cancelBag)
-        
         return output
     }
     
@@ -138,6 +134,11 @@ extension PokeMainViewModel {
         useCase.friendRandomUsers
             .prefix(2)
             .subscribe(output.friendRandomUsers)
+            .store(in: cancelBag)
+        
+        Publishers.Zip3(useCase.pokedToMeUser, useCase.myFriend, useCase.friendRandomUsers)
+            .map { _ in Void() }
+            .subscribe(output.endRefreshLoading)
             .store(in: cancelBag)
     }
 }

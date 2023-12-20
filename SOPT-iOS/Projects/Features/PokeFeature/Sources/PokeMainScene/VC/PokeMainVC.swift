@@ -181,6 +181,18 @@ extension PokeMainVC {
             make.bottom.equalToSuperview().inset(20)
         }
     }
+    
+    private func setFriendRandomUsers(with randomUsers: [PokeFriendRandomUserModel]) {
+        let profileCardGroupViews = [firstProfileCardGroupView, secondProfileCardGroupView]
+        
+        for (i, profileCardGroupView) in profileCardGroupViews.enumerated() {
+            let randomUser = randomUsers[safe: i]
+            profileCardGroupView.isHidden = (randomUser == nil)
+            if let randomUser {
+                profileCardGroupView.setData(with: randomUser)
+            }
+        }
+    }
 }
 
 // MARK: - Methods
@@ -233,15 +245,13 @@ extension PokeMainVC {
         output.friendRandomUsers
             .withUnretained(self)
             .sink { owner, randomUsers in
-                let profileCardGroupViews = [owner.firstProfileCardGroupView, owner.secondProfileCardGroupView]
-                
-                for (i, profileCardGroupView) in profileCardGroupViews.enumerated() {
-                    let randomUser = randomUsers[safe: i]
-                    profileCardGroupView.isHidden = (randomUser == nil)
-                    if let randomUser {
-                        profileCardGroupView.setData(with: randomUser)
-                    }
-                }
+                owner.setFriendRandomUsers(with: randomUsers)
+            }.store(in: cancelBag)
+        
+        output.endRefreshLoading
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.refreshControl.endRefreshing()
             }.store(in: cancelBag)
     }
 }
