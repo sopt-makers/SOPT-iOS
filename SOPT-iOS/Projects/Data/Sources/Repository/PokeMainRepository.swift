@@ -28,4 +28,10 @@ extension PokeMainRepository: PokeMainRepositoryInterface {
             .map { $0?.toDomain() }
             .eraseToAnyPublisher()
     }
+    
+    public func getFriend() -> AnyPublisher<[PokeUserModel], Error> {
+        pokeService.getFriend()
+            .map { $0.map { $0.toDomain() } }
+            .eraseToAnyPublisher()
+    }
 }
