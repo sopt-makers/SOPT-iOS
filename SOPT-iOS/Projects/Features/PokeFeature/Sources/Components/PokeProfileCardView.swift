@@ -106,7 +106,7 @@ public final class PokeProfileCardView: UIView {
 
     func setData(with model: PokeUserModel) {
         self.userId = model.userId
-        self.profileImageView.setImage(with: model.profileImage)
+        self.profileImageView.setImage(with: model.profileImage, placeholder: DSKitAsset.Assets.iconDefaultProfile.image)
         self.nameLabel.text = model.name
         self.partLabel.text = model.part
     }
