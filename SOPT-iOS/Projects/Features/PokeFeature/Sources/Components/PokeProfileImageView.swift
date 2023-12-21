@@ -30,7 +30,7 @@ public final class PokeProfileImageView: UIImageView {
     }
     
     public func setImage(with url: String, relation: PokeRelation) {
-        self.setImage(with: url)
+        self.setImage(with: url, placeholder: DSKitAsset.Assets.iconDefaultProfile.image)
         self.setBorderColor(for: relation)
     }
     

@@ -113,6 +113,7 @@ extension ProfileCardGroupView {
     
     func setData(with model: PokeFriendRandomUserModel) {
         self.friendNameLabel.text = model.friendName
+        self.friendProfileImageView.setImage(with: model.friendProfileImage, placeholder: DSKitAsset.Assets.iconDefaultProfile.image)
         let randomUsers = model.friendList.prefix(2)
         
         handleProfileCardCount(count: randomUsers.count)

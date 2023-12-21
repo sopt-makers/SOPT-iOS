@@ -119,11 +119,18 @@ extension PokeMyFriendsVC {
                                                        bestFriendsSectionView.headerRightButtonTap,
                                                         soulmateSectionView.headerRightButtonTap).asDriver()
         
-        let input = PokeMyFriendsViewModel.Input(moreFriendListButtonTap: moreFriendListButtonTap)
+        let input = PokeMyFriendsViewModel.Input(
+            viewDidLoad: Just(()).asDriver(),
+            moreFriendListButtonTap: moreFriendListButtonTap)
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
         
-        // TODO: 임시로 데이터를 넣기 위한 코드 -> 서버 연결 후 제거 예정
-        self.soulmateSectionView.setData(friendsCount: 2, models: [])
+        output.myFriends
+            .withUnretained(self)
+            .sink { owner, friends in
+                owner.newFriendsSectionView.setData(friendsCount: friends.newFriendSize, models: friends.newFriend)
+                owner.bestFriendsSectionView.setData(friendsCount: friends.bestFriendSize, models: friends.bestFriend)
+                owner.soulmateSectionView.setData(friendsCount: friends.soulmateSize, models: friends.soulmate)
+            }.store(in: cancelBag)
     }
 }
