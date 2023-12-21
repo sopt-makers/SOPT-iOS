@@ -1,23 +1,17 @@
 //
-//  PokeRelation.swift
+//  PokeRelation+.swift
 //  PokeFeature
 //
-//  Created by sejin on 12/3/23.
+//  Created by sejin on 12/22/23.
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
 import UIKit
+
 import DSKit
 import Domain
 
-public enum PokeRelation: String {
-    case nonFriend
-    case newFriend = "친한친구"
-    case bestFriend = "단짝친구"
-    case soulmate = "천생연분"
-}
-
-extension PokeRelation {
+public extension PokeRelation {
     var color: UIColor {
         switch self {
         case .nonFriend, .newFriend:
@@ -30,7 +24,7 @@ extension PokeRelation {
     }
 }
 
-extension PokeUserModel {
+public extension PokeUserModel {
     var pokeRelation: PokeRelation {
         return PokeRelation(rawValue: self.relationName) ?? .nonFriend
     }

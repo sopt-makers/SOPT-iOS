@@ -16,6 +16,8 @@ import PokeFeatureInterface
 
 public class PokeMyFriendsViewModel:
     PokeMyFriendsViewModelType {
+    
+    public var showFriendsListButtonTap: ((PokeRelation) -> Void)?
         
     // MARK: - Properties
     
@@ -53,9 +55,11 @@ extension PokeMyFriendsViewModel {
                 owner.useCase.getFriends()
             }.store(in: cancelBag)
         
-        input.moreFriendListButtonTap.sink { relation in
-            print("\(relation) 친구 리스트 바텀 시트 보여주기")
-        }.store(in: cancelBag)
+        input.moreFriendListButtonTap
+            .withUnretained(self)
+            .sink { owner, relation in
+                owner.showFriendsListButtonTap?(relation)
+            }.store(in: cancelBag)
         
         return output
     }
