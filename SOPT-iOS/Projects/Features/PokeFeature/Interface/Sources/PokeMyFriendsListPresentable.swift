@@ -15,5 +15,8 @@ public protocol PokeMyFriendsListViewControllable: ViewControllable { }
 public protocol PokeMyFriendsListCoordinatable {
 }
 
-public typealias PokeMyFriendsListViewModelType = ViewModelType & PokeMyFriendsListCoordinatable
+public protocol PokeMyFriendsListViewModelType: ViewModelType & PokeMyFriendsListCoordinatable {
+    var relation: PokeRelation { get }
+}
+
 public typealias PokeMyFriendsListPresentable = (vc: PokeMyFriendsListViewControllable, vm: any PokeMyFriendsListViewModelType)

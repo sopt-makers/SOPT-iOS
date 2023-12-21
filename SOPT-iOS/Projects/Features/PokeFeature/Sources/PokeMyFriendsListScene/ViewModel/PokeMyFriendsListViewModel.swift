@@ -22,6 +22,8 @@ public class PokeMyFriendsListViewModel:
 //    private let useCase: PokeMyFriendsListUseCase
     private var cancelBag = CancelBag()
     
+    public let relation: PokeRelation
+    
     // MARK: - Inputs
     
     public struct Input {
@@ -35,7 +37,8 @@ public class PokeMyFriendsListViewModel:
     
     // MARK: - initialization
     
-    public init() {
+    public init(relation: PokeRelation) {
+        self.relation = relation
     }
 }
     

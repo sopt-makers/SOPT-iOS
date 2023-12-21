@@ -33,8 +33,8 @@ extension PokeBuilder: PokeFeatureBuildable {
         return (pokeMyFriendsVC, viewModel)
     }
     
-    public func makePokeMyFriendsList() -> PokeFeatureInterface.PokeMyFriendsListPresentable {
-        let viewModel = PokeMyFriendsListViewModel()
+    public func makePokeMyFriendsList(relation: PokeRelation) -> PokeFeatureInterface.PokeMyFriendsListPresentable {
+        let viewModel = PokeMyFriendsListViewModel(relation: relation)
         let pokeMyFriendsListVC = PokeMyFriendsListVC(viewModel: viewModel)
         
         return (pokeMyFriendsListVC, viewModel)

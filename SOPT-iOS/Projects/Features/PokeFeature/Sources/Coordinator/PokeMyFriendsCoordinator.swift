@@ -38,7 +38,7 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
     }
     
     private func showPokeMyFriendsList(with relation: PokeRelation) {
-        let pokeMyFriendsList = factory.makePokeMyFriendsList()
+        let pokeMyFriendsList = factory.makePokeMyFriendsList(relation: relation)
         
         router.present(pokeMyFriendsList.vc, animated: true)
     }
