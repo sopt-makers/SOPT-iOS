@@ -34,6 +34,7 @@ extension DefaultPokeService: PokeService {
     }
     
     public func getFriendList() -> AnyPublisher<PokeMyFriendsEntity, Error> {
-        requestObjectInCombine(.getFriendList)
+        requestObjectInCombine(.getFriendList
+        )
     }
 }
