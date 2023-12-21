@@ -11,6 +11,7 @@ import Foundation
 // MARK: - Empty
 public struct PokeUserModel: Codable {
     public let userId: Int
+    public let playgroundId: Int
     public let profileImage, name: String
     public let generation: Int
     public let part: String
@@ -20,8 +21,9 @@ public struct PokeUserModel: Codable {
     public let mutual: [String]
     public let isFirstMeet, isAlreadyPoke: Bool
     
-    public init(userId: Int, profileImage: String, name: String, generation: Int, part: String, pokeNum: Int, message: String, relationName: String, mutual: [String], isFirstMeet: Bool, isAlreadyPoke: Bool) {
+    public init(userId: Int, playgroundId: Int, profileImage: String, name: String, generation: Int, part: String, pokeNum: Int, message: String, relationName: String, mutual: [String], isFirstMeet: Bool, isAlreadyPoke: Bool) {
         self.userId = userId
+        self.playgroundId = playgroundId
         self.profileImage = profileImage
         self.name = name
         self.generation = generation

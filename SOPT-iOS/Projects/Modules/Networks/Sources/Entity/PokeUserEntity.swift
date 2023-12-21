@@ -10,6 +10,7 @@ import Foundation
 
 public struct PokeUserEntity: Codable {
     public let userId: Int
+    public let playgroundId: Int
     public let profileImage, name: String
     public let generation: Int
     public let part: String
