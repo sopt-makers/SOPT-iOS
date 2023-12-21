@@ -11,12 +11,13 @@ import Combine
 
 import Core
 import DSKit
+import Domain
 
 public final class ProfileCardGroupView: UIView {
     
     // MARK: - Properties
     
-    typealias UserId = String
+    typealias UserId = Int
     
     lazy var kokButtonTap: Driver<UserId?> = leftProfileCardView.kokButtonTap
         .merge(with: rightProfileCardView.kokButtonTap)
@@ -109,14 +110,15 @@ extension ProfileCardGroupView {
 // MARK: - Methods
 
 extension ProfileCardGroupView {
-    func setProfileCard(with models: [ProfileCardContentModel], friendName: String) {
-        self.friendNameLabel.text = friendName
-        let models = models.prefix(2)
+    
+    func setData(with model: PokeFriendRandomUserModel) {
+        self.friendNameLabel.text = model.friendName
+        let randomUsers = model.friendList.prefix(2)
         
-        handleProfileCardCount(count: models.count)
+        handleProfileCardCount(count: randomUsers.count)
         
-        for (index, model) in models.enumerated() {
-            index == 0 ? leftProfileCardView.setData(with: model) : rightProfileCardView.setData(with: model)
+        for (index, user) in randomUsers.enumerated() {
+            index == 0 ? leftProfileCardView.setData(with: user) : rightProfileCardView.setData(with: user)
         }
     }
     

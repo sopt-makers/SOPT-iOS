@@ -57,7 +57,9 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
     // 누가 나를 찔렀어요 부분
     private let pokedSectionHeaderView = PokeMainSectionHeaderView(title: I18N.Poke.someonePokedMe)
     private let pokedUserContentView = PokeNotificationListContentView(frame: .zero)
-    private lazy var pokedSectionGroupView = self.makeSectionGroupView(header: pokedSectionHeaderView, content: pokedUserContentView)
+    private lazy var pokedSectionGroupView = self.makeSectionGroupView(header: pokedSectionHeaderView, content: pokedUserContentView).then {
+        $0.isHidden = true
+    }
     
     // 내 친구를 찔러보세요 부분
     private let friendSectionHeaderView = PokeMainSectionHeaderView(title: I18N.Poke.pokeMyFriends)
@@ -179,6 +181,18 @@ extension PokeMainVC {
             make.bottom.equalToSuperview().inset(20)
         }
     }
+    
+    private func setFriendRandomUsers(with randomUsers: [PokeFriendRandomUserModel]) {
+        let profileCardGroupViews = [firstProfileCardGroupView, secondProfileCardGroupView]
+        
+        for (i, profileCardGroupView) in profileCardGroupViews.enumerated() {
+            let randomUser = randomUsers[safe: i]
+            profileCardGroupView.isHidden = (randomUser == nil)
+            if let randomUser {
+                profileCardGroupView.setData(with: randomUser)
+            }
+        }
+    }
 }
 
 // MARK: - Methods
@@ -187,6 +201,7 @@ extension PokeMainVC {
     private func bindViewModel() {
         let input = PokeMainViewModel
             .Input(
+                viewDidLoad: Just(()).asDriver(),
                 naviBackButtonTap: self.backButton
                     .publisher(for: .touchUpInside)
                     .mapVoid().asDriver(),
@@ -194,8 +209,8 @@ extension PokeMainVC {
                     .rightButtonTap,
                 friendSectionHeaderButtonTap: friendSectionHeaderView
                     .rightButtonTap,
-                pokedSectionKokButtonTap: PassthroughSubject<String?, Never>()
-                    .asDriver(),
+                pokedSectionKokButtonTap: pokedUserContentView
+                    .signalForPokeButtonClicked(),
                 friendSectionKokButtonTap: friendSectionContentView
                     .kokButtonTap,
                 nearbyFriendsSectionKokButtonTap: firstProfileCardGroupView
@@ -207,14 +222,36 @@ extension PokeMainVC {
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
         
-        // 테스트를 위해 더미 데이터를 넣도록 임시 세팅
-        pokedSectionHeaderView.rightButtonTap
-            .sink { _ in
-                self.friendSectionContentView.setData(with: .init(userId: "1234aa", avatarUrl: "sdafasdf", name: "test1", partInfomation: "ios", pokeCount: 3, relation: .bestFriend))
-                
-                self.firstProfileCardGroupView.setProfileCard(with: [.init(userId: "777", avatarUrl: "sdafds", name: "test2", partInfomation: "server"), .init(userId: "999", avatarUrl: "", name: "test3", partInfomation: "pm")], friendName: "someone")
-                
-                self.secondProfileCardGroupView.setProfileCard(with: [.init(userId: "001", avatarUrl: "sdafds", name: "test4", partInfomation: "server")], friendName: "aaa")
+        output.pokedToMeUser
+            .withUnretained(self)
+            .sink { owner, model in
+                owner.pokedUserContentView.configure(with: model)
+            }.store(in: cancelBag)
+        
+        output.pokedUserSectionWillBeHidden
+            .assign(to: \.isHidden, onWeak: pokedSectionGroupView)
+            .store(in: cancelBag)
+        
+        output.myFriend
+            .withUnretained(self)
+            .sink { owner, model in
+                owner.friendSectionContentView.setData(with: model)
+            }.store(in: cancelBag)
+        
+        output.friendsSectionWillBeHidden
+            .assign(to: \.isHidden, onWeak: friendSectionGroupView)
+            .store(in: cancelBag)
+        
+        output.friendRandomUsers
+            .withUnretained(self)
+            .sink { owner, randomUsers in
+                owner.setFriendRandomUsers(with: randomUsers)
+            }.store(in: cancelBag)
+        
+        output.endRefreshLoading
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.refreshControl.endRefreshing()
             }.store(in: cancelBag)
     }
 }

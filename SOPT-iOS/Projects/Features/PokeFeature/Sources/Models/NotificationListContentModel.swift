@@ -7,6 +7,7 @@
 //
 
 public struct NotificationListContentModel {
+    let userId: Int
     let avatarUrl: String
     let pokeRelation: PokeRelation
     let name: String
@@ -14,4 +15,5 @@ public struct NotificationListContentModel {
     let description: String
     let chipInfo: PokeChipView.ChipType
     let isPoked: Bool
+    let isFirstMeet: Bool
 }

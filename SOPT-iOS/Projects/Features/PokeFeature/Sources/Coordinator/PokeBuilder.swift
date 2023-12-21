@@ -11,12 +11,15 @@ import Domain
 @_exported import PokeFeatureInterface
 
 public final class PokeBuilder {
+    @Injected public var pokeMainRepository: PokeMainRepositoryInterface
+    
     public init() {}
 }
 
 extension PokeBuilder: PokeFeatureBuildable {
     public func makePokeMain() -> PokeFeatureInterface.PokeMainPresentable {
-        let viewModel = PokeMainViewModel()
+        let useCase = DefaultPokeMainUseCase(repository: pokeMainRepository)
+        let viewModel = PokeMainViewModel(useCase: useCase)
         let pokeMainVC = PokeMainVC(viewModel: viewModel)
         return (pokeMainVC, viewModel)
     }
