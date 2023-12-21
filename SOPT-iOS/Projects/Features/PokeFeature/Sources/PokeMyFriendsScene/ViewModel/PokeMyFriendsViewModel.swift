@@ -19,6 +19,7 @@ public class PokeMyFriendsViewModel:
         
     // MARK: - Properties
     
+    private let useCase: PokeMyFriendsUseCase
     private var cancelBag = CancelBag()
     
     // MARK: - Inputs
@@ -34,8 +35,8 @@ public class PokeMyFriendsViewModel:
     
     // MARK: - initialization
     
-    public init() {
-        
+    public init(useCase: PokeMyFriendsUseCase) {
+        self.useCase = useCase
     }
 }
     

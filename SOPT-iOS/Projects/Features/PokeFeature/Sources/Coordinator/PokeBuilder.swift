@@ -12,6 +12,7 @@ import Domain
 
 public final class PokeBuilder {
     @Injected public var pokeMainRepository: PokeMainRepositoryInterface
+    @Injected public var pokeMyFriendsRepository: PokeMyFriendsRepositoryInterface
     
     public init() {}
 }
@@ -25,7 +26,8 @@ extension PokeBuilder: PokeFeatureBuildable {
     }
     
     public func makePokeMyFriends() -> PokeFeatureInterface.PokeMyFriendsPresentable {
-        let viewModel = PokeMyFriendsViewModel()
+        let useCase = DefaultPokeMyFriendsUseCase(repository: pokeMyFriendsRepository)
+        let viewModel = PokeMyFriendsViewModel(useCase: useCase)
         let pokeMyFriendsVC = PokeMyFriendsVC(viewModel: viewModel)
         
         return (pokeMyFriendsVC, viewModel)

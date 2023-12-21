@@ -143,5 +143,12 @@ extension AppDelegate {
                 )
             }
         )
+        container.register(interface: PokeMyFriendsRepositoryInterface.self,
+           implement: {
+                PokeMyFriendsRepository(
+                    service: DefaultPokeService()
+                )
+            }
+        )
     }
 }
