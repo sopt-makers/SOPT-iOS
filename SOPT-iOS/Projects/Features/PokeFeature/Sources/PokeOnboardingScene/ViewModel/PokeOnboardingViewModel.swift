@@ -58,7 +58,8 @@ extension PokeOnboardingViewModel {
             .sink(receiveValue: { [weak self] isFirstVisit in
                 guard isFirstVisit else { return }
                 
-                self?.onFirstVisitInOnboarding?()
+//                UserDefaultKeyList.User.isFirstVisitToPokeView = false
+//                self?.onFirstVisitInOnboarding?()
             }).store(in: cancelBag)
         
         input.pokeButtonTapped

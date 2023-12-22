@@ -14,6 +14,7 @@ import Core
 
 public enum PokeAPI {
     case getWhoPokedToMe
+    case getWhoPokedToMeList(pageIndex: String)
     case getFriend
     case getFriendRandomUser
     case getFriendList
@@ -29,6 +30,8 @@ extension PokeAPI: BaseAPI {
         switch self {
         case .getWhoPokedToMe:
             return "/to/me"
+        case .getWhoPokedToMeList:
+            return "/to/me/list"
         case .getFriend:
             return "/friend"
         case .getFriendRandomUser:
@@ -46,8 +49,8 @@ extension PokeAPI: BaseAPI {
     
     public var method: Moya.Method {
         switch self {
-        case .getWhoPokedToMe, .getFriend, .getFriendRandomUser, .getFriendList,
-                .getRandomUsers, .getPokeMessages:
+        case .getWhoPokedToMe, .getWhoPokedToMeList, .getFriend, .getFriendRandomUser,
+                .getFriendList, .getRandomUsers, .getPokeMessages:
             return .get
         case .poke:
             return .put
@@ -56,6 +59,8 @@ extension PokeAPI: BaseAPI {
     
     public var task: Moya.Task {
         switch self {
+        case .getWhoPokedToMeList(let pageIndex):
+            return .requestParameters(parameters: ["page": pageIndex], encoding: URLEncoding.queryString)
         case .getPokeMessages(let messageType):
             return .requestParameters(parameters: ["messageType": messageType.rawValue], encoding: URLEncoding.queryString)
         case .poke(_, let params):

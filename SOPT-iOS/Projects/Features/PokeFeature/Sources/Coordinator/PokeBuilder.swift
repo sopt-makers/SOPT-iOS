@@ -14,6 +14,7 @@ public final class PokeBuilder {
     @Injected public var pokeMainRepository: PokeMainRepositoryInterface
     @Injected public var pokeMyFriendsRepository: PokeMyFriendsRepositoryInterface
     @Injected public var pokeOnboardingRepository: PokeOnboardingRepositoryInterface
+    @Injected public var pokeNotificationListRepository: PokeNotificationRepositoryInterface
     
     public init() {}
 }
@@ -46,6 +47,14 @@ extension PokeBuilder: PokeFeatureBuildable {
         let usecase = DefaultPokeMessageTemplateUsecase(repository: self.pokeOnboardingRepository)
         let viewModel = PokeMessageTemplateViewModel(usecase: usecase)
         let viewController = PokeMessageTemplateBottomSheet(viewModel: viewModel)
+        
+        return (viewController, viewModel)
+    }
+    
+    public func makePokeNotificationList() -> PokeNotificationPresentable {
+        let usecase = DefaultPokeNotificationUsecase(repository: self.pokeNotificationListRepository)
+        let viewModel = PokeNotificationViewModel(usecase: usecase)
+        let viewController = PokeNotificationViewController(viewModel: viewModel)
         
         return (viewController, viewModel)
     }
