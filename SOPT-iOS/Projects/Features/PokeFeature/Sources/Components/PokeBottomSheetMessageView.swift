@@ -6,6 +6,7 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
+import Combine
 import UIKit
 
 import Core
@@ -34,6 +35,16 @@ final public class PokeBottomSheetMessageView: UIView {
         $0.spacing = 0.f
         $0.layer.cornerRadius = 14.f
     }
+    
+    private lazy var longPressGestureRecognzier = UILongPressGestureRecognizer().then {
+        $0.minimumPressDuration = TimeInterval(0.01)
+        $0.delegate = self
+    }
+    
+    private lazy var tapGestureRecognizer = UITapGestureRecognizer().then {
+        $0.delegate = self
+    }
+
 
     private let contentView = UIView()
     private let leftTitleLabel = UILabel().then {
@@ -102,10 +113,6 @@ extension PokeBottomSheetMessageView {
 // MARK: - Private functions
 extension PokeBottomSheetMessageView {
     private func setupBackgroundColorwithTapGesture() {
-        let longPressGestureRecognzier = UILongPressGestureRecognizer().then {
-            $0.minimumPressDuration = TimeInterval(0.01)
-        }
-        
         self.gesture(.longPress(longPressGestureRecognzier))
             .receive(on: DispatchQueue.main)
             .throttle(for: 0.01, scheduler: DispatchQueue.main, latest: false)
@@ -122,5 +129,14 @@ extension PokeBottomSheetMessageView {
                 @unknown default: break
                 }
             }).store(in: self.cancelBag)
+    }
+}
+
+extension PokeBottomSheetMessageView: UIGestureRecognizerDelegate {
+    public func gestureRecognizer(
+        _ gestureRecognizer: UIGestureRecognizer,
+        shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
+    ) -> Bool {
+        return true
     }
 }

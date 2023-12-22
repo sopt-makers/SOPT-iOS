@@ -50,7 +50,7 @@ extension PokeAPI: BaseAPI {
                 .getRandomUsers, .getPokeMessages:
             return .get
         case .poke:
-            return .post
+            return .put
         }
     }
     

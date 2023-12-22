@@ -107,8 +107,9 @@ extension PokeMessageTemplateBottomSheet {
             bottomsheetContentView.configure(with: $0)
             bottomsheetContentView
                 .signalForClick()
-                .sink(receiveValue: {
-                    self.messageModelSubject.send($0)
+                .sink(receiveValue: { [weak self] value in
+                    self?.messageModelSubject.send(value)
+                    self?.dismiss(animated: true)
                 }).store(in: self.cancelBag)
             
             self.scrollContainerStackView.addArrangedSubview(bottomsheetContentView)
