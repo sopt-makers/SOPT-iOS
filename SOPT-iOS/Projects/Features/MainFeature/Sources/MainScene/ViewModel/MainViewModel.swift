@@ -17,7 +17,6 @@ import MainFeatureInterface
 import Sentry
 
 public class MainViewModel: MainViewModelType {
-
     // MARK: - Properties
     
     private let useCase: MainUseCase
@@ -56,7 +55,7 @@ public class MainViewModel: MainViewModelType {
     public var onSafari: ((String) -> Void)?
     public var onAttendance: (() -> Void)?
     public var onSoptamp: (() -> Void)?
-    public var onPoke: (() -> Void)?
+    public var onPoke: ((_ isFirstVisit: Bool) -> Void)?
     public var onNeedSignIn: (() -> Void)?
     
     // MARK: - init
@@ -190,7 +189,9 @@ extension MainViewModel {
             self.trackAmplitude(event: service.toAmplitudeEventType)
             switch service {
             case .soptamp: onSoptamp?()
-            case .poke: onPoke?()
+            case .poke:
+                let isFirstVisitToPokeView = UserDefaultKeyList.User.isFirstVisitToPokeView
+                onPoke?(isFirstVisitToPokeView ?? true)
             }
         default: break
         }

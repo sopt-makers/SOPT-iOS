@@ -13,4 +13,6 @@ import Domain
 public protocol PokeFeatureBuildable {
     func makePokeMain() -> PokeMainPresentable
     func makePokeMyFriends() -> PokeMyFriendsPresentable
+    func makePokeOnboarding() -> PokeOnboardingPresentable
+    func makePokeMessageTemplateBottomSheet() -> PokeMessageTemplatesPresentable
 }

@@ -49,6 +49,8 @@ public class MainVC: UIViewController, MainViewControllable {
         self.bindViewModels()
         self.setUI()
         self.setLayout()
+        
+        UserDefaultKeyList.User.isFirstVisitToPokeView = true
         self.setDelegate()
         self.registerCells()
     }
@@ -82,11 +84,31 @@ extension MainVC {
 }
 
 // MARK: - Methods
+final class ComponentWorkplaceViewController: UIViewController {
+    private lazy var stackView = UIStackView(frame: self.view.frame).then {
+        $0.axis = .vertical
+        $0.spacing = 10.f
+    }
+    
+    private var cancelBag = CancelBag()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.view.backgroundColor = DSKitAsset.Colors.gray800.color
+        
+        self.view.addSubview(self.stackView)
+        self.stackView.snp.makeConstraints {
+            $0.center.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
+            $0.height.lessThanOrEqualTo(500.f)
+        }
+    }
+}
 
 extension MainVC {
     private func bindViewModels() {
-        
-        let noticeButtonTapped = naviBar.noticeButtonTap
+      let noticeButtonTapped = naviBar.noticeButtonTap
             .mapVoid()
             .asDriver()
         

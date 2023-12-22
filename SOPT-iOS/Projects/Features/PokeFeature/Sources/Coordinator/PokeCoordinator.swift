@@ -47,8 +47,8 @@ final class PokeCoordinator: DefaultCoordinator {
     }
     
     private func runPokeMyFriendsFlow() {
-        let pokeMyFriendsCoordinator = PokeMyFriendsCoordinator(factory: factory
-                                                                , router: Router(rootController: rootController!))
+        let pokeMyFriendsCoordinator = PokeMyFriendsCoordinator(factory: factory,
+                                                                router: Router(rootController: rootController!))
         
         pokeMyFriendsCoordinator.finishFlow = { [weak self, weak pokeMyFriendsCoordinator] in
             self?.removeDependency(pokeMyFriendsCoordinator)

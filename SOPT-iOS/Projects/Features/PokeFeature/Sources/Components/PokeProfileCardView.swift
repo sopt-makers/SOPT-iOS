@@ -15,9 +15,11 @@ import Domain
 public final class PokeProfileCardView: UIView {
     
     // MARK: - Properties
-    
+   
     typealias UserId = Int
     
+    lazy var profileTapped = self.profileImageView.gesture().mapVoid().asDriver()
+
     lazy var kokButtonTap: Driver<UserId?> = kokButton.tap.map { self.userId }.asDriver()
     
     var userId: Int?
@@ -108,7 +110,7 @@ public final class PokeProfileCardView: UIView {
         self.userId = model.userId
         self.profileImageView.setImage(with: model.profileImage, placeholder: DSKitAsset.Assets.iconDefaultProfile.image)
         self.nameLabel.text = model.name
-        self.partLabel.text = model.part
+        self.partLabel.text = String(describing: model.generation) + "기" + " " + model.part
     }
     
     @discardableResult

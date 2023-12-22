@@ -6,10 +6,12 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
+
 import Core
 import DSKit
+import Domain
 
-import UIKit
 
 // MARK: - PokeBottomSheetMessageView
 final public class PokeBottomSheetMessageView: UIView {
@@ -22,7 +24,7 @@ final public class PokeBottomSheetMessageView: UIView {
     }
     
     private enum Constant {
-        static let contentClickedStateBackgroundColor = DSKitAsset.Colors.gray800.color
+        static let contentClickedStateBackgroundColor = DSKitAsset.Colors.gray700.color
         static let contentNormalStateBackgroundColor = DSKitAsset.Colors.gray800.color
     }
     
@@ -44,17 +46,31 @@ final public class PokeBottomSheetMessageView: UIView {
     // MARK: Combine
     // MARK: Local variables
     private var cancelBag = CancelBag()
-    private var message: String?
+    private var messageModel: PokeMessageModel?
     
-    override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         
         self.backgroundColor = DSKitAsset.Colors.gray800.color
         
+        self.initializeViews()
+        self.setupConstraints()
+        self.setupBackgroundColorwithTapGesture()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension PokeBottomSheetMessageView {
+    private func initializeViews() {
         self.addSubview(self.containerStackView)
         self.containerStackView.addSubview(self.contentView)
         self.contentView.addSubview(self.leftTitleLabel)
-        
+    }
+    
+    private func setupConstraints() {
         self.containerStackView.snp.makeConstraints {
             $0.top.bottom.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(Metrics.containerLeadingTrailing)
@@ -65,34 +81,34 @@ final public class PokeBottomSheetMessageView: UIView {
             $0.top.bottom.equalToSuperview().inset(Metrics.contentTopBottom)
         }
         self.leftTitleLabel.snp.makeConstraints { $0.directionalEdges.equalToSuperview() }
-        
-        self.setupBackgroundColorwithTapGesture()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
 
 // MARK: - Public functions
 extension PokeBottomSheetMessageView {
-    public func configure(with message: String) {
-        self.leftTitleLabel.text = message
+    public func configure(with messageModel: PokeMessageModel) {
+        self.messageModel = messageModel
+        self.leftTitleLabel.text = messageModel.content
     }
     
-    public func signalForClick() ->Driver<String> {
-        return self.gesture().map { [weak self] _ in self?.message }.compactMap { $0 }.asDriver()
+    public func signalForClick() ->Driver<PokeMessageModel> {
+        return self.containerStackView
+            .gesture(.tap())
+            .compactMap { [weak self] _ in self?.messageModel }
+            .asDriver()
     }
 }
 
 // MARK: - Private functions
 extension PokeBottomSheetMessageView {
     private func setupBackgroundColorwithTapGesture() {
-        let longPressGestureRecognzier = UILongPressGestureRecognizer()
-        longPressGestureRecognzier.minimumPressDuration = TimeInterval(0.01)
+        let longPressGestureRecognzier = UILongPressGestureRecognizer().then {
+            $0.minimumPressDuration = TimeInterval(0.01)
+        }
         
         self.gesture(.longPress(longPressGestureRecognzier))
             .receive(on: DispatchQueue.main)
+            .throttle(for: 0.01, scheduler: DispatchQueue.main, latest: false)
             .sink(receiveValue: { tapGesture in
                 switch tapGesture.get().state {
                 case .began, .recognized, .changed:

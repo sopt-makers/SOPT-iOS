@@ -181,6 +181,8 @@ extension ApplicationCoordinator {
                 self?.runStampFlow()
             case .poke:
                 self?.runPokeFlow()
+            case .pokeOnboarding:
+                self?.runPokeOnboardingFlow()
             case .signIn:
                 self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
                 self?.removeDependency(coordinator)
@@ -232,6 +234,25 @@ extension ApplicationCoordinator {
             factory: PokeBuilder()
         )
         
+        coordinator.finishFlow = { [weak self, weak coordinator] in
+            coordinator?.childCoordinators = []
+            self?.removeDependency(coordinator)
+        }
+        
+        addDependency(coordinator)
+        coordinator.start()
+        
+        return coordinator
+    }
+    
+    @discardableResult
+    internal func runPokeOnboardingFlow() -> PokeOnboardingCoordinator {
+        let coordinator = PokeOnboardingCoordinator(
+            router: Router(
+                rootController: UIWindow.getRootNavigationController
+            ),
+            factory: PokeBuilder()
+        )
         coordinator.finishFlow = { [weak self, weak coordinator] in
             coordinator?.childCoordinators = []
             self?.removeDependency(coordinator)
