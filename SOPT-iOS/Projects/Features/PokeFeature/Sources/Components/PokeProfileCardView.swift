@@ -111,6 +111,7 @@ public final class PokeProfileCardView: UIView {
         self.profileImageView.setImage(with: model.profileImage, placeholder: DSKitAsset.Assets.iconDefaultProfile.image)
         self.nameLabel.text = model.name
         self.partLabel.text = String(describing: model.generation) + "기" + " " + model.part
+        self.kokButton.isEnabled = !model.isAlreadyPoke
     }
     
     @discardableResult
