@@ -258,12 +258,7 @@ final class Router: NSObject, RouterProtocol {
     public func showBottomSheet(manager: BottomSheetManager, toPresent: UIViewController, on view: UIViewController?) {
         manager.present(toPresent: toPresent, on: view)
     }
-    
-    public func showBottomSheetOnTopVC(manager: BottomSheetManager, toPresent: UIViewController) {
-        let topVC = UIApplication.getMostTopViewController(base: self.rootController)
-        manager.present(toPresent: toPresent, on: topVC)
-    }
-    
+
     // MARK: - Private methods
     
     private func runCompletion(for controller: UIViewController) {

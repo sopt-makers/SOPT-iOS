@@ -53,10 +53,9 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
             
             let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate())
             
-            self?.router.showBottomSheetOnTopVC(
-                manager: bottomSheetManager,
-                toPresent: bottomSheet
-            )
+            self?.router.showBottomSheet(manager: bottomSheetManager, 
+                                         toPresent: bottomSheet,
+                                         on: pokeMyFriendsList.vc.viewController)
             
             return bottomSheet
                 .signalForClick()
