@@ -17,6 +17,7 @@ public final class PokeProfileListView: UIView {
     // MARK: - Properties
         
     lazy var kokButtonTap: Driver<PokeUserModel?> = kokButton.tap.map { self.user }.asDriver()
+    lazy var profileImageTap: Driver<PokeUserModel?> = profileImageView.tap.map { self.user }.asDriver()
     
     var viewType: ProfileListType
     
@@ -174,7 +175,7 @@ public final class PokeProfileListView: UIView {
         self.user = model
         self.profileImageView.setImage(with: model.profileImage, relation: model.pokeRelation)
         self.nameLabel.text = model.name
-        self.partLabel.text = model.part
+        self.partLabel.text = "\(model.generation)기 \(model.part)"
         self.kokCountLabel.text = "\(model.pokeNum)콕"
         self.kokButton.isEnabled = !model.isAlreadyPoke
         return self

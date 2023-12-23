@@ -27,6 +27,7 @@ public final class PokeMyFriendsListVC: UIViewController, PokeMyFriendsListViewC
     
     private let reachToBottomSubject = PassthroughSubject<Void, Never>()
     private let kokButtonTap = PassthroughSubject<PokeUserModel?, Never>()
+    private let profileImageTap = PassthroughSubject<PokeUserModel?, Never>()
     
     // MARK: - UI Components
     
@@ -61,6 +62,7 @@ public final class PokeMyFriendsListVC: UIViewController, PokeMyFriendsListViewC
 
 extension PokeMyFriendsListVC {
     private func setUI() {
+        self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = DSKitAsset.Colors.gray800.color
         tableView.backgroundColor = .clear
         headerView.setTitle(viewModel.relation.title)
@@ -96,7 +98,8 @@ extension PokeMyFriendsListVC {
         let input = PokeMyFriendsListViewModel.Input(viewDidLoad: Just(()).asDriver(),
                                                      closeButtonTap: self.headerView.rightButtonTap,
                                                      reachToBottom: self.reachToBottomSubject.asDriver(), 
-                                                     pokeButtonTap: self.kokButtonTap.asDriver())
+                                                     pokeButtonTap: self.kokButtonTap.asDriver(), 
+                                                     profileImageTap: self.profileImageTap.asDriver())
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
         
@@ -131,6 +134,10 @@ extension PokeMyFriendsListVC: UITableViewDelegate, UITableViewDataSource {
         
         cell.kokButtonTap
             .subscribe(self.kokButtonTap)
+            .store(in: cell.cancelBag)
+        
+        cell.profileImageTap
+            .subscribe(self.profileImageTap)
             .store(in: cell.cancelBag)
 
         return cell

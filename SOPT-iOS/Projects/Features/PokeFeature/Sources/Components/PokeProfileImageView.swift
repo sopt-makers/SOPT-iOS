@@ -12,6 +12,10 @@ import DSKit
 /// 테두리가 있는 원형 프로필 이미지 뷰
 public final class PokeProfileImageView: UIImageView {
     
+    // MARK: - Properties
+    
+    lazy var tap = self.gesture().mapVoid().asDriver()
+    
     // MARK: - initialization
     
     public init() {

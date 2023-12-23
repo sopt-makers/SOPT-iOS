@@ -19,6 +19,7 @@ public protocol PokeMyFriendsListCoordinatable {
 public protocol PokeMyFriendsListViewModelType: ViewModelType & PokeMyFriendsListCoordinatable {
     var relation: PokeRelation { get }
     var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)? { get set }
+    var onProfileImageTapped: ((Int) -> Void)? { get set }
 }
 
 public typealias PokeMyFriendsListPresentable = (vc: PokeMyFriendsListViewControllable, vm: any PokeMyFriendsListViewModelType)

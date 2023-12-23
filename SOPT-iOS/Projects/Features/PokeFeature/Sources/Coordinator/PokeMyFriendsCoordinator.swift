@@ -6,6 +6,8 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
+
 import Core
 import Domain
 import BaseFeatureDependency
@@ -17,6 +19,7 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
     
     private let factory: PokeFeatureBuildable
     private let router: Router
+    private weak var rootController: UINavigationController?
     
     public init(factory: PokeFeatureBuildable, router: Router) {
         self.factory = factory
@@ -63,6 +66,14 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
                 .asDriver()
         }
         
-        router.present(pokeMyFriendsList.vc, animated: true)
+        pokeMyFriendsList.vm.onProfileImageTapped = { [weak self] playgroundId in
+            guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(playgroundId)") else { return }
+            
+            let webView = SOPTWebView(startWith: url)
+            self?.rootController?.pushViewController(webView, animated: true)
+        }
+        
+        self.rootController = pokeMyFriendsList.vc.asNavigationController
+        router.present(rootController, animated: true)
     }
 }
