@@ -15,9 +15,7 @@ import Domain
 public final class PokeProfileListView: UIView {
     
     // MARK: - Properties
-    
-    typealias UserId = Int
-    
+        
     lazy var kokButtonTap: Driver<UserId?> = kokButton.tap.map { self.userId }.asDriver()
     
     var viewType: ProfileListType
@@ -196,6 +194,12 @@ public final class PokeProfileListView: UIView {
     @discardableResult
     func setDividerViewIsHidden(to isHidden: Bool) -> Self {
         self.dividerView.isHidden = isHidden
+        return self
+     }
+    
+    @discardableResult
+    func setDividerViewColor(with color: UIColor) -> Self {
+        self.dividerView.backgroundColor = color
         return self
     }
     

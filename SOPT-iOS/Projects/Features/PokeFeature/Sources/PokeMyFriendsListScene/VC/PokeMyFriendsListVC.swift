@@ -126,6 +126,10 @@ extension PokeMyFriendsListVC: UITableViewDelegate, UITableViewDataSource {
         
         cell.selectionStyle = .none
         cell.setData(model: viewModel.friends[indexPath.row])
+        
+        cell.kokButtonTap.sink { id in
+            print("디버그", id)
+        }.store(in: cell.cancelBag)
 
         return cell
     }

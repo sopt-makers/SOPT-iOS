@@ -14,11 +14,11 @@ import Domain
 
 import PokeFeatureInterface
 
+internal typealias UserId = Int
+
 public class PokeMainViewModel:
     PokeMainViewModelType {
-    
-    typealias UserId = Int
-    
+        
     public var onNaviBackTap: (() -> Void)?
     public var onPokeNotificationsTap: (() -> Void)?
     public var onMyFriendsTap: (() -> Void)?

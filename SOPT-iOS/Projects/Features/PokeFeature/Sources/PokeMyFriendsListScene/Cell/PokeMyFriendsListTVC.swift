@@ -14,10 +14,16 @@ import Domain
 
 final class PokeMyFriendsListTVC: UITableViewCell {
     
+    // MARK: - Properties
+    
+    lazy var kokButtonTap: Driver<UserId?> = self.profileListView.kokButtonTap
+    let cancelBag = CancelBag()
+    
     // MARK: - UI Components
     
     private let profileListView = PokeProfileListView(viewType: .default)
         .setDividerViewIsHidden(to: false)
+        .setDividerViewColor(with: DSKitAsset.Colors.gray700.color)
     
     // MARK: - Initialization
     
@@ -41,7 +47,7 @@ extension PokeMyFriendsListTVC {
     }
     
     private func setLayout() {
-        self.addSubviews(profileListView)
+        self.contentView.addSubviews(profileListView)
         
         profileListView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -54,5 +60,9 @@ extension PokeMyFriendsListTVC {
 extension PokeMyFriendsListTVC {
     func setData(model: PokeUserModel) {
         profileListView.setData(with: model)
+    }
+    
+    override func prepareForReuse() {
+        self.cancelBag.cancel()
     }
 }
