@@ -64,17 +64,23 @@ extension PokeMyFriendsListVC {
     }
     
     private func setLayout() {
-        self.view.addSubviews(headerView)
+        self.view.addSubviews(headerView, tableView)
         
         headerView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(24)
             make.leading.trailing.equalToSuperview()
+        }
+        
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(headerView.snp.bottom)
+            make.leading.bottom.trailing.equalToSuperview()
         }
     }
     
     private func setTableView() {
         self.tableView.delegate = self
         self.tableView.dataSource = self
+        self.tableView.register(PokeMyFriendsListTVC.self, forCellReuseIdentifier: PokeMyFriendsListTVC.className)
     }
 }
 
@@ -89,10 +95,16 @@ extension PokeMyFriendsListVC {
 
 extension PokeMyFriendsListVC: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return 4
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: PokeMyFriendsListTVC.className, for: indexPath) 
+                as? PokeMyFriendsListTVC 
+        else {
+            return UITableViewCell()
+        }
+        
+        return cell
     }
 }
