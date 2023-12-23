@@ -89,6 +89,7 @@ public enum GestureType {
 
 public extension UIView {
     func gesture(_ gestureType: GestureType = .tap()) -> GesturePublisher {
-        GesturePublisher(view: self, gestureType: gestureType)
+        self.isUserInteractionEnabled = true
+        return GesturePublisher(view: self, gestureType: gestureType)
     }
 }

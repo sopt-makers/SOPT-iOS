@@ -22,6 +22,7 @@ public struct UserDefaultKeyList {
         @UserDefaultWrapper<String>(key: "sentence") public static var sentence
         @UserDefaultWrapper<String>(key: "soptampName") public static var soptampName
         @UserDefaultWrapper<String>(key: "pushToken") public static var pushToken
+        @UserDefaultWrapper<Bool>(key: "isFirstVisitToPokeView") public static var isFirstVisitToPokeView
     }
     
     public struct AppNotice {

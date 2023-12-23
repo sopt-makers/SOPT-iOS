@@ -15,14 +15,22 @@ public typealias DefaultPokeService = BaseService<PokeAPI>
 
 public protocol PokeService {
     func getWhoPokedToMe() -> AnyPublisher<PokeUserEntity?, Error>
+    func getWhoPokedToMeList(pageIndex: String)  -> AnyPublisher<PokedToMeHistoryListEntity, Error>
     func getFriend() -> AnyPublisher<[PokeUserEntity], Error>
     func getFriendRandomUser() -> AnyPublisher<[PokeFriendRandomUserEntity], Error>
     func getFriendList() -> AnyPublisher<PokeMyFriendsEntity, Error>
+    func getRandomUsers() -> AnyPublisher<[PokeUserEntity], Error>
+    func getPokeMessages(messageType: PokeMessageType) -> AnyPublisher<PokeMessagesEntity, Error>
+    func poke(userId: Int, message: String) -> AnyPublisher<PokeUserEntity, Error>
 }
 
 extension DefaultPokeService: PokeService {
     public func getWhoPokedToMe() -> AnyPublisher<PokeUserEntity?, Error> {
         requestObjectInCombine(.getWhoPokedToMe)
+    }
+    
+    public func getWhoPokedToMeList(pageIndex: String) -> AnyPublisher<PokedToMeHistoryListEntity, Error> {
+        requestObjectInCombine(.getWhoPokedToMeList(pageIndex: pageIndex))
     }
     
     public func getFriend() -> AnyPublisher<[PokeUserEntity], Error> {
@@ -34,7 +42,20 @@ extension DefaultPokeService: PokeService {
     }
     
     public func getFriendList() -> AnyPublisher<PokeMyFriendsEntity, Error> {
-        requestObjectInCombine(.getFriendList
-        )
+        requestObjectInCombine(.getFriendList)
+    }
+    
+    public func getRandomUsers() -> AnyPublisher<[PokeUserEntity], Error> {
+        requestObjectInCombine(.getRandomUsers)
+    }
+    
+    public func getPokeMessages(messageType: PokeMessageType) -> AnyPublisher<PokeMessagesEntity, Error> {
+        requestObjectInCombine(.getPokeMessages(messageType: messageType))
+    }
+    
+    public func poke(userId: Int, message: String) -> AnyPublisher<PokeUserEntity, Error> {
+        let params: [String: Any] = ["message": message]
+        
+        return requestObjectInCombine(.poke(userId: String(describing: userId), params: params))
     }
 }

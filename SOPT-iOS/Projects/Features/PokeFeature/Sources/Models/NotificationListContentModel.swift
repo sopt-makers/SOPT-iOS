@@ -17,3 +17,19 @@ public struct NotificationListContentModel {
     let isPoked: Bool
     let isFirstMeet: Bool
 }
+
+extension NotificationListContentModel {
+    public init() {
+        self.userId = 0
+        self.avatarUrl = ""
+        self.name = "다혜다해"
+        self.pokeRelation = .newFriend
+        self.partInfomation = "29기 안드로이드"
+        self.description = "Text(아는 사람이 없나요?\n화면을 밑으로 당기면 다른 친구를 볼 수 있어요)"
+        self.chipInfo = Int.random(in: 0...1) == 0
+        ? .acquaintance(friendname: "제갈송현", relationCount: String(Int.random(in: 0...1000)))
+        : .withPokeCount(relation: "제갈건모", pokeCount: String(Int.random(in: 0...1000)))
+        self.isPoked = Int.random(in: 0...1) == 0 ? false : true
+        self.isFirstMeet = false
+    }
+}

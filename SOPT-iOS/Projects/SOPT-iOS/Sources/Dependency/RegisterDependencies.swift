@@ -150,5 +150,21 @@ extension AppDelegate {
                 )
             }
         )
+        container.register(
+            interface: PokeOnboardingRepositoryInterface.self,
+            implement: {
+                PokeOnboardingRepository(
+                    pokeService: DefaultPokeService()
+                )
+            }
+        )
+        container.register(
+            interface: PokeNotificationRepositoryInterface.self,
+            implement: {
+                PokeNotificationRepository(
+                    pokeService: DefaultPokeService()
+                )
+            }
+        )
     }
 }
