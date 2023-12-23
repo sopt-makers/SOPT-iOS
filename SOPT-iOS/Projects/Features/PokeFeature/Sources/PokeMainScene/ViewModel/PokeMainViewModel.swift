@@ -20,6 +20,7 @@ public class PokeMainViewModel:
     typealias UserId = Int
     
     public var onNaviBackTap: (() -> Void)?
+    public var onPokeNotificationsTap: (() -> Void)?
     public var onMyFriendsTap: (() -> Void)?
     
     // MARK: - Properties
@@ -76,8 +77,8 @@ extension PokeMainViewModel {
             }.store(in: cancelBag)
         
         input.pokedSectionHeaderButtonTap
-            .sink { _ in
-                print("찌르기 알림 뷰로 이동")
+            .sink { [weak self] _ in
+                self?.onPokeNotificationsTap?()
             }.store(in: cancelBag)
         
         input.friendSectionHeaderButtonTap

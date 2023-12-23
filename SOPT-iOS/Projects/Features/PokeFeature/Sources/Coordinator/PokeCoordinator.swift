@@ -38,12 +38,33 @@ final class PokeCoordinator: DefaultCoordinator {
             self?.finishFlow?()
         }
         
+        pokeMain.vm.onPokeNotificationsTap = { [weak self] in
+            self?.runPokeNotificationListFlow()
+        }
+        
         pokeMain.vm.onMyFriendsTap = { [weak self] in
             self?.runPokeMyFriendsFlow()
         }
         
         rootController = pokeMain.vc.asNavigationController
         router.present(rootController, animated: true, modalPresentationSytle: .overFullScreen)
+    }
+    
+    private func runPokeNotificationListFlow() {
+        let pokeNotificationListCoordinator = PokeNotificationListCoordinator(
+            router: Router(
+                rootController: rootController!
+            ),
+            factory: factory
+        )
+        
+        pokeNotificationListCoordinator.finishFlow = { [weak self, weak pokeNotificationListCoordinator] in
+            pokeNotificationListCoordinator?.childCoordinators = []
+            self?.removeDependency(pokeNotificationListCoordinator)
+        }
+        
+        addDependency(pokeNotificationListCoordinator)
+        pokeNotificationListCoordinator.start()
     }
     
     private func runPokeMyFriendsFlow() {

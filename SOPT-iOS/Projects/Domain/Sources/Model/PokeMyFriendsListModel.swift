@@ -10,11 +10,13 @@ import Foundation
 
 public struct PokeMyFriendsListModel {
     public let friendList: [PokeUserModel]
+    public let totalSize: Int
     public let pageSize: Int
     public let pageNum: Int
     
-    public init(friendList: [PokeUserModel], pageSize: Int, pageNum: Int) {
+    public init(friendList: [PokeUserModel], totalSize: Int, pageSize: Int, pageNum: Int) {
         self.friendList = friendList
+        self.totalSize = totalSize
         self.pageSize = pageSize
         self.pageNum = pageNum
     }

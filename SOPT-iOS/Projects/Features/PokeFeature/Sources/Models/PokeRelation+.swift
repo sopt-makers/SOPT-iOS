@@ -49,6 +49,19 @@ public extension PokeRelation {
             return ""
         }
     }
+    
+    var queryValueName: String {
+        switch self {
+        case .newFriend:
+            return "new"
+        case .bestFriend:
+            return "bestfriend"
+        case .soulmate:
+            return "soulmate"
+        default:
+            return ""
+        }
+    }
 }
 
 public extension PokeUserModel {

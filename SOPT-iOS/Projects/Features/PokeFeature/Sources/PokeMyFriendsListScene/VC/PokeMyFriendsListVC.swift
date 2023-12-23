@@ -25,6 +25,8 @@ public final class PokeMyFriendsListVC: UIViewController, PokeMyFriendsListViewC
     public var viewModel: PokeMyFriendsListViewModel
     private var cancelBag = CancelBag()
     
+    private let reachToBottomSubject = PassthroughSubject<Void, Never>()
+    
     // MARK: - UI Components
     
     private let headerView = PokeFriendsSectionHeaderView()
@@ -59,6 +61,7 @@ public final class PokeMyFriendsListVC: UIViewController, PokeMyFriendsListViewC
 extension PokeMyFriendsListVC {
     private func setUI() {
         view.backgroundColor = DSKitAsset.Colors.gray800.color
+        tableView.backgroundColor = .clear
         headerView.setTitle(viewModel.relation.title)
         headerView.setDescription(viewModel.relation.friendBaselineDescription)
     }
@@ -72,7 +75,7 @@ extension PokeMyFriendsListVC {
         }
         
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(headerView.snp.bottom)
+            make.top.equalTo(headerView.snp.bottom).offset(16)
             make.leading.bottom.trailing.equalToSuperview()
         }
     }
@@ -90,9 +93,20 @@ extension PokeMyFriendsListVC {
 extension PokeMyFriendsListVC {
     private func bindViewModel() {
         let input = PokeMyFriendsListViewModel.Input(viewDidLoad: Just(()).asDriver(),
-                                                     closeButtonTap: self.headerView.rightButtonTap)
+                                                     closeButtonTap: self.headerView.rightButtonTap,
+                                                     reachToBottom: self.reachToBottomSubject.asDriver())
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
+        
+        output.friendCount
+            .sink { [weak self] count in
+                self?.headerView.setFriendsCount(count)
+            }.store(in: cancelBag)
+        
+        output.needToReloadFriendList
+            .sink { [weak self] _ in
+                self?.tableView.reloadData()
+            }.store(in: cancelBag)
     }
 }
 
@@ -100,7 +114,7 @@ extension PokeMyFriendsListVC {
 
 extension PokeMyFriendsListVC: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4
+        return viewModel.friends.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -110,10 +124,25 @@ extension PokeMyFriendsListVC: UITableViewDelegate, UITableViewDataSource {
             return UITableViewCell()
         }
         
+        cell.selectionStyle = .none
+        cell.setData(model: viewModel.friends[indexPath.row])
+
         return cell
     }
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 70
+    }
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let height = scrollView.frame.height
+        
+        guard offsetY > 0 , contentHeight > 0 else { return }
+        
+        if height > contentHeight - offsetY {
+            self.reachToBottomSubject.send()
+        }
     }
 }

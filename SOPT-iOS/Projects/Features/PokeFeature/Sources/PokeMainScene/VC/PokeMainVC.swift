@@ -195,6 +195,13 @@ extension PokeMainVC {
     }
 }
 
+extension PokeMainVC: UIGestureRecognizerDelegate {
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard let viewControllers = self.navigationController?.viewControllers else { return false }
+        return viewControllers.count > 1
+    }
+}
+
 // MARK: - Methods
 
 extension PokeMainVC {

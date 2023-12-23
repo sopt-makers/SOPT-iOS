@@ -25,17 +25,25 @@ public class PokeMyFriendsListViewModel:
     private var cancelBag = CancelBag()
     
     public let relation: PokeRelation
+    var friends = [PokeUserModel]()
+    
+    private var isPaging = false
+    private var page = 0
+    
     
     // MARK: - Inputs
     
     public struct Input {
         let viewDidLoad: Driver<Void>
         let closeButtonTap: Driver<Void>
+        let reachToBottom: Driver<Void>
     }
     
     // MARK: - Outputs
     
     public struct Output {
+        let friendCount = PassthroughSubject<Int, Never>()
+        let needToReloadFriendList = PassthroughSubject<Void, Never>()
     }
     
     // MARK: - initialization
@@ -52,8 +60,15 @@ extension PokeMyFriendsListViewModel {
         self.bindOutput(output: output, cancelBag: cancelBag)
         
         input.viewDidLoad
-            .sink { _ in
-                print("데이터 요청")
+            .merge(with: input.reachToBottom)
+            .withUnretained(self)
+            .filter { owner, _ in
+                owner.isPaging == false
+            }
+            .sink { owner, _ in
+                owner.isPaging = true
+                owner.useCase.getFriends(relation: owner.relation.queryValueName, page: owner.page)
+                owner.page += 1
             }.store(in: cancelBag)
         
         input.closeButtonTap
@@ -65,6 +80,13 @@ extension PokeMyFriendsListViewModel {
     }
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
-
+        useCase.myFriendsList
+            .withUnretained(self)
+            .sink { owner, model in
+                owner.friends.append(contentsOf: model.friendList)
+                output.friendCount.send(model.totalSize)
+                output.needToReloadFriendList.send()
+                owner.isPaging = false
+            }.store(in: cancelBag)
     }
 }

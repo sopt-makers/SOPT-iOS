@@ -13,6 +13,6 @@ import Networks
 
 extension PokeMyFriendsListEntity {
     public func toDomain() -> PokeMyFriendsListModel {
-        return PokeMyFriendsListModel(friendList: friendList.map { $0.toDomain() }, pageSize: pageSize, pageNum: pageNum)
+        return PokeMyFriendsListModel(friendList: friendList.map { $0.toDomain() }, totalSize: totalSize, pageSize: pageSize, pageNum: pageNum)
     }
 }

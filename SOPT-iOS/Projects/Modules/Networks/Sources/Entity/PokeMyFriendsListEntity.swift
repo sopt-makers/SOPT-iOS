@@ -10,6 +10,7 @@ import Foundation
 
 public struct PokeMyFriendsListEntity: Codable {
     public let friendList: [PokeUserEntity]
+    public let totalSize: Int
     public let pageSize: Int
     public let pageNum: Int
 }
