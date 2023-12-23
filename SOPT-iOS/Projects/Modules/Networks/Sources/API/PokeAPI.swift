@@ -18,6 +18,7 @@ public enum PokeAPI {
     case getFriend
     case getFriendRandomUser
     case getFriendList
+    case getFriendListWithRelation(relation: String, page: Int)
     case getRandomUsers
     case getPokeMessages(messageType: PokeMessageType)
     case poke(userId: String, params: Parameters)
@@ -36,7 +37,7 @@ extension PokeAPI: BaseAPI {
             return "/friend"
         case .getFriendRandomUser:
             return "/friend/random-user"
-        case .getFriendList:
+        case .getFriendList, .getFriendListWithRelation:
             return "/friend/list"
         case .getRandomUsers:
             return "/random-user"
@@ -49,7 +50,7 @@ extension PokeAPI: BaseAPI {
     
     public var method: Moya.Method {
         switch self {
-        case .getWhoPokedToMe, .getWhoPokedToMeList, .getFriend, .getFriendRandomUser,
+        case .getWhoPokedToMe, .getWhoPokedToMeList, .getFriend, .getFriendListWithRelation, .getFriendRandomUser,
                 .getFriendList, .getRandomUsers, .getPokeMessages:
             return .get
         case .poke:
@@ -63,6 +64,8 @@ extension PokeAPI: BaseAPI {
             return .requestParameters(parameters: ["page": pageIndex], encoding: URLEncoding.queryString)
         case .getPokeMessages(let messageType):
             return .requestParameters(parameters: ["messageType": messageType.rawValue], encoding: URLEncoding.queryString)
+        case .getFriendListWithRelation(let relation, let page):
+            return .requestParameters(parameters: ["type": relation, "page": page], encoding: URLEncoding.queryString)
         case .poke(_, let params):
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
         default:

@@ -10,4 +10,5 @@ import Combine
 
 public protocol PokeMyFriendsRepositoryInterface {
     func getFriends() -> AnyPublisher<PokeMyFriendsModel, Error>
+    func getFriends(relation: String, page: Int) -> AnyPublisher<PokeMyFriendsListModel, Error>
 }

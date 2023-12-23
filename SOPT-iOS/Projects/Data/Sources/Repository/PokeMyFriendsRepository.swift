@@ -28,5 +28,11 @@ extension PokeMyFriendsRepository: PokeMyFriendsRepositoryInterface {
             .map { $0.toDomain() }
             .eraseToAnyPublisher()
     }
+    
+    public func getFriends(relation: String, page: Int) -> AnyPublisher<Domain.PokeMyFriendsListModel, Error> {
+        pokeService.getFriendList(relation: relation, page: page)
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
 }
 

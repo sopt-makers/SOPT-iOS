@@ -19,6 +19,7 @@ public protocol PokeService {
     func getFriend() -> AnyPublisher<[PokeUserEntity], Error>
     func getFriendRandomUser() -> AnyPublisher<[PokeFriendRandomUserEntity], Error>
     func getFriendList() -> AnyPublisher<PokeMyFriendsEntity, Error>
+    func getFriendList(relation: String, page: Int) -> AnyPublisher<PokeMyFriendsListEntity, Error>
     func getRandomUsers() -> AnyPublisher<[PokeUserEntity], Error>
     func getPokeMessages(messageType: PokeMessageType) -> AnyPublisher<PokeMessagesEntity, Error>
     func poke(userId: Int, message: String) -> AnyPublisher<PokeUserEntity, Error>
@@ -35,6 +36,10 @@ extension DefaultPokeService: PokeService {
     
     public func getFriend() -> AnyPublisher<[PokeUserEntity], Error> {
         requestObjectInCombine(.getFriend)
+    }
+    
+    public func getFriendList(relation: String, page: Int) -> AnyPublisher<PokeMyFriendsListEntity, Error> {
+        requestObjectInCombine(.getFriendListWithRelation(relation: relation, page: page))
     }
     
     public func getFriendRandomUser() -> AnyPublisher<[PokeFriendRandomUserEntity], Error> {
