@@ -26,6 +26,7 @@ public final class PokeMyFriendsListVC: UIViewController, PokeMyFriendsListViewC
     private var cancelBag = CancelBag()
     
     private let reachToBottomSubject = PassthroughSubject<Void, Never>()
+    private let kokButtonTap = PassthroughSubject<PokeUserModel?, Never>()
     
     // MARK: - UI Components
     
@@ -95,7 +96,7 @@ extension PokeMyFriendsListVC {
         let input = PokeMyFriendsListViewModel.Input(viewDidLoad: Just(()).asDriver(),
                                                      closeButtonTap: self.headerView.rightButtonTap,
                                                      reachToBottom: self.reachToBottomSubject.asDriver(), 
-                                                     pokeButtonTap: PassthroughSubject<PokeUserModel?, Never>().asDriver()) // TODO: 버튼 탭
+                                                     pokeButtonTap: self.kokButtonTap.asDriver())
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
         
@@ -128,9 +129,9 @@ extension PokeMyFriendsListVC: UITableViewDelegate, UITableViewDataSource {
         cell.selectionStyle = .none
         cell.setData(model: viewModel.friends[indexPath.row])
         
-        cell.kokButtonTap.sink { id in
-            print("디버그", id)
-        }.store(in: cell.cancelBag)
+        cell.kokButtonTap
+            .subscribe(self.kokButtonTap)
+            .store(in: cell.cancelBag)
 
         return cell
     }

@@ -44,6 +44,26 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
             self?.router.dismissModule(animated: true)
         }
         
+        pokeMyFriendsList.vm.onPokeButtonTapped = { [weak self] userModel in
+            guard let bottomSheet = self?.factory
+                    .makePokeMessageTemplateBottomSheet()
+                    .vc
+                    .viewController as? PokeMessageTemplateBottomSheet
+            else { return .empty() }
+            
+            let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate())
+            
+            self?.router.showBottomSheetOnTopVC(
+                manager: bottomSheetManager,
+                toPresent: bottomSheet
+            )
+            
+            return bottomSheet
+                .signalForClick()
+                .map { (userModel, $0) }
+                .asDriver()
+        }
+        
         router.present(pokeMyFriendsList.vc, animated: true)
     }
 }

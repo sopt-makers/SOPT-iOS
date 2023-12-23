@@ -18,6 +18,7 @@ public class PokeMyFriendsListViewModel:
     PokeMyFriendsListViewModelType {
     
     public var onCloseButtonTap: (() -> Void)?
+    public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)?
         
     // MARK: - Properties
     
@@ -77,16 +78,18 @@ extension PokeMyFriendsListViewModel {
                 self?.onCloseButtonTap?()
             }.store(in: cancelBag)
         
-//        input.pokeButtonTapped
-//            .compactMap { $0 }
-//            .flatMap { [weak self] UserId -> Driver<(UserId, PokeMessageModel)> in
-//                guard let self, let value = self.onPokeButtonTapped?(userModel) else { return .empty() }
-//                
-//                return value
-//            }
-//            .sink(receiveValue: { [weak self] userModel, messageModel in
+        input.pokeButtonTap
+            .compactMap { $0 }
+            .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel)> in
+                guard let self, let value = self.onPokeButtonTapped?(userModel) else { return .empty() }
+                
+                return value
+            }
+            .sink(receiveValue: { [weak self] userModel, messageModel in
+                print("디버그", userModel.userId, messageModel)
+                // Poke 요청하기
 //                self?.usecase.poke(userId: userModel.userId, message: messageModel)
-//            }).store(in: cancelBag)
+            }).store(in: cancelBag)
 
         return output
     }
