@@ -10,6 +10,7 @@ import Core
 import DSKit
 
 import UIKit
+import Domain
 
 final public class PokeNotificationListContentView: UIView {
     private enum Metrics {
@@ -79,6 +80,11 @@ final public class PokeNotificationListContentView: UIView {
     private let isDetailView: Bool
     
     private var userId: Int?
+    private var user: PokeUserModel?
+    
+    lazy var kokButtonTap: Driver<PokeUserModel?> = pokeKokButton.tap
+        .map { self.user }
+        .asDriver()
     
     // MARK: - View Lifecycle
     public init(
@@ -147,6 +153,18 @@ extension PokeNotificationListContentView {
         self.descriptionLabel.attributedText = model.description.applyMDSFont()
         self.pokeChipView.configure(with: model.chipInfo)
         self.pokeKokButton.isEnabled = !model.isPoked
+        self.pokeKokButton.setIsFriend(with: !model.isFirstMeet)
+    }
+    
+    public func configure(with model: PokeUserModel) {
+        self.user = model
+        self.userId = model.userId
+        self.profileImageView.setImage(with: model.profileImage, relation: PokeRelation(rawValue: model.relationName) ?? .newFriend)
+        self.nameLabel.text = model.name
+        self.partInfoLabel.text = model.part
+        self.descriptionLabel.attributedText = model.message.applyMDSFont()
+        self.pokeChipView.configure(with: model.makeChipInfo())
+        self.pokeKokButton.isEnabled = !model.isAlreadyPoke
         self.pokeKokButton.setIsFriend(with: !model.isFirstMeet)
     }
     

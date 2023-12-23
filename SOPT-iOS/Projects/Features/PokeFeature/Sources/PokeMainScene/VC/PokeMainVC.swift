@@ -217,7 +217,7 @@ extension PokeMainVC {
                 friendSectionHeaderButtonTap: friendSectionHeaderView
                     .rightButtonTap,
                 pokedSectionKokButtonTap: pokedUserContentView
-                    .signalForPokeButtonClicked(),
+                    .kokButtonTap,
                 friendSectionKokButtonTap: friendSectionContentView
                     .kokButtonTap,
                 nearbyFriendsSectionKokButtonTap: firstProfileCardGroupView

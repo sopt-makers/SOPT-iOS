@@ -17,7 +17,7 @@ public final class ProfileCardGroupView: UIView {
     
     // MARK: - Properties
         
-    lazy var kokButtonTap: Driver<UserId?> = leftProfileCardView.kokButtonTap
+    lazy var kokButtonTap: Driver<PokeUserModel?> = leftProfileCardView.kokButtonTap
         .merge(with: rightProfileCardView.kokButtonTap)
         .asDriver()
     

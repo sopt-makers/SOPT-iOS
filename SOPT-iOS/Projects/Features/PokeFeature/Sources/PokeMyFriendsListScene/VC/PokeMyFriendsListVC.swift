@@ -94,7 +94,8 @@ extension PokeMyFriendsListVC {
     private func bindViewModel() {
         let input = PokeMyFriendsListViewModel.Input(viewDidLoad: Just(()).asDriver(),
                                                      closeButtonTap: self.headerView.rightButtonTap,
-                                                     reachToBottom: self.reachToBottomSubject.asDriver())
+                                                     reachToBottom: self.reachToBottomSubject.asDriver(), 
+                                                     pokeButtonTap: PassthroughSubject<PokeUserModel?, Never>().asDriver()) // TODO: 버튼 탭
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
         

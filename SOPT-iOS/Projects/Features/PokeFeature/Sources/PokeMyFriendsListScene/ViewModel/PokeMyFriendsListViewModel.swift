@@ -37,6 +37,7 @@ public class PokeMyFriendsListViewModel:
         let viewDidLoad: Driver<Void>
         let closeButtonTap: Driver<Void>
         let reachToBottom: Driver<Void>
+        let pokeButtonTap: Driver<PokeUserModel?>
     }
     
     // MARK: - Outputs
@@ -75,6 +76,17 @@ extension PokeMyFriendsListViewModel {
             .sink { [weak self] _ in
                 self?.onCloseButtonTap?()
             }.store(in: cancelBag)
+        
+//        input.pokeButtonTapped
+//            .compactMap { $0 }
+//            .flatMap { [weak self] UserId -> Driver<(UserId, PokeMessageModel)> in
+//                guard let self, let value = self.onPokeButtonTapped?(userModel) else { return .empty() }
+//                
+//                return value
+//            }
+//            .sink(receiveValue: { [weak self] userModel, messageModel in
+//                self?.usecase.poke(userId: userModel.userId, message: messageModel)
+//            }).store(in: cancelBag)
 
         return output
     }

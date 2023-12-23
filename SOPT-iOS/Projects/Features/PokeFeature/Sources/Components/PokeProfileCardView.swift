@@ -18,9 +18,9 @@ public final class PokeProfileCardView: UIView {
        
     lazy var profileTapped = self.profileImageView.gesture().mapVoid().asDriver()
 
-    lazy var kokButtonTap: Driver<UserId?> = kokButton.tap.map { self.userId }.asDriver()
+    lazy var kokButtonTap: Driver<PokeUserModel?> = kokButton.tap.map { self.user }.asDriver()
     
-    var userId: Int?
+    var user: PokeUserModel?
     
     // MARK: - UI Components
     
@@ -105,7 +105,7 @@ public final class PokeProfileCardView: UIView {
     // MARK: - Methods
 
     func setData(with model: PokeUserModel) {
-        self.userId = model.userId
+        self.user = model
         self.profileImageView.setImage(with: model.profileImage, placeholder: DSKitAsset.Assets.iconDefaultProfile.image)
         self.nameLabel.text = model.name
         self.partLabel.text = String(describing: model.generation) + "기" + " " + model.part

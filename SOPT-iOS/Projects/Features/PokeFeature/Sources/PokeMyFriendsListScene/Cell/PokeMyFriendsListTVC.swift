@@ -16,7 +16,7 @@ final class PokeMyFriendsListTVC: UITableViewCell {
     
     // MARK: - Properties
     
-    lazy var kokButtonTap: Driver<UserId?> = self.profileListView.kokButtonTap
+    lazy var kokButtonTap: Driver<PokeUserModel?> = self.profileListView.kokButtonTap
     let cancelBag = CancelBag()
     
     // MARK: - UI Components
