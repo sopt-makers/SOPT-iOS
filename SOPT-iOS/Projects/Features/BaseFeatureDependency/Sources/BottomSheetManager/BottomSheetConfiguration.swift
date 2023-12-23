@@ -8,20 +8,53 @@
 
 import UIKit
 
+import Core
+
 public struct BottomSheetConfiguration {
-    let prefersScrollingExpandsWhenScrolledToEdge: Bool
-    let preferredCornerRadius: CGFloat
-    let detents: [UISheetPresentationController.Detent]
+    public let prefersScrollingExpandsWhenScrolledToEdge: Bool
+    public let preferredCornerRadius: CGFloat
+    public let detents: [UISheetPresentationController.Detent]
+  
+    public init(
+        prefersScrollingExpandsWhenScrolledToEdge: Bool = true,
+        preferredCornerRadius: CGFloat = 20.f,
+        detents: [UISheetPresentationController.Detent]
+    ) {
+        self.prefersScrollingExpandsWhenScrolledToEdge = prefersScrollingExpandsWhenScrolledToEdge
+        self.preferredCornerRadius = preferredCornerRadius
+        self.detents = detents
+    }
 }
 
 extension BottomSheetConfiguration {
     public static func `default`() -> Self {
         .init(
             prefersScrollingExpandsWhenScrolledToEdge: true,
-            preferredCornerRadius: 16.f,
+            preferredCornerRadius: 20.f,
             detents: [
-                .custom { context in context.maximumDetentValue * 0.6 },
+                .custom { context in context.maximumDetentValue * 0.5 },
                 .large()
+            ]
+        )
+    }
+    
+    public static func onboarding() -> Self {
+        .init(
+            prefersScrollingExpandsWhenScrolledToEdge: true,
+            preferredCornerRadius: 20.f,
+            detents: [
+                .custom { context in context.maximumDetentValue * 0.55 }
+            ]
+        )
+    }
+
+    
+    public static func messageTemplate() -> Self {
+        .init(
+            prefersScrollingExpandsWhenScrolledToEdge: true,
+            preferredCornerRadius: 20.f,
+            detents: [
+                .custom { context in context.maximumDetentValue * 0.4 }
             ]
         )
     }

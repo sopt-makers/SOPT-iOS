@@ -15,6 +15,7 @@ public enum MainCoordinatorDestination {
     case attendance
     case stamp
     case poke
+    case pokeOnboarding
     case signIn
 }
 public protocol MainCoordinatorOutput {
@@ -54,8 +55,12 @@ final class MainCoordinator: DefaultMainCoordinator {
         main.vm.onSoptamp = { [weak self] in
             self?.requestCoordinating?(.stamp)
         }
-        main.vm.onPoke = { [weak self] in
-            self?.requestCoordinating?(.poke)
+        main.vm.onPoke = { [weak self] isFirstVisit in
+            if isFirstVisit {
+                self?.requestCoordinating?(.pokeOnboarding)
+            } else {
+                self?.requestCoordinating?(.poke)
+            }
         }
         main.vm.onAttendance = { [weak self] in
             self?.requestCoordinating?(.attendance)
