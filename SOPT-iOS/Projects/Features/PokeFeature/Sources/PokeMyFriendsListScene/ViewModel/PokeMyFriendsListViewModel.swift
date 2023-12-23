@@ -86,9 +86,7 @@ extension PokeMyFriendsListViewModel {
                 return value
             }
             .sink(receiveValue: { [weak self] userModel, messageModel in
-                print("디버그", userModel.userId, messageModel)
-                // Poke 요청하기
-//                self?.usecase.poke(userId: userModel.userId, message: messageModel)
+                self?.useCase.poke(userId: userModel.userId, message: messageModel)
             }).store(in: cancelBag)
 
         return output
@@ -102,6 +100,16 @@ extension PokeMyFriendsListViewModel {
                 output.friendCount.send(model.totalSize)
                 output.needToReloadFriendList.send()
                 owner.isPaging = false
+            }.store(in: cancelBag)
+        
+        useCase.pokedResponse
+            .withUnretained(self)
+            .sink { owner, user in
+                if let index = owner.friends.firstIndex(where: { $0.userId == user.userId }) {
+                    owner.friends[index] = user
+                }
+                
+                output.needToReloadFriendList.send()
             }.store(in: cancelBag)
     }
 }

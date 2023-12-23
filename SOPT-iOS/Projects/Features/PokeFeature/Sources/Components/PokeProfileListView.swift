@@ -176,6 +176,7 @@ public final class PokeProfileListView: UIView {
         self.nameLabel.text = model.name
         self.partLabel.text = model.part
         self.kokCountLabel.text = "\(model.pokeNum)콕"
+        self.kokButton.isEnabled = !model.isAlreadyPoke
         return self
     }
     
