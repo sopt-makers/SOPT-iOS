@@ -264,6 +264,26 @@ extension ApplicationCoordinator {
         return coordinator
     }
     
+    internal func runPokeNotificationListFlow() -> PokeNotificationListCoordinator {
+        let coordinator = PokeNotificationListCoordinator(
+            router: Router(
+                rootController: UIWindow.getRootNavigationController
+            ),
+            factory: PokeBuilder()
+        )
+        
+        coordinator.finishFlow = { [weak self, weak coordinator] in
+            coordinator?.childCoordinators = []
+            self?.removeDependency(coordinator)
+        }
+        
+        addDependency(coordinator)
+        coordinator.start()
+        
+        return coordinator
+    }
+    
+    
     @discardableResult
     internal func runMyPageFlow(of userType: UserType) -> MyPageCoordinator {
         let coordinator = MyPageCoordinator(
