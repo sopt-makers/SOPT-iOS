@@ -46,7 +46,7 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
         
         pokeMyFriendsList.vm.onPokeButtonTapped = { [weak self] userModel in
             guard let bottomSheet = self?.factory
-                    .makePokeMessageTemplateBottomSheet()
+                .makePokeMessageTemplateBottomSheet(messageType: .pokeFriend)
                     .vc
                     .viewController as? PokeMessageTemplateBottomSheet
             else { return .empty() }

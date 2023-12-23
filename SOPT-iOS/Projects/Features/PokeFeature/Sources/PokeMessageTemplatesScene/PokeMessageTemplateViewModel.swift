@@ -15,6 +15,8 @@ import PokeFeatureInterface
 
 public final class PokeMessageTemplateViewModel: PokeMessageTemplatesViewModelType {
     
+    public var messageType: PokeMessageType
+    
     public struct Input {
         let viewWillAppear: Driver<Void>
     }
@@ -25,7 +27,8 @@ public final class PokeMessageTemplateViewModel: PokeMessageTemplatesViewModelTy
     
     private let usecase: PokeMessageTemplateUsecase
     
-    public init(usecase: PokeMessageTemplateUsecase) {
+    public init(messageType: PokeMessageType, usecase: PokeMessageTemplateUsecase) {
+        self.messageType = messageType
         self.usecase = usecase
     }
 }
@@ -37,7 +40,8 @@ extension PokeMessageTemplateViewModel {
             
         input.viewWillAppear
             .sink(receiveValue: { [weak self] _ in
-                self?.usecase.getPokeMessageTemplates()
+                guard let self = self else { return }
+                self.usecase.getPokeMessageTemplates(type: self.messageType)
             }).store(in: cancelBag)
         
         return output

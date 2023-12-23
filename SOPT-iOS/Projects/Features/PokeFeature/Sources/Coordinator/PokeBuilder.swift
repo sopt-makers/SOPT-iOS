@@ -43,9 +43,9 @@ extension PokeBuilder: PokeFeatureBuildable {
         return (viewController, viewModel)
     }
     
-    public func makePokeMessageTemplateBottomSheet() -> PokeMessageTemplatesPresentable {
+    public func makePokeMessageTemplateBottomSheet(messageType: PokeMessageType) -> PokeMessageTemplatesPresentable {
         let usecase = DefaultPokeMessageTemplateUsecase(repository: self.pokeOnboardingRepository)
-        let viewModel = PokeMessageTemplateViewModel(usecase: usecase)
+        let viewModel = PokeMessageTemplateViewModel(messageType: messageType, usecase: usecase)
         let viewController = PokeMessageTemplateBottomSheet(viewModel: viewModel)
         
         return (viewController, viewModel)

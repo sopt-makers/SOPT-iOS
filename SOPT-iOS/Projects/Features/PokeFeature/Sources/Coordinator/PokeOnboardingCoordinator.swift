@@ -51,7 +51,7 @@ extension PokeOnboardingCoordinator {
         
         pokeOnboarding.vm.onPokeButtonTapped = { [weak self] userModel in
             guard let bottomSheet = self?.factory
-                    .makePokeMessageTemplateBottomSheet()
+                .makePokeMessageTemplateBottomSheet(messageType: .pokeSomeone)
                     .vc
                     .viewController as? PokeMessageTemplateBottomSheet
             else { return .empty() }

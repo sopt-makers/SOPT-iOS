@@ -14,6 +14,8 @@ public protocol PokeMessageTemplatesViewControllable: ViewControllable { }
 
 public protocol PokeMessageTemplatesCoordinatable { }
 
-public typealias PokeMessageTemplatesViewModelType = ViewModelType & PokeMessageTemplatesCoordinatable
+public protocol PokeMessageTemplatesViewModelType: ViewModelType & PokeMessageTemplatesCoordinatable {
+    var messageType: PokeMessageType { get }
+}
 public typealias PokeMessageTemplatesPresentable = (vc: PokeMessageTemplatesViewControllable, vm: any PokeMessageTemplatesCoordinatable)
 

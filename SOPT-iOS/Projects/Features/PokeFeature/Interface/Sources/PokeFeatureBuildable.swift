@@ -15,6 +15,6 @@ public protocol PokeFeatureBuildable {
     func makePokeMyFriends() -> PokeMyFriendsPresentable
     func makePokeMyFriendsList(relation: PokeRelation) -> PokeMyFriendsListPresentable
     func makePokeOnboarding() -> PokeOnboardingPresentable
-    func makePokeMessageTemplateBottomSheet() -> PokeMessageTemplatesPresentable
+    func makePokeMessageTemplateBottomSheet(messageType: PokeMessageType) -> PokeMessageTemplatesPresentable
     func makePokeNotificationList() -> PokeNotificationPresentable
 }

@@ -20,7 +20,7 @@ public enum PokeAPI {
     case getFriendList
     case getFriendListWithRelation(relation: String, page: Int)
     case getRandomUsers
-    case getPokeMessages(messageType: PokeMessageType)
+    case getPokeMessages(messageType: String)
     case poke(userId: String, params: Parameters)
 }
 
@@ -63,7 +63,7 @@ extension PokeAPI: BaseAPI {
         case .getWhoPokedToMeList(let pageIndex):
             return .requestParameters(parameters: ["page": pageIndex], encoding: URLEncoding.queryString)
         case .getPokeMessages(let messageType):
-            return .requestParameters(parameters: ["messageType": messageType.rawValue], encoding: URLEncoding.queryString)
+            return .requestParameters(parameters: ["messageType": messageType], encoding: URLEncoding.queryString)
         case .getFriendListWithRelation(let relation, let page):
             return .requestParameters(parameters: ["type": relation, "page": page], encoding: URLEncoding.queryString)
         case .poke(_, let params):

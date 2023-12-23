@@ -1,8 +1,8 @@
 //
 //  PokeMessageType.swift
-//  Networks
+//  Domain
 //
-//  Created by Ian on 12/22/23.
+//  Created by sejin on 12/24/23.
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
