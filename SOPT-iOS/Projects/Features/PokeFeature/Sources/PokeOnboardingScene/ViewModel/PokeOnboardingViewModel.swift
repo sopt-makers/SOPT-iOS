@@ -60,6 +60,7 @@ extension PokeOnboardingViewModel {
                 
 //                UserDefaultKeyList.User.isFirstVisitToPokeView = false
 //                self?.onFirstVisitInOnboarding?()
+                 self?.onFirstVisitInOnboarding?()
             }).store(in: cancelBag)
         
         input.pokeButtonTapped

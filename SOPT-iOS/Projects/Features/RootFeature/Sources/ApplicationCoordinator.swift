@@ -182,7 +182,7 @@ extension ApplicationCoordinator {
             case .poke:
                 self?.runPokeFlow()
             case .pokeOnboarding:
-                self?.runPokeNotificationListFlow()
+                self?.runPokeOnboardingFlow()
             case .signIn:
                 self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
                 self?.removeDependency(coordinator)
@@ -264,7 +264,6 @@ extension ApplicationCoordinator {
         return coordinator
     }
     
-    @discardableResult
     internal func runPokeNotificationListFlow() -> PokeNotificationListCoordinator {
         let coordinator = PokeNotificationListCoordinator(
             router: Router(

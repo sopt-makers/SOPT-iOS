@@ -15,7 +15,7 @@ public final class PokeBuilder {
     @Injected public var pokeMyFriendsRepository: PokeMyFriendsRepositoryInterface
     @Injected public var pokeOnboardingRepository: PokeOnboardingRepositoryInterface
     @Injected public var pokeNotificationListRepository: PokeNotificationRepositoryInterface
-    
+   
     public init() {}
 }
 
