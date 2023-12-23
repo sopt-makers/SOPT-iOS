@@ -12,7 +12,9 @@ import Core
 
 public protocol PokeMyFriendsUseCase {
     var myFriends: PassthroughSubject<PokeMyFriendsModel, Never> { get }
+    var myFriendsList: PassthroughSubject<PokeMyFriendsListModel, Never> { get }
     func getFriends()
+    func getFriends(relation: String, page: Int)
 }
 
 public class DefaultPokeMyFriendsUseCase {
@@ -20,7 +22,8 @@ public class DefaultPokeMyFriendsUseCase {
     public let cancelBag = CancelBag()
 
     public let myFriends = PassthroughSubject<PokeMyFriendsModel, Never>()
-
+    public let myFriendsList = PassthroughSubject<PokeMyFriendsListModel, Never>()
+    
     public init(repository: PokeMyFriendsRepositoryInterface) {
         self.repository = repository
     }
@@ -33,6 +36,15 @@ extension DefaultPokeMyFriendsUseCase: PokeMyFriendsUseCase {
                 print("GetFriendsList State: \(event)")
             } receiveValue: { [weak self] friends in
                 self?.myFriends.send(friends)
+            }.store(in: cancelBag)
+    }
+    
+    public func getFriends(relation: String, page: Int) {
+        repository.getFriends(relation: relation, page: page)
+            .sink { event in
+                print("GetFriendsListWithRelation State: \(event)")
+            } receiveValue: { [weak self] friends in
+                self?.myFriendsList.send(friends)
             }.store(in: cancelBag)
     }
 }

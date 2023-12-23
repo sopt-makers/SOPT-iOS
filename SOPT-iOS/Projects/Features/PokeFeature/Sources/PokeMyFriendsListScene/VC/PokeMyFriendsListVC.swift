@@ -81,6 +81,7 @@ extension PokeMyFriendsListVC {
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.register(PokeMyFriendsListTVC.self, forCellReuseIdentifier: PokeMyFriendsListTVC.className)
+        self.tableView.separatorStyle = .none
     }
 }
 
@@ -88,6 +89,10 @@ extension PokeMyFriendsListVC {
 
 extension PokeMyFriendsListVC {
     private func bindViewModel() {
+        let input = PokeMyFriendsListViewModel.Input(viewDidLoad: Just(()).asDriver(),
+                                                     closeButtonTap: self.headerView.rightButtonTap)
+        
+        let output = viewModel.transform(from: input, cancelBag: cancelBag)
     }
 }
 
@@ -106,5 +111,9 @@ extension PokeMyFriendsListVC: UITableViewDelegate, UITableViewDataSource {
         }
         
         return cell
+    }
+    
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 70
     }
 }

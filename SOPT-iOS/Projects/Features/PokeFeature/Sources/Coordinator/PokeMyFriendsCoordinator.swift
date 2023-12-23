@@ -38,7 +38,11 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
     }
     
     private func showPokeMyFriendsList(with relation: PokeRelation) {
-        let pokeMyFriendsList = factory.makePokeMyFriendsList(relation: relation)
+        var pokeMyFriendsList = factory.makePokeMyFriendsList(relation: relation)
+        
+        pokeMyFriendsList.vm.onCloseButtonTap = { [weak self] in 
+            self?.router.dismissModule(animated: true)
+        }
         
         router.present(pokeMyFriendsList.vc, animated: true)
     }

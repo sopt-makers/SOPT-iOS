@@ -16,10 +16,12 @@ import PokeFeatureInterface
 
 public class PokeMyFriendsListViewModel:
     PokeMyFriendsListViewModelType {
+    
+    public var onCloseButtonTap: (() -> Void)?
         
     // MARK: - Properties
     
-//    private let useCase: PokeMyFriendsListUseCase
+    private let useCase: PokeMyFriendsUseCase
     private var cancelBag = CancelBag()
     
     public let relation: PokeRelation
@@ -28,6 +30,7 @@ public class PokeMyFriendsListViewModel:
     
     public struct Input {
         let viewDidLoad: Driver<Void>
+        let closeButtonTap: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -37,8 +40,9 @@ public class PokeMyFriendsListViewModel:
     
     // MARK: - initialization
     
-    public init(relation: PokeRelation) {
+    public init(relation: PokeRelation, useCase: PokeMyFriendsUseCase) {
         self.relation = relation
+        self.useCase = useCase
     }
 }
     
@@ -46,6 +50,16 @@ extension PokeMyFriendsListViewModel {
     public func transform(from input: Input, cancelBag: Core.CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
+        
+        input.viewDidLoad
+            .sink { _ in
+                print("데이터 요청")
+            }.store(in: cancelBag)
+        
+        input.closeButtonTap
+            .sink { [weak self] _ in
+                self?.onCloseButtonTap?()
+            }.store(in: cancelBag)
 
         return output
     }

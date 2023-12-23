@@ -60,7 +60,8 @@ extension PokeBuilder: PokeFeatureBuildable {
     }
     
     public func makePokeMyFriendsList(relation: PokeRelation) -> PokeFeatureInterface.PokeMyFriendsListPresentable {
-        let viewModel = PokeMyFriendsListViewModel(relation: relation)
+        let useCase = DefaultPokeMyFriendsUseCase(repository: self.pokeMyFriendsRepository)
+        let viewModel = PokeMyFriendsListViewModel(relation: relation, useCase: useCase)
         let pokeMyFriendsListVC = PokeMyFriendsListVC(viewModel: viewModel)
         
         return (pokeMyFriendsListVC, viewModel)

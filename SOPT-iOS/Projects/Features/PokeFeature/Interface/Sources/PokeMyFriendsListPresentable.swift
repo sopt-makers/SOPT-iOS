@@ -13,6 +13,7 @@ import Domain
 public protocol PokeMyFriendsListViewControllable: ViewControllable { }
 
 public protocol PokeMyFriendsListCoordinatable {
+    var onCloseButtonTap: (() -> Void)? { get set }
 }
 
 public protocol PokeMyFriendsListViewModelType: ViewModelType & PokeMyFriendsListCoordinatable {

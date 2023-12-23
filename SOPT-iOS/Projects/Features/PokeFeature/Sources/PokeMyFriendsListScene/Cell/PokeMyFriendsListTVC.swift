@@ -17,6 +17,7 @@ final class PokeMyFriendsListTVC: UITableViewCell {
     // MARK: - UI Components
     
     private let profileListView = PokeProfileListView(viewType: .default)
+        .setDividerViewIsHidden(to: false)
     
     // MARK: - Initialization
     
