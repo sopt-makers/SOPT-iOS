@@ -103,4 +103,9 @@ extension PokeFriendsSectionHeaderView {
         self.friendsCountLabel.text = "\(count)명"
         return self
     }
-}
+    
+    @discardableResult
+    public func setRightButtonImage(with image: UIImage) -> Self {
+        self.rightButton.setImage(image, for: .normal)
+        return self
+    }}

@@ -10,6 +10,7 @@ import UIKit
 
 import DSKit
 import Domain
+import Core
 
 public extension PokeRelation {
     var color: UIColor {
@@ -20,6 +21,32 @@ public extension PokeRelation {
             return DSKitAsset.Colors.information.color
         case .soulmate:
             return DSKitAsset.Colors.secondary.color
+        }
+    }
+    
+    var title: String {
+        switch self {
+        case .newFriend:
+            return I18N.Poke.MyFriends.newFriends
+        case .bestFriend:
+            return I18N.Poke.MyFriends.bestFriend
+        case .soulmate:
+            return I18N.Poke.MyFriends.soulmate
+        default:
+            return ""
+        }
+    }
+    
+    var friendBaselineDescription: String {
+        switch self {
+        case .newFriend:
+            return I18N.Poke.MyFriends.friendsBaseline(2)
+        case .bestFriend:
+            return I18N.Poke.MyFriends.friendsBaseline(5)
+        case .soulmate:
+            return I18N.Poke.MyFriends.friendsBaseline(11)
+        default:
+            return ""
         }
     }
 }

@@ -27,6 +27,11 @@ public final class PokeMyFriendsListVC: UIViewController, PokeMyFriendsListViewC
     
     // MARK: - UI Components
     
+    private let headerView = PokeFriendsSectionHeaderView()
+        .setRightButtonImage(with: DSKitAsset.Assets.xClose.image)
+    
+    private let tableView = UITableView()
+    
     // MARK: - initialization
     
     public init(viewModel: PokeMyFriendsListViewModel) {
@@ -43,6 +48,7 @@ public final class PokeMyFriendsListVC: UIViewController, PokeMyFriendsListViewC
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.setUI()
+        self.setTableView()
         self.setLayout()
         self.bindViewModel()
     }
@@ -52,10 +58,23 @@ public final class PokeMyFriendsListVC: UIViewController, PokeMyFriendsListViewC
 
 extension PokeMyFriendsListVC {
     private func setUI() {
-        view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        view.backgroundColor = DSKitAsset.Colors.gray800.color
+        headerView.setTitle(viewModel.relation.title)
+        headerView.setDescription(viewModel.relation.friendBaselineDescription)
     }
     
     private func setLayout() {
+        self.view.addSubviews(headerView)
+        
+        headerView.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(24)
+            make.leading.trailing.equalToSuperview()
+        }
+    }
+    
+    private func setTableView() {
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
     }
 }
 
@@ -63,5 +82,17 @@ extension PokeMyFriendsListVC {
 
 extension PokeMyFriendsListVC {
     private func bindViewModel() {
+    }
+}
+
+// MARK: - UITableViewDelegate, UITableViewDataSource
+
+extension PokeMyFriendsListVC: UITableViewDelegate, UITableViewDataSource {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return UITableViewCell()
     }
 }
