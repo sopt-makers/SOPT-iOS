@@ -16,7 +16,7 @@ public final class PokeProfileCardView: UIView {
     
     // MARK: - Properties
        
-    lazy var profileTapped = self.profileImageView.gesture().mapVoid().asDriver()
+    lazy var profileTapped = self.profileImageView.gesture().map { _ in self.user }.asDriver()
 
     lazy var kokButtonTap: Driver<PokeUserModel?> = kokButton.tap.map { self.user }.asDriver()
     

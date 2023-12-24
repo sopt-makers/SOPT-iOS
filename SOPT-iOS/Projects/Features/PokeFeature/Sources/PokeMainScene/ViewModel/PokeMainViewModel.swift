@@ -22,6 +22,7 @@ public class PokeMainViewModel:
     public var onNaviBackTap: (() -> Void)?
     public var onPokeNotificationsTap: (() -> Void)?
     public var onMyFriendsTap: (() -> Void)?
+    public var onProfileImageTapped: ((Int) -> Void)?
     
     // MARK: - Properties
     
@@ -39,6 +40,7 @@ public class PokeMainViewModel:
         let friendSectionKokButtonTap: Driver<PokeUserModel?>
         let nearbyFriendsSectionKokButtonTap: Driver<PokeUserModel?>
         let refreshRequest: Driver<Void>
+        let profileImageTap: Driver<PokeUserModel?>
     }
     
     // MARK: - Outputs
@@ -102,6 +104,12 @@ extension PokeMainViewModel {
             .compactMap { $0 }
             .sink { user in
                 print("찌르기 - \(user)")
+            }.store(in: cancelBag)
+        
+        input.profileImageTap
+            .compactMap { $0 }
+            .sink { [weak self] user in           
+                self?.onProfileImageTapped?(user.playgroundId)
             }.store(in: cancelBag)
         
         return output

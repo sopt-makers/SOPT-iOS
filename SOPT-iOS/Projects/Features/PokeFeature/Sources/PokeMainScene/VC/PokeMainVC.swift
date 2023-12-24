@@ -206,6 +206,11 @@ extension PokeMainVC: UIGestureRecognizerDelegate {
 
 extension PokeMainVC {
     private func bindViewModel() {
+        let profileImageTap = Publishers.Merge4(pokedUserContentView.profileImageTap,
+                                                friendSectionContentView.profileImageTap,
+                                                firstProfileCardGroupView.profileImageTap,
+                                                secondProfileCardGroupView.profileImageTap).asDriver()
+        
         let input = PokeMainViewModel
             .Input(
                 viewDidLoad: Just(()).asDriver(),
@@ -224,7 +229,8 @@ extension PokeMainVC {
                     .kokButtonTap
                     .merge(with: secondProfileCardGroupView.kokButtonTap)
                     .asDriver(),
-                refreshRequest: refreshControl.publisher(for: .valueChanged).mapVoid().asDriver()
+                refreshRequest: refreshControl.publisher(for: .valueChanged).mapVoid().asDriver(),
+                profileImageTap: profileImageTap
             )
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)

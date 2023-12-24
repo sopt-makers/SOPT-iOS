@@ -21,6 +21,10 @@ public final class ProfileCardGroupView: UIView {
         .merge(with: rightProfileCardView.kokButtonTap)
         .asDriver()
     
+    lazy var profileImageTap: Driver<PokeUserModel?> = Publishers.Merge(leftProfileCardView.profileTapped,
+                                                                        rightProfileCardView.profileTapped)
+    .asDriver()
+    
     let cancelBag = CancelBag()
         
     // MARK: - UI Components

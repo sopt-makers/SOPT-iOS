@@ -86,6 +86,10 @@ final public class PokeNotificationListContentView: UIView {
         .map { self.user }
         .asDriver()
     
+    lazy var profileImageTap = profileImageView
+        .tap
+        .map { self.user }
+    
     // MARK: - View Lifecycle
     public init(
         isDetailView: Bool = true,

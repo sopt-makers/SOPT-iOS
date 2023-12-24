@@ -46,6 +46,13 @@ final class PokeCoordinator: DefaultCoordinator {
             self?.runPokeMyFriendsFlow()
         }
         
+        pokeMain.vm.onProfileImageTapped = { [weak self] playgroundId in
+            guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(playgroundId)") else { return }
+            
+            let webView = SOPTWebView(startWith: url)
+            self?.rootController?.pushViewController(webView, animated: true)
+        }
+        
         rootController = pokeMain.vc.asNavigationController
         router.present(rootController, animated: true, modalPresentationSytle: .overFullScreen)
     }
