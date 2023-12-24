@@ -9,6 +9,7 @@
 import UIKit
 import Combine
 
+import BaseFeatureDependency
 import Core
 import DSKit
 import Domain

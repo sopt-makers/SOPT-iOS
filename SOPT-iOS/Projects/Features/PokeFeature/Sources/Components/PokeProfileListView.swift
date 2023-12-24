@@ -15,14 +15,13 @@ import Domain
 public final class PokeProfileListView: UIView {
     
     // MARK: - Properties
-    
-    typealias UserId = Int
-    
-    lazy var kokButtonTap: Driver<UserId?> = kokButton.tap.map { self.userId }.asDriver()
+        
+    lazy var kokButtonTap: Driver<PokeUserModel?> = kokButton.tap.map { self.user }.asDriver()
+    lazy var profileImageTap: Driver<PokeUserModel?> = profileImageView.tap.map { self.user }.asDriver()
     
     var viewType: ProfileListType
     
-    var userId: Int?
+    var user: PokeUserModel?
     
     // MARK: - UI Components
     
@@ -173,11 +172,12 @@ public final class PokeProfileListView: UIView {
     
     @discardableResult
     func setData(with model: PokeUserModel) -> Self {
-        self.userId = model.userId
+        self.user = model
         self.profileImageView.setImage(with: model.profileImage, relation: model.pokeRelation)
         self.nameLabel.text = model.name
-        self.partLabel.text = model.part
+        self.partLabel.text = "\(model.generation)기 \(model.part)"
         self.kokCountLabel.text = "\(model.pokeNum)콕"
+        self.kokButton.isEnabled = !model.isAlreadyPoke
         return self
     }
     
@@ -196,6 +196,12 @@ public final class PokeProfileListView: UIView {
     @discardableResult
     func setDividerViewIsHidden(to isHidden: Bool) -> Self {
         self.dividerView.isHidden = isHidden
+        return self
+     }
+    
+    @discardableResult
+    func setDividerViewColor(with color: UIColor) -> Self {
+        self.dividerView.backgroundColor = color
         return self
     }
     

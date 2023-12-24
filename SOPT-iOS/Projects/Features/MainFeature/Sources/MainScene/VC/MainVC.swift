@@ -49,8 +49,6 @@ public class MainVC: UIViewController, MainViewControllable {
         self.bindViewModels()
         self.setUI()
         self.setLayout()
-        
-        UserDefaultKeyList.User.isFirstVisitToPokeView = true
         self.setDelegate()
         self.registerCells()
     }

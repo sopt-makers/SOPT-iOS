@@ -14,12 +14,13 @@ import Domain
 
 import PokeFeatureInterface
 
+internal typealias UserId = Int
+
 public class PokeMainViewModel:
     PokeMainViewModelType {
-    
-    typealias UserId = Int
-    
+        
     public var onNaviBackTap: (() -> Void)?
+    public var onPokeNotificationsTap: (() -> Void)?
     public var onMyFriendsTap: (() -> Void)?
     
     // MARK: - Properties
@@ -34,16 +35,16 @@ public class PokeMainViewModel:
         let naviBackButtonTap: Driver<Void>
         let pokedSectionHeaderButtonTap: Driver<Void>
         let friendSectionHeaderButtonTap: Driver<Void>
-        let pokedSectionKokButtonTap: Driver<UserId?>
-        let friendSectionKokButtonTap: Driver<UserId?>
-        let nearbyFriendsSectionKokButtonTap: Driver<UserId?>
+        let pokedSectionKokButtonTap: Driver<PokeUserModel?>
+        let friendSectionKokButtonTap: Driver<PokeUserModel?>
+        let nearbyFriendsSectionKokButtonTap: Driver<PokeUserModel?>
         let refreshRequest: Driver<Void>
     }
     
     // MARK: - Outputs
     
     public struct Output {
-        let pokedToMeUser = PassthroughSubject<NotificationListContentModel, Never>()
+        let pokedToMeUser = PassthroughSubject<PokeUserModel, Never>()
         let pokedUserSectionWillBeHidden = PassthroughSubject<Bool, Never>()
         let myFriend = PassthroughSubject<PokeUserModel, Never>()
         let friendsSectionWillBeHidden = PassthroughSubject<Bool, Never>()
@@ -76,8 +77,8 @@ extension PokeMainViewModel {
             }.store(in: cancelBag)
         
         input.pokedSectionHeaderButtonTap
-            .sink { _ in
-                print("찌르기 알림 뷰로 이동")
+            .sink { [weak self] _ in
+                self?.onPokeNotificationsTap?()
             }.store(in: cancelBag)
         
         input.friendSectionHeaderButtonTap
@@ -87,20 +88,20 @@ extension PokeMainViewModel {
         
         input.pokedSectionKokButtonTap
             .compactMap { $0 }
-            .sink { userId in
-                print("찌르기 - \(userId)")
+            .sink { user in
+                print("찌르기 - \(user)")
             }.store(in: cancelBag)
         
         input.friendSectionKokButtonTap
             .compactMap { $0 }
-            .sink { userId in
-                print("찌르기 - \(userId)")
+            .sink { user in
+                print("찌르기 - \(user)")
             }.store(in: cancelBag)
         
         input.nearbyFriendsSectionKokButtonTap
             .compactMap { $0 }
-            .sink { userId in
-                print("찌르기 - \(userId)")
+            .sink { user in
+                print("찌르기 - \(user)")
             }.store(in: cancelBag)
         
         return output
@@ -109,10 +110,6 @@ extension PokeMainViewModel {
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         useCase.pokedToMeUser
             .compactMap { $0 }
-            .withUnretained(self)
-            .map { owner, pokeUserModel in
-                owner.makeNotificationListContentModel(with: pokeUserModel)
-            }
             .subscribe(output.pokedToMeUser)
             .store(in: cancelBag)
         
@@ -140,36 +137,5 @@ extension PokeMainViewModel {
             .map { _ in Void() }
             .subscribe(output.endRefreshLoading)
             .store(in: cancelBag)
-    }
-}
-
-// MARK: - Methods
-
-extension PokeMainViewModel {
-    private func makeNotificationListContentModel(with model: PokeUserModel) -> NotificationListContentModel {
-        return NotificationListContentModel(userId: model.userId,
-                                            avatarUrl: model.profileImage,
-                                            pokeRelation: PokeRelation(rawValue: model.relationName) ?? .newFriend,
-                                            name: model.name,
-                                            partInfomation: model.part,
-                                            description: model.message,
-                                            chipInfo: self.makeChipInfo(with: model),
-                                            isPoked: model.isAlreadyPoke,
-                                            isFirstMeet: model.isFirstMeet)
-    }
-    
-    private func makeChipInfo(with model: PokeUserModel) -> PokeChipView.ChipType {
-        if model.isFirstMeet { // 친구가 아닌 경우
-            switch model.mutual.count {
-            case 0:
-                return .newUser
-            case 1:
-                return .singleFriend(friendName: model.mutual.first ?? "")
-            default:
-                return .acquaintance(friendname: model.mutual.first ?? "", relationCount: "\(model.mutual.count-1)명")
-            }
-        }
-        
-        return .withPokeCount(relation: model.relationName, pokeCount: String(model.pokeNum))
     }
 }

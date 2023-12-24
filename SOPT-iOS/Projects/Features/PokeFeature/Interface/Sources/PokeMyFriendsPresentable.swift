@@ -13,6 +13,7 @@ import Domain
 public protocol PokeMyFriendsViewControllable: ViewControllable { }
 
 public protocol PokeMyFriendsCoordinatable {
+    var showFriendsListButtonTap: ((PokeRelation) -> Void)? { get set }
 }
 
 public typealias PokeMyFriendsViewModelType = ViewModelType & PokeMyFriendsCoordinatable

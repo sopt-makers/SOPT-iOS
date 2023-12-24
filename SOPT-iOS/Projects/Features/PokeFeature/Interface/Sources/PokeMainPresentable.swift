@@ -14,6 +14,7 @@ public protocol PokeMainViewControllable: ViewControllable { }
 
 public protocol PokeMainCoordinatable {
     var onNaviBackTap: (() -> Void)? { get set }
+    var onPokeNotificationsTap: (() -> Void)? { get set }
     var onMyFriendsTap: (() -> Void)? { get set }
 }
 

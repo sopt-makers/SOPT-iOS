@@ -11,7 +11,7 @@ import Combine
 import Core
 
 public protocol PokeMessageTemplateUsecase {
-    func getPokeMessageTemplates()
+    func getPokeMessageTemplates(type: PokeMessageType)
     
     var pokeMessageModels: PassthroughSubject<[PokeMessageModel], Never> { get }
 }
@@ -28,9 +28,9 @@ public final class DefaultPokeMessageTemplateUsecase {
 }
 
 extension DefaultPokeMessageTemplateUsecase: PokeMessageTemplateUsecase {
-    public func getPokeMessageTemplates() {
+    public func getPokeMessageTemplates(type: PokeMessageType) {
         self.repository
-            .getMesseageTemplates()
+            .getMesseageTemplates(type: type)
             .sink(
                 receiveCompletion: { _ in },
                 receiveValue: { [weak self] value in

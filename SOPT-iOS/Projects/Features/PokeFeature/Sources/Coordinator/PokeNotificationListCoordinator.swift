@@ -35,6 +35,6 @@ extension PokeNotificationListCoordinator {
         let viewController = self.factory.makePokeNotificationList()
      
         self.rootController = viewController.vc.asNavigationController
-        self.router.present(self.rootController, animated: true, modalPresentationSytle: .overFullScreen)
+        self.router.push(viewController.vc)
     }
 }

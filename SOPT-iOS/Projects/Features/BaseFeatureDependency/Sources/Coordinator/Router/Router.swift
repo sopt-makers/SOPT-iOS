@@ -258,7 +258,7 @@ final class Router: NSObject, RouterProtocol {
     public func showBottomSheet(manager: BottomSheetManager, toPresent: UIViewController, on view: UIViewController?) {
         manager.present(toPresent: toPresent, on: view)
     }
-    
+
     // MARK: - Private methods
     
     private func runCompletion(for controller: UIViewController) {
