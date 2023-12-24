@@ -13,7 +13,7 @@ import Core
 import DSKit
 import Domain
 
-public final class ProfileCardGroupView: UIView {
+public final class ProfileCardGroupView: UIView, PokeCompatible {
     
     // MARK: - Properties
         
@@ -129,5 +129,10 @@ extension ProfileCardGroupView {
         emptyFriendView.isHidden = count != 0
         leftProfileCardView.isHidden = count < 1
         rightProfileCardView.isHidden = count < 2
+    }
+    
+    func changeUIAfterPoke(newUserModel: PokeUserModel) {
+        leftProfileCardView.changeUIAfterPoke(newUserModel: newUserModel)
+        rightProfileCardView.changeUIAfterPoke(newUserModel: newUserModel)
     }
 }

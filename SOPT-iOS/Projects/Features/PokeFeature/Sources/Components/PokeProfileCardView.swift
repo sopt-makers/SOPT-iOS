@@ -12,7 +12,7 @@ import DSKit
 import Core
 import Domain
 
-public final class PokeProfileCardView: UIView {
+public final class PokeProfileCardView: UIView, PokeCompatible {
     
     // MARK: - Properties
        
@@ -123,5 +123,11 @@ public final class PokeProfileCardView: UIView {
     func setBackgroundColor(with color: UIColor) -> Self {
         self.backgroundColor = color
         return self
+    }
+    
+    func changeUIAfterPoke(newUserModel: PokeUserModel) {
+        guard let user, user.userId == newUserModel.userId else { return }
+        
+        self.setData(with: newUserModel)
     }
 }

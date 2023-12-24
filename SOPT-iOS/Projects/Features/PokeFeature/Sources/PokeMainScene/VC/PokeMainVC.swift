@@ -266,5 +266,19 @@ extension PokeMainVC {
             .sink { owner, _ in
                 owner.refreshControl.endRefreshing()
             }.store(in: cancelBag)
+        
+        output.pokeResponse
+            .withUnretained(self)
+            .sink { owner, updatedUser in
+                let pokeUserViews = [owner.pokedUserContentView,
+                             owner.friendSectionContentView,
+                             owner.firstProfileCardGroupView,
+                             owner.secondProfileCardGroupView]
+                    .compactMap { $0 as? PokeCompatible }
+                
+                pokeUserViews.forEach { pokeUserView in
+                    pokeUserView.changeUIAfterPoke(newUserModel: updatedUser)
+                }
+            }.store(in: cancelBag)
     }
 }

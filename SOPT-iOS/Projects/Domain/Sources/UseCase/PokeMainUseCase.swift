@@ -14,10 +14,12 @@ public protocol PokeMainUseCase {
     var pokedToMeUser: PassthroughSubject<PokeUserModel?, Never> { get }
     var myFriend: PassthroughSubject<[PokeUserModel], Never> { get }
     var friendRandomUsers: PassthroughSubject<[PokeFriendRandomUserModel], Never> { get }
+    var pokedResponse: PassthroughSubject<PokeUserModel, Never> { get }
     
     func getWhoPokedToMe()
     func getFriend()
     func getFriendRandomUser()
+    func poke(userId: Int, message: PokeMessageModel)
 }
 
 public class DefaultPokeMainUseCase {
@@ -27,7 +29,7 @@ public class DefaultPokeMainUseCase {
     public let pokedToMeUser = PassthroughSubject<PokeUserModel?, Never>()
     public let myFriend = PassthroughSubject<[PokeUserModel], Never>()
     public let friendRandomUsers = PassthroughSubject<[PokeFriendRandomUserModel], Never>()
-
+    public let pokedResponse = PassthroughSubject<PokeUserModel, Never>()
 
     public init(repository: PokeMainRepositoryInterface) {
         self.repository = repository
@@ -63,5 +65,15 @@ extension DefaultPokeMainUseCase: PokeMainUseCase {
             } receiveValue: { [weak self] randomUsers in
                 self?.friendRandomUsers.send(randomUsers)
             }.store(in: cancelBag)
+    }
+    
+    public func poke(userId: Int, message: PokeMessageModel) {
+        self.repository
+            .poke(userId: userId, message: message.content)
+            .sink { event in
+                print("Poke State: \(event)")
+            } receiveValue: { [weak self] user in
+                self?.pokedResponse.send(user)
+            }.store(in: self.cancelBag)
     }
 }

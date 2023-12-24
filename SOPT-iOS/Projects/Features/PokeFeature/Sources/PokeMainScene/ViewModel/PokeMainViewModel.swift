@@ -53,6 +53,7 @@ public class PokeMainViewModel:
         let friendsSectionWillBeHidden = PassthroughSubject<Bool, Never>()
         let friendRandomUsers = PassthroughSubject<[PokeFriendRandomUserModel], Never>()
         let endRefreshLoading = PassthroughSubject<Void, Never>()
+        let pokeResponse = PassthroughSubject<PokeUserModel, Never>()
     }
     
     // MARK: - initialization
@@ -106,7 +107,7 @@ extension PokeMainViewModel {
                 return value
             }
             .sink {[weak self] userModel, messageModel in
-//                self?.useCase.poke(userId: userModel.userId, message: messageModel)
+                self?.useCase.poke(userId: userModel.userId, message: messageModel)
             }.store(in: cancelBag)
         
         input.profileImageTap
@@ -147,6 +148,10 @@ extension PokeMainViewModel {
         Publishers.Zip3(useCase.pokedToMeUser, useCase.myFriend, useCase.friendRandomUsers)
             .map { _ in Void() }
             .subscribe(output.endRefreshLoading)
+            .store(in: cancelBag)
+        
+        useCase.pokedResponse
+            .subscribe(output.pokeResponse)
             .store(in: cancelBag)
     }
 }
