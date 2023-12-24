@@ -18,6 +18,8 @@ public class PokeMyFriendsViewModel:
     PokeMyFriendsViewModelType {
     
     public var showFriendsListButtonTap: ((PokeRelation) -> Void)?
+    public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)?
+    public var onProfileImageTapped: ((Int) -> Void)?
         
     // MARK: - Properties
     
@@ -29,6 +31,8 @@ public class PokeMyFriendsViewModel:
     public struct Input {
         let viewDidLoad: Driver<Void>
         let moreFriendListButtonTap: Driver<PokeRelation>
+        let pokeButtonTap: Driver<PokeUserModel?>
+        let profileImageTap: Driver<PokeUserModel?>
     }
     
     // MARK: - Outputs
@@ -59,6 +63,22 @@ extension PokeMyFriendsViewModel {
             .withUnretained(self)
             .sink { owner, relation in
                 owner.showFriendsListButtonTap?(relation)
+            }.store(in: cancelBag)
+        
+        input.pokeButtonTap
+            .compactMap { $0 }
+            .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel)> in
+                guard let self, let value = self.onPokeButtonTapped?(userModel) else { return .empty() }
+                return value
+            }
+            .sink {[weak self] userModel, messageModel in
+                self?.useCase.poke(userId: userModel.userId, message: messageModel)
+            }.store(in: cancelBag)
+        
+        input.profileImageTap
+            .compactMap { $0 }
+            .sink { [weak self] user in
+                self?.onProfileImageTapped?(user.playgroundId)
             }.store(in: cancelBag)
         
         return output

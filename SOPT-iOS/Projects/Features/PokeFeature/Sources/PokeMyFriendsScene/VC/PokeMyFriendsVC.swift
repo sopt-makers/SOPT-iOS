@@ -119,9 +119,19 @@ extension PokeMyFriendsVC {
                                                        bestFriendsSectionView.headerRightButtonTap,
                                                         soulmateSectionView.headerRightButtonTap).asDriver()
         
+        let pokeButtonTap = Publishers.Merge3(newFriendsSectionView.kokButtonTap,
+                                              bestFriendsSectionView.kokButtonTap,
+                                               soulmateSectionView.kokButtonTap).asDriver()
+        
+        let profileImageTap = Publishers.Merge3(newFriendsSectionView.profileImageTap,
+                                              bestFriendsSectionView.profileImageTap,
+                                               soulmateSectionView.profileImageTap).asDriver()
+        
         let input = PokeMyFriendsViewModel.Input(
             viewDidLoad: Just(()).asDriver(),
-            moreFriendListButtonTap: moreFriendListButtonTap)
+            moreFriendListButtonTap: moreFriendListButtonTap,
+            pokeButtonTap: pokeButtonTap,
+            profileImageTap: profileImageTap)
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
         

@@ -37,6 +37,13 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
             self?.showPokeMyFriendsList(with: relation)
         }
         
+        pokeMyFriends.vm.onProfileImageTapped = { [weak self] playgroundId in
+            guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(playgroundId)") else { return }
+            
+            let webView = SOPTWebView(startWith: url)
+            self?.router.push(webView)
+        }
+        
         router.push(pokeMyFriends.vc)
     }
     
