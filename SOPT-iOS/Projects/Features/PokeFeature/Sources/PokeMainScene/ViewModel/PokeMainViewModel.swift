@@ -18,11 +18,12 @@ internal typealias UserId = Int
 
 public class PokeMainViewModel:
     PokeMainViewModelType {
-        
+    
     public var onNaviBackTap: (() -> Void)?
     public var onPokeNotificationsTap: (() -> Void)?
     public var onMyFriendsTap: (() -> Void)?
     public var onProfileImageTapped: ((Int) -> Void)?
+    public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)?
     
     // MARK: - Properties
     
@@ -88,27 +89,29 @@ extension PokeMainViewModel {
                 self?.onMyFriendsTap?()
             }.store(in: cancelBag)
         
+        // 답장
         input.pokedSectionKokButtonTap
             .compactMap { $0 }
             .sink { user in
                 print("찌르기 - \(user)")
+                // 성공하면 로티
             }.store(in: cancelBag)
         
+        // 먼저 찌르기
         input.friendSectionKokButtonTap
+            .merge(with: input.nearbyFriendsSectionKokButtonTap)
             .compactMap { $0 }
-            .sink { user in
-                print("찌르기 - \(user)")
-            }.store(in: cancelBag)
-        
-        input.nearbyFriendsSectionKokButtonTap
-            .compactMap { $0 }
-            .sink { user in
-                print("찌르기 - \(user)")
+            .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel)> in
+                guard let self, let value = self.onPokeButtonTapped?(userModel) else { return .empty() }
+                return value
+            }
+            .sink {[weak self] userModel, messageModel in
+//                self?.useCase.poke(userId: userModel.userId, message: messageModel)
             }.store(in: cancelBag)
         
         input.profileImageTap
             .compactMap { $0 }
-            .sink { [weak self] user in           
+            .sink { [weak self] user in
                 self?.onProfileImageTapped?(user.playgroundId)
             }.store(in: cancelBag)
         

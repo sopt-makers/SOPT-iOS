@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 import BaseFeatureDependency
@@ -53,6 +54,11 @@ final class PokeCoordinator: DefaultCoordinator {
             self?.rootController?.pushViewController(webView, animated: true)
         }
         
+        pokeMain.vm.onPokeButtonTapped = { [weak self] userModel in
+            guard let self else { return .empty() }
+            return self.showMessageBottomSheet(userModel: userModel, isReplyToNewPerson: false, on: pokeMain.vc.viewController)
+        }
+        
         rootController = pokeMain.vc.asNavigationController
         router.present(rootController, animated: true, modalPresentationSytle: .overFullScreen)
     }
@@ -84,5 +90,29 @@ final class PokeCoordinator: DefaultCoordinator {
         
         addDependency(pokeMyFriendsCoordinator)
         pokeMyFriendsCoordinator.start()
+    }
+    
+    private func showMessageBottomSheet(userModel: PokeUserModel, isReplyToNewPerson: Bool, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel), Never> {
+        var messageType: PokeMessageType = userModel.isFirstMeet ? .pokeSomeone : .pokeFriend
+        if isReplyToNewPerson {
+            messageType = .replyNew
+        }
+        
+        guard let bottomSheet = self.factory
+            .makePokeMessageTemplateBottomSheet(messageType: messageType)
+                .vc
+                .viewController as? PokeMessageTemplateBottomSheet
+        else { return .empty() }
+        
+        let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate())
+        
+        self.router.showBottomSheet(manager: bottomSheetManager,
+                                     toPresent: bottomSheet,
+                                     on: view)
+        
+        return bottomSheet
+            .signalForClick()
+            .map { (userModel, $0) }
+            .asDriver()
     }
 }
