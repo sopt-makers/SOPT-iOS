@@ -157,7 +157,6 @@ extension PokeNotificationListContentView {
         self.descriptionLabel.attributedText = model.description.applyMDSFont()
         self.pokeChipView.configure(with: model.chipInfo)
         self.pokeKokButton.isEnabled = !model.isPoked
-        self.pokeKokButton.setIsFriend(with: !model.isFirstMeet)
     }
     
     public func configure(with model: PokeUserModel) {
@@ -169,7 +168,6 @@ extension PokeNotificationListContentView {
         self.descriptionLabel.attributedText = model.message.applyMDSFont()
         self.pokeChipView.configure(with: model.makeChipInfo())
         self.pokeKokButton.isEnabled = !model.isAlreadyPoke
-        self.pokeKokButton.setIsFriend(with: !model.isFirstMeet)
     }
     
     func setData(with model: PokeUserModel) {

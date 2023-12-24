@@ -110,7 +110,6 @@ public final class PokeProfileCardView: UIView, PokeCompatible {
         self.nameLabel.text = model.name
         self.partLabel.text = String(describing: model.generation) + "기" + " " + model.part
         self.kokButton.isEnabled = !model.isAlreadyPoke
-        self.kokButton.setIsFriend(with: !model.isFirstMeet)
     }
     
     @discardableResult

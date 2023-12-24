@@ -56,7 +56,7 @@ final class PokeCoordinator: DefaultCoordinator {
         
         pokeMain.vm.onPokeButtonTapped = { [weak self] userModel in
             guard let self else { return .empty() }
-            return self.showMessageBottomSheet(userModel: userModel, isReplyToNewPerson: false, on: pokeMain.vc.viewController)
+            return self.showMessageBottomSheet(userModel: userModel, on: pokeMain.vc.viewController)
         }
         
         rootController = pokeMain.vc.asNavigationController
@@ -92,12 +92,9 @@ final class PokeCoordinator: DefaultCoordinator {
         pokeMyFriendsCoordinator.start()
     }
     
-    private func showMessageBottomSheet(userModel: PokeUserModel, isReplyToNewPerson: Bool, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel), Never> {
+    private func showMessageBottomSheet(userModel: PokeUserModel, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel), Never> {
         var messageType: PokeMessageType = userModel.isFirstMeet ? .pokeSomeone : .pokeFriend
-        if isReplyToNewPerson {
-            messageType = .replyNew
-        }
-        
+
         guard let bottomSheet = self.factory
             .makePokeMessageTemplateBottomSheet(messageType: messageType)
                 .vc

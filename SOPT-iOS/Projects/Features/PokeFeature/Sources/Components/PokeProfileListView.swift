@@ -208,12 +208,6 @@ public final class PokeProfileListView: UIView, PokeCompatible {
         self.dividerView.backgroundColor = color
         return self
     }
-    
-    @discardableResult
-    func setIsFriend(to isFriend: Bool) -> Self {
-        self.kokButton.isFriend = isFriend
-        return self
-    }
 }
 
 extension PokeProfileListView {
