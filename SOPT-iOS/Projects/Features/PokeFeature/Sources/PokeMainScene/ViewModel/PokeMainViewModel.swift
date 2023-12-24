@@ -93,9 +93,12 @@ extension PokeMainViewModel {
         // 답장
         input.pokedSectionKokButtonTap
             .compactMap { $0 }
-            .sink { user in
-                print("찌르기 - \(user)")
-                // 성공하면 로티
+            .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel)> in
+                guard let self, let value = self.onPokeButtonTapped?(userModel) else { return .empty() }
+                return value
+            }
+            .sink { [weak self] userModel, messageModel in
+                self?.useCase.poke(userId: userModel.userId, message: messageModel, willBeNewFriend: userModel.isFirstMeet)
             }.store(in: cancelBag)
         
         // 먼저 찌르기
@@ -106,8 +109,8 @@ extension PokeMainViewModel {
                 guard let self, let value = self.onPokeButtonTapped?(userModel) else { return .empty() }
                 return value
             }
-            .sink {[weak self] userModel, messageModel in
-                self?.useCase.poke(userId: userModel.userId, message: messageModel)
+            .sink { [weak self] userModel, messageModel in
+                self?.useCase.poke(userId: userModel.userId, message: messageModel, willBeNewFriend: false)
             }.store(in: cancelBag)
         
         input.profileImageTap
