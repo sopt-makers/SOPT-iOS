@@ -25,6 +25,7 @@ public class PokeMyFriendsViewModel:
     
     private let useCase: PokeMyFriendsUseCase
     private var cancelBag = CancelBag()
+    private var myFriends: PokeMyFriendsModel?
     
     // MARK: - Inputs
     
@@ -88,5 +89,19 @@ extension PokeMyFriendsViewModel {
         useCase.myFriends
             .subscribe(output.myFriends)
             .store(in: cancelBag)
+        
+        useCase.myFriends
+            .sink { [weak self] myFriends in
+                self?.myFriends = myFriends
+            }.store(in: cancelBag)
+        
+        useCase.pokedResponse
+            .withUnretained(self)
+            .sink { owner, user in
+                owner.myFriends = owner.myFriends?.replaceUser(newUserModel: user)
+                if let myFriends = owner.myFriends {
+                    output.myFriends.send(myFriends)
+                }
+            }.store(in: cancelBag)
     }
 }
