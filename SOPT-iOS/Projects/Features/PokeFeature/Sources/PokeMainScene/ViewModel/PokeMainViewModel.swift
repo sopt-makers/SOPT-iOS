@@ -24,6 +24,7 @@ public class PokeMainViewModel:
     public var onMyFriendsTap: (() -> Void)?
     public var onProfileImageTapped: ((Int) -> Void)?
     public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)?
+    public var onNewFriendMade: ((String) -> Void)?
     
     // MARK: - Properties
     
@@ -156,5 +157,10 @@ extension PokeMainViewModel {
         useCase.pokedResponse
             .subscribe(output.pokeResponse)
             .store(in: cancelBag)
+        
+        useCase.madeNewFriend
+            .sink { [weak self] userModel in
+                self?.onNewFriendMade?(userModel.name)
+            }.store(in: cancelBag)
     }
 }

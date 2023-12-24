@@ -59,6 +59,13 @@ final class PokeCoordinator: DefaultCoordinator {
             return self.showMessageBottomSheet(userModel: userModel, on: pokeMain.vc.viewController)
         }
         
+        pokeMain.vm.onNewFriendMade = { [weak self] friendName in
+            guard let self else { return }
+            let pokeMakingFriendCompletedVC = self.factory.makePokeMakingFriendCompleted(friendName: friendName).viewController
+            pokeMakingFriendCompletedVC.modalPresentationStyle = .overFullScreen
+            pokeMain.vc.viewController.present(pokeMakingFriendCompletedVC, animated: false)
+        }
+        
         rootController = pokeMain.vc.asNavigationController
         router.present(rootController, animated: true, modalPresentationSytle: .overFullScreen)
     }
@@ -93,7 +100,7 @@ final class PokeCoordinator: DefaultCoordinator {
     }
     
     private func showMessageBottomSheet(userModel: PokeUserModel, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel), Never> {
-        var messageType: PokeMessageType = userModel.isFirstMeet ? .pokeSomeone : .pokeFriend
+        let messageType: PokeMessageType = userModel.isFirstMeet ? .pokeSomeone : .pokeFriend
 
         guard let bottomSheet = self.factory
             .makePokeMessageTemplateBottomSheet(messageType: messageType)
