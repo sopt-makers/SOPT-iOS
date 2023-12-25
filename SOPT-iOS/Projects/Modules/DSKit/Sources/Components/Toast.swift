@@ -10,8 +10,13 @@ import UIKit
 import SnapKit
 
 public extension UIViewController {
+    @available(*, deprecated, message: "Use MDS toast")
     func showToast(message: String) {
         Toast.show(message: message, view: self.view, safeAreaBottomInset: self.safeAreaBottomInset())
+    }
+    
+    func showMDSToast(type: MDSToast.ToastType, text: String, linkButtonAction: (() -> Void)? = nil) {
+        Toast.showMDSToast(type: type, text: text, linkButtonAction: linkButtonAction)
     }
 }
 
@@ -62,5 +67,33 @@ public class Toast {
                 toastContainer.removeFromSuperview()
             })
         })
+    }
+    
+    public static func showMDSToast(type: MDSToast.ToastType, text: String, linkButtonAction: (() -> Void)? = nil) {
+        let toast = MDSToast(type: type, text: text, linkButtonAction: linkButtonAction)
+        
+        guard let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene else { return }
+        guard let window = scene.windows.first(where: { $0.isKeyWindow }) else { return }
+        
+        window.addSubview(toast)
+        
+        let toastHeight = 48.f
+        
+        let toastStartingInset = window.safeAreaInsets.top + toastHeight
+        
+        toast.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.top.equalTo(window.safeAreaLayoutGuide).inset(-toastStartingInset)
+        }
+        
+        UIView.animate(withDuration: 0.5) {
+            toast.transform = CGAffineTransform(translationX: 0, y: toastStartingInset + 16.f)
+        } completion: { _ in
+            UIView.animate(withDuration: 0.5, delay: 4.0, animations: {
+                toast.transform = .identity
+            }) { _ in
+                toast.removeFromSuperview()
+            }
+        }
     }
 }
