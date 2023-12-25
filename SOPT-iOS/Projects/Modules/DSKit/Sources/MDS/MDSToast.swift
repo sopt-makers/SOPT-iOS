@@ -56,7 +56,7 @@ public class MDSToast: UIView {
     
     // MARK: - initialization
     
-    init(type: ToastType, text: String, linkButtonAction: (() -> Void)? = nil) {
+    public init(type: ToastType, text: String, linkButtonAction: (() -> Void)? = nil) {
         self.type = type
         self.text = text
         self.linkButtonAction = linkButtonAction
