@@ -92,7 +92,7 @@ public class Toast {
             toast.superview?.layoutIfNeeded()
         } completion: { _ in
             // 2. 토스트를 천천히 아래로 내린다. (화면에 등장)
-            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut) {
+            UIView.animate(withDuration: 0.5) {
                 toast.snp.updateConstraints { make in
                     make.top.equalTo(window.safeAreaLayoutGuide).inset(16)
                 }
