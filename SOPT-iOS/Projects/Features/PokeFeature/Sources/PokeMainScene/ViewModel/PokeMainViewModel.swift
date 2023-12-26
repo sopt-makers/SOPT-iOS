@@ -44,6 +44,7 @@ public class PokeMainViewModel:
         let nearbyFriendsSectionKokButtonTap: Driver<PokeUserModel?>
         let refreshRequest: Driver<Void>
         let profileImageTap: Driver<PokeUserModel?>
+        let randomUserSectionFriendProfileImageTap: Driver<Int?>
     }
     
     // MARK: - Outputs
@@ -119,6 +120,12 @@ extension PokeMainViewModel {
             .compactMap { $0 }
             .sink { [weak self] user in
                 self?.onProfileImageTapped?(user.playgroundId)
+            }.store(in: cancelBag)
+        
+        input.randomUserSectionFriendProfileImageTap
+            .compactMap { $0 }
+            .sink { [weak self] playgroundId in
+                self?.onProfileImageTapped?(playgroundId)
             }.store(in: cancelBag)
         
         return output

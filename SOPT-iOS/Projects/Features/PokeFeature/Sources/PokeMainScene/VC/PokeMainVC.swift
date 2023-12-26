@@ -87,7 +87,7 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
     }
     
     private let refreshControl = UIRefreshControl()
-
+    
     // MARK: - initialization
     
     public init(viewModel: PokeMainViewModel) {
@@ -119,7 +119,7 @@ extension PokeMainVC {
     }
     
     private func setStackView() {
-        self.contentStackView.addArrangedSubviews(pokedSectionGroupView, 
+        self.contentStackView.addArrangedSubviews(pokedSectionGroupView,
                                                   friendSectionGroupView,
                                                   recommendPokeLabel,
                                                   firstProfileCardGroupView,
@@ -211,6 +211,11 @@ extension PokeMainVC {
                                                 firstProfileCardGroupView.profileImageTap,
                                                 secondProfileCardGroupView.profileImageTap).asDriver()
         
+        let randomUserSectionFriendProfileImageTap = Publishers.Merge(
+            firstProfileCardGroupView.friendProfileImageTap,
+            secondProfileCardGroupView.friendProfileImageTap
+        ).asDriver()
+        
         let input = PokeMainViewModel
             .Input(
                 viewDidLoad: Just(()).asDriver(),
@@ -230,7 +235,8 @@ extension PokeMainVC {
                     .merge(with: secondProfileCardGroupView.kokButtonTap)
                     .asDriver(),
                 refreshRequest: refreshControl.publisher(for: .valueChanged).mapVoid().asDriver(),
-                profileImageTap: profileImageTap
+                profileImageTap: profileImageTap,
+                randomUserSectionFriendProfileImageTap: randomUserSectionFriendProfileImageTap
             )
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
@@ -271,9 +277,9 @@ extension PokeMainVC {
             .withUnretained(self)
             .sink { owner, updatedUser in
                 let pokeUserViews = [owner.pokedUserContentView,
-                             owner.friendSectionContentView,
-                             owner.firstProfileCardGroupView,
-                             owner.secondProfileCardGroupView]
+                                     owner.friendSectionContentView,
+                                     owner.firstProfileCardGroupView,
+                                     owner.secondProfileCardGroupView]
                     .compactMap { $0 as? PokeCompatible }
                 
                 pokeUserViews.forEach { pokeUserView in
