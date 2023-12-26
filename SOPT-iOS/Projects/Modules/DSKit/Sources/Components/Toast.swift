@@ -7,7 +7,7 @@
 
 import UIKit
 
-import SnapKit
+import Core
 
 public extension UIViewController {
     @available(*, deprecated, message: "Use MDS toast")
@@ -15,8 +15,8 @@ public extension UIViewController {
         Toast.show(message: message, view: self.view, safeAreaBottomInset: self.safeAreaBottomInset())
     }
     
-    func showMDSToast(type: MDSToast.ToastType, text: String, linkButtonAction: (() -> Void)? = nil) {
-        Toast.showMDSToast(type: type, text: text, linkButtonAction: linkButtonAction)
+    func showMDSToast(type: MDSToast.ToastType, text: String, actionButtonAction: (() -> Void)? = nil) {
+        Toast.showMDSToast(type: type, text: text, actionButtonAction: actionButtonAction)
     }
 }
 
@@ -69,8 +69,8 @@ public class Toast {
         })
     }
     
-    public static func showMDSToast(type: MDSToast.ToastType, text: String, linkButtonAction: (() -> Void)? = nil) {
-        let toast = MDSToast(type: type, text: text, linkButtonAction: linkButtonAction)
+    public static func showMDSToast(type: MDSToast.ToastType, text: String, actionButtonAction: (() -> Void)? = nil) {
+        let toast = MDSToast(type: type, text: text, actionButtonAction: actionButtonAction)
         
         guard let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene else { return }
         guard let window = scene.windows.first(where: { $0.isKeyWindow }) else { return }

@@ -17,7 +17,7 @@ public class MDSToast: UIView {
     
     private let type: ToastType
     private let text: String
-    private var linkButtonAction: (() -> Void)?
+    private var actionButtonAction: (() -> Void)?
     private let cancelBag = CancelBag()
     
     // MARK: - UI Components
@@ -33,7 +33,7 @@ public class MDSToast: UIView {
         return label
     }()
     
-    private let linkButton: UIButton = {
+    private let actionButton: UIButton = {
         var config = UIButton.Configuration.plain()
         config.baseBackgroundColor = .clear
         let attributes = AttributeContainer([.font: UIFont.MDS.label3,
@@ -56,14 +56,14 @@ public class MDSToast: UIView {
     
     // MARK: - initialization
     
-    public init(type: ToastType, text: String, linkButtonAction: (() -> Void)? = nil) {
+    public init(type: ToastType, text: String, actionButtonAction: (() -> Void)? = nil) {
         self.type = type
         self.text = text
-        self.linkButtonAction = linkButtonAction
+        self.actionButtonAction = actionButtonAction
         super.init(frame: .zero)
         self.setUI()
         self.setLayout()
-        self.setLinkButtonAction()
+        self.setActionButtonAction()
     }
     
     required init?(coder: NSCoder) {
@@ -86,7 +86,7 @@ public class MDSToast: UIView {
         case .default:
             containerStackView.addArrangedSubviews(contentLabel)
         case .actionButton:
-            containerStackView.addArrangedSubviews(toastIconImageView, contentLabel, linkButton)
+            containerStackView.addArrangedSubviews(toastIconImageView, contentLabel, actionButton)
         default:
             containerStackView.addArrangedSubviews(toastIconImageView, contentLabel)
         }
@@ -99,7 +99,7 @@ public class MDSToast: UIView {
             make.width.height.equalTo(20)
         }
         
-        linkButton.snp.contentHuggingHorizontalPriority = 999
+        actionButton.snp.contentHuggingHorizontalPriority = 999
         
         containerStackView.snp.makeConstraints { make in
             make.center.equalToSuperview()
@@ -108,11 +108,11 @@ public class MDSToast: UIView {
         }
     }
     
-    private func setLinkButtonAction() {
-        self.linkButton
+    private func setActionButtonAction() {
+        self.actionButton
             .publisher(for: .touchUpInside)
             .sink { [weak self] _ in
-                self?.linkButtonAction?()
+                self?.actionButtonAction?()
             }.store(in: cancelBag)
     }
 }
@@ -125,12 +125,16 @@ public extension MDSToast {
         case error
         case actionButton
         
-        var icon: UIImage {
+        var icon: UIImage? {
             switch self {
+            case .success, .actionButton:
+                return DSKitAsset.Assets.toastSuccess.image
             case .alert:
                 return DSKitAsset.Assets.toastAlert.image
-            default: // TODO: MDS 피그마 export 권한 생기면 추가 예정
-                return DSKitAsset.Assets.toastAlert.image
+            case .error:
+                return DSKitAsset.Assets.toastError.image
+            default:
+                return nil
             }
         }
     }
