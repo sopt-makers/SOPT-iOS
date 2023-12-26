@@ -35,7 +35,7 @@ extension PokeMyFriendsRepository: PokeMyFriendsRepositoryInterface {
             .eraseToAnyPublisher()
     }
     
-    public func poke(userId: Int, message: String) -> AnyPublisher<Domain.PokeUserModel, Error> {
+    public func poke(userId: Int, message: String) -> AnyPublisher<Domain.PokeUserModel, PokeError> {
         self.pokeService
             .poke(userId: userId, message: message)
             .map { $0.toDomain() }

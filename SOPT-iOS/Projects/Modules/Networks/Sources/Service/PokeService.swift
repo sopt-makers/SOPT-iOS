@@ -10,6 +10,7 @@ import Foundation
 import Combine
 
 import Moya
+import Domain
 
 public typealias DefaultPokeService = BaseService<PokeAPI>
 
@@ -22,7 +23,7 @@ public protocol PokeService {
     func getFriendList(relation: String, page: Int) -> AnyPublisher<PokeMyFriendsListEntity, Error>
     func getRandomUsers() -> AnyPublisher<[PokeUserEntity], Error>
     func getPokeMessages(messageType: String) -> AnyPublisher<PokeMessagesEntity, Error>
-    func poke(userId: Int, message: String) -> AnyPublisher<PokeUserEntity, Error>
+    func poke(userId: Int, message: String) -> AnyPublisher<PokeUserEntity, PokeError>
 }
 
 extension DefaultPokeService: PokeService {
@@ -58,9 +59,25 @@ extension DefaultPokeService: PokeService {
         requestObjectInCombine(.getPokeMessages(messageType: messageType))
     }
     
-    public func poke(userId: Int, message: String) -> AnyPublisher<PokeUserEntity, Error> {
+    public func poke(userId: Int, message: String) -> AnyPublisher<PokeUserEntity, PokeError> {
         let params: [String: Any] = ["message": message]
         
-        return requestObjectInCombine(.poke(userId: String(describing: userId), params: params))
+        return requestObjectWithNetworkErrorInCombine(.poke(userId: String(describing: userId), params: params))
+            .mapError { error in
+                guard let apiError = error as? APIError else {
+                    return PokeError.networkError
+                }
+                
+                switch apiError {
+                case .network(let statusCode, let response):
+                    if statusCode == 400 {
+                        return PokeError.exceedTodayPokeCount(message: response.responseMessage)
+                    }
+                    
+                    return PokeError.unknown(message: response.responseMessage)
+                default:
+                    return PokeError.networkError
+                }
+            }.eraseToAnyPublisher()
     }
 }

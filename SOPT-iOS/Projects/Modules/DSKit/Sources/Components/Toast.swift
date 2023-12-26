@@ -9,17 +9,6 @@ import UIKit
 
 import Core
 
-public extension UIViewController {
-    @available(*, deprecated, message: "Use MDS toast")
-    func showToast(message: String) {
-        Toast.show(message: message, view: self.view, safeAreaBottomInset: self.safeAreaBottomInset())
-    }
-    
-    func showMDSToast(type: MDSToast.ToastType, text: String, actionButtonAction: (() -> Void)? = nil) {
-        Toast.showMDSToast(type: type, text: text, actionButtonAction: actionButtonAction)
-    }
-}
-
 public class Toast {
     public static func show(
         message: String,

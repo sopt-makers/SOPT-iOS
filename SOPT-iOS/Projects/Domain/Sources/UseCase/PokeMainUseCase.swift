@@ -16,6 +16,7 @@ public protocol PokeMainUseCase {
     var friendRandomUsers: PassthroughSubject<[PokeFriendRandomUserModel], Never> { get }
     var pokedResponse: PassthroughSubject<PokeUserModel, Never> { get }
     var madeNewFriend: PassthroughSubject<PokeUserModel, Never> { get }
+    var errorMessage: PassthroughSubject<String?, Never> { get }
     
     func getWhoPokedToMe()
     func getFriend()
@@ -32,7 +33,8 @@ public class DefaultPokeMainUseCase {
     public let friendRandomUsers = PassthroughSubject<[PokeFriendRandomUserModel], Never>()
     public let pokedResponse = PassthroughSubject<PokeUserModel, Never>()
     public let madeNewFriend = PassthroughSubject<PokeUserModel, Never>()
-
+    public let errorMessage = PassthroughSubject<String?, Never>()
+    
     public init(repository: PokeMainRepositoryInterface) {
         self.repository = repository
     }
@@ -72,9 +74,11 @@ extension DefaultPokeMainUseCase: PokeMainUseCase {
     public func poke(userId: Int, message: PokeMessageModel, willBeNewFriend: Bool) {
         self.repository
             .poke(userId: userId, message: message.content)
-            .sink { event in
-                print("Poke State: \(event)")
-            } receiveValue: { [weak self] user in
+            .catch { [weak self] error in
+                let message = error.toastMessage
+                self?.errorMessage.send(message)
+                return Empty<PokeUserModel, Never>()
+            }.sink { [weak self] user in
                 self?.pokedResponse.send(user)
                 if willBeNewFriend {
                     self?.madeNewFriend.send(user)

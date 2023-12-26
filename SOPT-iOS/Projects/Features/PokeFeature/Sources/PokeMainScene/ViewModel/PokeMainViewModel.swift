@@ -13,6 +13,7 @@ import Core
 import Domain
 
 import PokeFeatureInterface
+import BaseFeatureDependency
 
 internal typealias UserId = Int
 
@@ -161,6 +162,12 @@ extension PokeMainViewModel {
         useCase.madeNewFriend
             .sink { [weak self] userModel in
                 self?.onNewFriendMade?(userModel.name)
+            }.store(in: cancelBag)
+        
+        useCase.errorMessage
+            .compactMap { $0 }
+            .sink { message in
+                ToastUtils.showMDSToast(type: .alert, text: message)
             }.store(in: cancelBag)
     }
 }
