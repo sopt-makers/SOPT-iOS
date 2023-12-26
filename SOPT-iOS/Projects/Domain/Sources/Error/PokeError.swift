@@ -23,7 +23,7 @@ public extension PokeError {
         case .duplicatePoke(let message):
             return message
         default:
-            return nil
+            return "콕 찌르기 실패"
         }
     }
 }
