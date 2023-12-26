@@ -184,7 +184,7 @@ extension PokeMainVC {
     
     private func setFriendRandomUsers(with randomUsers: [PokeFriendRandomUserModel]) {
         let profileCardGroupViews = [firstProfileCardGroupView, secondProfileCardGroupView]
-        
+        recommendPokeLabel.isHidden = randomUsers.isEmpty
         for (i, profileCardGroupView) in profileCardGroupViews.enumerated() {
             let randomUser = randomUsers[safe: i]
             profileCardGroupView.isHidden = (randomUser == nil)
