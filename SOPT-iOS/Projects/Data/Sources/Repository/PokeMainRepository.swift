@@ -44,6 +44,7 @@ extension PokeMainRepository: PokeMainRepositoryInterface {
     public func poke(userId: Int, message: String) -> AnyPublisher<Domain.PokeUserModel, PokeError> {
         self.pokeService
             .poke(userId: userId, message: message)
+            .mapErrorToPokeError()
             .map { $0.toDomain() }
             .eraseToAnyPublisher()
     }
