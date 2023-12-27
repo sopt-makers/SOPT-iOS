@@ -18,7 +18,7 @@ public final class PokeMessageTemplateViewModel: PokeMessageTemplatesViewModelTy
     public var messageType: PokeMessageType
     
     public struct Input {
-        let viewWillAppear: Driver<Void>
+        let viewDidLoaded: Driver<Void>
     }
     
     public struct Output {
@@ -38,7 +38,7 @@ extension PokeMessageTemplateViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
             
-        input.viewWillAppear
+        input.viewDidLoaded
             .sink(receiveValue: { [weak self] _ in
                 guard let self = self else { return }
                 self.usecase.getPokeMessageTemplates(type: self.messageType)

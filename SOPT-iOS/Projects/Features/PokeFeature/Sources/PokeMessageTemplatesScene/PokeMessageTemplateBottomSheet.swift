@@ -49,7 +49,7 @@ public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessage
     private let viewModel: PokeMessageTemplateViewModel
     
     // MARK: Combine
-    private let viewWillAppear = PassthroughSubject<Void, Never>()
+    private let viewDidLoaded = PassthroughSubject<Void, Never>()
     private let messageModelSubject = PassthroughSubject<PokeMessageModel, Error>()
     private var cancelBag = CancelBag()
     
@@ -63,6 +63,8 @@ public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessage
         self.initializeViews()
         self.setupConstraints()
         self.bindViewModels()
+        
+        self.viewDidLoaded.send(())
     }
     
     required init?(coder: NSCoder) {
@@ -72,7 +74,6 @@ public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessage
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.viewWillAppear.send(())
     }
 }
 
@@ -127,7 +128,7 @@ extension PokeMessageTemplateBottomSheet {
 // MARK: - ViewModel Methods
 extension PokeMessageTemplateBottomSheet {
     private func bindViewModels() {
-        let input = PokeMessageTemplateViewModel.Input(viewWillAppear: self.viewWillAppear.asDriver())
+        let input = PokeMessageTemplateViewModel.Input(viewDidLoaded: self.viewDidLoaded.asDriver())
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output
