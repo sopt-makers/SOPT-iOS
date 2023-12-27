@@ -54,10 +54,10 @@ extension PokeOnboardingViewModel {
             }).store(in: cancelBag)
         
         input.viewDidLoaded
-            .map { _ in UserDefaultKeyList.User.isFirstVisitToPokeView ?? true }
+            .map { _ in UserDefaultKeyList.User.isFirstVisitToPokeOnboardingView ?? true }
             .sink(receiveValue: { [weak self] isFirstVisit in
                 guard isFirstVisit else { return }
-                UserDefaultKeyList.User.isFirstVisitToPokeView = false
+                UserDefaultKeyList.User.isFirstVisitToPokeOnboardingView = false
                 self?.onFirstVisitInOnboarding?()
             }).store(in: cancelBag)
         
