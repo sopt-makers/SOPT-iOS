@@ -31,7 +31,7 @@ extension PokeOnboardingRepository: PokeOnboardingRepositoryInterface {
     public func getMesseageTemplates(type: PokeMessageType) -> AnyPublisher<PokeMessagesModel, Error> {
         self.pokeService
             .getPokeMessages(messageType: type.rawValue)
-            .map { $0.messages.map { $0.toDomain() } }
+            .map { $0.toDomain() }
             .eraseToAnyPublisher()
     }
 
