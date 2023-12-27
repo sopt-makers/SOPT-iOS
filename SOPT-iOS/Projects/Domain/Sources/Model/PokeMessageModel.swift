@@ -9,7 +9,13 @@
 import Foundation
 
 public struct PokeMessagesModel: Decodable {
+    public let header: String
     public let messages: [PokeMessageModel]
+    
+    public init(header: String, messages: [PokeMessageModel]) {
+        self.header = header
+        self.messages = messages
+    }
 }
 
 public struct PokeMessageModel: Decodable {

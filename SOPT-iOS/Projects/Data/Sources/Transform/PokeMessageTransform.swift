@@ -10,6 +10,12 @@ import Domain
 
 import Networks
 
+extension PokeMessagesEntity {
+    public func toDomain() -> PokeMessagesModel {
+        return PokeMessagesModel(header: header, messages: messages.map { $0.toDomain() })
+    }
+}
+
 extension PokeMessageEntity {
     public func toDomain() -> PokeMessageModel {
         return PokeMessageModel(

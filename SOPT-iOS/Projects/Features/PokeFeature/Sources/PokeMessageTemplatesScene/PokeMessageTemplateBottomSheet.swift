@@ -102,8 +102,9 @@ extension PokeMessageTemplateBottomSheet {
 }
 
 extension PokeMessageTemplateBottomSheet {
-    func configure(with messages: [PokeMessageModel]) {
-        messages.forEach {
+    func configure(with messagesModel: PokeMessagesModel) {
+        self.messegeTemplateTitleLabel.text = messagesModel.header
+        messagesModel.messages.forEach {
             let bottomsheetContentView = PokeBottomSheetMessageView(frame: self.view.frame)
             bottomsheetContentView.configure(with: $0)
             bottomsheetContentView
