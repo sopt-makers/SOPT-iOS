@@ -8,6 +8,6 @@
 
 import Combine
 
-public protocol PokeNotificationRepositoryInterface {
+public protocol PokeNotificationRepositoryInterface: PokeRepositoryInterface {
     func getWhoPokedMeList(page: Int) -> AnyPublisher<(users: [PokeUserModel], page: Int), Error>
 }

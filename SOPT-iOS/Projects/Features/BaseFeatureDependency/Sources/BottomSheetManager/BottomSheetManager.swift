@@ -43,6 +43,8 @@ extension BottomSheetManager {
         sheet.largestUndimmedDetentIdentifier = .none
         sheet.prefersGrabberVisible = true
         
-        view?.present(viewController, animated: true)
+        view?.present(viewController, animated: true) ?? UIApplication
+            .getMostTopViewController()?
+            .present(viewController, animated: true)
     }
 }
