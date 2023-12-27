@@ -12,6 +12,7 @@ import UIKit
 
 import Core
 import DSKit
+import Domain
 
 public final class PokeNotificationContentCell: UITableViewCell {
     private enum Metric {
@@ -59,11 +60,11 @@ extension PokeNotificationContentCell {
 }
 
 extension PokeNotificationContentCell {
-    public func configure(with model: NotificationListContentModel) {
+    public func configure(with model: PokeUserModel) {
         self.notificationListContentView.configure(with: model)
     }
     
-    public func signalForClick() -> Driver<Int?> {
+    public func signalForClick() -> Driver<PokeUserModel> {
         self.notificationListContentView.signalForPokeButtonClicked()
     }
 }

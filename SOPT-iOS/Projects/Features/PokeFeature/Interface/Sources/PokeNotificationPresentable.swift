@@ -14,6 +14,7 @@ public protocol PokeNotificationViewControllable: ViewControllable { }
 
 public protocol PokeNotificationCoordinatable {
     var onNaviBackTapped: (() -> Void)? { get set }
+    var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)? { get set }
 }
 
 public typealias PokeNotificationViewModelType = ViewModelType & PokeNotificationCoordinatable

@@ -131,7 +131,23 @@ extension PokeNotificationViewController {
     }
     
     private func bindViews() {
-        
+        self.tableView
+            .publisher(for: \.contentOffset)
+            .map { [weak self] offset in
+                guard 
+                    !offset.y.isZero,
+                    let tableView = self?.tableView,
+                    tableView.contentOffset.y >= tableView.contentSize.height - tableView.frame.size.height
+                else { return false }
+                
+                return true
+            }
+            .removeDuplicates()
+            .sink(receiveValue: { [weak self] reachedToBottom in
+                guard reachedToBottom else { return }
+                
+                self?.reachToBottomSubject.send(())
+            }).store(in: self.cancelBag)
     }
     
     private func bindViewModels() {
@@ -146,7 +162,19 @@ extension PokeNotificationViewController {
         output
             .pokeToMeHistoryList
             .sink(receiveValue: { [weak self] userModels in
-                self?.userModels = userModels
+                self?.userModels.append(contentsOf: userModels)
+                self?.tableView.reloadData()
+            }).store(in: self.cancelBag)
+        
+        output
+            .pokedResult
+            .asDriver()
+            .sink(receiveValue: { [weak self] pokedResult in
+                guard 
+                    let pokedUserIndex = self?.userModels.firstIndex(where: { $0.userId == pokedResult.userId })
+                else { return }
+                
+                self?.userModels[pokedUserIndex] = pokedResult
                 self?.tableView.reloadData()
             }).store(in: self.cancelBag)
     }
@@ -167,26 +195,13 @@ extension PokeNotificationViewController: UITableViewDataSource {
             let model = self.userModels[safe: indexPath.item]
         else { return UITableViewCell() }
         
-        cell.configure(
-            with: .init(
-                userId: model.userId,
-                avatarUrl: model.profileImage,
-                pokeRelation: model.pokeRelation,
-                name: model.name,
-                partInfomation: model.part,
-                description: model.message,
-                chipInfo: model.mutualRelationMessage,
-                isPoked: model.isAlreadyPoke,
-                isFirstMeet: model.isFirstMeet
-            )
-        )
-        
+        cell.configure(with: model)
+
         cell.signalForClick()
-            .sink(receiveValue: { [weak self] _ in
-//                self?.pokedActionSubject.send(<#T##input: PokeUserModel##PokeUserModel#>)
+            .sink(receiveValue: { [weak self] userModel in
+                self?.pokedActionSubject.send(userModel)
             }).store(in: cell.cancelBag)
         
         return cell
     }
-    
 }

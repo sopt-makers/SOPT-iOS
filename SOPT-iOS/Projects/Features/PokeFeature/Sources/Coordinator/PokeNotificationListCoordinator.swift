@@ -32,8 +32,24 @@ public final class PokeNotificationListCoordinator: DefaultCoordinator {
 
 extension PokeNotificationListCoordinator {
     private func showPokeNotificationListView() {
-        let viewController = self.factory.makePokeNotificationList()
-     
+        var viewController = self.factory.makePokeNotificationList()
+                    
+        viewController.vm.onPokeButtonTapped = { [weak self] userModel in
+            guard let bottomSheet = self?.factory
+                .makePokeMessageTemplateBottomSheet(messageType: .pokeSomeone)
+                    .vc
+                    .viewController as? PokeMessageTemplateBottomSheet
+            else { return .empty() }
+            
+            let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate())
+            bottomSheetManager.present(toPresent: bottomSheet, on: self?.rootController)
+            
+            return bottomSheet
+                .signalForClick()
+                .map { (userModel, $0) }
+                .asDriver()
+        }
+        
         self.rootController = viewController.vc.asNavigationController
         self.router.push(viewController.vc)
     }

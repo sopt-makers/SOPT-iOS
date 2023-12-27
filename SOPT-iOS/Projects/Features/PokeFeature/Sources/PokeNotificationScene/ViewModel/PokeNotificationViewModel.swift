@@ -22,11 +22,14 @@ public final class PokeNotificationViewModel: PokeNotificationViewModelType {
     
     public struct Output {
         let pokeToMeHistoryList = PassthroughSubject<[PokeUserModel], Never>()
+        let pokedResult = PassthroughSubject<PokeUserModel, Never>()
     }
     
+    public var onNaviBackTapped: (() -> Void)?
+    public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)?
+
     private let usecase: PokeNotificationUsecase
     private let cancelBag = CancelBag()
-    public var onNaviBackTapped: (() -> Void)?
     
     init(usecase: PokeNotificationUsecase) {
         self.usecase = usecase
@@ -43,7 +46,17 @@ extension PokeNotificationViewModel {
             .sink(receiveValue: { [weak self] _ in
                 self?.usecase.getWhoPokedMeList()
             }).store(in: self.cancelBag)
-
+        
+        input.pokedAction
+            .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel)> in
+                guard let self, let value = self.onPokeButtonTapped?(userModel) else { return .empty() }
+                
+                return value
+            }
+            .sink(receiveValue: { [weak self] userModel, messageModel in
+                self?.usecase.poke(userId: userModel.userId, message: messageModel)
+            }).store(in: cancelBag)
+        
         return output
     }
     
@@ -53,6 +66,13 @@ extension PokeNotificationViewModel {
             .asDriver()
             .sink(receiveValue: { values in
                 output.pokeToMeHistoryList.send(values)
+            }).store(in: cancelBag)
+        
+        self.usecase
+            .pokedResponse
+            .asDriver()
+            .sink(receiveValue: { value in
+                output.pokedResult.send(value)
             }).store(in: cancelBag)
     }
 }

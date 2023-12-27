@@ -149,17 +149,8 @@ extension PokeNotificationListContentView {
 }
 
 extension PokeNotificationListContentView {
-    public func configure(with model: NotificationListContentModel) {
-        self.userId = model.userId
-        self.profileImageView.setImage(with: model.avatarUrl, relation: model.pokeRelation)
-        self.nameLabel.text = model.name
-        self.partInfoLabel.text = model.partInfomation
-        self.descriptionLabel.attributedText = model.description.applyMDSFont()
-        self.pokeChipView.configure(with: model.chipInfo)
-        self.pokeKokButton.isEnabled = !model.isPoked
-    }
-    
     public func configure(with model: PokeUserModel) {
+        self.user = model
         self.user = model
         self.userId = model.userId
         self.profileImageView.setImage(with: model.profileImage, relation: PokeRelation(rawValue: model.relationName) ?? .newFriend)
@@ -180,13 +171,13 @@ extension PokeNotificationListContentView {
         self.setData(with: newUserModel)
     }
     
-    public func poked() {
-        // TBD
+    public func signalForPokeButtonClicked() -> Driver<PokeUserModel> {
+        self.pokeKokButton
+            .tap
+            .compactMap { [weak self] _ in self?.user }
+            .asDriver()
     }
-    
-    public func signalForPokeButtonClicked() -> Driver<Int?> {
-        self.pokeKokButton.tap.map { self.userId }.asDriver()
-    }
+
 }
 
 // NOTE(@승호): MDSFont 적용하고 DSKit으로 옮기고 적용하기.
