@@ -27,7 +27,7 @@ public class PokeMakingFriendCompletedVC: UIViewController, PokeMakingFriendComp
   
     // MARK: - UI Components
     
-    private let lottieView = LottieAnimationView(name: "friendcomplete",
+    private let lottieView = LottieAnimationView(name: "highfive",
                                                  bundle: DSKitResources.bundle)
     
     private let descriptionLabel = UILabel().then {
@@ -67,7 +67,7 @@ public class PokeMakingFriendCompletedVC: UIViewController, PokeMakingFriendComp
     private func setLottie() {
         lottieView.loopMode = .playOnce
         lottieView.contentMode = .scaleAspectFit
-        lottieView.play(toProgress: 0.8) { _ in
+        lottieView.play { _ in
             self.lottieView.stop()
             self.dismiss(animated: false)
         }
