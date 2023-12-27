@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 import Domain
@@ -37,6 +38,18 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
             self?.showPokeMyFriendsList(with: relation)
         }
         
+        pokeMyFriends.vm.onPokeButtonTapped = { [weak self] userModel in
+            guard let self else { return .empty() }
+            return self.showMessageBottomSheet(userModel: userModel, on: pokeMyFriends.vc.viewController)
+        }
+        
+        pokeMyFriends.vm.onProfileImageTapped = { [weak self] playgroundId in
+            guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(playgroundId)") else { return }
+            
+            let webView = SOPTWebView(startWith: url)
+            self?.router.push(webView)
+        }
+        
         router.push(pokeMyFriends.vc)
     }
     
@@ -48,22 +61,8 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
         }
         
         pokeMyFriendsList.vm.onPokeButtonTapped = { [weak self] userModel in
-            guard let bottomSheet = self?.factory
-                .makePokeMessageTemplateBottomSheet(messageType: .pokeFriend)
-                    .vc
-                    .viewController as? PokeMessageTemplateBottomSheet
-            else { return .empty() }
-            
-            let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate())
-            
-            self?.router.showBottomSheet(manager: bottomSheetManager, 
-                                         toPresent: bottomSheet,
-                                         on: pokeMyFriendsList.vc.viewController)
-            
-            return bottomSheet
-                .signalForClick()
-                .map { (userModel, $0) }
-                .asDriver()
+            guard let self else { return .empty() }
+            return self.showMessageBottomSheet(userModel: userModel, on: pokeMyFriendsList.vc.viewController)
         }
         
         pokeMyFriendsList.vm.onProfileImageTapped = { [weak self] playgroundId in
@@ -75,5 +74,24 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
         
         self.rootController = pokeMyFriendsList.vc.asNavigationController
         router.present(rootController, animated: true)
+    }
+    
+    private func showMessageBottomSheet(userModel: PokeUserModel, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel), Never> {
+        guard let bottomSheet = self.factory
+            .makePokeMessageTemplateBottomSheet(messageType: .pokeFriend)
+                .vc
+                .viewController as? PokeMessageTemplateBottomSheet
+        else { return .empty() }
+        
+        let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate())
+        
+        self.router.showBottomSheet(manager: bottomSheetManager,
+                                     toPresent: bottomSheet,
+                                     on: view)
+        
+        return bottomSheet
+            .signalForClick()
+            .map { (userModel, $0) }
+            .asDriver()
     }
 }

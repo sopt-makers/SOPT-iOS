@@ -12,7 +12,7 @@ import DSKit
 import UIKit
 import Domain
 
-final public class PokeNotificationListContentView: UIView {
+final public class PokeNotificationListContentView: UIView, PokeCompatible {
     private enum Metrics {
         static let contentDefaultSpacing = 8.f
         static let leftToCenterContentPadding = 12.f
@@ -80,11 +80,15 @@ final public class PokeNotificationListContentView: UIView {
     private let isDetailView: Bool
     
     private var userId: Int?
-    private var user: PokeUserModel?
+    var user: PokeUserModel?
     
     lazy var kokButtonTap: Driver<PokeUserModel?> = pokeKokButton.tap
         .map { self.user }
         .asDriver()
+    
+    lazy var profileImageTap = profileImageView
+        .tap
+        .map { self.user }
     
     // MARK: - View Lifecycle
     public init(
@@ -153,7 +157,6 @@ extension PokeNotificationListContentView {
         self.descriptionLabel.attributedText = model.description.applyMDSFont()
         self.pokeChipView.configure(with: model.chipInfo)
         self.pokeKokButton.isEnabled = !model.isPoked
-        self.pokeKokButton.setIsFriend(with: !model.isFirstMeet)
     }
     
     public func configure(with model: PokeUserModel) {
@@ -165,7 +168,16 @@ extension PokeNotificationListContentView {
         self.descriptionLabel.attributedText = model.message.applyMDSFont()
         self.pokeChipView.configure(with: model.makeChipInfo())
         self.pokeKokButton.isEnabled = !model.isAlreadyPoke
-        self.pokeKokButton.setIsFriend(with: !model.isFirstMeet)
+    }
+    
+    func setData(with model: PokeUserModel) {
+        self.configure(with: model)
+    }
+    
+    func changeUIAfterPoke(newUserModel: PokeUserModel) {
+        guard let user, user.userId == newUserModel.userId else { return }
+        
+        self.setData(with: newUserModel)
     }
     
     public func poked() {

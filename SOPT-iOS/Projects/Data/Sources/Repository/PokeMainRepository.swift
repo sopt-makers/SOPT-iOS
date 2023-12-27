@@ -40,4 +40,12 @@ extension PokeMainRepository: PokeMainRepositoryInterface {
             .map { $0.map { $0.toDomain() } }
             .eraseToAnyPublisher()
     }
+    
+    public func poke(userId: Int, message: String) -> AnyPublisher<Domain.PokeUserModel, PokeError> {
+        self.pokeService
+            .poke(userId: userId, message: message)
+            .mapErrorToPokeError()
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
 }

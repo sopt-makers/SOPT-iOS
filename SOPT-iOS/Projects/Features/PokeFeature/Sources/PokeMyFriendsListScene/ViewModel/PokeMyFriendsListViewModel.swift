@@ -13,6 +13,7 @@ import Core
 import Domain
 
 import PokeFeatureInterface
+import BaseFeatureDependency
 
 public class PokeMyFriendsListViewModel:
     PokeMyFriendsListViewModelType {
@@ -118,6 +119,12 @@ extension PokeMyFriendsListViewModel {
                 }
                 
                 output.needToReloadFriendList.send()
+            }.store(in: cancelBag)
+        
+        useCase.errorMessage
+            .compactMap { $0 }
+            .sink { message in
+                ToastUtils.showMDSToast(type: .alert, text: message)
             }.store(in: cancelBag)
     }
 }

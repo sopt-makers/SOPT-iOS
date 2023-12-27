@@ -15,12 +15,6 @@ public final class PokeKokButton: UIButton {
     
     // MARK: - Properties
     
-    public var isFriend: Bool {
-        didSet {
-            setIcon()
-        }
-    }
-    
     public lazy var tap: Driver<Void> = self.publisher(for: .touchUpInside)
         .mapVoid()
         .asDriver()
@@ -37,8 +31,7 @@ public final class PokeKokButton: UIButton {
     
     // MARK: - initialization
     
-    public init(isFriend: Bool = true) {
-        self.isFriend = isFriend
+    public init() {
         super.init(frame: .zero)
         self.setUI()
     }
@@ -60,12 +53,8 @@ public final class PokeKokButton: UIButton {
         self.backgroundColor = backgroundColor
     }
     
-    public func setIsFriend(with isFriend: Bool) {
-        self.isFriend = isFriend
-    }
-    
     private func setIcon() {
-        let icon = self.isFriend ? DSKitAsset.Assets.iconKok.image : DSKitAsset.Assets.iconEyes.image
+        let icon = DSKitAsset.Assets.iconKok.image
         self.setImage(icon.withTintColor(DSKitAsset.Colors.black.color), for: .normal)
         self.setImage(icon.withTintColor(DSKitAsset.Colors.gray500.color), for: .disabled)
     }

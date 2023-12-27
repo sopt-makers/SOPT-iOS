@@ -33,7 +33,7 @@ extension SignInRepository: SignInRepositoryInterface {
             .catch ({ error in
                 guard
                     let error = error as? APIError,
-                    case .network(let statusCode) = error,
+                    case .network(let statusCode, _) = error,
                     statusCode == 400
                 else {
                     return self.authService.reissuance()

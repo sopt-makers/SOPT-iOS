@@ -16,6 +16,9 @@ public protocol PokeMainCoordinatable {
     var onNaviBackTap: (() -> Void)? { get set }
     var onPokeNotificationsTap: (() -> Void)? { get set }
     var onMyFriendsTap: (() -> Void)? { get set }
+    var onProfileImageTapped: ((Int) -> Void)? { get set }
+    var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)? { get set }
+    var onNewFriendMade: ((String) -> Void)? { get set }
 }
 
 public typealias PokeMainViewModelType = ViewModelType & PokeMainCoordinatable

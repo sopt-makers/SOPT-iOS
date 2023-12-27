@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 import BaseFeatureDependency
@@ -46,6 +47,25 @@ final class PokeCoordinator: DefaultCoordinator {
             self?.runPokeMyFriendsFlow()
         }
         
+        pokeMain.vm.onProfileImageTapped = { [weak self] playgroundId in
+            guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(playgroundId)") else { return }
+            
+            let webView = SOPTWebView(startWith: url)
+            self?.rootController?.pushViewController(webView, animated: true)
+        }
+        
+        pokeMain.vm.onPokeButtonTapped = { [weak self] userModel in
+            guard let self else { return .empty() }
+            return self.showMessageBottomSheet(userModel: userModel, on: pokeMain.vc.viewController)
+        }
+        
+        pokeMain.vm.onNewFriendMade = { [weak self] friendName in
+            guard let self else { return }
+            let pokeMakingFriendCompletedVC = self.factory.makePokeMakingFriendCompleted(friendName: friendName).viewController
+            pokeMakingFriendCompletedVC.modalPresentationStyle = .overFullScreen
+            pokeMain.vc.viewController.present(pokeMakingFriendCompletedVC, animated: false)
+        }
+        
         rootController = pokeMain.vc.asNavigationController
         router.present(rootController, animated: true, modalPresentationSytle: .overFullScreen)
     }
@@ -77,5 +97,26 @@ final class PokeCoordinator: DefaultCoordinator {
         
         addDependency(pokeMyFriendsCoordinator)
         pokeMyFriendsCoordinator.start()
+    }
+    
+    private func showMessageBottomSheet(userModel: PokeUserModel, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel), Never> {
+        let messageType: PokeMessageType = userModel.isFirstMeet ? .pokeSomeone : .pokeFriend
+
+        guard let bottomSheet = self.factory
+            .makePokeMessageTemplateBottomSheet(messageType: messageType)
+                .vc
+                .viewController as? PokeMessageTemplateBottomSheet
+        else { return .empty() }
+        
+        let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate())
+        
+        self.router.showBottomSheet(manager: bottomSheetManager,
+                                     toPresent: bottomSheet,
+                                     on: view)
+        
+        return bottomSheet
+            .signalForClick()
+            .map { (userModel, $0) }
+            .asDriver()
     }
 }

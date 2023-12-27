@@ -12,7 +12,7 @@ import DSKit
 import Core
 import Domain
 
-public final class PokeProfileListView: UIView {
+public final class PokeProfileListView: UIView, PokeCompatible {
     
     // MARK: - Properties
         
@@ -170,15 +170,19 @@ public final class PokeProfileListView: UIView {
     
     // MARK: - Methods
     
-    @discardableResult
-    func setData(with model: PokeUserModel) -> Self {
+    func setData(with model: PokeUserModel) {
         self.user = model
         self.profileImageView.setImage(with: model.profileImage, relation: model.pokeRelation)
         self.nameLabel.text = model.name
         self.partLabel.text = "\(model.generation)기 \(model.part)"
         self.kokCountLabel.text = "\(model.pokeNum)콕"
         self.kokButton.isEnabled = !model.isAlreadyPoke
-        return self
+    }
+    
+    func changeUIAfterPoke(newUserModel: PokeUserModel) {
+        guard let user, user.userId == newUserModel.userId else { return }
+        
+        self.setData(with: newUserModel)
     }
     
     @discardableResult
@@ -202,12 +206,6 @@ public final class PokeProfileListView: UIView {
     @discardableResult
     func setDividerViewColor(with color: UIColor) -> Self {
         self.dividerView.backgroundColor = color
-        return self
-    }
-    
-    @discardableResult
-    func setIsFriend(to isFriend: Bool) -> Self {
-        self.kokButton.isFriend = isFriend
         return self
     }
 }

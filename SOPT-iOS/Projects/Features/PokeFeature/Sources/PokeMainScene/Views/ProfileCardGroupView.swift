@@ -13,7 +13,7 @@ import Core
 import DSKit
 import Domain
 
-public final class ProfileCardGroupView: UIView {
+public final class ProfileCardGroupView: UIView, PokeCompatible {
     
     // MARK: - Properties
         
@@ -21,7 +21,18 @@ public final class ProfileCardGroupView: UIView {
         .merge(with: rightProfileCardView.kokButtonTap)
         .asDriver()
     
+    
+    lazy var friendProfileImageTap: Driver<Int?> = friendProfileImageView
+        .gesture()
+        .map { _ in self.friendPlaygroundId }
+        .asDriver()
+    
+    lazy var profileImageTap: Driver<PokeUserModel?> = Publishers.Merge(leftProfileCardView.profileTapped,
+                                                                        rightProfileCardView.profileTapped).asDriver()
+    
     let cancelBag = CancelBag()
+    
+    private var friendPlaygroundId: Int?
         
     // MARK: - UI Components
     
@@ -35,7 +46,6 @@ public final class ProfileCardGroupView: UIView {
         $0.textColor = DSKitAsset.Colors.gray30.color
         $0.font = UIFont.MDS.title7
     }
-    
     
     private let emptyFriendView = PokeEmptyView().setText(with: I18N.Poke.emptyFriendDescription)
     
@@ -110,6 +120,7 @@ extension ProfileCardGroupView {
 extension ProfileCardGroupView {
     
     func setData(with model: PokeFriendRandomUserModel) {
+        self.friendPlaygroundId = model.playgroundId
         self.friendNameLabel.text = model.friendName
         self.friendProfileImageView.setImage(with: model.friendProfileImage, placeholder: DSKitAsset.Assets.iconDefaultProfile.image)
         let randomUsers = model.friendList.prefix(2)
@@ -125,5 +136,10 @@ extension ProfileCardGroupView {
         emptyFriendView.isHidden = count != 0
         leftProfileCardView.isHidden = count < 1
         rightProfileCardView.isHidden = count < 2
+    }
+    
+    func changeUIAfterPoke(newUserModel: PokeUserModel) {
+        leftProfileCardView.changeUIAfterPoke(newUserModel: newUserModel)
+        rightProfileCardView.changeUIAfterPoke(newUserModel: newUserModel)
     }
 }

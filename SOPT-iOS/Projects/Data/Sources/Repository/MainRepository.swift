@@ -38,7 +38,7 @@ extension MainRepository: MainRepositoryInterface {
                 }
                 
                 switch error {
-                case .network(let statusCode):
+                case .network(let statusCode, _):
                     if statusCode == 401 {
                         return MainError.authFailed
                     }

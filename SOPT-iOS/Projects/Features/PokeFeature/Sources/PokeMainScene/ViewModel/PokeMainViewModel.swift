@@ -13,15 +13,19 @@ import Core
 import Domain
 
 import PokeFeatureInterface
+import BaseFeatureDependency
 
 internal typealias UserId = Int
 
 public class PokeMainViewModel:
     PokeMainViewModelType {
-        
+    
     public var onNaviBackTap: (() -> Void)?
     public var onPokeNotificationsTap: (() -> Void)?
     public var onMyFriendsTap: (() -> Void)?
+    public var onProfileImageTapped: ((Int) -> Void)?
+    public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)?
+    public var onNewFriendMade: ((String) -> Void)?
     
     // MARK: - Properties
     
@@ -39,6 +43,8 @@ public class PokeMainViewModel:
         let friendSectionKokButtonTap: Driver<PokeUserModel?>
         let nearbyFriendsSectionKokButtonTap: Driver<PokeUserModel?>
         let refreshRequest: Driver<Void>
+        let profileImageTap: Driver<PokeUserModel?>
+        let randomUserSectionFriendProfileImageTap: Driver<Int?>
     }
     
     // MARK: - Outputs
@@ -50,6 +56,7 @@ public class PokeMainViewModel:
         let friendsSectionWillBeHidden = PassthroughSubject<Bool, Never>()
         let friendRandomUsers = PassthroughSubject<[PokeFriendRandomUserModel], Never>()
         let endRefreshLoading = PassthroughSubject<Void, Never>()
+        let pokeResponse = PassthroughSubject<PokeUserModel, Never>()
     }
     
     // MARK: - initialization
@@ -86,22 +93,39 @@ extension PokeMainViewModel {
                 self?.onMyFriendsTap?()
             }.store(in: cancelBag)
         
+        // 답장
         input.pokedSectionKokButtonTap
             .compactMap { $0 }
-            .sink { user in
-                print("찌르기 - \(user)")
+            .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel)> in
+                guard let self, let value = self.onPokeButtonTapped?(userModel) else { return .empty() }
+                return value
+            }
+            .sink { [weak self] userModel, messageModel in
+                self?.useCase.poke(userId: userModel.userId, message: messageModel, willBeNewFriend: userModel.isFirstMeet)
             }.store(in: cancelBag)
         
+        // 먼저 찌르기
         input.friendSectionKokButtonTap
+            .merge(with: input.nearbyFriendsSectionKokButtonTap)
             .compactMap { $0 }
-            .sink { user in
-                print("찌르기 - \(user)")
+            .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel)> in
+                guard let self, let value = self.onPokeButtonTapped?(userModel) else { return .empty() }
+                return value
+            }
+            .sink { [weak self] userModel, messageModel in
+                self?.useCase.poke(userId: userModel.userId, message: messageModel, willBeNewFriend: false)
             }.store(in: cancelBag)
         
-        input.nearbyFriendsSectionKokButtonTap
+        input.profileImageTap
             .compactMap { $0 }
-            .sink { user in
-                print("찌르기 - \(user)")
+            .sink { [weak self] user in
+                self?.onProfileImageTapped?(user.playgroundId)
+            }.store(in: cancelBag)
+        
+        input.randomUserSectionFriendProfileImageTap
+            .compactMap { $0 }
+            .sink { [weak self] playgroundId in
+                self?.onProfileImageTapped?(playgroundId)
             }.store(in: cancelBag)
         
         return output
@@ -137,5 +161,20 @@ extension PokeMainViewModel {
             .map { _ in Void() }
             .subscribe(output.endRefreshLoading)
             .store(in: cancelBag)
+        
+        useCase.pokedResponse
+            .subscribe(output.pokeResponse)
+            .store(in: cancelBag)
+        
+        useCase.madeNewFriend
+            .sink { [weak self] userModel in
+                self?.onNewFriendMade?(userModel.name)
+            }.store(in: cancelBag)
+        
+        useCase.errorMessage
+            .compactMap { $0 }
+            .sink { message in
+                ToastUtils.showMDSToast(type: .alert, text: message)
+            }.store(in: cancelBag)
     }
 }

@@ -14,6 +14,7 @@ import Networks
 extension PokeFriendRandomUserEntity {
     public func toDomain() -> PokeFriendRandomUserModel {
         return PokeFriendRandomUserModel(friendId: friendId,
+                                         playgroundId: playgroundId,
                                          friendName: friendName,
                                          friendProfileImage: friendProfileImage,
                                          friendList: friendList.map { $0.toDomain() })

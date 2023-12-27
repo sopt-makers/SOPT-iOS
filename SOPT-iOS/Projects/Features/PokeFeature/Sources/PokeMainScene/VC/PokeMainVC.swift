@@ -87,7 +87,7 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
     }
     
     private let refreshControl = UIRefreshControl()
-
+    
     // MARK: - initialization
     
     public init(viewModel: PokeMainViewModel) {
@@ -124,7 +124,7 @@ extension PokeMainVC {
     }
     
     private func setStackView() {
-        self.contentStackView.addArrangedSubviews(pokedSectionGroupView, 
+        self.contentStackView.addArrangedSubviews(pokedSectionGroupView,
                                                   friendSectionGroupView,
                                                   recommendPokeLabel,
                                                   firstProfileCardGroupView,
@@ -189,7 +189,7 @@ extension PokeMainVC {
     
     private func setFriendRandomUsers(with randomUsers: [PokeFriendRandomUserModel]) {
         let profileCardGroupViews = [firstProfileCardGroupView, secondProfileCardGroupView]
-        
+        recommendPokeLabel.isHidden = randomUsers.isEmpty
         for (i, profileCardGroupView) in profileCardGroupViews.enumerated() {
             let randomUser = randomUsers[safe: i]
             profileCardGroupView.isHidden = (randomUser == nil)
@@ -211,6 +211,16 @@ extension PokeMainVC: UIGestureRecognizerDelegate {
 
 extension PokeMainVC {
     private func bindViewModel() {
+        let profileImageTap = Publishers.Merge4(pokedUserContentView.profileImageTap,
+                                                friendSectionContentView.profileImageTap,
+                                                firstProfileCardGroupView.profileImageTap,
+                                                secondProfileCardGroupView.profileImageTap).asDriver()
+        
+        let randomUserSectionFriendProfileImageTap = Publishers.Merge(
+            firstProfileCardGroupView.friendProfileImageTap,
+            secondProfileCardGroupView.friendProfileImageTap
+        ).asDriver()
+        
         let input = PokeMainViewModel
             .Input(
                 viewDidLoad: Just(()).asDriver(),
@@ -229,7 +239,9 @@ extension PokeMainVC {
                     .kokButtonTap
                     .merge(with: secondProfileCardGroupView.kokButtonTap)
                     .asDriver(),
-                refreshRequest: refreshControl.publisher(for: .valueChanged).mapVoid().asDriver()
+                refreshRequest: refreshControl.publisher(for: .valueChanged).mapVoid().asDriver(),
+                profileImageTap: profileImageTap,
+                randomUserSectionFriendProfileImageTap: randomUserSectionFriendProfileImageTap
             )
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
@@ -264,6 +276,20 @@ extension PokeMainVC {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.refreshControl.endRefreshing()
+            }.store(in: cancelBag)
+        
+        output.pokeResponse
+            .withUnretained(self)
+            .sink { owner, updatedUser in
+                let pokeUserViews = [owner.pokedUserContentView,
+                                     owner.friendSectionContentView,
+                                     owner.firstProfileCardGroupView,
+                                     owner.secondProfileCardGroupView]
+                    .compactMap { $0 as? PokeCompatible }
+                
+                pokeUserViews.forEach { pokeUserView in
+                    pokeUserView.changeUIAfterPoke(newUserModel: updatedUser)
+                }
             }.store(in: cancelBag)
     }
 }

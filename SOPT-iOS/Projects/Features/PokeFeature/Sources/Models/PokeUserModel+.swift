@@ -24,5 +24,4 @@ extension PokeUserModel {
         
         return .withPokeCount(relation: model.relationName, pokeCount: String(model.pokeNum))
     }
-
 }

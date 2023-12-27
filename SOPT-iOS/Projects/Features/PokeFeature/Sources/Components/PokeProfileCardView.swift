@@ -12,11 +12,11 @@ import DSKit
 import Core
 import Domain
 
-public final class PokeProfileCardView: UIView {
+public final class PokeProfileCardView: UIView, PokeCompatible {
     
     // MARK: - Properties
        
-    lazy var profileTapped = self.profileImageView.gesture().mapVoid().asDriver()
+    lazy var profileTapped = self.profileImageView.gesture().map { _ in self.user }.asDriver()
 
     lazy var kokButtonTap: Driver<PokeUserModel?> = kokButton.tap.map { self.user }.asDriver()
     
@@ -110,7 +110,6 @@ public final class PokeProfileCardView: UIView {
         self.nameLabel.text = model.name
         self.partLabel.text = String(describing: model.generation) + "기" + " " + model.part
         self.kokButton.isEnabled = !model.isAlreadyPoke
-        self.kokButton.setIsFriend(with: !model.isFirstMeet)
     }
     
     @discardableResult
@@ -123,5 +122,11 @@ public final class PokeProfileCardView: UIView {
     func setBackgroundColor(with color: UIColor) -> Self {
         self.backgroundColor = color
         return self
+    }
+    
+    func changeUIAfterPoke(newUserModel: PokeUserModel) {
+        guard let user, user.userId == newUserModel.userId else { return }
+        
+        self.setData(with: newUserModel)
     }
 }

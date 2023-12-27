@@ -71,7 +71,7 @@ extension BaseAPI {
     }
     
     public var validationType: ValidationType {
-        return .successCodes
+        return .customCodes(Array(200..<600).filter { $0 != 401 })
     }
 }
 

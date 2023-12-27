@@ -7,13 +7,7 @@
 
 import UIKit
 
-import SnapKit
-
-public extension UIViewController {
-    func showToast(message: String) {
-        Toast.show(message: message, view: self.view, safeAreaBottomInset: self.safeAreaBottomInset())
-    }
-}
+import Core
 
 public class Toast {
     public static func show(
@@ -62,5 +56,55 @@ public class Toast {
                 toastContainer.removeFromSuperview()
             })
         })
+    }
+    
+    public static func showMDSToast(type: MDSToast.ToastType, text: String, actionButtonAction: (() -> Void)? = nil) {
+        let toast = MDSToast(type: type, text: text, actionButtonAction: actionButtonAction)
+        
+        guard let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene else { return }
+        guard let window = scene.windows.first(where: { $0.isKeyWindow }) else { return }
+        
+        window.addSubview(toast)
+        
+        let toastHeight = 64.f
+        let toastStartingInset = window.safeAreaInsets.top + toastHeight
+        
+        // 3단 animate로 구현 
+        // toast의 넓이가 계산된 이후에 y 위치 변화를 해야 애니메이션이 자연스럽게 나온다. (completion 시점에 y 위치 변화 시켜야 함)
+        
+        UIView.animate(withDuration: 0.0) {
+            // 1. 토스트의 처음 위치 잡기 (화면 상단 바깥 부분에 위치시킨다.)
+            toast.snp.makeConstraints { make in
+                make.leading.trailing.equalToSuperview().inset(16)
+                make.top.equalTo(window.safeAreaLayoutGuide).inset(-toastStartingInset)
+            }
+            toast.superview?.layoutIfNeeded()
+        } completion: { _ in
+            // 2. 토스트를 천천히 아래로 내린다. (화면에 등장)
+            UIView.animate(withDuration: 0.5) {
+                toast.snp.updateConstraints { make in
+                    make.top.equalTo(window.safeAreaLayoutGuide).inset(16)
+                }
+                toast.superview?.layoutIfNeeded()
+            } completion: { _ in
+                // 3. 4초 후에 토스트를 천천히 위로 올린다. (화면에서 제거)
+                /*
+                 여기서 UIView.animate의 delay 옵션이 아닌 DispathQueue의 ascynAfter를 쓴 이유
+                 -> delay로 주면 화면에는 4초 뒤에 토스트가 사라지지만 사실 toast의 위치는 애니메이션 시작 전에 이미 계산되어 화면 밖으로 인식됨
+                 -> 토스트에 있는 버튼이 터치가 안 되는 문제 발생
+                 -> asyncAfter를 사용하여 4초 뒤에 Constraints를 업데이트하도록 하여 문제 해결
+                */
+                DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+                    UIView.animate(withDuration: 0.5, animations: {
+                        toast.snp.updateConstraints { make in
+                            make.top.equalTo(window.safeAreaLayoutGuide).inset(-toastStartingInset)
+                        }
+                        toast.superview?.layoutIfNeeded()
+                    }) { _ in
+                        toast.removeFromSuperview()
+                    }
+                }
+            }
+        }
     }
 }

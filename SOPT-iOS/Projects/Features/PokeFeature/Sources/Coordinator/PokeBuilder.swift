@@ -66,4 +66,10 @@ extension PokeBuilder: PokeFeatureBuildable {
         
         return (pokeMyFriendsListVC, viewModel)
     }
+    
+    public func makePokeMakingFriendCompleted(friendName: String) -> PokeMakingFriendCompletedPresentable {
+        let vc = PokeMakingFriendCompletedVC(friendName: friendName)
+        
+        return vc
+    }
 }

@@ -8,7 +8,7 @@
 
 import Combine
 
-public protocol PokeMainRepositoryInterface {
+public protocol PokeMainRepositoryInterface: PokeRepositoryInterface {
     func getWhoPokeToMe() -> AnyPublisher<PokeUserModel?, Error>
     func getFriend() -> AnyPublisher<[PokeUserModel], Error>
     func getFriendRandomUser() -> AnyPublisher<[PokeFriendRandomUserModel], Error>

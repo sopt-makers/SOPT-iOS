@@ -140,7 +140,11 @@ extension BaseService {
                         case 400...599:
                             // NOTE: (@승호) 여기에서 서버와 에러 처리 핸들링 해서 Error도 json Decode 해야 함
                             // 임시로 Error 처리
-                            throw APIError(error: NSError(domain: "임시에러", code: -1001), statusCode: response.statusCode)
+                            let decoder = JSONDecoder()
+                            let body = try decoder.decode(ErrorResponse.self, from: value.data)
+                            let apiError = APIError(error: NSError(domain: "임시에러", code: -1001), statusCode: response.statusCode, response: body)
+                            SentrySDK.capture(error: apiError)
+                            throw apiError
                         default: break
                         }
                     } catch let error {

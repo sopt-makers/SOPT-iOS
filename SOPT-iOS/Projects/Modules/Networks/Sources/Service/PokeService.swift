@@ -66,6 +66,6 @@ extension DefaultPokeService: PokeService {
     public func poke(userId: Int, message: String) -> AnyPublisher<PokeUserEntity, Error> {
         let params: [String: Any] = ["message": message]
         
-        return requestObjectInCombine(.poke(userId: String(describing: userId), params: params))
+        return requestObjectWithNetworkErrorInCombine(.poke(userId: String(describing: userId), params: params))
     }
 }
