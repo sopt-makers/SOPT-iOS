@@ -89,9 +89,30 @@ extension MainViewModel {
             }.store(in: cancelBag)
         
         input.cellTapped
-            .sink { [weak self] indexPath in
-                guard let self = self else { return }
-                self.bindCellAction(indexPath)
+            .filter { $0.section == 1 }
+            .map { $0.item }
+            .compactMap { [weak self] index in
+                self?.mainServiceList[index]
+            }.sink { [weak self] service in
+                self?.handleMainServiceSectionTap(with: service)
+            }.store(in: cancelBag)
+        
+        input.cellTapped
+            .filter { $0.section == 2 }
+            .map { $0.item }
+            .compactMap { [weak self] index in
+                self?.otherServiceList[index]
+            }.sink { [weak self] service in
+                self?.handleOtherServiceSectionTap(with: service)
+            }.store(in: cancelBag)
+        
+        input.cellTapped
+            .filter { $0.section == 3 }
+            .map { $0.item }
+            .compactMap { [weak self] index in
+                self?.appServiceList[index]
+            }.sink { [weak self] service in
+                self?.handleAppServiceSectionTap(with: service)
             }.store(in: cancelBag)
         
         input.requestUserInfo
@@ -161,39 +182,35 @@ extension MainViewModel {
             }.store(in: self.cancelBag)
     }
     
-    private func bindCellAction(_ indexPath: IndexPath) {
-        switch (indexPath.section, indexPath.row) {
-        case (0, _): break
-        case (1, _):
-            guard let service = mainServiceList[safe: indexPath.item] else { return }
-            self.trackAmplitude(event: service.toAmplitudeEventType)
-            
-            guard service != .attendance else {
-                onAttendance?()
-                return
-            }
-            
-            let needOfficialProject = service == .project && userType == .visitor
-            let serviceDomainURL = needOfficialProject
-            ? ExternalURL.SOPT.project
-            : service.serviceDomainLink
-            onSafari?(serviceDomainURL)
-        case (2, _):
-            guard let service = otherServiceList[safe: indexPath.item] else { return }
-            self.trackAmplitude(event: service.toAmplitudeEventType)
-            
-            onSafari?(service.serviceDomainLink)
-        case(3, _):
-            guard userType != .visitor else { return }
-            guard let service = appServiceList[safe: indexPath.item] else { return }
-            self.trackAmplitude(event: service.toAmplitudeEventType)
-            switch service {
-            case .soptamp: onSoptamp?()
-            case .poke:
-                let isFirstVisitToPokeView = UserDefaultKeyList.User.isFirstVisitToPokeView
-                onPoke?(isFirstVisitToPokeView ?? true)
-            }
-        default: break
+    private func handleMainServiceSectionTap(with service: ServiceType) {
+        self.trackAmplitude(event: service.toAmplitudeEventType)
+        
+        guard service != .attendance else {
+            onAttendance?()
+            return
+        }
+        
+        let needOfficialProject = service == .project && userType == .visitor
+        let serviceDomainURL = needOfficialProject
+        ? ExternalURL.SOPT.project
+        : service.serviceDomainLink
+        onSafari?(serviceDomainURL)
+    }
+    
+    private func handleOtherServiceSectionTap(with service: ServiceType) {
+        self.trackAmplitude(event: service.toAmplitudeEventType)
+        
+        onSafari?(service.serviceDomainLink)
+    }
+    
+    private func handleAppServiceSectionTap(with service: AppServiceType) {
+        guard userType != .visitor else { return }
+        self.trackAmplitude(event: service.toAmplitudeEventType)
+        switch service {
+        case .soptamp: onSoptamp?()
+        case .poke:
+            // 온보딩 유저 분기
+            onPoke?(true)
         }
     }
     
