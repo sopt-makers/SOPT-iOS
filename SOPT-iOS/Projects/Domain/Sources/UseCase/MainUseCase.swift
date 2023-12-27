@@ -15,10 +15,13 @@ public protocol MainUseCase {
     var serviceState: PassthroughSubject<ServiceStateModel, Never> { get set }
     var mainDescription: PassthroughSubject<MainDescriptionModel, Never> { get set }
     var mainErrorOccurred: PassthroughSubject<MainError, Never> { get set }
+    var isPokeNewUser: PassthroughSubject<Bool, Never> { get set }
+    
     func getUserMainInfo()
     func getServiceState()
     func getMainViewDescription()
     func registerPushToken()
+    func checkPokeNewUser()
 }
 
 public class DefaultMainUseCase {
@@ -30,6 +33,7 @@ public class DefaultMainUseCase {
     public var serviceState = PassthroughSubject<ServiceStateModel, Never>()
     public var mainDescription = PassthroughSubject<MainDescriptionModel, Never>()
     public var mainErrorOccurred = PassthroughSubject<MainError, Never>()
+    public var isPokeNewUser = PassthroughSubject<Bool, Never>()
   
     public init(repository: MainRepositoryInterface) {
         self.repository = repository
@@ -75,9 +79,20 @@ extension DefaultMainUseCase: MainUseCase {
 
         repository.registerPushToken(with: pushToken)
             .sink { event in
-                print("DefaultSplashUseCase : \(event)")
+                print("MainUseCase Register PushToken: \(event)")
             } receiveValue: { didSucceed in
                 print("푸시 토큰 등록 결과: \(didSucceed)")
+            }.store(in: cancelBag)
+    }
+    
+    public func checkPokeNewUser() {
+        repository.checkPokeNewUser()
+            .catch { [weak self] error in
+                print("MainUseCase CheckPokeNewUser Error: \(error)")
+                self?.mainErrorOccurred.send(.networkError(message: "Poke 온보딩 대상 여부 확인 실패"))
+                return Empty<Bool, Never>()
+            }.sink { [weak self] isNewUser in
+                self?.isPokeNewUser.send(isNewUser)
             }.store(in: cancelBag)
     }
     

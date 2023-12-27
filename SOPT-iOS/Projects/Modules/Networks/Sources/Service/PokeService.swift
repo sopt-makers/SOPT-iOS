@@ -14,6 +14,7 @@ import Moya
 public typealias DefaultPokeService = BaseService<PokeAPI>
 
 public protocol PokeService {
+    func isNewUser() -> AnyPublisher<PokeIsNewUserEntity, Error>
     func getWhoPokedToMe() -> AnyPublisher<PokeUserEntity?, Error>
     func getWhoPokedToMeList(pageIndex: String)  -> AnyPublisher<PokedToMeHistoryListEntity, Error>
     func getFriend() -> AnyPublisher<[PokeUserEntity], Error>
@@ -26,6 +27,10 @@ public protocol PokeService {
 }
 
 extension DefaultPokeService: PokeService {
+    public func isNewUser() -> AnyPublisher<PokeIsNewUserEntity, Error> {
+        requestObjectInCombine(.isNewUser)
+    }
+    
     public func getWhoPokedToMe() -> AnyPublisher<PokeUserEntity?, Error> {
         requestObjectInCombine(.getWhoPokedToMe)
     }

@@ -17,12 +17,15 @@ public class MainRepository {
     private let userService: UserService
     private let configService: ConfigService
     private let descriptionService: DescriptionService
+    private let pokeService: PokeService
+    
     private let cancelBag = CancelBag()
     
-    public init(userService: UserService, configService: ConfigService, descriptionService: DescriptionService) {
+    public init(userService: UserService, configService: ConfigService, descriptionService: DescriptionService, pokeService: PokeService) {
         self.userService = userService
         self.configService = configService
         self.descriptionService = descriptionService
+        self.pokeService = pokeService
     }
 }
 
@@ -75,6 +78,12 @@ extension MainRepository: MainRepositoryInterface {
             .map {
                 return 200..<300 ~= $0
             }
+            .eraseToAnyPublisher()
+    }
+    
+    public func checkPokeNewUser() -> AnyPublisher<Bool, Error> {
+        pokeService.isNewUser()
+            .map { $0.isNew }
             .eraseToAnyPublisher()
     }
 }

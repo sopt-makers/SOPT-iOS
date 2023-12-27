@@ -26,7 +26,7 @@ public final class PokeOnboardingViewModel: PokeOnboardingViewModelType {
         let randomAcquaintance = PassthroughSubject<[PokeUserModel], Never>()
         let pokedResult = PassthroughSubject<PokeUserModel, Never>()
     }
-
+    
     public var onNaviBackTapped: (() -> Void)?
     public var onFirstVisitInOnboarding: (() -> Void)?
     public var onAvartarTapped: ((_ playgroundId: String) -> Void)?
@@ -54,13 +54,11 @@ extension PokeOnboardingViewModel {
             }).store(in: cancelBag)
         
         input.viewDidLoaded
-            .map { _ in UserDefaultKeyList.User.isFirstVisitToPokeView ?? true }
+            .map { _ in UserDefaultKeyList.User.isFirstVisitToPokeOnboardingView ?? true }
             .sink(receiveValue: { [weak self] isFirstVisit in
                 guard isFirstVisit else { return }
-                
-//                UserDefaultKeyList.User.isFirstVisitToPokeView = false
-//                self?.onFirstVisitInOnboarding?()
-                 self?.onFirstVisitInOnboarding?()
+                UserDefaultKeyList.User.isFirstVisitToPokeOnboardingView = false
+                self?.onFirstVisitInOnboarding?()
             }).store(in: cancelBag)
         
         input.pokeButtonTapped
@@ -77,7 +75,7 @@ extension PokeOnboardingViewModel {
             .sink(receiveValue: { [weak self] userModel in
                 self?.onAvartarTapped?(String(describing: userModel.playgroundId))
             }).store(in: cancelBag)
-
+        
         input.pullToRefreshTriggered
             .withUnretained(self)
             .sink(receiveValue: { [weak self] _ in
