@@ -18,10 +18,10 @@ public struct PokeUserModel: Codable {
     public let pokeNum: Int
     public let message: String
     public let relationName: String
-    public let mutual: [String]
+    public let mutualRelationMessage: String
     public let isFirstMeet, isAlreadyPoke: Bool
     
-    public init(userId: Int, playgroundId: Int, profileImage: String, name: String, generation: Int, part: String, pokeNum: Int, message: String, relationName: String, mutual: [String], isFirstMeet: Bool, isAlreadyPoke: Bool) {
+    public init(userId: Int, playgroundId: Int, profileImage: String, name: String, generation: Int, part: String, pokeNum: Int, message: String, relationName: String, mutualRelationMessage: String, isFirstMeet: Bool, isAlreadyPoke: Bool) {
         self.userId = userId
         self.playgroundId = playgroundId
         self.profileImage = profileImage
@@ -31,7 +31,7 @@ public struct PokeUserModel: Codable {
         self.pokeNum = pokeNum
         self.message = message
         self.relationName = relationName
-        self.mutual = mutual
+        self.mutualRelationMessage = mutualRelationMessage
         self.isFirstMeet = isFirstMeet
         self.isAlreadyPoke = isAlreadyPoke
     }

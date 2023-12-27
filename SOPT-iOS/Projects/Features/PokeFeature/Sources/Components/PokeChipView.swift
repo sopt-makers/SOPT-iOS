@@ -12,12 +12,6 @@ import Core
 import DSKit
 
 final public class PokeChipView: UIView {
-    public enum ChipType {
-        case newUser
-        case singleFriend(friendName: String)
-        case withPokeCount(relation: String, pokeCount: String)
-        case acquaintance(friendname: String, relationCount: String)
-    }
     
     // MARK: Private Constants
     private enum Constant {
@@ -72,16 +66,7 @@ final public class PokeChipView: UIView {
 }
 
 extension PokeChipView {
-    public func configure(with pokechipType: ChipType) {
-        switch pokechipType {
-        case .newUser:
-            self.titleLabel.text = "새로운 친구"
-        case let .singleFriend(friendName):
-            self.titleLabel.text = "\(friendName)의 친구"
-        case let .withPokeCount(relation, pokeCount):
-            self.titleLabel.text = relation + Constant.dotWithWhiteSpace + pokeCount + "콕"
-        case let .acquaintance(friendname, relationCount):
-            self.titleLabel.text = friendname + " 외 " + relationCount + "과 친구"
-        }
+    public func configure(with text: String) {
+        self.titleLabel.text = text
     }
 }
