@@ -180,6 +180,11 @@ extension MainViewModel {
                     self.onNeedSignIn?()
                 }
             }.store(in: self.cancelBag)
+        
+        useCase.isPokeNewUser
+            .sink { [weak self] isNewUser in
+                self?.onPoke?(isNewUser)
+            }.store(in: cancelBag)
     }
     
     private func handleMainServiceSectionTap(with service: ServiceType) {
@@ -209,8 +214,7 @@ extension MainViewModel {
         switch service {
         case .soptamp: onSoptamp?()
         case .poke:
-            // 온보딩 유저 분기
-            onPoke?(true)
+            useCase.checkPokeNewUser()
         }
     }
     

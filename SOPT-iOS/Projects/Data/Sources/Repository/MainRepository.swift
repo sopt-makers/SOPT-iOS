@@ -80,4 +80,10 @@ extension MainRepository: MainRepositoryInterface {
             }
             .eraseToAnyPublisher()
     }
+    
+    public func checkPokeNewUser() -> AnyPublisher<Bool, Error> {
+        pokeService.isNewUser()
+            .map { $0.isNew }
+            .eraseToAnyPublisher()
+    }
 }
