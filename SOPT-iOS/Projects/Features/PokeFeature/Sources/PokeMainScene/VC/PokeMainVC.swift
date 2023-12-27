@@ -104,6 +104,7 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.setUI()
+        self.setDelegate()
         self.setStackView()
         self.setLayout()
         self.bindViewModel()
@@ -116,6 +117,10 @@ extension PokeMainVC {
     private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+    }
+    
+    private func setDelegate() {
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     
     private func setStackView() {

@@ -13,6 +13,7 @@ import Moya
 import Core
 
 public enum PokeAPI {
+    case isNewUser
     case getWhoPokedToMe
     case getWhoPokedToMeList(pageIndex: String)
     case getFriend
@@ -29,6 +30,8 @@ extension PokeAPI: BaseAPI {
     
     public var path: String {
         switch self {
+        case .isNewUser:
+            return "/new"
         case .getWhoPokedToMe:
             return "/to/me"
         case .getWhoPokedToMeList:
@@ -50,7 +53,7 @@ extension PokeAPI: BaseAPI {
     
     public var method: Moya.Method {
         switch self {
-        case .getWhoPokedToMe, .getWhoPokedToMeList, .getFriend, .getFriendListWithRelation, .getFriendRandomUser,
+        case .isNewUser, .getWhoPokedToMe, .getWhoPokedToMeList, .getFriend, .getFriendListWithRelation, .getFriendRandomUser,
                 .getFriendList, .getRandomUsers, .getPokeMessages:
             return .get
         case .poke:

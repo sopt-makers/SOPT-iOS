@@ -89,9 +89,47 @@ extension MainViewModel {
             }.store(in: cancelBag)
         
         input.cellTapped
-            .sink { [weak self] indexPath in
-                guard let self = self else { return }
-                self.bindCellAction(indexPath)
+            .filter { $0.section == 1 }
+            .map { $0.item }
+            .compactMap { [weak self] index in
+                self?.mainServiceList[index]
+            }.sink { [weak self] service in
+                self?.handleMainServiceSectionTap(with: service)
+            }.store(in: cancelBag)
+        
+        input.cellTapped
+            .filter { $0.section == 2 }
+            .map { $0.item }
+            .compactMap { [weak self] index in
+                self?.otherServiceList[index]
+            }.sink { [weak self] service in
+                self?.handleOtherServiceSectionTap(with: service)
+            }.store(in: cancelBag)
+        
+        let appServiceSectionService = input.cellTapped
+            .filter { [weak self] _ in
+                guard let self else { return false }
+                return self.userType != .visitor
+            }
+            .filter { $0.section == 3 }
+            .map { $0.item }
+            .compactMap { [weak self] index in
+                return self?.appServiceList[index]
+            }.eraseToAnyPublisher()
+        
+        appServiceSectionService.sink { [weak self] service in
+            self?.trackAmplitude(event: service.toAmplitudeEventType)
+        }.store(in: cancelBag)
+
+        appServiceSectionService.filter { $0 == .soptamp }
+            .sink { [weak self] _ in
+                self?.onSoptamp?()
+            }.store(in: cancelBag)
+        
+        appServiceSectionService.filter { $0 == .poke }
+            .sink { [weak self] _ in
+                output.isLoading.send(true)
+                self?.useCase.checkPokeNewUser()
             }.store(in: cancelBag)
         
         input.requestUserInfo
@@ -159,42 +197,33 @@ extension MainViewModel {
                     self.onNeedSignIn?()
                 }
             }.store(in: self.cancelBag)
+        
+        useCase.isPokeNewUser
+            .sink { [weak self] isNewUser in
+                output.isLoading.send(false)
+                self?.onPoke?(isNewUser)
+            }.store(in: cancelBag)
     }
     
-    private func bindCellAction(_ indexPath: IndexPath) {
-        switch (indexPath.section, indexPath.row) {
-        case (0, _): break
-        case (1, _):
-            guard let service = mainServiceList[safe: indexPath.item] else { return }
-            self.trackAmplitude(event: service.toAmplitudeEventType)
-            
-            guard service != .attendance else {
-                onAttendance?()
-                return
-            }
-            
-            let needOfficialProject = service == .project && userType == .visitor
-            let serviceDomainURL = needOfficialProject
-            ? ExternalURL.SOPT.project
-            : service.serviceDomainLink
-            onSafari?(serviceDomainURL)
-        case (2, _):
-            guard let service = otherServiceList[safe: indexPath.item] else { return }
-            self.trackAmplitude(event: service.toAmplitudeEventType)
-            
-            onSafari?(service.serviceDomainLink)
-        case(3, _):
-            guard userType != .visitor else { return }
-            guard let service = appServiceList[safe: indexPath.item] else { return }
-            self.trackAmplitude(event: service.toAmplitudeEventType)
-            switch service {
-            case .soptamp: onSoptamp?()
-            case .poke:
-                let isFirstVisitToPokeView = UserDefaultKeyList.User.isFirstVisitToPokeView
-                onPoke?(isFirstVisitToPokeView ?? true)
-            }
-        default: break
+    private func handleMainServiceSectionTap(with service: ServiceType) {
+        self.trackAmplitude(event: service.toAmplitudeEventType)
+        
+        guard service != .attendance else {
+            onAttendance?()
+            return
         }
+        
+        let needOfficialProject = service == .project && userType == .visitor
+        let serviceDomainURL = needOfficialProject
+        ? ExternalURL.SOPT.project
+        : service.serviceDomainLink
+        onSafari?(serviceDomainURL)
+    }
+    
+    private func handleOtherServiceSectionTap(with service: ServiceType) {
+        self.trackAmplitude(event: service.toAmplitudeEventType)
+        
+        onSafari?(service.serviceDomainLink)
     }
     
     private func requestAuthorizationForNotification() {
@@ -224,12 +253,15 @@ extension MainViewModel {
         case .visitor:
             self.mainServiceList = [.officialHomepage, .review, .project]
             self.otherServiceList = [.instagram, .youtube, .faq]
+            self.appServiceList = [.poke, .soptamp]
         case .active:
             self.mainServiceList = [.attendance, .group, .playgroundCommunity]
             self.otherServiceList = [.member, .project, .officialHomepage]
+            self.appServiceList = [.poke, .soptamp]
         case .inactive:
             self.mainServiceList = [.playgroundCommunity, .group, .member]
             self.otherServiceList = [.project, .officialHomepage, .instagram, .youtube]
+            self.appServiceList = [.soptamp]
         }
     }
     
