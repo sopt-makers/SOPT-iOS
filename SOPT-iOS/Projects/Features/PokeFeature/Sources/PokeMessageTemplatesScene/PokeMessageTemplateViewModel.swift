@@ -22,7 +22,7 @@ public final class PokeMessageTemplateViewModel: PokeMessageTemplatesViewModelTy
     }
     
     public struct Output {
-        let messageTemplates = PassthroughSubject<[PokeMessageModel], Never>()
+        let messageTemplates = PassthroughSubject<PokeMessagesModel, Never>()
     }
     
     private let usecase: PokeMessageTemplateUsecase

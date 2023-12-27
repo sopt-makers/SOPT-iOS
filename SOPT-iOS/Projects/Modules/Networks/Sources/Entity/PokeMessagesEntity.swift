@@ -9,6 +9,7 @@
 import Foundation
 
 public struct PokeMessagesEntity: Decodable {
+    public let header: String
     public let messages: [PokeMessageEntity]
 }
 

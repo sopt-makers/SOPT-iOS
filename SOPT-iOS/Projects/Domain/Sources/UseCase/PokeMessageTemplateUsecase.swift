@@ -13,14 +13,14 @@ import Core
 public protocol PokeMessageTemplateUsecase {
     func getPokeMessageTemplates(type: PokeMessageType)
     
-    var pokeMessageModels: PassthroughSubject<[PokeMessageModel], Never> { get }
+    var pokeMessageModels: PassthroughSubject<PokeMessagesModel, Never> { get }
 }
 
 public final class DefaultPokeMessageTemplateUsecase {
     private let repository: PokeOnboardingRepositoryInterface
     private let cancelBag = CancelBag()
     
-    public let pokeMessageModels = PassthroughSubject<[PokeMessageModel], Never>()
+    public let pokeMessageModels = PassthroughSubject<PokeMessagesModel, Never>()
     
     public init(repository: PokeOnboardingRepositoryInterface) {
         self.repository = repository

@@ -18,14 +18,14 @@ public struct PokeUserEntity {
     public let pokeNum: Int
     public let message: String
     public let relationName: String
-    public let mutual: [String]
+    public let mutualRelationMessage: String
     public let isFirstMeet, isAlreadyPoke: Bool
 }
 
 extension PokeUserEntity: Codable {
     public enum CodingKeys: CodingKey {
         case userId, playgroundId, profileImage, name, generation, part, pokeNum,
-         message, relationName, mutual, isFirstMeet, isAlreadyPoke
+         message, relationName, mutualRelationMessage, isFirstMeet, isAlreadyPoke
     }
     
     public init(from decoder: Decoder) throws {
@@ -40,7 +40,7 @@ extension PokeUserEntity: Codable {
         self.pokeNum = try container.decode(Int.self, forKey: .pokeNum)
         self.message = try container.decode(String.self, forKey: .message)
         self.relationName = try container.decode(String.self, forKey: .relationName)
-        self.mutual = try container.decode([String].self, forKey: .mutual)
+        self.mutualRelationMessage = try container.decode(String.self, forKey: .mutualRelationMessage)
         self.isFirstMeet = try container.decode(Bool.self, forKey: .isFirstMeet)
         self.isAlreadyPoke = try container.decode(Bool.self, forKey: .isAlreadyPoke)
     }

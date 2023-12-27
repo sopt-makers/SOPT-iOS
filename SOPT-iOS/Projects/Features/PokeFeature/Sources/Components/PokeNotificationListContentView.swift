@@ -166,7 +166,7 @@ extension PokeNotificationListContentView {
         self.nameLabel.text = model.name
         self.partInfoLabel.text = model.part
         self.descriptionLabel.attributedText = model.message.applyMDSFont()
-        self.pokeChipView.configure(with: model.makeChipInfo())
+        self.pokeChipView.configure(with: model.mutualRelationMessage)
         self.pokeKokButton.isEnabled = !model.isAlreadyPoke
     }
     

@@ -22,7 +22,7 @@ extension PokeUserEntity {
                              pokeNum: pokeNum,
                              message: message,
                              relationName: relationName,
-                             mutual: mutual,
+                             mutualRelationMessage: mutualRelationMessage,
                              isFirstMeet: isFirstMeet,
                              isAlreadyPoke: isAlreadyPoke)
     }

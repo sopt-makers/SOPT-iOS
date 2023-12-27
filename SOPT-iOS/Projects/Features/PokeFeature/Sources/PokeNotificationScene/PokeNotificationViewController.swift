@@ -175,7 +175,7 @@ extension PokeNotificationViewController: UITableViewDataSource {
                 name: model.name,
                 partInfomation: model.part,
                 description: model.message,
-                chipInfo: .newUser,
+                chipInfo: model.mutualRelationMessage,
                 isPoked: model.isAlreadyPoke,
                 isFirstMeet: model.isFirstMeet
             )

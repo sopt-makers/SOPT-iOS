@@ -28,10 +28,10 @@ extension PokeOnboardingRepository: PokeOnboardingRepositoryInterface {
             .eraseToAnyPublisher()
     }
     
-    public func getMesseageTemplates(type: PokeMessageType) -> AnyPublisher<[PokeMessageModel], Error> {
+    public func getMesseageTemplates(type: PokeMessageType) -> AnyPublisher<PokeMessagesModel, Error> {
         self.pokeService
             .getPokeMessages(messageType: type.rawValue) // messageType domain화
-            .map { $0.messages.map { $0.toDomain() } }
+            .map { $0.toDomain() }
             .eraseToAnyPublisher()
     }
 
