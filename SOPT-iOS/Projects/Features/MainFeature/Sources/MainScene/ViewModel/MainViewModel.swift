@@ -106,13 +106,30 @@ extension MainViewModel {
                 self?.handleOtherServiceSectionTap(with: service)
             }.store(in: cancelBag)
         
-        input.cellTapped
+        let appServiceSectionService = input.cellTapped
+            .filter { [weak self] _ in
+                guard let self else { return false }
+                return self.userType != .visitor
+            }
             .filter { $0.section == 3 }
             .map { $0.item }
             .compactMap { [weak self] index in
-                self?.appServiceList[index]
-            }.sink { [weak self] service in
-                self?.handleAppServiceSectionTap(with: service)
+                return self?.appServiceList[index]
+            }.eraseToAnyPublisher()
+        
+        appServiceSectionService.sink { [weak self] service in
+            self?.trackAmplitude(event: service.toAmplitudeEventType)
+        }.store(in: cancelBag)
+
+        appServiceSectionService.filter { $0 == .soptamp }
+            .sink { [weak self] _ in
+                self?.onSoptamp?()
+            }.store(in: cancelBag)
+        
+        appServiceSectionService.filter { $0 == .poke }
+            .sink { [weak self] _ in
+                output.isLoading.send(true)
+                self?.useCase.checkPokeNewUser()
             }.store(in: cancelBag)
         
         input.requestUserInfo
@@ -183,6 +200,7 @@ extension MainViewModel {
         
         useCase.isPokeNewUser
             .sink { [weak self] isNewUser in
+                output.isLoading.send(false)
                 self?.onPoke?(isNewUser)
             }.store(in: cancelBag)
     }
@@ -206,16 +224,6 @@ extension MainViewModel {
         self.trackAmplitude(event: service.toAmplitudeEventType)
         
         onSafari?(service.serviceDomainLink)
-    }
-    
-    private func handleAppServiceSectionTap(with service: AppServiceType) {
-        guard userType != .visitor else { return }
-        self.trackAmplitude(event: service.toAmplitudeEventType)
-        switch service {
-        case .soptamp: onSoptamp?()
-        case .poke:
-            useCase.checkPokeNewUser()
-        }
     }
     
     private func requestAuthorizationForNotification() {
