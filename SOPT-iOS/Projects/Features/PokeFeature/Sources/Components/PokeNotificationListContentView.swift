@@ -151,7 +151,6 @@ extension PokeNotificationListContentView {
 extension PokeNotificationListContentView {
     public func configure(with model: PokeUserModel) {
         self.user = model
-        self.user = model
         self.userId = model.userId
         self.profileImageView.setImage(with: model.profileImage, relation: PokeRelation(rawValue: model.relationName) ?? .newFriend)
         self.nameLabel.text = model.name

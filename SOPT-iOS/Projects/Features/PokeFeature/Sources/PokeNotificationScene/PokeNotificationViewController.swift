@@ -27,7 +27,11 @@ public final class PokeNotificationViewController: UIViewController, PokeNotific
     }
     
     // MARK: - Views
-    private lazy var navigationBar = OPNavigationBar(self, type: .oneLeftButton)
+    private lazy var navigationBar = OPNavigationBar(
+        self,
+        type: .oneLeftButton,
+        backgroundColor: DSKitAsset.Colors.gray950.color
+    )
         .addMiddleLabel(title: "찌르기 알림", font: UIFont.MDS.body2)
         .setLeftButtonImage(DSKitAsset.Assets.chevronLeft.image.withTintColor(DSKitAsset.Colors.gray30.color))
     
@@ -56,6 +60,7 @@ public final class PokeNotificationViewController: UIViewController, PokeNotific
             PokeNotificationContentCell.self,
             forCellReuseIdentifier: PokeNotificationContentCell.className
         )
+        $0.backgroundColor = DSKitAsset.Colors.gray950.color
         $0.estimatedRowHeight = 88.f
     }
     

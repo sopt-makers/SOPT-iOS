@@ -79,5 +79,12 @@ extension PokeNotificationViewModel {
                 
                 self?.onNewFriendAdded?(userModel.name)
             }).store(in: cancelBag)
+        
+        self.usecase
+            .errorMessage
+            .compactMap { $0 }
+            .sink { message in
+                ToastUtils.showMDSToast(type: .alert, text: message)
+            }.store(in: cancelBag)
     }
 }
