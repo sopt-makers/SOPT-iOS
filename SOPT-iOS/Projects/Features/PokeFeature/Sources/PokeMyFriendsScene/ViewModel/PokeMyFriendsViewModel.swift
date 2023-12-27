@@ -13,6 +13,7 @@ import Core
 import Domain
 
 import PokeFeatureInterface
+import BaseFeatureDependency
 
 public class PokeMyFriendsViewModel:
     PokeMyFriendsViewModelType {
@@ -102,6 +103,12 @@ extension PokeMyFriendsViewModel {
                 if let myFriends = owner.myFriends {
                     output.myFriends.send(myFriends)
                 }
+            }.store(in: cancelBag)
+        
+        useCase.errorMessage
+            .compactMap { $0 }
+            .sink { message in
+                ToastUtils.showMDSToast(type: .alert, text: message)
             }.store(in: cancelBag)
     }
 }
