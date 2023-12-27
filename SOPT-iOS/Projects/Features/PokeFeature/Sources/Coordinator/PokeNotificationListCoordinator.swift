@@ -50,6 +50,14 @@ extension PokeNotificationListCoordinator {
                 .asDriver()
         }
         
+        viewController.vm.onNewFriendAdded = { [weak self] friendName in
+            guard let self else { return }
+            
+            let pokeMakingFriendCompletedVC = self.factory.makePokeMakingFriendCompleted(friendName: friendName).viewController
+            pokeMakingFriendCompletedVC.modalPresentationStyle = .overFullScreen
+            viewController.vc.viewController.present(pokeMakingFriendCompletedVC, animated: false)
+        }
+
         self.rootController = viewController.vc.asNavigationController
         self.router.push(viewController.vc)
     }

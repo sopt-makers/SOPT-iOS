@@ -28,9 +28,10 @@ extension PokeNotificationRepository: PokeNotificationRepositoryInterface {
             .eraseToAnyPublisher()
     }
     
-    public func poke(userId: Int, message: String) -> AnyPublisher<PokeUserModel, Error> {
+    public func poke(userId: Int, message: String) -> AnyPublisher<PokeUserModel, PokeError> {
         self.pokeService
             .poke(userId: userId, message: message)
+            .mapErrorToPokeError()
             .map { $0.toDomain() }
             .eraseToAnyPublisher()
     }

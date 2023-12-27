@@ -12,10 +12,10 @@ import Core
 
 public protocol PokeNotificationUsecase {
     func getWhoPokedMeList()
-    func poke(userId: Int, message: PokeMessageModel)
+    func poke(user: PokeUserModel, message: PokeMessageModel)
     
     var pokedMeList: PassthroughSubject<[PokeUserModel], Never> { get }
-    var pokedResponse: PassthroughSubject<PokeUserModel, Never> { get }
+    var pokedResponse: PassthroughSubject<(response: PokeUserModel, isNewlyAddedFriend: Bool), Never> { get }
 }
 
 public final class DefaultPokeNotificationUsecase {
@@ -26,7 +26,7 @@ public final class DefaultPokeNotificationUsecase {
 
     // MARK: UsecaseProtocol
     public let pokedMeList = PassthroughSubject<[PokeUserModel], Never>()
-    public let pokedResponse = PassthroughSubject<PokeUserModel, Never>()
+    public let pokedResponse = PassthroughSubject<(response: PokeUserModel, isNewlyAddedFriend: Bool), Never>()
 
     public init(repository: PokeNotificationRepositoryInterface) {
         self.repository = repository
@@ -49,13 +49,19 @@ extension DefaultPokeNotificationUsecase: PokeNotificationUsecase {
                 }).store(in: self.cancelBag)
     }
     
-    public func poke(userId: Int, message: PokeMessageModel) {
+    public func poke(user: PokeUserModel, message: PokeMessageModel) {
         self.repository
-            .poke(userId: userId, message: message.content)
+            .poke(userId: user.userId, message: message.content)
             .sink(
                 receiveCompletion: { _ in },
-                receiveValue: { [weak self] value in
-                    self?.pokedResponse.send(value)
+                receiveValue: { [weak self] userModel in
+                    let verifyIsNewlyAddedFriend = {
+                        guard user.isFirstMeet else { return false }
+                        
+                        return user.isFirstMeet && userModel.isFirstMeet == false
+                    }
+                    
+                    self?.pokedResponse.send((response: userModel, isNewlyAddedFriend: verifyIsNewlyAddedFriend()))
                 }
             ).store(in: self.cancelBag)
     }
