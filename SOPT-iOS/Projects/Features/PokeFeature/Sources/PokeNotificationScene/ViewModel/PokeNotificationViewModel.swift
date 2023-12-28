@@ -81,6 +81,12 @@ extension PokeNotificationViewModel {
             }).store(in: cancelBag)
         
         self.usecase
+            .pokedResponse
+            .sink { _ in
+                ToastUtils.showMDSToast(type: .success, text: I18N.Poke.pokeSuccess)
+            }.store(in: cancelBag)
+
+        self.usecase
             .errorMessage
             .compactMap { $0 }
             .sink { message in

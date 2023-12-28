@@ -121,6 +121,11 @@ extension PokeMyFriendsListViewModel {
                 output.needToReloadFriendList.send()
             }.store(in: cancelBag)
         
+        useCase.pokedResponse
+            .sink { _ in
+                ToastUtils.showMDSToast(type: .success, text: I18N.Poke.pokeSuccess)
+            }.store(in: cancelBag)
+        
         useCase.errorMessage
             .compactMap { $0 }
             .sink { message in

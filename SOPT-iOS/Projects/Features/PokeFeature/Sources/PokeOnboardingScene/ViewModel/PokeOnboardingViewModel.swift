@@ -101,5 +101,11 @@ extension PokeOnboardingViewModel {
             .sink(receiveValue: { value in
                 output.pokedResult.send(value)
             }).store(in: cancelBag)
+        
+        self.usecase
+            .pokedResponse
+            .sink { _ in
+                ToastUtils.showMDSToast(type: .success, text: I18N.Poke.pokeSuccess)
+            }.store(in: cancelBag)
     }
 }

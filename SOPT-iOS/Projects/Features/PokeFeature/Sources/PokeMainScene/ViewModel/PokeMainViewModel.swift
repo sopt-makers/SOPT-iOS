@@ -166,6 +166,11 @@ extension PokeMainViewModel {
             .subscribe(output.pokeResponse)
             .store(in: cancelBag)
         
+        useCase.pokedResponse
+            .sink { _ in
+                ToastUtils.showMDSToast(type: .success, text: I18N.Poke.pokeSuccess)
+            }.store(in: cancelBag)
+        
         useCase.madeNewFriend
             .sink { [weak self] userModel in
                 self?.onNewFriendMade?(userModel.name)
