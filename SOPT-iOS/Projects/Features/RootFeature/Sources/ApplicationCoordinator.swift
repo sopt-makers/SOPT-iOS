@@ -249,6 +249,8 @@ extension ApplicationCoordinator {
             self?.removeDependency(coordinator)
         }
         
+        addDependency(coordinator)
+        
         return coordinator
     }
     
