@@ -166,6 +166,13 @@ extension PokeMainViewModel {
             .subscribe(output.pokeResponse)
             .store(in: cancelBag)
         
+        // 다른 뷰에서 찌르기를 했을 때 메인 뷰의 해당 유저의 찌르기 버튼을 비활성화 하기 위해 NotificationCenter로 찌르기 이벤트를 받아온다.
+        let notiName = NotiList.makeNotiName(list: .pokedResponse)
+        NotificationCenter.default.publisher(for: notiName)
+            .compactMap { $0.object as? PokeUserModel }
+            .subscribe(output.pokeResponse)
+            .store(in: cancelBag)
+        
         useCase.pokedResponse
             .sink { _ in
                 ToastUtils.showMDSToast(type: .success, text: I18N.Poke.pokeSuccess)

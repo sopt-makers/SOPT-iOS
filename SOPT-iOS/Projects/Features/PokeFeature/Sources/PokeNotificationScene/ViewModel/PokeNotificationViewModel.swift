@@ -6,6 +6,7 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
+import Foundation
 import Combine
 
 import Core
@@ -82,8 +83,10 @@ extension PokeNotificationViewModel {
         
         self.usecase
             .pokedResponse
-            .sink { _ in
+            .sink { user in
                 ToastUtils.showMDSToast(type: .success, text: I18N.Poke.pokeSuccess)
+                let notiName = NotiList.makeNotiName(list: .pokedResponse)
+                NotificationCenter.default.post(name: notiName, object: user)
             }.store(in: cancelBag)
 
         self.usecase
