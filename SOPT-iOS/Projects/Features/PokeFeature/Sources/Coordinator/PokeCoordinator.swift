@@ -70,10 +70,10 @@ final class PokeCoordinator: DefaultCoordinator {
         router.present(rootController, animated: true, modalPresentationSytle: .overFullScreen)
     }
     
-    private func runPokeNotificationListFlow() {
+    internal func runPokeNotificationListFlow() {
         let pokeNotificationListCoordinator = PokeNotificationListCoordinator(
             router: Router(
-                rootController: rootController!
+                rootController: rootController ?? self.router.asNavigationController
             ),
             factory: factory
         )
