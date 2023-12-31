@@ -59,12 +59,14 @@ public class Toast {
     }
     
     public static func showMDSToast(type: MDSToast.ToastType, text: String, actionButtonAction: (() -> Void)? = nil) {
-        let toast = MDSToast(type: type, text: text, actionButtonAction: actionButtonAction)
-        
         guard let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene else { return }
         guard let window = scene.windows.first(where: { $0.isKeyWindow }) else { return }
         
-        guard !window.subviews.contains(where: { $0 is MDSToast }) else { return } // 토스트가 중복으로 나오지 않도록 방지
+        let toast = MDSToast(type: type, text: text, actionButtonAction: actionButtonAction)
+        
+        // 토스트가 중복으로 나오지 않도록 방지
+        let previousToast = window.subviews.first { $0 is MDSToast }
+        previousToast?.removeFromSuperview()
         
         window.addSubview(toast)
         
