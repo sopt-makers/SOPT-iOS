@@ -55,6 +55,17 @@ final class NotificationPayloadTests: XCTestCase {
         XCTAssertEqual(payload.aps.alert.body, "안녕하세요")
     }
     
+    func test_payload_decoding_실패() {
+        // Given
+        let dictionary: [AnyHashable: Any] = ["none": "willFail"]
+        
+        // When
+        self.payload = NotificationPayload(dictionary: dictionary)
+        
+        // Then
+        XCTAssertNil(self.payload)
+    }
+    
     func test_hasLink() {
         // Given
         let mockJson = "MockDeepLinkPayload"
