@@ -49,7 +49,7 @@ final class NotificationPayloadTests: XCTestCase {
         
         // Then
         XCTAssertEqual(payload.id, "2133")
-        XCTAssertEqual(payload.deepLink, "home/poke/notification-list")
+        XCTAssertEqual(payload.deepLink, "home/soptamp/entire-ranking")
         XCTAssertEqual(payload.category, "NOTICE")
         XCTAssertEqual(payload.aps.alert.title, "테스트")
         XCTAssertEqual(payload.aps.alert.body, "안녕하세요")
