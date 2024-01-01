@@ -28,11 +28,11 @@ final class PokeCoordinator: DefaultCoordinator {
     }
     
     public override func start() {
-        showPokeMain()
+        showPokeMain(isRouteFromRoot: false)
     }
     
-    private func showPokeMain() {
-        var pokeMain = factory.makePokeMain()
+    public func showPokeMain(isRouteFromRoot: Bool) {
+        var pokeMain = factory.makePokeMain(isRouteFromRoot: isRouteFromRoot)
         
         pokeMain.vm.onNaviBackTap = { [weak self] in
             self?.router.dismissModule(animated: true)
@@ -66,8 +66,30 @@ final class PokeCoordinator: DefaultCoordinator {
             pokeMain.vc.viewController.present(pokeMakingFriendCompletedVC, animated: false)
         }
         
+        pokeMain.vm.switchToOnboarding = { [weak self] in
+            guard let self = self else { return }
+            self.runPokeOnboardingFlow()
+        }
+        
         rootController = pokeMain.vc.asNavigationController
         router.present(rootController, animated: true, modalPresentationSytle: .overFullScreen)
+    }
+    
+    internal func runPokeOnboardingFlow() {
+        let pokeOnboardingCoordinator = PokeOnboardingCoordinator(
+            router: Router(
+                rootController: rootController ?? self.router.asNavigationController
+            ),
+            factory: factory
+        )
+        
+        pokeOnboardingCoordinator.finishFlow = { [weak self, weak pokeOnboardingCoordinator] in
+            pokeOnboardingCoordinator?.childCoordinators = []
+            self?.removeDependency(pokeOnboardingCoordinator)
+        }
+        
+        addDependency(pokeOnboardingCoordinator)
+        pokeOnboardingCoordinator.switchToPokeOnboardingView()
     }
     
     internal func runPokeNotificationListFlow() {

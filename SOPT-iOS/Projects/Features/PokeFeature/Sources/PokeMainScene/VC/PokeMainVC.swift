@@ -291,5 +291,10 @@ extension PokeMainVC {
                     pokeUserView.changeUIAfterPoke(newUserModel: updatedUser)
                 }
             }.store(in: cancelBag)
+        
+        output.isLoading
+            .sink { [weak self] isLoading in
+                isLoading ? self?.showLoading() : self?.stopLoading()
+            }.store(in: self.cancelBag)
     }
 }
