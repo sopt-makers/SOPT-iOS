@@ -11,6 +11,7 @@ import Foundation
 public protocol DeepLinkTreeNode {
     var name: String { get }
     var children: [DeepLinkExecutable] { get }
+    var isDestination: Bool { get set }
     func findChild(name: String) -> DeepLinkExecutable?
 }
 

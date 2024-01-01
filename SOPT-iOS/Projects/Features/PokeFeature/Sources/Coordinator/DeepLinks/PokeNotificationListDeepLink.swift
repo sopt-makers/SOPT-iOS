@@ -12,6 +12,7 @@ import BaseFeatureDependency
 public struct PokeNotificationListDeepLink: DeepLinkExecutable {
     public let name = "notification-list"
     public let children: [DeepLinkExecutable] = []
+    public var isDestination: Bool = false
     
     public init() {}
     

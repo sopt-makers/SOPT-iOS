@@ -13,6 +13,7 @@ import NotificationFeature
 public struct NotificationDeepLink: DeepLinkExecutable {
     public let name = "notification"
     public let children: [DeepLinkExecutable] = [NotificationDetailDeepLink()]
+    public var isDestination: Bool = false
     
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }

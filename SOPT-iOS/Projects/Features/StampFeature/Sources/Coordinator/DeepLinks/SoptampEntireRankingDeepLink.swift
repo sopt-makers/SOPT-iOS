@@ -12,6 +12,7 @@ import BaseFeatureDependency
 public struct SoptampEntireRankingDeepLink: DeepLinkExecutable {
     public let name = "entire-ranking"
     public let children: [DeepLinkExecutable] = []
+    public var isDestination: Bool = false
     
     public init() {}
     

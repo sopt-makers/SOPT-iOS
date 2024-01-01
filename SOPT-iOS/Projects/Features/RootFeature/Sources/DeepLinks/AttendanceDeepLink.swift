@@ -13,6 +13,7 @@ import AttendanceFeature
 public struct AttendanceDeepLink: DeepLinkExecutable {
     public let name = "attendance"
     public let children: [DeepLinkExecutable] = [AttendanceModalDeepLink()]
+    public var isDestination: Bool = false
     
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }

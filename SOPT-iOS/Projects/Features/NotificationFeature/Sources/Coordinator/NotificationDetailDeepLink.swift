@@ -12,6 +12,7 @@ import BaseFeatureDependency
 public struct NotificationDetailDeepLink: DeepLinkExecutable {
     public let name = "detail"
     public let children: [DeepLinkExecutable] = []
+    public var isDestination: Bool = false
     
     public init() {}
     
