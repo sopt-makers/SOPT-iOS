@@ -13,6 +13,7 @@ import Domain
 public struct AttendanceModalDeepLink: DeepLinkExecutable {
     public let name = "attendance-modal"
     public let children: [DeepLinkExecutable] = []
+    public var isDestination: Bool = false
     
     public init() {}
     

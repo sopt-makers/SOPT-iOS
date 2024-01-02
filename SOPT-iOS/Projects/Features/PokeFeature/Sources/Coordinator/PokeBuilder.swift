@@ -20,9 +20,9 @@ public final class PokeBuilder {
 }
 
 extension PokeBuilder: PokeFeatureBuildable {
-    public func makePokeMain() -> PokeFeatureInterface.PokeMainPresentable {
+    public func makePokeMain(isRouteFromRoot: Bool) -> PokeFeatureInterface.PokeMainPresentable {
         let useCase = DefaultPokeMainUseCase(repository: pokeMainRepository)
-        let viewModel = PokeMainViewModel(useCase: useCase)
+        let viewModel = PokeMainViewModel(useCase: useCase, isRouteFromRoot: isRouteFromRoot)
         let pokeMainVC = PokeMainVC(viewModel: viewModel)
         return (pokeMainVC, viewModel)
     }

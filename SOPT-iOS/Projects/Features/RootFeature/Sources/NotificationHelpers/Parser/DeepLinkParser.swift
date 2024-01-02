@@ -56,6 +56,10 @@ struct DeepLinkParser: NotificationLinkParser {
             deepLinks.append(child)
         }
         
+        if !deepLinks.isEmpty {
+            deepLinks[deepLinks.count-1].isDestination = true
+        }
+        
         return deepLinks
     }
     

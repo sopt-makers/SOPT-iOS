@@ -59,10 +59,14 @@ public class Toast {
     }
     
     public static func showMDSToast(type: MDSToast.ToastType, text: String, actionButtonAction: (() -> Void)? = nil) {
-        let toast = MDSToast(type: type, text: text, actionButtonAction: actionButtonAction)
-        
         guard let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene else { return }
         guard let window = scene.windows.first(where: { $0.isKeyWindow }) else { return }
+        
+        let toast = MDSToast(type: type, text: text, actionButtonAction: actionButtonAction)
+        
+        // 토스트가 중복으로 나오지 않도록 방지
+        let previousToast = window.subviews.first { $0 is MDSToast }
+        previousToast?.removeFromSuperview()
         
         window.addSubview(toast)
         
@@ -81,7 +85,7 @@ public class Toast {
             toast.superview?.layoutIfNeeded()
         } completion: { _ in
             // 2. 토스트를 천천히 아래로 내린다. (화면에 등장)
-            UIView.animate(withDuration: 0.5) {
+            UIView.animate(withDuration: 0.4) {
                 toast.snp.updateConstraints { make in
                     make.top.equalTo(window.safeAreaLayoutGuide).inset(16)
                 }
@@ -94,8 +98,8 @@ public class Toast {
                  -> 토스트에 있는 버튼이 터치가 안 되는 문제 발생
                  -> asyncAfter를 사용하여 4초 뒤에 Constraints를 업데이트하도록 하여 문제 해결
                 */
-                DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
-                    UIView.animate(withDuration: 0.5, animations: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    UIView.animate(withDuration: 0.4, animations: {
                         toast.snp.updateConstraints { make in
                             make.top.equalTo(window.safeAreaLayoutGuide).inset(-toastStartingInset)
                         }

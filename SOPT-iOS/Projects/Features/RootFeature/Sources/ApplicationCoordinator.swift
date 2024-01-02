@@ -229,6 +229,16 @@ extension ApplicationCoordinator {
     
     @discardableResult
     internal func runPokeFlow() -> PokeCoordinator {
+        let coordinator = makePokeCoordinator()
+        
+        addDependency(coordinator)
+        coordinator.start()
+        
+        return coordinator
+    }
+    
+    @discardableResult
+    internal func makePokeCoordinator() -> PokeCoordinator {
         let coordinator = PokeCoordinator(
             router: Router(rootController: UIWindow.getRootNavigationController),
             factory: PokeBuilder()
@@ -240,7 +250,6 @@ extension ApplicationCoordinator {
         }
         
         addDependency(coordinator)
-        coordinator.start()
         
         return coordinator
     }

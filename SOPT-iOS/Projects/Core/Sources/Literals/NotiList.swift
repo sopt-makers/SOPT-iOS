@@ -11,7 +11,7 @@ import Foundation
 /// enum형 NotiList를 Notification.Name으로 return
 /// - ex) NotificationCenter.default.post(name: NotiList.makeNotiName(list: <NotiList>), object: <>, userInfo: <>)
 public enum NotiList: String {
-    case sample
+    case pokedResponse
     
     public static func makeNotiName(list: NotiList) -> NSNotification.Name {
         return Notification.Name(String(describing: list))

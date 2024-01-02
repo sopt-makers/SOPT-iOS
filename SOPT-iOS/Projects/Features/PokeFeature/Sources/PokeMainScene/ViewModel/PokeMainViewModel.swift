@@ -26,10 +26,12 @@ public class PokeMainViewModel:
     public var onProfileImageTapped: ((Int) -> Void)?
     public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)?
     public var onNewFriendMade: ((String) -> Void)?
+    public var switchToOnboarding: (() -> Void)?
     
     // MARK: - Properties
     
     private let useCase: PokeMainUseCase
+    private let isRouteFromRoot: Bool
     private var cancelBag = CancelBag()
     
     // MARK: - Inputs
@@ -57,12 +59,14 @@ public class PokeMainViewModel:
         let friendRandomUsers = PassthroughSubject<[PokeFriendRandomUserModel], Never>()
         let endRefreshLoading = PassthroughSubject<Void, Never>()
         let pokeResponse = PassthroughSubject<PokeUserModel, Never>()
+        let isLoading = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - initialization
     
-    public init(useCase: PokeMainUseCase) {
+    public init(useCase: PokeMainUseCase, isRouteFromRoot: Bool = false) {
         self.useCase = useCase
+        self.isRouteFromRoot = isRouteFromRoot
     }
 }
 
@@ -76,6 +80,17 @@ extension PokeMainViewModel {
                 self?.useCase.getWhoPokedToMe()
                 self?.useCase.getFriend()
                 self?.useCase.getFriendRandomUser()
+            }.store(in: cancelBag)
+        
+        input.viewDidLoad
+            .map { [weak self] _ in
+                self?.isRouteFromRoot
+            }
+            .compactMap { $0 }
+            .filter { $0 == true }
+            .sink { [weak self] _ in
+                output.isLoading.send(true)
+                self?.useCase.checkPokeNewUser()
             }.store(in: cancelBag)
         
         input.naviBackButtonTap
@@ -166,6 +181,18 @@ extension PokeMainViewModel {
             .subscribe(output.pokeResponse)
             .store(in: cancelBag)
         
+        // 다른 뷰에서 찌르기를 했을 때 메인 뷰의 해당 유저의 찌르기 버튼을 비활성화 하기 위해 NotificationCenter로 찌르기 이벤트를 받아온다.
+        let notiName = NotiList.makeNotiName(list: .pokedResponse)
+        NotificationCenter.default.publisher(for: notiName)
+            .compactMap { $0.object as? PokeUserModel }
+            .subscribe(output.pokeResponse)
+            .store(in: cancelBag)
+        
+        useCase.pokedResponse
+            .sink { _ in
+                ToastUtils.showMDSToast(type: .success, text: I18N.Poke.pokeSuccess)
+            }.store(in: cancelBag)
+        
         useCase.madeNewFriend
             .sink { [weak self] userModel in
                 self?.onNewFriendMade?(userModel.name)
@@ -175,6 +202,14 @@ extension PokeMainViewModel {
             .compactMap { $0 }
             .sink { message in
                 ToastUtils.showMDSToast(type: .alert, text: message)
+            }.store(in: cancelBag)
+        
+        useCase.isPokeNewUser
+            .sink { [weak self] isNewUser in
+                output.isLoading.send(false)
+                if isNewUser {
+                    self?.switchToOnboarding?()
+                }
             }.store(in: cancelBag)
     }
 }
