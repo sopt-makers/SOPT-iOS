@@ -97,7 +97,6 @@ final class DeepLinkComponentsTests: XCTestCase {
         let coordinator = MockCoordinator()
         let mockDeepLinks: [DeepLinkExecutable] = [MockHomeDeepLink(), MockSoptampDeepLink()]
         let expected = mockDeepLinks.map { $0.name }
-        // home은 경로일 때는 라우팅하지 않는다.
         
         // When
         let deepLinkComponents = DeepLinkComponents(deepLinkData: (mockDeepLinks, nil))
