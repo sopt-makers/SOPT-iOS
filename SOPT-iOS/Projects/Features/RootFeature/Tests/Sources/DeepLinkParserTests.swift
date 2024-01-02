@@ -216,4 +216,40 @@ final class DeepLinkParserTests: XCTestCase {
         XCTAssertEqual(queryItems?.getQueryValue(key: "currentGeneration"), "33")
         XCTAssertEqual(queryItems?.getQueryValue(key: "status"), "active")
     }
+    
+    func test_딥링크_파싱_종착지뷰_설정() {
+        // Given
+        let link = "home/notification"
+        let expected = true
+        
+        // When
+        guard let result = try? parser.parse(with: link) else { return XCTFail() }
+        let deepLinks = result.deepLinks
+
+        // Then
+        guard let lastDeepLink = deepLinks.last else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(expected, lastDeepLink.isDestination)
+    }
+    
+    func test_딥링크_파싱_경유지뷰_설정() {
+        // Given
+        let link = "home/notification"
+        let expected = false
+        
+        // When
+        guard let result = try? parser.parse(with: link) else { return XCTFail() }
+        let deepLinks = result.deepLinks
+
+        // Then
+        guard let firstDeepLink = deepLinks.first else {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(expected, firstDeepLink.isDestination)
+    }
 }
