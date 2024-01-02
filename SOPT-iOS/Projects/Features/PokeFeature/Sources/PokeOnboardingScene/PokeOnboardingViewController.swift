@@ -84,7 +84,7 @@ public final class PokeOnboardingViewController: UIViewController, PokeOnboardin
 
     // MARK: Description
     private let contentFooterDescriptionLabel = UILabel().then {
-        $0.text = "아는 사람이 없나요?\n화면을 밑으로 당기면 다른 친구들을 볼 수 있어요"
+        $0.text = "아는 사람이 없나요?\n화면을 당기면 다른 친구들을 볼 수 있어요"
         $0.textAlignment = .center
         $0.numberOfLines = Constant.numberOfFooterDesciprionLines
         $0.textColor = DSKitAsset.Colors.gray200.color

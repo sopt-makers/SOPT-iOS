@@ -19,6 +19,7 @@ public protocol PokeMainCoordinatable {
     var onProfileImageTapped: ((Int) -> Void)? { get set }
     var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)? { get set }
     var onNewFriendMade: ((String) -> Void)? { get set }
+    var switchToOnboarding: (() -> Void)? { get set }
 }
 
 public typealias PokeMainViewModelType = ViewModelType & PokeMainCoordinatable

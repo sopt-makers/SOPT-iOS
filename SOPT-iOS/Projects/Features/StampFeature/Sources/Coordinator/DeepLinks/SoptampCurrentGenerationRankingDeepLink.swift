@@ -13,6 +13,7 @@ import Domain
 public struct SoptampCurrentGenerationRankingDeepLink: DeepLinkExecutable {
     public let name = "current-generation-ranking"
     public let children: [DeepLinkExecutable] = []
+    public var isDestination: Bool = false
     
     public init() {}
     

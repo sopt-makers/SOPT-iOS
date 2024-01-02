@@ -32,6 +32,20 @@ public final class PokeOnboardingCoordinator: DefaultCoordinator {
 
 extension PokeOnboardingCoordinator {
     private func showPokeOnboardingView() {
+        var pokeOnboarding = makePokeOnboardingView()
+                
+        self.rootController = pokeOnboarding.vc.asNavigationController
+        self.router.present(self.rootController, animated: true, modalPresentationSytle: .overFullScreen)
+    }
+    
+    func switchToPokeOnboardingView() {
+        var pokeOnboarding = makePokeOnboardingView()
+        
+        self.rootController = router.asNavigationController
+        self.router.setRootModule(pokeOnboarding.vc, hideBar: true, animated: false)
+    }
+    
+    func makePokeOnboardingView() -> PokeOnboardingPresentable {
         var pokeOnboarding = self.factory.makePokeOnboarding()
         
         pokeOnboarding.vm.onNaviBackTapped = { [weak self] in
@@ -71,8 +85,7 @@ extension PokeOnboardingCoordinator {
             let webView = SOPTWebView(startWith: url)
             self?.rootController?.pushViewController(webView, animated: true)
         }
-                
-        self.rootController = pokeOnboarding.vc.asNavigationController
-        self.router.present(self.rootController, animated: true, modalPresentationSytle: .overFullScreen)
+        
+        return pokeOnboarding
     }
 }

@@ -16,6 +16,7 @@ public protocol PokeOnboardingUsecase {
     
     var randomAcquaintances: PassthroughSubject<[PokeUserModel], Never> { get }
     var pokedResponse: PassthroughSubject<PokeUserModel, Never> { get }
+    var errorMessage: PassthroughSubject<String?, Never> { get }
 }
 
 public final class DefaultPokeOnboardingUsecase {
@@ -24,6 +25,7 @@ public final class DefaultPokeOnboardingUsecase {
     
     public let randomAcquaintances = PassthroughSubject<[PokeUserModel], Never>()
     public let pokedResponse = PassthroughSubject<PokeUserModel, Never>()
+    public let errorMessage = PassthroughSubject<String?, Never>()
     
     public init(repository: PokeOnboardingRepositoryInterface) {
         self.repository = repository
@@ -45,6 +47,11 @@ extension DefaultPokeOnboardingUsecase: PokeOnboardingUsecase {
     public func poke(userId: Int, message: PokeMessageModel) {
         self.repository
             .poke(userId: userId, message: message.content)
+            .catch { [weak self] error in
+                let message = error.toastMessage
+                self?.errorMessage.send(message)
+                return Empty<PokeUserModel, Never>()
+            }
             .sink(
                 receiveCompletion: { _ in },
                 receiveValue: { [weak self] value in
