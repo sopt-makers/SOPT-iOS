@@ -81,6 +81,29 @@ final class DeepLinkComponentsTests: XCTestCase {
         XCTAssertEqual(expected, result)
     }
     
+    func test_getQueryItems_쿼리_배열이_비어있는_경우() {
+        // Given
+        let expected: String? = nil
+        let deepLinkComponents = DeepLinkComponents(deepLinkData: ([], nil))
+        
+        // When
+        let result = deepLinkComponents.getQueryItemValue(name: "id")
+        
+        // Then
+        XCTAssertEqual(expected, result)
+    }
+    
+    func test_getQueryItems_찾는_쿼리가_없는_경우() {
+        // Given
+        let expected: String? = nil
+        
+        // When
+        let result = deepLinkComponents.getQueryItemValue(name: "weirdKey")
+        
+        // Then
+        XCTAssertEqual(expected, result)
+    }
+    
     func test_addDeepLink() {
         // Given
         let deepLinkComponents = DeepLinkComponents(deepLinkData: ([], nil))
@@ -103,7 +126,6 @@ final class DeepLinkComponentsTests: XCTestCase {
         deepLinkComponents.execute(coordinator: coordinator)
         
         // Then
-        
         XCTAssertEqual(expected, coordinator.childViewNames)
     }
 }
