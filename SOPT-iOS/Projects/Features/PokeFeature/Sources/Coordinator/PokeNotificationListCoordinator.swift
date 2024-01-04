@@ -59,6 +59,13 @@ extension PokeNotificationListCoordinator {
         }
 
         self.rootController = viewController.vc.asNavigationController
-        self.router.push(viewController.vc)
+        
+        var willAnimate = true
+        if let top = router.topViewController, type(of: top) == type(of: viewController.vc) {
+            willAnimate = false
+            router.popModule(transition: nil, animated: false)
+        }
+        
+        self.router.push(viewController.vc, transition: nil, animated: willAnimate)
     }
 }
