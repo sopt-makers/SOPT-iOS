@@ -36,7 +36,7 @@ extension PokeNotificationListCoordinator {
                     
         viewController.vm.onPokeButtonTapped = { [weak self] userModel in
             guard let bottomSheet = self?.factory
-                .makePokeMessageTemplateBottomSheet(messageType: .pokeSomeone)
+                .makePokeMessageTemplateBottomSheet(messageType: userModel.isFirstMeet ? .pokeSomeone : .pokeFriend)
                     .vc
                     .viewController as? PokeMessageTemplateBottomSheet
             else { return .empty() }
