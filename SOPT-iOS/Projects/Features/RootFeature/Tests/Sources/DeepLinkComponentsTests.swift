@@ -25,7 +25,7 @@ final class DeepLinkComponentsTests: XCTestCase {
         self.deepLinkComponents = nil
     }
     
-    func test_failable_initializer() {
+    func test_nil인_데이터로_init을_수행한다() {
         // Given
         let data: DeepLinkData? = nil
 
@@ -36,7 +36,7 @@ final class DeepLinkComponentsTests: XCTestCase {
         XCTAssertNil(deepLinkComponents)
     }
     
-    func test_isEmpty() {
+    func test_딥링크_데이터가_존재하는_경우_isEmpty를_검사() {
         // Given
         let expected = false
         
@@ -70,7 +70,7 @@ final class DeepLinkComponentsTests: XCTestCase {
         XCTAssertEqual(expected, result)
     }
     
-    func test_getQueryItems() {
+    func test_id가_키인_쿼리데이터를_가져온다() {
         // Given
         let expected = "123"
         
@@ -81,7 +81,7 @@ final class DeepLinkComponentsTests: XCTestCase {
         XCTAssertEqual(expected, result)
     }
     
-    func test_getQueryItems_쿼리_배열이_비어있는_경우() {
+    func test_쿼리_배열이_비어있는_경우_id_쿼리찾기() {
         // Given
         let expected: String? = nil
         let deepLinkComponents = DeepLinkComponents(deepLinkData: ([], nil))
@@ -93,7 +93,7 @@ final class DeepLinkComponentsTests: XCTestCase {
         XCTAssertEqual(expected, result)
     }
     
-    func test_getQueryItems_찾는_쿼리가_없는_경우() {
+    func test_찾는_쿼리가_없는_경우에_쿼리아이템을_요청한다() {
         // Given
         let expected: String? = nil
         
@@ -104,7 +104,7 @@ final class DeepLinkComponentsTests: XCTestCase {
         XCTAssertEqual(expected, result)
     }
     
-    func test_addDeepLink() {
+    func test_새_딥링크_객체를_추가한다() {
         // Given
         let deepLinkComponents = DeepLinkComponents(deepLinkData: ([], nil))
 
@@ -115,7 +115,7 @@ final class DeepLinkComponentsTests: XCTestCase {
         XCTAssertFalse(deepLinkComponents.isEmpty)
     }
     
-    func test_execute() {
+    func test_딥링크_구현체들을_execute하여_라우팅을_수행한다() {
         // Given
         let coordinator = MockCoordinator()
         let mockDeepLinks: [DeepLinkExecutable] = [MockHomeDeepLink(), MockSoptampDeepLink()]
