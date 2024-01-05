@@ -40,7 +40,7 @@ final class NotificationPayloadTests: XCTestCase {
         }
     }
     
-    func test_payload_decoding() {
+    func test_올바른_알림_페이로드를_디코딩한다() {
         // Given
         let mockJson = "MockDeepLinkPayload"
         
@@ -55,7 +55,7 @@ final class NotificationPayloadTests: XCTestCase {
         XCTAssertEqual(payload.aps.alert.body, "안녕하세요")
     }
     
-    func test_payload_decoding_실패() {
+    func test_잘못된_형태의_알림_페이로드를_디코딩한다() {
         // Given
         let dictionary: [AnyHashable: Any] = ["none": "willFail"]
         
@@ -77,7 +77,7 @@ final class NotificationPayloadTests: XCTestCase {
         XCTAssertTrue(payload.hasLink)
     }
     
-    func test_hasDeepLink_딥링크만_있는_경우() {
+    func test_딥링크만_있는_경우_딥링크_존재유무_확인() {
         // Given
         let mockJson = "MockDeepLinkPayload"
 
@@ -88,7 +88,7 @@ final class NotificationPayloadTests: XCTestCase {
         XCTAssertTrue(payload.hasDeepLink)
     }
     
-    func test_hasDeepLink_웹링크만_있는_경우() {
+    func test_웹링크만_있는_경우_딥링크_존재유무_확인() {
         // Given
         let mockJson = "MockWebLinkPayload"
 
@@ -99,7 +99,7 @@ final class NotificationPayloadTests: XCTestCase {
         XCTAssertFalse(payload.hasDeepLink)
     }
     
-    func test_hasWebLink_딥링크만_있는_경우() {
+    func test_딥링크만_있는_경우_웹링크_존재유무_확인() {
         // Given
         let mockJson = "MockDeepLinkPayload"
 
@@ -110,7 +110,7 @@ final class NotificationPayloadTests: XCTestCase {
         XCTAssertFalse(payload.hasWebLink)
     }
     
-    func test_hasWebLink_웹링크만_있는_경우() {
+    func test_웹링크만_있는_경우_웹링크_존재유무_확인() {
         // Given
         let mockJson = "MockWebLinkPayload"
 
