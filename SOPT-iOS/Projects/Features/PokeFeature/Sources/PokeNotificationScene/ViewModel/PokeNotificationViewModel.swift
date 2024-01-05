@@ -86,7 +86,7 @@ extension PokeNotificationViewModel {
             .sink { user in
                 ToastUtils.showMDSToast(type: .success, text: I18N.Poke.pokeSuccess)
                 let notiName = NotiList.makeNotiName(list: .pokedResponse)
-                NotificationCenter.default.post(name: notiName, object: user)
+                NotificationCenter.default.post(name: notiName, object: user.response)
             }.store(in: cancelBag)
 
         self.usecase
