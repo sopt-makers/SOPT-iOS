@@ -27,7 +27,7 @@ final class NotificationHandlerTests: XCTestCase {
         self.subsriptions = []
     }
     
-    func test_receive_deepLink() {
+    func test_정상적인_딥링크를_수신한다() {
         // Given
         let link = "home/notification"
         var result: DeepLinkComponentsExecutable!
@@ -46,7 +46,7 @@ final class NotificationHandlerTests: XCTestCase {
         XCTAssertTrue(result is DeepLinkComponents)
     }
     
-    func test_receive_deepLink_파싱성공() {
+    func test_정상적인_딥링크_수신결과가_비어있는지_검사한다() {
         // Given
         let link = "home/notification"
         var result: DeepLinkComponents!
@@ -66,7 +66,7 @@ final class NotificationHandlerTests: XCTestCase {
         XCTAssertFalse(result.isEmpty)
     }
     
-    func test_receive_deepLink_파싱실패() {
+    func test_비정상적인_딥링크를_수신한다() {
         // Given
         let link = "none"
         var linkError: NotificationLinkError!
@@ -85,7 +85,7 @@ final class NotificationHandlerTests: XCTestCase {
         XCTAssertTrue(linkError == .linkNotFound)
     }
     
-    func test_receive_deepLink_만료된_링크() {
+    func test_만료된_딥링크를_수신한다() {
         // Given
         let link = "home?expiredAt=2023-01-01T00:00:00.000Z"
         var linkError: NotificationLinkError!
@@ -104,7 +104,7 @@ final class NotificationHandlerTests: XCTestCase {
         XCTAssertTrue(linkError == .expiredLink)
     }
     
-    func test_receive_webLink() {
+    func test_정상적인_웹링크를_수신한다() {
         // Given
         let link = "https://www.sopt.org"
         var result = ""
@@ -123,7 +123,7 @@ final class NotificationHandlerTests: XCTestCase {
         XCTAssertEqual(result, link)
     }
     
-    func test_receive_webLink_파싱실패_잘못된_URL() {
+    func test_잘못된_URL의_웹링크를_수신한다() {
         // Given
         let link = "FAIL https:///test/url"
         var linkError: NotificationLinkError!
@@ -142,7 +142,7 @@ final class NotificationHandlerTests: XCTestCase {
         XCTAssertTrue(linkError == .invalidLink)
     }
     
-    func test_receive_webLink_파싱실패_잘못된_Scheme() {
+    func test_잘못된_Scheme의_웹링크를_수신한다() {
         // Given
         let link = "none://test/url"
         var linkError: NotificationLinkError!
@@ -161,7 +161,7 @@ final class NotificationHandlerTests: XCTestCase {
         XCTAssertTrue(linkError == .invalidScheme)
     }
     
-    func test_receive_webLink_파싱실패_만료된_링크() {
+    func test_만료된_웹링크를_수신한다() {
         // Given
         let link = "https://www.sopt.org?expiredAt=2023-01-01T00:00:00.000Z"
         var linkError: NotificationLinkError!
@@ -180,7 +180,7 @@ final class NotificationHandlerTests: XCTestCase {
         XCTAssertTrue(linkError == .expiredLink)
     }
     
-    func test_clear_record() {
+    func test_딥링크_웹링크_에러내역을_초기화한다() {
         // Given
         let deepLink = "home/notification"
         let webLink = "https://www.sopt.org"
