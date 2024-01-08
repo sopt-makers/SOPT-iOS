@@ -31,13 +31,6 @@ public class DeepLinkComponents: DeepLinkComponentsExecutable {
     
     // deepLink 배열을 재귀적으로 돌며 각 단계의 딥링크 뷰로 이동시킨다.
     public func execute(coordinator: Coordinator) {
-        guard let firstDeepLink = popFirstDeepLink() else { return }
-        
-        if firstDeepLink.name == "home" && self.isEmpty {
-            firstDeepLink.execute(with: coordinator, queryItems: self.queryItems)
-            return
-        }
-        
         var nextCoordinator: Coordinator? = coordinator
         while !self.isEmpty, let coordinator = nextCoordinator {
             let deepLink = popFirstDeepLink()

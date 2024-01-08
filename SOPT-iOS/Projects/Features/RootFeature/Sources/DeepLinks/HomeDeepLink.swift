@@ -17,7 +17,9 @@ public struct HomeDeepLink: DeepLinkExecutable {
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
         
-        coordinator.runMainFlow()
+        if self.isDestination == true {
+            coordinator.runMainFlow()
+        }
         
         return coordinator
     }
