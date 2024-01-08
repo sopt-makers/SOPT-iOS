@@ -31,6 +31,7 @@ public final class PokeProfileImageView: UIImageView {
         self.backgroundColor = DSKitAsset.Colors.gray700.color
         self.clipsToBounds = true
         self.layer.borderWidth = 2
+        self.contentMode = .scaleAspectFill
     }
     
     public func setImage(with url: String, relation: PokeRelation) {
