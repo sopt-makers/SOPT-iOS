@@ -1,0 +1,12 @@
+{
+    "Simulator Target Bundle" : "com.sopt-stamp-iOS.test",
+    "aps" : {
+        "alert" : {
+            "title" : "웹링크 테스트",
+            "body" : "웹링크 바디",
+        },
+    },
+    "category": "NOTICE",
+    "webLink": "https://www.sopt.org",
+    "id": "6677"
+}

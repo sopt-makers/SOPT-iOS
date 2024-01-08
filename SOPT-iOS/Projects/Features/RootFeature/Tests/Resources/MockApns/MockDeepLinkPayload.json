@@ -1,0 +1,12 @@
+{
+    "Simulator Target Bundle" : "com.sopt-stamp-iOS.test",
+    "aps" : {
+        "alert" : {
+            "title" : "테스트",
+            "body" : "안녕하세요",
+        },
+    },
+    "category": "NOTICE",
+    "deepLink": "home/soptamp/entire-ranking",
+    "id": "2133"
+}
