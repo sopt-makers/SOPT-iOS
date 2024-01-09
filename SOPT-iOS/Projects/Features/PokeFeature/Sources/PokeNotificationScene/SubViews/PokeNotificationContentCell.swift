@@ -18,10 +18,15 @@ public final class PokeNotificationContentCell: UITableViewCell {
     private enum Metric {
         static let contentTopBottom = 10.f
         static let contentLeadingTrailing = 20.f
+      
+        static let bottomSeperatorHeight = 1.f
     }
     
     private lazy var notificationListContentView = PokeNotificationListContentView(frame: self.frame)
-    
+  
+    private lazy var dividerView = UIView().then {
+      $0.backgroundColor = DSKitAsset.Colors.gray700.color
+    }
     
     // MARK: - View LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -40,7 +45,6 @@ public final class PokeNotificationContentCell: UITableViewCell {
     
     private(set) var cancelBag = CancelBag()
     
-    
     public override func prepareForReuse() {
         self.cancelBag = CancelBag()
     }
@@ -48,13 +52,18 @@ public final class PokeNotificationContentCell: UITableViewCell {
 
 extension PokeNotificationContentCell {
     private func initializeViews() {
-        self.contentView.addSubview(self.notificationListContentView)
+      self.contentView.addSubviews(self.notificationListContentView, self.dividerView)
     }
     
     private func setupConstraints() {
         self.notificationListContentView.snp.makeConstraints {
             $0.top.bottom.equalToSuperview().inset(Metric.contentTopBottom)
             $0.leading.trailing.equalToSuperview().inset(Metric.contentLeadingTrailing)
+        }
+      
+        self.dividerView.snp.makeConstraints {
+          $0.height.equalTo(Metric.bottomSeperatorHeight)
+          $0.leading.trailing.bottom.equalToSuperview()
         }
     }
 }
