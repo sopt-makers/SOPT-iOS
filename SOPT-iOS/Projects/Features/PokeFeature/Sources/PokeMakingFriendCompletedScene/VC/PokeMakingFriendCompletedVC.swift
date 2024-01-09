@@ -65,7 +65,7 @@ public class PokeMakingFriendCompletedVC: UIViewController, PokeMakingFriendComp
     // MARK: - Method
 
     private func setLottie() {
-        lottieView.loopMode = .playOnce
+        lottieView.loopMode = .repeat(2)
         lottieView.contentMode = .scaleAspectFit
         lottieView.play { _ in
             self.lottieView.stop()
