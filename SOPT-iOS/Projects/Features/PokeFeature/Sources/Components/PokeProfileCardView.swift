@@ -29,6 +29,7 @@ public final class PokeProfileCardView: UIView, PokeCompatible {
         imageView.layer.cornerRadius = 60
         imageView.backgroundColor = DSKitAsset.Colors.gray700.color
         imageView.clipsToBounds = true
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     

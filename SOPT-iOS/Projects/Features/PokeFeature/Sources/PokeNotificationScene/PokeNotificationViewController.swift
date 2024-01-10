@@ -140,7 +140,7 @@ extension PokeNotificationViewController {
             .publisher(for: \.contentOffset)
             .map { [weak self] offset in
                 guard 
-                    !offset.y.isZero,
+                    offset.y > 0,
                     let tableView = self?.tableView,
                     tableView.contentOffset.y >= tableView.contentSize.height - tableView.frame.size.height
                 else { return false }
