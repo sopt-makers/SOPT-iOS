@@ -96,6 +96,7 @@ final public class PokeNotificationListContentView: UIView, PokeCompatible {
         frame: CGRect
     ) {
         self.isDetailView = isDetailView
+      
         super.init(frame: frame)
 
         self.initializeViews()

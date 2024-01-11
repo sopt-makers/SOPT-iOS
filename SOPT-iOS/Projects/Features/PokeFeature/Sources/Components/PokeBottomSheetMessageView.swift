@@ -18,7 +18,7 @@ import Domain
 final public class PokeBottomSheetMessageView: UIView {
     private enum Metrics {
         static let containerLeadingTrailing = 20.f
-        static let containerHeight = 40.f
+        static let maximumContainerHeight = 50.f
         
         static let contentLeadingTrailing = 8.f
         static let contentTopBottom = 12.f
@@ -49,7 +49,6 @@ final public class PokeBottomSheetMessageView: UIView {
     private let contentView = UIView()
     private let leftTitleLabel = UILabel().then {
         $0.textColor = DSKitAsset.Colors.gray10.color
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 16)
         $0.textAlignment = .left
         $0.numberOfLines = 1
     }
@@ -85,7 +84,7 @@ extension PokeBottomSheetMessageView {
         self.containerStackView.snp.makeConstraints {
             $0.top.bottom.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(Metrics.containerLeadingTrailing)
-            $0.height.equalTo(Metrics.containerHeight)
+            $0.height.lessThanOrEqualTo(Metrics.maximumContainerHeight)
         }
         self.contentView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(Metrics.contentLeadingTrailing)
@@ -99,7 +98,7 @@ extension PokeBottomSheetMessageView {
 extension PokeBottomSheetMessageView {
     public func configure(with messageModel: PokeMessageModel) {
         self.messageModel = messageModel
-        self.leftTitleLabel.text = messageModel.content
+        self.leftTitleLabel.attributedText = messageModel.content.applyMDSFont()
     }
     
     public func signalForClick() ->Driver<PokeMessageModel> {
@@ -139,4 +138,46 @@ extension PokeBottomSheetMessageView: UIGestureRecognizerDelegate {
     ) -> Bool {
         return true
     }
+}
+
+// NOTE(@승호): MDSFont 적용하고 DSKit으로 옮기고 적용하기.
+private extension String {
+  func applyMDSFont() -> NSMutableAttributedString {
+    self.applyMDSFont(
+      height: 22.f,
+      font: DSKitFontFamily.Suit.medium.font(size: 16),
+      color: DSKitAsset.Colors.gray30.color,
+      letterSpacing: 0.f
+    )
+  }
+  
+  func applyMDSFont(
+    height: CGFloat,
+    font: UIFont,
+    color: UIColor,
+    letterSpacing: CGFloat,
+    alignment: NSTextAlignment = .left,
+    lineBreakMode: NSLineBreakMode = .byTruncatingTail
+  ) -> NSMutableAttributedString {
+    let paragraphStyle = NSMutableParagraphStyle()
+    paragraphStyle.lineBreakMode = lineBreakMode
+    paragraphStyle.minimumLineHeight = height
+    paragraphStyle.alignment = alignment
+    
+    if lineBreakMode == .byWordWrapping {
+      paragraphStyle.lineBreakStrategy = .hangulWordPriority
+    }
+    
+    let attributes: [NSAttributedString.Key: Any] = [
+      .foregroundColor: color,
+      .font: font,
+      .kern: letterSpacing,
+      .paragraphStyle: paragraphStyle,
+      .baselineOffset: (paragraphStyle.minimumLineHeight - font.lineHeight) / 4
+    ]
+    
+    let attrText = NSMutableAttributedString(string: self)
+    attrText.addAttributes(attributes, range: NSRange(location: 0, length: self.utf16.count))
+    return attrText
+  }
 }

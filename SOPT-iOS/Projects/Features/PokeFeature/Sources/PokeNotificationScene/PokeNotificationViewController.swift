@@ -52,7 +52,7 @@ public final class PokeNotificationViewController: UIViewController, PokeNotific
     
     // MARK: TableViews
     private lazy var tableView = UITableView().then {
-        $0.separatorStyle = .singleLine
+        $0.separatorStyle = .none
         $0.showsVerticalScrollIndicator = false
         $0.delegate = self
         $0.dataSource = self
