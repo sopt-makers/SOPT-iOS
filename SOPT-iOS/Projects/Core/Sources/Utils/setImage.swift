@@ -10,6 +10,11 @@ import Kingfisher
 
 public extension UIImageView {
     func setImage(with urlString: String, placeholder: UIImage? = nil, completion: ((UIImage?) -> Void)? = nil) {
+        guard let urlString = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+            print("URL 인코딩 실패")
+            return
+        }
+
         let cache = ImageCache.default
         if urlString == "" {
             self.image = placeholder
