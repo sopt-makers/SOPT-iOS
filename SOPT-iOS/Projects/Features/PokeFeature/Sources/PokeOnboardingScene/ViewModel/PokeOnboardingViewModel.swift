@@ -138,6 +138,6 @@ private extension PokeOnboardingViewModel {
             .add(key: .viewProfile, value: playgroundId)
             .build()
         
-        AmplitudeInstance.shared.track(eventType: .clickPoke, eventProperties: properties)
+        AmplitudeInstance.shared.track(eventType: .clickPokeIcon, eventProperties: properties)
     }
 }

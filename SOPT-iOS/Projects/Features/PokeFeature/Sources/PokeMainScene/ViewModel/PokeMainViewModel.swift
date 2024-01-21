@@ -93,13 +93,20 @@ extension PokeMainViewModel {
                 self?.useCase.checkPokeNewUser()
             }.store(in: cancelBag)
         
+        input.viewDidLoad
+            .sink { _ in
+                AmplitudeInstance.shared.trackWithUserType(event: .viewPokeMain)
+            }.store(in: cancelBag)
+        
         input.naviBackButtonTap
             .sink { [weak self] _ in
+                AmplitudeInstance.shared.trackWithUserType(event: .clickPokeQuit)
                 self?.onNaviBackTap?()
             }.store(in: cancelBag)
         
         input.pokedSectionHeaderButtonTap
             .sink { [weak self] _ in
+                AmplitudeInstance.shared.trackWithUserType(event: .clickPokeAlarmDetail)
                 self?.onPokeNotificationsTap?()
             }.store(in: cancelBag)
         
@@ -116,6 +123,7 @@ extension PokeMainViewModel {
                 return value
             }
             .sink { [weak self] userModel, messageModel in
+                self?.trackClickPokeEvent(clickView: .pokeMainAlarm)
                 self?.useCase.poke(userId: userModel.userId, message: messageModel, willBeNewFriend: userModel.isFirstMeet)
             }.store(in: cancelBag)
         
@@ -141,6 +149,17 @@ extension PokeMainViewModel {
             .compactMap { $0 }
             .sink { [weak self] playgroundId in
                 self?.onProfileImageTapped?(playgroundId)
+            }.store(in: cancelBag)
+        
+        // Amplitude 트래킹
+        input.friendSectionKokButtonTap
+            .sink { [weak self] _ in
+                self?.trackClickPokeEvent(clickView: .pokeMainFriend)
+            }.store(in: cancelBag)
+        
+        input.nearbyFriendsSectionKokButtonTap
+            .sink { [weak self] _ in
+                self?.trackClickPokeEvent(clickView: .pokeMainRecommendNotMyFriend)
             }.store(in: cancelBag)
         
         return output
@@ -211,5 +230,16 @@ extension PokeMainViewModel {
                     self?.switchToOnboarding?()
                 }
             }.store(in: cancelBag)
+    }
+}
+
+extension PokeMainViewModel {
+    private func trackClickPokeEvent(clickView: PokeAmplitudeEventPropertyValue) {
+        let properties = AmplitudeEventPropertyBuilder<PokeAmplitudeEventPropertyValue>()
+            .addViewType()
+            .add(key: .clickViewType, value: clickView)
+            .build()
+        
+        AmplitudeInstance.shared.track(eventType: .clickPokeIcon, eventProperties: properties)
     }
 }
