@@ -41,7 +41,6 @@ public extension Amplitude {
         let identify = Identify()
         let key: AmplitudeUserPropertyKey = .statusOfPushNotification
         identify.set(property: key.rawValue, value: isAuthorized)
-        identify.unset(property: "testProperty")
 
         AmplitudeInstance.shared.identify(identify: identify)
     }
