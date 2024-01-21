@@ -31,6 +31,7 @@ extension AppLifecycleAdapter {
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] _ in
                 self?.reissureTokens()
+                self?.checkNotificationSetting()
             }).store(in: self.cancelBag)
     }
     
@@ -43,5 +44,12 @@ extension AppLifecycleAdapter {
         guard UserDefaultKeyList.Auth.appAccessToken != nil else { return }
         
         self.authService.reissuance { _  in }
+    }
+    
+    private func checkNotificationSetting() {
+        UNUserNotificationCenter.current().getNotificationSettings { setting in
+            let isNotificationAuthorized = setting.authorizationStatus == .authorized
+            AmplitudeInstance.shared.addPushNotificationAuthorizationIdentity(isAuthorized: isNotificationAuthorized)
+        }
     }
 }

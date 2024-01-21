@@ -36,4 +36,13 @@ public extension Amplitude {
         
         AmplitudeInstance.shared.track(eventType: eventType, eventProperties: eventProperties, options: nil)
     }
+    
+    func addPushNotificationAuthorizationIdentity(isAuthorized: Bool) {
+        let identify = Identify()
+        let key: AmplitudeUserPropertyKey = .notificationAuthorized
+        identify.set(property: key.rawValue, value: isAuthorized)
+        identify.unset(property: "testProperty")
+
+        AmplitudeInstance.shared.identify(identify: identify)
+    }
 }

@@ -235,10 +235,8 @@ extension MainViewModel {
         // APNS 권한 허용 확인
         let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
         UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { granted, error in
-            if let error = error {
-                print(error)
-            }
-            
+            if let error = error { print(error) }
+            AmplitudeInstance.shared.addPushNotificationAuthorizationIdentity(isAuthorized: granted)
             print("APNs-알림 권한 허용 유무 \(granted)")
             
             if granted {
