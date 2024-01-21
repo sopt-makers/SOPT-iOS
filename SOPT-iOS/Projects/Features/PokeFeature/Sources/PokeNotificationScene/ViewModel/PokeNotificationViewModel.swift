@@ -32,6 +32,7 @@ public final class PokeNotificationViewModel: PokeNotificationViewModelType {
 
     private let usecase: PokeNotificationUsecase
     private let cancelBag = CancelBag()
+    private let eventTracker = PokeEventTracker()
     
     init(usecase: PokeNotificationUsecase) {
         self.usecase = usecase
@@ -42,6 +43,11 @@ extension PokeNotificationViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
+        
+        input.viewDidLoaded
+            .sink { [weak self] _ in
+                self?.eventTracker.trackViewEvent(with: .viewPokeAlarmDetail)
+            }.store(in: cancelBag)
         
         input.viewDidLoaded
             .merge(with: input.reachToBottom)
@@ -56,6 +62,7 @@ extension PokeNotificationViewModel {
                 return value
             }
             .sink(receiveValue: { [weak self] userModel, messageModel in
+                self?.eventTracker.trackClickPokeEvent(clickView: .pokeAlarm)
                 self?.usecase.poke(user: userModel, message: messageModel)
             }).store(in: cancelBag)
         
