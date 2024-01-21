@@ -37,9 +37,11 @@ public final class ProfileCardGroupView: UIView, PokeCompatible {
     // MARK: - UI Components
     
     private let friendProfileImageView = UIImageView().then {
+        $0.image = DSKitAsset.Assets.iconDefaultProfile.image
         $0.layer.cornerRadius = 15
         $0.backgroundColor = DSKitAsset.Colors.gray700.color
         $0.clipsToBounds = true
+        $0.contentMode = .scaleAspectFill
     }
     
     private let friendNameLabel = UILabel().then {

@@ -29,6 +29,7 @@ public final class PokeProfileImageView: UIImageView {
     
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.gray700.color
+        self.image = DSKitAsset.Assets.iconDefaultProfile.image
         self.clipsToBounds = true
         self.layer.borderWidth = 2
         self.contentMode = .scaleAspectFill

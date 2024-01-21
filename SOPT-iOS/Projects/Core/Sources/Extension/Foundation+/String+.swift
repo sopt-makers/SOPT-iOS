@@ -75,3 +75,30 @@ public extension String {
         return map({String($0)}).last
     }
 }
+
+public extension String {
+    func isPercentEncoded() -> Bool {
+        guard let decodedString = self.removingPercentEncoding,
+              let decodedData = decodedString.data(using: .utf8)
+        else { return false }
+        
+        let encodedData = self.data(using: .utf8)
+        
+        return encodedData != decodedData
+    }
+    
+    func removePercentEncodingIfNeeded() -> String {
+        func removePercentEncodingRecursively(with string: String, attempts: Int) -> String {
+            guard attempts > 0 else { return string }
+
+            let decodedString = string.removingPercentEncoding ?? string
+            return decodedString.isPercentEncoded() ? removePercentEncodingRecursively(with: decodedString, attempts: attempts - 1) : decodedString
+        }
+        
+        guard isPercentEncoded(),
+              let decodedString = self.removingPercentEncoding
+        else { return self }
+        
+        return removePercentEncodingRecursively(with: decodedString, attempts: 2)
+    }
+}
