@@ -33,6 +33,7 @@ public class PokeMainViewModel:
     private let useCase: PokeMainUseCase
     private let isRouteFromRoot: Bool
     private var cancelBag = CancelBag()
+    private let eventTracker = PokeEventTracker()
     
     // MARK: - Inputs
     
@@ -94,19 +95,19 @@ extension PokeMainViewModel {
             }.store(in: cancelBag)
         
         input.viewDidLoad
-            .sink { _ in
-                AmplitudeInstance.shared.trackWithUserType(event: .viewPokeMain)
+            .sink { [weak self] _ in
+                self?.eventTracker.trackViewEvent(with: .viewPokeMain)
             }.store(in: cancelBag)
         
         input.naviBackButtonTap
             .sink { [weak self] _ in
-                AmplitudeInstance.shared.trackWithUserType(event: .clickPokeQuit)
+                self?.eventTracker.trackViewEvent(with: .clickPokeQuit)
                 self?.onNaviBackTap?()
             }.store(in: cancelBag)
         
         input.pokedSectionHeaderButtonTap
             .sink { [weak self] _ in
-                AmplitudeInstance.shared.trackWithUserType(event: .clickPokeAlarmDetail)
+                self?.eventTracker.trackViewEvent(with: .clickPokeAlarmDetail)
                 self?.onPokeNotificationsTap?()
             }.store(in: cancelBag)
         
@@ -123,7 +124,7 @@ extension PokeMainViewModel {
                 return value
             }
             .sink { [weak self] userModel, messageModel in
-                self?.trackClickPokeEvent(clickView: .pokeMainAlarm)
+                self?.eventTracker.trackClickPokeEvent(clickView: .pokeMainAlarm)
                 self?.useCase.poke(userId: userModel.userId, message: messageModel, willBeNewFriend: userModel.isFirstMeet)
             }.store(in: cancelBag)
         
@@ -148,25 +149,25 @@ extension PokeMainViewModel {
         input.profileImageTap
             .map { $0.1 }
             .sink { [weak self] clickView in
-                self?.trackClickMemberProfileEvent(clickView: clickView)
+                self?.eventTracker.trackClickMemberProfileEvent(clickView: clickView)
             }.store(in: cancelBag)
         
         input.randomUserSectionFriendProfileImageTap
             .compactMap { $0 }
             .sink { [weak self] playgroundId in
-                self?.trackClickMemberProfileEvent(clickView: .pokeMainRecommendMyFriend)
+                self?.eventTracker.trackClickMemberProfileEvent(clickView: .pokeMainRecommendMyFriend)
                 self?.onProfileImageTapped?(playgroundId)
             }.store(in: cancelBag)
         
         // Amplitude 트래킹
         input.friendSectionKokButtonTap
             .sink { [weak self] _ in
-                self?.trackClickPokeEvent(clickView: .pokeMainFriend)
+                self?.eventTracker.trackClickPokeEvent(clickView: .pokeMainFriend)
             }.store(in: cancelBag)
         
         input.nearbyFriendsSectionKokButtonTap
             .sink { [weak self] _ in
-                self?.trackClickPokeEvent(clickView: .pokeMainRecommendNotMyFriend)
+                self?.eventTracker.trackClickPokeEvent(clickView: .pokeMainRecommendNotMyFriend)
             }.store(in: cancelBag)
         
         return output
@@ -237,25 +238,5 @@ extension PokeMainViewModel {
                     self?.switchToOnboarding?()
                 }
             }.store(in: cancelBag)
-    }
-}
-
-extension PokeMainViewModel {
-    private func trackClickPokeEvent(clickView: PokeAmplitudeEventPropertyValue) {
-        let properties = AmplitudeEventPropertyBuilder<PokeAmplitudeEventPropertyValue>()
-            .addViewType()
-            .add(key: .clickViewType, value: clickView)
-            .build()
-        
-        AmplitudeInstance.shared.track(eventType: .clickPokeIcon, eventProperties: properties)
-    }
-    
-    private func trackClickMemberProfileEvent(clickView: PokeAmplitudeEventPropertyValue) {
-        let properties = AmplitudeEventPropertyBuilder<PokeAmplitudeEventPropertyValue>()
-            .addViewType()
-            .add(key: .clickViewType, value: clickView)
-            .build()
-        
-        AmplitudeInstance.shared.track(eventType: .clickMemberProfile, eventProperties: properties)
     }
 }

@@ -33,4 +33,5 @@ public enum AmplitudeEventType: String {
     case viewAppHome = "view_apphome"
     case viewPokeOnboarding = "view_poke_onboarding"
     case viewPokeMain = "view_poke_main"
+    case viewPokeAlarmDetail = "view_poke_alarm_detail"
 }
