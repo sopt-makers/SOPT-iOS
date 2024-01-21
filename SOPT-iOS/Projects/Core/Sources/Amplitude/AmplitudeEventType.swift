@@ -9,20 +9,25 @@
 import Foundation
 
 public enum AmplitudeEventType: String {
-    // 서비스 클릭 이벤트
-    case main = "view_apphome"
-    case alarm = "click_alarm"
-    case myPage = "click_mypage"
-    case attendacne = "click_attendance"
-    case group = "click_group"
-    case project = "click_project"
-    case member = "click_member"
-    case officialHomepage = "click_homepage"
-    case soptamp = "click_soptamp"
-    case instagram = "click_instagram"
-    case youtube = "click_youtube"
-    case review = "click_review"
-    case faq = "click_faq"
-    case playgroundCommunity = "click_playground_community"
-    case poke = "click_poke"
+    // 클릭 이벤트
+    case clickAlarm = "click_alarm"
+    case clickMyPage = "click_mypage"
+    case clickAttendacne = "click_attendance"
+    case clickGroup = "click_group"
+    case clickProject = "click_project"
+    case clickMember = "click_member"
+    case clickOfficialHomepage = "click_homepage"
+    case clickSoptamp = "click_soptamp"
+    case clickInstagram = "click_instagram"
+    case clickYoutube = "click_youtube"
+    case clickReview = "click_review"
+    case clickFaq = "click_faq"
+    case clickPlaygroundCommunity = "click_playground_community"
+    case clickPoke = "click_poke"
+    case clickMemberProfile = "click_memberProfile"
+    case clickClickPoke = "clickPoke"
+    
+    // 뷰 이벤트
+    case viewAppHome = "view_apphome"
+    case viewPokeOnboarding = "view_poke_onboarding"
 }

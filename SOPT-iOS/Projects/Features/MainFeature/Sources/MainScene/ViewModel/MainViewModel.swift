@@ -78,14 +78,14 @@ extension MainViewModel {
             .sink { [weak self] _ in
                 guard let self = self else { return }
                 self.onNoticeButtonTap?()
-                self.trackAmplitude(event: .alarm)
+                self.trackAmplitude(event: .clickAlarm)
             }.store(in: cancelBag)
         
         input.myPageButtonTapped
             .sink { [weak self] _ in
                 guard let self = self else { return }
                 self.onMyPageButtonTap?(self.userType)
-                self.trackAmplitude(event: .myPage)
+                self.trackAmplitude(event: .clickMyPage)
             }.store(in: cancelBag)
         
         input.cellTapped
@@ -147,7 +147,7 @@ extension MainViewModel {
                 guard let self = self else { return }
                 self.requestAuthorizationForNotification()
                 self.useCase.getServiceState()
-                self.trackAmplitude(event: .main)
+                self.trackAmplitude(event: .viewAppHome)
             }.store(in: cancelBag)
     
         return output
