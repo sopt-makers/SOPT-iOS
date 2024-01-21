@@ -211,10 +211,16 @@ extension PokeMainVC: UIGestureRecognizerDelegate {
 
 extension PokeMainVC {
     private func bindViewModel() {
-        let profileImageTap = Publishers.Merge4(pokedUserContentView.profileImageTap,
-                                                friendSectionContentView.profileImageTap,
-                                                firstProfileCardGroupView.profileImageTap,
-                                                secondProfileCardGroupView.profileImageTap).asDriver()
+        let profileImageTap = Publishers.Merge4(
+            pokedUserContentView.profileImageTap
+                .map { ($0, PokeAmplitudeEventPropertyValue.pokeMainAlarm) },
+            friendSectionContentView.profileImageTap
+                .map { ($0, PokeAmplitudeEventPropertyValue.pokeMainFriend) },
+            firstProfileCardGroupView.profileImageTap
+                .map { ($0, PokeAmplitudeEventPropertyValue.pokeMainRecommendNotMyFriend) },
+            secondProfileCardGroupView.profileImageTap
+                .map { ($0, PokeAmplitudeEventPropertyValue.pokeMainRecommendNotMyFriend) })
+            .asDriver()
         
         let randomUserSectionFriendProfileImageTap = Publishers.Merge(
             firstProfileCardGroupView.friendProfileImageTap,

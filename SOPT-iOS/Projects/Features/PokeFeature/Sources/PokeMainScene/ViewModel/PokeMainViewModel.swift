@@ -45,7 +45,7 @@ public class PokeMainViewModel:
         let friendSectionKokButtonTap: Driver<PokeUserModel?>
         let nearbyFriendsSectionKokButtonTap: Driver<PokeUserModel?>
         let refreshRequest: Driver<Void>
-        let profileImageTap: Driver<PokeUserModel?>
+        let profileImageTap: Driver<(PokeUserModel?, PokeAmplitudeEventPropertyValue)>
         let randomUserSectionFriendProfileImageTap: Driver<Int?>
     }
     
@@ -140,14 +140,21 @@ extension PokeMainViewModel {
             }.store(in: cancelBag)
         
         input.profileImageTap
-            .compactMap { $0 }
+            .compactMap { $0.0 }
             .sink { [weak self] user in
                 self?.onProfileImageTapped?(user.playgroundId)
+            }.store(in: cancelBag)
+        
+        input.profileImageTap
+            .map { $0.1 }
+            .sink { [weak self] clickView in
+                self?.trackClickMemberProfileEvent(clickView: clickView)
             }.store(in: cancelBag)
         
         input.randomUserSectionFriendProfileImageTap
             .compactMap { $0 }
             .sink { [weak self] playgroundId in
+                self?.trackClickMemberProfileEvent(clickView: .pokeMainRecommendMyFriend)
                 self?.onProfileImageTapped?(playgroundId)
             }.store(in: cancelBag)
         
@@ -241,5 +248,14 @@ extension PokeMainViewModel {
             .build()
         
         AmplitudeInstance.shared.track(eventType: .clickPokeIcon, eventProperties: properties)
+    }
+    
+    private func trackClickMemberProfileEvent(clickView: PokeAmplitudeEventPropertyValue) {
+        let properties = AmplitudeEventPropertyBuilder<PokeAmplitudeEventPropertyValue>()
+            .addViewType()
+            .add(key: .clickViewType, value: clickView)
+            .build()
+        
+        AmplitudeInstance.shared.track(eventType: .clickMemberProfile, eventProperties: properties)
     }
 }
