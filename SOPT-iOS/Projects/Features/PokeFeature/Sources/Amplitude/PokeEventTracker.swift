@@ -8,45 +8,39 @@
 
 import Foundation
 import Core
+import PokeFeatureInterface
 
 struct PokeEventTracker {
     func trackViewEvent(with viewEvent: AmplitudeEventType) {
         AmplitudeInstance.shared.trackWithUserType(event: viewEvent)
     }
     
-    func trackClickPokeEvent(clickView: PokeAmplitudeEventPropertyValue) {
+    func trackViewFriendsListEvent(friendType: PokeRelation) {
         let properties = AmplitudeEventPropertyBuilder<PokeAmplitudeEventPropertyValue>()
             .addViewType()
-            .add(key: .clickViewType, value: clickView)
+            .add(key: .friendType, value: friendType.toEnglishName)
             .build()
         
-        AmplitudeInstance.shared.track(eventType: .clickPokeIcon, eventProperties: properties)
+        AmplitudeInstance.shared.track(eventType: .viewPokeFriendDetail, eventProperties: properties)
     }
-    
-    func trackClickPokeEvent(clickView: PokeAmplitudeEventPropertyValue, playgroundId: Int) {
+        
+    func trackClickPokeEvent(clickView: PokeAmplitudeEventPropertyValue, playgroundId: Int? = nil) {
         let properties = AmplitudeEventPropertyBuilder<PokeAmplitudeEventPropertyValue>()
             .addViewType()
             .add(key: .clickViewType, value: clickView)
             .add(key: .viewProfile, value: playgroundId)
+            .removeOptional()
             .build()
         
         AmplitudeInstance.shared.track(eventType: .clickPokeIcon, eventProperties: properties)
     }
-    
-    func trackClickMemberProfileEvent(clickView: PokeAmplitudeEventPropertyValue) {
-        let properties = AmplitudeEventPropertyBuilder<PokeAmplitudeEventPropertyValue>()
-            .addViewType()
-            .add(key: .clickViewType, value: clickView)
-            .build()
-        
-        AmplitudeInstance.shared.track(eventType: .clickMemberProfile, eventProperties: properties)
-    }
-    
-    func trackClickMemberProfileEvent(clickView: PokeAmplitudeEventPropertyValue, playgroundId: Int) {
+
+    func trackClickMemberProfileEvent(clickView: PokeAmplitudeEventPropertyValue, playgroundId: Int? = nil) {
         let properties = AmplitudeEventPropertyBuilder<PokeAmplitudeEventPropertyValue>()
             .addViewType()
             .add(key: .clickViewType, value: clickView)
             .add(key: .viewProfile, value: playgroundId)
+            .removeOptional()
             .build()
         
         AmplitudeInstance.shared.track(eventType: .clickMemberProfile, eventProperties: properties)

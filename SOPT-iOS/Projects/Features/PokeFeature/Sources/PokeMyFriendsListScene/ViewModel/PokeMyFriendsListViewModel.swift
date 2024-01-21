@@ -26,6 +26,7 @@ public class PokeMyFriendsListViewModel:
     
     private let useCase: PokeMyFriendsUseCase
     private var cancelBag = CancelBag()
+    private let eventTracker = PokeEventTracker()
     
     public let relation: PokeRelation
     var friends = [PokeUserModel]()
@@ -63,6 +64,12 @@ extension PokeMyFriendsListViewModel {
     public func transform(from input: Input, cancelBag: Core.CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
+        
+        input.viewDidLoad
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                self.eventTracker.trackViewFriendsListEvent(friendType: self.relation)
+            }.store(in: cancelBag)
         
         input.viewDidLoad
             .merge(with: input.reachToBottom)

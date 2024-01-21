@@ -32,8 +32,18 @@ public class AmplitudeEventPropertyBuilder<Value: AmplitudeEventPropertyValueCon
         return self
     }
     
+    public func add(key: AmplitudeEventPropertyKey, value: Optional<Any>) -> Self {
+        self.eventProperties[key.rawValue] = value
+        return self
+    }
+    
     public func add(key: AmplitudeEventPropertyKey, value: Value) -> Self {
         self.eventProperties[key.rawValue] = value.toString()
+        return self
+    }
+    
+    public func removeOptional() -> Self {
+        self.eventProperties = self.eventProperties.compactMapValues { $0 }
         return self
     }
     
