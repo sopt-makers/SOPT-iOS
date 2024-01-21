@@ -16,6 +16,7 @@ enum PokeAmplitudeEventPropertyValue: String, AmplitudeEventPropertyValueConvert
     case pokeMainRecommendNotMyFriend = "poke_main_recommend_notmyfriend"
     case pokeMainRecommendMyFriend = "poke_main_recommend_myfriend"
     case pokeAlarm = "poke_alarm"
+    case friend = "friend"
     
     func toString() -> String {
         self.rawValue

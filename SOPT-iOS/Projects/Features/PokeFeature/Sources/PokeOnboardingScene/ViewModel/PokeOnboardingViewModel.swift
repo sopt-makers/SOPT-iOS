@@ -35,6 +35,8 @@ public final class PokeOnboardingViewModel: PokeOnboardingViewModelType {
     
     // MARK: Privates
     private let usecase: PokeOnboardingUsecase
+    private let eventTracker = PokeEventTracker()
+
     
     // MARK: - Lifecycles
     public init(usecase: PokeOnboardingUsecase) {
@@ -69,13 +71,13 @@ extension PokeOnboardingViewModel {
                 return value
             }
             .sink(receiveValue: { [weak self] userModel, messageModel in
-                self?.trackClickPokeEvent(playgroundId: userModel.playgroundId)
+                self?.eventTracker.trackClickPokeEvent(clickView: .onboarding, playgroundId: userModel.playgroundId)
                 self?.usecase.poke(userId: userModel.userId, message: messageModel)
             }).store(in: cancelBag)
         
         input.avatarTapped
             .sink(receiveValue: { [weak self] userModel in
-                self?.trackClickMemberProfileEvent(playgroundId: userModel.playgroundId)
+                self?.eventTracker.trackClickMemberProfileEvent(clickView: .onboarding, playgroundId: userModel.playgroundId)
                 self?.onAvartarTapped?(String(describing: userModel.playgroundId))
             }).store(in: cancelBag)
         
@@ -117,27 +119,5 @@ extension PokeOnboardingViewModel {
             .sink { message in
                 ToastUtils.showMDSToast(type: .alert, text: message)
             }.store(in: cancelBag)
-    }
-}
-
-private extension PokeOnboardingViewModel {
-    func trackClickMemberProfileEvent(playgroundId: Int) {
-        let properties = AmplitudeEventPropertyBuilder<PokeAmplitudeEventPropertyValue>()
-            .addViewType()
-            .add(key: .clickViewType, value: .onboarding)
-            .add(key: .viewProfile, value: playgroundId)
-            .build()
-        
-        AmplitudeInstance.shared.track(eventType: .clickMemberProfile, eventProperties: properties)
-    }
-    
-    func trackClickPokeEvent(playgroundId: Int) {
-        let properties = AmplitudeEventPropertyBuilder<PokeAmplitudeEventPropertyValue>()
-            .addViewType()
-            .add(key: .clickViewType, value: .onboarding)
-            .add(key: .viewProfile, value: playgroundId)
-            .build()
-        
-        AmplitudeInstance.shared.track(eventType: .clickPokeIcon, eventProperties: properties)
     }
 }
