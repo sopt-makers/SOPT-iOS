@@ -29,7 +29,7 @@ public extension Amplitude {
         AmplitudeInstance.shared.track(eventType: eventType, eventProperties: eventProperties, options: nil)
     }
     
-    func trackWithUserType(event: AmplitudeEventType) {
+    func trackWithUserType(event: AmplitudeEventType, otherProperties: [String: Any]? = nil) {
         let eventType: String = event.rawValue
         let userType = UserDefaultKeyList.Auth.getUserType()
         let eventProperties: [String: Any] = ["view_type": userType.rawValue.lowercased()]
@@ -39,7 +39,7 @@ public extension Amplitude {
     
     func addPushNotificationAuthorizationIdentity(isAuthorized: Bool) {
         let identify = Identify()
-        let key: AmplitudeUserPropertyKey = .notificationAuthorized
+        let key: AmplitudeUserPropertyKey = .statusOfPushNotification
         identify.set(property: key.rawValue, value: isAuthorized)
         identify.unset(property: "testProperty")
 
