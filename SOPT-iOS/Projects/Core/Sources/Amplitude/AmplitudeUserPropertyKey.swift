@@ -9,5 +9,5 @@
 import Foundation
 
 public enum AmplitudeUserPropertyKey: String {
-    case statusOfPushNotification = "status_of_push_notification"
+    case statusOfPushNotification = "state_of_push_notification"
 }
