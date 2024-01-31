@@ -35,6 +35,8 @@ public final class PokeOnboardingViewModel: PokeOnboardingViewModelType {
     
     // MARK: Privates
     private let usecase: PokeOnboardingUsecase
+    private let eventTracker = PokeEventTracker()
+
     
     // MARK: - Lifecycles
     public init(usecase: PokeOnboardingUsecase) {
@@ -50,6 +52,7 @@ extension PokeOnboardingViewModel {
         input.viewDidLoaded
             .withUnretained(self)
             .sink(receiveValue: { [weak self] _ in
+                AmplitudeInstance.shared.trackWithUserType(event: .viewPokeOnboarding)
                 self?.usecase.getRandomAcquaintances()
             }).store(in: cancelBag)
         
@@ -68,11 +71,13 @@ extension PokeOnboardingViewModel {
                 return value
             }
             .sink(receiveValue: { [weak self] userModel, messageModel in
+                self?.eventTracker.trackClickPokeEvent(clickView: .onboarding, playgroundId: userModel.playgroundId)
                 self?.usecase.poke(userId: userModel.userId, message: messageModel)
             }).store(in: cancelBag)
         
         input.avatarTapped
             .sink(receiveValue: { [weak self] userModel in
+                self?.eventTracker.trackClickMemberProfileEvent(clickView: .onboarding, playgroundId: userModel.playgroundId)
                 self?.onAvartarTapped?(String(describing: userModel.playgroundId))
             }).store(in: cancelBag)
         

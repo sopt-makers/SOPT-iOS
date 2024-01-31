@@ -78,14 +78,14 @@ extension MainViewModel {
             .sink { [weak self] _ in
                 guard let self = self else { return }
                 self.onNoticeButtonTap?()
-                self.trackAmplitude(event: .alarm)
+                self.trackAmplitude(event: .clickAlarm)
             }.store(in: cancelBag)
         
         input.myPageButtonTapped
             .sink { [weak self] _ in
                 guard let self = self else { return }
                 self.onMyPageButtonTap?(self.userType)
-                self.trackAmplitude(event: .myPage)
+                self.trackAmplitude(event: .clickMyPage)
             }.store(in: cancelBag)
         
         input.cellTapped
@@ -147,7 +147,7 @@ extension MainViewModel {
                 guard let self = self else { return }
                 self.requestAuthorizationForNotification()
                 self.useCase.getServiceState()
-                self.trackAmplitude(event: .main)
+                self.trackAmplitude(event: .viewAppHome)
             }.store(in: cancelBag)
     
         return output
@@ -235,10 +235,8 @@ extension MainViewModel {
         // APNS 권한 허용 확인
         let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
         UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { granted, error in
-            if let error = error {
-                print(error)
-            }
-            
+            if let error = error { print(error) }
+            AmplitudeInstance.shared.addPushNotificationAuthorizationIdentity(isAuthorized: granted)
             print("APNs-알림 권한 허용 유무 \(granted)")
             
             if granted {

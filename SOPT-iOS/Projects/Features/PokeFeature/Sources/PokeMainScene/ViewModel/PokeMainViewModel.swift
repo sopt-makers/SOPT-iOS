@@ -33,6 +33,7 @@ public class PokeMainViewModel:
     private let useCase: PokeMainUseCase
     private let isRouteFromRoot: Bool
     private var cancelBag = CancelBag()
+    private let eventTracker = PokeEventTracker()
     
     // MARK: - Inputs
     
@@ -45,7 +46,7 @@ public class PokeMainViewModel:
         let friendSectionKokButtonTap: Driver<PokeUserModel?>
         let nearbyFriendsSectionKokButtonTap: Driver<PokeUserModel?>
         let refreshRequest: Driver<Void>
-        let profileImageTap: Driver<PokeUserModel?>
+        let profileImageTap: Driver<(PokeUserModel?, PokeAmplitudeEventPropertyValue)>
         let randomUserSectionFriendProfileImageTap: Driver<Int?>
     }
     
@@ -93,13 +94,20 @@ extension PokeMainViewModel {
                 self?.useCase.checkPokeNewUser()
             }.store(in: cancelBag)
         
+        input.viewDidLoad
+            .sink { [weak self] _ in
+                self?.eventTracker.trackViewEvent(with: .viewPokeMain)
+            }.store(in: cancelBag)
+        
         input.naviBackButtonTap
             .sink { [weak self] _ in
+                self?.eventTracker.trackViewEvent(with: .clickPokeQuit)
                 self?.onNaviBackTap?()
             }.store(in: cancelBag)
         
         input.pokedSectionHeaderButtonTap
             .sink { [weak self] _ in
+                self?.eventTracker.trackViewEvent(with: .clickPokeAlarmDetail)
                 self?.onPokeNotificationsTap?()
             }.store(in: cancelBag)
         
@@ -116,6 +124,7 @@ extension PokeMainViewModel {
                 return value
             }
             .sink { [weak self] userModel, messageModel in
+                self?.eventTracker.trackClickPokeEvent(clickView: .pokeMainAlarm)
                 self?.useCase.poke(userId: userModel.userId, message: messageModel, willBeNewFriend: userModel.isFirstMeet)
             }.store(in: cancelBag)
         
@@ -132,15 +141,33 @@ extension PokeMainViewModel {
             }.store(in: cancelBag)
         
         input.profileImageTap
-            .compactMap { $0 }
+            .compactMap { $0.0 }
             .sink { [weak self] user in
                 self?.onProfileImageTapped?(user.playgroundId)
+            }.store(in: cancelBag)
+        
+        input.profileImageTap
+            .map { $0.1 }
+            .sink { [weak self] clickView in
+                self?.eventTracker.trackClickMemberProfileEvent(clickView: clickView)
             }.store(in: cancelBag)
         
         input.randomUserSectionFriendProfileImageTap
             .compactMap { $0 }
             .sink { [weak self] playgroundId in
+                self?.eventTracker.trackClickMemberProfileEvent(clickView: .pokeMainRecommendMyFriend)
                 self?.onProfileImageTapped?(playgroundId)
+            }.store(in: cancelBag)
+        
+        // Amplitude 트래킹
+        input.friendSectionKokButtonTap
+            .sink { [weak self] _ in
+                self?.eventTracker.trackClickPokeEvent(clickView: .pokeMainFriend)
+            }.store(in: cancelBag)
+        
+        input.nearbyFriendsSectionKokButtonTap
+            .sink { [weak self] _ in
+                self?.eventTracker.trackClickPokeEvent(clickView: .pokeMainRecommendNotMyFriend)
             }.store(in: cancelBag)
         
         return output

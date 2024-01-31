@@ -11,16 +11,16 @@ import Foundation
 public extension ServiceType {
     var toAmplitudeEventType: AmplitudeEventType {
         switch self {
-            case .officialHomepage: return .officialHomepage
-            case .review: return .review
-            case .project: return .project
-            case .faq: return .faq
-            case .youtube: return .youtube
-            case .attendance: return .attendacne
-            case .member: return .member
-            case .group: return .group
-            case .instagram: return .instagram
-            case .playgroundCommunity: return .playgroundCommunity
+            case .officialHomepage: return .clickOfficialHomepage
+            case .review: return .clickReview
+            case .project: return .clickProject
+            case .faq: return .clickFaq
+            case .youtube: return .clickYoutube
+            case .attendance: return .clickAttendacne
+            case .member: return .clickMember
+            case .group: return .clickGroup
+            case .instagram: return .clickInstagram
+            case .playgroundCommunity: return .clickPlaygroundCommunity
         }
     }
 }
@@ -28,8 +28,8 @@ public extension ServiceType {
 public extension AppServiceType {
     var toAmplitudeEventType: AmplitudeEventType {
         switch self {
-        case .soptamp: return .soptamp
-        case .poke: return .poke
+        case .soptamp: return .clickSoptamp
+        case .poke: return .clickPoke
         }
     }
 }

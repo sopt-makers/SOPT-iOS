@@ -15,4 +15,17 @@ public enum PokeRelation: String {
     case soulmate = "천생연분"
 }
 
-
+extension PokeRelation {
+    public var toEnglishName: String {
+        switch self {
+        case .nonFriend:
+            return "nonFriend"
+        case .newFriend:
+            return "newFriend"
+        case .bestFriend:
+            return "bestFriend"
+        case .soulmate:
+            return "soulmate"
+        }
+    }
+}

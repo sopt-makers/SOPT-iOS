@@ -16,24 +16,25 @@ public struct AmplitudeInstance {
 }
 
 public extension Amplitude {
-    func track(event: AmplitudeEventType, userType: UserType, otherProperties: [String: Any]? = nil) {
-        let eventType: String = event.rawValue
-        var eventProperties: [String: Any] = ["view_type": userType.rawValue.lowercased()]
-        
-        if let otherProperties = otherProperties {
-            for (key, value) in otherProperties {
-                eventProperties.updateValue(value, forKey: key)
-            }
-        }
+    func track(eventType: AmplitudeEventType, eventProperties: [String: Any]? = nil) {
+        let eventType: String = eventType.rawValue
 
         AmplitudeInstance.shared.track(eventType: eventType, eventProperties: eventProperties, options: nil)
     }
     
-    func trackWithUserType(event: AmplitudeEventType) {
+    func trackWithUserType(event: AmplitudeEventType, otherProperties: [String: Any]? = nil) {
         let eventType: String = event.rawValue
         let userType = UserDefaultKeyList.Auth.getUserType()
-        var eventProperties: [String: Any] = ["view_type": userType.rawValue.lowercased()]
+        let eventProperties: [String: Any] = [AmplitudeEventPropertyKey.viewType.rawValue: userType.rawValue.lowercased()]
         
         AmplitudeInstance.shared.track(eventType: eventType, eventProperties: eventProperties, options: nil)
+    }
+    
+    func addPushNotificationAuthorizationIdentity(isAuthorized: Bool) {
+        let identify = Identify()
+        let key: AmplitudeUserPropertyKey = .stateOfPushNotification
+        identify.set(property: key.rawValue, value: isAuthorized)
+        
+        AmplitudeInstance.shared.identify(identify: identify)
     }
 }

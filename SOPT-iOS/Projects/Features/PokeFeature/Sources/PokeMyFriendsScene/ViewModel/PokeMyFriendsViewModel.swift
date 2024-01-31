@@ -27,6 +27,7 @@ public class PokeMyFriendsViewModel:
     private let useCase: PokeMyFriendsUseCase
     private var cancelBag = CancelBag()
     private var myFriends: PokeMyFriendsModel?
+    private let eventTracker = PokeEventTracker()
     
     // MARK: - Inputs
     
@@ -58,6 +59,7 @@ extension PokeMyFriendsViewModel {
         input.viewDidLoad
             .withUnretained(self)
             .sink { owner, _ in
+                owner.eventTracker.trackViewEvent(with: .viewPokeFriend)
                 owner.useCase.getFriends()
             }.store(in: cancelBag)
         
@@ -74,12 +76,14 @@ extension PokeMyFriendsViewModel {
                 return value
             }
             .sink {[weak self] userModel, messageModel in
+                self?.eventTracker.trackClickPokeEvent(clickView: .friend, playgroundId: userModel.playgroundId)
                 self?.useCase.poke(userId: userModel.userId, message: messageModel)
             }.store(in: cancelBag)
         
         input.profileImageTap
             .compactMap { $0 }
             .sink { [weak self] user in
+                self?.eventTracker.trackClickMemberProfileEvent(clickView: .friend, playgroundId: user.playgroundId)
                 self?.onProfileImageTapped?(user.playgroundId)
             }.store(in: cancelBag)
         
