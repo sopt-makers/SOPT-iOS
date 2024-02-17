@@ -106,11 +106,13 @@ extension SOPTWebView {
 
 extension SOPTWebView: WKNavigationDelegate {
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        guard !self.barrier else { return }
+        guard !self.barrier, let playgroundToken = UserDefaultKeyList.Auth.playgroundToken else {
+          return
+        }
         
         self.barrier = true
         self.wkwebView.evaluateJavaScript(
-            "localStorage.setItem(\"serviceAccessToken\", \"\(UserDefaultKeyList.Auth.playgroundToken!)\")"
+            "localStorage.setItem(\"serviceAccessToken\", \"\(playgroundToken)\")"
         )
         self.wkwebView.reload()
     }
