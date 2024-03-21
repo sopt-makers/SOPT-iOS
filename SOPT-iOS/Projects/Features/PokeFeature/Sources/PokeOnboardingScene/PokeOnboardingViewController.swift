@@ -72,7 +72,7 @@ public final class PokeOnboardingViewController: UIViewController, PokeOnboardin
     }
     
     private let sectionTitleLabel = UILabel().then {
-        $0.text = "나와 같은 33기를 하고 있어요"
+        $0.text = "나와 같은 34기를 하고 있어요"
         $0.textColor = DSKitAsset.Colors.gray30.color
         $0.font = DSKitFontFamily.Suit.bold.font(size: 16)
     }
