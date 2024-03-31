@@ -247,7 +247,7 @@ extension MissionListVC {
     partRankingFloatingButton.publisher(for: .touchUpInside)
       .withUnretained(self)
       .sink { owner, _ in
-        owner.onPartRankingButtonTap?(.all)
+        owner.onPartRankingButtonTap?(.partRanking)
       }.store(in: self.cancelBag)
 
     currentGenerationRankFloatingButton.publisher(for: .touchUpInside)

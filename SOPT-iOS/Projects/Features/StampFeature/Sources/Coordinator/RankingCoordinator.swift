@@ -31,7 +31,12 @@ final class RankingCoordinator: DefaultCoordinator {
     }
     
     public override func start() {
+      switch rankingViewType {
+      case .all, .currentGeneration:
         showRanking()
+      case .partRanking:
+        showPartRanking()
+      }
     }
     
     private func showRanking() {
@@ -48,7 +53,22 @@ final class RankingCoordinator: DefaultCoordinator {
         }
         router.push(ranking)
     }
-    
+
+    private func showPartRanking() {
+      var ranking = factory.makePartRankingVC(rankingViewType: self.rankingViewType)
+      ranking.onSwiped = { [weak self] in
+          self?.router.popModule()
+      }
+      ranking.onCellTap = { [weak self] (username, sentence) in
+          self?.showOtherMissionList(username, sentence)
+      }
+      ranking.onNaviBackTap = { [weak self] in
+          self?.router.popModule()
+          self?.finishFlow?()
+      }
+      router.push(ranking)
+    }
+
     private func showOtherMissionList(_ username: String, _ sentence: String) {
         var otherMissionList = factory.makeMissionListVC(
             sceneType: .ranking(userName: username, sentence: sentence)

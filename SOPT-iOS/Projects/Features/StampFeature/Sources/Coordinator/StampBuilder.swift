@@ -76,4 +76,10 @@ extension StampBuilder: StampFeatureViewBuildable {
         let stampGuideVC = StampGuideVC()
         return stampGuideVC
     }
+
+    public func makePartRankingVC(rankingViewType: RankingViewType) -> PartRankingViewControllable {
+      let vc = PartRankingVC(rankingViewType: rankingViewType)
+      vc.viewModel = PartRankingViewModel(rankingViewType: rankingViewType)
+      return vc
+    }
 }

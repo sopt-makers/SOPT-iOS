@@ -74,7 +74,7 @@ final class StampCoordinator: DefaultCoordinator {
         addDependency(rankingCoordinator)
         rankingCoordinator.start()
     }
-    
+
     private func runMissionDetailFlow(_ model: MissionListModel, _ username: String?) {
         let missionDetailCoordinator = MissionDetailCoordinator(
             router: Router(rootController: rootController!),

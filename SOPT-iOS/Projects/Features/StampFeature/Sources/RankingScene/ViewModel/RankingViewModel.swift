@@ -57,6 +57,8 @@ extension RankingViewModel {
                 switch self.rankingViewType {
                 case .all: owner.useCase.fetchRankingList(isCurrentGeneration: false)
                 case .currentGeneration: owner.useCase.fetchRankingList(isCurrentGeneration: true)
+                default:
+                  return
                 }
             }.store(in: self.cancelBag)
         

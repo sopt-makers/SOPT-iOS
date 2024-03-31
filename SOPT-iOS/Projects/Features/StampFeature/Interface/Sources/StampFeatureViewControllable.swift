@@ -30,4 +30,5 @@ public protocol RankingCoordinatable {
     var onSwiped: (() -> Void)? { get set }
     var onNaviBackTap: (() -> Void)? { get set }
 }
+public protocol PartRankingViewControllable: ViewControllable & RankingCoordinatable { }
 public protocol StampGuideViewControllable: ViewControllable { }
