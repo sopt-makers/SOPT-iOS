@@ -39,7 +39,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
 
   public var onSwiped: (() -> Void)?
   public var onNaviBackTap: (() -> Void)?
-  public var onRankingButtonTap: ((RankingViewType) -> Void)?
+  public var onPartRankingButtonTap: ((RankingViewType) -> Void)?
   public var onCurrentGenerationRankingButtonTap: ((RankingViewType) -> Void)?
   public var onGuideTap: (() -> Void)?
   public var onCellTap: ((MissionListModel, String?) -> Void)?
@@ -113,8 +113,8 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
     let bt = UIButton()
     bt.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
     bt.layer.cornerRadius = 27.adjustedH
-    bt.setBackgroundColor(DSKitAsset.Colors.soptampPink300.color, for: .normal)
-    bt.setBackgroundColor(DSKitAsset.Colors.soptampPink300.color.withAlphaComponent(0.2), for: .selected)
+    bt.setBackgroundColor(DSKitAsset.Colors.soptampPurple300.color, for: .normal)
+    bt.setBackgroundColor(DSKitAsset.Colors.soptampPurple300.color.withAlphaComponent(0.2), for: .selected)
     bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .normal)
     bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .highlighted)
     bt.tintColor = .white
@@ -128,13 +128,13 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
     let bt = UIButton()
     bt.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner]
     bt.layer.cornerRadius = 27.adjustedH
-    bt.setBackgroundColor(DSKitAsset.Colors.soptampPurple300.color, for: .normal)
-    bt.setBackgroundColor(DSKitAsset.Colors.soptampPurple300.color.withAlphaComponent(0.2), for: .selected)
+    bt.setBackgroundColor(DSKitAsset.Colors.soptampPink300.color, for: .normal)
+    bt.setBackgroundColor(DSKitAsset.Colors.soptampPink300.color.withAlphaComponent(0.2), for: .selected)
     bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .normal)
     bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .highlighted)
     bt.tintColor = .white
     bt.titleLabel?.setTypoStyle(.SoptampFont.h2)
-    let attributedStr = NSMutableAttributedString(string: "전체 랭킹")
+    let attributedStr = NSMutableAttributedString(string: "파트별 랭킹")
     let style = NSMutableParagraphStyle()
     attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
     attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.white, range: NSMakeRange(0, attributedStr.length))
@@ -247,7 +247,7 @@ extension MissionListVC {
     partRankingFloatingButton.publisher(for: .touchUpInside)
       .withUnretained(self)
       .sink { owner, _ in
-        owner.onRankingButtonTap?(.all)
+        owner.onPartRankingButtonTap?(.all)
       }.store(in: self.cancelBag)
 
     currentGenerationRankFloatingButton.publisher(for: .touchUpInside)
