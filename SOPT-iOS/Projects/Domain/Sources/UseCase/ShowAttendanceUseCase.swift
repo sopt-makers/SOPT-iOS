@@ -155,15 +155,24 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
         }
         /// 2차 출석 후
         else {
-            /// 2차 출석 안한 경우, 결석
+            /// 2차 결석인 경우
             if attendances[safe: 1]?.type == AttendanceStepType.unCheck {
-                attendances.append(AttendanceStepModel(type: .absent, title: I18N.Attendance.absent))
-            } else {
-                /// 1차 출석 안하고, 2차 출석한 경우 지각
+                /// 1차 출석일 때, 지각
+                if attendances[safe:0]?.type == AttendanceStepType.check {
+                    attendances.append(AttendanceStepModel(type: .tardy, title: I18N.Attendance.tardy))
+                }
+                /// 1차 결석일 때, 결석
+                else if attendances[safe:0]?.type == AttendanceStepType.unCheck {
+                    attendances.append(AttendanceStepModel(type: .absent, title: I18N.Attendance.absent))
+                }
+            } 
+            /// 2차 출석인 경우
+            else {
+                /// 1차 결석일 때, 지각
                 if attendances[safe: 0]?.type == AttendanceStepType.unCheck {
                     attendances.append(AttendanceStepModel(type: .tardy, title: I18N.Attendance.tardy))
                 }
-                /// 1차 출석, 2차 출석 모두 한 경우 출석완료
+                /// 1차 출석일 때, 출석
                 else {
                     attendances.append(AttendanceStepModel(type: .done, title: I18N.Attendance.completeAttendance))
                 }

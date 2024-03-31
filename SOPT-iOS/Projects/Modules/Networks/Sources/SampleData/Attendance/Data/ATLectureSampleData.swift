@@ -171,7 +171,7 @@ enum SampleData {
         """.utf8
         )
         
-        static let tardy = Data(
+        static let tardyCaseOne = Data(
         """
         {
           "success": true,
@@ -191,6 +191,34 @@ enum SampleData {
               },
               {
                 "status": "ATTENDANCE",
+                "attendedAt": "2023-04-13T14:10:04"
+              }
+            ]
+          }
+        }
+        """.utf8
+        )
+        
+        static let tardyCaseTwo = Data(
+        """
+        {
+          "success": true,
+          "message": "세션 조회 성공",
+          "data": {
+            "type": "HAS_ATTENDANCE",
+                "id": 1,
+            "location": "아름교육관",
+            "name": "서버 1차 세미나",
+            "startDate": "2023-04-13T14:00:00",
+            "endDate": "2023-04-13T18:00:00",
+            "message": "",
+            "attendances": [
+              {
+                "status": "ATTENDANCE",
+                "attendedAt": "2023-04-13T14:12:09"
+              },
+              {
+                "status": "ABSENT",
                 "attendedAt": "2023-04-13T14:10:04"
               }
             ]
