@@ -145,7 +145,7 @@ extension PartRankingVC {
 
   private func registerCells() {
     PartRankingChartCVC.register(target: rankingCollectionView)
-    RankingListCVC.register(target: rankingCollectionView)
+    PartRankingListCVC.register(target: rankingCollectionView)
   }
 
   private func setDataSource() {
@@ -158,10 +158,9 @@ extension PartRankingVC {
         return chartCell
 
       case .list:
-        guard let rankingListCell = collectionView.dequeueReusableCell(withReuseIdentifier: RankingListCVC.className, for: indexPath) as? RankingListCVC,
+        guard let rankingListCell = collectionView.dequeueReusableCell(withReuseIdentifier: PartRankingListCVC.className, for: indexPath) as? PartRankingListCVC,
               let rankingListCellModel = itemIdentifier as? RankingModel else { return UICollectionViewCell() }
-        rankingListCell.setData(model: rankingListCellModel,
-                                rank: indexPath.row+1)
+        rankingListCell.setData(rank: indexPath.row+1, partName: rankingListCellModel.username, score: rankingListCellModel.score)
 
         return rankingListCell
       }

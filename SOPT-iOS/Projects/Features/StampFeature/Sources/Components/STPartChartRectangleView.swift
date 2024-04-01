@@ -92,7 +92,7 @@ extension STPartChartRectangleView {
       starRankView.image = nil
     } else {
       rankLabel.text = ""
-      rectangleView.backgroundColor = DSKitAsset.Colors.gray300.color
+      rectangleView.backgroundColor = DSKitAsset.Colors.soptampGray300.color
     }
   }
 
