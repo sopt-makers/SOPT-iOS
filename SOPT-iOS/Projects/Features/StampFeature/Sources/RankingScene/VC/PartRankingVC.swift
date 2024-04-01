@@ -80,6 +80,13 @@ public class PartRankingVC: UIViewController, PartRankingViewControllable {
     self.bindViews()
     self.bindViewModels()
     self.setDataSource()
+
+    // TODO: 제거
+    applySnapshot(model: [.init(username: "a", score: 1, sentence: "test"),
+                          .init(username: "b", score: 1, sentence: "test"),
+                          .init(username: "c", score: 1, sentence: "test"),
+                          .init(username: "d", score: 1, sentence: "test")]
+    )
   }
 }
 
@@ -137,7 +144,7 @@ extension PartRankingVC {
   }
 
   private func registerCells() {
-    RankingChartCVC.register(target: rankingCollectionView)
+    PartRankingChartCVC.register(target: rankingCollectionView)
     RankingListCVC.register(target: rankingCollectionView)
   }
 
@@ -145,14 +152,9 @@ extension PartRankingVC {
     dataSource = UICollectionViewDiffableDataSource(collectionView: rankingCollectionView, cellProvider: { collectionView, indexPath, itemIdentifier in
       switch RankingSection.type(indexPath.section) {
       case .chart:
-        guard let chartCell = collectionView.dequeueReusableCell(withReuseIdentifier: RankingChartCVC.className, for: indexPath) as? RankingChartCVC,
+        guard let chartCell = collectionView.dequeueReusableCell(withReuseIdentifier: PartRankingChartCVC.className, for: indexPath) as? PartRankingChartCVC,
               let chartCellModel = itemIdentifier as? RankingChartModel else { return UICollectionViewCell() }
         chartCell.setData(model: chartCellModel)
-        chartCell.balloonTapped = { [weak self] balloonModel in
-          guard let self = self else { return }
-          let item = balloonModel.toRankingListTapItem()
-          self.onCellTap?(item.username, item.sentence)
-        }
         return chartCell
 
       case .list:

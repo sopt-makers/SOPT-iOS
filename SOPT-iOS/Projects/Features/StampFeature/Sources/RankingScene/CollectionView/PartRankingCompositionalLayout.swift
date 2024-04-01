@@ -21,18 +21,18 @@ extension PartRankingVC {
     }
 
     private func createChartSection() -> NSCollectionLayoutSection {
-        let size = NSCollectionLayoutSize(widthDimension: .absolute(RankingVC.standardWidth - 28.adjusted), heightDimension: .estimated(300))
+        let size = NSCollectionLayoutSize(widthDimension: .absolute(RankingVC.standardWidth), heightDimension: .estimated(250))
         let item = NSCollectionLayoutItem(layoutSize: size)
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: size, subitem: item, count: 1)
 
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = .init(top: 0, leading: 34.adjusted, bottom: 0, trailing: 34.adjusted)
+        section.contentInsets = .init(top: 0, leading: 20, bottom: 0, trailing: 20)
         section.orthogonalScrollingBehavior = .none
         return section
     }
 
     private func createListSection() -> NSCollectionLayoutSection {
-        let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(79.adjustedH))
+        let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(60))
         let item = NSCollectionLayoutItem(layoutSize: size)
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: size, subitem: item, count: 1)
 
