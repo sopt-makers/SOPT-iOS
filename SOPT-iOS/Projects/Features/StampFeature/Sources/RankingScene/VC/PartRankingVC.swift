@@ -193,9 +193,3 @@ extension PartRankingVC: UICollectionViewDelegate {
     self.onCellTap?(item.username, item.sentence)
   }
 }
-
-extension PartRankingVC: UIGestureRecognizerDelegate {
-  public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-    true
-  }
-}
