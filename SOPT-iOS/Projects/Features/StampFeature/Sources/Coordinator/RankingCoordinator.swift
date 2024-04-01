@@ -41,9 +41,7 @@ final class RankingCoordinator: DefaultCoordinator {
     
     private func showRanking() {
         var ranking = factory.makeRankingVC(rankingViewType: self.rankingViewType)
-        ranking.onSwiped = { [weak self] in
-            self?.router.popModule()
-        }
+
         ranking.onCellTap = { [weak self] (username, sentence) in
             self?.showOtherMissionList(username, sentence)
         }
@@ -56,9 +54,7 @@ final class RankingCoordinator: DefaultCoordinator {
 
     private func showPartRanking() {
       var ranking = factory.makePartRankingVC(rankingViewType: self.rankingViewType)
-      ranking.onSwiped = { [weak self] in
-          self?.router.popModule()
-      }
+
       ranking.onCellTap = { [weak self] (username, sentence) in
           self?.showOtherMissionList(username, sentence)
       }

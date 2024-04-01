@@ -27,7 +27,6 @@ public protocol MissionCompletedViewControllable: ViewControllable { }
 public protocol RankingViewControllable: ViewControllable & RankingCoordinatable { }
 public protocol RankingCoordinatable {
     var onCellTap: ((_ username: String, _ sentence: String) -> Void)? { get set }
-    var onSwiped: (() -> Void)? { get set }
     var onNaviBackTap: (() -> Void)? { get set }
 }
 public protocol PartRankingViewControllable: ViewControllable & RankingCoordinatable { }

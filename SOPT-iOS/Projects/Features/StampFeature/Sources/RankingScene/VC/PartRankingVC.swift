@@ -31,7 +31,6 @@ public class PartRankingVC: UIViewController, PartRankingViewControllable {
   // MARK: - RankingCoordinatable
 
   public var onCellTap: ((String, String) -> Void)?
-  public var onSwiped: (() -> Void)?
   public var onNaviBackTap: (() -> Void)?
 
   // MARK: - UI Components
@@ -77,7 +76,6 @@ public class PartRankingVC: UIViewController, PartRankingViewControllable {
     self.setUI()
     self.setLayout()
     self.setDelegate()
-    self.setGesture()
     self.registerCells()
     self.bindViews()
     self.bindViewModels()
@@ -136,27 +134,6 @@ extension PartRankingVC {
 
   private func setDelegate() {
     rankingCollectionView.delegate = self
-  }
-
-  private func setGesture() {
-    let swipeGesture = UIPanGestureRecognizer(target: self, action: #selector(swipeBack(_:)))
-    swipeGesture.delegate = self
-    self.rankingCollectionView.addGestureRecognizer(swipeGesture)
-  }
-
-  @objc
-  private func swipeBack(_ sender: UIPanGestureRecognizer) {
-    let velocity = sender.velocity(in: rankingCollectionView)
-    let velocityMinimum: CGFloat = 1000
-    guard let navigation = self.navigationController else { return }
-    let isScrollY: Bool = abs(velocity.x) > abs(velocity.y) + 200
-    let isNotRootView = navigation.viewControllers.count >= 2
-    if velocity.x >= velocityMinimum
-        && isNotRootView
-        && isScrollY {
-      self.rankingCollectionView.isScrollEnabled = false
-      self.onSwiped?()
-    }
   }
 
   private func registerCells() {
