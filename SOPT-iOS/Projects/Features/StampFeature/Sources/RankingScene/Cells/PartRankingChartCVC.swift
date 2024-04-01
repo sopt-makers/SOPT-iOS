@@ -69,7 +69,6 @@ extension PartRankingChartCVC {
 // MARK: - Methods
 
 extension PartRankingChartCVC {
-
   public func setData(model: RankingChartModel) {
     let models = model.ranking
     self.models = models

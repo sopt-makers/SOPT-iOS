@@ -124,6 +124,12 @@ extension STPartChartRectangleView {
     }
   }
 
+  private func updateLayout() {
+    rectangleView.snp.updateConstraints { make in
+      make.height.equalTo(self.calculateRectangleViewHeight())
+    }
+  }
+
   private func calculateRectangleViewHeight() -> CGFloat {
     return 27.f * (7 - rank).f
   }
@@ -131,10 +137,10 @@ extension STPartChartRectangleView {
 
 extension STPartChartRectangleView {
   public func setData(rank: Int, partName: String) {
-    print(rank)
     self.rank = rank
     self.partName = partName
     self.setUI()
+    self.updateLayout()
   }
 }
 
