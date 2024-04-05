@@ -133,6 +133,12 @@ extension ShowAttendanceViewModel {
             .compactMap { $0 }
             .withUnretained(self)
             .sink { owner, lectureRound in
+                if lectureRound == .EMPTY {
+                    output.isLoading.send(false)
+                    let buttonInfo = AttendanceButtonInfo(title: I18N.Attendance.takeNthAttendance(2), isEnalbed: false)
+                    output.attendanceButtonInfo.send(buttonInfo)
+                    return
+                }
                 owner.lectureRound = lectureRound
                 let buttonInfo = AttendanceButtonInfo(title: I18N.Attendance.takeNthAttendance(lectureRound.round), isEnalbed: true)
                 output.attendanceButtonInfo.send(buttonInfo)
