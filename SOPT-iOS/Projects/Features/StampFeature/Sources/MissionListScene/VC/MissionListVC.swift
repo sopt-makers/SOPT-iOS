@@ -274,7 +274,7 @@ extension MissionListVC {
     output.$missionListModel
       .compactMap { $0 }
       .sink { [weak self] model in
-        //                self?.setCollectionView(model: model)
+          self?.setCollectionView(model: model)
       }.store(in: self.cancelBag)
 
     output.$usersActivateGenerationStatus
