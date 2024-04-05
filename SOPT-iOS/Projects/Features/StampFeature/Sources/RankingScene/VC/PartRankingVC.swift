@@ -75,18 +75,11 @@ public class PartRankingVC: UIViewController, PartRankingViewControllable {
     super.viewDidLoad()
     self.setUI()
     self.setLayout()
+    self.setDataSource()
     self.setDelegate()
     self.registerCells()
     self.bindViews()
     self.bindViewModels()
-    self.setDataSource()
-
-    // TODO: 제거
-    applySnapshot(model: [.init(username: "a", score: 4, sentence: "test"),
-                          .init(username: "b", score: 1, sentence: "test"),
-                          .init(username: "c", score: 3, sentence: "test"),
-                          .init(username: "d", score: 2, sentence: "test")]
-    )
   }
 }
 
@@ -137,6 +130,12 @@ extension PartRankingVC {
     )
 
     let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+
+    output.partRanking
+      .receive(on: DispatchQueue.main)
+      .sink { [weak self] partRankingModels in
+        self?.applySnapshot(model: partRankingModels)
+      }.store(in: cancelBag)
   }
 
   private func setDelegate() {
@@ -153,26 +152,27 @@ extension PartRankingVC {
       switch RankingSection.type(indexPath.section) {
       case .chart:
         guard let chartCell = collectionView.dequeueReusableCell(withReuseIdentifier: PartRankingChartCVC.className, for: indexPath) as? PartRankingChartCVC,
-              let chartCellModel = itemIdentifier as? RankingChartModel else { return UICollectionViewCell() }
+              let chartCellModel = itemIdentifier as? PartRankingChartModel else { return UICollectionViewCell() }
         chartCell.setData(model: chartCellModel)
         return chartCell
 
       case .list:
         guard let rankingListCell = collectionView.dequeueReusableCell(withReuseIdentifier: PartRankingListCVC.className, for: indexPath) as? PartRankingListCVC,
-              let rankingListCellModel = itemIdentifier as? RankingModel else { return UICollectionViewCell() }
-        rankingListCell.setData(rank: indexPath.row+1, partName: rankingListCellModel.username, score: rankingListCellModel.score)
+              let model = itemIdentifier as? PartRankingModel else { return UICollectionViewCell() }
+        rankingListCell.setData(rank: model.rank, partName: model.part, score: model.points)
 
         return rankingListCell
       }
     })
   }
 
-  func applySnapshot(model: [RankingModel]) {
+  func applySnapshot(model: [PartRankingModel]) {
     var snapshot = NSDiffableDataSourceSnapshot<RankingSection, AnyHashable>()
     snapshot.appendSections([.chart, .list])
-    let chartCellModel = RankingChartModel.init(ranking: model)
+    let chartCellModel = PartRankingChartModel.init(ranking: model)
     snapshot.appendItems([chartCellModel], toSection: .chart)
-    snapshot.appendItems(model, toSection: .list)
+    let listModels = model.sorted(by: { $0.rank < $1.rank })
+    snapshot.appendItems(listModels, toSection: .list)
     dataSource.apply(snapshot, animatingDifferences: false)
     self.view.setNeedsLayout()
   }

@@ -8,14 +8,22 @@
 
 import Foundation
 
-public struct PartRankingModel {
+public struct PartRankingModel: Hashable {
   public let part: String
   public let rank: Int
   public let points: Int
 
-  init(part: String, rank: Int, points: Int) {
+  public init(part: String, rank: Int, points: Int) {
     self.part = part
     self.rank = rank
     self.points = points
+  }
+}
+
+public struct PartRankingChartModel: Hashable {
+  public let ranking: [PartRankingModel]
+  
+  public init(ranking: [PartRankingModel]) {
+    self.ranking = ranking
   }
 }

@@ -13,22 +13,30 @@ import Domain
 import Networks
 
 public class RankingRepository {
-    
-    private let rankService: RankService
-    private let cancelBag = CancelBag()
-    
-    public init(service: RankService) {
-        self.rankService = service
-    }
+
+  private let rankService: RankService
+  private let cancelBag = CancelBag()
+
+  public init(service: RankService) {
+    self.rankService = service
+  }
 }
 
 extension RankingRepository: RankingRepositoryInterface {
-    public func fetchRankingListModel(isCurrentGeneration: Bool) -> AnyPublisher<[Domain.RankingModel], Error> {
-        return self.rankService
-            .fetchRankingList(isCurrentGeneration: isCurrentGeneration)
-            .map({ entity in
-                entity.map { $0.toDomain() }
-            })
-            .eraseToAnyPublisher()
-    }
+  public func fetchRankingListModel(isCurrentGeneration: Bool) -> AnyPublisher<[Domain.RankingModel], Error> {
+    return self.rankService
+      .fetchRankingList(isCurrentGeneration: isCurrentGeneration)
+      .map({ entity in
+        entity.map { $0.toDomain() }
+      })
+      .eraseToAnyPublisher()
+  }
+
+  public func fetchPartRanking() -> AnyPublisher<[Domain.PartRankingModel], Error> {
+    return self.rankService
+      .fetchPartRanking()
+      .map {
+        $0.map { $0.toDomain() }
+      }.eraseToAnyPublisher()
+  }
 }
