@@ -15,16 +15,21 @@ import Moya
 public typealias DefaultRankService = BaseService<RankAPI>
 
 public protocol RankService {
-    func fetchRankingList(isCurrentGeneration: Bool) -> AnyPublisher<[RankingEntity], Error>
-    func fetchRankDetail(userName: String) -> AnyPublisher<RankDetailEntity, Error>
+  func fetchRankingList(isCurrentGeneration: Bool) -> AnyPublisher<[RankingEntity], Error>
+  func fetchRankDetail(userName: String) -> AnyPublisher<RankDetailEntity, Error>
+  func fetchPartRanking() -> AnyPublisher<[PartRankingEntity], Error>
 }
 
 extension DefaultRankService: RankService {
-    public func fetchRankingList(isCurrentGeneration: Bool) -> AnyPublisher<[RankingEntity], Error> {
-        requestObjectInCombine(isCurrentGeneration ? RankAPI.currentRank : RankAPI.rank)
-    }
-    
-    public func fetchRankDetail(userName: String) -> AnyPublisher<RankDetailEntity, Error> {
-        requestObjectInCombine(RankAPI.rankDetail(userName: userName))
-    }
+  public func fetchRankingList(isCurrentGeneration: Bool) -> AnyPublisher<[RankingEntity], Error> {
+    requestObjectInCombine(isCurrentGeneration ? RankAPI.currentRank : RankAPI.rank)
+  }
+
+  public func fetchRankDetail(userName: String) -> AnyPublisher<RankDetailEntity, Error> {
+    requestObjectInCombine(RankAPI.rankDetail(userName: userName))
+  }
+
+  public func fetchPartRanking() -> AnyPublisher<[PartRankingEntity], Error> {
+    requestObjectInCombine(.rankPart)
+  }
 }
