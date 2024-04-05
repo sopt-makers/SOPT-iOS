@@ -112,7 +112,6 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
             })
             .sink(receiveCompletion: { event in
                 print("completion: fetchLectureRound \(event)")
-                self.lectureRound.send(.EMPTY)
             }, receiveValue: { result in
                 /// 출석 진행중인데 이미 출석 완료한 경우
                 if self.takenAttendance.rawValue == result?.round {

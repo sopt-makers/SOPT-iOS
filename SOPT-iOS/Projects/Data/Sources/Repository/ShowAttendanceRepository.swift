@@ -39,7 +39,7 @@ extension ShowAttendanceRepository: ShowAttendanceRepositoryInterface {
     public func fetchLectureRound(lectureId: Int) -> AnyPublisher<AttendanceRoundModel?, Error> {
         return self.attendanceService
             .fetchAttendanceRound(lectureId: lectureId)
-            .compactMap { $0.data?.toDomain() }
+            .map { $0.data?.toDomain() }
             .eraseToAnyPublisher()
     }
 }
