@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct AttendanceRoundModel {
+public struct AttendanceRoundModel: Equatable {
     public let subLectureId: Int
     public let round: Int
     
