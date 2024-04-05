@@ -30,7 +30,7 @@ public class PartRankingVC: UIViewController, PartRankingViewControllable {
 
   // MARK: - RankingCoordinatable
 
-  public var onCellTap: ((String, String) -> Void)?
+  public var onCellTap: ((Part) -> Void)?
   public var onNaviBackTap: (() -> Void)?
 
   // MARK: - UI Components
@@ -159,7 +159,7 @@ extension PartRankingVC {
       case .list:
         guard let rankingListCell = collectionView.dequeueReusableCell(withReuseIdentifier: PartRankingListCVC.className, for: indexPath) as? PartRankingListCVC,
               let model = itemIdentifier as? PartRankingModel else { return UICollectionViewCell() }
-        rankingListCell.setData(rank: model.rank, partName: model.part, score: model.points)
+        rankingListCell.setData(model: model)
 
         return rankingListCell
       }
@@ -186,8 +186,9 @@ extension PartRankingVC: UICollectionViewDelegate {
   public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     guard indexPath.section >= 1 else { return }
 
-    guard let tappedCell = collectionView.cellForItem(at: indexPath) as? RankingListTappable,
-          let item = tappedCell.getModelItem() else { return }
-    self.onCellTap?(item.username, item.sentence)
+    guard let tappedCell = collectionView.cellForItem(at: indexPath) as? PartRankingListCVC,
+          let model = tappedCell.model else { return }
+    guard let part = Part(rawValue: model.part) else { return }
+    self.onCellTap?(part)
   }
 }

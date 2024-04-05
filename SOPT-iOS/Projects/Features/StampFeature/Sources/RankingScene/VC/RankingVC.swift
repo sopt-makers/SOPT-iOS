@@ -17,6 +17,7 @@ import SnapKit
 import Then
 
 import StampFeatureInterface
+import BaseFeatureDependency
 
 public class RankingVC: UIViewController, RankingViewControllable {
     
@@ -73,10 +74,15 @@ public class RankingVC: UIViewController, RankingViewControllable {
 
         super.init(nibName: nil, bundle: nil)
 
-        guard case .currentGeneration(let info) = rankingViewType else { return }
-        
+      if case .currentGeneration(let info) = rankingViewType {
         let navigationTitle = String(describing: info.currentGeneration) + "기 랭킹"
         self.naviBar.setTitle(navigationTitle)
+      }
+      
+      if case .individualRankingInPart(let part) = rankingViewType {
+        let navigationTitle = String(describing: part.rawValue) + " 랭킹"
+        self.naviBar.setTitle(navigationTitle)
+      }
     }
     
     required init?(coder: NSCoder) {

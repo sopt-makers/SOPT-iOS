@@ -20,6 +20,7 @@ final class PartRankingListCVC: UICollectionViewCell, UICollectionViewRegisterab
   // MARK: - Properties
 
   static var isFromNib: Bool = false
+  var model: PartRankingModel?
 
   // MARK: - UI Components
 
@@ -95,10 +96,11 @@ extension PartRankingListCVC {
 
 extension PartRankingListCVC {
 
-  public func setData(rank: Int, partName: String, score: Int) {
-    rankLabel.text = String(rank)
-    partNameLabel.text = partName
-    scoreLabel.text = "\(score)점"
+  public func setData(model: PartRankingModel) {
+    self.model = model
+    rankLabel.text = String(model.rank)
+    partNameLabel.text = model.part
+    scoreLabel.text = "\(model.points)점"
     scoreLabel.partFontChange(targetString: "점",
                               font: DSKitFontFamily.Pretendard.medium.font(size: 12))
     setDefaultRanking()

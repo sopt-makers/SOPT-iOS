@@ -39,4 +39,13 @@ extension RankingRepository: RankingRepositoryInterface {
         $0.map { $0.toDomain() }
       }.eraseToAnyPublisher()
   }
+
+  public func fetchRankingListInPart(part: String) -> AnyPublisher<[RankingModel], Error> {
+    return self.rankService
+      .fetchRankingListInPart(part: part)
+      .map {
+        $0.map { $0.toDomain() }
+      }
+      .eraseToAnyPublisher()
+  }
 }

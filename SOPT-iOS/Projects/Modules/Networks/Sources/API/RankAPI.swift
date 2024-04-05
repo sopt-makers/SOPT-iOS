@@ -16,6 +16,7 @@ public enum RankAPI {
   case currentRank
   case rankDetail(userName: String)
   case rankPart
+  case currentRankInPart(partName: String)
 }
 
 extension RankAPI: BaseAPI {
@@ -42,6 +43,8 @@ extension RankAPI: BaseAPI {
       return "/detail"
     case .rankPart:
       return "/part"
+    case .currentRankInPart(let partName):
+      return "/current/part/\(partName)"
     }
   }
 

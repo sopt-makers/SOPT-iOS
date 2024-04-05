@@ -12,6 +12,7 @@ import Core
 
 public protocol RankingUseCase {
   func fetchRankingList(isCurrentGeneration: Bool)
+  func fetchRankingList(part: String)
   func findMyRanking()
   func fetchPartRanking()
 
@@ -58,6 +59,16 @@ extension DefaultRankingUseCase: RankingUseCase {
         print(completion)
       } receiveValue: { [weak self] rankingModels in
         self?.partRanking.send(rankingModels)
+      }.store(in: cancelBag)
+  }
+
+  public func fetchRankingList(part: String) {
+    self.repository
+      .fetchRankingListInPart(part: part)
+      .sink { completion in
+        print(completion)
+      } receiveValue: { [weak self] rankingModels in
+        self?.rankingListModelFetched.send(rankingModels)
       }.store(in: cancelBag)
   }
 

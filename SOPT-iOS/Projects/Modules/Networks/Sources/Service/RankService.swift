@@ -18,6 +18,7 @@ public protocol RankService {
   func fetchRankingList(isCurrentGeneration: Bool) -> AnyPublisher<[RankingEntity], Error>
   func fetchRankDetail(userName: String) -> AnyPublisher<RankDetailEntity, Error>
   func fetchPartRanking() -> AnyPublisher<[PartRankingEntity], Error>
+  func fetchRankingListInPart(part: String) -> AnyPublisher<[RankingEntity], Error>
 }
 
 extension DefaultRankService: RankService {
@@ -31,5 +32,9 @@ extension DefaultRankService: RankService {
 
   public func fetchPartRanking() -> AnyPublisher<[PartRankingEntity], Error> {
     requestObjectInCombine(.rankPart)
+  }
+
+  public func fetchRankingListInPart(part: String) -> AnyPublisher<[RankingEntity], Error> {
+    requestObjectInCombine(.currentRankInPart(partName: part))
   }
 }
