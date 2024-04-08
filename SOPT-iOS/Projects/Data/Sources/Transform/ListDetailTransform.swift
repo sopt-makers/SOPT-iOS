@@ -12,21 +12,23 @@ import Domain
 import Networks
 
 extension ListDetailEntity {
-    public func toDomain() -> ListDetailModel {
-        
-        return ListDetailModel.init(image: self.images.first ?? "",
-                                    content: self.contents,
-                                    date: changeDateformat(self.updatedAt ?? self.createdAt),
-                                    stampId: self.id)
-    }
-    
-    private func changeDateformat(_ date: String) -> String {
-        return date.split(separator: "-").joined(separator: ".")
-    }
+  public func toDomain() -> ListDetailModel {
+    return ListDetailModel(
+      image: self.images.first ?? "",
+      content: self.contents,
+      date: changeDateformat(self.updatedAt ?? self.createdAt),
+      stampId: self.id,
+      activityDate: self.activityDate
+    )
+  }
+  
+  private func changeDateformat(_ date: String) -> String {
+    return date.split(separator: "-").joined(separator: ".")
+  }
 }
 
 extension StampEntity {
-    public func toDomain() -> Int {
-        return self.stampId
-    }
+  public func toDomain() -> Int {
+    return self.stampId
+  }
 }

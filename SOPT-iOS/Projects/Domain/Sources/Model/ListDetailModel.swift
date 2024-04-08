@@ -9,14 +9,23 @@
 import Foundation
 
 public struct ListDetailModel {
-
-    public let image, content, date: String
-    public let stampId: Int
-
-    public init(image: String, content: String, date: String, stampId: Int) {
-        self.image = image
-        self.content = content
-        self.date = date
-        self.stampId = stampId
-    }
+  public let image: String
+  public let content: String
+  public let date: String
+  public let stampId: Int
+  public let activityDate: String
+  
+  public init(
+    image: String,
+    content: String,
+    date: String,
+    stampId: Int,
+    activityDate: String
+  ) {
+    self.image = image
+    self.content = content
+    self.date = date
+    self.stampId = stampId
+    self.activityDate = activityDate
+  }
 }
