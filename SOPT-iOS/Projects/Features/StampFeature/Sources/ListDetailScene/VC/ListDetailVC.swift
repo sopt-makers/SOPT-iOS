@@ -233,6 +233,7 @@ extension ListDetailVC {
     }
     self.missionDateTextField.setText(with: model.activityDate)
     self.missionDateTextField.setIsEnabled(false)
+    self.missionDateTextField.setTextFieldView(.inactive)
     self.textView.text = model.content
     self.dateLabel.text = model.date
   }
@@ -460,6 +461,7 @@ extension ListDetailVC {
       self.originImage = self.missionImageView.image ?? UIImage()
       self.bottomButton.changeTitle(attributedString: I18N.ListDetail.editComplete)
         .setEnabled(false)
+      self.missionDateTextField.setIsEnabled(true)
     } else {
       self.naviBar.resetLeftButtonAction()
       self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
@@ -485,6 +487,7 @@ extension ListDetailVC {
       self.bottomButton.isHidden = true
       self.dateLabel.isHidden = false
       self.missionImageView.isUserInteractionEnabled = false
+      self.missionDateTextField.setTextFieldView(.completed)
     }
     
     if viewModel.isOtherUser {

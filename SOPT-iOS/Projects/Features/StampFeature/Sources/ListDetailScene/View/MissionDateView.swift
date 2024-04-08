@@ -98,6 +98,21 @@ extension MissionDateView {
   public func getText() -> String? {
     self.textField.text
   }
+  
+  public func setTextFieldView(_ state: TextViewState) {
+    switch state {
+    case .inactive:
+      self.backgroundColor = DSKitAsset.Colors.soptampGray50.color
+      self.layer.borderWidth = .zero
+    case .active:
+      self.backgroundColor = DSKitAsset.Colors.soptampWhite.color
+      self.layer.borderWidth = 1
+    case .completed:
+      self.backgroundColor = DSKitAsset.Colors.soptampGray50.color
+      self.layer.borderWidth = .zero
+    }
+  }
+
 }
 
 // MARK: - Private Extensions
@@ -128,21 +143,7 @@ extension MissionDateView {
     
     self.rightChevron.snp.makeConstraints { $0.size.equalTo(Metric.chevronLength) }
   }
-  
-  private func setTextFieldView(_ state: TextViewState) {
-    switch state {
-    case .inactive:
-      self.backgroundColor = DSKitAsset.Colors.soptampGray50.color
-      self.layer.borderWidth = .zero
-    case .active:
-      self.backgroundColor = DSKitAsset.Colors.soptampWhite.color
-      self.layer.borderWidth = 1
-    case .completed:
-      self.backgroundColor = DSKitAsset.Colors.soptampGray50.color
-      self.layer.borderWidth = .zero
-    }
-  }
-  
+    
   private func initializeDatePicker() {
     let toolBarView = self.getInitializedToolBar()
     let datePicker = UIDatePicker().then {
