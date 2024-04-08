@@ -15,7 +15,6 @@ public protocol MyPageCoordinatable {
     var onPolicyItemTap: (() -> Void)? { get set }
     var onTermsOfUseItemTap: (() -> Void)? { get set }
     var onEditOnelineSentenceItemTap: (() -> Void)? { get set }
-    var onEditNicknameItemTap: (() -> Void)? { get set }
     var onWithdrawalItemTap: ((UserType) -> Void)? { get set }
     var onShowLogin: (() -> Void)? { get set }
     var onAlertButtonTap: ((String) -> Void)? { get set }

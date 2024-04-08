@@ -37,7 +37,6 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
     public var onPolicyItemTap: (() -> Void)?
     public var onTermsOfUseItemTap: (() -> Void)?
     public var onEditOnelineSentenceItemTap: (() -> Void)?
-    public var onEditNicknameItemTap: (() -> Void)?
     public var onWithdrawalItemTap: ((UserType) -> Void)?
     public var onLoginItemTap: (() -> Void)?
     public var onShowLogin: (() -> Void)?
@@ -109,7 +108,6 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
         headerTitle: I18N.MyPage.soptampSectionTitle,
         subviews: [
             self.editOnelineSentenceListItem,
-            self.editNickNameListItem,
             self.resetStampListItem
         ],
         frame: self.view.frame
@@ -117,11 +115,6 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
     
     private lazy var editOnelineSentenceListItem = MyPageSectionListItemView(
         title: I18N.MyPage.editOnlineSentence,
-        frame: self.view.frame
-    )
-    
-    private lazy var editNickNameListItem = MyPageSectionListItemView(
-        title:  I18N.MyPage.editNickname,
         frame: self.view.frame
     )
     
@@ -259,10 +252,6 @@ extension AppMyPageVC {
 
         self.editOnelineSentenceListItem.addTapGestureRecognizer {
             self.onEditOnelineSentenceItemTap?()
-        }
-
-        self.editNickNameListItem.addTapGestureRecognizer {
-            self.onEditNicknameItemTap?()
         }
 
         self.resetStampListItem.addTapGestureRecognizer {
