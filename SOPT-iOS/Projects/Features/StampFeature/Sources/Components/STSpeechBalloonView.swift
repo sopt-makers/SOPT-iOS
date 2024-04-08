@@ -41,7 +41,7 @@ public class STSpeechBalloonView: UIView {
         st.distribution = .equalCentering
         st.alignment = .center
         st.spacing = 0
-        st.addArrangedSubviews(sentenceLabel, leftArrowImage)
+        st.addArrangedSubviews(sentenceLabel)
         return st
     }()
     
@@ -54,13 +54,6 @@ public class STSpeechBalloonView: UIView {
         label.sizeToFit()
         label.setCharacterSpacing(0)
         return label
-    }()
-    
-    private let leftArrowImage: UIImageView = {
-        let iv = UIImageView()
-        iv.contentMode = .scaleAspectFit
-        iv.image = DSKitAsset.Assets.icLeftArrow.image.withRenderingMode(.alwaysTemplate)
-        return iv
     }()
     
     // MARK: View Life Cycle
@@ -92,24 +85,20 @@ extension STSpeechBalloonView {
         case .rankOne:
             backgroundView.backgroundColor = DSKitAsset.Colors.soptampPurple300.color
             sentenceLabel.textColor = DSKitAsset.Colors.soptampWhite.color
-            leftArrowImage.tintColor = .white
             balloonTailImageView.tintColor = DSKitAsset.Colors.soptampPurple300.color
         case .rankTwo:
             backgroundView.backgroundColor = DSKitAsset.Colors.soptampPink300.color
             sentenceLabel.textColor = DSKitAsset.Colors.soptampWhite.color
-            leftArrowImage.tintColor = .white
             balloonTailImageView.tintColor = DSKitAsset.Colors.soptampPink300.color
         case .rankThree:
             backgroundView.backgroundColor = DSKitAsset.Colors.soptampMint300.color
             sentenceLabel.textColor = DSKitAsset.Colors.soptampBlack.color
-            leftArrowImage.tintColor = .black
             balloonTailImageView.tintColor = DSKitAsset.Colors.soptampMint300.color
         }
         
         guard self.sentenceLabel.text == I18N.RankingList.noSentenceText else { return }
         self.sentenceLabel.textColor = DSKitAsset.Colors.soptampGray500.color
         self.backgroundView.backgroundColor = DSKitAsset.Colors.soptampGray100.color
-        self.leftArrowImage.tintColor = DSKitAsset.Colors.soptampGray500.color
         self.balloonTailImageView.tintColor = DSKitAsset.Colors.soptampGray100.color
     }
     
@@ -131,10 +120,6 @@ extension STSpeechBalloonView {
         
         sentenceLabel.snp.makeConstraints { make in
             make.width.lessThanOrEqualTo(241.adjusted)
-        }
-        
-        leftArrowImage.snp.makeConstraints { make in
-            make.size.equalTo(32.adjusted)
         }
         
         balloonTailImageView.snp.makeConstraints { make in
