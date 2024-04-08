@@ -100,6 +100,9 @@ public struct I18N {
         public static let editComplete = "수정 완료"
         public static let editCompletedToast = "수정 완료되었습니다."
         public static let deleteTitle = "달성한 미션을 삭제하시겠습니까?"
+        public static let missionDatePlaceHolder = "날짜를 입력해주세요"
+        public static let datePickerDoneButtonTitle = "완료"
+        public static let datePickerCancelButtonTitle = "취소"
     }
     
     public struct Setting {
