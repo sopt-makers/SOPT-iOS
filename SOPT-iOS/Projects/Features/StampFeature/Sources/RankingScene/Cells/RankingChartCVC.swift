@@ -20,8 +20,9 @@ final class RankingChartCVC: UICollectionViewCell, UICollectionViewRegisterable 
     // MARK: - Properties
     
     static var isFromNib: Bool = false
-    public var balloonTapped: ((RankingModel) -> Void)?
+    public var usernameTapped: ((RankingModel) -> Void)?
     public var models: [RankingModel] = []
+    private var cancelBag = CancelBag()
     
     // MARK: - UI Components
     
@@ -127,7 +128,6 @@ extension RankingChartCVC {
                 balloonView.isHidden = true
             }
             balloonViews.append(balloonView)
-            self.setBalloonGesture(balloonView)
         }
         
         balloonViews.forEach {
@@ -142,22 +142,16 @@ extension RankingChartCVC {
         }
     }
     
-    private func setBalloonGesture(_ view: STSpeechBalloonView) {
-        let tap = UITapGestureRecognizer.init(target: self, action: #selector(tappedGetBalloonModel(_:)))
-        view.addGestureRecognizer(tap)
-    }
-    
-    @objc
-    private func tappedGetBalloonModel(_ sender: UITapGestureRecognizer) {
-        guard let senderView = sender.view as? STSpeechBalloonView,
-              let balloonIndex = balloonViews.firstIndex(of: senderView) else { return }
-        let model = models[balloonIndex]
-        _ = self.balloonTapped?(model)
-    }
-    
     private func setChartData(chartRectangleModel: [RankingModel]) {
         for (index, rectangle) in chartStackView.subviews.enumerated() {
             guard let chartRectangle = rectangle as? STChartRectangleView else { return }
+          
+          chartRectangle
+            .signalForClickUserName()
+            .sink(receiveValue: {
+              self.usernameTapped?(chartRectangleModel[index])
+            }).store(in: self.cancelBag)
+          
             chartRectangle.setData(score: chartRectangleModel[index].score,
                                    username: chartRectangleModel[index].username)
         }

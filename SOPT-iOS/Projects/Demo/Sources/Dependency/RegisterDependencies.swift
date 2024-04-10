@@ -109,7 +109,9 @@ extension AppDelegate {
             interface: ListDetailRepositoryInterface.self,
             implement: {
                 ListDetailRepository(
-                    service: DefaultStampService()
+                    stampService: DefaultStampService(),
+                    s3Service: DefaultS3Service(),
+                    mediaService: DefaultMediaService()                    
                 )
             }
         )

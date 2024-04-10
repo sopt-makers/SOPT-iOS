@@ -196,7 +196,7 @@ extension RankingVC {
                 guard let chartCell = collectionView.dequeueReusableCell(withReuseIdentifier: RankingChartCVC.className, for: indexPath) as? RankingChartCVC,
                       let chartCellModel = itemIdentifier as? RankingChartModel else { return UICollectionViewCell() }
                 chartCell.setData(model: chartCellModel)
-                chartCell.balloonTapped = { [weak self] balloonModel in
+                chartCell.usernameTapped = { [weak self] balloonModel in
                     guard let self = self else { return }
                     let item = balloonModel.toRankingListTapItem()
                     self.onCellTap?(item.username, item.sentence)

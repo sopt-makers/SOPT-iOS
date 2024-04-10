@@ -9,10 +9,13 @@
 import Core
 
 import Combine
+import Foundation
 
 public protocol ListDetailRepositoryInterface {
-    func fetchListDetail(missionId: Int, username: String?) -> AnyPublisher<ListDetailModel, Error>
-    func postStamp(missionId: Int, stampData: [Any]) -> AnyPublisher<ListDetailModel, Error>
-    func putStamp(missionId: Int, stampData: [Any]) -> Driver<Int>
-    func deleteStamp(stampId: Int) -> Driver<Bool>
+  func fetchListDetail(missionId: Int, username: String?) -> AnyPublisher<ListDetailModel, Error>
+  func getPresignedURL() -> AnyPublisher<PresignedUrlModel, Error>
+  func uploadMedia(imageData: Data, presignedUrl: String) -> AnyPublisher<Void, Error>
+  func postStamp(stampData: ListDetailRequestModel) -> AnyPublisher<ListDetailModel, Error>
+  func putStamp(stampData: ListDetailRequestModel) -> Driver<Int>
+  func deleteStamp(stampId: Int) -> Driver<Bool>
 }

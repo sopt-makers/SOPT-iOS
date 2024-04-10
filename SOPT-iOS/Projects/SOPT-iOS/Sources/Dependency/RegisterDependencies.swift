@@ -108,9 +108,11 @@ extension AppDelegate {
         container.register(
             interface: ListDetailRepositoryInterface.self,
             implement: {
-                ListDetailRepository(
-                    service: DefaultStampService()
-                )
+              ListDetailRepository(
+                  stampService: DefaultStampService(),
+                  s3Service: DefaultS3Service(),
+                  mediaService: DefaultMediaService()
+              )
             }
         )
         container.register(

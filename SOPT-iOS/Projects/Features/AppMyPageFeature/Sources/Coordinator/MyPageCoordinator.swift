@@ -52,10 +52,6 @@ final class MyPageCoordinator: DefaultMyPageCoordinator {
             let termsVC = self?.factory.makeTermsOfServiceVC()
             self?.router.push(termsVC)
         }
-        myPage.onEditNicknameItemTap = { [weak self] in
-            let nicknameEditVC = self?.factory.makeNicknameEditVC()
-            self?.router.push(nicknameEditVC)
-        }
         myPage.onEditOnelineSentenceItemTap = { [weak self] in
             let sentenceEditVC = self?.factory.makeSentenceEditVC()
             self?.router.push(sentenceEditVC)
