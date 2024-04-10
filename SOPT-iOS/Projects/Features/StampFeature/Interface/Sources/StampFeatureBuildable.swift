@@ -13,6 +13,8 @@ import BaseFeatureDependency
 public enum RankingViewType {
     case all
     case currentGeneration(info: UsersActiveGenerationStatusViewResponse)
+    case partRanking
+    case individualRankingInPart(part: Part)
 }
 
 public protocol StampFeatureViewBuildable {
@@ -29,5 +31,6 @@ public protocol StampFeatureViewBuildable {
         completionHandler: (() -> Void)?
     ) -> MissionCompletedViewControllable
     func makeRankingVC(rankingViewType: RankingViewType) -> RankingViewControllable
+    func makePartRankingVC(rankingViewType: RankingViewType) -> PartRankingViewControllable
     func makeStampGuideVC() -> StampGuideViewControllable
 }

@@ -9,5 +9,7 @@
 import Combine
 
 public protocol RankingRepositoryInterface {
-    func fetchRankingListModel(isCurrentGeneration: Bool) -> AnyPublisher<[RankingModel], Error>
+  func fetchRankingListModel(isCurrentGeneration: Bool) -> AnyPublisher<[RankingModel], Error>
+  func fetchPartRanking() -> AnyPublisher<[Domain.PartRankingModel], Error>
+  func fetchRankingListInPart(part: String) -> AnyPublisher<[RankingModel], Error>
 }

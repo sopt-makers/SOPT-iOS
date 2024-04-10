@@ -12,69 +12,75 @@ import Alamofire
 import Moya
 
 public enum RankAPI {
-    case rank
-    case currentRank
-    case rankDetail(userName: String)
+  case rank
+  case currentRank
+  case rankDetail(userName: String)
+  case rankPart
+  case currentRankInPart(partName: String)
 }
 
 extension RankAPI: BaseAPI {
-    
-    public static var apiType: APIType = .rank
-    
-    // MARK: - Header
-    public var headers: [String: String]? {
-        switch self {
-        case .rank, .rankDetail:
-            return HeaderType.jsonWithToken.value
-        default: return HeaderType.json.value
-        }
+
+  public static var apiType: APIType = .rank
+
+  // MARK: - Header
+  public var headers: [String: String]? {
+    switch self {
+    case .rank, .rankDetail:
+      return HeaderType.jsonWithToken.value
+    default: return HeaderType.json.value
     }
-    
-    // MARK: - Path
-    public var path: String {
-        switch self {
-        case .rank:
-            return ""
-        case .currentRank:
-            return "/current"
-        case .rankDetail:
-            return "/detail"
-        }
+  }
+
+  // MARK: - Path
+  public var path: String {
+    switch self {
+    case .rank:
+      return ""
+    case .currentRank:
+      return "/current"
+    case .rankDetail:
+      return "/detail"
+    case .rankPart:
+      return "/part"
+    case .currentRankInPart(let partName):
+      return "/current/part/\(partName)"
     }
-    
-    // MARK: - Method
-    public var method: Moya.Method {
-        switch self {
-        default: return .get
-        }
+  }
+
+  // MARK: - Method
+  public var method: Moya.Method {
+    switch self {
+    default: return .get
     }
-    
-    // MARK: - Parameters
-    private var bodyParameters: Parameters? {
-        var params: Parameters = [:]
-        switch self {
-        case .rankDetail(let userName):
-            params["nickname"] = userName
-        default: break
-        }
-        return params
+  }
+
+  // MARK: - Parameters
+  private var bodyParameters: Parameters? {
+    var params: Parameters = [:]
+    switch self {
+    case .rankDetail(let userName):
+      params["nickname"] = userName
+    default: break
     }
-    
-    private var parameterEncoding: ParameterEncoding {
-        switch self {
-        case .rankDetail:
-            return URLEncoding.default
-        default:
-            return JSONEncoding.default
-        }
+    return params
+  }
+
+  private var parameterEncoding: ParameterEncoding {
+    switch self {
+    case .rankDetail:
+      return URLEncoding.default
+    default:
+      return JSONEncoding.default
     }
-    
-    public var task: Task {
-        switch self {
-        case .rankDetail:
-            return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
-        default:
-            return .requestPlain
-        }
+  }
+
+  public var task: Task {
+    switch self {
+    case .rankDetail:
+      return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
+    default:
+      return .requestPlain
     }
+  }
 }

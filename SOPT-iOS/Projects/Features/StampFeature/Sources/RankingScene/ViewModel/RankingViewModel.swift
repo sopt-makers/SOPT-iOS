@@ -55,8 +55,14 @@ extension RankingViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 switch self.rankingViewType {
-                case .all: owner.useCase.fetchRankingList(isCurrentGeneration: false)
-                case .currentGeneration: owner.useCase.fetchRankingList(isCurrentGeneration: true)
+                case .all:
+                  owner.useCase.fetchRankingList(isCurrentGeneration: false)
+                case .currentGeneration:
+                  owner.useCase.fetchRankingList(isCurrentGeneration: true)
+                case .individualRankingInPart(let part):
+                  owner.useCase.fetchRankingList(part: part.uppercasedName())
+                default:
+                  return
                 }
             }.store(in: self.cancelBag)
         
