@@ -32,3 +32,14 @@ extension StampEntity {
     return self.stampId
   }
 }
+
+extension ListDetailRequestModel {
+  public func toEntity() -> ListDetailRequestEntity {
+    return ListDetailRequestEntity(
+      missionId: self.missionId,
+      content: self.content,
+      activityDate: self.activityDate,
+      imgURL: self.imgURL
+    )
+  }
+}

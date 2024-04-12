@@ -12,14 +12,14 @@ import Combine
 import Alamofire
 import Moya
 
-import Domain
+import Core
 
 public typealias DefaultStampService = BaseService<StampAPI>
 
 public protocol StampService {
     func fetchStampListDetail(missionId: Int, username: String) -> AnyPublisher<ListDetailEntity, Error>
-    func postStamp(requestModel: ListDetailRequestModel) -> AnyPublisher<ListDetailEntity, Error>
-    func putStamp(requestModel: ListDetailRequestModel) -> AnyPublisher<StampEntity, Error>
+    func postStamp(requestModel: ListDetailRequestEntity) -> AnyPublisher<ListDetailEntity, Error>
+    func putStamp(requestModel: ListDetailRequestEntity) -> AnyPublisher<StampEntity, Error>
     func deleteStamp(stampId: Int) -> AnyPublisher<Int, Error>
     func resetStamp() -> AnyPublisher<Int, Error>
 }
@@ -29,11 +29,11 @@ extension DefaultStampService: StampService {
         requestObjectInCombine(StampAPI.fetchStampListDetail(missionId: missionId, username: username))
     }
     
-    public func postStamp(requestModel: ListDetailRequestModel) -> AnyPublisher<ListDetailEntity, Error> {
+    public func postStamp(requestModel: ListDetailRequestEntity) -> AnyPublisher<ListDetailEntity, Error> {
         requestObjectInCombine(StampAPI.postStamp(requestModel: requestModel))
     }
     
-    public func putStamp( requestModel: ListDetailRequestModel) -> AnyPublisher<StampEntity, Error> {
+    public func putStamp( requestModel: ListDetailRequestEntity) -> AnyPublisher<StampEntity, Error> {
         requestObjectInCombine(StampAPI.putStamp(requestModel: requestModel))
     }
     

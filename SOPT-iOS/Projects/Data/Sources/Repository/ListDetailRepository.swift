@@ -55,13 +55,13 @@ extension ListDetailRepository: ListDetailRepositoryInterface {
   }
   
   public func postStamp(stampData: ListDetailRequestModel) -> AnyPublisher<ListDetailModel, Error> {
-    return stampService.postStamp(requestModel: stampData)
+    return stampService.postStamp(requestModel: stampData.toEntity())
       .map { $0.toDomain() }
       .eraseToAnyPublisher()
   }
   
   public func putStamp(stampData: ListDetailRequestModel) -> Driver<Int> {
-    return stampService.putStamp(requestModel: stampData)
+    return stampService.putStamp(requestModel: stampData.toEntity())
       .map { $0.toDomain() }
       .asDriver()
   }

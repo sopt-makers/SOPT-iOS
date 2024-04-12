@@ -10,13 +10,12 @@ import Foundation
 
 import Alamofire
 import Moya
-
-import Domain
+import Core
 
 public enum StampAPI {
   case fetchStampListDetail(missionId: Int, username: String)
-  case postStamp(requestModel: ListDetailRequestModel)
-  case putStamp(requestModel: ListDetailRequestModel)
+  case postStamp(requestModel: ListDetailRequestEntity)
+  case putStamp(requestModel: ListDetailRequestEntity)
   case deleteStamp(stampId: Int)
   case resetStamp
 }
