@@ -269,6 +269,8 @@ extension ListDetailVC {
     
     self.missionDateTextField
       .signalForChangeDate()
+      .dropFirst()
+      .removeDuplicates()
       .sink(receiveValue: { [weak self] date in
         guard let self else { return }
         

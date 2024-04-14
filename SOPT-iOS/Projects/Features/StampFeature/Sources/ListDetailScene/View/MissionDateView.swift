@@ -115,7 +115,7 @@ extension MissionDateView {
   
   public func signalForChangeDate() -> Driver<String> {
     self.textField
-      .publisher(for: .valueChanged)
+      .publisher(for: .allEditingEvents)
       .compactMap { $0.text }
       .asDriver()
   }
