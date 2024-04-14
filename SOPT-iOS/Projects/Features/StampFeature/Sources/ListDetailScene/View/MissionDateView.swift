@@ -112,7 +112,13 @@ extension MissionDateView {
       self.layer.borderWidth = .zero
     }
   }
-
+  
+  public func signalForChangeDate() -> Driver<String> {
+    self.textField
+      .publisher(for: .valueChanged)
+      .compactMap { $0.text }
+      .asDriver()
+  }
 }
 
 // MARK: - Private Extensions
@@ -150,6 +156,7 @@ extension MissionDateView {
       $0.datePickerMode = .date
       $0.locale = Locale(identifier: "ko-kr")
       $0.preferredDatePickerStyle = .wheels
+      $0.maximumDate = Date()
     }
     
     datePicker

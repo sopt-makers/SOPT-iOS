@@ -114,7 +114,6 @@ public class ListDetailVC: UIViewController, ListDetailViewControllable {
   private let imagePlaceholderLabel = UILabel()
   private let textView = UITextView()
   private lazy var missionDateTextField = MissionDateView(frame: self.view.frame)
-  private let dateLabel = UILabel()
   private lazy var bottomButton = STCustomButton(title: sceneType == .none ? I18N.ListDetail.missionComplete : I18N.ListDetail.editComplete)
     .setEnabled(false)
     .setColor(bgColor: starLevel.pointColor,
@@ -235,7 +234,6 @@ extension ListDetailVC {
     self.missionDateTextField.setIsEnabled(false)
     self.missionDateTextField.setTextFieldView(.inactive)
     self.textView.text = model.content
-    self.dateLabel.text = model.date
   }
   
   private func reloadData(_ scenetype: ListDetailSceneType) {
@@ -268,6 +266,14 @@ extension ListDetailVC {
       name: UIResponder.keyboardWillHideNotification,
       object: nil
     )
+    
+    self.missionDateTextField
+      .signalForChangeDate()
+      .sink(receiveValue: { [weak self] date in
+        guard let self else { return }
+        
+        self.bottomButton.setEnabled(!date.isEmpty && self.textView.hasText)
+      }).store(in: self.cancelBag)
   }
   
   private func setGesture() {
@@ -476,7 +482,6 @@ extension ListDetailVC {
       self.imagePlaceholderLabel.isHidden = missionImageView.image == nil ? false : true
       self.missionImageView.isUserInteractionEnabled = true
       self.bottomButton.isHidden = false
-      self.dateLabel.isHidden = true
     case .completed:
       self.scrollView.isScrollEnabled = false
       self.scrollView.setContentOffset(.zero, animated: true)
@@ -485,7 +490,6 @@ extension ListDetailVC {
       self.setTextView(.completed)
       self.imagePlaceholderLabel.isHidden = true
       self.bottomButton.isHidden = true
-      self.dateLabel.isHidden = false
       self.missionImageView.isUserInteractionEnabled = false
       self.missionDateTextField.setTextFieldView(.completed)
     }
@@ -516,11 +520,8 @@ extension ListDetailVC {
     self.textView.textContainerInset = UIEdgeInsets(top: 14, left: 14, bottom: 14, right: 14)
     
     self.imagePlaceholderLabel.textColor = DSKitAsset.Colors.soptampGray500.color
-    self.dateLabel.textColor = DSKitAsset.Colors.soptampGray600.color
-    
     self.imagePlaceholderLabel.setTypoStyle(.SoptampFont.subtitle2)
     self.textView.setTypoStyle(.SoptampFont.caption1)
-    self.dateLabel.setTypoStyle(.SoptampFont.number3)
     
     self.imagePlaceholderLabel.text = I18N.ListDetail.imagePlaceHolder
     self.textView.text = I18N.ListDetail.memoPlaceHolder
@@ -608,15 +609,10 @@ extension ListDetailVC {
       make.width.equalToSuperview()
     }
     
-    self.contentView.addSubviews(contentStackView, dateLabel, bottomButton)
+    contentView.addSubviews(contentStackView, bottomButton)
     
     contentStackView.snp.makeConstraints { make in
       make.leading.top.trailing.equalToSuperview()
-    }
-    
-    dateLabel.snp.makeConstraints { make in
-      make.trailing.equalToSuperview()
-      make.top.equalTo(contentStackView.snp.bottom).offset(12)
     }
     
     bottomButton.snp.makeConstraints { make in
