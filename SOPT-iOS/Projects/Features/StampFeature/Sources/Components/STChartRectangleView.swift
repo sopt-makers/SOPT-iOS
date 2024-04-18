@@ -176,6 +176,10 @@ extension STChartRectangleView {
         make.height.equalTo(32.f)
         make.centerY.equalToSuperview().inset(3)
       }
+      
+      rankLabel.snp.makeConstraints { make in
+        make.center.equalToSuperview()
+      }
     } else {
       self.addSubviews(rankLabel, rectangleView, usernameContainerView)
       
@@ -188,8 +192,7 @@ extension STChartRectangleView {
     rectangleView.addSubview(scoreLabel)
     
     scoreLabel.snp.makeConstraints { make in
-      make.top.equalToSuperview().inset(8.adjusted)
-      make.centerX.equalToSuperview()
+      make.center.equalToSuperview()
     }
     
     rectangleView.snp.makeConstraints { make in

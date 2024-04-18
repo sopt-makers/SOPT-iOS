@@ -94,13 +94,13 @@ public struct I18N {
     
     public struct ListDetail {
         public static let imagePlaceHolder = "달성 사진을 올려주세요"
-        public static let memoPlaceHolder = "메모를 작성해주세요"
+        public static let memoPlaceHolder = "함께한 사람과 어떤 추억을 남겼는지 작성해 주세요."
         public static let mission = "미션"
         public static let missionComplete = "미션 완료"
         public static let editComplete = "수정 완료"
         public static let editCompletedToast = "수정 완료되었습니다."
         public static let deleteTitle = "달성한 미션을 삭제하시겠습니까?"
-        public static let missionDatePlaceHolder = "날짜를 입력해주세요"
+        public static let missionDatePlaceHolder = "날짜를 입력해주세요."
         public static let datePickerDoneButtonTitle = "완료"
         public static let datePickerCancelButtonTitle = "취소"
     }

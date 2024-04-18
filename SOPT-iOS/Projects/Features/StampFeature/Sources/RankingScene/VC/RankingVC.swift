@@ -63,6 +63,7 @@ public class RankingVC: UIViewController, RankingViewControllable {
         attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
         attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.white, range: NSMakeRange(0, attributedStr.length))
         bt.setAttributedTitle(attributedStr, for: .normal)
+        bt.isHidden = true
         return bt
     }()
     
@@ -162,6 +163,17 @@ extension RankingVC {
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+      
+        output.$rankingListModel
+          .sink { [weak self] model in
+            guard
+              let self,
+              let name = UserDefaultKeyList.User.soptampName,
+              model.contains(where: { $0.username == name })
+            else { return }
+          
+            self.showMyRankingFloatingButton.isHidden = false
+        }.store(in: self.cancelBag)
         
         output.$rankingListModel
             .dropFirst(2)
