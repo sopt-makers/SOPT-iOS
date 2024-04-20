@@ -80,7 +80,7 @@ extension RankingViewModel {
         
         fetchedRankingList.asDriver()
             .sink(receiveValue: { model in
-                output.rankingListModel = model
+                output.rankingListModel = model.uniqued()
             })
             .store(in: self.cancelBag)
         
