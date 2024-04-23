@@ -8,29 +8,39 @@
 
 import Foundation
 
-public struct RankingModel: Hashable {
-    public let username: String
-    public let score: Int
-    public let sentence: String
-    
-    public var isMyRanking: Bool = false
-    
-    public init(username: String, score: Int, sentence: String) {
-        self.username = username
-        self.score = score
-        self.sentence = sentence
-    }
-    
-    public
-    mutating func setMyRanking(_ isMyRanking: Bool) {
-        self.isMyRanking = isMyRanking
-    }
+// MARK: - RankingModel
+public struct RankingModel {
+  public let username: String
+  public let score: Int
+  public let sentence: String
+  
+  public var isMyRanking: Bool = false
+  
+  public init(username: String, score: Int, sentence: String) {
+    self.username = username
+    self.score = score
+    self.sentence = sentence
+  }
+  
+  public
+  mutating func setMyRanking(_ isMyRanking: Bool) {
+    self.isMyRanking = isMyRanking
+  }
 }
 
-public struct RankingChartModel: Hashable {
-    public let ranking: [RankingModel]
-    
-    public init(ranking: [RankingModel]) {
-        self.ranking = ranking
-    }
+extension RankingModel: Hashable, Identifiable {
+  public var id: String { UUID().uuidString }
+}
+
+// MARK: - RankingChartModel
+public struct RankingChartModel {
+  public let ranking: [RankingModel]
+  
+  public init(ranking: [RankingModel]) {
+    self.ranking = ranking
+  }
+}
+
+extension RankingChartModel: Hashable, Identifiable {
+  public var id: String { UUID().uuidString }
 }
