@@ -188,11 +188,11 @@ extension PokeMainVC {
     }
   }
 
-  private func setFriendRandomUsers(with randomUsers: [PokeFriendRandomUserModel]) {
+  private func setFriendRandomUsers(with randomUsers: PokeFriendRandomUserModel) {
     let profileCardGroupViews = [firstProfileCardGroupView, secondProfileCardGroupView]
-    recommendPokeLabel.isHidden = randomUsers.isEmpty
+    recommendPokeLabel.isHidden = randomUsers.randomInfoList.isEmpty
     for (i, profileCardGroupView) in profileCardGroupViews.enumerated() {
-      let randomUser = randomUsers[safe: i]
+      let randomUser = randomUsers.randomInfoList[safe: i]
       profileCardGroupView.isHidden = (randomUser == nil)
       if let randomUser {
         profileCardGroupView.setData(with: randomUser)
@@ -223,11 +223,6 @@ extension PokeMainVC {
         .map { ($0, PokeAmplitudeEventPropertyValue.pokeMainRecommendNotMyFriend) })
       .asDriver()
 
-    let randomUserSectionFriendProfileImageTap = Publishers.Merge(
-      firstProfileCardGroupView.friendProfileImageTap,
-      secondProfileCardGroupView.friendProfileImageTap
-    ).asDriver()
-
     let input = PokeMainViewModel
       .Input(
         viewDidLoad: Just(()).asDriver(),
@@ -247,8 +242,7 @@ extension PokeMainVC {
           .merge(with: secondProfileCardGroupView.kokButtonTap)
           .asDriver(),
         refreshRequest: refreshControl.publisher(for: .valueChanged).mapVoid().asDriver(),
-        profileImageTap: profileImageTap,
-        randomUserSectionFriendProfileImageTap: randomUserSectionFriendProfileImageTap
+        profileImageTap: profileImageTap
       )
 
     let output = viewModel.transform(from: input, cancelBag: cancelBag)

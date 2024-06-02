@@ -47,7 +47,6 @@ public class PokeMainViewModel:
         let nearbyFriendsSectionKokButtonTap: Driver<PokeUserModel?>
         let refreshRequest: Driver<Void>
         let profileImageTap: Driver<(PokeUserModel?, PokeAmplitudeEventPropertyValue)>
-        let randomUserSectionFriendProfileImageTap: Driver<Int?>
     }
     
     // MARK: - Outputs
@@ -57,7 +56,7 @@ public class PokeMainViewModel:
         let pokedUserSectionWillBeHidden = PassthroughSubject<Bool, Never>()
         let myFriend = PassthroughSubject<PokeUserModel, Never>()
         let friendsSectionWillBeHidden = PassthroughSubject<Bool, Never>()
-        let friendRandomUsers = PassthroughSubject<[PokeFriendRandomUserModel], Never>()
+        let friendRandomUsers = PassthroughSubject<PokeFriendRandomUserModel, Never>()
         let endRefreshLoading = PassthroughSubject<Void, Never>()
         let pokeResponse = PassthroughSubject<PokeUserModel, Never>()
         let isLoading = PassthroughSubject<Bool, Never>()
@@ -80,7 +79,7 @@ extension PokeMainViewModel {
             .sink { [weak self] _ in
                 self?.useCase.getWhoPokedToMe()
                 self?.useCase.getFriend()
-                self?.useCase.getFriendRandomUser()
+              self?.useCase.getFriendRandomUser(randomType: .all, size: 2)
             }.store(in: cancelBag)
         
         input.viewDidLoad
@@ -150,13 +149,6 @@ extension PokeMainViewModel {
             .map { $0.1 }
             .sink { [weak self] clickView in
                 self?.eventTracker.trackClickMemberProfileEvent(clickView: clickView)
-            }.store(in: cancelBag)
-        
-        input.randomUserSectionFriendProfileImageTap
-            .compactMap { $0 }
-            .sink { [weak self] playgroundId in
-                self?.eventTracker.trackClickMemberProfileEvent(clickView: .pokeMainRecommendMyFriend)
-                self?.onProfileImageTapped?(playgroundId)
             }.store(in: cancelBag)
         
         // Amplitude 트래킹

@@ -13,10 +13,12 @@ import Networks
 
 extension PokeFriendRandomUserEntity {
     public func toDomain() -> PokeFriendRandomUserModel {
-        return PokeFriendRandomUserModel(friendId: friendId,
-                                         playgroundId: playgroundId,
-                                         friendName: friendName,
-                                         friendProfileImage: friendProfileImage,
-                                         friendList: friendList.map { $0.toDomain() })
+      return PokeFriendRandomUserModel(randomInfoList: randomInfoList.map { $0.toDomain() })
     }
+}
+
+extension PokeRandomInfoListEntity {
+  public func toDomain() -> PokeRandomInfoListModel {
+    return .init(randomType: PokeRandomUserType(rawValue: randomType), randomTitle: randomTitle, userInfoList: userInfoList.map { $0.toDomain() })
+  }
 }
