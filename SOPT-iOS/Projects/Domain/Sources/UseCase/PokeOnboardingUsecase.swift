@@ -33,9 +33,9 @@ public final class DefaultPokeOnboardingUsecase {
 }
 
 extension DefaultPokeOnboardingUsecase: PokeOnboardingUsecase {
-  public func getRandomAcquaintances() {
+  public func getRandomAcquaintances(randomUserType: PokeRandomUserType) {
     self.repository
-      .getRandomAcquaintances(randomUserType: .all, size: PokeRandomUserQueryCount.onboardingPage)
+      .getRandomAcquaintances(randomUserType: randomUserType, size: PokeRandomUserQueryCount.onboardingPage)
       .sink(
         receiveCompletion: { _ in },
         receiveValue: { [weak self] value in
