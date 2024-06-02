@@ -25,13 +25,13 @@ public final class PokeOnboardingViewController: UIViewController, PokeOnboardin
     
     static let containerViewTop = 7.f
     static let containerViewLeadingTrailing = 20.f
-    static let containerCornerRadius = 8.f
     
-    static let stackViewTopBottom = 8.f
-    static let stackViewLeadingTrailing = 12.f
-    static let contentVerticalSpacing = 8.f
+    static let collectionViewHeight = 586.f
     
-    static let descriptionLabelTop = 16.f
+    static let pageIndicatorTop = 14.f
+    static let pageIndicatorHeight = 10.f
+    
+    static let bottomDescriptionLabelTop = 10.f
   }
   
   private enum Constant {
@@ -48,16 +48,10 @@ public final class PokeOnboardingViewController: UIViewController, PokeOnboardin
     $0.alwaysBounceVertical = true
     $0.showsVerticalScrollIndicator = false
     $0.showsHorizontalScrollIndicator = false
-    
     $0.isScrollEnabled = true
   }
   
-  private let scrollContainerStackView = UIStackView().then {
-    $0.alignment = .fill
-    $0.axis = .vertical
-    $0.spacing = 16.f
-  }
-  
+  private let scrollContainerStackView = UIView()
   // MARK: Title
   private let pokeTitleLabel = UILabel().then {
     $0.attributedText = I18N.Poke.Onboarding.title.applyMDSFont(
@@ -66,24 +60,23 @@ public final class PokeOnboardingViewController: UIViewController, PokeOnboardin
     )
   }
   
-  // MARK: Sections
-  private let sectionContentView = UIView().then {
-    $0.layer.cornerRadius = Metric.containerCornerRadius
-    $0.backgroundColor = DSKitAsset.Colors.gray900.color
+  private lazy var collectionView = UICollectionView(
+    frame: self.view.frame,
+    collectionViewLayout: self.flowLayout
+  ).then {
+    $0.register(
+      PokeOnboardingCollectionViewCell.self,
+      forCellWithReuseIdentifier: PokeOnboardingCollectionViewCell.className
+    )
+    $0.dataSource = self
+    $0.delegate = self
+    $0.backgroundColor = .clear
+    $0.showsHorizontalScrollIndicator = false
+    $0.isPagingEnabled = true
   }
   
-  private let sectionTitleLabel = UILabel().then {
-    $0.text = "나와 같은 34기를 하고 있어요"
-    $0.textColor = DSKitAsset.Colors.gray30.color
-    $0.font = DSKitFontFamily.Suit.bold.font(size: 16)
-  }
-  
-  private let sectionItemStackView = UIStackView().then {
-    $0.axis = .vertical
-    $0.spacing = Metric.contentVerticalSpacing
-  }
-  
-  // MARK: Description
+  private let flowLayout = PokeCarouselFlowLayout()
+
   private let contentFooterDescriptionLabel = UILabel().then {
     $0.attributedText = I18N.Poke.Onboarding.footerPullToRefreshDescription.applyMDSFont(
       mdsFont: .title7,
@@ -93,12 +86,18 @@ public final class PokeOnboardingViewController: UIViewController, PokeOnboardin
     $0.numberOfLines = Constant.numberOfFooterDesciprionLines
   }
   
+  // MARK: Sections
   private let refreshControl = UIRefreshControl()
+  private let pageIndicator = UIPageControl().then {
+    $0.numberOfPages = 3
+    $0.currentPage = 0
+  }
   
   // MARK: - Variables
   private let viewModel: PokeOnboardingViewModel
-  private var contentModels: [PokeUserModel] = []
+  private var contentModels: [PokeRandomUserInfoModel] = []
   private var cancelBag = CancelBag()
+  
   
   // MARK: Combine
   private let viewDidLoaded = PassthroughSubject<Void, Never>()
@@ -139,39 +138,9 @@ extension PokeOnboardingViewController {
 
 // MARK: - Configuring methods
 extension PokeOnboardingViewController {
-  private func configure(with contentModels: [PokeUserModel]) {
+  private func configure(with contentModels: [PokeRandomUserInfoModel]) {
     self.contentModels = contentModels
-    self.sectionItemStackView.removeAllSubViews()
-    
-    let splitedArray: [[PokeUserModel]] = self.splitArrayIntoSizeTwoChunks(originArray: contentModels)
-    
-    splitedArray.forEach {
-      let contentView = PokeOnboardingHorizontalStackView(frame: self.view.frame)
-      contentView.configure(with: $0)
-      contentView
-        .signalForPokeButtonClick()
-        .asDriver()
-        .sink(receiveValue: { [weak self] userModel in
-          self?.pokeButtonTapped.send(userModel)
-        }).store(in: self.cancelBag)
-      
-      contentView
-        .signalForAvatarClick()
-        .asDriver()
-        .sink(receiveValue: { [weak self] userModel in
-          self?.avatarTapped.send(userModel)
-        }).store(in: self.cancelBag)
-      
-      self.sectionItemStackView.addArrangedSubview(contentView)
-    }
-  }
-  
-  private func update(with contentModel: PokeUserModel) {
-    if let index = self.contentModels.firstIndex(where: { $0.userId == contentModel.userId }) {
-      self.contentModels[index] = contentModel
-    }
-    
-    self.configure(with: self.contentModels)
+    self.collectionView.reloadData()
   }
 }
 
@@ -182,19 +151,12 @@ extension PokeOnboardingViewController {
     
     self.scrollView.addSubview(self.scrollContainerStackView)
     
-    self.scrollContainerStackView.addArrangedSubviews(
+    self.scrollContainerStackView.addSubviews(
       self.pokeTitleLabel,
-      self.sectionContentView,
+      self.collectionView,
+      self.pageIndicator,
       self.contentFooterDescriptionLabel
     )
-    
-    self.sectionContentView.addSubviews(
-      self.sectionTitleLabel,
-      self.sectionItemStackView
-    )
-    
-    self.scrollContainerStackView.setCustomSpacing(Metric.containerViewTop, after: self.pokeTitleLabel)
-    self.scrollContainerStackView.setCustomSpacing(Metric.descriptionLabelTop, after: self.sectionContentView)
   }
   
   private func setupConstraints() {
@@ -210,20 +172,82 @@ extension PokeOnboardingViewController {
     }
     
     self.scrollContainerStackView.snp.makeConstraints {
-      $0.top.leading.trailing.equalToSuperview().inset(Metric.containerViewLeadingTrailing)
-      $0.width.equalToSuperview().inset(Metric.containerViewLeadingTrailing)
+      $0.top.leading.trailing.equalToSuperview()
+      $0.width.height.equalToSuperview()
+      $0.bottom.lessThanOrEqualToSuperview()
     }
     
-    self.sectionTitleLabel.snp.makeConstraints {
-      $0.top.equalToSuperview().inset(Metric.stackViewTopBottom)
-      $0.leading.trailing.equalToSuperview().inset(Metric.stackViewLeadingTrailing)
+    self.pokeTitleLabel.snp.makeConstraints {
+      $0.top.equalToSuperview()
+      $0.leading.trailing.equalToSuperview().inset(Metric.containerViewLeadingTrailing)
     }
     
-    self.sectionItemStackView.snp.makeConstraints {
-      $0.top.equalTo(self.sectionTitleLabel.snp.bottom).offset(Metric.contentVerticalSpacing)
-      $0.leading.trailing.equalToSuperview().inset(Metric.stackViewLeadingTrailing)
-      $0.bottom.equalToSuperview().inset(Metric.stackViewTopBottom)
+    self.collectionView.snp.makeConstraints {
+      $0.top.equalTo(self.pokeTitleLabel.snp.bottom).offset(Metric.containerViewTop)
+      $0.leading.trailing.width.equalToSuperview()
+      $0.height.equalTo(Metric.collectionViewHeight)
     }
+    
+    self.pageIndicator.snp.makeConstraints {
+      $0.top.equalTo(self.collectionView.snp.bottom).offset(Metric.pageIndicatorTop)
+      $0.height.equalTo(Metric.pageIndicatorHeight)
+      $0.centerX.equalToSuperview()
+    }
+    
+    self.contentFooterDescriptionLabel.snp.makeConstraints {
+      $0.top.equalTo(self.pageIndicator.snp.bottom).offset(Metric.bottomDescriptionLabelTop)
+      $0.centerX.bottom.lessThanOrEqualToSuperview()
+    }
+  }
+}
+
+extension PokeOnboardingViewController: UICollectionViewDelegateFlowLayout {
+  public func scrollViewWillEndDragging(
+    _ scrollView: UIScrollView,
+    withVelocity velocity: CGPoint,
+    targetContentOffset: UnsafeMutablePointer<CGPoint>
+  ) {
+    let pageWidth = collectionView.bounds.width 
+    - Metric.containerViewLeadingTrailing * 2
+    - self.flowLayout.minimumLineSpacing
+    - Metric.containerViewLeadingTrailing * 2
+    
+    let targetXContentOffset = targetContentOffset.pointee.x
+    let newPage = Int(targetXContentOffset / pageWidth)
+    
+    self.pageIndicator.currentPage = newPage
+  }
+}
+extension PokeOnboardingViewController: UICollectionViewDataSource {
+  public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    return self.contentModels.count
+  }
+  
+  public func collectionView(
+    _ collectionView: UICollectionView,
+    cellForItemAt indexPath: IndexPath
+  ) -> UICollectionViewCell {
+    guard
+      let item = self.contentModels[safe: indexPath.item],
+      let cell = collectionView
+        .dequeueReusableCell(withReuseIdentifier: PokeOnboardingCollectionViewCell.className,
+        for: indexPath
+      ) as? PokeOnboardingCollectionViewCell
+    else { return UICollectionViewCell() }
+    
+    cell.configure(with: item)
+    
+    cell.signalForAvatarClick()
+      .sink(receiveValue: { userModel in
+        self.avatarTapped.send(userModel)
+      }).store(in: cell.cancelBag)
+    
+    cell.signalForPokeButtonClick()
+      .sink(receiveValue: { userModel in
+        self.pokeButtonTapped.send(userModel)
+      }).store(in: cell.cancelBag)
+    
+    return cell
   }
 }
 
@@ -252,15 +276,17 @@ extension PokeOnboardingViewController {
       .randomAcquaintance
       .sink(receiveCompletion: { [weak self] _ in
         self?.refreshControl.endRefreshing()
-      }, receiveValue: { [weak self] acquaintances in
+      }, receiveValue: { [weak self] randomUserInfoModels in
         self?.refreshControl.endRefreshing()
-        self?.configure(with: acquaintances)
+        self?.configure(with: randomUserInfoModels)
       }).store(in: self.cancelBag)
     
     output
       .pokedResult
       .sink(receiveValue: { [weak self] pokedResult in
-        self?.update(with: pokedResult)
+        // pokeResult가 어디있는질 몰라요... 그래서 곤란하네요;
+        
+//        self?.update(with: pokedResult)
       }).store(in: self.cancelBag)
   }
 }
@@ -274,22 +300,5 @@ extension PokeOnboardingViewController {
   
   @objc private func handleRefreshControl() {
     self.pullToRefreshTriggered.send(())
-  }
-}
-
-extension PokeOnboardingViewController {
-  private func splitArrayIntoSizeTwoChunks(originArray: [PokeUserModel]) -> [[PokeUserModel]] {
-    var result: [[PokeUserModel]] = []
-    var currentIndex = 0
-    let chunkSize = 2
-    
-    while currentIndex < originArray.count {
-      let endIndex = min(currentIndex + chunkSize, originArray.count)
-      let chunk = Array(originArray[currentIndex..<endIndex])
-      result.append(chunk)
-      currentIndex += chunkSize
-    }
-    
-    return result
   }
 }

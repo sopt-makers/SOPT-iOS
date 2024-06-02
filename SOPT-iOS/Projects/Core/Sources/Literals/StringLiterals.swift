@@ -347,7 +347,7 @@ public struct I18N {
       
       public struct Onboarding {
         public static let title = "아는 사람을 콕 찔러서 친구를 맺어보세요"
-        public static let footerPullToRefreshDescription = "아는 사람이 없나요?\n화면을 당기면 다른 친구들을 볼 수 있어요"
+        public static let footerPullToRefreshDescription = "화면을 당기면 다른 친구들을 볼 수 있어요"
       }
       
       public struct MyFriends {
