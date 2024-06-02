@@ -28,7 +28,7 @@ public final class PokeMyFriendsVC: UIViewController, PokeMyFriendsViewControlla
     // MARK: - UI Components
     
     private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton)
-        .addMiddleLabel(title: I18N.Poke.MyFriends.myFriends, font: UIFont.MDS.body2)
+        .addMiddleLabel(title: I18N.Poke.MyFriends.myFriends, font: UIFont.MDS.body2.font)
         .setLeftButtonImage(DSKitAsset.Assets.chevronLeft.image.withTintColor(DSKitAsset.Colors.gray30.color))
  
     private lazy var scrollView = UIScrollView().then {

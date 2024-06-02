@@ -42,13 +42,48 @@ public class PokeOnboardingBottomSheet: UIViewController {
         $0.image = DSKitAsset.Assets.pokeOnboarding.image
     }
     
-    private let onboardingDescriptionLabel = UILabel().then {
-        $0.text = "서로 찌르면 친구가 될 수 있어요. 친구와 자주 찌를수록\n전송할 수 있는 메시지 문구가 다양해져요."
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
-        $0.textColor = DSKitAsset.Colors.gray30.color
-        $0.textAlignment = .left
-        $0.numberOfLines = 2
-    }
+    static let doneButtonTop = 34.f
+    static let doneButtonLeadingTrailng = 16.f
+  }
+  
+  private let contentStackView = UIStackView().then {
+    $0.axis = .vertical
+    $0.spacing = Metric.titleLabelTop
+  }
+  
+  private let titleLabel = UILabel().then {
+    $0.attributedText = I18N.Poke.Onboarding.title.applyMDSFont(
+      mdsFont: .heading5,
+      color: DSKitAsset.Colors.gray30.color
+    )
+  }
+  
+  private let onboardingImageView = UIImageView().then {
+    $0.image = DSKitAsset.Assets.iosImgOnboarding.image
+  }
+  
+  private let onboardingDescriptionLabel = UILabel().then {
+    $0.attributedText = I18N.Poke.Onboarding.description.applyMDSFont(
+      mdsFont: .body3,
+      color: DSKitAsset.Colors.gray30.color
+    )
+    $0.textAlignment = .left
+    $0.numberOfLines = 0
+  }
+  
+  private lazy var doneButton = MDSButton(
+    buttonSize: .medium,
+    leftImage: nil,
+    buttonTitle: "확인",
+    rightImage: nil,
+    frame: self.view.frame
+  )
+  
+  // MARK: - Variables
+  private let cancelBag = CancelBag()
+  
+  init() {
+    super.init(nibName: nil, bundle: nil)
     
     private lazy var doneButton = MDSButton(
         buttonSize: .medium,

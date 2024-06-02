@@ -32,7 +32,7 @@ public final class PokeNotificationViewController: UIViewController, PokeNotific
         type: .oneLeftButton,
         backgroundColor: DSKitAsset.Colors.gray950.color
     )
-        .addMiddleLabel(title: "찌르기 알림", font: UIFont.MDS.body2)
+        .addMiddleLabel(title: "찌르기 알림", font: UIFont.MDS.body2.font)
         .setLeftButtonImage(DSKitAsset.Assets.chevronLeft.image.withTintColor(DSKitAsset.Colors.gray30.color))
     
     private let headerView = UIStackView().then {
