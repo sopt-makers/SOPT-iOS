@@ -189,7 +189,7 @@ extension PokeMainVC {
   }
 
   private func setFriendRandomUsers(with randomUsers: PokeFriendRandomUserModel) {
-    let profileCardGroupViews = [firstProfileCardGroupView, secondProfileCardGroupView]
+    let profileCardGroupViews = [firstProfileCardGroupView, secondProfileCardGroupView, thirdProfileCardGroupView]
     recommendPokeLabel.isHidden = randomUsers.randomInfoList.isEmpty
     for (i, profileCardGroupView) in profileCardGroupViews.enumerated() {
       let randomUser = randomUsers.randomInfoList[safe: i]
@@ -212,7 +212,7 @@ extension PokeMainVC: UIGestureRecognizerDelegate {
 
 extension PokeMainVC {
   private func bindViewModel() {
-    let profileImageTap = Publishers.Merge4(
+    let profileImageTap = Publishers.Merge5(
       pokedUserContentView.profileImageTap
         .map { ($0, PokeAmplitudeEventPropertyValue.pokeMainAlarm) },
       friendSectionContentView.profileImageTap
@@ -220,6 +220,8 @@ extension PokeMainVC {
       firstProfileCardGroupView.profileImageTap
         .map { ($0, PokeAmplitudeEventPropertyValue.pokeMainRecommendNotMyFriend) },
       secondProfileCardGroupView.profileImageTap
+        .map { ($0, PokeAmplitudeEventPropertyValue.pokeMainRecommendNotMyFriend) },
+      thirdProfileCardGroupView.profileImageTap
         .map { ($0, PokeAmplitudeEventPropertyValue.pokeMainRecommendNotMyFriend) })
       .asDriver()
 
@@ -240,6 +242,7 @@ extension PokeMainVC {
         nearbyFriendsSectionKokButtonTap: firstProfileCardGroupView
           .kokButtonTap
           .merge(with: secondProfileCardGroupView.kokButtonTap)
+          .merge(with: thirdProfileCardGroupView.kokButtonTap)
           .asDriver(),
         refreshRequest: refreshControl.publisher(for: .valueChanged).mapVoid().asDriver(),
         profileImageTap: profileImageTap
@@ -285,7 +288,8 @@ extension PokeMainVC {
         let pokeUserViews = [owner.pokedUserContentView,
                              owner.friendSectionContentView,
                              owner.firstProfileCardGroupView,
-                             owner.secondProfileCardGroupView]
+                             owner.secondProfileCardGroupView,
+                             owner.thirdProfileCardGroupView]
           .compactMap { $0 as? PokeCompatible }
 
         pokeUserViews.forEach { pokeUserView in

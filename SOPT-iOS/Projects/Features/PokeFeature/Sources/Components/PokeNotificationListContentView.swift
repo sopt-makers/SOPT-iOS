@@ -88,6 +88,7 @@ final public class PokeNotificationListContentView: UIView, PokeCompatible {
 
   lazy var profileImageTap = profileImageView
     .tap
+    .filter { self.user?.isAnonymous == false }
     .map { self.user }
 
   // MARK: - View Lifecycle
@@ -154,7 +155,6 @@ extension PokeNotificationListContentView {
     self.user = model
     self.userId = model.userId
     self.profileImageView.setImage(with: model.profileImage, relation: PokeRelation(rawValue: model.relationName) ?? .newFriend)
-    self.nameLabel.text = model.name
     self.partInfoLabel.text = model.part
     self.descriptionLabel.attributedText = model.message.applyMDSFont()
     self.pokeChipView.configure(with: model.mutualRelationMessage)
@@ -162,6 +162,15 @@ extension PokeNotificationListContentView {
     // 익명이면 데이터 숨김처리
     self.pokeChipView.isHidden = model.isAnonymous
     self.partInfoLabel.isHidden = model.isAnonymous
+    if model.isAnonymous {
+      configureAnonymous(model: model)
+      return
+    }
+    self.nameLabel.text = model.name
+  }
+
+  func configureAnonymous(model: PokeUserModel) {
+    self.nameLabel.text = model.anonymousName
   }
 
   func setData(with model: PokeUserModel) {

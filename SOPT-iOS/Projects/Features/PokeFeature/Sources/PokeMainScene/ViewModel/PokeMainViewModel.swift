@@ -187,7 +187,6 @@ extension PokeMainViewModel {
             .store(in: cancelBag)
         
         useCase.friendRandomUsers
-            .prefix(2)
             .subscribe(output.friendRandomUsers)
             .store(in: cancelBag)
         
