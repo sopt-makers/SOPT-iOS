@@ -26,6 +26,7 @@ public class PokeMainViewModel:
   public var onProfileImageTapped: ((Int) -> Void)?
   public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)?
   public var onNewFriendMade: ((String) -> Void)?
+  public var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)?
   public var switchToOnboarding: (() -> Void)?
 
   // MARK: - Properties
@@ -207,8 +208,14 @@ extension PokeMainViewModel {
       .store(in: cancelBag)
 
     useCase.pokedResponse
-      .sink { _ in
+      .sink { [weak self] user in
+        guard let self else { return }
         ToastUtils.showMDSToast(type: .success, text: I18N.Poke.pokeSuccess)
+        if user.isAnonymous {
+          if user.pokeNum == 5 || user.pokeNum == 11 {
+            onAnonymousFriendUpgrade?(user)
+          }
+        }
       }.store(in: cancelBag)
 
     useCase.madeNewFriend

@@ -38,6 +38,10 @@ public class PokeAnonymousFriendUpgradeVC: UIViewController, PokeAnonymousFriend
   private lazy var lottieView = LottieAnimationView(name: lottieName(user: user),
                                                bundle: DSKitResources.bundle)
 
+  private let profileImageView = PokeProfileImageView().then {
+    $0.isHidden = true
+  }
+
   private let descriptionLabel = UILabel().then {
     $0.font = UIFont.MDS.title5
     $0.textColor = DSKitAsset.Colors.gray10.color
@@ -80,7 +84,7 @@ public class PokeAnonymousFriendUpgradeVC: UIViewController, PokeAnonymousFriend
   // MARK: - Method
 
   private func dismissIfNeeded() {
-    if user.pokeNum != 5 || user.pokeNum != 11 {
+    if user.pokeNum != 5 && user.pokeNum != 11 {
       self.dismiss(animated: false)
     }
   }
@@ -88,8 +92,30 @@ public class PokeAnonymousFriendUpgradeVC: UIViewController, PokeAnonymousFriend
   private func setLottie() {
     lottieView.loopMode = .playOnce
     lottieView.contentMode = .scaleAspectFit
-    lottieView.play { _ in
-      self.lottieView.stop()
+    lottieView.play { [weak self] _ in
+      guard let self else { return }
+      if user.pokeNum == 5 {
+        self.lottieView.stop()
+        self.dismiss(animated: false)
+        return
+      }
+
+      if user.pokeNum == 11 {
+        showRealIdentity()
+        return
+      }
+
+      self.dismiss(animated: false)
+    }
+  }
+
+  private func showRealIdentity() {
+    titleLabel.text = "\(user.anonymousName)님의 정체는..."
+    profileImageView.isHidden = false
+    profileImageView.setImage(with: user.profileImage, relation: user.pokeRelation)
+    descriptionLabel.text = "\(user.generation)기 \(user.part)파트 \(user.name)"
+
+    DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
       self.dismiss(animated: false)
     }
   }
@@ -99,12 +125,17 @@ public class PokeAnonymousFriendUpgradeVC: UIViewController, PokeAnonymousFriend
 
 extension PokeAnonymousFriendUpgradeVC {
   private func setUI() {
+    self.titleLabel.text = makeTitle()
     self.view.backgroundColor = DSKitAsset.Colors.gray950.color.withAlphaComponent(0.8)
     setLottie()
+
+    if user.pokeNum == 5 {
+      descriptionLabel.text = "\(user.generation)기 \(user.part)파트"
+    }
   }
 
   private func setLayout() {
-    self.view.addSubviews(containerStackView)
+    self.view.addSubviews(containerStackView, profileImageView)
 
     lottieView.snp.makeConstraints { make in
       make.width.height.equalTo(200)
@@ -116,6 +147,11 @@ extension PokeAnonymousFriendUpgradeVC {
     }
 
     containerStackView.setCustomSpacing(34, after: lottieView)
+
+    profileImageView.snp.makeConstraints { make in
+      make.center.equalTo(lottieView)
+      make.width.height.equalTo(170)
+    }
   }
 
   private func lottieName(user: PokeUserModel) -> String {
@@ -123,6 +159,13 @@ extension PokeAnonymousFriendUpgradeVC {
       return "bestFriend"
     }
     return "soulmate"
+  }
+
+  private func makeTitle() -> String {
+    if user.pokeRelation == .bestFriend {
+      return "\(user.anonymousName)님과\n\(user.relationName)가 되었어요!"
+    }
+    return "\(user.anonymousName)님과\n\(user.relationName)이 되었어요!"
   }
 }
 
