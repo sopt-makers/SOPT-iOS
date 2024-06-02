@@ -27,6 +27,7 @@ public protocol PokeService {
 }
 
 extension PokeService {
+  // TODO(@승호): 컴파일 되도록 임시 처리 합니다. 작업시에 수정해 주세요~
   public func poke(userId: Int, message: String, isAnonymous: Bool = false) -> AnyPublisher<PokeUserEntity, Error> {
     self.poke(userId: userId, message: message, isAnonymous: isAnonymous)
   }
