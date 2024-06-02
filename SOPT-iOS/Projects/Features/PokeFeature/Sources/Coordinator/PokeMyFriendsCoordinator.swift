@@ -78,7 +78,14 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
             let webView = SOPTWebView(startWith: url)
             self?.rootController?.pushViewController(webView, animated: true)
         }
-        
+
+        pokeMyFriendsList.vm.onAnonymousFriendUpgrade = { [weak self] user in
+          guard let self else { return }
+          let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
+          pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
+          pokeMyFriendsList.vc.viewController.present(pokeAnonymousFriendUpgradeVC, animated: false)
+        }
+
         self.rootController = pokeMyFriendsList.vc.asNavigationController
         router.present(rootController, animated: true)
     }

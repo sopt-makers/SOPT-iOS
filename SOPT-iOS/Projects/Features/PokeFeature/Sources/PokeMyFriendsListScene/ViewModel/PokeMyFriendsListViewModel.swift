@@ -21,7 +21,8 @@ public class PokeMyFriendsListViewModel:
     public var onCloseButtonTap: (() -> Void)?
     public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)?
     public var onProfileImageTapped: ((Int) -> Void)?
-        
+    public var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)?
+
     // MARK: - Properties
     
     private let useCase: PokeMyFriendsUseCase
@@ -126,6 +127,11 @@ extension PokeMyFriendsListViewModel {
                 }
                 
                 output.needToReloadFriendList.send()
+                if user.isAnonymous {
+                  if user.pokeNum == 5 || user.pokeNum == 11 {
+                    owner.onAnonymousFriendUpgrade?(user)
+                  }
+                }
             }.store(in: cancelBag)
         
         useCase.pokedResponse
