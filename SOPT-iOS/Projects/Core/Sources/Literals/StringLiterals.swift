@@ -335,20 +335,30 @@ public struct I18N {
         public static func makingFriendCompleted(name: String) -> String {
             return "찌르기 답장으로\n\(name)님과 친구가 되었어요!"
         }
-        
-        public struct MyFriends {
-            public static let myFriends = "내 친구"
-            public static let newFriends = "나랑 친한친구"
-            public static let bestFriend = "나랑 단짝친구"
-            public static let soulmate = "나랑 천생연분"
-            public static func friendsBaseline(_ count: Int) -> String {
-                return "\(count)번 이상 찌르면 될 수 있어요"
-            }
-            public static let emptyViewDescription = "아직 없어요 T.T\n나와 비슷한 친구가 생길 때까지 기다려주세요"
+      
+      public struct Onboarding {
+        public static let title = "익명 콕 찌르기 기능이 추가되었어요!"
+        public static let description = """
+        친구 단계가 올라가면 익명 친구에 대한 힌트를 알 수 있어요.
+        친구와 천생연분 단계가 되면 어떤 일이 일어날까요?
+        더욱 재밌어진 콕찌르기를 만나보세요!
+        """
+      }
+      
+      public struct MyFriends {
+        public static let myFriends = "내 친구"
+        public static let newFriends = "나랑 친한친구"
+        public static let bestFriend = "나랑 단짝친구"
+        public static let soulmate = "나랑 천생연분"
+        public static func friendsBaseline(_ count: Int) -> String {
+          return "\(count)번 이상 찌르면 될 수 있어요"
         }
+        public static let emptyViewDescription = "아직 없어요 T.T\n나와 비슷한 친구가 생길 때까지 기다려주세요"
+      }
+      public static let emptyViewDescription = "아직 없어요 T.T\n더 많은 찌르기로 달성해보세요"
     }
 }
-    
+
 extension I18N {
     public struct ServiceUsagePolicy {
         public static let termsOfService = """
