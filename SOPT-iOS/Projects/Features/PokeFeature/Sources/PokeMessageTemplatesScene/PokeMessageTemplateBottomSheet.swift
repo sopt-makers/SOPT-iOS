@@ -59,6 +59,7 @@ public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessage
     $0.setImage(DSKitAsset.Assets.check.image, for: .selected)
     $0.setBackgroundColor(DSKitAsset.Colors.gray500.color, for: .normal)
     $0.setBackgroundColor(DSKitAsset.Colors.blue40.color, for: .selected)
+    $0.isSelected = true
   }
   
   private let anonymousDescription = UILabel().then {
