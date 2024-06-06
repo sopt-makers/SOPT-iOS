@@ -13,4 +13,5 @@ public enum PokeRandomUserEntityType: String, Decodable {
   case generation = "GENERATION"
   case mbti = "MBTI"
   case sojuCapacity = "SOJU_CAPACITY"
+  case university = "UNIVERSITY"
 }

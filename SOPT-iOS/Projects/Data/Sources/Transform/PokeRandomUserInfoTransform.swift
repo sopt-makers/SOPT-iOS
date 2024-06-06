@@ -28,6 +28,7 @@ extension PokeRandomUserEntityType {
     case .generation: return .generation
     case .mbti: return .mbti
     case .sojuCapacity: return .sojuCapacity
+    case .university: return .university
     }
   }
 }

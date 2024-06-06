@@ -16,6 +16,9 @@ import DSKit
 
 import SnapKit
 
+// 3. collectionView 이상한것 수정
+// 4. pokeAPI도 수정 (query 추가)
+
 public final class PokeOnboardingViewController: UIViewController, PokeOnboardingViewControllable {
   // MARK: - Constants
   private enum Metric {
@@ -101,7 +104,7 @@ public final class PokeOnboardingViewController: UIViewController, PokeOnboardin
   
   // MARK: Combine
   private let viewDidLoaded = PassthroughSubject<Void, Never>()
-  private let pullToRefreshTriggered = PassthroughSubject<Void, Never>()
+  private let pullToRefreshTriggered = PassthroughSubject<PokeRandomUserType, Never>()
   private let pokeButtonTapped = PassthroughSubject<PokeUserModel, Never>()
   private let avatarTapped = PassthroughSubject<PokeUserModel, Never>()
   private let messageCommandClicked = PassthroughSubject<PokeMessageModel, Never>()
@@ -139,7 +142,15 @@ extension PokeOnboardingViewController {
 // MARK: - Configuring methods
 extension PokeOnboardingViewController {
   private func configure(with contentModels: [PokeRandomUserInfoModel]) {
-    self.contentModels = contentModels
+    contentModels.forEach { newModel in
+      if let index = self.contentModels.firstIndex(where: { $0.randomType == newModel.randomType }) {
+        self.contentModels[index] = newModel
+      } else {
+        self.contentModels.append(newModel)
+      }
+    }
+    
+    self.pageIndicator.numberOfPages = self.contentModels.count
     self.collectionView.reloadData()
   }
 }
@@ -214,7 +225,7 @@ extension PokeOnboardingViewController: UICollectionViewDelegateFlowLayout {
     
     let targetXContentOffset = targetContentOffset.pointee.x
     let newPage = Int(targetXContentOffset / pageWidth)
-    
+
     self.pageIndicator.currentPage = newPage
   }
 }
@@ -284,7 +295,7 @@ extension PokeOnboardingViewController {
     output
       .pokedResult
       .sink(receiveValue: { [weak self] pokedResult in
-        // pokeResult가 어디있는질 몰라요... 그래서 곤란하네요;
+        
         
 //        self?.update(with: pokedResult)
       }).store(in: self.cancelBag)
@@ -295,10 +306,14 @@ extension PokeOnboardingViewController {
 extension PokeOnboardingViewController {
   private func setupRefreshControl() {
     self.scrollView.refreshControl = self.refreshControl
-    self.refreshControl.addTarget(self, action: #selector(self.handleRefreshControl), for: .valueChanged)
-  }
-  
-  @objc private func handleRefreshControl() {
-    self.pullToRefreshTriggered.send(())
+    
+    self.refreshControl
+      .publisher(for: .valueChanged)
+      .debounce(for: 0.5, scheduler: RunLoop.main)
+      .sink(receiveValue: { [weak self] index in
+        let currentIndex = self?.pageIndicator.currentPage ?? 0
+        let currentModel = self?.contentModels[safe: currentIndex]?.randomType ?? .all
+        self?.pullToRefreshTriggered.send(currentModel)
+      }).store(in: self.cancelBag)
   }
 }

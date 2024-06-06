@@ -33,9 +33,10 @@ public class PokeOnboardingBottomSheet: UIViewController {
   }
   
   private let titleLabel = UILabel().then {
-    $0.text = I18N.Poke.Onboarding.title
-    $0.textColor = DSKitAsset.Colors.gray30.color
-    $0.font = DSKitFontFamily.Suit.bold.font(size: 20)
+    $0.attributedText = I18N.Poke.Onboarding.title.applyMDSFont(
+      mdsFont: .heading5,
+      color: DSKitAsset.Colors.gray30.color
+    )
   }
   
   private let onboardingImageView = UIImageView().then {
@@ -43,9 +44,10 @@ public class PokeOnboardingBottomSheet: UIViewController {
   }
   
   private let onboardingDescriptionLabel = UILabel().then {
-    $0.text = I18N.Poke.Onboarding.description
-    $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
-    $0.textColor = DSKitAsset.Colors.gray30.color
+    $0.attributedText = I18N.Poke.Onboarding.description.applyMDSFont(
+      mdsFont: .body3,
+      color: DSKitAsset.Colors.gray30.color
+    )
     $0.textAlignment = .left
     $0.numberOfLines = 0
   }
