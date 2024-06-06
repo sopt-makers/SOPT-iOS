@@ -156,7 +156,7 @@ extension PokeNotificationListContentView {
     self.userId = model.userId
     self.profileImageView.setImage(
       with: model.isAnonymous ? model.anonymousImage : model.profileImage,
-      relation: PokeRelation(rawValue: model.relationName) ?? .newFriend
+      relation: PokeRelation(rawValue: model.relationName) ?? .nonFriend
     )
     self.partInfoLabel.text = model.part
     self.descriptionLabel.attributedText = model.message.applyMDSFont()
