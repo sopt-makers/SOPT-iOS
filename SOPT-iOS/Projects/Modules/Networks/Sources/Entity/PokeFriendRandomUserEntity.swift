@@ -9,8 +9,10 @@
 import Foundation
 
 public struct PokeFriendRandomUserEntity: Codable {
-    public let friendId: Int
-    public let playgroundId: Int
-    public let friendName, friendProfileImage: String
-    public let friendList: [PokeUserEntity]
+  public let randomInfoList: [PokeRandomInfoListEntity]
+}
+
+public struct PokeRandomInfoListEntity: Codable {
+  public let randomType, randomTitle: String
+  public let userInfoList: [PokeUserEntity]
 }

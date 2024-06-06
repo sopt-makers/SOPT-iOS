@@ -72,4 +72,9 @@ extension PokeBuilder: PokeFeatureBuildable {
         
         return vc
     }
+
+    public func makePokeAnonymousFriendUpgrade(user: PokeUserModel) -> PokeAnonymousFriendUpgradePresentable {
+      let vc = PokeAnonymousFriendUpgradeVC(user: user)
+      return vc
+    }
 }

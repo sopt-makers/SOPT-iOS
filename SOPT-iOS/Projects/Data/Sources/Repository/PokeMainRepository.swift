@@ -35,9 +35,9 @@ extension PokeMainRepository: PokeMainRepositoryInterface {
             .eraseToAnyPublisher()
     }
     
-    public func getFriendRandomUser() -> AnyPublisher<[PokeFriendRandomUserModel], Error> {
-        pokeService.getFriendRandomUser()
-            .map { $0.map { $0.toDomain() } }
+    public func getFriendRandomUser(randomType: String, size: Int) -> AnyPublisher<PokeFriendRandomUserModel, Error> {
+        pokeService.getFriendRandomUser(randomType: randomType, size: size)
+            .map { $0.toDomain() }
             .eraseToAnyPublisher()
     }
     

@@ -29,6 +29,7 @@ public final class PokeNotificationViewModel: PokeNotificationViewModelType {
     public var onNaviBackTapped: (() -> Void)?
     public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)?
     public var onNewFriendAdded: ((_ friendName: String) -> Void)?
+    public var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)?
 
     private let usecase: PokeNotificationUsecase
     private let cancelBag = CancelBag()
@@ -82,10 +83,16 @@ extension PokeNotificationViewModel {
             .asDriver()
             .sink(receiveValue: { [weak self] userModel, isNewFriend in
                 output.pokedResult.send(userModel)
-                
-                guard isNewFriend else { return }
-                
-                self?.onNewFriendAdded?(userModel.name)
+
+                if isNewFriend {
+                  self?.onNewFriendAdded?(userModel.name)
+                  return
+                }
+                if userModel.isAnonymous {
+                  if userModel.pokeNum == 5 || userModel.pokeNum == 11 {
+                    self?.onAnonymousFriendUpgrade?(userModel)
+                  }
+                }
             }).store(in: cancelBag)
         
         self.usecase

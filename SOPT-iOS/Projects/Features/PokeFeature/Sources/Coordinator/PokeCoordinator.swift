@@ -65,7 +65,14 @@ final class PokeCoordinator: DefaultCoordinator {
             pokeMakingFriendCompletedVC.modalPresentationStyle = .overFullScreen
             pokeMain.vc.viewController.present(pokeMakingFriendCompletedVC, animated: false)
         }
-        
+
+        pokeMain.vm.onAnonymousFriendUpgrade = { [weak self] user in
+          guard let self else { return }
+          let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
+          pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
+          pokeMain.vc.viewController.present(pokeAnonymousFriendUpgradeVC, animated: false)
+        }
+
         pokeMain.vm.switchToOnboarding = { [weak self] in
             guard let self = self else { return }
             self.runPokeOnboardingFlow()

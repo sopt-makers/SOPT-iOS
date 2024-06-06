@@ -58,6 +58,13 @@ extension PokeNotificationListCoordinator {
             viewController.vc.viewController.present(pokeMakingFriendCompletedVC, animated: false)
         }
 
+        viewController.vm.onAnonymousFriendUpgrade = { [weak self] user in
+            guard let self else { return }
+            let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
+            pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
+            viewController.vc.viewController.present(pokeAnonymousFriendUpgradeVC, animated: false)
+        }
+
         self.rootController = viewController.vc.asNavigationController
         
         var willAnimate = true
