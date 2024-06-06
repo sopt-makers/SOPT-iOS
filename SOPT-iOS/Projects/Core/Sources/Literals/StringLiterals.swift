@@ -333,7 +333,7 @@ public struct I18N {
         public static let refreshGuide = "화면을 밑으로 당기면\n다른 친구를 볼 수 있어요"
         public static let pokeSuccess = "콕 찌르기를 완료했어요."
         public static func makingFriendCompleted(name: String) -> String {
-            return "찌르기 답장으로\n\(name)님과 친구가 되었어요!"
+            return "찌르기 답장으로\n\(name)님과\n친구가 되었어요!"
         }
       
       public struct OnboardingBottomSheet {
