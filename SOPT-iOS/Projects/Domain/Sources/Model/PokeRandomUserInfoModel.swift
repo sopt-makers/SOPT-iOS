@@ -9,7 +9,7 @@
 public struct PokeRandomUserInfoModel {
   public let randomType: PokeRandomUserType
   public let randomTitle: String
-  public let userInfoList: [PokeUserModel]
+  public var userInfoList: [PokeUserModel]
   
   public init(
     randomType: PokeRandomUserType,
@@ -21,3 +21,12 @@ public struct PokeRandomUserInfoModel {
     self.userInfoList = userInfoList
   }
 }
+
+extension PokeRandomUserInfoModel {
+  mutating public func updateAfterPoked(with pokedResult: PokeUserModel) {
+    guard let index = userInfoList.firstIndex(where: { $0.userId == pokedResult.userId }) else { return }
+    
+    self.userInfoList[index] = pokedResult
+  }
+}
+

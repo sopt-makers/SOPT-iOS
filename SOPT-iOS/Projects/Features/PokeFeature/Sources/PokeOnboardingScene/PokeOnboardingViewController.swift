@@ -16,9 +16,6 @@ import DSKit
 
 import SnapKit
 
-// 3. collectionView 이상한것 수정
-// 4. pokeAPI도 수정 (query 추가)
-
 public final class PokeOnboardingViewController: UIViewController, PokeOnboardingViewControllable {
   // MARK: - Constants
   private enum Metric {
@@ -295,9 +292,14 @@ extension PokeOnboardingViewController {
     output
       .pokedResult
       .sink(receiveValue: { [weak self] pokedResult in
+        guard let self else { return }
         
+        let currentIndex = self.pageIndicator.currentPage
         
-//        self?.update(with: pokedResult)
+        guard self.contentModels.count > currentIndex else { return }
+        
+        self.contentModels[currentIndex].updateAfterPoked(with: pokedResult)
+        self.collectionView.reloadData()
       }).store(in: self.cancelBag)
   }
 }

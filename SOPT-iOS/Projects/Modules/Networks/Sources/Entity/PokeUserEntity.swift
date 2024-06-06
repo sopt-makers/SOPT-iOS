@@ -22,13 +22,14 @@ public struct PokeUserEntity {
   public let isFirstMeet, isAlreadyPoke: Bool
   public let isAnonymous: Bool
   public let anonymousName: String
+  public let anonymousImage: String
 }
 
 extension PokeUserEntity: Codable {
   public enum CodingKeys: CodingKey {
     case userId, playgroundId, profileImage, name, generation, part, pokeNum,
          message, relationName, mutualRelationMessage, isFirstMeet, isAlreadyPoke,
-         isAnonymous, anonymousName
+         isAnonymous, anonymousName, anonymousImage
   }
   
   public init(from decoder: Decoder) throws {
@@ -48,5 +49,6 @@ extension PokeUserEntity: Codable {
     self.isAlreadyPoke = try container.decode(Bool.self, forKey: .isAlreadyPoke)
     self.isAnonymous = try container.decode(Bool.self, forKey: .isAnonymous)
     self.anonymousName = try container.decode(String.self, forKey: .anonymousName)
+    self.anonymousImage = try container.decode(String.self, forKey: .anonymousImage)
   }
 }

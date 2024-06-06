@@ -174,7 +174,10 @@ public final class PokeProfileListView: UIView, PokeCompatible {
 
   func setData(with model: PokeUserModel) {
     self.user = model
-    self.profileImageView.setImage(with: model.profileImage, relation: model.pokeRelation)
+    self.profileImageView.setImage(
+      with: model.isAnonymous ? model.anonymousImage : model.profileImage,
+      relation: model.pokeRelation
+    )
     self.partLabel.text = "\(model.generation)기 \(model.part)"
     self.kokCountLabel.text = "\(model.pokeNum)콕"
     self.kokButton.isEnabled = !model.isAlreadyPoke
