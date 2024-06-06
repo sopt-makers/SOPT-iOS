@@ -24,7 +24,7 @@ public class PokeMainViewModel:
   public var onPokeNotificationsTap: (() -> Void)?
   public var onMyFriendsTap: (() -> Void)?
   public var onProfileImageTapped: ((Int) -> Void)?
-  public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)?
+  public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)?
   public var onNewFriendMade: ((String) -> Void)?
   public var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)?
   public var switchToOnboarding: (() -> Void)?
@@ -119,25 +119,25 @@ extension PokeMainViewModel {
     // 답장
     input.pokedSectionKokButtonTap
       .compactMap { $0 }
-      .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel)> in
+      .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)> in
         guard let self, let value = self.onPokeButtonTapped?(userModel) else { return .empty() }
         return value
       }
-      .sink { [weak self] userModel, messageModel in
+      .sink { [weak self] userModel, messageModel, isAnonymous in
         self?.eventTracker.trackClickPokeEvent(clickView: .pokeMainAlarm)
-        self?.useCase.poke(userId: userModel.userId, message: messageModel, willBeNewFriend: userModel.isFirstMeet)
+        self?.useCase.poke(userId: userModel.userId, message: messageModel, isAnonymous: isAnonymous, willBeNewFriend: userModel.isFirstMeet)
       }.store(in: cancelBag)
 
     // 먼저 찌르기
     input.friendSectionKokButtonTap
       .merge(with: input.nearbyFriendsSectionKokButtonTap)
       .compactMap { $0 }
-      .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel)> in
+      .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)> in
         guard let self, let value = self.onPokeButtonTapped?(userModel) else { return .empty() }
         return value
       }
-      .sink { [weak self] userModel, messageModel in
-        self?.useCase.poke(userId: userModel.userId, message: messageModel, willBeNewFriend: false)
+      .sink { [weak self] userModel, messageModel, isAnonymous in
+        self?.useCase.poke(userId: userModel.userId, message: messageModel, isAnonymous: isAnonymous, willBeNewFriend: false)
       }.store(in: cancelBag)
 
     input.profileImageTap

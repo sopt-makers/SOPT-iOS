@@ -18,7 +18,7 @@ public protocol PokeMyFriendsListCoordinatable {
 
 public protocol PokeMyFriendsListViewModelType: ViewModelType & PokeMyFriendsListCoordinatable {
     var relation: PokeRelation { get }
-    var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)? { get set }
+    var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)? { get set }
     var onProfileImageTapped: ((Int) -> Void)? { get set }
     var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)? { get set }
 }

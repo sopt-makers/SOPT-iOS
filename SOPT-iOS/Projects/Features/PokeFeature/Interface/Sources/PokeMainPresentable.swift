@@ -17,7 +17,7 @@ public protocol PokeMainCoordinatable {
   var onPokeNotificationsTap: (() -> Void)? { get set }
   var onMyFriendsTap: (() -> Void)? { get set }
   var onProfileImageTapped: ((Int) -> Void)? { get set }
-  var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)? { get set }
+  var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)? { get set }
   var onNewFriendMade: ((String) -> Void)? { get set }
   var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)? { get set }
   var switchToOnboarding: (() -> Void)? { get set }

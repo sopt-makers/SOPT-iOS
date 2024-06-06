@@ -9,5 +9,5 @@
 import Combine
 
 public protocol PokeRepositoryInterface {
-    func poke(userId: Int, message: String) -> AnyPublisher<PokeUserModel, PokeError>
+    func poke(userId: Int, message: String, isAnonymous: Bool) -> AnyPublisher<PokeUserModel, PokeError>
 }

@@ -11,8 +11,8 @@ import Combine
 import Core
 
 public protocol PokeOnboardingUsecase {
-  func getRandomAcquaintances()
-  func poke(userId: Int, message: PokeMessageModel)
+  func getRandomAcquaintances(randomUserType: PokeRandomUserType)
+  func poke(userId: Int, message: PokeMessageModel, isAnonymous: Bool)
   
   var randomAcquaintances: PassthroughSubject<[PokeUserModel], Never> { get }
   var pokedResponse: PassthroughSubject<PokeUserModel, Never> { get }
@@ -44,9 +44,9 @@ extension DefaultPokeOnboardingUsecase: PokeOnboardingUsecase {
       ).store(in: self.cancelBag)
   }
   
-  public func poke(userId: Int, message: PokeMessageModel) {
+  public func poke(userId: Int, message: PokeMessageModel, isAnonymous: Bool) {
     self.repository
-      .poke(userId: userId, message: message.content)
+      .poke(userId: userId, message: message.content, isAnonymous: isAnonymous)
       .catch { [weak self] error in
         let message = error.toastMessage
         self?.errorMessage.send(message)
