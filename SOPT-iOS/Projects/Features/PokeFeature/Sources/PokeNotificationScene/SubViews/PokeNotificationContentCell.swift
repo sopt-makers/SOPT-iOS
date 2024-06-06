@@ -22,6 +22,8 @@ public final class PokeNotificationContentCell: UITableViewCell {
         static let bottomSeperatorHeight = 1.f
     }
     
+    lazy var profileImageTap = notificationListContentView.profileImageTap
+
     private lazy var notificationListContentView = PokeNotificationListContentView(frame: self.frame)
   
     private lazy var dividerView = UIView().then {

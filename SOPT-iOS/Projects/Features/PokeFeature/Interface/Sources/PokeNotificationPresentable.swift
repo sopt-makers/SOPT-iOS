@@ -17,6 +17,7 @@ public protocol PokeNotificationCoordinatable {
     var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)? { get set }
     var onNewFriendAdded: ((_ friendName: String) -> Void)? { get set }
     var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)? { get set }
+    var onProfileImageTapped: ((Int) -> Void)? { get set }
 }
 
 public typealias PokeNotificationViewModelType = ViewModelType & PokeNotificationCoordinatable
