@@ -151,7 +151,7 @@ extension PokeAnonymousFriendUpgradeVC {
 
     profileImageView.snp.makeConstraints { make in
       make.center.equalTo(lottieView)
-      make.width.height.equalTo(170)
+      make.width.height.equalTo(160)
     }
   }
 
