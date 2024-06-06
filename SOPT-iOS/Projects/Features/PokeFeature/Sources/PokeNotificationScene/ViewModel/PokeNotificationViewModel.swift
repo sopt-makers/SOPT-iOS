@@ -92,7 +92,8 @@ extension PokeNotificationViewModel {
                 output.pokedResult.send(userModel)
 
                 if isNewFriend {
-                  self?.onNewFriendAdded?(userModel.name)
+                  let name = userModel.isAnonymous ? userModel.anonymousName : userModel.name
+                  self?.onNewFriendAdded?(name)
                   return
                 }
                 if userModel.isAnonymous {
