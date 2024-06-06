@@ -12,7 +12,7 @@ import Core
 
 public protocol PokeNotificationUsecase {
     func getWhoPokedMeList()
-    func poke(user: PokeUserModel, message: PokeMessageModel)
+    func poke(user: PokeUserModel, message: PokeMessageModel, isAnonymous: Bool)
     
     var pokedMeList: PassthroughSubject<[PokeUserModel], Never> { get }
     var pokedResponse: PassthroughSubject<(response: PokeUserModel, isNewlyAddedFriend: Bool), Never> { get }
@@ -51,9 +51,9 @@ extension DefaultPokeNotificationUsecase: PokeNotificationUsecase {
                 }).store(in: self.cancelBag)
     }
     
-    public func poke(user: PokeUserModel, message: PokeMessageModel) {
+    public func poke(user: PokeUserModel, message: PokeMessageModel, isAnonymous: Bool) {
         self.repository
-            .poke(userId: user.userId, message: message.content)
+            .poke(userId: user.userId, message: message.content, isAnonymous: isAnonymous)
             .catch { [weak self] error in
                 let message = error.toastMessage
                 self?.errorMessage.send(message)

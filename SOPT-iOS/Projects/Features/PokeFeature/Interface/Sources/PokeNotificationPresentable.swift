@@ -14,7 +14,7 @@ public protocol PokeNotificationViewControllable: ViewControllable { }
 
 public protocol PokeNotificationCoordinatable {
     var onNaviBackTapped: (() -> Void)? { get set }
-    var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)? { get set }
+    var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)? { get set }
     var onNewFriendAdded: ((_ friendName: String) -> Void)? { get set }
     var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)? { get set }
 }

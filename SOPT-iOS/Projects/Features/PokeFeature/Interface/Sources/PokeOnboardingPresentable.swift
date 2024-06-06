@@ -16,7 +16,7 @@ public protocol PokeOnboardingCoordinatable {
     var onNaviBackTapped: (() -> Void)? { get set }
     var onFirstVisitInOnboarding: (() -> Void)? { get set }
     var onAvartarTapped: ((_ playgroundId: String) -> Void)? { get set }
-    var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)? { get set }
+    var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)? { get set }
     var onMyFriendsTapped: (() -> Void)? { get set }
 }
 

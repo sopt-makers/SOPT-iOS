@@ -27,7 +27,7 @@ public final class PokeNotificationViewModel: PokeNotificationViewModelType {
     }
     
     public var onNaviBackTapped: (() -> Void)?
-    public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)?
+    public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)?
     public var onNewFriendAdded: ((_ friendName: String) -> Void)?
     public var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)?
 
@@ -57,14 +57,14 @@ extension PokeNotificationViewModel {
             }).store(in: self.cancelBag)
         
         input.pokedAction
-            .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel)> in
+            .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)> in
                 guard let self, let value = self.onPokeButtonTapped?(userModel) else { return .empty() }
                 
                 return value
             }
-            .sink(receiveValue: { [weak self] userModel, messageModel in
+            .sink(receiveValue: { [weak self] userModel, messageModel, isAnonymous in
                 self?.eventTracker.trackClickPokeEvent(clickView: .pokeAlarm)
-                self?.usecase.poke(user: userModel, message: messageModel)
+                self?.usecase.poke(user: userModel, message: messageModel, isAnonymous: isAnonymous)
             }).store(in: cancelBag)
         
         return output

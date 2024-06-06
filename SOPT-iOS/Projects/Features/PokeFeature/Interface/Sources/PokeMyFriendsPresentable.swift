@@ -14,7 +14,7 @@ public protocol PokeMyFriendsViewControllable: ViewControllable { }
 
 public protocol PokeMyFriendsCoordinatable {
     var showFriendsListButtonTap: ((PokeRelation) -> Void)? { get set }
-    var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)? { get set }
+    var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)? { get set }
     var onProfileImageTapped: ((Int) -> Void)? { get set }
     var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)? { get set }
 }

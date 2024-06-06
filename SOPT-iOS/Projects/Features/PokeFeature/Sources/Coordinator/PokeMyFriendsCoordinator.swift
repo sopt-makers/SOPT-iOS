@@ -90,7 +90,7 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
         router.present(rootController, animated: true)
     }
     
-    private func showMessageBottomSheet(userModel: PokeUserModel, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel), Never> {
+    private func showMessageBottomSheet(userModel: PokeUserModel, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel, isAnonymous: Bool), Never> {
         guard let bottomSheet = self.factory
             .makePokeMessageTemplateBottomSheet(messageType: .pokeFriend)
                 .vc
@@ -105,7 +105,7 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
         
         return bottomSheet
             .signalForClick()
-            .map { (userModel, $0) }
+            .map { (userModel, $0, $1) }
             .asDriver()
     }
 }

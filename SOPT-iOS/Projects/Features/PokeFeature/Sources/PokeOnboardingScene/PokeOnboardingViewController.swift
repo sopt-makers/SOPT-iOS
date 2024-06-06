@@ -243,18 +243,8 @@ extension PokeOnboardingViewController {
             avatarTapped: self.avatarTapped.asDriver(),
             messageCommandClicked: self.messageCommandClicked.asDriver()
         )
-        
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
-        
-        output
-            .randomAcquaintance
-            .sink(receiveCompletion: { [weak self] _ in
-                self?.refreshControl.endRefreshing()
-            }, receiveValue: { [weak self] acquaintances in
-                self?.refreshControl.endRefreshing()
-                self?.configure(with: acquaintances)
-            }).store(in: self.cancelBag)
-        
+      
         output
             .pokedResult
             .sink(receiveValue: { [weak self] pokedResult in

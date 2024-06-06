@@ -38,9 +38,9 @@ extension PokeOnboardingRepository: PokeOnboardingRepositoryInterface {
       .eraseToAnyPublisher()
   }
   
-  public func poke(userId: Int, message: String) -> AnyPublisher<PokeUserModel, PokeError> {
+  public func poke(userId: Int, message: String, isAnonymous: Bool) -> AnyPublisher<PokeUserModel, PokeError> {
     self.pokeService
-      .poke(userId: userId, message: message)
+      .poke(userId: userId, message: message, isAnonymous: isAnonymous)
       .mapErrorToPokeError()
       .map { $0.toDomain() }
       .eraseToAnyPublisher()

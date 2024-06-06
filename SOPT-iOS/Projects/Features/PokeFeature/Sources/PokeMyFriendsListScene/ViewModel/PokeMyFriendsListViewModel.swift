@@ -19,7 +19,7 @@ public class PokeMyFriendsListViewModel:
     PokeMyFriendsListViewModelType {
     
     public var onCloseButtonTap: (() -> Void)?
-    public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel)>)?
+    public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)?
     public var onProfileImageTapped: ((Int) -> Void)?
     public var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)?
 
@@ -91,13 +91,13 @@ extension PokeMyFriendsListViewModel {
         
         input.pokeButtonTap
             .compactMap { $0 }
-            .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel)> in
+            .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)> in
                 guard let self, let value = self.onPokeButtonTapped?(userModel) else { return .empty() }
                 
                 return value
             }
-            .sink {[weak self] userModel, messageModel in
-                self?.useCase.poke(userId: userModel.userId, message: messageModel)
+            .sink {[weak self] userModel, messageModel, isAnonymous in
+                self?.useCase.poke(userId: userModel.userId, message: messageModel, isAnonymous: isAnonymous)
             }.store(in: cancelBag)
         
         input.profileImageTap

@@ -46,7 +46,7 @@ extension PokeNotificationListCoordinator {
             
             return bottomSheet
                 .signalForClick()
-                .map { (userModel, $0) }
+                .map { (userModel, $0, $1) }
                 .asDriver()
         }
         

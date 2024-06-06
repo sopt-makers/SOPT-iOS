@@ -18,7 +18,7 @@ public protocol PokeMyFriendsUseCase {
     
     func getFriends()
     func getFriends(relation: String, page: Int)
-    func poke(userId: Int, message: PokeMessageModel)
+    func poke(userId: Int, message: PokeMessageModel, isAnonymous: Bool)
 }
 
 public class DefaultPokeMyFriendsUseCase {
@@ -54,9 +54,9 @@ extension DefaultPokeMyFriendsUseCase: PokeMyFriendsUseCase {
             }.store(in: cancelBag)
     }
     
-    public func poke(userId: Int, message: PokeMessageModel) {
+    public func poke(userId: Int, message: PokeMessageModel, isAnonymous: Bool) {
         self.repository
-            .poke(userId: userId, message: message.content)
+            .poke(userId: userId, message: message.content, isAnonymous: isAnonymous)
             .catch { [weak self] error in
                 let message = error.toastMessage
                 self?.errorMessage.send(message)
