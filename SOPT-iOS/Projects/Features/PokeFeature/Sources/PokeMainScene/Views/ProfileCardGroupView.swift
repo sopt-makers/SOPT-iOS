@@ -32,7 +32,7 @@ public final class ProfileCardGroupView: UIView, PokeCompatible {
 
   private let groupNameLabel = UILabel().then {
     $0.textColor = DSKitAsset.Colors.gray30.color
-    $0.font = UIFont.MDS.title7
+    $0.font = UIFont.MDS.title7.font
   }
 
   private let emptyFriendView = PokeEmptyView().setText(with: I18N.Poke.emptyFriendDescription)
