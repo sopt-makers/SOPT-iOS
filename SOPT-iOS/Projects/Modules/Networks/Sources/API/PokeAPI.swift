@@ -43,7 +43,7 @@ extension PokeAPI: BaseAPI {
     case .getFriendList, .getFriendListWithRelation:
       return "/friend/list"
     case .getRandomUsers:
-      return "/random-user"
+      return "/random"
     case .getPokeMessages:
       return "/message"
     case .poke(let userId, _):

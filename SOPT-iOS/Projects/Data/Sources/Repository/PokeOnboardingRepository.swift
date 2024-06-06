@@ -24,10 +24,10 @@ extension PokeOnboardingRepository: PokeOnboardingRepositoryInterface {
   public func getRandomAcquaintances(
     randomUserType: PokeRandomUserType,
     size: Int
-  ) -> AnyPublisher<[PokeUserModel], Error> {
+  ) -> AnyPublisher<[PokeRandomUserInfoModel], Error> {
     self.pokeService
       .getRandomUsers(randomType: randomUserType.rawValue, size: size)
-      .map { $0.map { $0.toDomain() } }
+      .map { $0.randomInfoList.map { $0.toDomain() } }
       .eraseToAnyPublisher()
   }
   

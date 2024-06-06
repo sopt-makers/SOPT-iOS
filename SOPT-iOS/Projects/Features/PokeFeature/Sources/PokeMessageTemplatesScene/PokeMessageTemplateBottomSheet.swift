@@ -185,5 +185,19 @@ extension PokeMessageTemplateBottomSheet {
       .sink(receiveValue: { [weak self] _ in
         self?.anonymousCheckboxButton.isSelected.toggle()
       }).store(in: self.cancelBag)
+    
+    self.anonymousCheckboxButton
+      .publisher(for: \.isSelected)
+      .dropFirst()
+      .receive(on: RunLoop.main)
+      .sink(receiveValue: { isSelected in
+        guard !isSelected else { return }
+        
+        ToastUtils.showMDSToast(
+          type: .alert,
+          text: "익명 해제 시, 상대방이 나를 알 수 있어요."
+        )
+        
+      }).store(in: self.cancelBag)
   }
 }

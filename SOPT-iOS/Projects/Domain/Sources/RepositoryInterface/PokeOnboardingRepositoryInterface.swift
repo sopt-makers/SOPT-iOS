@@ -9,7 +9,10 @@
 import Combine
 
 public protocol PokeOnboardingRepositoryInterface: PokeRepositoryInterface {
-  func getRandomAcquaintances(randomUserType: PokeRandomUserType, size: Int) -> AnyPublisher<[PokeUserModel], Error>
+  func getRandomAcquaintances(
+    randomUserType: PokeRandomUserType,
+    size: Int
+  ) -> AnyPublisher<[PokeRandomUserInfoModel], Error>
   func getMesseageTemplates(type: PokeMessageType) -> AnyPublisher<PokeMessagesModel, Error>
 }
 
