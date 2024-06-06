@@ -14,9 +14,8 @@ public struct ExternalURL {
         public static let appStoreLink = "https://itunes.apple.com/kr/app/id6444594319"
     }
     
-    public struct GoogleForms {
-        public static let serviceProposal = "https://forms.gle/mB59JD4F1FpKiXBAA"
-        public static let findEmail = "https://forms.gle/XkVFMUPsWWV1DXU38"
+    public struct KakaoTalk {
+        public static let serviceProposal = "https://pf.kakao.com/_sxaIWG"
     }
     
     public struct SOPT {
