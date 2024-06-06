@@ -94,13 +94,14 @@ public class PokeAnonymousFriendUpgradeVC: UIViewController, PokeAnonymousFriend
     lottieView.contentMode = .scaleAspectFit
     lottieView.play { [weak self] _ in
       guard let self else { return }
-      if user.pokeNum == 5 {
+      let pokeNum = user.pokeNum
+      if pokeNum == 5 || pokeNum == 6 {
         self.lottieView.stop()
         self.dismiss(animated: false)
         return
       }
 
-      if user.pokeNum == 11 {
+      if pokeNum == 11 || pokeNum == 12 {
         showRealIdentity()
         return
       }
@@ -129,7 +130,7 @@ extension PokeAnonymousFriendUpgradeVC {
     self.view.backgroundColor = DSKitAsset.Colors.gray950.color.withAlphaComponent(0.8)
     setLottie()
 
-    if user.pokeNum == 5 {
+    if user.pokeNum == 5 || user.pokeNum == 6 {
       descriptionLabel.text = "\(user.generation)기 \(user.part)파트"
     }
   }
@@ -155,7 +156,7 @@ extension PokeAnonymousFriendUpgradeVC {
   }
 
   private func lottieName(user: PokeUserModel) -> String {
-    if user.pokeNum == 5 {
+    if user.pokeNum == 5 || user.pokeNum == 6 {
       return "bestFriend"
     }
     return "soulmate"

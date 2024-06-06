@@ -97,7 +97,7 @@ extension PokeNotificationViewModel {
                   return
                 }
                 if userModel.isAnonymous {
-                  if userModel.pokeNum == 5 || userModel.pokeNum == 11 {
+                  if userModel.pokeNum == 5 || userModel.pokeNum == 6 || userModel.pokeNum == 11 || userModel.pokeNum == 12 {
                     self?.onAnonymousFriendUpgrade?(userModel)
                   }
                 }
