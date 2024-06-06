@@ -30,7 +30,7 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
   }
 
   private let serviceTitleLabel = UILabel().then {
-    $0.font = UIFont.MDS.heading6
+    $0.font = UIFont.MDS.heading6.font
     $0.textColor = DSKitAsset.Colors.gray30.color
     $0.text = I18N.Poke.poke
   }
@@ -70,7 +70,7 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
   private let recommendPokeLabel = UILabel().then {
     $0.text = I18N.Poke.pokeNearbyFriends
     $0.textColor = DSKitAsset.Colors.gray30.color
-    $0.font = UIFont.MDS.title5
+    $0.font = UIFont.MDS.title5.font
   }
 
   private let firstProfileCardGroupView = ProfileCardGroupView(frame: .zero)
@@ -79,7 +79,7 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
 
   // 리프레시
   private let refreshGuideLabel = UILabel().then {
-    $0.font = UIFont.MDS.title7
+    $0.font = UIFont.MDS.title7.font
     $0.textColor = DSKitAsset.Colors.gray200.color
     $0.text = I18N.Poke.refreshGuide
     $0.textAlignment = .center

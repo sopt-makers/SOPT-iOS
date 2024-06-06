@@ -21,7 +21,7 @@ public final class PokeMainSectionHeaderView: UIView {
     // MARK: - UI Components
     
     private let titleLabel = UILabel().then {
-        $0.font = UIFont.MDS.title6
+        $0.font = UIFont.MDS.title6.font
         $0.textColor = DSKitAsset.Colors.gray30.color
     }
     

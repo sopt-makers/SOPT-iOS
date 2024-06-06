@@ -26,7 +26,7 @@ public class MDSToast: UIView {
     
     private let contentLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.MDS.label3
+        label.font = UIFont.MDS.label3.font
         label.textColor = DSKitAsset.Colors.gray900.color
         label.numberOfLines = 2
         label.textAlignment = .left

@@ -21,17 +21,17 @@ public final class PokeFriendsSectionHeaderView: UIView {
     // MARK: - UI Components
     
     private let titleLabel = UILabel().then {
-        $0.font = UIFont.MDS.heading6
+        $0.font = UIFont.MDS.heading6.font
         $0.textColor = DSKitAsset.Colors.gray10.color
     }
     
     private let descriptionLabel = UILabel().then {
-        $0.font = UIFont.MDS.label4
+        $0.font = UIFont.MDS.label4.font
         $0.textColor = DSKitAsset.Colors.gray200.color
     }
     
     private let friendsCountLabel = UILabel().then {
-        $0.font = UIFont.MDS.body3R
+        $0.font = UIFont.MDS.body3R.font
         $0.textColor = DSKitAsset.Colors.white.color
     }
     

@@ -13,73 +13,73 @@ import DSKit
 
 // MARK: - PokeOnboardingBottomSheet
 public class PokeOnboardingBottomSheet: UIViewController {
-    private enum Metric {
-        static let contentTop = 24.f
-        static let contentLeadingTrailng = 20.f
-        
-        static let titleLabelTop = 12.f
-        
-        static let onboardingImageHeight = 180.f
-        
-        static let descriptionTop = 8.f
-        
-        static let doneButtonTop = 34.f
-        static let doneButtonLeadingTrailng = 16.f
-    }
+  private enum Metric {
+    static let contentTop = 24.f
+    static let contentLeadingTrailng = 20.f
+
+    static let titleLabelTop = 12.f
+    static let onboardingImageHeight = 180.f
     
-    private let contentStackView = UIStackView().then {
-        $0.axis = .vertical
-        $0.spacing = Metric.titleLabelTop
-    }
+    static let descriptionTop = 8.f
     
-    private let titleLabel = UILabel().then {
-        $0.text = "솝트에 콕 찌르기가 생겼어요!"
-        $0.textColor = DSKitAsset.Colors.gray30.color
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 20)
-    }
+    static let doneButtonTop = 34.f
+    static let doneButtonLeadingTrailng = 16.f
+  }
+  
+  private let contentStackView = UIStackView().then {
+    $0.axis = .vertical
+    $0.spacing = Metric.titleLabelTop
+  }
+  
+  private let titleLabel = UILabel().then {
+//    $0.text = I18N.Poke.Onboarding.title
+    $0.textColor = DSKitAsset.Colors.gray30.color
+    $0.font = DSKitFontFamily.Suit.bold.font(size: 20)
+  }
+  
+  private let onboardingImageView = UIImageView()
+//    .then {
+//    $0.image = DSKitAsset.Assets.iosImgOnboarding.image
+//  }
+  
+  private let onboardingDescriptionLabel = UILabel().then {
+//    $0.text = I18N.Poke.Onboarding.description
+    $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
+    $0.textColor = DSKitAsset.Colors.gray30.color
+    $0.textAlignment = .left
+    $0.numberOfLines = 0
+  }
+  
+  private lazy var doneButton = MDSButton(
+    buttonSize: .medium,
+    leftImage: nil,
+    buttonTitle: "확인",
+    rightImage: nil,
+    frame: self.view.frame
+  )
+  
+  // MARK: - Variables
+  private let cancelBag = CancelBag()
+  
+  init() {
+    super.init(nibName: nil, bundle: nil)
     
-    private let onboardingImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.pokeOnboarding.image
-    }
+    self.view.backgroundColor = DSKitAsset.Colors.gray800.color
     
-    private let onboardingDescriptionLabel = UILabel().then {
-        $0.text = "서로 찌르면 친구가 될 수 있어요. 친구와 자주 찌를수록\n전송할 수 있는 메시지 문구가 다양해져요."
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
-        $0.textColor = DSKitAsset.Colors.gray30.color
-        $0.textAlignment = .left
-        $0.numberOfLines = 2
-    }
+    self.initializeViews()
+    self.setupConstraints()
     
-    private lazy var doneButton = MDSButton(
-        buttonSize: .medium,
-        leftImage: nil,
-        buttonTitle: "확인",
-        rightImage: nil,
-        frame: self.view.frame
-    )
-    
-    // MARK: - Variables
-    private let cancelBag = CancelBag()
-    
-    init() {
-        super.init(nibName: nil, bundle: nil)
-        
-        self.view.backgroundColor = DSKitAsset.Colors.gray800.color
-        
-        self.initializeViews()
-        self.setupConstraints()
-        
-        self.doneButton
-            .signalForButtonClick()
-            .withUnretained(self)
-            .sink(receiveValue: { _ in 
-                self.dismiss(animated: true)
-            }).store(in: self.cancelBag)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    self.doneButton
+      .signalForButtonClick()
+      .withUnretained(self)
+      .sink(receiveValue: { _ in
+        self.dismiss(animated: true)
+      }).store(in: self.cancelBag)
+  }
+  
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
 }
 
 extension PokeOnboardingBottomSheet {

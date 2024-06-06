@@ -20,7 +20,7 @@ public final class PokeEmptyView: UIView {
     }
     
     private let descriptionLabel = UILabel().then {
-        $0.font = UIFont.MDS.label4
+        $0.font = UIFont.MDS.label4.font
         $0.textColor = DSKitAsset.Colors.gray300.color
         $0.textAlignment = .center
         $0.numberOfLines = 2

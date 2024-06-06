@@ -98,7 +98,10 @@ extension PokeBottomSheetMessageView {
 extension PokeBottomSheetMessageView {
     public func configure(with messageModel: PokeMessageModel) {
         self.messageModel = messageModel
-        self.leftTitleLabel.attributedText = messageModel.content.applyMDSFont()
+        self.leftTitleLabel.attributedText = messageModel.content.applyMDSFont(
+          mdsFont: .body2,
+          color: DSKitAsset.Colors.gray30.color
+        )
     }
     
     public func signalForClick() ->Driver<PokeMessageModel> {
@@ -138,46 +141,4 @@ extension PokeBottomSheetMessageView: UIGestureRecognizerDelegate {
     ) -> Bool {
         return true
     }
-}
-
-// NOTE(@승호): MDSFont 적용하고 DSKit으로 옮기고 적용하기.
-private extension String {
-  func applyMDSFont() -> NSMutableAttributedString {
-    self.applyMDSFont(
-      height: 22.f,
-      font: DSKitFontFamily.Suit.medium.font(size: 16),
-      color: DSKitAsset.Colors.gray30.color,
-      letterSpacing: 0.f
-    )
-  }
-  
-  func applyMDSFont(
-    height: CGFloat,
-    font: UIFont,
-    color: UIColor,
-    letterSpacing: CGFloat,
-    alignment: NSTextAlignment = .left,
-    lineBreakMode: NSLineBreakMode = .byTruncatingTail
-  ) -> NSMutableAttributedString {
-    let paragraphStyle = NSMutableParagraphStyle()
-    paragraphStyle.lineBreakMode = lineBreakMode
-    paragraphStyle.minimumLineHeight = height
-    paragraphStyle.alignment = alignment
-    
-    if lineBreakMode == .byWordWrapping {
-      paragraphStyle.lineBreakStrategy = .hangulWordPriority
-    }
-    
-    let attributes: [NSAttributedString.Key: Any] = [
-      .foregroundColor: color,
-      .font: font,
-      .kern: letterSpacing,
-      .paragraphStyle: paragraphStyle,
-      .baselineOffset: (paragraphStyle.minimumLineHeight - font.lineHeight) / 4
-    ]
-    
-    let attrText = NSMutableAttributedString(string: self)
-    attrText.addAttributes(attributes, range: NSRange(location: 0, length: self.utf16.count))
-    return attrText
-  }
 }

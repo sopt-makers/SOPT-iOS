@@ -29,7 +29,7 @@ public class PokeAnonymousFriendUpgradeVC: UIViewController, PokeAnonymousFriend
   // MARK: - UI Components
 
   private let titleLabel = UILabel().then {
-    $0.font = UIFont.MDS.title3
+    $0.font = UIFont.MDS.title3.font
     $0.textColor = DSKitAsset.Colors.gray10.color
     $0.numberOfLines = 2
     $0.textAlignment = .center
@@ -43,7 +43,7 @@ public class PokeAnonymousFriendUpgradeVC: UIViewController, PokeAnonymousFriend
   }
 
   private let descriptionLabel = UILabel().then {
-    $0.font = UIFont.MDS.title5
+    $0.font = UIFont.MDS.title5.font
     $0.textColor = DSKitAsset.Colors.gray10.color
     $0.numberOfLines = 2
     $0.textAlignment = .center

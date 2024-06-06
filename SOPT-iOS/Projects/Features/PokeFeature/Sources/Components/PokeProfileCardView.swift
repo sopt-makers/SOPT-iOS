@@ -41,14 +41,14 @@ public final class PokeProfileCardView: UIView, PokeCompatible {
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.textColor = DSKitAsset.Colors.gray30.color
-        label.font = UIFont.MDS.body3
+        label.font = UIFont.MDS.body3.font
         return label
     }()
     
     private let partLabel: UILabel = {
         let label = UILabel()
         label.textColor = DSKitAsset.Colors.gray300.color
-        label.font = UIFont.MDS.label5
+        label.font = UIFont.MDS.label5.font
         return label
     }()
     
