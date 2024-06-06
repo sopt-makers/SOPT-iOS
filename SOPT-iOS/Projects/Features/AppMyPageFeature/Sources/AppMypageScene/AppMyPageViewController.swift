@@ -243,7 +243,7 @@ extension AppMyPageVC {
         }
 
         self.sendFeedbackListItem.addTapGestureRecognizer {
-            openExternalLink(urlStr: ExternalURL.GoogleForms.serviceProposal)
+            openExternalLink(urlStr: ExternalURL.KakaoTalk.serviceProposal)
         }
         
         self.alertListItem.addTapGestureRecognizer {
