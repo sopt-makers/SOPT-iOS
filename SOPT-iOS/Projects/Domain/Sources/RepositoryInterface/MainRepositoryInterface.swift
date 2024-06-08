@@ -16,4 +16,5 @@ public protocol MainRepositoryInterface {
     func getMainViewDescription() -> AnyPublisher<MainDescriptionModel, MainError>
     func registerPushToken(with token: String) -> AnyPublisher<Bool, Error>
     func checkPokeNewUser() -> AnyPublisher<Bool, Error>
+    func appService() -> AnyPublisher<[AppServiceModel], Error>
 }

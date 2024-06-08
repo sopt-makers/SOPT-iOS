@@ -86,4 +86,10 @@ extension MainRepository: MainRepositoryInterface {
             .map { $0.isNew }
             .eraseToAnyPublisher()
     }
+
+    public func appService() -> AnyPublisher<[AppServiceModel], Error> {
+        userService.appService()
+            .map { $0.map { $0.toDomain() } }
+            .eraseToAnyPublisher()
+    }
 }

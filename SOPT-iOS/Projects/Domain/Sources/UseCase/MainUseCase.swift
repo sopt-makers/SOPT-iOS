@@ -16,12 +16,14 @@ public protocol MainUseCase {
     var mainDescription: PassthroughSubject<MainDescriptionModel, Never> { get set }
     var mainErrorOccurred: PassthroughSubject<MainError, Never> { get set }
     var isPokeNewUser: PassthroughSubject<Bool, Never> { get set }
-    
+    var appService: PassthroughSubject<[AppServiceModel], Never> { get set }
+
     func getUserMainInfo()
     func getServiceState()
     func getMainViewDescription()
     func registerPushToken()
     func checkPokeNewUser()
+    func getAppService()
 }
 
 public class DefaultMainUseCase {
@@ -34,7 +36,9 @@ public class DefaultMainUseCase {
     public var mainDescription = PassthroughSubject<MainDescriptionModel, Never>()
     public var mainErrorOccurred = PassthroughSubject<MainError, Never>()
     public var isPokeNewUser = PassthroughSubject<Bool, Never>()
-  
+    public var appService = PassthroughSubject<[AppServiceModel], Never>()
+
+
     public init(repository: MainRepositoryInterface) {
         self.repository = repository
     }
@@ -106,4 +110,17 @@ extension DefaultMainUseCase: MainUseCase {
             UserDefaultKeyList.Auth.isActiveUser = false
         }
     }
+
+  public func getAppService() {
+    repository.appService()
+      .catch { [weak self] error in
+        print("MainUseCase getAppService Error: \(error)")
+        self?.mainErrorOccurred.send(.networkError(message: "앱 서비스 확인 실패"))
+        return Just<[AppServiceModel]>.empty()
+      }
+      .sink { [weak self] services in
+        self?.appService.send(services)
+      }
+      .store(in: cancelBag)
+  }
 }
