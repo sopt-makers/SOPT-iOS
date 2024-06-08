@@ -65,6 +65,14 @@ extension PokeNotificationListCoordinator {
             viewController.vc.viewController.present(pokeAnonymousFriendUpgradeVC, animated: false)
         }
 
+        viewController.vm.onProfileImageTapped = { [weak self] playgroundId in
+          guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(playgroundId)") else { return }
+
+          let webView = SOPTWebView(startWith: url)
+
+          self?.router.push(webView.viewController, transition: nil, animated: true)
+        }
+
         self.rootController = viewController.vc.asNavigationController
         
         var willAnimate = true

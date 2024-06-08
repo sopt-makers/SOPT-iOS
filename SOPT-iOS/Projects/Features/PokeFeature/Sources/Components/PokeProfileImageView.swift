@@ -42,6 +42,7 @@ public final class PokeProfileImageView: UIImageView {
     
     @discardableResult
     public func setBorderColor(for relation: PokeRelation) -> Self {
+        self.layer.borderWidth = relation == .nonFriend ? 0 : 2
         self.layer.borderColor = relation.color.cgColor
         return self
     }

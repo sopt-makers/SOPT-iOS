@@ -19,6 +19,7 @@ public final class PokeNotificationViewModel: PokeNotificationViewModelType {
         let viewDidLoaded: Driver<Void>
         let reachToBottom: Driver<Void>
         let pokedAction: Driver<PokeUserModel>
+        let profileButtonTap: Driver<PokeUserModel>
     }
     
     public struct Output {
@@ -30,6 +31,7 @@ public final class PokeNotificationViewModel: PokeNotificationViewModelType {
     public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)?
     public var onNewFriendAdded: ((_ friendName: String) -> Void)?
     public var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)?
+    public var onProfileImageTapped: ((Int) -> Void)?
 
     private let usecase: PokeNotificationUsecase
     private let cancelBag = CancelBag()
@@ -67,6 +69,11 @@ extension PokeNotificationViewModel {
                 self?.usecase.poke(user: userModel, message: messageModel, isAnonymous: isAnonymous)
             }).store(in: cancelBag)
         
+        input.profileButtonTap
+          .sink { [weak self] user in
+            self?.onProfileImageTapped?(user.playgroundId)
+          }.store(in: cancelBag)
+
         return output
     }
     
@@ -85,11 +92,12 @@ extension PokeNotificationViewModel {
                 output.pokedResult.send(userModel)
 
                 if isNewFriend {
-                  self?.onNewFriendAdded?(userModel.name)
+                  let name = userModel.isAnonymous ? userModel.anonymousName : userModel.name
+                  self?.onNewFriendAdded?(name)
                   return
                 }
                 if userModel.isAnonymous {
-                  if userModel.pokeNum == 5 || userModel.pokeNum == 11 {
+                  if userModel.pokeNum == 5 || userModel.pokeNum == 6 || userModel.pokeNum == 11 || userModel.pokeNum == 12 {
                     self?.onAnonymousFriendUpgrade?(userModel)
                   }
                 }

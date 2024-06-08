@@ -25,7 +25,7 @@ public class MainViewModel: MainViewModelType {
     var userType: UserType = .visitor
     var mainServiceList: [ServiceType] = [.officialHomepage, .review, .project]
     var otherServiceList: [ServiceType] = [.instagram, .youtube, .faq]
-    var appServiceList: [AppServiceType] = [.poke, .soptamp]
+    var appServiceList: [AppServiceType] = []
     var userMainInfo: UserMainInfoModel?
     var mainDescription: MainDescriptionModel = .defaultDescription
   
@@ -165,6 +165,7 @@ extension MainViewModel {
                 self.userType = userMainInfo.userType
                 self.setServiceList(with: self.userType)
                 self.setSentryUser()
+                self.useCase.getAppService()
                 output.needToReload.send()
             }.store(in: self.cancelBag)
         
@@ -180,7 +181,7 @@ extension MainViewModel {
             }.store(in: self.cancelBag)
         
         // 모든 API 통신 완료되면 로딩뷰 숨기기
-        Publishers.Zip(useCase.userMainInfo, useCase.mainDescription)
+        Publishers.Zip3(useCase.userMainInfo, useCase.mainDescription, useCase.appService)
             .sink { _ in
                 output.isLoading.send(false)
             }.store(in: self.cancelBag)
@@ -203,6 +204,12 @@ extension MainViewModel {
                 output.isLoading.send(false)
                 self?.onPoke?(isNewUser)
             }.store(in: cancelBag)
+
+      useCase.appService
+        .sink { [weak self] serviceModels in
+          self?.updateAppServices(with: serviceModels)
+          output.needToReload.send()
+        }.store(in: cancelBag)
     }
     
     private func handleMainServiceSectionTap(with service: ServiceType) {
@@ -255,14 +262,30 @@ extension MainViewModel {
         case .active:
             self.mainServiceList = [.attendance, .group, .playgroundCommunity]
             self.otherServiceList = [.member, .project, .officialHomepage]
-            self.appServiceList = [.poke, .soptamp]
         case .inactive:
             self.mainServiceList = [.playgroundCommunity, .group, .member]
             self.otherServiceList = [.project, .officialHomepage, .instagram, .youtube]
-            self.appServiceList = [.soptamp]
         }
     }
-    
+
+    private func updateAppServices(with services: [AppServiceModel]) {
+      appServiceList.removeAll()
+      for service in services {
+        guard let appServiceType = AppServiceType(rawValue: service.serviceName) else {
+          continue
+        }
+
+        if userType == .active && service.activeUser {
+          appServiceList.append(appServiceType)
+          continue
+        }
+
+        if userType == .inactive && service.inactiveUser {
+          appServiceList.append(appServiceType)
+        }
+      }
+    }
+
     /// 최초 솝트 가입일로부터 몇달이 지났는지 계산
     func calculateMonths() -> String? {
         guard let userMainInfo = userMainInfo, let firstHistory = userMainInfo.historyList.last else { return nil }

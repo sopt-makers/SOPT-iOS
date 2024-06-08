@@ -73,7 +73,8 @@ public final class PokeNotificationViewController: UIViewController, PokeNotific
     private let viewDidLoaded = PassthroughSubject<Void, Never>()
     private let pokedActionSubject = PassthroughSubject<PokeUserModel, Never>()
     private let reachToBottomSubject = PassthroughSubject<Void, Never>()
-    
+    private let profileButtonTap = PassthroughSubject<PokeUserModel, Never>()
+
     init(viewModel: PokeNotificationViewModel) {
         self.viewModel = viewModel
         
@@ -159,7 +160,8 @@ extension PokeNotificationViewController {
         let input = PokeNotificationViewModel.Input(
             viewDidLoaded: self.viewDidLoaded.asDriver(),
             reachToBottom: self.reachToBottomSubject.asDriver(),
-            pokedAction: self.pokedActionSubject.asDriver()
+            pokedAction: self.pokedActionSubject.asDriver(),
+            profileButtonTap: self.profileButtonTap.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -207,6 +209,12 @@ extension PokeNotificationViewController: UITableViewDataSource {
                 self?.pokedActionSubject.send(userModel)
             }).store(in: cell.cancelBag)
         
+        cell.profileImageTap
+          .compactMap { $0 }
+          .sink { [weak self] userModel in
+            self?.profileButtonTap.send(userModel)
+          }.store(in: cell.cancelBag)
+
         return cell
     }
 }

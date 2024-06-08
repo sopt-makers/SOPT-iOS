@@ -109,7 +109,7 @@ extension PokeMyFriendsViewModel {
                 output.myFriends.send(myFriends)
               }
               if user.isAnonymous {
-                if user.pokeNum == 5 || user.pokeNum == 11 {
+                if user.pokeNum == 5 || user.pokeNum == 6 || user.pokeNum == 11 || user.pokeNum == 12 {
                   owner.onAnonymousFriendUpgrade?(user)
                 }
               }

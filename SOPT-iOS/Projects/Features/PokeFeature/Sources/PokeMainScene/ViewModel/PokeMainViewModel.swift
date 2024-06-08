@@ -212,7 +212,7 @@ extension PokeMainViewModel {
         guard let self else { return }
         ToastUtils.showMDSToast(type: .success, text: I18N.Poke.pokeSuccess)
         if user.isAnonymous {
-          if user.pokeNum == 5 || user.pokeNum == 11 {
+          if user.pokeNum == 5 || user.pokeNum == 6 || user.pokeNum == 11 || user.pokeNum == 12 {
             onAnonymousFriendUpgrade?(user)
           }
         }
