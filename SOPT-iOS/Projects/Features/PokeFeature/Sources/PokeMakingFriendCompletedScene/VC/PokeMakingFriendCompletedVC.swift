@@ -33,7 +33,7 @@ public class PokeMakingFriendCompletedVC: UIViewController, PokeMakingFriendComp
     private let descriptionLabel = UILabel().then {
         $0.font = UIFont.MDS.title5.font
         $0.textColor = DSKitAsset.Colors.gray10.color
-        $0.numberOfLines = 2
+        $0.numberOfLines = 3
         $0.textAlignment = .center
     }
     
