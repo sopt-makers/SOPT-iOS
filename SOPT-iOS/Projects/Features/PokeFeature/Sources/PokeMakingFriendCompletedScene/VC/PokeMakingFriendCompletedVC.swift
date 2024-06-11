@@ -31,10 +31,7 @@ public class PokeMakingFriendCompletedVC: UIViewController, PokeMakingFriendComp
                                                  bundle: DSKitResources.bundle)
     
     private let descriptionLabel = UILabel().then {
-        $0.font = UIFont.MDS.title5.font
-        $0.textColor = DSKitAsset.Colors.gray10.color
-        $0.numberOfLines = 3
-        $0.textAlignment = .center
+      $0.numberOfLines = 3
     }
     
     private lazy var containerStackView = UIStackView(arrangedSubviews: [lottieView, descriptionLabel]).then {
@@ -80,7 +77,10 @@ extension PokeMakingFriendCompletedVC {
     private func setUI() {
         self.view.backgroundColor = DSKitAsset.Colors.gray950.color.withAlphaComponent(0.8)
         setLottie()
-        self.descriptionLabel.text = I18N.Poke.makingFriendCompleted(name: self.friendName)
+      self.descriptionLabel.attributedText = I18N.Poke.makingFriendCompleted(name: self.friendName).applyMDSFont(
+        mdsFont: .title5, color: DSKitAsset.Colors.gray10.color,
+        alignment: .center
+      )
     }
     
     private func setLayout() {
