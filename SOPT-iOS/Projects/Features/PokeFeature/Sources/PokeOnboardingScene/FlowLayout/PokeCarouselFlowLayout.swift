@@ -13,7 +13,7 @@ public final class PokeCarouselFlowLayout: UICollectionViewFlowLayout {
     static let contentleadingTrailing = 20.f
     static let collectionViewHeight = 586.f
     
-    static let lineSpacing = 20.f
+    static let lineSpacing = 40.f
   }
   
   public override func prepare() {
@@ -45,11 +45,12 @@ extension PokeCarouselFlowLayout {
     
     let pageWidth = self.itemSize.width + self.minimumLineSpacing
     let approximatePage = collectionView.contentOffset.x / pageWidth
+    let minusOffsetPage = velocity.x < 0
+    ? floor(approximatePage) : ceil(approximatePage)
     let currentPage = velocity.x == 0
-    ? round(approximatePage) : (velocity.x < 0 ? floor(approximatePage) : ceil(approximatePage))
+    ? round(approximatePage) : minusOffsetPage
     
     let xOffset = currentPage * pageWidth
     return CGPoint(x: xOffset, y: 0)
   }
 }
-         

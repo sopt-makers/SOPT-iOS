@@ -27,6 +27,8 @@ public class PokeOnboardingBottomSheet: UIViewController {
     static let doneButtonLeadingTrailng = 16.f
   }
   
+  public static let minHeight = 408.f
+  
   private let contentStackView = UIStackView().then {
     $0.axis = .vertical
     $0.spacing = Metric.titleLabelTop

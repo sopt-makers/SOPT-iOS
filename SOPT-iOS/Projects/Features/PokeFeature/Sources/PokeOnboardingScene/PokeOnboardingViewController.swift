@@ -32,6 +32,7 @@ public final class PokeOnboardingViewController: UIViewController, PokeOnboardin
     static let pageIndicatorHeight = 10.f
     
     static let bottomDescriptionLabelTop = 10.f
+    static let bottomDescriptionLabelBottom = 2.f
   }
   
   private enum Constant {
@@ -51,7 +52,7 @@ public final class PokeOnboardingViewController: UIViewController, PokeOnboardin
     $0.isScrollEnabled = true
   }
   
-  private let scrollContainerStackView = UIView()
+  private let scrollContainerView = UIView()
   // MARK: Title
   private let pokeTitleLabel = UILabel().then {
     $0.attributedText = I18N.Poke.Onboarding.title.applyMDSFont(
@@ -134,6 +135,15 @@ extension PokeOnboardingViewController {
     
     self.viewDidLoaded.send(())
   }
+  
+  public override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+    
+    self.scrollView.layoutIfNeeded()
+    self.scrollContainerView.layoutIfNeeded()
+    
+    self.scrollView.contentSize = self.scrollContainerView.frame.size
+  }
 }
 
 // MARK: - Configuring methods
@@ -157,9 +167,9 @@ extension PokeOnboardingViewController {
   private func initializeViews() {
     self.view.addSubviews(self.navigationBar, self.scrollView)
     
-    self.scrollView.addSubview(self.scrollContainerStackView)
+    self.scrollView.addSubview(self.scrollContainerView)
     
-    self.scrollContainerStackView.addSubviews(
+    self.scrollContainerView.addSubviews(
       self.pokeTitleLabel,
       self.collectionView,
       self.pageIndicator,
@@ -179,10 +189,10 @@ extension PokeOnboardingViewController {
       $0.leading.trailing.bottom.equalToSuperview()
     }
     
-    self.scrollContainerStackView.snp.makeConstraints {
+    self.scrollContainerView.snp.makeConstraints {
       $0.top.leading.trailing.equalToSuperview()
-      $0.width.height.equalToSuperview()
-      $0.bottom.lessThanOrEqualToSuperview()
+      $0.width.equalToSuperview()
+      $0.bottom.equalTo(self.contentFooterDescriptionLabel.snp.bottom)
     }
     
     self.pokeTitleLabel.snp.makeConstraints {
@@ -192,7 +202,7 @@ extension PokeOnboardingViewController {
     
     self.collectionView.snp.makeConstraints {
       $0.top.equalTo(self.pokeTitleLabel.snp.bottom).offset(Metric.containerViewTop)
-      $0.leading.trailing.width.equalToSuperview()
+      $0.leading.trailing.equalToSuperview()
       $0.height.equalTo(Metric.collectionViewHeight)
     }
     
@@ -204,7 +214,8 @@ extension PokeOnboardingViewController {
     
     self.contentFooterDescriptionLabel.snp.makeConstraints {
       $0.top.equalTo(self.pageIndicator.snp.bottom).offset(Metric.bottomDescriptionLabelTop)
-      $0.centerX.bottom.lessThanOrEqualToSuperview()
+      $0.centerX.equalToSuperview()
+      $0.bottom.equalToSuperview().offset(-Metric.bottomDescriptionLabelBottom)
     }
   }
 }

@@ -32,14 +32,14 @@ public final class PokeOnboardingCoordinator: DefaultCoordinator {
 
 extension PokeOnboardingCoordinator {
     private func showPokeOnboardingView() {
-        var pokeOnboarding = makePokeOnboardingView()
+        let pokeOnboarding = makePokeOnboardingView()
                 
         self.rootController = pokeOnboarding.vc.asNavigationController
         self.router.present(self.rootController, animated: true, modalPresentationSytle: .overFullScreen)
     }
     
     func switchToPokeOnboardingView() {
-        var pokeOnboarding = makePokeOnboardingView()
+        let pokeOnboarding = makePokeOnboardingView()
         
         self.rootController = router.asNavigationController
         self.router.setRootModule(pokeOnboarding.vc, hideBar: true, animated: false)
@@ -55,7 +55,7 @@ extension PokeOnboardingCoordinator {
         
         pokeOnboarding.vm.onFirstVisitInOnboarding = { [weak self] in
             let viewController = PokeOnboardingBottomSheet()
-            let bottomSheetManager = BottomSheetManager(configuration: .onboarding())
+            let bottomSheetManager = BottomSheetManager(configuration: .onboarding(minHeight: PokeOnboardingBottomSheet.minHeight))
             self?.router.showBottomSheet(
                 manager: bottomSheetManager,
                 toPresent: viewController,
@@ -70,7 +70,7 @@ extension PokeOnboardingCoordinator {
                     .viewController as? PokeMessageTemplateBottomSheet
             else { return .empty() }
             
-            let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate())
+            let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate(minHeight: PokeMessageTemplateBottomSheet.minimunContentHeight))
             bottomSheetManager.present(toPresent: bottomSheet, on: self?.rootController)
             
             return bottomSheet
