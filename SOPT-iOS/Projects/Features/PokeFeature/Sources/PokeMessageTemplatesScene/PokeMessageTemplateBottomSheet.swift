@@ -27,6 +27,8 @@ public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessage
     static let contentStackViewSpacing = 4.f
   }
   
+  static let minimunContentHeight = 366.f
+  
   // MARK: - Views
   private let scrollView = UIScrollView().then {
     $0.alwaysBounceVertical = true
