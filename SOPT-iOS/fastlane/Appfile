@@ -9,16 +9,16 @@ for_platform :ios do
 
     # demo
     for_lane :set_version_demo do
-      app_identifier 'com.sopt-stamp-iOS.test'
+      app_identifier 'com.sopt-stamp-iOS.alpha'
     end
 
-    for_lane :upload_testflight_demo do
-        app_identifier 'com.sopt-stamp-iOS.test'
+    for_lane :upload_alphaflight_demo do
+        app_identifier 'com.sopt-stamp-iOS.alpha'
     end
   
     # release
 
-    for_lane :upload_testflight do
+    for_lane :upload_alphaflight do
         app_identifier 'com.sopt-stamp-iOS.release'
     end
 

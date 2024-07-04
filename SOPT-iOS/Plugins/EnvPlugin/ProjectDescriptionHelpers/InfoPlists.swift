@@ -50,7 +50,7 @@ public extension Project {
       "CFBundleShortVersionString": "1.0.0",
       "CFBundleDevelopmentRegion": "ko",
       "CFBundleVersion": "1",
-      "CFBundleIdentifier": "com.sopt-stamp-iOS.test",
+      "CFBundleIdentifier": "com.sopt-stamp-iOS.alpha",
       "CFBundleDisplayName": "SOPT-Test",
       "UILaunchStoryboardName": "LaunchScreen",
       "UIApplicationSceneManifest": [
