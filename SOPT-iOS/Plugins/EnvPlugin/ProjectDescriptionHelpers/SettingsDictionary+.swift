@@ -60,7 +60,7 @@ public extension SettingsDictionary {
     
     func setCodeSignManual() -> SettingsDictionary {
         merging(["CODE_SIGN_STYLE": SettingValue(stringLiteral: "Manual")])
-            .merging(["DEVELOPMENT_TEAM": SettingValue(stringLiteral: "9K86FQHDLU")])
+            .merging(["DEVELOPMENT_TEAM": SettingValue(stringLiteral: "95YWTT5L8K")])
             .merging(["CODE_SIGN_IDENTITY": SettingValue(stringLiteral: "$(CODE_SIGN_IDENTITY)")])
     }
     
