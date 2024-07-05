@@ -1,24 +1,24 @@
 app_identifier("com.sopt-stamp-iOS.release") # The bundle identifier of your app
 apple_id(ENV["APPLE_ID"]) # Your Apple Developer Portal username
 
-itc_team_id("125287287") # App Store Connect Team ID
-team_id("9K86FQHDLU") # Developer Portal Team ID
+itc_team_id("127177793") # App Store Connect Team ID
+team_id("95YWTT5L8K") # Developer Portal Team ID
 
 # app_identifier 설정
 for_platform :ios do
 
     # demo
     for_lane :set_version_demo do
-      app_identifier 'com.sopt-stamp-iOS.test'
+      app_identifier 'com.sopt-stamp-iOS.alpha'
     end
 
-    for_lane :upload_testflight_demo do
-        app_identifier 'com.sopt-stamp-iOS.test'
+    for_lane :upload_alphaflight_demo do
+        app_identifier 'com.sopt-stamp-iOS.alpha'
     end
   
     # release
 
-    for_lane :upload_testflight do
+    for_lane :upload_alphaflight do
         app_identifier 'com.sopt-stamp-iOS.release'
     end
 
