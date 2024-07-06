@@ -126,6 +126,7 @@ extension MainVC {
         
         output.needToReload
             .sink { [weak self] _ in
+                self?.updateCollectionViewLayout()
                 guard let userMainInfo = self?.viewModel.userMainInfo else {
                     self?.collectionView.reloadData()
                     return
@@ -161,6 +162,7 @@ extension MainVC {
                                      forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                      withReuseIdentifier: UserHistoryHeaderView.className)
         self.collectionView.register(UserHistoryCVC.self, forCellWithReuseIdentifier: UserHistoryCVC.className)
+        self.collectionView.register(HotBoardHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HotBoardHeaderView.className)
         self.collectionView.register(MainServiceHeaderView.self,
                                      forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                      withReuseIdentifier: MainServiceHeaderView.className)
@@ -180,7 +182,12 @@ extension MainVC {
         self.naviBar.hideNoticeButton(wantsToHide: self.viewModel.userType == .visitor)
         self.collectionView.reloadData()
     }
-    
+
+    private func updateCollectionViewLayout() {
+      let newLayout = createLayout()
+      self.collectionView.setCollectionViewLayout(newLayout, animated: true)
+    }
+
     private func presentNetworkAlertVC() {
         guard self.presentedViewController == nil else { return }
         
@@ -232,12 +239,22 @@ extension MainVC: UICollectionViewDataSource {
             headerView.initCell(userType: viewModel.userType, name: viewModel.userMainInfo?.name, months: viewModel.calculateMonths())
             return headerView
         case 1:
+            if viewModel.mainHeaderViewType == .defaultMainServiceHeaderView {
+                guard let headerView = collectionView
+                    .dequeueReusableSupplementaryView(ofKind: kind,
+                                                      withReuseIdentifier: MainServiceHeaderView.className,
+                                                      for: indexPath) as? MainServiceHeaderView
+                else { return UICollectionReusableView() }
+                headerView.initCell(title: viewModel.mainDescription.topDescription)
+                return headerView
+            }
+
             guard let headerView = collectionView
                 .dequeueReusableSupplementaryView(ofKind: kind,
-                                                  withReuseIdentifier: MainServiceHeaderView.className,
-                                                  for: indexPath) as? MainServiceHeaderView
+                                                  withReuseIdentifier: HotBoardHeaderView.className,
+                                                  for: indexPath) as? HotBoardHeaderView
             else { return UICollectionReusableView() }
-            headerView.initCell(title: viewModel.mainDescription.topDescription)
+            headerView.initCell()
             return headerView
         case 3:
             guard let headerView = collectionView

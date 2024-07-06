@@ -23,6 +23,7 @@ public class MainViewModel: MainViewModelType {
     private var cancelBag = CancelBag()
     
     var userType: UserType = .visitor
+    var mainHeaderViewType: MainHeaderViewType = .hotBoard
     var mainServiceList: [ServiceType] = [.officialHomepage, .review, .project]
     var otherServiceList: [ServiceType] = [.instagram, .youtube, .faq]
     var appServiceList: [AppServiceType] = []

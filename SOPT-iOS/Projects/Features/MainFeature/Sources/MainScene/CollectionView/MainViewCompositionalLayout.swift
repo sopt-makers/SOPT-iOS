@@ -49,7 +49,14 @@ extension MainVC {
     }
     
     private func createMainServiceSection() -> NSCollectionLayoutSection {
-        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(44))
+        let headerHeight: CGFloat
+        switch viewModel.mainHeaderViewType {
+        case .defaultMainServiceHeaderView:
+          headerHeight = 44.0
+        case .hotBoard:
+          headerHeight = 80.0
+        }
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(headerHeight))
         let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
         
         let leadingItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1.0))
