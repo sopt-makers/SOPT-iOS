@@ -28,7 +28,8 @@ public enum AmplitudeEventType: String {
     case clickPokeIcon = "click_poke_icon"
     case clickPokeAlarmDetail = "click_poke_alarm_detail"
     case clickPokeQuit = "click_poke_quit"
-    
+    case clickHotboard = "click_hotboard"
+
     // 뷰 이벤트
     case viewAppHome = "view_apphome"
     case viewPokeOnboarding = "view_poke_onboarding"

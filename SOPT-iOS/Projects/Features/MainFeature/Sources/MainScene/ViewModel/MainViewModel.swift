@@ -276,6 +276,11 @@ extension MainViewModel {
           continue
         }
 
+        if appServiceType.isHeaderService {
+          mainHeaderViewType = (appServiceType == .hotboard) ? .hotBoard : .defaultMainServiceHeaderView
+          continue
+        }
+
         if userType == .active && service.activeUser {
           appServiceList.append(appServiceType)
           continue

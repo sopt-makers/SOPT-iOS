@@ -126,7 +126,6 @@ extension MainVC {
         
         output.needToReload
             .sink { [weak self] _ in
-                self?.updateCollectionViewLayout()
                 guard let userMainInfo = self?.viewModel.userMainInfo else {
                     self?.collectionView.reloadData()
                     return
@@ -180,7 +179,11 @@ extension MainVC {
         }
         
         self.naviBar.hideNoticeButton(wantsToHide: self.viewModel.userType == .visitor)
+        self.updateCollectionViewLayout()
         self.collectionView.reloadData()
+        let sectionCount = MainViewSectionLayoutKind.allCases.count
+        let indexSet = IndexSet(integersIn: 0..<sectionCount)
+        self.collectionView.reloadSections(indexSet)
     }
 
     private func updateCollectionViewLayout() {
