@@ -300,19 +300,30 @@ extension MainViewModel {
       }
 
       if appServiceType.isHeaderService {
-        mainHeaderViewType = (appServiceType == .hotboard) ? .hotBoard : .defaultMainServiceHeaderView
+        if appServiceType == .hotboard && checkServiceCanShowForUserType(service: service) {
+          mainHeaderViewType = .hotBoard
+        } else {
+          mainHeaderViewType = .defaultMainServiceHeaderView
+        }
         continue
       }
 
-      if userType == .active && service.activeUser {
-        appServiceList.append(appServiceType)
-        continue
-      }
-
-      if userType == .inactive && service.inactiveUser {
+      if checkServiceCanShowForUserType(service: service) {
         appServiceList.append(appServiceType)
       }
     }
+  }
+
+  private func checkServiceCanShowForUserType(service: AppServiceModel) -> Bool {
+    if userType == .active && service.activeUser {
+      return true
+    }
+
+    if userType == .inactive && service.inactiveUser {
+      return true
+    }
+
+    return false
   }
 
   /// 최초 솝트 가입일로부터 몇달이 지났는지 계산
