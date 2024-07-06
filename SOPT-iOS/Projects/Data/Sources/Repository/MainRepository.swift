@@ -92,4 +92,10 @@ extension MainRepository: MainRepositoryInterface {
             .map { $0.map { $0.toDomain() } }
             .eraseToAnyPublisher()
     }
+
+    public func hotBoard() -> AnyPublisher<HotBoardModel, Error> {
+        userService.hotBoard()
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
 }
