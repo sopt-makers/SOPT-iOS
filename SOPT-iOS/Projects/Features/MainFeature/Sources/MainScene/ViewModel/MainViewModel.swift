@@ -157,6 +157,7 @@ extension MainViewModel {
     input.hotBoardTapped
       .map { $0.url }
       .sink { [weak self] url in
+        self?.trackAmplitude(event: .clickHotboard)
         self?.onSafari?(url)
       }.store(in: cancelBag)
 
