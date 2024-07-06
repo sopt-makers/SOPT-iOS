@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 import DSKit
@@ -17,6 +18,8 @@ final class HotBoardHeaderView: UICollectionReusableView {
   // MARK: - Properties
 
   private var hotBoard: HotBoardModel?
+  var hotBoardTap = PassthroughSubject<HotBoardModel, Never>()
+  var cancelBag = CancelBag()
 
   // MARK: - UI Components
 
@@ -79,10 +82,16 @@ final class HotBoardHeaderView: UICollectionReusableView {
     super.init(frame: frame)
     self.setUI()
     self.setLayout()
+    self.addTapGesture()
   }
 
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
+  }
+
+  override func prepareForReuse() {
+    super.prepareForReuse()
+    cancelBag = CancelBag()
   }
 }
 
@@ -114,6 +123,17 @@ extension HotBoardHeaderView {
 // MARK: - Methods
 
 extension HotBoardHeaderView {
+  private func addTapGesture() {
+    let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+    self.addGestureRecognizer(tapGestureRecognizer)
+  }
+
+  @objc
+  private func handleTap() {
+    guard let hotBoard else { return }
+    self.hotBoardTap.send(hotBoard)
+  }
+
   func initCell(_ hotBoard: HotBoardModel) {
     self.hotBoard = hotBoard
     titleLabel.text = hotBoard.title

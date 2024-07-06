@@ -19,19 +19,20 @@ import Then
 import BaseFeatureDependency
 
 public class MainVC: UIViewController, MainViewControllable {
-  
+
   // MARK: - Properties
-  
+
   public var viewModel: MainViewModel!
   private var cancelBag = CancelBag()
-  
+
   private var requestUserInfo = PassthroughSubject<Void, Never>()
   private var cellTapped = PassthroughSubject<IndexPath, Never>()
-  
+  private var hotBoardTapped = PassthroughSubject<HotBoardModel, Never>()
+
   // MARK: - UI Components
-  
+
   private lazy var naviBar = MainNavigationBar().hideNoticeButton(wantsToHide: self.viewModel.userType == .visitor)
-  
+
   private lazy var collectionView: UICollectionView = {
     let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
     cv.isScrollEnabled = true
@@ -41,9 +42,9 @@ public class MainVC: UIViewController, MainViewControllable {
     cv.backgroundColor = .clear
     return cv
   }()
-  
+
   // MARK: - View Life Cycle
-  
+
   public override func viewDidLoad() {
     super.viewDidLoad()
     self.bindViewModels()
@@ -52,7 +53,7 @@ public class MainVC: UIViewController, MainViewControllable {
     self.setDelegate()
     self.registerCells()
   }
-  
+
   public override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     self.requestUserInfo.send()
@@ -66,14 +67,14 @@ extension MainVC {
     self.navigationController?.isNavigationBarHidden = true
     view.backgroundColor = DSKitAsset.Colors.gray950.color
   }
-  
+
   private func setLayout() {
     view.addSubviews(naviBar, collectionView)
-    
+
     naviBar.snp.makeConstraints { make in
       make.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)
     }
-    
+
     collectionView.snp.makeConstraints { make in
       make.top.equalTo(naviBar.snp.bottom).offset(7)
       make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
@@ -87,14 +88,14 @@ final class ComponentWorkplaceViewController: UIViewController {
     $0.axis = .vertical
     $0.spacing = 10.f
   }
-  
+
   private var cancelBag = CancelBag()
-  
+
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+
     self.view.backgroundColor = DSKitAsset.Colors.gray800.color
-    
+
     self.view.addSubview(self.stackView)
     self.stackView.snp.makeConstraints {
       $0.center.equalToSuperview()
@@ -109,21 +110,22 @@ extension MainVC {
     let noticeButtonTapped = naviBar.noticeButtonTap
       .mapVoid()
       .asDriver()
-    
+
     let myPageButtonTapped = naviBar.rightButtonTap
       .mapVoid()
       .asDriver()
-    
+
     let input = MainViewModel.Input(
       requestUserInfo: requestUserInfo.asDriver(),
       viewDidLoad: Just<Void>(()).asDriver(),
       noticeButtonTapped: noticeButtonTapped,
       myPageButtonTapped: myPageButtonTapped,
-      cellTapped: cellTapped.asDriver()
+      cellTapped: cellTapped.asDriver(),
+      hotBoardTapped: hotBoardTapped.asDriver()
     )
-    
+
     let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
-    
+
     output.needToReload
       .sink { [weak self] _ in
         guard let userMainInfo = self?.viewModel.userMainInfo else {
@@ -133,29 +135,29 @@ extension MainVC {
         print("MainVC User 모델: \(userMainInfo)")
         self?.updateUI(with: userMainInfo)
       }.store(in: self.cancelBag)
-    
+
     output.isServiceAvailable
       .sink { isServiceAvailable in
         print("현재 앱 서비스 사용 가능(심사 X)?: \(isServiceAvailable)")
       }.store(in: self.cancelBag)
-    
+
     output.needNetworkAlert
       .sink { [weak self] in
         self?.presentNetworkAlertVC()
       }.store(in: self.cancelBag)
-    
+
     output.isLoading
       .sink { [weak self] isLoading in
         isLoading ? self?.showLoading() : self?.stopLoading()
       }.store(in: self.cancelBag)
   }
-  
+
   private func setDelegate() {
     self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     self.collectionView.delegate = self
     self.collectionView.dataSource = self
   }
-  
+
   private func registerCells() {
     self.collectionView.register(UserHistoryHeaderView.self,
                                  forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
@@ -172,12 +174,12 @@ extension MainVC {
                                  withReuseIdentifier: AppServiceHeaderView.className)
     self.collectionView.register(AppServiceCVC.self, forCellWithReuseIdentifier: AppServiceCVC.className)
   }
-  
+
   private func updateUI(with model: UserMainInfoModel) {
     if let isAllConfirm = model.isAllConfirm {
       self.naviBar.changeNoticeButtonStyle(isActive: !isAllConfirm)
     }
-    
+
     self.naviBar.hideNoticeButton(wantsToHide: self.viewModel.userType == .visitor)
     self.updateCollectionViewLayout()
     self.collectionView.reloadData()
@@ -185,15 +187,15 @@ extension MainVC {
     let indexSet = IndexSet(integersIn: 0..<sectionCount)
     self.collectionView.reloadSections(indexSet)
   }
-  
+
   private func updateCollectionViewLayout() {
     let newLayout = createLayout()
     self.collectionView.setCollectionViewLayout(newLayout, animated: true)
   }
-  
+
   private func presentNetworkAlertVC() {
     guard self.presentedViewController == nil else { return }
-    
+
     AlertUtils.presentAlertVC(
       type: .titleDescription,
       theme: .main,
@@ -225,11 +227,11 @@ extension MainVC: UICollectionViewDelegate {
 // MARK: - UICollectionViewDataSource
 
 extension MainVC: UICollectionViewDataSource {
-  
+
   public func numberOfSections(in collectionView: UICollectionView) -> Int {
     return 4
   }
-  
+
   public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
     guard kind == UICollectionView.elementKindSectionHeader else { return UICollectionReusableView() }
     switch indexPath.section {
@@ -251,7 +253,7 @@ extension MainVC: UICollectionViewDataSource {
         headerView.initCell(title: viewModel.mainDescription.topDescription)
         return headerView
       }
-      
+
       guard let headerView = collectionView
         .dequeueReusableSupplementaryView(ofKind: kind,
                                           withReuseIdentifier: HotBoardHeaderView.className,
@@ -260,6 +262,11 @@ extension MainVC: UICollectionViewDataSource {
       if let hotBoard = viewModel.hotBoard {
         headerView.initCell(hotBoard)
       }
+      headerView.hotBoardTap
+        .sink { [weak self] model in
+          self?.hotBoardTapped.send(model)
+        }
+        .store(in: headerView.cancelBag)
       return headerView
     case 3:
       guard let headerView = collectionView
@@ -273,7 +280,7 @@ extension MainVC: UICollectionViewDataSource {
       return UICollectionReusableView()
     }
   }
-  
+
   public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     switch section {
     case 0: return 1
@@ -283,7 +290,7 @@ extension MainVC: UICollectionViewDataSource {
     default: return 0
     }
   }
-  
+
   public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     switch indexPath.section {
     case 0:
@@ -300,7 +307,7 @@ extension MainVC: UICollectionViewDataSource {
         cell.initCell(serviceType: viewModel.mainServiceList[indexPath.item], userType: viewModel.userType)
         return cell
       }
-      
+
       guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductCVC.className, for: indexPath) as? ProductCVC else { return UICollectionViewCell() }
       cell.initCell(serviceType: viewModel.mainServiceList[indexPath.item], userType: viewModel.userType)
       return cell

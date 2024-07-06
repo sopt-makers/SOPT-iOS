@@ -39,6 +39,7 @@ public class MainViewModel: MainViewModelType {
     let noticeButtonTapped: Driver<Void>
     let myPageButtonTapped: Driver<Void>
     let cellTapped: Driver<IndexPath>
+    let hotBoardTapped: Driver<HotBoardModel>
   }
 
   // MARK: - Outputs
@@ -153,6 +154,12 @@ extension MainViewModel {
         self.trackAmplitude(event: .viewAppHome)
       }.store(in: cancelBag)
 
+    input.hotBoardTapped
+      .map { $0.url }
+      .sink { [weak self] url in
+        self?.onSafari?(url)
+      }.store(in: cancelBag)
+
     return output
   }
 
@@ -189,10 +196,9 @@ extension MainViewModel {
         output.needToReload.send()
       }.store(in: self.cancelBag)
 
-    // 모든 API 통신 완료되면 로딩뷰 숨기기
-    Publishers.Zip4(
+    // 필수 API 통신 완료되면 로딩뷰 숨기기
+    Publishers.Zip3(
       useCase.userMainInfo,
-      useCase.mainDescription,
       useCase.appService,
       useCase.hotBoard
     )
