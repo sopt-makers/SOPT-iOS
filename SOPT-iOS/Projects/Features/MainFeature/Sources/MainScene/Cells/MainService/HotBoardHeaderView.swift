@@ -10,8 +10,13 @@ import UIKit
 
 import Core
 import DSKit
+import Domain
 
 final class HotBoardHeaderView: UICollectionReusableView {
+
+  // MARK: - Properties
+
+  private var hotBoard: HotBoardModel?
 
   // MARK: - UI Components
 
@@ -109,9 +114,10 @@ extension HotBoardHeaderView {
 // MARK: - Methods
 
 extension HotBoardHeaderView {
-  func initCell() {
-    titleLabel.text = "핫게시물 제목"
-    descriptionLabel.text = "핫 게시글 본문내용입니다. 핫 게시글 본문 내용입..."
+  func initCell(_ hotBoard: HotBoardModel) {
+    self.hotBoard = hotBoard
+    titleLabel.text = hotBoard.title
+    descriptionLabel.text = hotBoard.content
   }
 }
 
