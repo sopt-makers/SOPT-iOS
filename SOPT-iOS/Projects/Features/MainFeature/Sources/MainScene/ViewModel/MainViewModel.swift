@@ -23,7 +23,7 @@ public class MainViewModel: MainViewModelType {
   private var cancelBag = CancelBag()
 
   var userType: UserType = .visitor
-  var mainHeaderViewType: MainHeaderViewType = .hotBoard
+  var mainHeaderViewType: MainHeaderViewType = .defaultMainServiceHeaderView
   var mainServiceList: [ServiceType] = [.officialHomepage, .review, .project]
   var otherServiceList: [ServiceType] = [.instagram, .youtube, .faq]
   var appServiceList: [AppServiceType] = []
@@ -279,12 +279,15 @@ extension MainViewModel {
       self.mainServiceList = [.officialHomepage, .review, .project]
       self.otherServiceList = [.instagram, .youtube, .faq]
       self.appServiceList = [.poke, .soptamp]
+      self.mainHeaderViewType = .defaultMainServiceHeaderView
     case .active:
       self.mainServiceList = [.attendance, .group, .playgroundCommunity]
       self.otherServiceList = [.member, .project, .officialHomepage]
+      self.mainHeaderViewType = .hotBoard
     case .inactive:
       self.mainServiceList = [.playgroundCommunity, .group, .member]
       self.otherServiceList = [.project, .officialHomepage, .instagram, .youtube]
+      self.mainHeaderViewType = .hotBoard
     }
   }
 
