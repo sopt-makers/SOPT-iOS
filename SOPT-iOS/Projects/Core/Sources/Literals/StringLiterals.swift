@@ -196,12 +196,12 @@ public struct I18N {
                     public static let member = "궁금한 사람 찾아보기"
                     public static let group = "지금 열린 모임은?"
                     public static let instagram = "SOPT 소식 빠르게 확인하기"
-                    public static let playgroundCommunity = "가장 HOT한 글은?"
+                    public static let playgroundCommunity = "모두와 연결되는 공간"
                 }
 
                 public struct ActiveUser {
                     public static let project = "역대 프로젝트 모아보기"
-                    public static let playgroundCommunity = "가장 HOT한 글은?"
+                    public static let playgroundCommunity = "모두와 연결되는 공간"
                 }
                 
                 public struct InactiveUser {
