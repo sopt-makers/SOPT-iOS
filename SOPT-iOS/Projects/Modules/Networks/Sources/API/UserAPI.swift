@@ -27,6 +27,7 @@ public enum UserAPI {
     case getNotificationSettingsInDetail
     case optInPushNotificationInDetail(notificationSettings: DetailNotificationOptInEntity)
     case appService
+    case hotboard
 }
 
 extension UserAPI: BaseAPI {
@@ -62,6 +63,8 @@ extension UserAPI: BaseAPI {
             return "/opt-in/detail"
         case .appService:
             return "app-service"
+        case .hotboard:
+            return "playground/hot-post"
         }
     }
     
@@ -69,7 +72,7 @@ extension UserAPI: BaseAPI {
     public var method: Moya.Method {
         switch self {
         case .getNicknameAvailable, .getUserMainInfo, .fetchSoptampUser, .fetchActiveGenerationStatus,
-            .getNotificationIsAllowed, .getNotificationSettingsInDetail, .appService:
+            .getNotificationIsAllowed, .getNotificationSettingsInDetail, .appService, .hotboard:
             return .get
         case .editSentence, .changeNickname, .optInPushNotificationInGeneral, .optInPushNotificationInDetail:
             return .patch

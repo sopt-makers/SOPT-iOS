@@ -30,6 +30,7 @@ public protocol UserService {
     func getNotificationSettingsInDetail() -> AnyPublisher<DetailNotificationOptInEntity, Error>
     func optInPushNotificationInDetail(notificationSettings: DetailNotificationOptInEntity) -> AnyPublisher<DetailNotificationOptInEntity, Error>
     func appService() -> AnyPublisher<[AppServiceEntity], Error>
+    func hotBoard() -> AnyPublisher<HotBoardEntity, Error>
 }
 
 extension DefaultUserService: UserService {
@@ -91,5 +92,9 @@ extension DefaultUserService: UserService {
 
     public func appService() -> AnyPublisher<[AppServiceEntity], Error> {
         requestObjectWithNetworkErrorInCombine(.appService)
+    }
+
+    public func hotBoard() -> AnyPublisher<HotBoardEntity, Error> {
+        requestObjectWithNetworkErrorInCombine(.hotboard)
     }
 }
