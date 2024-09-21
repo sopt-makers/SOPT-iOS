@@ -34,7 +34,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         configureAPNs()
         
         window = UIWindow(windowScene: scene)
-        window?.rootViewController = DailySoptuneResultVC(viewModel: DailySoptuneResultViewModel())
+        window?.rootViewController = rootController
         window?.makeKeyAndVisible()
         
         self.appCoordinator.start()
