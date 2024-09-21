@@ -367,6 +367,12 @@ public struct I18N {
       }
       public static let emptyViewDescription = "아직 없어요 T.T\n더 많은 찌르기로 달성해보세요"
     }
+    
+    public struct DailySoptune {
+        public static let poke = "콕 찌르기"
+        public static let pokeFortunatePerson = "행운이 2배가 될 솝트인을 찔러보세요"
+        public static let receiveTodaysTalisman = "오늘의 부적 받기"
+    }
 }
 
 extension I18N {
