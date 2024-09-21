@@ -10,6 +10,7 @@ import UIKit
 import Core
 import BaseFeatureDependency
 import RootFeature
+import DailySoptuneFeature
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
@@ -33,7 +34,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         configureAPNs()
         
         window = UIWindow(windowScene: scene)
-        window?.rootViewController = rootController
+        window?.rootViewController = DailySoptuneResultVC(viewModel: DailySoptuneResultViewModel())
         window?.makeKeyAndVisible()
         
         self.appCoordinator.start()
