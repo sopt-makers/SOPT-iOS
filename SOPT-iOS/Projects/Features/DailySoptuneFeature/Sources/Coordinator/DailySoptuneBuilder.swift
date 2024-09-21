@@ -15,5 +15,9 @@ public final class DailySoptuneBuilder {
 }
 
 extension DailySoptuneBuilder: DailySoptuneFeatureBuildable {
-    
+    public func makeDailySoptuneResultVC() -> any DailySoptuneFeatureInterface.DailySoptuneResultViewControllable {
+        let viewModel = DailySoptuneResultViewModel()
+        let dailySoptuneResultVC = DailySoptuneResultVC(viewModel: viewModel)
+        return dailySoptuneResultVC
+    }
 }
