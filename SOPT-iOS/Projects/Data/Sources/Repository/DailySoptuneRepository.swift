@@ -15,10 +15,16 @@ import Networks
 public class DailySoptuneRepository {
     
     private let fortuneService: FortuneService
+    private let pokeService: PokeService
+    
     private let cancelBag = CancelBag()
     
-    public init(service: FortuneService) {
-        self.fortuneService = service
+    public init(
+        fortuneService: FortuneService,
+        pokeService: PokeService
+    ) {
+        self.fortuneService = fortuneService
+        self.pokeService = pokeService
     }
     
 }
@@ -26,6 +32,12 @@ public class DailySoptuneRepository {
 extension DailySoptuneRepository: DailySoptuneRepositoyInterface {
     public func getTodaysFortuneCard() -> AnyPublisher<Domain.DailySoptuneCardModel, any Error> {
         fortuneService.getTodaysFortuneCard()
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
+    
+    public func getFriendRandomUser() -> AnyPublisher<Domain.PokeFriendRandomUserModel, any Error> {
+        pokeService.getFriendRandomUser(randomType: "", size: 1)
             .map { $0.toDomain() }
             .eraseToAnyPublisher()
     }
