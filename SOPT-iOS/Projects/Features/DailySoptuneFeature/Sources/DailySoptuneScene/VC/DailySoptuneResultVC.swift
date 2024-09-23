@@ -98,10 +98,6 @@ extension DailySoptuneResultVC {
     private func setLayout() {
         self.view.addSubviews(navigationView, scrollView, receiveTodaysTalismanButton)
         
-        backButton.snp.makeConstraints { make in
-            make.width.height.equalTo(40)
-        }
-        
         navigationView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(8)
@@ -129,7 +125,7 @@ extension DailySoptuneResultVC {
         contentStackView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalToSuperview().inset(17)
-            make.leading.trailing.equalToSuperview().inset(20)
+            make.width.equalTo(self.view.frame.size.width - 20 * 2)
             make.bottom.equalToSuperview().inset(20)
         }
         

@@ -109,11 +109,11 @@ extension DailySoptuneResultPokeView {
         }
         
         profileImageView.snp.makeConstraints { make in
-            make.width.height.equalTo(72)
+            make.size.equalTo(72)
         }
         
         kokButton.snp.makeConstraints { make in
-            make.width.height.equalTo(44)
+            make.size.equalTo(44)
         }
         
         pokeStackView.snp.makeConstraints { make in
