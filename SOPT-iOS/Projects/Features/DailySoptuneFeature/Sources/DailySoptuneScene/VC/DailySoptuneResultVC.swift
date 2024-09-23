@@ -17,11 +17,13 @@ import BaseFeatureDependency
 import DailySoptuneFeatureInterface
 
 public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultViewControllable {
-    
+        
     // MARK: - Properties
     
     public var viewModel: DailySoptuneResultViewModel
     private var cancelBag = CancelBag()
+    
+    private lazy var receiveTodaysFortuneButtonTap: Driver<Void> = receiveTodaysFortuneCardButton.publisher(for: .touchUpInside).mapVoid().asDriver()
     
     // MARK: - UI Components
     
@@ -136,5 +138,15 @@ extension DailySoptuneResultVC {
 
 extension DailySoptuneResultVC {
     private func bindViewModel() {
+        let input = DailySoptuneResultViewModel
+            .Input(
+                viewDidLoad: Just(()).asDriver(),
+                naviBackButtonTap: self.backButton
+                    .publisher(for: .touchUpInside)
+                    .mapVoid().asDriver(),
+                receiveTodaysFortuneCardTap: receiveTodaysFortuneButtonTap
+            )
+        
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
     }
 }
