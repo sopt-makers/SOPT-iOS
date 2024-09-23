@@ -56,7 +56,7 @@ public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultVie
     
     // 오늘의 부적 받기 버튼
     
-    private lazy var receiveTodaysTalismanButton = AppCustomButton(title: I18N.DailySoptune.receiveTodaysTalisman)
+    private lazy var receiveTodaysFortuneCardButton = AppCustomButton(title: I18N.DailySoptune.receiveTodaysFortuneCard)
         .setEnabled(true)
     
     // MARK: - Initialization
@@ -96,7 +96,7 @@ extension DailySoptuneResultVC {
     }
     
     private func setLayout() {
-        self.view.addSubviews(navigationView, scrollView, receiveTodaysTalismanButton)
+        self.view.addSubviews(navigationView, scrollView, receiveTodaysFortuneCardButton)
         
         navigationView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
@@ -106,7 +106,7 @@ extension DailySoptuneResultVC {
         
         setScrollViewLayout()
         
-        receiveTodaysTalismanButton.snp.makeConstraints { make in
+        receiveTodaysFortuneCardButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.height.equalTo(56.adjusted)
             make.width.equalTo(335.adjusted)
