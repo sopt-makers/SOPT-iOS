@@ -50,7 +50,7 @@ public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultVie
     
     // 오늘의 솝마디 부분
     
-    private let dailySoptuneResultContentView = DailySoptuneResultContentView(name: "이재현", description: "단순하게 생각하면\n일이 술술 풀리겠솝!")
+    private lazy var dailySoptuneResultContentView = DailySoptuneResultContentView(name: "이재현", description: "단순하게 생각하면\n일이 술술 풀리겠솝!", date: viewModel.setCurrentDateString())
     
     // 콕 찌르기 부분
     

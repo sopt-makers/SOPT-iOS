@@ -69,4 +69,12 @@ extension DailySoptuneResultViewModel {
             .subscribe(output.todaysFortuneCard)
             .store(in: cancelBag)
     }
+    
+    func setCurrentDateString() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "M월 d일 EEEE"
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
+        return dateFormatter.string(from: Date())
+    }
 }
