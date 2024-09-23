@@ -18,6 +18,7 @@ public class DailySoptuneResultViewModel: DailySoptuneResultViewModelType {
     
     // MARK: - Properties
 
+    private let useCase: DailySoptuneUseCase
     private var cancelBag = CancelBag()
     
     // MARK: - Inputs
@@ -32,8 +33,8 @@ public class DailySoptuneResultViewModel: DailySoptuneResultViewModelType {
     
     // MARK: - Initialization
     
-    public init() {
-        
+    public init(useCase: DailySoptuneUseCase) {
+        self.useCase = useCase
     }
 }
 

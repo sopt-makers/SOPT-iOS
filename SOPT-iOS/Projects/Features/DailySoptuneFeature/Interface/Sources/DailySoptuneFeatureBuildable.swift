@@ -11,5 +11,5 @@ import Foundation
 import Domain
 
 public protocol DailySoptuneFeatureBuildable {
-    func makeDailySoptuneResultVC() -> DailySoptuneResultViewControllable
+    func makeDailySoptuneResultVC() -> DailySoptuneResultPresentable
 }

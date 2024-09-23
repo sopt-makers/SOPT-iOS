@@ -23,6 +23,11 @@ public class DailySoptuneRepository {
     
 }
 
-extension DailySoptuneRepository: DailySoptuneRepositoryInterface {
-    
+extension DailySoptuneRepository: DailySoptuneRepositoyInterface {
+    public func getTodaysFortuneCard() -> AnyPublisher<Domain.DailySoptuneCardModel, any Error> {
+        fortuneService.getTodaysFortuneCard()
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
 }
+    
