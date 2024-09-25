@@ -372,6 +372,8 @@ public struct I18N {
         public static let poke = "콕 찌르기"
         public static let pokeFortunatePerson = "행운이 2배가 될 솝트인을 찔러보세요"
         public static let receiveTodaysTalisman = "오늘의 부적 받기"
+		public static let recieveTodayFortune = "오늘의 운세가 도착했어요!"
+		public static let checkTodayFortune = "오늘의 운세 확인하기"
     }
 }
 
