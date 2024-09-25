@@ -36,6 +36,7 @@ public class DailySoptuneResultViewModel: DailySoptuneResultViewModelType {
     
     public struct Output {
         let todaysFortuneCard = PassthroughSubject<DailySoptuneCardModel, Never>()
+        let randomUser = PassthroughSubject<PokeRandomUserInfoModel, Never>()
     }
     
     // MARK: - Initialization
@@ -53,6 +54,7 @@ extension DailySoptuneResultViewModel {
         input.viewDidLoad
             .sink { [weak self] _ in
                 self?.onNaviBackTap?()
+                self?.useCase.getRandomUser()
             }.store(in: cancelBag)
         
         input.receiveTodaysFortuneCardTap
@@ -68,6 +70,12 @@ extension DailySoptuneResultViewModel {
         useCase.todaysFortuneCard
             .subscribe(output.todaysFortuneCard)
             .store(in: cancelBag)
+        
+        useCase.randomUser
+            .asDriver()
+            .sink(receiveValue: { values in
+                output.randomUser.send(values[0])
+            }).store(in: cancelBag)
     }
     
     func setCurrentDateString() -> String {

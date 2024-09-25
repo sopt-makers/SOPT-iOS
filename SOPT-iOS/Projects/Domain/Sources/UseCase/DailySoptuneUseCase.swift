@@ -12,10 +12,10 @@ import Core
 
 public protocol DailySoptuneUseCase {
     var todaysFortuneCard: PassthroughSubject<DailySoptuneCardModel, Never> { get }
-    var friendRandomUser: PassthroughSubject<PokeFriendRandomUserModel, Never> { get }
+    var randomUser: PassthroughSubject<[PokeRandomUserInfoModel], Never> { get }
     
     func getTodaysFortuneCard()
-    func getFriendRandomUser()
+    func getRandomUser()
 }
 
 public class DefaultDailySoptuneUseCase {
@@ -24,7 +24,7 @@ public class DefaultDailySoptuneUseCase {
     public let cancelBag = CancelBag()
     
     public let todaysFortuneCard = PassthroughSubject<DailySoptuneCardModel, Never>()
-    public let friendRandomUser = PassthroughSubject<PokeFriendRandomUserModel, Never>()
+    public let randomUser = PassthroughSubject<[PokeRandomUserInfoModel], Never>()
     
     public init(repository: DailySoptuneRepositoyInterface) {
         self.repository = repository
@@ -42,12 +42,12 @@ extension DefaultDailySoptuneUseCase: DailySoptuneUseCase {
             }.store(in: cancelBag)
     }
     
-    public func getFriendRandomUser() {
-        repository.getFriendRandomUser()
+    public func getRandomUser() {
+        repository.getRandomUser()
             .sink { event in
-                print("GetFriendRandomUser State: \(event)")
+                print("GetRandomUser State: \(event)")
             } receiveValue: { [weak self] randomUser in
-                self?.friendRandomUser.send(friendRandomUser)
+                self?.randomUser.send(randomUser)
             }.store(in: cancelBag)
     }
 }

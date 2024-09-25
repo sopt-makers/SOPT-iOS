@@ -10,5 +10,5 @@ import Combine
 
 public protocol DailySoptuneRepositoyInterface {
     func getTodaysFortuneCard() -> AnyPublisher<DailySoptuneCardModel, Error>
-    func getFriendRandomUser() -> AnyPublisher<PokeFriendRandomUserModel, Error>
+    func getRandomUser() -> AnyPublisher<[PokeRandomUserInfoModel], Error>
 }

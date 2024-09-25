@@ -30,16 +30,16 @@ public class DailySoptuneRepository {
 }
 
 extension DailySoptuneRepository: DailySoptuneRepositoyInterface {
+    
     public func getTodaysFortuneCard() -> AnyPublisher<Domain.DailySoptuneCardModel, any Error> {
         fortuneService.getTodaysFortuneCard()
             .map { $0.toDomain() }
             .eraseToAnyPublisher()
     }
     
-    public func getFriendRandomUser() -> AnyPublisher<Domain.PokeFriendRandomUserModel, any Error> {
-        pokeService.getFriendRandomUser(randomType: "", size: 1)
-            .map { $0.toDomain() }
+    public func getRandomUser() -> AnyPublisher<[Domain.PokeRandomUserInfoModel], any Error> {
+        pokeService.getRandomUsers(randomType: "ALL_USER", size: 1)
+            .map { $0.randomInfoList.map { $0.toDomain() }}
             .eraseToAnyPublisher()
     }
 }
-    

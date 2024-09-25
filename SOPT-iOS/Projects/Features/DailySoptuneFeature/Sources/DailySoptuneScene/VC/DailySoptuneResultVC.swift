@@ -148,5 +148,11 @@ extension DailySoptuneResultVC {
             )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.randomUser
+            .withUnretained(self)
+            .sink { owner, model in
+                owner.dailySoptuneResultPokeView.setData(with: model.userInfoList[0])
+            }.store(in: self.cancelBag)
     }
 }
