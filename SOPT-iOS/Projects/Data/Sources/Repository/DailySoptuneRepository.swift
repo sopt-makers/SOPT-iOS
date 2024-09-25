@@ -38,7 +38,7 @@ extension DailySoptuneRepository: DailySoptuneRepositoyInterface {
     }
     
     public func getRandomUser() -> AnyPublisher<[Domain.PokeRandomUserInfoModel], any Error> {
-        pokeService.getRandomUsers(randomType: "ALL_USER", size: 1)
+        pokeService.getRandomUsers(randomType: nil, size: 1)
             .map { $0.randomInfoList.map { $0.toDomain() }}
             .eraseToAnyPublisher()
     }
