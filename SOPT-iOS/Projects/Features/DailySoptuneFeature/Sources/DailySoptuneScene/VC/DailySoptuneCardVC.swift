@@ -35,8 +35,7 @@ public final class DailySoptuneCardVC: UIViewController {
 		$0.image = DSKitAsset.Assets.imgTitlecards.image
 	}
 	
-	private let goToHomeButton = AppCustomButton(title: I18N.DailySoptune.goHome)
-		.setFontColor(customFont: DSKitFontFamily.Suit.semiBold.font(size: 18))
+	private let goToHomeButton = AppOutlinedButton(title: I18N.DailySoptune.goHome)
 	
 	public override func viewDidLoad() {
 		super.viewDidLoad()
