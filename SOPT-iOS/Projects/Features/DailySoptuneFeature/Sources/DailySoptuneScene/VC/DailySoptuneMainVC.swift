@@ -51,7 +51,6 @@ public final class DailySoptuneMainVC: UIViewController {
 		
 		setUI()
 		setLayout()
-
     }
 }
 

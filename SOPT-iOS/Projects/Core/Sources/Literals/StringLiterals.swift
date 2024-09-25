@@ -374,6 +374,7 @@ public struct I18N {
         public static let receiveTodaysTalisman = "오늘의 부적 받기"
 		public static let recieveTodayFortune = "오늘의 운세가 도착했어요!"
 		public static let checkTodayFortune = "오늘의 운세 확인하기"
+		public static let goHome = "홈으로 돌아가기"
     }
 }
 
