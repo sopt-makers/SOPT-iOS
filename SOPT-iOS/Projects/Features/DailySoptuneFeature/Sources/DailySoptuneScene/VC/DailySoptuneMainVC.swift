@@ -20,7 +20,7 @@ public final class DailySoptuneMainVC: UIViewController {
 	// MARK: - UI Components
 	
 	private let backButton = UIButton().then {
-		$0.setImage(DSKitAsset.Assets.xMark.image, for: .normal)
+		$0.setImage(DSKitAsset.Assets.xMark.image.withTintColor(DSKitAsset.Colors.gray30.color), for: .normal)
 	}
 	
 	private let dateLabel = UILabel().then {
@@ -44,7 +44,7 @@ public final class DailySoptuneMainVC: UIViewController {
 	}
 	
 	private let checkTodayFortuneButton = AppCustomButton(title: I18N.DailySoptune.checkTodayFortune)
-		.setFont(customFont: DSKitFontFamily.Suit.semiBold.font(size: 18))
+		.setFontColor(customFont: DSKitFontFamily.Suit.semiBold.font(size: 18))
 	
 	public override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,7 +63,13 @@ extension DailySoptuneMainVC {
 	}
 	
 	private func setLayout() {
-		self.view.addSubviews(dateLabel, recieveFortune, todayFortuneImage, titleCardsImage, checkTodayFortuneButton)
+		self.view.addSubviews(backButton, dateLabel, recieveFortune, todayFortuneImage, titleCardsImage, checkTodayFortuneButton)
+		
+		backButton.snp.makeConstraints { make in
+			make.top.equalTo(view.safeAreaLayoutGuide).offset(2.adjustedH)
+			make.leading.equalToSuperview().inset(8.adjusted)
+			make.size.equalTo(40)
+		}
 		
 		dateLabel.snp.makeConstraints { make in
 			make.top.equalTo(view.safeAreaLayoutGuide).offset(40.adjustedH)
