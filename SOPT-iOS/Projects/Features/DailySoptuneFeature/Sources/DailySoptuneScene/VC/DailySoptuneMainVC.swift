@@ -75,7 +75,7 @@ public final class DailySoptuneMainVC: UIViewController, DailySoptuneMainViewCon
 		
 		setUI()
 		setLayout()
-        bindViewModel()
+        bindViewModels()
     }
 }
 
@@ -124,7 +124,7 @@ private extension DailySoptuneMainVC {
 		}
 	}
     
-    func bindViewModel() {
+    func bindViewModels() {
         let input = DailySoptuneMainViewModel
             .Input(
                 viewDidLoad: viewDidLoaded,

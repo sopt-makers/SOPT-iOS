@@ -10,7 +10,6 @@ import Foundation
 import Combine
 
 import Moya
-import Network
 
 public typealias DefaultFortuneService = BaseService<FortuneAPI>
 

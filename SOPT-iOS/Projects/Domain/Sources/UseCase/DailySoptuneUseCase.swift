@@ -24,7 +24,7 @@ public protocol DailySoptuneUseCase {
 
 public class DefaultDailySoptuneUseCase {
     
-    public let repository: DailySoptuneRepositoyInterface
+    public let repository: DailySoptuneRepositoryInterface
     public let cancelBag = CancelBag()
     
     public let dailySoptuneResult = PassthroughSubject<DailySoptuneResultModel, Never>()
@@ -34,7 +34,7 @@ public class DefaultDailySoptuneUseCase {
     public let pokedResponse = PassthroughSubject<PokeUserModel, Never>()
     public let errorMessage = PassthroughSubject<String?, Never>()
     
-    public init(repository: DailySoptuneRepositoyInterface) {
+    public init(repository: DailySoptuneRepositoryInterface) {
         self.repository = repository
     }
 }

@@ -13,7 +13,7 @@ import PokeFeature
 import PokeFeatureInterface
 
 public final class DailySoptuneBuilder {
-    @Injected public var dailySoptuneRepository: DailySoptuneRepositoyInterface
+    @Injected public var dailySoptuneRepository: DailySoptuneRepositoryInterface
     @Injected public var pokeOnboardingRepository: PokeOnboardingRepositoryInterface
     
     public init() {}
