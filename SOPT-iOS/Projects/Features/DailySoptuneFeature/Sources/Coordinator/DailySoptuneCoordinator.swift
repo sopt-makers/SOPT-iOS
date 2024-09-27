@@ -35,6 +35,11 @@ public final class DailySoptuneCoordinator: DefaultCoordinator {
     private func showDailySoptuneResult() {
         var dailySoptuneResult = factory.makeDailySoptuneResultVC()
         
+        dailySoptuneResult.vm.onNaviBackButtonTap = { [weak self] in
+            self?.router.dismissModule(animated: true)
+            self?.finishFlow?()
+        }
+        
         dailySoptuneResult.vm.onKokButtonTapped = { [weak self] userModel in
             guard let self else { return .empty() }
             return self.showMessageBottomSheet(userModel: userModel, on: dailySoptuneResult.vc.viewController)
