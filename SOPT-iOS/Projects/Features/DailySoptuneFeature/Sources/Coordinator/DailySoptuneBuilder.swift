@@ -11,6 +11,8 @@ import Domain
 @_exported import DailySoptuneFeatureInterface
 
 public final class DailySoptuneBuilder {
+    @Injected public var dailySoptuneRepository: DailySoptuneRepositoryInterface
+    
     public init() {}
 }
 
@@ -21,9 +23,10 @@ extension DailySoptuneBuilder: DailySoptuneFeatureBuildable {
         return dailySoptuneResultVC
     }
 	
-	public func makeDailySoptuneMainVc() -> DailySoptuneMainViewControllable {
-		let viewModel = DailySoptuneMainViewModel()
+	public func makeDailySoptuneMainVC() -> DailySoptuneMainPresentable {
+        let useCase = DefaultDailySoptuneUseCase(repository: dailySoptuneRepository)
+        let viewModel = DailySoptuneMainViewModel(useCase: useCase)
 		let dailySoptuneMainVC = DailySoptuneMainVC(viewModel: viewModel)
-		return dailySoptuneMainVC
+		return (dailySoptuneMainVC, viewModel)
 	}
 }

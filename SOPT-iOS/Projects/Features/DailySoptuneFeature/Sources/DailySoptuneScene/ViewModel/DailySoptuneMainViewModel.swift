@@ -7,34 +7,75 @@
 //
 
 import Foundation
-import Core
+import Combine
 
-public class DailySoptuneMainViewModel: DailySoptuneMainViewModelType {
+import Core
+import Domain
+
+import DailySoptuneFeatureInterface
+
+public final class DailySoptuneMainViewModel: DailySoptuneMainViewModelType {
+    
+    public var onNavibackTap: (() -> Void)?
+    public var onReciveTodayFortuneButtonTap: (() -> Void)?
 	
 	// MARK: - Properties
 
+    private let useCase: DailySoptuneUseCase
 	private var cancelBag = CancelBag()
 	
 	// MARK: - Inputs
 	
 	public struct Input {
+        let viewDidLoad: Driver<Void>
+        let naviBackButtonTap: Driver<Void>
+        let receiveTodayFortuneButtonTap: Driver<Void>
+        
+        public init(viewDidLoad: Driver<Void>, naviBackButtonTap: Driver<Void>, receiveTodayFortuneButtonTap: Driver<Void>) {
+            self.viewDidLoad = viewDidLoad
+            self.naviBackButtonTap = naviBackButtonTap
+            self.receiveTodayFortuneButtonTap = receiveTodayFortuneButtonTap
+        }
 	}
 	
 	// MARK: - Outputs
 	
 	public struct Output {
+        let todayFortuneResult = PassthroughSubject<DailySoptuneResultModel, Never>()
 	}
 	
 	// MARK: - Initialization
 	
-	public init() {
-		
-	}
+    public init(useCase: DailySoptuneUseCase) {
+        self.useCase = useCase
+    }
 }
 
 extension DailySoptuneMainViewModel {
 	public func transform(from input: Input, cancelBag: CancelBag) -> Output {
 		let output = Output()
+        self.bindOutput(output: output, cancelBag: cancelBag)
+        
+        input.viewDidLoad
+            .withUnretained(self)
+            .sink {_ in
+                self.onNavibackTap?()
+            }.store(in: cancelBag)
+        
+        input.receiveTodayFortuneButtonTap
+            .withUnretained(self)
+            .sink { _ in
+                self.onReciveTodayFortuneButtonTap?()
+                self.useCase.getDailySoptuneResult(date: "2024-09-19")
+            }.store(in: cancelBag)
+        
 		return output
 	}
+    
+    private func bindOutput(output: Output, cancelBag: CancelBag) {
+        useCase.dailySoptuneResult
+            .asDriver()
+            .subscribe(output.todayFortuneResult)
+            .store(in: cancelBag)
+    }
 }

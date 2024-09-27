@@ -23,6 +23,10 @@ public final class DailySoptuneMainVC: UIViewController, DailySoptuneMainViewCon
 	
 	public var viewModel: DailySoptuneMainViewModel
 	private var cancelBag = CancelBag()
+    
+    private let viewDidLoaded: Driver<Void> = PassthroughSubject<Void, Never>().asDriver()
+    private lazy var todayFortuneButtonTapped: Driver<Void> = checkTodayFortuneButton.publisher(for: .touchUpInside).mapVoid().asDriver()
+    private lazy var backButtonTapped: Driver<Void> = backButton.publisher(for: .touchUpInside).mapVoid().asDriver()
 	
 	// MARK: - UI Components
 	
@@ -71,6 +75,7 @@ public final class DailySoptuneMainVC: UIViewController, DailySoptuneMainViewCon
 		
 		setUI()
 		setLayout()
+        bindViewModel()
     }
 }
 
@@ -118,4 +123,15 @@ private extension DailySoptuneMainVC {
 			make.height.equalTo(270.adjustedH)
 		}
 	}
+    
+    func bindViewModel() {
+        let input = DailySoptuneMainViewModel
+            .Input(
+                viewDidLoad: viewDidLoaded,
+                naviBackButtonTap: backButtonTapped,
+                receiveTodayFortuneButtonTap: todayFortuneButtonTapped
+            )
+        
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+    }
 }
