@@ -47,12 +47,12 @@ public final class DailySoptuneCardVC: UIViewController {
 
 // MARK: UI & Layout
 
-extension DailySoptuneCardVC {
-	private func setUI() {
+private extension DailySoptuneCardVC {
+	func setUI() {
 		view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
 	}
 	
-	private func setLayout() {
+	func setLayout() {
 		self.view.addSubviews(backButton, subCardLabel, cardLabel, cardImage, goToHomeButton)
 		
 		backButton.snp.makeConstraints { make in

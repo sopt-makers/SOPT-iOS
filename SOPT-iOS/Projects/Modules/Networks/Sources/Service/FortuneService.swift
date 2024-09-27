@@ -14,10 +14,15 @@ import Moya
 public typealias DefaultFortuneService = BaseService<FortuneAPI>
 
 public protocol FortuneService {
-    func getTodaysFortuneCard() -> AnyPublisher<FortuneCardEntity, Error>
+    func getDailySoptuneResult(date: String) -> AnyPublisher<DailyFortuneResultEntity, Error>
+    func getTodaysFortuneCard() -> AnyPublisher<FortuneCardEntity, any Error>
 }
 
 extension DefaultFortuneService: FortuneService {
+    public func getDailySoptuneResult(date: String) -> AnyPublisher<DailyFortuneResultEntity, Error> {
+        requestObjectInCombine(.getDailySoptuneResult(date: date))
+    }
+        
     public func getTodaysFortuneCard() -> AnyPublisher<FortuneCardEntity, any Error> {
         requestObjectInCombine(.getTodaysFortuneCard)
     }

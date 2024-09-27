@@ -15,8 +15,19 @@ import DSKit
 import SnapKit
 import Then
 
-public final class DailySoptuneMainVC: UIViewController {
+import BaseFeatureDependency
 
+public final class DailySoptuneMainVC: UIViewController, DailySoptuneMainViewControllable {
+
+	// MARK: - Properties
+	
+	public var viewModel: DailySoptuneMainViewModel
+	private var cancelBag = CancelBag()
+    
+    private let viewDidLoaded: Driver<Void> = PassthroughSubject<Void, Never>().asDriver()
+    private lazy var todayFortuneButtonTapped: Driver<Void> = checkTodayFortuneButton.publisher(for: .touchUpInside).mapVoid().asDriver()
+    private lazy var backButtonTapped: Driver<Void> = backButton.publisher(for: .touchUpInside).mapVoid().asDriver()
+	
 	// MARK: - UI Components
 	
 	private let backButton = UIButton().then {
@@ -46,22 +57,36 @@ public final class DailySoptuneMainVC: UIViewController {
 	private let checkTodayFortuneButton = AppCustomButton(title: I18N.DailySoptune.checkTodayFortune)
 		.setFontColor(customFont: DSKitFontFamily.Suit.semiBold.font(size: 18))
 	
+	// MARK: - Initialization
+	
+	public init(viewModel: DailySoptuneMainViewModel) {
+		self.viewModel = viewModel
+		super.init(nibName: nil, bundle: nil)
+	}
+	
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
+	
+	// MARK: - View Life Cycle
+	
 	public override func viewDidLoad() {
         super.viewDidLoad()
 		
 		setUI()
 		setLayout()
+        bindViewModels()
     }
 }
 
 // MARK: UI & Layout
 
-extension DailySoptuneMainVC {
-	private func setUI() {
+private extension DailySoptuneMainVC {
+	func setUI() {
 		view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
 	}
 	
-	private func setLayout() {
+	func setLayout() {
 		self.view.addSubviews(backButton, dateLabel, recieveFortune, todayFortuneImage, titleCardsImage, checkTodayFortuneButton)
 		
 		backButton.snp.makeConstraints { make in
@@ -98,4 +123,15 @@ extension DailySoptuneMainVC {
 			make.height.equalTo(270.adjustedH)
 		}
 	}
+    
+    func bindViewModels() {
+        let input = DailySoptuneMainViewModel
+            .Input(
+                viewDidLoad: viewDidLoaded,
+                naviBackButtonTap: backButtonTapped,
+                receiveTodayFortuneButtonTap: todayFortuneButtonTapped
+            )
+        
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+    }
 }

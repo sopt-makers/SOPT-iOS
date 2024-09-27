@@ -8,7 +8,7 @@
 
 import UIKit
 
-public class AppOutlinedButton: UIButton {
+public final class AppOutlinedButton: UIButton {
 	
 	// MARK: - Initialize
 	

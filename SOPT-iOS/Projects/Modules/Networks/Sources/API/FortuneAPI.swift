@@ -13,30 +13,35 @@ import Moya
 import Core
 
 public enum FortuneAPI {
+    case getDailySoptuneResult(date: String)
     case getTodaysFortuneCard
 }
 
 extension FortuneAPI: BaseAPI {
-    public static var apiType: APIType = .fortune
-    
-    public var path: String {
+	public static var apiType: APIType = .fortune
+	
+	public var path: String {
         switch self {
+        case .getDailySoptuneResult:
+            return "/word"
         case .getTodaysFortuneCard:
             return "/card/today"
         }
-    }
-    
-    public var method: Moya.Method {
+	}
+	
+	public var method: Moya.Method {
         switch self {
-        case .getTodaysFortuneCard:
+        case .getDailySoptuneResult, .getTodaysFortuneCard:
             return .get
         }
-    }
-    
-    public var task: Moya.Task {
+	}
+	
+	public var task: Moya.Task {
         switch self {
+        case .getDailySoptuneResult(let date):
+            return .requestParameters(parameters: ["todayDate": date], encoding: URLEncoding.queryString)
         default:
             return .requestPlain
         }
-    }
+	}
 }

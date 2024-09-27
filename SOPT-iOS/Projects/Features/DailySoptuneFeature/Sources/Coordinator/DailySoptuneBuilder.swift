@@ -13,7 +13,7 @@ import PokeFeature
 import PokeFeatureInterface
 
 public final class DailySoptuneBuilder {
-    @Injected public var dailySoptuneRepository: DailySoptuneRepositoyInterface
+    @Injected public var dailySoptuneRepository: DailySoptuneRepositoryInterface
     @Injected public var pokeOnboardingRepository: PokeOnboardingRepositoryInterface
     
     public init() {}
@@ -34,4 +34,11 @@ extension DailySoptuneBuilder: DailySoptuneFeatureBuildable {
         let viewController = PokeMessageTemplateBottomSheet(viewModel: viewModel)
         return (viewController, viewModel)
     }
+	
+	public func makeDailySoptuneMainVC() -> DailySoptuneMainPresentable {
+        let useCase = DefaultDailySoptuneUseCase(repository: dailySoptuneRepository)
+        let viewModel = DailySoptuneMainViewModel(useCase: useCase)
+		let dailySoptuneMainVC = DailySoptuneMainVC(viewModel: viewModel)
+		return (dailySoptuneMainVC, viewModel)
+	}
 }
