@@ -9,7 +9,6 @@
 import Core
 import Domain
 @_exported import DailySoptuneFeatureInterface
-import PokeFeature
 import PokeFeatureInterface
 
 public final class DailySoptuneBuilder {
@@ -26,13 +25,6 @@ extension DailySoptuneBuilder: DailySoptuneFeatureBuildable {
         let viewModel = DailySoptuneResultViewModel(useCase: useCase)
         let dailySoptuneResultVC = DailySoptuneResultVC(viewModel: viewModel)
         return (dailySoptuneResultVC, viewModel)
-    }
-    
-    public func makePokeMessageTemplateBottomSheet(messageType: Domain.PokeMessageType) -> PokeFeatureInterface.PokeMessageTemplatesPresentable {
-        let useCase = DefaultPokeMessageTemplateUsecase(repository: self.pokeOnboardingRepository)
-        let viewModel = PokeMessageTemplateViewModel(messageType: messageType, usecase: useCase)
-        let viewController = PokeMessageTemplateBottomSheet(viewModel: viewModel)
-        return (viewController, viewModel)
     }
 	
 	public func makeDailySoptuneMainVC() -> DailySoptuneMainPresentable {
