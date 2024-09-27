@@ -59,6 +59,7 @@ public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultVie
     // 오늘의 부적 받기 버튼
     
     private lazy var receiveTodaysFortuneCardButton = AppCustomButton(title: I18N.DailySoptune.receiveTodaysFortuneCard)
+        .setFontColor(customFont: DSKitFontFamily.Suit.semiBold.font(size: 18))
         .setEnabled(true)
     
     // MARK: - Initialization
