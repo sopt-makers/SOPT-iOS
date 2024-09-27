@@ -23,5 +23,10 @@ public class DailySoptuneRepository {
 }
 
 extension DailySoptuneRepository: DailySoptuneRepositoyInterface {
-    
+    public func getDailySoptuneResult(date: String) -> AnyPublisher<DailySoptuneResultModel, Error> {
+        self.fortuneService
+            .getDailySoptuneResult(date: date)
+            .map{ $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
 }
