@@ -24,6 +24,7 @@ public enum APIType {
   case description
   case poke
   case s3
+  case fortune
 }
 
 public protocol BaseAPI: TargetType {
@@ -60,7 +61,9 @@ extension BaseAPI {
       base += "/poke"
     case .s3:
       base += "/s3"
-    }
+	case .fortune:
+      base += "/fortune"
+	}
     
     guard let url = URL(string: base) else {
       fatalError("baseURL could not be configured")
