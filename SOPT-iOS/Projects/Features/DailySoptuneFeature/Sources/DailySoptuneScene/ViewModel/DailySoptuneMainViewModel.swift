@@ -60,7 +60,7 @@ extension DailySoptuneMainViewModel {
             .withUnretained(self)
             .sink { _ in
                 self.onReciveTodayFortuneButtonTap?()
-                self.useCase.getDailySoptuneResult(date: "2024-09-19")
+                self.useCase.getDailySoptuneResult(date: setDateFormat(to: "yyyy-MM-dd"))
             }.store(in: cancelBag)
         
 		return output
