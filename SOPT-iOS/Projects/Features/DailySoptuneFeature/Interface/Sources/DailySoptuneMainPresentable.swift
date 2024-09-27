@@ -8,10 +8,14 @@
 
 import BaseFeatureDependency
 import Core
+import Domain
 
 public protocol DailySoptuneMainViewControllable: ViewControllable {}
 
-public protocol DailySoptuneMainCoordinatable {}
+public protocol DailySoptuneMainCoordinatable {
+    var onNaviBackTap: (() -> Void)? { get set }
+    var onReciveTodayFortuneButtonTap: ((DailySoptuneResultModel) -> Void)? { get set }
+}
 
 public typealias DailySoptuneMainViewModelType = ViewModelType & DailySoptuneMainCoordinatable
 public typealias DailySoptuneMainPresentable = (vc: DailySoptuneMainViewControllable, vm: any DailySoptuneMainViewModelType)
