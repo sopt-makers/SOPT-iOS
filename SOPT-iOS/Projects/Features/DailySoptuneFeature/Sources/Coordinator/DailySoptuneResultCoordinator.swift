@@ -1,5 +1,5 @@
 //
-//  DailySoptuneCoordinator.swift
+//  DailySoptuneResultCoordinator.swift
 //  DailySoptuneFeature
 //
 //  Created by Jae Hyun Lee on 9/21/24.
@@ -15,7 +15,7 @@ import DailySoptuneFeatureInterface
 import Domain
 import PokeFeatureInterface
 
-public final class DailySoptuneCoordinator: DefaultCoordinator {
+public final class DailySoptuneResultCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: DailySoptuneFeatureBuildable
