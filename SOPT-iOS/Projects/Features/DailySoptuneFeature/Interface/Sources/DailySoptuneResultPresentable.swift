@@ -14,6 +14,7 @@ public protocol DailySoptuneResultViewControllable: ViewControllable { }
 
 public protocol DailySoptuneResultCoordinatable {
     var onKokButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)? { get set }
+    var onReceiveTodaysFortuneCardButtonTapped: ((DailySoptuneCardModel) -> Void)? { get set }
 }
 
 public typealias DailySoptuneResultViewModelType = ViewModelType & DailySoptuneResultCoordinatable

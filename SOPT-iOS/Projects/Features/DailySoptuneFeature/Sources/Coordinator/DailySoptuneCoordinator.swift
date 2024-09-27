@@ -40,9 +40,16 @@ public final class DailySoptuneCoordinator: DefaultCoordinator {
             return self.showMessageBottomSheet(userModel: userModel, on: dailySoptuneResult.vc.viewController)
         }
         
+        dailySoptuneResult.vm.onReceiveTodaysFortuneCardButtonTapped = { [weak self] cardModel in
+            guard let self else { return }
+            let dailySoptuneCardVC = self.factory.makeDailySoptuneCardVC(cardModel: cardModel).viewController
+            dailySoptuneCardVC.modalPresentationStyle = .overFullScreen
+            dailySoptuneResult.vc.viewController.present(dailySoptuneCardVC, animated: false)
+        }
+        
         router.push(dailySoptuneResult.vc)
     }
-    
+        
     private func showMessageBottomSheet(userModel: PokeUserModel, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel, isAnonymous: Bool), Never> {
         let messageType: PokeMessageType = userModel.isFirstMeet ? .pokeSomeone : .pokeFriend
         

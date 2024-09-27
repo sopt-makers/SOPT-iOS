@@ -14,4 +14,5 @@ import Domain
 public protocol DailySoptuneFeatureBuildable {
     func makeDailySoptuneResultVC() -> DailySoptuneResultPresentable
     func makeDailySoptuneMainVC() -> DailySoptuneMainPresentable
+    func makeDailySoptuneCardVC(cardModel: DailySoptuneCardModel) -> DailySoptuneCardPresentable
 }

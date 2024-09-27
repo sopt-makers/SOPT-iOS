@@ -33,4 +33,10 @@ extension DailySoptuneBuilder: DailySoptuneFeatureBuildable {
 		let dailySoptuneMainVC = DailySoptuneMainVC(viewModel: viewModel)
 		return (dailySoptuneMainVC, viewModel)
 	}
+    
+    public func makeDailySoptuneCardVC(cardModel: DailySoptuneCardModel) -> DailySoptuneCardPresentable {
+        let dailySoptuneCardVC = DailySoptuneCardVC(cardModel: cardModel)
+        return dailySoptuneCardVC
+    }
+    
 }

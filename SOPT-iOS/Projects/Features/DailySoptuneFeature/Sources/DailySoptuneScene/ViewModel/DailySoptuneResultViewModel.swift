@@ -17,8 +17,9 @@ import DailySoptuneFeatureInterface
 public class DailySoptuneResultViewModel: DailySoptuneResultViewModelType {
 
     public var onNaviBackTap: (() -> Void)?
-    public var onReceiveTodaysFortuneCardTap: (() -> Void)?
+    public var onReceiveTodaysFortuneCardTap: ((DailySoptuneCardModel) -> Void)?
     public var onKokButtonTapped: ((Domain.PokeUserModel) -> Core.Driver<(Domain.PokeUserModel, Domain.PokeMessageModel, isAnonymous: Bool)>)?
+    public var onReceiveTodaysFortuneCardButtonTapped: ((Domain.DailySoptuneCardModel) -> Void)?
     
     // MARK: - Properties
 
@@ -56,15 +57,16 @@ extension DailySoptuneResultViewModel {
         self.bindOutput(output: output, cancelBag: cancelBag)
         
         input.viewWillAppear
-            .sink { [weak self] _ in
-                self?.onNaviBackTap?()
-                self?.useCase.getRandomUser()
+            .withUnretained(self)
+            .sink {  _ in
+                self.onNaviBackTap?()
+                self.useCase.getRandomUser()
             }.store(in: cancelBag)
         
         input.receiveTodaysFortuneCardTap
-            .sink { [weak self] _ in
-                self?.onReceiveTodaysFortuneCardTap?()
-                self?.useCase.getTodaysFortuneCard()
+            .withUnretained(self)
+            .sink { _ in
+                self.useCase.getTodaysFortuneCard()
             }.store(in: cancelBag)
         
         input.kokButtonTap
@@ -82,7 +84,11 @@ extension DailySoptuneResultViewModel {
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         useCase.todaysFortuneCard
-            .subscribe(output.todaysFortuneCard)
+            .withUnretained(self)
+            .sink { _, cardModel in
+                self.onReceiveTodaysFortuneCardButtonTapped?(cardModel)
+                output.todaysFortuneCard.send(cardModel)
+            }
             .store(in: cancelBag)
         
         useCase.randomUser
