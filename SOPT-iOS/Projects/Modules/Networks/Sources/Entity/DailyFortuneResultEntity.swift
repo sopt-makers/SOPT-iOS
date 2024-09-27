@@ -1,5 +1,5 @@
 //
-//  DailyFortuneEntity.swift
+//  DailyFortuneResultEntity.swift
 //  Networks
 //
 //  Created by 강윤서 on 9/27/24.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct DailyFortuneEntity: Codable {
+public struct DailyFortuneResultEntity: Codable {
     public let userName: String
     public let title: String
 }
