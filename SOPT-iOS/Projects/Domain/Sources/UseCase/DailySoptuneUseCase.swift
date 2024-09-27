@@ -40,19 +40,21 @@ extension DefaultDailySoptuneUseCase: DailySoptuneUseCase {
     
     public func getTodaysFortuneCard() {
         repository.getTodaysFortuneCard()
+            .withUnretained(self)
             .sink { event in
                 print("GetTodaysFortuneCard State: \(event)")
-            } receiveValue: { [weak self] todaysFortuneCard in
-                self?.todaysFortuneCard.send(todaysFortuneCard)
+            } receiveValue: { _, todaysFortuneCard in
+                self.todaysFortuneCard.send(todaysFortuneCard)
             }.store(in: cancelBag)
     }
     
     public func getRandomUser() {
         repository.getRandomUser()
+            .withUnretained(self)
             .sink { event in
                 print("GetRandomUser State: \(event)")
-            } receiveValue: { [weak self] randomUser in
-                self?.randomUser.send(randomUser)
+            } receiveValue: { _, randomUser in
+                self.randomUser.send(randomUser)
             }.store(in: cancelBag)
     }
 
@@ -62,8 +64,10 @@ extension DefaultDailySoptuneUseCase: DailySoptuneUseCase {
                 let message = error.toastMessage
                 self?.errorMessage.send(message)
                 return Empty<PokeUserModel, Never>()
-            }.sink { [weak self] user in
-                self?.pokedResponse.send(user)
+            }
+            .withUnretained(self)
+            .sink { _, user in
+                self.pokedResponse.send(user)
             }
             .store(in: cancelBag)
     }

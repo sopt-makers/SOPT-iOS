@@ -17,13 +17,14 @@ import BaseFeatureDependency
 import DailySoptuneFeatureInterface
 
 public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultViewControllable {
-        
+    
     // MARK: - Properties
     
     public var viewModel: DailySoptuneResultViewModel
     private var cancelBag = CancelBag()
     
     private lazy var receiveTodaysFortuneButtonTap: Driver<Void> = receiveTodaysFortuneCardButton.publisher(for: .touchUpInside).mapVoid().asDriver()
+    private let viewWillAppear = PassthroughSubject<Void, Never>()
     
     // MARK: - UI Components
     
@@ -80,7 +81,12 @@ public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultVie
         self.setUI()
         self.setStackView()
         self.setLayout()
-        self.bindViewModel()
+        self.bindViewModels()
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.viewWillAppear.send(())
     }
 }
 
@@ -138,10 +144,10 @@ extension DailySoptuneResultVC {
 // MARK: - Methods
 
 extension DailySoptuneResultVC {
-    private func bindViewModel() {
+    private func bindViewModels() {
         let input = DailySoptuneResultViewModel
             .Input(
-                viewDidLoad: Just(()).asDriver(),
+                viewWillAppear: viewWillAppear.asDriver(),
                 naviBackButtonTap: self.backButton
                     .publisher(for: .touchUpInside)
                     .mapVoid().asDriver(),

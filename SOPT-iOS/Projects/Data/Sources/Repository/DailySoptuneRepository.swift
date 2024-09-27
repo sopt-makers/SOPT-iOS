@@ -12,7 +12,7 @@ import Core
 import Domain
 import Networks
 
-public class DailySoptuneRepository {
+public final class DailySoptuneRepository {
     
     private let fortuneService: FortuneService
     private let pokeService: PokeService

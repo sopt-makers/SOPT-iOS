@@ -17,7 +17,7 @@ import Domain
 public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessageTemplatesViewControllable {
     
   public var minimumContentHeight: CGFloat {
-     return PokeMessageTemplateBottomSheet.minimunContentHeight
+     return PokeMessageTemplateBottomSheet.minimumContentHeight
   }
     
   private enum Metric {
@@ -32,7 +32,7 @@ public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessage
     static let contentStackViewSpacing = 4.f
   }
   
-  public static let minimunContentHeight = 366.f
+  public static let minimumContentHeight = 366.f
 
   // MARK: - Views
   private let scrollView = UIScrollView().then {
