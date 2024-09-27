@@ -7,3 +7,13 @@
 //
 
 import Foundation
+
+public struct DailySoptuneResultModel: Codable {
+    public let userName: String
+    public let title: String
+    
+    public init(userName: String, title: String) {
+        self.userName = userName
+        self.title = title
+    }
+}

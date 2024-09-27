@@ -7,3 +7,12 @@
 //
 
 import Foundation
+
+import Domain
+import Networks
+
+extension DailyFortuneResultEntity {
+    public func toDomain() -> DailySoptuneResultModel {
+        return DailySoptuneResultModel(userName: userName, title: title)
+    }
+}

@@ -6,4 +6,8 @@
 //  Copyright © 2024 SOPT-iOS. All rights reserved.
 //
 
-import Foundation
+import Combine
+
+public protocol DailySoptuneRepositoyInterface {
+    func getDailySoptuneResult(date: String) -> AnyPublisher<DailySoptuneResultModel, Error>
+}
