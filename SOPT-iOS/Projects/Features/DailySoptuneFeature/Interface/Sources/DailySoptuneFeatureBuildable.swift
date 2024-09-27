@@ -12,4 +12,5 @@ import Domain
 
 public protocol DailySoptuneFeatureBuildable {
     func makeDailySoptuneResultVC() -> DailySoptuneResultViewControllable
+	func makeDailySoptuneMainVc() -> DailySoptuneMainViewControllable
 }

@@ -20,4 +20,10 @@ extension DailySoptuneBuilder: DailySoptuneFeatureBuildable {
         let dailySoptuneResultVC = DailySoptuneResultVC(viewModel: viewModel)
         return dailySoptuneResultVC
     }
+	
+	public func makeDailySoptuneMainVc() -> DailySoptuneMainViewControllable {
+		let viewModel = DailySoptuneMainViewModel()
+		let dailySoptuneMainVC = DailySoptuneMainVC(viewModel: viewModel)
+		return dailySoptuneMainVC
+	}
 }

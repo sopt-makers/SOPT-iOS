@@ -15,8 +15,15 @@ import DSKit
 import SnapKit
 import Then
 
-public final class DailySoptuneMainVC: UIViewController {
+import BaseFeatureDependency
 
+public final class DailySoptuneMainVC: UIViewController, DailySoptuneMainViewControllable {
+
+	// MARK: - Properties
+	
+	public var viewModel: DailySoptuneMainViewModel
+	private var cancelBag = CancelBag()
+	
 	// MARK: - UI Components
 	
 	private let backButton = UIButton().then {
@@ -45,6 +52,19 @@ public final class DailySoptuneMainVC: UIViewController {
 	
 	private let checkTodayFortuneButton = AppCustomButton(title: I18N.DailySoptune.checkTodayFortune)
 		.setFontColor(customFont: DSKitFontFamily.Suit.semiBold.font(size: 18))
+	
+	// MARK: - Initialization
+	
+	public init(viewModel: DailySoptuneMainViewModel) {
+		self.viewModel = viewModel
+		super.init(nibName: nil, bundle: nil)
+	}
+	
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
+	
+	// MARK: - View Life Cycle
 	
 	public override func viewDidLoad() {
         super.viewDidLoad()
