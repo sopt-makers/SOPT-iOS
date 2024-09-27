@@ -29,11 +29,28 @@ public final class DailySoptuneCoordinator: DefaultCoordinator {
     }
     
     public override func start() {
-        showDailySoptuneResult()
+        showDailySoptuneMain()
     }
     
-    private func showDailySoptuneResult() {
-        var dailySoptuneResult = factory.makeDailySoptuneResultVC()
+    private func showDailySoptuneMain() {
+        var dailySoptuneMain = factory.makeDailySoptuneMainVC()
+        
+        dailySoptuneMain.vm.onNaviBackTap = {
+            self.router.popModule()
+            self.finishFlow?()
+        }
+        
+        dailySoptuneMain.vm.onReciveTodayFortuneButtonTap = { [weak self] result in
+            guard let self else { return }
+            let resultVC = self.factory.makeDailySoptuneResultVC(resultModel: result)
+            self.router.push(resultVC.vc)
+        }
+        
+        router.push(dailySoptuneMain.vc)
+    }
+    
+    private func showDailySoptuneResult(resultModel: DailySoptuneResultModel) {
+        var dailySoptuneResult = factory.makeDailySoptuneResultVC(resultModel: resultModel)
         
         dailySoptuneResult.vm.onKokButtonTapped = { [weak self] userModel in
             guard let self else { return .empty() }
