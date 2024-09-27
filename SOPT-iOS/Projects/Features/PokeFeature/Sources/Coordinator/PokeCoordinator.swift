@@ -137,7 +137,7 @@ final class PokeCoordinator: DefaultCoordinator {
                 .viewController as? PokeMessageTemplateBottomSheet
         else { return .empty() }
         
-        let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate(minHeight: PokeMessageTemplateBottomSheet.minimunContentHeight))
+        let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate(minHeight: PokeMessageTemplateBottomSheet.minimumContentHeight))
         
         self.router.showBottomSheet(manager: bottomSheetManager,
                                      toPresent: bottomSheet,

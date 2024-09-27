@@ -169,5 +169,14 @@ extension AppDelegate {
                 )
             }
         )
+        container.register(
+            interface: DailySoptuneRepositoyInterface.self,
+            implement: {
+                DailySoptuneRepository(
+                    fortuneService: DefaultFortuneService(),
+                    pokeService: DefaultPokeService()
+                )
+            }
+        )
     }
 }

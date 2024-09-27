@@ -15,6 +15,11 @@ import DSKit
 import Domain
 
 public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessageTemplatesViewControllable {
+    
+  public var minimumContentHeight: CGFloat {
+     return PokeMessageTemplateBottomSheet.minimumContentHeight
+  }
+    
   private enum Metric {
     static let contentTop = 24.f
     static let contentLeadingTrailng = 20.f
@@ -27,8 +32,8 @@ public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessage
     static let contentStackViewSpacing = 4.f
   }
   
-  static let minimunContentHeight = 366.f
-  
+  public static let minimumContentHeight = 366.f
+
   // MARK: - Views
   private let scrollView = UIScrollView().then {
     $0.alwaysBounceVertical = true
@@ -79,7 +84,7 @@ public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessage
   private let messageModelSubject = PassthroughSubject<(PokeMessageModel, isAnonymous: Bool), Error>()
   private var cancelBag = CancelBag()
   
-  init(viewModel: PokeMessageTemplateViewModel) {
+  public init(viewModel: PokeMessageTemplateViewModel) {
     self.viewModel = viewModel
     
     super.init(nibName: nil, bundle: nil)
@@ -159,7 +164,7 @@ extension PokeMessageTemplateBottomSheet {
     }
   }
   
-  func signalForClick() -> Driver<(PokeMessageModel, isAnonymous: Bool)> {
+  public func signalForClick() -> Driver<(PokeMessageModel, isAnonymous: Bool)> {
     return self.messageModelSubject.asDriver()
   }
 }

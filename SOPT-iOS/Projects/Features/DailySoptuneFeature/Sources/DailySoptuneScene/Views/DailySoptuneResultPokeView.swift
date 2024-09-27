@@ -11,9 +11,19 @@ import Combine
 
 import DSKit
 import Core
+import Domain
 import PokeFeature
 
 public final class DailySoptuneResultPokeView: UIView {
+    
+    public lazy var kokButtonTap: Driver<PokeUserModel?> = kokButton.tap
+        .map { self.user }
+        .asDriver()
+    
+    // MARK: - Properties
+    
+    var user: PokeUserModel?
+    private var cancelBag = CancelBag()
     
     // MARK: - UI Components
     
@@ -34,18 +44,18 @@ public final class DailySoptuneResultPokeView: UIView {
         $0.backgroundColor = DSKitAsset.Colors.white.color
         $0.clipsToBounds = true
         $0.contentMode = .scaleAspectFill
+        $0.layer.borderColor = DSKitAsset.Colors.success.color.cgColor
+        $0.layer.borderWidth = 2
     }
     
     private let nameLabel = UILabel().then {
         $0.font = UIFont.MDS.body1.font
         $0.textColor = DSKitAsset.Colors.gray30.color
-        $0.text = "이재현"
     }
     
     private let partLabel = UILabel().then {
         $0.font = UIFont.MDS.label4.font
         $0.textColor = DSKitAsset.Colors.gray300.color
-        $0.text = "31기 iOS"
     }
     
     private let kokButton = PokeKokButton()
@@ -109,11 +119,11 @@ extension DailySoptuneResultPokeView {
         }
         
         profileImageView.snp.makeConstraints { make in
-            make.width.height.equalTo(72)
+            make.size.equalTo(72)
         }
         
         kokButton.snp.makeConstraints { make in
-            make.width.height.equalTo(44)
+            make.size.equalTo(44)
         }
         
         pokeStackView.snp.makeConstraints { make in
@@ -125,4 +135,21 @@ extension DailySoptuneResultPokeView {
             make.bottom.equalTo(pokeStackView.snp.bottom).offset(28)
         }
     }
+}
+
+// MARK: - Methods
+
+extension DailySoptuneResultPokeView {
+    
+    func setData(with model: PokeUserModel) {
+        self.configure(with: model)
+    }
+    
+    private func configure(with model: PokeUserModel) {
+        self.user = model
+        self.nameLabel.text = model.name
+        self.partLabel.text = "\(model.generation)기 \(model.part)"
+        self.profileImageView.setImage(with: model.isAnonymous ? model.anonymousImage : model.profileImage)
+    }
+    
 }

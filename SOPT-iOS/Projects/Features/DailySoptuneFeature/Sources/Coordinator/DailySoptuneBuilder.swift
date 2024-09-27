@@ -9,15 +9,29 @@
 import Core
 import Domain
 @_exported import DailySoptuneFeatureInterface
+import PokeFeature
+import PokeFeatureInterface
 
 public final class DailySoptuneBuilder {
+    @Injected public var dailySoptuneRepository: DailySoptuneRepositoyInterface
+    @Injected public var pokeOnboardingRepository: PokeOnboardingRepositoryInterface
+    
     public init() {}
 }
 
 extension DailySoptuneBuilder: DailySoptuneFeatureBuildable {
-    public func makeDailySoptuneResultVC() -> any DailySoptuneFeatureInterface.DailySoptuneResultViewControllable {
-        let viewModel = DailySoptuneResultViewModel()
+    
+    public func makeDailySoptuneResultVC() -> DailySoptuneFeatureInterface.DailySoptuneResultPresentable {
+        let useCase = DefaultDailySoptuneUseCase(repository: dailySoptuneRepository)
+        let viewModel = DailySoptuneResultViewModel(useCase: useCase)
         let dailySoptuneResultVC = DailySoptuneResultVC(viewModel: viewModel)
-        return dailySoptuneResultVC
+        return (dailySoptuneResultVC, viewModel)
+    }
+    
+    public func makePokeMessageTemplateBottomSheet(messageType: Domain.PokeMessageType) -> PokeFeatureInterface.PokeMessageTemplatesPresentable {
+        let useCase = DefaultPokeMessageTemplateUsecase(repository: self.pokeOnboardingRepository)
+        let viewModel = PokeMessageTemplateViewModel(messageType: messageType, usecase: useCase)
+        let viewController = PokeMessageTemplateBottomSheet(viewModel: viewModel)
+        return (viewController, viewModel)
     }
 }

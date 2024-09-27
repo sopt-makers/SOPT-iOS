@@ -41,7 +41,7 @@ extension PokeNotificationListCoordinator {
                     .viewController as? PokeMessageTemplateBottomSheet
             else { return .empty() }
             
-            let bottomSheetManager = BottomSheetManager(configuration:  .messageTemplate(minHeight: PokeMessageTemplateBottomSheet.minimunContentHeight))
+            let bottomSheetManager = BottomSheetManager(configuration:  .messageTemplate(minHeight: PokeMessageTemplateBottomSheet.minimumContentHeight))
             bottomSheetManager.present(toPresent: bottomSheet, on: self?.rootController)
             
             return bottomSheet
