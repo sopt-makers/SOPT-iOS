@@ -10,7 +10,6 @@ import UIKit
 import Core
 import BaseFeatureDependency
 import RootFeature
-import DailySoptuneFeature
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
@@ -30,7 +29,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                willConnectTo session: UISceneSession,
                options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
-        
         configureAPNs()
         
         window = UIWindow(windowScene: scene)

@@ -16,6 +16,15 @@ import PokeFeature
 
 public final class DailySoptuneResultPokeView: UIView {
     
+    public lazy var kokButtonTap: Driver<PokeUserModel?> = kokButton.tap
+        .map { self.user }
+        .asDriver()
+    
+    // MARK: - Properties
+    
+    var user: PokeUserModel?
+    private var cancelBag = CancelBag()
+    
     // MARK: - UI Components
     
     private let titleLabel = UILabel().then {
@@ -137,6 +146,7 @@ extension DailySoptuneResultPokeView {
     }
     
     private func configure(with model: PokeUserModel) {
+        self.user = model
         self.nameLabel.text = model.name
         self.partLabel.text = "\(model.generation)기 \(model.part)"
         self.profileImageView.setImage(with: model.isAnonymous ? model.anonymousImage : model.profileImage)

@@ -42,4 +42,12 @@ extension DailySoptuneRepository: DailySoptuneRepositoyInterface {
             .map { $0.randomInfoList.map { $0.toDomain() }}
             .eraseToAnyPublisher()
     }
+    
+    public func poke(userId: Int, message: String, isAnonymous: Bool) -> AnyPublisher<Domain.PokeUserModel, Domain.PokeError> {
+        pokeService.poke(userId: userId, message: message, isAnonymous: isAnonymous)
+            .mapErrorToPokeError()
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
+
 }

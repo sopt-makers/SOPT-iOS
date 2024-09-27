@@ -13,6 +13,7 @@ import Domain
 public protocol DailySoptuneResultViewControllable: ViewControllable { }
 
 public protocol DailySoptuneResultCoordinatable {
+    var onKokButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)? { get set }
 }
 
 public typealias DailySoptuneResultViewModelType = ViewModelType & DailySoptuneResultCoordinatable
