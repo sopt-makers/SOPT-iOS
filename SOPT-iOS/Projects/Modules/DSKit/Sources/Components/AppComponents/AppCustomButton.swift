@@ -41,6 +41,19 @@ extension AppCustomButton {
         self.setAttributedTitle(string, for: .normal)
         return self
     }
+	
+	@discardableResult
+	public func setFontColor(customFont: UIFont, customColor: UIColor = DSKitAsset.Colors.black100.color) -> Self {
+		if let title = self.titleLabel,
+		   let text = title.text {
+			let string = NSAttributedString(
+				string: text,
+				attributes: [.font: customFont, .foregroundColor: customColor])
+			self.setAttributedTitle(string, for: .normal)
+		}
+		
+		return self
+	}
     
     /// 버튼의 backgroundColor, textColor 변경
     @discardableResult
