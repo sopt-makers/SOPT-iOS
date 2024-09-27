@@ -13,18 +13,19 @@ import Core
 import BaseFeatureDependency
 import DailySoptuneFeatureInterface
 import Domain
-import PokeFeature
 import PokeFeatureInterface
 
 public final class DailySoptuneCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: DailySoptuneFeatureBuildable
+    private let pokeFactory: PokeFeatureBuildable
     private let router: Router
     
-    public init(router: Router, factory: DailySoptuneFeatureBuildable) {
+    public init(router: Router, factory: DailySoptuneFeatureBuildable, pokeFactory: PokeFeatureBuildable) {
         self.router = router
         self.factory = factory
+        self.pokeFactory = pokeFactory
     }
     
     public override func start() {
@@ -45,16 +46,16 @@ public final class DailySoptuneCoordinator: DefaultCoordinator {
     private func showMessageBottomSheet(userModel: PokeUserModel, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel, isAnonymous: Bool), Never> {
         let messageType: PokeMessageType = userModel.isFirstMeet ? .pokeSomeone : .pokeFriend
         
-        guard let bottomSheet = self.factory
+        guard let bottomSheet = self.pokeFactory
             .makePokeMessageTemplateBottomSheet(messageType: messageType)
             .vc
-            .viewController as? PokeMessageTemplateBottomSheet
+            .viewController as? PokeMessageTemplatesViewControllable
         else { return .empty() }
         
-        let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate(minHeight: PokeMessageTemplateBottomSheet.minimunContentHeight))
+        let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate(minHeight: bottomSheet.minimumContentHeight))
         
         self.router.showBottomSheet(manager: bottomSheetManager,
-                                    toPresent: bottomSheet,
+                                    toPresent: bottomSheet.viewController,
                                     on: view)
         
         return bottomSheet

@@ -6,11 +6,16 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
+import Foundation
 import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol PokeMessageTemplatesViewControllable: ViewControllable { }
+public protocol PokeMessageTemplatesViewControllable: ViewControllable {
+    var minimumContentHeight: CGFloat { get }
+    
+    func signalForClick() -> Driver<(PokeMessageModel, isAnonymous: Bool)>
+}
 
 public protocol PokeMessageTemplatesCoordinatable { }
 

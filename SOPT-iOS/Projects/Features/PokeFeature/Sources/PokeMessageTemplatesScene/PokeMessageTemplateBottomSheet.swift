@@ -15,6 +15,11 @@ import DSKit
 import Domain
 
 public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessageTemplatesViewControllable {
+    
+  public var minimumContentHeight: CGFloat {
+     return PokeMessageTemplateBottomSheet.minimunContentHeight
+  }
+    
   private enum Metric {
     static let contentTop = 24.f
     static let contentLeadingTrailng = 20.f
@@ -28,7 +33,7 @@ public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessage
   }
   
   public static let minimunContentHeight = 366.f
-  
+
   // MARK: - Views
   private let scrollView = UIScrollView().then {
     $0.alwaysBounceVertical = true
