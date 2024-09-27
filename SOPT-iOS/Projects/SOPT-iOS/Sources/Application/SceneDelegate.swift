@@ -10,7 +10,6 @@ import UIKit
 import Core
 import BaseFeatureDependency
 import RootFeature
-import DailySoptuneFeature
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     

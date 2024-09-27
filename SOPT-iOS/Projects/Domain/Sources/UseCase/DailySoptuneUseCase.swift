@@ -19,12 +19,12 @@ public protocol DailySoptuneUseCase {
 
 public class DefaultDailySoptuneUseCase {
     
-    private let repository: DailySoptuneRepositoyInterface
+    private let repository: DailySoptuneRepositoryInterface
     private let cancelBag = CancelBag()
     
     public let dailySoptuneResult = PassthroughSubject<DailySoptuneResultModel, Never>()
     
-    public init(repository: DailySoptuneRepositoyInterface) {
+    public init(repository: DailySoptuneRepositoryInterface) {
         self.repository = repository
     }
 }

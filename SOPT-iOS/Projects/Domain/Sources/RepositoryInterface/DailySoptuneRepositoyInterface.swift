@@ -1,5 +1,5 @@
 //
-//  DailySoptuneRepositoyInterface.swift
+//  DailySoptuneRepositoryInterface.swift
 //  Domain
 //
 //  Created by 강윤서 on 9/27/24.
@@ -8,6 +8,6 @@
 
 import Combine
 
-public protocol DailySoptuneRepositoyInterface {
+public protocol DailySoptuneRepositoryInterface {
     func getDailySoptuneResult(date: String) -> AnyPublisher<DailySoptuneResultModel, Error>
 }

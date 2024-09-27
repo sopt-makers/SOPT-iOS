@@ -22,7 +22,7 @@ public class DailySoptuneRepository {
     }
 }
 
-extension DailySoptuneRepository: DailySoptuneRepositoyInterface {
+extension DailySoptuneRepository: DailySoptuneRepositoryInterface {
     public func getDailySoptuneResult(date: String) -> AnyPublisher<DailySoptuneResultModel, Error> {
         self.fortuneService
             .getDailySoptuneResult(date: date)
