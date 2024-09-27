@@ -12,6 +12,7 @@ public enum PokeRandomUserType: String {
   case mbti = "MBTI"
   case sojuCapacity = "SOJU_CAPACITY"
   case university = "UNIVERSITY"
+  case allUser = "ALL_USER"
 }
 
 public enum PokeRandomUserQueryCount {

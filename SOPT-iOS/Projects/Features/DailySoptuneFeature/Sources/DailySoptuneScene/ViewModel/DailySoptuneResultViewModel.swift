@@ -15,25 +15,38 @@ import Domain
 import DailySoptuneFeatureInterface
 
 public class DailySoptuneResultViewModel: DailySoptuneResultViewModelType {
+
+    public var onNaviBackTap: (() -> Void)?
+    public var onReceiveTodaysFortuneCardTap: (() -> Void)?
+    public var onKokButtonTapped: ((Domain.PokeUserModel) -> Core.Driver<(Domain.PokeUserModel, Domain.PokeMessageModel, isAnonymous: Bool)>)?
     
     // MARK: - Properties
 
+    private let useCase: DailySoptuneUseCase
     private var cancelBag = CancelBag()
     
     // MARK: - Inputs
     
     public struct Input {
+        let viewWillAppear: Driver<Void>
+        let naviBackButtonTap: Driver<Void>
+        let receiveTodaysFortuneCardTap: Driver<Void>
+        let kokButtonTap: Driver<PokeUserModel?>
     }
     
     // MARK: - Outputs
     
     public struct Output {
+        let todaysFortuneCard = PassthroughSubject<DailySoptuneCardModel, Never>()
+        let randomUser = PassthroughSubject<PokeRandomUserInfoModel, Never>()
+        let messageTemplates = PassthroughSubject<PokeMessagesModel, Never>()
+        let pokeResponse = PassthroughSubject<PokeUserModel, Never>()
     }
     
     // MARK: - Initialization
     
-    public init() {
-        
+    public init(useCase: DailySoptuneUseCase) {
+        self.useCase = useCase
     }
 }
 
@@ -42,9 +55,52 @@ extension DailySoptuneResultViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
+        input.viewWillAppear
+            .sink { [weak self] _ in
+                self?.onNaviBackTap?()
+                self?.useCase.getRandomUser()
+            }.store(in: cancelBag)
+        
+        input.receiveTodaysFortuneCardTap
+            .sink { [weak self] _ in
+                self?.onReceiveTodaysFortuneCardTap?()
+                self?.useCase.getTodaysFortuneCard()
+            }.store(in: cancelBag)
+        
+        input.kokButtonTap
+            .compactMap { $0 }
+            .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)> in
+                guard let self, let value = self.onKokButtonTapped?(userModel) else { return .empty() }
+                return value
+            }
+            .sink { [weak self] userModel, messageModel, isAnonymous in
+                self?.useCase.poke(userId: userModel.userId, message: messageModel, isAnonymous: isAnonymous)
+            }.store(in: cancelBag)
+        
         return output
     }
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
+        useCase.todaysFortuneCard
+            .subscribe(output.todaysFortuneCard)
+            .store(in: cancelBag)
+        
+        useCase.randomUser
+            .asDriver()
+            .sink(receiveValue: { values in
+                output.randomUser.send(values[0])
+            }).store(in: cancelBag)
+
+        useCase.pokedResponse
+            .subscribe(output.pokeResponse)
+            .store(in: cancelBag)
+    }
+    
+    func setCurrentDateString() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "M월 d일 EEEE"
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
+        return dateFormatter.string(from: Date())
     }
 }

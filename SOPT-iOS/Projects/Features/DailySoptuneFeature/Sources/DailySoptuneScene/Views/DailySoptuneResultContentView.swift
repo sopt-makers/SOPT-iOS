@@ -23,7 +23,6 @@ public final class DailySoptuneResultContentView: UIView {
     private let dateLabel = UILabel().then {
         $0.font = UIFont.MDS.title5.font
         $0.textColor = DSKitAsset.Colors.gray100.color
-        $0.text = "9월 18일 수요일"
     }
     
     private lazy var contentLabel = UILabel().then {
@@ -34,9 +33,10 @@ public final class DailySoptuneResultContentView: UIView {
     
     // MARK: - initialization
     
-    init(name: String, description: String) {
+    init(name: String, description: String, date: String) {
         super.init(frame: .zero)
         self.contentLabel.text = "\(name)님,\n\(description)"
+        self.dateLabel.text = date
         self.setUI()
         self.setLayout()
     }

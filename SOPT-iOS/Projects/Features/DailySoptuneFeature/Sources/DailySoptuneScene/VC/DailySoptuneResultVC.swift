@@ -23,6 +23,9 @@ public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultVie
     public var viewModel: DailySoptuneResultViewModel
     private var cancelBag = CancelBag()
     
+    private lazy var receiveTodaysFortuneButtonTap: Driver<Void> = receiveTodaysFortuneCardButton.publisher(for: .touchUpInside).mapVoid().asDriver()
+    private let viewWillAppear = PassthroughSubject<Void, Never>()
+    
     // MARK: - UI Components
     
     private let backButton = UIButton().then {
@@ -48,7 +51,7 @@ public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultVie
     
     // 오늘의 솝마디 부분
     
-    private let dailySoptuneResultContentView = DailySoptuneResultContentView(name: "이재현", description: "단순하게 생각하면\n일이 술술 풀리겠솝!")
+    private lazy var dailySoptuneResultContentView = DailySoptuneResultContentView(name: "이재현", description: "단순하게 생각하면\n일이 술술 풀리겠솝!", date: viewModel.setCurrentDateString())
     
     // 콕 찌르기 부분
     
@@ -56,7 +59,8 @@ public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultVie
     
     // 오늘의 부적 받기 버튼
     
-    private lazy var receiveTodaysTalismanButton = AppCustomButton(title: I18N.DailySoptune.receiveTodaysTalisman)
+    private lazy var receiveTodaysFortuneCardButton = AppCustomButton(title: I18N.DailySoptune.receiveTodaysFortuneCard)
+        .setFontColor(customFont: DSKitFontFamily.Suit.semiBold.font(size: 18))
         .setEnabled(true)
     
     // MARK: - Initialization
@@ -77,7 +81,12 @@ public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultVie
         self.setUI()
         self.setStackView()
         self.setLayout()
-        self.bindViewModel()
+        self.bindViewModels()
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.viewWillAppear.send(())
     }
 }
 
@@ -96,11 +105,7 @@ extension DailySoptuneResultVC {
     }
     
     private func setLayout() {
-        self.view.addSubviews(navigationView, scrollView, receiveTodaysTalismanButton)
-        
-        backButton.snp.makeConstraints { make in
-            make.width.height.equalTo(40)
-        }
+        self.view.addSubviews(navigationView, scrollView, receiveTodaysFortuneCardButton)
         
         navigationView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
@@ -110,7 +115,7 @@ extension DailySoptuneResultVC {
         
         setScrollViewLayout()
         
-        receiveTodaysTalismanButton.snp.makeConstraints { make in
+        receiveTodaysFortuneCardButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.height.equalTo(56.adjusted)
             make.width.equalTo(335.adjusted)
@@ -129,7 +134,7 @@ extension DailySoptuneResultVC {
         contentStackView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalToSuperview().inset(17)
-            make.leading.trailing.equalToSuperview().inset(20)
+            make.width.equalTo(self.view.frame.size.width - 20 * 2)
             make.bottom.equalToSuperview().inset(20)
         }
         
@@ -139,6 +144,23 @@ extension DailySoptuneResultVC {
 // MARK: - Methods
 
 extension DailySoptuneResultVC {
-    private func bindViewModel() {
+    private func bindViewModels() {
+        let input = DailySoptuneResultViewModel
+            .Input(
+                viewWillAppear: viewWillAppear.asDriver(),
+                naviBackButtonTap: self.backButton
+                    .publisher(for: .touchUpInside)
+                    .mapVoid().asDriver(),
+                receiveTodaysFortuneCardTap: receiveTodaysFortuneButtonTap, 
+                kokButtonTap: dailySoptuneResultPokeView.kokButtonTap
+            )
+        
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.randomUser
+            .withUnretained(self)
+            .sink { owner, model in
+                owner.dailySoptuneResultPokeView.setData(with: model.userInfoList[0])
+            }.store(in: self.cancelBag)
     }
 }

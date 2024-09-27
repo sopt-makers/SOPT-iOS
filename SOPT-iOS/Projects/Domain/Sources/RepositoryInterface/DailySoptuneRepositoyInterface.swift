@@ -1,13 +1,17 @@
 //
-//  DailySoptuneRepositoryInterface.swift
+
+//  DailySoptuneRepositoyInterface.swift
 //  Domain
 //
-//  Created by 강윤서 on 9/27/24.
+//  Created by Jae Hyun Lee on 9/23/24.
 //  Copyright © 2024 SOPT-iOS. All rights reserved.
 //
 
 import Combine
 
-public protocol DailySoptuneRepositoryInterface {
+public protocol DailySoptuneRepositoyInterface {
     func getDailySoptuneResult(date: String) -> AnyPublisher<DailySoptuneResultModel, Error>
+    func getTodaysFortuneCard() -> AnyPublisher<DailySoptuneCardModel, Error>
+    func getRandomUser() -> AnyPublisher<[PokeRandomUserInfoModel], Error>
+    func poke(userId: Int, message: String, isAnonymous: Bool) -> AnyPublisher<PokeUserModel, PokeError>
 }

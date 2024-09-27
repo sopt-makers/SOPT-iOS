@@ -2,7 +2,7 @@
 //  FortuneAPI.swift
 //  Networks
 //
-//  Created by 강윤서 on 9/27/24.
+//  Created by Jae Hyun Lee on 9/23/24.
 //  Copyright © 2024 SOPT-iOS. All rights reserved.
 //
 
@@ -14,6 +14,7 @@ import Core
 
 public enum FortuneAPI {
     case getDailySoptuneResult(date: String)
+    case getTodaysFortuneCard
 }
 
 extension FortuneAPI: BaseAPI {
@@ -23,12 +24,14 @@ extension FortuneAPI: BaseAPI {
         switch self {
         case .getDailySoptuneResult:
             return "/word"
+        case .getTodaysFortuneCard:
+            return "/card/today"
         }
 	}
 	
 	public var method: Moya.Method {
         switch self {
-        case .getDailySoptuneResult:
+        case .getDailySoptuneResult, .getTodaysFortuneCard:
             return .get
         }
 	}
@@ -37,6 +40,8 @@ extension FortuneAPI: BaseAPI {
         switch self {
         case .getDailySoptuneResult(let date):
             return .requestParameters(parameters: ["todayDate": date], encoding: URLEncoding.queryString)
+        default:
+            return .requestPlain
         }
 	}
 }
