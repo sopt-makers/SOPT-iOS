@@ -32,14 +32,12 @@ public class DefaultDailySoptuneUseCase {
 extension DefaultDailySoptuneUseCase: DailySoptuneUseCase {
     public func getDailySoptuneResult(date: String) {
         repository.getDailySoptuneResult(date: date)
+            .withUnretained(self)
             .sink { event in
                 print("GetDailySoptuneResult State: \(event)")
-            } receiveValue: { [weak self] dailySoptuneResult in
-                self?.dailySoptuneResult.send(dailySoptuneResult)
+            } receiveValue: { _, resultModel in
+                self.dailySoptuneResult.send(resultModel)
             }
             .store(in: cancelBag)
-
     }
-    
-    
 }

@@ -30,12 +30,6 @@ public final class DailySoptuneMainViewModel: DailySoptuneMainViewModelType {
         let viewDidLoad: Driver<Void>
         let naviBackButtonTap: Driver<Void>
         let receiveTodayFortuneButtonTap: Driver<Void>
-        
-        public init(viewDidLoad: Driver<Void>, naviBackButtonTap: Driver<Void>, receiveTodayFortuneButtonTap: Driver<Void>) {
-            self.viewDidLoad = viewDidLoad
-            self.naviBackButtonTap = naviBackButtonTap
-            self.receiveTodayFortuneButtonTap = receiveTodayFortuneButtonTap
-        }
 	}
 	
 	// MARK: - Outputs
