@@ -76,12 +76,12 @@ public final class DailySoptuneMainVC: UIViewController, DailySoptuneMainViewCon
 
 // MARK: UI & Layout
 
-extension DailySoptuneMainVC {
-	private func setUI() {
+private extension DailySoptuneMainVC {
+	func setUI() {
 		view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
 	}
 	
-	private func setLayout() {
+	func setLayout() {
 		self.view.addSubviews(backButton, dateLabel, recieveFortune, todayFortuneImage, titleCardsImage, checkTodayFortuneButton)
 		
 		backButton.snp.makeConstraints { make in
