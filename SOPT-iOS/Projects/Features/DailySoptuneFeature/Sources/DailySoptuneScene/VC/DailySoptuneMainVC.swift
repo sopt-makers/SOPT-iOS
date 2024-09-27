@@ -127,7 +127,7 @@ private extension DailySoptuneMainVC {
     func bindViewModels() {
         let input = DailySoptuneMainViewModel
             .Input(
-                viewDidLoad: viewDidLoaded,
+                viewDidLoad: viewDidLoaded.asDriver(),
                 naviBackButtonTap: backButtonTapped,
                 receiveTodayFortuneButtonTap: todayFortuneButtonTapped
             )

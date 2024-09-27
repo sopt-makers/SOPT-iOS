@@ -26,7 +26,7 @@ public func setDateFormat(date: String? = nil, from before: String? = nil, to af
     dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
 
     if let dateString = date,
-        let inputFormat = before {
+        let before = before {
         
         dateFormatter.dateFormat = before
         guard let date = dateFormatter.date(from: dateString) else { return "00:00" }
