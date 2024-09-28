@@ -14,10 +14,10 @@ import Domain
 
 import DailySoptuneFeatureInterface
 
-public class DailySoptuneResultViewModel: DailySoptuneResultViewModelType {
+public final class DailySoptuneResultViewModel: DailySoptuneResultViewModelType {
     
-    public var onNaviBackButtonTap: (() -> Void)?
-        public var onReceiveTodaysFortuneCardTap: ((DailySoptuneCardModel) -> Void)?
+    public var onNaviBackButtonTapped: (() -> Void)?
+    public var onReceiveTodaysFortuneCardTap: ((DailySoptuneCardModel) -> Void)?
     public var onKokButtonTapped: ((Domain.PokeUserModel) -> Core.Driver<(Domain.PokeUserModel, Domain.PokeMessageModel, isAnonymous: Bool)>)?
     public var onReceiveTodaysFortuneCardButtonTapped: ((Domain.DailySoptuneCardModel) -> Void)?
     
@@ -65,7 +65,7 @@ extension DailySoptuneResultViewModel {
         input.naviBackButtonTap
             .withUnretained(self)
             .sink { _ in
-                self.onNaviBackButtonTap?()
+                self.onNaviBackButtonTapped?()
             }.store(in: cancelBag)
         
         input.receiveTodaysFortuneCardTap

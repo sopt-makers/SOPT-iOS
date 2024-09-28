@@ -13,7 +13,7 @@ import Domain
 public protocol DailySoptuneResultViewControllable: ViewControllable { }
 
 public protocol DailySoptuneResultCoordinatable {
-    var onNaviBackButtonTap: (() -> Void)? { get set }
+    var onNaviBackButtonTapped: (() -> Void)? { get set }
     var onKokButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)? { get set }
     var onReceiveTodaysFortuneCardButtonTapped: ((DailySoptuneCardModel) -> Void)? { get set }
 }

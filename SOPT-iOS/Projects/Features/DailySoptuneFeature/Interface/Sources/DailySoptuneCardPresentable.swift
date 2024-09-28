@@ -9,4 +9,12 @@
 import BaseFeatureDependency
 import Core
 
-public protocol DailySoptuneCardPresentable: ViewControllable { }
+public protocol DailySoptuneCardViewControllable: ViewControllable { }
+
+public protocol DailySoptuneCardCoordinatable {
+    var onGoToHomeButtonTapped: (() -> Void)? { get set }
+    var onBackButtonTapped: (() -> Void)? { get set }
+}
+
+public typealias DailySoptuneCardViewModelType = ViewModelType & DailySoptuneCardCoordinatable
+public typealias DailySoptuneCardPresentable = (vc: DailySoptuneCardViewControllable, vm: any DailySoptuneCardViewModelType)

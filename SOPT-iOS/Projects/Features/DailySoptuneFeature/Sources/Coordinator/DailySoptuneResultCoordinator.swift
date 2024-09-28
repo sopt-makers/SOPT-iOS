@@ -21,7 +21,8 @@ public final class DailySoptuneResultCoordinator: DefaultCoordinator {
     private let factory: DailySoptuneFeatureBuildable
     private let pokeFactory: PokeFeatureBuildable
     private let router: Router
-    
+    private weak var rootController: UINavigationController?
+
     public init(router: Router, factory: DailySoptuneFeatureBuildable, pokeFactory: PokeFeatureBuildable) {
         self.router = router
         self.factory = factory
@@ -35,7 +36,7 @@ public final class DailySoptuneResultCoordinator: DefaultCoordinator {
     private func showDailySoptuneResult() {
         var dailySoptuneResult = factory.makeDailySoptuneResultVC()
         
-        dailySoptuneResult.vm.onNaviBackButtonTap = { [weak self] in
+        dailySoptuneResult.vm.onNaviBackButtonTapped = { [weak self] in
             self?.router.dismissModule(animated: true)
             self?.finishFlow?()
         }
@@ -47,14 +48,30 @@ public final class DailySoptuneResultCoordinator: DefaultCoordinator {
         
         dailySoptuneResult.vm.onReceiveTodaysFortuneCardButtonTapped = { [weak self] cardModel in
             guard let self else { return }
-            let dailySoptuneCardVC = self.factory.makeDailySoptuneCardVC(cardModel: cardModel).viewController
-            dailySoptuneCardVC.modalPresentationStyle = .overFullScreen
-            dailySoptuneResult.vc.viewController.present(dailySoptuneCardVC, animated: false)
+            self.runDailySoptuneCardFlow(cardModel: cardModel)
         }
         
-        router.push(dailySoptuneResult.vc)
+        rootController = dailySoptuneResult.vc.asNavigationController
+        router.present(rootController, animated: false, modalPresentationSytle: .overFullScreen)
     }
+    
+    internal func runDailySoptuneCardFlow(cardModel: DailySoptuneCardModel) {
+        let dailySoptuneCardCoordinator = DailySoptuneCardCoordinator(
+            router: Router(
+                rootController: rootController ?? self.router.asNavigationController
+            ), factory: factory
+            , cardModel: cardModel
+        )
         
+        dailySoptuneCardCoordinator.finishFlow = { [weak self, weak dailySoptuneCardCoordinator] in
+            dailySoptuneCardCoordinator?.childCoordinators = []
+            self?.removeDependency(dailySoptuneCardCoordinator)
+        }
+        
+        addDependency(dailySoptuneCardCoordinator)
+        dailySoptuneCardCoordinator.start()
+    }
+    
     private func showMessageBottomSheet(userModel: PokeUserModel, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel, isAnonymous: Bool), Never> {
         let messageType: PokeMessageType = userModel.isFirstMeet ? .pokeSomeone : .pokeFriend
         

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 import DSKit
@@ -14,11 +15,13 @@ import Domain
 
 import BaseFeatureDependency
 
-public final class DailySoptuneCardVC: UIViewController, DailySoptuneCardPresentable {
+public final class DailySoptuneCardVC: UIViewController, DailySoptuneCardViewControllable {
     
     // MARK: - Properties
 
+    public var viewModel: DailySoptuneCardViewModel
     private let cardModel: DailySoptuneCardModel
+    private var cancelBag = CancelBag()
 
 	// MARK: - UI Components
 	
@@ -44,8 +47,9 @@ public final class DailySoptuneCardVC: UIViewController, DailySoptuneCardPresent
     
     // MARK: - initialization
     
-    init(cardModel: DailySoptuneCardModel) {
+    init(cardModel: DailySoptuneCardModel, viewModel: DailySoptuneCardViewModel) {
         self.cardModel = cardModel
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -60,6 +64,7 @@ public final class DailySoptuneCardVC: UIViewController, DailySoptuneCardPresent
 		setUI()
 		setLayout()
         setData()
+        bindViewModels()
 	}
 }
 
@@ -113,5 +118,14 @@ private extension DailySoptuneCardVC {
         self.cardLabel.text = "\(cardModel.name)이 왔솝"
         self.cardLabel.partColorChange(targetString: "\(cardModel.name)", textColor: UIColor(hex: "\(cardModel.imageColorCode)"))
         self.cardImage.setImage(with: cardModel.imageURL)
+    }
+    
+    private func bindViewModels() {
+        let input = DailySoptuneCardViewModel.Input(
+            goToHomeButtonTap: self.goToHomeButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
+            backButtonTap: self.backButton.publisher(for: .touchUpInside).mapVoid().asDriver()
+        )
+        
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
     }
 }
