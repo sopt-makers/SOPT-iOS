@@ -59,7 +59,6 @@ extension DailySoptuneResultViewModel {
         input.viewWillAppear
             .withUnretained(self)
             .sink {  _ in
-                self.onNaviBackButtonTap?()
                 self.useCase.getRandomUser()
             }.store(in: cancelBag)
         
