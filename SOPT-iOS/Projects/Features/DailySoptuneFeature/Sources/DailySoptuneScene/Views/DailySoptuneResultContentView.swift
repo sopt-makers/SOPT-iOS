@@ -11,6 +11,7 @@ import Combine
 
 import DSKit
 import Core
+import Domain
 
 public final class DailySoptuneResultContentView: UIView {
     
@@ -28,18 +29,18 @@ public final class DailySoptuneResultContentView: UIView {
     private lazy var contentLabel = UILabel().then {
         $0.font = UIFont.MDS.title3.font
         $0.textColor = DSKitAsset.Colors.gray30.color
-        $0.numberOfLines = 3
+        $0.numberOfLines = 0
     }
     
     // MARK: - initialization
     
-    init(name: String, description: String, date: String) {
-        super.init(frame: .zero)
-        self.contentLabel.text = "\(name)님,\n\(description)"
-        self.dateLabel.text = date
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+        
         self.setUI()
         self.setLayout()
     }
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -70,24 +71,32 @@ extension DailySoptuneResultContentView {
         self.addSubviews(soptuneLogoImage, dateLabel, contentLabel)
         
         soptuneLogoImage.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(32)
+            make.top.equalToSuperview().inset(32.adjustedH)
             make.width.equalTo(Metric.soptuneLogoWidth)
             make.height.equalTo(Metric.soptuneLogoWidth * Metric.soptuneLogoRatio)
             make.centerX.equalToSuperview()
         }
         
         dateLabel.snp.makeConstraints { make in
-            make.top.equalTo(soptuneLogoImage.snp.bottom).offset(12)
+            make.top.equalTo(soptuneLogoImage.snp.bottom).offset(12.adjusted)
             make.centerX.equalToSuperview()
         }
         
         contentLabel.snp.makeConstraints { make in
-            make.top.equalTo(dateLabel.snp.bottom).offset(20)
+            make.top.equalTo(dateLabel.snp.bottom).offset(20.adjustedH)
             make.centerX.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(76.adjusted)
         }
         
         self.snp.makeConstraints { make in
-            make.bottom.equalTo(contentLabel.snp.bottom).offset(34)
+            make.bottom.equalTo(contentLabel.snp.bottom).offset(34.adjustedH)
         }
+    }
+}
+
+extension DailySoptuneResultContentView {
+    public func setData(model: DailySoptuneResultModel) {
+        self.dateLabel.text = setDateFormat(to: "MM월 dd일 EEEE")
+        self.contentLabel.text = "\(model.userName)님,\n\(model.title)"
     }
 }

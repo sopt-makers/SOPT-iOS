@@ -22,6 +22,7 @@ public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultVie
     
     public var viewModel: DailySoptuneResultViewModel
     private var cancelBag = CancelBag()
+    private let resultModel: DailySoptuneResultModel
     
     private lazy var receiveTodaysFortuneButtonTap: Driver<Void> = receiveTodaysFortuneCardButton.publisher(for: .touchUpInside).mapVoid().asDriver()
     private let viewWillAppear = PassthroughSubject<Void, Never>()
@@ -51,7 +52,7 @@ public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultVie
     
     // 오늘의 솝마디 부분
     
-    private lazy var dailySoptuneResultContentView = DailySoptuneResultContentView(name: "이재현", description: "단순하게 생각하면\n일이 술술 풀리겠솝!", date: viewModel.setCurrentDateString())
+    private lazy var dailySoptuneResultContentView = DailySoptuneResultContentView()
     
     // 콕 찌르기 부분
     
@@ -65,8 +66,9 @@ public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultVie
     
     // MARK: - Initialization
     
-    public init(viewModel: DailySoptuneResultViewModel) {
+    public init(viewModel: DailySoptuneResultViewModel, resultModel: DailySoptuneResultModel) {
         self.viewModel = viewModel
+        self.resultModel = resultModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -95,6 +97,7 @@ public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultVie
 extension DailySoptuneResultVC {
     private func setUI() {
         view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        dailySoptuneResultContentView.setData(model: resultModel)
     }
     
     private func setStackView() {
@@ -143,8 +146,8 @@ extension DailySoptuneResultVC {
 
 // MARK: - Methods
 
-extension DailySoptuneResultVC {
-    private func bindViewModels() {
+private extension DailySoptuneResultVC {
+    func bindViewModels() {
         let input = DailySoptuneResultViewModel
             .Input(
                 viewWillAppear: viewWillAppear.asDriver(),
@@ -164,3 +167,4 @@ extension DailySoptuneResultVC {
             }.store(in: self.cancelBag)
     }
 }
+

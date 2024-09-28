@@ -19,10 +19,12 @@ public final class DailySoptuneBuilder {
 
 extension DailySoptuneBuilder: DailySoptuneFeatureBuildable {
     
-    public func makeDailySoptuneResultVC() -> DailySoptuneFeatureInterface.DailySoptuneResultPresentable {
+    public func makeDailySoptuneResultVC(resultModel: DailySoptuneResultModel) -> DailySoptuneFeatureInterface.DailySoptuneResultPresentable {
         let useCase = DefaultDailySoptuneUseCase(repository: dailySoptuneRepository)
         let viewModel = DailySoptuneResultViewModel(useCase: useCase)
-        let dailySoptuneResultVC = DailySoptuneResultVC(viewModel: viewModel)
+        let dailySoptuneResultVC = DailySoptuneResultVC(
+            viewModel: viewModel,
+            resultModel: resultModel)
         return (dailySoptuneResultVC, viewModel)
     }
 	
