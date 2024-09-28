@@ -16,6 +16,8 @@ import Domain
 import PokeFeatureInterface
 
 public final class DailySoptuneResultCoordinator: DefaultCoordinator {
+    
+    public var requestCoordinating: (() -> Void)?
     public var finishFlow: (() -> Void)?
     
     private let factory: DailySoptuneFeatureBuildable
@@ -66,6 +68,10 @@ public final class DailySoptuneResultCoordinator: DefaultCoordinator {
         dailySoptuneCardCoordinator.finishFlow = { [weak self, weak dailySoptuneCardCoordinator] in
             dailySoptuneCardCoordinator?.childCoordinators = []
             self?.removeDependency(dailySoptuneCardCoordinator)
+        }
+        
+        dailySoptuneCardCoordinator.requestCoordinating = { [weak self] in
+            self?.requestCoordinating?()
         }
         
         addDependency(dailySoptuneCardCoordinator)

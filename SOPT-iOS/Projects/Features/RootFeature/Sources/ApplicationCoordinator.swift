@@ -18,6 +18,7 @@ import NotificationFeature
 import StampFeature
 import PokeFeature
 import AttendanceFeature
+import DailySoptuneFeature
 
 public
 final class ApplicationCoordinator: BaseCoordinator {
@@ -342,6 +343,31 @@ extension ApplicationCoordinator {
         coordinator.finishFlow = { [weak self, weak coordinator] in
             self?.removeDependency(coordinator)
         }
+        addDependency(coordinator)
+        coordinator.start()
+        
+        return coordinator
+    }
+    
+    @discardableResult
+    internal func runDailySoptuneResultFlow() -> DailySoptuneResultCoordinator {
+        let coordinator = DailySoptuneResultCoordinator(
+            router: router,
+            factory: DailySoptuneBuilder(),
+            pokeFactory: PokeBuilder()
+        )
+        
+        coordinator.finishFlow = { [weak self, weak coordinator] in
+            coordinator?.childCoordinators = []
+            self?.removeDependency(coordinator)
+        }
+        
+        coordinator.requestCoordinating = { [weak self] in
+            self?.notificationHandler.receive(deepLink: "home")
+            guard let deepLinkComponent = self?.notificationHandler.deepLink.value else { return }
+            self?.handleDeepLink(deepLink: deepLinkComponent)
+        }
+        
         addDependency(coordinator)
         coordinator.start()
         

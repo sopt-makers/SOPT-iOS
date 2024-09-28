@@ -16,6 +16,7 @@ import Domain
 
 public final class DailySoptuneCardCoordinator: DefaultCoordinator {
     
+    public var requestCoordinating: (() -> Void)?
     public var finishFlow: (() -> Void)?
         
     private let factory: DailySoptuneFeatureBuildable
@@ -41,6 +42,10 @@ public final class DailySoptuneCardCoordinator: DefaultCoordinator {
         dailySoptuneCard.vm.onBackButtonTapped = { [weak self] in
             self?.router.dismissModule(animated: true)
             self?.finishFlow?()
+        }
+        
+        dailySoptuneCard.vm.onGoToHomeButtonTapped = { [weak self] in
+            self?.requestCoordinating?()
         }
         
         self.rootController = dailySoptuneCard.vc.asNavigationController
