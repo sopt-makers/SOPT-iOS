@@ -19,7 +19,9 @@ public struct DailySoptuneWordDeepLink: DeepLinkExecutable {
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
         guard let coordinator = coordinator as? DailySoptuneCoordinator else { return nil }
         
-        coordinator.start()
+        if self.isDestination == true {
+            coordinator.start()
+        }
         
         return nil
     }

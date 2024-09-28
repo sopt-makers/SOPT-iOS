@@ -18,6 +18,7 @@ import NotificationFeature
 import StampFeature
 import PokeFeature
 import AttendanceFeature
+import DailySoptuneFeature
 
 public
 final class ApplicationCoordinator: BaseCoordinator {
@@ -341,6 +342,26 @@ extension ApplicationCoordinator {
         coordinator.finishFlow = { [weak self, weak coordinator] in
             self?.removeDependency(coordinator)
         }
+        addDependency(coordinator)
+        coordinator.start()
+        
+        return coordinator
+    }
+    
+    @discardableResult
+    internal func runDailySoptuneFlow() -> DailySoptuneCoordinator {
+        let coordinator = DailySoptuneCoordinator(
+            router: Router(
+                rootController: UIWindow.getRootNavigationController
+            ),
+            factory: DailySoptuneBuilder(), 
+            pokeFactory: PokeBuilder()
+        )
+        coordinator.finishFlow = { [weak self, weak coordinator] in
+            coordinator?.childCoordinators = []
+            self?.removeDependency(coordinator)
+        }
+        
         addDependency(coordinator)
         coordinator.start()
         
