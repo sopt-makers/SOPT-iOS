@@ -37,7 +37,7 @@ public final class DailySoptuneMainVC: UIViewController, DailySoptuneMainViewCon
 	private let dateLabel = UILabel().then {
 		$0.textColor = DSKitAsset.Colors.gray100.color
 		$0.font = DSKitFontFamily.Suit.medium.font(size: 16)
-		$0.text = "9월 17일 화요일"
+		$0.text = setDateFormat(to: "M월 d일 EEEE")
 	}
 	
 	private let recieveFortune = UILabel().then {
@@ -127,7 +127,7 @@ private extension DailySoptuneMainVC {
     func bindViewModels() {
         let input = DailySoptuneMainViewModel
             .Input(
-                viewDidLoad: viewDidLoaded,
+                viewDidLoad: viewDidLoaded.asDriver(),
                 naviBackButtonTap: backButtonTapped,
                 receiveTodayFortuneButtonTap: todayFortuneButtonTapped
             )

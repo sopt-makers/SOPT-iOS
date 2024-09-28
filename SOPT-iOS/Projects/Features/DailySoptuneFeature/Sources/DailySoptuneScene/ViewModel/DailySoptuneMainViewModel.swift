@@ -16,8 +16,8 @@ import DailySoptuneFeatureInterface
 
 public final class DailySoptuneMainViewModel: DailySoptuneMainViewModelType {
     
-    public var onNavibackTap: (() -> Void)?
-    public var onReciveTodayFortuneButtonTap: (() -> Void)?
+    public var onNaviBackTap: (() -> Void)?
+    public var onReciveTodayFortuneButtonTap: ((DailySoptuneResultModel) -> Void)?
 	
 	// MARK: - Properties
 
@@ -35,7 +35,6 @@ public final class DailySoptuneMainViewModel: DailySoptuneMainViewModelType {
 	// MARK: - Outputs
 	
 	public struct Output {
-        let todayFortuneResult = PassthroughSubject<DailySoptuneResultModel, Never>()
 	}
 	
 	// MARK: - Initialization
@@ -53,14 +52,13 @@ extension DailySoptuneMainViewModel {
         input.viewDidLoad
             .withUnretained(self)
             .sink {_ in
-                self.onNavibackTap?()
+                self.onNaviBackTap?()
             }.store(in: cancelBag)
         
         input.receiveTodayFortuneButtonTap
             .withUnretained(self)
             .sink { _ in
-                self.onReciveTodayFortuneButtonTap?()
-                self.useCase.getDailySoptuneResult(date: "2024-09-19")
+                self.useCase.getDailySoptuneResult(date: setDateFormat(to: "yyyy-MM-dd"))
             }.store(in: cancelBag)
         
 		return output
@@ -68,8 +66,10 @@ extension DailySoptuneMainViewModel {
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         useCase.dailySoptuneResult
-            .asDriver()
-            .subscribe(output.todayFortuneResult)
+            .withUnretained(self)
+            .sink { _, resultModel in
+                self.onReciveTodayFortuneButtonTap?(resultModel)
+            }
             .store(in: cancelBag)
     }
 }
