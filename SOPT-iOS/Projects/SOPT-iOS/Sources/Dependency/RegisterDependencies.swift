@@ -173,7 +173,8 @@ extension AppDelegate {
             interface: DailySoptuneRepositoryInterface.self,
             implement: {
                 DailySoptuneRepository(
-                    fortuneService: DefaultFortuneService()
+                    fortuneService: DefaultFortuneService(), 
+                    pokeService: DefaultPokeService()
                 )
             }
         )
