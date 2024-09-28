@@ -22,7 +22,6 @@ import AttendanceFeature
 public
 final class ApplicationCoordinator: BaseCoordinator {
     
-    //  private let coordinatorFactory: CoordinatorFactory
     private let router: Router
     private var cancelBag = CancelBag()
     private let notificationHandler: NotificationHandler
