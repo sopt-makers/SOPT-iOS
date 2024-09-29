@@ -13,6 +13,6 @@ import Networks
 
 extension FortuneCardEntity {
     public func toDomain() -> DailySoptuneCardModel {
-        return DailySoptuneCardModel(name: name, description: description, imageURL: imageURL)
+        return DailySoptuneCardModel(name: name, description: description, imageURL: imageURL, imageColorCode: imageColorCode)
     }
 }

@@ -13,6 +13,6 @@ import Domain
 
 public protocol DailySoptuneFeatureBuildable {
     func makeDailySoptuneResultVC(resultModel: DailySoptuneResultModel) -> DailySoptuneResultPresentable
-    func makePokeMessageTemplateBottomSheet(messageType: PokeMessageType) -> PokeMessageTemplatesPresentable
     func makeDailySoptuneMainVC() -> DailySoptuneMainPresentable
+    func makeDailySoptuneCardVC(cardModel: DailySoptuneCardModel) -> DailySoptuneCardPresentable
 }

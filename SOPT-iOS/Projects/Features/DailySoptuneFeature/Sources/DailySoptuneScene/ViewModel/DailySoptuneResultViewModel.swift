@@ -14,11 +14,12 @@ import Domain
 
 import DailySoptuneFeatureInterface
 
-public class DailySoptuneResultViewModel: DailySoptuneResultViewModelType {
-
-    public var onNaviBackTap: (() -> Void)?
-    public var onReceiveTodaysFortuneCardTap: (() -> Void)?
+public final class DailySoptuneResultViewModel: DailySoptuneResultViewModelType {
+    
+    public var onNaviBackButtonTapped: (() -> Void)?
+    public var onReceiveTodaysFortuneCardTap: ((DailySoptuneCardModel) -> Void)?
     public var onKokButtonTapped: ((Domain.PokeUserModel) -> Core.Driver<(Domain.PokeUserModel, Domain.PokeMessageModel, isAnonymous: Bool)>)?
+    public var onReceiveTodaysFortuneCardButtonTapped: ((Domain.DailySoptuneCardModel) -> Void)?
     
     // MARK: - Properties
 
@@ -37,7 +38,7 @@ public class DailySoptuneResultViewModel: DailySoptuneResultViewModelType {
     // MARK: - Outputs
     
     public struct Output {
-        let todaysFortuneCard = PassthroughSubject<DailySoptuneCardModel, Never>()
+//        let todaysFortuneCard = PassthroughSubject<DailySoptuneCardModel, Never>()
         let randomUser = PassthroughSubject<PokeRandomUserInfoModel, Never>()
         let messageTemplates = PassthroughSubject<PokeMessagesModel, Never>()
         let pokeResponse = PassthroughSubject<PokeUserModel, Never>()
@@ -57,13 +58,16 @@ extension DailySoptuneResultViewModel {
         
         input.viewWillAppear
             .sink { [weak self] _ in
-                self?.onNaviBackTap?()
                 self?.useCase.getRandomUser()
+            }.store(in: cancelBag)
+        
+        input.naviBackButtonTap
+            .sink { [weak self] _ in
+                self?.onNaviBackButtonTapped?()
             }.store(in: cancelBag)
         
         input.receiveTodaysFortuneCardTap
             .sink { [weak self] _ in
-                self?.onReceiveTodaysFortuneCardTap?()
                 self?.useCase.getTodaysFortuneCard()
             }.store(in: cancelBag)
         
@@ -82,9 +86,10 @@ extension DailySoptuneResultViewModel {
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         useCase.todaysFortuneCard
-            .subscribe(output.todaysFortuneCard)
+            .sink { [weak self] cardModel in
+                self?.onReceiveTodaysFortuneCardButtonTapped?(cardModel)
+            }
             .store(in: cancelBag)
-        
         useCase.randomUser
             .asDriver()
             .sink(receiveValue: { values in

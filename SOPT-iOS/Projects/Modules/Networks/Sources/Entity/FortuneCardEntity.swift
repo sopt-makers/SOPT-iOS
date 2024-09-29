@@ -11,11 +11,11 @@ import Foundation
 // MARK: - Entity
 
 public struct FortuneCardEntity: Codable {
-    public let name, description: String
+    public let name, description, imageColorCode: String
     public let imageURL: String
 
     enum CodingKeys: String, CodingKey {
-        case name, description
+        case name, description, imageColorCode
         case imageURL = "imageUrl"
     }
 }

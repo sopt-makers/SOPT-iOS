@@ -349,6 +349,31 @@ extension ApplicationCoordinator {
     }
     
     @discardableResult
+    internal func runDailySoptuneResultFlow() -> DailySoptuneResultCoordinator {
+        let coordinator = DailySoptuneResultCoordinator(
+            router: router,
+            factory: DailySoptuneBuilder(),
+            pokeFactory: PokeBuilder()
+        )
+        
+        coordinator.finishFlow = { [weak self, weak coordinator] in
+            coordinator?.childCoordinators = []
+            self?.removeDependency(coordinator)
+        }
+        
+        coordinator.requestCoordinating = { [weak self] in
+            self?.notificationHandler.receive(deepLink: "home")
+            guard let deepLinkComponent = self?.notificationHandler.deepLink.value else { return }
+            self?.handleDeepLink(deepLink: deepLinkComponent)
+        }
+        
+        addDependency(coordinator)
+        coordinator.start()
+        
+        return coordinator
+    }
+    
+    @discardableResult
     internal func runDailySoptuneFlow() -> DailySoptuneCoordinator {
         let coordinator = DailySoptuneCoordinator(
             router: Router(

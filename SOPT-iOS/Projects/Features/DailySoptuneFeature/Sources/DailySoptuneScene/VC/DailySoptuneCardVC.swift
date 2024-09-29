@@ -7,11 +7,21 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 import DSKit
+import Domain
 
-public final class DailySoptuneCardVC: UIViewController {
+import BaseFeatureDependency
+
+public final class DailySoptuneCardVC: UIViewController, DailySoptuneCardViewControllable {
+    
+    // MARK: - Properties
+
+    public var viewModel: DailySoptuneCardViewModel
+    private let cardModel: DailySoptuneCardModel
+    private let cancelBag = CancelBag()
 
 	// MARK: - UI Components
 	
@@ -22,11 +32,9 @@ public final class DailySoptuneCardVC: UIViewController {
 	private let subCardLabel = UILabel().then {
 		$0.textColor = DSKitAsset.Colors.gray300.color
 		$0.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
-		$0.text = "어려움을 전부 극복할"
 	}
 	
 	private let cardLabel = UILabel().then {
-		$0.text = "OO부적이 왔솝"
 		$0.textColor = DSKitAsset.Colors.white100.color
 		$0.font = DSKitFontFamily.Suit.bold.font(size: 28)
 	}
@@ -36,12 +44,27 @@ public final class DailySoptuneCardVC: UIViewController {
 	}
 	
 	private let goToHomeButton = AppOutlinedButton(title: I18N.DailySoptune.goHome)
+    
+    // MARK: - initialization
+    
+    init(cardModel: DailySoptuneCardModel, viewModel: DailySoptuneCardViewModel) {
+        self.cardModel = cardModel
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - View Life Cycle
 	
 	public override func viewDidLoad() {
 		super.viewDidLoad()
-		
 		setUI()
 		setLayout()
+        setData()
+        bindViewModels()
 	}
 }
 
@@ -85,4 +108,24 @@ private extension DailySoptuneCardVC {
 			make.bottom.equalTo(goToHomeButton.snp.top).offset(-36.adjustedH)
 		}
 	}
+}
+
+// MARK: - Methods
+
+private extension DailySoptuneCardVC {
+    func setData() {
+        self.subCardLabel.text = cardModel.description
+        self.cardLabel.text = "\(cardModel.name)이 왔솝"
+        self.cardLabel.partColorChange(targetString: "\(cardModel.name)", textColor: UIColor(hex: "\(cardModel.imageColorCode)"))
+        self.cardImage.setImage(with: cardModel.imageURL)
+    }
+    
+    private func bindViewModels() {
+        let input = DailySoptuneCardViewModel.Input(
+            goToHomeButtonTap: self.goToHomeButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
+            backButtonTap: self.backButton.publisher(for: .touchUpInside).mapVoid().asDriver()
+        )
+        
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+    }
 }

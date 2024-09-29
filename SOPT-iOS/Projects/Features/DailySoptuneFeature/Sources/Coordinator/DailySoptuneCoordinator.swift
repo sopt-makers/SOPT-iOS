@@ -16,11 +16,15 @@ import Domain
 import PokeFeatureInterface
 
 public final class DailySoptuneCoordinator: DefaultCoordinator {
+    
+    public var requestCoordinating: (() -> Void)?
     public var finishFlow: (() -> Void)?
     
     private let factory: DailySoptuneFeatureBuildable
     private let pokeFactory: PokeFeatureBuildable
     private let router: Router
+    
+    private weak var rootController: UINavigationController?
     
     public init(router: Router, factory: DailySoptuneFeatureBuildable, pokeFactory: PokeFeatureBuildable) {
         self.router = router
@@ -42,42 +46,31 @@ public final class DailySoptuneCoordinator: DefaultCoordinator {
         
         dailySoptuneMain.vm.onReciveTodayFortuneButtonTap = { [weak self] result in
             guard let self else { return }
-            let resultVC = self.factory.makeDailySoptuneResultVC(resultModel: result)
-            self.router.push(resultVC.vc)
+            runDailySoptuneResultFlow(resultModel: result)
         }
         
-        router.push(dailySoptuneMain.vc)
+        self.rootController = dailySoptuneMain.vc.asNavigationController
+        self.router.present(self.rootController, animated: true, modalPresentationSytle: .overFullScreen)
     }
     
-    private func showDailySoptuneResult(resultModel: DailySoptuneResultModel) {
-        var dailySoptuneResult = factory.makeDailySoptuneResultVC(resultModel: resultModel)
+    internal func runDailySoptuneResultFlow(resultModel: DailySoptuneResultModel) {
+        let dailySoptuneResultCoordinator = DailySoptuneResultCoordinator(router: Router(
+            rootController: rootController ?? self.router.asNavigationController
+        ),
+                                                                          factory: factory,
+                                                                          pokeFactory: pokeFactory,
+                                                                          resultModel: resultModel)
         
-        dailySoptuneResult.vm.onKokButtonTapped = { [weak self] userModel in
-            guard let self else { return .empty() }
-            return self.showMessageBottomSheet(userModel: userModel, on: dailySoptuneResult.vc.viewController)
+        dailySoptuneResultCoordinator.finishFlow = { [weak self, weak dailySoptuneResultCoordinator] in
+            dailySoptuneResultCoordinator?.childCoordinators = []
+            self?.removeDependency(dailySoptuneResultCoordinator)
         }
         
-        router.push(dailySoptuneResult.vc)
-    }
-    
-    private func showMessageBottomSheet(userModel: PokeUserModel, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel, isAnonymous: Bool), Never> {
-        let messageType: PokeMessageType = userModel.isFirstMeet ? .pokeSomeone : .pokeFriend
+        dailySoptuneResultCoordinator.requestCoordinating = { [weak self] in
+            self?.requestCoordinating?()
+        }
         
-        guard let bottomSheet = self.pokeFactory
-            .makePokeMessageTemplateBottomSheet(messageType: messageType)
-            .vc
-            .viewController as? PokeMessageTemplatesViewControllable
-        else { return .empty() }
-        
-        let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate(minHeight: bottomSheet.minimumContentHeight))
-        
-        self.router.showBottomSheet(manager: bottomSheetManager,
-                                    toPresent: bottomSheet.viewController,
-                                    on: view)
-        
-        return bottomSheet
-            .signalForClick()
-            .map { (userModel, $0, $1)}
-            .asDriver()
+        addDependency(dailySoptuneResultCoordinator)
+        dailySoptuneResultCoordinator.start()
     }
 }

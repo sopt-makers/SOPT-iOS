@@ -12,10 +12,12 @@ public struct DailySoptuneCardModel: Codable {
     public let name: String
     public let description: String
     public let imageURL: String
+    public let imageColorCode: String
 
-    public init(name: String, description: String, imageURL: String) {
+    public init(name: String, description: String, imageURL: String, imageColorCode: String) {
         self.name = name
         self.description = description
         self.imageURL = imageURL
+        self.imageColorCode = imageColorCode
     }
 }
