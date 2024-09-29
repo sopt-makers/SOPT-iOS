@@ -21,7 +21,7 @@ public final class DailySoptuneCardVC: UIViewController, DailySoptuneCardViewCon
 
     public var viewModel: DailySoptuneCardViewModel
     private let cardModel: DailySoptuneCardModel
-    private var cancelBag = CancelBag()
+    private let cancelBag = CancelBag()
 
 	// MARK: - UI Components
 	

@@ -38,7 +38,7 @@ public final class DailySoptuneResultViewModel: DailySoptuneResultViewModelType 
     // MARK: - Outputs
     
     public struct Output {
-        let todaysFortuneCard = PassthroughSubject<DailySoptuneCardModel, Never>()
+//        let todaysFortuneCard = PassthroughSubject<DailySoptuneCardModel, Never>()
         let randomUser = PassthroughSubject<PokeRandomUserInfoModel, Never>()
         let messageTemplates = PassthroughSubject<PokeMessagesModel, Never>()
         let pokeResponse = PassthroughSubject<PokeUserModel, Never>()
@@ -57,21 +57,18 @@ extension DailySoptuneResultViewModel {
         self.bindOutput(output: output, cancelBag: cancelBag)
         
         input.viewWillAppear
-            .withUnretained(self)
-            .sink {  _ in
-                self.useCase.getRandomUser()
+            .sink { [weak self] _ in
+                self?.useCase.getRandomUser()
             }.store(in: cancelBag)
         
         input.naviBackButtonTap
-            .withUnretained(self)
-            .sink { _ in
-                self.onNaviBackButtonTapped?()
+            .sink { [weak self] _ in
+                self?.onNaviBackButtonTapped?()
             }.store(in: cancelBag)
         
         input.receiveTodaysFortuneCardTap
-            .withUnretained(self)
-            .sink { _ in
-                self.useCase.getTodaysFortuneCard()
+            .sink { [weak self] _ in
+                self?.useCase.getTodaysFortuneCard()
             }.store(in: cancelBag)
         
         input.kokButtonTap
@@ -89,13 +86,10 @@ extension DailySoptuneResultViewModel {
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         useCase.todaysFortuneCard
-            .withUnretained(self)
-            .sink { _, cardModel in
-                self.onReceiveTodaysFortuneCardButtonTapped?(cardModel)
-                output.todaysFortuneCard.send(cardModel)
+            .sink { [weak self] cardModel in
+                self?.onReceiveTodaysFortuneCardButtonTapped?(cardModel)
             }
             .store(in: cancelBag)
-        
         useCase.randomUser
             .asDriver()
             .sink(receiveValue: { values in

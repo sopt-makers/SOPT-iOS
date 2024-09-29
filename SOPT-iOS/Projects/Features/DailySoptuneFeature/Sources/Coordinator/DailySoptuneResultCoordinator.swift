@@ -22,34 +22,19 @@ public final class DailySoptuneResultCoordinator: DefaultCoordinator {
     
     private let factory: DailySoptuneFeatureBuildable
     private let pokeFactory: PokeFeatureBuildable
+    private let resultModel: DailySoptuneResultModel
     private let router: Router
     private weak var rootController: UINavigationController?
 
-    public init(router: Router, factory: DailySoptuneFeatureBuildable, pokeFactory: PokeFeatureBuildable) {
+    public init(router: Router, factory: DailySoptuneFeatureBuildable, pokeFactory: PokeFeatureBuildable, resultModel: DailySoptuneResultModel) {
         self.router = router
         self.factory = factory
         self.pokeFactory = pokeFactory
+        self.resultModel = resultModel
     }
     
     public override func start() {
-        showDailySoptuneMain()
-    }
-    
-    private func showDailySoptuneMain() {
-        var dailySoptuneMain = factory.makeDailySoptuneMainVC()
-        
-        dailySoptuneMain.vm.onNaviBackTap = {
-            self.router.popModule()
-            self.finishFlow?()
-        }
-        
-        dailySoptuneMain.vm.onReciveTodayFortuneButtonTap = { [weak self] result in
-            guard let self else { return }
-            let resultVC = self.factory.makeDailySoptuneResultVC(resultModel: result)
-            self.router.push(resultVC.vc)
-        }
-        
-        router.push(dailySoptuneMain.vc)
+        showDailySoptuneResult(resultModel: resultModel)
     }
     
     private func showDailySoptuneResult(resultModel: DailySoptuneResultModel) {
@@ -71,7 +56,7 @@ public final class DailySoptuneResultCoordinator: DefaultCoordinator {
         }
         
         rootController = dailySoptuneResult.vc.asNavigationController
-        router.present(rootController, animated: false, modalPresentationSytle: .overFullScreen)
+        router.present(rootController, animated: true, modalPresentationSytle: .overFullScreen)
     }
     
     internal func runDailySoptuneCardFlow(cardModel: DailySoptuneCardModel) {

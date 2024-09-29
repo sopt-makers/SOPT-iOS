@@ -40,8 +40,9 @@ public final class DailySoptuneCardCoordinator: DefaultCoordinator {
         var dailySoptuneCard = factory.makeDailySoptuneCardVC(cardModel: cardModel)
         
         dailySoptuneCard.vm.onBackButtonTapped = { [weak self] in
-            self?.router.dismissModule(animated: true)
-            self?.finishFlow?()
+            guard let self = self else { return }
+            self.router.dismissModule(animated: true)
+            self.finishFlow?()
         }
         
         dailySoptuneCard.vm.onGoToHomeButtonTapped = { [weak self] in
