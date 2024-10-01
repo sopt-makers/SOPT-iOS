@@ -52,7 +52,8 @@ open class BaseService<Target: TargetType> {
     }()
     
     private let endpointClosure = { (target: API) -> Endpoint in
-        let url = target.baseURL.appendingPathComponent(target.path).absoluteString
+        let url = target.path.isEmpty ? target.baseURL.absoluteString : target.baseURL.appendingPathComponent(target.path).absoluteString
+
         var endpoint: Endpoint = Endpoint(url: url,
                                           sampleResponseClosure: {.networkResponse(200, target.sampleData)},
                                           method: target.method,
@@ -62,7 +63,8 @@ open class BaseService<Target: TargetType> {
     }
     
     private let endpointClosureWithError = { (target: API) -> Endpoint in
-        let url = target.baseURL.appendingPathComponent(target.path).absoluteString
+        let url = target.path.isEmpty ? target.baseURL.absoluteString : target.baseURL.appendingPathComponent(target.path).absoluteString
+        
         var endpoint: Endpoint = Endpoint(url: url,
                                           sampleResponseClosure: {.networkResponse(400, target.sampleData)},
                                           method: target.method,
