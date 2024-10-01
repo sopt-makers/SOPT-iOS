@@ -73,6 +73,7 @@ public final class DailySoptuneCardVC: UIViewController, DailySoptuneCardViewCon
 private extension DailySoptuneCardVC {
 	func setUI() {
 		view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        navigationController?.navigationBar.isHidden = true
 	}
 	
 	func setLayout() {
