@@ -12,16 +12,13 @@ import DailySoptuneFeature
 
 public struct DailySoptuneDeepLink: DeepLinkExecutable {
     public var name = "fortune"
-    public var children: [DeepLinkExecutable] = [DailySoptuneWordDeepLink()]
+    public var children: [DeepLinkExecutable] = []
     public var isDestination = false
     
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
-        guard let coordinator = coordinator as? DailySoptuneCoordinator else { return nil }
+        guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
         
-        if self.isDestination == true {
-            coordinator.start()
-        }
-        
-        return nil
+        let stampCoordinator = coordinator.runDailySoptuneFlow()
+        return stampCoordinator
     }
 }
