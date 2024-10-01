@@ -18,7 +18,7 @@ public struct DailySoptuneDeepLink: DeepLinkExecutable {
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
         
-        let stampCoordinator = coordinator.runDailySoptuneFlow()
-        return stampCoordinator
+        let soptuneCoordinator = coordinator.runDailySoptuneFlow()
+        return soptuneCoordinator
     }
 }
