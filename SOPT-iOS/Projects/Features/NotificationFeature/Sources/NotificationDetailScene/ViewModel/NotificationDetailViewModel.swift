@@ -57,9 +57,9 @@ extension NotificationDetailViewModel {
         self.bindOutput(output: output, cancelBag: cancelBag)
         
         input.viewDidLoad
-            .sink { [weak self] _ in
-                guard let self = self else { return }
-                useCase.getNotificationDetail(notificationId: notificationId)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.useCase.getNotificationDetail(notificationId: owner.notificationId)
             }.store(in: cancelBag)
         
         input.shortCutButtonTap
@@ -74,11 +74,11 @@ extension NotificationDetailViewModel {
   
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         useCase.notificationDetail
-            .sink { [weak self] notificationDetail in
-                guard let self = self else { return }
+            .withUnretained(self)
+            .sink { owner, notificationDetail in
                 output.notification.send(notificationDetail)
-                self.notification = notificationDetail
-                self.useCase.readNotification(notificationId: self.notificationId)
+                owner.notification = notificationDetail
+                owner.useCase.readNotification(notificationId: owner.notificationId)
             }.store(in: cancelBag)
         
         useCase.readSuccess

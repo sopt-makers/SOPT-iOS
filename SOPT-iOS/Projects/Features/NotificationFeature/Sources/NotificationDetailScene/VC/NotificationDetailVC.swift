@@ -184,8 +184,9 @@ extension NotificationDetailVC {
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.notification
-            .sink { [weak self] notification in
-                self?.setData(with: notification)
+            .withUnretained(self)
+            .sink { owner, notification in
+                owner.setData(with: notification)
             }.store(in: cancelBag)
     }
     

@@ -67,9 +67,9 @@ extension PokeMyFriendsListViewModel {
         self.bindOutput(output: output, cancelBag: cancelBag)
         
         input.viewDidLoad
-            .sink { [weak self] _ in
-                guard let self = self else { return }
-                self.eventTracker.trackViewFriendsListEvent(friendType: self.relation)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.eventTracker.trackViewFriendsListEvent(friendType: owner.relation)
             }.store(in: cancelBag)
         
         input.viewDidLoad
@@ -85,8 +85,9 @@ extension PokeMyFriendsListViewModel {
             }.store(in: cancelBag)
         
         input.closeButtonTap
-            .sink { [weak self] _ in
-                self?.onCloseButtonTap?()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onCloseButtonTap?()
             }.store(in: cancelBag)
         
         input.pokeButtonTap
@@ -102,8 +103,9 @@ extension PokeMyFriendsListViewModel {
         
         input.profileImageTap
             .compactMap { $0 }
-            .sink { [weak self] user in
-                self?.onProfileImageTapped?(user.playgroundId)
+            .withUnretained(self)
+            .sink { owner, user in
+                owner.onProfileImageTapped?(user.playgroundId)
             }.store(in: cancelBag)
 
         return output

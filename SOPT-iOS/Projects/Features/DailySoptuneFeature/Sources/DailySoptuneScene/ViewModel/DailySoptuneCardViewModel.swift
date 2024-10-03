@@ -50,13 +50,15 @@ extension DailySoptuneCardViewModel {
         let output = Output()
         
         input.goToHomeButtonTap
-            .sink { [weak self] _ in
-                self?.onGoToHomeButtonTapped?()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onGoToHomeButtonTapped?()
             }.store(in: cancelBag)
         
         input.backButtonTap
-            .sink { [weak self] _ in
-                self?.onBackButtonTapped?()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onBackButtonTapped?()
             }.store(in: cancelBag)
         
         return output

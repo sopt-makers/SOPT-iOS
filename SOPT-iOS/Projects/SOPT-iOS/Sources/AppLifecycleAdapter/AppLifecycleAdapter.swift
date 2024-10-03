@@ -29,8 +29,9 @@ extension AppLifecycleAdapter {
             .publisher(for: UIApplication.willEnterForegroundNotification)
             .subscribe(on: DispatchQueue.global())
             .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] _ in
-                self?.reissureTokens()
+            .withUnretained(self)
+            .sink(receiveValue: { owner, _ in
+                owner.reissureTokens()
             }).store(in: self.cancelBag)
     }
     

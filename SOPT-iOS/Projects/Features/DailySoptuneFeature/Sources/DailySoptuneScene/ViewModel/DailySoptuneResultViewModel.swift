@@ -57,18 +57,21 @@ extension DailySoptuneResultViewModel {
         self.bindOutput(output: output, cancelBag: cancelBag)
         
         input.viewWillAppear
-            .sink { [weak self] _ in
-                self?.useCase.getRandomUser()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.useCase.getRandomUser()
             }.store(in: cancelBag)
         
         input.naviBackButtonTap
-            .sink { [weak self] _ in
-                self?.onNaviBackButtonTapped?()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNaviBackButtonTapped?()
             }.store(in: cancelBag)
         
         input.receiveTodaysFortuneCardTap
-            .sink { [weak self] _ in
-                self?.useCase.getTodaysFortuneCard()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.useCase.getTodaysFortuneCard()
             }.store(in: cancelBag)
         
         input.kokButtonTap
@@ -86,8 +89,9 @@ extension DailySoptuneResultViewModel {
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         useCase.todaysFortuneCard
-            .sink { [weak self] cardModel in
-                self?.onReceiveTodaysFortuneCardButtonTapped?(cardModel)
+            .withUnretained(self)
+            .sink { owner, cardModel in
+                owner.onReceiveTodaysFortuneCardButtonTapped?(cardModel)
             }
             .store(in: cancelBag)
         useCase.randomUser

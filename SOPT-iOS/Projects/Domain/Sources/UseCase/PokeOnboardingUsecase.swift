@@ -39,10 +39,11 @@ extension DefaultPokeOnboardingUsecase: PokeOnboardingUsecase {
         randomUserType: randomUserType,
         size: PokeRandomUserQueryCount.onboardingPage
       )
+      .withUnretained(self)
       .sink(
         receiveCompletion: { _ in },
-        receiveValue: { [weak self] value in
-          self?.randomAcquaintances.send(value)
+        receiveValue: { owner, value in
+          owner.randomAcquaintances.send(value)
         }
       ).store(in: self.cancelBag)
   }

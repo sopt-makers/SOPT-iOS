@@ -271,10 +271,9 @@ extension ListDetailVC {
       .signalForChangeDate()
       .dropFirst()
       .removeDuplicates()
-      .sink(receiveValue: { [weak self] date in
-        guard let self else { return }
-        
-        self.bottomButton.setEnabled(!date.isEmpty && self.textView.hasText)
+      .withUnretained(self)
+      .sink(receiveValue: { owner, date in
+          owner.bottomButton.setEnabled(!date.isEmpty && owner.textView.hasText)
       }).store(in: self.cancelBag)
   }
   

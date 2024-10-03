@@ -48,7 +48,7 @@ extension AppMyPageViewModel {
         input.viewWillAppear
             .withUnretained(self)
             .sink { owner, _ in
-                self.useCase.fetchUserNotificationIsAllowed()
+                owner.useCase.fetchUserNotificationIsAllowed()
             }.store(in: cancelBag)
         
         input.resetButtonTapped
