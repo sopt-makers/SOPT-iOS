@@ -20,6 +20,7 @@ public final class DailySoptuneResultViewModel: DailySoptuneResultViewModelType 
     public var onReceiveTodaysFortuneCardTap: ((DailySoptuneCardModel) -> Void)?
     public var onKokButtonTapped: ((Domain.PokeUserModel) -> Core.Driver<(Domain.PokeUserModel, Domain.PokeMessageModel, isAnonymous: Bool)>)?
     public var onReceiveTodaysFortuneCardButtonTapped: ((Domain.DailySoptuneCardModel) -> Void)?
+    public var onProfileImageTapped: ((Int) -> Void)?
     
     // MARK: - Properties
 
@@ -33,12 +34,12 @@ public final class DailySoptuneResultViewModel: DailySoptuneResultViewModelType 
         let naviBackButtonTap: Driver<Void>
         let receiveTodaysFortuneCardTap: Driver<Void>
         let kokButtonTap: Driver<PokeUserModel?>
+        let profileImageTap: Driver<PokeUserModel?>
     }
     
     // MARK: - Outputs
     
     public struct Output {
-//        let todaysFortuneCard = PassthroughSubject<DailySoptuneCardModel, Never>()
         let randomUser = PassthroughSubject<PokeRandomUserInfoModel, Never>()
         let messageTemplates = PassthroughSubject<PokeMessagesModel, Never>()
         let pokeResponse = PassthroughSubject<PokeUserModel, Never>()
@@ -57,18 +58,21 @@ extension DailySoptuneResultViewModel {
         self.bindOutput(output: output, cancelBag: cancelBag)
         
         input.viewWillAppear
-            .sink { [weak self] _ in
-                self?.useCase.getRandomUser()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.useCase.getRandomUser()
             }.store(in: cancelBag)
         
         input.naviBackButtonTap
-            .sink { [weak self] _ in
-                self?.onNaviBackButtonTapped?()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNaviBackButtonTapped?()
             }.store(in: cancelBag)
         
         input.receiveTodaysFortuneCardTap
-            .sink { [weak self] _ in
-                self?.useCase.getTodaysFortuneCard()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.useCase.getTodaysFortuneCard()
             }.store(in: cancelBag)
         
         input.kokButtonTap
@@ -81,15 +85,24 @@ extension DailySoptuneResultViewModel {
                 self?.useCase.poke(userId: userModel.userId, message: messageModel, isAnonymous: isAnonymous)
             }.store(in: cancelBag)
         
+        input.profileImageTap
+            .compactMap { $0 }
+            .withUnretained(self)
+            .sink { owner, user in
+                owner.onProfileImageTapped?(user.playgroundId)
+            }.store(in: cancelBag)
+        
         return output
     }
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         useCase.todaysFortuneCard
-            .sink { [weak self] cardModel in
-                self?.onReceiveTodaysFortuneCardButtonTapped?(cardModel)
+            .withUnretained(self)
+            .sink { owner, cardModel in
+                owner.onReceiveTodaysFortuneCardButtonTapped?(cardModel)
             }
             .store(in: cancelBag)
+        
         useCase.randomUser
             .asDriver()
             .sink(receiveValue: { values in

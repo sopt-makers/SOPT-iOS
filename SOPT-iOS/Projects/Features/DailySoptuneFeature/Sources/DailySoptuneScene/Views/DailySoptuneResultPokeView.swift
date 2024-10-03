@@ -19,6 +19,10 @@ public final class DailySoptuneResultPokeView: UIView {
         .map { self.user }
         .asDriver()
     
+    lazy var profileTap = self.profileImageView.gesture()
+        .filter { _ in self.user?.isAnonymous == false }
+        .map { _ in self.user }.asDriver()
+    
     // MARK: - Properties
     
     var user: PokeUserModel?
@@ -143,6 +147,7 @@ extension DailySoptuneResultPokeView {
         self.partLabel.text = "\(model.generation)기 \(model.part)"
         self.profileImageView.setImage(with: model.profileImage)
         self.profileImageView.setBorder()
+        self.kokButton.isEnabled = !model.isAlreadyPoke
     }
     
 }

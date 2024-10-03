@@ -72,6 +72,7 @@ public final class DailySoptuneCardVC: UIViewController, DailySoptuneCardViewCon
 
 private extension DailySoptuneCardVC {
 	func setUI() {
+        self.navigationController?.isNavigationBarHidden = true
 		view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
 	}
 	
@@ -79,26 +80,26 @@ private extension DailySoptuneCardVC {
 		self.view.addSubviews(backButton, subCardLabel, cardLabel, cardImage, goToHomeButton)
 		
 		backButton.snp.makeConstraints { make in
-			make.top.equalTo(view.safeAreaLayoutGuide).offset(2.adjustedH)
-			make.leading.equalToSuperview().inset(8.adjusted)
+			make.top.equalTo(view.safeAreaLayoutGuide).offset(2)
+			make.leading.equalToSuperview().inset(8)
 			make.size.equalTo(40)
 		}
 		
 		subCardLabel.snp.makeConstraints { make in
-			make.top.equalTo(view.safeAreaLayoutGuide).offset(48.adjustedH)
+			make.top.equalTo(view.safeAreaLayoutGuide).offset(48)
 			make.centerX.equalToSuperview()
-			make.height.equalTo(24.adjustedH)
+			make.height.equalTo(24)
 		}
 		
 		cardLabel.snp.makeConstraints { make in
-			make.top.equalTo(subCardLabel.snp.bottom).offset(2.adjustedH)
+			make.top.equalTo(subCardLabel.snp.bottom).offset(2)
 			make.centerX.equalToSuperview()
 			make.height.equalTo(42.adjustedH)
 		}
 		
 		goToHomeButton.snp.makeConstraints { make in
-			make.bottom.equalTo(view.safeAreaLayoutGuide).inset(49.adjustedH)
-			make.leading.trailing.equalToSuperview().inset(124.adjusted)
+			make.bottom.equalTo(view.safeAreaLayoutGuide).inset(49)
+			make.leading.trailing.equalToSuperview().inset(124)
 			make.height.equalTo(42.adjustedH)
 		}
 		
