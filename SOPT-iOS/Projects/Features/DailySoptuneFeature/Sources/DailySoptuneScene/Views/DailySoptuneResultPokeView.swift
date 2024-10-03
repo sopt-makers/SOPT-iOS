@@ -12,7 +12,6 @@ import Combine
 import DSKit
 import Core
 import Domain
-import PokeFeature
 
 public final class DailySoptuneResultPokeView: UIView {
     
@@ -51,7 +50,7 @@ public final class DailySoptuneResultPokeView: UIView {
         $0.textColor = DSKitAsset.Colors.gray300.color
     }
     
-    private let kokButton = PokeKokButton()
+    private let kokButton = PKokButton()
     
     private lazy var labelStackView = UIStackView(
         arrangedSubviews: [nameLabel, partLabel]

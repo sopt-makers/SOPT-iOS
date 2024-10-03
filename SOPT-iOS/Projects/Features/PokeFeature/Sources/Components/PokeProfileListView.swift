@@ -29,7 +29,7 @@ public final class PokeProfileListView: UIView, PokeCompatible {
 
   private let profileImageView = CustomProfileImageView()
 
-  private lazy var kokButton = PokeKokButton()
+  private lazy var kokButton = PKokButton()
 
   private let nameLabel: UILabel = {
     let label = UILabel()

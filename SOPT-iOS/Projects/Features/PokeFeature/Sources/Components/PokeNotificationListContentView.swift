@@ -74,7 +74,7 @@ final public class PokeNotificationListContentView: UIView, PokeCompatible {
   private lazy var pokeChipView = PokeChipView(frame: self.frame)
 
   // MARK: Right:
-  private let pokeKokButton = PokeKokButton()
+  private let pokeKokButton = PKokButton()
 
   // NOTE: NotifcationDetailView에서는 description의 numberOfLine Value가 2에요
   private let isDetailView: Bool
