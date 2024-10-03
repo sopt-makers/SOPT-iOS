@@ -49,14 +49,16 @@ extension DailySoptuneMainViewModel {
 		let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
-        input.viewDidLoad
-            .sink { [weak self] _ in
-                self?.onNaviBackTap?()
+        input.naviBackButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNaviBackTap?()
             }.store(in: cancelBag)
         
         input.receiveTodayFortuneButtonTap
-            .sink { [weak self] _ in
-                self?.useCase.getDailySoptuneResult(date: setDateFormat(to: "yyyy-MM-dd"))
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.useCase.getDailySoptuneResult(date: setDateFormat(to: "yyyy-MM-dd"))
             }.store(in: cancelBag)
         
 		return output
@@ -64,8 +66,9 @@ extension DailySoptuneMainViewModel {
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         useCase.dailySoptuneResult
-            .sink { [weak self] resultModel in
-                self?.onReciveTodayFortuneButtonTap?(resultModel)
+            .withUnretained(self)
+            .sink { owner, resultModel in
+                owner.onReciveTodayFortuneButtonTap?(resultModel)
             }
             .store(in: cancelBag)
     }

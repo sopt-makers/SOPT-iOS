@@ -91,6 +91,7 @@ extension DailySoptuneResultVC {
     private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        navigationController?.navigationBar.isHidden = true
         dailySoptuneResultContentView.setData(model: resultModel)
     }
     

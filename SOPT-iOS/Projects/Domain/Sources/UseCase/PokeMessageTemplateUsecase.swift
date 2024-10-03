@@ -31,10 +31,11 @@ extension DefaultPokeMessageTemplateUsecase: PokeMessageTemplateUsecase {
     public func getPokeMessageTemplates(type: PokeMessageType) {
         self.repository
             .getMesseageTemplates(type: type)
+            .withUnretained(self)
             .sink(
                 receiveCompletion: { _ in },
-                receiveValue: { [weak self] value in
-                    self?.pokeMessageModels.send(value)
+                receiveValue: { owner, value in
+                    owner.pokeMessageModels.send(value)
                 }
             ).store(in: self.cancelBag)
     }

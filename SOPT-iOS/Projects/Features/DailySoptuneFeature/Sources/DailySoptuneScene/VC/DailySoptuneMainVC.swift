@@ -84,24 +84,25 @@ public final class DailySoptuneMainVC: UIViewController, DailySoptuneMainViewCon
 private extension DailySoptuneMainVC {
 	func setUI() {
 		view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        navigationController?.navigationBar.isHidden = true
 	}
 	
 	func setLayout() {
 		self.view.addSubviews(backButton, dateLabel, recieveFortune, todayFortuneImage, titleCardsImage, checkTodayFortuneButton)
 		
 		backButton.snp.makeConstraints { make in
-			make.top.equalTo(view.safeAreaLayoutGuide).offset(2.adjustedH)
-			make.leading.equalToSuperview().inset(8.adjusted)
+			make.top.equalTo(view.safeAreaLayoutGuide).offset(2)
+			make.leading.equalToSuperview().inset(8)
 			make.size.equalTo(40)
 		}
 		
 		dateLabel.snp.makeConstraints { make in
-			make.top.equalTo(view.safeAreaLayoutGuide).offset(40.adjustedH)
+			make.top.equalTo(view.safeAreaLayoutGuide).offset(40)
 			make.centerX.equalToSuperview()
 		}
 		
 		recieveFortune.snp.makeConstraints { make in
-			make.top.equalTo(dateLabel.snp.bottom).offset(2.adjustedH)
+			make.top.equalTo(dateLabel.snp.bottom).offset(2)
 			make.centerX.equalToSuperview()
 		}
 		
@@ -112,9 +113,9 @@ private extension DailySoptuneMainVC {
 		}
 		
 		checkTodayFortuneButton.snp.makeConstraints { make in
-			make.bottom.equalTo(view.safeAreaLayoutGuide).inset(49.adjustedH)
-			make.leading.trailing.equalToSuperview().inset(20.adjusted)
-			make.height.equalTo(56.adjustedH)
+			make.bottom.equalTo(view.safeAreaLayoutGuide).inset(49)
+			make.leading.trailing.equalToSuperview().inset(20)
+			make.height.equalTo(56)
 		}
 		
 		titleCardsImage.snp.makeConstraints { make in

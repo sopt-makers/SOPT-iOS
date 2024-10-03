@@ -39,9 +39,9 @@ extension PokeMessageTemplateViewModel {
         self.bindOutput(output: output, cancelBag: cancelBag)
             
         input.viewDidLoaded
-            .sink(receiveValue: { [weak self] _ in
-                guard let self = self else { return }
-                self.usecase.getPokeMessageTemplates(type: self.messageType)
+            .withUnretained(self)
+            .sink(receiveValue: { owner, _ in
+                owner.usecase.getPokeMessageTemplates(type: owner.messageType)
             }).store(in: cancelBag)
         
         return output

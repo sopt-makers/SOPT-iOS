@@ -361,6 +361,7 @@ extension ApplicationCoordinator {
             coordinator?.childCoordinators = []
             self?.removeDependency(coordinator)
         }
+        
         coordinator.requestCoordinating = { [weak self] in
             self?.notificationHandler.receive(deepLink: "home")
             guard let deepLinkComponent = self?.notificationHandler.deepLink.value else { return }

@@ -152,22 +152,25 @@ extension NotificationSettingByFeaturesVC {
         
         self.allNotificationListItem
             .signalForRightSwitchClick()
-            .sink { [weak self] isOn in
-                self?.allOptInTapped.send(isOn)
+            .withUnretained(self)
+            .sink { owner, isOn in
+                owner.allOptInTapped.send(isOn)
             }
             .store(in: self.cancelBag)
         
         self.notificaitonByPartListItem
             .signalForRightSwitchClick()
-            .sink { [weak self] isOn in
-                self?.partOptInTapped.send(isOn)
+            .withUnretained(self)
+            .sink { owner, isOn in
+                owner.partOptInTapped.send(isOn)
             }
             .store(in: self.cancelBag)
 
         self.infoNotificationListItem
             .signalForRightSwitchClick()
-            .sink { [weak self] isOn in
-                self?.infoOptInTapped.send(isOn)
+            .withUnretained(self)
+            .sink { owner, isOn in
+                owner.infoOptInTapped.send(isOn)
             }
             .store(in: self.cancelBag)
     }
@@ -183,18 +186,20 @@ extension NotificationSettingByFeaturesVC {
         
         output
             .firstFetchedNotificationModel
-            .sink { [weak self] notifcationOptInModel in
-                self?.allNotificationListItem.configureRightSwitch(to: notifcationOptInModel.allOptIn)
-                self?.notificaitonByPartListItem.configureRightSwitch(to: notifcationOptInModel.partOptIn)
-                self?.infoNotificationListItem.configureRightSwitch(to: notifcationOptInModel.newsOptIn)
+            .withUnretained(self)
+            .sink { owner, notifcationOptInModel in
+                owner.allNotificationListItem.configureRightSwitch(to: notifcationOptInModel.allOptIn)
+                owner.notificaitonByPartListItem.configureRightSwitch(to: notifcationOptInModel.partOptIn)
+                owner.infoNotificationListItem.configureRightSwitch(to: notifcationOptInModel.newsOptIn)
             }.store(in: self.cancelBag)
 
         output
             .updateSuccessed
-            .sink { [weak self] notifcationOptInModel in
-                self?.allNotificationListItem.configureRightSwitch(to: notifcationOptInModel.allOptIn)
-                self?.notificaitonByPartListItem.configureRightSwitch(to: notifcationOptInModel.partOptIn)
-                self?.infoNotificationListItem.configureRightSwitch(to: notifcationOptInModel.newsOptIn)
+            .withUnretained(self)
+            .sink { owner, notifcationOptInModel in
+                owner.allNotificationListItem.configureRightSwitch(to: notifcationOptInModel.allOptIn)
+                owner.notificaitonByPartListItem.configureRightSwitch(to: notifcationOptInModel.partOptIn)
+                owner.infoNotificationListItem.configureRightSwitch(to: notifcationOptInModel.newsOptIn)
             }.store(in: self.cancelBag)
     }
 }

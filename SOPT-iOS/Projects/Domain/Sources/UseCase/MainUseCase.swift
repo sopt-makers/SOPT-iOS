@@ -76,8 +76,9 @@ extension DefaultMainUseCase: MainUseCase {
   public func getMainViewDescription() {
     repository.getMainViewDescription()
       .replaceError(with: .defaultDescription)
-      .sink { [weak self] mainDescriptionModel in
-        self?.mainDescription.send(mainDescriptionModel)
+      .withUnretained(self)
+      .sink { owner, mainDescriptionModel in
+          owner.mainDescription.send(mainDescriptionModel)
       }.store(in: self.cancelBag)
   }
 

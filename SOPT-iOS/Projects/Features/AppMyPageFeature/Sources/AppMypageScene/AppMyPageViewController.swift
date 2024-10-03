@@ -311,25 +311,29 @@ extension AppMyPageVC {
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.originNotificationIsAllowed
-            .sink { [weak self] isAllowed in
-                self?.alertListItem.configureSwitch(to: isAllowed)
+            .withUnretained(self)
+            .sink { owner, isAllowed in
+                owner.alertListItem.configureSwitch(to: isAllowed)
             }.store(in: self.cancelBag)
         
         output.alertSettingOptInEditedResult
-            .sink { [weak self] isAllowed in
-                self?.alertListItem.configureSwitch(to: isAllowed)
+            .withUnretained(self)
+            .sink { owner, isAllowed in
+                owner.alertListItem.configureSwitch(to: isAllowed)
             }.store(in: self.cancelBag)
         
         output.resetSuccessed
             .filter { $0 }
-            .sink { [weak self] _ in
-                self?.showToast(message: I18N.MyPage.resetSuccess)
+            .withUnretained(self)
+            .sink { owenr, _ in
+                owenr.showToast(message: I18N.MyPage.resetSuccess)
             }.store(in: self.cancelBag)
         
         output.deregisterPushTokenSuccess
-            .sink { [weak self] success in
-                self?.logout()
-                self?.onShowLogin?()
+            .withUnretained(self)
+            .sink { owner, success in
+                owner.logout()
+                owner.onShowLogin?()
             }.store(in: self.cancelBag)
     }
 }
