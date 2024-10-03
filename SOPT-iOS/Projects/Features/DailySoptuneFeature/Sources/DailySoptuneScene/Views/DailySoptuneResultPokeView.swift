@@ -44,8 +44,6 @@ public final class DailySoptuneResultPokeView: UIView {
         $0.backgroundColor = DSKitAsset.Colors.gray700.color
         $0.clipsToBounds = true
         $0.contentMode = .scaleAspectFill
-        $0.layer.borderColor = DSKitAsset.Colors.success.color.cgColor
-        $0.layer.borderWidth = 2
         $0.image = DSKitAsset.Assets.iconDefaultProfile.image
     }
     
@@ -93,7 +91,7 @@ public final class DailySoptuneResultPokeView: UIView {
 
 extension DailySoptuneResultPokeView {
     private func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.gray700.color
+        self.backgroundColor = DSKitAsset.Colors.gray900.color
         self.layer.cornerRadius = 12
         self.layer.masksToBounds = true
     }

@@ -56,7 +56,7 @@ extension DailySoptuneResultContentView {
     }
     
     private func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.gray700.color
+        self.backgroundColor = DSKitAsset.Colors.gray900.color
         self.layer.cornerRadius = 12
         self.layer.masksToBounds = true
         setContentLabel()
