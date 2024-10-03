@@ -96,7 +96,7 @@ extension DailySoptuneResultContentView {
 
 extension DailySoptuneResultContentView {
     public func setData(model: DailySoptuneResultModel) {
-        self.dateLabel.text = setDateFormat(to: "MM월 dd일 EEEE")
+        self.dateLabel.text = setDateFormat(to: "MM월 d일 EEEE")
         self.contentLabel.text = "\(model.userName)님,\n\(model.title)"
     }
 }

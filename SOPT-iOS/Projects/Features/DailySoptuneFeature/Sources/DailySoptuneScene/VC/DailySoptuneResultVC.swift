@@ -114,8 +114,8 @@ extension DailySoptuneResultVC {
         
         receiveTodaysFortuneCardButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.height.equalTo(56.adjusted)
-            make.width.equalTo(335.adjusted)
+            make.height.equalTo(56)
+            make.width.equalTo(335)
             make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).inset(16)
         }
     }
