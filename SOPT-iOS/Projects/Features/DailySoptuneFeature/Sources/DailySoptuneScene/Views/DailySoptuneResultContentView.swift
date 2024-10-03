@@ -78,18 +78,18 @@ extension DailySoptuneResultContentView {
         }
         
         dateLabel.snp.makeConstraints { make in
-            make.top.equalTo(soptuneLogoImage.snp.bottom).offset(12.adjusted)
+            make.top.equalTo(soptuneLogoImage.snp.bottom).offset(12)
             make.centerX.equalToSuperview()
         }
         
         contentLabel.snp.makeConstraints { make in
-            make.top.equalTo(dateLabel.snp.bottom).offset(20.adjustedH)
+            make.top.equalTo(dateLabel.snp.bottom).offset(20)
             make.centerX.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(76.adjusted)
+            make.leading.trailing.equalToSuperview()
         }
         
         self.snp.makeConstraints { make in
-            make.bottom.equalTo(contentLabel.snp.bottom).offset(34.adjustedH)
+            make.bottom.equalTo(contentLabel.snp.bottom).offset(34)
         }
     }
 }
@@ -97,6 +97,9 @@ extension DailySoptuneResultContentView {
 extension DailySoptuneResultContentView {
     public func setData(model: DailySoptuneResultModel) {
         self.dateLabel.text = setDateFormat(to: "MM월 d일 EEEE")
-        self.contentLabel.text = "\(model.userName)님,\n\(model.title)"
+        let adjustedText: String = model.title.setLineBreakAtMiddle()
+        self.contentLabel.text = "\(model.userName)님,\n\(adjustedText)"
+        self.contentLabel.setLineSpacing(lineSpacing: 5)
+        self.contentLabel.textAlignment = .center
     }
 }
