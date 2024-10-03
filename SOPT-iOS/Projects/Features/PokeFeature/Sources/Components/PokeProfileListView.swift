@@ -27,7 +27,7 @@ public final class PokeProfileListView: UIView, PokeCompatible {
 
   // MARK: - UI Components
 
-  private let profileImageView = PokeProfileImageView()
+  private let profileImageView = CustomProfileImageView()
 
   private lazy var kokButton = PokeKokButton()
 

@@ -39,13 +39,7 @@ public final class DailySoptuneResultPokeView: UIView {
         $0.text = I18N.DailySoptune.pokeFortunatePerson
     }
     
-    private let profileImageView = UIImageView().then {
-        $0.layer.cornerRadius = 36
-        $0.backgroundColor = DSKitAsset.Colors.gray700.color
-        $0.clipsToBounds = true
-        $0.contentMode = .scaleAspectFill
-        $0.image = DSKitAsset.Assets.iconDefaultProfile.image
-    }
+    private let profileImageView = CustomProfileImageView()
     
     private let nameLabel = UILabel().then {
         $0.font = UIFont.MDS.body1.font
@@ -148,7 +142,8 @@ extension DailySoptuneResultPokeView {
         self.user = model
         self.nameLabel.text = model.name
         self.partLabel.text = "\(model.generation)기 \(model.part)"
-        self.profileImageView.setImage(with: model.profileImage, placeholder: DSKitAsset.Assets.iconDefaultProfile.image)
+        self.profileImageView.setImage(with: model.profileImage)
+        self.profileImageView.setBorder()
     }
     
 }
