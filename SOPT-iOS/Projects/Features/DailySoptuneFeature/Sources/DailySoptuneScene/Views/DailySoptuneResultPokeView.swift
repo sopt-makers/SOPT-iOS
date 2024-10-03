@@ -141,6 +141,11 @@ extension DailySoptuneResultPokeView {
         self.configure(with: model)
     }
     
+    func changeUIAfterPoke(newUserModel: PokeUserModel) {
+        guard let user, user.userId == newUserModel.userId else { return }
+        self.setData(with: newUserModel)
+    }
+    
     private func configure(with model: PokeUserModel) {
         self.user = model
         self.nameLabel.text = model.name

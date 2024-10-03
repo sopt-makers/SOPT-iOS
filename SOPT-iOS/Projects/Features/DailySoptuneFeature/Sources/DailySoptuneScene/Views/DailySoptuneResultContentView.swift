@@ -97,8 +97,7 @@ extension DailySoptuneResultContentView {
 extension DailySoptuneResultContentView {
     public func setData(model: DailySoptuneResultModel) {
         self.dateLabel.text = setDateFormat(to: "MM월 d일 EEEE")
-        let adjustedText: String = model.title.setLineBreakAtMiddle()
-        self.contentLabel.text = "\(model.userName)님,\n\(adjustedText)"
+        self.contentLabel.text = "\(model.userName)님,\n\(model.title.setLineBreakAtMiddle())"
         self.contentLabel.setLineSpacing(lineSpacing: 5)
         self.contentLabel.textAlignment = .center
     }

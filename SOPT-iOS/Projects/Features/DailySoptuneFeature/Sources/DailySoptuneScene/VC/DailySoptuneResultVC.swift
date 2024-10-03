@@ -160,6 +160,12 @@ private extension DailySoptuneResultVC {
             .sink { owner, model in
                 owner.dailySoptuneResultPokeView.setData(with: model.userInfoList[0])
             }.store(in: self.cancelBag)
+        
+        output.pokeResponse
+            .withUnretained(self)
+            .sink { owner, updatedUser in
+                owner.dailySoptuneResultPokeView.changeUIAfterPoke(newUserModel: updatedUser)
+            }.store(in: cancelBag)
     }
 }
 
