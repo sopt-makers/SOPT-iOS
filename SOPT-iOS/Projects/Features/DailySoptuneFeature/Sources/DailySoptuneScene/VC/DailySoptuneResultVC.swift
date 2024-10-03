@@ -97,6 +97,7 @@ public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultVie
 extension DailySoptuneResultVC {
     private func setUI() {
         view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        navigationController?.navigationBar.isHidden = true
         dailySoptuneResultContentView.setData(model: resultModel)
     }
     
@@ -109,6 +110,10 @@ extension DailySoptuneResultVC {
     
     private func setLayout() {
         self.view.addSubviews(navigationView, scrollView, receiveTodaysFortuneCardButton)
+        
+        backButton.snp.makeConstraints { make in
+            make.size.equalTo(40)
+        }
         
         navigationView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)

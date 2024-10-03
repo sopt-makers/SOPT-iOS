@@ -40,7 +40,7 @@ public final class DailySoptuneCoordinator: DefaultCoordinator {
         var dailySoptuneMain = factory.makeDailySoptuneMainVC()
         
         dailySoptuneMain.vm.onNaviBackTap = {
-            self.router.popModule()
+            self.router.dismissModule(animated: true)
             self.finishFlow?()
         }
         

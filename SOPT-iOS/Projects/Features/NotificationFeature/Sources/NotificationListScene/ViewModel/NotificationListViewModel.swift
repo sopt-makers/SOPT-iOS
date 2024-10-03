@@ -126,26 +126,26 @@ extension NotificationListViewModel {
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         useCase.notificationList
             .asDriver()
-            .sink { [weak self] notificationList in
-                guard let self = self else { return }
-                self.removeDuplicatesAndUpdateNotifications(contentsOf: notificationList)
+            .withUnretained(self)
+            .sink { owner, notificationList in
+                owner.removeDuplicatesAndUpdateNotifications(contentsOf: notificationList)
                 output.notificationList.send(self.notifications)
-                self.endPaging(isEmptyResponse: notificationList.isEmpty)
+                owner.endPaging(isEmptyResponse: notificationList.isEmpty)
                 output.refreshLoading.send(false)
             }.store(in: cancelBag)
         
         useCase.readSuccess
             .asDriver()
-            .sink { [weak self] readSuccess in
-                guard let self = self else { return }
+            .withUnretained(self)
+            .sink { owner, readSuccess in
                 print("모든 알림 읽음 처리: \(readSuccess)")
                 if readSuccess {
-                    self.notifications = self.notifications.map {
+                    owner.notifications = owner.notifications.map {
                         var notification = $0
                         notification.isRead = true
                         return notification
                     }
-                    output.notificationList.send(self.notifications)
+                    output.notificationList.send(owner.notifications)
                 }
             }.store(in: cancelBag)
     }

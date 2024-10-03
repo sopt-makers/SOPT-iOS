@@ -55,20 +55,22 @@ extension DefaultRankingUseCase: RankingUseCase {
   public func fetchPartRanking() {
     self.repository
       .fetchPartRanking()
+      .withUnretained(self)
       .sink { completion in
         print(completion)
-      } receiveValue: { [weak self] rankingModels in
-        self?.partRanking.send(rankingModels)
+      } receiveValue: { owner, rankingModels in
+        owner.partRanking.send(rankingModels)
       }.store(in: cancelBag)
   }
 
   public func fetchRankingList(part: String) {
     self.repository
       .fetchRankingListInPart(part: part)
+      .withUnretained(self)
       .sink { completion in
         print(completion)
-      } receiveValue: { [weak self] rankingModels in
-        self?.rankingListModelFetched.send(rankingModels)
+      } receiveValue: { owner, rankingModels in
+        owner.rankingListModelFetched.send(rankingModels)
       }.store(in: cancelBag)
   }
 

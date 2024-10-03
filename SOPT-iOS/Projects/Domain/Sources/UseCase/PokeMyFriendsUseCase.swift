@@ -38,19 +38,21 @@ public class DefaultPokeMyFriendsUseCase {
 extension DefaultPokeMyFriendsUseCase: PokeMyFriendsUseCase {
     public func getFriends() {
         repository.getFriends()
+            .withUnretained(self)
             .sink { event in
                 print("GetFriendsList State: \(event)")
-            } receiveValue: { [weak self] friends in
-                self?.myFriends.send(friends)
+            } receiveValue: { owner, friends in
+                owner.myFriends.send(friends)
             }.store(in: cancelBag)
     }
     
     public func getFriends(relation: String, page: Int) {
         repository.getFriends(relation: relation, page: page)
+            .withUnretained(self)
             .sink { event in
                 print("GetFriendsListWithRelation State: \(event)")
-            } receiveValue: { [weak self] friends in
-                self?.myFriendsList.send(friends)
+            } receiveValue: { owner, friends in
+                owner.myFriendsList.send(friends)
             }.store(in: cancelBag)
     }
     

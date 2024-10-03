@@ -230,31 +230,33 @@ extension ShowAttendanceVC {
             .store(in: self.cancelBag)
         
         output.$scheduleModel
-            .sink(receiveValue: { [weak self] model in
-                guard let self, let model else { return }
+            .withUnretained(self)
+            .sink(receiveValue: { owner, model in
+                guard let model else { return }
                 
-                self.headerScheduleView.layoutIfNeeded()
+                owner.headerScheduleView.layoutIfNeeded()
                 
-                if self.sceneType == .scheduledDay {
-                    self.headerScheduleView.scheduleType = .scheduledDay
-                    self.setScheduledData(model)
-                    self.attendanceButton.isHidden = false
-                    self.attendanceGradientView.isHidden = false
+                if owner.sceneType == .scheduledDay {
+                    owner.headerScheduleView.scheduleType = .scheduledDay
+                    owner.setScheduledData(model)
+                    owner.attendanceButton.isHidden = false
+                    owner.attendanceGradientView.isHidden = false
                 } else {
-                    self.headerScheduleView.scheduleType = .unscheduledDay
-                    self.attendanceButton.isHidden = true
-                    self.attendanceGradientView.isHidden = true
+                    owner.headerScheduleView.scheduleType = .unscheduledDay
+                    owner.attendanceButton.isHidden = true
+                    owner.attendanceGradientView.isHidden = true
                 }
-                self.endRefresh()
+                owner.endRefresh()
             })
             .store(in: self.cancelBag)
         
         output.$scoreModel
-            .sink { [weak self] model in
-                guard let self, let model else { return }
-                self.infoButton.setImage(DSKitAsset.Assets.opInfo.image, for: .normal)
-                self.setScoreData(model)
-                self.endRefresh()
+            .withUnretained(self)
+            .sink { owner, model in
+                guard let model else { return }
+                owner.infoButton.setImage(DSKitAsset.Assets.opInfo.image, for: .normal)
+                owner.setScoreData(model)
+                owner.endRefresh()
             }.store(in: self.cancelBag)
         
         output.attendanceButtonInfo

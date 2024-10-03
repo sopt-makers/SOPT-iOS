@@ -45,8 +45,8 @@ extension DefaultDailySoptuneUseCase: DailySoptuneUseCase {
             .withUnretained(self)
             .sink { event in
                 print("GetDailySoptuneResult State: \(event)")
-            } receiveValue: { _, resultModel in
-                self.dailySoptuneResult.send(resultModel)
+            } receiveValue: { owner, resultModel in
+                owner.dailySoptuneResult.send(resultModel)
             }
             .store(in: cancelBag)
     }
@@ -56,8 +56,8 @@ extension DefaultDailySoptuneUseCase: DailySoptuneUseCase {
             .withUnretained(self)
             .sink { event in
                 print("GetTodaysFortuneCard State: \(event)")
-            } receiveValue: { _, todaysFortuneCard in
-                self.todaysFortuneCard.send(todaysFortuneCard)
+            } receiveValue: { owner, todaysFortuneCard in
+                owner.todaysFortuneCard.send(todaysFortuneCard)
             }.store(in: cancelBag)
     }
     
@@ -66,8 +66,8 @@ extension DefaultDailySoptuneUseCase: DailySoptuneUseCase {
             .withUnretained(self)
             .sink { event in
                 print("GetRandomUser State: \(event)")
-            } receiveValue: { _, randomUser in
-                self.randomUser.send(randomUser)
+            } receiveValue: { owner, randomUser in
+                owner.randomUser.send(randomUser)
             }.store(in: cancelBag)
     }
 
@@ -79,8 +79,8 @@ extension DefaultDailySoptuneUseCase: DailySoptuneUseCase {
                 return Empty<PokeUserModel, Never>()
             }
             .withUnretained(self)
-            .sink { _, user in
-                self.pokedResponse.send(user)
+            .sink { owner, user in
+                owner.pokedResponse.send(user)
             }
             .store(in: cancelBag)
     }

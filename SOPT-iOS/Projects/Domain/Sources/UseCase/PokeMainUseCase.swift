@@ -49,10 +49,11 @@ extension DefaultPokeMainUseCase: PokeMainUseCase {
       .catch { _ in
         Just<PokeUserModel?>(nil)
       }
+      .withUnretained(self)
       .sink { event in
         print("GetPokedToMe State: \(event)")
-      } receiveValue: { [weak self] pokeUser in
-        self?.pokedToMeUser.send(pokeUser)
+      } receiveValue: { owner, pokeUser in
+        owner.pokedToMeUser.send(pokeUser)
       }.store(in: cancelBag)
   }
 
