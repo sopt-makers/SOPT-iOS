@@ -8,10 +8,6 @@
 
 import Foundation
 
-public protocol ProfileRelation {
-    
-}
-
 public enum PokeRelation: String {
     case nonFriend
     case newFriend = "친한친구"

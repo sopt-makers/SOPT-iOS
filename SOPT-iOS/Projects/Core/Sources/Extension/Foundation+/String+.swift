@@ -107,33 +107,17 @@ public extension String {
     /// 자연스럽게 문장이 나눠질 수 있도록 합니다.
     ///
     func setLineBreakAtMiddle() -> String {
-        let middleIndex = self.count / 2
-        var spaceIndex: String.Index?
-        var result: String = ""
+        let middleIndex = self.index(self.startIndex, offsetBy: self.count / 2)
+        // 문자열에서 40%에 해당하는 인덱스
+        let minFrontIndex = self.index(self.startIndex, offsetBy: Int(Double(self.count) * 0.4))
+        var spaceIndex = self[minFrontIndex...middleIndex].lastIndex(of: " ")
         
-        // 앞쪽 최소 길이를 설정 (문자열의 40% 정도)
-        let minFrontLength = Int(Double(self.count) * 0.4)
-        
-        // 중간 인덱스로부터 앞쪽까지 탐색하면서, 가장 가까운 띄어쓰기 찾기
-        for i in (minFrontLength...middleIndex).reversed() {
-            let index = self.index(self.startIndex, offsetBy: i)
-            // 탐색에서 첫 번째 띄어쓰기 발견 시, break
-            if self[index] == " " {
-                spaceIndex = index
-                break
-            }
-        }
-        
-        // 앞쪽에 띄어쓰기가 없으면, 중간 인덱스부터 뒤쪽으로 탐색
+        // 앞쪽에 띄어쓰기가 없으면, 중간 인덱스 뒷쪽의 첫번째 인덱스
         if spaceIndex == nil {
-            for i in middleIndex..<self.count {
-                let index = self.index(self.startIndex, offsetBy: i)
-                if self[index] == " " {
-                    spaceIndex = index
-                    break
-                }
-            }
+            spaceIndex = self[middleIndex...endIndex].firstIndex(of: " ")
         }
+        
+        var result: String = ""
         
         // 띄어쓰기 지점을 찾아 줄바꿈하기
         if let spaceIndex = spaceIndex {
