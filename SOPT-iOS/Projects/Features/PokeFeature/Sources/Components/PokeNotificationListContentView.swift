@@ -39,7 +39,7 @@ final public class PokeNotificationListContentView: UIView, PokeCompatible {
   }
 
   // MARK: Left:
-  private let profileImageView = PokeProfileImageView()
+  private let profileImageView = CustomProfileImageView()
 
   // MARK: Center:
   private lazy var centerContentsStackView = UIStackView().then {
@@ -74,7 +74,7 @@ final public class PokeNotificationListContentView: UIView, PokeCompatible {
   private lazy var pokeChipView = PokeChipView(frame: self.frame)
 
   // MARK: Right:
-  private let pokeKokButton = PokeKokButton()
+  private let pokeKokButton = PKokButton()
 
   // NOTE: NotifcationDetailView에서는 description의 numberOfLine Value가 2에요
   private let isDetailView: Bool

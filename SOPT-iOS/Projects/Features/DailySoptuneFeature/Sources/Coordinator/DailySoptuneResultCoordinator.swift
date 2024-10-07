@@ -55,6 +55,13 @@ public final class DailySoptuneResultCoordinator: DefaultCoordinator {
             self.runDailySoptuneCardFlow(cardModel: cardModel)
         }
         
+        dailySoptuneResult.vm.onProfileImageTapped = { [weak self] playgroundId in
+            guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(playgroundId)") else { return }
+            
+            let webView = SOPTWebView(startWith: url)
+            self?.rootController?.pushViewController(webView, animated: true)
+        }
+        
         rootController = dailySoptuneResult.vc.asNavigationController
         router.present(rootController, animated: true, modalPresentationSytle: .overFullScreen)
     }

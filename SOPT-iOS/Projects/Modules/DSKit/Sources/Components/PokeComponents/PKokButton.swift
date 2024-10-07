@@ -1,17 +1,16 @@
 //
-//  PokeKokButton.swift
-//  PokeFeature
+//  PKokButton.swift
+//  DSKit
 //
-//  Created by sejin on 12/3/23.
-//  Copyright © 2023 SOPT-iOS. All rights reserved.
+//  Created by Jae Hyun Lee on 10/3/24.
+//  Copyright © 2024 SOPT-iOS. All rights reserved.
 //
 
 import UIKit
 
-import DSKit
 import Core
 
-public final class PokeKokButton: UIButton {
+public final class PKokButton: UIButton {
     
     // MARK: - Properties
     

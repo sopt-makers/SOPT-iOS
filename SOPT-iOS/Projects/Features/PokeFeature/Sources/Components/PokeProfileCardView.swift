@@ -36,7 +36,7 @@ public final class PokeProfileCardView: UIView, PokeCompatible {
         return imageView
     }()
     
-    private let kokButton = PokeKokButton()
+    private let kokButton = PKokButton()
     
     private let nameLabel: UILabel = {
         let label = UILabel()

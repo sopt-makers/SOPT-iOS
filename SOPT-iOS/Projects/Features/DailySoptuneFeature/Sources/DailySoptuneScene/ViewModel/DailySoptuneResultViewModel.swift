@@ -20,6 +20,7 @@ public final class DailySoptuneResultViewModel: DailySoptuneResultViewModelType 
     public var onReceiveTodaysFortuneCardTap: ((DailySoptuneCardModel) -> Void)?
     public var onKokButtonTapped: ((Domain.PokeUserModel) -> Core.Driver<(Domain.PokeUserModel, Domain.PokeMessageModel, isAnonymous: Bool)>)?
     public var onReceiveTodaysFortuneCardButtonTapped: ((Domain.DailySoptuneCardModel) -> Void)?
+    public var onProfileImageTapped: ((Int) -> Void)?
     
     // MARK: - Properties
 
@@ -33,12 +34,12 @@ public final class DailySoptuneResultViewModel: DailySoptuneResultViewModelType 
         let naviBackButtonTap: Driver<Void>
         let receiveTodaysFortuneCardTap: Driver<Void>
         let kokButtonTap: Driver<PokeUserModel?>
+        let profileImageTap: Driver<PokeUserModel?>
     }
     
     // MARK: - Outputs
     
     public struct Output {
-//        let todaysFortuneCard = PassthroughSubject<DailySoptuneCardModel, Never>()
         let randomUser = PassthroughSubject<PokeRandomUserInfoModel, Never>()
         let messageTemplates = PassthroughSubject<PokeMessagesModel, Never>()
         let pokeResponse = PassthroughSubject<PokeUserModel, Never>()
@@ -84,6 +85,13 @@ extension DailySoptuneResultViewModel {
                 self?.useCase.poke(userId: userModel.userId, message: messageModel, isAnonymous: isAnonymous)
             }.store(in: cancelBag)
         
+        input.profileImageTap
+            .compactMap { $0 }
+            .withUnretained(self)
+            .sink { owner, user in
+                owner.onProfileImageTapped?(user.playgroundId)
+            }.store(in: cancelBag)
+        
         return output
     }
     
@@ -94,6 +102,7 @@ extension DailySoptuneResultViewModel {
                 owner.onReceiveTodaysFortuneCardButtonTapped?(cardModel)
             }
             .store(in: cancelBag)
+        
         useCase.randomUser
             .asDriver()
             .sink(receiveValue: { values in
@@ -103,13 +112,5 @@ extension DailySoptuneResultViewModel {
         useCase.pokedResponse
             .subscribe(output.pokeResponse)
             .store(in: cancelBag)
-    }
-    
-    func setCurrentDateString() -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "M월 d일 EEEE"
-        dateFormatter.locale = Locale(identifier: "ko_KR")
-        dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
-        return dateFormatter.string(from: Date())
     }
 }

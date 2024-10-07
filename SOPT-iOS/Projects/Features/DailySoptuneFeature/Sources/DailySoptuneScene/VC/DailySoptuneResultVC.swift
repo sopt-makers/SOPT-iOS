@@ -33,13 +33,6 @@ public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultVie
         $0.setImage(DSKitAsset.Assets.xMark.image.withTintColor(DSKitAsset.Colors.gray30.color), for: .normal)
     }
     
-    private lazy var navigationView = UIStackView(
-        arrangedSubviews: [backButton]
-    ).then {
-        $0.axis = .vertical
-        $0.alignment = .leading
-    }
-    
     private lazy var scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
         $0.showsHorizontalScrollIndicator = false
@@ -97,7 +90,7 @@ public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultVie
 extension DailySoptuneResultVC {
     private func setUI() {
         view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
-        navigationController?.navigationBar.isHidden = true
+        self.navigationController?.isNavigationBarHidden = true
         dailySoptuneResultContentView.setData(model: resultModel)
     }
     
@@ -109,24 +102,20 @@ extension DailySoptuneResultVC {
     }
     
     private func setLayout() {
-        self.view.addSubviews(navigationView, scrollView, receiveTodaysFortuneCardButton)
+        self.view.addSubviews(backButton, scrollView, receiveTodaysFortuneCardButton)
         
         backButton.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(2)
+            make.leading.equalToSuperview().inset(8)
             make.size.equalTo(40)
-        }
-        
-        navigationView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide)
-            make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(8)
-            make.height.equalTo(44)
         }
         
         setScrollViewLayout()
         
         receiveTodaysFortuneCardButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.height.equalTo(56.adjusted)
-            make.width.equalTo(335.adjusted)
+            make.height.equalTo(56)
+            make.width.equalTo(335)
             make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).inset(16)
         }
     }
@@ -135,7 +124,7 @@ extension DailySoptuneResultVC {
         self.scrollView.addSubviews(contentStackView)
         
         scrollView.snp.makeConstraints { make in
-            make.top.equalTo(navigationView.snp.bottom)
+            make.top.equalTo(backButton.snp.bottom)
             make.leading.trailing.bottom.equalToSuperview()
         }
         
@@ -160,7 +149,8 @@ private extension DailySoptuneResultVC {
                     .publisher(for: .touchUpInside)
                     .mapVoid().asDriver(),
                 receiveTodaysFortuneCardTap: receiveTodaysFortuneButtonTap, 
-                kokButtonTap: dailySoptuneResultPokeView.kokButtonTap
+                kokButtonTap: dailySoptuneResultPokeView.kokButtonTap,
+                profileImageTap: dailySoptuneResultPokeView.profileTap
             )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -170,6 +160,12 @@ private extension DailySoptuneResultVC {
             .sink { owner, model in
                 owner.dailySoptuneResultPokeView.setData(with: model.userInfoList[0])
             }.store(in: self.cancelBag)
+        
+        output.pokeResponse
+            .withUnretained(self)
+            .sink { owner, updatedUser in
+                owner.dailySoptuneResultPokeView.changeUIAfterPoke(newUserModel: updatedUser)
+            }.store(in: cancelBag)
     }
 }
 

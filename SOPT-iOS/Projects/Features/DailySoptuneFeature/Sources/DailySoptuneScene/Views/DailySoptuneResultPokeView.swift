@@ -12,13 +12,16 @@ import Combine
 import DSKit
 import Core
 import Domain
-import PokeFeature
 
 public final class DailySoptuneResultPokeView: UIView {
     
     public lazy var kokButtonTap: Driver<PokeUserModel?> = kokButton.tap
         .map { self.user }
         .asDriver()
+    
+    lazy var profileTap = self.profileImageView.gesture()
+        .filter { _ in self.user?.isAnonymous == false }
+        .map { _ in self.user }.asDriver()
     
     // MARK: - Properties
     
@@ -39,15 +42,7 @@ public final class DailySoptuneResultPokeView: UIView {
         $0.text = I18N.DailySoptune.pokeFortunatePerson
     }
     
-    private let profileImageView = UIImageView().then {
-        $0.layer.cornerRadius = 36
-        $0.backgroundColor = DSKitAsset.Colors.gray700.color
-        $0.clipsToBounds = true
-        $0.contentMode = .scaleAspectFill
-        $0.layer.borderColor = DSKitAsset.Colors.success.color.cgColor
-        $0.layer.borderWidth = 2
-        $0.image = DSKitAsset.Assets.iconDefaultProfile.image
-    }
+    private let profileImageView = CustomProfileImageView()
     
     private let nameLabel = UILabel().then {
         $0.font = UIFont.MDS.body1.font
@@ -59,7 +54,7 @@ public final class DailySoptuneResultPokeView: UIView {
         $0.textColor = DSKitAsset.Colors.gray300.color
     }
     
-    private let kokButton = PokeKokButton()
+    private let kokButton = PKokButton()
     
     private lazy var labelStackView = UIStackView(
         arrangedSubviews: [nameLabel, partLabel]
@@ -93,7 +88,7 @@ public final class DailySoptuneResultPokeView: UIView {
 
 extension DailySoptuneResultPokeView {
     private func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.gray700.color
+        self.backgroundColor = DSKitAsset.Colors.gray900.color
         self.layer.cornerRadius = 12
         self.layer.masksToBounds = true
     }
@@ -146,11 +141,18 @@ extension DailySoptuneResultPokeView {
         self.configure(with: model)
     }
     
+    func changeUIAfterPoke(newUserModel: PokeUserModel) {
+        guard let user, user.userId == newUserModel.userId else { return }
+        self.setData(with: newUserModel)
+    }
+    
     private func configure(with model: PokeUserModel) {
         self.user = model
         self.nameLabel.text = model.name
         self.partLabel.text = "\(model.generation)기 \(model.part)"
-        self.profileImageView.setImage(with: model.profileImage, placeholder: DSKitAsset.Assets.iconDefaultProfile.image)
+        self.profileImageView.setImage(with: model.profileImage)
+        self.profileImageView.setBorder()
+        self.kokButton.isEnabled = !model.isAlreadyPoke
     }
     
 }
