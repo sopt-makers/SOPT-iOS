@@ -33,13 +33,6 @@ extension AppMyPageRepository: AppMyPageRepositoryInterface {
             .asDriver()
     }
     
-    public func optInPushNotificationInGeneral(to isOn: Bool) -> Driver<Bool> {
-        self.userService
-            .optInPushNotificationInGeneral(to: isOn)
-            .map(\.isOptIn)
-            .asDriver()
-    }
-    
     public func deregisterPushToken(with token: String) -> AnyPublisher<Bool, Error> {
         self.userService.deregisterPushToken(with: token)
             .map {

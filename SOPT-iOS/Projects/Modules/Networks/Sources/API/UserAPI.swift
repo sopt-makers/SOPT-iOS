@@ -22,7 +22,6 @@ public enum UserAPI {
     case registerPushToken(token: String)
     case deregisterPushToken(token: String)
     case fetchActiveGenerationStatus
-    case optInPushNotificationInGeneral(isOn: Bool)
     case getNotificationSettingsInDetail
     case optInPushNotificationInDetail(notificationSettings: DetailNotificationOptInEntity)
     case appService
@@ -52,8 +51,6 @@ extension UserAPI: BaseAPI {
             return "/push-token"
         case .fetchActiveGenerationStatus:
             return "/generation"
-        case .optInPushNotificationInGeneral:
-            return "/opt-in"
         case .getNotificationSettingsInDetail:
             return "/opt-in/detail"
         case .optInPushNotificationInDetail:
@@ -70,7 +67,7 @@ extension UserAPI: BaseAPI {
         switch self {
         case .getNicknameAvailable, .getUserMainInfo, .fetchSoptampUser, .fetchActiveGenerationStatus, .getNotificationSettingsInDetail, .appService, .hotboard:
             return .get
-        case .editSentence, .changeNickname, .optInPushNotificationInGeneral, .optInPushNotificationInDetail:
+        case .editSentence, .changeNickname, .optInPushNotificationInDetail:
             return .patch
         case .withdrawal:
             return .delete
@@ -95,8 +92,6 @@ extension UserAPI: BaseAPI {
         case .deregisterPushToken(let pushToken):
             params["platform"] = "iOS"
             params["pushToken"] = pushToken
-        case .optInPushNotificationInGeneral(let isOn):
-            params["isOptIn"] = isOn
         case .optInPushNotificationInDetail(let optInDTO):
             params = optInDTO.toDictionary()
         default: break
@@ -113,8 +108,7 @@ extension UserAPI: BaseAPI {
     
     public var task: Task {
         switch self {
-        case .changeNickname, .editSentence, .registerPushToken,
-                .optInPushNotificationInGeneral, .optInPushNotificationInDetail, .deregisterPushToken:
+        case .changeNickname, .editSentence, .registerPushToken, .optInPushNotificationInDetail, .deregisterPushToken:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain
