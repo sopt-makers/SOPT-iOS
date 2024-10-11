@@ -12,7 +12,6 @@ import Combine
 
 public protocol AppMyPageUseCase {
     func resetStamp()
-    func fetchUserNotificationIsAllowed()
     func optInPushNotificationInGeneral(to isOn: Bool)
     func deregisterPushToken()
     
@@ -43,14 +42,6 @@ extension DefaultAppMyPageUseCase: AppMyPageUseCase {
             .resetStamp()
             .sink { success in
                 self.resetSuccess.send(success)
-            }.store(in: self.cancelBag)
-    }
-    
-    public func fetchUserNotificationIsAllowed() {
-        self.repository
-            .getNotificationIsAllowed()
-            .sink { isAllowed in
-                self.originUserNotificationIsAllowedStatus.send(isAllowed)
             }.store(in: self.cancelBag)
     }
     

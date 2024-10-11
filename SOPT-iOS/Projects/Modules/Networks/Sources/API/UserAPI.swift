@@ -22,7 +22,6 @@ public enum UserAPI {
     case registerPushToken(token: String)
     case deregisterPushToken(token: String)
     case fetchActiveGenerationStatus
-    case getNotificationIsAllowed
     case optInPushNotificationInGeneral(isOn: Bool)
     case getNotificationSettingsInDetail
     case optInPushNotificationInDetail(notificationSettings: DetailNotificationOptInEntity)
@@ -53,8 +52,6 @@ extension UserAPI: BaseAPI {
             return "/push-token"
         case .fetchActiveGenerationStatus:
             return "/generation"
-        case .getNotificationIsAllowed:
-            return "/opt-in"
         case .optInPushNotificationInGeneral:
             return "/opt-in"
         case .getNotificationSettingsInDetail:
@@ -71,8 +68,7 @@ extension UserAPI: BaseAPI {
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .getNicknameAvailable, .getUserMainInfo, .fetchSoptampUser, .fetchActiveGenerationStatus,
-            .getNotificationIsAllowed, .getNotificationSettingsInDetail, .appService, .hotboard:
+        case .getNicknameAvailable, .getUserMainInfo, .fetchSoptampUser, .fetchActiveGenerationStatus, .getNotificationSettingsInDetail, .appService, .hotboard:
             return .get
         case .editSentence, .changeNickname, .optInPushNotificationInGeneral, .optInPushNotificationInDetail:
             return .patch
