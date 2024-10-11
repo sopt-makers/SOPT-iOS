@@ -80,14 +80,6 @@ extension AppDelegate {
             }
         )
         container.register(
-            interface: SignUpRepositoryInterface.self,
-            implement: {
-                SignUpRepository(
-                    service: DefaultUserService()
-                )
-            }
-        )
-        container.register(
             interface: MissionListRepositoryInterface.self,
             implement: {
                 MissionListRepository(

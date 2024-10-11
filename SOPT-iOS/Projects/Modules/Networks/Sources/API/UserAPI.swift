@@ -15,7 +15,6 @@ import Core
 public enum UserAPI {
     case fetchSoptampUser
     case editSentence(sentence: String)
-    case getNicknameAvailable(nickname: String)
     case getUserMainInfo
     case withdrawal
     case registerPushToken(token: String)
@@ -38,8 +37,6 @@ extension UserAPI: BaseAPI {
             return "soptamp"
         case .editSentence:
             return "profile-message"
-        case .getNicknameAvailable(let nickname):
-            return "nickname/\(nickname)"
         case .getUserMainInfo:
             return "/main"
         case .withdrawal:
@@ -62,7 +59,7 @@ extension UserAPI: BaseAPI {
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .getNicknameAvailable, .getUserMainInfo, .fetchSoptampUser, .fetchActiveGenerationStatus, .getNotificationSettingsInDetail, .appService, .hotboard:
+        case .getUserMainInfo, .fetchSoptampUser, .fetchActiveGenerationStatus, .getNotificationSettingsInDetail, .appService, .hotboard:
             return .get
         case .editSentence, .optInPushNotificationInDetail:
             return .patch

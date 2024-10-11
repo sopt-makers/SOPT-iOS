@@ -14,7 +14,6 @@ public
 final class MyPageBuilder {
     @Injected public var appMyPageRepository: AppMyPageRepositoryInterface
     @Injected public var settingRepository: SettingRepositoryInterface
-    @Injected public var signUpRepository: SignUpRepositoryInterface
     @Injected public var notificationSettingsRepository: NotificationSettingRepositoryInterface
     
     public init() { }
