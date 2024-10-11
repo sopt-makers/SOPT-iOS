@@ -21,16 +21,6 @@ final class MyPageBuilder {
 }
 
 extension MyPageBuilder: MyPageFeatureBuildable {
-    public func makeNicknameEditVC() -> NicknameEditViewControllable {
-        let settingUseCase = DefaultSettingUseCase(repository: settingRepository)
-        let signUpUseCase = DefaultSignUpUseCase(repository: signUpRepository)
-
-        let viewModel = NicknameEditViewModel(nicknameUseCase: signUpUseCase, editPostUseCase: settingUseCase)
-        let nicknameEdit = NicknameEditVC()
-        nicknameEdit.viewModel = viewModel
-        return nicknameEdit
-    }
-
     public func makeSentenceEditVC() -> SentenceEditViewControllable {
         let useCase = DefaultSentenceEditUseCase(repository: settingRepository)
         let viewModel = SentenceEditViewModel(useCase: useCase)
