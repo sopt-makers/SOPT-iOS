@@ -30,7 +30,7 @@ public final class DailySoptuneResultViewModel: DailySoptuneResultViewModelType 
     // MARK: - Inputs
     
     public struct Input {
-        let viewWillAppear: Driver<Void>
+        let viewDidLoad: Driver<Void>
         let naviBackButtonTap: Driver<Void>
         let receiveTodaysFortuneCardTap: Driver<Void>
         let kokButtonTap: Driver<PokeUserModel?>
@@ -57,7 +57,7 @@ extension DailySoptuneResultViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
-        input.viewWillAppear
+        input.viewDidLoad
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.getRandomUser()
