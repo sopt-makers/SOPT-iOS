@@ -14,4 +14,5 @@ public protocol MissionListRepositoryInterface {
   func fetchMissionList(type: MissionListFetchType, userName: String?) -> AnyPublisher<[MissionListModel], Error>
   func fetchIsActiveGenerationUser() -> AnyPublisher<UsersActiveGenerationStatusViewResponse, Error>
   func fetchCurrentSoptampInfo() -> AnyPublisher<SoptampUserModel, Error>
+  func getReportUrl() -> AnyPublisher<SoptampReportUrlModel, Error>
 }

@@ -17,20 +17,24 @@ public class MissionListRepository {
   private let missionService: MissionService
   private let rankService: RankService
   private let userService: UserService
+  private let stampService: StampService
   private let cancelBag = CancelBag()
   
   public init(
     missionService: MissionService,
     rankService: RankService,
-    userService: UserService
+    userService: UserService,
+    stampService: StampService
   ) {
     self.missionService = missionService
     self.rankService = rankService
     self.userService = userService
+    self.stampService = stampService
   }
 }
 
 extension MissionListRepository: MissionListRepositoryInterface {
+
   public func fetchMissionList(type: MissionListFetchType, userName: String?) -> AnyPublisher<[MissionListModel], Error> {
     guard let userName else {
       return fetchMissionList(type: type)
@@ -74,6 +78,12 @@ extension MissionListRepository {
   
   private func fetchRankDetail(userName: String) -> AnyPublisher<[MissionListModel], Error> {
     rankService.fetchRankDetail(userName: userName)
+      .map { $0.toDomain() }
+      .eraseToAnyPublisher()
+  }
+    
+  public func getReportUrl() -> AnyPublisher<SoptampReportUrlModel, Error> {
+    stampService.getReportUrl()
       .map { $0.toDomain() }
       .eraseToAnyPublisher()
   }
