@@ -24,6 +24,7 @@ public class MissionListViewModel: ViewModelType {
     let viewDidLoad: Driver<Void>
     let viewWillAppear: Driver<Void>
     let missionTypeSelected: CurrentValueSubject<MissionListFetchType, Never>
+    let reportUrlButtonTapped: Driver<Void>
   }
   
   // MARK: - Outputs
@@ -31,6 +32,7 @@ public class MissionListViewModel: ViewModelType {
   public class Output: NSObject {
     @Published var missionListModel: [MissionListModel]?
     @Published var usersActivateGenerationStatus: UsersActiveGenerationStatusViewResponse?
+    @Published var reportUrl: SoptampReportUrlModel?
   }
   
   // MARK: - init
@@ -66,6 +68,12 @@ extension MissionListViewModel {
         owner.useCase.fetchMissionList(type: fetchType)
       }.store(in: cancelBag)
     
+    input.reportUrlButtonTapped
+      .withUnretained(self)
+      .sink { owner, url in
+          owner.useCase.getReportUrl()
+      }.store(in: cancelBag)
+      
     return output
   }
   
@@ -100,5 +108,11 @@ extension MissionListViewModel {
       .sink { usersActivateGenerationStatus in
         output.usersActivateGenerationStatus = usersActivateGenerationStatus
       }.store(in: self.cancelBag)
+      
+    self.useCase.reportUrl
+      .asDriver()
+      .sink { url in
+        output.reportUrl = url
+      }.store(in: cancelBag)
   }
 }

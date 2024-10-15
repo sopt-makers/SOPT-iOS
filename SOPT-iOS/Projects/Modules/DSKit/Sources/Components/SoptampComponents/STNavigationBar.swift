@@ -41,6 +41,8 @@ public class STNavigationBar: UIView {
     private var naviType: NaviType!
     private var rightButtonClosure: (() -> Void)?
     private var leftButtonClosure: (() -> Void)?
+    private var reportButtonClosure: (() -> Void)?
+    
     public var rightButtonTapped: Driver<Void> {
         rightButton.publisher(for: .touchUpInside)
             .map { _ in () }
@@ -53,6 +55,11 @@ public class STNavigationBar: UIView {
     }
     public var titleButtonTapped: Driver<Void> {
         titleButton.publisher(for: .touchUpInside)
+            .map { _ in () }
+            .asDriver()
+    }
+    public var reportButtonTapped: Driver<Void> {
+        reportButton.publisher(for: .touchUpInside)
             .map { _ in () }
             .asDriver()
     }
@@ -132,6 +139,13 @@ extension STNavigationBar {
     }
     
     @discardableResult
+    public func reportButtonAction(_ closure: (() -> Void)? = nil) -> Self {
+        self.reportButtonClosure = closure
+        self.reportButton.addTarget(self, action: #selector(tappedReportButton), for: .touchUpInside)
+        return self
+    }
+    
+    @discardableResult
     public func resetLeftButtonAction(_ closure: (() -> Void)? = nil) -> Self {
         self.leftButtonClosure = closure
         self.leftButton.removeTarget(self, action: nil, for: .touchUpInside)
@@ -200,6 +214,11 @@ extension STNavigationBar {
     @objc
     private func tappedLeftButton() {
         self.leftButtonClosure?()
+    }
+    
+    @objc
+    private func tappedReportButton() {
+        self.reportButtonClosure?()
     }
 }
 
