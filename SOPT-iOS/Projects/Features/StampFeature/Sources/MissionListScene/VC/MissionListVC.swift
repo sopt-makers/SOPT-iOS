@@ -299,6 +299,11 @@ extension MissionListVC {
         self?.configureCurrentGenerationButton(with: String(describing: generationStatus.currentGeneration))
       }.store(in: self.cancelBag)
 
+    output.needNetworkAlert
+      .withUnretained(self)
+      .sink { owner, _ in
+          owner.showNetworkAlert()
+      }.store(in: self.cancelBag)
   }
 }
 
@@ -406,6 +411,13 @@ extension MissionListVC {
     attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
     attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.white, range: NSMakeRange(0, attributedStr.length))
     self.currentGenerationRankFloatingButton.setAttributedTitle(attributedStr, for: .normal)
+  }
+  
+  private func showNetworkAlert() {
+    AlertUtils.presentNetworkAlertVC(
+        theme: .soptamp,
+        animated: true
+    )
   }
 }
 

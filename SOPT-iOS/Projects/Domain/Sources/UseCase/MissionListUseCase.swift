@@ -19,7 +19,8 @@ public protocol MissionListUseCase {
   
   var missionListModelsFetched: PassthroughSubject<[MissionListModel], Error> { get set }
   var usersActiveGenerationInfo: PassthroughSubject<UsersActiveGenerationStatusViewResponse, Error> { get set }
-  var reportUrl: PassthroughSubject<SoptampReportUrlModel, Error> { get set}
+  var reportUrl: PassthroughSubject<SoptampReportUrlModel, Error> { get set }
+  var errorOccurred: PassthroughSubject<Void, Never> { get set }
 }
 
 public class DefaultMissionListUseCase {
@@ -29,13 +30,15 @@ public class DefaultMissionListUseCase {
   public var missionListModelsFetched = PassthroughSubject<[MissionListModel], Error>()
   public var usersActiveGenerationInfo = PassthroughSubject<UsersActiveGenerationStatusViewResponse, Error>()
   public var reportUrl = PassthroughSubject<SoptampReportUrlModel, Error>()
-  
+  public var errorOccurred = PassthroughSubject<Void, Never>()
+    
   public init(repository: MissionListRepositoryInterface) {
     self.repository = repository
   }
 }
 
 extension DefaultMissionListUseCase: MissionListUseCase {
+    
   public func fetchMissionList(type: MissionListFetchType) {
     repository.fetchMissionList(type: type, userName: nil)
       .sink(receiveCompletion: { event in
@@ -78,11 +81,15 @@ extension DefaultMissionListUseCase: MissionListUseCase {
     
   public func getReportUrl() {
     repository.getReportUrl()
-          .withUnretained(self)
-          .sink { event in
-              print("GetReportUrl State: \(event)")
-          } receiveValue: { owner, resultModel in
-              owner.reportUrl.send(resultModel)
-          }.store(in: cancelBag)
+      .withUnretained(self)
+      .sink { event in
+          print("GetReportUrl State: \(event)")
+          if case Subscribers.Completion.failure = event {
+              self.errorOccurred.send()
+          }
+      } receiveValue: { owner, resultModel in
+          owner.reportUrl.send(resultModel)
+      }.store(in: cancelBag)
   }
 }
+

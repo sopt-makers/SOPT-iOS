@@ -32,6 +32,7 @@ public class MissionListViewModel: ViewModelType {
     @Published var missionListModel: [MissionListModel]?
     @Published var usersActivateGenerationStatus: UsersActiveGenerationStatusViewResponse?
     @Published var reportUrl: SoptampReportUrlModel?
+    var needNetworkAlert = PassthroughSubject<Void, Never>()
   }
   
   // MARK: - init
@@ -107,6 +108,12 @@ extension MissionListViewModel {
       .asDriver()
       .sink { url in
         output.reportUrl = url
+      }.store(in: cancelBag)
+    
+    self.useCase.errorOccurred
+      .asDriver()
+      .sink { _ in
+          output.needNetworkAlert.send()
       }.store(in: cancelBag)
   }
 }
