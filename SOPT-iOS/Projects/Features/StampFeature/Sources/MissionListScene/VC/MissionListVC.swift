@@ -43,7 +43,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
   public var onCurrentGenerationRankingButtonTap: ((RankingViewType) -> Void)?
   public var onGuideTap: (() -> Void)?
   public var onCellTap: ((MissionListModel, String?) -> Void)?
-  public var onReportButtonTap: (() -> Void)?
+  public var onReportButtonTap: ((String) -> Void)?
 
   private var usersActiveGenerationStatus: UsersActiveGenerationStatusViewResponse?
 
@@ -244,12 +244,6 @@ extension MissionListVC {
           owner.onNaviBackTap?()
         }.store(in: self.cancelBag)
     }
-      
-    naviBar.reportButtonTapped
-      .withUnretained(self)
-      .sink { owner, _ in
-          owner.onReportButtonTap?()
-      }.store(in: cancelBag)
 
     partRankingFloatingButton.publisher(for: .touchUpInside)
       .withUnretained(self)
@@ -272,16 +266,23 @@ extension MissionListVC {
         owner.onSwiped?()
       }.store(in: self.cancelBag)
   }
-
+    
   private func bindViewModels() {
     let input = MissionListViewModel.Input(
       viewDidLoad: Driver<Void>.just(()),
       viewWillAppear: viewWillAppear.asDriver(),
-      missionTypeSelected: missionTypeMenuSelected, 
-      reportUrlButtonTapped: naviBar.reportButtonTapped
+      missionTypeSelected: missionTypeMenuSelected
     )
+      
     let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
 
+    naviBar.reportButtonTapped
+      .withUnretained(self)
+      .sink { owner, _ in
+          guard let url = output.reportUrl?.reportUrl else { return }
+          owner.onReportButtonTap?(url)
+      }.store(in: cancelBag)
+      
     output.$missionListModel
       .compactMap { $0 }
       .sink { [weak self] model in
@@ -297,6 +298,7 @@ extension MissionListVC {
         self?.remakeButtonConstraint()
         self?.configureCurrentGenerationButton(with: String(describing: generationStatus.currentGeneration))
       }.store(in: self.cancelBag)
+
   }
 }
 

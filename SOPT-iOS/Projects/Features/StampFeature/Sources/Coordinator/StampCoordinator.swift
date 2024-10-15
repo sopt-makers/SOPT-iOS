@@ -12,6 +12,7 @@ import Core
 import BaseFeatureDependency
 import StampFeatureInterface
 import Domain
+import SafariServices
 
 public
 final class StampCoordinator: DefaultCoordinator {
@@ -49,6 +50,11 @@ final class StampCoordinator: DefaultCoordinator {
         }
         missionList.onCellTap = { [weak self] model, username in
             self?.runMissionDetailFlow(model, username)
+        }
+        missionList.onReportButtonTap = { [weak self] url in
+            let safariViewController = SFSafariViewController(url: URL(string: url)!)
+            safariViewController.playgroundStyle()
+            self?.rootController?.present(safariViewController, animated: true)
         }
         rootController = missionList.asNavigationController
         router.present(rootController, animated: true, modalPresentationSytle: .overFullScreen)

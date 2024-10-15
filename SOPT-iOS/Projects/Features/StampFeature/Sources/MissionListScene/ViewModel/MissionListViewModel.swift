@@ -24,7 +24,6 @@ public class MissionListViewModel: ViewModelType {
     let viewDidLoad: Driver<Void>
     let viewWillAppear: Driver<Void>
     let missionTypeSelected: CurrentValueSubject<MissionListFetchType, Never>
-    let reportUrlButtonTapped: Driver<Void>
   }
   
   // MARK: - Outputs
@@ -59,6 +58,7 @@ extension MissionListViewModel {
       .sink { owner, _ in
         owner.fetchMissionList(type: input.missionTypeSelected.value)
         owner.useCase.fetchIsActiveGenerationUser()
+        owner.useCase.getReportUrl()
       }.store(in: cancelBag)
     
     input.missionTypeSelected
@@ -66,12 +66,6 @@ extension MissionListViewModel {
       .withUnretained(self)
       .sink { owner, fetchType in
         owner.useCase.fetchMissionList(type: fetchType)
-      }.store(in: cancelBag)
-    
-    input.reportUrlButtonTapped
-      .withUnretained(self)
-      .sink { owner, url in
-          owner.useCase.getReportUrl()
       }.store(in: cancelBag)
       
     return output

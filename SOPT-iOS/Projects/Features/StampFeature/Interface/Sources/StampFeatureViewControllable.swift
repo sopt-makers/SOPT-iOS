@@ -18,6 +18,7 @@ public protocol MissionListCoordinatable {
   var onCurrentGenerationRankingButtonTap: ((RankingViewType) -> Void)? { get set }
   var onGuideTap: (() -> Void)? { get set }
   var onCellTap: ((MissionListModel, _ username: String?) -> Void)? { get set }
+  var onReportButtonTap: ((String) -> Void)? { get set }
 }
 public protocol ListDetailViewControllable: ViewControllable & ListDetailCoordinatable { }
 public protocol ListDetailCoordinatable {
