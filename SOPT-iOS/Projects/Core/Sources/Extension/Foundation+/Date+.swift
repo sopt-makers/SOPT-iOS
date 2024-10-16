@@ -25,6 +25,6 @@ public extension Date {
         dateComponents.day = day
         
         let usaDate = calendar.date(from: dateComponents)
-        return usaDate!.addingTimeInterval(10 * 60 * 60)
+        return usaDate!.addingTimeInterval(9 * 60 * 60)
     }
 }
