@@ -24,7 +24,6 @@ public final class DailySoptuneMainVC: UIViewController, DailySoptuneMainViewCon
 	public var viewModel: DailySoptuneMainViewModel
 	private var cancelBag = CancelBag()
     
-    private let viewDidLoaded: Driver<Void> = PassthroughSubject<Void, Never>().asDriver()
     private lazy var todayFortuneButtonTapped: Driver<Void> = checkTodayFortuneButton.publisher(for: .touchUpInside).mapVoid().asDriver()
     private lazy var backButtonTapped: Driver<Void> = backButton.publisher(for: .touchUpInside).mapVoid().asDriver()
 	
@@ -128,11 +127,11 @@ private extension DailySoptuneMainVC {
     func bindViewModels() {
         let input = DailySoptuneMainViewModel
             .Input(
-                viewDidLoad: viewDidLoaded.asDriver(),
+                viewDidLoad: Just<Void>(()).asDriver(),
                 naviBackButtonTap: backButtonTapped,
                 receiveTodayFortuneButtonTap: todayFortuneButtonTapped
             )
         
-        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        let _ = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
     }
 }

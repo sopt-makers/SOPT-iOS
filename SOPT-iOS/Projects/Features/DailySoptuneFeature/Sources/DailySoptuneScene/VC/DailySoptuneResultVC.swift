@@ -144,6 +144,7 @@ private extension DailySoptuneResultVC {
     func bindViewModels() {
         let input = DailySoptuneResultViewModel
             .Input(
+                viewDidLoad: Just<Void>(()).asDriver(),
                 viewWillAppear: viewWillAppear.asDriver(),
                 naviBackButtonTap: self.backButton
                     .publisher(for: .touchUpInside)

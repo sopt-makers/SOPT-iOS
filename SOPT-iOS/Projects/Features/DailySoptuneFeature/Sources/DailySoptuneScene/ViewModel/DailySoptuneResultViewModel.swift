@@ -30,6 +30,7 @@ public final class DailySoptuneResultViewModel: DailySoptuneResultViewModelType 
     // MARK: - Inputs
     
     public struct Input {
+        let viewDidLoad: Driver<Void>
         let viewWillAppear: Driver<Void>
         let naviBackButtonTap: Driver<Void>
         let receiveTodaysFortuneCardTap: Driver<Void>
@@ -57,6 +58,12 @@ extension DailySoptuneResultViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
+        input.viewDidLoad
+            .withUnretained(self)
+            .sink { owner, _ in
+                AmplitudeInstance.shared.track(eventType: .viewSoptuneResult)
+            }.store(in: cancelBag)
+        
         input.viewWillAppear
             .withUnretained(self)
             .sink { owner, _ in
@@ -67,21 +74,25 @@ extension DailySoptuneResultViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNaviBackButtonTapped?()
+                AmplitudeInstance.shared.track(eventType: .clickLeaveSoptuneResult)
             }.store(in: cancelBag)
         
         input.receiveTodaysFortuneCardTap
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.getTodaysFortuneCard()
+                AmplitudeInstance.shared.track(eventType: .clickGetSoptuneCard)
             }.store(in: cancelBag)
         
         input.kokButtonTap
             .compactMap { $0 }
             .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)> in
                 guard let self, let value = self.onKokButtonTapped?(userModel) else { return .empty() }
+                AmplitudeInstance.shared.track(eventType: .clickSoptuneRamdomPeople)
                 return value
             }
             .sink { [weak self] userModel, messageModel, isAnonymous in
+                AmplitudeInstance.shared.track(eventType: .sendChoice, eventProperties: ["index": messageModel.messageId, "message": messageModel.content, "isAnonymous": isAnonymous])
                 self?.useCase.poke(userId: userModel.userId, message: messageModel, isAnonymous: isAnonymous)
             }.store(in: cancelBag)
         
