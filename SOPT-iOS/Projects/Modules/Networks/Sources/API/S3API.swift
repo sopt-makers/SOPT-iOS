@@ -20,7 +20,7 @@ extension S3API: BaseAPI {
 
   public var path: String {
     switch self {
-    case .getPresignedUrl: return "/mission"
+    case .getPresignedUrl: return "/stamp"
     }
   }
   

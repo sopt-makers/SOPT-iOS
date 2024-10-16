@@ -15,21 +15,18 @@ import Networks
 public class MainRepository {
     
     private let userService: UserService
-    private let configService: ConfigService
     private let descriptionService: DescriptionService
     private let pokeService: PokeService
     private let stampService: StampService
     
     private let cancelBag = CancelBag()
     
-    public init(userService: UserService, 
-                configService: ConfigService,
+    public init(userService: UserService,
                 descriptionService: DescriptionService,
                 pokeService: PokeService,
                 stampService: StampService
     ) {
         self.userService = userService
-        self.configService = configService
         self.descriptionService = descriptionService
         self.pokeService = pokeService
         self.stampService = stampService
@@ -55,16 +52,6 @@ extension MainRepository: MainRepositoryInterface {
                 default:
                     return MainError.networkError(message: "API 에러 디폴트")
                 }
-            }
-            .map { $0.toDomain() }
-            .eraseToAnyPublisher()
-    }
-    
-    public func getServiceState() -> AnyPublisher<ServiceStateModel, MainError> {
-        configService.getServiceAvailability()
-            .mapError { error in
-                print(error)
-                return MainError.networkError(message: "GetServiceState 에러")
             }
             .map { $0.toDomain() }
             .eraseToAnyPublisher()

@@ -136,11 +136,6 @@ extension MainVC {
         self?.updateUI(with: userMainInfo)
       }.store(in: self.cancelBag)
 
-    output.isServiceAvailable
-      .sink { isServiceAvailable in
-        print("현재 앱 서비스 사용 가능(심사 X)?: \(isServiceAvailable)")
-      }.store(in: self.cancelBag)
-
     output.needNetworkAlert
       .sink { [weak self] in
         self?.presentNetworkAlertVC()

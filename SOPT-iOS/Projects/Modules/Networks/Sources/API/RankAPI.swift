@@ -26,9 +26,8 @@ extension RankAPI: BaseAPI {
   // MARK: - Header
   public var headers: [String: String]? {
     switch self {
-    case .rank, .rankDetail:
+    default:
       return HeaderType.jsonWithToken.value
-    default: return HeaderType.json.value
     }
   }
 

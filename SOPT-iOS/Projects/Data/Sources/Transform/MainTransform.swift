@@ -17,9 +17,3 @@ extension MainEntity {
         return UserMainInfoModel.init(status: user.status, name: user.name, profileImage: user.profileImage, historyList: user.historyList, attendanceScore: operation?.attendanceScore, announcement: operation?.announcement, isAllConfirm: isAllConfirm)
     }
 }
-
-extension ServiceStateEntity {
-    public func toDomain() -> ServiceStateModel {
-        return ServiceStateModel(isAvailable: isAvailable)
-    }
-}

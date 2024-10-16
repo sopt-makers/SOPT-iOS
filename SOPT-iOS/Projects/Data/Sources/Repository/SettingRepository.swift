@@ -44,17 +44,6 @@ extension SettingRepository: SettingRepositoryInterface {
             .eraseToAnyPublisher()
     }
     
-    public func editNickname(nickname: String) -> AnyPublisher<Bool, Never> {
-        return userService.changeNickname(nickname: nickname)
-            .map { _ in true }
-            .replaceError(with: false)
-            .handleEvents(receiveOutput: { isSuccessed in
-                guard isSuccessed else { return }
-                UserDefaultKeyList.User.soptampName = nickname
-            })
-            .eraseToAnyPublisher()
-    }
-    
     public func withdrawal() -> AnyPublisher<Bool, Never> {
         return userService.withdraw()
             .handleEvents(receiveOutput: { status in

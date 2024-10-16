@@ -38,7 +38,6 @@ extension AppDelegate {
             implement: {
                 MainRepository(
                     userService: DefaultUserService(),
-                    configService: DefaultConfigService(),
                     descriptionService: DefaultDescriptionService(),
                     pokeService: DefaultPokeService(),
                     stampService: DefaultStampService()
@@ -77,14 +76,6 @@ extension AppDelegate {
                     authService: DefaultAuthService(),
                     stampService: DefaultStampService(),
                     userService: DefaultUserService()
-                )
-            }
-        )
-        container.register(
-            interface: SignUpRepositoryInterface.self,
-            implement: {
-                SignUpRepository(
-                    service: DefaultUserService()
                 )
             }
         )

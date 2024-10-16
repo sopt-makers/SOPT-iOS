@@ -17,7 +17,6 @@ public final class AppMyPageViewModel: MyPageViewModelType {
     // MARK: - Inputs
     
     public struct Input {
-        let viewWillAppear: Driver<Void>
         let resetButtonTapped: Driver<Bool>
         let logoutButtonTapped: Driver<Void>
     }
@@ -44,12 +43,6 @@ extension AppMyPageViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
-
-        input.viewWillAppear
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.useCase.fetchUserNotificationIsAllowed()
-            }.store(in: cancelBag)
         
         input.resetButtonTapped
             .withUnretained(self)
