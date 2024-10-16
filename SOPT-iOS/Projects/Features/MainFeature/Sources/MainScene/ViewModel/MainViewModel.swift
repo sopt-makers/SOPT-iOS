@@ -150,6 +150,7 @@ extension MainViewModel {
         guard let self = self else { return }
         self.requestAuthorizationForNotification()
         self.trackAmplitude(event: .viewAppHome)
+        self.useCase.getReportUrl()
       }.store(in: cancelBag)
 
     input.hotBoardTapped

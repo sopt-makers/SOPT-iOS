@@ -68,7 +68,7 @@ extension AlertVC.AlertTheme {
         case .main:
             return isNetworkErr ? DSKitAsset.Colors.white100.color : DSKitAsset.Colors.gray600.color
         case .soptamp:
-            return isNetworkErr ? DSKitAsset.Colors.soptampError200.color : DSKitAsset.Colors.soptampGray300.color
+            return isNetworkErr ? DSKitAsset.Colors.black60.color : DSKitAsset.Colors.soptampGray300.color
         }
     }
     

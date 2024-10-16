@@ -28,3 +28,9 @@ public extension MissionListEntity {
         }
     }
 }
+
+extension SoptampReportUrlEntity {
+    func toDomain() -> SoptampReportUrlModel {
+        return SoptampReportUrlModel(reportUrl: reportUrl)
+    }
+}

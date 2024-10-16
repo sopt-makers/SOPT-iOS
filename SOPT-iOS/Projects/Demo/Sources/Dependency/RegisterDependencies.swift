@@ -39,7 +39,8 @@ extension AppDelegate {
                 MainRepository(
                     userService: DefaultUserService(),
                     descriptionService: DefaultDescriptionService(),
-                    pokeService: DefaultPokeService()
+                    pokeService: DefaultPokeService(),
+                    stampService: DefaultStampService()
                 )
             }
         )

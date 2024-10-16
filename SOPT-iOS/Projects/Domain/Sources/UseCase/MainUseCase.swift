@@ -24,6 +24,7 @@ public protocol MainUseCase {
   func checkPokeNewUser()
   func getAppService()
   func getHotBoard()
+  func getReportUrl()
 }
 
 public class DefaultMainUseCase {
@@ -124,5 +125,15 @@ extension DefaultMainUseCase: MainUseCase {
         self?.hotBoard.send(hotBoard)
       }
       .store(in: cancelBag)
+  }
+    
+  public func getReportUrl() {
+    repository.getReportUrl()
+      .withUnretained(self)
+      .sink { event in
+          print("GetReportUrl State: \(event)")
+      } receiveValue: { owner, resultModel in
+          UserDefaultKeyList.Soptamp.reportUrl = resultModel.reportUrl
+      }.store(in: cancelBag)
   }
 }

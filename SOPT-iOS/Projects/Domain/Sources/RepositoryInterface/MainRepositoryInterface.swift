@@ -17,4 +17,5 @@ public protocol MainRepositoryInterface {
     func checkPokeNewUser() -> AnyPublisher<Bool, Error>
     func appService() -> AnyPublisher<[AppServiceModel], Error>
     func hotBoard() -> AnyPublisher<HotBoardModel, Error>
+    func getReportUrl() -> AnyPublisher<SoptampReportUrlModel, Error>
 }
