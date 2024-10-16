@@ -18,6 +18,7 @@ public protocol MissionListUseCase {
   
   var missionListModelsFetched: PassthroughSubject<[MissionListModel], Error> { get set }
   var usersActiveGenerationInfo: PassthroughSubject<UsersActiveGenerationStatusViewResponse, Error> { get set }
+  var errorOccurred: PassthroughSubject<Void, Never> { get set }
 }
 
 public class DefaultMissionListUseCase {
@@ -26,17 +27,22 @@ public class DefaultMissionListUseCase {
   private var cancelBag = CancelBag()
   public var missionListModelsFetched = PassthroughSubject<[MissionListModel], Error>()
   public var usersActiveGenerationInfo = PassthroughSubject<UsersActiveGenerationStatusViewResponse, Error>()
-  
+  public var errorOccurred = PassthroughSubject<Void, Never>()
+    
   public init(repository: MissionListRepositoryInterface) {
     self.repository = repository
   }
 }
 
 extension DefaultMissionListUseCase: MissionListUseCase {
+    
   public func fetchMissionList(type: MissionListFetchType) {
     repository.fetchMissionList(type: type, userName: nil)
       .sink(receiveCompletion: { event in
         print("completion: \(event)")
+        if case Subscribers.Completion.failure = event {
+          self.errorOccurred.send()
+        }
       }, receiveValue: { model in
         self.missionListModelsFetched.send(model)
       })
@@ -73,3 +79,4 @@ extension DefaultMissionListUseCase: MissionListUseCase {
       }).store(in: self.cancelBag)
   }
 }
+

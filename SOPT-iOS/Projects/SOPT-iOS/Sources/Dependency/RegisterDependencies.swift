@@ -40,7 +40,8 @@ extension AppDelegate {
                     userService: DefaultUserService(),
                     configService: DefaultConfigService(),
                     descriptionService: DefaultDescriptionService(),
-                    pokeService: DefaultPokeService()
+                    pokeService: DefaultPokeService(),
+                    stampService: DefaultStampService()
                 )
             }
         )

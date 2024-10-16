@@ -28,6 +28,10 @@ public struct UserDefaultKeyList {
     public struct AppNotice {
         @UserDefaultWrapper<String>(key: "checkedAppVersion") public static var checkedAppVersion
     }
+    
+    public struct Soptamp {
+        @UserDefaultWrapper<String>(key: "reportUrl") public static var reportUrl
+    }
 }
 
 extension UserDefaultKeyList {
