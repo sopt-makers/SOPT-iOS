@@ -40,7 +40,8 @@ extension AppDelegate {
                     userService: DefaultUserService(),
                     configService: DefaultConfigService(),
                     descriptionService: DefaultDescriptionService(),
-                    pokeService: DefaultPokeService()
+                    pokeService: DefaultPokeService(),
+                    stampService: DefaultStampService()
                 )
             }
         )
@@ -93,8 +94,7 @@ extension AppDelegate {
                 MissionListRepository(
                     missionService: DefaultMissionService(),
                     rankService: DefaultRankService(),
-                    userService: DefaultUserService(), 
-                    stampService: DefaultStampService()
+                    userService: DefaultUserService()
                 )
             }
         )

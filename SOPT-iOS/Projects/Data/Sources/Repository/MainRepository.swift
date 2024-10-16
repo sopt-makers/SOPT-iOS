@@ -18,14 +18,21 @@ public class MainRepository {
     private let configService: ConfigService
     private let descriptionService: DescriptionService
     private let pokeService: PokeService
+    private let stampService: StampService
     
     private let cancelBag = CancelBag()
     
-    public init(userService: UserService, configService: ConfigService, descriptionService: DescriptionService, pokeService: PokeService) {
+    public init(userService: UserService, 
+                configService: ConfigService,
+                descriptionService: DescriptionService,
+                pokeService: PokeService,
+                stampService: StampService
+    ) {
         self.userService = userService
         self.configService = configService
         self.descriptionService = descriptionService
         self.pokeService = pokeService
+        self.stampService = stampService
     }
 }
 
@@ -95,6 +102,12 @@ extension MainRepository: MainRepositoryInterface {
 
     public func hotBoard() -> AnyPublisher<HotBoardModel, Error> {
         userService.hotBoard()
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
+    
+    public func getReportUrl() -> AnyPublisher<SoptampReportUrlModel, Error> {
+        stampService.getReportUrl()
             .map { $0.toDomain() }
             .eraseToAnyPublisher()
     }

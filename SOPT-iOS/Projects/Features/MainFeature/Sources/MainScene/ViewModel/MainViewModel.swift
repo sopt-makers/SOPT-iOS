@@ -152,6 +152,7 @@ extension MainViewModel {
         self.requestAuthorizationForNotification()
         self.useCase.getServiceState()
         self.trackAmplitude(event: .viewAppHome)
+        self.useCase.getReportUrl()
       }.store(in: cancelBag)
 
     input.hotBoardTapped

@@ -51,7 +51,8 @@ final class StampCoordinator: DefaultCoordinator {
         missionList.onCellTap = { [weak self] model, username in
             self?.runMissionDetailFlow(model, username)
         }
-        missionList.onReportButtonTap = { [weak self] url in
+        missionList.onReportButtonTap = { [weak self] in
+            guard let url = UserDefaultKeyList.Soptamp.reportUrl else { return }
             let safariViewController = SFSafariViewController(url: URL(string: url)!)
             safariViewController.playgroundStyle()
             self?.rootController?.present(safariViewController, animated: true)

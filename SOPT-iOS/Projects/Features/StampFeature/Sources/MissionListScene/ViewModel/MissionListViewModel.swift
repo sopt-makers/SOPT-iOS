@@ -59,7 +59,6 @@ extension MissionListViewModel {
       .sink { owner, _ in
         owner.fetchMissionList(type: input.missionTypeSelected.value)
         owner.useCase.fetchIsActiveGenerationUser()
-        owner.useCase.getReportUrl()
       }.store(in: cancelBag)
     
     input.missionTypeSelected
@@ -103,12 +102,6 @@ extension MissionListViewModel {
       .sink { usersActivateGenerationStatus in
         output.usersActivateGenerationStatus = usersActivateGenerationStatus
       }.store(in: self.cancelBag)
-      
-    self.useCase.reportUrl
-      .asDriver()
-      .sink { url in
-        output.reportUrl = url
-      }.store(in: cancelBag)
     
     self.useCase.errorOccurred
       .asDriver()

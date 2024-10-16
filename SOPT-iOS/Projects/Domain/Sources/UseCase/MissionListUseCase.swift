@@ -15,11 +15,9 @@ public protocol MissionListUseCase {
   func fetchOtherUserMissionList(userName: String)
   func fetchIsActiveGenerationUser()
   func updateCurrentSoptampUserInfo()
-  func getReportUrl()
   
   var missionListModelsFetched: PassthroughSubject<[MissionListModel], Error> { get set }
   var usersActiveGenerationInfo: PassthroughSubject<UsersActiveGenerationStatusViewResponse, Error> { get set }
-  var reportUrl: PassthroughSubject<SoptampReportUrlModel, Error> { get set }
   var errorOccurred: PassthroughSubject<Void, Never> { get set }
 }
 
@@ -29,7 +27,6 @@ public class DefaultMissionListUseCase {
   private var cancelBag = CancelBag()
   public var missionListModelsFetched = PassthroughSubject<[MissionListModel], Error>()
   public var usersActiveGenerationInfo = PassthroughSubject<UsersActiveGenerationStatusViewResponse, Error>()
-  public var reportUrl = PassthroughSubject<SoptampReportUrlModel, Error>()
   public var errorOccurred = PassthroughSubject<Void, Never>()
     
   public init(repository: MissionListRepositoryInterface) {
@@ -43,6 +40,9 @@ extension DefaultMissionListUseCase: MissionListUseCase {
     repository.fetchMissionList(type: type, userName: nil)
       .sink(receiveCompletion: { event in
         print("completion: \(event)")
+        if case Subscribers.Completion.failure = event {
+          self.errorOccurred.send()
+        }
       }, receiveValue: { model in
         self.missionListModelsFetched.send(model)
       })
@@ -77,19 +77,6 @@ extension DefaultMissionListUseCase: MissionListUseCase {
         UserDefaultKeyList.User.soptampName = info.nickname
         UserDefaultKeyList.User.sentence = info.profileMessage
       }).store(in: self.cancelBag)
-  }
-    
-  public func getReportUrl() {
-    repository.getReportUrl()
-      .withUnretained(self)
-      .sink { event in
-          print("GetReportUrl State: \(event)")
-          if case Subscribers.Completion.failure = event {
-              self.errorOccurred.send()
-          }
-      } receiveValue: { owner, resultModel in
-          owner.reportUrl.send(resultModel)
-      }.store(in: cancelBag)
   }
 }
 

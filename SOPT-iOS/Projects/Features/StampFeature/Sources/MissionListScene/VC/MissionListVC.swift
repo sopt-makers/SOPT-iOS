@@ -43,7 +43,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
   public var onCurrentGenerationRankingButtonTap: ((RankingViewType) -> Void)?
   public var onGuideTap: (() -> Void)?
   public var onCellTap: ((MissionListModel, String?) -> Void)?
-  public var onReportButtonTap: ((String) -> Void)?
+  public var onReportButtonTap: (() -> Void)?
 
   private var usersActiveGenerationStatus: UsersActiveGenerationStatusViewResponse?
 
@@ -279,8 +279,7 @@ extension MissionListVC {
     naviBar.reportButtonTapped
       .withUnretained(self)
       .sink { owner, _ in
-          guard let url = output.reportUrl?.reportUrl else { return }
-          owner.onReportButtonTap?(url)
+          owner.onReportButtonTap?()
       }.store(in: cancelBag)
       
     output.$missionListModel
