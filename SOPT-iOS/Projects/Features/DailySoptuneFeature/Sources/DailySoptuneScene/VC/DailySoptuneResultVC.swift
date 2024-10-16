@@ -25,7 +25,6 @@ public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultVie
     private let resultModel: DailySoptuneResultModel
     
     private lazy var receiveTodaysFortuneButtonTap: Driver<Void> = receiveTodaysFortuneCardButton.publisher(for: .touchUpInside).mapVoid().asDriver()
-    private let viewWillAppear = PassthroughSubject<Void, Never>()
     
     // MARK: - UI Components
     
@@ -77,11 +76,6 @@ public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultVie
         self.setStackView()
         self.setLayout()
         self.bindViewModels()
-    }
-    
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.viewWillAppear.send(())
     }
 }
 
@@ -145,7 +139,6 @@ private extension DailySoptuneResultVC {
         let input = DailySoptuneResultViewModel
             .Input(
                 viewDidLoad: Just<Void>(()).asDriver(),
-                viewWillAppear: viewWillAppear.asDriver(),
                 naviBackButtonTap: self.backButton
                     .publisher(for: .touchUpInside)
                     .mapVoid().asDriver(),

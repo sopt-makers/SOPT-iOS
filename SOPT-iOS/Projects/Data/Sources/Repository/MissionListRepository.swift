@@ -31,6 +31,7 @@ public class MissionListRepository {
 }
 
 extension MissionListRepository: MissionListRepositoryInterface {
+
   public func fetchMissionList(type: MissionListFetchType, userName: String?) -> AnyPublisher<[MissionListModel], Error> {
     guard let userName else {
       return fetchMissionList(type: type)

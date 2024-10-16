@@ -9,7 +9,6 @@
 import Core
 import BaseFeatureDependency
 
-public protocol NicknameEditViewControllable: ViewControllable { }
 public protocol SentenceEditViewControllable: ViewControllable { }
 public protocol PrivacyPolicyViewControllable: ViewControllable { }
 public protocol TermsOfServiceViewControllable: ViewControllable { }

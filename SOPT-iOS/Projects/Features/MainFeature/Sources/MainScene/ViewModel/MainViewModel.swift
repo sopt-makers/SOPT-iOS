@@ -46,7 +46,6 @@ public class MainViewModel: MainViewModelType {
 
   public struct Output {
     var needToReload = PassthroughSubject<Void, Never>()
-    var isServiceAvailable = PassthroughSubject<Bool, Never>()
     var needNetworkAlert = PassthroughSubject<Void, Never>()
     var isLoading = PassthroughSubject<Bool, Never>()
   }
@@ -150,8 +149,8 @@ extension MainViewModel {
       .sink { [weak self] _ in
         guard let self = self else { return }
         self.requestAuthorizationForNotification()
-        self.useCase.getServiceState()
         self.trackAmplitude(event: .viewAppHome)
+        self.useCase.getReportUrl()
       }.store(in: cancelBag)
 
     input.hotBoardTapped
@@ -178,11 +177,6 @@ extension MainViewModel {
         self.setSentryUser()
         self.useCase.getAppService()
         output.needToReload.send()
-      }.store(in: self.cancelBag)
-
-    useCase.serviceState
-      .sink { serviceState in
-        output.isServiceAvailable.send(serviceState.isAvailable)
       }.store(in: self.cancelBag)
 
     useCase.mainDescription
@@ -330,7 +324,6 @@ extension MainViewModel {
   func calculateMonths() -> String? {
     guard let userMainInfo = userMainInfo, let firstHistory = userMainInfo.historyList.last else { return nil }
     guard let joinDate = calculateJoinDateWithFirstHistory(history: firstHistory), let monthDifference = calculateMonthDifference(since: joinDate) else { return nil }
-
     return String(monthDifference)
   }
 
@@ -339,7 +332,7 @@ extension MainViewModel {
     let yearDifference = history / 2
     let month = (history % 2 == 0) ? 3 : 9 // 짝수 기수는 3월, 홀수 기수는 9월 시작
     // 1기를 2007년으로 계산
-    return Date.from(year: yearDifference + 2007, month: month, day: 1)
+    return Date.from(year: yearDifference + 2007, month: month, day: 2)
   }
 
   // 파라미터로 넣은 날짜로 부터 현재 몇달이 지났는지 계산

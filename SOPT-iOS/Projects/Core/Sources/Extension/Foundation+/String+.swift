@@ -114,7 +114,7 @@ public extension String {
         
         // 앞쪽에 띄어쓰기가 없으면, 중간 인덱스 뒷쪽의 첫번째 인덱스
         if spaceIndex == nil {
-            spaceIndex = self[middleIndex...endIndex].firstIndex(of: " ")
+            spaceIndex = self[middleIndex..<endIndex].firstIndex(of: " ")
         }
         
         var result: String = ""

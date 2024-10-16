@@ -31,6 +31,8 @@ public class MissionListViewModel: ViewModelType {
   public class Output: NSObject {
     @Published var missionListModel: [MissionListModel]?
     @Published var usersActivateGenerationStatus: UsersActiveGenerationStatusViewResponse?
+    @Published var reportUrl: SoptampReportUrlModel?
+    var needNetworkAlert = PassthroughSubject<Void, Never>()
   }
   
   // MARK: - init
@@ -65,7 +67,7 @@ extension MissionListViewModel {
       .sink { owner, fetchType in
         owner.useCase.fetchMissionList(type: fetchType)
       }.store(in: cancelBag)
-    
+      
     return output
   }
   
@@ -100,5 +102,11 @@ extension MissionListViewModel {
       .sink { usersActivateGenerationStatus in
         output.usersActivateGenerationStatus = usersActivateGenerationStatus
       }.store(in: self.cancelBag)
+    
+    self.useCase.errorOccurred
+      .asDriver()
+      .sink { _ in
+          output.needNetworkAlert.send()
+      }.store(in: cancelBag)
   }
 }

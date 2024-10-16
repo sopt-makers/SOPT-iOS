@@ -124,66 +124,6 @@ final class DefaultMainUseCaseTests: XCTestCase {
         // Then
         XCTAssertEqual(result, expectationError)
     }
-    
-    func test_getServiceState() {
-        // Given
-        let expectation = XCTestExpectation(description: "GetServiceState")
-        let isAvailable = true
-        let serviceStateModel = ServiceStateModel(isAvailable: isAvailable)
-        repository.serviceStateModelResponse = .success(serviceStateModel)
-        var result: ServiceStateModel!
-        
-        // When
-        useCase.serviceState
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    XCTFail("Error: \(error)")
-                }
-            } receiveValue: { model in
-                result = model
-                expectation.fulfill()
-            }.store(in: repository.cancelBag)
-
-        useCase.getServiceState()
-        
-        wait(for: [expectation], timeout: 0.5)
-        
-        // Then
-        XCTAssertEqual(result.isAvailable, isAvailable)
-    }
-    
-    func test_getServiceState_ErrorOccurred() {
-        // Given
-        let expectation = XCTestExpectation(description: "GetUserMainInfo")
-        let expectationError: MainError = .authFailed
-        repository.serviceStateModelResponse = .failure(expectationError)
-        var result: MainError!
-        
-        // When
-        useCase.mainErrorOccurred
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    XCTFail("Error: \(error)")
-                }
-            } receiveValue: { errorModel in
-                result = errorModel
-                expectation.fulfill()
-            }
-            .store(in: repository.cancelBag)
-        
-        useCase.getServiceState()
-        
-        wait(for: [expectation], timeout: 0.5)
-        
-        // Then
-        XCTAssertEqual(result, .networkError(message: "GetServiceState 실패"))
-    }
 }
 
 extension DefaultMainUseCaseTests {

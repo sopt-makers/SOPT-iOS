@@ -31,7 +31,6 @@ public final class DailySoptuneResultViewModel: DailySoptuneResultViewModelType 
     
     public struct Input {
         let viewDidLoad: Driver<Void>
-        let viewWillAppear: Driver<Void>
         let naviBackButtonTap: Driver<Void>
         let receiveTodaysFortuneCardTap: Driver<Void>
         let kokButtonTap: Driver<PokeUserModel?>
@@ -59,12 +58,6 @@ extension DailySoptuneResultViewModel {
         self.bindOutput(output: output, cancelBag: cancelBag)
         
         input.viewDidLoad
-            .withUnretained(self)
-            .sink { owner, _ in
-                AmplitudeInstance.shared.track(eventType: .viewSoptuneResult)
-            }.store(in: cancelBag)
-        
-        input.viewWillAppear
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.getRandomUser()

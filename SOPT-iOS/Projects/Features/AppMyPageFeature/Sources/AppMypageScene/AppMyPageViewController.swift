@@ -43,7 +43,6 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
     public var onAlertButtonTap: ((String) -> Void)?
 
     // MARK: Combine
-    private let viewWillAppear = PassthroughSubject<Void, Never>()
     private let resetButtonTapped = PassthroughSubject<Bool, Never>()
     private let logoutButtonTapped = PassthroughSubject<Void, Never>()
     private let cancelBag = CancelBag()
@@ -185,12 +184,6 @@ extension AppMyPageVC {
         self.bindViews()
         self.bindViewModels()
     }
-    
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        self.viewWillAppear.send(())
-    }
 }
 
 extension AppMyPageVC {
@@ -304,7 +297,6 @@ extension AppMyPageVC {
     
     private func bindViewModels() {
         let input = AppMyPageViewModel.Input(
-            viewWillAppear: self.viewWillAppear.asDriver(),
             resetButtonTapped: self.resetButtonTapped.asDriver(),
             logoutButtonTapped: self.logoutButtonTapped.asDriver()
         )

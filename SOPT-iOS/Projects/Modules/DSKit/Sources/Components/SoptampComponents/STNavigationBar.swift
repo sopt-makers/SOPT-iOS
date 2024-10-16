@@ -34,12 +34,15 @@ public class STNavigationBar: UIView {
     private let titleButton = UIButton()
     private let leftButton = UIButton()
     private let rightButton = UIButton()
+    private let reportButton = UIButton()
     
     // MARK: - Properties
     
     private var naviType: NaviType!
     private var rightButtonClosure: (() -> Void)?
     private var leftButtonClosure: (() -> Void)?
+    private var reportButtonClosure: (() -> Void)?
+    
     public var rightButtonTapped: Driver<Void> {
         rightButton.publisher(for: .touchUpInside)
             .map { _ in () }
@@ -52,6 +55,11 @@ public class STNavigationBar: UIView {
     }
     public var titleButtonTapped: Driver<Void> {
         titleButton.publisher(for: .touchUpInside)
+            .map { _ in () }
+            .asDriver()
+    }
+    public var reportButtonTapped: Driver<Void> {
+        reportButton.publisher(for: .touchUpInside)
             .map { _ in () }
             .asDriver()
     }
@@ -131,6 +139,13 @@ extension STNavigationBar {
     }
     
     @discardableResult
+    public func reportButtonAction(_ closure: (() -> Void)? = nil) -> Self {
+        self.reportButtonClosure = closure
+        self.reportButton.addTarget(self, action: #selector(tappedReportButton), for: .touchUpInside)
+        return self
+    }
+    
+    @discardableResult
     public func resetLeftButtonAction(_ closure: (() -> Void)? = nil) -> Self {
         self.leftButtonClosure = closure
         self.leftButton.removeTarget(self, action: nil, for: .touchUpInside)
@@ -200,6 +215,11 @@ extension STNavigationBar {
     private func tappedLeftButton() {
         self.leftButtonClosure?()
     }
+    
+    @objc
+    private func tappedReportButton() {
+        self.reportButtonClosure?()
+    }
 }
 
 // MARK: - UI & Layout
@@ -222,6 +242,7 @@ extension STNavigationBar {
             titleButton.setTitleColor(.black, for: .normal)
             titleButton.semanticContentAttribute = .forceRightToLeft
             titleButton.titleLabel?.adjustsFontSizeToFitWidth = true
+            reportButton.setImage(DSKitAsset.Assets.icReport.image, for: .normal)
         case .titleWithLeftButton:
             rightButton.isHidden = true
             leftButton.setImage(UIImage(asset: DSKitAsset.Assets.icArrow), for: .normal)
@@ -243,18 +264,25 @@ extension STNavigationBar {
     }
     
     private func setTitleLayout() {
-        self.addSubviews(titleButton, rightButton)
+        self.addSubviews(titleButton, rightButton, reportButton)
         
         titleButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview().offset(1)
             make.leading.equalToSuperview().inset(20)
         }
-        
+
         rightButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.trailing.equalToSuperview().inset(20)
             make.width.height.equalTo(32)
         }
+        
+        reportButton.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.trailing.equalTo(rightButton.snp.leading).offset(-12)
+            make.size.equalTo(32)
+        }
+        
     }
     
     private func setTitleWithLeftButton() {

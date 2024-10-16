@@ -15,15 +15,11 @@ import Core
 public enum UserAPI {
     case fetchSoptampUser
     case editSentence(sentence: String)
-    case getNicknameAvailable(nickname: String)
-    case changeNickname(nickname: String)
     case getUserMainInfo
     case withdrawal
     case registerPushToken(token: String)
     case deregisterPushToken(token: String)
     case fetchActiveGenerationStatus
-    case getNotificationIsAllowed
-    case optInPushNotificationInGeneral(isOn: Bool)
     case getNotificationSettingsInDetail
     case optInPushNotificationInDetail(notificationSettings: DetailNotificationOptInEntity)
     case appService
@@ -41,10 +37,6 @@ extension UserAPI: BaseAPI {
             return "soptamp"
         case .editSentence:
             return "profile-message"
-        case .changeNickname:
-            return "nickname"
-        case .getNicknameAvailable(let nickname):
-            return "nickname/\(nickname)"
         case .getUserMainInfo:
             return "/main"
         case .withdrawal:
@@ -53,10 +45,6 @@ extension UserAPI: BaseAPI {
             return "/push-token"
         case .fetchActiveGenerationStatus:
             return "/generation"
-        case .getNotificationIsAllowed:
-            return "/opt-in"
-        case .optInPushNotificationInGeneral:
-            return "/opt-in"
         case .getNotificationSettingsInDetail:
             return "/opt-in/detail"
         case .optInPushNotificationInDetail:
@@ -71,10 +59,9 @@ extension UserAPI: BaseAPI {
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .getNicknameAvailable, .getUserMainInfo, .fetchSoptampUser, .fetchActiveGenerationStatus,
-            .getNotificationIsAllowed, .getNotificationSettingsInDetail, .appService, .hotboard:
+        case .getUserMainInfo, .fetchSoptampUser, .fetchActiveGenerationStatus, .getNotificationSettingsInDetail, .appService, .hotboard:
             return .get
-        case .editSentence, .changeNickname, .optInPushNotificationInGeneral, .optInPushNotificationInDetail:
+        case .editSentence, .optInPushNotificationInDetail:
             return .patch
         case .withdrawal:
             return .delete
@@ -89,8 +76,6 @@ extension UserAPI: BaseAPI {
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
-        case .changeNickname(let nickname):
-            params["nickname"] = nickname
         case .editSentence(let sentence):
             params["profileMessage"] = sentence
         case .registerPushToken(let pushToken):
@@ -99,8 +84,6 @@ extension UserAPI: BaseAPI {
         case .deregisterPushToken(let pushToken):
             params["platform"] = "iOS"
             params["pushToken"] = pushToken
-        case .optInPushNotificationInGeneral(let isOn):
-            params["isOptIn"] = isOn
         case .optInPushNotificationInDetail(let optInDTO):
             params = optInDTO.toDictionary()
         default: break
@@ -117,8 +100,7 @@ extension UserAPI: BaseAPI {
     
     public var task: Task {
         switch self {
-        case .changeNickname, .editSentence, .registerPushToken,
-                .optInPushNotificationInGeneral, .optInPushNotificationInDetail, .deregisterPushToken:
+        case .editSentence, .registerPushToken, .optInPushNotificationInDetail, .deregisterPushToken:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain

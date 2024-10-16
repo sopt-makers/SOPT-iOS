@@ -23,6 +23,8 @@ public extension Date {
         dateComponents.year = year
         dateComponents.month = month
         dateComponents.day = day
-        return calendar.date(from: dateComponents) ?? nil
+        
+        let usaDate = calendar.date(from: dateComponents)
+        return usaDate!.addingTimeInterval(9 * 60 * 60)
     }
 }
