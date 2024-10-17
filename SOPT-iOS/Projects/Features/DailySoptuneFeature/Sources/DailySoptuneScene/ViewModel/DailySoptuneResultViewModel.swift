@@ -13,6 +13,7 @@ import Core
 import Domain
 
 import DailySoptuneFeatureInterface
+import BaseFeatureDependency
 
 public final class DailySoptuneResultViewModel: DailySoptuneResultViewModelType {
     
@@ -109,12 +110,16 @@ extension DailySoptuneResultViewModel {
         
         useCase.randomUser
             .asDriver()
-            .sink(receiveValue: { values in
+            .withUnretained(self)
+            .sink { owner, values in
+                guard !values.isEmpty else { return }
                 output.randomUser.send(values[0])
-            }).store(in: cancelBag)
+            }.store(in: cancelBag)
 
         useCase.pokedResponse
-            .subscribe(output.pokeResponse)
+            .sink { _ in
+                ToastUtils.showMDSToast(type: .success, text: I18N.Poke.pokeSuccess)
+            }
             .store(in: cancelBag)
     }
 }
