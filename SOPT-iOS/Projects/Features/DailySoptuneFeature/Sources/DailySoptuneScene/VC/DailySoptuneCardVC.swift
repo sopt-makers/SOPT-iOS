@@ -24,6 +24,11 @@ public final class DailySoptuneCardVC: UIViewController, DailySoptuneCardViewCon
     private let cancelBag = CancelBag()
 
 	// MARK: - UI Components
+    
+    private let scrollView = UIScrollView().then {
+        $0.showsVerticalScrollIndicator = false
+        $0.showsHorizontalScrollIndicator = false
+    }
 	
 	private let backButton = UIButton().then {
 		$0.setImage(DSKitAsset.Assets.xMark.image.withTintColor(DSKitAsset.Colors.gray30.color), for: .normal)
@@ -71,42 +76,55 @@ public final class DailySoptuneCardVC: UIViewController, DailySoptuneCardViewCon
 // MARK: UI & Layout
 
 private extension DailySoptuneCardVC {
+    private enum Metric {
+        static let cardWidth = 295.adjusted
+        static let cardRatio = 450.0 / 295.0
+    }
 	func setUI() {
 		view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
         self.navigationController?.isNavigationBarHidden = true
 	}
 	
 	func setLayout() {
-		self.view.addSubviews(backButton, subCardLabel, cardLabel, cardImage, goToHomeButton)
+        self.view.addSubviews(backButton, scrollView)
+        scrollView.addSubviews(subCardLabel, cardLabel, cardImage, goToHomeButton)
 		
 		backButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(2.adjustedH)
-            make.leading.equalToSuperview().inset(8.adjusted)
-            make.size.equalTo(40.adjusted)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(2)
+            make.leading.equalToSuperview().inset(8)
+            make.size.equalTo(40)
 		}
+        
+        scrollView.snp.makeConstraints { make in
+            make.top.equalTo(backButton.snp.bottom)
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalTo(view.safeAreaLayoutGuide)
+        }
 		
 		subCardLabel.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(48.adjustedH)
+            make.top.equalToSuperview().offset(48)
 			make.centerX.equalToSuperview()
-            make.height.equalTo(24.adjustedH)
+            make.height.equalTo(24)
 		}
 		
 		cardLabel.snp.makeConstraints { make in
-            make.top.equalTo(subCardLabel.snp.bottom).offset(2.adjustedH)
+            make.top.equalTo(subCardLabel.snp.bottom).offset(2)
 			make.centerX.equalToSuperview()
-			make.height.equalTo(42.adjustedH)
+			make.height.equalTo(42)
 		}
 		
+        cardImage.snp.makeConstraints { make in
+            make.top.equalTo(cardLabel.snp.bottom).offset(41.adjustedH)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(Metric.cardWidth)
+            make.height.equalTo(Metric.cardRatio * Metric.cardWidth)
+        }
+        
 		goToHomeButton.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(49.adjustedH)
-            make.leading.trailing.equalToSuperview().inset(124.adjusted)
-			make.height.equalTo(42.adjustedH)
-		}
-		
-		cardImage.snp.makeConstraints { make in
-			make.top.equalTo(cardLabel.snp.bottom).offset(41.adjustedH)
-			make.leading.trailing.equalToSuperview().inset(40.adjusted)
-			make.bottom.equalTo(goToHomeButton.snp.top).offset(-36.adjustedH)
+            make.top.equalTo(cardImage.snp.bottom).offset(36)
+            make.bottom.equalToSuperview().inset(49)
+            make.centerX.equalToSuperview()
+			make.height.equalTo(42)
 		}
 	}
 }
@@ -128,6 +146,6 @@ private extension DailySoptuneCardVC {
             backButtonTap: self.backButton.publisher(for: .touchUpInside).mapVoid().asDriver()
         )
         
-        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        let _ = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
     }
 }

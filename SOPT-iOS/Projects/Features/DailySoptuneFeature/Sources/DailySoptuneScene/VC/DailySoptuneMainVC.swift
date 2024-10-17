@@ -104,7 +104,7 @@ private extension DailySoptuneMainVC {
         scrollView.addSubviews(dateLabel, recieveFortune, todayFortuneImage, titleCardsImage)
         
         scrollView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalTo(backButton.snp.bottom)
             make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-100)
             make.leading.trailing.equalToSuperview()
         }
