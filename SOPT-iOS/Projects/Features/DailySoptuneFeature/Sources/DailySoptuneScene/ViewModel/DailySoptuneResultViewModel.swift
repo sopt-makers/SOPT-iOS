@@ -13,6 +13,7 @@ import Core
 import Domain
 
 import DailySoptuneFeatureInterface
+import BaseFeatureDependency
 
 public final class DailySoptuneResultViewModel: DailySoptuneResultViewModelType {
     
@@ -114,7 +115,9 @@ extension DailySoptuneResultViewModel {
             }).store(in: cancelBag)
 
         useCase.pokedResponse
-            .subscribe(output.pokeResponse)
+            .sink { _ in
+                ToastUtils.showMDSToast(type: .success, text: I18N.Poke.pokeSuccess)
+            }
             .store(in: cancelBag)
     }
 }
