@@ -80,26 +80,26 @@ private extension DailySoptuneCardVC {
 		self.view.addSubviews(backButton, subCardLabel, cardLabel, cardImage, goToHomeButton)
 		
 		backButton.snp.makeConstraints { make in
-			make.top.equalTo(view.safeAreaLayoutGuide).offset(2)
-			make.leading.equalToSuperview().inset(8)
-			make.size.equalTo(40)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(2.adjustedH)
+            make.leading.equalToSuperview().inset(8.adjusted)
+            make.size.equalTo(40.adjusted)
 		}
 		
 		subCardLabel.snp.makeConstraints { make in
-			make.top.equalTo(view.safeAreaLayoutGuide).offset(48)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(48.adjustedH)
 			make.centerX.equalToSuperview()
-			make.height.equalTo(24)
+            make.height.equalTo(24.adjustedH)
 		}
 		
 		cardLabel.snp.makeConstraints { make in
-			make.top.equalTo(subCardLabel.snp.bottom).offset(2)
+            make.top.equalTo(subCardLabel.snp.bottom).offset(2.adjustedH)
 			make.centerX.equalToSuperview()
 			make.height.equalTo(42.adjustedH)
 		}
 		
 		goToHomeButton.snp.makeConstraints { make in
-			make.bottom.equalTo(view.safeAreaLayoutGuide).inset(49)
-			make.leading.trailing.equalToSuperview().inset(124)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(49.adjustedH)
+            make.leading.trailing.equalToSuperview().inset(124.adjusted)
 			make.height.equalTo(42.adjustedH)
 		}
 		

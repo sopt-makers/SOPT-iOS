@@ -63,7 +63,7 @@ extension DailySoptuneResultContentView {
     }
     
     private func setContentLabel() {
-        self.contentLabel.setLineSpacing(lineSpacing: 8)
+        self.contentLabel.setLineSpacing(lineSpacing: 8.adjustedH)
         self.contentLabel.textAlignment = .center
     }
     
@@ -78,18 +78,18 @@ extension DailySoptuneResultContentView {
         }
         
         dateLabel.snp.makeConstraints { make in
-            make.top.equalTo(soptuneLogoImage.snp.bottom).offset(12)
+            make.top.equalTo(soptuneLogoImage.snp.bottom).offset(12.adjustedH)
             make.centerX.equalToSuperview()
         }
         
         contentLabel.snp.makeConstraints { make in
-            make.top.equalTo(dateLabel.snp.bottom).offset(20)
+            make.top.equalTo(dateLabel.snp.bottom).offset(20.adjustedH)
             make.centerX.equalToSuperview()
             make.leading.trailing.equalToSuperview()
         }
         
         self.snp.makeConstraints { make in
-            make.bottom.equalTo(contentLabel.snp.bottom).offset(34)
+            make.bottom.equalTo(contentLabel.snp.bottom).offset(34.adjustedH)
         }
     }
 }

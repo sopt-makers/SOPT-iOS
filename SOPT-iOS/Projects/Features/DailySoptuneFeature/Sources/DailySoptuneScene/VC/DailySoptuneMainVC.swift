@@ -36,14 +36,14 @@ public final class DailySoptuneMainVC: UIViewController, DailySoptuneMainViewCon
 	
 	private let dateLabel = UILabel().then {
 		$0.textColor = DSKitAsset.Colors.gray100.color
-		$0.font = DSKitFontFamily.Suit.medium.font(size: 16)
+        $0.font = DSKitFontFamily.Suit.medium.font(size: 16)
 		$0.text = setDateFormat(to: "M월 d일 EEEE")
 	}
 	
 	private let recieveFortune = UILabel().then {
 		$0.text = I18N.DailySoptune.recieveTodayFortune
 		$0.textColor = DSKitAsset.Colors.gray100.color
-		$0.font = DSKitFontFamily.Suit.bold.font(size: 18)
+        $0.font = DSKitFontFamily.Suit.bold.font(size: 18)
 	}
 	
 	private let todayFortuneImage = UIImageView().then {
@@ -91,18 +91,18 @@ private extension DailySoptuneMainVC {
 		self.view.addSubviews(backButton, dateLabel, recieveFortune, todayFortuneImage, titleCardsImage, checkTodayFortuneButton)
 		
 		backButton.snp.makeConstraints { make in
-			make.top.equalTo(view.safeAreaLayoutGuide).offset(2)
-			make.leading.equalToSuperview().inset(8)
-			make.size.equalTo(40)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(2.adjustedH)
+            make.leading.equalToSuperview().inset(8.adjusted)
+            make.size.equalTo(40.adjusted)
 		}
 		
 		dateLabel.snp.makeConstraints { make in
-			make.top.equalTo(view.safeAreaLayoutGuide).offset(40)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(40.adjustedH)
 			make.centerX.equalToSuperview()
 		}
 		
 		recieveFortune.snp.makeConstraints { make in
-			make.top.equalTo(dateLabel.snp.bottom).offset(2)
+            make.top.equalTo(dateLabel.snp.bottom).offset(2.adjustedH)
 			make.centerX.equalToSuperview()
 		}
 		
@@ -113,15 +113,15 @@ private extension DailySoptuneMainVC {
 		}
 		
 		checkTodayFortuneButton.snp.makeConstraints { make in
-			make.bottom.equalTo(view.safeAreaLayoutGuide).inset(49)
-			make.leading.trailing.equalToSuperview().inset(20)
-			make.height.equalTo(56)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(49)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(56)
 		}
 		
 		titleCardsImage.snp.makeConstraints { make in
 			make.bottom.equalTo(checkTodayFortuneButton.snp.top).offset(-32.adjustedH)
+            make.top.equalTo(todayFortuneImage.snp.bottom).offset(14.adjustedH)
 			make.leading.trailing.equalToSuperview().inset(34.adjusted)
-			make.height.equalTo(270.adjustedH)
 		}
 	}
     
@@ -133,6 +133,6 @@ private extension DailySoptuneMainVC {
                 receiveTodayFortuneButtonTap: todayFortuneButtonTapped
             )
         
-        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        let _ = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
     }
 }
