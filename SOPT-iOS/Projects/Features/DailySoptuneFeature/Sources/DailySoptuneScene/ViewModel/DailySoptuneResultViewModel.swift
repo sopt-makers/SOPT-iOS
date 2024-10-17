@@ -13,6 +13,7 @@ import Core
 import Domain
 
 import DailySoptuneFeatureInterface
+import BaseFeatureDependency
 
 public final class DailySoptuneResultViewModel: DailySoptuneResultViewModelType {
     
@@ -67,21 +68,25 @@ extension DailySoptuneResultViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNaviBackButtonTapped?()
+                AmplitudeInstance.shared.track(eventType: .clickLeaveSoptuneResult)
             }.store(in: cancelBag)
         
         input.receiveTodaysFortuneCardTap
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.getTodaysFortuneCard()
+                AmplitudeInstance.shared.track(eventType: .clickGetSoptuneCard)
             }.store(in: cancelBag)
         
         input.kokButtonTap
             .compactMap { $0 }
             .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)> in
                 guard let self, let value = self.onKokButtonTapped?(userModel) else { return .empty() }
+                AmplitudeInstance.shared.track(eventType: .clickSoptuneRamdomPeople)
                 return value
             }
             .sink { [weak self] userModel, messageModel, isAnonymous in
+                AmplitudeInstance.shared.track(eventType: .sendChoice, eventProperties: ["index": messageModel.messageId, "message": messageModel.content, "isAnonymous": isAnonymous])
                 self?.useCase.poke(userId: userModel.userId, message: messageModel, isAnonymous: isAnonymous)
             }.store(in: cancelBag)
         
@@ -105,12 +110,16 @@ extension DailySoptuneResultViewModel {
         
         useCase.randomUser
             .asDriver()
-            .sink(receiveValue: { values in
+            .withUnretained(self)
+            .sink { owner, values in
+                guard !values.isEmpty else { return }
                 output.randomUser.send(values[0])
-            }).store(in: cancelBag)
+            }.store(in: cancelBag)
 
         useCase.pokedResponse
-            .subscribe(output.pokeResponse)
+            .sink { _ in
+                ToastUtils.showMDSToast(type: .success, text: I18N.Poke.pokeSuccess)
+            }
             .store(in: cancelBag)
     }
 }

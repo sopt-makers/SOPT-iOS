@@ -9,7 +9,6 @@
 import Foundation
 
 import Domain
-@_exported import PokeFeatureInterface
 
 public protocol DailySoptuneFeatureBuildable {
     func makeDailySoptuneResultVC(resultModel: DailySoptuneResultModel) -> DailySoptuneResultPresentable

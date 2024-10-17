@@ -119,7 +119,8 @@ extension DailySoptuneResultVC {
         
         scrollView.snp.makeConstraints { make in
             make.top.equalTo(backButton.snp.bottom)
-            make.leading.trailing.bottom.equalToSuperview()
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-100)
         }
         
         contentStackView.snp.makeConstraints { make in

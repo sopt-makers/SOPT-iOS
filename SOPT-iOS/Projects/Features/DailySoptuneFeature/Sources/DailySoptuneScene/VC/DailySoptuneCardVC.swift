@@ -123,6 +123,7 @@ private extension DailySoptuneCardVC {
     
     private func bindViewModels() {
         let input = DailySoptuneCardViewModel.Input(
+            viewDidLoad: Just<Void>(()).asDriver(),
             goToHomeButtonTap: self.goToHomeButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
             backButtonTap: self.backButton.publisher(for: .touchUpInside).mapVoid().asDriver()
         )

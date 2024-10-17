@@ -49,16 +49,24 @@ extension DailySoptuneMainViewModel {
 		let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
+        input.viewDidLoad
+            .withUnretained(self)
+            .sink { owner, _ in
+                AmplitudeInstance.shared.track(eventType: .viewSoptuneMain)
+            }.store(in: cancelBag)
+        
         input.naviBackButtonTap
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNaviBackTap?()
+                AmplitudeInstance.shared.track(eventType: .clickLeaveSoptuneMain)
             }.store(in: cancelBag)
         
         input.receiveTodayFortuneButtonTap
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.getDailySoptuneResult(date: setDateFormat(to: "yyyy-MM-dd"))
+                AmplitudeInstance.shared.track(eventType: .clickCheckTodaySoptune)
             }.store(in: cancelBag)
         
 		return output
