@@ -110,9 +110,11 @@ extension DailySoptuneResultViewModel {
         
         useCase.randomUser
             .asDriver()
-            .sink(receiveValue: { values in
+            .withUnretained(self)
+            .sink { owner, values in
+                guard !values.isEmpty else { return }
                 output.randomUser.send(values[0])
-            }).store(in: cancelBag)
+            }.store(in: cancelBag)
 
         useCase.pokedResponse
             .sink { _ in
