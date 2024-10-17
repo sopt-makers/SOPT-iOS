@@ -29,6 +29,11 @@ public final class DailySoptuneMainVC: UIViewController, DailySoptuneMainViewCon
     private lazy var backButtonTapped: Driver<Void> = backButton.publisher(for: .touchUpInside).mapVoid().asDriver()
 	
 	// MARK: - UI Components
+    
+    private lazy var scrollView = UIScrollView().then {
+        $0.showsVerticalScrollIndicator = false
+        $0.showsHorizontalScrollIndicator = false
+    }
 	
 	private let backButton = UIButton().then {
 		$0.setImage(DSKitAsset.Assets.xMark.image.withTintColor(DSKitAsset.Colors.gray30.color), for: .normal)
@@ -82,34 +87,50 @@ public final class DailySoptuneMainVC: UIViewController, DailySoptuneMainViewCon
 // MARK: UI & Layout
 
 private extension DailySoptuneMainVC {
+    private enum Metric {
+        static let soptuneLogoWidth = 269.adjusted
+        static let soptuneLogoRatio = 208.0 / 269.0
+        
+        static let cardWidth = 307.adjusted
+        static let cardRatio = 270.0 / 307.0
+    }
+    
 	func setUI() {
 		view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
         navigationController?.navigationBar.isHidden = true
 	}
 	
 	func setLayout() {
-		self.view.addSubviews(backButton, dateLabel, recieveFortune, todayFortuneImage, titleCardsImage, checkTodayFortuneButton)
-		
+        self.view.addSubviews(scrollView, backButton, checkTodayFortuneButton)
+        scrollView.addSubviews(dateLabel, recieveFortune, todayFortuneImage, titleCardsImage)
+        
+        scrollView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-100)
+            make.leading.trailing.equalToSuperview()
+        }
+        
 		backButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(2.adjustedH)
-            make.leading.equalToSuperview().inset(8.adjusted)
-            make.size.equalTo(40.adjusted)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(2)
+            make.leading.equalToSuperview().inset(8)
+            make.size.equalTo(40)
 		}
 		
 		dateLabel.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(40.adjustedH)
+            make.top.equalToSuperview().offset(40)
 			make.centerX.equalToSuperview()
 		}
 		
 		recieveFortune.snp.makeConstraints { make in
-            make.top.equalTo(dateLabel.snp.bottom).offset(2.adjustedH)
+            make.top.equalTo(dateLabel.snp.bottom).offset(2)
 			make.centerX.equalToSuperview()
 		}
 		
 		todayFortuneImage.snp.makeConstraints { make in
 			make.top.equalTo(recieveFortune.snp.bottom).offset(9.adjustedH)
-			make.leading.trailing.equalToSuperview().inset(53.adjusted)
-			make.height.equalTo(208.adjustedH)
+            make.centerX.equalToSuperview()
+            make.height.equalTo(Metric.soptuneLogoRatio * Metric.soptuneLogoWidth)
+            make.width.equalTo(Metric.soptuneLogoWidth)
 		}
 		
 		checkTodayFortuneButton.snp.makeConstraints { make in
@@ -119,9 +140,11 @@ private extension DailySoptuneMainVC {
 		}
 		
 		titleCardsImage.snp.makeConstraints { make in
-			make.bottom.equalTo(checkTodayFortuneButton.snp.top).offset(-32.adjustedH)
             make.top.equalTo(todayFortuneImage.snp.bottom).offset(14.adjustedH)
-			make.leading.trailing.equalToSuperview().inset(34.adjusted)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(Metric.cardWidth)
+            make.height.equalTo(Metric.cardRatio * Metric.cardWidth)
+            make.bottom.equalToSuperview().inset(20)
 		}
 	}
     
