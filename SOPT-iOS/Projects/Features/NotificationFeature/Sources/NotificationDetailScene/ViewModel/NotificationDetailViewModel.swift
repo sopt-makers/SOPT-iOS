@@ -12,6 +12,7 @@ import Combine
 import Core
 import Domain
 
+import BaseFeatureDependency
 import NotificationFeatureInterface
 
 public class NotificationDetailViewModel: NotificationDetailViewModelType {
@@ -64,6 +65,18 @@ extension NotificationDetailViewModel {
         
         input.shortCutButtonTap
             .withUnretained(self)
+            .map { owner, _ -> Bool in
+                if let deepLink = owner.notification?.deepLink,
+                    let date = owner.notification?.createdAt {
+                    if !owner.isToday(date.toDate()) && deepLink.hasSuffix("fortune") {
+                        ToastUtils.showMDSToast(type: .alert, text: I18N.DailySoptune.dateErrorToastMessage)
+                        return false
+                    }
+                }
+                return true
+            }
+            .filter{ $0 }
+            .withUnretained(self)
             .sink { owner, _ in
                 guard let shortCutLink = owner.makeShortCutLink() else { return }
                 owner.onShortCutButtonTap?(shortCutLink)
@@ -100,5 +113,10 @@ extension NotificationDetailViewModel {
         }
         
         return nil
+    }
+    
+    private func isToday(_ date: Date) -> Bool {
+        let calendar = Calendar.current
+        return calendar.isDateInToday(date)
     }
 }
