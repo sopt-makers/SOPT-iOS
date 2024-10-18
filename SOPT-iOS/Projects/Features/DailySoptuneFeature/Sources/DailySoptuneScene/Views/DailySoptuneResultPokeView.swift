@@ -105,30 +105,30 @@ extension DailySoptuneResultPokeView {
         self.addSubviews(titleLabel, subTitleLabel, pokeStackView)
         
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(20)
-            make.leading.equalToSuperview().inset(20)
+            make.top.equalToSuperview().inset(20.adjustedH)
+            make.leading.equalToSuperview().inset(20.adjusted)
         }
         
         subTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(10)
-            make.leading.equalToSuperview().inset(20)
+            make.top.equalTo(titleLabel.snp.bottom).offset(10.adjustedH)
+            make.leading.equalToSuperview().inset(20.adjusted)
         }
         
         profileImageView.snp.makeConstraints { make in
-            make.size.equalTo(72)
+            make.size.equalTo(72.adjusted)
         }
         
         kokButton.snp.makeConstraints { make in
-            make.size.equalTo(44)
+            make.size.equalTo(44.adjusted)
         }
         
         pokeStackView.snp.makeConstraints { make in
-            make.top.equalTo(subTitleLabel.snp.bottom).offset(28)
-            make.leading.trailing.equalToSuperview().inset(20)
+            make.top.equalTo(subTitleLabel.snp.bottom).offset(28.adjustedH)
+            make.leading.trailing.equalToSuperview().inset(20.adjusted)
         }
         
         self.snp.makeConstraints { make in
-            make.bottom.equalTo(pokeStackView.snp.bottom).offset(28)
+            make.bottom.equalTo(pokeStackView.snp.bottom).offset(28.adjustedH)
         }
     }
 }

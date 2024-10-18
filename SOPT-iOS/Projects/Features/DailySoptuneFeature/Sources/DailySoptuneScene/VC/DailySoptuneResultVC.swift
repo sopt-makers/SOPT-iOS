@@ -99,9 +99,9 @@ extension DailySoptuneResultVC {
         self.view.addSubviews(backButton, scrollView, receiveTodaysFortuneCardButton)
         
         backButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(2)
-            make.leading.equalToSuperview().inset(8)
-            make.size.equalTo(40)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(2.adjustedH)
+            make.leading.equalToSuperview().inset(8.adjusted)
+            make.size.equalTo(40.adjusted)
         }
         
         setScrollViewLayout()
@@ -125,9 +125,9 @@ extension DailySoptuneResultVC {
         
         contentStackView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalToSuperview().inset(17)
-            make.width.equalTo(self.view.frame.size.width - 20 * 2)
-            make.bottom.equalToSuperview().inset(20)
+            make.top.equalToSuperview().inset(17.adjustedH)
+            make.width.equalTo((self.view.frame.size.width - 20 * 2).adjusted)
+            make.bottom.equalToSuperview().inset(20.adjustedH)
         }
         
     }
