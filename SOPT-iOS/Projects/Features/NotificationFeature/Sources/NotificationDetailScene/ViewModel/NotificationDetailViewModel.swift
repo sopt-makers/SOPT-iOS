@@ -66,14 +66,12 @@ extension NotificationDetailViewModel {
         input.shortCutButtonTap
             .withUnretained(self)
             .map { owner, _ -> Bool in
-                if let deepLink = owner.notification?.deepLink,
-                    let date = owner.notification?.createdAt {
-                    if !owner.isToday(date.toDate()) && deepLink.hasSuffix("fortune") {
-                        ToastUtils.showMDSToast(type: .alert, text: I18N.DailySoptune.dateErrorToastMessage)
-                        return false
-                    }
-                }
-                return true
+                guard let deepLink = owner.notification?.deepLink,
+                           let date = owner.notification?.createdAt,
+                           !owner.isToday(date.toDate()),
+                           deepLink.hasSuffix("fortune")
+                else { return true }
+                return false
             }
             .filter{ $0 }
             .withUnretained(self)
