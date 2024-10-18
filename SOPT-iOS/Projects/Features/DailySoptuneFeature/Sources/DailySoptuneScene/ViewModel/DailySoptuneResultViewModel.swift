@@ -117,9 +117,10 @@ extension DailySoptuneResultViewModel {
             }.store(in: cancelBag)
 
         useCase.pokedResponse
-            .sink { _ in
+            .withUnretained(self)
+            .sink { owner, pokeUserModel in
                 ToastUtils.showMDSToast(type: .success, text: I18N.Poke.pokeSuccess)
-            }
-            .store(in: cancelBag)
+                output.pokeResponse.send(pokeUserModel)
+            }.store(in: cancelBag)
     }
 }
