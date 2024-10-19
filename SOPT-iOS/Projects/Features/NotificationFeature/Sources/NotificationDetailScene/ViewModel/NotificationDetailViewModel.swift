@@ -67,10 +67,12 @@ extension NotificationDetailViewModel {
             .withUnretained(self)
             .map { owner, _ -> Bool in
                 guard let deepLink = owner.notification?.deepLink,
-                           let date = owner.notification?.createdAt,
-                           !owner.isToday(date.toDate()),
-                           deepLink.hasSuffix("fortune")
+                      let date = owner.notification?.createdAt,
+                      !owner.isToday(date.toDate()),
+                      deepLink.hasSuffix("fortune")
                 else { return true }
+                
+                ToastUtils.showMDSToast(type: .alert, text: I18N.DailySoptune.dateErrorToastMessage)
                 return false
             }
             .filter{ $0 }
