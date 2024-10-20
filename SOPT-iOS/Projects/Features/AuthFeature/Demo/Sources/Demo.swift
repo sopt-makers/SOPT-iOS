@@ -25,8 +25,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         DIContainer.shared.register(
             interface: SignInRepositoryInterface.self,
-            implement: { StubSignInRepository()}
+            implement: { StubSignInRepository() }
         )
+        
         
         return true
     }
@@ -59,13 +60,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                willConnectTo session: UISceneSession,
                options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
-        let vc = UIViewController()
-        vc.view.backgroundColor = .purple
+
         window = UIWindow(windowScene: scene)
-        window?.rootViewController = vc
+        window?.rootViewController = rootController
         window?.makeKeyAndVisible()
         
-        self.authCoordinator.start()
+        self.authCoordinator.start(by: .root)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {}
@@ -80,3 +80,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneDidEnterBackground(_ scene: UIScene) {}
 }
+
