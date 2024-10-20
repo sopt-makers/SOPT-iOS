@@ -42,25 +42,80 @@ public class SignInVC: UIViewController, SignInViewControllable {
         $0.contentMode = .scaleAspectFit
     }
     
-    private lazy var signInButton = AppCustomButton(title: I18N.SignIn.signIn).then {
-        $0.setAttributedTitle(NSAttributedString(
-            string: I18N.SignIn.signIn,
-            attributes: [.font: UIFont.Main.body1, .foregroundColor: DSKitAsset.Colors.black100.color]
-        ), for: .normal)
+    private let googleLoginButton = AppImageTextButton(title: I18N.SignIn.googleLogin, image: DSKitAsset.Assets.logoGoogle.image).then {
+        $0.alpha = 0
+    }
+    private let appleLoginButton = AppImageTextButton(title: I18N.SignIn.appleLogin, image: DSKitAsset.Assets.logoApple.image).then {
+        $0.alpha = 0
     }
     
-    private lazy var notMemberButton = UIButton(type: .system).then {
-        $0.setTitle(I18N.SignIn.notMember, for: .normal)
+    private let loginHelpButton = UIButton(type: .system).then {
+        var config = UIButton.Configuration.plain()
+        config.baseForegroundColor = DSKitAsset.Colors.gray30.color
+        config.baseBackgroundColor = .clear
+        
+        var attributedTitle = AttributedString(I18N.SignIn.helpLogin)
+        attributedTitle.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
+        config.attributedTitle = attributedTitle
+        
+        config.image = DSKitAsset.Assets.chevronRight.image.withTintColor(DSKitAsset.Colors.gray30.color)
+        config.imagePadding = 0
+        config.imagePlacement = .trailing
+        
+        $0.configuration = config
+        $0.alpha = 0
+    }
+    
+    private let leftLine = UIView().then {
+        $0.backgroundColor = DSKitAsset.Colors.gray300.color
+    }
+    
+    private let rightLine = UIView().then {
+        $0.backgroundColor = DSKitAsset.Colors.gray300.color
+    }
+    
+    private let orLabel = UILabel().then {
+        $0.text = I18N.SignIn.or
+        $0.font = DSKitFontFamily.Suit.regular.font(size: 13)
+    }
+    
+    private lazy var orStackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.alignment = .center
+        $0.distribution = .fill
+        $0.spacing = 8
+        $0.alpha = 0
+    }
+    
+    private lazy var signUpButton = UIButton(type: .system).then {
+        $0.setTitle(I18N.SignIn.signUp, for: .normal)
         $0.setTitleColor(DSKitAsset.Colors.white100.color, for: .normal)
-        $0.titleLabel!.setTypoStyle(.SoptampFont.caption1)
+        $0.setBackgroundColor(DSKitAsset.Colors.gray700.color, for: .normal)
+        $0.setBackgroundColor(DSKitAsset.Colors.gray800.color, for: .highlighted)
+        $0.titleLabel?.setTypoStyle(DSKitFontFamily.Suit.semiBold.font(size: 16))
+        $0.layer.cornerRadius = 10
+        $0.layer.masksToBounds = true
         $0.alpha = 0
     }
     
-    private let bottomLogoImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.imgBottomLogo.image
-        $0.contentMode = .scaleAspectFit
+    
+    private let loginLaterButton = UIButton(type: .system).then {
+        var config = UIButton.Configuration.plain()
+        config.baseForegroundColor = DSKitAsset.Colors.gray30.color
+        config.baseBackgroundColor = .clear
+        
+        var attributedTitle = AttributedString(I18N.SignIn.loginLater)
+        attributedTitle.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
+        config.attributedTitle = attributedTitle
+        
+        config.image = DSKitAsset.Assets.chevronRight.image.withTintColor(DSKitAsset.Colors.gray30.color)
+        config.imagePadding = 0
+        config.imagePlacement = .trailing
+        
+        $0.configuration = config
         $0.alpha = 0
     }
+    
     
     // MARK: - View Life Cycle
     
@@ -95,12 +150,20 @@ extension SignInVC {
     
     private func setUI() {
         self.view.backgroundColor = DSKitAsset.Colors.soptampBlack.color
-        self.notMemberButton.setUnderline()
     }
     
     private func setLayout() {
-        self.view.addSubviews(logoImageView, signInButton, notMemberButton,
-                              bottomLogoImageView)
+        self.view.addSubviews(
+            logoImageView,
+            googleLoginButton,
+            appleLoginButton,
+            loginHelpButton,
+            orStackView,
+            signUpButton,
+            loginLaterButton
+        )
+        
+        orStackView.addArrangedSubviews(leftLine, orLabel, rightLine)
         
         logoImageView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).inset(Metric.topInset)
@@ -109,22 +172,52 @@ extension SignInVC {
             make.height.equalTo(Metric.logoWidth).multipliedBy(Metric.logoRatio)
         }
         
-        signInButton.snp.makeConstraints { make in
+        googleLoginButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(56.adjustedH)
-            make.bottom.equalTo(notMemberButton.snp.top).offset(-20.adjustedH)
+            make.height.equalTo(48)
+            make.bottom.equalTo(appleLoginButton.snp.top).offset(-20.adjustedH)
         }
         
-        notMemberButton.snp.makeConstraints { make in
+        appleLoginButton.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(48)
+            make.bottom.equalTo(loginHelpButton.snp.top).offset(-20.adjustedH)
+        }
+        
+        loginHelpButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.height.equalTo(20.adjustedH)
-            make.bottom.equalTo(bottomLogoImageView.snp.top).offset(-75.adjustedH)
+            make.bottom.equalTo(orStackView.snp.top).offset(-44.adjustedH)
         }
         
-        bottomLogoImageView.snp.makeConstraints { make in
+        leftLine.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        leftLine.snp.makeConstraints { make in
+            make.height.equalTo(1)
+        }
+        
+        rightLine.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        rightLine.snp.makeConstraints { make in
+            make.height.equalTo(1)
+            make.width.equalTo(leftLine)
+        }
+        
+        orLabel.setContentHuggingPriority(.required, for: .horizontal)
+        orLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        
+        orStackView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.bottom.equalTo(signUpButton.snp.top).inset(-16.adjustedH)
+        }
+        
+        signUpButton.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(48)
+            make.bottom.equalTo(loginLaterButton.snp.top).offset(-16.adjustedH)
+        }
+        
+        loginLaterButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.width.greaterThanOrEqualTo(100)
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(30.adjustedH)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(28.adjustedH)
         }
     }
     
@@ -137,7 +230,7 @@ extension SignInVC {
         UIView.animate(withDuration: 0.7, delay: 0, options: .curveEaseInOut, animations: {
             self.updateLogoY()
         })
-        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
+        UIView.animate(withDuration: 0.5, delay: 0.3, options: .curveEaseOut, animations: {
             self.retrieveAlpha()
         })
     }
@@ -147,7 +240,7 @@ extension SignInVC {
     }
     
     private func retrieveAlpha() {
-        [signInButton, notMemberButton, bottomLogoImageView].forEach {
+        [googleLoginButton, appleLoginButton, loginHelpButton, orStackView, signUpButton, loginLaterButton].forEach {
             $0.alpha = 1
         }
     }
@@ -158,11 +251,17 @@ extension SignInVC {
 extension SignInVC {
     
     private func bindViews() {
-        signInButton.publisher(for: .touchUpInside)
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.openPlaygroundURL()
-            }.store(in: self.cancelBag)
+//        googleLoginButton.publisher(for: .touchUpInside)
+//            .withUnretained(self)
+//            .sink { owner, _ in
+//                owner.openPlaygroundURL()
+//            }.store(in: self.cancelBag)
+//        
+//        appleLogin.publisher(for: .touchUpInside)
+//            .withUnretained(self)
+//            .sink { owner, _ in
+//                owner.openPlaygroundURL()
+//            }.store(in: self.cancelBag)
     }
     
     private func bindViewModels() {
@@ -175,7 +274,7 @@ extension SignInVC {
             .eraseToAnyPublisher()
             .asDriver()
         
-        let visitorButtonTapped = self.notMemberButton
+        let visitorButtonTapped = self.loginLaterButton
             .publisher(for: .touchUpInside)
             .compactMap { _ in () }
             .asDriver()
