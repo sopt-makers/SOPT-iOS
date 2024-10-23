@@ -23,6 +23,7 @@ public class SignInViewModel: SignInViewModelType {
     public struct Input {
         let viewDidLoad: Driver<Void>
         let playgroundSignInFinished: Driver<String>
+        let loginHelpButtonTapped: Driver<Void>
         let visitorButtonTapped: Driver<Void>
     }
     
@@ -34,6 +35,7 @@ public class SignInViewModel: SignInViewModelType {
     // MARK: - SignInCoordinating
     
     public var onSignInSuccess: ((SiginInHandleableType) -> Void)?
+    public var loginHelpButtonTapped: (() -> Void)?
     public var onVisitorButtonTapped: (() -> Void)?
     
     // MARK: - init
@@ -57,6 +59,12 @@ extension SignInViewModel {
             .withUnretained(self)
             .sink { owner, token in
                 owner.onVisitorButtonTapped?()
+            }.store(in: self.cancelBag)
+        
+        input.loginHelpButtonTapped
+            .withUnretained(self)
+            .sink { owner, token in
+                owner.loginHelpButtonTapped?()
             }.store(in: self.cancelBag)
         
         input.playgroundSignInFinished

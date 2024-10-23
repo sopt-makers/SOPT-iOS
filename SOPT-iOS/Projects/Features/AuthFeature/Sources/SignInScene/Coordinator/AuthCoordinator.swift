@@ -19,8 +19,7 @@ public protocol AuthCoordinatorFinishOutput {
 
 public typealias DefaultAuthCoordinator = BaseCoordinator & AuthCoordinatorFinishOutput
 
-public
-final class AuthCoordinator: DefaultAuthCoordinator {
+public final class AuthCoordinator: DefaultAuthCoordinator {
     
     public var finishFlow: ((UserType) -> Void)?
     
@@ -37,8 +36,6 @@ final class AuthCoordinator: DefaultAuthCoordinator {
     public override func start(by style: CoordinatorStartingOption) {
         var signIn = factory.makeSignIn()
         
-        if let url { redirectSignIn(module: &signIn.vc, url: url) }
-        
         signIn.vm.onSignInSuccess = { [weak self] type in
             switch type {
             case .loginSuccess:
@@ -48,9 +45,33 @@ final class AuthCoordinator: DefaultAuthCoordinator {
             }
         }
         
+        signIn.vm.loginHelpButtonTapped = { [weak self] in
+            guard let bottomSheetVC = self?.factory.makeLoginHelpBottomSheet().viewController as? LoginHelpBottomSheetVC
+            else { return Void() }
+            
+            bottomSheetVC.resetSocialAccountButtonDidTap = {
+                print("resetSocialAccountButtonDidTap")
+            }
+            
+            bottomSheetVC.wantToKnowLoginAccountButtonDidTap = {
+                print("wantToKnowLoginAccountButtonDidTap")
+            }
+            
+            let bottomSheetManager = BottomSheetManager(configuration: .fixed(minHeight: bottomSheetVC.minimumContentHeight,
+                                                                              prefersGrabberVisible: false))
+            
+            
+            
+            self?.router.showBottomSheet(manager: bottomSheetManager,
+                                         toPresent: bottomSheetVC,
+                                         on: signIn.vc.viewController)
+        }
+        
         signIn.vm.onVisitorButtonTapped = { [weak self] in
             self?.finishFlow?(.visitor)
         }
+        
+        
         
         switch style {
         case .modal:
@@ -80,35 +101,6 @@ final class AuthCoordinator: DefaultAuthCoordinator {
                 )
             }
         case .push: break
-        }
-    }
-    
-    private func redirectSignIn(module: inout SignInViewControllable, url: String) {
-        module.skipAnimation = true
-        for item in parseParameter(url: url) {
-            if item.query == "state" {
-                module.requestState = item.value
-                continue
-            }
-            
-            if item.query == "code" {
-                module.accessCode = item.value
-                continue
-            }
-        }
-    }
-}
-
-extension AuthCoordinator {
-    func parseParameter(url: String) -> [(query: String, value: String)] {
-        let components = URLComponents(string: url)
-        let params = components?.query ?? ""
-        guard params.count > 0 && params != "",
-              let items = components?.queryItems else {
-            return []
-        }
-        return items.map {
-            ($0.name, $0.value ?? "")
         }
     }
 }

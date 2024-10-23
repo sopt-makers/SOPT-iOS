@@ -37,11 +37,12 @@ extension BottomSheetManager {
         sheet.detents = self.configuration.detents
         sheet.preferredCornerRadius = self.configuration.preferredCornerRadius
         sheet.prefersScrollingExpandsWhenScrolledToEdge = self.configuration.prefersScrollingExpandsWhenScrolledToEdge
+        sheet.prefersGrabberVisible = self.configuration.prefersGrabberVisible
         
         sheet.prefersEdgeAttachedInCompactHeight = false
         sheet.widthFollowsPreferredContentSizeWhenEdgeAttached = false
         sheet.largestUndimmedDetentIdentifier = .none
-        sheet.prefersGrabberVisible = true
+        
         
         view?.present(viewController, animated: true) ?? UIApplication
             .getMostTopViewController()?

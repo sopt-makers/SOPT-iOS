@@ -42,7 +42,8 @@ public class SignInVC: UIViewController, SignInViewControllable {
         $0.contentMode = .scaleAspectFit
     }
     
-    private let googleLoginButton = AppImageTextButton(title: I18N.SignIn.googleLogin, image: DSKitAsset.Assets.logoGoogle.image).then {
+    private let googleLoginButton = AppImageTextButton(title: I18N.SignIn.googleLogin,
+                                                       image: DSKitAsset.Assets.logoGoogle.image.withRenderingMode(.automatic)).then {
         $0.alpha = 0
     }
     private let appleLoginButton = AppImageTextButton(title: I18N.SignIn.appleLogin, image: DSKitAsset.Assets.logoApple.image).then {
@@ -58,7 +59,7 @@ public class SignInVC: UIViewController, SignInViewControllable {
         attributedTitle.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
         config.attributedTitle = attributedTitle
         
-        config.image = DSKitAsset.Assets.chevronRight.image.withTintColor(DSKitAsset.Colors.gray30.color)
+        config.image = DSKitAsset.Assets.chevronRight.image.withTintColor(DSKitAsset.Colors.gray30.color).withRenderingMode(.alwaysTemplate)
         config.imagePadding = 0
         config.imagePlacement = .trailing
         
@@ -274,7 +275,12 @@ extension SignInVC {
             .eraseToAnyPublisher()
             .asDriver()
         
-        let visitorButtonTapped = self.loginLaterButton
+        let loginLaterButtonTapped = self.loginLaterButton
+            .publisher(for: .touchUpInside)
+            .compactMap { _ in () }
+            .asDriver()
+        
+        let loginHelpButtonTapped = self.loginHelpButton
             .publisher(for: .touchUpInside)
             .compactMap { _ in () }
             .asDriver()
@@ -282,7 +288,9 @@ extension SignInVC {
         let input = SignInViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
             playgroundSignInFinished: signInFinished,
-            visitorButtonTapped: visitorButtonTapped
+            loginHelpButtonTapped: loginHelpButtonTapped,
+            visitorButtonTapped: loginLaterButtonTapped
+            
         )
         let _ = self.viewModel.transform(from: input, cancelBag: cancelBag)
     }
