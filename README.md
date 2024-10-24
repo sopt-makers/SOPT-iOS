@@ -5,7 +5,7 @@
 
 SOPT는 IT와 벤처 창업에 뜻이 있는 대학생들이 모인 국내 최대 규모의 대학생 연합 IT 벤처 창업 동아리입니다.
 
-SOPT에서 활동하고 있는 회원들도, SOPT의 열정이 되고 싶은 분들도 모두 SOPT에 대해서 더 알아갈 수 있는 서비스에요.
+SOPT에서 활동하고 있는 회원들도, SOPT의 열정이 되고 싶은 분들도 모두 SOPT에 대해서 더 알아갈 수 있는 서비스예요.
 
 ![앱스토어 이미지](https://github.com/sopt-makers/SOPT-iOS/assets/77267404/4051a873-5ca6-4c16-b77d-0fdff1ee25d0)
 
@@ -30,10 +30,16 @@ SOPT에서 활동하고 있는 회원들도, SOPT의 열정이 되고 싶은 분
 
 #### 미션과 랭킹
 - SOPT를 제대로 즐기기 위한 ‘솝탬프'도 참여할 수 있어요
-- 달성할 수 있는 미션이 있다면 사진과 메모를 업로드하고, 도장을 받을 수 있어요. 완료한 미션을 모아보고 랭킹을 비교하며 SOPT에서의 추억을 쌓아가봐요!
+- 달성할 수 있는 미션이 있다면 사진과 메모를 업로드하고, 도장을 받을 수 있어요
+- 완료한 미션을 모아보고 랭킹을 비교하며 SOPT에서의 추억을 쌓아가봐요!
 
- <br>
-  <details>
+#### 오늘의 솝마디
+- 매일 도착하는 창업 운세, 오늘의 솝마디로 즐거운 하루를 시작해보세요
+- 오늘의 창업운을 높여줄 행운의 파트너를 콕 찌르고, 커피챗을 신청해보세요. SOPT인의 여정에 뜻밖의 인연을 가져다 줄지도 몰라요!
+
+<br>
+
+<details>
   <summary> 솝탬프 자세히 보기</summary>
   <div markdown="1">
 
@@ -46,16 +52,37 @@ SOPT에서 활동하고 있는 회원들도, SOPT의 열정이 되고 싶은 분
 
   <img src="https://user-images.githubusercontent.com/81167570/213433495-51eabb73-a1b7-4540-b48b-d21c37fe6f42.png" width=200 />   <img src="https://user-images.githubusercontent.com/81167570/213434064-e0f92603-c8fb-4a9d-a26d-3b20dabdf73c.png" width=200 />   <img src="https://user-images.githubusercontent.com/81167570/213434855-15797a40-f34f-446c-a44d-975b284b09ab.png" width=200 />
 
-
+  <br>
+  
   > 💪 랭킹
   - 달성한 미션 난이도에 따라 랭킹을 결정하는 점수가 부여돼요.
   - 랭킹 내에서 다른 사람들의 미션 현황, 한마디도 확인할 수 있어요.
   <img src="https://user-images.githubusercontent.com/81167570/213433864-988e543b-3aae-47fb-be6c-66e0a218c789.png" width=200 />
 
+  <br>
+
   </div>
   </details>
+
+<details>
+  <summary> 오늘의 솝마디 자세히 보기</summary>
+  <div markdown="1">
+
+  <br>
+
+  > 🍀 오늘의 솝마디
+  - 매일 도착하는 창업 운세, 오늘의 솝마디로 즐거운 하루를 시작해보세요.
+  - 오늘의 창업운을 높여줄 행운의 파트너를 콕 찌르고, 커피챗을 신청해보세요!
+  - 나의 하루를 더욱 빛내줄 부적과 함께, 잊지 못할 특별한 하루를 만들어보세요.
+
+  <img src="https://github.com/user-attachments/assets/3e9425e1-c3b7-44df-b842-215058c78b41" width=200 />   <img src="https://github.com/user-attachments/assets/f9dadb44-aea5-4281-afaf-bf57e1143249" width=200 />   <img src="https://github.com/user-attachments/assets/113b3080-4791-4e0b-a8d5-313f05b056ba" width=200 />
+
+  <br>
+  </div>
+</details>
   
 <br>
+
 
 문의사항 및 서비스 의견제안은 언제든지 환영합니다 :)
 
@@ -81,6 +108,10 @@ SOPT에서 활동하고 있는 회원들도, SOPT의 열정이 되고 싶은 분
 | 23.09 | `v2.2.0` |
 | 23.10 | `v2.2.1` |
 | 23.12 | `v2.2.2` |
+| 24.01 | `v2.3.0` |
+| 24.06 | `v2.4.0` |
+| 24.08 | `v2.5.0` |
+| 24.10 | `v2.6.0` |
 
 <br>
 
@@ -193,6 +224,10 @@ Fastlane과 Makefile을 활용하여 번거로운 개발 환경 세팅을 자동
 | <img src="https://user-images.githubusercontent.com/81167570/213436276-c1887933-0c9d-4540-b0e2-7bb7f8f110da.jpeg" width=120/> | <img src="https://user-images.githubusercontent.com/81167570/213436338-6778dd31-a614-464b-a730-8f3cec93ec8e.jpeg" width=120 /> | <img src="https://user-images.githubusercontent.com/81167570/213436397-ab386305-6171-4c3e-acd1-afd78c9456de.jpeg" width=120/> | <img src="https://user-images.githubusercontent.com/81167570/213436015-e9bcce7d-45f2-49d8-a9cd-d1a31f511eba.jpeg" width=120 /> | <img src="https://user-images.githubusercontent.com/77208067/233848222-85097d90-c2e2-4c10-94ee-71910d6e0cbd.jpeg" width=120 /> | <img src="https://user-images.githubusercontent.com/77208067/233848225-2aaad9eb-84ef-47bc-b164-eceb78cf85b0.jpeg" width=120 /> 
 |--|--|--|--|--|--|
 | [윤수빈](https://github.com/devxsby)| [이세진](https://github.com/lsj8706) | [이준호](https://github.com/L-j-h-c)| [양수빈](https://github.com/yangsubinn)| [김영인](https://github.com/0inn)| [이승호](https://github.com/elesahich) |
-| `1, 2, 3기`  | `1, 2, 3기`  | `1, 2기`  |  `1기`  |  `2,3기` |  `2,3기` |
+| `1, 2, 3기`  | `1, 2, 3, 4기`  | `1, 2기`  |  `1기`  |  `2, 3기` | `2, 3, 4기` |
+| <img src="https://github.com/user-attachments/assets/46c2fb55-9bb5-4e52-bc38-6d7a16021332" width=120 />  | <img src="https://github.com/user-attachments/assets/75a54aa5-e456-44e3-80f1-87b39b5defed" width=120 />  | <img src="https://github.com/user-attachments/assets/49001a52-8077-4715-9f05-4d5ef196f723" width=120 />  |  <img src="https://github.com/user-attachments/assets/4fb4c616-49c3-49ee-a1dd-9ecb734bfbab" width=120 />  |  <img src="https://github.com/user-attachments/assets/0e8475e1-e8db-458c-a426-ce33834908b3" width=120 /> |   |
+|  [김민재](https://github.com/ffalswo2)   |  [강윤서](https://github.com/yungu0010)   | [김승찬](https://github.com/seungchan2)  |  [이재현](https://github.com/dlwogus0128)  |  [장석우](https://github.com/meltsplit) |  |
+| `4기`  | `5기`  | `5기`  |  `5기`  |  `5기` |  |
+
 
 <br>
