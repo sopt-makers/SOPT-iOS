@@ -36,6 +36,17 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
     public override func start(by style: CoordinatorStartingOption) {
         var signIn = factory.makeSignIn()
         
+        if let url { redirectSignIn(module: &signIn.vc, url: url) }
+        
+        signIn.vm.onSignInSuccess = { [weak self] type in
+            switch type {
+            case .loginSuccess:
+                let userType = UserDefaultKeyList.Auth.getUserType()
+                self?.finishFlow?(userType)
+            case .loginFailure: break
+            }
+        }
+        
         signIn.vm.onSignInSuccess = { [weak self] type in
             switch type {
             case .loginSuccess:
@@ -127,3 +138,36 @@ extension AuthCoordinator {
         )
     }
 }
+
+
+//AS IS: 2024.10.26 이전. 플그 로그인 로직
+extension AuthCoordinator {
+    func parseParameter(url: String) -> [(query: String, value: String)] {
+        let components = URLComponents(string: url)
+        let params = components?.query ?? ""
+        guard params.count > 0 && params != "",
+              let items = components?.queryItems else {
+            return []
+        }
+        return items.map {
+            ($0.name, $0.value ?? "")
+        }
+    }
+    
+    private func redirectSignIn(module: inout SignInViewControllable, url: String) {
+        module.skipAnimation = true
+        for item in parseParameter(url: url) {
+            if item.query == "state" {
+                module.requestState = item.value
+                continue
+            }
+            
+            if item.query == "code" {
+                module.accessCode = item.value
+                continue
+            }
+        }
+    }
+}
+
+

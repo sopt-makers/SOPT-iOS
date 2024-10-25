@@ -68,7 +68,7 @@ public final class UserNotFoundVC: UIViewController, UserNotFoundViewControllabl
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        self.bind()
+        self.bindActions()
         self.setUI()
         self.setLayout()
     }
@@ -130,7 +130,7 @@ extension UserNotFoundVC {
 // MARK: - Methods
 
 extension UserNotFoundVC {
-    func bind() {
+    func bindActions() {
         loginRetryButton
             .publisher(for: .touchUpInside)
             .receive(on: RunLoop.main)

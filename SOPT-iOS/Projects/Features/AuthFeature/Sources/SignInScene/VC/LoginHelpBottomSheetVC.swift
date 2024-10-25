@@ -17,7 +17,6 @@ import Domain
 public final class LoginHelpBottomSheetVC: UIViewController, LoginHelpBottomSheetViewControllable {
     
     public var wantToKnowLoginAccountButtonDidTap: (() -> Void)?
-    
     public var resetSocialAccountButtonDidTap: (() -> Void)?
     private let cancelBag = CancelBag()
     
@@ -66,8 +65,7 @@ public final class LoginHelpBottomSheetVC: UIViewController, LoginHelpBottomShee
         
         self.view.backgroundColor = DSKitAsset.Colors.gray800.color
         
-        self.initializeViews()
-        self.setupConstraints()
+        self.setLayout()
         self.bindAction()
     }
     
@@ -77,16 +75,16 @@ public final class LoginHelpBottomSheetVC: UIViewController, LoginHelpBottomShee
 }
 
 extension LoginHelpBottomSheetVC {
-    private func initializeViews() {
+    
+    private func setLayout() {
+        
         self.view.addSubviews(
             warnImageView,
             titleLabel,
             wantToKnowAccountButton,
             resetSocialAccountButton
         )
-    }
-    
-    private func setupConstraints() {
+        
         self.warnImageView.snp.makeConstraints {
             $0.size.equalTo(24)
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(24)
