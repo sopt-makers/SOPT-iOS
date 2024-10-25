@@ -97,13 +97,13 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
             }
         case .push: break
         }
+        router.hideTitles()
     }
 }
 
 extension AuthCoordinator {
     private func runUserNotFoundFlow() {
         var userNotFoundVC = self.factory.makeUserNotFound()
-        router.asNavigationController.isNavigationBarHidden = true
         userNotFoundVC.loginRetryButtonTapped = { [weak self] in
             self?.router.popToRootModule(animated: true)
         }
