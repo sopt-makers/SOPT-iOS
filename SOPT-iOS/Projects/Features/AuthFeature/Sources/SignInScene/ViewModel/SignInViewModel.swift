@@ -23,6 +23,8 @@ public class SignInViewModel: SignInViewModelType {
     public struct Input {
         let viewDidLoad: Driver<Void>
         let playgroundSignInFinished: Driver<String>
+        let googleLoginButtonTapped: Driver<Void>
+        let appleLoginButtonTapped: Driver<Void>
         let loginHelpButtonTapped: Driver<Void>
         let visitorButtonTapped: Driver<Void>
     }
@@ -37,6 +39,7 @@ public class SignInViewModel: SignInViewModelType {
     public var onSignInSuccess: ((SiginInHandleableType) -> Void)?
     public var loginHelpButtonTapped: (() -> Void)?
     public var onVisitorButtonTapped: (() -> Void)?
+    public var socialLoginFail: (() -> Void)?
     
     // MARK: - init
   
@@ -53,6 +56,18 @@ extension SignInViewModel {
         input.viewDidLoad
             .sink { _ in
                 UserDefaultKeyList.clearUserData()
+            }.store(in: self.cancelBag)
+        
+        input.googleLoginButtonTapped
+            .withUnretained(self)
+            .sink { owner, token in
+                owner.socialLoginFail?() //TODO: 구글 로그인 로직
+            }.store(in: self.cancelBag)
+        
+        input.appleLoginButtonTapped
+            .withUnretained(self)
+            .sink { owner, token in
+                owner.socialLoginFail?() //TODO: 애플 로그인 로직
             }.store(in: self.cancelBag)
         
         input.visitorButtonTapped

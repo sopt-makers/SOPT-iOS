@@ -46,32 +46,16 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
         }
         
         signIn.vm.loginHelpButtonTapped = { [weak self] in
-            guard let bottomSheetVC = self?.factory.makeLoginHelpBottomSheet().viewController as? LoginHelpBottomSheetVC
-            else { return Void() }
-            
-            bottomSheetVC.resetSocialAccountButtonDidTap = {
-                print("resetSocialAccountButtonDidTap")
-            }
-            
-            bottomSheetVC.wantToKnowLoginAccountButtonDidTap = {
-                print("wantToKnowLoginAccountButtonDidTap")
-            }
-            
-            let bottomSheetManager = BottomSheetManager(configuration: .fixed(minHeight: bottomSheetVC.minimumContentHeight,
-                                                                              prefersGrabberVisible: false))
-            
-            
-            
-            self?.router.showBottomSheet(manager: bottomSheetManager,
-                                         toPresent: bottomSheetVC,
-                                         on: signIn.vc.viewController)
+            self?.showLoginHelpBottomSheet(on: signIn.vc)
         }
         
         signIn.vm.onVisitorButtonTapped = { [weak self] in
             self?.finishFlow?(.visitor)
         }
         
-        
+        signIn.vm.socialLoginFail = { [weak self] in
+            self?.runUserNotFoundFlow()
+        }
         
         switch style {
         case .modal:
@@ -82,10 +66,10 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
                 modalTransitionStyle: .crossDissolve
             )
         case .root:
-            router.setRootModule(signIn.vc, animated: true)
+            router.replaceRootWindow(signIn.vc, withAnimation: false)
         case .rootWindow(let animated, let message):
             guard !animated else {
-                router.setRootWindow(signIn.vc)
+                router.replaceRootWindow(signIn.vc, withAnimation: true)
                 return
             }
             
@@ -102,5 +86,44 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
             }
         case .push: break
         }
+    }
+}
+
+extension AuthCoordinator {
+    private func runUserNotFoundFlow() {
+        var userNotFoundVC = self.factory.makeUserNotFound()
+        router.asNavigationController.isNavigationBarHidden = true
+        userNotFoundVC.loginRetryButtonTapped = { [weak self] in
+            self?.router.popToRootModule(animated: true)
+        }
+        
+        userNotFoundVC.loginHelpButtonTapped = { [weak self] in
+            self?.showLoginHelpBottomSheet(on: userNotFoundVC)
+        }
+        
+        self.router.push(userNotFoundVC)
+    }
+    
+    private func showLoginHelpBottomSheet(on vc: ViewControllable) {
+        guard let bottomSheetVC = self.factory.makeLoginHelpBottomSheet().viewController as? LoginHelpBottomSheetVC
+        else { return Void() }
+        
+        bottomSheetVC.resetSocialAccountButtonDidTap = {
+            print("resetSocialAccountButtonDidTap") //TODO: asdf
+        }
+        
+        bottomSheetVC.wantToKnowLoginAccountButtonDidTap = {
+            print("wantToKnowLoginAccountButtonDidTap") //TODO: asdf
+        }
+        
+        let bottomSheetManager = BottomSheetManager(configuration: .fixed(minHeight: bottomSheetVC.minimumContentHeight,
+                                                                          prefersGrabberVisible: false))
+        
+        
+        self.router.showBottomSheet(
+            manager: bottomSheetManager,
+            toPresent: bottomSheetVC,
+            on: vc.viewController
+        )
     }
 }

@@ -21,35 +21,33 @@ public final class LoginHelpBottomSheetVC: UIViewController, LoginHelpBottomShee
     public var resetSocialAccountButtonDidTap: (() -> Void)?
     private let cancelBag = CancelBag()
     
-  public var minimumContentHeight: CGFloat {
-     return LoginHelpBottomSheetVC.minimumContentHeight
-  }
-  
-  public static let minimumContentHeight = 158.f
-
-  // MARK: - Views
-  
+    public var minimumContentHeight: CGFloat {
+        return 158.f
+    }
+    
+    // MARK: - Views
+    
     private let warnImageView = UIImageView().then {
         $0.image = DSKitAsset.Assets.alertCircle.image
     }
     
-  private let titleLabel = UILabel().then {
-      $0.text = "로그인이 안 되나요?"
-      $0.font = DSKitFontFamily.Suit.semiBold.font(size: 20)
-      $0.textColor = DSKitAsset.Colors.gray10.color
-  }
-  
-  private let wantToKnowAccountButton = UIButton().then {
-      $0.setTitleColor(DSKitAsset.Colors.gray10.color, for: .normal)
-      $0.setTitle("로그인한 계정을 알고 싶어요.", for: .normal)
-      $0.contentHorizontalAlignment = .leading
-      $0.titleEdgeInsets = .init(top: 0, left: 10, bottom: 0, right: 0)
-      $0.titleLabel?.font = DSKitFontFamily.Suit.regular.font(size: 16)
-      $0.setBackgroundColor(DSKitAsset.Colors.gray700.color, for: .highlighted)
-      $0.setBackgroundColor(DSKitAsset.Colors.gray800.color, for: .normal)
-      $0.layer.cornerRadius = 8
-      $0.layer.masksToBounds = true
-  }
+    private let titleLabel = UILabel().then {
+        $0.text = "로그인이 안 되나요?"
+        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 20)
+        $0.textColor = DSKitAsset.Colors.gray10.color
+    }
+    
+    private let wantToKnowAccountButton = UIButton().then {
+        $0.setTitleColor(DSKitAsset.Colors.gray10.color, for: .normal)
+        $0.setTitle("로그인한 계정을 알고 싶어요.", for: .normal)
+        $0.contentHorizontalAlignment = .leading
+        $0.titleEdgeInsets = .init(top: 0, left: 10, bottom: 0, right: 0)
+        $0.titleLabel?.font = DSKitFontFamily.Suit.regular.font(size: 16)
+        $0.setBackgroundColor(DSKitAsset.Colors.gray700.color, for: .highlighted)
+        $0.setBackgroundColor(DSKitAsset.Colors.gray800.color, for: .normal)
+        $0.layer.cornerRadius = 8
+        $0.layer.masksToBounds = true
+    }
     
     private let resetSocialAccountButton = UIButton().then {
         $0.setTitleColor(DSKitAsset.Colors.gray10.color, for: .normal)
@@ -62,22 +60,20 @@ public final class LoginHelpBottomSheetVC: UIViewController, LoginHelpBottomShee
         $0.layer.cornerRadius = 8
         $0.layer.masksToBounds = true
     }
-  
-  // MARK: - Variables
-  
-  public init() {
-    super.init(nibName: nil, bundle: nil)
     
-    self.view.backgroundColor = DSKitAsset.Colors.gray800.color
+    public init() {
+        super.init(nibName: nil, bundle: nil)
+        
+        self.view.backgroundColor = DSKitAsset.Colors.gray800.color
+        
+        self.initializeViews()
+        self.setupConstraints()
+        self.bindAction()
+    }
     
-    self.initializeViews()
-    self.setupConstraints()
-      self.bindAction()
-  }
-  
-  required init?(coder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 extension LoginHelpBottomSheetVC {

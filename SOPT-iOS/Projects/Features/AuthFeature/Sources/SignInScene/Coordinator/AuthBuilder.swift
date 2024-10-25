@@ -30,4 +30,8 @@ extension AuthBuilder: AuthFeatureViewBuildable {
     public func makeLoginHelpBottomSheet() -> LoginHelpBottomSheetPresentable {
         return LoginHelpBottomSheetVC()
     }
+    
+    public func makeUserNotFound() -> UserNotFoundPresentable {
+         return UserNotFoundVC()
+    }
 }

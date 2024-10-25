@@ -42,13 +42,21 @@ public class SignInVC: UIViewController, SignInViewControllable {
         $0.contentMode = .scaleAspectFit
     }
     
-    private let googleLoginButton = AppImageTextButton(title: I18N.SignIn.googleLogin,
-                                                       image: DSKitAsset.Assets.logoGoogle.image.withRenderingMode(.automatic)).then {
+    private let googleLoginButton = AppImageTextButton(
+        title: I18N.SignIn.googleLogin,
+        image: DSKitAsset.Assets.logoGoogle.image.withRenderingMode(.automatic)
+    ).then {
         $0.alpha = 0
     }
-    private let appleLoginButton = AppImageTextButton(title: I18N.SignIn.appleLogin, image: DSKitAsset.Assets.logoApple.image).then {
+    
+    private let appleLoginButton = AppImageTextButton(
+        title: I18N.SignIn.appleLogin,
+        image: DSKitAsset.Assets.logoApple.image
+    ).then {
         $0.alpha = 0
     }
+    
+    private let playgroundButton = AppImageTextButton(title: "SOPT Playground로 로그인").then { $0.alpha = 0 } //TODO: 추후 제거
     
     private let loginHelpButton = UIButton(type: .system).then {
         var config = UIButton.Configuration.plain()
@@ -143,9 +151,9 @@ public class SignInVC: UIViewController, SignInViewControllable {
 extension SignInVC {
     
     private enum Metric {
-        static let topInset = 151.adjustedH + logoMutableY
+        static let topInset = 100.adjustedH + logoMutableY //151.adjustedH + logoMutableY
         static let logoWidth = 184.adjusted
-        static let logoMutableY = 137.adjustedH
+        static let logoMutableY = 188.adjustedH // 137.adjustedH
         static let logoRatio = 114 / 184
     }
     
@@ -158,6 +166,7 @@ extension SignInVC {
             logoImageView,
             googleLoginButton,
             appleLoginButton,
+            playgroundButton,
             loginHelpButton,
             orStackView,
             signUpButton,
@@ -180,6 +189,12 @@ extension SignInVC {
         }
         
         appleLoginButton.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(48)
+            make.bottom.equalTo(playgroundButton.snp.top).offset(-20.adjustedH)
+        }
+        
+        playgroundButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(48)
             make.bottom.equalTo(loginHelpButton.snp.top).offset(-20.adjustedH)
@@ -241,7 +256,7 @@ extension SignInVC {
     }
     
     private func retrieveAlpha() {
-        [googleLoginButton, appleLoginButton, loginHelpButton, orStackView, signUpButton, loginLaterButton].forEach {
+        [googleLoginButton, appleLoginButton, playgroundButton, loginHelpButton, orStackView, signUpButton, loginLaterButton].forEach {
             $0.alpha = 1
         }
     }
@@ -252,17 +267,11 @@ extension SignInVC {
 extension SignInVC {
     
     private func bindViews() {
-//        googleLoginButton.publisher(for: .touchUpInside)
-//            .withUnretained(self)
-//            .sink { owner, _ in
-//                owner.openPlaygroundURL()
-//            }.store(in: self.cancelBag)
-//        
-//        appleLogin.publisher(for: .touchUpInside)
-//            .withUnretained(self)
-//            .sink { owner, _ in
-//                owner.openPlaygroundURL()
-//            }.store(in: self.cancelBag)
+        playgroundButton.publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.openPlaygroundURL()
+            }.store(in: self.cancelBag)
     }
     
     private func bindViewModels() {
@@ -273,6 +282,16 @@ extension SignInVC {
             }
             .replaceNil(with: "")
             .eraseToAnyPublisher()
+            .asDriver()
+        
+        let googleLoginButtonTapped = self.googleLoginButton
+            .publisher(for: .touchUpInside)
+            .compactMap { _ in () }
+            .asDriver()
+        
+        let appleLoginButtonTapped = self.appleLoginButton
+            .publisher(for: .touchUpInside)
+            .compactMap { _ in () }
             .asDriver()
         
         let loginLaterButtonTapped = self.loginLaterButton
@@ -288,6 +307,8 @@ extension SignInVC {
         let input = SignInViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
             playgroundSignInFinished: signInFinished,
+            googleLoginButtonTapped: googleLoginButtonTapped,
+            appleLoginButtonTapped: appleLoginButtonTapped,
             loginHelpButtonTapped: loginHelpButtonTapped,
             visitorButtonTapped: loginLaterButtonTapped
             

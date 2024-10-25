@@ -21,7 +21,7 @@ public final class AppImageTextButton: UIButton {
     
     // MARK: - Initialize
     
-    public init(title: String, image: UIImage) {
+    public init(title: String, image: UIImage? = nil) {
         super.init(frame: .zero)
         self.setUI(title, image)
     }
@@ -34,7 +34,7 @@ public final class AppImageTextButton: UIButton {
 // MARK: - UI & Layout
 
 extension AppImageTextButton {
-    private func setUI(_ title: String, _ image: UIImage) {
+    private func setUI(_ title: String, _ image: UIImage?) {
         
         var config = UIButton.Configuration.filled()
         config.baseForegroundColor = DSKitAsset.Colors.black.color
@@ -46,9 +46,11 @@ extension AppImageTextButton {
         attributedTitle.foregroundColor = DSKitAsset.Colors.black.color
         config.attributedTitle = attributedTitle
         
-        config.image = image
-        config.imagePadding = 3
-        config.imagePlacement = .leading
+        if let image = image {
+            config.image = image
+            config.imagePadding = 3
+            config.imagePlacement = .leading
+        }
         
         self.configuration = config
         self.layer.cornerRadius = 10

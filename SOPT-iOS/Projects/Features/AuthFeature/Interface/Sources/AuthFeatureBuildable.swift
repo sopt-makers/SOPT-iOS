@@ -11,4 +11,5 @@ import Foundation
 public protocol AuthFeatureViewBuildable {
     func makeSignIn() -> SignInPresentable
     func makeLoginHelpBottomSheet() -> LoginHelpBottomSheetPresentable
+    func makeUserNotFound() -> UserNotFoundPresentable
 }
