@@ -78,14 +78,17 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
             )
         case .root:
             router.replaceRootWindow(signIn.vc, withAnimation: false)
+            router.hideTitles()
         case .rootWindow(let animated, let message):
             guard !animated else {
                 router.replaceRootWindow(signIn.vc, withAnimation: true)
+                router.hideTitles()
                 return
             }
             
             guard let message else {
                 router.replaceRootWindow(signIn.vc, withAnimation: true)
+                router.hideTitles()
                 return
             }
             
@@ -95,9 +98,10 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
                     view: newWindow
                 )
             }
+            router.hideTitles()
         case .push: break
         }
-        router.hideTitles()
+        
     }
 }
 
