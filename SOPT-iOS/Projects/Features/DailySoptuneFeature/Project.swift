@@ -12,6 +12,9 @@ import DependencyPlugin
 let project = Project.makeModule(
     name: "DailySoptuneFeature",
     targets: [.unitTest, .staticFramework, .demo, .interface],
+    internalDependencies: [
+        .Features.Poke.Interface
+    ],
     interfaceDependencies: [
         .Features.BaseFeatureDependency
     ]

@@ -54,4 +54,9 @@ extension PokeOnboardingCollectionViewCell {
   private func setupConstraints() {
     self.sectionView.snp.makeConstraints { $0.directionalEdges.equalToSuperview() }
   }
+
+  public override func prepareForReuse() {
+    super.prepareForReuse()
+    self.cancelBag = CancelBag()
+  }
 }
