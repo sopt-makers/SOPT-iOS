@@ -19,6 +19,7 @@ public extension Dep {
         public struct Notification {}
         public struct Poke {}
         public struct DailySoptune {}
+        public struct Web{}
     }
     
     struct Modules {}
@@ -124,4 +125,10 @@ public extension Dep.Features.DailySoptune {
     
     static let Feature = Dep.Features.project(name: "Feature", group: group)
     static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))
+}
+
+public extension Dep.Features.Web {
+    static let group = "Web"
+    
+    static let Feature = Dep.Features.project(name: "Feature", group: group)
 }
