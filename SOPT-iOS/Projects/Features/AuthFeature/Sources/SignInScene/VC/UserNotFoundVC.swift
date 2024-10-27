@@ -133,7 +133,7 @@ extension UserNotFoundVC {
     func bindActions() {
         loginRetryButton
             .publisher(for: .touchUpInside)
-            .receive(on: RunLoop.main)
+            .asDriver()
             .sink { [weak self] _ in
                 self?.loginRetryButtonTapped?()
             }
@@ -141,7 +141,7 @@ extension UserNotFoundVC {
         
         loginHelpButton
             .publisher(for: .touchUpInside)
-            .receive(on: RunLoop.main)
+            .asDriver()
             .sink { [weak self] _ in
                 self?.loginHelpButtonTapped?()
             }

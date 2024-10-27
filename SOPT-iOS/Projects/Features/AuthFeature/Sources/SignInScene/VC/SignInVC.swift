@@ -269,6 +269,7 @@ extension SignInVC {
     private func bindViews() {
         playgroundButton.publisher(for: .touchUpInside)
             .withUnretained(self)
+            .asDriver()
             .sink { owner, _ in
                 owner.openPlaygroundURL()
             }.store(in: self.cancelBag)

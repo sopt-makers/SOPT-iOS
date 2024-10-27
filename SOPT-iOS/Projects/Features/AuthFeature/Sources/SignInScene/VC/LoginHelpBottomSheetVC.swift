@@ -115,7 +115,7 @@ extension LoginHelpBottomSheetVC {
     private func bindAction() {
         wantToKnowAccountButton
             .publisher(for: .touchUpInside)
-            .receive(on: RunLoop.main)
+            .asDriver()
             .sink { [weak self] _ in
                 self?.wantToKnowLoginAccountButtonDidTap?()
             }
@@ -123,7 +123,7 @@ extension LoginHelpBottomSheetVC {
         
         resetSocialAccountButton
             .publisher(for: .touchUpInside)
-            .receive(on: RunLoop.main)
+            .asDriver()
             .sink { [weak self] _ in
                 self?.resetSocialAccountButtonDidTap?()
             }
