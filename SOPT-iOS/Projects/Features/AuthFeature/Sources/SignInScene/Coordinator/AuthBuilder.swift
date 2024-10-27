@@ -26,4 +26,12 @@ extension AuthBuilder: AuthFeatureViewBuildable {
         vc.viewModel = vm
         return (vc, vm)
     }
+    
+    public func makeLoginHelpBottomSheet() -> LoginHelpBottomSheetPresentable {
+        return LoginHelpBottomSheetVC()
+    }
+    
+    public func makeUserNotFound() -> UserNotFoundPresentable {
+         return UserNotFoundVC()
+    }
 }

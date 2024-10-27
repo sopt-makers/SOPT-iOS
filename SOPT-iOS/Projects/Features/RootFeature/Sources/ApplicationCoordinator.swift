@@ -124,7 +124,7 @@ extension ApplicationCoordinator {
     
     private func checkDidSignIn() {
         let needAuth = UserDefaultKeyList.Auth.appAccessToken == nil
-        needAuth ? runSignInFlow(by: .modal) : runMainFlow()
+        needAuth ? runSignInFlow(by: .root) : runMainFlow()
     }
 }
 
