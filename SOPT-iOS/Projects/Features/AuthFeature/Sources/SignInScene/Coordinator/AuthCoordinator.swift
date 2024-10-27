@@ -112,7 +112,7 @@ extension AuthCoordinator {
             self?.router.popToRootModule(animated: true)
         }
         
-        userNotFoundVC.loginHelpButtonTapped = { [weak self] in
+        userNotFoundVC.onLoginHelpButtonTapped = { [weak self] in
             self?.showLoginHelpBottomSheet(on: userNotFoundVC)
         }
         

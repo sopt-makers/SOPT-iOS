@@ -14,6 +14,7 @@ import BaseFeatureDependency
 import DailySoptuneFeatureInterface
 import Domain
 import PokeFeatureInterface
+import WebFeature
 
 public final class DailySoptuneResultCoordinator: DefaultCoordinator {
     

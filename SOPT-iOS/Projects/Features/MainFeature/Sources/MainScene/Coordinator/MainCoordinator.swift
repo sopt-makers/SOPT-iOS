@@ -6,8 +6,11 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
+import Foundation
+
 import BaseFeatureDependency
 import Core
+import WebFeature
 
 public enum MainCoordinatorDestination {
     case notification
@@ -47,7 +50,9 @@ final class MainCoordinator: DefaultMainCoordinator {
             self?.requestCoordinating?(.myPage(userType))
         }
         main.vm.onSafari = { [weak self] url in
-            self?.router.pushSOPTWebView(url: url)
+            guard let url = URL(string: url) else { return }
+            let webView = SOPTWebView(startWith: url)
+            self?.router.push(webView)
         }
         main.vm.onNeedSignIn = { [weak self] in
             self?.requestCoordinating?(.signIn)

@@ -13,6 +13,7 @@ import Core
 import BaseFeatureDependency
 import PokeFeatureInterface
 import Domain
+import WebFeature
 
 public
 final class PokeCoordinator: DefaultCoordinator {
