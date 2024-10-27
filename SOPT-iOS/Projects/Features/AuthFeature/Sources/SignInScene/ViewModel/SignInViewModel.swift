@@ -37,9 +37,9 @@ public class SignInViewModel: SignInViewModelType {
     // MARK: - SignInCoordinating
     
     public var onSignInSuccess: ((SiginInHandleableType) -> Void)?
-    public var loginHelpButtonTapped: (() -> Void)?
+    public var onLoginHelpButtonTapped: (() -> Void)?
     public var onVisitorButtonTapped: (() -> Void)?
-    public var socialLoginFail: (() -> Void)?
+    public var onSocialLoginFail: (() -> Void)?
     
     // MARK: - init
   
@@ -60,26 +60,26 @@ extension SignInViewModel {
         
         input.googleLoginButtonTapped
             .withUnretained(self)
-            .sink { owner, token in
-                owner.socialLoginFail?() //TODO: 구글 로그인 로직
+            .sink { owner, _ in
+                owner.onSocialLoginFail?() //TODO: 구글 로그인 로직
             }.store(in: self.cancelBag)
         
         input.appleLoginButtonTapped
             .withUnretained(self)
-            .sink { owner, token in
-                owner.socialLoginFail?() //TODO: 애플 로그인 로직
+            .sink { owner, _ in
+                owner.onSocialLoginFail?() //TODO: 애플 로그인 로직
             }.store(in: self.cancelBag)
         
         input.visitorButtonTapped
             .withUnretained(self)
-            .sink { owner, token in
+            .sink { owner, _ in
                 owner.onVisitorButtonTapped?()
             }.store(in: self.cancelBag)
         
         input.loginHelpButtonTapped
             .withUnretained(self)
-            .sink { owner, token in
-                owner.loginHelpButtonTapped?()
+            .sink { owner, _ in
+                owner.onLoginHelpButtonTapped?()
             }.store(in: self.cancelBag)
         
         input.playgroundSignInFinished

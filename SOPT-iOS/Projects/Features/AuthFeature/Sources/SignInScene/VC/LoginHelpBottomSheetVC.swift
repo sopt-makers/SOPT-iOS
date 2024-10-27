@@ -16,8 +16,8 @@ import Domain
 
 public final class LoginHelpBottomSheetVC: UIViewController, LoginHelpBottomSheetViewControllable {
     
-    public var wantToKnowLoginAccountButtonDidTap: (() -> Void)?
-    public var resetSocialAccountButtonDidTap: (() -> Void)?
+    public var onWantToKnowLoginAccountButtonDidTap: (() -> Void)?
+    public var onResetSocialAccountButtonDidTap: (() -> Void)?
     private let cancelBag = CancelBag()
     
     public var minimumContentHeight: CGFloat {
@@ -31,14 +31,14 @@ public final class LoginHelpBottomSheetVC: UIViewController, LoginHelpBottomShee
     }
     
     private let titleLabel = UILabel().then {
-        $0.text = "로그인이 안 되나요?"
+        $0.text = I18N.SignIn.helpLogin
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 20)
         $0.textColor = DSKitAsset.Colors.gray10.color
     }
     
     private let wantToKnowAccountButton = UIButton().then {
         $0.setTitleColor(DSKitAsset.Colors.gray10.color, for: .normal)
-        $0.setTitle("로그인한 계정을 알고 싶어요.", for: .normal)
+        $0.setTitle(I18N.SignIn.wantToKnowAccount, for: .normal)
         $0.contentHorizontalAlignment = .leading
         $0.titleEdgeInsets = .init(top: 0, left: 10, bottom: 0, right: 0)
         $0.titleLabel?.font = DSKitFontFamily.Suit.regular.font(size: 16)
@@ -50,7 +50,7 @@ public final class LoginHelpBottomSheetVC: UIViewController, LoginHelpBottomShee
     
     private let resetSocialAccountButton = UIButton().then {
         $0.setTitleColor(DSKitAsset.Colors.gray10.color, for: .normal)
-        $0.setTitle("소셜 계정을 재설정하고 싶어요.", for: .normal)
+        $0.setTitle(I18N.SignIn.resetSocialAccount, for: .normal)
         $0.titleLabel?.font = DSKitFontFamily.Suit.regular.font(size: 16)
         $0.contentHorizontalAlignment = .leading
         $0.titleEdgeInsets = .init(top: 0, left: 10, bottom: 0, right: 0)
@@ -116,16 +116,18 @@ extension LoginHelpBottomSheetVC {
         wantToKnowAccountButton
             .publisher(for: .touchUpInside)
             .asDriver()
-            .sink { [weak self] _ in
-                self?.wantToKnowLoginAccountButtonDidTap?()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onWantToKnowLoginAccountButtonDidTap?()
             }
             .store(in: cancelBag)
         
         resetSocialAccountButton
             .publisher(for: .touchUpInside)
             .asDriver()
-            .sink { [weak self] _ in
-                self?.resetSocialAccountButtonDidTap?()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onResetSocialAccountButtonDidTap?()
             }
             .store(in: cancelBag)
     }

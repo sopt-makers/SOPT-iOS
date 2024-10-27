@@ -11,8 +11,8 @@ import Foundation
 import BaseFeatureDependency
 
 public protocol UserNotFoundViewControllable: ViewControllable {
-    var loginHelpButtonTapped: (() -> Void)? { get set }
-    var loginRetryButtonTapped: (() -> Void)? { get set }
+    var onLoginHelpButtonTapped: (() -> Void)? { get set }
+    var onLoginRetryButtonTapped: (() -> Void)? { get set }
 }
 
 public typealias UserNotFoundPresentable = UserNotFoundViewControllable

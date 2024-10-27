@@ -56,7 +56,7 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
             }
         }
         
-        signIn.vm.loginHelpButtonTapped = { [weak self] in
+        signIn.vm.onLoginHelpButtonTapped = { [weak self] in
             self?.showLoginHelpBottomSheet(on: signIn.vc)
         }
         
@@ -64,7 +64,7 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
             self?.finishFlow?(.visitor)
         }
         
-        signIn.vm.socialLoginFail = { [weak self] in
+        signIn.vm.onSocialLoginFail = { [weak self] in
             self?.runUserNotFoundFlow()
         }
         
@@ -108,7 +108,7 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
 extension AuthCoordinator {
     private func runUserNotFoundFlow() {
         var userNotFoundVC = self.factory.makeUserNotFound()
-        userNotFoundVC.loginRetryButtonTapped = { [weak self] in
+        userNotFoundVC.onLoginRetryButtonTapped = { [weak self] in
             self?.router.popToRootModule(animated: true)
         }
         
@@ -123,11 +123,11 @@ extension AuthCoordinator {
         guard let bottomSheetVC = self.factory.makeLoginHelpBottomSheet().viewController as? LoginHelpBottomSheetVC
         else { return Void() }
         
-        bottomSheetVC.resetSocialAccountButtonDidTap = {
+        bottomSheetVC.onResetSocialAccountButtonDidTap = {
             print("resetSocialAccountButtonDidTap") //TODO: asdf
         }
         
-        bottomSheetVC.wantToKnowLoginAccountButtonDidTap = {
+        bottomSheetVC.onWantToKnowLoginAccountButtonDidTap = {
             print("wantToKnowLoginAccountButtonDidTap") //TODO: asdf
         }
         

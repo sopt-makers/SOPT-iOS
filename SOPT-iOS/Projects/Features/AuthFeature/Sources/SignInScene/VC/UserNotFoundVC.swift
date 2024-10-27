@@ -18,8 +18,8 @@ public final class UserNotFoundVC: UIViewController, UserNotFoundViewControllabl
 
     // MARK: - Properties
     
-    public var loginHelpButtonTapped: (() -> Void)?
-    public var loginRetryButtonTapped: (() -> Void)?
+    public var onLoginHelpButtonTapped: (() -> Void)?
+    public var onLoginRetryButtonTapped: (() -> Void)?
     private var cancelBag = CancelBag()
     
     // MARK: - UI Components
@@ -30,21 +30,21 @@ public final class UserNotFoundVC: UIViewController, UserNotFoundViewControllabl
     }
     
     private let titleLabel = UILabel().then {
-        $0.text = "앗! 회원 정보를 찾을 수 없어요."
+        $0.text = I18N.SignIn.userNotFound
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 24)
         $0.textColor = .white
-        $0.partColorChange(targetString: "회원 정보", textColor: DSKitAsset.Colors.secondary.color)
+        $0.partColorChange(targetString: I18N.SignIn.userInfo, textColor: DSKitAsset.Colors.secondary.color)
     }
 
     
     private let descriptionLabel = UILabel().then {
-        $0.text = "먼저 회원가입 후, 다시 로그인해주세요."
+        $0.text = I18N.SignIn.signUpFirst
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 18)
         $0.textColor = .white
     }
 
     
-    private let loginRetryButton = AppCustomButton(title: "다시 로그인하기")
+    private let loginRetryButton = AppCustomButton(title: I18N.SignIn.retryLogin)
         .setFontColor(customFont: DSKitFontFamily.Suit.semiBold.font(size: 18))
     
     private let loginHelpButton = UIButton(type: .system).then {
@@ -134,16 +134,18 @@ extension UserNotFoundVC {
         loginRetryButton
             .publisher(for: .touchUpInside)
             .asDriver()
-            .sink { [weak self] _ in
-                self?.loginRetryButtonTapped?()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onLoginRetryButtonTapped?()
             }
             .store(in: cancelBag)
         
         loginHelpButton
             .publisher(for: .touchUpInside)
             .asDriver()
-            .sink { [weak self] _ in
-                self?.loginHelpButtonTapped?()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onLoginHelpButtonTapped?()
             }
             .store(in: cancelBag)
     }

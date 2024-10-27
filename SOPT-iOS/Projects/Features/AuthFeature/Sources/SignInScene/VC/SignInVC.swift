@@ -56,7 +56,7 @@ public class SignInVC: UIViewController, SignInViewControllable {
         $0.alpha = 0
     }
     
-    private let playgroundButton = AppImageTextButton(title: "SOPT Playground로 로그인").then { $0.alpha = 0 } //TODO: 추후 제거
+    private let playgroundButton = AppImageTextButton(title: I18N.SignIn.playgroundLogin).then { $0.alpha = 0 } //TODO: 추후 제거
     
     private let loginHelpButton = UIButton(type: .system).then {
         var config = UIButton.Configuration.plain()

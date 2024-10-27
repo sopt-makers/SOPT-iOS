@@ -11,8 +11,8 @@ import Core
 import Domain
 
 public protocol LoginHelpBottomSheetViewControllable: ViewControllable { 
-    var wantToKnowLoginAccountButtonDidTap: (() -> Void)? { get set }
-    var resetSocialAccountButtonDidTap: (() -> Void)? { get set }
+    var onWantToKnowLoginAccountButtonDidTap: (() -> Void)? { get set }
+    var onResetSocialAccountButtonDidTap: (() -> Void)? { get set }
 }
 
 public typealias LoginHelpBottomSheetPresentable = LoginHelpBottomSheetViewControllable
