@@ -19,7 +19,7 @@ public extension Dep {
         public struct Notification {}
         public struct Poke {}
         public struct DailySoptune {}
-        public struct Web{}
+        public struct Web {}
     }
     
     struct Modules {}
