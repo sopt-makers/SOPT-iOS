@@ -2,7 +2,7 @@
 //  Project.swift
 //  ProjectDescriptionHelpers
 //
-//  Created by sejin on 12/3/23.
+//  Created by 장석우 on 10/28/24.
 //
 
 import ProjectDescription
@@ -10,9 +10,9 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let project = Project.makeModule(
-    name: "PokeFeature",
-    targets: [.unitTest, .staticFramework, .demo, .interface],
-    interfaceDependencies: [
-        .Features.Web.Feature
+    name: "WebFeature",
+    targets: [.dynamicFramework, .demo, .unitTest],
+    internalDependencies: [
+        .Features.BaseFeatureDependency
     ]
 )

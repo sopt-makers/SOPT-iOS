@@ -16,7 +16,7 @@ let project = Project.makeModule(
         .Features.Poke.Interface
     ],
     interfaceDependencies: [
-        .Features.BaseFeatureDependency
+        .Features.Web.Feature
     ]
 )
 

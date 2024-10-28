@@ -19,6 +19,7 @@ import StampFeature
 import PokeFeature
 import AttendanceFeature
 import DailySoptuneFeature
+import WebFeature
 
 public
 final class ApplicationCoordinator: BaseCoordinator {
@@ -90,7 +91,9 @@ extension ApplicationCoordinator {
     
     private func handleWebLink(webLink: String) {
         self.router.dismissModule(animated: false)
-        self.router.pushSOPTWebView(url: webLink)
+        guard let url = URL(string: webLink) else { return }
+        let webView = SOPTWebView(startWith: url)
+        self.router.push(webView)
     }
     
     private func handleNotificationLinkError(error: NotificationLinkError) {
