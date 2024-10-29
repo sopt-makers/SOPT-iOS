@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import Combine
 
-import Domain
+import Core
 
 /// 테두리가 있는 원형 프로필 이미지 뷰
 public final class CustomProfileImageView: UIImageView {
