@@ -14,7 +14,7 @@ let spm = SwiftPackageManagerDependencies([
     .remote(url: "https://github.com/SnapKit/SnapKit.git", requirement: .upToNextMinor(from: "5.0.0")),
     .remote(url: "https://github.com/Moya/Moya.git", requirement: .upToNextMajor(from: "15.0.0")),
     .remote(url: "https://github.com/devxoul/Then", requirement: .upToNextMajor(from: "2")),
-    .remote(url: "https://github.com/onevcat/Kingfisher.git", requirement: .upToNextMajor(from: "7.6.2")),
+    .remote(url: "https://github.com/onevcat/Kingfisher.git", requirement: .upToNextMajor(from: "7.12.0")),
     .remote(url: "https://github.com/FLEXTool/FLEX.git", requirement: .upToNextMajor(from: "4.3.0")),
     .remote(url: "https://github.com/krzysztofzablocki/Inject.git", requirement: .upToNextMajor(from: "1.0.5")),
     .remote(url: "https://github.com/Quick/Quick.git", requirement: .upToNextMajor(from: "5.0.0")),
