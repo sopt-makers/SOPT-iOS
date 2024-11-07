@@ -158,6 +158,7 @@ extension ListDetailViewModel {
     
     listDetailModel.asDriver()
       .compactMap {
+        self.uploadedUrl = $0.image
         self.stampId = $0.stampId
         self.uploadedUrl = $0.image
         return $0
