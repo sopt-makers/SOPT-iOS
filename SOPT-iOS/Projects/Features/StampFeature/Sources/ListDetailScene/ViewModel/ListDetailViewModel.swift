@@ -75,6 +75,7 @@ extension ListDetailViewModel {
       .filter { owner, _ in
         owner.sceneType == .completed
       }
+      .withUnretained(self)
       .sink { owner, _ in
         owner.isOtherUser
         ? owner.useCase.fetchListDetail(missionId: owner.missionId, username: owner.otherUserName)
@@ -119,16 +120,18 @@ extension ListDetailViewModel {
         var requestModel = requestModel
         return Just(requestModel.updateImgUrl(to: presignedUrl)).asDriver()
       }
-      .sink { requestModel in
-        if self.sceneType == ListDetailSceneType.none {
-          self.useCase.postStamp(stampData: requestModel)
+      .withUnretained(self)
+      .sink { owner, requestModel in
+        if owner.sceneType == ListDetailSceneType.none {
+          owner.useCase.postStamp(stampData: requestModel)
         } else {
-          self.useCase.putStamp(stampData: requestModel)
+          owner.useCase.putStamp(stampData: requestModel)
         }
       }.store(in: self.cancelBag)
     
     input.rightButtonTapped
-      .sink { sceneType in
+      .withUnretained(self)
+      .sink { owner, sceneType in
         switch sceneType {
         case .completed:
           output.showDeleteAlert.send(false)
@@ -140,8 +143,9 @@ extension ListDetailViewModel {
       }.store(in: self.cancelBag)
     
     input.deleteButtonTapped
-      .sink { _ in
-        self.useCase.deleteStamp(stampId: self.stampId)
+      .withUnretained(self)
+      .sink { owner, _ in
+        owner.useCase.deleteStamp(stampId: owner.stampId)
       }.store(in: self.cancelBag)
     
     return output
@@ -162,12 +166,14 @@ extension ListDetailViewModel {
       .store(in: self.cancelBag)
     
     editSuccess.asDriver()
-      .sink { success in
+      .withUnretained(self)
+      .sink { owner, success in
         output.editSuccessed.send(success)
       }.store(in: self.cancelBag)
     
     deleteSuccess.asDriver()
-      .sink { success in
+      .withUnretained(self)
+      .sink { owner, success in
         output.deleteSuccessed.send(success)
       }.store(in: self.cancelBag)
   }
