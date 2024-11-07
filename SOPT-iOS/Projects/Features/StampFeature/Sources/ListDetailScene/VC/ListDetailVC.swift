@@ -228,7 +228,7 @@ extension ListDetailVC {
     guard self.sceneType != .none else { return }
     
     if let imageURL = URL(string: model.image) {
-      self.missionImageView.kf.setImage(with: imageURL)
+      self.missionImageView.setImage(with: imageURL.absoluteString)
     }
     self.missionDateTextField.setText(with: model.activityDate)
     self.missionDateTextField.setIsEnabled(false)
