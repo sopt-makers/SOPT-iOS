@@ -39,7 +39,7 @@ public extension UIImageView {
     
     private func setNewImage(with urlString: String, placeholder: UIImage? = nil, completion: ((UIImage?) -> Void)? = nil) {
         guard let url = URL(string: urlString) else { return }
-        let resource = ImageResource(downloadURL: url, cacheKey: urlString)
+        let resource = KF.ImageResource(downloadURL: url, cacheKey: urlString)
         
         self.kf.setImage(
             with: resource,
