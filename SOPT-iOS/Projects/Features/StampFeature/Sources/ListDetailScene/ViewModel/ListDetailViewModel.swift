@@ -75,7 +75,6 @@ extension ListDetailViewModel {
       .filter { owner, _ in
         owner.sceneType == .completed
       }
-      .withUnretained(self)
       .sink { owner, _ in
         owner.isOtherUser
         ? owner.useCase.fetchListDetail(missionId: owner.missionId, username: owner.otherUserName)
@@ -157,11 +156,11 @@ extension ListDetailViewModel {
     let deleteSuccess = useCase.deleteSuccess
     
     listDetailModel.asDriver()
-      .compactMap {
-        self.uploadedUrl = $0.image
-        self.stampId = $0.stampId
-        self.uploadedUrl = $0.image
-        return $0
+      .withUnretained(self)
+      .compactMap { owner, model in
+        owner.stampId = model.stampId
+        owner.uploadedUrl = model.image
+        return model
       }
       .assign(to: \.self.listDetailModel, on: output)
       .store(in: self.cancelBag)
