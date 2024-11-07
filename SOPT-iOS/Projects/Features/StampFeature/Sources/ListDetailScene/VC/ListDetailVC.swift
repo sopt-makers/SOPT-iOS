@@ -142,23 +142,27 @@ public class ListDetailVC: UIViewController, ListDetailViewControllable {
 extension ListDetailVC {
   private func bindViewModels() {
     let rightButtonTapped = naviBar.rightButtonTapped
-      .map { self.sceneType }
+      .withUnretained(self)
+      .map { owner, _ in
+          owner.sceneType
+      }
       .asDriver()
     
     let bottomButtonTapped = bottomButton
       .publisher(for: .touchUpInside)
-      .map { _ in
-        if self.sceneType == .edit {
-          self.bottomButton.setEnabled(false)
+      .withUnretained(self)
+      .map { owner, _ in
+        if owner.sceneType == .edit {
+          owner.bottomButton.setEnabled(false)
         }
-        if self.sceneType == .none {
+        if owner.sceneType == .none {
           self.showDimmerView()
         }
-        let content = self.textView.text
+        let content = owner.textView.text
         return ListDetailRequestModel(
-          missionId: self.viewModel.missionId ?? 0,
+          missionId: owner.viewModel.missionId ?? 0,
           content: content ?? "",
-          activityDate: self.missionDateTextField.getText() ?? ""
+          activityDate: owner.missionDateTextField.getText() ?? ""
         )
       }
       .asDriver()
@@ -174,50 +178,54 @@ extension ListDetailVC {
     
     output.$listDetailModel
       .compactMap { $0 }
-      .sink { model in
+      .withUnretained(self)
+      .sink { owner, model in
         if model.image.isEmpty {
           AlertUtils.presentNetworkAlertVC(theme: .soptamp,animated: true) {
-            self.backgroundDimmerView.removeFromSuperview()
+            owner.backgroundDimmerView.removeFromSuperview()
           }
         } else {
-          self.setData(model)
-          if self.sceneType == .none {
-            self.onComplete?(self.starLevel) {
+          owner.setData(model)
+          if owner.sceneType == .none {
+            owner.onComplete?(owner.starLevel) {
               UIView.animate(withDuration: 0.2, delay: 0, animations: {
-                self.backgroundDimmerView.alpha = 0
+                owner.backgroundDimmerView.alpha = 0
               }) { _ in
-                self.backgroundDimmerView.removeFromSuperview()
+                owner.backgroundDimmerView.removeFromSuperview()
               }
             }
           }
-          self.sceneType = .completed
-          self.reloadData(self.sceneType)
+          owner.sceneType = .completed
+          owner.reloadData(owner.sceneType)
         }
       }.store(in: self.cancelBag)
     
     output.editSuccessed
-      .sink { successed in
+      .withUnretained(self)
+      .sink { owner, successed in
         if successed {
-          self.reloadData(.completed)
-          self.showToast(message: I18N.ListDetail.editCompletedToast)
+          owner.reloadData(.completed)
+          owner.showToast(message: I18N.ListDetail.editCompletedToast)
         } else {
           AlertUtils.presentNetworkAlertVC(theme: .soptamp, animated: true)
         }
       }.store(in: self.cancelBag)
     
     output.showDeleteAlert
-      .sink { delete in
+      .withUnretained(self)
+      .sink { owner, delete in
         if delete {
-          self.presentDeleteAlertVC()
+          owner.presentDeleteAlertVC()
         } else {
-          self.reloadData(.edit)
+          owner.reloadData(.edit)
         }
       }.store(in: self.cancelBag)
     
     output.deleteSuccessed
-      .sink { success in
+      .withUnretained(self)
+      .sink { owner, success in
         if success {
-          self.navigationController?.popViewController(animated: true)
+          owner.navigationController?.popViewController(animated: true)
         } else {
           AlertUtils.presentNetworkAlertVC(theme: .soptamp, animated: true)
         }
