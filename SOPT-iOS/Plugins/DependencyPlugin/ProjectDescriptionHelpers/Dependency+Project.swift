@@ -20,6 +20,7 @@ public extension Dep {
         public struct Poke {}
         public struct DailySoptune {}
         public struct Web {}
+        public struct Home {}
     }
     
     struct Modules {}
@@ -131,4 +132,11 @@ public extension Dep.Features.Web {
     static let group = "Web"
     
     static let Feature = Dep.Features.project(name: "Feature", group: group)
+}
+
+public extension Dep.Features.Home {
+    static let group = "Home"
+    
+    static let Feature = Dep.Features.project(name: "Feature", group: group)
+    static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))
 }
