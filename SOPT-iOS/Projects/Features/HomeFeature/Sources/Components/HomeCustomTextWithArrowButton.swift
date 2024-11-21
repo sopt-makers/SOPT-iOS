@@ -11,31 +11,13 @@ import UIKit
 import Core
 import DSKit
 
-final class HomeCustomTextWithArrowButton: UIView {
+final class HomeCustomTextWithArrowButton: UIButton {
 
-    // MARK: - UI Components
-    
-    private let titleLabel = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
-        $0.textColor = DSKitAsset.Colors.gray300.color
-        $0.textAlignment = .center
-    }
-    
-    private let chervronIconImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.chevronRight.image.withTintColor(DSKitAsset.Colors.gray300.color)
-    }
-    
-    private let contentStackView = UIStackView().then {
-        $0.axis = .horizontal
-    }
-    
     // MARK: - Initialization
 
     init(title: String) {
         super.init(frame: .zero)
         setUI(title)
-        setStackView()
-        setLayout()
     }
     
     required init?(coder: NSCoder) {
@@ -47,21 +29,41 @@ final class HomeCustomTextWithArrowButton: UIView {
 
 extension HomeCustomTextWithArrowButton {
     private func setUI(_ title: String) {
-        self.titleLabel.text = title
-    }
-    
-    private func setStackView() {
-        self.contentStackView.addArrangedSubviews(
-            titleLabel,
-            chervronIconImageView
-        )
-    }
-    
-    private func setLayout() {
-        self.addSubview(self.contentStackView)
+        self.setBackgroundColor(.clear, for: .normal)
         
-        contentStackView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
+        /// 텍스트 지정
+        let font = DSKitFontFamily.Suit.semiBold.font(size: 12)
+        let foregroundColor = DSKitAsset.Colors.gray300.color
+
+        let attributedText = NSAttributedString(
+            string: title,
+            attributes: [
+                .font: font,
+                .foregroundColor: foregroundColor
+            ]
+        )
+        
+        /// 이미지 지정
+        let imageAttachment = NSTextAttachment()
+        imageAttachment.image = DSKitAsset.Assets.chevronRight.image.withTintColor(DSKitAsset.Colors.gray300.color)
+
+        let imageSize = CGSize(width: 16, height: 16)
+        imageAttachment.bounds = CGRect(x: 0,
+                                        y: (font.lineHeight - imageSize.height) / 2 + font.descender,
+                                        width: imageSize.width,
+                                        height: imageSize.height)
+        
+        let attributedImage = NSAttributedString(attachment: imageAttachment)
+        
+        /// 텍스트 + 이미지 결합
+        let combinedAttributedString = NSMutableAttributedString()
+        combinedAttributedString.append(attributedText)
+        combinedAttributedString.append(attributedImage)
+        
+        /// 타이틀 지정
+        self.setAttributedTitle(
+            combinedAttributedString,
+            for: .normal
+        )
     }
 }
