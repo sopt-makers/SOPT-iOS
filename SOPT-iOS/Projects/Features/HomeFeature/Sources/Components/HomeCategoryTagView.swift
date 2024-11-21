@@ -70,7 +70,7 @@ extension HomeCategoryTagView {
     func setData(with text: String, isHotTag: Bool) {
         self.titleLabel.text = text
         /// 이미지 중복 삽입 방지
-        if contentStackView.arrangedSubviews.contains(hotIconImageView) && isHotTag {
+        if !contentStackView.arrangedSubviews.contains(hotIconImageView) && isHotTag {
             self.contentStackView.insertArrangedSubview(hotIconImageView, at: 0)
         }
     }

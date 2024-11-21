@@ -30,7 +30,7 @@ final class HomeServiceCardView: UIView {
         $0.contentMode = .scaleAspectFit
     }
     
-    private lazy var notificationBadgeView = HomeNotificationBadgeView()
+    private let notificationBadgeView = HomeNotificationBadgeView()
     
     // MARK: - Initialization
     
