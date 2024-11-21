@@ -8,23 +8,46 @@
 
 import UIKit
 
-class HomeForMemberVC: UIViewController {
+import Core
+import Domain
+import DSKit
 
-    override func viewDidLoad() {
+import BaseFeatureDependency
+
+public final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
+
+    // MARK: - UI Components
+    
+    private lazy var naviBar = HomeNavigationBar()
+    
+    // MARK: - View Life Cycle
+    
+    public override func viewDidLoad() {
         super.viewDidLoad()
+        setUI()
+        setLayout()
+    }
+}
 
-        // Do any additional setup after loading the view.
+// MARK: - UI & Layout
+
+extension HomeForMemberVC {
+    private func setUI() {
+        self.navigationController?.isNavigationBarHidden = true
+        view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    private func setLayout() {
+        view.addSubviews(naviBar)
+        
+        naviBar.snp.makeConstraints { make in
+          make.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)
+        }
     }
-    */
+}
 
+// MARK: - Methods
+
+extension HomeForMemberVC {
+    
 }
