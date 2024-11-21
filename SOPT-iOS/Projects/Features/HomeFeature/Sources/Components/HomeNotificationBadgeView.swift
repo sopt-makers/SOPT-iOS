@@ -15,10 +15,6 @@ final class HomeNotificationBadgeView: UIView {
     
     // MARK: - UI Components
     
-    private let contentView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.secondary.color
-    }
-    
     private let titleLabel = UILabel().then {
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
         $0.textColor = DSKitAsset.Colors.black.color
@@ -29,6 +25,7 @@ final class HomeNotificationBadgeView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setUI()
         setLayout()
     }
     
@@ -38,7 +35,7 @@ final class HomeNotificationBadgeView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        self.contentView.layer.cornerRadius = self.contentView.frame.height / 2
+        setCornerRadius()
     }
 }
 
@@ -46,18 +43,21 @@ final class HomeNotificationBadgeView: UIView {
 // MARK: - UI & Layout
 
 extension HomeNotificationBadgeView {
+    private func setUI() {
+        self.backgroundColor = DSKitAsset.Colors.secondary.color
+    }
+    
     private func setLayout() {
-        self.addSubview(self.contentView)
-        contentView.addSubviews(titleLabel)
-        
-        contentView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
+        self.addSubviews(titleLabel)
         
         titleLabel.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(6)
             make.top.bottom.equalToSuperview().inset(3)
         }
+    }
+    
+    private func setCornerRadius() {
+        self.layer.cornerRadius = self.frame.height / 2
     }
 }
 
@@ -67,7 +67,6 @@ extension HomeNotificationBadgeView {
 extension HomeNotificationBadgeView {
     func setData(with text: String) {
         self.titleLabel.text = text
-        self.layoutIfNeeded()
     }
 }
 

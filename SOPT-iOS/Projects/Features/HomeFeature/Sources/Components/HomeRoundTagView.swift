@@ -15,10 +15,6 @@ final class HomeRoundTagView: UIView {
 
     // MARK: - UI Components
     
-    private let contentView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.gray700.color
-    }
-    
     private let titleLabel = UILabel().then {
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 11)
         $0.textColor = DSKitAsset.Colors.gray100.color
@@ -29,6 +25,7 @@ final class HomeRoundTagView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setUI()
         setLayout()
     }
     
@@ -38,25 +35,28 @@ final class HomeRoundTagView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        self.contentView.layer.cornerRadius = self.contentView.frame.height / 2
+        setCornerRadius()
     }
 }
 
 // MARK: - UI & Layout
 
 extension HomeRoundTagView {
+    private func setUI() {
+        self.backgroundColor = DSKitAsset.Colors.gray700.color
+    }
+    
     private func setLayout() {
-        self.addSubview(self.contentView)
-        contentView.addSubviews(titleLabel)
-        
-        contentView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-        
+        self.addSubviews(titleLabel)
+
         titleLabel.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(8)
             make.top.bottom.equalToSuperview().inset(5)
         }
+    }
+    
+    private func setCornerRadius() {
+        self.layer.cornerRadius = self.frame.height / 2
     }
 }
 

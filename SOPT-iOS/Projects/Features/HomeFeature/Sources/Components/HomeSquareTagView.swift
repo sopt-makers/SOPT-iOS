@@ -14,11 +14,7 @@ import DSKit
 final class HomeSquareTagView: UIView {
 
     // MARK: - UI Components
-    
-    private let contentView = UIView().then {
-        $0.layer.cornerRadius = 4.f
-    }
-    
+
     private let titleLabel = UILabel().then {
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 11)
         $0.textAlignment = .center
@@ -28,6 +24,7 @@ final class HomeSquareTagView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setUI()
         setLayout()
     }
     
@@ -39,13 +36,12 @@ final class HomeSquareTagView: UIView {
 // MARK: - UI & Layout
 
 extension HomeSquareTagView {
+    private func setUI() {
+        self.layer.cornerRadius = 4.f
+    }
+    
     private func setLayout() {
-        self.addSubview(self.contentView)
-        contentView.addSubviews(titleLabel)
-        
-        contentView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
+        self.addSubviews(titleLabel)
         
         titleLabel.snp.makeConstraints { make in
             make.edges.equalToSuperview().inset(5)
@@ -58,7 +54,6 @@ extension HomeSquareTagView {
 extension HomeSquareTagView {
     func setData(with text: String) {
         self.titleLabel.text = text
-        self.layoutIfNeeded()
     }
     
     @discardableResult
@@ -69,7 +64,7 @@ extension HomeSquareTagView {
     
     @discardableResult
     public func setBackgroundColor(with color: UIColor) -> Self {
-        self.contentView.backgroundColor = color
+        self.backgroundColor = color
         return self
     }
 }

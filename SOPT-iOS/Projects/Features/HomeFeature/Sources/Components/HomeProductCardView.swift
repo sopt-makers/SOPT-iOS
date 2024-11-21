@@ -14,9 +14,7 @@ import DSKit
 final class HomeProductCardView: UIView {
     
     // MARK: - UI Components
-    
-    private let contentView = UIView()
-    
+        
     private let titleLabel = UILabel().then {
         $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
         $0.textColor = DSKitAsset.Colors.gray200.color
@@ -28,7 +26,9 @@ final class HomeProductCardView: UIView {
         $0.backgroundColor = DSKitAsset.Colors.gray800.color
     }
     
-    private let logoImageView = UIImageView()
+    private let logoImageView = UIImageView().then {
+        $0.contentMode = .scaleAspectFit
+    }
         
     // MARK: - Initialization
     
@@ -46,13 +46,7 @@ final class HomeProductCardView: UIView {
 
 extension HomeProductCardView {
     private func setLayout() {
-        self.addSubview(self.contentView)
-        
-        contentView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-        
-        contentView.addSubviews(
+        self.addSubviews(
             logoBackgroundView, logoImageView, titleLabel
         )
         
@@ -63,6 +57,7 @@ extension HomeProductCardView {
         
         logoImageView.snp.makeConstraints { make in
             make.center.equalTo(logoBackgroundView.snp.center)
+            make.width.lessThanOrEqualTo(54)
         }
         
         titleLabel.snp.makeConstraints { make in
@@ -75,19 +70,8 @@ extension HomeProductCardView {
 // MARK: - Methods
 
 extension HomeProductCardView {
-    @discardableResult
-    public func setTitle(with title: String) -> Self {
+    func setData(title: String, image: UIImage) {
         self.titleLabel.text = title
-        return self
-    }
-    
-    @discardableResult
-    public func setImage(with image: UIImage, size: CGSize) -> Self {
         self.logoImageView.image = image
-        logoImageView.snp.makeConstraints { make in
-            make.width.equalTo(size.width)
-            make.height.equalTo(size.height)
-        }
-        return self
     }
 }

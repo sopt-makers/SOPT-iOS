@@ -14,9 +14,7 @@ import DSKit
 final class HomeServiceCardView: UIView {
     
     // MARK: - UI Components
-    
-    private let contentView = UIView()
-    
+        
     private let titleLabel = UILabel().then {
         $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
         $0.textColor = DSKitAsset.Colors.gray200.color
@@ -50,13 +48,7 @@ final class HomeServiceCardView: UIView {
 
 extension HomeServiceCardView {
     private func setLayout() {
-        self.addSubview(self.contentView)
-        
-        contentView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-        
-        contentView.addSubviews(
+        self.addSubviews(
             logoBackgroundView, logoImageView, titleLabel, notificationBadgeView
         )
         
