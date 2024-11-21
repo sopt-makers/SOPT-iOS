@@ -11,7 +11,7 @@ import UIKit
 import Core
 import DSKit
 
-final public class HomeCategoryTagView: UIView {
+final class HomeCategoryTagView: UIView {
     
     // MARK: - UI Components
 
@@ -31,7 +31,7 @@ final public class HomeCategoryTagView: UIView {
         
     // MARK: - Initialization
     
-    public override init(frame: CGRect) {
+    override init(frame: CGRect) {
         super.init(frame: frame)
         setStackView()
         setLayout()

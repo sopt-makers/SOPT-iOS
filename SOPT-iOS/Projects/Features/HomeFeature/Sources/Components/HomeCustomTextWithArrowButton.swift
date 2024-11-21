@@ -11,7 +11,7 @@ import UIKit
 import Core
 import DSKit
 
-final public class HomeCustomTextWithArrowButton: UIView {
+final class HomeCustomTextWithArrowButton: UIView {
 
     // MARK: - UI Components
     
@@ -31,7 +31,7 @@ final public class HomeCustomTextWithArrowButton: UIView {
     
     // MARK: - Initialization
 
-    public init(title: String) {
+    init(title: String) {
         super.init(frame: .zero)
         setUI(title)
         setStackView()

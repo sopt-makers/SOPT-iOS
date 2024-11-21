@@ -1,8 +1,8 @@
 //
-//  HomeProductCardView.swift
+//  HomeServiceCardView.swift
 //  HomeFeature
 //
-//  Created by Jae Hyun Lee on 11/19/24.
+//  Created by Jae Hyun Lee on 11/20/24.
 //  Copyright © 2024 SOPT-iOS. All rights reserved.
 //
 
@@ -11,7 +11,7 @@ import UIKit
 import Core
 import DSKit
 
-final public class HomeProductCardView: UIView {
+final class HomeServiceCardView: UIView {
     
     // MARK: - UI Components
     
@@ -24,15 +24,19 @@ final public class HomeProductCardView: UIView {
     }
     
     private let logoBackgroundView = UIView().then {
-        $0.layer.cornerRadius = 8.f
+        $0.layer.cornerRadius = 40.f
         $0.backgroundColor = DSKitAsset.Colors.gray800.color
     }
     
-    private let logoImageView = UIImageView()
-        
+    private let logoImageView = UIImageView().then {
+        $0.contentMode = .scaleAspectFit
+    }
+    
+    private lazy var notificationBadgeView = HomeNotificationBadgeView()
+    
     // MARK: - Initialization
     
-    override public init(frame: CGRect) {
+    override init(frame: CGRect) {
         super.init(frame: frame)
         setLayout()
     }
@@ -44,7 +48,7 @@ final public class HomeProductCardView: UIView {
 
 // MARK: - UI & Layout
 
-extension HomeProductCardView {
+extension HomeServiceCardView {
     private func setLayout() {
         self.addSubview(self.contentView)
         
@@ -53,7 +57,7 @@ extension HomeProductCardView {
         }
         
         contentView.addSubviews(
-            logoBackgroundView, logoImageView, titleLabel
+            logoBackgroundView, logoImageView, titleLabel, notificationBadgeView
         )
         
         logoBackgroundView.snp.makeConstraints { make in
@@ -61,8 +65,13 @@ extension HomeProductCardView {
             make.height.equalTo(logoBackgroundView.snp.width)
         }
         
+        notificationBadgeView.snp.makeConstraints { make in
+            make.top.trailing.equalToSuperview()
+        }
+        
         logoImageView.snp.makeConstraints { make in
             make.center.equalTo(logoBackgroundView.snp.center)
+            make.leading.trailing.equalToSuperview().inset(10)
         }
         
         titleLabel.snp.makeConstraints { make in
@@ -74,20 +83,10 @@ extension HomeProductCardView {
 
 // MARK: - Methods
 
-extension HomeProductCardView {
-    @discardableResult
-    public func setTitle(with title: String) -> Self {
+extension HomeServiceCardView {
+    func setData(imageURL: String, title: String, badgeText: String) {
+        self.logoImageView.setImage(with: imageURL)
         self.titleLabel.text = title
-        return self
-    }
-    
-    @discardableResult
-    public func setImage(with image: UIImage, size: CGSize) -> Self {
-        self.logoImageView.image = image
-        logoImageView.snp.makeConstraints { make in
-            make.width.equalTo(size.width)
-            make.height.equalTo(size.height)
-        }
-        return self
+        self.notificationBadgeView.setData(with: badgeText)
     }
 }

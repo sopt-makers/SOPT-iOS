@@ -11,7 +11,7 @@ import UIKit
 import Core
 import DSKit
 
-final public class HomeNotificationBadgeView: UIView {
+final class HomeNotificationBadgeView: UIView {
     
     // MARK: - UI Components
     
@@ -27,7 +27,7 @@ final public class HomeNotificationBadgeView: UIView {
     
     // MARK: - Initialization
     
-    public override init(frame: CGRect) {
+    override init(frame: CGRect) {
         super.init(frame: frame)
         setLayout()
     }
@@ -36,7 +36,7 @@ final public class HomeNotificationBadgeView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func layoutSubviews() {
+    override func layoutSubviews() {
         super.layoutSubviews()
         self.contentView.layer.cornerRadius = self.contentView.frame.height / 2
     }

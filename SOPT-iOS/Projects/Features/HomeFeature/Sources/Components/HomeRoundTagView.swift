@@ -1,5 +1,5 @@
 //
-//  HomeSquareTagView.swift
+//  HomeRoundTagView.swift
 //  HomeFeature
 //
 //  Created by Jae Hyun Lee on 11/20/24.
@@ -11,22 +11,23 @@ import UIKit
 import Core
 import DSKit
 
-final public class HomeSquareTagView: UIView {
+final class HomeRoundTagView: UIView {
 
     // MARK: - UI Components
     
     private let contentView = UIView().then {
-        $0.layer.cornerRadius = 4.f
+        $0.backgroundColor = DSKitAsset.Colors.gray700.color
     }
     
     private let titleLabel = UILabel().then {
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 11)
+        $0.textColor = DSKitAsset.Colors.gray100.color
         $0.textAlignment = .center
     }
     
     // MARK: - Initialization
     
-    public override init(frame: CGRect) {
+    override init(frame: CGRect) {
         super.init(frame: frame)
         setLayout()
     }
@@ -34,11 +35,16 @@ final public class HomeSquareTagView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        self.contentView.layer.cornerRadius = self.contentView.frame.height / 2
+    }
 }
 
 // MARK: - UI & Layout
 
-extension HomeSquareTagView {
+extension HomeRoundTagView {
     private func setLayout() {
         self.addSubview(self.contentView)
         contentView.addSubviews(titleLabel)
@@ -48,29 +54,17 @@ extension HomeSquareTagView {
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(5)
+            make.leading.trailing.equalToSuperview().inset(8)
+            make.top.bottom.equalToSuperview().inset(5)
         }
     }
 }
 
 // MARK: - Methods
 
-extension HomeSquareTagView {
+extension HomeRoundTagView {
     func setData(with text: String) {
         self.titleLabel.text = text
         self.layoutIfNeeded()
     }
-    
-    @discardableResult
-    public func setTitleColor(with color: UIColor) -> Self {
-        self.titleLabel.textColor = color
-        return self
-    }
-    
-    @discardableResult
-    public func setBackgroundColor(with color: UIColor) -> Self {
-        self.contentView.backgroundColor = color
-        return self
-    }
 }
-
