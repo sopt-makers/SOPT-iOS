@@ -126,6 +126,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
             guard let cell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className,
                                      for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }
+            cell.initCell(userType: .active)
             return cell
         default: return UICollectionViewCell()
         }
@@ -143,6 +144,19 @@ extension HomeForMemberVC: UICollectionViewDelegateFlowLayout {
         switch section {
         case 0:
             return CGSize(width: collectionView.frame.width, height: 123)
+        default:
+            return .zero
+        }
+    }
+    
+    public func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        switch indexPath.section {
+        case 0:
+            return CGSize(width: collectionView.frame.width, height: 160)
         default:
             return .zero
         }

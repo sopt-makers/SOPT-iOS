@@ -239,6 +239,8 @@ public struct I18N {
             
             public struct Attendance {
                 public static let attendance = "출석"
+                public static let event = "행사"
+                public static let seminar = "세미나"
             }
             
             public struct Services {
