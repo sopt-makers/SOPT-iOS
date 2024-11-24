@@ -16,8 +16,8 @@ public final class HomeBuilder {
 
 extension HomeBuilder: HomeFeatureBuildable {
     public func makeHomeForMember() -> HomeForMemberPresentable {
-        let homeForMemberVC = HomeForMemberVC()
         let viewModel = HomeForMemberViewModel()
+        let homeForMemberVC = HomeForMemberVC(viewModel: viewModel)
         return (homeForMemberVC, viewModel)
     }
     

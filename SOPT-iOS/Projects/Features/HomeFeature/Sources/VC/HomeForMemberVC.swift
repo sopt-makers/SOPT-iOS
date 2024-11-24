@@ -15,6 +15,10 @@ import DSKit
 import BaseFeatureDependency
 
 public final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
+    
+    // MARK: - Properties
+
+    public var viewModel: HomeForMemberViewModel
 
     // MARK: - UI Components
     
@@ -29,6 +33,17 @@ public final class HomeForMemberVC: UIViewController, HomeForMemberViewControlla
         $0.showsVerticalScrollIndicator = false
         $0.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         $0.backgroundColor = .clear
+    }
+    
+    // MARK: - Initialization
+    
+    public init(viewModel: HomeForMemberViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: - View Life Cycle
@@ -81,6 +96,8 @@ extension HomeForMemberVC {
                                      withReuseIdentifier: MainServiceHeaderView.className)
         self.collectionView.register(MainServiceCalendarCardCVC.self,
                                      forCellWithReuseIdentifier: MainServiceCalendarCardCVC.className)
+        self.collectionView.register(MainServiceProductCardCVC.self,
+                                     forCellWithReuseIdentifier: MainServiceProductCardCVC.className)
     }
 }
 
@@ -96,7 +113,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return HomeForMemberSectionLayoutKind.allCases.count
     }
-    
+        
     public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         guard kind == UICollectionView.elementKindSectionHeader else { return UICollectionReusableView() }
         
@@ -115,7 +132,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
-        case 0: return 1
+        case 0: return 5
         default: return 0
         }
     }
@@ -123,14 +140,30 @@ extension HomeForMemberVC: UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch indexPath.section {
         case 0:
-            guard let cell = collectionView
-                .dequeueReusableCell(withReuseIdentifier: MainServiceCalendarCardCVC.className,
-                                     for: indexPath) as? MainServiceCalendarCardCVC else { return UICollectionViewCell() }
-            cell.initCell(date: "10.22",
-                          tag: .event,
-                          title: "1차 행사",
-                          userType: .active)
-            return cell
+            switch indexPath.item {
+            case 0:
+                /// 캘린더 카드 셀
+                guard let calendarCardCell = collectionView
+                    .dequeueReusableCell(withReuseIdentifier: MainServiceCalendarCardCVC.className,
+                                         for: indexPath) as? MainServiceCalendarCardCVC else { return UICollectionViewCell() }
+                calendarCardCell.initCell(date: "10.22",
+                              tag: .event,
+                              title: "1차 행사",
+                              userType: .active)
+                return calendarCardCell
+            case 1...4:
+                /// 프로덕트 카드 셀
+                let productIndex = indexPath.item - 1
+                guard let productCardCell = collectionView
+                    .dequeueReusableCell(withReuseIdentifier: MainServiceProductCardCVC.className,
+                                         for: indexPath) as? MainServiceProductCardCVC else { return UICollectionViewCell() }
+                productCardCell.initCell(title: viewModel.productInfoList[productIndex].name,
+                                         image: viewModel.productInfoList[productIndex].image)
+                
+                return productCardCell
+                
+            default: return UICollectionViewCell()
+            }
         default: return UICollectionViewCell()
         }
     }
