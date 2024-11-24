@@ -22,7 +22,7 @@ public final class HomeForMemberVC: UIViewController, HomeForMemberViewControlla
     
     private lazy var collectionView = UICollectionView(
         frame: .zero,
-        collectionViewLayout: UICollectionViewFlowLayout()
+        collectionViewLayout: self.createLayout()
     ).then {
         $0.isScrollEnabled = true
         $0.showsHorizontalScrollIndicator = false
@@ -94,7 +94,7 @@ extension HomeForMemberVC: UICollectionViewDelegate {
 
 extension HomeForMemberVC: UICollectionViewDataSource {
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 7
+        return HomeForMemberSectionLayoutKind.allCases.count
     }
     
     public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -129,36 +129,6 @@ extension HomeForMemberVC: UICollectionViewDataSource {
             cell.initCell(userType: .active)
             return cell
         default: return UICollectionViewCell()
-        }
-    }
-}
-
-// MARK: - UICollectionViewDelegateFlowLayout
-
-extension HomeForMemberVC: UICollectionViewDelegateFlowLayout {
-    public func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        referenceSizeForHeaderInSection section: Int
-    ) -> CGSize {
-        switch section {
-        case 0:
-            return CGSize(width: collectionView.frame.width, height: 123)
-        default:
-            return .zero
-        }
-    }
-    
-    public func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        sizeForItemAt indexPath: IndexPath
-    ) -> CGSize {
-        switch indexPath.section {
-        case 0:
-            return CGSize(width: collectionView.frame.width, height: 160)
-        default:
-            return .zero
         }
     }
 }

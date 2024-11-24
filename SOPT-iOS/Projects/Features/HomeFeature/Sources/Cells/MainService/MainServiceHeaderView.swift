@@ -14,16 +14,14 @@ import DSKit
 final class MainServiceHeaderView: UICollectionReusableView {
     
     // MARK: - UI Components
-    
-    private let contentView = UIView()
-    
+        
     private let userInfoLabel = UILabel().then {
         $0.text = I18N.Home.MainService.UserHistory.welcome
         $0.textColor = DSKitAsset.Colors.white100.color
         $0.font = DSKitFontFamily.Suit.bold.font(size: 18)
         $0.numberOfLines = 2
         $0.textAlignment = .left
-        $0.setLineSpacing(lineSpacing: 5)
+        $0.setLineSpacing(lineSpacing: 4)
     }
     
     private let userHistoryView = UserHistoryView()
@@ -49,26 +47,19 @@ final class MainServiceHeaderView: UICollectionReusableView {
 
 extension MainServiceHeaderView {
     private func setUI() {
-        contentView.backgroundColor = DSKitAsset.Colors.gray800.color
-        contentView.layer.cornerRadius = 8
+        self.backgroundColor = DSKitAsset.Colors.gray800.color
+        self.layer.cornerRadius = 8
     }
     
     private func setLayout() {
-        self.addSubview(contentView)
-        
-        contentView.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(123)
-        }
-        
-        contentView.addSubviews(
+        self.addSubviews(
             userInfoLabel,
             userHistoryView
         )
-        
+
         userInfoLabel.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().inset(16)
+            make.top.equalToSuperview().inset(18)
+            make.leading.equalToSuperview().inset(16)
         }
         
         userHistoryView.snp.makeConstraints { make in
@@ -80,7 +71,7 @@ extension MainServiceHeaderView {
     }
     
     private func setRightArrowWithCircleImageViewLayout() {
-        contentView.addSubview(rightArrowWithCircleImageView)
+        self.addSubview(rightArrowWithCircleImageView)
         
         rightArrowWithCircleImageView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
@@ -102,6 +93,6 @@ extension MainServiceHeaderView {
             setRightArrowWithCircleImageViewLayout()
         }
         
-        userHistoryView.setData(userType: userType, recentHistory: 3, allHistory: [35, 34, 33])
+        userHistoryView.setData(userType: userType, recentHistory: 35, allHistory: [35, 34, 33])
     }
 }
