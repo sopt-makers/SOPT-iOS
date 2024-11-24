@@ -21,6 +21,7 @@ public extension Dep {
         public struct DailySoptune {}
         public struct Web {}
         public struct Home {}
+        public struct Soptlog {}
     }
     
     struct Modules {}
@@ -136,6 +137,13 @@ public extension Dep.Features.Web {
 
 public extension Dep.Features.Home {
     static let group = "Home"
+    
+    static let Feature = Dep.Features.project(name: "Feature", group: group)
+    static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))
+}
+
+public extension Dep.Features.Soptlog {
+    static let group = "Soptlog"
     
     static let Feature = Dep.Features.project(name: "Feature", group: group)
     static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))
