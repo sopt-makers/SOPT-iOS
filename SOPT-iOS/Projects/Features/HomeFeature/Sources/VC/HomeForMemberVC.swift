@@ -79,8 +79,8 @@ extension HomeForMemberVC {
         self.collectionView.register(MainServiceHeaderView.self,
                                      forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                      withReuseIdentifier: MainServiceHeaderView.className)
-        self.collectionView.register(MainServiceCVC.self,
-                                     forCellWithReuseIdentifier: MainServiceCVC.className)
+        self.collectionView.register(MainServiceCalendarCardCVC.self,
+                                     forCellWithReuseIdentifier: MainServiceCalendarCardCVC.className)
     }
 }
 
@@ -124,9 +124,12 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         switch indexPath.section {
         case 0:
             guard let cell = collectionView
-                .dequeueReusableCell(withReuseIdentifier: MainServiceCVC.className,
-                                     for: indexPath) as? MainServiceCVC else { return UICollectionViewCell() }
-            cell.initCell(userType: .active)
+                .dequeueReusableCell(withReuseIdentifier: MainServiceCalendarCardCVC.className,
+                                     for: indexPath) as? MainServiceCalendarCardCVC else { return UICollectionViewCell() }
+            cell.initCell(date: "10.22",
+                          tag: .event,
+                          title: "1차 행사",
+                          userType: .active)
             return cell
         default: return UICollectionViewCell()
         }

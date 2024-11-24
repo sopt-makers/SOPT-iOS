@@ -12,7 +12,7 @@ import Core
 import DSKit
 
 @frozen
-enum HomeCalenderCardTag {
+enum MainServiceCalenderCardTag {
     case event
     case seminar
     var tag: HomeSquareTagView {
@@ -31,7 +31,7 @@ enum HomeCalenderCardTag {
     }
 }
 
-final class HomeCalendarCardView: UIView {
+final class MainServiceCalendarCardCVC: UICollectionViewCell {
     
     // MARK: - Properties
     
@@ -107,7 +107,7 @@ final class HomeCalendarCardView: UIView {
 
 // MARK: - UI & Layout
 
-extension HomeCalendarCardView {
+extension MainServiceCalendarCardCVC {
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.gray800.color
         self.layer.cornerRadius = 8
@@ -145,8 +145,8 @@ extension HomeCalendarCardView {
 
 // MARK: - Methods
 
-extension HomeCalendarCardView {
-    func setData(date: String, tag: HomeCalenderCardTag, title: String, userType: UserType) {
+extension MainServiceCalendarCardCVC {
+    func initCell(date: String, tag: MainServiceCalenderCardTag, title: String, userType: UserType) {
         self.dateLabel.text = date
         self.scheduleTagView = tag.tag
         self.scheduleTitleLabel.text = title
