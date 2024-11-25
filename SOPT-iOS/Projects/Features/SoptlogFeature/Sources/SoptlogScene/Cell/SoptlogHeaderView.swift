@@ -20,11 +20,13 @@ final class SoptlogHeaderView: UICollectionReusableView {
     private let nameLabel = UILabel().then {
         $0.font = DSKitFontFamily.Suit.bold.font(size: 20)
         $0.textColor = DSKitAsset.Colors.white.color
+        $0.text = "차은우"
     }
     
     private let partLabel = UILabel().then {
         $0.font = DSKitFontFamily.Suit.medium.font(size: 12)
         $0.textColor = DSKitAsset.Colors.gray100.color
+        $0.text = "디자인/기획"
     }
     
     private let labelStackView = UIStackView().then {
@@ -56,7 +58,7 @@ extension SoptlogHeaderView {
         
         profileImageView.snp.makeConstraints { make in
             make.size.equalTo(80)
-            make.leading.trailing.bottom.equalToSuperview()
+            make.leading.bottom.equalToSuperview()
         }
         
         labelStackView.snp.makeConstraints { make in
