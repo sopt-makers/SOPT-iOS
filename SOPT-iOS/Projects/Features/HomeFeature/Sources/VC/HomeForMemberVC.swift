@@ -106,6 +106,8 @@ extension HomeForMemberVC {
                                      forCellWithReuseIdentifier: MainProductCardCVC.className)
         self.collectionView.register(AppServiceCardCVC.self,
                                      forCellWithReuseIdentifier: AppServiceCardCVC.className)
+        self.collectionView.register(InsightCardCVC.self,
+                                     forCellWithReuseIdentifier: InsightCardCVC.className)
     }
 }
 
