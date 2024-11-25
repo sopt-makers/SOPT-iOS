@@ -6,4 +6,18 @@
 //  Copyright © 2024 SOPT-iOS. All rights reserved.
 //
 
-import Foundation
+import Core
+import Domain
+@_exported import SoptlogFeatureInterface
+
+public final class SoptlogBuilder {
+    public init() {}
+}
+
+extension SoptlogBuilder: SoptlogFeatureBuildable {
+    public func makeSoptlog() -> SoptlogPresentable {
+        let viewModel = SoptlogViewModel()
+        let soptlogVC = SoptlogVC(viewModel: viewModel)
+        return (soptlogVC, viewModel)
+    }
+}
