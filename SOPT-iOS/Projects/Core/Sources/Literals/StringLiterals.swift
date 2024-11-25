@@ -226,6 +226,41 @@ public struct I18N {
         }
     }
     
+    public struct Home {
+        public struct MainService {
+            public struct UserHistory {
+                public static let visitor = "비회원"
+                public static let active = "기 활동 중"
+                public static let inactive = "기 수료"
+                public static let inactiveMember = "비활동"
+                public static let encourage = "안녕하세요.\nSOPT의 열정이 되어주세요!"
+            }
+            
+            public struct Attendance {
+                public static let attendance = "출석"
+                public static let event = "행사"
+                public static let seminar = "세미나"
+            }
+            
+            public struct Services {
+                public static let playground = "Playground"
+                public static let groupAndStudy = "모임/스터디"
+                public static let member = "멤버"
+                public static let project = "프로젝트"
+            }
+        }
+        
+        public struct AppService { }
+        
+        public struct Insight { }
+        
+        public struct Group { }
+        
+        public struct CoffeeChat { }
+        
+        public struct Announcements { }
+    }
+    
     public struct Attendance {
         public static func nthAttendance(_ idx: Int) -> String {
             return "\(idx)차 출석"

@@ -52,8 +52,10 @@ extension HomeSquareTagView {
 // MARK: - Methods
 
 extension HomeSquareTagView {
-    func setData(with text: String) {
-        self.titleLabel.text = text
+    @discardableResult
+    public func setTitle(with title: String) -> Self {
+        self.titleLabel.text = title
+        return self
     }
     
     @discardableResult

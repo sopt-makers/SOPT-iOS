@@ -1,8 +1,8 @@
 //
-//  HomeProductCardView.swift
+//  MainProductCardCVC.swift
 //  HomeFeature
 //
-//  Created by Jae Hyun Lee on 11/19/24.
+//  Created by Jae Hyun Lee on 11/24/24.
 //  Copyright © 2024 SOPT-iOS. All rights reserved.
 //
 
@@ -11,7 +11,7 @@ import UIKit
 import Core
 import DSKit
 
-final class HomeProductCardView: UIView {
+final class MainProductCardCVC: UICollectionViewCell {
     
     // MARK: - UI Components
         
@@ -44,7 +44,7 @@ final class HomeProductCardView: UIView {
 
 // MARK: - UI & Layout
 
-extension HomeProductCardView {
+extension MainProductCardCVC {
     private func setLayout() {
         self.addSubviews(
             logoBackgroundView, logoImageView, titleLabel
@@ -69,8 +69,8 @@ extension HomeProductCardView {
 
 // MARK: - Methods
 
-extension HomeProductCardView {
-    func setData(title: String, image: UIImage) {
+extension MainProductCardCVC {
+    func configureCell(title: String, image: UIImage) {
         self.titleLabel.text = title
         self.logoImageView.image = image
     }
