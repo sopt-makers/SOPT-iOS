@@ -1,5 +1,5 @@
 //
-//  MainServiceHeaderView.swift
+//  DashBoardHeaderView.swift
 //  HomeFeature
 //
 //  Created by Jae Hyun Lee on 11/22/24.
@@ -11,12 +11,11 @@ import UIKit
 import Core
 import DSKit
 
-final class MainServiceHeaderView: UICollectionReusableView {
+final class DashBoardHeaderView: UICollectionReusableView {
     
     // MARK: - UI Components
         
     private let userInfoLabel = UILabel().then {
-        $0.text = I18N.Home.MainService.UserHistory.welcome
         $0.textColor = DSKitAsset.Colors.white100.color
         $0.font = DSKitFontFamily.Suit.bold.font(size: 18)
         $0.numberOfLines = 2
@@ -45,7 +44,7 @@ final class MainServiceHeaderView: UICollectionReusableView {
 
 // MARK: - UI & Layout
 
-extension MainServiceHeaderView {
+extension DashBoardHeaderView {
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.gray800.color
         self.layer.cornerRadius = 8
@@ -83,16 +82,16 @@ extension MainServiceHeaderView {
 
 // MARK: - Methods
 
-extension MainServiceHeaderView {
-    func initCell(userType: UserType) {
+extension DashBoardHeaderView {
+    func configureCell(userType: UserType) {
         switch userType {
         case .visitor:
             self.userInfoLabel.text = I18N.Home.MainService.UserHistory.encourage
         case .active, .inactive:
-            self.userInfoLabel.text = I18N.Home.MainService.UserHistory.welcome
+            self.userInfoLabel.text = "김솝트 님은\nSOPT와 N개월 째"
             setRightArrowWithCircleImageViewLayout()
         }
         
-        userHistoryView.setData(userType: userType, recentHistory: 35, allHistory: [35, 34, 33])
+        userHistoryView.setData(userType: userType, recentHistory: 35, allHistory: [35, 34, 33, 32, 31, 30, 29])
     }
 }

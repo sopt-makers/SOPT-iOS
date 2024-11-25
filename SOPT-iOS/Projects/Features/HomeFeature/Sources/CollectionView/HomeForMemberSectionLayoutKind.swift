@@ -9,15 +9,12 @@
 import Foundation
 
 enum HomeForMemberSectionLayoutKind: Int, CaseIterable {
-    case mainService
+    case dashBoard
+    case mainProduct
     case appService
     case insight
     case group
     case coffeeChat
     case announcement
     case socialLinks
-    
-    static func type(_ index: Int) -> HomeForMemberSectionLayoutKind? {
-        return self.allCases[safe: index]
-    }
 }

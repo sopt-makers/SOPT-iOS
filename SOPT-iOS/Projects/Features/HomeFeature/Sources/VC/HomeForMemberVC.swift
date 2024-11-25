@@ -14,11 +14,11 @@ import DSKit
 
 import BaseFeatureDependency
 
-public final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
+final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     
     // MARK: - Properties
 
-    public var viewModel: HomeForMemberViewModel
+    public let viewModel: HomeForMemberViewModel
 
     // MARK: - UI Components
     
@@ -91,13 +91,13 @@ extension HomeForMemberVC {
     }
     
     private func registerCells() {
-        self.collectionView.register(MainServiceHeaderView.self,
+        self.collectionView.register(DashBoardHeaderView.self,
                                      forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                                     withReuseIdentifier: MainServiceHeaderView.className)
-        self.collectionView.register(MainServiceCalendarCardCVC.self,
-                                     forCellWithReuseIdentifier: MainServiceCalendarCardCVC.className)
-        self.collectionView.register(MainServiceProductCardCVC.self,
-                                     forCellWithReuseIdentifier: MainServiceProductCardCVC.className)
+                                     withReuseIdentifier: DashBoardHeaderView.className)
+        self.collectionView.register(DashBoardCalendarCardCVC.self,
+                                     forCellWithReuseIdentifier: DashBoardCalendarCardCVC.className)
+        self.collectionView.register(MainProductCardCVC.self,
+                                     forCellWithReuseIdentifier: MainProductCardCVC.className)
     }
 }
 
@@ -116,14 +116,15 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         
     public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         guard kind == UICollectionView.elementKindSectionHeader else { return UICollectionReusableView() }
+        guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: indexPath.section) else { return UICollectionReusableView() }
         
-        switch indexPath.section {
-        case 0:
+        switch sectionKind {
+        case .dashBoard:
             guard let headerView = collectionView
                 .dequeueReusableSupplementaryView(ofKind: kind,
-                                                  withReuseIdentifier: MainServiceHeaderView.className,
-                                                  for: indexPath) as? MainServiceHeaderView else { return UICollectionReusableView() }
-            headerView.initCell(userType: .active)
+                                                  withReuseIdentifier: DashBoardHeaderView.className,
+                                                  for: indexPath) as? DashBoardHeaderView else { return UICollectionReusableView() }
+            headerView.configureCell(userType: .active)
             return headerView
         default:
             return UICollectionReusableView()
@@ -131,39 +132,39 @@ extension HomeForMemberVC: UICollectionViewDataSource {
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        switch section {
-        case 0: return 5
+        guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: section) else { return 0 }
+        
+        switch sectionKind {
+        case .dashBoard: return 1
+        case .mainProduct: return 4
         default: return 0
         }
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch indexPath.section {
-        case 0:
-            switch indexPath.item {
-            case 0:
-                /// 캘린더 카드 셀
-                guard let calendarCardCell = collectionView
-                    .dequeueReusableCell(withReuseIdentifier: MainServiceCalendarCardCVC.className,
-                                         for: indexPath) as? MainServiceCalendarCardCVC else { return UICollectionViewCell() }
-                calendarCardCell.initCell(date: "10.22",
-                              tag: .event,
-                              title: "1차 행사",
-                              userType: .active)
-                return calendarCardCell
-            case 1...4:
-                /// 프로덕트 카드 셀
-                let productIndex = indexPath.item - 1
-                guard let productCardCell = collectionView
-                    .dequeueReusableCell(withReuseIdentifier: MainServiceProductCardCVC.className,
-                                         for: indexPath) as? MainServiceProductCardCVC else { return UICollectionViewCell() }
-                productCardCell.initCell(title: viewModel.productInfoList[productIndex].name,
-                                         image: viewModel.productInfoList[productIndex].image)
-                
-                return productCardCell
-                
-            default: return UICollectionViewCell()
-            }
+        guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: indexPath.section) else { return UICollectionViewCell() }
+        
+        switch sectionKind {
+        case .dashBoard:
+            /// 캘린더 카드 셀
+            guard let calendarCardCell = collectionView
+                .dequeueReusableCell(withReuseIdentifier: DashBoardCalendarCardCVC.className,
+                                     for: indexPath) as? DashBoardCalendarCardCVC else { return UICollectionViewCell() }
+            calendarCardCell.configureCell(date: "10.22",
+                          tag: .event,
+                          title: "1차 행사",
+                          userType: .active)
+            return calendarCardCell
+            
+        case .mainProduct:
+            /// 프로덕트 카드 셀
+            let productIndex = indexPath.item
+            guard let productCardCell = collectionView
+                .dequeueReusableCell(withReuseIdentifier: MainProductCardCVC.className,
+                                     for: indexPath) as? MainProductCardCVC else { return UICollectionViewCell() }
+            productCardCell.configureCell(title: viewModel.productInfoList[productIndex].name,
+                                          image: viewModel.productInfoList[productIndex].image)
+            return productCardCell
         default: return UICollectionViewCell()
         }
     }

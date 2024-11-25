@@ -1,5 +1,5 @@
 //
-//  MainServiceProductCardCVC.swift
+//  MainProductCardCVC.swift
 //  HomeFeature
 //
 //  Created by Jae Hyun Lee on 11/24/24.
@@ -11,7 +11,7 @@ import UIKit
 import Core
 import DSKit
 
-final class MainServiceProductCardCVC: UICollectionViewCell {
+final class MainProductCardCVC: UICollectionViewCell {
     
     // MARK: - UI Components
         
@@ -44,7 +44,7 @@ final class MainServiceProductCardCVC: UICollectionViewCell {
 
 // MARK: - UI & Layout
 
-extension MainServiceProductCardCVC {
+extension MainProductCardCVC {
     private func setLayout() {
         self.addSubviews(
             logoBackgroundView, logoImageView, titleLabel
@@ -69,8 +69,8 @@ extension MainServiceProductCardCVC {
 
 // MARK: - Methods
 
-extension MainServiceProductCardCVC {
-    func initCell(title: String, image: UIImage) {
+extension MainProductCardCVC {
+    func configureCell(title: String, image: UIImage) {
         self.titleLabel.text = title
         self.logoImageView.image = image
     }

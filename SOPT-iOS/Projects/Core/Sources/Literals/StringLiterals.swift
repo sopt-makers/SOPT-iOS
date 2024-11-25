@@ -234,7 +234,6 @@ public struct I18N {
                 public static let inactive = "기 수료"
                 public static let inactiveMember = "비활동"
                 public static let encourage = "안녕하세요.\nSOPT의 열정이 되어주세요!"
-                public static let welcome = "안녕하세요.\nSOPT에 오신 것을 환영합니다!"
             }
             
             public struct Attendance {

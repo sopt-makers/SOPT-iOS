@@ -1,5 +1,5 @@
 //
-//  HomeCalendarCardView.swift
+//  DashBoardCalendarCardCVC.swift
 //  HomeFeature
 //
 //  Created by Jae Hyun Lee on 11/22/24.
@@ -15,7 +15,8 @@ import DSKit
 enum MainServiceCalenderCardTag {
     case event
     case seminar
-    var tag: HomeSquareTagView {
+    
+    func makeTag() -> HomeSquareTagView {
         switch self {
         case .event:
             return HomeSquareTagView()
@@ -31,11 +32,7 @@ enum MainServiceCalenderCardTag {
     }
 }
 
-final class MainServiceCalendarCardCVC: UICollectionViewCell {
-    
-    // MARK: - Properties
-    
-    private var userType: UserType?
+final class DashBoardCalendarCardCVC: UICollectionViewCell {
     
     // MARK: - UI Components
 
@@ -67,7 +64,7 @@ final class MainServiceCalendarCardCVC: UICollectionViewCell {
         $0.configurationUpdateHandler = { button in
             guard var configuration = button.configuration else { return }
             /// 타이틀 설정
-            var attributedTitle = AttributedString("출석")
+            var attributedTitle = AttributedString(I18N.Home.MainService.Attendance.attendance)
             var attributes = AttributeContainer()
             attributes.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
             attributes.foregroundColor = DSKitAsset.Colors.black.color
@@ -107,7 +104,7 @@ final class MainServiceCalendarCardCVC: UICollectionViewCell {
 
 // MARK: - UI & Layout
 
-extension MainServiceCalendarCardCVC {
+extension DashBoardCalendarCardCVC {
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.gray800.color
         self.layer.cornerRadius = 8
@@ -145,13 +142,15 @@ extension MainServiceCalendarCardCVC {
 
 // MARK: - Methods
 
-extension MainServiceCalendarCardCVC {
-    func initCell(date: String, tag: MainServiceCalenderCardTag, title: String, userType: UserType) {
+extension DashBoardCalendarCardCVC {
+    func configureCell(date: String, tag: MainServiceCalenderCardTag, title: String, userType: UserType) {
         self.dateLabel.text = date
-        self.scheduleTagView = tag.tag
+        self.scheduleTagView = tag.makeTag()
         self.scheduleTitleLabel.text = title
-        self.userType = userType
-        self.scheduleTagView = tag.tag
-        self.scheduleStackView.insertArrangedSubview(self.scheduleTagView, at: 1)
+        self.scheduleTagView = tag.makeTag()
+        if !scheduleStackView.contains(scheduleTagView) {
+            self.scheduleStackView.insertArrangedSubview(self.scheduleTagView, at: 1)
+        }
+        self.attendanceButton.isHidden = userType == .visitor
     }
 }

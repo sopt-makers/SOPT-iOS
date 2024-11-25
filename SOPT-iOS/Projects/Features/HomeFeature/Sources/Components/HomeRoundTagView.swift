@@ -65,6 +65,5 @@ extension HomeRoundTagView {
 extension HomeRoundTagView {
     func setData(with text: String) {
         self.titleLabel.text = text
-        self.layoutIfNeeded()
     }
 }

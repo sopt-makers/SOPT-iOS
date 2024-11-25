@@ -22,19 +22,21 @@ extension HomeForMemberVC {
     
     func createLayout() -> UICollectionViewCompositionalLayout {
         return UICollectionViewCompositionalLayout { sectionIndex, env in
-            guard let sectionKind = HomeForMemberSectionLayoutKind.type(sectionIndex)
+            guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: sectionIndex)
             else { return self.createEmptySection() }
             
             switch sectionKind {
-            case .mainService:
-                return self.createMainServiceSection()
+            case .dashBoard:
+                return self.createDashBoardSection()
+            case .mainProduct:
+                return self.createMainProductSection()
             default:
                 return self.createEmptySection()
             }
         }
     }
     
-    private func createMainServiceSection() -> NSCollectionLayoutSection {
+    private func createDashBoardSection() -> NSCollectionLayoutSection {
         /// header: 유저 정보 및 활동 히스토리
         let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                 heightDimension: .absolute(123))
@@ -53,17 +55,36 @@ extension HomeForMemberVC {
         let calendarGroup = NSCollectionLayoutGroup.vertical(layoutSize: calendarGroupSize,
                                                              subitems: [calendarItem])
         
+        /// section 지정
+        let section = NSCollectionLayoutSection(
+            group: NSCollectionLayoutGroup.vertical(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .estimated(295)
+                ),
+                subitems: [calendarGroup]
+            )
+        )
+        section.boundarySupplementaryItems = [header]
+        section.contentInsets = NSDirectionalEdgeInsets(top: 12,
+                                                        leading: Metric.collectionViewDefaultSideInset,
+                                                        bottom: 0,
+                                                        trailing: Metric.collectionViewDefaultSideInset)
+        
+        return section
+    }
+    
+    private func createMainProductSection() -> NSCollectionLayoutSection {
         /// item: 프로덕트 카드
         let productItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.25),
                                                      heightDimension: .absolute(92))
         let productItem = NSCollectionLayoutItem(layoutSize: productItemSize)
-        productItem.contentInsets = .init(top: 12, leading: 0, bottom: 0, trailing: 0)
         
         /// group: 프로덕트 카드
         let productGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                       heightDimension: .estimated(92))
         let productGroup = NSCollectionLayoutGroup.horizontal(layoutSize: productGroupSize,
-                                                            subitems: Array(repeating: productItem, count: 4))
+                                                              subitems: [productItem])
         productGroup.interItemSpacing = .fixed(Metric.productItemSpacing)
         
         /// section 지정
@@ -73,10 +94,9 @@ extension HomeForMemberVC {
                     widthDimension: .fractionalWidth(1.0),
                     heightDimension: .estimated(295)
                 ),
-                subitems: [calendarGroup, productGroup]
+                subitems: [productGroup]
             )
         )
-        section.boundarySupplementaryItems = [header]
         section.contentInsets = NSDirectionalEdgeInsets(top: 12,
                                                         leading: Metric.collectionViewDefaultSideInset,
                                                         bottom: 0,

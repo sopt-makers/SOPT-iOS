@@ -14,7 +14,7 @@ import DSKit
 
 import BaseFeatureDependency
 
-public final class HomeForVisitorVC: UIViewController, HomeForVisitorViewControllable {
+final class HomeForVisitorVC: UIViewController, HomeForVisitorViewControllable {
     
     // MARK: - UI Components
     
@@ -22,7 +22,7 @@ public final class HomeForVisitorVC: UIViewController, HomeForVisitorViewControl
     
     // MARK: - View Life Cycle
 
-    public override func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
         setLayout()
