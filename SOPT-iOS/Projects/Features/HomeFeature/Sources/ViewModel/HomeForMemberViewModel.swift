@@ -28,6 +28,14 @@ struct AppServiceInfo {
     let badgeText: String
 }
 
+struct InsightInfo {
+    let category: String
+    let profileImageURL: UIImage
+    let userName: String
+    let postTitle: String
+    let isHotTag: Bool
+}
+
 public class HomeForMemberViewModel: HomeForMemberViewModelType {
     
     // MARK: - Properties
@@ -44,6 +52,11 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         AppServiceInfo(name: "콕찌르기", imageURL: "", badgeText: "3"),
         AppServiceInfo(name: "솝마디", imageURL: "", badgeText: "N"),
         AppServiceInfo(name: "솝탬프", imageURL: "", badgeText: "3위")
+    ]
+    
+    // TODO: 서버 연결 필요
+    let insightInfoList: [InsightInfo] = [
+        InsightInfo(category: "SOPT활동", profileImageURL: DSKitAsset.Assets.imgMemberLogo.image, userName: "차은우", postTitle: "차은우가 솝트 기획으로 활동한 썰 푼다 최대글자수입니다람지렁이", isHotTag: false)
     ]
     
     // MARK: - Inputs
