@@ -154,6 +154,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .dashBoard: return 1
         case .mainProduct: return viewModel.productInfoList.count
         case .appService: return viewModel.appServiceInfoList.count
+        case .insight: return viewModel.insightInfoList.count
         default: return 0
         }
     }
@@ -193,7 +194,16 @@ extension HomeForMemberVC: UICollectionViewDataSource {
                                              name: viewModel.appServiceInfoList[appServiceIndex].name,
                                              badgeText: viewModel.appServiceInfoList[appServiceIndex].badgeText)
             return appServiceCardCell
+        
+        case .insight:
+            /// 인사이트 카드 셀
+            let insightIndex = indexPath.item
+            guard let insightCardCell = collectionView
+                .dequeueReusableCell(withReuseIdentifier: InsightCardCVC.className,
+                                     for: indexPath) as? InsightCardCVC else { return UICollectionViewCell() }
+            insightCardCell.configureCell(model: viewModel.insightInfoList[insightIndex])
             
+            return insightCardCell
         default: return UICollectionViewCell()
         }
     }
