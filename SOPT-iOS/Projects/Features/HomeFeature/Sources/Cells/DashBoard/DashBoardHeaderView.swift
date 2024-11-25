@@ -83,10 +83,10 @@ extension DashBoardHeaderView {
 // MARK: - Methods
 
 extension DashBoardHeaderView {
-    func configureCell(userType: UserType) {
+    func setData(userType: UserType) {
         switch userType {
         case .visitor:
-            self.userInfoLabel.text = I18N.Home.MainService.UserHistory.encourage
+            self.userInfoLabel.text = I18N.Home.DashBoard.UserHistory.encourage
         case .active, .inactive:
             self.userInfoLabel.text = "김솝트 님은\nSOPT와 N개월 째"
             setRightArrowWithCircleImageViewLayout()
