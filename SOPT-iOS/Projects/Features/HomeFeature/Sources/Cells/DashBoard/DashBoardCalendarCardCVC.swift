@@ -147,7 +147,6 @@ extension DashBoardCalendarCardCVC {
         self.dateLabel.text = date
         self.scheduleTagView = tag.makeTag()
         self.scheduleTitleLabel.text = title
-        self.scheduleTagView = tag.makeTag()
         if !scheduleStackView.contains(scheduleTagView) {
             self.scheduleStackView.insertArrangedSubview(self.scheduleTagView, at: 1)
         }
