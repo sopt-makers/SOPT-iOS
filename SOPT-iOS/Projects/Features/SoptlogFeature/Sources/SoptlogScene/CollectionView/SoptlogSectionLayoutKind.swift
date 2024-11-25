@@ -7,3 +7,10 @@
 //
 
 import Foundation
+
+enum SoptlogSectionLayoutKind: Int, CaseIterable {
+    case introduce
+    case appService
+    case editProfile
+    case alarm
+}

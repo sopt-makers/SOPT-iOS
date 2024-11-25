@@ -261,6 +261,11 @@ public struct I18N {
         public struct Announcements { }
     }
     
+    public struct Soptlog {
+        public static let editProfile = "프로필 수정"
+        public static let enrollIntroduce = "한 줄 소개 등록하기 >"
+    }
+    
     public struct Attendance {
         public static func nthAttendance(_ idx: Int) -> String {
             return "\(idx)차 출석"
