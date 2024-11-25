@@ -22,7 +22,7 @@ final class SoptlogAppServiceCVC: UICollectionViewCell {
     }
     
     private let serviceImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.soptampLogo.image
+        $0.image = DSKitAsset.Assets.icHot.image
     }
     
     private let serviceLabel = UILabel().then {
@@ -55,9 +55,12 @@ extension SoptlogAppServiceCVC {
         
         titleLabel.snp.makeConstraints { make in
             make.centerX.top.equalToSuperview()
+            make.top.equalToSuperview().inset(10)
         }
         
         serviceImageView.snp.makeConstraints { make in
+            make.size.equalTo(39)
+            make.centerX.equalToSuperview()
             make.top.equalTo(titleLabel.snp.bottom).offset(6)
         }
         

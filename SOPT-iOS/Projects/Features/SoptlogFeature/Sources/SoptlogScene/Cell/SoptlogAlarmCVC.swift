@@ -50,7 +50,7 @@ final class SoptlogAlarmCVC: UICollectionViewCell {
 
 extension SoptlogAlarmCVC {
     private func setUI() {
-        contentView.backgroundColor = .clear
+        contentView.backgroundColor = DSKitAsset.Colors.gray800.color
     }
     
     private func setLayout() {
