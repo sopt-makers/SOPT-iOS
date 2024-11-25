@@ -37,11 +37,23 @@ extension AppCustomButton {
     /// 버튼의 Title 변경
     @discardableResult
     public func changeTitle(attributedString: String) -> Self {
-        let string = NSAttributedString(string: attributedString, attributes: [.font: UIFont.SoptampFont.h2, .foregroundColor: self.titleLabel?.textColor ?? .white])
+        let string = NSAttributedString(
+            string: attributedString,
+            attributes: [
+                .font: UIFont.SoptampFont.h2,
+                .foregroundColor: self.titleLabel?.textColor ?? .white])
         self.setAttributedTitle(string, for: .normal)
         return self
     }
+    
+    /// 버튼의 cornerRadius 변경
+    @discardableResult
+    public func changeCornerRadius(radius: Double) -> Self {
+        self.layer.cornerRadius = radius
+        return self
+    }
 	
+    /// 버튼의 font와 textColor 변경
 	@discardableResult
 	public func setFontColor(customFont: UIFont, customColor: UIColor = DSKitAsset.Colors.black100.color) -> Self {
 		if let title = self.titleLabel,
@@ -55,26 +67,28 @@ extension AppCustomButton {
 		return self
 	}
     
-    /// 버튼의 backgroundColor, textColor 변경
+    /// 버튼의 enable, disable에 따른 상태 변경
     @discardableResult
-    public func setColor(
+    public func setConfigForState(
         bgColor: UIColor = DSKitAsset.Colors.white100.color,
-        disableColor: UIColor = DSKitAsset.Colors.gray600.color,
+        disabledColor: UIColor = DSKitAsset.Colors.gray600.color,
         disabledTextColor: UIColor = DSKitAsset.Colors.gray60.color,
-        enabledTextColor: UIColor = DSKitAsset.Colors.black100.color
+        disabledFont: UIFont = DSKitFontFamily.Suit.bold.font(size: 18),
+        enabledTextColor: UIColor = DSKitAsset.Colors.black100.color,
+        enabledFont: UIFont = DSKitFontFamily.Suit.bold.font(size: 18)
     ) -> Self {
         self.setBackgroundColor(bgColor, for: .normal)
-        self.setBackgroundColor(disableColor, for: .disabled)
+        self.setBackgroundColor(disabledColor, for: .disabled)
         self.setAttributedTitle(
             NSAttributedString(
                 string: self.titleLabel?.text ?? "",
-                attributes: [.font: DSKitFontFamily.Suit.bold.font(size: 18), .foregroundColor: enabledTextColor]),
+                attributes: [.font: enabledFont, .foregroundColor: enabledTextColor]),
             for: .normal
         )
         self.setAttributedTitle(
             NSAttributedString(
                 string: self.titleLabel?.text ?? "",
-                attributes: [.font: DSKitFontFamily.Suit.bold.font(size: 18), .foregroundColor: disabledTextColor]),
+                attributes: [.font: disabledFont, .foregroundColor: disabledTextColor]),
             for: .disabled
         )
         
