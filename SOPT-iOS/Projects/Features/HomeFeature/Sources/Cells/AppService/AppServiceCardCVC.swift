@@ -1,5 +1,5 @@
 //
-//  HomeServiceCardView.swift
+//  AppServiceCardCVC.swift
 //  HomeFeature
 //
 //  Created by Jae Hyun Lee on 11/20/24.
@@ -11,7 +11,7 @@ import UIKit
 import Core
 import DSKit
 
-final class HomeServiceCardView: UIView {
+final class AppServiceCardCVC: UICollectionViewCell {
     
     // MARK: - UI Components
         
@@ -46,7 +46,7 @@ final class HomeServiceCardView: UIView {
 
 // MARK: - UI & Layout
 
-extension HomeServiceCardView {
+extension AppServiceCardCVC {
     private func setLayout() {
         self.addSubviews(
             logoBackgroundView, logoImageView, titleLabel, notificationBadgeView
@@ -75,10 +75,10 @@ extension HomeServiceCardView {
 
 // MARK: - Methods
 
-extension HomeServiceCardView {
-    func setData(imageURL: String, title: String, badgeText: String) {
+extension AppServiceCardCVC {
+    func configureCell(imageURL: String, name: String, badgeText: String) {
         self.logoImageView.setImage(with: imageURL)
-        self.titleLabel.text = title
+        self.titleLabel.text = name
         self.notificationBadgeView.setData(with: badgeText)
     }
 }

@@ -20,12 +20,12 @@ enum MainServiceCalenderCardTag {
         switch self {
         case .event:
             return HomeSquareTagView()
-                .setTitle(with: I18N.Home.MainService.Attendance.event)
+                .setTitle(with: I18N.Home.DashBoard.Attendance.event)
                 .setTitleColor(with: DSKitAsset.Colors.success.color)
                 .setBackgroundColor(with: DSKitAsset.Colors.success.color.withAlphaComponent(0.2))
         case .seminar:
             return HomeSquareTagView()
-                .setTitle(with: I18N.Home.MainService.Attendance.seminar)
+                .setTitle(with: I18N.Home.DashBoard.Attendance.seminar)
                 .setTitleColor(with: DSKitAsset.Colors.success.color)
                 .setBackgroundColor(with: DSKitAsset.Colors.secondary.color.withAlphaComponent(0.2))
         }
@@ -64,7 +64,7 @@ final class DashBoardCalendarCardCVC: UICollectionViewCell {
         $0.configurationUpdateHandler = { button in
             guard var configuration = button.configuration else { return }
             /// 타이틀 설정
-            var attributedTitle = AttributedString(I18N.Home.MainService.Attendance.attendance)
+            var attributedTitle = AttributedString(I18N.Home.DashBoard.Attendance.attendance)
             var attributes = AttributeContainer()
             attributes.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
             attributes.foregroundColor = DSKitAsset.Colors.black.color

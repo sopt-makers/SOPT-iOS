@@ -91,13 +91,21 @@ extension HomeForMemberVC {
     }
     
     private func registerCells() {
+        /// Header
         self.collectionView.register(DashBoardHeaderView.self,
                                      forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                      withReuseIdentifier: DashBoardHeaderView.className)
+        self.collectionView.register(HomeDefaultHeaderView.self,
+                                     forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                     withReuseIdentifier: HomeDefaultHeaderView.className)
+        
+        /// Cell
         self.collectionView.register(DashBoardCalendarCardCVC.self,
                                      forCellWithReuseIdentifier: DashBoardCalendarCardCVC.className)
         self.collectionView.register(MainProductCardCVC.self,
                                      forCellWithReuseIdentifier: MainProductCardCVC.className)
+        self.collectionView.register(AppServiceCardCVC.self,
+                                     forCellWithReuseIdentifier: AppServiceCardCVC.className)
     }
 }
 
@@ -119,15 +127,21 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: indexPath.section) else { return UICollectionReusableView() }
         
         switch sectionKind {
+        /// dashBoard일 경우에만 defaultHeader 대신 UserHistory가 나타나는 커스텀 헤더를 사용합니다.
         case .dashBoard:
             guard let headerView = collectionView
                 .dequeueReusableSupplementaryView(ofKind: kind,
                                                   withReuseIdentifier: DashBoardHeaderView.className,
                                                   for: indexPath) as? DashBoardHeaderView else { return UICollectionReusableView() }
-            headerView.configureCell(userType: .active)
+            headerView.setData(userType: .active)
             return headerView
         default:
-            return UICollectionReusableView()
+            guard let headerView = collectionView
+                .dequeueReusableSupplementaryView(ofKind: kind,
+                                                  withReuseIdentifier: HomeDefaultHeaderView.className,
+                                                  for: indexPath) as? HomeDefaultHeaderView else { return UICollectionReusableView() }
+            headerView.setData(sectionKind: sectionKind)
+            return headerView
         }
     }
     
@@ -136,7 +150,8 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         
         switch sectionKind {
         case .dashBoard: return 1
-        case .mainProduct: return 4
+        case .mainProduct: return viewModel.productInfoList.count
+        case .appService: return viewModel.appServiceInfoList.count
         default: return 0
         }
     }
@@ -165,6 +180,18 @@ extension HomeForMemberVC: UICollectionViewDataSource {
             productCardCell.configureCell(title: viewModel.productInfoList[productIndex].name,
                                           image: viewModel.productInfoList[productIndex].image)
             return productCardCell
+            
+        case .appService:
+            /// 앱 서비스 카드 셀
+            let appServiceIndex = indexPath.item
+            guard let appServiceCardCell = collectionView
+                .dequeueReusableCell(withReuseIdentifier: AppServiceCardCVC.className,
+                                     for: indexPath) as? AppServiceCardCVC else { return UICollectionViewCell() }
+            appServiceCardCell.configureCell(imageURL: viewModel.appServiceInfoList[appServiceIndex].imageURL,
+                                             name: viewModel.appServiceInfoList[appServiceIndex].name,
+                                             badgeText: viewModel.appServiceInfoList[appServiceIndex].badgeText)
+            return appServiceCardCell
+            
         default: return UICollectionViewCell()
         }
     }
