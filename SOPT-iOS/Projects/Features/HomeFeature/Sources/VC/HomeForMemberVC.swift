@@ -91,13 +91,21 @@ extension HomeForMemberVC {
     }
     
     private func registerCells() {
+        /// Header
         self.collectionView.register(DashBoardHeaderView.self,
                                      forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                      withReuseIdentifier: DashBoardHeaderView.className)
+        self.collectionView.register(HomeDefaultHeaderView.self,
+                                     forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                     withReuseIdentifier: HomeDefaultHeaderView.className)
+        
+        /// Cell
         self.collectionView.register(DashBoardCalendarCardCVC.self,
                                      forCellWithReuseIdentifier: DashBoardCalendarCardCVC.className)
         self.collectionView.register(MainProductCardCVC.self,
                                      forCellWithReuseIdentifier: MainProductCardCVC.className)
+        self.collectionView.register(AppServiceCardCVC.self,
+                                     forCellWithReuseIdentifier: AppServiceCardCVC.className)
     }
 }
 
