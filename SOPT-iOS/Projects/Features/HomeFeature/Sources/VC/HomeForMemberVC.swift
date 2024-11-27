@@ -157,6 +157,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .mainProduct: return viewModel.productInfoList.count
         case .appService: return viewModel.appServiceInfoList.count
         case .insight: return viewModel.insightInfoList.count
+        case .group: return viewModel.groupInfoList.count
         default: return 0
         }
     }
@@ -206,6 +207,17 @@ extension HomeForMemberVC: UICollectionViewDataSource {
             insightCardCell.configureCell(model: viewModel.insightInfoList[insightIndex])
             
             return insightCardCell
+            
+        case .group:
+            /// 모임 카드 셀
+            let groupIndex = indexPath.item
+            guard let groupCardCell = collectionView
+                .dequeueReusableCell(withReuseIdentifier: GroupCardCVC.className,
+                                     for: indexPath) as? GroupCardCVC else { return UICollectionViewCell() }
+            groupCardCell.configureCell(model: viewModel.groupInfoList[groupIndex])
+            
+            return groupCardCell
+
         default: return UICollectionViewCell()
         }
     }

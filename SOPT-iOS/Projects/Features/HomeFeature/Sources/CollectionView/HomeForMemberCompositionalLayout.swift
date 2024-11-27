@@ -35,6 +35,8 @@ extension HomeForMemberVC {
                 return self.createAppServiceSection()
             case .insight:
                 return self.createInsightSection()
+            case .group:
+                return self.createGroupSection()
             default:
                 return self.createEmptySection()
             }
@@ -168,20 +170,49 @@ extension HomeForMemberVC {
                                                               subitems: [insightItem])
         
         /// section 지정
+        let section = NSCollectionLayoutSection(group: insightGroup)
+        section.boundarySupplementaryItems = [header]
+        section.contentInsets = NSDirectionalEdgeInsets(top: 16,
+                                                        leading: Metric.collectionViewDefaultSideInset,
+                                                        bottom: Metric.defaultLineSpacing,
+                                                        trailing: Metric.collectionViewDefaultSideInset)
+        return section
+    }
+    
+    private func createGroupSection() -> NSCollectionLayoutSection {
+        /// header: default
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                heightDimension: .absolute(30))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
+                                                                 elementKind: UICollectionView.elementKindSectionHeader,
+                                                                 alignment: .top)
+        header.contentInsets = .init(top: 0,
+                                     leading: 0,
+                                     bottom: 0,
+                                     trailing: Metric.collectionViewDefaultSideInset)
+        
+        /// item: 모임 카드
+        let groupItemSize = NSCollectionLayoutSize(widthDimension: .absolute(140),
+                                                   heightDimension: .estimated(220))
+        let groupItem = NSCollectionLayoutItem(layoutSize: groupItemSize)
+        
+        /// group: 모임 카드
+        let groupGroupSize = NSCollectionLayoutSize(widthDimension: .absolute(150),
+                                                    heightDimension: .estimated(220))
+        let groupGroup = NSCollectionLayoutGroup.horizontal(layoutSize: groupGroupSize,
+                                                            subitems: [groupItem])
+        groupGroup.interItemSpacing = .fixed(12)
+        
+        /// section 지정
         let section = NSCollectionLayoutSection(
-            group: NSCollectionLayoutGroup.horizontal(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(80)
-                ),
-                subitems: [insightGroup]
-            )
+            group: groupGroup
         )
         section.boundarySupplementaryItems = [header]
         section.contentInsets = NSDirectionalEdgeInsets(top: 16,
                                                         leading: Metric.collectionViewDefaultSideInset,
                                                         bottom: 0,
-                                                        trailing: Metric.collectionViewDefaultSideInset)
+                                                        trailing: 0)
+        section.orthogonalScrollingBehavior = .groupPaging
         return section
     }
     
