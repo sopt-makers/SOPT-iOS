@@ -63,15 +63,7 @@ extension HomeForMemberVC {
                                                              subitems: [calendarItem])
         
         /// section 지정
-        let section = NSCollectionLayoutSection(
-            group: NSCollectionLayoutGroup.vertical(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(295)
-                ),
-                subitems: [calendarGroup]
-            )
-        )
+        let section = NSCollectionLayoutSection(group: calendarGroup)
         section.boundarySupplementaryItems = [header]
         section.contentInsets = NSDirectionalEdgeInsets(top: 12,
                                                         leading: Metric.collectionViewDefaultSideInset,
@@ -95,15 +87,7 @@ extension HomeForMemberVC {
         productGroup.interItemSpacing = .fixed(Metric.productItemSpacing)
         
         /// section 지정
-        let section = NSCollectionLayoutSection(
-            group: NSCollectionLayoutGroup.vertical(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(295)
-                ),
-                subitems: [productGroup]
-            )
-        )
+        let section = NSCollectionLayoutSection(group: productGroup)
         section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultItemSpacing,
                                                         leading: Metric.collectionViewDefaultSideInset,
                                                         bottom: 40,
@@ -133,15 +117,7 @@ extension HomeForMemberVC {
         appServiceGroup.interItemSpacing = .fixed(Metric.appServiceItemSpacing)
         
         /// section 지정
-        let section = NSCollectionLayoutSection(
-            group: NSCollectionLayoutGroup.horizontal(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(106)
-                ),
-                subitems: [appServiceGroup]
-            )
-        )
+        let section = NSCollectionLayoutSection(group: appServiceGroup)
         section.boundarySupplementaryItems = [header]
         section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultItemSpacing,
                                                         leading: Metric.collectionViewDefaultSideInset,
