@@ -64,6 +64,7 @@ final class InsightCardCVC: UICollectionViewCell {
 extension InsightCardCVC {
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.gray800.color
+        self.layer.cornerRadius = 12
     }
 
     private func setLayout() {
