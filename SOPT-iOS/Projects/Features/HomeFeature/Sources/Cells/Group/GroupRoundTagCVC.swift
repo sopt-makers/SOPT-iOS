@@ -11,7 +11,7 @@ import UIKit
 import Core
 import DSKit
 
-final class HomeRoundTagView: UIView {
+final class GroupRoundTagCVC: UICollectionViewCell {
 
     // MARK: - UI Components
     
@@ -41,7 +41,7 @@ final class HomeRoundTagView: UIView {
 
 // MARK: - UI & Layout
 
-extension HomeRoundTagView {
+extension GroupRoundTagCVC {
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.gray700.color
     }
@@ -62,8 +62,14 @@ extension HomeRoundTagView {
 
 // MARK: - Methods
 
-extension HomeRoundTagView {
+extension GroupRoundTagCVC {
     func setData(with text: String) {
         self.titleLabel.text = text
+    }
+    
+    @discardableResult
+    public func setTitle(with title: String) -> Self {
+        self.titleLabel.text = title
+        return self
     }
 }
