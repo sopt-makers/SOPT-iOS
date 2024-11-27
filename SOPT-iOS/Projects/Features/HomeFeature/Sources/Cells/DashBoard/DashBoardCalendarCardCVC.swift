@@ -12,22 +12,34 @@ import Core
 import DSKit
 
 @frozen
-enum MainServiceCalenderCardTag {
+enum DashBoardCalenderCategoryTagType {
     case event
     case seminar
     
-    func makeTag() -> HomeSquareTagView {
+    var text: String {
         switch self {
         case .event:
-            return HomeSquareTagView()
-                .setTitle(with: I18N.Home.DashBoard.Attendance.event)
-                .setTitleColor(with: DSKitAsset.Colors.success.color)
-                .setBackgroundColor(with: DSKitAsset.Colors.success.color.withAlphaComponent(0.2))
+            return I18N.Home.DashBoard.Attendance.event
         case .seminar:
-            return HomeSquareTagView()
-                .setTitle(with: I18N.Home.DashBoard.Attendance.seminar)
-                .setTitleColor(with: DSKitAsset.Colors.success.color)
-                .setBackgroundColor(with: DSKitAsset.Colors.secondary.color.withAlphaComponent(0.2))
+            return I18N.Home.DashBoard.Attendance.seminar
+        }
+    }
+    
+    var textColor: UIColor {
+        switch self {
+        case .event:
+            return DSKitAsset.Colors.success.color
+        case .seminar:
+            return DSKitAsset.Colors.success.color
+        }
+    }
+    
+    var backgroundColor: UIColor {
+        switch self {
+        case .event:
+            return DSKitAsset.Colors.success.color.withAlphaComponent(0.2)
+        case .seminar:
+            return DSKitAsset.Colors.secondary.color.withAlphaComponent(0.2)
         }
     }
 }
@@ -42,14 +54,14 @@ final class DashBoardCalendarCardCVC: UICollectionViewCell {
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
     }
     
+    private let scheduleCategoryTagView = HomeSquareTagView()
+    
     private let scheduleTitleLabel = UILabel().then {
         $0.text = "1차 행사"
         $0.textColor = DSKitAsset.Colors.white.color
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
     }
-    
-    private var scheduleTagView = HomeSquareTagView()
-    
+        
     private let rightArrowImageView = UIImageView().then {
         $0.image = DSKitAsset.Assets.chevronRight.image.withTintColor(DSKitAsset.Colors.white.color)
         $0.contentMode = .scaleAspectFit
@@ -135,6 +147,7 @@ extension DashBoardCalendarCardCVC {
         
         scheduleStackView.addArrangedSubviews(
             dateLabel,
+            scheduleCategoryTagView,
             titleStackView
         )
     }
@@ -143,13 +156,12 @@ extension DashBoardCalendarCardCVC {
 // MARK: - Methods
 
 extension DashBoardCalendarCardCVC {
-    func configureCell(date: String, tag: MainServiceCalenderCardTag, title: String, userType: UserType) {
+    func configureCell(date: String, tag: DashBoardCalenderCategoryTagType, title: String, userType: UserType) {
         self.dateLabel.text = date
-        self.scheduleTagView = tag.makeTag()
         self.scheduleTitleLabel.text = title
-        if !scheduleStackView.contains(scheduleTagView) {
-            self.scheduleStackView.insertArrangedSubview(self.scheduleTagView, at: 1)
-        }
+        self.scheduleCategoryTagView.setData(title: tag.text,
+                                             titleColor: tag.textColor,
+                                             backgroundColor: tag.backgroundColor)
         self.attendanceButton.isHidden = userType == .visitor
     }
 }
