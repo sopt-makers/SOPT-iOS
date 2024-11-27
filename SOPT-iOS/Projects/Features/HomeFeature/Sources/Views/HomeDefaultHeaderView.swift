@@ -20,16 +20,31 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
         $0.textColor = DSKitAsset.Colors.white100.color
     }
     
+    private let coffechatLogoImageView = UIImageView().then {
+        $0.image = DSKitAsset.Assets.imgCoffeechatLogo.image
+        $0.contentMode = .scaleAspectFit
+        $0.isHidden = true
+    }
+    
+    private let titleStackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.alignment = .leading
+        $0.spacing = 8
+    }
+    
     private let viewAllButton = HomeCustomTextWithArrowButton(title: "전체보기")
     
+
     // MARK: - Initialization
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setStackView()
         setLayout()
     }
     
     required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
         fatalError("init(coder:) has not been implemented")
     }
 }
@@ -39,17 +54,24 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
 extension HomeDefaultHeaderView {
     private func setLayout() {
         self.addSubviews(
-            titleLabel,
+            titleStackView,
             viewAllButton
         )
         
-        titleLabel.snp.makeConstraints { make in
+        titleStackView.snp.makeConstraints { make in
             make.centerY.leading.equalToSuperview()
         }
         
         viewAllButton.snp.makeConstraints { make in
             make.centerY.trailing.equalToSuperview()
         }
+    }
+    
+    private func setStackView() {
+        titleStackView.addArrangedSubviews(
+            titleLabel,
+            coffechatLogoImageView
+        )
     }
 }
 
@@ -58,9 +80,8 @@ extension HomeDefaultHeaderView {
 extension HomeDefaultHeaderView {
     func setData(sectionKind: HomeForMemberSectionLayoutKind) {
         self.titleLabel.text = sectionKind.title
-        if sectionKind == .appService { self.viewAllButton.isHidden = true }
+        self.viewAllButton.isHidden = (sectionKind == .appService) ? true : false
+        self.coffechatLogoImageView.isHidden = (sectionKind == .coffeeChat) ? false : true
     }
 }
-
-
 
