@@ -37,6 +37,8 @@ extension HomeForMemberVC {
                 return self.createInsightSection()
             case .group:
                 return self.createGroupSection()
+            case .coffeeChat:
+                return self.createCoffeeChatSection()
             default:
                 return self.createEmptySection()
             }
@@ -186,8 +188,45 @@ extension HomeForMemberVC {
         section.boundarySupplementaryItems = [header]
         section.contentInsets = NSDirectionalEdgeInsets(top: 16,
                                                         leading: Metric.collectionViewDefaultSideInset,
+                                                        bottom: Metric.defaultLineSpacing,
+                                                        trailing: 0)
+        section.orthogonalScrollingBehavior = .groupPaging
+        return section
+    }
+    
+    private func createCoffeeChatSection() -> NSCollectionLayoutSection {
+        /// header: default
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                heightDimension: .absolute(30))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
+                                                                 elementKind: UICollectionView.elementKindSectionHeader,
+                                                                 alignment: .top)
+        header.contentInsets = .init(top: 0,
+                                     leading: 0,
+                                     bottom: 0,
+                                     trailing: Metric.collectionViewDefaultSideInset)
+        
+        /// item: 커피챗 카드
+        let coffeeChatItemSize = NSCollectionLayoutSize(widthDimension: .absolute(280),
+                                                        heightDimension: .estimated(234))
+        let coffeeChatItem = NSCollectionLayoutItem(layoutSize: coffeeChatItemSize)
+        
+        /// group: 커피챗 카드
+        let coffeeChatGroupSize = NSCollectionLayoutSize(widthDimension: .absolute(280),
+                                                         heightDimension: .estimated(234))
+        let coffeeChatGroup = NSCollectionLayoutGroup.horizontal(layoutSize: coffeeChatGroupSize,
+                                                                 subitems: [coffeeChatItem])
+        
+        /// section 지정
+        let section = NSCollectionLayoutSection(
+            group: coffeeChatGroup
+        )
+        section.boundarySupplementaryItems = [header]
+        section.contentInsets = NSDirectionalEdgeInsets(top: 16,
+                                                        leading: Metric.collectionViewDefaultSideInset,
                                                         bottom: 0,
                                                         trailing: 0)
+        section.interGroupSpacing = 12
         section.orthogonalScrollingBehavior = .groupPaging
         return section
     }
