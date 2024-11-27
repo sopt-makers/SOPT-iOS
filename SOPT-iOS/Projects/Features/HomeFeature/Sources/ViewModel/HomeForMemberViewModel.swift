@@ -30,10 +30,44 @@ struct AppServiceInfo {
 
 struct InsightInfo {
     let category: String
-    let profileImageURL: UIImage
+    let profileImageURL: String
     let userName: String
     let postTitle: String
     let isHotTag: Bool
+}
+
+struct GroupInfo {
+    let title: String
+    let category: GroupCategoryType
+    let canJoinOnlyActiveGeneration: Bool
+    let joinableParts: [String]
+    let canJoinAllParts: Bool
+    let status: RecruitmentStatusType
+    let imageURL: String
+}
+
+@frozen
+enum GroupCategoryType: String {
+    case event = "EVENT"
+    case study = "STUDY"
+    
+    var text: String {
+        switch self {
+        case .event:
+            return "행사"
+        case .study:
+            return "스터디"
+        }
+    }
+    
+    var textColor: UIColor {
+        switch self {
+        case .event:
+            return DSKitAsset.Colors.success.color
+        case .study:
+            return DSKitAsset.Colors.secondary.color
+        }
+    }
 }
 
 public class HomeForMemberViewModel: HomeForMemberViewModelType {
@@ -49,14 +83,23 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     
     // TODO: 서버 연결 필요
     let appServiceInfoList: [AppServiceInfo] = [
-        AppServiceInfo(name: "콕찌르기", imageURL: "", badgeText: "3"),
-        AppServiceInfo(name: "솝마디", imageURL: "", badgeText: "N"),
-        AppServiceInfo(name: "솝탬프", imageURL: "", badgeText: "3위")
+        AppServiceInfo(name: "콕찌르기", imageURL: "https://images.mypetlife.co.kr/content/uploads/2018/12/09154907/cotton-tulear-2422612_1280.jpg", badgeText: "3"),
+        AppServiceInfo(name: "솝마디", imageURL: "https://images.mypetlife.co.kr/content/uploads/2018/12/09154907/cotton-tulear-2422612_1280.jpg", badgeText: "N"),
+        AppServiceInfo(name: "솝탬프", imageURL: "https://images.mypetlife.co.kr/content/uploads/2018/12/09154907/cotton-tulear-2422612_1280.jpg", badgeText: "3위")
     ]
     
     // TODO: 서버 연결 필요
     let insightInfoList: [InsightInfo] = [
-        InsightInfo(category: "SOPT활동", profileImageURL: DSKitAsset.Assets.imgMemberLogo.image, userName: "차은우", postTitle: "차은우가 솝트 기획으로 활동한 썰 푼다 최대글자수입니다람지렁이", isHotTag: false)
+        InsightInfo(category: "SOPT활동", profileImageURL: "https://img.seoul.co.kr/img/upload/2023/06/13/SSC_20230613163553_O2.png", userName: "차은우", postTitle: "차은우가 솝트 기획으로 활동한 썰 푼다 최대글자수입니다람지렁이", isHotTag: false)
+    ]
+    
+    // TODO: 서버 연결 필요
+    let groupInfoList: [GroupInfo] = [
+        GroupInfo(title: "모임 타이틀이고 두 줄이 넘어가면 줄어들어야 합니다", category: .study, canJoinOnlyActiveGeneration: true, joinableParts: ["안드로이드", "서버", "iOS", "디자인"], canJoinAllParts: false, status: .applyAble, imageURL: "https://flexible.img.hani.co.kr/flexible/normal/960/960/imgdb/resize/2019/0121/00501111_20190121.JPG"),
+        GroupInfo(title: "모임 타이틀이고 두 줄이 넘어가면 줄어들어야 합니다", category: .event, canJoinOnlyActiveGeneration: true, joinableParts: ["서버"], canJoinAllParts: false, status: .beforeStart, imageURL: "https://ojsfile.ohmynews.com/down/images/1/freesoul_76669_1[17].jpg"),
+        GroupInfo(title: "모임 타이틀이고 두 줄이 넘어가면 줄어들어야 합니다", category: .study, canJoinOnlyActiveGeneration: true, joinableParts: ["안드로이드"], canJoinAllParts: false, status: .recruitmentComplete, imageURL: "https://www.petmove.co.kr/content/images/size/w2400/2023/09/ying-zhu-4UZfmxvc5Qk-unsplash.jpg"),
+        GroupInfo(title: "모임 타이틀이고 두 줄이 넘어가면 줄어들어야 합니다", category: .event, canJoinOnlyActiveGeneration: true, joinableParts: ["iOS"], canJoinAllParts: false, status: .applyAble, imageURL: "https://flexible.img.hani.co.kr/flexible/normal/960/960/imgdb/resize/2019/0121/00501111_20190121.JPG"),
+        GroupInfo(title: "모임 타이틀이고 두 줄이 넘어가면 줄어들어야 합니다", category: .study, canJoinOnlyActiveGeneration: true, joinableParts: ["iOS"], canJoinAllParts: false, status: .applyAble, imageURL: "https://flexible.img.hani.co.kr/flexible/normal/960/960/imgdb/resize/2019/0121/00501111_20190121.JPG")
     ]
     
     // MARK: - Inputs
