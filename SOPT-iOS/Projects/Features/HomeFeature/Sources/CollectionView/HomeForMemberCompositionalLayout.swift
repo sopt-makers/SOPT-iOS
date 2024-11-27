@@ -33,6 +33,8 @@ extension HomeForMemberVC {
                 return self.createMainProductSection()
             case .appService:
                 return self.createAppServiceSection()
+            case .insight:
+                return self.createInsightSection()
             default:
                 return self.createEmptySection()
             }
@@ -109,7 +111,7 @@ extension HomeForMemberVC {
     }
     
     private func createAppServiceSection() -> NSCollectionLayoutSection {
-        /// header: 유저 정보 및 활동 히스토리
+        /// header: default
         let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                 heightDimension: .absolute(30))
         let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
@@ -136,6 +138,43 @@ extension HomeForMemberVC {
                     heightDimension: .estimated(106)
                 ),
                 subitems: [appServiceGroup]
+            )
+        )
+        section.boundarySupplementaryItems = [header]
+        section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultItemSpacing,
+                                                        leading: Metric.collectionViewDefaultSideInset,
+                                                        bottom: Metric.defaultLineSpacing,
+                                                        trailing: Metric.collectionViewDefaultSideInset)
+        return section
+    }
+    
+    private func createInsightSection() -> NSCollectionLayoutSection {
+        /// header: default
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                heightDimension: .absolute(30))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
+                                                                 elementKind: UICollectionView.elementKindSectionHeader,
+                                                                 alignment: .top)
+        
+        /// item: 인사이트 카드
+        let insightItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                     heightDimension: .absolute(80))
+        let insightItem = NSCollectionLayoutItem(layoutSize: insightItemSize)
+        
+        /// group: 인사이트 카드
+        let insightGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                         heightDimension: .estimated(80))
+        let insightGroup = NSCollectionLayoutGroup.horizontal(layoutSize: insightGroupSize,
+                                                              subitems: [insightItem])
+        
+        /// section 지정
+        let section = NSCollectionLayoutSection(
+            group: NSCollectionLayoutGroup.horizontal(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .estimated(80)
+                ),
+                subitems: [insightGroup]
             )
         )
         section.boundarySupplementaryItems = [header]
