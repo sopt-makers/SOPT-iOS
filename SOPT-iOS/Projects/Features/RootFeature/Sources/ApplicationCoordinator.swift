@@ -182,7 +182,7 @@ extension ApplicationCoordinator {
             case .attendance:
                 self?.runAttendanceFlow()
             case .stamp:
-                self?.runSoptlogFlow()
+                self?.runStampFlow()
             case .poke:
                 self?.runPokeFlow()
             case .pokeOnboarding:
