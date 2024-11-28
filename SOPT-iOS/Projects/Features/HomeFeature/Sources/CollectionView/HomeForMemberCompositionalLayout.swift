@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 
@@ -19,6 +20,7 @@ extension HomeForMemberVC {
         
         static let productItemSpacing: Double = 15
         static let appServiceItemSpacing: Double = 16
+        static let announcementWidth: Double = 300
     }
     
     func createLayout() -> UICollectionViewCompositionalLayout {
@@ -35,6 +37,8 @@ extension HomeForMemberVC {
                 return self.createAppServiceSection()
             case .insight:
                 return self.createInsightSection()
+            case .announcement:
+                return self.createAnnouncementSection()
             default:
                 return self.createEmptySection()
             }
@@ -180,8 +184,48 @@ extension HomeForMemberVC {
         section.boundarySupplementaryItems = [header]
         section.contentInsets = NSDirectionalEdgeInsets(top: 16,
                                                         leading: Metric.collectionViewDefaultSideInset,
+                                                        bottom: Metric.defaultLineSpacing,
+                                                        trailing: Metric.collectionViewDefaultSideInset)
+        return section
+    }
+    
+    private func createAnnouncementSection() -> NSCollectionLayoutSection {
+        /// header: default
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                heightDimension: .absolute(30))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
+                                                                 elementKind: UICollectionView.elementKindSectionHeader,
+                                                                 alignment: .top)
+        
+        /// item: 홍보 카드
+        let announcementItemSize = NSCollectionLayoutSize(widthDimension: .absolute(Metric.announcementWidth),
+                                                          heightDimension: .absolute(308))
+        let announctementItem = NSCollectionLayoutItem(layoutSize: announcementItemSize)
+        
+        /// group: 홍보 카드
+        let announcementGroupSize = NSCollectionLayoutSize(widthDimension: .absolute(Metric.announcementWidth),
+                                                           heightDimension: .absolute(308))
+        let announcementGroup = NSCollectionLayoutGroup.vertical(layoutSize: announcementGroupSize,
+                                                              subitems: [announctementItem])
+        
+        /// section 지정
+        let section = NSCollectionLayoutSection(group: announcementGroup)
+        section.boundarySupplementaryItems = [header]
+        section.contentInsets = NSDirectionalEdgeInsets(top: 16,
+                                                        leading: Metric.collectionViewDefaultSideInset,
                                                         bottom: 0,
                                                         trailing: Metric.collectionViewDefaultSideInset)
+        
+        /// footer: pageController 추가
+        let footerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                heightDimension: .estimated(24))
+        let footer = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: footerSize,
+                                                                 elementKind: UICollectionView.elementKindSectionFooter,
+                                                                 alignment: .bottomLeading)
+
+        section.boundarySupplementaryItems = [header, footer]
+        section.orthogonalScrollingBehavior = .groupPaging
+        section.interGroupSpacing = 12
         return section
     }
     
