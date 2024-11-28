@@ -79,6 +79,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         AnnouncementInfo(id: 0, categoryName: "취업/진로", categoryDetailName: "꿀팁", title: "이력서를 쓰며 확인해야 할 7가지", profileImage: "https://i.pinimg.com/736x/5e/83/3a/5e833a2a1b804d3f0fdd0bae204c20f8.jpg", name: "눈멍이", content: "https://toss.im/career/job-detail?job_id=4071133003&company=토스뱅크 안녕하세요 31기 안드로이드 파트장 이현우입니다. 제가 속한 토스커뮤니티 계열사중 토스뱅크에서 네이티브 모바일 개발자를 채용을 시작했습니다.  토스커뮤니티에 관심있으신 분은 저에게 디스코드/링크드인 DM 주시면 감사하겠습니다 https://toss.im/career/job-detail?job_id=4071133003&company=토스뱅크 안녕하세요 31기 안드로이드 파트장 이현우입니다. 제가 속한 토스커뮤니티 계열사중 토스뱅크에서 네이티브 모바일 개발자를 채용을 시작했습니다.  토스커뮤니티에 관심있으신 분은 저에게 디스코드/링크드인 DM 주시면 감사하겠습니다", images: nil)
     ]
     
+    let currentCardPage = PassthroughSubject<Int, Never>()
     
     // MARK: - Inputs
     

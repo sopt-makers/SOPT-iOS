@@ -222,6 +222,13 @@ extension HomeForMemberVC {
         let footer = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: footerSize,
                                                                  elementKind: UICollectionView.elementKindSectionFooter,
                                                                  alignment: .bottomLeading)
+        
+        /// 포커스 중인 페이지 인덱스 계산
+        section.visibleItemsInvalidationHandler = { [weak self] items, offset, env in
+            let pageWidth = Metric.announcementWidth
+            let currentPage = Int(ceil(offset.x / (pageWidth + Metric.defaultGroupSpacing)))
+            self?.viewModel.currentCardPage.send(currentPage)
+        }
 
         section.boundarySupplementaryItems = [header, footer]
         section.orthogonalScrollingBehavior = .groupPaging
