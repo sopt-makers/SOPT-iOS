@@ -15,7 +15,7 @@ final class SoptlogAlarmCVC: UICollectionViewCell {
     
     // MARK: - UI Components
     
-    private var serviceImageView = UIImageView()
+    private let serviceImageView = UIImageView()
 
     private let titleLabel = UILabel().then {
         $0.text = "차은우님, 잊지 말아야 할 말을 듣게 될 거예요"
@@ -48,6 +48,8 @@ final class SoptlogAlarmCVC: UICollectionViewCell {
     }
 }
 
+// MARK: - UI & Layout
+
 extension SoptlogAlarmCVC {
     private func setUI() {
         contentView.backgroundColor = DSKitAsset.Colors.gray800.color
@@ -71,7 +73,11 @@ extension SoptlogAlarmCVC {
     private func setStackView() {
         labelStackView.addArrangedSubviews(titleLabel, subTitleLabel)
     }
-    
+}
+
+// MARK: - Methods
+
+extension SoptlogAlarmCVC {
     func configureCell(title: String, image: UIImage, subTitle: String) {
         self.titleLabel.text = title
         self.serviceImageView.image = image

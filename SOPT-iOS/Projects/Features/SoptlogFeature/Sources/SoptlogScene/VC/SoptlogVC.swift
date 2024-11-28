@@ -30,7 +30,6 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
         $0.backgroundColor = .clear
     }
     
-    
     // MARK: - Initialization
     
     public init(viewModel: SoptlogViewModel) {
@@ -41,7 +40,6 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     
     // MARK: - View Life Cycle
 

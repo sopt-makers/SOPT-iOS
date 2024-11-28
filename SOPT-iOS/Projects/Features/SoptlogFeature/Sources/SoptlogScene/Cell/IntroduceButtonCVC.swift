@@ -20,8 +20,6 @@ final class IntroduceButtonCVC: UICollectionViewCell {
         .setConfigForState(bgColor: DSKitAsset.Colors.gray700.color,
                            enabledTextColor: DSKitAsset.Colors.gray100.color,
                            enabledFont: DSKitFontFamily.Suit.semiBold.font(size: 12))
-        
-    
     
     // MARK: - init
     
@@ -35,6 +33,8 @@ final class IntroduceButtonCVC: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+// MARK: - UI & Layout
 
 extension IntroduceButtonCVC {
     private func setUI() {

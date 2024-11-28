@@ -15,7 +15,9 @@ final class EditProfileCVC: UICollectionViewCell {
     
     // MARK: - UI Components
     
-    private let editProfileButton = AppOutlinedButton(title: I18N.Soptlog.editProfile).setColor()
+    private let editProfileButton = AppOutlinedButton(title: I18N.Soptlog.editProfile)
+        .chageTextColor(textColor: DSKitAsset.Colors.gray100.color)
+        .chageOutlinedColor(outlinedColor: DSKitAsset.Colors.gray100.color)
     
     // MARK: - init
     
@@ -29,6 +31,8 @@ final class EditProfileCVC: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+// MARK: - UI & Layout
 
 extension EditProfileCVC {
     private func setUI() {

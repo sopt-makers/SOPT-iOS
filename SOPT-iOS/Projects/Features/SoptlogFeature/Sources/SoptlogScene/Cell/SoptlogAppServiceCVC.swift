@@ -44,8 +44,9 @@ final class SoptlogAppServiceCVC: UICollectionViewCell {
     }
 }
 
+// MARK: - UI & Layout
+
 extension SoptlogAppServiceCVC {
-    
     private func setUI() {
         contentView.backgroundColor = .clear
     }
@@ -69,7 +70,11 @@ extension SoptlogAppServiceCVC {
             make.centerX.bottom.equalToSuperview()
         }
     }
-    
+}
+
+// MARK: - Methods
+
+extension SoptlogAppServiceCVC {
     func configureCell(title: String, image: UIImage) {
         self.titleLabel.text = title
         self.serviceImageView.image = image

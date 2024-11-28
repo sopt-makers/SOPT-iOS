@@ -24,6 +24,8 @@ final class AppServiceSectionBackgroundView: UICollectionReusableView {
     }
 }
 
+// MARK: - UI & Layout
+
 extension AppServiceSectionBackgroundView {
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.gray700.color
