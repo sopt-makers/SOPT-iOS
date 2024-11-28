@@ -132,26 +132,43 @@ extension HomeForMemberVC: UICollectionViewDataSource {
     }
         
     public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        guard kind == UICollectionView.elementKindSectionHeader else { return UICollectionReusableView() }
         guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: indexPath.section) else { return UICollectionReusableView() }
         
-        switch sectionKind {
-        /// dashBoard일 경우에만 defaultHeader 대신 UserHistory가 나타나는 커스텀 헤더를 사용합니다.
-        case .dashBoard:
-            guard let headerView = collectionView
-                .dequeueReusableSupplementaryView(ofKind: kind,
-                                                  withReuseIdentifier: DashBoardHeaderView.className,
-                                                  for: indexPath) as? DashBoardHeaderView else { return UICollectionReusableView() }
-            headerView.setData(userType: .active)
-            return headerView
-        default:
-            guard let headerView = collectionView
-                .dequeueReusableSupplementaryView(ofKind: kind,
-                                                  withReuseIdentifier: HomeDefaultHeaderView.className,
-                                                  for: indexPath) as? HomeDefaultHeaderView else { return UICollectionReusableView() }
-            headerView.setData(sectionKind: sectionKind)
-            return headerView
+        /// Header View
+        if kind == UICollectionView.elementKindSectionHeader {
+            switch sectionKind {
+            /// dashBoard일 경우에만 defaultHeader 대신 UserHistory가 나타나는 커스텀 헤더를 사용합니다.
+            case .dashBoard:
+                guard let headerView = collectionView
+                    .dequeueReusableSupplementaryView(ofKind: kind,
+                                                      withReuseIdentifier: DashBoardHeaderView.className,
+                                                      for: indexPath) as? DashBoardHeaderView else { return UICollectionReusableView() }
+                headerView.setData(userType: .active)
+                return headerView
+            default:
+                guard let headerView = collectionView
+                    .dequeueReusableSupplementaryView(ofKind: kind,
+                                                      withReuseIdentifier: HomeDefaultHeaderView.className,
+                                                      for: indexPath) as? HomeDefaultHeaderView else { return UICollectionReusableView() }
+                headerView.setData(sectionKind: sectionKind)
+                return headerView
+            }
+        } /// Footer View
+        else if kind == UICollectionView.elementKindSectionFooter {
+            switch sectionKind {
+            case .announcement:
+                guard let footerView = collectionView
+                    .dequeueReusableSupplementaryView(ofKind: kind,
+                                                      withReuseIdentifier: AnnouncementPageContolFooterView.className,
+                                                      for: indexPath) as? AnnouncementPageContolFooterView else { return UICollectionReusableView() }
+                footerView.bind(input: viewModel.currentCardPage,
+                                pageNumber: viewModel.announcementInfoList.count)
+                return footerView
+            default:
+                return UICollectionReusableView()
+            }
         }
+        return UICollectionReusableView()
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -162,6 +179,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .mainProduct: return viewModel.productInfoList.count
         case .appService: return viewModel.appServiceInfoList.count
         case .insight: return viewModel.insightInfoList.count
+        case .announcement: return viewModel.announcementInfoList.count
         default: return 0
         }
     }
@@ -211,6 +229,17 @@ extension HomeForMemberVC: UICollectionViewDataSource {
             insightCardCell.configureCell(model: viewModel.insightInfoList[insightIndex])
             
             return insightCardCell
+            
+        case .announcement:
+            /// 홍보 카드 셀
+            let announcementIndex = indexPath.item
+            guard let announcementCardCell = collectionView
+                .dequeueReusableCell(withReuseIdentifier: AnnouncementCardCVC.className,
+                                     for: indexPath) as? AnnouncementCardCVC else { return UICollectionViewCell() }
+            announcementCardCell.configureCell(model: viewModel.announcementInfoList[announcementIndex])
+            
+            return announcementCardCell
+            
         default: return UICollectionViewCell()
         }
     }
