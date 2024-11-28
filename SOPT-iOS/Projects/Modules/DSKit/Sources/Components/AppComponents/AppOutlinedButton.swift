@@ -11,13 +11,17 @@ import UIKit
 public final class AppOutlinedButton: UIButton {
     
     // MARK: - Properties
+    
     private var config = UIButton.Configuration.plain()
+    private var title: AttributedString
 	
 	// MARK: - Initialize
 	
 	public init(title: String) {
-		super.init(frame: .zero)
-		self.setUI(title)
+        self.title = AttributedString(title)
+        super.init(frame: .zero)
+        
+        self.setUI()
 	}
 	
 	required init?(coder: NSCoder) {
@@ -28,22 +32,21 @@ public final class AppOutlinedButton: UIButton {
 // MARK: - Methods
 
 extension AppOutlinedButton {
-    /// 버튼의 backgroundColor, textColor 변경
+    /// 버튼의 outlinedColor변경
     @discardableResult
-    public func setColor(
-        outlinedColor: UIColor = DSKitAsset.Colors.gray100.color,
-        textColor: UIColor = DSKitAsset.Colors.gray100.color
-    ) -> Self {
-        
-        self.setAttributedTitle(
-            NSAttributedString(
-                string: self.titleLabel?.text ?? "",
-                attributes: [.font: DSKitFontFamily.Suit.semiBold.font(size: 14),
-                    .foregroundColor: textColor]),
-            for: .normal
-        )
-        
+    public func chageOutlinedColor(outlinedColor: UIColor) -> Self {
         config.background.strokeColor = outlinedColor
+        self.configuration = config
+        
+        return self
+    }
+    
+    /// 버튼의 textColor변경
+    @discardableResult
+    public func chageTextColor(textColor: UIColor) -> Self {
+        self.title.foregroundColor = textColor
+        config.attributedTitle = self.title
+        self.configuration = config
         
         return self
     }
@@ -52,17 +55,16 @@ extension AppOutlinedButton {
 // MARK: - UI & Layout
 
 extension AppOutlinedButton {
-	private func setUI(_ title: String) {
+	private func setUI() {
 		
 		config.baseBackgroundColor = .clear
 		config.background.strokeColor = DSKitAsset.Colors.white100.color
 		config.background.strokeWidth = 1.0
 		config.cornerStyle = .capsule
 		
-		var attributedTitle = AttributedString(title)
-		attributedTitle.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-		attributedTitle.foregroundColor = DSKitAsset.Colors.white100.color
-		config.attributedTitle = attributedTitle
+        self.title.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
+        self.title.foregroundColor = DSKitAsset.Colors.white100.color
+        config.attributedTitle = self.title
 		
 		self.configuration = config
 	}
