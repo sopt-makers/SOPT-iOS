@@ -35,6 +35,8 @@ extension HomeForMemberVC {
                 return self.createAppServiceSection()
             case .insight:
                 return self.createInsightSection()
+            case .socialLinks:
+                return self.createSocialLinksSection()
             default:
                 return self.createEmptySection()
             }
@@ -184,6 +186,29 @@ extension HomeForMemberVC {
                                                         trailing: Metric.collectionViewDefaultSideInset)
         return section
     }
+    
+    private func createSocialLinksSection() -> NSCollectionLayoutSection {
+        /// item: 소셜 링크 카드
+        let socialLinkItemSize = NSCollectionLayoutSize(widthDimension: .absolute(97),
+                                                        heightDimension: .absolute(40))
+        let socialLinkItem = NSCollectionLayoutItem(layoutSize: socialLinkItemSize)
+        
+        /// group: 소셜 링크 카드
+        let socialLinkGroupSize = NSCollectionLayoutSize(widthDimension: .absolute(97),
+                                                         heightDimension: .absolute(40))
+        let socialLinkGroup = NSCollectionLayoutGroup.vertical(layoutSize: socialLinkGroupSize,
+                                                            subitems: [socialLinkItem])
+        
+        /// section 지정
+        let section = NSCollectionLayoutSection(group: socialLinkGroup)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0,
+                                                        leading: Metric.collectionViewDefaultSideInset,
+                                                        bottom: 0,
+                                                        trailing: 0)
+        section.interGroupSpacing = 6
+        return section
+    }
+    
     
     private func createEmptySection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(1),

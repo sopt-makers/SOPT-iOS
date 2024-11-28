@@ -157,6 +157,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .mainProduct: return viewModel.productInfoList.count
         case .appService: return viewModel.appServiceInfoList.count
         case .insight: return viewModel.insightInfoList.count
+        case .socialLinks: return SocialLinkCardType.allCases.count
         default: return 0
         }
     }
@@ -206,6 +207,17 @@ extension HomeForMemberVC: UICollectionViewDataSource {
             insightCardCell.configureCell(model: viewModel.insightInfoList[insightIndex])
             
             return insightCardCell
+            
+        case .socialLinks:
+            /// 소셜 링크 카드 셀
+            let socialLinkIndex = indexPath.item
+            guard let socialLinkCardCell = collectionView
+                .dequeueReusableCell(withReuseIdentifier: SocialLinkCardCVC.className,
+                                     for: indexPath) as? SocialLinkCardCVC else { return UICollectionViewCell() }
+            let socialLinkType = SocialLinkCardType.allCases[socialLinkIndex]
+            socialLinkCardCell.configureCell(type: socialLinkType)
+            
+            return socialLinkCardCell
         default: return UICollectionViewCell()
         }
     }
