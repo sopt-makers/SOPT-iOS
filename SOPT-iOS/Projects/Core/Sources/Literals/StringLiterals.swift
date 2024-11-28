@@ -269,6 +269,12 @@ public struct I18N {
         public struct Announcements {
             public static let headerTitle = "솝트인에게 홍보합니다!"
         }
+        
+        public struct SocialLink {
+            public static let homePage = "홈페이지"
+            public static let instagram = "인스타"
+            public static let youtube = "유튜브"
+        }
     }
     
     public struct Attendance {
