@@ -19,19 +19,20 @@ final class SoptlogAlarmCVC: UICollectionViewCell {
 
     private let titleLabel = UILabel().then {
         $0.text = "차은우님, 잊지 말아야 할 말을 듣게 될 거예요"
+        $0.numberOfLines = 1
         $0.textColor = DSKitAsset.Colors.white.color
         $0.font = DSKitFontFamily.Suit.bold.font(size: 18)
     }
     
     private let subTitleLabel = UILabel().then {
-        $0.text = "오늘의 솝마디 >"
+        $0.text = "오늘의 솝마디"
         $0.textColor = DSKitAsset.Colors.gray200.color
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
     }
     
-    private let labelStackView = UIStackView().then {
-        $0.axis = .vertical
-        $0.spacing = 2
+    private let arrowImageview = UIImageView().then {
+        $0.image = DSKitAsset.Assets.chevronRight.image
+            .withTintColor(DSKitAsset.Colors.gray200.color)
     }
     
     // MARK: - init
@@ -40,7 +41,6 @@ final class SoptlogAlarmCVC: UICollectionViewCell {
         super.init(frame: frame)
         setUI()
         setLayout()
-        setStackView()
     }
     
     required init?(coder: NSCoder) {
@@ -53,25 +53,34 @@ final class SoptlogAlarmCVC: UICollectionViewCell {
 extension SoptlogAlarmCVC {
     private func setUI() {
         contentView.backgroundColor = DSKitAsset.Colors.gray800.color
+        serviceImageView.image = DSKitAsset.Assets.soptampLogo.image
     }
     
     private func setLayout() {
-        contentView.addSubviews(serviceImageView, labelStackView)
+        contentView.addSubviews(serviceImageView, titleLabel, subTitleLabel, arrowImageview)
         
         serviceImageView.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(20)
             make.centerY.equalToSuperview()
+            make.size.equalTo(60)
         }
         
-        labelStackView.snp.makeConstraints { make in
-            make.leading.equalTo(serviceImageView.snp.trailing).offset(14)
-            make.centerY.equalToSuperview()
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(19)
             make.trailing.equalToSuperview().inset(20)
+            make.leading.equalTo(serviceImageView.snp.trailing).offset(14)
         }
-    }
-    
-    private func setStackView() {
-        labelStackView.addArrangedSubviews(titleLabel, subTitleLabel)
+        
+        subTitleLabel.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(2)
+            make.leading.equalTo(titleLabel.snp.leading)
+        }
+        
+        arrowImageview.snp.makeConstraints { make in
+            make.size.equalTo(16)
+            make.top.equalTo(subTitleLabel.snp.top)
+            make.leading.equalTo(subTitleLabel.snp.trailing)
+        }
     }
 }
 

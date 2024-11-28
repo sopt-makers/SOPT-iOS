@@ -82,8 +82,8 @@ extension SoptlogVC {
         self.collectionView.register(SoptlogHeaderView.self,
                                      forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                      withReuseIdentifier: SoptlogHeaderView.className)
-        self.collectionView.register(IntroduceButtonCVC.self,
-                                     forCellWithReuseIdentifier: IntroduceButtonCVC.className)
+        self.collectionView.register(IntroduceCVC.self,
+                                     forCellWithReuseIdentifier: IntroduceCVC.className)
         self.collectionView.register(SoptlogAppServiceCVC.self,
                                      forCellWithReuseIdentifier: SoptlogAppServiceCVC.className)
         self.collectionView.register(EditProfileCVC.self,
@@ -141,8 +141,8 @@ extension SoptlogVC: UICollectionViewDataSource {
         case .introduce:
             /// 한 줄 소개
             guard let introduceCell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: IntroduceButtonCVC.className,
-                for: indexPath) as? IntroduceButtonCVC else { return UICollectionViewCell() }
+                withReuseIdentifier: IntroduceCVC.className,
+                for: indexPath) as? IntroduceCVC else { return UICollectionViewCell() }
             return introduceCell
             
         case .appService:

@@ -28,7 +28,7 @@ final class AppServiceSectionBackgroundView: UICollectionReusableView {
 
 extension AppServiceSectionBackgroundView {
     private func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.gray700.color
+        self.backgroundColor = DSKitAsset.Colors.gray800.color
         self.layer.cornerRadius = 12
     }
 }
