@@ -108,6 +108,13 @@ extension HomeForMemberVC {
                                      forCellWithReuseIdentifier: AppServiceCardCVC.className)
         self.collectionView.register(InsightCardCVC.self,
                                      forCellWithReuseIdentifier: InsightCardCVC.className)
+        self.collectionView.register(AnnouncementCardCVC.self,
+                                     forCellWithReuseIdentifier: AnnouncementCardCVC.className)
+        
+        /// Footer
+        self.collectionView.register(AnnouncementPageContolFooterView.self,
+                                     forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
+                                     withReuseIdentifier: AnnouncementPageContolFooterView.className)
     }
 }
 
