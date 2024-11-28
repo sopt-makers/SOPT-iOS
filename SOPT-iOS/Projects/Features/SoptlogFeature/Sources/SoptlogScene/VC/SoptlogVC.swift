@@ -116,6 +116,7 @@ extension SoptlogVC: UICollectionViewDataSource {
                 ofKind: kind,
                 withReuseIdentifier: SoptlogHeaderView.className,
                 for: indexPath) as? SoptlogHeaderView else { return UICollectionReusableView() }
+            headerView.setData(model: viewModel.profileInfoList[indexPath.item])
             return headerView
         default:
             return UICollectionReusableView()
@@ -143,16 +144,15 @@ extension SoptlogVC: UICollectionViewDataSource {
             guard let introduceCell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: IntroduceCVC.className,
                 for: indexPath) as? IntroduceCVC else { return UICollectionViewCell() }
+            introduceCell.configureCell(viewModel.profileInfoList[indexPath.item].introduce)
             return introduceCell
             
         case .appService:
             /// 앱 서비스
-//            let productIndex = indexPath.item
             guard let appServiceCell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: SoptlogAppServiceCVC.className,
                 for: indexPath) as? SoptlogAppServiceCVC else { return UICollectionViewCell() }
-//            productCardCell.configureCell(title: viewModel.productInfoList[productIndex].name,
-//                                          image: viewModel.productInfoList[productIndex].image)
+            appServiceCell.configureCell(model: viewModel.appServiceInfoList[indexPath.item])
             return appServiceCell
             
         case .editProfile:
@@ -167,6 +167,7 @@ extension SoptlogVC: UICollectionViewDataSource {
             guard let alarmCell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: SoptlogAlarmCVC.className,
                 for: indexPath) as? SoptlogAlarmCVC else { return UICollectionViewCell() }
+            alarmCell.configureCell(model: viewModel.soptlogAlarmInfoList[indexPath.item])
             return alarmCell
             
         default: return UICollectionViewCell()

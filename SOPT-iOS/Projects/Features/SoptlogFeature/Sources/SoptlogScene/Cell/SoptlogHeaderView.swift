@@ -48,6 +48,8 @@ final class SoptlogHeaderView: UICollectionReusableView {
     }
 }
 
+// MARK: - UI & Layout
+
 extension SoptlogHeaderView {
     private func setUI() {
         self.backgroundColor = .clear
@@ -69,5 +71,15 @@ extension SoptlogHeaderView {
     
     private func setStackView() {
         labelStackView.addArrangedSubviews(nameLabel, partLabel)
+    }
+}
+
+// MARK: - Methods
+
+extension SoptlogHeaderView {
+    func setData(model: ProfileInfo) {
+        self.nameLabel.text = model.name
+        self.partLabel.text = model.part
+        self.profileImageView.setImage(with: model.profileImageURL)
     }
 }

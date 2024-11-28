@@ -87,9 +87,9 @@ extension SoptlogAlarmCVC {
 // MARK: - Methods
 
 extension SoptlogAlarmCVC {
-    func configureCell(title: String, image: UIImage, subTitle: String) {
-        self.titleLabel.text = title
-        self.serviceImageView.image = image
-        self.subTitleLabel.text = subTitle
+    func configureCell(model: SoptlogAlarmInfo) {
+        self.titleLabel.text = model.title
+        self.serviceImageView.setImage(with: model.imageURL)
+        self.subTitleLabel.text = model.subTitle
     }
 }
