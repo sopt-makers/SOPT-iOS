@@ -49,7 +49,7 @@ extension SoptlogVC {
         
         /// group: 한 줄 소개
         let introduceGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                       heightDimension: .estimated(37))
+                                                       heightDimension: .absolute(37))
         let introduceGroup = NSCollectionLayoutGroup.vertical(layoutSize: introduceGroupSize,
                                                              subitems: [introduceItem])
         
@@ -58,7 +58,7 @@ extension SoptlogVC {
             group: NSCollectionLayoutGroup.vertical(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(295)
+                    heightDimension: .estimated(80)
                 ),
                 subitems: [introduceGroup]
             )
@@ -75,7 +75,7 @@ extension SoptlogVC {
     private func createAppServiceSection() -> NSCollectionLayoutSection {
         /// item: 프로덕트
         let productItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.33),
-                                                     heightDimension: .absolute(114))
+                                                     heightDimension: .absolute(126))
         let productItem = NSCollectionLayoutItem(layoutSize: productItemSize)
         
         /// group: 프로덕트
@@ -90,7 +90,7 @@ extension SoptlogVC {
             group: NSCollectionLayoutGroup.vertical(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(295)
+                    heightDimension: .estimated(126)
                 ),
                 subitems: [productGroup]
             )
@@ -118,7 +118,7 @@ extension SoptlogVC {
         
         /// group: 프로필 수정
         let editProfileGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                      heightDimension: .estimated(273))
+                                                      heightDimension: .estimated(36))
         let editProfileGroup = NSCollectionLayoutGroup.horizontal(layoutSize: editProfileGroupSize,
                                                               subitems: [editProfileItem])
         
@@ -127,7 +127,7 @@ extension SoptlogVC {
             group: NSCollectionLayoutGroup.vertical(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(295)
+                    heightDimension: .estimated(36)
                 ),
                 subitems: [editProfileGroup]
             )
@@ -148,7 +148,7 @@ extension SoptlogVC {
         
         /// group: 알림
         let alarmGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                      heightDimension: .estimated(273))
+                                                      heightDimension: .estimated(80))
         let alarmGroup = NSCollectionLayoutGroup.horizontal(layoutSize: alarmGroupSize,
                                                               subitems: [alarmItem])
         

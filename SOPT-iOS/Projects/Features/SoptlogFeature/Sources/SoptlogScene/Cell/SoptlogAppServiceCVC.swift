@@ -15,8 +15,7 @@ final class SoptlogAppServiceCVC: UICollectionViewCell {
     
     // MARK: - UI Components
 
-    private let titleLabel = UILabel().then {
-        $0.text = "솝레벨"
+    private let serviceLabel = UILabel().then {
         $0.textColor = DSKitAsset.Colors.gray200.color
         $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
     }
@@ -25,8 +24,7 @@ final class SoptlogAppServiceCVC: UICollectionViewCell {
         $0.image = DSKitAsset.Assets.icHot.image
     }
     
-    private let serviceLabel = UILabel().then {
-        $0.text = "Lv.6"
+    private let serviceValue = UILabel().then {
         $0.textColor = DSKitAsset.Colors.white.color
         $0.font = DSKitFontFamily.Suit.bold.font(size: 16)
     }
@@ -52,22 +50,22 @@ extension SoptlogAppServiceCVC {
     }
     
     private func setLayout() {
-        contentView.addSubviews(titleLabel, serviceImageView, serviceLabel)
+        contentView.addSubviews(serviceLabel, serviceImageView, serviceValue)
         
-        titleLabel.snp.makeConstraints { make in
-            make.centerX.top.equalToSuperview()
+        serviceLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
             make.top.equalToSuperview().inset(10)
         }
         
         serviceImageView.snp.makeConstraints { make in
             make.size.equalTo(39)
             make.centerX.equalToSuperview()
-            make.top.equalTo(titleLabel.snp.bottom).offset(6)
+            make.top.equalTo(serviceLabel.snp.bottom).offset(6)
         }
         
-        serviceLabel.snp.makeConstraints { make in
+        serviceValue.snp.makeConstraints { make in
             make.top.equalTo(serviceImageView.snp.bottom).offset(4)
-            make.centerX.bottom.equalToSuperview()
+            make.centerX.equalToSuperview()
         }
     }
 }
@@ -75,8 +73,9 @@ extension SoptlogAppServiceCVC {
 // MARK: - Methods
 
 extension SoptlogAppServiceCVC {
-    func configureCell(title: String, image: UIImage) {
-        self.titleLabel.text = title
-        self.serviceImageView.image = image
+    func configureCell(model: AppServiceInfo) {
+        self.serviceLabel.text = model.serviceName
+        self.serviceValue.text = model.serviceValue
+        self.serviceImageView.setImage(with: model.serviceImageURL)
     }
 }
