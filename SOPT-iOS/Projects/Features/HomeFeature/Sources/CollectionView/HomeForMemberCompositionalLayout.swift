@@ -169,12 +169,12 @@ extension HomeForMemberVC {
         
         /// item: 모임 카드
         let groupItemSize = NSCollectionLayoutSize(widthDimension: .absolute(140),
-                                                   heightDimension: .estimated(220))
+                                                   heightDimension: .estimated(170))
         let groupItem = NSCollectionLayoutItem(layoutSize: groupItemSize)
         
         /// group: 모임 카드
         let groupGroupSize = NSCollectionLayoutSize(widthDimension: .absolute(150),
-                                                    heightDimension: .estimated(220))
+                                                    heightDimension: .estimated(170))
         let groupGroup = NSCollectionLayoutGroup.horizontal(layoutSize: groupGroupSize,
                                                             subitems: [groupItem])
         groupGroup.interItemSpacing = .fixed(12)
