@@ -172,7 +172,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
                 .dequeueReusableCell(withReuseIdentifier: DashBoardCalendarCardCVC.className,
                                      for: indexPath) as? DashBoardCalendarCardCVC else { return UICollectionViewCell() }
             calendarCardCell.configureCell(date: "10.22",
-                          tag: .event,
+                          tagType: .event,
                           title: "1차 행사",
                           userType: .active)
             return calendarCardCell

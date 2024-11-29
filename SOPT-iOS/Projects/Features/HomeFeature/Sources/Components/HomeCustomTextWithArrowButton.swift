@@ -35,7 +35,7 @@ extension HomeCustomTextWithArrowButton {
 
         self.configurationUpdateHandler = { button in
             guard var configuration = button.configuration else { return }
-            configuration.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
+            configuration.contentInsets = .zero
 
             /// 타이틀 설정
             var attributedTitle = AttributedString(title)

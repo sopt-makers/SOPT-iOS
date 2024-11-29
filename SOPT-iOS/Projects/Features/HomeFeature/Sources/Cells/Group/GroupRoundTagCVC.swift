@@ -63,13 +63,7 @@ extension GroupRoundTagCVC {
 // MARK: - Methods
 
 extension GroupRoundTagCVC {
-    func setData(with text: String) {
+    func configureCell(text: String) {
         self.titleLabel.text = text
-    }
-    
-    @discardableResult
-    public func setTitle(with title: String) -> Self {
-        self.titleLabel.text = title
-        return self
     }
 }

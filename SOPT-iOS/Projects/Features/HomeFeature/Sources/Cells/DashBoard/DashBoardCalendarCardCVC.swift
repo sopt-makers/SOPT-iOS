@@ -156,12 +156,12 @@ extension DashBoardCalendarCardCVC {
 // MARK: - Methods
 
 extension DashBoardCalendarCardCVC {
-    func configureCell(date: String, tag: DashBoardCalenderCategoryTagType, title: String, userType: UserType) {
+    func configureCell(date: String, tagType: DashBoardCalenderCategoryTagType, title: String, userType: UserType) {
         self.dateLabel.text = date
         self.scheduleTitleLabel.text = title
-        self.scheduleCategoryTagView.setData(title: tag.text,
-                                             titleColor: tag.textColor,
-                                             backgroundColor: tag.backgroundColor)
+        self.scheduleCategoryTagView.setData(title: tagType.text,
+                                             titleColor: tagType.textColor,
+                                             backgroundColor: tagType.backgroundColor)
         self.attendanceButton.isHidden = userType == .visitor
     }
 }

@@ -148,7 +148,7 @@ extension HomeForMemberVC {
         /// section 지정
         let section = NSCollectionLayoutSection(group: insightGroup)
         section.boundarySupplementaryItems = [header]
-        section.contentInsets = NSDirectionalEdgeInsets(top: 16,
+        section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultItemSpacing,
                                                         leading: Metric.collectionViewDefaultSideInset,
                                                         bottom: Metric.defaultLineSpacing,
                                                         trailing: Metric.collectionViewDefaultSideInset)
@@ -184,7 +184,7 @@ extension HomeForMemberVC {
             group: groupGroup
         )
         section.boundarySupplementaryItems = [header]
-        section.contentInsets = NSDirectionalEdgeInsets(top: 16,
+        section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultItemSpacing,
                                                         leading: Metric.collectionViewDefaultSideInset,
                                                         bottom: 0,
                                                         trailing: 0)

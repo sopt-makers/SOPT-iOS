@@ -70,15 +70,11 @@ final class GroupCardCVC: UICollectionViewCell {
     private let titleLabel = UILabel().then {
         $0.lineBreakMode = .byTruncatingTail
         $0.numberOfLines = 2
+        $0.textColor = DSKitAsset.Colors.white.color
+        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
     }
     
-    private let eligibilityTagContentStackView = UIStackView().then {
-        $0.axis = .vertical
-        $0.spacing = 4
-        $0.alignment = .leading
-    }
-    
-    private lazy var eligibilityTagCollectionView = UICollectionView(
+    private lazy var joinableConditionTagCollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: self.createColletionViewLayout()
     ).then {
@@ -116,7 +112,7 @@ extension GroupCardCVC {
             coverImageView,
             recruitmentStatusTagView,
             titleLabel,
-            eligibilityTagCollectionView
+            joinableConditionTagCollectionView
         )
         
         coverImageView.snp.makeConstraints { make in
@@ -133,10 +129,9 @@ extension GroupCardCVC {
             make.leading.trailing.equalToSuperview()
         }
         
-        eligibilityTagCollectionView.snp.makeConstraints { make in
+        joinableConditionTagCollectionView.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(8)
-            make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
+            make.leading.trailing.bottom.equalToSuperview()
         }
     }
 }
@@ -164,20 +159,9 @@ extension GroupCardCVC {
      
     /// 카테고리 + 모임글 타이틀
     private func makeTitleAttributedString(category: GroupCategoryType, title: String) {
-        let categoryString = NSAttributedString(string: category.text,
-                                                attributes: [
-                                                    .foregroundColor: category.textColor,
-                                                    .font: DSKitFontFamily.Suit.semiBold.font(size: 14)
-                                                ])
-        let titleString = NSAttributedString(string: " " + title,
-                                             attributes: [
-                                                .foregroundColor: DSKitAsset.Colors.gray10.color,
-                                                .font: DSKitFontFamily.Suit.semiBold.font(size: 14)
-                                             ])
-        let attrString = NSMutableAttributedString()
-        attrString.append(categoryString)
-        attrString.append(titleString)
-        titleLabel.attributedText = attrString
+        let attributedText = "\(category.text) \(title)"
+        self.titleLabel.text = attributedText
+        self.titleLabel.partColorChange(targetString: category.text, textColor: category.textColor)
     }
 }
 
@@ -185,12 +169,12 @@ extension GroupCardCVC {
 
 extension GroupCardCVC {
     private func setDelegate() {
-        self.eligibilityTagCollectionView.delegate = self
-        self.eligibilityTagCollectionView.dataSource = self
+        self.joinableConditionTagCollectionView.delegate = self
+        self.joinableConditionTagCollectionView.dataSource = self
     }
     
     private func registerCells() {
-        self.eligibilityTagCollectionView.register(GroupRoundTagCVC.self,
+        self.joinableConditionTagCollectionView.register(GroupRoundTagCVC.self,
                                                    forCellWithReuseIdentifier: GroupRoundTagCVC.className)
     }
 }
@@ -212,7 +196,7 @@ extension GroupCardCVC: UICollectionViewDataSource {
         guard let cell = collectionView
             .dequeueReusableCell(withReuseIdentifier: GroupRoundTagCVC.className,
                                  for: indexPath) as? GroupRoundTagCVC else { return UICollectionViewCell() }
-        cell.setData(with: tagTextList[indexPath.item])
+        cell.configureCell(text: tagTextList[indexPath.item])
         return cell
     }
 }
