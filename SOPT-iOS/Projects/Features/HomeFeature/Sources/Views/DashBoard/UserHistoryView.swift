@@ -23,7 +23,7 @@ final class UserHistoryView: UIView {
         $0.backgroundColor = DSKitAsset.Colors.black40.color
         $0.textColor = DSKitAsset.Colors.white100.color
         $0.font = DSKitFontFamily.Suit.medium.font(size: 12)
-        $0.text = I18N.Home.MainService.UserHistory.visitor
+        $0.text = I18N.Home.DashBoard.UserHistory.encourage
         $0.layer.cornerRadius = 12
         $0.textAlignment = .center
         $0.clipsToBounds = true

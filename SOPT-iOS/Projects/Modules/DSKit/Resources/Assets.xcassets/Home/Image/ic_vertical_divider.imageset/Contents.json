@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "ic_vertical_divider.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

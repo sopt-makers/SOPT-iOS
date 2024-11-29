@@ -227,7 +227,7 @@ public struct I18N {
     }
     
     public struct Home {
-        public struct MainService {
+        public struct DashBoard {
             public struct UserHistory {
                 public static let visitor = "비회원"
                 public static let active = "기 활동 중"
@@ -241,24 +241,34 @@ public struct I18N {
                 public static let event = "행사"
                 public static let seminar = "세미나"
             }
-            
-            public struct Services {
-                public static let playground = "Playground"
-                public static let groupAndStudy = "모임/스터디"
-                public static let member = "멤버"
-                public static let project = "프로젝트"
-            }
         }
         
-        public struct AppService { }
+        public struct MainProduct {
+            public static let playground = "Playground"
+            public static let groupAndStudy = "모임/스터디"
+            public static let member = "멤버"
+            public static let project = "프로젝트"
+        }
         
-        public struct Insight { }
+        public struct AppService {
+            public static let headerTitle = "SOPT 더 재밌게 즐기기!"
+        }
         
-        public struct Group { }
+        public struct Insight {
+            public static let headerTitle = "인사이트 못참지!"
+        }
         
-        public struct CoffeeChat { }
+        public struct Group {
+            public static let headerTitle = "다들 모여서 모하니?"
+        }
         
-        public struct Announcements { }
+        public struct CoffeeChat {
+            public static let headerTitle = "커피솝에서 인사이트 한잔"
+        }
+        
+        public struct Announcements {
+            public static let headerTitle = "솝트인에게 홍보합니다!"
+        }
     }
     
     public struct Soptlog {
