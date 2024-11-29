@@ -59,7 +59,7 @@ public final class DailySoptuneMainVC: UIViewController, DailySoptuneMainViewCon
 	}
 	
 	private let checkTodayFortuneButton = AppCustomButton(title: I18N.DailySoptune.checkTodayFortune)
-		.setFontColor(customFont: DSKitFontFamily.Suit.semiBold.font(size: 18))
+        .setConfigForState(enabledFont: DSKitFontFamily.Suit.semiBold.font(size: 18))
 	
 	// MARK: - Initialization
 	
