@@ -11,7 +11,6 @@ import UIKit
 import Core
 import DSKit
 
-@frozen
 enum RecruitmentStatusType: String {
     case beforeStart = "BEFORE_START"
     case applyAble = "APPLY_ABLE"

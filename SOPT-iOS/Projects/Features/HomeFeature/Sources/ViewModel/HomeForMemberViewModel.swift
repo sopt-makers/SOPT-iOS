@@ -46,7 +46,6 @@ struct GroupInfo {
     let imageURL: String
 }
 
-@frozen
 enum GroupCategoryType: String {
     case event = "EVENT"
     case study = "STUDY"
