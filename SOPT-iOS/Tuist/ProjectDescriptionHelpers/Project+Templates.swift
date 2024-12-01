@@ -33,12 +33,12 @@ public extension Project {
             let infoPlist = name.contains("Demo") ? Project.demoInfoPlist : Project.appInfoPlist
             let settings = baseSettings.setProvisioning()
             
-            let target = Target(
+            let target = Target.target(
                 name: name,
-                platform: platform,
+                destinations: .iOS,
                 product: .app,
                 bundleId: "\(Environment.bundlePrefix).\(bundleSuffix)",
-                deploymentTarget: deploymentTarget,
+                deploymentTargets: deploymentTarget,
                 infoPlist: .extendingDefault(with: infoPlist),
                 sources: ["Sources/**/*.swift"],
                 resources: [.glob(pattern: "Resources/**", excluding: [])],
@@ -50,7 +50,7 @@ public extension Project {
                     [
                         .SPM.Inject
                     ]
-                ].flatMap { $0 },
+                ].flatMap{ $0 },
                 settings: .settings(base: settings, configurations: XCConfig.project)
             )
             
@@ -62,12 +62,12 @@ public extension Project {
         if targets.contains(.interface) {
             let settings = baseSettings
             
-            let target = Target(
+            let target = Target.target(
                 name: "\(name)Interface",
-                platform: platform,
+                destinations: .iOS,
                 product: .framework,
                 bundleId: "\(Environment.bundlePrefix).\(name)Interface",
-                deploymentTarget: deploymentTarget,
+                deploymentTargets: deploymentTarget,
                 infoPlist: .default,
                 sources: ["Interface/Sources/**/*.swift"],
                 dependencies: interfaceDependencies,
@@ -85,15 +85,15 @@ public extension Project {
             : []
             let settings = baseSettings
             
-            let target = Target(
+            let target = Target.target(
                 name: name,
-                platform: platform,
+                destinations: .iOS,
                 product: hasDynamicFramework ? .framework : .staticFramework,
                 bundleId: "\(Environment.bundlePrefix).\(name)",
-                deploymentTarget: deploymentTarget,
+                deploymentTargets: deploymentTarget,
                 infoPlist: .default,
                 sources: ["Sources/**/*.swift"],
-                resources: hasResources ? [.glob(pattern: "Resources/**", excluding: [])] : [],
+                resources:  hasResources ? [.glob(pattern: "Resources/**", excluding: [])] : [],
                 dependencies: deps + internalDependencies + externalDependencies,
                 settings: .settings(base: settings, configurations: XCConfig.framework)
             )
@@ -106,12 +106,12 @@ public extension Project {
         if targets.contains(.demo) {
             let deps: [TargetDependency] = [.target(name: name)]
             
-            let target = Target(
+            let target = Target.target(
                 name: "\(name)Demo",
-                platform: platform,
+                destinations: .iOS,
                 product: .app,
                 bundleId: "\(Environment.bundlePrefix).\(name)Demo",
-                deploymentTarget: deploymentTarget,
+                deploymentTargets: deploymentTarget,
                 infoPlist: .extendingDefault(with: Project.demoInfoPlist),
                 sources: ["Demo/Sources/**/*.swift"],
                 resources: [.glob(pattern: "Demo/Resources/**", excluding: ["Demo/Resources/dummy.txt"])],
@@ -121,7 +121,7 @@ public extension Project {
                         .SPM.FLEX,
                         .SPM.Inject
                     ]
-                ].flatMap { $0 },
+                ].flatMap{ $0 },
                 settings: .settings(base: baseSettings, configurations: XCConfig.demo)
             )
             
@@ -133,12 +133,12 @@ public extension Project {
         if targets.contains(.unitTest) {
             let deps: [TargetDependency] = [.target(name: name)]
             
-            let target = Target(
+            let target = Target.target(
                 name: "\(name)Tests",
-                platform: platform,
+                destinations: .iOS,
                 product: .unitTests,
                 bundleId: "\(Environment.bundlePrefix).\(name)Tests",
-                deploymentTarget: deploymentTarget,
+                deploymentTargets: deploymentTarget,
                 infoPlist: .default,
                 sources: ["Tests/Sources/**/*.swift"],
                 resources: [.glob(pattern: "Tests/Resources/**", excluding: [])],
@@ -149,7 +149,7 @@ public extension Project {
                         .SPM.Quick,
                         .Modules.testCore
                     ]
-                ].flatMap { $0 },
+                ].flatMap{ $0 },
                 settings: .settings(base: SettingsDictionary().setCodeSignManual(), configurations: XCConfig.tests)
             )
             
@@ -162,12 +162,12 @@ public extension Project {
             let deps: [TargetDependency] = targets.contains(.demo)
             ? [.target(name: name), .target(name: "\(name)Demo")] : [.target(name: name)]
             
-            let target = Target(
+            let target = Target.target(
                 name: "\(name)UITests",
-                platform: platform,
+                destinations: .iOS,
                 product: .uiTests,
                 bundleId: "\(Environment.bundlePrefix).\(name)UITests",
-                deploymentTarget: deploymentTarget,
+                deploymentTargets: deploymentTarget,
                 infoPlist: .default,
                 sources: ["UITests/Sources/**/*.swift"],
                 dependencies: [
@@ -175,7 +175,7 @@ public extension Project {
                     [
                         .Modules.testCore
                     ]
-                ].flatMap { $0 },
+                ].flatMap{ $0 },
                 settings: .settings(base: SettingsDictionary().setCodeSignManual(), configurations: XCConfig.tests)
             )
             
@@ -213,7 +213,7 @@ public extension Project {
 extension Scheme {
     /// Scheme 생성하는 method
     static func makeScheme(configs: ConfigurationName, name: String) -> Scheme {
-        return Scheme(
+        return .scheme(
             name: name,
             shared: true,
             buildAction: .buildAction(targets: ["\(name)"]),
@@ -221,7 +221,7 @@ extension Scheme {
                 ["\(name)Tests"],
                 configuration: configs,
                 options: .options(coverage: true, codeCoverageTargets: ["\(name)"])
-            ),
+            ), 
             runAction: .runAction(configuration: configs),
             archiveAction: .archiveAction(configuration: configs),
             profileAction: .profileAction(configuration: configs),
@@ -230,7 +230,7 @@ extension Scheme {
     }
     
     static func makeDemoScheme(configs: ConfigurationName, name: String) -> Scheme {
-        return Scheme(
+        return .scheme(
             name: "\(name)Demo",
             shared: true,
             buildAction: .buildAction(targets: ["\(name)Demo"]),
@@ -242,13 +242,12 @@ extension Scheme {
             runAction: .runAction(configuration: configs),
             archiveAction: .archiveAction(configuration: configs),
             profileAction: .profileAction(configuration: configs),
-            analyzeAction: .analyzeAction(configuration: configs)
-        )
+            analyzeAction: .analyzeAction(configuration: configs))
     }
     
     static func makeDemoAppTestScheme() -> Scheme {
         let targetName = "\(Environment.workspaceName)-Demo"
-        return Scheme(
+        return .scheme(
           name: "\(targetName)-Test",
           shared: true,
           buildAction: .buildAction(targets: ["\(targetName)"]),
@@ -268,7 +267,7 @@ extension Scheme {
 extension Project {
     static let appSchemes: [Scheme] = [
         // PROD API, debug scheme
-        .init(
+        .scheme(
             name: "\(Environment.workspaceName)-DEV",
             shared: true,
             buildAction: .buildAction(targets: ["\(Environment.workspaceName)"]),
@@ -283,7 +282,7 @@ extension Project {
             analyzeAction: .analyzeAction(configuration: "Development")
         ),
         // Test API, debug scheme
-        .init(
+        .scheme(
             name: "\(Environment.workspaceName)-Test",
             shared: true,
             buildAction: .buildAction(targets: ["\(Environment.workspaceName)"]),
@@ -298,7 +297,7 @@ extension Project {
             analyzeAction: .analyzeAction(configuration: "Test")
         ),
         // Test API, release scheme
-        .init(
+        .scheme(
             name: "\(Environment.workspaceName)-QA",
             shared: true,
             buildAction: .buildAction(targets: ["\(Environment.workspaceName)"]),
@@ -308,7 +307,7 @@ extension Project {
             analyzeAction: .analyzeAction(configuration: "QA")
         ),
         // PROD API, release scheme
-        .init(
+        .scheme(
             name: "\(Environment.workspaceName)-PROD",
             shared: true,
             buildAction: .buildAction(targets: ["\(Environment.workspaceName)"]),
