@@ -51,7 +51,7 @@ final class CoffeeChatRoundTagCVC: UICollectionViewCell {
 
 extension CoffeeChatRoundTagCVC {
     private func setUI() {
-        self.layer.cornerRadius = 4.f
+        self.layer.cornerRadius = 4
     }
     
     private func setLayout() {

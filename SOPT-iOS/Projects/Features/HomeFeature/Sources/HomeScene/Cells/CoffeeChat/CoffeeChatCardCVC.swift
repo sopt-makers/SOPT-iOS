@@ -93,6 +93,10 @@ final class CoffeeChatCardCVC: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func prepareForReuse() {
+        self.categoryTagStackView.removeAllSubViews()
+    }
 }
 
 // MARK: - UI & Layout
@@ -188,7 +192,6 @@ extension CoffeeChatCardCVC {
     }
     
     private func makeCategoryTagView(categories: [String]) {
-        self.categoryTagStackView.removeAllSubViews()
         for category in categories {
             let categoryTag = HomeSquareTagView()
                 .setTitle(with: category)

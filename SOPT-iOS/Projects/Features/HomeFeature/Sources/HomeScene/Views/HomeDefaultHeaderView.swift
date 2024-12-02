@@ -32,7 +32,7 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
         $0.spacing = 8
     }
     
-    private let viewAllButton = HomeCustomTextWithArrowButton(title: "전체보기")
+    private let viewAllButton = HomeCustomTextWithArrowButton(title: I18N.Home.viewAll)
     
 
     // MARK: - Initialization
@@ -44,7 +44,6 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
         fatalError("init(coder:) has not been implemented")
     }
 }

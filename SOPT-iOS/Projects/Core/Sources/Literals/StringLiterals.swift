@@ -227,6 +227,8 @@ public struct I18N {
     }
     
     public struct Home {
+        public static let viewAll = "전체보기"
+        
         public struct DashBoard {
             public struct UserHistory {
                 public static let visitor = "비회원"
