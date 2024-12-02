@@ -22,7 +22,7 @@ final class InsightCardCVC: UICollectionViewCell {
         $0.contentMode = .scaleAspectFit
     }
     
-    private let profileImageView = UIImageView()
+    private let profileImageView = CustomProfileImageView().hideBorder()
     
     private let userNameLabel = UILabel().then {
         $0.textColor = DSKitAsset.Colors.gray100.color
@@ -57,18 +57,14 @@ final class InsightCardCVC: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    override func layoutSubviews() {
-        setCornerRadius()
-    }
 }
 
 // MARK: - UI & Layout
 
 extension InsightCardCVC {
     private func setUI() {
-        self.layer.cornerRadius = 12
         self.backgroundColor = DSKitAsset.Colors.gray800.color
+        self.layer.cornerRadius = 12
     }
 
     private func setLayout() {
@@ -101,10 +97,6 @@ extension InsightCardCVC {
             postTitleLabel
         )
     }
-    
-    private func setCornerRadius() {
-        profileImageView.layer.cornerRadius = self.frame.height / 2
-    }
 }
 
 // MARK: - Methods
@@ -112,7 +104,7 @@ extension InsightCardCVC {
 extension InsightCardCVC {
     func configureCell(model: InsightInfo) {
         self.categoryTagView.setData(with: model.category, isHotTag: model.isHotTag)
-        self.profileImageView.image = model.profileImageURL
+        self.profileImageView.setImage(with: model.profileImageURL)
         self.userNameLabel.text = model.userName
         self.postTitleLabel.text = model.postTitle
     }

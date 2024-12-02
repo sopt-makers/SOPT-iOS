@@ -64,6 +64,7 @@ extension AppServiceCardCVC {
         logoImageView.snp.makeConstraints { make in
             make.center.equalTo(logoBackgroundView.snp.center)
             make.leading.trailing.equalToSuperview().inset(10)
+            make.height.equalTo(logoImageView.snp.width)
         }
         
         titleLabel.snp.makeConstraints { make in
