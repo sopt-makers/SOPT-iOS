@@ -20,6 +20,7 @@ import PokeFeature
 import AttendanceFeature
 import DailySoptuneFeature
 import WebFeature
+import SoptlogFeature
 
 public
 final class ApplicationCoordinator: BaseCoordinator {
@@ -369,6 +370,23 @@ extension ApplicationCoordinator {
             self?.notificationHandler.receive(deepLink: "home")
             guard let deepLinkComponent = self?.notificationHandler.deepLink.value else { return }
             self?.handleDeepLink(deepLink: deepLinkComponent)
+        }
+        
+        addDependency(coordinator)
+        coordinator.start()
+        
+        return coordinator
+    }
+    
+    @discardableResult
+    internal func runSoptlogFlow() -> SoptlogCoordinator {
+        let coordinator = SoptlogCoordinator(
+            router: Router(rootController: UIWindow.getRootNavigationController),
+            factory: SoptlogBuilder()
+        )
+        
+        coordinator.finishFlow = { [weak self] in
+            self?.removeDependency(coordinator)
         }
         
         addDependency(coordinator)

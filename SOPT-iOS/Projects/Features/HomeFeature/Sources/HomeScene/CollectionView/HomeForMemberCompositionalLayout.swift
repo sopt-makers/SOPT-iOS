@@ -65,15 +65,7 @@ extension HomeForMemberVC {
                                                              subitems: [calendarItem])
         
         /// section 지정
-        let section = NSCollectionLayoutSection(
-            group: NSCollectionLayoutGroup.vertical(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(295)
-                ),
-                subitems: [calendarGroup]
-            )
-        )
+        let section = NSCollectionLayoutSection(group: calendarGroup)
         section.boundarySupplementaryItems = [header]
         section.contentInsets = NSDirectionalEdgeInsets(top: 12,
                                                         leading: Metric.collectionViewDefaultSideInset,
@@ -97,15 +89,7 @@ extension HomeForMemberVC {
         productGroup.interItemSpacing = .fixed(Metric.productItemSpacing)
         
         /// section 지정
-        let section = NSCollectionLayoutSection(
-            group: NSCollectionLayoutGroup.vertical(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(295)
-                ),
-                subitems: [productGroup]
-            )
-        )
+        let section = NSCollectionLayoutSection(group: productGroup)
         section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultItemSpacing,
                                                         leading: Metric.collectionViewDefaultSideInset,
                                                         bottom: 40,
@@ -135,15 +119,7 @@ extension HomeForMemberVC {
         appServiceGroup.interItemSpacing = .fixed(Metric.appServiceItemSpacing)
         
         /// section 지정
-        let section = NSCollectionLayoutSection(
-            group: NSCollectionLayoutGroup.horizontal(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(106)
-                ),
-                subitems: [appServiceGroup]
-            )
-        )
+        let section = NSCollectionLayoutSection(group: appServiceGroup)
         section.boundarySupplementaryItems = [header]
         section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultItemSpacing,
                                                         leading: Metric.collectionViewDefaultSideInset,
@@ -172,17 +148,45 @@ extension HomeForMemberVC {
                                                               subitems: [insightItem])
         
         /// section 지정
+        let section = NSCollectionLayoutSection(group: insightGroup)
+        section.boundarySupplementaryItems = [header]
+        section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultItemSpacing,
+                                                        leading: Metric.collectionViewDefaultSideInset,
+                                                        bottom: Metric.defaultLineSpacing,
+                                                        trailing: Metric.collectionViewDefaultSideInset)
+        return section
+    }
+    
+    private func createGroupSection() -> NSCollectionLayoutSection {
+        /// header: default
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                heightDimension: .absolute(30))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
+                                                                 elementKind: UICollectionView.elementKindSectionHeader,
+                                                                 alignment: .top)
+        header.contentInsets = .init(top: 0,
+                                     leading: 0,
+                                     bottom: 0,
+                                     trailing: Metric.collectionViewDefaultSideInset)
+        
+        /// item: 모임 카드
+        let groupItemSize = NSCollectionLayoutSize(widthDimension: .absolute(140),
+                                                   heightDimension: .estimated(170))
+        let groupItem = NSCollectionLayoutItem(layoutSize: groupItemSize)
+        
+        /// group: 모임 카드
+        let groupGroupSize = NSCollectionLayoutSize(widthDimension: .absolute(150),
+                                                    heightDimension: .estimated(170))
+        let groupGroup = NSCollectionLayoutGroup.horizontal(layoutSize: groupGroupSize,
+                                                            subitems: [groupItem])
+        groupGroup.interItemSpacing = .fixed(12)
+        
+        /// section 지정
         let section = NSCollectionLayoutSection(
-            group: NSCollectionLayoutGroup.horizontal(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(80)
-                ),
-                subitems: [insightGroup]
-            )
+            group: groupGroup
         )
         section.boundarySupplementaryItems = [header]
-        section.contentInsets = NSDirectionalEdgeInsets(top: 16,
+        section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultItemSpacing,
                                                         leading: Metric.collectionViewDefaultSideInset,
                                                         bottom: Metric.defaultLineSpacing,
                                                         trailing: 0)

@@ -10,13 +10,20 @@ import UIKit
 
 import Core
 
-public class AppCustomButton: UIButton {
+public final class AppCustomButton: UIButton {
+    
+    // MARK: - Properties
+    
+    private var config = UIButton.Configuration.plain()
+    private var title: AttributedString
     
     // MARK: - Initialize
-
+    
     public init(title: String) {
+        self.title = AttributedString(title)
         super.init(frame: .zero)
-        self.setUI(title)
+        
+        self.setUI()
     }
     
     required init?(coder: NSCoder) {
@@ -34,49 +41,41 @@ extension AppCustomButton {
         return self
     }
     
-    /// 버튼의 Title 변경
+    /// 버튼의 cornerRadius 변경
     @discardableResult
-    public func changeTitle(attributedString: String) -> Self {
-        let string = NSAttributedString(string: attributedString, attributes: [.font: UIFont.SoptampFont.h2, .foregroundColor: self.titleLabel?.textColor ?? .white])
-        self.setAttributedTitle(string, for: .normal)
+    public func changeCornerRadius(radius: Double) -> Self {
+        config.background.cornerRadius = radius
+        self.configuration = config
+        
         return self
     }
-	
-	@discardableResult
-	public func setFontColor(customFont: UIFont, customColor: UIColor = DSKitAsset.Colors.black100.color) -> Self {
-		if let title = self.titleLabel,
-		   let text = title.text {
-			let string = NSAttributedString(
-				string: text,
-				attributes: [.font: customFont, .foregroundColor: customColor])
-			self.setAttributedTitle(string, for: .normal)
-		}
-		
-		return self
-	}
     
-    /// 버튼의 backgroundColor, textColor 변경
+    /// 버튼의 enable, disable에 따른 상태 변경
     @discardableResult
-    public func setColor(
+    public func setConfigForState(
         bgColor: UIColor = DSKitAsset.Colors.white100.color,
-        disableColor: UIColor = DSKitAsset.Colors.gray600.color,
+        disabledColor: UIColor = DSKitAsset.Colors.gray600.color,
         disabledTextColor: UIColor = DSKitAsset.Colors.gray60.color,
-        enabledTextColor: UIColor = DSKitAsset.Colors.black100.color
+        disabledFont: UIFont = DSKitFontFamily.Suit.bold.font(size: 18),
+        enabledTextColor: UIColor = DSKitAsset.Colors.black100.color,
+        enabledFont: UIFont = DSKitFontFamily.Suit.bold.font(size: 18)
     ) -> Self {
-        self.setBackgroundColor(bgColor, for: .normal)
-        self.setBackgroundColor(disableColor, for: .disabled)
-        self.setAttributedTitle(
-            NSAttributedString(
-                string: self.titleLabel?.text ?? "",
-                attributes: [.font: DSKitFontFamily.Suit.bold.font(size: 18), .foregroundColor: enabledTextColor]),
-            for: .normal
-        )
-        self.setAttributedTitle(
-            NSAttributedString(
-                string: self.titleLabel?.text ?? "",
-                attributes: [.font: DSKitFontFamily.Suit.bold.font(size: 18), .foregroundColor: disabledTextColor]),
-            for: .disabled
-        )
+        
+        self.configurationUpdateHandler = { button in
+            var updatedConfig = button.configuration ?? .plain()
+            switch button.state {
+            case .disabled:
+                updatedConfig.background.backgroundColor = disabledColor
+                self.title.foregroundColor = disabledTextColor
+                self.title.font = disabledFont
+            default:
+                updatedConfig.background.backgroundColor = bgColor
+                self.title.foregroundColor = enabledTextColor
+                self.title.font = enabledFont
+            }
+            updatedConfig.attributedTitle = self.title
+            button.configuration = updatedConfig
+        }
         
         return self
     }
@@ -85,30 +84,26 @@ extension AppCustomButton {
 // MARK: - UI & Layout
 
 extension AppCustomButton {
-    private func setUI(_ title: String) {
-        self.layer.cornerRadius = 10
+    private func setUI() {
         
-        self.setBackgroundColor(DSKitAsset.Colors.white100.color, for: .normal)
-        self.setBackgroundColor(DSKitAsset.Colors.gray600.color, for: .disabled)
-        self.setAttributedTitle(
-            NSAttributedString(
-                string: title,
-                attributes: [
-                    .font: DSKitFontFamily.Suit.bold.font(size: 18),
-                    .foregroundColor: DSKitAsset.Colors.black100.color
-                ]
-            ),
-            for: .normal
-        )
-        self.setAttributedTitle(
-            NSAttributedString(
-                string: title,
-                attributes: [
-                    .font: DSKitFontFamily.Suit.bold.font(size: 18),
-                    .foregroundColor: DSKitAsset.Colors.gray60.color
-                ]
-            ),
-            for: .disabled
-        )
+        /// 초기 상태
+        self.title.font = DSKitFontFamily.Suit.bold.font(size: 18)
+        config.attributedTitle = self.title
+        config.background.cornerRadius = 10
+        self.configuration = config
+        
+        self.configurationUpdateHandler = { button in
+            var updatedConfig = button.configuration ?? .plain()
+            switch button.state {
+            case .disabled:
+                updatedConfig.background.backgroundColor = DSKitAsset.Colors.gray600.color
+                self.title.foregroundColor = DSKitAsset.Colors.gray60.color
+            default:
+                updatedConfig.background.backgroundColor = DSKitAsset.Colors.white100.color
+                self.title.foregroundColor = DSKitAsset.Colors.black100.color
+            }
+            updatedConfig.attributedTitle = self.title
+            button.configuration = updatedConfig
+        }
     }
 }

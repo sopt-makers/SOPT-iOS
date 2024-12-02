@@ -175,7 +175,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
                 .dequeueReusableCell(withReuseIdentifier: DashBoardCalendarCardCVC.className,
                                      for: indexPath) as? DashBoardCalendarCardCVC else { return UICollectionViewCell() }
             calendarCardCell.configureCell(date: "10.22",
-                          tag: .event,
+                          tagType: .event,
                           title: "1차 행사",
                           userType: .active)
             return calendarCardCell
@@ -183,31 +183,35 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .mainProduct:
             /// 프로덕트 카드 셀
             let productIndex = indexPath.item
+            guard let product = viewModel.productInfoList[safe: productIndex] else { return UICollectionViewCell() }
             guard let productCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: MainProductCardCVC.className,
                                      for: indexPath) as? MainProductCardCVC else { return UICollectionViewCell() }
-            productCardCell.configureCell(title: viewModel.productInfoList[productIndex].name,
-                                          image: viewModel.productInfoList[productIndex].image)
+            
+            productCardCell.configureCell(title: product.name,
+                                          image: product.image)
             return productCardCell
             
         case .appService:
             /// 앱 서비스 카드 셀
             let appServiceIndex = indexPath.item
+            guard let appService = viewModel.appServiceInfoList[safe: appServiceIndex] else { return UICollectionViewCell() }
             guard let appServiceCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: AppServiceCardCVC.className,
                                      for: indexPath) as? AppServiceCardCVC else { return UICollectionViewCell() }
-            appServiceCardCell.configureCell(imageURL: viewModel.appServiceInfoList[appServiceIndex].imageURL,
-                                             name: viewModel.appServiceInfoList[appServiceIndex].name,
-                                             badgeText: viewModel.appServiceInfoList[appServiceIndex].badgeText)
+            appServiceCardCell.configureCell(imageURL: appService.imageURL,
+                                             name: appService.name,
+                                             badgeText: appService.badgeText)
             return appServiceCardCell
         
         case .insight:
             /// 인사이트 카드 셀
             let insightIndex = indexPath.item
+            guard let insight = viewModel.insightInfoList[safe: insightIndex] else { return UICollectionViewCell() }
             guard let insightCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: InsightCardCVC.className,
                                      for: indexPath) as? InsightCardCVC else { return UICollectionViewCell() }
-            insightCardCell.configureCell(model: viewModel.insightInfoList[insightIndex])
+            insightCardCell.configureCell(model: insight)
             
             return insightCardCell
             

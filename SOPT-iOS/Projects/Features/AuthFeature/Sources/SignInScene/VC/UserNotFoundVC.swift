@@ -45,7 +45,7 @@ public final class UserNotFoundVC: UIViewController, UserNotFoundViewControllabl
 
     
     private let loginRetryButton = AppCustomButton(title: I18N.SignIn.retryLogin)
-        .setFontColor(customFont: DSKitFontFamily.Suit.semiBold.font(size: 18))
+        .setConfigForState(enabledFont: DSKitFontFamily.Suit.semiBold.font(size: 18))
     
     private let loginHelpButton = UIButton(type: .system).then {
         var config = UIButton.Configuration.plain()
