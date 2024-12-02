@@ -11,39 +11,6 @@ import UIKit
 import Core
 import DSKit
 
-@frozen
-enum DashBoardCalenderCategoryTagType {
-    case event
-    case seminar
-    
-    var text: String {
-        switch self {
-        case .event:
-            return I18N.Home.DashBoard.Attendance.event
-        case .seminar:
-            return I18N.Home.DashBoard.Attendance.seminar
-        }
-    }
-    
-    var textColor: UIColor {
-        switch self {
-        case .event:
-            return DSKitAsset.Colors.success.color
-        case .seminar:
-            return DSKitAsset.Colors.success.color
-        }
-    }
-    
-    var backgroundColor: UIColor {
-        switch self {
-        case .event:
-            return DSKitAsset.Colors.success.color.withAlphaComponent(0.2)
-        case .seminar:
-            return DSKitAsset.Colors.secondary.color.withAlphaComponent(0.2)
-        }
-    }
-}
-
 final class DashBoardCalendarCardCVC: UICollectionViewCell {
     
     // MARK: - UI Components
