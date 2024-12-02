@@ -165,8 +165,6 @@ extension GroupCardCVC {
 
 extension GroupCardCVC {
     func configureCell(model: GroupInfo) {
-        print("Configuring cell with model: \(model)")
-
         self.coverImageView.setImage(with: model.imageURL)
         self.titleLabel.text = model.title
         self.recruitmentStatusTagView.setData(title: model.status.text,
