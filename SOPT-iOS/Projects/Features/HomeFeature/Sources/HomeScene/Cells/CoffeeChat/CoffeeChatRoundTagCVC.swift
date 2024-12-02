@@ -11,30 +11,6 @@ import UIKit
 import Core
 import DSKit
 
-@frozen
-enum CoffeeChatGenerationHistoryType {
-    case currentActivity
-    case pastActivity
-    
-    var titleColor: UIColor {
-        switch self {
-        case .currentActivity:
-            return DSKitAsset.Colors.secondary.color
-        case .pastActivity:
-            return DSKitAsset.Colors.gray200.color
-        }
-    }
-    
-    var backgroundColor: UIColor {
-        switch self {
-        case .currentActivity:
-            return DSKitAsset.Colors.secondary.color.withAlphaComponent(0.2)
-        case .pastActivity:
-            return DSKitAsset.Colors.gray700.color
-        }
-    }
-}
-
 final class CoffeeChatRoundTagCVC: UICollectionViewCell {
 
     // MARK: - UI Components
@@ -105,11 +81,11 @@ extension CoffeeChatRoundTagCVC {
         self.titleLabel.text = info.title
         if info.isActive {
             activityRoundView.isHidden = false
-            self.titleLabel.textColor = CoffeeChatGenerationHistoryType.currentActivity.titleColor
-            self.backgroundColor = CoffeeChatGenerationHistoryType.currentActivity.backgroundColor
+            self.titleLabel.textColor = CoffeeChatGenerationHistoryTagType.currentActivity.titleColor
+            self.backgroundColor = CoffeeChatGenerationHistoryTagType.currentActivity.backgroundColor
         } else {
-            self.titleLabel.textColor = CoffeeChatGenerationHistoryType.pastActivity.titleColor
-            self.backgroundColor = CoffeeChatGenerationHistoryType.pastActivity.backgroundColor
+            self.titleLabel.textColor = CoffeeChatGenerationHistoryTagType.pastActivity.titleColor
+            self.backgroundColor = CoffeeChatGenerationHistoryTagType.pastActivity.backgroundColor
         }
     }
 }

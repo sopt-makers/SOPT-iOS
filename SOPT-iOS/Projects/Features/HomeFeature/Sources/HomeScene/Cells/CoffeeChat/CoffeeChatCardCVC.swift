@@ -46,13 +46,11 @@ final class CoffeeChatCardCVC: UICollectionViewCell {
     private let hostNameLabel = UILabel().then {
         $0.textColor = DSKitAsset.Colors.gray100.color
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-        $0.lineBreakMode = .byTruncatingTail
     }
     
     private let hostJobLabel = UILabel().then {
         $0.textColor = DSKitAsset.Colors.gray400.color
         $0.font = DSKitFontFamily.Suit.medium.font(size: 13)
-        $0.lineBreakMode = .byTruncatingTail
     }
     
     private lazy var hostGenerationHistoryCollecitonView = UICollectionView(
