@@ -110,6 +110,8 @@ extension HomeForMemberVC {
                                      forCellWithReuseIdentifier: InsightCardCVC.className)
         self.collectionView.register(GroupCardCVC.self,
                                      forCellWithReuseIdentifier: GroupCardCVC.className)
+        self.collectionView.register(CoffeeChatCardCVC.self,
+                                     forCellWithReuseIdentifier: CoffeeChatCardCVC.className)
     }
 }
 
@@ -158,6 +160,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .appService: return viewModel.appServiceInfoList.count
         case .insight: return viewModel.insightInfoList.count
         case .group: return viewModel.groupInfoList.count
+        case .coffeeChat: return viewModel.coffeeChatHostInfoList.count
         default: return 0
         }
     }
@@ -215,13 +218,22 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .group:
             /// 모임 카드 셀
             let groupIndex = indexPath.item
-            guard let group = viewModel.groupInfoList[safe: groupIndex] else { return UICollectionViewCell() }
             guard let groupCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: GroupCardCVC.className,
                                      for: indexPath) as? GroupCardCVC else { return UICollectionViewCell() }
-            groupCardCell.configureCell(model: group)
+            groupCardCell.configureCell(model: viewModel.groupInfoList[groupIndex])
             
             return groupCardCell
+            
+        case .coffeeChat:
+            /// 커피챗 카드 셀
+            let coffeeChatIndex = indexPath.item
+            guard let coffeeChatCardCell = collectionView
+                .dequeueReusableCell(withReuseIdentifier: CoffeeChatCardCVC.className,
+                                     for: indexPath) as? CoffeeChatCardCVC else { return UICollectionViewCell() }
+            coffeeChatCardCell.configureCell(model: viewModel.coffeeChatHostInfoList[coffeeChatIndex])
+            
+            return coffeeChatCardCell
 
         default: return UICollectionViewCell()
         }
