@@ -250,6 +250,9 @@ public struct I18N {
             public static let groupAndStudy = "모임/스터디"
             public static let member = "멤버"
             public static let project = "프로젝트"
+            public static let homePage = "홈페이지"
+            public static let activityReview = "활동후기"
+            public static let instagram = "인스타그램"
         }
         
         public struct AppService {
