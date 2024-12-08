@@ -227,6 +227,8 @@ public struct I18N {
     }
     
     public struct Home {
+        public static let viewAll = "전체보기"
+        
         public struct DashBoard {
             public struct UserHistory {
                 public static let visitor = "비회원"
@@ -260,6 +262,12 @@ public struct I18N {
         
         public struct Group {
             public static let headerTitle = "다들 모여서 모하니?"
+            public static let entireGeneration = "전체기수"
+            public static let activityGeneration = "활동기수"
+            public static let beforeStart = "모집 전"
+            public static let applyAble = "모집 중"
+            public static let recruitmentComplete = "모집 마감"
+            public static let entirePart = "전체파트"
         }
         
         public struct CoffeeChat {
@@ -269,6 +277,11 @@ public struct I18N {
         public struct Announcements {
             public static let headerTitle = "솝트인에게 홍보합니다!"
         }
+    }
+    
+    public struct Soptlog {
+        public static let editProfile = "프로필 수정"
+        public static let enrollIntroduce = "프로필 수정에서 한 줄 소개 등록해보세요!"
     }
     
     public struct Attendance {

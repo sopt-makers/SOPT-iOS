@@ -41,4 +41,10 @@ public final class CustomProfileImageView: UIImageView {
         super.layoutSubviews()
         self.layer.cornerRadius = self.frame.width / 2
     }
+    
+    @discardableResult
+    public func hideBorder() -> Self {
+        self.layer.borderWidth = 0
+        return self
+    }
 }
