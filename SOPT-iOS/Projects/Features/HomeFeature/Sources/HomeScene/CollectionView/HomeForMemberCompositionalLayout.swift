@@ -298,7 +298,7 @@ extension HomeForMemberVC {
         
         /// section 지정
         let section = NSCollectionLayoutSection(group: socialLinkGroup)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0,
+        section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultLineSpacing,
                                                         leading: Metric.collectionViewDefaultSideInset,
                                                         bottom: 0,
                                                         trailing: 0)
