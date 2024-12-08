@@ -119,6 +119,8 @@ extension HomeForMemberVC {
         self.collectionView.register(AnnouncementPageContolFooterView.self,
                                      forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
                                      withReuseIdentifier: AnnouncementPageContolFooterView.className)
+        self.collectionView.register(SocialLinkCardCVC.self,
+                                     forCellWithReuseIdentifier: SocialLinkCardCVC.className)
     }
 }
 
@@ -186,6 +188,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .group: return viewModel.groupInfoList.count
         case .coffeeChat: return viewModel.coffeeChatHostInfoList.count
         case .announcement: return viewModel.announcementInfoList.count
+        case .socialLinks: return SocialLinkCardType.allCases.count
         default: return 0
         }
     }
@@ -260,7 +263,6 @@ extension HomeForMemberVC: UICollectionViewDataSource {
             
             return coffeeChatCardCell
 
-            
         case .announcement:
             /// 홍보 카드 셀
             let announcementIndex = indexPath.item
@@ -271,6 +273,16 @@ extension HomeForMemberVC: UICollectionViewDataSource {
             
             return announcementCardCell
             
+        case .socialLinks:
+            /// 소셜 링크 카드 셀
+            let socialLinkIndex = indexPath.item
+            guard let socialLinkCardCell = collectionView
+                .dequeueReusableCell(withReuseIdentifier: SocialLinkCardCVC.className,
+                                     for: indexPath) as? SocialLinkCardCVC else { return UICollectionViewCell() }
+            let socialLinkType = SocialLinkCardType.allCases[socialLinkIndex]
+            socialLinkCardCell.configureCell(type: socialLinkType)
+            
+            return socialLinkCardCell
         default: return UICollectionViewCell()
         }
     }
