@@ -194,9 +194,12 @@ extension CoffeeChatCardCVC {
     private func makeCategoryTagView(categories: [String]) {
         for category in categories {
             let categoryTag = HomeSquareTagView()
-                .setTitle(with: category)
-                .setTitleColor(with: DSKitAsset.Colors.success.color)
-                .setBackgroundColor(with: DSKitAsset.Colors.success.color.withAlphaComponent(0.2))
+//                .setTitle(with: category)
+//                .setTitleColor(with: DSKitAsset.Colors.success.color)
+//                .setBackgroundColor(with: DSKitAsset.Colors.success.color.withAlphaComponent(0.2))
+            categoryTag.setData(title: category,
+                                titleColor: DSKitAsset.Colors.success.color,
+                                backgroundColor: DSKitAsset.Colors.success.color.withAlphaComponent(0.2))
             self.categoryTagStackView.addArrangedSubviews(categoryTag)
         }
     }

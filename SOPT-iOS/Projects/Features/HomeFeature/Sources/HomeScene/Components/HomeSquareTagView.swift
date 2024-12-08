@@ -57,23 +57,4 @@ extension HomeSquareTagView {
         self.titleLabel.textColor = titleColor
         self.backgroundColor = backgroundColor
     }
-    
-    @discardableResult
-    public func setTitle(with title: String) -> Self {
-        self.titleLabel.text = title
-        return self
-    }
-    
-    @discardableResult
-    public func setTitleColor(with color: UIColor) -> Self {
-        self.titleLabel.textColor = color
-        return self
-    }
-    
-    @discardableResult
-    public func setBackgroundColor(with color: UIColor) -> Self {
-        self.backgroundColor = color
-        return self
-    }
 }
-
