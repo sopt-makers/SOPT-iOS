@@ -61,6 +61,3 @@ extension HomeDefaultHeaderView {
         if sectionKind == .appService { self.viewAllButton.isHidden = true }
     }
 }
-
-
-
