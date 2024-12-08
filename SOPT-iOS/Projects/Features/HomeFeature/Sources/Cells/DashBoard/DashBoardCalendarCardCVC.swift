@@ -16,18 +16,25 @@ enum MainServiceCalenderCardTag {
     case event
     case seminar
     
-    func makeTag() -> HomeSquareTagView {
+    var title: String {
         switch self {
         case .event:
-            return HomeSquareTagView()
-                .setTitle(with: I18N.Home.DashBoard.Attendance.event)
-                .setTitleColor(with: DSKitAsset.Colors.success.color)
-                .setBackgroundColor(with: DSKitAsset.Colors.success.color.withAlphaComponent(0.2))
+            return I18N.Home.DashBoard.Attendance.event
         case .seminar:
-            return HomeSquareTagView()
-                .setTitle(with: I18N.Home.DashBoard.Attendance.seminar)
-                .setTitleColor(with: DSKitAsset.Colors.success.color)
-                .setBackgroundColor(with: DSKitAsset.Colors.secondary.color.withAlphaComponent(0.2))
+            return I18N.Home.DashBoard.Attendance.seminar
+        }
+    }
+    
+    var titleColor: UIColor {
+        return DSKitAsset.Colors.success.color
+    }
+    
+    var backgroundColor: UIColor {
+        switch self {
+        case .event:
+            return DSKitAsset.Colors.success.color.withAlphaComponent(0.2)
+        case .seminar:
+            return DSKitAsset.Colors.secondary.color.withAlphaComponent(0.2)
         }
     }
 }
@@ -135,6 +142,7 @@ extension DashBoardCalendarCardCVC {
         
         scheduleStackView.addArrangedSubviews(
             dateLabel,
+            scheduleTagView,
             titleStackView
         )
     }
@@ -143,13 +151,12 @@ extension DashBoardCalendarCardCVC {
 // MARK: - Methods
 
 extension DashBoardCalendarCardCVC {
-    func configureCell(date: String, tag: MainServiceCalenderCardTag, title: String, userType: UserType) {
+    func configureCell(date: String, tagType: MainServiceCalenderCardTag, title: String, userType: UserType) {
         self.dateLabel.text = date
-        self.scheduleTagView = tag.makeTag()
         self.scheduleTitleLabel.text = title
-        if !scheduleStackView.contains(scheduleTagView) {
-            self.scheduleStackView.insertArrangedSubview(self.scheduleTagView, at: 1)
-        }
+        self.scheduleTagView.setData(title: tagType.title,
+                                     titleColor: tagType.titleColor,
+                                     backgroundColor: tagType.backgroundColor)
         self.attendanceButton.isHidden = userType == .visitor
     }
 }

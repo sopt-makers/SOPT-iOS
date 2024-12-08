@@ -52,22 +52,10 @@ extension HomeSquareTagView {
 // MARK: - Methods
 
 extension HomeSquareTagView {
-    @discardableResult
-    public func setTitle(with title: String) -> Self {
+    func setData(title: String, titleColor: UIColor, backgroundColor: UIColor) {
         self.titleLabel.text = title
-        return self
-    }
-    
-    @discardableResult
-    public func setTitleColor(with color: UIColor) -> Self {
-        self.titleLabel.textColor = color
-        return self
-    }
-    
-    @discardableResult
-    public func setBackgroundColor(with color: UIColor) -> Self {
-        self.backgroundColor = color
-        return self
+        self.titleLabel.textColor = titleColor
+        self.backgroundColor = backgroundColor
     }
 }
 
