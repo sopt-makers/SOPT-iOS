@@ -230,6 +230,8 @@ extension HomeForMemberVC {
                                                         leading: Metric.collectionViewDefaultSideInset,
                                                         bottom: Metric.defaultLineSpacing,
                                                         trailing: Metric.collectionViewDefaultSideInset)
+        section.interGroupSpacing = 12
+        section.orthogonalScrollingBehavior = .groupPaging
         return section
     }
     
