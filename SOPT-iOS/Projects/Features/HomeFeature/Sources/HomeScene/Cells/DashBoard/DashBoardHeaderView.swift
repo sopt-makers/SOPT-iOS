@@ -53,7 +53,8 @@ extension DashBoardHeaderView {
     private func setLayout() {
         self.addSubviews(
             userInfoLabel,
-            userHistoryView
+            userHistoryView,
+            rightArrowWithCircleImageView
         )
 
         userInfoLabel.snp.makeConstraints { make in
@@ -67,10 +68,6 @@ extension DashBoardHeaderView {
             make.width.equalTo(250)
             make.height.equalTo(23)
         }
-    }
-    
-    private func setRightArrowWithCircleImageViewLayout() {
-        self.addSubview(rightArrowWithCircleImageView)
         
         rightArrowWithCircleImageView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
@@ -87,11 +84,13 @@ extension DashBoardHeaderView {
         switch userType {
         case .visitor:
             self.userInfoLabel.text = I18N.Home.DashBoard.UserHistory.encourage
+            self.rightArrowWithCircleImageView.isHidden = true
         case .active, .inactive:
             self.userInfoLabel.text = "김솝트 님은\nSOPT와 N개월 째"
-            setRightArrowWithCircleImageViewLayout()
+            self.rightArrowWithCircleImageView.isHidden = false
         }
         
+        self.userInfoLabel.setLineSpacing(lineSpacing: 5)
         userHistoryView.setData(userType: userType, recentHistory: 35, allHistory: [35, 34, 33, 32, 31, 30, 29])
     }
 }
