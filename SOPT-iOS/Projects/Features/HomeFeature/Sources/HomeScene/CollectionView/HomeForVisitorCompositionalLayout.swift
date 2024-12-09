@@ -42,11 +42,16 @@ extension HomeForVisitorVC {
                                                                  elementKind: UICollectionView.elementKindSectionHeader,
                                                                  alignment: .top)
         
+        /// item 지정: 헤더만 존재
+        let emptyItemSize = NSCollectionLayoutSize(widthDimension: .absolute(0),
+                                                   heightDimension: .absolute(0))
+        let emptyItem = NSCollectionLayoutItem(layoutSize: emptyItemSize)
+        
         /// group 지정: 헤더만 존재
         let emptyGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                     heightDimension: .absolute(0))
         let emptyGroup = NSCollectionLayoutGroup.vertical(layoutSize: emptyGroupSize,
-                                                          subitems: [])
+                                                          subitems: [emptyItem])
         
         /// section 지정
         let section = NSCollectionLayoutSection(group: emptyGroup)

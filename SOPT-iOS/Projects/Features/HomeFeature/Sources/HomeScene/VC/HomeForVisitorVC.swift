@@ -52,6 +52,8 @@ final class HomeForVisitorVC: UIViewController, HomeForVisitorViewControllable {
         super.viewDidLoad()
         setUI()
         setLayout()
+        setDelegate()
+        registerCells()
     }
 }
 
@@ -89,7 +91,10 @@ extension HomeForVisitorVC {
     }
     
     private func registerCells() {
-        
+        /// Header
+        self.collectionView.register(DashBoardHeaderView.self,
+                                     forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                     withReuseIdentifier: DashBoardHeaderView.className)
     }
 }
 
@@ -102,8 +107,38 @@ extension HomeForVisitorVC: UICollectionViewDelegate {
 // MARK: - UICollectionViewDataSource
 
 extension HomeForVisitorVC: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return HomeForVisitorSectionLayoutKind.allCases.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard let sectionKind = HomeForVisitorSectionLayoutKind(rawValue: indexPath.section) else { return UICollectionReusableView() }
+        
+        switch sectionKind {
+        case .dashBoard:
+            guard let headerView = collectionView
+                .dequeueReusableSupplementaryView(ofKind: kind,
+                                                  withReuseIdentifier: DashBoardHeaderView.className,
+                                                  for: indexPath) as? DashBoardHeaderView else { return UICollectionReusableView() }
+            headerView.setData(userType: .visitor)
+            return headerView
+        default:
+            guard let headerView = collectionView
+                .dequeueReusableSupplementaryView(ofKind: kind,
+                                                  withReuseIdentifier: HomeDefaultHeaderView.className,
+                                                  for: indexPath) as? HomeDefaultHeaderView else { return UICollectionReusableView() }
+            headerView.setDataForVisitor(sectionKind: sectionKind)
+            return headerView
+        }
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        guard let sectionKind = HomeForVisitorSectionLayoutKind(rawValue: section) else { return 0 }
+        
+        switch sectionKind {
+        case .dashBoard: return 1
+        default: return 0
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

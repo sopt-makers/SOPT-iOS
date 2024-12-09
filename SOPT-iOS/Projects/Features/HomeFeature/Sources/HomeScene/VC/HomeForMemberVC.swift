@@ -156,7 +156,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
                     .dequeueReusableSupplementaryView(ofKind: kind,
                                                       withReuseIdentifier: HomeDefaultHeaderView.className,
                                                       for: indexPath) as? HomeDefaultHeaderView else { return UICollectionReusableView() }
-                headerView.setData(sectionKind: sectionKind)
+                headerView.setDataForMember(sectionKind: sectionKind)
                 return headerView
             }
         } /// Footer View
