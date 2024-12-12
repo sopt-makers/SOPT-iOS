@@ -80,6 +80,7 @@ extension NotificationDetailViewModel {
             .sink { owner, _ in
                 guard let shortCutLink = owner.makeShortCutLink() else { return }
                 owner.onShortCutButtonTap?(shortCutLink)
+                owner.trackAmplitudeShortcutButtonTapped(with: owner.notificationId)
             }.store(in: cancelBag)
     
         return output
@@ -118,5 +119,8 @@ extension NotificationDetailViewModel {
     private func isToday(_ date: Date) -> Bool {
         let calendar = Calendar.current
         return calendar.isDateInToday(date)
+    }
+    private func trackAmplitudeShortcutButtonTapped(with notificationId: String) {
+        AmplitudeInstance.shared.track(eventType: .clickShortcutButton, eventProperties: ["notification_id": notificationId])
     }
 }
