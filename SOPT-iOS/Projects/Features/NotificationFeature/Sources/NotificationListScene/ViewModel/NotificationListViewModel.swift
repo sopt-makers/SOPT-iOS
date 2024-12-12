@@ -70,6 +70,7 @@ extension NotificationListViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 output.filterList.send(owner.filterList)
+                AmplitudeInstance.shared.track(eventType: .viewNotificationList)
             }.store(in: cancelBag)
         
         input.requestNotifications
