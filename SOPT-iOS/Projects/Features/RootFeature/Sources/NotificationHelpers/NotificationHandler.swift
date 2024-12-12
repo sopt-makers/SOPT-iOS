@@ -27,6 +27,11 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
     public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
         let userInfo = notification.request.content.userInfo
         print("APNs 푸시 알림 페이로드: \(userInfo)")
+        AmplitudeInstance.shared.track(eventType: .receivedPush, eventProperties: ["notificationId": payload.id,
+                                                                                   "send_timeStamp": payload.sendAt,
+                                                                                   "title": payload.title,
+                                                                                   "contents": payload.content,
+                                                                                   "admin_category": payload.category ?? "없음"])
         return([.badge, .banner, .list, .sound])
     }
     
@@ -36,11 +41,11 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
         print("APNs 푸시 알림 페이로드: \(userInfo)")
         guard let payload = NotificationPayload(dictionary: userInfo) else { return }
         
-        AmplitudeInstance.shared.track(eventType: .receivedPush, eventProperties: ["notificationId": payload.id,
-                                                                                   "send_timeStamp": payload.sendAt,
-                                                                                   "title": payload.title,
-                                                                                   "contents": payload.content,
-                                                                                   "admin_category": payload.category ?? "없음"])
+        AmplitudeInstance.shared.track(eventType: .clickPush, eventProperties: ["notificationId": payload.id,
+                                                                                "send_timeStamp": payload.sendAt,
+                                                                                "leadtime": "",
+                                                                                "contain_deeplink": payload.hasDeepLink,
+                                                                                "deeplink_url": payload.deepLink ?? "없음"])
         guard payload.hasLink else {
             self.deepLink.send(makeComponentsForEmptyLink(notificationId: payload.id))
             return

@@ -11,6 +11,7 @@ import Foundation
 public enum AmplitudeEventType: String {
     // 푸시 이벤트
     case receivedPush = "received_push"
+    case clickPush = "click_push"
     // 클릭 이벤트
     case clickAlarm = "click_alarm"
     case clickMyPage = "click_mypage"
