@@ -98,6 +98,7 @@ extension NotificationListViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.readAllNotifications()
+                AmplitudeInstance.shared.track(eventType: .clickReadAllButton)
             }.store(in: cancelBag)
         
         input.categoryCellTapped
