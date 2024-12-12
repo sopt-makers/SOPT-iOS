@@ -61,7 +61,6 @@ extension NotificationDetailViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.getNotificationDetail(notificationId: owner.notificationId)
-                owner.trackAmplitudeNoticeDetailView(with: owner.notificationId)
             }.store(in: cancelBag)
         
         input.shortCutButtonTap
@@ -120,16 +119,6 @@ extension NotificationDetailViewModel {
     private func isToday(_ date: Date) -> Bool {
         let calendar = Calendar.current
         return calendar.isDateInToday(date)
-    }
-    
-    private func trackAmplitudeNoticeDetailView(with notificationId: String) {
-        guard let notification else { return }
-        AmplitudeInstance.shared.track(eventType: .viewNotificationDetail,
-                                       eventProperties: [
-            "notification_id": notificationId,
-            "open_method": notification.hasDeepLink ? "푸시" : "알림센터",
-            "contain_deeplink": notification.hasDeepLink
-        ])
     }
     
     private func trackAmplitudeShortcutButtonTapped(with notificationId: String) {
