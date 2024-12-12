@@ -51,6 +51,7 @@ public enum AmplitudeEventType: String {
     // 뷰 이벤트
     case viewAppHome = "view_apphome"
     case viewPokeOnboarding = "view_poke_onboarding"
+    case viewNotificationDetail = "view_notification_detail"
     
     // 콕 찌르기 뷰 이벤트
     case viewPokeMain = "view_poke_main"
