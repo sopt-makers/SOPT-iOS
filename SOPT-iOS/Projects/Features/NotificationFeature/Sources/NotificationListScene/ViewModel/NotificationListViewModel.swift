@@ -92,6 +92,14 @@ extension NotificationListViewModel {
                 owner.onNotificationTap?(notification.notificationId)
                 owner.read(index: index)
                 output.notificationList.send(self.notifications)
+                AmplitudeInstance.shared.track(eventType: .clickNotificationItem,
+                                               eventProperties: [
+                                                "notification_id": notification.notificationId,
+                                                "send_timestamp": notification.createdAt,
+                                                "contents": notification.content ?? "",
+                                                "admin_category": notification.category ?? "",
+                                                "title": notification.title
+                                               ])
             }.store(in: cancelBag)
         
         input.readAllButtonTapped

@@ -28,6 +28,7 @@ public enum AmplitudeEventType: String {
     case clickHotboard = "click_hotboard"
     case clickShortcutButton = "click_link.btn"
     case clickReadAllButton = "click_allread.btn"
+    case clickNotificationItem = "click_notification_item"
     
     // 콕 찌르기 클릭 이벤트
     case clickPoke = "click_poke"
