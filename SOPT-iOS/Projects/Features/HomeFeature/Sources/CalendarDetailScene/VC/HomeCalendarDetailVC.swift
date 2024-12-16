@@ -70,6 +70,8 @@ final class HomeCalendarDetailVC: UIViewController, HomeCalendarDetailViewContro
         if let gradientLayer = gradationView.layer.sublayers?.first as? CAGradientLayer {
             gradientLayer.frame = gradationView.bounds
         }
+        
+        scrollToRecentSchedule()
     }
 }
 
@@ -113,6 +115,15 @@ extension HomeCalendarDetailVC {
     
     private func registerCells() {
         collectionView.register(HomeCalendarDetailCVC.self, forCellWithReuseIdentifier: HomeCalendarDetailCVC.className)
+    }
+    
+    @MainActor
+    private func scrollToRecentSchedule() {
+        if let index = self.viewModel.calendarDetailList.firstIndex(where: {$0.isRecentSchedule}) {
+            self.collectionView.scrollToItem(at: IndexPath(item: index, section: 0),
+                                             at: .top,
+                                        animated: true)
+        }
     }
 }
 
