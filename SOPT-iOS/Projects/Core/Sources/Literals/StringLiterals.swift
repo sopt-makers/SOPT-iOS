@@ -291,6 +291,7 @@ public struct I18N {
     }
     
     public struct Soptlog {
+        public static let navigationTitle = "솝트로그"
         public static let editProfile = "프로필 수정"
         public static let enrollIntroduce = "프로필 수정에서 한 줄 소개 등록해보세요!"
     }
