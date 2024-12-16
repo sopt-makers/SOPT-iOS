@@ -122,11 +122,18 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     
     // MARK: - Inputs
     
-    public struct Input { }
+    public struct Input {
+        let cellTapped: Driver<IndexPath>
+    }
     
     // MARK: - Outputs
     
     public struct Output { }
+    
+    // MARK: - HomeForeMemberCoordinating
+    
+    public var onDashBoardCellTapped: (() -> Void)?
+
     
     // MARK: - initialization
     
@@ -134,8 +141,16 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
 }
 
 extension HomeForMemberViewModel {
-    public func transform(from input: Input, cancelBag: Core.CancelBag) -> Output {
+    public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
+        
+        input.cellTapped
+            .filter{ $0.section == 0 }
+            .withUnretained(self)
+            .sink(receiveValue: { owner, indexPath in
+                self.onDashBoardCellTapped?()
+            })
+            .store(in: cancelBag)
         return output
     }
 }

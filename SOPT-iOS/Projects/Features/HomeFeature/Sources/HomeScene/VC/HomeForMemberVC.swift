@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 import Domain
@@ -14,11 +15,13 @@ import DSKit
 
 import BaseFeatureDependency
 
-final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
+final public class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     
     // MARK: - Properties
 
     public let viewModel: HomeForMemberViewModel
+    private var cancelBag = CancelBag()
+    private var cellTapped = PassthroughSubject<IndexPath, Never>()
 
     // MARK: - UI Components
     
@@ -54,6 +57,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
         setLayout()
         setDelegate()
         registerCells()
+        bindViewModels()
     }
 }
 
@@ -122,6 +126,14 @@ extension HomeForMemberVC {
         self.collectionView.register(SocialLinkCardCVC.self,
                                      forCellWithReuseIdentifier: SocialLinkCardCVC.className)
     }
+    
+    private func bindViewModels() {
+        let input = HomeForMemberViewModel.Input(
+            cellTapped: cellTapped.asDriver()
+        )
+        
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -133,6 +145,10 @@ extension HomeForMemberVC: UICollectionViewDelegate {
 // MARK: - UICollectionViewDataSource
 
 extension HomeForMemberVC: UICollectionViewDataSource {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        cellTapped.send(indexPath)
+    }
+    
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return HomeForMemberSectionLayoutKind.allCases.count
     }
