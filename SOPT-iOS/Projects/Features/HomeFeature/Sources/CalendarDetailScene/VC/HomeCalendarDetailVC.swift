@@ -18,6 +18,12 @@ final class HomeCalendarDetailVC: UIViewController, HomeCalendarDetailViewContro
     
     // MARK: UI Components
     
+    private lazy var naviBar = OPNavigationBar(self,
+                                               type: .oneLeftButton,
+                                               backgroundColor: DSKitAsset.Colors.semanticBackground.color)
+        .addMiddleLabel(title: I18N.Home.CalendarDetail.navigationTitle, font: DSKitFontFamily.Suit.medium.font(size: 16))
+    
+    
     private lazy var collectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: UICollectionViewFlowLayout()
@@ -84,10 +90,15 @@ extension HomeCalendarDetailVC {
     }
     
     private func setLayout() {
-        view.addSubviews(collectionView, gradationView, attendanceButton)
+        view.addSubviews(naviBar, collectionView, gradationView, attendanceButton)
+        
+        naviBar.snp.makeConstraints { make in
+            make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            
+        }
         
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide)          // navigation 추가 후 변경
+            make.top.equalTo(naviBar.snp.bottom)
             make.leading.trailing.equalToSuperview().inset(20)
             make.bottom.equalToSuperview()
         }

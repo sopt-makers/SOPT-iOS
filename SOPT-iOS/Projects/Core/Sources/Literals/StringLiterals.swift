@@ -285,6 +285,7 @@ public struct I18N {
         }
         
         public struct CalendarDetail {
+            public static let navigationTitle = "일정"
             public static let attendance = "출석하러 가기"
         }
     }
