@@ -7,3 +7,13 @@
 //
 
 import Foundation
+
+import BaseFeatureDependency
+import Core
+
+public protocol HomeCalendarDetailViewControllable: ViewControllable {}
+public protocol HomeCalendarDetailCoordinatable {
+    
+}
+public typealias HomeCalendarDetailViewModelType = ViewModelType & HomeCalendarDetailCoordinatable
+public typealias HomeCalendarDetailPresentable = (vc: HomeCalendarDetailViewControllable, vm: any HomeCalendarDetailViewModelType)
