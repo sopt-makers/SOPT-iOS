@@ -80,6 +80,10 @@ extension AppServiceCardCVC {
     func configureCell(imageURL: String, name: String, badgeText: String) {
         self.logoImageView.setImage(with: imageURL)
         self.titleLabel.text = name
-        self.notificationBadgeView.setData(with: badgeText)
+        if badgeText.isEmpty {
+            self.notificationBadgeView.isHidden = true
+        } else {
+            self.notificationBadgeView.setData(with: badgeText)
+        }
     }
 }

@@ -101,6 +101,8 @@ extension HomeForVisitorVC {
                                      forCellWithReuseIdentifier: DashBoardCardCVC.className)
         self.collectionView.register(MainProductCardCVC.self,
                                      forCellWithReuseIdentifier: MainProductCardCVC.className)
+        self.collectionView.register(AppServiceCardCVC.self,
+                                     forCellWithReuseIdentifier: AppServiceCardCVC.className)
     }
 }
 
@@ -133,7 +135,7 @@ extension HomeForVisitorVC: UICollectionViewDataSource {
         switch sectionKind {
         case .dashBoard: return 1
         case .mainProduct: return viewModel.productInfoList.count
-        default: return 0
+        case .appService: return viewModel.appServiceInfoList.count
         }
     }
     
@@ -160,7 +162,19 @@ extension HomeForVisitorVC: UICollectionViewDataSource {
                                           image: product.image)
             
             return productCardCell
-        default: return UICollectionViewCell()
+            
+        case .appService:
+            /// 앱 서비스 카드 셀
+            let appServiceIndex = indexPath.item
+            guard let appService = viewModel.appServiceInfoList[safe: appServiceIndex] else { return UICollectionViewCell() }
+            guard let appServiceCardCell = collectionView
+                .dequeueReusableCell(withReuseIdentifier: AppServiceCardCVC.className,
+                                     for: indexPath) as? AppServiceCardCVC else { return UICollectionViewCell() }
+            appServiceCardCell.configureCell(imageURL: appService.imageURL,
+                                             name: appService.name,
+                                             badgeText: appService.badgeText)
+            
+            return appServiceCardCell
         }
     }
 }
