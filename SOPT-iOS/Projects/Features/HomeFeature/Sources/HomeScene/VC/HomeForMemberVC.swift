@@ -72,7 +72,7 @@ extension HomeForMemberVC {
         )
         
         naviBar.snp.makeConstraints { make in
-          make.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)
+            make.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)
         }
         
         collectionView.snp.makeConstraints { make in
@@ -92,16 +92,15 @@ extension HomeForMemberVC {
     
     private func registerCells() {
         /// Header
-        self.collectionView.register(DashBoardHeaderView.self,
-                                     forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                                     withReuseIdentifier: DashBoardHeaderView.className)
         self.collectionView.register(HomeDefaultHeaderView.self,
                                      forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                      withReuseIdentifier: HomeDefaultHeaderView.className)
         
         /// Cell
-        self.collectionView.register(DashBoardCalendarCardCVC.self,
-                                     forCellWithReuseIdentifier: DashBoardCalendarCardCVC.className)
+        self.collectionView.register(DashBoardCardCVC.self,
+                                     forCellWithReuseIdentifier: DashBoardCardCVC.className)
+        self.collectionView.register(CalendarCardCVC.self,
+                                     forCellWithReuseIdentifier: CalendarCardCVC.className)
         self.collectionView.register(MainProductCardCVC.self,
                                      forCellWithReuseIdentifier: MainProductCardCVC.className)
         self.collectionView.register(AppServiceCardCVC.self,
@@ -142,23 +141,12 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         
         /// Header View
         if kind == UICollectionView.elementKindSectionHeader {
-            switch sectionKind {
-            /// dashBoard일 경우에만 defaultHeader 대신 UserHistory가 나타나는 커스텀 헤더를 사용합니다.
-            case .dashBoard:
-                guard let headerView = collectionView
-                    .dequeueReusableSupplementaryView(ofKind: kind,
-                                                      withReuseIdentifier: DashBoardHeaderView.className,
-                                                      for: indexPath) as? DashBoardHeaderView else { return UICollectionReusableView() }
-                headerView.setData(userType: .active)
-                return headerView
-            default:
-                guard let headerView = collectionView
-                    .dequeueReusableSupplementaryView(ofKind: kind,
-                                                      withReuseIdentifier: HomeDefaultHeaderView.className,
-                                                      for: indexPath) as? HomeDefaultHeaderView else { return UICollectionReusableView() }
-                headerView.setDataForMember(sectionKind: sectionKind)
-                return headerView
-            }
+            guard let headerView = collectionView
+                .dequeueReusableSupplementaryView(ofKind: kind,
+                                                  withReuseIdentifier: HomeDefaultHeaderView.className,
+                                                  for: indexPath) as? HomeDefaultHeaderView else { return UICollectionReusableView() }
+            headerView.setDataForMember(sectionKind: sectionKind)
+            return headerView
         } /// Footer View
         else if kind == UICollectionView.elementKindSectionFooter {
             switch sectionKind {
@@ -182,6 +170,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         
         switch sectionKind {
         case .dashBoard: return 1
+        case .calendar: return 1
         case .mainProduct: return viewModel.productInfoList.count
         case .appService: return viewModel.appServiceInfoList.count
         case .insight: return viewModel.insightInfoList.count
@@ -189,7 +178,6 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .coffeeChat: return viewModel.coffeeChatHostInfoList.count
         case .announcement: return viewModel.announcementInfoList.count
         case .socialLinks: return SocialLinkCardType.allCases.count
-        default: return 0
         }
     }
     
@@ -198,14 +186,24 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         
         switch sectionKind {
         case .dashBoard:
+            /// 대시보드 카드 셀
+            guard let dashBoardCardCell = collectionView
+                .dequeueReusableCell(withReuseIdentifier: DashBoardCardCVC.className,
+                                     for: indexPath) as? DashBoardCardCVC else { return UICollectionViewCell() }
+            dashBoardCardCell.configureCell(userType: .active)
+            
+            return dashBoardCardCell
+            
+        case .calendar:
             /// 캘린더 카드 셀
             guard let calendarCardCell = collectionView
-                .dequeueReusableCell(withReuseIdentifier: DashBoardCalendarCardCVC.className,
-                                     for: indexPath) as? DashBoardCalendarCardCVC else { return UICollectionViewCell() }
+                .dequeueReusableCell(withReuseIdentifier: CalendarCardCVC.className,
+                                     for: indexPath) as? CalendarCardCVC else { return UICollectionViewCell() }
             calendarCardCell.configureCell(date: "10.22",
-                          tagType: .event,
-                          title: "1차 행사",
-                          userType: .active)
+                                           tagType: .event,
+                                           title: "1차 행사",
+                                           userType: .active)
+            
             return calendarCardCell
             
         case .mainProduct:
@@ -215,9 +213,9 @@ extension HomeForMemberVC: UICollectionViewDataSource {
             guard let productCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: MainProductCardCVC.className,
                                      for: indexPath) as? MainProductCardCVC else { return UICollectionViewCell() }
-            
             productCardCell.configureCell(title: product.name,
                                           image: product.image)
+            
             return productCardCell
             
         case .appService:
@@ -230,6 +228,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
             appServiceCardCell.configureCell(imageURL: appService.imageURL,
                                              name: appService.name,
                                              badgeText: appService.badgeText)
+            
             return appServiceCardCell
         
         case .insight:
@@ -283,7 +282,6 @@ extension HomeForMemberVC: UICollectionViewDataSource {
             socialLinkCardCell.configureCell(type: socialLinkType)
             
             return socialLinkCardCell
-        default: return UICollectionViewCell()
         }
     }
 }
