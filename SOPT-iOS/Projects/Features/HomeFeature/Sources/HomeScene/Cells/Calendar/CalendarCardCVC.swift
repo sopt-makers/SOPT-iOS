@@ -11,7 +11,7 @@ import UIKit
 import Core
 import DSKit
 
-final class DashBoardCalendarCardCVC: UICollectionViewCell {
+final class CalendarCardCVC: UICollectionViewCell {
     
     // MARK: - UI Components
 
@@ -83,7 +83,7 @@ final class DashBoardCalendarCardCVC: UICollectionViewCell {
 
 // MARK: - UI & Layout
 
-extension DashBoardCalendarCardCVC {
+extension CalendarCardCVC {
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.gray800.color
         self.layer.cornerRadius = 8
@@ -122,7 +122,7 @@ extension DashBoardCalendarCardCVC {
 
 // MARK: - Methods
 
-extension DashBoardCalendarCardCVC {
+extension CalendarCardCVC {
     func configureCell(date: String, tagType: DashBoardCalenderCategoryTagType, title: String, userType: UserType) {
         self.dateLabel.text = date
         self.scheduleTitleLabel.text = title

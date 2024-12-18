@@ -1,5 +1,5 @@
 //
-//  DashBoardHeaderView.swift
+//  DashBoardCardCVC.swift
 //  HomeFeature
 //
 //  Created by Jae Hyun Lee on 11/22/24.
@@ -11,7 +11,7 @@ import UIKit
 import Core
 import DSKit
 
-final class DashBoardHeaderView: UICollectionReusableView {
+final class DashBoardCardCVC: UICollectionViewCell {
     
     // MARK: - UI Components
         
@@ -44,7 +44,7 @@ final class DashBoardHeaderView: UICollectionReusableView {
 
 // MARK: - UI & Layout
 
-extension DashBoardHeaderView {
+extension DashBoardCardCVC {
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.gray800.color
         self.layer.cornerRadius = 8
@@ -79,8 +79,8 @@ extension DashBoardHeaderView {
 
 // MARK: - Methods
 
-extension DashBoardHeaderView {
-    func setData(userType: UserType) {
+extension DashBoardCardCVC {
+    func configureCell(userType: UserType) {
         switch userType {
         case .visitor:
             self.userInfoLabel.text = I18N.Home.DashBoard.UserHistory.encourage
