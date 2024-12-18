@@ -17,6 +17,8 @@ enum HomeForVisitorSectionLayoutKind: Int, CaseIterable {
     
     var title: String {
         switch self {
+        case .mainProduct:
+            return I18N.Home.MainProduct.headerTitleForVisitor
         case .appService:
             return I18N.Home.AppService.headerTitle
         default:

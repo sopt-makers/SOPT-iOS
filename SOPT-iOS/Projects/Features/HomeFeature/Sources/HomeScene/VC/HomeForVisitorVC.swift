@@ -92,9 +92,15 @@ extension HomeForVisitorVC {
     
     private func registerCells() {
         /// Header
-        self.collectionView.register(DashBoardHeaderView.self,
+        self.collectionView.register(HomeDefaultHeaderView.self,
                                      forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                                     withReuseIdentifier: DashBoardHeaderView.className)
+                                     withReuseIdentifier: HomeDefaultHeaderView.className)
+        
+        /// Cell
+        self.collectionView.register(DashBoardCardCVC.self,
+                                     forCellWithReuseIdentifier: DashBoardCardCVC.className)
+        self.collectionView.register(MainProductCardCVC.self,
+                                     forCellWithReuseIdentifier: MainProductCardCVC.className)
     }
 }
 
@@ -113,23 +119,12 @@ extension HomeForVisitorVC: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         guard let sectionKind = HomeForVisitorSectionLayoutKind(rawValue: indexPath.section) else { return UICollectionReusableView() }
-        
-        switch sectionKind {
-        case .dashBoard:
-            guard let headerView = collectionView
-                .dequeueReusableSupplementaryView(ofKind: kind,
-                                                  withReuseIdentifier: DashBoardHeaderView.className,
-                                                  for: indexPath) as? DashBoardHeaderView else { return UICollectionReusableView() }
-            headerView.setData(userType: .visitor)
-            return headerView
-        default:
-            guard let headerView = collectionView
-                .dequeueReusableSupplementaryView(ofKind: kind,
-                                                  withReuseIdentifier: HomeDefaultHeaderView.className,
-                                                  for: indexPath) as? HomeDefaultHeaderView else { return UICollectionReusableView() }
-            headerView.setDataForVisitor(sectionKind: sectionKind)
-            return headerView
-        }
+        guard let headerView = collectionView
+            .dequeueReusableSupplementaryView(ofKind: kind,
+                                              withReuseIdentifier: HomeDefaultHeaderView.className,
+                                              for: indexPath) as? HomeDefaultHeaderView else { return UICollectionReusableView() }
+        headerView.setDataForVisitor(sectionKind: sectionKind)
+        return headerView
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -137,6 +132,7 @@ extension HomeForVisitorVC: UICollectionViewDataSource {
         
         switch sectionKind {
         case .dashBoard: return 1
+        case .mainProduct: return viewModel.productInfoList.count
         default: return 0
         }
     }
@@ -144,6 +140,26 @@ extension HomeForVisitorVC: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let sectionKind = HomeForVisitorSectionLayoutKind(rawValue: indexPath.section) else { return UICollectionViewCell() }
         switch sectionKind {
+        case .dashBoard:
+            /// 대시보드 카드 셀
+            guard let dashBoardCardCell = collectionView
+                .dequeueReusableCell(withReuseIdentifier: DashBoardCardCVC.className,
+                                     for: indexPath) as? DashBoardCardCVC else { return UICollectionViewCell() }
+            dashBoardCardCell.configureCell(userType: .visitor)
+            
+            return dashBoardCardCell
+            
+        case .mainProduct:
+            /// 프로덕트 카드 셀
+            let productIndex = indexPath.item
+            guard let product = viewModel.productInfoList[safe: productIndex] else { return UICollectionViewCell() }
+            guard let productCardCell = collectionView
+                .dequeueReusableCell(withReuseIdentifier: MainProductCardCVC.className,
+                                     for: indexPath) as? MainProductCardCVC else { return UICollectionViewCell() }
+            productCardCell.configureCell(title: product.name,
+                                          image: product.image)
+            
+            return productCardCell
         default: return UICollectionViewCell()
         }
     }

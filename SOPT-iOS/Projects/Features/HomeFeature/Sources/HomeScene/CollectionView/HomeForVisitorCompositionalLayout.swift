@@ -16,6 +16,7 @@ extension HomeForVisitorVC {
         static let defaultItemSpacing: Double = 16
         static let defaultGroupSpacing: Double = 12
         static let defaultLineSpacing: Double = 56
+        static let defaultSectionSpacing: Double = 36
         
         static let productItemSpacing: Double = 15
         static let appServiceItemSpacing: Double = 16
@@ -28,6 +29,8 @@ extension HomeForVisitorVC {
             switch sectionKind {
             case .dashBoard:
                 return self.createDashBoardSection()
+            case .mainProduct:
+                return self.createMainProductSection()
             default:
                 return self.createEmptySection()
             }
@@ -35,30 +38,53 @@ extension HomeForVisitorVC {
     }
     
     private func createDashBoardSection() -> NSCollectionLayoutSection {
-        /// header: 유저 정보 및 활동 히스토리
+        /// item: 대시보드 카드
+        let dashBoardItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                       heightDimension: .absolute(123))
+        let dashBoardItem = NSCollectionLayoutItem(layoutSize: dashBoardItemSize)
+        
+        /// group: 대시보드 카드
+        let dashBoardGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                        heightDimension: .estimated(123))
+        let dashBoardGroup = NSCollectionLayoutGroup.vertical(layoutSize: dashBoardGroupSize,
+                                                              subitems: [dashBoardItem])
+        
+        /// section 지정
+        let section = NSCollectionLayoutSection(group: dashBoardGroup)
+        section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultGroupSpacing,
+                                                        leading: Metric.collectionViewDefaultSideInset,
+                                                        bottom: Metric.defaultSectionSpacing,
+                                                        trailing: Metric.collectionViewDefaultSideInset)
+        
+        return section
+    }
+    
+    private func createMainProductSection() -> NSCollectionLayoutSection {
+        /// header: default
         let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                heightDimension: .absolute(123))
+                                                heightDimension: .absolute(30))
         let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
                                                                  elementKind: UICollectionView.elementKindSectionHeader,
                                                                  alignment: .top)
         
-        /// item 지정: 헤더만 존재
-        let emptyItemSize = NSCollectionLayoutSize(widthDimension: .absolute(0),
-                                                   heightDimension: .absolute(0))
-        let emptyItem = NSCollectionLayoutItem(layoutSize: emptyItemSize)
+        /// item: 프로덕트 카드
+        let productItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.25),
+                                                     heightDimension: .absolute(92))
+        let productItem = NSCollectionLayoutItem(layoutSize: productItemSize)
         
-        /// group 지정: 헤더만 존재
-        let emptyGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                    heightDimension: .absolute(0))
-        let emptyGroup = NSCollectionLayoutGroup.vertical(layoutSize: emptyGroupSize,
-                                                          subitems: [emptyItem])
+        /// group: 프로덕트 카드
+        let productGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                      heightDimension: .estimated(92))
+        let productGroup = NSCollectionLayoutGroup.horizontal(layoutSize: productGroupSize,
+                                                              subitems: [productItem])
+        productGroup.interItemSpacing = .fixed(Metric.productItemSpacing)
         
         /// section 지정
-        let section = NSCollectionLayoutSection(group: emptyGroup)
+        let section = NSCollectionLayoutSection(group: productGroup)
         section.boundarySupplementaryItems = [header]
-        section.contentInsets = NSDirectionalEdgeInsets(top: 12,
+        section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultItemSpacing,
                                                         leading: Metric.collectionViewDefaultSideInset,
-                                                        bottom: 0,
+                                                        bottom: 40,
                                                         trailing: Metric.collectionViewDefaultSideInset)
         
         return section
