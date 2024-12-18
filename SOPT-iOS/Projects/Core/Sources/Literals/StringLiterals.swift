@@ -246,6 +246,7 @@ public struct I18N {
         }
         
         public struct MainProduct {
+            public static let headerTitleForVisitor = "SOPT를 더 알고 싶다면, 둘러보세요"
             public static let playground = "Playground"
             public static let groupAndStudy = "모임/스터디"
             public static let member = "멤버"
