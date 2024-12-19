@@ -21,10 +21,10 @@ public class HomeForVisitorViewModel: HomeForVisitorViewModelType {
     // MARK: - Properties
     
     let productInfoList: [ProductInfo] = [
-        ProductInfo(name: I18N.Home.MainProduct.homePage, image: DSKitAsset.Assets.icHomepage.image),
+        ProductInfo(name: I18N.Home.MainProduct.homePage, image: DSKitAsset.Assets.imgHomepage.image),
         ProductInfo(name: I18N.Home.MainProduct.activityReview, image: DSKitAsset.Assets.imgGroupLogo.image),
         ProductInfo(name: I18N.Home.MainProduct.project, image: DSKitAsset.Assets.imgMemberLogo.image),
-        ProductInfo(name: I18N.Home.MainProduct.instagram, image: DSKitAsset.Assets.icInstagram.image)
+        ProductInfo(name: I18N.Home.MainProduct.instagram, image: DSKitAsset.Assets.imgInstagram.image)
     ]
     
     // TODO: 서버 연결 필요
