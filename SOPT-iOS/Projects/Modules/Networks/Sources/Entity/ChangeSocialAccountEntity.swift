@@ -8,28 +8,20 @@
 
 import Foundation
 
-struct ChangeSocialAccountEntity: Encodable {
+public struct ChangeSocialAccountEntity: Encodable {
     let phone: String
-    let authPlatform: SocialAccountType
+    let authPlatform: PlatformType
     let code: String
-    
 
-    enum CodingKeys: CodingKey {
-        case phone
-        case authPlatform
-        case code
-    }
-    
-    func encode(to encoder: any Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(self.phone, forKey: .phone)
-        try container.encode(self.authPlatform.rawValue, forKey: .authPlatform)
-        try container.encode(self.code, forKey: .code)
+    public init(phone: String, authPlatform: PlatformType, code: String) {
+        self.phone = phone
+        self.authPlatform = authPlatform
+        self.code = code
     }
     
 }
 
-enum SocialAccountType: String, Encodable {
-    case google = "GOOGLE"
-    case apple = "APPLE"
+
+public extension ChangeSocialAccountEntity {
+    static let stub: ChangeSocialAccountEntity = .init(phone: "01011111111", authPlatform: .apple, code: "code")
 }
