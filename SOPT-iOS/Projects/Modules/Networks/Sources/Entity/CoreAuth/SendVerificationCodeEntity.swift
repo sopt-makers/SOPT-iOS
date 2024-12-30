@@ -15,7 +15,7 @@ public struct SendVerificationCodeEntity: Encodable {
     
     public init(name: String, phone: String, type: VerifyType) {
         self.name = name
-        self.phone = phone
+        self.phone = phone.filter{ $0.isNumber }
         self.type = type
     }
 }

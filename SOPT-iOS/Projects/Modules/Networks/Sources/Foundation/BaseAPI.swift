@@ -67,7 +67,7 @@ extension BaseAPI {
     case .fortune:
       base += "/fortune"
     case .coreAuth:
-        base = coreAuthBaseURL + "/auth"
+      base = coreAuthBaseURL + "/auth"
     case .social:
       base = coreAuthBaseURL + "/social"
     }
