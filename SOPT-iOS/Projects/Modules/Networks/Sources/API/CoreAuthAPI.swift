@@ -7,11 +7,10 @@
 //
 
 import Moya
-import Core
 
 public enum CoreAuthAPI {
-    case sendVerifyCode(phone: )
-    case verfiyCode(entity: )
+    case sendVerifyCode(dto: SendVerificationCodeEntity)
+    case verfiyCode(dto: VerifyCodeEntity)
     case signUp
     case signIn
 }
@@ -31,34 +30,42 @@ extension CoreAuthAPI: BaseAPI {
     // MARK: - Path
     public var path: String {
         switch self {
-        case .sendVerifyCode(phone: let phone):
-            <#code#>
-        case .verfiyCode(entity: let entity):
-            <#code#>
+        case .sendVerifyCode:
+            return "/phone"
+        case .verfiyCode:
+            return "/verify/phone"
         case .signUp:
-            <#code#>
+            return "signup"
         case .signIn:
-            <#code#>
+            return "/login/app"
         }
     }
     
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .getSocialAccount:
-            return .get
-        case .changeSocialAccount:
-            return .patch
+        case .sendVerifyCode:
+            return .post
+        case .verfiyCode:
+            return .post
+        case .signUp:
+            return .post
+        case .signIn:
+            return .post
         }
     }
     
     
     public var task: Task {
         switch self {
-        case let .getSocialAccount(phone):
-            return .requestParameters(parameters: ["phone": phone], encoding: URLEncoding.queryString)
-        case let .changeSocialAccount(entity):
-            return .requestJSONEncodable(entity)
+        case let .sendVerifyCode(dto):
+            return .requestJSONEncodable(dto)
+        case let .verfiyCode(dto):
+            return .requestJSONEncodable(dto)
+        case .signUp:
+            return .requestPlain
+        case .signIn:
+            return .requestPlain
         }
     }
     

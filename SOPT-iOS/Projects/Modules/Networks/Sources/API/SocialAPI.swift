@@ -6,11 +6,7 @@
 //  Copyright © 2024 SOPT-iOS. All rights reserved.
 //
 
-import Foundation
-
-import Alamofire
 import Moya
-import Core
 
 public enum SocialAPI {
     case getSocialAccount(phone: String)
