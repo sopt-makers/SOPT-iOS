@@ -11,8 +11,8 @@ import Moya
 public enum CoreAuthAPI {
     case sendVerifyCode(dto: SendVerificationCodeEntity)
     case verfiyCode(dto: VerifyCodeEntity)
-    case signUp
-    case signIn
+    case signUp(dto: SignUpEntity)
+    case login(dto: LoginEntity)
 }
 
 extension CoreAuthAPI: BaseAPI {
@@ -35,8 +35,8 @@ extension CoreAuthAPI: BaseAPI {
         case .verfiyCode:
             return "/verify/phone"
         case .signUp:
-            return "signup"
-        case .signIn:
+            return "/signup"
+        case .login:
             return "/login/app"
         }
     }
@@ -50,7 +50,7 @@ extension CoreAuthAPI: BaseAPI {
             return .post
         case .signUp:
             return .post
-        case .signIn:
+        case .login:
             return .post
         }
     }
@@ -62,10 +62,10 @@ extension CoreAuthAPI: BaseAPI {
             return .requestJSONEncodable(dto)
         case let .verfiyCode(dto):
             return .requestJSONEncodable(dto)
-        case .signUp:
-            return .requestPlain
-        case .signIn:
-            return .requestPlain
+        case let .signUp(dto):
+            return .requestJSONEncodable(dto)
+        case let .login(dto):
+            return .requestJSONEncodable(dto)
         }
     }
     
