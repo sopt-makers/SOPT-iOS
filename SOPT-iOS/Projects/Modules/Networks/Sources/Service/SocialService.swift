@@ -9,17 +9,19 @@
 import Foundation
 import Combine
 
+import Core
 import Moya
+
 
 public typealias DefaultSocialService = BaseService<SocialAPI>
 
 public protocol SocialService {
-    func getSocialAccount(for phoneNumber: String) -> AnyPublisher<SocialAccountResultEntity, Error>
+    func getSocialAccount(for phoneNumber: String) -> AnyPublisher<BaseEntity<SocialAccountResultEntity>, Error>
     func changeSocialAccount(with entity: ChangeSocialAccountEntity) -> AnyPublisher<Int, Error>
 }
 
 extension DefaultSocialService: SocialService {
-    public func getSocialAccount(for phoneNumber: String) -> AnyPublisher<SocialAccountResultEntity, Error> {
+    public func getSocialAccount(for phoneNumber: String) -> AnyPublisher<BaseEntity<SocialAccountResultEntity>, Error> {
         requestObjectInCombine(.getSocialAccount(phone: phoneNumber))
     }
     

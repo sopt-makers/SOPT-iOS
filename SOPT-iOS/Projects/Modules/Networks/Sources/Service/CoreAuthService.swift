@@ -9,14 +9,16 @@
 import Foundation
 import Combine
 
-import Moya
 import Core
+import Moya
+
 
 public typealias DefaultCoreAuthService = BaseService<CoreAuthAPI>
 
 public protocol CoreAuthService {
     func sendVerifyCode(_ dto: SendVerificationCodeEntity) -> AnyPublisher<Int, Error>
     func verifyCode(_ dto: VerifyCodeEntity) -> AnyPublisher<BaseEntity<VerifyResultEntity>, Error>
+    func login(_ dto: LoginEntity) -> AnyPublisher<BaseEntity<CoreSignInEntity>, Error>
 }
 
 extension DefaultCoreAuthService: CoreAuthService {
@@ -26,6 +28,10 @@ extension DefaultCoreAuthService: CoreAuthService {
     
     public func verifyCode(_ dto: VerifyCodeEntity) -> AnyPublisher<BaseEntity<VerifyResultEntity>, Error> {
         requestObjectInCombine(.verfiyCode(dto: dto))
+    }
+    
+    public func login(_ dto: LoginEntity) -> AnyPublisher<BaseEntity<CoreSignInEntity>, Error> {
+        requestObjectInCombine(.login(dto: dto))
     }
 }
 
