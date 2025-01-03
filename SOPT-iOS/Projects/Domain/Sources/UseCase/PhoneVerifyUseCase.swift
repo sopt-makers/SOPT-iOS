@@ -47,6 +47,9 @@ public struct DefaultPhoneVerifyUseCase: PhoneVerifyUseCase {
 }
 
 public struct StubPhoneVerifyUseCase: PhoneVerifyUseCase {
+    
+    public init() { }
+    
     public var sideEffect = PassthroughSubject<PhoneVerifyError, Never>()
     
     public func send(_ model: PhoneSendModel) -> AnyPublisher<Void, Never> {

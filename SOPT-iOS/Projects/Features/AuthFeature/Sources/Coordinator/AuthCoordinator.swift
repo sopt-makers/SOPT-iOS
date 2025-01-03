@@ -68,6 +68,10 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
             self?.runUserNotFoundFlow()
         }
         
+        signIn.vm.onSignUpButtonTapped = { [weak self] in
+            self?.runSignUpFlow()
+        }
+        
         switch style {
         case .modal:
             router.present(
@@ -117,6 +121,11 @@ extension AuthCoordinator {
         }
         
         self.router.push(userNotFoundVC)
+    }
+    
+    private func runSignUpFlow() {
+        var signUpVC = self.factory.makeSignUp()
+        self.router.push(signUpVC.vc)
     }
     
     private func showLoginHelpBottomSheet(on vc: ViewControllable) {
