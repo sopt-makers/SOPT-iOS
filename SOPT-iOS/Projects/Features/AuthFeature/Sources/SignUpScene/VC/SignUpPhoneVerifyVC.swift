@@ -37,7 +37,7 @@ public class SignUpPhoneVerifyVC: UIViewController, SignUpPhoneVerifyViewControl
     private let firstCircle = UILabel().then {
         $0.text = "1"
         $0.font = DSKitFontFamily.Suit.bold.font(size: 12)
-        $0.backgroundColor = DSKitAsset.Colors.blue50.color
+        $0.backgroundColor = DSKitAsset.Colors.blue400.color
         $0.layer.cornerRadius = 11
         $0.layer.masksToBounds = true
         $0.textAlignment = .center
@@ -55,24 +55,27 @@ public class SignUpPhoneVerifyVC: UIViewController, SignUpPhoneVerifyViewControl
     private let firstLabel = UILabel().then {
         $0.text = "SOPT 회원인증"
         $0.font = DSKitFontFamily.Suit.bold.font(size: 12)
+        $0.textColor = DSKitAsset.Colors.white.color
         $0.textAlignment = .center
     }
     
     private let secondLabel = UILabel().then {
         $0.text = "소셜 계정 연동"
         $0.font = DSKitFontFamily.Suit.bold.font(size: 12)
+        $0.textColor = DSKitAsset.Colors.white.color
         $0.textAlignment = .center
     }
     
     private let titleLabel = UILabel().then {
         $0.text = "SOPT 회원인증"
-        $0.font = UIFont.MDS.heading4.font
+        $0.font = DSKitFontFamily.Suit.bold.font(size: 24)
+        $0.textColor = DSKitAsset.Colors.gray10.color
         $0.textAlignment = .center
     }
     
     private let descriptionLabel = UILabel().then {
         $0.text = "이곳은 SOPT 회원만을 위한 공간이에요.\nSOPT 회원인증을 위해 전화번호를 입력해 주세요."
-        $0.font = UIFont.MDS.label4.font
+        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
         $0.textColor = DSKitAsset.Colors.gray60.color
         $0.textAlignment = .center
         $0.numberOfLines = 2
@@ -80,15 +83,16 @@ public class SignUpPhoneVerifyVC: UIViewController, SignUpPhoneVerifyViewControl
     
     private let phoneLabel = UILabel().then {
         $0.text = "전화번호"
-        $0.font = UIFont.MDS.title7.font
-        $0.textColor = DSKitAsset.Colors.gray60.color
+        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
+        $0.textColor = DSKitAsset.Colors.gray80.color
     }
     
     private let phoneTextField = UITextField().then {
         $0.placeholder = "010-1111-1111"
-        $0.font = UIFont.MDS.body2R.font
+        $0.font = DSKitFontFamily.Suit.medium.font(size: 16)
         $0.keyboardType = .numberPad
         $0.backgroundColor = DSKitAsset.Colors.gray800.color
+        $0.textColor = DSKitAsset.Colors.gray10.color
         $0.layer.cornerRadius = 10
         $0.layer.masksToBounds = true
         $0.addLeftPadding(width: 20)
@@ -97,7 +101,7 @@ public class SignUpPhoneVerifyVC: UIViewController, SignUpPhoneVerifyViewControl
     private let sendButton = UIButton().then {
         $0.setTitle("전송하기", for: .normal)
         $0.setTitleColor(DSKitAsset.Colors.black.color, for: .normal)
-        $0.titleLabel?.font = UIFont.MDS.label2.font
+        $0.titleLabel?.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
         $0.backgroundColor = DSKitAsset.Colors.gray10.color
         $0.layer.cornerRadius = 10
         $0.layer.masksToBounds = true
@@ -105,7 +109,7 @@ public class SignUpPhoneVerifyVC: UIViewController, SignUpPhoneVerifyViewControl
     
     private let codeTextField = UITextField().then {
         $0.placeholder = ""
-        $0.font = UIFont.MDS.body2R.font
+        $0.font = DSKitFontFamily.Suit.medium.font(size: 16)
         $0.keyboardType = .numberPad
         $0.backgroundColor = DSKitAsset.Colors.gray800.color
         $0.layer.cornerRadius = 10
@@ -114,39 +118,56 @@ public class SignUpPhoneVerifyVC: UIViewController, SignUpPhoneVerifyViewControl
         $0.addRightPadding(width: 63)
     }
     
+    private let failIcon = UIImageView().then {
+        $0.image = DSKitAsset.Assets.alertCircle.image.withTintColor(DSKitAsset.Colors.error.color)
+        $0.contentMode = .scaleAspectFit
+        $0.isHidden = true
+    }
+    
     private let failLabel = UILabel().then {
-        $0.font = UIFont.MDS.label4.font
-        $0.textColor = DSKitAsset.Colors.red100.color
+        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
+        $0.textColor = DSKitAsset.Colors.error.color
+        $0.isHidden = true
     }
     
     private let helpView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.blue50.color.withAlphaComponent(0.1)
-        $0.layer.borderColor = DSKitAsset.Colors.blue50.color.cgColor
+        $0.backgroundColor = DSKitAsset.Colors.blue400.color.withAlphaComponent(0.1)
+        $0.layer.borderColor = DSKitAsset.Colors.blue400.color.withAlphaComponent(0.6).cgColor
         $0.layer.borderWidth = 1
         $0.layer.cornerRadius = 10
         $0.layer.masksToBounds = true
     }
     
     private let infoIcon = UIImageView().then {
-        $0.image = DSKitAsset.Assets.opInfo.image
+        $0.image = DSKitAsset.Assets.infoCircle.image.withTintColor(
+            DSKitAsset.Colors.blue500.color
+        )
         $0.contentMode = .scaleAspectFit
     }
     
     private let helpTitleLabel = UILabel().then {
         $0.text = "SOPT 회원인증에 실패하셨나요?"
-        $0.font = UIFont.MDS.label3.font
+        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
         $0.textColor = DSKitAsset.Colors.gray30.color
+    }
+    
+    private let chevronRightIcon = UIImageView().then {
+        $0.image = DSKitAsset.Assets.chevronRight.image.withTintColor(
+            DSKitAsset.Colors.gray30.color
+        )
+        $0.contentMode = .scaleAspectFit
     }
     
     private let helpDescriptionLabel = UILabel().then {
         $0.text = "번호가 바뀌었거나, 인증이 어려우신 경우 추가 정보 인증을 통해 가입을 도와드리고 있어요!"
-        $0.font = UIFont.MDS.label4.font
+        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
         $0.textColor = DSKitAsset.Colors.gray200.color
         $0.numberOfLines = 0
     }
     
-    private let doneButton = AppImageTextButton(title: "SOPT 회원 인증 완료")
-    
+    private let doneButton = AppImageTextButton(title: "SOPT 회원 인증 완료").then {
+        $0.configuration?.attributedTitle?.font = DSKitFontFamily.Suit.semiBold.font(size: 18)
+    }
     
     // MARK: - View Life Cycle
     
@@ -155,7 +176,6 @@ public class SignUpPhoneVerifyVC: UIViewController, SignUpPhoneVerifyViewControl
         setUI()
         setLayout()
     }
-    
     
 }
 
@@ -177,6 +197,7 @@ extension SignUpPhoneVerifyVC {
             phoneTextField,
             sendButton,
             codeTextField,
+            failIcon,
             failLabel,
             helpView,
             doneButton
@@ -185,6 +206,7 @@ extension SignUpPhoneVerifyVC {
         helpView.addSubviews(
             infoIcon,
             helpTitleLabel,
+            chevronRightIcon,
             helpDescriptionLabel
         )
     }
@@ -260,8 +282,15 @@ extension SignUpPhoneVerifyVC {
             $0.bottom.lessThanOrEqualToSuperview()
         }
         
-        failLabel.snp.makeConstraints {
+        failIcon.snp.makeConstraints {
             $0.top.equalTo(codeTextField.snp.bottom).offset(8)
+            $0.leading.equalTo(codeTextField)
+            $0.size.equalTo(14)
+        }
+        
+        failLabel.snp.makeConstraints {
+            $0.centerY.equalTo(failIcon)
+            $0.leading.equalTo(failIcon.snp.trailing).offset(4)
             $0.leading.trailing.equalTo(codeTextField)
         }
         
@@ -281,6 +310,12 @@ extension SignUpPhoneVerifyVC {
             $0.leading.equalTo(infoIcon.snp.trailing).offset(10)
         }
         
+        chevronRightIcon.snp.makeConstraints {
+            $0.centerY.equalTo(helpTitleLabel)
+            $0.leading.equalTo(helpTitleLabel.snp.trailing)
+            $0.size.equalTo(16)
+        }
+        
         helpDescriptionLabel.snp.makeConstraints {
             $0.top.equalTo(helpTitleLabel.snp.bottom).offset(10)
             $0.leading.equalTo(helpTitleLabel)
@@ -294,10 +329,7 @@ extension SignUpPhoneVerifyVC {
             $0.height.equalTo(56)
         }
         
-        
     }
-    
-    
 }
 
 // MARK: - Methods
