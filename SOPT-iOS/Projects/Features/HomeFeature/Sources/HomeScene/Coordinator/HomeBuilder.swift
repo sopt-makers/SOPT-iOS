@@ -22,8 +22,8 @@ extension HomeBuilder: HomeFeatureBuildable {
     }
     
     public func makeHomeForVisitor() -> HomeForVisitorPresentable {
-        let homeForVisitorVC = HomeForVisitorVC()
         let viewModel = HomeForVisitorViewModel()
+        let homeForVisitorVC = HomeForVisitorVC(viewModel: viewModel)
         return (homeForVisitorVC, viewModel)
     }
 }

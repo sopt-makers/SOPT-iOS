@@ -31,6 +31,8 @@ extension HomeForMemberVC {
             switch sectionKind {
             case .dashBoard:
                 return self.createDashBoardSection()
+            case .calendar:
+                return self.createCalendarSection()
             case .mainProduct:
                 return self.createMainProductSection()
             case .appService:
@@ -45,20 +47,33 @@ extension HomeForMemberVC {
                 return self.createCoffeeChatSection()
             case .socialLinks:
                 return self.createSocialLinksSection()
-            default:
-                return self.createEmptySection()
             }
         }
     }
     
     private func createDashBoardSection() -> NSCollectionLayoutSection {
-        /// header: 유저 정보 및 활동 히스토리
-        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                heightDimension: .absolute(123))
-        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
-                                                                 elementKind: UICollectionView.elementKindSectionHeader,
-                                                                 alignment: .top)
+        /// item: 유저 정보 및 활동 히스토리 카드
+        let dashBoardItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                       heightDimension: .absolute(123))
+        let dashBoardItem = NSCollectionLayoutItem(layoutSize: dashBoardItemSize)
         
+        /// group: 유저 정보 및 활동 히스토리 카드
+        let dashBoardGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                        heightDimension: .estimated(123))
+        let dashBoardGroup = NSCollectionLayoutGroup.vertical(layoutSize: dashBoardGroupSize,
+                                                              subitems: [dashBoardItem])
+        
+        /// section 지정
+        let section = NSCollectionLayoutSection(group: dashBoardGroup)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 12,
+                                                        leading: Metric.collectionViewDefaultSideInset,
+                                                        bottom: 0,
+                                                        trailing: Metric.collectionViewDefaultSideInset)
+        
+        return section
+    }
+    
+    private func createCalendarSection() -> NSCollectionLayoutSection {
         /// item: 캘린더 카드
         let calendarItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                       heightDimension: .absolute(56))
@@ -72,7 +87,6 @@ extension HomeForMemberVC {
         
         /// section 지정
         let section = NSCollectionLayoutSection(group: calendarGroup)
-        section.boundarySupplementaryItems = [header]
         section.contentInsets = NSDirectionalEdgeInsets(top: 12,
                                                         leading: Metric.collectionViewDefaultSideInset,
                                                         bottom: 0,
