@@ -18,9 +18,7 @@ public struct ChangeSocialAccountEntity: Encodable {
         self.authPlatform = authPlatform
         self.code = code
     }
-    
 }
-
 
 public extension ChangeSocialAccountEntity {
     static let stub: ChangeSocialAccountEntity = .init(phone: "01011111111", authPlatform: .apple, code: "code")

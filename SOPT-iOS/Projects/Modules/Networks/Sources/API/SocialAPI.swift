@@ -10,7 +10,7 @@ import Moya
 
 public enum SocialAPI {
     case getSocialAccount(phone: String)
-    case changeSocialAccount(entity: ChangeSocialAccountEntity)
+    case changeSocialAccount(dto: ChangeSocialAccountEntity)
 }
 
 extension SocialAPI: BaseAPI {
@@ -53,10 +53,6 @@ extension SocialAPI: BaseAPI {
         case let .changeSocialAccount(entity):
             return .requestJSONEncodable(entity)
         }
-    }
-    
-    public var validationType: ValidationType {
-        return .none
     }
 }
 
