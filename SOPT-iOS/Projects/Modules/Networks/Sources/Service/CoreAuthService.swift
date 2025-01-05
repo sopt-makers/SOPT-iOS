@@ -1,0 +1,37 @@
+//
+//  CoreAuthService.swift
+//  Networks
+//
+//  Created by 장석우 on 12/30/24.
+//  Copyright © 2024 SOPT-iOS. All rights reserved.
+//
+
+import Foundation
+import Combine
+
+import Core
+import Moya
+
+
+public typealias DefaultCoreAuthService = BaseService<CoreAuthAPI>
+
+public protocol CoreAuthService {
+    func sendVerifyCode(_ dto: SendVerificationCodeEntity) -> AnyPublisher<Int, Error>
+    func verifyCode(_ dto: VerifyCodeEntity) -> AnyPublisher<BaseEntity<VerifyResultEntity>, Error>
+    func login(_ dto: LoginEntity) -> AnyPublisher<BaseEntity<CoreSignInEntity>, Error>
+}
+
+extension DefaultCoreAuthService: CoreAuthService {
+    public func sendVerifyCode(_ dto: SendVerificationCodeEntity) -> AnyPublisher<Int, Error> {
+        requestObjectInCombineNoResult(.sendVerifyCode(dto: dto))
+    }
+    
+    public func verifyCode(_ dto: VerifyCodeEntity) -> AnyPublisher<BaseEntity<VerifyResultEntity>, Error> {
+        requestObjectInCombine(.verfiyCode(dto: dto))
+    }
+    
+    public func login(_ dto: LoginEntity) -> AnyPublisher<BaseEntity<CoreSignInEntity>, Error> {
+        requestObjectInCombine(.login(dto: dto))
+    }
+}
+

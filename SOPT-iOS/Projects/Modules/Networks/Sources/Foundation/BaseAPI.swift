@@ -25,6 +25,8 @@ public enum APIType {
   case poke
   case s3
   case fortune
+  case coreAuth
+  case social
 }
 
 public protocol BaseAPI: TargetType {
@@ -35,7 +37,8 @@ extension BaseAPI {
   public var baseURL: URL {
     var base = Config.Network.baseURL
     let operationBaseURL = Config.Network.operationBaseURL
-    
+    let coreAuthBaseURL = Config.Network.coreAuthBaseURL
+      
     switch Self.apiType {
     case .attendance:
       base = operationBaseURL
@@ -63,6 +66,10 @@ extension BaseAPI {
       base += "/s3"
     case .fortune:
       base += "/fortune"
+    case .coreAuth:
+      base = coreAuthBaseURL + "/auth"
+    case .social:
+      base = coreAuthBaseURL + "/social"
     }
     
     guard let url = URL(string: base) else {
