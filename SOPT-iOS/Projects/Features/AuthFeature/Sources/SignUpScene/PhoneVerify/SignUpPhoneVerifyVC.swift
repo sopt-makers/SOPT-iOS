@@ -11,7 +11,6 @@ import Combine
 
 import DSKit
 import Core
-import Domain
 
 import AuthFeatureInterface
 import BaseFeatureDependency
@@ -20,6 +19,23 @@ import SnapKit
 import Then
 
 public class SignUpPhoneVerifyVC: UIViewController, SignUpPhoneVerifyViewControllable {
+    
+    //MARK: - Properties
+    
+    private let viewModel: SignUpPhoneVerifyViewModel
+    private let cancelBag = CancelBag()
+    
+    // MARK: - Initialization
+    
+    init(viewModel: SignUpPhoneVerifyViewModel) {
+        self.viewModel = viewModel
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - UI Components
     
@@ -88,7 +104,7 @@ public class SignUpPhoneVerifyVC: UIViewController, SignUpPhoneVerifyViewControl
     }
     
     private let phoneTextField = UITextField().then {
-        $0.placeholder = "010-1111-1111"
+        $0.placeholder = "01012345678"
         $0.font = DSKitFontFamily.Suit.medium.font(size: 16)
         $0.keyboardType = .numberPad
         $0.backgroundColor = DSKitAsset.Colors.gray800.color
@@ -98,11 +114,8 @@ public class SignUpPhoneVerifyVC: UIViewController, SignUpPhoneVerifyViewControl
         $0.addLeftPadding(width: 20)
     }
     
-    private let sendButton = UIButton().then {
-        $0.setTitle("전송하기", for: .normal)
-        $0.setTitleColor(DSKitAsset.Colors.black.color, for: .normal)
+    private let sendButton = AppImageTextButton(title: "전송하기").then {
         $0.titleLabel?.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
-        $0.backgroundColor = DSKitAsset.Colors.gray10.color
         $0.layer.cornerRadius = 10
         $0.layer.masksToBounds = true
     }
@@ -175,6 +188,7 @@ public class SignUpPhoneVerifyVC: UIViewController, SignUpPhoneVerifyViewControl
         super.viewDidLoad()
         setUI()
         setLayout()
+        bind()
     }
     
 }
@@ -291,12 +305,12 @@ extension SignUpPhoneVerifyVC {
         failLabel.snp.makeConstraints {
             $0.centerY.equalTo(failIcon)
             $0.leading.equalTo(failIcon.snp.trailing).offset(4)
-            $0.leading.trailing.equalTo(codeTextField)
+            $0.trailing.equalTo(codeTextField)
         }
         
         helpView.snp.makeConstraints {
             $0.top.equalTo(failLabel.snp.bottom).offset(20)
-            $0.leading.trailing.equalTo(failLabel)
+            $0.leading.trailing.equalTo(codeTextField)
         }
         
         infoIcon.snp.makeConstraints {
@@ -330,10 +344,70 @@ extension SignUpPhoneVerifyVC {
         }
         
     }
+    
+    private func bind() {
+        let input = type(of: viewModel).Input.init(
+            viewDidLoad: Just<Void>(()).asDriver(),
+            sendButtonTapped: sendButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
+            doneButtonTapped: doneButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
+            phoneTextFieldText: phoneTextField.publisher(for: .editingChanged).map { $0.text ?? "" }.asDriver(),
+            codeTextFieldText: codeTextField.publisher(for: .editingChanged).map { $0.text ?? "" }.asDriver()
+        )
+        
+        let output = viewModel.transform(from: input, cancelBag: cancelBag)
+        
+        output.showToast
+            .withUnretained(self)
+            .sink { owner, text in
+                print(text)
+            }
+            .store(in: cancelBag)
+        
+        output.messageSent
+            .withUnretained(self)
+            .sink { owner, isSent in
+                let title = isSent ? "재전송하기" : "전송하기"
+                owner.sendButton.setTitle(title, for: .normal)
+            }
+            .store(in: cancelBag)
+        
+        output.timeLeft
+            .withUnretained(self)
+            .sink { owner, time in
+                print(time)
+            }
+            .store(in: cancelBag)
+        
+        output.verifyFail
+            .withUnretained(self)
+            .sink { owner, msg in
+                owner.updateFailLabelUI(msg)
+            }
+            .store(in: cancelBag)
+        
+        output.sendButtonIsEnabled
+            .withUnretained(self)
+            .sink { owner, isEnabled in
+                owner.sendButton.isEnabled = isEnabled
+            }
+            .store(in: cancelBag)
+        
+        output.doneButtonIsEnabled
+            .withUnretained(self)
+            .sink { owner, isEnabled in
+                owner.doneButton.isEnabled = isEnabled
+            }
+            .store(in: cancelBag)
+    }
 }
 
 // MARK: - Methods
 
 extension SignUpPhoneVerifyVC {
     
+    private func updateFailLabelUI(_ msg: String?) {
+        failLabel.text = msg
+        failIcon.isHidden = msg == nil
+        failLabel.isHidden = msg == nil
+    }
 }

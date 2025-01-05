@@ -46,17 +46,22 @@ public struct DefaultPhoneVerifyUseCase: PhoneVerifyUseCase {
     
 }
 
-public struct StubPhoneVerifyUseCase: PhoneVerifyUseCase {
+public class StubPhoneVerifyUseCase: PhoneVerifyUseCase {
     
     public init() { }
     
     public var sideEffect = PassthroughSubject<PhoneVerifyError, Never>()
     
     public func send(_ model: PhoneSendModel) -> AnyPublisher<Void, Never> {
+        print("🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏")
         return Just(()).eraseToAnyPublisher()
     }
     
     public func verify(_ model: PhoneVerifyModel) -> AnyPublisher<Void, Never> {
         return Just(()).eraseToAnyPublisher()
     }
+}
+
+extension StubPhoneVerifyUseCase: SignUpUseCase {
+    
 }
