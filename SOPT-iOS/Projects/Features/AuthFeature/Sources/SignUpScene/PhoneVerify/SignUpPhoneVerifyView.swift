@@ -1,85 +1,25 @@
 //
-//  SignUpPhoneVerificationVC.swift
+//  SignUpPhoneVerifyView.swift
 //  AuthFeature
 //
-//  Created by 장석우 on 12/20/24.
-//  Copyright © 2024 SOPT-iOS. All rights reserved.
+//  Created by 장석우 on 1/11/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
 import UIKit
-import Combine
 
 import DSKit
 import Core
 
-import AuthFeatureInterface
-import BaseFeatureDependency
-
-import SnapKit
-import Then
-
-public class SignUpPhoneVerifyVC: UIViewController, SignUpPhoneVerifyViewControllable {
+final class SignUpPhoneVerifyView: UIView {
     
-    //MARK: - Properties
-    
-    private let viewModel: SignUpPhoneVerifyViewModel
-    private let cancelBag = CancelBag()
-    
-    // MARK: - Initialization
-    
-    init(viewModel: SignUpPhoneVerifyViewModel) {
-        self.viewModel = viewModel
-        
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    // MARK: - UI Components
-    
-    private lazy var navigationBar = OPNavigationBar(
-        self,
-        type: .oneLeftButton,
-        backgroundColor: DSKitAsset.Colors.black100.color,
-        ignoreLeftButtonAction: false
-    )
-    
-    private let lineView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.black40.color
-    }
-    
-    private let firstCircle = UILabel().then {
-        $0.text = "1"
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 12)
-        $0.backgroundColor = DSKitAsset.Colors.blue400.color
-        $0.layer.cornerRadius = 11
-        $0.layer.masksToBounds = true
-        $0.textAlignment = .center
-    }
-    
-    private let secondCircle = UILabel().then {
-        $0.text = "2"
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 12)
-        $0.backgroundColor = DSKitAsset.Colors.black40.color
-        $0.layer.cornerRadius = 11
-        $0.layer.masksToBounds = true
-        $0.textAlignment = .center
-    }
-    
-    private let firstLabel = UILabel().then {
-        $0.text = "SOPT 회원인증"
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 12)
-        $0.textColor = DSKitAsset.Colors.white.color
-        $0.textAlignment = .center
-    }
-    
-    private let secondLabel = UILabel().then {
-        $0.text = "소셜 계정 연동"
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 12)
-        $0.textColor = DSKitAsset.Colors.white.color
-        $0.textAlignment = .center
+    public var viewModelInput: SignUpViewModel.Input.PhoneVerify {
+        return .init(
+            sendButtonTapped: sendButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
+            doneButtonTapped: doneButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
+            phoneTextFieldText: phoneTextField.publisher(for: .allEditingEvents).map { $0.text ?? "" }.asDriver(),
+            codeTextFieldText: codeTextField.publisher(for: .allEditingEvents).map { $0.text ?? "" }.asDriver()
+        )
     }
     
     private let titleLabel = UILabel().then {
@@ -190,31 +130,23 @@ public class SignUpPhoneVerifyVC: UIViewController, SignUpPhoneVerifyViewControl
         $0.configuration?.attributedTitle?.font = DSKitFontFamily.Suit.semiBold.font(size: 18)
     }
     
-    // MARK: - View Life Cycle
-    
-    public override func viewDidLoad() {
-        super.viewDidLoad()
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
         setUI()
         setLayout()
         
-        bindUI()
-        bind()
     }
     
-}
-
-// MARK: - UI & Layout
-
-extension SignUpPhoneVerifyVC {
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
     
     private func setUI() {
-        self.view.addSubviews(
-            navigationBar,
-            lineView,
-            firstCircle,
-            secondCircle,
-            firstLabel,
-            secondLabel,
+        
+        self.addSubviews(
             titleLabel,
             descriptionLabel,
             phoneLabel,
@@ -238,42 +170,8 @@ extension SignUpPhoneVerifyVC {
     }
     
     private func setLayout() {
-        navigationBar.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-            $0.leading.trailing.equalToSuperview()
-        }
-        
-        lineView.snp.makeConstraints {
-            $0.top.equalTo(navigationBar.snp.bottom)
-            $0.centerX.equalToSuperview()
-            $0.width.equalTo(123)
-            $0.height.equalTo(1)
-        }
-        
-        firstCircle.snp.makeConstraints {
-            $0.centerX.equalTo(lineView.snp.leading)
-            $0.centerY.equalTo(lineView)
-            $0.size.equalTo(22)
-        }
-        
-        secondCircle.snp.makeConstraints {
-            $0.centerX.equalTo(lineView.snp.trailing)
-            $0.centerY.equalTo(lineView)
-            $0.size.equalTo(22)
-        }
-        
-        firstLabel.snp.makeConstraints {
-            $0.top.equalTo(firstCircle.snp.bottom).offset(12)
-            $0.centerX.equalTo(firstCircle)
-        }
-        
-        secondLabel.snp.makeConstraints {
-            $0.top.equalTo(secondCircle.snp.bottom).offset(12)
-            $0.centerX.equalTo(secondCircle)
-        }
-        
         titleLabel.snp.makeConstraints {
-            $0.top.equalTo(firstLabel.snp.bottom).offset(54)
+            $0.top.equalToSuperview().inset(54)
             $0.centerX.equalToSuperview()
         }
         
@@ -355,99 +253,83 @@ extension SignUpPhoneVerifyVC {
         }
         
         doneButton.snp.makeConstraints {
-            $0.bottom.equalTo(self.view.safeAreaLayoutGuide)
+            $0.bottom.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(24)
             $0.height.equalTo(56)
         }
-        
-    }
-    
-    
-    private func bindUI() {
-        sendButton
-            .publisher(for: .touchUpInside)
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.sendButton.setTitle("재전송하기", for: .normal)
-            }
-            .store(in: cancelBag)
-    }
-    
-    private func bind() {
-        let input = type(of: viewModel).Input.init(
-            viewDidLoad: Just<Void>(()).asDriver(),
-            sendButtonTapped: sendButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
-            doneButtonTapped: doneButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
-            phoneTextFieldText: phoneTextField.publisher(for: .allEditingEvents).map { $0.text ?? "" }.asDriver(),
-            codeTextFieldText: codeTextField.publisher(for: .allEditingEvents).map { $0.text ?? "" }.asDriver()
-        )
-        
-        let output = viewModel.transform(from: input, cancelBag: cancelBag)
-        
-        output.showToast
-            .withUnretained(self)
-            .sink { owner, text in
-                print(text)
-            }
-            .store(in: cancelBag)
-        
-        output.timerIsRunning
-            .withUnretained(self)
-            .sink { owner, isSent in
-                
-            }
-            .store(in: cancelBag)
-        
-        output.timeLeft
-            .withUnretained(self)
-            .sink { owner, time in
-                print(time)
-            }
-            .store(in: cancelBag)
-        
-        output.failDescription
-            .withUnretained(self)
-            .sink { owner, description in
-                owner.updateFailLabelUI(description)
-            }
-            .store(in: cancelBag)
-        
-        output.sendButtonIsEnabled
-            .assign(to: \.sendButton.isEnabled, on: self)
-            .store(in: cancelBag)
-//        
-//            .withUnretained(self)
-//            
-//            .sink { owner, isEnabled in
-//                owner.sendButton.isEnabled = isEnabled
-//            }
-//            .store(in: cancelBag)
-        
-        output.doneButtonIsEnabled
-            .withUnretained(self)
-            .sink { owner, isEnabled in
-                owner.doneButton.isEnabled = isEnabled
-            }
-            .store(in: cancelBag)
-        
-        output.timeLeft
-            .withUnretained(self)
-            .sink { owner, timeLeft in
-                owner.timeLeftLabel.text = timeLeft.to_mmss
-            }
-            .store(in: cancelBag)
     }
 }
 
-// MARK: - Methods
-
-extension SignUpPhoneVerifyVC {
+extension SignUpPhoneVerifyView {
+    
+    func bindOutput(
+        _ output: SignUpViewModel.Output.PhoneVerify,
+        cancelBag: CancelBag) {
+            
+            output.isSent
+                .map { $0 ? "재전송하기" : "전송하기" }
+                .withUnretained(self)
+                .sink { owner, text in
+                    owner.sendButton.setTitle(text, for: .normal) 
+                }
+                .store(in: cancelBag)
+            
+            output.showToast
+                .withUnretained(self)
+                .sink { owner, text in
+                    
+                }
+                .store(in: cancelBag)
+            
+            output.timerIsRunning
+                .withUnretained(self)
+                .sink { owner, isSent in
+                    
+                }
+                .store(in: cancelBag)
+            
+            output.timeLeft
+                .withUnretained(self)
+                .sink { owner, time in
+                    print(time)
+                }
+                .store(in: cancelBag)
+            
+            output.failDescription
+                .withUnretained(self)
+                .sink { owner, description in
+                    owner.updateFailLabelUI(description)
+                }
+                .store(in: cancelBag)
+            
+            output.sendButtonIsEnabled
+                .withUnretained(self)
+                .sink { owner, isEnabled in
+                    owner.sendButton.isEnabled = isEnabled
+                }
+                .store(in: cancelBag)
+            
+            output.doneButtonIsEnabled
+                .withUnretained(self)
+                .sink { owner, isEnabled in
+                    owner.doneButton.isEnabled = isEnabled
+                }
+                .store(in: cancelBag)
+            
+            output.timeLeft
+                .withUnretained(self)
+                .sink { owner, timeLeft in
+                    owner.timeLeftLabel.text = timeLeft.to_mmss
+                }
+                .store(in: cancelBag)
+        }
+    
     
     private func updateFailLabelUI(_ description: String?) {
         failLabel.text = description
         failIcon.isHidden = description == nil
         failLabel.isHidden = description == nil
         timeLeftLabel.textColor = description == nil ? DSKitAsset.Colors.white.color : DSKitAsset.Colors.error.color
-        codeTextField.layer.borderColor = description == nil ? UIColor.clear.cgColor : DSKitAsset.Colors.error.color.cgColor 
+        codeTextField.layer.borderColor = description == nil ? UIColor.clear.cgColor : DSKitAsset.Colors.error.color.cgColor
     }
 }

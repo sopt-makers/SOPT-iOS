@@ -15,8 +15,8 @@ import Core
 
 typealias SignUpPhoneVerifyUseCase = SignUpUseCase & PhoneVerifyUseCase
 
-public class SignUpPhoneVerifyViewModel: SignUpPhoneVerifyViewModelType {
-    
+public class SignUpViewModel: SignUpViewModelType {
+
     private let useCase: SignUpPhoneVerifyUseCase
     
     private let timerPublisher: Timer.TimerPublisher
@@ -26,22 +26,51 @@ public class SignUpPhoneVerifyViewModel: SignUpPhoneVerifyViewModelType {
     
     public struct Input {
         let viewDidLoad: Driver<Void>
-        let sendButtonTapped: Driver<Void>
-        let doneButtonTapped: Driver<Void>
-        let phoneTextFieldText: Driver<String>
-        let codeTextFieldText: Driver<String>
+        let phoneVerify: PhoneVerify
+        let oauth: OAuth
+        
+        public struct PhoneVerify {
+            let sendButtonTapped: Driver<Void>
+            let doneButtonTapped: Driver<Void>
+            let phoneTextFieldText: Driver<String>
+            let codeTextFieldText: Driver<String>
+        }
+        
+        public struct OAuth {
+            let googleLoginTapped: Driver<Void>
+            let appleLoginTapped: Driver<Void>
+        }
+        
+        init(
+            viewDidLoad: Driver<Void>,
+            phoneVerify: PhoneVerify,
+            oauth: OAuth
+        ) {
+            self.viewDidLoad = viewDidLoad
+            self.phoneVerify = phoneVerify
+            self.oauth = oauth
+        }
     }
     
     // MARK: - Outputs
     
     public struct Output {
-        let verifySuccess = PassthroughSubject<Void, Never>()
-        let failDescription = PassthroughSubject<String?, Never>()
-        let showToast = PassthroughSubject<String, Never>()
-        let timeLeft = PassthroughSubject<Int, Never>()
-        let timerIsRunning = PassthroughSubject<Bool, Never>()
-        let sendButtonIsEnabled = CurrentValueSubject<Bool, Never>(false)
-        let doneButtonIsEnabled =  CurrentValueSubject<Bool, Never>(false)
+        let currentStep = 1
+        let phoneVerify: PhoneVerify
+        let oauth: OAuth
+        
+        public struct PhoneVerify {
+            let isSent = CurrentValueSubject<Bool, Never>(false)
+            let verifySuccess = PassthroughSubject<Void, Never>()
+            let failDescription = PassthroughSubject<String?, Never>()
+            let showToast = PassthroughSubject<String, Never>()
+            let timeLeft = PassthroughSubject<Int, Never>()
+            let timerIsRunning = PassthroughSubject<Bool, Never>()
+            let sendButtonIsEnabled = CurrentValueSubject<Bool, Never>(false)
+            let doneButtonIsEnabled =  CurrentValueSubject<Bool, Never>(false)
+        }
+        
+        public struct OAuth {}
     }
     
     // MARK: - init
@@ -55,9 +84,18 @@ public class SignUpPhoneVerifyViewModel: SignUpPhoneVerifyViewModelType {
     }
 }
 
-extension SignUpPhoneVerifyViewModel {
+extension SignUpViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
-        let output = Output()
+        let phoneVerify = transform(from: input.phoneVerify, cancelBag: cancelBag)
+        let oAuth = transform(from: input.oauth, cancelBag: cancelBag)
+        return Output(phoneVerify: phoneVerify, oauth: oAuth)
+    }
+}
+
+extension SignUpViewModel {
+    
+    private func transform(from input: Input.PhoneVerify, cancelBag: CancelBag) -> Output.PhoneVerify {
+        let output = Output.PhoneVerify()
         
         $timerCancellable
             .map { $0 != nil }
@@ -81,6 +119,7 @@ extension SignUpPhoneVerifyViewModel {
         
         input.sendButtonTapped
             .handleEvents(receiveOutput: { _ in
+                output.isSent.send(true)
                 output.failDescription.send(nil) }
             )
             .withLatestFrom(input.phoneTextFieldText)
@@ -130,6 +169,11 @@ extension SignUpPhoneVerifyViewModel {
             }
             .store(in: cancelBag)
         
+        return output
+    }
+    
+    public func transform(from input: Input.OAuth, cancelBag: CancelBag) -> Output.OAuth {
+        let output = Output.OAuth()
         return output
     }
 }

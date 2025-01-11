@@ -35,10 +35,10 @@ extension AuthBuilder: AuthFeatureViewBuildable {
          return UserNotFoundVC()
     }
     
-    public func makeSignUp() -> SignUpPhoneVerifyPresentable {
+    public func makeSignUp() -> SignUpPresentable {
         let useCase = StubPhoneVerifyUseCase() // TODO
-        let vm = SignUpPhoneVerifyViewModel(useCase: useCase)
-        let vc = SignUpPhoneVerifyVC(viewModel: vm)
+        let vm = SignUpViewModel(useCase: useCase)
+        let vc = SignUpVC(viewModel: vm)
         return (vc, vm)
     }
 }

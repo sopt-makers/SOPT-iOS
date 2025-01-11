@@ -12,5 +12,5 @@ public protocol AuthFeatureViewBuildable {
     func makeSignIn() -> SignInPresentable
     func makeLoginHelpBottomSheet() -> LoginHelpBottomSheetPresentable
     func makeUserNotFound() -> UserNotFoundPresentable
-    func makeSignUp() -> SignUpPhoneVerifyPresentable
+    func makeSignUp() -> SignUpPresentable
 }
