@@ -17,8 +17,8 @@ final class SignUpPhoneVerifyView: UIView {
         return .init(
             sendButtonTapped: sendButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
             doneButtonTapped: doneButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
-            phoneTextFieldText: phoneTextField.publisher(for: .allEditingEvents).map { $0.text ?? "" }.asDriver(),
-            codeTextFieldText: codeTextField.publisher(for: .allEditingEvents).map { $0.text ?? "" }.asDriver()
+            phoneTextFieldText: phoneTextField.publisher(for: .editingChanged).map { $0.text ?? "" }.asDriver(),
+            codeTextFieldText: codeTextField.publisher(for: .editingChanged).map { $0.text ?? "" }.asDriver()
         )
     }
     
@@ -145,7 +145,6 @@ final class SignUpPhoneVerifyView: UIView {
     
     
     private func setUI() {
-        
         self.addSubviews(
             titleLabel,
             descriptionLabel,

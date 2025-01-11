@@ -18,43 +18,7 @@ class SignUpOAuthView: UIView {
     }
     
     //MARK: - Properties
-    
-    private let lineView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.black40.color
-    }
-    
-    private let firstCircle = UILabel().then {
-        $0.text = "1"
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 12)
-        $0.backgroundColor = DSKitAsset.Colors.blue400.color
-        $0.layer.cornerRadius = 11
-        $0.layer.masksToBounds = true
-        $0.textAlignment = .center
-    }
-    
-    private let secondCircle = UILabel().then {
-        $0.text = "2"
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 12)
-        $0.backgroundColor = DSKitAsset.Colors.black40.color
-        $0.layer.cornerRadius = 11
-        $0.layer.masksToBounds = true
-        $0.textAlignment = .center
-    }
-    
-    private let firstLabel = UILabel().then {
-        $0.text = "SOPT 회원인증"
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 12)
-        $0.textColor = DSKitAsset.Colors.white.color
-        $0.textAlignment = .center
-    }
-    
-    private let secondLabel = UILabel().then {
-        $0.text = "소셜 계정 연동"
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 12)
-        $0.textColor = DSKitAsset.Colors.white.color
-        $0.textAlignment = .center
-    }
-    
+
     private let titleLabel = UILabel().then {
         $0.text = "소셜 계정 연동"
         $0.font = DSKitFontFamily.Suit.bold.font(size: 24)
@@ -94,11 +58,6 @@ class SignUpOAuthView: UIView {
     
     private func setUI() {
         self.addSubviews(
-            lineView,
-            firstCircle,
-            secondCircle,
-            firstLabel,
-            secondLabel,
             titleLabel,
             descriptionLabel,
             googleLoginButton,
@@ -107,44 +66,28 @@ class SignUpOAuthView: UIView {
     }
     
     private func setLayout() {
-        
-        lineView.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide.snp.top).offset(28)
-            $0.centerX.equalToSuperview()
-            $0.width.equalTo(123)
-            $0.height.equalTo(1)
-        }
-        
-        firstCircle.snp.makeConstraints {
-            $0.centerX.equalTo(lineView.snp.leading)
-            $0.centerY.equalTo(lineView)
-            $0.size.equalTo(22)
-        }
-        
-        secondCircle.snp.makeConstraints {
-            $0.centerX.equalTo(lineView.snp.trailing)
-            $0.centerY.equalTo(lineView)
-            $0.size.equalTo(22)
-        }
-        
-        firstLabel.snp.makeConstraints {
-            $0.top.equalTo(firstCircle.snp.bottom).offset(12)
-            $0.centerX.equalTo(firstCircle)
-        }
-        
-        secondLabel.snp.makeConstraints {
-            $0.top.equalTo(secondCircle.snp.bottom).offset(12)
-            $0.centerX.equalTo(secondCircle)
-        }
-        
         titleLabel.snp.makeConstraints {
-            $0.top.equalTo(firstLabel.snp.bottom).offset(54)
+            $0.top.equalToSuperview().inset(54)
             $0.centerX.equalToSuperview()
         }
         
         descriptionLabel.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(14)
             $0.centerX.equalToSuperview()
+        }
+        
+        googleLoginButton.snp.makeConstraints {
+            $0.top.equalTo(descriptionLabel.snp.bottom).offset(66)
+            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.height.equalTo(48)
+            
+        }
+        
+        appleLoginButton.snp.makeConstraints {
+            $0.top.equalTo(googleLoginButton.snp.bottom).offset(20)
+            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.height.equalTo(48)
+            $0.bottom.lessThanOrEqualToSuperview()
         }
        
     }

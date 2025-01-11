@@ -63,6 +63,15 @@ public class SignUpVC: UIViewController, SignUpViewControllable {
         $0.textAlignment = .center
     }
     
+    private let checkImageView = UIImageView().then {
+        $0.image = DSKitAsset.Assets.check.image.withAlignmentRectInsets(.init(top: -4, left: -4, bottom: -4, right: -4))
+        $0.contentMode = .scaleAspectFit
+        $0.backgroundColor = DSKitAsset.Colors.blue400.color
+        $0.layer.cornerRadius = 11
+        $0.layer.masksToBounds = true
+        $0.isHidden = true
+    }
+    
     private let secondCircle = UILabel().then {
         $0.text = "2"
         $0.font = DSKitFontFamily.Suit.bold.font(size: 12)
@@ -107,10 +116,12 @@ extension SignUpVC {
             navigationBar,
             lineView,
             firstCircle,
+            checkImageView,
             secondCircle,
             firstLabel,
             secondLabel,
-            phoneVerifyView
+            phoneVerifyView,
+            oAuthView
         )
     }
     
@@ -131,6 +142,10 @@ extension SignUpVC {
             $0.centerX.equalTo(lineView.snp.leading)
             $0.centerY.equalTo(lineView)
             $0.size.equalTo(22)
+        }
+        
+        checkImageView.snp.makeConstraints {
+            $0.edges.equalTo(firstCircle)
         }
         
         secondCircle.snp.makeConstraints {
@@ -155,6 +170,10 @@ extension SignUpVC {
             $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
         
+        oAuthView.snp.makeConstraints {
+            $0.edges.equalTo(phoneVerifyView)
+        }
+        
     }
     
     private func bind() {
@@ -168,6 +187,19 @@ extension SignUpVC {
         
         phoneVerifyView.bindOutput(output.phoneVerify, cancelBag: cancelBag)
         oAuthView.bindOutput(output.oauth, cancelBag: cancelBag)
+        
+        output.currentStep
+            .withUnretained(self)
+            .sink { owner, step in
+                let bg = step == .phoneVerify ? DSKitAsset.Colors.black40.color : DSKitAsset.Colors.blue400.color
+                owner.phoneVerifyView.isHidden = step != .phoneVerify
+                owner.oAuthView.isHidden = step != .oAuth
+                owner.checkImageView.isHidden = step == .phoneVerify
+                owner.lineView.backgroundColor = bg
+                owner.secondCircle.backgroundColor = bg
+                owner.navigationBar.isHidden = step != .phoneVerify
+            }
+            .store(in: cancelBag)
     }
     
 }

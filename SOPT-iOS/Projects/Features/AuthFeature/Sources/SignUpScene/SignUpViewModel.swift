@@ -24,6 +24,11 @@ public class SignUpViewModel: SignUpViewModelType {
     
     // MARK: - Inputs
     
+    enum Step: Int {
+        case phoneVerify = 1
+        case oAuth = 2
+    }
+    
     public struct Input {
         let viewDidLoad: Driver<Void>
         let phoneVerify: PhoneVerify
@@ -55,7 +60,7 @@ public class SignUpViewModel: SignUpViewModelType {
     // MARK: - Outputs
     
     public struct Output {
-        let currentStep = 1
+        let currentStep = CurrentValueSubject<Step, Never>(.phoneVerify)
         let phoneVerify: PhoneVerify
         let oauth: OAuth
         
@@ -70,7 +75,9 @@ public class SignUpViewModel: SignUpViewModelType {
             let doneButtonIsEnabled =  CurrentValueSubject<Bool, Never>(false)
         }
         
-        public struct OAuth {}
+        public struct OAuth {
+            
+        }
     }
     
     // MARK: - init
@@ -88,7 +95,17 @@ extension SignUpViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let phoneVerify = transform(from: input.phoneVerify, cancelBag: cancelBag)
         let oAuth = transform(from: input.oauth, cancelBag: cancelBag)
-        return Output(phoneVerify: phoneVerify, oauth: oAuth)
+        let output = Output(phoneVerify: phoneVerify, oauth: oAuth)
+      
+        phoneVerify.verifySuccess
+            .withUnretained(self)
+            .sink { owner, _ in
+                output.currentStep.send(.oAuth)
+            }
+            .store(in: cancelBag)
+        
+        
+        return output
     }
 }
 
@@ -174,6 +191,9 @@ extension SignUpViewModel {
     
     public func transform(from input: Input.OAuth, cancelBag: CancelBag) -> Output.OAuth {
         let output = Output.OAuth()
+        
+        
+        
         return output
     }
 }
