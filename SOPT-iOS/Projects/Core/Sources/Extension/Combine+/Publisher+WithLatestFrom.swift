@@ -45,8 +45,7 @@ extension Publishers.WithLatestFrom {
     func mergeStream(_ upstream: Upstream, _ other: Other) -> AnyPublisher<MergedOutput, Failure> {
         let upstream = upstream.map { MergedOutput.upstream($0)}
         let other = other.map { MergedOutput.other($0)}
-        
-        return upstream.merge(with: other).eraseToAnyPublisher()
+        return Publishers.Merge(upstream, other).eraseToAnyPublisher()
     }
     
     func resultStream(from mergedStream: AnyPublisher<MergedOutput, Failure>) -> AnyPublisher<Output, Failure> {

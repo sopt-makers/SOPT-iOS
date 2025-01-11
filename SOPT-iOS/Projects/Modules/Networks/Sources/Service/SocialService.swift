@@ -26,6 +26,6 @@ extension DefaultSocialService: SocialService {
     }
     
     public func changeSocialAccount(with entity: ChangeSocialAccountEntity) -> AnyPublisher<Int, Error> {
-        return requestObjectInCombineNoResult(.changeSocialAccount(entity: entity))
+        return requestObjectInCombineNoResult(.changeSocialAccount(dto: entity))
     }
 }
