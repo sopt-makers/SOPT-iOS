@@ -26,6 +26,7 @@ public enum APIType {
   case s3
   case fortune
   case home
+  case calendar
 }
 
 public protocol BaseAPI: TargetType {
@@ -66,6 +67,8 @@ extension BaseAPI {
       base += "/fortune"
     case .home:
       base += "/home"
+    case .calendar:
+      base += "/calendar"
     }
     
     guard let url = URL(string: base) else {
