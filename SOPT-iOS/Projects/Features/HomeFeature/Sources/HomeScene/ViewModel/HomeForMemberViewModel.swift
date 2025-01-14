@@ -127,11 +127,16 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     
     // MARK: - Inputs
     
-    public struct Input { }
+    public struct Input {
+        let viewDidLoad: Driver<Void>
+    }
     
     // MARK: - Outputs
     
-    public struct Output { }
+    public struct Output {
+        let homeDescription = PassthroughSubject<HomeDescriptionModel, Never>()
+        let recentSchedule = PassthroughSubject<HomeRecentScheduleModel, Never>()
+    }
     
     // MARK: - initialization
     
@@ -143,6 +148,25 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
 extension HomeForMemberViewModel {
     public func transform(from input: Input, cancelBag: Core.CancelBag) -> Output {
         let output = Output()
+        self.bindOutput(output: output, cancelBag: cancelBag)
+        
+        input.viewDidLoad
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.useCase.getHomeDescription()
+                owner.useCase.getRecentSchedule()
+            }.store(in: cancelBag)
+        
         return output
+    }
+    
+    private func bindOutput(output: Output, cancelBag: CancelBag) {
+        useCase.homeDescription
+            .subscribe(output.homeDescription)
+            .store(in: cancelBag)
+        
+        useCase.recentSchedule
+            .subscribe(output.recentSchedule)
+            .store(in: cancelBag)
     }
 }

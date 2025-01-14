@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 import Domain
@@ -19,6 +20,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     // MARK: - Properties
 
     public let viewModel: HomeForMemberViewModel
+    private var cancelBag = CancelBag()
 
     // MARK: - UI Components
     
@@ -85,6 +87,13 @@ extension HomeForMemberVC {
 // MARK: - Methods
 
 extension HomeForMemberVC {
+    private func bindViewModels() {
+        let input = HomeForMemberViewModel
+            .Input(viewDidLoad: Just<Void>(()).asDriver())
+        
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+    }
+    
     private func setDelegate() {
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
