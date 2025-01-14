@@ -34,6 +34,11 @@ public class HomeForVisitorViewModel: HomeForVisitorViewModelType {
         AppServiceInfo(name: "솝탬프", imageURL: "https://images.mypetlife.co.kr/content/uploads/2018/12/09154907/cotton-tulear-2422612_1280.jpg", badgeText: "")
     ]
     
+    // MARK: - Properties
+
+    private let useCase: HomeUseCase
+    private var cancelBag = CancelBag()
+    
     // MARK: - Inputs
     
     public struct Input { }
@@ -44,7 +49,9 @@ public class HomeForVisitorViewModel: HomeForVisitorViewModelType {
     
     // MARK: - initialization
     
-    public init() { }
+    public init(useCase: HomeUseCase) {
+        self.useCase = useCase
+    }
 }
 
 extension HomeForVisitorViewModel {

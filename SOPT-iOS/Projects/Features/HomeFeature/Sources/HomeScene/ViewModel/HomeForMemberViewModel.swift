@@ -120,6 +120,11 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     
     let currentCardPage = PassthroughSubject<Int, Never>()
     
+    // MARK: - Properties
+
+    private let useCase: HomeUseCase
+    private var cancelBag = CancelBag()
+    
     // MARK: - Inputs
     
     public struct Input { }
@@ -130,7 +135,9 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     
     // MARK: - initialization
     
-    public init() { }
+    public init(useCase: HomeUseCase) {
+        self.useCase = useCase
+    }
 }
 
 extension HomeForMemberViewModel {
