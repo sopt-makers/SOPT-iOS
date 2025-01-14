@@ -15,11 +15,15 @@ import Networks
 public class HomeRepository {
     
     private let homeService: HomeService
+    private let calendarService: CalendarService
     
     private let cancelBag = CancelBag()
     
-    public init(homeService: HomeService) {
+    public init(homeService: HomeService,
+                calendarService: CalendarService
+    ) {
         self.homeService = homeService
+        self.calendarService = calendarService
     }
 }
 
