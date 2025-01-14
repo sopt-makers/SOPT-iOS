@@ -56,7 +56,6 @@ public struct DefaultPhoneVerifyUseCase: PhoneVerifyUseCase {
     }
     
     public func verify(_ model: PhoneVerifyModel) -> AnyPublisher<Void, Never> {
-        print("검증시도")
         return repository.verify(model)
             .catch { 
                 sideEffect.send($0)
@@ -75,13 +74,10 @@ public class StubPhoneVerifyUseCase: PhoneVerifyUseCase {
     public var sideEffect = PassthroughSubject<PhoneVerifyError, Never>()
     
     public func send(_ model: PhoneSendModel) -> AnyPublisher<Void, Never> {
-        print("🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏")
         return Just(()).eraseToAnyPublisher()
     }
     
     public func verify(_ model: PhoneVerifyModel) -> AnyPublisher<Void, Never> {
-        print("검증시도")
-        print(model)
         return Just(()).eraseToAnyPublisher()
     }
 }

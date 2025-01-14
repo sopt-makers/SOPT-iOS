@@ -11,10 +11,13 @@ import UIKit
 import Core
 import DSKit
 
-class SignUpOAuthView: UIView {
+final class SignUpOAuthView: UIView {
     
-    var viewModelInput: SignUpViewModel.Input.OAuth {
-        .init(googleLoginTapped: .empty(), appleLoginTapped: .empty())
+    public var viewModelInput: SignUpViewModel.Input.OAuth {
+        .init(
+            googleLoginTapped: googleLoginButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
+            appleLoginTapped: appleLoginButton.publisher(for: .touchUpInside).mapVoid().asDriver()
+        )
     }
     
     //MARK: - Properties
@@ -90,11 +93,5 @@ class SignUpOAuthView: UIView {
             $0.bottom.lessThanOrEqualToSuperview()
         }
        
-    }
-}
-
-extension SignUpOAuthView {
-    func bindOutput(_ output: SignUpViewModel.Output.OAuth, cancelBag: CancelBag) {
-        
     }
 }

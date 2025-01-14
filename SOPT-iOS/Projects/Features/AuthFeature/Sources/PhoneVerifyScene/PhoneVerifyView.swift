@@ -11,9 +11,9 @@ import UIKit
 import DSKit
 import Core
 
-final class SignUpPhoneVerifyView: UIView {
+final class PhoneVerifyView: UIView {
     
-    public var viewModelInput: SignUpViewModel.Input.PhoneVerify {
+    public var viewModelInput: PhoneVerifyViewModel.Input {
         return .init(
             sendButtonTapped: sendButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
             doneButtonTapped: doneButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
@@ -69,6 +69,7 @@ final class SignUpPhoneVerifyView: UIView {
         $0.layer.masksToBounds = true
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor.clear.cgColor
+        $0.isHidden = true
         $0.addLeftPadding(width: 20)
         $0.addRightPadding(width: 63)
     }
@@ -259,17 +260,17 @@ final class SignUpPhoneVerifyView: UIView {
     }
 }
 
-extension SignUpPhoneVerifyView {
+extension PhoneVerifyView {
     
     func bindOutput(
-        _ output: SignUpViewModel.Output.PhoneVerify,
+        _ output: PhoneVerifyViewModel.Output,
         cancelBag: CancelBag) {
             
             output.isSent
-                .map { $0 ? "재전송하기" : "전송하기" }
                 .withUnretained(self)
-                .sink { owner, text in
-                    owner.sendButton.setTitle(text, for: .normal) 
+                .sink { owner, isSent in
+                    owner.sendButton.setTitle(isSent ? "재전송하기" : "전송하기", for: .normal)
+                    owner.codeTextField.isHidden = !isSent
                 }
                 .store(in: cancelBag)
             

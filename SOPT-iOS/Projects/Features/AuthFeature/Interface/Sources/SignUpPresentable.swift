@@ -15,5 +15,8 @@ public protocol SignUpViewControllable: ViewControllable {}
 public protocol SignUpCoordinatable {
 }
 
-public typealias SignUpViewModelType = ViewModelType & SignUpCoordinatable
+public typealias PhoneVerifyViewModelType = ViewModelType
+
+public typealias SignUpViewModelType = ViewModelType
+
 public typealias SignUpPresentable = (vc: SignUpViewControllable, vm: any SignUpViewModelType)

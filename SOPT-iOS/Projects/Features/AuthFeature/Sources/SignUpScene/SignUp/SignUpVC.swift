@@ -22,17 +22,22 @@ public class SignUpVC: UIViewController, SignUpViewControllable {
     
     //MARK: - Properties
     
-    private let phoneVerifyView = SignUpPhoneVerifyView()
+    private let phoneVerifyView = PhoneVerifyView()
     private let oAuthView = SignUpOAuthView()
     
     private let viewModel: SignUpViewModel
+    private let phoneVerifyViewModel: PhoneVerifyViewModel
     
     private let cancelBag = CancelBag()
     
     // MARK: - Initialization
     
-    init(viewModel: SignUpViewModel) {
+    init(
+        viewModel: SignUpViewModel,
+        phoneVerifyViewModel: PhoneVerifyViewModel
+    ) {
         self.viewModel = viewModel
+        self.phoneVerifyViewModel = phoneVerifyViewModel
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -177,16 +182,17 @@ extension SignUpVC {
     }
     
     private func bind() {
+
+        let pvInput = phoneVerifyView.viewModelInput
+        let pvOutput = phoneVerifyViewModel.transform(from: pvInput, cancelBag: cancelBag)
+        phoneVerifyView.bindOutput(pvOutput, cancelBag: cancelBag)
+            
         let input = type(of: viewModel).Input.init(
-            viewDidLoad: Just<Void>(()).asDriver(),
-            phoneVerify: phoneVerifyView.viewModelInput,
-            oauth: oAuthView.viewModelInput
+            verifySuccess: pvOutput.verifySuccess.mapVoid().asDriver(),
+            oAuth: oAuthView.viewModelInput
         )
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
-        
-        phoneVerifyView.bindOutput(output.phoneVerify, cancelBag: cancelBag)
-        oAuthView.bindOutput(output.oauth, cancelBag: cancelBag)
         
         output.currentStep
             .withUnretained(self)

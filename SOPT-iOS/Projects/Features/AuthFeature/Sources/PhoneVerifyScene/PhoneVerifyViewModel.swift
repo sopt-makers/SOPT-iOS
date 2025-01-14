@@ -13,77 +13,39 @@ import AuthFeatureInterface
 import Domain
 import Core
 
-typealias SignUpPhoneVerifyUseCase = SignUpUseCase & PhoneVerifyUseCase
+public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
 
-public class SignUpViewModel: SignUpViewModelType {
-
-    private let useCase: SignUpPhoneVerifyUseCase
+    private let useCase: PhoneVerifyUseCase
     
     private let timerPublisher: Timer.TimerPublisher
     @Published private var timerCancellable: AnyCancellable?
     
     // MARK: - Inputs
     
-    enum Step: Int {
-        case phoneVerify = 1
-        case oAuth = 2
-    }
-    
     public struct Input {
-        let viewDidLoad: Driver<Void>
-        let phoneVerify: PhoneVerify
-        let oauth: OAuth
-        
-        public struct PhoneVerify {
-            let sendButtonTapped: Driver<Void>
-            let doneButtonTapped: Driver<Void>
-            let phoneTextFieldText: Driver<String>
-            let codeTextFieldText: Driver<String>
-        }
-        
-        public struct OAuth {
-            let googleLoginTapped: Driver<Void>
-            let appleLoginTapped: Driver<Void>
-        }
-        
-        init(
-            viewDidLoad: Driver<Void>,
-            phoneVerify: PhoneVerify,
-            oauth: OAuth
-        ) {
-            self.viewDidLoad = viewDidLoad
-            self.phoneVerify = phoneVerify
-            self.oauth = oauth
-        }
+        let sendButtonTapped: Driver<Void>
+        let doneButtonTapped: Driver<Void>
+        let phoneTextFieldText: Driver<String>
+        let codeTextFieldText: Driver<String>
     }
     
     // MARK: - Outputs
     
     public struct Output {
-        let currentStep = CurrentValueSubject<Step, Never>(.phoneVerify)
-        let phoneVerify: PhoneVerify
-        let oauth: OAuth
-        
-        public struct PhoneVerify {
-            let isSent = CurrentValueSubject<Bool, Never>(false)
-            let verifySuccess = PassthroughSubject<Void, Never>()
-            let failDescription = PassthroughSubject<String?, Never>()
-            let showToast = PassthroughSubject<String, Never>()
-            let timeLeft = PassthroughSubject<Int, Never>()
-            let timerIsRunning = PassthroughSubject<Bool, Never>()
-            let sendButtonIsEnabled = CurrentValueSubject<Bool, Never>(false)
-            let doneButtonIsEnabled =  CurrentValueSubject<Bool, Never>(false)
-        }
-        
-        public struct OAuth {
-            
-        }
+        let isSent = CurrentValueSubject<Bool, Never>(false)
+        let verifySuccess = PassthroughSubject<Void, Never>()
+        let failDescription = PassthroughSubject<String?, Never>()
+        let showToast = PassthroughSubject<String, Never>()
+        let timeLeft = PassthroughSubject<Int, Never>()
+        let timerIsRunning = PassthroughSubject<Bool, Never>()
+        let sendButtonIsEnabled = CurrentValueSubject<Bool, Never>(false)
+        let doneButtonIsEnabled =  CurrentValueSubject<Bool, Never>(false)
     }
     
     // MARK: - init
     
     init(
-        useCase: SignUpPhoneVerifyUseCase,
+        useCase: PhoneVerifyUseCase,
         timerPublisher: Timer.TimerPublisher = Timer.publish(every: 1, on: .main, in: .default)
     ) {
         self.useCase = useCase
@@ -91,28 +53,10 @@ public class SignUpViewModel: SignUpViewModelType {
     }
 }
 
-extension SignUpViewModel {
-    public func transform(from input: Input, cancelBag: CancelBag) -> Output {
-        let phoneVerify = transform(from: input.phoneVerify, cancelBag: cancelBag)
-        let oAuth = transform(from: input.oauth, cancelBag: cancelBag)
-        let output = Output(phoneVerify: phoneVerify, oauth: oAuth)
-      
-        phoneVerify.verifySuccess
-            .withUnretained(self)
-            .sink { owner, _ in
-                output.currentStep.send(.oAuth)
-            }
-            .store(in: cancelBag)
-        
-        
-        return output
-    }
-}
-
-extension SignUpViewModel {
+extension PhoneVerifyViewModel {
     
-    private func transform(from input: Input.PhoneVerify, cancelBag: CancelBag) -> Output.PhoneVerify {
-        let output = Output.PhoneVerify()
+    public func transform(from input: Input, cancelBag: CancelBag) -> Output {
+        let output = Output()
         
         $timerCancellable
             .map { $0 != nil }
@@ -188,12 +132,5 @@ extension SignUpViewModel {
         
         return output
     }
-    
-    public func transform(from input: Input.OAuth, cancelBag: CancelBag) -> Output.OAuth {
-        let output = Output.OAuth()
-        
-        
-        
-        return output
-    }
+
 }
