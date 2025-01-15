@@ -60,15 +60,17 @@ final class SignUpOAuthView: UIView {
     
     
     private func setUI() {
+        self.backgroundColor = DSKitAsset.Colors.black100.color
+    }
+    
+    private func setLayout() {
         self.addSubviews(
             titleLabel,
             descriptionLabel,
             googleLoginButton,
             appleLoginButton
         )
-    }
-    
-    private func setLayout() {
+        
         titleLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(54)
             $0.centerX.equalToSuperview()

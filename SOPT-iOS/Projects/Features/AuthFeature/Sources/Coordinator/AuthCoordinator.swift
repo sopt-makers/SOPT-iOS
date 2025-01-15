@@ -125,6 +125,11 @@ extension AuthCoordinator {
     
     private func runSignUpFlow() {
         var signUpVC = self.factory.makeSignUp()
+        
+        signUpVC.vm.onLoginHelpButtonTapped = { [weak self] in
+            self?.showLoginHelpBottomSheet(on: signUpVC.vc)
+        }
+        
         self.router.push(signUpVC.vc)
     }
     

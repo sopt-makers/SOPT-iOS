@@ -27,6 +27,7 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
         let doneButtonTapped: Driver<Void>
         let phoneTextFieldText: Driver<String>
         let codeTextFieldText: Driver<String>
+        let loginHelpButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs

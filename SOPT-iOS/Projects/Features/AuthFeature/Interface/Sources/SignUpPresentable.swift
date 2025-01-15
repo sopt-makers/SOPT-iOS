@@ -13,10 +13,11 @@ import Domain
 public protocol SignUpViewControllable: ViewControllable {}
 
 public protocol SignUpCoordinatable {
+    var onLoginHelpButtonTapped: (() -> Void)? { get set }
 }
 
 public typealias PhoneVerifyViewModelType = ViewModelType
 
-public typealias SignUpViewModelType = ViewModelType
+public typealias SignUpViewModelType = ViewModelType & SignUpCoordinatable
 
 public typealias SignUpPresentable = (vc: SignUpViewControllable, vm: any SignUpViewModelType)

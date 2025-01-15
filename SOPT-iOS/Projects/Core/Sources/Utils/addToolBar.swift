@@ -8,6 +8,23 @@
 import Foundation
 import UIKit
 
+public extension UITextField {
+    func addToolbar() {
+        let toolBarKeyboard = UIToolbar()
+        toolBarKeyboard.sizeToFit()
+        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let btnDoneBar = UIBarButtonItem(title: "완료", style: .done, target: self, action: #selector(self.dismissKeyBoard))
+        toolBarKeyboard.items = [flexSpace, btnDoneBar]
+        self.inputAccessoryView = toolBarKeyboard
+        
+    }
+    
+    @objc func dismissKeyBoard() {
+        self.endEditing(true)
+    }
+}
+
+
 public extension UIViewController {
     
     func addToolbar(textfields: [UITextField]) {

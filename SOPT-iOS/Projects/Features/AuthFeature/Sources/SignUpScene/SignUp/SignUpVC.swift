@@ -105,6 +105,7 @@ public class SignUpVC: UIViewController, SignUpViewControllable {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        
         setUI()
         setLayout()
         bind()
@@ -117,6 +118,8 @@ public class SignUpVC: UIViewController, SignUpViewControllable {
 extension SignUpVC {
     
     private func setUI() {
+        self.view.backgroundColor = DSKitAsset.Colors.black100.color
+        
         self.view.addSubviews(
             navigationBar,
             lineView,
@@ -189,6 +192,7 @@ extension SignUpVC {
             
         let input = type(of: viewModel).Input.init(
             verifySuccess: pvOutput.verifySuccess.mapVoid().asDriver(),
+            loginHelpButtonTapped: pvInput.loginHelpButtonTapped.asDriver(),
             oAuth: oAuthView.viewModelInput
         )
         

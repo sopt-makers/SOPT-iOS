@@ -18,7 +18,8 @@ final class PhoneVerifyView: UIView {
             sendButtonTapped: sendButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
             doneButtonTapped: doneButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
             phoneTextFieldText: phoneTextField.publisher(for: .editingChanged).map { $0.text ?? "" }.asDriver(),
-            codeTextFieldText: codeTextField.publisher(for: .editingChanged).map { $0.text ?? "" }.asDriver()
+            codeTextFieldText: codeTextField.publisher(for: .editingChanged).map { $0.text ?? "" }.asDriver(),
+            loginHelpButtonTapped: helpView.gesture().mapVoid().asDriver()
         )
     }
     
@@ -43,7 +44,7 @@ final class PhoneVerifyView: UIView {
         $0.textColor = DSKitAsset.Colors.gray80.color
     }
     
-    private let phoneTextField = UITextField().then {
+    public let phoneTextField = UITextField().then {
         $0.placeholder = "01012345678"
         $0.font = DSKitFontFamily.Suit.medium.font(size: 16)
         $0.keyboardType = .numberPad
@@ -51,11 +52,11 @@ final class PhoneVerifyView: UIView {
         $0.textColor = DSKitAsset.Colors.gray10.color
         $0.layer.cornerRadius = 10
         $0.layer.masksToBounds = true
+        $0.addToolbar()
         $0.addLeftPadding(width: 20)
     }
     
     private let sendButton = AppImageTextButton(title: "전송하기").then {
-        $0.titleLabel?.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
         $0.layer.cornerRadius = 10
         $0.layer.masksToBounds = true
     }
@@ -70,6 +71,7 @@ final class PhoneVerifyView: UIView {
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor.clear.cgColor
         $0.isHidden = true
+        $0.addToolbar()
         $0.addLeftPadding(width: 20)
         $0.addRightPadding(width: 63)
     }
@@ -269,7 +271,8 @@ extension PhoneVerifyView {
             output.isSent
                 .withUnretained(self)
                 .sink { owner, isSent in
-                    owner.sendButton.setTitle(isSent ? "재전송하기" : "전송하기", for: .normal)
+                    let text = isSent ? "재전송하기" : "전송하기"
+                    owner.sendButton.updateTitle(text)
                     owner.codeTextField.isHidden = !isSent
                 }
                 .store(in: cancelBag)
@@ -283,8 +286,9 @@ extension PhoneVerifyView {
             
             output.timerIsRunning
                 .withUnretained(self)
-                .sink { owner, isSent in
-                    
+                .sink { owner, active in
+                    self.endEditing(!active)
+                    self.codeTextField.isEnabled = active
                 }
                 .store(in: cancelBag)
             

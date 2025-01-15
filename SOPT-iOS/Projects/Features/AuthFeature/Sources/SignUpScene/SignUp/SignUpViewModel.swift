@@ -15,7 +15,8 @@ import Domain
 final class SignUpViewModel: SignUpViewModelType {
     
     private let useCase: SignUpUseCase
-
+    public var onLoginHelpButtonTapped: (() -> Void)?
+    
     enum Step: Int {
         case phoneVerify
         case oAuth
@@ -23,6 +24,7 @@ final class SignUpViewModel: SignUpViewModelType {
     
     struct Input {
         let verifySuccess: Driver<Void>
+        let loginHelpButtonTapped: Driver<Void>
         var oAuth: OAuth
         
         struct OAuth {
@@ -45,6 +47,13 @@ final class SignUpViewModel: SignUpViewModelType {
         input.verifySuccess
             .sink { _ in
                 output.currentStep.send(.oAuth)
+            }
+            .store(in: cancelBag)
+        
+        input.loginHelpButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onLoginHelpButtonTapped?()
             }
             .store(in: cancelBag)
         

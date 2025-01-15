@@ -10,8 +10,7 @@ import UIKit
 
 public final class AppImageTextButton: UIButton {
     
-    
-    //TODO: disabled 상태일 때 config background 설정 기능 필요
+    private let font: UIFont?
     
     public override var isEnabled: Bool {
         didSet { updateUI() }
@@ -23,7 +22,13 @@ public final class AppImageTextButton: UIButton {
     
     // MARK: - Initialize
     
-    public init(title: String, image: UIImage? = nil) {
+    public init(
+        title: String,
+        image: UIImage? = nil,
+        font: UIFont? = DSKitFontFamily.Suit.semiBold.font(size: 16)
+    ) {
+        self.font = font
+        
         super.init(frame: .zero)
         self.setUI(title, image)
     }
@@ -36,11 +41,18 @@ public final class AppImageTextButton: UIButton {
 // MARK: - UI & Layout
 
 extension AppImageTextButton {
+    
+    public func updateTitle(_ title: String) {
+        var attributedTitle = AttributedString(title)
+        attributedTitle.font = font
+        self.configuration?.attributedTitle = attributedTitle
+    }
+    
     private func setUI(_ title: String, _ image: UIImage?) {
         
         var config = UIButton.Configuration.filled()
         var attributedTitle = AttributedString(title)
-        attributedTitle.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
+        attributedTitle.font = font
         config.attributedTitle = attributedTitle
         
         if let image = image {
@@ -64,7 +76,6 @@ extension AppImageTextButton {
         
         configuration?.baseBackgroundColor = bg.color
         configuration?.baseForegroundColor = fg.color
-        
     }
 }
 
