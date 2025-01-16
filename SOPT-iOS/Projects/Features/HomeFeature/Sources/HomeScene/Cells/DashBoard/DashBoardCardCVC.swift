@@ -15,7 +15,7 @@ final class DashBoardCardCVC: UICollectionViewCell {
     
     // MARK: - UI Components
         
-    private let userInfoLabel = UILabel().then {
+    private let descriptionLabel = UILabel().then {
         $0.textColor = DSKitAsset.Colors.white100.color
         $0.font = DSKitFontFamily.Suit.bold.font(size: 18)
         $0.numberOfLines = 2
@@ -52,18 +52,18 @@ extension DashBoardCardCVC {
     
     private func setLayout() {
         self.addSubviews(
-            userInfoLabel,
+            descriptionLabel,
             userHistoryView,
             rightArrowWithCircleImageView
         )
 
-        userInfoLabel.snp.makeConstraints { make in
+        descriptionLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(18)
             make.leading.equalToSuperview().inset(16)
         }
         
         userHistoryView.snp.makeConstraints { make in
-            make.top.equalTo(userInfoLabel.snp.bottom).offset(15)
+            make.top.equalTo(descriptionLabel.snp.bottom).offset(15)
             make.leading.equalToSuperview().inset(16)
             make.width.equalTo(250)
             make.height.equalTo(23)
@@ -80,17 +80,17 @@ extension DashBoardCardCVC {
 // MARK: - Methods
 
 extension DashBoardCardCVC {
-    func configureCell(userType: UserType) {
+    func configureCell(userType: UserType, description: String) {
         switch userType {
         case .visitor:
-            self.userInfoLabel.text = I18N.Home.DashBoard.UserHistory.encourage
+            self.descriptionLabel.text = I18N.Home.DashBoard.UserHistory.encourage
             self.rightArrowWithCircleImageView.isHidden = true
         case .active, .inactive:
-            self.userInfoLabel.text = "김솝트 님은\nSOPT와 N개월 째"
+            self.descriptionLabel.text = description
             self.rightArrowWithCircleImageView.isHidden = false
         }
         
-        self.userInfoLabel.setLineSpacing(lineSpacing: 5)
+        self.descriptionLabel.setLineSpacing(lineSpacing: 5)
         userHistoryView.setData(userType: userType, recentHistory: 35, allHistory: [35, 34, 33, 32, 31, 30, 29])
     }
 }
