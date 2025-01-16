@@ -52,6 +52,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        bindViewModels()
         setUI()
         setLayout()
         setDelegate()
@@ -92,6 +93,12 @@ extension HomeForMemberVC {
             .Input(viewDidLoad: Just<Void>(()).asDriver())
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.needToReload
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.collectionView.reloadData()
+            }.store(in: cancelBag)
     }
     
     private func setDelegate() {
@@ -199,7 +206,8 @@ extension HomeForMemberVC: UICollectionViewDataSource {
             guard let dashBoardCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: DashBoardCardCVC.className,
                                      for: indexPath) as? DashBoardCardCVC else { return UICollectionViewCell() }
-            dashBoardCardCell.configureCell(userType: .active)
+            dashBoardCardCell.configureCell(userType: viewModel.userType,
+                                            description: viewModel.homeDescription?.description)
             
             return dashBoardCardCell
             

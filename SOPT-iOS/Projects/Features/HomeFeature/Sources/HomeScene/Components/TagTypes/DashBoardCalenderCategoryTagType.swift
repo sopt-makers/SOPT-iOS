@@ -11,9 +11,9 @@ import UIKit
 import Core
 import DSKit
 
-enum DashBoardCalenderCategoryTagType {
-    case event
-    case seminar
+enum DashBoardCalenderCategoryTagType: String {
+    case event = "EVENT"
+    case seminar = "SEMINAR"
     
     var text: String {
         switch self {

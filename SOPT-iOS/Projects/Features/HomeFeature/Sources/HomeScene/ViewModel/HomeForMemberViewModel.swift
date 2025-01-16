@@ -125,6 +125,10 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     private let useCase: HomeUseCase
     private var cancelBag = CancelBag()
     
+    var userType: UserType = UserDefaultKeyList.Auth.getUserType()
+    var homeDescription: HomeDescriptionModel?
+    var recentSchedule: HomeRecentScheduleModel?
+    
     // MARK: - Inputs
     
     public struct Input {
@@ -134,8 +138,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     // MARK: - Outputs
     
     public struct Output {
-        let homeDescription = PassthroughSubject<HomeDescriptionModel, Never>()
-        let recentSchedule = PassthroughSubject<HomeRecentScheduleModel, Never>()
+        let needToReload = PassthroughSubject<Void, Never>()
     }
     
     // MARK: - initialization
@@ -162,11 +165,18 @@ extension HomeForMemberViewModel {
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         useCase.homeDescription
-            .subscribe(output.homeDescription)
-            .store(in: cancelBag)
+            .withUnretained(self)
+            .sink { owner, description in
+                owner.homeDescription = description
+                output.needToReload.send()
+            }.store(in: cancelBag)
         
         useCase.recentSchedule
-            .subscribe(output.recentSchedule)
-            .store(in: cancelBag)
+            .withUnretained(self)
+            .sink { owner, schedule in
+                owner.recentSchedule = schedule
+                owner.recentSchedule?.date = setDateFormat(to: "MM.dd")
+                output.needToReload.send()
+            }.store(in: cancelBag)
     }
 }
