@@ -216,10 +216,8 @@ extension HomeForMemberVC: UICollectionViewDataSource {
             guard let calendarCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: CalendarCardCVC.className,
                                      for: indexPath) as? CalendarCardCVC else { return UICollectionViewCell() }
-            calendarCardCell.configureCell(date: "10.22",
-                                           tagType: .event,
-                                           title: "1차 행사",
-                                           userType: .active)
+            calendarCardCell.configureCell(model: viewModel.recentSchedule,
+                                           userType: viewModel.userType)
             
             return calendarCardCell
             

@@ -11,7 +11,7 @@ import Foundation
 import Core
 
 public struct HomeRecentScheduleModel: Codable {
-    public let date: String
+    public var date: String
     public let type: String
     public let title: String
     

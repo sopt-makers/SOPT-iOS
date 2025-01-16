@@ -8,6 +8,7 @@
 
 import UIKit
 
+import Domain
 import Core
 import DSKit
 
@@ -123,12 +124,16 @@ extension CalendarCardCVC {
 // MARK: - Methods
 
 extension CalendarCardCVC {
-    func configureCell(date: String, tagType: DashBoardCalenderCategoryTagType, title: String, userType: UserType) {
-        self.dateLabel.text = date
-        self.scheduleTitleLabel.text = title
-        self.scheduleCategoryTagView.setData(title: tagType.text,
-                                             titleColor: tagType.textColor,
-                                             backgroundColor: tagType.backgroundColor)
+    func configureCell(model: HomeRecentScheduleModel?,
+                       userType: UserType) {
+        guard let model = model else { return }
+        self.dateLabel.text = model.date
+        self.scheduleTitleLabel.text = model.title
+        if let tagType = DashBoardCalenderCategoryTagType(rawValue: model.type) {
+            self.scheduleCategoryTagView.setData(title: tagType.text,
+                                                 titleColor: tagType.textColor,
+                                                 backgroundColor: tagType.backgroundColor)
+        }
         self.attendanceButton.isHidden = userType == .visitor
     }
 }
