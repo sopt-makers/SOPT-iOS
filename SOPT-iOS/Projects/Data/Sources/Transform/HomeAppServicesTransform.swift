@@ -12,11 +12,11 @@ import Domain
 import Networks
 
 extension HomeAppServiceAccessStatusEntity {
-    public func toDomain() -> [HomeAppServicesModel] {
-        return [HomeAppServicesModel(serviceName: serviceName,
-                                     displayAlarmBadge: displayAlarmBadge,
-                                     alarmBadge: alarmBadge,
-                                     iconURL: iconURL,
-                                     deepLink: deepLink)]
+    public func toDomain() -> HomeAppServicesModel {
+        return HomeAppServicesModel(serviceName: serviceName,
+                                    displayAlarmBadge: displayAlarmBadge,
+                                    alarmBadge: alarmBadge,
+                                    iconURL: iconURL,
+                                    deepLink: deepLink)
     }
 }

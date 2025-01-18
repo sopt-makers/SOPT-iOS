@@ -12,7 +12,7 @@ import Domain
 import Networks
 
 extension HomeInsightPostsEntity {
-    public func toDomain() -> [HomeInsightPostsModel] {
-        return [HomeInsightPostsModel(id: id, title: title, category: category, content: content, isHotPost: isHotPost)]
+    public func toDomain() -> HomeInsightPostsModel {
+        return HomeInsightPostsModel(id: id, title: title, category: category, content: content, isHotPost: isHotPost)
     }
 }

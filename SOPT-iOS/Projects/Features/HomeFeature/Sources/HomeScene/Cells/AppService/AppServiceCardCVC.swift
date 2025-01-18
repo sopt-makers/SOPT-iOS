@@ -10,6 +10,7 @@ import UIKit
 
 import Core
 import DSKit
+import Domain
 
 final class AppServiceCardCVC: UICollectionViewCell {
     
@@ -77,13 +78,15 @@ extension AppServiceCardCVC {
 // MARK: - Methods
 
 extension AppServiceCardCVC {
-    func configureCell(imageURL: String, name: String, badgeText: String) {
-        self.logoImageView.setImage(with: imageURL)
-        self.titleLabel.text = name
-        if badgeText.isEmpty {
+    func configureCell(model: HomeAppServicesModel?) {
+        guard let model = model else { return }
+        
+        self.logoImageView.setImage(with: model.iconURL)
+        self.titleLabel.text = model.serviceName
+        if model.alarmBadge.isEmpty {
             self.notificationBadgeView.isHidden = true
         } else {
-            self.notificationBadgeView.setData(with: badgeText)
+            self.notificationBadgeView.setData(with: model.alarmBadge)
         }
     }
 }

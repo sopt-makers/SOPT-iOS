@@ -188,7 +188,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .dashBoard: return 1
         case .calendar: return 1
         case .mainProduct: return viewModel.productInfoList.count
-        case .appService: return viewModel.appServiceInfoList.count
+        case .appService: return viewModel.appServices?.count ?? 0
         case .insight: return viewModel.insightInfoList.count
         case .group: return viewModel.groupInfoList.count
         case .coffeeChat: return viewModel.coffeeChatHostInfoList.count
@@ -236,13 +236,11 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .appService:
             /// 앱 서비스 카드 셀
             let appServiceIndex = indexPath.item
-            guard let appService = viewModel.appServiceInfoList[safe: appServiceIndex] else { return UICollectionViewCell() }
+            guard let appService = viewModel.appServices?[safe: appServiceIndex] else { return UICollectionViewCell() }
             guard let appServiceCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: AppServiceCardCVC.className,
                                      for: indexPath) as? AppServiceCardCVC else { return UICollectionViewCell() }
-            appServiceCardCell.configureCell(imageURL: appService.imageURL,
-                                             name: appService.name,
-                                             badgeText: appService.badgeText)
+            appServiceCardCell.configureCell(model: appService)
             
             return appServiceCardCell
         

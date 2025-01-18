@@ -30,13 +30,13 @@ public class HomeRepository {
 extension HomeRepository: HomeRepositoryInterface {
     public func getAppServices() -> AnyPublisher<[Domain.HomeAppServicesModel], any Error> {
         homeService.getAppServiceAccessStatus()
-            .map { $0.toDomain() }
+            .map { $0.map { $0.toDomain() } }
             .eraseToAnyPublisher()
     }
     
     public func getInsightPosts() -> AnyPublisher<[Domain.HomeInsightPostsModel], any Error> {
         homeService.getInsightPosts()
-            .map { $0.toDomain() }
+            .map { $0.map { $0.toDomain() } }
             .eraseToAnyPublisher()
     }
     
