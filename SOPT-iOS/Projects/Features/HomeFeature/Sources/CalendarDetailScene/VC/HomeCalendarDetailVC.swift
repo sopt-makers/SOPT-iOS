@@ -39,7 +39,7 @@ final class HomeCalendarDetailVC: UIViewController, HomeCalendarDetailViewContro
                                     .changeCornerRadius(radius: 12)
                                     .setConfigForState(enabledFont: DSKitFontFamily.Suit.semiBold.font(size: 18))
     
-    private let gradationView = UIView().then {
+    private let gradientView = UIView().then {
         let gradientLayer = CAGradientLayer()
         gradientLayer.colors = [DSKitAsset.Colors.black.color.withAlphaComponent(0.0).cgColor, DSKitAsset.Colors.black.color.cgColor]
         gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
@@ -73,8 +73,8 @@ final class HomeCalendarDetailVC: UIViewController, HomeCalendarDetailViewContro
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        if let gradientLayer = gradationView.layer.sublayers?.first as? CAGradientLayer {
-            gradientLayer.frame = gradationView.bounds
+        if let gradientLayer = gradientView.layer.sublayers?.first as? CAGradientLayer {
+            gradientLayer.frame = gradientView.bounds
         }
         
         scrollToRecentSchedule()
@@ -90,11 +90,10 @@ extension HomeCalendarDetailVC {
     }
     
     private func setLayout() {
-        view.addSubviews(naviBar, collectionView, gradationView, attendanceButton)
+        view.addSubviews(naviBar, collectionView, gradientView, attendanceButton)
         
         naviBar.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-            
         }
         
         collectionView.snp.makeConstraints { make in
@@ -103,7 +102,7 @@ extension HomeCalendarDetailVC {
             make.bottom.equalToSuperview()
         }
         
-        gradationView.snp.makeConstraints { make in
+        gradientView.snp.makeConstraints { make in
             make.leading.trailing.bottom.equalToSuperview()
             make.height.equalTo(209.adjustedH)
         }
@@ -128,7 +127,6 @@ extension HomeCalendarDetailVC {
         collectionView.register(HomeCalendarDetailCVC.self, forCellWithReuseIdentifier: HomeCalendarDetailCVC.className)
     }
     
-    @MainActor
     private func scrollToRecentSchedule() {
         if let index = self.viewModel.calendarDetailList.firstIndex(where: {$0.isRecentSchedule}) {
             self.collectionView.scrollToItem(at: IndexPath(item: index, section: 0),
