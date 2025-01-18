@@ -97,8 +97,20 @@ extension HomeForMemberVC {
         output.needToReload
             .withUnretained(self)
             .sink { owner, _ in
-                owner.collectionView.reloadData()
+                owner.updateUI()
             }.store(in: cancelBag)
+    }
+    
+    private func updateUI() {
+        updateCollectionViewLayout()
+        let sectionCount = HomeForMemberSectionLayoutKind.allCases.count
+        let indexSet = IndexSet(integersIn: 0..<sectionCount)
+        self.collectionView.reloadSections(indexSet)
+    }
+    
+    private func updateCollectionViewLayout() {
+      let newLayout = createLayout()
+      self.collectionView.setCollectionViewLayout(newLayout, animated: true)
     }
     
     private func setDelegate() {
