@@ -170,5 +170,14 @@ extension AppDelegate {
                 )
             }
         )
+        container.register(
+            interface: HomeRepositoryInterface.self,
+            implement: {
+                HomeRepository(
+                    homeService: DefaultHomeService(),
+                    calendarService: DefaultCalendarService()
+                )
+            }
+        )
     }
 }

@@ -8,10 +8,11 @@
 
 import UIKit
 
+import Domain
 import Core
 import DSKit
 
-final class DashBoardCalendarCardCVC: UICollectionViewCell {
+final class CalendarCardCVC: UICollectionViewCell {
     
     // MARK: - UI Components
 
@@ -83,7 +84,7 @@ final class DashBoardCalendarCardCVC: UICollectionViewCell {
 
 // MARK: - UI & Layout
 
-extension DashBoardCalendarCardCVC {
+extension CalendarCardCVC {
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.gray800.color
         self.layer.cornerRadius = 8
@@ -122,13 +123,17 @@ extension DashBoardCalendarCardCVC {
 
 // MARK: - Methods
 
-extension DashBoardCalendarCardCVC {
-    func configureCell(date: String, tagType: DashBoardCalenderCategoryTagType, title: String, userType: UserType) {
-        self.dateLabel.text = date
-        self.scheduleTitleLabel.text = title
-        self.scheduleCategoryTagView.setData(title: tagType.text,
-                                             titleColor: tagType.textColor,
-                                             backgroundColor: tagType.backgroundColor)
+extension CalendarCardCVC {
+    func configureCell(model: HomeRecentScheduleModel?,
+                       userType: UserType) {
+        guard let model = model else { return }
+        self.dateLabel.text = model.date
+        self.scheduleTitleLabel.text = model.title
+        if let tagType = DashBoardCalenderCategoryTagType(rawValue: model.type) {
+            self.scheduleCategoryTagView.setData(title: tagType.text,
+                                                 titleColor: tagType.textColor,
+                                                 backgroundColor: tagType.backgroundColor)
+        }
         self.attendanceButton.isHidden = userType == .visitor
     }
 }

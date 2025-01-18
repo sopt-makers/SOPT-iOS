@@ -11,19 +11,24 @@ import Domain
 @_exported import HomeFeatureInterface
 
 public final class HomeBuilder {
+    @Injected public var homeRepository: HomeRepositoryInterface
+    
     public init() {}
 }
 
 extension HomeBuilder: HomeFeatureBuildable {
+    
     public func makeHomeForMember() -> HomeForMemberPresentable {
-        let viewModel = HomeForMemberViewModel()
+        let useCase = DefaultHomeUseCase(repository: homeRepository)
+        let viewModel = HomeForMemberViewModel(useCase: useCase)
         let homeForMemberVC = HomeForMemberVC(viewModel: viewModel)
         return (homeForMemberVC, viewModel)
     }
     
     public func makeHomeForVisitor() -> HomeForVisitorPresentable {
-        let viewModel = HomeForVisitorViewModel()
-        let homeForVisitorVC = HomeForVisitorVC()
+        let useCase = DefaultHomeUseCase(repository: homeRepository)
+        let viewModel = HomeForVisitorViewModel(useCase: useCase)
+        let homeForVisitorVC = HomeForVisitorVC(viewModel: viewModel)
         return (homeForVisitorVC, viewModel)
     }
     

@@ -1,5 +1,5 @@
 //
-//  DashBoardHeaderView.swift
+//  DashBoardCardCVC.swift
 //  HomeFeature
 //
 //  Created by Jae Hyun Lee on 11/22/24.
@@ -11,16 +11,15 @@ import UIKit
 import Core
 import DSKit
 
-final class DashBoardHeaderView: UICollectionReusableView {
+final class DashBoardCardCVC: UICollectionViewCell {
     
     // MARK: - UI Components
         
-    private let userInfoLabel = UILabel().then {
+    private var descriptionLabel = UILabel().then {
         $0.textColor = DSKitAsset.Colors.white100.color
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 18)
+        $0.font = DSKitFontFamily.Suit.medium.font(size: 18)
         $0.numberOfLines = 2
         $0.textAlignment = .left
-        $0.setLineSpacing(lineSpacing: 4)
     }
     
     private let userHistoryView = UserHistoryView()
@@ -44,7 +43,7 @@ final class DashBoardHeaderView: UICollectionReusableView {
 
 // MARK: - UI & Layout
 
-extension DashBoardHeaderView {
+extension DashBoardCardCVC {
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.gray800.color
         self.layer.cornerRadius = 8
@@ -52,25 +51,22 @@ extension DashBoardHeaderView {
     
     private func setLayout() {
         self.addSubviews(
-            userInfoLabel,
-            userHistoryView
+            descriptionLabel,
+            userHistoryView,
+            rightArrowWithCircleImageView
         )
 
-        userInfoLabel.snp.makeConstraints { make in
+        descriptionLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(18)
             make.leading.equalToSuperview().inset(16)
         }
         
         userHistoryView.snp.makeConstraints { make in
-            make.top.equalTo(userInfoLabel.snp.bottom).offset(15)
+            make.top.equalTo(descriptionLabel.snp.bottom).offset(15)
             make.leading.equalToSuperview().inset(16)
             make.width.equalTo(250)
             make.height.equalTo(23)
         }
-    }
-    
-    private func setRightArrowWithCircleImageViewLayout() {
-        self.addSubview(rightArrowWithCircleImageView)
         
         rightArrowWithCircleImageView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
@@ -82,14 +78,22 @@ extension DashBoardHeaderView {
 
 // MARK: - Methods
 
-extension DashBoardHeaderView {
-    func setData(userType: UserType) {
+extension DashBoardCardCVC {
+    func configureCell(userType: UserType, description: String?) {
+        guard let description = description else { return }
+        
         switch userType {
         case .visitor:
-            self.userInfoLabel.text = I18N.Home.DashBoard.UserHistory.encourage
+            self.descriptionLabel.font = DSKitFontFamily.Suit.medium.font(size: 18)
+            self.descriptionLabel.text = I18N.Home.DashBoard.UserHistory.encourage
+            self.descriptionLabel.setLineSpacing(lineSpacing: 5)
+            self.rightArrowWithCircleImageView.isHidden = true
         case .active, .inactive:
-            self.userInfoLabel.text = "김솝트 님은\nSOPT와 N개월 째"
-            setRightArrowWithCircleImageViewLayout()
+            self.descriptionLabel.text = description
+            self.descriptionLabel.htmlToString(targetString: description,
+                                               defaultFont: DSKitFontFamily.Suit.medium.font(size: 18),
+                                               defaultColor: DSKitAsset.Colors.white100.color)
+            self.rightArrowWithCircleImageView.isHidden = false
         }
         
         userHistoryView.setData(userType: userType, recentHistory: 35, allHistory: [35, 34, 33, 32, 31, 30, 29])

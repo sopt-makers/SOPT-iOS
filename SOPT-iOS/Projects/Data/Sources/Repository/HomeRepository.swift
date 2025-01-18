@@ -1,0 +1,42 @@
+//
+//  HomeRepository.swift
+//  Data
+//
+//  Created by Jae Hyun Lee on 1/14/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
+//
+
+import Combine
+
+import Core
+import Domain
+import Networks
+
+public class HomeRepository {
+    
+    private let homeService: HomeService
+    private let calendarService: CalendarService
+    
+    private let cancelBag = CancelBag()
+    
+    public init(homeService: HomeService,
+                calendarService: CalendarService
+    ) {
+        self.homeService = homeService
+        self.calendarService = calendarService
+    }
+}
+
+extension HomeRepository: HomeRepositoryInterface {
+    public func getHomeDescription() -> AnyPublisher<Domain.HomeDescriptionModel, any Error> {
+        homeService.getDescription()
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
+    
+    public func getRecentSchedule() -> AnyPublisher<Domain.HomeRecentScheduleModel, any Error> {
+        calendarService.getRecentSchedule()
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
+}

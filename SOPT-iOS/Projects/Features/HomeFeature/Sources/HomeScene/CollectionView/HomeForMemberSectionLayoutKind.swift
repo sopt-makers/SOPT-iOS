@@ -12,6 +12,7 @@ import Core
 
 enum HomeForMemberSectionLayoutKind: Int, CaseIterable {
     case dashBoard
+    case calendar
     case mainProduct
     case appService
     case insight

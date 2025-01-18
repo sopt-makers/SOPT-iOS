@@ -120,15 +120,26 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     
     let currentCardPage = PassthroughSubject<Int, Never>()
     
+    // MARK: - Properties
+
+    private let useCase: HomeUseCase
+    private var cancelBag = CancelBag()
+    
+    var userType: UserType = UserDefaultKeyList.Auth.getUserType()
+    var homeDescription: HomeDescriptionModel?
+    var recentSchedule: HomeRecentScheduleModel?
+    
     // MARK: - Inputs
     
     public struct Input {
-        let cellTapped: Driver<IndexPath>
+        let viewDidLoad: Driver<Void>
     }
     
     // MARK: - Outputs
     
-    public struct Output { }
+    public struct Output {
+        let needToReload = PassthroughSubject<Void, Never>()
+    }
     
     // MARK: - HomeForeMemberCoordinating
     
@@ -137,20 +148,40 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     
     // MARK: - initialization
     
-    public init() { }
+    public init(useCase: HomeUseCase) {
+        self.useCase = useCase
+    }
 }
 
 extension HomeForMemberViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
+        self.bindOutput(output: output, cancelBag: cancelBag)
         
-        input.cellTapped
-            .filter{ $0.section == 0 }
+        input.viewDidLoad
             .withUnretained(self)
-            .sink(receiveValue: { owner, indexPath in
-                self.onDashBoardCellTapped?()
-            })
-            .store(in: cancelBag)
+            .sink { owner, _ in
+                owner.useCase.getHomeDescription()
+                owner.useCase.getRecentSchedule()
+            }.store(in: cancelBag)
+        
         return output
+    }
+    
+    private func bindOutput(output: Output, cancelBag: CancelBag) {
+        useCase.homeDescription
+            .withUnretained(self)
+            .sink { owner, description in
+                owner.homeDescription = description
+                output.needToReload.send()
+            }.store(in: cancelBag)
+        
+        useCase.recentSchedule
+            .withUnretained(self)
+            .sink { owner, schedule in
+                owner.recentSchedule = schedule
+                owner.recentSchedule?.date = setDateFormat(to: "MM.dd")
+                output.needToReload.send()
+            }.store(in: cancelBag)
     }
 }
