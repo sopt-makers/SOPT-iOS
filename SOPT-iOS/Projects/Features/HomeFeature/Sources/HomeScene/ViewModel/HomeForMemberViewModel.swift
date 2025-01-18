@@ -122,6 +122,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     var homeDescription: HomeDescriptionModel?
     var recentSchedule: HomeRecentScheduleModel?
     var appServices: [HomeAppServicesModel]?
+    var insightPosts: [HomeInsightPostsModel]?
     
     // MARK: - Inputs
     
@@ -153,6 +154,7 @@ extension HomeForMemberViewModel {
                 owner.useCase.getHomeDescription()
                 owner.useCase.getRecentSchedule()
                 owner.useCase.getAppServices()
+                owner.useCase.getInsightPosts()
             }.store(in: cancelBag)
         
         return output
@@ -178,6 +180,13 @@ extension HomeForMemberViewModel {
             .withUnretained(self)
             .sink { owner, services in
                 owner.appServices = services
+                output.needToReload.send()
+            }.store(in: cancelBag)
+        
+        useCase.insightPosts
+            .withUnretained(self)
+            .sink { owner, posts in
+                owner.insightPosts = posts
                 output.needToReload.send()
             }.store(in: cancelBag)
     }

@@ -201,7 +201,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .calendar: return 1
         case .mainProduct: return viewModel.productInfoList.count
         case .appService: return viewModel.appServices?.count ?? 0
-        case .insight: return viewModel.insightInfoList.count
+        case .insight: return viewModel.insightPosts != nil ? 1 : 0
         case .group: return viewModel.groupInfoList.count
         case .coffeeChat: return viewModel.coffeeChatHostInfoList.count
         case .announcement: return viewModel.announcementInfoList.count
@@ -259,7 +259,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .insight:
             /// 인사이트 카드 셀
             let insightIndex = indexPath.item
-            guard let insight = viewModel.insightInfoList[safe: insightIndex] else { return UICollectionViewCell() }
+            guard let insight = viewModel.insightPosts?[safe: 2] else { return UICollectionViewCell() }
             guard let insightCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: InsightCardCVC.className,
                                      for: indexPath) as? InsightCardCVC else { return UICollectionViewCell() }
