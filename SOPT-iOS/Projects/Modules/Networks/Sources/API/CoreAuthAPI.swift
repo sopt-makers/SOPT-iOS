@@ -12,7 +12,7 @@ public enum CoreAuthAPI {
     case sendVerifyCode(dto: SendVerificationCodeEntity)
     case verfiyCode(dto: VerifyCodeEntity)
     case signUp(dto: SignUpEntity)
-    case login(dto: LoginEntity)
+    case login(dto: CoreLoginRequestEntity)
 }
 
 extension CoreAuthAPI: BaseAPI {

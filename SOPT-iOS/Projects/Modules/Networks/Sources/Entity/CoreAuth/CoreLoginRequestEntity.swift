@@ -8,12 +8,12 @@
 
 import Foundation
 
-public struct LoginEntity: Encodable {
-    let code: String
+public struct CoreLoginRequestEntity: Encodable {
+    let token: String
     let authPlatform: PlatformType
     
-    public init(code: String, authPlatform: PlatformType) {
-        self.code = code
+    public init(token: String, authPlatform: PlatformType) {
+        self.token = token
         self.authPlatform = authPlatform
     }
 }

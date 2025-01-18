@@ -1,5 +1,5 @@
 //
-//  CoreOAuthRepository.swift
+//  CoreAuthRepository.swift
 //  Data
 //
 //  Created by 장석우 on 1/18/25.
@@ -9,25 +9,46 @@
 import Combine
 import Foundation
 
+import Core
 import Domain
 import Networks
 
-public class CoreOAuthRepository {
+public struct CoreAuthRepository {
+    private let coreAuthService: CoreAuthService
     
-    private let appleService: AuthenticationService
-//    private let googleService:
-    
-    public init(appleService: AuthenticationService) {
-        self.appleService = appleService
+    public init(coreAuthService: CoreAuthService) {
+        self.coreAuthService = coreAuthService
     }
 }
 
-extension CoreOAuthRepository: CoreOAuthRepositoryInterface {
-    public func getIdentityToken(from provider: OAuthType) -> AnyPublisher<String, Domain.CoreAuthError> {
-        switch provider {
-        case .apple: return appleService.getIdentityToken()
-        case .google: fatalError() //TODO: 
-        }
-        
+extension CoreAuthRepository: CoreAuthRepositoryInterface {
+
+    public func login(
+        for provider: OAuthType,
+        with identityToken: String
+    ) -> AnyPublisher<CoreAuthTokens, CoreAuthError> {
+        coreAuthService
+            .login(.dto(token: identityToken, oauthType: provider))
+            .compactMap { $0.data?.toDomain() }
+            .mapError { _ in CoreAuthError.makers(.loginFail) }
+            .eraseToAnyPublisher()
+    }
+    
+    public func saveTokens(_ tokens: Domain.CoreAuthTokens) {
+        UserDefaultKeyList.CoreAuth.accessToken = tokens.accessToken
+        UserDefaultKeyList.CoreAuth.refreshToken = tokens.refreshToken
+    }
+    
+    public func changeSocialAccount() -> AnyPublisher<Void, CoreAuthError> {
+        fatalError()
+    }
+    
+    public func searchSocialAccount() -> AnyPublisher<Void, CoreAuthError> {
+        fatalError()
+    }
+    
+    public func signUp(_ model: Domain.SignUpModel) -> AnyPublisher<Void, CoreAuthError> {
+        fatalError()
     }
 }
+

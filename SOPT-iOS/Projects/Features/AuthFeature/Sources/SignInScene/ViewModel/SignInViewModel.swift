@@ -65,8 +65,8 @@ extension SignInViewModel {
             input.appleLoginButtonTapped.map { OAuthType.apple }
         ).flatMap(useCase.login)
             .withUnretained(self)
-            .sink { owner, id in
-                print(id)
+            .sink { owner,  _ in
+                print("로그인 성공")
             }.store(in: self.cancelBag)
         
         input.signUpButtonTapped
@@ -104,5 +104,11 @@ extension SignInViewModel {
             } receiveValue: { (owner, isSignInSuccess) in
                 owner.onSignInSuccess?(isSignInSuccess)
             }.store(in: self.cancelBag)
+        
+        useCase.sideEffect
+            .sink { event in
+                print(event)
+            }
+            .store(in: self.cancelBag)
     }
 }

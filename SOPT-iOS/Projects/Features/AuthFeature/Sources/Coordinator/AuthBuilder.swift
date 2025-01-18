@@ -14,6 +14,7 @@ public
 final class AuthBuilder {
     @Injected public var repository: SignInRepositoryInterface
     @Injected public var oauthRepository: CoreOAuthRepositoryInterface
+    @Injected public var coreRepository: CoreAuthRepositoryInterface
     
     public init() { }
 }
@@ -21,7 +22,11 @@ final class AuthBuilder {
 extension AuthBuilder: AuthFeatureViewBuildable {
     
     public func makeSignIn() -> SignInPresentable {
-        let useCase = DefaultSignInUseCase(repository: repository, oauthRepository: oauthRepository)
+        let useCase = DefaultSignInUseCase(
+            repository: repository,
+            oauthRepository: oauthRepository,
+            coreRepository: coreRepository
+        )
         let vm = SignInViewModel(useCase: useCase)
         let vc = SignInVC()
         vc.viewModel = vm

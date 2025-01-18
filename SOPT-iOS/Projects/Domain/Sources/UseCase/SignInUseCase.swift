@@ -17,7 +17,9 @@ public enum SiginInHandleableType {
 
 public protocol SignInUseCase {
     func requestSignIn(token: String)
-    func login(with provider: OAuthType) -> AnyPublisher<String, Never>
+    func login(with provider: OAuthType) -> AnyPublisher<Void, Never>
+    
+    var sideEffect: PassthroughSubject<CoreAuthError, Never> { get }
     var signInSuccess: CurrentValueSubject<SiginInHandleableType, Error> { get set }
 }
 
@@ -25,21 +27,42 @@ public class DefaultSignInUseCase {
     
     private let repository: SignInRepositoryInterface
     private let oauthRepository: CoreOAuthRepositoryInterface
+    private let coreRepository: CoreAuthRepositoryInterface
     
     private var cancelBag = CancelBag()
     
+    public var sideEffect = PassthroughSubject<CoreAuthError, Never>()
     public var signInSuccess = CurrentValueSubject<SiginInHandleableType, Error>(.loginFailure)
     
     public init(
         repository: SignInRepositoryInterface,
-        oauthRepository: CoreOAuthRepositoryInterface
+        oauthRepository: CoreOAuthRepositoryInterface,
+        coreRepository: CoreAuthRepositoryInterface
     ) {
         self.repository = repository
         self.oauthRepository = oauthRepository
+        self.coreRepository = coreRepository
     }
 }
 
+//MARK: - 인증중앙화(CoreAuth) 로직
 extension DefaultSignInUseCase: SignInUseCase {
+    public func login(with provider: OAuthType) -> AnyPublisher<Void, Never> {
+        oauthRepository.getIdentityToken(from: .apple)
+            .map { (provider, $0) }
+            .flatMap(coreRepository.login)
+            .handleEvents(receiveOutput: coreRepository.saveTokens)
+            .mapVoid()
+            .catch { [weak self] in
+                self?.sideEffect.send($0)
+                return Empty<Void, Never>()
+            }
+            .eraseToAnyPublisher()
+    }
+}
+
+//MARK: - LegacyAuth 로직
+extension DefaultSignInUseCase {
     public func requestSignIn(token: String) {
         repository.requestSignIn(token: token)
             .sink { event in
@@ -53,13 +76,5 @@ extension DefaultSignInUseCase: SignInUseCase {
             } receiveValue: { isSuccessed in
                 self.signInSuccess.send(isSuccessed ? .loginSuccess : .loginFailure)
             }.store(in: self.cancelBag)
-    }
-    
-    public func login(with provider: OAuthType) -> AnyPublisher<String, Never> {
-        oauthRepository.getIdentityToken(from: .apple)
-            .catch { _ in
-                return Empty<String, Never>()
-            }
-            .eraseToAnyPublisher()
     }
 }
