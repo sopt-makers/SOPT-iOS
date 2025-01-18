@@ -10,12 +10,10 @@ import AuthenticationServices
 import Combine
 import Foundation
 
-import Domain
-
 final class ASAuthorizationControllerProxy: NSObject {
     
     private let presentationWindow: UIWindow = UIWindow()
-    public let didComplete = PassthroughSubject<ASAuthorization, CoreAuthError.Apple>()
+    public let didComplete = PassthroughSubject<ASAuthorization, AuthenticationError>()
     
     private override init() {}
     
@@ -23,10 +21,6 @@ final class ASAuthorizationControllerProxy: NSObject {
         let owner = Self()
         object.delegate = owner
         return owner
-    }
-    
-    deinit {
-        print("ASAuthorizationControllerProxy: 나 죽네")
     }
 }
 
@@ -42,7 +36,7 @@ extension ASAuthorizationControllerProxy: ASAuthorizationControllerDelegate {
         controller: ASAuthorizationController,
         didCompleteWithError error: any Error
     ) {
-        didComplete.send(completion: .failure(.authFail(error)))
+        didComplete.send(completion: .failure(.unauthorized(error)))
     }
 }
 

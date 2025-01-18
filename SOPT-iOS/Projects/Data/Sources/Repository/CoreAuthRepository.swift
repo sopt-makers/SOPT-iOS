@@ -14,6 +14,7 @@ import Domain
 import Networks
 
 public struct CoreAuthRepository {
+    
     private let coreAuthService: CoreAuthService
     
     public init(coreAuthService: CoreAuthService) {
@@ -28,9 +29,9 @@ extension CoreAuthRepository: CoreAuthRepositoryInterface {
         with identityToken: String
     ) -> AnyPublisher<CoreAuthTokens, CoreAuthError> {
         coreAuthService
-            .login(.dto(token: identityToken, oauthType: provider))
+            .login(.init(token: identityToken, authPlatform: provider.toData()))
             .compactMap { $0.data?.toDomain() }
-            .mapError { _ in CoreAuthError.makers(.loginFail) }
+            .mapError { _ in CoreAuthError.loginFail }
             .eraseToAnyPublisher()
     }
     

@@ -16,11 +16,13 @@ public enum SiginInHandleableType {
 }
 
 public protocol SignInUseCase {
+    // legacy
     func requestSignIn(token: String)
-    func login(with provider: OAuthType) -> AnyPublisher<Void, Never>
-    
-    var sideEffect: PassthroughSubject<CoreAuthError, Never> { get }
     var signInSuccess: CurrentValueSubject<SiginInHandleableType, Error> { get set }
+    
+    // 인증 중앙화
+    func login(with provider: OAuthType) -> AnyPublisher<Void, Never> // 인증 중앙화
+    var sideEffect: PassthroughSubject<CoreAuthError, Never> { get } // 인증 중앙화
 }
 
 public class DefaultSignInUseCase {
@@ -46,7 +48,9 @@ public class DefaultSignInUseCase {
 }
 
 //MARK: - 인증중앙화(CoreAuth) 로직
+
 extension DefaultSignInUseCase: SignInUseCase {
+    
     public func login(with provider: OAuthType) -> AnyPublisher<Void, Never> {
         oauthRepository.getIdentityToken(from: .apple)
             .map { (provider, $0) }
@@ -62,6 +66,7 @@ extension DefaultSignInUseCase: SignInUseCase {
 }
 
 //MARK: - LegacyAuth 로직
+
 extension DefaultSignInUseCase {
     public func requestSignIn(token: String) {
         repository.requestSignIn(token: token)

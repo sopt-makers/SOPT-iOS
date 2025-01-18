@@ -9,7 +9,7 @@
 import Combine
 
 public protocol CoreAuthRepositoryInterface {
-    func login(for provider: OAuthType,with identityToken: String) -> AnyPublisher<CoreAuthTokens, CoreAuthError>
+    func login(for provider: OAuthType, with identityToken: String) -> AnyPublisher<CoreAuthTokens, CoreAuthError>
     func changeSocialAccount() -> AnyPublisher<Void, CoreAuthError>
     func searchSocialAccount() -> AnyPublisher<Void, CoreAuthError>
     func signUp(_ model: SignUpModel) -> AnyPublisher<Void, CoreAuthError>

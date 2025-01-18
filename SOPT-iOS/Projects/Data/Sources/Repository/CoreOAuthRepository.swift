@@ -24,10 +24,14 @@ public class CoreOAuthRepository {
 
 extension CoreOAuthRepository: CoreOAuthRepositoryInterface {
     public func getIdentityToken(from provider: OAuthType) -> AnyPublisher<String, Domain.CoreAuthError> {
+        let service: AuthenticationService
         switch provider {
-        case .apple: return appleService.getIdentityToken()
-        case .google: fatalError() //TODO: 
+        case .apple: service = appleService
+        case .google: fatalError() //TODO:
         }
         
+        return service.getIdentityToken()
+            .mapError { _ in CoreAuthError.oAuthFail(provider) } // oauth error의 구체화 필요시 여기서 구현
+            .eraseToAnyPublisher()
     }
 }

@@ -9,22 +9,7 @@
 import Foundation
 
 public enum CoreAuthError: Error {
-    case apple(Apple)
-    case google(Google)
-    case makers(Makers)
+    case oAuthFail(OAuthType)
+    case loginFail
     case unknown(Error)
-    
-    public enum Apple: Error {
-        case authFail(Error)
-        case credentialFail
-        case encodedFail
-    }
-    
-    public enum Google: Error {
-        
-    }
-    
-    public enum Makers: Error {
-        case loginFail
-    }
 }

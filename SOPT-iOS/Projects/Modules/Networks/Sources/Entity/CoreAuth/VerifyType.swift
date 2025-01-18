@@ -8,7 +8,6 @@
 
 import Foundation
 
-
 public enum VerifyType: String, Encodable {
     case register = "REGISTER"
     case change = "CHANGE"
