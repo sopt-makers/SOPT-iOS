@@ -41,8 +41,10 @@ extension HomeAPI: BaseAPI {
     
     public var task: Moya.Task {
         switch self {
-        case .getDescription, .getGroupAll, .getCoffeeChat:
+        case .getDescription, .getCoffeeChat:
             return .requestPlain
+        case .getGroupAll:
+            return .requestParameters(parameters: ["page": 1, "take": 10, "category": "행사,세미나"], encoding: URLEncoding.queryString)
         }
     }
 }
