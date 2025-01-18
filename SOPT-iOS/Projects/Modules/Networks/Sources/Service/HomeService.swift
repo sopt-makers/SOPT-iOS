@@ -15,10 +15,15 @@ public typealias DefaultHomeService = BaseService<HomeAPI>
 
 public protocol HomeService {
     func getDescription() -> AnyPublisher<HomeDescriptionEntity, Error>
+    func getGroupAll() -> AnyPublisher<HomeGroupEntity, Error>
 }
 
 extension DefaultHomeService: HomeService {
     public func getDescription() -> AnyPublisher<HomeDescriptionEntity, any Error> {
         requestObjectInCombine(.getDescription)
+    }
+    
+    public func getGroupAll() -> AnyPublisher<HomeGroupEntity, any Error> {
+        requestObjectInCombine(.getGroupAll)
     }
 }

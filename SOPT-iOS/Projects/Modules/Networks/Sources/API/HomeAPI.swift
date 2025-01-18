@@ -14,6 +14,7 @@ import Core
 
 public enum HomeAPI {
     case getDescription
+    case getGroupAll
 }
 
 extension HomeAPI: BaseAPI {
@@ -23,19 +24,21 @@ extension HomeAPI: BaseAPI {
         switch self {
         case .getDescription:
             return "/description"
+        case .getGroupAll:
+            return "/meeting/all"
         }
     }
     
     public var method: Moya.Method {
         switch self {
-        case .getDescription:
+        case .getDescription, .getGroupAll:
             return .get
         }
     }
     
     public var task: Moya.Task {
         switch self {
-        case .getDescription:
+        case .getDescription, .getGroupAll:
             return .requestPlain
         }
     }
