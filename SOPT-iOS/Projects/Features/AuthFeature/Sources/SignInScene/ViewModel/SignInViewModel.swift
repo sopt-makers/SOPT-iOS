@@ -60,16 +60,13 @@ extension SignInViewModel {
                 UserDefaultKeyList.clearUserData()
             }.store(in: self.cancelBag)
         
-        input.googleLoginButtonTapped
+        Publishers.Merge(
+            input.googleLoginButtonTapped.map { OAuthType.google },
+            input.appleLoginButtonTapped.map { OAuthType.apple }
+        ).flatMap(useCase.login)
             .withUnretained(self)
-            .sink { owner, _ in
-                owner.onSocialLoginFail?() //TODO: 구글 로그인 로직
-            }.store(in: self.cancelBag)
-        
-        input.appleLoginButtonTapped
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onSocialLoginFail?() //TODO: 애플 로그인 로직
+            .sink { owner, id in
+                print(id)
             }.store(in: self.cancelBag)
         
         input.signUpButtonTapped

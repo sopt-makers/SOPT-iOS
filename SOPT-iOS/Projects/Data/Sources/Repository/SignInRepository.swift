@@ -19,6 +19,7 @@ public class SignInRepository {
     
     private let authService: AuthService
     private let userService: UserService
+    
     private let cancelBag = CancelBag()
     
     public init(authService: AuthService, userService: UserService) {
@@ -28,6 +29,7 @@ public class SignInRepository {
 }
 
 extension SignInRepository: SignInRepositoryInterface {
+    
     public func requestSignIn(token: String) -> AnyPublisher<Bool, Error> {
         return authService.signIn(token: token)
             .catch ({ error in

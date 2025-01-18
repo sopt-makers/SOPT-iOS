@@ -27,12 +27,21 @@ extension AppDelegate {
                 )
             }
         )
+        
+        container.register(
+            interface: CoreOAuthRepositoryInterface.self,
+            implement: {
+                CoreOAuthRepository(appleService: DefaultAppleAuthenticationService())
+            }
+        )
+        
         container.register(
             interface: SplashRepositoryInterface.self,
             implement: {
                 SplashRepository(service: DefaultFirebaseService())
             }
         )
+        
         container.register(
             interface: MainRepositoryInterface.self,
             implement: {

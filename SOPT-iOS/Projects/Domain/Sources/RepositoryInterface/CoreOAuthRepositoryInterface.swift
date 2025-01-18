@@ -1,5 +1,5 @@
 //
-//  CoreAuthRepository.swift
+//  CoreOAuthRepositoryInterface.swift
 //  Domain
 //
 //  Created by 장석우 on 1/18/25.

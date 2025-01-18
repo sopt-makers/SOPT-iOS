@@ -13,6 +13,7 @@ import Domain
 public
 final class AuthBuilder {
     @Injected public var repository: SignInRepositoryInterface
+    @Injected public var oauthRepository: CoreOAuthRepositoryInterface
     
     public init() { }
 }
@@ -20,7 +21,7 @@ final class AuthBuilder {
 extension AuthBuilder: AuthFeatureViewBuildable {
     
     public func makeSignIn() -> SignInPresentable {
-        let useCase = DefaultSignInUseCase(repository: repository)
+        let useCase = DefaultSignInUseCase(repository: repository, oauthRepository: oauthRepository)
         let vm = SignInViewModel(useCase: useCase)
         let vc = SignInVC()
         vc.viewModel = vm
