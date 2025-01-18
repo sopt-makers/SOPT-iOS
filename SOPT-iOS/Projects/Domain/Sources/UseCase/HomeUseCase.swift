@@ -13,11 +13,13 @@ import Core
 public protocol HomeUseCase {
     var homeDescription: PassthroughSubject<HomeDescriptionModel, Never> { get set }
     var recentSchedule: PassthroughSubject<HomeRecentScheduleModel, Never> { get set }
-    var appServices: PassthroughSubject<HomeAppServicesModel, Never> { get set }
+    var appServices: PassthroughSubject<[HomeAppServicesModel], Never> { get set }
+    var insightPosts: PassthroughSubject<[HomeInsightPostsModel], Never> { get set }
     
     func getHomeDescription()
     func getRecentSchedule()
     func getAppServices()
+    func getInsightPosts()
 }
 
 public class DefaultHomeUseCase {
@@ -27,7 +29,8 @@ public class DefaultHomeUseCase {
     
     public var homeDescription = PassthroughSubject<HomeDescriptionModel, Never>()
     public var recentSchedule = PassthroughSubject<HomeRecentScheduleModel, Never>()
-    public var appServices = PassthroughSubject<HomeAppServicesModel, Never>()
+    public var appServices = PassthroughSubject<[HomeAppServicesModel], Never>()
+    public var insightPosts = PassthroughSubject<[HomeInsightPostsModel], Never>()
     
     public init(repository: HomeRepositoryInterface) {
         self.repository = repository
@@ -64,6 +67,17 @@ extension DefaultHomeUseCase: HomeUseCase {
                 print("GetAppServices State: \(event)")
             } receiveValue: { owner, services in
                 owner.appServices.send(services)
+            }
+            .store(in: cancelBag)
+    }
+    
+    public func getInsightPosts() {
+        repository.getInsightPosts()
+            .withUnretained(self)
+            .sink { event in
+                print("GetInsightPosts State: \(event)")
+            } receiveValue: { owner, posts in
+                owner.insightPosts.send(posts)
             }
             .store(in: cancelBag)
     }
