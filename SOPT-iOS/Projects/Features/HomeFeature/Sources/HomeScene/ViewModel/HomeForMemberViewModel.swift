@@ -120,22 +120,63 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     
     let currentCardPage = PassthroughSubject<Int, Never>()
     
+    // MARK: - Properties
+
+    private let useCase: HomeUseCase
+    private var cancelBag = CancelBag()
+    
+    var userType: UserType = UserDefaultKeyList.Auth.getUserType()
+    var homeDescription: HomeDescriptionModel?
+    var recentSchedule: HomeRecentScheduleModel?
+    
     // MARK: - Inputs
     
-    public struct Input { }
+    public struct Input {
+        let viewDidLoad: Driver<Void>
+    }
     
     // MARK: - Outputs
     
-    public struct Output { }
+    public struct Output {
+        let needToReload = PassthroughSubject<Void, Never>()
+    }
     
     // MARK: - initialization
     
-    public init() { }
+    public init(useCase: HomeUseCase) {
+        self.useCase = useCase
+    }
 }
 
 extension HomeForMemberViewModel {
     public func transform(from input: Input, cancelBag: Core.CancelBag) -> Output {
         let output = Output()
+        self.bindOutput(output: output, cancelBag: cancelBag)
+        
+        input.viewDidLoad
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.useCase.getHomeDescription()
+                owner.useCase.getRecentSchedule()
+            }.store(in: cancelBag)
+        
         return output
+    }
+    
+    private func bindOutput(output: Output, cancelBag: CancelBag) {
+        useCase.homeDescription
+            .withUnretained(self)
+            .sink { owner, description in
+                owner.homeDescription = description
+                output.needToReload.send()
+            }.store(in: cancelBag)
+        
+        useCase.recentSchedule
+            .withUnretained(self)
+            .sink { owner, schedule in
+                owner.recentSchedule = schedule
+                owner.recentSchedule?.date = setDateFormat(to: "MM.dd")
+                output.needToReload.send()
+            }.store(in: cancelBag)
     }
 }

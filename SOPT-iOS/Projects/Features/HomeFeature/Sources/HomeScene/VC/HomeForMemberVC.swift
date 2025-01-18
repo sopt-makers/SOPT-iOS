@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 import Domain
@@ -19,6 +20,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     // MARK: - Properties
 
     public let viewModel: HomeForMemberViewModel
+    private var cancelBag = CancelBag()
 
     // MARK: - UI Components
     
@@ -50,6 +52,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        bindViewModels()
         setUI()
         setLayout()
         setDelegate()
@@ -85,6 +88,19 @@ extension HomeForMemberVC {
 // MARK: - Methods
 
 extension HomeForMemberVC {
+    private func bindViewModels() {
+        let input = HomeForMemberViewModel
+            .Input(viewDidLoad: Just<Void>(()).asDriver())
+        
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.needToReload
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.collectionView.reloadData()
+            }.store(in: cancelBag)
+    }
+    
     private func setDelegate() {
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
@@ -190,7 +206,8 @@ extension HomeForMemberVC: UICollectionViewDataSource {
             guard let dashBoardCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: DashBoardCardCVC.className,
                                      for: indexPath) as? DashBoardCardCVC else { return UICollectionViewCell() }
-            dashBoardCardCell.configureCell(userType: .active)
+            dashBoardCardCell.configureCell(userType: viewModel.userType,
+                                            description: viewModel.homeDescription?.description)
             
             return dashBoardCardCell
             
@@ -199,10 +216,8 @@ extension HomeForMemberVC: UICollectionViewDataSource {
             guard let calendarCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: CalendarCardCVC.className,
                                      for: indexPath) as? CalendarCardCVC else { return UICollectionViewCell() }
-            calendarCardCell.configureCell(date: "10.22",
-                                           tagType: .event,
-                                           title: "1차 행사",
-                                           userType: .active)
+            calendarCardCell.configureCell(model: viewModel.recentSchedule,
+                                           userType: viewModel.userType)
             
             return calendarCardCell
             

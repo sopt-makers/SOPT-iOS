@@ -147,7 +147,7 @@ extension HomeForVisitorVC: UICollectionViewDataSource {
             guard let dashBoardCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: DashBoardCardCVC.className,
                                      for: indexPath) as? DashBoardCardCVC else { return UICollectionViewCell() }
-            dashBoardCardCell.configureCell(userType: .visitor)
+            dashBoardCardCell.configureCell(userType: .visitor, description: "")
             
             return dashBoardCardCell
             
