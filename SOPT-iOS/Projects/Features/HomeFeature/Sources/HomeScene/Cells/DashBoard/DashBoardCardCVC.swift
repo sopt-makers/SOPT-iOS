@@ -81,7 +81,7 @@ extension DashBoardCardCVC {
 extension DashBoardCardCVC {
     func configureCell(userType: UserType, description: String?) {
         guard let description = description else { return }
-
+        
         switch userType {
         case .visitor:
             self.descriptionLabel.font = DSKitFontFamily.Suit.medium.font(size: 18)
@@ -90,39 +90,12 @@ extension DashBoardCardCVC {
             self.rightArrowWithCircleImageView.isHidden = true
         case .active, .inactive:
             self.descriptionLabel.text = description
-            setDescriptionLabel(description)
+            self.descriptionLabel.htmlToString(targetString: description,
+                                               defaultFont: DSKitFontFamily.Suit.medium.font(size: 18),
+                                               defaultColor: DSKitAsset.Colors.white100.color)
             self.rightArrowWithCircleImageView.isHidden = false
         }
         
         userHistoryView.setData(userType: userType, recentHistory: 35, allHistory: [35, 34, 33, 32, 31, 30, 29])
     }
-    
-    /// 볼드 태그로 감싸진 텍스트만 추출해서, 볼드 처리
-    func setDescriptionLabel(_ description: String) {
-        if description.isEmpty { return }
-        
-        do {
-            let pattern = "<b>(.*?)</b>"
-            let regex = try NSRegularExpression(pattern: pattern, options: [])
-            let range = NSRange(description.startIndex..., in: description)
-            let modifiedDescription = regex.stringByReplacingMatches(in: description, options: [], range: range, withTemplate: "$1")    // 태그가 삭제된 값
-            
-            self.descriptionLabel.text = modifiedDescription
-            
-            // 태그로 감싸진 값 탐색
-            let matches = regex.matches(in: description, options: [], range: NSRange(description.startIndex..., in: description))
-
-            for match in matches {
-                if let range = Range(match.range(at: 1), in: description) {
-                    let matchText = description[range]
-                    self.descriptionLabel.partFontChange(targetString: String(matchText),
-                                                         font: DSKitFontFamily.Suit.bold.font(size: 18),
-                                                         lineSpacing: 5)
-                }
-            }
-        } catch {
-            print("정규식 오류: \(error)")
-        }
-    }
-
 }
