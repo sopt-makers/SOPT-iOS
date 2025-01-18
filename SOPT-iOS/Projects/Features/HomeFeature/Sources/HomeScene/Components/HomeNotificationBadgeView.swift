@@ -53,6 +53,7 @@ extension HomeNotificationBadgeView {
         titleLabel.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(6)
             make.top.bottom.equalToSuperview().inset(3)
+            make.width.greaterThanOrEqualTo(8)
         }
     }
     
