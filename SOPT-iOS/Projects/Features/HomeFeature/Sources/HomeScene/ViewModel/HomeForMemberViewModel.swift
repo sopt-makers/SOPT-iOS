@@ -36,16 +36,6 @@ struct InsightInfo {
     let isHotTag: Bool
 }
 
-struct GroupInfo {
-    let title: String
-    let category: GroupCategoryTagType
-    let canJoinOnlyActiveGeneration: Bool
-    let joinableParts: [String]
-    let canJoinAllParts: Bool
-    let status: RecruitmentStatusTagType
-    let imageURL: String
-}
-
 struct CoffeeChatHostInfo {
     let memberId: Int
     let bio: String
@@ -94,15 +84,6 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     ]
     
     // TODO: 서버 연결 필요
-    let groupInfoList: [GroupInfo] = [
-        GroupInfo(title: "모임 타이틀이고 두 줄이 넘어가면 줄어들어야 합니다", category: .study, canJoinOnlyActiveGeneration: true, joinableParts: ["안드로이드", "서버", "iOS", "디자인"], canJoinAllParts: false, status: .applyAble, imageURL: "https://flexible.img.hani.co.kr/flexible/normal/960/960/imgdb/resize/2019/0121/00501111_20190121.JPG"),
-        GroupInfo(title: "모임 타이틀이고 두 줄이 넘어가면 줄어들어야 합니다", category: .event, canJoinOnlyActiveGeneration: true, joinableParts: ["서버"], canJoinAllParts: false, status: .beforeStart, imageURL: "https://ojsfile.ohmynews.com/down/images/1/freesoul_76669_1[17].jpg"),
-        GroupInfo(title: "모임 타이틀이고 두 줄이 넘어가면 줄어들어야 합니다", category: .study, canJoinOnlyActiveGeneration: true, joinableParts: ["안드로이드"], canJoinAllParts: false, status: .recruitmentComplete, imageURL: "https://www.petmove.co.kr/content/images/size/w2400/2023/09/ying-zhu-4UZfmxvc5Qk-unsplash.jpg"),
-        GroupInfo(title: "모임 타이틀이고 두 줄이 넘어가면 줄어들어야 합니다", category: .event, canJoinOnlyActiveGeneration: true, joinableParts: ["iOS"], canJoinAllParts: false, status: .applyAble, imageURL: "https://flexible.img.hani.co.kr/flexible/normal/960/960/imgdb/resize/2019/0121/00501111_20190121.JPG"),
-        GroupInfo(title: "모임 타이틀이고 두 줄이 넘어가면 줄어들어야 합니다", category: .study, canJoinOnlyActiveGeneration: true, joinableParts: ["iOS"], canJoinAllParts: false, status: .applyAble, imageURL: "https://flexible.img.hani.co.kr/flexible/normal/960/960/imgdb/resize/2019/0121/00501111_20190121.JPG")
-    ]
-    
-    // TODO: 서버 연결 필요
     let coffeeChatHostInfoList: [CoffeeChatHostInfo] = [
         CoffeeChatHostInfo(memberId: 0, bio: "디자인 관련 고민이 있다면, 함께 나눠봐요!", topicTypeList: ["커리어", "면접", "포트폴리오"], profileImage: "https://i.pinimg.com/736x/d0/1e/78/d01e78f19a709a859f7c23d1cab11db3.jpg", name: "재영이", career: "주니어(0-3년차)", organization: "Google", companyJob: "Product Designer", soptActivities: ["29기 디자인"], nowActivity: "35기 웹"),
         CoffeeChatHostInfo(memberId: 0, bio: "디자인 관련 고민이 있다면, 함께 나눠봐요!", topicTypeList: ["커리어", "면접", "포트폴리오"], profileImage: "https://i.pinimg.com/736x/97/08/4c/97084c4f037ac2db897535268ca475b3.jpg", name: "포차코", career: "주니어(0-3년차)", organization: "Google", companyJob: "Product Designer", soptActivities: ["29기 디자인"], nowActivity: "35기 웹"),
@@ -128,6 +109,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     var userType: UserType = UserDefaultKeyList.Auth.getUserType()
     var homeDescription: HomeDescriptionModel?
     var recentSchedule: HomeRecentScheduleModel?
+    var groupPosts: [HomeGroupPostModel]?
     
     // MARK: - Inputs
     
@@ -158,6 +140,7 @@ extension HomeForMemberViewModel {
             .sink { owner, _ in
                 owner.useCase.getHomeDescription()
                 owner.useCase.getRecentSchedule()
+                owner.useCase.getGroupPosts()
             }.store(in: cancelBag)
         
         return output
@@ -176,6 +159,13 @@ extension HomeForMemberViewModel {
             .sink { owner, schedule in
                 owner.recentSchedule = schedule
                 owner.recentSchedule?.date = setDateFormat(to: "MM.dd")
+                output.needToReload.send()
+            }.store(in: cancelBag)
+        
+        useCase.groupPosts
+            .withUnretained(self)
+            .sink { owner, posts in
+                owner.groupPosts = posts
                 output.needToReload.send()
             }.store(in: cancelBag)
     }

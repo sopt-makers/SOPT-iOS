@@ -190,7 +190,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .mainProduct: return viewModel.productInfoList.count
         case .appService: return viewModel.appServiceInfoList.count
         case .insight: return viewModel.insightInfoList.count
-        case .group: return viewModel.groupInfoList.count
+        case .group: return viewModel.groupPosts?.count ?? 0
         case .coffeeChat: return viewModel.coffeeChatHostInfoList.count
         case .announcement: return viewModel.announcementInfoList.count
         case .socialLinks: return SocialLinkCardType.allCases.count
@@ -260,10 +260,11 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .group:
             /// 모임 카드 셀
             let groupIndex = indexPath.item
+            guard let group = viewModel.groupPosts?[safe: groupIndex] else { return UICollectionViewCell() }
             guard let groupCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: GroupCardCVC.className,
                                      for: indexPath) as? GroupCardCVC else { return UICollectionViewCell() }
-            groupCardCell.configureCell(model: viewModel.groupInfoList[groupIndex])
+            groupCardCell.configureCell(model: group)
             
             return groupCardCell
             

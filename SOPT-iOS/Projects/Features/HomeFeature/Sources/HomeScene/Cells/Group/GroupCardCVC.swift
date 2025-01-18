@@ -8,6 +8,7 @@
 
 import UIKit
 
+import Domain
 import Core
 import DSKit
 
@@ -125,8 +126,10 @@ extension GroupCardCVC {
 // MARK: - Methods
 
 extension GroupCardCVC {
-    func configureCell(model: GroupInfo) {
-        self.coverImageView.setImage(with: model.imageURL)
+    func configureCell(model: HomeGroupPostModel?) {
+        guard let model = model else { return }
+        
+        self.coverImageView.setImage(with: model.imageUrl)
         self.titleLabel.text = model.title
         self.recruitmentStatusTagView.setData(title: model.status.text,
                                               titleColor: model.status.textColor,
@@ -135,8 +138,9 @@ extension GroupCardCVC {
         makeTitleAttributedString(category: model.category, title: model.title)
     }
     
+    
     /// 자격 요건 태그 콜렉션뷰: 데이터 append 이후 reload
-    private func reloadJoinableConditionTagCollectionView(_ model: GroupInfo) {
+    private func reloadJoinableConditionTagCollectionView(_ model: HomeGroupPostModel) {
         self.tagTextList.removeAll()
         self.tagTextList.append(model.canJoinAllParts ? I18N.Home.Group.entireGeneration : I18N.Home.Group.activityGeneration)
         self.tagTextList += model.joinableParts
@@ -153,7 +157,7 @@ extension GroupCardCVC {
     }
     
     /// 카테고리 + 모임글 타이틀
-    private func makeTitleAttributedString(category: GroupCategoryTagType, title: String) {
+    private func makeTitleAttributedString(category: HomeGroupPostModel.Category, title: String) {
         let attributedText = "\(category.text) \(title)"
         self.titleLabel.text = attributedText
         self.titleLabel.partColorChange(targetString: category.text, textColor: category.textColor)
