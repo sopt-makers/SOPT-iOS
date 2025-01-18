@@ -13,6 +13,7 @@ import Core
 
 public protocol HomeForMemberViewControllable: ViewControllable { }
 public protocol HomeForMemberCoordinatable {
+    var onDashBoardCellTapped: (() -> Void)? { get set }
     
 }
 public typealias HomeForMemberViewModelType = ViewModelType & HomeForMemberCoordinatable

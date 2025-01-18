@@ -29,7 +29,7 @@ enum DashBoardCalenderCategoryTagType: String {
         case .event:
             return DSKitAsset.Colors.success.color
         case .seminar:
-            return DSKitAsset.Colors.success.color
+            return DSKitAsset.Colors.secondary.color
         }
     }
     

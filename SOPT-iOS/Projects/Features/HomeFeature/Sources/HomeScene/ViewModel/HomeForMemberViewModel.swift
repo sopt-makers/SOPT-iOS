@@ -141,6 +141,11 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         let needToReload = PassthroughSubject<Void, Never>()
     }
     
+    // MARK: - HomeForeMemberCoordinating
+    
+    public var onDashBoardCellTapped: (() -> Void)?
+
+    
     // MARK: - initialization
     
     public init(useCase: HomeUseCase) {
@@ -149,7 +154,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
 }
 
 extension HomeForMemberViewModel {
-    public func transform(from input: Input, cancelBag: Core.CancelBag) -> Output {
+    public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         

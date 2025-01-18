@@ -287,9 +287,15 @@ public struct I18N {
             public static let instagram = "인스타"
             public static let youtube = "유튜브"
         }
+        
+        public struct CalendarDetail {
+            public static let navigationTitle = "일정"
+            public static let attendance = "출석하러 가기"
+        }
     }
     
     public struct Soptlog {
+        public static let navigationTitle = "솝트로그"
         public static let editProfile = "프로필 수정"
         public static let enrollIntroduce = "프로필 수정에서 한 줄 소개 등록해보세요!"
     }

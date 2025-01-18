@@ -57,6 +57,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
         setLayout()
         setDelegate()
         registerCells()
+        bindViewModels()
     }
 }
 
@@ -137,6 +138,14 @@ extension HomeForMemberVC {
         self.collectionView.register(SocialLinkCardCVC.self,
                                      forCellWithReuseIdentifier: SocialLinkCardCVC.className)
     }
+    
+    private func bindViewModels() {
+        let input = HomeForMemberViewModel.Input(
+            cellTapped: cellTapped.asDriver()
+        )
+        
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -148,11 +157,15 @@ extension HomeForMemberVC: UICollectionViewDelegate {
 // MARK: - UICollectionViewDataSource
 
 extension HomeForMemberVC: UICollectionViewDataSource {
-    public func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        cellTapped.send(indexPath)
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return HomeForMemberSectionLayoutKind.allCases.count
     }
         
-    public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: indexPath.section) else { return UICollectionReusableView() }
         
         /// Header View
@@ -181,7 +194,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         return UICollectionReusableView()
     }
     
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: section) else { return 0 }
         
         switch sectionKind {
@@ -197,7 +210,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         }
     }
     
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: indexPath.section) else { return UICollectionViewCell() }
         
         switch sectionKind {
