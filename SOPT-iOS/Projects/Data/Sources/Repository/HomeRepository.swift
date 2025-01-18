@@ -45,4 +45,10 @@ extension HomeRepository: HomeRepositoryInterface {
             .map { $0.map { $0.toDomain() } }
             .eraseToAnyPublisher()
     }
+    
+    public func getCoffeeChatPosts() -> AnyPublisher<[Domain.HomeCoffeeChatPostModel], any Error> {
+        homeService.getCoffeeChat()
+            .map { $0.map { $0.toDomain() } }
+            .eraseToAnyPublisher()
+    }
 }
