@@ -39,4 +39,10 @@ extension HomeRepository: HomeRepositoryInterface {
             .map { $0.toDomain() }
             .eraseToAnyPublisher()
     }
+    
+    public func getGroupPosts() -> AnyPublisher<[Domain.HomeGroupPostModel], any Error> {
+        homeService.getGroupAll()
+            .map { $0.map { $0.toDomain() } }
+            .eraseToAnyPublisher()
+    }
 }

@@ -13,4 +13,5 @@ import Core
 public protocol HomeRepositoryInterface {
     func getHomeDescription() -> AnyPublisher<HomeDescriptionModel, Error>
     func getRecentSchedule() -> AnyPublisher<HomeRecentScheduleModel, Error>
+    func getGroupPosts() -> AnyPublisher<[HomeGroupPostModel], Error>
 }

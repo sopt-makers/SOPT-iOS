@@ -13,9 +13,11 @@ import Core
 public protocol HomeUseCase {
     var homeDescription: PassthroughSubject<HomeDescriptionModel, Never> { get set }
     var recentSchedule: PassthroughSubject<HomeRecentScheduleModel, Never> { get set }
+    var groupPosts: PassthroughSubject<[HomeGroupPostModel], Never> { get set }
     
     func getHomeDescription()
     func getRecentSchedule()
+    func getGroupPosts()
 }
 
 public class DefaultHomeUseCase {
@@ -25,6 +27,7 @@ public class DefaultHomeUseCase {
     
     public var homeDescription = PassthroughSubject<HomeDescriptionModel, Never>()
     public var recentSchedule = PassthroughSubject<HomeRecentScheduleModel, Never>()
+    public var groupPosts = PassthroughSubject<[HomeGroupPostModel], Never>()
     
     public init(repository: HomeRepositoryInterface) {
         self.repository = repository
@@ -50,6 +53,17 @@ extension DefaultHomeUseCase: HomeUseCase {
                 print("GetRecentSchedule State: \(event)")
             } receiveValue: { owner, schedule in
                 owner.recentSchedule.send(schedule)
+            }
+            .store(in: cancelBag)
+    }
+    
+    public func getGroupPosts() {
+        repository.getGroupPosts()
+            .withUnretained(self)
+            .sink { event in
+                print("GetGroupPosts State: \(event)")
+            } receiveValue: { owner, posts in
+                owner.groupPosts.send(posts)
             }
             .store(in: cancelBag)
     }
