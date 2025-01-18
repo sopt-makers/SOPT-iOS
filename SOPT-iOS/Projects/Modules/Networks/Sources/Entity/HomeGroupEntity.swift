@@ -17,13 +17,6 @@ public struct HomeGroupEntity: Codable {
     public let canJoinOnlyActiveGeneration: Bool
     public let joinableParts: [String]
     public let canJoinAllParts: Bool
-    public let status: Status
+    public let status: String
     public let imageUrl: String
-    
-    // MARK: - Status Enum
-    public enum Status: String, Codable {
-        case beforeStart = "BEFORE_START"
-        case applyAble = "APPLY_ABLE"
-        case recruitmentComplete = "RECRUITMENT_COMPLETE"
-    }
 }
