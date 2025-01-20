@@ -63,4 +63,10 @@ extension HomeRepository: HomeRepositoryInterface {
             .map { $0.map { $0.toDomain() } }
             .eraseToAnyPublisher()
     }
+    
+    public func getAnnouncementPosts() -> AnyPublisher<[Domain.HomeAnnouncementModel], any Error> {
+        homeService.getHomeEmploymentEntity()
+            .map { $0.map { $0.toDomain() } }
+            .eraseToAnyPublisher()
+    }
 }
