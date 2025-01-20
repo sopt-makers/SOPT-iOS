@@ -46,10 +46,15 @@ public final class SoptlogCoordinator: DefaultCoordinator {
             guard let url = URL(string: "\(ExternalURL.Playground.main)/members/edit") else { return }
             
             let webView = SOPTWebView(startWith: url)
-            self?.rootController?.pushViewController(webView, animated: true)
+            self?.router.push(webView)
+        }
+        
+        soptlog.vm.onAlarmTapped = { [weak self] in
+            
+            
         }
         
         self.rootController = soptlog.vc.asNavigationController
-        self.router.present(self.rootController, animated: true, modalPresentationSytle: .overFullScreen)
+        self.router.push(soptlog.vc)
     }
 }

@@ -108,6 +108,7 @@ extension SoptlogVC {
     private func bindViewModels() {
         let input = SoptlogViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
+            naviBackButtonTap: self.naviBar.leftButtonTapped.asDriver(),
             cellTap: cellTap.asDriver())
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)

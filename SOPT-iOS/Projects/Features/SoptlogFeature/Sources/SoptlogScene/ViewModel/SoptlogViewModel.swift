@@ -17,8 +17,6 @@ import BaseFeatureDependency
 
 public class SoptlogViewModel: SoptlogViewModelType {
     
-    public var onNaviBackButtonTap: (() -> Void)?
-    
     // MARK: - Properties
 
     private let useCase: SoptlogUseCase
@@ -28,6 +26,7 @@ public class SoptlogViewModel: SoptlogViewModelType {
     
     public struct Input { 
         let viewDidLoad: Driver<Void>
+        let naviBackButtonTap: Driver<Void>
         let cellTap: Driver<IndexPath>
     }
     
@@ -39,6 +38,7 @@ public class SoptlogViewModel: SoptlogViewModelType {
     
     // MARK: - SoptlogCoordinatable
     
+    public var onNaviBackButtonTap: (() -> Void)?
     public var onProfileEditTapped: (() -> Void)?
     public var onAlarmTapped: (() -> Void)?
     
@@ -60,6 +60,12 @@ extension SoptlogViewModel {
             .sink { owner, soptlogModel in
                 let info = owner.transformToPresentationModel(model: soptlogModel)
                 output.soptlogInfo.send(info)
+            }.store(in: cancelBag)
+        
+        input.naviBackButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNaviBackButtonTap?()
             }.store(in: cancelBag)
         
         input.cellTap
