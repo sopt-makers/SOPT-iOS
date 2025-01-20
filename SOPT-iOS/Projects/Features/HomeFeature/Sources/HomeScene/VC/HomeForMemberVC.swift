@@ -150,14 +150,6 @@ extension HomeForMemberVC {
         self.collectionView.register(SocialLinkCardCVC.self,
                                      forCellWithReuseIdentifier: SocialLinkCardCVC.className)
     }
-    
-    private func bindViewModels() {
-        let input = HomeForMemberViewModel.Input(
-            cellTapped: cellTapped.asDriver()
-        )
-        
-        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
-    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -169,10 +161,6 @@ extension HomeForMemberVC: UICollectionViewDelegate {
 // MARK: - UICollectionViewDataSource
 
 extension HomeForMemberVC: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        cellTapped.send(indexPath)
-    }
-    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return HomeForMemberSectionLayoutKind.allCases.count
     }
