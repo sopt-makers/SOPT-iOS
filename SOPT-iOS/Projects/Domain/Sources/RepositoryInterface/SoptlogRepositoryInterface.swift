@@ -6,4 +6,10 @@
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
-import Foundation
+import Combine
+
+import Core
+
+public protocol SoptlogRepositoryInterface {
+    func fetchSoptlogModel() -> AnyPublisher<SoptlogModel, Error>
+}

@@ -6,7 +6,7 @@
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
-import Foundation
+import Combine
 
 import Core
 import Domain
@@ -14,15 +14,19 @@ import Networks
 
 public class SoptlogRepository {
     
-    private let homeService: HomeService
+    private let userService: UserService
     
     private let cancelBag = CancelBag()
     
-    public init(homeService: HomeService) {
-        self.homeService = homeService
+    public init(userService: UserService) {
+        self.userService = userService
     }
 }
 
 extension SoptlogRepository: SoptlogRepositoryInterface {
-    
+    public func fetchSoptlogModel() -> AnyPublisher<Domain.SoptlogModel, any Error> {
+        return self.userService.fetchSoptlogInfo()
+            .map{ $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
 }
