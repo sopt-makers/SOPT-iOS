@@ -259,7 +259,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .insight:
             /// 인사이트 카드 셀
             let insightIndex = indexPath.item
-            guard let insight = viewModel.insightPosts?[safe: 2] else { return UICollectionViewCell() }
+            guard let insight = viewModel.insightPosts?[safe: 0] else { return UICollectionViewCell() }
             guard let insightCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: InsightCardCVC.className,
                                      for: indexPath) as? InsightCardCVC else { return UICollectionViewCell() }

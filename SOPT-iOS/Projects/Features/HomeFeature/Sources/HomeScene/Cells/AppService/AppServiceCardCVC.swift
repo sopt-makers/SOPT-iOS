@@ -79,7 +79,7 @@ extension AppServiceCardCVC {
 
 extension AppServiceCardCVC {
     func configureCell(model: HomeAppServicesModel?) {
-        guard let model = model else { return }
+        guard let model else { return }
         
         self.logoImageView.setImage(with: model.iconURL)
         self.titleLabel.text = model.serviceName

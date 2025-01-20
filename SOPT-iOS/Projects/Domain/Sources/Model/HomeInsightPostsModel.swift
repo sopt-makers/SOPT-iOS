@@ -10,7 +10,7 @@ import Foundation
 
 import Core
 
-public struct HomeInsightPostsModel: Codable {
+public struct HomeInsightPostsModel {
     public var id: Int
     public var title, category: String
     public var profileImage: String?
