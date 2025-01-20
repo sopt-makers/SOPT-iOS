@@ -175,7 +175,7 @@ extension HomeCalendarDetailVC: UICollectionViewDelegateFlowLayout, UICollection
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeCalendarDetailCVC.className, for: indexPath) as? HomeCalendarDetailCVC else { return UICollectionViewCell() }
         
-        cell.configureCell(self.calendarDetailInfo?[indexPath.row])
+        cell.configureCell(self.calendarDetailInfo?[safe: indexPath.row])
         
         return cell
     }

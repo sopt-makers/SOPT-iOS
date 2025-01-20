@@ -34,7 +34,7 @@ extension HomeBuilder: HomeFeatureBuildable {
     
     public func makeHomeCalendarDetail() -> HomeCalendarDetailPresentable {
         let useCase = DefaultHomeUseCase(repository: homeRepository)
-        let viewModel = HomeCalendarDetailViewModel(useCase: useCase )
+        let viewModel = HomeCalendarDetailViewModel(useCase: useCase)
         let homeCalendarDetailVC = HomeCalendarDetailVC(viewModel: viewModel)
         return (homeCalendarDetailVC, viewModel)
     }
