@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 import Domain
@@ -19,6 +20,10 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     // MARK: - Properties
 
     public let viewModel: SoptlogViewModel
+    private let cancelBag = CancelBag()
+    private var cellTap = PassthroughSubject<IndexPath, Never>()
+    
+    private var soptlogInfo: SoptlogPresentationModel?
     
     // MARK: - UI Components
     
@@ -52,6 +57,7 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
         setLayout()
         setDelegate()
         registerCells()
+        bindViewModels()
     }
 }
 
@@ -98,6 +104,22 @@ extension SoptlogVC {
         self.collectionView.register(SoptlogAlarmCVC.self,
                                      forCellWithReuseIdentifier: SoptlogAlarmCVC.className)
     }
+    
+    private func bindViewModels() {
+        let input = SoptlogViewModel.Input(
+            viewDidLoad: Just<Void>(()).asDriver(),
+            cellTap: cellTap.asDriver())
+        
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.soptlogInfo
+            .withUnretained(self)
+            .subscribe(on: DispatchQueue.main)
+            .sink { owner, soptlogModel in
+                owner.soptlogInfo = soptlogModel
+                owner.collectionView.reloadData()
+            }.store(in: cancelBag)
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -109,11 +131,15 @@ extension SoptlogVC: UICollectionViewDelegate {
 // MARK: - UICollectionViewDataSource
 
 extension SoptlogVC: UICollectionViewDataSource {
-    public func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        cellTap.send(indexPath)
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return SoptlogSectionLayoutKind.allCases.count
     }
         
-    public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         guard kind == UICollectionView.elementKindSectionHeader else { return UICollectionReusableView() }
         guard let sectionKind = SoptlogSectionLayoutKind(rawValue: indexPath.section) else { return UICollectionReusableView() }
         
@@ -123,14 +149,14 @@ extension SoptlogVC: UICollectionViewDataSource {
                 ofKind: kind,
                 withReuseIdentifier: SoptlogHeaderView.className,
                 for: indexPath) as? SoptlogHeaderView else { return UICollectionReusableView() }
-            headerView.setData(model: viewModel.profileInfoList[indexPath.item])
+            headerView.setData(model: self.soptlogInfo?.profile)
             return headerView
         default:
             return UICollectionReusableView()
         }
     }
     
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard let sectionKind = SoptlogSectionLayoutKind(rawValue: section) else { return 0 }
         
         switch sectionKind {
@@ -142,7 +168,7 @@ extension SoptlogVC: UICollectionViewDataSource {
         }
     }
     
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let sectionKind = SoptlogSectionLayoutKind(rawValue: indexPath.section) else { return UICollectionViewCell() }
         
         switch sectionKind {
@@ -151,7 +177,7 @@ extension SoptlogVC: UICollectionViewDataSource {
             guard let introduceCell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: IntroduceCVC.className,
                 for: indexPath) as? IntroduceCVC else { return UICollectionViewCell() }
-            introduceCell.configureCell(viewModel.profileInfoList[indexPath.item].introduce)
+            introduceCell.configureCell(model: self.soptlogInfo?.introduce)
             return introduceCell
             
         case .appService:
@@ -159,7 +185,7 @@ extension SoptlogVC: UICollectionViewDataSource {
             guard let appServiceCell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: SoptlogAppServiceCVC.className,
                 for: indexPath) as? SoptlogAppServiceCVC else { return UICollectionViewCell() }
-            appServiceCell.configureCell(model: viewModel.appServiceInfoList[indexPath.item])
+            appServiceCell.configureCell(model: self.soptlogInfo?.appService[indexPath.row])
             return appServiceCell
             
         case .editProfile:
@@ -174,7 +200,7 @@ extension SoptlogVC: UICollectionViewDataSource {
             guard let alarmCell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: SoptlogAlarmCVC.className,
                 for: indexPath) as? SoptlogAlarmCVC else { return UICollectionViewCell() }
-            alarmCell.configureCell(model: viewModel.soptlogAlarmInfoList[indexPath.item])
+            alarmCell.configureCell(model: self.soptlogInfo?.alarm)
             return alarmCell
             
         default: return UICollectionViewCell()
