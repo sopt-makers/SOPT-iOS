@@ -37,6 +37,7 @@ final class EditProfileCVC: UICollectionViewCell {
 extension EditProfileCVC {
     private func setUI() {
         contentView.backgroundColor = .clear
+        editProfileButton.isEnabled = false
     }
     
     private func setLayout() {

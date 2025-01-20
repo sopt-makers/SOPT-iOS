@@ -37,6 +37,11 @@ public class SoptlogViewModel: SoptlogViewModelType {
         let soptlogInfo = PassthroughSubject<SoptlogPresentationModel, Never>()
     }
     
+    // MARK: - SoptlogCoordinatable
+    
+    public var onProfileEditTapped: (() -> Void)?
+    public var onAlarmTapped: (() -> Void)?
+    
     // MARK: - initialization
     
     public init(useCase: SoptlogUseCase, cancelBag: CancelBag = CancelBag()) {
@@ -58,17 +63,17 @@ extension SoptlogViewModel {
             }.store(in: cancelBag)
         
         input.cellTap
-            .filter{ $0.section == 1 }
-            .withUnretained(self)
-            .sink { owner, _ in
-                // 화면 전환
-            }.store(in: cancelBag)
-        
-        input.cellTap
             .filter{ $0.section == 2 }
             .withUnretained(self)
             .sink { owner, _ in
-                // 화면 전환
+                owner.onProfileEditTapped?()
+            }.store(in: cancelBag)
+        
+        input.cellTap
+            .filter{ $0.section == 3 }
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onAlarmTapped?()
             }.store(in: cancelBag)
         
         return output
