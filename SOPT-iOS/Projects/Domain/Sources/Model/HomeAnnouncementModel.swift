@@ -10,11 +10,12 @@ import Foundation
 
 public struct HomeAnnouncementModel {
     public let id: Int
-    public let categoryName, title, profileImage, name: String
+    public let profileImage, name: String?
+    public let categoryName, title: String
     public let content: String
-    public let images: [String]
+    public let images: [String]?
     
-    public init(id: Int, categoryName: String, title: String, profileImage: String, name: String, content: String, images: [String]) {
+    public init(id: Int, categoryName: String, title: String, profileImage: String?, name: String?, content: String, images: [String]?) {
         self.id = id
         self.categoryName = categoryName
         self.title = title

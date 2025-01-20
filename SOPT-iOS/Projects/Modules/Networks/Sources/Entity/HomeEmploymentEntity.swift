@@ -12,7 +12,8 @@ import Foundation
 
 public struct HomeEmploymentEntity: Codable {
     public let id: Int
-    public let categoryName, title, profileImage, name: String
+    public let profileImage, name: String?
+    public let categoryName, title: String
     public let content: String
     public let images: [String]
 }
