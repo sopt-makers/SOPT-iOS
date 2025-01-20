@@ -34,7 +34,7 @@ final class AnnouncementCardCVC: UICollectionViewCell {
         $0.spacing = 10
     }
     
-    private let writerProfileImageView = CustomProfileImageView()
+    private let writerProfileImageView = CustomProfileImageView().hideBorder()
     
     private let writerNameLabel = UILabel().then {
         $0.textColor = DSKitAsset.Colors.white.color
