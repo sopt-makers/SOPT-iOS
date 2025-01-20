@@ -12,15 +12,15 @@ public struct HomeCoffeeChatPostModel: Codable {
     public let memberId: Int
     public let bio: String
     public let topicTypeList: [String]
-    public let profileImage: String
+    public let profileImage: String?
     public let name: String
     public let career: String?
-    public let organization: String
+    public let organization: String?
     public let companyJob: String?
     public let soptActivities: [String]
     public let currentSoptActivity: String?
     
-    public init(memberId: Int, bio: String, topicTypeList: [String], profileImage: String, name: String, career: String?, organization: String, companyJob: String?, soptActivities: [String], currentSoptActivity: String?) {
+    public init(memberId: Int, bio: String, topicTypeList: [String], profileImage: String?, name: String, career: String?, organization: String?, companyJob: String?, soptActivities: [String], currentSoptActivity: String?) {
         self.memberId = memberId
         self.bio = bio
         self.topicTypeList = topicTypeList
