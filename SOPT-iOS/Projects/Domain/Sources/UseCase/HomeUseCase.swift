@@ -15,11 +15,15 @@ public protocol HomeUseCase {
     var recentSchedule: PassthroughSubject<HomeRecentScheduleModel, Never> { get set }
     var appServices: PassthroughSubject<[HomeAppServicesModel], Never> { get set }
     var insightPosts: PassthroughSubject<[HomeInsightPostsModel], Never> { get set }
+    var groupPosts: PassthroughSubject<[HomeGroupPostModel], Never> { get set }
+    var coffeeChatPosts: PassthroughSubject<[HomeCoffeeChatPostModel], Never> { get set }
     
     func getHomeDescription()
     func getRecentSchedule()
     func getAppServices()
     func getInsightPosts()
+    func getGroupPosts()
+    func getCoffeeChatPosts()
 }
 
 public class DefaultHomeUseCase {
@@ -31,6 +35,8 @@ public class DefaultHomeUseCase {
     public var recentSchedule = PassthroughSubject<HomeRecentScheduleModel, Never>()
     public var appServices = PassthroughSubject<[HomeAppServicesModel], Never>()
     public var insightPosts = PassthroughSubject<[HomeInsightPostsModel], Never>()
+    public var groupPosts = PassthroughSubject<[HomeGroupPostModel], Never>()
+    public var coffeeChatPosts = PassthroughSubject<[HomeCoffeeChatPostModel], Never>()
     
     public init(repository: HomeRepositoryInterface) {
         self.repository = repository
@@ -78,6 +84,28 @@ extension DefaultHomeUseCase: HomeUseCase {
                 print("GetInsightPosts State: \(event)")
             } receiveValue: { owner, posts in
                 owner.insightPosts.send(posts)
+            }
+            .store(in: cancelBag)
+    }
+    
+    public func getGroupPosts() {
+        repository.getGroupPosts()
+            .withUnretained(self)
+            .sink { event in
+                print("GetGroupPosts State: \(event)")
+            } receiveValue: { owner, posts in
+                owner.groupPosts.send(posts)
+            }
+            .store(in: cancelBag)
+    }
+    
+    public func getCoffeeChatPosts() {
+        repository.getCoffeeChatPosts()
+            .withUnretained(self)
+            .sink { event in
+                print("GetCoffeeChatPosts State: \(event)")
+            } receiveValue: { owner, posts in
+                owner.coffeeChatPosts.send(posts)
             }
             .store(in: cancelBag)
     }

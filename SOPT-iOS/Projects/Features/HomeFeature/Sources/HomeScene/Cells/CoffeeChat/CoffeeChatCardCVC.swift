@@ -8,6 +8,7 @@
 
 import UIKit
 
+import Domain
 import Core
 import DSKit
 
@@ -103,7 +104,7 @@ final class CoffeeChatCardCVC: UICollectionViewCell {
 
 extension CoffeeChatCardCVC {
     private func createColletionViewLayout() -> UICollectionViewFlowLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = LeftAlignedCollectionViewFlowLayout()
         layout.minimumLineSpacing = 4
         layout.minimumInteritemSpacing = 4
         layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
@@ -161,10 +162,15 @@ extension CoffeeChatCardCVC {
 // MARK: - Methods
 
 extension CoffeeChatCardCVC {
-    func configureCell(model: CoffeeChatHostInfo) {
+    func configureCell(model: HomeCoffeeChatPostModel?) {
+        guard let model else { return }
+
         self.titleLabel.text = model.bio
         makeCategoryTagView(categories: model.topicTypeList)
-        self.hostProfileImageView.setImage(with: model.profileImage ?? "")
+        
+        if let profileImage = model.profileImage {
+            self.hostProfileImageView.setImage(with: profileImage)
+        }
         
         if let career = model.career {
             self.hostNameLabel.text = "\(model.name) | \(career)"
@@ -172,17 +178,15 @@ extension CoffeeChatCardCVC {
             self.hostNameLabel.text = model.name
         }
         
-        if let companyJob = model.companyJob {
-            self.hostJobLabel.text = "\(model.organization) | \(companyJob)"
-        } else {
-            self.hostJobLabel.text = model.organization
-        }
-    
+        self.hostJobLabel.text = [model.organization, model.companyJob]
+            .compactMap { $0 }
+            .joined(separator: " | ")
+        
         self.generationTagTextList = []
         
         /// 현재 활동 중인 기수 정보가 있을 때
-        if let nowActivity = model.nowActivity {
-            self.generationTagTextList.append(GenerationTagInfo(title: nowActivity, isActive: true))
+        if let currentSoptActivity = model.currentSoptActivity {
+            self.generationTagTextList.append(GenerationTagInfo(title: currentSoptActivity, isActive: true))
         }
         
         /// 과거 활동했던 기수 정보들 추가
@@ -194,9 +198,6 @@ extension CoffeeChatCardCVC {
     private func makeCategoryTagView(categories: [String]) {
         for category in categories {
             let categoryTag = HomeSquareTagView()
-//                .setTitle(with: category)
-//                .setTitleColor(with: DSKitAsset.Colors.success.color)
-//                .setBackgroundColor(with: DSKitAsset.Colors.success.color.withAlphaComponent(0.2))
             categoryTag.setData(title: category,
                                 titleColor: DSKitAsset.Colors.success.color,
                                 backgroundColor: DSKitAsset.Colors.success.color.withAlphaComponent(0.2))

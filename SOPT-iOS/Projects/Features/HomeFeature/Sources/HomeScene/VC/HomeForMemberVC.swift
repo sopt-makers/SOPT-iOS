@@ -215,8 +215,8 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .mainProduct: return viewModel.productInfoList.count
         case .appService: return viewModel.appServices?.count ?? 0
         case .insight: return viewModel.insightPosts != nil ? 1 : 0
-        case .group: return viewModel.groupInfoList.count
-        case .coffeeChat: return viewModel.coffeeChatHostInfoList.count
+        case .group: return viewModel.groupPosts?.count ?? 0
+        case .coffeeChat: return viewModel.coffeeChatPosts?.count ?? 0
         case .announcement: return viewModel.announcementInfoList.count
         case .socialLinks: return SocialLinkCardType.allCases.count
         }
@@ -283,20 +283,22 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .group:
             /// 모임 카드 셀
             let groupIndex = indexPath.item
+            guard let group = viewModel.groupPosts?[safe: groupIndex] else { return UICollectionViewCell() }
             guard let groupCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: GroupCardCVC.className,
                                      for: indexPath) as? GroupCardCVC else { return UICollectionViewCell() }
-            groupCardCell.configureCell(model: viewModel.groupInfoList[groupIndex])
+            groupCardCell.configureCell(model: group)
             
             return groupCardCell
             
         case .coffeeChat:
             /// 커피챗 카드 셀
             let coffeeChatIndex = indexPath.item
+            guard let coffeeChat = viewModel.coffeeChatPosts?[safe: coffeeChatIndex] else { return UICollectionViewCell() }
             guard let coffeeChatCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: CoffeeChatCardCVC.className,
                                      for: indexPath) as? CoffeeChatCardCVC else { return UICollectionViewCell() }
-            coffeeChatCardCell.configureCell(model: viewModel.coffeeChatHostInfoList[coffeeChatIndex])
+            coffeeChatCardCell.configureCell(model: coffeeChat)
             
             return coffeeChatCardCell
 
