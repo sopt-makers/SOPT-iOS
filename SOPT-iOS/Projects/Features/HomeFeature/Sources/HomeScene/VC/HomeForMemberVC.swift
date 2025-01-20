@@ -98,8 +98,20 @@ extension HomeForMemberVC {
         output.needToReload
             .withUnretained(self)
             .sink { owner, _ in
-                owner.collectionView.reloadData()
+                owner.updateUI()
             }.store(in: cancelBag)
+    }
+    
+    private func updateUI() {
+        updateCollectionViewLayout()
+        let sectionCount = HomeForMemberSectionLayoutKind.allCases.count
+        let indexSet = IndexSet(integersIn: 0..<sectionCount)
+        self.collectionView.reloadSections(indexSet)
+    }
+    
+    private func updateCollectionViewLayout() {
+      let newLayout = createLayout()
+      self.collectionView.setCollectionViewLayout(newLayout, animated: true)
     }
     
     private func setDelegate() {
@@ -201,8 +213,8 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .dashBoard: return 1
         case .calendar: return 1
         case .mainProduct: return viewModel.productInfoList.count
-        case .appService: return viewModel.appServiceInfoList.count
-        case .insight: return viewModel.insightInfoList.count
+        case .appService: return viewModel.appServices?.count ?? 0
+        case .insight: return viewModel.insightPosts != nil ? 1 : 0
         case .group: return viewModel.groupInfoList.count
         case .coffeeChat: return viewModel.coffeeChatHostInfoList.count
         case .announcement: return viewModel.announcementInfoList.count
@@ -249,20 +261,18 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .appService:
             /// 앱 서비스 카드 셀
             let appServiceIndex = indexPath.item
-            guard let appService = viewModel.appServiceInfoList[safe: appServiceIndex] else { return UICollectionViewCell() }
+            guard let appService = viewModel.appServices?[safe: appServiceIndex] else { return UICollectionViewCell() }
             guard let appServiceCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: AppServiceCardCVC.className,
                                      for: indexPath) as? AppServiceCardCVC else { return UICollectionViewCell() }
-            appServiceCardCell.configureCell(imageURL: appService.imageURL,
-                                             name: appService.name,
-                                             badgeText: appService.badgeText)
+            appServiceCardCell.configureCell(model: appService)
             
             return appServiceCardCell
         
         case .insight:
             /// 인사이트 카드 셀
             let insightIndex = indexPath.item
-            guard let insight = viewModel.insightInfoList[safe: insightIndex] else { return UICollectionViewCell() }
+            guard let insight = viewModel.insightPosts?[safe: 0] else { return UICollectionViewCell() }
             guard let insightCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: InsightCardCVC.className,
                                      for: indexPath) as? InsightCardCVC else { return UICollectionViewCell() }

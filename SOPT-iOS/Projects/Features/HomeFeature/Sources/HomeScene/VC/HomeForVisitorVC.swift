@@ -170,9 +170,13 @@ extension HomeForVisitorVC: UICollectionViewDataSource {
             guard let appServiceCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: AppServiceCardCVC.className,
                                      for: indexPath) as? AppServiceCardCVC else { return UICollectionViewCell() }
-            appServiceCardCell.configureCell(imageURL: appService.imageURL,
-                                             name: appService.name,
-                                             badgeText: appService.badgeText)
+            appServiceCardCell.configureCell(model: HomeAppServicesModel(
+                serviceName: "",
+                displayAlarmBadge: false,
+                alarmBadge: "",
+                iconURL: "",
+                deepLink: ""
+            ))
             
             return appServiceCardCell
         }

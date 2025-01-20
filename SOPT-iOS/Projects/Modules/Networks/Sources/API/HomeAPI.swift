@@ -14,6 +14,8 @@ import Core
 
 public enum HomeAPI {
     case getDescription
+    case getAppServiceAccessStatus
+    case getInsightPosts
 }
 
 extension HomeAPI: BaseAPI {
@@ -23,19 +25,23 @@ extension HomeAPI: BaseAPI {
         switch self {
         case .getDescription:
             return "/description"
+        case .getAppServiceAccessStatus:
+            return "/app-service"
+        case .getInsightPosts:
+            return "/posts"
         }
     }
     
     public var method: Moya.Method {
         switch self {
-        case .getDescription:
+        case .getDescription, .getAppServiceAccessStatus, .getInsightPosts:
             return .get
         }
     }
     
     public var task: Moya.Task {
         switch self {
-        case .getDescription:
+        case .getDescription, .getAppServiceAccessStatus, .getInsightPosts:
             return .requestPlain
         }
     }
