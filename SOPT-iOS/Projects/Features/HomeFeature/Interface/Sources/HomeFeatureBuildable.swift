@@ -11,4 +11,5 @@ import Core
 public protocol HomeFeatureBuildable {
     func makeHomeForMember() -> HomeForMemberPresentable
     func makeHomeForVisitor() -> HomeForVisitorPresentable
+    func makeHomeCalendarDetail() -> HomeCalendarDetailPresentable
 }

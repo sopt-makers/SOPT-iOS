@@ -13,6 +13,7 @@ import BaseFeatureDependency
 import SplashFeature
 import AuthFeature
 import MainFeature
+import HomeFeature
 import AppMyPageFeature
 import NotificationFeature
 import StampFeature
@@ -191,6 +192,19 @@ extension ApplicationCoordinator {
                 self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
                 self?.removeDependency(coordinator)
             }
+        }
+        addDependency(coordinator)
+        coordinator.start()
+    }
+    
+    internal func runHomeFlow(type: UserType) {
+        let coordinator = HomeCoordinator(
+            router: router,
+            factory: HomeBuilder(),
+            userType: type
+        )
+        coordinator.finishFlow = { [weak self, weak coordinator] in
+            self?.removeDependency(coordinator)
         }
         addDependency(coordinator)
         coordinator.start()

@@ -54,15 +54,7 @@ extension SoptlogVC {
                                                              subitems: [introduceItem])
         
         /// section 지정
-        let section = NSCollectionLayoutSection(
-            group: NSCollectionLayoutGroup.vertical(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(80)
-                ),
-                subitems: [introduceGroup]
-            )
-        )
+        let section = NSCollectionLayoutSection(group: introduceGroup)
         section.boundarySupplementaryItems = [header]
         section.contentInsets = NSDirectionalEdgeInsets(top: 16,
                                                         leading: Metric.collectionViewDefaultSideInset,
@@ -86,15 +78,7 @@ extension SoptlogVC {
         productGroup.interItemSpacing = .fixed(Metric.productItemSpacing)
         
         /// section 지정
-        let section = NSCollectionLayoutSection(
-            group: NSCollectionLayoutGroup.vertical(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(126)
-                ),
-                subitems: [productGroup]
-            )
-        )
+        let section = NSCollectionLayoutSection(group: productGroup)
         let backgroundItem = NSCollectionLayoutDecorationItem.background(
             elementKind: AppServiceSectionBackgroundView.className)
         backgroundItem.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultGroupSpacing,
@@ -123,15 +107,7 @@ extension SoptlogVC {
                                                               subitems: [editProfileItem])
         
         /// section 지정
-        let section = NSCollectionLayoutSection(
-            group: NSCollectionLayoutGroup.vertical(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(36)
-                ),
-                subitems: [editProfileGroup]
-            )
-        )
+        let section = NSCollectionLayoutSection(group: editProfileGroup)
         section.contentInsets = NSDirectionalEdgeInsets(top: 20,
                                                         leading: Metric.collectionViewDefaultSideInset,
                                                         bottom: 0,
@@ -153,15 +129,7 @@ extension SoptlogVC {
                                                               subitems: [alarmItem])
         
         /// section 지정
-        let section = NSCollectionLayoutSection(
-            group: NSCollectionLayoutGroup.vertical(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(295)
-                ),
-                subitems: [alarmGroup]
-            )
-        )
+        let section = NSCollectionLayoutSection(group: alarmGroup)
         section.contentInsets = NSDirectionalEdgeInsets(top: 40,
                                                         leading: 0,
                                                         bottom: 0,

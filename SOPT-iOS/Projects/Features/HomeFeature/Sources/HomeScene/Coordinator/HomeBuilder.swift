@@ -31,4 +31,10 @@ extension HomeBuilder: HomeFeatureBuildable {
         let homeForVisitorVC = HomeForVisitorVC(viewModel: viewModel)
         return (homeForVisitorVC, viewModel)
     }
+    
+    public func makeHomeCalendarDetail() -> HomeCalendarDetailPresentable {
+        let viewModel = HomeCalendarDetailViewModel()
+        let homeCalendarDetailVC = HomeCalendarDetailVC(viewModel: viewModel)
+        return (homeCalendarDetailVC, viewModel)
+    }
 }

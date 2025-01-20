@@ -57,6 +57,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
         setLayout()
         setDelegate()
         registerCells()
+        bindViewModels()
     }
 }
 
@@ -97,8 +98,20 @@ extension HomeForMemberVC {
         output.needToReload
             .withUnretained(self)
             .sink { owner, _ in
-                owner.collectionView.reloadData()
+                owner.updateUI()
             }.store(in: cancelBag)
+    }
+    
+    private func updateUI() {
+        updateCollectionViewLayout()
+        let sectionCount = HomeForMemberSectionLayoutKind.allCases.count
+        let indexSet = IndexSet(integersIn: 0..<sectionCount)
+        self.collectionView.reloadSections(indexSet)
+    }
+    
+    private func updateCollectionViewLayout() {
+      let newLayout = createLayout()
+      self.collectionView.setCollectionViewLayout(newLayout, animated: true)
     }
     
     private func setDelegate() {
@@ -137,6 +150,14 @@ extension HomeForMemberVC {
         self.collectionView.register(SocialLinkCardCVC.self,
                                      forCellWithReuseIdentifier: SocialLinkCardCVC.className)
     }
+    
+    private func bindViewModels() {
+        let input = HomeForMemberViewModel.Input(
+            cellTapped: cellTapped.asDriver()
+        )
+        
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -148,11 +169,15 @@ extension HomeForMemberVC: UICollectionViewDelegate {
 // MARK: - UICollectionViewDataSource
 
 extension HomeForMemberVC: UICollectionViewDataSource {
-    public func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        cellTapped.send(indexPath)
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return HomeForMemberSectionLayoutKind.allCases.count
     }
         
-    public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: indexPath.section) else { return UICollectionReusableView() }
         
         /// Header View
@@ -181,15 +206,15 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         return UICollectionReusableView()
     }
     
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: section) else { return 0 }
         
         switch sectionKind {
         case .dashBoard: return 1
         case .calendar: return 1
         case .mainProduct: return viewModel.productInfoList.count
-        case .appService: return viewModel.appServiceInfoList.count
-        case .insight: return viewModel.insightInfoList.count
+        case .appService: return viewModel.appServices?.count ?? 0
+        case .insight: return viewModel.insightPosts != nil ? 1 : 0
         case .group: return viewModel.groupPosts?.count ?? 0
         case .coffeeChat: return viewModel.coffeeChatPosts?.count ?? 0
         case .announcement: return viewModel.announcementInfoList.count
@@ -197,7 +222,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         }
     }
     
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: indexPath.section) else { return UICollectionViewCell() }
         
         switch sectionKind {
@@ -236,20 +261,18 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .appService:
             /// 앱 서비스 카드 셀
             let appServiceIndex = indexPath.item
-            guard let appService = viewModel.appServiceInfoList[safe: appServiceIndex] else { return UICollectionViewCell() }
+            guard let appService = viewModel.appServices?[safe: appServiceIndex] else { return UICollectionViewCell() }
             guard let appServiceCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: AppServiceCardCVC.className,
                                      for: indexPath) as? AppServiceCardCVC else { return UICollectionViewCell() }
-            appServiceCardCell.configureCell(imageURL: appService.imageURL,
-                                             name: appService.name,
-                                             badgeText: appService.badgeText)
+            appServiceCardCell.configureCell(model: appService)
             
             return appServiceCardCell
         
         case .insight:
             /// 인사이트 카드 셀
             let insightIndex = indexPath.item
-            guard let insight = viewModel.insightInfoList[safe: insightIndex] else { return UICollectionViewCell() }
+            guard let insight = viewModel.insightPosts?[safe: 0] else { return UICollectionViewCell() }
             guard let insightCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: InsightCardCVC.className,
                                      for: indexPath) as? InsightCardCVC else { return UICollectionViewCell() }

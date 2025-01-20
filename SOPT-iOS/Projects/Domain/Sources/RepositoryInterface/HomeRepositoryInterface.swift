@@ -13,6 +13,8 @@ import Core
 public protocol HomeRepositoryInterface {
     func getHomeDescription() -> AnyPublisher<HomeDescriptionModel, Error>
     func getRecentSchedule() -> AnyPublisher<HomeRecentScheduleModel, Error>
+    func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Error>
+    func getInsightPosts() -> AnyPublisher<[HomeInsightPostsModel], Error>
     func getGroupPosts() -> AnyPublisher<[HomeGroupPostModel], Error>
     func getCoffeeChatPosts() -> AnyPublisher<[HomeCoffeeChatPostModel], Error>
 }

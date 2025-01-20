@@ -45,6 +45,11 @@ public final class HomeCoordinator: DefaultCoordinator {
     
     public func showHomeForMember() {
         var homeForMember = factory.makeHomeForMember()
+        
+        homeForMember.vm.onDashBoardCellTapped = { [weak self] in
+            let homeCalendarDetail = self?.factory.makeHomeCalendarDetail()
+            self?.router.push(homeCalendarDetail?.vc)
+        }
     
         router.replaceRootWindow(homeForMember.vc, withAnimation: true)
     }

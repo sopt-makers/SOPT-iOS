@@ -57,14 +57,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         ProductInfo(name: I18N.Home.MainProduct.member, image: DSKitAsset.Assets.imgMemberLogo.image),
         ProductInfo(name: I18N.Home.MainProduct.project, image: DSKitAsset.Assets.imgProjectLogo.image)
     ]
-    
-    // TODO: 서버 연결 필요
-    let appServiceInfoList: [AppServiceInfo] = [
-        AppServiceInfo(name: "콕찌르기", imageURL: "https://images.mypetlife.co.kr/content/uploads/2018/12/09154907/cotton-tulear-2422612_1280.jpg", badgeText: "3"),
-        AppServiceInfo(name: "솝마디", imageURL: "https://images.mypetlife.co.kr/content/uploads/2018/12/09154907/cotton-tulear-2422612_1280.jpg", badgeText: "N"),
-        AppServiceInfo(name: "솝탬프", imageURL: "https://images.mypetlife.co.kr/content/uploads/2018/12/09154907/cotton-tulear-2422612_1280.jpg", badgeText: "3위")
-    ]
-    
+
     // TODO: 서버 연결 필요
     let insightInfoList: [InsightInfo] = [
         InsightInfo(category: "SOPT활동", profileImageURL: "https://img.seoul.co.kr/img/upload/2023/06/13/SSC_20230613163553_O2.png", userName: "차은우", postTitle: "차은우가 솝트 기획으로 활동한 썰 푼다 최대글자수입니다람지렁이", isHotTag: false)
@@ -89,6 +82,8 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     var userType: UserType = UserDefaultKeyList.Auth.getUserType()
     var homeDescription: HomeDescriptionModel?
     var recentSchedule: HomeRecentScheduleModel?
+    var appServices: [HomeAppServicesModel]?
+    var insightPosts: [HomeInsightPostsModel]?
     var groupPosts: [HomeGroupPostModel]?
     var coffeeChatPosts: [HomeCoffeeChatPostModel]?
     
@@ -104,6 +99,11 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         let needToReload = PassthroughSubject<Void, Never>()
     }
     
+    // MARK: - HomeForeMemberCoordinating
+    
+    public var onDashBoardCellTapped: (() -> Void)?
+
+    
     // MARK: - initialization
     
     public init(useCase: HomeUseCase) {
@@ -112,7 +112,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
 }
 
 extension HomeForMemberViewModel {
-    public func transform(from input: Input, cancelBag: Core.CancelBag) -> Output {
+    public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
@@ -121,6 +121,8 @@ extension HomeForMemberViewModel {
             .sink { owner, _ in
                 owner.useCase.getHomeDescription()
                 owner.useCase.getRecentSchedule()
+                owner.useCase.getAppServices()
+                owner.useCase.getInsightPosts()
                 owner.useCase.getGroupPosts()
                 owner.useCase.getCoffeeChatPosts()
             }.store(in: cancelBag)
@@ -141,6 +143,20 @@ extension HomeForMemberViewModel {
             .sink { owner, schedule in
                 owner.recentSchedule = schedule
                 owner.recentSchedule?.date = setDateFormat(to: "MM.dd")
+                output.needToReload.send()
+            }.store(in: cancelBag)
+        
+        useCase.appServices
+            .withUnretained(self)
+            .sink { owner, services in
+                owner.appServices = services
+                output.needToReload.send()
+            }.store(in: cancelBag)
+        
+        useCase.insightPosts
+            .withUnretained(self)
+            .sink { owner, posts in
+                owner.insightPosts = posts
                 output.needToReload.send()
             }.store(in: cancelBag)
         
