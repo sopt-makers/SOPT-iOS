@@ -9,10 +9,10 @@
 import Foundation
 
 public struct HomeCalendarDetailModel {
-    let date: String
-    let title: String
-    let type: String
-    let isRecentSchedule: Bool
+    public let date: String
+    public let title: String
+    public let type: String
+    public let isRecentSchedule: Bool
     
     public init(date: String, title: String, type: String, isRecentSchedule: Bool) {
         self.date = date
