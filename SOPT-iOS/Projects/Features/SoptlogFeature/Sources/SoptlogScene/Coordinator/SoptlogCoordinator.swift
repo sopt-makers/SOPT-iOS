@@ -18,6 +18,7 @@ import WebFeature
 
 public final class SoptlogCoordinator: DefaultCoordinator {
     
+    public var requestCoordinating: (() -> Void)?
     public var finishFlow: (() -> Void)?
     
     private let factory: SoptlogFeatureBuildable
@@ -50,8 +51,7 @@ public final class SoptlogCoordinator: DefaultCoordinator {
         }
         
         soptlog.vm.onAlarmTapped = { [weak self] in
-            
-            
+            self?.requestCoordinating?()
         }
         
         self.rootController = soptlog.vc.asNavigationController
