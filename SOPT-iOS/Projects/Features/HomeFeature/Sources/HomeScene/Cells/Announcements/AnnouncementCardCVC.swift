@@ -8,6 +8,7 @@
 
 import UIKit
 
+import Domain
 import Core
 import DSKit
 
@@ -139,17 +140,21 @@ extension AnnouncementCardCVC {
 // MARK: - Methods
 
 extension AnnouncementCardCVC {
-    func configureCell(model: AnnouncementInfo) {
+    func configureCell(model: HomeAnnouncementModel?) {
+        guard let model else { return }
+        
         self.categoryTagView.setData(with: model.categoryName, isHotTag: false)
-        self.categoryDetailLabel.text = model.categoryDetailName
-        self.writerProfileImageView.setImage(with: model.profileImage)
+        self.categoryDetailLabel.text = "꿀팁"
+        if let profileImage = model.profileImage {
+            self.writerProfileImageView.setImage(with: profileImage)
+        }
         self.writerNameLabel.text = model.name
         self.titleLabel.text = model.title
         self.contentLabel.text = model.content
         
         let hasCoverImage = (model.images != nil)
         updateContentLayout(hasCoverImage: hasCoverImage)
-        if hasCoverImage, let cover = model.images {
+        if hasCoverImage, let cover = model.images?.first {
             self.coverImageView.setImage(with: cover)
         } else {
             updateContentLabelAttributes()
