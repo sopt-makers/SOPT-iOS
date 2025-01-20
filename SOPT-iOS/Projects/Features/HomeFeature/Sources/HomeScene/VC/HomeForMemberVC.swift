@@ -191,7 +191,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .appService: return viewModel.appServiceInfoList.count
         case .insight: return viewModel.insightInfoList.count
         case .group: return viewModel.groupPosts?.count ?? 0
-        case .coffeeChat: return viewModel.coffeeChatHostInfoList.count
+        case .coffeeChat: return viewModel.coffeeChatPosts?.count ?? 0
         case .announcement: return viewModel.announcementInfoList.count
         case .socialLinks: return SocialLinkCardType.allCases.count
         }
@@ -271,10 +271,11 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .coffeeChat:
             /// 커피챗 카드 셀
             let coffeeChatIndex = indexPath.item
+            guard let coffeeChat = viewModel.coffeeChatPosts?[safe: coffeeChatIndex] else { return UICollectionViewCell() }
             guard let coffeeChatCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: CoffeeChatCardCVC.className,
                                      for: indexPath) as? CoffeeChatCardCVC else { return UICollectionViewCell() }
-            coffeeChatCardCell.configureCell(model: viewModel.coffeeChatHostInfoList[coffeeChatIndex])
+            coffeeChatCardCell.configureCell(model: coffeeChat)
             
             return coffeeChatCardCell
 
