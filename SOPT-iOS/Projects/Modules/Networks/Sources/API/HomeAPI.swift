@@ -37,7 +37,7 @@ extension HomeAPI: BaseAPI {
         case .getCoffeeChat:
             return "/coffeechat"
         case .getEmployment:
-            return "/employment"
+            return "/employments"
         }
     }
     
