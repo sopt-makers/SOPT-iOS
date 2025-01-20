@@ -8,6 +8,7 @@
 
 import UIKit
 
+import Domain
 import Core
 import DSKit
 
@@ -103,7 +104,7 @@ final class CoffeeChatCardCVC: UICollectionViewCell {
 
 extension CoffeeChatCardCVC {
     private func createColletionViewLayout() -> UICollectionViewFlowLayout {
-        let layout = UICollectionViewFlowLayout()
+        let layout = LeftAlignedCollectionViewFlowLayout()
         layout.minimumLineSpacing = 4
         layout.minimumInteritemSpacing = 4
         layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
@@ -197,9 +198,6 @@ extension CoffeeChatCardCVC {
     private func makeCategoryTagView(categories: [String]) {
         for category in categories {
             let categoryTag = HomeSquareTagView()
-//                .setTitle(with: category)
-//                .setTitleColor(with: DSKitAsset.Colors.success.color)
-//                .setBackgroundColor(with: DSKitAsset.Colors.success.color.withAlphaComponent(0.2))
             categoryTag.setData(title: category,
                                 titleColor: DSKitAsset.Colors.success.color,
                                 backgroundColor: DSKitAsset.Colors.success.color.withAlphaComponent(0.2))
