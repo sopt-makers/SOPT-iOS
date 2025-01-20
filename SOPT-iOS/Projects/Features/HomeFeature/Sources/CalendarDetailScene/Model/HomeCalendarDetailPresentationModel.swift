@@ -7,3 +7,10 @@
 //
 
 import Foundation
+
+struct HomeCalendarDetailPresentationModel {
+    let date: String
+    let title: String
+    let type: String
+    let isRecentSchedule: Bool
+}

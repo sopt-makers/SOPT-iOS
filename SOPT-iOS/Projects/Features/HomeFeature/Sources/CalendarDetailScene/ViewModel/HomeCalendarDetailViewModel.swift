@@ -7,50 +7,65 @@
 //
 
 import Foundation
+import Combine
 
 import Core
+import Domain
 import HomeFeatureInterface
-
-struct CalendarDetail {
-    let date: String
-    let title: String
-    let isRecentSchedule: Bool
-    let type: DashBoardCalenderCategoryTagType
-}
 
 
 public class HomeCalendarDetailViewModel: HomeCalendarDetailViewModelType {
     
-    // TODO: - 서버 연결 필요
+    // MARK: - Properties
     
-    let calendarDetailList: [CalendarDetail] = [
-        CalendarDetail(date: "9월 28일 토요일", title: "OT", isRecentSchedule: false, type: .event),
-        CalendarDetail(date: "9월 28일 토요일", title: "1차 세미나", isRecentSchedule: false, type: .seminar),
-        CalendarDetail(date: "9월 28일 토요일", title: "2차 세미나", isRecentSchedule: false, type: .seminar),
-        CalendarDetail(date: "9월 28일 토요일", title: "3차 세미나", isRecentSchedule: true, type: .seminar),
-        CalendarDetail(date: "9월 28일 토요일", title: "4차 세미나", isRecentSchedule: false, type: .seminar),
-        CalendarDetail(date: "9월 28일 토요일", title: "5차 세미나", isRecentSchedule: false, type: .seminar),
-        CalendarDetail(date: "9월 28일 토요일", title: "6차 세미나", isRecentSchedule: false, type: .seminar),
-        CalendarDetail(date: "9월 28일 토요일", title: "7차 세미나", isRecentSchedule: false, type: .seminar),
-        CalendarDetail(date: "9월 28일 토요일", title: "8차 세미나", isRecentSchedule: false, type: .seminar)
-    ]
+    private let useCase: HomeUseCase
+    private var cancelBag = CancelBag()
     
     // MARK: - Inputs
     
-    public struct Input { }
+    public struct Input {
+        let viewDidLoad: Driver<Void>
+    }
     
     // MARK: - Outputs
     
-    public struct Output { }
+    public struct Output { 
+        let calendarDetailModel = PassthroughSubject<[HomeCalendarDetailPresentationModel], Never>()
+    }
     
     // MARK: - initialization
     
-    public init() { }
+    public init(useCase: HomeUseCase, cancelBag: CancelBag = CancelBag()) {
+        self.useCase = useCase
+        self.cancelBag = cancelBag
+    }
 }
 
 extension HomeCalendarDetailViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
+        
+        input.viewDidLoad
+            .flatMap(useCase.getCalendarDetail)
+            .withUnretained(self)
+            .sink { owner, calendarDetailModel in
+                let calendarDetailInfo = owner.transformToPresentationModel(model: calendarDetailModel)
+                output.calendarDetailModel.send(calendarDetailInfo)
+            }.store(in: cancelBag)
+        
         return output
+    }
+}
+
+extension HomeCalendarDetailViewModel {
+    private func transformToPresentationModel(model: [HomeCalendarDetailModel]) -> [HomeCalendarDetailPresentationModel] {
+        return model.map { calendar in
+            HomeCalendarDetailPresentationModel(
+                date: calendar.date, 
+                title: calendar.title,
+                type: calendar.type,
+                isRecentSchedule: calendar.isRecentSchedule
+            )
+        }
     }
 }
