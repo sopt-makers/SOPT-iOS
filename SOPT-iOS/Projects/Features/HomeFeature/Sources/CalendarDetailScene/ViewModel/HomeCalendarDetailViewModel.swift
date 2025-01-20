@@ -25,6 +25,8 @@ public class HomeCalendarDetailViewModel: HomeCalendarDetailViewModelType {
     
     public struct Input {
         let viewDidLoad: Driver<Void>
+        let naviBackButtonTap: Driver<Void>
+        let onAttendanceButtonTap: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -32,6 +34,11 @@ public class HomeCalendarDetailViewModel: HomeCalendarDetailViewModelType {
     public struct Output { 
         let calendarDetailModel = PassthroughSubject<[HomeCalendarDetailPresentationModel], Never>()
     }
+    
+    // MARK: - SoptlogCoordinatable
+
+    public var onNaviBackButtonTap: (() -> Void)?
+    public var onAttendanceButtonTap: (() -> Void)?
     
     // MARK: - initialization
     
@@ -51,6 +58,18 @@ extension HomeCalendarDetailViewModel {
             .sink { owner, calendarDetailModel in
                 let calendarDetailInfo = owner.transformToPresentationModel(model: calendarDetailModel)
                 output.calendarDetailModel.send(calendarDetailInfo)
+            }.store(in: cancelBag)
+        
+        input.naviBackButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNaviBackButtonTap?()
+            }.store(in: cancelBag)
+        
+        input.onAttendanceButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onAttendanceButtonTap?()
             }.store(in: cancelBag)
         
         return output

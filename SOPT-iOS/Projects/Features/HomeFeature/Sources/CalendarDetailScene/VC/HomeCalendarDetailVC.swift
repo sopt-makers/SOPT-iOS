@@ -138,7 +138,13 @@ extension HomeCalendarDetailVC {
     
     private func bindViewModels() {
         let input = HomeCalendarDetailViewModel.Input(
-            viewDidLoad: Just<Void>(()).asDriver()
+            viewDidLoad: Just<Void>(()).asDriver(), 
+            naviBackButtonTap: self.naviBar.leftButtonTapped.asDriver(), 
+            onAttendanceButtonTap: self.attendanceButton
+                .publisher(for: .touchUpInside)
+                .withUnretained(self)
+                .mapVoid()
+                .asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
