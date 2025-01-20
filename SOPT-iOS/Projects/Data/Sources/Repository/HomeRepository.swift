@@ -65,7 +65,7 @@ extension HomeRepository: HomeRepositoryInterface {
     }
     
     public func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], any Error> {
-        homeService.getCalendarDetail()
+        calendarService.getCalendarDetail()
             .map{ $0.map { $0.toDomain() } }
             .eraseToAnyPublisher()
     }
