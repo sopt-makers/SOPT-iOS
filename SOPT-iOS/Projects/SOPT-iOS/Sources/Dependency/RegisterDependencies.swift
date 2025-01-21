@@ -179,5 +179,11 @@ extension AppDelegate {
                 )
             }
         )
+        container.register(
+            interface: SoptlogRepositoryInterface.self,
+            implement: {
+                SoptlogRepository(userService: DefaultUserService())
+            }
+        )
     }
 }

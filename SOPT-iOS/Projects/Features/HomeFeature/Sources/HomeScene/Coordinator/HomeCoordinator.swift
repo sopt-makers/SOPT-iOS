@@ -76,4 +76,3 @@ public final class HomeCoordinator: DefaultCoordinator {
         self.router.push(homeCalendarDetail.vc)
     }
 }
-
