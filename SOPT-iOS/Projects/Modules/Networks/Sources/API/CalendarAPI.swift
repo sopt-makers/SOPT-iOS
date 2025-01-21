@@ -14,6 +14,7 @@ import Core
 
 public enum CalendarAPI {
     case getRecentSchedule
+    case getCalendarDetail
 }
 
 extension CalendarAPI: BaseAPI {
@@ -23,19 +24,21 @@ extension CalendarAPI: BaseAPI {
         switch self {
         case .getRecentSchedule:
             return "/recent"
+        case .getCalendarDetail:
+            return "/all"
         }
     }
     
     public var method: Moya.Method {
         switch self {
-        case .getRecentSchedule:
+        case .getRecentSchedule, .getCalendarDetail:
             return .get
         }
     }
     
     public var task: Moya.Task {
         switch self {
-        case .getRecentSchedule:
+        case .getRecentSchedule, .getCalendarDetail:
             return .requestPlain
         }
     }

@@ -24,6 +24,7 @@ public protocol HomeUseCase {
     func getInsightPosts()
     func getGroupPosts()
     func getCoffeeChatPosts()
+    func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never>
 }
 
 public class DefaultHomeUseCase {
@@ -109,4 +110,13 @@ extension DefaultHomeUseCase: HomeUseCase {
             }
             .store(in: cancelBag)
     }
+    
+    public func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never> {
+        repository.getCalendarDetail()
+            .catch { error in
+                return Empty<[HomeCalendarDetailModel], Never>()
+            }
+            .eraseToAnyPublisher()
+    }
+    
 }

@@ -91,12 +91,15 @@ extension HomeCalendarDetailCVC {
 }
 
 extension HomeCalendarDetailCVC {
-    func configureCell(_ model: CalendarDetail) {
+    func configureCell(_ model: HomeCalendarDetailPresentationModel?) {
+        guard let model else { return }
         dateLabel.text = model.date
         calendarTitleLabel.text = model.title
-        homeCategoryTagView.setData(title: model.type.text,
-                                    titleColor: model.type.textColor,
-                                    backgroundColor: model.type.backgroundColor)
+        if let tagType = CalenderCategoryTagType(rawValue: model.type) {
+            self.homeCategoryTagView.setData(title: tagType.text,
+                                                 titleColor: tagType.textColor,
+                                                 backgroundColor: tagType.backgroundColor)
+        }
         circleView.backgroundColor = model.isRecentSchedule ? DSKitAsset.Colors.white.color : DSKitAsset.Colors.gray500.color
     }
 }

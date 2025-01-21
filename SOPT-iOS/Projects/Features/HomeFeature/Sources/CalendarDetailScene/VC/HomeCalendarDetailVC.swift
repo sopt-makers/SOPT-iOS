@@ -7,14 +7,22 @@
 //
 
 import UIKit
-import DSKit
+import Combine
+
 import Core
+import Domain
+import DSKit
+
+import BaseFeatureDependency
+import DailySoptuneFeatureInterface
 
 final class HomeCalendarDetailVC: UIViewController, HomeCalendarDetailViewControllable {
 
     // MARK: Properties
     
     public let viewModel: HomeCalendarDetailViewModel
+    private var cancelBag = CancelBag()
+    private var calendarDetailInfo: [HomeCalendarDetailPresentationModel]?
     
     // MARK: UI Components
     
@@ -68,6 +76,7 @@ final class HomeCalendarDetailVC: UIViewController, HomeCalendarDetailViewContro
         setLayout()
         setDelegate()
         registerCells()
+        bindViewModels()
     }
     
     override func viewDidLayoutSubviews() {
@@ -127,8 +136,30 @@ extension HomeCalendarDetailVC {
         collectionView.register(HomeCalendarDetailCVC.self, forCellWithReuseIdentifier: HomeCalendarDetailCVC.className)
     }
     
+    private func bindViewModels() {
+        let input = HomeCalendarDetailViewModel.Input(
+            viewDidLoad: Just<Void>(()).asDriver(), 
+            naviBackButtonTap: self.naviBar.leftButtonTapped.asDriver(), 
+            onAttendanceButtonTap: self.attendanceButton
+                .publisher(for: .touchUpInside)
+                .withUnretained(self)
+                .mapVoid()
+                .asDriver()
+        )
+        
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.calendarDetailModel
+            .withUnretained(self)
+            .sink { owner, calendarDetailInfo in
+                owner.calendarDetailInfo = calendarDetailInfo
+                owner.collectionView.reloadData()
+            }.store(in: cancelBag)
+            
+    }
+    
     private func scrollToRecentSchedule() {
-        if let index = self.viewModel.calendarDetailList.firstIndex(where: {$0.isRecentSchedule}) {
+        if let index = self.calendarDetailInfo?.firstIndex(where: {$0.isRecentSchedule}) {
             self.collectionView.scrollToItem(at: IndexPath(item: index, section: 0),
                                              at: .top,
                                         animated: true)
@@ -138,13 +169,13 @@ extension HomeCalendarDetailVC {
 
 extension HomeCalendarDetailVC: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.calendarDetailList.count
+        return self.calendarDetailInfo?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeCalendarDetailCVC.className, for: indexPath) as? HomeCalendarDetailCVC else { return UICollectionViewCell() }
         
-        cell.configureCell(viewModel.calendarDetailList[indexPath.row])
+        cell.configureCell(self.calendarDetailInfo?[safe: indexPath.row])
         
         return cell
     }

@@ -163,10 +163,10 @@ extension HomeForMemberVC: UICollectionViewDelegate {
 // MARK: - UICollectionViewDataSource
 
 extension HomeForMemberVC: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        cellTapped.send(indexPath)
-    }
-    
+//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        cellTapped.send(indexPath)
+//    }
+//    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return HomeForMemberSectionLayoutKind.allCases.count
     }
