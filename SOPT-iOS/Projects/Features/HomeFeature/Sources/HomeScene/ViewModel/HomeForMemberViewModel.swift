@@ -170,7 +170,7 @@ extension HomeForMemberViewModel {
             .filter{ $0.section == 1 }
             .withUnretained(self)
             .sink(receiveValue: { owner, indexPath in
-                self.onDashBoardCellTapped?()
+                owner.onDashBoardCellTapped?()
             })
             .store(in: cancelBag)
         
