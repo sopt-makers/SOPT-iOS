@@ -403,6 +403,10 @@ extension ApplicationCoordinator {
             self?.removeDependency(coordinator)
         }
         
+        coordinator.requestCoordinating = { [weak self] in
+            self?.runDailySoptuneFlow()
+        }
+        
         addDependency(coordinator)
         coordinator.start()
         

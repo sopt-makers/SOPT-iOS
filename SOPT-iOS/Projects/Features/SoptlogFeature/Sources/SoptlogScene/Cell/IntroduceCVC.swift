@@ -54,7 +54,8 @@ extension IntroduceCVC {
 // MARK: - Methods
 
 extension IntroduceCVC {
-    func configureCell(_ text: String) {
-        introduceLabel.text = text
+    func configureCell(model: SoptlogPresentationModel.Introduce?) {
+        guard let model else { return }
+        introduceLabel.text = model.profileMessage.count == 0 ? I18N.Soptlog.enrollIntroduce : model.profileMessage
     }
 }

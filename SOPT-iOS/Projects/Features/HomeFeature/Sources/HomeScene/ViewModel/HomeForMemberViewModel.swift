@@ -90,6 +90,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     // MARK: - Inputs
     
     public struct Input {
+        let cellTapped: Driver<IndexPath>
         let viewDidLoad: Driver<Void>
     }
     
@@ -126,6 +127,14 @@ extension HomeForMemberViewModel {
                 owner.useCase.getGroupPosts()
                 owner.useCase.getCoffeeChatPosts()
             }.store(in: cancelBag)
+        
+        input.cellTapped
+            .filter{ $0.section == 1 }
+            .withUnretained(self)
+            .sink(receiveValue: { owner, indexPath in
+                owner.onDashBoardCellTapped?()
+            })
+            .store(in: cancelBag)
         
         return output
     }

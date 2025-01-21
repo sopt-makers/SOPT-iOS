@@ -73,7 +73,8 @@ extension SoptlogAppServiceCVC {
 // MARK: - Methods
 
 extension SoptlogAppServiceCVC {
-    func configureCell(model: AppServiceInfo) {
+    func configureCell(model: SoptlogPresentationModel.AppService?) {
+        guard let model else { return }
         self.serviceLabel.text = model.serviceName
         self.serviceValue.text = model.serviceValue
         self.serviceImageView.setImage(with: model.serviceImageURL)

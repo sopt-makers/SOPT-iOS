@@ -298,6 +298,11 @@ public struct I18N {
         public static let navigationTitle = "솝트로그"
         public static let editProfile = "프로필 수정"
         public static let enrollIntroduce = "프로필 수정에서 한 줄 소개 등록해보세요!"
+        public static let dailyFortuneButton = "바로 확인하기"
+        public static let soptlevel = "솝레벨"
+        public static let poke = "콕찌르기"
+        public static let soptamp = "솝탬프"
+        public static let withSopt = "솝트와"
     }
     
     public struct Attendance {

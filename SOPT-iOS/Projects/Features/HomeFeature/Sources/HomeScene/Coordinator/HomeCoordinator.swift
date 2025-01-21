@@ -60,4 +60,3 @@ public final class HomeCoordinator: DefaultCoordinator {
         router.replaceRootWindow(homeForVisitor.vc, withAnimation: true)
     }
 }
-
