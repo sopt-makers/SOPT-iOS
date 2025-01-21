@@ -162,7 +162,7 @@ extension SoptlogVC: UICollectionViewDataSource {
         
         switch sectionKind {
         case .introduce: return 1
-        case .appService: return 3
+        case .appService: return self.soptlogInfo?.appService.count ?? 0
         case .editProfile: return 1
         case .alarm: return 1
         default: return 0
@@ -186,7 +186,7 @@ extension SoptlogVC: UICollectionViewDataSource {
             guard let appServiceCell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: SoptlogAppServiceCVC.className,
                 for: indexPath) as? SoptlogAppServiceCVC else { return UICollectionViewCell() }
-            appServiceCell.configureCell(model: self.soptlogInfo?.appService[indexPath.row])
+            appServiceCell.configureCell(model: self.soptlogInfo?.appService[safe: indexPath.row])
             return appServiceCell
             
         case .editProfile:

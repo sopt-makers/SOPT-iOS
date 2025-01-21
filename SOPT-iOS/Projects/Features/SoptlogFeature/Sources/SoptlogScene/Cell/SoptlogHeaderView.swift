@@ -76,8 +76,9 @@ extension SoptlogHeaderView {
 
 extension SoptlogHeaderView {
     func setData(model: SoptlogPresentationModel.Profile?) {
-        self.nameLabel.text = model?.userName
-        self.partLabel.text = model?.part
-        self.profileImageView.setImage(with: model?.profileImage ?? "")
+        guard let model else { return }
+        self.nameLabel.text = model.userName
+        self.partLabel.text = model.part
+        self.profileImageView.setImage(with: model.profileImage ?? "")
     }
 }

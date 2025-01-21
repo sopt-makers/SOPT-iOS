@@ -26,7 +26,7 @@ final class SoptlogAlarmCVC: UICollectionViewCell {
     }
     
     private let subTitleLabel = UILabel().then {
-        $0.text = "바로 확인하기"
+        $0.text = I18N.Soptlog.dailyFortuneButton
         $0.textColor = DSKitAsset.Colors.gray200.color
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
     }
@@ -88,6 +88,7 @@ extension SoptlogAlarmCVC {
 
 extension SoptlogAlarmCVC {
     func configureCell(model: SoptlogPresentationModel.Alarm?) {
-        self.titleLabel.text = model?.todayFortuneText
+        guard let model else { return }
+        self.titleLabel.text = model.todayFortuneText
     }
 }
