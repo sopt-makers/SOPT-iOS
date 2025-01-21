@@ -9,8 +9,8 @@
 import Foundation
 
 public struct  SoptlogModel {
-    public let userName: String
-    public let profileImage: String
+    public let userName: String?
+    public let profileImage: String?
     public let part: String
     public let soptampRank: String
     public let pokeCount: String
@@ -22,7 +22,7 @@ public struct  SoptlogModel {
     public let todayFortuneText: String
     public let isActive: Bool
     
-    public init(userName: String, profileImage: String, part: String, soptampRank: String, pokeCount: String, soptLevel: String, during: Int, profileMessage: String, icons: [String], isFortuneChecked: Bool, todayFortuneText: String, isActive: Bool) {
+    public init(userName: String?, profileImage: String?, part: String, soptampRank: String, pokeCount: String, soptLevel: String, during: Int, profileMessage: String, icons: [String], isFortuneChecked: Bool, todayFortuneText: String, isActive: Bool) {
         self.userName = userName
         self.profileImage = profileImage
         self.part = part
