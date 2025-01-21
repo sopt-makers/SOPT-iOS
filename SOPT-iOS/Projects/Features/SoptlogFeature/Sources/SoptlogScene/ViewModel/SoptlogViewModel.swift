@@ -58,7 +58,7 @@ extension SoptlogViewModel {
             .flatMap(useCase.fetchSoptlogInfo)
             .withUnretained(self)
             .sink { owner, soptlogModel in
-                let info = owner.transformToPresentationModel(model: soptlogModel)
+                let info = soptlogModel.toPresentation()
                 output.soptlogInfo.send(info)
             }.store(in: cancelBag)
         
@@ -86,44 +86,44 @@ extension SoptlogViewModel {
     }
 }
 
-extension SoptlogViewModel {
-    private func transformToPresentationModel(model: SoptlogModel) -> SoptlogPresentationModel {
+extension SoptlogModel {
+    func toPresentation() -> SoptlogPresentationModel {
         var appService: [SoptlogPresentationModel.AppService] = []
         appService.append(SoptlogPresentationModel.AppService(
             serviceName: I18N.Soptlog.soptlevel,
-            serviceImageURL: model.icons[0],
-            serviceValue: model.soptLevel))
+            serviceImageURL: self.icons[0],
+            serviceValue: self.soptLevel))
         appService.append(SoptlogPresentationModel.AppService(
             serviceName: I18N.Soptlog.poke,
-            serviceImageURL: model.icons[1],
-            serviceValue: model.pokeCount))
+            serviceImageURL: self.icons[1],
+            serviceValue: self.pokeCount))
         
-        if model.isActive {
+        if self.isActive {
             appService.append(SoptlogPresentationModel.AppService(
                 serviceName: I18N.Soptlog.soptamp,
-                serviceImageURL: model.icons[2],
-                serviceValue: model.soptampRank))
+                serviceImageURL: self.icons[2],
+                serviceValue: self.soptampRank))
         } else {
             appService.append(SoptlogPresentationModel.AppService(
                 serviceName: I18N.Soptlog.withSopt,
-                serviceImageURL: model.icons[2],
-                serviceValue: "\(model.during)개월"))
+                serviceImageURL: self.icons[2],
+                serviceValue: "\(self.during)개월"))
         }
         
         
         return SoptlogPresentationModel(
             profile: SoptlogPresentationModel.Profile(
-                userName: model.userName,
-                profileImage: model.profileImage,
-                part: model.part
+                userName: self.userName,
+                profileImage: self.profileImage,
+                part: self.part
             ),
             introduce: SoptlogPresentationModel.Introduce(
-                profileMessage: model.profileMessage
+                profileMessage: self.profileMessage
             ),
             appService: appService,
             alarm: SoptlogPresentationModel.Alarm(
-                isFortuneChecked: model.isFortuneChecked,
-                todayFortuneText: model.todayFortuneText
+                isFortuneChecked: self.isFortuneChecked,
+                todayFortuneText: self.todayFortuneText
             )
         )
     }

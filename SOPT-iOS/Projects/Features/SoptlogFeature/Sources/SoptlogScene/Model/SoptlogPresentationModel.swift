@@ -15,8 +15,8 @@ struct SoptlogPresentationModel {
     let alarm: Alarm
     
     struct Profile {
-        let userName: String
-        let profileImage: String
+        let userName: String?
+        let profileImage: String?
         let part: String
     }
     
