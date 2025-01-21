@@ -95,7 +95,7 @@ extension HomeCalendarDetailCVC {
         guard let model else { return }
         dateLabel.text = model.date
         calendarTitleLabel.text = model.title
-        if let tagType = DashBoardCalenderCategoryTagType(rawValue: model.type) {
+        if let tagType = CalenderCategoryTagType(rawValue: model.type) {
             self.homeCategoryTagView.setData(title: tagType.text,
                                                  titleColor: tagType.textColor,
                                                  backgroundColor: tagType.backgroundColor)

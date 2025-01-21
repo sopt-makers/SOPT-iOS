@@ -56,7 +56,7 @@ extension HomeCalendarDetailViewModel {
             .flatMap(useCase.getCalendarDetail)
             .withUnretained(self)
             .sink { owner, calendarDetailModel in
-                let calendarDetailInfo = owner.transformToPresentationModel(model: calendarDetailModel)
+                let calendarDetailInfo = calendarDetailModel.map{ $0.toPresentation() }
                 output.calendarDetailModel.send(calendarDetailInfo)
             }.store(in: cancelBag)
         
@@ -76,15 +76,13 @@ extension HomeCalendarDetailViewModel {
     }
 }
 
-extension HomeCalendarDetailViewModel {
-    private func transformToPresentationModel(model: [HomeCalendarDetailModel]) -> [HomeCalendarDetailPresentationModel] {
-        return model.map { calendar in
-            HomeCalendarDetailPresentationModel(
-                date: calendar.date, 
-                title: calendar.title,
-                type: calendar.type,
-                isRecentSchedule: calendar.isRecentSchedule
-            )
-        }
+extension HomeCalendarDetailModel {
+    func toPresentation() -> HomeCalendarDetailPresentationModel {
+        return HomeCalendarDetailPresentationModel(
+            date: self.date,
+            title: self.title,
+            type: self.type,
+            isRecentSchedule: self.isRecentSchedule
+        )
     }
 }
