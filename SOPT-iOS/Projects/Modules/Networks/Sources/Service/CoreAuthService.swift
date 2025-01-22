@@ -16,17 +16,17 @@ import Moya
 public typealias DefaultCoreAuthService = BaseService<CoreAuthAPI>
 
 public protocol CoreAuthService {
-    func sendVerifyCode(_ dto: SendVerificationCodeEntity) -> AnyPublisher<Int, Error>
-    func verifyCode(_ dto: VerifyCodeEntity) -> AnyPublisher<BaseEntity<VerifyResultEntity>, Error>
+    func sendVerifyCode(_ dto: SendVerificationCodeRequestEntity) -> AnyPublisher<Int, Error>
+    func verifyCode(_ dto: VerifyCodeRequestEntity) -> AnyPublisher<BaseEntity<VerifyResultEntity>, Error>
     func login(_ dto: CoreLoginRequestEntity) -> AnyPublisher<BaseEntity<CoreLoginEntity>, Error>
 }
 
 extension DefaultCoreAuthService: CoreAuthService {
-    public func sendVerifyCode(_ dto: SendVerificationCodeEntity) -> AnyPublisher<Int, Error> {
+    public func sendVerifyCode(_ dto: SendVerificationCodeRequestEntity) -> AnyPublisher<Int, Error> {
         requestObjectInCombineNoResult(.sendVerifyCode(dto: dto))
     }
     
-    public func verifyCode(_ dto: VerifyCodeEntity) -> AnyPublisher<BaseEntity<VerifyResultEntity>, Error> {
+    public func verifyCode(_ dto: VerifyCodeRequestEntity) -> AnyPublisher<BaseEntity<VerifyResultEntity>, Error> {
         requestObjectInCombine(.verfiyCode(dto: dto))
     }
     

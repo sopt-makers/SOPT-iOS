@@ -31,8 +31,7 @@ extension AppDelegate {
         container.register(
             interface: PhoneVerifyRepositoryInterface.self,
             implement: {
-                PhoneRe
-                PhoneVerifyRepositoryInterface(appleService: DefaultAppleAuthenticationService())
+                PhoneVerifyRepository(coreAuthService: DefaultCoreAuthService())
             }
         )
         
