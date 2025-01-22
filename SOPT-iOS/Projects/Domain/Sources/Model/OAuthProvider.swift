@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum OAuthType {
+public enum OAuthProvider {
     case google
     case apple
 }
