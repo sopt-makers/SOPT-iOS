@@ -8,8 +8,10 @@
 
 import UIKit
 
+import BaseFeatureDependency
 import DSKit
 import Core
+
 
 final class PhoneVerifyView: UIView {
     
@@ -17,8 +19,8 @@ final class PhoneVerifyView: UIView {
         return .init(
             sendButtonTapped: sendButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
             doneButtonTapped: doneButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
-            phoneTextFieldText: phoneTextField.publisher(for: .editingChanged).map { $0.text ?? "" }.asDriver(),
-            codeTextFieldText: codeTextField.publisher(for: .editingChanged).map { $0.text ?? "" }.asDriver(),
+            phoneTextFieldText: phoneTextField.publisher(for: .editingChanged).compactMap { $0.text }.asDriver(),
+            codeTextFieldText: codeTextField.publisher(for: .editingChanged).compactMap { $0.text }.asDriver(),
             loginHelpButtonTapped: helpView.gesture().mapVoid().asDriver()
         )
     }
@@ -52,8 +54,22 @@ final class PhoneVerifyView: UIView {
         $0.textColor = DSKitAsset.Colors.gray10.color
         $0.layer.cornerRadius = 10
         $0.layer.masksToBounds = true
+        $0.layer.borderWidth = 1
+        $0.layer.borderColor = UIColor.clear.cgColor
         $0.addToolbar()
         $0.addLeftPadding(width: 20)
+    }
+    
+    private let phoneFailIcon = UIImageView().then {
+        $0.image = DSKitAsset.Assets.alertCircle.image.withTintColor(DSKitAsset.Colors.error.color)
+        $0.contentMode = .scaleAspectFit
+        $0.isHidden = true
+    }
+    
+    private let phoneFailLabel = UILabel().then {
+        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
+        $0.textColor = DSKitAsset.Colors.error.color
+        $0.isHidden = true
     }
     
     private let sendButton = AppImageTextButton(title: "전송하기").then {
@@ -82,13 +98,13 @@ final class PhoneVerifyView: UIView {
         $0.text = "03:00"
     }
     
-    private let failIcon = UIImageView().then {
+    private let codeFailIcon = UIImageView().then {
         $0.image = DSKitAsset.Assets.alertCircle.image.withTintColor(DSKitAsset.Colors.error.color)
         $0.contentMode = .scaleAspectFit
         $0.isHidden = true
     }
     
-    private let failLabel = UILabel().then {
+    private let codeFailLabel = UILabel().then {
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
         $0.textColor = DSKitAsset.Colors.error.color
         $0.isHidden = true
@@ -153,10 +169,12 @@ final class PhoneVerifyView: UIView {
             descriptionLabel,
             phoneLabel,
             phoneTextField,
+            phoneFailIcon,
+            phoneFailLabel,
             sendButton,
             codeTextField,
-            failIcon,
-            failLabel,
+            codeFailIcon,
+            codeFailLabel,
             helpView,
             doneButton
         )
@@ -193,6 +211,18 @@ final class PhoneVerifyView: UIView {
             $0.height.equalTo(48)
         }
         
+        phoneFailIcon.snp.makeConstraints {
+            $0.top.equalTo(phoneTextField.snp.bottom).offset(8)
+            $0.leading.equalTo(phoneTextField)
+            $0.size.equalTo(14)
+        }
+        
+        phoneFailLabel.snp.makeConstraints {
+            $0.centerY.equalTo(phoneFailIcon)
+            $0.leading.equalTo(phoneFailIcon.snp.trailing).offset(4)
+            $0.trailing.equalTo(codeTextField)
+        }
+        
         sendButton.snp.makeConstraints {
             $0.centerY.equalTo(phoneTextField)
             $0.leading.equalTo(phoneTextField.snp.trailing).offset(7)
@@ -202,7 +232,7 @@ final class PhoneVerifyView: UIView {
         }
         
         codeTextField.snp.makeConstraints {
-            $0.top.equalTo(phoneTextField.snp.bottom).offset(13)
+            $0.top.equalTo(phoneFailLabel.snp.bottom).offset(10)
             $0.leading.trailing.equalToSuperview().inset(24)
             $0.height.equalTo(phoneTextField)
             $0.bottom.lessThanOrEqualToSuperview()
@@ -213,20 +243,20 @@ final class PhoneVerifyView: UIView {
             $0.trailing.equalToSuperview().inset(16)
         }
         
-        failIcon.snp.makeConstraints {
+        codeFailIcon.snp.makeConstraints {
             $0.top.equalTo(codeTextField.snp.bottom).offset(8)
             $0.leading.equalTo(codeTextField)
             $0.size.equalTo(14)
         }
         
-        failLabel.snp.makeConstraints {
-            $0.centerY.equalTo(failIcon)
-            $0.leading.equalTo(failIcon.snp.trailing).offset(4)
+        codeFailLabel.snp.makeConstraints {
+            $0.centerY.equalTo(codeFailIcon)
+            $0.leading.equalTo(codeFailIcon.snp.trailing).offset(4)
             $0.trailing.equalTo(codeTextField)
         }
         
         helpView.snp.makeConstraints {
-            $0.top.equalTo(failLabel.snp.bottom).offset(20)
+            $0.top.equalTo(codeFailLabel.snp.bottom).offset(20)
             $0.leading.trailing.equalTo(codeTextField)
         }
         
@@ -272,15 +302,25 @@ extension PhoneVerifyView {
                 .withUnretained(self)
                 .sink { owner, isSent in
                     let text = isSent ? "재전송하기" : "전송하기"
+                    ToastUtils.showMDSToast(type: .success, text: "인증번호가 전송되었어요.")
                     owner.sendButton.updateTitle(text)
                     owner.codeTextField.isHidden = !isSent
                 }
                 .store(in: cancelBag)
             
-            output.showToast
+            output.phoneTextFieldText
+                .asDriver()
                 .withUnretained(self)
                 .sink { owner, text in
-                    
+                    owner.phoneTextField.text = text
+                }
+                .store(in: cancelBag)
+            
+            output.codeTextFieldText
+                .asDriver()
+                .withUnretained(self)
+                .sink { owner, text in
+                    owner.codeTextField.text = text
                 }
                 .store(in: cancelBag)
             
@@ -299,10 +339,17 @@ extension PhoneVerifyView {
                 }
                 .store(in: cancelBag)
             
-            output.failDescription
+            output.phoneFailDescription
                 .withUnretained(self)
                 .sink { owner, description in
-                    owner.updateFailLabelUI(description)
+                    owner.updateFailLabelUI(isCode: false, description)
+                }
+                .store(in: cancelBag)
+            
+            output.codeFailDescription
+                .withUnretained(self)
+                .sink { owner, description in
+                    owner.updateFailLabelUI(isCode: true, description)
                 }
                 .store(in: cancelBag)
             
@@ -329,11 +376,17 @@ extension PhoneVerifyView {
         }
     
     
-    private func updateFailLabelUI(_ description: String?) {
+    private func updateFailLabelUI(isCode: Bool, _ description: String?) {
+        let failLabel = isCode ? codeFailLabel : phoneFailLabel
+        let failIcon = isCode ? codeFailIcon : phoneFailIcon
+        let textfield = isCode ? codeTextField : phoneTextField
         failLabel.text = description
         failIcon.isHidden = description == nil
         failLabel.isHidden = description == nil
-        timeLeftLabel.textColor = description == nil ? DSKitAsset.Colors.white.color : DSKitAsset.Colors.error.color
-        codeTextField.layer.borderColor = description == nil ? UIColor.clear.cgColor : DSKitAsset.Colors.error.color.cgColor
+        textfield.layer.borderColor = description == nil ? UIColor.clear.cgColor : DSKitAsset.Colors.error.color.cgColor
+        
+        if isCode {
+            timeLeftLabel.textColor = description == nil ? DSKitAsset.Colors.white.color : DSKitAsset.Colors.error.color
+        }
     }
 }
