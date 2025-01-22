@@ -9,7 +9,7 @@
 import Domain
 import Networks
 
-extension OAuthType {
+extension OAuthProvider {
     public func toData() -> PlatformType {
         switch self {
         case .google: .google

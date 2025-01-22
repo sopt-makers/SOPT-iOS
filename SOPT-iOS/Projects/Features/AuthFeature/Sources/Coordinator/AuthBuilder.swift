@@ -15,6 +15,7 @@ final class AuthBuilder {
     @Injected public var repository: SignInRepositoryInterface
     @Injected public var oauthRepository: CoreOAuthRepositoryInterface
     @Injected public var coreRepository: CoreAuthRepositoryInterface
+    @Injected public var phoneRepository: PhoneVerifyRepositoryInterface
     
     public init() { }
 }
@@ -42,10 +43,13 @@ extension AuthBuilder: AuthFeatureViewBuildable {
     }
     
     public func makeSignUp() -> SignUpPresentable {
-        let useCase = StubPhoneVerifyUseCase() // TODO
+        let phoneUseCase = DefaultPhoneVerifyUseCase(repository: phoneRepository)
+        let phoneVM = PhoneVerifyViewModel(useCase: phoneUseCase)
+        
+        let useCase = DefaultSignUpUseCase(repository: coreRepository, oAuthRepository: oauthRepository) 
         let vm = SignUpViewModel(useCase: useCase)
-        let subVM = PhoneVerifyViewModel(useCase: useCase)
-        let vc = SignUpVC(viewModel: vm, phoneVerifyViewModel: subVM)
+        
+        let vc = SignUpVC(viewModel: vm, phoneVerifyViewModel: phoneVM)
         return (vc, vm)
     }
 }

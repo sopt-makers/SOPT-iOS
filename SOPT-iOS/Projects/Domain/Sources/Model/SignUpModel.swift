@@ -9,5 +9,8 @@
 import Foundation
 
 public struct SignUpModel {
-    
+    public let name: String?
+    public let phone: String
+    public let code: String
+    public let provider: OAuthProvider
 }

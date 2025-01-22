@@ -9,7 +9,8 @@
 import Foundation
 
 public enum CoreAuthError: Error {
-    case oAuthFail(OAuthType)
+    case oAuthFail(OAuthProvider)
     case loginFail
+    case signUpFail
     case unknown(Error)
 }

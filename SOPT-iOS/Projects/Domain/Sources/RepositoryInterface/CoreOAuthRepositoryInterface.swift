@@ -10,7 +10,7 @@ import Foundation
 import Combine
 
 public protocol CoreOAuthRepositoryInterface {
-    func getIdentityToken(from provider: OAuthType) -> AnyPublisher<String, CoreAuthError>
+    func getIdentityToken(from provider: OAuthProvider) -> AnyPublisher<String, CoreAuthError>
 }
 
 

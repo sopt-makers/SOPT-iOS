@@ -23,7 +23,7 @@ public class CoreOAuthRepository {
 }
 
 extension CoreOAuthRepository: CoreOAuthRepositoryInterface {
-    public func getIdentityToken(from provider: OAuthType) -> AnyPublisher<String, Domain.CoreAuthError> {
+    public func getIdentityToken(from provider: OAuthProvider) -> AnyPublisher<String, Domain.CoreAuthError> {
         let service: AuthenticationService
         switch provider {
         case .apple: service = appleService

@@ -21,8 +21,8 @@ public protocol SignInUseCase {
     var signInSuccess: CurrentValueSubject<SiginInHandleableType, Error> { get set }
     
     // 인증 중앙화
-    func login(with provider: OAuthType) -> AnyPublisher<Void, Never> // 인증 중앙화
-    var sideEffect: PassthroughSubject<CoreAuthError, Never> { get } // 인증 중앙화
+    func login(with provider: OAuthProvider) -> AnyPublisher<Void, Never>
+    var sideEffect: PassthroughSubject<CoreAuthError, Never> { get } 
 }
 
 public class DefaultSignInUseCase {
@@ -51,7 +51,7 @@ public class DefaultSignInUseCase {
 
 extension DefaultSignInUseCase: SignInUseCase {
     
-    public func login(with provider: OAuthType) -> AnyPublisher<Void, Never> {
+    public func login(with provider: OAuthProvider) -> AnyPublisher<Void, Never> {
         oauthRepository.getIdentityToken(from: .apple)
             .map { (provider, $0) }
             .flatMap(coreRepository.login)

@@ -14,15 +14,13 @@ import Domain
 
 final class SignUpViewModel: SignUpViewModelType {
     
-    private let useCase: SignUpUseCase
-    public var onLoginHelpButtonTapped: (() -> Void)?
-    
     enum Step: Int {
         case phoneVerify
         case oAuth
     }
     
     struct Input {
+        let phone: Driver<String>
         let verifySuccess: Driver<Void>
         let loginHelpButtonTapped: Driver<Void>
         var oAuth: OAuth
@@ -37,7 +35,13 @@ final class SignUpViewModel: SignUpViewModelType {
         let currentStep = CurrentValueSubject<Step, Never>(.phoneVerify)
     }
     
-    init(useCase: SignUpUseCase) {
+    private let useCase: SignUpUseCase
+    public var onLoginHelpButtonTapped: (() -> Void)?
+    public var onSignUpSuccess: (() -> Void)?
+    
+    init(
+        useCase: SignUpUseCase
+    ) {
         self.useCase = useCase
     }
     
@@ -56,6 +60,21 @@ final class SignUpViewModel: SignUpViewModelType {
                 owner.onLoginHelpButtonTapped?()
             }
             .store(in: cancelBag)
+        
+        Publishers.Merge(
+            input.oAuth.googleLoginTapped.map { OAuthProvider.google },
+            input.oAuth.appleLoginTapped.map { OAuthProvider.apple }
+        )
+        .withLatestFrom(input.phone)
+        .withUnretained(self)
+        .flatMap { owner, output in
+            owner.useCase.signUp(with: output.0, name: nil, phone: output.1)
+        }
+        .withUnretained(self)
+        .sink { owner, _ in
+            owner.onSignUpSuccess?()
+        }
+        .store(in: cancelBag)
         
         return output
     }

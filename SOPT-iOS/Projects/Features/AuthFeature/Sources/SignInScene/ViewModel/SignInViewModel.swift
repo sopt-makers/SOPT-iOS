@@ -61,8 +61,8 @@ extension SignInViewModel {
             }.store(in: self.cancelBag)
         
         Publishers.Merge(
-            input.googleLoginButtonTapped.map { OAuthType.google },
-            input.appleLoginButtonTapped.map { OAuthType.apple }
+            input.googleLoginButtonTapped.map { OAuthProvider.google },
+            input.appleLoginButtonTapped.map { OAuthProvider.apple }
         ).flatMap(useCase.login)
             .withUnretained(self)
             .sink { owner,  _ in

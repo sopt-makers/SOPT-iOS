@@ -25,7 +25,7 @@ public struct CoreAuthRepository {
 extension CoreAuthRepository: CoreAuthRepositoryInterface {
 
     public func login(
-        for provider: OAuthType,
+        for provider: OAuthProvider,
         with identityToken: String
     ) -> AnyPublisher<CoreAuthTokens, CoreAuthError> {
         coreAuthService

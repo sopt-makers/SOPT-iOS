@@ -1,5 +1,5 @@
 //
-//  OAuthType.swift
+//  OAuthProvider.swift
 //  Domain
 //
 //  Created by 장석우 on 12/20/24.

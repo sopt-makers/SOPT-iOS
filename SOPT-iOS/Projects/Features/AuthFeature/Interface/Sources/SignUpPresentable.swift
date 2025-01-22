@@ -13,6 +13,7 @@ import Domain
 public protocol SignUpViewControllable: ViewControllable {}
 
 public protocol SignUpCoordinatable {
+    var onSignUpSuccess: (() -> Void)? { get set }
     var onLoginHelpButtonTapped: (() -> Void)? { get set }
 }
 

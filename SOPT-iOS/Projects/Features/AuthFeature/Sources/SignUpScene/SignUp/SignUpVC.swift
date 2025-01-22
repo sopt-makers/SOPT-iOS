@@ -191,8 +191,9 @@ extension SignUpVC {
         phoneVerifyView.bindOutput(pvOutput, cancelBag: cancelBag)
             
         let input = type(of: viewModel).Input.init(
-            verifySuccess: pvOutput.verifySuccess.mapVoid().asDriver(),
-            loginHelpButtonTapped: pvInput.loginHelpButtonTapped.asDriver(),
+            phone: pvOutput.phoneTextFieldText.asDriver(),
+            verifySuccess: pvOutput.verifySuccess.asDriver(),
+            loginHelpButtonTapped: phoneVerifyView.loginHelpButtonTapped,
             oAuth: oAuthView.viewModelInput
         )
         

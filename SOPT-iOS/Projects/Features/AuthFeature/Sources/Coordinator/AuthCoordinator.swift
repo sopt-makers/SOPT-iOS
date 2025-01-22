@@ -130,6 +130,11 @@ extension AuthCoordinator {
             self?.showLoginHelpBottomSheet(on: signUpVC.vc)
         }
         
+        signUpVC.vm.onSignUpSuccess = { [weak self] in
+            let userType = UserDefaultKeyList.Auth.getUserType()
+            self?.finishFlow?(userType)
+        }
+        
         self.router.push(signUpVC.vc)
     }
     

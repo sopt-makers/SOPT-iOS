@@ -6,4 +6,16 @@
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
-import Foundation
+import Domain
+import Networks
+
+extension SignUpModel {
+    func toData() -> SignUpRequestEntity {
+        .init(
+            name: name,
+            phone: phone,
+            code: code,
+            authPlatform: provider.toData()
+        )
+    }
+}

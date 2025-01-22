@@ -45,7 +45,7 @@ public struct DefaultPhoneVerifyUseCase: PhoneVerifyUseCase {
     public let policy: PhoneVerifyPolicy = .default
     public let sideEffect = PassthroughSubject<PhoneVerifyError, Never>()
     
-    init(repository: PhoneVerifyRepositoryInterface) {
+    public init(repository: PhoneVerifyRepositoryInterface) {
         self.repository = repository
     }
     
@@ -73,14 +73,13 @@ public class StubPhoneVerifyUseCase: PhoneVerifyUseCase {
     public init() { }
     
     public let policy: PhoneVerifyPolicy = .stub
-    public var sideEffect = PassthroughSubject<PhoneVerifyError, Never>()
+    public let sideEffect = PassthroughSubject<PhoneVerifyError, Never>()
     
     public func send(_ model: PhoneSendModel) -> AnyPublisher<Void, Never> {
         return Just(()).eraseToAnyPublisher()
     }
     
     public func verify(_ model: PhoneVerifyModel) -> AnyPublisher<Void, Never> {
-        sideEffect.send(.userNotFound)
-        return Empty().eraseToAnyPublisher()
+        return Just(()).eraseToAnyPublisher()
     }
 }
