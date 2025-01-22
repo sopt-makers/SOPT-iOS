@@ -21,6 +21,7 @@ public protocol SignInCoordinatable {
     var onLoginHelpButtonTapped: (() -> Void)? { get set }
     var onVisitorButtonTapped: (() -> Void)? { get set }
     var onSocialLoginFail: (() -> Void)? { get set }
+    var onSignUpButtonTapped: (() -> Void)? { get set }
 }
 
 public typealias SignInViewModelType = ViewModelType & SignInCoordinatable

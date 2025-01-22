@@ -10,18 +10,25 @@ import UIKit
 
 public final class AppImageTextButton: UIButton {
     
+    private let font: UIFont?
     
-    //TODO: disabled 상태일 때 config background 설정 기능 필요
+    public override var isEnabled: Bool {
+        didSet { updateUI() }
+    }
     
     public override var isHighlighted: Bool {
-        didSet {
-            self.configuration?.baseBackgroundColor = isHighlighted ? DSKitAsset.Colors.gray100.color : DSKitAsset.Colors.white.color
-        }
+        didSet { updateUI() }
     }
     
     // MARK: - Initialize
     
-    public init(title: String, image: UIImage? = nil) {
+    public init(
+        title: String,
+        image: UIImage? = nil,
+        font: UIFont? = DSKitFontFamily.Suit.semiBold.font(size: 16)
+    ) {
+        self.font = font
+        
         super.init(frame: .zero)
         self.setUI(title, image)
     }
@@ -34,16 +41,18 @@ public final class AppImageTextButton: UIButton {
 // MARK: - UI & Layout
 
 extension AppImageTextButton {
+    
+    public func updateTitle(_ title: String) {
+        var attributedTitle = AttributedString(title)
+        attributedTitle.font = font
+        self.configuration?.attributedTitle = attributedTitle
+    }
+    
     private func setUI(_ title: String, _ image: UIImage?) {
         
         var config = UIButton.Configuration.filled()
-        config.baseForegroundColor = DSKitAsset.Colors.black.color
-        config.baseBackgroundColor = DSKitAsset.Colors.white.color
-        
-        
         var attributedTitle = AttributedString(title)
-        attributedTitle.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
-        attributedTitle.foregroundColor = DSKitAsset.Colors.black.color
+        attributedTitle.font = font
         config.attributedTitle = attributedTitle
         
         if let image = image {
@@ -55,5 +64,19 @@ extension AppImageTextButton {
         self.configuration = config
         self.layer.cornerRadius = 10
         self.layer.masksToBounds = true
+        
+        updateUI()
+    }
+    
+    private func updateUI() {
+        let bg = isEnabled ? isHighlighted ?
+        DSKitAsset.Colors.gray100 : DSKitAsset.Colors.white : DSKitAsset.Colors.gray800
+        let fg = isEnabled ?
+        DSKitAsset.Colors.black : DSKitAsset.Colors.gray500
+        
+        configuration?.baseBackgroundColor = bg.color
+        configuration?.baseForegroundColor = fg.color
     }
 }
+
+

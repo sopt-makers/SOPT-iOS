@@ -18,6 +18,12 @@ public struct PhoneSendModel {
     let name: String?
     let phone: String
     let type: PhoneVerifyType
+    
+    public init(name: String?, phone: String, type: PhoneVerifyType) {
+        self.name = name
+        self.phone = phone
+        self.type = type
+    }
 }
 
 public struct PhoneVerifyModel {
@@ -25,4 +31,11 @@ public struct PhoneVerifyModel {
     let phone: String
     let code: String
     let type: PhoneVerifyType
+    
+    public init(name: String?, phone: String, code: String, type: PhoneVerifyType) {
+        self.name = name
+        self.phone = phone
+        self.code = code
+        self.type = type
+    }
 }
