@@ -9,6 +9,9 @@
 import Foundation
 
 public enum PhoneVerifyError: Error {
+    case userNotFound
+    case alreadyExist
     case invalidVerifyCode //인증 내역은 유효하나 제출한 “인증 번호”가 일치하지 않을 경우
     case timeout // 시간 초과
+    case unknown(Error)
 }

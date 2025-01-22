@@ -33,11 +33,13 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
     // MARK: - Outputs
     
     public struct Output {
-        let isSent = CurrentValueSubject<Bool, Never>(false)
+        let isSent = PassthroughSubject<Bool, Never>()
         let verifySuccess = PassthroughSubject<Void, Never>()
-        let failDescription = PassthroughSubject<String?, Never>()
-        let showToast = PassthroughSubject<String, Never>()
+        let phoneFailDescription = PassthroughSubject<String?, Never>()
+        let codeFailDescription = PassthroughSubject<String?, Never>()
         let timeLeft = PassthroughSubject<Int, Never>()
+        let phoneTextFieldText = CurrentValueSubject<String, Never>("")
+        let codeTextFieldText = CurrentValueSubject<String, Never>("")
         let timerIsRunning = PassthroughSubject<Bool, Never>()
         let sendButtonIsEnabled = CurrentValueSubject<Bool, Never>(false)
         let doneButtonIsEnabled =  CurrentValueSubject<Bool, Never>(false)
@@ -69,26 +71,34 @@ extension PhoneVerifyViewModel {
             .sink { owner, err in
                 switch err {
                 case .invalidVerifyCode:
-                    output.failDescription.send("인증번호가 올바르지 않습니다.")
+                    output.codeFailDescription.send("인증번호가 올바르지 않습니다.")
                     return
                 case .timeout:
                     owner.timerCancellable = nil
-                    output.failDescription.send("3분이 초과되었어요. 인증번호를 다시 요청해주세요.")
+                    output.codeFailDescription.send("3분이 초과되었어요. 인증번호를 다시 요청해주세요.")
                     return
+                case .userNotFound:
+                    output.phoneFailDescription.send("SOPT 활동 시 사용한 전화번호가 아니에요.")
+                case .alreadyExist:
+                    output.phoneFailDescription.send("이미 가입된 전화번호예요.")
+                case .unknown(_):
+                    output.codeFailDescription.send("알 수 없는 오류예요.")
                 }
             }
             .store(in: cancelBag)
         
         input.sendButtonTapped
+            .throttle(for: 2, scheduler: RunLoop.main, latest: false)
             .handleEvents(receiveOutput: { _ in
-                output.isSent.send(true)
-                output.failDescription.send(nil) }
+                output.phoneFailDescription.send(nil)
+                output.codeFailDescription.send(nil)
+            }
             )
-            .withLatestFrom(input.phoneTextFieldText)
-            .map { PhoneSendModel(name: nil, phone: $0, type: .register) }
+            .map { PhoneSendModel(name: nil, phone: output.phoneTextFieldText.value, type: .register) }
             .flatMap(useCase.send)
             .withUnretained(self)
             .sink { owner , _ in
+                output.isSent.send(true)
                 output.timeLeft.send(owner.useCase.policy.timeLimit)
                 owner.timerCancellable = owner.timerPublisher
                     .autoconnect()
@@ -101,17 +111,40 @@ extension PhoneVerifyViewModel {
                         }
                         output.timeLeft.send(counter)
                     }
-                output.showToast.send("인증번호가 전송되었어요.")
             }
             .store(in: cancelBag)
         
         input.phoneTextFieldText
-            .map { $0.count >= self.useCase.policy.phoneNumberCount && $0.allSatisfy { $0.isNumber } }
+            .handleEvents(receiveOutput: { _ in
+                output.phoneFailDescription.send(nil)
+            })
+            .withUnretained(self)
+            .map { $1.count >= $0.useCase.policy.phoneMaxLength && $1.allSatisfy { $0.isNumber } }
             .sink { output.sendButtonIsEnabled.send($0) }
             .store(in: cancelBag)
         
+        input.phoneTextFieldText
+            .withUnretained(self)
+            .filter { $1.count > $0.useCase.policy.phoneMaxLength }
+            .map {
+                let newValue = $1.prefix($0.useCase.policy.phoneMaxLength)
+                return String(newValue)
+            }
+            .sink { output.phoneTextFieldText.send($0) }
+            .store(in: cancelBag)
+        
+        input.codeTextFieldText
+            .withUnretained(self)
+            .filter { $1.count > $0.useCase.policy.codeMaxLength }
+            .map {
+                let newValue = $1.prefix($0.useCase.policy.codeMaxLength)
+                return String(newValue)
+            }
+            .sink { output.codeTextFieldText.send($0) }
+            .store(in: cancelBag)
+        
         Publishers.CombineLatest(
-            input.codeTextFieldText,
+            output.codeTextFieldText,
             output.timerIsRunning
         )
         .map { !$0.isEmpty && $1 }
@@ -121,8 +154,13 @@ extension PhoneVerifyViewModel {
         input.doneButtonTapped
             .withLatestFrom(output.timerIsRunning)
             .filter { $0 }
-            .withLatestFrom(Publishers.Zip(input.phoneTextFieldText, input.codeTextFieldText))
-            .map { PhoneVerifyModel(name: nil, phone: $0, code: $1, type: .register)}
+            .mapVoid()
+            .map { PhoneVerifyModel(
+                name: nil,
+                phone: output.phoneTextFieldText.value,
+                code: output.codeTextFieldText.value,
+                type: .register)
+            }
             .flatMap(useCase.verify)
             .withUnretained(self)
             .sink { owner, _ in

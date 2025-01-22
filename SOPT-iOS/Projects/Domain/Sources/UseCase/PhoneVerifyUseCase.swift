@@ -11,19 +11,21 @@ import Combine
 import Core
 
 public struct PhoneVerifyPolicy {
-    public let phoneNumberCount: Int
+    public let phoneMaxLength: Int
+    public let codeMaxLength: Int
     private let _timeLimit: Duration
     public var timeLimit: Int { Int(_timeLimit.components.seconds) }
     
-    public init(phoneNumberCount: Int, timeLimit: Duration) {
-        self.phoneNumberCount = phoneNumberCount
+    public init(phoneMaxLength: Int, codeMaxLength: Int, timeLimit: Duration) {
+        self.phoneMaxLength = phoneMaxLength
+        self.codeMaxLength = codeMaxLength
         self._timeLimit = timeLimit
     }
 }
 
 extension PhoneVerifyPolicy {
-    static let `default` = Self(phoneNumberCount: 11, timeLimit: .seconds(180))
-    static let stub = Self(phoneNumberCount: 11, timeLimit: .seconds(10))
+    static let `default` = Self(phoneMaxLength: 11, codeMaxLength: 6, timeLimit: .seconds(180))
+    static let stub = Self(phoneMaxLength: 11, codeMaxLength: 6, timeLimit: .seconds(10))
 }
 
 public protocol PhoneVerifyUseCase {
@@ -78,10 +80,7 @@ public class StubPhoneVerifyUseCase: PhoneVerifyUseCase {
     }
     
     public func verify(_ model: PhoneVerifyModel) -> AnyPublisher<Void, Never> {
-        return Just(()).eraseToAnyPublisher()
+        sideEffect.send(.userNotFound)
+        return Empty().eraseToAnyPublisher()
     }
-}
-
-extension StubPhoneVerifyUseCase: SignUpUseCase {
-    
 }
