@@ -11,12 +11,15 @@ import Domain
 @_exported import SoptlogFeatureInterface
 
 public final class SoptlogBuilder {
+    @Injected public var soptlogReposiotry: SoptlogRepositoryInterface
+    
     public init() {}
 }
 
 extension SoptlogBuilder: SoptlogFeatureBuildable {
     public func makeSoptlog() -> SoptlogPresentable {
-        let viewModel = SoptlogViewModel()
+        let useCase = DefaultSoptlogUseCase(repository: soptlogReposiotry)
+        let viewModel = SoptlogViewModel(useCase: useCase)
         let soptlogVC = SoptlogVC(viewModel: viewModel)
         return (soptlogVC, viewModel)
     }

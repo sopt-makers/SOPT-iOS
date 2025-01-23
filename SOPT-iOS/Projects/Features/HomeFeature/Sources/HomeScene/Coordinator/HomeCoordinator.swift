@@ -18,6 +18,7 @@ import WebFeature
 
 public final class HomeCoordinator: DefaultCoordinator {
     
+    public var requestCoordinating: (() -> Void)?
     public var finishFlow: (() -> Void)?
     
     private let factory: HomeFeatureBuildable
@@ -59,5 +60,19 @@ public final class HomeCoordinator: DefaultCoordinator {
         
         router.replaceRootWindow(homeForVisitor.vc, withAnimation: true)
     }
+    
+    public func showHomeCalendarDetail() {
+        var homeCalendarDetail = factory.makeHomeCalendarDetail()
+        
+        homeCalendarDetail.vm.onNaviBackButtonTap = { [weak self] in
+            self?.router.popModule()
+            self?.finishFlow?()
+        }
+        
+        homeCalendarDetail.vm.onAttendanceButtonTap = { [weak self] in
+            self?.requestCoordinating?()
+        }
+        
+        self.router.push(homeCalendarDetail.vc)
+    }
 }
-

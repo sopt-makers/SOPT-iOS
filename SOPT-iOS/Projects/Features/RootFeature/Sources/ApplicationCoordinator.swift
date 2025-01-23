@@ -206,6 +206,11 @@ extension ApplicationCoordinator {
         coordinator.finishFlow = { [weak self, weak coordinator] in
             self?.removeDependency(coordinator)
         }
+        
+        coordinator.requestCoordinating = { [weak self] in
+            self?.runAttendanceFlow()
+        }
+        
         addDependency(coordinator)
         coordinator.start()
     }
@@ -401,6 +406,10 @@ extension ApplicationCoordinator {
         
         coordinator.finishFlow = { [weak self] in
             self?.removeDependency(coordinator)
+        }
+        
+        coordinator.requestCoordinating = { [weak self] in
+            self?.runDailySoptuneFlow()
         }
         
         addDependency(coordinator)

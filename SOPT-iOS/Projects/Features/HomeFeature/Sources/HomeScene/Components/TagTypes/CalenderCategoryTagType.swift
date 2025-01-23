@@ -1,5 +1,5 @@
 //
-//  DashBoardCalenderCategoryTagType.swift
+//  CalenderCategoryTagType.swift
 //  HomeFeature
 //
 //  Created by Jae Hyun Lee on 12/2/24.
@@ -11,7 +11,7 @@ import UIKit
 import Core
 import DSKit
 
-enum DashBoardCalenderCategoryTagType: String {
+enum CalenderCategoryTagType: String {
     case event = "EVENT"
     case seminar = "SEMINAR"
     

@@ -21,6 +21,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
 
     public let viewModel: HomeForMemberViewModel
     private var cancelBag = CancelBag()
+    private var cellTapped = PassthroughSubject<IndexPath, Never>()
 
     // MARK: - UI Components
     
@@ -57,7 +58,6 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
         setLayout()
         setDelegate()
         registerCells()
-        bindViewModels()
     }
 }
 
@@ -91,7 +91,9 @@ extension HomeForMemberVC {
 extension HomeForMemberVC {
     private func bindViewModels() {
         let input = HomeForMemberViewModel
-            .Input(viewDidLoad: Just<Void>(()).asDriver())
+            .Input(
+                cellTapped: cellTapped.asDriver(), 
+                viewDidLoad: Just<Void>(()).asDriver())
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         

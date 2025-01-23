@@ -25,6 +25,7 @@ public protocol HomeUseCase {
     func getInsightPosts()
     func getGroupPosts()
     func getCoffeeChatPosts()
+    func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never>
     func getAnnouncementPosts()
 }
 
@@ -111,6 +112,14 @@ extension DefaultHomeUseCase: HomeUseCase {
                 owner.coffeeChatPosts.send(posts)
             }
             .store(in: cancelBag)
+    }
+    
+    public func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never> {
+        repository.getCalendarDetail()
+            .catch { error in
+                return Empty<[HomeCalendarDetailModel], Never>()
+            }
+            .eraseToAnyPublisher()
     }
     
     public func getAnnouncementPosts() {

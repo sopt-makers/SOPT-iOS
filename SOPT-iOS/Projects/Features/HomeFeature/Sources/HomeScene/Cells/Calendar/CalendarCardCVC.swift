@@ -129,7 +129,7 @@ extension CalendarCardCVC {
         guard let model = model else { return }
         self.dateLabel.text = model.date
         self.scheduleTitleLabel.text = model.title
-        if let tagType = DashBoardCalenderCategoryTagType(rawValue: model.type) {
+        if let tagType = CalenderCategoryTagType(rawValue: model.type) {
             self.scheduleCategoryTagView.setData(title: tagType.text,
                                                  titleColor: tagType.textColor,
                                                  backgroundColor: tagType.backgroundColor)

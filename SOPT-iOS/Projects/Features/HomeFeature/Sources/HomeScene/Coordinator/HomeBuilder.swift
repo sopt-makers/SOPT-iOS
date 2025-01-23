@@ -24,7 +24,7 @@ extension HomeBuilder: HomeFeatureBuildable {
         let homeForMemberVC = HomeForMemberVC(viewModel: viewModel)
         return (homeForMemberVC, viewModel)
     }
-    
+     
     public func makeHomeForVisitor() -> HomeForVisitorPresentable {
         let useCase = DefaultHomeUseCase(repository: homeRepository)
         let viewModel = HomeForVisitorViewModel(useCase: useCase)
@@ -33,7 +33,8 @@ extension HomeBuilder: HomeFeatureBuildable {
     }
     
     public func makeHomeCalendarDetail() -> HomeCalendarDetailPresentable {
-        let viewModel = HomeCalendarDetailViewModel()
+        let useCase = DefaultHomeUseCase(repository: homeRepository)
+        let viewModel = HomeCalendarDetailViewModel(useCase: useCase)
         let homeCalendarDetailVC = HomeCalendarDetailVC(viewModel: viewModel)
         return (homeCalendarDetailVC, viewModel)
     }

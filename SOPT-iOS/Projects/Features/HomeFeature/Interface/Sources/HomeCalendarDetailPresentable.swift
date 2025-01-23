@@ -13,7 +13,8 @@ import Core
 
 public protocol HomeCalendarDetailViewControllable: ViewControllable {}
 public protocol HomeCalendarDetailCoordinatable {
-    
+    var onNaviBackButtonTap: (() -> Void)? { get set }
+    var onAttendanceButtonTap: (() -> Void)? { get set }
 }
 public typealias HomeCalendarDetailViewModelType = ViewModelType & HomeCalendarDetailCoordinatable
 public typealias HomeCalendarDetailPresentable = (vc: HomeCalendarDetailViewControllable, vm: any HomeCalendarDetailViewModelType)

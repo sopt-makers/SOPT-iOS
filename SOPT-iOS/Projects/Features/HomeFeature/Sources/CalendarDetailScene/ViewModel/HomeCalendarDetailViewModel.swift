@@ -7,50 +7,82 @@
 //
 
 import Foundation
+import Combine
 
 import Core
+import Domain
 import HomeFeatureInterface
-
-struct CalendarDetail {
-    let date: String
-    let title: String
-    let isRecentSchedule: Bool
-    let type: DashBoardCalenderCategoryTagType
-}
 
 
 public class HomeCalendarDetailViewModel: HomeCalendarDetailViewModelType {
     
-    // TODO: - 서버 연결 필요
+    // MARK: - Properties
     
-    let calendarDetailList: [CalendarDetail] = [
-        CalendarDetail(date: "9월 28일 토요일", title: "OT", isRecentSchedule: false, type: .event),
-        CalendarDetail(date: "9월 28일 토요일", title: "1차 세미나", isRecentSchedule: false, type: .seminar),
-        CalendarDetail(date: "9월 28일 토요일", title: "2차 세미나", isRecentSchedule: false, type: .seminar),
-        CalendarDetail(date: "9월 28일 토요일", title: "3차 세미나", isRecentSchedule: true, type: .seminar),
-        CalendarDetail(date: "9월 28일 토요일", title: "4차 세미나", isRecentSchedule: false, type: .seminar),
-        CalendarDetail(date: "9월 28일 토요일", title: "5차 세미나", isRecentSchedule: false, type: .seminar),
-        CalendarDetail(date: "9월 28일 토요일", title: "6차 세미나", isRecentSchedule: false, type: .seminar),
-        CalendarDetail(date: "9월 28일 토요일", title: "7차 세미나", isRecentSchedule: false, type: .seminar),
-        CalendarDetail(date: "9월 28일 토요일", title: "8차 세미나", isRecentSchedule: false, type: .seminar)
-    ]
+    private let useCase: HomeUseCase
+    private var cancelBag = CancelBag()
     
     // MARK: - Inputs
     
-    public struct Input { }
+    public struct Input {
+        let viewDidLoad: Driver<Void>
+        let naviBackButtonTap: Driver<Void>
+        let onAttendanceButtonTap: Driver<Void>
+    }
     
     // MARK: - Outputs
     
-    public struct Output { }
+    public struct Output { 
+        let calendarDetailModel = PassthroughSubject<[HomeCalendarDetailPresentationModel], Never>()
+    }
+    
+    // MARK: - SoptlogCoordinatable
+
+    public var onNaviBackButtonTap: (() -> Void)?
+    public var onAttendanceButtonTap: (() -> Void)?
     
     // MARK: - initialization
     
-    public init() { }
+    public init(useCase: HomeUseCase, cancelBag: CancelBag = CancelBag()) {
+        self.useCase = useCase
+        self.cancelBag = cancelBag
+    }
 }
 
 extension HomeCalendarDetailViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
+        
+        input.viewDidLoad
+            .flatMap(useCase.getCalendarDetail)
+            .withUnretained(self)
+            .sink { owner, calendarDetailModel in
+                let calendarDetailInfo = calendarDetailModel.map{ $0.toPresentation() }
+                output.calendarDetailModel.send(calendarDetailInfo)
+            }.store(in: cancelBag)
+        
+        input.naviBackButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNaviBackButtonTap?()
+            }.store(in: cancelBag)
+        
+        input.onAttendanceButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onAttendanceButtonTap?()
+            }.store(in: cancelBag)
+        
         return output
+    }
+}
+
+extension HomeCalendarDetailModel {
+    func toPresentation() -> HomeCalendarDetailPresentationModel {
+        return HomeCalendarDetailPresentationModel(
+            date: self.date,
+            title: self.title,
+            type: self.type,
+            isRecentSchedule: self.isRecentSchedule
+        )
     }
 }
