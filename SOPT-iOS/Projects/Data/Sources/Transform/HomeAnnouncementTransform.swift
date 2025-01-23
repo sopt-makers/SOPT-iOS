@@ -11,7 +11,7 @@ import Foundation
 import Domain
 import Networks
 
-extension HomeEmploymentEntity {
+extension HomeEmploymentResponseEntity {
     public func toDomain() -> HomeAnnouncementModel {
         return HomeAnnouncementModel(id: id, categoryName: categoryName, title: title, profileImage: profileImage, name: name, content: content, images: images)
     }

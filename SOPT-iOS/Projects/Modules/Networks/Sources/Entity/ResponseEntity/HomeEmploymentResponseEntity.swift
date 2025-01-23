@@ -1,5 +1,5 @@
 //
-//  HomeEmploymentEntity.swift
+//  HomeEmploymentResponseEntity.swift
 //  Networks
 //
 //  Created by Jae Hyun Lee on 1/20/25.
@@ -8,9 +8,9 @@
 
 import Foundation
 
-// MARK: - HomeEmploymentEntity
+// MARK: - HomeEmploymentResponseEntity
 
-public struct HomeEmploymentEntity: Codable {
+public struct HomeEmploymentResponseEntity: Codable {
     public let id: Int
     public let profileImage, name: String?
     public let categoryName, title: String
