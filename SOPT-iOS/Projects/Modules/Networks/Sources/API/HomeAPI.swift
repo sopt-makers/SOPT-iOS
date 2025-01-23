@@ -18,6 +18,7 @@ public enum HomeAPI {
     case getInsightPosts
     case getGroupAll
     case getCoffeeChat
+    case getEmployment
 }
 
 extension HomeAPI: BaseAPI {
@@ -35,19 +36,21 @@ extension HomeAPI: BaseAPI {
             return "/meeting/all"
         case .getCoffeeChat:
             return "/coffeechat"
+        case .getEmployment:
+            return "/employments"
         }
     }
     
     public var method: Moya.Method {
         switch self {
-        case .getDescription, .getAppServiceAccessStatus, .getInsightPosts, .getGroupAll, .getCoffeeChat:
+        case .getDescription, .getAppServiceAccessStatus, .getInsightPosts, .getGroupAll, .getCoffeeChat, .getEmployment:
             return .get
         }
     }
     
     public var task: Moya.Task {
         switch self {
-        case .getDescription, .getAppServiceAccessStatus, .getInsightPosts, .getCoffeeChat:
+        case .getDescription, .getAppServiceAccessStatus, .getInsightPosts, .getCoffeeChat, .getEmployment:
             return .requestPlain
         case .getGroupAll:
             return .requestParameters(parameters: ["page": 1, "take": 10, "category": "행사,세미나"], encoding: URLEncoding.queryString)

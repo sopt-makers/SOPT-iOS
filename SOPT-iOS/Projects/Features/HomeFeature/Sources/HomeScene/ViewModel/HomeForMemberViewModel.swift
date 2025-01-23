@@ -86,6 +86,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     var insightPosts: [HomeInsightPostsModel]?
     var groupPosts: [HomeGroupPostModel]?
     var coffeeChatPosts: [HomeCoffeeChatPostModel]?
+    var announcementPosts: [HomeAnnouncementModel]?
     
     // MARK: - Inputs
     
@@ -126,6 +127,7 @@ extension HomeForMemberViewModel {
                 owner.useCase.getInsightPosts()
                 owner.useCase.getGroupPosts()
                 owner.useCase.getCoffeeChatPosts()
+                owner.useCase.getAnnouncementPosts()
             }.store(in: cancelBag)
         
         input.cellTapped
@@ -180,6 +182,13 @@ extension HomeForMemberViewModel {
             .withUnretained(self)
             .sink { owner, posts in
                 owner.coffeeChatPosts = posts
+                output.needToReload.send()
+            }.store(in: cancelBag)
+        
+        useCase.announcementPosts
+            .withUnretained(self)
+            .sink { owner, posts in
+                owner.announcementPosts = posts
                 output.needToReload.send()
             }.store(in: cancelBag)
     }

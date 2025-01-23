@@ -17,6 +17,7 @@ public protocol HomeUseCase {
     var insightPosts: PassthroughSubject<[HomeInsightPostsModel], Never> { get set }
     var groupPosts: PassthroughSubject<[HomeGroupPostModel], Never> { get set }
     var coffeeChatPosts: PassthroughSubject<[HomeCoffeeChatPostModel], Never> { get set }
+    var announcementPosts: PassthroughSubject<[HomeAnnouncementModel], Never> { get set }
     
     func getHomeDescription()
     func getRecentSchedule()
@@ -25,6 +26,7 @@ public protocol HomeUseCase {
     func getGroupPosts()
     func getCoffeeChatPosts()
     func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never>
+    func getAnnouncementPosts()
 }
 
 public class DefaultHomeUseCase {
@@ -38,6 +40,7 @@ public class DefaultHomeUseCase {
     public var insightPosts = PassthroughSubject<[HomeInsightPostsModel], Never>()
     public var groupPosts = PassthroughSubject<[HomeGroupPostModel], Never>()
     public var coffeeChatPosts = PassthroughSubject<[HomeCoffeeChatPostModel], Never>()
+    public var announcementPosts = PassthroughSubject<[HomeAnnouncementModel], Never>()
     
     public init(repository: HomeRepositoryInterface) {
         self.repository = repository
@@ -119,4 +122,14 @@ extension DefaultHomeUseCase: HomeUseCase {
             .eraseToAnyPublisher()
     }
     
+    public func getAnnouncementPosts() {
+        repository.getAnnouncementPosts()
+            .withUnretained(self)
+            .sink { event in
+                print("GetAnnouncementPosts State: \(event)")
+            } receiveValue: { owner, posts in
+                owner.announcementPosts.send(posts)
+            }
+            .store(in: cancelBag)
+    }
 }

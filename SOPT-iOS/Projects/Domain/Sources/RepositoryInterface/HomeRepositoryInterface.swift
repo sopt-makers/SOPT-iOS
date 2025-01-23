@@ -18,4 +18,5 @@ public protocol HomeRepositoryInterface {
     func getGroupPosts() -> AnyPublisher<[HomeGroupPostModel], Error>
     func getCoffeeChatPosts() -> AnyPublisher<[HomeCoffeeChatPostModel], Error>
     func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Error>
+    func getAnnouncementPosts() -> AnyPublisher<[HomeAnnouncementModel], Error>
 }

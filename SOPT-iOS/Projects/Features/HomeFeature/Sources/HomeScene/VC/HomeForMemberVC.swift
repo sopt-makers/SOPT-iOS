@@ -163,10 +163,6 @@ extension HomeForMemberVC: UICollectionViewDelegate {
 // MARK: - UICollectionViewDataSource
 
 extension HomeForMemberVC: UICollectionViewDataSource {
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        cellTapped.send(indexPath)
-//    }
-//    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return HomeForMemberSectionLayoutKind.allCases.count
     }
@@ -211,7 +207,7 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .insight: return viewModel.insightPosts != nil ? 1 : 0
         case .group: return viewModel.groupPosts?.count ?? 0
         case .coffeeChat: return viewModel.coffeeChatPosts?.count ?? 0
-        case .announcement: return viewModel.announcementInfoList.count
+        case .announcement: return viewModel.announcementPosts?.count ?? 0
         case .socialLinks: return SocialLinkCardType.allCases.count
         }
     }
@@ -299,10 +295,11 @@ extension HomeForMemberVC: UICollectionViewDataSource {
         case .announcement:
             /// 홍보 카드 셀
             let announcementIndex = indexPath.item
+            guard let announcement = viewModel.announcementPosts?[safe: announcementIndex] else { return UICollectionViewCell() }
             guard let announcementCardCell = collectionView
                 .dequeueReusableCell(withReuseIdentifier: AnnouncementCardCVC.className,
                                      for: indexPath) as? AnnouncementCardCVC else { return UICollectionViewCell() }
-            announcementCardCell.configureCell(model: viewModel.announcementInfoList[announcementIndex])
+            announcementCardCell.configureCell(model: announcement)
             
             return announcementCardCell
             
