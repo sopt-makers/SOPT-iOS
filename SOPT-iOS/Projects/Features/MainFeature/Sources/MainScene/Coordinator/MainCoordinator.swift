@@ -47,7 +47,7 @@ final class MainCoordinator: DefaultMainCoordinator {
             self?.requestCoordinating?(.myPage(userType))
         }
         main.vm.onSafari = { [weak self] url in
-            self?.router.pushSOPTWebView(url: url)
+            self?.router.pushSOPTWebView(url: "https://sopt-internal-dev.pages.dev/test/image")
         }
         main.vm.onNeedSignIn = { [weak self] in
             self?.requestCoordinating?(.signIn)
