@@ -13,7 +13,7 @@ import WebKit
 public final class WKDownloadManager {
     
     private var downloadHandlers: [UTType: WKDownloadExecutable]
-    var webVC: SOPTWebViewControllable?
+    weak var webVC: SOPTWebViewControllable?
     
     init(
         downloadHandlers: [UTType : WKDownloadExecutable] = [:],
@@ -25,6 +25,10 @@ public final class WKDownloadManager {
     
     public func register<T: WKDownloadExecutable>(_ object: T) {
         self.downloadHandlers[T.key] = object
+    }
+    
+    public func register(key: UTType, _ object: WKDownloadExecutable) {
+        self.downloadHandlers[key] = object
     }
     
     func download(

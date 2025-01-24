@@ -14,7 +14,7 @@ import WebKit
 
 import SnapKit
 
-public protocol SOPTWebViewControllable {
+public protocol SOPTWebViewControllable: AnyObject {
     var vc: UIViewController { get }
     var webView: WKWebView { get }
 }
