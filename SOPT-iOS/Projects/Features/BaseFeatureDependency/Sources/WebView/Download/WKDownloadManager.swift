@@ -11,6 +11,7 @@ import UniformTypeIdentifiers
 import WebKit
 
 public final class WKDownloadManager {
+    
     private var downloadHandlers: [UTType: WKDownloadExecutable]
     var webVC: SOPTWebViewControllable?
     

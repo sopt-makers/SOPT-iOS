@@ -23,9 +23,8 @@ struct WKImageDownloadHandler: WKDownloadExecutable {
         
         guard let webVC else { return nil }
         
-        guard await requestAuthorization()
-        else {
-            //TODO: 권한 요청
+        guard await requestAuthorization() else {
+            await presentGoToSettingAlert(from: webVC)
             return nil
         }
         
@@ -41,8 +40,8 @@ struct WKImageDownloadHandler: WKDownloadExecutable {
         guard let fileURL = try? saveToTemporaryDirectory(pngData, suggestedFilename)
         else { return nil }
         
-        presentActivityVC(fileURL, from: webVC)
-  
+        await presentActivityVC(fileURL, from: webVC)
+        
         return nil
     }
     
@@ -60,29 +59,45 @@ struct WKImageDownloadHandler: WKDownloadExecutable {
         return temporaryURL
     }
     
+    @MainActor
     private func presentActivityVC(_ fileURL: URL, from webVC: SOPTWebViewControllable) {
-        Task { @MainActor in
-            let activityVC = UIActivityViewController(
-                activityItems: [fileURL],
-                applicationActivities: nil
-            )
-            
-            activityVC.completionWithItemsHandler = {
-                activityType, completed, returnedItems, activityError in
-                if activityType == .saveToCameraRoll {
-                    guard activityError == nil else {
-                        ToastUtils.showMDSToast(type: .error, text: "이미지 저장에 실패했습니다.")
-                        return
-                    }
-                    
-                    if completed {
-                        ToastUtils.showMDSToast(type: .success, text: "이미지가 저장되었습니다.")
-                    }
+        
+        let activityVC = UIActivityViewController(
+            activityItems: [fileURL],
+            applicationActivities: nil
+        )
+        
+        activityVC.completionWithItemsHandler = {
+            activityType, completed, returnedItems, activityError in
+            if activityType == .saveToCameraRoll {
+                guard activityError == nil else {
+                    ToastUtils.showMDSToast(type: .error, text: "이미지 저장에 실패했습니다.")
+                    return
+                }
+                
+                if completed {
+                    ToastUtils.showMDSToast(type: .success, text: "이미지가 저장되었습니다.")
                 }
             }
-            // 공유 화면 표시
-            webVC.vc.present(activityVC, animated: true, completion: nil)
         }
+        // 공유 화면 표시
+        webVC.vc.present(activityVC, animated: true, completion: nil)
+        
+    }
+    
+    @MainActor
+    private func presentGoToSettingAlert(from webVC: SOPTWebViewControllable) {
+        webVC.vc.makeAlert(
+            title: "갤러리 접근 권한 설정",
+            message: "이미지를 저장하시려면 갤러리 접근 권한이 필요합니다.",
+            actions: .init(title: "나중에", style: .destructive),
+            .init(title: "설정", style: .default, handler: { _ in
+                guard let url = URL(string: UIApplication.openSettingsURLString),
+                      UIApplication.shared.canOpenURL(url) else { return }
+                
+                UIApplication.shared.open(url, completionHandler: nil)
+            })
+        )
     }
 }
 

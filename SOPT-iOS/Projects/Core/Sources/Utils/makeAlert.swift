@@ -34,4 +34,20 @@ public extension UIViewController {
         alertViewController.addAction(okAction)
         self.present(alertViewController, animated: true, completion: completion)
     }
+    
+    func makeAlert(
+        title: String,
+        message: String,
+        actions: UIAlertAction...,
+        completion: (() -> Void)? = nil
+    ) {
+        makeVibrate()
+        let alertVC = UIAlertController(
+            title: title,
+            message: message,
+            preferredStyle: .alert
+        )
+        actions.forEach { alertVC.addAction($0) }
+        self.present(alertVC, animated: true, completion: completion)
+    }
 }
