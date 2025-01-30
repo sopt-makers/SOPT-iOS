@@ -39,8 +39,7 @@ final class HotBoardHeaderView: UICollectionReusableView {
 
   private let descriptionLabel: UILabel = {
     let label = UILabel()
-    label.font = .Main.body2
-    label.textColor = DSKitAsset.Colors.gray300.color
+    label.numberOfLines = 0
     label.textAlignment = .left
     return label
   }()
@@ -137,7 +136,10 @@ extension HotBoardHeaderView {
   func initCell(_ hotBoard: HotBoardModel) {
     self.hotBoard = hotBoard
     titleLabel.text = hotBoard.title
-    descriptionLabel.text = hotBoard.content
+    descriptionLabel.htmlToString(targetString: hotBoard.content,
+                                  defaultFont: DSKitFontFamily.Suit.medium.font(size: 14),
+                                  defaultColor: DSKitAsset.Colors.gray300.color
+    )
   }
 }
 
