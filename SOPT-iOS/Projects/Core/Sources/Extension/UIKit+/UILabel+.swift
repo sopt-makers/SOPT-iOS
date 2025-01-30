@@ -74,18 +74,53 @@ public extension UILabel {
         self.attributedText = attributedString
     }
     
-    func htmlToString(_ targetString: String) -> NSAttributedString? {
+    /// 서버에서 받아온 string 값에서 html 태그를 적용해주는 함수
+    /// - targetString에는 특정 문자열을 넣어주세요
+    /// - defaultFont, defaultColor에는 기본 폰트와 컬러를 넣어주세요
+    func htmlToString(targetString: String,
+                      defaultFont: UIFont,
+                      defaultColor: UIColor) {
         let text = targetString
+        guard let data = text.data(using: .utf8) else { return }
         
-        guard let data = text.data(using: .utf8) else {
-            return NSAttributedString()
-        }
         do {
-            return try NSAttributedString(data: data,
-                                          options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding: String.Encoding.utf8.rawValue],
-                                          documentAttributes: nil)
-        } catch {
-            return NSAttributedString()
+            let attributedString = try NSMutableAttributedString(
+                data: data,
+                options: [
+                    .documentType: NSAttributedString.DocumentType.html,
+                    .characterEncoding: String.Encoding.utf8.rawValue],
+                documentAttributes: nil
+            )
+            let range = NSRange(location: 0, length: attributedString.length)
+            
+            attributedString.enumerateAttribute(.font, in: range, options: .longestEffectiveRangeNotRequired)
+            { value, range, _ in
+                let currentFont: UIFont = (value as? UIFont) ?? .init()
+                var replacementFont: UIFont?
+                
+                // 기본 폰트 이름
+                let fontName = defaultFont.fontName.split(separator: "-").first ?? .init()
+                // 볼드 폰트
+                let boldFont = UIFont(name: String(fontName + "-" + "Bold"), size: defaultFont.pointSize) ?? .init()
+                
+                // 폰트 이름에 bold가 포함되어 있을 경우, 볼드체로 간주
+                if currentFont.fontName.contains("bold") || currentFont.fontName.contains("Bold") {
+                    replacementFont = boldFont
+                } else {
+                    replacementFont = defaultFont
+                }
+                
+                let replacingAttributedFont = [NSAttributedString.Key.font: replacementFont ?? .init()]
+                attributedString.addAttributes(replacingAttributedFont, range: range)
+            }
+            
+            attributedString.addAttributes([NSAttributedString.Key.foregroundColor: defaultColor],
+                                           range: range)
+            
+            self.attributedText = attributedString
+            
+        } catch let error {
+            print("htmlToString 변환 에러: ", error.localizedDescription)
         }
     }
     
