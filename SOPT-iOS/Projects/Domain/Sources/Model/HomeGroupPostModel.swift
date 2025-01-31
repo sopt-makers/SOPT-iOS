@@ -6,10 +6,9 @@
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 import Core
-import DSKit
 
 public struct HomeGroupPostModel: Codable {
     public let id: Int
@@ -46,15 +45,6 @@ public struct HomeGroupPostModel: Codable {
                 return "스터디"
             }
         }
-        
-        public var textColor: UIColor {
-            switch self {
-            case .event:
-                return DSKitAsset.Colors.success.color
-            case .study:
-                return DSKitAsset.Colors.secondary.color
-            }
-        }
     }
     
     // MARK: - Status Enum
@@ -72,28 +62,6 @@ public struct HomeGroupPostModel: Codable {
                 return I18N.Home.Group.applyAble
             case .recruitmentComplete:
                 return I18N.Home.Group.recruitmentComplete
-            }
-        }
-        
-        public var textColor: UIColor {
-            switch self {
-            case .beforeStart:
-                return DSKitAsset.Colors.gray800.color
-            case .applyAble:
-                return DSKitAsset.Colors.gray800.color
-            case .recruitmentComplete:
-                return DSKitAsset.Colors.gray800.color
-            }
-        }
-        
-        public var backgroundColor: UIColor {
-            switch self {
-            case .beforeStart:
-                return DSKitAsset.Colors.attention.color
-            case .applyAble:
-                return DSKitAsset.Colors.secondary.color
-            case .recruitmentComplete:
-                return DSKitAsset.Colors.gray100.color
             }
         }
     }

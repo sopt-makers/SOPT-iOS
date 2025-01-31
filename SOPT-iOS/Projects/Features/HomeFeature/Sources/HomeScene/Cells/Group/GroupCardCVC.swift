@@ -222,7 +222,7 @@ extension GroupCardCVC: UICollectionViewDataSource {
         guard let cell = collectionView
             .dequeueReusableCell(withReuseIdentifier: GroupRoundTagCVC.className,
                                  for: indexPath) as? GroupRoundTagCVC else { return UICollectionViewCell() }
-        cell.configureCell(text: tagTextList[indexPath.item])
+        cell.configureCell(text: tagTextList[safe: indexPath.item])
         return cell
     }
 }

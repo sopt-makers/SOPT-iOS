@@ -237,7 +237,7 @@ extension CoffeeChatCardCVC: UICollectionViewDataSource {
         guard let cell = collectionView
             .dequeueReusableCell(withReuseIdentifier: CoffeeChatRoundTagCVC.className,
                                  for: indexPath) as? CoffeeChatRoundTagCVC else { return UICollectionViewCell() }
-        cell.setData(info: generationTagTextList[indexPath.item])
+        cell.setData(info: generationTagTextList[safe: indexPath.item])
         return cell
     }
 }
