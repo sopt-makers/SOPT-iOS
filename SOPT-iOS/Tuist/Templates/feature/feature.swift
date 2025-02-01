@@ -20,34 +20,22 @@ let template = Template(
         .file(path: "Projects/Features/\(nameAttribute)Feature/Project.swift", templatePath: "Project.stencil"),
         
         // Tests
-        .directory(path: "Projects/Features/\(nameAttribute)Feature/Tests", sourcePath: "./"),
-        .directory(path: "Projects/Features/\(nameAttribute)Feature/Tests/Sources", sourcePath: "./"),
-        .file(path: "Projects/Features/\(nameAttribute)Feature/Tests/Sources/.empty", templatePath: ".empty"),
-        .directory(path: "Projects/Features/\(nameAttribute)Feature/Tests/Resources", sourcePath: "./"),
-        .file(path: "Projects/Features/\(nameAttribute)Feature/Tests/Resources/.empty", templatePath: ".empty"),
+        .file(path: "Projects/Features/\(nameAttribute)Feature/Tests/Sources/Empty.swift", templatePath: "Empty.stencil"),
+        .file(path: "Projects/Features/\(nameAttribute)Feature/Tests/Resources/Empty.swift", templatePath: "Empty.stencil"),
         
         // Sources
-        .directory(path: "Projects/Features/\(nameAttribute)Feature/Sources", sourcePath: "./"),
-        .file(path: "Projects/Features/\(nameAttribute)Feature/Sources/.empty", templatePath: ".empty"),
+        .file(path: "Projects/Features/\(nameAttribute)Feature/Sources/Empty.swift", templatePath: "Empty.stencil"),
         
         // Interface
-        .directory(path: "Projects/Features/\(nameAttribute)Feature/Interface", sourcePath: "./"),
-        .directory(path: "Projects/Features/\(nameAttribute)Feature/Interface/Sources", sourcePath: "./"),
-        .file(path: "Projects/Features/\(nameAttribute)Feature/Interface/Sources/.empty", templatePath: ".empty"),
+        .file(path: "Projects/Features/\(nameAttribute)Feature/Interface/Sources/Empty.swift", templatePath: "Empty.stencil"),
         
         // Derived
-        .directory(path: "Projects/Features/\(nameAttribute)Feature/Derived", sourcePath: "./"),
-        .directory(path: "Projects/Features/\(nameAttribute)Feature/Derived/Sources", sourcePath: "./"),
-        .file(path: "Projects/Features/\(nameAttribute)Feature/Derived/Sources/.empty", templatePath: ".empty"),
-        .directory(path: "Projects/Features/\(nameAttribute)Feature/Derived/InfoPlists", sourcePath: "./"),
+        .file(path: "Projects/Features/\(nameAttribute)Feature/Derived/Sources/Empty.swift", templatePath: "Empty.stencil"),
         .file(path: "Projects/Features/\(nameAttribute)Feature/Derived/InfoPlists/Info.plist", templatePath: "Info.plist"),
         
         // Demo
-        .directory(path: "Projects/Features/\(nameAttribute)Feature/Demo", sourcePath: "./"),
-        .directory(path: "Projects/Features/\(nameAttribute)Feature/Demo/Resources", sourcePath: "./"),
-        .file(path: "Projects/Features/\(nameAttribute)Feature/Demo/Sources/LaunchScreen.storyboard", templatePath: "LaunchScreen.storyboard"),
-        .directory(path: "Projects/Features/\(nameAttribute)Feature/Demo/Sources/Assets.xcassets", sourcePath: "Assets.xcassets"),
-        .directory(path: "Projects/Features/\(nameAttribute)Feature/Demo/Sources", sourcePath: "./"),
-        .file(path: "Projects/Features/\(nameAttribute)Feature/Demo/Sources/.empty", templatePath: ".empty"),
+        .file(path: "Projects/Features/\(nameAttribute)Feature/Demo/Resources/LaunchScreen.storyboard", templatePath: "LaunchScreen.storyboard"),
+        .directory(path: "Projects/Features/\(nameAttribute)Feature/Demo/Resources/Assets.xcassets", sourcePath: "Assets.xcassets"),
+        .file(path: "Projects/Features/\(nameAttribute)Feature/Demo/Sources/Empty.swift", templatePath: "Empty.stencil"),
     ]
 )
