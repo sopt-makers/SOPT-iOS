@@ -1,0 +1,18 @@
+//
+//  Project.swift
+//  Templates
+//
+//  Created by 강윤서 on 2/1/25.
+//
+
+import ProjectDescription
+import ProjectDescriptionHelpers
+import DependencyPlugin
+
+let project = Project.makeModule(
+    name: "{{name}}Feature",
+    targets: [.unitTest, .staticFramework, .demo, .interface],
+    interfaceDependencies: [
+        .Features.Web.Feature
+    ]
+)
