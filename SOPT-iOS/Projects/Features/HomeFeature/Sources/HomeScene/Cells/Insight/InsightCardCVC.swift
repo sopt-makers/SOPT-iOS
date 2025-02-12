@@ -103,7 +103,7 @@ extension InsightCardCVC {
 // MARK: - Methods
 
 extension InsightCardCVC {
-    func configureCell(model: HomeInsightPostsModel?) {
+    func configureCell(model: HomePresentationModel.InsightPost?) {
         guard let model = model else { return }
         self.categoryTagView.setData(with: model.category, isHotTag: model.isHotPost)
         if let profileImage = model.profileImage {

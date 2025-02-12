@@ -78,7 +78,7 @@ extension AppServiceCardCVC {
 // MARK: - Methods
 
 extension AppServiceCardCVC {
-    func configureCell(model: HomeAppServicesModel?) {
+    func configureCell(model: HomePresentationModel.AppService?) {
         guard let model else { return }
         
         self.logoImageView.setImage(with: model.iconURL)

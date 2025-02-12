@@ -126,7 +126,7 @@ extension GroupCardCVC {
 // MARK: - Methods
 
 extension GroupCardCVC {
-    func configureCell(model: HomeGroupPostModel?) {
+    func configureCell(model: HomePresentationModel.GroupPost?) {
         guard let model = model else { return }
         
         self.coverImageView.setImage(with: model.imageUrl)
@@ -138,9 +138,8 @@ extension GroupCardCVC {
         makeTitleAttributedString(category: model.category, title: model.title)
     }
     
-    
     /// 자격 요건 태그 콜렉션뷰: 데이터 append 이후 reload
-    private func reloadJoinableConditionTagCollectionView(_ model: HomeGroupPostModel) {
+    private func reloadJoinableConditionTagCollectionView(_ model: HomePresentationModel.GroupPost) {
         self.tagTextList.removeAll()
         self.tagTextList.append(model.canJoinAllParts ? I18N.Home.Group.entireGeneration : I18N.Home.Group.activityGeneration)
         self.tagTextList += model.joinableParts

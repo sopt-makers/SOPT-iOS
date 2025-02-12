@@ -162,7 +162,7 @@ extension CoffeeChatCardCVC {
 // MARK: - Methods
 
 extension CoffeeChatCardCVC {
-    func configureCell(model: HomeCoffeeChatPostModel?) {
+    func configureCell(model: HomePresentationModel.CoffeeChat?) {
         guard let model else { return }
 
         self.titleLabel.text = model.bio
