@@ -83,6 +83,7 @@ public extension UILabel {
     /// - defaultFont, defaultColor에는 기본 폰트와 컬러를 넣어주세요
     func htmlToString(targetString: String,
                       defaultFont: UIFont,
+                      boldFont: UIFont,
                       defaultColor: UIColor) {
         let text = targetString
         guard let data = text.data(using: .utf8) else { return }
@@ -101,11 +102,6 @@ public extension UILabel {
             { value, range, _ in
                 let currentFont: UIFont = (value as? UIFont) ?? .init()
                 var replacementFont: UIFont?
-
-                // 기본 폰트 이름
-                let fontName = defaultFont.fontName.split(separator: "-").first ?? .init()
-                // 볼드 폰트
-                let boldFont = UIFont(name: String(fontName + "-" + "Bold"), size: defaultFont.pointSize) ?? .init()
                 
                 // 폰트 이름에 bold가 포함되어 있을 경우, 볼드체로 간주
                 if currentFont.fontName.contains("bold") || currentFont.fontName.contains("Bold") {
@@ -120,9 +116,8 @@ public extension UILabel {
             
             attributedString.addAttributes([NSAttributedString.Key.foregroundColor: defaultColor],
                                            range: range)
-            
             self.attributedText = attributedString
-        
+
         } catch let error {
             print("htmlToString 변환 에러: ", error.localizedDescription)
         }
