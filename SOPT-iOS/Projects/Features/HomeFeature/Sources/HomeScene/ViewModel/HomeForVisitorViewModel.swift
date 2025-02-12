@@ -20,32 +20,31 @@ public class HomeForVisitorViewModel: HomeForVisitorViewModelType {
     
     // MARK: - Properties
     
-    let productInfoList: [ProductInfo] = [
-        ProductInfo(name: I18N.Home.MainProduct.homePage, image: DSKitAsset.Assets.imgHomepage.image),
-        ProductInfo(name: I18N.Home.MainProduct.activityReview, image: DSKitAsset.Assets.imgGroupLogo.image),
-        ProductInfo(name: I18N.Home.MainProduct.project, image: DSKitAsset.Assets.imgMemberLogo.image),
-        ProductInfo(name: I18N.Home.MainProduct.instagram, image: DSKitAsset.Assets.imgInstagram.image)
-    ]
+    let userType: UserType = UserDefaultKeyList.Auth.getUserType()
     
-    // TODO: 서버 연결 필요
-    let appServiceInfoList: [AppServiceInfo] = [
-        AppServiceInfo(name: "콕찌르기", imageURL: "https://images.mypetlife.co.kr/content/uploads/2018/12/09154907/cotton-tulear-2422612_1280.jpg", badgeText: ""),
-        AppServiceInfo(name: "솝마디", imageURL: "https://images.mypetlife.co.kr/content/uploads/2018/12/09154907/cotton-tulear-2422612_1280.jpg", badgeText: ""),
-        AppServiceInfo(name: "솝탬프", imageURL: "https://images.mypetlife.co.kr/content/uploads/2018/12/09154907/cotton-tulear-2422612_1280.jpg", badgeText: "")
+    let productServiceList: [HomePresentationModel.ProductService] = [
+        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.homePage, image: DSKitAsset.Assets.imgHomepage.image),
+        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.activityReview, image: DSKitAsset.Assets.imgGroupLogo.image),
+        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.project, image: DSKitAsset.Assets.imgMemberLogo.image),
+        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.instagram, image: DSKitAsset.Assets.imgInstagram.image)
     ]
     
     // MARK: - Properties
 
     private let useCase: HomeUseCase
     private var cancelBag = CancelBag()
-    
+        
     // MARK: - Inputs
     
-    public struct Input { }
+    public struct Input {
+        let viewDidLoad: Driver<Void>
+    }
     
     // MARK: - Outputs
     
-    public struct Output { }
+    public struct Output {
+        let appService = PassthroughSubject<[HomePresentationModel.AppService], Never>()
+    }
     
     // MARK: - initialization
     
@@ -57,6 +56,15 @@ public class HomeForVisitorViewModel: HomeForVisitorViewModelType {
 extension HomeForVisitorViewModel {
     public func transform(from input: Input, cancelBag: Core.CancelBag) -> Output {
         let output = Output()
+        
+        input.viewDidLoad
+            .flatMap(useCase.getAppServices)
+            .withUnretained(self)
+            .sink { owner, appServiceModel in
+                let appService = appServiceModel.map { $0.toPresentation() }
+                output.appService.send(appService)
+            }.store(in: cancelBag)
+        
         return output
     }
 }

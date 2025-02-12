@@ -4,7 +4,7 @@
 //
 //  Created by Jae Hyun Lee on 11/22/24.
 //  Copyright © 2024 SOPT-iOS. All rights reserved.
-//
+
 
 import Foundation
 import UIKit
@@ -17,76 +17,22 @@ import DSKit
 import HomeFeatureInterface
 import BaseFeatureDependency
 
-struct ProductInfo {
-    let name: String
-    let image: UIImage
-}
-
-struct AppServiceInfo {
-    let name: String
-    let imageURL: String
-    let badgeText: String
-}
-
-struct InsightInfo {
-    let category: String
-    let profileImageURL: String
-    let userName: String
-    let postTitle: String
-    let isHotTag: Bool
-}
-
-struct AnnouncementInfo {
-    let id: Int
-    let categoryName: String
-    let categoryDetailName: String
-    let title: String
-    let profileImage: String
-    let name: String
-    let content: String
-    let images: String?
-}
-
 public class HomeForMemberViewModel: HomeForMemberViewModelType {
-    
-    // MARK: - Properties
-    
-    let productInfoList: [ProductInfo] = [
-        ProductInfo(name: I18N.Home.MainProduct.playground, image: DSKitAsset.Assets.imgPlaygroundLogo.image),
-        ProductInfo(name: I18N.Home.MainProduct.groupAndStudy, image: DSKitAsset.Assets.imgGroupLogo.image),
-        ProductInfo(name: I18N.Home.MainProduct.member, image: DSKitAsset.Assets.imgMemberLogo.image),
-        ProductInfo(name: I18N.Home.MainProduct.project, image: DSKitAsset.Assets.imgProjectLogo.image)
-    ]
-
-    // TODO: 서버 연결 필요
-    let insightInfoList: [InsightInfo] = [
-        InsightInfo(category: "SOPT활동", profileImageURL: "https://img.seoul.co.kr/img/upload/2023/06/13/SSC_20230613163553_O2.png", userName: "차은우", postTitle: "차은우가 솝트 기획으로 활동한 썰 푼다 최대글자수입니다람지렁이", isHotTag: false)
-    ]
-    
-    // TODO: 서버 연결 필요
-    let announcementInfoList: [AnnouncementInfo] = [
-        AnnouncementInfo(id: 0, categoryName: "취업/진로", categoryDetailName: "꿀팁", title: "이력서를 쓰며 확인해야 할 7가지", profileImage: "https://i.pinimg.com/736x/5e/83/3a/5e833a2a1b804d3f0fdd0bae204c20f8.jpg", name: "눈멍이", content: "사진이 있는 경우, 본문 내용은 한 줄로 보여주는 정책으로", images: "https://i.pinimg.com/736x/c5/e4/b7/c5e4b76374f640585796b8e01f907845.jpg"),
-        AnnouncementInfo(id: 0, categoryName: "취업/진로", categoryDetailName: "꿀팁", title: "이력서를 쓰며 확인해야 할 7가지", profileImage: "https://i.pinimg.com/736x/5e/83/3a/5e833a2a1b804d3f0fdd0bae204c20f8.jpg", name: "눈멍이", content: "https://toss.im/career/job-detail?job_id=4071133003&company=토스뱅크 안녕하세요 31기 안드로이드 파트장 이현우입니다. 제가 속한 토스커뮤니티 계열사중 토스뱅크에서 네이티브 모바일 개발자를 채용을 시작했습니다.  토스커뮤니티에 관심있으신 분은 저에게 디스코드/링크드인 DM 주시면 감사하겠습니다 https://toss.im/career/job-detail?job_id=4071133003&company=토스뱅크 안녕하세요 31기 안드로이드 파트장 이현우입니다. 제가 속한 토스커뮤니티 계열사중 토스뱅크에서 네이티브 모바일 개발자를 채용을 시작했습니다.  토스커뮤니티에 관심있으신 분은 저에게 디스코드/링크드인 DM 주시면 감사하겠습니다", images: nil),
-        AnnouncementInfo(id: 0, categoryName: "취업/진로", categoryDetailName: "꿀팁", title: "이력서를 쓰며 확인해야 할 7가지", profileImage: "https://i.pinimg.com/736x/5e/83/3a/5e833a2a1b804d3f0fdd0bae204c20f8.jpg", name: "눈멍이", content: "https://toss.im/career/job-detail?job_id=4071133003&company=토스뱅크  안녕하세요 31기 안드로이드 파트장 이현우입니다. 제가 속한 토스커뮤니티 계열사중 토스뱅크에서 네이티브 모바일 개발자를 채용을 시작했습니다.  토스커뮤니티에 관심있으신 분은 저에게 디스코드/링크드인 DM 주시면 감사하겠습니다", images: nil),
-        AnnouncementInfo(id: 0, categoryName: "취업/진로", categoryDetailName: "꿀팁", title: "이력서를 쓰며 확인해야 할 7가지", profileImage: "https://i.pinimg.com/736x/5e/83/3a/5e833a2a1b804d3f0fdd0bae204c20f8.jpg", name: "눈멍이", content: "사진이 있는 경우, 본문 내용은 한 줄로 보여주는 정책으로", images: "https://i.pinimg.com/736x/a8/c4/d2/a8c4d26e0dcedad1eacdcaf721a966b3.jpg"),
-        AnnouncementInfo(id: 0, categoryName: "취업/진로", categoryDetailName: "꿀팁", title: "이력서를 쓰며 확인해야 할 7가지", profileImage: "https://i.pinimg.com/736x/5e/83/3a/5e833a2a1b804d3f0fdd0bae204c20f8.jpg", name: "눈멍이", content: "https://toss.im/career/job-detail?job_id=4071133003&company=토스뱅크 안녕하세요 31기 안드로이드 파트장 이현우입니다. 제가 속한 토스커뮤니티 계열사중 토스뱅크에서 네이티브 모바일 개발자를 채용을 시작했습니다.  토스커뮤니티에 관심있으신 분은 저에게 디스코드/링크드인 DM 주시면 감사하겠습니다 https://toss.im/career/job-detail?job_id=4071133003&company=토스뱅크 안녕하세요 31기 안드로이드 파트장 이현우입니다. 제가 속한 토스커뮤니티 계열사중 토스뱅크에서 네이티브 모바일 개발자를 채용을 시작했습니다.  토스커뮤니티에 관심있으신 분은 저에게 디스코드/링크드인 DM 주시면 감사하겠습니다", images: nil)
-    ]
-    
-    let currentCardPage = PassthroughSubject<Int, Never>()
     
     // MARK: - Properties
 
     private let useCase: HomeUseCase
     private var cancelBag = CancelBag()
     
-    var userType: UserType = UserDefaultKeyList.Auth.getUserType()
-    var homeDescription: HomeDescriptionModel?
-    var recentSchedule: HomeRecentScheduleModel?
-    var appServices: [HomeAppServicesModel]?
-    var insightPosts: [HomeInsightPostsModel]?
-    var groupPosts: [HomeGroupPostModel]?
-    var coffeeChatPosts: [HomeCoffeeChatPostModel]?
-    var announcementPosts: [HomeAnnouncementModel]?
+    let currentCardPage = PassthroughSubject<Int, Never>()
+    let userType: UserType = UserDefaultKeyList.Auth.getUserType()
+    
+    let productServiceList: [HomePresentationModel.ProductService] = [
+        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.playground, image: DSKitAsset.Assets.imgPlaygroundLogo.image),
+        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.groupAndStudy, image: DSKitAsset.Assets.imgGroupLogo.image),
+        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.member, image: DSKitAsset.Assets.imgMemberLogo.image),
+        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.project, image: DSKitAsset.Assets.imgProjectLogo.image)
+    ]
     
     // MARK: - Inputs
     
@@ -98,13 +44,12 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     // MARK: - Outputs
     
     public struct Output {
-        let needToReload = PassthroughSubject<Void, Never>()
+        let homeItem = PassthroughSubject<HomePresentationModel, Never>()
     }
     
-    // MARK: - HomeForeMemberCoordinating
+    // MARK: - HomeForMemberCoordinating
     
     public var onDashBoardCellTapped: (() -> Void)?
-
     
     // MARK: - initialization
     
@@ -116,19 +61,42 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
 extension HomeForMemberViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
-        self.bindOutput(output: output, cancelBag: cancelBag)
-        
+
         input.viewDidLoad
+            .flatMap { _ in
+                Publishers.Zip3(
+                    self.useCase.getHomeDescription().map { $0.toPresentation() },
+                    self.useCase.getRecentSchedule().map { $0.toPresentation() },
+                    self.useCase.getAppServices().map { $0.map { $0.toPresentation() } }
+                )
+            }
+            .flatMap {
+                description,
+                recentSchedule,
+                appService in
+                Publishers.Zip4(
+                    self.useCase.getInsightPosts().map { $0.map { $0.toPresentation() } },
+                    self.useCase.getGroupPosts().map { $0.map { $0.toPresentation() } },
+                    self.useCase.getCoffeeChatPosts().map { $0.map { $0.toPresentation() } },
+                    self.useCase.getAnnouncementPosts().map { $0.map { $0.toPresentation() } }
+                )
+                .map { insight, group, coffeeChat, announcement in
+                    HomePresentationModel(
+                        description: description,
+                        recentSchedule: recentSchedule,
+                        appServices: appService,
+                        insightPosts: insight,
+                        groupPosts: group,
+                        coffeeChatPosts: coffeeChat,
+                        announcementPosts: announcement
+                    )
+                }
+            }
             .withUnretained(self)
-            .sink { owner, _ in
-                owner.useCase.getHomeDescription()
-                owner.useCase.getRecentSchedule()
-                owner.useCase.getAppServices()
-                owner.useCase.getInsightPosts()
-                owner.useCase.getGroupPosts()
-                owner.useCase.getCoffeeChatPosts()
-                owner.useCase.getAnnouncementPosts()
-            }.store(in: cancelBag)
+            .sink { owner, data in
+                output.homeItem.send(data)
+            }
+            .store(in: cancelBag)
         
         input.cellTapped
             .filter{ $0.section == 1 }
@@ -139,57 +107,5 @@ extension HomeForMemberViewModel {
             .store(in: cancelBag)
         
         return output
-    }
-    
-    private func bindOutput(output: Output, cancelBag: CancelBag) {
-        useCase.homeDescription
-            .withUnretained(self)
-            .sink { owner, description in
-                owner.homeDescription = description
-                output.needToReload.send()
-            }.store(in: cancelBag)
-        
-        useCase.recentSchedule
-            .withUnretained(self)
-            .sink { owner, schedule in
-                owner.recentSchedule = schedule
-                owner.recentSchedule?.date = setDateFormat(to: "MM.dd")
-                output.needToReload.send()
-            }.store(in: cancelBag)
-        
-        useCase.appServices
-            .withUnretained(self)
-            .sink { owner, services in
-                owner.appServices = services
-                output.needToReload.send()
-            }.store(in: cancelBag)
-        
-        useCase.insightPosts
-            .withUnretained(self)
-            .sink { owner, posts in
-                owner.insightPosts = posts
-                output.needToReload.send()
-            }.store(in: cancelBag)
-        
-        useCase.groupPosts
-            .withUnretained(self)
-            .sink { owner, posts in
-                owner.groupPosts = posts
-                output.needToReload.send()
-            }.store(in: cancelBag)
-        
-        useCase.coffeeChatPosts
-            .withUnretained(self)
-            .sink { owner, posts in
-                owner.coffeeChatPosts = posts
-                output.needToReload.send()
-            }.store(in: cancelBag)
-        
-        useCase.announcementPosts
-            .withUnretained(self)
-            .sink { owner, posts in
-                owner.announcementPosts = posts
-                output.needToReload.send()
-            }.store(in: cancelBag)
     }
 }
