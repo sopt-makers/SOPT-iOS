@@ -38,3 +38,5 @@ enum HomeForMemberSectionLayoutKind: Int, CaseIterable {
         }
     }
 }
+
+extension HomeForMemberSectionLayoutKind: HomeSectionKindProtocol { }
