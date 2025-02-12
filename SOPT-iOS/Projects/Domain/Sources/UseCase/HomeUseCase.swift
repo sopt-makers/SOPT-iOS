@@ -11,22 +11,14 @@ import Combine
 import Core
 
 public protocol HomeUseCase {
-    var homeDescription: PassthroughSubject<HomeDescriptionModel, Never> { get set }
-    var recentSchedule: PassthroughSubject<HomeRecentScheduleModel, Never> { get set }
-    var appServices: PassthroughSubject<[HomeAppServicesModel], Never> { get set }
-    var insightPosts: PassthroughSubject<[HomeInsightPostsModel], Never> { get set }
-    var groupPosts: PassthroughSubject<[HomeGroupPostModel], Never> { get set }
-    var coffeeChatPosts: PassthroughSubject<[HomeCoffeeChatPostModel], Never> { get set }
-    var announcementPosts: PassthroughSubject<[HomeAnnouncementModel], Never> { get set }
-    
-    func getHomeDescription()
-    func getRecentSchedule()
-    func getAppServices()
-    func getInsightPosts()
-    func getGroupPosts()
-    func getCoffeeChatPosts()
+    func getHomeDescription() -> AnyPublisher<HomeDescriptionModel, Never>
+    func getRecentSchedule() -> AnyPublisher<HomeRecentScheduleModel, Never>
+    func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Never>
+    func getInsightPosts() -> AnyPublisher<[HomeInsightPostsModel], Never>
+    func getGroupPosts() -> AnyPublisher<[HomeGroupPostModel], Never>
+    func getCoffeeChatPosts() -> AnyPublisher<[HomeCoffeeChatPostModel], Never>
     func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never>
-    func getAnnouncementPosts()
+    func getAnnouncementPosts() -> AnyPublisher<[HomeAnnouncementModel], Never>
 }
 
 public class DefaultHomeUseCase {
@@ -34,84 +26,59 @@ public class DefaultHomeUseCase {
     private let repository: HomeRepositoryInterface
     private let cancelBag = CancelBag()
     
-    public var homeDescription = PassthroughSubject<HomeDescriptionModel, Never>()
-    public var recentSchedule = PassthroughSubject<HomeRecentScheduleModel, Never>()
-    public var appServices = PassthroughSubject<[HomeAppServicesModel], Never>()
-    public var insightPosts = PassthroughSubject<[HomeInsightPostsModel], Never>()
-    public var groupPosts = PassthroughSubject<[HomeGroupPostModel], Never>()
-    public var coffeeChatPosts = PassthroughSubject<[HomeCoffeeChatPostModel], Never>()
-    public var announcementPosts = PassthroughSubject<[HomeAnnouncementModel], Never>()
-    
     public init(repository: HomeRepositoryInterface) {
         self.repository = repository
     }
 }
 
 extension DefaultHomeUseCase: HomeUseCase {
-    public func getHomeDescription() {
+    public func getHomeDescription() -> AnyPublisher<HomeDescriptionModel, Never> {
         repository.getHomeDescription()
-            .withUnretained(self)
-            .sink { event in
-                print("GetHomeDescription State: \(event)")
-            } receiveValue: { owner, description in
-                owner.homeDescription.send(description)
-            }
-            .store(in: cancelBag)
+            .catch { error in
+                return Empty<HomeDescriptionModel, Never>()
+            }.eraseToAnyPublisher()
     }
     
-    public func getRecentSchedule() {
+    public func getRecentSchedule() -> AnyPublisher<HomeRecentScheduleModel, Never> {
         repository.getRecentSchedule()
-            .withUnretained(self)
-            .sink { event in
-                print("GetRecentSchedule State: \(event)")
-            } receiveValue: { owner, schedule in
-                owner.recentSchedule.send(schedule)
-            }
-            .store(in: cancelBag)
+            .catch { error in
+                return Empty<HomeRecentScheduleModel, Never>()
+            }.eraseToAnyPublisher()
     }
     
-    public func getAppServices() {
+    public func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Never> {
         repository.getAppServices()
-            .withUnretained(self)
-            .sink { event in
-                print("GetAppServices State: \(event)")
-            } receiveValue: { owner, services in
-                owner.appServices.send(services)
-            }
-            .store(in: cancelBag)
+            .catch { error in
+                return Empty<[HomeAppServicesModel], Never>()
+            }.eraseToAnyPublisher()
     }
     
-    public func getInsightPosts() {
+    public func getInsightPosts() -> AnyPublisher<[HomeInsightPostsModel], Never> {
         repository.getInsightPosts()
-            .withUnretained(self)
-            .sink { event in
-                print("GetInsightPosts State: \(event)")
-            } receiveValue: { owner, posts in
-                owner.insightPosts.send(posts)
-            }
-            .store(in: cancelBag)
+            .catch { error in
+                return Empty<[HomeInsightPostsModel], Never>()
+            }.eraseToAnyPublisher()
     }
     
-    public func getGroupPosts() {
+    public func getGroupPosts() -> AnyPublisher<[HomeGroupPostModel], Never> {
         repository.getGroupPosts()
-            .withUnretained(self)
-            .sink { event in
-                print("GetGroupPosts State: \(event)")
-            } receiveValue: { owner, posts in
-                owner.groupPosts.send(posts)
-            }
-            .store(in: cancelBag)
+            .catch { error in
+                return Empty<[HomeGroupPostModel], Never>()
+            }.eraseToAnyPublisher()
     }
     
-    public func getCoffeeChatPosts() {
+    public func getCoffeeChatPosts() -> AnyPublisher<[HomeCoffeeChatPostModel], Never> {
         repository.getCoffeeChatPosts()
-            .withUnretained(self)
-            .sink { event in
-                print("GetCoffeeChatPosts State: \(event)")
-            } receiveValue: { owner, posts in
-                owner.coffeeChatPosts.send(posts)
-            }
-            .store(in: cancelBag)
+            .catch { error in
+                return Empty<[HomeCoffeeChatPostModel], Never>()
+            }.eraseToAnyPublisher()
+    }
+    
+    public func getAnnouncementPosts() -> AnyPublisher<[HomeAnnouncementModel], Never> {
+        repository.getAnnouncementPosts()
+            .catch { error in
+                return Empty<[HomeAnnouncementModel], Never>()
+            }.eraseToAnyPublisher()
     }
     
     public func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never> {
@@ -120,16 +87,5 @@ extension DefaultHomeUseCase: HomeUseCase {
                 return Empty<[HomeCalendarDetailModel], Never>()
             }
             .eraseToAnyPublisher()
-    }
-    
-    public func getAnnouncementPosts() {
-        repository.getAnnouncementPosts()
-            .withUnretained(self)
-            .sink { event in
-                print("GetAnnouncementPosts State: \(event)")
-            } receiveValue: { owner, posts in
-                owner.announcementPosts.send(posts)
-            }
-            .store(in: cancelBag)
     }
 }
