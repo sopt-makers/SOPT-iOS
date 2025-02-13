@@ -11,10 +11,14 @@ import UIKit
 import Core
 import DSKit
 
-enum SocialLinkCardType: CaseIterable {
+enum SocialLinkCardType: CaseIterable, Identifiable {
     case homePage
     case instagram
     case youtube
+        
+    var id: UUID {
+        return UUID()
+    }
     
     var image: UIImage {
         switch self {

@@ -77,14 +77,15 @@ extension HomeDefaultHeaderView {
 // MARK: - Methods
 
 extension HomeDefaultHeaderView {
-    func setDataForMember(sectionKind: HomeForMemberSectionLayoutKind) {
-        self.titleLabel.text = sectionKind.title
-        self.viewAllButton.isHidden = (sectionKind == .appService) ? true : false
-        self.coffechatLogoImageView.isHidden = (sectionKind == .coffeeChat) ? false : true
-    }
-    
-    func setDataForVisitor(sectionKind: HomeForVisitorSectionLayoutKind) {
+    func configureView<T: HomeSectionKindProtocol>(sectionKind: T) {
         self.titleLabel.text = sectionKind.title
         self.viewAllButton.isHidden = true
+        
+        if let memberKind = sectionKind as? HomeForMemberSectionLayoutKind {
+            self.viewAllButton.isHidden = (memberKind == .appService) ? true : false
+            self.coffechatLogoImageView.isHidden = (memberKind == .coffeeChat) ? false : true
+        } else {
+            self.coffechatLogoImageView.isHidden = true
+        }
     }
 }

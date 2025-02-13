@@ -78,9 +78,7 @@ extension AppServiceCardCVC {
 // MARK: - Methods
 
 extension AppServiceCardCVC {
-    func configureCell(model: HomeAppServicesModel?) {
-        guard let model else { return }
-        
+    func configureCell(model: HomePresentationModel.AppService) {
         self.logoImageView.setImage(with: model.iconURL)
         self.titleLabel.text = model.serviceName
         if model.alarmBadge.isEmpty {

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 import Domain
@@ -19,21 +20,13 @@ final class HomeForVisitorVC: UIViewController, HomeForVisitorViewControllable {
     // MARK: - Properties
 
     public let viewModel: HomeForVisitorViewModel
+    private var cancelBag = CancelBag()
     
     // MARK: - UI Components
     
     private lazy var naviBar = HomeNavigationBar().hideNoticeButton()
-    
-    private lazy var collectionView = UICollectionView(
-        frame: .zero,
-        collectionViewLayout: self.createLayout()
-    ).then {
-        $0.isScrollEnabled = true
-        $0.showsHorizontalScrollIndicator = false
-        $0.showsVerticalScrollIndicator = false
-        $0.contentInset = .zero
-        $0.backgroundColor = .clear
-    }
+    private var dataSource: UICollectionViewDiffableDataSource<HomeForVisitorSectionLayoutKind, HomeForVisitorItem>! = nil
+    var collectionView: UICollectionView! = nil
     
     // MARK: - Initialization
     
@@ -50,29 +43,39 @@ final class HomeForVisitorVC: UIViewController, HomeForVisitorViewControllable {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setUI()
-        setLayout()
-        setDelegate()
-        registerCells()
+        configureHierarchy()
+        configureUI()
+        configureLayout()
+        configureDataSource()
+        bindViewModels()
     }
 }
 
 // MARK: - UI & Layout
 
 extension HomeForVisitorVC {
-    private func setUI() {
+    private func configureHierarchy() {
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
+        collectionView.isScrollEnabled = true
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.contentInset = .zero
+        collectionView.backgroundColor = .clear
+    }
+    
+    private func configureUI() {
         self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
     }
     
-    private func setLayout() {
+    private func configureLayout() {
         view.addSubviews(
             naviBar,
             collectionView
         )
         
         naviBar.snp.makeConstraints { make in
-          make.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)
+            make.leading.top.equalTo(view.safeAreaLayoutGuide)
         }
         
         collectionView.snp.makeConstraints { make in
@@ -85,100 +88,64 @@ extension HomeForVisitorVC {
 // MARK: - Methods
 
 extension HomeForVisitorVC {
-    private func setDelegate() {
-        self.collectionView.delegate = self
-        self.collectionView.dataSource = self
-    }
-    
-    private func registerCells() {
-        /// Header
-        self.collectionView.register(HomeDefaultHeaderView.self,
-                                     forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                                     withReuseIdentifier: HomeDefaultHeaderView.className)
+    private func configureDataSource() {
+        let dashBoardRegistration = createDashBoardCellRegistration()
+        let mainProductRegistration = createProductCellRegistration()
+        let appServiceRegistration = createAppServiceCellRegistration()
+
+        dataSource = UICollectionViewDiffableDataSource<HomeForVisitorSectionLayoutKind, HomeForVisitorItem> (
+            collectionView: collectionView) { (collectionView, indexPath, item) in
+                switch item {
+                case .description(let description):
+                    return collectionView.dequeueConfiguredReusableCell(using: dashBoardRegistration,
+                                                                        for: indexPath, item: description)
+                case .productService(let productService):
+                    return collectionView.dequeueConfiguredReusableCell(using: mainProductRegistration,
+                                                                        for: indexPath, item: productService)
+                case .appService(let appService):
+                    return collectionView.dequeueConfiguredReusableCell(using: appServiceRegistration,
+                                                                        for: indexPath, item: appService)
+                }
+            }
         
-        /// Cell
-        self.collectionView.register(DashBoardCardCVC.self,
-                                     forCellWithReuseIdentifier: DashBoardCardCVC.className)
-        self.collectionView.register(MainProductCardCVC.self,
-                                     forCellWithReuseIdentifier: MainProductCardCVC.className)
-        self.collectionView.register(AppServiceCardCVC.self,
-                                     forCellWithReuseIdentifier: AppServiceCardCVC.className)
-    }
-}
-
-// MARK: - UICollectionViewDelegate
-
-extension HomeForVisitorVC: UICollectionViewDelegate {
-    
-}
-
-// MARK: - UICollectionViewDataSource
-
-extension HomeForVisitorVC: UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return HomeForVisitorSectionLayoutKind.allCases.count
+        configureSupplementaryView()
     }
     
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        guard let sectionKind = HomeForVisitorSectionLayoutKind(rawValue: indexPath.section) else { return UICollectionReusableView() }
-        guard let headerView = collectionView
-            .dequeueReusableSupplementaryView(ofKind: kind,
-                                              withReuseIdentifier: HomeDefaultHeaderView.className,
-                                              for: indexPath) as? HomeDefaultHeaderView else { return UICollectionReusableView() }
-        headerView.setDataForVisitor(sectionKind: sectionKind)
-        return headerView
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard let sectionKind = HomeForVisitorSectionLayoutKind(rawValue: section) else { return 0 }
+    private func configureSupplementaryView() {
+        let headerRegistration = createHeaderRegistration()
         
-        switch sectionKind {
-        case .dashBoard: return 1
-        case .mainProduct: return viewModel.productInfoList.count
-        case .appService: return viewModel.appServiceInfoList.count
+        dataSource.supplementaryViewProvider = { (collectionView, kind, indexPath) in
+            if kind == UICollectionView.elementKindSectionHeader {
+                return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
+            }
+            
+            return UICollectionReusableView()
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let sectionKind = HomeForVisitorSectionLayoutKind(rawValue: indexPath.section) else { return UICollectionViewCell() }
-        switch sectionKind {
-        case .dashBoard:
-            /// 대시보드 카드 셀
-            guard let dashBoardCardCell = collectionView
-                .dequeueReusableCell(withReuseIdentifier: DashBoardCardCVC.className,
-                                     for: indexPath) as? DashBoardCardCVC else { return UICollectionViewCell() }
-            dashBoardCardCell.configureCell(userType: .visitor, description: "")
-            
-            return dashBoardCardCell
-            
-        case .mainProduct:
-            /// 프로덕트 카드 셀
-            let productIndex = indexPath.item
-            guard let product = viewModel.productInfoList[safe: productIndex] else { return UICollectionViewCell() }
-            guard let productCardCell = collectionView
-                .dequeueReusableCell(withReuseIdentifier: MainProductCardCVC.className,
-                                     for: indexPath) as? MainProductCardCVC else { return UICollectionViewCell() }
-            productCardCell.configureCell(title: product.name,
-                                          image: product.image)
-            
-            return productCardCell
-            
-        case .appService:
-            /// 앱 서비스 카드 셀
-            let appServiceIndex = indexPath.item
-            guard let appService = viewModel.appServiceInfoList[safe: appServiceIndex] else { return UICollectionViewCell() }
-            guard let appServiceCardCell = collectionView
-                .dequeueReusableCell(withReuseIdentifier: AppServiceCardCVC.className,
-                                     for: indexPath) as? AppServiceCardCVC else { return UICollectionViewCell() }
-            appServiceCardCell.configureCell(model: HomeAppServicesModel(
-                serviceName: "",
-                displayAlarmBadge: false,
-                alarmBadge: "",
-                iconURL: "",
-                deepLink: ""
-            ))
-            
-            return appServiceCardCell
-        }
+    private func bindViewModels() {
+        let input = HomeForVisitorViewModel.Input(
+            viewDidLoad: Just<Void>(()).asDriver()
+        )
+        
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.appService
+            .withUnretained(self)
+            .sink { owner, appService in
+                owner.applySnapshot(with: appService)
+            }.store(in: cancelBag)
+    }
+    
+    private func applySnapshot(with appService: [HomePresentationModel.AppService]) {
+        var snapshot = NSDiffableDataSourceSnapshot<HomeForVisitorSectionLayoutKind, HomeForVisitorItem>()
+        
+        snapshot.appendSections(HomeForVisitorSectionLayoutKind.allCases)
+        
+        snapshot.appendItems([.description(HomePresentationModel.Description(description: ""))], toSection: .dashBoard)
+        snapshot.appendItems(self.viewModel.productServiceList.map { .productService($0) }, toSection: .mainProduct)
+        snapshot.appendItems(appService.map { .appService($0) }, toSection: .appService)
+        
+        dataSource.apply(snapshot, animatingDifferences: true)
     }
 }

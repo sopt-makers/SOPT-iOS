@@ -140,7 +140,7 @@ extension AnnouncementCardCVC {
 // MARK: - Methods
 
 extension AnnouncementCardCVC {
-    func configureCell(model: HomeAnnouncementModel?) {
+    func configureCell(model: HomePresentationModel.Announcement?) {
         guard let model else { return }
         
         self.categoryTagView.setData(with: model.categoryName, isHotTag: false)

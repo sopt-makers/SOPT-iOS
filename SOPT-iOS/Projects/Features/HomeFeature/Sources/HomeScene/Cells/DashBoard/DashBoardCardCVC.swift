@@ -39,6 +39,11 @@ final class DashBoardCardCVC: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.descriptionLabel.text = nil
+    }
 }
 
 // MARK: - UI & Layout
@@ -79,9 +84,7 @@ extension DashBoardCardCVC {
 // MARK: - Methods
 
 extension DashBoardCardCVC {
-    func configureCell(userType: UserType, description: String?) {
-        guard let description = description else { return }
-        
+    func configureCell(userType: UserType, description: String? = nil) {
         switch userType {
         case .visitor:
             self.descriptionLabel.font = DSKitFontFamily.Suit.medium.font(size: 18)
@@ -89,9 +92,10 @@ extension DashBoardCardCVC {
             self.descriptionLabel.setLineSpacing(lineSpacing: 5)
             self.rightArrowWithCircleImageView.isHidden = true
         case .active, .inactive:
-            self.descriptionLabel.text = description
+            guard let description else { return }
             self.descriptionLabel.htmlToString(targetString: description,
                                                defaultFont: DSKitFontFamily.Suit.medium.font(size: 18),
+                                               boldFont: DSKitFontFamily.Suit.bold.font(size: 18),
                                                defaultColor: DSKitAsset.Colors.white100.color)
             self.rightArrowWithCircleImageView.isHidden = false
         }

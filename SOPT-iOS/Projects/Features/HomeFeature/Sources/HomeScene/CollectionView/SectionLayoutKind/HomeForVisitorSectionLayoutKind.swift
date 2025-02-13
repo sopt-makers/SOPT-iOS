@@ -26,3 +26,5 @@ enum HomeForVisitorSectionLayoutKind: Int, CaseIterable {
         }
     }
 }
+
+extension HomeForVisitorSectionLayoutKind: HomeSectionKindProtocol { }
