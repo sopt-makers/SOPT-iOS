@@ -8,17 +8,8 @@
 
 import UIKit
 
-protocol HomeForVisitorItemProvider {
+extension HomeForVisitorVC {
     // cells
-    func createDashBoardCellRegistration() -> UICollectionView.CellRegistration<DashBoardCardCVC, HomePresentationModel.Description>
-    func createProductCellRegistration() -> UICollectionView.CellRegistration<MainProductCardCVC, HomePresentationModel.ProductService>
-    func createAppServiceCellRegistration() -> UICollectionView.CellRegistration<AppServiceCardCVC, HomePresentationModel.AppService>
-    
-    // supplementary views
-    func createHeaderRegistration() -> UICollectionView.SupplementaryRegistration<HomeDefaultHeaderView>
-}
-
-extension HomeForVisitorVC: HomeForVisitorItemProvider {
     func createDashBoardCellRegistration() -> UICollectionView.CellRegistration<DashBoardCardCVC, HomePresentationModel.Description> {
         collectionView.createCellRegistration { [weak self] cell, _, _ in
             guard let self else { return }
@@ -38,6 +29,7 @@ extension HomeForVisitorVC: HomeForVisitorItemProvider {
         }
     }
     
+    // supplementary views
     func createHeaderRegistration() -> UICollectionView.SupplementaryRegistration<HomeDefaultHeaderView> {
         collectionView.createSupplementaryRegistration(
             elementKind: UICollectionView.elementKindSectionHeader

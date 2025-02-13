@@ -8,24 +8,8 @@
 
 import UIKit
 
-protocol HomeForMemberItemProvider {
+extension HomeForMemberVC {
     // cells
-    func createDashBoardCellRegistration() -> UICollectionView.CellRegistration<DashBoardCardCVC, HomePresentationModel.Description>
-    func createCalendarCellRegistration() -> UICollectionView.CellRegistration<CalendarCardCVC, HomePresentationModel.RecentSchedule>
-    func createProductCellRegistration() -> UICollectionView.CellRegistration<MainProductCardCVC, HomePresentationModel.ProductService>
-    func createAppServiceCellRegistration() -> UICollectionView.CellRegistration<AppServiceCardCVC, HomePresentationModel.AppService>
-    func createInsightCellRegistration() -> UICollectionView.CellRegistration<InsightCardCVC, HomePresentationModel.InsightPost>
-    func createGroupCellRegistration() -> UICollectionView.CellRegistration<GroupCardCVC, HomePresentationModel.GroupPost>
-    func createCoffeeChatCellRegistration() -> UICollectionView.CellRegistration<CoffeeChatCardCVC, HomePresentationModel.CoffeeChat>
-    func createAnnouncementCellRegistration() -> UICollectionView.CellRegistration<AnnouncementCardCVC, HomePresentationModel.Announcement>
-    func createSocialLinkCellRegistration() -> UICollectionView.CellRegistration<SocialLinkCardCVC, SocialLinkCardType>
-    
-    // supplementary views
-    func createHeaderRegistration() -> UICollectionView.SupplementaryRegistration<HomeDefaultHeaderView>
-    func createFooterRegistration() -> UICollectionView.SupplementaryRegistration<AnnouncementPageContolFooterView>
-}
-
-extension HomeForMemberVC: HomeForMemberItemProvider {
     func createDashBoardCellRegistration() -> UICollectionView.CellRegistration<DashBoardCardCVC, HomePresentationModel.Description> {
         collectionView.createCellRegistration { [weak self] cell, _, item in
             guard let self else { return }
@@ -82,6 +66,7 @@ extension HomeForMemberVC: HomeForMemberItemProvider {
         }
     }
     
+    // supplementary views
     func createHeaderRegistration() -> UICollectionView.SupplementaryRegistration<HomeDefaultHeaderView> {
         collectionView.createSupplementaryRegistration(
             elementKind: UICollectionView.elementKindSectionHeader
