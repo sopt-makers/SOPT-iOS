@@ -93,8 +93,6 @@ extension DashBoardCardCVC {
             self.rightArrowWithCircleImageView.isHidden = true
         case .active, .inactive:
             guard let description else { return }
-            
-            self.descriptionLabel.text = description
             self.descriptionLabel.htmlToString(targetString: description,
                                                defaultFont: DSKitFontFamily.Suit.medium.font(size: 18),
                                                boldFont: DSKitFontFamily.Suit.bold.font(size: 18),
