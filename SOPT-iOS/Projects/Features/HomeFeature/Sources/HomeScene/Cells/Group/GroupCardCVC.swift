@@ -126,9 +126,7 @@ extension GroupCardCVC {
 // MARK: - Methods
 
 extension GroupCardCVC {
-    func configureCell(model: HomePresentationModel.GroupPost?) {
-        guard let model = model else { return }
-        
+    func configureCell(model: HomePresentationModel.GroupPost) {        
         self.coverImageView.setImage(with: model.imageUrl)
         self.titleLabel.text = model.title
         self.recruitmentStatusTagView.setData(title: model.status.text,

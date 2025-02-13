@@ -24,7 +24,6 @@ public protocol HomeUseCase {
 public class DefaultHomeUseCase {
     
     private let repository: HomeRepositoryInterface
-    private let cancelBag = CancelBag()
     
     public init(repository: HomeRepositoryInterface) {
         self.repository = repository

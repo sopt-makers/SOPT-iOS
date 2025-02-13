@@ -18,27 +18,4 @@ enum HomeForMemberItem: Hashable {
     case coffeeChat(HomePresentationModel.CoffeeChat)
     case announcement(HomePresentationModel.Announcement)
     case socialLink(SocialLinkCardType)
-    
-    func hash(into hasher: inout Hasher) {
-        switch self {
-        case .description(let model):
-            hasher.combine(model.id.hashValue)
-        case .recentSchedule(let model):
-            hasher.combine(model.id.hashValue)
-        case .productService(let model):
-            hasher.combine(model.id.hashValue)
-        case .appService(let model):
-            hasher.combine(model.id.hashValue)
-        case .insightPost(let model):
-            hasher.combine(model.id.hashValue)
-        case .groupPost(let model):
-            hasher.combine(model.id.hashValue)
-        case .coffeeChat(let model):
-            hasher.combine(model.id.hashValue)
-        case .announcement(let model):
-            hasher.combine(model.id.hashValue)
-        case .socialLink(let model):
-            hasher.combine(model.hashValue)
-        }
-    }
 }

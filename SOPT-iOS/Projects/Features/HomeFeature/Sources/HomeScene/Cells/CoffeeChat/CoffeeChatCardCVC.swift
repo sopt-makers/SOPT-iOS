@@ -162,9 +162,7 @@ extension CoffeeChatCardCVC {
 // MARK: - Methods
 
 extension CoffeeChatCardCVC {
-    func configureCell(model: HomePresentationModel.CoffeeChat?) {
-        guard let model else { return }
-
+    func configureCell(model: HomePresentationModel.CoffeeChat) {
         self.titleLabel.text = model.bio
         makeCategoryTagView(categories: model.topicTypeList)
         

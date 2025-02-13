@@ -23,7 +23,7 @@ struct HomePresentationModel {
 
     // MARK: - Item Structs
     
-    struct Description: Identifiable, Equatable {
+    struct Description: Identifiable, Hashable {
         let id = UUID()
         
         let description: String
@@ -33,7 +33,7 @@ struct HomePresentationModel {
         }
     }
     
-    struct RecentSchedule: Identifiable, Equatable {
+    struct RecentSchedule: Identifiable, Hashable {
         let id = UUID()
         
         let date: String
@@ -47,7 +47,7 @@ struct HomePresentationModel {
         }
     }
     
-    struct ProductService: Identifiable, Equatable {
+    struct ProductService: Identifiable, Hashable {
         let id = UUID()
         
         let name: String
@@ -59,7 +59,7 @@ struct HomePresentationModel {
         }
     }
     
-    struct AppService: Identifiable, Equatable {
+    struct AppService: Identifiable, Hashable {
         let id = UUID()
 
         let serviceName: String
@@ -81,7 +81,7 @@ struct HomePresentationModel {
         }
     }
     
-    struct InsightPost: Identifiable, Equatable {
+    struct InsightPost: Identifiable, Hashable {
         let id = UUID()
 
         let title, category: String
@@ -107,7 +107,7 @@ struct HomePresentationModel {
         }
     }
     
-    struct GroupPost: Identifiable, Equatable {
+    struct GroupPost: Identifiable, Hashable {
         let id = UUID()
         
         let title: String
@@ -137,7 +137,7 @@ struct HomePresentationModel {
         }
     }
     
-    struct CoffeeChat: Identifiable, Equatable {
+    struct CoffeeChat: Identifiable, Hashable {
         let id = UUID()
 
         let bio: String
@@ -173,7 +173,7 @@ struct HomePresentationModel {
         }
     }
     
-    struct Announcement: Identifiable, Equatable{
+    struct Announcement: Identifiable, Hashable {
         let id = UUID()
 
         let profileImage, name: String?

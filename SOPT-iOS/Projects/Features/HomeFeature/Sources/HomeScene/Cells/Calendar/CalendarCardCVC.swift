@@ -124,9 +124,8 @@ extension CalendarCardCVC {
 // MARK: - Methods
 
 extension CalendarCardCVC {
-    func configureCell(model: HomePresentationModel.RecentSchedule?,
+    func configureCell(model: HomePresentationModel.RecentSchedule,
                        userType: UserType) {
-        guard let model = model else { return }
         self.dateLabel.text = model.date
         self.scheduleTitleLabel.text = model.title
         if let tagType = CalenderCategoryTagType(rawValue: model.type) {

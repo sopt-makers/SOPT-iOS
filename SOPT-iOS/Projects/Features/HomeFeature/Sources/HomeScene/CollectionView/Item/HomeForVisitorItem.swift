@@ -12,15 +12,4 @@ enum HomeForVisitorItem: Hashable {
     case description(HomePresentationModel.Description)
     case productService(HomePresentationModel.ProductService)
     case appService(HomePresentationModel.AppService)
-    
-    func hash(into hasher: inout Hasher) {
-        switch self {
-        case .description(let model):
-            hasher.combine(model.id.hashValue)
-        case .productService(let model):
-            hasher.combine(model.id.hashValue)
-        case .appService(let model):
-            hasher.combine(model.id.hashValue)
-        }
-    }
 }
