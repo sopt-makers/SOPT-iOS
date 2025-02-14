@@ -66,10 +66,12 @@ struct HomePresentationModel {
         
         let name: String
         let image: UIImage
+        let url: String
         
-        init(name: String, image: UIImage) {
+        init(name: String, image: UIImage, url: String) {
             self.name = name
             self.image = image
+            self.url = url
         }
     }
     
