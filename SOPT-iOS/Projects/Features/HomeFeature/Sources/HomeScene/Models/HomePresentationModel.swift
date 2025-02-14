@@ -16,10 +16,12 @@ struct HomePresentationModel {
     let description: HomePresentationModel.Description
     let recentSchedule: HomePresentationModel.RecentSchedule
     let appServices: [HomePresentationModel.AppService]
-    let insightPosts: [HomePresentationModel.InsightPost]
-    let groupPosts: [HomePresentationModel.GroupPost]
-    let coffeeChatPosts: [HomePresentationModel.CoffeeChat]
-    let announcementPosts: [HomePresentationModel.Announcement]
+    
+    // TODO: 이후 스프린트에서 순차 배포
+//    let insightPosts: [HomePresentationModel.InsightPost]
+//    let groupPosts: [HomePresentationModel.GroupPost]
+//    let coffeeChatPosts: [HomePresentationModel.CoffeeChat]
+//    let announcementPosts: [HomePresentationModel.Announcement]
 
     // MARK: - Item Structs
     

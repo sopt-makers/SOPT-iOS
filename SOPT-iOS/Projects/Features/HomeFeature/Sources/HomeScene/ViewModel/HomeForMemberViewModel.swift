@@ -69,29 +69,37 @@ extension HomeForMemberViewModel {
                     self.useCase.getRecentSchedule().map { $0.toPresentation() },
                     self.useCase.getAppServices().map { $0.map { $0.toPresentation() } }
                 )
-            }
-            .flatMap {
-                description,
-                recentSchedule,
-                appService in
-                Publishers.Zip4(
-                    self.useCase.getInsightPosts().map { $0.map { $0.toPresentation() } },
-                    self.useCase.getGroupPosts().map { $0.map { $0.toPresentation() } },
-                    self.useCase.getCoffeeChatPosts().map { $0.map { $0.toPresentation() } },
-                    self.useCase.getAnnouncementPosts().map { $0.map { $0.toPresentation() } }
-                )
-                .map { insight, group, coffeeChat, announcement in
+                .map { description, recentSchedule, appService in
                     HomePresentationModel(
                         description: description,
                         recentSchedule: recentSchedule,
-                        appServices: appService,
-                        insightPosts: insight,
-                        groupPosts: group,
-                        coffeeChatPosts: coffeeChat,
-                        announcementPosts: announcement
+                        appServices: appService
                     )
                 }
             }
+            // TODO: 이후 스프린트에서 순차 배포
+//            .flatMap {
+//                description,
+//                recentSchedule,
+//                appService in
+//                Publishers.Zip4(
+//                    self.useCase.getInsightPosts().map { $0.map { $0.toPresentation() } },
+//                    self.useCase.getGroupPosts().map { $0.map { $0.toPresentation() } },
+//                    self.useCase.getCoffeeChatPosts().map { $0.map { $0.toPresentation() } },
+//                    self.useCase.getAnnouncementPosts().map { $0.map { $0.toPresentation() } }
+//                )
+//                .map { insight, group, coffeeChat, announcement in
+//                    HomePresentationModel(
+//                        description: description,
+//                        recentSchedule: recentSchedule,
+//                        appServices: appService,
+//                        insightPosts: insight,
+//                        groupPosts: group,
+//                        coffeeChatPosts: coffeeChat,
+//                        announcementPosts: announcement
+//                    )
+//                }
+//            }
             .withUnretained(self)
             .sink { owner, data in
                 output.homeItem.send(data)
