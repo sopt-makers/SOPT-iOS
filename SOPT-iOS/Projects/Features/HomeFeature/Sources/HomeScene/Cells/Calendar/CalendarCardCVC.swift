@@ -14,10 +14,13 @@ import DSKit
 
 final class CalendarCardCVC: UICollectionViewCell {
     
+    // MARK: - Properties
+
+    lazy var attendanceButtonTap = attendanceButton.publisher(for: .touchUpInside)
+    
     // MARK: - UI Components
 
     private let dateLabel = UILabel().then {
-        $0.text = "10.22"
         $0.textColor = DSKitAsset.Colors.gray400.color
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
     }
@@ -25,7 +28,6 @@ final class CalendarCardCVC: UICollectionViewCell {
     private let scheduleCategoryTagView = HomeSquareTagView()
     
     private let scheduleTitleLabel = UILabel().then {
-        $0.text = "1차 행사"
         $0.textColor = DSKitAsset.Colors.white.color
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
     }
@@ -126,7 +128,7 @@ extension CalendarCardCVC {
 extension CalendarCardCVC {
     func configureCell(model: HomePresentationModel.RecentSchedule,
                        userType: UserType) {
-        self.dateLabel.text = model.date
+        self.dateLabel.text = setDateFormat(date: model.date, to: "MM.dd")
         self.scheduleTitleLabel.text = model.title
         if let tagType = CalenderCategoryTagType(rawValue: model.type) {
             self.scheduleCategoryTagView.setData(title: tagType.text,
