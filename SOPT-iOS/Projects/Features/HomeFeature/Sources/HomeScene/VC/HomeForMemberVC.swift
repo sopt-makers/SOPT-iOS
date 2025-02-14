@@ -20,8 +20,9 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     // MARK: - Properties
 
     public let viewModel: HomeForMemberViewModel
-    private var cancelBag = CancelBag()
-    private var cellTapped = PassthroughSubject<IndexPath, Never>()
+    var cancelBag = CancelBag()
+    private var cellTapped = PassthroughSubject<HomeForMemberItem, Never>()
+    var attendanceButtonTapped = PassthroughSubject<Void, Never>()
     
     // MARK: - UI Components
     
@@ -47,6 +48,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
         configureHierarchy()
         configureUI()
         configureLayout()
+        configureDelegate()
         configureDataSource()
         bindViewModels()
     }
@@ -76,7 +78,8 @@ extension HomeForMemberVC {
         )
         
         naviBar.snp.makeConstraints { make in
-            make.leading.top.equalTo(view.safeAreaLayoutGuide)
+            make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            make.height.equalTo(40)
         }
         
         collectionView.snp.makeConstraints { make in
@@ -89,6 +92,10 @@ extension HomeForMemberVC {
 // MARK: - Methods
 
 extension HomeForMemberVC {
+    private func configureDelegate() {
+        self.collectionView.delegate = self
+    }
+    
     private func configureDataSource() {
         let dashBoardRegistration = createDashBoardCellRegistration()
         let calendarRegistration = createCalendarCellRegistration()
@@ -160,9 +167,20 @@ extension HomeForMemberVC {
     }
     
     private func bindViewModels() {
+        let noticeButtonTapped = naviBar.noticeButtonTap
+            .mapVoid()
+            .asDriver()
+        
+        let settingButtonTapped = naviBar.settingButtonTap
+            .mapVoid()
+            .asDriver()
+        
         let input = HomeForMemberViewModel.Input(
+            viewDidLoad: Just<Void>(()).asDriver(),
             cellTapped: cellTapped.asDriver(),
-            viewDidLoad: Just<Void>(()).asDriver()
+            attendanceButtonTapped: attendanceButtonTapped.asDriver(),
+            noticeButtonTapped: noticeButtonTapped,
+            settingButtonTapped: settingButtonTapped
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -172,6 +190,13 @@ extension HomeForMemberVC {
             .sink { owner, data in
                 owner.applySnapshot(with: data)
             }.store(in: cancelBag)
+        
+        output.isLoading
+            .withUnretained(self)
+            .sink { owner, isLoading in
+                isLoading ? owner.showLoading() : owner.stopLoading()
+            }
+            .store(in: cancelBag)
     }
     
     private func applySnapshot(with data: HomePresentationModel) {
@@ -196,3 +221,22 @@ extension HomeForMemberVC {
     }
 }
 
+// MARK: - UICollectionViewDelegate
+
+extension HomeForMemberVC: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let selectedItem = dataSource.itemIdentifier(for: indexPath) {
+            switch selectedItem {
+            case .dashBoard(let model):
+                self.cellTapped.send(.dashBoard(model))
+            case .recentSchedule(let model):
+                self.cellTapped.send(.recentSchedule(model))
+            case .productService(let model):
+                self.cellTapped.send(.productService(model))
+            case .appService(let model):
+                self.cellTapped.send(.appService(model))
+            default: return
+            }
+        }
+    }
+}
