@@ -10,64 +10,64 @@ import UIKit
 
 extension HomeForMemberVC {
     // cells
-    func createDashBoardCellRegistration() -> UICollectionView.CellRegistration<DashBoardCardCVC, HomePresentationModel.Description> {
+    func createDashBoardCellRegistration() -> DashBoardCardCellRegistration {
         collectionView.createCellRegistration { [weak self] cell, _, item in
             guard let self else { return }
             cell.configureCell(userType: self.viewModel.userType, description: item.description)
         }
     }
     
-    func createCalendarCellRegistration() -> UICollectionView.CellRegistration<CalendarCardCVC, HomePresentationModel.RecentSchedule> {
+    func createCalendarCellRegistration() -> CalendarCellRegistration {
         collectionView.createCellRegistration { [weak self] cell, _, item in
             guard let self else { return }
             cell.configureCell(model: item, userType: self.viewModel.userType)
         }
     }
     
-    func createProductCellRegistration() -> UICollectionView.CellRegistration<MainProductCardCVC, HomePresentationModel.ProductService> {
+    func createProductCellRegistration() -> ProductCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
             cell.configureCell(title: item.name, image: item.image)
         }
     }
     
-    func createAppServiceCellRegistration() -> UICollectionView.CellRegistration<AppServiceCardCVC, HomePresentationModel.AppService> {
+    func createAppServiceCellRegistration() -> AppServiceCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
             cell.configureCell(model: item)
         }
     }
     
-    func createInsightCellRegistration() -> UICollectionView.CellRegistration<InsightCardCVC, HomePresentationModel.InsightPost> {
+    func createInsightCellRegistration() -> InsightCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
             cell.configureCell(model: item)
         }
     }
     
-    func createGroupCellRegistration() -> UICollectionView.CellRegistration<GroupCardCVC, HomePresentationModel.GroupPost> {
+    func createGroupCellRegistration() -> GroupCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
             cell.configureCell(model: item)
         }
     }
     
-    func createCoffeeChatCellRegistration() -> UICollectionView.CellRegistration<CoffeeChatCardCVC, HomePresentationModel.CoffeeChat> {
+    func createCoffeeChatCellRegistration() -> CoffeeChatCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
             cell.configureCell(model: item)
         }
     }
     
-    func createAnnouncementCellRegistration() -> UICollectionView.CellRegistration<AnnouncementCardCVC, HomePresentationModel.Announcement> {
+    func createAnnouncementCellRegistration() -> AnnouncementCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
             cell.configureCell(model: item)
         }
     }
     
-    func createSocialLinkCellRegistration() -> UICollectionView.CellRegistration<SocialLinkCardCVC, SocialLinkCardType> {
+    func createSocialLinkCellRegistration() -> SocialLinkCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
             cell.configureCell(type: item)
         }
     }
     
     // supplementary views
-    func createHeaderRegistration() -> UICollectionView.SupplementaryRegistration<HomeDefaultHeaderView> {
+    func createHeaderRegistration() -> HeaderRegistration {
         collectionView.createSupplementaryRegistration(
             elementKind: UICollectionView.elementKindSectionHeader
         ) { headerView, indexPath in
@@ -76,7 +76,7 @@ extension HomeForMemberVC {
         }
     }
     
-    func createFooterRegistration() -> UICollectionView.SupplementaryRegistration<AnnouncementPageContolFooterView> {
+    func createFooterRegistration() -> FooterRegistration {
         collectionView.createSupplementaryRegistration(
             elementKind: UICollectionView.elementKindSectionFooter
         ) { [weak self] footerView, indexPath in
