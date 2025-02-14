@@ -8,6 +8,8 @@
 
 import UIKit
 
+import Combine
+
 extension HomeForMemberVC {
     // cells
     func createDashBoardCellRegistration() -> DashBoardCardCellRegistration {
@@ -21,6 +23,13 @@ extension HomeForMemberVC {
         collectionView.createCellRegistration { [weak self] cell, _, item in
             guard let self else { return }
             cell.configureCell(model: item, userType: self.viewModel.userType)
+            
+            cell.attendanceButtonTap
+                .withUnretained(self)
+                .sink { owner, _ in
+                    owner.attendanceButtonTapped.send()
+                }
+                .store(in: cancelBag)
         }
     }
     

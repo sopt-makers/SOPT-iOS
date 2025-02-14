@@ -21,6 +21,7 @@ final class HomeForVisitorVC: UIViewController, HomeForVisitorViewControllable {
 
     public let viewModel: HomeForVisitorViewModel
     private var cancelBag = CancelBag()
+    private var cellTapped = PassthroughSubject<HomeForVisitorItem, Never>()
     
     // MARK: - UI Components
     
@@ -46,6 +47,7 @@ final class HomeForVisitorVC: UIViewController, HomeForVisitorViewControllable {
         configureHierarchy()
         configureUI()
         configureLayout()
+        configureDelegate()
         configureDataSource()
         bindViewModels()
     }
@@ -75,7 +77,8 @@ extension HomeForVisitorVC {
         )
         
         naviBar.snp.makeConstraints { make in
-            make.leading.top.equalTo(view.safeAreaLayoutGuide)
+            make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            make.height.equalTo(40)
         }
         
         collectionView.snp.makeConstraints { make in
@@ -88,6 +91,10 @@ extension HomeForVisitorVC {
 // MARK: - Methods
 
 extension HomeForVisitorVC {
+    private func configureDelegate() {
+        self.collectionView.delegate = self
+    }
+    
     private func configureDataSource() {
         let dashBoardRegistration = createDashBoardCellRegistration()
         let mainProductRegistration = createProductCellRegistration()
@@ -124,8 +131,14 @@ extension HomeForVisitorVC {
     }
     
     private func bindViewModels() {
+        let settingButtonTapped = naviBar.settingButtonTap
+            .mapVoid()
+            .asDriver()
+        
         let input = HomeForVisitorViewModel.Input(
-            viewDidLoad: Just<Void>(()).asDriver()
+            viewDidLoad: Just<Void>(()).asDriver(),
+            cellTapped: cellTapped.asDriver(),
+            settingButtonTapped: settingButtonTapped
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -134,6 +147,12 @@ extension HomeForVisitorVC {
             .withUnretained(self)
             .sink { owner, appService in
                 owner.applySnapshot(with: appService)
+            }.store(in: cancelBag)
+        
+        output.isLoading
+            .withUnretained(self)
+            .sink { owner, isLoading in
+                isLoading ? owner.showLoading() : owner.stopLoading()
             }.store(in: cancelBag)
     }
     
@@ -147,5 +166,21 @@ extension HomeForVisitorVC {
         snapshot.appendItems(appService.map { .appService($0) }, toSection: .appService)
         
         dataSource.apply(snapshot, animatingDifferences: true)
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+
+extension HomeForVisitorVC: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let selectedItem = dataSource.itemIdentifier(for: indexPath) {
+            switch selectedItem {
+            case .productService(let model):
+                self.cellTapped.send(.productService(model))
+            case .appService(let model):
+                self.cellTapped.send(.appService(model))
+            default: return
+            }
+        }
     }
 }
