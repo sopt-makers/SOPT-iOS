@@ -13,7 +13,7 @@ import Domain
 
 struct HomePresentationModel {
 
-    let description: HomePresentationModel.Description
+    let dashBoard: HomePresentationModel.DashBoard
     let recentSchedule: HomePresentationModel.RecentSchedule
     let appServices: [HomePresentationModel.AppService]
     
@@ -25,13 +25,25 @@ struct HomePresentationModel {
 
     // MARK: - Item Structs
     
-    struct Description: Identifiable, Hashable {
+    struct DashBoard: Identifiable, Hashable {
         let id = UUID()
         
         let description: String
+        let historyList: [Int]?
         
-        init(description: String) {
+        init(description: String, userInfo: UserMainInfoModel? = nil) {
             self.description = description
+            self.historyList = userInfo?.historyList
+        }
+    }
+    
+    struct UserInfo: Identifiable, Hashable {
+        let id = UUID()
+        
+        let history: [Int]
+        
+        init(history: [Int]) {
+            self.history = history
         }
     }
     
@@ -204,9 +216,10 @@ struct HomePresentationModel {
 // MARK: - toPresentation
 
 extension HomeDescriptionModel {
-    func toPresentation() -> HomePresentationModel.Description {
-        return HomePresentationModel.Description(
-            description: self.description
+    func toPresentation(userInfo: UserMainInfoModel) -> HomePresentationModel.DashBoard {
+        return HomePresentationModel.DashBoard(
+            description: self.description,
+            userInfo: userInfo
         )
     }
 }

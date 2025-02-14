@@ -9,7 +9,7 @@
 import Foundation
 
 enum HomeForMemberItem: Hashable {
-    case description(HomePresentationModel.Description)
+    case dashBoard(HomePresentationModel.DashBoard)
     case recentSchedule(HomePresentationModel.RecentSchedule)
     case productService(HomePresentationModel.ProductService)
     case appService(HomePresentationModel.AppService)

@@ -9,7 +9,7 @@
 import UIKit
 
 // cells
-typealias DashBoardCardCellRegistration = UICollectionView.CellRegistration<DashBoardCardCVC, HomePresentationModel.Description>
+typealias DashBoardCardCellRegistration = UICollectionView.CellRegistration<DashBoardCardCVC, HomePresentationModel.DashBoard>
 typealias CalendarCellRegistration = UICollectionView.CellRegistration<CalendarCardCVC, HomePresentationModel.RecentSchedule>
 typealias ProductCellRegistration = UICollectionView.CellRegistration<MainProductCardCVC, HomePresentationModel.ProductService>
 typealias AppServiceCellRegistration = UICollectionView.CellRegistration<AppServiceCardCVC, HomePresentationModel.AppService>

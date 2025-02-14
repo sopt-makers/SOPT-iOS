@@ -84,7 +84,7 @@ extension DashBoardCardCVC {
 // MARK: - Methods
 
 extension DashBoardCardCVC {
-    func configureCell(userType: UserType, description: String? = nil) {
+    func configureCell(userType: UserType, model: HomePresentationModel.DashBoard? = nil) {
         switch userType {
         case .visitor:
             self.descriptionLabel.font = DSKitFontFamily.Suit.medium.font(size: 18)
@@ -92,14 +92,15 @@ extension DashBoardCardCVC {
             self.descriptionLabel.setLineSpacing(lineSpacing: 5)
             self.rightArrowWithCircleImageView.isHidden = true
         case .active, .inactive:
-            guard let description else { return }
-            self.descriptionLabel.htmlToString(targetString: description,
+            guard let model else { return }
+            self.descriptionLabel.htmlToString(targetString: model.description,
                                                defaultFont: DSKitFontFamily.Suit.medium.font(size: 18),
                                                boldFont: DSKitFontFamily.Suit.bold.font(size: 18),
                                                defaultColor: DSKitAsset.Colors.white100.color)
             self.rightArrowWithCircleImageView.isHidden = false
+            guard let historyList = model.historyList else { return }
+            userHistoryView.setData(userType: userType, recentHistory: 35, allHistory: historyList)
         }
         
-        userHistoryView.setData(userType: userType, recentHistory: 35, allHistory: [35, 34, 33, 32, 31, 30, 29])
     }
 }

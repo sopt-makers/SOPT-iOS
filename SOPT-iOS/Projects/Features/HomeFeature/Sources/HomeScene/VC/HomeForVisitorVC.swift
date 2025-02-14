@@ -96,9 +96,9 @@ extension HomeForVisitorVC {
         dataSource = UICollectionViewDiffableDataSource<HomeForVisitorSectionLayoutKind, HomeForVisitorItem> (
             collectionView: collectionView) { (collectionView, indexPath, item) in
                 switch item {
-                case .description(let description):
+                case .dashBoard(let dashBoard):
                     return collectionView.dequeueConfiguredReusableCell(using: dashBoardRegistration,
-                                                                        for: indexPath, item: description)
+                                                                        for: indexPath, item: dashBoard)
                 case .productService(let productService):
                     return collectionView.dequeueConfiguredReusableCell(using: mainProductRegistration,
                                                                         for: indexPath, item: productService)
@@ -142,7 +142,7 @@ extension HomeForVisitorVC {
         
         snapshot.appendSections(HomeForVisitorSectionLayoutKind.allCases)
         
-        snapshot.appendItems([.description(HomePresentationModel.Description(description: ""))], toSection: .dashBoard)
+        snapshot.appendItems([.dashBoard(HomePresentationModel.DashBoard(description: ""))], toSection: .dashBoard)
         snapshot.appendItems(self.viewModel.productServiceList.map { .productService($0) }, toSection: .mainProduct)
         snapshot.appendItems(appService.map { .appService($0) }, toSection: .appService)
         

@@ -64,14 +64,18 @@ extension HomeForMemberViewModel {
 
         input.viewDidLoad
             .flatMap { _ in
+                self.useCase.getUserInfo()
+            }
+            .compactMap { $0 }
+            .flatMap { userInfo in
                 Publishers.Zip3(
-                    self.useCase.getHomeDescription().map { $0.toPresentation() },
+                    self.useCase.getHomeDescription().map { $0.toPresentation(userInfo: userInfo) },
                     self.useCase.getRecentSchedule().map { $0.toPresentation() },
                     self.useCase.getAppServices().map { $0.map { $0.toPresentation() } }
                 )
-                .map { description, recentSchedule, appService in
+                .map { dashBoard, recentSchedule, appService in
                     HomePresentationModel(
-                        description: description,
+                        dashBoard: dashBoard,
                         recentSchedule: recentSchedule,
                         appServices: appService
                     )

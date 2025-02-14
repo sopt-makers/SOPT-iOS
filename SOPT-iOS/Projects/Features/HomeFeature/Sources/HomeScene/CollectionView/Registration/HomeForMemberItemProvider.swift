@@ -13,7 +13,7 @@ extension HomeForMemberVC {
     func createDashBoardCellRegistration() -> DashBoardCardCellRegistration {
         collectionView.createCellRegistration { [weak self] cell, _, item in
             guard let self else { return }
-            cell.configureCell(userType: self.viewModel.userType, description: item.description)
+            cell.configureCell(userType: self.viewModel.userType, model: item)
         }
     }
     
