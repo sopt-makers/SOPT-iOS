@@ -22,6 +22,7 @@ import AttendanceFeature
 import DailySoptuneFeature
 import WebFeature
 import SoptlogFeature
+import HomeFeature
 
 public
 final class ApplicationCoordinator: BaseCoordinator {
@@ -129,7 +130,7 @@ extension ApplicationCoordinator {
     
     private func checkDidSignIn() {
         let needAuth = UserDefaultKeyList.Auth.appAccessToken == nil
-        needAuth ? runSignInFlow(by: .root) : runMainFlow()
+        needAuth ? runSignInFlow(by: .root) : runHomeFlow()
     }
 }
 
@@ -139,7 +140,7 @@ extension ApplicationCoordinator {
     private func runSignInFlow(by style: CoordinatorStartingOption) {
         let coordinator = AuthCoordinator(router: router, factory: AuthBuilder())
         coordinator.finishFlow = { [weak self, weak coordinator] userType in
-            self?.runMainFlow(type: userType)
+            self?.runHomeFlow(type: userType)
             self?.removeDependency(coordinator)
         }
         addDependency(coordinator)
@@ -150,7 +151,7 @@ extension ApplicationCoordinator {
         childCoordinators = []
         let coordinator = AuthCoordinator(router: router, factory: AuthBuilder(), url: url)
         coordinator.finishFlow = { [weak self, weak coordinator] userType in
-            self?.runMainFlow(type: userType)
+            self?.runHomeFlow(type: userType)
             self?.removeDependency(coordinator)
         }
         addDependency(coordinator)
@@ -197,18 +198,45 @@ extension ApplicationCoordinator {
         coordinator.start()
     }
     
-    internal func runHomeFlow(type: UserType) {
+    internal func runHomeFlow(type: UserType? = nil) {
+        defer {
+            bindNotification()
+        }
+        
+        self.childCoordinators = []
+        
+        let userType = type ?? UserDefaultKeyList.Auth.getUserType()
         let coordinator = HomeCoordinator(
             router: router,
             factory: HomeBuilder(),
-            userType: type
+            userType: userType
         )
         coordinator.finishFlow = { [weak self, weak coordinator] in
             self?.removeDependency(coordinator)
         }
         
-        coordinator.requestCoordinating = { [weak self] in
-            self?.runAttendanceFlow()
+        coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
+            switch destination {
+            case .calendar:
+                self?.runAttendanceFlow()
+            case .attendance:
+                self?.runAttendanceFlow()
+            case .setting(let userType):
+                self?.runMyPageFlow(of: userType)
+            case .signIn:
+                self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
+                self?.removeDependency(coordinator)
+            case .notification:
+                self?.runNotificationFlow()
+            case .soptlog:
+                self?.runSoptlogFlow()
+            case .deepLink(let url):
+                self?.notificationHandler.receive(deepLink: url)
+                guard let deepLink = self?.notificationHandler.deepLink.value else { return }
+                self?.handleDeepLink(deepLink: deepLink)
+            case .webLink(let url):
+                self?.handleWebLink(webLink: url)
+            }
         }
         
         addDependency(coordinator)
