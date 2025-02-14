@@ -19,6 +19,7 @@ extension HomeForVisitorVC {
         static let defaultSectionSpacing: Double = 36
         
         static let productItemSpacing: Double = 15
+        static let mainProductSectionSpacing: Double = 44
         static let appServiceItemSpacing: Double = 16
     }
     
@@ -84,7 +85,7 @@ extension HomeForVisitorVC {
         section.boundarySupplementaryItems = [header]
         section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultItemSpacing,
                                                         leading: Metric.collectionViewDefaultSideInset,
-                                                        bottom: 40,
+                                                        bottom: Metric.mainProductSectionSpacing,
                                                         trailing: Metric.collectionViewDefaultSideInset)
         
         return section
