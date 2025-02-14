@@ -97,10 +97,10 @@ extension DashBoardCardCVC {
                                                defaultFont: DSKitFontFamily.Suit.medium.font(size: 18),
                                                boldFont: DSKitFontFamily.Suit.bold.font(size: 18),
                                                defaultColor: DSKitAsset.Colors.white100.color)
+            self.descriptionLabel.setLineSpacingWithChaining(lineSpacing: 5)
             self.rightArrowWithCircleImageView.isHidden = false
             guard let historyList = model.historyList else { return }
             userHistoryView.setData(userType: userType, recentHistory: 35, allHistory: historyList)
         }
-        
     }
 }
