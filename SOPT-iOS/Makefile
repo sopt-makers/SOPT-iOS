@@ -25,6 +25,7 @@ regenerate:
 createModule:
 	@tuist scaffold feature \
 	--name ${name} \
+	--author "$(shell git config user.name || whoami)" \
 	--current_date "$(shell date +"%m/%d/%y")"
 
 	tuist edit

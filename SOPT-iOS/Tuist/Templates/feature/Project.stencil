@@ -2,7 +2,7 @@
 //  Project.swift
 //  ProjectDescriptionHelpers
 //
-//  Created by author on {{ current_date }}.
+//  Created by {{ author }} on {{ current_date }}.
 //
 
 import ProjectDescription
