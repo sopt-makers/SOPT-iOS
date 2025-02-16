@@ -21,6 +21,13 @@ regenerate:
 	rm -rf **/*.xcodeproj
 	rm -rf *.xcworkspace
 	tuist generate
+
+createModule:
+	@tuist scaffold feature \
+	--name ${name} \
+	--current_date "$(shell date +"%m/%d/%y")"
+
+	tuist edit
 	
 # Privates 파일 다운로드
 

@@ -8,11 +8,13 @@
 import ProjectDescription
 
 let nameAttribute: Template.Attribute = .required("name")
+let currentDate: Template.Attribute = .required("current_date")
 
 let template = Template(
     description: "Creates a new feature module",
     attributes: [
-        nameAttribute
+        nameAttribute,
+        currentDate
     ],
     items: ModuleTemplate.allCases.flatMap{ $0.item }
 )
