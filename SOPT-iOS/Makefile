@@ -8,19 +8,17 @@ clean:
 	rm -rf **/*.xcodeproj
 	rm -rf *.xcworkspace
 
-reset:
-	tuist clean
-	rm -rf **/**/**/*.xcodeproj
-	rm -rf **/**/*.xcodeproj
-	rm -rf **/*.xcodeproj
-	rm -rf *.xcworkspace
-
 regenerate:
-	rm -rf **/**/**/*.xcodeproj
-	rm -rf **/**/*.xcodeproj
-	rm -rf **/*.xcodeproj
-	rm -rf *.xcworkspace
+	make clean
 	tuist generate
+
+createModule:
+	@tuist scaffold feature \
+	--name ${name} \
+	--author "$(shell git config user.name || whoami)" \
+	--current_date "$(shell date +"%m/%d/%y")"
+
+	tuist edit
 	
 # Privates 파일 다운로드
 
