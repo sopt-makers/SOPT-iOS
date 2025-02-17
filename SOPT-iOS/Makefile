@@ -8,18 +8,8 @@ clean:
 	rm -rf **/*.xcodeproj
 	rm -rf *.xcworkspace
 
-reset:
-	tuist clean
-	rm -rf **/**/**/*.xcodeproj
-	rm -rf **/**/*.xcodeproj
-	rm -rf **/*.xcodeproj
-	rm -rf *.xcworkspace
-
 regenerate:
-	rm -rf **/**/**/*.xcodeproj
-	rm -rf **/**/*.xcodeproj
-	rm -rf **/*.xcodeproj
-	rm -rf *.xcworkspace
+	make clean
 	tuist generate
 
 createModule:
