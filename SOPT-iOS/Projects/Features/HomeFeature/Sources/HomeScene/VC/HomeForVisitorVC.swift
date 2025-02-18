@@ -161,7 +161,7 @@ extension HomeForVisitorVC {
         
         snapshot.appendSections(HomeForVisitorSectionLayoutKind.allCases)
         
-        snapshot.appendItems([.dashBoard(HomePresentationModel.DashBoard(description: ""))], toSection: .dashBoard)
+        snapshot.appendItems([.dashBoard(HomePresentationModel.DashBoard())], toSection: .dashBoard)
         snapshot.appendItems(self.viewModel.productServiceList.map { .productService($0) }, toSection: .mainProduct)
         snapshot.appendItems(appService.map { .appService($0) }, toSection: .appService)
         

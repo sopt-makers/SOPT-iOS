@@ -16,7 +16,7 @@ final class CalendarCardCVC: UICollectionViewCell {
     
     // MARK: - Properties
 
-    lazy var attendanceButtonTap = attendanceButton.publisher(for: .touchUpInside)
+    private(set) lazy var attendanceButtonTap = attendanceButton.publisher(for: .touchUpInside)
     
     // MARK: - UI Components
 
@@ -128,6 +128,7 @@ extension CalendarCardCVC {
 extension CalendarCardCVC {
     func configureCell(model: HomePresentationModel.RecentSchedule,
                        userType: UserType) {
+        // TODO: 서버 - 날짜 포맷 변경 후 반영
         self.dateLabel.text = setDateFormat(date: model.date, to: "MM.dd")
         self.scheduleTitleLabel.text = model.title
         if let tagType = CalenderCategoryTagType(rawValue: model.type) {

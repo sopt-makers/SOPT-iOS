@@ -20,9 +20,9 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     // MARK: - Properties
 
     public let viewModel: HomeForMemberViewModel
-    var cancelBag = CancelBag()
+    private(set) var cancelBag = CancelBag()
     private var cellTapped = PassthroughSubject<HomeForMemberItem, Never>()
-    var attendanceButtonTapped = PassthroughSubject<Void, Never>()
+    private(set) var attendanceButtonTapped = PassthroughSubject<Void, Never>()
     
     // MARK: - UI Components
     

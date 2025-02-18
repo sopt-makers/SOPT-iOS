@@ -42,7 +42,7 @@ extension HomeRepository: HomeRepositoryInterface {
         userService.getUserMainInfo()
             .mapError { error -> MainError in
                 guard let error = error as? APIError else {
-                    return MainError.networkError(message: "Moya 에러")
+                    return MainError.networkError(message: error.localizedDescription)
                 }
                 
                 switch error {

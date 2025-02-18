@@ -20,15 +20,17 @@ public extension UILabel {
         }
     }
     
-    func setLineSpacingWithChaining(lineSpacing: CGFloat) {
+    func setLineSpacingWithChaining(lineSpacing: CGFloat) -> UILabel {
+        let label = self
         if let text = self.text {
             let style = NSMutableParagraphStyle()
             style.lineSpacing = lineSpacing
             let attributes: [NSAttributedString.Key: Any] = [
                 .paragraphStyle: style
             ]
-            self.attributedText = NSAttributedString(string: text, attributes: attributes)
+            label.attributedText = NSAttributedString(string: text, attributes: attributes)
         }
+        return label
     }
     
     /// 자간 설정 메서드

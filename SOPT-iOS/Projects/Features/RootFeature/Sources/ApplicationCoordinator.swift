@@ -259,7 +259,7 @@ extension ApplicationCoordinator {
         
         return coordinator
     }
-    
+        
     @discardableResult
     internal func runStampFlow() -> StampCoordinator {
         let coordinator = StampCoordinator(

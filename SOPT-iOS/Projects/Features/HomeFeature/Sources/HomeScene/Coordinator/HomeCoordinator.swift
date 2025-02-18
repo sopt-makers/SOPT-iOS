@@ -70,8 +70,7 @@ public final class HomeCoordinator: DefaultCoordinator {
         }
         
         homeForMember.vm.onCalendarCellTapped = { [weak self] in
-            let homeCalendarDetail = self?.factory.makeHomeCalendarDetail()
-            self?.router.push(homeCalendarDetail?.vc)
+            self?.showHomeCalendarDetail()
         }
 
         homeForMember.vm.onNotificationButtonTapped = { [weak self] in
@@ -132,7 +131,7 @@ public final class HomeCoordinator: DefaultCoordinator {
         }
         
         homeCalendarDetail.vm.onAttendanceButtonTap = { [weak self] in
-            self?.requestCoordinating?(.calendar)
+            self?.requestCoordinating?(.attendance)
         }
         
         self.router.push(homeCalendarDetail.vc)
