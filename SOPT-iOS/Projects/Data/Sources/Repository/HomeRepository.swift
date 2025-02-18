@@ -54,7 +54,7 @@ extension HomeRepository: HomeRepositoryInterface {
                 case .tokenReissuanceFailed:
                     return MainError.authFailed
                 default:
-                    return MainError.networkError(message: "API 에러 디폴트")
+                    return MainError.networkError(message: error.localizedDescription)
                 }
             }
             .map { $0.toDomain() }

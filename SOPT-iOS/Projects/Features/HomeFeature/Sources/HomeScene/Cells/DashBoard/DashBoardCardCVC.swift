@@ -93,14 +93,15 @@ extension DashBoardCardCVC {
             self.rightArrowWithCircleImageView.isHidden = true
         case .active, .inactive:
             guard let model else { return }
-            self.descriptionLabel.htmlToString(targetString: model.description,
+            guard let description = model.description else { return }
+            self.descriptionLabel.htmlToString(targetString: description,
                                                defaultFont: DSKitFontFamily.Suit.medium.font(size: 18),
                                                boldFont: DSKitFontFamily.Suit.bold.font(size: 18),
                                                defaultColor: DSKitAsset.Colors.white100.color)
             self.descriptionLabel.setLineSpacing(lineSpacing: 5)
             self.rightArrowWithCircleImageView.isHidden = false
-            guard let historyList = model.historyList else { return }
-            userHistoryView.setData(userType: userType, recentHistory: 35, allHistory: historyList)
+            guard let history = model.history else { return }
+            userHistoryView.setData(userType: userType, recentHistory: 35, allHistory: history)
         }
     }
 }

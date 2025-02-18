@@ -29,20 +29,10 @@ struct HomePresentationModel {
         let id = UUID()
         
         let description: String?
-        let historyList: [Int]?
+        let history: [Int]?
         
-        init(description: String? = nil, userInfo: UserMainInfoModel? = nil) {
+        init(description: String? = nil, history: [Int]? = nil) {
             self.description = description
-            self.historyList = userInfo?.historyList
-        }
-    }
-    
-    struct UserInfo: Identifiable, Hashable {
-        let id = UUID()
-        
-        let history: [Int]
-        
-        init(history: [Int]) {
             self.history = history
         }
     }
@@ -221,10 +211,10 @@ struct HomePresentationModel {
 // MARK: - toPresentation
 
 extension HomeDescriptionModel {
-    func toPresentation(userInfo: UserMainInfoModel) -> HomePresentationModel.DashBoard {
+    func toPresentation(history: [Int]) -> HomePresentationModel.DashBoard {
         return HomePresentationModel.DashBoard(
             description: self.description,
-            userInfo: userInfo
+            history: history
         )
     }
 }

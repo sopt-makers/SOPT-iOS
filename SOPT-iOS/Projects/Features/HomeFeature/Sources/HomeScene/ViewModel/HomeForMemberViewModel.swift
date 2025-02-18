@@ -81,7 +81,7 @@ extension HomeForMemberViewModel {
             .compactMap { $0 }
             .flatMap { userInfo in
                 Publishers.Zip3(
-                    self.useCase.getHomeDescription().map { $0.toPresentation(userInfo: userInfo) },
+                    self.useCase.getHomeDescription().map { $0.toPresentation(history: userInfo.historyList) },
                     self.useCase.getRecentSchedule().map { $0.toPresentation() },
                     self.useCase.getAppServices().map { $0.map { $0.toPresentation() } }
                 )
