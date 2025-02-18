@@ -10,27 +10,27 @@ import UIKit
 
 extension HomeForVisitorVC {
     // cells
-    func createDashBoardCellRegistration() -> UICollectionView.CellRegistration<DashBoardCardCVC, HomePresentationModel.Description> {
+    func createDashBoardCellRegistration() -> DashBoardCardCellRegistration {
         collectionView.createCellRegistration { [weak self] cell, _, _ in
             guard let self else { return }
             cell.configureCell(userType: self.viewModel.userType)
         }
     }
     
-    func createProductCellRegistration() -> UICollectionView.CellRegistration<MainProductCardCVC, HomePresentationModel.ProductService> {
+    func createProductCellRegistration() -> ProductCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
             cell.configureCell(title: item.name, image: item.image)
         }
     }
     
-    func createAppServiceCellRegistration() -> UICollectionView.CellRegistration<AppServiceCardCVC, HomePresentationModel.AppService> {
+    func createAppServiceCellRegistration() -> AppServiceCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
             cell.configureCell(model: item)
         }
     }
     
     // supplementary views
-    func createHeaderRegistration() -> UICollectionView.SupplementaryRegistration<HomeDefaultHeaderView> {
+    func createHeaderRegistration() -> HeaderRegistration {
         collectionView.createSupplementaryRegistration(
             elementKind: UICollectionView.elementKindSectionHeader
         ) { headerView, indexPath in

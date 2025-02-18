@@ -83,9 +83,10 @@ public extension UILabel {
     /// - defaultFont, defaultColor에는 기본 폰트와 컬러를 넣어주세요
     func htmlToString(targetString: String,
                       defaultFont: UIFont,
-                      boldFont: UIFont,
+                      boldFont: UIFont?,
                       defaultColor: UIColor) {
         let text = targetString
+        let boldFont = boldFont ?? defaultFont
         guard let data = text.data(using: .utf8) else { return }
         
         do {

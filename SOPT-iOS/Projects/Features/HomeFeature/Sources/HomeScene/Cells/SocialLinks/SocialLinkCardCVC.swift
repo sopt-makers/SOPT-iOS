@@ -16,9 +16,7 @@ enum SocialLinkCardType: CaseIterable, Identifiable {
     case instagram
     case youtube
         
-    var id: UUID {
-        return UUID()
-    }
+    var id: Self { self }
     
     var image: UIImage {
         switch self {

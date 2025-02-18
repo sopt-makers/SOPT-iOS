@@ -12,6 +12,7 @@ import Core
 
 public protocol HomeUseCase {
     func getHomeDescription() -> AnyPublisher<HomeDescriptionModel, Never>
+    func getUserInfo() -> AnyPublisher<UserMainInfoModel?, Never>
     func getRecentSchedule() -> AnyPublisher<HomeRecentScheduleModel, Never>
     func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Never>
     func getInsightPosts() -> AnyPublisher<[HomeInsightPostsModel], Never>
@@ -35,6 +36,13 @@ extension DefaultHomeUseCase: HomeUseCase {
         repository.getHomeDescription()
             .catch { error in
                 return Empty<HomeDescriptionModel, Never>()
+            }.eraseToAnyPublisher()
+    }
+    
+    public func getUserInfo() -> AnyPublisher<UserMainInfoModel?, Never> {
+        repository.getUserInfo()
+            .catch { error in
+                return Empty<UserMainInfoModel?, Never>()
             }.eraseToAnyPublisher()
     }
     

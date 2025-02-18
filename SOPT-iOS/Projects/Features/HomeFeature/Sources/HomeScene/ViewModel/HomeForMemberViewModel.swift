@@ -7,7 +7,6 @@
 
 
 import Foundation
-import UIKit
 import Combine
 
 import Core
@@ -28,28 +27,38 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     let userType: UserType = UserDefaultKeyList.Auth.getUserType()
     
     let productServiceList: [HomePresentationModel.ProductService] = [
-        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.playground, image: DSKitAsset.Assets.imgPlaygroundLogo.image),
-        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.groupAndStudy, image: DSKitAsset.Assets.imgGroupLogo.image),
-        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.member, image: DSKitAsset.Assets.imgMemberLogo.image),
-        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.project, image: DSKitAsset.Assets.imgProjectLogo.image)
+        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.playground, image: DSKitAsset.Assets.imgPlaygroundLogo.image, url: ExternalURL.Playground.main),
+        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.groupAndStudy, image: DSKitAsset.Assets.imgGroupLogo.image, url: ExternalURL.Playground.group),
+        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.member, image: DSKitAsset.Assets.imgMemberLogo.image, url: ExternalURL.Playground.member),
+        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.project, image: DSKitAsset.Assets.imgProjectLogo.image, url: ExternalURL.Playground.project)
     ]
     
     // MARK: - Inputs
     
     public struct Input {
-        let cellTapped: Driver<IndexPath>
         let viewDidLoad: Driver<Void>
+        let cellTapped: Driver<HomeForMemberItem>
+        let attendanceButtonTapped: Driver<Void>
+        let noticeButtonTapped: Driver<Void>
+        let settingButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs
     
     public struct Output {
         let homeItem = PassthroughSubject<HomePresentationModel, Never>()
+        let isLoading = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - HomeForMemberCoordinating
     
     public var onDashBoardCellTapped: (() -> Void)?
+    public var onCalendarCellTapped: (() -> Void)?
+    public var onAttendanceButtonTapped: (() -> Void)?
+    public var onMainProductCellTapped: ((String) -> Void)?
+    public var onAppServiceCellTapped: ((String) -> Void)?
+    public var onNotificationButtonTapped: (() -> Void)?
+    public var onSettingButtonTapped: ((UserType) -> Void)?
     
     // MARK: - initialization
     
@@ -63,47 +72,93 @@ extension HomeForMemberViewModel {
         let output = Output()
 
         input.viewDidLoad
+            .handleEvents(receiveOutput: { _ in
+                output.isLoading.send(true)
+            })
             .flatMap { _ in
+                self.useCase.getUserInfo()
+            }
+            .compactMap { $0 }
+            .flatMap { userInfo in
                 Publishers.Zip3(
-                    self.useCase.getHomeDescription().map { $0.toPresentation() },
+                    self.useCase.getHomeDescription().map { $0.toPresentation(history: userInfo.historyList) },
                     self.useCase.getRecentSchedule().map { $0.toPresentation() },
                     self.useCase.getAppServices().map { $0.map { $0.toPresentation() } }
                 )
-            }
-            .flatMap {
-                description,
-                recentSchedule,
-                appService in
-                Publishers.Zip4(
-                    self.useCase.getInsightPosts().map { $0.map { $0.toPresentation() } },
-                    self.useCase.getGroupPosts().map { $0.map { $0.toPresentation() } },
-                    self.useCase.getCoffeeChatPosts().map { $0.map { $0.toPresentation() } },
-                    self.useCase.getAnnouncementPosts().map { $0.map { $0.toPresentation() } }
-                )
-                .map { insight, group, coffeeChat, announcement in
+                .map { dashBoard, recentSchedule, appService in
                     HomePresentationModel(
-                        description: description,
+                        dashBoard: dashBoard,
                         recentSchedule: recentSchedule,
-                        appServices: appService,
-                        insightPosts: insight,
-                        groupPosts: group,
-                        coffeeChatPosts: coffeeChat,
-                        announcementPosts: announcement
+                        appServices: appService
                     )
                 }
             }
+            // TODO: 이후 스프린트에서 순차 배포
+//            .flatMap {
+//                description,
+//                recentSchedule,
+//                appService in
+//                Publishers.Zip4(
+//                    self.useCase.getInsightPosts().map { $0.map { $0.toPresentation() } },
+//                    self.useCase.getGroupPosts().map { $0.map { $0.toPresentation() } },
+//                    self.useCase.getCoffeeChatPosts().map { $0.map { $0.toPresentation() } },
+//                    self.useCase.getAnnouncementPosts().map { $0.map { $0.toPresentation() } }
+//                )
+//                .map { insight, group, coffeeChat, announcement in
+//                    HomePresentationModel(
+//                        description: description,
+//                        recentSchedule: recentSchedule,
+//                        appServices: appService,
+//                        insightPosts: insight,
+//                        groupPosts: group,
+//                        coffeeChatPosts: coffeeChat,
+//                        announcementPosts: announcement
+//                    )
+//                }
+//            }
             .withUnretained(self)
             .sink { owner, data in
                 output.homeItem.send(data)
+                output.isLoading.send(false)
             }
             .store(in: cancelBag)
         
         input.cellTapped
-            .filter{ $0.section == 1 }
             .withUnretained(self)
-            .sink(receiveValue: { owner, indexPath in
-                owner.onDashBoardCellTapped?()
-            })
+            .sink { owner, item in
+                switch item {
+                case .dashBoard:
+                    owner.onDashBoardCellTapped?()
+                case .recentSchedule:
+                    owner.onCalendarCellTapped?()
+                case .productService(let model):
+                    owner.onMainProductCellTapped?(model.url)
+                case .appService(let model):
+                    owner.onAppServiceCellTapped?(model.deepLink)
+                default: break
+                }
+            }
+            .store(in: cancelBag)
+        
+        input.noticeButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNotificationButtonTapped?()
+            }
+            .store(in: cancelBag)
+        
+        input.settingButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onSettingButtonTapped?(owner.userType)
+            }
+            .store(in: cancelBag)
+        
+        input.attendanceButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onAttendanceButtonTapped?()
+            }
             .store(in: cancelBag)
         
         return output

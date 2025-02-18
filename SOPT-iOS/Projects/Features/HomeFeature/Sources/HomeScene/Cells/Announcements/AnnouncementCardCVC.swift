@@ -140,9 +140,7 @@ extension AnnouncementCardCVC {
 // MARK: - Methods
 
 extension AnnouncementCardCVC {
-    func configureCell(model: HomePresentationModel.Announcement?) {
-        guard let model else { return }
-        
+    func configureCell(model: HomePresentationModel.Announcement) {
         self.categoryTagView.setData(with: model.categoryName, isHotTag: false)
         self.categoryDetailLabel.text = "꿀팁"
         if let profileImage = model.profileImage {

@@ -229,6 +229,12 @@ public struct I18N {
     public struct Home {
         public static let viewAll = "전체보기"
         
+        public struct PopUp {
+            public static let login = "로그인"
+            public static let needToLogin = "로그인이 필요해요"
+            public static let needToLoginDetail = "앱 서비스는 로그인을 해야만 사용할 수 있어요.\n솝트 회원이라면 로그인해주세요."
+        }
+        
         public struct DashBoard {
             public struct UserHistory {
                 public static let visitor = "비회원"

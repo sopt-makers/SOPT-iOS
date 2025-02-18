@@ -20,6 +20,7 @@ extension HomeForMemberVC {
         
         static let productItemSpacing: Double = 15
         static let appServiceItemSpacing: Double = 16
+        static let mainProductSectionSpacing: Double = 44
         static let announcementWidth: Double = 300
     }
     
@@ -112,7 +113,7 @@ extension HomeForMemberVC {
         let section = NSCollectionLayoutSection(group: productGroup)
         section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultItemSpacing,
                                                         leading: Metric.collectionViewDefaultSideInset,
-                                                        bottom: 40,
+                                                        bottom: Metric.mainProductSectionSpacing,
                                                         trailing: Metric.collectionViewDefaultSideInset)
         
         return section

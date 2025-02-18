@@ -175,7 +175,8 @@ extension AppDelegate {
             implement: {
                 HomeRepository(
                     homeService: DefaultHomeService(),
-                    calendarService: DefaultCalendarService()
+                    calendarService: DefaultCalendarService(),
+                    userService: DefaultUserService()
                 )
             }
         )

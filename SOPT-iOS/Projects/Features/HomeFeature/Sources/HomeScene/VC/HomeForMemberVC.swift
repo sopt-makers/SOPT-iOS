@@ -20,8 +20,9 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     // MARK: - Properties
 
     public let viewModel: HomeForMemberViewModel
-    private var cancelBag = CancelBag()
-    private var cellTapped = PassthroughSubject<IndexPath, Never>()
+    private(set) var cancelBag = CancelBag()
+    private var cellTapped = PassthroughSubject<HomeForMemberItem, Never>()
+    private(set) var attendanceButtonTapped = PassthroughSubject<Void, Never>()
     
     // MARK: - UI Components
     
@@ -47,6 +48,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
         configureHierarchy()
         configureUI()
         configureLayout()
+        configureDelegate()
         configureDataSource()
         bindViewModels()
     }
@@ -76,7 +78,8 @@ extension HomeForMemberVC {
         )
         
         naviBar.snp.makeConstraints { make in
-            make.leading.top.equalTo(view.safeAreaLayoutGuide)
+            make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            make.height.equalTo(40)
         }
         
         collectionView.snp.makeConstraints { make in
@@ -89,23 +92,29 @@ extension HomeForMemberVC {
 // MARK: - Methods
 
 extension HomeForMemberVC {
+    private func configureDelegate() {
+        self.collectionView.delegate = self
+    }
+    
     private func configureDataSource() {
         let dashBoardRegistration = createDashBoardCellRegistration()
         let calendarRegistration = createCalendarCellRegistration()
         let mainProductRegistration = createProductCellRegistration()
         let appServiceRegistration = createAppServiceCellRegistration()
-        let insightRegistration = createInsightCellRegistration()
-        let groupRegistration  = createGroupCellRegistration()
-        let coffeeChatRegistration = createCoffeeChatCellRegistration()
-        let announcementRegistration = createAnnouncementCellRegistration()
-        let socialLinkRegistration = createSocialLinkCellRegistration()
+        
+        // TODO: 이후 스프린트에서 순차 배포
+//        let insightRegistration = createInsightCellRegistration()
+//        let groupRegistration  = createGroupCellRegistration()
+//        let coffeeChatRegistration = createCoffeeChatCellRegistration()
+//        let announcementRegistration = createAnnouncementCellRegistration()
+//        let socialLinkRegistration = createSocialLinkCellRegistration()
         
         dataSource = UICollectionViewDiffableDataSource<HomeForMemberSectionLayoutKind, HomeForMemberItem> (
             collectionView: collectionView) { (collectionView, indexPath, item) in
                 switch item {
-                case .description(let description):
+                case .dashBoard(let dashBoard):
                     return collectionView.dequeueConfiguredReusableCell(using: dashBoardRegistration,
-                                                                        for: indexPath, item: description)
+                                                                        for: indexPath, item: dashBoard)
                 case .recentSchedule(let schedule):
                     return collectionView.dequeueConfiguredReusableCell(using: calendarRegistration,
                                                                         for: indexPath, item: schedule)
@@ -115,21 +124,23 @@ extension HomeForMemberVC {
                 case .appService(let appService):
                     return collectionView.dequeueConfiguredReusableCell(using: appServiceRegistration,
                                                                         for: indexPath, item: appService)
-                case .insightPost(let insight):
-                    return collectionView.dequeueConfiguredReusableCell(using: insightRegistration,
-                                                                        for: indexPath, item: insight)
-                case .groupPost(let group):
-                    return collectionView.dequeueConfiguredReusableCell(using: groupRegistration,
-                                                                        for: indexPath, item: group)
-                case .coffeeChat(let coffeeChat):
-                    return collectionView.dequeueConfiguredReusableCell(using: coffeeChatRegistration,
-                                                                        for: indexPath, item: coffeeChat)
-                case .announcement(let announcement):
-                    return collectionView.dequeueConfiguredReusableCell(using: announcementRegistration,
-                                                                        for: indexPath, item: announcement)
-                case .socialLink(let socialLink):
-                    return collectionView.dequeueConfiguredReusableCell(using: socialLinkRegistration,
-                                                                        for: indexPath, item: socialLink)
+                // TODO: 이후 스프린트에서 순차 배포
+                default: return UICollectionViewCell()
+//                case .insightPost(let insight):
+//                    return collectionView.dequeueConfiguredReusableCell(using: insightRegistration,
+//                                                                        for: indexPath, item: insight)
+//                case .groupPost(let group):
+//                    return collectionView.dequeueConfiguredReusableCell(using: groupRegistration,
+//                                                                        for: indexPath, item: group)
+//                case .coffeeChat(let coffeeChat):
+//                    return collectionView.dequeueConfiguredReusableCell(using: coffeeChatRegistration,
+//                                                                        for: indexPath, item: coffeeChat)
+//                case .announcement(let announcement):
+//                    return collectionView.dequeueConfiguredReusableCell(using: announcementRegistration,
+//                                                                        for: indexPath, item: announcement)
+//                case .socialLink(let socialLink):
+//                    return collectionView.dequeueConfiguredReusableCell(using: socialLinkRegistration,
+//                                                                        for: indexPath, item: socialLink)
                 }
             }
         
@@ -138,25 +149,38 @@ extension HomeForMemberVC {
     
     private func configureSupplementaryView() {
         let headerRegistration = createHeaderRegistration()
-        let footerRegistration = createFooterRegistration()
+        // TODO: 이후 스프린트에서 순차 배포
+//        let footerRegistration = createFooterRegistration()
         
         dataSource.supplementaryViewProvider = { (collectionView, kind, indexPath) in
             if kind == UICollectionView.elementKindSectionHeader {
                 return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
             }
             
-            if kind == UICollectionView.elementKindSectionFooter {
-                return collectionView.dequeueConfiguredReusableSupplementary(using: footerRegistration, for: indexPath)
-            }
+            // TODO: 이후 스프린트에서 순차 배포
+//            if kind == UICollectionView.elementKindSectionFooter {
+//                return collectionView.dequeueConfiguredReusableSupplementary(using: footerRegistration, for: indexPath)
+//            }
             
             return UICollectionReusableView()
         }
     }
     
     private func bindViewModels() {
+        let noticeButtonTapped = naviBar.noticeButtonTap
+            .mapVoid()
+            .asDriver()
+        
+        let settingButtonTapped = naviBar.settingButtonTap
+            .mapVoid()
+            .asDriver()
+        
         let input = HomeForMemberViewModel.Input(
+            viewDidLoad: Just<Void>(()).asDriver(),
             cellTapped: cellTapped.asDriver(),
-            viewDidLoad: Just<Void>(()).asDriver()
+            attendanceButtonTapped: attendanceButtonTapped.asDriver(),
+            noticeButtonTapped: noticeButtonTapped,
+            settingButtonTapped: settingButtonTapped
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -166,24 +190,53 @@ extension HomeForMemberVC {
             .sink { owner, data in
                 owner.applySnapshot(with: data)
             }.store(in: cancelBag)
+        
+        output.isLoading
+            .withUnretained(self)
+            .sink { owner, isLoading in
+                isLoading ? owner.showLoading() : owner.stopLoading()
+            }
+            .store(in: cancelBag)
     }
     
     private func applySnapshot(with data: HomePresentationModel) {
         var snapshot = NSDiffableDataSourceSnapshot<HomeForMemberSectionLayoutKind, HomeForMemberItem>()
         
-        snapshot.appendSections(HomeForMemberSectionLayoutKind.allCases)
+        // TODO: 이후 스프린트에서 순차 배포
+//        snapshot.appendSections(HomeForMemberSectionLayoutKind.allCases)
+        snapshot.appendSections([.dashBoard, .calendar, .mainProduct, .appService])
         
-        snapshot.appendItems([.description(data.description)], toSection: .dashBoard)
+        snapshot.appendItems([.dashBoard(data.dashBoard)], toSection: .dashBoard)
         snapshot.appendItems([.recentSchedule(data.recentSchedule)], toSection: .calendar)
         snapshot.appendItems(self.viewModel.productServiceList.map { .productService($0) }, toSection: .mainProduct)
         snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
-        snapshot.appendItems([.insightPost(data.insightPosts.first!)], toSection: .insight) // 임시로 첫 번째 값만 배정
-        snapshot.appendItems(data.groupPosts.map { .groupPost($0) }, toSection: .group)
-        snapshot.appendItems(data.coffeeChatPosts.map { .coffeeChat($0) }, toSection: .coffeeChat)
-        snapshot.appendItems(data.announcementPosts.map { .announcement($0) }, toSection: .announcement)
-        snapshot.appendItems(SocialLinkCardType.allCases.map { .socialLink($0) }, toSection: .socialLinks)
-        
+        // TODO: 이후 스프린트에서 순차 배포
+//        snapshot.appendItems([.insightPost(data.insightPosts.first!)], toSection: .insight) // 임시로 첫 번째 값만 배정
+//        snapshot.appendItems(data.groupPosts.map { .groupPost($0) }, toSection: .group)
+//        snapshot.appendItems(data.coffeeChatPosts.map { .coffeeChat($0) }, toSection: .coffeeChat)
+//        snapshot.appendItems(data.announcementPosts.map { .announcement($0) }, toSection: .announcement)
+//        snapshot.appendItems(SocialLinkCardType.allCases.map { .socialLink($0) }, toSection: .socialLinks)
+//        
         dataSource.apply(snapshot, animatingDifferences: true)
     }
 }
 
+// MARK: - UICollectionViewDelegate
+
+extension HomeForMemberVC: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let selectedItem = dataSource.itemIdentifier(for: indexPath) {
+            switch selectedItem {
+            case .dashBoard(let model):
+                self.cellTapped.send(.dashBoard(model))
+            case .recentSchedule(let model):
+                self.cellTapped.send(.recentSchedule(model))
+            case .productService(let model):
+                self.cellTapped.send(.productService(model))
+            case .appService(let model):
+                self.cellTapped.send(.appService(model))
+            default: return
+            }
+        }
+    }
+}

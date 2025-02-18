@@ -13,23 +13,27 @@ import Domain
 
 struct HomePresentationModel {
 
-    let description: HomePresentationModel.Description
+    let dashBoard: HomePresentationModel.DashBoard
     let recentSchedule: HomePresentationModel.RecentSchedule
     let appServices: [HomePresentationModel.AppService]
-    let insightPosts: [HomePresentationModel.InsightPost]
-    let groupPosts: [HomePresentationModel.GroupPost]
-    let coffeeChatPosts: [HomePresentationModel.CoffeeChat]
-    let announcementPosts: [HomePresentationModel.Announcement]
+    
+    // TODO: 이후 스프린트에서 순차 배포
+//    let insightPosts: [HomePresentationModel.InsightPost]
+//    let groupPosts: [HomePresentationModel.GroupPost]
+//    let coffeeChatPosts: [HomePresentationModel.CoffeeChat]
+//    let announcementPosts: [HomePresentationModel.Announcement]
 
     // MARK: - Item Structs
     
-    struct Description: Identifiable, Hashable {
+    struct DashBoard: Identifiable, Hashable {
         let id = UUID()
         
-        let description: String
+        let description: String?
+        let history: [Int]?
         
-        init(description: String) {
+        init(description: String? = nil, history: [Int]? = nil) {
             self.description = description
+            self.history = history
         }
     }
     
@@ -52,16 +56,17 @@ struct HomePresentationModel {
         
         let name: String
         let image: UIImage
+        let url: String
         
-        init(name: String, image: UIImage) {
+        init(name: String, image: UIImage, url: String) {
             self.name = name
             self.image = image
+            self.url = url
         }
     }
     
     struct AppService: Identifiable, Hashable {
-        let id = UUID()
-
+        var id: String
         let serviceName: String
         let displayAlarmBadge: Bool
         let alarmBadge, iconURL, deepLink: String
@@ -78,6 +83,7 @@ struct HomePresentationModel {
             self.alarmBadge = alarmBadge
             self.iconURL = iconURL
             self.deepLink = deepLink
+            self.id = deepLink
         }
     }
     
@@ -108,8 +114,7 @@ struct HomePresentationModel {
     }
     
     struct GroupPost: Identifiable, Hashable {
-        let id = UUID()
-        
+        let id: Int
         let title: String
         let category: HomeGroupPostModel.Category
         let canJoinOnlyActiveGeneration: Bool
@@ -119,6 +124,7 @@ struct HomePresentationModel {
         let imageUrl: String
         
         init(
+            id: Int,
             title: String,
             category: HomeGroupPostModel.Category,
             canJoinOnlyActiveGeneration: Bool,
@@ -127,6 +133,7 @@ struct HomePresentationModel {
             status: HomeGroupPostModel.Status,
             imageUrl: String
         ) {
+            self.id = id
             self.title = title
             self.category = category
             self.canJoinOnlyActiveGeneration = canJoinOnlyActiveGeneration
@@ -138,8 +145,7 @@ struct HomePresentationModel {
     }
     
     struct CoffeeChat: Identifiable, Hashable {
-        let id = UUID()
-
+        let id: Int
         let bio: String
         let topicTypeList: [String]
         let profileImage: String?
@@ -151,6 +157,7 @@ struct HomePresentationModel {
         let currentSoptActivity: String?
         
         init(
+            id: Int,
             bio: String,
             topicTypeList: [String],
             profileImage: String? = nil,
@@ -161,6 +168,7 @@ struct HomePresentationModel {
             soptActivities: [String],
             currentSoptActivity: String? = nil
         ) {
+            self.id = id
             self.bio = bio
             self.topicTypeList = topicTypeList
             self.profileImage = profileImage
@@ -174,14 +182,14 @@ struct HomePresentationModel {
     }
     
     struct Announcement: Identifiable, Hashable {
-        let id = UUID()
-
+        let id: Int
         let profileImage, name: String?
         let categoryName, title: String
         let content: String
         let images: [String]?
         
         init(
+            id: Int,
             profileImage: String? = nil,
             name: String? = nil,
             categoryName: String,
@@ -189,6 +197,7 @@ struct HomePresentationModel {
             content: String,
             images: [String]? = nil
         ) {
+            self.id = id
             self.profileImage = profileImage
             self.name = name
             self.categoryName = categoryName
@@ -202,9 +211,10 @@ struct HomePresentationModel {
 // MARK: - toPresentation
 
 extension HomeDescriptionModel {
-    func toPresentation() -> HomePresentationModel.Description {
-        return HomePresentationModel.Description(
-            description: self.description
+    func toPresentation(history: [Int]) -> HomePresentationModel.DashBoard {
+        return HomePresentationModel.DashBoard(
+            description: self.description,
+            history: history
         )
     }
 }
@@ -247,6 +257,7 @@ extension HomeInsightPostsModel {
 extension HomeGroupPostModel {
     func toPresentation() -> HomePresentationModel.GroupPost {
         return HomePresentationModel.GroupPost(
+            id: self.id,
             title: self.title,
             category: self.category,
             canJoinOnlyActiveGeneration: self.canJoinOnlyActiveGeneration,
@@ -261,6 +272,7 @@ extension HomeGroupPostModel {
 extension HomeCoffeeChatPostModel {
     func toPresentation() -> HomePresentationModel.CoffeeChat {
         return HomePresentationModel.CoffeeChat(
+            id: self.memberId,
             bio: self.bio,
             topicTypeList: self.topicTypeList,
             name: self.name,
@@ -272,6 +284,7 @@ extension HomeCoffeeChatPostModel {
 extension HomeAnnouncementModel {
     func toPresentation() -> HomePresentationModel.Announcement {
         return HomePresentationModel.Announcement(
+            id: self.id,
             profileImage: self.profileImage,
             name: self.name,
             categoryName: self.categoryName,
