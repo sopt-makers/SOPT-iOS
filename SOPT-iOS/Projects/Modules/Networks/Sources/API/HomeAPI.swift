@@ -56,4 +56,13 @@ extension HomeAPI: BaseAPI {
             return .requestParameters(parameters: ["page": 1, "take": 10, "category": "행사,세미나"], encoding: URLEncoding.queryString)
         }
     }
+    
+    public var headers: [String : String]? {
+        switch self {
+        case .getAppServiceAccessStatus:
+            let userType = UserDefaultKeyList.Auth.getUserType()
+            return userType == .visitor ? HeaderType.json.value : HeaderType.jsonWithToken.value
+        default: return HeaderType.jsonWithToken.value
+        }
+    }
 }
