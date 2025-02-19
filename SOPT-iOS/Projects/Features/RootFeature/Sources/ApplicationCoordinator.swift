@@ -88,7 +88,8 @@ extension ApplicationCoordinator {
     }
     
     private func handleDeepLink(deepLink: DeepLinkComponentsExecutable) {
-        self.router.dismissModule(animated: false)
+        // TODO: 해당 부분 왜 .dismissModule(animated: false) 하고 있었는지 확인
+//        self.router.dismissModule(animated: false)
         deepLink.execute(coordinator: self)
     }
     
@@ -211,10 +212,6 @@ extension ApplicationCoordinator {
             factory: HomeBuilder(),
             userType: userType
         )
-        coordinator.finishFlow = { [weak self, weak coordinator] in
-            self?.removeDependency(coordinator)
-        }
-        
         coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
             switch destination {
             case .attendance:

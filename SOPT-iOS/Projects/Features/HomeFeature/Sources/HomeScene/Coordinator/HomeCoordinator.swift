@@ -33,7 +33,7 @@ public protocol HomeCoordinatorOutput {
 
 public typealias DefaultHomeCoordinator = BaseCoordinator & HomeCoordinatorOutput
 
-public final class HomeCoordinator: DefaultCoordinator {
+public final class HomeCoordinator: DefaultHomeCoordinator {
     
     public var requestCoordinating: ((HomeCoordinatorDestination) -> Void)?
     public var finishFlow: (() -> Void)?
