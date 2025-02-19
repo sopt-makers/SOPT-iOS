@@ -18,11 +18,14 @@ import BaseFeatureDependency
 final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     
     // MARK: - Properties
-
+    
     public let viewModel: HomeForMemberViewModel
     private(set) var cancelBag = CancelBag()
+    private var requestUserInfo = PassthroughSubject<Void, Never>()
     private var cellTapped = PassthroughSubject<HomeForMemberItem, Never>()
     private(set) var attendanceButtonTapped = PassthroughSubject<Void, Never>()
+    
+    private var isFirstAppear = true
     
     // MARK: - UI Components
     
@@ -51,6 +54,11 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
         configureDelegate()
         configureDataSource()
         bindViewModels()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.requestUserInfo.send()
     }
 }
 
@@ -177,6 +185,7 @@ extension HomeForMemberVC {
         
         let input = HomeForMemberViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
+            requestUserInfo: requestUserInfo.asDriver(),
             cellTapped: cellTapped.asDriver(),
             attendanceButtonTapped: attendanceButtonTapped.asDriver(),
             noticeButtonTapped: noticeButtonTapped,
@@ -188,8 +197,17 @@ extension HomeForMemberVC {
         output.homeItem
             .withUnretained(self)
             .sink { owner, data in
+                owner.changeNaviBarUI(isAllConfirm: data.dashBoard.isAllConfirm)
                 owner.applySnapshot(with: data)
             }.store(in: cancelBag)
+        
+        output.dashBoard
+            .withUnretained(self)
+            .sink { owner, data in
+                owner.changeNaviBarUI(isAllConfirm: data.isAllConfirm)
+                owner.setDashBoardNeedsUpdate(data)
+            }
+            .store(in: cancelBag)
         
         output.isLoading
             .withUnretained(self)
@@ -197,6 +215,12 @@ extension HomeForMemberVC {
                 isLoading ? owner.showLoading() : owner.stopLoading()
             }
             .store(in: cancelBag)
+    }
+    
+    private func changeNaviBarUI(isAllConfirm: Bool?) {
+        if let isAllConfirm = isAllConfirm {
+            self.naviBar.changeNoticeButtonStyle(isActive: !isAllConfirm)
+        }
     }
     
     private func applySnapshot(with data: HomePresentationModel) {
@@ -218,6 +242,15 @@ extension HomeForMemberVC {
 //        snapshot.appendItems(SocialLinkCardType.allCases.map { .socialLink($0) }, toSection: .socialLinks)
 //        
         dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+    private func setDashBoardNeedsUpdate(_ dashBoard: HomePresentationModel.DashBoard) {
+        var snapshot = self.dataSource.snapshot()
+        let dashBoardItem = HomeForMemberItem.dashBoard(dashBoard)
+        if snapshot.itemIdentifiers.contains(dashBoardItem) {
+            snapshot.reconfigureItems([dashBoardItem])
+            self.dataSource.apply(snapshot, animatingDifferences: true)
+        }
     }
 }
 

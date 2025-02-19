@@ -37,6 +37,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     
     public struct Input {
         let viewDidLoad: Driver<Void>
+        let requestUserInfo: Driver<Void>
         let cellTapped: Driver<HomeForMemberItem>
         let attendanceButtonTapped: Driver<Void>
         let noticeButtonTapped: Driver<Void>
@@ -47,6 +48,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     
     public struct Output {
         let homeItem = PassthroughSubject<HomePresentationModel, Never>()
+        let dashBoard = PassthroughSubject<HomePresentationModel.DashBoard, Never>()
         let isLoading = PassthroughSubject<Bool, Never>()
     }
     
@@ -81,7 +83,7 @@ extension HomeForMemberViewModel {
             .compactMap { $0 }
             .flatMap { userInfo in
                 Publishers.Zip3(
-                    self.useCase.getHomeDescription().map { $0.toPresentation(history: userInfo.historyList) },
+                    self.useCase.getHomeDescription().map { $0.toPresentation(history: userInfo.historyList, isAllConfirm: userInfo.isAllConfirm) },
                     self.useCase.getRecentSchedule().map { $0.toPresentation() },
                     self.useCase.getAppServices().map { $0.map { $0.toPresentation() } }
                 )
@@ -119,6 +121,25 @@ extension HomeForMemberViewModel {
             .withUnretained(self)
             .sink { owner, data in
                 output.homeItem.send(data)
+                output.isLoading.send(false)
+            }
+            .store(in: cancelBag)
+        
+        input.requestUserInfo
+            .dropFirst()
+            .handleEvents(receiveOutput: { _ in
+                output.isLoading.send(true)
+            })
+            .flatMap { _ in
+                self.useCase.getUserInfo()
+            }
+            .compactMap { $0 }
+            .flatMap { userInfo in
+                self.useCase.getHomeDescription().map { $0.toPresentation(history: userInfo.historyList, isAllConfirm: userInfo.isAllConfirm) }
+            }
+            .withUnretained(self)
+            .sink { owner, data in
+                output.dashBoard.send(data)
                 output.isLoading.send(false)
             }
             .store(in: cancelBag)

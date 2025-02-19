@@ -26,14 +26,16 @@ struct HomePresentationModel {
     // MARK: - Item Structs
     
     struct DashBoard: Identifiable, Hashable {
-        let id = UUID()
+        let id = "dashboard"
         
         let description: String?
         let history: [Int]?
+        let isAllConfirm: Bool?
         
-        init(description: String? = nil, history: [Int]? = nil) {
+        init(description: String? = nil, history: [Int]? = nil, isAllConfirm: Bool? = nil) {
             self.description = description
             self.history = history
+            self.isAllConfirm = isAllConfirm
         }
     }
     
@@ -211,10 +213,11 @@ struct HomePresentationModel {
 // MARK: - toPresentation
 
 extension HomeDescriptionModel {
-    func toPresentation(history: [Int]) -> HomePresentationModel.DashBoard {
+    func toPresentation(history: [Int], isAllConfirm: Bool?) -> HomePresentationModel.DashBoard {
         return HomePresentationModel.DashBoard(
             description: self.description,
-            history: history
+            history: history,
+            isAllConfirm: isAllConfirm
         )
     }
 }
