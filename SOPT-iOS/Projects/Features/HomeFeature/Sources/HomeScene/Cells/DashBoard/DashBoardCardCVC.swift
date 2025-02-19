@@ -91,6 +91,7 @@ extension DashBoardCardCVC {
             self.descriptionLabel.text = I18N.Home.DashBoard.UserHistory.encourage
             self.descriptionLabel.setLineSpacing(lineSpacing: 5)
             self.rightArrowWithCircleImageView.isHidden = true
+            userHistoryView.setData(userType: userType, recentHistory: nil, allHistory: nil)
         case .active, .inactive:
             guard let model else { return }
             guard let description = model.description else { return }
