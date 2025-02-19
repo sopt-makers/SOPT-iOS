@@ -59,7 +59,7 @@ extension ApplicationCoordinator {
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .filter { _ in
-                self.childCoordinators.contains(where: { $0 is MainCoordinator })
+                self.childCoordinators.contains(where: { $0 is HomeCoordinator })
             }
             .sink { [weak self] deepLinkComponent in
                 self?.handleDeepLink(deepLink: deepLinkComponent)
@@ -70,7 +70,7 @@ extension ApplicationCoordinator {
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .filter { _ in
-                self.childCoordinators.contains(where: { $0 is MainCoordinator })
+                self.childCoordinators.contains(where: { $0 is HomeCoordinator })
             }.sink { [weak self] url in
                 self?.handleWebLink(webLink: url)
                 self?.notificationHandler.clearNotificationRecord()
@@ -80,7 +80,7 @@ extension ApplicationCoordinator {
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .filter { _ in
-                self.childCoordinators.contains(where: { $0 is MainCoordinator })
+                self.childCoordinators.contains(where: { $0 is HomeCoordinator })
             }.sink { [weak self] error in
                 self?.handleNotificationLinkError(error: error)
                 self?.notificationHandler.clearNotificationRecord()
