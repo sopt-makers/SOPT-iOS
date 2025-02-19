@@ -14,7 +14,13 @@ import DSKit
 final class SoptlogAppServiceCVC: UICollectionViewCell {
     
     // MARK: - UI Components
-
+    
+    private let stackView = UIStackView(frame: .zero).then {
+        $0.axis = .vertical
+        $0.spacing = 6
+        $0.alignment = .center
+    }
+    
     private let serviceLabel = UILabel().then {
         $0.textColor = DSKitAsset.Colors.gray200.color
         $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
@@ -40,6 +46,11 @@ final class SoptlogAppServiceCVC: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.stackView.removeAllSubViews()
+    }
 }
 
 // MARK: - UI & Layout
@@ -50,22 +61,16 @@ extension SoptlogAppServiceCVC {
     }
     
     private func setLayout() {
-        contentView.addSubviews(serviceLabel, serviceImageView, serviceValue)
-        
-        serviceLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalToSuperview().inset(10)
-        }
+        stackView.addArrangedSubviews(serviceLabel, serviceImageView, serviceValue)
         
         serviceImageView.snp.makeConstraints { make in
             make.size.equalTo(39)
-            make.centerX.equalToSuperview()
-            make.top.equalTo(serviceLabel.snp.bottom).offset(6)
         }
         
-        serviceValue.snp.makeConstraints { make in
-            make.top.equalTo(serviceImageView.snp.bottom).offset(4)
-            make.centerX.equalToSuperview()
+        contentView.addSubviews(stackView)
+        
+        stackView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
         }
     }
 }

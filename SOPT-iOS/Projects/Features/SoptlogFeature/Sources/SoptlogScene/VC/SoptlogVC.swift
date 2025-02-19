@@ -209,8 +209,6 @@ extension SoptlogVC: UICollectionViewDataSource {
                 for: indexPath) as? SoptlogAlarmCVC else { return UICollectionViewCell() }
             alarmCell.configureCell(model: self.soptlogInfo?.alarm)
             return alarmCell
-            
-        default: return UICollectionViewCell()
         }
     }
 }
