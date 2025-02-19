@@ -102,7 +102,7 @@ extension DashBoardCardCVC {
             self.descriptionLabel.setLineSpacing(lineSpacing: 5)
             self.rightArrowWithCircleImageView.isHidden = false
             guard let history = model.history else { return }
-            userHistoryView.setData(userType: userType, recentHistory: 35, allHistory: history)
+            userHistoryView.setData(userType: userType, recentHistory: history.first, allHistory: history)
         }
     }
 }
