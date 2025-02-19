@@ -120,6 +120,13 @@ extension SoptlogVC {
                 owner.soptlogInfo = soptlogModel
                 owner.collectionView.reloadData()
             }.store(in: cancelBag)
+        
+        output.isLoading
+            .withUnretained(self)
+            .sink { owner, isLoading in
+                isLoading ? owner.showLoading() : owner.stopLoading()
+            }
+            .store(in: cancelBag)
     }
 }
 

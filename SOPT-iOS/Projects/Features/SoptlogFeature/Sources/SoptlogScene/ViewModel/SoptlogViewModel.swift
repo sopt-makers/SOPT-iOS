@@ -34,6 +34,7 @@ public class SoptlogViewModel: SoptlogViewModelType {
     
     public struct Output {
         let soptlogInfo = PassthroughSubject<SoptlogPresentationModel, Never>()
+        let isLoading = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - SoptlogCoordinatable
@@ -55,11 +56,15 @@ extension SoptlogViewModel {
         let output = Output()
         
         input.viewDidLoad
+            .handleEvents(receiveOutput: { _ in
+                output.isLoading.send(true)
+            })
             .flatMap(useCase.fetchSoptlogInfo)
             .withUnretained(self)
             .sink { owner, soptlogModel in
                 let info = soptlogModel.toPresentation()
                 output.soptlogInfo.send(info)
+                output.isLoading.send(false)
             }.store(in: cancelBag)
         
         input.naviBackButtonTap
