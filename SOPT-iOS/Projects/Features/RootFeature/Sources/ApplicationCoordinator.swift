@@ -217,8 +217,6 @@ extension ApplicationCoordinator {
         
         coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
             switch destination {
-            case .calendar:
-                self?.runAttendanceFlow()
             case .attendance:
                 self?.runAttendanceFlow()
             case .setting(let userType):
