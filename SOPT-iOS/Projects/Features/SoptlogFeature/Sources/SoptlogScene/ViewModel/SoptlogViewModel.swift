@@ -81,7 +81,7 @@ extension SoptlogViewModel {
             .sink { owner, _ in
                 owner.onAlarmTapped?()
             }.store(in: cancelBag)
-        
+
         return output
     }
 }
@@ -107,7 +107,7 @@ extension SoptlogModel {
             appService.append(SoptlogPresentationModel.AppService(
                 serviceName: I18N.Soptlog.withSopt,
                 serviceImageURL: self.icons[2],
-                serviceValue: "\(self.during)개월"))
+                serviceValue: self.during))
         }
         
         

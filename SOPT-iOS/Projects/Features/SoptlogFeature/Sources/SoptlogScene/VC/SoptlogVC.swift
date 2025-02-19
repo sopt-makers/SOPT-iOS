@@ -165,7 +165,6 @@ extension SoptlogVC: UICollectionViewDataSource {
         case .appService: return self.soptlogInfo?.appService.count ?? 0
         case .editProfile: return 1
         case .alarm: return 1
-        default: return 0
         }
     }
     
