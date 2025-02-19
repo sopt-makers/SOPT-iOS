@@ -17,6 +17,7 @@ final class SoptlogAlarmCVC: UICollectionViewCell {
     
     private let serviceImageView = UIImageView().then {
         $0.image = DSKitAsset.Assets.imgDailysoptune.image
+        $0.contentMode = .scaleAspectFit
     }
 
     private let titleLabel = UILabel().then {
