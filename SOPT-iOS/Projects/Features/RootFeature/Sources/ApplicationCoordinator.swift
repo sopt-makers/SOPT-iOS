@@ -166,9 +166,13 @@ extension ApplicationCoordinator {
 extension ApplicationCoordinator {
     
     internal func runTabBarFlow(type: UserType? = nil) {
+        let homeVC = HomeBuilder().makeHomeForMember()
+        let soptlogVC = SoptlogBuilder().makeSoptlog()
+        
         let coordinator = TabBarCoordinator(
             router: router,
-            factory: TabBarBuilder()
+            factory: TabBarBuilder(),
+            items: [homeVC.vc.viewController, soptlogVC.vc.viewController]
         )
         
         // 각 코디네이터 실행

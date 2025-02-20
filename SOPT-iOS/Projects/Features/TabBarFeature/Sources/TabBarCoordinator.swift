@@ -6,7 +6,7 @@
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import Combine
 
 import Core
@@ -23,15 +23,17 @@ public enum TabBarCoordinatorDestination {
 
 public final class TabBarCoordinator: DefaultCoordinator {
     
-    public var requestCoordinating: ((TabBarCoordinatorDestination) -> Void)?
     public var finishFlow: (() -> Void)?
-    
+    public var requestCoordinating: ((TabBarCoordinatorDestination) -> Void)?
+        
     private let factory: TabBarBuildable
     private let router: Router
+    private let items: [UIViewController]
     
-    public init(router: Router, factory: TabBarBuildable) {
+    public init(router: Router, factory: TabBarBuildable, items: [UIViewController]) {
         self.router = router
         self.factory = factory
+        self.items = items
     }
     
     public override func start() {
@@ -39,7 +41,7 @@ public final class TabBarCoordinator: DefaultCoordinator {
     }
     
     private func showTabBar() {
-        var tabBar = factory.makeTabBar()
+        var tabBar = factory.makeTabBar(with: items)
         
         tabBar.vm.onTabBarItemTapped = { [weak self] index in
             // 각 탭의 코디네이터 실행

@@ -16,9 +16,9 @@ public final class TabBarBuilder {
 }
 
 extension TabBarBuilder: TabBarBuildable {
-    public func makeTabBar() -> TabBarPresentable {
+    public func makeTabBar(with views: [UIViewController]) -> TabBarPresentable {
         let viewModel = TabBarViewModel()
-        let tabBarVC = TabBarController(viewModel: viewModel, tabList: [])
+        let tabBarVC = TabBarController(viewModel: viewModel, tabList: views)
         return (tabBarVC, viewModel)
     }
 }

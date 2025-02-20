@@ -12,11 +12,11 @@ import DSKit
 
 final class TabBarController: UITabBarController {
     
-    private let tabList: [UINavigationController]
+    private let tabList: [UIViewController]
     private let viewModel: TabBarViewModel
     
     
-    init(viewModel: TabBarViewModel, tabList: [UINavigationController]) {
+    init(viewModel: TabBarViewModel, tabList: [UIViewController]) {
         self.viewModel = viewModel
         self.tabList = tabList
         
