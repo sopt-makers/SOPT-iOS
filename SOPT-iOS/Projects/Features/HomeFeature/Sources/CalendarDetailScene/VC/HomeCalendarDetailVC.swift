@@ -78,16 +78,6 @@ final class HomeCalendarDetailVC: UIViewController, HomeCalendarDetailViewContro
         registerCells()
         bindViewModels()
     }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        if let gradientLayer = gradientView.layer.sublayers?.first as? CAGradientLayer {
-            gradientLayer.frame = gradientView.bounds
-        }
-        
-        scrollToRecentSchedule()
-    }
 }
 
 // MARK: - UI & Layout
@@ -138,8 +128,8 @@ extension HomeCalendarDetailVC {
     
     private func bindViewModels() {
         let input = HomeCalendarDetailViewModel.Input(
-            viewDidLoad: Just<Void>(()).asDriver(), 
-            naviBackButtonTap: self.naviBar.leftButtonTapped.asDriver(), 
+            viewDidLoad: Just<Void>(()).asDriver(),
+            naviBackButtonTap: self.naviBar.leftButtonTapped.asDriver(),
             onAttendanceButtonTap: self.attendanceButton
                 .publisher(for: .touchUpInside)
                 .withUnretained(self)
@@ -154,15 +144,20 @@ extension HomeCalendarDetailVC {
             .sink { owner, calendarDetailInfo in
                 owner.calendarDetailInfo = calendarDetailInfo
                 owner.collectionView.reloadData()
+                self.scrollToRecentSchedule()
             }.store(in: cancelBag)
-            
+        
     }
     
     private func scrollToRecentSchedule() {
         if let index = self.calendarDetailInfo?.firstIndex(where: {$0.isRecentSchedule}) {
-            self.collectionView.scrollToItem(at: IndexPath(item: index, section: 0),
-                                             at: .top,
-                                        animated: true)
+            let itemCount = collectionView.numberOfItems(inSection: 0)
+            guard index < itemCount else {
+                print("🚨 아이템이 부족하여 스크롤할 수 없습니다.")
+                return
+            }
+            
+            self.collectionView.scrollToItem(at: IndexPath(item: index, section: 0), at: .top, animated: true)
         }
     }
 }
