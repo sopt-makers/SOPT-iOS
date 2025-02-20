@@ -77,6 +77,7 @@ extension TabBarController {
 
 extension TabBarController: UITabBarControllerDelegate {
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-        viewModel.selectedIndex = selectedIndex
+        guard let index = tabBar.items?.firstIndex(of: item) else { return }
+        viewModel.selectedIndex = index
     }
 }

@@ -188,16 +188,38 @@ extension ApplicationCoordinator {
                 soptlogVC
             ]
         )
-        
-        self.router.replaceRootWindow(tabbarController, withAnimation: true, hideBar: true)
-        
+                
+        router.replaceRootWindow(tabbarController, withAnimation: true, hideBar: true)
+
         // 각 코디네이터 실행
         coordinator.requestCoordinating = { [weak self] destination in
             switch destination {
             case .home:
-                self?.runHomeFlow(type: type)
+                homeCoordinator.requestCoordinating = { [weak self, weak coordinator] destination in
+                    switch destination {
+                    case .attendance:
+                        self?.runAttendanceFlow()
+                    case .setting(let userType):
+                        self?.runMyPageFlow(of: userType)
+                    case .signIn:
+                        self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
+                        self?.removeDependency(coordinator)
+                    case .notification:
+                        self?.runNotificationFlow()
+                    case .soptlog:
+                        self?.runSoptlogFlow()
+                    case .deepLink(let url):
+                        self?.notificationHandler.receive(deepLink: url)
+                        guard let deepLink = self?.notificationHandler.deepLink.value else { return }
+                        self?.handleDeepLink(deepLink: deepLink)
+                    case .webLink(let url):
+                        self?.handleWebLink(webLink: url)
+                    }
+                }
             case .soptlog:
-                self?.runSoptlogFlow()
+                soptlogCoordinator.requestCoordinating = { [weak self] in
+                    self?.runDailySoptuneFlow()
+                }
             }
         }
         
@@ -465,6 +487,7 @@ extension ApplicationCoordinator {
     
     @discardableResult
     internal func runSoptlogFlow() -> SoptlogCoordinator {
+        
         let coordinator = SoptlogCoordinator(
             router: router,
             factory: SoptlogBuilder()
