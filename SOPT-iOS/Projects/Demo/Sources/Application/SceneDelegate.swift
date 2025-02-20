@@ -10,6 +10,7 @@ import UIKit
 import Core
 import BaseFeatureDependency
 import RootFeature
+import TabBarFeature
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
@@ -34,7 +35,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         configureAPNs()
         
         window = UIWindow(windowScene: scene)
-        window?.rootViewController = rootController
+        window?.rootViewController = TabBarController(tabList: [UINavigationController(rootViewController: UIViewController()), UINavigationController(rootViewController: UIViewController())])
         window?.makeKeyAndVisible()
         
         self.appCoordinator.start()
