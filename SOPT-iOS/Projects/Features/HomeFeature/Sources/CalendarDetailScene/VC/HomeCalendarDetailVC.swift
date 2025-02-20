@@ -78,6 +78,16 @@ final class HomeCalendarDetailVC: UIViewController, HomeCalendarDetailViewContro
         registerCells()
         bindViewModels()
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        if let gradientLayer = gradientView.layer.sublayers?.first as? CAGradientLayer {
+            gradientLayer.frame = gradientView.bounds
+        }
+
+        scrollToRecentSchedule()
+    }
 }
 
 // MARK: - UI & Layout
