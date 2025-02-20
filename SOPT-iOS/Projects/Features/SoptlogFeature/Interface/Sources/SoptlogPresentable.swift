@@ -13,7 +13,7 @@ import Core
 
 public protocol SoptlogViewControllable: ViewControllable { }
 public protocol SoptlogCoordinatable {
-    var onNaviBackButtonTap: (() -> Void)? { get set }
+//    var onNaviBackButtonTap: (() -> Void)? { get set }
     var onProfileEditTapped: (() -> Void)? { get set }
     var onAlarmTapped: (() -> Void)? { get set }
 }

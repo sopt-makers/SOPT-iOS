@@ -26,7 +26,7 @@ public class SoptlogViewModel: SoptlogViewModelType {
     
     public struct Input { 
         let viewDidLoad: Driver<Void>
-        let naviBackButtonTap: Driver<Void>
+//        let naviBackButtonTap: Driver<Void>
         let cellTap: Driver<IndexPath>
     }
     
@@ -62,11 +62,11 @@ extension SoptlogViewModel {
                 output.soptlogInfo.send(info)
             }.store(in: cancelBag)
         
-        input.naviBackButtonTap
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onNaviBackButtonTap?()
-            }.store(in: cancelBag)
+//        input.naviBackButtonTap
+//            .withUnretained(self)
+//            .sink { owner, _ in
+//                owner.onNaviBackButtonTap?()
+//            }.store(in: cancelBag)
         
         input.cellTap
             .filter{ $0.section == 2 }
