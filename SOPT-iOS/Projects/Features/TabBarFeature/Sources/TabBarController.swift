@@ -13,8 +13,11 @@ import DSKit
 final class TabBarController: UITabBarController {
     
     private let tabList: [UINavigationController]
+    private let viewModel: TabBarViewModel
     
-    init(tabList: [UINavigationController]) {
+    
+    init(viewModel: TabBarViewModel, tabList: [UINavigationController]) {
+        self.viewModel = viewModel
         self.tabList = tabList
         
         super.init(nibName: nil, bundle: nil)
@@ -29,6 +32,7 @@ final class TabBarController: UITabBarController {
         
         configureTabBar()
         configureTabBarItem()
+        setDelegate()
     }
     
     override public func viewDidLayoutSubviews() {
@@ -64,5 +68,15 @@ extension TabBarController {
         }
 
         setViewControllers(tabList, animated: true)
+    }
+    
+    private func setDelegate() {
+        self.delegate = self
+    }
+}
+
+extension TabBarController: UITabBarControllerDelegate {
+    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        viewModel.selectedIndex = selectedIndex
     }
 }
