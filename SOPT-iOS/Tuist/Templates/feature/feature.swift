@@ -44,8 +44,7 @@ enum ModuleTemplate: CaseIterable {
     var item: [Template.Item] {
         switch self {
         case .main:
-            return [.directory(path: path, sourcePath: ""),
-                    .file(path: path + "/Project.swift", templatePath: "Project.stencil")]
+            return [.file(path: path + "/Project.swift", templatePath: "Project.stencil")]
         case .tests:
             return [.file(path: path + "/Sources/Empty.swift", templatePath: "Empty.stencil"),
                     .file(path: path + "/Resources/Empty.swift", templatePath: "Empty.stencil")]

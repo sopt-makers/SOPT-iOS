@@ -27,8 +27,8 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     
     // MARK: - UI Components
     
-    private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton)
-        .addMiddleLabel(title: I18N.Soptlog.navigationTitle, font: DSKitFontFamily.Suit.medium.font(size: 16))
+//    private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton)
+//        .addMiddleLabel(title: I18N.Soptlog.navigationTitle, font: DSKitFontFamily.Suit.medium.font(size: 16))
     
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout()).then {
         $0.isScrollEnabled = true
@@ -70,14 +70,14 @@ extension SoptlogVC {
     }
     
     private func setLayout() {
-        view.addSubviews(naviBar, collectionView)
+        view.addSubviews(collectionView)
         
-        naviBar.snp.makeConstraints { make in
-            make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-        }
+//        naviBar.snp.makeConstraints { make in
+//            make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+//        }
         
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(naviBar.snp.bottom).offset(16)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(16)
             make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
@@ -108,7 +108,7 @@ extension SoptlogVC {
     private func bindViewModels() {
         let input = SoptlogViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
-            naviBackButtonTap: self.naviBar.leftButtonTapped.asDriver(),
+//            naviBackButtonTap: self.naviBar.leftButtonTapped.asDriver(),
             cellTap: cellTap.asDriver())
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)

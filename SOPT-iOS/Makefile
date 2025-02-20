@@ -8,6 +8,10 @@ clean:
 	rm -rf **/*.xcodeproj
 	rm -rf *.xcworkspace
 
+reset:
+	tuist clean
+	make clean
+
 regenerate:
 	make clean
 	tuist generate
