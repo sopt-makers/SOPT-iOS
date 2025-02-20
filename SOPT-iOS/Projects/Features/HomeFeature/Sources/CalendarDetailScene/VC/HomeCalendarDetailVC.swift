@@ -86,7 +86,6 @@ final class HomeCalendarDetailVC: UIViewController, HomeCalendarDetailViewContro
             gradientLayer.frame = gradientView.bounds
         }
 
-        scrollToRecentSchedule()
     }
 }
 
