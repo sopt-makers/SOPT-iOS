@@ -6,4 +6,19 @@
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
-import Foundation
+import Core
+import Domain
+@_exported import TabBarFeatureInterface
+import UIKit
+
+public final class TabBarBuilder {
+    public init() {}
+}
+
+extension TabBarBuilder: TabBarBuildable {
+    public func makeTabBar() -> TabBarPresentable {
+        let viewModel = TabBarViewModel()
+        let tabBarVC = TabBarController(viewModel: viewModel, tabList: [])
+        return (tabBarVC, viewModel)
+    }
+}

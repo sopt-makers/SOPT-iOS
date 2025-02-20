@@ -23,6 +23,7 @@ import DailySoptuneFeature
 import WebFeature
 import SoptlogFeature
 import HomeFeature
+import TabBarFeature
 
 public
 final class ApplicationCoordinator: BaseCoordinator {
@@ -130,7 +131,7 @@ extension ApplicationCoordinator {
     
     private func checkDidSignIn() {
         let needAuth = UserDefaultKeyList.Auth.appAccessToken == nil
-        needAuth ? runSignInFlow(by: .root) : runHomeFlow()
+        needAuth ? runSignInFlow(by: .root) : runTabBarFlow()
     }
 }
 
@@ -140,7 +141,7 @@ extension ApplicationCoordinator {
     private func runSignInFlow(by style: CoordinatorStartingOption) {
         let coordinator = AuthCoordinator(router: router, factory: AuthBuilder())
         coordinator.finishFlow = { [weak self, weak coordinator] userType in
-            self?.runHomeFlow(type: userType)
+            self?.runTabBarFlow(type: userType)
             self?.removeDependency(coordinator)
         }
         addDependency(coordinator)
@@ -151,7 +152,7 @@ extension ApplicationCoordinator {
         childCoordinators = []
         let coordinator = AuthCoordinator(router: router, factory: AuthBuilder(), url: url)
         coordinator.finishFlow = { [weak self, weak coordinator] userType in
-            self?.runHomeFlow(type: userType)
+            self?.runTabBarFlow(type: userType)
             self?.removeDependency(coordinator)
         }
         addDependency(coordinator)
@@ -162,6 +163,28 @@ extension ApplicationCoordinator {
 // MARK: - MainFlow
 
 extension ApplicationCoordinator {
+    
+    internal func runTabBarFlow(type: UserType? = nil) {
+        let coordinator = TabBarCoordinator(
+            router: router,
+            factory: TabBarBuilder()
+        )
+        
+        // 각 코디네이터 실행
+        coordinator.requestCoordinating = { [weak self] destination in
+            switch destination {
+            case .home:
+//                self?.runHomeFlow(type: type)
+                break
+            case .soptlog:
+//                self?.runSoptlogFlow()
+                break
+            }
+        }
+        
+        coordinator.start()
+    }
+    
     internal func runMainFlow(type: UserType? = nil) {
         defer {
             bindNotification()
