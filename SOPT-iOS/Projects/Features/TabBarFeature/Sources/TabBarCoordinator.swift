@@ -26,11 +26,12 @@ public final class TabBarCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     public var requestCoordinating: ((TabBarCoordinatorDestination) -> Void)?
         
-    private let factory: TabBarBuildable
+    private let factory: TabBarPresentable
     private let router: Router
     private let items: [UIViewController]
+    private weak var rootController: UINavigationController?
     
-    public init(router: Router, factory: TabBarBuildable, items: [UIViewController]) {
+    public init(router: Router, factory: TabBarPresentable, items: [UIViewController]) {
         self.router = router
         self.factory = factory
         self.items = items
@@ -41,8 +42,8 @@ public final class TabBarCoordinator: DefaultCoordinator {
     }
     
     private func showTabBar() {
-        var tabBar = factory.makeTabBar(with: items)
-        
+        var tabBar = factory
+                
         tabBar.vm.onTabBarItemTapped = { [weak self] index in
             // 각 탭의 코디네이터 실행
             switch index {
@@ -51,10 +52,9 @@ public final class TabBarCoordinator: DefaultCoordinator {
             case 1:
                 self?.requestCoordinating?(.soptlog)
             default:
-                break
+                print("😅")
+                return
             }
         }
-        
-        self.router.push(tabBar.vc)
     }
 }

@@ -23,7 +23,7 @@ final public class TabBarViewModel: TabBarViewModelType {
     public struct Output {}
     
     public init() {
-        
+        bind()
     }
     
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
@@ -33,6 +33,7 @@ final public class TabBarViewModel: TabBarViewModelType {
     
     private func bind() {
         $selectedIndex
+            .removeDuplicates()
             .withUnretained(self)
             .sink { owner, index in
                 owner.onTabBarItemTapped?(index)

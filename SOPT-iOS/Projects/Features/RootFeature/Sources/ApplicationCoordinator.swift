@@ -60,7 +60,7 @@ extension ApplicationCoordinator {
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .filter { _ in
-                self.childCoordinators.contains(where: { $0 is HomeCoordinator })
+                self.childCoordinators.contains(where: { $0 is TabBarCoordinator })
             }
             .sink { [weak self] deepLinkComponent in
                 self?.handleDeepLink(deepLink: deepLinkComponent)
@@ -71,7 +71,7 @@ extension ApplicationCoordinator {
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .filter { _ in
-                self.childCoordinators.contains(where: { $0 is HomeCoordinator })
+                self.childCoordinators.contains(where: { $0 is TabBarCoordinator })
             }.sink { [weak self] url in
                 self?.handleWebLink(webLink: url)
                 self?.notificationHandler.clearNotificationRecord()
@@ -81,7 +81,7 @@ extension ApplicationCoordinator {
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .filter { _ in
-                self.childCoordinators.contains(where: { $0 is HomeCoordinator })
+                self.childCoordinators.contains(where: { $0 is TabBarCoordinator })
             }.sink { [weak self] error in
                 self?.handleNotificationLinkError(error: error)
                 self?.notificationHandler.clearNotificationRecord()
@@ -90,7 +90,7 @@ extension ApplicationCoordinator {
     
     private func handleDeepLink(deepLink: DeepLinkComponentsExecutable) {
         // TODO: 해당 부분 왜 .dismissModule(animated: false) 하고 있었는지 확인
-//        self.router.dismissModule(animated: false)
+        self.router.dismissModule(animated: false)
         deepLink.execute(coordinator: self)
     }
     
@@ -166,30 +166,45 @@ extension ApplicationCoordinator {
 extension ApplicationCoordinator {
     
     internal func runTabBarFlow(type: UserType? = nil) {
-        let homeVC = HomeBuilder().makeHomeForMember()
-        let soptlogVC = SoptlogBuilder().makeSoptlog()
+        let tabBarBuilder = TabBarBuilder()
+        let userType = type ?? UserDefaultKeyList.Auth.getUserType()
+
+        let homeCoordinator = runHomeFlow(type: userType)
+        guard let homeVC = homeCoordinator.rootViewController else { return }
+        
+        let soptlogCoordinator = runSoptlogFlow()
+        guard let soptlogVC = soptlogCoordinator.rootViewController else { return }
+                
+        let (tabbarController, viewModel) = tabBarBuilder.makeTabBar(with: [
+            homeVC,
+            soptlogVC
+        ])
         
         let coordinator = TabBarCoordinator(
             router: router,
-            factory: TabBarBuilder(),
-            items: [homeVC.vc.viewController, soptlogVC.vc.viewController]
+            factory: (tabbarController, viewModel),
+            items: [
+                homeVC,
+                soptlogVC
+            ]
         )
+        
+        self.router.replaceRootWindow(tabbarController, withAnimation: true, hideBar: true)
         
         // 각 코디네이터 실행
         coordinator.requestCoordinating = { [weak self] destination in
             switch destination {
             case .home:
-//                self?.runHomeFlow(type: type)
-                break
+                self?.runHomeFlow(type: type)
             case .soptlog:
-//                self?.runSoptlogFlow()
-                break
+                self?.runSoptlogFlow()
             }
         }
         
+        addDependency(coordinator)
         coordinator.start()
     }
-    
+
     internal func runMainFlow(type: UserType? = nil) {
         defer {
             bindNotification()
@@ -226,7 +241,8 @@ extension ApplicationCoordinator {
         coordinator.start()
     }
     
-    internal func runHomeFlow(type: UserType? = nil) {
+    @discardableResult
+    internal func runHomeFlow(type: UserType? = nil) -> HomeCoordinator {
         defer {
             bindNotification()
         }
@@ -260,9 +276,9 @@ extension ApplicationCoordinator {
                 self?.handleWebLink(webLink: url)
             }
         }
-        
         addDependency(coordinator)
         coordinator.start()
+        return coordinator
     }
     
     @discardableResult
@@ -450,7 +466,7 @@ extension ApplicationCoordinator {
     @discardableResult
     internal func runSoptlogFlow() -> SoptlogCoordinator {
         let coordinator = SoptlogCoordinator(
-            router: Router(rootController: UIWindow.getRootNavigationController),
+            router: router,
             factory: SoptlogBuilder()
         )
         

@@ -42,6 +42,8 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
     private let router: Router
     private let userType: UserType
     
+    public private(set) var rootViewController: UIViewController?
+    
     public init(
         router: Router,
         factory: HomeFeatureBuildable,
@@ -92,7 +94,8 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
             self?.requestCoordinating?(.attendance)
         }
     
-        router.replaceRootWindow(homeForMember.vc, withAnimation: true)
+        rootViewController = homeForMember.vc.viewController
+        router.push(homeForMember.vc)
     }
     
     public func showHomeForVisitor() {
@@ -118,7 +121,8 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
             self?.requestCoordinating?(.setting(userType: userType))
         }
         
-        router.replaceRootWindow(homeForVisitor.vc, withAnimation: true)
+        rootViewController = homeForVisitor.vc.viewController
+        router.push(homeForVisitor.vc)
     }
     
     public func showHomeCalendarDetail() {

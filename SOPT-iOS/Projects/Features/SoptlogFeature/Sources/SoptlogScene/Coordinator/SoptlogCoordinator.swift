@@ -25,6 +25,7 @@ public final class SoptlogCoordinator: DefaultCoordinator {
     private let router: Router
     
     private weak var rootController: UINavigationController?
+    public private(set) var rootViewController: UIViewController?
     
     public init(router: Router, factory: SoptlogFeatureBuildable) {
         self.router = router
@@ -55,6 +56,7 @@ public final class SoptlogCoordinator: DefaultCoordinator {
         }
         
         self.rootController = soptlog.vc.asNavigationController
+        self.rootViewController = soptlog.vc.viewController
         self.router.push(soptlog.vc)
     }
 }
