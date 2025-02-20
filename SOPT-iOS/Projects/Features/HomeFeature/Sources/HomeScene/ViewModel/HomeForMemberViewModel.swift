@@ -36,8 +36,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     // MARK: - Inputs
     
     public struct Input {
-        let viewDidLoad: Driver<Void>
-        let requestUserInfo: Driver<Void>
+        let viewWillAppear: Driver<Void>
         let cellTapped: Driver<HomeForMemberItem>
         let attendanceButtonTapped: Driver<Void>
         let noticeButtonTapped: Driver<Void>
@@ -48,7 +47,6 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     
     public struct Output {
         let homeItem = PassthroughSubject<HomePresentationModel, Never>()
-        let dashBoard = PassthroughSubject<HomePresentationModel.DashBoard, Never>()
         let isLoading = PassthroughSubject<Bool, Never>()
     }
     
@@ -73,7 +71,7 @@ extension HomeForMemberViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
 
-        input.viewDidLoad
+        input.viewWillAppear
             .handleEvents(receiveOutput: { _ in
                 output.isLoading.send(true)
             })
@@ -121,25 +119,6 @@ extension HomeForMemberViewModel {
             .withUnretained(self)
             .sink { owner, data in
                 output.homeItem.send(data)
-                output.isLoading.send(false)
-            }
-            .store(in: cancelBag)
-        
-        input.requestUserInfo
-            .dropFirst()
-            .handleEvents(receiveOutput: { _ in
-                output.isLoading.send(true)
-            })
-            .flatMap { _ in
-                self.useCase.getUserInfo()
-            }
-            .compactMap { $0 }
-            .flatMap { userInfo in
-                self.useCase.getHomeDescription().map { $0.toPresentation(history: userInfo.historyList, isAllConfirm: userInfo.isAllConfirm) }
-            }
-            .withUnretained(self)
-            .sink { owner, data in
-                output.dashBoard.send(data)
                 output.isLoading.send(false)
             }
             .store(in: cancelBag)

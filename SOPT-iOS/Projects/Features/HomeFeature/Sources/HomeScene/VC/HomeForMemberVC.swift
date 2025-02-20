@@ -21,7 +21,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     
     public let viewModel: HomeForMemberViewModel
     private(set) var cancelBag = CancelBag()
-    private var requestUserInfo = PassthroughSubject<Void, Never>()
+    private var viewWillAppear = PassthroughSubject<Void, Never>()
     private var cellTapped = PassthroughSubject<HomeForMemberItem, Never>()
     private(set) var attendanceButtonTapped = PassthroughSubject<Void, Never>()
     
@@ -58,7 +58,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.requestUserInfo.send()
+        self.viewWillAppear.send()
     }
 }
 
@@ -184,8 +184,7 @@ extension HomeForMemberVC {
             .asDriver()
         
         let input = HomeForMemberViewModel.Input(
-            viewDidLoad: Just<Void>(()).asDriver(),
-            requestUserInfo: requestUserInfo.asDriver(),
+            viewWillAppear: viewWillAppear.asDriver(),
             cellTapped: cellTapped.asDriver(),
             attendanceButtonTapped: attendanceButtonTapped.asDriver(),
             noticeButtonTapped: noticeButtonTapped,
@@ -197,17 +196,8 @@ extension HomeForMemberVC {
         output.homeItem
             .withUnretained(self)
             .sink { owner, data in
-                owner.changeNaviBarUI(isAllConfirm: data.dashBoard.isAllConfirm)
-                owner.applySnapshot(with: data)
+                owner.updateUI(with: data)
             }.store(in: cancelBag)
-        
-        output.dashBoard
-            .withUnretained(self)
-            .sink { owner, data in
-                owner.changeNaviBarUI(isAllConfirm: data.isAllConfirm)
-                owner.setDashBoardNeedsUpdate(data)
-            }
-            .store(in: cancelBag)
         
         output.isLoading
             .withUnretained(self)
@@ -217,7 +207,17 @@ extension HomeForMemberVC {
             .store(in: cancelBag)
     }
     
-    private func changeNaviBarUI(isAllConfirm: Bool?) {
+    private func updateUI(with data: HomePresentationModel) {
+        if isFirstAppear {
+            applySnapshot(with: data)
+            isFirstAppear = false
+        } else {
+            setItemsNeedUpdate(data)
+        }
+        updateNaviBarUI(isAllConfirm: data.dashBoard.isAllConfirm)
+    }
+    
+    private func updateNaviBarUI(isAllConfirm: Bool?) {
         if let isAllConfirm = isAllConfirm {
             self.naviBar.changeNoticeButtonStyle(isActive: !isAllConfirm)
         }
@@ -244,11 +244,18 @@ extension HomeForMemberVC {
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     
-    private func setDashBoardNeedsUpdate(_ dashBoard: HomePresentationModel.DashBoard) {
+    private func setItemsNeedUpdate(_ data: HomePresentationModel) {
         var snapshot = self.dataSource.snapshot()
-        let dashBoardItem = HomeForMemberItem.dashBoard(dashBoard)
-        if snapshot.itemIdentifiers.contains(dashBoardItem) {
-            snapshot.reconfigureItems([dashBoardItem])
+        
+        let items: [HomeForMemberItem] = [
+            .dashBoard(data.dashBoard),
+            .recentSchedule(data.recentSchedule)
+        ] + data.appServices.map { .appService($0) }
+        
+        let existingItems = snapshot.itemIdentifiers.filter { items.contains($0) }
+        
+        if !existingItems.isEmpty {
+            snapshot.reconfigureItems(existingItems)
             self.dataSource.apply(snapshot, animatingDifferences: true)
         }
     }
