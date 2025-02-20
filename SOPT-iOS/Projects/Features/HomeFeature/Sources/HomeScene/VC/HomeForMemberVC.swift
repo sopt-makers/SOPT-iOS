@@ -18,11 +18,14 @@ import BaseFeatureDependency
 final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     
     // MARK: - Properties
-
+    
     public let viewModel: HomeForMemberViewModel
     private(set) var cancelBag = CancelBag()
+    private var viewWillAppear = PassthroughSubject<Void, Never>()
     private var cellTapped = PassthroughSubject<HomeForMemberItem, Never>()
     private(set) var attendanceButtonTapped = PassthroughSubject<Void, Never>()
+    
+    private var isFirstAppear = true
     
     // MARK: - UI Components
     
@@ -51,6 +54,11 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
         configureDelegate()
         configureDataSource()
         bindViewModels()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.viewWillAppear.send()
     }
 }
 
@@ -176,7 +184,7 @@ extension HomeForMemberVC {
             .asDriver()
         
         let input = HomeForMemberViewModel.Input(
-            viewDidLoad: Just<Void>(()).asDriver(),
+            viewWillAppear: viewWillAppear.asDriver(),
             cellTapped: cellTapped.asDriver(),
             attendanceButtonTapped: attendanceButtonTapped.asDriver(),
             noticeButtonTapped: noticeButtonTapped,
@@ -188,7 +196,7 @@ extension HomeForMemberVC {
         output.homeItem
             .withUnretained(self)
             .sink { owner, data in
-                owner.applySnapshot(with: data)
+                owner.updateUI(with: data)
             }.store(in: cancelBag)
         
         output.isLoading
@@ -197,6 +205,22 @@ extension HomeForMemberVC {
                 isLoading ? owner.showLoading() : owner.stopLoading()
             }
             .store(in: cancelBag)
+    }
+    
+    private func updateUI(with data: HomePresentationModel) {
+        if isFirstAppear {
+            applySnapshot(with: data)
+            isFirstAppear = false
+        } else {
+            setItemsNeedUpdate(data)
+        }
+        updateNaviBarUI(isAllConfirm: data.dashBoard.isAllConfirm)
+    }
+    
+    private func updateNaviBarUI(isAllConfirm: Bool?) {
+        if let isAllConfirm = isAllConfirm {
+            self.naviBar.changeNoticeButtonStyle(isActive: !isAllConfirm)
+        }
     }
     
     private func applySnapshot(with data: HomePresentationModel) {
@@ -218,6 +242,22 @@ extension HomeForMemberVC {
 //        snapshot.appendItems(SocialLinkCardType.allCases.map { .socialLink($0) }, toSection: .socialLinks)
 //        
         dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+    private func setItemsNeedUpdate(_ data: HomePresentationModel) {
+        var snapshot = self.dataSource.snapshot()
+        
+        let items: [HomeForMemberItem] = [
+            .dashBoard(data.dashBoard),
+            .recentSchedule(data.recentSchedule)
+        ] + data.appServices.map { .appService($0) }
+        
+        let existingItems = snapshot.itemIdentifiers.filter { items.contains($0) }
+        
+        if !existingItems.isEmpty {
+            snapshot.reconfigureItems(existingItems)
+            self.dataSource.apply(snapshot, animatingDifferences: true)
+        }
     }
 }
 

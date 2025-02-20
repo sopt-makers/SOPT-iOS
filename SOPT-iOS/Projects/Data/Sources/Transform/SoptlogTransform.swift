@@ -19,7 +19,7 @@ extension SoptlogResponseEntity {
                                  soptampRank: self.soptampRank ?? "0",
                                  pokeCount: self.pokeCount,
                                  soptLevel: self.soptLevel,
-                                 during: self.during ?? 0,
+                                 during: self.during,
                                  profileMessage: self.profileMessage,
                                  icons: self.icons,
                                  isFortuneChecked: self.isFortuneChecked,

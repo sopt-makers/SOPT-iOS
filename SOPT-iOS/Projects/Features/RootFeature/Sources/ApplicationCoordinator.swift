@@ -60,7 +60,7 @@ extension ApplicationCoordinator {
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .filter { _ in
-                self.childCoordinators.contains(where: { $0 is MainCoordinator })
+                self.childCoordinators.contains(where: { $0 is HomeCoordinator })
             }
             .sink { [weak self] deepLinkComponent in
                 self?.handleDeepLink(deepLink: deepLinkComponent)
@@ -71,7 +71,7 @@ extension ApplicationCoordinator {
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .filter { _ in
-                self.childCoordinators.contains(where: { $0 is MainCoordinator })
+                self.childCoordinators.contains(where: { $0 is HomeCoordinator })
             }.sink { [weak self] url in
                 self?.handleWebLink(webLink: url)
                 self?.notificationHandler.clearNotificationRecord()
@@ -81,7 +81,7 @@ extension ApplicationCoordinator {
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .filter { _ in
-                self.childCoordinators.contains(where: { $0 is MainCoordinator })
+                self.childCoordinators.contains(where: { $0 is HomeCoordinator })
             }.sink { [weak self] error in
                 self?.handleNotificationLinkError(error: error)
                 self?.notificationHandler.clearNotificationRecord()
@@ -89,7 +89,8 @@ extension ApplicationCoordinator {
     }
     
     private func handleDeepLink(deepLink: DeepLinkComponentsExecutable) {
-        self.router.dismissModule(animated: false)
+        // TODO: 해당 부분 왜 .dismissModule(animated: false) 하고 있었는지 확인
+//        self.router.dismissModule(animated: false)
         deepLink.execute(coordinator: self)
     }
     
@@ -234,14 +235,8 @@ extension ApplicationCoordinator {
             factory: HomeBuilder(),
             userType: userType
         )
-        coordinator.finishFlow = { [weak self, weak coordinator] in
-            self?.removeDependency(coordinator)
-        }
-        
         coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
             switch destination {
-            case .calendar:
-                self?.runAttendanceFlow()
             case .attendance:
                 self?.runAttendanceFlow()
             case .setting(let userType):

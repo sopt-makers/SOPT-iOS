@@ -20,7 +20,6 @@ public enum HomeCoordinatorDestination {
     case signIn
     case notification
     case setting(userType: UserType)
-    case calendar
     case attendance
     case soptlog
     
@@ -34,7 +33,7 @@ public protocol HomeCoordinatorOutput {
 
 public typealias DefaultHomeCoordinator = BaseCoordinator & HomeCoordinatorOutput
 
-public final class HomeCoordinator: DefaultCoordinator {
+public final class HomeCoordinator: DefaultHomeCoordinator {
     
     public var requestCoordinating: ((HomeCoordinatorDestination) -> Void)?
     public var finishFlow: (() -> Void)?
@@ -127,7 +126,6 @@ public final class HomeCoordinator: DefaultCoordinator {
         
         homeCalendarDetail.vm.onNaviBackButtonTap = { [weak self] in
             self?.router.popModule()
-            self?.finishFlow?()
         }
         
         homeCalendarDetail.vm.onAttendanceButtonTap = { [weak self] in

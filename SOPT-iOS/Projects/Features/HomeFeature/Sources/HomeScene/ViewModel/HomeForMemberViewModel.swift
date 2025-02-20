@@ -36,7 +36,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     // MARK: - Inputs
     
     public struct Input {
-        let viewDidLoad: Driver<Void>
+        let viewWillAppear: Driver<Void>
         let cellTapped: Driver<HomeForMemberItem>
         let attendanceButtonTapped: Driver<Void>
         let noticeButtonTapped: Driver<Void>
@@ -71,7 +71,7 @@ extension HomeForMemberViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
 
-        input.viewDidLoad
+        input.viewWillAppear
             .handleEvents(receiveOutput: { _ in
                 output.isLoading.send(true)
             })
@@ -81,7 +81,7 @@ extension HomeForMemberViewModel {
             .compactMap { $0 }
             .flatMap { userInfo in
                 Publishers.Zip3(
-                    self.useCase.getHomeDescription().map { $0.toPresentation(history: userInfo.historyList) },
+                    self.useCase.getHomeDescription().map { $0.toPresentation(history: userInfo.historyList, isAllConfirm: userInfo.isAllConfirm) },
                     self.useCase.getRecentSchedule().map { $0.toPresentation() },
                     self.useCase.getAppServices().map { $0.map { $0.toPresentation() } }
                 )

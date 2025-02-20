@@ -16,14 +16,14 @@ public struct SoptlogResponseEntity: Decodable {
     public let soptampRank: String?
     public let pokeCount: String
     public let soptLevel: String
-    public let during: Int?
+    public let during: String
     public let profileMessage: String
     public let icons: [String]
     public let isFortuneChecked: Bool
     public let todayFortuneText: String
     public let isActive: Bool
     
-    public init(userName: String?, profileImage: String?, part: String, soptampRank: String?, pokeCount: String, soptLevel: String, during: Int?, profileMessage: String, icons: [String], isFortuneChecked: Bool, todayFortuneText: String, isActive: Bool) {
+    public init(userName: String?, profileImage: String?, part: String, soptampRank: String?, pokeCount: String, soptLevel: String, during: String, profileMessage: String, icons: [String], isFortuneChecked: Bool, todayFortuneText: String, isActive: Bool) {
         self.userName = userName
         self.profileImage = profileImage
         self.part = part

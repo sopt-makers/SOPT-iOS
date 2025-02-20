@@ -120,6 +120,13 @@ extension SoptlogVC {
                 owner.soptlogInfo = soptlogModel
                 owner.collectionView.reloadData()
             }.store(in: cancelBag)
+        
+        output.isLoading
+            .withUnretained(self)
+            .sink { owner, isLoading in
+                isLoading ? owner.showLoading() : owner.stopLoading()
+            }
+            .store(in: cancelBag)
     }
 }
 
@@ -165,7 +172,6 @@ extension SoptlogVC: UICollectionViewDataSource {
         case .appService: return self.soptlogInfo?.appService.count ?? 0
         case .editProfile: return 1
         case .alarm: return 1
-        default: return 0
         }
     }
     
@@ -203,8 +209,6 @@ extension SoptlogVC: UICollectionViewDataSource {
                 for: indexPath) as? SoptlogAlarmCVC else { return UICollectionViewCell() }
             alarmCell.configureCell(model: self.soptlogInfo?.alarm)
             return alarmCell
-            
-        default: return UICollectionViewCell()
         }
     }
 }
