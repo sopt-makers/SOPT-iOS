@@ -43,6 +43,10 @@ final class TabBarController: UITabBarController {
     override public func viewDidLayoutSubviews() {
         configureTabBarHeight()
     }
+    
+    deinit {
+        self.delegate = nil
+    }
 }
 
 extension TabBarController {

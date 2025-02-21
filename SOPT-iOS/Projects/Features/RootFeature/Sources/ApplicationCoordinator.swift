@@ -89,12 +89,12 @@ extension ApplicationCoordinator {
     }
     
     private func handleDeepLink(deepLink: DeepLinkComponentsExecutable) {
-        self.router.dismissModule(animated: false)
+//        self.router.dismissModule(animated: false)
         deepLink.execute(coordinator: self)
     }
     
     private func handleWebLink(webLink: String) {
-        self.router.dismissModule(animated: false)
+//        self.router.dismissModule(animated: false)
         guard let url = URL(string: webLink) else { return }
         let webView = SOPTWebView(startWith: url)
         self.router.push(webView)
@@ -163,8 +163,10 @@ extension ApplicationCoordinator {
 // MARK: - MainFlow
 
 extension ApplicationCoordinator {
-    
     internal func runTabBarFlow(type: UserType? = nil) {
+        
+        self.childCoordinators = []
+        
         let tabBarBuilder = TabBarBuilder()
         let userType = type ?? UserDefaultKeyList.Auth.getUserType()
 
@@ -227,8 +229,6 @@ extension ApplicationCoordinator {
         }
         
         addDependency(coordinator)
-        addDependency(homeCoordinator)
-        addDependency(soptlogCoordinator)
         coordinator.start()
     }
 
@@ -317,6 +317,7 @@ extension ApplicationCoordinator {
             factory: AttendanceBuilder()
         )
         coordinator.finishFlow = { [weak self, weak coordinator] in
+            coordinator?.childCoordinators = []
             self?.removeDependency(coordinator)
         }
         addDependency(coordinator)
@@ -456,6 +457,7 @@ extension ApplicationCoordinator {
         }
         
         coordinator.finishFlow = { [weak self, weak coordinator] in
+            coordinator?.childCoordinators = []
             self?.removeDependency(coordinator)
         }
         addDependency(coordinator)
@@ -500,7 +502,8 @@ extension ApplicationCoordinator {
             factory: SoptlogBuilder()
         )
         
-        coordinator.finishFlow = { [weak self] in
+        coordinator.finishFlow = { [weak self, weak coordinator] in
+            coordinator?.childCoordinators = []
             self?.removeDependency(coordinator)
         }
         

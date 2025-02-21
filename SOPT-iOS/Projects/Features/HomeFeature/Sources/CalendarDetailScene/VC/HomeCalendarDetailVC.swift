@@ -85,7 +85,11 @@ final class HomeCalendarDetailVC: UIViewController, HomeCalendarDetailViewContro
         if let gradientLayer = gradientView.layer.sublayers?.first as? CAGradientLayer {
             gradientLayer.frame = gradientView.bounds
         }
-
+    }
+    
+    deinit {
+        collectionView.dataSource = self
+        collectionView.delegate = self
     }
 }
 
