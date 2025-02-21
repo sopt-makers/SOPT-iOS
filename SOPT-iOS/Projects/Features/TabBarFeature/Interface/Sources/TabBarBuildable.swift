@@ -7,7 +7,8 @@
 //
 
 import UIKit
+import Core
 
 public protocol TabBarBuildable {
-    func makeTabBar(with views: [UIViewController]) -> TabBarPresentable
+    func makeTabBar(with views: [UIViewController], userType: UserType) -> TabBarPresentable
 }

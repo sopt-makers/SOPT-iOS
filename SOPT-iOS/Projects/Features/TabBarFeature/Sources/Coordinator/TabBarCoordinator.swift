@@ -19,6 +19,7 @@ import WebFeature
 public enum TabBarCoordinatorDestination {
     case home
     case soptlog
+    case signIn
 }
 
 public final class TabBarCoordinator: DefaultCoordinator {
@@ -52,9 +53,20 @@ public final class TabBarCoordinator: DefaultCoordinator {
             case 1:
                 self?.requestCoordinating?(.soptlog)
             default:
-                print("😅")
                 return
             }
+        }
+        
+        tabBar.vm.showTabBarAlert = { [weak self] in
+            AlertUtils.presentAlertVC(
+                type: .titleDescription,
+                title: I18N.Home.PopUp.needToLogin,
+                description: I18N.Home.PopUp.needToLoginDetail,
+                customButtonTitle: I18N.Home.PopUp.login,
+                customAction: { [weak self] in
+                    self?.requestCoordinating?(.signIn)
+                }
+            )
         }
     }
 }

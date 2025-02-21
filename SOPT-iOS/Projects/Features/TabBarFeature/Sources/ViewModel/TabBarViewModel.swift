@@ -15,28 +15,40 @@ import TabBarFeatureInterface
 final public class TabBarViewModel: TabBarViewModelType {
     
     private let cancelBag = CancelBag()
-    @Published var selectedIndex: Int = 0
+    private let userType: UserType
     
     public var onTabBarItemTapped: ((Int) -> Void)?
+    public var showTabBarAlert: (() -> Void)?
     
-    public struct Input {}
-    public struct Output {}
-    
-    public init() {
-        bind()
+    public struct Input {
+        let isTabSelectedIndex: Driver<Int>
     }
     
+    public struct Output {
+        let selectedIndex = PassthroughSubject<Int, Never>()
+    }
+    
+    public init(userType: UserType) {
+        self.userType = userType
+    }
+}
+
+extension TabBarViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
-        return output
-    }
-    
-    private func bind() {
-        $selectedIndex
-            .removeDuplicates()
+        
+        input.isTabSelectedIndex
             .withUnretained(self)
             .sink { owner, index in
-                owner.onTabBarItemTapped?(index)
+                if index == 1, owner.userType == .visitor {
+                    owner.showTabBarAlert?()
+                    output.selectedIndex.send(0)
+                } else {
+                    owner.onTabBarItemTapped?(index)
+                    output.selectedIndex.send(1)
+                }
             }.store(in: cancelBag)
+        
+        return output
     }
 }
