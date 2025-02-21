@@ -12,7 +12,7 @@ import Core
 import BaseFeatureDependency
 import SplashFeature
 import AuthFeature
-import MainFeature
+//import MainFeature
 import HomeFeature
 import AppMyPageFeature
 import NotificationFeature
@@ -89,7 +89,6 @@ extension ApplicationCoordinator {
     }
     
     private func handleDeepLink(deepLink: DeepLinkComponentsExecutable) {
-        // TODO: 해당 부분 왜 .dismissModule(animated: false) 하고 있었는지 확인
         self.router.dismissModule(animated: false)
         deepLink.execute(coordinator: self)
     }
@@ -175,10 +174,11 @@ extension ApplicationCoordinator {
         let soptlogCoordinator = runSoptlogFlow()
         guard let soptlogVC = soptlogCoordinator.rootViewController else { return }
                 
-        let (tabbarController, viewModel) = tabBarBuilder.makeTabBar(with: [
-            homeVC,
-            soptlogVC
-        ])
+        let (tabbarController, viewModel) = tabBarBuilder.makeTabBar(
+            with: [homeVC,
+                   soptlogVC],
+            userType: userType
+        )
         
         let coordinator = TabBarCoordinator(
             router: router,
@@ -207,7 +207,7 @@ extension ApplicationCoordinator {
                     case .notification:
                         self?.runNotificationFlow()
                     case .soptlog:
-                        self?.runSoptlogFlow()
+                        tabbarController.selectedIndex = 1
                     case .deepLink(let url):
                         self?.notificationHandler.receive(deepLink: url)
                         guard let deepLink = self?.notificationHandler.deepLink.value else { return }
@@ -220,48 +220,53 @@ extension ApplicationCoordinator {
                 soptlogCoordinator.requestCoordinating = { [weak self] in
                     self?.runDailySoptuneFlow()
                 }
-            }
-        }
-        
-        addDependency(coordinator)
-        coordinator.start()
-    }
-
-    internal func runMainFlow(type: UserType? = nil) {
-        defer {
-            bindNotification()
-        }
-        
-        self.childCoordinators = []
-        
-        let userType = type ?? UserDefaultKeyList.Auth.getUserType()
-        let coordinator = MainCoordinator(
-            router: router,
-            factory: MainBuilder(),
-            userType: userType
-        )
-        coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
-            switch destination {
-            case .myPage(let userType):
-                self?.runMyPageFlow(of: userType)
-            case .notification:
-                self?.runNotificationFlow()
-            case .attendance:
-                self?.runAttendanceFlow()
-            case .stamp:
-                self?.runStampFlow()
-            case .poke:
-                self?.runPokeFlow()
-            case .pokeOnboarding:
-                self?.runPokeOnboardingFlow()
             case .signIn:
                 self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
                 self?.removeDependency(coordinator)
             }
         }
+        
         addDependency(coordinator)
+        addDependency(homeCoordinator)
+        addDependency(soptlogCoordinator)
         coordinator.start()
     }
+
+//    internal func runMainFlow(type: UserType? = nil) {
+//        defer {
+//            bindNotification()
+//        }
+//        
+//        self.childCoordinators = []
+//        
+//        let userType = type ?? UserDefaultKeyList.Auth.getUserType()
+//        let coordinator = MainCoordinator(
+//            router: router,
+//            factory: MainBuilder(),
+//            userType: userType
+//        )
+//        coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
+//            switch destination {
+//            case .myPage(let userType):
+//                self?.runMyPageFlow(of: userType)
+//            case .notification:
+//                self?.runNotificationFlow()
+//            case .attendance:
+//                self?.runAttendanceFlow()
+//            case .stamp:
+//                self?.runStampFlow()
+//            case .poke:
+//                self?.runPokeFlow()
+//            case .pokeOnboarding:
+//                self?.runPokeOnboardingFlow()
+//            case .signIn:
+//                self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
+//                self?.removeDependency(coordinator)
+//            }
+//        }
+//        addDependency(coordinator)
+//        coordinator.start()
+//    }
     
     @discardableResult
     internal func runHomeFlow(type: UserType? = nil) -> HomeCoordinator {
@@ -488,6 +493,8 @@ extension ApplicationCoordinator {
     @discardableResult
     internal func runSoptlogFlow() -> SoptlogCoordinator {
         
+        self.childCoordinators = []
+
         let coordinator = SoptlogCoordinator(
             router: router,
             factory: SoptlogBuilder()

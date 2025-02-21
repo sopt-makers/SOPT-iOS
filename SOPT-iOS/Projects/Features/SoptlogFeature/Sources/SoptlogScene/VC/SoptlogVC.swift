@@ -27,8 +27,8 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     
     // MARK: - UI Components
     
-//    private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton)
-//        .addMiddleLabel(title: I18N.Soptlog.navigationTitle, font: DSKitFontFamily.Suit.medium.font(size: 16))
+    private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton)
+        .addMiddleLabel(title: I18N.Soptlog.navigationTitle, font: DSKitFontFamily.Suit.medium.font(size: 16))
     
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout()).then {
         $0.isScrollEnabled = true
@@ -108,7 +108,7 @@ extension SoptlogVC {
     private func bindViewModels() {
         let input = SoptlogViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
-//            naviBackButtonTap: self.naviBar.leftButtonTapped.asDriver(),
+            naviBackButtonTap: self.naviBar.leftButtonTapped.asDriver(),
             cellTap: cellTap.asDriver())
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
