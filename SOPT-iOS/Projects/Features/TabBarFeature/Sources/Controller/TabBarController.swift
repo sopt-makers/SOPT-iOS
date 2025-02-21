@@ -1,5 +1,5 @@
 //
-//  TabBarItem.swift
+//  TabBarController.swift
 //  TabBarFeature
 //
 //  Created by 강윤서 on 2/20/25.
@@ -7,7 +7,9 @@
 //
 
 import UIKit
+import Combine
 
+import Core
 import DSKit
 
 final class TabBarController: UITabBarController {
@@ -15,6 +17,8 @@ final class TabBarController: UITabBarController {
     private let tabList: [UIViewController]
     private let viewModel: TabBarViewModel
     
+    private let isTabBarItemSelected = PassthroughSubject<Int, Never>()
+    private let cancelBag = CancelBag()
     
     init(viewModel: TabBarViewModel, tabList: [UIViewController]) {
         self.viewModel = viewModel
@@ -33,6 +37,7 @@ final class TabBarController: UITabBarController {
         configureTabBar()
         configureTabBarItem()
         setDelegate()
+        bindViewModels()
     }
     
     override public func viewDidLayoutSubviews() {
@@ -73,11 +78,25 @@ extension TabBarController {
     private func setDelegate() {
         self.delegate = self
     }
+    
+    private func bindViewModels() {
+        let input = TabBarViewModel.Input(
+            isTabSelectedIndex: isTabBarItemSelected.asDriver()
+        )
+    
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.selectedIndex
+            .withUnretained(self)
+            .sink { owner, index in
+                owner.selectedIndex = index
+            }.store(in: cancelBag)
+    }
 }
 
 extension TabBarController: UITabBarControllerDelegate {
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         guard let index = tabBar.items?.firstIndex(of: item) else { return }
-        viewModel.selectedIndex = index
+        isTabBarItemSelected.send(index)
     }
 }
