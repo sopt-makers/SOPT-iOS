@@ -45,7 +45,6 @@ extension TabBarViewModel {
                     output.selectedIndex.send(0)
                 } else {
                     owner.onTabBarItemTapped?(index)
-                    output.selectedIndex.send(1)
                 }
             }.store(in: cancelBag)
         
