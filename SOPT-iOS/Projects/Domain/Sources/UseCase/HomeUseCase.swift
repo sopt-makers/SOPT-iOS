@@ -20,11 +20,13 @@ public protocol HomeUseCase {
     func getCoffeeChatPosts() -> AnyPublisher<[HomeCoffeeChatPostModel], Never>
     func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never>
     func getAnnouncementPosts() -> AnyPublisher<[HomeAnnouncementModel], Never>
+    func getReportURL()
 }
 
 public class DefaultHomeUseCase {
     
     private let repository: HomeRepositoryInterface
+    private let cancelBag = CancelBag()
     
     public init(repository: HomeRepositoryInterface) {
         self.repository = repository
@@ -32,6 +34,7 @@ public class DefaultHomeUseCase {
 }
 
 extension DefaultHomeUseCase: HomeUseCase {
+
     public func getHomeDescription() -> AnyPublisher<HomeDescriptionModel, Never> {
         repository.getHomeDescription()
             .catch { error in
@@ -94,5 +97,15 @@ extension DefaultHomeUseCase: HomeUseCase {
                 return Empty<[HomeCalendarDetailModel], Never>()
             }
             .eraseToAnyPublisher()
+    }
+    
+    public func getReportURL() {
+        repository.getReportUrl()
+            .withUnretained(self)
+            .sink { event in
+                print("GetReportUrl State: \(event)")
+            } receiveValue: { owner, resultModel in
+                UserDefaultKeyList.Soptamp.reportUrl = resultModel.reportUrl
+            }.store(in: cancelBag)
     }
 }

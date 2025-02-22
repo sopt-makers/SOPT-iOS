@@ -184,6 +184,7 @@ extension HomeForMemberVC {
             .asDriver()
         
         let input = HomeForMemberViewModel.Input(
+            viewDidLoad: Just<Void>(()).asDriver(),
             viewWillAppear: viewWillAppear.asDriver(),
             cellTapped: cellTapped.asDriver(),
             attendanceButtonTapped: attendanceButtonTapped.asDriver(),

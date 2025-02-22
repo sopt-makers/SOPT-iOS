@@ -36,6 +36,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     // MARK: - Inputs
     
     public struct Input {
+        let viewDidLoad: Driver<Void>
         let viewWillAppear: Driver<Void>
         let cellTapped: Driver<HomeForMemberItem>
         let attendanceButtonTapped: Driver<Void>
@@ -70,6 +71,12 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
 extension HomeForMemberViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
+        
+        input.viewDidLoad
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.useCase.getReportURL()
+            }.store(in: cancelBag)
 
         input.viewWillAppear
             .handleEvents(receiveOutput: { _ in
