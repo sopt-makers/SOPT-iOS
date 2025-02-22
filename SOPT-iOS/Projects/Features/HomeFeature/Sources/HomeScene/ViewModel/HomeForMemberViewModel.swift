@@ -20,7 +20,7 @@ import BaseFeatureDependency
 public class HomeForMemberViewModel: HomeForMemberViewModelType {
     
     // MARK: - Properties
-
+    
     private let useCase: HomeUseCase
     private var cancelBag = CancelBag()
     
@@ -50,6 +50,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public struct Output {
         let homeItem = PassthroughSubject<HomePresentationModel, Never>()
         let isLoading = PassthroughSubject<Bool, Never>()
+        let needNetworkAlert = PassthroughSubject<Void, Never>()
     }
     
     // MARK: - HomeForMemberCoordinating
@@ -61,6 +62,8 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public var onAppServiceCellTapped: ((String) -> Void)?
     public var onNotificationButtonTapped: (() -> Void)?
     public var onSettingButtonTapped: ((UserType) -> Void)?
+    public var onNeedSignIn: (() -> Void)?
+    public var onNetworkError: (() -> Void)?
     
     // MARK: - initialization
     
@@ -79,20 +82,31 @@ extension HomeForMemberViewModel {
                 owner.useCase.getReportURL()
                 owner.requestAuthorizationForNotification()
             }.store(in: cancelBag)
-
+        
         input.viewWillAppear
             .handleEvents(receiveOutput: { _ in
                 output.isLoading.send(true)
             })
             .flatMap { _ in
                 self.useCase.getUserInfo()
+                    .catch{ mainError -> AnyPublisher<UserMainInfoModel?, Never> in
+                        switch mainError {
+                        case .networkError(_):
+                            self.onNetworkError?()
+                            return Empty().eraseToAnyPublisher()
+                        case .authFailed:
+                            self.onNeedSignIn?()
+                            return Empty().eraseToAnyPublisher()
+                        }
+                    }
             }
             .compactMap { $0 }
-            .flatMap { userInfo in
+            .withUnretained(self)
+            .flatMap { owner, userInfo in
                 Publishers.Zip3(
-                    self.useCase.getHomeDescription().map { $0.toPresentation(history: userInfo.historyList, isAllConfirm: userInfo.isAllConfirm) },
-                    self.useCase.getRecentSchedule().map { $0.toPresentation() },
-                    self.useCase.getAppServices().map { $0.map { $0.toPresentation() } }
+                    owner.useCase.getHomeDescription().map { $0.toPresentation(history: userInfo.historyList, isAllConfirm: userInfo.isAllConfirm) },
+                    owner.useCase.getRecentSchedule().map { $0.toPresentation() },
+                    owner.useCase.getAppServices().map { $0.map { $0.toPresentation() } }
                 )
                 .map { dashBoard, recentSchedule, appService in
                     HomePresentationModel(
@@ -125,8 +139,7 @@ extension HomeForMemberViewModel {
         //                    )
         //                }
         //            }
-            .withUnretained(self)
-            .sink { owner, data in
+            .sink { data in
                 output.homeItem.send(data)
                 output.isLoading.send(false)
             }

@@ -20,6 +20,8 @@ public protocol HomeForMemberCoordinatable {
     var onAppServiceCellTapped: ((String) -> Void)? { get set }
     var onNotificationButtonTapped: (() -> Void)? { get set }
     var onSettingButtonTapped: ((UserType) -> Void)? { get set }
+    var onNeedSignIn: (() -> Void)? { get set }
+    var onNetworkError: (() -> Void)? { get set }
 }
 public typealias HomeForMemberViewModelType = ViewModelType & HomeForMemberCoordinatable
 public typealias HomeForMemberPresentable = (vc: HomeForMemberViewControllable, vm: any HomeForMemberViewModelType)
