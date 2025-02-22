@@ -227,8 +227,13 @@ extension ApplicationCoordinator {
                     }
                 }
             case .soptlog:
-                soptlogCoordinator.requestCoordinating = { [weak self] in
-                    self?.runDailySoptuneFlow()
+                soptlogCoordinator.requestCoordinating = { [weak self] destination in
+                    switch destination {
+                    case .dailySoptune:
+                        self?.runDailySoptuneFlow()
+                    case .webLink(let url):
+                        self?.handleWebLink(webLink: url)
+                    }
                 }
             case .signIn:
                 self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
@@ -523,8 +528,13 @@ extension ApplicationCoordinator {
             self?.removeDependency(coordinator)
         }
         
-        coordinator.requestCoordinating = { [weak self] in
-            self?.runDailySoptuneFlow()
+        coordinator.requestCoordinating = { [weak self] destination in
+            switch destination {
+            case .dailySoptune:
+                self?.runDailySoptuneFlow()
+            case .webLink(let url):
+                self?.handleWebLink(webLink: url)
+            }
         }
         
         addDependency(coordinator)
