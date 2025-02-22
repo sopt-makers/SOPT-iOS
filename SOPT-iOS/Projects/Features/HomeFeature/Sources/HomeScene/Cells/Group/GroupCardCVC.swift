@@ -74,8 +74,8 @@ final class GroupCardCVC: UICollectionViewCell {
     }
     
     deinit {
-        self.joinableConditionTagCollectionView.delegate = self
-        self.joinableConditionTagCollectionView.dataSource = self
+        self.joinableConditionTagCollectionView.delegate = nil
+        self.joinableConditionTagCollectionView.dataSource = nil
     }
 }
 

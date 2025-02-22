@@ -88,8 +88,8 @@ final class HomeCalendarDetailVC: UIViewController, HomeCalendarDetailViewContro
     }
     
     deinit {
-        collectionView.dataSource = self
-        collectionView.delegate = self
+        collectionView.dataSource = nil
+        collectionView.delegate = nil
     }
 }
 
