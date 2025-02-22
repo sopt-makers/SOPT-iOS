@@ -34,6 +34,14 @@ public class HomeRepository {
 }
 
 extension HomeRepository: HomeRepositoryInterface {
+    public func registerPushToken(with token: String) -> AnyPublisher<Bool, any Error> {
+        userService.registerPushToken(with: token)
+            .map {
+                return 200..<300 ~= $0
+            }
+            .eraseToAnyPublisher()
+    }
+    
     public func getAppServices() -> AnyPublisher<[Domain.HomeAppServicesModel], any Error> {
         homeService.getAppServiceAccessStatus()
             .map { $0.map { $0.toDomain() } }

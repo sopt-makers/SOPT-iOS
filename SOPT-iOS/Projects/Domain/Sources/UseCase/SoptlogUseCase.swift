@@ -9,9 +9,10 @@
 import Combine
 
 import Core
+import Networks
 
 public protocol SoptlogUseCase {
-    func fetchSoptlogInfo() -> AnyPublisher<SoptlogModel, Never>
+    func fetchSoptlogInfo() -> AnyPublisher<SoptlogModel, MainError>
 }
 
 public class DefaultSoptlogUseCase: SoptlogUseCase {
@@ -25,12 +26,8 @@ public class DefaultSoptlogUseCase: SoptlogUseCase {
 }
 
 extension DefaultSoptlogUseCase {
-    public func fetchSoptlogInfo() -> AnyPublisher<SoptlogModel, Never> {
+    public func fetchSoptlogInfo() -> AnyPublisher<SoptlogModel, MainError> {
         self.repository.fetchSoptlogModel()
-            .catch { error in
-                print("Error: \(error)")
-                return Empty<SoptlogModel, Never>()
-            }
             .eraseToAnyPublisher()
     }
 }

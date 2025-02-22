@@ -11,8 +11,9 @@ import Combine
 import Core
 
 public protocol HomeUseCase {
+    func registerPushToken()
     func getHomeDescription() -> AnyPublisher<HomeDescriptionModel, Never>
-    func getUserInfo() -> AnyPublisher<UserMainInfoModel?, Never>
+    func getUserInfo() -> AnyPublisher<UserMainInfoModel?, MainError>
     func getRecentSchedule() -> AnyPublisher<HomeRecentScheduleModel, Never>
     func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Never>
     func getInsightPosts() -> AnyPublisher<[HomeInsightPostsModel], Never>
@@ -34,7 +35,18 @@ public class DefaultHomeUseCase {
 }
 
 extension DefaultHomeUseCase: HomeUseCase {
-
+    public func registerPushToken() {
+        guard let pushToken = UserDefaultKeyList.User.pushToken, !pushToken.isEmpty else { return }
+        
+        repository.registerPushToken(with: pushToken)
+            .sink { event in
+                print("MainUseCase Register PushToken: \(event)")
+            } receiveValue: { didSucceed in
+                print("푸시 토큰 등록 결과: \(didSucceed)")
+            }.store(in: cancelBag)
+    }
+    
+    
     public func getHomeDescription() -> AnyPublisher<HomeDescriptionModel, Never> {
         repository.getHomeDescription()
             .catch { error in
@@ -42,11 +54,9 @@ extension DefaultHomeUseCase: HomeUseCase {
             }.eraseToAnyPublisher()
     }
     
-    public func getUserInfo() -> AnyPublisher<UserMainInfoModel?, Never> {
+    public func getUserInfo() -> AnyPublisher<UserMainInfoModel?, MainError> {
         repository.getUserInfo()
-            .catch { error in
-                return Empty<UserMainInfoModel?, Never>()
-            }.eraseToAnyPublisher()
+            .eraseToAnyPublisher()
     }
     
     public func getRecentSchedule() -> AnyPublisher<HomeRecentScheduleModel, Never> {

@@ -95,7 +95,14 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
         homeForMember.vm.onAttendanceButtonTapped = { [weak self] in
             self?.requestCoordinating?(.attendance)
         }
+        
+        homeForMember.vm.onNeedSignIn = { [weak self] in
+            self?.requestCoordinating?(.signIn)
+        }
     
+        homeForMember.vm.onNetworkError = {
+            AlertUtils.presentNetworkAlertVC()
+        }
         rootViewController = homeForMember.vc.viewController
         
         router.push(homeForMember.vc)
