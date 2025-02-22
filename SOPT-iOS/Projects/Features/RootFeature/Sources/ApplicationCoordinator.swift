@@ -301,6 +301,8 @@ extension ApplicationCoordinator {
                 self?.handleDeepLink(deepLink: deepLink)
             case .webLink(let url):
                 self?.handleWebLink(webLink: url)
+            case .calendar:
+                self?.showHomeCalendarDetail()
             }
         }
         addDependency(coordinator)
@@ -308,6 +310,21 @@ extension ApplicationCoordinator {
         return coordinator
     }
     
+    
+    public func showHomeCalendarDetail() {
+        var homeCalendarDetail = HomeBuilder().makeHomeCalendarDetail()
+        
+        homeCalendarDetail.vm.onNaviBackButtonTap = { [weak self] in
+            self?.router.popModule()
+        }
+        
+        homeCalendarDetail.vm.onAttendanceButtonTap = { [weak self] in
+            self?.runAttendanceFlow()
+        }
+        
+        router.push(homeCalendarDetail.vc)
+    }
+
     @discardableResult
     internal func runAttendanceFlow() -> AttendanceCoordinator {
         let coordinator = AttendanceCoordinator(
