@@ -32,6 +32,8 @@ final class ApplicationCoordinator: BaseCoordinator {
     private var cancelBag = CancelBag()
     private let notificationHandler: NotificationHandler
     
+    private weak var rootController: UINavigationController?
+    
     public init(router: Router, notificationHandler: NotificationHandler) {
         self.router = router
         self.notificationHandler = notificationHandler
@@ -89,12 +91,13 @@ extension ApplicationCoordinator {
     }
     
     private func handleDeepLink(deepLink: DeepLinkComponentsExecutable) {
-//        self.router.dismissModule(animated: false)
+        self.rootController?.dismiss(animated: false)
+//        router.dismissModule(animated: false)
         deepLink.execute(coordinator: self)
     }
     
     private func handleWebLink(webLink: String) {
-//        self.router.dismissModule(animated: false)
+        self.router.dismissModule(animated: false)
         guard let url = URL(string: webLink) else { return }
         let webView = SOPTWebView(startWith: url)
         self.router.push(webView)
@@ -164,6 +167,9 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     internal func runTabBarFlow(type: UserType? = nil) {
+        defer {
+            bindNotification()
+        }
         
         self.childCoordinators = []
         
@@ -190,9 +196,9 @@ extension ApplicationCoordinator {
                 soptlogVC
             ]
         )
-                
-        router.replaceRootWindow(tabbarController, withAnimation: true, hideBar: true)
-
+                        
+        self.rootController = tabbarController.asNavigationController
+        
         // 각 코디네이터 실행
         coordinator.requestCoordinating = { [weak self] destination in
             switch destination {
@@ -216,6 +222,8 @@ extension ApplicationCoordinator {
                         self?.handleDeepLink(deepLink: deepLink)
                     case .webLink(let url):
                         self?.handleWebLink(webLink: url)
+                    case .calendar:
+                        self?.showHomeCalendarDetail()
                     }
                 }
             case .soptlog:
@@ -270,15 +278,9 @@ extension ApplicationCoordinator {
     
     @discardableResult
     internal func runHomeFlow(type: UserType? = nil) -> HomeCoordinator {
-        defer {
-            bindNotification()
-        }
-        
-        self.childCoordinators = []
-        
         let userType = type ?? UserDefaultKeyList.Auth.getUserType()
         let coordinator = HomeCoordinator(
-            router: router,
+            router: Router(rootController: self.rootController ?? self.router.asNavigationController),
             factory: HomeBuilder(),
             userType: userType
         )
@@ -511,11 +513,8 @@ extension ApplicationCoordinator {
     
     @discardableResult
     internal func runSoptlogFlow() -> SoptlogCoordinator {
-        
-        self.childCoordinators = []
-
         let coordinator = SoptlogCoordinator(
-            router: router,
+            router: Router(rootController: self.rootController ?? self.router.asNavigationController),
             factory: SoptlogBuilder()
         )
         

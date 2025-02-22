@@ -68,5 +68,7 @@ public final class TabBarCoordinator: DefaultCoordinator {
                 }
             )
         }
+        
+        router.replaceRootWindow(tabBar.vc, withAnimation: true, hideBar: true)
     }
 }
