@@ -9,7 +9,6 @@
 import Combine
 
 import Core
-import Networks
 
 public protocol SoptlogUseCase {
     func fetchSoptlogInfo() -> AnyPublisher<SoptlogModel, MainError>
