@@ -18,6 +18,7 @@ import WebFeature
 
 public enum SoptlogCoordinatorDestination {
     case dailySoptune
+    case signIn
     case webLink(url: String)
 }
 
@@ -56,6 +57,14 @@ public final class SoptlogCoordinator: DefaultCoordinator {
         
         soptlog.vm.onAlarmTapped = { [weak self] in
             self?.requestCoordinating?(.dailySoptune)
+        }
+        
+        soptlog.vm.onNetworkError = {
+            AlertUtils.presentNetworkAlertVC()
+        }
+        
+        soptlog.vm.onNeedSignIn = { [weak self] in
+            self?.requestCoordinating?(.signIn)
         }
         
         self.rootViewController = soptlog.vc.viewController

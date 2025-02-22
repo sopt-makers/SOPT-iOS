@@ -42,6 +42,9 @@ public class SoptlogViewModel: SoptlogViewModelType {
     public var onNaviBackButtonTap: (() -> Void)?
     public var onProfileEditTapped: (() -> Void)?
     public var onAlarmTapped: (() -> Void)?
+    public var onNetworkError: (() -> Void)?
+    public var onNeedSignIn: (() -> Void)?
+    
     
     // MARK: - initialization
     
@@ -59,7 +62,20 @@ extension SoptlogViewModel {
             .handleEvents(receiveOutput: { _ in
                 output.isLoading.send(true)
             })
-            .flatMap(useCase.fetchSoptlogInfo)
+            .flatMap{ _ in
+                self.useCase.fetchSoptlogInfo()
+                    .catch { error  -> AnyPublisher<SoptlogModel, Never> in
+                        switch error {
+                        case .networkError(_):
+                            self.onNetworkError?()
+                            return Empty().eraseToAnyPublisher()
+                        case .authFailed:
+                            self.onNeedSignIn?()
+                            return Empty().eraseToAnyPublisher()
+                        }
+                    }
+            }
+            .compactMap{ $0 }
             .withUnretained(self)
             .sink { owner, soptlogModel in
                 let info = soptlogModel.toPresentation()
