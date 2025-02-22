@@ -6,7 +6,7 @@
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import Combine
 
 import Core
@@ -19,19 +19,23 @@ import WebFeature
 public enum TabBarCoordinatorDestination {
     case home
     case soptlog
+    case signIn
 }
 
 public final class TabBarCoordinator: DefaultCoordinator {
     
-    public var requestCoordinating: ((TabBarCoordinatorDestination) -> Void)?
     public var finishFlow: (() -> Void)?
-    
-    private let factory: TabBarBuildable
+    public var requestCoordinating: ((TabBarCoordinatorDestination) -> Void)?
+        
+    private let factory: TabBarPresentable
     private let router: Router
+    private let items: [UIViewController]
+    private weak var rootController: UINavigationController?
     
-    public init(router: Router, factory: TabBarBuildable) {
+    public init(router: Router, factory: TabBarPresentable, items: [UIViewController]) {
         self.router = router
         self.factory = factory
+        self.items = items
     }
     
     public override func start() {
@@ -39,8 +43,8 @@ public final class TabBarCoordinator: DefaultCoordinator {
     }
     
     private func showTabBar() {
-        var tabBar = factory.makeTabBar()
-        
+        var tabBar = factory
+                
         tabBar.vm.onTabBarItemTapped = { [weak self] index in
             // 각 탭의 코디네이터 실행
             switch index {
@@ -49,10 +53,22 @@ public final class TabBarCoordinator: DefaultCoordinator {
             case 1:
                 self?.requestCoordinating?(.soptlog)
             default:
-                break
+                return
             }
         }
         
-        self.router.push(tabBar.vc)
+        tabBar.vm.showTabBarAlert = { [weak self] in
+            AlertUtils.presentAlertVC(
+                type: .titleDescription,
+                title: I18N.Home.PopUp.needToLogin,
+                description: I18N.Home.PopUp.needToLoginDetail,
+                customButtonTitle: I18N.Home.PopUp.login,
+                customAction: { [weak self] in
+                    self?.requestCoordinating?(.signIn)
+                }
+            )
+        }
+        
+        router.replaceRootWindow(tabBar.vc, withAnimation: true, hideBar: true)
     }
 }

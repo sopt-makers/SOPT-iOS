@@ -17,21 +17,23 @@ public class HomeRepository {
     private let homeService: HomeService
     private let calendarService: CalendarService
     private let userService: UserService
+    private let stampService: StampService
     
     private let cancelBag = CancelBag()
     
     public init(homeService: HomeService,
                 calendarService: CalendarService,
-                userService: UserService
+                userService: UserService,
+                stampService: StampService
     ) {
         self.homeService = homeService
         self.calendarService = calendarService
         self.userService = userService
+        self.stampService = stampService
     }
 }
 
 extension HomeRepository: HomeRepositoryInterface {
-    
     public func getAppServices() -> AnyPublisher<[Domain.HomeAppServicesModel], any Error> {
         homeService.getAppServiceAccessStatus()
             .map { $0.map { $0.toDomain() } }
@@ -100,6 +102,12 @@ extension HomeRepository: HomeRepositoryInterface {
     public func getAnnouncementPosts() -> AnyPublisher<[Domain.HomeAnnouncementModel], any Error> {
         homeService.getHomeEmploymentEntity()
             .map { $0.map { $0.toDomain() } }
+            .eraseToAnyPublisher()
+    }
+    
+    public func getReportUrl() -> AnyPublisher<Domain.SoptampReportUrlModel, any Error> {
+        stampService.getReportUrl()
+            .map { $0.toDomain() }
             .eraseToAnyPublisher()
     }
 }

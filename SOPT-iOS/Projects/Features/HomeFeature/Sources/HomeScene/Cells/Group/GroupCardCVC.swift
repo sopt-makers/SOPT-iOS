@@ -72,6 +72,11 @@ final class GroupCardCVC: UICollectionViewCell {
         let updatedAttributes = calculateContentHeight(layoutAttributes)
         return updatedAttributes
     }
+    
+    deinit {
+        self.joinableConditionTagCollectionView.delegate = nil
+        self.joinableConditionTagCollectionView.dataSource = nil
+    }
 }
 
 // MARK: - UI & Layout

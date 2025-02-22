@@ -98,6 +98,11 @@ final class CoffeeChatCardCVC: UICollectionViewCell {
     override func prepareForReuse() {
         self.categoryTagStackView.removeAllSubViews()
     }
+    
+    deinit {
+        self.hostGenerationHistoryCollecitonView.delegate = nil
+        self.hostGenerationHistoryCollecitonView.dataSource = nil
+    }
 }
 
 // MARK: - UI & Layout

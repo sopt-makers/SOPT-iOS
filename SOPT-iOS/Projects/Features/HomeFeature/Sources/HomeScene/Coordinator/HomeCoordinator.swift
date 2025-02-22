@@ -22,6 +22,7 @@ public enum HomeCoordinatorDestination {
     case setting(userType: UserType)
     case attendance
     case soptlog
+    case calendar
     
     case webLink(url: String)
     case deepLink(url: String)
@@ -41,6 +42,9 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
     private let factory: HomeFeatureBuildable
     private let router: Router
     private let userType: UserType
+    
+    public private(set) var rootViewController: UIViewController?
+    private weak var rootController: UINavigationController?
     
     public init(
         router: Router,
@@ -69,7 +73,7 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
         }
         
         homeForMember.vm.onCalendarCellTapped = { [weak self] in
-            self?.showHomeCalendarDetail()
+            self?.requestCoordinating?(.calendar)
         }
 
         homeForMember.vm.onNotificationButtonTapped = { [weak self] in
@@ -92,7 +96,9 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
             self?.requestCoordinating?(.attendance)
         }
     
-        router.replaceRootWindow(homeForMember.vc, withAnimation: true)
+        rootViewController = homeForMember.vc.viewController
+        
+        router.push(homeForMember.vc)
     }
     
     public func showHomeForVisitor() {
@@ -118,20 +124,7 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
             self?.requestCoordinating?(.setting(userType: userType))
         }
         
-        router.replaceRootWindow(homeForVisitor.vc, withAnimation: true)
-    }
-    
-    public func showHomeCalendarDetail() {
-        var homeCalendarDetail = factory.makeHomeCalendarDetail()
-        
-        homeCalendarDetail.vm.onNaviBackButtonTap = { [weak self] in
-            self?.router.popModule()
-        }
-        
-        homeCalendarDetail.vm.onAttendanceButtonTap = { [weak self] in
-            self?.requestCoordinating?(.attendance)
-        }
-        
-        self.router.push(homeCalendarDetail.vc)
+        rootViewController = homeForVisitor.vc.viewController
+        router.push(homeForVisitor.vc)
     }
 }

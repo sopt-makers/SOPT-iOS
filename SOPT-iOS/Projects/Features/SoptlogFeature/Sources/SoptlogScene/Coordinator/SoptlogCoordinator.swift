@@ -16,15 +16,21 @@ import BaseFeatureDependency
 import SoptlogFeatureInterface
 import WebFeature
 
+public enum SoptlogCoordinatorDestination {
+    case dailySoptune
+    case webLink(url: String)
+}
+
 public final class SoptlogCoordinator: DefaultCoordinator {
     
-    public var requestCoordinating: (() -> Void)?
+    public var requestCoordinating: ((SoptlogCoordinatorDestination) -> Void)?
     public var finishFlow: (() -> Void)?
     
     private let factory: SoptlogFeatureBuildable
     private let router: Router
     
     private weak var rootController: UINavigationController?
+    public private(set) var rootViewController: UIViewController?
     
     public init(router: Router, factory: SoptlogFeatureBuildable) {
         self.router = router
@@ -38,23 +44,21 @@ public final class SoptlogCoordinator: DefaultCoordinator {
     private func showSoptlog() {
         var soptlog = factory.makeSoptlog()
         
-//        soptlog.vm.onNaviBackButtonTap = { [weak self] in
-//            self?.router.popModule()
-//            self?.finishFlow?()
-//        }
+        soptlog.vm.onNaviBackButtonTap = { [weak self] in
+            self?.router.popModule()
+            self?.finishFlow?()
+        }
         
         soptlog.vm.onProfileEditTapped = { [weak self] in
-            guard let url = URL(string: "\(ExternalURL.Playground.main)/members/edit") else { return }
-            
-            let webView = SOPTWebView(startWith: url)
-            self?.router.push(webView)
+            let url = "\(ExternalURL.Playground.main)/members/edit"
+            self?.requestCoordinating?(.webLink(url: url))
         }
         
         soptlog.vm.onAlarmTapped = { [weak self] in
-            self?.requestCoordinating?()
+            self?.requestCoordinating?(.dailySoptune)
         }
         
-        self.rootController = soptlog.vc.asNavigationController
+        self.rootViewController = soptlog.vc.viewController
         self.router.push(soptlog.vc)
     }
 }

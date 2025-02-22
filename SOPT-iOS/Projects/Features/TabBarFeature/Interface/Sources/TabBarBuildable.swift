@@ -6,8 +6,9 @@
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
-import Foundation
+import UIKit
+import Core
 
 public protocol TabBarBuildable {
-    func makeTabBar() -> TabBarPresentable
+    func makeTabBar(with views: [UIViewController], userType: UserType) -> TabBarPresentable
 }
