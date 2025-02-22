@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import UserNotifications
 
 import Core
 import Domain
@@ -76,6 +77,7 @@ extension HomeForMemberViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.getReportURL()
+                owner.requestAuthorizationForNotification()
             }.store(in: cancelBag)
 
         input.viewWillAppear
@@ -100,29 +102,29 @@ extension HomeForMemberViewModel {
                     )
                 }
             }
-            // TODO: 이후 스프린트에서 순차 배포
-//            .flatMap {
-//                description,
-//                recentSchedule,
-//                appService in
-//                Publishers.Zip4(
-//                    self.useCase.getInsightPosts().map { $0.map { $0.toPresentation() } },
-//                    self.useCase.getGroupPosts().map { $0.map { $0.toPresentation() } },
-//                    self.useCase.getCoffeeChatPosts().map { $0.map { $0.toPresentation() } },
-//                    self.useCase.getAnnouncementPosts().map { $0.map { $0.toPresentation() } }
-//                )
-//                .map { insight, group, coffeeChat, announcement in
-//                    HomePresentationModel(
-//                        description: description,
-//                        recentSchedule: recentSchedule,
-//                        appServices: appService,
-//                        insightPosts: insight,
-//                        groupPosts: group,
-//                        coffeeChatPosts: coffeeChat,
-//                        announcementPosts: announcement
-//                    )
-//                }
-//            }
+        // TODO: 이후 스프린트에서 순차 배포
+        //            .flatMap {
+        //                description,
+        //                recentSchedule,
+        //                appService in
+        //                Publishers.Zip4(
+        //                    self.useCase.getInsightPosts().map { $0.map { $0.toPresentation() } },
+        //                    self.useCase.getGroupPosts().map { $0.map { $0.toPresentation() } },
+        //                    self.useCase.getCoffeeChatPosts().map { $0.map { $0.toPresentation() } },
+        //                    self.useCase.getAnnouncementPosts().map { $0.map { $0.toPresentation() } }
+        //                )
+        //                .map { insight, group, coffeeChat, announcement in
+        //                    HomePresentationModel(
+        //                        description: description,
+        //                        recentSchedule: recentSchedule,
+        //                        appServices: appService,
+        //                        insightPosts: insight,
+        //                        groupPosts: group,
+        //                        coffeeChatPosts: coffeeChat,
+        //                        announcementPosts: announcement
+        //                    )
+        //                }
+        //            }
             .withUnretained(self)
             .sink { owner, data in
                 output.homeItem.send(data)
@@ -169,5 +171,24 @@ extension HomeForMemberViewModel {
             .store(in: cancelBag)
         
         return output
+    }
+    
+    private func requestAuthorizationForNotification() {
+        guard self.userType != .visitor,
+              UserDefaultKeyList.Auth.hasAccessToken(),
+              UserDefaultKeyList.User.hasPushToken()
+        else { return }
+        
+        // APNS 권한 허용 확인
+        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+        UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { granted, error in
+            if let error = error { print(error) }
+            AmplitudeInstance.shared.addPushNotificationAuthorizationIdentity(isAuthorized: granted)
+            print("APNs-알림 권한 허용 유무 \(granted)")
+            
+            if granted {
+                self.useCase.registerPushToken()
+            }
+        }
     }
 }
