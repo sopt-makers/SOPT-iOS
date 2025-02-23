@@ -65,7 +65,7 @@ public extension Project {
             let target = Target(
                 name: "\(name)Interface",
                 platform: platform,
-                product:.framework,
+                product: .framework,
                 bundleId: "\(Environment.bundlePrefix).\(name)Interface",
                 deploymentTarget: deploymentTarget,
                 infoPlist: .default,

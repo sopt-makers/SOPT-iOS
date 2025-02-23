@@ -15,9 +15,14 @@ public protocol SignInViewControllable: ViewControllable {
     var accessCode: String? { get set }
     var requestState: String? { get set }
 }
+
 public protocol SignInCoordinatable {
     var onSignInSuccess: ((SiginInHandleableType) -> Void)? { get set }
+    var onLoginHelpButtonTapped: (() -> Void)? { get set }
     var onVisitorButtonTapped: (() -> Void)? { get set }
+    var onSocialLoginFail: (() -> Void)? { get set }
 }
+
 public typealias SignInViewModelType = ViewModelType & SignInCoordinatable
 public typealias SignInPresentable = (vc: SignInViewControllable, vm: any SignInViewModelType)
+

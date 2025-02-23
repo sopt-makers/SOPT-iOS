@@ -19,6 +19,10 @@ public extension Dep {
         public struct Notification {}
         public struct Poke {}
         public struct DailySoptune {}
+        public struct Web {}
+        public struct Home {}
+        public struct Soptlog {}
+        public struct TabBar {}
     }
     
     struct Modules {}
@@ -121,6 +125,33 @@ public extension Dep.Features.Poke {
 
 public extension Dep.Features.DailySoptune {
     static let group = "DailySoptune"
+    
+    static let Feature = Dep.Features.project(name: "Feature", group: group)
+    static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))
+}
+
+public extension Dep.Features.Web {
+    static let group = "Web"
+    
+    static let Feature = Dep.Features.project(name: "Feature", group: group)
+}
+
+public extension Dep.Features.Home {
+    static let group = "Home"
+    
+    static let Feature = Dep.Features.project(name: "Feature", group: group)
+    static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))
+}
+
+public extension Dep.Features.Soptlog {
+    static let group = "Soptlog"
+    
+    static let Feature = Dep.Features.project(name: "Feature", group: group)
+    static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))
+}
+
+public extension Dep.Features.TabBar {
+    static let group = "TabBar"
     
     static let Feature = Dep.Features.project(name: "Feature", group: group)
     static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))

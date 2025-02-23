@@ -170,7 +170,8 @@ SOPT에서 활동하고 있는 회원들도, SOPT의 열정이 되고 싶은 분
 - 대신 Coordinator가 Factory를 참조하여 Presentable을 생성하고 런타임에 클로저 주입으로 화면 전환 시 액션을 지정합니다.
 
 #### Modular Architecture
-![graph](https://github.com/sopt-makers/SOPT-iOS/assets/77267404/d7248dfb-3bbe-410c-ba8d-e4265be54e3e)
+![graph_after_web_2024 10 28](https://github.com/user-attachments/assets/e399f5e7-c15c-4eef-aa6f-b9bb04571d81)
+
 - SOPT-iOS 앱은 Makers App 팀과 Makers 운영 서비스 팀의 공동 작업물입니다.
 - 목적조직의 형태이기 때문에, 각 Feature 간의 독립적인 개발 환경을 보장하기 위해 Feature Interface를 도입했습니다.
 - 모듈을 분리하여 응집도 높고 결합도가 낮은 코드를 작성할 수 있는 환경을 구현합니다.

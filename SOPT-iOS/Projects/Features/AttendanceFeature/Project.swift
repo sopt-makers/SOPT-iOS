@@ -16,6 +16,6 @@ let project = Project.makeModule(
         
     ],
     interfaceDependencies: [
-        .Features.BaseFeatureDependency
+        .Features.Web.Feature
     ]
 )

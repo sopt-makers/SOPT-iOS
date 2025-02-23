@@ -12,6 +12,7 @@ import Core
 import Domain
 import BaseFeatureDependency
 import PokeFeatureInterface
+import WebFeature
 
 public final class PokeOnboardingCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?

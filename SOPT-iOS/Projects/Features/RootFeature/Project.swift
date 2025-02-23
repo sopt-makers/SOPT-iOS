@@ -22,6 +22,9 @@ let project = Project.makeModule(
         .Features.AppMyPage.Feature,
         .Features.Notification.Feature,
         .Features.Poke.Feature,
-        .Features.DailySoptune.Feature
+        .Features.DailySoptune.Feature,
+        .Features.Home.Feature,
+        .Features.Soptlog.Feature,
+        .Features.TabBar.Feature,
     ]
 )

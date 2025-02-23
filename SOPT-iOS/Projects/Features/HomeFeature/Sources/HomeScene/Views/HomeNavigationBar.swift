@@ -1,0 +1,101 @@
+//
+//  HomeNavigationBar.swift
+//  HomeFeature
+//
+//  Created by Jae Hyun Lee on 11/21/24.
+//  Copyright © 2024 SOPT-iOS. All rights reserved.
+//
+
+import UIKit
+
+import Core
+import DSKit
+
+final class HomeNavigationBar: UIView {
+
+    // MARK: - Properties
+    
+    public lazy var noticeButtonTap = noticeButton.publisher(for: .touchUpInside)
+    
+    public lazy var settingButtonTap = settingButton.publisher(for: .touchUpInside)
+    
+    // MARK: - UI Components
+    
+    private let logoImageView = UIImageView().then {
+        $0.image = DSKitAsset.Assets.imgLogo.image.withRenderingMode(.alwaysOriginal)
+        $0.contentMode = .scaleToFill
+    }
+    
+    private let noticeButton = UIButton(type: .custom).then {
+        $0.setImage(DSKitAsset.Assets.btnBellInactive.image, for: .normal)
+    }
+    
+    private let settingButton = UIButton(type: .custom).then {
+        $0.setImage(DSKitAsset.Assets.btnSetting.image, for: .normal)
+    }
+    
+    private lazy var rightItemsStackView = UIStackView(
+        arrangedSubviews: [noticeButton, settingButton]
+    ).then {
+        $0.axis = .horizontal
+        $0.spacing = 4
+        $0.distribution = .fillEqually
+    }
+    
+    // MARK: - initialization
+    
+    init() {
+        super.init(frame: .zero)
+        setUI()
+        setLayout()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+// MARK: - UI & Layout
+
+extension HomeNavigationBar {
+    private func setUI() {
+        self.backgroundColor = DSKitAsset.Colors.black100.color
+    }
+    
+    private func setLayout() {
+        self.addSubviews(logoImageView, rightItemsStackView)
+        
+        self.snp.makeConstraints { make in
+            make.height.equalTo(40)
+        }
+        
+        logoImageView.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview()
+            make.leading.equalToSuperview().inset(20)
+            make.width.equalTo(72)
+        }
+        
+        rightItemsStackView.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview()
+            make.trailing.equalToSuperview().inset(20)
+        }
+    }
+}
+
+// MARK: - Methods
+
+extension HomeNavigationBar {
+    @discardableResult
+    public func hideNoticeButton() -> Self {
+        self.noticeButton.isHidden = true
+        return self
+    }
+    
+    @discardableResult
+    public func changeNoticeButtonStyle(isActive: Bool) -> Self {
+        let activeImage = DSKitAsset.Assets.btnBellActive.image
+        let inactiveImage = DSKitAsset.Assets.btnBellInactive.image
+        self.noticeButton.setImage(isActive ? activeImage : inactiveImage, for: .normal)
+        return self
+    }
+}

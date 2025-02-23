@@ -20,7 +20,6 @@ public protocol RouterProtocol: ViewControllable {
     func present(_ module: ViewControllable?, animated: Bool)
     func present(_ module: ViewControllable?, animated: Bool, modalPresentationSytle: UIModalPresentationStyle)
     func present(_ module: ViewControllable?, animated: Bool, completion: (() -> Void)?)
-    func pushSOPTWebView(url: String)
     func presentSafari(url: String)
     
     func push(_ module: ViewControllable?)
@@ -38,7 +37,7 @@ public protocol RouterProtocol: ViewControllable {
     func setRootModule(_ module: ViewControllable?, animated: Bool)
     func setRootModule(_ module: ViewControllable?, hideBar: Bool, animated: Bool)
     
-    func replaceRootWindow(_ module: ViewControllable, withAnimation: Bool, completion: ((UIWindow) -> Void)?)
+    func replaceRootWindow(_ module: ViewControllable, withAnimation: Bool, hideBar: Bool, completion: ((UIWindow) -> Void)?)
     
     func popToRootModule(animated: Bool)
     func popToModule(module: ViewControllable?, animated: Bool)
@@ -67,8 +66,7 @@ public protocol RouterProtocol: ViewControllable {
 /// RouterProtocol을 채택하여 Coordinator가 모르는 화면전환의 기능을 수행합니다. RootController를 가지고 다양한 기능을 수행합니다.
 public
 final class Router: NSObject, RouterProtocol {
-    
-    
+
     
     // MARK: - Vars & Lets
     
@@ -117,14 +115,7 @@ final class Router: NSObject, RouterProtocol {
         guard let controller = module?.viewController else { return }
         self.rootController?.present(controller, animated: animated, completion: completion)
     }
-    
-    public func pushSOPTWebView(url: String) {
-        guard let url = URL(string: url) else { return }
-        
-        let webView = SOPTWebView(startWith: url)
-        self.rootController?.pushViewController(webView, animated: true)
-    }
-    
+
     public func presentSafari(url: String) {
         let safariViewController = SFSafariViewController(url: URL(string: url)!)
         safariViewController.playgroundStyle()
@@ -206,12 +197,13 @@ final class Router: NSObject, RouterProtocol {
         self.rootController?.isNavigationBarHidden = hideBar
     }
     
-    public func replaceRootWindow(_ module: ViewControllable, withAnimation: Bool, completion: ((UIWindow) -> Void)? = nil) {
+    public func replaceRootWindow(_ module: any ViewControllable, withAnimation: Bool, hideBar: Bool = false, completion: ((UIWindow) -> Void)? = nil) {
         let viewController = module.viewController
         let window = UIWindow.keyWindowGetter!
         let navigation = UINavigationController(rootViewController: viewController)
         
         self.rootController = navigation
+        self.rootController?.isNavigationBarHidden = hideBar
         
         if !withAnimation {
             window.rootViewController = navigation
@@ -233,6 +225,7 @@ final class Router: NSObject, RouterProtocol {
             })
         }
     }
+    
     
     public func setRootWindow(_ module: ViewControllable) {
         let viewController = module.viewController

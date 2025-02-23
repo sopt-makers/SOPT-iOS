@@ -13,6 +13,6 @@ let project = Project.makeModule(
     name: "AuthFeature",
     targets: [.unitTest, .staticFramework, .demo, .interface],
     interfaceDependencies: [
-        .Features.BaseFeatureDependency
+        .Features.Web.Feature
     ]
 )

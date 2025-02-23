@@ -53,7 +53,7 @@ public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultVie
     // 오늘의 부적 받기 버튼
     
     private lazy var receiveTodaysFortuneCardButton = AppCustomButton(title: I18N.DailySoptune.receiveTodaysFortuneCard)
-        .setFontColor(customFont: DSKitFontFamily.Suit.semiBold.font(size: 18))
+        .setConfigForState(enabledFont: DSKitFontFamily.Suit.semiBold.font(size: 18))
         .setEnabled(true)
     
     // MARK: - Initialization
@@ -99,17 +99,16 @@ extension DailySoptuneResultVC {
         self.view.addSubviews(backButton, scrollView, receiveTodaysFortuneCardButton)
         
         backButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(2.adjustedH)
-            make.leading.equalToSuperview().inset(8.adjusted)
-            make.size.equalTo(40.adjusted)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(2)
+            make.leading.equalToSuperview().inset(8)
+            make.size.equalTo(40)
         }
         
         setScrollViewLayout()
         
         receiveTodaysFortuneCardButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(56)
-            make.width.equalTo(335)
             make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).inset(16)
         }
     }
@@ -126,7 +125,7 @@ extension DailySoptuneResultVC {
         contentStackView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalToSuperview().inset(17.adjustedH)
-            make.width.equalTo((self.view.frame.size.width - 20 * 2).adjusted)
+            make.leading.trailing.equalToSuperview().inset(20)
             make.bottom.equalToSuperview().inset(20.adjustedH)
         }
         
