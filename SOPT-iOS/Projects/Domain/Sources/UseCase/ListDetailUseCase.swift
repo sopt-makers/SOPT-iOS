@@ -45,31 +45,34 @@ public class DefaultListDetailUseCase {
 extension DefaultListDetailUseCase: ListDetailUseCase {
   public func fetchListDetail(missionId: Int, username: String?) {
     repository.fetchListDetail(missionId: missionId, username: username)
+      .withUnretained(self)
       .sink(receiveCompletion: { event in
         print("completion: \(event)")
-      }, receiveValue: { model in
-        self.listDetailModel.send(model)
+      }, receiveValue: { owner, model in
+          owner.listDetailModel.send(model)
       })
       .store(in: self.cancelBag)
   }
   
   public func getPresignedURL() {
     self.repository.getPresignedURL()
+      .withUnretained(self)
       .sink(receiveCompletion: {
         print("completion: \($0)")
-      }, receiveValue: { presignedModel in
-        self.presignedURL.send(presignedModel)
+      }, receiveValue: { owner, presignedModel in
+        owner.presignedURL.send(presignedModel)
       }).store(in: self.cancelBag)
   }
 
   public func uploadMedia(imageData: Data, presignedUrl: String) {
     self.repository
       .uploadMedia(imageData: imageData, presignedUrl: presignedUrl)
+      .withUnretained(self)
       .sink(receiveCompletion: {
         print("completion: \($0)")
-      }, receiveValue: {
-        self.mediaUploadCompleted.send(())
-        print("receivedValue: \($0)")
+      }, receiveValue: { owner, _ in
+        owner.mediaUploadCompleted.send(())
+          print("receivedValue: \(owner)")
       }).store(in: self.cancelBag)
   }
   
@@ -84,26 +87,29 @@ extension DefaultListDetailUseCase: ListDetailUseCase {
           activityDate: ""
         )
       )
+      .withUnretained(self)
       .sink { event in
         print("completion: \(event)")
-      } receiveValue: { model in
-        self.listDetailModel.send(model)
+      } receiveValue: { owner, model in
+          owner.listDetailModel.send(model)
       }.store(in: self.cancelBag)
   }
   
   public func putStamp(stampData: ListDetailRequestModel) {
     repository.putStamp(stampData: stampData)
       .replaceError(with: -1)
-      .sink { result in
-        self.editSuccess.send(result == -1 ? false: true)
+      .withUnretained(self)
+      .sink { owner, result in
+        owner.editSuccess.send(result == -1 ? false: true)
       }.store(in: self.cancelBag)
   }
   
   public func deleteStamp(stampId: Int) {
     repository.deleteStamp(stampId: stampId)
       .replaceError(with: false)
-      .sink { success in
-        self.deleteSuccess.send(success)
+      .withUnretained(self)
+      .sink { owner, success in
+        owner.deleteSuccess.send(success)
       }.store(in: self.cancelBag)
   }
 }
