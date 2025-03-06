@@ -25,6 +25,7 @@ public class SignInVC_Refactor: UIViewController, SignInViewControllable {
     
     // MARK: - Properties
     
+    private static let i18n = I18N.SignIn.Refactor.self
     public var viewModel: SignInViewModel_Refactor!
     public var skipAnimation: Bool = false
     public var accessCode: String? = nil
@@ -43,27 +44,27 @@ public class SignInVC_Refactor: UIViewController, SignInViewControllable {
     }
     
     private let googleLoginButton = AppImageTextButton(
-        title: I18N.SignIn.Refactor.googleLogin,
+        title: i18n.googleLogin,
         image: DSKitAsset.Assets.logoGoogle.image.withRenderingMode(.automatic)
     ).then {
         $0.alpha = 0
     }
     
     private let appleLoginButton = AppImageTextButton(
-        title: I18N.SignIn.Refactor.appleLogin,
+        title: i18n.appleLogin,
         image: DSKitAsset.Assets.logoApple.image
     ).then {
         $0.alpha = 0
     }
     
-    private let playgroundButton = AppImageTextButton(title: I18N.SignIn.Refactor.playgroundLogin).then { $0.alpha = 0 } //TODO: 추후 제거
+    private let playgroundButton = AppImageTextButton(title: i18n.playgroundLogin).then { $0.alpha = 0 } //TODO: 추후 제거
     
     private let loginHelpButton = UIButton(type: .system).then {
         var config = UIButton.Configuration.plain()
         config.baseForegroundColor = DSKitAsset.Colors.gray30.color
         config.baseBackgroundColor = .clear
         
-        var attributedTitle = AttributedString(I18N.SignIn.Refactor.helpLogin)
+        var attributedTitle = AttributedString(i18n.helpLogin)
         attributedTitle.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
         config.attributedTitle = attributedTitle
         
@@ -84,7 +85,7 @@ public class SignInVC_Refactor: UIViewController, SignInViewControllable {
     }
     
     private let orLabel = UILabel().then {
-        $0.text = I18N.SignIn.Refactor.or
+        $0.text = i18n.or
         $0.font = DSKitFontFamily.Suit.regular.font(size: 13)
     }
     
@@ -97,7 +98,7 @@ public class SignInVC_Refactor: UIViewController, SignInViewControllable {
     }
     
     private lazy var signUpButton = UIButton(type: .system).then {
-        $0.setTitle(I18N.SignIn.Refactor.signUp, for: .normal)
+        $0.setTitle(Self.i18n.signUp, for: .normal)
         $0.setTitleColor(DSKitAsset.Colors.white100.color, for: .normal)
         $0.setBackgroundColor(DSKitAsset.Colors.gray700.color, for: .normal)
         $0.setBackgroundColor(DSKitAsset.Colors.gray800.color, for: .highlighted)
@@ -113,7 +114,7 @@ public class SignInVC_Refactor: UIViewController, SignInViewControllable {
         config.baseForegroundColor = DSKitAsset.Colors.gray30.color
         config.baseBackgroundColor = .clear
         
-        var attributedTitle = AttributedString(I18N.SignIn.Refactor.loginLater)
+        var attributedTitle = AttributedString(i18n.loginLater)
         attributedTitle.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
         config.attributedTitle = attributedTitle
         

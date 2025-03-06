@@ -19,6 +19,7 @@ public final class UserNotFoundVC: UIViewController, UserNotFoundViewControllabl
     public var onLoginHelpButtonTapped: (() -> Void)?
     public var onLoginRetryButtonTapped: (() -> Void)?
     private var cancelBag = CancelBag()
+    private static let i18n = I18N.SignIn.Refactor.self
     
     // MARK: - UI Components
     
@@ -28,7 +29,7 @@ public final class UserNotFoundVC: UIViewController, UserNotFoundViewControllabl
     }
     
     private let titleLabel = UILabel().then {
-        $0.text = I18N.SignIn.Refactor.userNotFound
+        $0.text = i18n.userNotFound
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 24)
         $0.textColor = .white
         $0.partColorChange(targetString: I18N.SignIn.Refactor.userInfo, textColor: DSKitAsset.Colors.secondary.color)
@@ -36,13 +37,13 @@ public final class UserNotFoundVC: UIViewController, UserNotFoundViewControllabl
 
     
     private let descriptionLabel = UILabel().then {
-        $0.text = I18N.SignIn.Refactor.signUpFirst
+        $0.text = i18n.signUpFirst
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 18)
         $0.textColor = .white
     }
 
     
-    private let loginRetryButton = AppCustomButton(title: I18N.SignIn.Refactor.retryLogin)
+    private let loginRetryButton = AppCustomButton(title: i18n.retryLogin)
         .setConfigForState(enabledFont: DSKitFontFamily.Suit.semiBold.font(size: 18))
     
     private let loginHelpButton = UIButton(type: .system).then {
@@ -50,7 +51,7 @@ public final class UserNotFoundVC: UIViewController, UserNotFoundViewControllabl
         config.baseForegroundColor = DSKitAsset.Colors.gray30.color
         config.baseBackgroundColor = .clear
         
-        var attributedTitle = AttributedString(I18N.SignIn.Refactor.helpLogin)
+        var attributedTitle = AttributedString(i18n.helpLogin)
         attributedTitle.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
         config.attributedTitle = attributedTitle
         
