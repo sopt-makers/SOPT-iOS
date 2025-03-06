@@ -74,57 +74,73 @@ extension StarViewLevel {
 }
 
 public class ListDetailVC: UIViewController, ListDetailViewControllable {
-  
-  // MARK: - Properties
-  
-  public var viewModel: ListDetailViewModel!
-  private var cancelBag = CancelBag()
-  private var sceneType: ListDetailSceneType {
-    get {
-      return self.viewModel.sceneType
-    } set(type) {
-      self.viewModel.sceneType = type
+    
+    // MARK: - Properties
+    
+    public var viewModel: ListDetailViewModel
+    private var cancelBag = CancelBag()
+    private var sceneType: ListDetailSceneType {
+        get {
+            return self.viewModel.sceneType
+        } set(type) {
+            self.viewModel.sceneType = type
+        }
     }
-  }
-  private var starLevel: StarViewLevel {
-    return self.viewModel.starLevel
-  }
-  private var missionTitle: String {
-    return self.viewModel.missionTitle
-  }
-  private var originImage: UIImage = UIImage()
-  private var originText: String = ""
-  private let deleteButtonTapped = PassthroughSubject<Bool, Never>()
-  private let imageSelected = PassthroughSubject<Data, Never>()
-  
-  // MARK: - ListDetailCoordinatable
-  
-  public var onComplete: ((StarViewLevel, (() -> Void)?) -> Void)?
-  
-  // MARK: - UI Components
-  
-  private lazy var naviBar = STNavigationBar(self, type: .titleWithLeftButton)
-    .setTitle(I18N.ListDetail.mission)
-    .setRightButton(.none)
-  private let scrollView = UIScrollView()
-  private let contentView = UIView()
-  private let contentStackView = UIStackView()
-  private lazy var missionView = MissionView(level: starLevel, mission: missionTitle)
-  private let missionImageView = UIImageView()
-  private let imagePlaceholderLabel = UILabel()
-  private let textView = UITextView()
-  private lazy var missionDateTextField = MissionDateView(frame: self.view.frame)
-  private lazy var bottomButton = STCustomButton(title: sceneType == .none ? I18N.ListDetail.missionComplete : I18N.ListDetail.editComplete)
-    .setEnabled(false)
-    .setColor(bgColor: starLevel.pointColor,
-              disableColor: starLevel.disableColor,
-              textColor: starLevel.buttonTitleColor)
-  private lazy var backgroundDimmerView = CustomDimmerView(self)
+    private var starLevel: StarViewLevel {
+        return self.viewModel.starLevel
+    }
+    private var missionTitle: String {
+        return self.viewModel.missionTitle
+    }
+    private var originImage: UIImage = UIImage()
+    private var originText: String = ""
+    private let deleteButtonTapped = PassthroughSubject<Bool, Never>()
+    private let imageSelected = PassthroughSubject<Data, Never>()
+    
+    private var keyboardWillShowObserver: NSObjectProtocol?
+    private var keyboardWillHideObserver: NSObjectProtocol?
+    
+    // MARK: - ListDetailCoordinatable
+    
+    public var onNaviBackTap: (() -> Void)?
+    public var onComplete: ((StarViewLevel, (() -> Void)?) -> Void)?
+    
+    // MARK: - UI Components
+    
+    private lazy var naviBar = STNavigationBar(type: .titleWithLeftButton)
+        .setTitle(I18N.ListDetail.mission)
+        .setRightButton(.none)
+    private let scrollView = UIScrollView()
+    private let contentView = UIView()
+    private let contentStackView = UIStackView()
+    private lazy var missionView = MissionView(level: starLevel, mission: missionTitle)
+    private let missionImageView = UIImageView()
+    private let imagePlaceholderLabel = UILabel()
+    private let textView = UITextView()
+    private lazy var missionDateTextField = MissionDateView(frame: self.view.frame)
+    private lazy var bottomButton = STCustomButton(title: sceneType == .none ? I18N.ListDetail.missionComplete : I18N.ListDetail.editComplete)
+        .setEnabled(false)
+        .setColor(bgColor: starLevel.pointColor,
+                  disableColor: starLevel.disableColor,
+                  textColor: starLevel.buttonTitleColor)
+    private lazy var backgroundDimmerView = CustomDimmerView(self)
+    
+    
+    public init(viewModel: ListDetailViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
   
   // MARK: - View Life Cycle
   
   public override func viewDidLoad() {
     super.viewDidLoad()
+    self.bindViews()
     self.bindViewModels()
     self.setLayout()
     self.setStackView()
@@ -135,11 +151,25 @@ public class ListDetailVC: UIViewController, ListDetailViewControllable {
     self.setDelegate()
     self.hideKeyboard()
   }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+        self.missionImageView.image = nil
+    }
 }
 
 // MARK: - Methods
 
 extension ListDetailVC {
+    
+  private func bindViews() {
+      naviBar.leftButtonTapped
+          .withUnretained(self)
+          .sink { owner, _ in
+              owner.onNaviBackTap?()
+          }.store(in: cancelBag)
+  }
+    
   private func bindViewModels() {
     let rightButtonTapped = naviBar.rightButtonTapped
       .withUnretained(self)
@@ -166,7 +196,7 @@ extension ListDetailVC {
         )
       }
       .asDriver()
-    
+      
     let input = ListDetailViewModel.Input(
       viewDidLoad: Driver.just(()), 
       imageSelected: self.imageSelected.eraseToAnyPublisher(),
@@ -262,18 +292,21 @@ extension ListDetailVC {
   }
   
   private func setObserver() {
-    NotificationCenter.default.addObserver(
-      self,
-      selector: #selector(keyboardWillShow),
-      name: UIResponder.keyboardWillShowNotification,
-      object: nil
-    )
-    NotificationCenter.default.addObserver(
-      self,
-      selector: #selector(keyboardWillHide),
-      name: UIResponder.keyboardWillHideNotification,
-      object: nil
-    )
+      keyboardWillShowObserver = NotificationCenter.default.addObserver(
+          forName: UIResponder.keyboardWillShowNotification,
+          object: nil,
+          queue: .main
+      ) { [weak self] notification in
+          self?.keyboardWillShow(notification as NSNotification)
+      }
+      
+      keyboardWillHideObserver = NotificationCenter.default.addObserver(
+          forName: UIResponder.keyboardWillHideNotification,
+          object: nil,
+          queue: .main
+      ) { [weak self] notification in
+          self?.keyboardWillHide(notification as NSNotification)
+      }
     
     self.missionDateTextField
       .signalForChangeDate()
