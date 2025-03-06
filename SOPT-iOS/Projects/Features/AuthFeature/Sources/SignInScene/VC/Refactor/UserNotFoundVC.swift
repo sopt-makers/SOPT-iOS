@@ -12,8 +12,6 @@ import BaseFeatureDependency
 import Core
 import DSKit
 
-
-
 public final class UserNotFoundVC: UIViewController, UserNotFoundViewControllable {
 
     // MARK: - Properties
@@ -30,21 +28,21 @@ public final class UserNotFoundVC: UIViewController, UserNotFoundViewControllabl
     }
     
     private let titleLabel = UILabel().then {
-        $0.text = I18N.SignIn.userNotFound
+        $0.text = I18N.SignIn.Refactor.userNotFound
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 24)
         $0.textColor = .white
-        $0.partColorChange(targetString: I18N.SignIn.userInfo, textColor: DSKitAsset.Colors.secondary.color)
+        $0.partColorChange(targetString: I18N.SignIn.Refactor.userInfo, textColor: DSKitAsset.Colors.secondary.color)
     }
 
     
     private let descriptionLabel = UILabel().then {
-        $0.text = I18N.SignIn.signUpFirst
+        $0.text = I18N.SignIn.Refactor.signUpFirst
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 18)
         $0.textColor = .white
     }
 
     
-    private let loginRetryButton = AppCustomButton(title: I18N.SignIn.retryLogin)
+    private let loginRetryButton = AppCustomButton(title: I18N.SignIn.Refactor.retryLogin)
         .setConfigForState(enabledFont: DSKitFontFamily.Suit.semiBold.font(size: 18))
     
     private let loginHelpButton = UIButton(type: .system).then {
@@ -52,7 +50,7 @@ public final class UserNotFoundVC: UIViewController, UserNotFoundViewControllabl
         config.baseForegroundColor = DSKitAsset.Colors.gray30.color
         config.baseBackgroundColor = .clear
         
-        var attributedTitle = AttributedString(I18N.SignIn.helpLogin)
+        var attributedTitle = AttributedString(I18N.SignIn.Refactor.helpLogin)
         attributedTitle.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
         config.attributedTitle = attributedTitle
         

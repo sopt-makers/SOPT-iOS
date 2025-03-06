@@ -31,14 +31,14 @@ public final class LoginHelpBottomSheetVC: UIViewController, LoginHelpBottomShee
     }
     
     private let titleLabel = UILabel().then {
-        $0.text = I18N.SignIn.helpLogin
+        $0.text = I18N.SignIn.Refactor.helpLogin
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 20)
         $0.textColor = DSKitAsset.Colors.gray10.color
     }
     
     private let wantToKnowAccountButton = UIButton().then {
         $0.setTitleColor(DSKitAsset.Colors.gray10.color, for: .normal)
-        $0.setTitle(I18N.SignIn.wantToKnowAccount, for: .normal)
+        $0.setTitle(I18N.SignIn.Refactor.wantToKnowAccount, for: .normal)
         $0.contentHorizontalAlignment = .leading
         $0.titleEdgeInsets = .init(top: 0, left: 10, bottom: 0, right: 0)
         $0.titleLabel?.font = DSKitFontFamily.Suit.regular.font(size: 16)
@@ -50,7 +50,7 @@ public final class LoginHelpBottomSheetVC: UIViewController, LoginHelpBottomShee
     
     private let resetSocialAccountButton = UIButton().then {
         $0.setTitleColor(DSKitAsset.Colors.gray10.color, for: .normal)
-        $0.setTitle(I18N.SignIn.resetSocialAccount, for: .normal)
+        $0.setTitle(I18N.SignIn.Refactor.resetSocialAccount, for: .normal)
         $0.titleLabel?.font = DSKitFontFamily.Suit.regular.font(size: 16)
         $0.contentHorizontalAlignment = .leading
         $0.titleEdgeInsets = .init(top: 0, left: 10, bottom: 0, right: 0)
