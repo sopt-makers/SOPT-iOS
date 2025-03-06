@@ -156,7 +156,7 @@ extension ListDetailVC {
           owner.bottomButton.setEnabled(false)
         }
         if owner.sceneType == .none {
-          self.showDimmerView()
+          owner.showDimmerView()
         }
         let content = owner.textView.text
         return ListDetailRequestModel(
