@@ -35,6 +35,9 @@ final class ApplicationCoordinator: BaseCoordinator {
     private weak var rootController: UINavigationController?
     private weak var tabBarController: UITabBarController?
     
+    private weak var homeCoordinator: HomeCoordinator?
+    private weak var soptlogCoordinator: SoptlogCoordinator?
+    
     public init(router: Router, notificationHandler: NotificationHandler) {
         self.router = router
         self.notificationHandler = notificationHandler
@@ -176,11 +179,11 @@ extension ApplicationCoordinator {
         let tabBarBuilder = TabBarBuilder()
         let userType = type ?? UserDefaultKeyList.Auth.getUserType()
 
-        let homeCoordinator = runHomeFlow(type: userType)
-        guard let homeVC = homeCoordinator.rootViewController else { return }
+        self.homeCoordinator = runHomeFlow(type: userType)
+        guard let homeVC = self.homeCoordinator?.rootViewController else { return }
         
-        let soptlogCoordinator = runSoptlogFlow()
-        guard let soptlogVC = soptlogCoordinator.rootViewController else { return }
+        self.soptlogCoordinator = runSoptlogFlow()
+        guard let soptlogVC = self.soptlogCoordinator?.rootViewController else { return }
                 
         let (tabbarController, viewModel) = tabBarBuilder.makeTabBar(
             with: [homeVC,
@@ -204,7 +207,7 @@ extension ApplicationCoordinator {
         coordinator.requestCoordinating = { [weak self] destination in
             switch destination {
             case .home:
-                homeCoordinator.requestCoordinating = { [weak self, weak coordinator] destination in
+                self?.homeCoordinator?.requestCoordinating = { [weak self, weak coordinator] destination in
                     switch destination {
                     case .attendance:
                         self?.runAttendanceFlow()
@@ -228,7 +231,7 @@ extension ApplicationCoordinator {
                     }
                 }
             case .soptlog:
-                soptlogCoordinator.requestCoordinating = { [weak self] destination in
+                self?.soptlogCoordinator?.requestCoordinating = { [weak self] destination in
                     switch destination {
                     case .dailySoptune:
                         self?.runDailySoptuneFlow()
