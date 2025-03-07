@@ -82,6 +82,8 @@ public final class DailySoptuneResultCoordinator: DefaultCoordinator {
         
         dailySoptuneCardCoordinator.requestCoordinating = { [weak self] in
             self?.requestCoordinating?()
+            self?.router.dismissModule(animated: true)
+            self?.finishFlow?()
         }
         
         addDependency(dailySoptuneCardCoordinator)
