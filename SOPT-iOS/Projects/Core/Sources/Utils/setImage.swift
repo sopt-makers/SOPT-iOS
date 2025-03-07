@@ -40,12 +40,13 @@ public extension UIImageView {
     private func setNewImage(with urlString: String, placeholder: UIImage? = nil, completion: ((UIImage?) -> Void)? = nil) {
         guard let url = URL(string: urlString) else { return }
         let resource = KF.ImageResource(downloadURL: url, cacheKey: urlString)
-        
+                
         self.kf.setImage(
             with: resource,
             placeholder: placeholder,
             options: [
-                .scaleFactor(UIScreen.main.scale/4),
+                .processor(DownsamplingImageProcessor(size: self.bounds.size)),
+                .scaleFactor(UIScreen.main.scale),
                 .transition(.fade(0.5)),
                 .cacheMemoryOnly
             ],
