@@ -33,6 +33,7 @@ final class ApplicationCoordinator: BaseCoordinator {
     private let notificationHandler: NotificationHandler
     
     private weak var rootController: UINavigationController?
+    private weak var tabBarController: UITabBarController?
     
     public init(router: Router, notificationHandler: NotificationHandler) {
         self.router = router
@@ -92,7 +93,6 @@ extension ApplicationCoordinator {
     
     private func handleDeepLink(deepLink: DeepLinkComponentsExecutable) {
         self.rootController?.dismiss(animated: false)
-//        router.dismissModule(animated: false)
         deepLink.execute(coordinator: self)
     }
     
@@ -198,6 +198,7 @@ extension ApplicationCoordinator {
         )
                         
         self.rootController = tabbarController.asNavigationController
+        self.tabBarController = tabbarController
         
         // 각 코디네이터 실행
         coordinator.requestCoordinating = { [weak self] destination in
@@ -215,7 +216,7 @@ extension ApplicationCoordinator {
                     case .notification:
                         self?.runNotificationFlow()
                     case .soptlog:
-                        tabbarController.selectedIndex = 1
+                        self?.tabBarController?.selectedIndex = 1
                     case .deepLink(let url):
                         self?.notificationHandler.receive(deepLink: url)
                         guard let deepLink = self?.notificationHandler.deepLink.value else { return }
@@ -303,7 +304,7 @@ extension ApplicationCoordinator {
             case .notification:
                 self?.runNotificationFlow()
             case .soptlog:
-                self?.runSoptlogFlow()
+                self?.tabBarController?.selectedIndex = 1
             case .deepLink(let url):
                 self?.notificationHandler.receive(deepLink: url)
                 guard let deepLink = self?.notificationHandler.deepLink.value else { return }
