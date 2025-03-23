@@ -43,7 +43,6 @@ public enum AmplitudeEventType: String {
     case clickAnonymity = "click_anonymity"
     case sendChoice = "send_choice"
 
-
     // 뷰 이벤트
     case viewAppHome = "view_apphome"
     case viewPokeOnboarding = "view_poke_onboarding"
@@ -62,4 +61,8 @@ public enum AmplitudeEventType: String {
     // 솝트로그 뷰 이벤트
     case clickSoptlogEditProfile = "click_soptlog_editprofile"
     case clickSoptlogSoptune = "click_soptlog_soptmadi"
+    
+    // 탭 바 이벤트
+    case clickNaviHome = "click_navi_home"
+    case clickNaviSoptlog = "click_navi_soptlog"
 }
