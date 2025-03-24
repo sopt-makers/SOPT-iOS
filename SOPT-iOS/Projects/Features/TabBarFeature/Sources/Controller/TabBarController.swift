@@ -70,7 +70,7 @@ extension TabBarController {
     }
     
     private func configureTabBarItem() {
-        TabBarItem.allCases.forEach {
+        TabBarItemType.allCases.forEach {
             tabList[$0.rawValue].tabBarItem = $0.makeTabBarItem()
             tabList[$0.rawValue].tabBarItem.tag = $0.rawValue
             tabList[$0.rawValue].tabBarItem.imageInsets = UIEdgeInsets(top: 18, left: 0, bottom: -18, right: 0)
