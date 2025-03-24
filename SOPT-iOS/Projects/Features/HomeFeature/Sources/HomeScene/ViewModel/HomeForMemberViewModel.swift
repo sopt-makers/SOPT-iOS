@@ -81,6 +81,7 @@ extension HomeForMemberViewModel {
             .sink { owner, _ in
                 owner.useCase.getReportURL()
                 owner.requestAuthorizationForNotification()
+                AmplitudeInstance.shared.trackWithUserType(event: .viewAppHomeNew)
             }.store(in: cancelBag)
         
         input.viewWillAppear
@@ -153,6 +154,7 @@ extension HomeForMemberViewModel {
                     owner.onDashBoardCellTapped?()
                 case .recentSchedule:
                     owner.onCalendarCellTapped?()
+                    AmplitudeInstance.shared.trackWithUserType(event: .clickAllCalendar)
                 case .productService(let model):
                     owner.onMainProductCellTapped?(model.url)
                 case .appService(let model):
@@ -166,6 +168,7 @@ extension HomeForMemberViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNotificationButtonTapped?()
+                AmplitudeInstance.shared.trackWithUserType(event: .clickAlarmNew)
             }
             .store(in: cancelBag)
         
@@ -180,6 +183,7 @@ extension HomeForMemberViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onAttendanceButtonTapped?()
+                AmplitudeInstance.shared.trackWithUserType(event: .clickAttendanceNew)
             }
             .store(in: cancelBag)
         
