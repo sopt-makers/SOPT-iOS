@@ -55,7 +55,7 @@ public final class SoptlogCoordinator: DefaultCoordinator {
             self?.requestCoordinating?(.webLink(url: url))
         }
         
-        soptlog.vm.onAlarmTapped = { [weak self] in
+        soptlog.vm.onSoptuneTapped = { [weak self] in
             self?.requestCoordinating?(.dailySoptune)
         }
         

@@ -41,7 +41,7 @@ public class SoptlogViewModel: SoptlogViewModelType {
     
     public var onNaviBackButtonTap: (() -> Void)?
     public var onProfileEditTapped: (() -> Void)?
-    public var onAlarmTapped: (() -> Void)?
+    public var onSoptuneTapped: (() -> Void)?
     public var onNetworkError: (() -> Void)?
     public var onNeedSignIn: (() -> Void)?
     
@@ -94,13 +94,15 @@ extension SoptlogViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onProfileEditTapped?()
+                AmplitudeInstance.shared.trackWithUserType(event: .clickSoptlogEditProfile)
             }.store(in: cancelBag)
         
         input.cellTap
             .filter{ $0.section == 3 }
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onAlarmTapped?()
+                owner.onSoptuneTapped?()
+                AmplitudeInstance.shared.trackWithUserType(event: .clickSoptlogSoptune)
             }.store(in: cancelBag)
 
         return output
