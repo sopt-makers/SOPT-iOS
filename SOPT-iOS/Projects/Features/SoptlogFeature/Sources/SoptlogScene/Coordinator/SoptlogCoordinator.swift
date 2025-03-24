@@ -29,17 +29,24 @@ public final class SoptlogCoordinator: DefaultCoordinator {
     
     private let factory: SoptlogFeatureBuildable
     private let router: Router
+    private let userType: UserType
     
     private weak var rootController: UINavigationController?
     public private(set) var rootViewController: UIViewController?
     
-    public init(router: Router, factory: SoptlogFeatureBuildable) {
+    public init(router: Router, factory: SoptlogFeatureBuildable, userType: UserType) {
         self.router = router
         self.factory = factory
+        self.userType = userType
     }
     
     public override func start() {
-        showSoptlog()
+        switch userType {
+        case .visitor:
+            self.rootViewController = UIViewController()
+        case .active, .inactive:
+            showSoptlog()
+        }
     }
     
     private func showSoptlog() {

@@ -178,8 +178,8 @@ extension ApplicationCoordinator {
 
         let homeCoordinator = runHomeFlow(type: userType)
         guard let homeVC = homeCoordinator.rootViewController else { return }
-        
-        let soptlogCoordinator = runSoptlogFlow()
+    
+        let soptlogCoordinator = runSoptlogFlow(type: userType)
         guard let soptlogVC = soptlogCoordinator.rootViewController else { return }
                 
         let (tabbarController, viewModel) = tabBarBuilder.makeTabBar(
@@ -284,12 +284,11 @@ extension ApplicationCoordinator {
 //    }
     
     @discardableResult
-    internal func runHomeFlow(type: UserType? = nil) -> HomeCoordinator {
-        let userType = type ?? UserDefaultKeyList.Auth.getUserType()
+    internal func runHomeFlow(type: UserType) -> HomeCoordinator {
         let coordinator = HomeCoordinator(
             router: Router(rootController: self.rootController ?? self.router.asNavigationController),
             factory: HomeBuilder(),
-            userType: userType
+            userType: type
         )
         coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
             switch destination {
@@ -303,7 +302,7 @@ extension ApplicationCoordinator {
             case .notification:
                 self?.runNotificationFlow()
             case .soptlog:
-                self?.runSoptlogFlow()
+                self?.runSoptlogFlow(type: type)
             case .deepLink(let url):
                 self?.notificationHandler.receive(deepLink: url)
                 guard let deepLink = self?.notificationHandler.deepLink.value else { return }
@@ -519,10 +518,11 @@ extension ApplicationCoordinator {
     }
     
     @discardableResult
-    internal func runSoptlogFlow() -> SoptlogCoordinator {
+    internal func runSoptlogFlow(type: UserType) -> SoptlogCoordinator {
         let coordinator = SoptlogCoordinator(
             router: Router(rootController: self.rootController ?? self.router.asNavigationController),
-            factory: SoptlogBuilder()
+            factory: SoptlogBuilder(), 
+            userType: type
         )
         
         coordinator.finishFlow = { [weak self, weak coordinator] in
