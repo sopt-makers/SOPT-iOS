@@ -16,7 +16,9 @@ import Domain
 public final class DailySoptuneResultPokeView: UIView {
     
     public lazy var kokButtonTap: Driver<PokeUserModel?> = kokButton.tap
-        .map { self.user }
+        .map { [weak self] in
+            self?.user
+        }
         .asDriver()
     
     lazy var profileTap = self.profileImageView.gesture()
