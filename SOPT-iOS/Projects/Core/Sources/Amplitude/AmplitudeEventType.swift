@@ -89,6 +89,4 @@ public enum AmplitudeEventType: String {
     // 솝트로그 뷰 이벤트
     case clickSoptlogEditProfile = "click_soptlog_editprofile"
     case clickSoptlogSoptune = "click_soptlog_soptmadi"
-    
-    
 }
