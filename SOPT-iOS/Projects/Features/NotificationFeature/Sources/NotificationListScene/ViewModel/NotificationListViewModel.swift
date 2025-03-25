@@ -70,6 +70,7 @@ extension NotificationListViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 output.filterList.send(owner.filterList)
+                AmplitudeInstance.shared.track(eventType: .viewNotificationList)
             }.store(in: cancelBag)
         
         input.requestNotifications
@@ -91,6 +92,14 @@ extension NotificationListViewModel {
                 owner.onNotificationTap?(notification.notificationId)
                 owner.read(index: index)
                 output.notificationList.send(self.notifications)
+                AmplitudeInstance.shared.track(eventType: .clickNotificationItem,
+                                               eventProperties: [
+                                                "notification_id": notification.notificationId,
+                                                "send_timestamp": notification.createdAt,
+                                                "contents": notification.content ?? "",
+                                                "admin_category": notification.category ?? "",
+                                                "title": notification.title
+                                               ])
             }.store(in: cancelBag)
         
         input.readAllButtonTapped
@@ -98,6 +107,7 @@ extension NotificationListViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.readAllNotifications()
+                AmplitudeInstance.shared.track(eventType: .clickReadAllButton)
             }.store(in: cancelBag)
         
         input.categoryCellTapped
