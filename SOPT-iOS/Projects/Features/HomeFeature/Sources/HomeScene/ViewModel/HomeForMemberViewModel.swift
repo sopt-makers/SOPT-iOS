@@ -28,10 +28,10 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     let userType: UserType = UserDefaultKeyList.Auth.getUserType()
     
     let productServiceList: [HomePresentationModel.ProductService] = [
-        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.playground, image: DSKitAsset.Assets.imgPlaygroundLogo.image, url: ExternalURL.Playground.main),
-        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.groupAndStudy, image: DSKitAsset.Assets.imgGroupLogo.image, url: ExternalURL.Playground.group),
-        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.member, image: DSKitAsset.Assets.imgMemberLogo.image, url: ExternalURL.Playground.member),
-        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.project, image: DSKitAsset.Assets.imgProjectLogo.image, url: ExternalURL.Playground.project)
+        .init(product: .playgroundCommunity),
+        .init(product: .group),
+        .init(product: .member),
+        .init(product: .project)
     ]
     
     // MARK: - Inputs
@@ -156,7 +156,7 @@ extension HomeForMemberViewModel {
                     owner.onCalendarCellTapped?()
                     AmplitudeInstance.shared.trackWithUserType(event: .clickAllCalendar)
                 case .productService(let model):
-                    owner.onMainProductCellTapped?(model.url)
+                    owner.onMainProductCellTapped?(model.product.serviceDomainLink)
                 case .appService(let model):
                     owner.onAppServiceCellTapped?(model.deepLink)
                 default: break
