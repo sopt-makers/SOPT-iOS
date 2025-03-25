@@ -8,7 +8,6 @@
 
 import Foundation
 
-@frozen
 public enum ServiceType {
     case officialHomepage
     case review
