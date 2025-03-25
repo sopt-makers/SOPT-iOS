@@ -261,6 +261,8 @@ public struct I18N {
                 public static let attendance = "출석"
                 public static let event = "행사"
                 public static let seminar = "세미나"
+                public static let jointSeminar = "합동 세미나"
+                public static let `break` = "휴식"
             }
         }
         
