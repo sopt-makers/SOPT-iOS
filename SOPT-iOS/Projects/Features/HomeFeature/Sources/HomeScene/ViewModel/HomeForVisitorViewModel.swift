@@ -84,6 +84,7 @@ extension HomeForVisitorViewModel {
                     owner.onAppServiceCellTapped?()
                 case .productService(let model):
                     owner.onMainProductCellTapped?(model.product.serviceDomainLink)
+                    owner.trackAmplitude(event: model.product.toAmplitudeEventTypeNew)
                 default: break
                 }
             }
@@ -97,5 +98,13 @@ extension HomeForVisitorViewModel {
             .store(in: cancelBag)
         
         return output
+    }
+}
+
+extension HomeForVisitorViewModel {
+    private func trackAmplitude(event: AmplitudeEventType?) {
+        if let event {
+            AmplitudeInstance.shared.trackWithUserType(event: event)
+        }
     }
 }

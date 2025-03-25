@@ -157,6 +157,7 @@ extension HomeForMemberViewModel {
                     AmplitudeInstance.shared.trackWithUserType(event: .clickAllCalendar)
                 case .productService(let model):
                     owner.onMainProductCellTapped?(model.product.serviceDomainLink)
+                    owner.trackAmplitude(event: model.product.toAmplitudeEventTypeNew)
                 case .appService(let model):
                     owner.onAppServiceCellTapped?(model.deepLink)
                 default: break
@@ -206,6 +207,14 @@ extension HomeForMemberViewModel {
             if granted {
                 self.useCase.registerPushToken()
             }
+        }
+    }
+}
+
+extension HomeForMemberViewModel {
+    private func trackAmplitude(event: AmplitudeEventType?) {
+        if let event {
+            AmplitudeInstance.shared.trackWithUserType(event: event)
         }
     }
 }
