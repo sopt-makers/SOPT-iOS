@@ -22,6 +22,7 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     public let viewModel: SoptlogViewModel
     private let cancelBag = CancelBag()
     private var cellTap = PassthroughSubject<IndexPath, Never>()
+    private var viewWillAppear = PassthroughSubject<Void, Never>()
     
     private var soptlogInfo: SoptlogPresentationModel?
     
@@ -55,6 +56,11 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
         setDelegate()
         registerCells()
         bindViewModels()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.viewWillAppear.send()
     }
     
     deinit {
@@ -105,7 +111,7 @@ extension SoptlogVC {
     
     private func bindViewModels() {
         let input = SoptlogViewModel.Input(
-            viewDidLoad: Just<Void>(()).asDriver(),
+            viewWillAppear: self.viewWillAppear.asDriver(),
             cellTap: cellTap.asDriver())
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)

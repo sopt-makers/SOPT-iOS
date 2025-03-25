@@ -25,7 +25,7 @@ public class SoptlogViewModel: SoptlogViewModelType {
     // MARK: - Inputs
     
     public struct Input { 
-        let viewDidLoad: Driver<Void>
+        let viewWillAppear: Driver<Void>
         let cellTap: Driver<IndexPath>
     }
     
@@ -56,7 +56,7 @@ extension SoptlogViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         
-        input.viewDidLoad
+        input.viewWillAppear
             .handleEvents(receiveOutput: { _ in
                 output.isLoading.send(true)
             })
