@@ -28,10 +28,10 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     let userType: UserType = UserDefaultKeyList.Auth.getUserType()
     
     let productServiceList: [HomePresentationModel.ProductService] = [
-        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.playground, image: DSKitAsset.Assets.imgPlaygroundLogo.image, url: ExternalURL.Playground.main),
-        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.groupAndStudy, image: DSKitAsset.Assets.imgGroupLogo.image, url: ExternalURL.Playground.group),
-        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.member, image: DSKitAsset.Assets.imgMemberLogo.image, url: ExternalURL.Playground.member),
-        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.project, image: DSKitAsset.Assets.imgProjectLogo.image, url: ExternalURL.Playground.project)
+        .init(product: .playgroundCommunity),
+        .init(product: .group),
+        .init(product: .member),
+        .init(product: .project)
     ]
     
     // MARK: - Inputs
@@ -81,6 +81,7 @@ extension HomeForMemberViewModel {
             .sink { owner, _ in
                 owner.useCase.getReportURL()
                 owner.requestAuthorizationForNotification()
+                AmplitudeInstance.shared.trackWithUserType(event: .viewAppHomeNew)
             }.store(in: cancelBag)
         
         input.viewWillAppear
@@ -153,8 +154,10 @@ extension HomeForMemberViewModel {
                     owner.onDashBoardCellTapped?()
                 case .recentSchedule:
                     owner.onCalendarCellTapped?()
+                    AmplitudeInstance.shared.trackWithUserType(event: .clickAllCalendar)
                 case .productService(let model):
-                    owner.onMainProductCellTapped?(model.url)
+                    owner.onMainProductCellTapped?(model.product.serviceDomainLink)
+                    owner.trackAmplitude(event: model.product.toAmplitudeEventTypeNew)
                 case .appService(let model):
                     owner.onAppServiceCellTapped?(model.deepLink)
                 default: break
@@ -166,6 +169,7 @@ extension HomeForMemberViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNotificationButtonTapped?()
+                AmplitudeInstance.shared.trackWithUserType(event: .clickAlarmNew)
             }
             .store(in: cancelBag)
         
@@ -180,6 +184,7 @@ extension HomeForMemberViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onAttendanceButtonTapped?()
+                AmplitudeInstance.shared.trackWithUserType(event: .clickAttendanceNew)
             }
             .store(in: cancelBag)
         
@@ -202,6 +207,14 @@ extension HomeForMemberViewModel {
             if granted {
                 self.useCase.registerPushToken()
             }
+        }
+    }
+}
+
+extension HomeForMemberViewModel {
+    private func trackAmplitude(event: AmplitudeEventType?) {
+        if let event {
+            AmplitudeInstance.shared.trackWithUserType(event: event)
         }
     }
 }

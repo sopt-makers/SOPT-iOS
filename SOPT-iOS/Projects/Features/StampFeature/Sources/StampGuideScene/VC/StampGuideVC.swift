@@ -8,18 +8,16 @@
 
 import UIKit
 
-import DSKit
-
-import Domain
-
 import Core
+import DSKit
+import Domain
 
 import SnapKit
 import Then
 
-import StampFeatureInterface
+import BaseFeatureDependency
 
-public class StampGuideVC: UIViewController, StampGuideViewControllable {
+public final class StampGuideVC: UIViewController, StampGuideViewControllable {
     
     // MARK: - Properties
     

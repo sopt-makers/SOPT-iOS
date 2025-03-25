@@ -26,7 +26,6 @@ public class SoptlogViewModel: SoptlogViewModelType {
     
     public struct Input { 
         let viewDidLoad: Driver<Void>
-        let naviBackButtonTap: Driver<Void>
         let cellTap: Driver<IndexPath>
     }
     
@@ -39,9 +38,8 @@ public class SoptlogViewModel: SoptlogViewModelType {
     
     // MARK: - SoptlogCoordinatable
     
-    public var onNaviBackButtonTap: (() -> Void)?
     public var onProfileEditTapped: (() -> Void)?
-    public var onAlarmTapped: (() -> Void)?
+    public var onSoptuneTapped: (() -> Void)?
     public var onNetworkError: (() -> Void)?
     public var onNeedSignIn: (() -> Void)?
     
@@ -83,24 +81,20 @@ extension SoptlogViewModel {
                 output.isLoading.send(false)
             }.store(in: cancelBag)
         
-        input.naviBackButtonTap
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onNaviBackButtonTap?()
-            }.store(in: cancelBag)
-        
         input.cellTap
             .filter{ $0.section == 2 }
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onProfileEditTapped?()
+                AmplitudeInstance.shared.trackWithUserType(event: .clickSoptlogEditProfile)
             }.store(in: cancelBag)
         
         input.cellTap
             .filter{ $0.section == 3 }
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onAlarmTapped?()
+                owner.onSoptuneTapped?()
+                AmplitudeInstance.shared.trackWithUserType(event: .clickSoptlogSoptune)
             }.store(in: cancelBag)
 
         return output

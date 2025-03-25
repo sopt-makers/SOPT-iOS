@@ -179,11 +179,11 @@ extension ApplicationCoordinator {
         let tabBarBuilder = TabBarBuilder()
         let userType = type ?? UserDefaultKeyList.Auth.getUserType()
 
-        self.homeCoordinator = runHomeFlow(type: userType)
-        guard let homeVC = self.homeCoordinator?.rootViewController else { return }
-        
-        self.soptlogCoordinator = runSoptlogFlow()
-        guard let soptlogVC = self.soptlogCoordinator?.rootViewController else { return }
+        let homeCoordinator = runHomeFlow(type: userType)
+        guard let homeVC = homeCoordinator.rootViewController else { return }
+    
+        let soptlogCoordinator = runSoptlogFlow(type: userType)
+        guard let soptlogVC = soptlogCoordinator.rootViewController else { return }
                 
         let (tabbarController, viewModel) = tabBarBuilder.makeTabBar(
             with: [homeVC,
@@ -288,12 +288,11 @@ extension ApplicationCoordinator {
 //    }
     
     @discardableResult
-    internal func runHomeFlow(type: UserType? = nil) -> HomeCoordinator {
-        let userType = type ?? UserDefaultKeyList.Auth.getUserType()
+    internal func runHomeFlow(type: UserType) -> HomeCoordinator {
         let coordinator = HomeCoordinator(
             router: Router(rootController: self.rootController ?? self.router.asNavigationController),
             factory: HomeBuilder(),
-            userType: userType
+            userType: type
         )
         coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
             switch destination {
@@ -522,10 +521,11 @@ extension ApplicationCoordinator {
     }
     
     @discardableResult
-    internal func runSoptlogFlow() -> SoptlogCoordinator {
+    internal func runSoptlogFlow(type: UserType) -> SoptlogCoordinator {
         let coordinator = SoptlogCoordinator(
             router: Router(rootController: self.rootController ?? self.router.asNavigationController),
-            factory: SoptlogBuilder()
+            factory: SoptlogBuilder(), 
+            userType: type
         )
         
         coordinator.finishFlow = { [weak self, weak coordinator] in

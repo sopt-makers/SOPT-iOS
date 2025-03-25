@@ -45,9 +45,18 @@ extension TabBarViewModel {
                     output.selectedIndex.send(0)
                 } else {
                     owner.onTabBarItemTapped?(index)
+                    owner.trackAmplitude(itemIndex: index)
                 }
             }.store(in: cancelBag)
         
         return output
+    }
+}
+
+extension TabBarViewModel {
+    private func trackAmplitude(itemIndex: Int) {
+        if let item = TabBarItemType(rawValue: itemIndex) {
+            AmplitudeInstance.shared.trackWithUserType(event: item.toAmplitudeEventType)
+        }
     }
 }

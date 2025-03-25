@@ -25,10 +25,10 @@ public class HomeForVisitorViewModel: HomeForVisitorViewModelType {
     let userType: UserType = .visitor
     
     let productServiceList: [HomePresentationModel.ProductService] = [
-        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.homePage, image: DSKitAsset.Assets.imgHomepage.image, url: ExternalURL.SOPT.officialHomepage),
-        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.activityReview, image: DSKitAsset.Assets.imgGroupLogo.image, url: ExternalURL.SOPT.review),
-        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.project, image: DSKitAsset.Assets.imgMemberLogo.image, url: ExternalURL.SOPT.project),
-        HomePresentationModel.ProductService(name: I18N.Home.MainProduct.instagram, image: DSKitAsset.Assets.imgInstagram.image, url: ExternalURL.SNS.instagram)
+        .init(product: .officialHomepage),
+        .init(product: .review),
+        .init(product: .project),
+        .init(product: .instagram)
     ]
 
         
@@ -83,7 +83,8 @@ extension HomeForVisitorViewModel {
                 case .appService:
                     owner.onAppServiceCellTapped?()
                 case .productService(let model):
-                    owner.onMainProductCellTapped?(model.url)
+                    owner.onMainProductCellTapped?(model.product.serviceDomainLink)
+                    owner.trackAmplitude(event: model.product.toAmplitudeEventTypeNew)
                 default: break
                 }
             }
@@ -97,5 +98,13 @@ extension HomeForVisitorViewModel {
             .store(in: cancelBag)
         
         return output
+    }
+}
+
+extension HomeForVisitorViewModel {
+    private func trackAmplitude(event: AmplitudeEventType?) {
+        if let event {
+            AmplitudeInstance.shared.trackWithUserType(event: event)
+        }
     }
 }
