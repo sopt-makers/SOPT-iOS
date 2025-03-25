@@ -17,11 +17,11 @@ extension ServiceType {
         case .officialHomepage:
             return DSKitAsset.Assets.imgHomepage.image
         case .review:
-            return DSKitAsset.Assets.imgGroupLogo.image
+            return DSKitAsset.Assets.imgReviewLogo.image
         case .project:
             return DSKitAsset.Assets.imgProjectLogo.image
         case .member:
-            return DSKitAsset.Assets.imgMemberLogo.image
+            return DSKitAsset.Assets.imgUserLogo.image
         case .group:
             return DSKitAsset.Assets.imgGroupLogo.image
         case .instagram:
