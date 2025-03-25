@@ -9,6 +9,10 @@
 import Foundation
 
 public enum AmplitudeEventType: String {
+    // 푸시 알림 이벤트
+    case receivedPush = "received_push"
+    case clickPush = "click_push"
+    
     // 클릭 이벤트
     case clickAlarm = "click_alarm"
     case clickMyPage = "click_mypage"
@@ -24,6 +28,9 @@ public enum AmplitudeEventType: String {
     case clickFaq = "click_faq"
     case clickPlaygroundCommunity = "click_playground_community"
     case clickHotboard = "click_hotboard"
+    case clickShortcutButton = "click_link.btn"
+    case clickReadAllButton = "click_allread.btn"
+    case clickNotificationItem = "click_notification_item"
     
     // 신규 홈 클릭 이벤트
     case clickAttendanceNew = "at36_click_attendance"
@@ -61,7 +68,9 @@ public enum AmplitudeEventType: String {
 
     // 기존 홈 뷰 이벤트
     case viewAppHome = "view_apphome"
-    
+    case viewNotificationDetail = "view_notification_detail"
+    case viewNotificationList = "view_notification_list"
+
     // 신규 홈 뷰 이벤트
     case viewAppHomeNew = "at36_view_apphome"
     
