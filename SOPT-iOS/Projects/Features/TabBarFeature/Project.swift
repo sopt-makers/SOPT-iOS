@@ -12,9 +12,16 @@ import DependencyPlugin
 let project = Project.makeModule(
     name: "TabBarFeature",
     targets: [.unitTest, .staticFramework, .demo, .interface],
-    internalDependencies: [
-    ],
     interfaceDependencies: [
-        .Features.Web.Feature
+        .Features.Main.Feature,
+        .Features.Stamp.Feature,
+        .Features.Attendance.Feature,
+        .Features.Notice.Feature,
+        .Features.AppMyPage.Feature,
+        .Features.Notification.Feature,
+        .Features.Poke.Feature,
+        .Features.DailySoptune.Feature,
+        .Features.Home.Feature,
+        .Features.Soptlog.Feature,
     ]
 )

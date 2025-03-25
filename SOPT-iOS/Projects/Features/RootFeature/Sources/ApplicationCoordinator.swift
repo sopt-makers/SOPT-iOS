@@ -33,6 +33,10 @@ final class ApplicationCoordinator: BaseCoordinator {
     private let notificationHandler: NotificationHandler
     
     private weak var rootController: UINavigationController?
+    private weak var tabBarController: UITabBarController?
+    
+    private weak var homeCoordinator: HomeCoordinator?
+    private weak var soptlogCoordinator: SoptlogCoordinator?
     
     public init(router: Router, notificationHandler: NotificationHandler) {
         self.router = router
@@ -92,7 +96,6 @@ extension ApplicationCoordinator {
     
     private func handleDeepLink(deepLink: DeepLinkComponentsExecutable) {
         self.rootController?.dismiss(animated: false)
-//        router.dismissModule(animated: false)
         deepLink.execute(coordinator: self)
     }
     
@@ -198,12 +201,13 @@ extension ApplicationCoordinator {
         )
                         
         self.rootController = tabbarController.asNavigationController
+        self.tabBarController = tabbarController
         
         // 각 코디네이터 실행
         coordinator.requestCoordinating = { [weak self] destination in
             switch destination {
             case .home:
-                homeCoordinator.requestCoordinating = { [weak self, weak coordinator] destination in
+                self?.homeCoordinator?.requestCoordinating = { [weak self, weak coordinator] destination in
                     switch destination {
                     case .attendance:
                         self?.runAttendanceFlow()
@@ -215,7 +219,7 @@ extension ApplicationCoordinator {
                     case .notification:
                         self?.runNotificationFlow()
                     case .soptlog:
-                        tabbarController.selectedIndex = 1
+                        self?.tabBarController?.selectedIndex = 1
                     case .deepLink(let url):
                         self?.notificationHandler.receive(deepLink: url)
                         guard let deepLink = self?.notificationHandler.deepLink.value else { return }
@@ -227,7 +231,7 @@ extension ApplicationCoordinator {
                     }
                 }
             case .soptlog:
-                soptlogCoordinator.requestCoordinating = { [weak self] destination in
+                self?.soptlogCoordinator?.requestCoordinating = { [weak self] destination in
                     switch destination {
                     case .dailySoptune:
                         self?.runDailySoptuneFlow()
@@ -302,7 +306,7 @@ extension ApplicationCoordinator {
             case .notification:
                 self?.runNotificationFlow()
             case .soptlog:
-                self?.runSoptlogFlow(type: type)
+                self?.tabBarController?.selectedIndex = 1
             case .deepLink(let url):
                 self?.notificationHandler.receive(deepLink: url)
                 guard let deepLink = self?.notificationHandler.deepLink.value else { return }
@@ -505,10 +509,9 @@ extension ApplicationCoordinator {
             self?.removeDependency(coordinator)
         }
         
-        coordinator.requestCoordinating = { [weak self] in
-            self?.notificationHandler.receive(deepLink: "home")
-            guard let deepLinkComponent = self?.notificationHandler.deepLink.value else { return }
-            self?.handleDeepLink(deepLink: deepLinkComponent)
+        coordinator.requestCoordinating = { [weak self, weak coordinator] in
+            self?.router.popToRootModule(animated: true)
+            coordinator?.childCoordinators = []
         }
         
         addDependency(coordinator)

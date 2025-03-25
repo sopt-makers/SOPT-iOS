@@ -39,9 +39,9 @@ public final class DailySoptuneCoordinator: DefaultCoordinator {
     private func showDailySoptuneMain() {
         var dailySoptuneMain = factory.makeDailySoptuneMainVC()
         
-        dailySoptuneMain.vm.onNaviBackTap = {
-            self.router.dismissModule(animated: true)
-            self.finishFlow?()
+        dailySoptuneMain.vm.onNaviBackTap = { [weak self] in
+            self?.router.dismissModule(animated: true)
+            self?.finishFlow?()
         }
         
         dailySoptuneMain.vm.onReciveTodayFortuneButtonTap = { [weak self] result in
@@ -68,6 +68,8 @@ public final class DailySoptuneCoordinator: DefaultCoordinator {
         
         dailySoptuneResultCoordinator.requestCoordinating = { [weak self] in
             self?.requestCoordinating?()
+            self?.router.dismissModule(animated: true)
+            self?.finishFlow?()
         }
         
         addDependency(dailySoptuneResultCoordinator)
