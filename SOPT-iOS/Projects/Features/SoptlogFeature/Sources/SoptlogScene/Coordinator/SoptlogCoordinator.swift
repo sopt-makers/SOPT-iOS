@@ -52,11 +52,6 @@ public final class SoptlogCoordinator: DefaultCoordinator {
     private func showSoptlog() {
         var soptlog = factory.makeSoptlog()
         
-        soptlog.vm.onNaviBackButtonTap = { [weak self] in
-            self?.router.popModule()
-            self?.finishFlow?()
-        }
-        
         soptlog.vm.onProfileEditTapped = { [weak self] in
             let url = "\(ExternalURL.Playground.main)/members/edit"
             self?.requestCoordinating?(.webLink(url: url))

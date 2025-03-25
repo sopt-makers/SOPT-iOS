@@ -26,7 +26,6 @@ public class SoptlogViewModel: SoptlogViewModelType {
     
     public struct Input { 
         let viewDidLoad: Driver<Void>
-        let naviBackButtonTap: Driver<Void>
         let cellTap: Driver<IndexPath>
     }
     
@@ -39,7 +38,6 @@ public class SoptlogViewModel: SoptlogViewModelType {
     
     // MARK: - SoptlogCoordinatable
     
-    public var onNaviBackButtonTap: (() -> Void)?
     public var onProfileEditTapped: (() -> Void)?
     public var onSoptuneTapped: (() -> Void)?
     public var onNetworkError: (() -> Void)?
@@ -81,12 +79,6 @@ extension SoptlogViewModel {
                 let info = soptlogModel.toPresentation()
                 output.soptlogInfo.send(info)
                 output.isLoading.send(false)
-            }.store(in: cancelBag)
-        
-        input.naviBackButtonTap
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onNaviBackButtonTap?()
             }.store(in: cancelBag)
         
         input.cellTap
