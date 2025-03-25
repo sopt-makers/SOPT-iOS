@@ -22,6 +22,7 @@ public extension Dep {
         public struct Web {}
         public struct Home {}
         public struct Soptlog {}
+        public struct TabBar {}
     }
     
     struct Modules {}
@@ -144,6 +145,13 @@ public extension Dep.Features.Home {
 
 public extension Dep.Features.Soptlog {
     static let group = "Soptlog"
+    
+    static let Feature = Dep.Features.project(name: "Feature", group: group)
+    static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))
+}
+
+public extension Dep.Features.TabBar {
+    static let group = "TabBar"
     
     static let Feature = Dep.Features.project(name: "Feature", group: group)
     static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))

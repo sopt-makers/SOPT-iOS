@@ -46,6 +46,10 @@ public class TermsOfServiceVC: UIViewController, TermsOfServiceViewControllable 
         self.setLayout()
         self.setDelegate()
     }
+    
+    deinit {
+        self.textView.delegate = nil
+    }
 }
 
 // MARK: - UI & Layout

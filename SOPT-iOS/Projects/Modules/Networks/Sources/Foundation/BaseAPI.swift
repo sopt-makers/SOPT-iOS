@@ -27,6 +27,8 @@ public enum APIType {
   case fortune
   case coreAuth
   case social
+  case home
+  case calendar
 }
 
 public protocol BaseAPI: TargetType {
@@ -70,6 +72,10 @@ extension BaseAPI {
       base = coreAuthBaseURL + "/auth"
     case .social:
       base = coreAuthBaseURL + "/social"
+    case .home:
+      base += "/home"
+    case .calendar:
+      base += "/calendar"
     }
     
     guard let url = URL(string: base) else {

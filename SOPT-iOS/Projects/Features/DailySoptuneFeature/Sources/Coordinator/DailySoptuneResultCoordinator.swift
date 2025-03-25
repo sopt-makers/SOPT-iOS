@@ -26,6 +26,7 @@ public final class DailySoptuneResultCoordinator: DefaultCoordinator {
     private let resultModel: DailySoptuneResultModel
     private let router: Router
     private weak var rootController: UINavigationController?
+    private weak var viewController: UIViewController?
 
     public init(router: Router, factory: DailySoptuneFeatureBuildable, pokeFactory: PokeFeatureBuildable, resultModel: DailySoptuneResultModel) {
         self.router = router
@@ -48,7 +49,7 @@ public final class DailySoptuneResultCoordinator: DefaultCoordinator {
         
         dailySoptuneResult.vm.onKokButtonTapped = { [weak self] userModel in
             guard let self else { return .empty() }
-            return self.showMessageBottomSheet(userModel: userModel, on: dailySoptuneResult.vc.viewController)
+            return self.showMessageBottomSheet(userModel: userModel, on: self.viewController)
         }
         
         dailySoptuneResult.vm.onReceiveTodaysFortuneCardButtonTapped = { [weak self] cardModel in
@@ -64,6 +65,7 @@ public final class DailySoptuneResultCoordinator: DefaultCoordinator {
         }
         
         rootController = dailySoptuneResult.vc.asNavigationController
+        viewController = dailySoptuneResult.vc.viewController
         router.present(rootController, animated: true, modalPresentationSytle: .overFullScreen)
     }
     
@@ -82,6 +84,8 @@ public final class DailySoptuneResultCoordinator: DefaultCoordinator {
         
         dailySoptuneCardCoordinator.requestCoordinating = { [weak self] in
             self?.requestCoordinating?()
+            self?.router.dismissModule(animated: true)
+            self?.finishFlow?()
         }
         
         addDependency(dailySoptuneCardCoordinator)

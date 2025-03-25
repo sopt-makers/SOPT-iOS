@@ -77,7 +77,8 @@ extension CoffeeChatRoundTagCVC {
 // MARK: - Methods
 
 extension CoffeeChatRoundTagCVC {
-    func setData(info: GenerationTagInfo) {
+    func setData(info: GenerationTagInfo?) {
+        guard let info else { return }
         self.titleLabel.text = info.title
         if info.isActive {
             activityRoundView.isHidden = false

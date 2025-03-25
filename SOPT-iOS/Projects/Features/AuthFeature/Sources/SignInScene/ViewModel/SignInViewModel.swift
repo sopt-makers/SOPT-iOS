@@ -23,10 +23,6 @@ public class SignInViewModel: SignInViewModelType {
     public struct Input {
         let viewDidLoad: Driver<Void>
         let playgroundSignInFinished: Driver<String>
-        let googleLoginButtonTapped: Driver<Void>
-        let appleLoginButtonTapped: Driver<Void>
-        let signUpButtonTapped: Driver<Void>
-        let loginHelpButtonTapped: Driver<Void>
         let visitorButtonTapped: Driver<Void>
     }
     
@@ -38,10 +34,7 @@ public class SignInViewModel: SignInViewModelType {
     // MARK: - SignInCoordinating
     
     public var onSignInSuccess: ((SiginInHandleableType) -> Void)?
-    public var onLoginHelpButtonTapped: (() -> Void)?
     public var onVisitorButtonTapped: (() -> Void)?
-    public var onSocialLoginFail: (() -> Void)?
-    public var onSignUpButtonTapped: (() -> Void)?
     
     // MARK: - init
   
@@ -60,36 +53,10 @@ extension SignInViewModel {
                 UserDefaultKeyList.clearUserData()
             }.store(in: self.cancelBag)
         
-        Publishers.Merge(
-            input.googleLoginButtonTapped.map { OAuthProvider.google },
-            input.appleLoginButtonTapped.map { OAuthProvider.apple }
-        ).flatMap(useCase.login)
-            .withUnretained(self)
-            .sink { owner,  _ in
-                print("로그인 성공했습니다.")
-                // 홈화면 진입 시 두가지 토큰이 충돌함 (2025.01.18)
-                // AS-IS: UserDefaultKeyList.Auth.appAccessToken
-                // TO-BE: UserDefaultKeyList.CoreAuth.accessToken
-                // 홈화면 진입 후 토큰 관리 로직을 AS-IS에서 TO-BE로 모두 변경 후 아래 코드 주석을 풀 것
-//                owner.onSignInSuccess?(.loginSuccess)
-            }.store(in: self.cancelBag)
-        
-        input.signUpButtonTapped
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onSignUpButtonTapped?()
-            }.store(in: self.cancelBag)
-        
         input.visitorButtonTapped
             .withUnretained(self)
-            .sink { owner, _ in
+            .sink { owner, token in
                 owner.onVisitorButtonTapped?()
-            }.store(in: self.cancelBag)
-        
-        input.loginHelpButtonTapped
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onLoginHelpButtonTapped?()
             }.store(in: self.cancelBag)
         
         input.playgroundSignInFinished

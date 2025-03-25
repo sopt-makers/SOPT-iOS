@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 import Domain
@@ -17,23 +18,20 @@ import BaseFeatureDependency
 final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     
     // MARK: - Properties
-
+    
     public let viewModel: HomeForMemberViewModel
-
+    private(set) var cancelBag = CancelBag()
+    private var viewWillAppear = PassthroughSubject<Void, Never>()
+    private var cellTapped = PassthroughSubject<HomeForMemberItem, Never>()
+    private(set) var attendanceButtonTapped = PassthroughSubject<Void, Never>()
+    
+    private var isFirstAppear = true
+    
     // MARK: - UI Components
     
     private lazy var naviBar = HomeNavigationBar()
-    
-    private lazy var collectionView = UICollectionView(
-        frame: .zero,
-        collectionViewLayout: self.createLayout()
-    ).then {
-        $0.isScrollEnabled = true
-        $0.showsHorizontalScrollIndicator = false
-        $0.showsVerticalScrollIndicator = false
-        $0.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        $0.backgroundColor = .clear
-    }
+    private var dataSource: UICollectionViewDiffableDataSource<HomeForMemberSectionLayoutKind, HomeForMemberItem>! = nil
+    var collectionView: UICollectionView! = nil
     
     // MARK: - Initialization
     
@@ -50,29 +48,46 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        setUI()
-        setLayout()
-        setDelegate()
-        registerCells()
+        configureHierarchy()
+        configureUI()
+        configureLayout()
+        configureDelegate()
+        configureDataSource()
+        bindViewModels()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.viewWillAppear.send()
     }
 }
 
 // MARK: - UI & Layout
 
 extension HomeForMemberVC {
-    private func setUI() {
+    private func configureHierarchy() {
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
+        collectionView.isScrollEnabled = true
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.contentInset = .zero
+        collectionView.backgroundColor = .clear
+    }
+    
+    private func configureUI() {
         self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
     }
     
-    private func setLayout() {
+    private func configureLayout() {
         view.addSubviews(
             naviBar,
             collectionView
         )
         
         naviBar.snp.makeConstraints { make in
-          make.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)
+            make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            make.height.equalTo(40)
         }
         
         collectionView.snp.makeConstraints { make in
@@ -85,205 +100,184 @@ extension HomeForMemberVC {
 // MARK: - Methods
 
 extension HomeForMemberVC {
-    private func setDelegate() {
+    private func configureDelegate() {
         self.collectionView.delegate = self
-        self.collectionView.dataSource = self
     }
     
-    private func registerCells() {
-        /// Header
-        self.collectionView.register(DashBoardHeaderView.self,
-                                     forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                                     withReuseIdentifier: DashBoardHeaderView.className)
-        self.collectionView.register(HomeDefaultHeaderView.self,
-                                     forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                                     withReuseIdentifier: HomeDefaultHeaderView.className)
+    private func configureDataSource() {
+        let dashBoardRegistration = createDashBoardCellRegistration()
+        let calendarRegistration = createCalendarCellRegistration()
+        let mainProductRegistration = createProductCellRegistration()
+        let appServiceRegistration = createAppServiceCellRegistration()
         
-        /// Cell
-        self.collectionView.register(DashBoardCalendarCardCVC.self,
-                                     forCellWithReuseIdentifier: DashBoardCalendarCardCVC.className)
-        self.collectionView.register(MainProductCardCVC.self,
-                                     forCellWithReuseIdentifier: MainProductCardCVC.className)
-        self.collectionView.register(AppServiceCardCVC.self,
-                                     forCellWithReuseIdentifier: AppServiceCardCVC.className)
-        self.collectionView.register(InsightCardCVC.self,
-                                     forCellWithReuseIdentifier: InsightCardCVC.className)
-        self.collectionView.register(GroupCardCVC.self,
-                                     forCellWithReuseIdentifier: GroupCardCVC.className)
-        self.collectionView.register(CoffeeChatCardCVC.self,
-                                     forCellWithReuseIdentifier: CoffeeChatCardCVC.className)
-        self.collectionView.register(AnnouncementCardCVC.self,
-                                     forCellWithReuseIdentifier: AnnouncementCardCVC.className)
+        // TODO: 이후 스프린트에서 순차 배포
+//        let insightRegistration = createInsightCellRegistration()
+//        let groupRegistration  = createGroupCellRegistration()
+//        let coffeeChatRegistration = createCoffeeChatCellRegistration()
+//        let announcementRegistration = createAnnouncementCellRegistration()
+//        let socialLinkRegistration = createSocialLinkCellRegistration()
         
-        /// Footer
-        self.collectionView.register(AnnouncementPageContolFooterView.self,
-                                     forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
-                                     withReuseIdentifier: AnnouncementPageContolFooterView.className)
-        self.collectionView.register(SocialLinkCardCVC.self,
-                                     forCellWithReuseIdentifier: SocialLinkCardCVC.className)
+        dataSource = UICollectionViewDiffableDataSource<HomeForMemberSectionLayoutKind, HomeForMemberItem> (
+            collectionView: collectionView) { (collectionView, indexPath, item) in
+                switch item {
+                case .dashBoard(let dashBoard):
+                    return collectionView.dequeueConfiguredReusableCell(using: dashBoardRegistration,
+                                                                        for: indexPath, item: dashBoard)
+                case .recentSchedule(let schedule):
+                    return collectionView.dequeueConfiguredReusableCell(using: calendarRegistration,
+                                                                        for: indexPath, item: schedule)
+                case .productService(let productService):
+                    return collectionView.dequeueConfiguredReusableCell(using: mainProductRegistration,
+                                                                        for: indexPath, item: productService)
+                case .appService(let appService):
+                    return collectionView.dequeueConfiguredReusableCell(using: appServiceRegistration,
+                                                                        for: indexPath, item: appService)
+                // TODO: 이후 스프린트에서 순차 배포
+                default: return UICollectionViewCell()
+//                case .insightPost(let insight):
+//                    return collectionView.dequeueConfiguredReusableCell(using: insightRegistration,
+//                                                                        for: indexPath, item: insight)
+//                case .groupPost(let group):
+//                    return collectionView.dequeueConfiguredReusableCell(using: groupRegistration,
+//                                                                        for: indexPath, item: group)
+//                case .coffeeChat(let coffeeChat):
+//                    return collectionView.dequeueConfiguredReusableCell(using: coffeeChatRegistration,
+//                                                                        for: indexPath, item: coffeeChat)
+//                case .announcement(let announcement):
+//                    return collectionView.dequeueConfiguredReusableCell(using: announcementRegistration,
+//                                                                        for: indexPath, item: announcement)
+//                case .socialLink(let socialLink):
+//                    return collectionView.dequeueConfiguredReusableCell(using: socialLinkRegistration,
+//                                                                        for: indexPath, item: socialLink)
+                }
+            }
+        
+        configureSupplementaryView()
+    }
+    
+    private func configureSupplementaryView() {
+        let headerRegistration = createHeaderRegistration()
+        // TODO: 이후 스프린트에서 순차 배포
+//        let footerRegistration = createFooterRegistration()
+        
+        dataSource.supplementaryViewProvider = { (collectionView, kind, indexPath) in
+            if kind == UICollectionView.elementKindSectionHeader {
+                return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
+            }
+            
+            // TODO: 이후 스프린트에서 순차 배포
+//            if kind == UICollectionView.elementKindSectionFooter {
+//                return collectionView.dequeueConfiguredReusableSupplementary(using: footerRegistration, for: indexPath)
+//            }
+            
+            return UICollectionReusableView()
+        }
+    }
+    
+    private func bindViewModels() {
+        let noticeButtonTapped = naviBar.noticeButtonTap
+            .mapVoid()
+            .asDriver()
+        
+        let settingButtonTapped = naviBar.settingButtonTap
+            .mapVoid()
+            .asDriver()
+        
+        let input = HomeForMemberViewModel.Input(
+            viewDidLoad: Just<Void>(()).asDriver(),
+            viewWillAppear: viewWillAppear.asDriver(),
+            cellTapped: cellTapped.asDriver(),
+            attendanceButtonTapped: attendanceButtonTapped.asDriver(),
+            noticeButtonTapped: noticeButtonTapped,
+            settingButtonTapped: settingButtonTapped
+        )
+        
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.homeItem
+            .withUnretained(self)
+            .sink { owner, data in
+                owner.updateUI(with: data)
+            }.store(in: cancelBag)
+        
+        output.isLoading
+            .withUnretained(self)
+            .sink { owner, isLoading in
+                isLoading ? owner.showLoading() : owner.stopLoading()
+            }
+            .store(in: cancelBag)
+    }
+    
+    private func updateUI(with data: HomePresentationModel) {
+        if isFirstAppear {
+            applySnapshot(with: data)
+            isFirstAppear = false
+        } else {
+            setItemsNeedUpdate(data)
+        }
+        updateNaviBarUI(isAllConfirm: data.dashBoard.isAllConfirm)
+    }
+    
+    private func updateNaviBarUI(isAllConfirm: Bool?) {
+        if let isAllConfirm = isAllConfirm {
+            self.naviBar.changeNoticeButtonStyle(isActive: !isAllConfirm)
+        }
+    }
+    
+    private func applySnapshot(with data: HomePresentationModel) {
+        var snapshot = NSDiffableDataSourceSnapshot<HomeForMemberSectionLayoutKind, HomeForMemberItem>()
+        
+        // TODO: 이후 스프린트에서 순차 배포
+//        snapshot.appendSections(HomeForMemberSectionLayoutKind.allCases)
+        snapshot.appendSections([.dashBoard, .calendar, .mainProduct, .appService])
+        
+        snapshot.appendItems([.dashBoard(data.dashBoard)], toSection: .dashBoard)
+        snapshot.appendItems([.recentSchedule(data.recentSchedule)], toSection: .calendar)
+        snapshot.appendItems(self.viewModel.productServiceList.map { .productService($0) }, toSection: .mainProduct)
+        snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
+        // TODO: 이후 스프린트에서 순차 배포
+//        snapshot.appendItems([.insightPost(data.insightPosts.first!)], toSection: .insight) // 임시로 첫 번째 값만 배정
+//        snapshot.appendItems(data.groupPosts.map { .groupPost($0) }, toSection: .group)
+//        snapshot.appendItems(data.coffeeChatPosts.map { .coffeeChat($0) }, toSection: .coffeeChat)
+//        snapshot.appendItems(data.announcementPosts.map { .announcement($0) }, toSection: .announcement)
+//        snapshot.appendItems(SocialLinkCardType.allCases.map { .socialLink($0) }, toSection: .socialLinks)
+//        
+        dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+    private func setItemsNeedUpdate(_ data: HomePresentationModel) {
+        var snapshot = self.dataSource.snapshot()
+        
+        let items: [HomeForMemberItem] = [
+            .dashBoard(data.dashBoard),
+            .recentSchedule(data.recentSchedule)
+        ] + data.appServices.map { .appService($0) }
+        
+        let existingItems = snapshot.itemIdentifiers.filter { items.contains($0) }
+        
+        if !existingItems.isEmpty {
+            snapshot.reconfigureItems(existingItems)
+            self.dataSource.apply(snapshot, animatingDifferences: true)
+        }
     }
 }
 
 // MARK: - UICollectionViewDelegate
 
 extension HomeForMemberVC: UICollectionViewDelegate {
-    
-}
-
-// MARK: - UICollectionViewDataSource
-
-extension HomeForMemberVC: UICollectionViewDataSource {
-    public func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return HomeForMemberSectionLayoutKind.allCases.count
-    }
-        
-    public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: indexPath.section) else { return UICollectionReusableView() }
-        
-        /// Header View
-        if kind == UICollectionView.elementKindSectionHeader {
-            switch sectionKind {
-            /// dashBoard일 경우에만 defaultHeader 대신 UserHistory가 나타나는 커스텀 헤더를 사용합니다.
-            case .dashBoard:
-                guard let headerView = collectionView
-                    .dequeueReusableSupplementaryView(ofKind: kind,
-                                                      withReuseIdentifier: DashBoardHeaderView.className,
-                                                      for: indexPath) as? DashBoardHeaderView else { return UICollectionReusableView() }
-                headerView.setData(userType: .active)
-                return headerView
-            default:
-                guard let headerView = collectionView
-                    .dequeueReusableSupplementaryView(ofKind: kind,
-                                                      withReuseIdentifier: HomeDefaultHeaderView.className,
-                                                      for: indexPath) as? HomeDefaultHeaderView else { return UICollectionReusableView() }
-                headerView.setData(sectionKind: sectionKind)
-                return headerView
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let selectedItem = dataSource.itemIdentifier(for: indexPath) {
+            switch selectedItem {
+            case .dashBoard(let model):
+                self.cellTapped.send(.dashBoard(model))
+            case .recentSchedule(let model):
+                self.cellTapped.send(.recentSchedule(model))
+            case .productService(let model):
+                self.cellTapped.send(.productService(model))
+            case .appService(let model):
+                self.cellTapped.send(.appService(model))
+            default: return
             }
-        } /// Footer View
-        else if kind == UICollectionView.elementKindSectionFooter {
-            switch sectionKind {
-            case .announcement:
-                guard let footerView = collectionView
-                    .dequeueReusableSupplementaryView(ofKind: kind,
-                                                      withReuseIdentifier: AnnouncementPageContolFooterView.className,
-                                                      for: indexPath) as? AnnouncementPageContolFooterView else { return UICollectionReusableView() }
-                footerView.bind(input: viewModel.currentCardPage,
-                                pageNumber: viewModel.announcementInfoList.count)
-                return footerView
-            default:
-                return UICollectionReusableView()
-            }
-        }
-        return UICollectionReusableView()
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: section) else { return 0 }
-        
-        switch sectionKind {
-        case .dashBoard: return 1
-        case .mainProduct: return viewModel.productInfoList.count
-        case .appService: return viewModel.appServiceInfoList.count
-        case .insight: return viewModel.insightInfoList.count
-        case .group: return viewModel.groupInfoList.count
-        case .coffeeChat: return viewModel.coffeeChatHostInfoList.count
-        case .announcement: return viewModel.announcementInfoList.count
-        case .socialLinks: return SocialLinkCardType.allCases.count
-        default: return 0
-        }
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: indexPath.section) else { return UICollectionViewCell() }
-        
-        switch sectionKind {
-        case .dashBoard:
-            /// 캘린더 카드 셀
-            guard let calendarCardCell = collectionView
-                .dequeueReusableCell(withReuseIdentifier: DashBoardCalendarCardCVC.className,
-                                     for: indexPath) as? DashBoardCalendarCardCVC else { return UICollectionViewCell() }
-            calendarCardCell.configureCell(date: "10.22",
-                          tagType: .event,
-                          title: "1차 행사",
-                          userType: .active)
-            return calendarCardCell
-            
-        case .mainProduct:
-            /// 프로덕트 카드 셀
-            let productIndex = indexPath.item
-            guard let product = viewModel.productInfoList[safe: productIndex] else { return UICollectionViewCell() }
-            guard let productCardCell = collectionView
-                .dequeueReusableCell(withReuseIdentifier: MainProductCardCVC.className,
-                                     for: indexPath) as? MainProductCardCVC else { return UICollectionViewCell() }
-            
-            productCardCell.configureCell(title: product.name,
-                                          image: product.image)
-            return productCardCell
-            
-        case .appService:
-            /// 앱 서비스 카드 셀
-            let appServiceIndex = indexPath.item
-            guard let appService = viewModel.appServiceInfoList[safe: appServiceIndex] else { return UICollectionViewCell() }
-            guard let appServiceCardCell = collectionView
-                .dequeueReusableCell(withReuseIdentifier: AppServiceCardCVC.className,
-                                     for: indexPath) as? AppServiceCardCVC else { return UICollectionViewCell() }
-            appServiceCardCell.configureCell(imageURL: appService.imageURL,
-                                             name: appService.name,
-                                             badgeText: appService.badgeText)
-            return appServiceCardCell
-        
-        case .insight:
-            /// 인사이트 카드 셀
-            let insightIndex = indexPath.item
-            guard let insight = viewModel.insightInfoList[safe: insightIndex] else { return UICollectionViewCell() }
-            guard let insightCardCell = collectionView
-                .dequeueReusableCell(withReuseIdentifier: InsightCardCVC.className,
-                                     for: indexPath) as? InsightCardCVC else { return UICollectionViewCell() }
-            insightCardCell.configureCell(model: insight)
-            
-            return insightCardCell
-            
-        case .group:
-            /// 모임 카드 셀
-            let groupIndex = indexPath.item
-            guard let groupCardCell = collectionView
-                .dequeueReusableCell(withReuseIdentifier: GroupCardCVC.className,
-                                     for: indexPath) as? GroupCardCVC else { return UICollectionViewCell() }
-            groupCardCell.configureCell(model: viewModel.groupInfoList[groupIndex])
-            
-            return groupCardCell
-            
-        case .coffeeChat:
-            /// 커피챗 카드 셀
-            let coffeeChatIndex = indexPath.item
-            guard let coffeeChatCardCell = collectionView
-                .dequeueReusableCell(withReuseIdentifier: CoffeeChatCardCVC.className,
-                                     for: indexPath) as? CoffeeChatCardCVC else { return UICollectionViewCell() }
-            coffeeChatCardCell.configureCell(model: viewModel.coffeeChatHostInfoList[coffeeChatIndex])
-            
-            return coffeeChatCardCell
-
-        case .announcement:
-            /// 홍보 카드 셀
-            let announcementIndex = indexPath.item
-            guard let announcementCardCell = collectionView
-                .dequeueReusableCell(withReuseIdentifier: AnnouncementCardCVC.className,
-                                     for: indexPath) as? AnnouncementCardCVC else { return UICollectionViewCell() }
-            announcementCardCell.configureCell(model: viewModel.announcementInfoList[announcementIndex])
-            
-            return announcementCardCell
-            
-        case .socialLinks:
-            /// 소셜 링크 카드 셀
-            let socialLinkIndex = indexPath.item
-            guard let socialLinkCardCell = collectionView
-                .dequeueReusableCell(withReuseIdentifier: SocialLinkCardCVC.className,
-                                     for: indexPath) as? SocialLinkCardCVC else { return UICollectionViewCell() }
-            let socialLinkType = SocialLinkCardType.allCases[socialLinkIndex]
-            socialLinkCardCell.configureCell(type: socialLinkType)
-            
-            return socialLinkCardCell
-        default: return UICollectionViewCell()
         }
     }
 }

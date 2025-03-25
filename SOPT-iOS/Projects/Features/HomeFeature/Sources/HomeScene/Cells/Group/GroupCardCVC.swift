@@ -8,6 +8,7 @@
 
 import UIKit
 
+import Domain
 import Core
 import DSKit
 
@@ -71,6 +72,11 @@ final class GroupCardCVC: UICollectionViewCell {
         let updatedAttributes = calculateContentHeight(layoutAttributes)
         return updatedAttributes
     }
+    
+    deinit {
+        self.joinableConditionTagCollectionView.delegate = nil
+        self.joinableConditionTagCollectionView.dataSource = nil
+    }
 }
 
 // MARK: - UI & Layout
@@ -125,8 +131,8 @@ extension GroupCardCVC {
 // MARK: - Methods
 
 extension GroupCardCVC {
-    func configureCell(model: GroupInfo) {
-        self.coverImageView.setImage(with: model.imageURL)
+    func configureCell(model: HomePresentationModel.GroupPost) {        
+        self.coverImageView.setImage(with: model.imageUrl)
         self.titleLabel.text = model.title
         self.recruitmentStatusTagView.setData(title: model.status.text,
                                               titleColor: model.status.textColor,
@@ -136,7 +142,7 @@ extension GroupCardCVC {
     }
     
     /// 자격 요건 태그 콜렉션뷰: 데이터 append 이후 reload
-    private func reloadJoinableConditionTagCollectionView(_ model: GroupInfo) {
+    private func reloadJoinableConditionTagCollectionView(_ model: HomePresentationModel.GroupPost) {
         self.tagTextList.removeAll()
         self.tagTextList.append(model.canJoinAllParts ? I18N.Home.Group.entireGeneration : I18N.Home.Group.activityGeneration)
         self.tagTextList += model.joinableParts
@@ -153,7 +159,7 @@ extension GroupCardCVC {
     }
     
     /// 카테고리 + 모임글 타이틀
-    private func makeTitleAttributedString(category: GroupCategoryTagType, title: String) {
+    private func makeTitleAttributedString(category: HomeGroupPostModel.Category, title: String) {
         let attributedText = "\(category.text) \(title)"
         self.titleLabel.text = attributedText
         self.titleLabel.partColorChange(targetString: category.text, textColor: category.textColor)
@@ -218,7 +224,7 @@ extension GroupCardCVC: UICollectionViewDataSource {
         guard let cell = collectionView
             .dequeueReusableCell(withReuseIdentifier: GroupRoundTagCVC.className,
                                  for: indexPath) as? GroupRoundTagCVC else { return UICollectionViewCell() }
-        cell.configureCell(text: tagTextList[indexPath.item])
+        cell.configureCell(text: tagTextList[safe: indexPath.item])
         return cell
     }
 }

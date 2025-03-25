@@ -19,7 +19,8 @@ public protocol AuthCoordinatorFinishOutput {
 
 public typealias DefaultAuthCoordinator = BaseCoordinator & AuthCoordinatorFinishOutput
 
-public final class AuthCoordinator: DefaultAuthCoordinator {
+public
+final class AuthCoordinator: DefaultAuthCoordinator {
     
     public var finishFlow: ((UserType) -> Void)?
     
@@ -47,31 +48,10 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
             }
         }
         
-        signIn.vm.onSignInSuccess = { [weak self] type in
-            switch type {
-            case .loginSuccess:
-                let userType = UserDefaultKeyList.Auth.getUserType()
-                self?.finishFlow?(userType)
-            case .loginFailure: break
-            }
-        }
-        
-        signIn.vm.onLoginHelpButtonTapped = { [weak self] in
-            self?.showLoginHelpBottomSheet(on: signIn.vc)
-        }
-        
         signIn.vm.onVisitorButtonTapped = { [weak self] in
             self?.finishFlow?(.visitor)
         }
-        
-        signIn.vm.onSocialLoginFail = { [weak self] in
-            self?.runUserNotFoundFlow()
-        }
-        
-        signIn.vm.onSignUpButtonTapped = { [weak self] in
-            self?.runSignUpFlow()
-        }
-        
+
         switch style {
         case .modal:
             router.present(
@@ -81,18 +61,15 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
                 modalTransitionStyle: .crossDissolve
             )
         case .root:
-            router.replaceRootWindow(signIn.vc, withAnimation: false)
-            router.hideTitles()
+            router.setRootModule(signIn.vc, animated: true)
         case .rootWindow(let animated, let message):
             guard !animated else {
-                router.replaceRootWindow(signIn.vc, withAnimation: true)
-                router.hideTitles()
+                router.setRootWindow(signIn.vc)
                 return
             }
             
             guard let message else {
                 router.replaceRootWindow(signIn.vc, withAnimation: true)
-                router.hideTitles()
                 return
             }
             
@@ -102,78 +79,7 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
                     view: newWindow
                 )
             }
-            router.hideTitles()
         case .push: break
-        }
-        
-    }
-}
-
-extension AuthCoordinator {
-    private func runUserNotFoundFlow() {
-        var userNotFoundVC = self.factory.makeUserNotFound()
-        userNotFoundVC.onLoginRetryButtonTapped = { [weak self] in
-            self?.router.popToRootModule(animated: true)
-        }
-        
-        userNotFoundVC.onLoginHelpButtonTapped = { [weak self] in
-            self?.showLoginHelpBottomSheet(on: userNotFoundVC)
-        }
-        
-        self.router.push(userNotFoundVC)
-    }
-    
-    private func runSignUpFlow() {
-        var signUpVC = self.factory.makeSignUp()
-        
-        signUpVC.vm.onLoginHelpButtonTapped = { [weak self] in
-            self?.showLoginHelpBottomSheet(on: signUpVC.vc)
-        }
-        
-        signUpVC.vm.onSignUpSuccess = { [weak self] in
-            let userType = UserDefaultKeyList.Auth.getUserType()
-            self?.finishFlow?(userType)
-        }
-        
-        self.router.push(signUpVC.vc)
-    }
-    
-    private func showLoginHelpBottomSheet(on vc: ViewControllable) {
-        guard let bottomSheetVC = self.factory.makeLoginHelpBottomSheet().viewController as? LoginHelpBottomSheetVC
-        else { return Void() }
-        
-        bottomSheetVC.onResetSocialAccountButtonDidTap = {
-            print("resetSocialAccountButtonDidTap") //TODO: asdf
-        }
-        
-        bottomSheetVC.onWantToKnowLoginAccountButtonDidTap = {
-            print("wantToKnowLoginAccountButtonDidTap") //TODO: asdf
-        }
-        
-        let bottomSheetManager = BottomSheetManager(configuration: .fixed(minHeight: bottomSheetVC.minimumContentHeight,
-                                                                          prefersGrabberVisible: false))
-        
-        
-        self.router.showBottomSheet(
-            manager: bottomSheetManager,
-            toPresent: bottomSheetVC,
-            on: vc.viewController
-        )
-    }
-}
-
-
-//AS IS: 2024.10.26 이전. 플그 로그인 로직
-extension AuthCoordinator {
-    func parseParameter(url: String) -> [(query: String, value: String)] {
-        let components = URLComponents(string: url)
-        let params = components?.query ?? ""
-        guard params.count > 0 && params != "",
-              let items = components?.queryItems else {
-            return []
-        }
-        return items.map {
-            ($0.name, $0.value ?? "")
         }
     }
     
@@ -193,4 +99,16 @@ extension AuthCoordinator {
     }
 }
 
-
+extension AuthCoordinator {
+    func parseParameter(url: String) -> [(query: String, value: String)] {
+        let components = URLComponents(string: url)
+        let params = components?.query ?? ""
+        guard params.count > 0 && params != "",
+              let items = components?.queryItems else {
+            return []
+        }
+        return items.map {
+            ($0.name, $0.value ?? "")
+        }
+    }
+}

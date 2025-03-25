@@ -16,13 +16,35 @@ import BaseFeatureDependency
 import HomeFeatureInterface
 import WebFeature
 
-public final class HomeCoordinator: DefaultCoordinator {
+public enum HomeCoordinatorDestination {
+    case signIn
+    case notification
+    case setting(userType: UserType)
+    case attendance
+    case soptlog
+    case calendar
     
+    case webLink(url: String)
+    case deepLink(url: String)
+}
+
+public protocol HomeCoordinatorOutput {
+    var requestCoordinating: ((HomeCoordinatorDestination) -> Void)? { get set }
+}
+
+public typealias DefaultHomeCoordinator = BaseCoordinator & HomeCoordinatorOutput
+
+public final class HomeCoordinator: DefaultHomeCoordinator {
+    
+    public var requestCoordinating: ((HomeCoordinatorDestination) -> Void)?
     public var finishFlow: (() -> Void)?
     
     private let factory: HomeFeatureBuildable
     private let router: Router
     private let userType: UserType
+    
+    public private(set) var rootViewController: UIViewController?
+    private weak var rootController: UINavigationController?
     
     public init(
         router: Router,
@@ -45,14 +67,71 @@ public final class HomeCoordinator: DefaultCoordinator {
     
     public func showHomeForMember() {
         var homeForMember = factory.makeHomeForMember()
+        
+        homeForMember.vm.onDashBoardCellTapped = { [weak self] in
+            self?.requestCoordinating?(.soptlog)
+        }
+        
+        homeForMember.vm.onCalendarCellTapped = { [weak self] in
+            self?.requestCoordinating?(.calendar)
+        }
+
+        homeForMember.vm.onNotificationButtonTapped = { [weak self] in
+            self?.requestCoordinating?(.notification)
+        }
+        
+        homeForMember.vm.onSettingButtonTapped = { [weak self] userType in
+            self?.requestCoordinating?(.setting(userType: userType))
+        }
+        
+        homeForMember.vm.onAppServiceCellTapped = { [weak self] url in
+            self?.requestCoordinating?(.deepLink(url: url))
+        }
+        
+        homeForMember.vm.onMainProductCellTapped = { [weak self] url in
+            self?.requestCoordinating?(.webLink(url: url))
+        }
+        
+        homeForMember.vm.onAttendanceButtonTapped = { [weak self] in
+            self?.requestCoordinating?(.attendance)
+        }
+        
+        homeForMember.vm.onNeedSignIn = { [weak self] in
+            self?.requestCoordinating?(.signIn)
+        }
     
-        router.replaceRootWindow(homeForMember.vc, withAnimation: true)
+        homeForMember.vm.onNetworkError = {
+            AlertUtils.presentNetworkAlertVC()
+        }
+        rootViewController = homeForMember.vc.viewController
+        
+        router.push(homeForMember.vc)
     }
     
     public func showHomeForVisitor() {
         var homeForVisitor = factory.makeHomeForVisitor()
         
-        router.replaceRootWindow(homeForVisitor.vc, withAnimation: true)
+        homeForVisitor.vm.onAppServiceCellTapped = {
+            AlertUtils.presentAlertVC(
+                type: .titleDescription,
+                title: I18N.Home.PopUp.needToLogin,
+                description: I18N.Home.PopUp.needToLoginDetail,
+                customButtonTitle: I18N.Home.PopUp.login,
+                customAction: { [weak self] in
+                    self?.requestCoordinating?(.signIn)
+                }
+            )
+        }
+        
+        homeForVisitor.vm.onMainProductCellTapped = { [weak self] url in
+            self?.requestCoordinating?(.webLink(url: url))
+        }
+        
+        homeForVisitor.vm.onSettingButtonTapped = { [weak self] userType in
+            self?.requestCoordinating?(.setting(userType: userType))
+        }
+        
+        rootViewController = homeForVisitor.vc.viewController
+        router.push(homeForVisitor.vc)
     }
 }
-

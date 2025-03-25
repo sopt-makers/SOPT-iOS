@@ -13,7 +13,9 @@ import Core
 
 public protocol HomeForVisitorViewControllable: ViewControllable { }
 public protocol HomeForVisitorCoordinatable {
-    
+    var onMainProductCellTapped: ((String) -> Void)? { get set }
+    var onAppServiceCellTapped: (() -> Void)? { get set }
+    var onSettingButtonTapped: ((UserType) -> Void)? { get set }
 }
 public typealias HomeForVisitorViewModelType = ViewModelType & HomeForVisitorCoordinatable
 public typealias HomeForVisitorPresentable = (vc: HomeForVisitorViewControllable, vm: any HomeForVisitorViewModelType)

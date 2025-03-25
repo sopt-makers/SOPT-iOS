@@ -35,7 +35,7 @@ public class PartRankingVC: UIViewController, PartRankingViewControllable {
 
   // MARK: - UI Components
 
-  lazy var naviBar = STNavigationBar(self, type: .titleWithLeftButton, ignorePopAction: true)
+  lazy var naviBar = STNavigationBar(type: .titleWithLeftButton)
     .setTitleTypoStyle(.SoptampFont.h2)
     .setTitle("파트별 랭킹")
     .setRightButton(.none)

@@ -192,5 +192,22 @@ extension AppDelegate {
                 )
             }
         )
+        container.register(
+            interface: HomeRepositoryInterface.self,
+            implement: {
+                HomeRepository(
+                    homeService: DefaultHomeService(),
+                    calendarService: DefaultCalendarService(),
+                    userService: DefaultUserService(),
+                    stampService: DefaultStampService()
+                )
+            }
+        )
+        container.register(
+            interface: SoptlogRepositoryInterface.self,
+            implement: {
+                SoptlogRepository(userService: DefaultUserService())
+            }
+        )
     }
 }

@@ -8,6 +8,7 @@
 
 import UIKit
 
+import Domain
 import Core
 import DSKit
 
@@ -102,10 +103,14 @@ extension InsightCardCVC {
 // MARK: - Methods
 
 extension InsightCardCVC {
-    func configureCell(model: InsightInfo) {
-        self.categoryTagView.setData(with: model.category, isHotTag: model.isHotTag)
-        self.profileImageView.setImage(with: model.profileImageURL)
-        self.userNameLabel.text = model.userName
-        self.postTitleLabel.text = model.postTitle
+    func configureCell(model: HomePresentationModel.InsightPost) {
+        self.categoryTagView.setData(with: model.category, isHotTag: model.isHotPost)
+        if let profileImage = model.profileImage {
+            self.profileImageView.setImage(with: profileImage)
+        }
+        if let name = model.name {
+            self.userNameLabel.text = name
+        }
+        self.postTitleLabel.text = model.title
     }
 }

@@ -66,12 +66,10 @@ public class STNavigationBar: UIView {
     
     // MARK: - Initialize
     
-    public init(_ vc: UIViewController, type: NaviType, ignorePopAction: Bool = false) {
+    public init(type: NaviType) {
         super.init(frame: .zero)
-        self.vc = vc
         self.setUI(type)
         self.setLayout(type)
-        self.setAddTarget(ignorePopAction)
     }
     
     required init?(coder: NSCoder) {
@@ -96,7 +94,7 @@ extension STNavigationBar {
     
     private func setAddTarget(_ ignorePopAction: Bool = false) {
         guard !ignorePopAction else { return }
-        self.leftButton.addTarget(self, action: #selector(popToPreviousVC), for: .touchUpInside)
+//        self.leftButton.addTarget(self, action: #selector(popToPreviousVC), for: .touchUpInside)
     }
     
     @discardableResult
@@ -201,11 +199,6 @@ extension STNavigationBar {
 // MARK: - @objc
 
 extension STNavigationBar {
-    @objc
-    private func popToPreviousVC() {
-        self.vc?.navigationController?.popViewController(animated: true)
-    }
-    
     @objc
     private func tappedRightButton() {
         self.rightButtonClosure?()
