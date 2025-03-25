@@ -23,10 +23,6 @@ public class SignInViewModel: SignInViewModelType {
     public struct Input {
         let viewDidLoad: Driver<Void>
         let playgroundSignInFinished: Driver<String>
-        let googleLoginButtonTapped: Driver<Void>
-        let appleLoginButtonTapped: Driver<Void>
-        let signUpButtonTapped: Driver<Void>
-        let loginHelpButtonTapped: Driver<Void>
         let visitorButtonTapped: Driver<Void>
     }
     
@@ -38,10 +34,7 @@ public class SignInViewModel: SignInViewModelType {
     // MARK: - SignInCoordinating
     
     public var onSignInSuccess: ((SiginInHandleableType) -> Void)?
-    public var onLoginHelpButtonTapped: (() -> Void)?
     public var onVisitorButtonTapped: (() -> Void)?
-    public var onSocialLoginFail: (() -> Void)?
-    public var onSignUpButtonTapped: (() -> Void)?
     
     // MARK: - init
   
@@ -60,34 +53,10 @@ extension SignInViewModel {
                 UserDefaultKeyList.clearUserData()
             }.store(in: self.cancelBag)
         
-        input.googleLoginButtonTapped
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onSocialLoginFail?() //TODO: 구글 로그인 로직
-            }.store(in: self.cancelBag)
-        
-        input.appleLoginButtonTapped
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onSocialLoginFail?() //TODO: 애플 로그인 로직
-            }.store(in: self.cancelBag)
-        
-        input.signUpButtonTapped
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onSignUpButtonTapped?()
-            }.store(in: self.cancelBag)
-        
         input.visitorButtonTapped
             .withUnretained(self)
-            .sink { owner, _ in
+            .sink { owner, token in
                 owner.onVisitorButtonTapped?()
-            }.store(in: self.cancelBag)
-        
-        input.loginHelpButtonTapped
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onLoginHelpButtonTapped?()
             }.store(in: self.cancelBag)
         
         input.playgroundSignInFinished

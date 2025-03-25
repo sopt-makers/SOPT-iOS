@@ -34,7 +34,7 @@ public class StampGuideVC: UIViewController, StampGuideViewControllable {
     
     // MARK: - UI Components
     
-    private lazy var naviBar = STNavigationBar(self, type: .titleWithLeftButton)
+    private lazy var naviBar = STNavigationBar(type: .titleWithLeftButton)
         .setTitle(I18N.StampGuide.guide)
     
     private lazy var stampGuideCollectionView: UICollectionView = {

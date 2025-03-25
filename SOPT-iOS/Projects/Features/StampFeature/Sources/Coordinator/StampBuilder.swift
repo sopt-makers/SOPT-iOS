@@ -44,8 +44,7 @@ extension StampBuilder: StampFeatureViewBuildable {
             missionTitle: missionTitle,
             otherUsername: otherUserName
         )
-        let listDetailVC = ListDetailVC()
-        listDetailVC.viewModel = viewModel
+        let listDetailVC = ListDetailVC(viewModel: viewModel)
         return listDetailVC
     }
     

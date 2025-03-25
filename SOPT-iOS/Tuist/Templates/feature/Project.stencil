@@ -1,0 +1,19 @@
+//
+//  Project.swift
+//  ProjectDescriptionHelpers
+//
+//  Created by {{ author }} on {{ current_date }}.
+//
+
+import ProjectDescription
+import ProjectDescriptionHelpers
+import DependencyPlugin
+
+let project = Project.makeModule(
+    name: "{{name}}Feature",
+    targets: [.unitTest, .staticFramework, .demo, .interface],
+    internalDependencies: [
+    ],
+    interfaceDependencies: [  
+    ]
+)

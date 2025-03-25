@@ -23,6 +23,8 @@ final class HomeCategoryTagView: UIView {
     
     private let contentStackView = UIStackView().then {
         $0.axis = .horizontal
+        $0.alignment = .center
+        $0.distribution = .equalSpacing
     }
     
     private let hotIconImageView = UIImageView().then {

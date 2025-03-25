@@ -52,13 +52,13 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
   lazy var naviBar: STNavigationBar = {
     switch sceneType {
     case .default:
-      return STNavigationBar(self, type: .title)
+        return STNavigationBar(type: .title)
         .setTitle("전체 미션")
         .setTitleTypoStyle(.SoptampFont.h2)
         .setTitleButtonMenu(menuItems: self.menuItems)
         .addLeftButtonToTitleMenu()
     case .ranking(let username, _):
-      return STNavigationBar(self, type: .titleWithLeftButton)
+        return STNavigationBar(type: .titleWithLeftButton)
         .setTitle(username)
         .setRightButton(.none)
         .setTitleTypoStyle(.SoptampFont.h2)
@@ -237,13 +237,11 @@ extension MissionListVC {
         owner.onGuideTap?()
       }.store(in: self.cancelBag)
 
-    if case .default = sceneType {
-      naviBar.leftButtonTapped
-        .withUnretained(self)
-        .sink { owner, _ in
-          owner.onNaviBackTap?()
-        }.store(in: self.cancelBag)
-    }
+    naviBar.leftButtonTapped
+      .withUnretained(self)
+      .sink { owner, _ in
+        owner.onNaviBackTap?()
+      }.store(in: self.cancelBag)
 
     partRankingFloatingButton.publisher(for: .touchUpInside)
       .withUnretained(self)

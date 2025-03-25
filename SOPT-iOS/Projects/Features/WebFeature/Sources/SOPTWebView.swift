@@ -14,13 +14,20 @@ import WebKit
 
 import SnapKit
 
-public final class SOPTWebView: UIViewController {
+public protocol SOPTWebViewControllable: AnyObject {
+    var vc: UIViewController { get }
+    var webView: WKWebView { get }
+}
+
+public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
     private enum Metric {
         static let navigationBarHeight = 44.f
     }
     
     private lazy var navigationBar = WebViewNavigationBar(frame: self.view.frame)
-    private let wkwebView: WKWebView
+    public let webView: WKWebView
+    public var vc: UIViewController { self }
+    private let downloadManager: WKDownloadManager
     
     // MARK: Variables
     private let cancelbag = CancelBag()
@@ -28,22 +35,23 @@ public final class SOPTWebView: UIViewController {
     
     public init(
         config: WebViewConfig = WebViewConfig(),
-        startWith url: URL
+        startWith url: URL,
+        downloadManager: WKDownloadManager = .default
     ) {
         let configuration = WKWebViewConfiguration().then {
             $0.allowsInlineMediaPlayback = config.allowsInlineMediaPlayback
             $0.mediaTypesRequiringUserActionForPlayback = config.mediaTypesRequiringUserActionForPlayback
         }
         
-        self.wkwebView = WKWebView(frame: .zero, configuration: configuration).then {
+        self.webView = WKWebView(frame: .zero, configuration: configuration).then {
             $0.allowsBackForwardNavigationGestures = config.allowsBackForwardNavigationGestures
         }
-        
+        self.downloadManager = downloadManager
         super.init(nibName: nil, bundle: nil)
         
         DispatchQueue.main.async {
             let request = URLRequest(url: url)
-            self.wkwebView.load(request)
+            self.webView.load(request)
         }
     }
     
@@ -56,10 +64,10 @@ public final class SOPTWebView: UIViewController {
         
         self.view.backgroundColor = DSKitAsset.Colors.black100.color
         
-        self.wkwebView.scrollView.delegate = self
-        self.wkwebView.navigationDelegate = self
-        self.wkwebView.uiDelegate = self
-        
+        self.webView.scrollView.delegate = self
+        self.webView.navigationDelegate = self
+        self.webView.uiDelegate = self
+        downloadManager.webVC = self
         self.initializeViews()
         self.setupConstraints()
         self.setupNavigationButtonActions()
@@ -68,7 +76,7 @@ public final class SOPTWebView: UIViewController {
 
 extension SOPTWebView {
     private func initializeViews() {
-        self.view.addSubviews(self.navigationBar, self.wkwebView)
+        self.view.addSubviews(self.navigationBar, self.webView)
     }
     
     private func setupConstraints() {
@@ -78,7 +86,7 @@ extension SOPTWebView {
             $0.height.equalTo(Metric.navigationBarHeight)
         }
         
-        self.wkwebView.snp.makeConstraints {
+        self.webView.snp.makeConstraints {
             $0.top.equalTo(self.navigationBar.snp.bottom)
             $0.leading.trailing.bottom.equalToSuperview()
         }
@@ -88,12 +96,12 @@ extension SOPTWebView {
         self.navigationBar
             .signalForClickLeftButton()
             .sink { [weak self] _ in
-                guard self?.wkwebView.canGoBack == true else {
+                guard self?.webView.canGoBack == true else {
                     self?.navigationController?.popViewController(animated: true)
                     return
                 }
                     
-                self?.wkwebView.goBack()
+                self?.webView.goBack()
             }.store(in: self.cancelbag)
         
         self.navigationBar
@@ -111,10 +119,10 @@ extension SOPTWebView: WKNavigationDelegate {
         }
         
         self.barrier = true
-        self.wkwebView.evaluateJavaScript(
+        self.webView.evaluateJavaScript(
             "localStorage.setItem(\"serviceAccessToken\", \"\(playgroundToken)\")"
         )
-        self.wkwebView.reload()
+        self.webView.reload()
     }
 }
 
@@ -136,5 +144,24 @@ extension SOPTWebView: WKUIDelegate {
 extension SOPTWebView: UIScrollViewDelegate {
     public func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
         scrollView.pinchGestureRecognizer?.isEnabled = false
+    }
+}
+
+extension SOPTWebView: WKDownloadDelegate {
+    
+    public func download(_ download: WKDownload, decideDestinationUsing response: URLResponse, suggestedFilename: String) async -> URL? {
+        return await downloadManager.download(
+            download,
+            decideDestinationUsing: response,
+            suggestedFilename: suggestedFilename
+        )
+    }
+    
+    public func webView(_ webView: WKWebView, navigationAction: WKNavigationAction, didBecome download: WKDownload) {
+        download.delegate = self
+    }
+    
+    public func webView(_ webView: WKWebView, navigationResponse: WKNavigationResponse, didBecome download: WKDownload) {
+        download.delegate = self
     }
 }

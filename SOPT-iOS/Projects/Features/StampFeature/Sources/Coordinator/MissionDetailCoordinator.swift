@@ -44,6 +44,11 @@ final class MissionDetailCoordinator: DefaultCoordinator {
         missionDetail.onComplete = { [weak self] starViewLevel, handler in
             self?.showMissionComplete(starViewLevel, handler)
         }
+        missionDetail.onNaviBackTap = { [weak self] in
+            self?.router.popModule()
+            self?.finishFlow?()
+        }
+        
         router.push(missionDetail)
     }
     

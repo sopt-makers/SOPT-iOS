@@ -46,6 +46,10 @@ public class PrivacyPolicyVC: UIViewController, PrivacyPolicyViewControllable {
         self.setLayout()
         self.setDelegate()
     }
+    
+    deinit {
+        self.textView.delegate = nil
+    }
 }
 
 // MARK: - UI & Layout

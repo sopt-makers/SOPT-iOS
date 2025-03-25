@@ -13,6 +13,8 @@ import DSKit
 
 final class SignUpOAuthView: UIView {
     
+    private static let i18n = I18N.SignIn.Refactor.self
+    
     public var viewModelInput: SignUpViewModel.Input.OAuth {
         .init(
             googleLoginTapped: googleLoginButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
@@ -38,12 +40,12 @@ final class SignUpOAuthView: UIView {
     }
     
     private let googleLoginButton = AppImageTextButton(
-        title: I18N.SignIn.googleLogin,
+        title: i18n.googleLogin,
         image: DSKitAsset.Assets.logoGoogle.image.withRenderingMode(.automatic)
     )
     
     private let appleLoginButton = AppImageTextButton(
-        title: I18N.SignIn.appleLogin,
+        title: i18n.googleLogin,
         image: DSKitAsset.Assets.logoApple.image
     )
     

@@ -15,17 +15,19 @@ final class SoptlogAlarmCVC: UICollectionViewCell {
     
     // MARK: - UI Components
     
-    private let serviceImageView = UIImageView()
+    private let serviceImageView = UIImageView().then {
+        $0.image = DSKitAsset.Assets.imgDailysoptune.image
+        $0.contentMode = .scaleAspectFit
+    }
 
     private let titleLabel = UILabel().then {
-        $0.text = "차은우님, 잊지 말아야 할 말을 듣게 될 거예요"
         $0.numberOfLines = 1
         $0.textColor = DSKitAsset.Colors.white.color
         $0.font = DSKitFontFamily.Suit.bold.font(size: 18)
     }
     
     private let subTitleLabel = UILabel().then {
-        $0.text = "오늘의 솝마디"
+        $0.text = I18N.Soptlog.dailyFortuneButton
         $0.textColor = DSKitAsset.Colors.gray200.color
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
     }
@@ -53,7 +55,6 @@ final class SoptlogAlarmCVC: UICollectionViewCell {
 extension SoptlogAlarmCVC {
     private func setUI() {
         contentView.backgroundColor = DSKitAsset.Colors.gray800.color
-        serviceImageView.image = DSKitAsset.Assets.soptampLogo.image
     }
     
     private func setLayout() {
@@ -87,9 +88,8 @@ extension SoptlogAlarmCVC {
 // MARK: - Methods
 
 extension SoptlogAlarmCVC {
-    func configureCell(model: SoptlogAlarmInfo) {
-        self.titleLabel.text = model.title
-        self.serviceImageView.setImage(with: model.imageURL)
-        self.subTitleLabel.text = model.subTitle
+    func configureCell(model: SoptlogPresentationModel.Alarm?) {
+        guard let model else { return }
+        self.titleLabel.text = model.todayFortuneText
     }
 }
