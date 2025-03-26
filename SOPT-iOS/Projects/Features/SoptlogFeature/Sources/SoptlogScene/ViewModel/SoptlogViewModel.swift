@@ -24,9 +24,10 @@ public class SoptlogViewModel: SoptlogViewModelType {
 
     // MARK: - Inputs
     
-    public struct Input { 
+    public struct Input {
         let viewWillAppear: Driver<Void>
         let cellTap: Driver<IndexPath>
+        let toolTipButtonTap: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -95,6 +96,11 @@ extension SoptlogViewModel {
             .sink { owner, _ in
                 owner.onSoptuneTapped?()
                 AmplitudeInstance.shared.trackWithUserType(event: .clickSoptlogSoptune)
+            }.store(in: cancelBag)
+        
+        input.toolTipButtonTap
+            .sink { _ in
+                print("툴팁 클릭")
             }.store(in: cancelBag)
 
         return output

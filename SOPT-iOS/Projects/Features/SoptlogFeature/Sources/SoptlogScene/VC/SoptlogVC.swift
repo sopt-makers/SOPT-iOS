@@ -22,6 +22,7 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     public let viewModel: SoptlogViewModel
     private let cancelBag = CancelBag()
     private var cellTap = PassthroughSubject<IndexPath, Never>()
+    private var toolTipTap = PassthroughSubject<Void, Never>()
     private var viewWillAppear = PassthroughSubject<Void, Never>()
     
     private var soptlogInfo: SoptlogPresentationModel?
@@ -119,7 +120,8 @@ extension SoptlogVC {
     private func bindViewModels() {
         let input = SoptlogViewModel.Input(
             viewWillAppear: self.viewWillAppear.asDriver(),
-            cellTap: cellTap.asDriver())
+            cellTap: cellTap.asDriver(), 
+            toolTipButtonTap: toolTipTap.asDriver())
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
@@ -203,6 +205,10 @@ extension SoptlogVC: UICollectionViewDataSource {
                 withReuseIdentifier: SoptlogAppServiceCVC.className,
                 for: indexPath) as? SoptlogAppServiceCVC else { return UICollectionViewCell() }
             appServiceCell.configureCell(model: self.soptlogInfo?.appService[safe: indexPath.row])
+            appServiceCell.toolTipButtonTapped
+                .mapVoid()
+                .subscribe(self.toolTipTap)
+                .store(in: cancelBag)
             return appServiceCell
             
         case .editProfile:
