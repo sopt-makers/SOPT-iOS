@@ -7,12 +7,18 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 import DSKit
 import SnapKit
 
-final class SoptlogToolTipVC: UIViewController {
+final class SoptlogToolTipVC: UIViewController, SoptlogToolTipViewControllable {
+    
+    // MARK: - Properties
+    
+    public var viewModel: SoptlogToolTipViewModel
+    private let cancelBag = CancelBag()
 
     // MARK: - UI Components
     
@@ -50,11 +56,20 @@ final class SoptlogToolTipVC: UIViewController {
         $0.numberOfLines = 0
     }
     
+    init(viewModel: SoptlogToolTipViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
         setLayout()
+        bindViewModels()
     }
 }
 
@@ -105,5 +120,15 @@ extension SoptlogToolTipVC {
     
     private func setStackView() {
         toolTipTitleStackView.addArrangedSubviews(infoImageView, infoTitleLabel, dismissButton)
+    }
+}
+
+extension SoptlogToolTipVC {
+    private func bindViewModels() {
+        let input = SoptlogToolTipViewModel.Input(
+            dismissbuttonTap: self.dismissButton.publisher(for: .touchUpInside).mapVoid().asDriver()
+        )
+        
+        let output = viewModel.transform(from: input, cancelBag: cancelBag)
     }
 }

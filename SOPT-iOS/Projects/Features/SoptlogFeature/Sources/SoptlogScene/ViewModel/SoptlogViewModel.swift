@@ -12,7 +12,6 @@ import Combine
 import Core
 import Domain
 
-import HomeFeatureInterface
 import BaseFeatureDependency
 
 public class SoptlogViewModel: SoptlogViewModelType {
@@ -40,6 +39,7 @@ public class SoptlogViewModel: SoptlogViewModelType {
     // MARK: - SoptlogCoordinatable
     
     public var onProfileEditTapped: (() -> Void)?
+    public var onToolTipTapped: (() -> Void)?
     public var onSoptuneTapped: (() -> Void)?
     public var onNetworkError: (() -> Void)?
     public var onNeedSignIn: (() -> Void)?
@@ -99,8 +99,9 @@ extension SoptlogViewModel {
             }.store(in: cancelBag)
         
         input.toolTipButtonTap
-            .sink { _ in
-                print("툴팁 클릭")
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onToolTipTapped?()
             }.store(in: cancelBag)
 
         return output

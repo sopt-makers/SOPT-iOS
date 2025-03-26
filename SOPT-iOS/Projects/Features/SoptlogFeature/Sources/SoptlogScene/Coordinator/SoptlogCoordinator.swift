@@ -57,6 +57,10 @@ public final class SoptlogCoordinator: DefaultCoordinator {
             self?.requestCoordinating?(.webLink(url: url))
         }
         
+        soptlog.vm.onToolTipTapped = { [weak self] in
+            self?.showToolTip()
+        }
+        
         soptlog.vm.onSoptuneTapped = { [weak self] in
             self?.requestCoordinating?(.dailySoptune)
         }
@@ -71,5 +75,17 @@ public final class SoptlogCoordinator: DefaultCoordinator {
         
         self.rootViewController = soptlog.vc.viewController
         self.router.push(soptlog.vc)
+    }
+    
+    private func showToolTip() {
+        var soptlogToolTip = factory.makeSoptlogToolTip()
+        
+        soptlogToolTip.vm.onDismissButtonTap = { [weak self] in
+            self?.rootViewController?.dismiss(animated: true )
+        }
+        
+        soptlogToolTip.vc.viewController.modalPresentationStyle = .overFullScreen
+        soptlogToolTip.vc.viewController.modalTransitionStyle = .crossDissolve
+        self.rootViewController?.present(soptlogToolTip.vc.viewController, animated: true)
     }
 }
