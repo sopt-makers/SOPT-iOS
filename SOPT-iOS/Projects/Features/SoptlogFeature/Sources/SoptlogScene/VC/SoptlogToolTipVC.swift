@@ -17,7 +17,7 @@ final class SoptlogToolTipVC: UIViewController {
     // MARK: - UI Components
     
     private let infoImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.icInfo.image
+        $0.image = DSKitAsset.Assets.icInfo.image.withTintColor(DSKitAsset.Colors.white100.color)
     }
     
     private let dismissButton = UIButton().then {
