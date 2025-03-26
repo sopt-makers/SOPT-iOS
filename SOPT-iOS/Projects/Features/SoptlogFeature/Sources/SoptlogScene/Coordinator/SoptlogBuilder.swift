@@ -23,4 +23,10 @@ extension SoptlogBuilder: SoptlogFeatureBuildable {
         let soptlogVC = SoptlogVC(viewModel: viewModel)
         return (soptlogVC, viewModel)
     }
+    
+    public func makeSoptlogToolTip() -> SoptlogTooltipPresentable {
+        let viewModel = SoptlogToolTipViewModel()
+        let soptlogToolTipVC = SoptlogToolTipVC(viewModel: viewModel)
+        return (soptlogToolTipVC, viewModel)
+    }
 }
