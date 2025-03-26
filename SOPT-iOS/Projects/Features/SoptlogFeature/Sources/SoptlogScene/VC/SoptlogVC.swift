@@ -22,7 +22,7 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     public let viewModel: SoptlogViewModel
     private let cancelBag = CancelBag()
     private var cellTap = PassthroughSubject<IndexPath, Never>()
-    private var toolTipTap = PassthroughSubject<Void, Never>()
+    private var toolTipTap = PassthroughSubject<CGRect, Never>()
     private var viewWillAppear = PassthroughSubject<Void, Never>()
     
     private var soptlogInfo: SoptlogPresentationModel?
@@ -206,7 +206,6 @@ extension SoptlogVC: UICollectionViewDataSource {
                 for: indexPath) as? SoptlogAppServiceCVC else { return UICollectionViewCell() }
             appServiceCell.configureCell(model: self.soptlogInfo?.appService[safe: indexPath.row])
             appServiceCell.toolTipButtonTapped
-                .mapVoid()
                 .subscribe(self.toolTipTap)
                 .store(in: cancelBag)
             return appServiceCell

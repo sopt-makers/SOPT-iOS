@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 import DSKit
@@ -15,7 +16,11 @@ final class SoptlogAppServiceCVC: UICollectionViewCell {
     
     // MARK: - Properties
 
-    lazy var toolTipButtonTapped = infoToolTipButton.publisher(for: .touchUpInside).asDriver()
+    lazy var toolTipButtonTapped = infoToolTipButton.publisher(for: .touchUpInside)
+        .withUnretained(self)
+        .map { owner, _ in
+            owner.infoToolTipButton.convert(owner.infoToolTipButton.bounds, to: nil)
+        }.asDriver()
     
     // MARK: - UI Components
     
