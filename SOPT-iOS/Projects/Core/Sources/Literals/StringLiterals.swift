@@ -324,6 +324,11 @@ public struct I18N {
         public static let poke = "콕찌르기"
         public static let soptamp = "솝탬프"
         public static let withSopt = "솝트와"
+        public static let toolTipTitle = "솝레벨이란?"
+        public static let toolTip = """
+                                    앱잼, 솝커톤, 솝텀, 모임 등 다양한
+                                    솝트 활동에 참여한 횟수를 의미해요.
+                                    """
     }
     
     public struct Attendance {
