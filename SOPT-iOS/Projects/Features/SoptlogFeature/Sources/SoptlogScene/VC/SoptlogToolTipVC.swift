@@ -19,6 +19,7 @@ final class SoptlogToolTipVC: UIViewController, SoptlogToolTipViewControllable {
     
     public var viewModel: SoptlogToolTipViewModel
     private let cancelBag = CancelBag()
+    private let toolTipFrame: CGRect
 
     // MARK: - UI Components
     
@@ -56,8 +57,9 @@ final class SoptlogToolTipVC: UIViewController, SoptlogToolTipViewControllable {
         $0.numberOfLines = 0
     }
     
-    init(viewModel: SoptlogToolTipViewModel) {
+    init(viewModel: SoptlogToolTipViewModel, toolTipFrame: CGRect) {
         self.viewModel = viewModel
+        self.toolTipFrame = toolTipFrame
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -83,11 +85,16 @@ extension SoptlogToolTipVC {
         toolTipView.addSubviews(toolTipTitleStackView, infoContentsLabel)
         view.addSubviews(toolTipView, arrowImageView)
         
-        // TODO: - 매개변수로 i 이미지 위치 받아서 toolTipView 위치 정해야 함.
+        arrowImageView.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(toolTipFrame.maxY + 5)
+            make.centerX.equalTo(toolTipFrame.midX)
+            make.size.equalTo(12)
+        }
+        
         toolTipView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).inset(294)
+            make.top.equalTo(arrowImageView.snp.bottom)
             make.leading.equalToSuperview().inset(68)
-            make.trailing.equalToSuperview().inset(44)
+            make.width.equalTo(263)
             make.height.equalTo(100)
         }
         
@@ -110,12 +117,6 @@ extension SoptlogToolTipVC {
             make.leading.trailing.equalToSuperview().inset(18)
             make.bottom.equalToSuperview().inset(16)
         }
-        
-        arrowImageView.snp.makeConstraints { make in
-            make.leading.equalTo(toolTipView.snp.leading).inset(20)
-            make.bottom.equalTo(toolTipView.snp.top)
-            make.size.equalTo(12)
-        }
     }
     
     private func setStackView() {
@@ -129,6 +130,6 @@ extension SoptlogToolTipVC {
             dismissbuttonTap: self.dismissButton.publisher(for: .touchUpInside).mapVoid().asDriver()
         )
         
-        let output = viewModel.transform(from: input, cancelBag: cancelBag)
+        _ = viewModel.transform(from: input, cancelBag: cancelBag)
     }
 }
