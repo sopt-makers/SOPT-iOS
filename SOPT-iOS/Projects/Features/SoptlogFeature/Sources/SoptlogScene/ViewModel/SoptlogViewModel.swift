@@ -26,7 +26,7 @@ public class SoptlogViewModel: SoptlogViewModelType {
     public struct Input {
         let viewWillAppear: Driver<Void>
         let cellTap: Driver<IndexPath>
-        let toolTipButtonTap: Driver<Void>
+        let toolTipButtonTap: Driver<CGRect>
     }
     
     // MARK: - Outputs
@@ -39,7 +39,7 @@ public class SoptlogViewModel: SoptlogViewModelType {
     // MARK: - SoptlogCoordinatable
     
     public var onProfileEditTapped: (() -> Void)?
-    public var onToolTipTapped: (() -> Void)?
+    public var onToolTipTapped: ((CGRect) -> Void)?
     public var onSoptuneTapped: (() -> Void)?
     public var onNetworkError: (() -> Void)?
     public var onNeedSignIn: (() -> Void)?
@@ -100,8 +100,8 @@ extension SoptlogViewModel {
         
         input.toolTipButtonTap
             .withUnretained(self)
-            .sink { owner, _ in
-                owner.onToolTipTapped?()
+            .sink { owner, toolTipFrame in
+                owner.onToolTipTapped?(toolTipFrame)
             }.store(in: cancelBag)
 
         return output

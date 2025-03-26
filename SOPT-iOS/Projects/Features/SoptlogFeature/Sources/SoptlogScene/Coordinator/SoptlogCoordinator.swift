@@ -57,8 +57,8 @@ public final class SoptlogCoordinator: DefaultCoordinator {
             self?.requestCoordinating?(.webLink(url: url))
         }
         
-        soptlog.vm.onToolTipTapped = { [weak self] in
-            self?.showToolTip()
+        soptlog.vm.onToolTipTapped = { [weak self] toolTipFrame in
+            self?.showToolTip(toolTipFrame)
         }
         
         soptlog.vm.onSoptuneTapped = { [weak self] in
@@ -77,8 +77,8 @@ public final class SoptlogCoordinator: DefaultCoordinator {
         self.router.push(soptlog.vc)
     }
     
-    private func showToolTip() {
-        var soptlogToolTip = factory.makeSoptlogToolTip()
+    private func showToolTip(_ frame: CGRect) {
+        var soptlogToolTip = factory.makeSoptlogToolTip(frame)
         
         soptlogToolTip.vm.onDismissButtonTap = { [weak self] in
             self?.rootViewController?.dismiss(animated: true )

@@ -10,5 +10,5 @@ import Foundation
 
 public protocol SoptlogFeatureBuildable {
     func makeSoptlog() -> SoptlogPresentable
-    func makeSoptlogToolTip() -> SoptlogTooltipPresentable
+    func makeSoptlogToolTip(_ toolTipFrame: CGRect) -> SoptlogTooltipPresentable
 }
