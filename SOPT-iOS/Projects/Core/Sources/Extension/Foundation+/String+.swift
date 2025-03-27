@@ -19,10 +19,8 @@ public extension String {
     
     /// 서버에서 들어온 Date String을 Date 타입으로 반환하는 메서드
     func toDate() -> Date {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-        dateFormatter.timeZone = TimeZone(identifier: "KST")
-        if let date = dateFormatter.date(from: self) {
+        DateFormatManager.shared.setFormat(.serverFormat)
+        if let date = DateFormatManager.shared.stringToDate(self) {
             return date
         } else {
             print("toDate() convert error")
@@ -38,8 +36,7 @@ public extension String {
     
     /// 서버에서 들어온 Date String을 UI에 적용 가능한 String 타입으로 반환하는 메서드
     func serverTimeToString(forUse: TimeStringCase) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yy/MM/dd"
+        DateFormatManager.shared.setFormat(.dateWithSlash)
         
         let currentTime = Int(Date().timeIntervalSince1970)
         
@@ -61,7 +58,7 @@ public extension String {
                 return "방금"
             }
         case .forDefault:
-            return dateFormatter.string(from: self.toDate())
+            return DateFormatManager.shared.dateToString(self.toDate())
         }
     }
     
