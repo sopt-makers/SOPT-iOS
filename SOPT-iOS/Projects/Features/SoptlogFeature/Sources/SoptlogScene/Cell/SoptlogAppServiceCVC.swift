@@ -7,11 +7,20 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 import DSKit
 
 final class SoptlogAppServiceCVC: UICollectionViewCell {
+    
+    // MARK: - Properties
+
+    lazy var toolTipButtonTapped = infoToolTipButton.publisher(for: .touchUpInside)
+        .withUnretained(self)
+        .map { owner, _ in
+            owner.infoToolTipButton.convert(owner.infoToolTipButton.bounds, to: nil)
+        }.asDriver()
     
     // MARK: - UI Components
     
@@ -35,6 +44,16 @@ final class SoptlogAppServiceCVC: UICollectionViewCell {
         $0.font = DSKitFontFamily.Suit.bold.font(size: 16)
     }
     
+    private let serviceTitleStackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.spacing = 1
+    }
+    
+    private let infoToolTipButton = UIButton().then {
+        $0.setImage(DSKitAsset.Assets.icInfo.image, for: .normal)
+        $0.isHidden = true
+    }
+    
     // MARK: - init
     
     override init(frame: CGRect) {
@@ -46,11 +65,6 @@ final class SoptlogAppServiceCVC: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        self.stackView.removeAllSubViews()
-    }
 }
 
 // MARK: - UI & Layout
@@ -61,17 +75,25 @@ extension SoptlogAppServiceCVC {
     }
     
     private func setLayout() {
-        stackView.addArrangedSubviews(serviceLabel, serviceImageView, serviceValue)
+        setStackView()
+        contentView.addSubviews(stackView)
         
         serviceImageView.snp.makeConstraints { make in
             make.size.equalTo(39)
         }
         
-        contentView.addSubviews(stackView)
+        infoToolTipButton.snp.makeConstraints { make in
+            make.size.equalTo(16)
+        }
         
         stackView.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
+    }
+    
+    private func setStackView() {
+        serviceTitleStackView.addArrangedSubviews(serviceLabel, infoToolTipButton)
+        stackView.addArrangedSubviews(serviceTitleStackView, serviceImageView, serviceValue)
     }
 }
 
@@ -83,5 +105,6 @@ extension SoptlogAppServiceCVC {
         self.serviceLabel.text = model.serviceName
         self.serviceValue.text = model.serviceValue
         self.serviceImageView.setImage(with: model.serviceImageURL)
+        self.infoToolTipButton.isHidden = model.serviceName != "솝레벨"
     }
 }

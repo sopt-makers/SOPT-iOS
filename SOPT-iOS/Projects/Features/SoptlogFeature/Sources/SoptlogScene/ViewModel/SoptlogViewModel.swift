@@ -12,7 +12,6 @@ import Combine
 import Core
 import Domain
 
-import HomeFeatureInterface
 import BaseFeatureDependency
 
 public class SoptlogViewModel: SoptlogViewModelType {
@@ -24,9 +23,10 @@ public class SoptlogViewModel: SoptlogViewModelType {
 
     // MARK: - Inputs
     
-    public struct Input { 
-        let viewDidLoad: Driver<Void>
+    public struct Input {
+        let viewWillAppear: Driver<Void>
         let cellTap: Driver<IndexPath>
+        let toolTipButtonTap: Driver<CGRect>
     }
     
     // MARK: - Outputs
@@ -39,6 +39,7 @@ public class SoptlogViewModel: SoptlogViewModelType {
     // MARK: - SoptlogCoordinatable
     
     public var onProfileEditTapped: (() -> Void)?
+    public var onToolTipTapped: ((CGRect) -> Void)?
     public var onSoptuneTapped: (() -> Void)?
     public var onNetworkError: (() -> Void)?
     public var onNeedSignIn: (() -> Void)?
@@ -56,7 +57,7 @@ extension SoptlogViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         
-        input.viewDidLoad
+        input.viewWillAppear
             .handleEvents(receiveOutput: { _ in
                 output.isLoading.send(true)
             })
@@ -95,6 +96,12 @@ extension SoptlogViewModel {
             .sink { owner, _ in
                 owner.onSoptuneTapped?()
                 AmplitudeInstance.shared.trackWithUserType(event: .clickSoptlogSoptune)
+            }.store(in: cancelBag)
+        
+        input.toolTipButtonTap
+            .withUnretained(self)
+            .sink { owner, toolTipFrame in
+                owner.onToolTipTapped?(toolTipFrame)
             }.store(in: cancelBag)
 
         return output

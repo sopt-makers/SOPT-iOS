@@ -15,7 +15,7 @@ final class SoptlogHeaderView: UICollectionReusableView {
  
     // MARK: - UI Components
     
-    private let profileImageView = CustomProfileImageView()
+    private let profileImageView = CustomProfileImageView().hideBorder()
     
     private let nameLabel = UILabel().then {
         $0.font = DSKitFontFamily.Suit.bold.font(size: 20)

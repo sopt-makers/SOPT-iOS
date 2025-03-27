@@ -14,6 +14,8 @@ import DSKit
 enum CalenderCategoryTagType: String {
     case event = "EVENT"
     case seminar = "SEMINAR"
+    case jointSeminar = "JOINT_SEMINAR"
+    case `break` = "BREAK"
     
     var text: String {
         switch self {
@@ -21,6 +23,10 @@ enum CalenderCategoryTagType: String {
             return I18N.Home.DashBoard.Attendance.event
         case .seminar:
             return I18N.Home.DashBoard.Attendance.seminar
+        case .jointSeminar:
+            return I18N.Home.DashBoard.Attendance.jointSeminar
+        case .break:
+            return I18N.Home.DashBoard.Attendance.break
         }
     }
     
@@ -28,8 +34,10 @@ enum CalenderCategoryTagType: String {
         switch self {
         case .event:
             return DSKitAsset.Colors.success.color
-        case .seminar:
+        case .seminar, .jointSeminar:
             return DSKitAsset.Colors.secondary.color
+        case .break:
+            return DSKitAsset.Colors.information.color
         }
     }
     
@@ -37,8 +45,10 @@ enum CalenderCategoryTagType: String {
         switch self {
         case .event:
             return DSKitAsset.Colors.success.color.withAlphaComponent(0.2)
-        case .seminar:
+        case .seminar, .jointSeminar:
             return DSKitAsset.Colors.secondary.color.withAlphaComponent(0.2)
+        case .break:
+            return DSKitAsset.Colors.information.color.withAlphaComponent(0.2)
         }
     }
 }

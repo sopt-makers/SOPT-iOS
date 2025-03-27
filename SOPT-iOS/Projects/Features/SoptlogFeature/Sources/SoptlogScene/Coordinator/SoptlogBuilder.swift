@@ -6,6 +6,8 @@
 //  Copyright © 2024 SOPT-iOS. All rights reserved.
 //
 
+import Foundation
+
 import Core
 import Domain
 @_exported import SoptlogFeatureInterface
@@ -22,5 +24,11 @@ extension SoptlogBuilder: SoptlogFeatureBuildable {
         let viewModel = SoptlogViewModel(useCase: useCase)
         let soptlogVC = SoptlogVC(viewModel: viewModel)
         return (soptlogVC, viewModel)
+    }
+    
+    public func makeSoptlogToolTip(_ toolTipFrame: CGRect) -> SoptlogTooltipPresentable {
+        let viewModel = SoptlogToolTipViewModel()
+        let soptlogToolTipVC = SoptlogToolTipVC(viewModel: viewModel, toolTipFrame: toolTipFrame)
+        return (soptlogToolTipVC, viewModel)
     }
 }
