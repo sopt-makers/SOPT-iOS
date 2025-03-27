@@ -41,7 +41,7 @@ public final class DailySoptuneMainVC: UIViewController, DailySoptuneMainViewCon
 	private let dateLabel = UILabel().then {
 		$0.textColor = DSKitAsset.Colors.gray100.color
         $0.font = DSKitFontFamily.Suit.medium.font(size: 16)
-		$0.text = setDateFormat(to: "M월 d일 EEEE")
+        $0.text = DateFormatManager.shared.transformDateFormat(to: .monthDayWeek)
 	}
 	
 	private let recieveFortune = UILabel().then {
