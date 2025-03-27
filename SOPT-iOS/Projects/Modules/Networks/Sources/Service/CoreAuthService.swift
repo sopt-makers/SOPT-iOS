@@ -19,6 +19,7 @@ public protocol CoreAuthService {
     func sendVerifyCode(_ dto: SendVerificationCodeRequestEntity) -> AnyPublisher<Int, Error>
     func verifyCode(_ dto: VerifyCodeRequestEntity) -> AnyPublisher<BaseEntity<VerifyResultEntity>, Error>
     func login(_ dto: CoreLoginRequestEntity) -> AnyPublisher<BaseEntity<CoreLoginEntity>, Error>
+    func signUp(_ dto: CoreSignUpRequestEntity) -> AnyPublisher<Int, Error>
 }
 
 extension DefaultCoreAuthService: CoreAuthService {
@@ -32,6 +33,10 @@ extension DefaultCoreAuthService: CoreAuthService {
     
     public func login(_ dto: CoreLoginRequestEntity) -> AnyPublisher<BaseEntity<CoreLoginEntity>, Error> {
         requestObjectInCombine(.login(dto: dto))
+    }
+    
+    public func signUp(_ dto: CoreSignUpRequestEntity) -> AnyPublisher<Int, Error> {
+        requestObjectInCombineNoResult(.signUp(dto: dto))
     }
 }
 

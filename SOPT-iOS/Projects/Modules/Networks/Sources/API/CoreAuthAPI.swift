@@ -11,7 +11,7 @@ import Moya
 public enum CoreAuthAPI {
     case sendVerifyCode(dto: SendVerificationCodeRequestEntity)
     case verfiyCode(dto: VerifyCodeRequestEntity)
-    case signUp(dto: SignUpRequestEntity)
+    case signUp(dto: CoreSignUpRequestEntity)
     case login(dto: CoreLoginRequestEntity)
 }
 
