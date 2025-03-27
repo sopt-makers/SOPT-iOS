@@ -10,15 +10,16 @@ import Core
 import Domain
 @_exported import AuthFeatureInterface
 
-
-final class AuthBuilder_Refactor {
+public final class AuthBuilder_Refactor: AuthFeatureViewBuildable_Refactor {
     
     @Injected public var repository: SignInRepositoryInterface
     @Injected public var oauthRepository: CoreOAuthRepositoryInterface
     @Injected public var coreRepository: CoreAuthRepositoryInterface
     @Injected public var phoneRepository: PhoneVerifyRepositoryInterface
     
-    func makeSignIn() -> SignInPresentable_Refactor {
+    public init() { }
+    
+    public func makeSignIn() -> SignInPresentable_Refactor {
         let useCase = DefaultSignInUseCase(repository: repository,
                                            oauthRepository: oauthRepository,
                                            coreRepository: coreRepository)
@@ -35,4 +36,16 @@ final class AuthBuilder_Refactor {
     public func makeUserNotFound() -> UserNotFoundPresentable {
          return UserNotFoundVC()
     }
+    
+    public func makeSignUp() -> SignUpPresentable {
+        let useCase = DefaultSignUpUseCase(repository: coreRepository, oAuthRepository: oauthRepository)
+        let phoneUseCase = DefaultPhoneVerifyUseCase(repository: phoneRepository)
+        
+        let vm = SignUpViewModel(useCase: useCase)
+        let phoneVM = PhoneVerifyViewModel(useCase: phoneUseCase)
+        let vc = SignUpVC(viewModel: vm, phoneVerifyViewModel: phoneVM)
+        
+        return (vc, vm)
+    }
+    
 }

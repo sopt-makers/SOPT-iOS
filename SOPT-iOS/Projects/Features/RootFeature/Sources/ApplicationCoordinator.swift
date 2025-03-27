@@ -145,7 +145,8 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     private func runSignInFlow(by style: CoordinatorStartingOption) {
-        let coordinator = AuthCoordinator(router: router, factory: AuthBuilder())
+        let coordinator = AuthCoordinator_Refactor(router: router, factory: AuthBuilder_Refactor())
+        
         coordinator.finishFlow = { [weak self, weak coordinator] userType in
             self?.runTabBarFlow(type: userType)
             self?.removeDependency(coordinator)

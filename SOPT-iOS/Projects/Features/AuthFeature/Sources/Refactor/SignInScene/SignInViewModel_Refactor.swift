@@ -22,11 +22,11 @@ public class SignInViewModel_Refactor: SignInViewModelType_Refactor {
     
     public struct Input {
         let viewDidLoad: Driver<Void>
-        let playgroundSignInFinished: Driver<String>
         let googleLoginButtonTapped: Driver<Void>
         let appleLoginButtonTapped: Driver<Void>
         let loginHelpButtonTapped: Driver<Void>
         let visitorButtonTapped: Driver<Void>
+        let signUpButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -40,6 +40,7 @@ public class SignInViewModel_Refactor: SignInViewModelType_Refactor {
     public var onLoginHelpButtonTapped: (() -> Void)?
     public var onVisitorButtonTapped: (() -> Void)?
     public var onSocialLoginFail: (() -> Void)?
+    public var onSignUpButtonTapped: (() -> Void)?
     
     // MARK: - init
   
@@ -66,9 +67,14 @@ extension SignInViewModel_Refactor {
         
         input.appleLoginButtonTapped
             .withUnretained(self)
+            .flatMap { owner, _ in
+                owner.useCase.login(with: .apple)
+            }
+            .withUnretained(self)
             .sink { owner, _ in
-                owner.onSocialLoginFail?() //TODO: 애플 로그인 로직
-            }.store(in: self.cancelBag)
+                owner.onSignInSuccess?(.loginSuccess)
+            }
+            .store(in: self.cancelBag)
         
         input.visitorButtonTapped
             .withUnretained(self)
@@ -82,11 +88,12 @@ extension SignInViewModel_Refactor {
                 owner.onLoginHelpButtonTapped?()
             }.store(in: self.cancelBag)
         
-        input.playgroundSignInFinished
+        input.signUpButtonTapped
             .withUnretained(self)
-            .sink { owner, token in
-                owner.useCase.requestSignIn(token: token)
+            .sink { owner, _ in
+                owner.onSignUpButtonTapped?()
             }.store(in: self.cancelBag)
+        
         return output
     }
   

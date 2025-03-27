@@ -13,6 +13,7 @@ import Core
 public protocol SignInCoordinatable_Refactor: SignInCoordinatable {
     var onLoginHelpButtonTapped: (() -> Void)? { get set }
     var onSocialLoginFail: (() -> Void)? { get set }
+    var onSignUpButtonTapped: (() -> Void)? { get set }
 }
 public typealias SignInViewModelType_Refactor = ViewModelType & SignInCoordinatable_Refactor
 public typealias SignInPresentable_Refactor = (vc: SignInViewControllable, vm: any SignInViewModelType_Refactor)

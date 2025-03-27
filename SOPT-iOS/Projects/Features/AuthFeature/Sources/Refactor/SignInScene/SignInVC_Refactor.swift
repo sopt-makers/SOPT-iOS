@@ -277,44 +277,32 @@ extension SignInVC_Refactor {
     }
     
     private func bindViewModels() {
-        let signInFinished = Driver.just(accessCode)
-            .drop { [weak self] code in
-                return code == nil
-                || self?.requestState != UserDefaultKeyList.Auth.requestState
-            }
-            .replaceNil(with: "")
-            .eraseToAnyPublisher()
-            .asDriver()
-        
-        let googleLoginButtonTapped = self.googleLoginButton
-            .publisher(for: .touchUpInside)
-            .compactMap { _ in () }
-            .asDriver()
-        
-        let appleLoginButtonTapped = self.appleLoginButton
-            .publisher(for: .touchUpInside)
-            .compactMap { _ in () }
-            .asDriver()
-        
-        let loginLaterButtonTapped = self.loginLaterButton
-            .publisher(for: .touchUpInside)
-            .compactMap { _ in () }
-            .asDriver()
-        
-        let loginHelpButtonTapped = self.loginHelpButton
-            .publisher(for: .touchUpInside)
-            .compactMap { _ in () }
-            .asDriver()
         
         let input = SignInViewModel_Refactor.Input(
-            viewDidLoad: Just<Void>(()).asDriver(),
-            playgroundSignInFinished: signInFinished,
-            googleLoginButtonTapped: googleLoginButtonTapped,
-            appleLoginButtonTapped: appleLoginButtonTapped,
-            loginHelpButtonTapped: loginHelpButtonTapped,
-            visitorButtonTapped: loginLaterButtonTapped
-            
-        )
+                    viewDidLoad: Just<Void>(()).asDriver(),
+                    googleLoginButtonTapped:
+                        self.googleLoginButton
+                        .publisher(for: .touchUpInside)
+                        .compactMap { _ in () }
+                        .asDriver(),
+                    appleLoginButtonTapped:
+                        self.appleLoginButton
+                        .publisher(for: .touchUpInside)
+                        .compactMap { _ in () }
+                        .asDriver(),
+                    loginHelpButtonTapped: self.loginHelpButton
+                        .publisher(for: .touchUpInside)
+                        .compactMap { _ in () }
+                        .asDriver(),
+                    visitorButtonTapped: self.loginLaterButton
+                        .publisher(for: .touchUpInside)
+                        .compactMap { _ in () }
+                        .asDriver(),
+                    signUpButtonTapped: self.signUpButton
+                        .publisher(for: .touchUpInside)
+                        .compactMap { _ in () }
+                        .asDriver()
+                    )
         let _ = self.viewModel.transform(from: input, cancelBag: cancelBag)
     }
     
