@@ -8,16 +8,16 @@
 
 import Foundation
 
-public enum PhoneVerifyType: String {
-    case register = "REGISTER" // 회원가입
-    case change = "CHANGE"     // 소설계정재설정
-    case search = "SEARCH"     // 계정 찾기
+public enum PhoneVerifyType {
+    case register  // 회원가입
+    case change    // 소설계정재설정
+    case search    // 계정 찾기
 }
 
 public struct PhoneSendModel {
-    let name: String?
-    let phone: String
-    let type: PhoneVerifyType
+    public let name: String?
+    public let phone: String
+    public let type: PhoneVerifyType
     
     public init(name: String?, phone: String, type: PhoneVerifyType) {
         self.name = name
@@ -27,10 +27,10 @@ public struct PhoneSendModel {
 }
 
 public struct PhoneVerifyModel {
-    let name: String?
-    let phone: String
-    let code: String
-    let type: PhoneVerifyType
+    public let name: String?
+    public let phone: String
+    public let code: String
+    public let type: PhoneVerifyType
     
     public init(name: String?, phone: String, code: String, type: PhoneVerifyType) {
         self.name = name

@@ -9,6 +9,12 @@
 import Foundation
 
 public struct UserDefaultKeyList {
+    
+    public struct CoreAuth {
+        @UserDefaultWrapper<String>(key: "accessToken") public static var accessToken
+        @UserDefaultWrapper<String>(key: "refreshToken") public static var refreshToken
+    }
+    
     public struct Auth {
         @UserDefaultWrapper<String>(key: "appAccessToken") public static var appAccessToken
         @UserDefaultWrapper<String>(key: "appRefreshToken") public static var appRefreshToken
@@ -46,6 +52,11 @@ extension UserDefaultKeyList {
         UserDefaultKeyList.Auth.appRefreshToken = nil
         UserDefaultKeyList.Auth.playgroundToken = nil
         UserDefaultKeyList.Auth.isActiveUser = nil
+    }
+    
+    public static func clearCoreUserData() {
+        UserDefaultKeyList.CoreAuth.accessToken = nil
+        UserDefaultKeyList.CoreAuth.refreshToken = nil
     }
     
     public static func clearPushToken() {

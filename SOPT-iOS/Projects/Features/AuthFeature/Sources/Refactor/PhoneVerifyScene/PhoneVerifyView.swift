@@ -20,9 +20,12 @@ final class PhoneVerifyView: UIView {
             sendButtonTapped: sendButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
             doneButtonTapped: doneButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
             phoneTextFieldText: phoneTextField.publisher(for: .editingChanged).compactMap { $0.text }.asDriver(),
-            codeTextFieldText: codeTextField.publisher(for: .editingChanged).compactMap { $0.text }.asDriver(),
-            loginHelpButtonTapped: helpView.gesture().mapVoid().asDriver()
+            codeTextFieldText: codeTextField.publisher(for: .editingChanged).compactMap { $0.text }.asDriver()
         )
+    }
+    
+    public var loginHelpButtonTapped: Driver<Void> {
+        helpView.gesture().mapVoid().asDriver()
     }
     
     private let titleLabel = UILabel().then {

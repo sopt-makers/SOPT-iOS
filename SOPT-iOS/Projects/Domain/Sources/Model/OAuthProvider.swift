@@ -1,5 +1,5 @@
 //
-//  OAuthType.swift
+//  OAuthProvider.swift
 //  Domain
 //
 //  Created by 장석우 on 12/20/24.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum OAuthType {
+public enum OAuthProvider {
     case google
     case apple
 }

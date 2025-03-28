@@ -14,7 +14,7 @@ extension Publishers {
 
     public struct WithLatestFrom<Upstream, Other> : Publisher where Upstream : Publisher, Other: Publisher,  Upstream.Failure == Other.Failure {
 
-        public typealias Output = Other.Output
+        public typealias Output = (Upstream.Output, Other.Output)
         public typealias Failure = Upstream.Failure
 
         public let upstream: Upstream
@@ -73,7 +73,8 @@ extension Publishers.WithLatestFrom {
             }
             .compactMap { $0 }
             .filter { $0.shouldEmit }
-            .compactMap { $0.other }
+            .filter { $0.upstream != nil && $0.other != nil }
+            .map { ($0.upstream!, $0.other!) }
             .eraseToAnyPublisher()
     }
 }
@@ -81,6 +82,10 @@ extension Publishers.WithLatestFrom {
 extension Publisher {
     public func withLatestFrom<P>(_ other: P) -> Publishers.WithLatestFrom<Self, P> where P : Publisher, Self.Failure == P.Failure {
         return .init(upstream: self, other: other)
+    }
+    
+    public func withLatestFrom<P>(_ other: P) -> AnyPublisher<P.Output, P.Failure> where P : Publisher, Self.Failure == P.Failure, Self.Output == Void {
+        return Publishers.WithLatestFrom(upstream: self, other: other).map { $0.1 }.eraseToAnyPublisher()
     }
 }
 

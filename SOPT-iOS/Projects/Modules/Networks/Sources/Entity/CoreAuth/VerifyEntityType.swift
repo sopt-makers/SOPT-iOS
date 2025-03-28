@@ -8,8 +8,7 @@
 
 import Foundation
 
-
-public enum VerifyType: String, Encodable {
+public enum VerifyEntityType: String, Encodable {
     case register = "REGISTER"
     case change = "CHANGE"
     case search = "SEARCH"

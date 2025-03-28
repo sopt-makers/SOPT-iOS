@@ -27,7 +27,6 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
         let doneButtonTapped: Driver<Void>
         let phoneTextFieldText: Driver<String>
         let codeTextFieldText: Driver<String>
-        let loginHelpButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -125,7 +124,7 @@ extension PhoneVerifyViewModel {
         
         input.phoneTextFieldText
             .withUnretained(self)
-            .filter { $1.count > $0.useCase.policy.phoneMaxLength }
+            .filter { $1.count >= $0.useCase.policy.phoneMaxLength }
             .map {
                 let newValue = $1.prefix($0.useCase.policy.phoneMaxLength)
                 return String(newValue)
@@ -135,7 +134,7 @@ extension PhoneVerifyViewModel {
         
         input.codeTextFieldText
             .withUnretained(self)
-            .filter { $1.count > $0.useCase.policy.codeMaxLength }
+            .filter { $1.count >= $0.useCase.policy.codeMaxLength }
             .map {
                 let newValue = $1.prefix($0.useCase.policy.codeMaxLength)
                 return String(newValue)
@@ -165,7 +164,7 @@ extension PhoneVerifyViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.timerCancellable = nil
-                output.verifySuccess.send(())
+                output.verifySuccess.send()
             }
             .store(in: cancelBag)
         

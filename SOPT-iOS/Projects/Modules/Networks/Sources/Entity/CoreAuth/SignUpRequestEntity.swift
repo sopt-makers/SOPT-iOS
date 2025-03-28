@@ -8,17 +8,15 @@
 
 import Foundation
 
-public struct SignUpEntity: Encodable {
-    let name: String
+public struct SignUpRequestEntity: Encodable {
+    let name: String?
     let phone: String
-    let type: VerifyType
     let code: String
     let authPlatform: PlatformType
     
-    public init(name: String, phone: String, type: VerifyType, code: String, authPlatform: PlatformType) {
+    public init(name: String?, phone: String, code: String, authPlatform: PlatformType) {
         self.name = name
         self.phone = phone
-        self.type = type
         self.code = code
         self.authPlatform = authPlatform
     }

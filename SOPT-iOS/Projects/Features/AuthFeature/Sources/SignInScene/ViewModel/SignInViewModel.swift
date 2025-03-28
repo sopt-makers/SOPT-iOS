@@ -76,5 +76,11 @@ extension SignInViewModel {
             } receiveValue: { (owner, isSignInSuccess) in
                 owner.onSignInSuccess?(isSignInSuccess)
             }.store(in: self.cancelBag)
+        
+        useCase.sideEffect
+            .sink { event in
+                print(event)
+            }
+            .store(in: self.cancelBag)
     }
 }
