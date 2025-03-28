@@ -32,4 +32,30 @@ final class MockMainRepository: MainRepositoryInterface {
         }
         .eraseToAnyPublisher()
     }
+    
+    func getMainViewDescription() -> AnyPublisher<Domain.MainDescriptionModel, Domain.MainError> {
+        Empty().eraseToAnyPublisher()
+    }
+    
+    func registerPushToken(with token: String) -> AnyPublisher<Bool, any Error> {
+        Empty().eraseToAnyPublisher()
+    }
+    
+    func checkPokeNewUser() -> AnyPublisher<Bool, any Error> {
+        Empty().eraseToAnyPublisher()
+    }
+    
+    func appService() -> AnyPublisher<[Domain.AppServiceModel], any Error> {
+        Empty().eraseToAnyPublisher()
+    }
+    
+    func hotBoard() -> AnyPublisher<Domain.HotBoardModel, any Error> {
+        Empty().eraseToAnyPublisher()
+    }
+    
+    func getReportUrl() -> AnyPublisher<Domain.SoptampReportUrlModel, any Error> {
+        Empty().eraseToAnyPublisher()
+    }
+    
+    
 }

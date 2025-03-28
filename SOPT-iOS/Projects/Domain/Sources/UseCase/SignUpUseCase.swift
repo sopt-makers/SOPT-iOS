@@ -37,7 +37,7 @@ public struct DefaultSignUpUseCase {
 extension DefaultSignUpUseCase: SignUpUseCase {
     public func signUp(with provider: OAuthProvider, name: String?, phone: String) -> AnyPublisher<Void, Never> {
         oAuthRepository.getIdentityToken(from: provider)
-            .map { SignUpModel(name: nil, phone: phone, token: $0, provider: provider)}
+            .map { SignUpModel(name: name, phone: phone, token: $0, provider: provider)}
             .flatMap { model in
                 self.repository.signUp(model)
                     .flatMap {
@@ -46,8 +46,8 @@ extension DefaultSignUpUseCase: SignUpUseCase {
             }
             .handleEvents(receiveOutput: self.repository.saveTokens)
             .mapVoid()
-            .catch { _ in
-                self.sideEffect.send(.signUpFail)
+            .catch { error in
+                self.sideEffect.send(error)
                 return Empty<Void, Never>()
             }
             .eraseToAnyPublisher()

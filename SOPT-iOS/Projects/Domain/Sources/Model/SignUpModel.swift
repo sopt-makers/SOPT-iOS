@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct SignUpModel {
+public struct SignUpModel: Equatable {
     public let name: String?
     public let phone: String
     public let token: String
