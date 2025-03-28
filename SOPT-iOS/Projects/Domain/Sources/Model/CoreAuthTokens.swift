@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct CoreAuthTokens {
+public struct CoreAuthTokens: Equatable {
     public let accessToken: String
     public let refreshToken: String
     

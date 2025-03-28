@@ -11,11 +11,10 @@ import Combine
 
 import Domain
 
-struct MockCoreOAuthRepository: CoreOAuthRepositoryInterface {
+final class MockCoreOAuthRepository: CoreOAuthRepositoryInterface {
     
-    var getIdentityTokenResponse: Result<String, Domain.CoreAuthError>!
-    
+    var getIdentityTokenResult: Result<String, Domain.CoreAuthError>!
     func getIdentityToken(from provider: Domain.OAuthProvider) -> AnyPublisher<String, Domain.CoreAuthError> {
-        getIdentityTokenResponse.publisher.eraseToAnyPublisher()
+        getIdentityTokenResult.publisher.eraseToAnyPublisher()
     }
 }
