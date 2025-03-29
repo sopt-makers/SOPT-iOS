@@ -51,8 +51,8 @@ public extension DateFormatManager {
     }
     
     /// 서버에서 내려주는 iSO 포맷 타입을 원하는 타입으로 변환
-    func serverTimeToString(_ target: String, _ format: DateFormatType) -> String {
-        setFormat(.serverFormat)
+    func serverTimeToString(_ target: String, from format: DateFormatType, to serverFormat: DateFormatType = .iso) -> String {
+        setFormat(serverFormat)
         guard let date = stringToDate(target) else { return "" }
         
         setFormat(format)
