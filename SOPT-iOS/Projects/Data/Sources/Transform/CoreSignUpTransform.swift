@@ -1,20 +1,21 @@
 //
-//  SignUpRequestTransform.swift
+//  CoreSignUpRequestTransform.swift
 //  Data
 //
-//  Created by 장석우 on 1/23/25.
+//  Created by 장석우 on 3/27/25.
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
-import Domain
+import Foundation
 import Networks
+import Domain
 
 extension SignUpModel {
-    func toData() -> SignUpRequestEntity {
-        .init(
+    func toData() -> CoreSignUpRequestEntity {
+        return CoreSignUpRequestEntity(
             name: name,
             phone: phone,
-            code: code,
+            token: token,
             authPlatform: provider.toData()
         )
     }

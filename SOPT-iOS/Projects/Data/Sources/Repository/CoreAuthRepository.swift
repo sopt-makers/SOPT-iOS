@@ -49,7 +49,10 @@ extension CoreAuthRepository: CoreAuthRepositoryInterface {
     }
     
     public func signUp(_ model: Domain.SignUpModel) -> AnyPublisher<Void, CoreAuthError> {
-        fatalError()
+        coreAuthService
+            .signUp(model.toData())
+            .mapVoid()
+            .mapError { _ in CoreAuthError.signUpFail }
+            .eraseToAnyPublisher()
     }
 }
-
