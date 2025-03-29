@@ -9,7 +9,8 @@
 import Foundation
 
 public enum DateFormatType: String {
-    case serverFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+    case iso = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+    case isoWithoutMillis = "yyyy-MM-dd'T'HH:mm:ss"
     case dateTimeDash = "yyyy-MM-dd HH:mm:ss"
     case dateWithDot = "yyyy.MM.dd"
     case dateWithDash = "yyyy-MM-dd"

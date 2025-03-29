@@ -19,7 +19,7 @@ public extension String {
     
     /// 서버에서 들어온 Date String을 Date 타입으로 반환하는 메서드
     func toDate() -> Date {
-        DateFormatManager.shared.setFormat(.serverFormat)
+        DateFormatManager.shared.setFormat(.iso)
         if let date = DateFormatManager.shared.stringToDate(self) {
             return date
         } else {
