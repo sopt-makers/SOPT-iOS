@@ -13,9 +13,9 @@ import Core
 
 public protocol SoptlogViewControllable: ViewControllable { }
 public protocol SoptlogCoordinatable {
-    var onNaviBackButtonTap: (() -> Void)? { get set }
     var onProfileEditTapped: (() -> Void)? { get set }
-    var onAlarmTapped: (() -> Void)? { get set }
+    var onToolTipTapped: ((CGRect) -> Void)? { get set }
+    var onSoptuneTapped: (() -> Void)? { get set }
     var onNetworkError: (() -> Void)? { get set }
     var onNeedSignIn: (() -> Void)? { get set }
 }

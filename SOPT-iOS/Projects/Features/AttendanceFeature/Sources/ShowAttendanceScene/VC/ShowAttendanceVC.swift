@@ -66,7 +66,6 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     
     private lazy var attendanceButtonStackView: UIStackView = {
         let stackView = UIStackView()
-//        stackView.backgroundColor = DSKitAsset.Colors.gray900.color // 안쓰는거같음
         stackView.addArrangedSubview(attendanceButton)
         return stackView
     }()

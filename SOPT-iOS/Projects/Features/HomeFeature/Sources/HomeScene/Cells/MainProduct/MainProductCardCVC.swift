@@ -70,8 +70,8 @@ extension MainProductCardCVC {
 // MARK: - Methods
 
 extension MainProductCardCVC {
-    func configureCell(title: String, image: UIImage) {
-        self.titleLabel.text = title
-        self.logoImageView.image = image
+    func configureCell(model: ServiceType) {
+        self.titleLabel.text = model.title
+        self.logoImageView.image = model.icon
     }
 }

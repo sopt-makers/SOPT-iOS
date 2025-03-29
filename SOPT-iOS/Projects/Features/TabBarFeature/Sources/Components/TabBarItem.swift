@@ -9,11 +9,10 @@
 
 import UIKit
 
+import Core
 import DSKit
 
-enum TabBarItem: Int, CaseIterable {
-    case home, soptlog
-    
+extension TabBarItemType {
     private var itemImage: UIImage {
         switch self {
         case .home:
@@ -22,9 +21,7 @@ enum TabBarItem: Int, CaseIterable {
             return DSKitAsset.Assets.icUserFilled.image.withRenderingMode(.alwaysTemplate)
         }
     }
-}
-
-extension TabBarItem {
+    
     func makeTabBarItem() -> UITabBarItem {
         return UITabBarItem(title: nil,
                             image: self.itemImage,

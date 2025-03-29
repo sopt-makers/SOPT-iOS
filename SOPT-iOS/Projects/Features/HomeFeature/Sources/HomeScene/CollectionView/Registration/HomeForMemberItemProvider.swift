@@ -35,7 +35,7 @@ extension HomeForMemberVC {
     
     func createProductCellRegistration() -> ProductCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
-            cell.configureCell(title: item.name, image: item.image)
+            cell.configureCell(model: item.product)
         }
     }
     

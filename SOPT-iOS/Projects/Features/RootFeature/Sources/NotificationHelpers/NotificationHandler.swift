@@ -27,11 +27,14 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
     public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
         let userInfo = notification.request.content.userInfo
         print("APNs 푸시 알림 페이로드: \(userInfo)")
-//        AmplitudeInstance.shared.track(eventType: .receivedPush, eventProperties: ["notificationId": payload.id,
-//                                                                                   "send_timeStamp": payload.sendAt,
-//                                                                                   "title": payload.title,
-//                                                                                   "contents": payload.content,
-//                                                                                   "admin_category": payload.category ?? "없음"])
+        if let payload = NotificationPayload(dictionary: userInfo) {
+            AmplitudeInstance.shared.track(eventType: .receivedPush, eventProperties: ["notificationId": payload.id,
+                                                                                       "send_timeStamp": payload.sendAt,
+                                                                                       "title": payload.title,
+                                                                                       "contents": payload.content,
+                                                                                       "admin_category": payload.category ?? "없음"])
+        }
+        
         return([.badge, .banner, .list, .sound])
     }
     

@@ -18,16 +18,18 @@ import BaseFeatureDependency
 final class SoptlogVC: UIViewController, SoptlogViewControllable {
     
     // MARK: - Properties
-
+    
     public let viewModel: SoptlogViewModel
     private let cancelBag = CancelBag()
     private var cellTap = PassthroughSubject<IndexPath, Never>()
+    private var toolTipTap = PassthroughSubject<CGRect, Never>()
+    private var viewWillAppear = PassthroughSubject<Void, Never>()
     
     private var soptlogInfo: SoptlogPresentationModel?
     
     // MARK: - UI Components
     
-    private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton)
+    private lazy var naviBar = OPNavigationBar(self, type: .none)
         .addMiddleLabel(title: I18N.Soptlog.navigationTitle, font: DSKitFontFamily.Suit.medium.font(size: 16))
     
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout()).then {
@@ -50,7 +52,7 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     }
     
     // MARK: - View Life Cycle
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
@@ -58,6 +60,11 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
         setDelegate()
         registerCells()
         bindViewModels()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.viewWillAppear.send()
     }
     
     deinit {
@@ -112,9 +119,9 @@ extension SoptlogVC {
     
     private func bindViewModels() {
         let input = SoptlogViewModel.Input(
-            viewDidLoad: Just<Void>(()).asDriver(),
-            naviBackButtonTap: self.naviBar.leftButtonTapped.asDriver(),
-            cellTap: cellTap.asDriver())
+            viewWillAppear: self.viewWillAppear.asDriver(),
+            cellTap: cellTap.asDriver(), 
+            toolTipButtonTap: toolTipTap.asDriver())
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
@@ -151,7 +158,7 @@ extension SoptlogVC: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return SoptlogSectionLayoutKind.allCases.count
     }
-        
+    
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         guard kind == UICollectionView.elementKindSectionHeader else { return UICollectionReusableView() }
         guard let sectionKind = SoptlogSectionLayoutKind(rawValue: indexPath.section) else { return UICollectionReusableView() }
@@ -198,6 +205,9 @@ extension SoptlogVC: UICollectionViewDataSource {
                 withReuseIdentifier: SoptlogAppServiceCVC.className,
                 for: indexPath) as? SoptlogAppServiceCVC else { return UICollectionViewCell() }
             appServiceCell.configureCell(model: self.soptlogInfo?.appService[safe: indexPath.row])
+            appServiceCell.toolTipButtonTapped
+                .subscribe(self.toolTipTap)
+                .store(in: cancelBag)
             return appServiceCell
             
         case .editProfile:

@@ -9,9 +9,10 @@
 import Foundation
 
 public enum AmplitudeEventType: String {
-    // 푸시 이벤트
+    // 푸시 알림 이벤트
     case receivedPush = "received_push"
     case clickPush = "click_push"
+    
     // 클릭 이벤트
     case clickAlarm = "click_alarm"
     case clickMyPage = "click_mypage"
@@ -31,6 +32,18 @@ public enum AmplitudeEventType: String {
     case clickReadAllButton = "click_allread.btn"
     case clickNotificationItem = "click_notification_item"
     
+    // 신규 홈 클릭 이벤트
+    case clickAttendanceNew = "at36_click_attendance"
+    case clickAlarmNew = "at36_click_alarm"
+    case clickAllCalendar = "click_all_calendar"
+    case clickPlaygroundCommunityNew = "at36_click_playground_community"
+    case clickMoim = "click_moim"
+    case clickMemberNew = "at36_click_member"
+    case clickProjectNew = "at36_click_project"
+    case clickPokeMenu = "click_poke_menu"
+    case clickTodaySoptuneMenu = "click_todaysoptmadi_menu"
+    case clickSoptampMenu = "click_soptamp_menu"
+    
     // 콕 찌르기 클릭 이벤트
     case clickPoke = "click_poke"
     case clickMemberProfile = "click_memberprofile"
@@ -48,15 +61,21 @@ public enum AmplitudeEventType: String {
     case clickLeaveSoptuneCard = "click_done_soptmadi_charmcard"
     case clickAnonymity = "click_anonymity"
     case sendChoice = "send_choice"
+    
+    // 탭 바 클릭 이벤트
+    case clickNaviHome = "click_navi_home"
+    case clickNaviSoptlog = "click_navi_soptlog"
 
-
-    // 뷰 이벤트
+    // 기존 홈 뷰 이벤트
     case viewAppHome = "view_apphome"
-    case viewPokeOnboarding = "view_poke_onboarding"
     case viewNotificationDetail = "view_notification_detail"
     case viewNotificationList = "view_notification_list"
+
+    // 신규 홈 뷰 이벤트
+    case viewAppHomeNew = "at36_view_apphome"
     
     // 콕 찌르기 뷰 이벤트
+    case viewPokeOnboarding = "view_poke_onboarding"
     case viewPokeMain = "view_poke_main"
     case viewPokeAlarmDetail = "view_poke_alarm_detail"
     case viewPokeFriend = "view_poke_friend"
@@ -66,4 +85,8 @@ public enum AmplitudeEventType: String {
     case viewSoptuneMain = "view_soptmadi_title"
     case viewSoptuneResult = "view_soptmadi_todays"
     case viewSoptuenCard = "view_soptmadi_charmcard"
+    
+    // 솝트로그 뷰 이벤트
+    case clickSoptlogEditProfile = "click_soptlog_editprofile"
+    case clickSoptlogSoptune = "click_soptlog_soptmadi"
 }

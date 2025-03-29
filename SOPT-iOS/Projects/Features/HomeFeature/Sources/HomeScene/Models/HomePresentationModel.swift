@@ -56,14 +56,10 @@ struct HomePresentationModel {
     struct ProductService: Identifiable, Hashable {
         let id = UUID()
         
-        let name: String
-        let image: UIImage
-        let url: String
+        let product: ServiceType
         
-        init(name: String, image: UIImage, url: String) {
-            self.name = name
-            self.image = image
-            self.url = url
+        init(product: ServiceType) {
+            self.product = product
         }
     }
     

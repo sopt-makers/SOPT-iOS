@@ -29,33 +29,39 @@ public final class SoptlogCoordinator: DefaultCoordinator {
     
     private let factory: SoptlogFeatureBuildable
     private let router: Router
+    private let userType: UserType
     
     private weak var rootController: UINavigationController?
     public private(set) var rootViewController: UIViewController?
     
-    public init(router: Router, factory: SoptlogFeatureBuildable) {
+    public init(router: Router, factory: SoptlogFeatureBuildable, userType: UserType) {
         self.router = router
         self.factory = factory
+        self.userType = userType
     }
     
     public override func start() {
-        showSoptlog()
+        switch userType {
+        case .visitor:
+            self.rootViewController = UIViewController()
+        case .active, .inactive:
+            showSoptlog()
+        }
     }
     
     private func showSoptlog() {
         var soptlog = factory.makeSoptlog()
-        
-        soptlog.vm.onNaviBackButtonTap = { [weak self] in
-            self?.router.popModule()
-            self?.finishFlow?()
-        }
         
         soptlog.vm.onProfileEditTapped = { [weak self] in
             let url = "\(ExternalURL.Playground.main)/members/edit"
             self?.requestCoordinating?(.webLink(url: url))
         }
         
-        soptlog.vm.onAlarmTapped = { [weak self] in
+        soptlog.vm.onToolTipTapped = { [weak self] toolTipFrame in
+            self?.showToolTip(toolTipFrame)
+        }
+        
+        soptlog.vm.onSoptuneTapped = { [weak self] in
             self?.requestCoordinating?(.dailySoptune)
         }
         
@@ -69,5 +75,17 @@ public final class SoptlogCoordinator: DefaultCoordinator {
         
         self.rootViewController = soptlog.vc.viewController
         self.router.push(soptlog.vc)
+    }
+    
+    private func showToolTip(_ frame: CGRect) {
+        var soptlogToolTip = factory.makeSoptlogToolTip(frame)
+        
+        soptlogToolTip.vm.onDismissButtonTap = { [weak self] in
+            self?.rootViewController?.dismiss(animated: true )
+        }
+        
+        soptlogToolTip.vc.viewController.modalPresentationStyle = .overFullScreen
+        soptlogToolTip.vc.viewController.modalTransitionStyle = .crossDissolve
+        self.rootViewController?.present(soptlogToolTip.vc.viewController, animated: true)
     }
 }
