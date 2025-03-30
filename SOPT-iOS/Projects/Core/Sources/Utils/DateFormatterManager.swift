@@ -11,7 +11,7 @@ import Foundation
 public final class DateFormatManager {
     public static let shared = DateFormatManager()
     
-    public init() {
+    private init() {
         formatter.locale = Locale(identifier: "ko_KR")
         formatter.timeZone = TimeZone(identifier: "Asia/Seoul")
     }
