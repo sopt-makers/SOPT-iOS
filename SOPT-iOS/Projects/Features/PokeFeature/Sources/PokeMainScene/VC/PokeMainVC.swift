@@ -103,11 +103,11 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
 
   public override func viewDidLoad() {
     super.viewDidLoad()
-    self.setUI()
-    self.setDelegate()
-    self.setStackView()
-    self.setLayout()
-    self.bindViewModel()
+    setUI()
+    setDelegate()
+    setStackView()
+    setLayout()
+    bindViewModel()
   }
 }
 
@@ -298,8 +298,9 @@ extension PokeMainVC {
       }.store(in: cancelBag)
 
     output.isLoading
-      .sink { [weak self] isLoading in
-        isLoading ? self?.showLoading() : self?.stopLoading()
-      }.store(in: self.cancelBag)
+      .withUnretained(self)
+      .sink { owner, isLoading in
+        isLoading ? owner.showLoading() : owner.stopLoading()
+      }.store(in: cancelBag)
   }
 }
