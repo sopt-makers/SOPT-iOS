@@ -26,7 +26,7 @@ final class HomeCalendarDetailVC: UIViewController, HomeCalendarDetailViewContro
     
     // MARK: UI Components
     
-    private lazy var naviBar = OPNavigationBar(type: .oneLeftButton,
+    private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton,
                                                backgroundColor: DSKitAsset.Colors.semanticBackground.color)
         .addMiddleLabel(title: I18N.Home.CalendarDetail.navigationTitle, font: DSKitFontFamily.Suit.medium.font(size: 16))
     

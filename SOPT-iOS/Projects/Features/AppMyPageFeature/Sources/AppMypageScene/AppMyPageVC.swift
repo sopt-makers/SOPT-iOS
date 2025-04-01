@@ -49,6 +49,7 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
     
     // MARK: - Views
     private lazy var navigationBar = OPNavigationBar(
+        self,
         type: .oneLeftButton,
         backgroundColor: DSKitAsset.Colors.black100.color,
         ignoreLeftButtonAction: true
