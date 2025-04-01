@@ -23,7 +23,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
 
   // MARK: - Properties
 
-  public var viewModel: MissionListViewModel!
+  public var viewModel: MissionListViewModel
   public var sceneType: MissionListSceneType {
     return self.viewModel.missionListsceneType
   }
@@ -69,11 +69,11 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
     var menuItems: [UIAction] = []
     [("전체 미션", MissionListFetchType.all),
      ("완료 미션", MissionListFetchType.complete),
-     ("미완료 미션", MissionListFetchType.incomplete)].forEach { menuTitle, fetchType in
+     ("미완료 미션", MissionListFetchType.incomplete)].forEach { [weak self] menuTitle, fetchType in
       menuItems.append(UIAction(title: menuTitle,
-                                handler: { _ in
-        self.missionTypeMenuSelected.send(fetchType)
-        self.naviBar.setTitle(menuTitle)
+                                handler: { [weak self] _ in
+        self?.missionTypeMenuSelected.send(fetchType)
+        self?.naviBar.setTitle(menuTitle)
       }))
     }
     return menuItems
@@ -164,6 +164,15 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
     self.viewWillAppear.send(())
     self.navigationController?.interactivePopGestureRecognizer?.delegate = self
   }
+    
+    init(viewModel: MissionListViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 // MARK: - UI & Layouts
