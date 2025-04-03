@@ -55,6 +55,7 @@ final class SoptlogToolTipVC: UIViewController, SoptlogToolTipViewControllable {
         $0.text = I18N.Soptlog.toolTip
         $0.font = DSKitFontFamily.Suit.medium.font(size: 13)
         $0.numberOfLines = 0
+        $0.setLineSpacing(lineSpacing: 4)
     }
     
     init(viewModel: SoptlogToolTipViewModel, toolTipFrame: CGRect) {
