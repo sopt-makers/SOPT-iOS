@@ -101,7 +101,7 @@ extension MissionListViewModel {
       .asDriver()
       .sink { usersActivateGenerationStatus in
         output.usersActivateGenerationStatus = usersActivateGenerationStatus
-      }.store(in: self.cancelBag)
+      }.store(in: cancelBag)
     
     self.useCase.errorOccurred
       .asDriver()

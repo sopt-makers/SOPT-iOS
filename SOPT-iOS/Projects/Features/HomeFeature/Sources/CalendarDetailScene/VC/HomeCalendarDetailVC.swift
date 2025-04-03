@@ -26,8 +26,7 @@ final class HomeCalendarDetailVC: UIViewController, HomeCalendarDetailViewContro
     
     // MARK: UI Components
     
-    private lazy var naviBar = OPNavigationBar(self,
-                                               type: .oneLeftButton,
+    private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton,
                                                backgroundColor: DSKitAsset.Colors.semanticBackground.color)
         .addMiddleLabel(title: I18N.Home.CalendarDetail.navigationTitle, font: DSKitFontFamily.Suit.medium.font(size: 16))
     
@@ -142,7 +141,7 @@ extension HomeCalendarDetailVC {
     private func bindViewModels() {
         let input = HomeCalendarDetailViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
-            naviBackButtonTap: self.naviBar.leftButtonTapped.asDriver(),
+            naviBackButtonTap: self.naviBar.leftButtonTapped,
             onAttendanceButtonTap: self.attendanceButton
                 .publisher(for: .touchUpInside)
                 .withUnretained(self)
@@ -157,7 +156,7 @@ extension HomeCalendarDetailVC {
             .sink { owner, calendarDetailInfo in
                 owner.calendarDetailInfo = calendarDetailInfo
                 owner.collectionView.reloadData()
-                self.scrollToRecentSchedule()
+                owner.scrollToRecentSchedule()
             }.store(in: cancelBag)
         
     }
