@@ -93,6 +93,8 @@ extension SoptlogAppServiceCVC {
     
     private func setStackView() {
         serviceTitleStackView.addArrangedSubviews(serviceLabel, infoToolTipButton)
+        serviceTitleStackView.setCustomSpacing(1, after: serviceLabel)
+        
         stackView.addArrangedSubviews(serviceTitleStackView, serviceImageView, serviceValue)
     }
 }
