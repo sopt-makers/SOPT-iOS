@@ -184,6 +184,11 @@ extension AppMyPageVC {
         self.bindViews()
         self.bindViewModels()
     }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.setGestureDelegate()
+    }
 }
 
 extension AppMyPageVC {
@@ -336,5 +341,17 @@ extension AppMyPageVC {
         UserDefaultKeyList.Auth.appRefreshToken = nil
         UserDefaultKeyList.Auth.playgroundToken = nil
         SFSafariViewController.DataStore.default.clearWebsiteData()
+    }
+}
+
+// MARK: - UIGestureRecognizerDelegate
+
+extension AppMyPageVC: UIGestureRecognizerDelegate {
+    private func setGestureDelegate() {
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+    }
+    
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }

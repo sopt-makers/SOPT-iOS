@@ -29,9 +29,6 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
         print("APNs 푸시 알림 페이로드: \(userInfo)")
         if let payload = NotificationPayload(dictionary: userInfo) {
             AmplitudeInstance.shared.track(eventType: .receivedPush, eventProperties: ["notificationId": payload.id,
-                                                                                       "send_timeStamp": payload.sendAt,
-                                                                                       "title": payload.title,
-                                                                                       "contents": payload.content,
                                                                                        "admin_category": payload.category ?? "없음"])
         }
         
@@ -41,11 +38,11 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
     @MainActor
     public func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
         let userInfo = response.notification.request.content.userInfo
+        print(userInfo)
         print("APNs 푸시 알림 페이로드: \(userInfo)")
         guard let payload = NotificationPayload(dictionary: userInfo) else { return }
         
         AmplitudeInstance.shared.track(eventType: .clickPush, eventProperties: ["notificationId": payload.id,
-                                                                                "send_timeStamp": payload.sendAt,
                                                                                 "leadtime": "",
                                                                                 "contain_deeplink": payload.hasDeepLink,
                                                                                 "deeplink_url": payload.deepLink ?? "없음"])

@@ -86,6 +86,11 @@ final class HomeCalendarDetailVC: UIViewController, HomeCalendarDetailViewContro
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.setGestureDelegate()
+    }
+    
     deinit {
         collectionView.dataSource = nil
         collectionView.delegate = nil
@@ -194,5 +199,17 @@ extension HomeCalendarDetailVC: UICollectionViewDelegateFlowLayout, UICollection
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
+    }
+}
+
+// MARK: - UIGestureRecognizerDelegate
+
+extension HomeCalendarDetailVC: UIGestureRecognizerDelegate {
+    private func setGestureDelegate() {
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+    }
+    
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }

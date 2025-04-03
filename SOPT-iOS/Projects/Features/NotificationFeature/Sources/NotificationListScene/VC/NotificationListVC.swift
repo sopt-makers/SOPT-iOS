@@ -91,6 +91,7 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.notificationListCollectionView.reloadData()
+        self.setGestureDelegate()
     }
 }
 
@@ -247,5 +248,17 @@ extension NotificationListVC: UICollectionViewDelegate {
             viewModel.startPaging()
             requestNotifications.send(())
         }
+    }
+}
+
+// MARK: - UIGestureRecognizerDelegate
+
+extension NotificationListVC: UIGestureRecognizerDelegate {
+    private func setGestureDelegate() {
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+    }
+    
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }
