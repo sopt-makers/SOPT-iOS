@@ -14,6 +14,7 @@ import Core
 public protocol SoptlogToolTipViewControllable: ViewControllable { }
 public protocol SoptlogToolTipCoordinatable {
     var onDismissButtonTap: (() -> Void)? { get set }
+    var onDimmingBackgroundTap: (() -> Void)? { get set }
 }
 public typealias SoptlogToolTipViewModelType = ViewModelType & SoptlogToolTipCoordinatable
 public typealias SoptlogTooltipPresentable = (vc: SoptlogToolTipViewControllable, vm: any SoptlogToolTipViewModelType)
