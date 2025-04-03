@@ -29,7 +29,6 @@ public class STNavigationBar: UIView {
     
     // MARK: - UI Component
     
-    private var vc: UIViewController?
     private let titleLabel = UILabel()
     private let titleButton = UIButton()
     private let leftButton = UIButton()

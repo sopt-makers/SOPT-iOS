@@ -10,7 +10,6 @@ import Foundation
 import Combine
 
 import Core
-import TabBarFeatureInterface
 
 final public class TabBarViewModel: TabBarViewModelType {
     
