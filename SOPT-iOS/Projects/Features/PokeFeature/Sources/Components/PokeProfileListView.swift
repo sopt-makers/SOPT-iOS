@@ -16,13 +16,20 @@ public final class PokeProfileListView: UIView, PokeCompatible {
 
   // MARK: - Properties
 
-  lazy var kokButtonTap: Driver<PokeUserModel?> = kokButton.tap.map { self.user }.asDriver()
-  lazy var profileImageTap: Driver<PokeUserModel?> = profileImageView.tap
-    .filter { self.user?.isAnonymous == false }
-    .map { self.user }.asDriver()
+    lazy var kokButtonTap: Driver<PokeUserModel?> = kokButton.tap
+        .withUnretained(self)
+        .map{ owner, _ in owner.user}
+        .asDriver()
+    lazy var profileImageTap: Driver<PokeUserModel?> = profileImageView.tap
+        .withUnretained(self)
+        .filter({ owner, _ in
+            owner.user?.isAnonymous == false
+        })
+        .map({ owner, _ in
+            owner.user
+        }).asDriver()
 
   var viewType: ProfileListType
-
   var user: PokeUserModel?
 
   // MARK: - UI Components
