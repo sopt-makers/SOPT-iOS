@@ -83,13 +83,19 @@ final public class PokeNotificationListContentView: UIView, PokeCompatible {
   var user: PokeUserModel?
 
   lazy var kokButtonTap: Driver<PokeUserModel?> = pokeKokButton.tap
-    .map { self.user }
-    .asDriver()
+        .withUnretained(self)
+        .map({ owner, _ in
+            owner.user
+        }).asDriver()
 
-  lazy var profileImageTap = profileImageView
-    .tap
-    .filter { self.user?.isAnonymous == false }
-    .map { self.user }
+  lazy var profileImageTap = profileImageView.tap
+        .withUnretained(self)
+        .filter({ owner, _ in
+            owner.user?.isAnonymous == false
+        })
+        .map({ owner, _ in
+            owner.user
+        }).asDriver()
 
   // MARK: - View Lifecycle
   public init(
