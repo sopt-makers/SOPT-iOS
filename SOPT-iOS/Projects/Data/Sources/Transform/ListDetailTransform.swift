@@ -16,14 +16,10 @@ extension ListDetailEntity {
     return ListDetailModel(
       image: self.images.first ?? "",
       content: self.contents,
-      date: changeDateformat(self.updatedAt ?? self.createdAt),
+      date: self.updatedAt ?? self.createdAt,
       stampId: self.id,
       activityDate: self.activityDate
     )
-  }
-  
-  private func changeDateformat(_ date: String) -> String {
-    return date.split(separator: "-").joined(separator: ".")
   }
 }
 
