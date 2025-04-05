@@ -64,13 +64,16 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
         
         self.view.backgroundColor = DSKitAsset.Colors.black100.color
         
-        self.webView.scrollView.delegate = self
-        self.webView.navigationDelegate = self
-        self.webView.uiDelegate = self
         downloadManager.webVC = self
         self.initializeViews()
         self.setupConstraints()
         self.setupNavigationButtonActions()
+        self.setDelegate()
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.setGestureDelegate()
     }
 }
 
@@ -109,6 +112,12 @@ extension SOPTWebView {
             .sink { [weak self] _ in
                 self?.navigationController?.popViewController(animated: true)
             }.store(in: self.cancelbag)
+    }
+    
+    private func setDelegate() {
+        self.webView.scrollView.delegate = self
+        self.webView.navigationDelegate = self
+        self.webView.uiDelegate = self
     }
 }
 
@@ -163,5 +172,17 @@ extension SOPTWebView: WKDownloadDelegate {
     
     public func webView(_ webView: WKWebView, navigationResponse: WKNavigationResponse, didBecome download: WKDownload) {
         download.delegate = self
+    }
+}
+
+// MARK: - UIGestureRecognizerDelegate
+
+extension SOPTWebView: UIGestureRecognizerDelegate {
+    private func setGestureDelegate() {
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+    }
+    
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }

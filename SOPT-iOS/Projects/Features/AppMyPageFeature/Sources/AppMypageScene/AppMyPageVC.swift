@@ -184,6 +184,11 @@ extension AppMyPageVC {
         self.bindViews()
         self.bindViewModels()
     }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.setGestureDelegate()
+    }
 }
 
 extension AppMyPageVC {
@@ -227,27 +232,27 @@ extension AppMyPageVC {
     
     // TODO: - (@승호): 적절히 객체에 위임하기
     private func addTabGestureOnListItems() {
-        self.servicePolicySectionGroup.addTapGestureRecognizer {
-            self.onPolicyItemTap?()
+        self.servicePolicySectionGroup.addTapGestureRecognizer { [weak self] in
+            self?.onPolicyItemTap?()
         }
 
-        self.termsOfUseListItem.addTapGestureRecognizer {
-            self.onTermsOfUseItemTap?()
+        self.termsOfUseListItem.addTapGestureRecognizer { [weak self] in
+            self?.onTermsOfUseItemTap?()
         }
 
         self.sendFeedbackListItem.addTapGestureRecognizer {
             openExternalLink(urlStr: ExternalURL.KakaoTalk.serviceProposal)
         }
         
-        self.alertListItem.addTapGestureRecognizer {
-            self.onAlertButtonTap?(UIApplication.openSettingsURLString)
+        self.alertListItem.addTapGestureRecognizer { [weak self] in
+            self?.onAlertButtonTap?(UIApplication.openSettingsURLString)
         }
 
-        self.editOnelineSentenceListItem.addTapGestureRecognizer {
-            self.onEditOnelineSentenceItemTap?()
+        self.editOnelineSentenceListItem.addTapGestureRecognizer { [weak self] in
+            self?.onEditOnelineSentenceItemTap?()
         }
 
-        self.resetStampListItem.addTapGestureRecognizer {
+        self.resetStampListItem.addTapGestureRecognizer { [weak self] in
             AlertUtils.presentAlertVC(
                 type: .titleDescription,
                 theme: .main,
@@ -261,7 +266,7 @@ extension AppMyPageVC {
             )
         }
 
-        self.logoutListItem.addTapGestureRecognizer {
+        self.logoutListItem.addTapGestureRecognizer { [weak self] in
             AlertUtils.presentAlertVC(
                 type: .titleDescription,
                 theme: .main,
@@ -275,12 +280,12 @@ extension AppMyPageVC {
             )
         }
 
-        self.withDrawalListItem.addTapGestureRecognizer {
-            self.onWithdrawalItemTap?(self.userType)
+        self.withDrawalListItem.addTapGestureRecognizer { [weak self] in
+            self?.onWithdrawalItemTap?(self?.userType ?? .visitor)
         }
         
-        self.loginListItem.addTapGestureRecognizer {
-            self.onShowLogin?()
+        self.loginListItem.addTapGestureRecognizer { [weak self] in
+            self?.onShowLogin?()
         }
     }
 }
@@ -336,5 +341,17 @@ extension AppMyPageVC {
         UserDefaultKeyList.Auth.appRefreshToken = nil
         UserDefaultKeyList.Auth.playgroundToken = nil
         SFSafariViewController.DataStore.default.clearWebsiteData()
+    }
+}
+
+// MARK: - UIGestureRecognizerDelegate
+
+extension AppMyPageVC: UIGestureRecognizerDelegate {
+    private func setGestureDelegate() {
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+    }
+    
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }

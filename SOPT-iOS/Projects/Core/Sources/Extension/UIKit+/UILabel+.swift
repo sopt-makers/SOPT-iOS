@@ -11,7 +11,20 @@ public extension UILabel {
     
     /// 행간 조정 메서드
     func setLineSpacing(lineSpacing: CGFloat) {
-        if let text = self.text {
+        // 기존에 attributedText가 존재할 경우, 덮어쓰지 않고 그대로 유지
+        if let attributedText = self.attributedText {
+            let mutableAttributedString = NSMutableAttributedString(attributedString: attributedText)
+            
+            mutableAttributedString.enumerateAttribute(.paragraphStyle,
+                                                       in: NSRange(location: 0, length: mutableAttributedString.length),
+                                                       options: []) { value, range, _ in
+                let paragraphStyle = (value as? NSMutableParagraphStyle) ?? NSMutableParagraphStyle()
+                paragraphStyle.lineSpacing = lineSpacing
+                mutableAttributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: range)
+            }
+            
+            self.attributedText = mutableAttributedString
+        } else if let text = self.text {
             let attributedStr = NSMutableAttributedString(string: text)
             let style = NSMutableParagraphStyle()
             style.lineSpacing = lineSpacing
@@ -118,7 +131,6 @@ public extension UILabel {
             attributedString.addAttributes([NSAttributedString.Key.foregroundColor: defaultColor],
                                            range: range)
             self.attributedText = attributedString
-
         } catch let error {
             print("htmlToString 변환 에러: ", error.localizedDescription)
         }

@@ -12,10 +12,10 @@ extension MissionListVC {
     static let standardWidth = UIScreen.main.bounds.width - 40.adjusted
     
     func createLayout() -> UICollectionViewLayout {
-        return UICollectionViewCompositionalLayout { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
+        return UICollectionViewCompositionalLayout { [weak self] (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
             switch MissionListSection.type(sectionIndex) {
-            case .sentence: return self.createSentenceSection()
-            case .missionList: return self.createMissionListSection()
+            case .sentence: return self?.createSentenceSection()
+            case .missionList: return self?.createMissionListSection()
             }
         }
     }

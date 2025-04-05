@@ -111,6 +111,11 @@ public final class NotificationDetailVC: UIViewController, NotificationDetailVie
         self.setUI()
         self.setLayout()
     }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.setGestureDelegate()
+    }
 }
 
 // MARK: - UI & Layout
@@ -194,5 +199,17 @@ extension NotificationDetailVC {
         self.titleLabel.text = notification.title
         self.textView.text = notification.content
         self.shortCutButton.isHidden = !notification.hasLink
+    }
+}
+
+// MARK: - UIGestureRecognizerDelegate
+
+extension NotificationDetailVC: UIGestureRecognizerDelegate {
+    private func setGestureDelegate() {
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+    }
+    
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }

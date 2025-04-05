@@ -28,7 +28,7 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
         static let bottomButtonHeight = 48.f
         
         static let customSpacing = 32.f
-        static let keyboardBottomOffset = 34.f // 피그마에 40인데 수정했음
+        static let keyboardBottomOffset = 34.f
     }
     
     // MARK: - Properties

@@ -20,6 +20,8 @@ final class SoptlogToolTipVC: UIViewController, SoptlogToolTipViewControllable {
     public var viewModel: SoptlogToolTipViewModel
     private let cancelBag = CancelBag()
     private let toolTipFrame: CGRect
+    
+    private var dimmingBackgroundTap = PassthroughSubject<Void, Never>()
 
     // MARK: - UI Components
     
@@ -55,6 +57,7 @@ final class SoptlogToolTipVC: UIViewController, SoptlogToolTipViewControllable {
         $0.text = I18N.Soptlog.toolTip
         $0.font = DSKitFontFamily.Suit.medium.font(size: 13)
         $0.numberOfLines = 0
+        $0.setLineSpacing(lineSpacing: 4)
     }
     
     init(viewModel: SoptlogToolTipViewModel, toolTipFrame: CGRect) {
@@ -74,6 +77,8 @@ final class SoptlogToolTipVC: UIViewController, SoptlogToolTipViewControllable {
         bindViewModels()
     }
 }
+
+// MARK: - UI & Layout
 
 extension SoptlogToolTipVC {
     private func setUI() {
@@ -124,12 +129,30 @@ extension SoptlogToolTipVC {
     }
 }
 
+// MARK: - Methods
+
 extension SoptlogToolTipVC {
     private func bindViewModels() {
         let input = SoptlogToolTipViewModel.Input(
-            dismissbuttonTap: self.dismissButton.publisher(for: .touchUpInside).mapVoid().asDriver()
+            dismissbuttonTap: self.dismissButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
+            dimmingBackgroundTap: self.dimmingBackgroundTap.asDriver()
         )
         
         _ = viewModel.transform(from: input, cancelBag: cancelBag)
+    }
+}
+
+// MARK: - Override Methods
+
+extension SoptlogToolTipVC {
+    /// dimming 뒷배경을 눌렀을 때, dismiss 이벤트를 전달합니다.
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else { return }
+        let location = touch.location(in: self.view)
+        // toolTipView 프레임의 밖일 경우에만 dismiss
+        if !toolTipView.frame.contains(location) {
+            self.dimmingBackgroundTap.send()
+        }
+        super.touchesBegan(touches, with: event)
     }
 }
