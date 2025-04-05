@@ -22,8 +22,17 @@ extension TabBarItemType {
         }
     }
     
+    private var title: String {
+        switch self {
+        case .home:
+            return I18N.Home.title
+        case .soptlog:
+            return I18N.Soptlog.navigationTitle
+        }
+    }
+    
     func makeTabBarItem() -> UITabBarItem {
-        return UITabBarItem(title: nil,
+        return UITabBarItem(title: self.title,
                             image: self.itemImage,
                             selectedImage: nil)
     }
