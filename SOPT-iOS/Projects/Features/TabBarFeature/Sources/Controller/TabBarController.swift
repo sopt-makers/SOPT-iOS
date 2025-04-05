@@ -73,7 +73,9 @@ extension TabBarController {
         TabBarItemType.allCases.forEach {
             tabList[$0.rawValue].tabBarItem = $0.makeTabBarItem()
             tabList[$0.rawValue].tabBarItem.tag = $0.rawValue
-            tabList[$0.rawValue].tabBarItem.imageInsets = UIEdgeInsets(top: 18, left: 0, bottom: -18, right: 0)
+            tabList[$0.rawValue].tabBarItem.imageInsets = UIEdgeInsets(top: 5, left: 0, bottom: -5, right: 0)
+            tabList[$0.rawValue].tabBarItem.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: 3)
+            tabList[$0.rawValue].tabBarItem.setTitleTextAttributes([NSAttributedString.Key.font: DSKitFontFamily.Suit.medium.font(size: 10)], for: .normal)
         }
 
         setViewControllers(tabList, animated: true)
