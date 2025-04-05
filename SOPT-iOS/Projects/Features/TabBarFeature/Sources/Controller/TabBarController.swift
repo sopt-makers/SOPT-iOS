@@ -63,7 +63,7 @@ extension TabBarController {
     /// setting tabbar height
     private func configureTabBarHeight() {
         var tabFrame = tabBar.frame
-        tabFrame.size.height = 72
+        tabFrame.size.height = 82
         tabFrame.origin.y = view.frame.size.height - tabFrame.size.height
         
         tabBar.frame = tabFrame
