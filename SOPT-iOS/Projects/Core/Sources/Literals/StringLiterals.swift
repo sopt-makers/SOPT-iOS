@@ -241,6 +241,7 @@ public struct I18N {
     
     public struct Home {
         public static let viewAll = "전체보기"
+        public static let title = "홈"
         
         public struct PopUp {
             public static let login = "로그인"
