@@ -128,7 +128,7 @@ extension CalendarCardCVC {
 extension CalendarCardCVC {
     func configureCell(model: HomePresentationModel.RecentSchedule,
                        userType: UserType) {
-        self.dateLabel.text = model.date.split(separator: "-").joined(separator: ".")
+        self.dateLabel.text = model.date
         self.scheduleTitleLabel.text = model.title
         if let tagType = CalenderCategoryTagType(rawValue: model.type) {
             self.scheduleCategoryTagView.setData(title: tagType.text,
