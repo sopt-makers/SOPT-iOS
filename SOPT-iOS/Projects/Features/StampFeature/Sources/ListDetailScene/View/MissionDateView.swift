@@ -33,12 +33,12 @@ public final class MissionDateView: UIView {
   
   private lazy var textField = UITextField().then {
     $0.attributedPlaceholder = self.getAttributedString(I18N.ListDetail.missionDatePlaceHolder)
-    $0.textColor = DSKitAsset.Colors.soptampGray600.color
+    $0.textColor = DSKitAsset.Colors.gray50.color
     $0.font = .SoptampFont.caption1
   }
   private let rightChevron = UIImageView().then {
     $0.image = DSKitAsset.Assets.iconChevronRight.image.withRenderingMode(.alwaysTemplate)
-    $0.tintColor = DSKitAsset.Colors.gray600.color
+    $0.tintColor = DSKitAsset.Colors.gray300.color
   }
   
   // MARK: - Private Variables
@@ -48,8 +48,9 @@ public final class MissionDateView: UIView {
   public override init(frame: CGRect) {
     super.init(frame: frame)
     
-    self.backgroundColor = DSKitAsset.Colors.soptampGray50.color
+    self.backgroundColor = DSKitAsset.Colors.soptampGray900.color
     self.layer.cornerRadius = Constant.cornerRadius
+    self.layer.borderColor = DSKitAsset.Colors.soptampGray500.color.cgColor
     
     self.initializeViews()
     self.initializeDatePicker()
@@ -91,10 +92,6 @@ extension MissionDateView {
     self.textField.isEnabled = isEnabled
   }
   
-  public func setBorderLayerColor(to pointColor: CGColor) {
-    self.layer.borderColor = pointColor
-  }
-  
   public func getText() -> String? {
     self.textField.text
   }
@@ -102,13 +99,10 @@ extension MissionDateView {
   public func setTextFieldView(_ state: TextViewState) {
     switch state {
     case .inactive:
-      self.backgroundColor = DSKitAsset.Colors.soptampGray50.color
       self.layer.borderWidth = .zero
     case .active:
-      self.backgroundColor = DSKitAsset.Colors.soptampWhite.color
       self.layer.borderWidth = 1
     case .completed:
-      self.backgroundColor = DSKitAsset.Colors.soptampGray50.color
       self.layer.borderWidth = .zero
     }
   }
