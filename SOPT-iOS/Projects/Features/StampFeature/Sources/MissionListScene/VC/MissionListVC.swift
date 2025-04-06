@@ -98,7 +98,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
     private lazy var missionListCollectionView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
         cv.showsVerticalScrollIndicator = true
-        cv.backgroundColor = .white
+        cv.backgroundColor = DSKitAsset.Colors.gray950.color
         cv.bounces = false
         return cv
     }()
@@ -114,11 +114,11 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
         let bt = UIButton()
         bt.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
         bt.layer.cornerRadius = 27.adjustedH
-        bt.setBackgroundColor(DSKitAsset.Colors.soptampPurple300.color, for: .normal)
-        bt.setBackgroundColor(DSKitAsset.Colors.soptampPurple300.color.withAlphaComponent(0.2), for: .selected)
-        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .highlighted)
-        bt.tintColor = .white
+        bt.setBackgroundColor(DSKitAsset.Colors.white.color, for: .normal)
+        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate).withTintColor(DSKitAsset.Colors.white.color), for: .normal)
+        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate).withTintColor(DSKitAsset.Colors.white.color), for: .highlighted)
+        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate).withTintColor(DSKitAsset.Colors.gray200.color), for: .selected)
+        bt.tintColor = DSKitAsset.Colors.black.color
         bt.titleLabel?.setTypoStyle(.SoptampFont.h2)
         bt.contentEdgeInsets = UIEdgeInsets(top: 0, left: -15, bottom: 0, right: 0)
         bt.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
@@ -129,10 +129,10 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
         let bt = UIButton()
         bt.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner]
         bt.layer.cornerRadius = 27.adjustedH
-        bt.setBackgroundColor(DSKitAsset.Colors.soptampPink300.color, for: .normal)
-        bt.setBackgroundColor(DSKitAsset.Colors.soptampPink300.color.withAlphaComponent(0.2), for: .selected)
+        bt.setBackgroundColor(DSKitAsset.Colors.black.color, for: .normal)
+        bt.setBackgroundColor(DSKitAsset.Colors.black.color.withAlphaComponent(0.8), for: .selected)
         bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .highlighted)
+        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate).withTintColor(DSKitAsset.Colors.gray200.color), for: .highlighted)
         bt.tintColor = .white
         bt.titleLabel?.setTypoStyle(.SoptampFont.h2)
         let attributedStr = NSMutableAttributedString(string: "파트별 랭킹")
@@ -180,7 +180,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
 extension MissionListVC {
     
     private func setUI() {
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = DSKitAsset.Colors.gray950.color
         self.navigationController?.isNavigationBarHidden = true
     }
     
@@ -415,7 +415,7 @@ extension MissionListVC {
         let attributedStr = NSMutableAttributedString(string: "\(generation)기 랭킹")
         let style = NSMutableParagraphStyle()
         attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
-        attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.white, range: NSMakeRange(0, attributedStr.length))
+        attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: DSKitColors.Color.black, range: NSMakeRange(0, attributedStr.length))
         self.currentGenerationRankFloatingButton.setAttributedTitle(attributedStr, for: .normal)
     }
     
