@@ -180,8 +180,17 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
 extension MissionListVC {
     
     private func setUI() {
-        self.view.backgroundColor = DSKitAsset.Colors.gray950.color
         self.navigationController?.isNavigationBarHidden = true
+        self.view.backgroundColor = DSKitAsset.Colors.gray950.color
+        
+        switch sceneType {
+        case .default:
+            self.sentenceLabel.backgroundColor = DSKitAsset.Colors.gray800.color
+        case .ranking(_, let sentence):
+            self.sentenceLabel.backgroundColor = DSKitAsset.Colors.gray800.color
+            self.sentenceLabel.textColor = DSKitAsset.Colors.white.color
+            if sentence.isEmpty { self.sentenceLabel.text = I18N.RankingList.noSentenceText }
+        }
     }
     
     private func setLayout() {
