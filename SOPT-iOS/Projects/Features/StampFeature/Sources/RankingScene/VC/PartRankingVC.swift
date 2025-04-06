@@ -43,7 +43,7 @@ public class PartRankingVC: UIViewController, PartRankingViewControllable {
   private lazy var rankingCollectionView: UICollectionView = {
     let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
     cv.showsVerticalScrollIndicator = true
-    cv.backgroundColor = .white
+    cv.backgroundColor = DSKitAsset.Colors.gray950.color
     cv.refreshControl = refresher
     return cv
   }()
@@ -88,7 +88,7 @@ public class PartRankingVC: UIViewController, PartRankingViewControllable {
 extension PartRankingVC {
 
   private func setUI() {
-    self.view.backgroundColor = .white
+    self.view.backgroundColor = DSKitAsset.Colors.gray950.color
     self.navigationController?.isNavigationBarHidden = true
   }
 
@@ -97,10 +97,11 @@ extension PartRankingVC {
 
     naviBar.snp.makeConstraints { make in
       make.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)
+      make.height.equalTo(56)
     }
 
     rankingCollectionView.snp.makeConstraints { make in
-      make.top.equalTo(naviBar.snp.bottom).offset(4)
+      make.top.equalTo(naviBar.snp.bottom)
       make.leading.trailing.equalToSuperview()
       make.bottom.equalToSuperview()
     }

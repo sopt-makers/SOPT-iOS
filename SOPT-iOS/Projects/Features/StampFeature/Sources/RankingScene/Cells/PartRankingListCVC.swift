@@ -27,7 +27,7 @@ final class PartRankingListCVC: UICollectionViewCell, UICollectionViewRegisterab
   private let rankLabel: UILabel = {
     let label = UILabel()
     label.font = DSKitFontFamily.Montserrat.bold.font(size: 30.adjusted)
-    label.textColor = DSKitAsset.Colors.soptampGray500.color
+    label.textColor = DSKitAsset.Colors.gray300.color
     label.textAlignment = .center
     return label
   }()
@@ -35,7 +35,7 @@ final class PartRankingListCVC: UICollectionViewCell, UICollectionViewRegisterab
   private let partNameLabel: UILabel = {
     let label = UILabel()
     label.setTypoStyle(.SoptampFont.h3)
-    label.textColor = DSKitAsset.Colors.soptampGray800.color
+    label.textColor = DSKitAsset.Colors.white.color
     label.lineBreakMode = .byTruncatingTail
     label.setCharacterSpacing(0)
     return label
@@ -44,7 +44,7 @@ final class PartRankingListCVC: UICollectionViewCell, UICollectionViewRegisterab
   private let scoreLabel: UILabel = {
     let label = UILabel()
     label.setTypoStyle(.SoptampFont.number2)
-    label.textColor = DSKitAsset.Colors.soptampGray400.color
+    label.textColor = DSKitAsset.Colors.white.color
     return label
   }()
 
@@ -66,7 +66,7 @@ final class PartRankingListCVC: UICollectionViewCell, UICollectionViewRegisterab
 extension PartRankingListCVC {
 
   public func setUI() {
-    self.backgroundColor = DSKitAsset.Colors.soptampGray50.color
+    self.backgroundColor = DSKitAsset.Colors.gray900.color
     self.layer.cornerRadius = 8
   }
 
@@ -107,10 +107,10 @@ extension PartRankingListCVC {
   }
 
   private func setDefaultRanking() {
-    self.backgroundColor = DSKitAsset.Colors.soptampGray50.color
+    self.backgroundColor = DSKitAsset.Colors.gray900.color
     self.layer.borderColor = nil
     self.layer.borderWidth = 0
-    rankLabel.textColor = DSKitAsset.Colors.soptampGray500.color
-    scoreLabel.textColor = DSKitAsset.Colors.soptampGray400.color
+    rankLabel.textColor = DSKitAsset.Colors.gray300.color
+    scoreLabel.textColor = DSKitAsset.Colors.white.color
   }
 }
