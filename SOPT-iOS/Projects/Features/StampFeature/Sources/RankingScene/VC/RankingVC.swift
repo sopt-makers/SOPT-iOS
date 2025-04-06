@@ -43,7 +43,7 @@ public class RankingVC: UIViewController, RankingViewControllable {
   private lazy var rankingCollectionView: UICollectionView = {
     let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
     cv.showsVerticalScrollIndicator = true
-    cv.backgroundColor = .white
+    cv.backgroundColor = DSKitAsset.Colors.gray950.color
     cv.refreshControl = refresher
     return cv
   }()
@@ -56,12 +56,12 @@ public class RankingVC: UIViewController, RankingViewControllable {
   private lazy var showMyRankingFloatingButton: UIButton = {
     let bt = UIButton()
     bt.layer.cornerRadius = 27.adjustedH
-    bt.backgroundColor = DSKitAsset.Colors.soptampPurple300.color
+    bt.backgroundColor = DSKitAsset.Colors.white.color
     bt.titleLabel?.setTypoStyle(.SoptampFont.h2)
     let attributedStr = NSMutableAttributedString(string: "내 랭킹 보기")
     let style = NSMutableParagraphStyle()
     attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
-    attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.white, range: NSMakeRange(0, attributedStr.length))
+    attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: DSKitAsset.Colors.black.color, range: NSMakeRange(0, attributedStr.length))
     bt.setAttributedTitle(attributedStr, for: .normal)
     bt.isHidden = true
     return bt
@@ -107,7 +107,7 @@ public class RankingVC: UIViewController, RankingViewControllable {
 extension RankingVC {
   
   private func setUI() {
-    self.view.backgroundColor = .white
+    self.view.backgroundColor = DSKitAsset.Colors.gray950.color
     self.navigationController?.isNavigationBarHidden = true
   }
   
