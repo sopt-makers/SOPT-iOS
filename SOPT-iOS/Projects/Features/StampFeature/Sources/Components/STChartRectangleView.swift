@@ -111,7 +111,7 @@ public class STChartRectangleView: UIView {
   private var pointColor: UIColor {
     switch self.viewLevel {
     case .rankOne: return DSKitAsset.Colors.soptampPink300.color
-    case .rankTwo: return DSKitAsset.Colors.soptampMint300.color
+    case .rankTwo: return DSKitAsset.Colors.green300.color
     case .rankThree: return DSKitAsset.Colors.soptampPurple300.color
     }
   }
