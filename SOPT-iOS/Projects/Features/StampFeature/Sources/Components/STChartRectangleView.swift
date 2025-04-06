@@ -43,7 +43,7 @@ public class STChartRectangleView: UIView {
   private let starRankView: UIImageView = {
     let iv = UIImageView()
     iv.contentMode = .scaleAspectFit
-    iv.image = DSKitAsset.Assets.icStar.image.withRenderingMode(.alwaysTemplate)
+    iv.image = DSKitAsset.Assets.icBigStar.image.withRenderingMode(.alwaysTemplate)
     iv.tintColor = DSKitAsset.Colors.soptampPink300.color
     return iv
   }()

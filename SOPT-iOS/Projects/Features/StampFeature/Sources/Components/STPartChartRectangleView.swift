@@ -25,7 +25,7 @@ public class STPartChartRectangleView: UIView {
   private let starRankView: UIImageView = {
     let iv = UIImageView()
     iv.contentMode = .scaleAspectFit
-    iv.image = DSKitAsset.Assets.icStar.image.withRenderingMode(.alwaysTemplate)
+    iv.image = DSKitAsset.Assets.icBigStar.image.withRenderingMode(.alwaysTemplate)
     iv.tintColor = DSKitAsset.Colors.soptampPink300.color
     return iv
   }()
@@ -81,7 +81,7 @@ extension STPartChartRectangleView {
     if rank == 1 {
       rankLabel.textColor = DSKitAsset.Colors.white.color
       rectangleView.backgroundColor = DSKitAsset.Colors.soptampPink300.color
-      starRankView.image = DSKitAsset.Assets.icStar.image.withRenderingMode(.alwaysTemplate)
+      starRankView.image = DSKitAsset.Assets.icBigStar.image.withRenderingMode(.alwaysTemplate)
     } else if rank == 2 {
       rankLabel.textColor = DSKitAsset.Colors.green300.color
       rectangleView.backgroundColor = DSKitAsset.Colors.green300.color
