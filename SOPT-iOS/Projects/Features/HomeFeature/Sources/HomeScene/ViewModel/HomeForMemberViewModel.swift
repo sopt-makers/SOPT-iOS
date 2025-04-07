@@ -64,6 +64,8 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public var onSettingButtonTapped: ((UserType) -> Void)?
     public var onNeedSignIn: (() -> Void)?
     public var onNetworkError: (() -> Void)?
+    public var onPoke: ((Bool) -> Void)?
+    
     
     // MARK: - initialization
     
@@ -159,7 +161,14 @@ extension HomeForMemberViewModel {
                     owner.onMainProductCellTapped?(model.product.serviceDomainLink)
                     owner.trackAmplitude(event: model.product.toAmplitudeEventTypeNew)
                 case .appService(let model):
-                    owner.onAppServiceCellTapped?(model.deepLink)
+                    if model.serviceName == "콕찌르기" {
+                        owner.useCase.checkPokeNewUser()
+                            .sink { isPokeNewUser in
+                                owner.onPoke?(isPokeNewUser)
+                            }.store(in: cancelBag)
+                    } else {
+                        owner.onAppServiceCellTapped?(model.deepLink)
+                    }
                 default: break
                 }
             }
