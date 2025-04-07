@@ -186,6 +186,7 @@ extension MissionListVC {
         switch sceneType {
         case .default:
             self.sentenceLabel.backgroundColor = DSKitAsset.Colors.gray800.color
+            self.missionListCollectionView.contentInset.bottom = 128
         case .ranking(_, let sentence):
             self.sentenceLabel.backgroundColor = DSKitAsset.Colors.gray800.color
             self.sentenceLabel.textColor = DSKitAsset.Colors.white.color
