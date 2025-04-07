@@ -48,9 +48,9 @@ public final class MissionDateView: UIView {
   public override init(frame: CGRect) {
     super.init(frame: frame)
     
-    self.backgroundColor = DSKitAsset.Colors.soptampGray900.color
+    self.backgroundColor = DSKitAsset.Colors.gray900.color
     self.layer.cornerRadius = Constant.cornerRadius
-    self.layer.borderColor = DSKitAsset.Colors.soptampGray500.color.cgColor
+    self.layer.borderColor = DSKitAsset.Colors.gray500.color.cgColor
     
     self.initializeViews()
     self.initializeDatePicker()
@@ -102,8 +102,12 @@ extension MissionDateView {
       self.layer.borderWidth = .zero
     case .active:
       self.layer.borderWidth = 1
+      self.textField.textColor = DSKitAsset.Colors.white.color
+      self.rightChevron.tintColor = DSKitAsset.Colors.white.color
     case .completed:
       self.layer.borderWidth = .zero
+      self.textField.textColor = DSKitAsset.Colors.white.color
+      self.rightChevron.tintColor = DSKitAsset.Colors.white.color
     }
   }
   

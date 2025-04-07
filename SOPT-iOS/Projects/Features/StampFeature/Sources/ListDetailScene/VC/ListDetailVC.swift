@@ -122,7 +122,9 @@ public class ListDetailVC: UIViewController, ListDetailViewControllable {
         .setEnabled(false)
         .setColor(bgColor: DSKitAsset.Colors.white.color,
                   disableColor: DSKitAsset.Colors.gray300.color,
-                  textColor: DSKitAsset.Colors.black.color)
+                  textColor: DSKitAsset.Colors.black.color,
+                  disableTextcolor: DSKitAsset.Colors.black.color
+        )
     private lazy var backgroundDimmerView = CustomDimmerView(self)
     
     
@@ -314,7 +316,7 @@ extension ListDetailVC {
       .removeDuplicates()
       .withUnretained(self)
       .sink(receiveValue: { owner, date in
-          owner.bottomButton.setEnabled(!date.isEmpty && owner.textView.hasText)
+          owner.bottomButton.setEnabled(!date.isEmpty && !(owner.textView.text == I18N.ListDetail.memoPlaceHolder))
       }).store(in: self.cancelBag)
   }
   
@@ -571,19 +573,18 @@ extension ListDetailVC {
   }
   
   private func setTextView(_ state: TextViewState) {
+    self.textView.backgroundColor = DSKitAsset.Colors.gray900.color
+
     switch state {
     case .inactive:
-      self.textView.backgroundColor = DSKitAsset.Colors.gray900.color
       self.textView.textColor = DSKitAsset.Colors.gray300.color
       self.textView.layer.borderWidth = .zero
       self.textView.isEditable = true
     case .active:
-      self.textView.backgroundColor = DSKitAsset.Colors.gray900.color
       self.textView.textColor = DSKitAsset.Colors.white.color
       self.textView.layer.borderWidth = 1
       self.textView.isEditable = true
     case .completed:
-      self.textView.backgroundColor = DSKitAsset.Colors.gray800.color
       self.textView.textColor = DSKitAsset.Colors.white.color
       self.textView.layer.borderWidth = .zero
       self.textView.isEditable = false
