@@ -18,18 +18,21 @@ public class HomeRepository {
     private let calendarService: CalendarService
     private let userService: UserService
     private let stampService: StampService
+    private let pokeService: PokeService
     
     private let cancelBag = CancelBag()
     
     public init(homeService: HomeService,
                 calendarService: CalendarService,
                 userService: UserService,
-                stampService: StampService
+                stampService: StampService,
+                pokeService: PokeService
     ) {
         self.homeService = homeService
         self.calendarService = calendarService
         self.userService = userService
         self.stampService = stampService
+        self.pokeService = pokeService
     }
 }
 
@@ -116,6 +119,12 @@ extension HomeRepository: HomeRepositoryInterface {
     public func getReportUrl() -> AnyPublisher<Domain.SoptampReportUrlModel, any Error> {
         stampService.getReportUrl()
             .map { $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
+    
+    public func checkPokeNewUser() -> AnyPublisher<Bool, any Error> {
+        pokeService.isNewUser()
+            .map{ $0.isNew }
             .eraseToAnyPublisher()
     }
 }
