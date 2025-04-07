@@ -228,6 +228,8 @@ extension ApplicationCoordinator {
                         self?.handleWebLink(webLink: url)
                     case .calendar:
                         self?.showHomeCalendarDetail()
+                    case .poke(let isNewUser):
+                        _ = isNewUser ? self?.runPokeOnboardingFlow() : self?.runPokeFlow()
                     }
                 }
             case .soptlog:
@@ -315,6 +317,8 @@ extension ApplicationCoordinator {
                 self?.handleWebLink(webLink: url)
             case .calendar:
                 self?.showHomeCalendarDetail()
+            case .poke(let isNewUser):
+                isNewUser ? self?.runPokeOnboardingFlow() : self?.runPokeFlow()
             }
         }
         addDependency(coordinator)
