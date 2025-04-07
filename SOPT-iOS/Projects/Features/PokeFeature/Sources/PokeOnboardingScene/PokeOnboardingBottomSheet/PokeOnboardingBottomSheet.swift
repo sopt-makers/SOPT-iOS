@@ -76,8 +76,8 @@ public class PokeOnboardingBottomSheet: UIViewController {
     self.doneButton
       .signalForButtonClick()
       .withUnretained(self)
-      .sink(receiveValue: { _ in 
-        self.dismiss(animated: true)
+      .sink(receiveValue: { owner, _ in
+          owner.dismiss(animated: true)
       }).store(in: self.cancelBag)
   }
   
