@@ -26,12 +26,12 @@ public class StampGuideCVC: UICollectionViewCell {
     
     private let titleLabel = UILabel().then {
         $0.setTypoStyle(.SoptampFont.h1)
-        $0.textColor = DSKitAsset.Colors.soptampGray900.color
+        $0.textColor = DSKitAsset.Colors.white.color
     }
     
     private let captionLabel = UILabel().then {
         $0.textAlignment = .center
-        $0.textColor = DSKitAsset.Colors.soptampGray500.color
+        $0.textColor = DSKitAsset.Colors.gray200.color
         $0.text = " "
         $0.numberOfLines = 2
         $0.setTypoStyle(.SoptampFont.subtitle2)
@@ -56,7 +56,7 @@ public class StampGuideCVC: UICollectionViewCell {
 extension StampGuideCVC {
     
     private func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.soptampWhite.color
+        self.backgroundColor = DSKitAsset.Colors.gray950.color
     }
     
     private func setLayout() {

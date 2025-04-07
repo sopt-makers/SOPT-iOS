@@ -42,19 +42,25 @@ public final class StampGuideVC: UIViewController, StampGuideViewControllable {
         collectionView.isScrollEnabled = true
         collectionView.isPagingEnabled = true
         collectionView.showsHorizontalScrollIndicator = false
-        collectionView.backgroundColor = .clear
+        collectionView.backgroundColor = DSKitAsset.Colors.gray950.color
         return collectionView
     }()
     
     private lazy var pageControl = UIPageControl().then {
-        $0.pageIndicatorTintColor = DSKitAsset.Colors.soptampPurple200.color
-        $0.currentPageIndicatorTintColor = DSKitAsset.Colors.soptampPurple300.color
+        $0.pageIndicatorTintColor = DSKitAsset.Colors.gray500.color
+        $0.currentPageIndicatorTintColor = DSKitAsset.Colors.white.color
         $0.numberOfPages = 3
         $0.isUserInteractionEnabled = false
     }
     
-    private lazy var startButton = STCustomButton(title: I18N.StampGuide.okay).setEnabled(false).then {
+    private lazy var startButton = STCustomButton(title: I18N.StampGuide.okay).then {
         $0.addTarget(self, action: #selector(startButtonDidTap), for: .touchUpInside)
+        $0.setColor(
+            bgColor: DSKitAsset.Colors.white.color,
+            disableColor: DSKitAsset.Colors.gray800.color,
+            textColor: DSKitAsset.Colors.black.color,
+            disableTextcolor: DSKitAsset.Colors.gray300.color
+        )
     }
     
     // MARK: - View Life Cycle
@@ -63,6 +69,7 @@ public final class StampGuideVC: UIViewController, StampGuideViewControllable {
         super.viewDidLoad()
         self.setUI()
         self.setLayout()
+        self.setButtonDisabled()
         self.setCollectionViewCell()
         self.setStampGuideData()
     }
@@ -85,7 +92,7 @@ public final class StampGuideVC: UIViewController, StampGuideViewControllable {
 extension StampGuideVC {
     
     private func setUI() {
-        self.view.backgroundColor = DSKitAsset.Colors.soptampWhite.color
+        self.view.backgroundColor = DSKitAsset.Colors.gray950.color
     }
     
     private func setLayout() {
@@ -112,6 +119,10 @@ extension StampGuideVC {
             make.top.equalTo(startButton).offset(-80.adjustedH)
             make.centerX.equalToSuperview()
         }
+    }
+    
+    private func setButtonDisabled() {
+        self.startButton.setEnabled(false)  // 초기 시작값 false
     }
 }
 
