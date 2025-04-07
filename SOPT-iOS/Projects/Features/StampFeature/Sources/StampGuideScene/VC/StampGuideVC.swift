@@ -104,19 +104,19 @@ extension StampGuideVC {
         }
         
         stampGuideCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(70.adjustedH)
+            make.centerY.equalToSuperview().offset(-89)
             make.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-            make.height.equalTo(460.adjustedH)
+            make.height.equalTo(460)
         }
         
         startButton.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(70.adjustedH)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(32)
             make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
             make.height.equalTo(56)
         }
         
         pageControl.snp.makeConstraints { make in
-            make.top.equalTo(startButton).offset(-80.adjustedH)
+            make.top.equalTo(stampGuideCollectionView.snp.bottom).offset(28)
             make.centerX.equalToSuperview()
         }
     }
@@ -178,7 +178,7 @@ extension StampGuideVC: UICollectionViewDelegateFlowLayout {
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let length = self.view.frame.size.width
-        return CGSize(width: length, height: 460.adjustedH)
+        return CGSize(width: length, height: 460)
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {

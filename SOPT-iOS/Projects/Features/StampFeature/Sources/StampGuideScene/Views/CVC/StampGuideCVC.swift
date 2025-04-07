@@ -35,7 +35,7 @@ public class StampGuideCVC: UICollectionViewCell {
         $0.text = " "
         $0.numberOfLines = 2
         $0.setTypoStyle(.SoptampFont.subtitle2)
-        $0.setLineSpacing(lineSpacing: 8)
+        $0.setLineSpacing(lineSpacing: 5)
         $0.textAlignment = .center
     }
     
@@ -64,16 +64,16 @@ extension StampGuideCVC {
         
         imageView.snp.makeConstraints { make in
             make.top.centerX.equalToSuperview()
-            make.width.height.equalTo(contentView.snp.width).multipliedBy(0.8.adjustedH)
+            make.size.equalTo(335)
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(imageView.snp.bottom).offset(45)
+            make.top.equalTo(imageView.snp.bottom).offset(32)
             make.centerX.equalToSuperview()
         }
         
         captionLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(16)
+            make.top.equalTo(titleLabel.snp.bottom).offset(12)
             make.centerX.equalToSuperview()
         }
     }
