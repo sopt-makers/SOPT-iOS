@@ -199,6 +199,16 @@ extension HomeForMemberViewModel {
         
         return output
     }
+}
+
+// MARK: - Methods
+
+extension HomeForMemberViewModel {
+    private func trackAmplitude(event: AmplitudeEventType?) {
+        if let event {
+            AmplitudeInstance.shared.trackWithUserType(event: event)
+        }
+    }
     
     private func requestAuthorizationForNotification() {
         guard self.userType != .visitor,
@@ -216,14 +226,6 @@ extension HomeForMemberViewModel {
             if granted {
                 self.useCase.registerPushToken()
             }
-        }
-    }
-}
-
-extension HomeForMemberViewModel {
-    private func trackAmplitude(event: AmplitudeEventType?) {
-        if let event {
-            AmplitudeInstance.shared.trackWithUserType(event: event)
         }
     }
 }
