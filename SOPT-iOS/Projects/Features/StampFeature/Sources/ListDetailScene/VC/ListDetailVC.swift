@@ -24,53 +24,53 @@ import BaseFeatureDependency
 import StampFeatureInterface
 
 public enum TextViewState {
-  case inactive
-  case active
-  case completed
+    case inactive
+    case active
+    case completed
 }
 
 extension StarViewLevel {
-  var buttonTitleColor: UIColor {
-    switch self {
-    case .levelOne, .levelTwo:
-      return DSKitAsset.Colors.soptampWhite.color
-    case .levelThree:
-      return DSKitAsset.Colors.soptampGray700.color
+    var buttonTitleColor: UIColor {
+        switch self {
+        case .levelOne, .levelTwo:
+            return DSKitAsset.Colors.soptampWhite.color
+        case .levelThree:
+            return DSKitAsset.Colors.soptampGray700.color
+        }
     }
-  }
-  
-  var pointColor: UIColor {
-    switch self {
-    case .levelOne:
-      return DSKitAsset.Colors.soptampPink300.color
-    case .levelTwo:
-      return DSKitAsset.Colors.soptampPurple300.color
-    case .levelThree:
-      return DSKitAsset.Colors.soptampMint300.color
+    
+    var pointColor: UIColor {
+        switch self {
+        case .levelOne:
+            return DSKitAsset.Colors.soptampPink300.color
+        case .levelTwo:
+            return DSKitAsset.Colors.soptampPurple300.color
+        case .levelThree:
+            return DSKitAsset.Colors.soptampMint300.color
+        }
     }
-  }
-  
-  var disableColor: UIColor {
-    switch self {
-    case .levelOne:
-      return DSKitAsset.Colors.soptampPink200.color
-    case .levelTwo:
-      return DSKitAsset.Colors.soptampPurple200.color
-    case .levelThree:
-      return DSKitAsset.Colors.soptampMint200.color
+    
+    var disableColor: UIColor {
+        switch self {
+        case .levelOne:
+            return DSKitAsset.Colors.soptampPink200.color
+        case .levelTwo:
+            return DSKitAsset.Colors.soptampPurple200.color
+        case .levelThree:
+            return DSKitAsset.Colors.soptampMint200.color
+        }
     }
-  }
-  
-  var bgColor: UIColor {
-    switch self {
-    case .levelOne:
-      return DSKitAsset.Colors.soptampPink100.color
-    case .levelTwo:
-      return DSKitAsset.Colors.soptampPurple100.color
-    case .levelThree:
-      return DSKitAsset.Colors.soptampMint100.color
+    
+    var bgColor: UIColor {
+        switch self {
+        case .levelOne:
+            return DSKitAsset.Colors.soptampPink100.color
+        case .levelTwo:
+            return DSKitAsset.Colors.soptampPurple100.color
+        case .levelThree:
+            return DSKitAsset.Colors.soptampMint100.color
+        }
     }
-  }
 }
 
 public class ListDetailVC: UIViewController, ListDetailViewControllable {
@@ -137,22 +137,22 @@ public class ListDetailVC: UIViewController, ListDetailViewControllable {
         fatalError("init(coder:) has not been implemented")
     }
     
-  
-  // MARK: - View Life Cycle
-  
-  public override func viewDidLoad() {
-    super.viewDidLoad()
-    self.bindViews()
-    self.bindViewModels()
-    self.setLayout()
-    self.setStackView()
-    self.setDefaultUI()
-    self.setUI(sceneType)
-    self.setObserver()
-    self.setGesture()
-    self.setDelegate()
-    self.hideKeyboard()
-  }
+    
+    // MARK: - View Life Cycle
+    
+    public override func viewDidLoad() {
+        super.viewDidLoad()
+        self.bindViews()
+        self.bindViewModels()
+        self.setLayout()
+        self.setStackView()
+        self.setDefaultUI()
+        self.setUI(sceneType)
+        self.setObserver()
+        self.setGesture()
+        self.setDelegate()
+        self.hideKeyboard()
+    }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -164,503 +164,503 @@ public class ListDetailVC: UIViewController, ListDetailViewControllable {
 
 extension ListDetailVC {
     
-  private func bindViews() {
-      naviBar.leftButtonTapped
-          .withUnretained(self)
-          .sink { owner, _ in
-              owner.onNaviBackTap?()
-          }.store(in: cancelBag)
-  }
+    private func bindViews() {
+        naviBar.leftButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNaviBackTap?()
+            }.store(in: cancelBag)
+    }
     
-  private func bindViewModels() {
-    let rightButtonTapped = naviBar.rightButtonTapped
-      .withUnretained(self)
-      .map { owner, _ in
-          owner.sceneType
-      }
-      .asDriver()
-    
-    let bottomButtonTapped = bottomButton
-      .publisher(for: .touchUpInside)
-      .withUnretained(self)
-      .map { owner, _ in
-        if owner.sceneType == .edit {
-          owner.bottomButton.setEnabled(false)
-        }
-        if owner.sceneType == .none {
-          owner.showDimmerView()
-        }
-        let content = owner.textView.text
-        return ListDetailRequestModel(
-          missionId: owner.viewModel.missionId ?? 0,
-          content: content ?? "",
-          activityDate: owner.missionDateTextField.getText() ?? ""
-        )
-      }
-      .asDriver()
-      
-    let input = ListDetailViewModel.Input(
-      viewDidLoad: Driver.just(()), 
-      imageSelected: self.imageSelected.eraseToAnyPublisher(),
-      bottomButtonTapped: bottomButtonTapped,
-      rightButtonTapped: rightButtonTapped,
-      deleteButtonTapped: deleteButtonTapped.asDriver())
-    
-    let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
-    
-    output.$listDetailModel
-      .compactMap { $0 }
-      .withUnretained(self)
-      .sink { owner, model in
-        if model.image.isEmpty {
-          AlertUtils.presentNetworkAlertVC(theme: .soptamp,animated: true) {
-            owner.backgroundDimmerView.removeFromSuperview()
-          }
-        } else {
-          owner.setData(model)
-          if owner.sceneType == .none {
-            owner.onComplete?(owner.starLevel) {
-              UIView.animate(withDuration: 0.2, delay: 0, animations: {
-                owner.backgroundDimmerView.alpha = 0
-              }) { _ in
-                owner.backgroundDimmerView.removeFromSuperview()
-              }
+    private func bindViewModels() {
+        let rightButtonTapped = naviBar.rightButtonTapped
+            .withUnretained(self)
+            .map { owner, _ in
+                owner.sceneType
             }
-          }
-          owner.sceneType = .completed
-          owner.reloadData(owner.sceneType)
+            .asDriver()
+        
+        let bottomButtonTapped = bottomButton
+            .publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .map { owner, _ in
+                if owner.sceneType == .edit {
+                    owner.bottomButton.setEnabled(false)
+                }
+                if owner.sceneType == .none {
+                    owner.showDimmerView()
+                }
+                let content = owner.textView.text
+                return ListDetailRequestModel(
+                    missionId: owner.viewModel.missionId ?? 0,
+                    content: content ?? "",
+                    activityDate: owner.missionDateTextField.getText() ?? ""
+                )
+            }
+            .asDriver()
+        
+        let input = ListDetailViewModel.Input(
+            viewDidLoad: Driver.just(()),
+            imageSelected: self.imageSelected.eraseToAnyPublisher(),
+            bottomButtonTapped: bottomButtonTapped,
+            rightButtonTapped: rightButtonTapped,
+            deleteButtonTapped: deleteButtonTapped.asDriver())
+        
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        
+        output.$listDetailModel
+            .compactMap { $0 }
+            .withUnretained(self)
+            .sink { owner, model in
+                if model.image.isEmpty {
+                    AlertUtils.presentNetworkAlertVC(theme: .soptamp,animated: true) {
+                        owner.backgroundDimmerView.removeFromSuperview()
+                    }
+                } else {
+                    owner.setData(model)
+                    if owner.sceneType == .none {
+                        owner.onComplete?(owner.starLevel) {
+                            UIView.animate(withDuration: 0.2, delay: 0, animations: {
+                                owner.backgroundDimmerView.alpha = 0
+                            }) { _ in
+                                owner.backgroundDimmerView.removeFromSuperview()
+                            }
+                        }
+                    }
+                    owner.sceneType = .completed
+                    owner.reloadData(owner.sceneType)
+                }
+            }.store(in: self.cancelBag)
+        
+        output.editSuccessed
+            .withUnretained(self)
+            .sink { owner, successed in
+                if successed {
+                    owner.reloadData(.completed)
+                    owner.showToast(message: I18N.ListDetail.editCompletedToast)
+                } else {
+                    AlertUtils.presentNetworkAlertVC(theme: .soptamp, animated: true)
+                }
+            }.store(in: self.cancelBag)
+        
+        output.showDeleteAlert
+            .withUnretained(self)
+            .sink { owner, delete in
+                if delete {
+                    owner.presentDeleteAlertVC()
+                } else {
+                    owner.reloadData(.edit)
+                }
+            }.store(in: self.cancelBag)
+        
+        output.deleteSuccessed
+            .withUnretained(self)
+            .sink { owner, success in
+                if success {
+                    owner.navigationController?.popViewController(animated: true)
+                } else {
+                    AlertUtils.presentNetworkAlertVC(theme: .soptamp, animated: true)
+                }
+            }.store(in: self.cancelBag)
+    }
+    
+    private func setData(_ model: ListDetailModel) {
+        guard self.sceneType != .none else { return }
+        
+        if let imageURL = URL(string: model.image) {
+            self.missionImageView.setImage(with: imageURL.absoluteString)
         }
-      }.store(in: self.cancelBag)
+        self.missionDateTextField.setText(with: model.activityDate)
+        self.missionDateTextField.setIsEnabled(false)
+        self.missionDateTextField.setTextFieldView(.inactive)
+        self.textView.text = model.content
+    }
     
-    output.editSuccessed
-      .withUnretained(self)
-      .sink { owner, successed in
-        if successed {
-          owner.reloadData(.completed)
-          owner.showToast(message: I18N.ListDetail.editCompletedToast)
-        } else {
-          AlertUtils.presentNetworkAlertVC(theme: .soptamp, animated: true)
+    private func reloadData(_ scenetype: ListDetailSceneType) {
+        self.sceneType = scenetype
+        self.setUI(self.sceneType)
+    }
+    
+    private func resetData() {
+        if textView.text != I18N.ListDetail.memoPlaceHolder && textView.text != originText {
+            textView.text = originText
         }
-      }.store(in: self.cancelBag)
-    
-    output.showDeleteAlert
-      .withUnretained(self)
-      .sink { owner, delete in
-        if delete {
-          owner.presentDeleteAlertVC()
-        } else {
-          owner.reloadData(.edit)
+        
+        if let image = missionImageView.image {
+            if image != originImage {
+                missionImageView.image = originImage
+            }
         }
-      }.store(in: self.cancelBag)
+    }
     
-    output.deleteSuccessed
-      .withUnretained(self)
-      .sink { owner, success in
-        if success {
-          owner.navigationController?.popViewController(animated: true)
-        } else {
-          AlertUtils.presentNetworkAlertVC(theme: .soptamp, animated: true)
+    private func setObserver() {
+        keyboardWillShowObserver = NotificationCenter.default.addObserver(
+            forName: UIResponder.keyboardWillShowNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            self?.keyboardWillShow(notification as NSNotification)
         }
-      }.store(in: self.cancelBag)
-  }
-  
-  private func setData(_ model: ListDetailModel) {
-    guard self.sceneType != .none else { return }
-    
-    if let imageURL = URL(string: model.image) {
-      self.missionImageView.setImage(with: imageURL.absoluteString)
-    }
-    self.missionDateTextField.setText(with: model.activityDate)
-    self.missionDateTextField.setIsEnabled(false)
-    self.missionDateTextField.setTextFieldView(.inactive)
-    self.textView.text = model.content
-  }
-  
-  private func reloadData(_ scenetype: ListDetailSceneType) {
-    self.sceneType = scenetype
-    self.setUI(self.sceneType)
-  }
-  
-  private func resetData() {
-    if textView.text != I18N.ListDetail.memoPlaceHolder && textView.text != originText {
-      textView.text = originText
+        
+        keyboardWillHideObserver = NotificationCenter.default.addObserver(
+            forName: UIResponder.keyboardWillHideNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            self?.keyboardWillHide(notification as NSNotification)
+        }
+        
+        self.missionDateTextField
+            .signalForChangeDate()
+            .dropFirst()
+            .removeDuplicates()
+            .withUnretained(self)
+            .sink(receiveValue: { owner, date in
+                owner.bottomButton.setEnabled(!date.isEmpty && !(owner.textView.text == I18N.ListDetail.memoPlaceHolder))
+            }).store(in: self.cancelBag)
     }
     
-    if let image = missionImageView.image {
-      if image != originImage {
-        missionImageView.image = originImage
-      }
-    }
-  }
-  
-  private func setObserver() {
-      keyboardWillShowObserver = NotificationCenter.default.addObserver(
-          forName: UIResponder.keyboardWillShowNotification,
-          object: nil,
-          queue: .main
-      ) { [weak self] notification in
-          self?.keyboardWillShow(notification as NSNotification)
-      }
-      
-      keyboardWillHideObserver = NotificationCenter.default.addObserver(
-          forName: UIResponder.keyboardWillHideNotification,
-          object: nil,
-          queue: .main
-      ) { [weak self] notification in
-          self?.keyboardWillHide(notification as NSNotification)
-      }
-    
-    self.missionDateTextField
-      .signalForChangeDate()
-      .dropFirst()
-      .removeDuplicates()
-      .withUnretained(self)
-      .sink(receiveValue: { owner, date in
-          owner.bottomButton.setEnabled(!date.isEmpty && !(owner.textView.text == I18N.ListDetail.memoPlaceHolder))
-      }).store(in: self.cancelBag)
-  }
-  
-  private func setGesture() {
-    let tapGesture = UITapGestureRecognizer(target: self, action: #selector(requestPhotoLibrary))
-    missionImageView.addGestureRecognizer(tapGesture)
-  }
-  
-  private func setDelegate() {
-    self.textView.delegate = self
-  }
-  
-  private func openLibrary() {
-    var configuration = PHPickerConfiguration()
-    configuration.selectionLimit = 1
-    configuration.filter = .any(of: [.images, .livePhotos])
-    
-    DispatchQueue.main.async {
-      let pickerVC = PHPickerViewController(configuration: configuration)
-      pickerVC.delegate = self
-      
-      self.present(pickerVC, animated: true)
-    }
-  }
-  
-  private func moveToSetting() {
-    let alertController = UIAlertController(title: I18N.Photo.authTitle, message: I18N.Photo.authMessage, preferredStyle: .alert)
-    let okAction = UIAlertAction(title: I18N.Photo.moveToSetting, style: .default) { action in
-      guard let settingURL = URL(string: UIApplication.openSettingsURLString) else { return }
-      if UIApplication.shared.canOpenURL(settingURL) {
-        UIApplication.shared.open(settingURL)
-      }
-    }
-    let cancelAction = UIAlertAction(title: I18N.Default.ok, style: .cancel)
-    
-    alertController.addAction(okAction)
-    alertController.addAction(cancelAction)
-    
-    makeVibrate()
-    
-    self.present(alertController, animated: true)
-  }
-  
-  private func presentDeleteAlertVC() {
-    AlertUtils.presentAlertVC(
-      type: .title,
-      theme: .soptamp,
-      title: I18N.ListDetail.deleteTitle,
-      description: "",
-      customButtonTitle: I18N.Default.delete,
-      customAction: {
-        self.deleteButtonTapped.send(true)
-      }
-    )
-  }
-  
-  private func showDimmerView() {
-    self.backgroundDimmerView.alpha = 0
-    
-    self.view.addSubview(backgroundDimmerView)
-    
-    backgroundDimmerView.snp.makeConstraints { make in
-      make.edges.greaterThanOrEqualToSuperview()
+    private func setGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(requestPhotoLibrary))
+        missionImageView.addGestureRecognizer(tapGesture)
     }
     
-    UIView.animate(withDuration: 0.2, delay: 0) {
-      self.backgroundDimmerView.alpha = 1
+    private func setDelegate() {
+        self.textView.delegate = self
     }
-  }
-  
-  // MARK: - @objc
-  
-  @objc
-  private func keyboardWillShow(_ notification: NSNotification) {
-    if let keyboardSize = (
-      notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue
-    )?.cgRectValue {
-      let scrollPosition = CGPoint(x: 0, y: keyboardSize.height + (UIDevice.current.hasNotch ? -40 : 66))
-      self.scrollView.setContentOffset(scrollPosition, animated: true)
+    
+    private func openLibrary() {
+        var configuration = PHPickerConfiguration()
+        configuration.selectionLimit = 1
+        configuration.filter = .any(of: [.images, .livePhotos])
+        
+        DispatchQueue.main.async {
+            let pickerVC = PHPickerViewController(configuration: configuration)
+            pickerVC.delegate = self
+            
+            self.present(pickerVC, animated: true)
+        }
     }
-  }
-  
-  @objc
-  private func keyboardWillHide(_ notification: NSNotification) {
-    self.scrollView.setContentOffset(.zero, animated: true)
-  }
-  
-  @objc
-  private func requestPhotoLibrary() {
-    switch PHPhotoLibrary.authorizationStatus(for: .readWrite) {
-    case .authorized, .limited:
-      openLibrary()
-    case .notDetermined:
-      PHPhotoLibrary.requestAuthorization(for: .readWrite) { newStatus in
-        switch newStatus {
-        case .authorized, .limited :
-          self.openLibrary()
+    
+    private func moveToSetting() {
+        let alertController = UIAlertController(title: I18N.Photo.authTitle, message: I18N.Photo.authMessage, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: I18N.Photo.moveToSetting, style: .default) { action in
+            guard let settingURL = URL(string: UIApplication.openSettingsURLString) else { return }
+            if UIApplication.shared.canOpenURL(settingURL) {
+                UIApplication.shared.open(settingURL)
+            }
+        }
+        let cancelAction = UIAlertAction(title: I18N.Default.ok, style: .cancel)
+        
+        alertController.addAction(okAction)
+        alertController.addAction(cancelAction)
+        
+        makeVibrate()
+        
+        self.present(alertController, animated: true)
+    }
+    
+    private func presentDeleteAlertVC() {
+        AlertUtils.presentAlertVC(
+            type: .title,
+            theme: .soptamp,
+            title: I18N.ListDetail.deleteTitle,
+            description: "",
+            customButtonTitle: I18N.Default.delete,
+            customAction: {
+                self.deleteButtonTapped.send(true)
+            }
+        )
+    }
+    
+    private func showDimmerView() {
+        self.backgroundDimmerView.alpha = 0
+        
+        self.view.addSubview(backgroundDimmerView)
+        
+        backgroundDimmerView.snp.makeConstraints { make in
+            make.edges.greaterThanOrEqualToSuperview()
+        }
+        
+        UIView.animate(withDuration: 0.2, delay: 0) {
+            self.backgroundDimmerView.alpha = 1
+        }
+    }
+    
+    // MARK: - @objc
+    
+    @objc
+    private func keyboardWillShow(_ notification: NSNotification) {
+        if let keyboardSize = (
+            notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue
+        )?.cgRectValue {
+            let scrollPosition = CGPoint(x: 0, y: keyboardSize.height + (UIDevice.current.hasNotch ? -40 : 66))
+            self.scrollView.setContentOffset(scrollPosition, animated: true)
+        }
+    }
+    
+    @objc
+    private func keyboardWillHide(_ notification: NSNotification) {
+        self.scrollView.setContentOffset(.zero, animated: true)
+    }
+    
+    @objc
+    private func requestPhotoLibrary() {
+        switch PHPhotoLibrary.authorizationStatus(for: .readWrite) {
+        case .authorized, .limited:
+            openLibrary()
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization(for: .readWrite) { newStatus in
+                switch newStatus {
+                case .authorized, .limited :
+                    self.openLibrary()
+                case .denied:
+                    DispatchQueue.main.async {
+                        self.moveToSetting()
+                    }
+                default:
+                    break
+                }
+            }
         case .denied:
-          DispatchQueue.main.async {
-            self.moveToSetting()
-          }
+            DispatchQueue.main.async {
+                self.moveToSetting()
+            }
         default:
-          break
+            break
         }
-      }
-    case .denied:
-      DispatchQueue.main.async {
-        self.moveToSetting()
-      }
-    default:
-      break
     }
-  }
 }
 
 // MARK: - PHPickerViewControllerDelegate
 
 extension ListDetailVC: PHPickerViewControllerDelegate {
-  public func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-    
-    self.dismiss(animated: true)
-    
-    let itemProvider = results.first?.itemProvider
-    if let itemProvider = itemProvider,
-       itemProvider.canLoadObject(ofClass: UIImage.self) {
-      itemProvider.loadObject(ofClass: UIImage.self) { image, error in
-        DispatchQueue.main.async {
-          guard let selectedImage = image as? UIImage else { return }
-          self.missionImageView.image = selectedImage
-          
-          if let imageData = selectedImage.jpegData(compressionQuality: 0.9) {
-            self.imageSelected.send(imageData)
-          }
-          self.imagePlaceholderLabel.isHidden = true
-          if self.textView.hasText && self.textView.text != I18N.ListDetail.memoPlaceHolder { self.bottomButton.setEnabled(true)
-          }
+    public func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        
+        self.dismiss(animated: true)
+        
+        let itemProvider = results.first?.itemProvider
+        if let itemProvider = itemProvider,
+           itemProvider.canLoadObject(ofClass: UIImage.self) {
+            itemProvider.loadObject(ofClass: UIImage.self) { image, error in
+                DispatchQueue.main.async {
+                    guard let selectedImage = image as? UIImage else { return }
+                    self.missionImageView.image = selectedImage
+                    
+                    if let imageData = selectedImage.jpegData(compressionQuality: 0.9) {
+                        self.imageSelected.send(imageData)
+                    }
+                    self.imagePlaceholderLabel.isHidden = true
+                    if self.textView.hasText && self.textView.text != I18N.ListDetail.memoPlaceHolder { self.bottomButton.setEnabled(true)
+                    }
+                }
+            }
         }
-      }
     }
-  }
 }
 
 // MARK: - UITextFieldDelegate
 
 extension ListDetailVC: UITextViewDelegate {
-  public func textView(
-    _ textView: UITextView,
-    shouldChangeTextIn range: NSRange,
-    replacementText text: String
-  ) -> Bool {
-    if (text == "\n") {
-      textView.resignFirstResponder()
+    public func textView(
+        _ textView: UITextView,
+        shouldChangeTextIn range: NSRange,
+        replacementText text: String
+    ) -> Bool {
+        if (text == "\n") {
+            textView.resignFirstResponder()
+        }
+        return true
     }
-    return true
-  }
-  
-  public func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-    if textView.text == I18N.ListDetail.memoPlaceHolder {
-      self.textView.text = .none
+    
+    public func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+        if textView.text == I18N.ListDetail.memoPlaceHolder {
+            self.textView.text = .none
+        }
+        setTextView(.active)
+        return true
     }
-    setTextView(.active)
-    return true
-  }
-  
-  public func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
-    if textView.text == "" {
-      self.textView.text = I18N.ListDetail.memoPlaceHolder
-      setTextView(.inactive)
+    
+    public func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
+        if textView.text == "" {
+            self.textView.text = I18N.ListDetail.memoPlaceHolder
+            setTextView(.inactive)
+        }
+        return true
     }
-    return true
-  }
-  
-  public func textViewDidChange(_ textView: UITextView) {
-    let missionImageViewFilled = missionImageView.image != nil
-    self.bottomButton.setEnabled(textView.hasText && missionImageViewFilled && textView.text != originText)
-  }
+    
+    public func textViewDidChange(_ textView: UITextView) {
+        let missionImageViewFilled = missionImageView.image != nil
+        self.bottomButton.setEnabled(textView.hasText && missionImageViewFilled && textView.text != originText)
+    }
 }
 
 // MARK: - UI & Layout
 
 extension ListDetailVC {
-  private func setUI(_ type: ListDetailSceneType) {
-    if type == .edit {
-      self.naviBar
-        .setRightButton(.delete)
-        .resetLeftButtonAction {
-          self.resetData()
-          self.reloadData(.completed)
+    private func setUI(_ type: ListDetailSceneType) {
+        if type == .edit {
+            self.naviBar
+                .setRightButton(.delete)
+                .resetLeftButtonAction {
+                    self.resetData()
+                    self.reloadData(.completed)
+                }
+            self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+            self.originText = textView.text
+            self.originImage = self.missionImageView.image ?? UIImage()
+            self.bottomButton.changeTitle(attributedString: I18N.ListDetail.editComplete)
+                .setEnabled(false)
+            self.missionDateTextField.setIsEnabled(true)
+        } else {
+            self.naviBar.resetLeftButtonAction()
+            self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+            self.bottomButton.changeTitle(attributedString: I18N.ListDetail.missionComplete)
         }
-      self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-      self.originText = textView.text
-      self.originImage = self.missionImageView.image ?? UIImage()
-      self.bottomButton.changeTitle(attributedString: I18N.ListDetail.editComplete)
-        .setEnabled(false)
-      self.missionDateTextField.setIsEnabled(true)
-    } else {
-      self.naviBar.resetLeftButtonAction()
-      self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-      self.bottomButton.changeTitle(attributedString: I18N.ListDetail.missionComplete)
+        
+        switch type {
+        case .none, .edit:
+            self.scrollView.isScrollEnabled = true
+            self.missionView.backgroundColor = DSKitAsset.Colors.gray800.color
+            self.setTextView(.inactive)
+            self.imagePlaceholderLabel.isHidden = missionImageView.image == nil ? false : true
+            self.missionImageView.isUserInteractionEnabled = true
+            self.bottomButton.isHidden = false
+        case .completed:
+            self.scrollView.isScrollEnabled = false
+            self.scrollView.setContentOffset(.zero, animated: true)
+            self.naviBar.setRightButton(.addRecord)
+            self.missionView.backgroundColor = DSKitAsset.Colors.gray800.color
+            self.setTextView(.completed)
+            self.imagePlaceholderLabel.isHidden = true
+            self.bottomButton.isHidden = true
+            self.missionImageView.isUserInteractionEnabled = false
+            self.missionDateTextField.setTextFieldView(.completed)
+        }
+        
+        if viewModel.isOtherUser {
+            self.naviBar.hideRightButton()
+        }
     }
     
-    switch type {
-    case .none, .edit:
-      self.scrollView.isScrollEnabled = true
-      self.missionView.backgroundColor = DSKitAsset.Colors.gray800.color
-      self.setTextView(.inactive)
-      self.imagePlaceholderLabel.isHidden = missionImageView.image == nil ? false : true
-      self.missionImageView.isUserInteractionEnabled = true
-      self.bottomButton.isHidden = false
-    case .completed:
-      self.scrollView.isScrollEnabled = false
-      self.scrollView.setContentOffset(.zero, animated: true)
-      self.naviBar.setRightButton(.addRecord)
-      self.missionView.backgroundColor = DSKitAsset.Colors.gray800.color
-      self.setTextView(.completed)
-      self.imagePlaceholderLabel.isHidden = true
-      self.bottomButton.isHidden = true
-      self.missionImageView.isUserInteractionEnabled = false
-      self.missionDateTextField.setTextFieldView(.completed)
+    private func setDefaultUI() {
+        self.navigationController?.navigationBar.isHidden = true
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
+        
+        self.view.backgroundColor = DSKitAsset.Colors.gray950.color
+        
+        self.scrollView.keyboardDismissMode = .onDrag
+        self.scrollView.showsVerticalScrollIndicator = false
+        self.scrollView.contentInset = UIEdgeInsets(top: 7, left: 0, bottom: 32, right: 0)
+        
+        self.missionImageView.backgroundColor = DSKitAsset.Colors.gray900.color
+        self.missionImageView.layer.masksToBounds = true
+        self.missionImageView.contentMode = .scaleAspectFill
+        self.missionImageView.layer.cornerRadius = 9
+        
+        self.textView.layer.cornerRadius = 12
+        self.textView.layer.borderColor = DSKitAsset.Colors.gray500.color.cgColor
+        self.textView.textContainerInset = UIEdgeInsets(top: 14, left: 14, bottom: 14, right: 14)
+        
+        self.imagePlaceholderLabel.textColor = DSKitAsset.Colors.gray300.color
+        self.imagePlaceholderLabel.setTypoStyle(.SoptampFont.subtitle2)
+        self.textView.setTypoStyle(.SoptampFont.caption1)
+        
+        self.imagePlaceholderLabel.text = I18N.ListDetail.imagePlaceHolder
+        self.textView.text = I18N.ListDetail.memoPlaceHolder
+        
+        self.textView.returnKeyType = .done
     }
     
-    if viewModel.isOtherUser {
-      self.naviBar.hideRightButton()
-    }
-  }
-  
-  private func setDefaultUI() {
-    self.navigationController?.navigationBar.isHidden = true
-    self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
-    
-    self.view.backgroundColor = DSKitAsset.Colors.gray950.color
-    
-    self.scrollView.keyboardDismissMode = .onDrag
-    self.scrollView.showsVerticalScrollIndicator = false
-    self.scrollView.contentInset = UIEdgeInsets(top: 7, left: 0, bottom: 32, right: 0)
-    
-    self.missionImageView.backgroundColor = DSKitAsset.Colors.gray900.color
-    self.missionImageView.layer.masksToBounds = true
-    self.missionImageView.contentMode = .scaleAspectFill
-    self.missionImageView.layer.cornerRadius = 9
-    
-    self.textView.layer.cornerRadius = 12
-    self.textView.layer.borderColor = DSKitAsset.Colors.gray500.color.cgColor
-    self.textView.textContainerInset = UIEdgeInsets(top: 14, left: 14, bottom: 14, right: 14)
-    
-    self.imagePlaceholderLabel.textColor = DSKitAsset.Colors.gray300.color
-    self.imagePlaceholderLabel.setTypoStyle(.SoptampFont.subtitle2)
-    self.textView.setTypoStyle(.SoptampFont.caption1)
-    
-    self.imagePlaceholderLabel.text = I18N.ListDetail.imagePlaceHolder
-    self.textView.text = I18N.ListDetail.memoPlaceHolder
-    
-    self.textView.returnKeyType = .done
-  }
-  
-  private func setTextView(_ state: TextViewState) {
-    self.textView.backgroundColor = DSKitAsset.Colors.gray900.color
-
-    switch state {
-    case .inactive:
-      self.textView.textColor = DSKitAsset.Colors.gray300.color
-      self.textView.layer.borderWidth = .zero
-      self.textView.isEditable = true
-    case .active:
-      self.textView.textColor = DSKitAsset.Colors.white.color
-      self.textView.layer.borderWidth = 1
-      self.textView.isEditable = true
-    case .completed:
-      self.textView.textColor = DSKitAsset.Colors.white.color
-      self.textView.layer.borderWidth = .zero
-      self.textView.isEditable = false
-    }
-  }
-  
-  private func setStackView() {
-    self.contentStackView.axis = .vertical
-    self.contentStackView.distribution = .fill
-    self.contentStackView.spacing = UIDevice.current.hasNotch ? 16 : 14
-  }
-  
-  private func setLayout() {
-    self.setScrollViewLayout()
-    self.view.addSubviews(scrollView, naviBar)
-    
-    naviBar.snp.makeConstraints { make in
-      make.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)
+    private func setTextView(_ state: TextViewState) {
+        self.textView.backgroundColor = DSKitAsset.Colors.gray900.color
+        
+        switch state {
+        case .inactive:
+            self.textView.textColor = DSKitAsset.Colors.gray300.color
+            self.textView.layer.borderWidth = .zero
+            self.textView.isEditable = true
+        case .active:
+            self.textView.textColor = DSKitAsset.Colors.white.color
+            self.textView.layer.borderWidth = 1
+            self.textView.isEditable = true
+        case .completed:
+            self.textView.textColor = DSKitAsset.Colors.white.color
+            self.textView.layer.borderWidth = .zero
+            self.textView.isEditable = false
+        }
     }
     
-    scrollView.snp.makeConstraints { make in
-      make.top.equalTo(naviBar.snp.bottom).offset(7)
-      make.leading.trailing.equalToSuperview().inset(20)
-      make.bottom.equalToSuperview()
-    }
-  }
-  
-  private func setStackViewLayout() {
-    contentStackView.addArrangedSubviews(missionView, missionImageView, missionDateTextField, textView)
-    
-    missionView.snp.makeConstraints { make in
-      make.leading.top.trailing.equalToSuperview()
-      make.height.equalTo(64)
+    private func setStackView() {
+        self.contentStackView.axis = .vertical
+        self.contentStackView.distribution = .fill
+        self.contentStackView.spacing = UIDevice.current.hasNotch ? 16 : 14
     }
     
-    missionImageView.snp.makeConstraints { make in
-      make.leading.trailing.equalToSuperview()
-      make.height.equalTo(self.missionImageView.snp.width)
+    private func setLayout() {
+        self.setScrollViewLayout()
+        self.view.addSubviews(scrollView, naviBar)
+        
+        naviBar.snp.makeConstraints { make in
+            make.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)
+        }
+        
+        scrollView.snp.makeConstraints { make in
+            make.top.equalTo(naviBar.snp.bottom).offset(7)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.bottom.equalToSuperview()
+        }
     }
     
-    missionDateTextField.snp.makeConstraints {
-      $0.height.equalTo(39.f)
+    private func setStackViewLayout() {
+        contentStackView.addArrangedSubviews(missionView, missionImageView, missionDateTextField, textView)
+        
+        missionView.snp.makeConstraints { make in
+            make.leading.top.trailing.equalToSuperview()
+            make.height.equalTo(64)
+        }
+        
+        missionImageView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(self.missionImageView.snp.width)
+        }
+        
+        missionDateTextField.snp.makeConstraints {
+            $0.height.equalTo(39.f)
+        }
+        
+        textView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(self.contentStackView.snp.width).multipliedBy(0.39)
+        }
+        
+        contentStackView.addSubview(imagePlaceholderLabel)
+        
+        imagePlaceholderLabel.snp.makeConstraints { make in
+            make.center.equalTo(missionImageView.snp.center)
+        }
     }
     
-    textView.snp.makeConstraints { make in
-      make.leading.trailing.equalToSuperview()
-      make.height.equalTo(self.contentStackView.snp.width).multipliedBy(0.39)
+    private func setScrollViewLayout() {
+        self.setStackViewLayout()
+        
+        self.scrollView.addSubviews(contentView)
+        
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalToSuperview()
+        }
+        
+        contentView.addSubviews(contentStackView, bottomButton)
+        
+        contentStackView.snp.makeConstraints { make in
+            make.leading.top.trailing.equalToSuperview()
+        }
+        
+        bottomButton.snp.makeConstraints { make in
+            make.leading.trailing.bottom.equalToSuperview()
+            make.top.equalTo(contentStackView.snp.bottom).offset(UIDevice.current.hasNotch ? 30 : 20)
+            make.height.equalTo(56)
+        }
     }
-    
-    contentStackView.addSubview(imagePlaceholderLabel)
-    
-    imagePlaceholderLabel.snp.makeConstraints { make in
-      make.center.equalTo(missionImageView.snp.center)
-    }
-  }
-  
-  private func setScrollViewLayout() {
-    self.setStackViewLayout()
-    
-    self.scrollView.addSubviews(contentView)
-    
-    contentView.snp.makeConstraints { make in
-      make.edges.equalToSuperview()
-      make.width.equalToSuperview()
-    }
-    
-    contentView.addSubviews(contentStackView, bottomButton)
-    
-    contentStackView.snp.makeConstraints { make in
-      make.leading.top.trailing.equalToSuperview()
-    }
-    
-    bottomButton.snp.makeConstraints { make in
-      make.leading.trailing.bottom.equalToSuperview()
-      make.top.equalTo(contentStackView.snp.bottom).offset(UIDevice.current.hasNotch ? 30 : 20)
-      make.height.equalTo(56)
-    }
-  }
 }

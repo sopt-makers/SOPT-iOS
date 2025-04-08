@@ -13,211 +13,211 @@ import Core
 import DSKit
 
 public final class MissionDateView: UIView {
-  private enum Metric {
-    static let contentTop = 9.f
-    static let contentLeadingTrailing = 14.f
-    static let contentBottom = 10.f
-    
-    static let toolBarHeight = 44.f
-    static let chevronLength = 20.f
-  }
-  
-  private enum Constant {
-    static let cornerRadius = 9.f
-  }
-  
-  private lazy var contentStackView = UIStackView().then {
-    $0.axis = .horizontal
-    $0.spacing = 0.f
-  }
-  
-  private lazy var textField = UITextField().then {
-    $0.attributedPlaceholder = self.getAttributedString(I18N.ListDetail.missionDatePlaceHolder)
-    $0.textColor = DSKitAsset.Colors.gray50.color
-    $0.font = .SoptampFont.caption1
-  }
-  private let rightChevron = UIImageView().then {
-    $0.image = DSKitAsset.Assets.iconChevronRight.image.withRenderingMode(.alwaysTemplate)
-    $0.tintColor = DSKitAsset.Colors.gray300.color
-  }
-  
-  // MARK: - Private Variables
-  private var cancelBag = CancelBag()
-  private var selectAndFormattedDate: String?
-  
-  public override init(frame: CGRect) {
-    super.init(frame: frame)
-    
-    self.backgroundColor = DSKitAsset.Colors.gray900.color
-    self.layer.cornerRadius = Constant.cornerRadius
-    self.layer.borderColor = DSKitAsset.Colors.gray500.color.cgColor
-    
-    self.initializeViews()
-    self.initializeDatePicker()
-    
-    self.setupConstraints()
-    
-    self.textField
-      .publisher(for: .editingDidBegin)
-      .compactMap { $0.text }
-      .receive(on: RunLoop.main)
-      .sink(receiveValue: { [weak self] text in
-        self?.setTextFieldView(.active)
-      }).store(in: self.cancelBag)
-
-      
-    self.textField
-      .publisher(for: .editingDidEnd)
-      .compactMap { $0.text }
-      .receive(on: RunLoop.main)
-      .sink(receiveValue: { [weak self] text in
-        guard text.isEmpty else { return }
+    private enum Metric {
+        static let contentTop = 9.f
+        static let contentLeadingTrailing = 14.f
+        static let contentBottom = 10.f
         
-        self?.setTextFieldView(.inactive)
-      }).store(in: self.cancelBag)
-  }
-  
-  required init?(coder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
+        static let toolBarHeight = 44.f
+        static let chevronLength = 20.f
+    }
+    
+    private enum Constant {
+        static let cornerRadius = 9.f
+    }
+    
+    private lazy var contentStackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.spacing = 0.f
+    }
+    
+    private lazy var textField = UITextField().then {
+        $0.attributedPlaceholder = self.getAttributedString(I18N.ListDetail.missionDatePlaceHolder)
+        $0.textColor = DSKitAsset.Colors.gray50.color
+        $0.font = .SoptampFont.caption1
+    }
+    private let rightChevron = UIImageView().then {
+        $0.image = DSKitAsset.Assets.iconChevronRight.image.withRenderingMode(.alwaysTemplate)
+        $0.tintColor = DSKitAsset.Colors.gray300.color
+    }
+    
+    // MARK: - Private Variables
+    private var cancelBag = CancelBag()
+    private var selectAndFormattedDate: String?
+    
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        self.backgroundColor = DSKitAsset.Colors.gray900.color
+        self.layer.cornerRadius = Constant.cornerRadius
+        self.layer.borderColor = DSKitAsset.Colors.gray500.color.cgColor
+        
+        self.initializeViews()
+        self.initializeDatePicker()
+        
+        self.setupConstraints()
+        
+        self.textField
+            .publisher(for: .editingDidBegin)
+            .compactMap { $0.text }
+            .receive(on: RunLoop.main)
+            .sink(receiveValue: { [weak self] text in
+                self?.setTextFieldView(.active)
+            }).store(in: self.cancelBag)
+        
+        
+        self.textField
+            .publisher(for: .editingDidEnd)
+            .compactMap { $0.text }
+            .receive(on: RunLoop.main)
+            .sink(receiveValue: { [weak self] text in
+                guard text.isEmpty else { return }
+                
+                self?.setTextFieldView(.inactive)
+            }).store(in: self.cancelBag)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 // MARK: - Public functions
 extension MissionDateView {
-  public func setText(with dateText: String) {
-    self.textField.attributedText = self.getAttributedString(dateText)
-  }
-  
-  public func setIsEnabled(_ isEnabled: Bool) {
-    self.textField.isEnabled = isEnabled
-  }
-  
-  public func getText() -> String? {
-    self.textField.text
-  }
-  
-  public func setTextFieldView(_ state: TextViewState) {
-    switch state {
-    case .inactive:
-      self.layer.borderWidth = .zero
-    case .active:
-      self.layer.borderWidth = 1
-      self.textField.textColor = DSKitAsset.Colors.white.color
-      self.rightChevron.tintColor = DSKitAsset.Colors.white.color
-    case .completed:
-      self.layer.borderWidth = .zero
-      self.textField.textColor = DSKitAsset.Colors.white.color
-      self.rightChevron.tintColor = DSKitAsset.Colors.white.color
+    public func setText(with dateText: String) {
+        self.textField.attributedText = self.getAttributedString(dateText)
     }
-  }
-  
-  public func signalForChangeDate() -> Driver<String> {
-    self.textField
-      .publisher(for: .allEditingEvents)
-      .compactMap { $0.text }
-      .asDriver()
-  }
+    
+    public func setIsEnabled(_ isEnabled: Bool) {
+        self.textField.isEnabled = isEnabled
+    }
+    
+    public func getText() -> String? {
+        self.textField.text
+    }
+    
+    public func setTextFieldView(_ state: TextViewState) {
+        switch state {
+        case .inactive:
+            self.layer.borderWidth = .zero
+        case .active:
+            self.layer.borderWidth = 1
+            self.textField.textColor = DSKitAsset.Colors.white.color
+            self.rightChevron.tintColor = DSKitAsset.Colors.white.color
+        case .completed:
+            self.layer.borderWidth = .zero
+            self.textField.textColor = DSKitAsset.Colors.white.color
+            self.rightChevron.tintColor = DSKitAsset.Colors.white.color
+        }
+    }
+    
+    public func signalForChangeDate() -> Driver<String> {
+        self.textField
+            .publisher(for: .allEditingEvents)
+            .compactMap { $0.text }
+            .asDriver()
+    }
 }
 
 // MARK: - Private Extensions
 private extension MissionDateView {
-  func getAttributedString(_ text: String) -> NSAttributedString {
-    let attributes: [NSAttributedString.Key: Any] = [
-      .foregroundColor: DSKitAsset.Colors.soptampGray600.color
-    ]
-    
-    return NSAttributedString(string: text, attributes: attributes)
-  }
+    func getAttributedString(_ text: String) -> NSAttributedString {
+        let attributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: DSKitAsset.Colors.soptampGray600.color
+        ]
+        
+        return NSAttributedString(string: text, attributes: attributes)
+    }
 }
 
 // MARK: - Private functions
 extension MissionDateView {
-  private func initializeViews() {
-    self.addSubview(self.contentStackView)
-    
-    self.contentStackView.addArrangedSubviews(self.textField, self.rightChevron)
-  }
-  
-  private func setupConstraints() {
-    self.contentStackView.snp.makeConstraints {
-      $0.top.equalToSuperview().inset(Metric.contentTop)
-      $0.leading.trailing.equalToSuperview().inset(Metric.contentLeadingTrailing)
-      $0.bottom.equalToSuperview().inset(Metric.contentBottom)
+    private func initializeViews() {
+        self.addSubview(self.contentStackView)
+        
+        self.contentStackView.addArrangedSubviews(self.textField, self.rightChevron)
     }
     
-    self.rightChevron.snp.makeConstraints { $0.size.equalTo(Metric.chevronLength) }
-  }
-    
-  private func initializeDatePicker() {
-    let toolBarView = self.getInitializedToolBar()
-    let datePicker = UIDatePicker().then {
-      $0.datePickerMode = .date
-      $0.locale = Locale(identifier: "ko-kr")
-      $0.preferredDatePickerStyle = .wheels
-      $0.maximumDate = Date()
+    private func setupConstraints() {
+        self.contentStackView.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(Metric.contentTop)
+            $0.leading.trailing.equalToSuperview().inset(Metric.contentLeadingTrailing)
+            $0.bottom.equalToSuperview().inset(Metric.contentBottom)
+        }
+        
+        self.rightChevron.snp.makeConstraints { $0.size.equalTo(Metric.chevronLength) }
     }
     
-    datePicker
-      .publisher(for: .valueChanged)
-      .map { $0.date }
-      .sink(receiveValue: { [weak self] value in
-        let dateFormatter = DateFormatter().then {
-          $0.dateFormat = "yyyy.MM.dd"
-          $0.locale = .current
+    private func initializeDatePicker() {
+        let toolBarView = self.getInitializedToolBar()
+        let datePicker = UIDatePicker().then {
+            $0.datePickerMode = .date
+            $0.locale = Locale(identifier: "ko-kr")
+            $0.preferredDatePickerStyle = .wheels
+            $0.maximumDate = Date()
         }
-        let formattedDate = dateFormatter.string(from: value)
-        self?.selectAndFormattedDate = formattedDate
-        self?.textField.text = formattedDate
-      }).store(in: self.cancelBag)
+        
+        datePicker
+            .publisher(for: .valueChanged)
+            .map { $0.date }
+            .sink(receiveValue: { [weak self] value in
+                let dateFormatter = DateFormatter().then {
+                    $0.dateFormat = "yyyy.MM.dd"
+                    $0.locale = .current
+                }
+                let formattedDate = dateFormatter.string(from: value)
+                self?.selectAndFormattedDate = formattedDate
+                self?.textField.text = formattedDate
+            }).store(in: self.cancelBag)
+        
+        self.textField.inputView = datePicker
+        self.textField.inputAccessoryView = toolBarView
+    }
     
-    self.textField.inputView = datePicker
-    self.textField.inputAccessoryView = toolBarView
-  }
-  
-  private func getInitializedToolBar() -> UIToolbar {
-    let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: Metric.toolBarHeight))
-    let resetButton = UIBarButtonItem(
-      title: I18N.ListDetail.datePickerCancelButtonTitle,
-      style: .plain,
-      target: nil,
-      action: nil
-    )
-    let flexible = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-    let doneButton = UIBarButtonItem(
-      title: I18N.ListDetail.datePickerDoneButtonTitle,
-      style: .plain,
-      target: target,
-      action: nil
-    )
-    
-    resetButton
-      .tapPublisher
-      .asDriver()
-      .sink(receiveValue: { [weak self] _ in
-        self?.textField.text = ""
-        self?.textField.resignFirstResponder()
-      }).store(in: self.cancelBag)
-    
-    doneButton
-      .tapPublisher
-      .asDriver()
-      .sink(receiveValue: { [weak self] _ in
-        let date: String
-        if let selectAndFormattedDate = self?.selectAndFormattedDate {
-          date = selectAndFormattedDate
-        } else {
-          let dateFormatter = DateFormatter().then {
-            $0.dateFormat = "yyyy.MM.dd"
-            $0.locale = .current
-          }
-          date = dateFormatter.string(from: Date())
-        }
-        self?.textField.text = date
-        self?.textField.resignFirstResponder()
-      }).store(in: self.cancelBag)
-    
-    toolBar.setItems([resetButton, flexible, doneButton], animated: false)
-    
-    return toolBar
-  }
+    private func getInitializedToolBar() -> UIToolbar {
+        let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: Metric.toolBarHeight))
+        let resetButton = UIBarButtonItem(
+            title: I18N.ListDetail.datePickerCancelButtonTitle,
+            style: .plain,
+            target: nil,
+            action: nil
+        )
+        let flexible = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let doneButton = UIBarButtonItem(
+            title: I18N.ListDetail.datePickerDoneButtonTitle,
+            style: .plain,
+            target: target,
+            action: nil
+        )
+        
+        resetButton
+            .tapPublisher
+            .asDriver()
+            .sink(receiveValue: { [weak self] _ in
+                self?.textField.text = ""
+                self?.textField.resignFirstResponder()
+            }).store(in: self.cancelBag)
+        
+        doneButton
+            .tapPublisher
+            .asDriver()
+            .sink(receiveValue: { [weak self] _ in
+                let date: String
+                if let selectAndFormattedDate = self?.selectAndFormattedDate {
+                    date = selectAndFormattedDate
+                } else {
+                    let dateFormatter = DateFormatter().then {
+                        $0.dateFormat = "yyyy.MM.dd"
+                        $0.locale = .current
+                    }
+                    date = dateFormatter.string(from: Date())
+                }
+                self?.textField.text = date
+                self?.textField.resignFirstResponder()
+            }).store(in: self.cancelBag)
+        
+        toolBar.setItems([resetButton, flexible, doneButton], animated: false)
+        
+        return toolBar
+    }
 }

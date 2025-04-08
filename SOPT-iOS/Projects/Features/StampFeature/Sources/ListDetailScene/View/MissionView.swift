@@ -26,7 +26,7 @@ class MissionView: UIView {
     
     private override init(frame: CGRect) {
         super.init(frame: frame)
-
+        
         self.setUI()
         self.setLayout()
     }

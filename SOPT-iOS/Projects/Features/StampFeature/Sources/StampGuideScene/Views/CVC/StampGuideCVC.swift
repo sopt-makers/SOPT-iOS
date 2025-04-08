@@ -82,7 +82,7 @@ extension StampGuideCVC {
 // MARK: - Methods
 
 extension StampGuideCVC {
-
+    
     func setStampGuideSlides(_ slides: StampGuideDataModel) {
         imageView.image = slides.image
         titleLabel.text = slides.title
