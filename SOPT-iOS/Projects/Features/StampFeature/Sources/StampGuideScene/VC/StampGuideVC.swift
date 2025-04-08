@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 import DSKit
@@ -29,6 +30,9 @@ public final class StampGuideVC: UIViewController, StampGuideViewControllable {
             startButton.setEnabled(currentPage == 2)
         }
     }
+    
+    public var onNaviBackTap: (() -> Void)?
+    private var cancelBag = CancelBag()
     
     // MARK: - UI Components
     
@@ -72,11 +76,12 @@ public final class StampGuideVC: UIViewController, StampGuideViewControllable {
         self.setButtonDisabled()
         self.setCollectionViewCell()
         self.setStampGuideData()
+        self.setObserver()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+        setGestureDelegate()
     }
     
     // MARK: - @objc Function
@@ -129,6 +134,13 @@ extension StampGuideVC {
 // MARK: - Methods
 
 extension StampGuideVC {
+    private func setObserver() {
+        self.naviBar.leftButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNaviBackTap?()
+            }.store(in: cancelBag)
+    }
     
     private func setCollectionViewCell() {
         stampGuideCollectionView.delegate = self
@@ -187,5 +199,17 @@ extension StampGuideVC: UICollectionViewDelegateFlowLayout {
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
+    }
+}
+
+// MARK: - UIGestureRecognizerDelegate
+
+extension StampGuideVC: UIGestureRecognizerDelegate {
+    private func setGestureDelegate() {
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+    }
+    
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }
