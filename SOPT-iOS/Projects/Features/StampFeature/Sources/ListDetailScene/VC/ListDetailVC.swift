@@ -95,7 +95,10 @@ public class ListDetailVC: UIViewController, ListDetailViewControllable {
     private var originImage: UIImage = UIImage()
     private var originText: String = ""
     private let deleteButtonTapped = PassthroughSubject<Bool, Never>()
+    
     private let imageSelected = PassthroughSubject<Data, Never>()
+    private let dateSelected = PassthroughSubject<String, Never>()
+    private let textEdited = PassthroughSubject<String, Never>()
     
     private var keyboardWillShowObserver: NSObjectProtocol?
     private var keyboardWillHideObserver: NSObjectProtocol?
@@ -182,26 +185,14 @@ extension ListDetailVC {
         
         let bottomButtonTapped = bottomButton
             .publisher(for: .touchUpInside)
-            .withUnretained(self)
-            .map { owner, _ in
-                if owner.sceneType == .edit {
-                    owner.bottomButton.setEnabled(false)
-                }
-                if owner.sceneType == .none {
-                    owner.showDimmerView()
-                }
-                let content = owner.textView.text
-                return ListDetailRequestModel(
-                    missionId: owner.viewModel.missionId ?? 0,
-                    content: content ?? "",
-                    activityDate: owner.missionDateTextField.getText() ?? ""
-                )
-            }
+            .mapVoid()
             .asDriver()
         
         let input = ListDetailViewModel.Input(
             viewDidLoad: Driver.just(()),
             imageSelected: self.imageSelected.eraseToAnyPublisher(),
+            dateSelected: dateSelected.asDriver(),
+            textEdited: textEdited.asDriver(),
             bottomButtonTapped: bottomButtonTapped,
             rightButtonTapped: rightButtonTapped,
             deleteButtonTapped: deleteButtonTapped.asDriver())
@@ -262,6 +253,12 @@ extension ListDetailVC {
                     AlertUtils.presentNetworkAlertVC(theme: .soptamp, animated: true)
                 }
             }.store(in: self.cancelBag)
+        
+        output.bottomButtonEnabled
+            .withUnretained(self)
+            .sink { owner, buttonEnabled in
+                owner.bottomButton.setEnabled(buttonEnabled)
+            }.store(in: cancelBag)
     }
     
     private func setData(_ model: ListDetailModel) {
@@ -310,14 +307,13 @@ extension ListDetailVC {
             self?.keyboardWillHide(notification as NSNotification)
         }
         
-        self.missionDateTextField
-            .signalForChangeDate()
-            .dropFirst()
-            .removeDuplicates()
+        self.missionDateTextField.textFieldDidEdited
             .withUnretained(self)
-            .sink(receiveValue: { owner, date in
-                owner.bottomButton.setEnabled(!date.isEmpty && !(owner.textView.text == I18N.ListDetail.memoPlaceHolder))
-            }).store(in: self.cancelBag)
+            .sink { owner, date in
+                guard let text = owner.missionDateTextField.getText() else { return }
+                owner.dateSelected.send(text)
+            }
+            .store(in: self.cancelBag)
     }
     
     private func setGesture() {
@@ -451,8 +447,6 @@ extension ListDetailVC: PHPickerViewControllerDelegate {
                         self.imageSelected.send(imageData)
                     }
                     self.imagePlaceholderLabel.isHidden = true
-                    if self.textView.hasText && self.textView.text != I18N.ListDetail.memoPlaceHolder { self.bottomButton.setEnabled(true)
-                    }
                 }
             }
         }
@@ -478,6 +472,7 @@ extension ListDetailVC: UITextViewDelegate {
             self.textView.text = .none
         }
         setTextView(.active)
+        self.textEdited.send(textView.text)
         return true
     }
     
@@ -490,8 +485,7 @@ extension ListDetailVC: UITextViewDelegate {
     }
     
     public func textViewDidChange(_ textView: UITextView) {
-        let missionImageViewFilled = missionImageView.image != nil
-        self.bottomButton.setEnabled(textView.hasText && missionImageViewFilled && textView.text != originText)
+        self.textEdited.send(textView.text)
     }
 }
 

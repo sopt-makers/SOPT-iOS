@@ -41,6 +41,13 @@ public final class MissionDateView: UIView {
         $0.tintColor = DSKitAsset.Colors.gray300.color
     }
     
+    public var textFieldDidEdited: Driver<Void> {
+        self.textField
+            .publisher(for: .allEditingEvents)
+            .mapVoid()
+            .asDriver()
+    }
+    
     // MARK: - Private Variables
     private var cancelBag = CancelBag()
     private var selectAndFormattedDate: String?
@@ -109,13 +116,6 @@ extension MissionDateView {
             self.textField.textColor = DSKitAsset.Colors.white.color
             self.rightChevron.tintColor = DSKitAsset.Colors.white.color
         }
-    }
-    
-    public func signalForChangeDate() -> Driver<String> {
-        self.textField
-            .publisher(for: .allEditingEvents)
-            .compactMap { $0.text }
-            .asDriver()
     }
 }
 

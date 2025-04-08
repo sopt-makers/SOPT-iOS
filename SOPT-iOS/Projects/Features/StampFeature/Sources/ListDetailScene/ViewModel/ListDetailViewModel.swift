@@ -26,12 +26,18 @@ public class ListDetailViewModel: ViewModelType {
     
     private var uploadedUrl: String?
     
+    private let currentImage = CurrentValueSubject<Data, Never>(Data())
+    private let currentDate = CurrentValueSubject<String, Never>(String())
+    private let currentText = CurrentValueSubject<String, Never>(String())
+    
     // MARK: - Inputs
     
     public struct Input {
         let viewDidLoad: Driver<Void>
         let imageSelected: Driver<Data>
-        let bottomButtonTapped: Driver<ListDetailRequestModel>
+        let dateSelected: Driver<String>
+        let textEdited: Driver<String>
+        let bottomButtonTapped: Driver<Void>
         let rightButtonTapped: Driver<ListDetailSceneType>
         let deleteButtonTapped: Driver<Bool>
     }
@@ -43,6 +49,7 @@ public class ListDetailViewModel: ViewModelType {
         var editSuccessed = PassthroughSubject<Bool, Never>()
         var showDeleteAlert = PassthroughSubject<Bool, Never>()
         var deleteSuccessed = PassthroughSubject<Bool, Never>()
+        var bottomButtonEnabled = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - init
@@ -86,6 +93,7 @@ extension ListDetailViewModel {
                 guard let self else { return .empty() }
                 
                 self.useCase.getPresignedURL()
+                self.currentImage.send(imageData)
                 
                 return self.useCase
                     .presignedURL
@@ -107,9 +115,17 @@ extension ListDetailViewModel {
             .sink(receiveValue: { value in
                 
             }).store(in: self.cancelBag)
+
         
         input.bottomButtonTapped
-            .eraseToAnyPublisher()
+            .withUnretained(self)
+            .map { owner, _ in
+                return ListDetailRequestModel(
+                    missionId: owner.missionId ?? 0,
+                    content: owner.currentText.value,
+                    activityDate: owner.currentDate.value
+                )
+            }
             .flatMap { [weak self] requestModel -> Driver<ListDetailRequestModel> in
                 guard
                     let self,
@@ -147,6 +163,45 @@ extension ListDetailViewModel {
                 owner.useCase.deleteStamp(stampId: owner.stampId)
             }.store(in: self.cancelBag)
         
+        input.textEdited
+            .withUnretained(self)
+            .sink { owner, text in
+                owner.currentText.send(text)
+            }.store(in: cancelBag)
+        
+        input.dateSelected
+            .withUnretained(self)
+            .sink { owner, date in
+                owner.currentDate.send(date)
+            }.store(in: cancelBag)
+
+        // 버튼 활성화 로직
+        Publishers.CombineLatest3(currentImage, currentDate, currentText)
+            .withUnretained(self)
+            .filter { owner, _ in
+                owner.sceneType != .completed
+            }
+            .map { owner, currentState in
+                let (currentImage, currentDate, currentText) = currentState
+                
+                switch owner.sceneType {
+                case .edit:
+                    let isImageSelected = owner.isImageSelected(currentImage)
+                    let isDateChanged = owner.isDateChanged(output.listDetailModel?.activityDate, currentDate)
+                    let isTextChanged = owner.isTextChanged(output.listDetailModel?.content, currentText)
+                    return isImageSelected || isDateChanged || isTextChanged
+                default:
+                    let isImageSelected = !currentImage.isEmpty
+                    let isDateChanged = !currentDate.isEmpty
+                    let isTextChanged = !currentText.isEmpty
+                    return isImageSelected && isDateChanged && isTextChanged
+                }
+            }
+            .sink { isEdited in
+                output.bottomButtonEnabled.send(isEdited)
+            }
+            .store(in: cancelBag)
+        
         return output
     }
     
@@ -176,5 +231,23 @@ extension ListDetailViewModel {
             .sink { owner, success in
                 output.deleteSuccessed.send(success)
             }.store(in: self.cancelBag)
+    }
+}
+
+// MARK: - Methods
+
+extension ListDetailViewModel {
+    private func isImageSelected(_ image: Data) -> Bool {
+        return !image.isEmpty
+    }
+    
+    private func isDateChanged(_ originDate: String?, _ currentDate: String) -> Bool {
+        guard let originDate else { return false }
+        return !currentDate.isEmpty && originDate != currentDate
+    }
+    
+    private func isTextChanged(_ originText: String?, _ currentText: String) -> Bool {
+        guard let originText else { return false }
+        return !originText.isEmpty && originText != currentText
     }
 }
