@@ -131,18 +131,14 @@ extension RankingListCVC {
     }
     
     private func setMyRanking() {
-        self.backgroundColor = DSKitAsset.Colors.soptampPurple100.color
-        self.layer.borderColor = DSKitAsset.Colors.soptampPurple300.color.cgColor
-        self.layer.borderWidth = 2
-        rankLabel.textColor = DSKitAsset.Colors.soptampPurple300.color
-        scoreLabel.textColor = DSKitAsset.Colors.soptampPurple300.color
+        self.backgroundColor = DSKitAsset.Colors.gray800.color
+        rankLabel.textColor = DSKitAsset.Colors.gray10.color
+        scoreLabel.textColor = DSKitAsset.Colors.white.color
     }
     
     private func setDefaultRanking() {
-        self.backgroundColor = DSKitAsset.Colors.soptampGray900.color
-        self.layer.borderColor = nil
-        self.layer.borderWidth = 0
-        rankLabel.textColor = DSKitAsset.Colors.soptampGray300.color
+        self.backgroundColor = DSKitAsset.Colors.gray900.color
+        rankLabel.textColor = DSKitAsset.Colors.gray300.color
         scoreLabel.textColor = DSKitAsset.Colors.white.color
     }
 }
