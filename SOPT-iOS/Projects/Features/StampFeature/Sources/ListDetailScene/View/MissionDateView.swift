@@ -110,11 +110,9 @@ extension MissionDateView {
         case .active:
             self.layer.borderWidth = 1
             self.textField.textColor = DSKitAsset.Colors.white.color
-            self.rightChevron.tintColor = DSKitAsset.Colors.white.color
         case .completed:
             self.layer.borderWidth = .zero
             self.textField.textColor = DSKitAsset.Colors.white.color
-            self.rightChevron.tintColor = DSKitAsset.Colors.white.color
         }
     }
 }

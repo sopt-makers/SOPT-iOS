@@ -583,6 +583,12 @@ extension ListDetailVC {
             self.textView.layer.borderWidth = .zero
             self.textView.isEditable = false
         }
+        
+        switch sceneType {
+        case .edit:
+            self.textView.textColor = DSKitAsset.Colors.white.color
+        default: return
+        }
     }
     
     private func setStackView() {
