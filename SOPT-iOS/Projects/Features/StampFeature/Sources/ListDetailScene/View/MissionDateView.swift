@@ -163,11 +163,8 @@ extension MissionDateView {
       .publisher(for: .valueChanged)
       .map { $0.date }
       .sink(receiveValue: { [weak self] value in
-        let dateFormatter = DateFormatter().then {
-          $0.dateFormat = "yyyy.MM.dd"
-          $0.locale = .current
-        }
-        let formattedDate = dateFormatter.string(from: value)
+        DateFormatManager.shared.setFormat(.dateWithDot)
+        let formattedDate = DateFormatManager.shared.dateToString(value)
         self?.selectAndFormattedDate = formattedDate
         self?.textField.text = formattedDate
       }).store(in: self.cancelBag)
@@ -208,11 +205,8 @@ extension MissionDateView {
         if let selectAndFormattedDate = self?.selectAndFormattedDate {
           date = selectAndFormattedDate
         } else {
-          let dateFormatter = DateFormatter().then {
-            $0.dateFormat = "yyyy.MM.dd"
-            $0.locale = .current
-          }
-          date = dateFormatter.string(from: Date())
+          DateFormatManager.shared.setFormat(.dateWithDot)
+          date = DateFormatManager.shared.dateToString(Date())
         }
         self?.textField.text = date
         self?.textField.resignFirstResponder()
