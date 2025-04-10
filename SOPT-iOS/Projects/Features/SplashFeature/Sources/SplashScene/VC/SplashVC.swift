@@ -21,6 +21,8 @@ import SplashFeatureInterface
 
 public class SplashVC: UIViewController, SplashViewControllable {
     
+    public var onDeinit: (() -> Void)?
+    
     // MARK: - Properties
     
     public var viewModel: SplashViewModel!
@@ -41,6 +43,10 @@ public class SplashVC: UIViewController, SplashViewControllable {
         self.setLayout()
         self.setNavigationBar()
         self.setDelay()
+    }
+    
+    deinit {
+        onDeinit?()
     }
 }
 

@@ -119,7 +119,7 @@ extension MainViewModel {
         return self?.appServiceList[index]
       }.eraseToAnyPublisher()
 
-    appServiceSectionService.sink { [weak self] service in
+      appServiceSectionService.sink { [weak self] service in
       self?.trackAmplitude(event: service.toAmplitudeEventType)
     }.store(in: cancelBag)
 

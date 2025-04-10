@@ -10,7 +10,9 @@ import Core
 import Domain
 import BaseFeatureDependency
 
-public protocol SplashViewControllable: ViewControllable { }
+public protocol SplashViewControllable: ViewControllable, TestCoordinatorFinishOutput {
+    var onDeinit: (() -> Void)? { get set }
+}
 public protocol SplashCoordinatable {
     var onNoticeSkipped: (() -> Void)? { get set }
     var onNoticeExist: ((AppNoticeModel) -> Void)? { get set }
