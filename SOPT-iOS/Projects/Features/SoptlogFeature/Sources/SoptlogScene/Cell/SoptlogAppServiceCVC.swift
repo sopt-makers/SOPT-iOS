@@ -35,9 +35,7 @@ final class SoptlogAppServiceCVC: UICollectionViewCell {
         $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
     }
     
-    private let serviceImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.icHot.image
-    }
+    private let serviceImageView = UIImageView()
     
     private let serviceValue = UILabel().then {
         $0.textColor = DSKitAsset.Colors.white.color

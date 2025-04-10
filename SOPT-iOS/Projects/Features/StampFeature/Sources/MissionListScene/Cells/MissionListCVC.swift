@@ -154,8 +154,7 @@ final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     
     private let purposeLabel: UILabel = {
         let label = UILabel()
-        label.text = "세미나 끝나고 뒷풀이 2시까지 달리기"
-        label.textColor = .black
+        label.textColor = DSKitAsset.Colors.white.color
         label.setTypoStyle(.SoptampFont.caption1D)
         label.numberOfLines = 2
         return label
@@ -183,8 +182,9 @@ final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
 extension MissionListCVC {
     
     public func setUI(_ type: MissionListCellType) {
+        backgroundImageView.tintColor = DSKitAsset.Colors.gray800.color
+        
         guard cellType.isCompleted else {
-            backgroundImageView.tintColor = DSKitAsset.Colors.soptampGray50.color
             starView.changeStarLevel(level: cellType.starLevel)
             return
         }
@@ -192,13 +192,10 @@ extension MissionListCVC {
         switch cellType {
         case .levelOne:
             stampImageView.image = DSKitAsset.Assets.levelOneStamp.image
-            backgroundImageView.tintColor = DSKitAsset.Colors.soptampPink100.color
         case .levelTwo:
             stampImageView.image = DSKitAsset.Assets.levelTwoStamp.image
-            backgroundImageView.tintColor = DSKitAsset.Colors.soptampPurple100.color
         case .levelThree:
             stampImageView.image = DSKitAsset.Assets.levelThreeStamp.image
-            backgroundImageView.tintColor = DSKitAsset.Colors.soptampMint100.color
         }
     }
     

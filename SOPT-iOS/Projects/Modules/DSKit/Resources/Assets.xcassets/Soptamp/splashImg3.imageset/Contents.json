@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "splashImg3.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "splashImg3@2x.png",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "splashImg3@3x.png",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "ios_img3.svg",
+      "idiom" : "universal"
     }
   ],
   "info" : {
