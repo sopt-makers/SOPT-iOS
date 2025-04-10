@@ -64,6 +64,8 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public var onSettingButtonTapped: ((UserType) -> Void)?
     public var onNeedSignIn: (() -> Void)?
     public var onNetworkError: (() -> Void)?
+    public var onPoke: ((Bool) -> Void)?
+    
     
     // MARK: - initialization
     
@@ -159,7 +161,14 @@ extension HomeForMemberViewModel {
                     owner.onMainProductCellTapped?(model.product.serviceDomainLink)
                     owner.trackAmplitude(event: model.product.toAmplitudeEventTypeNew)
                 case .appService(let model):
-                    owner.onAppServiceCellTapped?(model.deepLink)
+                    if model.serviceName == "콕찌르기" {
+                        owner.useCase.checkPokeNewUser()
+                            .sink { isPokeNewUser in
+                                owner.onPoke?(isPokeNewUser)
+                            }.store(in: cancelBag)
+                    } else {
+                        owner.onAppServiceCellTapped?(model.deepLink)
+                    }
                 default: break
                 }
             }
@@ -190,6 +199,16 @@ extension HomeForMemberViewModel {
         
         return output
     }
+}
+
+// MARK: - Methods
+
+extension HomeForMemberViewModel {
+    private func trackAmplitude(event: AmplitudeEventType?) {
+        if let event {
+            AmplitudeInstance.shared.trackWithUserType(event: event)
+        }
+    }
     
     private func requestAuthorizationForNotification() {
         guard self.userType != .visitor,
@@ -207,14 +226,6 @@ extension HomeForMemberViewModel {
             if granted {
                 self.useCase.registerPushToken()
             }
-        }
-    }
-}
-
-extension HomeForMemberViewModel {
-    private func trackAmplitude(event: AmplitudeEventType?) {
-        if let event {
-            AmplitudeInstance.shared.trackWithUserType(event: event)
         }
     }
 }

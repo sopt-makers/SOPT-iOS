@@ -22,6 +22,7 @@ public protocol HomeUseCase {
     func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never>
     func getAnnouncementPosts() -> AnyPublisher<[HomeAnnouncementModel], Never>
     func getReportURL()
+    func checkPokeNewUser() -> AnyPublisher<Bool, Never>
 }
 
 public class DefaultHomeUseCase {
@@ -117,5 +118,14 @@ extension DefaultHomeUseCase: HomeUseCase {
             } receiveValue: { owner, resultModel in
                 UserDefaultKeyList.Soptamp.reportUrl = resultModel.reportUrl
             }.store(in: cancelBag)
+    }
+    
+    public func checkPokeNewUser() -> AnyPublisher<Bool, Never> {
+        repository.checkPokeNewUser()
+            .catch { error in
+                print("HomeUseCase checkPokeNewUser에서 문제가 발생했습니다. \(error)")
+                return Empty<Bool, Never>()
+            }
+            .eraseToAnyPublisher()
     }
 }
