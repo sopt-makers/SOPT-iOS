@@ -33,7 +33,7 @@ public final class MissionDateView: UIView {
     
     private lazy var textField = UITextField().then {
         $0.attributedPlaceholder = self.getAttributedString(I18N.ListDetail.missionDatePlaceHolder)
-        $0.textColor = DSKitAsset.Colors.gray50.color
+        $0.textColor = DSKitAsset.Colors.gray300.color
         $0.font = .SoptampFont.caption1
     }
     private let rightChevron = UIImageView().then {
@@ -121,7 +121,7 @@ extension MissionDateView {
 private extension MissionDateView {
     func getAttributedString(_ text: String) -> NSAttributedString {
         let attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: DSKitAsset.Colors.soptampGray600.color
+            .foregroundColor: DSKitAsset.Colors.gray300.color
         ]
         
         return NSAttributedString(string: text, attributes: attributes)
