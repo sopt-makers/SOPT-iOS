@@ -78,7 +78,7 @@ final class MissionView: UIView {
 extension MissionView {
     private func setMissionLabelText(_ mission: String) {
         self.missionLabel.text = (mission.count >= 24) ? mission.setLineBreakAtMiddle() : mission
-        self.missionLabel.setLineSpacing(lineSpacing: 2)
+        self.missionLabel.modifyLineSpacing(lineSpacing: 2)
     }
 }
 
