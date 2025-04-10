@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 import DSKit
@@ -30,6 +31,9 @@ public final class StampGuideVC: UIViewController, StampGuideViewControllable {
         }
     }
     
+    public var onNaviBackTap: (() -> Void)?
+    private var cancelBag = CancelBag()
+    
     // MARK: - UI Components
     
     private lazy var naviBar = STNavigationBar(type: .titleWithLeftButton)
@@ -42,19 +46,25 @@ public final class StampGuideVC: UIViewController, StampGuideViewControllable {
         collectionView.isScrollEnabled = true
         collectionView.isPagingEnabled = true
         collectionView.showsHorizontalScrollIndicator = false
-        collectionView.backgroundColor = .clear
+        collectionView.backgroundColor = DSKitAsset.Colors.gray950.color
         return collectionView
     }()
     
     private lazy var pageControl = UIPageControl().then {
-        $0.pageIndicatorTintColor = DSKitAsset.Colors.soptampPurple200.color
-        $0.currentPageIndicatorTintColor = DSKitAsset.Colors.soptampPurple300.color
+        $0.pageIndicatorTintColor = DSKitAsset.Colors.gray500.color
+        $0.currentPageIndicatorTintColor = DSKitAsset.Colors.white.color
         $0.numberOfPages = 3
         $0.isUserInteractionEnabled = false
     }
     
-    private lazy var startButton = STCustomButton(title: I18N.StampGuide.okay).setEnabled(false).then {
+    private lazy var startButton = STCustomButton(title: I18N.StampGuide.okay).then {
         $0.addTarget(self, action: #selector(startButtonDidTap), for: .touchUpInside)
+        $0.setColor(
+            bgColor: DSKitAsset.Colors.white.color,
+            disableColor: DSKitAsset.Colors.gray800.color,
+            textColor: DSKitAsset.Colors.black.color,
+            disableTextcolor: DSKitAsset.Colors.gray300.color
+        )
     }
     
     // MARK: - View Life Cycle
@@ -63,13 +73,15 @@ public final class StampGuideVC: UIViewController, StampGuideViewControllable {
         super.viewDidLoad()
         self.setUI()
         self.setLayout()
+        self.setButtonDisabled()
         self.setCollectionViewCell()
         self.setStampGuideData()
+        self.setObserver()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+        setGestureDelegate()
     }
     
     // MARK: - @objc Function
@@ -85,7 +97,7 @@ public final class StampGuideVC: UIViewController, StampGuideViewControllable {
 extension StampGuideVC {
     
     private func setUI() {
-        self.view.backgroundColor = DSKitAsset.Colors.soptampWhite.color
+        self.view.backgroundColor = DSKitAsset.Colors.gray950.color
     }
     
     private func setLayout() {
@@ -97,27 +109,38 @@ extension StampGuideVC {
         }
         
         stampGuideCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(70.adjustedH)
+            make.centerY.equalToSuperview().offset(-89)
             make.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-            make.height.equalTo(460.adjustedH)
+            make.height.equalTo(460)
         }
         
         startButton.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(70.adjustedH)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(32)
             make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
             make.height.equalTo(56)
         }
         
         pageControl.snp.makeConstraints { make in
-            make.top.equalTo(startButton).offset(-80.adjustedH)
+            make.top.equalTo(stampGuideCollectionView.snp.bottom).offset(28)
             make.centerX.equalToSuperview()
         }
+    }
+    
+    private func setButtonDisabled() {
+        self.startButton.setEnabled(false)  // 초기 시작값 false
     }
 }
 
 // MARK: - Methods
 
 extension StampGuideVC {
+    private func setObserver() {
+        self.naviBar.leftButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNaviBackTap?()
+            }.store(in: cancelBag)
+    }
     
     private func setCollectionViewCell() {
         stampGuideCollectionView.delegate = self
@@ -167,7 +190,7 @@ extension StampGuideVC: UICollectionViewDelegateFlowLayout {
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let length = self.view.frame.size.width
-        return CGSize(width: length, height: 460.adjustedH)
+        return CGSize(width: length, height: 460)
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
@@ -176,5 +199,17 @@ extension StampGuideVC: UICollectionViewDelegateFlowLayout {
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
+    }
+}
+
+// MARK: - UIGestureRecognizerDelegate
+
+extension StampGuideVC: UIGestureRecognizerDelegate {
+    private func setGestureDelegate() {
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+    }
+    
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }

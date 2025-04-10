@@ -43,8 +43,8 @@ public class STChartRectangleView: UIView {
   private let starRankView: UIImageView = {
     let iv = UIImageView()
     iv.contentMode = .scaleAspectFit
-    iv.image = DSKitAsset.Assets.icStar.image.withRenderingMode(.alwaysTemplate)
-    iv.tintColor = DSKitAsset.Colors.soptampPurple100.color
+    iv.image = DSKitAsset.Assets.icBigStar.image.withRenderingMode(.alwaysTemplate)
+    iv.tintColor = DSKitAsset.Colors.soptampPink300.color
     return iv
   }()
   
@@ -62,7 +62,6 @@ public class STChartRectangleView: UIView {
   
   private let scoreLabel: UILabel = {
     let label = UILabel()
-    label.text = "100점"
     label.setTypoStyle(.SoptampFont.number2)
     label.partFontChange(targetString: "점", font: DSKitFontFamily.Pretendard.medium.font(size: 12))
     return label
@@ -75,7 +74,7 @@ public class STChartRectangleView: UIView {
   
   private lazy var usernameContainerView = UIView().then {
     $0.layer.cornerRadius = 16.f
-    $0.backgroundColor = self.pointColor
+    $0.backgroundColor = DSKitAsset.Colors.gray800.color
   }
 
   private lazy var usernameStackView = UIStackView().then {
@@ -85,9 +84,7 @@ public class STChartRectangleView: UIView {
   
   private let usernameLabel: UILabel = {
     let label = UILabel()
-    label.text = "뉴비"
     label.setTypoStyle(.SoptampFont.subtitle3)
-    label.textColor = DSKitAsset.Colors.gray800.color
     label.lineBreakMode = .byCharWrapping
     label.setCharacterSpacing(0)
     return label
@@ -113,9 +110,9 @@ public class STChartRectangleView: UIView {
   
   private var pointColor: UIColor {
     switch self.viewLevel {
-    case .rankOne: return DSKitAsset.Colors.soptampPurple200.color
-    case .rankTwo: return DSKitAsset.Colors.soptampPink200.color
-    case .rankThree: return DSKitAsset.Colors.soptampMint200.color
+    case .rankOne: return DSKitAsset.Colors.soptampPink300.color
+    case .rankTwo: return DSKitAsset.Colors.green300.color
+    case .rankThree: return DSKitAsset.Colors.soptampPurple300.color
     }
   }
 }
@@ -127,25 +124,21 @@ public class STChartRectangleView: UIView {
 extension STChartRectangleView {
   private func setUI() {
     self.rectangleView.backgroundColor = self.pointColor
-    
+    self.scoreLabel.textColor = DSKitAsset.Colors.white.color
+    self.usernameLabel.textColor = pointColor
+    self.rightChevronImageView.tintColor = pointColor
+      
     switch viewLevel {
     case .rankOne:
       rankLabel.text = "1"
-      rankLabel.textColor = DSKitAsset.Colors.soptampPurple300.color
-      setScoreLabel(by: DSKitAsset.Colors.soptampPurple300.color)
+      rankLabel.textColor = DSKitAsset.Colors.white.color
     case .rankTwo:
       rankLabel.text = "2"
-      rankLabel.textColor = DSKitAsset.Colors.soptampPink300.color
-      setScoreLabel(by: DSKitAsset.Colors.soptampPink300.color)
+      rankLabel.textColor = pointColor
     case .rankThree:
       rankLabel.text = "3"
-      rankLabel.textColor = DSKitAsset.Colors.soptampMint300.color
-      setScoreLabel(by: DSKitAsset.Colors.soptampMint300.color)
+      rankLabel.textColor = pointColor
     }
-  }
-  
-  private func setScoreLabel(by color: UIColor) {
-    scoreLabel.textColor = color
   }
   
   private func setLayout() {
@@ -192,7 +185,8 @@ extension STChartRectangleView {
     rectangleView.addSubview(scoreLabel)
     
     scoreLabel.snp.makeConstraints { make in
-      make.center.equalToSuperview()
+        make.top.equalToSuperview().offset(8)
+        make.centerX.equalToSuperview()
     }
     
     rectangleView.snp.makeConstraints { make in

@@ -66,6 +66,10 @@ final class StampCoordinator: DefaultCoordinator {
             router: Router(rootController: rootController!),
             factory: factory
         )
+        guideCoordinator.finishFlow = { [weak self, weak guideCoordinator] in
+            self?.removeDependency(guideCoordinator)
+        }
+        addDependency(guideCoordinator)
         guideCoordinator.start()
     }
     

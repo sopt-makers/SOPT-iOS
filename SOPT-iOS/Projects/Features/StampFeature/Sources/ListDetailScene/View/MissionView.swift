@@ -26,7 +26,7 @@ class MissionView: UIView {
     
     private override init(frame: CGRect) {
         super.init(frame: frame)
-
+        
         self.setUI()
         self.setLayout()
     }
@@ -45,7 +45,7 @@ class MissionView: UIView {
     
     private func setUI() {
         self.layer.cornerRadius = 9
-        self.missionLabel.textColor = DSKitAsset.Colors.soptampGray900.color
+        self.missionLabel.textColor = DSKitAsset.Colors.white.color
         self.missionLabel.setTypoStyle(.SoptampFont.subtitle1)
     }
     
