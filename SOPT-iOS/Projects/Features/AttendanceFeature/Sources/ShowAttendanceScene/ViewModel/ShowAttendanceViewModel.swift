@@ -91,9 +91,12 @@ extension ShowAttendanceViewModel {
                 if model.type != SessionType.noSession.rawValue {
                     self.sceneType = .scheduledDay
                     
-                    let convertedStartDate = self.convertDateString(model.startDate)
-                    let convertedEndDate = self.convertDateString(model.endDate)
-
+                    let convertedStartDate = DateFormatManager.shared.serverTimeToString(model.startDate,
+                                                                                         from: .isoWithoutMillis,
+                                                                                         to: .monthDayWeekTime)
+                    let convertedEndDate = DateFormatManager.shared.serverTimeToString(model.endDate,
+                                                                                       from: .isoWithoutMillis,
+                                                                                       to: .monthDayWeekTime)
                     let newModel = AttendanceScheduleModel(type: model.type,
                                                            id: model.id,
                                                            location: model.location,
@@ -153,34 +156,5 @@ extension ShowAttendanceViewModel {
                 output.isLoading.send(false)
             }
             .store(in: self.cancelBag)
-    }
-    
-    private func convertDateString(_ dateString: String) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-        dateFormatter.locale = Locale(identifier: "ko_KR")
-        dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
-        
-        guard let date = dateFormatter.date(from: dateString) else { return "" }
-        
-        dateFormatter.dateFormat = "M월 d일 EEEE H:mm"
-        return dateFormatter.string(from: date)
-    }
-    
-    func formatTimeInterval(startDate: String, endDate: String) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "M월 d일 EEEE HH:mm"
-        dateFormatter.locale = Locale(identifier: "ko_KR")
-        dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
-    
-        guard let startDateObject = dateFormatter.date(from: startDate),
-              let endDateObject = dateFormatter.date(from: endDate) else { return "" }
-        
-        let formattedStartDate = dateFormatter.string(from: startDateObject)
-        
-        dateFormatter.dateFormat = "HH:mm"
-        let formattedEndDate = dateFormatter.string(from: endDateObject)
-        
-        return "\(formattedStartDate) ~ \(formattedEndDate)"
     }
 }

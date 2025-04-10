@@ -146,76 +146,61 @@ extension MissionDateView {
         self.rightChevron.snp.makeConstraints { $0.size.equalTo(Metric.chevronLength) }
     }
     
-    private func initializeDatePicker() {
-        let toolBarView = self.getInitializedToolBar()
-        let datePicker = UIDatePicker().then {
-            $0.datePickerMode = .date
-            $0.locale = Locale(identifier: "ko-kr")
-            $0.preferredDatePickerStyle = .wheels
-            $0.maximumDate = Date()
-        }
-        
-        datePicker
-            .publisher(for: .valueChanged)
-            .map { $0.date }
-            .sink(receiveValue: { [weak self] value in
-                let dateFormatter = DateFormatter().then {
-                    $0.dateFormat = "yyyy.MM.dd"
-                    $0.locale = .current
-                }
-                let formattedDate = dateFormatter.string(from: value)
-                self?.selectAndFormattedDate = formattedDate
-                self?.textField.text = formattedDate
-            }).store(in: self.cancelBag)
-        
-        self.textField.inputView = datePicker
-        self.textField.inputAccessoryView = toolBarView
-    }
+    datePicker
+      .publisher(for: .valueChanged)
+      .map { $0.date }
+      .sink(receiveValue: { [weak self] value in
+        DateFormatManager.shared.setFormat(.dateWithDot)
+        let formattedDate = DateFormatManager.shared.dateToString(value)
+        self?.selectAndFormattedDate = formattedDate
+        self?.textField.text = formattedDate
+      }).store(in: self.cancelBag)
     
-    private func getInitializedToolBar() -> UIToolbar {
-        let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: Metric.toolBarHeight))
-        let resetButton = UIBarButtonItem(
-            title: I18N.ListDetail.datePickerCancelButtonTitle,
-            style: .plain,
-            target: nil,
-            action: nil
-        )
-        let flexible = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        let doneButton = UIBarButtonItem(
-            title: I18N.ListDetail.datePickerDoneButtonTitle,
-            style: .plain,
-            target: target,
-            action: nil
-        )
-        
-        resetButton
-            .tapPublisher
-            .asDriver()
-            .sink(receiveValue: { [weak self] _ in
-                self?.textField.text = ""
-                self?.textField.resignFirstResponder()
-            }).store(in: self.cancelBag)
-        
-        doneButton
-            .tapPublisher
-            .asDriver()
-            .sink(receiveValue: { [weak self] _ in
-                let date: String
-                if let selectAndFormattedDate = self?.selectAndFormattedDate {
-                    date = selectAndFormattedDate
-                } else {
-                    let dateFormatter = DateFormatter().then {
-                        $0.dateFormat = "yyyy.MM.dd"
-                        $0.locale = .current
-                    }
-                    date = dateFormatter.string(from: Date())
-                }
-                self?.textField.text = date
-                self?.textField.resignFirstResponder()
-            }).store(in: self.cancelBag)
-        
-        toolBar.setItems([resetButton, flexible, doneButton], animated: false)
-        
-        return toolBar
-    }
+    self.textField.inputView = datePicker
+    self.textField.inputAccessoryView = toolBarView
+  }
+  
+  private func getInitializedToolBar() -> UIToolbar {
+    let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: Metric.toolBarHeight))
+    let resetButton = UIBarButtonItem(
+      title: I18N.ListDetail.datePickerCancelButtonTitle,
+      style: .plain,
+      target: nil,
+      action: nil
+    )
+    let flexible = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+    let doneButton = UIBarButtonItem(
+      title: I18N.ListDetail.datePickerDoneButtonTitle,
+      style: .plain,
+      target: target,
+      action: nil
+    )
+    
+    resetButton
+      .tapPublisher
+      .asDriver()
+      .sink(receiveValue: { [weak self] _ in
+        self?.textField.text = ""
+        self?.textField.resignFirstResponder()
+      }).store(in: self.cancelBag)
+    
+    doneButton
+      .tapPublisher
+      .asDriver()
+      .sink(receiveValue: { [weak self] _ in
+        let date: String
+        if let selectAndFormattedDate = self?.selectAndFormattedDate {
+          date = selectAndFormattedDate
+        } else {
+          DateFormatManager.shared.setFormat(.dateWithDot)
+          date = DateFormatManager.shared.dateToString(Date())
+        }
+        self?.textField.text = date
+        self?.textField.resignFirstResponder()
+      }).store(in: self.cancelBag)
+    
+    toolBar.setItems([resetButton, flexible, doneButton], animated: false)
+    
+    return toolBar
+  }
 }
