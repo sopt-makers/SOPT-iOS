@@ -265,6 +265,12 @@ extension ListDetailVC {
             .sink { owner, buttonEnabled in
                 owner.bottomButton.setEnabled(buttonEnabled)
             }.store(in: cancelBag)
+        
+        output.isLoading
+            .withUnretained(self)
+            .sink { owner, isLoading in
+                isLoading ? owner.showLoading() : owner.stopLoading()
+            }.store(in: cancelBag)
     }
     
     private func setData(_ model: ListDetailModel) {
