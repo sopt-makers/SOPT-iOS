@@ -629,7 +629,6 @@ extension ListDetailVC {
         
         missionView.snp.makeConstraints { make in
             make.leading.top.trailing.equalToSuperview()
-            make.height.equalTo(64)
         }
         
         missionImageView.snp.makeConstraints { make in
