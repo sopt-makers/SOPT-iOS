@@ -185,6 +185,12 @@ extension ListDetailVC {
         
         let bottomButtonTapped = bottomButton
             .publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .map { owner, _ in
+                if owner.sceneType == .none {
+                    owner.showDimmerView()
+                }
+            }
             .mapVoid()
             .asDriver()
         
