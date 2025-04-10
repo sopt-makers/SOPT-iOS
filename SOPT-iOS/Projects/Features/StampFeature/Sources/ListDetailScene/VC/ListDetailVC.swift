@@ -185,6 +185,12 @@ extension ListDetailVC {
         
         let bottomButtonTapped = bottomButton
             .publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .map { owner, _ in
+                if owner.sceneType == .none {
+                    owner.showDimmerView()
+                }
+            }
             .mapVoid()
             .asDriver()
         
@@ -258,6 +264,12 @@ extension ListDetailVC {
             .withUnretained(self)
             .sink { owner, buttonEnabled in
                 owner.bottomButton.setEnabled(buttonEnabled)
+            }.store(in: cancelBag)
+        
+        output.isLoading
+            .withUnretained(self)
+            .sink { owner, isLoading in
+                isLoading ? owner.showLoading() : owner.stopLoading()
             }.store(in: cancelBag)
     }
     
@@ -554,7 +566,7 @@ extension ListDetailVC {
         
         self.textView.layer.cornerRadius = 12
         self.textView.layer.borderColor = DSKitAsset.Colors.gray500.color.cgColor
-        self.textView.textContainerInset = UIEdgeInsets(top: 14, left: 14, bottom: 14, right: 14)
+        self.textView.textContainerInset = UIEdgeInsets(top: 14, left: 10, bottom: 14, right: 14)
         
         self.imagePlaceholderLabel.textColor = DSKitAsset.Colors.gray300.color
         self.imagePlaceholderLabel.setTypoStyle(.SoptampFont.subtitle2)
@@ -617,7 +629,6 @@ extension ListDetailVC {
         
         missionView.snp.makeConstraints { make in
             make.leading.top.trailing.equalToSuperview()
-            make.height.equalTo(64)
         }
         
         missionImageView.snp.makeConstraints { make in

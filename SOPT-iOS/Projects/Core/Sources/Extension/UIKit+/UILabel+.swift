@@ -8,10 +8,20 @@
 import UIKit
 
 public extension UILabel {
-    
+
     /// 행간 조정 메서드
     func setLineSpacing(lineSpacing: CGFloat) {
-        // 기존에 attributedText가 존재할 경우, 덮어쓰지 않고 그대로 유지
+        if let text = self.text {
+            let attributedStr = NSMutableAttributedString(string: text)
+            let style = NSMutableParagraphStyle()
+            style.lineSpacing = lineSpacing
+            attributedStr.addAttribute(NSAttributedString.Key.paragraphStyle, value: style, range: NSMakeRange(0, attributedStr.length))
+            self.attributedText = attributedStr
+        }
+    }
+    
+    /// 행간 조정 메서드: 기존 attributedText에 속성 추가
+    func modifyLineSpacing(lineSpacing: CGFloat) {
         if let attributedText = self.attributedText {
             let mutableAttributedString = NSMutableAttributedString(attributedString: attributedText)
             
@@ -24,12 +34,6 @@ public extension UILabel {
             }
             
             self.attributedText = mutableAttributedString
-        } else if let text = self.text {
-            let attributedStr = NSMutableAttributedString(string: text)
-            let style = NSMutableParagraphStyle()
-            style.lineSpacing = lineSpacing
-            attributedStr.addAttribute(NSAttributedString.Key.paragraphStyle, value: style, range: NSMakeRange(0, attributedStr.length))
-            self.attributedText = attributedStr
         }
     }
     
@@ -79,7 +83,7 @@ public extension UILabel {
         attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: fullText.count))
         self.attributedText = attributedString
     }
-
+    
     /// 라벨 일부 textColor 변경해주는 함수
     /// - targetString에는 바꾸고자 하는 특정 문자열을 넣어주세요
     /// - textColor에는 targetString에 적용하고자 하는 특정 UIColor에 넣어주세요
@@ -90,7 +94,7 @@ public extension UILabel {
         attributedString.addAttribute(.foregroundColor, value: textColor, range: range)
         self.attributedText = attributedString
     }
-
+    
     /// 서버에서 받아온 string 값에서 html 태그를 적용해주는 함수
     /// - targetString에는 특정 문자열을 넣어주세요
     /// - defaultFont, defaultColor에는 기본 폰트와 컬러를 넣어주세요

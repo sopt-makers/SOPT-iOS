@@ -50,6 +50,7 @@ public class ListDetailViewModel: ViewModelType {
         var showDeleteAlert = PassthroughSubject<Bool, Never>()
         var deleteSuccessed = PassthroughSubject<Bool, Never>()
         var bottomButtonEnabled = PassthroughSubject<Bool, Never>()
+        let isLoading = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - init
@@ -91,7 +92,7 @@ extension ListDetailViewModel {
         input.imageSelected
             .flatMap { [weak self] imageData -> Driver<(Data, PresignedUrlModel)> in
                 guard let self else { return .empty() }
-                
+                output.isLoading.send(true)
                 self.useCase.getPresignedURL()
                 self.currentImage.send(imageData)
                 
@@ -113,7 +114,7 @@ extension ListDetailViewModel {
                     .asDriver()
             }
             .sink(receiveValue: { value in
-                
+                output.isLoading.send(false)
             }).store(in: self.cancelBag)
 
         
@@ -142,7 +143,8 @@ extension ListDetailViewModel {
                 } else {
                     owner.useCase.putStamp(stampData: requestModel)
                 }
-            }.store(in: self.cancelBag)
+            }
+            .store(in: self.cancelBag)
         
         input.rightButtonTapped
             .withUnretained(self)
