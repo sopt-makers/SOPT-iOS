@@ -554,7 +554,7 @@ extension ListDetailVC {
         
         self.textView.layer.cornerRadius = 12
         self.textView.layer.borderColor = DSKitAsset.Colors.gray500.color.cgColor
-        self.textView.textContainerInset = UIEdgeInsets(top: 14, left: 14, bottom: 14, right: 14)
+        self.textView.textContainerInset = UIEdgeInsets(top: 14, left: 10, bottom: 14, right: 14)
         
         self.imagePlaceholderLabel.textColor = DSKitAsset.Colors.gray300.color
         self.imagePlaceholderLabel.setTypoStyle(.SoptampFont.subtitle2)

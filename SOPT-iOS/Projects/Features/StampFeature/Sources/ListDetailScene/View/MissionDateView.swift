@@ -14,12 +14,12 @@ import DSKit
 
 public final class MissionDateView: UIView {
     private enum Metric {
-        static let contentTop = 9.f
-        static let contentLeadingTrailing = 14.f
-        static let contentBottom = 10.f
+        static let contentTop = 9
+        static let contentLeadingTrailing = 14
+        static let contentBottom = 10
         
-        static let toolBarHeight = 44.f
-        static let chevronLength = 20.f
+        static let toolBarHeight = 44
+        static let chevronLength = 20
     }
     
     private enum Constant {
@@ -28,7 +28,7 @@ public final class MissionDateView: UIView {
     
     private lazy var contentStackView = UIStackView().then {
         $0.axis = .horizontal
-        $0.spacing = 0.f
+        $0.spacing = 0
     }
     
     private lazy var textField = UITextField().then {
@@ -170,7 +170,7 @@ extension MissionDateView {
     }
     
     private func getInitializedToolBar() -> UIToolbar {
-        let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: Metric.toolBarHeight))
+        let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: Int(self.frame.width), height: Metric.toolBarHeight))
         let resetButton = UIBarButtonItem(
             title: I18N.ListDetail.datePickerCancelButtonTitle,
             style: .plain,
