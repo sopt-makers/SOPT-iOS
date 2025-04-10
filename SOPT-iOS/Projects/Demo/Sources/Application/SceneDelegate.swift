@@ -26,10 +26,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         notificationHandler: self.notificationHandler
     )
     
-    lazy var testAppCoordinator: TestApplicationCoordinator = TestApplicationCoordinator(
-        navigationController: rootController
-    )
-    
     func scene(_ scene: UIScene,
                willConnectTo session: UISceneSession,
                options connectionOptions: UIScene.ConnectionOptions) {
@@ -39,11 +35,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(windowScene: scene)
         window?.rootViewController = rootController
-
         window?.makeKeyAndVisible()
         
-//        self.appCoordinator.start()
-        self.testAppCoordinator.start()
+        self.appCoordinator.start()
     }
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {

@@ -14,10 +14,3 @@ public protocol CoordinatorFinishOutput {
 }
 
 public typealias DefaultCoordinator = BaseCoordinator & CoordinatorFinishOutput
-
-// Test 전용
-public protocol TestCoordinatorFinishOutput: AnyObject {
-    var onDeinit: (() -> Void)? { get set }
-}
-
-public typealias TestDefaultCoordinator = TestBaseCoordinator & TestCoordinatorFinishOutput
