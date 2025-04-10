@@ -271,7 +271,7 @@ extension MissionListCVC {
         let style = NSMutableParagraphStyle()
         style.lineHeightMultiple = 1.2
         style.alignment = .center
-        style.lineBreakMode = .byWordWrapping
+        style.lineBreakMode = .byTruncatingTail
         style.lineBreakStrategy = .hangulWordPriority
         attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
         attributedStr.addAttribute(NSAttributedString.Key.paragraphStyle, value: style, range: NSMakeRange(0, attributedStr.length))
