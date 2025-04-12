@@ -39,13 +39,13 @@ extension FABMenuCVC {
     private func setLayout() {
         contentView.addSubviews(menuImage, menuTitle)
         
-        menuImage.snp.makeConstraints{
-            $0.size.equalTo(22)
-            $0.leading.centerY.equalToSuperview()
+        menuImage.snp.makeConstraints { make in
+            make.size.equalTo(22)
+            make.leading.centerY.equalToSuperview()
         }
         
-        menuTitle.snp.makeConstraints{
-            $0.leading.equalTo(menuImage.snp.trailing).offset(6)
+        menuTitle.snp.makeConstraints { make in
+            make.leading.equalTo(menuImage.snp.trailing).offset(6)
         }
     }
 }

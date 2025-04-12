@@ -62,10 +62,10 @@ extension TabBarController {
     private func setLayout() {
         view.addSubviews(plusButton)
         
-        plusButton.snp.makeConstraints {
-            $0.size.equalTo(48)
-            $0.bottom.equalToSuperview().inset(58)
-            $0.centerX.equalToSuperview()
+        plusButton.snp.makeConstraints { make in
+            make.size.equalTo(48)
+            make.bottom.equalToSuperview().inset(58)
+            make.centerX.equalToSuperview()
         }
     }
     
