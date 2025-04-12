@@ -56,7 +56,19 @@ final class TabBarController: UITabBarController {
     }
 }
 
+// MARK: - UI & Layout
+
 extension TabBarController {
+    private func setLayout() {
+        view.addSubviews(plusButton)
+        
+        plusButton.snp.makeConstraints {
+            $0.size.equalTo(48)
+            $0.bottom.equalToSuperview().inset(58)
+            $0.centerX.equalToSuperview()
+        }
+    }
+    
     private func configureTabBar() {
         UITabBar.clearShadow()
         view.tintColor = .white
@@ -67,7 +79,6 @@ extension TabBarController {
         tabBar.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     }
     
-    /// setting tabbar height
     private func configureTabBarHeight() {
         var tabFrame = tabBar.frame
         tabFrame.size.height = 82
@@ -87,7 +98,11 @@ extension TabBarController {
 
         setViewControllers(tabList, animated: true)
     }
-    
+}
+
+// MARK: - Methods
+
+extension TabBarController {
     private func setDelegate() {
         self.delegate = self
     }
@@ -105,17 +120,10 @@ extension TabBarController {
                 owner.selectedIndex = index
             }.store(in: cancelBag)
     }
-    
-    private func setLayout() {
-        view.addSubviews(plusButton)
-        
-        plusButton.snp.makeConstraints {
-            $0.size.equalTo(48)
-            $0.bottom.equalToSuperview().inset(58)
-            $0.centerX.equalToSuperview()
-        }
-    }
 }
+
+
+// MARK: - UITabBarControllerDelegate
 
 extension TabBarController: UITabBarControllerDelegate {
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
