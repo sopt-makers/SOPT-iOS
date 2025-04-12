@@ -20,6 +20,12 @@ final class TabBarController: UITabBarController {
     private let isTabBarItemSelected = PassthroughSubject<Int, Never>()
     private let cancelBag = CancelBag()
     
+    private var plusButton = UIButton().then{
+        $0.setImage(DSKitAsset.Assets.icFabPlus.image, for: .normal)
+        $0.backgroundColor = .white
+        $0.layer.cornerRadius = 18
+    }
+    
     init(viewModel: TabBarViewModel, tabList: [UIViewController]) {
         self.viewModel = viewModel
         self.tabList = tabList
@@ -38,6 +44,7 @@ final class TabBarController: UITabBarController {
         configureTabBarItem()
         setDelegate()
         bindViewModels()
+        setLayout()
     }
     
     override public func viewDidLayoutSubviews() {
@@ -97,6 +104,16 @@ extension TabBarController {
             .sink { owner, index in
                 owner.selectedIndex = index
             }.store(in: cancelBag)
+    }
+    
+    private func setLayout() {
+        view.addSubviews(plusButton)
+        
+        plusButton.snp.makeConstraints {
+            $0.size.equalTo(48)
+            $0.bottom.equalToSuperview().inset(58)
+            $0.centerX.equalToSuperview()
+        }
     }
 }
 
