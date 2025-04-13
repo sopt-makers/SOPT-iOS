@@ -14,17 +14,24 @@ import DSKit
 
 final class TabBarController: UITabBarController {
     
+    // MARK: - Properties
+    
     private let tabList: [UIViewController]
     private let viewModel: TabBarViewModel
     
     private let isTabBarItemSelected = PassthroughSubject<Int, Never>()
+    private lazy var isFABTapped = plusButton.publisher(for: .touchUpInside).mapVoid().asDriver()
     private let cancelBag = CancelBag()
     
-    private var plusButton = UIButton().then{
+    private let plusButton = UIButton().then{
         $0.setImage(DSKitAsset.Assets.icFabPlus.image, for: .normal)
         $0.backgroundColor = .white
         $0.layer.cornerRadius = 18
+        $0.imageView?.contentMode = .center
+        $0.imageView?.clipsToBounds = false
     }
+    
+    // MARK: - Life Cycle
     
     init(viewModel: TabBarViewModel, tabList: [UIViewController]) {
         self.viewModel = viewModel
@@ -45,6 +52,7 @@ final class TabBarController: UITabBarController {
         setDelegate()
         bindViewModels()
         setLayout()
+        setAddTarget()
     }
     
     override public func viewDidLayoutSubviews() {
@@ -98,6 +106,13 @@ extension TabBarController {
 
         setViewControllers(tabList, animated: true)
     }
+    
+    @objc
+    private func FABAnimation(_ isTapped: Bool) {
+        UIView.animate(withDuration: 0.6) {
+            self.plusButton.imageView?.transform = isTapped ? .init(rotationAngle: -CGFloat.pi/4) : .identity
+        }
+    }
 }
 
 // MARK: - Methods
@@ -109,7 +124,8 @@ extension TabBarController {
     
     private func bindViewModels() {
         let input = TabBarViewModel.Input(
-            isTabSelectedIndex: isTabBarItemSelected.asDriver()
+            isTabSelectedIndex: isTabBarItemSelected.asDriver(), 
+            isFABTapped: isFABTapped
         )
     
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -119,6 +135,16 @@ extension TabBarController {
             .sink { owner, index in
                 owner.selectedIndex = index
             }.store(in: cancelBag)
+        
+        viewModel.$isFABTapped
+            .withUnretained(self)
+            .sink { owner, bool in
+                owner.FABAnimation(bool)
+            }.store(in: cancelBag)
+    }
+    
+    private func setAddTarget() {
+        plusButton.addTarget(self, action: #selector(FABAnimation), for: .touchUpInside)
     }
 }
 
