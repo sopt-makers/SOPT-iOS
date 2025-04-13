@@ -15,12 +15,14 @@ final public class TabBarViewModel: TabBarViewModelType {
     
     private let cancelBag = CancelBag()
     private let userType: UserType
+    @Published private(set) var isFABTapped: Bool = false
     
     public var onTabBarItemTapped: ((Int) -> Void)?
     public var showTabBarAlert: (() -> Void)?
     
     public struct Input {
         let isTabSelectedIndex: Driver<Int>
+        let isFABTapped: Driver<Void>
     }
     
     public struct Output {
@@ -46,6 +48,12 @@ extension TabBarViewModel {
                     owner.onTabBarItemTapped?(index)
                     owner.trackAmplitude(itemIndex: index)
                 }
+            }.store(in: cancelBag)
+        
+        input.isFABTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.isFABTapped.toggle()
             }.store(in: cancelBag)
         
         return output
