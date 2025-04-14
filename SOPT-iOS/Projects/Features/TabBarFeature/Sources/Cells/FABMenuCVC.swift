@@ -41,11 +41,14 @@ extension FABMenuCVC {
         
         menuImage.snp.makeConstraints { make in
             make.size.equalTo(22)
-            make.leading.centerY.equalToSuperview()
+            make.top.equalToSuperview().inset(10)
+            make.leading.bottom.equalToSuperview()
         }
         
         menuTitle.snp.makeConstraints { make in
             make.leading.equalTo(menuImage.snp.trailing).offset(6)
+            make.top.equalToSuperview().inset(10)
+            make.bottom.equalToSuperview()
         }
     }
 }
@@ -53,10 +56,8 @@ extension FABMenuCVC {
 // MARK: - Methods
 
 extension FABMenuCVC {
-    private func configureCell() {
-        
-        //TODO: - 데이터 전달 시 수정
-        menuImage.image = .actions
-        menuTitle.text = "메뉴"
+    public func configureCell(model: MenuSectionItem) {
+        menuTitle.text = model.title
+        menuImage.image = model.icon
     }
 }
