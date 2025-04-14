@@ -39,6 +39,15 @@ extension FABMenuHeaderView {
         
         sectionTitle.snp.makeConstraints { make in
             make.leading.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
+    }
+}
+
+// MARK: - Methods
+
+extension FABMenuHeaderView {
+    public func configureCell(title: String) {
+        sectionTitle.text = title
     }
 }
