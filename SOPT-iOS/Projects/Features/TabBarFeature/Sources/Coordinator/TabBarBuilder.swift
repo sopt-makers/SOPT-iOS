@@ -21,4 +21,9 @@ extension TabBarBuilder: TabBarBuildable {
         let tabBarVC = TabBarController(viewModel: viewModel, tabList: views)
         return (tabBarVC, viewModel)
     }
+    
+    public func makeTabBarFABMenu() -> UIViewController {
+        let tabBarFABMenuVC = TabBarFABMenuVC()
+        return tabBarFABMenuVC
+    }
 }
