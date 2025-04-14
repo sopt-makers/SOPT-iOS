@@ -246,6 +246,13 @@ extension ApplicationCoordinator {
             case .signIn:
                 self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
                 self?.removeDependency(coordinator)
+            case .FABMenu:
+                let vc = tabBarBuilder.makeTabBarFABMenu()
+                self?.router.present(vc, 
+                                     animated: true,
+                                     modalPresentationSytle: .overFullScreen,
+                                     modalTransitionStyle: .crossDissolve)
+                
             }
         }
         

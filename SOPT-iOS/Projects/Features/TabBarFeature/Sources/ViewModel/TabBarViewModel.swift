@@ -19,6 +19,7 @@ final public class TabBarViewModel: TabBarViewModelType {
     
     public var onTabBarItemTapped: ((Int) -> Void)?
     public var showTabBarAlert: (() -> Void)?
+    public var showTabBarFABMenu: ((Bool) -> Void)?
     
     public struct Input {
         let isTabSelectedIndex: Driver<Int>
@@ -54,6 +55,7 @@ extension TabBarViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.isFABTapped.toggle()
+                owner.showTabBarFABMenu?(owner.isFABTapped)
             }.store(in: cancelBag)
         
         return output
