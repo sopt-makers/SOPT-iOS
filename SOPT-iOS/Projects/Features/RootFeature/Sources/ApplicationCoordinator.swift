@@ -12,7 +12,6 @@ import Core
 import BaseFeatureDependency
 import SplashFeature
 import AuthFeature
-//import MainFeature
 import HomeFeature
 import AppMyPageFeature
 import NotificationFeature
@@ -166,7 +165,7 @@ extension ApplicationCoordinator {
     }
 }
 
-// MARK: - MainFlow
+// MARK: - TabBarFlow
 
 extension ApplicationCoordinator {
     internal func runTabBarFlow(type: UserType? = nil) {
@@ -253,42 +252,6 @@ extension ApplicationCoordinator {
         coordinator.start()
     }
 
-//    internal func runMainFlow(type: UserType? = nil) {
-//        defer {
-//            bindNotification()
-//        }
-//        
-//        self.childCoordinators = []
-//        
-//        let userType = type ?? UserDefaultKeyList.Auth.getUserType()
-//        let coordinator = MainCoordinator(
-//            router: router,
-//            factory: MainBuilder(),
-//            userType: userType
-//        )
-//        coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
-//            switch destination {
-//            case .myPage(let userType):
-//                self?.runMyPageFlow(of: userType)
-//            case .notification:
-//                self?.runNotificationFlow()
-//            case .attendance:
-//                self?.runAttendanceFlow()
-//            case .stamp:
-//                self?.runStampFlow()
-//            case .poke:
-//                self?.runPokeFlow()
-//            case .pokeOnboarding:
-//                self?.runPokeOnboardingFlow()
-//            case .signIn:
-//                self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
-//                self?.removeDependency(coordinator)
-//            }
-//        }
-//        addDependency(coordinator)
-//        coordinator.start()
-//    }
-    
     @discardableResult
     internal func runHomeFlow(type: UserType) -> HomeCoordinator {
         let coordinator = HomeCoordinator(
