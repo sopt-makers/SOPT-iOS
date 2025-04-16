@@ -13,7 +13,6 @@ let project = Project.makeModule(
     name: "TabBarFeature",
     targets: [.unitTest, .staticFramework, .demo, .interface],
     interfaceDependencies: [
-        .Features.Main.Feature,
         .Features.Stamp.Feature,
         .Features.Attendance.Feature,
         .Features.Notice.Feature,
