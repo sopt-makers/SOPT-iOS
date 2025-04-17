@@ -16,6 +16,7 @@ import DSKit
 struct MenuSectionItem {
     var title: String
     var icon: UIImage
+    var url: String
 }
 
 protocol TabBarMenuSectionProtocol {
@@ -43,20 +44,25 @@ enum TabBarMenuSection: CaseIterable, TabBarMenuSectionProtocol {
         switch self {
         case .playground:
             return [MenuSectionItem(title: I18N.TabBar.Playground.write, 
-                                    icon: DSKitAsset.Assets.icFabPencil.image)]
+                                    icon: DSKitAsset.Assets.icFabPencil.image, 
+                                    url: ExternalURL.Playground.feed)]
         case .groupAndStudy:
             return [
                 MenuSectionItem(title: I18N.TabBar.GroupAndStudy.makeGroup, 
-                                icon: DSKitAsset.Assets.icFabGroup.image),
+                                icon: DSKitAsset.Assets.icFabGroup.image, 
+                                url: ExternalURL.Playground.makeGroup),
                 MenuSectionItem(title: I18N.TabBar.GroupAndStudy.makeLightGroup,
-                                icon: DSKitAsset.Assets.icFabBolt.image),
+                                icon: DSKitAsset.Assets.icFabBolt.image, 
+                                url: ExternalURL.Playground.makeLightGroup),
                 MenuSectionItem(title: I18N.TabBar.GroupAndStudy.writeFeed,
-                                icon: DSKitAsset.Assets.icFabFire.image)
+                                icon: DSKitAsset.Assets.icFabFire.image, 
+                                url: ExternalURL.Playground.makeGroup)
             ]
         case .homepage:
             return [
                 MenuSectionItem(title: I18N.TabBar.Homepage.uploadArticle, 
-                                icon: DSKitAsset.Assets.icFabHomepage.image),
+                                icon: DSKitAsset.Assets.icFabHomepage.image, 
+                                url: ExternalURL.SOPT.officialHomepage),
             ]
         }
     }
