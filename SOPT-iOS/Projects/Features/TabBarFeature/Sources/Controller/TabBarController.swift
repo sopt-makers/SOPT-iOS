@@ -87,7 +87,6 @@ final class TabBarController: UITabBarController {
 
 extension TabBarController {
     private func setUI() {
-        menuCollectionView.isHidden = true
         dimmedView.isHidden = true
     }
     
@@ -102,7 +101,7 @@ extension TabBarController {
         
         menuCollectionView.snp.makeConstraints { make in
             make.height.equalTo(299)
-            make.bottom.equalTo(plusButton.snp.top).offset(-16)
+            make.top.equalTo(view.snp.bottom)
             make.leading.trailing.equalToSuperview().inset(107)
         }
         
@@ -137,75 +136,21 @@ extension TabBarController {
             tabList[$0.rawValue].tabBarItem.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: 3)
             tabList[$0.rawValue].tabBarItem.setTitleTextAttributes([NSAttributedString.Key.font: DSKitFontFamily.Suit.medium.font(size: 10)], for: .normal)
         }
-
+        
         setViewControllers(tabList, animated: true)
-    }
-    
-    // TODO: - 애니메이션 디테일 추가
-    @objc
-    private func FABAnimation(_ isTapped: Bool) {
-        UIView.animate(withDuration: 0.6) {
-            self.plusButton.imageView?.transform = isTapped ? .init(rotationAngle: -CGFloat.pi/4) : .identity
-        }
-        
-        
-        UIView.animate(withDuration: 0.6,
-                       delay: 0,
-                       usingSpringWithDamping: 0.75,
-                       initialSpringVelocity: 1.2,
-                       options: [.curveEaseInOut],
-                       animations: {
-            self.dimmedView.isHidden = !isTapped
-            self.dimmedView.alpha = isTapped ? 1 : 0
-            self.menuCollectionView.isHidden = !isTapped
-        })
-        
-//        UIView.transition(with: dimmedView, duration: 0.6) {
-//            self.dimmedView.isHidden = !isTapped
-//            self.dimmedView.backgroundColor = isTapped ? DSKitAsset.Colors.black100.color.withAlphaComponent(0.6) : .clear
-//        }
-//        
-//        if #available(iOS 17.0, *) {
-//            UIView.animate(springDuration: 0.6, bounce: 0.7) {
-//                self.dimmedView.isHidden = !isTapped
-//                self.menuCollectionView.isHidden = !isTapped
-//            }
-//        } else {
-//            UIView.animate(withDuration: 0.6,
-//                           delay: 0,
-//                           usingSpringWithDamping: 0.7,
-//                           initialSpringVelocity: 0.8,
-//                           options: .curveEaseInOut) {
-//                self.dimmedView.isHidden = !isTapped
-//                self.dimmedView.backgroundColor = !isTapped ? DSKitAsset.Colors.black100.color.withAlphaComponent(0.6) : .clear
-//                self.menuCollectionView.isHidden = !isTapped
-//            }
-//        }
-    }
-    
-    private func configureCollectionView() {
-        menuCollectionView.delegate = self
-        menuCollectionView.dataSource = self
-        
-        menuCollectionView.register(FABMenuCVC.self, forCellWithReuseIdentifier: FABMenuCVC.className)
-        menuCollectionView.register(FABMenuHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: FABMenuHeaderView.className)
     }
 }
 
 // MARK: - Methods
 
 extension TabBarController {
-    private func setDelegate() {
-        self.delegate = self
-    }
-    
     private func bindViewModels() {
         let input = TabBarViewModel.Input(
-            isTabSelectedIndex: isTabBarItemSelected.asDriver(), 
+            isTabSelectedIndex: isTabBarItemSelected.asDriver(),
             isFABTapped: isFABTapped,
             isMenuCellTapped: isMenuCellTapped.asDriver()
         )
-    
+        
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.selectedIndex
@@ -221,8 +166,76 @@ extension TabBarController {
             }.store(in: cancelBag)
     }
     
+    private func setDelegate() {
+        self.delegate = self
+    }
+    
+    private func configureCollectionView() {
+        menuCollectionView.delegate = self
+        menuCollectionView.dataSource = self
+        
+        menuCollectionView.register(FABMenuCVC.self, forCellWithReuseIdentifier: FABMenuCVC.className)
+        menuCollectionView.register(FABMenuHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: FABMenuHeaderView.className)
+    }
+    
     private func setAddTarget() {
         plusButton.addTarget(self, action: #selector(FABAnimation), for: .touchUpInside)
+    }
+}
+
+// MARK: - Animate
+
+extension TabBarController {
+    // TODO: - 애니메이션 디테일 추가
+    @objc
+    private func FABAnimation(_ isTapped: Bool) {
+        
+        plusButtonAnimate(isTapped)
+        menuCollectionViewAnimate(isTapped)
+        dimmedViewAnimate(isTapped)
+        
+        
+//        if #available(iOS 17.0, *) {
+//            UIView.animate(springDuration: 0.6, bounce: 0.2) {
+//                self.dimmedView.isHidden = !isTapped
+//                self.dimmedView.alpha = isTapped ? 1 : 0
+//            }
+//        } else {
+//            UIView.animate(withDuration: 0.6,
+//                           delay: 0,
+//                           usingSpringWithDamping: 0.75,
+//                           initialSpringVelocity: 1.2,
+//                           options: [.curveEaseInOut],
+//                           animations: {
+//                self.dimmedView.isHidden = !isTapped
+//                self.dimmedView.alpha = isTapped ? 1 : 0
+//            })
+//        }
+    }
+    
+    private func plusButtonAnimate(_ isTapped: Bool) {
+        UIView.animate(withDuration: 0.6) {
+            self.plusButton.imageView?.transform = isTapped ? .init(rotationAngle: -CGFloat.pi/4) : .identity
+        }
+    }
+    
+    private func menuCollectionViewAnimate(_ isTapped: Bool) {
+        UIView.animate(withDuration: 0.6) {
+            let positionY = self.view.frame.maxY - self.plusButton.frame.minY + 16 + self.menuCollectionView.frame.height
+            self.menuCollectionView.transform = isTapped ? CGAffineTransform(translationX: 0, y: -positionY) : CGAffineTransform(translationX: 0, y: 0)
+        }
+    }
+    
+    private func dimmedViewAnimate(_ isTapped: Bool) {
+        UIView.animate(withDuration: 0.6,
+                       delay: 0,
+                       usingSpringWithDamping: 0.75,
+                       initialSpringVelocity: 1.2,
+                       options: [.curveEaseInOut],
+                       animations: {
+            self.dimmedView.isHidden = !isTapped
+            self.dimmedView.alpha = isTapped ? 1 : 0
+        })
     }
 }
 
@@ -238,9 +251,7 @@ extension TabBarController: UITabBarControllerDelegate {
 
 // MARK: - UICollectionView
 
-extension TabBarController: UICollectionViewDelegateFlowLayout {
-
-}
+extension TabBarController: UICollectionViewDelegateFlowLayout { }
 
 extension TabBarController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -267,7 +278,7 @@ extension TabBarController: UICollectionViewDataSource {
                                               withReuseIdentifier: FABMenuHeaderView.className,
                                               for: indexPath) as? FABMenuHeaderView
         else { return UICollectionReusableView() }
-    
+        
         headerView.configureCell(title: TabBarMenuSection.allCases[indexPath.section].title)
         return headerView
     }
