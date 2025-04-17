@@ -69,6 +69,12 @@ public final class TabBarCoordinator: DefaultCoordinator {
             )
         }
         
+        tabBar.vm.onFABMenuTapped = { [weak self] url in
+            guard let url = URL(string: url) else { return }
+            let webView = SOPTWebView(startWith: url)
+            self?.router.push(webView)
+        }
+        
         router.replaceRootWindow(tabBar.vc, withAnimation: true, hideBar: true)
     }
 }

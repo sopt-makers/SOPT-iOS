@@ -18,11 +18,13 @@ final public class TabBarViewModel: TabBarViewModelType {
     @Published private(set) var isFABTapped: Bool = false
     
     public var onTabBarItemTapped: ((Int) -> Void)?
+    public var onFABMenuTapped: ((String) -> Void)?
     public var showTabBarAlert: (() -> Void)?
     
     public struct Input {
         let isTabSelectedIndex: Driver<Int>
         let isFABTapped: Driver<Void>
+        let isMenuCellTapped: Driver<String>
     }
     
     public struct Output {
@@ -54,6 +56,12 @@ extension TabBarViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.isFABTapped.toggle()
+            }.store(in: cancelBag)
+        
+        input.isMenuCellTapped
+            .withUnretained(self)
+            .sink { owner, url in
+                owner.onFABMenuTapped?(url)
             }.store(in: cancelBag)
         
         return output

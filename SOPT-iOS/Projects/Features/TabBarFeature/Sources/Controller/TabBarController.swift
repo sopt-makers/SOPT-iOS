@@ -20,6 +20,7 @@ final class TabBarController: UITabBarController {
     private let viewModel: TabBarViewModel
     
     private let isTabBarItemSelected = PassthroughSubject<Int, Never>()
+    private let isMenuCellTapped = PassthroughSubject<String, Never>()
     private lazy var isFABTapped = plusButton.publisher(for: .touchUpInside).mapVoid().asDriver()
     private let cancelBag = CancelBag()
     
@@ -140,6 +141,7 @@ extension TabBarController {
         setViewControllers(tabList, animated: true)
     }
     
+    // TODO: - 애니메이션 디테일 추가
     @objc
     private func FABAnimation(_ isTapped: Bool) {
         UIView.animate(withDuration: 0.6) {
@@ -155,6 +157,7 @@ extension TabBarController {
                        animations: {
             self.dimmedView.isHidden = !isTapped
             self.dimmedView.alpha = isTapped ? 1 : 0
+            self.menuCollectionView.isHidden = !isTapped
         })
         
 //        UIView.transition(with: dimmedView, duration: 0.6) {
@@ -199,7 +202,8 @@ extension TabBarController {
     private func bindViewModels() {
         let input = TabBarViewModel.Input(
             isTabSelectedIndex: isTabBarItemSelected.asDriver(), 
-            isFABTapped: isFABTapped
+            isFABTapped: isFABTapped,
+            isMenuCellTapped: isMenuCellTapped.asDriver()
         )
     
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -266,5 +270,12 @@ extension TabBarController: UICollectionViewDataSource {
     
         headerView.configureCell(title: TabBarMenuSection.allCases[indexPath.section].title)
         return headerView
+    }
+}
+
+extension TabBarController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let url = TabBarMenuSection.allCases[indexPath.section].items[indexPath.item].url
+        self.isMenuCellTapped.send(url)
     }
 }
