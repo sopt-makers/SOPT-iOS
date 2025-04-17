@@ -24,6 +24,8 @@ final class TabBarController: UITabBarController {
     private lazy var isFABTapped = plusButton.publisher(for: .touchUpInside).mapVoid().asDriver()
     private let cancelBag = CancelBag()
     
+    // MARK: - UI Components
+    
     private let plusButton = UIButton().then{
         $0.setImage(DSKitAsset.Assets.icFabPlus.image, for: .normal)
         $0.backgroundColor = .white
@@ -64,13 +66,15 @@ final class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        configureTabBar()
-        configureTabBarItem()
-        setDelegate()
-        bindViewModels()
         setUI()
         setLayout()
+        bindViewModels()
         setAddTarget()
+        
+        configureTabBar()
+        configureTabBarItem()
+        
+        setDelegate()
         configureCollectionView()
     }
     
