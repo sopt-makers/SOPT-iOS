@@ -186,51 +186,48 @@ extension TabBarController {
 // MARK: - Animate
 
 extension TabBarController {
-    // TODO: - 애니메이션 디테일 추가
     @objc
     private func FABAnimation(_ isTapped: Bool) {
         
-        plusButtonAnimate(isTapped)
-        menuCollectionViewAnimate(isTapped)
-        dimmedViewAnimate(isTapped)
-        
-        
-//        if #available(iOS 17.0, *) {
-//            UIView.animate(springDuration: 0.6, bounce: 0.2) {
-//                self.dimmedView.isHidden = !isTapped
-//                self.dimmedView.alpha = isTapped ? 1 : 0
-//            }
-//        } else {
-//            UIView.animate(withDuration: 0.6,
-//                           delay: 0,
-//                           usingSpringWithDamping: 0.75,
-//                           initialSpringVelocity: 1.2,
-//                           options: [.curveEaseInOut],
-//                           animations: {
-//                self.dimmedView.isHidden = !isTapped
-//                self.dimmedView.alpha = isTapped ? 1 : 0
-//            })
-//        }
+        animatePlusButton(isTapped)
+        animateDimmedView(isTapped)
+        isTapped ? animateFABMenuIn() : animateFABMenuOut()
     }
     
-    private func plusButtonAnimate(_ isTapped: Bool) {
+    private func animatePlusButton(_ isTapped: Bool) {
         UIView.animate(withDuration: 0.6) {
             self.plusButton.imageView?.transform = isTapped ? .init(rotationAngle: -CGFloat.pi/4) : .identity
         }
     }
     
-    private func menuCollectionViewAnimate(_ isTapped: Bool) {
-        UIView.animate(withDuration: 0.6) {
-            let positionY = self.view.frame.maxY - self.plusButton.frame.minY + 16 + self.menuCollectionView.frame.height
-            self.menuCollectionView.transform = isTapped ? CGAffineTransform(translationX: 0, y: -positionY) : CGAffineTransform(translationX: 0, y: 0)
-        }
-    }
-    
-    private func dimmedViewAnimate(_ isTapped: Bool) {
+    private func animateFABMenuIn() {
         UIView.animate(withDuration: 0.6,
                        delay: 0,
                        usingSpringWithDamping: 0.75,
-                       initialSpringVelocity: 1.2,
+                       initialSpringVelocity: 0.75,
+                       options: [.curveEaseInOut],
+                       animations: {
+            let positionY = self.view.frame.maxY - self.plusButton.frame.minY + 16 + self.menuCollectionView.frame.height
+            self.menuCollectionView.transform = CGAffineTransform(translationX: 0, y: -positionY)
+        })
+    }
+    
+    private func animateFABMenuOut() {
+        UIView.animate(withDuration: 0.6,
+                       delay: 0,
+                       usingSpringWithDamping: 1,
+                       initialSpringVelocity: 0.8,
+                       options: [.curveEaseInOut],
+                       animations: {
+            self.menuCollectionView.transform = CGAffineTransform(translationX: 0, y: 0)
+        })
+    }
+    
+    private func animateDimmedView(_ isTapped: Bool) {
+        UIView.animate(withDuration: 0.6,
+                       delay: 0,
+                       usingSpringWithDamping: 0.75,
+                       initialSpringVelocity: 0.75,
                        options: [.curveEaseInOut],
                        animations: {
             self.dimmedView.isHidden = !isTapped
