@@ -20,7 +20,6 @@ public enum TabBarCoordinatorDestination {
     case home
     case soptlog
     case signIn
-    case FABMenu
 }
 
 public final class TabBarCoordinator: DefaultCoordinator {
@@ -68,10 +67,6 @@ public final class TabBarCoordinator: DefaultCoordinator {
                     self?.requestCoordinating?(.signIn)
                 }
             )
-        }
-        
-        tabBar.vm.showTabBarFABMenu = { [weak self] isFABClicked in
-            self?.requestCoordinating?(.FABMenu)
         }
         
         router.replaceRootWindow(tabBar.vc, withAnimation: true, hideBar: true)

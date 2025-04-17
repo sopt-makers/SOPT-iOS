@@ -11,5 +11,4 @@ import Core
 
 public protocol TabBarBuildable {
     func makeTabBar(with views: [UIViewController], userType: UserType) -> TabBarPresentable
-    func makeTabBarFABMenu() -> UIViewController
 }

@@ -8,8 +8,7 @@
 
 import UIKit
 
-extension TabBarFABMenuVC {
-    
+extension TabBarController {
     private enum Metric {
         static let collectionViewDefaultInset: Double = 14
         static let collectionViewTopInset: Double = 10

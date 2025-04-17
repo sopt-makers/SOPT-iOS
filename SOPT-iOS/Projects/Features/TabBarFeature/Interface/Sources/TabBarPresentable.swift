@@ -15,7 +15,6 @@ import Core
 public protocol TabBarCoordinatable {
     var onTabBarItemTapped: ((Int) -> Void)? { get set }
     var showTabBarAlert: (() -> Void)? { get set }
-    var showTabBarFABMenu: ((Bool) -> Void)? { get set }
 }
 public typealias TabBarViewModelType = ViewModelType & TabBarCoordinatable
 public typealias TabBarPresentable = (vc: UITabBarController, vm: any TabBarViewModelType)

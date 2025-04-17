@@ -31,6 +31,22 @@ final class TabBarController: UITabBarController {
         $0.imageView?.clipsToBounds = false
     }
     
+    private let dimmedView = UIView().then{
+        $0.backgroundColor = DSKitAsset.Colors.black100.color.withAlphaComponent(0.6)
+    }
+    
+    private lazy var menuCollectionView: UICollectionView = {
+        let layout = self.createLayout()
+        layout.register(FABMenuDecorationView.self, forDecorationViewOfKind: FABMenuDecorationView.className)
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.isScrollEnabled = false
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.backgroundColor = .clear
+        return collectionView
+    }()
+    
     // MARK: - Life Cycle
     
     init(viewModel: TabBarViewModel, tabList: [UIViewController]) {
@@ -51,8 +67,10 @@ final class TabBarController: UITabBarController {
         configureTabBarItem()
         setDelegate()
         bindViewModels()
+        setUI()
         setLayout()
         setAddTarget()
+        configureCollectionView()
     }
     
     override public func viewDidLayoutSubviews() {
@@ -67,13 +85,28 @@ final class TabBarController: UITabBarController {
 // MARK: - UI & Layout
 
 extension TabBarController {
+    private func setUI() {
+        menuCollectionView.isHidden = true
+        dimmedView.isHidden = true
+    }
+    
     private func setLayout() {
-        view.addSubviews(plusButton)
+        view.addSubviews(dimmedView, plusButton, menuCollectionView)
         
         plusButton.snp.makeConstraints { make in
             make.size.equalTo(48)
             make.bottom.equalToSuperview().inset(58)
             make.centerX.equalToSuperview()
+        }
+        
+        menuCollectionView.snp.makeConstraints { make in
+            make.height.equalTo(299)
+            make.bottom.equalTo(plusButton.snp.top).offset(-16)
+            make.leading.trailing.equalToSuperview().inset(107)
+        }
+        
+        dimmedView.snp.makeConstraints { make in
+            make.center.size.equalToSuperview()
         }
     }
     
@@ -112,6 +145,47 @@ extension TabBarController {
         UIView.animate(withDuration: 0.6) {
             self.plusButton.imageView?.transform = isTapped ? .init(rotationAngle: -CGFloat.pi/4) : .identity
         }
+        
+        
+        UIView.animate(withDuration: 0.6,
+                       delay: 0,
+                       usingSpringWithDamping: 0.75,
+                       initialSpringVelocity: 1.2,
+                       options: [.curveEaseInOut],
+                       animations: {
+            self.dimmedView.isHidden = !isTapped
+            self.dimmedView.alpha = isTapped ? 1 : 0
+        })
+        
+//        UIView.transition(with: dimmedView, duration: 0.6) {
+//            self.dimmedView.isHidden = !isTapped
+//            self.dimmedView.backgroundColor = isTapped ? DSKitAsset.Colors.black100.color.withAlphaComponent(0.6) : .clear
+//        }
+//        
+//        if #available(iOS 17.0, *) {
+//            UIView.animate(springDuration: 0.6, bounce: 0.7) {
+//                self.dimmedView.isHidden = !isTapped
+//                self.menuCollectionView.isHidden = !isTapped
+//            }
+//        } else {
+//            UIView.animate(withDuration: 0.6,
+//                           delay: 0,
+//                           usingSpringWithDamping: 0.7,
+//                           initialSpringVelocity: 0.8,
+//                           options: .curveEaseInOut) {
+//                self.dimmedView.isHidden = !isTapped
+//                self.dimmedView.backgroundColor = !isTapped ? DSKitAsset.Colors.black100.color.withAlphaComponent(0.6) : .clear
+//                self.menuCollectionView.isHidden = !isTapped
+//            }
+//        }
+    }
+    
+    private func configureCollectionView() {
+        menuCollectionView.delegate = self
+        menuCollectionView.dataSource = self
+        
+        menuCollectionView.register(FABMenuCVC.self, forCellWithReuseIdentifier: FABMenuCVC.className)
+        menuCollectionView.register(FABMenuHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: FABMenuHeaderView.className)
     }
 }
 
@@ -155,5 +229,42 @@ extension TabBarController: UITabBarControllerDelegate {
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         guard let index = tabBar.items?.firstIndex(of: item) else { return }
         isTabBarItemSelected.send(index)
+    }
+}
+
+// MARK: - UICollectionView
+
+extension TabBarController: UICollectionViewDelegateFlowLayout {
+
+}
+
+extension TabBarController: UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return TabBarMenuSection.allCases.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        let menuSection = TabBarMenuSection.allCases[section]
+        return menuSection.items.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FABMenuCVC.className, for: indexPath) as? FABMenuCVC else { return UICollectionViewCell() }
+        
+        let menuSection = TabBarMenuSection.allCases[indexPath.section]
+        cell.configureCell(model: menuSection.items[indexPath.row])
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard let headerView = collectionView
+            .dequeueReusableSupplementaryView(ofKind: kind,
+                                              withReuseIdentifier: FABMenuHeaderView.className,
+                                              for: indexPath) as? FABMenuHeaderView
+        else { return UICollectionReusableView() }
+    
+        headerView.configureCell(title: TabBarMenuSection.allCases[indexPath.section].title)
+        return headerView
     }
 }
