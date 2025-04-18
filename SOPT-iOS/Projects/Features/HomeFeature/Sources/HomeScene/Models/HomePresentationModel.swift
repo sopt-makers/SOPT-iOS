@@ -221,10 +221,14 @@ extension HomeDescriptionModel {
 extension HomeRecentScheduleModel {
     func toPresentation() -> HomePresentationModel.RecentSchedule {
         return HomePresentationModel.RecentSchedule(
-            date: self.date,
+            date: changeFormat(self.date),
             type: self.type,
             title: self.title
         )
+    }
+    
+    private func changeFormat(_ dateString: String) -> String {
+        return dateString.split(separator: "-").joined(separator: ".")
     }
 }
 

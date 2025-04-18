@@ -22,4 +22,5 @@ public protocol HomeRepositoryInterface {
     func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Error>
     func getAnnouncementPosts() -> AnyPublisher<[HomeAnnouncementModel], Error>
     func getReportUrl() -> AnyPublisher<SoptampReportUrlModel, Error>
+    func checkPokeNewUser() -> AnyPublisher<Bool, Error>
 }

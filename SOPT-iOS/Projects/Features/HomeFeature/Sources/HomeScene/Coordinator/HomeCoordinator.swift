@@ -23,6 +23,7 @@ public enum HomeCoordinatorDestination {
     case attendance
     case soptlog
     case calendar
+    case poke(isNewUser: Bool)
     
     case webLink(url: String)
     case deepLink(url: String)
@@ -103,6 +104,11 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
         homeForMember.vm.onNetworkError = {
             AlertUtils.presentNetworkAlertVC()
         }
+        
+        homeForMember.vm.onPoke = { [weak self] isNewUser in
+            self?.requestCoordinating?(.poke(isNewUser: isNewUser))
+        }
+        
         rootViewController = homeForMember.vc.viewController
         
         router.push(homeForMember.vc)

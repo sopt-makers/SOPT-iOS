@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "ic_fab_homepage.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

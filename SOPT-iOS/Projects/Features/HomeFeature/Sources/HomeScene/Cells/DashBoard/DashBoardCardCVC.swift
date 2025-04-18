@@ -87,7 +87,6 @@ extension DashBoardCardCVC {
     func configureCell(userType: UserType, model: HomePresentationModel.DashBoard? = nil) {
         switch userType {
         case .visitor:
-            self.descriptionLabel.font = DSKitFontFamily.Suit.medium.font(size: 18)
             self.descriptionLabel.text = I18N.Home.DashBoard.UserHistory.encourage
             self.descriptionLabel.setLineSpacing(lineSpacing: 5)
             self.rightArrowWithCircleImageView.isHidden = true
@@ -99,7 +98,7 @@ extension DashBoardCardCVC {
                                                defaultFont: DSKitFontFamily.Suit.medium.font(size: 18),
                                                boldFont: DSKitFontFamily.Suit.bold.font(size: 18),
                                                defaultColor: DSKitAsset.Colors.white100.color)
-            self.descriptionLabel.setLineSpacing(lineSpacing: 5)
+            self.descriptionLabel.modifyLineSpacing(lineSpacing: 5)
             self.rightArrowWithCircleImageView.isHidden = false
             guard let history = model.history else { return }
             userHistoryView.setData(userType: userType, recentHistory: history.first, allHistory: history)

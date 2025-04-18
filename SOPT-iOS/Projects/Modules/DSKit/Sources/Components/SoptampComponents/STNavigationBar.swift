@@ -120,7 +120,7 @@ extension STNavigationBar {
             self.rightButton.isHidden = true
         case .addRecord:
             self.rightButton.isHidden = false
-            self.rightButton.setImage(UIImage(asset: DSKitAsset.Assets.icAddRecord), for: .normal)
+            self.rightButton.setImage(DSKitAsset.Assets.icAddRecord.image.withTintColor(DSKitAsset.Colors.gray10.color), for: .normal)
         case .delete:
             self.rightButton.isHidden = false
             self.rightButton.setImage(UIImage(asset: DSKitAsset.Assets.icDelete), for: .normal)
@@ -220,25 +220,25 @@ extension STNavigationBar {
     private func setUI(_ type: NaviType) {
         self.naviType = type
         
-        self.backgroundColor = .white
+        self.backgroundColor = DSKitAsset.Colors.gray950.color
         leftButton.setImage(UIImage(asset: DSKitAsset.Assets.icArrow), for: .normal)
         
         titleLabel.setTypoStyle(.SoptampFont.h2)
-        titleLabel.textColor = DSKitAsset.Colors.soptampBlack.color
+        titleLabel.textColor = DSKitAsset.Colors.gray10.color
         
         switch type {
         case .title:
             rightButton.isHidden = false
             rightButton.setImage(DSKitAsset.Assets.stampGuide.image, for: .normal)
             titleButton.setImage(DSKitAsset.Assets.icDownArrow.image, for: .normal)
-            titleButton.setTitleColor(.black, for: .normal)
+            titleButton.setTitleColor(DSKitAsset.Colors.gray10.color, for: .normal)
             titleButton.semanticContentAttribute = .forceRightToLeft
             titleButton.titleLabel?.adjustsFontSizeToFitWidth = true
             reportButton.setImage(DSKitAsset.Assets.icReport.image, for: .normal)
         case .titleWithLeftButton:
             rightButton.isHidden = true
             leftButton.setImage(UIImage(asset: DSKitAsset.Assets.icArrow), for: .normal)
-            rightButton.setImage(UIImage(asset: DSKitAsset.Assets.icAddRecord), for: .normal)
+            rightButton.setImage(DSKitAsset.Assets.icAddRecord.image.withTintColor(DSKitAsset.Colors.gray10.color), for: .normal)
         }
     }
     

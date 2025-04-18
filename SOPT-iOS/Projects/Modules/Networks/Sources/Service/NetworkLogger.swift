@@ -9,11 +9,11 @@
 import Foundation
 import Moya
 
+import Core
+
 /// Logs network activity (outgoing requests and incoming responses).
 public final class NetworkLoggerPlugin: PluginType {
     fileprivate let loggerId = "Moya_Logger"
-    fileprivate let dateFormatString = "dd/MM/yyyy HH:mm:ss"
-    fileprivate let dateFormatter = DateFormatter()
     fileprivate let separator = ", "
     fileprivate let terminator = "\n"
     fileprivate let cURLTerminator = "\\\n"
@@ -67,9 +67,8 @@ public final class NetworkLoggerPlugin: PluginType {
 private extension NetworkLoggerPlugin {
     
     var date: String {
-        dateFormatter.dateFormat = dateFormatString
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        return dateFormatter.string(from: Date())
+        DateFormatManager.shared.setFormat(.networkLogger)
+        return DateFormatManager.shared.dateToString(Date())
     }
     
     func format(_ loggerId: String, date: String, identifier: String, message: String) -> String {

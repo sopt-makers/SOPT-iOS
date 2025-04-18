@@ -14,11 +14,15 @@ import SnapKit
 import Core
 import DSKit
 
-class MissionView: UIView {
+final class MissionView: UIView {
+    
     // MARK: - UI Component
     
     private let starView = STStarView(starScale: 14, spacing: 10, level: .levelOne)
-    private let missionLabel = UILabel()
+    private let missionLabel = UILabel().then {
+        $0.textAlignment = .center
+        $0.numberOfLines = 2
+    }
     
     // MARK: - Properties
     
@@ -26,14 +30,14 @@ class MissionView: UIView {
     
     private override init(frame: CGRect) {
         super.init(frame: frame)
-
+        
         self.setUI()
         self.setLayout()
     }
     
     public convenience init(level: StarViewLevel, mission: String) {
         self.init()
-        self.missionLabel.text = mission
+        self.setMissionLabelText(mission)
         starView.changeStarLevel(level: level)
     }
     
@@ -45,7 +49,7 @@ class MissionView: UIView {
     
     private func setUI() {
         self.layer.cornerRadius = 9
-        self.missionLabel.textColor = DSKitAsset.Colors.soptampGray900.color
+        self.missionLabel.textColor = DSKitAsset.Colors.white.color
         self.missionLabel.setTypoStyle(.SoptampFont.subtitle1)
     }
     
@@ -59,12 +63,22 @@ class MissionView: UIView {
         }
         
         missionLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
             make.top.equalTo(starView.snp.bottom).offset(8)
+            make.leading.trailing.equalToSuperview().inset(40)
+        }
+        
+        self.snp.makeConstraints { make in
+            make.bottom.equalTo(missionLabel.snp.bottom).offset(11)
         }
     }
-    
-    // MARK: - Custom Method
-    
+}
+
+// MARK: - Methods
+
+extension MissionView {
+    private func setMissionLabelText(_ mission: String) {
+        self.missionLabel.text = (mission.count >= 24) ? mission.setLineBreakAtMiddle() : mission
+        self.missionLabel.modifyLineSpacing(lineSpacing: 2)
+    }
 }
 

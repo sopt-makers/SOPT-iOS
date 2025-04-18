@@ -9,7 +9,6 @@ import ProjectDescription
 
 public extension Dep {
     struct Features {
-        public struct Main {}
         public struct Spalsh {}
         public struct Auth {}
         public struct Stamp {}
@@ -58,13 +57,6 @@ public extension Dep.Features {
     static let BaseFeatureDependency = TargetDependency.project(target: "BaseFeatureDependency", path: .relativeToFeature("BaseFeatureDependency"))
     
     static let RootFeature = TargetDependency.project(target: "RootFeature", path: .relativeToFeature("RootFeature"))
-}
-
-public extension Dep.Features.Main {
-    static let group = "Main"
-    
-    static let Feature = Dep.Features.project(name: "Feature", group: group)
-    static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))
 }
 
 public extension Dep.Features.Spalsh {

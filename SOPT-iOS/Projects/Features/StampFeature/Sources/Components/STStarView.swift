@@ -20,7 +20,7 @@ public class STStarView: UIView {
     private var spacing: CGFloat = 0
     private var starScale: CGFloat = 15
     private var starImageArray: [UIImageView] = []
-    private var starDefaultColor = DSKitAsset.Colors.soptampGray300.color
+    private var starDefaultColor = DSKitAsset.Colors.soptampGray500.color
     
     // MARK: - UI Components
     

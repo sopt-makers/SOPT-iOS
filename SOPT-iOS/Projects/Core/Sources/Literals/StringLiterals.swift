@@ -239,6 +239,26 @@ public struct I18N {
         }
     }
     
+    public struct TabBar {
+        public static let playground = "플레이그라운드"
+        public static let groupAndStudy = "모임/스터디"
+        public static let homepage = "홈페이지"
+        
+        public struct Playground {
+            public static let write = "글쓰기"
+        }
+        
+        public struct GroupAndStudy {
+            public static let makeGroup = "모임 개설"
+            public static let makeLightGroup = "번쩍 개설"
+            public static let writeFeed = "피드 작성"
+        }
+        
+        public struct Homepage {
+            public static let uploadArticle = "솝티클 올리기"
+        }
+    }
+    
     public struct Home {
         public static let viewAll = "전체보기"
         public static let title = "홈"

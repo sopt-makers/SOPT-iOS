@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "stampGuide.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "stampGuide@2x.png",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "stampGuide@3x.png",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "Guide.svg",
+      "idiom" : "universal"
     }
   ],
   "info" : {

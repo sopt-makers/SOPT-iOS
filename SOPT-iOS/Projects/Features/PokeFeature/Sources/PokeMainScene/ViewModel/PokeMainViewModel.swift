@@ -83,6 +83,8 @@ extension PokeMainViewModel {
         self?.useCase.getFriendRandomUser(randomType: .all, size: 2)
       }.store(in: cancelBag)
 
+    // 콕찌르기 새 유저인지 판별, 새유저인 경우 PokeOnboardingVC로 전환한다.
+    // isRouteFromRoot == true일 때만 로직 실행, isRouteFromRoot는 딥링크를 통해 이동한 경우만 true (update.2025.04.08)
     input.viewDidLoad
       .map { [weak self] _ in
         self?.isRouteFromRoot
