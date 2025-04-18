@@ -19,12 +19,12 @@ struct MenuSectionItem {
     var url: String
 }
 
-protocol TabBarMenuSectionProtocol {
+protocol FABMenuSectionProtocol {
     var title: String { get }
     var items: [MenuSectionItem] { get }
 }
 
-enum TabBarMenuSection: CaseIterable, TabBarMenuSectionProtocol {
+enum FABMenuSection: CaseIterable, FABMenuSectionProtocol {
     case playground
     case groupAndStudy
     case homepage

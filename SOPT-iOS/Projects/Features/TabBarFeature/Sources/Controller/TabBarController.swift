@@ -18,6 +18,7 @@ final class TabBarController: UITabBarController {
     
     private let tabList: [UIViewController]
     private let viewModel: TabBarViewModel
+    private let fabMenuSections = FABMenuSection.allCases
     
     private let isTabBarItemSelected = PassthroughSubject<Int, Never>()
     private let isMenuCellTapped = PassthroughSubject<String, Never>()
@@ -256,19 +257,17 @@ extension TabBarController: UICollectionViewDelegateFlowLayout { }
 
 extension TabBarController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return TabBarMenuSection.allCases.count
+        return fabMenuSections.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let menuSection = TabBarMenuSection.allCases[section]
-        return menuSection.items.count
+        return fabMenuSections[section].items.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FABMenuCVC.className, for: indexPath) as? FABMenuCVC else { return UICollectionViewCell() }
         
-        let menuSection = TabBarMenuSection.allCases[indexPath.section]
-        cell.configureCell(model: menuSection.items[indexPath.row])
+        cell.configureCell(model: fabMenuSections[indexPath.section].items[indexPath.row])
         
         return cell
     }
@@ -280,14 +279,14 @@ extension TabBarController: UICollectionViewDataSource {
                                               for: indexPath) as? FABMenuHeaderView
         else { return UICollectionReusableView() }
         
-        headerView.configureCell(title: TabBarMenuSection.allCases[indexPath.section].title)
+        headerView.configureCell(title: fabMenuSections[indexPath.section].title)
         return headerView
     }
 }
 
 extension TabBarController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let url = TabBarMenuSection.allCases[indexPath.section].items[indexPath.item].url
+        let url = fabMenuSections[indexPath.section].items[indexPath.item].url
         self.isMenuCellTapped.send(url)
     }
 }

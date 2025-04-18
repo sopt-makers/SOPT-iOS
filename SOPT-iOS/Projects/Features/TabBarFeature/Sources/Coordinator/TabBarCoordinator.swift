@@ -30,7 +30,6 @@ public final class TabBarCoordinator: DefaultCoordinator {
     private let factory: TabBarPresentable
     private let router: Router
     private let items: [UIViewController]
-    private weak var rootController: UINavigationController?
     
     public init(router: Router, factory: TabBarPresentable, items: [UIViewController]) {
         self.router = router
