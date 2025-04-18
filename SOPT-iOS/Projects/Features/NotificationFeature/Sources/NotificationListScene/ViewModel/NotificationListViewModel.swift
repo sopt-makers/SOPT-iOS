@@ -24,6 +24,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
     let filterList: [NotificationFilterType] = [.all, .notice, .news]
     var notifications: [NotificationListModel] = [] // 리스트 뷰에서 snapshot을 사용하기 때문에 중복된 모델이 있으면 안 된다.
     
+    private var selectedCategory: NotificationFilterType = .all
     var page = 0
     var isPaging = false
     
@@ -114,7 +115,10 @@ extension NotificationListViewModel {
             .removeDuplicates()
             .withUnretained(self)
             .sink { owner, index in
-                print(index)
+                guard owner.filterList.indices.contains(index) else { return }
+                owner.selectedCategory = owner.filterList[index]
+                let filtered = owner.filterNotifications(owner.notifications, by: owner.selectedCategory)
+                output.notificationList.send(filtered)
             }.store(in: cancelBag)
         
         input.refreshRequest
@@ -139,8 +143,10 @@ extension NotificationListViewModel {
             .withUnretained(self)
             .sink { owner, notificationList in
                 owner.removeDuplicatesAndUpdateNotifications(contentsOf: notificationList)
-                output.notificationList.send(self.notifications)
+                let filtered = owner.filterNotifications(owner.notifications, by: owner.selectedCategory)
+                output.notificationList.send(filtered)
                 owner.endPaging(isEmptyResponse: notificationList.isEmpty)
+                
                 output.refreshLoading.send(false)
             }.store(in: cancelBag)
         
@@ -179,5 +185,21 @@ extension NotificationListViewModel {
     
     private func read(index: Int) {
         self.notifications[index].isRead = true
+    }
+    
+    private func filterNotifications(_ notifications: [NotificationListModel], by category: NotificationFilterType) -> [NotificationListModel] {
+        switch category {
+        case .all: return notifications
+        case .notice:
+            return notifications.filter {
+                guard let category = $0.category else { return false }
+                return category == NotificationFilterType.notice.serverKey
+            }
+        case .news:
+            return notifications.filter {
+                guard let category = $0.category else { return false }
+                return category == NotificationFilterType.news.serverKey
+            }
+        }
     }
 }
