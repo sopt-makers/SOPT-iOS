@@ -130,6 +130,7 @@ public class ListDetailVC: UIViewController, ListDetailViewControllable {
         )
     private lazy var backgroundDimmerView = CustomDimmerView(self)
     
+    // MARK: - initialization
     
     public init(viewModel: ListDetailViewModel) {
         self.viewModel = viewModel
