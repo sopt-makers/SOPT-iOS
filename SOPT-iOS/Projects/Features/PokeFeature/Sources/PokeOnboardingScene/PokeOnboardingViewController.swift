@@ -257,14 +257,16 @@ extension PokeOnboardingViewController: UICollectionViewDataSource {
     cell.configure(with: item)
     
     cell.signalForAvatarClick()
-      .sink(receiveValue: { userModel in
-        self.avatarTapped.send(userModel)
-      }).store(in: cell.cancelBag)
+          .withUnretained(self)
+          .sink(receiveValue: { owner, userModel in
+              owner.avatarTapped.send(userModel)
+          }).store(in: cell.cancelBag)
     
     cell.signalForPokeButtonClick()
-      .sink(receiveValue: { userModel in
-        self.pokeButtonTapped.send(userModel)
-      }).store(in: cell.cancelBag)
+          .withUnretained(self)
+          .sink(receiveValue: { owner, userModel in
+              owner.pokeButtonTapped.send(userModel)
+          }).store(in: cell.cancelBag)
     
     return cell
   }
