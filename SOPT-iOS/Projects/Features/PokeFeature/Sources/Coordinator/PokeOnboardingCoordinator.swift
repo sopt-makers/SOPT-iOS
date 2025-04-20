@@ -29,6 +29,10 @@ public final class PokeOnboardingCoordinator: DefaultCoordinator {
     public override func start() {
         self.showPokeOnboardingView()
     }
+    
+    deinit {
+        print("PokeOnboardingCoordi deinit")
+    }
 }
 
 extension PokeOnboardingCoordinator {

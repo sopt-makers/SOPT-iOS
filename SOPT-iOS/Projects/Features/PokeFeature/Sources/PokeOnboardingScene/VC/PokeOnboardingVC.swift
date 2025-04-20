@@ -130,9 +130,7 @@ extension PokeOnboardingVC {
         setupConstraints()
         setupRefreshControl()
         
-        bindViews()
         bindViewModels()
-        
         viewDidLoaded.send(())
     }
     
@@ -274,18 +272,10 @@ extension PokeOnboardingVC: UICollectionViewDataSource {
 
 // MARK: - ViewModel Methods
 extension PokeOnboardingVC {
-    private func bindViews() {
-        self.navigationBar
-            .signalForClickLeftButton()
-            .withUnretained(self)
-            .sink(receiveValue: { owner, _ in
-                owner.dismiss(animated: true)
-            }).store(in: cancelBag)
-    }
-    
     private func bindViewModels() {
         let input = PokeOnboardingViewModel.Input(
             viewDidLoaded: self.viewDidLoaded.asDriver(),
+            onNaviBackButtonTap: self.navigationBar.signalForClickLeftButton(),
             pullToRefreshTriggered: self.pullToRefreshTriggered.asDriver(),
             pokeButtonTapped: self.pokeButtonTapped.asDriver(),
             avatarTapped: self.avatarTapped.asDriver(),

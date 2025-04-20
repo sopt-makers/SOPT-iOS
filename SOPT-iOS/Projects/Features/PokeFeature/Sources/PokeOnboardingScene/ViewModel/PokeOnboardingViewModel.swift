@@ -16,6 +16,7 @@ import PokeFeatureInterface
 public final class PokeOnboardingViewModel: PokeOnboardingViewModelType {
   public struct Input {
     let viewDidLoaded: Driver<Void>
+      let onNaviBackButtonTap: Driver<Void>
     let pullToRefreshTriggered: Driver<PokeRandomUserType>
     let pokeButtonTapped: Driver<PokeUserModel>
     let avatarTapped: Driver<PokeUserModel>
@@ -65,6 +66,12 @@ extension PokeOnboardingViewModel {
         self?.onFirstVisitInOnboarding?()
       }).store(in: cancelBag)
     
+      input.onNaviBackButtonTap
+          .withUnretained(self)
+          .sink { owner, _ in
+              owner.onNaviBackTapped?()
+          }.store(in: cancelBag)
+      
     input.pokeButtonTapped
       .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)> in
         guard let self, let value = self.onPokeButtonTapped?(userModel) else { return .empty() }
