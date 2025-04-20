@@ -123,26 +123,26 @@ extension PokeOnboardingVC {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = DSKitAsset.Colors.gray950.color
-        self.navigationController?.navigationBar.isHidden = true
+        view.backgroundColor = DSKitAsset.Colors.gray950.color
+        navigationController?.navigationBar.isHidden = true
         
-        self.initializeViews()
-        self.setupConstraints()
-        self.setupRefreshControl()
+        initializeViews()
+        setupConstraints()
+        setupRefreshControl()
         
-        self.bindViews()
-        self.bindViewModels()
+        bindViews()
+        bindViewModels()
         
-        self.viewDidLoaded.send(())
+        viewDidLoaded.send(())
     }
     
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        self.scrollView.layoutIfNeeded()
-        self.scrollContainerView.layoutIfNeeded()
+        scrollView.layoutIfNeeded()
+        scrollContainerView.layoutIfNeeded()
         
-        self.scrollView.contentSize = self.scrollContainerView.frame.size
+        scrollView.contentSize = self.scrollContainerView.frame.size
     }
 }
 
@@ -157,63 +157,63 @@ extension PokeOnboardingVC {
             }
         }
         
-        self.pageIndicator.numberOfPages = self.contentModels.count
-        self.collectionView.reloadData()
+        pageIndicator.numberOfPages = self.contentModels.count
+        collectionView.reloadData()
     }
 }
 
 // MARK: - Private methods
 extension PokeOnboardingVC {
     private func initializeViews() {
-        self.view.addSubviews(self.navigationBar, self.scrollView)
+        view.addSubviews(navigationBar, scrollView)
         
-        self.scrollView.addSubview(self.scrollContainerView)
+        scrollView.addSubview(scrollContainerView)
         
-        self.scrollContainerView.addSubviews(
-            self.pokeTitleLabel,
-            self.collectionView,
-            self.pageIndicator,
-            self.contentFooterDescriptionLabel
+        scrollContainerView.addSubviews(
+            pokeTitleLabel,
+            collectionView,
+            pageIndicator,
+            contentFooterDescriptionLabel
         )
     }
     
     private func setupConstraints() {
-        self.navigationBar.snp.makeConstraints {
+        navigationBar.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
-            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             $0.height.equalTo(Metric.navigationbarHeight)
         }
         
-        self.scrollView.snp.makeConstraints {
-            $0.top.equalTo(self.navigationBar.snp.bottom).offset(Metric.titleLabelTop)
+        scrollView.snp.makeConstraints {
+            $0.top.equalTo(navigationBar.snp.bottom).offset(Metric.titleLabelTop)
             $0.leading.trailing.bottom.equalToSuperview()
         }
         
-        self.scrollContainerView.snp.makeConstraints {
+        scrollContainerView.snp.makeConstraints {
             $0.top.leading.trailing.equalToSuperview()
             $0.width.equalToSuperview()
-            $0.bottom.equalTo(self.contentFooterDescriptionLabel.snp.bottom)
+            $0.bottom.equalTo(contentFooterDescriptionLabel.snp.bottom)
         }
         
-        self.pokeTitleLabel.snp.makeConstraints {
+        pokeTitleLabel.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(Metric.containerViewLeadingTrailing)
         }
         
-        self.collectionView.snp.makeConstraints {
-            $0.top.equalTo(self.pokeTitleLabel.snp.bottom).offset(Metric.containerViewTop)
+        collectionView.snp.makeConstraints {
+            $0.top.equalTo(pokeTitleLabel.snp.bottom).offset(Metric.containerViewTop)
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(Metric.collectionViewHeight)
         }
         
-        self.pageIndicator.snp.makeConstraints {
-            $0.top.equalTo(self.collectionView.snp.bottom).offset(Metric.pageIndicatorTop)
+        pageIndicator.snp.makeConstraints {
+            $0.top.equalTo(collectionView.snp.bottom).offset(Metric.pageIndicatorTop)
             $0.height.equalTo(Metric.pageIndicatorHeight)
             $0.centerX.equalToSuperview()
         }
         
-        self.contentFooterDescriptionLabel.snp.makeConstraints {
-            $0.top.equalTo(self.pageIndicator.snp.bottom).offset(Metric.bottomDescriptionLabelTop)
+        contentFooterDescriptionLabel.snp.makeConstraints {
+            $0.top.equalTo(pageIndicator.snp.bottom).offset(Metric.bottomDescriptionLabelTop)
             $0.centerX.equalToSuperview()
             $0.bottom.equalToSuperview().offset(-Metric.bottomDescriptionLabelBottom)
         }
@@ -277,9 +277,10 @@ extension PokeOnboardingVC {
     private func bindViews() {
         self.navigationBar
             .signalForClickLeftButton()
-            .sink(receiveValue: { [weak self] _ in
-                self?.dismiss(animated: true)
-            }).store(in: self.cancelBag)
+            .withUnretained(self)
+            .sink(receiveValue: { owner, _ in
+                owner.dismiss(animated: true)
+            }).store(in: cancelBag)
     }
     
     private func bindViewModels() {
@@ -296,23 +297,22 @@ extension PokeOnboardingVC {
         output
             .randomAcquaintance
             .sink(receiveCompletion: { [weak self] _ in
-                self?.refreshControl.endRefreshing()
+                guard let self else { return }
+                self.refreshControl.endRefreshing()
             }, receiveValue: { [weak self] randomUserInfoModels in
-                self?.refreshControl.endRefreshing()
-                self?.configure(with: randomUserInfoModels)
+                guard let self else { return }
+                self.refreshControl.endRefreshing()
+                self.configure(with: randomUserInfoModels)
             }).store(in: self.cancelBag)
         
         output
             .pokedResult
-            .sink(receiveValue: { [weak self] pokedResult in
-                guard let self else { return }
-                
-                let currentIndex = self.pageIndicator.currentPage
-                
-                guard self.contentModels.count > currentIndex else { return }
-                
-                self.contentModels[currentIndex].updateAfterPoked(with: pokedResult)
-                self.collectionView.reloadData()
+            .withUnretained(self)
+            .sink(receiveValue: { owner, pokedResult in
+                let currentIndex = owner.pageIndicator.currentPage
+                guard owner.contentModels.count > currentIndex else { return }
+                owner.contentModels[currentIndex].updateAfterPoked(with: pokedResult)
+                owner.collectionView.reloadData()
             }).store(in: self.cancelBag)
     }
 }
@@ -325,10 +325,11 @@ extension PokeOnboardingVC {
         self.refreshControl
             .publisher(for: .valueChanged)
             .debounce(for: 0.5, scheduler: RunLoop.main)
-            .sink(receiveValue: { [weak self] index in
-                let currentIndex = self?.pageIndicator.currentPage ?? 0
-                let currentModel = self?.contentModels[safe: currentIndex]?.randomType ?? .all
-                self?.pullToRefreshTriggered.send(currentModel)
+            .withUnretained(self)
+            .sink(receiveValue: { owner, index in
+                let currentIndex = owner.pageIndicator.currentPage
+                let currentModel = owner.contentModels[safe: currentIndex]?.randomType ?? .all
+                owner.pullToRefreshTriggered.send(currentModel)
             }).store(in: self.cancelBag)
     }
 }
