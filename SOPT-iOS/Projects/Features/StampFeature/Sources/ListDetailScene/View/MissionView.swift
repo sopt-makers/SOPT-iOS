@@ -59,6 +59,7 @@ final class MissionView: UIView {
         starView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalToSuperview().inset(12)
+            make.leading.trailing.equalToSuperview().inset(136)
             make.height.equalTo(14)
         }
         
