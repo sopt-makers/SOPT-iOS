@@ -64,13 +64,13 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
     private func showPokeMyFriendsList(with relation: PokeRelation) {
         var pokeMyFriendsList = factory.makePokeMyFriendsList(relation: relation)
         
-        pokeMyFriendsList.vm.onCloseButtonTap = { [weak self] in 
+        pokeMyFriendsList.vm.onCloseButtonTap = { [weak self] in
             self?.router.dismissModule(animated: true)
         }
         
         pokeMyFriendsList.vm.onPokeButtonTapped = { [weak self] userModel in
             guard let self else { return .empty() }
-            return self.showMessageBottomSheet(userModel: userModel, on: pokeMyFriendsList.vc.viewController)
+            return self.showMessageBottomSheet(userModel: userModel, on: self.rootController)
         }
         
         pokeMyFriendsList.vm.onProfileImageTapped = { [weak self] playgroundId in
