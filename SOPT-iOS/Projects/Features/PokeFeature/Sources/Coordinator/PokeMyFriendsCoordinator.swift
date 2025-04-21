@@ -50,14 +50,14 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
             let webView = SOPTWebView(startWith: url)
             self?.router.push(webView)
         }
-
+        
         pokeMyFriends.vm.onAnonymousFriendUpgrade = { [weak self] user in
-          guard let self else { return }
-          let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
-          pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
+            guard let self else { return }
+            let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
+            pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
             self.router.present(pokeAnonymousFriendUpgradeVC, animated: false)
         }
-
+        
         router.push(pokeMyFriends.vc)
     }
     
@@ -79,14 +79,14 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
             let webView = SOPTWebView(startWith: url)
             self?.rootController?.pushViewController(webView, animated: true)
         }
-
+        
         pokeMyFriendsList.vm.onAnonymousFriendUpgrade = { [weak self] user in
-          guard let self else { return }
-          let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
-          pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
+            guard let self else { return }
+            let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
+            pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
             self.router.present(pokeAnonymousFriendUpgradeVC, animated: false)
         }
-
+        
         self.rootController = pokeMyFriendsList.vc.asNavigationController
         router.present(rootController, animated: true)
     }
@@ -94,15 +94,15 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
     private func showMessageBottomSheet(userModel: PokeUserModel, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel, isAnonymous: Bool), Never> {
         guard let bottomSheet = self.factory
             .makePokeMessageTemplateBottomSheet(messageType: .pokeFriend)
-                .vc
-                .viewController as? PokeMessageTemplateBottomSheet
+            .vc
+            .viewController as? PokeMessageTemplateBottomSheet
         else { return .empty() }
         
         let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate(minHeight: PokeMessageTemplateBottomSheet.minimumContentHeight))
         
         self.router.showBottomSheet(manager: bottomSheetManager,
-                                     toPresent: bottomSheet,
-                                     on: view)
+                                    toPresent: bottomSheet,
+                                    on: view)
         
         return bottomSheet
             .signalForClick()
