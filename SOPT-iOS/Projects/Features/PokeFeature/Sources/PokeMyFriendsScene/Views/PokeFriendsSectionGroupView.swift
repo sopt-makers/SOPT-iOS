@@ -17,7 +17,11 @@ public final class PokeFriendsSectionGroupView: UIView {
     
     // MARK: - Properties
         
-    lazy var headerRightButtonTap: Driver<PokeRelation> = headerView.rightButtonTap.map { self.relation }.asDriver()
+    lazy var headerRightButtonTap: Driver<PokeRelation> = headerView.rightButtonTap
+        .withUnretained(self)
+        .map({ owner, _ in
+            owner.relation
+        }).asDriver()
     let kokButtonTap = PassthroughSubject<PokeUserModel?, Never>()
     let profileImageTap = PassthroughSubject<PokeUserModel?, Never>()
     
