@@ -41,7 +41,7 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
         
         pokeMyFriends.vm.onPokeButtonTapped = { [weak self] userModel in
             guard let self else { return .empty() }
-            return self.showMessageBottomSheet(userModel: userModel, on: pokeMyFriends.vc.viewController)
+            return self.showMessageBottomSheet(userModel: userModel, on: self.rootController)
         }
         
         pokeMyFriends.vm.onProfileImageTapped = { [weak self] playgroundId in
@@ -55,7 +55,7 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
           guard let self else { return }
           let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
           pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
-          pokeMyFriends.vc.viewController.present(pokeAnonymousFriendUpgradeVC, animated: false)
+            self.router.present(pokeAnonymousFriendUpgradeVC, animated: false)
         }
 
         router.push(pokeMyFriends.vc)
@@ -84,7 +84,7 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
           guard let self else { return }
           let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
           pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
-          pokeMyFriendsList.vc.viewController.present(pokeAnonymousFriendUpgradeVC, animated: false)
+            self.router.present(pokeAnonymousFriendUpgradeVC, animated: false)
         }
 
         self.rootController = pokeMyFriendsList.vc.asNavigationController
