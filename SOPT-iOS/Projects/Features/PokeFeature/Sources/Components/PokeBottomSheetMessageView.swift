@@ -107,8 +107,10 @@ extension PokeBottomSheetMessageView {
     public func signalForClick() ->Driver<PokeMessageModel> {
         return self.containerStackView
             .gesture(.tap())
-            .compactMap { [weak self] _ in self?.messageModel }
-            .asDriver()
+            .withUnretained(self)
+            .compactMap({ owner, _ in
+                owner.messageModel
+            }).asDriver()
     }
 }
 
