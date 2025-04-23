@@ -29,50 +29,6 @@ public enum TextViewState {
     case completed
 }
 
-extension StarViewLevel {
-    var buttonTitleColor: UIColor {
-        switch self {
-        case .levelOne, .levelTwo:
-            return DSKitAsset.Colors.soptampWhite.color
-        case .levelThree:
-            return DSKitAsset.Colors.soptampGray700.color
-        }
-    }
-    
-    var pointColor: UIColor {
-        switch self {
-        case .levelOne:
-            return DSKitAsset.Colors.soptampPink300.color
-        case .levelTwo:
-            return DSKitAsset.Colors.soptampPurple300.color
-        case .levelThree:
-            return DSKitAsset.Colors.soptampMint300.color
-        }
-    }
-    
-    var disableColor: UIColor {
-        switch self {
-        case .levelOne:
-            return DSKitAsset.Colors.soptampPink200.color
-        case .levelTwo:
-            return DSKitAsset.Colors.soptampPurple200.color
-        case .levelThree:
-            return DSKitAsset.Colors.soptampMint200.color
-        }
-    }
-    
-    var bgColor: UIColor {
-        switch self {
-        case .levelOne:
-            return DSKitAsset.Colors.soptampPink100.color
-        case .levelTwo:
-            return DSKitAsset.Colors.soptampPurple100.color
-        case .levelThree:
-            return DSKitAsset.Colors.soptampMint100.color
-        }
-    }
-}
-
 public class ListDetailVC: UIViewController, ListDetailViewControllable {
     
     // MARK: - Properties
@@ -177,6 +133,7 @@ extension ListDetailVC {
     
     private func bindViewModels() {
         let rightButtonTapped = naviBar.rightButtonTapped
+            .throttle(for: 1, scheduler: DispatchQueue.main, latest: false)
             .withUnretained(self)
             .map { owner, _ in
                 owner.sceneType
