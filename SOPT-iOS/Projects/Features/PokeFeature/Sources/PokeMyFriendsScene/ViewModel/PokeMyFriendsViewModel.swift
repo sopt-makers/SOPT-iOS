@@ -93,7 +93,7 @@ extension PokeMyFriendsViewModel {
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         useCase.myFriends
-            .subscribe(output.myFriends)
+            .sink { output.myFriends.send($0) }
             .store(in: cancelBag)
         
         useCase.myFriends

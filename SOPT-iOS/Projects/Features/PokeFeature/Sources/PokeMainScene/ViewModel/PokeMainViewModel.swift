@@ -171,42 +171,42 @@ extension PokeMainViewModel {
   private func bindOutput(output: Output, cancelBag: CancelBag) {
     useCase.pokedToMeUser
       .compactMap { $0 }
-      .subscribe(output.pokedToMeUser)
+      .sink { output.pokedToMeUser.send($0) }
       .store(in: cancelBag)
 
     useCase.pokedToMeUser
       .map { $0 == nil }
-      .subscribe(output.pokedUserSectionWillBeHidden)
+      .sink { output.pokedUserSectionWillBeHidden.send($0) }
       .store(in: cancelBag)
 
     useCase.myFriend
       .compactMap { $0.first }
-      .subscribe(output.myFriend)
+      .sink { output.myFriend.send($0) }
       .store(in: cancelBag)
 
     useCase.myFriend
       .map { $0.isEmpty }
-      .subscribe(output.friendsSectionWillBeHidden)
+      .sink { output.friendsSectionWillBeHidden.send($0) }
       .store(in: cancelBag)
 
     useCase.friendRandomUsers
-      .subscribe(output.friendRandomUsers)
+      .sink { output.friendRandomUsers.send($0) }
       .store(in: cancelBag)
 
     Publishers.Zip3(useCase.pokedToMeUser, useCase.myFriend, useCase.friendRandomUsers)
       .map { _ in Void() }
-      .subscribe(output.endRefreshLoading)
+      .sink { output.endRefreshLoading.send() }
       .store(in: cancelBag)
 
     useCase.pokedResponse
-      .subscribe(output.pokeResponse)
+      .sink { output.pokeResponse.send($0) }
       .store(in: cancelBag)
 
     // 다른 뷰에서 찌르기를 했을 때 메인 뷰의 해당 유저의 찌르기 버튼을 비활성화 하기 위해 NotificationCenter로 찌르기 이벤트를 받아온다.
     let notiName = NotiList.makeNotiName(list: .pokedResponse)
     NotificationCenter.default.publisher(for: notiName)
       .compactMap { $0.object as? PokeUserModel }
-      .subscribe(output.pokeResponse)
+      .sink { output.pokeResponse.send($0) }
       .store(in: cancelBag)
 
     useCase.pokedResponse
