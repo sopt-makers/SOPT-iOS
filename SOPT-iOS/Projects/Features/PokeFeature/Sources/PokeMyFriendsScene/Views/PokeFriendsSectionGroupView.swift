@@ -69,15 +69,21 @@ extension PokeFriendsSectionGroupView {
         for i in 0..<self.maxContentsCount {
             let profileListView = PokeProfileListView(viewType: .default).setDividerViewIsHidden(to: i == maxContentsCount-1)
             profileListView.isHidden = true
+            
             profileListView
                 .kokButtonTap
-                .subscribe(self.kokButtonTap)
-                .store(in: cancelBag)
+                .withUnretained(self)
+                .sink(receiveValue: { owner, pokeUserModel in
+                    owner.kokButtonTap.send(pokeUserModel)
+                }).store(in: cancelBag)
             
             profileListView
                 .profileImageTap
-                .subscribe(self.profileImageTap)
-                .store(in: cancelBag)
+                .withUnretained(self)
+                .sink(receiveValue: { owner, pokeUserModel in
+                    owner.profileImageTap.send(pokeUserModel)
+                }).store(in: cancelBag)
+            
             self.contentStackView.addArrangedSubview(profileListView)
         }
     }

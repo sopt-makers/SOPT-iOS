@@ -133,12 +133,16 @@ extension PokeMyFriendsListVC: UITableViewDelegate, UITableViewDataSource {
         cell.setData(model: viewModel.friends[indexPath.row])
         
         cell.kokButtonTap
-            .subscribe(self.kokButtonTap)
-            .store(in: cell.cancelBag)
+            .withUnretained(self)
+            .sink(receiveValue: { owner, pokeUserModel in
+                owner.kokButtonTap.send(pokeUserModel)
+            }).store(in: cell.cancelBag)
         
         cell.profileImageTap
-            .subscribe(self.profileImageTap)
-            .store(in: cell.cancelBag)
+            .withUnretained(self)
+            .sink(receiveValue: { owner, pokeUserModel in
+                owner.profileImageTap.send(pokeUserModel)
+            }).store(in: cell.cancelBag)
 
         return cell
     }
