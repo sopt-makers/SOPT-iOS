@@ -232,7 +232,6 @@ extension MissionListCVC {
         starView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(70.adjustedH)
             make.centerX.equalToSuperview()
-            make.height.equalTo(15.adjustedH)
         }
         
         purposeLabel.snp.makeConstraints { make in
