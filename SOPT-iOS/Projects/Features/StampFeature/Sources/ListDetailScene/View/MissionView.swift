@@ -19,7 +19,6 @@ final class MissionView: UIView {
     // MARK: - UI Component
     
     private lazy var defaultStarView = STStarView(starScale: 14, spacing: 10, level: .levelOne)
-    
     private lazy var levelTenStarView = STLevelTenStarView()
     
     private let missionLabel = UILabel().then {
