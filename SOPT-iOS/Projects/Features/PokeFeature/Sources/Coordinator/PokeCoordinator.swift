@@ -97,7 +97,7 @@ final class PokeCoordinator: DefaultCoordinator {
         }
         
         addDependency(pokeOnboardingCoordinator)
-        pokeOnboardingCoordinator.switchToPokeOnboardingView()
+        pokeOnboardingCoordinator.start()
     }
     
     internal func runPokeNotificationListFlow() {
