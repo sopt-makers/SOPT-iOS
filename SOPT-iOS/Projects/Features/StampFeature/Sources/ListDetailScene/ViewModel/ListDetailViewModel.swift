@@ -160,6 +160,7 @@ extension ListDetailViewModel {
             }.store(in: self.cancelBag)
         
         input.deleteButtonTapped
+            .removeDuplicates()
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.deleteStamp(stampId: owner.stampId)

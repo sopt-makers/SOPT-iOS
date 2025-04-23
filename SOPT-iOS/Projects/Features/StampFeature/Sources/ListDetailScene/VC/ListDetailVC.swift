@@ -133,6 +133,7 @@ extension ListDetailVC {
     
     private func bindViewModels() {
         let rightButtonTapped = naviBar.rightButtonTapped
+            .throttle(for: 1, scheduler: DispatchQueue.main, latest: false)
             .withUnretained(self)
             .map { owner, _ in
                 owner.sceneType
