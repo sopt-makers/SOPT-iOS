@@ -45,7 +45,6 @@ final public class PokeBottomSheetMessageView: UIView {
         $0.delegate = self
     }
 
-
     private let contentView = UIView()
     private let leftTitleLabel = UILabel().then {
         $0.textColor = DSKitAsset.Colors.gray10.color
@@ -81,16 +80,16 @@ extension PokeBottomSheetMessageView {
     }
     
     private func setupConstraints() {
-        self.containerStackView.snp.makeConstraints {
+        containerStackView.snp.makeConstraints {
             $0.top.bottom.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(Metrics.containerLeadingTrailing)
             $0.height.lessThanOrEqualTo(Metrics.maximumContainerHeight)
         }
-        self.contentView.snp.makeConstraints {
+        contentView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(Metrics.contentLeadingTrailing)
             $0.top.bottom.equalToSuperview().inset(Metrics.contentTopBottom)
         }
-        self.leftTitleLabel.snp.makeConstraints { $0.directionalEdges.equalToSuperview() }
+        leftTitleLabel.snp.makeConstraints { $0.directionalEdges.equalToSuperview() }
     }
 }
 
@@ -120,19 +119,20 @@ extension PokeBottomSheetMessageView {
         self.gesture(.longPress(longPressGestureRecognzier))
             .receive(on: DispatchQueue.main)
             .throttle(for: 0.01, scheduler: DispatchQueue.main, latest: false)
-            .sink(receiveValue: { tapGesture in
+            .withUnretained(self)
+            .sink(receiveValue: { owner, tapGesture in
                 switch tapGesture.get().state {
                 case .began, .recognized, .changed:
-                    self.containerStackView.backgroundColor = Constant.contentClickedStateBackgroundColor
+                    owner.containerStackView.backgroundColor = Constant.contentClickedStateBackgroundColor
                 case .ended, .cancelled, .failed:
-                    self.containerStackView.backgroundColor = Constant.contentNormalStateBackgroundColor
+                    owner.containerStackView.backgroundColor = Constant.contentNormalStateBackgroundColor
                 case .possible:
-                    UIView.animate(withDuration: 0.1) { [weak self] in
-                        self?.containerStackView.backgroundColor = Constant.contentNormalStateBackgroundColor
+                    UIView.animate(withDuration: 0.1) {
+                        owner.containerStackView.backgroundColor = Constant.contentNormalStateBackgroundColor
                     }
                 @unknown default: break
                 }
-            }).store(in: self.cancelBag)
+            }).store(in: cancelBag)
     }
 }
 
