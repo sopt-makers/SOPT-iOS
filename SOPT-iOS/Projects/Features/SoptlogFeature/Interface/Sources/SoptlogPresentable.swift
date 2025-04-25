@@ -13,7 +13,11 @@ import Core
 
 public protocol SoptlogViewControllable: ViewControllable { }
 public protocol SoptlogCoordinatable {
-    
+    var onProfileEditTapped: (() -> Void)? { get set }
+    var onToolTipTapped: ((CGRect) -> Void)? { get set }
+    var onSoptuneTapped: (() -> Void)? { get set }
+    var onNetworkError: (() -> Void)? { get set }
+    var onNeedSignIn: (() -> Void)? { get set }
 }
 public typealias SoptlogViewModelType = ViewModelType & SoptlogCoordinatable
 public typealias SoptlogPresentable = (vc: SoptlogViewControllable, vm: any SoptlogViewModelType)

@@ -66,7 +66,6 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     
     private lazy var attendanceButtonStackView: UIStackView = {
         let stackView = UIStackView()
-//        stackView.backgroundColor = DSKitAsset.Colors.gray900.color // 안쓰는거같음
         stackView.addArrangedSubview(attendanceButton)
         return stackView
     }()
@@ -287,8 +286,7 @@ extension ShowAttendanceVC {
     private func setScheduledData(_ model: AttendanceScheduleModel) {
         
         if self.sceneType == .scheduledDay {
-            let date = viewModel.formatTimeInterval(startDate: model.startDate,
-                                                    endDate: model.endDate)
+            let date = DateFormatManager.shared.formatTimeInterval(start: model.startDate, end: model.endDate)
             headerScheduleView.setData(date: date,
                                        place: model.location,
                                        todaySchedule: model.name,

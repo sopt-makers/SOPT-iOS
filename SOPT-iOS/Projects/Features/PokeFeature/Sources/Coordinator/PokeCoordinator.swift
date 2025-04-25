@@ -57,21 +57,21 @@ final class PokeCoordinator: DefaultCoordinator {
         
         pokeMain.vm.onPokeButtonTapped = { [weak self] userModel in
             guard let self else { return .empty() }
-            return self.showMessageBottomSheet(userModel: userModel, on: pokeMain.vc.viewController)
+            return self.showMessageBottomSheet(userModel: userModel, on: self.rootController)
         }
         
         pokeMain.vm.onNewFriendMade = { [weak self] friendName in
             guard let self else { return }
             let pokeMakingFriendCompletedVC = self.factory.makePokeMakingFriendCompleted(friendName: friendName).viewController
             pokeMakingFriendCompletedVC.modalPresentationStyle = .overFullScreen
-            pokeMain.vc.viewController.present(pokeMakingFriendCompletedVC, animated: false)
+            self.rootController?.present(pokeMakingFriendCompletedVC, animated: false)
         }
 
         pokeMain.vm.onAnonymousFriendUpgrade = { [weak self] user in
           guard let self else { return }
           let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
           pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
-          pokeMain.vc.viewController.present(pokeAnonymousFriendUpgradeVC, animated: false)
+          self.rootController?.present(pokeAnonymousFriendUpgradeVC, animated: false)
         }
 
         pokeMain.vm.switchToOnboarding = { [weak self] in

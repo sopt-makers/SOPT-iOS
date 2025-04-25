@@ -25,8 +25,8 @@ public class STPartChartRectangleView: UIView {
   private let starRankView: UIImageView = {
     let iv = UIImageView()
     iv.contentMode = .scaleAspectFit
-    iv.image = DSKitAsset.Assets.icStar.image.withRenderingMode(.alwaysTemplate)
-    iv.tintColor = DSKitAsset.Colors.soptampPurple100.color
+    iv.image = DSKitAsset.Assets.icBigStar.image.withRenderingMode(.alwaysTemplate)
+    iv.tintColor = DSKitAsset.Colors.soptampPink300.color
     return iv
   }()
 
@@ -45,7 +45,7 @@ public class STPartChartRectangleView: UIView {
   private let partNameLabel: UILabel = {
     let label = UILabel()
     label.setTypoStyle(.MDS.body3.font)
-    label.textColor = .black
+    label.textColor = DSKitAsset.Colors.white.color
     label.lineBreakMode = .byTruncatingTail
     label.setCharacterSpacing(0)
     return label
@@ -79,20 +79,20 @@ extension STPartChartRectangleView {
     starRankView.isHidden = (rank > 3)
 
     if rank == 1 {
-      rankLabel.textColor = DSKitAsset.Colors.soptampPurple300.color
-      rectangleView.backgroundColor = DSKitAsset.Colors.soptampPurple200.color
-      starRankView.image = DSKitAsset.Assets.icStar.image.withRenderingMode(.alwaysTemplate)
+      rankLabel.textColor = DSKitAsset.Colors.white.color
+      rectangleView.backgroundColor = DSKitAsset.Colors.soptampPink300.color
+      starRankView.image = DSKitAsset.Assets.icBigStar.image.withRenderingMode(.alwaysTemplate)
     } else if rank == 2 {
-      rankLabel.textColor = DSKitAsset.Colors.soptampPink300.color
-      rectangleView.backgroundColor = DSKitAsset.Colors.soptampPink200.color
+      rankLabel.textColor = DSKitAsset.Colors.green300.color
+      rectangleView.backgroundColor = DSKitAsset.Colors.green300.color
       starRankView.image = nil
     } else if rank == 3 {
-      rankLabel.textColor = DSKitAsset.Colors.soptampMint300.color
-      rectangleView.backgroundColor = DSKitAsset.Colors.soptampMint200.color
+      rankLabel.textColor = DSKitAsset.Colors.soptampPurple300.color
+      rectangleView.backgroundColor = DSKitAsset.Colors.soptampPurple300.color
       starRankView.image = nil
     } else {
       rankLabel.text = ""
-      rectangleView.backgroundColor = DSKitAsset.Colors.soptampGray300.color
+      rectangleView.backgroundColor = DSKitAsset.Colors.gray700.color
     }
   }
 
@@ -101,7 +101,7 @@ extension STPartChartRectangleView {
     starRankView.addSubview(rankLabel)
 
     starRankView.snp.makeConstraints { make in
-      make.bottom.equalTo(rectangleView.snp.top).offset(-13.adjusted)
+      make.bottom.equalTo(rectangleView.snp.top).offset(-4)
       make.centerX.equalToSuperview()
       make.size.equalTo(50.adjusted)
     }
@@ -119,7 +119,7 @@ extension STPartChartRectangleView {
 
     partNameLabel.snp.makeConstraints { make in
       make.centerX.equalToSuperview()
-      make.bottom.equalToSuperview()
+      make.bottom.equalToSuperview().offset(4)
       make.width.lessThanOrEqualToSuperview()
     }
   }

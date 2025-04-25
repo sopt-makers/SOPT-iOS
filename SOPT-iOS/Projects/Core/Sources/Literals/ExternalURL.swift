@@ -46,5 +46,9 @@ public struct ExternalURL {
         public static let member = "\(main)/members"
         public static let group = "\(main)/group?utm_source=playground_group&utm_medium=app_button&utm_campaign=app"
         public static let playgroundCommunity = main
+        public static let feed = "\(main)/feed/upload"
+        public static let sopticle = "\(main)/sopticle"
+        public static let makeGroup = "\(main)/group/make"
+        public static let makeLightGroup = "\(main)/group/make/flash"
     }
 }

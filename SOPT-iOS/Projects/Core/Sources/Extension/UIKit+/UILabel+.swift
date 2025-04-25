@@ -8,7 +8,7 @@
 import UIKit
 
 public extension UILabel {
-    
+
     /// 행간 조정 메서드
     func setLineSpacing(lineSpacing: CGFloat) {
         if let text = self.text {
@@ -17,6 +17,23 @@ public extension UILabel {
             style.lineSpacing = lineSpacing
             attributedStr.addAttribute(NSAttributedString.Key.paragraphStyle, value: style, range: NSMakeRange(0, attributedStr.length))
             self.attributedText = attributedStr
+        }
+    }
+    
+    /// 행간 조정 메서드: 기존 attributedText에 속성 추가
+    func modifyLineSpacing(lineSpacing: CGFloat) {
+        if let attributedText = self.attributedText {
+            let mutableAttributedString = NSMutableAttributedString(attributedString: attributedText)
+            
+            mutableAttributedString.enumerateAttribute(.paragraphStyle,
+                                                       in: NSRange(location: 0, length: mutableAttributedString.length),
+                                                       options: []) { value, range, _ in
+                let paragraphStyle = (value as? NSMutableParagraphStyle) ?? NSMutableParagraphStyle()
+                paragraphStyle.lineSpacing = lineSpacing
+                mutableAttributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: range)
+            }
+            
+            self.attributedText = mutableAttributedString
         }
     }
     
@@ -55,11 +72,15 @@ public extension UILabel {
     /// 라벨 일부 font 변경해주는 함수
     /// - targerString에는 바꾸고자 하는 특정 문자열을 넣어주세요
     /// - font에는 targetString에 적용하고자 하는 UIFont를 넣어주세요
-    func partFontChange(targetString: String, font: UIFont) {
+    /// - (선택) lineSpacing에 설정하고자 하는 행간의 크기를 넣어주세요
+    func partFontChange(targetString: String, font: UIFont, lineSpacing: CGFloat = 0) {
         let fullText = self.text ?? ""
         let range = (fullText as NSString).range(of: targetString)
         let attributedString = NSMutableAttributedString(string: fullText)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = lineSpacing
         attributedString.addAttribute(.font, value: font, range: range)
+        attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: fullText.count))
         self.attributedText = attributedString
     }
     
@@ -74,18 +95,48 @@ public extension UILabel {
         self.attributedText = attributedString
     }
     
-    func htmlToString(_ targetString: String) -> NSAttributedString? {
+    /// 서버에서 받아온 string 값에서 html 태그를 적용해주는 함수
+    /// - targetString에는 특정 문자열을 넣어주세요
+    /// - defaultFont, defaultColor에는 기본 폰트와 컬러를 넣어주세요
+    func htmlToString(targetString: String,
+                      defaultFont: UIFont,
+                      boldFont: UIFont?,
+                      defaultColor: UIColor) {
         let text = targetString
+        let boldFont = boldFont ?? defaultFont
+        guard let data = text.data(using: .utf8) else { return }
         
-        guard let data = text.data(using: .utf8) else {
-            return NSAttributedString()
-        }
         do {
-            return try NSAttributedString(data: data,
-                                          options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding: String.Encoding.utf8.rawValue],
-                                          documentAttributes: nil)
-        } catch {
-            return NSAttributedString()
+            let attributedString = try NSMutableAttributedString(
+                data: data,
+                options: [
+                    .documentType: NSAttributedString.DocumentType.html,
+                    .characterEncoding: String.Encoding.utf8.rawValue],
+                documentAttributes: nil
+            )
+            let range = NSRange(location: 0, length: attributedString.length)
+            
+            attributedString.enumerateAttribute(.font, in: range, options: .longestEffectiveRangeNotRequired)
+            { value, range, _ in
+                let currentFont: UIFont = (value as? UIFont) ?? .init()
+                var replacementFont: UIFont?
+                
+                // 폰트 이름에 bold가 포함되어 있을 경우, 볼드체로 간주
+                if currentFont.fontName.contains("bold") || currentFont.fontName.contains("Bold") {
+                    replacementFont = boldFont
+                } else {
+                    replacementFont = defaultFont
+                }
+                
+                let replacingAttributedFont = [NSAttributedString.Key.font: replacementFont ?? .init()]
+                attributedString.addAttributes(replacingAttributedFont, range: range)
+            }
+            
+            attributedString.addAttributes([NSAttributedString.Key.foregroundColor: defaultColor],
+                                           range: range)
+            self.attributedText = attributedString
+        } catch let error {
+            print("htmlToString 변환 에러: ", error.localizedDescription)
         }
     }
     

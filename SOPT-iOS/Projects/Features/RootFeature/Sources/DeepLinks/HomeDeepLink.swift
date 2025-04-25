@@ -18,7 +18,7 @@ public struct HomeDeepLink: DeepLinkExecutable {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
         
         if self.isDestination == true {
-            coordinator.runMainFlow()
+            coordinator.runTabBarFlow()
         }
         
         return coordinator

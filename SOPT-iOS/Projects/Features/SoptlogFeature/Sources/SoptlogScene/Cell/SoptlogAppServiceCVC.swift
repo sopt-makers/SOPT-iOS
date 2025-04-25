@@ -7,26 +7,49 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 import DSKit
 
 final class SoptlogAppServiceCVC: UICollectionViewCell {
     
-    // MARK: - UI Components
+    // MARK: - Properties
 
+    lazy var toolTipButtonTapped = infoToolTipButton.publisher(for: .touchUpInside)
+        .withUnretained(self)
+        .map { owner, _ in
+            owner.infoToolTipButton.convert(owner.infoToolTipButton.bounds, to: nil)
+        }.asDriver()
+    
+    // MARK: - UI Components
+    
+    private let stackView = UIStackView(frame: .zero).then {
+        $0.axis = .vertical
+        $0.spacing = 6
+        $0.alignment = .center
+    }
+    
     private let serviceLabel = UILabel().then {
         $0.textColor = DSKitAsset.Colors.gray200.color
         $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
     }
     
-    private let serviceImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.icHot.image
-    }
+    private let serviceImageView = UIImageView()
     
     private let serviceValue = UILabel().then {
         $0.textColor = DSKitAsset.Colors.white.color
         $0.font = DSKitFontFamily.Suit.bold.font(size: 16)
+    }
+    
+    private let serviceTitleStackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.spacing = 1
+    }
+    
+    private let infoToolTipButton = UIButton().then {
+        $0.setImage(DSKitAsset.Assets.icInfo.image, for: .normal)
+        $0.isHidden = true
     }
     
     // MARK: - init
@@ -50,32 +73,38 @@ extension SoptlogAppServiceCVC {
     }
     
     private func setLayout() {
-        contentView.addSubviews(serviceLabel, serviceImageView, serviceValue)
-        
-        serviceLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalToSuperview().inset(10)
-        }
+        setStackView()
+        contentView.addSubviews(stackView)
         
         serviceImageView.snp.makeConstraints { make in
             make.size.equalTo(39)
-            make.centerX.equalToSuperview()
-            make.top.equalTo(serviceLabel.snp.bottom).offset(6)
         }
         
-        serviceValue.snp.makeConstraints { make in
-            make.top.equalTo(serviceImageView.snp.bottom).offset(4)
-            make.centerX.equalToSuperview()
+        infoToolTipButton.snp.makeConstraints { make in
+            make.size.equalTo(16)
         }
+        
+        stackView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+    }
+    
+    private func setStackView() {
+        serviceTitleStackView.addArrangedSubviews(serviceLabel, infoToolTipButton)
+        serviceTitleStackView.setCustomSpacing(1, after: serviceLabel)
+        
+        stackView.addArrangedSubviews(serviceTitleStackView, serviceImageView, serviceValue)
     }
 }
 
 // MARK: - Methods
 
 extension SoptlogAppServiceCVC {
-    func configureCell(model: AppServiceInfo) {
+    func configureCell(model: SoptlogPresentationModel.AppService?) {
+        guard let model else { return }
         self.serviceLabel.text = model.serviceName
         self.serviceValue.text = model.serviceValue
         self.serviceImageView.setImage(with: model.serviceImageURL)
+        self.infoToolTipButton.isHidden = model.serviceName != "솝레벨"
     }
 }

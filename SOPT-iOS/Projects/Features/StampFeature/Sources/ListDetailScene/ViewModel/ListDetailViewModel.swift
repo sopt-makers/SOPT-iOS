@@ -13,168 +13,244 @@ import Core
 import Domain
 
 public class ListDetailViewModel: ViewModelType {
-  
-  private let useCase: ListDetailUseCase
-  private var cancelBag = CancelBag()
-  public var sceneType: ListDetailSceneType!
-  public var starLevel: StarViewLevel!
-  public var missionId: Int!
-  public var missionTitle: String!
-  public var stampId: Int!
-  public var isOtherUser: Bool
-  public var otherUserName: String!
-  
-  private var uploadedUrl: String?
-  
-  // MARK: - Inputs
-  
-  public struct Input {
-    let viewDidLoad: Driver<Void>
-    let imageSelected: Driver<Data>
-    let bottomButtonTapped: Driver<ListDetailRequestModel>
-    let rightButtonTapped: Driver<ListDetailSceneType>
-    let deleteButtonTapped: Driver<Bool>
-  }
-  
-  // MARK: - Outputs
-  
-  public class Output {
-    @Published var listDetailModel: ListDetailModel?
-    var editSuccessed = PassthroughSubject<Bool, Never>()
-    var showDeleteAlert = PassthroughSubject<Bool, Never>()
-    var deleteSuccessed = PassthroughSubject<Bool, Never>()
-  }
-  
-  // MARK: - init
-  
-  public init(
-    useCase: ListDetailUseCase,
-    sceneType: ListDetailSceneType,
-    starLevel: StarViewLevel,
-    missionId: Int,
-    missionTitle: String,
-    otherUsername: String?
-  ) {
-    self.useCase = useCase
-    self.sceneType = sceneType
-    self.starLevel = starLevel
-    self.missionId = missionId
-    self.missionTitle = missionTitle
-    self.isOtherUser = !(otherUsername == nil)
-    self.otherUserName = otherUsername
-  }
+    
+    private let useCase: ListDetailUseCase
+    private var cancelBag = CancelBag()
+    public var sceneType: ListDetailSceneType!
+    public var starLevel: StarViewLevel!
+    public var missionId: Int!
+    public var missionTitle: String!
+    public var stampId: Int!
+    public var isOtherUser: Bool
+    public var otherUserName: String!
+    
+    private var uploadedUrl: String?
+    
+    private let currentImage = CurrentValueSubject<Data, Never>(Data())
+    private let currentDate = CurrentValueSubject<String, Never>(String())
+    private let currentText = CurrentValueSubject<String, Never>(String())
+    
+    // MARK: - Inputs
+    
+    public struct Input {
+        let viewDidLoad: Driver<Void>
+        let imageSelected: Driver<Data>
+        let dateSelected: Driver<String>
+        let textEdited: Driver<String>
+        let bottomButtonTapped: Driver<Void>
+        let rightButtonTapped: Driver<ListDetailSceneType>
+        let deleteButtonTapped: Driver<Bool>
+    }
+    
+    // MARK: - Outputs
+    
+    public class Output {
+        @Published var listDetailModel: ListDetailModel?
+        var editSuccessed = PassthroughSubject<Bool, Never>()
+        var showDeleteAlert = PassthroughSubject<Bool, Never>()
+        var deleteSuccessed = PassthroughSubject<Bool, Never>()
+        var bottomButtonEnabled = PassthroughSubject<Bool, Never>()
+        let isLoading = PassthroughSubject<Bool, Never>()
+    }
+    
+    // MARK: - init
+    
+    public init(
+        useCase: ListDetailUseCase,
+        sceneType: ListDetailSceneType,
+        starLevel: StarViewLevel,
+        missionId: Int,
+        missionTitle: String,
+        otherUsername: String?
+    ) {
+        self.useCase = useCase
+        self.sceneType = sceneType
+        self.starLevel = starLevel
+        self.missionId = missionId
+        self.missionTitle = missionTitle
+        self.isOtherUser = !(otherUsername == nil)
+        self.otherUserName = otherUsername
+    }
 }
 
 extension ListDetailViewModel {
-  public func transform(from input: Input, cancelBag: CancelBag) -> Output {
-    let output = Output()
-    self.bindOutput(output: output, cancelBag: cancelBag)
-    
-    input.viewDidLoad
-      .withUnretained(self)
-      .filter { owner, _ in
-        owner.sceneType == .completed
-      }
-      .sink { owner, _ in
-        owner.isOtherUser
-        ? owner.useCase.fetchListDetail(missionId: owner.missionId, username: owner.otherUserName)
-        : owner.useCase.fetchListDetail(missionId: owner.missionId, username: nil)
-      }.store(in: cancelBag)
-    
-    input.imageSelected
-      .flatMap { [weak self] imageData -> Driver<(Data, PresignedUrlModel)> in
-        guard let self else { return .empty() }
+    public func transform(from input: Input, cancelBag: CancelBag) -> Output {
+        let output = Output()
+        self.bindOutput(output: output, cancelBag: cancelBag)
         
-        self.useCase.getPresignedURL()
+        input.viewDidLoad
+            .withUnretained(self)
+            .filter { owner, _ in
+                owner.sceneType == .completed
+            }
+            .sink { owner, _ in
+                owner.isOtherUser
+                ? owner.useCase.fetchListDetail(missionId: owner.missionId, username: owner.otherUserName)
+                : owner.useCase.fetchListDetail(missionId: owner.missionId, username: nil)
+            }.store(in: cancelBag)
         
-        return self.useCase
-          .presignedURL
-          .map { (imageData, $0) }
-          .eraseToAnyPublisher()
-          .asDriver()
-      }
-      .flatMap { [weak self] imageData, presignedUrlModel -> Driver<Void> in
-        guard let self else { return .empty() }
+        input.imageSelected
+            .flatMap { [weak self] imageData -> Driver<(Data, PresignedUrlModel)> in
+                guard let self else { return .empty() }
+                output.isLoading.send(true)
+                self.useCase.getPresignedURL()
+                self.currentImage.send(imageData)
+                
+                return self.useCase
+                    .presignedURL
+                    .map { (imageData, $0) }
+                    .eraseToAnyPublisher()
+                    .asDriver()
+            }
+            .flatMap { [weak self] imageData, presignedUrlModel -> Driver<Void> in
+                guard let self else { return .empty() }
+                
+                self.uploadedUrl = presignedUrlModel.imageURL
+                self.useCase.uploadMedia(imageData: imageData, presignedUrl: presignedUrlModel.preSignedURL)
+                
+                return self.useCase
+                    .mediaUploadCompleted
+                    .eraseToAnyPublisher()
+                    .asDriver()
+            }
+            .sink(receiveValue: { value in
+                output.isLoading.send(false)
+            }).store(in: self.cancelBag)
+
         
-        self.uploadedUrl = presignedUrlModel.imageURL
-        self.useCase.uploadMedia(imageData: imageData, presignedUrl: presignedUrlModel.preSignedURL)
+        input.bottomButtonTapped
+            .withUnretained(self)
+            .map { owner, _ in
+                return ListDetailRequestModel(
+                    missionId: owner.missionId ?? 0,
+                    content: owner.currentText.value,
+                    activityDate: owner.currentDate.value
+                )
+            }
+            .flatMap { [weak self] requestModel -> Driver<ListDetailRequestModel> in
+                guard
+                    let self,
+                    let presignedUrl = self.uploadedUrl?.removePercentEncodingIfNeeded()
+                else { return .empty() }
+                
+                var requestModel = requestModel
+                return Just(requestModel.updateImgUrl(to: presignedUrl)).asDriver()
+            }
+            .withUnretained(self)
+            .sink { owner, requestModel in
+                if owner.sceneType == ListDetailSceneType.none {
+                    owner.useCase.postStamp(stampData: requestModel)
+                } else {
+                    owner.useCase.putStamp(stampData: requestModel)
+                }
+            }
+            .store(in: self.cancelBag)
         
-        return self.useCase
-          .mediaUploadCompleted
-          .eraseToAnyPublisher()
-          .asDriver()
-      }
-      .sink(receiveValue: { value in
+        input.rightButtonTapped
+            .withUnretained(self)
+            .sink { owner, sceneType in
+                switch sceneType {
+                case .completed:
+                    output.showDeleteAlert.send(false)
+                case .edit:
+                    output.showDeleteAlert.send(true)
+                default:
+                    break
+                }
+            }.store(in: self.cancelBag)
         
-      }).store(in: self.cancelBag)
-    
-    input.bottomButtonTapped
-      .eraseToAnyPublisher()
-      .flatMap { [weak self] requestModel -> Driver<ListDetailRequestModel> in
-        guard
-          let self,
-          let presignedUrl = self.uploadedUrl?.removePercentEncodingIfNeeded()
-        else { return .empty() }
+        input.deleteButtonTapped
+            .removeDuplicates()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.useCase.deleteStamp(stampId: owner.stampId)
+            }.store(in: self.cancelBag)
         
-        var requestModel = requestModel
-        return Just(requestModel.updateImgUrl(to: presignedUrl)).asDriver()
-      }
-      .withUnretained(self)
-      .sink { owner, requestModel in
-        if owner.sceneType == ListDetailSceneType.none {
-          owner.useCase.postStamp(stampData: requestModel)
-        } else {
-          owner.useCase.putStamp(stampData: requestModel)
-        }
-      }.store(in: self.cancelBag)
+        input.textEdited
+            .withUnretained(self)
+            .sink { owner, text in
+                owner.currentText.send(text)
+            }.store(in: cancelBag)
+        
+        input.dateSelected
+            .withUnretained(self)
+            .sink { owner, date in
+                owner.currentDate.send(date)
+            }.store(in: cancelBag)
+
+        // 버튼 활성화 로직
+        Publishers.CombineLatest3(currentImage, currentDate, currentText)
+            .withUnretained(self)
+            .filter { owner, _ in
+                owner.sceneType != .completed
+            }
+            .map { owner, currentState in
+                let (currentImage, currentDate, currentText) = currentState
+                
+                switch owner.sceneType {
+                case .edit:
+                    let isImageSelected = owner.isImageSelected(currentImage)
+                    let isDateChanged = owner.isDateChanged(output.listDetailModel?.activityDate, currentDate)
+                    let isTextChanged = owner.isTextChanged(output.listDetailModel?.content, currentText)
+                    return isImageSelected || isDateChanged || isTextChanged
+                default:
+                    let isImageSelected = !currentImage.isEmpty
+                    let isDateChanged = !currentDate.isEmpty
+                    let isTextChanged = !currentText.isEmpty
+                    return isImageSelected && isDateChanged && isTextChanged
+                }
+            }
+            .sink { isEdited in
+                output.bottomButtonEnabled.send(isEdited)
+            }
+            .store(in: cancelBag)
+        
+        return output
+    }
     
-    input.rightButtonTapped
-      .withUnretained(self)
-      .sink { owner, sceneType in
-        switch sceneType {
-        case .completed:
-          output.showDeleteAlert.send(false)
-        case .edit:
-          output.showDeleteAlert.send(true)
-        default:
-          break
-        }
-      }.store(in: self.cancelBag)
+    private func bindOutput(output: Output, cancelBag: CancelBag) {
+        let listDetailModel = useCase.listDetailModel
+        let editSuccess = useCase.editSuccess
+        let deleteSuccess = useCase.deleteSuccess
+        
+        listDetailModel.asDriver()
+            .withUnretained(self)
+            .compactMap { owner, model in
+                owner.stampId = model.stampId
+                owner.uploadedUrl = model.image
+                return model
+            }
+            .assign(to: \.self.listDetailModel, on: output)
+            .store(in: self.cancelBag)
+        
+        editSuccess.asDriver()
+            .withUnretained(self)
+            .sink { owner, success in
+                output.editSuccessed.send(success)
+            }.store(in: self.cancelBag)
+        
+        deleteSuccess.asDriver()
+            .withUnretained(self)
+            .sink { owner, success in
+                output.deleteSuccessed.send(success)
+            }.store(in: self.cancelBag)
+    }
+}
+
+// MARK: - Methods
+
+extension ListDetailViewModel {
+    private func isImageSelected(_ image: Data) -> Bool {
+        return !image.isEmpty
+    }
     
-    input.deleteButtonTapped
-      .withUnretained(self)
-      .sink { owner, _ in
-        owner.useCase.deleteStamp(stampId: owner.stampId)
-      }.store(in: self.cancelBag)
+    private func isDateChanged(_ originDate: String?, _ currentDate: String) -> Bool {
+        guard let originDate else { return false }
+        return !currentDate.isEmpty && originDate != currentDate
+    }
     
-    return output
-  }
-  
-  private func bindOutput(output: Output, cancelBag: CancelBag) {
-    let listDetailModel = useCase.listDetailModel
-    let editSuccess = useCase.editSuccess
-    let deleteSuccess = useCase.deleteSuccess
-    
-    listDetailModel.asDriver()
-      .withUnretained(self)
-      .compactMap { owner, model in
-        owner.stampId = model.stampId
-        owner.uploadedUrl = model.image
-        return model
-      }
-      .assign(to: \.self.listDetailModel, on: output)
-      .store(in: self.cancelBag)
-    
-    editSuccess.asDriver()
-      .withUnretained(self)
-      .sink { owner, success in
-        output.editSuccessed.send(success)
-      }.store(in: self.cancelBag)
-    
-    deleteSuccess.asDriver()
-      .withUnretained(self)
-      .sink { owner, success in
-        output.deleteSuccessed.send(success)
-      }.store(in: self.cancelBag)
-  }
+    private func isTextChanged(_ originText: String?, _ currentText: String) -> Bool {
+        guard let originText else { return false }
+        return !originText.isEmpty && originText != currentText
+    }
 }

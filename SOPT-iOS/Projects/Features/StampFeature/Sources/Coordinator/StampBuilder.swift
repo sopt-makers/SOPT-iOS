@@ -23,7 +23,7 @@ extension StampBuilder: StampFeatureViewBuildable {
     public func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListViewControllable {
         let useCase = DefaultMissionListUseCase(repository: missionListRepository)
         let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType)
-        let missionListVC = MissionListVC()
+        let missionListVC = MissionListVC(viewModel: viewModel)
         missionListVC.viewModel = viewModel
         return missionListVC
     }
@@ -44,8 +44,7 @@ extension StampBuilder: StampFeatureViewBuildable {
             missionTitle: missionTitle,
             otherUsername: otherUserName
         )
-        let listDetailVC = ListDetailVC()
-        listDetailVC.viewModel = viewModel
+        let listDetailVC = ListDetailVC(viewModel: viewModel)
         return listDetailVC
     }
     

@@ -14,9 +14,10 @@ import Core
 
 @frozen
 public enum OPNaviType {
-    case oneLeftButton /// 좌측 뒤로가기 버튼
-    case oneRightButton /// 우측 버튼
-    case bothButtons /// 좌측 뒤로가기, 우측 버튼
+    case oneLeftButton      /// 좌측 뒤로가기 버튼
+    case oneRightButton     /// 우측 버튼
+    case bothButtons        /// 좌측 뒤로가기, 우측 버튼
+    case none               /// 버튼 없음
 }
 
 public final class OPNavigationBar: UIView {
@@ -138,12 +139,20 @@ extension OPNavigationBar {
         case .bothButtons:
             leftButton.setImage(UIImage(asset: DSKitAsset.Assets.opArrowWhite), for: .normal)
             rightButton.setImage(UIImage(asset: DSKitAsset.Assets.opRefresh), for: .normal)
+        case .none:
+            break
         }
     }
     
     private func setLayout(_ type: OPNaviType) {
+        self.addSubviews(titleLabel)
+        
         self.snp.makeConstraints {
             $0.height.equalTo(44)
+        }
+        
+        titleLabel.snp.makeConstraints {
+            $0.center.equalToSuperview()
         }
         
         switch type {
@@ -153,15 +162,13 @@ extension OPNavigationBar {
             self.setOneRightButtonLayout()
         case .bothButtons:
             self.setOneLeftButtonWithOneRightButtonLayout()
+        case .none:
+            break
         }
     }
-    
+
     private func setOneLeftButtonLayout() {
-        self.addSubviews(titleLabel, leftButton)
-        
-        titleLabel.snp.makeConstraints {
-            $0.center.equalToSuperview()
-        }
+        self.addSubviews(leftButton)
         
         leftButton.snp.makeConstraints {
             $0.leading.equalToSuperview().inset(20)
@@ -170,11 +177,7 @@ extension OPNavigationBar {
     }
     
     private func setOneRightButtonLayout() {
-        self.addSubviews(titleLabel, rightButton)
-        
-        titleLabel.snp.makeConstraints {
-            $0.center.equalToSuperview()
-        }
+        self.addSubviews(rightButton)
         
         rightButton.snp.makeConstraints {
             $0.centerY.equalToSuperview()
@@ -183,12 +186,8 @@ extension OPNavigationBar {
     }
     
     private func setOneLeftButtonWithOneRightButtonLayout() {
-        self.addSubviews(leftButton, rightButton, titleLabel)
-        
-        titleLabel.snp.makeConstraints {
-            $0.center.equalToSuperview()
-        }
-        
+        self.addSubviews(leftButton, rightButton)
+
         leftButton.snp.makeConstraints {
             $0.leading.equalToSuperview().inset(20)
             $0.centerY.equalToSuperview()

@@ -29,7 +29,6 @@ public class STNavigationBar: UIView {
     
     // MARK: - UI Component
     
-    private var vc: UIViewController?
     private let titleLabel = UILabel()
     private let titleButton = UIButton()
     private let leftButton = UIButton()
@@ -66,12 +65,10 @@ public class STNavigationBar: UIView {
     
     // MARK: - Initialize
     
-    public init(_ vc: UIViewController, type: NaviType, ignorePopAction: Bool = false) {
+    public init(type: NaviType) {
         super.init(frame: .zero)
-        self.vc = vc
         self.setUI(type)
         self.setLayout(type)
-        self.setAddTarget(ignorePopAction)
     }
     
     required init?(coder: NSCoder) {
@@ -96,7 +93,7 @@ extension STNavigationBar {
     
     private func setAddTarget(_ ignorePopAction: Bool = false) {
         guard !ignorePopAction else { return }
-        self.leftButton.addTarget(self, action: #selector(popToPreviousVC), for: .touchUpInside)
+//        self.leftButton.addTarget(self, action: #selector(popToPreviousVC), for: .touchUpInside)
     }
     
     @discardableResult
@@ -123,7 +120,7 @@ extension STNavigationBar {
             self.rightButton.isHidden = true
         case .addRecord:
             self.rightButton.isHidden = false
-            self.rightButton.setImage(UIImage(asset: DSKitAsset.Assets.icAddRecord), for: .normal)
+            self.rightButton.setImage(DSKitAsset.Assets.icAddRecord.image.withTintColor(DSKitAsset.Colors.gray10.color), for: .normal)
         case .delete:
             self.rightButton.isHidden = false
             self.rightButton.setImage(UIImage(asset: DSKitAsset.Assets.icDelete), for: .normal)
@@ -202,11 +199,6 @@ extension STNavigationBar {
 
 extension STNavigationBar {
     @objc
-    private func popToPreviousVC() {
-        self.vc?.navigationController?.popViewController(animated: true)
-    }
-    
-    @objc
     private func tappedRightButton() {
         self.rightButtonClosure?()
     }
@@ -228,25 +220,25 @@ extension STNavigationBar {
     private func setUI(_ type: NaviType) {
         self.naviType = type
         
-        self.backgroundColor = .white
+        self.backgroundColor = DSKitAsset.Colors.gray950.color
         leftButton.setImage(UIImage(asset: DSKitAsset.Assets.icArrow), for: .normal)
         
         titleLabel.setTypoStyle(.SoptampFont.h2)
-        titleLabel.textColor = DSKitAsset.Colors.soptampBlack.color
+        titleLabel.textColor = DSKitAsset.Colors.gray10.color
         
         switch type {
         case .title:
             rightButton.isHidden = false
             rightButton.setImage(DSKitAsset.Assets.stampGuide.image, for: .normal)
             titleButton.setImage(DSKitAsset.Assets.icDownArrow.image, for: .normal)
-            titleButton.setTitleColor(.black, for: .normal)
+            titleButton.setTitleColor(DSKitAsset.Colors.gray10.color, for: .normal)
             titleButton.semanticContentAttribute = .forceRightToLeft
             titleButton.titleLabel?.adjustsFontSizeToFitWidth = true
             reportButton.setImage(DSKitAsset.Assets.icReport.image, for: .normal)
         case .titleWithLeftButton:
             rightButton.isHidden = true
             leftButton.setImage(UIImage(asset: DSKitAsset.Assets.icArrow), for: .normal)
-            rightButton.setImage(UIImage(asset: DSKitAsset.Assets.icAddRecord), for: .normal)
+            rightButton.setImage(DSKitAsset.Assets.icAddRecord.image.withTintColor(DSKitAsset.Colors.gray10.color), for: .normal)
         }
     }
     

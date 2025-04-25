@@ -27,6 +27,8 @@ extension StarViewLevel {
             return "purplestamp"
         case .levelThree:
             return "greenstamp"
+        case .levelTen:
+            return "orangeStamp"
         }
     }
 }

@@ -23,6 +23,7 @@ public protocol MissionListCoordinatable {
 public protocol ListDetailViewControllable: ViewControllable & ListDetailCoordinatable { }
 public protocol ListDetailCoordinatable {
   var onComplete: ((StarViewLevel, (() -> Void)?) -> Void)? { get set }
+  var onNaviBackTap: (() -> Void)? { get set }
 }
 public protocol MissionCompletedViewControllable: ViewControllable { }
 public protocol RankingViewControllable: ViewControllable & RankingCoordinatable { }
@@ -36,4 +37,6 @@ public protocol PartRankingCoordinatable {
   var onNaviBackTap: (() -> Void)? { get set }
 }
 public protocol PartRankingViewControllable: ViewControllable & PartRankingCoordinatable { }
-public protocol StampGuideViewControllable: ViewControllable { }
+public protocol StampGuideViewControllable: ViewControllable {
+    var onNaviBackTap: (() -> Void)? { get set }
+}

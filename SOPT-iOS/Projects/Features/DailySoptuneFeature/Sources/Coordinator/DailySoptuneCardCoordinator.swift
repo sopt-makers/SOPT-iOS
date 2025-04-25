@@ -47,6 +47,8 @@ public final class DailySoptuneCardCoordinator: DefaultCoordinator {
         
         dailySoptuneCard.vm.onGoToHomeButtonTapped = { [weak self] in
             self?.requestCoordinating?()
+            self?.router.dismissModule(animated: true)
+            self?.finishFlow?()
         }
         
         self.rootController = dailySoptuneCard.vc.asNavigationController

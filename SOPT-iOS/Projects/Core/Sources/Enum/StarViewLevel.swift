@@ -12,4 +12,5 @@ public enum StarViewLevel: Int {
     case levelOne = 1
     case levelTwo = 2
     case levelThree = 3
+    case levelTen = 10
 }
