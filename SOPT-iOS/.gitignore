@@ -71,6 +71,8 @@ DerivedData/
 graph.dot
 graph.png
 Derived/
+.mise.toml
+Package.resolved
 
 ### Tuist managed dependencies ###
 Tuist/Dependencies
