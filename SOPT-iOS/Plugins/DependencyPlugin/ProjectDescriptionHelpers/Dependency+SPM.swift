@@ -25,7 +25,3 @@ public extension TargetDependency.SPM {
     static let lottie = TargetDependency.external(name: "Lottie")
     static let Amplitude = TargetDependency.external(name: "AmplitudeSwift")
 }
-
-public extension TargetDependency.Carthage {
-    static let Sentry = TargetDependency.external(name: "Sentry")
-}

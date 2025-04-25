@@ -19,7 +19,6 @@ public extension Project {
         let configurationName: ConfigurationName = "Development"
         let hasDynamicFramework = targets.contains(.dynamicFramework)
         let deploymentTarget = Environment.deploymentTarget
-        let platform = Environment.platform
         
         let baseSettings: SettingsDictionary = .baseSettings.setCodeSignManual()
         
@@ -43,7 +42,6 @@ public extension Project {
                 sources: ["Sources/**/*.swift"],
                 resources: [.glob(pattern: "Resources/**", excluding: [])],
                 entitlements: "\(name).entitlements",
-                scripts: [.Sentry],
                 dependencies: [
                     internalDependencies,
                     externalDependencies,

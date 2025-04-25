@@ -20,6 +20,5 @@ let project = Project.makeModule(
         .SPM.CombineMoya,
         .SPM.lottie,
         .SPM.Amplitude,
-        .Carthage.Sentry
     ]
 )
