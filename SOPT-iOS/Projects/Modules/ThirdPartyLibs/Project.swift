@@ -13,6 +13,7 @@ let project = Project.makeModule(
     name: "ThirdPartyLibs",
     targets: [.dynamicFramework],
     externalDependencies: [
+        .SPM.Alamofire,
         .SPM.SnapKit,
         .SPM.Kingfisher,
         .SPM.Then,

@@ -8,16 +8,17 @@ import ProjectDescription
 let xcconfigPath: ProjectDescription.Path = .relativeToRoot("xcconfigs/targets/iOS-Framework.xcconfig")
 let packageSettings = PackageSettings(
     productTypes: [
-        "SnapKit": .framework,
-        "Moya": .framework,
-        "Then": .framework,
-        "Kingfisher": .framework,
-        "FLEX": .framework,
-        "Inject": .framework,
-        "Quick": .framework,
-        "Nimble": .framework,
-        "Lottie": .framework,
-        "AmplitudeSwift": .framework,
+        "Alamofire": .framework,
+        "SnapKit": .staticFramework,
+        "Moya": .staticFramework,
+        "Then": .staticFramework,
+        "Kingfisher": .staticFramework,
+        "FLEX": .staticFramework,
+        "Inject": .staticFramework,
+        "Quick": .staticFramework,
+        "Nimble": .staticFramework,
+        "Lottie": .staticFramework,
+        "AmplitudeSwift": .staticFramework,
     ],
     baseSettings: .settings(
         configurations: [
@@ -36,6 +37,7 @@ let package = Package(
         .iOS("16.0")
     ],
     dependencies: [
+        .package(url: "https://github.com/Alamofire/Alamofire", from: "5.10.0"),
         .package(url: "https://github.com/SnapKit/SnapKit.git", from: "5.0.0"),
         .package(url: "https://github.com/Moya/Moya.git", from: "15.0.0"),
         .package(url: "https://github.com/devxoul/Then", from: "2.0.0"),
