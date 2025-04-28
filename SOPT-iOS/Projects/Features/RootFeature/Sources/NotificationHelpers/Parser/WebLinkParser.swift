@@ -8,12 +8,10 @@
 
 import Foundation
 
-import Sentry
-
 struct WebLinkParser: NotificationLinkParser {
     func parse(with link: String) throws -> String {
         guard let components = URLComponents(string: link) else {
-            SentrySDK.capture(message: "푸시 알림 WebLink Parse 에러: \(link)")
+            print("⚠️푸시 알림 WebLink Parse 에러: \(link)")
             throw NotificationLinkError.invalidLink
         }
         

@@ -19,7 +19,6 @@ import BaseFeatureDependency
 
 import SnapKit
 import Then
-import Sentry
 
 public class SignInVC_Refactor: UIViewController, SignInViewControllable {
     
@@ -322,7 +321,7 @@ extension SignInVC_Refactor {
         let state = UUID().uuidString
         UserDefaultKeyList.Auth.requestState = state
         guard let url = URL(string: ExternalURL.Playground.login(state: state)) else {
-            SentrySDK.capture(message: "Invalid URL string: \(ExternalURL.Playground.login(state: state))")
+            print("⚠️Invalid URL String at openPlaygroundURL: \(ExternalURL.Playground.login(state: state))")
             makeAlert(title: "URL 에러", message: "잘못된 URL이 생성되었습니다. 개발자에게 문의주시면 감사하겠습니다.")
             return
         }
