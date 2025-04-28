@@ -133,12 +133,12 @@ extension OPNavigationBar {
         
         switch type {
         case .oneLeftButton:
-            leftButton.setImage(UIImage(asset: DSKitAsset.Assets.opArrowWhite), for: .normal)
+            leftButton.setImage(DSKitAsset.Assets.opArrowWhite.image , for: .normal)
         case .oneRightButton:
-            rightButton.setImage(UIImage(asset: DSKitAsset.Assets.xMark)?.withTintColor(.white), for: .normal)
+            rightButton.setImage(DSKitAsset.Assets.xMark.image.withTintColor(.white), for: .normal)
         case .bothButtons:
-            leftButton.setImage(UIImage(asset: DSKitAsset.Assets.opArrowWhite), for: .normal)
-            rightButton.setImage(UIImage(asset: DSKitAsset.Assets.opRefresh), for: .normal)
+            leftButton.setImage(DSKitAsset.Assets.opArrowWhite.image, for: .normal)
+            rightButton.setImage(DSKitAsset.Assets.opRefresh.image, for: .normal)
         case .none:
             break
         }

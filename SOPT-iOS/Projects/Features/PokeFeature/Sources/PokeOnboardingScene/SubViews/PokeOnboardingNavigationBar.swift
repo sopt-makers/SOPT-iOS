@@ -22,8 +22,7 @@ internal final class PokeOnboardingNavigationBar: UIView {
     
     // MARK: LeftButton
     private let leftButton = UIButton().then {
-        let image = UIImage(asset: DSKitAsset.Assets.icClose)?.withRenderingMode(.alwaysTemplate)
-        $0.setImage(image, for: .normal)
+        $0.setImage(DSKitAsset.Assets.icClose.image.withRenderingMode(.alwaysTemplate), for: .normal)
         $0.tintColor = .white
     }
     
