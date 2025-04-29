@@ -24,6 +24,7 @@ public class SoptlogToolTipViewModel: SoptlogToolTipViewModelType {
     
     public struct Input {
         let dismissbuttonTap: Driver<Void>
+        let dimmingBackgroundTap: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -33,7 +34,7 @@ public class SoptlogToolTipViewModel: SoptlogToolTipViewModelType {
     // MARK: - SoptlogToolTipCoordinatable
     
     public var onDismissButtonTap: (() -> Void)?
-    
+    public var onDimmingBackgroundTap: (() -> Void)?
     
     // MARK: - initialization
     
@@ -50,6 +51,12 @@ extension SoptlogToolTipViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onDismissButtonTap?()
+            }.store(in: cancelBag)
+        
+        input.dimmingBackgroundTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onDimmingBackgroundTap?()
             }.store(in: cancelBag)
         
         return output

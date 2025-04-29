@@ -56,13 +56,13 @@ extension RankingViewModel {
             .sink { owner, _ in
                 switch self.rankingViewType {
                 case .all:
-                  owner.useCase.fetchRankingList(isCurrentGeneration: false)
+                    owner.useCase.fetchRankingList(isCurrentGeneration: false)
                 case .currentGeneration:
-                  owner.useCase.fetchRankingList(isCurrentGeneration: true)
+                    owner.useCase.fetchRankingList(isCurrentGeneration: true)
                 case .individualRankingInPart(let part):
-                  owner.useCase.fetchRankingList(part: part.uppercasedName())
+                    owner.useCase.fetchRankingList(part: part.uppercasedName())
                 default:
-                  return
+                    return
                 }
             }.store(in: self.cancelBag)
         

@@ -12,4 +12,12 @@ enum NotificationFilterType: String {
     case all = "전체 알림"
     case notice = "공지"
     case news = "소식"
+    
+    var serverKey: String {
+        switch self {
+        case .all: return "ALL"
+        case .notice: return "NOTICE"
+        case .news: return "NEWS"
+        }
+    }
 }

@@ -30,7 +30,6 @@ public final class TabBarCoordinator: DefaultCoordinator {
     private let factory: TabBarPresentable
     private let router: Router
     private let items: [UIViewController]
-    private weak var rootController: UINavigationController?
     
     public init(router: Router, factory: TabBarPresentable, items: [UIViewController]) {
         self.router = router
@@ -67,6 +66,12 @@ public final class TabBarCoordinator: DefaultCoordinator {
                     self?.requestCoordinating?(.signIn)
                 }
             )
+        }
+        
+        tabBar.vm.onFABMenuTapped = { [weak self] url in
+            guard let url = URL(string: url) else { return }
+            let webView = SOPTWebView(startWith: url)
+            self?.router.push(webView)
         }
         
         router.replaceRootWindow(tabBar.vc, withAnimation: true, hideBar: true)

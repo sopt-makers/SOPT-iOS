@@ -47,7 +47,8 @@ extension STCustomButton {
     public func setColor(
         bgColor: UIColor,
         disableColor: UIColor = DSKitAsset.Colors.gray100.color,
-        textColor: UIColor = .white
+        textColor: UIColor = .white,
+        disableTextcolor: UIColor = .white
     ) -> Self {
         self.setBackgroundColor(bgColor, for: .normal)
         self.setBackgroundColor(disableColor, for: .disabled)
@@ -56,6 +57,11 @@ extension STCustomButton {
                 string: self.titleLabel?.text ?? "",
                 attributes: [.font: UIFont.SoptampFont.h2, .foregroundColor: textColor]),
             for: .normal)
+        self.setAttributedTitle(
+            NSAttributedString(
+                string: self.titleLabel?.text ?? "",
+                attributes: [.font: UIFont.SoptampFont.h2, .foregroundColor: disableTextcolor]),
+            for: .disabled)
         
         return self
     }

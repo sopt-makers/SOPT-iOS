@@ -91,6 +91,7 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.notificationListCollectionView.reloadData()
+        self.setGestureDelegate()
     }
 }
 
@@ -102,14 +103,20 @@ extension NotificationListVC {
     }
     
     private func setLayout() {
-        self.view.addSubviews(naviBar, notificationListCollectionView)
+        self.view.addSubviews(naviBar, notificationFilterCollectionView, notificationListCollectionView)
         
         naviBar.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
         }
         
-        notificationListCollectionView.snp.makeConstraints { make in
+        notificationFilterCollectionView.snp.makeConstraints { make in
             make.top.equalTo(naviBar.snp.bottom)
+            make.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            make.height.equalTo(60)
+        }
+        
+        notificationListCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(notificationFilterCollectionView.snp.bottom)
             make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
         }
         
@@ -247,5 +254,17 @@ extension NotificationListVC: UICollectionViewDelegate {
             viewModel.startPaging()
             requestNotifications.send(())
         }
+    }
+}
+
+// MARK: - UIGestureRecognizerDelegate
+
+extension NotificationListVC: UIGestureRecognizerDelegate {
+    private func setGestureDelegate() {
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+    }
+    
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }

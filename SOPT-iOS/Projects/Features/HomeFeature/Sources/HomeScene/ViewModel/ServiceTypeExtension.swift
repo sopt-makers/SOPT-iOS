@@ -19,7 +19,8 @@ extension ServiceType {
         case .review:
             return DSKitAsset.Assets.imgReviewLogo.image
         case .project:
-            return DSKitAsset.Assets.imgProjectLogo.image
+            let userType = UserDefaultKeyList.Auth.getUserType()
+            return userType == .visitor ? DSKitAsset.Assets.imgProjectLogo.image : DSKitAsset.Assets.imgActiveProjectLogo.image
         case .member:
             return DSKitAsset.Assets.imgUserLogo.image
         case .group:

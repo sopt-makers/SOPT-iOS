@@ -20,7 +20,7 @@ public class STStarView: UIView {
     private var spacing: CGFloat = 0
     private var starScale: CGFloat = 15
     private var starImageArray: [UIImageView] = []
-    private var starDefaultColor = DSKitAsset.Colors.soptampGray300.color
+    private var starDefaultColor = DSKitAsset.Colors.soptampGray500.color
     
     // MARK: - UI Components
     
@@ -57,8 +57,9 @@ extension STStarView {
     
     private func setLayout() {
         self.addSubviews(starStackView)
+        
         starStackView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+            make.edges.equalToSuperview()
         }
     }
     
@@ -72,6 +73,7 @@ extension STStarView {
             }
             imageView.contentMode = .scaleToFill
             imageView.image = DSKitAsset.Assets.icStar.image.withRenderingMode(.alwaysTemplate)
+            
             starStackView.addArrangedSubviews(imageView)
             starImageArray.append(imageView)
             
@@ -95,6 +97,8 @@ extension STStarView {
                 self.starImageArray[starNumber-1].tintColor =  DSKitAsset.Colors.soptampPurple300.color
             } else if level == .levelThree {
                 self.starImageArray[starNumber-1].tintColor = DSKitAsset.Colors.soptampMint300.color
+            } else if level == .levelTen {
+                self.starImageArray[starNumber-1].tintColor = DSKitAsset.Colors.orange300.color
             } else {
                 self.starImageArray[starNumber-1].tintColor = starDefaultColor
             }

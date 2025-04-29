@@ -128,8 +128,7 @@ extension CalendarCardCVC {
 extension CalendarCardCVC {
     func configureCell(model: HomePresentationModel.RecentSchedule,
                        userType: UserType) {
-        // TODO: 서버 - 날짜 포맷 변경 후 반영
-        self.dateLabel.text = setDateFormat(date: model.date, to: "MM.dd")
+        self.dateLabel.text = model.date
         self.scheduleTitleLabel.text = model.title
         if let tagType = CalenderCategoryTagType(rawValue: model.type) {
             self.scheduleCategoryTagView.setData(title: tagType.text,

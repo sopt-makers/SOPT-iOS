@@ -81,7 +81,11 @@ public final class SoptlogCoordinator: DefaultCoordinator {
         var soptlogToolTip = factory.makeSoptlogToolTip(frame)
         
         soptlogToolTip.vm.onDismissButtonTap = { [weak self] in
-            self?.rootViewController?.dismiss(animated: true )
+            self?.rootViewController?.dismiss(animated: true)
+        }
+        
+        soptlogToolTip.vm.onDimmingBackgroundTap = { [weak self] in
+            self?.rootViewController?.dismiss(animated: true)
         }
         
         soptlogToolTip.vc.viewController.modalPresentationStyle = .overFullScreen

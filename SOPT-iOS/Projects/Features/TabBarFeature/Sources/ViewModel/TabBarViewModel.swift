@@ -10,23 +10,36 @@ import Foundation
 import Combine
 
 import Core
-import TabBarFeatureInterface
 
 final public class TabBarViewModel: TabBarViewModelType {
     
+    // MARK: - Properties
+    
     private let cancelBag = CancelBag()
     private let userType: UserType
+    @Published private(set) var isFABTapped: Bool = false
     
-    public var onTabBarItemTapped: ((Int) -> Void)?
-    public var showTabBarAlert: (() -> Void)?
+    // MARK: - Inputs
     
     public struct Input {
         let isTabSelectedIndex: Driver<Int>
+        let isFABTapped: Driver<Void>
+        let isMenuCellTapped: Driver<String>
     }
+    
+    // MARK: - Outputs
     
     public struct Output {
         let selectedIndex = PassthroughSubject<Int, Never>()
     }
+    
+    // MARK: - TabBarCoordinating
+    
+    public var onTabBarItemTapped: ((Int) -> Void)?
+    public var onFABMenuTapped: ((String) -> Void)?
+    public var showTabBarAlert: (() -> Void)?
+    
+    // MARK: - initialization
     
     public init(userType: UserType) {
         self.userType = userType
@@ -49,9 +62,23 @@ extension TabBarViewModel {
                 }
             }.store(in: cancelBag)
         
+        input.isFABTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.isFABTapped.toggle()
+            }.store(in: cancelBag)
+        
+        input.isMenuCellTapped
+            .withUnretained(self)
+            .sink { owner, url in
+                owner.onFABMenuTapped?(url)
+            }.store(in: cancelBag)
+        
         return output
     }
 }
+
+// MARK: - Methods
 
 extension TabBarViewModel {
     private func trackAmplitude(itemIndex: Int) {

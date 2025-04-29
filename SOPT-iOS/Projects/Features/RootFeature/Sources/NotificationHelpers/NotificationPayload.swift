@@ -12,9 +12,6 @@ import Sentry
 public struct NotificationPayload: Codable {
     public let aps: APS
     public let id: String
-    public let title: String
-    public let content: String
-    public let sendAt: String
     public let category: String?
     public let deepLink: String?
     public let webLink: String?

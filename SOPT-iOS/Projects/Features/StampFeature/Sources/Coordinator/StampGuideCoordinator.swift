@@ -28,7 +28,13 @@ final class StampGuideCoordinator: DefaultCoordinator {
     }
     
     private func showGuide() {
-        let guide = factory.makeStampGuideVC()
+        var guide = factory.makeStampGuideVC()
+        
+        guide.onNaviBackTap = { [weak self] in
+            self?.router.popModule()
+            self?.finishFlow?()
+        }
+        
         router.push(guide)
     }
 }

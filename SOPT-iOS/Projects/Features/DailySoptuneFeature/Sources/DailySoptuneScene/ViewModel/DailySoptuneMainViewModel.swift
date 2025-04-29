@@ -65,7 +65,7 @@ extension DailySoptuneMainViewModel {
         input.receiveTodayFortuneButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.useCase.getDailySoptuneResult(date: setDateFormat(to: "yyyy-MM-dd"))
+                owner.useCase.getDailySoptuneResult(date: DateFormatManager.shared.transformDateFormat(to: .dateWithDash))
                 AmplitudeInstance.shared.track(eventType: .clickCheckTodaySoptune)
             }.store(in: cancelBag)
         

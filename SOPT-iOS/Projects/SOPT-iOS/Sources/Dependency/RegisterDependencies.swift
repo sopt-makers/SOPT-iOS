@@ -199,7 +199,8 @@ extension AppDelegate {
                     homeService: DefaultHomeService(),
                     calendarService: DefaultCalendarService(),
                     userService: DefaultUserService(),
-                    stampService: DefaultStampService()
+                    stampService: DefaultStampService(),
+                    pokeService: DefaultPokeService()
                 )
             }
         )
