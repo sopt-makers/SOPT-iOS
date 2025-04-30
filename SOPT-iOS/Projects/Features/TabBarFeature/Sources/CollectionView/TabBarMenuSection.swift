@@ -62,7 +62,7 @@ enum FABMenuSection: CaseIterable, FABMenuSectionProtocol {
             return [
                 MenuSectionItem(title: I18N.TabBar.Homepage.reviewUpload, 
                                 icon: DSKitAsset.Assets.icFabHomepage.image, 
-                                url: ExternalURL.SOPT.officialHomepage),
+                                url: ExternalURL.Playground.blog),
             ]
         }
     }
