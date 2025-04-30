@@ -50,5 +50,6 @@ public struct ExternalURL {
         public static let sopticle = "\(main)/sopticle"
         public static let makeGroup = "\(main)/group/make"
         public static let makeLightGroup = "\(main)/group/make/flash"
+        public static let makeGroupFeed = "\(main)/group?modal=create-feed"
     }
 }
