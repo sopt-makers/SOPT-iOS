@@ -8,9 +8,7 @@
 
 import Foundation
 
-import Alamofire
 import Moya
-import Core
 
 public enum CalendarAPI {
     case getRecentSchedule

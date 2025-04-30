@@ -8,8 +8,6 @@
 
 import Foundation
 import Combine
-
-import Alamofire
 import Moya
 
 import Core

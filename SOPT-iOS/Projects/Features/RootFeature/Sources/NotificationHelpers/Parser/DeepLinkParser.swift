@@ -11,8 +11,6 @@ import BaseFeatureDependency
 import Core
 import NotificationFeature
 
-import Sentry
-
 struct DeepLinkParser: NotificationLinkParser {
     private var defaultDeepLinks: [DeepLinkExecutable] {
         return [HomeDeepLink()]
@@ -20,7 +18,7 @@ struct DeepLinkParser: NotificationLinkParser {
     
     func parse(with link: String) throws -> DeepLinkData {
         guard let components = URLComponents(string: link) else {
-            SentrySDK.capture(message: "푸시 알림 DeepLink Parse 에러: \(link)")
+            print("⚠️푸시 알림 DeepLink Parse 에러: \(link)")
             return (defaultDeepLinks, nil)
         }
         
