@@ -21,5 +21,8 @@ let project = Project.makeModule(
         .SPM.CombineMoya,
         .SPM.lottie,
         .SPM.Amplitude,
+        .SPM.FirebaseAuth,
+        .SPM.FirebaseCore,
+        .SPM.GoogleSignIn
     ]
 )
