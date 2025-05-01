@@ -257,7 +257,7 @@ public struct I18N {
         }
         
         public struct Homepage {
-            public static let uploadArticle = "솝티클 올리기"
+            public static let reviewUpload = "활동후기 업로드"
         }
     }
     

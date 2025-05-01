@@ -6,9 +6,9 @@
 //  Copyright © 2022 SOPT-Stamp-iOS. All rights reserved.
 //
 
-import Alamofire
-import Moya
 import Foundation
+import Moya
+
 import Core
 
 public enum APIType {

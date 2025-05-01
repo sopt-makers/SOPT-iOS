@@ -1,5 +1,5 @@
 generate:
-	tuist fetch
+	tuist install
 	tuist generate
 
 clean:

@@ -8,7 +8,6 @@
 
 import Foundation
 
-import Alamofire
 import Moya
 
 public enum NotificationAPI {

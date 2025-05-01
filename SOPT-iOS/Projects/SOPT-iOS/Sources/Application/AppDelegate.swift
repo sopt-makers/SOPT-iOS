@@ -7,8 +7,6 @@
 
 import UIKit
 
-import Sentry
-
 import BaseFeatureDependency
 import Core
 import Networks
@@ -19,7 +17,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private var appLifecycleAdapter = AppLifecycleAdapter()
     
     func application( _ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        configureSentry()
         configureAppLifecycleAdapter()
         registerDependencies()
         
@@ -47,22 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 // MARK: - Sentry & FCM
 
-extension AppDelegate {
-    private func configureSentry() {
-        SentrySDK.start { options in
-            options.dsn = Config.Sentry.DSN
-            options.enableCaptureFailedRequests = true
-            options.attachScreenshot = true
-            options.enableUserInteractionTracing = true
-            options.attachViewHierarchy = true
-            options.enableUIViewControllerTracing = true
-            options.enableNetworkBreadcrumbs = true
-            let httpStatusCodeRange = HttpStatusCodeRange(min: 400, max: 599)
-            options.failedRequestStatusCodes = [ httpStatusCodeRange ]
-            options.enableAutoBreadcrumbTracking = true
-        }
-    }
-    
+extension AppDelegate {    
     private func configureAppLifecycleAdapter() {
         self.appLifecycleAdapter.prepare()
     }

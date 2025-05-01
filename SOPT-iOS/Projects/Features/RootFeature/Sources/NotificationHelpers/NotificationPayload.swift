@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Sentry
 
 public struct NotificationPayload: Codable {
     public let aps: APS
@@ -38,7 +37,7 @@ public struct NotificationPayload: Codable {
         do {
             self = try JSONDecoder().decode(NotificationPayload.self, from: JSONSerialization.data(withJSONObject: dictionary))
         } catch {
-            SentrySDK.capture(error: error)
+            debugPrint("⚠️NotificationPayload Decoding Error: \(error)")
             return nil
         }
     }
