@@ -28,10 +28,10 @@ public final class TabBarCoordinator: DefaultCoordinator {
     public var requestCoordinating: ((TabBarCoordinatorDestination) -> Void)?
         
     private let factory: TabBarPresentable
-    private let router: Router
+    private let router: LegacyRouter
     private let items: [UIViewController]
     
-    public init(router: Router, factory: TabBarPresentable, items: [UIViewController]) {
+    public init(router: LegacyRouter, factory: TabBarPresentable, items: [UIViewController]) {
         self.router = router
         self.factory = factory
         self.items = items

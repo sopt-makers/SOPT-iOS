@@ -20,11 +20,11 @@ final class StampCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: StampFeatureViewBuildable
-    private let router: Router
+    private let router: LegacyRouter
     // Note: @준호 - Soptamp는 Present되기 때문에 최상위 NavController의 참조를 유지해야 함
     private weak var rootController: UINavigationController?
     
-    public init(router: Router, factory: StampFeatureViewBuildable) {
+    public init(router: LegacyRouter, factory: StampFeatureViewBuildable) {
         self.factory = factory
         self.router = router
     }
@@ -63,7 +63,7 @@ final class StampCoordinator: DefaultCoordinator {
     
     private func showGuide() {
         let guideCoordinator = StampGuideCoordinator(
-            router: Router(rootController: rootController!),
+            router: LegacyRouter(rootController: rootController!),
             factory: factory
         )
         guideCoordinator.finishFlow = { [weak self, weak guideCoordinator] in
@@ -75,7 +75,7 @@ final class StampCoordinator: DefaultCoordinator {
     
     internal func runRankingFlow(rankingViewType: RankingViewType) {
         let rankingCoordinator = RankingCoordinator(
-            router: Router(rootController: rootController!),
+            router: LegacyRouter(rootController: rootController!),
             factory: factory,
             rankingViewType: rankingViewType
         )
@@ -88,7 +88,7 @@ final class StampCoordinator: DefaultCoordinator {
 
     private func runMissionDetailFlow(_ model: MissionListModel, _ username: String?) {
         let missionDetailCoordinator = MissionDetailCoordinator(
-            router: Router(rootController: rootController!),
+            router: LegacyRouter(rootController: rootController!),
             factory: factory,
             model: model,
             username: username

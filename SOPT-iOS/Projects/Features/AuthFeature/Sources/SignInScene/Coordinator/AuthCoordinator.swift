@@ -25,10 +25,10 @@ final class AuthCoordinator: DefaultAuthCoordinator {
     public var finishFlow: ((UserType) -> Void)?
     
     private let factory: AuthFeatureViewBuildable
-    private let router: Router
+    private let router: LegacyRouter
     private var url: String?
     
-    public init(router: Router, factory: AuthFeatureViewBuildable, url: String? = nil) {
+    public init(router: LegacyRouter, factory: AuthFeatureViewBuildable, url: String? = nil) {
         self.factory = factory
         self.router = router
         self.url = url

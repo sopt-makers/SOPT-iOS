@@ -20,13 +20,13 @@ public final class DailySoptuneCardCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
         
     private let factory: DailySoptuneFeatureBuildable
-    private let router: Router
+    private let router: LegacyRouter
     
     private let cardModel: DailySoptuneCardModel
 
     private weak var rootController: UINavigationController?
     
-    public init(router: Router, factory: DailySoptuneFeatureBuildable, cardModel: DailySoptuneCardModel) {
+    public init(router: LegacyRouter, factory: DailySoptuneFeatureBuildable, cardModel: DailySoptuneCardModel) {
         self.router = router
         self.factory = factory
         self.cardModel = cardModel

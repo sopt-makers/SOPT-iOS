@@ -20,10 +20,10 @@ final class PokeCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: PokeFeatureBuildable
-    private let router: Router
+    private let router: LegacyRouter
     private weak var rootController: UINavigationController?
     
-    public init(router: Router, factory: PokeFeatureBuildable) {
+    public init(router: LegacyRouter, factory: PokeFeatureBuildable) {
         self.router = router
         self.factory = factory
     }
@@ -85,7 +85,7 @@ final class PokeCoordinator: DefaultCoordinator {
     
     internal func runPokeOnboardingFlow() {
         let pokeOnboardingCoordinator = PokeOnboardingCoordinator(
-            router: Router(
+            router: LegacyRouter(
                 rootController: rootController ?? self.router.asNavigationController
             ),
             factory: factory
@@ -102,7 +102,7 @@ final class PokeCoordinator: DefaultCoordinator {
     
     internal func runPokeNotificationListFlow() {
         let pokeNotificationListCoordinator = PokeNotificationListCoordinator(
-            router: Router(
+            router: LegacyRouter(
                 rootController: rootController ?? self.router.asNavigationController
             ),
             factory: factory
@@ -119,7 +119,7 @@ final class PokeCoordinator: DefaultCoordinator {
     
     private func runPokeMyFriendsFlow() {
         let pokeMyFriendsCoordinator = PokeMyFriendsCoordinator(factory: factory,
-                                                                router: Router(rootController: rootController!))
+                                                                router: LegacyRouter(rootController: rootController!))
         
         pokeMyFriendsCoordinator.finishFlow = { [weak self, weak pokeMyFriendsCoordinator] in
             self?.removeDependency(pokeMyFriendsCoordinator)

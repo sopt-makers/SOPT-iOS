@@ -17,11 +17,11 @@ final class MissionDetailCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: StampFeatureViewBuildable
-    private let router: Router
+    private let router: LegacyRouter
     private let model: MissionListModel
     private let username: String?
     
-    public init(router: Router, factory: StampFeatureViewBuildable, model: MissionListModel, username: String?) {
+    public init(router: LegacyRouter, factory: StampFeatureViewBuildable, model: MissionListModel, username: String?) {
         self.factory = factory
         self.router = router
         self.model = model

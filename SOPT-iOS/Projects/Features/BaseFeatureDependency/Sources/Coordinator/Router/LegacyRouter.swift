@@ -1,5 +1,5 @@
 //
-//  Router.swift
+//  LegacyRouter.swift
 //  BaseFeatureDependency
 //
 //  Created by Junho Lee on 2023/06/03.
@@ -12,7 +12,7 @@ import Core
 import SafariServices
 
 /// RouterProtocol은 Coordinator에서 화면전환의 종류를 지정합니다.
-public protocol RouterProtocol: ViewControllable {
+public protocol LegacyRouterProtocol: ViewControllable {
     
     var topViewController: UIViewController? { get }
     
@@ -65,7 +65,7 @@ public protocol RouterProtocol: ViewControllable {
 
 /// RouterProtocol을 채택하여 Coordinator가 모르는 화면전환의 기능을 수행합니다. RootController를 가지고 다양한 기능을 수행합니다.
 public
-final class Router: NSObject, RouterProtocol {
+final class LegacyRouter: NSObject, LegacyRouterProtocol {
 
     
     // MARK: - Vars & Lets
@@ -87,7 +87,7 @@ final class Router: NSObject, RouterProtocol {
         return rootController ?? UINavigationController(rootViewController: viewController)
     }
     
-    // MARK: - RouterProtocol
+    // MARK: - LegacyRouterProtocol
     
     public func present(_ module: ViewControllable?) {
         self.present(module, animated: true)
@@ -277,7 +277,7 @@ final class Router: NSObject, RouterProtocol {
 
 // MARK: - Alert
 
-extension Router {
+extension LegacyRouter {
     public func presentAlertVC(
         type: AlertType,
         theme: AlertVC.AlertTheme = .main,
@@ -310,7 +310,7 @@ extension Router {
     }
 }
 
-extension Router: UINavigationControllerDelegate {
+extension LegacyRouter: UINavigationControllerDelegate {
     public func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return self.transition
     }

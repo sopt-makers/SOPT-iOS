@@ -1,5 +1,5 @@
 //
-//  SplashCoordinator.swift
+//  LegacySplashCoordinator.swift
 //  SplashFeature
 //
 //  Created by Junho Lee on 2023/06/20.
@@ -12,15 +12,15 @@ import Core
 import Domain
 
 public
-final class SplashCoordinator: DefaultCoordinator {
+final class LegacySplashCoordinator: DefaultCoordinator {
     
     public var finishFlow: (() -> Void)?
     
     private let factory: SplashFeatureViewBuildable
-    private let router: Router
+    private let router: LegacyRouter
     private let cancelBag = CancelBag()
     
-    public init(router: Router, factory: SplashFeatureViewBuildable) {
+    public init(router: LegacyRouter, factory: SplashFeatureViewBuildable) {
         self.factory = factory
         self.router = router
     }
