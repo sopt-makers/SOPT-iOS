@@ -8,7 +8,7 @@
 
 import Core
 
-public protocol AlertViewControllable: ViewControllable { }
+public protocol AlertViewControllable: LegacyViewControllable { }
 
 public protocol AlertViewBuildable {
     func makeAlertVC(type: AlertType,

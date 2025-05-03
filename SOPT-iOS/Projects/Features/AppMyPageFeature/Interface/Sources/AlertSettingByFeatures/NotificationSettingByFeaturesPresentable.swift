@@ -10,7 +10,7 @@ import BaseFeatureDependency
 import Core
 
 public protocol NotificationSettingByFeaturesViewControllable:
-    ViewControllable & NotificationSettingByFeaturesCoordiatable { }
+    LegacyViewControllable & NotificationSettingByFeaturesCoordiatable { }
 public protocol NotificationSettingByFeaturesCoordiatable {
     var onNaviBackButtonTap: (() -> Void)? { get set }
 }

@@ -16,11 +16,11 @@ final class LegacySplashCoordinator: DefaultCoordinator {
     
     public var finishFlow: (() -> Void)?
     
-    private let factory: SplashFeatureViewBuildable
+    private let factory: LegacySplashFeatureViewBuildable
     private let router: LegacyRouter
     private let cancelBag = CancelBag()
     
-    public init(router: LegacyRouter, factory: SplashFeatureViewBuildable) {
+    public init(router: LegacyRouter, factory: LegacySplashFeatureViewBuildable) {
         self.factory = factory
         self.router = router
     }

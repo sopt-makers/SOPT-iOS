@@ -11,7 +11,7 @@ import Foundation
 import BaseFeatureDependency
 import Core
 
-public protocol SoptlogViewControllable: ViewControllable { }
+public protocol SoptlogViewControllable: LegacyViewControllable { }
 public protocol SoptlogCoordinatable {
     var onProfileEditTapped: (() -> Void)? { get set }
     var onToolTipTapped: ((CGRect) -> Void)? { get set }

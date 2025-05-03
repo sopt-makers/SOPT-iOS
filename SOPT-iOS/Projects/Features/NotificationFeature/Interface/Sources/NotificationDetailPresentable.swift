@@ -10,7 +10,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol NotificationDetailViewControllable: ViewControllable { }
+public protocol NotificationDetailViewControllable: LegacyViewControllable { }
 
 public protocol NotificationDetailCoordinatable {
     var onShortCutButtonTap: ((ShortCutLink) -> Void)? { get set }

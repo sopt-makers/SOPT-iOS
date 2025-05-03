@@ -18,7 +18,7 @@ import Then
 import BaseFeatureDependency
 import SplashFeatureInterface
 
-public class NoticePopUpVC: UIViewController, NoticePopUpViewControllable {
+public class NoticePopUpVC: UIViewController, LegacyNoticePopUpViewControllable, NoticePopUpViewControllable {
     
     // MARK: - Properties
     

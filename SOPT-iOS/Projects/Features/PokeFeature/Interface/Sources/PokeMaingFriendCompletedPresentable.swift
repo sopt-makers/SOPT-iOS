@@ -10,4 +10,4 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol PokeMakingFriendCompletedPresentable: ViewControllable { }
+public protocol PokeMakingFriendCompletedPresentable: LegacyViewControllable { }
