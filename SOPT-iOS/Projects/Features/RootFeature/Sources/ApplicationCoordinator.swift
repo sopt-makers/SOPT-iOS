@@ -31,13 +31,20 @@ final class ApplicationCoordinator: BaseCoordinator {
     private var cancelBag = CancelBag()
     private let notificationHandler: NotificationHandler
     
+    private let rootNavigationController: UINavigationController
+    
     private weak var rootController: UINavigationController?
     private weak var tabBarController: UITabBarController?
     
     private weak var homeCoordinator: HomeCoordinator?
     private weak var soptlogCoordinator: SoptlogCoordinator?
     
-    public init(router: LegacyRouter, notificationHandler: NotificationHandler) {
+    public init(
+        rootNavigationController: UINavigationController,
+        router: LegacyRouter,
+        notificationHandler: NotificationHandler
+    ) {
+        self.rootNavigationController = rootNavigationController
         self.router = router
         self.notificationHandler = notificationHandler
         super.init()
@@ -125,11 +132,26 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     private func runSplashFlow() {
-        let coordinator = LegacySplashCoordinator(router: router, factory: SplashBuilder())
+        var coordinator: DefaultCoordinator
+        
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator = LegacySplashCoordinator(
+                router: router,
+                factory: SplashBuilder()
+            )
+        case .new:
+            coordinator = SplashCoordinator(
+                navigationController: rootNavigationController,
+                factory: SplashBuilder()
+            )
+        }
+        
         coordinator.finishFlow = { [weak self, weak coordinator] in
             self?.checkDidSignIn()
             self?.removeDependency(coordinator)
         }
+        
         addDependency(coordinator)
         coordinator.start()
     }
