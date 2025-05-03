@@ -138,7 +138,7 @@ extension ApplicationCoordinator {
         case .legacy:
             coordinator = LegacySplashCoordinator(
                 router: router,
-                factory: SplashBuilder()
+                factory: LegacySplashBuilder()
             )
         case .new:
             coordinator = SplashCoordinator(

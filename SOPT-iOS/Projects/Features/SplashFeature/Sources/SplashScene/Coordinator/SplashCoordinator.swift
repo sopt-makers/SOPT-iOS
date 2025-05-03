@@ -20,14 +20,14 @@ public final class SplashCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let navigationController: UINavigationController
-    private let factory: LegacySplashFeatureViewBuildable
+    private let factory: SplashFeatureBuildable
     private let cancelBag = CancelBag()
     
     // MARK: - Init
     
     public init(
         navigationController: UINavigationController,
-        factory: LegacySplashFeatureViewBuildable
+        factory: SplashFeatureBuildable
     ) {
         self.factory = factory
         self.navigationController = navigationController
@@ -44,14 +44,16 @@ public final class SplashCoordinator: DefaultCoordinator {
     
     private func showSplash() {
         var splash = factory.makeSplash()
+        
         splash.vm.onNoticeExist = { [weak self] appNoticeModel in
             self?.presentNoticePopUp(model: appNoticeModel)
         }
+        
         splash.vm.onNoticeSkipped = { [weak self] in
             self?.finishFlow?()
         }
         
-        navigationController.setViewControllers([splash.vc.viewController], animated: true)
+        navigationController.setViewControllers([splash.vc], animated: true)
     }
     
     private func presentNoticePopUp(model: AppNoticeModel) {
@@ -59,12 +61,12 @@ public final class SplashCoordinator: DefaultCoordinator {
         
         let popUpType: NoticePopUpType = isForcedUpdate ? .forceUpdate : .recommendUpdate
         
-        let noticePopUp = factory.makeNoticePopUpVC(
+        let noticePopUpVC = factory.makeNoticePopUpVC(
             noticeType: popUpType,
             content: model.notice
         )
         
-        noticePopUp.closeButtonTappedWithCheck.sink { [weak self] didCheck in
+        noticePopUpVC.closeButtonTappedWithCheck.sink { [weak self] didCheck in
             if didCheck {
                 UserDefaultKeyList.AppNotice.checkedAppVersion = model.recommendVersion
             }
@@ -72,6 +74,6 @@ public final class SplashCoordinator: DefaultCoordinator {
             self?.finishFlow?()
         }.store(in: cancelBag)
         
-        navigationController.present(noticePopUp.viewController, animated: false)
+        navigationController.present(noticePopUpVC, animated: false)
     }
 }

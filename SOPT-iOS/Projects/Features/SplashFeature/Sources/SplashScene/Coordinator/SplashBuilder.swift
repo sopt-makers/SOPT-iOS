@@ -1,23 +1,23 @@
 //
 //  SplashBuilder.swift
-//  SplashFeatureInterface
+//  SplashFeature
 //
-//  Created by Junho Lee on 2023/06/20.
-//  Copyright © 2023 SOPT-iOS. All rights reserved.
+//  Created by Jae Hyun Lee on 5/3/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
 import Core
 import Domain
 @_exported import SplashFeatureInterface
 
-public
-final class SplashBuilder {
+public final class SplashBuilder {
     @Injected public var repository: SplashRepositoryInterface
     
     public init() { }
 }
 
-extension SplashBuilder: SplashFeatureViewBuildable {
+extension SplashBuilder: SplashFeatureBuildable {
+    
     public func makeSplash() -> SplashPresentable {
         let useCase = DefaultSplashUseCase(repository: repository)
         let vm = SplashViewModel(useCase: useCase)
@@ -26,7 +26,7 @@ extension SplashBuilder: SplashFeatureViewBuildable {
         return (vc, vm)
     }
     
-    public func makeNoticePopUpVC(noticeType: NoticePopUpType, content: String) -> NoticePopUpViewControllable {
+    public func makeNoticePopUpVC(noticeType: Core.NoticePopUpType, content: String) -> NoticePopUpPresentable {
         let noticePopUpVC = NoticePopUpVC()
         noticePopUpVC.setData(type: noticeType, content: content)
         noticePopUpVC.modalPresentationStyle = .overFullScreen
