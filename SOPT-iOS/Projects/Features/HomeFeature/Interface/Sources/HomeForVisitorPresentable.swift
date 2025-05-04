@@ -18,4 +18,7 @@ public protocol HomeForVisitorCoordinatable {
     var onSettingButtonTapped: ((UserType) -> Void)? { get set }
 }
 public typealias HomeForVisitorViewModelType = ViewModelType & HomeForVisitorCoordinatable
+public typealias LegacyHomeForVisitorPresentable = (vc: HomeForVisitorViewControllable, vm: any HomeForVisitorViewModelType)
+
 public typealias HomeForVisitorPresentable = (vc: HomeForVisitorViewControllable, vm: any HomeForVisitorViewModelType)
+

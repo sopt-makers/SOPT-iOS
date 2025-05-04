@@ -1,5 +1,5 @@
 //
-//  HomeBuilder.swift
+//  LegacyHomeBuilder.swift
 //  HomeFeatureInterface
 //
 //  Created by Jae Hyun Lee on 11/22/24.
@@ -10,29 +10,29 @@ import Core
 import Domain
 @_exported import HomeFeatureInterface
 
-public final class HomeBuilder {
+public final class LegacyHomeBuilder {
     @Injected public var homeRepository: HomeRepositoryInterface
     
     public init() {}
 }
 
-extension HomeBuilder: HomeFeatureBuildable {
+extension LegacyHomeBuilder: LegacyHomeFeatureBuildable {
     
-    public func makeHomeForMember() -> HomeForMemberPresentable {
+    public func makeHomeForMember() -> LegacyHomeForMemberPresentable {
         let useCase = DefaultHomeUseCase(repository: homeRepository)
         let viewModel = HomeForMemberViewModel(useCase: useCase)
         let homeForMemberVC = HomeForMemberVC(viewModel: viewModel)
         return (homeForMemberVC, viewModel)
     }
      
-    public func makeHomeForVisitor() -> HomeForVisitorPresentable {
+    public func makeHomeForVisitor() -> LegacyHomeForVisitorPresentable {
         let useCase = DefaultHomeUseCase(repository: homeRepository)
         let viewModel = HomeForVisitorViewModel(useCase: useCase)
         let homeForVisitorVC = HomeForVisitorVC(viewModel: viewModel)
         return (homeForVisitorVC, viewModel)
     }
     
-    public func makeHomeCalendarDetail() -> HomeCalendarDetailPresentable {
+    public func makeHomeCalendarDetail() -> LegacyHomeCalendarDetailPresentable {
         let useCase = DefaultHomeUseCase(repository: homeRepository)
         let viewModel = HomeCalendarDetailViewModel(useCase: useCase)
         let homeCalendarDetailVC = HomeCalendarDetailVC(viewModel: viewModel)

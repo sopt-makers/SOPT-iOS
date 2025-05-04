@@ -1,5 +1,5 @@
 //
-//  HomeCoordinator.swift
+//  LegacyHomeCoordinator.swift
 //  HomeFeature
 //
 //  Created by Jae Hyun Lee on 11/22/24.
@@ -35,12 +35,12 @@ public protocol HomeCoordinatorOutput {
 
 public typealias DefaultHomeCoordinator = BaseCoordinator & HomeCoordinatorOutput
 
-public final class HomeCoordinator: DefaultHomeCoordinator {
+public final class LegacyHomeCoordinator: DefaultHomeCoordinator {
     
     public var requestCoordinating: ((HomeCoordinatorDestination) -> Void)?
     public var finishFlow: (() -> Void)?
     
-    private let factory: HomeFeatureBuildable
+    private let factory: LegacyHomeFeatureBuildable
     private let router: LegacyRouter
     private let userType: UserType
     
@@ -49,7 +49,7 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
     
     public init(
         router: LegacyRouter,
-        factory: HomeFeatureBuildable,
+        factory: LegacyHomeFeatureBuildable,
         userType: UserType
     ) {
         self.router = router

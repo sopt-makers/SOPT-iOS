@@ -36,7 +36,7 @@ final class ApplicationCoordinator: BaseCoordinator {
     private weak var rootController: UINavigationController?
     private weak var tabBarController: UITabBarController?
     
-    private weak var homeCoordinator: HomeCoordinator?
+    private weak var homeCoordinator: LegacyHomeCoordinator?
     private weak var soptlogCoordinator: SoptlogCoordinator?
     
     public init(
@@ -289,10 +289,10 @@ extension ApplicationCoordinator {
     }
 
     @discardableResult
-    internal func runHomeFlow(type: UserType) -> HomeCoordinator {
-        let coordinator = HomeCoordinator(
+    internal func runHomeFlow(type: UserType) -> LegacyHomeCoordinator {
+        let coordinator = LegacyHomeCoordinator(
             router: LegacyRouter(rootController: self.rootController ?? self.router.asNavigationController),
-            factory: HomeBuilder(),
+            factory: LegacyHomeBuilder(),
             userType: type
         )
         coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
@@ -327,7 +327,7 @@ extension ApplicationCoordinator {
     
     
     public func showHomeCalendarDetail() {
-        var homeCalendarDetail = HomeBuilder().makeHomeCalendarDetail()
+        var homeCalendarDetail = LegacyHomeBuilder().makeHomeCalendarDetail()
         
         homeCalendarDetail.vm.onNaviBackButtonTap = { [weak self] in
             self?.router.popModule()
