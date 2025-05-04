@@ -1,9 +1,9 @@
 //
-//  LegacySoptlogCoordinator.swift
+//  SoptlogCoordinator.swift
 //  SoptlogFeature
 //
-//  Created by 강윤서 on 11/25/24.
-//  Copyright © 2024 SOPT-iOS. All rights reserved.
+//  Created by Jae Hyun Lee on 5/5/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
 import UIKit
@@ -16,37 +16,27 @@ import BaseFeatureDependency
 import SoptlogFeatureInterface
 import WebFeature
 
-public enum SoptlogCoordinatorDestination {
-    case dailySoptune
-    case signIn
-    case webLink(url: String)
-}
-
-public protocol SoptlogCoordinatorOutput: CoordinatorFinishOutput {
-    var requestCoordinating: ((SoptlogCoordinatorDestination) -> Void)? { get set }
-    var rootViewController: UIViewController? { get }
-}
-
-public typealias DefaultSoptlogCoordinator = BaseCoordinator & SoptlogCoordinatorOutput
-
-public final class LegacySoptlogCoordinator: DefaultSoptlogCoordinator {
+public final class SoptlogCoordinator: DefaultSoptlogCoordinator {
     
     // MARK: - Properties
     
     public var requestCoordinating: ((SoptlogCoordinatorDestination) -> Void)?
     public var finishFlow: (() -> Void)?
     
-    private let factory: LegacySoptlogFeatureBuildable
-    private let router: LegacyRouter
+    private let factory: SoptlogFeatureBuildable
     private let userType: UserType
+    private let navigationController: UINavigationController
     
-    private weak var rootController: UINavigationController?
     public private(set) var rootViewController: UIViewController?
     
     // MARK: - Init
     
-    public init(router: LegacyRouter, factory: LegacySoptlogFeatureBuildable, userType: UserType) {
-        self.router = router
+    public init(
+        navigationController: UINavigationController,
+        factory: SoptlogFeatureBuildable,
+        userType: UserType
+    ) {
+        self.navigationController = navigationController
         self.factory = factory
         self.userType = userType
     }
@@ -89,7 +79,7 @@ public final class LegacySoptlogCoordinator: DefaultSoptlogCoordinator {
         }
         
         self.rootViewController = soptlog.vc.viewController
-        self.router.push(soptlog.vc)
+        navigationController.pushViewController(soptlog.vc.viewController, animated: true)
     }
     
     private func showToolTip(_ frame: CGRect) {
