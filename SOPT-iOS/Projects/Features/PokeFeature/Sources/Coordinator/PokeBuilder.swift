@@ -38,7 +38,7 @@ extension PokeBuilder: PokeFeatureBuildable {
     public func makePokeOnboarding() -> PokeFeatureInterface.PokeOnboardingPresentable {
         let usecase = DefaultPokeOnboardingUsecase(repository: self.pokeOnboardingRepository)
         let viewModel = PokeOnboardingViewModel(usecase: usecase)
-        let viewController = PokeOnboardingViewController(viewModel: viewModel)
+        let viewController = PokeOnboardingVC(viewModel: viewModel)
         
         return (viewController, viewModel)
     }
