@@ -31,6 +31,7 @@ public enum HomeCoordinatorDestination {
 
 public protocol HomeCoordinatorOutput {
     var requestCoordinating: ((HomeCoordinatorDestination) -> Void)? { get set }
+    var rootViewController: UIViewController? { get }
 }
 
 public typealias DefaultHomeCoordinator = BaseCoordinator & HomeCoordinatorOutput

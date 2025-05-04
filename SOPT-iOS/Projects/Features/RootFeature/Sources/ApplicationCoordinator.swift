@@ -289,12 +289,24 @@ extension ApplicationCoordinator {
     }
 
     @discardableResult
-    internal func runHomeFlow(type: UserType) -> LegacyHomeCoordinator {
-        let coordinator = LegacyHomeCoordinator(
-            router: LegacyRouter(rootController: self.rootController ?? self.router.asNavigationController),
-            factory: LegacyHomeBuilder(),
-            userType: type
-        )
+    internal func runHomeFlow(type: UserType) -> DefaultHomeCoordinator {
+        var coordinator: DefaultHomeCoordinator
+        
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator = LegacyHomeCoordinator(
+                router: LegacyRouter(rootController: self.rootController ?? self.router.asNavigationController),
+                factory: LegacyHomeBuilder(),
+                userType: type
+            )
+        case .new:
+            coordinator = HomeCoordinator(
+                navigationController: rootNavigationController,
+                factory: HomeBuilder(),
+                userType: type
+            )
+        }
+        
         coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
             switch destination {
             case .attendance:
