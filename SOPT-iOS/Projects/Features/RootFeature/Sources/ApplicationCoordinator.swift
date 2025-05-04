@@ -536,13 +536,26 @@ extension ApplicationCoordinator {
     }
     
     @discardableResult
-    internal func runSoptlogFlow(type: UserType) -> LegacySoptlogCoordinator {
-        let coordinator = LegacySoptlogCoordinator(
-            router: LegacyRouter(rootController: self.rootController ?? self.router.asNavigationController),
-            factory: LegacySoptlogBuilder(), 
-            userType: type
-        )
+    internal func runSoptlogFlow(type: UserType) -> DefaultSoptlogCoordinator {
         
+        var coordinator: DefaultSoptlogCoordinator
+        
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator = LegacySoptlogCoordinator(
+                router: LegacyRouter(rootController: self.rootController ?? self.router.asNavigationController),
+                factory: LegacySoptlogBuilder(),
+                userType: type
+            )
+            
+        case .new:
+            coordinator = SoptlogCoordinator(
+                navigationController: rootNavigationController,
+                factory: SoptlogBuilder(),
+                userType: type
+            )
+        }
+            
         coordinator.finishFlow = { [weak self, weak coordinator] in
             coordinator?.childCoordinators = []
             self?.removeDependency(coordinator)
