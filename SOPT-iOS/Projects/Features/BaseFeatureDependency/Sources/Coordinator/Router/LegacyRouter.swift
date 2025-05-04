@@ -1,5 +1,5 @@
 //
-//  Router.swift
+//  LegacyRouter.swift
 //  BaseFeatureDependency
 //
 //  Created by Junho Lee on 2023/06/03.
@@ -12,20 +12,20 @@ import Core
 import SafariServices
 
 /// RouterProtocol은 Coordinator에서 화면전환의 종류를 지정합니다.
-public protocol RouterProtocol: ViewControllable {
+public protocol LegacyRouterProtocol: LegacyViewControllable {
     
     var topViewController: UIViewController? { get }
     
-    func present(_ module: ViewControllable?)
-    func present(_ module: ViewControllable?, animated: Bool)
-    func present(_ module: ViewControllable?, animated: Bool, modalPresentationSytle: UIModalPresentationStyle)
-    func present(_ module: ViewControllable?, animated: Bool, completion: (() -> Void)?)
+    func present(_ module: LegacyViewControllable?)
+    func present(_ module: LegacyViewControllable?, animated: Bool)
+    func present(_ module: LegacyViewControllable?, animated: Bool, modalPresentationSytle: UIModalPresentationStyle)
+    func present(_ module: LegacyViewControllable?, animated: Bool, completion: (() -> Void)?)
     func presentSafari(url: String)
     
-    func push(_ module: ViewControllable?)
-    func push(_ module: ViewControllable?, transition: UIViewControllerAnimatedTransitioning?)
-    func push(_ module: ViewControllable?, transition: UIViewControllerAnimatedTransitioning?, animated: Bool)
-    func push(_ module: ViewControllable?, transition: UIViewControllerAnimatedTransitioning?, animated: Bool, completion: (() -> Void)?)
+    func push(_ module: LegacyViewControllable?)
+    func push(_ module: LegacyViewControllable?, transition: UIViewControllerAnimatedTransitioning?)
+    func push(_ module: LegacyViewControllable?, transition: UIViewControllerAnimatedTransitioning?, animated: Bool)
+    func push(_ module: LegacyViewControllable?, transition: UIViewControllerAnimatedTransitioning?, animated: Bool, completion: (() -> Void)?)
     
     func popModule()
     func popModule(transition: UIViewControllerAnimatedTransitioning?)
@@ -34,13 +34,13 @@ public protocol RouterProtocol: ViewControllable {
     func dismissModule(animated: Bool)
     func dismissModule(animated: Bool, completion: (() -> Void)?)
     
-    func setRootModule(_ module: ViewControllable?, animated: Bool)
-    func setRootModule(_ module: ViewControllable?, hideBar: Bool, animated: Bool)
+    func setRootModule(_ module: LegacyViewControllable?, animated: Bool)
+    func setRootModule(_ module: LegacyViewControllable?, hideBar: Bool, animated: Bool)
     
-    func replaceRootWindow(_ module: ViewControllable, withAnimation: Bool, hideBar: Bool, completion: ((UIWindow) -> Void)?)
+    func replaceRootWindow(_ module: LegacyViewControllable, withAnimation: Bool, hideBar: Bool, completion: ((UIWindow) -> Void)?)
     
     func popToRootModule(animated: Bool)
-    func popToModule(module: ViewControllable?, animated: Bool)
+    func popToModule(module: LegacyViewControllable?, animated: Bool)
     
     func showTitles()
     func hideTitles()
@@ -65,7 +65,7 @@ public protocol RouterProtocol: ViewControllable {
 
 /// RouterProtocol을 채택하여 Coordinator가 모르는 화면전환의 기능을 수행합니다. RootController를 가지고 다양한 기능을 수행합니다.
 public
-final class Router: NSObject, RouterProtocol {
+final class LegacyRouter: NSObject, LegacyRouterProtocol {
 
     
     // MARK: - Vars & Lets
@@ -87,31 +87,31 @@ final class Router: NSObject, RouterProtocol {
         return rootController ?? UINavigationController(rootViewController: viewController)
     }
     
-    // MARK: - RouterProtocol
+    // MARK: - LegacyRouterProtocol
     
-    public func present(_ module: ViewControllable?) {
+    public func present(_ module: LegacyViewControllable?) {
         self.present(module, animated: true)
     }
     
-    public func present(_ module: ViewControllable?, animated: Bool) {
+    public func present(_ module: LegacyViewControllable?, animated: Bool) {
         guard let controller = module?.viewController else { return }
         self.rootController?.present(controller, animated: animated, completion: nil)
     }
     
-    public func present(_ module: ViewControllable?, animated: Bool, modalPresentationSytle: UIModalPresentationStyle) {
+    public func present(_ module: LegacyViewControllable?, animated: Bool, modalPresentationSytle: UIModalPresentationStyle) {
         guard let controller = module?.viewController else { return }
         controller.modalPresentationStyle = modalPresentationSytle
         self.rootController?.present(controller, animated: animated, completion: nil)
     }
     
-    public func present(_ module: ViewControllable?, animated: Bool, modalPresentationSytle: UIModalPresentationStyle, modalTransitionStyle: UIModalTransitionStyle) {
+    public func present(_ module: LegacyViewControllable?, animated: Bool, modalPresentationSytle: UIModalPresentationStyle, modalTransitionStyle: UIModalTransitionStyle) {
         guard let controller = module?.viewController else { return }
         controller.modalPresentationStyle = modalPresentationSytle
         controller.modalTransitionStyle = modalTransitionStyle
         self.rootController?.present(controller, animated: animated, completion: nil)
     }
     
-    public func present(_ module: ViewControllable?, animated: Bool, completion: (() -> Void)?) {
+    public func present(_ module: LegacyViewControllable?, animated: Bool, completion: (() -> Void)?) {
         guard let controller = module?.viewController else { return }
         self.rootController?.present(controller, animated: animated, completion: completion)
     }
@@ -122,19 +122,19 @@ final class Router: NSObject, RouterProtocol {
         self.rootController?.present(safariViewController, animated: true)
     }
     
-    public func push(_ module: ViewControllable?)  {
+    public func push(_ module: LegacyViewControllable?)  {
         self.push(module, transition: nil)
     }
     
-    public func push(_ module: ViewControllable?, transition: UIViewControllerAnimatedTransitioning?) {
+    public func push(_ module: LegacyViewControllable?, transition: UIViewControllerAnimatedTransitioning?) {
         self.push(module, transition: transition, animated: true)
     }
     
-    public func push(_ module: ViewControllable?, transition: UIViewControllerAnimatedTransitioning?, animated: Bool)  {
+    public func push(_ module: LegacyViewControllable?, transition: UIViewControllerAnimatedTransitioning?, animated: Bool)  {
         self.push(module, transition: transition, animated: animated, completion: nil)
     }
     
-    public func push(_ module: ViewControllable?, transition: UIViewControllerAnimatedTransitioning?, animated: Bool, completion: (() -> Void)?) {
+    public func push(_ module: LegacyViewControllable?, transition: UIViewControllerAnimatedTransitioning?, animated: Bool, completion: (() -> Void)?) {
         self.transition = transition
         
         guard let controller = module?.viewController,
@@ -167,7 +167,7 @@ final class Router: NSObject, RouterProtocol {
         self.transition = nil
     }
     
-    public func popToModule(module: ViewControllable?, animated: Bool = true) {
+    public func popToModule(module: LegacyViewControllable?, animated: Bool = true) {
         if let controllers = self.rootController?.viewControllers , let module = module {
             for controller in controllers {
                 if controller == module as! UIViewController {
@@ -187,17 +187,17 @@ final class Router: NSObject, RouterProtocol {
         self.rootController?.dismiss(animated: animated, completion: completion)
     }
     
-    public func setRootModule(_ module: ViewControllable?, animated: Bool) {
+    public func setRootModule(_ module: LegacyViewControllable?, animated: Bool) {
         self.setRootModule(module, hideBar: false, animated: animated)
     }
     
-    public func setRootModule(_ module: ViewControllable?, hideBar: Bool, animated: Bool) {
+    public func setRootModule(_ module: LegacyViewControllable?, hideBar: Bool, animated: Bool) {
         guard let controller = module?.viewController else { return }
         self.rootController?.setViewControllers([controller], animated: animated)
         self.rootController?.isNavigationBarHidden = hideBar
     }
     
-    public func replaceRootWindow(_ module: any ViewControllable, withAnimation: Bool, hideBar: Bool = false, completion: ((UIWindow) -> Void)? = nil) {
+    public func replaceRootWindow(_ module: any LegacyViewControllable, withAnimation: Bool, hideBar: Bool = false, completion: ((UIWindow) -> Void)? = nil) {
         let viewController = module.viewController
         let window = UIWindow.keyWindowGetter!
         let navigation = UINavigationController(rootViewController: viewController)
@@ -227,7 +227,7 @@ final class Router: NSObject, RouterProtocol {
     }
     
     
-    public func setRootWindow(_ module: ViewControllable) {
+    public func setRootWindow(_ module: LegacyViewControllable) {
         let viewController = module.viewController
         let window = UIWindow.keyWindowGetter!
         let navigation = UINavigationController(rootViewController: viewController)
@@ -277,7 +277,7 @@ final class Router: NSObject, RouterProtocol {
 
 // MARK: - Alert
 
-extension Router {
+extension LegacyRouter {
     public func presentAlertVC(
         type: AlertType,
         theme: AlertVC.AlertTheme = .main,
@@ -310,7 +310,7 @@ extension Router {
     }
 }
 
-extension Router: UINavigationControllerDelegate {
+extension LegacyRouter: UINavigationControllerDelegate {
     public func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return self.transition
     }

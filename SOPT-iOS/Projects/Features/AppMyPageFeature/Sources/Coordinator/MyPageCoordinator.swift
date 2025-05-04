@@ -26,10 +26,10 @@ final class MyPageCoordinator: DefaultMyPageCoordinator {
     public var requestCoordinating: ((MyPageCoordinatorDestination) -> Void)?
     
     private let factory: MyPageFeatureBuildable
-    private let router: Router
+    private let router: LegacyRouter
     private let userType: UserType
     
-    public init(router: Router, factory: MyPageFeatureBuildable, userType: UserType) {
+    public init(router: LegacyRouter, factory: MyPageFeatureBuildable, userType: UserType) {
         self.factory = factory
         self.router = router
         self.userType = userType

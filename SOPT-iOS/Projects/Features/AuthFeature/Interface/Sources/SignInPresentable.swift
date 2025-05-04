@@ -10,7 +10,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol SignInViewControllable: ViewControllable {
+public protocol SignInViewControllable: LegacyViewControllable {
     var skipAnimation: Bool { get set }
     var accessCode: String? { get set }
     var requestState: String? { get set }

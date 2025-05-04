@@ -17,11 +17,11 @@ import WebFeature
 public final class PokeOnboardingCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
-    private let router: Router
+    private let router: LegacyRouter
     private let factory: PokeFeatureBuildable
     private weak var rootController: UINavigationController?
     
-    public init(router: Router, factory: PokeFeatureBuildable) {
+    public init(router: LegacyRouter, factory: PokeFeatureBuildable) {
         self.router = router
         self.factory = factory
     }

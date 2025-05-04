@@ -10,7 +10,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol DailySoptuneMainViewControllable: ViewControllable {}
+public protocol DailySoptuneMainViewControllable: LegacyViewControllable {}
 
 public protocol DailySoptuneMainCoordinatable {
     var onNaviBackTap: (() -> Void)? { get set }

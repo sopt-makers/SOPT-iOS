@@ -9,4 +9,4 @@
 import BaseFeatureDependency
 import Core
 
-public protocol PokeAnonymousFriendUpgradePresentable: ViewControllable { }
+public protocol PokeAnonymousFriendUpgradePresentable: LegacyViewControllable { }

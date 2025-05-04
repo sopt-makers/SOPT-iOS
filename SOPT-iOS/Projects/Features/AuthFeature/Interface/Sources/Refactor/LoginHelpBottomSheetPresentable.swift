@@ -10,7 +10,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol LoginHelpBottomSheetViewControllable: ViewControllable { 
+public protocol LoginHelpBottomSheetViewControllable: LegacyViewControllable { 
     var onWantToKnowLoginAccountButtonDidTap: (() -> Void)? { get set }
     var onResetSocialAccountButtonDidTap: (() -> Void)? { get set }
 }

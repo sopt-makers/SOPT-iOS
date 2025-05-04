@@ -1,5 +1,5 @@
 //
-//  NoticePopUpViewControllable.swift
+//  LegacyNoticePopUpViewControllable.swift
 //  SplashFeatureInterface
 //
 //  Created by Junho Lee on 2023/06/20.
@@ -10,6 +10,6 @@ import Combine
 
 import BaseFeatureDependency
 
-public protocol NoticePopUpViewControllable: ViewControllable {
+public protocol LegacyNoticePopUpViewControllable: LegacyViewControllable {
     var closeButtonTappedWithCheck: PassthroughSubject<Bool, Never> { get }
 }
