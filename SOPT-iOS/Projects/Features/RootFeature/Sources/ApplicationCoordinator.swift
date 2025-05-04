@@ -212,15 +212,29 @@ extension ApplicationCoordinator {
             userType: userType
         )
         
-        let coordinator = LegacyTabBarCoordinator(
-            router: router,
-            factory: (tabbarController, viewModel),
-            items: [
-                homeVC,
-                soptlogVC
-            ]
-        )
-                        
+        var coordinator: (DefaultCoordinator & TabBarCoordinating)
+        
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator = LegacyTabBarCoordinator(
+                router: router,
+                factory: (tabbarController, viewModel),
+                items: [
+                    homeVC,
+                    soptlogVC
+                ]
+            )
+        case .new:
+            coordinator = TabBarCoordinator(
+                navigationController: rootNavigationController,
+                factory: (tabbarController, viewModel),
+                items: [
+                    homeVC,
+                    soptlogVC
+                ]
+            )
+        }
+        
         self.rootController = tabbarController.asNavigationController
         self.tabBarController = tabbarController
         
