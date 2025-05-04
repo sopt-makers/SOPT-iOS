@@ -1,5 +1,5 @@
 //
-//  HomeFeaturebuildable.swift
+//  HomeFeatureBuildable.swift
 //  HomeFeatureInterface
 //
 //  Created by Jae Hyun Lee on 5/5/25.
@@ -8,7 +8,7 @@
 
 import Core
 
-public protocol HomeFeaturebuildable {
+public protocol HomeFeatureBuildable {
     func makeHomeForMember() -> HomeForMemberPresentable
     func makeHomeForVisitor() -> HomeForVisitorPresentable
     func makeHomeCalendarDetail() -> HomeCalendarDetailPresentable

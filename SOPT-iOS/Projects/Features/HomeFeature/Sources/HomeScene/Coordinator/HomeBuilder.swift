@@ -16,7 +16,7 @@ public final class HomeBuilder {
     public init() {}
 }
 
-extension HomeBuilder: HomeFeaturebuildable {
+extension HomeBuilder: HomeFeatureBuildable {
     
     public func makeHomeForMember() -> HomeForMemberPresentable {
         let useCase = DefaultHomeUseCase(repository: homeRepository)
