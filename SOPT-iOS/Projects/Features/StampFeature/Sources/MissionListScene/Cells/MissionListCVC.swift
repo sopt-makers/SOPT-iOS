@@ -22,14 +22,15 @@ enum MissionListCellType {
     case levelOne(completed: Bool)
     case levelTwo(completed: Bool)
     case levelThree(completed: Bool)
+    case levelTen(completed: Bool)
     
     var isCompleted: Bool {
         switch self {
-        case .levelOne(let completed):
-            return completed
-        case .levelTwo(let completed):
-            return completed
-        case .levelThree(let completed):
+        case
+            let .levelOne(completed),
+            let .levelTwo(completed),
+            let .levelThree(completed),
+            let .levelTen(completed):
             return completed
         }
     }
@@ -42,6 +43,8 @@ enum MissionListCellType {
             return .levelTwo
         case .levelThree:
             return .levelThree
+        case .levelTen:
+            return .levelTen
         }
     }
 }
@@ -53,44 +56,52 @@ extension MissionListCellType {
     var stampTop: CGFloat {
         switch self {
         case .levelOne:
-            return 47.adjustedH
+            return 47
         case .levelTwo:
-            return 40.adjustedH
+            return 40
         case .levelThree:
-            return 26.adjustedH
+            return 26
+        case .levelTen:
+            return 36
         }
     }
     
     var stampWidth: CGFloat {
         switch self {
         case .levelOne:
-            return 135.adjusted
+            return 135
         case .levelTwo:
-            return 125.adjusted
+            return 125
         case .levelThree:
-            return 135.adjusted
+            return 104
+        case .levelTen:
+            return 124
         }
     }
     
     var stampHeight: CGFloat {
         switch self {
         case .levelOne:
-            return 81.adjusted
+            return 81
         case .levelTwo:
-            return 90.adjusted
+            return 90
         case .levelThree:
-            return 104.adjusted
+            return 104
+        case .levelTen:
+            return 87
         }
     }
     
     var stampLabelSpacing: CGFloat {
         switch self {
         case .levelOne:
-            return 16.adjustedH
+            return 16
         case .levelTwo:
-            return 13.adjustedH
+            return 13
         case .levelThree:
-            return 12.adjustedH
+            return 12
+        case .levelTen:
+            return 19
         }
     }
 }
@@ -100,6 +111,8 @@ extension MissionListModel {
         switch self.level {
         case 1: return .levelOne(completed: self.isCompleted)
         case 2: return .levelTwo(completed: self.isCompleted)
+        case 3: return .levelThree(completed: self.isCompleted)
+        case 10: return .levelTen(completed: self.isCompleted)
         default: return .levelThree(completed: self.isCompleted)
         }
     }
@@ -196,6 +209,8 @@ extension MissionListCVC {
             stampImageView.image = DSKitAsset.Assets.levelTwoStamp.image
         case .levelThree:
             stampImageView.image = DSKitAsset.Assets.levelThreeStamp.image
+        case .levelTen:
+            stampImageView.image = DSKitAsset.Assets.levelTenStamp.image
         }
     }
     
@@ -217,7 +232,6 @@ extension MissionListCVC {
         starView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(70.adjustedH)
             make.centerX.equalToSuperview()
-            make.height.equalTo(15.adjustedH)
         }
         
         purposeLabel.snp.makeConstraints { make in

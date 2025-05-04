@@ -56,13 +56,13 @@ enum FABMenuSection: CaseIterable, FABMenuSectionProtocol {
                                 url: ExternalURL.Playground.makeLightGroup),
                 MenuSectionItem(title: I18N.TabBar.GroupAndStudy.writeFeed,
                                 icon: DSKitAsset.Assets.icFabFire.image, 
-                                url: ExternalURL.Playground.makeGroup)
+                                url: ExternalURL.Playground.makeGroupFeed)
             ]
         case .homepage:
             return [
-                MenuSectionItem(title: I18N.TabBar.Homepage.uploadArticle, 
+                MenuSectionItem(title: I18N.TabBar.Homepage.reviewUpload, 
                                 icon: DSKitAsset.Assets.icFabHomepage.image, 
-                                url: ExternalURL.SOPT.officialHomepage),
+                                url: ExternalURL.Playground.blog),
             ]
         }
     }

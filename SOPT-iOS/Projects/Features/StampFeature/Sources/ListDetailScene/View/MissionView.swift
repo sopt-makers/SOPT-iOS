@@ -18,7 +18,9 @@ final class MissionView: UIView {
     
     // MARK: - UI Component
     
-    private let starView = STStarView(starScale: 14, spacing: 10, level: .levelOne)
+    private lazy var defaultStarView = STStarView(starScale: 14, spacing: 10, level: .levelOne)
+    private lazy var levelTenStarView = STLevelTenStarView()
+    
     private let missionLabel = UILabel().then {
         $0.textAlignment = .center
         $0.numberOfLines = 2
@@ -32,13 +34,13 @@ final class MissionView: UIView {
         super.init(frame: frame)
         
         self.setUI()
-        self.setLayout()
     }
     
     public convenience init(level: StarViewLevel, mission: String) {
         self.init()
         self.setMissionLabelText(mission)
-        starView.changeStarLevel(level: level)
+        self.setLayout(level: level)
+        defaultStarView.changeStarLevel(level: level)
     }
     
     required init?(coder: NSCoder) {
@@ -53,14 +55,14 @@ final class MissionView: UIView {
         self.missionLabel.setTypoStyle(.SoptampFont.subtitle1)
     }
     
-    private func setLayout() {
+    private func setLayout(level: StarViewLevel) {
+        let starView = level == .levelTen ? levelTenStarView : defaultStarView
+        
         self.addSubviews([starView, missionLabel])
         
         starView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalToSuperview().inset(12)
-            make.leading.trailing.equalToSuperview().inset(136)
-            make.height.equalTo(14)
         }
         
         missionLabel.snp.makeConstraints { make in

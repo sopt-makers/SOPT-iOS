@@ -123,7 +123,7 @@ extension STNavigationBar {
             self.rightButton.setImage(DSKitAsset.Assets.icAddRecord.image.withTintColor(DSKitAsset.Colors.gray10.color), for: .normal)
         case .delete:
             self.rightButton.isHidden = false
-            self.rightButton.setImage(UIImage(asset: DSKitAsset.Assets.icDelete), for: .normal)
+            self.rightButton.setImage(DSKitAsset.Assets.icDelete.image, for: .normal)
         }
         return self
     }
@@ -221,7 +221,7 @@ extension STNavigationBar {
         self.naviType = type
         
         self.backgroundColor = DSKitAsset.Colors.gray950.color
-        leftButton.setImage(UIImage(asset: DSKitAsset.Assets.icArrow), for: .normal)
+        leftButton.setImage(DSKitAsset.Assets.icArrow.image, for: .normal)
         
         titleLabel.setTypoStyle(.SoptampFont.h2)
         titleLabel.textColor = DSKitAsset.Colors.gray10.color
@@ -237,7 +237,7 @@ extension STNavigationBar {
             reportButton.setImage(DSKitAsset.Assets.icReport.image, for: .normal)
         case .titleWithLeftButton:
             rightButton.isHidden = true
-            leftButton.setImage(UIImage(asset: DSKitAsset.Assets.icArrow), for: .normal)
+            leftButton.setImage(DSKitAsset.Assets.icArrow.image, for: .normal)
             rightButton.setImage(DSKitAsset.Assets.icAddRecord.image.withTintColor(DSKitAsset.Colors.gray10.color), for: .normal)
         }
     }

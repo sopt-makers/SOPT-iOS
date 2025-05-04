@@ -22,8 +22,7 @@ internal final class WebViewNavigationBar: UIView {
     
     // MARK: LeftButton
     private let leftButton = UIButton().then {
-        let image = UIImage(asset: DSKitAsset.Assets.btnArrowLeft)?.withRenderingMode(.alwaysTemplate)
-        $0.setImage(image, for: .normal)
+        $0.setImage(DSKitAsset.Assets.btnArrowLeft.image.withRenderingMode(.alwaysTemplate), for: .normal)
         $0.tintColor = .white
     }
     

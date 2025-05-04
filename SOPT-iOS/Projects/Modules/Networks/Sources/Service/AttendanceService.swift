@@ -10,7 +10,6 @@ import Foundation
 import Combine
 
 import Core
-import Alamofire
 import Moya
 
 public typealias DefaultAttendanceService = BaseService<AttendanceAPI>

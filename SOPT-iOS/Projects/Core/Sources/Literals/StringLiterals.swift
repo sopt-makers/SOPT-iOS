@@ -103,6 +103,8 @@ public struct I18N {
     
     public struct MissionList {
         public static let noMission = "아직 완료한 미션이 없습니다!"
+        public static let multipleTen = "x 10"
+        public static let specialMission = "특별미션"
     }
     
     public struct RankingList {
@@ -255,7 +257,7 @@ public struct I18N {
         }
         
         public struct Homepage {
-            public static let uploadArticle = "솝티클 올리기"
+            public static let reviewUpload = "활동후기 업로드"
         }
     }
     
