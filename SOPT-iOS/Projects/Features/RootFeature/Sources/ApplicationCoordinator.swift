@@ -37,7 +37,7 @@ final class ApplicationCoordinator: BaseCoordinator {
     private weak var tabBarController: UITabBarController?
     
     private weak var homeCoordinator: LegacyHomeCoordinator?
-    private weak var soptlogCoordinator: SoptlogCoordinator?
+    private weak var soptlogCoordinator: LegacySoptlogCoordinator?
     
     public init(
         rootNavigationController: UINavigationController,
@@ -524,10 +524,10 @@ extension ApplicationCoordinator {
     }
     
     @discardableResult
-    internal func runSoptlogFlow(type: UserType) -> SoptlogCoordinator {
-        let coordinator = SoptlogCoordinator(
+    internal func runSoptlogFlow(type: UserType) -> LegacySoptlogCoordinator {
+        let coordinator = LegacySoptlogCoordinator(
             router: LegacyRouter(rootController: self.rootController ?? self.router.asNavigationController),
-            factory: SoptlogBuilder(), 
+            factory: LegacySoptlogBuilder(), 
             userType: type
         )
         

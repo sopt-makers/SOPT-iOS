@@ -1,5 +1,5 @@
 //
-//  SoptlogCoordinator.swift
+//  LegacySoptlogCoordinator.swift
 //  SoptlogFeature
 //
 //  Created by 강윤서 on 11/25/24.
@@ -22,19 +22,19 @@ public enum SoptlogCoordinatorDestination {
     case webLink(url: String)
 }
 
-public final class SoptlogCoordinator: DefaultCoordinator {
+public final class LegacySoptlogCoordinator: DefaultCoordinator {
     
     public var requestCoordinating: ((SoptlogCoordinatorDestination) -> Void)?
     public var finishFlow: (() -> Void)?
     
-    private let factory: SoptlogFeatureBuildable
+    private let factory: LegacySoptlogFeatureBuildable
     private let router: LegacyRouter
     private let userType: UserType
     
     private weak var rootController: UINavigationController?
     public private(set) var rootViewController: UIViewController?
     
-    public init(router: LegacyRouter, factory: SoptlogFeatureBuildable, userType: UserType) {
+    public init(router: LegacyRouter, factory: LegacySoptlogFeatureBuildable, userType: UserType) {
         self.router = router
         self.factory = factory
         self.userType = userType
