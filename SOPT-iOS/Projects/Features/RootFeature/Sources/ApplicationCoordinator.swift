@@ -72,7 +72,7 @@ extension ApplicationCoordinator {
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .filter { _ in
-                self.childCoordinators.contains(where: { $0 is TabBarCoordinator })
+                self.childCoordinators.contains(where: { $0 is LegacyTabBarCoordinator })
             }
             .sink { [weak self] deepLinkComponent in
                 self?.handleDeepLink(deepLink: deepLinkComponent)
@@ -83,7 +83,7 @@ extension ApplicationCoordinator {
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .filter { _ in
-                self.childCoordinators.contains(where: { $0 is TabBarCoordinator })
+                self.childCoordinators.contains(where: { $0 is LegacyTabBarCoordinator })
             }.sink { [weak self] url in
                 self?.handleWebLink(webLink: url)
                 self?.notificationHandler.clearNotificationRecord()
@@ -93,7 +93,7 @@ extension ApplicationCoordinator {
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .filter { _ in
-                self.childCoordinators.contains(where: { $0 is TabBarCoordinator })
+                self.childCoordinators.contains(where: { $0 is LegacyTabBarCoordinator })
             }.sink { [weak self] error in
                 self?.handleNotificationLinkError(error: error)
                 self?.notificationHandler.clearNotificationRecord()
@@ -212,7 +212,7 @@ extension ApplicationCoordinator {
             userType: userType
         )
         
-        let coordinator = TabBarCoordinator(
+        let coordinator = LegacyTabBarCoordinator(
             router: router,
             factory: (tabbarController, viewModel),
             items: [

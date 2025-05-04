@@ -1,5 +1,5 @@
 //
-//  TabBarCoordinator.swift
+//  LegacyTabBarCoordinator.swift
 //  TabBarFeature
 //
 //  Created by 강윤서 on 2/20/25.
@@ -22,7 +22,7 @@ public enum TabBarCoordinatorDestination {
     case signIn
 }
 
-public final class TabBarCoordinator: DefaultCoordinator {
+public final class LegacyTabBarCoordinator: DefaultCoordinator {
     
     public var finishFlow: (() -> Void)?
     public var requestCoordinating: ((TabBarCoordinatorDestination) -> Void)?
