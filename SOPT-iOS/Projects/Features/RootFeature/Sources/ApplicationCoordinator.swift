@@ -104,7 +104,7 @@ extension ApplicationCoordinator {
     
     // MARK: - handleDeepLink
     
-    private func handleDeepLink(deepLink: DeepLinkComponentsExecutable) {
+    func handleDeepLink(deepLink: DeepLinkComponentsExecutable) {
         switch Config.coordinatorFlag {
         case .legacy:
             handleLegacyDeepLink(deepLink: deepLink)
@@ -125,7 +125,7 @@ extension ApplicationCoordinator {
     
     // MARK: - handleWebLink
     
-    private func handleWebLink(webLink: String) {
+    func handleWebLink(webLink: String) {
         switch Config.coordinatorFlag {
         case .legacy:
             handleLegacyWebLink(webLink: webLink)
@@ -203,7 +203,7 @@ extension ApplicationCoordinator {
 // MARK: - SignInFlow
 
 extension ApplicationCoordinator {
-    private func runSignInFlow(by style: CoordinatorStartingOption) {
+    func runSignInFlow(by style: CoordinatorStartingOption) {
         let coordinator = AuthCoordinator(router: router, factory: AuthBuilder())
         coordinator.finishFlow = { [weak self, weak coordinator] userType in
             Config.coordinatorFlag == .legacy ? self?.runLegacyTabBarFlow(type: userType) : self?.runTabBarFlow()
@@ -716,50 +716,5 @@ extension ApplicationCoordinator {
         coordinator.start()
         
         return coordinator
-    }
-}
-
-// MARK: - HomeCoordinatorDelegate
-
-extension ApplicationCoordinator: HomeCoordinatorDelegate {
-    public func homeCoordinator(_ coordinator: HomeCoordinator, didRequest destination: HomeCoordinatorDestination) {
-        switch destination {
-        case .attendance:
-            runAttendanceFlow()
-        case .setting(let userType):
-            runMyPageFlow(of: userType)
-        case .signIn:
-            runSignInFlow(by: .rootWindow(animated: true, message: nil))
-            removeDependency(coordinator)
-        case .notification:
-            runNotificationFlow()
-        case .soptlog:
-            tabBarController?.selectedIndex = 1
-        case .deepLink(let url):
-            notificationHandler.receive(deepLink: url)
-            guard let deepLink = self.notificationHandler.deepLink.value else { return }
-            handleDeepLink(deepLink: deepLink)
-        case .webLink(let url):
-            handleWebLink(webLink: url)
-        case .calendar:
-            showHomeCalendarDetail()
-        case .poke(let isNewUser):
-            isNewUser ? runPokeOnboardingFlow() : runPokeFlow()
-        }
-    }
-}
-
-// MARK: - SoptlogCoordinatorDelegate
-
-extension ApplicationCoordinator: SoptlogCoordinatorDelegate {
-    public func soptlogCoordinator(_ coordinator: SoptlogCoordinator, didRequest destination: SoptlogCoordinatorDestination) {
-        switch destination {
-        case .dailySoptune:
-            self.runDailySoptuneFlow()
-        case .signIn:
-            self.runSignInFlow(by: .rootWindow(animated: true, message: nil))
-        case .webLink(let url):
-            self.handleWebLink(webLink: url)
-        }
     }
 }
