@@ -36,4 +36,9 @@ public enum CoordinatorUtils {
             })
         }
     }
+    
+    /// 최상위 navigationController에 화면을 push할 때 사용합니다.
+    public static func pushOnRootNavigation(_ viewController: UIViewController, animated: Bool = true) {
+        UIWindow.getRootNavigationController.pushViewController(viewController, animated: animated)
+    }
 }
