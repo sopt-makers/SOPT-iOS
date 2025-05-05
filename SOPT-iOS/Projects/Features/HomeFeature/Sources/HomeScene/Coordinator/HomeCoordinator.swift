@@ -112,8 +112,8 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
             self.delegate?.homeCoordinator(self, didRequest: .poke(isNewUser: isNewUser))
         }
         
-        rootViewController = homeForMember.vc.viewController
-        navigationController.pushViewController(homeForMember.vc.viewController, animated: true)
+        rootViewController = homeForMember.vc
+        navigationController.pushViewController(homeForMember.vc, animated: true)
     }
     
     public func showHomeForVisitor() {
@@ -141,7 +141,7 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
             self.delegate?.homeCoordinator(self, didRequest: .setting(userType: userType))
         }
         
-        rootViewController = homeForVisitor.vc.viewController
-        navigationController.pushViewController(homeForVisitor.vc.viewController, animated: true)
+        rootViewController = homeForVisitor.vc
+        navigationController.pushViewController(homeForVisitor.vc, animated: true)
     }
 }

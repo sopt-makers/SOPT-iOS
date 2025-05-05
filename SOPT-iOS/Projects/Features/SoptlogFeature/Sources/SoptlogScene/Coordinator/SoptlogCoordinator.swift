@@ -88,8 +88,8 @@ public final class SoptlogCoordinator: DefaultSoptlogCoordinator {
             self.delegate?.soptlogCoordinator(self, didRequest: .signIn)
         }
         
-        self.rootViewController = soptlog.vc.viewController
-        navigationController.pushViewController(soptlog.vc.viewController, animated: true)
+        self.rootViewController = soptlog.vc
+        navigationController.pushViewController(soptlog.vc, animated: true)
     }
     
     private func showToolTip(_ frame: CGRect) {
@@ -103,8 +103,8 @@ public final class SoptlogCoordinator: DefaultSoptlogCoordinator {
             self?.rootViewController?.dismiss(animated: true)
         }
         
-        soptlogToolTip.vc.viewController.modalPresentationStyle = .overFullScreen
-        soptlogToolTip.vc.viewController.modalTransitionStyle = .crossDissolve
-        self.rootViewController?.present(soptlogToolTip.vc.viewController, animated: true)
+        soptlogToolTip.vc.modalPresentationStyle = .overFullScreen
+        soptlogToolTip.vc.modalTransitionStyle = .crossDissolve
+        self.rootViewController?.present(soptlogToolTip.vc, animated: true)
     }
 }
