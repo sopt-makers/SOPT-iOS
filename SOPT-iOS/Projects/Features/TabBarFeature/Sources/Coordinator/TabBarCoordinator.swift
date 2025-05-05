@@ -16,7 +16,12 @@ import BaseFeatureDependency
 import TabBarFeatureInterface
 import WebFeature
 
-public final class TabBarCoordinator: DefaultCoordinator {
+public enum TabType: Int {
+    case home = 0
+    case soptlog = 1
+}
+
+public final class TabBarCoordinator: DefaultTabBarCoordinator {
     
     // MARK: - Properties
     
@@ -52,13 +57,10 @@ public final class TabBarCoordinator: DefaultCoordinator {
     
         tabBar.vm.onTabBarItemTapped = { [weak self] index in
             // 각 탭의 코디네이터 실행
-            switch index {
-            case 0:
-                self?.requestCoordinating?(.home)
-            case 1:
-                self?.requestCoordinating?(.soptlog)
-            default:
-                return
+            guard let tabType = TabType(rawValue: index) else { return }
+            switch tabType {
+            case .home: self?.requestCoordinating?(.home)
+            case .soptlog: self?.requestCoordinating?(.soptlog)
             }
         }
         
@@ -79,7 +81,7 @@ public final class TabBarCoordinator: DefaultCoordinator {
             let webView = SOPTWebView(startWith: url)
             self?.navigationController.pushViewController(webView, animated: true)
         }
-
+        
         let navigation = UINavigationController(rootViewController: tabBar.vc)
         CoordinatorUtils.replaceAsRootWindow(root: navigation, hideBar: true)
         self.navigationController = navigation
