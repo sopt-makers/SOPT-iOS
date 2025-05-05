@@ -28,12 +28,12 @@ final class ApplicationCoordinator: BaseCoordinator {
     
     private let router: LegacyRouter
     private var cancelBag = CancelBag()
-    private let notificationHandler: NotificationHandler
+    let notificationHandler: NotificationHandler
     
     private let rootNavigationController: UINavigationController
     
-    private weak var rootController: UINavigationController?
-    private weak var tabBarController: UITabBarController?
+    private weak var legacyRootController: UINavigationController?
+    weak var tabBarController: UITabBarController?
     
     private weak var homeCoordinator: DefaultHomeCoordinator?
     private weak var soptlogCoordinator: DefaultSoptlogCoordinator?
@@ -114,7 +114,7 @@ extension ApplicationCoordinator {
     }
     
     private func handleLegacyDeepLink(deepLink: DeepLinkComponentsExecutable) {
-        self.rootController?.dismiss(animated: false)
+        self.legacyRootController?.dismiss(animated: false)
         deepLink.execute(coordinator: self)
     }
     
@@ -259,7 +259,7 @@ extension ApplicationCoordinator {
             ]
         )
         
-        self.rootController = tabbarController.asNavigationController
+        self.legacyRootController = tabbarController.asNavigationController
         self.tabBarController = tabbarController
         
         // 각 코디네이터 실행
@@ -343,7 +343,6 @@ extension ApplicationCoordinator {
             ]
         )
         
-        self.rootController = tabBarFactory.vc.asNavigationController
         self.tabBarController = tabBarFactory.vc
         
         // 각 코디네이터 실행
@@ -378,7 +377,7 @@ extension ApplicationCoordinator {
         switch Config.coordinatorFlag {
         case .legacy:
             coordinator = LegacyHomeCoordinator(
-                router: LegacyRouter(rootController: self.rootController ?? self.router.asNavigationController),
+                router: LegacyRouter(rootController: self.legacyRootController ?? self.router.asNavigationController),
                 factory: LegacyHomeBuilder(),
                 userType: type
             )
@@ -682,7 +681,7 @@ extension ApplicationCoordinator {
         switch Config.coordinatorFlag {
         case .legacy:
             coordinator = LegacySoptlogCoordinator(
-                router: LegacyRouter(rootController: self.rootController ?? self.router.asNavigationController),
+                router: LegacyRouter(rootController: self.legacyRootController ?? self.router.asNavigationController),
                 factory: LegacySoptlogBuilder(),
                 userType: type
             )
