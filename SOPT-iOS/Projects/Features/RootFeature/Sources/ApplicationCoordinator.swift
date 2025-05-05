@@ -21,7 +21,6 @@ import AttendanceFeature
 import DailySoptuneFeature
 import WebFeature
 import SoptlogFeature
-import HomeFeature
 import TabBarFeature
 
 public
