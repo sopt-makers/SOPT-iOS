@@ -22,14 +22,13 @@ public enum TabBarCoordinatorDestination {
     case signIn
 }
 
-public protocol TabBarCoordinating: AnyObject {
+public protocol TabBarCoordinatorOutput: AnyObject {
     var requestCoordinating: ((TabBarCoordinatorDestination) -> Void)? { get set }
 }
 
-extension LegacyTabBarCoordinator: TabBarCoordinating {}
-extension TabBarCoordinator: TabBarCoordinating {}
+public typealias DefaultTabBarCoordinator = BaseCoordinator & TabBarCoordinatorOutput
 
-public final class LegacyTabBarCoordinator: DefaultCoordinator {
+public final class LegacyTabBarCoordinator: DefaultTabBarCoordinator {
     
     public var finishFlow: (() -> Void)?
     public var requestCoordinating: ((TabBarCoordinatorDestination) -> Void)?
