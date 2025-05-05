@@ -16,7 +16,13 @@ import BaseFeatureDependency
 import HomeFeatureInterface
 import WebFeature
 
+public protocol HomeCoordinatorDelegate: AnyObject {
+    func homeCoordinator(_ coordinator: HomeCoordinator, didRequest destination: HomeCoordinatorDestination)
+}
+
 public final class HomeCoordinator: DefaultHomeCoordinator {
+    
+    public weak var delegate: HomeCoordinatorDelegate?
     
     // MARK: - Properties
     
@@ -58,35 +64,43 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
         var homeForMember = factory.makeHomeForMember()
         
         homeForMember.vm.onDashBoardCellTapped = { [weak self] in
-            self?.requestCoordinating?(.soptlog)
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, didRequest: .soptlog)
         }
         
         homeForMember.vm.onCalendarCellTapped = { [weak self] in
-            self?.requestCoordinating?(.calendar)
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, didRequest: .calendar)
         }
 
         homeForMember.vm.onNotificationButtonTapped = { [weak self] in
-            self?.requestCoordinating?(.notification)
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, didRequest: .notification)
         }
         
         homeForMember.vm.onSettingButtonTapped = { [weak self] userType in
-            self?.requestCoordinating?(.setting(userType: userType))
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, didRequest: .setting(userType: userType))
         }
         
         homeForMember.vm.onAppServiceCellTapped = { [weak self] url in
-            self?.requestCoordinating?(.deepLink(url: url))
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, didRequest: .deepLink(url: url))
         }
         
         homeForMember.vm.onMainProductCellTapped = { [weak self] url in
-            self?.requestCoordinating?(.webLink(url: url))
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, didRequest: .webLink(url: url))
         }
         
         homeForMember.vm.onAttendanceButtonTapped = { [weak self] in
-            self?.requestCoordinating?(.attendance)
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, didRequest: .attendance)
         }
         
         homeForMember.vm.onNeedSignIn = { [weak self] in
-            self?.requestCoordinating?(.signIn)
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, didRequest: .signIn)
         }
     
         homeForMember.vm.onNetworkError = {
@@ -94,7 +108,8 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
         }
         
         homeForMember.vm.onPoke = { [weak self] isNewUser in
-            self?.requestCoordinating?(.poke(isNewUser: isNewUser))
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, didRequest: .poke(isNewUser: isNewUser))
         }
         
         rootViewController = homeForMember.vc.viewController
@@ -117,11 +132,13 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
         }
         
         homeForVisitor.vm.onMainProductCellTapped = { [weak self] url in
-            self?.requestCoordinating?(.webLink(url: url))
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, didRequest: .webLink(url: url))
         }
         
         homeForVisitor.vm.onSettingButtonTapped = { [weak self] userType in
-            self?.requestCoordinating?(.setting(userType: userType))
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, didRequest: .setting(userType: userType))
         }
         
         rootViewController = homeForVisitor.vc.viewController

@@ -16,7 +16,13 @@ import BaseFeatureDependency
 import SoptlogFeatureInterface
 import WebFeature
 
+public protocol SoptlogCoordinatorDelegate: AnyObject {
+    func soptlogCoordinator(_ coordinator: SoptlogCoordinator, didRequest destination: SoptlogCoordinatorDestination)
+}
+
 public final class SoptlogCoordinator: DefaultSoptlogCoordinator {
+    
+    public weak var delegate: SoptlogCoordinatorDelegate?
     
     // MARK: - Properties
     
@@ -58,16 +64,19 @@ public final class SoptlogCoordinator: DefaultSoptlogCoordinator {
         var soptlog = factory.makeSoptlog()
         
         soptlog.vm.onProfileEditTapped = { [weak self] in
+            guard let self else { return }
             let url = "\(ExternalURL.Playground.main)/members/edit"
-            self?.requestCoordinating?(.webLink(url: url))
+            self.delegate?.soptlogCoordinator(self, didRequest: .webLink(url: url))
         }
         
         soptlog.vm.onToolTipTapped = { [weak self] toolTipFrame in
-            self?.showToolTip(toolTipFrame)
+            guard let self else { return }
+            self.showToolTip(toolTipFrame)
         }
         
         soptlog.vm.onSoptuneTapped = { [weak self] in
-            self?.requestCoordinating?(.dailySoptune)
+            guard let self else { return }
+            self.delegate?.soptlogCoordinator(self, didRequest: .dailySoptune)
         }
         
         soptlog.vm.onNetworkError = {
@@ -75,7 +84,8 @@ public final class SoptlogCoordinator: DefaultSoptlogCoordinator {
         }
         
         soptlog.vm.onNeedSignIn = { [weak self] in
-            self?.requestCoordinating?(.signIn)
+            guard let self else { return }
+            self.delegate?.soptlogCoordinator(self, didRequest: .signIn)
         }
         
         self.rootViewController = soptlog.vc.viewController
