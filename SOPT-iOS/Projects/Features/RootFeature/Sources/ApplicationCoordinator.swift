@@ -26,6 +26,8 @@ import TabBarFeature
 public
 final class ApplicationCoordinator: BaseCoordinator {
     
+    // MARK: - Properties
+    
     private let router: LegacyRouter
     private var cancelBag = CancelBag()
     let notificationHandler: NotificationHandler
@@ -38,6 +40,8 @@ final class ApplicationCoordinator: BaseCoordinator {
     private weak var homeCoordinator: DefaultHomeCoordinator?
     private weak var soptlogCoordinator: DefaultSoptlogCoordinator?
     
+    // MARK: - Init
+    
     public init(
         rootNavigationController: UINavigationController,
         router: LegacyRouter,
@@ -48,6 +52,8 @@ final class ApplicationCoordinator: BaseCoordinator {
         self.notificationHandler = notificationHandler
         super.init()
     }
+    
+    // MARK: - Coordinator Life Cycle
     
     public override func start(with option: DeepLinkOption?) {
         if let option {
