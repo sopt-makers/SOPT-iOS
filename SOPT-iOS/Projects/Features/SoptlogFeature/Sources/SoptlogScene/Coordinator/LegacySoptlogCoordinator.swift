@@ -16,19 +16,6 @@ import BaseFeatureDependency
 import SoptlogFeatureInterface
 import WebFeature
 
-public enum SoptlogCoordinatorDestination {
-    case dailySoptune
-    case signIn
-    case webLink(url: String)
-}
-
-public protocol SoptlogCoordinatorOutput: CoordinatorFinishOutput {
-    var requestCoordinating: ((SoptlogCoordinatorDestination) -> Void)? { get set }
-    var rootViewController: UIViewController? { get }
-}
-
-public typealias DefaultSoptlogCoordinator = BaseCoordinator & SoptlogCoordinatorOutput
-
 public final class LegacySoptlogCoordinator: DefaultSoptlogCoordinator {
     
     // MARK: - Properties

@@ -16,26 +16,6 @@ import BaseFeatureDependency
 import HomeFeatureInterface
 import WebFeature
 
-public enum HomeCoordinatorDestination {
-    case signIn
-    case notification
-    case setting(userType: UserType)
-    case attendance
-    case soptlog
-    case calendar
-    case poke(isNewUser: Bool)
-    
-    case webLink(url: String)
-    case deepLink(url: String)
-}
-
-public protocol HomeCoordinatorOutput {
-    var requestCoordinating: ((HomeCoordinatorDestination) -> Void)? { get set }
-    var rootViewController: UIViewController? { get }
-}
-
-public typealias DefaultHomeCoordinator = BaseCoordinator & HomeCoordinatorOutput
-
 public final class LegacyHomeCoordinator: DefaultHomeCoordinator {
     
     public var requestCoordinating: ((HomeCoordinatorDestination) -> Void)?

@@ -16,18 +16,6 @@ import BaseFeatureDependency
 import TabBarFeatureInterface
 import WebFeature
 
-public enum TabBarCoordinatorDestination {
-    case home
-    case soptlog
-    case signIn
-}
-
-public protocol TabBarCoordinatorOutput: AnyObject {
-    var requestCoordinating: ((TabBarCoordinatorDestination) -> Void)? { get set }
-}
-
-public typealias DefaultTabBarCoordinator = BaseCoordinator & TabBarCoordinatorOutput
-
 public final class LegacyTabBarCoordinator: DefaultTabBarCoordinator {
     
     public var finishFlow: (() -> Void)?
