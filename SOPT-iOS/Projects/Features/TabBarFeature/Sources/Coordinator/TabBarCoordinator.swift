@@ -16,11 +16,6 @@ import BaseFeatureDependency
 import TabBarFeatureInterface
 import WebFeature
 
-public enum TabType: Int {
-    case home = 0
-    case soptlog = 1
-}
-
 public final class TabBarCoordinator: DefaultTabBarCoordinator {
     
     // MARK: - Properties
