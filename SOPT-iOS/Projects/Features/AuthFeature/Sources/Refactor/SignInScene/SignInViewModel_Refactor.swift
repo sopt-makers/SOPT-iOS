@@ -12,9 +12,7 @@ import Core
 import Domain
 
 import AuthFeatureInterface
-import GoogleSignIn
 
-import BaseFeatureDependency
 public class SignInViewModel_Refactor: SignInViewModelType_Refactor {
     
     private let useCase: SignInUseCase
