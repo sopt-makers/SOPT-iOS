@@ -56,7 +56,8 @@ public class SignInVC_Refactor: UIViewController, SignInViewControllable {
         $0.alpha = 0
     }
     
-    private let playgroundButton = AppImageTextButton(title: i18n.playgroundLogin).then { $0.alpha = 0 } //TODO: 추후 제거
+    //TODO: 인증중앙화 완료 시 제거
+    private let playgroundButton = AppImageTextButton(title: i18n.playgroundLogin).then { $0.alpha = 0 }
     
     private let loginHelpButton = UIButton(type: .system).then {
         var config = UIButton.Configuration.plain()

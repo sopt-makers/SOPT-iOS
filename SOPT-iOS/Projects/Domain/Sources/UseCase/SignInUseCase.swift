@@ -52,7 +52,7 @@ public class DefaultSignInUseCase {
 extension DefaultSignInUseCase: SignInUseCase {
     
     public func login(with provider: OAuthProvider) -> AnyPublisher<Void, Never> {
-        oauthRepository.getIdentityToken(from: .apple)
+        oauthRepository.getIdentityToken(from: provider)
             .map { (provider, $0) }
             .flatMap(coreRepository.login)
             .handleEvents(receiveOutput: coreRepository.saveTokens)

@@ -21,6 +21,8 @@ let packageSettings = PackageSettings(
         "AmplitudeSwift": .staticFramework,
         "GoogleSignIn": .framework,
         "GTMAppAuth": .framework,
+        "AppAuth": .framework,
+        
     ],
     baseSettings: .settings(
         configurations: [

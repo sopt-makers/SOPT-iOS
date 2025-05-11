@@ -12,25 +12,32 @@ import Foundation
 import Domain
 import Networks
 
+public struct OAuthServiceFactory {
+    
+    public init() { }
+    
+    func create(_ oAuthProvider: OAuthProvider) -> OAuthService {
+        switch oAuthProvider {
+        case .apple: return AppleOAuthService()
+        case .google: return GoogleOAuthService()
+        }
+    }
+}
+
 public class CoreOAuthRepository {
     
-    private let appleService: AuthenticationService
-//    private let googleService:
+    private let oAuthServiceFactory: OAuthServiceFactory
     
-    public init(appleService: AuthenticationService) {
-        self.appleService = appleService
+    public init(oAuthServiceFactory: OAuthServiceFactory) {
+        self.oAuthServiceFactory = oAuthServiceFactory
     }
 }
 
 extension CoreOAuthRepository: CoreOAuthRepositoryInterface {
+    
     public func getIdentityToken(from provider: OAuthProvider) -> AnyPublisher<String, Domain.CoreAuthError> {
-        let service: AuthenticationService
-        switch provider {
-        case .apple: service = appleService
-        case .google: fatalError() //TODO:
-        }
-        
-        return service.getIdentityToken()
+        let oAuthService = oAuthServiceFactory.create(provider)
+        return oAuthService.getIdentityToken()
             .mapError { _ in CoreAuthError.oAuthFail(provider) } // oauth error의 구체화 필요시 여기서 구현
             .eraseToAnyPublisher()
     }
