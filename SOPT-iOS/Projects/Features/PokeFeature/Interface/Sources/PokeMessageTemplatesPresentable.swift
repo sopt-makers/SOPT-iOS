@@ -11,7 +11,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol PokeMessageTemplatesViewControllable: ViewControllable {
+public protocol PokeMessageTemplatesViewControllable: LegacyViewControllable {
     var minimumContentHeight: CGFloat { get }
     
     func signalForClick() -> Driver<(PokeMessageModel, isAnonymous: Bool)>

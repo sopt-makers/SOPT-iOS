@@ -54,7 +54,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         return self.window!.rootViewController as? UINavigationController ?? UINavigationController(rootViewController: UIViewController())
     }
     
-    lazy var authCoordinator: AuthCoordinator = AuthCoordinator(router: Router(rootController: rootController), factory: AuthBuilder())
+    lazy var authCoordinator: AuthCoordinator = AuthCoordinator(router: LegacyRouter(rootController: rootController), factory: AuthBuilder())
     
     func scene(_ scene: UIScene,
                willConnectTo session: UISceneSession,

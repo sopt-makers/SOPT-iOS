@@ -9,7 +9,7 @@
 import BaseFeatureDependency
 import Core
 
-public protocol DailySoptuneCardViewControllable: ViewControllable { }
+public protocol DailySoptuneCardViewControllable: LegacyViewControllable { }
 
 public protocol DailySoptuneCardCoordinatable {
     var onGoToHomeButtonTapped: (() -> Void)? { get set }

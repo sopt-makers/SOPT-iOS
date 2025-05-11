@@ -10,7 +10,7 @@ import Core
 import BaseFeatureDependency
 import Domain
 
-public protocol MissionListViewControllable: ViewControllable & MissionListCoordinatable { }
+public protocol MissionListViewControllable: LegacyViewControllable & MissionListCoordinatable { }
 public protocol MissionListCoordinatable {
   var onSwiped: (() -> Void)? { get set }
   var onNaviBackTap: (() -> Void)? { get set }
@@ -20,13 +20,13 @@ public protocol MissionListCoordinatable {
   var onCellTap: ((MissionListModel, _ username: String?) -> Void)? { get set }
   var onReportButtonTap: (() -> Void)? { get set }
 }
-public protocol ListDetailViewControllable: ViewControllable & ListDetailCoordinatable { }
+public protocol ListDetailViewControllable: LegacyViewControllable & ListDetailCoordinatable { }
 public protocol ListDetailCoordinatable {
   var onComplete: ((StarViewLevel, (() -> Void)?) -> Void)? { get set }
   var onNaviBackTap: (() -> Void)? { get set }
 }
-public protocol MissionCompletedViewControllable: ViewControllable { }
-public protocol RankingViewControllable: ViewControllable & RankingCoordinatable { }
+public protocol MissionCompletedViewControllable: LegacyViewControllable { }
+public protocol RankingViewControllable: LegacyViewControllable & RankingCoordinatable { }
 public protocol RankingCoordinatable {
   var onCellTap: ((_ username: String, _ sentence: String) -> Void)? { get set }
   var onNaviBackTap: (() -> Void)? { get set }
@@ -36,7 +36,7 @@ public protocol PartRankingCoordinatable {
   var onCellTap: ((_ part: Part) -> Void)? { get set }
   var onNaviBackTap: (() -> Void)? { get set }
 }
-public protocol PartRankingViewControllable: ViewControllable & PartRankingCoordinatable { }
-public protocol StampGuideViewControllable: ViewControllable {
+public protocol PartRankingViewControllable: LegacyViewControllable & PartRankingCoordinatable { }
+public protocol StampGuideViewControllable: LegacyViewControllable {
     var onNaviBackTap: (() -> Void)? { get set }
 }

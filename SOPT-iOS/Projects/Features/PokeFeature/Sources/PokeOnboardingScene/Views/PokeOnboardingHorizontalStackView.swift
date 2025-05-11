@@ -64,15 +64,15 @@ extension PokeOnboardingHorizontalStackView {
       cardView
         .kokButtonTap
         .withUnretained(self)
-        .sink(receiveValue: { _ in
-          self.pokeButtonClickSubject.send(model)
+        .sink(receiveValue: { owner, _ in
+          owner.pokeButtonClickSubject.send(model)
         }).store(in: self.cancelBag)
       
       cardView
         .profileTapped
         .withUnretained(self)
-        .sink(receiveValue: { _ in
-          self.avatarClickSubject.send(model)
+        .sink(receiveValue: { owner, _ in
+          owner.avatarClickSubject.send(model)
         }).store(in: self.cancelBag)
       
       self.stackView.addArrangedSubview(cardView)

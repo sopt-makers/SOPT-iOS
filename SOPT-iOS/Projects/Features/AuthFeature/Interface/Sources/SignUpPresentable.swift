@@ -10,7 +10,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol SignUpViewControllable: ViewControllable {}
+public protocol SignUpViewControllable: LegacyViewControllable {}
 
 public protocol SignUpCoordinatable {
     var onSignUpSuccess: (() -> Void)? { get set }

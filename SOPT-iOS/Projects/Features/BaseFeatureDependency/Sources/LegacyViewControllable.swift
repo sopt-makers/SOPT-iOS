@@ -1,5 +1,5 @@
 //
-//  ViewControllable.swift
+//  LegacyViewControllable.swift
 //  BaseFeatureDependency
 //
 //  Created by 김영인 on 2023/03/16.
@@ -8,11 +8,11 @@
 
 import UIKit
 
-public protocol ViewControllable {
+public protocol LegacyViewControllable {
     var viewController: UIViewController { get }
     var asNavigationController: UINavigationController { get }
 }
-public extension ViewControllable where Self: UIViewController {
+public extension LegacyViewControllable where Self: UIViewController {
     var viewController: UIViewController {
         return self
     }
@@ -23,4 +23,4 @@ public extension ViewControllable where Self: UIViewController {
     }
 }
 
-extension UIViewController: ViewControllable {}
+extension UIViewController: LegacyViewControllable {}

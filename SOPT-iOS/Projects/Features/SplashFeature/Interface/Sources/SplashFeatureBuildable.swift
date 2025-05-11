@@ -1,14 +1,16 @@
 //
 //  SplashFeatureBuildable.swift
-//  SplashFeatureInterface
+//  SplashFeature
 //
-//  Created by Junho Lee on 2023/06/20.
-//  Copyright © 2023 SOPT-iOS. All rights reserved.
+//  Created by Jae Hyun Lee on 5/3/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
+
+import UIKit
 
 import Core
 
-public protocol SplashFeatureViewBuildable {
+public protocol SplashFeatureBuildable {
     func makeSplash() -> SplashPresentable
-    func makeNoticePopUpVC(noticeType: NoticePopUpType, content: String) -> NoticePopUpViewControllable
+    func makeNoticePopUpVC(noticeType: NoticePopUpType, content: String) -> NoticePopUpPresentable
 }

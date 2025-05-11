@@ -1,59 +1,43 @@
 //
-//  SplashCoordinator.swift
+//  LegacySplashCoordinator.swift
 //  SplashFeature
 //
-//  Created by Jae Hyun Lee on 5/3/25.
-//  Copyright © 2025 SOPT-iOS. All rights reserved.
+//  Created by Junho Lee on 2023/06/20.
+//  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
-
-import UIKit
 
 import BaseFeatureDependency
 import SplashFeatureInterface
 import Core
 import Domain
 
-public final class SplashCoordinator: DefaultCoordinator {
-    
-    // MARK: - Properties
+public
+final class LegacySplashCoordinator: DefaultCoordinator {
     
     public var finishFlow: (() -> Void)?
     
-    private let navigationController: UINavigationController
-    private let factory: SplashFeatureBuildable
+    private let factory: LegacySplashFeatureViewBuildable
+    private let router: LegacyRouter
     private let cancelBag = CancelBag()
     
-    // MARK: - Init
-    
-    public init(
-        navigationController: UINavigationController,
-        factory: SplashFeatureBuildable
-    ) {
+    public init(router: LegacyRouter, factory: LegacySplashFeatureViewBuildable) {
         self.factory = factory
-        self.navigationController = navigationController
-        super.init()
+        self.router = router
     }
-    
-    // MARK: - Coordinator Life Cycle
     
     public override func start() {
         showSplash()
     }
     
-    // MARK: - Navigation
-    
     private func showSplash() {
         var splash = factory.makeSplash()
-        
         splash.vm.onNoticeExist = { [weak self] appNoticeModel in
             self?.presentNoticePopUp(model: appNoticeModel)
         }
-        
         splash.vm.onNoticeSkipped = { [weak self] in
             self?.finishFlow?()
         }
-        
-        navigationController.setViewControllers([splash.vc], animated: true)
+        router.setRootModule(splash.vc, animated: true)
     }
     
     private func presentNoticePopUp(model: AppNoticeModel) {
@@ -61,19 +45,20 @@ public final class SplashCoordinator: DefaultCoordinator {
         
         let popUpType: NoticePopUpType = isForcedUpdate ? .forceUpdate : .recommendUpdate
         
-        let noticePopUpVC = factory.makeNoticePopUpVC(
+        let noticePopUpControllable = factory.makeNoticePopUpVC(
             noticeType: popUpType,
             content: model.notice
         )
         
-        noticePopUpVC.closeButtonTappedWithCheck.sink { [weak self] didCheck in
+        noticePopUpControllable.closeButtonTappedWithCheck.sink { [weak self] didCheck in
             if didCheck {
                 UserDefaultKeyList.AppNotice.checkedAppVersion = model.recommendVersion
             }
-            self?.navigationController.dismiss(animated: true)
+            self?.router.dismissModule(animated: true)
             self?.finishFlow?()
         }.store(in: cancelBag)
         
-        navigationController.present(noticePopUpVC, animated: false)
+        router.present(noticePopUpControllable, animated: false, completion: nil)
     }
 }
+

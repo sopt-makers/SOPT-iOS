@@ -9,7 +9,7 @@
 import BaseFeatureDependency
 import Core
 
-public protocol MyPageViewControllable: ViewControllable & MyPageCoordinatable { }
+public protocol MyPageViewControllable: LegacyViewControllable & MyPageCoordinatable { }
 public protocol MyPageCoordinatable {
     var onNaviBackButtonTap: (() -> Void)? { get set }
     var onPolicyItemTap: (() -> Void)? { get set }

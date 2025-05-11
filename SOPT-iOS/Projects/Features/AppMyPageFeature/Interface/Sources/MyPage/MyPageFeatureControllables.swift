@@ -9,10 +9,10 @@
 import Core
 import BaseFeatureDependency
 
-public protocol SentenceEditViewControllable: ViewControllable { }
-public protocol PrivacyPolicyViewControllable: ViewControllable { }
-public protocol TermsOfServiceViewControllable: ViewControllable { }
-public protocol WithdrawalViewControllable: ViewControllable & WithdrawalViewCoordinatable {
+public protocol SentenceEditViewControllable: LegacyViewControllable { }
+public protocol PrivacyPolicyViewControllable: LegacyViewControllable { }
+public protocol TermsOfServiceViewControllable: LegacyViewControllable { }
+public protocol WithdrawalViewControllable: LegacyViewControllable & WithdrawalViewCoordinatable {
     var userType: UserType { get set }
 }
 public protocol WithdrawalViewCoordinatable {

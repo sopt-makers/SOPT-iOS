@@ -17,11 +17,11 @@ final class RankingCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: StampFeatureViewBuildable
-    private let router: Router
+    private let router: LegacyRouter
     private let rankingViewType: RankingViewType
     
     public init(
-        router: Router,
+        router: LegacyRouter,
         factory: StampFeatureViewBuildable,
         rankingViewType: RankingViewType
     ) {

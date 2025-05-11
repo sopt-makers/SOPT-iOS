@@ -19,11 +19,11 @@ public final class AuthCoordinator_Refactor: DefaultAuthCoordinator {
     public var finishFlow: ((UserType) -> Void)?
 
     private let factory: AuthFeatureViewBuildable_Refactor
-    private let router: Router
+    private let router: LegacyRouter
     private var url: String?
 
     public init(
-        router: Router,
+        router: LegacyRouter,
         factory: AuthFeatureViewBuildable_Refactor,
         url: String? = nil
     ) {
@@ -130,7 +130,7 @@ extension AuthCoordinator_Refactor {
         self.router.push(signUpVC.vc)
     }
 
-    private func showLoginHelpBottomSheet(on vc: ViewControllable) {
+    private func showLoginHelpBottomSheet(on vc: LegacyViewControllable) {
         guard let bottomSheetVC = self.factory.makeLoginHelpBottomSheet().viewController as? LoginHelpBottomSheetVC
         else { return Void() }
         

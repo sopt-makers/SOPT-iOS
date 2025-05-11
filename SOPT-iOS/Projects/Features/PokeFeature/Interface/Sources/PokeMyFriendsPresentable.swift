@@ -10,7 +10,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol PokeMyFriendsViewControllable: ViewControllable { }
+public protocol PokeMyFriendsViewControllable: LegacyViewControllable { }
 
 public protocol PokeMyFriendsCoordinatable {
     var showFriendsListButtonTap: ((PokeRelation) -> Void)? { get set }
