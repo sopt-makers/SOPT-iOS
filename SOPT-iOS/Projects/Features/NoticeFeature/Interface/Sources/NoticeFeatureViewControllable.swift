@@ -8,6 +8,6 @@
 
 import BaseFeatureDependency
 
-public protocol NoticeFeatureViewControllable: ViewControllable { }
+public protocol NoticeFeatureViewControllable: LegacyViewControllable { }
 
 public protocol NoticeFeatureViewBuildable { }

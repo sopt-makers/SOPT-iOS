@@ -10,7 +10,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol PokeMainViewControllable: ViewControllable { }
+public protocol PokeMainViewControllable: LegacyViewControllable { }
 
 public protocol PokeMainCoordinatable {
   var onNaviBackTap: (() -> Void)? { get set }

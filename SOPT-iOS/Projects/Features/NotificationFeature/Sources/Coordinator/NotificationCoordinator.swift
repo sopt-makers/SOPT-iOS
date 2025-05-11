@@ -30,9 +30,9 @@ final class NotificationCoordinator: DefaultNotificationCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: NotificationFeatureBuildable
-    private let router: Router
+    private let router: LegacyRouter
     
-    public init(router: Router, factory: NotificationFeatureBuildable) {
+    public init(router: LegacyRouter, factory: NotificationFeatureBuildable) {
         self.factory = factory
         self.router = router
     }

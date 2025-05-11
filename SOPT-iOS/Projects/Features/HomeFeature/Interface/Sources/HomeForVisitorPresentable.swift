@@ -11,7 +11,7 @@ import Foundation
 import BaseFeatureDependency
 import Core
 
-public protocol HomeForVisitorViewControllable: ViewControllable { }
+public protocol HomeForVisitorViewControllable: LegacyViewControllable { }
 public protocol HomeForVisitorCoordinatable {
     var onMainProductCellTapped: ((String) -> Void)? { get set }
     var onAppServiceCellTapped: (() -> Void)? { get set }

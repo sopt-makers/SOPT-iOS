@@ -10,9 +10,9 @@ import BaseFeatureDependency
 
 import Domain
 
-public protocol ShowAttendanceViewControllable: ViewControllable & ShowAttendanceCoordinatable { }
+public protocol ShowAttendanceViewControllable: LegacyViewControllable & ShowAttendanceCoordinatable { }
 public protocol ShowAttendanceCoordinatable {
     var onAttendanceButtonTap: ((AttendanceRoundModel, (() -> Void)?) -> Void)? { get set }
     var onNaviBackTap: (() -> Void)? { get set }
 }
-public protocol AttendanceViewControllable: ViewControllable { }
+public protocol AttendanceViewControllable: LegacyViewControllable { }

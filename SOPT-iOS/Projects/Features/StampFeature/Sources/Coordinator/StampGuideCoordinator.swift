@@ -16,9 +16,9 @@ final class StampGuideCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: StampFeatureViewBuildable
-    private let router: Router
+    private let router: LegacyRouter
     
-    public init(router: Router, factory: StampFeatureViewBuildable) {
+    public init(router: LegacyRouter, factory: StampFeatureViewBuildable) {
         self.factory = factory
         self.router = router
     }

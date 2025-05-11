@@ -24,11 +24,11 @@ public final class DailySoptuneResultCoordinator: DefaultCoordinator {
     private let factory: DailySoptuneFeatureBuildable
     private let pokeFactory: PokeFeatureBuildable
     private let resultModel: DailySoptuneResultModel
-    private let router: Router
+    private let router: LegacyRouter
     private weak var rootController: UINavigationController?
     private weak var viewController: UIViewController?
 
-    public init(router: Router, factory: DailySoptuneFeatureBuildable, pokeFactory: PokeFeatureBuildable, resultModel: DailySoptuneResultModel) {
+    public init(router: LegacyRouter, factory: DailySoptuneFeatureBuildable, pokeFactory: PokeFeatureBuildable, resultModel: DailySoptuneResultModel) {
         self.router = router
         self.factory = factory
         self.pokeFactory = pokeFactory
@@ -71,7 +71,7 @@ public final class DailySoptuneResultCoordinator: DefaultCoordinator {
     
     internal func runDailySoptuneCardFlow(cardModel: DailySoptuneCardModel) {
         let dailySoptuneCardCoordinator = DailySoptuneCardCoordinator(
-            router: Router(
+            router: LegacyRouter(
                 rootController: rootController ?? self.router.asNavigationController
             ), factory: factory
             , cardModel: cardModel

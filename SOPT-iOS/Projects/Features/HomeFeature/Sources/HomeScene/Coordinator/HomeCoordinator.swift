@@ -41,14 +41,14 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: HomeFeatureBuildable
-    private let router: Router
+    private let router: LegacyRouter
     private let userType: UserType
     
     public private(set) var rootViewController: UIViewController?
     private weak var rootController: UINavigationController?
     
     public init(
-        router: Router,
+        router: LegacyRouter,
         factory: HomeFeatureBuildable,
         userType: UserType
     ) {

@@ -10,7 +10,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol PokeNotificationViewControllable: ViewControllable { }
+public protocol PokeNotificationViewControllable: LegacyViewControllable { }
 
 public protocol PokeNotificationCoordinatable {
     var onNaviBackTapped: (() -> Void)? { get set }

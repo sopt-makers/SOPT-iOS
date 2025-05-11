@@ -17,11 +17,11 @@ import WebFeature
 public final class PokeOnboardingCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
-    private let router: Router
+    private let router: LegacyRouter
     private let factory: PokeFeatureBuildable
     private weak var rootController: UINavigationController?
     
-    public init(router: Router, factory: PokeFeatureBuildable) {
+    public init(router: LegacyRouter, factory: PokeFeatureBuildable) {
         self.router = router
         self.factory = factory
     }
@@ -37,13 +37,6 @@ extension PokeOnboardingCoordinator {
                 
         self.rootController = pokeOnboarding.vc.asNavigationController
         self.router.present(self.rootController, animated: true, modalPresentationSytle: .overFullScreen)
-    }
-    
-    func switchToPokeOnboardingView() {
-        let pokeOnboarding = makePokeOnboardingView()
-        
-        self.rootController = router.asNavigationController
-        self.router.setRootModule(pokeOnboarding.vc, hideBar: true, animated: false)
     }
     
     func makePokeOnboardingView() -> PokeOnboardingPresentable {

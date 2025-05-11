@@ -22,7 +22,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     let notificationHandler = NotificationHandler()
     
     lazy var appCoordinator: ApplicationCoordinator = ApplicationCoordinator(
-        router: Router(rootController: rootController),
+        rootNavigationController: rootController,
+        router: LegacyRouter(rootController: rootController),
         notificationHandler: self.notificationHandler
     )
     

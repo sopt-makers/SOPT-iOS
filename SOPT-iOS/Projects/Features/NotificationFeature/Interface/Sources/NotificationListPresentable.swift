@@ -10,7 +10,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol NotificationListViewControllable: ViewControllable { }
+public protocol NotificationListViewControllable: LegacyViewControllable { }
 public protocol NotificationListCoordinatable {
     var onNaviBackButtonTap: (() -> Void)? { get set }
     var onNotificationTap: ((String) -> Void)? { get set }

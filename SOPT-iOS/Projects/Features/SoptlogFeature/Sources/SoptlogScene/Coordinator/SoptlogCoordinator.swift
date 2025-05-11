@@ -28,13 +28,13 @@ public final class SoptlogCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: SoptlogFeatureBuildable
-    private let router: Router
+    private let router: LegacyRouter
     private let userType: UserType
     
     private weak var rootController: UINavigationController?
     public private(set) var rootViewController: UIViewController?
     
-    public init(router: Router, factory: SoptlogFeatureBuildable, userType: UserType) {
+    public init(router: LegacyRouter, factory: SoptlogFeatureBuildable, userType: UserType) {
         self.router = router
         self.factory = factory
         self.userType = userType

@@ -20,10 +20,10 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: PokeFeatureBuildable
-    private let router: Router
+    private let router: LegacyRouter
     private weak var rootController: UINavigationController?
     
-    public init(factory: PokeFeatureBuildable, router: Router) {
+    public init(factory: PokeFeatureBuildable, router: LegacyRouter) {
         self.factory = factory
         self.router = router
     }
@@ -41,7 +41,7 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
         
         pokeMyFriends.vm.onPokeButtonTapped = { [weak self] userModel in
             guard let self else { return .empty() }
-            return self.showMessageBottomSheet(userModel: userModel, on: pokeMyFriends.vc.viewController)
+            return self.showMessageBottomSheet(userModel: userModel, on: self.rootController)
         }
         
         pokeMyFriends.vm.onProfileImageTapped = { [weak self] playgroundId in
@@ -50,27 +50,27 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
             let webView = SOPTWebView(startWith: url)
             self?.router.push(webView)
         }
-
+        
         pokeMyFriends.vm.onAnonymousFriendUpgrade = { [weak self] user in
-          guard let self else { return }
-          let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
-          pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
-          pokeMyFriends.vc.viewController.present(pokeAnonymousFriendUpgradeVC, animated: false)
+            guard let self else { return }
+            let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
+            pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
+            self.router.present(pokeAnonymousFriendUpgradeVC, animated: false)
         }
-
+        
         router.push(pokeMyFriends.vc)
     }
     
     private func showPokeMyFriendsList(with relation: PokeRelation) {
         var pokeMyFriendsList = factory.makePokeMyFriendsList(relation: relation)
         
-        pokeMyFriendsList.vm.onCloseButtonTap = { [weak self] in 
+        pokeMyFriendsList.vm.onCloseButtonTap = { [weak self] in
             self?.router.dismissModule(animated: true)
         }
         
         pokeMyFriendsList.vm.onPokeButtonTapped = { [weak self] userModel in
             guard let self else { return .empty() }
-            return self.showMessageBottomSheet(userModel: userModel, on: pokeMyFriendsList.vc.viewController)
+            return self.showMessageBottomSheet(userModel: userModel, on: self.rootController)
         }
         
         pokeMyFriendsList.vm.onProfileImageTapped = { [weak self] playgroundId in
@@ -79,14 +79,14 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
             let webView = SOPTWebView(startWith: url)
             self?.rootController?.pushViewController(webView, animated: true)
         }
-
+        
         pokeMyFriendsList.vm.onAnonymousFriendUpgrade = { [weak self] user in
-          guard let self else { return }
-          let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
-          pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
-          pokeMyFriendsList.vc.viewController.present(pokeAnonymousFriendUpgradeVC, animated: false)
+            guard let self else { return }
+            let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
+            pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
+            self.router.present(pokeAnonymousFriendUpgradeVC, animated: false)
         }
-
+        
         self.rootController = pokeMyFriendsList.vc.asNavigationController
         router.present(rootController, animated: true)
     }
@@ -94,15 +94,15 @@ final class PokeMyFriendsCoordinator: DefaultCoordinator {
     private func showMessageBottomSheet(userModel: PokeUserModel, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel, isAnonymous: Bool), Never> {
         guard let bottomSheet = self.factory
             .makePokeMessageTemplateBottomSheet(messageType: .pokeFriend)
-                .vc
-                .viewController as? PokeMessageTemplateBottomSheet
+            .vc
+            .viewController as? PokeMessageTemplateBottomSheet
         else { return .empty() }
         
         let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate(minHeight: PokeMessageTemplateBottomSheet.minimumContentHeight))
         
         self.router.showBottomSheet(manager: bottomSheetManager,
-                                     toPresent: bottomSheet,
-                                     on: view)
+                                    toPresent: bottomSheet,
+                                    on: view)
         
         return bottomSheet
             .signalForClick()

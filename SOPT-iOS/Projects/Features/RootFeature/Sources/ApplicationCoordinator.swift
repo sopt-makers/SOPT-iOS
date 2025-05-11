@@ -27,9 +27,11 @@ import TabBarFeature
 public
 final class ApplicationCoordinator: BaseCoordinator {
     
-    private let router: Router
+    private let router: LegacyRouter
     private var cancelBag = CancelBag()
     private let notificationHandler: NotificationHandler
+    
+    private let rootNavigationController: UINavigationController
     
     private weak var rootController: UINavigationController?
     private weak var tabBarController: UITabBarController?
@@ -37,7 +39,12 @@ final class ApplicationCoordinator: BaseCoordinator {
     private weak var homeCoordinator: HomeCoordinator?
     private weak var soptlogCoordinator: SoptlogCoordinator?
     
-    public init(router: Router, notificationHandler: NotificationHandler) {
+    public init(
+        rootNavigationController: UINavigationController,
+        router: LegacyRouter,
+        notificationHandler: NotificationHandler
+    ) {
+        self.rootNavigationController = rootNavigationController
         self.router = router
         self.notificationHandler = notificationHandler
         super.init()
@@ -125,11 +132,26 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     private func runSplashFlow() {
-        let coordinator = SplashCoordinator(router: router, factory: SplashBuilder())
+        var coordinator: DefaultCoordinator
+        
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator = LegacySplashCoordinator(
+                router: router,
+                factory: LegacySplashBuilder()
+            )
+        case .new:
+            coordinator = SplashCoordinator(
+                navigationController: rootNavigationController,
+                factory: SplashBuilder()
+            )
+        }
+        
         coordinator.finishFlow = { [weak self, weak coordinator] in
             self?.checkDidSignIn()
             self?.removeDependency(coordinator)
         }
+        
         addDependency(coordinator)
         coordinator.start()
     }
@@ -256,7 +278,7 @@ extension ApplicationCoordinator {
     @discardableResult
     internal func runHomeFlow(type: UserType) -> HomeCoordinator {
         let coordinator = HomeCoordinator(
-            router: Router(rootController: self.rootController ?? self.router.asNavigationController),
+            router: LegacyRouter(rootController: self.rootController ?? self.router.asNavigationController),
             factory: HomeBuilder(),
             userType: type
         )
@@ -308,7 +330,7 @@ extension ApplicationCoordinator {
     @discardableResult
     internal func runAttendanceFlow() -> AttendanceCoordinator {
         let coordinator = AttendanceCoordinator(
-            router: Router(
+            router: LegacyRouter(
                 rootController: UIWindow.getRootNavigationController
             ),
             factory: AttendanceBuilder()
@@ -326,7 +348,7 @@ extension ApplicationCoordinator {
     @discardableResult
     internal func runStampFlow() -> StampCoordinator {
         let coordinator = StampCoordinator(
-            router: Router(
+            router: LegacyRouter(
                 rootController: UIWindow.getRootNavigationController
             ),
             factory: StampBuilder()
@@ -354,7 +376,7 @@ extension ApplicationCoordinator {
     @discardableResult
     internal func makePokeCoordinator() -> PokeCoordinator {
         let coordinator = PokeCoordinator(
-            router: Router(rootController: UIWindow.getRootNavigationController),
+            router: LegacyRouter(rootController: UIWindow.getRootNavigationController),
             factory: PokeBuilder()
         )
         
@@ -371,7 +393,7 @@ extension ApplicationCoordinator {
     @discardableResult
     internal func runPokeOnboardingFlow() -> PokeOnboardingCoordinator {
         let coordinator = PokeOnboardingCoordinator(
-            router: Router(
+            router: LegacyRouter(
                 rootController: UIWindow.getRootNavigationController
             ),
             factory: PokeBuilder()
@@ -389,7 +411,7 @@ extension ApplicationCoordinator {
     
     internal func runPokeNotificationListFlow() -> PokeNotificationListCoordinator {
         let coordinator = PokeNotificationListCoordinator(
-            router: Router(
+            router: LegacyRouter(
                 rootController: UIWindow.getRootNavigationController
             ),
             factory: PokeBuilder()
@@ -410,7 +432,7 @@ extension ApplicationCoordinator {
     @discardableResult
     internal func runMyPageFlow(of userType: UserType) -> MyPageCoordinator {
         let coordinator = MyPageCoordinator(
-            router: Router(
+            router: LegacyRouter(
                 rootController: UIWindow.getRootNavigationController
             ),
             factory: MyPageBuilder(),
@@ -438,7 +460,7 @@ extension ApplicationCoordinator {
     @discardableResult
     internal func runNotificationFlow() -> NotificationCoordinator {
         let coordinator = NotificationCoordinator(
-            router: Router(
+            router: LegacyRouter(
                 rootController: UIWindow.getRootNavigationController
             ),
             factory: NotificationBuilder()
@@ -466,7 +488,7 @@ extension ApplicationCoordinator {
     @discardableResult
     internal func runDailySoptuneFlow() -> DailySoptuneCoordinator {
         let coordinator = DailySoptuneCoordinator(
-            router: Router(
+            router: LegacyRouter(
                 rootController: UIWindow.getRootNavigationController
             ),
             factory: DailySoptuneBuilder(), 
@@ -491,7 +513,7 @@ extension ApplicationCoordinator {
     @discardableResult
     internal func runSoptlogFlow(type: UserType) -> SoptlogCoordinator {
         let coordinator = SoptlogCoordinator(
-            router: Router(rootController: self.rootController ?? self.router.asNavigationController),
+            router: LegacyRouter(rootController: self.rootController ?? self.router.asNavigationController),
             factory: SoptlogBuilder(), 
             userType: type
         )

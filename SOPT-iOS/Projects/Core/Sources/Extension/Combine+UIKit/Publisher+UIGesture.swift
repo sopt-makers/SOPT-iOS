@@ -13,7 +13,7 @@ public struct GesturePublisher: Publisher {
     public typealias Output = GestureType
     public typealias Failure = Never
     
-    private let view: UIView
+    private weak var view: UIView?
     private let gestureType: GestureType
     
     init(view: UIView, gestureType: GestureType) {
@@ -34,9 +34,9 @@ public struct GesturePublisher: Publisher {
 final class GestureSubscription<S: Subscriber>: Subscription where S.Input == GestureType, S.Failure == Never {
     private var subscriber: S?
     private var gestureType: GestureType
-    private var view: UIView
+    private weak var view: UIView?
     
-    init(subscriber: S, view: UIView, gestureType: GestureType) {
+    init(subscriber: S, view: UIView?, gestureType: GestureType) {
         self.subscriber = subscriber
         self.view = view
         self.gestureType = gestureType
@@ -46,7 +46,7 @@ final class GestureSubscription<S: Subscriber>: Subscription where S.Input == Ge
     private func configureGesture(_ gestureType: GestureType) {
         let gesture = gestureType.get()
         gesture.addTarget(self, action: #selector(self.handler))
-        self.view.addGestureRecognizer(gesture)
+        self.view?.addGestureRecognizer(gesture)
     }
     
     func request(_ demand: Subscribers.Demand) { }
