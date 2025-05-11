@@ -38,7 +38,7 @@ extension AppDelegate {
         container.register(
             interface: CoreOAuthRepositoryInterface.self,
             implement: {
-                CoreOAuthRepository(appleService: DefaultAppleAuthenticationService())
+                CoreOAuthRepository(oAuthServiceFactory: OAuthServiceFactory())
             }
         )
         
