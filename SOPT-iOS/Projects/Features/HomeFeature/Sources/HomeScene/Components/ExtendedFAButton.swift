@@ -42,6 +42,14 @@ final class ExtendedFAButton: UIView {
         $0.textColor = DSKitAsset.Colors.orange700.color
     }
     
+    private let actionButton = UIButton().then {
+        $0.setTitle("미션 보기", for: .normal)
+        $0.setTitleColor(DSKitAsset.Colors.white.color, for: .normal)
+        $0.titleLabel?.font = DSKitFontFamily.Suit.medium.font(size: 13)
+        $0.backgroundColor = DSKitAsset.Colors.black.color
+        $0.clipsToBounds = true
+    }
+    
     // MARK: - Initialization
     
     override init(frame: CGRect) {
@@ -57,6 +65,7 @@ final class ExtendedFAButton: UIView {
     
     override func layoutSubviews() {
         self.layer.cornerRadius = self.frame.height / 2
+        self.actionButton.layer.cornerRadius = 16
     }
 }
 
@@ -68,7 +77,7 @@ extension ExtendedFAButton {
     }
     
     private func setLayout() {
-        self.addSubviews(serviceBackgroundView, serviceImageView, subTitle, title)
+        self.addSubviews(serviceBackgroundView, serviceImageView, subTitle, title, actionButton)
         
         serviceBackgroundView.snp.makeConstraints { make in
             make.top.leading.bottom.equalToSuperview().inset(13)
@@ -89,18 +98,24 @@ extension ExtendedFAButton {
             make.leading.equalTo(title.snp.leading)
             make.top.equalTo(title.snp.bottom).offset(4)
         }
+        
+        actionButton.snp.makeConstraints { make in
+            make.top.bottom.trailing.equalToSuperview().inset(18)
+            make.height.equalTo(32)
+            make.width.equalTo(70)
+        }
     }
 }
 
 // MARK: - Methods
-
-extension ExtendedFAButton {
-    public func setStyle(_ style: ExtendedFAButtonType) {
-        switch style {
-        case .expended:
-            self.isUserInteractionEnabled = false
-        case .collapsed:
-            <#code#>
-        }
-    }
-}
+//
+//extension ExtendedFAButton {
+//    public func setStyle(_ style: ExtendedFAButtonType) {
+//        switch style {
+//        case .expended:
+//            self.isUserInteractionEnabled = false
+//        case .collapsed:
+//            <#code#>
+//        }
+//    }
+//}
