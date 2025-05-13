@@ -6,7 +6,7 @@
 //  Copyright © 2024 SOPT-iOS. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 import BaseFeatureDependency
 import Core
@@ -20,4 +20,6 @@ public protocol SoptlogCoordinatable {
     var onNeedSignIn: (() -> Void)? { get set }
 }
 public typealias SoptlogViewModelType = ViewModelType & SoptlogCoordinatable
-public typealias SoptlogPresentable = (vc: SoptlogViewControllable, vm: any SoptlogViewModelType)
+public typealias LegacySoptlogPresentable = (vc: SoptlogViewControllable, vm: any SoptlogViewModelType)
+
+public typealias SoptlogPresentable = (vc: UIViewController, vm: any SoptlogViewModelType)

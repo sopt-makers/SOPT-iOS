@@ -6,7 +6,7 @@
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 import BaseFeatureDependency
 import Core
@@ -17,4 +17,6 @@ public protocol SoptlogToolTipCoordinatable {
     var onDimmingBackgroundTap: (() -> Void)? { get set }
 }
 public typealias SoptlogToolTipViewModelType = ViewModelType & SoptlogToolTipCoordinatable
-public typealias SoptlogTooltipPresentable = (vc: SoptlogToolTipViewControllable, vm: any SoptlogToolTipViewModelType)
+public typealias LegacySoptlogTooltipPresentable = (vc: SoptlogToolTipViewControllable, vm: any SoptlogToolTipViewModelType)
+
+public typealias SoptlogTooltipPresentable = (vc: UIViewController, vm: any SoptlogToolTipViewModelType)

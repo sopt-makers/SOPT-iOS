@@ -6,7 +6,7 @@
 //  Copyright © 2024 SOPT-iOS. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 import BaseFeatureDependency
 import Core
@@ -18,4 +18,6 @@ public protocol HomeForVisitorCoordinatable {
     var onSettingButtonTapped: ((UserType) -> Void)? { get set }
 }
 public typealias HomeForVisitorViewModelType = ViewModelType & HomeForVisitorCoordinatable
-public typealias HomeForVisitorPresentable = (vc: HomeForVisitorViewControllable, vm: any HomeForVisitorViewModelType)
+public typealias LegacyHomeForVisitorPresentable = (vc: HomeForVisitorViewControllable, vm: any HomeForVisitorViewModelType)
+
+public typealias HomeForVisitorPresentable = (vc: UIViewController, vm: any HomeForVisitorViewModelType)

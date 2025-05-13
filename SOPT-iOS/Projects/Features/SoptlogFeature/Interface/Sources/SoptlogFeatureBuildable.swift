@@ -1,9 +1,9 @@
 //
 //  SoptlogFeatureBuildable.swift
-//  SoptlogFeature
+//  SoptlogFeatureInterface
 //
-//  Created by 강윤서 on 11/25/24.
-//  Copyright © 2024 SOPT-iOS. All rights reserved.
+//  Created by Jae Hyun Lee on 5/5/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
 import Foundation
