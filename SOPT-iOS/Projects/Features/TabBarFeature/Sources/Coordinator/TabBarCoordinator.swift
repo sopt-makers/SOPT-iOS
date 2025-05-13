@@ -78,7 +78,7 @@ public final class TabBarCoordinator: DefaultTabBarCoordinator {
         }
         
         let navigation = UINavigationController(rootViewController: tabBar.vc)
-        CoordinatorUtils.replaceAsRootWindow(root: navigation, hideBar: true)
+        CoordinatorUtils.replaceRootWindowWithAnimate(root: navigation, hideBar: true)
         self.navigationController = navigation
     }
 }
