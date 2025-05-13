@@ -15,7 +15,7 @@ import TabBarFeature
 // MARK: - HomeCoordinatorDelegate
 
 extension ApplicationCoordinator: HomeCoordinatorDelegate {
-    public func homeCoordinator(_ coordinator: HomeCoordinator, didRequest destination: HomeCoordinatorDestination) {
+    public func homeCoordinator(_ coordinator: HomeCoordinator, to destination: HomeCoordinatorDestination) {
         switch destination {
         case .attendance:
             runAttendanceFlow()
