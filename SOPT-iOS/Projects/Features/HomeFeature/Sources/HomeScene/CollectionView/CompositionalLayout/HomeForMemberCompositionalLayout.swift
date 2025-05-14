@@ -40,12 +40,6 @@ extension HomeForMemberVC {
                 return self.createAppServiceSection()
             case .insight:
                 return self.createInsightSection()
-            case .announcement:
-                return self.createAnnouncementSection()
-            case .group:
-                return self.createGroupSection()
-            case .coffeeChat:
-                return self.createCoffeeChatSection()
             case .socialLinks:
                 return self.createSocialLinksSection()
             }
@@ -177,128 +171,7 @@ extension HomeForMemberVC {
                                                         trailing: Metric.collectionViewDefaultSideInset)
         return section
     }
-    
-    private func createGroupSection() -> NSCollectionLayoutSection {
-        /// header: default
-        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                heightDimension: .absolute(30))
-        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
-                                                                 elementKind: UICollectionView.elementKindSectionHeader,
-                                                                 alignment: .top)
-        header.contentInsets = .init(top: 0,
-                                     leading: 0,
-                                     bottom: 0,
-                                     trailing: Metric.collectionViewDefaultSideInset)
-        
-        /// item: 모임 카드
-        let groupItemSize = NSCollectionLayoutSize(widthDimension: .absolute(140),
-                                                   heightDimension: .estimated(170))
-        let groupItem = NSCollectionLayoutItem(layoutSize: groupItemSize)
-        
-        /// group: 모임 카드
-        let groupGroupSize = NSCollectionLayoutSize(widthDimension: .absolute(150),
-                                                    heightDimension: .estimated(170))
-        let groupGroup = NSCollectionLayoutGroup.horizontal(layoutSize: groupGroupSize,
-                                                            subitems: [groupItem])
-        groupGroup.interItemSpacing = .fixed(12)
-        
-        /// section 지정
-        let section = NSCollectionLayoutSection(
-            group: groupGroup
-        )
-        section.boundarySupplementaryItems = [header]
-        section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultItemSpacing,
-                                                        leading: Metric.collectionViewDefaultSideInset,
-                                                        bottom: Metric.defaultLineSpacing,
-                                                        trailing: 0)
-        section.orthogonalScrollingBehavior = .groupPaging
-        return section
-    }
-    
-    private func createCoffeeChatSection() -> NSCollectionLayoutSection {
-        /// header: default
-        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                heightDimension: .absolute(30))
-        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
-                                                                 elementKind: UICollectionView.elementKindSectionHeader,
-                                                                 alignment: .top)
-        header.contentInsets = .init(top: 0,
-                                     leading: 0,
-                                     bottom: 0,
-                                     trailing: Metric.collectionViewDefaultSideInset)
-        
-        /// item: 커피챗 카드
-        let coffeeChatItemSize = NSCollectionLayoutSize(widthDimension: .absolute(280),
-                                                        heightDimension: .estimated(234))
-        let coffeeChatItem = NSCollectionLayoutItem(layoutSize: coffeeChatItemSize)
-        
-        /// group: 커피챗 카드
-        let coffeeChatGroupSize = NSCollectionLayoutSize(widthDimension: .absolute(280),
-                                                         heightDimension: .estimated(234))
-        let coffeeChatGroup = NSCollectionLayoutGroup.horizontal(layoutSize: coffeeChatGroupSize,
-                                                                 subitems: [coffeeChatItem])
-        
-        /// section 지정
-        let section = NSCollectionLayoutSection(
-            group: coffeeChatGroup
-        )
-        section.boundarySupplementaryItems = [header]
-        section.contentInsets = NSDirectionalEdgeInsets(top: 16,
-                                                        leading: Metric.collectionViewDefaultSideInset,
-                                                        bottom: Metric.defaultLineSpacing,
-                                                        trailing: Metric.collectionViewDefaultSideInset)
-        section.interGroupSpacing = 12
-        section.orthogonalScrollingBehavior = .groupPaging
-        return section
-    }
-    
-    private func createAnnouncementSection() -> NSCollectionLayoutSection {
-        /// header: default
-        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                heightDimension: .absolute(30))
-        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
-                                                                 elementKind: UICollectionView.elementKindSectionHeader,
-                                                                 alignment: .top)
-        
-        /// item: 홍보 카드
-        let announcementItemSize = NSCollectionLayoutSize(widthDimension: .absolute(Metric.announcementWidth),
-                                                          heightDimension: .absolute(308))
-        let announctementItem = NSCollectionLayoutItem(layoutSize: announcementItemSize)
-        
-        /// group: 홍보 카드
-        let announcementGroupSize = NSCollectionLayoutSize(widthDimension: .absolute(Metric.announcementWidth),
-                                                           heightDimension: .absolute(308))
-        let announcementGroup = NSCollectionLayoutGroup.vertical(layoutSize: announcementGroupSize,
-                                                              subitems: [announctementItem])
-        
-        /// section 지정
-        let section = NSCollectionLayoutSection(group: announcementGroup)
-        section.boundarySupplementaryItems = [header]
-        section.contentInsets = NSDirectionalEdgeInsets(top: 16,
-                                                        leading: Metric.collectionViewDefaultSideInset,
-                                                        bottom: 0,
-                                                        trailing: Metric.collectionViewDefaultSideInset)
-        
-        /// footer: pageController 추가
-        let footerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                heightDimension: .estimated(24))
-        let footer = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: footerSize,
-                                                                 elementKind: UICollectionView.elementKindSectionFooter,
-                                                                 alignment: .bottomLeading)
-        
-        /// 포커스 중인 페이지 인덱스 계산
-        section.visibleItemsInvalidationHandler = { [weak self] items, offset, env in
-            let pageWidth = Metric.announcementWidth
-            let currentPage = Int(ceil(offset.x / (pageWidth + Metric.defaultGroupSpacing)))
-            self?.viewModel.currentCardPage.send(currentPage)
-        }
 
-        section.boundarySupplementaryItems = [header, footer]
-        section.orthogonalScrollingBehavior = .groupPaging
-        section.interGroupSpacing = 12
-        return section
-    }
-    
     private func createSocialLinksSection() -> NSCollectionLayoutSection {
         /// item: 소셜 링크 카드
         let socialLinkItemSize = NSCollectionLayoutSize(widthDimension: .absolute(97),

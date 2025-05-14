@@ -24,7 +24,6 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     private let useCase: HomeUseCase
     private var cancelBag = CancelBag()
     
-    let currentCardPage = PassthroughSubject<Int, Never>()
     let userType: UserType = UserDefaultKeyList.Auth.getUserType()
     
     let productServiceList: [HomePresentationModel.ProductService] = [
