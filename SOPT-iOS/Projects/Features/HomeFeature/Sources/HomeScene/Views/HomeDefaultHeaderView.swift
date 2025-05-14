@@ -76,6 +76,6 @@ extension HomeDefaultHeaderView {
         
         if let memberKind = sectionKind as? HomeForMemberSectionLayoutKind {
             self.viewAllButton.isHidden = (memberKind == .appService) ? true : false
-        } 
+        }
     }
 }
