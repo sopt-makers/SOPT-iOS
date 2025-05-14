@@ -32,6 +32,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     private lazy var naviBar = HomeNavigationBar()
     private var dataSource: UICollectionViewDiffableDataSource<HomeForMemberSectionLayoutKind, HomeForMemberItem>! = nil
     var collectionView: UICollectionView! = nil
+    private var extendedFAButton = ExtendedFAButton(frame: .zero)
     
     // MARK: - Initialization
     
@@ -82,7 +83,8 @@ extension HomeForMemberVC {
     private func configureLayout() {
         view.addSubviews(
             naviBar,
-            collectionView
+            collectionView,
+            extendedFAButton
         )
         
         naviBar.snp.makeConstraints { make in
@@ -93,6 +95,29 @@ extension HomeForMemberVC {
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(naviBar.snp.bottom).offset(16)
             make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
+        }
+        
+        extendedFAButton.snp.makeConstraints { make in
+            make.bottom.equalToSuperview().inset(124)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(68)
+        }
+    }
+    
+    private func extendedFAButtonLayout() {
+        extendedFAButton.snp.remakeConstraints { make in
+            make.bottom.equalToSuperview().inset(124)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(68)
+        }
+    }
+    
+    private func collapsedFAButtonLayout() {
+        extendedFAButton.snp.remakeConstraints { make in
+            make.bottom.equalToSuperview().inset(124)
+            make.trailing.equalToSuperview().inset(20)
+            make.width.equalTo(127)
+            make.height.equalTo(53)
         }
     }
 }
@@ -278,6 +303,21 @@ extension HomeForMemberVC: UICollectionViewDelegate {
                 self.cellTapped.send(.appService(model))
             default: return
             }
+        }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        
+        UIView.animate(withDuration: 0.3) {
+            if offsetY >= 330 {
+                self.collapsedFAButtonLayout()
+                self.extendedFAButton.setStyle(.collapsed)
+            } else {
+                self.extendedFAButtonLayout()
+                self.extendedFAButton.setStyle(.expended)
+            }
+            self.view.layoutIfNeeded()
         }
     }
 }
