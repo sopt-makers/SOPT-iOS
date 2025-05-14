@@ -21,6 +21,13 @@ public extension UIView {
         addSubview(view)
     }
     
+    /// UIView의 subView를 한 번에 remove
+    func removeAllSubviews() {
+        subviews.forEach {
+            $0.removeFromSuperview()
+        }
+    }
+    
     func setGradient() {
         let gradient = CAGradientLayer()
         gradient.frame = bounds
