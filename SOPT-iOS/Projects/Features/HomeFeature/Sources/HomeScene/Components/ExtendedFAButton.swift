@@ -19,6 +19,12 @@ final class ExtendedFAButton: UIView {
 
     // MARK: - Properties
     
+    private var buttonType: ExtendedFAButtonType = .expended {
+        didSet {
+            updateLayout(buttonType)
+        }
+    }
+    
     // MARK: - UI Components
     
     private let serviceBackgroundView = UIView().then {
@@ -50,13 +56,30 @@ final class ExtendedFAButton: UIView {
         $0.clipsToBounds = true
     }
     
+    private let collapsedTitle = UILabel().then {
+        $0.text = "솝탬프"
+        $0.textColor = DSKitAsset.Colors.orange800.color
+        $0.font = DSKitFontFamily.Suit.medium.font(size: 12)
+    }
+    
+    private let collapsedSubTitle = UILabel().then {
+        $0.text = "미션 보기"
+        $0.textColor = DSKitAsset.Colors.gray900.color
+        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
+    }
+    
+    private let collapsedRightButton = UIImageView().then {
+        $0.image = DSKitAsset.Assets.btnRightChevron.image
+    }
+    
     // MARK: - Initialization
     
-    override init(frame: CGRect) {
+    init(frame: CGRect, buttonType: ExtendedFAButtonType = .expended) {
+        self.buttonType = buttonType
         super.init(frame: frame)
         
         setUI()
-        setLayout()
+        setExpendedLayout()
     }
     
     required init?(coder: NSCoder) {
@@ -76,46 +99,90 @@ extension ExtendedFAButton {
         self.backgroundColor = DSKitAsset.Colors.orange400.color
     }
     
-    private func setLayout() {
+    private func setExpendedLayout() {
+        self.removeAllSubviews()
         self.addSubviews(serviceBackgroundView, serviceImageView, subTitle, title, actionButton)
         
-        serviceBackgroundView.snp.makeConstraints { make in
-            make.top.leading.bottom.equalToSuperview().inset(13)
+        serviceBackgroundView.snp.remakeConstraints { make in
+            make.leading.equalToSuperview().inset(13)
             make.size.equalTo(42)
+            make.centerY.equalToSuperview()
         }
         
-        serviceImageView.snp.makeConstraints { make in
-            make.size.equalTo(42)
+        serviceImageView.snp.remakeConstraints { make in
             make.center.equalTo(serviceBackgroundView.snp.center)
         }
         
-        title.snp.makeConstraints { make in
+        title.snp.remakeConstraints { make in
             make.top.equalToSuperview().inset(15)
             make.leading.equalTo(serviceBackgroundView.snp.trailing).offset(8)
         }
         
-        subTitle.snp.makeConstraints { make in
+        subTitle.snp.remakeConstraints { make in
             make.leading.equalTo(title.snp.leading)
             make.top.equalTo(title.snp.bottom).offset(4)
         }
         
-        actionButton.snp.makeConstraints { make in
-            make.top.bottom.trailing.equalToSuperview().inset(18)
+        actionButton.snp.remakeConstraints { make in
+            make.trailing.equalToSuperview().inset(18)
+            make.centerY.equalToSuperview()
             make.height.equalTo(32)
             make.width.equalTo(70)
         }
     }
+    
+    private func setCollapsedLayout() {
+        self.removeAllSubviews()
+        self.addSubviews(serviceBackgroundView, serviceImageView, collapsedTitle, collapsedSubTitle, collapsedRightButton)
+        
+        serviceBackgroundView.snp.remakeConstraints { make in
+            make.leading.equalToSuperview().inset(9)
+            make.centerY.equalToSuperview()
+            make.size.equalTo(35)
+        }
+        
+        serviceImageView.snp.remakeConstraints { make in
+            make.center.equalTo(serviceBackgroundView)
+        }
+        
+        collapsedTitle.snp.remakeConstraints { make in
+            make.top.equalToSuperview().inset(10)
+            make.leading.equalTo(serviceBackgroundView.snp.trailing).offset(6)
+        }
+        
+        collapsedSubTitle.snp.remakeConstraints { make in
+            make.leading.equalTo(collapsedTitle)
+            make.top.equalTo(collapsedTitle.snp.bottom).offset(1)
+        }
+        
+        collapsedRightButton.snp.remakeConstraints { make in
+            make.centerY.equalTo(collapsedSubTitle)
+            make.leading.equalTo(collapsedSubTitle.snp.trailing)
+            make.size.equalTo(16)
+        }
+    }
+    
+    private func updateLayout(_ type: ExtendedFAButtonType) {
+        switch type {
+        case .expended:
+            self.setExpendedLayout()
+        case .collapsed:
+            self.setCollapsedLayout()
+        }
+        self.layoutIfNeeded()
+    }
 }
 
 // MARK: - Methods
-//
-//extension ExtendedFAButton {
-//    public func setStyle(_ style: ExtendedFAButtonType) {
-//        switch style {
-//        case .expended:
-//            self.isUserInteractionEnabled = false
-//        case .collapsed:
-//            <#code#>
-//        }
-//    }
-//}
+
+extension ExtendedFAButton {
+    public func setStyle(_ style: ExtendedFAButtonType) {
+        self.buttonType = style
+        switch style {
+        case .expended:
+            self.isUserInteractionEnabled = false
+        case .collapsed:
+            self.isUserInteractionEnabled = true
+        }
+    }
+}
