@@ -28,7 +28,6 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
     
     private let viewAllButton = HomeCustomTextWithArrowButton(title: I18N.Home.viewAll)
     
-
     // MARK: - Initialization
     
     override init(frame: CGRect) {
