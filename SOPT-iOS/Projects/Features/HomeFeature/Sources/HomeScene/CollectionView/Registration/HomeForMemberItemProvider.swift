@@ -51,24 +51,6 @@ extension HomeForMemberVC {
         }
     }
     
-    func createGroupCellRegistration() -> GroupCellRegistration {
-        collectionView.createCellRegistration { cell, _, item in
-            cell.configureCell(model: item)
-        }
-    }
-    
-    func createCoffeeChatCellRegistration() -> CoffeeChatCellRegistration {
-        collectionView.createCellRegistration { cell, _, item in
-            cell.configureCell(model: item)
-        }
-    }
-    
-    func createAnnouncementCellRegistration() -> AnnouncementCellRegistration {
-        collectionView.createCellRegistration { cell, _, item in
-            cell.configureCell(model: item)
-        }
-    }
-    
     func createSocialLinkCellRegistration() -> SocialLinkCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
             cell.configureCell(type: item)
@@ -82,15 +64,6 @@ extension HomeForMemberVC {
         ) { headerView, indexPath in
             guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: indexPath.section) else { return }
             headerView.configureView(sectionKind: sectionKind)
-        }
-    }
-    
-    func createFooterRegistration() -> FooterRegistration {
-        collectionView.createSupplementaryRegistration(
-            elementKind: UICollectionView.elementKindSectionFooter
-        ) { [weak self] footerView, indexPath in
-            guard let self else { return }
-            footerView.bind(input: self.viewModel.currentCardPage, pageNumber: 5)
         }
     }
 }
