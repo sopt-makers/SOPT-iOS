@@ -25,12 +25,13 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     private var cellTapped = PassthroughSubject<HomeForMemberItem, Never>()
     private(set) var attendanceButtonTapped = PassthroughSubject<Void, Never>()
     
-    private lazy var noticeButtonTapped = naviBar.noticeButtonTap.mapVoid().asDriver()
-    private lazy var settingButtonTapped = naviBar.settingButtonTap.mapVoid().asDriver()
-    private lazy var extendedFAButtonTapped = extendedFAButton.gesture().mapVoid().asDriver()
+    private var fabButtonTapped = PassthroughSubject<Void, Never>()
+    private lazy var extendedFAButtonTapped = extendedFAButton.actionButtonTapped
+    private lazy var collapsedFAButtonTapped = extendedFAButton.gesture().mapVoid().asDriver()
     
     private var isFirstAppear = true
     private var isExtendedButtonHidden: Bool = false
+    private var fabButtonType: ExtendedFAButtonType = .extended
     
     // MARK: - UI Components
     
@@ -55,10 +56,11 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     public override func viewDidLoad() {
         super.viewDidLoad()
         configureHierarchy()
-        configureUI()
-        configureLayout()
-        configureDelegate()
-        configureDataSource()
+        setUI()
+        setLayout()
+        setDelegate()
+        setDataSource()
+        bindViews()
         bindViewModels()
     }
     
@@ -80,12 +82,12 @@ extension HomeForMemberVC {
         collectionView.backgroundColor = .clear
     }
     
-    private func configureUI() {
+    private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
     }
     
-    private func configureLayout() {
+    private func setLayout() {
         view.addSubviews(
             naviBar,
             collectionView,
@@ -161,22 +163,22 @@ extension HomeForMemberVC {
 // MARK: - Methods
 
 extension HomeForMemberVC {
-    private func configureDelegate() {
+    private func setDelegate() {
         self.collectionView.delegate = self
     }
     
-    private func configureDataSource() {
+    private func setDataSource() {
         let dashBoardRegistration = createDashBoardCellRegistration()
         let calendarRegistration = createCalendarCellRegistration()
         let mainProductRegistration = createProductCellRegistration()
         let appServiceRegistration = createAppServiceCellRegistration()
         
         // TODO: 이후 스프린트에서 순차 배포
-//        let insightRegistration = createInsightCellRegistration()
-//        let groupRegistration  = createGroupCellRegistration()
-//        let coffeeChatRegistration = createCoffeeChatCellRegistration()
-//        let announcementRegistration = createAnnouncementCellRegistration()
-//        let socialLinkRegistration = createSocialLinkCellRegistration()
+        //        let insightRegistration = createInsightCellRegistration()
+        //        let groupRegistration  = createGroupCellRegistration()
+        //        let coffeeChatRegistration = createCoffeeChatCellRegistration()
+        //        let announcementRegistration = createAnnouncementCellRegistration()
+        //        let socialLinkRegistration = createSocialLinkCellRegistration()
         
         dataSource = UICollectionViewDiffableDataSource<HomeForMemberSectionLayoutKind, HomeForMemberItem> (
             collectionView: collectionView) { (collectionView, indexPath, item) in
@@ -193,23 +195,23 @@ extension HomeForMemberVC {
                 case .appService(let appService):
                     return collectionView.dequeueConfiguredReusableCell(using: appServiceRegistration,
                                                                         for: indexPath, item: appService)
-                // TODO: 이후 스프린트에서 순차 배포
+                    // TODO: 이후 스프린트에서 순차 배포
                 default: return UICollectionViewCell()
-//                case .insightPost(let insight):
-//                    return collectionView.dequeueConfiguredReusableCell(using: insightRegistration,
-//                                                                        for: indexPath, item: insight)
-//                case .groupPost(let group):
-//                    return collectionView.dequeueConfiguredReusableCell(using: groupRegistration,
-//                                                                        for: indexPath, item: group)
-//                case .coffeeChat(let coffeeChat):
-//                    return collectionView.dequeueConfiguredReusableCell(using: coffeeChatRegistration,
-//                                                                        for: indexPath, item: coffeeChat)
-//                case .announcement(let announcement):
-//                    return collectionView.dequeueConfiguredReusableCell(using: announcementRegistration,
-//                                                                        for: indexPath, item: announcement)
-//                case .socialLink(let socialLink):
-//                    return collectionView.dequeueConfiguredReusableCell(using: socialLinkRegistration,
-//                                                                        for: indexPath, item: socialLink)
+                    //                case .insightPost(let insight):
+                    //                    return collectionView.dequeueConfiguredReusableCell(using: insightRegistration,
+                    //                                                                        for: indexPath, item: insight)
+                    //                case .groupPost(let group):
+                    //                    return collectionView.dequeueConfiguredReusableCell(using: groupRegistration,
+                    //                                                                        for: indexPath, item: group)
+                    //                case .coffeeChat(let coffeeChat):
+                    //                    return collectionView.dequeueConfiguredReusableCell(using: coffeeChatRegistration,
+                    //                                                                        for: indexPath, item: coffeeChat)
+                    //                case .announcement(let announcement):
+                    //                    return collectionView.dequeueConfiguredReusableCell(using: announcementRegistration,
+                    //                                                                        for: indexPath, item: announcement)
+                    //                case .socialLink(let socialLink):
+                    //                    return collectionView.dequeueConfiguredReusableCell(using: socialLinkRegistration,
+                    //                                                                        for: indexPath, item: socialLink)
                 }
             }
         
@@ -219,7 +221,7 @@ extension HomeForMemberVC {
     private func configureSupplementaryView() {
         let headerRegistration = createHeaderRegistration()
         // TODO: 이후 스프린트에서 순차 배포
-//        let footerRegistration = createFooterRegistration()
+        //        let footerRegistration = createFooterRegistration()
         
         dataSource.supplementaryViewProvider = { (collectionView, kind, indexPath) in
             if kind == UICollectionView.elementKindSectionHeader {
@@ -227,15 +229,36 @@ extension HomeForMemberVC {
             }
             
             // TODO: 이후 스프린트에서 순차 배포
-//            if kind == UICollectionView.elementKindSectionFooter {
-//                return collectionView.dequeueConfiguredReusableSupplementary(using: footerRegistration, for: indexPath)
-//            }
+            //            if kind == UICollectionView.elementKindSectionFooter {
+            //                return collectionView.dequeueConfiguredReusableSupplementary(using: footerRegistration, for: indexPath)
+            //            }
             
             return UICollectionReusableView()
         }
     }
     
+    private func bindViews() {
+        self.extendedFAButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                if owner.fabButtonType == .extended {
+                    owner.fabButtonTapped.send()
+                }
+            }.store(in: cancelBag)
+        
+        self.collapsedFAButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                if owner.fabButtonType == .collapsed {
+                    owner.fabButtonTapped.send()
+                }
+            }.store(in: cancelBag)
+    }
+    
     private func bindViewModels() {
+        let noticeButtonTapped = naviBar.noticeButtonTap.mapVoid().asDriver()
+        let settingButtonTapped = naviBar.settingButtonTap.mapVoid().asDriver()
+        
         let input = HomeForMemberViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
             viewWillAppear: viewWillAppear.asDriver(),
@@ -243,7 +266,7 @@ extension HomeForMemberVC {
             attendanceButtonTapped: attendanceButtonTapped.asDriver(),
             noticeButtonTapped: noticeButtonTapped,
             settingButtonTapped: settingButtonTapped,
-            extendedFAButtonTapped: extendedFAButtonTapped
+            extendedFAButtonTapped: fabButtonTapped.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -282,7 +305,7 @@ extension HomeForMemberVC {
         var snapshot = NSDiffableDataSourceSnapshot<HomeForMemberSectionLayoutKind, HomeForMemberItem>()
         
         // TODO: 이후 스프린트에서 순차 배포
-//        snapshot.appendSections(HomeForMemberSectionLayoutKind.allCases)
+        //        snapshot.appendSections(HomeForMemberSectionLayoutKind.allCases)
         snapshot.appendSections([.dashBoard, .calendar, .mainProduct, .appService])
         
         snapshot.appendItems([.dashBoard(data.dashBoard)], toSection: .dashBoard)
@@ -290,12 +313,12 @@ extension HomeForMemberVC {
         snapshot.appendItems(self.viewModel.productServiceList.map { .productService($0) }, toSection: .mainProduct)
         snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
         // TODO: 이후 스프린트에서 순차 배포
-//        snapshot.appendItems([.insightPost(data.insightPosts.first!)], toSection: .insight) // 임시로 첫 번째 값만 배정
-//        snapshot.appendItems(data.groupPosts.map { .groupPost($0) }, toSection: .group)
-//        snapshot.appendItems(data.coffeeChatPosts.map { .coffeeChat($0) }, toSection: .coffeeChat)
-//        snapshot.appendItems(data.announcementPosts.map { .announcement($0) }, toSection: .announcement)
-//        snapshot.appendItems(SocialLinkCardType.allCases.map { .socialLink($0) }, toSection: .socialLinks)
-//        
+        //        snapshot.appendItems([.insightPost(data.insightPosts.first!)], toSection: .insight) // 임시로 첫 번째 값만 배정
+        //        snapshot.appendItems(data.groupPosts.map { .groupPost($0) }, toSection: .group)
+        //        snapshot.appendItems(data.coffeeChatPosts.map { .coffeeChat($0) }, toSection: .coffeeChat)
+        //        snapshot.appendItems(data.announcementPosts.map { .announcement($0) }, toSection: .announcement)
+        //        snapshot.appendItems(SocialLinkCardType.allCases.map { .socialLink($0) }, toSection: .socialLinks)
+        //
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     
@@ -339,12 +362,14 @@ extension HomeForMemberVC: UICollectionViewDelegate {
         let offsetY = scrollView.contentOffset.y
         
         if offsetY >= 330 && !isExtendedButtonHidden {
-            self.animateExtendedFAButtonHide(.extended)
+            self.animateExtendedFAButtonHide(fabButtonType)
             self.isExtendedButtonHidden = true
+            self.fabButtonType = .collapsed
             self.extendedFAButton.layoutIfNeeded()
         } else if offsetY < 330 && isExtendedButtonHidden {
-            self.animateExtendedFAButtonHide(.collapsed)
+            self.animateExtendedFAButtonHide(fabButtonType)
             self.isExtendedButtonHidden = false
+            self.fabButtonType = .extended
             self.extendedFAButton.layoutIfNeeded()
         }
     }
