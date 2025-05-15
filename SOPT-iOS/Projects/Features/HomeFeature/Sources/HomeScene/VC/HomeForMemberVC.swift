@@ -25,6 +25,10 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     private var cellTapped = PassthroughSubject<HomeForMemberItem, Never>()
     private(set) var attendanceButtonTapped = PassthroughSubject<Void, Never>()
     
+    private lazy var noticeButtonTapped = naviBar.noticeButtonTap.mapVoid().asDriver()
+    private lazy var settingButtonTapped = naviBar.settingButtonTap.mapVoid().asDriver()
+    private lazy var extendedFAButtonTapped = extendedFAButton.gesture().mapVoid().asDriver()
+    
     private var isFirstAppear = true
     private var isExtendedButtonHidden: Bool = false
     
@@ -232,21 +236,14 @@ extension HomeForMemberVC {
     }
     
     private func bindViewModels() {
-        let noticeButtonTapped = naviBar.noticeButtonTap
-            .mapVoid()
-            .asDriver()
-        
-        let settingButtonTapped = naviBar.settingButtonTap
-            .mapVoid()
-            .asDriver()
-        
         let input = HomeForMemberViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
             viewWillAppear: viewWillAppear.asDriver(),
             cellTapped: cellTapped.asDriver(),
             attendanceButtonTapped: attendanceButtonTapped.asDriver(),
             noticeButtonTapped: noticeButtonTapped,
-            settingButtonTapped: settingButtonTapped
+            settingButtonTapped: settingButtonTapped,
+            extendedFAButtonTapped: extendedFAButtonTapped
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
