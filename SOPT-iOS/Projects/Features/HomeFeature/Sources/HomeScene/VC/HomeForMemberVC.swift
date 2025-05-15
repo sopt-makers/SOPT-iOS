@@ -128,9 +128,11 @@ extension HomeForMemberVC {
                        usingSpringWithDamping: 1,
                        initialSpringVelocity: 0.8,
                        options: [.curveEaseInOut],
-                       animations: {
+                       animations: { [weak self] in
+            guard let self else { return }
             self.extendedFAButton.transform = CGAffineTransform(translationX: 0, y: 120)
-        }, completion: { _ in
+        }, completion: { [weak self] _ in
+            guard let self else { return }
             self.animateExtendedFAButtonShow()
             
             type == .extended ? self.extendedFAButton.setStyle(.collapsed) : self.extendedFAButton.setStyle(.extended)
@@ -145,7 +147,8 @@ extension HomeForMemberVC {
                        usingSpringWithDamping: 1,
                        initialSpringVelocity: 0.8,
                        options: [.curveEaseInOut],
-                       animations: {
+                       animations: { [weak self] in
+            guard let self else { return }
             self.extendedFAButton.transform = .identity
         })
     }
