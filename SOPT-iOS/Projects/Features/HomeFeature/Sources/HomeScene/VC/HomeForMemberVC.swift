@@ -26,6 +26,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     private(set) var attendanceButtonTapped = PassthroughSubject<Void, Never>()
     
     private var isFirstAppear = true
+    private var isExtendedButtonHidden: Bool = false
     
     // MARK: - UI Components
     
@@ -119,6 +120,34 @@ extension HomeForMemberVC {
             make.width.equalTo(127)
             make.height.equalTo(53)
         }
+    }
+    
+    private func animateExtendedFAButtonHide(_ type: ExtendedFAButtonType) {
+        UIView.animate(withDuration: 0.2,
+                       delay: 0,
+                       usingSpringWithDamping: 1,
+                       initialSpringVelocity: 0.8,
+                       options: [.curveEaseInOut],
+                       animations: {
+            self.extendedFAButton.transform = CGAffineTransform(translationX: 0, y: 120)
+        }, completion: { _ in
+            self.animateExtendedFAButtonShow()
+            
+            type == .extended ? self.extendedFAButton.setStyle(.collapsed) : self.extendedFAButton.setStyle(.extended)
+            type == .extended ? self.collapsedFAButtonLayout() : self.extendedFAButtonLayout()
+            
+        })
+    }
+    
+    private func animateExtendedFAButtonShow() {
+        UIView.animate(withDuration: 0.2,
+                       delay: 0,
+                       usingSpringWithDamping: 1,
+                       initialSpringVelocity: 0.8,
+                       options: [.curveEaseInOut],
+                       animations: {
+            self.extendedFAButton.transform = .identity
+        })
     }
 }
 
@@ -309,15 +338,14 @@ extension HomeForMemberVC: UICollectionViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
         
-        UIView.animate(withDuration: 0.3) {
-            if offsetY >= 330 {
-                self.collapsedFAButtonLayout()
-                self.extendedFAButton.setStyle(.collapsed)
-            } else {
-                self.extendedFAButtonLayout()
-                self.extendedFAButton.setStyle(.expended)
-            }
-            self.view.layoutIfNeeded()
+        if offsetY >= 330 && !isExtendedButtonHidden {
+            self.animateExtendedFAButtonHide(.extended)
+            self.isExtendedButtonHidden = true
+            self.extendedFAButton.layoutIfNeeded()
+        } else if offsetY < 330 && isExtendedButtonHidden {
+            self.animateExtendedFAButtonHide(.collapsed)
+            self.isExtendedButtonHidden = false
+            self.extendedFAButton.layoutIfNeeded()
         }
     }
 }
