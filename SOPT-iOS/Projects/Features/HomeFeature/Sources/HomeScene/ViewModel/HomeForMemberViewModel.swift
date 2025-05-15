@@ -31,6 +31,48 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         .init(product: .playgroundCommunity),
         .init(product: .group),
         .init(product: .member),
+        .init(product: .project),
+        .init(product: .playgroundCommunity),
+        .init(product: .group),
+        .init(product: .member),
+        .init(product: .project),
+        .init(product: .playgroundCommunity),
+        .init(product: .group),
+        .init(product: .member),
+        .init(product: .project),
+        .init(product: .playgroundCommunity),
+        .init(product: .group),
+        .init(product: .member),.init(product: .project),
+        .init(product: .playgroundCommunity),
+        .init(product: .group),
+        .init(product: .member),.init(product: .project),
+        .init(product: .playgroundCommunity),
+        .init(product: .group),
+        .init(product: .member),.init(product: .project),
+        .init(product: .playgroundCommunity),
+        .init(product: .group),
+        .init(product: .member),.init(product: .project),
+        .init(product: .playgroundCommunity),
+        .init(product: .group),
+        .init(product: .member),.init(product: .project),
+        .init(product: .playgroundCommunity),
+        .init(product: .group),
+        .init(product: .member),.init(product: .project),
+        .init(product: .playgroundCommunity),
+        .init(product: .group),
+        .init(product: .member),.init(product: .project),
+        .init(product: .playgroundCommunity),
+        .init(product: .group),
+        .init(product: .member),.init(product: .project),
+        .init(product: .playgroundCommunity),
+        .init(product: .group),
+        .init(product: .member),.init(product: .project),
+        .init(product: .playgroundCommunity),
+        .init(product: .group),
+        .init(product: .member),.init(product: .project),
+        .init(product: .playgroundCommunity),
+        .init(product: .group),
+        .init(product: .member),
         .init(product: .project)
     ]
     
@@ -43,6 +85,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         let attendanceButtonTapped: Driver<Void>
         let noticeButtonTapped: Driver<Void>
         let settingButtonTapped: Driver<Void>
+        let extendedFAButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -65,6 +108,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public var onNeedSignIn: (() -> Void)?
     public var onNetworkError: (() -> Void)?
     public var onPoke: ((Bool) -> Void)?
+    public var onExtendedFAButtonTapped: ((String) -> Void)?
     
     
     // MARK: - initialization
@@ -194,6 +238,14 @@ extension HomeForMemberViewModel {
             .sink { owner, _ in
                 owner.onAttendanceButtonTapped?()
                 AmplitudeInstance.shared.trackWithUserType(event: .clickAttendanceNew)
+            }
+            .store(in: cancelBag)
+        
+        input.extendedFAButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                print("버튼 클릭")
+                owner.onExtendedFAButtonTapped?("home/poke")
             }
             .store(in: cancelBag)
         
