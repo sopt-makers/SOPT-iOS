@@ -123,9 +123,9 @@ extension HomeForMemberVC {
     }
     
     private func animateExtendedFAButtonHide(_ type: ExtendedFAButtonType) {
-        UIView.animate(withDuration: 0.2,
+        UIView.animate(withDuration: 0.1,
                        delay: 0,
-                       usingSpringWithDamping: 1,
+                       usingSpringWithDamping: 0.7,
                        initialSpringVelocity: 0.8,
                        options: [.curveEaseInOut],
                        animations: { [weak self] in
@@ -142,9 +142,9 @@ extension HomeForMemberVC {
     }
     
     private func animateExtendedFAButtonShow() {
-        UIView.animate(withDuration: 0.2,
+        UIView.animate(withDuration: 0.1,
                        delay: 0,
-                       usingSpringWithDamping: 1,
+                       usingSpringWithDamping: 0.7,
                        initialSpringVelocity: 0.8,
                        options: [.curveEaseInOut],
                        animations: { [weak self] in
