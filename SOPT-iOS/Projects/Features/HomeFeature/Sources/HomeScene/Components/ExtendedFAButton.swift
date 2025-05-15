@@ -7,13 +7,14 @@
 //
 
 import UIKit
+import Combine
 
 import DSKit
 
 final class ExtendedFAButton: UIView {
 
     // MARK: - Properties
-    
+    public lazy var actionButtonTapped = actionButton.gesture().mapVoid().asDriver()
     private var buttonType: ExtendedFAButtonType = .extended {
         didSet {
             updateLayout(buttonType)
