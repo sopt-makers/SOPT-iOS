@@ -109,6 +109,10 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
             self?.requestCoordinating?(.poke(isNewUser: isNewUser))
         }
         
+        homeForMember.vm.onExtendedFAButtonTapped = { [weak self] url in
+            self?.requestCoordinating?(.deepLink(url: url))
+        }
+        
         rootViewController = homeForMember.vc.viewController
         
         router.push(homeForMember.vc)
