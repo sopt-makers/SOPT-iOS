@@ -94,7 +94,7 @@ extension PlaygroundNewsCardCVC {
 
     private func setLayout() {
         self.addSubviews(userStackView, contentStackView)
-        
+
         profileImageView.snp.makeConstraints { make in
             make.size.equalTo(50)
         }
@@ -159,10 +159,10 @@ extension PlaygroundNewsCardCVC {
     func setOutlinedAnimated() {
         self.layer.borderColor = DSKitAsset.Colors.orange300.color.cgColor
         self.layer.borderWidth = 0
-        UIView.animate(withDuration: 1, delay: 0, options: [.curveEaseIn], animations: { [weak self] in
+        UIView.transition(with: self, duration: 1, options: .transitionCrossDissolve, animations: { [weak self] in
             self?.changeComponentsUI(by: .focusing)
-        }) { _ in
-            UIView.animate(withDuration: 1, delay: 0, options: [.curveEaseOut], animations: { [weak self] in
+        }) { _ in 
+            UIView.transition(with: self, duration: 1, options: .transitionCrossDissolve, animations: { [weak self] in
                 self?.changeComponentsUI(by: .unfocusing)
             })
         }
