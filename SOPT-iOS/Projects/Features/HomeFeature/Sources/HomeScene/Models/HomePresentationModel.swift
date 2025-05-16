@@ -16,6 +16,7 @@ struct HomePresentationModel {
     let dashBoard: HomePresentationModel.DashBoard
     let recentSchedule: HomePresentationModel.RecentSchedule
     let appServices: [HomePresentationModel.AppService]
+    let insightPosts: [HomePresentationModel.InsightPost]
     
     // MARK: - Item Structs
     

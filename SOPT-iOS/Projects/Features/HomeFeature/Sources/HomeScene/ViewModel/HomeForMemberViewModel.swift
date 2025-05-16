@@ -105,42 +105,21 @@ extension HomeForMemberViewModel {
             .compactMap { $0 }
             .withUnretained(self)
             .flatMap { owner, userInfo in
-                Publishers.Zip3(
+                Publishers.Zip4(
                     owner.useCase.getHomeDescription().map { $0.toPresentation(history: userInfo.historyList, isAllConfirm: userInfo.isAllConfirm) },
                     owner.useCase.getRecentSchedule().map { $0.toPresentation() },
-                    owner.useCase.getAppServices().map { $0.map { $0.toPresentation() } }
+                    owner.useCase.getAppServices().map { $0.map { $0.toPresentation() } },
+                    owner.useCase.getInsightPosts().map { $0.map { $0.toPresentation() } }
                 )
-                .map { dashBoard, recentSchedule, appService in
+                .map { dashBoard, recentSchedule, appService, insights in
                     HomePresentationModel(
                         dashBoard: dashBoard,
                         recentSchedule: recentSchedule,
-                        appServices: appService
+                        appServices: appService,
+                        insightPosts: insights
                     )
                 }
             }
-        // TODO: 이후 스프린트에서 순차 배포
-        //            .flatMap {
-        //                description,
-        //                recentSchedule,
-        //                appService in
-        //                Publishers.Zip4(
-        //                    self.useCase.getInsightPosts().map { $0.map { $0.toPresentation() } },
-        //                    self.useCase.getGroupPosts().map { $0.map { $0.toPresentation() } },
-        //                    self.useCase.getCoffeeChatPosts().map { $0.map { $0.toPresentation() } },
-        //                    self.useCase.getAnnouncementPosts().map { $0.map { $0.toPresentation() } }
-        //                )
-        //                .map { insight, group, coffeeChat, announcement in
-        //                    HomePresentationModel(
-        //                        description: description,
-        //                        recentSchedule: recentSchedule,
-        //                        appServices: appService,
-        //                        insightPosts: insight,
-        //                        groupPosts: group,
-        //                        coffeeChatPosts: coffeeChat,
-        //                        announcementPosts: announcement
-        //                    )
-        //                }
-        //            }
             .sink { data in
                 output.homeItem.send(data)
                 output.isLoading.send(false)
