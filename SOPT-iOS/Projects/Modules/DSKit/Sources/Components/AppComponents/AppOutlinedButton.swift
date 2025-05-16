@@ -58,12 +58,12 @@ extension AppOutlinedButton {
 	private func setUI() {
 		
 		config.baseBackgroundColor = .clear
-		config.background.strokeColor = DSKitAsset.Colors.white100.color
+		config.background.strokeColor = DSKitAsset.Colors.white.color
 		config.background.strokeWidth = 1.0
 		config.cornerStyle = .capsule
 		
         self.title.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-        self.title.foregroundColor = DSKitAsset.Colors.white100.color
+        self.title.foregroundColor = DSKitAsset.Colors.white.color
         config.attributedTitle = self.title
 		
 		self.configuration = config

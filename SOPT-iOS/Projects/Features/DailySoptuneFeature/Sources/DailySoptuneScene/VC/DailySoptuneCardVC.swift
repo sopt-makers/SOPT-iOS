@@ -40,7 +40,7 @@ public final class DailySoptuneCardVC: UIViewController, DailySoptuneCardViewCon
 	}
 	
 	private let cardLabel = UILabel().then {
-		$0.textColor = DSKitAsset.Colors.white100.color
+		$0.textColor = DSKitAsset.Colors.white.color
 		$0.font = DSKitFontFamily.Suit.bold.font(size: 28)
 	}
 	

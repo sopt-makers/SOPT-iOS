@@ -17,7 +17,7 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
     
     private let titleLabel = UILabel().then {
         $0.font = DSKitFontFamily.Suit.bold.font(size: 20)
-        $0.textColor = DSKitAsset.Colors.white100.color
+        $0.textColor = DSKitAsset.Colors.white.color
     }
     
     private let coffechatLogoImageView = UIImageView().then {

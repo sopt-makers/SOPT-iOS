@@ -16,7 +16,7 @@ final class DashBoardCardCVC: UICollectionViewCell {
     // MARK: - UI Components
         
     private var descriptionLabel = UILabel().then {
-        $0.textColor = DSKitAsset.Colors.white100.color
+        $0.textColor = DSKitAsset.Colors.white.color
         $0.font = DSKitFontFamily.Suit.medium.font(size: 18)
         $0.numberOfLines = 2
         $0.textAlignment = .left
@@ -97,7 +97,7 @@ extension DashBoardCardCVC {
             self.descriptionLabel.htmlToString(targetString: description,
                                                defaultFont: DSKitFontFamily.Suit.medium.font(size: 18),
                                                boldFont: DSKitFontFamily.Suit.bold.font(size: 18),
-                                               defaultColor: DSKitAsset.Colors.white100.color)
+                                               defaultColor: DSKitAsset.Colors.white.color)
             self.descriptionLabel.modifyLineSpacing(lineSpacing: 5)
             self.rightArrowWithCircleImageView.isHidden = false
             guard let history = model.history else { return }
