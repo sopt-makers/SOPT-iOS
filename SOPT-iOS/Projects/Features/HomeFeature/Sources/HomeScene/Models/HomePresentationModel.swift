@@ -10,6 +10,7 @@ import UIKit
 
 import Core
 import Domain
+import DSKit
 
 struct HomePresentationModel {
 
@@ -23,11 +24,15 @@ struct HomePresentationModel {
     struct DashBoard: Identifiable, Hashable {
         let id = "dashboard"
         
-        let description: String?
+        let description: NSAttributedString
         let history: [Int]?
         let isAllConfirm: Bool?
         
-        init(description: String? = nil, history: [Int]? = nil, isAllConfirm: Bool? = nil) {
+        init(
+            description: NSAttributedString = NSAttributedString(string: ""),
+            history: [Int]? = nil,
+            isAllConfirm: Bool? = nil
+        ) {
             self.description = description
             self.history = history
             self.isAllConfirm = isAllConfirm
@@ -112,8 +117,15 @@ struct HomePresentationModel {
 
 extension HomeDescriptionModel {
     func toPresentation(history: [Int], isAllConfirm: Bool?) -> HomePresentationModel.DashBoard {
+        let attrString = NSAttributedString
+            .fromHTML(
+                description,
+                defaultFont: DSKitFontFamily.Suit.medium.font(size: 18),
+                boldFont: DSKitFontFamily.Suit.bold.font(size: 18),
+                defaultColor: DSKitAsset.Colors.white100.color
+            )
         return HomePresentationModel.DashBoard(
-            description: self.description,
+            description: attrString,
             history: history,
             isAllConfirm: isAllConfirm
         )

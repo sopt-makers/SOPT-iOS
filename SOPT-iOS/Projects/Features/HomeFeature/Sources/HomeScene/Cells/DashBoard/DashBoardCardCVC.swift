@@ -93,11 +93,7 @@ extension DashBoardCardCVC {
             userHistoryView.setData(userType: userType, recentHistory: nil, allHistory: nil)
         case .active, .inactive:
             guard let model else { return }
-            guard let description = model.description else { return }
-            self.descriptionLabel.htmlToString(targetString: description,
-                                               defaultFont: DSKitFontFamily.Suit.medium.font(size: 18),
-                                               boldFont: DSKitFontFamily.Suit.bold.font(size: 18),
-                                               defaultColor: DSKitAsset.Colors.white100.color)
+            self.descriptionLabel.attributedText = model.description
             self.descriptionLabel.modifyLineSpacing(lineSpacing: 5)
             self.rightArrowWithCircleImageView.isHidden = false
             guard let history = model.history else { return }
