@@ -6,7 +6,7 @@
 //  Copyright © 2024 SOPT-iOS. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 import BaseFeatureDependency
 import Core
@@ -17,4 +17,6 @@ public protocol HomeCalendarDetailCoordinatable {
     var onAttendanceButtonTap: (() -> Void)? { get set }
 }
 public typealias HomeCalendarDetailViewModelType = ViewModelType & HomeCalendarDetailCoordinatable
-public typealias HomeCalendarDetailPresentable = (vc: HomeCalendarDetailViewControllable, vm: any HomeCalendarDetailViewModelType)
+public typealias LegacyHomeCalendarDetailPresentable = (vc: HomeCalendarDetailViewControllable, vm: any HomeCalendarDetailViewModelType)
+
+public typealias HomeCalendarDetailPresentable = (vc: UIViewController, vm: any HomeCalendarDetailViewModelType)

@@ -6,7 +6,7 @@
 //  Copyright © 2024 SOPT-iOS. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 import BaseFeatureDependency
 import Core
@@ -26,4 +26,6 @@ public protocol HomeForMemberCoordinatable {
     var onExtendedFAButtonTapped: ((String) -> Void)? { get set }
 }
 public typealias HomeForMemberViewModelType = ViewModelType & HomeForMemberCoordinatable
-public typealias HomeForMemberPresentable = (vc: HomeForMemberViewControllable, vm: any HomeForMemberViewModelType)
+public typealias LegacyHomeForMemberPresentable = (vc: HomeForMemberViewControllable, vm: any HomeForMemberViewModelType)
+
+public typealias HomeForMemberPresentable = (vc: UIViewController, vm: any HomeForMemberViewModelType)

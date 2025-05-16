@@ -30,7 +30,6 @@ public class HomeForVisitorViewModel: HomeForVisitorViewModelType {
         .init(product: .project),
         .init(product: .instagram)
     ]
-
         
     // MARK: - Inputs
     

@@ -17,9 +17,6 @@ public protocol HomeService {
     func getDescription() -> AnyPublisher<HomeDescriptionEntity, Error>
     func getAppServiceAccessStatus() -> AnyPublisher<[HomeAppServiceAccessStatusEntity], Error>
     func getInsightPosts() -> AnyPublisher<[HomeInsightPostsEntity], Error>
-    func getGroupAll() -> AnyPublisher<[HomeGroupEntity], Error>
-    func getCoffeeChat() -> AnyPublisher<[HomeCoffeeChatEntity], Error>
-    func getHomeEmploymentEntity() -> AnyPublisher<[HomeEmploymentResponseEntity], Error>
 }
 
 extension DefaultHomeService: HomeService {
@@ -33,17 +30,5 @@ extension DefaultHomeService: HomeService {
     
     public func getInsightPosts() -> AnyPublisher<[HomeInsightPostsEntity], any Error> {
         requestObjectInCombine(.getInsightPosts)
-    }
-    
-    public func getGroupAll() -> AnyPublisher<[HomeGroupEntity], any Error> {
-        requestObjectInCombine(.getGroupAll)
-    }
-    
-    public func getCoffeeChat() -> AnyPublisher<[HomeCoffeeChatEntity], any Error> {
-        requestObjectInCombine(.getCoffeeChat)
-    }
-    
-    public func getHomeEmploymentEntity() -> AnyPublisher<[HomeEmploymentResponseEntity], any Error> {
-        requestObjectInCombine(.getEmployment)
     }
 }

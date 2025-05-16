@@ -14,8 +14,5 @@ enum HomeForMemberItem: Hashable {
     case productService(HomePresentationModel.ProductService)
     case appService(HomePresentationModel.AppService)
     case insightPost(HomePresentationModel.InsightPost)
-    case groupPost(HomePresentationModel.GroupPost)
-    case coffeeChat(HomePresentationModel.CoffeeChat)
-    case announcement(HomePresentationModel.Announcement)
     case socialLink(SocialLinkCardType)
 }
