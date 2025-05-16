@@ -26,8 +26,8 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     private(set) var attendanceButtonTapped = PassthroughSubject<Void, Never>()
     
     private var fabButtonTapped = PassthroughSubject<Void, Never>()
-    private lazy var extendedFAButtonTapped = extendedFAButton.actionButtonTapped
-    private lazy var collapsedFAButtonTapped = extendedFAButton.gesture().mapVoid().asDriver()
+    private lazy var extendedFAButtonTapped = fabButton.actionButtonTapped
+    private lazy var collapsedFAButtonTapped = fabButton.gesture().mapVoid().asDriver()
     
     private var isFirstAppear = true
     private var isExtendedButtonHidden: Bool = false
@@ -38,7 +38,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     private lazy var naviBar = HomeNavigationBar()
     private var dataSource: UICollectionViewDiffableDataSource<HomeForMemberSectionLayoutKind, HomeForMemberItem>! = nil
     var collectionView: UICollectionView! = nil
-    private var extendedFAButton = ExtendedFAButton(frame: .zero)
+    private var fabButton = ExtendedFAButton(frame: .zero)
     
     // MARK: - Initialization
     
@@ -84,14 +84,14 @@ extension HomeForMemberVC {
     
     private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
-        view.backgroundColor = .white
+        view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
     }
     
     private func setLayout() {
         view.addSubviews(
             naviBar,
             collectionView,
-            extendedFAButton
+            fabButton
         )
         
         naviBar.snp.makeConstraints { make in
@@ -104,7 +104,7 @@ extension HomeForMemberVC {
             make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
         }
         
-        extendedFAButton.snp.makeConstraints { make in
+        fabButton.snp.makeConstraints { make in
             make.bottom.equalToSuperview().inset(124)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(68)
@@ -112,7 +112,7 @@ extension HomeForMemberVC {
     }
     
     private func extendedFAButtonLayout() {
-        extendedFAButton.snp.remakeConstraints { make in
+        fabButton.snp.remakeConstraints { make in
             make.bottom.equalToSuperview().inset(124)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(68)
@@ -120,7 +120,7 @@ extension HomeForMemberVC {
     }
     
     private func collapsedFAButtonLayout() {
-        extendedFAButton.snp.remakeConstraints { make in
+        fabButton.snp.remakeConstraints { make in
             make.bottom.equalToSuperview().inset(124)
             make.trailing.equalToSuperview().inset(20)
             make.width.equalTo(127)
@@ -136,12 +136,12 @@ extension HomeForMemberVC {
                        options: [.curveEaseInOut],
                        animations: { [weak self] in
             guard let self else { return }
-            self.extendedFAButton.transform = CGAffineTransform(translationX: 0, y: 120)
+            self.fabButton.transform = CGAffineTransform(translationX: 0, y: 120)
         }, completion: { [weak self] _ in
             guard let self else { return }
             self.animateExtendedFAButtonShow()
             
-            type == .extended ? self.extendedFAButton.setStyle(.collapsed) : self.extendedFAButton.setStyle(.extended)
+            type == .extended ? self.fabButton.setStyle(.collapsed) : self.fabButton.setStyle(.extended)
             type == .extended ? self.collapsedFAButtonLayout() : self.extendedFAButtonLayout()
             
         })
@@ -155,7 +155,7 @@ extension HomeForMemberVC {
                        options: [.curveEaseInOut],
                        animations: { [weak self] in
             guard let self else { return }
-            self.extendedFAButton.transform = .identity
+            self.fabButton.transform = .identity
         })
     }
 }
@@ -361,16 +361,16 @@ extension HomeForMemberVC: UICollectionViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
         
-        if offsetY >= 330 && !isExtendedButtonHidden {
-            self.animateExtendedFAButtonHide(fabButtonType)
-            self.isExtendedButtonHidden = true
-            self.fabButtonType = .collapsed
-            self.extendedFAButton.layoutIfNeeded()
-        } else if offsetY < 330 && isExtendedButtonHidden {
-            self.animateExtendedFAButtonHide(fabButtonType)
-            self.isExtendedButtonHidden = false
-            self.fabButtonType = .extended
-            self.extendedFAButton.layoutIfNeeded()
+        if offsetY < 330 && isExtendedButtonHidden || offsetY >= 330 && !isExtendedButtonHidden {
+            toggleFAButtonUI()
         }
+    }
+    
+    /// offsetY 값이 330을 지날 때 FAB의 UI를 변경하고 애니메이션을 실행하는 메서드
+    private func toggleFAButtonUI() {
+        animateExtendedFAButtonHide(fabButtonType)
+        isExtendedButtonHidden.toggle()
+        fabButtonType = fabButtonType == .extended ? .collapsed : .extended
+        fabButton.layoutIfNeeded()
     }
 }
