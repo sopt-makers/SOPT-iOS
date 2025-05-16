@@ -11,7 +11,7 @@ import Combine
 
 import DSKit
 
-final class ExtendedFAButton: UIView {
+final class HomeFAButton: UIView {
 
     // MARK: - Properties
     public lazy var actionButtonTapped = actionButton.gesture().mapVoid().asDriver()
@@ -97,7 +97,7 @@ final class ExtendedFAButton: UIView {
 
 // MARK: UI & Layout
 
-extension ExtendedFAButton {
+extension HomeFAButton {
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.orange400.color
         self.layer.applyShadow(color: DSKitAsset.Colors.shadow.color, alpha: 0.7, y: 4, blur: 40)
@@ -184,7 +184,7 @@ extension ExtendedFAButton {
 
 // MARK: - Methods
 
-extension ExtendedFAButton {
+extension HomeFAButton {
     public func setStyle(_ style: ExtendedFAButtonType) {
         self.buttonType = style
     }
