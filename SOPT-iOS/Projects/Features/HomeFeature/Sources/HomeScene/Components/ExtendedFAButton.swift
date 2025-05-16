@@ -64,7 +64,7 @@ final class ExtendedFAButton: UIView {
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
     }
     
-    private let collapsedRightButton = UIImageView().then {
+    private let collapsedRightChevronImageView = UIImageView().then {
         $0.image = DSKitAsset.Assets.btnRightChevron.image
     }
     
@@ -132,8 +132,8 @@ extension ExtendedFAButton {
         }
     }
     
-    private func collapsedLayout() {
-        self.addSubviews(serviceBackgroundView, serviceImageView, collapsedTitle, collapsedSubTitle, collapsedRightButton)
+    private func setCollapsedLayout() {
+        self.addSubviews(serviceBackgroundView, serviceImageView, collapsedTitle, collapsedSubTitle, collapsedRightChevronImageView)
         
         serviceBackgroundView.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(9)
@@ -155,7 +155,7 @@ extension ExtendedFAButton {
             make.top.equalTo(collapsedTitle.snp.bottom).offset(1)
         }
         
-        collapsedRightButton.snp.makeConstraints { make in
+        collapsedRightChevronImageView.snp.makeConstraints { make in
             make.centerY.equalTo(collapsedSubTitle)
             make.leading.equalTo(collapsedSubTitle.snp.trailing)
             make.size.equalTo(16)
@@ -169,7 +169,7 @@ extension ExtendedFAButton {
         case .extended:
             self.setExpendedLayout()
         case .collapsed:
-            self.collapsedLayout()
+            self.setCollapsedLayout()
         }
     }
     
