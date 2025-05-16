@@ -307,25 +307,7 @@ public struct I18N {
         public struct Insight {
             public static let headerTitle = "인사이트 못참지!"
         }
-        
-        public struct Group {
-            public static let headerTitle = "다들 모여서 모하니?"
-            public static let entireGeneration = "전체기수"
-            public static let activityGeneration = "활동기수"
-            public static let beforeStart = "모집 전"
-            public static let applyAble = "모집 중"
-            public static let recruitmentComplete = "모집 마감"
-            public static let entirePart = "전체파트"
-        }
-        
-        public struct CoffeeChat {
-            public static let headerTitle = "커피솝에서 인사이트 한잔"
-        }
-        
-        public struct Announcements {
-            public static let headerTitle = "솝트인에게 홍보합니다!"
-        }
-        
+
         public struct SocialLink {
             public static let homePage = "홈페이지"
             public static let instagram = "인스타"

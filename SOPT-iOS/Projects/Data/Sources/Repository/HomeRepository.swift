@@ -92,27 +92,9 @@ extension HomeRepository: HomeRepositoryInterface {
             .eraseToAnyPublisher()
     }
     
-    public func getGroupPosts() -> AnyPublisher<[Domain.HomeGroupPostModel], any Error> {
-        homeService.getGroupAll()
-            .map { $0.map { $0.toDomain() } }
-            .eraseToAnyPublisher()
-    }
-    
-    public func getCoffeeChatPosts() -> AnyPublisher<[Domain.HomeCoffeeChatPostModel], any Error> {
-        homeService.getCoffeeChat()
-            .map { $0.map { $0.toDomain() } }
-            .eraseToAnyPublisher()
-    }
-    
     public func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], any Error> {
         calendarService.getCalendarDetail()
             .map{ $0.map { $0.toDomain() } }
-            .eraseToAnyPublisher()
-    }
-    
-    public func getAnnouncementPosts() -> AnyPublisher<[Domain.HomeAnnouncementModel], any Error> {
-        homeService.getHomeEmploymentEntity()
-            .map { $0.map { $0.toDomain() } }
             .eraseToAnyPublisher()
     }
     

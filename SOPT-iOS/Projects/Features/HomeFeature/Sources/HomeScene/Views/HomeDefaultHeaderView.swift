@@ -19,13 +19,7 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
         $0.font = DSKitFontFamily.Suit.bold.font(size: 20)
         $0.textColor = DSKitAsset.Colors.white100.color
     }
-    
-    private let coffechatLogoImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.imgCoffeechatLogo.image
-        $0.contentMode = .scaleAspectFit
-        $0.isHidden = true
-    }
-    
+
     private let titleStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.alignment = .leading
@@ -34,7 +28,6 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
     
     private let viewAllButton = HomeCustomTextWithArrowButton(title: I18N.Home.viewAll)
     
-
     // MARK: - Initialization
     
     override init(frame: CGRect) {
@@ -68,8 +61,7 @@ extension HomeDefaultHeaderView {
     
     private func setStackView() {
         titleStackView.addArrangedSubviews(
-            titleLabel,
-            coffechatLogoImageView
+            titleLabel
         )
     }
 }
@@ -83,9 +75,6 @@ extension HomeDefaultHeaderView {
         
         if let memberKind = sectionKind as? HomeForMemberSectionLayoutKind {
             self.viewAllButton.isHidden = (memberKind == .appService) ? true : false
-            self.coffechatLogoImageView.isHidden = (memberKind == .coffeeChat) ? false : true
-        } else {
-            self.coffechatLogoImageView.isHidden = true
         }
     }
 }
