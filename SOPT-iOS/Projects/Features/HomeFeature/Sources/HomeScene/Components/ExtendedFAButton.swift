@@ -100,7 +100,7 @@ final class ExtendedFAButton: UIView {
 extension ExtendedFAButton {
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.orange400.color
-        self.layer.applyShadow(color: <#T##UIColor#>, alpha: <#T##Float#>, x: <#T##CGFloat#>, y: <#T##CGFloat#>, blur: <#T##CGFloat#>, spread: <#T##CGFloat#>, radius: <#T##CGFloat#>)
+        self.layer.applyShadow(color: DSKitAsset.Colors.shadow.color, alpha: 0.7, y: 4, blur: 40)
     }
     
     private func setExpendedLayout() {

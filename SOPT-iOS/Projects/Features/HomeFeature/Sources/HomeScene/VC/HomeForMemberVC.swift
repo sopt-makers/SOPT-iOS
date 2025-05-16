@@ -84,7 +84,7 @@ extension HomeForMemberVC {
     
     private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
-        view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        view.backgroundColor = .white
     }
     
     private func setLayout() {
