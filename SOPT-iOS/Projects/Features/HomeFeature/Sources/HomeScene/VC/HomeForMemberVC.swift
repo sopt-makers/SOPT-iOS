@@ -26,6 +26,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     private(set) var attendanceButtonTapped = PassthroughSubject<Void, Never>()
     
     private var isFirstAppear = true
+    private var outlinedTriggered = false
     
     // MARK: - UI Components
     
@@ -258,6 +259,32 @@ extension HomeForMemberVC: UICollectionViewDelegate {
             case .playgroundNewsPost(let model):
                 self.cellTapped.send(.playgroundNewsPost(model))
             default: return
+            }
+        }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard !outlinedTriggered else { return }
+        
+        if scrollView.contentOffset.y >= 450 {
+            outlinedTriggered = true
+            self.animatePlaygroundNewsOutline()
+        } else {
+            outlinedTriggered = false
+        }
+    }
+    
+    func animatePlaygroundNewsOutline() {
+        let playgroundNewsSectionIndex = HomeForMemberSectionLayoutKind.playgroundNews.rawValue
+        let repeatCount = 4
+        let interval: TimeInterval = 2.0
+        
+        for i in 0..<repeatCount {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * interval) {
+                let indexPath = IndexPath(item: i, section: playgroundNewsSectionIndex)
+                if let cell = self.collectionView.cellForItem(at: indexPath) as? PlaygroundNewsCardCVC {
+                    cell.setOutlinedAnimated()
+                }
             }
         }
     }

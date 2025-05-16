@@ -12,28 +12,33 @@ import Domain
 import Core
 import DSKit
 
+enum PlaygroundNewsCardCVCStatus {
+    case focusing
+    case unfocusing
+}
+
 final class PlaygroundNewsCardCVC: UICollectionViewCell {
     
     // MARK: - Properties
 
-    private let categorySubPhraseView = HomeCategoryTagView()
+    private let categorySubPhraseView = HomeCategoryTagView().setTitleColor(DSKitAsset.Colors.orange300.color.withAlphaComponent(0.6))
 
     private let verticalDividerView = UIImageView().then {
         $0.image = DSKitAsset.Assets.icVerticalDivider.image
         $0.contentMode = .scaleAspectFit
     }
     
-    private let categoryTagView = HomeCategoryTagView()
+    private let categoryTagView = HomeCategoryTagView().setTitleColor(DSKitAsset.Colors.orange300.color.withAlphaComponent(0.6))
     
     private let profileImageView = CustomProfileImageView().hideBorder()
     
     private let userNameLabel = UILabel().then {
-        $0.textColor = DSKitAsset.Colors.gray30.color
+        $0.textColor = DSKitAsset.Colors.gray200.color
         $0.font = DSKitFontFamily.Suit.regular.font(size: 10)
     }
     
     private let userPartLabel = UILabel().then {
-        $0.textColor = DSKitAsset.Colors.gray400.color
+        $0.textColor = DSKitAsset.Colors.gray500.color
         $0.font = DSKitFontFamily.Suit.regular.font(size: 10)
     }
     
@@ -48,7 +53,7 @@ final class PlaygroundNewsCardCVC: UICollectionViewCell {
     }
     
     private let postTitleLabel = UILabel().then {
-        $0.textColor = DSKitAsset.Colors.white100.color
+        $0.textColor = DSKitAsset.Colors.gray200.color
         $0.font = DSKitFontFamily.Suit.bold.font(size: 16)
         $0.lineBreakMode = .byTruncatingTail
     }
@@ -144,5 +149,53 @@ extension PlaygroundNewsCardCVC {
         self.postTitleLabel.text = "나 메이커스팀인데 메팀 좋다"
         self.postContentLabel.text = "본문 내용은 두줄로 보여줍니다. 본문 내용은 두줄로 보여줍니다.본문 내용은 두줄로 보여줍니다."
         self.postContentLabel.setLineSpacing(lineSpacing: 1)
+    }
+}
+
+
+// MARK: - Animation Methods
+
+extension PlaygroundNewsCardCVC {
+    func setOutlinedAnimated() {
+        self.layer.borderColor = DSKitAsset.Colors.orange300.color.cgColor
+        self.layer.borderWidth = 0
+        UIView.animate(withDuration: 1, delay: 0, options: [.curveEaseIn], animations: { [weak self] in
+            self?.changeComponentsUI(by: .focusing)
+        }) { _ in
+            UIView.animate(withDuration: 1, delay: 0, options: [.curveEaseOut], animations: { [weak self] in
+                self?.changeComponentsUI(by: .unfocusing)
+            })
+        }
+    }
+    
+    private func animateColorFades(_ changes: [(UIView, () -> Void)]) {
+        for (view, change) in changes {
+            UIView.transition(with: view, duration: 0.3, options: .transitionCrossDissolve, animations: change, completion: nil)
+        }
+    }
+    
+    private func changeComponentsUI(by status: PlaygroundNewsCardCVCStatus) {
+        switch status {
+        case .focusing:
+            self.layer.borderWidth = 1
+            self.animateColorFades([
+                (self.userNameLabel, { self.userNameLabel.textColor = DSKitAsset.Colors.gray30.color }),
+                (self.userPartLabel, { self.userPartLabel.textColor = DSKitAsset.Colors.gray400.color }),
+                (self.categorySubPhraseView, { self.categorySubPhraseView.setTitleColor(DSKitAsset.Colors.orange300.color) }),
+                (self.categoryTagView, { self.categoryTagView.setTitleColor(DSKitAsset.Colors.orange300.color) }),
+                (self.postTitleLabel, { self.postTitleLabel.textColor = DSKitAsset.Colors.white100.color }),
+                (self.postContentLabel, { self.postContentLabel.textColor = DSKitAsset.Colors.gray400.color })
+            ])
+        case .unfocusing:
+            self.layer.borderWidth = 0
+            self.animateColorFades([
+                (self.userNameLabel, { self.userNameLabel.textColor = DSKitAsset.Colors.gray200.color }),
+                (self.userPartLabel, { self.userPartLabel.textColor = DSKitAsset.Colors.gray500.color }),
+                (self.categorySubPhraseView, { self.categorySubPhraseView.setTitleColor(DSKitAsset.Colors.orange300.color.withAlphaComponent(0.6)) }),
+                (self.categoryTagView, { self.categoryTagView.setTitleColor(DSKitAsset.Colors.orange300.color.withAlphaComponent(0.6)) }),
+                (self.postTitleLabel, { self.postTitleLabel.textColor = DSKitAsset.Colors.gray200.color }),
+                (self.postContentLabel, { self.postContentLabel.textColor = DSKitAsset.Colors.gray500.color })
+            ])
+        }
     }
 }

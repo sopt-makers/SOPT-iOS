@@ -64,4 +64,10 @@ extension HomeCategoryTagView {
     func setData(with text: String) {
         self.titleLabel.text = text
     }
+    
+    @discardableResult
+    func setTitleColor(_ color: UIColor) -> Self {
+        self.titleLabel.textColor = color
+        return self
+    }
 }
