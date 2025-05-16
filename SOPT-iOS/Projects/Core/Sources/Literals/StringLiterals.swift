@@ -305,7 +305,7 @@ public struct I18N {
         }
         
         public struct Insight {
-            public static let headerTitle = "인사이트 못참지!"
+            public static let headerTitle = "지금 인기 소식 🔥"
         }
 
         public struct SocialLink {
