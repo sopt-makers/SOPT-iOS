@@ -45,7 +45,7 @@ extension HomeForMemberVC {
         }
     }
     
-    func createInsightCellRegistration() -> InsightCellRegistration {
+    func createPlaygroundNewsCellRegistration() -> PlaygroundNewsCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
             cell.configureCell(model: item)
         }

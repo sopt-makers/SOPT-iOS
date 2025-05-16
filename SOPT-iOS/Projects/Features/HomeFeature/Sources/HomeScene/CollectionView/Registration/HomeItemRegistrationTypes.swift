@@ -13,7 +13,7 @@ typealias DashBoardCardCellRegistration = UICollectionView.CellRegistration<Dash
 typealias CalendarCellRegistration = UICollectionView.CellRegistration<CalendarCardCVC, HomePresentationModel.RecentSchedule>
 typealias ProductCellRegistration = UICollectionView.CellRegistration<MainProductCardCVC, HomePresentationModel.ProductService>
 typealias AppServiceCellRegistration = UICollectionView.CellRegistration<AppServiceCardCVC, HomePresentationModel.AppService>
-typealias InsightCellRegistration = UICollectionView.CellRegistration<InsightCardCVC, HomePresentationModel.InsightPost>
+typealias PlaygroundNewsCellRegistration = UICollectionView.CellRegistration<PlaygroundNewsCardCVC, HomePresentationModel.PlaygroundNews>
 typealias SocialLinkCellRegistration = UICollectionView.CellRegistration<SocialLinkCardCVC, SocialLinkCardType>
 
 // supplemenatry views

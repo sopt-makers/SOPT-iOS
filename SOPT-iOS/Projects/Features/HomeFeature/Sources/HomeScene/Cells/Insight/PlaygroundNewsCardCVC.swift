@@ -1,5 +1,5 @@
 //
-//  InsightCardCVC.swift
+//  PlaygroundNewsCardCVC.swift
 //  HomeFeature
 //
 //  Created by Jae Hyun Lee on 11/25/24.
@@ -12,7 +12,7 @@ import Domain
 import Core
 import DSKit
 
-final class InsightCardCVC: UICollectionViewCell {
+final class PlaygroundNewsCardCVC: UICollectionViewCell {
     
     // MARK: - Properties
 
@@ -81,7 +81,7 @@ final class InsightCardCVC: UICollectionViewCell {
 
 // MARK: - UI & Layout
 
-extension InsightCardCVC {
+extension PlaygroundNewsCardCVC {
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.gray800.color
         self.layer.cornerRadius = 12
@@ -132,8 +132,8 @@ extension InsightCardCVC {
 
 // MARK: - Methods
 
-extension InsightCardCVC {
-    func configureCell(model: HomePresentationModel.InsightPost) {
+extension PlaygroundNewsCardCVC {
+    func configureCell(model: HomePresentationModel.PlaygroundNews) {
         self.categorySubPhraseView.setData(with: "활동기수의 따끈한 새소식")
         self.categoryTagView.setData(with: model.category)
         self.userNameLabel.text = "김차돌"

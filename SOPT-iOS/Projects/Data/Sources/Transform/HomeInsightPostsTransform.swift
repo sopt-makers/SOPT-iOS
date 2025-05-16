@@ -1,5 +1,5 @@
 //
-//  HomeInsightPostsTransform.swift
+//  HomePlaygroundNewsPostsTransform.swift
 //  Data
 //
 //  Created by Jae Hyun Lee on 1/18/25.
@@ -11,8 +11,8 @@ import Foundation
 import Domain
 import Networks
 
-extension HomeInsightPostsEntity {
-    public func toDomain() -> HomeInsightPostsModel {
-        return HomeInsightPostsModel(id: id, title: title, category: category, content: content, isHotPost: isHotPost)
+extension HomePlaygroundNewsPostsEntity {
+    public func toDomain() -> HomePlaygroundNewsPostsModel {
+        return HomePlaygroundNewsPostsModel(id: id, title: title, category: category, content: content, isHotPost: isHotPost)
     }
 }

@@ -109,14 +109,14 @@ extension HomeForMemberViewModel {
                     owner.useCase.getHomeDescription().map { $0.toPresentation(history: userInfo.historyList, isAllConfirm: userInfo.isAllConfirm) },
                     owner.useCase.getRecentSchedule().map { $0.toPresentation() },
                     owner.useCase.getAppServices().map { $0.map { $0.toPresentation() } },
-                    owner.useCase.getInsightPosts().map { $0.map { $0.toPresentation() } }
+                    owner.useCase.getPlaygroundNewsPosts().map { $0.map { $0.toPresentation() } }
                 )
-                .map { dashBoard, recentSchedule, appService, insights in
+                .map { dashBoard, recentSchedule, appService, playgroundNews in
                     HomePresentationModel(
                         dashBoard: dashBoard,
                         recentSchedule: recentSchedule,
                         appServices: appService,
-                        insightPosts: insights
+                        playgroundNewsPosts: playgroundNews
                     )
                 }
             }

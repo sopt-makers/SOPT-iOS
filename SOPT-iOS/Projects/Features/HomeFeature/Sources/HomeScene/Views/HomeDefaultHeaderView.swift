@@ -22,7 +22,7 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
         $0.textColor = DSKitAsset.Colors.white100.color
     }
 
-    private lazy var orangeCharacterLottieView = LottieAnimationView(name: "insightOrangeCharacter",
+    private lazy var orangeCharacterLottieView = LottieAnimationView(name: "playgroundNewsOrangeCharacter",
                                                                      bundle: DSKitResources.bundle).then {
         $0.loopMode = .loop
     }
@@ -60,8 +60,8 @@ extension HomeDefaultHeaderView {
         }
     }
 
-    /// 인사이트 섹션일 때만 lottie에 의해서 view의 높이가 달라져, 타이틀의 레이아웃을 재설정합니다.
-    private func setTitleLabelLayoutForInsight() {
+    /// 플레이그라운드 뉴스 섹션일 때만 lottie에 의해서 view의 높이가 달라져, 타이틀의 레이아웃을 재설정합니다.
+    private func setTitleLabelLayoutForPlaygroundNews() {
         titleLabel.snp.removeConstraints()
         
         titleLabel.snp.makeConstraints { make in
@@ -79,12 +79,12 @@ extension HomeDefaultHeaderView {
         self.orangeCharacterLottieView.isHidden = true
         
         if let memberKind = sectionKind as? HomeForMemberSectionLayoutKind {
-            let shouldShow = (memberKind == .insight)
+            let shouldShow = (memberKind == .playgroundNews)
             self.orangeCharacterLottieView.isHidden = !shouldShow
             
             if shouldShow {
                 self.orangeCharacterLottieView.play()
-                setTitleLabelLayoutForInsight()
+                setTitleLabelLayoutForPlaygroundNews()
             } else {
                 self.orangeCharacterLottieView.stop()
             }

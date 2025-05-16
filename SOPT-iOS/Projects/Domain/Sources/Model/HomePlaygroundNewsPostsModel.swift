@@ -1,5 +1,5 @@
 //
-//  HomeInsightPostsModel.swift
+//  HomePlaygroundNewsPostsModel.swift
 //  Domain
 //
 //  Created by Jae Hyun Lee on 1/18/25.
@@ -10,7 +10,7 @@ import Foundation
 
 import Core
 
-public struct HomeInsightPostsModel {
+public struct HomePlaygroundNewsPostsModel {
     public var id: Int
     public var title, category: String
     public var profileImage: String?

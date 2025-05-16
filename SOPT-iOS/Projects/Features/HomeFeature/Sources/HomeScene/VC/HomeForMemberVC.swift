@@ -111,7 +111,7 @@ extension HomeForMemberVC {
         let appServiceRegistration = createAppServiceCellRegistration()
         
         // TODO: 이후 스프린트에서 순차 배포
-        let insightRegistration = createInsightCellRegistration()
+        let playgroundNewsRegistration = createPlaygroundNewsCellRegistration()
 //        let socialLinkRegistration = createSocialLinkCellRegistration()
         
         dataSource = UICollectionViewDiffableDataSource<HomeForMemberSectionLayoutKind, HomeForMemberItem> (
@@ -129,9 +129,9 @@ extension HomeForMemberVC {
                 case .appService(let appService):
                     return collectionView.dequeueConfiguredReusableCell(using: appServiceRegistration,
                                                                         for: indexPath, item: appService)
-                case .insightPost(let insight):
-                    return collectionView.dequeueConfiguredReusableCell(using: insightRegistration,
-                                                                        for: indexPath, item: insight)
+                case .playgroundNewsPost(let playgroundNews):
+                    return collectionView.dequeueConfiguredReusableCell(using: playgroundNewsRegistration,
+                                                                        for: indexPath, item: playgroundNews)
 //                    return collectionView.dequeueConfiguredReusableCell(using: socialLinkRegistration,
 //                                                                        for: indexPath, item: socialLink)
                 // TODO: 이후 스프린트에서 순차 배포
@@ -207,13 +207,13 @@ extension HomeForMemberVC {
     private func applySnapshot(with data: HomePresentationModel) {
         var snapshot = NSDiffableDataSourceSnapshot<HomeForMemberSectionLayoutKind, HomeForMemberItem>()
         
-        snapshot.appendSections([.dashBoard, .calendar, .mainProduct, .appService, .insight])
+        snapshot.appendSections([.dashBoard, .calendar, .mainProduct, .appService, .playgroundNews])
         
         snapshot.appendItems([.dashBoard(data.dashBoard)], toSection: .dashBoard)
         snapshot.appendItems([.recentSchedule(data.recentSchedule)], toSection: .calendar)
         snapshot.appendItems(self.viewModel.productServiceList.map { .productService($0) }, toSection: .mainProduct)
         snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
-        snapshot.appendItems(data.insightPosts.map { .insightPost($0) }, toSection: .insight)
+        snapshot.appendItems(data.playgroundNewsPosts.map { .playgroundNewsPost($0) }, toSection: .playgroundNews)
 
         dataSource.apply(snapshot, animatingDifferences: true)
     }
@@ -249,8 +249,8 @@ extension HomeForMemberVC: UICollectionViewDelegate {
                 self.cellTapped.send(.productService(model))
             case .appService(let model):
                 self.cellTapped.send(.appService(model))
-            case .insightPost(let model):
-                self.cellTapped.send(.insightPost(model))
+            case .playgroundNewsPost(let model):
+                self.cellTapped.send(.playgroundNewsPost(model))
             default: return
             }
         }

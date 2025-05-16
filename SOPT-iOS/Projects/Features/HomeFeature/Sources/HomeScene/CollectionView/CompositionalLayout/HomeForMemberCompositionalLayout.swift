@@ -20,7 +20,7 @@ extension HomeForMemberVC {
         
         static let productItemSpacing: Double = 15
         static let appServiceItemSpacing: Double = 16
-        static let insightSectionSpacing: Double = 10
+        static let playgroundNewsSectionSpacing: Double = 10
         static let mainProductSectionSpacing: Double = 44
     }
     
@@ -38,8 +38,8 @@ extension HomeForMemberVC {
                 return self.createMainProductSection()
             case .appService:
                 return self.createAppServiceSection()
-            case .insight:
-                return self.createInsightSection()
+            case .playgroundNews:
+                return self.createPlaygroundNewsSection()
             case .socialLinks:
                 return self.createSocialLinksSection()
             }
@@ -143,7 +143,7 @@ extension HomeForMemberVC {
         return section
     }
     
-    private func createInsightSection() -> NSCollectionLayoutSection {
+    private func createPlaygroundNewsSection() -> NSCollectionLayoutSection {
         /// header: default
         let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                 heightDimension: .absolute(68))
@@ -151,21 +151,21 @@ extension HomeForMemberVC {
                                                                  elementKind: UICollectionView.elementKindSectionHeader,
                                                                  alignment: .top)
         
-        /// item: 인사이트 카드
-        let insightItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+        /// item: 플레이그라운드 뉴스 카드
+        let playgroundNewsItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                      heightDimension: .absolute(122))
-        let insightItem = NSCollectionLayoutItem(layoutSize: insightItemSize)
+        let playgroundNewsItem = NSCollectionLayoutItem(layoutSize: playgroundNewsItemSize)
         
-        /// group: 인사이트 카드
-        let insightGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+        /// group: 플레이그라운드 뉴스 카드
+        let playgroundNewsGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                       heightDimension: .estimated(122))
-        let insightGroup = NSCollectionLayoutGroup.vertical(layoutSize: insightGroupSize,
-                                                            subitems: [insightItem])
+        let playgroundNewsGroup = NSCollectionLayoutGroup.vertical(layoutSize: playgroundNewsGroupSize,
+                                                            subitems: [playgroundNewsItem])
         
         /// section 지정
-        let section = NSCollectionLayoutSection(group: insightGroup)
+        let section = NSCollectionLayoutSection(group: playgroundNewsGroup)
         section.boundarySupplementaryItems = [header]
-        section.interGroupSpacing = Metric.insightSectionSpacing
+        section.interGroupSpacing = Metric.playgroundNewsSectionSpacing
         section.contentInsets = NSDirectionalEdgeInsets(top: 0,
                                                         leading: Metric.collectionViewDefaultSideInset,
                                                         bottom: Metric.defaultLineSpacing,

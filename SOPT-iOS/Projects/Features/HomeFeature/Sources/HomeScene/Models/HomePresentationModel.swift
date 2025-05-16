@@ -17,7 +17,7 @@ struct HomePresentationModel {
     let dashBoard: HomePresentationModel.DashBoard
     let recentSchedule: HomePresentationModel.RecentSchedule
     let appServices: [HomePresentationModel.AppService]
-    let insightPosts: [HomePresentationModel.InsightPost]
+    let playgroundNewsPosts: [HomePresentationModel.PlaygroundNews]
     
     // MARK: - Item Structs
     
@@ -85,7 +85,7 @@ struct HomePresentationModel {
         }
     }
     
-    struct InsightPost: Identifiable, Hashable {
+    struct PlaygroundNews: Identifiable, Hashable {
         let id = UUID()
 
         let title, category: String
@@ -158,9 +158,9 @@ extension HomeAppServicesModel {
     }
 }
 
-extension HomeInsightPostsModel {
-    func toPresentation() -> HomePresentationModel.InsightPost {
-        return HomePresentationModel.InsightPost(
+extension HomePlaygroundNewsPostsModel {
+    func toPresentation() -> HomePresentationModel.PlaygroundNews {
+        return HomePresentationModel.PlaygroundNews(
             title: self.title,
             category: self.category,
             profileImage: self.profileImage,

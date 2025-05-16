@@ -1,5 +1,5 @@
 //
-//  HomeInsightPostsEntity.swift
+//  HomePlaygroundNewsPostsEntity.swift
 //  Networks
 //
 //  Created by Jae Hyun Lee on 1/18/25.
@@ -10,7 +10,7 @@ import Foundation
 
 // MARK: - Entity
 
-public struct HomeInsightPostsEntity: Codable {
+public struct HomePlaygroundNewsPostsEntity: Codable {
     public let id: Int
     public let title, category: String
     public let profileImage: String?
