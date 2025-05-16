@@ -11,6 +11,8 @@ import UIKit
 import Core
 import DSKit
 
+import Lottie
+
 final class HomeDefaultHeaderView: UICollectionReusableView {
     
     // MARK: - UI Components
@@ -20,19 +22,15 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
         $0.textColor = DSKitAsset.Colors.white100.color
     }
 
-    private let titleStackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.alignment = .leading
-        $0.spacing = 8
+    private lazy var orangeCharacterLottieView = LottieAnimationView(name: "insightOrangeCharacter",
+                                                                     bundle: DSKitResources.bundle).then {
+        $0.loopMode = .loop
     }
-    
-    private let viewAllButton = HomeCustomTextWithArrowButton(title: I18N.Home.viewAll)
-    
+        
     // MARK: - Initialization
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setStackView()
         setLayout()
     }
     
@@ -45,24 +43,31 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
 
 extension HomeDefaultHeaderView {
     private func setLayout() {
-        self.addSubviews(
-            titleStackView,
-            viewAllButton
-        )
+        self.clipsToBounds = true
         
-        titleStackView.snp.makeConstraints { make in
-            make.centerY.leading.equalToSuperview()
+        self.addSubviews(titleLabel, orangeCharacterLottieView)
+        
+        titleLabel.snp.updateConstraints { make in
+            make.leading.equalToSuperview()
+            make.centerY.equalToSuperview()
         }
         
-        viewAllButton.snp.makeConstraints { make in
-            make.centerY.trailing.equalToSuperview()
+        orangeCharacterLottieView.snp.makeConstraints { make in
+            make.width.equalTo(124)
+            make.height.equalTo(95)
+            make.trailing.equalToSuperview()
+            make.top.equalToSuperview()
         }
     }
-    
-    private func setStackView() {
-        titleStackView.addArrangedSubviews(
-            titleLabel
-        )
+
+    /// 인사이트 섹션일 때만 lottie에 의해서 view의 높이가 달라져, 타이틀의 레이아웃을 재설정합니다.
+    private func setTitleLabelLayoutForInsight() {
+        titleLabel.snp.removeConstraints()
+        
+        titleLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.bottom.equalToSuperview().inset(16)
+        }
     }
 }
 
@@ -71,10 +76,18 @@ extension HomeDefaultHeaderView {
 extension HomeDefaultHeaderView {
     func configureView<T: HomeSectionKindProtocol>(sectionKind: T) {
         self.titleLabel.text = sectionKind.title
-        self.viewAllButton.isHidden = true
+        self.orangeCharacterLottieView.isHidden = true
         
         if let memberKind = sectionKind as? HomeForMemberSectionLayoutKind {
-            self.viewAllButton.isHidden = (memberKind == .appService) ? true : false
+            let shouldShow = (memberKind == .insight)
+            self.orangeCharacterLottieView.isHidden = !shouldShow
+            
+            if shouldShow {
+                self.orangeCharacterLottieView.play()
+                setTitleLabelLayoutForInsight()
+            } else {
+                self.orangeCharacterLottieView.stop()
+            }
         }
     }
 }

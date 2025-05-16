@@ -61,7 +61,7 @@ extension HomeCategoryTagView {
 // MARK: - Methods
 
 extension HomeCategoryTagView {
-    func setData(with text: String, isHotTag: Bool) {
+    func setData(with text: String) {
         self.titleLabel.text = text
     }
 }

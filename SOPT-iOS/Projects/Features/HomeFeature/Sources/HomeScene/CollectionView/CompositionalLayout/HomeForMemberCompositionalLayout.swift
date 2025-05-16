@@ -20,8 +20,8 @@ extension HomeForMemberVC {
         
         static let productItemSpacing: Double = 15
         static let appServiceItemSpacing: Double = 16
+        static let insightSectionSpacing: Double = 10
         static let mainProductSectionSpacing: Double = 44
-        static let announcementWidth: Double = 300
     }
     
     func createLayout() -> UICollectionViewCompositionalLayout {
@@ -146,26 +146,27 @@ extension HomeForMemberVC {
     private func createInsightSection() -> NSCollectionLayoutSection {
         /// header: default
         let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                heightDimension: .absolute(30))
+                                                heightDimension: .absolute(68))
         let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
                                                                  elementKind: UICollectionView.elementKindSectionHeader,
                                                                  alignment: .top)
         
         /// item: 인사이트 카드
         let insightItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                     heightDimension: .absolute(80))
+                                                     heightDimension: .absolute(122))
         let insightItem = NSCollectionLayoutItem(layoutSize: insightItemSize)
         
         /// group: 인사이트 카드
         let insightGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                         heightDimension: .estimated(80))
-        let insightGroup = NSCollectionLayoutGroup.horizontal(layoutSize: insightGroupSize,
-                                                              subitems: [insightItem])
+                                                      heightDimension: .estimated(122))
+        let insightGroup = NSCollectionLayoutGroup.vertical(layoutSize: insightGroupSize,
+                                                            subitems: [insightItem])
         
         /// section 지정
         let section = NSCollectionLayoutSection(group: insightGroup)
         section.boundarySupplementaryItems = [header]
-        section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultItemSpacing,
+        section.interGroupSpacing = Metric.insightSectionSpacing
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0,
                                                         leading: Metric.collectionViewDefaultSideInset,
                                                         bottom: Metric.defaultLineSpacing,
                                                         trailing: Metric.collectionViewDefaultSideInset)
