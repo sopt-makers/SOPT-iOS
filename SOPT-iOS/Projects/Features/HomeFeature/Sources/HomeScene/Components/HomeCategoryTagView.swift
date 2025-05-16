@@ -26,10 +26,6 @@ final class HomeCategoryTagView: UIView {
         $0.alignment = .center
         $0.distribution = .equalSpacing
     }
-    
-    private let hotIconImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.icHot.image
-    }
         
     // MARK: - Initialization
     
@@ -59,10 +55,6 @@ extension HomeCategoryTagView {
         contentStackView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-        
-        hotIconImageView.snp.makeConstraints { make in
-            make.size.equalTo(12)
-        }
     }
 }
     
@@ -71,9 +63,5 @@ extension HomeCategoryTagView {
 extension HomeCategoryTagView {
     func setData(with text: String, isHotTag: Bool) {
         self.titleLabel.text = text
-        /// 이미지 중복 삽입 방지
-        if !contentStackView.arrangedSubviews.contains(hotIconImageView) && isHotTag {
-            self.contentStackView.insertArrangedSubview(hotIconImageView, at: 0)
-        }
     }
 }

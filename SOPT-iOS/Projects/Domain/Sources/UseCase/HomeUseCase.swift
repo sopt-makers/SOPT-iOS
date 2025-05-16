@@ -17,10 +17,7 @@ public protocol HomeUseCase {
     func getRecentSchedule() -> AnyPublisher<HomeRecentScheduleModel, Never>
     func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Never>
     func getInsightPosts() -> AnyPublisher<[HomeInsightPostsModel], Never>
-    func getGroupPosts() -> AnyPublisher<[HomeGroupPostModel], Never>
-    func getCoffeeChatPosts() -> AnyPublisher<[HomeCoffeeChatPostModel], Never>
     func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never>
-    func getAnnouncementPosts() -> AnyPublisher<[HomeAnnouncementModel], Never>
     func getReportURL()
     func checkPokeNewUser() -> AnyPublisher<Bool, Never>
 }
@@ -78,27 +75,6 @@ extension DefaultHomeUseCase: HomeUseCase {
         repository.getInsightPosts()
             .catch { error in
                 return Empty<[HomeInsightPostsModel], Never>()
-            }.eraseToAnyPublisher()
-    }
-    
-    public func getGroupPosts() -> AnyPublisher<[HomeGroupPostModel], Never> {
-        repository.getGroupPosts()
-            .catch { error in
-                return Empty<[HomeGroupPostModel], Never>()
-            }.eraseToAnyPublisher()
-    }
-    
-    public func getCoffeeChatPosts() -> AnyPublisher<[HomeCoffeeChatPostModel], Never> {
-        repository.getCoffeeChatPosts()
-            .catch { error in
-                return Empty<[HomeCoffeeChatPostModel], Never>()
-            }.eraseToAnyPublisher()
-    }
-    
-    public func getAnnouncementPosts() -> AnyPublisher<[HomeAnnouncementModel], Never> {
-        repository.getAnnouncementPosts()
-            .catch { error in
-                return Empty<[HomeAnnouncementModel], Never>()
             }.eraseToAnyPublisher()
     }
     
