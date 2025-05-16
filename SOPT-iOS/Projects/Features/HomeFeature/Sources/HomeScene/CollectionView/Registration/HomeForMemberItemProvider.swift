@@ -66,4 +66,11 @@ extension HomeForMemberVC {
             headerView.configureView(sectionKind: sectionKind)
         }
     }
+    
+    func createPlaygroundNewsFooterRegistration() -> PlaygroundNewsFooterRegistration {
+        collectionView.createSupplementaryRegistration(
+            elementKind: UICollectionView.elementKindSectionFooter,
+            configure: { _, _ in }
+        )
+    }
 }

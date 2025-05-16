@@ -18,3 +18,5 @@ typealias SocialLinkCellRegistration = UICollectionView.CellRegistration<SocialL
 
 // supplemenatry views
 typealias HeaderRegistration = UICollectionView.SupplementaryRegistration<HomeDefaultHeaderView>
+typealias PlaygroundNewsFooterRegistration = UICollectionView.SupplementaryRegistration<PlaygroundNewsFooterView>
+

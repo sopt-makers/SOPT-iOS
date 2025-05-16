@@ -153,22 +153,30 @@ extension HomeForMemberVC {
         
         /// item: 플레이그라운드 뉴스 카드
         let playgroundNewsItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                     heightDimension: .absolute(122))
+                                                            heightDimension: .absolute(122))
         let playgroundNewsItem = NSCollectionLayoutItem(layoutSize: playgroundNewsItemSize)
         
         /// group: 플레이그라운드 뉴스 카드
         let playgroundNewsGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                      heightDimension: .estimated(122))
+                                                             heightDimension: .estimated(122))
         let playgroundNewsGroup = NSCollectionLayoutGroup.vertical(layoutSize: playgroundNewsGroupSize,
-                                                            subitems: [playgroundNewsItem])
+                                                                    subitems: [playgroundNewsItem])
+        
+        /// footer
+        let footerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                heightDimension: .absolute(36))
+        let footer = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: footerSize,
+                                                                 elementKind: UICollectionView.elementKindSectionFooter,
+                                                                 alignment: .bottom)
+        footer.contentInsets = NSDirectionalEdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0)
         
         /// section 지정
         let section = NSCollectionLayoutSection(group: playgroundNewsGroup)
-        section.boundarySupplementaryItems = [header]
+        section.boundarySupplementaryItems = [header, footer]
         section.interGroupSpacing = Metric.playgroundNewsSectionSpacing
         section.contentInsets = NSDirectionalEdgeInsets(top: 0,
                                                         leading: Metric.collectionViewDefaultSideInset,
-                                                        bottom: Metric.defaultLineSpacing,
+                                                        bottom: 0,
                                                         trailing: Metric.collectionViewDefaultSideInset)
         return section
     }
