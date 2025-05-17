@@ -53,7 +53,7 @@ extension AppCustomButton {
     /// 버튼의 enable, disable에 따른 상태 변경
     @discardableResult
     public func setConfigForState(
-        bgColor: UIColor = DSKitAsset.Colors.white100.color,
+        bgColor: UIColor = DSKitAsset.Colors.white.color,
         disabledColor: UIColor = DSKitAsset.Colors.gray600.color,
         disabledTextColor: UIColor = DSKitAsset.Colors.gray60.color,
         disabledFont: UIFont = DSKitFontFamily.Suit.bold.font(size: 18),
@@ -99,7 +99,7 @@ extension AppCustomButton {
                 updatedConfig.background.backgroundColor = DSKitAsset.Colors.gray600.color
                 self.title.foregroundColor = DSKitAsset.Colors.gray60.color
             default:
-                updatedConfig.background.backgroundColor = DSKitAsset.Colors.white100.color
+                updatedConfig.background.backgroundColor = DSKitAsset.Colors.white.color
                 self.title.foregroundColor = DSKitAsset.Colors.black100.color
             }
             updatedConfig.attributedTitle = self.title

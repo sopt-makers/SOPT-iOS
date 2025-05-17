@@ -28,7 +28,7 @@ final class NotificationFilterCVC: UICollectionViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-        label.textColor = DSKitAsset.Colors.white100.color
+        label.textColor = DSKitAsset.Colors.white.color
         label.textAlignment = .center
         return label
     }()
@@ -70,7 +70,7 @@ extension NotificationFilterCVC {
     
     func setSelectionStyle(isSelected: Bool) {
         self.backgroundColor = isSelected ? DSKitAsset.Colors.gray700.color : DSKitAsset.Colors.gray800.color
-        self.titleLabel.textColor = isSelected ? DSKitAsset.Colors.white100.color : DSKitAsset.Colors.gray300.color
+        self.titleLabel.textColor = isSelected ? DSKitAsset.Colors.white.color : DSKitAsset.Colors.gray300.color
         self.layer.borderColor = isSelected ? DSKitAsset.Colors.gray100.color.cgColor : DSKitAsset.Colors.gray700.color.cgColor
     }
 }
