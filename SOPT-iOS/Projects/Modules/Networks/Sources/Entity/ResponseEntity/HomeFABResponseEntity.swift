@@ -9,17 +9,17 @@
 import Foundation
 
 public struct HomeFABResponseEntity: Decodable {
-    public var title: String
-    public var expandedSubTitle: String
-    public var collapsedSubTitle: String
-    public var actionButtonName: String
-    public var imageUrl: String
-    public var url: String
-    public var isActive: Bool
+    public let title: String
+    public let expandedSubTitle: String
+    public let collapsedSubTitle: String
+    public let actionButtonName: String
+    public let imageUrl: String
+    public let url: String
+    public let isActive: Bool
     
     enum CodingKeys: String, CodingKey {
-        case title, expandedSubTitle, collapsedSubTitle, actionButtonName, imageUrl
+        case title, expandedSubTitle, actionButtonName, imageUrl, isActive
+        case collapsedSubTitle = "collapsedSubtitle"
         case url = "linkUrl"
-        case isActive = "active"
     }
 }
