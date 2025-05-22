@@ -20,6 +20,7 @@ public protocol HomeUseCase {
     func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never>
     func getReportURL()
     func checkPokeNewUser() -> AnyPublisher<Bool, Never>
+    func getFABInfo() -> AnyPublisher<HomeFABModel, Never>
 }
 
 public class DefaultHomeUseCase {
@@ -101,6 +102,14 @@ extension DefaultHomeUseCase: HomeUseCase {
             .catch { error in
                 print("HomeUseCase checkPokeNewUser에서 문제가 발생했습니다. \(error)")
                 return Empty<Bool, Never>()
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    public func getFABInfo() -> AnyPublisher<HomeFABModel, Never> {
+        repository.getFABInfo()
+            .catch { error in
+                return Empty<HomeFABModel, Never>()
             }
             .eraseToAnyPublisher()
     }
