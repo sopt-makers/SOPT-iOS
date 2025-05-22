@@ -9,13 +9,13 @@
 import Foundation
 
 public struct HomeFABModel: Decodable {
-    public var title: String
-    public var expandedSubTitle: String
-    public var collapsedSubTitle: String
-    public var actionButtonName: String
-    public var imageUrl: String
-    public var url: String
-    public var isActive: Bool
+    public let title: String
+    public let expandedSubTitle: String
+    public let collapsedSubTitle: String
+    public let actionButtonName: String
+    public let imageUrl: String
+    public let url: String
+    public let isActive: Bool
     
     public init(title: String, expandedSubTitle: String, collapsedSubTitle: String, actionButtonName: String, imageUrl: String, url: String, isActive: Bool) {
         self.title = title
