@@ -109,6 +109,7 @@ extension DefaultHomeUseCase: HomeUseCase {
     public func getFABInfo() -> AnyPublisher<HomeFABModel, Never> {
         repository.getFABInfo()
             .catch { error in
+                print("HomeUseCase getFABInfo에서 문제가 발생했습니다. \(error)")
                 return Empty<HomeFABModel, Never>()
             }
             .eraseToAnyPublisher()
