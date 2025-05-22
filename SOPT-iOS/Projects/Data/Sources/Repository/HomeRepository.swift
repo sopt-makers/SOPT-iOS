@@ -109,4 +109,10 @@ extension HomeRepository: HomeRepositoryInterface {
             .map{ $0.isNew }
             .eraseToAnyPublisher()
     }
+    
+    public func getFABInfo() -> AnyPublisher<HomeFABModel, any Error> {
+        homeService.getFABInfo()
+            .map{ $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
 }
