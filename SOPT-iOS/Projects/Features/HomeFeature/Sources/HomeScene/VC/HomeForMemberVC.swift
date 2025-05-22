@@ -85,6 +85,7 @@ extension HomeForMemberVC {
     private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        self.FAButton.isHidden = true
     }
     
     private func setLayout() {
@@ -250,8 +251,14 @@ extension HomeForMemberVC {
             .withUnretained(self)
             .sink { owner, isLoading in
                 isLoading ? owner.showLoading() : owner.stopLoading()
-            }
-            .store(in: cancelBag)
+            }.store(in: cancelBag)
+        
+        output.fabButtonInfo
+            .withUnretained(self)
+            .sink { owner, fabModel in
+                owner.FAButton.isHidden = false
+                owner.FAButton.configureUI(with: fabModel)
+            }.store(in: cancelBag)
     }
     
     private func updateUI(with data: HomePresentationModel) {
