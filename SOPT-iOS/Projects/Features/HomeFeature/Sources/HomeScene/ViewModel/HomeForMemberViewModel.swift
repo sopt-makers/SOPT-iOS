@@ -25,6 +25,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     private var cancelBag = CancelBag()
     
     let userType: UserType = UserDefaultKeyList.Auth.getUserType()
+    private var fabuttonUrl: String = ""
     
     let productServiceList: [HomePresentationModel.ProductService] = [
         .init(product: .playgroundCommunity),
@@ -50,7 +51,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public struct Output {
         let homeItem = PassthroughSubject<HomePresentationModel, Never>()
         let isLoading = PassthroughSubject<Bool, Never>()
-        let needNetworkAlert = PassthroughSubject<Void, Never>()
+        let fabButtonInfo = PassthroughSubject<HomeFABPresentationModel, Never>()
     }
     
     // MARK: - HomeForMemberCoordinating
@@ -85,6 +86,16 @@ extension HomeForMemberViewModel {
                 owner.useCase.getReportURL()
                 owner.requestAuthorizationForNotification()
                 AmplitudeInstance.shared.trackWithUserType(event: .viewAppHomeNew)
+            }.store(in: cancelBag)
+        
+        input.viewDidLoad
+            .flatMap(useCase.getFABInfo)
+            .filter{ $0.isActive }
+            .withUnretained(self)
+            .sink { owner, fabModel in
+                let presentationModel = fabModel.toPresentationModel()
+                output.fabButtonInfo.send(presentationModel)
+                owner.fabuttonUrl = presentationModel.url
             }.store(in: cancelBag)
         
         input.viewWillAppear
@@ -201,8 +212,7 @@ extension HomeForMemberViewModel {
         input.extendedFAButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                print("버튼 클릭")
-                owner.onExtendedFAButtonTapped?("home/poke")
+                owner.onExtendedFAButtonTapped?(owner.fabuttonUrl)
             }
             .store(in: cancelBag)
         
