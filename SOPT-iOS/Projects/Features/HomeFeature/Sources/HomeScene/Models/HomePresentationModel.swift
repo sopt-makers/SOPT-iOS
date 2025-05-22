@@ -104,7 +104,6 @@ struct HomePresentationModel {
             self.isHotPost = isHotPost
         }
     }
-    
 }
 
 // MARK: - toPresentation
