@@ -112,6 +112,11 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
             self.delegate?.homeCoordinator(self, to: .poke(isNewUser: isNewUser))
         }
         
+        homeForMember.vm.onExtendedFAButtonTapped = { [weak self] url in
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .deepLink(url: url))
+        }
+        
         rootViewController = homeForMember.vc
         navigationController.pushViewController(homeForMember.vc, animated: true)
     }
