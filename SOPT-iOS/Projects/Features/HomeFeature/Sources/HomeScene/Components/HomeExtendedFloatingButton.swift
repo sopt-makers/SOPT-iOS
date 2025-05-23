@@ -1,5 +1,5 @@
 //
-//  ExtendedFAButton.swift
+//  HomeFloatingButton.swift
 //  HomeFeature
 //
 //  Created by 강윤서 on 5/10/25.
@@ -11,11 +11,11 @@ import Combine
 
 import DSKit
 
-final class HomeFAButton: UIView {
+final class HomeFloatingButton: UIView {
 
     // MARK: - Properties
     public lazy var actionButtonTapped = actionButton.gesture().mapVoid().asDriver()
-    private var buttonType: ExtendedFAButtonType = .extended {
+    private var buttonType: ExtendedFloatingButtonType = .extended {
         didSet {
             updateLayout(buttonType)
         }
@@ -28,24 +28,19 @@ final class HomeFAButton: UIView {
         $0.layer.cornerRadius = 21
     }
     
-    private let serviceImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.icBell.image.withRenderingMode(.alwaysOriginal)
-    }
+    private let serviceImageView = UIImageView()
     
-    private let title = UILabel().then {
-        $0.text = "점수 2배! 깜짝 미션 오픈"
+    private let extendedTitle = UILabel().then {
         $0.font = DSKitFontFamily.Suit.bold.font(size: 16)
         $0.textColor = DSKitAsset.Colors.gray950.color
     }
     
-    private let subTitle = UILabel().then {
-        $0.text = "지금 바로 미션에 도전해보세요"
+    private let extendedSubTitle = UILabel().then {
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
         $0.textColor = DSKitAsset.Colors.orange700.color
     }
     
     private let actionButton = UIButton().then {
-        $0.setTitle("미션 보기", for: .normal)
         $0.setTitleColor(DSKitAsset.Colors.white.color, for: .normal)
         $0.titleLabel?.font = DSKitFontFamily.Suit.medium.font(size: 13)
         $0.backgroundColor = DSKitAsset.Colors.black.color
@@ -53,13 +48,11 @@ final class HomeFAButton: UIView {
     }
     
     private let collapsedTitle = UILabel().then {
-        $0.text = "솝탬프"
         $0.textColor = DSKitAsset.Colors.orange800.color
         $0.font = DSKitFontFamily.Suit.medium.font(size: 12)
     }
     
     private let collapsedSubTitle = UILabel().then {
-        $0.text = "미션 보기"
         $0.textColor = DSKitAsset.Colors.gray900.color
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
     }
@@ -70,7 +63,7 @@ final class HomeFAButton: UIView {
     
     // MARK: - Initialization
     
-    init(frame: CGRect, buttonType: ExtendedFAButtonType = .extended) {
+    init(frame: CGRect, buttonType: ExtendedFloatingButtonType = .extended) {
         self.buttonType = buttonType
         super.init(frame: frame)
         
@@ -97,14 +90,14 @@ final class HomeFAButton: UIView {
 
 // MARK: UI & Layout
 
-extension HomeFAButton {
+extension HomeFloatingButton {
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.orange400.color
         self.layer.applyShadow(color: DSKitAsset.Colors.shadow.color, alpha: 0.7, y: 4, blur: 40)
     }
     
     private func setExpendedLayout() {
-        self.addSubviews(serviceBackgroundView, serviceImageView, subTitle, title, actionButton)
+        self.addSubviews(serviceBackgroundView, serviceImageView, extendedSubTitle, extendedTitle, actionButton)
         
         serviceBackgroundView.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(13)
@@ -114,16 +107,17 @@ extension HomeFAButton {
         
         serviceImageView.snp.makeConstraints { make in
             make.center.equalTo(serviceBackgroundView.snp.center)
+            make.leading.trailing.equalTo(serviceBackgroundView).inset(6)
         }
         
-        title.snp.makeConstraints { make in
+        extendedTitle.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(15)
             make.leading.equalTo(serviceBackgroundView.snp.trailing).offset(8)
         }
         
-        subTitle.snp.makeConstraints { make in
-            make.leading.equalTo(title.snp.leading)
-            make.top.equalTo(title.snp.bottom).offset(4)
+        extendedSubTitle.snp.makeConstraints { make in
+            make.leading.equalTo(extendedTitle.snp.leading)
+            make.top.equalTo(extendedTitle.snp.bottom).offset(4)
         }
         
         actionButton.snp.makeConstraints { make in
@@ -143,6 +137,7 @@ extension HomeFAButton {
         
         serviceImageView.snp.makeConstraints { make in
             make.center.equalTo(serviceBackgroundView)
+            make.leading.trailing.equalTo(serviceBackgroundView).inset(5)
         }
         
         collapsedTitle.snp.makeConstraints { make in
@@ -162,7 +157,7 @@ extension HomeFAButton {
         }
     }
     
-    private func updateLayout(_ type: ExtendedFAButtonType) {
+    private func updateLayout(_ type: ExtendedFloatingButtonType) {
         removeAllConstrains()
         
         switch type {
@@ -184,8 +179,22 @@ extension HomeFAButton {
 
 // MARK: - Methods
 
-extension HomeFAButton {
-    public func setStyle(_ style: ExtendedFAButtonType) {
+extension HomeFloatingButton {
+    public func setStyle(_ style: ExtendedFloatingButtonType) {
         self.buttonType = style
+    }
+    
+    func configureUI(with model: HomeFloatingButtonPresentationModel) {
+        // 공통 속성
+        serviceImageView.setImage(with: model.imageUrl)
+        
+        // 확장 버튼 속성
+        extendedTitle.text = model.extenedFloatingButton.title
+        extendedSubTitle.text = model.extenedFloatingButton.subTitle
+        actionButton.setTitle(model.actionButtonName, for: .normal)
+        
+        // 접힘 버튼 속성
+        collapsedTitle.text = model.collapsedFloatingButton.subTitle
+        collapsedSubTitle.text = model.actionButtonName
     }
 }

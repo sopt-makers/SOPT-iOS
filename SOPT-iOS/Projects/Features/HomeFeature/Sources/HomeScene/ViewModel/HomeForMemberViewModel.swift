@@ -25,6 +25,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     private var cancelBag = CancelBag()
     
     let userType: UserType = UserDefaultKeyList.Auth.getUserType()
+    private var floatingButtonUrl: String = ""
     
     let productServiceList: [HomePresentationModel.ProductService] = [
         .init(product: .playgroundCommunity),
@@ -42,7 +43,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         let attendanceButtonTapped: Driver<Void>
         let noticeButtonTapped: Driver<Void>
         let settingButtonTapped: Driver<Void>
-        let extendedFAButtonTapped: Driver<Void>
+        let extendedFloatingButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -50,7 +51,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public struct Output {
         let homeItem = PassthroughSubject<HomePresentationModel, Never>()
         let isLoading = PassthroughSubject<Bool, Never>()
-        let needNetworkAlert = PassthroughSubject<Void, Never>()
+        let floatingButtonInfo = PassthroughSubject<HomeFloatingButtonPresentationModel, Never>()
     }
     
     // MARK: - HomeForMemberCoordinating
@@ -65,7 +66,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public var onNeedSignIn: (() -> Void)?
     public var onNetworkError: (() -> Void)?
     public var onPoke: ((Bool) -> Void)?
-    public var onExtendedFAButtonTapped: ((String) -> Void)?
+    public var onExtendedFloatingButtonTapped: ((String) -> Void)?
     
     
     // MARK: - initialization
@@ -85,6 +86,16 @@ extension HomeForMemberViewModel {
                 owner.useCase.getReportURL()
                 owner.requestAuthorizationForNotification()
                 AmplitudeInstance.shared.trackWithUserType(event: .viewAppHomeNew)
+            }.store(in: cancelBag)
+        
+        input.viewDidLoad
+            .flatMap(useCase.getFloatingButtonInfo)
+            .filter{ $0.isActive }
+            .withUnretained(self)
+            .sink { owner, floatingButtonModel in
+                let presentationModel = floatingButtonModel.toPresentationModel()
+                output.floatingButtonInfo.send(presentationModel)
+                owner.floatingButtonUrl = presentationModel.url
             }.store(in: cancelBag)
         
         input.viewWillAppear
@@ -198,11 +209,10 @@ extension HomeForMemberViewModel {
             }
             .store(in: cancelBag)
         
-        input.extendedFAButtonTapped
+        input.extendedFloatingButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                print("버튼 클릭")
-                owner.onExtendedFAButtonTapped?("home/poke")
+                owner.onExtendedFloatingButtonTapped?(owner.floatingButtonUrl)
             }
             .store(in: cancelBag)
         

@@ -25,20 +25,20 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     private var cellTapped = PassthroughSubject<HomeForMemberItem, Never>()
     private(set) var attendanceButtonTapped = PassthroughSubject<Void, Never>()
     
-    private var fabButtonTapped = PassthroughSubject<Void, Never>()
-    private lazy var extendedFAButtonTapped = FAButton.actionButtonTapped
-    private lazy var collapsedFAButtonTapped = FAButton.gesture().mapVoid().asDriver()
+    private var floatingButtonTapped = PassthroughSubject<Void, Never>()
+    private lazy var extendedFloatingButtonTapped = floatingButton.actionButtonTapped
+    private lazy var collapsedFloatingButtonTapped = floatingButton.gesture().mapVoid().asDriver()
     
     private var isFirstAppear = true
     private var isExtendedButtonHidden: Bool = false
-    private var fabButtonType: ExtendedFAButtonType = .extended
+    private var floatingButtonType: ExtendedFloatingButtonType = .extended
     
     // MARK: - UI Components
     
     private lazy var naviBar = HomeNavigationBar()
     private var dataSource: UICollectionViewDiffableDataSource<HomeForMemberSectionLayoutKind, HomeForMemberItem>! = nil
     var collectionView: UICollectionView! = nil
-    private var FAButton = HomeFAButton(frame: .zero)
+    private var floatingButton = HomeFloatingButton(frame: .zero)
     
     // MARK: - Initialization
     
@@ -85,13 +85,14 @@ extension HomeForMemberVC {
     private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        self.floatingButton.isHidden = true
     }
     
     private func setLayout() {
         view.addSubviews(
             naviBar,
             collectionView,
-            FAButton
+            floatingButton
         )
         
         naviBar.snp.makeConstraints { make in
@@ -104,23 +105,23 @@ extension HomeForMemberVC {
             make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
         }
         
-        FAButton.snp.makeConstraints { make in
+        floatingButton.snp.makeConstraints { make in
             make.bottom.equalToSuperview().inset(124)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(68)
         }
     }
     
-    private func extendedFAButtonLayout() {
-        FAButton.snp.remakeConstraints { make in
+    private func extendedFloatingButtonLayout() {
+        floatingButton.snp.remakeConstraints { make in
             make.bottom.equalToSuperview().inset(124)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(68)
         }
     }
     
-    private func collapsedFAButtonLayout() {
-        FAButton.snp.remakeConstraints { make in
+    private func collapsedFloatingButtonLayout() {
+        floatingButton.snp.remakeConstraints { make in
             make.bottom.equalToSuperview().inset(124)
             make.trailing.equalToSuperview().inset(20)
             make.width.equalTo(127)
@@ -128,7 +129,7 @@ extension HomeForMemberVC {
         }
     }
     
-    private func animateExtendedFAButtonHide(_ type: ExtendedFAButtonType) {
+    private func animateExtendedFloatingButtonHide(_ type: ExtendedFloatingButtonType) {
         UIView.animate(withDuration: 0.1,
                        delay: 0,
                        usingSpringWithDamping: 0.7,
@@ -136,18 +137,18 @@ extension HomeForMemberVC {
                        options: [.curveEaseInOut],
                        animations: { [weak self] in
             guard let self else { return }
-            self.FAButton.transform = CGAffineTransform(translationX: 0, y: 120)
+            self.floatingButton.transform = CGAffineTransform(translationX: 0, y: 120)
         }, completion: { [weak self] _ in
             guard let self else { return }
-            self.animateExtendedFAButtonShow()
+            self.animateExtendedFloatingButtonShow()
             
-            type == .extended ? self.FAButton.setStyle(.collapsed) : self.FAButton.setStyle(.extended)
-            type == .extended ? self.collapsedFAButtonLayout() : self.extendedFAButtonLayout()
+            type == .extended ? self.floatingButton.setStyle(.collapsed) : self.floatingButton.setStyle(.extended)
+            type == .extended ? self.collapsedFloatingButtonLayout() : self.extendedFloatingButtonLayout()
             
         })
     }
     
-    private func animateExtendedFAButtonShow() {
+    private func animateExtendedFloatingButtonShow() {
         UIView.animate(withDuration: 0.1,
                        delay: 0,
                        usingSpringWithDamping: 0.7,
@@ -155,7 +156,7 @@ extension HomeForMemberVC {
                        options: [.curveEaseInOut],
                        animations: { [weak self] in
             guard let self else { return }
-            self.FAButton.transform = .identity
+            self.floatingButton.transform = .identity
         })
     }
 }
@@ -207,19 +208,19 @@ extension HomeForMemberVC {
     }
     
     private func bindViews() {
-        self.extendedFAButtonTapped
+        self.extendedFloatingButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                if owner.fabButtonType == .extended {
-                    owner.fabButtonTapped.send()
+                if owner.floatingButtonType == .extended {
+                    owner.floatingButtonTapped.send()
                 }
             }.store(in: cancelBag)
         
-        self.collapsedFAButtonTapped
+        self.collapsedFloatingButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                if owner.fabButtonType == .collapsed {
-                    owner.fabButtonTapped.send()
+                if owner.floatingButtonType == .collapsed {
+                    owner.floatingButtonTapped.send()
                 }
             }.store(in: cancelBag)
     }
@@ -235,7 +236,7 @@ extension HomeForMemberVC {
             attendanceButtonTapped: attendanceButtonTapped.asDriver(),
             noticeButtonTapped: noticeButtonTapped,
             settingButtonTapped: settingButtonTapped,
-            extendedFAButtonTapped: fabButtonTapped.asDriver()
+            extendedFloatingButtonTapped: floatingButtonTapped.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -250,8 +251,14 @@ extension HomeForMemberVC {
             .withUnretained(self)
             .sink { owner, isLoading in
                 isLoading ? owner.showLoading() : owner.stopLoading()
-            }
-            .store(in: cancelBag)
+            }.store(in: cancelBag)
+        
+        output.floatingButtonInfo
+            .withUnretained(self)
+            .sink { owner, floatingButtonModel in
+                owner.floatingButton.isHidden = false
+                owner.floatingButton.configureUI(with: floatingButtonModel)
+            }.store(in: cancelBag)
     }
     
     private func updateUI(with data: HomePresentationModel) {
@@ -323,15 +330,15 @@ extension HomeForMemberVC: UICollectionViewDelegate {
         let offsetY = scrollView.contentOffset.y
         
         if offsetY < 330 && isExtendedButtonHidden || offsetY >= 330 && !isExtendedButtonHidden {
-            toggleFAButtonUI()
+            toggleFloatingButtonUI()
         }
     }
     
-    /// offsetY 값이 330을 지날 때 FAB의 UI를 변경하고 애니메이션을 실행하는 메서드
-    private func toggleFAButtonUI() {
-        animateExtendedFAButtonHide(fabButtonType)
+    /// offsetY 값이 330을 지날 때 floating button의 UI를 변경하고 애니메이션을 실행하는 메서드
+    private func toggleFloatingButtonUI() {
+        animateExtendedFloatingButtonHide(floatingButtonType)
         isExtendedButtonHidden.toggle()
-        fabButtonType = fabButtonType == .extended ? .collapsed : .extended
-        FAButton.layoutIfNeeded()
+        floatingButtonType = floatingButtonType == .extended ? .collapsed : .extended
+        floatingButton.layoutIfNeeded()
     }
 }

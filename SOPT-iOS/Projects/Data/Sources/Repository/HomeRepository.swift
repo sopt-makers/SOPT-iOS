@@ -109,4 +109,10 @@ extension HomeRepository: HomeRepositoryInterface {
             .map{ $0.isNew }
             .eraseToAnyPublisher()
     }
+    
+    public func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonModel, any Error> {
+        homeService.getFloatingButtonInfo()
+            .map{ $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
 }
