@@ -1,5 +1,5 @@
 //
-//  HomeFABModel.swift
+//  HomeFloatingButtonModel.swift
 //  Domain
 //
 //  Created by 강윤서 on 5/22/25.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct HomeFABModel: Decodable {
+public struct HomeFloatingButtonModel: Decodable {
     public let title: String
     public let expandedSubTitle: String
     public let collapsedSubTitle: String

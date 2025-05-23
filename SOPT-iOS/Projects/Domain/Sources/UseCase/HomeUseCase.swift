@@ -20,7 +20,7 @@ public protocol HomeUseCase {
     func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never>
     func getReportURL()
     func checkPokeNewUser() -> AnyPublisher<Bool, Never>
-    func getFABInfo() -> AnyPublisher<HomeFABModel, Never>
+    func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonModel, Never>
 }
 
 public class DefaultHomeUseCase {
@@ -106,11 +106,11 @@ extension DefaultHomeUseCase: HomeUseCase {
             .eraseToAnyPublisher()
     }
     
-    public func getFABInfo() -> AnyPublisher<HomeFABModel, Never> {
-        repository.getFABInfo()
+    public func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonModel, Never> {
+        repository.getFloatingButtonInfo()
             .catch { error in
-                print("HomeUseCase getFABInfo에서 문제가 발생했습니다. \(error)")
-                return Empty<HomeFABModel, Never>()
+                print("HomeUseCase getFloatingButtonInfo에서 문제가 발생했습니다. \(error)")
+                return Empty<HomeFloatingButtonModel, Never>()
             }
             .eraseToAnyPublisher()
     }

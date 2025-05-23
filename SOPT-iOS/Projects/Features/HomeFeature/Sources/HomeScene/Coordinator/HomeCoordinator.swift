@@ -112,7 +112,7 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
             self.delegate?.homeCoordinator(self, to: .poke(isNewUser: isNewUser))
         }
         
-        homeForMember.vm.onExtendedFAButtonTapped = { [weak self] url in
+        homeForMember.vm.onExtendedFloatingButtonTapped = { [weak self] url in
             guard let self else { return }
             self.delegate?.homeCoordinator(self, to: .deepLink(url: url))
         }

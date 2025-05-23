@@ -1,5 +1,5 @@
 //
-//  HomeFABTransform.swift
+//  HomeFloatingButtonTransform.swift
 //  Data
 //
 //  Created by 강윤서 on 5/22/25.
@@ -9,9 +9,9 @@
 import Domain
 import Networks
 
-extension HomeFABResponseEntity {
-    func toDomain() -> HomeFABModel {
-        return HomeFABModel(
+extension HomeFloatingButtonResponseEntity {
+    func toDomain() -> HomeFloatingButtonModel {
+        return HomeFloatingButtonModel(
             title: self.title,
             expandedSubTitle: self.expandedSubTitle,
             collapsedSubTitle: self.collapsedSubTitle,

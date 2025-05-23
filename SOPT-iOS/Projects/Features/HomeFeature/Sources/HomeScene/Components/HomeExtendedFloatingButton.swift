@@ -1,5 +1,5 @@
 //
-//  ExtendedFAButton.swift
+//  HomeFloatingButton.swift
 //  HomeFeature
 //
 //  Created by 강윤서 on 5/10/25.
@@ -11,11 +11,11 @@ import Combine
 
 import DSKit
 
-final class HomeFAButton: UIView {
+final class HomeFloatingButton: UIView {
 
     // MARK: - Properties
     public lazy var actionButtonTapped = actionButton.gesture().mapVoid().asDriver()
-    private var buttonType: ExtendedFAButtonType = .extended {
+    private var buttonType: ExtendedFloatingButtonType = .extended {
         didSet {
             updateLayout(buttonType)
         }
@@ -63,7 +63,7 @@ final class HomeFAButton: UIView {
     
     // MARK: - Initialization
     
-    init(frame: CGRect, buttonType: ExtendedFAButtonType = .extended) {
+    init(frame: CGRect, buttonType: ExtendedFloatingButtonType = .extended) {
         self.buttonType = buttonType
         super.init(frame: frame)
         
@@ -90,7 +90,7 @@ final class HomeFAButton: UIView {
 
 // MARK: UI & Layout
 
-extension HomeFAButton {
+extension HomeFloatingButton {
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.orange400.color
         self.layer.applyShadow(color: DSKitAsset.Colors.shadow.color, alpha: 0.7, y: 4, blur: 40)
@@ -157,7 +157,7 @@ extension HomeFAButton {
         }
     }
     
-    private func updateLayout(_ type: ExtendedFAButtonType) {
+    private func updateLayout(_ type: ExtendedFloatingButtonType) {
         removeAllConstrains()
         
         switch type {
@@ -179,22 +179,22 @@ extension HomeFAButton {
 
 // MARK: - Methods
 
-extension HomeFAButton {
-    public func setStyle(_ style: ExtendedFAButtonType) {
+extension HomeFloatingButton {
+    public func setStyle(_ style: ExtendedFloatingButtonType) {
         self.buttonType = style
     }
     
-    func configureUI(with model: HomeFABPresentationModel) {
+    func configureUI(with model: HomeFloatingButtonPresentationModel) {
         // 공통 속성
         serviceImageView.setImage(with: model.imageUrl)
         
         // 확장 버튼 속성
-        extendedTitle.text = model.extenedFAButton.title
-        extendedSubTitle.text = model.extenedFAButton.subTitle
+        extendedTitle.text = model.extenedFloatingButton.title
+        extendedSubTitle.text = model.extenedFloatingButton.subTitle
         actionButton.setTitle(model.actionButtonName, for: .normal)
         
         // 접힘 버튼 속성
-        collapsedTitle.text = model.collapsedFAButton.subTitle
+        collapsedTitle.text = model.collapsedFloatingButton.subTitle
         collapsedSubTitle.text = model.actionButtonName
     }
 }

@@ -110,8 +110,8 @@ extension HomeRepository: HomeRepositoryInterface {
             .eraseToAnyPublisher()
     }
     
-    public func getFABInfo() -> AnyPublisher<HomeFABModel, any Error> {
-        homeService.getFABInfo()
+    public func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonModel, any Error> {
+        homeService.getFloatingButtonInfo()
             .map{ $0.toDomain() }
             .eraseToAnyPublisher()
     }

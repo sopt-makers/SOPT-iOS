@@ -90,7 +90,7 @@ public final class LegacyHomeCoordinator: DefaultHomeCoordinator {
             self?.requestCoordinating?(.poke(isNewUser: isNewUser))
         }
         
-        homeForMember.vm.onExtendedFAButtonTapped = { [weak self] url in
+        homeForMember.vm.onExtendedFloatingButtonTapped = { [weak self] url in
             self?.requestCoordinating?(.deepLink(url: url))
         }
         
