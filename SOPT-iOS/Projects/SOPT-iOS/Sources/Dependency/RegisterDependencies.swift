@@ -34,17 +34,6 @@ extension AppDelegate {
             }
         )
         container.register(
-            interface: MainRepositoryInterface.self,
-            implement: {
-                MainRepository(
-                    userService: DefaultUserService(),
-                    descriptionService: DefaultDescriptionService(),
-                    pokeService: DefaultPokeService(),
-                    stampService: DefaultStampService()
-                )
-            }
-        )
-        container.register(
             interface: AppMyPageRepositoryInterface.self,
             implement: {
                 AppMyPageRepository(
