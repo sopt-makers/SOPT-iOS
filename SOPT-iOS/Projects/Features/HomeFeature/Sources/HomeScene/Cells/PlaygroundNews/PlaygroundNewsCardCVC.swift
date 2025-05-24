@@ -21,14 +21,14 @@ final class PlaygroundNewsCardCVC: UICollectionViewCell {
     
     // MARK: - Properties
 
-    private let categorySubPhraseView = HomeCategoryTagView().setTitleColor(DSKitAsset.Colors.orange300.color.withAlphaComponent(0.6))
+    private let categorySubPhraseView = HomeCategoryTagLabel().setTitleColor(DSKitAsset.Colors.orange300.color.withAlphaComponent(0.6))
 
     private let verticalDividerView = UIImageView().then {
         $0.image = DSKitAsset.Assets.icVerticalDivider.image
         $0.contentMode = .scaleAspectFit
     }
     
-    private let categoryTagView = HomeCategoryTagView().setTitleColor(DSKitAsset.Colors.orange300.color.withAlphaComponent(0.6))
+    private let categoryTagView = HomeCategoryTagLabel().setTitleColor(DSKitAsset.Colors.orange300.color.withAlphaComponent(0.6))
     
     private let profileImageView = CustomProfileImageView().hideBorder()
     
