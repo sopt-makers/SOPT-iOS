@@ -11,7 +11,6 @@ import UIKit
 public extension NSAttributedString {
     
     /// string 값에서 html 태그를 적용해주는 함수
-    /// - targetString에는 특정 문자열을 넣어주세요
     /// - defaultFont, defaultColor에는 기본 폰트와 컬러를 넣어주세요
     static func fromHTML(
         _ html: String,
