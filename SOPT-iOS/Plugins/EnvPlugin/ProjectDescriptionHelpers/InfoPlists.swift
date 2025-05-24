@@ -25,15 +25,22 @@ public extension Project {
         "ITSAppUsesNonExemptEncryption": .boolean(false),
         "UIUserInterfaceStyle": .string("Dark"),
         "NSPhotoLibraryUsageDescription": .string("미션과 관련된 사진을 업로드하기 위해 갤러리 권한이 필요합니다."),
+        "UIBackgroundModes": .array([
+            .string("remote-notification")
+        ]),
+        "GIDClientID": .string("$(GOOGLE_IOS_CLIENT_ID)"),
+        "GIDServerClientID": .string("$(GOOGLE_SERVER_CLIENT_ID)"),
         "CFBundleURLTypes": .array([
             .dictionary([
                 "CFBundleTypeRole": .string("Editor"),
                 "CFBundleURLName": .string("sopt-makers"),
                 "CFBundleURLSchemes": .array([.string("sopt-makers")])
+            ]),
+            .dictionary([
+                "CFBundleTypeRole": .string("Editor"),
+                "CFBundleURLName": .string("Google"),
+                "CFBundleURLSchemes": .array([.string("$(GOOGLE_IOS_REVERSED_CLIENT_ID)")])
             ])
-        ]),
-        "UIBackgroundModes": .array([
-            .string("remote-notification")
         ])
     ]
     
@@ -61,15 +68,23 @@ public extension Project {
         "ITSAppUsesNonExemptEncryption": .boolean(false),
         "UIUserInterfaceStyle": .string("Dark"),
         "NSPhotoLibraryUsageDescription": .string("미션과 관련된 사진을 업로드하기 위해 갤러리 권한이 필요합니다."),
+        "UIBackgroundModes": .array([
+            .string("remote-notification")
+        ]),
+        "SENTRY_AUTH_TOKEN": .string("$(SENTRY_AUTH_TOKEN)"),
+        "GIDClientID": .string("$(GOOGLE_IOS_CLIENT_ID)"),
+        "GIDServerClientID": .string("$(GOOGLE_SERVER_CLIENT_ID)"),
         "CFBundleURLTypes": .array([
             .dictionary([
                 "CFBundleTypeRole": .string("Editor"),
                 "CFBundleURLName": .string("sopt-makers"),
                 "CFBundleURLSchemes": .array([.string("sopt-makers")])
+            ]),
+            .dictionary([
+                "CFBundleTypeRole": .string("Editor"),
+                "CFBundleURLName": .string("Google"),
+                "CFBundleURLSchemes": .array([.string("$(GOOGLE_IOS_REVERSED_CLIENT_ID)")])
             ])
-        ]),
-        "UIBackgroundModes": .array([
-            .string("remote-notification")
         ])
     ]
 }
