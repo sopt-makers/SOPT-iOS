@@ -59,22 +59,20 @@ extension SignInViewModel_Refactor {
                 UserDefaultKeyList.clearUserData()
             }.store(in: self.cancelBag)
         
-        input.googleLoginButtonTapped
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onSocialLoginFail?() //TODO: 구글 로그인 로직
-            }.store(in: self.cancelBag)
         
-        input.appleLoginButtonTapped
-            .withUnretained(self)
-            .flatMap { owner, _ in
-                owner.useCase.login(with: .apple)
-            }
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onSignInSuccess?(.loginSuccess)
-            }
-            .store(in: self.cancelBag)
+        Publishers.Merge(
+            input.googleLoginButtonTapped.map { _ in OAuthProvider.google },
+            input.appleLoginButtonTapped.map { _ in  OAuthProvider.apple }
+        )
+        .withUnretained(self)
+        .flatMap { owner, provider in
+            owner.useCase.login(with: provider)
+        }
+        .withUnretained(self)
+        .sink { owner, _ in
+            owner.onSignInSuccess?(.loginSuccess)
+        }.store(in: self.cancelBag)
+          
         
         input.visitorButtonTapped
             .withUnretained(self)

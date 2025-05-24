@@ -31,7 +31,9 @@ extension CoreAuthRepository: CoreAuthRepositoryInterface {
         coreAuthService
             .login(.init(token: identityToken, authPlatform: provider.toData()))
             .compactMap { $0.data?.toDomain() }
-            .mapError { _ in CoreAuthError.loginFail }
+            .mapError { _ in
+                return CoreAuthError.loginFail
+            }
             .eraseToAnyPublisher()
     }
     

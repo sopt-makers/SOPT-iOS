@@ -19,6 +19,10 @@ let packageSettings = PackageSettings(
         "Nimble": .staticFramework,
         "Lottie": .staticFramework,
         "AmplitudeSwift": .staticFramework,
+        "GoogleSignIn": .framework,
+        "GTMAppAuth": .framework,
+        "AppAuth": .framework,
+        
     ],
     baseSettings: .settings(
         configurations: [
@@ -48,5 +52,6 @@ let package = Package(
         .package(url: "https://github.com/Quick/Nimble.git", from: "12.0.0"),
         .package(url: "https://github.com/airbnb/lottie-ios", from: "4.5.0"),
         .package(url: "https://github.com/amplitude/Amplitude-Swift", from: "1.11.10"),
+        .package(url: "https://github.com/google/GoogleSignIn-iOS.git", from: "7.0.0")
     ]
 )
