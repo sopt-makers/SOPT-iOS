@@ -16,7 +16,7 @@ public typealias DefaultHomeService = BaseService<HomeAPI>
 public protocol HomeService {
     func getDescription() -> AnyPublisher<HomeDescriptionEntity, Error>
     func getAppServiceAccessStatus() -> AnyPublisher<[HomeAppServiceAccessStatusEntity], Error>
-    func getPlaygroundNewsPosts() -> AnyPublisher<[HomePlaygroundNewsPostsEntity], Error>
+    func getPlaygroundNewsPosts() -> AnyPublisher<[HomePlaygroundNewsPostsResponseEntity], Error>
 }
 
 extension DefaultHomeService: HomeService {
@@ -28,7 +28,7 @@ extension DefaultHomeService: HomeService {
         requestObjectInCombine(.getAppServiceAccessStatus)
     }
     
-    public func getPlaygroundNewsPosts() -> AnyPublisher<[HomePlaygroundNewsPostsEntity], any Error> {
+    public func getPlaygroundNewsPosts() -> AnyPublisher<[HomePlaygroundNewsPostsResponseEntity], any Error> {
         requestObjectInCombine(.getPlaygroundNewsPosts)
     }
 }

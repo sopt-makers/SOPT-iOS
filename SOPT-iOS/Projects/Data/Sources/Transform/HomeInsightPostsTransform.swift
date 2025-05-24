@@ -11,7 +11,7 @@ import Foundation
 import Domain
 import Networks
 
-extension HomePlaygroundNewsPostsEntity {
+extension HomePlaygroundNewsPostsResponseEntity {
     public func toDomain() -> HomePlaygroundNewsPostsModel {
         return HomePlaygroundNewsPostsModel(id: id, title: title, category: category, content: content, isHotPost: isHotPost)
     }
