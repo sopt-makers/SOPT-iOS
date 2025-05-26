@@ -17,7 +17,7 @@ public struct NotificationDetailDeepLink: DeepLinkExecutable {
     public init() {}
     
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
-        guard let coordinator = coordinator as? NotificationCoordinator else { return nil }
+        guard let coordinator = coordinator as? LegacyNotificationCoordinator else { return nil }
         guard let notificationId = queryItems?.getQueryValue(key: "id") else { return nil }
         
         coordinator.showNotificationDetail(notificationId: notificationId)

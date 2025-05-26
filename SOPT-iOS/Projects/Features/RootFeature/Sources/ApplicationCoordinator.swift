@@ -624,12 +624,12 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runNotificationFlow() -> NotificationCoordinator {
-        let coordinator = NotificationCoordinator(
+    internal func runNotificationFlow() -> LegacyNotificationCoordinator {
+        let coordinator = LegacyNotificationCoordinator(
             router: LegacyRouter(
                 rootController: UIWindow.getRootNavigationController
             ),
-            factory: NotificationBuilder()
+            factory: LegacyNotificationBuilder()
         )
         
         coordinator.requestCoordinating = { [weak self] destination in

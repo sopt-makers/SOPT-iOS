@@ -1,5 +1,5 @@
 //
-//  NotificationCoordinator.swift
+//  LegacyNotificationCoordinator.swift
 //  NotificationFeatureInterface
 //
 //  Created by Junho Lee on 2023/06/21.
@@ -23,16 +23,16 @@ public protocol NotificationCoordinatorOutput {
 public typealias DefaultNotificationCoordinator = DefaultCoordinator & NotificationCoordinatorOutput
 
 public
-final class NotificationCoordinator: DefaultNotificationCoordinator {
+final class LegacyNotificationCoordinator: DefaultNotificationCoordinator {
     
     public var requestCoordinating: ((NotificationCoordinatorDestination) -> Void)?
     
     public var finishFlow: (() -> Void)?
     
-    private let factory: NotificationFeatureBuildable
+    private let factory: LegacyNotificationFeatureBuildable
     private let router: LegacyRouter
     
-    public init(router: LegacyRouter, factory: NotificationFeatureBuildable) {
+    public init(router: LegacyRouter, factory: LegacyNotificationFeatureBuildable) {
         self.factory = factory
         self.router = router
     }

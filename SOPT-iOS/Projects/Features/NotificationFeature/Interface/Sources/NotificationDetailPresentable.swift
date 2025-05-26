@@ -6,6 +6,8 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
+
 import BaseFeatureDependency
 import Core
 import Domain
@@ -19,4 +21,6 @@ public protocol NotificationDetailCoordinatable {
 public typealias ShortCutLink = (url: String, isDeepLink: Bool)
 
 public typealias NotificationDetailViewModelType = ViewModelType & NotificationDetailCoordinatable
-public typealias NotificationDetailPresentable = (vc: NotificationDetailViewControllable, vm: any NotificationDetailViewModelType)
+public typealias LegacyNotificationDetailPresentable = (vc: NotificationDetailViewControllable, vm: any NotificationDetailViewModelType)
+
+public typealias NotificationDetailPresentable = (vc: UIViewController, vm: any NotificationDetailViewModelType)
