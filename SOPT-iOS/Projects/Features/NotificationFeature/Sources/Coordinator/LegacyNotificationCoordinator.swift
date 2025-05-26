@@ -11,17 +11,6 @@ import BaseFeatureDependency
 import NotificationFeatureInterface
 import Domain
 
-public enum NotificationCoordinatorDestination {
-    case deepLink(url: String)
-    case webLink(url: String)
-}
-
-public protocol NotificationCoordinatorOutput {
-    var requestCoordinating: ((NotificationCoordinatorDestination) -> Void)? { get set }
-}
-
-public typealias DefaultNotificationCoordinator = DefaultCoordinator & NotificationCoordinatorOutput
-
 public
 final class LegacyNotificationCoordinator: DefaultNotificationCoordinator {
     
