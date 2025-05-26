@@ -144,7 +144,7 @@ extension ApplicationCoordinator {
         self.router.dismissModule(animated: false)
         guard let url = URL(string: webLink) else { return }
         let webView = SOPTWebView(startWith: url)
-        self.router.push(webView)
+        UIWindow.getRootNavigationController.pushViewController(webView, animated: true)
     }
     
     private func handleNewWebLink(webLink: String) {
@@ -454,7 +454,7 @@ extension ApplicationCoordinator {
             self?.runAttendanceFlow()
         }
 
-        router.push(homeCalendarDetail.vc)
+        UIWindow.getRootNavigationController.pushViewController(homeCalendarDetail.vc.viewController, animated: true)
     }
     
     public func showNewHomeCalendarDetail() {
