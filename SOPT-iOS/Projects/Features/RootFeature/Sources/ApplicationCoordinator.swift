@@ -234,7 +234,7 @@ extension ApplicationCoordinator {
 // MARK: - LegacyTabBarFlow
 
 extension ApplicationCoordinator {
-    internal func runLegacyTabBarFlow(type: UserType? = nil) {
+    internal func runLegacyTabBarFlow(type: UserType? = nil, initSelectedTabIndex: Int = 0) {
         defer {
             bindNotification()
         }
@@ -267,6 +267,8 @@ extension ApplicationCoordinator {
         
         self.legacyRootController = tabbarController.asNavigationController
         self.tabBarController = tabbarController
+        
+        self.tabBarController?.selectedIndex = initSelectedTabIndex
         
         // 각 코디네이터 실행
         coordinator.requestCoordinating = { [weak self] destination in
@@ -322,7 +324,7 @@ extension ApplicationCoordinator {
 // MARK: - TabBarFlow
 
 extension ApplicationCoordinator {
-    internal func runTabBarFlow(type: UserType? = nil) {
+    internal func runTabBarFlow(type: UserType? = nil, initSelectedTabType: TabType = .home) {
         defer { bindNotification() }
         self.childCoordinators = []
         
@@ -350,6 +352,7 @@ extension ApplicationCoordinator {
         )
         
         self.tabBarController = tabBarFactory.vc
+        self.selectedTab(initSelectedTabType)
         
         // 각 코디네이터 실행
         coordinator.requestCoordinating = { [weak self] destination in
