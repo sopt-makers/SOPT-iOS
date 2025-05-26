@@ -271,7 +271,7 @@ extension ApplicationCoordinator {
         self.tabBarController?.selectedIndex = initSelectedTabIndex
         
         // 각 코디네이터 실행
-        coordinator.requestCoordinating = { [weak self] destination in
+        coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
             switch destination {
             case .home:
                 self?.homeCoordinator?.requestCoordinating = { [weak self, weak coordinator] destination in
@@ -355,7 +355,7 @@ extension ApplicationCoordinator {
         self.selectedTab(initSelectedTabType)
         
         // 각 코디네이터 실행
-        coordinator.requestCoordinating = { [weak self] destination in
+        coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
             switch destination {
             case .home:
                 self?.selectedTab(.home)
