@@ -45,7 +45,7 @@ extension HomeForMemberVC {
         }
     }
     
-    func createInsightCellRegistration() -> InsightCellRegistration {
+    func createPlaygroundNewsCellRegistration() -> PlaygroundNewsCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
             cell.configureCell(model: item)
         }
@@ -65,5 +65,12 @@ extension HomeForMemberVC {
             guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: indexPath.section) else { return }
             headerView.configureView(sectionKind: sectionKind)
         }
+    }
+    
+    func createPlaygroundNewsFooterRegistration() -> PlaygroundNewsFooterRegistration {
+        collectionView.createSupplementaryRegistration(
+            elementKind: UICollectionView.elementKindSectionFooter,
+            configure: { _, _ in }
+        )
     }
 }

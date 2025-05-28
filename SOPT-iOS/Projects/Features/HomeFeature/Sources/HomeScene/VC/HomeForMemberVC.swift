@@ -30,6 +30,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     private lazy var collapsedFloatingButtonTapped = floatingButton.gesture().mapVoid().asDriver()
     
     private var isFirstAppear = true
+    private var outlinedTriggered = false
     private var isExtendedButtonHidden: Bool = false
     private var floatingButtonType: ExtendedFloatingButtonType = .extended
     
@@ -174,6 +175,10 @@ extension HomeForMemberVC {
         let mainProductRegistration = createProductCellRegistration()
         let appServiceRegistration = createAppServiceCellRegistration()
         
+        // TODO: 이후 스프린트에서 순차 배포
+        let playgroundNewsRegistration = createPlaygroundNewsCellRegistration()
+//        let socialLinkRegistration = createSocialLinkCellRegistration()
+        
         dataSource = UICollectionViewDiffableDataSource<HomeForMemberSectionLayoutKind, HomeForMemberItem> (
             collectionView: collectionView) { (collectionView, indexPath, item) in
                 switch item {
@@ -189,7 +194,14 @@ extension HomeForMemberVC {
                 case .appService(let appService):
                     return collectionView.dequeueConfiguredReusableCell(using: appServiceRegistration,
                                                                         for: indexPath, item: appService)
+                case .playgroundNewsPost(let playgroundNews):
+                    return collectionView.dequeueConfiguredReusableCell(using: playgroundNewsRegistration,
+                                                                        for: indexPath, item: playgroundNews)
+//                    return collectionView.dequeueConfiguredReusableCell(using: socialLinkRegistration,
+//                                                                        for: indexPath, item: socialLink)
+                // TODO: 이후 스프린트에서 순차 배포
                 default: return UICollectionViewCell()
+
                 }
             }
         
@@ -198,11 +210,17 @@ extension HomeForMemberVC {
     
     private func configureSupplementaryView() {
         let headerRegistration = createHeaderRegistration()
+        let playgroundNewsFooterRegistration = createPlaygroundNewsFooterRegistration()
         
         dataSource.supplementaryViewProvider = { (collectionView, kind, indexPath) in
             if kind == UICollectionView.elementKindSectionHeader {
                 return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
             }
+            
+            if kind == UICollectionView.elementKindSectionFooter {
+                return collectionView.dequeueConfiguredReusableSupplementary(using: playgroundNewsFooterRegistration, for: indexPath)
+            }
+            
             return UICollectionReusableView()
         }
     }
@@ -280,12 +298,13 @@ extension HomeForMemberVC {
     private func applySnapshot(with data: HomePresentationModel) {
         var snapshot = NSDiffableDataSourceSnapshot<HomeForMemberSectionLayoutKind, HomeForMemberItem>()
         
-        snapshot.appendSections([.dashBoard, .calendar, .mainProduct, .appService])
+        snapshot.appendSections([.dashBoard, .calendar, .mainProduct, .appService, .playgroundNews])
         
         snapshot.appendItems([.dashBoard(data.dashBoard)], toSection: .dashBoard)
         snapshot.appendItems([.recentSchedule(data.recentSchedule)], toSection: .calendar)
         snapshot.appendItems(self.viewModel.productServiceList.map { .productService($0) }, toSection: .mainProduct)
         snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
+        snapshot.appendItems(data.playgroundNewsPosts.map { .playgroundNewsPost($0) }, toSection: .playgroundNews)
 
         dataSource.apply(snapshot, animatingDifferences: true)
     }
@@ -321,12 +340,46 @@ extension HomeForMemberVC: UICollectionViewDelegate {
                 self.cellTapped.send(.productService(model))
             case .appService(let model):
                 self.cellTapped.send(.appService(model))
+            case .playgroundNewsPost(let model):
+                self.cellTapped.send(.playgroundNewsPost(model))
             default: return
             }
         }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        animatePlaygroundNewsSection(scrollView)
+        animateFAButton(scrollView)
+    }
+    
+    /// Playground News 섹션의 디졸브 전환 애니메이션
+    private func animatePlaygroundNewsSection(_ scrollView: UIScrollView) {
+        guard !outlinedTriggered else { return }
+        
+        if scrollView.contentOffset.y >= 450 {
+            outlinedTriggered = true
+            self.togglePlaygroundNewsItemUI()
+        } else {
+            outlinedTriggered = false
+        }
+    }
+    
+    private func togglePlaygroundNewsItemUI() {
+        let playgroundNewsSectionIndex = HomeForMemberSectionLayoutKind.playgroundNews.rawValue
+        let repeatCount = 4
+        let interval: TimeInterval = 2.0
+        
+        for i in 0..<repeatCount {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * interval) {
+                let indexPath = IndexPath(item: i, section: playgroundNewsSectionIndex)
+                if let cell = self.collectionView.cellForItem(at: indexPath) as? PlaygroundNewsCardCVC {
+                    cell.setOutlinedAnimated()
+                }
+            }
+        }
+    }
+    
+    private func animateFAButton(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
         
         if offsetY < 330 && isExtendedButtonHidden || offsetY >= 330 && !isExtendedButtonHidden {

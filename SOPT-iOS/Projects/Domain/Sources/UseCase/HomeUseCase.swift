@@ -16,7 +16,7 @@ public protocol HomeUseCase {
     func getUserInfo() -> AnyPublisher<UserMainInfoModel?, MainError>
     func getRecentSchedule() -> AnyPublisher<HomeRecentScheduleModel, Never>
     func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Never>
-    func getInsightPosts() -> AnyPublisher<[HomeInsightPostsModel], Never>
+    func getPlaygroundNewsPosts() -> AnyPublisher<[HomePlaygroundNewsPostsModel], Never>
     func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never>
     func getReportURL()
     func checkPokeNewUser() -> AnyPublisher<Bool, Never>
@@ -72,10 +72,10 @@ extension DefaultHomeUseCase: HomeUseCase {
             }.eraseToAnyPublisher()
     }
     
-    public func getInsightPosts() -> AnyPublisher<[HomeInsightPostsModel], Never> {
-        repository.getInsightPosts()
+    public func getPlaygroundNewsPosts() -> AnyPublisher<[HomePlaygroundNewsPostsModel], Never> {
+        repository.getPlaygroundNewsPosts()
             .catch { error in
-                return Empty<[HomeInsightPostsModel], Never>()
+                return Empty<[HomePlaygroundNewsPostsModel], Never>()
             }.eraseToAnyPublisher()
     }
     

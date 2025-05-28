@@ -234,8 +234,9 @@ public struct I18N {
             public static let headerTitle = "SOPT 더 재밌게 즐기기!"
         }
         
-        public struct Insight {
-            public static let headerTitle = "인사이트 못참지!"
+        public struct PlaygroundNews {
+            public static let headerTitle = "지금 인기 소식 🔥"
+            public static let morePosts = "다른 게시물 보러가기"
         }
 
         public struct SocialLink {

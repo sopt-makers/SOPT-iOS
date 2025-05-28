@@ -15,15 +15,15 @@ enum HomeForMemberSectionLayoutKind: Int, CaseIterable {
     case calendar
     case mainProduct
     case appService
-    case insight
+    case playgroundNews
     case socialLinks
     
     var title: String {
         switch self {
         case .appService:
             return I18N.Home.AppService.headerTitle
-        case .insight:
-            return I18N.Home.Insight.headerTitle
+        case .playgroundNews:
+            return I18N.Home.PlaygroundNews.headerTitle
         default:
             return ""
         }
