@@ -39,5 +39,4 @@ public enum ServiceType {
 public enum AppServiceType: String {
     case soptamp = "SOPTAMP"
     case poke = "POKE"
-    case hotboard = "HOTBOARD"
 }

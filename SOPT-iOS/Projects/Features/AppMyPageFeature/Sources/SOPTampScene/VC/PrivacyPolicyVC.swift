@@ -32,7 +32,7 @@ public class PrivacyPolicyVC: UIViewController, PrivacyPolicyViewControllable {
         $0.text = I18N.ServiceUsagePolicy.privacyPolicy
         $0.setTypoStyle(DSKitFontFamily.Suit.regular.font(size: 14))
         $0.backgroundColor = DSKitAsset.Colors.black100.color
-        $0.textColor = DSKitAsset.Colors.white100.color
+        $0.textColor = DSKitAsset.Colors.white.color
         $0.isEditable = false
         $0.showsVerticalScrollIndicator = false
         $0.setLineSpacing(lineSpacing: 5)

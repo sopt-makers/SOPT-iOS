@@ -110,7 +110,6 @@ struct HomePresentationModel {
             self.isHotPost = isHotPost
         }
     }
-    
 }
 
 // MARK: - toPresentation
@@ -122,7 +121,7 @@ extension HomeDescriptionModel {
                 description,
                 defaultFont: DSKitFontFamily.Suit.medium.font(size: 18),
                 boldFont: DSKitFontFamily.Suit.bold.font(size: 18),
-                defaultColor: DSKitAsset.Colors.white100.color
+                defaultColor: DSKitAsset.Colors.white.color
             )
         return HomePresentationModel.DashBoard(
             description: attrString,

@@ -523,6 +523,11 @@ extension ApplicationCoordinator {
         addDependency(coordinator)
         coordinator.start()
         
+        coordinator.finishFlow = { [weak self, weak coordinator] in
+            coordinator?.childCoordinators = []
+            self?.removeDependency(coordinator)
+        }
+        
         return coordinator
     }
     

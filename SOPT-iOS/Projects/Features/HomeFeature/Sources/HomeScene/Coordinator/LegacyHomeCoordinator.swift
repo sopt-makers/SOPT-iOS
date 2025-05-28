@@ -90,6 +90,10 @@ public final class LegacyHomeCoordinator: DefaultHomeCoordinator {
             self?.requestCoordinating?(.poke(isNewUser: isNewUser))
         }
         
+        homeForMember.vm.onExtendedFloatingButtonTapped = { [weak self] url in
+            self?.requestCoordinating?(.deepLink(url: url))
+        }
+        
         rootViewController = homeForMember.vc.viewController
         
         router.push(homeForMember.vc)

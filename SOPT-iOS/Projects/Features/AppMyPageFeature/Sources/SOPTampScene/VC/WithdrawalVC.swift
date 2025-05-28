@@ -39,7 +39,7 @@ public class WithdrawalVC: UIViewController, WithdrawalViewControllable {
     
     private let cautionLabel = UILabel().then {
         $0.text = I18N.Setting.Withdrawal.caution
-        $0.textColor = DSKitAsset.Colors.white100.color
+        $0.textColor = DSKitAsset.Colors.white.color
         $0.textAlignment = .left
         $0.numberOfLines = 3
         $0.setTypoStyle(DSKitFontFamily.Suit.bold.font(size: 16))

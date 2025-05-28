@@ -15,6 +15,7 @@ public enum HomeAPI {
     case getDescription
     case getAppServiceAccessStatus
     case getPlaygroundNewsPosts
+    case getFABInfo
 }
 
 extension HomeAPI: BaseAPI {
@@ -28,19 +29,21 @@ extension HomeAPI: BaseAPI {
             return "/app-service"
         case .getPlaygroundNewsPosts:
             return "/posts"
+        case .getFABInfo:
+            return "/floating-button"
         }
     }
     
     public var method: Moya.Method {
         switch self {
-        case .getDescription, .getAppServiceAccessStatus, .getPlaygroundNewsPosts:
+        case .getDescription, .getAppServiceAccessStatus, .getPlaygroundNewsPosts, .getFABInfo:
             return .get
         }
     }
     
     public var task: Moya.Task {
         switch self {
-        case .getDescription, .getAppServiceAccessStatus, .getPlaygroundNewsPosts:
+        case .getDescription, .getAppServiceAccessStatus, .getPlaygroundNewsPosts, .getFABInfo:
             return .requestPlain
         }
     }

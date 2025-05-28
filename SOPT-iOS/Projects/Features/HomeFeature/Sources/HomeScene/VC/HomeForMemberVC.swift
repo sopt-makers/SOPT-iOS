@@ -25,14 +25,21 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     private var cellTapped = PassthroughSubject<HomeForMemberItem, Never>()
     private(set) var attendanceButtonTapped = PassthroughSubject<Void, Never>()
     
+    private var floatingButtonTapped = PassthroughSubject<Void, Never>()
+    private lazy var extendedFloatingButtonTapped = floatingButton.actionButtonTapped
+    private lazy var collapsedFloatingButtonTapped = floatingButton.gesture().mapVoid().asDriver()
+    
     private var isFirstAppear = true
     private var outlinedTriggered = false
+    private var isExtendedButtonHidden: Bool = false
+    private var floatingButtonType: ExtendedFloatingButtonType = .extended
     
     // MARK: - UI Components
     
     private lazy var naviBar = HomeNavigationBar()
     private var dataSource: UICollectionViewDiffableDataSource<HomeForMemberSectionLayoutKind, HomeForMemberItem>! = nil
     var collectionView: UICollectionView! = nil
+    private var floatingButton = HomeFloatingButton(frame: .zero)
     
     // MARK: - Initialization
     
@@ -50,10 +57,11 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     public override func viewDidLoad() {
         super.viewDidLoad()
         configureHierarchy()
-        configureUI()
-        configureLayout()
-        configureDelegate()
-        configureDataSource()
+        setUI()
+        setLayout()
+        setDelegate()
+        setDataSource()
+        bindViews()
         bindViewModels()
     }
     
@@ -75,15 +83,17 @@ extension HomeForMemberVC {
         collectionView.backgroundColor = .clear
     }
     
-    private func configureUI() {
+    private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        self.floatingButton.isHidden = true
     }
     
-    private func configureLayout() {
+    private func setLayout() {
         view.addSubviews(
             naviBar,
-            collectionView
+            collectionView,
+            floatingButton
         )
         
         naviBar.snp.makeConstraints { make in
@@ -95,17 +105,71 @@ extension HomeForMemberVC {
             make.top.equalTo(naviBar.snp.bottom).offset(16)
             make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
         }
+        
+        floatingButton.snp.makeConstraints { make in
+            make.bottom.equalToSuperview().inset(124)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(68)
+        }
+    }
+    
+    private func extendedFloatingButtonLayout() {
+        floatingButton.snp.remakeConstraints { make in
+            make.bottom.equalToSuperview().inset(124)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(68)
+        }
+    }
+    
+    private func collapsedFloatingButtonLayout() {
+        floatingButton.snp.remakeConstraints { make in
+            make.bottom.equalToSuperview().inset(124)
+            make.trailing.equalToSuperview().inset(20)
+            make.width.equalTo(127)
+            make.height.equalTo(53)
+        }
+    }
+    
+    private func animateExtendedFloatingButtonHide(_ type: ExtendedFloatingButtonType) {
+        UIView.animate(withDuration: 0.1,
+                       delay: 0,
+                       usingSpringWithDamping: 0.7,
+                       initialSpringVelocity: 0.8,
+                       options: [.curveEaseInOut],
+                       animations: { [weak self] in
+            guard let self else { return }
+            self.floatingButton.transform = CGAffineTransform(translationX: 0, y: 120)
+        }, completion: { [weak self] _ in
+            guard let self else { return }
+            self.animateExtendedFloatingButtonShow()
+            
+            type == .extended ? self.floatingButton.setStyle(.collapsed) : self.floatingButton.setStyle(.extended)
+            type == .extended ? self.collapsedFloatingButtonLayout() : self.extendedFloatingButtonLayout()
+            
+        })
+    }
+    
+    private func animateExtendedFloatingButtonShow() {
+        UIView.animate(withDuration: 0.1,
+                       delay: 0,
+                       usingSpringWithDamping: 0.7,
+                       initialSpringVelocity: 0.8,
+                       options: [.curveEaseInOut],
+                       animations: { [weak self] in
+            guard let self else { return }
+            self.floatingButton.transform = .identity
+        })
     }
 }
 
 // MARK: - Methods
 
 extension HomeForMemberVC {
-    private func configureDelegate() {
+    private func setDelegate() {
         self.collectionView.delegate = self
     }
     
-    private func configureDataSource() {
+    private func setDataSource() {
         let dashBoardRegistration = createDashBoardCellRegistration()
         let calendarRegistration = createCalendarCellRegistration()
         let mainProductRegistration = createProductCellRegistration()
@@ -161,14 +225,27 @@ extension HomeForMemberVC {
         }
     }
     
-    private func bindViewModels() {
-        let noticeButtonTapped = naviBar.noticeButtonTap
-            .mapVoid()
-            .asDriver()
+    private func bindViews() {
+        self.extendedFloatingButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                if owner.floatingButtonType == .extended {
+                    owner.floatingButtonTapped.send()
+                }
+            }.store(in: cancelBag)
         
-        let settingButtonTapped = naviBar.settingButtonTap
-            .mapVoid()
-            .asDriver()
+        self.collapsedFloatingButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                if owner.floatingButtonType == .collapsed {
+                    owner.floatingButtonTapped.send()
+                }
+            }.store(in: cancelBag)
+    }
+    
+    private func bindViewModels() {
+        let noticeButtonTapped = naviBar.noticeButtonTap.mapVoid().asDriver()
+        let settingButtonTapped = naviBar.settingButtonTap.mapVoid().asDriver()
         
         let input = HomeForMemberViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
@@ -176,7 +253,8 @@ extension HomeForMemberVC {
             cellTapped: cellTapped.asDriver(),
             attendanceButtonTapped: attendanceButtonTapped.asDriver(),
             noticeButtonTapped: noticeButtonTapped,
-            settingButtonTapped: settingButtonTapped
+            settingButtonTapped: settingButtonTapped,
+            extendedFloatingButtonTapped: floatingButtonTapped.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -191,8 +269,14 @@ extension HomeForMemberVC {
             .withUnretained(self)
             .sink { owner, isLoading in
                 isLoading ? owner.showLoading() : owner.stopLoading()
-            }
-            .store(in: cancelBag)
+            }.store(in: cancelBag)
+        
+        output.floatingButtonInfo
+            .withUnretained(self)
+            .sink { owner, floatingButtonModel in
+                owner.floatingButton.isHidden = false
+                owner.floatingButton.configureUI(with: floatingButtonModel)
+            }.store(in: cancelBag)
     }
     
     private func updateUI(with data: HomePresentationModel) {
@@ -264,17 +348,23 @@ extension HomeForMemberVC: UICollectionViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        animatePlaygroundNewsSection(scrollView)
+        animateFAButton(scrollView)
+    }
+    
+    /// Playground News 섹션의 디졸브 전환 애니메이션
+    private func animatePlaygroundNewsSection(_ scrollView: UIScrollView) {
         guard !outlinedTriggered else { return }
         
         if scrollView.contentOffset.y >= 450 {
             outlinedTriggered = true
-            self.animatePlaygroundNewsOutline()
+            self.togglePlaygroundNewsItemUI()
         } else {
             outlinedTriggered = false
         }
     }
     
-    func animatePlaygroundNewsOutline() {
+    private func togglePlaygroundNewsItemUI() {
         let playgroundNewsSectionIndex = HomeForMemberSectionLayoutKind.playgroundNews.rawValue
         let repeatCount = 4
         let interval: TimeInterval = 2.0
@@ -287,5 +377,21 @@ extension HomeForMemberVC: UICollectionViewDelegate {
                 }
             }
         }
+    }
+    
+    private func animateFAButton(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        
+        if offsetY < 330 && isExtendedButtonHidden || offsetY >= 330 && !isExtendedButtonHidden {
+            toggleFloatingButtonUI()
+        }
+    }
+    
+    /// offsetY 값이 330을 지날 때 floating button의 UI를 변경하고 애니메이션을 실행하는 메서드
+    private func toggleFloatingButtonUI() {
+        animateExtendedFloatingButtonHide(floatingButtonType)
+        isExtendedButtonHidden.toggle()
+        floatingButtonType = floatingButtonType == .extended ? .collapsed : .extended
+        floatingButton.layoutIfNeeded()
     }
 }

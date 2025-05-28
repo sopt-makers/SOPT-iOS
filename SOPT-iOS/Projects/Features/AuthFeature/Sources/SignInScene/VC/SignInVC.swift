@@ -6,14 +6,6 @@
 //  Copyright © 2022 SOPT-Stamp-iOS. All rights reserved.
 //
 
-//
-//  SignInVC.swift
-//  Presentation
-//
-//  Created by devxsby on 2022/12/01.
-//  Copyright © 2022 SOPT-Stamp-iOS. All rights reserved.
-//
-
 import UIKit
 import Combine
 import SafariServices
@@ -58,7 +50,7 @@ public class SignInVC: UIViewController, SignInViewControllable {
 
     private lazy var notMemberButton = UIButton(type: .system).then {
         $0.setTitle(I18N.SignIn.notMember, for: .normal)
-        $0.setTitleColor(DSKitAsset.Colors.white100.color, for: .normal)
+        $0.setTitleColor(DSKitAsset.Colors.white.color, for: .normal)
         $0.titleLabel!.setTypoStyle(.SoptampFont.caption1)
         $0.alpha = 0
     }

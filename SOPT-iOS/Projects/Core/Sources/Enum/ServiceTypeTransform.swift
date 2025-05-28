@@ -47,7 +47,6 @@ public extension AppServiceType {
         switch self {
         case .soptamp: return .clickSoptamp
         case .poke: return .clickPoke
-        case .hotboard: return .clickHotboard
         }
     }
 }

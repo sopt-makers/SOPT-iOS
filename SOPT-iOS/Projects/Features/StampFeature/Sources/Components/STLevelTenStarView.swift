@@ -26,7 +26,7 @@ final class STLevelTenStarView: UIView {
     private let starMultipleTenLabel = UILabel().then {
         $0.text = I18N.MissionList.multipleTen
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-        $0.textColor = DSKitAsset.Colors.white100.color
+        $0.textColor = DSKitAsset.Colors.white.color
     }
     
     private let dividerView = UIView().then {

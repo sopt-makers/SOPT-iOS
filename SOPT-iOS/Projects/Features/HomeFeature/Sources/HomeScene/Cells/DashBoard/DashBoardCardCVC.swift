@@ -16,7 +16,7 @@ final class DashBoardCardCVC: UICollectionViewCell {
     // MARK: - UI Components
         
     private var descriptionLabel = UILabel().then {
-        $0.textColor = DSKitAsset.Colors.white100.color
+        $0.textColor = DSKitAsset.Colors.white.color
         $0.font = DSKitFontFamily.Suit.medium.font(size: 18)
         $0.numberOfLines = 2
         $0.textAlignment = .left

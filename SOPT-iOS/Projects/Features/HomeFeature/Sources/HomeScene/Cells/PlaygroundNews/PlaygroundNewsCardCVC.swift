@@ -183,7 +183,7 @@ extension PlaygroundNewsCardCVC {
                 (self.userPartLabel, { self.userPartLabel.textColor = DSKitAsset.Colors.gray400.color }),
                 (self.categorySubPhraseView, { self.categorySubPhraseView.setTitleColor(DSKitAsset.Colors.orange300.color) }),
                 (self.categoryTagView, { self.categoryTagView.setTitleColor(DSKitAsset.Colors.orange300.color) }),
-                (self.postTitleLabel, { self.postTitleLabel.textColor = DSKitAsset.Colors.white100.color }),
+                (self.postTitleLabel, { self.postTitleLabel.textColor = DSKitAsset.Colors.white.color }),
                 (self.postContentLabel, { self.postContentLabel.textColor = DSKitAsset.Colors.gray400.color })
             ])
         case .unfocusing:
