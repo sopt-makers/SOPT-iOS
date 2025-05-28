@@ -382,12 +382,12 @@ extension HomeForMemberVC: UICollectionViewDelegate {
     private func animateFAButton(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
         
-        if offsetY < 330 && isExtendedButtonHidden || offsetY >= 330 && !isExtendedButtonHidden {
+        if offsetY < 130 && isExtendedButtonHidden || offsetY >= 130 && !isExtendedButtonHidden {
             toggleFloatingButtonUI()
         }
     }
     
-    /// offsetY 값이 330을 지날 때 floating button의 UI를 변경하고 애니메이션을 실행하는 메서드
+    /// offsetY 기준 값을 지날 때 floating button의 UI를 변경하고 애니메이션을 실행하는 메서드
     private func toggleFloatingButtonUI() {
         animateExtendedFloatingButtonHide(floatingButtonType)
         isExtendedButtonHidden.toggle()
