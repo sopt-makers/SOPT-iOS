@@ -210,16 +210,16 @@ extension HomeForMemberVC {
     
     private func configureSupplementaryView() {
         let headerRegistration = createHeaderRegistration()
-        let playgroundNewsFooterRegistration = createPlaygroundNewsFooterRegistration()
+//        let playgroundNewsFooterRegistration = createPlaygroundNewsFooterRegistration()
         
         dataSource.supplementaryViewProvider = { (collectionView, kind, indexPath) in
             if kind == UICollectionView.elementKindSectionHeader {
                 return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
             }
-            
-            if kind == UICollectionView.elementKindSectionFooter {
-                return collectionView.dequeueConfiguredReusableSupplementary(using: playgroundNewsFooterRegistration, for: indexPath)
-            }
+//            
+//            if kind == UICollectionView.elementKindSectionFooter {
+//                return collectionView.dequeueConfiguredReusableSupplementary(using: playgroundNewsFooterRegistration, for: indexPath)
+//            }
             
             return UICollectionReusableView()
         }
@@ -342,43 +342,45 @@ extension HomeForMemberVC: UICollectionViewDelegate {
                 self.cellTapped.send(.appService(model))
             case .playgroundNewsPost(let model):
                 self.cellTapped.send(.playgroundNewsPost(model))
+            case .socialLink(let model):
+                self.cellTapped.send(.socialLink(model))
             default: return
             }
         }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        animatePlaygroundNewsSection(scrollView)
+//        animatePlaygroundNewsSection(scrollView)
         animateFAButton(scrollView)
     }
     
     /// Playground News 섹션의 디졸브 전환 애니메이션
-    private func animatePlaygroundNewsSection(_ scrollView: UIScrollView) {
-        guard !outlinedTriggered else { return }
-        
-        if scrollView.contentOffset.y >= 450 {
-            outlinedTriggered = true
-            self.togglePlaygroundNewsItemUI()
-        } else {
-            outlinedTriggered = false
-        }
-    }
-    
-    private func togglePlaygroundNewsItemUI() {
-        let playgroundNewsSectionIndex = HomeForMemberSectionLayoutKind.playgroundNews.rawValue
-        let repeatCount = 4
-        let interval: TimeInterval = 2.0
-        
-        for i in 0..<repeatCount {
-            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * interval) {
-                let indexPath = IndexPath(item: i, section: playgroundNewsSectionIndex)
-                if let cell = self.collectionView.cellForItem(at: indexPath) as? PlaygroundNewsCardCVC {
-                    cell.setOutlinedAnimated()
-                }
-            }
-        }
-    }
-    
+//    private func animatePlaygroundNewsSection(_ scrollView: UIScrollView) {
+//        guard !outlinedTriggered else { return }
+//        
+//        if scrollView.contentOffset.y >= 450 {
+//            outlinedTriggered = true
+//            self.togglePlaygroundNewsItemUI()
+//        } else {
+//            outlinedTriggered = false
+//        }
+//    }
+//    
+//    private func togglePlaygroundNewsItemUI() {
+//        let playgroundNewsSectionIndex = HomeForMemberSectionLayoutKind.playgroundNews.rawValue
+//        let repeatCount = 4
+//        let interval: TimeInterval = 2.0
+//        
+//        for i in 0..<repeatCount {
+//            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * interval) {
+//                let indexPath = IndexPath(item: i, section: playgroundNewsSectionIndex)
+//                if let cell = self.collectionView.cellForItem(at: indexPath) as? PlaygroundNewsCardCVC {
+//                    cell.setOutlinedAnimated()
+//                }
+//            }
+//        }
+//    }
+//    
     private func animateFAButton(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
         
