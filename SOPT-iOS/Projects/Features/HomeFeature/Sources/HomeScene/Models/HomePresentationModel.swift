@@ -18,6 +18,7 @@ struct HomePresentationModel {
     let recentSchedule: HomePresentationModel.RecentSchedule
     let appServices: [HomePresentationModel.AppService]
     let playgroundNewsPosts: [HomePresentationModel.PlaygroundNews]
+    let survey: HomePresentationModel.Survey
     
     // MARK: - Item Structs
     
@@ -110,6 +111,40 @@ struct HomePresentationModel {
             self.isHotPost = isHotPost
         }
     }
+    
+    struct Survey: Identifiable, Hashable {
+        let id = UUID()
+        
+        let title: String
+        let subTitle: String
+        let actionButtonName: String
+        let linkURL: String
+        let isActive: Bool
+        
+        init(
+            title: String,
+            subTitle: String,
+            actionButtonName: String,
+            linkURL: String,
+            isActive: Bool
+        ) {
+            self.title = title
+            self.subTitle = subTitle
+            self.actionButtonName = actionButtonName
+            self.linkURL = linkURL
+            self.isActive = isActive
+        }
+    }
+    
+    struct SocialLink: Identifiable, Hashable {
+        let id = UUID()
+        
+        let socialLink: ServiceType
+        
+        init(socialLink: ServiceType) {
+            self.socialLink = socialLink
+        }
+    }
 }
 
 // MARK: - toPresentation
@@ -166,6 +201,18 @@ extension HomePlaygroundNewsPostsModel {
             name: self.name,
             content: self.content,
             isHotPost: self.isHotPost
+        )
+    }
+}
+
+extension HomeSurveyModel {
+    func toPresentation() -> HomePresentationModel.Survey {
+        return HomePresentationModel.Survey(
+            title: self.title,
+            subTitle: self.subTitle,
+            actionButtonName: self.actionButtonName,
+            linkURL: self.linkURL,
+            isActive: self.isActive
         )
     }
 }
