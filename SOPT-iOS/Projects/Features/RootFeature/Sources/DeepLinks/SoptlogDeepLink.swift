@@ -1,9 +1,9 @@
 //
-//  HomeDeeplink.swift
-//  RootFeatureDemo
+//  SoptlogDeepLink.swift
+//  RootFeature
 //
-//  Created by sejin on 2023/10/27.
-//  Copyright © 2023 SOPT-iOS. All rights reserved.
+//  Created by Jae Hyun Lee on 5/24/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
 import Foundation
@@ -11,8 +11,8 @@ import Foundation
 import BaseFeatureDependency
 import Core
 
-public struct HomeDeepLink: DeepLinkExecutable {
-    public let name = "home"
+public struct SoptlogDeepLink: DeepLinkExecutable {
+    public let name = "soptlog"
     public let children: [DeepLinkExecutable] = [NotificationDeepLink(), SoptampDeepLink(), MyPageDeepLink(), AttendanceDeepLink(), PokeDeepLink(), DailySoptuneDeepLink()]
     public var isDestination: Bool = false
     
@@ -20,7 +20,7 @@ public struct HomeDeepLink: DeepLinkExecutable {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
         
         if self.isDestination == true {
-            Config.coordinatorFlag == .legacy ? coordinator.runLegacyTabBarFlow(initSelectedTabIndex: 0) : coordinator.runTabBarFlow(initSelectedTabType: .home)
+            Config.coordinatorFlag == .legacy ? coordinator.runLegacyTabBarFlow(initSelectedTabIndex: 1) : coordinator.runTabBarFlow(initSelectedTabType: .soptlog)
         }
         
         return coordinator
