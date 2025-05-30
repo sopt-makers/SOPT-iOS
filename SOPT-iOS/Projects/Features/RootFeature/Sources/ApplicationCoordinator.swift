@@ -144,7 +144,7 @@ extension ApplicationCoordinator {
         self.router.dismissModule(animated: false)
         guard let url = URL(string: webLink) else { return }
         let webView = SOPTWebView(startWith: url)
-        self.router.push(webView)
+        router.push(webView)
     }
     
     private func handleNewWebLink(webLink: String) {
@@ -256,8 +256,8 @@ extension ApplicationCoordinator {
             userType: userType
         )
         
-        let coordinator = TabBarCoordinator(
-            navigationController: rootNavigationController,
+        let coordinator = LegacyTabBarCoordinator(
+            router: router,
             factory: (tabbarController, viewModel),
             items: [
                 homeVC,
@@ -624,13 +624,23 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runNotificationFlow() -> NotificationCoordinator {
-        let coordinator = NotificationCoordinator(
-            router: LegacyRouter(
-                rootController: UIWindow.getRootNavigationController
-            ),
-            factory: NotificationBuilder()
-        )
+    internal func runNotificationFlow() -> DefaultNotificationCoordinator {
+        var coordinator: DefaultNotificationCoordinator
+        
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator = LegacyNotificationCoordinator(
+                router: LegacyRouter(
+                    rootController: UIWindow.getRootNavigationController
+                ),
+                factory: LegacyNotificationBuilder()
+            )
+        case .new:
+            coordinator = NotificationCoordinator(
+                navigationController: UIWindow.getRootNavigationController,
+                factory: NotificationBuilder()
+            )
+        }
         
         coordinator.requestCoordinating = { [weak self] destination in
             switch destination {
@@ -645,6 +655,7 @@ extension ApplicationCoordinator {
             coordinator?.childCoordinators = []
             self?.removeDependency(coordinator)
         }
+        
         addDependency(coordinator)
         coordinator.start()
         
