@@ -28,6 +28,8 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     private var floatingButtonTapped = PassthroughSubject<Void, Never>()
     private lazy var extendedFloatingButtonTapped = floatingButton.actionButtonTapped
     private lazy var collapsedFloatingButtonTapped = floatingButton.gesture().mapVoid().asDriver()
+    private(set) var surveyButtonTapped = PassthroughSubject<Void, Never>()
+    private var socialLinkButtonTapped = PassthroughSubject<HomePresentationModel.SocialLink, Never>()
     
     private var isFirstAppear = true
     private var outlinedTriggered = false
@@ -174,10 +176,9 @@ extension HomeForMemberVC {
         let calendarRegistration = createCalendarCellRegistration()
         let mainProductRegistration = createProductCellRegistration()
         let appServiceRegistration = createAppServiceCellRegistration()
-        
-        // TODO: 이후 스프린트에서 순차 배포
-        let playgroundNewsRegistration = createPlaygroundNewsCellRegistration()
-//        let socialLinkRegistration = createSocialLinkCellRegistration()
+//        let playgroundNewsRegistration = createPlaygroundNewsCellRegistration()
+        let surveyRegistration = createSurveyRegistration()
+        let socialLinkRegistration = createSocialLinkCellRegistration()
         
         dataSource = UICollectionViewDiffableDataSource<HomeForMemberSectionLayoutKind, HomeForMemberItem> (
             collectionView: collectionView) { (collectionView, indexPath, item) in
@@ -194,12 +195,15 @@ extension HomeForMemberVC {
                 case .appService(let appService):
                     return collectionView.dequeueConfiguredReusableCell(using: appServiceRegistration,
                                                                         for: indexPath, item: appService)
-                case .playgroundNewsPost(let playgroundNews):
-                    return collectionView.dequeueConfiguredReusableCell(using: playgroundNewsRegistration,
-                                                                        for: indexPath, item: playgroundNews)
-//                    return collectionView.dequeueConfiguredReusableCell(using: socialLinkRegistration,
-//                                                                        for: indexPath, item: socialLink)
-                // TODO: 이후 스프린트에서 순차 배포
+//                case .playgroundNewsPost(let playgroundNews):
+//                    return collectionView.dequeueConfiguredReusableCell(using: playgroundNewsRegistration,
+//                                                                        for: indexPath, item: playgroundNews)
+                case .survey(let survey):
+                    return collectionView.dequeueConfiguredReusableCell(using: surveyRegistration,
+                                                                        for: indexPath, item: survey)
+                case .socialLink(let socialLink):
+                    return collectionView.dequeueConfiguredReusableCell(using: socialLinkRegistration,
+                                                                        for: indexPath, item: socialLink)
                 default: return UICollectionViewCell()
 
                 }
@@ -254,7 +258,9 @@ extension HomeForMemberVC {
             attendanceButtonTapped: attendanceButtonTapped.asDriver(),
             noticeButtonTapped: noticeButtonTapped,
             settingButtonTapped: settingButtonTapped,
-            extendedFloatingButtonTapped: floatingButtonTapped.asDriver()
+            extendedFloatingButtonTapped: floatingButtonTapped.asDriver(),
+            surveyButtonTapped: surveyButtonTapped.asDriver(),
+            socialLinkButtonTapped: socialLinkButtonTapped.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -298,13 +304,15 @@ extension HomeForMemberVC {
     private func applySnapshot(with data: HomePresentationModel) {
         var snapshot = NSDiffableDataSourceSnapshot<HomeForMemberSectionLayoutKind, HomeForMemberItem>()
         
-        snapshot.appendSections([.dashBoard, .calendar, .mainProduct, .appService, .playgroundNews])
+        snapshot.appendSections([.dashBoard, .calendar, .mainProduct, .appService, .survey, .socialLinks])
         
         snapshot.appendItems([.dashBoard(data.dashBoard)], toSection: .dashBoard)
         snapshot.appendItems([.recentSchedule(data.recentSchedule)], toSection: .calendar)
         snapshot.appendItems(self.viewModel.productServiceList.map { .productService($0) }, toSection: .mainProduct)
         snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
-        snapshot.appendItems(data.playgroundNewsPosts.map { .playgroundNewsPost($0) }, toSection: .playgroundNews)
+//        snapshot.appendItems(data.playgroundNewsPosts.map { .playgroundNewsPost($0) }, toSection: .playgroundNews)
+        snapshot.appendItems([.survey(data.survey)], toSection: .survey)
+        snapshot.appendItems(self.viewModel.socialLinkList.map { .socialLink($0) }, toSection: .socialLinks)
 
         dataSource.apply(snapshot, animatingDifferences: true)
     }

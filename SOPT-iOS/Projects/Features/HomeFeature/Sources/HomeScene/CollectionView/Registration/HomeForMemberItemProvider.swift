@@ -51,9 +51,23 @@ extension HomeForMemberVC {
         }
     }
     
+    func createSurveyRegistration() -> SurveyCellRegistration {
+        collectionView.createCellRegistration { [weak self] cell, _, item in
+            guard let self else { return }
+            cell.configureCell(model: item)
+            
+            cell.surveyButtonTap
+                .withUnretained(self)
+                .sink { owner, _ in
+                    owner.surveyButtonTapped.send()
+                }
+                .store(in: cancelBag)
+        }
+    }
+    
     func createSocialLinkCellRegistration() -> SocialLinkCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
-            cell.configureCell(type: item)
+            cell.configureCell(type: item.socialLink)
         }
     }
     
