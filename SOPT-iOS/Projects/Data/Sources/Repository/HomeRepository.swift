@@ -74,8 +74,8 @@ extension HomeRepository: HomeRepositoryInterface {
             .eraseToAnyPublisher()
     }
     
-    public func getInsightPosts() -> AnyPublisher<[Domain.HomeInsightPostsModel], any Error> {
-        homeService.getInsightPosts()
+    public func getPlaygroundNewsPosts() -> AnyPublisher<[Domain.HomePlaygroundNewsPostsModel], any Error> {
+        homeService.getPlaygroundNewsPosts()
             .map { $0.map { $0.toDomain() } }
             .eraseToAnyPublisher()
     }
