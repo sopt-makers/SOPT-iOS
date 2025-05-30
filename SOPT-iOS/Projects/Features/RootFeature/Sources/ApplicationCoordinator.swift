@@ -144,7 +144,7 @@ extension ApplicationCoordinator {
         self.router.dismissModule(animated: false)
         guard let url = URL(string: webLink) else { return }
         let webView = SOPTWebView(startWith: url)
-        UIWindow.getRootNavigationController.pushViewController(webView, animated: true)
+        router.push(webView)
     }
     
     private func handleNewWebLink(webLink: String) {
@@ -256,8 +256,8 @@ extension ApplicationCoordinator {
             userType: userType
         )
         
-        let coordinator = TabBarCoordinator(
-            navigationController: rootNavigationController,
+        let coordinator = LegacyTabBarCoordinator(
+            router: router,
             factory: (tabbarController, viewModel),
             items: [
                 homeVC,
