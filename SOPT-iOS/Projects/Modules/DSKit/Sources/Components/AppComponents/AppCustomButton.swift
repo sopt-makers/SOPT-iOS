@@ -19,7 +19,7 @@ public final class AppCustomButton: UIButton {
     
     // MARK: - Initialize
     
-    public init(title: String) {
+    public init(title: String = "") {
         self.title = AttributedString(title)
         super.init(frame: .zero)
         
@@ -38,6 +38,22 @@ extension AppCustomButton {
     @discardableResult
     public func setEnabled(_ isEnabled: Bool) -> Self {
         self.isEnabled = isEnabled
+        return self
+    }
+    
+    /// 버튼의 text 설정
+    @discardableResult
+    public func setTitle(_ title: String) -> Self {
+        self.title = AttributedString(title)
+        return self
+    }
+    
+    /// content의 edge 변경
+    @discardableResult
+    public func changeInset(inset: NSDirectionalEdgeInsets) -> Self {
+        config.contentInsets = inset
+        self.configuration = config
+        
         return self
     }
     
@@ -76,7 +92,7 @@ extension AppCustomButton {
             updatedConfig.attributedTitle = self.title
             button.configuration = updatedConfig
         }
-        
+                
         return self
     }
 }
