@@ -94,6 +94,14 @@ public final class LegacyHomeCoordinator: DefaultHomeCoordinator {
             self?.requestCoordinating?(.deepLink(url: url))
         }
         
+        homeForMember.vm.onSurveyButtonTapped = { [weak self] url in
+            self?.requestCoordinating?(.webLink(url: url))
+        }
+        
+        homeForMember.vm.onSocialLinkButtonTapped = { [weak self] url in
+            self?.requestCoordinating?(.webLink(url: url))
+        }
+        
         rootViewController = homeForMember.vc.viewController
         
         router.push(homeForMember.vc)
