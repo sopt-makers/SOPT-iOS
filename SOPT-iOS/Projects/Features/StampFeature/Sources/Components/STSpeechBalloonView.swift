@@ -47,7 +47,7 @@ public class STSpeechBalloonView: UIView {
     
     private let sentenceLabel: UILabel = {
         let label = UILabel()
-        label.setTypoStyle(.SoptampFont.subtitle3)
+        label.font = .SoptampFont.subtitle3
         label.text = I18N.RankingList.noSentenceText
         label.textColor = DSKitAsset.Colors.gray300.color
         label.textAlignment = .center

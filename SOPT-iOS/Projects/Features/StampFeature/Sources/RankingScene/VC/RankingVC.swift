@@ -57,7 +57,7 @@ public class RankingVC: UIViewController, RankingViewControllable {
         let bt = UIButton()
         bt.layer.cornerRadius = 27.adjustedH
         bt.backgroundColor = DSKitAsset.Colors.white.color
-        bt.titleLabel?.setTypoStyle(.SoptampFont.h2)
+        bt.titleLabel?.font = .SoptampFont.h2
         let attributedStr = NSMutableAttributedString(string: "내 랭킹 보기")
         let style = NSMutableParagraphStyle()
         attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))

@@ -30,7 +30,7 @@ public class PrivacyPolicyVC: UIViewController, PrivacyPolicyViewControllable {
     
     private let textView = UITextView().then {
         $0.text = I18N.ServiceUsagePolicy.privacyPolicy
-        $0.setTypoStyle(DSKitFontFamily.Suit.regular.font(size: 14))
+        $0.font = DSKitFontFamily.Suit.regular.font(size: 14)
         $0.backgroundColor = DSKitAsset.Colors.black100.color
         $0.textColor = DSKitAsset.Colors.white.color
         $0.isEditable = false

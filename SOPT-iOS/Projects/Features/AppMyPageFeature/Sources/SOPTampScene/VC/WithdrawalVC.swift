@@ -42,7 +42,7 @@ public class WithdrawalVC: UIViewController, WithdrawalViewControllable {
         $0.textColor = DSKitAsset.Colors.white.color
         $0.textAlignment = .left
         $0.numberOfLines = 3
-        $0.setTypoStyle(DSKitFontFamily.Suit.bold.font(size: 16))
+        $0.font = DSKitFontFamily.Suit.bold.font(size: 16)
         $0.setLineSpacing(lineSpacing: 10)
     }
     
@@ -50,7 +50,7 @@ public class WithdrawalVC: UIViewController, WithdrawalViewControllable {
         $0.text = I18N.Setting.Withdrawal.guide1
         $0.textColor = DSKitAsset.Colors.gray60.color
         $0.textAlignment = .left
-        $0.setTypoStyle(DSKitFontFamily.Suit.regular.font(size: 14))
+        $0.font = DSKitFontFamily.Suit.regular.font(size: 14)
         $0.setLineSpacing(lineSpacing: 10)
     }
     
@@ -59,7 +59,7 @@ public class WithdrawalVC: UIViewController, WithdrawalViewControllable {
         $0.textColor = DSKitAsset.Colors.gray60.color
         $0.textAlignment = .left
         $0.numberOfLines = 2
-        $0.setTypoStyle(DSKitFontFamily.Suit.regular.font(size: 14))
+        $0.font = DSKitFontFamily.Suit.regular.font(size: 14)
         $0.setLineSpacing(lineSpacing: 10)
     }
     

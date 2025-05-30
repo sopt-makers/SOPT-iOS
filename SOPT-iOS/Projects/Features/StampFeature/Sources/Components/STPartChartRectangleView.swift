@@ -44,7 +44,7 @@ public class STPartChartRectangleView: UIView {
 
   private let partNameLabel: UILabel = {
     let label = UILabel()
-    label.setTypoStyle(.MDS.body3.font)
+    label.font = .MDS.body3.font
     label.textColor = DSKitAsset.Colors.white.color
     label.lineBreakMode = .byTruncatingTail
     label.setCharacterSpacing(0)

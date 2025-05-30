@@ -34,7 +34,7 @@ final class PartRankingListCVC: UICollectionViewCell, UICollectionViewRegisterab
     
     private let partNameLabel: UILabel = {
         let label = UILabel()
-        label.setTypoStyle(.SoptampFont.h3)
+        label.font = .SoptampFont.h3
         label.textColor = DSKitAsset.Colors.white.color
         label.lineBreakMode = .byTruncatingTail
         label.setCharacterSpacing(0)
@@ -43,7 +43,7 @@ final class PartRankingListCVC: UICollectionViewCell, UICollectionViewRegisterab
     
     private let scoreLabel: UILabel = {
         let label = UILabel()
-        label.setTypoStyle(.SoptampFont.number2)
+        label.font = .SoptampFont.number2
         label.textColor = DSKitAsset.Colors.white.color
         return label
     }()

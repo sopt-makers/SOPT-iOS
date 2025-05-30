@@ -168,7 +168,7 @@ final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     private let purposeLabel: UILabel = {
         let label = UILabel()
         label.textColor = DSKitAsset.Colors.white.color
-        label.setTypoStyle(.SoptampFont.caption1D)
+        label.font = .SoptampFont.caption1D
         label.numberOfLines = 2
         return label
     }()

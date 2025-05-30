@@ -44,7 +44,7 @@ final class RankingListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     
     private let usernameLabel: UILabel = {
         let label = UILabel()
-        label.setTypoStyle(.SoptampFont.h3)
+        label.font = .SoptampFont.h3
         label.textColor = DSKitAsset.Colors.white.color
         label.lineBreakMode = .byTruncatingTail
         label.setCharacterSpacing(0)
@@ -53,7 +53,7 @@ final class RankingListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     
     private let sentenceLabel: UILabel = {
         let label = UILabel()
-        label.setTypoStyle(.SoptampFont.caption1)
+        label.font = .SoptampFont.caption1
         label.textColor = DSKitAsset.Colors.gray300.color
         label.lineBreakMode = .byTruncatingTail
         label.setCharacterSpacing(0)
@@ -62,7 +62,7 @@ final class RankingListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     
     private let scoreLabel: UILabel = {
         let label = UILabel()
-        label.setTypoStyle(.SoptampFont.number2)
+        label.font = .SoptampFont.number2
         label.partFontChange(targetString: "점", font: DSKitFontFamily.Pretendard.medium.font(size: 12))
         label.textColor = DSKitAsset.Colors.soptampGray400.color
         return label
