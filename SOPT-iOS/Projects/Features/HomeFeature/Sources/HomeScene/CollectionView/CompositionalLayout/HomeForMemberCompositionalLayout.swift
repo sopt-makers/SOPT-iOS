@@ -22,6 +22,9 @@ extension HomeForMemberVC {
         static let appServiceItemSpacing: Double = 16
         static let playgroundNewsSectionSpacing: Double = 10
         static let mainProductSectionSpacing: Double = 44
+        static let socialLinkSectionSpacing: Double = 72
+        
+        static let bottomSpacing: Double = 50
     }
     
     func createLayout() -> UICollectionViewCompositionalLayout {
@@ -38,10 +41,12 @@ extension HomeForMemberVC {
                 return self.createMainProductSection()
             case .appService:
                 return self.createAppServiceSection()
-            case .playgroundNews:
-                return self.createPlaygroundNewsSection()
+//            case .playgroundNews:
+//                return self.createPlaygroundNewsSection()
             case .socialLinks:
                 return self.createSocialLinksSection()
+            case .survey:
+                return self.createSurveySection()
             }
         }
     }
@@ -195,14 +200,35 @@ extension HomeForMemberVC {
         
         /// section 지정
         let section = NSCollectionLayoutSection(group: socialLinkGroup)
-        section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultLineSpacing,
+        section.contentInsets = NSDirectionalEdgeInsets(top: Metric.socialLinkSectionSpacing,
                                                         leading: Metric.collectionViewDefaultSideInset,
-                                                        bottom: 0,
+                                                        bottom: Metric.bottomSpacing,
                                                         trailing: 0)
         section.interGroupSpacing = 6
         return section
     }
     
+    private func createSurveySection() -> NSCollectionLayoutSection {
+        /// item: 설문
+        let surveyItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                    heightDimension: .absolute(279))
+        let surveyItem = NSCollectionLayoutItem(layoutSize: surveyItemSize)
+        
+        /// group: 설문
+        let surveyGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                     heightDimension: .estimated(279))
+        let surveyGroup = NSCollectionLayoutGroup.vertical(layoutSize: surveyGroupSize,
+                                                           subitems: [surveyItem])
+        
+        /// section 지정
+        let section = NSCollectionLayoutSection(group: surveyGroup)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0,
+                                                        leading: Metric.collectionViewDefaultSideInset,
+                                                        bottom: 0,
+                                                        trailing: Metric.collectionViewDefaultSideInset)
+        
+        return section
+    }
     
     private func createEmptySection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(1),
