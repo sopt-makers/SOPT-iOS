@@ -527,8 +527,8 @@ extension ListDetailVC {
         self.textView.textContainerInset = UIEdgeInsets(top: 14, left: 10, bottom: 14, right: 14)
         
         self.imagePlaceholderLabel.textColor = DSKitAsset.Colors.gray300.color
-        self.imagePlaceholderLabel.setTypoStyle(.SoptampFont.subtitle2)
-        self.textView.setTypoStyle(.SoptampFont.caption1)
+        self.imagePlaceholderLabel.font = .SoptampFont.subtitle2
+        self.textView.font = .SoptampFont.caption1
         
         self.imagePlaceholderLabel.text = I18N.ListDetail.imagePlaceHolder
         self.textView.text = I18N.ListDetail.memoPlaceHolder

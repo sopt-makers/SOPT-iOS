@@ -51,7 +51,7 @@ public class SignInVC: UIViewController, SignInViewControllable {
     private lazy var notMemberButton = UIButton(type: .system).then {
         $0.setTitle(I18N.SignIn.notMember, for: .normal)
         $0.setTitleColor(DSKitAsset.Colors.white.color, for: .normal)
-        $0.titleLabel!.setTypoStyle(.SoptampFont.caption1)
+        $0.titleLabel!.font = .SoptampFont.caption1
         $0.alpha = 0
     }
 

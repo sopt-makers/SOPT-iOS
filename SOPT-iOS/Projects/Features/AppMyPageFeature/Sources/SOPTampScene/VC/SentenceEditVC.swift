@@ -38,7 +38,7 @@ public class SentenceEditVC: UIViewController, SentenceEditViewControllable {
         let tv = UITextView()
         tv.backgroundColor = DSKitAsset.Colors.black80.color
         tv.textColor = DSKitAsset.Colors.white.color
-        tv.setTypoStyle(DSKitFontFamily.Suit.medium.font(size: 16))
+        tv.font = DSKitFontFamily.Suit.medium.font(size: 16)
         tv.layer.cornerRadius = 9.adjustedH
         tv.layer.borderWidth = 1.adjustedH
         tv.isEditable = true

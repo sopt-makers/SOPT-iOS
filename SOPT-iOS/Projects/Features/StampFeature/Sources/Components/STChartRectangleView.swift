@@ -62,7 +62,7 @@ public class STChartRectangleView: UIView {
   
   private let scoreLabel: UILabel = {
     let label = UILabel()
-    label.setTypoStyle(.SoptampFont.number2)
+    label.font = .SoptampFont.number2
     label.partFontChange(targetString: "점", font: DSKitFontFamily.Pretendard.medium.font(size: 12))
     return label
   }()
@@ -84,7 +84,7 @@ public class STChartRectangleView: UIView {
   
   private let usernameLabel: UILabel = {
     let label = UILabel()
-    label.setTypoStyle(.SoptampFont.subtitle3)
+    label.font = .SoptampFont.subtitle3
     label.lineBreakMode = .byCharWrapping
     label.setCharacterSpacing(0)
     return label

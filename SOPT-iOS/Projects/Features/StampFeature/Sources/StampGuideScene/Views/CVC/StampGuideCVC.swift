@@ -25,7 +25,7 @@ public class StampGuideCVC: UICollectionViewCell {
     }
     
     private let titleLabel = UILabel().then {
-        $0.setTypoStyle(.SoptampFont.h1)
+        $0.font = .SoptampFont.h1
         $0.textColor = DSKitAsset.Colors.white.color
     }
     
@@ -34,7 +34,7 @@ public class StampGuideCVC: UICollectionViewCell {
         $0.textColor = DSKitAsset.Colors.gray200.color
         $0.text = " "
         $0.numberOfLines = 2
-        $0.setTypoStyle(.SoptampFont.subtitle2)
+        $0.font = .SoptampFont.subtitle2
         $0.setLineSpacing(lineSpacing: 5)
         $0.textAlignment = .center
     }
