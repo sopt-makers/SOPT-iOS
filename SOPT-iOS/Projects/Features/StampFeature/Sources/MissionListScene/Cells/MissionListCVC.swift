@@ -15,113 +15,6 @@ import DSKit
 
 import SnapKit
 
-// MARK: MissionListCellType
-
-@frozen
-enum MissionListCellType {
-    case levelOne(completed: Bool)
-    case levelTwo(completed: Bool)
-    case levelThree(completed: Bool)
-    case levelTen(completed: Bool)
-    
-    var isCompleted: Bool {
-        switch self {
-        case
-            let .levelOne(completed),
-            let .levelTwo(completed),
-            let .levelThree(completed),
-            let .levelTen(completed):
-            return completed
-        }
-    }
-    
-    var starLevel: StarViewLevel {
-        switch self {
-        case .levelOne:
-            return .levelOne
-        case .levelTwo:
-            return .levelTwo
-        case .levelThree:
-            return .levelThree
-        case .levelTen:
-            return .levelTen
-        }
-    }
-}
-
-// MARK: - Metrics
-
-extension MissionListCellType {
-    
-    var stampTop: CGFloat {
-        switch self {
-        case .levelOne:
-            return 47
-        case .levelTwo:
-            return 40
-        case .levelThree:
-            return 26
-        case .levelTen:
-            return 36
-        }
-    }
-    
-    var stampWidth: CGFloat {
-        switch self {
-        case .levelOne:
-            return 135
-        case .levelTwo:
-            return 125
-        case .levelThree:
-            return 104
-        case .levelTen:
-            return 124
-        }
-    }
-    
-    var stampHeight: CGFloat {
-        switch self {
-        case .levelOne:
-            return 81
-        case .levelTwo:
-            return 90
-        case .levelThree:
-            return 104
-        case .levelTen:
-            return 87
-        }
-    }
-    
-    var stampLabelSpacing: CGFloat {
-        switch self {
-        case .levelOne:
-            return 16
-        case .levelTwo:
-            return 13
-        case .levelThree:
-            return 12
-        case .levelTen:
-            return 19
-        }
-    }
-}
-
-extension MissionListModel {
-    func toCellType() -> MissionListCellType {
-        switch self.level {
-        case 1: return .levelOne(completed: self.isCompleted)
-        case 2: return .levelTwo(completed: self.isCompleted)
-        case 3: return .levelThree(completed: self.isCompleted)
-        case 10: return .levelTen(completed: self.isCompleted)
-        default: return .levelThree(completed: self.isCompleted)
-        }
-    }
-    
-    func toListDetailSceneType() -> ListDetailSceneType {
-        return (self.isCompleted == true) ? .completed : .none
-    }
-}
-
 // MARK: MissionListCVC
 
 final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
@@ -131,7 +24,7 @@ final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     static var isFromNib: Bool = false
     
     public var model: MissionListModel?
-    private var cellType: MissionListCellType = .levelOne(completed: false)
+    private var cellType: MissionListCellType = .mission(level: .levelOne, completed: false)
     public var initCellType: MissionListCellType {
         get { return self.cellType }
         set {
@@ -161,7 +54,7 @@ final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     }()
     
     private lazy var starView: STStarView = {
-        let view = STStarView(starScale: 15.adjusted, spacing: 10.adjusted, level: cellType.starLevel)
+        let view = STStarView(level: cellType.starLevel)
         return view
     }()
     
@@ -172,6 +65,8 @@ final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
         label.numberOfLines = 2
         return label
     }()
+    
+    private let levelTenStarView = STLevelTenStarView(frame: .zero)
     
     // MARK: - View Life Cycles
     
@@ -198,19 +93,13 @@ extension MissionListCVC {
         backgroundImageView.tintColor = DSKitAsset.Colors.gray800.color
         
         guard cellType.isCompleted else {
-            starView.changeStarLevel(level: cellType.starLevel)
+            starView.setStarColor(level: cellType.starLevel)
             return
         }
         
         switch cellType {
-        case .levelOne:
-            stampImageView.image = DSKitAsset.Assets.levelOneStamp.image
-        case .levelTwo:
-            stampImageView.image = DSKitAsset.Assets.levelTwoStamp.image
-        case .levelThree:
-            stampImageView.image = DSKitAsset.Assets.levelThreeStamp.image
-        case .levelTen:
-            stampImageView.image = DSKitAsset.Assets.levelTenStamp.image
+        case .mission(_, _):
+            stampImageView.image = cellType.completedImage
         }
     }
     
@@ -227,6 +116,7 @@ extension MissionListCVC {
     }
     
     private func setOnGoingLayout() {
+        let starView = cellType.starLevel == .levelTen ? levelTenStarView : self.starView
         self.backgroundImageView.addSubviews(starView, purposeLabel)
         
         starView.snp.makeConstraints { make in
