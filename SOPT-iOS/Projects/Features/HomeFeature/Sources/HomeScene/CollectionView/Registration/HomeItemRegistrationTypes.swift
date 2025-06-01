@@ -14,7 +14,8 @@ typealias CalendarCellRegistration = UICollectionView.CellRegistration<CalendarC
 typealias ProductCellRegistration = UICollectionView.CellRegistration<MainProductCardCVC, HomePresentationModel.ProductService>
 typealias AppServiceCellRegistration = UICollectionView.CellRegistration<AppServiceCardCVC, HomePresentationModel.AppService>
 typealias PlaygroundNewsCellRegistration = UICollectionView.CellRegistration<PlaygroundNewsCardCVC, HomePresentationModel.PlaygroundNews>
-typealias SocialLinkCellRegistration = UICollectionView.CellRegistration<SocialLinkCardCVC, SocialLinkCardType>
+typealias SurveyCellRegistration = UICollectionView.CellRegistration<SurveyCVC, HomePresentationModel.Survey>
+typealias SocialLinkCellRegistration = UICollectionView.CellRegistration<SocialLinkCardCVC, HomePresentationModel.SocialLink>
 
 // supplemenatry views
 typealias HeaderRegistration = UICollectionView.SupplementaryRegistration<HomeDefaultHeaderView>

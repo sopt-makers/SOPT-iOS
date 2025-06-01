@@ -18,6 +18,7 @@ public protocol HomeService {
     func getAppServiceAccessStatus() -> AnyPublisher<[HomeAppServiceAccessStatusEntity], Error>
     func getPlaygroundNewsPosts() -> AnyPublisher<[HomePlaygroundNewsPostsResponseEntity], Error>
     func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonResponseEntity, Error>
+    func getSurveyInfo() -> AnyPublisher<HomeSurveyResponseEntity, Error>
 }
 
 extension DefaultHomeService: HomeService {
@@ -35,5 +36,9 @@ extension DefaultHomeService: HomeService {
     
     public func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonResponseEntity, any Error> {
         requestObjectInCombine(.getFABInfo)
+    }
+    
+    public func getSurveyInfo() -> AnyPublisher<HomeSurveyResponseEntity, any Error> {
+        requestObjectInCombine(.getSurveyInfo)
     }
 }

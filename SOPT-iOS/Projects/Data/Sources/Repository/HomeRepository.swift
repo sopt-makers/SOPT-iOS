@@ -115,4 +115,10 @@ extension HomeRepository: HomeRepositoryInterface {
             .map{ $0.toDomain() }
             .eraseToAnyPublisher()
     }
+    
+    public func getSurveyInfo() -> AnyPublisher<Domain.HomeSurveyModel, any Error> {
+        homeService.getSurveyInfo()
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
 }

@@ -83,7 +83,8 @@ extension HomeDefaultHeaderView {
         self.orangeCharacterLottieView.isHidden = true
         
         if let memberKind = sectionKind as? HomeForMemberSectionLayoutKind {
-            let shouldShow = (memberKind == .playgroundNews)
+//            let shouldShow = (memberKind == .playgroundNews)
+            let shouldShow = false
             self.orangeCharacterLottieView.isHidden = !shouldShow
             
             if shouldShow {

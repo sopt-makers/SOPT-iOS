@@ -11,36 +11,6 @@ import UIKit
 import Core
 import DSKit
 
-enum SocialLinkCardType: CaseIterable, Identifiable {
-    case homePage
-    case instagram
-    case youtube
-        
-    var id: Self { self }
-    
-    var image: UIImage {
-        switch self {
-        case .homePage:
-            return DSKitAsset.Assets.icHomepage.image
-        case .instagram:
-            return DSKitAsset.Assets.icInstagram.image
-        case .youtube:
-            return DSKitAsset.Assets.icYoutube.image
-        }
-    }
-    
-    var description: String {
-        switch self {
-        case .homePage:
-            return I18N.Home.SocialLink.homePage
-        case .instagram:
-            return I18N.Home.SocialLink.instagram
-        case .youtube:
-            return I18N.Home.SocialLink.youtube
-        }
-    }
-}
-
 final class SocialLinkCardCVC: UICollectionViewCell {
     
     // MARK: - UI Components
@@ -111,8 +81,12 @@ extension SocialLinkCardCVC {
 // MARK: - Methods
 
 extension SocialLinkCardCVC {
-    func configureCell(type: SocialLinkCardType) {
-        self.socialLinkImageView.image = type.image
-        self.socialLinkTitleLabel.text = type.description
+    func configureCell(type: ServiceType) {
+        self.socialLinkImageView.image = type.icon.withTintColor(DSKitAsset.Colors.gray100.color)
+        if type == .instagram { // 인스타그램인 경우, 인스타로 축약
+            self.socialLinkTitleLabel.text = I18N.Home.SocialLink.instagram
+        } else {
+            self.socialLinkTitleLabel.text = type.title
+        }
     }
 }

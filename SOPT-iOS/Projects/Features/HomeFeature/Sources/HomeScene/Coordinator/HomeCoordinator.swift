@@ -117,6 +117,16 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
             self.delegate?.homeCoordinator(self, to: .deepLink(url: url))
         }
         
+        homeForMember.vm.onSurveyButtonTapped = { [weak self] url in
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .webLink(url: url))
+        }
+        
+        homeForMember.vm.onSocialLinkButtonTapped = { [weak self] url in
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .webLink(url: url))
+        }
+        
         rootViewController = homeForMember.vc
         navigationController.pushViewController(homeForMember.vc, animated: true)
     }

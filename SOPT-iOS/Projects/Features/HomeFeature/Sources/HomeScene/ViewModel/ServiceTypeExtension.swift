@@ -29,6 +29,8 @@ extension ServiceType {
             return DSKitAsset.Assets.imgInstagram.image
         case .playgroundCommunity:
             return DSKitAsset.Assets.imgPlaygroundLogo.image
+        case .youtube:
+            return DSKitAsset.Assets.icYoutube.image
         default:
             return UIImage()
         }
@@ -50,6 +52,8 @@ extension ServiceType {
             return I18N.Home.MainProduct.instagram
         case .playgroundCommunity:
             return I18N.Home.MainProduct.playground
+        case .youtube:
+            return I18N.Home.SocialLink.youtube
         default:
             return ""
         }
