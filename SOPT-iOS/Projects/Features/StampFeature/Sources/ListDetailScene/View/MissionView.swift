@@ -40,7 +40,7 @@ final class MissionView: UIView {
         self.init()
         self.setMissionLabelText(mission)
         self.setLayout(level: level)
-        defaultStarView.changeStarLevel(level: level)
+        defaultStarView.setStarColor(level: level)
     }
     
     required init?(coder: NSCoder) {

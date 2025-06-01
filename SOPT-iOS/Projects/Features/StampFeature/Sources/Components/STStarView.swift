@@ -33,13 +33,13 @@ public class STStarView: UIView {
     
     // MARK: View Life Cycle
     
-    public init(starScale: CGFloat, spacing: CGFloat = 0, level: StarViewLevel) {
+    public init(starScale: CGFloat = 15, spacing: CGFloat = 10, level: StarViewLevel) {
         self.init()
         
         self.starScale = starScale
         self.spacing = spacing
         setLayout()
-        setStarStackView(level: level)
+        setStarStackView(level)
     }
     
     private override init(frame: CGRect) {
@@ -63,45 +63,28 @@ extension STStarView {
         }
     }
     
-    private func setStarStackView(level: StarViewLevel) {
+    private func setStarStackView(_ level: StarViewLevel) {
         starStackView.spacing = self.spacing
         
-        for starNumber in 1...3 {
+        (1...3).forEach { _ in
             let imageView = UIImageView()
             imageView.snp.makeConstraints { make in
-                make.width.height.equalTo(self.starScale)
+                make.size.equalTo(self.starScale)
             }
             imageView.contentMode = .scaleToFill
             imageView.image = DSKitAsset.Assets.icStar.image.withRenderingMode(.alwaysTemplate)
             
-            starStackView.addArrangedSubviews(imageView)
+            starStackView.addArrangedSubview(imageView)
             starImageArray.append(imageView)
-            
-            if level == .levelOne && starNumber <= 1 {
-                imageView.tintColor = DSKitAsset.Colors.soptampPink300.color
-            } else if level == .levelTwo && starNumber <= 2 {
-                imageView.tintColor =  DSKitAsset.Colors.soptampPurple300.color
-            } else if level == .levelThree {
-                imageView.tintColor = DSKitAsset.Colors.soptampMint300.color
-            } else {
-                imageView.tintColor = starDefaultColor
-            }
         }
+        setStarColor(level: level)
     }
     
-    public func changeStarLevel(level: StarViewLevel) {
-        for starNumber in 1...3 {
-            if level == .levelOne && starNumber <= 1 {
-                self.starImageArray[starNumber-1].tintColor = DSKitAsset.Colors.soptampPink300.color
-            } else if level == .levelTwo && starNumber <= 2 {
-                self.starImageArray[starNumber-1].tintColor =  DSKitAsset.Colors.soptampPurple300.color
-            } else if level == .levelThree {
-                self.starImageArray[starNumber-1].tintColor = DSKitAsset.Colors.soptampMint300.color
-            } else if level == .levelTen {
-                self.starImageArray[starNumber-1].tintColor = DSKitAsset.Colors.orange300.color
-            } else {
-                self.starImageArray[starNumber-1].tintColor = starDefaultColor
-            }
+    public func setStarColor(level: StarViewLevel) {
+        let cellType = MissionListCellType.mission(level: level, completed: false)
+        
+        for (index, imageView) in starImageArray.enumerated() {
+            imageView.tintColor = index < level.rawValue ? cellType.starColor : starDefaultColor
         }
     }
 }
