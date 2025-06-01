@@ -17,6 +17,7 @@ final class SurveyCVC: UICollectionViewCell {
     // MARK: - Properties
     
     private(set) lazy var surveyButtonTap = surveyButton.publisher(for: .touchUpInside)
+    private(set) var cancelBag = CancelBag()
     
     private let surveyImageView = UIImageView().then {
         $0.image = DSKitAsset.Assets.imgGirlSurvey.image
@@ -43,6 +44,12 @@ final class SurveyCVC: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.cancelBag = CancelBag()
+//        surveyButtonTap = surveyButton.publisher(for: .touchUpInside)
     }
 }
 

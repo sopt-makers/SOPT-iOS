@@ -61,7 +61,7 @@ extension HomeForMemberVC {
                 .sink { owner, _ in
                     owner.surveyButtonTapped.send()
                 }
-                .store(in: cancelBag)
+                .store(in: cell.cancelBag)
         }
     }
     
