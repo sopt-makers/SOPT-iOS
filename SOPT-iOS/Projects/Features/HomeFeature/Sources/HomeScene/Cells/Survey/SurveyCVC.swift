@@ -18,7 +18,7 @@ final class SurveyCVC: UICollectionViewCell {
     
     private(set) lazy var surveyButtonTap = surveyButton.publisher(for: .touchUpInside)
     
-    private let girlImageView = UIImageView().then {
+    private let surveyImageView = UIImageView().then {
         $0.image = DSKitAsset.Assets.imgGirlSurvey.image
     }
     
@@ -50,15 +50,15 @@ final class SurveyCVC: UICollectionViewCell {
 
 extension SurveyCVC {
     private func setLayout() {
-        self.addSubviews(girlImageView, titleLabel, subTitleLabel, surveyButton)
+        self.addSubviews(surveyImageView, titleLabel, subTitleLabel, surveyButton)
         
-        girlImageView.snp.makeConstraints { make in
+        surveyImageView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(girlImageView.snp.width).multipliedBy(0.41)
+            make.height.equalTo(surveyImageView.snp.width).multipliedBy(0.41)
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(girlImageView.snp.bottom).offset(24)
+            make.top.equalTo(surveyImageView.snp.bottom).offset(24)
             make.centerX.equalToSuperview()
         }
         
