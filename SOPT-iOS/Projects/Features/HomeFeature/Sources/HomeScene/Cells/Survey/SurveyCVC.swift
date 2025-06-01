@@ -49,7 +49,7 @@ final class SurveyCVC: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         self.cancelBag = CancelBag()
-//        surveyButtonTap = surveyButton.publisher(for: .touchUpInside)
+        surveyButtonTap = surveyButton.publisher(for: .touchUpInside)
     }
 }
 
