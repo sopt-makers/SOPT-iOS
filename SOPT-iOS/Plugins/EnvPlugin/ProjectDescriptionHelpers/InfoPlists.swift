@@ -7,7 +7,7 @@ public extension Project {
         "CFBundleVersion": .string("1"),
         "CFBundleIdentifier": .string("com.sopt-stamp-iOS.release"),
         "CFBundleDisplayName": .string("SOPT"),
-        "UILaunchScreen": .dictionary([:]),
+        "UILaunchStoryboardName": .string("LaunchScreen"),
         "UIApplicationSceneManifest": .dictionary([
                 "UIApplicationSupportsMultipleScenes": .boolean(false),
                 "UISceneConfigurations": .dictionary([
@@ -43,7 +43,7 @@ public extension Project {
         "CFBundleVersion": .string("1"),
         "CFBundleIdentifier": .string("com.sopt-stamp-iOS.alpha"),
         "CFBundleDisplayName": .string("SOPT-Test"),
-        "UILaunchScreen": .dictionary([:]),
+        "UILaunchStoryboardName": .string("LaunchScreen"),
         "UIApplicationSceneManifest": .dictionary([
             "UIApplicationSupportsMultipleScenes": .boolean(false),
             "UISceneConfigurations": .dictionary([
