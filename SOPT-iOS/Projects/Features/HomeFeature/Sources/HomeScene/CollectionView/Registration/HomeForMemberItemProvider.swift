@@ -29,7 +29,7 @@ extension HomeForMemberVC {
                 .sink { owner, _ in
                     owner.attendanceButtonTapped.send()
                 }
-                .store(in: cancelBag)
+                .store(in: cell.cancelBag)
         }
     }
     
