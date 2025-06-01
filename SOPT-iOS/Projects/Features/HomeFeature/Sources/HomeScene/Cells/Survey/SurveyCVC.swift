@@ -87,6 +87,6 @@ extension SurveyCVC {
                 enabledTextColor: DSKitAsset.Colors.gray950.color,
                 enabledFont: DSKitFontFamily.Suit.semiBold.font(size: 14)
             )
-            .changeInset(inset: NSDirectionalEdgeInsets(top: 12, leading: 20, bottom: 12, trailing: 20))
+            .changeInset(top: 12, leading: 20, bottom: 12, trailing: 20)
     }
 }

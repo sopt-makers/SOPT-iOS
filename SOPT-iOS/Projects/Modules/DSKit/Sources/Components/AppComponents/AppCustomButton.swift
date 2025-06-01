@@ -50,8 +50,13 @@ extension AppCustomButton {
     
     /// content의 edge 변경
     @discardableResult
-    public func changeInset(inset: NSDirectionalEdgeInsets) -> Self {
-        config.contentInsets = inset
+    public func changeInset(
+        top: CGFloat = 0,
+        leading: CGFloat = 0,
+        bottom: CGFloat = 0,
+        trailing: CGFloat = 0
+    ) -> Self {
+        config.contentInsets = NSDirectionalEdgeInsets(top: top, leading: leading, bottom: bottom, trailing: trailing)
         self.configuration = config
         
         return self
