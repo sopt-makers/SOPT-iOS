@@ -498,13 +498,24 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runStampFlow() -> LegacyStampCoordinator {
-        let coordinator = LegacyStampCoordinator(
-            router: LegacyRouter(
-                rootController: UIWindow.getRootNavigationController
-            ),
-            factory: LegacyStampBuilder()
-        )
+    internal func runStampFlow() -> DefaultCoordinator {
+        var coordinator: DefaultCoordinator
+        
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator = LegacyStampCoordinator(
+                router: LegacyRouter(
+                    rootController: UIWindow.getRootNavigationController
+                ),
+                factory: LegacyStampBuilder()
+            )
+        case .new:
+            coordinator = StampCoordinator(
+                navigationController: UIWindow.getRootNavigationController,
+                factory: StampBuilder()
+            )
+        }
+        
         coordinator.finishFlow = { [weak self, weak coordinator] in
             coordinator?.childCoordinators = []
             self?.removeDependency(coordinator)
