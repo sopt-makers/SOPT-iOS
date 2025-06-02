@@ -19,7 +19,7 @@ import Then
 import StampFeatureInterface
 import BaseFeatureDependency
 
-public class MissionListVC: UIViewController, LegacyMissionListViewControllable {
+public class MissionListVC: UIViewController, MissionListViewControllable, LegacyMissionListViewControllable {
     
     // MARK: - Properties
     

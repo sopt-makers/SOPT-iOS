@@ -13,6 +13,8 @@ import BaseFeatureDependency
 import Domain
 
 public protocol LegacyMissionListViewControllable: LegacyViewControllable & MissionListCoordinatable { }
+public protocol MissionListViewControllable: UIViewController & MissionListCoordinatable { }
+
 public protocol MissionListCoordinatable {
   var onSwiped: (() -> Void)? { get set }
   var onNaviBackTap: (() -> Void)? { get set }
@@ -23,4 +25,4 @@ public protocol MissionListCoordinatable {
   var onReportButtonTap: (() -> Void)? { get set }
 }
 public typealias MissionListViewModelType = ViewModelType & MissionListCoordinatable
-public typealias MissionListPresentable = (vc: UIViewController, vm: any MissionListViewModelType)
+public typealias MissionListPresentable = (vc: any MissionListViewControllable, vm: any MissionListViewModelType)

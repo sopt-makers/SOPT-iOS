@@ -13,10 +13,11 @@ import BaseFeatureDependency
 import Domain
 
 public protocol LegacyRankingViewControllable: LegacyViewControllable & RankingCoordinatable { }
+public protocol RankingViewControllable: UIViewController & RankingCoordinatable { }
 public protocol RankingCoordinatable {
   var onCellTap: ((_ username: String, _ sentence: String) -> Void)? { get set }
   var onNaviBackTap: (() -> Void)? { get set }
 }
 public typealias RankingViewModelType = ViewModelType & RankingCoordinatable
-public typealias RankingPresentable = (vc: UIViewController, vm: any RankingViewModelType)
+public typealias RankingPresentable = (vc: RankingViewControllable, vm: any RankingViewModelType)
 
