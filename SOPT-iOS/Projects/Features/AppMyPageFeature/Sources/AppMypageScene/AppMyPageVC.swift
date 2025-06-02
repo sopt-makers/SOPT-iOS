@@ -114,7 +114,7 @@ extension AppMyPageVC {
         }
         
         collectionView.snp.makeConstraints {
-            $0.top.equalTo(navigationBar.snp.bottom)
+            $0.top.equalTo(navigationBar.snp.bottom).offset(13)
             $0.leading.trailing.bottom.equalToSuperview()
         }
     }
