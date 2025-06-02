@@ -18,19 +18,19 @@ public enum RankingViewType {
 }
 
 public protocol StampFeatureViewBuildable {
-    func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListViewControllable
+    func makeMissionListVC(sceneType: MissionListSceneType) -> LegacyMissionListViewControllable
     func makeListDetailVC(
         sceneType: ListDetailSceneType,
         starLevel: StarViewLevel,
         missionId: Int,
         missionTitle: String,
         otherUserName: String?
-    ) -> ListDetailViewControllable
+    ) -> LegacyListDetailViewControllable
     func makeMissionCompletedVC(
         starLevel: StarViewLevel,
         completionHandler: (() -> Void)?
-    ) -> MissionCompletedViewControllable
-    func makeRankingVC(rankingViewType: RankingViewType) -> RankingViewControllable
-    func makePartRankingVC(rankingViewType: RankingViewType) -> PartRankingViewControllable
-    func makeStampGuideVC() -> StampGuideViewControllable
+    ) -> LegacyMissionCompletedViewControllable
+    func makeRankingVC(rankingViewType: RankingViewType) -> LegacyRankingViewControllable
+    func makePartRankingVC(rankingViewType: RankingViewType) -> LegacyPartRankingViewControllable
+    func makeStampGuideVC() -> LegacyStampGuideViewControllable
 }

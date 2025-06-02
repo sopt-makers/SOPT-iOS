@@ -20,7 +20,7 @@ final class StampBuilder {
 }
 
 extension StampBuilder: StampFeatureViewBuildable {
-    public func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListViewControllable {
+    public func makeMissionListVC(sceneType: MissionListSceneType) -> LegacyMissionListViewControllable {
         let useCase = DefaultMissionListUseCase(repository: missionListRepository)
         let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType)
         let missionListVC = MissionListVC(viewModel: viewModel)
@@ -34,7 +34,7 @@ extension StampBuilder: StampFeatureViewBuildable {
         missionId: Int,
         missionTitle: String,
         otherUserName: String?
-    ) -> ListDetailViewControllable {
+    ) -> LegacyListDetailViewControllable {
         let useCase = DefaultListDetailUseCase(repository: listDetailRepository)
         let viewModel = ListDetailViewModel(
             useCase: useCase,
@@ -51,7 +51,7 @@ extension StampBuilder: StampFeatureViewBuildable {
     public func makeMissionCompletedVC(
         starLevel: StarViewLevel,
         completionHandler: (() -> Void)?
-    ) -> MissionCompletedViewControllable {
+    ) -> LegacyMissionCompletedViewControllable {
         let missionCompletedVC = MissionCompletedVC()
             .setLevel(starLevel)
         missionCompletedVC.completionHandler = completionHandler
@@ -60,7 +60,7 @@ extension StampBuilder: StampFeatureViewBuildable {
         return missionCompletedVC
     }
     
-    public func makeRankingVC(rankingViewType: RankingViewType) -> RankingViewControllable {
+    public func makeRankingVC(rankingViewType: RankingViewType) -> LegacyRankingViewControllable {
         let useCase = DefaultRankingUseCase(repository: rankingRepository)
         let viewModel = RankingViewModel(
             rankingViewType: rankingViewType,
@@ -71,12 +71,12 @@ extension StampBuilder: StampFeatureViewBuildable {
         return rankingVC
     }
     
-    public func makeStampGuideVC() -> StampGuideViewControllable {
+    public func makeStampGuideVC() -> LegacyStampGuideViewControllable {
         let stampGuideVC = StampGuideVC()
         return stampGuideVC
     }
 
-    public func makePartRankingVC(rankingViewType: RankingViewType) -> PartRankingViewControllable {
+    public func makePartRankingVC(rankingViewType: RankingViewType) -> LegacyPartRankingViewControllable {
       let vc = PartRankingVC(rankingViewType: rankingViewType)
       let useCase = DefaultRankingUseCase(repository: rankingRepository)
       vc.viewModel = PartRankingViewModel(rankingViewType: rankingViewType, useCase: useCase)
