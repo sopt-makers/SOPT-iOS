@@ -1,5 +1,5 @@
 //
-//  StampBuilder.swift
+//  LegacyStampBuilder.swift
 //  StampFeature
 //
 //  Created by Junho Lee on 2023/06/21.
@@ -11,7 +11,7 @@ import Domain
 @_exported import StampFeatureInterface
 
 public
-final class StampBuilder {
+final class LegacyStampBuilder {
     @Injected public var missionListRepository: MissionListRepositoryInterface
     @Injected public var rankingRepository: RankingRepositoryInterface
     @Injected public var listDetailRepository: ListDetailRepositoryInterface
@@ -19,7 +19,7 @@ final class StampBuilder {
     public init() { }
 }
 
-extension StampBuilder: LegacyStampFeatureViewBuildable {
+extension LegacyStampBuilder: LegacyStampFeatureViewBuildable {
     public func makeMissionListVC(sceneType: MissionListSceneType) -> LegacyMissionListViewControllable {
         let useCase = DefaultMissionListUseCase(repository: missionListRepository)
         let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType)

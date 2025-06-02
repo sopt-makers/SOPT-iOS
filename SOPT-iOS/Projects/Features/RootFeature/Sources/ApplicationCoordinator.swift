@@ -503,7 +503,7 @@ extension ApplicationCoordinator {
             router: LegacyRouter(
                 rootController: UIWindow.getRootNavigationController
             ),
-            factory: StampBuilder()
+            factory: LegacyStampBuilder()
         )
         coordinator.finishFlow = { [weak self, weak coordinator] in
             coordinator?.childCoordinators = []
