@@ -15,10 +15,10 @@ final class LegacyStampGuideCoordinator: DefaultCoordinator {
         
     public var finishFlow: (() -> Void)?
     
-    private let factory: StampFeatureViewBuildable
+    private let factory: LegacyStampFeatureViewBuildable
     private let router: LegacyRouter
     
-    public init(router: LegacyRouter, factory: StampFeatureViewBuildable) {
+    public init(router: LegacyRouter, factory: LegacyStampFeatureViewBuildable) {
         self.factory = factory
         self.router = router
     }

@@ -19,12 +19,12 @@ final class LegacyStampCoordinator: DefaultCoordinator {
         
     public var finishFlow: (() -> Void)?
     
-    private let factory: StampFeatureViewBuildable
+    private let factory: LegacyStampFeatureViewBuildable
     private let router: LegacyRouter
     // Note: @준호 - Soptamp는 Present되기 때문에 최상위 NavController의 참조를 유지해야 함
     private weak var rootController: UINavigationController?
     
-    public init(router: LegacyRouter, factory: StampFeatureViewBuildable) {
+    public init(router: LegacyRouter, factory: LegacyStampFeatureViewBuildable) {
         self.factory = factory
         self.router = router
     }

@@ -19,7 +19,7 @@ final class StampBuilder {
     public init() { }
 }
 
-extension StampBuilder: StampFeatureViewBuildable {
+extension StampBuilder: LegacyStampFeatureViewBuildable {
     public func makeMissionListVC(sceneType: MissionListSceneType) -> LegacyMissionListViewControllable {
         let useCase = DefaultMissionListUseCase(repository: missionListRepository)
         let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType)
