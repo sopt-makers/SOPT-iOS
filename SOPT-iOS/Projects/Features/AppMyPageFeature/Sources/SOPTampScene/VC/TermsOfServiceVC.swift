@@ -26,7 +26,7 @@ public class TermsOfServiceVC: UIViewController, TermsOfServiceViewControllable 
             type: .oneLeftButton,
             backgroundColor: DSKitAsset.Colors.black100.color
         )
-        .addMiddleLabel(title: I18N.Setting.serviceTerm)
+        .addMiddleLabel(title: I18N.MyPage.ServicePolicySection.termsOfUse)
 
     private let textView = UITextView().then {
         $0.text = I18N.ServiceUsagePolicy.privacyPolicy
