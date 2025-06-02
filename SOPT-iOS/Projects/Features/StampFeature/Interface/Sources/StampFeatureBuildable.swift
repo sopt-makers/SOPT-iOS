@@ -1,5 +1,5 @@
 //
-//  StampFeatureViewBuildable.swift
+//  StampFeatureBuildable.swift
 //  StampFeatureInterface
 //
 //  Created by Jae Hyun Lee on 6/2/25.
@@ -10,20 +10,20 @@ import Core
 import Domain
 import BaseFeatureDependency
 
-public protocol StampFeatureViewBuildable {
-    func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListViewControllable
+public protocol StampFeatureBuildable {
+    func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListPresentable
     func makeListDetailVC(
         sceneType: ListDetailSceneType,
         starLevel: StarViewLevel,
         missionId: Int,
         missionTitle: String,
         otherUserName: String?
-    ) -> ListDetailViewControllable
+    ) -> ListDetailPresentable
     func makeMissionCompletedVC(
         starLevel: StarViewLevel,
         completionHandler: (() -> Void)?
     ) -> MissionCompletedViewControllable
-    func makeRankingVC(rankingViewType: RankingViewType) -> RankingViewControllable
-    func makePartRankingVC(rankingViewType: RankingViewType) -> PartRankingViewControllable
+    func makeRankingVC(rankingViewType: RankingViewType) -> RankingPresentable
+    func makePartRankingVC(rankingViewType: RankingViewType) -> PartRankingPresentable
     func makeStampGuideVC() -> StampGuideViewControllable
 }

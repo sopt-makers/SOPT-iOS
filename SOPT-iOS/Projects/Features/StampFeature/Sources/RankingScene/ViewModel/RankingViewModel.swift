@@ -12,7 +12,11 @@ import Core
 import Domain
 import StampFeatureInterface
 
-public class RankingViewModel: ViewModelType {
+public class RankingViewModel: RankingViewModelType {
+    
+    // TODO: coordinating vc -> vm
+    public var onCellTap: ((String, String) -> Void)?
+    public var onNaviBackTap: (() -> Void)?
     
     private let useCase: RankingUseCase
     private var cancelBag = CancelBag()

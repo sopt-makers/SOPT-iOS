@@ -12,7 +12,16 @@ import Foundation
 import Core
 import Domain
 
-public class MissionListViewModel: ViewModelType {
+public class MissionListViewModel: MissionListViewModelType {
+    
+    // TODO: coordinating vc -> vm
+    public var onSwiped: (() -> Void)?
+    public var onNaviBackTap: (() -> Void)?
+    public var onPartRankingButtonTap: ((StampFeatureInterface.RankingViewType) -> Void)?
+    public var onCurrentGenerationRankingButtonTap: ((StampFeatureInterface.RankingViewType) -> Void)?
+    public var onGuideTap: (() -> Void)?
+    public var onCellTap: ((Domain.MissionListModel, String?) -> Void)?
+    public var onReportButtonTap: (() -> Void)?
     
     private let useCase: MissionListUseCase
     private var cancelBag = CancelBag()
