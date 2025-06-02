@@ -145,15 +145,23 @@ extension AppMyPageVC {
         }
     }
     
+    private func makeSections(for userType: UserType) -> [MyPageSectionLayoutKind] {
+        switch userType {
+        case .visitor:
+            return [.servicePolicy, .etcVisitor]
+        default:
+            return [.servicePolicy, .notificationSettings, .soptampSettings, .etcUser]
+        }
+    }
+    
     private func applySnapshot() {
         var snapshot = NSDiffableDataSourceSnapshot<MyPageSectionLayoutKind, MyPageItem>()
         
-        snapshot.appendSections([.servicePolicy, .notificationSettings, .soptampSettings, .etc])
-        
-        snapshot.appendItems(MyPageSectionLayoutKind.servicePolicy.items, toSection: .servicePolicy)
-        snapshot.appendItems(MyPageSectionLayoutKind.notificationSettings.items, toSection: .notificationSettings)
-        snapshot.appendItems(MyPageSectionLayoutKind.soptampSettings.items, toSection: .soptampSettings)
-        snapshot.appendItems(MyPageSectionLayoutKind.etc.items, toSection: .etc)
+        let sections = makeSections(for: self.userType)
+        snapshot.appendSections(sections)
+        sections.forEach { section in
+            snapshot.appendItems(section.items, toSection: section)
+        }
         
         dataSource.apply(snapshot, animatingDifferences: true)
     }

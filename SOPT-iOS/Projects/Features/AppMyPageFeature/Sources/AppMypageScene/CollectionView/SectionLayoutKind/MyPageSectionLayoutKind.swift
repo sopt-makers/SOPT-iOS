@@ -12,14 +12,15 @@ enum MyPageSectionLayoutKind: Int, CaseIterable {
     case servicePolicy
     case notificationSettings
     case soptampSettings
-    case etc
+    case etcUser
+    case etcVisitor
     
     var title: String {
         switch self {
         case .servicePolicy: return I18N.MyPage.ServicePolicySection.title
         case .notificationSettings: return I18N.MyPage.NotificationSection.title
         case .soptampSettings: return I18N.MyPage.SoptampSection.title
-        case .etc: return I18N.MyPage.EtcSection.title
+        case .etcUser, .etcVisitor: return I18N.MyPage.EtcSection.title
         }
     }
     
@@ -40,10 +41,14 @@ enum MyPageSectionLayoutKind: Int, CaseIterable {
                 MyPageItem(title: I18N.MyPage.SoptampSection.editOnelineSentence),
                 MyPageItem(title: I18N.MyPage.SoptampSection.resetStamp)
             ]
-        case .etc:
+        case .etcUser:
             return [
                 MyPageItem(title: I18N.MyPage.EtcSection.logout),
                 MyPageItem(title: I18N.MyPage.EtcSection.withdrawal),
+            ]
+        case .etcVisitor:
+            return [
+                MyPageItem(title: I18N.MyPage.EtcSection.logout),
             ]
         }
     }
