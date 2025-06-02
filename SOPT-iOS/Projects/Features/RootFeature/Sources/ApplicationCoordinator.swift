@@ -498,8 +498,8 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runStampFlow() -> StampCoordinator {
-        let coordinator = StampCoordinator(
+    internal func runStampFlow() -> LegacyStampCoordinator {
+        let coordinator = LegacyStampCoordinator(
             router: LegacyRouter(
                 rootController: UIWindow.getRootNavigationController
             ),

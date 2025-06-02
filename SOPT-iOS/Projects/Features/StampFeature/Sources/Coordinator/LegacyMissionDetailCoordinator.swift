@@ -1,5 +1,5 @@
 //
-//  MissionDetailCoordinator.swift
+//  LegacyMissionDetailCoordinator.swift
 //  StampFeature
 //
 //  Created by Junho Lee on 2023/06/22.
@@ -12,7 +12,7 @@ import BaseFeatureDependency
 import StampFeatureInterface
 
 public
-final class MissionDetailCoordinator: DefaultCoordinator {
+final class LegacyMissionDetailCoordinator: DefaultCoordinator {
         
     public var finishFlow: (() -> Void)?
     

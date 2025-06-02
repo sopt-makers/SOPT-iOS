@@ -1,5 +1,5 @@
 //
-//  RankingCoordinator.swift
+//  LegacyRankingCoordinator.swift
 //  StampFeature
 //
 //  Created by Junho Lee on 2023/06/22.
@@ -12,7 +12,7 @@ import BaseFeatureDependency
 import StampFeatureInterface
 
 public
-final class RankingCoordinator: DefaultCoordinator {
+final class LegacyRankingCoordinator: DefaultCoordinator {
         
     public var finishFlow: (() -> Void)?
     
@@ -81,7 +81,7 @@ final class RankingCoordinator: DefaultCoordinator {
     }
     
     private func runMissionDetailFlow(_ model: MissionListModel, _ username: String?) {
-        let missionDetailCoordinator = MissionDetailCoordinator(
+        let missionDetailCoordinator = LegacyMissionDetailCoordinator(
             router: router,
             factory: factory,
             model: model,

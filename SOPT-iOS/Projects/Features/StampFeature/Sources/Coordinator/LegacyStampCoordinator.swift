@@ -1,5 +1,5 @@
 //
-//  StampCoordinator.swift
+//  LegacyStampCoordinator.swift
 //  StampFeature
 //
 //  Created by Junho Lee on 2023/06/21.
@@ -15,7 +15,7 @@ import Domain
 import SafariServices
 
 public
-final class StampCoordinator: DefaultCoordinator {
+final class LegacyStampCoordinator: DefaultCoordinator {
         
     public var finishFlow: (() -> Void)?
     
@@ -62,7 +62,7 @@ final class StampCoordinator: DefaultCoordinator {
     }
     
     private func showGuide() {
-        let guideCoordinator = StampGuideCoordinator(
+        let guideCoordinator = LegacyStampGuideCoordinator(
             router: LegacyRouter(rootController: rootController!),
             factory: factory
         )
@@ -74,7 +74,7 @@ final class StampCoordinator: DefaultCoordinator {
     }
     
     internal func runRankingFlow(rankingViewType: RankingViewType) {
-        let rankingCoordinator = RankingCoordinator(
+        let rankingCoordinator = LegacyRankingCoordinator(
             router: LegacyRouter(rootController: rootController!),
             factory: factory,
             rankingViewType: rankingViewType
@@ -87,7 +87,7 @@ final class StampCoordinator: DefaultCoordinator {
     }
 
     private func runMissionDetailFlow(_ model: MissionListModel, _ username: String?) {
-        let missionDetailCoordinator = MissionDetailCoordinator(
+        let missionDetailCoordinator = LegacyMissionDetailCoordinator(
             router: LegacyRouter(rootController: rootController!),
             factory: factory,
             model: model,

@@ -1,5 +1,5 @@
 //
-//  StampGuideCoordinator.swift
+//  LegacyStampGuideCoordinator.swift
 //  StampFeature
 //
 //  Created by Junho Lee on 2023/06/21.
@@ -11,7 +11,7 @@ import BaseFeatureDependency
 import StampFeatureInterface
 
 public
-final class StampGuideCoordinator: DefaultCoordinator {
+final class LegacyStampGuideCoordinator: DefaultCoordinator {
         
     public var finishFlow: (() -> Void)?
     
