@@ -592,8 +592,8 @@ extension ApplicationCoordinator {
 extension ApplicationCoordinator {
     
     @discardableResult
-    internal func runMyPageFlow(of userType: UserType) -> MyPageCoordinator {
-        let coordinator = MyPageCoordinator(
+    internal func runMyPageFlow(of userType: UserType) -> LegacyMyPageCoordinator {
+        let coordinator = LegacyMyPageCoordinator(
             router: LegacyRouter(
                 rootController: UIWindow.getRootNavigationController
             ),
