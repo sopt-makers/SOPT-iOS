@@ -1,5 +1,5 @@
 //
-//  StampFeatureBuildable.swift
+//  LegacyStampFeatureViewBuildable.swift
 //  StampFeatureInterface
 //
 //  Created by Junho Lee on 2023/06/21.
@@ -10,14 +10,7 @@ import Core
 import Domain
 import BaseFeatureDependency
 
-public enum RankingViewType {
-    case all
-    case currentGeneration(info: UsersActiveGenerationStatusViewResponse)
-    case partRanking
-    case individualRankingInPart(part: Part)
-}
-
-public protocol StampFeatureViewBuildable {
+public protocol LegacyStampFeatureViewBuildable {
     func makeMissionListVC(sceneType: MissionListSceneType) -> LegacyMissionListViewControllable
     func makeListDetailVC(
         sceneType: ListDetailSceneType,
