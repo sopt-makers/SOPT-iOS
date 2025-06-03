@@ -10,7 +10,7 @@ import Moya
 
 public enum SocialAPI {
     case getSocialAccount(phone: String)
-    case changeSocialAccount(dto: ChangeSocialAccountEntity)
+    case changeSocialAccount(dto: CoreSignUpRequestEntity)
 }
 
 extension SocialAPI: BaseAPI {
@@ -49,7 +49,7 @@ extension SocialAPI: BaseAPI {
     public var task: Task {
         switch self {
         case let .getSocialAccount(phone):
-            return .requestParameters(parameters: ["phone": phone], encoding: URLEncoding.queryString)
+            return .requestParameters(parameters: ["phone": phone, "name": "장석우"], encoding: URLEncoding.queryString)
         case let .changeSocialAccount(entity):
             return .requestJSONEncodable(entity)
         }

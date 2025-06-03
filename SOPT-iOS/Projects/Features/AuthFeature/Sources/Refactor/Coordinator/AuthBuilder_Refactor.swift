@@ -63,5 +63,18 @@ public final class AuthBuilder_Refactor: AuthFeatureViewBuildable_Refactor {
         let vc = ChangeSocialAccountVC(viewModel: vm, phoneVerifyViewModel: phoneVM)
         return (vc, vm)
     }
+    
+    public func makeSearchSocialAccount() -> SearchSocialAccountPresentable {
+        let useCase = DefaultSearchSocialAccountUseCase(
+            repository: coreRepository
+        )
+        
+        let phoneUseCase = DefaultPhoneVerifyUseCase(repository: phoneRepository)
+        
+        let vm = SearchSocialAccountViewModel(useCase: useCase)
+        let phoneVM = PhoneVerifyViewModel(useCase: phoneUseCase, phoneVerifyType: .searchSocialAccount)
+        let vc = SearchSocialAccountVC(viewModel: vm, phoneVerifyViewModel: phoneVM)
+        return (vc, vm)
+    }
 
 }

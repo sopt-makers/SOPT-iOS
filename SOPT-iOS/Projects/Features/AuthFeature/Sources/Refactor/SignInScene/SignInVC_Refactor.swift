@@ -25,11 +25,19 @@ public class SignInVC_Refactor: UIViewController, SignInViewControllable {
     // MARK: - Properties
     
     private static let i18n = I18N.SignIn.Refactor.self
+    
     public var viewModel: SignInViewModel_Refactor!
+    
     public var skipAnimation: Bool = false
+    
     public var accessCode: String? = nil
+
     public var requestState: String? = nil
+    
     private var cancelBag = CancelBag()
+    
+    private var viewWillAppear = PassthroughSubject<Void, Never>()
+    
     
     // MARK: - UI Components
     
@@ -139,6 +147,7 @@ public class SignInVC_Refactor: UIViewController, SignInViewControllable {
     
     public override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+        viewWillAppear.send(())
     }
     
     public override func viewDidAppear(_ animated: Bool) {
@@ -280,6 +289,7 @@ extension SignInVC_Refactor {
         
         let input = SignInViewModel_Refactor.Input(
                     viewDidLoad: Just<Void>(()).asDriver(),
+                    viewWillAppear: self.viewWillAppear.asDriver(),
                     googleLoginButtonTapped:
                         self.googleLoginButton
                         .publisher(for: .touchUpInside)
@@ -303,7 +313,13 @@ extension SignInVC_Refactor {
                         .compactMap { _ in () }
                         .asDriver()
                     )
-        let _ = self.viewModel.transform(from: input, cancelBag: cancelBag)
+        let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
+        
+        output.recentLogin
+            .sink {
+                print($0.rawValue)
+            }
+            .store(in: cancelBag)
     }
     
     private func openPlaygroundURL() {

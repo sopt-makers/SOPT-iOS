@@ -7,7 +7,15 @@
 //
 
 import Foundation
+import Domain
 
 public struct SocialAccountResultEntity: Decodable {
     let platform: PlatformType
 }
+
+extension SocialAccountResultEntity {
+    public func toDomain()-> OAuthProvider {
+        self.platform.toDomain()
+    }
+}
+

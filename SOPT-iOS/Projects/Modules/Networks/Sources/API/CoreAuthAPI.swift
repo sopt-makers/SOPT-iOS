@@ -13,7 +13,6 @@ public enum CoreAuthAPI {
     case verfiyCode(dto: VerifyCodeRequestEntity)
     case signUp(dto: CoreSignUpRequestEntity)
     case login(dto: CoreLoginRequestEntity)
-    case changeSocialAccount(dto: CoreSignUpRequestEntity)
 }
 
 extension CoreAuthAPI: BaseAPI {
@@ -39,8 +38,6 @@ extension CoreAuthAPI: BaseAPI {
             return "/signup"
         case .login:
             return "/login/app"
-        case .changeSocialAccount:
-            return "/accounts"
         }
     }
     
@@ -55,8 +52,6 @@ extension CoreAuthAPI: BaseAPI {
             return .post
         case .login:
             return .post
-        case .changeSocialAccount:
-            return .patch
         }
     }
     
@@ -70,8 +65,6 @@ extension CoreAuthAPI: BaseAPI {
         case .signUp(let dto):
             return .requestJSONEncodable(dto)
         case .login(let dto):
-            return .requestJSONEncodable(dto)
-        case .changeSocialAccount(dto: let dto):
             return .requestJSONEncodable(dto)
         }
     }

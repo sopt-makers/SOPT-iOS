@@ -57,9 +57,6 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
         self.phoneVerifyType = phoneVerifyType
         self.timerPublisher = timerPublisher
     }
-}
-
-extension PhoneVerifyViewModel {
     
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()

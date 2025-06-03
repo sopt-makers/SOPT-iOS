@@ -45,7 +45,10 @@ extension AppDelegate {
         container.register(
             interface: CoreAuthRepositoryInterface.self,
             implement: {
-                CoreAuthRepository(coreAuthService: DefaultCoreAuthService())
+                CoreAuthRepository(
+                    coreAuthService: DefaultCoreAuthService(),
+                    socialService: DefaultSocialService()
+                )
             }
         )
         

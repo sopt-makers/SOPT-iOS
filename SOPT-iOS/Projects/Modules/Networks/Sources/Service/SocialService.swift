@@ -17,7 +17,7 @@ public typealias DefaultSocialService = BaseService<SocialAPI>
 
 public protocol SocialService {
     func getSocialAccount(for phoneNumber: String) -> AnyPublisher<BaseEntity<SocialAccountResultEntity>, Error>
-    func changeSocialAccount(with entity: ChangeSocialAccountEntity) -> AnyPublisher<Int, Error>
+    func changeSocialAccount(_ dto: CoreSignUpRequestEntity) -> AnyPublisher<Int, Error>
 }
 
 extension DefaultSocialService: SocialService {
@@ -25,7 +25,7 @@ extension DefaultSocialService: SocialService {
         requestObjectInCombine(.getSocialAccount(phone: phoneNumber))
     }
     
-    public func changeSocialAccount(with entity: ChangeSocialAccountEntity) -> AnyPublisher<Int, Error> {
-        return requestObjectInCombineNoResult(.changeSocialAccount(dto: entity))
+    public func changeSocialAccount(_ dto: CoreSignUpRequestEntity) -> AnyPublisher<Int, Error> {
+        return requestObjectInCombineNoResult(.changeSocialAccount(dto: dto))
     }
 }

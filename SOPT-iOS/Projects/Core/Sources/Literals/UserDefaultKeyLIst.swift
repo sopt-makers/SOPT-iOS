@@ -13,6 +13,7 @@ public struct UserDefaultKeyList {
     public struct CoreAuth {
         @UserDefaultWrapper<String>(key: "accessToken") public static var accessToken
         @UserDefaultWrapper<String>(key: "refreshToken") public static var refreshToken
+        @UserDefaultWrapper<String>(key: "recentLogin") public static var recentLogin
     }
     
     public struct Auth {
