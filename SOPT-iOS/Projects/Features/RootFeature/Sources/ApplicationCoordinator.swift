@@ -520,8 +520,8 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runPokeFlow() -> LegacyPokeCoordinator {
-        let coordinator = makePokeCoordinator()
+    internal func runPokeFlow() -> DefaultCoordinator {
+        var coordinator = makePokeCoordinator()
         
         addDependency(coordinator)
         coordinator.start()
@@ -562,13 +562,24 @@ extension ApplicationCoordinator {
     }
     
     @discardableResult
-    internal func runPokeOnboardingFlow() -> LegacyPokeOnboardingCoordinator {
-        let coordinator = LegacyPokeOnboardingCoordinator(
-            router: LegacyRouter(
-                rootController: UIWindow.getRootNavigationController
-            ),
-            factory: LegacyPokeBuilder()
-        )
+    internal func runPokeOnboardingFlow() -> DefaultCoordinator {
+        var coordinator: DefaultCoordinator
+        
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator = LegacyPokeOnboardingCoordinator(
+                router: LegacyRouter(
+                    rootController: UIWindow.getRootNavigationController
+                ),
+                factory: LegacyPokeBuilder()
+            )
+        case .new:
+            coordinator = PokeOnboardingCoordinator(
+                navigationController: UIWindow.getRootNavigationController,
+                factory: PokeBuilder()
+            )
+        }
+
         coordinator.finishFlow = { [weak self, weak coordinator] in
             coordinator?.childCoordinators = []
             self?.removeDependency(coordinator)
@@ -580,14 +591,24 @@ extension ApplicationCoordinator {
         return coordinator
     }
     
-    internal func runPokeNotificationListFlow() -> LegacyPokeNotificationListCoordinator {
-        let coordinator = LegacyPokeNotificationListCoordinator(
-            router: LegacyRouter(
-                rootController: UIWindow.getRootNavigationController
-            ),
-            factory: LegacyPokeBuilder()
-        )
+    internal func runPokeNotificationListFlow() -> DefaultCoordinator {
+        var coordinator: DefaultCoordinator
         
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator = LegacyPokeNotificationListCoordinator(
+                router: LegacyRouter(
+                    rootController: UIWindow.getRootNavigationController
+                ),
+                factory: LegacyPokeBuilder()
+            )
+        case .new:
+            coordinator = PokeNotificationListCoordinator(
+                navigationController: UIWindow.getRootNavigationController,
+                factory: PokeBuilder()
+            )
+        }
+
         coordinator.finishFlow = { [weak self, weak coordinator] in
             coordinator?.childCoordinators = []
             self?.removeDependency(coordinator)
