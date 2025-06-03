@@ -2,8 +2,8 @@
 //  PokeFeatureBuildable.swift
 //  PokeFeatureInterface
 //
-//  Created by sejin on 12/7/23.
-//  Copyright © 2023 SOPT-iOS. All rights reserved.
+//  Created by Jae Hyun Lee on 6/3/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
 import Foundation

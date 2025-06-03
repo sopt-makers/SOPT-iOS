@@ -22,13 +22,13 @@ public final class DailySoptuneResultCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: DailySoptuneFeatureBuildable
-    private let pokeFactory: PokeFeatureBuildable
+    private let pokeFactory: LegacyPokeFeatureBuildable
     private let resultModel: DailySoptuneResultModel
     private let router: LegacyRouter
     private weak var rootController: UINavigationController?
     private weak var viewController: UIViewController?
 
-    public init(router: LegacyRouter, factory: DailySoptuneFeatureBuildable, pokeFactory: PokeFeatureBuildable, resultModel: DailySoptuneResultModel) {
+    public init(router: LegacyRouter, factory: DailySoptuneFeatureBuildable, pokeFactory: LegacyPokeFeatureBuildable, resultModel: DailySoptuneResultModel) {
         self.router = router
         self.factory = factory
         self.pokeFactory = pokeFactory
@@ -98,7 +98,7 @@ public final class DailySoptuneResultCoordinator: DefaultCoordinator {
         guard let bottomSheet = self.pokeFactory
             .makePokeMessageTemplateBottomSheet(messageType: messageType)
             .vc
-            .viewController as? PokeMessageTemplatesViewControllable
+            .viewController as? LegacyPokeMessageTemplatesViewControllable
         else { return .empty() }
         
         let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate(minHeight: bottomSheet.minimumContentHeight))

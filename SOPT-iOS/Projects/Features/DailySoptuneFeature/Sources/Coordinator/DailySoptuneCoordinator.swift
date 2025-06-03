@@ -21,12 +21,12 @@ public final class DailySoptuneCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: DailySoptuneFeatureBuildable
-    private let pokeFactory: PokeFeatureBuildable
+    private let pokeFactory: LegacyPokeFeatureBuildable
     private let router: LegacyRouter
     
     private weak var rootController: UINavigationController?
     
-    public init(router: LegacyRouter, factory: DailySoptuneFeatureBuildable, pokeFactory: PokeFeatureBuildable) {
+    public init(router: LegacyRouter, factory: DailySoptuneFeatureBuildable, pokeFactory: LegacyPokeFeatureBuildable) {
         self.router = router
         self.factory = factory
         self.pokeFactory = pokeFactory

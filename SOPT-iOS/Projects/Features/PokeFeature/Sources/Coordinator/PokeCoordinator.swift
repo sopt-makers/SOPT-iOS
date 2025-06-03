@@ -19,11 +19,11 @@ public
 final class PokeCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
-    private let factory: PokeFeatureBuildable
+    private let factory: LegacyPokeFeatureBuildable
     private let router: LegacyRouter
     private weak var rootController: UINavigationController?
     
-    public init(router: LegacyRouter, factory: PokeFeatureBuildable) {
+    public init(router: LegacyRouter, factory: LegacyPokeFeatureBuildable) {
         self.router = router
         self.factory = factory
     }

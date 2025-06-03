@@ -18,10 +18,10 @@ public final class PokeOnboardingCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let router: LegacyRouter
-    private let factory: PokeFeatureBuildable
+    private let factory: LegacyPokeFeatureBuildable
     private weak var rootController: UINavigationController?
     
-    public init(router: LegacyRouter, factory: PokeFeatureBuildable) {
+    public init(router: LegacyRouter, factory: LegacyPokeFeatureBuildable) {
         self.router = router
         self.factory = factory
     }
@@ -39,7 +39,7 @@ extension PokeOnboardingCoordinator {
         self.router.present(self.rootController, animated: true, modalPresentationSytle: .overFullScreen)
     }
     
-    func makePokeOnboardingView() -> PokeOnboardingPresentable {
+    func makePokeOnboardingView() -> LegacyPokeOnboardingPresentable {
         var pokeOnboarding = self.factory.makePokeOnboarding()
         
         pokeOnboarding.vm.onNaviBackTapped = { [weak self] in

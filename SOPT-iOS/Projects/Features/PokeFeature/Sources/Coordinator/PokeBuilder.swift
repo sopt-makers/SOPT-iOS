@@ -19,15 +19,15 @@ public final class PokeBuilder {
     public init() {}
 }
 
-extension PokeBuilder: PokeFeatureBuildable {
-    public func makePokeMain(isRouteFromRoot: Bool) -> PokeFeatureInterface.PokeMainPresentable {
+extension PokeBuilder: LegacyPokeFeatureBuildable {
+    public func makePokeMain(isRouteFromRoot: Bool) -> PokeFeatureInterface.LegacyPokeMainPresentable {
         let useCase = DefaultPokeMainUseCase(repository: pokeMainRepository)
         let viewModel = PokeMainViewModel(useCase: useCase, isRouteFromRoot: isRouteFromRoot)
         let pokeMainVC = PokeMainVC(viewModel: viewModel)
         return (pokeMainVC, viewModel)
     }
     
-    public func makePokeMyFriends() -> PokeFeatureInterface.PokeMyFriendsPresentable {
+    public func makePokeMyFriends() -> PokeFeatureInterface.LegacyPokeMyFriendsPresentable {
         let useCase = DefaultPokeMyFriendsUseCase(repository: pokeMyFriendsRepository)
         let viewModel = PokeMyFriendsViewModel(useCase: useCase)
         let pokeMyFriendsVC = PokeMyFriendsVC(viewModel: viewModel)
@@ -35,7 +35,7 @@ extension PokeBuilder: PokeFeatureBuildable {
         return (pokeMyFriendsVC, viewModel)
     }
     
-    public func makePokeOnboarding() -> PokeFeatureInterface.PokeOnboardingPresentable {
+    public func makePokeOnboarding() -> PokeFeatureInterface.LegacyPokeOnboardingPresentable {
         let usecase = DefaultPokeOnboardingUsecase(repository: self.pokeOnboardingRepository)
         let viewModel = PokeOnboardingViewModel(usecase: usecase)
         let viewController = PokeOnboardingVC(viewModel: viewModel)
@@ -43,7 +43,7 @@ extension PokeBuilder: PokeFeatureBuildable {
         return (viewController, viewModel)
     }
     
-    public func makePokeMessageTemplateBottomSheet(messageType: PokeMessageType) -> PokeMessageTemplatesPresentable {
+    public func makePokeMessageTemplateBottomSheet(messageType: PokeMessageType) -> LegacyPokeMessageTemplatesPresentable {
         let usecase = DefaultPokeMessageTemplateUsecase(repository: self.pokeOnboardingRepository)
         let viewModel = PokeMessageTemplateViewModel(messageType: messageType, usecase: usecase)
         let viewController = PokeMessageTemplateBottomSheet(viewModel: viewModel)
@@ -51,7 +51,7 @@ extension PokeBuilder: PokeFeatureBuildable {
         return (viewController, viewModel)
     }
     
-    public func makePokeNotificationList() -> PokeNotificationPresentable {
+    public func makePokeNotificationList() -> LegacyPokeNotificationPresentable {
         let usecase = DefaultPokeNotificationUsecase(repository: self.pokeNotificationListRepository)
         let viewModel = PokeNotificationViewModel(usecase: usecase)
         let viewController = PokeNotificationViewController(viewModel: viewModel)
@@ -59,7 +59,7 @@ extension PokeBuilder: PokeFeatureBuildable {
         return (viewController, viewModel)
     }
     
-    public func makePokeMyFriendsList(relation: PokeRelation) -> PokeFeatureInterface.PokeMyFriendsListPresentable {
+    public func makePokeMyFriendsList(relation: PokeRelation) -> PokeFeatureInterface.LegacyPokeMyFriendsListPresentable {
         let useCase = DefaultPokeMyFriendsUseCase(repository: self.pokeMyFriendsRepository)
         let viewModel = PokeMyFriendsListViewModel(relation: relation, useCase: useCase)
         let pokeMyFriendsListVC = PokeMyFriendsListVC(viewModel: viewModel)
@@ -73,7 +73,7 @@ extension PokeBuilder: PokeFeatureBuildable {
         return vc
     }
 
-    public func makePokeAnonymousFriendUpgrade(user: PokeUserModel) -> PokeAnonymousFriendUpgradePresentable {
+    public func makePokeAnonymousFriendUpgrade(user: PokeUserModel) -> LegacyPokeAnonymousFriendUpgradePresentable {
       let vc = PokeAnonymousFriendUpgradeVC(user: user)
       return vc
     }

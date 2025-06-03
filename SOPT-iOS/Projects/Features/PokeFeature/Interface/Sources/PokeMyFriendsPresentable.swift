@@ -6,6 +6,8 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
+
 import BaseFeatureDependency
 import Core
 import Domain
@@ -20,4 +22,6 @@ public protocol PokeMyFriendsCoordinatable {
 }
 
 public typealias PokeMyFriendsViewModelType = ViewModelType & PokeMyFriendsCoordinatable
-public typealias PokeMyFriendsPresentable = (vc: PokeMyFriendsViewControllable, vm: any PokeMyFriendsViewModelType)
+public typealias LegacyPokeMyFriendsPresentable = (vc: PokeMyFriendsViewControllable, vm: any PokeMyFriendsViewModelType)
+
+public typealias PokeMyFriendsPresentable = (vc: UIViewController, vm: any PokeMyFriendsViewModelType)
