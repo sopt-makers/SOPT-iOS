@@ -28,27 +28,27 @@ enum MyPageSectionLayoutKind: Int, CaseIterable {
         switch self {
         case .servicePolicy:
             return [
-                MyPageItem(title: I18N.MyPage.ServicePolicySection.privacyPolicy),
-                MyPageItem(title: I18N.MyPage.ServicePolicySection.termsOfUse),
-                MyPageItem(title: I18N.MyPage.ServicePolicySection.sendFeedback)
+                MyPageItem(type: .privacyPolicy),
+                MyPageItem(type: .termsOfUse),
+                MyPageItem(type: .sendFeedback)
             ]
         case .notificationSettings:
             return [
-                MyPageItem(title: I18N.MyPage.NotificationSection.setNotification)
+                MyPageItem(type: .setNotification)
             ]
         case .soptampSettings:
             return [
-                MyPageItem(title: I18N.MyPage.SoptampSection.editOnelineSentence),
-                MyPageItem(title: I18N.MyPage.SoptampSection.resetStamp)
+                MyPageItem(type: .editOnelineSentence),
+                MyPageItem(type: .resetStamp)
             ]
         case .etcUser:
             return [
-                MyPageItem(title: I18N.MyPage.EtcSection.logout),
-                MyPageItem(title: I18N.MyPage.EtcSection.withdrawal),
+                MyPageItem(type: .logout),
+                MyPageItem(type: .withdrawal)
             ]
         case .etcVisitor:
             return [
-                MyPageItem(title: I18N.MyPage.EtcSection.logout),
+                MyPageItem(type: .login)
             ]
         }
     }
