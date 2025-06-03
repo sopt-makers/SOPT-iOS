@@ -6,13 +6,13 @@
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
 import Core
 
 public protocol MyPageFeatureBuildable {
     func makeAppMyPage(userType: UserType) -> MyPagePresentable
-    func makeSentenceEditVC() -> SentenceEditViewControllable
-    func makePrivacyPolicyVC() -> PrivacyPolicyViewControllable
-    func makeTermsOfServiceVC() -> TermsOfServiceViewControllable
-    func makeWithdrawalVC(userType: UserType) -> WithdrawalViewControllable
-    func makeAlertSettingByFeatures() -> NotificationSettingByFeaturesViewControllable
+    func makeSentenceEditVC() -> UIViewController
+    func makePrivacyPolicyVC() -> UIViewController
+    func makeTermsOfServiceVC() -> UIViewController
+    func makeWithdrawalVC(userType: UserType) -> WithdrawalPresentable
 }
