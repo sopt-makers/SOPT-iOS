@@ -134,6 +134,22 @@ public class SignInVC_Refactor: UIViewController, SignInViewControllable {
         $0.alpha = 0
     }
     
+    private let recentLoginLabel = UILabel().then {
+        $0.font = DSKitFontFamily.Suit.medium.font(size: 13)
+        $0.textColor = DSKitAsset.Colors.gray50.color
+    }
+    
+    private lazy var recentLoginToolTip = ToolTipView().then {
+        $0.contentView.addSubview(recentLoginLabel)
+        $0.layer.cornerRadius = 12
+        $0.backgroundColor = DSKitAsset.Colors.success.color
+        recentLoginLabel.snp.makeConstraints {
+            $0.verticalEdges.equalToSuperview().inset(10)
+            $0.horizontalEdges.equalToSuperview().inset(20)
+        }
+        $0.alpha = 0
+    }
+    
     
     // MARK: - View Life Cycle
     
@@ -180,7 +196,8 @@ extension SignInVC_Refactor {
             loginHelpButton,
             orStackView,
             signUpButton,
-            loginLaterButton
+            loginLaterButton,
+            recentLoginToolTip
         )
         
         orStackView.addArrangedSubviews(leftLine, orLabel, rightLine)
@@ -245,6 +262,11 @@ extension SignInVC_Refactor {
             make.centerX.equalToSuperview()
             make.bottom.equalTo(view.safeAreaLayoutGuide).inset(28.adjustedH)
         }
+        
+        recentLoginToolTip.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(googleLoginButton.snp.top)
+        }
     }
     
     private func performAnimation() {
@@ -266,7 +288,7 @@ extension SignInVC_Refactor {
     }
     
     private func retrieveAlpha() {
-        [googleLoginButton, appleLoginButton, playgroundButton, loginHelpButton, orStackView, signUpButton, loginLaterButton].forEach {
+        [googleLoginButton, appleLoginButton, playgroundButton, loginHelpButton, orStackView, signUpButton, loginLaterButton, recentLoginToolTip].forEach {
             $0.alpha = 1
         }
     }
@@ -316,8 +338,18 @@ extension SignInVC_Refactor {
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
         
         output.recentLogin
-            .sink {
-                print($0.rawValue)
+            .withUnretained(self)
+            .sink { owner, oAuthProvider in
+                owner.recentLoginToolTip.isHidden = oAuthProvider == nil
+                guard let oAuthProvider else { return }
+                
+                owner.recentLoginLabel.text = "로그인한 계정은 \(oAuthProvider.rawValue)이에요."
+                
+                let bottomAnchor: ConstraintRelatableTarget = oAuthProvider == .apple ? owner.appleLoginButton.snp.top : owner.googleLoginButton.snp.top
+                
+                owner.recentLoginToolTip.snp.updateConstraints {
+                    $0.bottom.equalTo(bottomAnchor).offset(-19)
+                }
             }
             .store(in: cancelBag)
     }

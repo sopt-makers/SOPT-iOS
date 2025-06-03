@@ -33,7 +33,7 @@ public class SignInViewModel_Refactor: SignInViewModelType_Refactor {
     // MARK: - Outputs
     
     public struct Output {
-        let recentLogin = PassthroughSubject<OAuthProvider, Never>()
+        let recentLogin = PassthroughSubject<OAuthProvider?, Never>()
     }
     
     // MARK: - SignInCoordinating
@@ -64,8 +64,7 @@ extension SignInViewModel_Refactor {
         input.viewWillAppear
             .withUnretained(self)
             .sink { owner, _ in
-                guard let recentLogin = owner.useCase.getRecentLogin() else { return }
-                output.recentLogin.send(recentLogin)
+                output.recentLogin.send(owner.useCase.getRecentLogin())
             }.store(in: self.cancelBag)
         
         Publishers.Merge(
