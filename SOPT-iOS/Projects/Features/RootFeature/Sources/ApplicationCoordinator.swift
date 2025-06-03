@@ -538,7 +538,7 @@ extension ApplicationCoordinator {
     internal func makePokeCoordinator() -> PokeCoordinator {
         let coordinator = PokeCoordinator(
             router: LegacyRouter(rootController: UIWindow.getRootNavigationController),
-            factory: PokeBuilder()
+            factory: LegacyPokeBuilder()
         )
         
         coordinator.finishFlow = { [weak self, weak coordinator] in
@@ -557,7 +557,7 @@ extension ApplicationCoordinator {
             router: LegacyRouter(
                 rootController: UIWindow.getRootNavigationController
             ),
-            factory: PokeBuilder()
+            factory: LegacyPokeBuilder()
         )
         coordinator.finishFlow = { [weak self, weak coordinator] in
             coordinator?.childCoordinators = []
@@ -575,7 +575,7 @@ extension ApplicationCoordinator {
             router: LegacyRouter(
                 rootController: UIWindow.getRootNavigationController
             ),
-            factory: PokeBuilder()
+            factory: LegacyPokeBuilder()
         )
         
         coordinator.finishFlow = { [weak self, weak coordinator] in
@@ -677,7 +677,7 @@ extension ApplicationCoordinator {
                 rootController: UIWindow.getRootNavigationController
             ),
             factory: DailySoptuneBuilder(),
-            pokeFactory: PokeBuilder()
+            pokeFactory: LegacyPokeBuilder()
         )
         coordinator.finishFlow = { [weak self, weak coordinator] in
             coordinator?.childCoordinators = []
