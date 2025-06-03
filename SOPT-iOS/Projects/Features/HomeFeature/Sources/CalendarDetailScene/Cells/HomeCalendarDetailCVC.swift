@@ -29,7 +29,7 @@ final class HomeCalendarDetailCVC: UICollectionViewCell {
         $0.textColor = DSKitAsset.Colors.gray300.color
     }
     
-    private let homeCategoryTagView = HomeSquareTagView()
+    private let homeSquareTagView = HomeSquareTagView()
     
     private let calendarTitleLabel = UILabel().then {
         $0.font = DSKitFontFamily.Suit.bold.font(size: 18)
@@ -58,7 +58,7 @@ extension HomeCalendarDetailCVC {
     }
     
     private func setLayout() {
-        contentView.addSubviews(circleView, stickView, dateLabel, homeCategoryTagView, calendarTitleLabel)
+        contentView.addSubviews(circleView, stickView, dateLabel, homeSquareTagView, calendarTitleLabel)
         
         circleView.snp.makeConstraints { make in
             make.width.height.equalTo(13)
@@ -78,14 +78,14 @@ extension HomeCalendarDetailCVC {
             make.centerY.equalTo(circleView)
         }
         
-        homeCategoryTagView.snp.makeConstraints { make in
+        homeSquareTagView.snp.makeConstraints { make in
             make.top.equalTo(dateLabel.snp.bottom).offset(17)
             make.leading.equalTo(dateLabel)
         }
         
         calendarTitleLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(homeCategoryTagView)
-            make.leading.equalTo(homeCategoryTagView.snp.trailing).offset(10)
+            make.centerY.equalTo(homeSquareTagView)
+            make.leading.equalTo(homeSquareTagView.snp.trailing).offset(10)
         }
     }
 }
@@ -96,7 +96,7 @@ extension HomeCalendarDetailCVC {
         dateLabel.text = model.date
         calendarTitleLabel.text = model.title
         if let tagType = CalenderCategoryTagType(rawValue: model.type) {
-            self.homeCategoryTagView.setData(title: tagType.text,
+            self.homeSquareTagView.setData(title: tagType.text,
                                                  titleColor: tagType.textColor,
                                                  backgroundColor: tagType.backgroundColor)
         }

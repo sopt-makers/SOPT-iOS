@@ -10,23 +10,30 @@ import UIKit
 
 import Core
 import Domain
+import DSKit
 
 struct HomePresentationModel {
 
     let dashBoard: HomePresentationModel.DashBoard
     let recentSchedule: HomePresentationModel.RecentSchedule
     let appServices: [HomePresentationModel.AppService]
+    let playgroundNewsPosts: [HomePresentationModel.PlaygroundNews]
+    let survey: HomePresentationModel.Survey
     
     // MARK: - Item Structs
     
     struct DashBoard: Identifiable, Hashable {
         let id = "dashboard"
         
-        let description: String?
+        let description: NSAttributedString
         let history: [Int]?
         let isAllConfirm: Bool?
         
-        init(description: String? = nil, history: [Int]? = nil, isAllConfirm: Bool? = nil) {
+        init(
+            description: NSAttributedString = NSAttributedString(string: ""),
+            history: [Int]? = nil,
+            isAllConfirm: Bool? = nil
+        ) {
             self.description = description
             self.history = history
             self.isAllConfirm = isAllConfirm
@@ -79,7 +86,7 @@ struct HomePresentationModel {
         }
     }
     
-    struct InsightPost: Identifiable, Hashable {
+    struct PlaygroundNews: Identifiable, Hashable {
         let id = UUID()
 
         let title, category: String
@@ -104,14 +111,55 @@ struct HomePresentationModel {
             self.isHotPost = isHotPost
         }
     }
+    
+    struct Survey: Identifiable, Hashable {
+        let id = UUID()
+        
+        let title: String
+        let subTitle: String
+        let actionButtonName: String
+        let linkURL: String
+        let isActive: Bool
+        
+        init(
+            title: String,
+            subTitle: String,
+            actionButtonName: String,
+            linkURL: String,
+            isActive: Bool
+        ) {
+            self.title = title
+            self.subTitle = subTitle
+            self.actionButtonName = actionButtonName
+            self.linkURL = linkURL
+            self.isActive = isActive
+        }
+    }
+    
+    struct SocialLink: Identifiable, Hashable {
+        let id = UUID()
+        
+        let socialLink: ServiceType
+        
+        init(socialLink: ServiceType) {
+            self.socialLink = socialLink
+        }
+    }
 }
 
 // MARK: - toPresentation
 
 extension HomeDescriptionModel {
     func toPresentation(history: [Int], isAllConfirm: Bool?) -> HomePresentationModel.DashBoard {
+        let attrString = NSAttributedString
+            .fromHTML(
+                description,
+                defaultFont: DSKitFontFamily.Suit.medium.font(size: 18),
+                boldFont: DSKitFontFamily.Suit.bold.font(size: 18),
+                defaultColor: DSKitAsset.Colors.white.color
+            )
         return HomePresentationModel.DashBoard(
-            description: self.description,
+            description: attrString,
             history: history,
             isAllConfirm: isAllConfirm
         )
@@ -144,15 +192,27 @@ extension HomeAppServicesModel {
     }
 }
 
-extension HomeInsightPostsModel {
-    func toPresentation() -> HomePresentationModel.InsightPost {
-        return HomePresentationModel.InsightPost(
+extension HomePlaygroundNewsPostsModel {
+    func toPresentation() -> HomePresentationModel.PlaygroundNews {
+        return HomePresentationModel.PlaygroundNews(
             title: self.title,
             category: self.category,
             profileImage: self.profileImage,
             name: self.name,
             content: self.content,
             isHotPost: self.isHotPost
+        )
+    }
+}
+
+extension HomeSurveyModel {
+    func toPresentation() -> HomePresentationModel.Survey {
+        return HomePresentationModel.Survey(
+            title: self.title,
+            subTitle: self.subTitle,
+            actionButtonName: self.actionButtonName,
+            linkURL: self.linkURL,
+            isActive: self.isActive
         )
     }
 }

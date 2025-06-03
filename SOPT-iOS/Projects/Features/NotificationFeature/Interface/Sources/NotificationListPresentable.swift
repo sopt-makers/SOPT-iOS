@@ -6,6 +6,8 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
+
 import BaseFeatureDependency
 import Core
 import Domain
@@ -16,4 +18,6 @@ public protocol NotificationListCoordinatable {
     var onNotificationTap: ((String) -> Void)? { get set }
 }
 public typealias NotificationListViewModelType = ViewModelType & NotificationListCoordinatable
-public typealias NotificationListPresentable = (vc: NotificationListViewControllable, vm: any NotificationListViewModelType)
+public typealias LegacyNotificationListPresentable = (vc: NotificationListViewControllable, vm: any NotificationListViewModelType)
+
+public typealias NotificationListPresentable = (vc: UIViewController, vm: any NotificationListViewModelType)

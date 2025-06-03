@@ -6,27 +6,41 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
+import Foundation
 import Combine
+import SafariServices
 
 import Core
 import Domain
 import AppMyPageFeatureInterface
+import BaseFeatureDependency
 
 public final class AppMyPageViewModel: MyPageViewModelType {
+    
+    public var onNaviBackButtonTap: (() -> Void)?
+    public var onPolicyItemTap: (() -> Void)?
+    public var onTermsOfUseItemTap: (() -> Void)?
+    public var onEditOnelineSentenceItemTap: (() -> Void)?
+    public var onWithdrawalItemTap: ((Core.UserType) -> Void)?
+    public var onShowLogin: (() -> Void)?
+    public var onShowLogout: (() -> Void)?
+    public var onAlertButtonTap: ((String) -> Void)?
+    public var onResetSoptampTap: (() -> Void)?
+    
+    let userType: UserType = UserDefaultKeyList.Auth.getUserType()
     
     // MARK: - Inputs
     
     public struct Input {
-        let resetButtonTapped: Driver<Bool>
-        let logoutButtonTapped: Driver<Void>
+        let naviBackButtonTapped: Driver<Void>
+        let cellTapped: Driver<MyPageItem>
     }
     
     // MARK: - Outputs
     
     public struct Output {
         let resetSuccessed = PassthroughSubject<Bool, Never>()
-        let originNotificationIsAllowed = PassthroughSubject<Bool, Never>()
-        let alertSettingOptInEditedResult = PassthroughSubject<Bool, Never>()
         let deregisterPushTokenSuccess = PassthroughSubject<Bool, Never>()
     }
     
@@ -44,16 +58,16 @@ extension AppMyPageViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
-        input.resetButtonTapped
+        input.naviBackButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                owner.useCase.resetStamp()
+                owner.onNaviBackButtonTap?()
             }.store(in: cancelBag)
         
-        input.logoutButtonTapped
+        input.cellTapped
             .withUnretained(self)
-            .sink { owner, _ in
-                owner.useCase.deregisterPushToken()
+            .sink { owner, item in
+                owner.handleCellTap(item: item)
             }.store(in: cancelBag)
         
         return output
@@ -61,31 +75,86 @@ extension AppMyPageViewModel {
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         self.useCase
-            .originUserNotificationIsAllowedStatus
-            .asDriver()
-            .sink { isAllowed in
-                output.originNotificationIsAllowed.send(isAllowed)
-            }.store(in: cancelBag)
-        
-        self.useCase
             .resetSuccess
             .asDriver()
             .sink { success in
-                output.resetSuccessed.send(success)
-            }.store(in: cancelBag)
-        
-        self.useCase
-            .optInPushNotificationResult
-            .asDriver()
-            .sink { isOn in
-                output.alertSettingOptInEditedResult.send(isOn)
+                if success {
+                    output.resetSuccessed.send(success)
+                } else {
+                    AlertUtils.presentNetworkAlertVC()
+                }
             }.store(in: cancelBag)
         
         self.useCase
             .deregisterPushTokenSuccess
             .asDriver()
-            .sink { success in
-                output.deregisterPushTokenSuccess.send(success)
+            .withUnretained(self)
+            .sink { owner, success in
+                if success {
+                    owner.logout()
+                    owner.onShowLogin?()
+                }
             }.store(in: cancelBag)
+    }
+    
+    private func handleCellTap(item: MyPageItem) {
+        switch item.type {
+        case .privacyPolicy:
+            self.onPolicyItemTap?()
+        case .termsOfUse:
+            self.onTermsOfUseItemTap?()
+        case .sendFeedback:
+            openExternalLink(urlStr: ExternalURL.KakaoTalk.serviceProposal)
+        case .setNotification:
+            self.onAlertButtonTap?(UIApplication.openSettingsURLString)
+        case .editOnelineSentence:
+            self.onEditOnelineSentenceItemTap?()
+        case .resetStamp:
+            self.showResetSoptampAlert()
+        case .withdrawal:
+            self.onWithdrawalItemTap?(userType)
+        case .logout:
+            self.showLogoutAlert()
+        case .login:
+            self.onShowLogin?()
+        }
+    }
+}
+
+extension AppMyPageViewModel {
+    private func logout() {
+        UserDefaultKeyList.Auth.appAccessToken = nil
+        UserDefaultKeyList.Auth.appRefreshToken = nil
+        UserDefaultKeyList.Auth.playgroundToken = nil
+        SFSafariViewController.DataStore.default.clearWebsiteData()
+    }
+    
+    private func showResetSoptampAlert() {
+        AlertUtils.presentAlertVC(
+            type: .titleDescription,
+            theme: .main,
+            title: I18N.MyPage.resetMissionTitle,
+            description: I18N.MyPage.resetMissionDescription,
+            customButtonTitle: I18N.MyPage.reset,
+            customAction: { [weak self] in
+                self?.useCase.resetStamp()
+            },
+            animated: true
+        )
+    }
+    
+    private func showLogoutAlert() {
+        AlertUtils.presentAlertVC(
+            type: .titleDescription,
+            theme: .main,
+            title: I18N.MyPage.logoutDialogTitle,
+            description: I18N.MyPage.logoutDialogDescription,
+            customButtonTitle: I18N.MyPage.logoutDialogGrantButtonTitle,
+            customAction: { [weak self] in
+                self?.useCase.deregisterPushToken()
+                self?.onShowLogout?()
+            },
+            animated: true
+        )
     }
 }

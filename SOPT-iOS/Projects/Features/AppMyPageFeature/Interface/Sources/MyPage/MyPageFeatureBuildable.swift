@@ -9,7 +9,7 @@
 import Core
 
 public protocol MyPageFeatureBuildable {
-    func makeAppMyPage(userType: UserType) -> MyPageViewControllable
+    func makeAppMyPage(userType: UserType) -> LegacyMyPagePresentable
     func makeSentenceEditVC() -> SentenceEditViewControllable
     func makePrivacyPolicyVC() -> PrivacyPolicyViewControllable
     func makeTermsOfServiceVC() -> TermsOfServiceViewControllable

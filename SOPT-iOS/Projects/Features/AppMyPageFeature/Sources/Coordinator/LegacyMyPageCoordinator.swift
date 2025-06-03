@@ -20,8 +20,8 @@ public protocol MyPageCoordinatorFinishOutput {
 }
 public typealias DefaultMyPageCoordinator = BaseCoordinator & MyPageCoordinatorFinishOutput
 public
-final class LegacyMyPageCoordinator: DefaultMyPageCoordinator {
-        
+final class MyPageCoordinator: DefaultMyPageCoordinator {
+    
     public var finishFlow: (() -> Void)?
     public var requestCoordinating: ((MyPageCoordinatorDestination) -> Void)?
     
@@ -37,34 +37,44 @@ final class LegacyMyPageCoordinator: DefaultMyPageCoordinator {
     
     public override func start() {
         var myPage = factory.makeAppMyPage(userType: userType)
-        myPage.onNaviBackButtonTap = { [weak self] in
+        
+        myPage.vm.onNaviBackButtonTap = { [weak self] in
             self?.router.popModule()
             self?.finishFlow?()
         }
-        myPage.onShowLogin = { [weak self] in
+        
+        myPage.vm.onShowLogout = { [weak self] in
             self?.requestCoordinating?(.signIn)
         }
-        myPage.onPolicyItemTap = { [weak self] in
+        
+        myPage.vm.onShowLogin = { [weak self] in
+            self?.requestCoordinating?(.signIn)
+        }
+        
+        myPage.vm.onPolicyItemTap = { [weak self] in
             let policyVC = self?.factory.makePrivacyPolicyVC()
             self?.router.push(policyVC)
         }
-        myPage.onTermsOfUseItemTap = { [weak self] in
+        
+        myPage.vm.onTermsOfUseItemTap = { [weak self] in
             let termsVC = self?.factory.makeTermsOfServiceVC()
             self?.router.push(termsVC)
         }
-        myPage.onEditOnelineSentenceItemTap = { [weak self] in
+        
+        myPage.vm.onEditOnelineSentenceItemTap = { [weak self] in
             let sentenceEditVC = self?.factory.makeSentenceEditVC()
             self?.router.push(sentenceEditVC)
         }
-        myPage.onWithdrawalItemTap = { [weak self] userType in
+        
+        myPage.vm.onWithdrawalItemTap = { [weak self] userType in
             self?.showWithdrawal(userType: userType)
         }
         
-        myPage.onAlertButtonTap = { [weak self] url in
+        myPage.vm.onAlertButtonTap = { [weak self] url in
             self?.showAlertSetting(url: url)
         }
-
-        router.push(myPage)
+        
+        router.push(myPage.vc)
     }
     
     private func showWithdrawal(userType: UserType) {

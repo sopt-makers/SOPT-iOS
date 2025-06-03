@@ -2,72 +2,75 @@
 //  NotificationCoordinator.swift
 //  NotificationFeatureInterface
 //
-//  Created by Junho Lee on 2023/06/21.
-//  Copyright © 2023 SOPT-iOS. All rights reserved.
+//  Created by Jae Hyun Lee on 5/27/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
-import Core
+import UIKit
+
 import BaseFeatureDependency
 import NotificationFeatureInterface
 import Domain
+import Core
 
-public enum NotificationCoordinatorDestination {
-    case deepLink(url: String)
-    case webLink(url: String)
-}
-
-public protocol NotificationCoordinatorOutput {
-    var requestCoordinating: ((NotificationCoordinatorDestination) -> Void)? { get set }
-}
-
-public typealias DefaultNotificationCoordinator = DefaultCoordinator & NotificationCoordinatorOutput
-
-public
-final class NotificationCoordinator: DefaultNotificationCoordinator {
+public final class NotificationCoordinator: DefaultNotificationCoordinator {
+    
+    // MARK: - Properties
     
     public var requestCoordinating: ((NotificationCoordinatorDestination) -> Void)?
-    
     public var finishFlow: (() -> Void)?
-    
+
+    private let navigationController: UINavigationController
     private let factory: NotificationFeatureBuildable
-    private let router: LegacyRouter
     
-    public init(router: LegacyRouter, factory: NotificationFeatureBuildable) {
+    // MARK: - Init
+    
+    public init(
+        navigationController: UINavigationController,
+        factory: NotificationFeatureBuildable
+    ) {
+        self.navigationController = navigationController
         self.factory = factory
-        self.router = router
+        super.init()
     }
     
+    // MARK: - Coordinator Life Cycle
+
     public override func start() {
-        showNotifcationList()
+        showNotificationList()
     }
+
+    // MARK: - Navigation
     
-    private func showNotifcationList() {
-        var notificiationList = factory.makeNotificationList()
-        notificiationList.vm.onNaviBackButtonTap = { [weak self] in
-            self?.router.popModule()
+    private func showNotificationList() {
+        var notificationList = factory.makeNotificationList()
+        
+        notificationList.vm.onNaviBackButtonTap = { [weak self] in
+            self?.navigationController.popViewController(animated: true)
             self?.finishFlow?()
         }
-        notificiationList.vm.onNotificationTap = { [weak self] notificationId in
+        
+        notificationList.vm.onNotificationTap = { [weak self] notificationId in
             self?.showNotificationDetail(notificationId: notificationId)
         }
-        router.push(notificiationList.vc)
+        
+        navigationController.pushViewController(notificationList.vc, animated: true)
     }
-    
+
     public func showNotificationDetail(notificationId: String) {
         var notificationDetail = factory.makeNotificationDetailVC(notificationId: notificationId)
+        
         notificationDetail.vm.onShortCutButtonTap = { [weak self] link in
             let url = link.url
-            
             let destination: NotificationCoordinatorDestination = link.isDeepLink ? .deepLink(url: url) : .webLink(url: url)
             AmplitudeInstance.shared.track(eventType: .viewNotificationDetail, eventProperties: [
                 "notification_id": notificationId,
                 "open_method": link.isDeepLink ? "푸시알림" : "알림센터",
                 "contain_deeplink": link.isDeepLink
             ])
-            
             self?.requestCoordinating?(destination)
         }
         
-        router.push(notificationDetail.vc)
+        navigationController.pushViewController(notificationDetail.vc, animated: true)
     }
 }

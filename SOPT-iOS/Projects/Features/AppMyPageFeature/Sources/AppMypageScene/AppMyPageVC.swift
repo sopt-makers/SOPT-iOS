@@ -18,36 +18,17 @@ import DSKit
 import BaseFeatureDependency
 
 public final class AppMyPageVC: UIViewController, MyPageViewControllable {
-    // MARK: - Metric
-    private enum Metric {
-        static let navigationbarHeight = 44.f
-        static let firstSectionGroupTop = 13.f
-        static let sectionGroupLeadingTrailing = 20.f
-        
-        static let sectionGroupSpacing = 16.f
-    }
     
-    // MARK: - Local Variables
+    // MARK: - Properties
+    
     private let viewModel: AppMyPageViewModel
     private let userType: UserType
-    
-    // MARK: - MyPageCoordinatable
-    
-    public var onNaviBackButtonTap: (() -> Void)?
-    public var onPolicyItemTap: (() -> Void)?
-    public var onTermsOfUseItemTap: (() -> Void)?
-    public var onEditOnelineSentenceItemTap: (() -> Void)?
-    public var onWithdrawalItemTap: ((UserType) -> Void)?
-    public var onLoginItemTap: (() -> Void)?
-    public var onShowLogin: (() -> Void)?
-    public var onAlertButtonTap: ((String) -> Void)?
-
-    // MARK: Combine
-    private let resetButtonTapped = PassthroughSubject<Bool, Never>()
-    private let logoutButtonTapped = PassthroughSubject<Void, Never>()
+    private var dataSource: UICollectionViewDiffableDataSource<MyPageSectionLayoutKind, MyPageItem>! = nil
+    private var cellTapped = PassthroughSubject<MyPageItem, Never>()
     private let cancelBag = CancelBag()
     
-    // MARK: - Views
+    // MARK: - UI Components
+    
     private lazy var navigationBar = OPNavigationBar(
         self,
         type: .oneLeftButton,
@@ -56,110 +37,33 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
     )
         .addMiddleLabel(title: I18N.MyPage.navigationTitle)
     
-    private let scrollView = UIScrollView()
-    private let contentStackView = UIStackView().then {
-        $0.axis = .vertical
-        $0.spacing = Metric.sectionGroupSpacing
+    private(set) lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout()).then {
+        $0.delegate = self
+        $0.isScrollEnabled = true
+        $0.showsHorizontalScrollIndicator = false
+        $0.showsVerticalScrollIndicator = false
+        $0.backgroundColor = .clear
     }
     
-    // MARK: ServicePolicy
-    private lazy var servicePolicySectionGroup = MypageSectionGroupView(
-        headerTitle: I18N.MyPage.servicePolicySectionTitle,
-        subviews: [
-            self.privacyPolicyListItem,
-            self.termsOfUseListItem,
-            self.sendFeedbackListItem
-        ],
-        frame: self.view.frame
-    )
+    // MARK: - Life Cycle
     
-    private lazy var privacyPolicyListItem = MyPageSectionListItemView(
-        title: I18N.MyPage.privacyPolicy,
-        frame: self.view.frame
-    )
+    public override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        setUI()
+        setLayout()
+        setRegister()
+        setDataSource()
+        applySnapshot()
+        bindViewModels()
+    }
     
-    private lazy var termsOfUseListItem = MyPageSectionListItemView(
-        title: I18N.MyPage.termsOfUse,
-        frame: self.view.frame
-    )
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.setGestureDelegate()
+    }
     
-    private lazy var sendFeedbackListItem = MyPageSectionListItemView(
-        title: I18N.MyPage.sendFeedback,
-        frame: self.view.frame
-    )
-    
-    // MARK: Alert
-    private lazy var alertSectionGroup = MypageSectionGroupView(
-        headerTitle: I18N.MyPage.alertSectionTitle,
-        subviews: [
-            self.alertListItem
-        ],
-        frame: self.view.frame
-    )
-    
-    private lazy var alertListItem = MyPageSectionListItemView(
-        title: I18N.MyPage.alertListItemTitle,
-        frame: self.view.frame
-    )
-
-    // MARK: Soptamp
-    private lazy var soptampSectionGroup = MypageSectionGroupView(
-        headerTitle: I18N.MyPage.soptampSectionTitle,
-        subviews: [
-            self.editOnelineSentenceListItem,
-            self.resetStampListItem
-        ],
-        frame: self.view.frame
-    )
-    
-    private lazy var editOnelineSentenceListItem = MyPageSectionListItemView(
-        title: I18N.MyPage.editOnlineSentence,
-        frame: self.view.frame
-    )
-    
-    private lazy var resetStampListItem = MyPageSectionListItemView(
-        title:  I18N.MyPage.resetStamp,
-        frame: self.view.frame
-    )
-    
-    // MARK: Etcs
-    private lazy var etcSectionGroup = MypageSectionGroupView(
-        headerTitle: I18N.MyPage.etcSectionGroupTitle,
-        subviews: [
-            self.logoutListItem,
-            self.withDrawalListItem,
-        ],
-        frame: self.view.frame
-    )
-    
-    private lazy var logoutListItem = MyPageSectionListItemView(
-        title: I18N.MyPage.logout,
-        frame: self.view.frame
-    )
-    
-    private lazy var withDrawalListItem = MyPageSectionListItemView(
-        title: I18N.MyPage.withdrawal,
-        frame: self.view.frame
-    )
-    
-    // MARK: For Visitors
-    private lazy var etcForVisitorsSectionGroup = MypageSectionGroupView(
-        headerTitle: I18N.MyPage.etcSectionGroupTitle,
-        subviews: [
-            self.loginListItem,
-        ],
-        frame: self.view.frame
-    )
-    
-    private lazy var loginListItem = MyPageSectionListItemView(
-        title: I18N.MyPage.login,
-        frame: self.view.frame
-    )
-    
-    public init(
-        userType: UserType,
-        viewModel: AppMyPageViewModel
-    ) {
+    public init(userType: UserType, viewModel: AppMyPageViewModel) {
         self.userType = userType
         self.viewModel = viewModel
         
@@ -172,177 +76,104 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
 }
 
 extension AppMyPageVC {
-    public override func viewDidLoad() {
-        super.viewDidLoad()
-        
+    private func setUI() {
         self.navigationController?.navigationBar.isHidden = true
-        self.view.backgroundColor = DSKitAsset.Colors.black100.color
-        
-        self.setupLayouts()
-        self.setupConstraints()
-        self.addTabGestureOnListItems()
-        self.bindViews()
-        self.bindViewModels()
+        self.view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
     }
     
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.setGestureDelegate()
-    }
-}
-
-extension AppMyPageVC {
-    private func setupLayouts() {
-        self.view.addSubviews(self.navigationBar, self.scrollView)
-        self.scrollView.addSubview(self.contentStackView)
+    private func setLayout() {
+        view.addSubviews(navigationBar, collectionView)
         
-        switch self.userType {
-        case .active, .inactive:
-            self.contentStackView.addArrangedSubviews(
-                self.servicePolicySectionGroup,
-                self.alertSectionGroup,
-                self.soptampSectionGroup,
-                self.etcSectionGroup
-            )
-        case .visitor:
-            self.contentStackView.addArrangedSubviews(
-                self.servicePolicySectionGroup,
-                self.etcForVisitorsSectionGroup
-            )
-        }
-    }
-    
-    private func setupConstraints() {
-        self.navigationBar.snp.makeConstraints {
-            $0.height.equalTo(Metric.navigationbarHeight)
-            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+        navigationBar.snp.makeConstraints {
+            $0.height.equalTo(44)
+            $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.leading.trailing.equalToSuperview()
         }
-        self.scrollView.snp.makeConstraints {
-            $0.top.equalTo(self.navigationBar.snp.bottom)
+        
+        collectionView.snp.makeConstraints {
+            $0.top.equalTo(navigationBar.snp.bottom).offset(13)
             $0.leading.trailing.bottom.equalToSuperview()
-        }
-        self.contentStackView.snp.makeConstraints {
-            $0.width.equalTo(self.view.frame.width - Metric.sectionGroupLeadingTrailing * 2)
-            $0.top.equalToSuperview().inset(Metric.firstSectionGroupTop)
-            $0.leading.trailing.equalToSuperview().inset(Metric.sectionGroupLeadingTrailing)
-            $0.bottom.equalToSuperview()
         }
     }
     
-    // TODO: - (@승호): 적절히 객체에 위임하기
-    private func addTabGestureOnListItems() {
-        self.servicePolicySectionGroup.addTapGestureRecognizer { [weak self] in
-            self?.onPolicyItemTap?()
+    private func setRegister() {
+        collectionView.collectionViewLayout.register(MyPageSectionBackgroundView.self, forDecorationViewOfKind: MyPageSectionBackgroundView.className)
+        collectionView.register(MyPageSectionHeaderView.self, forSupplementaryViewOfKind:  UICollectionView.elementKindSectionHeader, withReuseIdentifier: MyPageSectionHeaderView.className)
+    }
+    
+    private func setDataSource() {
+        let myPageMenuRegistration = createMyPageeCellRegistration()
+        dataSource = UICollectionViewDiffableDataSource<MyPageSectionLayoutKind, MyPageItem> (collectionView: collectionView, cellProvider: { collectionView, indexPath, item in
+            return collectionView.dequeueConfiguredReusableCell(using: myPageMenuRegistration, for: indexPath, item: item)
+        })
+        
+        configureSupplementaryView()
+    }
+    
+    private func configureSupplementaryView() {
+        let headerRegistration = createHeaderRegistration()
+        
+        dataSource.supplementaryViewProvider = { collectionView, kind, indexPath in
+            if kind == UICollectionView.elementKindSectionHeader {
+                return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
+            }
+            
+            return UICollectionReusableView()
         }
-
-        self.termsOfUseListItem.addTapGestureRecognizer { [weak self] in
-            self?.onTermsOfUseItemTap?()
+    }
+    
+    private func makeSections(for userType: UserType) -> [MyPageSectionLayoutKind] {
+        switch userType {
+        case .visitor:
+            return [.servicePolicy, .etcVisitor]
+        default:
+            return [.servicePolicy, .notificationSettings, .soptampSettings, .etcUser]
         }
-
-        self.sendFeedbackListItem.addTapGestureRecognizer {
-            openExternalLink(urlStr: ExternalURL.KakaoTalk.serviceProposal)
+    }
+    
+    private func applySnapshot() {
+        var snapshot = NSDiffableDataSourceSnapshot<MyPageSectionLayoutKind, MyPageItem>()
+        
+        let sections = makeSections(for: self.userType)
+        snapshot.appendSections(sections)
+        sections.forEach { section in
+            snapshot.appendItems(section.items, toSection: section)
         }
         
-        self.alertListItem.addTapGestureRecognizer { [weak self] in
-            self?.onAlertButtonTap?(UIApplication.openSettingsURLString)
-        }
-
-        self.editOnelineSentenceListItem.addTapGestureRecognizer { [weak self] in
-            self?.onEditOnelineSentenceItemTap?()
-        }
-
-        self.resetStampListItem.addTapGestureRecognizer { [weak self] in
-            AlertUtils.presentAlertVC(
-                type: .titleDescription,
-                theme: .main,
-                title: I18N.MyPage.resetMissionTitle,
-                description: I18N.MyPage.resetMissionDescription,
-                customButtonTitle: I18N.MyPage.reset,
-                customAction: { [weak self] in
-                    self?.resetButtonTapped.send(true)
-                },
-                animated: true
-            )
-        }
-
-        self.logoutListItem.addTapGestureRecognizer { [weak self] in
-            AlertUtils.presentAlertVC(
-                type: .titleDescription,
-                theme: .main,
-                title: I18N.MyPage.logoutDialogTitle,
-                description: I18N.MyPage.logoutDialogDescription,
-                customButtonTitle: I18N.MyPage.logoutDialogGrantButtonTitle,
-                customAction: { [weak self] in
-                    self?.logoutButtonTapped.send()
-                },
-                animated: true
-            )
-        }
-
-        self.withDrawalListItem.addTapGestureRecognizer { [weak self] in
-            self?.onWithdrawalItemTap?(self?.userType ?? .visitor)
-        }
-        
-        self.loginListItem.addTapGestureRecognizer { [weak self] in
-            self?.onShowLogin?()
-        }
+        dataSource.apply(snapshot, animatingDifferences: true)
     }
 }
 
-extension AppMyPageVC {
-    private func bindViews() {
-        self.navigationBar
-            .leftButtonTapped
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onNaviBackButtonTap?()
-            }.store(in: self.cancelBag)
+// MARK: - UICollectionViewDelegate
+
+extension AppMyPageVC: UICollectionViewDelegate {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+        cellTapped.send(item)
     }
-    
+}
+
+// MARK: - Methods
+
+extension AppMyPageVC {
     private func bindViewModels() {
         let input = AppMyPageViewModel.Input(
-            resetButtonTapped: self.resetButtonTapped.asDriver(),
-            logoutButtonTapped: self.logoutButtonTapped.asDriver()
+            naviBackButtonTapped: navigationBar.leftButtonTapped.asDriver(),
+            cellTapped: cellTapped.asDriver()
         )
-        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
-        output.originNotificationIsAllowed
-            .withUnretained(self)
-            .sink { owner, isAllowed in
-                owner.alertListItem.configureSwitch(to: isAllowed)
-            }.store(in: self.cancelBag)
-        
-        output.alertSettingOptInEditedResult
-            .withUnretained(self)
-            .sink { owner, isAllowed in
-                owner.alertListItem.configureSwitch(to: isAllowed)
-            }.store(in: self.cancelBag)
+        let output = viewModel.transform(from: input, cancelBag: cancelBag)
         
         output.resetSuccessed
             .filter { $0 }
             .withUnretained(self)
-            .sink { owenr, _ in
-                owenr.showToast(message: I18N.MyPage.resetSuccess)
+            .sink { owner, _ in
+                Toast.show(message: I18N.MyPage.resetSuccess, view: owner.view)
             }.store(in: self.cancelBag)
         
-        output.deregisterPushTokenSuccess
-            .withUnretained(self)
-            .sink { owner, success in
-                owner.logout()
-                owner.onShowLogin?()
-            }.store(in: self.cancelBag)
     }
 }
 
-extension AppMyPageVC {
-    private func logout() {
-        UserDefaultKeyList.Auth.appAccessToken = nil
-        UserDefaultKeyList.Auth.appRefreshToken = nil
-        UserDefaultKeyList.Auth.playgroundToken = nil
-        SFSafariViewController.DataStore.default.clearWebsiteData()
-    }
-}
 
 // MARK: - UIGestureRecognizerDelegate
 

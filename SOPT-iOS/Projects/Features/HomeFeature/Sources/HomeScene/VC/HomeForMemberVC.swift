@@ -28,8 +28,11 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     private var floatingButtonTapped = PassthroughSubject<Void, Never>()
     private lazy var extendedFloatingButtonTapped = floatingButton.actionButtonTapped
     private lazy var collapsedFloatingButtonTapped = floatingButton.gesture().mapVoid().asDriver()
+    private(set) var surveyButtonTapped = PassthroughSubject<Void, Never>()
+    private var socialLinkButtonTapped = PassthroughSubject<HomePresentationModel.SocialLink, Never>()
     
     private var isFirstAppear = true
+    private var outlinedTriggered = false
     private var isExtendedButtonHidden: Bool = false
     private var floatingButtonType: ExtendedFloatingButtonType = .extended
     
@@ -173,6 +176,9 @@ extension HomeForMemberVC {
         let calendarRegistration = createCalendarCellRegistration()
         let mainProductRegistration = createProductCellRegistration()
         let appServiceRegistration = createAppServiceCellRegistration()
+//        let playgroundNewsRegistration = createPlaygroundNewsCellRegistration()
+        let surveyRegistration = createSurveyRegistration()
+        let socialLinkRegistration = createSocialLinkCellRegistration()
         
         dataSource = UICollectionViewDiffableDataSource<HomeForMemberSectionLayoutKind, HomeForMemberItem> (
             collectionView: collectionView) { (collectionView, indexPath, item) in
@@ -189,7 +195,17 @@ extension HomeForMemberVC {
                 case .appService(let appService):
                     return collectionView.dequeueConfiguredReusableCell(using: appServiceRegistration,
                                                                         for: indexPath, item: appService)
+//                case .playgroundNewsPost(let playgroundNews):
+//                    return collectionView.dequeueConfiguredReusableCell(using: playgroundNewsRegistration,
+//                                                                        for: indexPath, item: playgroundNews)
+                case .survey(let survey):
+                    return collectionView.dequeueConfiguredReusableCell(using: surveyRegistration,
+                                                                        for: indexPath, item: survey)
+                case .socialLink(let socialLink):
+                    return collectionView.dequeueConfiguredReusableCell(using: socialLinkRegistration,
+                                                                        for: indexPath, item: socialLink)
                 default: return UICollectionViewCell()
+
                 }
             }
         
@@ -198,11 +214,17 @@ extension HomeForMemberVC {
     
     private func configureSupplementaryView() {
         let headerRegistration = createHeaderRegistration()
+//        let playgroundNewsFooterRegistration = createPlaygroundNewsFooterRegistration()
         
         dataSource.supplementaryViewProvider = { (collectionView, kind, indexPath) in
             if kind == UICollectionView.elementKindSectionHeader {
                 return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
             }
+//            
+//            if kind == UICollectionView.elementKindSectionFooter {
+//                return collectionView.dequeueConfiguredReusableSupplementary(using: playgroundNewsFooterRegistration, for: indexPath)
+//            }
+            
             return UICollectionReusableView()
         }
     }
@@ -236,7 +258,9 @@ extension HomeForMemberVC {
             attendanceButtonTapped: attendanceButtonTapped.asDriver(),
             noticeButtonTapped: noticeButtonTapped,
             settingButtonTapped: settingButtonTapped,
-            extendedFloatingButtonTapped: floatingButtonTapped.asDriver()
+            extendedFloatingButtonTapped: floatingButtonTapped.asDriver(),
+            surveyButtonTapped: surveyButtonTapped.asDriver(),
+            socialLinkButtonTapped: socialLinkButtonTapped.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -280,12 +304,15 @@ extension HomeForMemberVC {
     private func applySnapshot(with data: HomePresentationModel) {
         var snapshot = NSDiffableDataSourceSnapshot<HomeForMemberSectionLayoutKind, HomeForMemberItem>()
         
-        snapshot.appendSections([.dashBoard, .calendar, .mainProduct, .appService])
+        snapshot.appendSections([.dashBoard, .calendar, .mainProduct, .appService, .survey, .socialLinks])
         
         snapshot.appendItems([.dashBoard(data.dashBoard)], toSection: .dashBoard)
         snapshot.appendItems([.recentSchedule(data.recentSchedule)], toSection: .calendar)
         snapshot.appendItems(self.viewModel.productServiceList.map { .productService($0) }, toSection: .mainProduct)
         snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
+//        snapshot.appendItems(data.playgroundNewsPosts.map { .playgroundNewsPost($0) }, toSection: .playgroundNews)
+        snapshot.appendItems([.survey(data.survey)], toSection: .survey)
+        snapshot.appendItems(self.viewModel.socialLinkList.map { .socialLink($0) }, toSection: .socialLinks)
 
         dataSource.apply(snapshot, animatingDifferences: true)
     }
@@ -321,20 +348,56 @@ extension HomeForMemberVC: UICollectionViewDelegate {
                 self.cellTapped.send(.productService(model))
             case .appService(let model):
                 self.cellTapped.send(.appService(model))
+            case .playgroundNewsPost(let model):
+                self.cellTapped.send(.playgroundNewsPost(model))
+            case .socialLink(let model):
+                self.cellTapped.send(.socialLink(model))
             default: return
             }
         }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        animatePlaygroundNewsSection(scrollView)
+        animateFAButton(scrollView)
+    }
+    
+    /// Playground News 섹션의 디졸브 전환 애니메이션
+//    private func animatePlaygroundNewsSection(_ scrollView: UIScrollView) {
+//        guard !outlinedTriggered else { return }
+//        
+//        if scrollView.contentOffset.y >= 450 {
+//            outlinedTriggered = true
+//            self.togglePlaygroundNewsItemUI()
+//        } else {
+//            outlinedTriggered = false
+//        }
+//    }
+//    
+//    private func togglePlaygroundNewsItemUI() {
+//        let playgroundNewsSectionIndex = HomeForMemberSectionLayoutKind.playgroundNews.rawValue
+//        let repeatCount = 4
+//        let interval: TimeInterval = 2.0
+//        
+//        for i in 0..<repeatCount {
+//            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * interval) {
+//                let indexPath = IndexPath(item: i, section: playgroundNewsSectionIndex)
+//                if let cell = self.collectionView.cellForItem(at: indexPath) as? PlaygroundNewsCardCVC {
+//                    cell.setOutlinedAnimated()
+//                }
+//            }
+//        }
+//    }
+//    
+    private func animateFAButton(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
         
-        if offsetY < 330 && isExtendedButtonHidden || offsetY >= 330 && !isExtendedButtonHidden {
+        if offsetY < 130 && isExtendedButtonHidden || offsetY >= 130 && !isExtendedButtonHidden {
             toggleFloatingButtonUI()
         }
     }
     
-    /// offsetY 값이 330을 지날 때 floating button의 UI를 변경하고 애니메이션을 실행하는 메서드
+    /// offsetY 기준 값을 지날 때 floating button의 UI를 변경하고 애니메이션을 실행하는 메서드
     private func toggleFloatingButtonUI() {
         animateExtendedFloatingButtonHide(floatingButtonType)
         isExtendedButtonHidden.toggle()

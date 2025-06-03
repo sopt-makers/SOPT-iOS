@@ -144,7 +144,7 @@ extension ApplicationCoordinator {
         self.router.dismissModule(animated: false)
         guard let url = URL(string: webLink) else { return }
         let webView = SOPTWebView(startWith: url)
-        self.router.push(webView)
+        router.push(webView)
     }
     
     private func handleNewWebLink(webLink: String) {
@@ -234,7 +234,7 @@ extension ApplicationCoordinator {
 // MARK: - LegacyTabBarFlow
 
 extension ApplicationCoordinator {
-    internal func runLegacyTabBarFlow(type: UserType? = nil) {
+    internal func runLegacyTabBarFlow(type: UserType? = nil, initSelectedTabIndex: Int = 0) {
         defer {
             bindNotification()
         }
@@ -256,8 +256,8 @@ extension ApplicationCoordinator {
             userType: userType
         )
         
-        let coordinator = TabBarCoordinator(
-            navigationController: rootNavigationController,
+        let coordinator = LegacyTabBarCoordinator(
+            router: router,
             factory: (tabbarController, viewModel),
             items: [
                 homeVC,
@@ -268,8 +268,10 @@ extension ApplicationCoordinator {
         self.legacyRootController = tabbarController.asNavigationController
         self.tabBarController = tabbarController
         
+        self.tabBarController?.selectedIndex = initSelectedTabIndex
+        
         // 각 코디네이터 실행
-        coordinator.requestCoordinating = { [weak self] destination in
+        coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
             switch destination {
             case .home:
                 self?.homeCoordinator?.requestCoordinating = { [weak self, weak coordinator] destination in
@@ -322,7 +324,7 @@ extension ApplicationCoordinator {
 // MARK: - TabBarFlow
 
 extension ApplicationCoordinator {
-    internal func runTabBarFlow(type: UserType? = nil) {
+    internal func runTabBarFlow(type: UserType? = nil, initSelectedTabType: TabType = .home) {
         defer { bindNotification() }
         self.childCoordinators = []
         
@@ -350,9 +352,10 @@ extension ApplicationCoordinator {
         )
         
         self.tabBarController = tabBarFactory.vc
+        self.selectedTab(initSelectedTabType)
         
         // 각 코디네이터 실행
-        coordinator.requestCoordinating = { [weak self] destination in
+        coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
             switch destination {
             case .home:
                 self?.selectedTab(.home)
@@ -451,7 +454,7 @@ extension ApplicationCoordinator {
             self?.runAttendanceFlow()
         }
 
-        router.push(homeCalendarDetail.vc)
+        UIWindow.getRootNavigationController.pushViewController(homeCalendarDetail.vc.viewController, animated: true)
     }
     
     public func showNewHomeCalendarDetail() {
@@ -624,13 +627,23 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runNotificationFlow() -> NotificationCoordinator {
-        let coordinator = NotificationCoordinator(
-            router: LegacyRouter(
-                rootController: UIWindow.getRootNavigationController
-            ),
-            factory: NotificationBuilder()
-        )
+    internal func runNotificationFlow() -> DefaultNotificationCoordinator {
+        var coordinator: DefaultNotificationCoordinator
+        
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator = LegacyNotificationCoordinator(
+                router: LegacyRouter(
+                    rootController: UIWindow.getRootNavigationController
+                ),
+                factory: LegacyNotificationBuilder()
+            )
+        case .new:
+            coordinator = NotificationCoordinator(
+                navigationController: UIWindow.getRootNavigationController,
+                factory: NotificationBuilder()
+            )
+        }
         
         coordinator.requestCoordinating = { [weak self] destination in
             switch destination {
@@ -645,6 +658,7 @@ extension ApplicationCoordinator {
             coordinator?.childCoordinators = []
             self?.removeDependency(coordinator)
         }
+        
         addDependency(coordinator)
         coordinator.start()
         
