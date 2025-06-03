@@ -6,11 +6,11 @@
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
-
+import BaseFeatureDependency
 
 public protocol MyPageCoordinatorFinishOutput {
     var finishFlow: (() -> Void)? { get set }
     var requestCoordinating: ((MyPageCoordinatorDestination) -> Void)? { get set }
 }
 
-public typealias DefaultHomeCoordinator = BaseCoordinator & MyPageCoordinatorFinishOutput
+public typealias DefaultMyPageCoordinator = BaseCoordinator & MyPageCoordinatorFinishOutput
