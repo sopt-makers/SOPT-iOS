@@ -1,5 +1,5 @@
 //
-//  AttendanceFeatureViewControllable.swift
+//  AttendancePresentable.swift
 //  AttendanceFeature
 //
 //  Created by 김영인 on 2023/03/18.
