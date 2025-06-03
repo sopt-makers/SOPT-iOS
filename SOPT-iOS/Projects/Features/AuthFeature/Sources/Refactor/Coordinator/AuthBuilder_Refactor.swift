@@ -8,7 +8,9 @@
 
 import Core
 import Domain
+
 @_exported import AuthFeatureInterface
+import BaseFeatureDependency
 
 public final class AuthBuilder_Refactor: AuthFeatureViewBuildable_Refactor {
     
@@ -28,13 +30,13 @@ public final class AuthBuilder_Refactor: AuthFeatureViewBuildable_Refactor {
         vc.viewModel = vm
         return (vc, vm)
     }
-
+    
     public func makeLoginHelpBottomSheet() -> LoginHelpBottomSheetPresentable {
         return LoginHelpBottomSheetVC()
     }
     
     public func makeUserNotFound() -> UserNotFoundPresentable {
-         return UserNotFoundVC()
+        return UserNotFoundVC()
     }
     
     public func makeSignUp() -> SignUpPresentable {
@@ -42,10 +44,24 @@ public final class AuthBuilder_Refactor: AuthFeatureViewBuildable_Refactor {
         let phoneUseCase = DefaultPhoneVerifyUseCase(repository: phoneRepository)
         
         let vm = SignUpViewModel(useCase: useCase)
-        let phoneVM = PhoneVerifyViewModel(useCase: phoneUseCase)
+        let phoneVM = PhoneVerifyViewModel(useCase: phoneUseCase, phoneVerifyType: .register)
         let vc = SignUpVC(viewModel: vm, phoneVerifyViewModel: phoneVM)
         
         return (vc, vm)
     }
     
+    public func makeChangeSocialAccount() -> ChangeSocialAccountPresentable {
+        let useCase = DefaultChangeSocialAccountUseCase(
+            repository: coreRepository,
+            oAuthRepository: oauthRepository
+        )
+        
+        let phoneUseCase = DefaultPhoneVerifyUseCase(repository: phoneRepository)
+        
+        let vm = ChangeSocialAccountViewModel(useCase: useCase)
+        let phoneVM = PhoneVerifyViewModel(useCase: phoneUseCase, phoneVerifyType: .changeSocialAccount)
+        let vc = ChangeSocialAccountVC(viewModel: vm, phoneVerifyViewModel: phoneVM)
+        return (vc, vm)
+    }
+
 }

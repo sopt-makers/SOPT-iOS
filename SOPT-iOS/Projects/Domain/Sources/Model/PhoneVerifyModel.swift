@@ -10,8 +10,9 @@ import Foundation
 
 public enum PhoneVerifyType {
     case register  // 회원가입
-    case change    // 소설계정재설정
-    case search    // 계정 찾기
+    case changeSocialAccount    // 소설계정재설정
+    case changePhoneNumber
+    case searchSocialAccount    // 계정 찾기
 }
 
 public struct PhoneSendModel {

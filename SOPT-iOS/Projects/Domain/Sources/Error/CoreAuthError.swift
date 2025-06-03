@@ -12,5 +12,6 @@ public enum CoreAuthError: Error {
     case oAuthFail(OAuthProvider)
     case loginFail
     case signUpFail
+    case changeSocialAccountFail
     case unknown(Error)
 }

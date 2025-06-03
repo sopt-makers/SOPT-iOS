@@ -10,6 +10,7 @@ import Foundation
 
 public enum VerifyEntityType: String, Encodable {
     case register = "REGISTER"
-    case change = "CHANGE"
-    case search = "SEARCH"
+    case searchSocialAccount = "SEARCH_SOCIAL_PLATFORM"
+    case changeSocialAccount = "CHANGE_SOCIAL_PLATFORM"
+    case changePhoneNumber = "CHANGE_PHONE_NUMBER"
 }

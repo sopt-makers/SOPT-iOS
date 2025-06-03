@@ -42,8 +42,12 @@ extension CoreAuthRepository: CoreAuthRepositoryInterface {
         UserDefaultKeyList.CoreAuth.refreshToken = tokens.refreshToken
     }
     
-    public func changeSocialAccount() -> AnyPublisher<Void, CoreAuthError> {
-        fatalError()
+    public func changeSocialAccount(_ model: Domain.SignUpModel) -> AnyPublisher<Void, Domain.CoreAuthError> {
+        coreAuthService
+            .changeSocialAccount(model.toData())
+            .mapVoid()
+            .mapError { _ in CoreAuthError.changeSocialAccountFail }
+            .eraseToAnyPublisher()
     }
     
     public func searchSocialAccount() -> AnyPublisher<Void, CoreAuthError> {
