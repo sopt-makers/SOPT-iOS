@@ -10,26 +10,17 @@ import Core
 import BaseFeatureDependency
 import AppMyPageFeatureInterface
 
-public enum MyPageCoordinatorDestination {
-    case signIn
-    case signInWithToast
-}
-public protocol MyPageCoordinatorFinishOutput {
-    var finishFlow: (() -> Void)? { get set }
-    var requestCoordinating: ((MyPageCoordinatorDestination) -> Void)? { get set }
-}
-public typealias DefaultMyPageCoordinator = BaseCoordinator & MyPageCoordinatorFinishOutput
 public
 final class LegacyMyPageCoordinator: DefaultMyPageCoordinator {
     
     public var finishFlow: (() -> Void)?
     public var requestCoordinating: ((MyPageCoordinatorDestination) -> Void)?
     
-    private let factory: MyPageFeatureBuildable
+    private let factory: LegacyMyPageFeatureBuildable
     private let router: LegacyRouter
     private let userType: UserType
     
-    public init(router: LegacyRouter, factory: MyPageFeatureBuildable, userType: UserType) {
+    public init(router: LegacyRouter, factory: LegacyMyPageFeatureBuildable, userType: UserType) {
         self.factory = factory
         self.router = router
         self.userType = userType
