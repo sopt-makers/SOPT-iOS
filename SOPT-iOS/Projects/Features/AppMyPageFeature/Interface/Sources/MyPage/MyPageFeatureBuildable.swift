@@ -2,14 +2,14 @@
 //  MyPageFeatureBuildable.swift
 //  AppMyPageFeature
 //
-//  Created by Junho Lee on 2023/06/20.
-//  Copyright © 2023 SOPT-iOS. All rights reserved.
+//  Created by 강윤서 on 6/4/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
 import Core
 
 public protocol MyPageFeatureBuildable {
-    func makeAppMyPage(userType: UserType) -> LegacyMyPagePresentable
+    func makeAppMyPage(userType: UserType) -> MyPagePresentable
     func makeSentenceEditVC() -> SentenceEditViewControllable
     func makePrivacyPolicyVC() -> PrivacyPolicyViewControllable
     func makeTermsOfServiceVC() -> TermsOfServiceViewControllable

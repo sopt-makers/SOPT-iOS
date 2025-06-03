@@ -20,7 +20,7 @@ public protocol MyPageCoordinatorFinishOutput {
 }
 public typealias DefaultMyPageCoordinator = BaseCoordinator & MyPageCoordinatorFinishOutput
 public
-final class MyPageCoordinator: DefaultMyPageCoordinator {
+final class LegacyMyPageCoordinator: DefaultMyPageCoordinator {
     
     public var finishFlow: (() -> Void)?
     public var requestCoordinating: ((MyPageCoordinatorDestination) -> Void)?

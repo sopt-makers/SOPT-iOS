@@ -1,5 +1,5 @@
 //
-//  MyPageBuilder.swift
+//  LegacyMyPageBuilder.swift
 //  AppMyPageFeature
 //
 //  Created by Junho Lee on 2023/06/21.
@@ -11,7 +11,7 @@ import Domain
 @_exported import AppMyPageFeatureInterface
 
 public
-final class MyPageBuilder {
+final class LegacyMyPageBuilder {
     @Injected public var appMyPageRepository: AppMyPageRepositoryInterface
     @Injected public var settingRepository: SettingRepositoryInterface
     @Injected public var notificationSettingsRepository: NotificationSettingRepositoryInterface
@@ -19,7 +19,7 @@ final class MyPageBuilder {
     public init() { }
 }
 
-extension MyPageBuilder: MyPageFeatureBuildable {
+extension LegacyMyPageBuilder: LegacyMyPageFeatureBuildable {
     public func makeSentenceEditVC() -> SentenceEditViewControllable {
         let useCase = DefaultSentenceEditUseCase(repository: settingRepository)
         let viewModel = SentenceEditViewModel(useCase: useCase)
