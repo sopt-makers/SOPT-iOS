@@ -18,7 +18,7 @@ import Then
 import BaseFeatureDependency
 import AppMyPageFeatureInterface
 
-public class SentenceEditVC: UIViewController, SentenceEditViewControllable {
+public class SentenceEditVC: UIViewController, LegacySentenceEditViewControllable {
     
     // MARK: - Properties
     

@@ -17,7 +17,7 @@ import Then
 import AppMyPageFeatureInterface
 import BaseFeatureDependency
 
-public class TermsOfServiceVC: UIViewController, TermsOfServiceViewControllable {
+public class TermsOfServiceVC: UIViewController, LegacyTermsOfServiceViewControllable {
     
     // MARK: - UI Components
     

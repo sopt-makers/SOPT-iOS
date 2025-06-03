@@ -17,7 +17,7 @@ import Then
 import AppMyPageFeatureInterface
 import BaseFeatureDependency
 
-public class PrivacyPolicyVC: UIViewController, PrivacyPolicyViewControllable {
+public class PrivacyPolicyVC: UIViewController, LegacyPrivacyPolicyViewControllable {
         
     // MARK: - UI Components
     
