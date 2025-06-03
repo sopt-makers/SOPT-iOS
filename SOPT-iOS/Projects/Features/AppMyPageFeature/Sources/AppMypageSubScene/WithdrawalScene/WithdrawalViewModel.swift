@@ -11,8 +11,9 @@ import Combine
 import Core
 import Domain
 
-public class WithdrawalViewModel: ViewModelType {
-
+public class WithdrawalViewModel: ViewModelType, WithdrawalViewCoordinatable {
+    public var onWithdrawal: (() -> Void)?
+    
     private let useCase: SettingUseCase
     private var cancelBag = CancelBag()
     
