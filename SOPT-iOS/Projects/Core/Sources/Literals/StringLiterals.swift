@@ -340,6 +340,7 @@ public struct I18N {
             public static let title = "기타"
             public static let logout = "로그아웃"
             public static let withdrawal = "탈퇴하기"
+            public static let login = "로그인"
         }
         
         public static let resetMissionTitle = "미션을 초기화 하실건가요?"
@@ -349,9 +350,6 @@ public struct I18N {
         public static let logoutDialogTitle = "로그아웃"
         public static let logoutDialogDescription = "정말 로그아웃을 하실 건가요?"
         public static let logoutDialogGrantButtonTitle = "로그아웃"
-        public static let login = "로그인"
-
-        
     }
     
     public struct NotificationSettingsByFeature {
