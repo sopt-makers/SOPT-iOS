@@ -18,7 +18,7 @@ import Then
 import AttendanceFeatureInterface
 import BaseFeatureDependency
 
-public final class AttendanceVC: UIViewController, AttendanceViewControllable {
+public final class AttendanceVC: UIViewController, LegacyAttendanceViewControllable, AttendanceViewControllable {
     private enum Metric {
         static let baseInset = 20.f
         static let contentInset = 16.f

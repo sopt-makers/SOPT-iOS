@@ -2,18 +2,18 @@
 //  AttendanceFeatureBuildable.swift
 //  AttendanceFeatureInterface
 //
-//  Created by Junho Lee on 2023/06/22.
-//  Copyright © 2023 SOPT-iOS. All rights reserved.
+//  Created by Jae Hyun Lee on 6/3/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
 import BaseFeatureDependency
 
 import Domain
 
-public protocol AttendanceFeatureViewBuildable {
-    func makeShowAttendanceVC() -> ShowAttendanceViewControllable
+public protocol AttendanceFeatureBuildable {
+    func makeShowAttendanceVC() -> ShowAttendancePresentable
     func makeAttendanceVC(
         lectureRound: AttendanceRoundModel,
         dismissCompletion: (() -> Void)?
-    ) -> AttendanceViewControllable
+    ) -> AttendancePresentable
 }

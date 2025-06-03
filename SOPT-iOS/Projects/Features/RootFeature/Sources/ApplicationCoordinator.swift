@@ -481,7 +481,7 @@ extension ApplicationCoordinator {
             router: LegacyRouter(
                 rootController: UIWindow.getRootNavigationController
             ),
-            factory: AttendanceBuilder()
+            factory: LegacyAttendanceBuilder()
         )
         coordinator.finishFlow = { [weak self, weak coordinator] in
             coordinator?.childCoordinators = []

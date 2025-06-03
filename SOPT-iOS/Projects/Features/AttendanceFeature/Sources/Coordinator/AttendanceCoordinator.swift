@@ -16,10 +16,10 @@ final class AttendanceCoordinator: DefaultCoordinator {
     
     public var finishFlow: (() -> Void)?
     
-    private let factory: AttendanceFeatureViewBuildable
+    private let factory: LegacyAttendanceFeatureBuildable
     private let router: LegacyRouter
     
-    public init(router: LegacyRouter, factory: AttendanceFeatureViewBuildable) {
+    public init(router: LegacyRouter, factory: LegacyAttendanceFeatureBuildable) {
         self.factory = factory
         self.router = router
     }

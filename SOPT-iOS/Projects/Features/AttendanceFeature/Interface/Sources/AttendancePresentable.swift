@@ -6,13 +6,14 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
-import BaseFeatureDependency
+import UIKit
 
+import BaseFeatureDependency
+import Core
 import Domain
 
-public protocol ShowAttendanceViewControllable: LegacyViewControllable & ShowAttendanceCoordinatable { }
-public protocol ShowAttendanceCoordinatable {
-    var onAttendanceButtonTap: ((AttendanceRoundModel, (() -> Void)?) -> Void)? { get set }
-    var onNaviBackTap: (() -> Void)? { get set }
-}
-public protocol AttendanceViewControllable: LegacyViewControllable { }
+public protocol LegacyAttendanceViewControllable: LegacyViewControllable { }
+public protocol AttendanceViewControllable: UIViewController { }
+
+public typealias AttendanceViewModelType = ViewModelType
+public typealias AttendancePresentable = (vc: AttendanceViewControllable, vm: any AttendanceViewModelType)
