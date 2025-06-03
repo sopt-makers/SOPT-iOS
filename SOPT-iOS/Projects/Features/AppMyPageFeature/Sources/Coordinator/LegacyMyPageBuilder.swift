@@ -20,7 +20,7 @@ final class LegacyMyPageBuilder {
 }
 
 extension LegacyMyPageBuilder: LegacyMyPageFeatureBuildable {
-    public func makeSentenceEditVC() -> SentenceEditViewControllable {
+    public func makeSentenceEditVC() -> LegacySentenceEditViewControllable {
         let useCase = DefaultSentenceEditUseCase(repository: settingRepository)
         let viewModel = SentenceEditViewModel(useCase: useCase)
         let sentenceEditVC = SentenceEditVC()
@@ -28,22 +28,20 @@ extension LegacyMyPageBuilder: LegacyMyPageFeatureBuildable {
         return sentenceEditVC
     }
 
-    public func makePrivacyPolicyVC() -> PrivacyPolicyViewControllable {
+    public func makePrivacyPolicyVC() -> LegacyPrivacyPolicyViewControllable {
         let privacyPolicyVC = PrivacyPolicyVC()
         return privacyPolicyVC
     }
 
-    public func makeTermsOfServiceVC() -> TermsOfServiceViewControllable {
+    public func makeTermsOfServiceVC() -> LegacyTermsOfServiceViewControllable {
         let termsOfServiceVC = TermsOfServiceVC()
         return termsOfServiceVC
     }
 
-    public func makeWithdrawalVC(userType: UserType) -> WithdrawalViewControllable {
-        let withdrawalVC = WithdrawalVC()
+    public func makeWithdrawalVC(userType: UserType) -> LegacyWithdrawalViewControllable {
         let useCase = DefaultSettingUseCase(repository: settingRepository)
         let viewModel = WithdrawalViewModel(useCase: useCase)
-        withdrawalVC.viewModel = viewModel
-        withdrawalVC.userType = userType
+        let withdrawalVC = WithdrawalVC(viewModel: viewModel, userType: userType)
         return withdrawalVC
     }
     
