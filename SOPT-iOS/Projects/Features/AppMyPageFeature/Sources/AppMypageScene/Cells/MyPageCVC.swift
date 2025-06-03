@@ -15,7 +15,7 @@ final class MyPageCVC: UICollectionViewCell {
     // MARK: - UI Components
     
     private let titleLabel = UILabel().then {
-        $0.textColor = .white
+        $0.textColor = DSKitAsset.Colors.white.color
         $0.font = DSKitFontFamily.Suit.medium.font(size: 16)
     }
     private let arrowImageView = UIImageView().then {
