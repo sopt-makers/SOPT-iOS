@@ -16,7 +16,7 @@ import Domain
 import WebFeature
 
 public
-final class LegacyPokeCoordinator: DefaultCoordinator {
+final class LegacyPokeCoordinator: DefaultPokeCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: LegacyPokeFeatureBuildable

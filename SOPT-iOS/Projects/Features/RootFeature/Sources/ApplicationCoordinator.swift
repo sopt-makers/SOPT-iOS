@@ -535,12 +535,22 @@ extension ApplicationCoordinator {
     }
     
     @discardableResult
-    internal func makePokeCoordinator() -> LegacyPokeCoordinator {
-        let coordinator = LegacyPokeCoordinator(
-            router: LegacyRouter(rootController: UIWindow.getRootNavigationController),
-            factory: LegacyPokeBuilder()
-        )
+    internal func makePokeCoordinator() -> DefaultPokeCoordinator {
+        var coordinator: DefaultPokeCoordinator
         
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator = LegacyPokeCoordinator(
+                router: LegacyRouter(rootController: UIWindow.getRootNavigationController),
+                factory: LegacyPokeBuilder()
+            )
+        case .new:
+            coordinator = PokeCoordinator(
+                navigationController: UIWindow.getRootNavigationController,
+                factory: PokeBuilder()
+            )
+        }
+
         coordinator.finishFlow = { [weak self, weak coordinator] in
             coordinator?.childCoordinators = []
             self?.removeDependency(coordinator)
