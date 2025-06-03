@@ -8,9 +8,12 @@
 
 import Foundation
 
+import Core
+
 import HomeFeature
 import SoptlogFeature
 import TabBarFeature
+import AppMyPageFeature
 
 // MARK: - HomeCoordinatorDelegate
 
@@ -53,6 +56,19 @@ extension ApplicationCoordinator: SoptlogCoordinatorDelegate {
             self.runSignInFlow(by: .rootWindow(animated: true, message: nil))
         case .webLink(let url):
             self.handleWebLink(webLink: url)
+        }
+    }
+}
+
+// MARK: - MyPageCoordinatorDelegate
+
+extension ApplicationCoordinator: MyPageCoordinatorDelegate {
+    public func myPageCoordinator(_ coordinator: MyPageCoordinator, to destination: MyPageCoordinatorDestination) {
+        switch destination {
+        case .signIn:
+            self.runSignInFlow(by: .rootWindow(animated: true, message: nil))
+        case .signInWithToast:
+            self.runSignInFlow(by: .rootWindow(animated: true, message: I18N.Setting.Withdrawal.withdrawalSuccess))
         }
     }
 }
