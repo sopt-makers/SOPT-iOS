@@ -76,7 +76,10 @@ extension SentenceEditVC {
         
         let saveButtonTapped = self.saveButton
             .publisher(for: .touchUpInside)
-            .compactMap { _ in self.textView.text }
+            .withUnretained(self)
+            .compactMap({ owner, _ in
+                owner.textView.text
+            })
             .filter { !$0.isEmpty }
             .asDriver()
         

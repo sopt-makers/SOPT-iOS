@@ -19,36 +19,12 @@ import BaseFeatureDependency
 
 public final class AppMyPageVC: UIViewController, MyPageViewControllable {
     
-    // MARK: - Metric
-    
-    private enum Metric {
-        static let navigationbarHeight = 44.f
-        static let firstSectionGroupTop = 13.f
-        static let sectionGroupLeadingTrailing = 20.f
-        
-        static let sectionGroupSpacing = 16.f
-    }
-    
     // MARK: - Properties
     
     private let viewModel: AppMyPageViewModel
     private let userType: UserType
     private var dataSource: UICollectionViewDiffableDataSource<MyPageSectionLayoutKind, MyPageItem>! = nil
-    
-    // MARK: - MyPageCoordinatable
-    
-    public var onNaviBackButtonTap: (() -> Void)?
-    public var onPolicyItemTap: (() -> Void)?
-    public var onTermsOfUseItemTap: (() -> Void)?
-    public var onEditOnelineSentenceItemTap: (() -> Void)?
-    public var onWithdrawalItemTap: ((UserType) -> Void)?
-    public var onLoginItemTap: (() -> Void)?
-    public var onShowLogin: (() -> Void)?
-    public var onAlertButtonTap: ((String) -> Void)?
-    
-    // MARK: Combine
-    private let resetButtonTapped = PassthroughSubject<Bool, Never>()
-    private let logoutButtonTapped = PassthroughSubject<Void, Never>()
+    private var cellTapped = PassthroughSubject<MyPageItem, Never>()
     private let cancelBag = CancelBag()
     
     // MARK: - UI Components
@@ -79,6 +55,7 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
         setRegister()
         setDataSource()
         applySnapshot()
+        bindViewModels()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -167,161 +144,36 @@ extension AppMyPageVC {
     }
 }
 
+// MARK: - UICollectionViewDelegate
+
 extension AppMyPageVC: UICollectionViewDelegate {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+        cellTapped.send(item)
+    }
 }
 
-//extension AppMyPageVC {
-//    private func setupLayouts() {
-//        self.view.addSubviews(self.navigationBar, self.scrollView)
-//        self.scrollView.addSubview(self.contentStackView)
-//
-//        switch self.userType {
-//        case .active, .inactive:
-//            self.contentStackView.addArrangedSubviews(
-//                self.servicePolicySectionGroup,
-//                self.alertSectionGroup,
-//                self.soptampSectionGroup,
-//                self.etcSectionGroup
-//            )
-//        case .visitor:
-//            self.contentStackView.addArrangedSubviews(
-//                self.servicePolicySectionGroup,
-//                self.etcForVisitorsSectionGroup
-//            )
-//        }
-//    }
-//
-//    private func setupConstraints() {
-//        self.navigationBar.snp.makeConstraints {
-//            $0.height.equalTo(Metric.navigationbarHeight)
-//            $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
-//            $0.leading.trailing.equalToSuperview()
-//        }
-//        self.scrollView.snp.makeConstraints {
-//            $0.top.equalTo(self.navigationBar.snp.bottom)
-//            $0.leading.trailing.bottom.equalToSuperview()
-//        }
-//        self.contentStackView.snp.makeConstraints {
-//            $0.width.equalTo(self.view.frame.width - Metric.sectionGroupLeadingTrailing * 2)
-//            $0.top.equalToSuperview().inset(Metric.firstSectionGroupTop)
-//            $0.leading.trailing.equalToSuperview().inset(Metric.sectionGroupLeadingTrailing)
-//            $0.bottom.equalToSuperview()
-//        }
-//    }
-//
-//    // TODO: - (@승호): 적절히 객체에 위임하기
-//    private func addTabGestureOnListItems() {
-//        self.servicePolicySectionGroup.addTapGestureRecognizer { [weak self] in
-//            self?.onPolicyItemTap?()
-//        }
-//
-//        self.termsOfUseListItem.addTapGestureRecognizer { [weak self] in
-//            self?.onTermsOfUseItemTap?()
-//        }
-//
-//        self.sendFeedbackListItem.addTapGestureRecognizer {
-//            openExternalLink(urlStr: ExternalURL.KakaoTalk.serviceProposal)
-//        }
-//
-//        self.alertListItem.addTapGestureRecognizer { [weak self] in
-//            self?.onAlertButtonTap?(UIApplication.openSettingsURLString)
-//        }
-//
-//        self.editOnelineSentenceListItem.addTapGestureRecognizer { [weak self] in
-//            self?.onEditOnelineSentenceItemTap?()
-//        }
-//
-//        self.resetStampListItem.addTapGestureRecognizer { [weak self] in
-//            AlertUtils.presentAlertVC(
-//                type: .titleDescription,
-//                theme: .main,
-//                title: I18N.MyPage.resetMissionTitle,
-//                description: I18N.MyPage.resetMissionDescription,
-//                customButtonTitle: I18N.MyPage.reset,
-//                customAction: { [weak self] in
-//                    self?.resetButtonTapped.send(true)
-//                },
-//                animated: true
-//            )
-//        }
-//
-//        self.logoutListItem.addTapGestureRecognizer { [weak self] in
-//            AlertUtils.presentAlertVC(
-//                type: .titleDescription,
-//                theme: .main,
-//                title: I18N.MyPage.logoutDialogTitle,
-//                description: I18N.MyPage.logoutDialogDescription,
-//                customButtonTitle: I18N.MyPage.logoutDialogGrantButtonTitle,
-//                customAction: { [weak self] in
-//                    self?.logoutButtonTapped.send()
-//                },
-//                animated: true
-//            )
-//        }
-//
-//        self.withDrawalListItem.addTapGestureRecognizer { [weak self] in
-//            self?.onWithdrawalItemTap?(self?.userType ?? .visitor)
-//        }
-//
-//        self.loginListItem.addTapGestureRecognizer { [weak self] in
-//            self?.onShowLogin?()
-//        }
-//    }
-//}
-//
-//extension AppMyPageVC {
-//    private func bindViews() {
-//        self.navigationBar
-//            .leftButtonTapped
-//            .withUnretained(self)
-//            .sink { owner, _ in
-//                owner.onNaviBackButtonTap?()
-//            }.store(in: self.cancelBag)
-//    }
-//
-//    private func bindViewModels() {
-//        let input = AppMyPageViewModel.Input(
-//            resetButtonTapped: self.resetButtonTapped.asDriver(),
-//            logoutButtonTapped: self.logoutButtonTapped.asDriver()
-//        )
-//        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
-//
-//        output.originNotificationIsAllowed
-//            .withUnretained(self)
-//            .sink { owner, isAllowed in
-//                owner.alertListItem.configureSwitch(to: isAllowed)
-//            }.store(in: self.cancelBag)
-//
-//        output.alertSettingOptInEditedResult
-//            .withUnretained(self)
-//            .sink { owner, isAllowed in
-//                owner.alertListItem.configureSwitch(to: isAllowed)
-//            }.store(in: self.cancelBag)
-//
-//        output.resetSuccessed
-//            .filter { $0 }
-//            .withUnretained(self)
-//            .sink { owenr, _ in
-//                owenr.showToast(message: I18N.MyPage.resetSuccess)
-//            }.store(in: self.cancelBag)
-//
-//        output.deregisterPushTokenSuccess
-//            .withUnretained(self)
-//            .sink { owner, success in
-//                owner.logout()
-//                owner.onShowLogin?()
-//            }.store(in: self.cancelBag)
-//    }
-//}
-//
-//extension AppMyPageVC {
-//    private func logout() {
-//        UserDefaultKeyList.Auth.appAccessToken = nil
-//        UserDefaultKeyList.Auth.appRefreshToken = nil
-//        UserDefaultKeyList.Auth.playgroundToken = nil
-//        SFSafariViewController.DataStore.default.clearWebsiteData()
-//    }
-//}
+// MARK: - Methods
+
+extension AppMyPageVC {
+    private func bindViewModels() {
+        let input = AppMyPageViewModel.Input(
+            naviBackButtonTapped: navigationBar.leftButtonTapped.asDriver(),
+            cellTapped: cellTapped.asDriver()
+        )
+        
+        let output = viewModel.transform(from: input, cancelBag: cancelBag)
+        
+        output.resetSuccessed
+            .filter { $0 }
+            .withUnretained(self)
+            .sink { owner, _ in
+                Toast.show(message: I18N.MyPage.resetSuccess, view: owner.view)
+            }.store(in: self.cancelBag)
+        
+    }
+}
+
 
 // MARK: - UIGestureRecognizerDelegate
 

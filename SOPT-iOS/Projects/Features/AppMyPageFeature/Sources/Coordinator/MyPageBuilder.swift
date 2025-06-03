@@ -47,11 +47,11 @@ extension MyPageBuilder: MyPageFeatureBuildable {
         return withdrawalVC
     }
     
-    public func makeAppMyPage(userType: UserType) -> MyPageViewControllable {
+    public func makeAppMyPage(userType: UserType) -> LegacyMyPagePresentable {
         let useCase = DefaultAppMyPageUseCase(repository: appMyPageRepository)
         let vm = AppMyPageViewModel(useCase: useCase)
         let vc = AppMyPageVC(userType: userType, viewModel: vm)
-        return vc
+        return (vc, vm)
     }
     
     public func makeAlertSettingByFeatures() -> NotificationSettingByFeaturesViewControllable {
