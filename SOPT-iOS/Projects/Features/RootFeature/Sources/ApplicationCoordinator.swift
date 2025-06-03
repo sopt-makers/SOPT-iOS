@@ -520,7 +520,7 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runPokeFlow() -> PokeCoordinator {
+    internal func runPokeFlow() -> LegacyPokeCoordinator {
         let coordinator = makePokeCoordinator()
         
         addDependency(coordinator)
@@ -535,8 +535,8 @@ extension ApplicationCoordinator {
     }
     
     @discardableResult
-    internal func makePokeCoordinator() -> PokeCoordinator {
-        let coordinator = PokeCoordinator(
+    internal func makePokeCoordinator() -> LegacyPokeCoordinator {
+        let coordinator = LegacyPokeCoordinator(
             router: LegacyRouter(rootController: UIWindow.getRootNavigationController),
             factory: LegacyPokeBuilder()
         )
@@ -552,8 +552,8 @@ extension ApplicationCoordinator {
     }
     
     @discardableResult
-    internal func runPokeOnboardingFlow() -> PokeOnboardingCoordinator {
-        let coordinator = PokeOnboardingCoordinator(
+    internal func runPokeOnboardingFlow() -> LegacyPokeOnboardingCoordinator {
+        let coordinator = LegacyPokeOnboardingCoordinator(
             router: LegacyRouter(
                 rootController: UIWindow.getRootNavigationController
             ),
@@ -570,8 +570,8 @@ extension ApplicationCoordinator {
         return coordinator
     }
     
-    internal func runPokeNotificationListFlow() -> PokeNotificationListCoordinator {
-        let coordinator = PokeNotificationListCoordinator(
+    internal func runPokeNotificationListFlow() -> LegacyPokeNotificationListCoordinator {
+        let coordinator = LegacyPokeNotificationListCoordinator(
             router: LegacyRouter(
                 rootController: UIWindow.getRootNavigationController
             ),

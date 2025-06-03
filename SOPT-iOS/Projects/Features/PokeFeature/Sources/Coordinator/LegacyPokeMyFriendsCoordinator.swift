@@ -1,5 +1,5 @@
 //
-//  PokeMyFriendsCoordinator.swift
+//  LegacyPokeMyFriendsCoordinator.swift
 //  PokeFeature
 //
 //  Created by sejin on 12/14/23.
@@ -16,7 +16,7 @@ import PokeFeatureInterface
 import WebFeature
 
 public
-final class PokeMyFriendsCoordinator: DefaultCoordinator {
+final class LegacyPokeMyFriendsCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: LegacyPokeFeatureBuildable

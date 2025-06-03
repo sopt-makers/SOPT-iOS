@@ -1,5 +1,5 @@
 //
-//  PokeOnboardingCoordinator.swift
+//  LegacyPokeOnboardingCoordinator.swift
 //  PokeFeatureInterface
 //
 //  Created by Ian on 12/22/23.
@@ -14,7 +14,7 @@ import BaseFeatureDependency
 import PokeFeatureInterface
 import WebFeature
 
-public final class PokeOnboardingCoordinator: DefaultCoordinator {
+public final class LegacyPokeOnboardingCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let router: LegacyRouter
@@ -31,7 +31,7 @@ public final class PokeOnboardingCoordinator: DefaultCoordinator {
     }
 }
 
-extension PokeOnboardingCoordinator {
+extension LegacyPokeOnboardingCoordinator {
     private func showPokeOnboardingView() {
         let pokeOnboarding = makePokeOnboardingView()
                 

@@ -1,5 +1,5 @@
 //
-//  PokeNotificationListCoordinator.swift
+//  LegacyPokeNotificationListCoordinator.swift
 //  PokeFeature
 //
 //  Created by Ian on 12/23/23.
@@ -14,7 +14,7 @@ import BaseFeatureDependency
 import PokeFeatureInterface
 import WebFeature
 
-public final class PokeNotificationListCoordinator: DefaultCoordinator {
+public final class LegacyPokeNotificationListCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let router: LegacyRouter
@@ -31,7 +31,7 @@ public final class PokeNotificationListCoordinator: DefaultCoordinator {
     }
 }
 
-extension PokeNotificationListCoordinator {
+extension LegacyPokeNotificationListCoordinator {
     private func showPokeNotificationListView() {
         var pokeNotiListVC = self.factory.makePokeNotificationList()
                     

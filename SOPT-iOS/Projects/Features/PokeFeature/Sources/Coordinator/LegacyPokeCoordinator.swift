@@ -1,5 +1,5 @@
 //
-//  PokeCoordinator.swift
+//  LegacyPokeCoordinator.swift
 //  PokeFeature
 //
 //  Created by sejin on 12/7/23.
@@ -16,7 +16,7 @@ import Domain
 import WebFeature
 
 public
-final class PokeCoordinator: DefaultCoordinator {
+final class LegacyPokeCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: LegacyPokeFeatureBuildable
@@ -84,7 +84,7 @@ final class PokeCoordinator: DefaultCoordinator {
     }
     
     internal func runPokeOnboardingFlow() {
-        let pokeOnboardingCoordinator = PokeOnboardingCoordinator(
+        let pokeOnboardingCoordinator = LegacyPokeOnboardingCoordinator(
             router: LegacyRouter(
                 rootController: rootController ?? self.router.asNavigationController
             ),
@@ -101,7 +101,7 @@ final class PokeCoordinator: DefaultCoordinator {
     }
     
     internal func runPokeNotificationListFlow() {
-        let pokeNotificationListCoordinator = PokeNotificationListCoordinator(
+        let pokeNotificationListCoordinator = LegacyPokeNotificationListCoordinator(
             router: LegacyRouter(
                 rootController: rootController ?? self.router.asNavigationController
             ),
@@ -118,7 +118,7 @@ final class PokeCoordinator: DefaultCoordinator {
     }
     
     private func runPokeMyFriendsFlow() {
-        let pokeMyFriendsCoordinator = PokeMyFriendsCoordinator(factory: factory,
+        let pokeMyFriendsCoordinator = LegacyPokeMyFriendsCoordinator(factory: factory,
                                                                 router: LegacyRouter(rootController: rootController!))
         
         pokeMyFriendsCoordinator.finishFlow = { [weak self, weak pokeMyFriendsCoordinator] in
