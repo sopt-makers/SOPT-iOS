@@ -204,7 +204,7 @@ extension RankingVC {
     private func setDataSource() {
         dataSource = UICollectionViewDiffableDataSource(
             collectionView: rankingCollectionView,
-            cellProvider: { collectionView, indexPath, itemIdentifier in
+            cellProvider: { [weak self] collectionView, indexPath, itemIdentifier in
                 switch RankingSection.type(indexPath.section) {
                 case .chart:
                     guard 
