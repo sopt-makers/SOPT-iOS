@@ -57,11 +57,6 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
         applySnapshot()
         bindViewModels()
     }
-//    
-//    public override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        self.setGestureDelegate()
-//    }
     
     public init(userType: UserType, viewModel: AppMyPageViewModel) {
         self.userType = userType
@@ -170,6 +165,5 @@ extension AppMyPageVC {
             .sink { owner, _ in
                 Toast.show(message: I18N.MyPage.resetSuccess, view: owner.view)
             }.store(in: self.cancelBag)
-        
     }
 }
