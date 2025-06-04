@@ -134,9 +134,10 @@ extension PartRankingVC {
         
         output.partRanking
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] partRankingModels in
-                self?.applySnapshot(model: partRankingModels)
-            }.store(in: cancelBag)
+            .withUnretained(self)
+            .sink(receiveValue: { owner, partRankingModels in
+                owner.applySnapshot(model: partRankingModels)
+            }).store(in: cancelBag)
     }
     
     private func setDelegate() {
