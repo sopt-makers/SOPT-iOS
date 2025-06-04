@@ -12,7 +12,8 @@ extension RankingVC {
     static let standardWidth = UIScreen.main.bounds.width - 40.adjusted
     
     func createLayout() -> UICollectionViewLayout {
-        return UICollectionViewCompositionalLayout { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
+        return UICollectionViewCompositionalLayout { [weak self] (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
+            guard let self else { return nil }
             switch RankingSection.type(sectionIndex) {
             case .chart: return self.createChartSection()
             case .list: return self.createListSection()
