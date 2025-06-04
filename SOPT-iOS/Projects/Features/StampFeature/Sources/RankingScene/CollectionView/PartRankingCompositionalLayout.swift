@@ -12,10 +12,10 @@ extension PartRankingVC {
     static let standardWidth = UIScreen.main.bounds.width - 40.adjusted
 
     func createLayout() -> UICollectionViewLayout {
-        return UICollectionViewCompositionalLayout { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
+        return UICollectionViewCompositionalLayout { [weak self] (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
             switch RankingSection.type(sectionIndex) {
-            case .chart: return self.createChartSection()
-            case .list: return self.createListSection()
+            case .chart: return self?.createChartSection()
+            case .list: return self?.createListSection()
             }
         }
     }
