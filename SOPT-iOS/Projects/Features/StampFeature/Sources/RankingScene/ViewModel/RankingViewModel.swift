@@ -54,7 +54,7 @@ extension RankingViewModel {
         input.viewDidLoad.merge(with: input.refreshStarted)
             .withUnretained(self)
             .sink { owner, _ in
-                switch self.rankingViewType {
+                switch owner.rankingViewType {
                 case .all:
                     owner.useCase.fetchRankingList(isCurrentGeneration: false)
                 case .currentGeneration:
