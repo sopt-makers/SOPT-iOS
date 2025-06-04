@@ -16,8 +16,9 @@ public protocol MyPageCoordinatorDelegate: AnyObject {
     func myPageCoordinator(_ coordinator: MyPageCoordinator, to destination: MyPageCoordinatorDestination)
 }
 
-public
-final class MyPageCoordinator: DefaultMyPageCoordinator {
+public final class MyPageCoordinator: DefaultMyPageCoordinator {
+    
+    // MARK: - Properties
     
     public weak var delegate: MyPageCoordinatorDelegate?
     public var finishFlow: (() -> Void)?
@@ -26,6 +27,8 @@ final class MyPageCoordinator: DefaultMyPageCoordinator {
     private let factory: MyPageFeatureBuildable
     private let userType: UserType
     private let navigationController: UINavigationController
+    
+    // MARK: - Init
     
     public init(
         factory: MyPageFeatureBuildable,
@@ -37,7 +40,15 @@ final class MyPageCoordinator: DefaultMyPageCoordinator {
         self.navigationController = navigationController
     }
     
+    // MARK: - Coordinator Life Cycle
+    
     public override func start() {
+        showMyPage()
+    }
+    
+    // MARK: - Navigation
+    
+    private func showMyPage() {
         var myPage = factory.makeAppMyPage(userType: userType)
         
         myPage.vm.onNaviBackButtonTap = { [weak self] in
