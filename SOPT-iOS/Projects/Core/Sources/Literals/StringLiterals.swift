@@ -110,6 +110,7 @@ public struct I18N {
     public struct RankingList {
         public static let noSentenceText = "설정된 한 마디가 없습니다."
         public static let rankingForPartTitle = "파트별 랭킹"
+        public static let myRanking = "내 랭킹 보기"
     }
     
     public struct ListDetail {
