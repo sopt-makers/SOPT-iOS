@@ -152,7 +152,8 @@ extension RankingVC {
         
         let showRankingButtonTapped = self.showMyRankingFloatingButton
             .publisher(for: .touchUpInside)
-            .filter { _ in self.rankingCollectionView.indexPathsForVisibleItems.count > 5 }
+            .withUnretained(self)
+            .filter { owner, _ in owner.rankingCollectionView.indexPathsForVisibleItems.count > 5 }
             .mapVoid()
             .asDriver()
         
@@ -165,14 +166,13 @@ extension RankingVC {
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.$rankingListModel
-            .sink { [weak self] model in
-                guard
-                    let self,
-                    let name = UserDefaultKeyList.User.soptampName,
+            .withUnretained(self)
+            .sink { owner, model in
+                guard let name = UserDefaultKeyList.User.soptampName,
                     model.contains(where: { $0.username == name })
                 else { return }
                 
-                self.showMyRankingFloatingButton.isHidden = false
+                owner.showMyRankingFloatingButton.isHidden = false
             }.store(in: self.cancelBag)
         
         output.$rankingListModel
@@ -217,7 +217,7 @@ extension RankingVC {
                     
                     chartCell.setData(model: chartCellModel)
                     chartCell.usernameTapped = { [weak self] balloonModel in
-                        guard let self = self else { return }
+                        guard let self else { return }
                         
                         let item = balloonModel.toRankingListTapItem()
                         self.onCellTap?(item.username, item.sentence)
