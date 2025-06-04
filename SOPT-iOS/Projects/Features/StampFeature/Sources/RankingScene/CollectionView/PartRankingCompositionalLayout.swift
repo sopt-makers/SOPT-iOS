@@ -13,9 +13,10 @@ extension PartRankingVC {
 
     func createLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { [weak self] (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
+            guard let self else { return nil }
             switch RankingSection.type(sectionIndex) {
-            case .chart: return self?.createChartSection()
-            case .list: return self?.createListSection()
+            case .chart: return self.createChartSection()
+            case .list: return self.createListSection()
             }
         }
     }
