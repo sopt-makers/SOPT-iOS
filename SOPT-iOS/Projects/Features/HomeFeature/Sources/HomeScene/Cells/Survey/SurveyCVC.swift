@@ -32,6 +32,7 @@ final class SurveyCVC: UICollectionViewCell {
         $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
         $0.textColor = DSKitAsset.Colors.white.color
         $0.numberOfLines = 2
+        $0.lineBreakMode = .byWordWrapping
     }
     
     private lazy var surveyButton = AppCustomButton()
