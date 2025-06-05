@@ -17,6 +17,8 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
 
     private let useCase: PhoneVerifyUseCase
     
+    private let phoneVerifyType: PhoneVerifyType
+    
     private let timerPublisher: Timer.TimerPublisher
     @Published private var timerCancellable: AnyCancellable?
     
@@ -48,9 +50,11 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
     
     init(
         useCase: PhoneVerifyUseCase,
+        phoneVerifyType: PhoneVerifyType,
         timerPublisher: Timer.TimerPublisher = Timer.publish(every: 1, on: .main, in: .default)
     ) {
         self.useCase = useCase
+        self.phoneVerifyType = phoneVerifyType
         self.timerPublisher = timerPublisher
     }
 }
@@ -93,7 +97,13 @@ extension PhoneVerifyViewModel {
                 output.codeFailDescription.send(nil)
             }
             )
-            .map { PhoneSendModel(name: nil, phone: output.phoneTextFieldText.value, type: .register) }
+            .withUnretained(self)
+            .map { owner, _ in 
+                PhoneSendModel(
+                    name: nil,
+                    phone: output.phoneTextFieldText.value,
+                    type: owner.phoneVerifyType
+            )}
             .flatMap(useCase.send)
             .withUnretained(self)
             .sink { owner , _ in
@@ -158,7 +168,7 @@ extension PhoneVerifyViewModel {
                 name: nil,
                 phone: output.phoneTextFieldText.value,
                 code: output.codeTextFieldText.value,
-                type: .register)
+                type: self.phoneVerifyType)
             }
             .flatMap(useCase.verify)
             .withUnretained(self)

@@ -15,7 +15,6 @@ import DSKit
 
 public final class AuthCoordinator_Refactor: DefaultAuthCoordinator {
 
-
     public var finishFlow: ((UserType) -> Void)?
 
     private let factory: AuthFeatureViewBuildable_Refactor
@@ -129,13 +128,25 @@ extension AuthCoordinator_Refactor {
         
         self.router.push(signUpVC.vc)
     }
-
+    
+    private func runChangeSocialFlow() {
+        var changeSocialAccount = self.factory.makeChangeSocialAccount()
+        
+        changeSocialAccount.vm.changeSocialAccountSucceed = { [weak self] in
+            let userType = UserDefaultKeyList.Auth.getUserType() //TODO: 인증중앙화 후 로직으로 수정
+            self?.finishFlow?(userType)
+        }
+        
+        self.router.push(changeSocialAccount.vc)
+    }
+    
     private func showLoginHelpBottomSheet(on vc: LegacyViewControllable) {
         guard let bottomSheetVC = self.factory.makeLoginHelpBottomSheet().viewController as? LoginHelpBottomSheetVC
         else { return Void() }
         
         bottomSheetVC.onResetSocialAccountButtonDidTap = {
-            print("resetSocialAccountButtonDidTap") //TODO: asdf
+            bottomSheetVC.dismiss(animated: true)
+            self.runChangeSocialFlow()
         }
         
         bottomSheetVC.onWantToKnowLoginAccountButtonDidTap = {

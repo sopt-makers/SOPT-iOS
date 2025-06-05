@@ -8,7 +8,7 @@
 
 import Core
 import Domain
-@_exported import AuthFeatureInterface
+import AuthFeatureInterface
 
 public class AuthBuilder: AuthFeatureViewBuildable {
     @Injected public var repository: SignInRepositoryInterface

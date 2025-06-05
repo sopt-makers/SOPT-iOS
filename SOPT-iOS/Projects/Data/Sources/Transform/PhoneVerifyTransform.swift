@@ -14,9 +14,10 @@ import Networks
 extension PhoneVerifyType {
     func toData() -> VerifyEntityType {
         switch self {
-        case .change: return .change
+        case .changePhoneNumber: return .changePhoneNumber
+        case .changeSocialAccount: return .changeSocialAccount
         case .register: return .register
-        case .search: return .search
+        case .searchSocialAccount: return .searchSocialAccount
         }
     }
 }
