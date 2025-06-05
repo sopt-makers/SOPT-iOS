@@ -142,6 +142,6 @@ extension CalendarCardCVC {
                                                  titleColor: tagType.textColor,
                                                  backgroundColor: tagType.backgroundColor)
         }
-        self.attendanceButton.isHidden = userType == .visitor
+        self.attendanceButton.isHidden = (userType == .visitor || userType == .inactive)
     }
 }
