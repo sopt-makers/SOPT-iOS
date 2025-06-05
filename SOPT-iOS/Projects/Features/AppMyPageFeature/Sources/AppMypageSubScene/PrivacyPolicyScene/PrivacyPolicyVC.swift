@@ -1,5 +1,5 @@
 //
-//  TermsOfServiceVC.swift
+//  PrivacyPolicyVC.swift
 //  Presentation
 //
 //  Created by devxsby on 2022/12/29.
@@ -17,8 +17,8 @@ import Then
 import AppMyPageFeatureInterface
 import BaseFeatureDependency
 
-public class TermsOfServiceVC: UIViewController, TermsOfServiceViewControllable {
-    
+public class PrivacyPolicyVC: UIViewController, LegacyPrivacyPolicyViewControllable {
+        
     // MARK: - UI Components
     
     private lazy var naviBar = OPNavigationBar(
@@ -26,8 +26,8 @@ public class TermsOfServiceVC: UIViewController, TermsOfServiceViewControllable 
             type: .oneLeftButton,
             backgroundColor: DSKitAsset.Colors.black100.color
         )
-        .addMiddleLabel(title: I18N.MyPage.ServicePolicySection.termsOfUse)
-
+        .addMiddleLabel(title: I18N.Setting.personalInfoPolicy)
+    
     private let textView = UITextView().then {
         $0.text = I18N.ServiceUsagePolicy.privacyPolicy
         $0.font = DSKitFontFamily.Suit.regular.font(size: 14)
@@ -54,7 +54,7 @@ public class TermsOfServiceVC: UIViewController, TermsOfServiceViewControllable 
 
 // MARK: - UI & Layout
 
-extension TermsOfServiceVC {
+extension PrivacyPolicyVC {
     
     private func setUI() {
         self.view.backgroundColor = DSKitAsset.Colors.black100.color
@@ -77,14 +77,14 @@ extension TermsOfServiceVC {
 
 // MARK: - Methods
 
-extension TermsOfServiceVC {
+extension PrivacyPolicyVC {
     
     private func setDelegate() {
         textView.delegate = self
     }
 }
 
-extension TermsOfServiceVC: UITextViewDelegate {
+extension PrivacyPolicyVC: UITextViewDelegate {
     
     public func textViewDidChangeSelection(_ textView: UITextView) {
         textView.selectedTextRange = nil

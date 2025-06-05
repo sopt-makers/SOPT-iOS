@@ -595,27 +595,42 @@ extension ApplicationCoordinator {
 extension ApplicationCoordinator {
     
     @discardableResult
-    internal func runMyPageFlow(of userType: UserType) -> MyPageCoordinator {
-        let coordinator = MyPageCoordinator(
-            router: LegacyRouter(
-                rootController: UIWindow.getRootNavigationController
-            ),
-            factory: MyPageBuilder(),
-            userType: userType
-        )
-        coordinator.finishFlow = { [weak self, weak coordinator] in
-            self?.removeDependency(coordinator)
-        }
-        coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
-            self?.removeDependency(coordinator)
-            self?.childCoordinators = []
-            switch destination {
-            case .signIn:
-                self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
-            case .signInWithToast:
-                self?.runSignInFlow(by: .rootWindow(animated: true, message: I18N.Setting.Withdrawal.withdrawalSuccess))
+    internal func runMyPageFlow(of userType: UserType) -> DefaultMyPageCoordinator {
+        var coordinator: DefaultMyPageCoordinator
+        
+        switch Config.coordinatorFlag {
+        case .legacy:
+            let legacyCoordinator = LegacyMyPageCoordinator(
+                router: LegacyRouter(
+                    rootController: UIWindow.getRootNavigationController
+                ),
+                factory: LegacyMyPageBuilder(),
+                userType: userType
+            )
+            legacyCoordinator.finishFlow = { [weak self, weak legacyCoordinator] in
+                self?.removeDependency(legacyCoordinator)
             }
+            legacyCoordinator.requestCoordinating = { [weak self, weak legacyCoordinator] destination in
+                self?.removeDependency(legacyCoordinator)
+                self?.childCoordinators = []
+                switch destination {
+                case .signIn:
+                    self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
+                case .signInWithToast:
+                    self?.runSignInFlow(by: .rootWindow(animated: true, message: I18N.Setting.Withdrawal.withdrawalSuccess))
+                }
+            }
+            coordinator = legacyCoordinator
+        case .new:
+            let newCoordinator = MyPageCoordinator(
+                factory: MyPageBuilder(),
+                userType: userType,
+                navigationController: UIWindow.getRootNavigationController
+            )
+            newCoordinator.delegate = self
+            coordinator = newCoordinator
         }
+        
         addDependency(coordinator)
         coordinator.start()
         

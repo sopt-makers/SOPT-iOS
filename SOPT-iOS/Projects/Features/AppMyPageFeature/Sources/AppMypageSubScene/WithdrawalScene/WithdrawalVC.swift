@@ -16,7 +16,7 @@ import Core
 import BaseFeatureDependency
 import AppMyPageFeatureInterface
 
-public class WithdrawalVC: UIViewController, WithdrawalViewControllable {
+public class WithdrawalVC: UIViewController, LegacyWithdrawalViewControllable {
     
     // MARK: - Properties
     
@@ -65,6 +65,17 @@ public class WithdrawalVC: UIViewController, WithdrawalViewControllable {
     
     private lazy var withdrawalButton = AppCustomButton(title: I18N.Setting.Withdrawal.withdrawal)
         .setEnabled(true)
+    
+    init(viewModel: WithdrawalViewModel!, userType: UserType, onWithdrawal: (() -> Void)? = nil) {
+        self.viewModel = viewModel
+        self.userType = userType
+        self.onWithdrawal = onWithdrawal
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - View Life Cycle
     
