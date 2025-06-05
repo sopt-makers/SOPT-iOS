@@ -94,11 +94,13 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
                 output.codeFailDescription.send(nil)
             }
             )
-            .map { PhoneSendModel(
-                name: nil,
-                phone: output.phoneTextFieldText.value,
-                type: self.phoneVerifyType
-            ) }
+            .withUnretained(self)
+            .map { owner, _ in 
+                PhoneSendModel(
+                    name: nil,
+                    phone: output.phoneTextFieldText.value,
+                    type: owner.phoneVerifyType
+            )}
             .flatMap(useCase.send)
             .withUnretained(self)
             .sink { owner , _ in
