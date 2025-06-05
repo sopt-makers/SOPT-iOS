@@ -20,3 +20,18 @@ extension SignUpModel {
         )
     }
 }
+
+extension PlatformType {
+    public func toDomain() -> OAuthProvider {
+        switch self {
+        case .apple: .apple
+        case .google: .google
+        }
+    }
+}
+
+extension SocialAccountResultEntity {
+    public func toDomain()-> OAuthProvider {
+        self.platform.toDomain()
+    }
+}

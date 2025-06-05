@@ -38,7 +38,9 @@ extension CoreOAuthRepository: CoreOAuthRepositoryInterface {
     public func getIdentityToken(from provider: OAuthProvider) -> AnyPublisher<String, Domain.CoreAuthError> {
         let oAuthService = oAuthServiceFactory.create(provider)
         return oAuthService.getIdentityToken()
-            .mapError { _ in CoreAuthError.oAuthFail(provider) } // oauth error의 구체화 필요시 여기서 구현
+            .mapError { _ in
+                CoreAuthError.oAuthFail(provider)
+            } // oauth error의 구체화 필요시 여기서 구현
             .eraseToAnyPublisher()
     }
 }

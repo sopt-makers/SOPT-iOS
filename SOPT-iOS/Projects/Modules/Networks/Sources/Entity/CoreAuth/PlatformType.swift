@@ -7,18 +7,8 @@
 //
 
 import Foundation
-import Domain
 
 public enum PlatformType: String, Codable {
     case google = "GOOGLE"
     case apple = "APPLE"
-}
-
-extension PlatformType {
-    public func toDomain() -> OAuthProvider {
-        switch self {
-        case .apple: .apple
-        case .google: .google
-        }
-    }
 }
