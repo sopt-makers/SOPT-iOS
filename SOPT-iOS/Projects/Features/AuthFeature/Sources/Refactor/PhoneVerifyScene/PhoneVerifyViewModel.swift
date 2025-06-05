@@ -161,11 +161,14 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
             .withLatestFrom(output.timerIsRunning)
             .filter { $0 }
             .mapVoid()
-            .map { PhoneVerifyModel(
-                name: nil,
-                phone: output.phoneTextFieldText.value,
-                code: output.codeTextFieldText.value,
-                type: self.phoneVerifyType)
+            .withUnretained(self)
+            .map { owner, _ in
+                PhoneVerifyModel(
+                    name: nil,
+                    phone: output.phoneTextFieldText.value,
+                    code: output.codeTextFieldText.value,
+                    type: owner.phoneVerifyType
+                )
             }
             .flatMap(useCase.verify)
             .withUnretained(self)
