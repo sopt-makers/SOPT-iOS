@@ -10,7 +10,7 @@ import Core
 import Domain
 import LegacyAuthFeatureInterface
 
-public class AuthBuilder: AuthFeatureViewBuildable {
+public class AuthBuilder: AuthFeatureBuildable {
     @Injected public var repository: SignInRepositoryInterface
     @Injected public var oauthRepository: CoreOAuthRepositoryInterface
     @Injected public var coreRepository: CoreAuthRepositoryInterface

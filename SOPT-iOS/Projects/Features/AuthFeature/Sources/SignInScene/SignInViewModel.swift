@@ -13,7 +13,7 @@ import Domain
 
 import AuthFeatureInterface
 
-public class SignInViewModel_Refactor: SignInViewModelType_Refactor {
+public class SignInViewModel: SignInViewModelType {
     
     private let useCase: SignInUseCase
     private var cancelBag = CancelBag()
@@ -38,7 +38,6 @@ public class SignInViewModel_Refactor: SignInViewModelType_Refactor {
     
     // MARK: - SignInCoordinating
     
-    // TODO: 신규 자동 로그인
     public var onSignInSuccess: (() -> Void)?
     public var onLoginHelpButtonTapped: (() -> Void)?
     public var onVisitorButtonTapped: (() -> Void)?
@@ -52,7 +51,7 @@ public class SignInViewModel_Refactor: SignInViewModelType_Refactor {
     }
 }
 
-extension SignInViewModel_Refactor {
+extension SignInViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         

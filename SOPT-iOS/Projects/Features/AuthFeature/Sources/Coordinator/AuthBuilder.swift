@@ -1,5 +1,5 @@
 //
-//  AuthBuilder_Refactor.swift
+//  AuthBuilder.swift
 //  AuthFeature
 //
 //  Created by 장석우 on 3/7/25.
@@ -25,8 +25,8 @@ public final class AuthBuilder: AuthFeatureViewBuildable {
         let useCase = DefaultSignInUseCase(repository: repository,
                                            oauthRepository: oauthRepository,
                                            coreRepository: coreRepository)
-        let vm = SignInViewModel_Refactor(useCase: useCase)
-        let vc = SignInVC_Refactor()
+        let vm = SignInViewModel(useCase: useCase)
+        let vc = SignInVC()
         vc.viewModel = vm
         return (vc, vm)
     }

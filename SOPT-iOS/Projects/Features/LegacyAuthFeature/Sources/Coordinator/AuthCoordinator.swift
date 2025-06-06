@@ -13,22 +13,22 @@ import LegacyAuthFeatureInterface
 import Core
 import DSKit
 
-public protocol LegacyAuthCoordinatorFinishOutput {
+public protocol AuthCoordinatorFinishOutput {
     var finishFlow: ((UserType) -> Void)? { get set }
 }
 
-public typealias DefaultAuthCoordinator = BaseCoordinator & LegacyAuthCoordinatorFinishOutput
+public typealias DefaultAuthCoordinator = BaseCoordinator & AuthCoordinatorFinishOutput
 
 public
 final class AuthCoordinator: DefaultAuthCoordinator {
     
     public var finishFlow: ((UserType) -> Void)?
     
-    private let factory: AuthFeatureViewBuildable
+    private let factory: AuthFeatureBuildable
     private let router: LegacyRouter
     private var url: String?
     
-    public init(router: LegacyRouter, factory: AuthFeatureViewBuildable, url: String? = nil) {
+    public init(router: LegacyRouter, factory: AuthFeatureBuildable, url: String? = nil) {
         self.factory = factory
         self.router = router
         self.url = url

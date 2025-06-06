@@ -1,5 +1,5 @@
 //
-//  SignInPresentable_Refactor.swift
+//  SignInPresentable.swift
 //  AuthFeature
 //
 //  Created by 장석우 on 3/7/25.
@@ -14,7 +14,7 @@ public protocol SignInViewControllable: LegacyViewControllable {
     var skipAnimation: Bool { get set }
 }
 
-public protocol SignInCoordinatable_Refactor {
+public protocol SignInCoordinatable {
     var onLoginHelpButtonTapped: (() -> Void)? { get set }
     var onSocialLoginFail: (() -> Void)? { get set }
     var onSignUpButtonTapped: (() -> Void)? { get set }
@@ -22,6 +22,6 @@ public protocol SignInCoordinatable_Refactor {
     var onVisitorButtonTapped: (() -> Void)? { get set }
 }
 
-public typealias SignInViewModelType_Refactor = ViewModelType & SignInCoordinatable_Refactor
+public typealias SignInViewModelType = ViewModelType & SignInCoordinatable
 
-public typealias SignInPresentable = (vc: SignInViewControllable, vm: any SignInViewModelType_Refactor)
+public typealias SignInPresentable = (vc: SignInViewControllable, vm: any SignInViewModelType)

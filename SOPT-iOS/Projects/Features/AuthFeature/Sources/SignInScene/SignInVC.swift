@@ -20,13 +20,13 @@ import BaseFeatureDependency
 import SnapKit
 import Then
 
-public class SignInVC_Refactor: UIViewController, SignInViewControllable {
+public class SignInVC: UIViewController, SignInViewControllable {
     
     // MARK: - Properties
     
     private static let i18n = I18N.SignIn.Refactor.self
     
-    public var viewModel: SignInViewModel_Refactor!
+    public var viewModel: SignInViewModel!
     
     public var skipAnimation: Bool = false
     
@@ -174,7 +174,7 @@ public class SignInVC_Refactor: UIViewController, SignInViewControllable {
 
 // MARK: - UI & Layout
 
-extension SignInVC_Refactor {
+extension SignInVC {
     
     private enum Metric {
         static let topInset = 100.adjustedH + logoMutableY //151.adjustedH + logoMutableY
@@ -296,7 +296,7 @@ extension SignInVC_Refactor {
 
 // MARK: - Methods
 
-extension SignInVC_Refactor {
+extension SignInVC {
     
     private func bindViews() {
         playgroundButton.publisher(for: .touchUpInside)
@@ -309,7 +309,7 @@ extension SignInVC_Refactor {
     
     private func bindViewModels() {
         
-        let input = SignInViewModel_Refactor.Input(
+        let input = SignInViewModel.Input(
                     viewDidLoad: Just<Void>(()).asDriver(),
                     viewWillAppear: self.viewWillAppear.asDriver(),
                     googleLoginButtonTapped:
