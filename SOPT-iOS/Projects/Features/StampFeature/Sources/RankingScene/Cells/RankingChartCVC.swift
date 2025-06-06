@@ -148,10 +148,11 @@ extension RankingChartCVC {
           
           chartRectangle
             .signalForClickUserName()
-            .sink(receiveValue: {
-              self.usernameTapped?(chartRectangleModel[index])
+            .withUnretained(self)
+            .sink(receiveValue: { owner, _ in
+                owner.usernameTapped?(chartRectangleModel[index])
             }).store(in: self.cancelBag)
-          
+            
             chartRectangle.setData(score: chartRectangleModel[index].score,
                                    username: chartRectangleModel[index].username)
         }

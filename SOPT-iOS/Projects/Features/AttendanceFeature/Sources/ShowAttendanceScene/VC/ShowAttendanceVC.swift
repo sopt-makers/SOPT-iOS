@@ -20,7 +20,7 @@ import AttendanceFeatureInterface
 import BaseFeatureDependency
 import SafariServices
 
-public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControllable {
+public final class ShowAttendanceVC: UIViewController, LegacyShowAttendanceViewControllable, ShowAttendanceViewControllable {
     
     // MARK: - Properties
     

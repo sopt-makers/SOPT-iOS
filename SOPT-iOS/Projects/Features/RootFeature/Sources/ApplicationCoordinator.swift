@@ -476,13 +476,24 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runAttendanceFlow() -> AttendanceCoordinator {
-        let coordinator = AttendanceCoordinator(
-            router: LegacyRouter(
-                rootController: UIWindow.getRootNavigationController
-            ),
-            factory: AttendanceBuilder()
-        )
+    internal func runAttendanceFlow() -> DefaultCoordinator {
+        var coordinator: DefaultCoordinator
+        
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator = LegacyAttendanceCoordinator(
+                router: LegacyRouter(
+                    rootController: UIWindow.getRootNavigationController
+                ),
+                factory: LegacyAttendanceBuilder()
+            )
+        case .new:
+            coordinator = AttendanceCoordinator(
+                navigationController: UIWindow.getRootNavigationController,
+                factory: AttendanceBuilder()
+            )
+        }
+        
         coordinator.finishFlow = { [weak self, weak coordinator] in
             coordinator?.childCoordinators = []
             self?.removeDependency(coordinator)
@@ -498,13 +509,24 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runStampFlow() -> StampCoordinator {
-        let coordinator = StampCoordinator(
-            router: LegacyRouter(
-                rootController: UIWindow.getRootNavigationController
-            ),
-            factory: StampBuilder()
-        )
+    internal func runStampFlow() -> DefaultCoordinator {
+        var coordinator: DefaultCoordinator
+        
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator = LegacyStampCoordinator(
+                router: LegacyRouter(
+                    rootController: UIWindow.getRootNavigationController
+                ),
+                factory: LegacyStampBuilder()
+            )
+        case .new:
+            coordinator = StampCoordinator(
+                navigationController: UIWindow.getRootNavigationController,
+                factory: StampBuilder()
+            )
+        }
+        
         coordinator.finishFlow = { [weak self, weak coordinator] in
             coordinator?.childCoordinators = []
             self?.removeDependency(coordinator)
@@ -520,8 +542,8 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runPokeFlow() -> PokeCoordinator {
-        let coordinator = makePokeCoordinator()
+    internal func runPokeFlow() -> DefaultCoordinator {
+        var coordinator = makePokeCoordinator()
         
         addDependency(coordinator)
         coordinator.start()
@@ -535,12 +557,22 @@ extension ApplicationCoordinator {
     }
     
     @discardableResult
-    internal func makePokeCoordinator() -> PokeCoordinator {
-        let coordinator = PokeCoordinator(
-            router: LegacyRouter(rootController: UIWindow.getRootNavigationController),
-            factory: PokeBuilder()
-        )
+    internal func makePokeCoordinator() -> DefaultPokeCoordinator {
+        var coordinator: DefaultPokeCoordinator
         
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator = LegacyPokeCoordinator(
+                router: LegacyRouter(rootController: UIWindow.getRootNavigationController),
+                factory: LegacyPokeBuilder()
+            )
+        case .new:
+            coordinator = PokeCoordinator(
+                navigationController: UIWindow.getRootNavigationController,
+                factory: PokeBuilder()
+            )
+        }
+
         coordinator.finishFlow = { [weak self, weak coordinator] in
             coordinator?.childCoordinators = []
             self?.removeDependency(coordinator)
@@ -552,13 +584,24 @@ extension ApplicationCoordinator {
     }
     
     @discardableResult
-    internal func runPokeOnboardingFlow() -> PokeOnboardingCoordinator {
-        let coordinator = PokeOnboardingCoordinator(
-            router: LegacyRouter(
-                rootController: UIWindow.getRootNavigationController
-            ),
-            factory: PokeBuilder()
-        )
+    internal func runPokeOnboardingFlow() -> DefaultCoordinator {
+        var coordinator: DefaultCoordinator
+        
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator = LegacyPokeOnboardingCoordinator(
+                router: LegacyRouter(
+                    rootController: UIWindow.getRootNavigationController
+                ),
+                factory: LegacyPokeBuilder()
+            )
+        case .new:
+            coordinator = PokeOnboardingCoordinator(
+                navigationController: UIWindow.getRootNavigationController,
+                factory: PokeBuilder()
+            )
+        }
+
         coordinator.finishFlow = { [weak self, weak coordinator] in
             coordinator?.childCoordinators = []
             self?.removeDependency(coordinator)
@@ -570,14 +613,24 @@ extension ApplicationCoordinator {
         return coordinator
     }
     
-    internal func runPokeNotificationListFlow() -> PokeNotificationListCoordinator {
-        let coordinator = PokeNotificationListCoordinator(
-            router: LegacyRouter(
-                rootController: UIWindow.getRootNavigationController
-            ),
-            factory: PokeBuilder()
-        )
+    internal func runPokeNotificationListFlow() -> DefaultCoordinator {
+        var coordinator: DefaultCoordinator
         
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator = LegacyPokeNotificationListCoordinator(
+                router: LegacyRouter(
+                    rootController: UIWindow.getRootNavigationController
+                ),
+                factory: LegacyPokeBuilder()
+            )
+        case .new:
+            coordinator = PokeNotificationListCoordinator(
+                navigationController: UIWindow.getRootNavigationController,
+                factory: PokeBuilder()
+            )
+        }
+
         coordinator.finishFlow = { [weak self, weak coordinator] in
             coordinator?.childCoordinators = []
             self?.removeDependency(coordinator)
@@ -692,7 +745,7 @@ extension ApplicationCoordinator {
                 rootController: UIWindow.getRootNavigationController
             ),
             factory: LegacyDailySoptuneBuilder(),
-            pokeFactory: PokeBuilder()
+            pokeFactory: LegacyPokeBuilder()
         )
         coordinator.finishFlow = { [weak self, weak coordinator] in
             coordinator?.childCoordinators = []

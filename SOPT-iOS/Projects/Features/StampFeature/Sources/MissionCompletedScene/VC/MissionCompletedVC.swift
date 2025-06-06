@@ -33,7 +33,7 @@ extension StarViewLevel {
     }
 }
 
-public class MissionCompletedVC: UIViewController, MissionCompletedViewControllable {
+public class MissionCompletedVC: UIViewController, LegacyMissionCompletedViewControllable {
     
     // MARK: - Properties
     

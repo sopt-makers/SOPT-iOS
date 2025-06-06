@@ -145,7 +145,7 @@ extension RankingListCVC {
 
 extension RankingListCVC: RankingListTappable {
     func getModelItem() -> RankingListTapItem? {
-        guard let model = model else { return nil }
+        guard let model else { return nil }
         return RankingListTapItem.init(username: model.username,
                                        sentence: model.sentence)
     }

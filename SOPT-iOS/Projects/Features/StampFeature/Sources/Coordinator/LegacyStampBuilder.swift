@@ -1,0 +1,85 @@
+//
+//  LegacyStampBuilder.swift
+//  StampFeature
+//
+//  Created by Junho Lee on 2023/06/21.
+//  Copyright © 2023 SOPT-iOS. All rights reserved.
+//
+
+import Core
+import Domain
+@_exported import StampFeatureInterface
+
+public
+final class LegacyStampBuilder {
+    @Injected public var missionListRepository: MissionListRepositoryInterface
+    @Injected public var rankingRepository: RankingRepositoryInterface
+    @Injected public var listDetailRepository: ListDetailRepositoryInterface
+    
+    public init() { }
+}
+
+extension LegacyStampBuilder: LegacyStampFeatureViewBuildable {
+    public func makeMissionListVC(sceneType: MissionListSceneType) -> LegacyMissionListViewControllable {
+        let useCase = DefaultMissionListUseCase(repository: missionListRepository)
+        let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType)
+        let missionListVC = MissionListVC(viewModel: viewModel)
+        missionListVC.viewModel = viewModel
+        return missionListVC
+    }
+    
+    public func makeListDetailVC(
+        sceneType: ListDetailSceneType,
+        starLevel: StarViewLevel,
+        missionId: Int,
+        missionTitle: String,
+        otherUserName: String?
+    ) -> LegacyListDetailViewControllable {
+        let useCase = DefaultListDetailUseCase(repository: listDetailRepository)
+        let viewModel = ListDetailViewModel(
+            useCase: useCase,
+            sceneType: sceneType,
+            starLevel: starLevel,
+            missionId: missionId,
+            missionTitle: missionTitle,
+            otherUsername: otherUserName
+        )
+        let listDetailVC = ListDetailVC(viewModel: viewModel)
+        return listDetailVC
+    }
+    
+    public func makeMissionCompletedVC(
+        starLevel: StarViewLevel,
+        completionHandler: (() -> Void)?
+    ) -> LegacyMissionCompletedViewControllable {
+        let missionCompletedVC = MissionCompletedVC()
+            .setLevel(starLevel)
+        missionCompletedVC.completionHandler = completionHandler
+        missionCompletedVC.modalPresentationStyle = .overFullScreen
+        missionCompletedVC.modalTransitionStyle = .crossDissolve
+        return missionCompletedVC
+    }
+    
+    public func makeRankingVC(rankingViewType: RankingViewType) -> LegacyRankingViewControllable {
+        let useCase = DefaultRankingUseCase(repository: rankingRepository)
+        let viewModel = RankingViewModel(
+            rankingViewType: rankingViewType,
+            useCase: useCase
+        )
+        let rankingVC = RankingVC(rankingViewType: rankingViewType)
+        rankingVC.viewModel = viewModel
+        return rankingVC
+    }
+    
+    public func makeStampGuideVC() -> LegacyStampGuideViewControllable {
+        let stampGuideVC = StampGuideVC()
+        return stampGuideVC
+    }
+
+    public func makePartRankingVC(rankingViewType: RankingViewType) -> LegacyPartRankingViewControllable {
+      let vc = PartRankingVC(rankingViewType: rankingViewType)
+      let useCase = DefaultRankingUseCase(repository: rankingRepository)
+      vc.viewModel = PartRankingViewModel(rankingViewType: rankingViewType, useCase: useCase)
+      return vc
+    }
+}

@@ -14,7 +14,7 @@ import Core
 import DSKit
 import Domain
 
-public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessageTemplatesViewControllable {
+public final class PokeMessageTemplateBottomSheet: UIViewController, LegacyPokeMessageTemplatesViewControllable, PokeMessageTemplatesViewControllable {
     
   public var minimumContentHeight: CGFloat {
      return PokeMessageTemplateBottomSheet.minimumContentHeight

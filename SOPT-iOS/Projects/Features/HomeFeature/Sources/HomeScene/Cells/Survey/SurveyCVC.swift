@@ -31,6 +31,8 @@ final class SurveyCVC: UICollectionViewCell {
     private let subTitleLabel = UILabel().then {
         $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
         $0.textColor = DSKitAsset.Colors.white.color
+        $0.numberOfLines = 2
+        $0.lineBreakMode = .byWordWrapping
     }
     
     private lazy var surveyButton = AppCustomButton()
@@ -71,6 +73,7 @@ extension SurveyCVC {
         
         subTitleLabel.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(10)
+            make.leading.trailing.equalToSuperview()
             make.centerX.equalToSuperview()
         }
         

@@ -29,7 +29,7 @@ public enum TextViewState {
     case completed
 }
 
-public class ListDetailVC: UIViewController, ListDetailViewControllable {
+public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, ListDetailViewControllable {
     
     // MARK: - Properties
     

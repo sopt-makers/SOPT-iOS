@@ -17,7 +17,7 @@ public struct SoptampEntireRankingDeepLink: DeepLinkExecutable {
     public init() {}
     
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
-        guard let coordinator = coordinator as? StampCoordinator else { return nil }
+        guard let coordinator = coordinator as? LegacyStampCoordinator else { return nil }
         
         coordinator.runRankingFlow(rankingViewType: .all)
         

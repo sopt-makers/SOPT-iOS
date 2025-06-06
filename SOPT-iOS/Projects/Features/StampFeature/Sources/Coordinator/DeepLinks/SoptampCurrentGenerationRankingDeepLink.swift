@@ -18,7 +18,7 @@ public struct SoptampCurrentGenerationRankingDeepLink: DeepLinkExecutable {
     public init() {}
     
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
-        guard let coordinator = coordinator as? StampCoordinator else { return nil }
+        guard let coordinator = coordinator as? LegacyStampCoordinator else { return nil }
         
         guard let currentGenerationValue = queryItems?.getQueryValue(key: "currentGeneration"),
               let currentGeneration = Int(currentGenerationValue),

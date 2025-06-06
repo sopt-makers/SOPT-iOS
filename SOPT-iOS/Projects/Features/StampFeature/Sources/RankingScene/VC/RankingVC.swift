@@ -19,7 +19,7 @@ import Then
 import StampFeatureInterface
 import BaseFeatureDependency
 
-public class RankingVC: UIViewController, RankingViewControllable {
+public class RankingVC: UIViewController, LegacyRankingViewControllable, RankingViewControllable {
     
     // MARK: - Properties
     
@@ -58,7 +58,7 @@ public class RankingVC: UIViewController, RankingViewControllable {
         bt.layer.cornerRadius = 27.adjustedH
         bt.backgroundColor = DSKitAsset.Colors.white.color
         bt.titleLabel?.font = .SoptampFont.h2
-        let attributedStr = NSMutableAttributedString(string: "내 랭킹 보기")
+        let attributedStr = NSMutableAttributedString(string: I18N.RankingList.myRanking)
         let style = NSMutableParagraphStyle()
         attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
         attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: DSKitAsset.Colors.black.color, range: NSMakeRange(0, attributedStr.length))
@@ -152,7 +152,8 @@ extension RankingVC {
         
         let showRankingButtonTapped = self.showMyRankingFloatingButton
             .publisher(for: .touchUpInside)
-            .filter { _ in self.rankingCollectionView.indexPathsForVisibleItems.count > 5 }
+            .withUnretained(self)
+            .filter { owner, _ in owner.rankingCollectionView.indexPathsForVisibleItems.count > 5 }
             .mapVoid()
             .asDriver()
         
@@ -165,14 +166,13 @@ extension RankingVC {
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.$rankingListModel
-            .sink { [weak self] model in
-                guard
-                    let self,
-                    let name = UserDefaultKeyList.User.soptampName,
+            .withUnretained(self)
+            .sink { owner, model in
+                guard let name = UserDefaultKeyList.User.soptampName,
                     model.contains(where: { $0.username == name })
                 else { return }
                 
-                self.showMyRankingFloatingButton.isHidden = false
+                owner.showMyRankingFloatingButton.isHidden = false
             }.store(in: self.cancelBag)
         
         output.$rankingListModel
@@ -204,7 +204,7 @@ extension RankingVC {
     private func setDataSource() {
         dataSource = UICollectionViewDiffableDataSource(
             collectionView: rankingCollectionView,
-            cellProvider: { collectionView, indexPath, itemIdentifier in
+            cellProvider: { [weak self] collectionView, indexPath, itemIdentifier in
                 switch RankingSection.type(indexPath.section) {
                 case .chart:
                     guard 
@@ -217,7 +217,7 @@ extension RankingVC {
                     
                     chartCell.setData(model: chartCellModel)
                     chartCell.usernameTapped = { [weak self] balloonModel in
-                        guard let self = self else { return }
+                        guard let self else { return }
                         
                         let item = balloonModel.toRankingListTapItem()
                         self.onCellTap?(item.username, item.sentence)

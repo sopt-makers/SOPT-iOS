@@ -2,38 +2,53 @@
 //  MissionDetailCoordinator.swift
 //  StampFeature
 //
-//  Created by Junho Lee on 2023/06/22.
-//  Copyright © 2023 SOPT-iOS. All rights reserved.
+//  Created by Jae Hyun Lee on 6/3/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
+
+import UIKit
 
 import Core
 import Domain
 import BaseFeatureDependency
 import StampFeatureInterface
 
-public
-final class MissionDetailCoordinator: DefaultCoordinator {
-        
+public final class MissionDetailCoordinator: DefaultCoordinator {
+    
+    // MARK: - Properties
+    
     public var finishFlow: (() -> Void)?
     
-    private let factory: StampFeatureViewBuildable
-    private let router: LegacyRouter
+    private let factory: StampFeatureBuildable
+    private let navigationController: UINavigationController
     private let model: MissionListModel
     private let username: String?
     
-    public init(router: LegacyRouter, factory: StampFeatureViewBuildable, model: MissionListModel, username: String?) {
+    // MARK: - Init
+    
+    public init(
+        navigationController: UINavigationController,
+        factory: StampFeatureBuildable,
+        model: MissionListModel,
+        username: String?
+    ) {
+        self.navigationController = navigationController
         self.factory = factory
-        self.router = router
         self.model = model
         self.username = username
     }
+    
+    // MARK: - Coordinator Life Cycle
     
     public override func start() {
         showMissionDetail()
     }
     
+    // MARK: - Navigation
+    
     private func showMissionDetail() {
         guard let starLevel = StarViewLevel.init(rawValue: model.level) else { return }
+        
         var missionDetail = factory.makeListDetailVC(
             sceneType: model.toListDetailSceneType(),
             starLevel: starLevel,
@@ -41,15 +56,19 @@ final class MissionDetailCoordinator: DefaultCoordinator {
             missionTitle: model.title,
             otherUserName: username
         )
-        missionDetail.onComplete = { [weak self] starViewLevel, handler in
-            self?.showMissionComplete(starViewLevel, handler)
-        }
-        missionDetail.onNaviBackTap = { [weak self] in
-            self?.router.popModule()
-            self?.finishFlow?()
+        
+        missionDetail.vc.onComplete = { [weak self] starViewLevel, handler in
+            guard let self else { return }
+            self.showMissionComplete(starViewLevel, handler)
         }
         
-        router.push(missionDetail)
+        missionDetail.vc.onNaviBackTap = { [weak self] in
+            guard let self else { return }
+            self.navigationController.popViewController(animated: true)
+            self.finishFlow?()
+        }
+        
+        navigationController.pushViewController(missionDetail.vc, animated: true)
     }
     
     private func showMissionComplete(_ level: StarViewLevel, _ handler: (() -> Void)?) {
@@ -57,6 +76,7 @@ final class MissionDetailCoordinator: DefaultCoordinator {
             starLevel: level,
             completionHandler: handler
         )
-        router.present(missionCompleted, animated: true)
+        
+        navigationController.present(missionCompleted, animated: true)
     }
 }

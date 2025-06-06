@@ -2,9 +2,11 @@
 //  StampBuilder.swift
 //  StampFeature
 //
-//  Created by Junho Lee on 2023/06/21.
-//  Copyright © 2023 SOPT-iOS. All rights reserved.
+//  Created by Jae Hyun Lee on 6/2/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
+
+import UIKit
 
 import Core
 import Domain
@@ -19,13 +21,12 @@ final class StampBuilder {
     public init() { }
 }
 
-extension StampBuilder: StampFeatureViewBuildable {
-    public func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListViewControllable {
+extension StampBuilder: StampFeatureBuildable {
+    public func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListPresentable {
         let useCase = DefaultMissionListUseCase(repository: missionListRepository)
         let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType)
         let missionListVC = MissionListVC(viewModel: viewModel)
-        missionListVC.viewModel = viewModel
-        return missionListVC
+        return (missionListVC, viewModel)
     }
     
     public func makeListDetailVC(
@@ -34,7 +35,7 @@ extension StampBuilder: StampFeatureViewBuildable {
         missionId: Int,
         missionTitle: String,
         otherUserName: String?
-    ) -> ListDetailViewControllable {
+    ) -> ListDetailPresentable {
         let useCase = DefaultListDetailUseCase(repository: listDetailRepository)
         let viewModel = ListDetailViewModel(
             useCase: useCase,
@@ -45,13 +46,13 @@ extension StampBuilder: StampFeatureViewBuildable {
             otherUsername: otherUserName
         )
         let listDetailVC = ListDetailVC(viewModel: viewModel)
-        return listDetailVC
+        return (listDetailVC, viewModel)
     }
     
     public func makeMissionCompletedVC(
         starLevel: StarViewLevel,
         completionHandler: (() -> Void)?
-    ) -> MissionCompletedViewControllable {
+    ) -> UIViewController {
         let missionCompletedVC = MissionCompletedVC()
             .setLevel(starLevel)
         missionCompletedVC.completionHandler = completionHandler
@@ -60,7 +61,7 @@ extension StampBuilder: StampFeatureViewBuildable {
         return missionCompletedVC
     }
     
-    public func makeRankingVC(rankingViewType: RankingViewType) -> RankingViewControllable {
+    public func makeRankingVC(rankingViewType: RankingViewType) -> RankingPresentable {
         let useCase = DefaultRankingUseCase(repository: rankingRepository)
         let viewModel = RankingViewModel(
             rankingViewType: rankingViewType,
@@ -68,18 +69,19 @@ extension StampBuilder: StampFeatureViewBuildable {
         )
         let rankingVC = RankingVC(rankingViewType: rankingViewType)
         rankingVC.viewModel = viewModel
-        return rankingVC
+        return (rankingVC, viewModel)
     }
     
-    public func makeStampGuideVC() -> StampGuideViewControllable {
+    public func makePartRankingVC(rankingViewType: RankingViewType) -> PartRankingPresentable {
+        let useCase = DefaultRankingUseCase(repository: rankingRepository)
+        let viewModel = PartRankingViewModel(rankingViewType: rankingViewType, useCase: useCase)
+        let partRankingVC = PartRankingVC(rankingViewType: rankingViewType)
+        partRankingVC.viewModel = viewModel
+        return (partRankingVC, viewModel)
+    }
+    
+    public func makeStampGuideVC() -> any StampGuideViewControllable {
         let stampGuideVC = StampGuideVC()
         return stampGuideVC
-    }
-
-    public func makePartRankingVC(rankingViewType: RankingViewType) -> PartRankingViewControllable {
-      let vc = PartRankingVC(rankingViewType: rankingViewType)
-      let useCase = DefaultRankingUseCase(repository: rankingRepository)
-      vc.viewModel = PartRankingViewModel(rankingViewType: rankingViewType, useCase: useCase)
-      return vc
     }
 }
