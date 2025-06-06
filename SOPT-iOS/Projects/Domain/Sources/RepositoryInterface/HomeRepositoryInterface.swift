@@ -16,11 +16,10 @@ public protocol HomeRepositoryInterface {
     func getUserInfo() -> AnyPublisher<UserMainInfoModel?, MainError>
     func getRecentSchedule() -> AnyPublisher<HomeRecentScheduleModel, Error>
     func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Error>
-    func getInsightPosts() -> AnyPublisher<[HomeInsightPostsModel], Error>
-    func getGroupPosts() -> AnyPublisher<[HomeGroupPostModel], Error>
-    func getCoffeeChatPosts() -> AnyPublisher<[HomeCoffeeChatPostModel], Error>
+    func getPlaygroundNewsPosts() -> AnyPublisher<[HomePlaygroundNewsPostsModel], Error>
     func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Error>
-    func getAnnouncementPosts() -> AnyPublisher<[HomeAnnouncementModel], Error>
     func getReportUrl() -> AnyPublisher<SoptampReportUrlModel, Error>
     func checkPokeNewUser() -> AnyPublisher<Bool, Error>
+    func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonModel, Error>
+    func getSurveyInfo() -> AnyPublisher<HomeSurveyModel, Error>
 }

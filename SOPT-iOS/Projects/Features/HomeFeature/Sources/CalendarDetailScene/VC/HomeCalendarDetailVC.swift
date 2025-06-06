@@ -123,11 +123,18 @@ extension HomeCalendarDetailVC {
             make.height.equalTo(209.adjustedH)
         }
         
+        setAttendanceButtonVisibility()
+        
         attendanceButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(20)
             make.bottom.equalToSuperview().inset(34)
             make.height.equalTo(56)
         }
+    }
+    
+    private func setAttendanceButtonVisibility() {
+        let userType = UserDefaultKeyList.Auth.getUserType()
+        self.attendanceButton.isHidden = (userType == .inactive)
     }
 }
 

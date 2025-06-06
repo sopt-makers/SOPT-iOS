@@ -29,7 +29,7 @@ extension HomeForMemberVC {
                 .sink { owner, _ in
                     owner.attendanceButtonTapped.send()
                 }
-                .store(in: cancelBag)
+                .store(in: cell.cancelBag)
         }
     }
     
@@ -45,33 +45,29 @@ extension HomeForMemberVC {
         }
     }
     
-    func createInsightCellRegistration() -> InsightCellRegistration {
+    func createPlaygroundNewsCellRegistration() -> PlaygroundNewsCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
             cell.configureCell(model: item)
         }
     }
     
-    func createGroupCellRegistration() -> GroupCellRegistration {
-        collectionView.createCellRegistration { cell, _, item in
+    func createSurveyRegistration() -> SurveyCellRegistration {
+        collectionView.createCellRegistration { [weak self] cell, _, item in
+            guard let self else { return }
             cell.configureCell(model: item)
-        }
-    }
-    
-    func createCoffeeChatCellRegistration() -> CoffeeChatCellRegistration {
-        collectionView.createCellRegistration { cell, _, item in
-            cell.configureCell(model: item)
-        }
-    }
-    
-    func createAnnouncementCellRegistration() -> AnnouncementCellRegistration {
-        collectionView.createCellRegistration { cell, _, item in
-            cell.configureCell(model: item)
+            
+            cell.surveyButtonTap
+                .withUnretained(self)
+                .sink { owner, _ in
+                    owner.surveyButtonTapped.send()
+                }
+                .store(in: cell.cancelBag)
         }
     }
     
     func createSocialLinkCellRegistration() -> SocialLinkCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
-            cell.configureCell(type: item)
+            cell.configureCell(type: item.socialLink)
         }
     }
     
@@ -85,12 +81,10 @@ extension HomeForMemberVC {
         }
     }
     
-    func createFooterRegistration() -> FooterRegistration {
+    func createPlaygroundNewsFooterRegistration() -> PlaygroundNewsFooterRegistration {
         collectionView.createSupplementaryRegistration(
-            elementKind: UICollectionView.elementKindSectionFooter
-        ) { [weak self] footerView, indexPath in
-            guard let self else { return }
-            footerView.bind(input: self.viewModel.currentCardPage, pageNumber: 5)
-        }
+            elementKind: UICollectionView.elementKindSectionFooter,
+            configure: { _, _ in }
+        )
     }
 }

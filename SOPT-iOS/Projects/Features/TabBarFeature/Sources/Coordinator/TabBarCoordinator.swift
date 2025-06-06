@@ -2,7 +2,7 @@
 //  TabBarCoordinator.swift
 //  TabBarFeature
 //
-//  Created by 강윤서 on 2/20/25.
+//  Created by Jae Hyun Lee on 5/4/25.
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
@@ -16,43 +16,46 @@ import BaseFeatureDependency
 import TabBarFeatureInterface
 import WebFeature
 
-public enum TabBarCoordinatorDestination {
-    case home
-    case soptlog
-    case signIn
-}
-
-public final class TabBarCoordinator: DefaultCoordinator {
+public final class TabBarCoordinator: DefaultTabBarCoordinator {
+    
+    // MARK: - Properties
     
     public var finishFlow: (() -> Void)?
     public var requestCoordinating: ((TabBarCoordinatorDestination) -> Void)?
         
     private let factory: TabBarPresentable
-    private let router: LegacyRouter
+    private var navigationController: UINavigationController
     private let items: [UIViewController]
     
-    public init(router: LegacyRouter, factory: TabBarPresentable, items: [UIViewController]) {
-        self.router = router
+    // MARK: - Init
+    
+    public init(
+        navigationController: UINavigationController,
+        factory: TabBarPresentable,
+        items: [UIViewController]
+    ) {
+        self.navigationController = navigationController
         self.factory = factory
         self.items = items
     }
+    
+    // MARK: - Coordinator Life Cycle
     
     public override func start() {
         showTabBar()
     }
     
+    // MARK: - Navigation
+    
     private func showTabBar() {
         var tabBar = factory
-                
+    
         tabBar.vm.onTabBarItemTapped = { [weak self] index in
             // 각 탭의 코디네이터 실행
-            switch index {
-            case 0:
-                self?.requestCoordinating?(.home)
-            case 1:
-                self?.requestCoordinating?(.soptlog)
-            default:
-                return
+            guard let tabType = TabType(rawValue: index) else { return }
+            switch tabType {
+            case .home: self?.requestCoordinating?(.home)
+            case .soptlog: self?.requestCoordinating?(.soptlog)
             }
         }
         
@@ -71,9 +74,11 @@ public final class TabBarCoordinator: DefaultCoordinator {
         tabBar.vm.onFABMenuTapped = { [weak self] url in
             guard let url = URL(string: url) else { return }
             let webView = SOPTWebView(startWith: url)
-            self?.router.push(webView)
+            self?.navigationController.pushViewController(webView, animated: true)
         }
         
-        router.replaceRootWindow(tabBar.vc, withAnimation: true, hideBar: true)
+        let navigation = UINavigationController(rootViewController: tabBar.vc)
+        CoordinatorUtils.replaceRootWindowWithAnimate(root: navigation, hideBar: true)
+        self.navigationController = navigation
     }
 }

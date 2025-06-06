@@ -84,7 +84,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
         if case let .ranking(_, sentence) = sceneType {
             lb.text = sentence
         }
-        lb.setTypoStyle(.SoptampFont.subtitle1)
+        lb.font = .SoptampFont.subtitle1
         lb.textColor = DSKitAsset.Colors.soptampGray900.color
         lb.numberOfLines = 2
         lb.textAlignment = .center
@@ -119,7 +119,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
         bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate).withTintColor(DSKitAsset.Colors.white.color), for: .highlighted)
         bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate).withTintColor(DSKitAsset.Colors.gray200.color), for: .selected)
         bt.tintColor = DSKitAsset.Colors.black.color
-        bt.titleLabel?.setTypoStyle(.SoptampFont.h2)
+        bt.titleLabel?.font = .SoptampFont.h2
         bt.contentEdgeInsets = UIEdgeInsets(top: 0, left: -15, bottom: 0, right: 0)
         bt.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
         return bt
@@ -134,8 +134,8 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
         bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .normal)
         bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate).withTintColor(DSKitAsset.Colors.gray200.color), for: .highlighted)
         bt.tintColor = .white
-        bt.titleLabel?.setTypoStyle(.SoptampFont.h2)
-        let attributedStr = NSMutableAttributedString(string: "파트별 랭킹")
+        bt.titleLabel?.font = .SoptampFont.h2
+        let attributedStr = NSMutableAttributedString(string: I18N.RankingList.rankingForPartTitle)
         let style = NSMutableParagraphStyle()
         attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
         attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.white, range: NSMakeRange(0, attributedStr.length))

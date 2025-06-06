@@ -16,10 +16,9 @@ public typealias DefaultHomeService = BaseService<HomeAPI>
 public protocol HomeService {
     func getDescription() -> AnyPublisher<HomeDescriptionEntity, Error>
     func getAppServiceAccessStatus() -> AnyPublisher<[HomeAppServiceAccessStatusEntity], Error>
-    func getInsightPosts() -> AnyPublisher<[HomeInsightPostsEntity], Error>
-    func getGroupAll() -> AnyPublisher<[HomeGroupEntity], Error>
-    func getCoffeeChat() -> AnyPublisher<[HomeCoffeeChatEntity], Error>
-    func getHomeEmploymentEntity() -> AnyPublisher<[HomeEmploymentResponseEntity], Error>
+    func getPlaygroundNewsPosts() -> AnyPublisher<[HomePlaygroundNewsPostsResponseEntity], Error>
+    func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonResponseEntity, Error>
+    func getSurveyInfo() -> AnyPublisher<HomeSurveyResponseEntity, Error>
 }
 
 extension DefaultHomeService: HomeService {
@@ -31,19 +30,15 @@ extension DefaultHomeService: HomeService {
         requestObjectInCombine(.getAppServiceAccessStatus)
     }
     
-    public func getInsightPosts() -> AnyPublisher<[HomeInsightPostsEntity], any Error> {
-        requestObjectInCombine(.getInsightPosts)
+    public func getPlaygroundNewsPosts() -> AnyPublisher<[HomePlaygroundNewsPostsResponseEntity], any Error> {
+        requestObjectInCombine(.getPlaygroundNewsPosts)
     }
     
-    public func getGroupAll() -> AnyPublisher<[HomeGroupEntity], any Error> {
-        requestObjectInCombine(.getGroupAll)
+    public func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonResponseEntity, any Error> {
+        requestObjectInCombine(.getFABInfo)
     }
     
-    public func getCoffeeChat() -> AnyPublisher<[HomeCoffeeChatEntity], any Error> {
-        requestObjectInCombine(.getCoffeeChat)
-    }
-    
-    public func getHomeEmploymentEntity() -> AnyPublisher<[HomeEmploymentResponseEntity], any Error> {
-        requestObjectInCombine(.getEmployment)
+    public func getSurveyInfo() -> AnyPublisher<HomeSurveyResponseEntity, any Error> {
+        requestObjectInCombine(.getSurveyInfo)
     }
 }

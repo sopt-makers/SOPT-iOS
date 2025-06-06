@@ -24,14 +24,21 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     private let useCase: HomeUseCase
     private var cancelBag = CancelBag()
     
-    let currentCardPage = PassthroughSubject<Int, Never>()
     let userType: UserType = UserDefaultKeyList.Auth.getUserType()
+    private var floatingButtonUrl: String = ""
+    private var surveyButtonURL: String = ""
     
     let productServiceList: [HomePresentationModel.ProductService] = [
         .init(product: .playgroundCommunity),
         .init(product: .group),
         .init(product: .member),
         .init(product: .project)
+    ]
+    
+    let socialLinkList: [HomePresentationModel.SocialLink] = [
+        .init(socialLink: .officialHomepage),
+        .init(socialLink: .instagram),
+        .init(socialLink: .youtube)
     ]
     
     // MARK: - Inputs
@@ -43,6 +50,9 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         let attendanceButtonTapped: Driver<Void>
         let noticeButtonTapped: Driver<Void>
         let settingButtonTapped: Driver<Void>
+        let extendedFloatingButtonTapped: Driver<Void>
+        let surveyButtonTapped: Driver<Void>
+        let socialLinkButtonTapped: Driver<HomePresentationModel.SocialLink>
     }
     
     // MARK: - Outputs
@@ -50,7 +60,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public struct Output {
         let homeItem = PassthroughSubject<HomePresentationModel, Never>()
         let isLoading = PassthroughSubject<Bool, Never>()
-        let needNetworkAlert = PassthroughSubject<Void, Never>()
+        let floatingButtonInfo = PassthroughSubject<HomeFloatingButtonPresentationModel, Never>()
     }
     
     // MARK: - HomeForMemberCoordinating
@@ -65,7 +75,9 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public var onNeedSignIn: (() -> Void)?
     public var onNetworkError: (() -> Void)?
     public var onPoke: ((Bool) -> Void)?
-    
+    public var onExtendedFloatingButtonTapped: ((String) -> Void)?
+    public var onSurveyButtonTapped: ((String) -> Void)?
+    public var onSocialLinkButtonTapped: ((String) -> Void)?
     
     // MARK: - initialization
     
@@ -84,6 +96,16 @@ extension HomeForMemberViewModel {
                 owner.useCase.getReportURL()
                 owner.requestAuthorizationForNotification()
                 AmplitudeInstance.shared.trackWithUserType(event: .viewAppHomeNew)
+            }.store(in: cancelBag)
+        
+        input.viewDidLoad
+            .flatMap(useCase.getFloatingButtonInfo)
+            .filter{ $0.isActive }
+            .withUnretained(self)
+            .sink { owner, floatingButtonModel in
+                let presentationModel = floatingButtonModel.toPresentationModel()
+                output.floatingButtonInfo.send(presentationModel)
+                owner.floatingButtonUrl = presentationModel.url
             }.store(in: cancelBag)
         
         input.viewWillAppear
@@ -106,43 +128,35 @@ extension HomeForMemberViewModel {
             .compactMap { $0 }
             .withUnretained(self)
             .flatMap { owner, userInfo in
-                Publishers.Zip3(
-                    owner.useCase.getHomeDescription().map { $0.toPresentation(history: userInfo.historyList, isAllConfirm: userInfo.isAllConfirm) },
-                    owner.useCase.getRecentSchedule().map { $0.toPresentation() },
-                    owner.useCase.getAppServices().map { $0.map { $0.toPresentation() } }
-                )
-                .map { dashBoard, recentSchedule, appService in
-                    HomePresentationModel(
-                        dashBoard: dashBoard,
-                        recentSchedule: recentSchedule,
-                        appServices: appService
-                    )
-                }
+                let dashBoardPublisher = owner.useCase.getHomeDescription()
+                    .map { $0.toPresentation(history: userInfo.historyList, isAllConfirm: userInfo.isAllConfirm) }
+                
+                let recentSchedulePublisher = owner.useCase.getRecentSchedule()
+                    .map { $0.toPresentation() }
+                
+                let appServicePublisher = owner.useCase.getAppServices()
+                    .map { $0.map { $0.toPresentation() } }
+                
+                let playgroundPublisher = owner.useCase.getPlaygroundNewsPosts()
+                    .map { $0.map { $0.toPresentation() } }
+                
+                return Publishers.Zip4(dashBoardPublisher, recentSchedulePublisher, appServicePublisher, playgroundPublisher)
             }
-        // TODO: 이후 스프린트에서 순차 배포
-        //            .flatMap {
-        //                description,
-        //                recentSchedule,
-        //                appService in
-        //                Publishers.Zip4(
-        //                    self.useCase.getInsightPosts().map { $0.map { $0.toPresentation() } },
-        //                    self.useCase.getGroupPosts().map { $0.map { $0.toPresentation() } },
-        //                    self.useCase.getCoffeeChatPosts().map { $0.map { $0.toPresentation() } },
-        //                    self.useCase.getAnnouncementPosts().map { $0.map { $0.toPresentation() } }
-        //                )
-        //                .map { insight, group, coffeeChat, announcement in
-        //                    HomePresentationModel(
-        //                        description: description,
-        //                        recentSchedule: recentSchedule,
-        //                        appServices: appService,
-        //                        insightPosts: insight,
-        //                        groupPosts: group,
-        //                        coffeeChatPosts: coffeeChat,
-        //                        announcementPosts: announcement
-        //                    )
-        //                }
-        //            }
-            .sink { data in
+            .flatMap { dashBoard, recentSchedule, appServices, playgroundNewsPosts in
+                self.useCase.getSurveyInfo()
+                    .map { survey in
+                        HomePresentationModel(
+                            dashBoard: dashBoard,
+                            recentSchedule: recentSchedule,
+                            appServices: appServices,
+                            playgroundNewsPosts: playgroundNewsPosts,
+                            survey: survey.toPresentation()
+                        )
+                    }
+            }
+            .withUnretained(self)
+            .sink { owner, data in
+                owner.surveyButtonURL = data.survey.linkURL
                 output.homeItem.send(data)
                 output.isLoading.send(false)
             }
@@ -169,6 +183,8 @@ extension HomeForMemberViewModel {
                     } else {
                         owner.onAppServiceCellTapped?(model.deepLink)
                     }
+                case .socialLink(let type):
+                    owner.onSocialLinkButtonTapped?(type.socialLink.serviceDomainLink)
                 default: break
                 }
             }
@@ -197,6 +213,19 @@ extension HomeForMemberViewModel {
             }
             .store(in: cancelBag)
         
+        input.extendedFloatingButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onExtendedFloatingButtonTapped?(owner.floatingButtonUrl)
+            }
+            .store(in: cancelBag)
+        
+        input.surveyButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onSurveyButtonTapped?(owner.surveyButtonURL)
+            }
+            .store(in: cancelBag)
         return output
     }
 }

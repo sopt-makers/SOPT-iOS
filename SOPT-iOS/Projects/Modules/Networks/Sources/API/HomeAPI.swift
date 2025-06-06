@@ -14,10 +14,9 @@ import Core
 public enum HomeAPI {
     case getDescription
     case getAppServiceAccessStatus
-    case getInsightPosts
-    case getGroupAll
-    case getCoffeeChat
-    case getEmployment
+    case getPlaygroundNewsPosts
+    case getFABInfo
+    case getSurveyInfo
 }
 
 extension HomeAPI: BaseAPI {
@@ -29,30 +28,26 @@ extension HomeAPI: BaseAPI {
             return "/description"
         case .getAppServiceAccessStatus:
             return "/app-service"
-        case .getInsightPosts:
+        case .getPlaygroundNewsPosts:
             return "/posts"
-        case .getGroupAll:
-            return "/meeting/all"
-        case .getCoffeeChat:
-            return "/coffeechat"
-        case .getEmployment:
-            return "/employments"
+        case .getFABInfo:
+            return "/floating-button"
+        case .getSurveyInfo:
+            return "/review-form"
         }
     }
     
     public var method: Moya.Method {
         switch self {
-        case .getDescription, .getAppServiceAccessStatus, .getInsightPosts, .getGroupAll, .getCoffeeChat, .getEmployment:
+        case .getDescription, .getAppServiceAccessStatus, .getPlaygroundNewsPosts, .getFABInfo, .getSurveyInfo:
             return .get
         }
     }
     
     public var task: Moya.Task {
         switch self {
-        case .getDescription, .getAppServiceAccessStatus, .getInsightPosts, .getCoffeeChat, .getEmployment:
+        case .getDescription, .getAppServiceAccessStatus, .getPlaygroundNewsPosts, .getFABInfo, .getSurveyInfo:
             return .requestPlain
-        case .getGroupAll:
-            return .requestParameters(parameters: ["page": 1, "take": 10, "category": "행사,세미나"], encoding: URLEncoding.queryString)
         }
     }
     

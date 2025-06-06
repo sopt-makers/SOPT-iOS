@@ -13,12 +13,11 @@ typealias DashBoardCardCellRegistration = UICollectionView.CellRegistration<Dash
 typealias CalendarCellRegistration = UICollectionView.CellRegistration<CalendarCardCVC, HomePresentationModel.RecentSchedule>
 typealias ProductCellRegistration = UICollectionView.CellRegistration<MainProductCardCVC, HomePresentationModel.ProductService>
 typealias AppServiceCellRegistration = UICollectionView.CellRegistration<AppServiceCardCVC, HomePresentationModel.AppService>
-typealias InsightCellRegistration = UICollectionView.CellRegistration<InsightCardCVC, HomePresentationModel.InsightPost>
-typealias GroupCellRegistration = UICollectionView.CellRegistration<GroupCardCVC, HomePresentationModel.GroupPost>
-typealias CoffeeChatCellRegistration = UICollectionView.CellRegistration<CoffeeChatCardCVC, HomePresentationModel.CoffeeChat>
-typealias AnnouncementCellRegistration = UICollectionView.CellRegistration<AnnouncementCardCVC, HomePresentationModel.Announcement>
-typealias SocialLinkCellRegistration = UICollectionView.CellRegistration<SocialLinkCardCVC, SocialLinkCardType>
+typealias PlaygroundNewsCellRegistration = UICollectionView.CellRegistration<PlaygroundNewsCardCVC, HomePresentationModel.PlaygroundNews>
+typealias SurveyCellRegistration = UICollectionView.CellRegistration<SurveyCVC, HomePresentationModel.Survey>
+typealias SocialLinkCellRegistration = UICollectionView.CellRegistration<SocialLinkCardCVC, HomePresentationModel.SocialLink>
 
 // supplemenatry views
 typealias HeaderRegistration = UICollectionView.SupplementaryRegistration<HomeDefaultHeaderView>
-typealias FooterRegistration = UICollectionView.SupplementaryRegistration<AnnouncementPageContolFooterView>
+typealias PlaygroundNewsFooterRegistration = UICollectionView.SupplementaryRegistration<PlaygroundNewsFooterView>
+

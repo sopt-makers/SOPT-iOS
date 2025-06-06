@@ -37,7 +37,7 @@ public class PartRankingVC: UIViewController, PartRankingViewControllable {
     
     lazy var naviBar = STNavigationBar(type: .titleWithLeftButton)
         .setTitleTypoStyle(.SoptampFont.h2)
-        .setTitle("파트별 랭킹")
+        .setTitle(I18N.RankingList.rankingForPartTitle)
         .setRightButton(.none)
     
     private lazy var rankingCollectionView: UICollectionView = {
@@ -134,9 +134,10 @@ extension PartRankingVC {
         
         output.partRanking
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] partRankingModels in
-                self?.applySnapshot(model: partRankingModels)
-            }.store(in: cancelBag)
+            .withUnretained(self)
+            .sink(receiveValue: { owner, partRankingModels in
+                owner.applySnapshot(model: partRankingModels)
+            }).store(in: cancelBag)
     }
     
     private func setDelegate() {

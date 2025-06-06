@@ -109,6 +109,8 @@ public struct I18N {
     
     public struct RankingList {
         public static let noSentenceText = "설정된 한 마디가 없습니다."
+        public static let rankingForPartTitle = "파트별 랭킹"
+        public static let myRanking = "내 랭킹 보기"
     }
     
     public struct ListDetail {
@@ -169,76 +171,6 @@ public struct I18N {
         public static let visitor = "비회원"
         public static let active = "기 활동 중"
         public static let inactive = "기 수료"
-        public static let inactiveMember = "비활동"
-        public static let encourage = "안녕하세요, \nSOPT의 열정이 되어주세요!"
-        public static let hello = "안녕하세요"
-        public static let welcome = "안녕하세요, \nSOPT에 오신 것을 환영합니다!"
-        public static let failedToGetUserInfo = "활동 정보를 가져올 수 없어요."
-        public static let needToRegisterPlayground = "플레이그라운드에서 프로필을 업데이트하면\n 서비스를 원활하게 사용할 수 있어요."
-        
-        public static func userHistory(name: String, months: String) -> String {
-            return "\(name) 님은 \nSOPT와 \(months)개월째"
-        }
-        
-        public struct MainService {
-            public static let visitorGuide = "SOPT를 더 알고 싶다면, 둘러보세요"
-            public static let memberGuide = "더욱 편리해진 SOPT를 이용해보세요!"
-            
-            public struct MainTitle {
-                public static let attendance = "출석하기"
-                public static let group = "모임/스터디"
-                public static let officialHomePage = "SOPT\n공식홈페이지"
-                public static let playgroundCommunity = "Playground"
-            }
-
-            public struct Title {
-                public static let officialHomePage = "공식 홈페이지"
-                public static let review = "활동 후기"
-                public static let project = "프로젝트"
-                public static let faq = "FAQ"
-                public static let youtube = "Youtube"
-                public static let attendance = "출석하기"
-                public static let member = "멤버"
-                public static let group = "모임/스터디"
-                public static let instagram = "Instagram"
-                public static let playgroundCommunity = "Playground"
-            }
-            
-            public struct Description {
-                public struct Default {
-                    public static let officialHomePage = "솝트 홈페이지 바로가기"
-                    public static let review = "'진짜' 후기가\n 궁금하다면?"
-                    public static let project = "역대 프로젝트 보기"
-                    public static let faq = "자주 묻는 질문"
-                    public static let youtube = "SOPT 활동 구경하기"
-                    public static let attendance = "아 맞다, 출석!"
-                    public static let member = "궁금한 사람 찾아보기"
-                    public static let group = "지금 열린 모임은?"
-                    public static let instagram = "SOPT 소식 빠르게 확인하기"
-                    public static let playgroundCommunity = "모두와 연결되는 공간"
-                }
-
-                public struct ActiveUser {
-                    public static let project = "역대 프로젝트 모아보기"
-                    public static let playgroundCommunity = "모두와 연결되는 공간"
-                }
-                
-                public struct InactiveUser {
-                    public static let project = "지난 프로젝트 보기"
-                    public static let playgroundCommunity = "모든 솝트와 소통하기"
-                }
-                
-                public struct Visitor {
-                    public static let project = "SOPT에서\n탄생한 프로젝트"
-                }
-            }
-        }
-
-        public struct AppService {
-            public static let appServiceIntroduction = "SOPT를 알차게 즐기고 싶다면?"
-            public static let recommendSopt = "SOPT 회원이 되어 다양한 서비스를 즐겨보세요"
-            public static let soptamp = "SOPT-AMP!"
-        }
     }
     
     public struct TabBar {
@@ -304,28 +236,11 @@ public struct I18N {
             public static let headerTitle = "SOPT 더 재밌게 즐기기!"
         }
         
-        public struct Insight {
-            public static let headerTitle = "인사이트 못참지!"
+        public struct PlaygroundNews {
+            public static let headerTitle = "지금 인기 소식 🔥"
+            public static let morePosts = "다른 게시물 보러가기"
         }
-        
-        public struct Group {
-            public static let headerTitle = "다들 모여서 모하니?"
-            public static let entireGeneration = "전체기수"
-            public static let activityGeneration = "활동기수"
-            public static let beforeStart = "모집 전"
-            public static let applyAble = "모집 중"
-            public static let recruitmentComplete = "모집 마감"
-            public static let entirePart = "전체파트"
-        }
-        
-        public struct CoffeeChat {
-            public static let headerTitle = "커피솝에서 인사이트 한잔"
-        }
-        
-        public struct Announcements {
-            public static let headerTitle = "솝트인에게 홍보합니다!"
-        }
-        
+
         public struct SocialLink {
             public static let homePage = "홈페이지"
             public static let instagram = "인스타"
@@ -404,19 +319,32 @@ public struct I18N {
     
     public struct MyPage {
         public static let navigationTitle = "마이페이지"
-        public static let servicePolicySectionTitle = "서비스 이용 방침"
-        public static let privacyPolicy = "개인정보 처리 방침"
-        public static let termsOfUse = "서비스 이용 약관"
-        public static let sendFeedback = "의견 보내기"
-        public static let alertSectionTitle = "알림 설정"
-        public static let alertListItemTitle = "알림 설정하기"
-        public static let alertByFeaturesListItemTitle = "기능별 알림"
-        public static let soptampSectionTitle = "솝탬프 설정"
-        public static let editOnlineSentence = "한 마디 편집"
-        public static let editNickname = "닉네임 변경"
-        public static let resetStamp = "스탬프 초기화"
-        public static let etcSectionGroupTitle = "기타"
-        public static let logout = "로그아웃"
+        
+        public struct ServicePolicySection {
+            public static let title = "서비스 이용 방침"
+            public static let privacyPolicy = "개인정보 처리 방침"
+            public static let termsOfUse = "서비스 이용 약관"
+            public static let sendFeedback = "의견 보내기"
+        }
+        
+        public struct NotificationSection {
+            public static let title = "알림 설정"
+            public static let setNotification = "알림 설정하기"
+        }
+        
+        public struct SoptampSection {
+            public static let title = "솝탬프 설정"
+            public static let editOnelineSentence = "한 마디 편집"
+            public static let resetStamp = "스탬프 초기화"
+        }
+        
+        public struct EtcSection {
+            public static let title = "기타"
+            public static let logout = "로그아웃"
+            public static let withdrawal = "탈퇴하기"
+            public static let login = "로그인"
+        }
+        
         public static let resetMissionTitle = "미션을 초기화 하실건가요?"
         public static let resetMissionDescription = "사진, 메모가 삭제되고\n 전체 미션이 미완료상태로 초기화됩니다."
         public static let reset = "초기화"
@@ -424,9 +352,6 @@ public struct I18N {
         public static let logoutDialogTitle = "로그아웃"
         public static let logoutDialogDescription = "정말 로그아웃을 하실 건가요?"
         public static let logoutDialogGrantButtonTitle = "로그아웃"
-        public static let login = "로그인"
-
-        public static let withdrawal = "탈퇴하기"
     }
     
     public struct NotificationSettingsByFeature {

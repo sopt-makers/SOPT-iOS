@@ -34,7 +34,7 @@ public extension Project {
             
             let target = Target.target(
                 name: name,
-                destinations: .iOS,
+                destinations: [.iPhone],
                 product: .app,
                 bundleId: "\(Environment.bundlePrefix).\(bundleSuffix)",
                 deploymentTargets: deploymentTarget,
@@ -62,7 +62,7 @@ public extension Project {
             
             let target = Target.target(
                 name: "\(name)Interface",
-                destinations: .iOS,
+                destinations: [.iPhone],
                 product: .framework,
                 bundleId: "\(Environment.bundlePrefix).\(name)Interface",
                 deploymentTargets: deploymentTarget,
@@ -85,7 +85,7 @@ public extension Project {
             
             let target = Target.target(
                 name: name,
-                destinations: .iOS,
+                destinations: [.iPhone],
                 product: hasDynamicFramework ? .framework : .staticFramework,
                 bundleId: "\(Environment.bundlePrefix).\(name)",
                 deploymentTargets: deploymentTarget,
@@ -106,7 +106,7 @@ public extension Project {
             
             let target = Target.target(
                 name: "\(name)Demo",
-                destinations: .iOS,
+                destinations: [.iPhone],
                 product: .app,
                 bundleId: "\(Environment.bundlePrefix).\(name)Demo",
                 deploymentTargets: deploymentTarget,
@@ -133,7 +133,7 @@ public extension Project {
             
             let target = Target.target(
                 name: "\(name)Tests",
-                destinations: .iOS,
+                destinations: [.iPhone],
                 product: .unitTests,
                 bundleId: "\(Environment.bundlePrefix).\(name)Tests",
                 deploymentTargets: deploymentTarget,
@@ -162,7 +162,7 @@ public extension Project {
             
             let target = Target.target(
                 name: "\(name)UITests",
-                destinations: .iOS,
+                destinations: [.iPhone],
                 product: .uiTests,
                 bundleId: "\(Environment.bundlePrefix).\(name)UITests",
                 deploymentTargets: deploymentTarget,

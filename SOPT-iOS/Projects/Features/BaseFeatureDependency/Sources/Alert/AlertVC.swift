@@ -98,10 +98,10 @@ extension AlertVC {
         self.cancelButton.backgroundColor = alertTheme.cancelButtonColor(isNetworkErr: self.alertType == .networkErr)
         self.customButton.backgroundColor = alertTheme.customButtonColor
         
-        self.titleLabel.setTypoStyle(.Main.headline2)
-        self.descriptionLabel.setTypoStyle(.Main.body2)
-        self.cancelButton.titleLabel?.setTypoStyle(.Main.caption3)
-        self.customButton.titleLabel?.setTypoStyle(.Main.caption3)
+        self.titleLabel.font = .Main.headline2
+        self.descriptionLabel.font = .Main.body2
+        self.cancelButton.titleLabel?.font = .Main.caption3
+        self.customButton.titleLabel?.font = .Main.caption3
         
         self.titleLabel.textColor = alertTheme.titleColor
         self.descriptionLabel.textColor = alertTheme.descriptionColor

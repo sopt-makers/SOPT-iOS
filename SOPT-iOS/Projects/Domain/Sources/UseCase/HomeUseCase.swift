@@ -16,13 +16,12 @@ public protocol HomeUseCase {
     func getUserInfo() -> AnyPublisher<UserMainInfoModel?, MainError>
     func getRecentSchedule() -> AnyPublisher<HomeRecentScheduleModel, Never>
     func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Never>
-    func getInsightPosts() -> AnyPublisher<[HomeInsightPostsModel], Never>
-    func getGroupPosts() -> AnyPublisher<[HomeGroupPostModel], Never>
-    func getCoffeeChatPosts() -> AnyPublisher<[HomeCoffeeChatPostModel], Never>
+    func getPlaygroundNewsPosts() -> AnyPublisher<[HomePlaygroundNewsPostsModel], Never>
     func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never>
-    func getAnnouncementPosts() -> AnyPublisher<[HomeAnnouncementModel], Never>
     func getReportURL()
     func checkPokeNewUser() -> AnyPublisher<Bool, Never>
+    func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonModel, Never>
+    func getSurveyInfo() -> AnyPublisher<HomeSurveyModel, Never>
 }
 
 public class DefaultHomeUseCase {
@@ -74,31 +73,10 @@ extension DefaultHomeUseCase: HomeUseCase {
             }.eraseToAnyPublisher()
     }
     
-    public func getInsightPosts() -> AnyPublisher<[HomeInsightPostsModel], Never> {
-        repository.getInsightPosts()
+    public func getPlaygroundNewsPosts() -> AnyPublisher<[HomePlaygroundNewsPostsModel], Never> {
+        repository.getPlaygroundNewsPosts()
             .catch { error in
-                return Empty<[HomeInsightPostsModel], Never>()
-            }.eraseToAnyPublisher()
-    }
-    
-    public func getGroupPosts() -> AnyPublisher<[HomeGroupPostModel], Never> {
-        repository.getGroupPosts()
-            .catch { error in
-                return Empty<[HomeGroupPostModel], Never>()
-            }.eraseToAnyPublisher()
-    }
-    
-    public func getCoffeeChatPosts() -> AnyPublisher<[HomeCoffeeChatPostModel], Never> {
-        repository.getCoffeeChatPosts()
-            .catch { error in
-                return Empty<[HomeCoffeeChatPostModel], Never>()
-            }.eraseToAnyPublisher()
-    }
-    
-    public func getAnnouncementPosts() -> AnyPublisher<[HomeAnnouncementModel], Never> {
-        repository.getAnnouncementPosts()
-            .catch { error in
-                return Empty<[HomeAnnouncementModel], Never>()
+                return Empty<[HomePlaygroundNewsPostsModel], Never>()
             }.eraseToAnyPublisher()
     }
     
@@ -125,6 +103,24 @@ extension DefaultHomeUseCase: HomeUseCase {
             .catch { error in
                 print("HomeUseCase checkPokeNewUser에서 문제가 발생했습니다. \(error)")
                 return Empty<Bool, Never>()
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    public func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonModel, Never> {
+        repository.getFloatingButtonInfo()
+            .catch { error in
+                print("HomeUseCase getFloatingButtonInfo에서 문제가 발생했습니다. \(error)")
+                return Empty<HomeFloatingButtonModel, Never>()
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    public func getSurveyInfo() -> AnyPublisher<HomeSurveyModel, Never> {
+        repository.getSurveyInfo()
+            .catch { error in
+                print("HomeUseCase getSurveyInfo에서 문제가 발생했습니다. \(error)")
+                return Empty<HomeSurveyModel, Never>()
             }
             .eraseToAnyPublisher()
     }

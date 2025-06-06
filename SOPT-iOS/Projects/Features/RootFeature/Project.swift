@@ -16,5 +16,14 @@ let project = Project.makeModule(
         .Features.Spalsh.Feature,
         .Features.Auth.Feature,
         .Features.TabBar.Feature,
+        .Features.Stamp.Feature,
+        .Features.Attendance.Feature,
+        .Features.Notice.Feature,
+        .Features.AppMyPage.Feature,
+        .Features.Notification.Feature,
+        .Features.Poke.Feature,
+        .Features.DailySoptune.Feature,
+        .Features.Home.Feature,
+        .Features.Soptlog.Feature
     ]
 )

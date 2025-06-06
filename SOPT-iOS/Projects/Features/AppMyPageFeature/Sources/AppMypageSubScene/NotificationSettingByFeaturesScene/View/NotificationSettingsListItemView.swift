@@ -26,7 +26,7 @@ public final class NotificationSettingsListItemView: UIView {
     }
     
     private let titleLabel = UILabel().then {
-        $0.textColor = DSKitAsset.Colors.white100.color
+        $0.textColor = DSKitAsset.Colors.white.color
         $0.font = DSKitFontFamily.Suit.medium.font(size: 16)
     }
     

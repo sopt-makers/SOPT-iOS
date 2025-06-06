@@ -21,7 +21,7 @@ final class UserHistoryView: UIView {
     
     private let userTypeLabel = UILabel().then {
         $0.backgroundColor = DSKitAsset.Colors.black40.color
-        $0.textColor = DSKitAsset.Colors.white100.color
+        $0.textColor = DSKitAsset.Colors.white.color
         $0.font = DSKitFontFamily.Suit.medium.font(size: 12)
         $0.text = I18N.Home.DashBoard.UserHistory.encourage
         $0.layer.cornerRadius = 12
@@ -87,7 +87,7 @@ extension UserHistoryView {
     
     private func setUserTypeLabel(with userType: UserType, text: String) {
         self.userTypeLabel.text = text
-        self.userTypeLabel.textColor = userType == .active ? DSKitAsset.Colors.black100.color : DSKitAsset.Colors.white100.color
+        self.userTypeLabel.textColor = userType == .active ? DSKitAsset.Colors.black100.color : DSKitAsset.Colors.white.color
         self.userTypeLabel.backgroundColor = userType == .active ? DSKitAsset.Colors.orange100.color : DSKitAsset.Colors.black40.color
     }
     

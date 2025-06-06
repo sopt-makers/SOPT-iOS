@@ -2,8 +2,8 @@
 //  HomeCoordinator.swift
 //  HomeFeature
 //
-//  Created by Jae Hyun Lee on 11/22/24.
-//  Copyright © 2024 SOPT-iOS. All rights reserved.
+//  Created by Jae Hyun Lee on 5/5/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
 import UIKit
@@ -16,46 +16,38 @@ import BaseFeatureDependency
 import HomeFeatureInterface
 import WebFeature
 
-public enum HomeCoordinatorDestination {
-    case signIn
-    case notification
-    case setting(userType: UserType)
-    case attendance
-    case soptlog
-    case calendar
-    case poke(isNewUser: Bool)
-    
-    case webLink(url: String)
-    case deepLink(url: String)
+public protocol HomeCoordinatorDelegate: AnyObject {
+    func homeCoordinator(_ coordinator: HomeCoordinator, to destination: HomeCoordinatorDestination)
 }
-
-public protocol HomeCoordinatorOutput {
-    var requestCoordinating: ((HomeCoordinatorDestination) -> Void)? { get set }
-}
-
-public typealias DefaultHomeCoordinator = BaseCoordinator & HomeCoordinatorOutput
 
 public final class HomeCoordinator: DefaultHomeCoordinator {
+    
+    public weak var delegate: HomeCoordinatorDelegate?
+    
+    // MARK: - Properties
     
     public var requestCoordinating: ((HomeCoordinatorDestination) -> Void)?
     public var finishFlow: (() -> Void)?
     
     private let factory: HomeFeatureBuildable
-    private let router: LegacyRouter
     private let userType: UserType
+    private let navigationController: UINavigationController
     
     public private(set) var rootViewController: UIViewController?
-    private weak var rootController: UINavigationController?
+    
+    // MARK: - Init
     
     public init(
-        router: LegacyRouter,
+        navigationController: UINavigationController,
         factory: HomeFeatureBuildable,
         userType: UserType
     ) {
-        self.router = router
+        self.navigationController = navigationController
         self.factory = factory
         self.userType = userType
     }
+    
+    // MARK: - Coordinator Life Cycle
     
     public override func start() {
         switch userType {
@@ -66,39 +58,49 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
         }
     }
     
+    // MARK: - Navigation
+    
     public func showHomeForMember() {
         var homeForMember = factory.makeHomeForMember()
         
         homeForMember.vm.onDashBoardCellTapped = { [weak self] in
-            self?.requestCoordinating?(.soptlog)
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .soptlog)
         }
         
         homeForMember.vm.onCalendarCellTapped = { [weak self] in
-            self?.requestCoordinating?(.calendar)
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .calendar)
         }
 
         homeForMember.vm.onNotificationButtonTapped = { [weak self] in
-            self?.requestCoordinating?(.notification)
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .notification)
         }
         
         homeForMember.vm.onSettingButtonTapped = { [weak self] userType in
-            self?.requestCoordinating?(.setting(userType: userType))
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .setting(userType: userType))
         }
         
         homeForMember.vm.onAppServiceCellTapped = { [weak self] url in
-            self?.requestCoordinating?(.deepLink(url: url))
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .deepLink(url: url))
         }
         
         homeForMember.vm.onMainProductCellTapped = { [weak self] url in
-            self?.requestCoordinating?(.webLink(url: url))
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .webLink(url: url))
         }
         
         homeForMember.vm.onAttendanceButtonTapped = { [weak self] in
-            self?.requestCoordinating?(.attendance)
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .attendance)
         }
         
         homeForMember.vm.onNeedSignIn = { [weak self] in
-            self?.requestCoordinating?(.signIn)
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .signIn)
         }
     
         homeForMember.vm.onNetworkError = {
@@ -106,12 +108,27 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
         }
         
         homeForMember.vm.onPoke = { [weak self] isNewUser in
-            self?.requestCoordinating?(.poke(isNewUser: isNewUser))
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .poke(isNewUser: isNewUser))
         }
         
-        rootViewController = homeForMember.vc.viewController
+        homeForMember.vm.onExtendedFloatingButtonTapped = { [weak self] url in
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .deepLink(url: url))
+        }
         
-        router.push(homeForMember.vc)
+        homeForMember.vm.onSurveyButtonTapped = { [weak self] url in
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .webLink(url: url))
+        }
+        
+        homeForMember.vm.onSocialLinkButtonTapped = { [weak self] url in
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .webLink(url: url))
+        }
+        
+        rootViewController = homeForMember.vc
+        navigationController.pushViewController(homeForMember.vc, animated: true)
     }
     
     public func showHomeForVisitor() {
@@ -130,14 +147,16 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
         }
         
         homeForVisitor.vm.onMainProductCellTapped = { [weak self] url in
-            self?.requestCoordinating?(.webLink(url: url))
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .webLink(url: url))
         }
         
         homeForVisitor.vm.onSettingButtonTapped = { [weak self] userType in
-            self?.requestCoordinating?(.setting(userType: userType))
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .setting(userType: userType))
         }
         
-        rootViewController = homeForVisitor.vc.viewController
-        router.push(homeForVisitor.vc)
+        rootViewController = homeForVisitor.vc
+        navigationController.pushViewController(homeForVisitor.vc, animated: true)
     }
 }

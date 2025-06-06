@@ -1,20 +1,17 @@
 //
-//  MyPageControllables.swift
-//  AppMyPageFeatureInterface
+//  MyPageFeatureControllables.swift
+//  AppMyPageFeature
 //
-//  Created by Junho Lee on 2023/06/21.
-//  Copyright © 2023 SOPT-iOS. All rights reserved.
+//  Created by 강윤서 on 6/4/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
 import Core
-import BaseFeatureDependency
 
-public protocol SentenceEditViewControllable: LegacyViewControllable { }
-public protocol PrivacyPolicyViewControllable: LegacyViewControllable { }
-public protocol TermsOfServiceViewControllable: LegacyViewControllable { }
-public protocol WithdrawalViewControllable: LegacyViewControllable & WithdrawalViewCoordinatable {
-    var userType: UserType { get set }
-}
 public protocol WithdrawalViewCoordinatable {
     var onWithdrawal: (() -> Void)? { get set }
 }
+
+public typealias WithdrawalViewModelType = ViewModelType & WithdrawalViewCoordinatable
+public typealias WithdrawalPresentable = (vc: UIViewController, vm: any WithdrawalViewModelType)

@@ -15,8 +15,6 @@ public protocol AppMyPageUseCase {
     func deregisterPushToken()
     
     var resetSuccess: PassthroughSubject<Bool, Error> { get }
-    var originUserNotificationIsAllowedStatus: PassthroughSubject<Bool, Error> { get }
-    var optInPushNotificationResult: PassthroughSubject<Bool, Error> { get }
     var deregisterPushTokenSuccess: PassthroughSubject<Bool, Never> { get }
 }
 
@@ -24,8 +22,6 @@ public final class DefaultAppMyPageUseCase {
     private let repository: AppMyPageRepositoryInterface
     
     public let resetSuccess = PassthroughSubject<Bool, Error>()
-    public let originUserNotificationIsAllowedStatus = PassthroughSubject<Bool, Error>()
-    public let optInPushNotificationResult = PassthroughSubject<Bool, Error>()
     public let deregisterPushTokenSuccess = PassthroughSubject<Bool, Never>()
 
     private let cancelBag = CancelBag()

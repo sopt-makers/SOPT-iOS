@@ -10,29 +10,30 @@ import UIKit
 
 import Core
 import Domain
+import DSKit
 
 struct HomePresentationModel {
 
     let dashBoard: HomePresentationModel.DashBoard
     let recentSchedule: HomePresentationModel.RecentSchedule
     let appServices: [HomePresentationModel.AppService]
+    let playgroundNewsPosts: [HomePresentationModel.PlaygroundNews]
+    let survey: HomePresentationModel.Survey
     
-    // TODO: 이후 스프린트에서 순차 배포
-//    let insightPosts: [HomePresentationModel.InsightPost]
-//    let groupPosts: [HomePresentationModel.GroupPost]
-//    let coffeeChatPosts: [HomePresentationModel.CoffeeChat]
-//    let announcementPosts: [HomePresentationModel.Announcement]
-
     // MARK: - Item Structs
     
     struct DashBoard: Identifiable, Hashable {
         let id = "dashboard"
         
-        let description: String?
+        let description: NSAttributedString
         let history: [Int]?
         let isAllConfirm: Bool?
         
-        init(description: String? = nil, history: [Int]? = nil, isAllConfirm: Bool? = nil) {
+        init(
+            description: NSAttributedString = NSAttributedString(string: ""),
+            history: [Int]? = nil,
+            isAllConfirm: Bool? = nil
+        ) {
             self.description = description
             self.history = history
             self.isAllConfirm = isAllConfirm
@@ -85,7 +86,7 @@ struct HomePresentationModel {
         }
     }
     
-    struct InsightPost: Identifiable, Hashable {
+    struct PlaygroundNews: Identifiable, Hashable {
         let id = UUID()
 
         let title, category: String
@@ -111,97 +112,37 @@ struct HomePresentationModel {
         }
     }
     
-    struct GroupPost: Identifiable, Hashable {
-        let id: Int
+    struct Survey: Identifiable, Hashable {
+        let id = UUID()
+        
         let title: String
-        let category: HomeGroupPostModel.Category
-        let canJoinOnlyActiveGeneration: Bool
-        let joinableParts: [String]
-        let canJoinAllParts: Bool
-        let status: HomeGroupPostModel.Status
-        let imageUrl: String
+        let subTitle: String
+        let actionButtonName: String
+        let linkURL: String
+        let isActive: Bool
         
         init(
-            id: Int,
             title: String,
-            category: HomeGroupPostModel.Category,
-            canJoinOnlyActiveGeneration: Bool,
-            joinableParts: [String],
-            canJoinAllParts: Bool,
-            status: HomeGroupPostModel.Status,
-            imageUrl: String
+            subTitle: String,
+            actionButtonName: String,
+            linkURL: String,
+            isActive: Bool
         ) {
-            self.id = id
             self.title = title
-            self.category = category
-            self.canJoinOnlyActiveGeneration = canJoinOnlyActiveGeneration
-            self.joinableParts = joinableParts
-            self.canJoinAllParts = canJoinAllParts
-            self.status = status
-            self.imageUrl = imageUrl
+            self.subTitle = subTitle
+            self.actionButtonName = actionButtonName
+            self.linkURL = linkURL
+            self.isActive = isActive
         }
     }
     
-    struct CoffeeChat: Identifiable, Hashable {
-        let id: Int
-        let bio: String
-        let topicTypeList: [String]
-        let profileImage: String?
-        let name: String
-        let career: String?
-        let organization: String?
-        let companyJob: String?
-        let soptActivities: [String]
-        let currentSoptActivity: String?
+    struct SocialLink: Identifiable, Hashable {
+        let id = UUID()
         
-        init(
-            id: Int,
-            bio: String,
-            topicTypeList: [String],
-            profileImage: String? = nil,
-            name: String,
-            career: String? = nil,
-            organization: String? = nil,
-            companyJob: String? = nil,
-            soptActivities: [String],
-            currentSoptActivity: String? = nil
-        ) {
-            self.id = id
-            self.bio = bio
-            self.topicTypeList = topicTypeList
-            self.profileImage = profileImage
-            self.name = name
-            self.career = career
-            self.organization = organization
-            self.companyJob = companyJob
-            self.soptActivities = soptActivities
-            self.currentSoptActivity = currentSoptActivity
-        }
-    }
-    
-    struct Announcement: Identifiable, Hashable {
-        let id: Int
-        let profileImage, name: String?
-        let categoryName, title: String
-        let content: String
-        let images: [String]?
+        let socialLink: ServiceType
         
-        init(
-            id: Int,
-            profileImage: String? = nil,
-            name: String? = nil,
-            categoryName: String,
-            title: String,
-            content: String,
-            images: [String]? = nil
-        ) {
-            self.id = id
-            self.profileImage = profileImage
-            self.name = name
-            self.categoryName = categoryName
-            self.title = title
-            self.content = content
-            self.images = images
+        init(socialLink: ServiceType) {
+            self.socialLink = socialLink
         }
     }
 }
@@ -210,8 +151,15 @@ struct HomePresentationModel {
 
 extension HomeDescriptionModel {
     func toPresentation(history: [Int], isAllConfirm: Bool?) -> HomePresentationModel.DashBoard {
+        let attrString = NSAttributedString
+            .fromHTML(
+                description,
+                defaultFont: DSKitFontFamily.Suit.medium.font(size: 18),
+                boldFont: DSKitFontFamily.Suit.bold.font(size: 18),
+                defaultColor: DSKitAsset.Colors.white.color
+            )
         return HomePresentationModel.DashBoard(
-            description: self.description,
+            description: attrString,
             history: history,
             isAllConfirm: isAllConfirm
         )
@@ -244,9 +192,9 @@ extension HomeAppServicesModel {
     }
 }
 
-extension HomeInsightPostsModel {
-    func toPresentation() -> HomePresentationModel.InsightPost {
-        return HomePresentationModel.InsightPost(
+extension HomePlaygroundNewsPostsModel {
+    func toPresentation() -> HomePresentationModel.PlaygroundNews {
+        return HomePresentationModel.PlaygroundNews(
             title: self.title,
             category: self.category,
             profileImage: self.profileImage,
@@ -257,43 +205,14 @@ extension HomeInsightPostsModel {
     }
 }
 
-extension HomeGroupPostModel {
-    func toPresentation() -> HomePresentationModel.GroupPost {
-        return HomePresentationModel.GroupPost(
-            id: self.id,
+extension HomeSurveyModel {
+    func toPresentation() -> HomePresentationModel.Survey {
+        return HomePresentationModel.Survey(
             title: self.title,
-            category: self.category,
-            canJoinOnlyActiveGeneration: self.canJoinOnlyActiveGeneration,
-            joinableParts: self.joinableParts,
-            canJoinAllParts: self.canJoinAllParts,
-            status: self.status,
-            imageUrl: self.imageUrl
-        )
-    }
-}
-
-extension HomeCoffeeChatPostModel {
-    func toPresentation() -> HomePresentationModel.CoffeeChat {
-        return HomePresentationModel.CoffeeChat(
-            id: self.memberId,
-            bio: self.bio,
-            topicTypeList: self.topicTypeList,
-            name: self.name,
-            soptActivities: self.soptActivities
-        )
-    }
-}
-
-extension HomeAnnouncementModel {
-    func toPresentation() -> HomePresentationModel.Announcement {
-        return HomePresentationModel.Announcement(
-            id: self.id,
-            profileImage: self.profileImage,
-            name: self.name,
-            categoryName: self.categoryName,
-            title: self.title,
-            content: self.content,
-            images: self.images
+            subTitle: self.subTitle,
+            actionButtonName: self.actionButtonName,
+            linkURL: self.linkURL,
+            isActive: self.isActive
         )
     }
 }
