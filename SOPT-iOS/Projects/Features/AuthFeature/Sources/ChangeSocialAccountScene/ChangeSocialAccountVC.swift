@@ -31,22 +31,6 @@ public class ChangeSocialAccountVC: UIViewController, ChangeSocialAccountViewCon
     
     private let cancelBag = CancelBag()
     
-    // MARK: - Initialization
-    
-    public init(
-        viewModel: ChangeSocialAccountViewModel,
-        phoneVerifyViewModel: PhoneVerifyViewModel
-    ) {
-        self.viewModel = viewModel
-        self.phoneVerifyViewModel = phoneVerifyViewModel
-        
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     // MARK: - UI Components
     
     private lazy var navigationBar = OPNavigationBar(
@@ -104,6 +88,20 @@ public class ChangeSocialAccountVC: UIViewController, ChangeSocialAccountViewCon
     
     // MARK: - View Life Cycle
     
+    public init(
+        viewModel: ChangeSocialAccountViewModel,
+        phoneVerifyViewModel: PhoneVerifyViewModel
+    ) {
+        self.viewModel = viewModel
+        self.phoneVerifyViewModel = phoneVerifyViewModel
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -120,6 +118,10 @@ extension ChangeSocialAccountVC {
     
     private func setUI() {
         self.view.backgroundColor = DSKitAsset.Colors.black100.color
+        self.phoneVerifyView.helpViewHidden = true
+    }
+    
+    private func setLayout() {
         
         self.view.addSubviews(
             navigationBar,
@@ -132,9 +134,7 @@ extension ChangeSocialAccountVC {
             phoneVerifyView,
             oAuthView
         )
-    }
-    
-    private func setLayout() {
+        
         navigationBar.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             $0.leading.trailing.equalToSuperview()

@@ -23,6 +23,7 @@ public struct ExternalURL {
         public static let officialHomepage = "https://sopt.org"
         public static let review = "https://sopt.org/review"
         public static let faq = "https://sopt.org/FAQ"
+        public static let memberVerifyGoogleForm = "https://docs.google.com/forms/d/e/1FAIpQLSdBxksqlkAHShYdQYxDIK1Mnsy45MbYMkEeGuCMpeXjn6C1NQ/viewform"
     }
     
     public struct SNS {

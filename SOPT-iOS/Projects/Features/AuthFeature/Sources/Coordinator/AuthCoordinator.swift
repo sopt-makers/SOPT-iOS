@@ -12,6 +12,7 @@ import BaseFeatureDependency
 import AuthFeatureInterface
 import Core
 import DSKit
+import WebFeature
 
 public protocol AuthCoordinatorFinishOutput {
     var finishFlow: ((UserType) -> Void)? { get set }
@@ -118,7 +119,10 @@ extension AuthCoordinator {
         var signUpVC = self.factory.makeSignUp()
         
         signUpVC.vm.onLoginHelpButtonTapped = { [weak self] in
-            self?.showLoginHelpBottomSheet(on: signUpVC.vc)
+            guard let url = URL(string: ExternalURL.SOPT.memberVerifyGoogleForm) else { return }
+            
+            let webView = SOPTWebView(startWith: url)
+            self?.router.asNavigationController.pushViewController(webView, animated: true)
         }
         
         self.router.push(signUpVC.vc)

@@ -15,6 +15,11 @@ import Core
 
 final class PhoneVerifyView: UIView {
     
+    public var helpViewHidden: Bool {
+        get { helpView.isHidden }
+        set { helpView.isHidden = newValue }
+    }
+    
     public var viewModelInput: PhoneVerifyViewModel.Input {
         return .init(
             sendButtonTapped: sendButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
@@ -28,15 +33,17 @@ final class PhoneVerifyView: UIView {
         helpView.gesture().mapVoid().asDriver()
     }
     
+    private static let i18N = I18N.Auth.PhoneVerify.self
+    
     private let titleLabel = UILabel().then {
-        $0.text = "SOPT 회원인증"
+        $0.text = i18N.title
         $0.font = DSKitFontFamily.Suit.bold.font(size: 24)
         $0.textColor = DSKitAsset.Colors.gray10.color
         $0.textAlignment = .center
     }
     
     private let descriptionLabel = UILabel().then {
-        $0.text = "이곳은 SOPT 회원만을 위한 공간이에요.\nSOPT 회원인증을 위해 전화번호를 입력해 주세요."
+        $0.text = i18N.description
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
         $0.textColor = DSKitAsset.Colors.gray60.color
         $0.textAlignment = .center
@@ -44,13 +51,13 @@ final class PhoneVerifyView: UIView {
     }
     
     private let phoneLabel = UILabel().then {
-        $0.text = "전화번호"
+        $0.text = i18N.phoneLabel
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
         $0.textColor = DSKitAsset.Colors.gray80.color
     }
     
-    public let phoneTextField = UITextField().then {
-        $0.placeholder = "01012345678"
+    private let phoneTextField = UITextField().then {
+        $0.placeholder = i18N.phonePlaceholder
         $0.font = DSKitFontFamily.Suit.medium.font(size: 16)
         $0.keyboardType = .numberPad
         $0.backgroundColor = DSKitAsset.Colors.gray800.color
@@ -75,13 +82,13 @@ final class PhoneVerifyView: UIView {
         $0.isHidden = true
     }
     
-    private let sendButton = AppImageTextButton(title: "전송하기").then {
+    private let sendButton = AppImageTextButton(title: i18N.sendButtonTitle).then {
         $0.layer.cornerRadius = 10
         $0.layer.masksToBounds = true
     }
     
     private let codeTextField = UITextField().then {
-        $0.placeholder = "인증번호를 입력해주세요."
+        $0.placeholder = i18N.codePlaceholder
         $0.font = DSKitFontFamily.Suit.medium.font(size: 16)
         $0.keyboardType = .numberPad
         $0.backgroundColor = DSKitAsset.Colors.gray800.color
@@ -98,7 +105,7 @@ final class PhoneVerifyView: UIView {
     private let timeLeftLabel = UILabel().then {
         $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
         $0.textColor = DSKitAsset.Colors.white.color
-        $0.text = "03:00"
+        $0.text = i18N.defaultTimerText
     }
     
     private let codeFailIcon = UIImageView().then {
@@ -129,7 +136,7 @@ final class PhoneVerifyView: UIView {
     }
     
     private let helpTitleLabel = UILabel().then {
-        $0.text = "SOPT 회원인증에 실패하셨나요?"
+        $0.text = i18N.helpTitle
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
         $0.textColor = DSKitAsset.Colors.gray30.color
     }
@@ -142,13 +149,13 @@ final class PhoneVerifyView: UIView {
     }
     
     private let helpDescriptionLabel = UILabel().then {
-        $0.text = "번호가 바뀌었거나, 인증이 어려우신 경우 추가 정보 인증을 통해 가입을 도와드리고 있어요!"
+        $0.text = i18N.helpDescription
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
         $0.textColor = DSKitAsset.Colors.gray200.color
         $0.numberOfLines = 0
     }
     
-    private let doneButton = AppImageTextButton(title: "SOPT 회원 인증 완료").then {
+    private let doneButton = AppImageTextButton(title: i18N.doneButtonTitle).then {
         $0.configuration?.attributedTitle?.font = DSKitFontFamily.Suit.semiBold.font(size: 18)
     }
     
@@ -163,8 +170,6 @@ final class PhoneVerifyView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    
     
     private func setUI() {
         self.addSubviews(
@@ -297,87 +302,87 @@ final class PhoneVerifyView: UIView {
 
 extension PhoneVerifyView {
     
-    func bindOutput(
+    internal func bindOutput(
         _ output: PhoneVerifyViewModel.Output,
-        cancelBag: CancelBag) {
-            
-            output.isSent
-                .withUnretained(self)
-                .sink { owner, isSent in
-                    let text = isSent ? "재전송하기" : "전송하기"
-                    ToastUtils.showMDSToast(type: .success, text: "인증번호가 전송되었어요.")
-                    owner.sendButton.updateTitle(text)
-                    owner.codeTextField.isHidden = !isSent
-                }
-                .store(in: cancelBag)
-            
-            output.phoneTextFieldText
-                .asDriver()
-                .withUnretained(self)
-                .sink { owner, text in
-                    owner.phoneTextField.text = text
-                }
-                .store(in: cancelBag)
-            
-            output.codeTextFieldText
-                .asDriver()
-                .withUnretained(self)
-                .sink { owner, text in
-                    owner.codeTextField.text = text
-                }
-                .store(in: cancelBag)
-            
-            output.timerIsRunning
-                .withUnretained(self)
-                .sink { owner, active in
-                    self.endEditing(!active)
-                    self.codeTextField.isEnabled = active
-                }
-                .store(in: cancelBag)
-            
-            output.timeLeft
-                .withUnretained(self)
-                .sink { owner, time in
-                    print(time)
-                }
-                .store(in: cancelBag)
-            
-            output.phoneFailDescription
-                .withUnretained(self)
-                .sink { owner, description in
-                    owner.updateFailLabelUI(isCode: false, description)
-                }
-                .store(in: cancelBag)
-            
-            output.codeFailDescription
-                .withUnretained(self)
-                .sink { owner, description in
-                    owner.updateFailLabelUI(isCode: true, description)
-                }
-                .store(in: cancelBag)
-            
-            output.sendButtonIsEnabled
-                .withUnretained(self)
-                .sink { owner, isEnabled in
-                    owner.sendButton.isEnabled = isEnabled
-                }
-                .store(in: cancelBag)
-            
-            output.doneButtonIsEnabled
-                .withUnretained(self)
-                .sink { owner, isEnabled in
-                    owner.doneButton.isEnabled = isEnabled
-                }
-                .store(in: cancelBag)
-            
-            output.timeLeft
-                .withUnretained(self)
-                .sink { owner, timeLeft in
-                    owner.timeLeftLabel.text = timeLeft.to_mmss
-                }
-                .store(in: cancelBag)
-        }
-    
+        cancelBag: CancelBag
+    ) {
+        
+        output.isSent
+            .withUnretained(self)
+            .sink { owner, isSent in
+                let text = isSent ? Self.i18N.resendButtonTitle : Self.i18N.sendButtonTitle
+                ToastUtils.showMDSToast(type: .success, text: Self.i18N.sendSuccessToast)
+                owner.sendButton.updateTitle(text)
+                owner.codeTextField.isHidden = !isSent
+            }
+            .store(in: cancelBag)
+        
+        output.phoneTextFieldText
+            .asDriver()
+            .withUnretained(self)
+            .sink { owner, text in
+                owner.phoneTextField.text = text
+            }
+            .store(in: cancelBag)
+        
+        output.codeTextFieldText
+            .asDriver()
+            .withUnretained(self)
+            .sink { owner, text in
+                owner.codeTextField.text = text
+            }
+            .store(in: cancelBag)
+        
+        output.timerIsRunning
+            .withUnretained(self)
+            .sink { owner, active in
+                self.endEditing(!active)
+                self.codeTextField.isEnabled = active
+            }
+            .store(in: cancelBag)
+        
+        output.timeLeft
+            .withUnretained(self)
+            .sink { owner, time in
+                print(time)
+            }
+            .store(in: cancelBag)
+        
+        output.phoneFailDescription
+            .withUnretained(self)
+            .sink { owner, description in
+                owner.updateFailLabelUI(isCode: false, description)
+            }
+            .store(in: cancelBag)
+        
+        output.codeFailDescription
+            .withUnretained(self)
+            .sink { owner, description in
+                owner.updateFailLabelUI(isCode: true, description)
+            }
+            .store(in: cancelBag)
+        
+        output.sendButtonIsEnabled
+            .withUnretained(self)
+            .sink { owner, isEnabled in
+                owner.sendButton.isEnabled = isEnabled
+            }
+            .store(in: cancelBag)
+        
+        output.doneButtonIsEnabled
+            .withUnretained(self)
+            .sink { owner, isEnabled in
+                owner.doneButton.isEnabled = isEnabled
+            }
+            .store(in: cancelBag)
+        
+        output.timeLeft
+            .withUnretained(self)
+            .sink { owner, timeLeft in
+                owner.timeLeftLabel.text = timeLeft.to_mmss
+            }
+            .store(in: cancelBag)
+    }
     
     private func updateFailLabelUI(isCode: Bool, _ description: String?) {
         let failLabel = isCode ? codeFailLabel : phoneFailLabel

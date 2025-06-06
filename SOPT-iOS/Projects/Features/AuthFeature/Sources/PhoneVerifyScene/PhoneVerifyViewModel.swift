@@ -20,7 +20,7 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
     private let phoneVerifyType: PhoneVerifyType
     
     private let timerPublisher: Timer.TimerPublisher
-    @Published private var timerCancellable: AnyCancellable?
+    @Published private var timerCancellable: Cancellable?
     
     // MARK: - Inputs
     
