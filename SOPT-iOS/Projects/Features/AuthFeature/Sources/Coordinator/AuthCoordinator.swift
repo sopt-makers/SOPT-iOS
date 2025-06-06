@@ -37,6 +37,8 @@ public final class AuthCoordinator: BaseCoordinator & AuthCoordinatorFinishOutpu
 
     public override func start(by style: CoordinatorStartingOption) {
         var signIn = factory.makeSignIn()
+        
+        //TODO: 딥링크 URL 자동로그인 로직
 
         signIn.vm.onSignInSuccess = { [weak self]  in
             let userType = UserDefaultKeyList.Auth.getUserType()
