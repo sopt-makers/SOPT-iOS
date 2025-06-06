@@ -15,7 +15,7 @@ import DailySoptuneFeatureInterface
 import Domain
 import PokeFeatureInterface
 
-public final class LegacyDailySoptuneCoordinator: DefaultCoordinator {
+public final class LegacyDailySoptuneCoordinator: DefaultDailySoptuneCoordinator {
     
     public var requestCoordinating: (() -> Void)?
     public var finishFlow: (() -> Void)?
