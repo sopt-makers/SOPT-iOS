@@ -1,53 +1,42 @@
 //
-//  PokeCoordinator.swift
+//  LegacyPokeCoordinator.swift
 //  PokeFeature
 //
-//  Created by Jae Hyun Lee on 6/3/25.
-//  Copyright © 2025 SOPT-iOS. All rights reserved.
+//  Created by sejin on 12/7/23.
+//  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
 import UIKit
 import Combine
 
 import Core
-import Domain
 import BaseFeatureDependency
 import PokeFeatureInterface
+import Domain
 import WebFeature
 
-public final class PokeCoordinator: DefaultPokeCoordinator {
-    
-    // MARK: - Properties
-    
+public
+final class LegacyPokeCoordinator: DefaultPokeCoordinator {
     public var finishFlow: (() -> Void)?
     
-    private let factory: PokeFeatureBuildable
-    private let navigationController: UINavigationController
+    private let factory: LegacyPokeFeatureBuildable
+    private let router: LegacyRouter
     private weak var rootController: UINavigationController?
     
-    // MARK: - Init
-    
-    public init(
-        navigationController: UINavigationController,
-        factory: PokeFeatureBuildable
-    ) {
-        self.navigationController = navigationController
+    public init(router: LegacyRouter, factory: LegacyPokeFeatureBuildable) {
+        self.router = router
         self.factory = factory
     }
-    
-    // MARK: - Coordinator Life Cycle
     
     public override func start() {
         showPokeMain(isRouteFromRoot: false)
     }
     
-    // MARK: - Navigation
-    
     public func showPokeMain(isRouteFromRoot: Bool) {
         var pokeMain = factory.makePokeMain(isRouteFromRoot: isRouteFromRoot)
         
         pokeMain.vm.onNaviBackTap = { [weak self] in
-            self?.navigationController.dismiss(animated: true)
+            self?.router.dismissModule(animated: true)
             self?.finishFlow?()
         }
         
@@ -79,10 +68,10 @@ public final class PokeCoordinator: DefaultPokeCoordinator {
         }
 
         pokeMain.vm.onAnonymousFriendUpgrade = { [weak self] user in
-            guard let self else { return }
-            let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
-            pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
-            self.rootController?.present(pokeAnonymousFriendUpgradeVC, animated: false)
+          guard let self else { return }
+          let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
+          pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
+          self.rootController?.present(pokeAnonymousFriendUpgradeVC, animated: false)
         }
 
         pokeMain.vm.switchToOnboarding = { [weak self] in
@@ -90,15 +79,15 @@ public final class PokeCoordinator: DefaultPokeCoordinator {
             self.runPokeOnboardingFlow()
         }
         
-        let navController = UINavigationController(rootViewController: pokeMain.vc)
-        navController.modalPresentationStyle = .overFullScreen
-        rootController = navController
-        navigationController.present(navController, animated: true)
+        rootController = pokeMain.vc.asNavigationController
+        router.present(rootController, animated: true, modalPresentationSytle: .overFullScreen)
     }
     
     internal func runPokeOnboardingFlow() {
-        let pokeOnboardingCoordinator = PokeOnboardingCoordinator(
-            navigationController: rootController ?? navigationController,
+        let pokeOnboardingCoordinator = LegacyPokeOnboardingCoordinator(
+            router: LegacyRouter(
+                rootController: rootController ?? self.router.asNavigationController
+            ),
             factory: factory
         )
         
@@ -112,8 +101,10 @@ public final class PokeCoordinator: DefaultPokeCoordinator {
     }
     
     internal func runPokeNotificationListFlow() {
-        let pokeNotificationListCoordinator = PokeNotificationListCoordinator(
-            navigationController: rootController ?? navigationController,
+        let pokeNotificationListCoordinator = LegacyPokeNotificationListCoordinator(
+            router: LegacyRouter(
+                rootController: rootController ?? self.router.asNavigationController
+            ),
             factory: factory
         )
         
@@ -127,10 +118,8 @@ public final class PokeCoordinator: DefaultPokeCoordinator {
     }
     
     private func runPokeMyFriendsFlow() {
-        let pokeMyFriendsCoordinator = PokeMyFriendsCoordinator(
-            navigationController: rootController ?? navigationController,
-            factory: factory
-        )
+        let pokeMyFriendsCoordinator = LegacyPokeMyFriendsCoordinator(factory: factory,
+                                                                router: LegacyRouter(rootController: rootController!))
         
         pokeMyFriendsCoordinator.finishFlow = { [weak self, weak pokeMyFriendsCoordinator] in
             self?.removeDependency(pokeMyFriendsCoordinator)
@@ -151,7 +140,9 @@ public final class PokeCoordinator: DefaultPokeCoordinator {
         
         let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate(minHeight: PokeMessageTemplateBottomSheet.minimumContentHeight))
         
-        bottomSheetManager.present(toPresent: bottomSheet, on: view)
+        self.router.showBottomSheet(manager: bottomSheetManager,
+                                     toPresent: bottomSheet,
+                                     on: view)
         
         return bottomSheet
             .signalForClick()

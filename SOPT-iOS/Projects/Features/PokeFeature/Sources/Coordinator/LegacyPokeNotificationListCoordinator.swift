@@ -1,9 +1,9 @@
 //
-//  PokeNotificationListCoordinator.swift
+//  LegacyPokeNotificationListCoordinator.swift
 //  PokeFeature
 //
-//  Created by Jae Hyun Lee on 6/3/25.
-//  Copyright © 2025 SOPT-iOS. All rights reserved.
+//  Created by Ian on 12/23/23.
+//  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
 import UIKit
@@ -14,37 +14,27 @@ import BaseFeatureDependency
 import PokeFeatureInterface
 import WebFeature
 
-public final class PokeNotificationListCoordinator: DefaultCoordinator {
-    
-    // MARK: - Properties
-    
+public final class LegacyPokeNotificationListCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
-    private let factory: PokeFeatureBuildable
-    private let navigationController: UINavigationController
+    private let router: LegacyRouter
+    private let factory: LegacyPokeFeatureBuildable
     private weak var rootController: UINavigationController?
     
-    // MARK: - Init
-    
-    public init(
-        navigationController: UINavigationController,
-        factory: PokeFeatureBuildable
-    ) {
-        self.navigationController = navigationController
+    public init(router: LegacyRouter, factory: LegacyPokeFeatureBuildable) {
+        self.router = router
         self.factory = factory
     }
     
-    // MARK: - Coordinator Life Cycle
-    
     public override func start() {
-        showPokeNotificationListView()
+        self.showPokeNotificationListView()
     }
-    
-    // MARK: - Navigation
-    
+}
+
+extension LegacyPokeNotificationListCoordinator {
     private func showPokeNotificationListView() {
-        var pokeNotiListVC = factory.makePokeNotificationList()
-        
+        var pokeNotiListVC = self.factory.makePokeNotificationList()
+                    
         pokeNotiListVC.vm.onPokeButtonTapped = { [weak self] userModel in
             guard let bottomSheet = self?.factory
                 .makePokeMessageTemplateBottomSheet(messageType: userModel.isFirstMeet ? .pokeSomeone : .pokeFriend)
@@ -52,7 +42,7 @@ public final class PokeNotificationListCoordinator: DefaultCoordinator {
                     .viewController as? PokeMessageTemplateBottomSheet
             else { return .empty() }
             
-            let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate(minHeight: PokeMessageTemplateBottomSheet.minimumContentHeight))
+            let bottomSheetManager = BottomSheetManager(configuration:  .messageTemplate(minHeight: PokeMessageTemplateBottomSheet.minimumContentHeight))
             bottomSheetManager.present(toPresent: bottomSheet, on: self?.rootController)
             
             return bottomSheet
@@ -77,21 +67,21 @@ public final class PokeNotificationListCoordinator: DefaultCoordinator {
         }
 
         pokeNotiListVC.vm.onProfileImageTapped = { [weak self] playgroundId in
-            guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(playgroundId)") else { return }
-            
-            let webView = SOPTWebView(startWith: url)
-            self?.navigationController.pushViewController(webView, animated: true)
+          guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(playgroundId)") else { return }
+
+          let webView = SOPTWebView(startWith: url)
+
+          self?.router.push(webView.viewController, transition: nil, animated: true)
         }
-        
-        let navController = UINavigationController(rootViewController: pokeNotiListVC.vc)
-        rootController = navController
+
+        self.rootController = pokeNotiListVC.vc.asNavigationController
         
         var willAnimate = true
-        if let top = navigationController.topViewController, type(of: top) == type(of: pokeNotiListVC.vc) {
+        if let top = router.topViewController, type(of: top) == type(of: pokeNotiListVC.vc) {
             willAnimate = false
-            navigationController.popViewController(animated: false)
+            router.popModule(transition: nil, animated: false)
         }
         
-        navigationController.pushViewController(pokeNotiListVC.vc, animated: willAnimate)
+        self.router.push(pokeNotiListVC.vc, transition: nil, animated: willAnimate)
     }
 }

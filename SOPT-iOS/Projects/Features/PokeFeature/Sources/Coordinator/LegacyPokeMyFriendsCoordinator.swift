@@ -1,9 +1,9 @@
 //
-//  PokeMyFriendsCoordinator.swift
+//  LegacyPokeMyFriendsCoordinator.swift
 //  PokeFeature
 //
-//  Created by Jae Hyun Lee on 6/3/25.
-//  Copyright © 2025 SOPT-iOS. All rights reserved.
+//  Created by sejin on 12/14/23.
+//  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
 import UIKit
@@ -15,33 +15,22 @@ import BaseFeatureDependency
 import PokeFeatureInterface
 import WebFeature
 
-public final class PokeMyFriendsCoordinator: DefaultCoordinator {
-    
-    // MARK: - Properties
-    
+public
+final class LegacyPokeMyFriendsCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
-    private let factory: PokeFeatureBuildable
-    private let navigationController: UINavigationController
+    private let factory: LegacyPokeFeatureBuildable
+    private let router: LegacyRouter
     private weak var rootController: UINavigationController?
     
-    // MARK: - Init
-    
-    public init(
-        navigationController: UINavigationController,
-        factory: PokeFeatureBuildable
-    ) {
-        self.navigationController = navigationController
+    public init(factory: LegacyPokeFeatureBuildable, router: LegacyRouter) {
         self.factory = factory
+        self.router = router
     }
-    
-    // MARK: - Coordinator Life Cycle
     
     public override func start() {
         showPokeMyFriends()
     }
-    
-    // MARK: - Navigation
     
     private func showPokeMyFriends() {
         var pokeMyFriends = factory.makePokeMyFriends()
@@ -59,24 +48,24 @@ public final class PokeMyFriendsCoordinator: DefaultCoordinator {
             guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(playgroundId)") else { return }
             
             let webView = SOPTWebView(startWith: url)
-            self?.navigationController.pushViewController(webView, animated: true)
+            self?.router.push(webView)
         }
         
         pokeMyFriends.vm.onAnonymousFriendUpgrade = { [weak self] user in
             guard let self else { return }
             let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
             pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
-            self.navigationController.present(pokeAnonymousFriendUpgradeVC, animated: false)
+            self.router.present(pokeAnonymousFriendUpgradeVC, animated: false)
         }
         
-        navigationController.pushViewController(pokeMyFriends.vc, animated: true)
+        router.push(pokeMyFriends.vc)
     }
     
     private func showPokeMyFriendsList(with relation: PokeRelation) {
         var pokeMyFriendsList = factory.makePokeMyFriendsList(relation: relation)
         
         pokeMyFriendsList.vm.onCloseButtonTap = { [weak self] in
-            self?.navigationController.dismiss(animated: true)
+            self?.router.dismissModule(animated: true)
         }
         
         pokeMyFriendsList.vm.onPokeButtonTapped = { [weak self] userModel in
@@ -95,12 +84,11 @@ public final class PokeMyFriendsCoordinator: DefaultCoordinator {
             guard let self else { return }
             let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
             pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
-            self.navigationController.present(pokeAnonymousFriendUpgradeVC, animated: false)
+            self.router.present(pokeAnonymousFriendUpgradeVC, animated: false)
         }
         
-        let navController = UINavigationController(rootViewController: pokeMyFriendsList.vc)
-        rootController = navController
-        navigationController.present(navController, animated: true)
+        self.rootController = pokeMyFriendsList.vc.asNavigationController
+        router.present(rootController, animated: true)
     }
     
     private func showMessageBottomSheet(userModel: PokeUserModel, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel, isAnonymous: Bool), Never> {
@@ -112,7 +100,9 @@ public final class PokeMyFriendsCoordinator: DefaultCoordinator {
         
         let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate(minHeight: PokeMessageTemplateBottomSheet.minimumContentHeight))
         
-        bottomSheetManager.present(toPresent: bottomSheet, on: view)
+        self.router.showBottomSheet(manager: bottomSheetManager,
+                                    toPresent: bottomSheet,
+                                    on: view)
         
         return bottomSheet
             .signalForClick()

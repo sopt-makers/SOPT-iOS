@@ -6,6 +6,8 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
+
 import BaseFeatureDependency
 import Core
 import Domain
@@ -24,4 +26,6 @@ public protocol PokeMainCoordinatable {
 }
 
 public typealias PokeMainViewModelType = ViewModelType & PokeMainCoordinatable
-public typealias PokeMainPresentable = (vc: PokeMainViewControllable, vm: any PokeMainViewModelType)
+public typealias LegacyPokeMainPresentable = (vc: PokeMainViewControllable, vm: any PokeMainViewModelType)
+
+public typealias PokeMainPresentable = (vc: UIViewController, vm: any PokeMainViewModelType)

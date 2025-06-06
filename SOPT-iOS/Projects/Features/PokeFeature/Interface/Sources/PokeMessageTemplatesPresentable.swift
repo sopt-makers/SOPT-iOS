@@ -6,12 +6,18 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
 import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol PokeMessageTemplatesViewControllable: LegacyViewControllable {
+public protocol LegacyPokeMessageTemplatesViewControllable: LegacyViewControllable {
+    var minimumContentHeight: CGFloat { get }
+    
+    func signalForClick() -> Driver<(PokeMessageModel, isAnonymous: Bool)>
+}
+public protocol PokeMessageTemplatesViewControllable: UIViewController {
     var minimumContentHeight: CGFloat { get }
     
     func signalForClick() -> Driver<(PokeMessageModel, isAnonymous: Bool)>
@@ -22,5 +28,5 @@ public protocol PokeMessageTemplatesCoordinatable { }
 public protocol PokeMessageTemplatesViewModelType: ViewModelType & PokeMessageTemplatesCoordinatable {
     var messageType: PokeMessageType { get }
 }
+public typealias LegacyPokeMessageTemplatesPresentable = (vc: LegacyPokeMessageTemplatesViewControllable, vm: any PokeMessageTemplatesCoordinatable)
 public typealias PokeMessageTemplatesPresentable = (vc: PokeMessageTemplatesViewControllable, vm: any PokeMessageTemplatesCoordinatable)
-
