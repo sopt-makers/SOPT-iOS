@@ -6,6 +6,8 @@
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
+
 import Core
 import Domain
 @_exported import StampFeatureInterface
@@ -50,7 +52,7 @@ extension StampBuilder: StampFeatureBuildable {
     public func makeMissionCompletedVC(
         starLevel: StarViewLevel,
         completionHandler: (() -> Void)?
-    ) -> any MissionCompletedViewControllable {
+    ) -> UIViewController {
         let missionCompletedVC = MissionCompletedVC()
             .setLevel(starLevel)
         missionCompletedVC.completionHandler = completionHandler

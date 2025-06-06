@@ -6,6 +6,8 @@
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
+
 import Core
 import Domain
 import BaseFeatureDependency
@@ -22,7 +24,7 @@ public protocol StampFeatureBuildable {
     func makeMissionCompletedVC(
         starLevel: StarViewLevel,
         completionHandler: (() -> Void)?
-    ) -> MissionCompletedViewControllable
+    ) -> UIViewController
     func makeRankingVC(rankingViewType: RankingViewType) -> RankingPresentable
     func makePartRankingVC(rankingViewType: RankingViewType) -> PartRankingPresentable
     func makeStampGuideVC() -> StampGuideViewControllable

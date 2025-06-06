@@ -13,4 +13,3 @@ import BaseFeatureDependency
 import Domain
 
 public protocol LegacyMissionCompletedViewControllable: LegacyViewControllable { }
-public protocol MissionCompletedViewControllable: UIViewController { }
