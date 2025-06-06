@@ -13,7 +13,7 @@ import Domain
 
 import AuthFeatureInterface
 
-public class SignInViewModel_Refactor: SignInViewModelType_Refactor {
+public class SignInViewModel: SignInViewModelType {
     
     private let useCase: SignInUseCase
     private var cancelBag = CancelBag()
@@ -38,7 +38,7 @@ public class SignInViewModel_Refactor: SignInViewModelType_Refactor {
     
     // MARK: - SignInCoordinating
     
-    public var onSignInSuccess: ((SiginInHandleableType) -> Void)?
+    public var onSignInSuccess: (() -> Void)?
     public var onLoginHelpButtonTapped: (() -> Void)?
     public var onVisitorButtonTapped: (() -> Void)?
     public var onSocialLoginFail: (() -> Void)?
@@ -51,10 +51,9 @@ public class SignInViewModel_Refactor: SignInViewModelType_Refactor {
     }
 }
 
-extension SignInViewModel_Refactor {
+extension SignInViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
-        self.bindOutput(output: output, cancelBag: cancelBag)
         
         input.viewDidLoad
             .sink { _ in
@@ -77,7 +76,7 @@ extension SignInViewModel_Refactor {
         }
         .withUnretained(self)
         .sink { owner, _ in
-            owner.onSignInSuccess?(.loginSuccess)
+            owner.onSignInSuccess?()
         }.store(in: self.cancelBag)
           
         
@@ -100,16 +99,5 @@ extension SignInViewModel_Refactor {
             }.store(in: self.cancelBag)
         
         return output
-    }
-  
-    private func bindOutput(output: Output, cancelBag: CancelBag) {
-        useCase.signInSuccess
-            .removeDuplicates()
-            .withUnretained(self)
-            .sink { event in
-                print("SignInViewModel: \(event)")
-            } receiveValue: { (owner, isSignInSuccess) in
-                owner.onSignInSuccess?(isSignInSuccess)
-            }.store(in: self.cancelBag)
     }
 }

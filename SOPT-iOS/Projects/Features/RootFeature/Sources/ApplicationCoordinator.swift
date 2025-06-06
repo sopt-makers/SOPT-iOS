@@ -11,7 +11,6 @@ import UIKit
 import Core
 import BaseFeatureDependency
 import SplashFeature
-import AuthFeature
 import HomeFeature
 import AppMyPageFeature
 import NotificationFeature
@@ -22,6 +21,12 @@ import DailySoptuneFeature
 import WebFeature
 import SoptlogFeature
 import TabBarFeature
+
+#if DEV || PROD
+import LegacyAuthFeature
+#else
+import AuthFeature
+#endif
 
 public
 final class ApplicationCoordinator: BaseCoordinator {
@@ -59,7 +64,10 @@ final class ApplicationCoordinator: BaseCoordinator {
         if let option {
             switch option {
             case .signInSuccess(let url):
-                runSignInSuccessFlow(with: url)
+                runSignInFlow(
+                    by: .rootWindow(animated: false, message: nil),
+                    with: url
+                )
             }
         } else {
             runSplashFlow()
@@ -176,6 +184,7 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     private func runSplashFlow() {
+        UserDefaultKeyList.Auth.appAccessToken = nil
         var coordinator: DefaultCoordinator
         
         switch Config.coordinatorFlag {
@@ -192,26 +201,29 @@ extension ApplicationCoordinator {
         }
         
         coordinator.finishFlow = { [weak self, weak coordinator] in
-            self?.checkDidSignIn()
+            if UserDefaultKeyList.Auth.appAccessToken == nil {
+                self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
+            } else {
+                Config.coordinatorFlag == .legacy
+                ? self?.runLegacyTabBarFlow()
+                : self?.runTabBarFlow()
+            }
             self?.removeDependency(coordinator)
         }
         
         addDependency(coordinator)
         coordinator.start()
     }
-    
-    private func checkDidSignIn() {
-        let needAuth = UserDefaultKeyList.Auth.appAccessToken == nil
-        needAuth ? runSignInFlow(by: .root) : (Config.coordinatorFlag == .legacy ? runLegacyTabBarFlow() : runTabBarFlow())
-    }
 }
 
 // MARK: - SignInFlow
 
 extension ApplicationCoordinator {
-    func runSignInFlow(by style: CoordinatorStartingOption) {
-        let coordinator = AuthCoordinator_Refactor(router: router, factory: AuthBuilder_Refactor())
-//        let coordinator = AuthCoordinator(router: router, factory: AuthBuilder())
+    func runSignInFlow(
+        by style: CoordinatorStartingOption,
+        with url: String? = nil
+    ) {
+        let coordinator = AuthCoordinator(router: router, factory: AuthBuilder(), url: url)
         
         coordinator.finishFlow = { [weak self, weak coordinator] userType in
             Config.coordinatorFlag == .legacy ? self?.runLegacyTabBarFlow(type: userType) : self?.runTabBarFlow()
@@ -219,17 +231,6 @@ extension ApplicationCoordinator {
         }
         addDependency(coordinator)
         coordinator.start(by: style)
-    }
-    
-    private func runSignInSuccessFlow(with url: String) {
-        childCoordinators = []
-        let coordinator = AuthCoordinator(router: router, factory: AuthBuilder(), url: url)
-        coordinator.finishFlow = { [weak self, weak coordinator] userType in
-            Config.coordinatorFlag == .legacy ? self?.runLegacyTabBarFlow(type: userType) : self?.runTabBarFlow()
-            self?.removeDependency(coordinator)
-        }
-        addDependency(coordinator)
-        coordinator.start(by: .rootWindow(animated: false, message: nil))
     }
 }
 

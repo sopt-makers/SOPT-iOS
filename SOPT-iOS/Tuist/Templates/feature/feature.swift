@@ -57,7 +57,7 @@ enum ModuleTemplate: CaseIterable {
                     .file(path: path + "/InfoPlists/Info.plist", templatePath: "Info.plist")]
         case .demo:
             return [.file(path: path + "/Resources/LaunchScreen.storyboard", templatePath: "LaunchScreen.storyboard"),
-                    .directory(path: path + "/Resources/Assets.xcassets", sourcePath: "Assets.xcassets"),
+                    .directory(path: path + "/Resources", sourcePath: "Assets.xcassets"),
                     .file(path: path + "/Sources/Empty.swift", templatePath: "Empty.stencil")]
         }
     }

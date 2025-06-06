@@ -8,8 +8,8 @@
 
 import Foundation
 
-public protocol AuthFeatureViewBuildable_Refactor {
-    func makeSignIn() -> SignInPresentable_Refactor
+public protocol AuthFeatureViewBuildable {
+    func makeSignIn() -> SignInPresentable
     func makeLoginHelpBottomSheet() -> LoginHelpBottomSheetPresentable
     func makeUserNotFound() -> UserNotFoundPresentable
     func makeSignUp() -> SignUpPresentable

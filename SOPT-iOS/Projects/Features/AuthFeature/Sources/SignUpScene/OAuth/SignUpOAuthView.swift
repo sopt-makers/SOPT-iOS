@@ -41,11 +41,11 @@ final class SignUpOAuthView: UIView {
     
     private let googleLoginButton = AppImageTextButton(
         title: i18n.googleLogin,
-        image: DSKitAsset.Assets.logoGoogle.image.withRenderingMode(.automatic)
+        image: DSKitAsset.Assets.logoGoogle.image
     )
     
     private let appleLoginButton = AppImageTextButton(
-        title: i18n.googleLogin,
+        title: i18n.appleLogin,
         image: DSKitAsset.Assets.logoApple.image
     )
     

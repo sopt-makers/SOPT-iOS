@@ -8,6 +8,6 @@
 
 import Foundation
 
-public protocol AuthFeatureViewBuildable {
+public protocol AuthFeatureBuildable {
     func makeSignIn() -> SignInPresentable
 }

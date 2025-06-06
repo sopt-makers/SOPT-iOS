@@ -11,4 +11,11 @@ import Foundation
 public enum OAuthProvider: String {
     case google
     case apple
+    
+    public var title: String {
+        switch self {
+        case .google: "Google"
+        case .apple: "Apple"
+        }
+    }
 }
