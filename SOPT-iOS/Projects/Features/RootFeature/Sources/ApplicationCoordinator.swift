@@ -739,22 +739,41 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runDailySoptuneFlow() -> LegacyDailySoptuneCoordinator {
-        let coordinator = LegacyDailySoptuneCoordinator(
-            router: LegacyRouter(
-                rootController: UIWindow.getRootNavigationController
-            ),
-            factory: LegacyDailySoptuneBuilder(),
-            pokeFactory: LegacyPokeBuilder()
-        )
-        coordinator.finishFlow = { [weak self, weak coordinator] in
-            coordinator?.childCoordinators = []
-            self?.removeDependency(coordinator)
-        }
+    internal func runDailySoptuneFlow() -> DefaultDailySoptuneCoordinator {
+        var coordinator: DefaultDailySoptuneCoordinator
         
-        coordinator.requestCoordinating = { [weak self, weak coordinator] in
-            self?.router.popToRootModule(animated: true)
-            coordinator?.childCoordinators = []
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator = LegacyDailySoptuneCoordinator(
+                router: LegacyRouter(
+                    rootController: UIWindow.getRootNavigationController
+                ),
+                factory: LegacyDailySoptuneBuilder(),
+                pokeFactory: LegacyPokeBuilder()
+            )
+            coordinator.finishFlow = { [weak self, weak coordinator] in
+                coordinator?.childCoordinators = []
+                self?.removeDependency(coordinator)
+            }
+            
+            coordinator.requestCoordinating = { [weak self, weak coordinator] in
+                self?.router.popToRootModule(animated: true)
+                coordinator?.childCoordinators = []
+            }
+        case .new:
+            coordinator = DailySoptuneCoordinator(
+                navigationController: UIWindow.getRootNavigationController,
+                factory: DailySoptuneBuilder(),
+                pokeFactory: PokeBuilder()
+            )
+            coordinator.finishFlow = { [weak self, weak coordinator] in
+                coordinator?.childCoordinators = []
+                self?.removeDependency(coordinator)
+            }
+            coordinator.requestCoordinating = { [weak self, weak coordinator] in
+                self?.rootNavigationController.popToRootViewController(animated: true)
+                coordinator?.childCoordinators = []
+            }
         }
         
         addDependency(coordinator)
