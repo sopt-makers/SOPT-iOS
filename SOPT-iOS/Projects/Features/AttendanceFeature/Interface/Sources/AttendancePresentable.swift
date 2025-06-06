@@ -13,7 +13,6 @@ import Core
 import Domain
 
 public protocol LegacyAttendanceViewControllable: LegacyViewControllable { }
-public protocol AttendanceViewControllable: UIViewController { }
 
 public typealias AttendanceViewModelType = ViewModelType
-public typealias AttendancePresentable = (vc: AttendanceViewControllable, vm: any AttendanceViewModelType)
+public typealias AttendancePresentable = (vc: UIViewController, vm: any AttendanceViewModelType)
