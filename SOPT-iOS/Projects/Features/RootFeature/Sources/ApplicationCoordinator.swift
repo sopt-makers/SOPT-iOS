@@ -210,7 +210,7 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     func runSignInFlow(by style: CoordinatorStartingOption) {
-        let coordinator = AuthCoordinator_Refactor(router: router, factory: AuthBuilder_Refactor())
+        let coordinator = AuthCoordinator(router: router, factory: AuthBuilder())
 //        let coordinator = AuthCoordinator(router: router, factory: AuthBuilder())
         
         coordinator.finishFlow = { [weak self, weak coordinator] userType in

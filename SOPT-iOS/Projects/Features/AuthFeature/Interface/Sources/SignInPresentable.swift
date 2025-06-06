@@ -1,25 +1,27 @@
 //
-//  AuthFeatureViewControllable.swift
-//  AuthFeatureInterface
+//  SignInPresentable_Refactor.swift
+//  AuthFeature
 //
-//  Created by 김영인 on 2023/03/17.
-//  Copyright © 2023 SOPT-iOS. All rights reserved.
+//  Created by 장석우 on 3/7/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
+import Foundation
 import BaseFeatureDependency
 import Core
-import Domain
 
 public protocol SignInViewControllable: LegacyViewControllable {
     var skipAnimation: Bool { get set }
-    var accessCode: String? { get set }
-    var requestState: String? { get set }
 }
 
-public protocol SignInCoordinatable {
-    var onSignInSuccess: ((SiginInHandleableType) -> Void)? { get set }
+public protocol SignInCoordinatable_Refactor {
+    var onLoginHelpButtonTapped: (() -> Void)? { get set }
+    var onSocialLoginFail: (() -> Void)? { get set }
+    var onSignUpButtonTapped: (() -> Void)? { get set }
+    var onSignInSuccess: (() -> Void)? { get set }
     var onVisitorButtonTapped: (() -> Void)? { get set }
 }
 
-public typealias SignInViewModelType = ViewModelType & SignInCoordinatable
-public typealias SignInPresentable = (vc: SignInViewControllable, vm: any SignInViewModelType)
+public typealias SignInViewModelType_Refactor = ViewModelType & SignInCoordinatable_Refactor
+
+public typealias SignInPresentable = (vc: SignInViewControllable, vm: any SignInViewModelType_Refactor)

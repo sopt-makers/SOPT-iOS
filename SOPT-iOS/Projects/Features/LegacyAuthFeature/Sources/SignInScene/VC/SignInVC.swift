@@ -14,7 +14,7 @@ import DSKit
 import Core
 import Domain
 
-import AuthFeatureInterface
+import LegacyAuthFeatureInterface
 import BaseFeatureDependency
 
 import SnapKit

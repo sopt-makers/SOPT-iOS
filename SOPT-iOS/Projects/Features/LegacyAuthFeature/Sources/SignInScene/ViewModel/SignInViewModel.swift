@@ -11,7 +11,7 @@ import Combine
 import Core
 import Domain
 
-import AuthFeatureInterface
+import LegacyAuthFeatureInterface
 
 public class SignInViewModel: SignInViewModelType {
     
