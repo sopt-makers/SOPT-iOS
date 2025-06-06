@@ -17,6 +17,7 @@ import Core
 import DSKit
 
 import StampFeatureInterface
+import BaseFeatureDependency
 
 extension StarViewLevel {
     fileprivate var lottieName: String {

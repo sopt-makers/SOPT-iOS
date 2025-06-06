@@ -24,7 +24,7 @@ extension PartRankingVC {
     private func createChartSection() -> NSCollectionLayoutSection {
         let size = NSCollectionLayoutSize(widthDimension: .absolute(RankingVC.standardWidth), heightDimension: .estimated(250))
         let item = NSCollectionLayoutItem(layoutSize: size)
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: size, subitem: item, count: 1)
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: size, repeatingSubitem: item, count: 1)
 
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = .init(top: 0, leading: 20, bottom: 0, trailing: 20)
@@ -35,7 +35,7 @@ extension PartRankingVC {
     private func createListSection() -> NSCollectionLayoutSection {
         let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(60))
         let item = NSCollectionLayoutItem(layoutSize: size)
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: size, subitem: item, count: 1)
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: size, repeatingSubitem: item, count: 1)
 
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = .init(top: 28.adjustedH, leading: 20.adjusted, bottom: 60.adjustedH, trailing: 20.adjusted)
