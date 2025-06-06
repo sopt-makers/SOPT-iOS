@@ -17,8 +17,8 @@ public final class ChangeSocialOAuthView: UIView {
     
     public var viewModelInput: ChangeSocialAccountViewModel.Input.OAuth {
         .init(
-            googleLoginTapped: googleLoginButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
-            appleLoginTapped: appleLoginButton.publisher(for: .touchUpInside).mapVoid().asDriver()
+            googleLoginTapped: oAuthView.googleLoginButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
+            appleLoginTapped: oAuthView.appleLoginButton.publisher(for: .touchUpInside).mapVoid().asDriver()
         )
     }
     
@@ -39,15 +39,7 @@ public final class ChangeSocialOAuthView: UIView {
         $0.numberOfLines = 2
     }
     
-    private let googleLoginButton = AppImageTextButton(
-        title: i18n.googleLogin,
-        image: DSKitAsset.Assets.logoGoogle.image.withRenderingMode(.automatic)
-    )
-    
-    private let appleLoginButton = AppImageTextButton(
-        title: i18n.googleLogin,
-        image: DSKitAsset.Assets.logoApple.image
-    )
+    private let oAuthView = OAuthView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -69,8 +61,7 @@ public final class ChangeSocialOAuthView: UIView {
         self.addSubviews(
             titleLabel,
             descriptionLabel,
-            googleLoginButton,
-            appleLoginButton
+            oAuthView
         )
         
         titleLabel.snp.makeConstraints {
@@ -83,19 +74,10 @@ public final class ChangeSocialOAuthView: UIView {
             $0.centerX.equalToSuperview()
         }
         
-        googleLoginButton.snp.makeConstraints {
+        oAuthView.snp.makeConstraints {
             $0.top.equalTo(descriptionLabel.snp.bottom).offset(66)
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.height.equalTo(48)
-            
-        }
-        
-        appleLoginButton.snp.makeConstraints {
-            $0.top.equalTo(googleLoginButton.snp.bottom).offset(20)
-            $0.leading.trailing.equalToSuperview().inset(20)
-            $0.height.equalTo(48)
             $0.bottom.lessThanOrEqualToSuperview()
         }
-       
     }
 }

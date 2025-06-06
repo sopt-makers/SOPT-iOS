@@ -47,6 +47,13 @@ public struct I18N {
         public static let guide = "가이드"
     }
     
+    public struct Auth {
+        public struct OAuth {
+            public static let googleLogin = "Google로 로그인"
+            public static let appleLogin = "Apple로 로그인"
+        }
+    }
+    
     public struct SignIn {
             public static let signIn = "SOPT Playground로 로그인"
             public static let notMember = "SOPT 회원이 아니에요"
@@ -61,8 +68,6 @@ public struct I18N {
             public static let findPassword = "비밀번호 찾기"
         
         public struct Refactor {
-            public static let googleLogin = "Google로 로그인"
-            public static let appleLogin = "Apple로 로그인"
             public static let playgroundLogin = "SOPT Playground로 로그인"
             public static let helpLogin = "로그인이 안 되나요?"
             public static let loginLater = "나중에 로그인할래요."

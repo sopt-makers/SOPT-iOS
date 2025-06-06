@@ -43,17 +43,7 @@ public class SignInVC: UIViewController, SignInViewControllable {
         $0.contentMode = .scaleAspectFit
     }
     
-    private let googleLoginButton = AppImageTextButton(
-        title: i18n.googleLogin,
-        image: DSKitAsset.Assets.logoGoogle.image.withRenderingMode(.automatic)
-    ).then {
-        $0.alpha = 0
-    }
-    
-    private let appleLoginButton = AppImageTextButton(
-        title: i18n.appleLogin,
-        image: DSKitAsset.Assets.logoApple.image
-    ).then {
+    private let oAuthView = OAuthView().then {
         $0.alpha = 0
     }
     
@@ -130,9 +120,11 @@ public class SignInVC: UIViewController, SignInViewControllable {
     }
     
     private lazy var recentLoginToolTip = ToolTipView().then {
-        $0.contentView.addSubview(recentLoginLabel)
         $0.layer.cornerRadius = 12
         $0.backgroundColor = DSKitAsset.Colors.success.color
+        
+        $0.contentView.addSubview(recentLoginLabel)
+        
         recentLoginLabel.snp.makeConstraints {
             $0.verticalEdges.equalToSuperview().inset(10)
             $0.horizontalEdges.equalToSuperview().inset(20)
@@ -185,8 +177,7 @@ public class SignInVC: UIViewController, SignInViewControllable {
     private func setLayout() {
         self.view.addSubviews(
             logoImageView,
-            googleLoginButton,
-            appleLoginButton,
+            oAuthView,
             loginHelpButton,
             orStackView,
             signUpButton,
@@ -203,15 +194,8 @@ public class SignInVC: UIViewController, SignInViewControllable {
             make.height.equalTo(Metric.logoWidth).multipliedBy(Metric.logoRatio)
         }
         
-        googleLoginButton.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(48)
-            make.bottom.equalTo(appleLoginButton.snp.top).offset(-20.adjustedH)
-        }
-        
-        appleLoginButton.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(48)
+        oAuthView.snp.makeConstraints { make in
+            make.horizontalEdges.equalToSuperview().inset(20)
             make.bottom.equalTo(loginHelpButton.snp.top).offset(-20.adjustedH)
         }
         
@@ -253,7 +237,7 @@ public class SignInVC: UIViewController, SignInViewControllable {
         
         recentLoginToolTip.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(googleLoginButton.snp.top)
+            make.bottom.equalTo(oAuthView.googleLoginButton.snp.top)
         }
     }
     
@@ -271,7 +255,7 @@ public class SignInVC: UIViewController, SignInViewControllable {
     }
     
     private func retrieveAlpha() {
-        [googleLoginButton, appleLoginButton, loginHelpButton, orStackView, signUpButton, loginLaterButton, recentLoginToolTip].forEach {
+        [oAuthView, loginHelpButton, orStackView, signUpButton, loginLaterButton, recentLoginToolTip].forEach {
             $0.alpha = 1
         }
     }
@@ -287,12 +271,12 @@ extension SignInVC {
             viewDidLoad: Just<Void>(()).asDriver(),
             viewWillAppear: self.viewWillAppear.asDriver(),
             googleLoginButtonTapped:
-                self.googleLoginButton
+                oAuthView.googleLoginButton
                 .publisher(for: .touchUpInside)
                 .compactMap { _ in () }
                 .asDriver(),
             appleLoginButtonTapped:
-                self.appleLoginButton
+                oAuthView.appleLoginButton
                 .publisher(for: .touchUpInside)
                 .compactMap { _ in () }
                 .asDriver(),
@@ -320,7 +304,7 @@ extension SignInVC {
                 
                 owner.recentLoginLabel.text = "로그인한 계정은 \(oAuthProvider.title)이에요."
                 
-                let bottomAnchor: ConstraintRelatableTarget = oAuthProvider == .apple ? owner.appleLoginButton.snp.top : owner.googleLoginButton.snp.top
+                let bottomAnchor: ConstraintRelatableTarget = oAuthProvider == .apple ? owner.oAuthView.appleLoginButton.snp.top : owner.oAuthView.googleLoginButton.snp.top
                 
                 owner.recentLoginToolTip.snp.updateConstraints {
                     $0.bottom.equalTo(bottomAnchor).offset(-19)

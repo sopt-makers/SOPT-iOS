@@ -41,7 +41,7 @@ public final class AuthBuilder: AuthFeatureViewBuildable {
     
     public func makeSignUp() -> SignUpPresentable {
         let useCase = DefaultSignUpUseCase(repository: coreRepository, oAuthRepository: oauthRepository)
-        let phoneUseCase = DefaultPhoneVerifyUseCase(repository: phoneRepository)
+        let phoneUseCase = StubPhoneVerifyUseCase()
         
         let vm = SignUpViewModel(useCase: useCase)
         let phoneVM = PhoneVerifyViewModel(useCase: phoneUseCase, phoneVerifyType: .register)
@@ -56,7 +56,7 @@ public final class AuthBuilder: AuthFeatureViewBuildable {
             oAuthRepository: oauthRepository
         )
         
-        let phoneUseCase = DefaultPhoneVerifyUseCase(repository: phoneRepository)
+        let phoneUseCase = StubPhoneVerifyUseCase()
         
         let vm = ChangeSocialAccountViewModel(useCase: useCase)
         let phoneVM = PhoneVerifyViewModel(useCase: phoneUseCase, phoneVerifyType: .changeSocialAccount)
@@ -69,7 +69,7 @@ public final class AuthBuilder: AuthFeatureViewBuildable {
             repository: coreRepository
         )
         
-        let phoneUseCase = DefaultPhoneVerifyUseCase(repository: phoneRepository)
+        let phoneUseCase = StubPhoneVerifyUseCase()
         
         let vm = SearchSocialAccountViewModel(useCase: useCase)
         let phoneVM = PhoneVerifyViewModel(useCase: phoneUseCase, phoneVerifyType: .searchSocialAccount)
