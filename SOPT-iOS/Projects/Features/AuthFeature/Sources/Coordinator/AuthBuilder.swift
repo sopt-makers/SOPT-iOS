@@ -22,12 +22,12 @@ public final class AuthBuilder: AuthFeatureViewBuildable {
     public init() { }
     
     public func makeSignIn() -> SignInPresentable {
-        let useCase = DefaultSignInUseCase(repository: repository,
-                                           oauthRepository: oauthRepository,
-                                           coreRepository: coreRepository)
+        let useCase = DefaultSignInUseCase(
+            repository: repository,
+            oauthRepository: oauthRepository,
+            coreRepository: coreRepository)
         let vm = SignInViewModel(useCase: useCase)
-        let vc = SignInVC()
-        vc.viewModel = vm
+        let vc = SignInVC(viewModel: vm)
         return (vc, vm)
     }
     
@@ -76,5 +76,5 @@ public final class AuthBuilder: AuthFeatureViewBuildable {
         let vc = SearchSocialAccountVC(viewModel: vm, phoneVerifyViewModel: phoneVM)
         return (vc, vm)
     }
-
+    
 }

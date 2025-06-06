@@ -10,9 +10,7 @@ import Foundation
 import BaseFeatureDependency
 import Core
 
-public protocol SignInViewControllable: LegacyViewControllable {
-    var skipAnimation: Bool { get set }
-}
+public protocol SignInViewControllable: LegacyViewControllable { }
 
 public protocol SignInCoordinatable {
     var onLoginHelpButtonTapped: (() -> Void)? { get set }

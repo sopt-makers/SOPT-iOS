@@ -17,7 +17,9 @@ public protocol AuthCoordinatorFinishOutput {
     var finishFlow: ((UserType) -> Void)? { get set }
 }
 
-public final class AuthCoordinator: BaseCoordinator & AuthCoordinatorFinishOutput {
+public typealias DefaultAuthCoordinator = BaseCoordinator & AuthCoordinatorFinishOutput
+
+public final class AuthCoordinator: DefaultAuthCoordinator {
 
     public var finishFlow: ((UserType) -> Void)?
 

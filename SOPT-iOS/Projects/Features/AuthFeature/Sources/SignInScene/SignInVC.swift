@@ -26,18 +26,11 @@ public class SignInVC: UIViewController, SignInViewControllable {
     
     private static let i18n = I18N.SignIn.Refactor.self
     
-    public var viewModel: SignInViewModel!
-    
-    public var skipAnimation: Bool = false
-    
-    public var accessCode: String? = nil
-
-    public var requestState: String? = nil
+    public var viewModel: SignInViewModel
     
     private var cancelBag = CancelBag()
     
     private var viewWillAppear = PassthroughSubject<Void, Never>()
-    
     
     // MARK: - UI Components
     
@@ -63,9 +56,6 @@ public class SignInVC: UIViewController, SignInViewControllable {
     ).then {
         $0.alpha = 0
     }
-    
-    //TODO: 인증중앙화 완료 시 제거
-    private let playgroundButton = AppImageTextButton(title: i18n.playgroundLogin).then { $0.alpha = 0 }
     
     private let loginHelpButton = UIButton(type: .system).then {
         var config = UIButton.Configuration.plain()
@@ -153,10 +143,18 @@ public class SignInVC: UIViewController, SignInViewControllable {
     
     // MARK: - View Life Cycle
     
+    init(viewModel: SignInViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.bindViewModels()
-        self.bindViews()
         self.setUI()
         self.setLayout()
     }
@@ -170,16 +168,13 @@ public class SignInVC: UIViewController, SignInViewControllable {
         super.viewDidAppear(animated)
         self.performAnimation()
     }
-}
-
-// MARK: - UI & Layout
-
-extension SignInVC {
+    
+    // MARK: - UI & Layout
     
     private enum Metric {
-        static let topInset = 100.adjustedH + logoMutableY //151.adjustedH + logoMutableY
+        static let topInset = 151.adjustedH + logoMutableY
         static let logoWidth = 184.adjusted
-        static let logoMutableY = 188.adjustedH // 137.adjustedH
+        static let logoMutableY = 137.adjustedH
         static let logoRatio = 114 / 184
     }
     
@@ -192,7 +187,6 @@ extension SignInVC {
             logoImageView,
             googleLoginButton,
             appleLoginButton,
-            playgroundButton,
             loginHelpButton,
             orStackView,
             signUpButton,
@@ -216,12 +210,6 @@ extension SignInVC {
         }
         
         appleLoginButton.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(48)
-            make.bottom.equalTo(playgroundButton.snp.top).offset(-20.adjustedH)
-        }
-        
-        playgroundButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(48)
             make.bottom.equalTo(loginHelpButton.snp.top).offset(-20.adjustedH)
@@ -270,11 +258,6 @@ extension SignInVC {
     }
     
     private func performAnimation() {
-        guard !skipAnimation else {
-            retrieveAlpha()
-            updateLogoY()
-            return
-        }
         UIView.animate(withDuration: 0.7, delay: 0, options: .curveEaseInOut, animations: {
             self.updateLogoY()
         })
@@ -288,7 +271,7 @@ extension SignInVC {
     }
     
     private func retrieveAlpha() {
-        [googleLoginButton, appleLoginButton, playgroundButton, loginHelpButton, orStackView, signUpButton, loginLaterButton, recentLoginToolTip].forEach {
+        [googleLoginButton, appleLoginButton, loginHelpButton, orStackView, signUpButton, loginLaterButton, recentLoginToolTip].forEach {
             $0.alpha = 1
         }
     }
@@ -298,52 +281,44 @@ extension SignInVC {
 
 extension SignInVC {
     
-    private func bindViews() {
-        playgroundButton.publisher(for: .touchUpInside)
-            .withUnretained(self)
-            .asDriver()
-            .sink { owner, _ in
-                owner.openPlaygroundURL()
-            }.store(in: self.cancelBag)
-    }
-    
     private func bindViewModels() {
         
         let input = SignInViewModel.Input(
-                    viewDidLoad: Just<Void>(()).asDriver(),
-                    viewWillAppear: self.viewWillAppear.asDriver(),
-                    googleLoginButtonTapped:
-                        self.googleLoginButton
-                        .publisher(for: .touchUpInside)
-                        .compactMap { _ in () }
-                        .asDriver(),
-                    appleLoginButtonTapped:
-                        self.appleLoginButton
-                        .publisher(for: .touchUpInside)
-                        .compactMap { _ in () }
-                        .asDriver(),
-                    loginHelpButtonTapped: self.loginHelpButton
-                        .publisher(for: .touchUpInside)
-                        .compactMap { _ in () }
-                        .asDriver(),
-                    visitorButtonTapped: self.loginLaterButton
-                        .publisher(for: .touchUpInside)
-                        .compactMap { _ in () }
-                        .asDriver(),
-                    signUpButtonTapped: self.signUpButton
-                        .publisher(for: .touchUpInside)
-                        .compactMap { _ in () }
-                        .asDriver()
-                    )
+            viewDidLoad: Just<Void>(()).asDriver(),
+            viewWillAppear: self.viewWillAppear.asDriver(),
+            googleLoginButtonTapped:
+                self.googleLoginButton
+                .publisher(for: .touchUpInside)
+                .compactMap { _ in () }
+                .asDriver(),
+            appleLoginButtonTapped:
+                self.appleLoginButton
+                .publisher(for: .touchUpInside)
+                .compactMap { _ in () }
+                .asDriver(),
+            loginHelpButtonTapped: self.loginHelpButton
+                .publisher(for: .touchUpInside)
+                .compactMap { _ in () }
+                .asDriver(),
+            visitorButtonTapped: self.loginLaterButton
+                .publisher(for: .touchUpInside)
+                .compactMap { _ in () }
+                .asDriver(),
+            signUpButtonTapped: self.signUpButton
+                .publisher(for: .touchUpInside)
+                .compactMap { _ in () }
+                .asDriver()
+        )
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
         
         output.recentLogin
             .withUnretained(self)
             .sink { owner, oAuthProvider in
                 owner.recentLoginToolTip.isHidden = oAuthProvider == nil
+                
                 guard let oAuthProvider else { return }
                 
-                owner.recentLoginLabel.text = "로그인한 계정은 \(oAuthProvider.rawValue)이에요."
+                owner.recentLoginLabel.text = "로그인한 계정은 \(oAuthProvider.title)이에요."
                 
                 let bottomAnchor: ConstraintRelatableTarget = oAuthProvider == .apple ? owner.appleLoginButton.snp.top : owner.googleLoginButton.snp.top
                 
@@ -352,19 +327,5 @@ extension SignInVC {
                 }
             }
             .store(in: cancelBag)
-    }
-    
-    private func openPlaygroundURL() {
-        let state = UUID().uuidString
-        UserDefaultKeyList.Auth.requestState = state
-        guard let url = URL(string: ExternalURL.Playground.login(state: state)) else {
-            print("⚠️Invalid URL String at openPlaygroundURL: \(ExternalURL.Playground.login(state: state))")
-            makeAlert(title: "URL 에러", message: "잘못된 URL이 생성되었습니다. 개발자에게 문의주시면 감사하겠습니다.")
-            return
-        }
-        let safari = SFSafariViewController(url: url)
-        safari.modalPresentationStyle = .fullScreen
-        safari.playgroundStyle()
-        self.present(safari, animated: true)
     }
 }
