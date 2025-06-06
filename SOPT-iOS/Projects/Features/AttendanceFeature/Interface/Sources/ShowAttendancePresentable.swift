@@ -19,4 +19,5 @@ public protocol ShowAttendanceCoordinatable {
     var onNaviBackTap: (() -> Void)? { get set }
 }
 public typealias ShowAttendanceViewModelType = ViewModelType & ShowAttendanceCoordinatable
+// TODO: coordinating vc -> vm 위임 시 활용
 public typealias ShowAttendancePresentable = (vc: ShowAttendanceViewControllable, vm: any ShowAttendanceViewModelType)
