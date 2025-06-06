@@ -19,4 +19,5 @@ public protocol PartRankingCoordinatable {
   var onNaviBackTap: (() -> Void)? { get set }
 }
 public typealias PartRankingViewModelType = ViewModelType & PartRankingCoordinatable
+// TODO: coordinating vc -> vm 작업에서 활용
 public typealias PartRankingPresentable = (vc: PartRankingViewControllable, vm: any PartRankingViewModelType)

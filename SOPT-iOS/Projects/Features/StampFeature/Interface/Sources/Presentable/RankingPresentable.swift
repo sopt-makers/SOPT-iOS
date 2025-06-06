@@ -19,5 +19,6 @@ public protocol RankingCoordinatable {
   var onNaviBackTap: (() -> Void)? { get set }
 }
 public typealias RankingViewModelType = ViewModelType & RankingCoordinatable
+// TODO: coordinating vc -> vm 작업에서 활용
 public typealias RankingPresentable = (vc: RankingViewControllable, vm: any RankingViewModelType)
 
