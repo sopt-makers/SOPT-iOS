@@ -686,12 +686,12 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runDailySoptuneFlow() -> DailySoptuneCoordinator {
-        let coordinator = DailySoptuneCoordinator(
+    internal func runDailySoptuneFlow() -> LegacyDailySoptuneCoordinator {
+        let coordinator = LegacyDailySoptuneCoordinator(
             router: LegacyRouter(
                 rootController: UIWindow.getRootNavigationController
             ),
-            factory: DailySoptuneBuilder(),
+            factory: LegacyDailySoptuneBuilder(),
             pokeFactory: PokeBuilder()
         )
         coordinator.finishFlow = { [weak self, weak coordinator] in

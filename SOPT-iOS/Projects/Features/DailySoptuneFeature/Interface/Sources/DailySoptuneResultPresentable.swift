@@ -6,6 +6,8 @@
 //  Copyright © 2024 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
+
 import BaseFeatureDependency
 import Core
 import Domain
@@ -20,4 +22,6 @@ public protocol DailySoptuneResultCoordinatable {
 }
 
 public typealias DailySoptuneResultViewModelType = ViewModelType & DailySoptuneResultCoordinatable
-public typealias DailySoptuneResultPresentable = (vc: DailySoptuneResultViewControllable, vm: any DailySoptuneResultViewModelType)
+public typealias LegacyDailySoptuneResultPresentable = (vc: DailySoptuneResultViewControllable, vm: any DailySoptuneResultViewModelType)
+
+public typealias DailySoptuneResultPresentable = (vc: UIViewController, vm: any DailySoptuneResultViewModelType)

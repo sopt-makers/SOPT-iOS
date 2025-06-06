@@ -6,6 +6,8 @@
 //  Copyright © 2024 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
+
 import BaseFeatureDependency
 import Core
 
@@ -17,4 +19,6 @@ public protocol DailySoptuneCardCoordinatable {
 }
 
 public typealias DailySoptuneCardViewModelType = ViewModelType & DailySoptuneCardCoordinatable
-public typealias DailySoptuneCardPresentable = (vc: DailySoptuneCardViewControllable, vm: any DailySoptuneCardViewModelType)
+public typealias LegacyDailySoptuneCardPresentable = (vc: DailySoptuneCardViewControllable, vm: any DailySoptuneCardViewModelType)
+
+public typealias DailySoptuneCardPresentable = (vc: UIViewController, vm: any DailySoptuneCardViewModelType)

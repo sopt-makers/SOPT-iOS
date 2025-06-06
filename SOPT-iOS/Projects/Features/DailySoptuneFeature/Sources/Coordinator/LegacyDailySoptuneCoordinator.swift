@@ -1,5 +1,5 @@
 //
-//  DailySoptuneCoordinator.swift
+//  LegacyDailySoptuneCoordinator.swift
 //  DailySoptuneFeature
 //
 //  Created by Jae Hyun Lee on 9/21/24.
@@ -15,18 +15,18 @@ import DailySoptuneFeatureInterface
 import Domain
 import PokeFeatureInterface
 
-public final class DailySoptuneCoordinator: DefaultCoordinator {
+public final class LegacyDailySoptuneCoordinator: DefaultCoordinator {
     
     public var requestCoordinating: (() -> Void)?
     public var finishFlow: (() -> Void)?
     
-    private let factory: DailySoptuneFeatureBuildable
+    private let factory: LegacyDailySoptuneFeatureBuildable
     private let pokeFactory: PokeFeatureBuildable
     private let router: LegacyRouter
     
     private weak var rootController: UINavigationController?
     
-    public init(router: LegacyRouter, factory: DailySoptuneFeatureBuildable, pokeFactory: PokeFeatureBuildable) {
+    public init(router: LegacyRouter, factory: LegacyDailySoptuneFeatureBuildable, pokeFactory: PokeFeatureBuildable) {
         self.router = router
         self.factory = factory
         self.pokeFactory = pokeFactory
@@ -54,7 +54,7 @@ public final class DailySoptuneCoordinator: DefaultCoordinator {
     }
     
     internal func runDailySoptuneResultFlow(resultModel: DailySoptuneResultModel) {
-        let dailySoptuneResultCoordinator = DailySoptuneResultCoordinator(router: LegacyRouter(
+        let dailySoptuneResultCoordinator = LegacyDailySoptuneResultCoordinator(router: LegacyRouter(
             rootController: rootController ?? self.router.asNavigationController
         ),
                                                                           factory: factory,
