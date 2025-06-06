@@ -1,19 +1,17 @@
 //
-//  StampBuilder.swift
+//  LegacyStampBuilder.swift
 //  StampFeature
 //
-//  Created by Jae Hyun Lee on 6/2/25.
-//  Copyright © 2025 SOPT-iOS. All rights reserved.
+//  Created by Junho Lee on 2023/06/21.
+//  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
-
-import UIKit
 
 import Core
 import Domain
 @_exported import StampFeatureInterface
 
 public
-final class StampBuilder {
+final class LegacyStampBuilder {
     @Injected public var missionListRepository: MissionListRepositoryInterface
     @Injected public var rankingRepository: RankingRepositoryInterface
     @Injected public var listDetailRepository: ListDetailRepositoryInterface
@@ -21,12 +19,13 @@ final class StampBuilder {
     public init() { }
 }
 
-extension StampBuilder: StampFeatureBuildable {
-    public func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListPresentable {
+extension LegacyStampBuilder: LegacyStampFeatureViewBuildable {
+    public func makeMissionListVC(sceneType: MissionListSceneType) -> LegacyMissionListViewControllable {
         let useCase = DefaultMissionListUseCase(repository: missionListRepository)
         let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType)
         let missionListVC = MissionListVC(viewModel: viewModel)
-        return (missionListVC, viewModel)
+        missionListVC.viewModel = viewModel
+        return missionListVC
     }
     
     public func makeListDetailVC(
@@ -35,7 +34,7 @@ extension StampBuilder: StampFeatureBuildable {
         missionId: Int,
         missionTitle: String,
         otherUserName: String?
-    ) -> ListDetailPresentable {
+    ) -> LegacyListDetailViewControllable {
         let useCase = DefaultListDetailUseCase(repository: listDetailRepository)
         let viewModel = ListDetailViewModel(
             useCase: useCase,
@@ -46,13 +45,13 @@ extension StampBuilder: StampFeatureBuildable {
             otherUsername: otherUserName
         )
         let listDetailVC = ListDetailVC(viewModel: viewModel)
-        return (listDetailVC, viewModel)
+        return listDetailVC
     }
     
     public func makeMissionCompletedVC(
         starLevel: StarViewLevel,
         completionHandler: (() -> Void)?
-    ) -> UIViewController {
+    ) -> LegacyMissionCompletedViewControllable {
         let missionCompletedVC = MissionCompletedVC()
             .setLevel(starLevel)
         missionCompletedVC.completionHandler = completionHandler
@@ -61,7 +60,7 @@ extension StampBuilder: StampFeatureBuildable {
         return missionCompletedVC
     }
     
-    public func makeRankingVC(rankingViewType: RankingViewType) -> RankingPresentable {
+    public func makeRankingVC(rankingViewType: RankingViewType) -> LegacyRankingViewControllable {
         let useCase = DefaultRankingUseCase(repository: rankingRepository)
         let viewModel = RankingViewModel(
             rankingViewType: rankingViewType,
@@ -69,19 +68,18 @@ extension StampBuilder: StampFeatureBuildable {
         )
         let rankingVC = RankingVC(rankingViewType: rankingViewType)
         rankingVC.viewModel = viewModel
-        return (rankingVC, viewModel)
+        return rankingVC
     }
     
-    public func makePartRankingVC(rankingViewType: RankingViewType) -> PartRankingPresentable {
-        let useCase = DefaultRankingUseCase(repository: rankingRepository)
-        let viewModel = PartRankingViewModel(rankingViewType: rankingViewType, useCase: useCase)
-        let partRankingVC = PartRankingVC(rankingViewType: rankingViewType)
-        partRankingVC.viewModel = viewModel
-        return (partRankingVC, viewModel)
-    }
-    
-    public func makeStampGuideVC() -> any StampGuideViewControllable {
+    public func makeStampGuideVC() -> LegacyStampGuideViewControllable {
         let stampGuideVC = StampGuideVC()
         return stampGuideVC
+    }
+
+    public func makePartRankingVC(rankingViewType: RankingViewType) -> LegacyPartRankingViewControllable {
+      let vc = PartRankingVC(rankingViewType: rankingViewType)
+      let useCase = DefaultRankingUseCase(repository: rankingRepository)
+      vc.viewModel = PartRankingViewModel(rankingViewType: rankingViewType, useCase: useCase)
+      return vc
     }
 }

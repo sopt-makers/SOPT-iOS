@@ -2,39 +2,52 @@
 //  StampGuideCoordinator.swift
 //  StampFeature
 //
-//  Created by Junho Lee on 2023/06/21.
-//  Copyright © 2023 SOPT-iOS. All rights reserved.
+//  Created by Jae Hyun Lee on 6/3/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
+
+import UIKit
 
 import Core
 import BaseFeatureDependency
 import StampFeatureInterface
 
-public
-final class StampGuideCoordinator: DefaultCoordinator {
-        
+public final class StampGuideCoordinator: DefaultCoordinator {
+    
+    // MARK: - Properties
+    
     public var finishFlow: (() -> Void)?
     
-    private let factory: StampFeatureViewBuildable
-    private let router: LegacyRouter
+    private let factory: StampFeatureBuildable
+    private let navigationController: UINavigationController
     
-    public init(router: LegacyRouter, factory: StampFeatureViewBuildable) {
+    // MARK: - Init
+    
+    public init(
+        navigationController: UINavigationController,
+        factory: StampFeatureBuildable
+    ) {
+        self.navigationController = navigationController
         self.factory = factory
-        self.router = router
     }
+    
+    // MARK: - Coordinator Life Cycle
     
     public override func start() {
         showGuide()
     }
     
+    // MARK: - Navigation
+    
     private func showGuide() {
-        var guide = factory.makeStampGuideVC()
+        let guide = factory.makeStampGuideVC()
         
         guide.onNaviBackTap = { [weak self] in
-            self?.router.popModule()
-            self?.finishFlow?()
+            guard let self else { return }
+            self.navigationController.popViewController(animated: true)
+            self.finishFlow?()
         }
         
-        router.push(guide)
+        navigationController.pushViewController(guide, animated: true)
     }
 }

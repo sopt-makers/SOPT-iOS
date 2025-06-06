@@ -12,7 +12,10 @@ import Foundation
 import Core
 import Domain
 
-public class ListDetailViewModel: ViewModelType {
+public class ListDetailViewModel: ListDetailViewModelType {
+    // TODO: coordinating vc -> vm
+    public var onComplete: ((Core.StarViewLevel, (() -> Void)?) -> Void)?
+    public var onNaviBackTap: (() -> Void)?
     
     private let useCase: ListDetailUseCase
     private var cancelBag = CancelBag()

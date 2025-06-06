@@ -18,7 +18,7 @@ import Then
 
 import BaseFeatureDependency
 
-public final class StampGuideVC: UIViewController, StampGuideViewControllable {
+public final class StampGuideVC: UIViewController, LegacyStampGuideViewControllable, StampGuideViewControllable {
     
     // MARK: - Properties
     

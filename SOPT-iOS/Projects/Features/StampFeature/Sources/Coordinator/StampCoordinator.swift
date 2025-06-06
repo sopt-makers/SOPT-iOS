@@ -2,102 +2,136 @@
 //  StampCoordinator.swift
 //  StampFeature
 //
-//  Created by Junho Lee on 2023/06/21.
-//  Copyright © 2023 SOPT-iOS. All rights reserved.
+//  Created by Jae Hyun Lee on 6/3/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
 import UIKit
+import Combine
 
 import Core
+import Domain
 import BaseFeatureDependency
 import StampFeatureInterface
-import Domain
 import SafariServices
 
-public
-final class StampCoordinator: DefaultCoordinator {
+public final class StampCoordinator: DefaultCoordinator {
         
+    // MARK: - Properties
+    
     public var finishFlow: (() -> Void)?
     
-    private let factory: StampFeatureViewBuildable
-    private let router: LegacyRouter
-    // Note: @준호 - Soptamp는 Present되기 때문에 최상위 NavController의 참조를 유지해야 함
-    private weak var rootController: UINavigationController?
+    private let factory: StampFeatureBuildable
+    private let navigationController: UINavigationController
     
-    public init(router: LegacyRouter, factory: StampFeatureViewBuildable) {
+    private weak var rootController: UINavigationController?
+        
+    // MARK: - Init
+    
+    public init(
+        navigationController: UINavigationController,
+        factory: StampFeatureBuildable
+    ) {
+        self.navigationController = navigationController
         self.factory = factory
-        self.router = router
     }
+    
+    // MARK: - Coordinator Life Cycle
     
     public override func start() {
         showMissionList(sceneType: .default)
     }
     
+    // MARK: - Navigation
+    
     private func showMissionList(sceneType: MissionListSceneType) {
         var missionList = factory.makeMissionListVC(sceneType: sceneType)
-        missionList.onNaviBackTap = { [weak self] in
-            self?.router.dismissModule(animated: true)
-            self?.finishFlow?()
+        
+        missionList.vc.onNaviBackTap = { [weak self] in
+            guard let self else { return }
+            self.navigationController.dismiss(animated: true)
+            self.finishFlow?()
         }
-        missionList.onGuideTap = { [weak self] in
-            self?.showGuide()
+        
+        missionList.vc.onGuideTap = { [weak self] in
+            guard let self else { return }
+            self.showGuide()
         }
-        missionList.onPartRankingButtonTap = { [weak self] rankingViewType in
-            self?.runRankingFlow(rankingViewType: rankingViewType)
+        
+        missionList.vc.onPartRankingButtonTap = { [weak self] rankingViewType in
+            guard let self else { return }
+            self.runRankingFlow(rankingViewType: rankingViewType)
         }
-        missionList.onCurrentGenerationRankingButtonTap = { [weak self] rankingViewType in
-            self?.runRankingFlow(rankingViewType: rankingViewType)
+        
+        missionList.vc.onCurrentGenerationRankingButtonTap = { [weak self] rankingViewType in
+            guard let self else { return }
+            self.runRankingFlow(rankingViewType: rankingViewType)
         }
-        missionList.onCellTap = { [weak self] model, username in
-            self?.runMissionDetailFlow(model, username)
+        
+        missionList.vc.onCellTap = { [weak self] model, username in
+            guard let self else { return }
+            self.runMissionDetailFlow(model, username)
         }
-        missionList.onReportButtonTap = { [weak self] in
+        
+        missionList.vc.onReportButtonTap = { [weak self] in
+            guard let self else { return }
             guard let url = UserDefaultKeyList.Soptamp.reportUrl else { return }
             let safariViewController = SFSafariViewController(url: URL(string: url)!)
             safariViewController.playgroundStyle()
-            self?.rootController?.present(safariViewController, animated: true)
+            self.rootController?.present(safariViewController, animated: true)
         }
-        rootController = missionList.asNavigationController
-        router.present(rootController, animated: true, modalPresentationSytle: .overFullScreen)
+        
+        let navController = UINavigationController(rootViewController: missionList.vc)
+        navController.modalPresentationStyle = .overFullScreen
+        rootController = navController
+        navigationController.present(navController, animated: true)
     }
     
     private func showGuide() {
         let guideCoordinator = StampGuideCoordinator(
-            router: LegacyRouter(rootController: rootController!),
+            navigationController: rootController ?? UIWindow.getRootNavigationController,
             factory: factory
         )
+        
         guideCoordinator.finishFlow = { [weak self, weak guideCoordinator] in
-            self?.removeDependency(guideCoordinator)
+            guard let self else { return }
+            self.removeDependency(guideCoordinator)
         }
+        
         addDependency(guideCoordinator)
         guideCoordinator.start()
     }
     
-    internal func runRankingFlow(rankingViewType: RankingViewType) {
+    private func runRankingFlow(rankingViewType: RankingViewType) {
         let rankingCoordinator = RankingCoordinator(
-            router: LegacyRouter(rootController: rootController!),
+            navigationController: rootController ?? UIWindow.getRootNavigationController,
             factory: factory,
             rankingViewType: rankingViewType
         )
+        
         rankingCoordinator.finishFlow = { [weak self, weak rankingCoordinator] in
-            self?.removeDependency(rankingCoordinator)
+            guard let self else { return }
+            self.removeDependency(rankingCoordinator)
         }
+        
         addDependency(rankingCoordinator)
         rankingCoordinator.start()
     }
-
+    
     private func runMissionDetailFlow(_ model: MissionListModel, _ username: String?) {
         let missionDetailCoordinator = MissionDetailCoordinator(
-            router: LegacyRouter(rootController: rootController!),
+            navigationController: rootController ?? UIWindow.getRootNavigationController,
             factory: factory,
             model: model,
             username: username
         )
+        
         missionDetailCoordinator.finishFlow = { [weak self, weak missionDetailCoordinator] in
-            self?.removeDependency(missionDetailCoordinator)
+            guard let self else { return }
+            self.removeDependency(missionDetailCoordinator)
         }
+        
         addDependency(missionDetailCoordinator)
         missionDetailCoordinator.start()
     }
 }
-

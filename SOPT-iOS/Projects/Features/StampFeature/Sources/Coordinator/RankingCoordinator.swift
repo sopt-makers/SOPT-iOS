@@ -2,94 +2,121 @@
 //  RankingCoordinator.swift
 //  StampFeature
 //
-//  Created by Junho Lee on 2023/06/22.
-//  Copyright © 2023 SOPT-iOS. All rights reserved.
+//  Created by Jae Hyun Lee on 6/3/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
+
+import UIKit
 
 import Core
 import Domain
 import BaseFeatureDependency
 import StampFeatureInterface
 
-public
-final class RankingCoordinator: DefaultCoordinator {
-        
+public final class RankingCoordinator: DefaultCoordinator {
+    
+    // MARK: - Properties
+    
     public var finishFlow: (() -> Void)?
     
-    private let factory: StampFeatureViewBuildable
-    private let router: LegacyRouter
+    private let factory: StampFeatureBuildable
+    private let navigationController: UINavigationController
     private let rankingViewType: RankingViewType
+        
+    // MARK: - Init
     
     public init(
-        router: LegacyRouter,
-        factory: StampFeatureViewBuildable,
+        navigationController: UINavigationController,
+        factory: StampFeatureBuildable,
         rankingViewType: RankingViewType
     ) {
+        self.navigationController = navigationController
         self.factory = factory
-        self.router = router
         self.rankingViewType = rankingViewType
     }
     
+    // MARK: - Coordinator Life Cycle
+    
     public override func start() {
-      switch rankingViewType {
-      case .all, .currentGeneration, .individualRankingInPart:
-        showRanking(rankingViewType: rankingViewType)
-      case .partRanking:
-        showPartRanking()
-      }
+        switch rankingViewType {
+        case .all, .currentGeneration, .individualRankingInPart:
+            showRanking(rankingViewType: rankingViewType)
+        case .partRanking:
+            showPartRanking()
+        }
     }
+    
+    // MARK: - Navigation
     
     private func showRanking(rankingViewType: RankingViewType) {
         var ranking = factory.makeRankingVC(rankingViewType: rankingViewType)
+        
+        ranking.vc.onCellTap = { [weak self] (username, sentence) in
+            guard let self else { return }
+            self.showOtherMissionList(username, sentence)
+        }
+        
+        ranking.vc.onNaviBackTap = { [weak self] in
+            guard let self else { return }
+            self.navigationController.popViewController(animated: true)
+        }
 
-        ranking.onCellTap = { [weak self] (username, sentence) in
-            self?.showOtherMissionList(username, sentence)
-        }
-        ranking.onNaviBackTap = { [weak self] in
-            self?.router.popModule()
-        }
-        router.push(ranking)
+        navigationController.pushViewController(ranking.vc, animated: true)
     }
-
+    
     private func showPartRanking() {
-      var ranking = factory.makePartRankingVC(rankingViewType: self.rankingViewType)
+        var ranking = factory.makePartRankingVC(rankingViewType: self.rankingViewType)
+        
+        ranking.vc.onCellTap = { [weak self] part in
+            guard let self else { return }
+            self.showRanking(rankingViewType: .individualRankingInPart(part: part))
+        }
+        
+        ranking.vc.onNaviBackTap = { [weak self] in
+            guard let self else { return }
+            self.navigationController.popViewController(animated: true)
+            self.finishFlow?()
+        }
 
-      ranking.onCellTap = { [weak self] part in
-        self?.showRanking(rankingViewType: .individualRankingInPart(part: part))
-      }
-      ranking.onNaviBackTap = { [weak self] in
-          self?.router.popModule()
-          self?.finishFlow?()
-      }
-      router.push(ranking)
+        navigationController.pushViewController(ranking.vc, animated: true)
     }
-
+    
     private func showOtherMissionList(_ username: String, _ sentence: String) {
         var otherMissionList = factory.makeMissionListVC(
             sceneType: .ranking(userName: username, sentence: sentence)
         )
-        otherMissionList.onNaviBackTap = { [weak self] in
-            self?.router.popModule()
+        
+        otherMissionList.vc.onNaviBackTap = { [weak self] in
+            guard let self else { return }
+            self.navigationController.popViewController(animated: true)
         }
-        otherMissionList.onSwiped = { [weak self] in
-            self?.router.popModule()
+        
+        otherMissionList.vc.onSwiped = { [weak self] in
+            guard let self else { return }
+            self.navigationController.popViewController(animated: true)
         }
-        otherMissionList.onCellTap = { [weak self] model, username in
-            self?.runMissionDetailFlow(model, username)
+        
+        otherMissionList.vc.onCellTap = { [weak self] model, username in
+            guard let self else { return }
+            self.runMissionDetailFlow(model, username)
         }
-        router.push(otherMissionList)
+        
+        navigationController.pushViewController(otherMissionList.vc, animated: true)
     }
     
     private func runMissionDetailFlow(_ model: MissionListModel, _ username: String?) {
         let missionDetailCoordinator = MissionDetailCoordinator(
-            router: router,
+            navigationController: navigationController,
             factory: factory,
             model: model,
             username: username
         )
+        
         missionDetailCoordinator.finishFlow = { [weak self, weak missionDetailCoordinator] in
-            self?.removeDependency(missionDetailCoordinator)
+            guard let self else { return }
+            self.removeDependency(missionDetailCoordinator)
         }
+        
         addDependency(missionDetailCoordinator)
         missionDetailCoordinator.start()
     }
