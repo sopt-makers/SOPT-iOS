@@ -74,14 +74,14 @@ extension SearchSocialAccountVC {
     
     private func setUI() {
         self.view.backgroundColor = DSKitAsset.Colors.black100.color
-        
+    }
+    
+    private func setLayout() {
         self.view.addSubviews(
             navigationBar,
             phoneVerifyView
         )
-    }
-    
-    private func setLayout() {
+        
         navigationBar.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             $0.leading.trailing.equalToSuperview()

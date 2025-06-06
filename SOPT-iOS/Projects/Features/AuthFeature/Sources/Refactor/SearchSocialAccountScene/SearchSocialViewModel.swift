@@ -40,7 +40,6 @@ public final class SearchSocialAccountViewModel: SearchSocialAccountViewModelTyp
             .withLatestFrom(input.phone)
             .flatMap(useCase.searchSocialAccount)
             .sink { [weak self] recentLogin in
-                print(recentLogin)
                 self?.searchSocialAccountSucceed?(recentLogin)
             }
             .store(in: cancelBag)
