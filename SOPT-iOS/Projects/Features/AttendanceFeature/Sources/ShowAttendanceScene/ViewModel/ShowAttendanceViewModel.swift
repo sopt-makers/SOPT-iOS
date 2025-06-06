@@ -6,18 +6,24 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
+import Foundation
 import Combine
 
 import Core
 import Domain
-import Foundation
+
+import AttendanceFeatureInterface
 
 struct AttendanceButtonInfo {
     let title: String
     let isEnalbed: Bool
 }
 
-public final class ShowAttendanceViewModel: ViewModelType {
+public final class ShowAttendanceViewModel: ShowAttendanceViewModelType {
+    
+    // TODO: coordinating vc -> vm
+    public var onAttendanceButtonTap: ((AttendanceRoundModel, (() -> Void)?) -> Void)?
+    public var onNaviBackTap: (() -> Void)?
 
     // MARK: - Properties
     

@@ -18,7 +18,7 @@ public struct AttendanceModalDeepLink: DeepLinkExecutable {
     public init() {}
     
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
-        guard let coordinator = coordinator as? AttendanceCoordinator else { return nil }
+        guard let coordinator = coordinator as? LegacyAttendanceCoordinator else { return nil }
         
         guard let subLectureIdValue = queryItems?.getQueryValue(key: "subLectureId"),
               let roundValue = queryItems?.getQueryValue(key: "round"),

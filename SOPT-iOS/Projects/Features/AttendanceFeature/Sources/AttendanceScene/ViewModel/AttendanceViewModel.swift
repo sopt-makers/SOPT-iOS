@@ -11,8 +11,9 @@ import Foundation
 
 import Core
 import Domain
+import AttendanceFeatureInterface
 
-public final class AttendanceViewModel: ViewModelType {
+public final class AttendanceViewModel: AttendanceViewModelType {
     
     // MARK: - Properties
     

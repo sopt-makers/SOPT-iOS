@@ -476,13 +476,24 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runAttendanceFlow() -> AttendanceCoordinator {
-        let coordinator = AttendanceCoordinator(
-            router: LegacyRouter(
-                rootController: UIWindow.getRootNavigationController
-            ),
-            factory: AttendanceBuilder()
-        )
+    internal func runAttendanceFlow() -> DefaultCoordinator {
+        var coordinator: DefaultCoordinator
+        
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator = LegacyAttendanceCoordinator(
+                router: LegacyRouter(
+                    rootController: UIWindow.getRootNavigationController
+                ),
+                factory: LegacyAttendanceBuilder()
+            )
+        case .new:
+            coordinator = AttendanceCoordinator(
+                navigationController: UIWindow.getRootNavigationController,
+                factory: AttendanceBuilder()
+            )
+        }
+        
         coordinator.finishFlow = { [weak self, weak coordinator] in
             coordinator?.childCoordinators = []
             self?.removeDependency(coordinator)
