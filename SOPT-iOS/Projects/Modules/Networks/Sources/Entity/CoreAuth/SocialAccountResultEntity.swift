@@ -9,5 +9,5 @@
 import Foundation
 
 public struct SocialAccountResultEntity: Decodable {
-    let platform: PlatformType
+    public let platform: PlatformType
 }

@@ -57,9 +57,6 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
         self.phoneVerifyType = phoneVerifyType
         self.timerPublisher = timerPublisher
     }
-}
-
-extension PhoneVerifyViewModel {
     
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
@@ -164,11 +161,14 @@ extension PhoneVerifyViewModel {
             .withLatestFrom(output.timerIsRunning)
             .filter { $0 }
             .mapVoid()
-            .map { PhoneVerifyModel(
-                name: nil,
-                phone: output.phoneTextFieldText.value,
-                code: output.codeTextFieldText.value,
-                type: self.phoneVerifyType)
+            .withUnretained(self)
+            .map { owner, _ in
+                PhoneVerifyModel(
+                    name: nil,
+                    phone: output.phoneTextFieldText.value,
+                    code: output.codeTextFieldText.value,
+                    type: owner.phoneVerifyType
+                )
             }
             .flatMap(useCase.verify)
             .withUnretained(self)

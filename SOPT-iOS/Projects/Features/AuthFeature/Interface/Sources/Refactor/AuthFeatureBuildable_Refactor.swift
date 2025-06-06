@@ -14,4 +14,5 @@ public protocol AuthFeatureViewBuildable_Refactor {
     func makeUserNotFound() -> UserNotFoundPresentable
     func makeSignUp() -> SignUpPresentable
     func makeChangeSocialAccount() -> ChangeSocialAccountPresentable
+    func makeSearchSocialAccount() -> SearchSocialAccountPresentable
 }

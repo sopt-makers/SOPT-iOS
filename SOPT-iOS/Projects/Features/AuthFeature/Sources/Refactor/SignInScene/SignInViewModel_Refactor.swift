@@ -22,6 +22,7 @@ public class SignInViewModel_Refactor: SignInViewModelType_Refactor {
     
     public struct Input {
         let viewDidLoad: Driver<Void>
+        let viewWillAppear: Driver<Void>
         let googleLoginButtonTapped: Driver<Void>
         let appleLoginButtonTapped: Driver<Void>
         let loginHelpButtonTapped: Driver<Void>
@@ -32,6 +33,7 @@ public class SignInViewModel_Refactor: SignInViewModelType_Refactor {
     // MARK: - Outputs
     
     public struct Output {
+        let recentLogin = PassthroughSubject<OAuthProvider?, Never>()
     }
     
     // MARK: - SignInCoordinating
@@ -59,6 +61,11 @@ extension SignInViewModel_Refactor {
                 UserDefaultKeyList.clearUserData()
             }.store(in: self.cancelBag)
         
+        input.viewWillAppear
+            .withUnretained(self)
+            .sink { owner, _ in
+                output.recentLogin.send(owner.useCase.getRecentLogin())
+            }.store(in: self.cancelBag)
         
         Publishers.Merge(
             input.googleLoginButtonTapped.map { _ in OAuthProvider.google },

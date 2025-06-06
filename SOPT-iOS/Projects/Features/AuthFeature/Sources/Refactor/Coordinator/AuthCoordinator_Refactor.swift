@@ -13,7 +13,7 @@ import AuthFeatureInterface
 import Core
 import DSKit
 
-public final class AuthCoordinator_Refactor: DefaultAuthCoordinator {
+public final class AuthCoordinator_Refactor: BaseCoordinator & AuthCoordinatorFinishOutput {
 
     public var finishFlow: ((UserType) -> Void)?
 
@@ -140,18 +140,28 @@ extension AuthCoordinator_Refactor {
         self.router.push(changeSocialAccount.vc)
     }
     
+    private func runSearchSocialFlow() {
+        var searchSocialAccount = self.factory.makeSearchSocialAccount()
+        
+        searchSocialAccount.vm.searchSocialAccountSucceed = { [weak self] _ in
+            self?.router.popToRootModule(animated: true)
+        }
+        
+        self.router.push(searchSocialAccount.vc)
+    }
+    
     private func showLoginHelpBottomSheet(on vc: LegacyViewControllable) {
         guard let bottomSheetVC = self.factory.makeLoginHelpBottomSheet().viewController as? LoginHelpBottomSheetVC
         else { return Void() }
         
-        bottomSheetVC.onResetSocialAccountButtonDidTap = {
+        bottomSheetVC.onResetSocialAccountButtonDidTap = { [weak self] in
             bottomSheetVC.dismiss(animated: true)
-            self.runChangeSocialFlow()
+            self?.runChangeSocialFlow()
         }
         
-        bottomSheetVC.onWantToKnowLoginAccountButtonDidTap = {
-            print("wantToKnowLoginAccountButtonDidTap") //TODO: asdf
-
+        bottomSheetVC.onWantToKnowLoginAccountButtonDidTap = { [weak self] in
+            bottomSheetVC.dismiss(animated: true)
+            self?.runSearchSocialFlow()
         }
         
         let bottomSheetManager = BottomSheetManager(configuration: .fixed(minHeight: bottomSheetVC.minimumContentHeight,

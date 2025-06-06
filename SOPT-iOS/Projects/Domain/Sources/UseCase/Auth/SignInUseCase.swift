@@ -21,6 +21,7 @@ public protocol SignInUseCase {
     var signInSuccess: CurrentValueSubject<SiginInHandleableType, Error> { get set }
     
     // 인증 중앙화
+    func getRecentLogin() -> OAuthProvider?
     func login(with provider: OAuthProvider) -> AnyPublisher<Void, Never>
     var sideEffect: PassthroughSubject<CoreAuthError, Never> { get } 
 }
@@ -62,6 +63,10 @@ extension DefaultSignInUseCase: SignInUseCase {
                 return Empty<Void, Never>()
             }
             .eraseToAnyPublisher()
+    }
+    
+    public func getRecentLogin() -> OAuthProvider? {
+        coreRepository.getRecentLogin()
     }
 }
 

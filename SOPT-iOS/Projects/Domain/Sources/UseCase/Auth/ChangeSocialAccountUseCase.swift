@@ -38,7 +38,8 @@ public struct DefaultChangeSocialAccountUseCase: ChangeSocialAccountUseCase {
         phone: String
     ) -> AnyPublisher<Void, Never> {
         oAuthRepository.getIdentityToken(from: provider)
-            .map { SignUpModel(name: name, phone: phone, token: $0, provider: provider)}
+            .map {
+                SignUpModel(name: name, phone: phone, token: $0, provider: provider)}
             .flatMap { model in
                 self.repository.changeSocialAccount(model)
                     .flatMap {

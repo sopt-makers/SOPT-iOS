@@ -10,7 +10,7 @@ import Moya
 
 public enum SocialAPI {
     case getSocialAccount(phone: String)
-    case changeSocialAccount(dto: ChangeSocialAccountEntity)
+    case changeSocialAccount(dto: CoreSignUpRequestEntity)
 }
 
 extension SocialAPI: BaseAPI {
