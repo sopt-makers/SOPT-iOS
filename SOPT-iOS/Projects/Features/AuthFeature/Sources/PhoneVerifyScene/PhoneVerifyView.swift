@@ -382,6 +382,13 @@ extension PhoneVerifyView {
                 owner.timeLeftLabel.text = timeLeft.to_mmss
             }
             .store(in: cancelBag)
+        
+        output.shouldWaitForCoolTime
+            .withUnretained(self)
+            .sink { owner, coolTime in
+                ToastUtils.showMDSToast(type: .alert, text: "\(coolTime)초 후에 다시 시도하세요.")
+            }
+            .store(in: cancelBag)
     }
     
     private func updateFailLabelUI(isCode: Bool, _ description: String?) {

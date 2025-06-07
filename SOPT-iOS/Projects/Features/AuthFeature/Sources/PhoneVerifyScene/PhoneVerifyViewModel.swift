@@ -34,10 +34,11 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
     
     public struct Output {
         let isSent = PassthroughSubject<Bool, Never>()
+        let shouldWaitForCoolTime = PassthroughSubject<Int, Never>()
         let verifySuccess = PassthroughSubject<Void, Never>()
         let phoneFailDescription = PassthroughSubject<String?, Never>()
         let codeFailDescription = PassthroughSubject<String?, Never>()
-        let timeLeft = PassthroughSubject<Int, Never>()
+        let timeLeft = CurrentValueSubject<Int, Never>(0)
         let phoneTextFieldText = CurrentValueSubject<String, Never>("")
         let codeTextFieldText = CurrentValueSubject<String, Never>("")
         let timerIsRunning = PassthroughSubject<Bool, Never>()
@@ -71,7 +72,6 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
                     output.codeFailDescription.send("인증번호가 올바르지 않습니다.")
                     return
                 case .timeout:
-                    owner.timerCancellable = nil
                     output.codeFailDescription.send("3분이 초과되었어요. 인증번호를 다시 요청해주세요.")
                     return
                 case .userNotFound:
@@ -84,8 +84,20 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
             }
             .store(in: cancelBag)
         
+        
+        // 10초가 지나기 전에 재요청한 경우
         input.sendButtonTapped
-            .throttle(for: 10, scheduler: RunLoop.main, latest: false)
+            .withUnretained(self)
+            .filter { owner, _ in owner.shouldWaitForCoolTime(output.timeLeft.value) }
+            .sink { owner, _ in
+                output.shouldWaitForCoolTime.send((owner.useCase.policy.coolTime))
+            }
+            .store(in: cancelBag)
+        
+        // 전송하기
+        input.sendButtonTapped
+            .withUnretained(self)
+            .filter { owner, _ in !owner.shouldWaitForCoolTime(output.timeLeft.value) }
             .handleEvents(
                 receiveOutput: { _ in
                     output.codeTextFieldText.send("")
@@ -113,30 +125,12 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
                     .sink { owner, counter in
                         guard counter >= 0 else {
                             owner.useCase.sideEffect.send(.timeout)
+                            owner.timerCancellable = nil
                             return
                         }
                         output.timeLeft.send(counter)
                     }
             }
-            .store(in: cancelBag)
-        
-        input.phoneTextFieldText
-            .handleEvents(receiveOutput: { _ in
-                output.phoneFailDescription.send(nil)
-            })
-            .withUnretained(self)
-            .map { $1.count >= $0.useCase.policy.phoneMaxLength && $1.allSatisfy { $0.isNumber } }
-            .sink { output.sendButtonIsEnabled.send($0) }
-            .store(in: cancelBag)
-        
-        input.phoneTextFieldText
-            .withUnretained(self)
-            .filter { $1.count >= $0.useCase.policy.phoneMaxLength }
-            .map {
-                let newValue = $1.prefix($0.useCase.policy.phoneMaxLength)
-                return String(newValue)
-            }
-            .sink { output.phoneTextFieldText.send($0) }
             .store(in: cancelBag)
         
         input.codeTextFieldText
@@ -181,4 +175,9 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
         return output
     }
 
+    private func shouldWaitForCoolTime(_ currentTimeLeft: Int) -> Bool {
+        let requestInterval = useCase.policy.timeLimit - currentTimeLeft
+        let coolTime = useCase.policy.coolTime
+        return requestInterval < coolTime
+    }
 }
