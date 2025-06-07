@@ -163,8 +163,11 @@ extension AuthCoordinator {
             self?.runSearchSocialFlow()
         }
         
-        let bottomSheetManager = BottomSheetManager(configuration: .fixed(minHeight: bottomSheetVC.minimumContentHeight,
-                                                                          prefersGrabberVisible: false))
+        let bottomSheetManager = BottomSheetManager(
+            configuration: .fixed(
+                minHeight: bottomSheetVC.minimumContentHeight,
+                prefersGrabberVisible: false)
+        )
         
         self.router.showBottomSheet(
             manager: bottomSheetManager,

@@ -22,7 +22,7 @@ public final class LoginHelpBottomSheetVC: UIViewController, LoginHelpBottomShee
     private let cancelBag = CancelBag()
     
     public var minimumContentHeight: CGFloat {
-        return 158.f
+        return 158.adjustedH
     }
     
     // MARK: - Views
@@ -100,15 +100,15 @@ extension LoginHelpBottomSheetVC {
         
         self.wantToKnowAccountButton.snp.makeConstraints {
             $0.top.equalTo(warnImageView.snp.bottom).offset(12)
-            $0.leading.trailing.equalToSuperview().inset(14)
-            $0.height.equalTo(44.adjustedH)
+            $0.horizontalEdges.equalToSuperview().inset(14)
+            $0.height.equalTo(44)
         }
         
         self.resetSocialAccountButton.snp.makeConstraints {
             $0.top.equalTo(wantToKnowAccountButton.snp.bottom).offset(4)
-            $0.leading.trailing.equalToSuperview().inset(14)
-            $0.height.equalTo(44.adjustedH)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(8)
+            $0.horizontalEdges.equalToSuperview().inset(14)
+            $0.height.equalTo(wantToKnowAccountButton.snp.height)
+            $0.bottom.lessThanOrEqualTo(view.safeAreaLayoutGuide).inset(8)
         }
     }
     
