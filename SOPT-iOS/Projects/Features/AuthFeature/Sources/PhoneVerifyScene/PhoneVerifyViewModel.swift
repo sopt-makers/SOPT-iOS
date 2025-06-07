@@ -133,6 +133,26 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
             }
             .store(in: cancelBag)
         
+        input.phoneTextFieldText
+            .handleEvents(receiveOutput: { _ in
+                output.phoneFailDescription.send(nil)
+            })
+            .withUnretained(self)
+            .map { $1.count >= $0.useCase.policy.phoneMaxLength && $1.allSatisfy { $0.isNumber } }
+            .sink { output.sendButtonIsEnabled.send($0) }
+            .store(in: cancelBag)
+        
+        input.phoneTextFieldText
+            .withUnretained(self)
+            .filter { $1.count >= $0.useCase.policy.phoneMaxLength }
+            .map {
+                let newValue = $1.prefix($0.useCase.policy.phoneMaxLength)
+                return String(newValue)
+            }
+            .sink { output.phoneTextFieldText.send($0) }
+
+            .store(in: cancelBag)
+        
         input.codeTextFieldText
             .withUnretained(self)
             .filter { $1.count >= $0.useCase.policy.codeMaxLength }
