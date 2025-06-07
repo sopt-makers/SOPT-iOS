@@ -88,6 +88,7 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
             .throttle(for: 10, scheduler: RunLoop.main, latest: false)
             .handleEvents(
                 receiveOutput: { _ in
+                    output.codeTextFieldText.send("")
                     output.phoneFailDescription.send(nil)
                     output.codeFailDescription.send(nil)
                 }
