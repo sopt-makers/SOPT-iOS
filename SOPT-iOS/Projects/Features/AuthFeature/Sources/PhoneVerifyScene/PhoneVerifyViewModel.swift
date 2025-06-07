@@ -19,7 +19,6 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
     
     private let phoneVerifyType: PhoneVerifyType
     
-    private let timerPublisher: Timer.TimerPublisher
     @Published private var timerCancellable: Cancellable?
     
     // MARK: - Inputs
@@ -50,12 +49,10 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
     
     init(
         useCase: PhoneVerifyUseCase,
-        phoneVerifyType: PhoneVerifyType,
-        timerPublisher: Timer.TimerPublisher = Timer.publish(every: 1, on: .main, in: .default)
+        phoneVerifyType: PhoneVerifyType
     ) {
         self.useCase = useCase
         self.phoneVerifyType = phoneVerifyType
-        self.timerPublisher = timerPublisher
     }
     
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
@@ -88,11 +85,12 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
             .store(in: cancelBag)
         
         input.sendButtonTapped
-            .throttle(for: 2, scheduler: RunLoop.main, latest: false)
-            .handleEvents(receiveOutput: { _ in
-                output.phoneFailDescription.send(nil)
-                output.codeFailDescription.send(nil)
-            }
+            .throttle(for: 10, scheduler: RunLoop.main, latest: false)
+            .handleEvents(
+                receiveOutput: { _ in
+                    output.phoneFailDescription.send(nil)
+                    output.codeFailDescription.send(nil)
+                }
             )
             .withUnretained(self)
             .map { owner, _ in 
@@ -106,7 +104,8 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
             .sink { owner , _ in
                 output.isSent.send(true)
                 output.timeLeft.send(owner.useCase.policy.timeLimit)
-                owner.timerCancellable = owner.timerPublisher
+                owner.timerCancellable = Timer
+                    .publish(every: 1, on: .main, in: .default)
                     .autoconnect()
                     .scan(owner.useCase.policy.timeLimit) { counter, _ in counter - 1 }
                     .withUnretained(self)
