@@ -65,9 +65,10 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
             .store(in: cancelBag)
         
         useCase.sideEffect
-            .withUnretained(self)
-            .sink { owner, err in
+            .sink { err in
                 switch err {
+                case .invalidRequest:
+                    output.phoneFailDescription.send("요청 형식이 잘못됐어요.")
                 case .invalidVerifyCode:
                     output.codeFailDescription.send("인증번호가 올바르지 않습니다.")
                     return

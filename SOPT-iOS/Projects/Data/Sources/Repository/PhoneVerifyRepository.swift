@@ -23,9 +23,12 @@ public struct PhoneVerifyRepository {
 extension PhoneVerifyRepository: PhoneVerifyRepositoryInterface {
     public func send(_ model: Domain.PhoneSendModel) -> AnyPublisher<Void, Domain.PhoneVerifyError> {
         coreAuthService.sendVerifyCode(model.toData())
-            .mapVoid()
-            .mapError {
-                PhoneVerifyError.unknown($0) //TODO: 기획 명세에 맞게 에러 매핑
+            .mapError { moyaError in
+                switch moyaError.response?.statusCode {
+                case 400: PhoneVerifyError.invalidRequest
+                case 404: PhoneVerifyError.userNotFound
+                default: PhoneVerifyError.unknown(moyaError)
+                }
             }
             .eraseToAnyPublisher()
     }

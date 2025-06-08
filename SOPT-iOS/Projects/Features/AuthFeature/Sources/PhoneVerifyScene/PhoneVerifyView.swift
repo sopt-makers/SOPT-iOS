@@ -341,13 +341,6 @@ extension PhoneVerifyView {
             }
             .store(in: cancelBag)
         
-        output.timeLeft
-            .withUnretained(self)
-            .sink { owner, time in
-                print(time)
-            }
-            .store(in: cancelBag)
-        
         output.phoneFailDescription
             .withUnretained(self)
             .sink { owner, description in
