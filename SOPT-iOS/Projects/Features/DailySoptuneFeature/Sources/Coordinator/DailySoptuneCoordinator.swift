@@ -72,9 +72,9 @@ public final class DailySoptuneCoordinator: DefaultDailySoptuneCoordinator {
         }
         
         dailySoptuneResultCoordinator.requestCoordinating = { [weak self] in
-            self?.requestCoordinating?()
-            self?.navigationController.dismiss(animated: true)
-            self?.finishFlow?()
+            self?.navigationController.dismiss(animated: false) {
+                self?.finishFlow?()
+            }
         }
         
         addDependency(dailySoptuneResultCoordinator)
