@@ -32,7 +32,7 @@ final class ApplicationCoordinator: BaseCoordinator {
     private var cancelBag = CancelBag()
     let notificationHandler: NotificationHandler
     
-    private let rootNavigationController: UINavigationController
+    internal let rootNavigationController: UINavigationController
     
     private weak var legacyRootController: UINavigationController?
     weak var tabBarController: UITabBarController?
@@ -769,10 +769,6 @@ extension ApplicationCoordinator {
             coordinator.finishFlow = { [weak self, weak coordinator] in
                 coordinator?.childCoordinators = []
                 self?.removeDependency(coordinator)
-            }
-            coordinator.requestCoordinating = { [weak self, weak coordinator] in
-                self?.rootNavigationController.popToRootViewController(animated: true)
-                coordinator?.childCoordinators = []
             }
         }
         
