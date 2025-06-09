@@ -20,18 +20,16 @@ public final class DailySoptuneCardCoordinator: DefaultCoordinator {
     public var requestCoordinating: (() -> Void)?
     public var finishFlow: (() -> Void)?
         
-    private var navigationController: UINavigationController
+    private var rootViewController: UIViewController
     private let factory: DailySoptuneBuildable
     private let cardModel: DailySoptuneCardModel
     
-    private weak var rootViewController: UIViewController?
-    
     public init(
-        navigationController: UINavigationController,
+        navigationController: UIViewController,
         factory: DailySoptuneBuildable,
         cardModel: DailySoptuneCardModel
     ) {
-        self.navigationController = navigationController
+        self.rootViewController = navigationController
         self.factory = factory
         self.cardModel = cardModel
     }
@@ -45,19 +43,20 @@ public final class DailySoptuneCardCoordinator: DefaultCoordinator {
         
         dailySoptuneCard.vm.onBackButtonTapped = { [weak self] in
             guard let self = self else { return }
-            self.navigationController.dismiss(animated: true)
+            self.rootViewController.dismiss(animated: true)
             self.finishFlow?()
         }
         
         dailySoptuneCard.vm.onGoToHomeButtonTapped = { [weak self] in
-            self?.navigationController.dismiss(animated: false) {
-                self?.requestCoordinating?()
-                self?.finishFlow?()
-            }
+//            self?.delegate?.requestAllDismiss()
+//            self?.navigationController.dismiss(animated: false) {
+//                self?.requestCoordinating?()
+//                self?.finishFlow?()
+//            }
         }
         
-        rootViewController = dailySoptuneCard.vc
-        rootViewController?.modalPresentationStyle = .overFullScreen
-        navigationController.present(dailySoptuneCard.vc, animated: true)
+//        rootViewController = dailySoptuneCard.vc
+        dailySoptuneCard.vc.modalPresentationStyle = .overFullScreen
+        rootViewController.present(dailySoptuneCard.vc, animated: true)
     }
 }
