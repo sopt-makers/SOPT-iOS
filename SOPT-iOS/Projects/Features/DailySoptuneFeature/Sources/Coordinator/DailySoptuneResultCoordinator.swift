@@ -60,14 +60,14 @@ public final class DailySoptuneResultCoordinator: DefaultDailySoptuneCoordinator
         
         dailySoptuneResult.vm.onReceiveTodaysFortuneCardButtonTapped = { [weak self] cardModel in
             guard let self else { return }
-            self.runDailySoptuneCardFlow(cardModel: cardModel)
+            self.showDailySoptuneCard(cardModel)
         }
         
         dailySoptuneResult.vm.onProfileImageTapped = { [weak self] playgroundId in
             guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(playgroundId)") else { return }
             
             let webView = SOPTWebView(startWith: url)
-            self?.navigationController.pushViewController(webView, animated: true)
+            self?.rootController?.pushViewController(webView, animated: true)
         }
         
         let navController = UINavigationController(rootViewController: dailySoptuneResult.vc)
@@ -76,27 +76,22 @@ public final class DailySoptuneResultCoordinator: DefaultDailySoptuneCoordinator
         navigationController.present(navController, animated: true)
     }
     
-    internal func runDailySoptuneCardFlow(cardModel: DailySoptuneCardModel) {
-        let dailySoptuneCardCoordinator = DailySoptuneCardCoordinator(
-            navigationController: rootController ?? UIWindow.getRootNavigationController,
-            factory: factory,
-            cardModel: cardModel
-        )
+    private func showDailySoptuneCard(_ cardModel: DailySoptuneCardModel) {
+        var dailySoptuneCard = factory.makeDailySoptuneCardVC(cardModel: cardModel)
         
-        dailySoptuneCardCoordinator.finishFlow = { [weak self, weak dailySoptuneCardCoordinator] in
-            dailySoptuneCardCoordinator?.childCoordinators = []
-            self?.removeDependency(dailySoptuneCardCoordinator)
+        dailySoptuneCard.vm.onBackButtonTapped = { [weak self] in
+            guard let self = self else { return }
+            self.rootController?.dismiss(animated: true)
         }
         
-        dailySoptuneCardCoordinator.requestCoordinating = { [weak self] in
-            self?.navigationController.dismiss(animated: false) {
-                self?.requestCoordinating?()
-                self?.finishFlow?()
-            }
+        dailySoptuneCard.vm.onGoToHomeButtonTapped = { [weak self] in
+            self?.navigationController.dismiss(animated: false)
+            self?.requestCoordinating?()
+            self?.finishFlow?()
         }
         
-        addDependency(dailySoptuneCardCoordinator)
-        dailySoptuneCardCoordinator.start()
+        dailySoptuneCard.vc.modalPresentationStyle = .overFullScreen
+        rootController?.present(dailySoptuneCard.vc, animated: true)
     }
     
     private func showMessageBottomSheet(userModel: PokeUserModel, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel, isAnonymous: Bool), Never> {
