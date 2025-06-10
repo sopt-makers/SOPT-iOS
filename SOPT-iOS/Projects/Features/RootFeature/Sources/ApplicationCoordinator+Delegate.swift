@@ -15,6 +15,29 @@ import SoptlogFeature
 import TabBarFeature
 import AppMyPageFeature
 
+// MARK: - TabBarCoordinatorDelegate
+
+extension ApplicationCoordinator: TabBarCoordinatorDelegate {
+    public func tabBarCoordinator(_ coordinator: TabBarCoordinator, didRequest destination: TabBarCoordinatorDestination) {
+        switch destination {
+        case .home:
+            print("홈클릭")
+            self.selectedTab(.home)
+        case .soptlog:
+            print("솝트로그클릭")
+            self.selectedTab(.soptlog)
+        case .signIn:
+            print("회원가입클릭")
+            self.runSignInFlow(by: .rootWindow(animated: true, message: nil))
+            self.removeDependency(coordinator)
+        }
+    }
+
+    private func selectedTab(_ tab: TabType) {
+        self.tabBarController?.selectedIndex = tab.rawValue
+    }
+}
+
 // MARK: - HomeCoordinatorDelegate
 
 extension ApplicationCoordinator: HomeCoordinatorDelegate {
