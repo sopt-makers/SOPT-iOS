@@ -13,10 +13,15 @@ import NotificationFeatureInterface
 import Domain
 import Core
 
+public protocol NotificationCoordinatorDelegate: AnyObject {
+    func notificationCoordinator(_ coordinator: NotificationCoordinator, to destination: NotificationCoordinatorDestination)
+}
+
 public final class NotificationCoordinator: DefaultNotificationCoordinator {
     
     // MARK: - Properties
     
+    public weak var delegate: NotificationCoordinatorDelegate?
     public var requestCoordinating: ((NotificationCoordinatorDestination) -> Void)?
     public var finishFlow: (() -> Void)?
 
@@ -61,6 +66,7 @@ public final class NotificationCoordinator: DefaultNotificationCoordinator {
         var notificationDetail = factory.makeNotificationDetailVC(notificationId: notificationId)
         
         notificationDetail.vm.onShortCutButtonTap = { [weak self] link in
+            guard let self else { return }
             let url = link.url
             let destination: NotificationCoordinatorDestination = link.isDeepLink ? .deepLink(url: url) : .webLink(url: url)
             AmplitudeInstance.shared.track(eventType: .viewNotificationDetail, eventProperties: [
@@ -68,7 +74,8 @@ public final class NotificationCoordinator: DefaultNotificationCoordinator {
                 "open_method": link.isDeepLink ? "푸시알림" : "알림센터",
                 "contain_deeplink": link.isDeepLink
             ])
-            self?.requestCoordinating?(destination)
+            
+            self.delegate?.notificationCoordinator(self, to: destination)
         }
         
         navigationController.pushViewController(notificationDetail.vc, animated: true)
