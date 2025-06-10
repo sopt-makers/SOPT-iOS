@@ -351,28 +351,12 @@ extension ApplicationCoordinator {
             ]
         )
         
+        coordinator.delegate = self
         self.tabBarController = tabBarFactory.vc
-        self.selectedTab(initSelectedTabType)
-        
-        // 각 코디네이터 실행
-        coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
-            switch destination {
-            case .home:
-                self?.selectedTab(.home)
-            case .soptlog:
-                self?.selectedTab(.soptlog)
-            case .signIn:
-                self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
-                self?.removeDependency(coordinator)
-            }
-        }
+        self.tabBarController?.selectedIndex = initSelectedTabType.rawValue
         
         addDependency(coordinator)
         coordinator.start()
-    }
-    
-    private func selectedTab(_ tab: TabType) {
-        self.tabBarController?.selectedIndex = tab.rawValue
     }
 }
 
