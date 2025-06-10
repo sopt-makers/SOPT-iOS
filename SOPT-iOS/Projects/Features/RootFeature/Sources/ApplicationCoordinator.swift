@@ -684,26 +684,30 @@ extension ApplicationCoordinator {
         
         switch Config.coordinatorFlag {
         case .legacy:
-            coordinator = LegacyNotificationCoordinator(
+            let legacyCoordinator = LegacyNotificationCoordinator(
                 router: LegacyRouter(
                     rootController: UIWindow.getRootNavigationController
                 ),
                 factory: LegacyNotificationBuilder()
             )
+            
+            legacyCoordinator.requestCoordinating = { [weak self] destination in
+                switch destination {
+                case .deepLink(let url):
+                    self?.notificationHandler.receive(deepLink: url)
+                case .webLink(let url):
+                    self?.notificationHandler.receive(webLink: url)
+                }
+            }
+            
+            coordinator = legacyCoordinator
         case .new:
-            coordinator = NotificationCoordinator(
+            let newCoordinator = NotificationCoordinator(
                 navigationController: UIWindow.getRootNavigationController,
                 factory: NotificationBuilder()
             )
-        }
-        
-        coordinator.requestCoordinating = { [weak self] destination in
-            switch destination {
-            case .deepLink(let url):
-                self?.notificationHandler.receive(deepLink: url)
-            case .webLink(let url):
-                self?.notificationHandler.receive(webLink: url)
-            }
+            newCoordinator.delegate = self
+            coordinator = newCoordinator
         }
         
         coordinator.finishFlow = { [weak self, weak coordinator] in
