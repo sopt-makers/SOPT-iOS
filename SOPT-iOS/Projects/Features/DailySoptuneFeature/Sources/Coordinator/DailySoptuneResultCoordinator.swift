@@ -85,7 +85,7 @@ public final class DailySoptuneResultCoordinator: DefaultDailySoptuneCoordinator
         }
         
         dailySoptuneCard.vm.onGoToHomeButtonTapped = { [weak self] in
-            self?.navigationController.dismiss(animated: false)
+            CoordinatorUtils.dismissToRootNavigation()
             self?.requestCoordinating?()
             self?.finishFlow?()
         }
