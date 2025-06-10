@@ -148,7 +148,7 @@ extension ApplicationCoordinator {
     }
     
     private func handleNewWebLink(webLink: String) {
-        self.rootNavigationController.dismiss(animated: false)
+        UIWindow.getRootNavigationController.dismiss(animated: false)
         guard let url = URL(string: webLink) else { return }
         let webView = SOPTWebView(startWith: url)
         CoordinatorUtils.pushOnRootNavigation(webView)
