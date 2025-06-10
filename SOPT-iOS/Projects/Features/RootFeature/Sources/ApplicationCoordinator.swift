@@ -413,7 +413,7 @@ extension ApplicationCoordinator {
                 case .calendar:
                     self?.showHomeCalendarDetail()
                 case .poke(let isNewUser):
-                    isNewUser ? self?.runPokeOnboardingFlow() : self?.runPokeFlow()
+                    _ = isNewUser ? self?.runPokeOnboardingFlow() : self?.runPokeFlow()
                 }
             }
         case .new:

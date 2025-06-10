@@ -40,7 +40,7 @@ extension ApplicationCoordinator: HomeCoordinatorDelegate {
         case .calendar:
             showHomeCalendarDetail()
         case .poke(let isNewUser):
-            isNewUser ? runPokeOnboardingFlow() : runPokeFlow()
+            _ = isNewUser ? runPokeOnboardingFlow() : runPokeFlow()
         }
     }
 }
