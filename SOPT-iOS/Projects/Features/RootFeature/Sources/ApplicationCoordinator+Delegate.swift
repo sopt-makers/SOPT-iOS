@@ -14,6 +14,7 @@ import HomeFeature
 import SoptlogFeature
 import TabBarFeature
 import AppMyPageFeature
+import NotificationFeature
 
 // MARK: - TabBarCoordinatorDelegate
 
@@ -79,6 +80,19 @@ extension ApplicationCoordinator: SoptlogCoordinatorDelegate {
             self.runSignInFlow(by: .rootWindow(animated: true, message: nil))
         case .webLink(let url):
             self.handleWebLink(webLink: url)
+        }
+    }
+}
+
+// MARK: - NotificationCoordinatorDelegate
+
+extension ApplicationCoordinator: NotificationCoordinatorDelegate {
+    public func notificationCoordinator(_ coordinator: NotificationCoordinator, to destination: NotificationCoordinatorDestination) {
+        switch destination {
+        case .deepLink(let url):
+            self.notificationHandler.receive(deepLink: url)
+        case .webLink(let url):
+            self.notificationHandler.receive(webLink: url)
         }
     }
 }
