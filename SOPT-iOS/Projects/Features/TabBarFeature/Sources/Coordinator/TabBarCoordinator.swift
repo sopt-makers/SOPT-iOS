@@ -16,12 +16,17 @@ import BaseFeatureDependency
 import TabBarFeatureInterface
 import WebFeature
 
+public protocol TabBarCoordinatorDelegate: AnyObject {
+    func tabBarCoordinator(_ coordinator: TabBarCoordinator, didRequest destination: TabBarCoordinatorDestination)
+}
+
 public final class TabBarCoordinator: DefaultTabBarCoordinator {
     
     // MARK: - Properties
     
     public var finishFlow: (() -> Void)?
     public var requestCoordinating: ((TabBarCoordinatorDestination) -> Void)?
+    public weak var delegate: TabBarCoordinatorDelegate?
         
     private let factory: TabBarPresentable
     private var navigationController: UINavigationController
@@ -52,10 +57,11 @@ public final class TabBarCoordinator: DefaultTabBarCoordinator {
     
         tabBar.vm.onTabBarItemTapped = { [weak self] index in
             // 각 탭의 코디네이터 실행
-            guard let tabType = TabType(rawValue: index) else { return }
+            guard let self = self,
+                let tabType = TabType(rawValue: index) else { return }
             switch tabType {
-            case .home: self?.requestCoordinating?(.home)
-            case .soptlog: self?.requestCoordinating?(.soptlog)
+            case .home: self.delegate?.tabBarCoordinator(self, didRequest: .home)
+            case .soptlog: self.delegate?.tabBarCoordinator(self, didRequest: .soptlog)
             }
         }
         
@@ -66,7 +72,8 @@ public final class TabBarCoordinator: DefaultTabBarCoordinator {
                 description: I18N.Home.PopUp.needToLoginDetail,
                 customButtonTitle: I18N.Home.PopUp.login,
                 customAction: { [weak self] in
-                    self?.requestCoordinating?(.signIn)
+                    guard let self else { return }
+                    self.delegate?.tabBarCoordinator(self, didRequest: .signIn)
                 }
             )
         }
