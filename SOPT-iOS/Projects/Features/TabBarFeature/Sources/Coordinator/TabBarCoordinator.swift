@@ -60,8 +60,8 @@ public final class TabBarCoordinator: DefaultTabBarCoordinator {
             guard let self = self,
                 let tabType = TabType(rawValue: index) else { return }
             switch tabType {
-            case .home: self.delegate?.tabBarCoordinator(self, didRequest: .home)
-            case .soptlog: self.delegate?.tabBarCoordinator(self, didRequest: .soptlog)
+            case .home: self.delegate?.tabBarCoordinator(self, to: .home)
+            case .soptlog: self.delegate?.tabBarCoordinator(self, to: .soptlog)
             }
         }
         
@@ -73,7 +73,7 @@ public final class TabBarCoordinator: DefaultTabBarCoordinator {
                 customButtonTitle: I18N.Home.PopUp.login,
                 customAction: { [weak self] in
                     guard let self else { return }
-                    self.delegate?.tabBarCoordinator(self, didRequest: .signIn)
+                    self.delegate?.tabBarCoordinator(self, to: .signIn)
                 }
             )
         }
