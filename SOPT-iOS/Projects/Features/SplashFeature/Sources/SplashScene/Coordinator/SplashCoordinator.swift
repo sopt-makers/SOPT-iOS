@@ -25,7 +25,7 @@ public final class SplashCoordinator: DefaultCoordinator & SplashCoordinatable {
     
     public var finishFlow: (() -> Void)?
     
-    private let navigationController: UINavigationController
+    private weak var navigationController: UINavigationController?
     private let factory: SplashFeatureBuildable
     private let cancelBag = CancelBag()
     
@@ -63,7 +63,7 @@ public final class SplashCoordinator: DefaultCoordinator & SplashCoordinatable {
             self?.finishFlow?()
         }
         
-        navigationController.setViewControllers([splash.vc], animated: true)
+        navigationController?.setViewControllers([splash.vc], animated: true)
     }
     
     private func presentNoticePopUp(model: AppNoticeModel) {
@@ -80,10 +80,10 @@ public final class SplashCoordinator: DefaultCoordinator & SplashCoordinatable {
             if didCheck {
                 UserDefaultKeyList.AppNotice.checkedAppVersion = model.recommendVersion
             }
-            self?.navigationController.dismiss(animated: true)
+            self?.navigationController?.dismiss(animated: true)
             self?.finishFlow?()
         }.store(in: cancelBag)
         
-        navigationController.present(noticePopUpVC, animated: false)
+        navigationController?.present(noticePopUpVC, animated: false)
     }
 }
