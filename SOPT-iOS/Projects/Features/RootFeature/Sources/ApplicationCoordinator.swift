@@ -180,20 +180,28 @@ extension ApplicationCoordinator {
         
         switch Config.coordinatorFlag {
         case .legacy:
-            coordinator = LegacySplashCoordinator(
+            let legacyCoordinator = LegacySplashCoordinator(
                 router: router,
                 factory: LegacySplashBuilder()
             )
+            
+            legacyCoordinator.finishFlow = { [weak self, weak legacyCoordinator] in
+                self?.checkDidSignIn()
+                self?.removeDependency(legacyCoordinator
+                )
+            }
+            coordinator = legacyCoordinator
         case .new:
-            coordinator = SplashCoordinator(
+            let newCoordinator = SplashCoordinator(
                 navigationController: rootNavigationController,
                 factory: SplashBuilder()
             )
-        }
-        
-        coordinator.finishFlow = { [weak self, weak coordinator] in
-            self?.checkDidSignIn()
-            self?.removeDependency(coordinator)
+            
+            newCoordinator.finishFlow = { [weak self] in
+                self?.checkDidSignIn()
+            }
+            
+            coordinator = newCoordinator
         }
         
         addDependency(coordinator)
