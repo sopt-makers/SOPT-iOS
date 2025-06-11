@@ -19,16 +19,13 @@ import NotificationFeature
 // MARK: - TabBarCoordinatorDelegate
 
 extension ApplicationCoordinator: TabBarCoordinatorDelegate {
-    public func tabBarCoordinator(_ coordinator: TabBarCoordinator, didRequest destination: TabBarCoordinatorDestination) {
+    public func tabBarCoordinator(_ coordinator: TabBarCoordinator, to destination: TabBarCoordinatorDestination) {
         switch destination {
         case .home:
-            print("홈클릭")
             self.selectedTab(.home)
         case .soptlog:
-            print("솝트로그클릭")
             self.selectedTab(.soptlog)
         case .signIn:
-            print("회원가입클릭")
             self.runSignInFlow(by: .rootWindow(animated: true, message: nil))
             self.removeDependency(coordinator)
         }
@@ -72,7 +69,7 @@ extension ApplicationCoordinator: HomeCoordinatorDelegate {
 // MARK: - SoptlogCoordinatorDelegate
 
 extension ApplicationCoordinator: SoptlogCoordinatorDelegate {
-    public func soptlogCoordinator(_ coordinator: SoptlogCoordinator, didRequest destination: SoptlogCoordinatorDestination) {
+    public func soptlogCoordinator(_ coordinator: SoptlogCoordinator, to destination: SoptlogCoordinatorDestination) {
         switch destination {
         case .dailySoptune:
             self.runDailySoptuneFlow()

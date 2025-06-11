@@ -17,7 +17,7 @@ import TabBarFeatureInterface
 import WebFeature
 
 public protocol TabBarCoordinatorDelegate: AnyObject {
-    func tabBarCoordinator(_ coordinator: TabBarCoordinator, didRequest destination: TabBarCoordinatorDestination)
+    func tabBarCoordinator(_ coordinator: TabBarCoordinator, to destination: TabBarCoordinatorDestination)
 }
 
 public final class TabBarCoordinator: DefaultTabBarCoordinator {
