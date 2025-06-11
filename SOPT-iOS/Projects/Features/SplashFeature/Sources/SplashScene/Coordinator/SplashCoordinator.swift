@@ -40,10 +40,6 @@ public final class SplashCoordinator: DefaultCoordinator & SplashCoordinatable {
         super.init()
     }
     
-    deinit {
-        print("coordinator deinit")
-    }
-    
     // MARK: - Coordinator Life Cycle
     
     public override func start() {

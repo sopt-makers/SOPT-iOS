@@ -37,10 +37,6 @@ public class SplashViewModel: ViewModelType {
         self.useCase = useCase
         self.coordinator = coordinator
     }
-    
-    deinit {
-        print("VM deinit")
-    }
 }
 
 extension SplashViewModel {
