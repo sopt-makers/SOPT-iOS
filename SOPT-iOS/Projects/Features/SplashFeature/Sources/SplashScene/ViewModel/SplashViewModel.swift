@@ -14,8 +14,9 @@ import Domain
 import BaseFeatureDependency
 import SplashFeatureInterface
 
-public class SplashViewModel: SplashViewModelType {
+public class SplashViewModel: ViewModelType {
     
+    private let coordinator: SplashCoordinatable
     private let useCase: SplashUseCase
     private var cancelBag = CancelBag()
     
@@ -30,15 +31,15 @@ public class SplashViewModel: SplashViewModelType {
         var appNoticeModel = PassthroughSubject<AppNoticeModel?, Error>()
     }
     
-    // MARK: - SignInCoordinatable
-    
-    public var onNoticeSkipped: (() -> Void)?
-    public var onNoticeExist: ((AppNoticeModel) -> Void)?
-    
     // MARK: - init
     
-    public init(useCase: SplashUseCase) {
+    public init(useCase: SplashUseCase, coordinator: SplashCoordinatable) {
         self.useCase = useCase
+        self.coordinator = coordinator
+    }
+    
+    deinit {
+        print("VM deinit")
     }
 }
 
@@ -57,7 +58,7 @@ extension SplashViewModel {
                 print("SplashViewModel - completion: \(event)")
             } receiveValue: { owner, appNoticeModel in
                 guard let appNoticeModel = appNoticeModel else {
-                    owner.onNoticeSkipped?()
+                    owner.coordinator.onNoticeSkipped?()
                     return
                 }
                 
@@ -66,7 +67,7 @@ extension SplashViewModel {
                     return
                 }
                 
-                owner.onNoticeExist?(appNoticeModel)
+                owner.coordinator.onNoticeExist?(appNoticeModel)
             }.store(in: cancelBag)
     }
 
