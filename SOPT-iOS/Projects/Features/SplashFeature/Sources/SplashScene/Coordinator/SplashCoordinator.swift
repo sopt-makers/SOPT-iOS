@@ -13,7 +13,13 @@ import SplashFeatureInterface
 import Core
 import Domain
 
-public final class SplashCoordinator: DefaultCoordinator {
+public final class SplashCoordinator: DefaultCoordinator & SplashCoordinatable {
+    
+    // MARK: - SplashCoordinatable
+    
+    public var onNoticeSkipped: (() -> Void)?
+    public var onNoticeExist: ((Domain.AppNoticeModel) -> Void)?
+    
     
     // MARK: - Properties
     
@@ -34,6 +40,10 @@ public final class SplashCoordinator: DefaultCoordinator {
         super.init()
     }
     
+    deinit {
+        print("coordinator deinit")
+    }
+    
     // MARK: - Coordinator Life Cycle
     
     public override func start() {
@@ -43,13 +53,13 @@ public final class SplashCoordinator: DefaultCoordinator {
     // MARK: - Navigation
     
     private func showSplash() {
-        var splash = factory.makeSplash()
+        let splash = factory.makeSplash(self)
         
-        splash.vm.onNoticeExist = { [weak self] appNoticeModel in
+        onNoticeExist = { [weak self] appNoticeModel in
             self?.presentNoticePopUp(model: appNoticeModel)
         }
         
-        splash.vm.onNoticeSkipped = { [weak self] in
+        onNoticeSkipped = { [weak self] in
             self?.finishFlow?()
         }
         
