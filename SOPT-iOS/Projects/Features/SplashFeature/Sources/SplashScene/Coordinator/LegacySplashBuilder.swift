@@ -18,9 +18,9 @@ final class LegacySplashBuilder {
 }
 
 extension LegacySplashBuilder: LegacySplashFeatureViewBuildable {
-    public func makeSplash() -> LegacySplashPresentable {
+    public func makeSplash(_ coordinator: SplashCoordinatable) -> LegacySplashPresentable {
         let useCase = DefaultSplashUseCase(repository: repository)
-        let vm = SplashViewModel(useCase: useCase)
+        let vm = SplashViewModel(useCase: useCase, coordinator: coordinator)
         let vc = SplashVC()
         vc.viewModel = vm
         return (vc, vm)

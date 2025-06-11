@@ -10,6 +10,12 @@ import Core
 import Domain
 @_exported import SplashFeatureInterface
 
+public protocol SplashBuildable {
+    func makeSplash(_ coordinator: SplashCoordinatable) -> SplashPresentable
+    func makeNoticePopUpVC(noticeType: NoticePopUpType, content: String) -> NoticePopUpPresentable
+}
+
+
 public final class SplashBuilder {
     @Injected public var repository: SplashRepositoryInterface
     
@@ -17,10 +23,9 @@ public final class SplashBuilder {
 }
 
 extension SplashBuilder: SplashFeatureBuildable {
-    
-    public func makeSplash() -> SplashPresentable {
+    public func makeSplash(_ coordinator: SplashCoordinatable) -> SplashPresentable {
         let useCase = DefaultSplashUseCase(repository: repository)
-        let vm = SplashViewModel(useCase: useCase)
+        let vm = SplashViewModel(useCase: useCase, coordinator: coordinator)
         let vc = SplashVC()
         vc.viewModel = vm
         return (vc, vm)
