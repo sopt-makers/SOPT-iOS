@@ -1,16 +1,14 @@
 //
-//  DailySoptuneFeatureBuildable.swift
-//  DailySoptuneFeatureInterface
+//  DailySoptuneBuildable.swift
+//  DailySoptuneFeature
 //
-//  Created by Jae Hyun Lee on 9/21/24.
-//  Copyright © 2024 SOPT-iOS. All rights reserved.
+//  Created by 강윤서 on 6/6/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
-
-import Foundation
 
 import Domain
 
-public protocol DailySoptuneFeatureBuildable {
+public protocol DailySoptuneBuildable {
     func makeDailySoptuneResultVC(resultModel: DailySoptuneResultModel) -> DailySoptuneResultPresentable
     func makeDailySoptuneMainVC() -> DailySoptuneMainPresentable
     func makeDailySoptuneCardVC(cardModel: DailySoptuneCardModel) -> DailySoptuneCardPresentable

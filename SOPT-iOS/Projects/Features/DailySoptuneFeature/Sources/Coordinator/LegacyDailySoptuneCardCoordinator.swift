@@ -1,5 +1,5 @@
 //
-//  DailySoptuneCardCoordinator.swift
+//  LegacyDailySoptuneCardCoordinator.swift
 //  DailySoptuneFeature
 //
 //  Created by Jae Hyun Lee on 9/28/24.
@@ -14,19 +14,19 @@ import BaseFeatureDependency
 import DailySoptuneFeatureInterface
 import Domain
 
-public final class DailySoptuneCardCoordinator: DefaultCoordinator {
+public final class LegacyDailySoptuneCardCoordinator: DefaultCoordinator {
     
     public var requestCoordinating: (() -> Void)?
     public var finishFlow: (() -> Void)?
         
-    private let factory: DailySoptuneFeatureBuildable
+    private let factory: LegacyDailySoptuneFeatureBuildable
     private let router: LegacyRouter
     
     private let cardModel: DailySoptuneCardModel
 
     private weak var rootController: UINavigationController?
     
-    public init(router: LegacyRouter, factory: DailySoptuneFeatureBuildable, cardModel: DailySoptuneCardModel) {
+    public init(router: LegacyRouter, factory: LegacyDailySoptuneFeatureBuildable, cardModel: DailySoptuneCardModel) {
         self.router = router
         self.factory = factory
         self.cardModel = cardModel

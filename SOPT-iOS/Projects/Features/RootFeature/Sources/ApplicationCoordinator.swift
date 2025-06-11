@@ -32,7 +32,7 @@ final class ApplicationCoordinator: BaseCoordinator {
     private var cancelBag = CancelBag()
     let notificationHandler: NotificationHandler
     
-    private let rootNavigationController: UINavigationController
+    internal let rootNavigationController: UINavigationController
     
     private weak var legacyRootController: UINavigationController?
     weak var tabBarController: UITabBarController?
@@ -148,7 +148,7 @@ extension ApplicationCoordinator {
     }
     
     private func handleNewWebLink(webLink: String) {
-        self.rootNavigationController.dismiss(animated: false)
+        UIWindow.getRootNavigationController.dismiss(animated: false)
         guard let url = URL(string: webLink) else { return }
         let webView = SOPTWebView(startWith: url)
         CoordinatorUtils.pushOnRootNavigation(webView)
@@ -727,22 +727,37 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runDailySoptuneFlow() -> DailySoptuneCoordinator {
-        let coordinator = DailySoptuneCoordinator(
-            router: LegacyRouter(
-                rootController: UIWindow.getRootNavigationController
-            ),
-            factory: DailySoptuneBuilder(),
-            pokeFactory: LegacyPokeBuilder()
-        )
-        coordinator.finishFlow = { [weak self, weak coordinator] in
-            coordinator?.childCoordinators = []
-            self?.removeDependency(coordinator)
-        }
+    internal func runDailySoptuneFlow() -> DefaultDailySoptuneCoordinator {
+        var coordinator: DefaultDailySoptuneCoordinator
         
-        coordinator.requestCoordinating = { [weak self, weak coordinator] in
-            self?.router.popToRootModule(animated: true)
-            coordinator?.childCoordinators = []
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator = LegacyDailySoptuneCoordinator(
+                router: LegacyRouter(
+                    rootController: UIWindow.getRootNavigationController
+                ),
+                factory: LegacyDailySoptuneBuilder(),
+                pokeFactory: LegacyPokeBuilder()
+            )
+            coordinator.finishFlow = { [weak self, weak coordinator] in
+                coordinator?.childCoordinators = []
+                self?.removeDependency(coordinator)
+            }
+            
+            coordinator.requestCoordinating = { [weak self, weak coordinator] in
+                self?.router.popToRootModule(animated: true)
+                coordinator?.childCoordinators = []
+            }
+        case .new:
+            coordinator = DailySoptuneCoordinator(
+                navigationController: UIWindow.getRootNavigationController,
+                factory: DailySoptuneBuilder(),
+                pokeFactory: PokeBuilder()
+            )
+            coordinator.finishFlow = { [weak self, weak coordinator] in
+                coordinator?.childCoordinators = []
+                self?.removeDependency(coordinator)
+            }
         }
         
         addDependency(coordinator)
