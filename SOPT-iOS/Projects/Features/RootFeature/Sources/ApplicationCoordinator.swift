@@ -197,7 +197,7 @@ extension ApplicationCoordinator {
                 factory: SplashBuilder()
             )
             
-            newCoordinator.finishFlow = { [weak self] in
+            newCoordinator.checkSignInFlow = { [weak self] in
                 self?.checkDidSignIn()
             }
             
