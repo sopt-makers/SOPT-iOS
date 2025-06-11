@@ -351,28 +351,12 @@ extension ApplicationCoordinator {
             ]
         )
         
+        coordinator.delegate = self
         self.tabBarController = tabBarFactory.vc
-        self.selectedTab(initSelectedTabType)
-        
-        // 각 코디네이터 실행
-        coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
-            switch destination {
-            case .home:
-                self?.selectedTab(.home)
-            case .soptlog:
-                self?.selectedTab(.soptlog)
-            case .signIn:
-                self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
-                self?.removeDependency(coordinator)
-            }
-        }
+        self.tabBarController?.selectedIndex = initSelectedTabType.rawValue
         
         addDependency(coordinator)
         coordinator.start()
-    }
-    
-    private func selectedTab(_ tab: TabType) {
-        self.tabBarController?.selectedIndex = tab.rawValue
     }
 }
 
@@ -413,7 +397,7 @@ extension ApplicationCoordinator {
                 case .calendar:
                     self?.showHomeCalendarDetail()
                 case .poke(let isNewUser):
-                    isNewUser ? self?.runPokeOnboardingFlow() : self?.runPokeFlow()
+                    _ = isNewUser ? self?.runPokeOnboardingFlow() : self?.runPokeFlow()
                 }
             }
         case .new:
@@ -700,26 +684,30 @@ extension ApplicationCoordinator {
         
         switch Config.coordinatorFlag {
         case .legacy:
-            coordinator = LegacyNotificationCoordinator(
+            let legacyCoordinator = LegacyNotificationCoordinator(
                 router: LegacyRouter(
                     rootController: UIWindow.getRootNavigationController
                 ),
                 factory: LegacyNotificationBuilder()
             )
+            
+            legacyCoordinator.requestCoordinating = { [weak self] destination in
+                switch destination {
+                case .deepLink(let url):
+                    self?.notificationHandler.receive(deepLink: url)
+                case .webLink(let url):
+                    self?.notificationHandler.receive(webLink: url)
+                }
+            }
+            
+            coordinator = legacyCoordinator
         case .new:
-            coordinator = NotificationCoordinator(
+            let newCoordinator = NotificationCoordinator(
                 navigationController: UIWindow.getRootNavigationController,
                 factory: NotificationBuilder()
             )
-        }
-        
-        coordinator.requestCoordinating = { [weak self] destination in
-            switch destination {
-            case .deepLink(let url):
-                self?.notificationHandler.receive(deepLink: url)
-            case .webLink(let url):
-                self?.notificationHandler.receive(webLink: url)
-            }
+            newCoordinator.delegate = self
+            coordinator = newCoordinator
         }
         
         coordinator.finishFlow = { [weak self, weak coordinator] in

@@ -17,7 +17,7 @@ import SoptlogFeatureInterface
 import WebFeature
 
 public protocol SoptlogCoordinatorDelegate: AnyObject {
-    func soptlogCoordinator(_ coordinator: SoptlogCoordinator, didRequest destination: SoptlogCoordinatorDestination)
+    func soptlogCoordinator(_ coordinator: SoptlogCoordinator, to destination: SoptlogCoordinatorDestination)
 }
 
 public final class SoptlogCoordinator: DefaultSoptlogCoordinator {

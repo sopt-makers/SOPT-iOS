@@ -98,7 +98,8 @@ public final class MyPageCoordinator: DefaultMyPageCoordinator {
     private func showWithdrawal(userType: UserType) {
         var withdrawal = factory.makeWithdrawalVC(userType: userType)
         withdrawal.vm.onWithdrawal = { [weak self] in
-            self?.requestCoordinating?(.signInWithToast)
+            guard let self else { return }
+            self.delegate?.myPageCoordinator(self, to: .signInWithToast)
         }
         
         self.navigationController.pushViewController(withdrawal.vc, animated: true)
