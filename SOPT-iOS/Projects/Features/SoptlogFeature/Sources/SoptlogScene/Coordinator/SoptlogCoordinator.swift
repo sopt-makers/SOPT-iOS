@@ -66,7 +66,7 @@ public final class SoptlogCoordinator: DefaultSoptlogCoordinator {
         soptlog.vm.onProfileEditTapped = { [weak self] in
             guard let self else { return }
             let url = "\(ExternalURL.Playground.main)/members/edit"
-            self.delegate?.soptlogCoordinator(self, didRequest: .webLink(url: url))
+            self.delegate?.soptlogCoordinator(self, to: .webLink(url: url))
         }
         
         soptlog.vm.onToolTipTapped = { [weak self] toolTipFrame in
@@ -76,7 +76,7 @@ public final class SoptlogCoordinator: DefaultSoptlogCoordinator {
         
         soptlog.vm.onSoptuneTapped = { [weak self] in
             guard let self else { return }
-            self.delegate?.soptlogCoordinator(self, didRequest: .dailySoptune)
+            self.delegate?.soptlogCoordinator(self, to: .dailySoptune)
         }
         
         soptlog.vm.onNetworkError = {
@@ -85,7 +85,7 @@ public final class SoptlogCoordinator: DefaultSoptlogCoordinator {
         
         soptlog.vm.onNeedSignIn = { [weak self] in
             guard let self else { return }
-            self.delegate?.soptlogCoordinator(self, didRequest: .signIn)
+            self.delegate?.soptlogCoordinator(self, to: .signIn)
         }
         
         self.rootViewController = soptlog.vc
