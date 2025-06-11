@@ -1,9 +1,9 @@
 //
-//  DailySoptuneResultCoordinator.swift
+//  LegacyDailySoptuneResultCoordinator.swift
 //  DailySoptuneFeature
 //
-//  Created by 강윤서 on 6/6/25.
-//  Copyright © 2025 SOPT-iOS. All rights reserved.
+//  Created by Jae Hyun Lee on 9/21/24.
+//  Copyright © 2024 SOPT-iOS. All rights reserved.
 //
 
 import UIKit
@@ -16,26 +16,20 @@ import Domain
 import PokeFeatureInterface
 import WebFeature
 
-
-public final class DailySoptuneResultCoordinator: DefaultDailySoptuneCoordinator {
+public final class LegacyDailySoptuneResultCoordinator: DefaultCoordinator {
     
     public var requestCoordinating: (() -> Void)?
     public var finishFlow: (() -> Void)?
     
-    private let factory: DailySoptuneBuildable
-    private let pokeFactory: PokeFeatureBuildable
+    private let factory: LegacyDailySoptuneFeatureBuildable
+    private let pokeFactory: LegacyPokeFeatureBuildable
     private let resultModel: DailySoptuneResultModel
-    
-    private var navigationController: UINavigationController
+    private let router: LegacyRouter
     private weak var rootController: UINavigationController?
+    private weak var viewController: UIViewController?
 
-    public init(
-        navigationController: UINavigationController,
-        factory: DailySoptuneBuildable,
-        pokeFactory: PokeFeatureBuildable,
-        resultModel: DailySoptuneResultModel
-    ) {
-        self.navigationController = navigationController
+    public init(router: LegacyRouter, factory: LegacyDailySoptuneFeatureBuildable, pokeFactory: LegacyPokeFeatureBuildable, resultModel: DailySoptuneResultModel) {
+        self.router = router
         self.factory = factory
         self.pokeFactory = pokeFactory
         self.resultModel = resultModel
@@ -49,18 +43,18 @@ public final class DailySoptuneResultCoordinator: DefaultDailySoptuneCoordinator
         var dailySoptuneResult = factory.makeDailySoptuneResultVC(resultModel: resultModel)
         
         dailySoptuneResult.vm.onNaviBackButtonTapped = { [weak self] in
-            self?.navigationController.dismiss(animated: true)
+            self?.router.dismissModule(animated: true)
             self?.finishFlow?()
         }
         
         dailySoptuneResult.vm.onKokButtonTapped = { [weak self] userModel in
             guard let self else { return .empty() }
-            return self.showMessageBottomSheet(userModel: userModel, on: rootController)
+            return self.showMessageBottomSheet(userModel: userModel, on: self.viewController)
         }
         
         dailySoptuneResult.vm.onReceiveTodaysFortuneCardButtonTapped = { [weak self] cardModel in
             guard let self else { return }
-            self.showDailySoptuneCard(cardModel)
+            self.runDailySoptuneCardFlow(cardModel: cardModel)
         }
         
         dailySoptuneResult.vm.onProfileImageTapped = { [weak self] playgroundId in
@@ -70,28 +64,32 @@ public final class DailySoptuneResultCoordinator: DefaultDailySoptuneCoordinator
             self?.rootController?.pushViewController(webView, animated: true)
         }
         
-        let navController = UINavigationController(rootViewController: dailySoptuneResult.vc)
-        navController.modalPresentationStyle = .overFullScreen
-        rootController = navController
-        navigationController.present(navController, animated: true)
+        rootController = dailySoptuneResult.vc.asNavigationController
+        viewController = dailySoptuneResult.vc.viewController
+        router.present(rootController, animated: true, modalPresentationSytle: .overFullScreen)
     }
     
-    private func showDailySoptuneCard(_ cardModel: DailySoptuneCardModel) {
-        var dailySoptuneCard = factory.makeDailySoptuneCardVC(cardModel: cardModel)
+    internal func runDailySoptuneCardFlow(cardModel: DailySoptuneCardModel) {
+        let dailySoptuneCardCoordinator = LegacyDailySoptuneCardCoordinator(
+            router: LegacyRouter(
+                rootController: rootController ?? self.router.asNavigationController
+            ), factory: factory
+            , cardModel: cardModel
+        )
         
-        dailySoptuneCard.vm.onBackButtonTapped = { [weak self] in
-            guard let self = self else { return }
-            self.rootController?.dismiss(animated: true)
+        dailySoptuneCardCoordinator.finishFlow = { [weak self, weak dailySoptuneCardCoordinator] in
+            dailySoptuneCardCoordinator?.childCoordinators = []
+            self?.removeDependency(dailySoptuneCardCoordinator)
         }
         
-        dailySoptuneCard.vm.onGoToHomeButtonTapped = { [weak self] in
-            CoordinatorUtils.dismissToRootNavigation()
+        dailySoptuneCardCoordinator.requestCoordinating = { [weak self] in
             self?.requestCoordinating?()
+            self?.router.dismissModule(animated: true)
             self?.finishFlow?()
         }
         
-        dailySoptuneCard.vc.modalPresentationStyle = .overFullScreen
-        rootController?.present(dailySoptuneCard.vc, animated: true)
+        addDependency(dailySoptuneCardCoordinator)
+        dailySoptuneCardCoordinator.start()
     }
     
     private func showMessageBottomSheet(userModel: PokeUserModel, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel, isAnonymous: Bool), Never> {
@@ -100,12 +98,14 @@ public final class DailySoptuneResultCoordinator: DefaultDailySoptuneCoordinator
         guard let bottomSheet = self.pokeFactory
             .makePokeMessageTemplateBottomSheet(messageType: messageType)
             .vc
-            .viewController as? PokeMessageTemplatesViewControllable
+            .viewController as? LegacyPokeMessageTemplatesViewControllable
         else { return .empty() }
         
         let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate(minHeight: bottomSheet.minimumContentHeight))
         
-        bottomSheetManager.present(toPresent: bottomSheet.viewController, on: view)
+        self.router.showBottomSheet(manager: bottomSheetManager,
+                                    toPresent: bottomSheet.viewController,
+                                    on: view)
         
         return bottomSheet
             .signalForClick()

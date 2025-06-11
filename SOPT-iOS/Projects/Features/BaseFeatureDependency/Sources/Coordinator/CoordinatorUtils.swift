@@ -45,4 +45,9 @@ public enum CoordinatorUtils {
     public static func pushOnRootNavigation(_ viewController: UIViewController, animated: Bool = true) {
         UIWindow.getRootNavigationController.pushViewController(viewController, animated: animated)
     }
+    
+    /// 최상위 navigationController 위에 있는 모든 컨트롤러를 dismiss합니다.
+    public static func dismissToRootNavigation(animated: Bool = true) {
+        UIWindow.getRootNavigationController.dismiss(animated: animated)
+    }
 }
