@@ -10,12 +10,6 @@ import Core
 import Domain
 @_exported import SplashFeatureInterface
 
-public protocol SplashBuildable {
-    func makeSplash(_ coordinator: SplashCoordinatable) -> SplashPresentable
-    func makeNoticePopUpVC(noticeType: NoticePopUpType, content: String) -> NoticePopUpPresentable
-}
-
-
 public final class SplashBuilder {
     @Injected public var repository: SplashRepositoryInterface
     
