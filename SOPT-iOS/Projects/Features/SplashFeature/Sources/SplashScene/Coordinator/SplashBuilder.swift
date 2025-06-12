@@ -26,8 +26,7 @@ extension SplashBuilder: SplashFeatureBuildable {
     public func makeSplash(_ coordinator: SplashCoordinatable) -> SplashPresentable {
         let useCase = DefaultSplashUseCase(repository: repository)
         let vm = SplashViewModel(useCase: useCase, coordinator: coordinator)
-        let vc = SplashVC()
-        vc.viewModel = vm
+        let vc = SplashVC(viewModel: vm)
         return (vc, vm)
     }
     
