@@ -188,7 +188,7 @@ extension BaseService {
                     } else {
                         do {
                             let decoder = JSONDecoder()
-                            let errorData = try decoder.decode(BaseEntity<Data>.self, from: error.response?.data ?? Data())
+                            let errorData = try decoder.decode(OPErrorResponse.self, from: error.response?.data ?? Data())
                             throw OPAPIError.attendanceError(errorData)
                         } catch let error {
                             promise(.failure(error))

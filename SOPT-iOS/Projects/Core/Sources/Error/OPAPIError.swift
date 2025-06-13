@@ -8,8 +8,13 @@
 
 import Foundation
 
+public struct OPErrorResponse: Decodable {
+    public let success: Bool
+    public let message: String
+}
+
 public enum OPAPIError: LocalizedError {
-    case attendanceError(BaseEntity<Data>)
+    case attendanceError(OPErrorResponse)
     
     public var errorDescription: String? {
         switch self {
