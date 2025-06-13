@@ -16,8 +16,9 @@ public protocol SplashViewControllable: LegacyViewControllable { }
 public protocol SplashCoordinatable {
     var onNoticeSkipped: (() -> Void)? { get set }
     var onNoticeExist: ((AppNoticeModel) -> Void)? { get set }
+    var finished: (() -> Void)? { get set }
 }
-public typealias SplashViewModelType = ViewModelType & SplashCoordinatable
-public typealias LegacySplashPresentable = (vc: SplashViewControllable, vm: any SplashViewModelType)
 
-public typealias SplashPresentable = (vc: UIViewController, vm: any SplashViewModelType)
+public typealias LegacySplashPresentable = (vc: SplashViewControllable, vm: any ViewModelType)
+
+public typealias SplashPresentable = (vc: UIViewController, vm: any ViewModelType)

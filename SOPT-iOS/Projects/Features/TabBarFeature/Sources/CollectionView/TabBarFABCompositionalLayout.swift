@@ -19,10 +19,10 @@ extension TabBarController {
     }
     
     func createLayout() -> UICollectionViewLayout {
-        return UICollectionViewCompositionalLayout { section, evn in
+        return UICollectionViewCompositionalLayout { [weak self] section, evn in
             switch section {
             default:
-                return self.createFABMenuSection()
+                return self?.createFABMenuSection()
             }
         }
     }
