@@ -19,7 +19,7 @@ public final class SplashCoordinator: DefaultCoordinator & SplashCoordinatable {
     
     public var onNoticeSkipped: (() -> Void)?
     public var onNoticeExist: ((Domain.AppNoticeModel) -> Void)?
-    public var checkSignInFlow: (() -> Void)?
+    public var finished: (() -> Void)?
     
     
     // MARK: - Properties
@@ -58,7 +58,7 @@ public final class SplashCoordinator: DefaultCoordinator & SplashCoordinatable {
         
         onNoticeSkipped = { [weak self] in
             UIWindow.getRootNavigationController.viewControllers.removeAll()
-            self?.checkSignInFlow?()
+            self?.finished?()
         }
         
         navigationController?.setViewControllers([splash.vc], animated: true)
@@ -79,7 +79,7 @@ public final class SplashCoordinator: DefaultCoordinator & SplashCoordinatable {
                 UserDefaultKeyList.AppNotice.checkedAppVersion = model.recommendVersion
             }
             self?.navigationController?.dismiss(animated: true)
-            self?.checkSignInFlow?()
+            self?.finished?()
         }.store(in: cancelBag)
         
         navigationController?.present(noticePopUpVC, animated: false)

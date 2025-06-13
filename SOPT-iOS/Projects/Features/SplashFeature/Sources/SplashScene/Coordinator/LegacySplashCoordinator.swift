@@ -13,7 +13,7 @@ import Domain
 
 public
 final class LegacySplashCoordinator: DefaultCoordinator & SplashCoordinatable {
-    public var checkSignInFlow: (() -> Void)?
+    public var finished: (() -> Void)?
     public var onNoticeSkipped: (() -> Void)?
     public var onNoticeExist: ((Domain.AppNoticeModel) -> Void)?
     
