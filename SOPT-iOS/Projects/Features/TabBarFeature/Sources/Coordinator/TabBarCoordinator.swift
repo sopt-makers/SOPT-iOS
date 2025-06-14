@@ -30,18 +30,15 @@ public final class TabBarCoordinator: DefaultTabBarCoordinator {
         
     private let factory: TabBarPresentable
     private var navigationController: UINavigationController
-    private let items: [UIViewController]
     
     // MARK: - Init
     
     public init(
         navigationController: UINavigationController,
-        factory: TabBarPresentable,
-        items: [UIViewController]
+        factory: TabBarPresentable
     ) {
         self.navigationController = navigationController
         self.factory = factory
-        self.items = items
     }
     
     // MARK: - Coordinator Life Cycle
@@ -84,8 +81,9 @@ public final class TabBarCoordinator: DefaultTabBarCoordinator {
             self?.navigationController.pushViewController(webView, animated: true)
         }
         
-        let navigation = UINavigationController(rootViewController: tabBar.vc)
-        CoordinatorUtils.replaceRootWindowWithAnimate(root: navigation, hideBar: true)
-        self.navigationController = navigation
+//        let navigation = UINavigationController(rootViewController: tabBar.vc)
+//        navigationController.pushViewController(tabBar.vc, animated: true)
+//        CoordinatorUtils.replaceRootWindowWithAnimate(root: tabBar.vc, hideBar: true)
+//        self.navigationController = tabBar.vc
     }
 }

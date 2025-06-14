@@ -341,11 +341,8 @@ extension ApplicationCoordinator {
         let tabBarBuilder = TabBarBuilder()
         let userType = type ?? UserDefaultKeyList.Auth.getUserType()
 
-        let homeCoordinator = runHomeFlow(type: userType)
-        let soptlogCoordinator = runSoptlogFlow(type: userType)
-
-        guard let homeVC = homeCoordinator.rootViewController,
-              let soptlogVC = soptlogCoordinator.rootViewController else { return }
+        runHomeFlow(type: userType)
+        runSoptlogFlow(type: userType)
 
         let tabBarFactory = tabBarBuilder.makeTabBar(
             with: [homeNavigationController, soptlogNavigationController],
@@ -354,11 +351,7 @@ extension ApplicationCoordinator {
         
         let coordinator = TabBarCoordinator(
             navigationController: rootNavigationController,
-            factory: tabBarFactory,
-            items: [
-                homeVC,
-                soptlogVC
-            ]
+            factory: tabBarFactory
         )
         
         coordinator.delegate = self
