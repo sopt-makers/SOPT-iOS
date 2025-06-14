@@ -21,4 +21,35 @@ else
     echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
 fi
 """, name: "SwiftLintString", basedOnDependencyAnalysis: false)
+    
+    static let googleServiceInfo = TargetScript.pre(
+    script: """
+    case "${TARGET_NAME}" in
+    "SOPT-iOS" )
+      cp -r "$SRCROOT/Resources/GoogleService-Info.plist" \\
+            "${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist"
+      ;;
+    "SOPT-iOS-Demo" )
+      cp -r "$SRCROOT/../Demo/Resources/GoogleService-Info.plist" \\
+            "${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist"
+      ;;
+    esac
+    """,
+    name: "Copy GoogleService-Info.plist"
+    )
+    
+    static let uploadDSYMToFirebaseScript = TargetScript.post(
+      script: """
+        "$SRCROOT/../../Tuist/Dependencies/SwiftPackageManager/.build/checkouts/firebase-ios-sdk/Crashlytics/run"
+      """,
+      name: "Upload dSYM to Firebase",
+      inputPaths: [
+        "${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
+        "${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}",
+        "${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist",
+        "$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist",
+        "$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)",
+        "${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}.debug.dylib"
+      ]
+    )
 }
