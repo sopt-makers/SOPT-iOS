@@ -84,7 +84,7 @@ public class SearchSocialAccountVC: UIViewController, SearchSocialAccountViewCon
         }
 
         phoneVerifyView.snp.makeConstraints {
-            $0.top.equalTo(navigationBar.snp.bottom).offset(54 )
+            $0.top.equalTo(navigationBar.snp.bottom).offset(54)
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
