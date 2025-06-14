@@ -80,10 +80,5 @@ public final class TabBarCoordinator: DefaultTabBarCoordinator {
             let webView = SOPTWebView(startWith: url)
             self?.navigationController.pushViewController(webView, animated: true)
         }
-        
-//        let navigation = UINavigationController(rootViewController: tabBar.vc)
-//        navigationController.pushViewController(tabBar.vc, animated: true)
-//        CoordinatorUtils.replaceRootWindowWithAnimate(root: tabBar.vc, hideBar: true)
-//        self.navigationController = tabBar.vc
     }
 }

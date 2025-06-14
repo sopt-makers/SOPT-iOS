@@ -355,8 +355,7 @@ extension ApplicationCoordinator {
         )
         
         coordinator.delegate = self
-        self.tabBarController = tabBarFactory.vc
-        self.tabBarController?.selectedIndex = initSelectedTabType.rawValue
+        self.rootNavigationController.setViewControllers([tabBarFactory.vc], animated: false)
         
         addDependency(coordinator)
         coordinator.start()
