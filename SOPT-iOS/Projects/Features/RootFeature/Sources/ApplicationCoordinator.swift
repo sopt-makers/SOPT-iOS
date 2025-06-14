@@ -37,7 +37,7 @@ final class ApplicationCoordinator: BaseCoordinator {
     private weak var legacyRootController: UINavigationController?
     private let homeNavigationController = UINavigationController()
     private let soptlogNavigationController = UINavigationController()
-    fileprivate weak var tabBarController: UITabBarController?
+    weak var tabBarController: UITabBarController?
     
     private weak var homeCoordinator: DefaultHomeCoordinator?
     private weak var soptlogCoordinator: DefaultSoptlogCoordinator?
@@ -127,7 +127,7 @@ extension ApplicationCoordinator {
     }
     
     private func handleNewDeepLink(deepLink: DeepLinkComponentsExecutable) {
-        self.rootNavigationController.dismiss(animated: false)
+        self.rootNavigationController.popToRootViewController(animated: false)
         deepLink.execute(coordinator: self)
     }
     
@@ -150,7 +150,9 @@ extension ApplicationCoordinator {
     }
     
     private func handleNewWebLink(webLink: String) {
-        UIWindow.getRootNavigationController.dismiss(animated: false)
+        print("ApplicationCoordinator의 rootNavigationController: \(rootNavigationController)",
+              "UIWindow의 최상위 navigationController: \(UIWindow.getRootNavigationController)")
+        self.rootNavigationController.dismiss(animated: true)
         guard let url = URL(string: webLink) else { return }
         let webView = SOPTWebView(startWith: url)
         CoordinatorUtils.pushOnRootNavigation(webView)
