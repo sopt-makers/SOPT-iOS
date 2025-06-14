@@ -151,7 +151,6 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
                 return String(newValue)
             }
             .sink { output.phoneTextFieldText.send($0) }
-
             .store(in: cancelBag)
         
         input.codeTextFieldText
