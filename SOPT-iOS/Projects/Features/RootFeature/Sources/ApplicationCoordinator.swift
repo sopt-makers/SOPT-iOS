@@ -35,7 +35,9 @@ final class ApplicationCoordinator: BaseCoordinator {
     internal let rootNavigationController: UINavigationController
     
     private weak var legacyRootController: UINavigationController?
-    weak var tabBarController: UITabBarController?
+    private let homeNavigationController = UINavigationController()
+    private let soptlogNavigationController = UINavigationController()
+    fileprivate weak var tabBarController: UITabBarController?
     
     private weak var homeCoordinator: DefaultHomeCoordinator?
     private weak var soptlogCoordinator: DefaultSoptlogCoordinator?
@@ -346,7 +348,7 @@ extension ApplicationCoordinator {
               let soptlogVC = soptlogCoordinator.rootViewController else { return }
 
         let tabBarFactory = tabBarBuilder.makeTabBar(
-            with: [homeVC, soptlogVC],
+            with: [homeNavigationController, soptlogNavigationController],
             userType: userType
         )
         
@@ -410,7 +412,7 @@ extension ApplicationCoordinator {
             }
         case .new:
             let newCoordinator = HomeCoordinator(
-                navigationController: rootNavigationController,
+                navigationController: homeNavigationController,
                 factory: HomeBuilder(),
                 userType: type
             )
@@ -802,7 +804,7 @@ extension ApplicationCoordinator {
             }
         case .new:
             let newCoordinator = SoptlogCoordinator(
-                navigationController: rootNavigationController,
+                navigationController: soptlogNavigationController,
                 factory: SoptlogBuilder(),
                 userType: type
             )
