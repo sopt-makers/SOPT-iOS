@@ -19,8 +19,7 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
     
     private let phoneVerifyType: PhoneVerifyType
     
-    private let timerPublisher: Timer.TimerPublisher
-    @Published private var timerCancellable: AnyCancellable?
+    @Published private var timerCancellable: Cancellable?
     
     // MARK: - Inputs
     
@@ -35,10 +34,11 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
     
     public struct Output {
         let isSent = PassthroughSubject<Bool, Never>()
+        let shouldWaitForCoolTime = PassthroughSubject<Int, Never>()
         let verifySuccess = PassthroughSubject<Void, Never>()
         let phoneFailDescription = PassthroughSubject<String?, Never>()
         let codeFailDescription = PassthroughSubject<String?, Never>()
-        let timeLeft = PassthroughSubject<Int, Never>()
+        let timeLeft = CurrentValueSubject<Int, Never>(0)
         let phoneTextFieldText = CurrentValueSubject<String, Never>("")
         let codeTextFieldText = CurrentValueSubject<String, Never>("")
         let timerIsRunning = PassthroughSubject<Bool, Never>()
@@ -50,12 +50,10 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
     
     init(
         useCase: PhoneVerifyUseCase,
-        phoneVerifyType: PhoneVerifyType,
-        timerPublisher: Timer.TimerPublisher = Timer.publish(every: 1, on: .main, in: .default)
+        phoneVerifyType: PhoneVerifyType
     ) {
         self.useCase = useCase
         self.phoneVerifyType = phoneVerifyType
-        self.timerPublisher = timerPublisher
     }
     
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
@@ -67,14 +65,14 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
             .store(in: cancelBag)
         
         useCase.sideEffect
-            .withUnretained(self)
-            .sink { owner, err in
+            .sink { err in
                 switch err {
+                case .invalidRequest:
+                    output.phoneFailDescription.send("요청 형식이 잘못됐어요.")
                 case .invalidVerifyCode:
                     output.codeFailDescription.send("인증번호가 올바르지 않습니다.")
                     return
                 case .timeout:
-                    owner.timerCancellable = nil
                     output.codeFailDescription.send("3분이 초과되었어요. 인증번호를 다시 요청해주세요.")
                     return
                 case .userNotFound:
@@ -87,12 +85,26 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
             }
             .store(in: cancelBag)
         
+        
+        // 10초가 지나기 전에 재요청한 경우
         input.sendButtonTapped
-            .throttle(for: 2, scheduler: RunLoop.main, latest: false)
-            .handleEvents(receiveOutput: { _ in
-                output.phoneFailDescription.send(nil)
-                output.codeFailDescription.send(nil)
+            .withUnretained(self)
+            .filter { owner, _ in owner.shouldWaitForCoolTime(output.timeLeft.value) }
+            .sink { owner, _ in
+                output.shouldWaitForCoolTime.send((owner.useCase.policy.coolTime))
             }
+            .store(in: cancelBag)
+        
+        // 전송하기
+        input.sendButtonTapped
+            .withUnretained(self)
+            .filter { owner, _ in !owner.shouldWaitForCoolTime(output.timeLeft.value) }
+            .handleEvents(
+                receiveOutput: { _ in
+                    output.codeTextFieldText.send("")
+                    output.phoneFailDescription.send(nil)
+                    output.codeFailDescription.send(nil)
+                }
             )
             .withUnretained(self)
             .map { owner, _ in 
@@ -106,13 +118,15 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
             .sink { owner , _ in
                 output.isSent.send(true)
                 output.timeLeft.send(owner.useCase.policy.timeLimit)
-                owner.timerCancellable = owner.timerPublisher
+                owner.timerCancellable = Timer
+                    .publish(every: 1, on: .main, in: .default)
                     .autoconnect()
                     .scan(owner.useCase.policy.timeLimit) { counter, _ in counter - 1 }
                     .withUnretained(self)
                     .sink { owner, counter in
                         guard counter >= 0 else {
                             owner.useCase.sideEffect.send(.timeout)
+                            owner.timerCancellable = nil
                             return
                         }
                         output.timeLeft.send(counter)
@@ -181,4 +195,9 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
         return output
     }
 
+    private func shouldWaitForCoolTime(_ currentTimeLeft: Int) -> Bool {
+        let requestInterval = useCase.policy.timeLimit - currentTimeLeft
+        let coolTime = useCase.policy.coolTime
+        return requestInterval < coolTime
+    }
 }

@@ -42,7 +42,7 @@ extension CoreAuthRepository: CoreAuthRepositoryInterface {
     ) -> AnyPublisher<CoreAuthTokens, CoreAuthError> {
         coreAuthService
             .login(.init(token: identityToken, authPlatform: provider.toData()))
-            .compactMap { $0.data?.toDomain() }
+            .compactMap { $0.data.toDomain() }
             .mapError { _ in
                 return CoreAuthError.loginFail
             }
@@ -73,7 +73,7 @@ extension CoreAuthRepository: CoreAuthRepositoryInterface {
     public func searchSocialAccount(_ phone: String) -> AnyPublisher<OAuthProvider, CoreAuthError> {
         socialService
             .getSocialAccount(for: phone)
-            .compactMap { $0.data?.toDomain() }
+            .compactMap { $0.data.toDomain() }
             .mapError { _ in CoreAuthError.changeSocialAccountFail }
             .eraseToAnyPublisher()
     }

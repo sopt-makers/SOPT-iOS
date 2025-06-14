@@ -10,7 +10,7 @@ import Foundation
 
 public struct SendVerificationCodeRequestEntity: Encodable {
     let name: String?
-    let id: String? = nil
+    let userId: String? = nil
     let phone: String
     let type: VerifyEntityType
     

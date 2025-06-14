@@ -188,7 +188,7 @@ extension BaseService {
                     } else {
                         do {
                             let decoder = JSONDecoder()
-                            let errorData = try decoder.decode(BaseEntity<Data>.self, from: error.response?.data ?? Data())
+                            let errorData = try decoder.decode(OPErrorResponse.self, from: error.response?.data ?? Data())
                             throw OPAPIError.attendanceError(errorData)
                         } catch let error {
                             promise(.failure(error))
@@ -198,7 +198,6 @@ extension BaseService {
             }
         }.eraseToAnyPublisher()
     }
-
     
     func requestObjectInCombineNoResult(_ target: API) -> AnyPublisher<Int, Error> {
         return Future { promise in
@@ -212,72 +211,4 @@ extension BaseService {
             }
         }.eraseToAnyPublisher()
     }
-    
-    func requestObject<T: Decodable>(_ target: API, completion: @escaping (Result<T?, Error>) -> Void) {
-        provider.request(target) { response in
-            switch response {
-            case .success(let value):
-                do {
-                    let decoder = JSONDecoder()
-                    let body = try decoder.decode(T.self, from: value.data)
-                    completion(.success(body))
-                } catch let error {
-                    completion(.failure(error))
-                }
-            case .failure(let error):
-                switch error {
-                case .underlying(let error, _):
-                    if error.asAFError?.isSessionTaskError ?? false {
-                        
-                    }
-                default: break
-                }
-                completion(.failure(error))
-            }
-        }
-    }
-    
-    func requestArray<T: Decodable>(_ target: API, completion: @escaping (Result<[T], Error>) -> Void) {
-        provider.request(target) { response in
-            switch response {
-            case .success(let value):
-                do {
-                    let decoder = JSONDecoder()
-                    let body = try decoder.decode([T].self, from: value.data)
-                    completion(.success(body))
-                } catch let error {
-                    completion(.failure(error))
-                }
-            case .failure(let error):
-                switch error {
-                case .underlying(let error, _):
-                    if error.asAFError?.isSessionTaskError ?? false {
-                        
-                    }
-                default: break
-                }
-                completion(.failure(error))
-            }
-        }
-    }
-    
-    func requestObjectWithNoResult(_ target: API, completion: @escaping (Result<Int?, Error>) -> Void) {
-        provider.request(target) { response in
-            switch response {
-            case .success(let value):
-                completion(.success(value.statusCode))
-                
-            case .failure(let error):
-                switch error {
-                case .underlying(let error, _):
-                    if error.asAFError?.isSessionTaskError ?? false {
-                        
-                    }
-                default: break
-                }
-                completion(.failure(error))
-            }
-        }
-    }
 }
-

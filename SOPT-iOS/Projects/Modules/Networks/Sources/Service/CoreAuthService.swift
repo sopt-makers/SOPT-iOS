@@ -11,25 +11,32 @@ import Combine
 
 import Core
 import Moya
+import CombineMoya
 
 
 public typealias DefaultCoreAuthService = BaseService<CoreAuthAPI>
 
 public protocol CoreAuthService {
-    func sendVerifyCode(_ dto: SendVerificationCodeRequestEntity) -> AnyPublisher<Int, Error>
-    func verifyCode(_ dto: VerifyCodeRequestEntity) -> AnyPublisher<BaseEntity<VerifyResultEntity>, Error>
+    func sendVerifyCode(_ dto: SendVerificationCodeRequestEntity) -> AnyPublisher<Void, MoyaError>
+    func verifyCode(_ dto: VerifyCodeRequestEntity) -> AnyPublisher<VerifyResultEntity, MoyaError>
     func login(_ dto: CoreLoginRequestEntity) -> AnyPublisher<BaseEntity<CoreLoginEntity>, Error>
     func signUp(_ dto: CoreSignUpRequestEntity) -> AnyPublisher<Int, Error>
 }
 
 extension DefaultCoreAuthService: CoreAuthService {
     
-    public func sendVerifyCode(_ dto: SendVerificationCodeRequestEntity) -> AnyPublisher<Int, Error> {
-        requestObjectInCombineNoResult(.sendVerifyCode(dto: dto))
+    public func sendVerifyCode(_ dto: SendVerificationCodeRequestEntity) -> AnyPublisher<Void, MoyaError> {
+        provider.requestPublisher(.sendVerifyCode(dto: dto))
+            .filterSuccessfulStatusCodes()
+            .mapVoid()
     }
     
-    public func verifyCode(_ dto: VerifyCodeRequestEntity) -> AnyPublisher<BaseEntity<VerifyResultEntity>, Error> {
-        requestObjectInCombine(.verfiyCode(dto: dto))
+    public func verifyCode(_ dto: VerifyCodeRequestEntity) -> AnyPublisher<VerifyResultEntity, MoyaError> {
+        provider.requestPublisher(.verfiyCode(dto: dto))
+            .filterSuccessfulStatusCodes()
+            .map(BaseEntity<VerifyResultEntity>.self)
+            .map { $0.data }
+            .eraseToAnyPublisher()
     }
     
     public func login(_ dto: CoreLoginRequestEntity) -> AnyPublisher<BaseEntity<CoreLoginEntity>, Error> {

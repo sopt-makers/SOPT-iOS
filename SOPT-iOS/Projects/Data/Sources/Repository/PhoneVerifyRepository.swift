@@ -23,19 +23,26 @@ public struct PhoneVerifyRepository {
 extension PhoneVerifyRepository: PhoneVerifyRepositoryInterface {
     public func send(_ model: Domain.PhoneSendModel) -> AnyPublisher<Void, Domain.PhoneVerifyError> {
         coreAuthService.sendVerifyCode(model.toData())
-            .mapVoid()
-            .mapError {
-                PhoneVerifyError.unknown($0) //TODO: 기획 명세에 맞게 에러 매핑
+            .mapError { moyaError in
+                switch moyaError.response?.statusCode {
+                case 400: return PhoneVerifyError.alreadyExist
+                case 404: return PhoneVerifyError.userNotFound
+                default: return PhoneVerifyError.unknown(moyaError)
+                }
             }
             .eraseToAnyPublisher()
     }
     
     public func verify(_ model: Domain.PhoneVerifyModel) -> AnyPublisher<Void, Domain.PhoneVerifyError> {
         coreAuthService.verifyCode(model.toData())
-            .mapVoid()
-            .mapError {
-                PhoneVerifyError.unknown($0) //TODO: 기획 명세에 맞게 에러 매핑
+            .mapError { moyaError in
+                switch moyaError.response?.statusCode {
+                case 400: return PhoneVerifyError.invalidVerifyCode
+                case 404: return PhoneVerifyError.invalidRequest
+                default: return PhoneVerifyError.unknown(moyaError)
+                }
             }
+            .mapVoid()
             .eraseToAnyPublisher()
     }
     

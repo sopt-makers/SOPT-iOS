@@ -15,17 +15,19 @@ public struct PhoneVerifyPolicy {
     public let codeMaxLength: Int
     private let _timeLimit: Duration
     public var timeLimit: Int { Int(_timeLimit.components.seconds) }
+    public var coolTime: Int
     
-    public init(phoneMaxLength: Int, codeMaxLength: Int, timeLimit: Duration) {
+    public init(phoneMaxLength: Int, codeMaxLength: Int, timeLimit: Duration, coolTime: Int) {
         self.phoneMaxLength = phoneMaxLength
         self.codeMaxLength = codeMaxLength
         self._timeLimit = timeLimit
+        self.coolTime = coolTime
     }
 }
 
 extension PhoneVerifyPolicy {
-    static let `default` = Self(phoneMaxLength: 11, codeMaxLength: 6, timeLimit: .seconds(180))
-    static let stub = Self(phoneMaxLength: 11, codeMaxLength: 6, timeLimit: .seconds(10))
+    static let `default` = Self(phoneMaxLength: 11, codeMaxLength: 6, timeLimit: .seconds(180), coolTime: 10)
+    static let stub = Self(phoneMaxLength: 11, codeMaxLength: 6, timeLimit: .seconds(10), coolTime: 10)
 }
 
 public protocol PhoneVerifyUseCase {

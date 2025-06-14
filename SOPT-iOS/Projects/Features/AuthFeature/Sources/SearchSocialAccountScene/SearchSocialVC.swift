@@ -18,7 +18,6 @@ import BaseFeatureDependency
 import SnapKit
 import Then
 
-
 public class SearchSocialAccountVC: UIViewController, SearchSocialAccountViewControllable {
     
     //MARK: - Properties
@@ -65,15 +64,12 @@ public class SearchSocialAccountVC: UIViewController, SearchSocialAccountViewCon
         setLayout()
         bind()
     }
-    
-}
 
-// MARK: - UI & Layout
-
-extension SearchSocialAccountVC {
+    // MARK: - UI & Layout
     
     private func setUI() {
         self.view.backgroundColor = DSKitAsset.Colors.black100.color
+        self.phoneVerifyView.helpViewHidden = true
     }
     
     private func setLayout() {
@@ -88,7 +84,7 @@ extension SearchSocialAccountVC {
         }
 
         phoneVerifyView.snp.makeConstraints {
-            $0.top.equalTo(navigationBar.snp.bottom).offset(84)
+            $0.top.equalTo(navigationBar.snp.bottom).offset(54)
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
