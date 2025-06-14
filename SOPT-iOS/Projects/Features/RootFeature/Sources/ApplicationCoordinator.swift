@@ -150,8 +150,6 @@ extension ApplicationCoordinator {
     }
     
     private func handleNewWebLink(webLink: String) {
-        print("ApplicationCoordinator의 rootNavigationController: \(rootNavigationController)",
-              "UIWindow의 최상위 navigationController: \(UIWindow.getRootNavigationController)")
         self.rootNavigationController.dismiss(animated: true)
         guard let url = URL(string: webLink) else { return }
         let webView = SOPTWebView(startWith: url)
