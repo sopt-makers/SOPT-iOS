@@ -19,6 +19,7 @@ let packageSettings = PackageSettings(
         "Nimble": .staticFramework,
         "Lottie": .staticFramework,
         "AmplitudeSwift": .staticFramework,
+        "Firebase": .framework
     ],
     baseSettings: .settings(
         configurations: [
@@ -48,5 +49,6 @@ let package = Package(
         .package(url: "https://github.com/Quick/Nimble.git", from: "12.0.0"),
         .package(url: "https://github.com/airbnb/lottie-ios", from: "4.5.0"),
         .package(url: "https://github.com/amplitude/Amplitude-Swift", from: "1.11.10"),
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "11.14.0")
     ]
 )
