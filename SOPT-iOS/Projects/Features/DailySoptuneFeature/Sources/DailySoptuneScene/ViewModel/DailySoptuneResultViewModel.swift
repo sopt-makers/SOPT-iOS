@@ -15,17 +15,12 @@ import Domain
 import DailySoptuneFeatureInterface
 import BaseFeatureDependency
 
-public final class DailySoptuneResultViewModel: DailySoptuneResultViewModelType {
-    
-    public var onNaviBackButtonTapped: (() -> Void)?
-    public var onReceiveTodaysFortuneCardTap: ((DailySoptuneCardModel) -> Void)?
-    public var onKokButtonTapped: ((Domain.PokeUserModel) -> Core.Driver<(Domain.PokeUserModel, Domain.PokeMessageModel, isAnonymous: Bool)>)?
-    public var onReceiveTodaysFortuneCardButtonTapped: ((Domain.DailySoptuneCardModel) -> Void)?
-    public var onProfileImageTapped: ((Int) -> Void)?
+public final class DailySoptuneResultViewModel: ViewModelType {
     
     // MARK: - Properties
 
     private let useCase: DailySoptuneUseCase
+    private let coordinator: DailySoptuneResultCoordinatable
     private var cancelBag = CancelBag()
     
     // MARK: - Inputs
@@ -48,8 +43,13 @@ public final class DailySoptuneResultViewModel: DailySoptuneResultViewModelType 
     
     // MARK: - Initialization
     
-    public init(useCase: DailySoptuneUseCase) {
+    public init(useCase: DailySoptuneUseCase, coordinator: DailySoptuneResultCoordinatable) {
         self.useCase = useCase
+        self.coordinator = coordinator
+    }
+    
+    deinit {
+        print("Result VM deinit")
     }
 }
 
@@ -67,7 +67,7 @@ extension DailySoptuneResultViewModel {
         input.naviBackButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onNaviBackButtonTapped?()
+                owner.coordinator.onNaviBackButtonTapped?()
                 AmplitudeInstance.shared.track(eventType: .clickLeaveSoptuneResult)
             }.store(in: cancelBag)
         
@@ -81,7 +81,7 @@ extension DailySoptuneResultViewModel {
         input.kokButtonTap
             .compactMap { $0 }
             .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)> in
-                guard let self, let value = self.onKokButtonTapped?(userModel) else { return .empty() }
+                guard let self, let value = self.coordinator.onKokButtonTapped?(userModel) else { return .empty() }
                 AmplitudeInstance.shared.track(eventType: .clickSoptuneRamdomPeople)
                 return value
             }
@@ -94,7 +94,7 @@ extension DailySoptuneResultViewModel {
             .compactMap { $0 }
             .withUnretained(self)
             .sink { owner, user in
-                owner.onProfileImageTapped?(user.playgroundId)
+                owner.coordinator.onProfileImageTapped?(user.playgroundId)
             }.store(in: cancelBag)
         
         return output
@@ -104,7 +104,7 @@ extension DailySoptuneResultViewModel {
         useCase.todaysFortuneCard
             .withUnretained(self)
             .sink { owner, cardModel in
-                owner.onReceiveTodaysFortuneCardButtonTapped?(cardModel)
+                owner.coordinator.onReceiveTodaysFortuneCardButtonTapped?(cardModel)
             }
             .store(in: cancelBag)
         
