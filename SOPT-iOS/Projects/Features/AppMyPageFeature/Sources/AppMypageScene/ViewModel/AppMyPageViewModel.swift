@@ -43,10 +43,6 @@ public final class AppMyPageViewModel: ViewModelType {
         self.useCase = useCase
         self.coordinator = coordinator
     }
-    
-    deinit {
-        print("vm deinit")
-    }
 }
 
 extension AppMyPageViewModel {

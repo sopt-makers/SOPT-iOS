@@ -18,6 +18,8 @@ public protocol MyPageCoordinatorDelegate: AnyObject {
 
 public final class MyPageCoordinator: DefaultMyPageCoordinator & MyPageCoordinatable {
     
+    // MARK: - Coordinatable
+    
     public var onNaviBackButtonTap: (() -> Void)?
     public var onPolicyItemTap: (() -> Void)?
     public var onTermsOfUseItemTap: (() -> Void)?
@@ -55,10 +57,6 @@ public final class MyPageCoordinator: DefaultMyPageCoordinator & MyPageCoordinat
     
     public override func start() {
         showMyPage()
-    }
-    
-    deinit {
-        print("coor deinit")
     }
     
     // MARK: - Navigation
