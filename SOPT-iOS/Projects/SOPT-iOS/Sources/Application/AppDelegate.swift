@@ -11,6 +11,8 @@ import BaseFeatureDependency
 import Core
 import Networks
 
+import Firebase
+
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
@@ -21,6 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         registerDependencies()
         
         application.registerForRemoteNotifications()
+        configureCrashlytics()
         return true
     }
     
