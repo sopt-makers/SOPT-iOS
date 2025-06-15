@@ -23,7 +23,6 @@ public protocol MyPageCoordinatable {
     var onAlertButtonTap: ((String) -> Void)? { get set }
     var onResetSoptampTap: (() -> Void)? { get set }
 }
-public typealias MyPageViewModelType = ViewModelType & MyPageCoordinatable
 
-public typealias LegacyMyPagePresentable = (vc: MyPageViewControllable, vm: any MyPageViewModelType)
-public typealias MyPagePresentable = (vc: UIViewController, vm: any MyPageViewModelType)
+public typealias LegacyMyPagePresentable = (vc: MyPageViewControllable, vm: any ViewModelType)
+public typealias MyPagePresentable = (vc: UIViewController, vm: any ViewModelType)
