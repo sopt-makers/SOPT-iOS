@@ -46,9 +46,9 @@ extension MyPageBuilder: MyPageFeatureBuildable {
         return (withdrawalVC, viewModel)
     }
     
-    public func makeAppMyPage(userType: UserType) -> MyPagePresentable {
+    public func makeAppMyPage(userType: UserType, coordinator: MyPageCoordinatable) -> MyPagePresentable {
         let useCase = DefaultAppMyPageUseCase(repository: appMyPageRepository)
-        let vm = AppMyPageViewModel(useCase: useCase)
+        let vm = AppMyPageViewModel(useCase: useCase, coordinator: coordinator)
         let vc = AppMyPageVC(userType: userType, viewModel: vm)
         return (vc, vm)
     }
