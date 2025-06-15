@@ -11,7 +11,16 @@ import BaseFeatureDependency
 import AppMyPageFeatureInterface
 
 public
-final class LegacyMyPageCoordinator: DefaultMyPageCoordinator {
+final class LegacyMyPageCoordinator: DefaultMyPageCoordinator & MyPageCoordinatable {
+    public var onNaviBackButtonTap: (() -> Void)?
+    public var onPolicyItemTap: (() -> Void)?
+    public var onTermsOfUseItemTap: (() -> Void)?
+    public var onEditOnelineSentenceItemTap: (() -> Void)?
+    public var onWithdrawalItemTap: ((Core.UserType) -> Void)?
+    public var onShowLogin: (() -> Void)?
+    public var onShowLogout: (() -> Void)?
+    public var onAlertButtonTap: ((String) -> Void)?
+    public var onResetSoptampTap: (() -> Void)?
     
     public var finishFlow: (() -> Void)?
     public var requestCoordinating: ((MyPageCoordinatorDestination) -> Void)?
@@ -27,41 +36,41 @@ final class LegacyMyPageCoordinator: DefaultMyPageCoordinator {
     }
     
     public override func start() {
-        var myPage = factory.makeAppMyPage(userType: userType)
+        var myPage = factory.makeAppMyPage(userType: userType, coordinator: self)
         
-        myPage.vm.onNaviBackButtonTap = { [weak self] in
+        onNaviBackButtonTap = { [weak self] in
             self?.router.popModule()
             self?.finishFlow?()
         }
         
-        myPage.vm.onShowLogout = { [weak self] in
+        onShowLogout = { [weak self] in
             self?.requestCoordinating?(.signIn)
         }
         
-        myPage.vm.onShowLogin = { [weak self] in
+        onShowLogin = { [weak self] in
             self?.requestCoordinating?(.signIn)
         }
         
-        myPage.vm.onPolicyItemTap = { [weak self] in
+        onPolicyItemTap = { [weak self] in
             let policyVC = self?.factory.makePrivacyPolicyVC()
             self?.router.push(policyVC)
         }
         
-        myPage.vm.onTermsOfUseItemTap = { [weak self] in
+        onTermsOfUseItemTap = { [weak self] in
             let termsVC = self?.factory.makeTermsOfServiceVC()
             self?.router.push(termsVC)
         }
         
-        myPage.vm.onEditOnelineSentenceItemTap = { [weak self] in
+        onEditOnelineSentenceItemTap = { [weak self] in
             let sentenceEditVC = self?.factory.makeSentenceEditVC()
             self?.router.push(sentenceEditVC)
         }
         
-        myPage.vm.onWithdrawalItemTap = { [weak self] userType in
+        onWithdrawalItemTap = { [weak self] userType in
             self?.showWithdrawal(userType: userType)
         }
         
-        myPage.vm.onAlertButtonTap = { [weak self] url in
+        onAlertButtonTap = { [weak self] url in
             self?.showAlertSetting(url: url)
         }
         

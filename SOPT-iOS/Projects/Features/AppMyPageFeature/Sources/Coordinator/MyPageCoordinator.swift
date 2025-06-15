@@ -16,7 +16,18 @@ public protocol MyPageCoordinatorDelegate: AnyObject {
     func myPageCoordinator(_ coordinator: MyPageCoordinator, to destination: MyPageCoordinatorDestination)
 }
 
-public final class MyPageCoordinator: DefaultMyPageCoordinator {
+public final class MyPageCoordinator: DefaultMyPageCoordinator & MyPageCoordinatable {
+    
+    public var onNaviBackButtonTap: (() -> Void)?
+    public var onPolicyItemTap: (() -> Void)?
+    public var onTermsOfUseItemTap: (() -> Void)?
+    public var onEditOnelineSentenceItemTap: (() -> Void)?
+    public var onWithdrawalItemTap: ((Core.UserType) -> Void)?
+    public var onShowLogin: (() -> Void)?
+    public var onShowLogout: (() -> Void)?
+    public var onAlertButtonTap: ((String) -> Void)?
+    public var onResetSoptampTap: (() -> Void)?
+    
     
     // MARK: - Properties
     
@@ -46,49 +57,54 @@ public final class MyPageCoordinator: DefaultMyPageCoordinator {
         showMyPage()
     }
     
+    deinit {
+        print("coor deinit")
+    }
+    
     // MARK: - Navigation
     
     private func showMyPage() {
-        var myPage = factory.makeAppMyPage(userType: userType)
+        let myPage = factory.makeAppMyPage(userType: userType, coordinator: self)
         
-        myPage.vm.onNaviBackButtonTap = { [weak self] in
-            self?.navigationController.popViewController(animated: true)
-            self?.finishFlow?()
+        onNaviBackButtonTap = { [weak self] in
+            guard let self else { return }
+            self.navigationController.popViewController(animated: true)
+            self.finishFlow?()
         }
         
-        myPage.vm.onShowLogout = { [weak self] in
+        onShowLogout = { [weak self] in
             guard let self = self else { return }
             self.delegate?.myPageCoordinator(self, to: .signIn)
         }
         
-        myPage.vm.onShowLogin = { [weak self] in
+        onShowLogin = { [weak self] in
             guard let self = self else { return }
             self.delegate?.myPageCoordinator(self, to: .signIn)
         }
         
-        myPage.vm.onPolicyItemTap = { [weak self] in
+        onPolicyItemTap = { [weak self] in
             guard let self = self else { return }
             let policyVC = self.factory.makePrivacyPolicyVC()
             self.navigationController.pushViewController(policyVC, animated: true)
         }
         
-        myPage.vm.onTermsOfUseItemTap = { [weak self] in
+        onTermsOfUseItemTap = { [weak self] in
             guard let self = self else { return }
             let termsVC = self.factory.makeTermsOfServiceVC()
             self.navigationController.pushViewController(termsVC, animated: true)
         }
         
-        myPage.vm.onEditOnelineSentenceItemTap = { [weak self] in
+        onEditOnelineSentenceItemTap = { [weak self] in
             guard let self = self else { return }
             let sentenceEditVC = self.factory.makeSentenceEditVC()
             self.navigationController.pushViewController(sentenceEditVC, animated: true)
         }
         
-        myPage.vm.onWithdrawalItemTap = { [weak self] userType in
+        onWithdrawalItemTap = { [weak self] userType in
             self?.showWithdrawal(userType: userType)
         }
         
-        myPage.vm.onAlertButtonTap = { [weak self] url in
+        onAlertButtonTap = { [weak self] url in
             self?.showAlertSetting(url: url)
         }
         
