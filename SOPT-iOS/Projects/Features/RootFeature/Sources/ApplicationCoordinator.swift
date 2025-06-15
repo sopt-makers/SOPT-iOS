@@ -658,6 +658,7 @@ extension ApplicationCoordinator {
                 }
             }
             coordinator = legacyCoordinator
+            addDependency(coordinator)
         case .new:
             let newCoordinator = MyPageCoordinator(
                 factory: MyPageBuilder(),
@@ -668,7 +669,6 @@ extension ApplicationCoordinator {
             coordinator = newCoordinator
         }
         
-        addDependency(coordinator)
         coordinator.start()
         
         return coordinator
