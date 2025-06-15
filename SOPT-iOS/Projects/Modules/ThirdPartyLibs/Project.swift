@@ -20,7 +20,6 @@ let project = Project.makeModule(
         .SPM.Moya,
         .SPM.CombineMoya,
         .SPM.lottie,
-        .SPM.Amplitude,
-        .SPM.FirebaseCrashlytics
+        .SPM.Amplitude
     ]
 )

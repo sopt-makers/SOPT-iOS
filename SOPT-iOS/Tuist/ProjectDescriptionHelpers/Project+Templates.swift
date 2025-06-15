@@ -42,13 +42,21 @@ public extension Project {
                 sources: ["Sources/**/*.swift"],
                 resources: [.glob(pattern: "Resources/**", excluding: [])],
                 entitlements: "\(name).entitlements",
+                scripts: [
+                    .googleServiceInfo,
+                    .uploadDSYMToFirebaseScript
+                ],
                 dependencies: [
                     internalDependencies,
                     externalDependencies,
                     [
-                        .SPM.Inject
+                        .SPM.Inject,
+                        .SPM.FirebaseCrashlytics,
+                        .SPM.FirebaseAnalytics,
+                        .SPM.FirebaseCore
                     ]
-                ].flatMap{ $0 },
+                ].flatMap{ $0
+                },
                 settings: .settings(base: settings, configurations: XCConfig.project)
             )
             

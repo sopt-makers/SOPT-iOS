@@ -9,17 +9,14 @@ let xcconfigPath: ProjectDescription.Path = .relativeToRoot("xcconfigs/targets/i
 let packageSettings = PackageSettings(
     productTypes: [
         "Alamofire": .framework,
-        "SnapKit": .staticFramework,
-        "Moya": .staticFramework,
-        "Then": .staticFramework,
-        "Kingfisher": .staticFramework,
-        "FLEX": .staticFramework,
-        "Inject": .staticFramework,
-        "Quick": .staticFramework,
-        "Nimble": .staticFramework,
-        "Lottie": .staticFramework,
-        "AmplitudeSwift": .staticFramework,
-        "Firebase": .framework
+        "Firebase": .framework,
+        "FirebaseRemoteConfig": .framework,
+        "GULEnvironment": .framework,
+        "GULLogger": .framework,
+        "GULNSData": .framework,
+        "GULNetwork": .framework,
+        "GULUserDefaults": .framework,
+        "GULReachability": .framework,
     ],
     baseSettings: .settings(
         configurations: [
