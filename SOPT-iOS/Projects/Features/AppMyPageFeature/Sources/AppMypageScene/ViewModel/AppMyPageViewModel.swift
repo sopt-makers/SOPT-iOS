@@ -16,19 +16,10 @@ import Domain
 import AppMyPageFeatureInterface
 import BaseFeatureDependency
 
-public final class AppMyPageViewModel: MyPageViewModelType {
+public final class AppMyPageViewModel: ViewModelType {
     
-    public var onNaviBackButtonTap: (() -> Void)?
-    public var onPolicyItemTap: (() -> Void)?
-    public var onTermsOfUseItemTap: (() -> Void)?
-    public var onEditOnelineSentenceItemTap: (() -> Void)?
-    public var onWithdrawalItemTap: ((Core.UserType) -> Void)?
-    public var onShowLogin: (() -> Void)?
-    public var onShowLogout: (() -> Void)?
-    public var onAlertButtonTap: ((String) -> Void)?
-    public var onResetSoptampTap: (() -> Void)?
-    
-    let userType: UserType = UserDefaultKeyList.Auth.getUserType()
+    private let coordinator: MyPageCoordinatable
+    private let userType: UserType = UserDefaultKeyList.Auth.getUserType()
     
     // MARK: - Inputs
     
@@ -48,8 +39,13 @@ public final class AppMyPageViewModel: MyPageViewModelType {
     
     private let useCase: AppMyPageUseCase
     
-    public init(useCase: AppMyPageUseCase) {
+    public init(useCase: AppMyPageUseCase, coordinator: MyPageCoordinatable) {
         self.useCase = useCase
+        self.coordinator = coordinator
+    }
+    
+    deinit {
+        print("vm deinit")
     }
 }
 
@@ -61,7 +57,7 @@ extension AppMyPageViewModel {
         input.naviBackButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onNaviBackButtonTap?()
+                owner.coordinator.onNaviBackButtonTap?()
             }.store(in: cancelBag)
         
         input.cellTapped
@@ -92,7 +88,7 @@ extension AppMyPageViewModel {
             .sink { owner, success in
                 if success {
                     owner.logout()
-                    owner.onShowLogin?()
+                    owner.coordinator.onShowLogin?()
                 }
             }.store(in: cancelBag)
     }
@@ -100,23 +96,23 @@ extension AppMyPageViewModel {
     private func handleCellTap(item: MyPageItem) {
         switch item.type {
         case .privacyPolicy:
-            self.onPolicyItemTap?()
+            self.coordinator.onPolicyItemTap?()
         case .termsOfUse:
-            self.onTermsOfUseItemTap?()
+            self.coordinator.onTermsOfUseItemTap?()
         case .sendFeedback:
             openExternalLink(urlStr: ExternalURL.KakaoTalk.serviceProposal)
         case .setNotification:
-            self.onAlertButtonTap?(UIApplication.openSettingsURLString)
+            self.coordinator.onAlertButtonTap?(UIApplication.openSettingsURLString)
         case .editOnelineSentence:
-            self.onEditOnelineSentenceItemTap?()
+            self.coordinator.onEditOnelineSentenceItemTap?()
         case .resetStamp:
             self.showResetSoptampAlert()
         case .withdrawal:
-            self.onWithdrawalItemTap?(userType)
+            self.coordinator.onWithdrawalItemTap?(userType)
         case .logout:
             self.showLogoutAlert()
         case .login:
-            self.onShowLogin?()
+            self.coordinator.onShowLogin?()
         }
     }
 }
@@ -152,7 +148,7 @@ extension AppMyPageViewModel {
             customButtonTitle: I18N.MyPage.logoutDialogGrantButtonTitle,
             customAction: { [weak self] in
                 self?.useCase.deregisterPushToken()
-                self?.onShowLogout?()
+                self?.coordinator.onShowLogout?()
             },
             animated: true
         )
