@@ -80,16 +80,6 @@ public final class DailySoptuneCoordinator: DefaultDailySoptuneCoordinator & Dai
             resultModel: resultModel
         )
         
-        dailySoptuneResultCoordinator.finishFlow = { [weak self, weak dailySoptuneResultCoordinator] in
-            dailySoptuneResultCoordinator?.childCoordinators = []
-            self?.removeDependency(dailySoptuneResultCoordinator)
-        }
-        
-        dailySoptuneResultCoordinator.requestCoordinating = { [weak self] in
-            self?.finishFlow?()
-        }
-        
-        addDependency(dailySoptuneResultCoordinator)
         dailySoptuneResultCoordinator.start()
     }
 }
