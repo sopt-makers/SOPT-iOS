@@ -17,7 +17,16 @@ import PokeFeatureInterface
 import WebFeature
 
 
-public final class DailySoptuneResultCoordinator: DefaultDailySoptuneCoordinator {
+public final class DailySoptuneResultCoordinator: DefaultDailySoptuneCoordinator & DailySoptuneResultCoordinatable {
+    
+    // MARK: - Coordintable
+    
+    public var onNaviBackButtonTapped: (() -> Void)?
+    public var onKokButtonTapped: ((Domain.PokeUserModel) -> Core.Driver<(Domain.PokeUserModel, Domain.PokeMessageModel, isAnonymous: Bool)>)?
+    public var onReceiveTodaysFortuneCardButtonTapped: ((Domain.DailySoptuneCardModel) -> Void)?
+    public var onProfileImageTapped: ((Int) -> Void)?
+    
+    // MARK: - Properties
     
     public var requestCoordinating: (() -> Void)?
     public var finishFlow: (() -> Void)?
@@ -26,7 +35,7 @@ public final class DailySoptuneResultCoordinator: DefaultDailySoptuneCoordinator
     private let pokeFactory: PokeFeatureBuildable
     private let resultModel: DailySoptuneResultModel
     
-    private var navigationController: UINavigationController
+    private weak var navigationController: UINavigationController?
     private weak var rootController: UINavigationController?
 
     public init(
@@ -41,29 +50,32 @@ public final class DailySoptuneResultCoordinator: DefaultDailySoptuneCoordinator
         self.resultModel = resultModel
     }
     
+    deinit {
+        print("resultCoor deinit")
+    }
+    
     public override func start() {
         showDailySoptuneResult(resultModel: resultModel)
     }
     
     private func showDailySoptuneResult(resultModel: DailySoptuneResultModel) {
-        var dailySoptuneResult = factory.makeDailySoptuneResultVC(resultModel: resultModel)
+        let dailySoptuneResult = factory.makeDailySoptuneResultVC(resultModel: resultModel, coordinator: self)
         
-        dailySoptuneResult.vm.onNaviBackButtonTapped = { [weak self] in
-            self?.navigationController.dismiss(animated: true)
-            self?.finishFlow?()
+        onNaviBackButtonTapped = { [weak self] in
+            self?.navigationController?.dismiss(animated: true)
         }
         
-        dailySoptuneResult.vm.onKokButtonTapped = { [weak self] userModel in
+        onKokButtonTapped = { [weak self] userModel in
             guard let self else { return .empty() }
             return self.showMessageBottomSheet(userModel: userModel, on: rootController)
         }
         
-        dailySoptuneResult.vm.onReceiveTodaysFortuneCardButtonTapped = { [weak self] cardModel in
+        onReceiveTodaysFortuneCardButtonTapped = { [weak self] cardModel in
             guard let self else { return }
             self.showDailySoptuneCard(cardModel)
         }
         
-        dailySoptuneResult.vm.onProfileImageTapped = { [weak self] playgroundId in
+        onProfileImageTapped = { [weak self] playgroundId in
             guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(playgroundId)") else { return }
             
             let webView = SOPTWebView(startWith: url)
@@ -73,7 +85,7 @@ public final class DailySoptuneResultCoordinator: DefaultDailySoptuneCoordinator
         let navController = UINavigationController(rootViewController: dailySoptuneResult.vc)
         navController.modalPresentationStyle = .overFullScreen
         rootController = navController
-        navigationController.present(navController, animated: true)
+        navigationController?.present(navController, animated: true)
     }
     
     private func showDailySoptuneCard(_ cardModel: DailySoptuneCardModel) {
