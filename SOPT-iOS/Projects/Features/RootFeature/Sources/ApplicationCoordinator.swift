@@ -756,19 +756,15 @@ extension ApplicationCoordinator {
                 self?.router.popToRootModule(animated: true)
                 coordinator?.childCoordinators = []
             }
+            addDependency(coordinator)
         case .new:
             coordinator = DailySoptuneCoordinator(
                 navigationController: UIWindow.getRootNavigationController,
                 factory: DailySoptuneBuilder(),
                 pokeFactory: PokeBuilder()
             )
-            coordinator.finishFlow = { [weak self, weak coordinator] in
-                coordinator?.childCoordinators = []
-                self?.removeDependency(coordinator)
-            }
         }
         
-        addDependency(coordinator)
         coordinator.start()
         
         return coordinator
