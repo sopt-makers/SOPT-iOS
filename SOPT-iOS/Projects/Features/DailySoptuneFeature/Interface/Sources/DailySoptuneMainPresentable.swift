@@ -19,7 +19,5 @@ public protocol DailySoptuneMainCoordinatable {
     var onReciveTodayFortuneButtonTap: ((DailySoptuneResultModel) -> Void)? { get set }
 }
 
-public typealias DailySoptuneMainViewModelType = ViewModelType & DailySoptuneMainCoordinatable
-public typealias LegacyDailySoptuneMainPresentable = (vc: DailySoptuneMainViewControllable, vm: any DailySoptuneMainViewModelType)
-
-public typealias DailySoptuneMainPresentable = (vc: UIViewController, vm: any DailySoptuneMainViewModelType)
+public typealias LegacyDailySoptuneMainPresentable = (vc: DailySoptuneMainViewControllable, vm: any ViewModelType)
+public typealias DailySoptuneMainPresentable = (vc: UIViewController, vm: any ViewModelType)
