@@ -37,7 +37,7 @@ public final class MyPageCoordinator: DefaultMyPageCoordinator & MyPageCoordinat
     
     private let factory: MyPageFeatureBuildable
     private let userType: UserType
-    private let navigationController: UINavigationController
+    private weak var navigationController: UINavigationController?
     
     // MARK: - Init
     
@@ -68,7 +68,7 @@ public final class MyPageCoordinator: DefaultMyPageCoordinator & MyPageCoordinat
         
         onNaviBackButtonTap = { [weak self] in
             guard let self else { return }
-            self.navigationController.popViewController(animated: true)
+            self.navigationController?.popViewController(animated: true)
         }
         
         onShowLogout = { [weak self] in
@@ -84,19 +84,19 @@ public final class MyPageCoordinator: DefaultMyPageCoordinator & MyPageCoordinat
         onPolicyItemTap = { [weak self] in
             guard let self = self else { return }
             let policyVC = self.factory.makePrivacyPolicyVC()
-            self.navigationController.pushViewController(policyVC, animated: true)
+            self.navigationController?.pushViewController(policyVC, animated: true)
         }
         
         onTermsOfUseItemTap = { [weak self] in
             guard let self = self else { return }
             let termsVC = self.factory.makeTermsOfServiceVC()
-            self.navigationController.pushViewController(termsVC, animated: true)
+            self.navigationController?.pushViewController(termsVC, animated: true)
         }
         
         onEditOnelineSentenceItemTap = { [weak self] in
             guard let self = self else { return }
             let sentenceEditVC = self.factory.makeSentenceEditVC()
-            self.navigationController.pushViewController(sentenceEditVC, animated: true)
+            self.navigationController?.pushViewController(sentenceEditVC, animated: true)
         }
         
         onWithdrawalItemTap = { [weak self] userType in
@@ -107,7 +107,7 @@ public final class MyPageCoordinator: DefaultMyPageCoordinator & MyPageCoordinat
             self?.showAlertSetting(url: url)
         }
         
-        self.navigationController.pushViewController(myPage.vc, animated: true)
+        self.navigationController?.pushViewController(myPage.vc, animated: true)
     }
     
     private func showWithdrawal(userType: UserType) {
@@ -117,7 +117,7 @@ public final class MyPageCoordinator: DefaultMyPageCoordinator & MyPageCoordinat
             self.delegate?.myPageCoordinator(self, to: .signInWithToast)
         }
         
-        self.navigationController.pushViewController(withdrawal.vc, animated: true)
+        self.navigationController?.pushViewController(withdrawal.vc, animated: true)
     }
     
     private func showAlertSetting(url: String) {
