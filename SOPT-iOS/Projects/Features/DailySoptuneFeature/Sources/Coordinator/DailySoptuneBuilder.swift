@@ -27,9 +27,9 @@ extension DailySoptuneBuilder: DailySoptuneBuildable {
         return (dailySoptuneResultVC, viewModel)
     }
     
-    public func makeDailySoptuneMainVC() -> DailySoptuneMainPresentable {
+    public func makeDailySoptuneMainVC(coordinator: DailySoptuneMainCoordinatable) -> DailySoptuneMainPresentable {
         let useCase = DefaultDailySoptuneUseCase(repository: dailySoptuneRepository)
-        let viewModel = DailySoptuneMainViewModel(useCase: useCase)
+        let viewModel = DailySoptuneMainViewModel(useCase: useCase, coordinator: coordinator)
         let dailySoptuneMainVC = DailySoptuneMainVC(viewModel: viewModel)
         return (dailySoptuneMainVC, viewModel)
     }

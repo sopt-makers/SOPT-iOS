@@ -10,6 +10,6 @@ import Domain
 
 public protocol DailySoptuneBuildable {
     func makeDailySoptuneResultVC(resultModel: DailySoptuneResultModel) -> DailySoptuneResultPresentable
-    func makeDailySoptuneMainVC() -> DailySoptuneMainPresentable
+    func makeDailySoptuneMainVC(coordinator: DailySoptuneMainCoordinatable) -> DailySoptuneMainPresentable
     func makeDailySoptuneCardVC(cardModel: DailySoptuneCardModel) -> DailySoptuneCardPresentable
 }
