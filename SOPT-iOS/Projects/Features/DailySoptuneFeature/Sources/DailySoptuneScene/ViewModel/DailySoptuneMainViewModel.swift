@@ -41,10 +41,6 @@ public final class DailySoptuneMainViewModel: ViewModelType {
         self.useCase = useCase
         self.coordinator = coordinator
     }
-    
-    deinit {
-        print("Main VM deinit")
-    }
 }
 
 extension DailySoptuneMainViewModel {

@@ -50,10 +50,6 @@ public final class DailySoptuneCoordinator: DefaultDailySoptuneCoordinator & Dai
         showDailySoptuneMain()
     }
     
-    deinit {
-        print("mainCoor deinit")
-    }
-    
     private func showDailySoptuneMain() {
         let dailySoptuneMain = factory.makeDailySoptuneMainVC(coordinator: self)
         

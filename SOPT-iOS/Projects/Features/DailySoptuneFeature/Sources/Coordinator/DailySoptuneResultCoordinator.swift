@@ -50,10 +50,6 @@ public final class DailySoptuneResultCoordinator: DefaultDailySoptuneCoordinator
         self.resultModel = resultModel
     }
     
-    deinit {
-        print("resultCoor deinit")
-    }
-    
     public override func start() {
         showDailySoptuneResult(resultModel: resultModel)
     }
