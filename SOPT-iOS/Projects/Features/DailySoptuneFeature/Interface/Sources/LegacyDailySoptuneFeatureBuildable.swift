@@ -11,7 +11,8 @@ import Foundation
 import Domain
 
 public protocol LegacyDailySoptuneFeatureBuildable {
-    func makeDailySoptuneResultVC(resultModel: DailySoptuneResultModel) -> LegacyDailySoptuneResultPresentable
+    func makeDailySoptuneResultVC(resultModel: DailySoptuneResultModel,
+                                  coordinator: DailySoptuneResultCoordinatable) -> DailySoptuneResultPresentable
     func makeDailySoptuneMainVC(coordinator: DailySoptuneMainCoordinatable) -> LegacyDailySoptuneMainPresentable
     func makeDailySoptuneCardVC(cardModel: DailySoptuneCardModel) -> LegacyDailySoptuneCardPresentable
 }

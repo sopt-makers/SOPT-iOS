@@ -9,7 +9,8 @@
 import Domain
 
 public protocol DailySoptuneBuildable {
-    func makeDailySoptuneResultVC(resultModel: DailySoptuneResultModel) -> DailySoptuneResultPresentable
+    func makeDailySoptuneResultVC(resultModel: DailySoptuneResultModel,
+                                  coordinator: DailySoptuneResultCoordinatable) -> DailySoptuneResultPresentable
     func makeDailySoptuneMainVC(coordinator: DailySoptuneMainCoordinatable) -> DailySoptuneMainPresentable
     func makeDailySoptuneCardVC(cardModel: DailySoptuneCardModel) -> DailySoptuneCardPresentable
 }

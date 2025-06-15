@@ -19,9 +19,10 @@ public final class LegacyDailySoptuneBuilder {
 
 extension LegacyDailySoptuneBuilder: LegacyDailySoptuneFeatureBuildable {
     
-    public func makeDailySoptuneResultVC(resultModel: DailySoptuneResultModel) -> LegacyDailySoptuneResultPresentable {
+    public func makeDailySoptuneResultVC(resultModel: DailySoptuneResultModel,
+                                         coordinator: DailySoptuneResultCoordinatable) -> DailySoptuneResultPresentable {
         let useCase = DefaultDailySoptuneUseCase(repository: dailySoptuneRepository)
-        let viewModel = DailySoptuneResultViewModel(useCase: useCase)
+        let viewModel = DailySoptuneResultViewModel(useCase: useCase, coordinator: coordinator)
         let dailySoptuneResultVC = DailySoptuneResultVC(
             viewModel: viewModel,
             resultModel: resultModel)
