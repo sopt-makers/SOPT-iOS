@@ -21,7 +21,5 @@ public protocol DailySoptuneResultCoordinatable {
     var onProfileImageTapped: ((Int) -> Void)? { get set }
 }
 
-public typealias DailySoptuneResultViewModelType = ViewModelType & DailySoptuneResultCoordinatable
-public typealias LegacyDailySoptuneResultPresentable = (vc: DailySoptuneResultViewControllable, vm: any DailySoptuneResultViewModelType)
-
-public typealias DailySoptuneResultPresentable = (vc: UIViewController, vm: any DailySoptuneResultViewModelType)
+public typealias LegacyDailySoptuneResultPresentable = (vc: DailySoptuneResultViewControllable, vm: any ViewModelType)
+public typealias DailySoptuneResultPresentable = (vc: UIViewController, vm: any ViewModelType)
