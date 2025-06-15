@@ -69,7 +69,6 @@ public final class MyPageCoordinator: DefaultMyPageCoordinator & MyPageCoordinat
         onNaviBackButtonTap = { [weak self] in
             guard let self else { return }
             self.navigationController.popViewController(animated: true)
-            self.finishFlow?()
         }
         
         onShowLogout = { [weak self] in
