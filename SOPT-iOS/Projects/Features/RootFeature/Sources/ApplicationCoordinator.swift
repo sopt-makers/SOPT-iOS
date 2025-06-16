@@ -68,11 +68,6 @@ final class ApplicationCoordinator: BaseCoordinator {
             runSplashFlow()
         }
     }
-}
-
-// MARK: - Push Notification Binding
-
-extension ApplicationCoordinator {
     
     private func makeNavigationController() {
         TabBarItemType.allCases.forEach {
