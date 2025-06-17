@@ -156,8 +156,8 @@ extension STNavigationBar {
     
     @discardableResult
     public func setTitleTypoStyle(_ font: UIFont) -> Self {
-        titleButton.titleLabel?.setTypoStyle(font)
-        titleLabel.setTypoStyle(font)
+        titleButton.titleLabel?.font = font
+        titleLabel.font = font
         return self
     }
     
@@ -223,7 +223,7 @@ extension STNavigationBar {
         self.backgroundColor = DSKitAsset.Colors.gray950.color
         leftButton.setImage(DSKitAsset.Assets.icArrow.image, for: .normal)
         
-        titleLabel.setTypoStyle(.SoptampFont.h2)
+        titleLabel.font = .SoptampFont.h2
         titleLabel.textColor = DSKitAsset.Colors.gray10.color
         
         switch type {

@@ -17,6 +17,7 @@ import Core
 import DSKit
 
 import StampFeatureInterface
+import BaseFeatureDependency
 
 extension StarViewLevel {
     fileprivate var lottieName: String {
@@ -33,7 +34,7 @@ extension StarViewLevel {
     }
 }
 
-public class MissionCompletedVC: UIViewController, MissionCompletedViewControllable {
+public class MissionCompletedVC: UIViewController, LegacyMissionCompletedViewControllable {
     
     // MARK: - Properties
     

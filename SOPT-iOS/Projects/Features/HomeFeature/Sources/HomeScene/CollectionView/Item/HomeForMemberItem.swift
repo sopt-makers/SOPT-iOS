@@ -13,6 +13,7 @@ enum HomeForMemberItem: Hashable {
     case recentSchedule(HomePresentationModel.RecentSchedule)
     case productService(HomePresentationModel.ProductService)
     case appService(HomePresentationModel.AppService)
-    case insightPost(HomePresentationModel.InsightPost)
-    case socialLink(SocialLinkCardType)
+    case playgroundNewsPost(HomePresentationModel.PlaygroundNews)
+    case survey(HomePresentationModel.Survey)
+    case socialLink(HomePresentationModel.SocialLink)
 }

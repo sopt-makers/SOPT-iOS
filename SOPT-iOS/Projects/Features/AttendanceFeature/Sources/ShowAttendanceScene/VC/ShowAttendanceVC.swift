@@ -20,7 +20,7 @@ import AttendanceFeatureInterface
 import BaseFeatureDependency
 import SafariServices
 
-public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControllable {
+public final class ShowAttendanceVC: UIViewController, LegacyShowAttendanceViewControllable, ShowAttendanceViewControllable {
     
     // MARK: - Properties
     
@@ -74,7 +74,7 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     
     private let attendanceButton: OPCustomButton = {
         let button = OPCustomButton()
-        button.titleLabel!.setTypoStyle(.Attendance.h1)
+        button.titleLabel!.font = .Attendance.h1
         button.isHidden = true
         button.isEnabled = false
         return button

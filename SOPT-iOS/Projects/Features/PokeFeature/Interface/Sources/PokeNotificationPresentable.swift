@@ -6,6 +6,8 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
+
 import BaseFeatureDependency
 import Core
 import Domain
@@ -21,5 +23,6 @@ public protocol PokeNotificationCoordinatable {
 }
 
 public typealias PokeNotificationViewModelType = ViewModelType & PokeNotificationCoordinatable
-public typealias PokeNotificationPresentable = (vc: PokeNotificationViewControllable, vm: any PokeNotificationViewModelType)
+public typealias LegacyPokeNotificationPresentable = (vc: PokeNotificationViewControllable, vm: any PokeNotificationViewModelType)
 
+public typealias PokeNotificationPresentable = (vc: UIViewController, vm: any PokeNotificationViewModelType)

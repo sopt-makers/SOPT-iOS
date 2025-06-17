@@ -112,6 +112,21 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
             self.delegate?.homeCoordinator(self, to: .poke(isNewUser: isNewUser))
         }
         
+        homeForMember.vm.onExtendedFloatingButtonTapped = { [weak self] url in
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .deepLink(url: url))
+        }
+        
+        homeForMember.vm.onSurveyButtonTapped = { [weak self] url in
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .webLink(url: url))
+        }
+        
+        homeForMember.vm.onSocialLinkButtonTapped = { [weak self] url in
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .webLink(url: url))
+        }
+        
         rootViewController = homeForMember.vc
         navigationController.pushViewController(homeForMember.vc, animated: true)
     }
@@ -126,7 +141,8 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
                 description: I18N.Home.PopUp.needToLoginDetail,
                 customButtonTitle: I18N.Home.PopUp.login,
                 customAction: { [weak self] in
-                    self?.requestCoordinating?(.signIn)
+                    guard let self else { return }
+                    self.delegate?.homeCoordinator(self, to: .signIn)
                 }
             )
         }

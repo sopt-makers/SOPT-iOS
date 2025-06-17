@@ -6,7 +6,10 @@
 //  Copyright © 2024 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
+
 import BaseFeatureDependency
 import Core
 
-public protocol PokeAnonymousFriendUpgradePresentable: LegacyViewControllable { }
+public protocol LegacyPokeAnonymousFriendUpgradePresentable: LegacyViewControllable { }
+public protocol PokeAnonymousFriendUpgradePresentable: UIViewController { }

@@ -25,13 +25,23 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     private var cellTapped = PassthroughSubject<HomeForMemberItem, Never>()
     private(set) var attendanceButtonTapped = PassthroughSubject<Void, Never>()
     
+    private var floatingButtonTapped = PassthroughSubject<Void, Never>()
+    private lazy var extendedFloatingButtonTapped = floatingButton.actionButtonTapped
+    private lazy var collapsedFloatingButtonTapped = floatingButton.gesture().mapVoid().asDriver()
+    private(set) var surveyButtonTapped = PassthroughSubject<Void, Never>()
+    private var socialLinkButtonTapped = PassthroughSubject<HomePresentationModel.SocialLink, Never>()
+    
     private var isFirstAppear = true
+    private var outlinedTriggered = false
+    private var isExtendedButtonHidden: Bool = false
+    private var floatingButtonType: ExtendedFloatingButtonType = .extended
     
     // MARK: - UI Components
     
     private lazy var naviBar = HomeNavigationBar()
     private var dataSource: UICollectionViewDiffableDataSource<HomeForMemberSectionLayoutKind, HomeForMemberItem>! = nil
     var collectionView: UICollectionView! = nil
+    private var floatingButton = HomeFloatingButton(frame: .zero)
     
     // MARK: - Initialization
     
@@ -49,10 +59,11 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     public override func viewDidLoad() {
         super.viewDidLoad()
         configureHierarchy()
-        configureUI()
-        configureLayout()
-        configureDelegate()
-        configureDataSource()
+        setUI()
+        setLayout()
+        setDelegate()
+        setDataSource()
+        bindViews()
         bindViewModels()
     }
     
@@ -74,15 +85,17 @@ extension HomeForMemberVC {
         collectionView.backgroundColor = .clear
     }
     
-    private func configureUI() {
+    private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        self.floatingButton.isHidden = true
     }
     
-    private func configureLayout() {
+    private func setLayout() {
         view.addSubviews(
             naviBar,
-            collectionView
+            collectionView,
+            floatingButton
         )
         
         naviBar.snp.makeConstraints { make in
@@ -94,25 +107,78 @@ extension HomeForMemberVC {
             make.top.equalTo(naviBar.snp.bottom).offset(16)
             make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
         }
+        
+        floatingButton.snp.makeConstraints { make in
+            make.bottom.equalToSuperview().inset(124)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(68)
+        }
+    }
+    
+    private func extendedFloatingButtonLayout() {
+        floatingButton.snp.remakeConstraints { make in
+            make.bottom.equalToSuperview().inset(124)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(68)
+        }
+    }
+    
+    private func collapsedFloatingButtonLayout() {
+        floatingButton.snp.remakeConstraints { make in
+            make.bottom.equalToSuperview().inset(124)
+            make.trailing.equalToSuperview().inset(20)
+            make.width.equalTo(127)
+            make.height.equalTo(53)
+        }
+    }
+    
+    private func animateExtendedFloatingButtonHide(_ type: ExtendedFloatingButtonType) {
+        UIView.animate(withDuration: 0.1,
+                       delay: 0,
+                       usingSpringWithDamping: 0.7,
+                       initialSpringVelocity: 0.8,
+                       options: [.curveEaseInOut],
+                       animations: { [weak self] in
+            guard let self else { return }
+            self.floatingButton.transform = CGAffineTransform(translationX: 0, y: 120)
+        }, completion: { [weak self] _ in
+            guard let self else { return }
+            self.animateExtendedFloatingButtonShow()
+            
+            type == .extended ? self.floatingButton.setStyle(.collapsed) : self.floatingButton.setStyle(.extended)
+            type == .extended ? self.collapsedFloatingButtonLayout() : self.extendedFloatingButtonLayout()
+            
+        })
+    }
+    
+    private func animateExtendedFloatingButtonShow() {
+        UIView.animate(withDuration: 0.1,
+                       delay: 0,
+                       usingSpringWithDamping: 0.7,
+                       initialSpringVelocity: 0.8,
+                       options: [.curveEaseInOut],
+                       animations: { [weak self] in
+            guard let self else { return }
+            self.floatingButton.transform = .identity
+        })
     }
 }
 
 // MARK: - Methods
 
 extension HomeForMemberVC {
-    private func configureDelegate() {
+    private func setDelegate() {
         self.collectionView.delegate = self
     }
     
-    private func configureDataSource() {
+    private func setDataSource() {
         let dashBoardRegistration = createDashBoardCellRegistration()
         let calendarRegistration = createCalendarCellRegistration()
         let mainProductRegistration = createProductCellRegistration()
         let appServiceRegistration = createAppServiceCellRegistration()
-        
-        // TODO: 이후 스프린트에서 순차 배포
-//        let insightRegistration = createInsightCellRegistration()
-//        let socialLinkRegistration = createSocialLinkCellRegistration()
+//        let playgroundNewsRegistration = createPlaygroundNewsCellRegistration()
+        let surveyRegistration = createSurveyRegistration()
+        let socialLinkRegistration = createSocialLinkCellRegistration()
         
         dataSource = UICollectionViewDiffableDataSource<HomeForMemberSectionLayoutKind, HomeForMemberItem> (
             collectionView: collectionView) { (collectionView, indexPath, item) in
@@ -129,13 +195,17 @@ extension HomeForMemberVC {
                 case .appService(let appService):
                     return collectionView.dequeueConfiguredReusableCell(using: appServiceRegistration,
                                                                         for: indexPath, item: appService)
-                // TODO: 이후 스프린트에서 순차 배포
+//                case .playgroundNewsPost(let playgroundNews):
+//                    return collectionView.dequeueConfiguredReusableCell(using: playgroundNewsRegistration,
+//                                                                        for: indexPath, item: playgroundNews)
+                case .survey(let survey):
+                    return collectionView.dequeueConfiguredReusableCell(using: surveyRegistration,
+                                                                        for: indexPath, item: survey)
+                case .socialLink(let socialLink):
+                    return collectionView.dequeueConfiguredReusableCell(using: socialLinkRegistration,
+                                                                        for: indexPath, item: socialLink)
                 default: return UICollectionViewCell()
-//                case .insightPost(let insight):
-//                    return collectionView.dequeueConfiguredReusableCell(using: insightRegistration,
-//                                                                        for: indexPath, item: insight)
-//                    return collectionView.dequeueConfiguredReusableCell(using: socialLinkRegistration,
-//                                                                        for: indexPath, item: socialLink)
+
                 }
             }
         
@@ -144,23 +214,42 @@ extension HomeForMemberVC {
     
     private func configureSupplementaryView() {
         let headerRegistration = createHeaderRegistration()
+//        let playgroundNewsFooterRegistration = createPlaygroundNewsFooterRegistration()
         
         dataSource.supplementaryViewProvider = { (collectionView, kind, indexPath) in
             if kind == UICollectionView.elementKindSectionHeader {
                 return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
             }
+//            
+//            if kind == UICollectionView.elementKindSectionFooter {
+//                return collectionView.dequeueConfiguredReusableSupplementary(using: playgroundNewsFooterRegistration, for: indexPath)
+//            }
+            
             return UICollectionReusableView()
         }
     }
     
-    private func bindViewModels() {
-        let noticeButtonTapped = naviBar.noticeButtonTap
-            .mapVoid()
-            .asDriver()
+    private func bindViews() {
+        self.extendedFloatingButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                if owner.floatingButtonType == .extended {
+                    owner.floatingButtonTapped.send()
+                }
+            }.store(in: cancelBag)
         
-        let settingButtonTapped = naviBar.settingButtonTap
-            .mapVoid()
-            .asDriver()
+        self.collapsedFloatingButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                if owner.floatingButtonType == .collapsed {
+                    owner.floatingButtonTapped.send()
+                }
+            }.store(in: cancelBag)
+    }
+    
+    private func bindViewModels() {
+        let noticeButtonTapped = naviBar.noticeButtonTap.mapVoid().asDriver()
+        let settingButtonTapped = naviBar.settingButtonTap.mapVoid().asDriver()
         
         let input = HomeForMemberViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
@@ -168,7 +257,10 @@ extension HomeForMemberVC {
             cellTapped: cellTapped.asDriver(),
             attendanceButtonTapped: attendanceButtonTapped.asDriver(),
             noticeButtonTapped: noticeButtonTapped,
-            settingButtonTapped: settingButtonTapped
+            settingButtonTapped: settingButtonTapped,
+            extendedFloatingButtonTapped: floatingButtonTapped.asDriver(),
+            surveyButtonTapped: surveyButtonTapped.asDriver(),
+            socialLinkButtonTapped: socialLinkButtonTapped.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -183,8 +275,14 @@ extension HomeForMemberVC {
             .withUnretained(self)
             .sink { owner, isLoading in
                 isLoading ? owner.showLoading() : owner.stopLoading()
-            }
-            .store(in: cancelBag)
+            }.store(in: cancelBag)
+        
+        output.floatingButtonInfo
+            .withUnretained(self)
+            .sink { owner, floatingButtonModel in
+                owner.floatingButton.isHidden = false
+                owner.floatingButton.configureUI(with: floatingButtonModel)
+            }.store(in: cancelBag)
     }
     
     private func updateUI(with data: HomePresentationModel) {
@@ -206,12 +304,15 @@ extension HomeForMemberVC {
     private func applySnapshot(with data: HomePresentationModel) {
         var snapshot = NSDiffableDataSourceSnapshot<HomeForMemberSectionLayoutKind, HomeForMemberItem>()
         
-        snapshot.appendSections([.dashBoard, .calendar, .mainProduct, .appService])
+        snapshot.appendSections([.dashBoard, .calendar, .mainProduct, .appService, .survey, .socialLinks])
         
         snapshot.appendItems([.dashBoard(data.dashBoard)], toSection: .dashBoard)
         snapshot.appendItems([.recentSchedule(data.recentSchedule)], toSection: .calendar)
         snapshot.appendItems(self.viewModel.productServiceList.map { .productService($0) }, toSection: .mainProduct)
         snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
+//        snapshot.appendItems(data.playgroundNewsPosts.map { .playgroundNewsPost($0) }, toSection: .playgroundNews)
+        snapshot.appendItems([.survey(data.survey)], toSection: .survey)
+        snapshot.appendItems(self.viewModel.socialLinkList.map { .socialLink($0) }, toSection: .socialLinks)
 
         dataSource.apply(snapshot, animatingDifferences: true)
     }
@@ -247,8 +348,60 @@ extension HomeForMemberVC: UICollectionViewDelegate {
                 self.cellTapped.send(.productService(model))
             case .appService(let model):
                 self.cellTapped.send(.appService(model))
+            case .playgroundNewsPost(let model):
+                self.cellTapped.send(.playgroundNewsPost(model))
+            case .socialLink(let model):
+                self.cellTapped.send(.socialLink(model))
             default: return
             }
         }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        animatePlaygroundNewsSection(scrollView)
+        animateFAButton(scrollView)
+    }
+    
+    /// Playground News 섹션의 디졸브 전환 애니메이션
+//    private func animatePlaygroundNewsSection(_ scrollView: UIScrollView) {
+//        guard !outlinedTriggered else { return }
+//        
+//        if scrollView.contentOffset.y >= 450 {
+//            outlinedTriggered = true
+//            self.togglePlaygroundNewsItemUI()
+//        } else {
+//            outlinedTriggered = false
+//        }
+//    }
+//    
+//    private func togglePlaygroundNewsItemUI() {
+//        let playgroundNewsSectionIndex = HomeForMemberSectionLayoutKind.playgroundNews.rawValue
+//        let repeatCount = 4
+//        let interval: TimeInterval = 2.0
+//        
+//        for i in 0..<repeatCount {
+//            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * interval) {
+//                let indexPath = IndexPath(item: i, section: playgroundNewsSectionIndex)
+//                if let cell = self.collectionView.cellForItem(at: indexPath) as? PlaygroundNewsCardCVC {
+//                    cell.setOutlinedAnimated()
+//                }
+//            }
+//        }
+//    }
+//    
+    private func animateFAButton(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        
+        if offsetY < 130 && isExtendedButtonHidden || offsetY >= 130 && !isExtendedButtonHidden {
+            toggleFloatingButtonUI()
+        }
+    }
+    
+    /// offsetY 기준 값을 지날 때 floating button의 UI를 변경하고 애니메이션을 실행하는 메서드
+    private func toggleFloatingButtonUI() {
+        animateExtendedFloatingButtonHide(floatingButtonType)
+        isExtendedButtonHidden.toggle()
+        floatingButtonType = floatingButtonType == .extended ? .collapsed : .extended
+        floatingButton.layoutIfNeeded()
     }
 }

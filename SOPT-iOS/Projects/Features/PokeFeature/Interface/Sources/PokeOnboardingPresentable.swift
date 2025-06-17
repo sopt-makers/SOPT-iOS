@@ -6,6 +6,8 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
+
 import BaseFeatureDependency
 import Core
 import Domain
@@ -21,5 +23,7 @@ public protocol PokeOnboardingCoordinatable {
 }
 
 public typealias PokeOnboardingViewModelType = ViewModelType & PokeOnboardingCoordinatable
-public typealias PokeOnboardingPresentable = (vc: PokeOnboardingViewControllable, vm: any PokeOnboardingViewModelType)
+public typealias LegacyPokeOnboardingPresentable = (vc: PokeOnboardingViewControllable, vm: any PokeOnboardingViewModelType)
+
+public typealias PokeOnboardingPresentable = (vc: UIViewController, vm: any PokeOnboardingViewModelType)
 

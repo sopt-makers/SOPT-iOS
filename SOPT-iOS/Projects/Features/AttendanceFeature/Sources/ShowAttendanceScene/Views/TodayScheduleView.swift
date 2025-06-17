@@ -202,7 +202,7 @@ extension TodayScheduleView {
     
     private func addUnscheduledTitle() {
         titleLabel.text = I18N.Attendance.today + I18N.Attendance.unscheduledDay + I18N.Attendance.dayIs
-        titleLabel.setTypoStyle(DSKitFontFamily.Suit.medium.font(size: 16))
+        titleLabel.font = DSKitFontFamily.Suit.medium.font(size: 16)
     }
         
     private func setDefaultLayout() {

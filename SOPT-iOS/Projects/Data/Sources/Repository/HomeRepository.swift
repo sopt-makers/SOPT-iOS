@@ -74,8 +74,8 @@ extension HomeRepository: HomeRepositoryInterface {
             .eraseToAnyPublisher()
     }
     
-    public func getInsightPosts() -> AnyPublisher<[Domain.HomeInsightPostsModel], any Error> {
-        homeService.getInsightPosts()
+    public func getPlaygroundNewsPosts() -> AnyPublisher<[Domain.HomePlaygroundNewsPostsModel], any Error> {
+        homeService.getPlaygroundNewsPosts()
             .map { $0.map { $0.toDomain() } }
             .eraseToAnyPublisher()
     }
@@ -107,6 +107,18 @@ extension HomeRepository: HomeRepositoryInterface {
     public func checkPokeNewUser() -> AnyPublisher<Bool, any Error> {
         pokeService.isNewUser()
             .map{ $0.isNew }
+            .eraseToAnyPublisher()
+    }
+    
+    public func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonModel, any Error> {
+        homeService.getFloatingButtonInfo()
+            .map{ $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
+    
+    public func getSurveyInfo() -> AnyPublisher<Domain.HomeSurveyModel, any Error> {
+        homeService.getSurveyInfo()
+            .map { $0.toDomain() }
             .eraseToAnyPublisher()
     }
 }

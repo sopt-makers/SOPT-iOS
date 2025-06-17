@@ -98,10 +98,10 @@ public class SignInVC_Refactor: UIViewController, SignInViewControllable {
     
     private lazy var signUpButton = UIButton(type: .system).then {
         $0.setTitle(Self.i18n.signUp, for: .normal)
-        $0.setTitleColor(DSKitAsset.Colors.white100.color, for: .normal)
+        $0.setTitleColor(DSKitAsset.Colors.white.color, for: .normal)
         $0.setBackgroundColor(DSKitAsset.Colors.gray700.color, for: .normal)
         $0.setBackgroundColor(DSKitAsset.Colors.gray800.color, for: .highlighted)
-        $0.titleLabel?.setTypoStyle(DSKitFontFamily.Suit.semiBold.font(size: 16))
+        $0.titleLabel?.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
         $0.layer.cornerRadius = 10
         $0.layer.masksToBounds = true
         $0.alpha = 0

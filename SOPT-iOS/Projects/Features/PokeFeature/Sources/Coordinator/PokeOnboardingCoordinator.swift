@@ -1,9 +1,9 @@
 //
 //  PokeOnboardingCoordinator.swift
-//  PokeFeatureInterface
+//  PokeFeature
 //
-//  Created by Ian on 12/22/23.
-//  Copyright © 2023 SOPT-iOS. All rights reserved.
+//  Created by Jae Hyun Lee on 6/3/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
 import UIKit
@@ -15,46 +15,53 @@ import PokeFeatureInterface
 import WebFeature
 
 public final class PokeOnboardingCoordinator: DefaultCoordinator {
+    
+    // MARK: - Properties
+    
     public var finishFlow: (() -> Void)?
     
-    private let router: LegacyRouter
     private let factory: PokeFeatureBuildable
+    private let navigationController: UINavigationController
     private weak var rootController: UINavigationController?
     
-    public init(router: LegacyRouter, factory: PokeFeatureBuildable) {
-        self.router = router
+    // MARK: - Init
+    
+    public init(
+        navigationController: UINavigationController,
+        factory: PokeFeatureBuildable
+    ) {
+        self.navigationController = navigationController
         self.factory = factory
     }
     
+    // MARK: - Coordinator Life Cycle
+    
     public override func start() {
-        self.showPokeOnboardingView()
-    }
-}
-
-extension PokeOnboardingCoordinator {
-    private func showPokeOnboardingView() {
-        let pokeOnboarding = makePokeOnboardingView()
-                
-        self.rootController = pokeOnboarding.vc.asNavigationController
-        self.router.present(self.rootController, animated: true, modalPresentationSytle: .overFullScreen)
+        showPokeOnboardingView()
     }
     
-    func makePokeOnboardingView() -> PokeOnboardingPresentable {
-        var pokeOnboarding = self.factory.makePokeOnboarding()
+    // MARK: - Navigation
+    
+    private func showPokeOnboardingView() {
+        let pokeOnboarding = makePokeOnboardingView()
+        
+        let navController = UINavigationController(rootViewController: pokeOnboarding.vc)
+        rootController = navController
+        navigationController.present(navController, animated: true)
+    }
+    
+    private func makePokeOnboardingView() -> PokeOnboardingPresentable {
+        var pokeOnboarding = factory.makePokeOnboarding()
         
         pokeOnboarding.vm.onNaviBackTapped = { [weak self] in
-            self?.router.dismissModule(animated: true)
+            self?.navigationController.dismiss(animated: true)
             self?.finishFlow?()
         }
         
         pokeOnboarding.vm.onFirstVisitInOnboarding = { [weak self] in
             let viewController = PokeOnboardingBottomSheet()
             let bottomSheetManager = BottomSheetManager(configuration: .onboarding(minHeight: PokeOnboardingBottomSheet.minHeight))
-            self?.router.showBottomSheet(
-                manager: bottomSheetManager,
-                toPresent: viewController,
-                on: self?.rootController
-            )
+            bottomSheetManager.present(toPresent: viewController, on: self?.rootController)
         }
         
         pokeOnboarding.vm.onPokeButtonTapped = { [weak self] userModel in

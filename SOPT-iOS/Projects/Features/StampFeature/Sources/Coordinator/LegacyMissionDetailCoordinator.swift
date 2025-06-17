@@ -1,0 +1,62 @@
+//
+//  LegacyMissionDetailCoordinator.swift
+//  StampFeature
+//
+//  Created by Junho Lee on 2023/06/22.
+//  Copyright © 2023 SOPT-iOS. All rights reserved.
+//
+
+import Core
+import Domain
+import BaseFeatureDependency
+import StampFeatureInterface
+
+public
+final class LegacyMissionDetailCoordinator: DefaultCoordinator {
+        
+    public var finishFlow: (() -> Void)?
+    
+    private let factory: LegacyStampFeatureViewBuildable
+    private let router: LegacyRouter
+    private let model: MissionListModel
+    private let username: String?
+    
+    public init(router: LegacyRouter, factory: LegacyStampFeatureViewBuildable, model: MissionListModel, username: String?) {
+        self.factory = factory
+        self.router = router
+        self.model = model
+        self.username = username
+    }
+    
+    public override func start() {
+        showMissionDetail()
+    }
+    
+    private func showMissionDetail() {
+        guard let starLevel = StarViewLevel.init(rawValue: model.level) else { return }
+        var missionDetail = factory.makeListDetailVC(
+            sceneType: model.toListDetailSceneType(),
+            starLevel: starLevel,
+            missionId: model.id,
+            missionTitle: model.title,
+            otherUserName: username
+        )
+        missionDetail.onComplete = { [weak self] starViewLevel, handler in
+            self?.showMissionComplete(starViewLevel, handler)
+        }
+        missionDetail.onNaviBackTap = { [weak self] in
+            self?.router.popModule()
+            self?.finishFlow?()
+        }
+        
+        router.push(missionDetail)
+    }
+    
+    private func showMissionComplete(_ level: StarViewLevel, _ handler: (() -> Void)?) {
+        let missionCompleted = factory.makeMissionCompletedVC(
+            starLevel: level,
+            completionHandler: handler
+        )
+        router.present(missionCompleted, animated: true)
+    }
+}

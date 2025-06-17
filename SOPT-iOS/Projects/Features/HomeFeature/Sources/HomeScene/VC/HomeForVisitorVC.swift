@@ -45,10 +45,10 @@ final class HomeForVisitorVC: UIViewController, HomeForVisitorViewControllable {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureHierarchy()
-        configureUI()
-        configureLayout()
-        configureDelegate()
-        configureDataSource()
+        setUI()
+        setLayout()
+        setDelegate()
+        setDataSource()
         bindViewModels()
     }
 }
@@ -65,12 +65,12 @@ extension HomeForVisitorVC {
         collectionView.backgroundColor = .clear
     }
     
-    private func configureUI() {
+    private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
     }
     
-    private func configureLayout() {
+    private func setLayout() {
         view.addSubviews(
             naviBar,
             collectionView
@@ -91,11 +91,11 @@ extension HomeForVisitorVC {
 // MARK: - Methods
 
 extension HomeForVisitorVC {
-    private func configureDelegate() {
+    private func setDelegate() {
         self.collectionView.delegate = self
     }
     
-    private func configureDataSource() {
+    private func setDataSource() {
         let dashBoardRegistration = createDashBoardCellRegistration()
         let mainProductRegistration = createProductCellRegistration()
         let appServiceRegistration = createAppServiceCellRegistration()

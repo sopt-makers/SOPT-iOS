@@ -17,6 +17,7 @@ final class CalendarCardCVC: UICollectionViewCell {
     // MARK: - Properties
 
     private(set) lazy var attendanceButtonTap = attendanceButton.publisher(for: .touchUpInside)
+    private(set) var cancelBag = CancelBag()
     
     // MARK: - UI Components
 
@@ -82,6 +83,12 @@ final class CalendarCardCVC: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.cancelBag = CancelBag()
+        self.attendanceButtonTap = attendanceButton.publisher(for: .touchUpInside)
+    }
 }
 
 // MARK: - UI & Layout
@@ -135,6 +142,6 @@ extension CalendarCardCVC {
                                                  titleColor: tagType.textColor,
                                                  backgroundColor: tagType.backgroundColor)
         }
-        self.attendanceButton.isHidden = userType == .visitor
+        self.attendanceButton.isHidden = (userType == .visitor || userType == .inactive)
     }
 }

@@ -40,7 +40,7 @@ final class MissionView: UIView {
         self.init()
         self.setMissionLabelText(mission)
         self.setLayout(level: level)
-        defaultStarView.changeStarLevel(level: level)
+        defaultStarView.setStarColor(level: level)
     }
     
     required init?(coder: NSCoder) {
@@ -52,7 +52,7 @@ final class MissionView: UIView {
     private func setUI() {
         self.layer.cornerRadius = 9
         self.missionLabel.textColor = DSKitAsset.Colors.white.color
-        self.missionLabel.setTypoStyle(.SoptampFont.subtitle1)
+        self.missionLabel.font = .SoptampFont.subtitle1
     }
     
     private func setLayout(level: StarViewLevel) {
@@ -80,7 +80,12 @@ final class MissionView: UIView {
 
 extension MissionView {
     private func setMissionLabelText(_ mission: String) {
-        self.missionLabel.text = (mission.count >= 24) ? mission.setLineBreakAtMiddle() : mission
+        if !mission.contains("\n") && mission.count >= 24 {
+            self.missionLabel.text = mission.setLineBreakAtMiddle()
+        } else {
+            self.missionLabel.text = mission
+        }
+
         self.missionLabel.modifyLineSpacing(lineSpacing: 2)
     }
 }

@@ -2,8 +2,8 @@
 //  DailySoptuneResultCoordinator.swift
 //  DailySoptuneFeature
 //
-//  Created by Jae Hyun Lee on 9/21/24.
-//  Copyright © 2024 SOPT-iOS. All rights reserved.
+//  Created by 강윤서 on 6/6/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
 import UIKit
@@ -16,20 +16,26 @@ import Domain
 import PokeFeatureInterface
 import WebFeature
 
-public final class DailySoptuneResultCoordinator: DefaultCoordinator {
+
+public final class DailySoptuneResultCoordinator: DefaultDailySoptuneCoordinator {
     
     public var requestCoordinating: (() -> Void)?
     public var finishFlow: (() -> Void)?
     
-    private let factory: DailySoptuneFeatureBuildable
+    private let factory: DailySoptuneBuildable
     private let pokeFactory: PokeFeatureBuildable
     private let resultModel: DailySoptuneResultModel
-    private let router: LegacyRouter
+    
+    private var navigationController: UINavigationController
     private weak var rootController: UINavigationController?
-    private weak var viewController: UIViewController?
 
-    public init(router: LegacyRouter, factory: DailySoptuneFeatureBuildable, pokeFactory: PokeFeatureBuildable, resultModel: DailySoptuneResultModel) {
-        self.router = router
+    public init(
+        navigationController: UINavigationController,
+        factory: DailySoptuneBuildable,
+        pokeFactory: PokeFeatureBuildable,
+        resultModel: DailySoptuneResultModel
+    ) {
+        self.navigationController = navigationController
         self.factory = factory
         self.pokeFactory = pokeFactory
         self.resultModel = resultModel
@@ -43,18 +49,18 @@ public final class DailySoptuneResultCoordinator: DefaultCoordinator {
         var dailySoptuneResult = factory.makeDailySoptuneResultVC(resultModel: resultModel)
         
         dailySoptuneResult.vm.onNaviBackButtonTapped = { [weak self] in
-            self?.router.dismissModule(animated: true)
+            self?.navigationController.dismiss(animated: true)
             self?.finishFlow?()
         }
         
         dailySoptuneResult.vm.onKokButtonTapped = { [weak self] userModel in
             guard let self else { return .empty() }
-            return self.showMessageBottomSheet(userModel: userModel, on: self.viewController)
+            return self.showMessageBottomSheet(userModel: userModel, on: rootController)
         }
         
         dailySoptuneResult.vm.onReceiveTodaysFortuneCardButtonTapped = { [weak self] cardModel in
             guard let self else { return }
-            self.runDailySoptuneCardFlow(cardModel: cardModel)
+            self.showDailySoptuneCard(cardModel)
         }
         
         dailySoptuneResult.vm.onProfileImageTapped = { [weak self] playgroundId in
@@ -64,32 +70,28 @@ public final class DailySoptuneResultCoordinator: DefaultCoordinator {
             self?.rootController?.pushViewController(webView, animated: true)
         }
         
-        rootController = dailySoptuneResult.vc.asNavigationController
-        viewController = dailySoptuneResult.vc.viewController
-        router.present(rootController, animated: true, modalPresentationSytle: .overFullScreen)
+        let navController = UINavigationController(rootViewController: dailySoptuneResult.vc)
+        navController.modalPresentationStyle = .overFullScreen
+        rootController = navController
+        navigationController.present(navController, animated: true)
     }
     
-    internal func runDailySoptuneCardFlow(cardModel: DailySoptuneCardModel) {
-        let dailySoptuneCardCoordinator = DailySoptuneCardCoordinator(
-            router: LegacyRouter(
-                rootController: rootController ?? self.router.asNavigationController
-            ), factory: factory
-            , cardModel: cardModel
-        )
+    private func showDailySoptuneCard(_ cardModel: DailySoptuneCardModel) {
+        var dailySoptuneCard = factory.makeDailySoptuneCardVC(cardModel: cardModel)
         
-        dailySoptuneCardCoordinator.finishFlow = { [weak self, weak dailySoptuneCardCoordinator] in
-            dailySoptuneCardCoordinator?.childCoordinators = []
-            self?.removeDependency(dailySoptuneCardCoordinator)
+        dailySoptuneCard.vm.onBackButtonTapped = { [weak self] in
+            guard let self = self else { return }
+            self.rootController?.dismiss(animated: true)
         }
         
-        dailySoptuneCardCoordinator.requestCoordinating = { [weak self] in
+        dailySoptuneCard.vm.onGoToHomeButtonTapped = { [weak self] in
+            CoordinatorUtils.dismissToRootNavigation()
             self?.requestCoordinating?()
-            self?.router.dismissModule(animated: true)
             self?.finishFlow?()
         }
         
-        addDependency(dailySoptuneCardCoordinator)
-        dailySoptuneCardCoordinator.start()
+        dailySoptuneCard.vc.modalPresentationStyle = .overFullScreen
+        rootController?.present(dailySoptuneCard.vc, animated: true)
     }
     
     private func showMessageBottomSheet(userModel: PokeUserModel, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel, isAnonymous: Bool), Never> {
@@ -103,9 +105,7 @@ public final class DailySoptuneResultCoordinator: DefaultCoordinator {
         
         let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate(minHeight: bottomSheet.minimumContentHeight))
         
-        self.router.showBottomSheet(manager: bottomSheetManager,
-                                    toPresent: bottomSheet.viewController,
-                                    on: view)
+        bottomSheetManager.present(toPresent: bottomSheet.viewController, on: view)
         
         return bottomSheet
             .signalForClick()

@@ -19,7 +19,7 @@ public final class AppCustomButton: UIButton {
     
     // MARK: - Initialize
     
-    public init(title: String) {
+    public init(title: String = "") {
         self.title = AttributedString(title)
         super.init(frame: .zero)
         
@@ -41,6 +41,27 @@ extension AppCustomButton {
         return self
     }
     
+    /// 버튼의 text 설정
+    @discardableResult
+    public func setTitle(_ title: String) -> Self {
+        self.title = AttributedString(title)
+        return self
+    }
+    
+    /// content의 edge 변경
+    @discardableResult
+    public func changeInset(
+        top: CGFloat = 0,
+        leading: CGFloat = 0,
+        bottom: CGFloat = 0,
+        trailing: CGFloat = 0
+    ) -> Self {
+        config.contentInsets = NSDirectionalEdgeInsets(top: top, leading: leading, bottom: bottom, trailing: trailing)
+        self.configuration = config
+        
+        return self
+    }
+    
     /// 버튼의 cornerRadius 변경
     @discardableResult
     public func changeCornerRadius(radius: Double) -> Self {
@@ -53,7 +74,7 @@ extension AppCustomButton {
     /// 버튼의 enable, disable에 따른 상태 변경
     @discardableResult
     public func setConfigForState(
-        bgColor: UIColor = DSKitAsset.Colors.white100.color,
+        bgColor: UIColor = DSKitAsset.Colors.white.color,
         disabledColor: UIColor = DSKitAsset.Colors.gray600.color,
         disabledTextColor: UIColor = DSKitAsset.Colors.gray60.color,
         disabledFont: UIFont = DSKitFontFamily.Suit.bold.font(size: 18),
@@ -76,7 +97,7 @@ extension AppCustomButton {
             updatedConfig.attributedTitle = self.title
             button.configuration = updatedConfig
         }
-        
+                
         return self
     }
 }
@@ -99,7 +120,7 @@ extension AppCustomButton {
                 updatedConfig.background.backgroundColor = DSKitAsset.Colors.gray600.color
                 self.title.foregroundColor = DSKitAsset.Colors.gray60.color
             default:
-                updatedConfig.background.backgroundColor = DSKitAsset.Colors.white100.color
+                updatedConfig.background.backgroundColor = DSKitAsset.Colors.white.color
                 self.title.foregroundColor = DSKitAsset.Colors.black100.color
             }
             updatedConfig.attributedTitle = self.title

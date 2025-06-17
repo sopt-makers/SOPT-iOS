@@ -29,7 +29,7 @@ extension HomeForMemberVC {
                 .sink { owner, _ in
                     owner.attendanceButtonTapped.send()
                 }
-                .store(in: cancelBag)
+                .store(in: cell.cancelBag)
         }
     }
     
@@ -45,15 +45,29 @@ extension HomeForMemberVC {
         }
     }
     
-    func createInsightCellRegistration() -> InsightCellRegistration {
+    func createPlaygroundNewsCellRegistration() -> PlaygroundNewsCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
             cell.configureCell(model: item)
         }
     }
     
+    func createSurveyRegistration() -> SurveyCellRegistration {
+        collectionView.createCellRegistration { [weak self] cell, _, item in
+            guard let self else { return }
+            cell.configureCell(model: item)
+            
+            cell.surveyButtonTap
+                .withUnretained(self)
+                .sink { owner, _ in
+                    owner.surveyButtonTapped.send()
+                }
+                .store(in: cell.cancelBag)
+        }
+    }
+    
     func createSocialLinkCellRegistration() -> SocialLinkCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
-            cell.configureCell(type: item)
+            cell.configureCell(type: item.socialLink)
         }
     }
     
@@ -65,5 +79,12 @@ extension HomeForMemberVC {
             guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: indexPath.section) else { return }
             headerView.configureView(sectionKind: sectionKind)
         }
+    }
+    
+    func createPlaygroundNewsFooterRegistration() -> PlaygroundNewsFooterRegistration {
+        collectionView.createSupplementaryRegistration(
+            elementKind: UICollectionView.elementKindSectionFooter,
+            configure: { _, _ in }
+        )
     }
 }

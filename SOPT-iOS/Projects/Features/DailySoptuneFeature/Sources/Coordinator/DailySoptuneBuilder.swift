@@ -1,9 +1,9 @@
 //
 //  DailySoptuneBuilder.swift
-//  DailySoptuneFeatureInterface
+//  DailySoptuneFeature
 //
-//  Created by Jae Hyun Lee on 9/21/24.
-//  Copyright © 2024 SOPT-iOS. All rights reserved.
+//  Created by 강윤서 on 6/6/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
 import Core
@@ -17,9 +17,8 @@ public final class DailySoptuneBuilder {
     public init() {}
 }
 
-extension DailySoptuneBuilder: DailySoptuneFeatureBuildable {
-    
-    public func makeDailySoptuneResultVC(resultModel: DailySoptuneResultModel) -> DailySoptuneFeatureInterface.DailySoptuneResultPresentable {
+extension DailySoptuneBuilder: DailySoptuneBuildable {
+    public func makeDailySoptuneResultVC(resultModel: DailySoptuneResultModel) -> DailySoptuneResultPresentable {
         let useCase = DefaultDailySoptuneUseCase(repository: dailySoptuneRepository)
         let viewModel = DailySoptuneResultViewModel(useCase: useCase)
         let dailySoptuneResultVC = DailySoptuneResultVC(
@@ -27,13 +26,13 @@ extension DailySoptuneBuilder: DailySoptuneFeatureBuildable {
             resultModel: resultModel)
         return (dailySoptuneResultVC, viewModel)
     }
-	
-	public func makeDailySoptuneMainVC() -> DailySoptuneMainPresentable {
+    
+    public func makeDailySoptuneMainVC() -> DailySoptuneMainPresentable {
         let useCase = DefaultDailySoptuneUseCase(repository: dailySoptuneRepository)
         let viewModel = DailySoptuneMainViewModel(useCase: useCase)
-		let dailySoptuneMainVC = DailySoptuneMainVC(viewModel: viewModel)
-		return (dailySoptuneMainVC, viewModel)
-	}
+        let dailySoptuneMainVC = DailySoptuneMainVC(viewModel: viewModel)
+        return (dailySoptuneMainVC, viewModel)
+    }
     
     public func makeDailySoptuneCardVC(cardModel: DailySoptuneCardModel) -> DailySoptuneCardPresentable {
         let useCase = DefaultDailySoptuneUseCase(repository: dailySoptuneRepository)
@@ -41,5 +40,4 @@ extension DailySoptuneBuilder: DailySoptuneFeatureBuildable {
         let dailySoptuneCardVC = DailySoptuneCardVC(cardModel: cardModel, viewModel: viewModel)
         return (dailySoptuneCardVC, viewModel)
     }
-    
 }

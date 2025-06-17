@@ -38,7 +38,7 @@ public class NoticePopUpVC: UIViewController, LegacyNoticePopUpViewControllable,
     private let noticeTitleLabel = UILabel().then {
         $0.text = I18N.Notice.notice
         $0.font = .Main.headline2
-        $0.textColor = DSKitAsset.Colors.white100.color
+        $0.textColor = DSKitAsset.Colors.white.color
         $0.backgroundColor = DSKitAsset.Colors.black60.color
         $0.textAlignment = .center
         $0.layer.cornerRadius = 4
@@ -48,7 +48,7 @@ public class NoticePopUpVC: UIViewController, LegacyNoticePopUpViewControllable,
         $0.text = I18N.Notice.notice
         $0.isEditable = false
         $0.font = .Main.body1
-        $0.textColor = DSKitAsset.Colors.white100.color
+        $0.textColor = DSKitAsset.Colors.white.color
         $0.backgroundColor = .clear
         $0.textAlignment = .center
     }
@@ -73,14 +73,14 @@ public class NoticePopUpVC: UIViewController, LegacyNoticePopUpViewControllable,
             attributes: [.font: UIFont.Main.caption3, .foregroundColor: DSKitAsset.Colors.black100.color]
         ), for: .normal)
         
-        $0.backgroundColor = DSKitAsset.Colors.white100.color
+        $0.backgroundColor = DSKitAsset.Colors.white.color
         $0.layer.cornerRadius = 10
     }
     
     private let closeButton = UIButton(type: .system).then {
         $0.setAttributedTitle(NSAttributedString(string: I18N.Notice.close,
                                                  attributes: [.font: UIFont.Main.caption3,
-                                                              .foregroundColor: DSKitAsset.Colors.white100.color]), for: .normal)
+                                                              .foregroundColor: DSKitAsset.Colors.white.color]), for: .normal)
         $0.backgroundColor = DSKitAsset.Colors.black40.color
         $0.layer.cornerRadius = 10
     }

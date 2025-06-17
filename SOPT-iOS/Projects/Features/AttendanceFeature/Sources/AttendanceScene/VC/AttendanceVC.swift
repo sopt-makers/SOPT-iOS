@@ -18,7 +18,7 @@ import Then
 import AttendanceFeatureInterface
 import BaseFeatureDependency
 
-public final class AttendanceVC: UIViewController, AttendanceViewControllable {
+public final class AttendanceVC: UIViewController, LegacyAttendanceViewControllable {
     private enum Metric {
         static let baseInset = 20.f
         static let contentInset = 16.f
@@ -80,7 +80,7 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = DSKitAsset.Colors.gray10.color
-        label.setTypoStyle(.Attendance.h1)
+        label.font = .Attendance.h1
         return label
     }()
     
@@ -89,7 +89,7 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
         let label = UILabel()
         label.text = I18N.Attendance.inputCodeDescription
         label.textColor = DSKitAsset.Colors.gray300.color
-        label.setTypoStyle(.Main.caption1)
+        label.font = .Main.caption1
         return label
     }()
     
@@ -119,7 +119,7 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
         let label = UILabel()
         label.text = I18N.Attendance.codeMismatch
         label.textColor = DSKitAsset.Colors.error.color
-        label.setTypoStyle(.Main.body2)
+        label.font = .Main.body2
         label.isHidden = true
         return label
     }()
@@ -128,7 +128,7 @@ public final class AttendanceVC: UIViewController, AttendanceViewControllable {
     private let attendanceButton: OPCustomButton = {
         let button = OPCustomButton()
         button.setTitle(I18N.Attendance.takeAttendance, for: .normal)
-        button.titleLabel!.setTypoStyle(.Attendance.h2)
+        button.titleLabel!.font = .Attendance.h2
         return button
     }()
     

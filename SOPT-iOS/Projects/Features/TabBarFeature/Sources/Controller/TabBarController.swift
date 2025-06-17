@@ -193,7 +193,6 @@ extension TabBarController {
 extension TabBarController {
     @objc
     private func FABAnimation(_ isTapped: Bool) {
-        
         animatePlusButton(isTapped)
         animateDimmedView(isTapped)
         isTapped ? animateFABMenuIn() : animateFABMenuOut()
