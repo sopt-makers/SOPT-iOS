@@ -17,7 +17,7 @@ extension HomeForMemberVC {
         static let defaultItemSpacing: Double = 16
         static let defaultGroupSpacing: Double = 12
         static let defaultLineSpacing: Double = 56
-        
+                
         static let productItemSpacing: Double = 15
         static let appServiceItemSpacing: Double = 16
         static let playgroundNewsSectionSpacing: Double = 10
@@ -41,12 +41,14 @@ extension HomeForMemberVC {
                 return self.createMainProductSection()
             case .appService:
                 return self.createAppServiceSection()
-//            case .playgroundNews:
-//                return self.createPlaygroundNewsSection()
+            case .playgroundNews:
+                return self.createPlaygroundNewsSection()
             case .socialLinks:
                 return self.createSocialLinksSection()
             case .survey:
                 return self.createSurveySection()
+            case .recentPost:
+                return self.createRecentPostSection()
             }
         }
     }
@@ -151,7 +153,7 @@ extension HomeForMemberVC {
     private func createPlaygroundNewsSection() -> NSCollectionLayoutSection {
         /// header: default
         let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                heightDimension: .absolute(68))
+                                                heightDimension: .absolute(30))
         let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
                                                                  elementKind: UICollectionView.elementKindSectionHeader,
                                                                  alignment: .top)
@@ -166,23 +168,72 @@ extension HomeForMemberVC {
                                                              heightDimension: .estimated(122))
         let playgroundNewsGroup = NSCollectionLayoutGroup.vertical(layoutSize: playgroundNewsGroupSize,
                                                                     subitems: [playgroundNewsItem])
-        
-        /// footer
-        let footerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                heightDimension: .absolute(36))
-        let footer = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: footerSize,
-                                                                 elementKind: UICollectionView.elementKindSectionFooter,
-                                                                 alignment: .bottom)
-        footer.contentInsets = NSDirectionalEdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0)
+        playgroundNewsGroup.interItemSpacing = .fixed(Metric.collectionViewDefaultSideInset)
         
         /// section 지정
         let section = NSCollectionLayoutSection(group: playgroundNewsGroup)
-        section.boundarySupplementaryItems = [header, footer]
+        section.boundarySupplementaryItems = [header]
         section.interGroupSpacing = Metric.playgroundNewsSectionSpacing
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0,
+        section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultItemSpacing,
                                                         leading: Metric.collectionViewDefaultSideInset,
-                                                        bottom: 0,
+                                                        bottom: Metric.defaultLineSpacing,
                                                         trailing: Metric.collectionViewDefaultSideInset)
+        return section
+    }
+    
+    
+    private func createRecentPostSection() -> NSCollectionLayoutSection {
+        /// header: default
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                heightDimension: .absolute(30))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
+                                                                 elementKind: UICollectionView.elementKindSectionHeader,
+                                                                 alignment: .top)
+        
+        /// 화면 너비에서 좌우 inset을 뺀 값을 아이템 너비로 사용
+        let itemWidth = UIScreen.main.bounds.width - (Metric.collectionViewDefaultSideInset * 2)
+        
+        /// item: 최신 게시글
+        let recentPostItemSize = NSCollectionLayoutSize(widthDimension: .absolute(itemWidth),
+                                                        heightDimension: .absolute(122))
+        let recentPostItem = NSCollectionLayoutItem(layoutSize: recentPostItemSize)
+        
+        /// group: 최신 게시글
+        let recentPostGroupSize = NSCollectionLayoutSize(widthDimension: .absolute(itemWidth),
+                                                         heightDimension: .absolute(122))
+        let recentPostGroup = NSCollectionLayoutGroup.horizontal(layoutSize: recentPostGroupSize,
+                                                                 subitems: [recentPostItem])
+        recentPostGroup.interItemSpacing = .fixed(Metric.collectionViewDefaultSideInset)
+        
+        /// footer: page control
+        let footerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                heightDimension: .absolute(4))
+        let footer = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: footerSize,
+                                                                 elementKind: UICollectionView.elementKindSectionFooter,
+                                                                 alignment: .bottom)
+        
+        /// section 지정
+        let section = NSCollectionLayoutSection(group: recentPostGroup)
+        section.boundarySupplementaryItems = [header, footer]
+        section.interGroupSpacing = 20
+        section.orthogonalScrollingBehavior = .groupPaging
+        
+        section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultItemSpacing,
+                                                        leading: Metric.collectionViewDefaultSideInset,
+                                                        bottom: Metric.defaultItemSpacing,
+                                                        trailing: Metric.collectionViewDefaultSideInset)
+        
+        section.visibleItemsInvalidationHandler  = { [weak self] (item, point, env) in
+            guard let self = self,
+                  let footer = self.collectionView.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter)
+                .first(where: { ($0 as? RecentPostFooterView) != nil }) as? RecentPostFooterView else { return }
+            
+            let itemWidthWithInset: CGFloat = itemWidth + Metric.collectionViewDefaultSideInset
+            let currentPage = Int(round(point.x / itemWidthWithInset))
+            
+            footer.updatePage(currentPage: currentPage)
+        }
+        
         return section
     }
 
@@ -222,7 +273,7 @@ extension HomeForMemberVC {
         
         /// section 지정
         let section = NSCollectionLayoutSection(group: surveyGroup)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0,
+        section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultLineSpacing,
                                                         leading: Metric.collectionViewDefaultSideInset,
                                                         bottom: 0,
                                                         trailing: Metric.collectionViewDefaultSideInset)
