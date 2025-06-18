@@ -360,6 +360,8 @@ extension HomeForMemberVC: UICollectionViewDelegate {
                 self.cellTapped.send(.appService(model))
             case .playgroundNewsPost(let model):
                 self.cellTapped.send(.playgroundNewsPost(model))
+            case .recentPost(let model):
+                self.cellTapped.send(.recentPost(model))
             case .socialLink(let model):
                 self.cellTapped.send(.socialLink(model))
             default: return
