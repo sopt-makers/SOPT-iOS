@@ -214,18 +214,28 @@ extension HomeForMemberVC {
     
     private func configureSupplementaryView() {
         let headerRegistration = createHeaderRegistration()
-//        let playgroundNewsFooterRegistration = createPlaygroundNewsFooterRegistration()
+        let recentPostFooterRegistration = createRecentPostFooterRegistration()
         
         dataSource.supplementaryViewProvider = { (collectionView, kind, indexPath) in
-            if kind == UICollectionView.elementKindSectionHeader {
-                return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
+            guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: indexPath.section) else {
+                return UICollectionReusableView()
             }
-//            
-//            if kind == UICollectionView.elementKindSectionFooter {
-//                return collectionView.dequeueConfiguredReusableSupplementary(using: playgroundNewsFooterRegistration, for: indexPath)
-//            }
             
-            return UICollectionReusableView()
+            if kind == UICollectionView.elementKindSectionHeader {
+                return collectionView.dequeueConfiguredReusableSupplementary(
+                    using: headerRegistration,
+                    for: indexPath
+                )
+            }
+            
+            if kind == UICollectionView.elementKindSectionFooter && sectionKind == .recentPost {
+                return collectionView.dequeueConfiguredReusableSupplementary(
+                    using: recentPostFooterRegistration,
+                    for: indexPath
+                )
+            }
+            
+            return nil
         }
     }
     
