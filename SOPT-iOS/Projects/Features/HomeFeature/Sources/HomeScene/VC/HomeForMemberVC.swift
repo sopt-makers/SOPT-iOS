@@ -32,14 +32,16 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     private var socialLinkButtonTapped = PassthroughSubject<HomePresentationModel.SocialLink, Never>()
     
     private var isFirstAppear = true
-    private var outlinedTriggered = false
     private var isExtendedButtonHidden: Bool = false
+    private var hasStartedAnimation = false
     private var floatingButtonType: ExtendedFloatingButtonType = .extended
+    var playgroundNewsAnimationTask: Task<Void, Never>?
+    var recentPostAnimationTask: Task<Void, Never>?
     
     // MARK: - UI Components
     
     private lazy var naviBar = HomeNavigationBar()
-    private var dataSource: UICollectionViewDiffableDataSource<HomeForMemberSectionLayoutKind, HomeForMemberItem>! = nil
+    var dataSource: UICollectionViewDiffableDataSource<HomeForMemberSectionLayoutKind, HomeForMemberItem>! = nil
     var collectionView: UICollectionView! = nil
     private var floatingButton = HomeFloatingButton(frame: .zero)
     
@@ -70,6 +72,12 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.viewWillAppear.send()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        stopPlaygroundNewsAnimationLoop()
+        stopRecentPostAnimationLoop()
     }
 }
 
@@ -297,6 +305,7 @@ extension HomeForMemberVC {
             }.store(in: cancelBag)
     }
     
+    @MainActor
     private func updateUI(with data: HomePresentationModel) {
         if isFirstAppear {
             applySnapshot(with: data)
@@ -351,7 +360,10 @@ extension HomeForMemberVC {
         
         if !existingItems.isEmpty {
             snapshot.reconfigureItems(existingItems)
-            self.dataSource.apply(snapshot, animatingDifferences: true)
+            self.dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
+                self?.startPlaygroundNewsAnimationLoop()
+                self?.startRecentPostAnimationLoop()
+            }
         }
     }
 }
@@ -382,37 +394,10 @@ extension HomeForMemberVC: UICollectionViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        animatePlaygroundNewsSection(scrollView)
         animateFAButton(scrollView)
+        updateRecentPostPageControl()
     }
     
-    /// Playground News 섹션의 디졸브 전환 애니메이션
-//    private func animatePlaygroundNewsSection(_ scrollView: UIScrollView) {
-//        guard !outlinedTriggered else { return }
-//        
-//        if scrollView.contentOffset.y >= 450 {
-//            outlinedTriggered = true
-//            self.togglePlaygroundNewsItemUI()
-//        } else {
-//            outlinedTriggered = false
-//        }
-//    }
-//    
-//    private func togglePlaygroundNewsItemUI() {
-//        let playgroundNewsSectionIndex = HomeForMemberSectionLayoutKind.playgroundNews.rawValue
-//        let repeatCount = 4
-//        let interval: TimeInterval = 2.0
-//        
-//        for i in 0..<repeatCount {
-//            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * interval) {
-//                let indexPath = IndexPath(item: i, section: playgroundNewsSectionIndex)
-//                if let cell = self.collectionView.cellForItem(at: indexPath) as? PlaygroundNewsCardCVC {
-//                    cell.setOutlinedAnimated()
-//                }
-//            }
-//        }
-//    }
-//    
     private func animateFAButton(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
         
