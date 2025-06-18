@@ -14,8 +14,10 @@ enum HomeForVisitorSectionLayoutKind: Int, CaseIterable {
     case dashBoard
     case mainProduct
     case appService
-    
-    var title: String {
+}
+
+extension HomeForVisitorSectionLayoutKind: HomeSectionUIConfigurable {
+    var headerTitle: String {
         switch self {
         case .mainProduct:
             return I18N.Home.MainProduct.headerTitleForVisitor
@@ -25,6 +27,12 @@ enum HomeForVisitorSectionLayoutKind: Int, CaseIterable {
             return ""
         }
     }
+    
+    var shouldShowFireIcon: Bool {
+        return false
+    }
+    
+    var shouldShowViewAllButton: Bool {
+        return false
+    }
 }
-
-extension HomeForVisitorSectionLayoutKind: HomeSectionKindProtocol { }
