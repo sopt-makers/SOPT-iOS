@@ -175,6 +175,9 @@ struct HomePresentationModel {
     }
 }
 
+extension HomePresentationModel.PlaygroundNews: PostDisplayable {}
+extension HomePresentationModel.RecentPost: PostDisplayable {}
+
 // MARK: - toPresentation
 
 extension HomeDescriptionModel {
