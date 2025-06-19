@@ -57,7 +57,6 @@ public final class SplashCoordinator: DefaultCoordinator & SplashCoordinatable {
         }
         
         onNoticeSkipped = { [weak self] in
-            UIWindow.getRootNavigationController.viewControllers.removeAll()
             self?.finished?()
         }
         
