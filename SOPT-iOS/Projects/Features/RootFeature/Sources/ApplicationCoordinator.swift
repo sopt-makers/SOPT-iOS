@@ -35,7 +35,8 @@ final class ApplicationCoordinator: BaseCoordinator {
     internal let rootNavigationController: UINavigationController
     
     private weak var legacyRootController: UINavigationController?
-    private var navigationControllerByTab: [TabBarItemType: UINavigationController] = [:]
+    private let homeNavigationController = UINavigationController()
+    private let soptlogNavigationController = UINavigationController()
     weak var tabBarController: UITabBarController?
     
     private weak var homeCoordinator: DefaultHomeCoordinator?
@@ -53,7 +54,6 @@ final class ApplicationCoordinator: BaseCoordinator {
         self.notificationHandler = notificationHandler
         
         super.init()
-        self.makeNavigationController()
     }
     
     // MARK: - Coordinator Life Cycle
@@ -66,12 +66,6 @@ final class ApplicationCoordinator: BaseCoordinator {
             }
         } else {
             runSplashFlow()
-        }
-    }
-    
-    private func makeNavigationController() {
-        TabBarItemType.allCases.forEach {
-            self.navigationControllerByTab[$0] = UINavigationController()
         }
     }
     
@@ -345,12 +339,9 @@ extension ApplicationCoordinator {
 
         runHomeFlow(type: userType)
         runSoptlogFlow(type: userType)
-
-        guard let homeNavigation = self.navigationControllerByTab[.home],
-              let soptlogNavigation = self.navigationControllerByTab[.soptlog] else { return }
         
         let tabBarFactory = tabBarBuilder.makeTabBar(
-            with: [homeNavigation, soptlogNavigation],
+            with: [homeNavigationController, soptlogNavigationController],
             userType: userType
         )
         
@@ -409,7 +400,7 @@ extension ApplicationCoordinator {
             }
         case .new:
             let newCoordinator = HomeCoordinator(
-                navigationController: self.navigationControllerByTab[.home] ?? UINavigationController(),
+                navigationController: homeNavigationController,
                 factory: HomeBuilder(),
                 userType: type
             )
@@ -801,7 +792,7 @@ extension ApplicationCoordinator {
             }
         case .new:
             let newCoordinator = SoptlogCoordinator(
-                navigationController: self.navigationControllerByTab[.soptlog] ?? UINavigationController(),
+                navigationController: soptlogNavigationController,
                 factory: SoptlogBuilder(),
                 userType: type
             )
