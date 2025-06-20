@@ -32,14 +32,16 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     private var socialLinkButtonTapped = PassthroughSubject<HomePresentationModel.SocialLink, Never>()
     
     private var isFirstAppear = true
-    private var outlinedTriggered = false
     private var isExtendedButtonHidden: Bool = false
+    private var hasStartedAnimation = false
     private var floatingButtonType: ExtendedFloatingButtonType = .extended
+    var playgroundNewsAnimationTask: Task<Void, Never>?
+    var recentPostAnimationTask: Task<Void, Never>?
     
     // MARK: - UI Components
     
     private lazy var naviBar = HomeNavigationBar()
-    private var dataSource: UICollectionViewDiffableDataSource<HomeForMemberSectionLayoutKind, HomeForMemberItem>! = nil
+    var dataSource: UICollectionViewDiffableDataSource<HomeForMemberSectionLayoutKind, HomeForMemberItem>! = nil
     var collectionView: UICollectionView! = nil
     private var floatingButton = HomeFloatingButton(frame: .zero)
     
@@ -70,6 +72,12 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.viewWillAppear.send()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        stopPlaygroundNewsAnimationLoop()
+        stopRecentPostAnimationLoop()
     }
 }
 
@@ -176,7 +184,8 @@ extension HomeForMemberVC {
         let calendarRegistration = createCalendarCellRegistration()
         let mainProductRegistration = createProductCellRegistration()
         let appServiceRegistration = createAppServiceCellRegistration()
-//        let playgroundNewsRegistration = createPlaygroundNewsCellRegistration()
+        let playgroundNewsRegistration = createPlaygroundNewsCellRegistration()
+        let recentPostRegistration = createRecentPostCellRegistration()
         let surveyRegistration = createSurveyRegistration()
         let socialLinkRegistration = createSocialLinkCellRegistration()
         
@@ -195,17 +204,18 @@ extension HomeForMemberVC {
                 case .appService(let appService):
                     return collectionView.dequeueConfiguredReusableCell(using: appServiceRegistration,
                                                                         for: indexPath, item: appService)
-//                case .playgroundNewsPost(let playgroundNews):
-//                    return collectionView.dequeueConfiguredReusableCell(using: playgroundNewsRegistration,
-//                                                                        for: indexPath, item: playgroundNews)
+                case .playgroundNewsPost(let playgroundNews):
+                    return collectionView.dequeueConfiguredReusableCell(using: playgroundNewsRegistration,
+                                                                        for: indexPath, item: playgroundNews)
+                case .recentPost(let recentPost):
+                    return collectionView.dequeueConfiguredReusableCell(using: recentPostRegistration,
+                                                                        for: indexPath, item: recentPost)
                 case .survey(let survey):
                     return collectionView.dequeueConfiguredReusableCell(using: surveyRegistration,
                                                                         for: indexPath, item: survey)
                 case .socialLink(let socialLink):
                     return collectionView.dequeueConfiguredReusableCell(using: socialLinkRegistration,
                                                                         for: indexPath, item: socialLink)
-                default: return UICollectionViewCell()
-
                 }
             }
         
@@ -214,18 +224,28 @@ extension HomeForMemberVC {
     
     private func configureSupplementaryView() {
         let headerRegistration = createHeaderRegistration()
-//        let playgroundNewsFooterRegistration = createPlaygroundNewsFooterRegistration()
+        let recentPostFooterRegistration = createRecentPostFooterRegistration()
         
         dataSource.supplementaryViewProvider = { (collectionView, kind, indexPath) in
-            if kind == UICollectionView.elementKindSectionHeader {
-                return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
+            guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: indexPath.section) else {
+                return UICollectionReusableView()
             }
-//            
-//            if kind == UICollectionView.elementKindSectionFooter {
-//                return collectionView.dequeueConfiguredReusableSupplementary(using: playgroundNewsFooterRegistration, for: indexPath)
-//            }
             
-            return UICollectionReusableView()
+            if kind == UICollectionView.elementKindSectionHeader {
+                return collectionView.dequeueConfiguredReusableSupplementary(
+                    using: headerRegistration,
+                    for: indexPath
+                )
+            }
+            
+            if kind == UICollectionView.elementKindSectionFooter && sectionKind == .recentPost {
+                return collectionView.dequeueConfiguredReusableSupplementary(
+                    using: recentPostFooterRegistration,
+                    for: indexPath
+                )
+            }
+            
+            return nil
         }
     }
     
@@ -285,6 +305,7 @@ extension HomeForMemberVC {
             }.store(in: cancelBag)
     }
     
+    @MainActor
     private func updateUI(with data: HomePresentationModel) {
         if isFirstAppear {
             applySnapshot(with: data)
@@ -304,17 +325,27 @@ extension HomeForMemberVC {
     private func applySnapshot(with data: HomePresentationModel) {
         var snapshot = NSDiffableDataSourceSnapshot<HomeForMemberSectionLayoutKind, HomeForMemberItem>()
         
-        snapshot.appendSections([.dashBoard, .calendar, .mainProduct, .appService, .survey, .socialLinks])
+        snapshot.appendSections([.dashBoard, .calendar, .mainProduct, .appService, .playgroundNews, .recentPost, .survey, .socialLinks])
         
         snapshot.appendItems([.dashBoard(data.dashBoard)], toSection: .dashBoard)
         snapshot.appendItems([.recentSchedule(data.recentSchedule)], toSection: .calendar)
         snapshot.appendItems(self.viewModel.productServiceList.map { .productService($0) }, toSection: .mainProduct)
         snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
-//        snapshot.appendItems(data.playgroundNewsPosts.map { .playgroundNewsPost($0) }, toSection: .playgroundNews)
+        
+        // TODO: - @재현: 서버 통신 이후 수정
+        let dummyPlaygroundNews = createDummyPlaygroundNewsPosts()
+        snapshot.appendItems(dummyPlaygroundNews.map { .playgroundNewsPost($0) }, toSection: .playgroundNews)
+        let dummyRecentPosts = createDummyRecentPosts()
+        snapshot.appendItems(dummyRecentPosts.map { .recentPost($0) }, toSection: .recentPost)
+        
         snapshot.appendItems([.survey(data.survey)], toSection: .survey)
         snapshot.appendItems(self.viewModel.socialLinkList.map { .socialLink($0) }, toSection: .socialLinks)
 
-        dataSource.apply(snapshot, animatingDifferences: true)
+        dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
+            // 애니메이션은 data가 apply된 이후에 실행
+            self?.startPlaygroundNewsAnimationLoop()
+            self?.startRecentPostAnimationLoop()
+        }
     }
     
     private func setItemsNeedUpdate(_ data: HomePresentationModel) {
@@ -329,7 +360,10 @@ extension HomeForMemberVC {
         
         if !existingItems.isEmpty {
             snapshot.reconfigureItems(existingItems)
-            self.dataSource.apply(snapshot, animatingDifferences: true)
+            self.dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
+                self?.startPlaygroundNewsAnimationLoop()
+                self?.startRecentPostAnimationLoop()
+            }
         }
     }
 }
@@ -350,6 +384,8 @@ extension HomeForMemberVC: UICollectionViewDelegate {
                 self.cellTapped.send(.appService(model))
             case .playgroundNewsPost(let model):
                 self.cellTapped.send(.playgroundNewsPost(model))
+            case .recentPost(let model):
+                self.cellTapped.send(.recentPost(model))
             case .socialLink(let model):
                 self.cellTapped.send(.socialLink(model))
             default: return
@@ -358,37 +394,10 @@ extension HomeForMemberVC: UICollectionViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        animatePlaygroundNewsSection(scrollView)
         animateFAButton(scrollView)
+        updateRecentPostPageControl()
     }
     
-    /// Playground News 섹션의 디졸브 전환 애니메이션
-//    private func animatePlaygroundNewsSection(_ scrollView: UIScrollView) {
-//        guard !outlinedTriggered else { return }
-//        
-//        if scrollView.contentOffset.y >= 450 {
-//            outlinedTriggered = true
-//            self.togglePlaygroundNewsItemUI()
-//        } else {
-//            outlinedTriggered = false
-//        }
-//    }
-//    
-//    private func togglePlaygroundNewsItemUI() {
-//        let playgroundNewsSectionIndex = HomeForMemberSectionLayoutKind.playgroundNews.rawValue
-//        let repeatCount = 4
-//        let interval: TimeInterval = 2.0
-//        
-//        for i in 0..<repeatCount {
-//            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * interval) {
-//                let indexPath = IndexPath(item: i, section: playgroundNewsSectionIndex)
-//                if let cell = self.collectionView.cellForItem(at: indexPath) as? PlaygroundNewsCardCVC {
-//                    cell.setOutlinedAnimated()
-//                }
-//            }
-//        }
-//    }
-//    
     private func animateFAButton(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
         
@@ -403,5 +412,18 @@ extension HomeForMemberVC: UICollectionViewDelegate {
         isExtendedButtonHidden.toggle()
         floatingButtonType = floatingButtonType == .extended ? .collapsed : .extended
         floatingButton.layoutIfNeeded()
+    }
+    
+    /// Recent Post 섹션의 page control에 focusing된 값을 바꾸는 메서드
+    private func updateRecentPostPageControl() {
+        guard let footer = collectionView.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter)
+            .first(where: { ($0 as? RecentPostFooterView) != nil }) as? RecentPostFooterView else { return }
+                
+        if let visibleItems = self.collectionView.indexPathsForVisibleItems
+            .filter({ $0.section == HomeForMemberSectionLayoutKind.recentPost.rawValue })
+            .sorted(by: { $0.item < $1.item })
+            .first {
+            footer.updatePage(currentPage: visibleItems.item)
+        }
     }
 }

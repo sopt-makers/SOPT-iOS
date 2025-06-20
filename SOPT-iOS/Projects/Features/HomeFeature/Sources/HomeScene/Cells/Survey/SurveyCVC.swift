@@ -32,7 +32,7 @@ final class SurveyCVC: UICollectionViewCell {
         $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
         $0.textColor = DSKitAsset.Colors.white.color
         $0.numberOfLines = 2
-        $0.lineBreakMode = .byWordWrapping
+        $0.textAlignment = .center
     }
     
     private lazy var surveyButton = AppCustomButton()
@@ -83,6 +83,14 @@ extension SurveyCVC {
             make.centerX.equalToSuperview()
         }
     }
+    
+    private func updateSubTitleLayout() {
+        subTitleLabel.snp.updateConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(10)
+            make.leading.trailing.equalToSuperview().inset(56)
+            make.centerX.equalToSuperview()
+        }
+    }
 }
 
 // MARK: - Methods
@@ -90,7 +98,7 @@ extension SurveyCVC {
 extension SurveyCVC {
     func configureCell(model: HomePresentationModel.Survey) {
         self.titleLabel.text = model.title
-        self.subTitleLabel.text = model.subTitle
+        configureSubTitleLabel(with: model.subTitle)
         self.surveyButton.setTitle(model.actionButtonName)
             .setConfigForState(
                 bgColor: DSKitAsset.Colors.orange400.color,
@@ -98,5 +106,15 @@ extension SurveyCVC {
                 enabledFont: DSKitFontFamily.Suit.semiBold.font(size: 14)
             )
             .changeInset(top: 12, leading: 20, bottom: 12, trailing: 20)
+    }
+    
+    func configureSubTitleLabel(with text: String) {
+        self.subTitleLabel.text = text
+        // 피그마 기준, 20자를 넘으면 긴 문장으로 판단해서 두 줄로 보여줍니다.
+        if text.count > 20 {
+            updateSubTitleLayout()
+            subTitleLabel.setLineSpacing(lineSpacing: 3)
+            subTitleLabel.textAlignment = .center
+        }
     }
 }

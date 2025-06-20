@@ -18,6 +18,7 @@ struct HomePresentationModel {
     let recentSchedule: HomePresentationModel.RecentSchedule
     let appServices: [HomePresentationModel.AppService]
     let playgroundNewsPosts: [HomePresentationModel.PlaygroundNews]
+//    let recentPosts: [HomePresentationModel.RecentPost]     // TODO: @재현 - 서버 통신 시 해제
     let survey: HomePresentationModel.Survey
     
     // MARK: - Item Structs
@@ -111,6 +112,33 @@ struct HomePresentationModel {
             self.isHotPost = isHotPost
         }
     }
+
+    // TODO: @재현 - 서버 통신 시 모델 변경
+    struct RecentPost: Identifiable, Hashable {
+        let id = UUID()
+
+        let title, category: String
+        let profileImage: String?
+        let name: String?
+        let content: String
+        let isHotPost: Bool
+        
+        init(
+            title: String,
+            category: String,
+            profileImage: String? = nil,
+            name: String? = nil,
+            content: String,
+            isHotPost: Bool
+        ) {
+            self.title = title
+            self.category = category
+            self.profileImage = profileImage
+            self.name = name
+            self.content = content
+            self.isHotPost = isHotPost
+        }
+    }
     
     struct Survey: Identifiable, Hashable {
         let id = UUID()
@@ -146,6 +174,9 @@ struct HomePresentationModel {
         }
     }
 }
+
+extension HomePresentationModel.PlaygroundNews: PostDisplayable {}
+extension HomePresentationModel.RecentPost: PostDisplayable {}
 
 // MARK: - toPresentation
 
