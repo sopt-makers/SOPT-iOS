@@ -26,7 +26,7 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
         $0.image = DSKitAsset.Assets.icFire.image
     }
     
-    private let viewAllButton = UIButton(configuration: .plain()).then {
+    private let viewAllContentButton = UIButton(configuration: .plain()).then {
         var config = UIButton.Configuration.plain()
         config.baseForegroundColor = DSKitAsset.Colors.gray300.color
         config.contentInsets = .zero
@@ -61,7 +61,7 @@ extension HomeDefaultHeaderView {
     private func setLayout() {
         self.clipsToBounds = true
         
-        self.addSubviews(titleLabel, fireImageView, viewAllButton)
+        self.addSubviews(titleLabel, fireImageView, viewAllContentButton)
         
         titleLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview()
@@ -74,14 +74,14 @@ extension HomeDefaultHeaderView {
             make.leading.equalTo(titleLabel.snp.trailing).offset(3)
         }
         
-        viewAllButton.snp.makeConstraints { make in
+        viewAllContentButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview()
             make.centerY.equalToSuperview()
             make.height.equalTo(16)
         }
         
         hiddenFireIcon()
-        hiddenViewAllButton()
+        hiddenViewAllContentButton()
     }
     
     /// 기본적으로 fire 아이콘은 hidden 처리
@@ -90,8 +90,8 @@ extension HomeDefaultHeaderView {
     }
     
     /// 기본적으로 전체보기 버튼은 hidden 처리
-    private func hiddenViewAllButton() {
-        self.viewAllButton.isHidden = true
+    private func hiddenViewAllContentButton() {
+        self.viewAllContentButton.isHidden = true
     }
 }
 
@@ -101,6 +101,6 @@ extension HomeDefaultHeaderView {
     func configureView(sectionKind: some HomeSectionUIConfigurable) {
         self.titleLabel.text = sectionKind.headerTitle
         self.fireImageView.isHidden = !sectionKind.shouldShowFireIcon
-        self.viewAllButton.isHidden = !sectionKind.shouldShowViewAllButton
+        self.viewAllContentButton.isHidden = !sectionKind.shouldShowViewAllContentButton
     }
 }

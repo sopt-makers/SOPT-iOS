@@ -32,7 +32,7 @@ extension HomeForVisitorSectionLayoutKind: HomeSectionUIConfigurable {
         return false
     }
     
-    var shouldShowViewAllButton: Bool {
+    var shouldShowViewAllContentButton: Bool {
         return false
     }
 }
