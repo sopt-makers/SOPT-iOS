@@ -217,6 +217,6 @@ extension DefaultPostCVC {
         gradientLayer.add(animation, forKey: "opacity")
         gradientLayer.opacity = value
 
-        try? await Task.sleep(nanoseconds: UInt64(animation.duration * 1_000_000_000)) // 애니메이션 동안 sleep
+        try? await Task.sleep(for: .seconds(animation.duration)) // 애니메이션 동안 sleep
     }
 }

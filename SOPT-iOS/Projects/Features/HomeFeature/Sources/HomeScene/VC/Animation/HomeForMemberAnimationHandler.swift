@@ -50,7 +50,7 @@ extension HomeForMemberVC {
         guard recentPostAnimationTask == nil else { return } // Task 중복 생성 방지
         
         let maxItemCount = 5 // 아이템 5개 고정
-        let interval: UInt64 = 3_000_000_000
+        let interval = 3.0
         
         recentPostAnimationTask = Task {
             var currentIndex = 0
@@ -58,7 +58,7 @@ extension HomeForMemberVC {
             while !Task.isCancelled {
                 await scrollRecentPostItem(at: currentIndex)
                 currentIndex = (currentIndex + 1) % maxItemCount
-                try? await Task.sleep(nanoseconds: interval)
+                try? await Task.sleep(for: .seconds(interval))
             }
         }
     }
