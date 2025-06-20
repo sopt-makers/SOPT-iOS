@@ -47,22 +47,12 @@ struct HomePresentationModel {
         let date: String
         let type: String
         let title: String
-        
-        init(date: String, type: String, title: String) {
-            self.date = date
-            self.type = type
-            self.title = title
-        }
     }
     
     struct ProductService: Identifiable, Hashable {
         let id = UUID()
         
         let product: ServiceType
-        
-        init(product: ServiceType) {
-            self.product = product
-        }
     }
     
     struct AppService: Identifiable, Hashable {
@@ -70,21 +60,6 @@ struct HomePresentationModel {
         let serviceName: String
         let displayAlarmBadge: Bool
         let alarmBadge, iconURL, deepLink: String
-        
-        init(
-            serviceName: String,
-            displayAlarmBadge: Bool,
-            alarmBadge: String,
-            iconURL: String,
-            deepLink: String
-        ) {
-            self.serviceName = serviceName
-            self.displayAlarmBadge = displayAlarmBadge
-            self.alarmBadge = alarmBadge
-            self.iconURL = iconURL
-            self.deepLink = deepLink
-            self.id = deepLink
-        }
     }
     
     struct PlaygroundNews: Identifiable, Hashable {
@@ -148,30 +123,12 @@ struct HomePresentationModel {
         let actionButtonName: String
         let linkURL: String
         let isActive: Bool
-        
-        init(
-            title: String,
-            subTitle: String,
-            actionButtonName: String,
-            linkURL: String,
-            isActive: Bool
-        ) {
-            self.title = title
-            self.subTitle = subTitle
-            self.actionButtonName = actionButtonName
-            self.linkURL = linkURL
-            self.isActive = isActive
-        }
     }
     
     struct SocialLink: Identifiable, Hashable {
         let id = UUID()
         
         let socialLink: ServiceType
-        
-        init(socialLink: ServiceType) {
-            self.socialLink = socialLink
-        }
     }
 }
 
@@ -214,6 +171,7 @@ extension HomeRecentScheduleModel {
 extension HomeAppServicesModel {
     func toPresentation() -> HomePresentationModel.AppService {
         return HomePresentationModel.AppService(
+            id: self.deepLink,
             serviceName: self.serviceName,
             displayAlarmBadge: self.displayAlarmBadge,
             alarmBadge: self.alarmBadge,

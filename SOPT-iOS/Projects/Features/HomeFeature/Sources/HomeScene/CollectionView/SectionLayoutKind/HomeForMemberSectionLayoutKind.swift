@@ -39,7 +39,7 @@ extension HomeForMemberSectionLayoutKind: HomeSectionUIConfigurable {
         return self == .playgroundNews
     }
     
-    var shouldShowViewAllButton: Bool {
+    var shouldShowViewAllContentButton: Bool {
         return self == .recentPost
     }
 }

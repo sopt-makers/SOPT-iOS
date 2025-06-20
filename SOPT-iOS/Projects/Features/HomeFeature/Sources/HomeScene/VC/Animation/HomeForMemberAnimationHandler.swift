@@ -27,7 +27,6 @@ extension HomeForMemberVC {
         playgroundNewsAnimationTask = nil
     }
 
-    @MainActor
     private func togglePlaygroundNewsItemUI() async {
         let playgroundNewsSectionIndex = HomeForMemberSectionLayoutKind.playgroundNews.rawValue
         let repeatCount = 3
@@ -51,7 +50,7 @@ extension HomeForMemberVC {
         guard recentPostAnimationTask == nil else { return } // Task 중복 생성 방지
         
         let maxItemCount = 5 // 아이템 5개 고정
-        let interval: UInt64 = 3_000_000_000
+        let interval = 3.0
         
         recentPostAnimationTask = Task {
             var currentIndex = 0
@@ -59,7 +58,7 @@ extension HomeForMemberVC {
             while !Task.isCancelled {
                 await scrollRecentPostItem(at: currentIndex)
                 currentIndex = (currentIndex + 1) % maxItemCount
-                try? await Task.sleep(nanoseconds: interval)
+                try? await Task.sleep(for: .seconds(interval))
             }
         }
     }
@@ -69,7 +68,6 @@ extension HomeForMemberVC {
         recentPostAnimationTask = nil
     }
     
-    @MainActor
     private func scrollRecentPostItem(at currentIndex: Int) async {
         let sectionIndex = HomeForMemberSectionLayoutKind.recentPost.rawValue
         let indexPath = IndexPath(item: currentIndex, section: sectionIndex)

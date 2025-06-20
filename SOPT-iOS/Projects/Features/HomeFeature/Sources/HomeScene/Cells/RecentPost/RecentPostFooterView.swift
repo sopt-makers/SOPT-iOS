@@ -23,7 +23,6 @@ final class RecentPostFooterView: UICollectionReusableView {
     
     private let pageControl = UIPageControl().then {
         $0.currentPageIndicatorTintColor = DSKitAsset.Colors.white.color
-        $0.pageIndicatorTintColor = DSKitAsset.Colors.gray500.color
         $0.numberOfPages = 5
         $0.currentPage = 0
         $0.isUserInteractionEnabled = false
