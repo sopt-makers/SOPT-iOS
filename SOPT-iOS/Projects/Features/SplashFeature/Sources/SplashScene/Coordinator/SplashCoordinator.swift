@@ -13,13 +13,20 @@ import SplashFeatureInterface
 import Core
 import Domain
 
-public final class SplashCoordinator: DefaultCoordinator {
+public final class SplashCoordinator: DefaultCoordinator & SplashCoordinatable {
+    
+    // MARK: - SplashCoordinatable
+    
+    public var onNoticeSkipped: (() -> Void)?
+    public var onNoticeExist: ((Domain.AppNoticeModel) -> Void)?
+    public var finished: (() -> Void)?
+    
     
     // MARK: - Properties
     
     public var finishFlow: (() -> Void)?
     
-    private let navigationController: UINavigationController
+    private weak var navigationController: UINavigationController?
     private let factory: SplashFeatureBuildable
     private let cancelBag = CancelBag()
     
@@ -43,17 +50,17 @@ public final class SplashCoordinator: DefaultCoordinator {
     // MARK: - Navigation
     
     private func showSplash() {
-        var splash = factory.makeSplash()
+        let splash = factory.makeSplash(self)
         
-        splash.vm.onNoticeExist = { [weak self] appNoticeModel in
+        onNoticeExist = { [weak self] appNoticeModel in
             self?.presentNoticePopUp(model: appNoticeModel)
         }
         
-        splash.vm.onNoticeSkipped = { [weak self] in
-            self?.finishFlow?()
+        onNoticeSkipped = { [weak self] in
+            self?.finished?()
         }
         
-        navigationController.setViewControllers([splash.vc], animated: true)
+        navigationController?.setViewControllers([splash.vc], animated: true)
     }
     
     private func presentNoticePopUp(model: AppNoticeModel) {
@@ -70,10 +77,10 @@ public final class SplashCoordinator: DefaultCoordinator {
             if didCheck {
                 UserDefaultKeyList.AppNotice.checkedAppVersion = model.recommendVersion
             }
-            self?.navigationController.dismiss(animated: true)
-            self?.finishFlow?()
+            self?.navigationController?.dismiss(animated: true)
+            self?.finished?()
         }.store(in: cancelBag)
         
-        navigationController.present(noticePopUpVC, animated: false)
+        navigationController?.present(noticePopUpVC, animated: false)
     }
 }

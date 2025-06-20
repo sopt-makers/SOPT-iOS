@@ -12,7 +12,11 @@ import Core
 import Domain
 
 public
-final class LegacySplashCoordinator: DefaultCoordinator {
+final class LegacySplashCoordinator: DefaultCoordinator & SplashCoordinatable {
+    public var finished: (() -> Void)?
+    public var onNoticeSkipped: (() -> Void)?
+    public var onNoticeExist: ((Domain.AppNoticeModel) -> Void)?
+    
     
     public var finishFlow: (() -> Void)?
     
@@ -30,11 +34,11 @@ final class LegacySplashCoordinator: DefaultCoordinator {
     }
     
     private func showSplash() {
-        var splash = factory.makeSplash()
-        splash.vm.onNoticeExist = { [weak self] appNoticeModel in
+        let splash = factory.makeSplash(self)
+        onNoticeExist = { [weak self] appNoticeModel in
             self?.presentNoticePopUp(model: appNoticeModel)
         }
-        splash.vm.onNoticeSkipped = { [weak self] in
+        onNoticeSkipped = { [weak self] in
             self?.finishFlow?()
         }
         router.setRootModule(splash.vc, animated: true)

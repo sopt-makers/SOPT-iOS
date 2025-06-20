@@ -17,12 +17,10 @@ public final class SplashBuilder {
 }
 
 extension SplashBuilder: SplashFeatureBuildable {
-    
-    public func makeSplash() -> SplashPresentable {
+    public func makeSplash(_ coordinator: SplashCoordinatable) -> SplashPresentable {
         let useCase = DefaultSplashUseCase(repository: repository)
-        let vm = SplashViewModel(useCase: useCase)
-        let vc = SplashVC()
-        vc.viewModel = vm
+        let vm = SplashViewModel(useCase: useCase, coordinator: coordinator)
+        let vc = SplashVC(viewModel: vm)
         return (vc, vm)
     }
     

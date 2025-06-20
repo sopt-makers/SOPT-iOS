@@ -9,6 +9,6 @@
 import Core
 
 public protocol LegacySplashFeatureViewBuildable {
-    func makeSplash() -> LegacySplashPresentable
+    func makeSplash(_ coordinator: SplashCoordinatable) -> LegacySplashPresentable
     func makeNoticePopUpVC(noticeType: NoticePopUpType, content: String) -> LegacyNoticePopUpViewControllable
 }
