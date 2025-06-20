@@ -207,7 +207,6 @@ extension DefaultPostCVC {
         await animateBorderOpacity(to: 0)
     }
     
-    @MainActor
     private func animateBorderOpacity(to value: Float) async {
         let animation = CABasicAnimation(keyPath: "opacity")
         animation.fromValue = gradientLayer.presentation()?.opacity ?? gradientLayer.opacity

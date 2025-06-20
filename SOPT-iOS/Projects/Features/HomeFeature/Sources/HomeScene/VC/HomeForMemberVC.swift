@@ -305,7 +305,6 @@ extension HomeForMemberVC {
             }.store(in: cancelBag)
     }
     
-    @MainActor
     private func updateUI(with data: HomePresentationModel) {
         if isFirstAppear {
             applySnapshot(with: data)

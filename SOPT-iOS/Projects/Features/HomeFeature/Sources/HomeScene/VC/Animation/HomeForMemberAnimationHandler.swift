@@ -27,7 +27,6 @@ extension HomeForMemberVC {
         playgroundNewsAnimationTask = nil
     }
 
-    @MainActor
     private func togglePlaygroundNewsItemUI() async {
         let playgroundNewsSectionIndex = HomeForMemberSectionLayoutKind.playgroundNews.rawValue
         let repeatCount = 3
@@ -69,7 +68,6 @@ extension HomeForMemberVC {
         recentPostAnimationTask = nil
     }
     
-    @MainActor
     private func scrollRecentPostItem(at currentIndex: Int) async {
         let sectionIndex = HomeForMemberSectionLayoutKind.recentPost.rawValue
         let indexPath = IndexPath(item: currentIndex, section: sectionIndex)
