@@ -14,6 +14,7 @@ let project = Project.makeModule(
     targets: [.unitTest, .staticFramework, .demo, .interface],
     internalDependencies: [
     ],
-    interfaceDependencies: [  
+    interfaceDependencies: [
+      .Features.Web.Feature
     ]
 )
