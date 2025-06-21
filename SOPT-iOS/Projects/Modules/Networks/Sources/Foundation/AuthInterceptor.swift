@@ -15,8 +15,6 @@ import Alamofire
 
 public final class AuthInterceptor: RequestInterceptor {
     
-    public typealias AdapterResult = Swift.Result<URLRequest, Error>
-    
     public typealias AccessTokenClosure = (@Sendable () -> String)
     
     public let accessTokenClosure: AccessTokenClosure
@@ -43,9 +41,5 @@ public final class AuthInterceptor: RequestInterceptor {
             return HTTPHeader(name: $0.name, value: accessTokenClosure())
         }
         urlRequest.headers = HTTPHeaders(headers)
-    }
-    
-    public func retry(_ request: Alamofire.Request, for session: Alamofire.Session, dueTo error: Swift.Error, completion: @escaping (RetryResult) -> Void) {
-        completion(.doNotRetryWithError(error))
     }
 }
