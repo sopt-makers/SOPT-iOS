@@ -13,7 +13,7 @@ import Core
 import Alamofire
 
 
-public final class AuthInterceptor: RequestInterceptor {
+public class AccessTokenInterceptor: RequestInterceptor {
     
     public typealias AccessTokenClosure = (@Sendable () -> String)
     

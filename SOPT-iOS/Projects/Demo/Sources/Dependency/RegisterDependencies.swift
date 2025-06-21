@@ -22,7 +22,7 @@ extension AppDelegate {
             interface: SignInRepositoryInterface.self,
             implement: {
                 SignInRepository(
-                    authService: DefaultAuthService(interceptor: AuthInterceptor()),
+                    authService: DefaultAuthService(interceptor: AccessTokenInterceptor()),
                     userService: DefaultUserService()
                 )
             }
@@ -88,7 +88,7 @@ extension AppDelegate {
             interface: SettingRepositoryInterface.self,
             implement: {
                 SettingRepository(
-                    authService: DefaultAuthService(interceptor: AuthInterceptor()),
+                    authService: DefaultAuthService(interceptor: AccessTokenInterceptor()),
                     stampService: DefaultStampService(),
                     userService: DefaultUserService()
                 )

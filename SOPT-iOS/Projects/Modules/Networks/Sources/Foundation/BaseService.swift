@@ -76,9 +76,9 @@ open class BaseService<Target: TargetType> {
     // MARK: - Initializers
     
     public init(
-        interceptor: RequestInterceptor = DefaultInterceptor(
-            reissuance: DefaultAuthService(interceptor: AuthInterceptor()).reissuance,
-            accessTokenClosure: { UserDefaultKeyList.Auth.appAccessToken ?? "" }
+        interceptor: RequestInterceptor = ReissuanceInterceptor(
+            accessTokenClosure: { UserDefaultKeyList.Auth.appAccessToken ?? "" },
+            reissuance: DefaultAuthService(interceptor: AccessTokenInterceptor()).reissuance
         )
     ) {
         self.interceptor = interceptor

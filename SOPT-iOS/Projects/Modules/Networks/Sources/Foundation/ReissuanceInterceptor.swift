@@ -12,40 +12,18 @@ import Core
 
 import Alamofire
 
-public final class DefaultInterceptor: RequestInterceptor {
+public final class ReissuanceInterceptor: AccessTokenInterceptor {
     
     public typealias ReissueClosure = (@Sendable (@escaping (Bool) -> Void) -> Void)
     
-    public typealias AccessTokenClosure = (@Sendable () -> String)
-    
     private let reissuance: ReissueClosure
     
-    private let accessTokenClosure: AccessTokenClosure
-    
     public init(
-        reissuance: @escaping ReissueClosure,
-        accessTokenClosure: @escaping AccessTokenClosure
+        accessTokenClosure: @escaping AccessTokenClosure,
+        reissuance: @escaping ReissueClosure
     ) {
         self.reissuance = reissuance
-        self.accessTokenClosure = accessTokenClosure
-    }
-    
-    public func adapt(_ urlRequest: URLRequest, for session: Alamofire.Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
-        var adaptedRequest = urlRequest
-        validateHeader(&adaptedRequest)
-        completion(.success(adaptedRequest))
-    }
-    
-    // Note: 토큰 재발급 시 AccessToken 갱신
-    // @준호
-    private func validateHeader(_ urlRequest: inout URLRequest) {
-        let headers = urlRequest.headers.map {
-            guard $0.name == "Authorization" else {
-                return $0
-            }
-            return HTTPHeader(name: $0.name, value: accessTokenClosure())
-        }
-        urlRequest.headers = HTTPHeaders(headers)
+        super.init(accessTokenClosure: accessTokenClosure)
     }
     
     public func retry(_ request: Alamofire.Request, for session: Alamofire.Session, dueTo error: Swift.Error, completion: @escaping (RetryResult) -> Void) {
