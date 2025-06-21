@@ -14,15 +14,13 @@ import Alamofire
 
 public final class DefaultInterceptor: RequestInterceptor {
     
-    public typealias AdapterResult = Swift.Result<URLRequest, Error>
-    
     public typealias ReissueClosure = (@Sendable (@escaping (Bool) -> Void) -> Void)
     
     public typealias AccessTokenClosure = (@Sendable () -> String)
     
-    public let reissuance: ReissueClosure
+    private let reissuance: ReissueClosure
     
-    public let accessTokenClosure: AccessTokenClosure
+    private let accessTokenClosure: AccessTokenClosure
     
     public init(
         reissuance: @escaping ReissueClosure,

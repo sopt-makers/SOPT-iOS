@@ -17,7 +17,7 @@ public final class AuthInterceptor: RequestInterceptor {
     
     public typealias AccessTokenClosure = (@Sendable () -> String)
     
-    public let accessTokenClosure: AccessTokenClosure
+    private let accessTokenClosure: AccessTokenClosure
     
     public init(
         accessTokenClosure: @escaping AccessTokenClosure = { UserDefaultKeyList.Auth.appAccessToken ?? ""}
