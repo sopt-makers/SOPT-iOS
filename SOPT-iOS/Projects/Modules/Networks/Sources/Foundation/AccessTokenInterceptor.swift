@@ -31,8 +31,6 @@ public class AccessTokenInterceptor: RequestInterceptor {
         completion(.success(adaptedRequest))
     }
     
-    // Note: 토큰 재발급 시 AccessToken 갱신
-    // @준호
     private func validateHeader(_ urlRequest: inout URLRequest) {
         let headers = urlRequest.headers.map {
             guard $0.name == "Authorization" else {

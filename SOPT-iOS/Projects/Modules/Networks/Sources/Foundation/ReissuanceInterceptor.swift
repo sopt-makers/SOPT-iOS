@@ -27,7 +27,7 @@ public final class ReissuanceInterceptor: AccessTokenInterceptor {
     }
     
     public func retry(_ request: Alamofire.Request, for session: Alamofire.Session, dueTo error: Swift.Error, completion: @escaping (RetryResult) -> Void) {
-        // token 재발급 API가 아니며 && 로그인 실패가 아니며 && 토큰이 만료된 경우(401)
+        // 토큰이 만료된 경우(401)
         guard let response = request.task?.response as? HTTPURLResponse,
               response.statusCode == 401 else {
             completion(.doNotRetryWithError(error))
