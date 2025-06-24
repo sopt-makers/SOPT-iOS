@@ -40,4 +40,8 @@ public class AccessTokenInterceptor: RequestInterceptor {
         }
         urlRequest.headers = HTTPHeaders(headers)
     }
+    
+    public func retry(_ request: Request, for session: Session, dueTo error: any Error, completion: @escaping (RetryResult) -> Void) {
+        completion(.doNotRetry)
+    }
 }
