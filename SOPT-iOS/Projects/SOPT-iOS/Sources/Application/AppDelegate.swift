@@ -12,6 +12,7 @@ import FirebaseCore
 import BaseFeatureDependency
 import Core
 import Networks
+import ThirdPartyLibs
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -21,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application( _ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         configureAppLifecycleAdapter()
         registerDependencies()
-        FirebaseApp.configure()
+        Firebase.configure()
         
         application.registerForRemoteNotifications()
         return true
