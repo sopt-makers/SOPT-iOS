@@ -52,7 +52,7 @@ struct AccessTokenInterceptorTests {
                 accessTokenClosure: { "stub_accessToken" }
             )
             
-            var urlRequest = URLRequest(url: URL(string: "http://")!)
+            let urlRequest = URLRequest(url: URL(string: "http://")!)
             // header = [:] 헤더에 Authorization 없을 때
             
             sut.adapt(
