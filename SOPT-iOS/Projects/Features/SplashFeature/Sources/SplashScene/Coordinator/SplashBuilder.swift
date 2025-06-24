@@ -11,14 +11,12 @@ import Domain
 @_exported import SplashFeatureInterface
 
 public final class SplashBuilder {
-    @Injected public var repository: SplashRepositoryInterface
-    
     public init() { }
 }
 
 extension SplashBuilder: SplashFeatureBuildable {
     public func makeSplash(_ coordinator: SplashCoordinatable) -> SplashPresentable {
-        let useCase = DefaultSplashUseCase(repository: repository)
+        let useCase = DefaultSplashUseCase()
         let vm = SplashViewModel(useCase: useCase, coordinator: coordinator)
         let vc = SplashVC(viewModel: vm)
         return (vc, vm)

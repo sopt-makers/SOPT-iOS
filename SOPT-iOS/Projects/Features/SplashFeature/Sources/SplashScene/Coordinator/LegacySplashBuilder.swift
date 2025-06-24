@@ -12,14 +12,12 @@ import Domain
 
 public
 final class LegacySplashBuilder {
-    @Injected public var repository: SplashRepositoryInterface
-    
     public init() { }
 }
 
 extension LegacySplashBuilder: LegacySplashFeatureViewBuildable {
     public func makeSplash(_ coordinator: SplashCoordinatable) -> LegacySplashPresentable {
-        let useCase = DefaultSplashUseCase(repository: repository)
+        let useCase = DefaultSplashUseCase()
         let vm = SplashViewModel(useCase: useCase, coordinator: coordinator)
         let vc = SplashVC(viewModel: vm)
         return (vc, vm)
