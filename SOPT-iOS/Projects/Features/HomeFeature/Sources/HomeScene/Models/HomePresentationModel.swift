@@ -18,6 +18,7 @@ struct HomePresentationModel {
     let recentSchedule: HomePresentationModel.RecentSchedule
     let appServices: [HomePresentationModel.AppService]
     let playgroundNewsPosts: [HomePresentationModel.PlaygroundNews]
+//    let recentPosts: [HomePresentationModel.RecentPost]     // TODO: @재현 - 서버 통신 시 해제
     let survey: HomePresentationModel.Survey
     
     // MARK: - Item Structs
@@ -46,22 +47,12 @@ struct HomePresentationModel {
         let date: String
         let type: String
         let title: String
-        
-        init(date: String, type: String, title: String) {
-            self.date = date
-            self.type = type
-            self.title = title
-        }
     }
     
     struct ProductService: Identifiable, Hashable {
         let id = UUID()
         
         let product: ServiceType
-        
-        init(product: ServiceType) {
-            self.product = product
-        }
     }
     
     struct AppService: Identifiable, Hashable {
@@ -69,24 +60,36 @@ struct HomePresentationModel {
         let serviceName: String
         let displayAlarmBadge: Bool
         let alarmBadge, iconURL, deepLink: String
-        
-        init(
-            serviceName: String,
-            displayAlarmBadge: Bool,
-            alarmBadge: String,
-            iconURL: String,
-            deepLink: String
-        ) {
-            self.serviceName = serviceName
-            self.displayAlarmBadge = displayAlarmBadge
-            self.alarmBadge = alarmBadge
-            self.iconURL = iconURL
-            self.deepLink = deepLink
-            self.id = deepLink
-        }
     }
     
     struct PlaygroundNews: Identifiable, Hashable {
+        let id = UUID()
+
+        let title, category: String
+        let profileImage: String?
+        let name: String?
+        let content: String
+        let isHotPost: Bool
+        
+        init(
+            title: String,
+            category: String,
+            profileImage: String? = nil,
+            name: String? = nil,
+            content: String,
+            isHotPost: Bool
+        ) {
+            self.title = title
+            self.category = category
+            self.profileImage = profileImage
+            self.name = name
+            self.content = content
+            self.isHotPost = isHotPost
+        }
+    }
+
+    // TODO: @재현 - 서버 통신 시 모델 변경
+    struct RecentPost: Identifiable, Hashable {
         let id = UUID()
 
         let title, category: String
@@ -120,32 +123,17 @@ struct HomePresentationModel {
         let actionButtonName: String
         let linkURL: String
         let isActive: Bool
-        
-        init(
-            title: String,
-            subTitle: String,
-            actionButtonName: String,
-            linkURL: String,
-            isActive: Bool
-        ) {
-            self.title = title
-            self.subTitle = subTitle
-            self.actionButtonName = actionButtonName
-            self.linkURL = linkURL
-            self.isActive = isActive
-        }
     }
     
     struct SocialLink: Identifiable, Hashable {
         let id = UUID()
         
         let socialLink: ServiceType
-        
-        init(socialLink: ServiceType) {
-            self.socialLink = socialLink
-        }
     }
 }
+
+extension HomePresentationModel.PlaygroundNews: PostDisplayable {}
+extension HomePresentationModel.RecentPost: PostDisplayable {}
 
 // MARK: - toPresentation
 
@@ -183,6 +171,7 @@ extension HomeRecentScheduleModel {
 extension HomeAppServicesModel {
     func toPresentation() -> HomePresentationModel.AppService {
         return HomePresentationModel.AppService(
+            id: self.deepLink,
             serviceName: self.serviceName,
             displayAlarmBadge: self.displayAlarmBadge,
             alarmBadge: self.alarmBadge,

@@ -35,6 +35,8 @@ final class ApplicationCoordinator: BaseCoordinator {
     internal let rootNavigationController: UINavigationController
     
     private weak var legacyRootController: UINavigationController?
+    private let homeNavigationController = UINavigationController()
+    private let soptlogNavigationController = UINavigationController()
     weak var tabBarController: UITabBarController?
     
     private weak var homeCoordinator: DefaultHomeCoordinator?
@@ -50,6 +52,7 @@ final class ApplicationCoordinator: BaseCoordinator {
         self.rootNavigationController = rootNavigationController
         self.router = router
         self.notificationHandler = notificationHandler
+        
         super.init()
     }
     
@@ -65,11 +68,6 @@ final class ApplicationCoordinator: BaseCoordinator {
             runSplashFlow()
         }
     }
-}
-
-// MARK: - Push Notification Binding
-
-extension ApplicationCoordinator {
     
     // MARK: - bindNotification
     
@@ -125,7 +123,7 @@ extension ApplicationCoordinator {
     }
     
     private func handleNewDeepLink(deepLink: DeepLinkComponentsExecutable) {
-        self.rootNavigationController.dismiss(animated: false)
+        self.rootNavigationController.popToRootViewController(animated: false)
         deepLink.execute(coordinator: self)
     }
     
@@ -148,7 +146,7 @@ extension ApplicationCoordinator {
     }
     
     private func handleNewWebLink(webLink: String) {
-        UIWindow.getRootNavigationController.dismiss(animated: false)
+        self.rootNavigationController.dismiss(animated: true)
         guard let url = URL(string: webLink) else { return }
         let webView = SOPTWebView(startWith: url)
         CoordinatorUtils.pushOnRootNavigation(webView)
@@ -339,29 +337,21 @@ extension ApplicationCoordinator {
         let tabBarBuilder = TabBarBuilder()
         let userType = type ?? UserDefaultKeyList.Auth.getUserType()
 
-        let homeCoordinator = runHomeFlow(type: userType)
-        let soptlogCoordinator = runSoptlogFlow(type: userType)
-
-        guard let homeVC = homeCoordinator.rootViewController,
-              let soptlogVC = soptlogCoordinator.rootViewController else { return }
-
+        runHomeFlow(type: userType)
+        runSoptlogFlow(type: userType)
+        
         let tabBarFactory = tabBarBuilder.makeTabBar(
-            with: [homeVC, soptlogVC],
+            with: [homeNavigationController, soptlogNavigationController],
             userType: userType
         )
         
         let coordinator = TabBarCoordinator(
             navigationController: rootNavigationController,
-            factory: tabBarFactory,
-            items: [
-                homeVC,
-                soptlogVC
-            ]
+            factory: tabBarFactory
         )
         
         coordinator.delegate = self
-        self.tabBarController = tabBarFactory.vc
-        self.tabBarController?.selectedIndex = initSelectedTabType.rawValue
+        self.rootNavigationController.setViewControllers([tabBarFactory.vc], animated: false)
         
         addDependency(coordinator)
         coordinator.start()
@@ -410,7 +400,7 @@ extension ApplicationCoordinator {
             }
         case .new:
             let newCoordinator = HomeCoordinator(
-                navigationController: rootNavigationController,
+                navigationController: homeNavigationController,
                 factory: HomeBuilder(),
                 userType: type
             )
@@ -798,7 +788,7 @@ extension ApplicationCoordinator {
             }
         case .new:
             let newCoordinator = SoptlogCoordinator(
-                navigationController: rootNavigationController,
+                navigationController: soptlogNavigationController,
                 factory: SoptlogBuilder(),
                 userType: type
             )
