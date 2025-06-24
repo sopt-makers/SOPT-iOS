@@ -19,6 +19,7 @@ public final class SplashCoordinator: DefaultCoordinator & SplashCoordinatable {
     
     public var onNoticeSkipped: (() -> Void)?
     public var onNoticeExist: ((Domain.AppNoticeModel) -> Void)?
+    public var onOptionalNoticeExist: ((Domain.AppNoticeModel) -> Void)?
     public var finished: (() -> Void)?
     
     
@@ -53,35 +54,41 @@ public final class SplashCoordinator: DefaultCoordinator & SplashCoordinatable {
         let splash = factory.makeSplash(self)
         
         onNoticeExist = { [weak self] appNoticeModel in
-            self?.presentNoticePopUp(model: appNoticeModel)
+            self?.presentNoticePopUp(model: appNoticeModel, as: .forceUpdate)
         }
         
         onNoticeSkipped = { [weak self] in
-            UIWindow.getRootNavigationController.viewControllers.removeAll()
             self?.finished?()
+        }
+        
+        onOptionalNoticeExist = { [weak self] appNoticeModel in
+            self?.presentNoticePopUp(model: appNoticeModel, as: .recommendUpdate)
         }
         
         navigationController?.setViewControllers([splash.vc], animated: true)
     }
     
-    private func presentNoticePopUp(model: AppNoticeModel) {
-        guard let isForcedUpdate = model.isForced else { return }
-        
-        let popUpType: NoticePopUpType = isForcedUpdate ? .forceUpdate : .recommendUpdate
-        
+    private func presentNoticePopUp(model: AppNoticeModel, as type: NoticePopUpType) {
         let noticePopUpVC = factory.makeNoticePopUpVC(
-            noticeType: popUpType,
+            noticeType: type,
             content: model.notice
         )
         
         noticePopUpVC.closeButtonTappedWithCheck.sink { [weak self] didCheck in
-            if didCheck {
-                UserDefaultKeyList.AppNotice.checkedAppVersion = model.recommendVersion
-            }
             self?.navigationController?.dismiss(animated: true)
             self?.finished?()
         }.store(in: cancelBag)
         
         navigationController?.present(noticePopUpVC, animated: false)
+    }
+    
+    public func showNetworkAlert() {
+        AlertUtils.presentAlertVC(
+            type: .titleDescription,
+            theme: .main,
+            title: I18N.Default.networkError,
+            description: I18N.Default.networkErrorDescription,
+            customButtonTitle: I18N.Default.ok
+        )
     }
 }

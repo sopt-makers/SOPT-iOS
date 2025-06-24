@@ -13,9 +13,10 @@ import Domain
 
 public
 final class LegacySplashCoordinator: DefaultCoordinator & SplashCoordinatable {
+    public var onOptionalNoticeExist: ((Domain.AppNoticeModel) -> Void)?
+    public var onNoticeExist: ((Domain.AppNoticeModel) -> Void)?
     public var finished: (() -> Void)?
     public var onNoticeSkipped: (() -> Void)?
-    public var onNoticeExist: ((Domain.AppNoticeModel) -> Void)?
     
     
     public var finishFlow: (() -> Void)?
@@ -36,28 +37,24 @@ final class LegacySplashCoordinator: DefaultCoordinator & SplashCoordinatable {
     private func showSplash() {
         let splash = factory.makeSplash(self)
         onNoticeExist = { [weak self] appNoticeModel in
-            self?.presentNoticePopUp(model: appNoticeModel)
+            self?.presentNoticePopUp(model: appNoticeModel, as: .forceUpdate)
         }
         onNoticeSkipped = { [weak self] in
             self?.finishFlow?()
         }
+        onOptionalNoticeExist = { [weak self] appNoticeModel in
+            self?.presentNoticePopUp(model: appNoticeModel, as: .recommendUpdate)
+        }
         router.setRootModule(splash.vc, animated: true)
     }
     
-    private func presentNoticePopUp(model: AppNoticeModel) {
-        guard let isForcedUpdate = model.isForced else { return }
-        
-        let popUpType: NoticePopUpType = isForcedUpdate ? .forceUpdate : .recommendUpdate
-        
+    private func presentNoticePopUp(model: AppNoticeModel, as type: NoticePopUpType) {
         let noticePopUpControllable = factory.makeNoticePopUpVC(
-            noticeType: popUpType,
+            noticeType: type,
             content: model.notice
         )
         
         noticePopUpControllable.closeButtonTappedWithCheck.sink { [weak self] didCheck in
-            if didCheck {
-                UserDefaultKeyList.AppNotice.checkedAppVersion = model.recommendVersion
-            }
             self?.router.dismissModule(animated: true)
             self?.finishFlow?()
         }.store(in: cancelBag)
