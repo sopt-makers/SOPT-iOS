@@ -47,7 +47,6 @@ public class DefaultSplashUseCase {
 extension DefaultSplashUseCase: SplashUseCase {
     public func getAppNotice() {
         #if DEV || PROD
-        needUpdate.send(.networkError(.versionFetchError))
         updateTask = Task {
                 do {
                     try await checkedUpdate()
