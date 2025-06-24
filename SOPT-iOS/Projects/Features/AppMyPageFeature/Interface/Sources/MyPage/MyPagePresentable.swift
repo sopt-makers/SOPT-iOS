@@ -12,7 +12,7 @@ import BaseFeatureDependency
 import Core
 
 public protocol MyPageViewControllable: LegacyViewControllable { }
-public protocol MyPageCoordinatable {
+public protocol MyPageEventTrigger {
     var onNaviBackButtonTap: (() -> Void)? { get set }
     var onPolicyItemTap: (() -> Void)? { get set }
     var onTermsOfUseItemTap: (() -> Void)? { get set }
@@ -24,5 +24,6 @@ public protocol MyPageCoordinatable {
     var onResetSoptampTap: (() -> Void)? { get set }
 }
 
-public typealias LegacyMyPagePresentable = (vc: MyPageViewControllable, vm: any ViewModelType)
-public typealias MyPagePresentable = (vc: UIViewController, vm: any ViewModelType)
+public typealias MyPageViewModelType = MyPageEventTrigger & ViewModelType
+public typealias LegacyMyPagePresentable = (vc: MyPageViewControllable, vm: any MyPageViewModelType)
+public typealias MyPagePresentable = (vc: UIViewController, vm: any MyPageViewModelType)
