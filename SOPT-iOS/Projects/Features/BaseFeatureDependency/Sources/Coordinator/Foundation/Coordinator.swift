@@ -9,7 +9,7 @@
 import Foundation
 
 /// 모든 Coordinator가 따르는 Coordinator 프로토콜입니다.
-public protocol Coordinator: AnyObject {
+public protocol Coordinatable: AnyObject {
     /// start 메서드는 Coordinator가 담당하는 플로우를 시작하게 합니다. 대개의 경우 화면전환이 이뤄집니다.
     func start()
     
@@ -21,3 +21,5 @@ public protocol Coordinator: AnyObject {
     /// - Parameter style: modal 또는 Root 등의 옵션을 지정합니다.
     func start(by style: CoordinatorStartingOption)
 }
+
+public protocol Coordinator: AnyObject { }
