@@ -15,6 +15,9 @@ let project = Project.makeModule(
     targets: [.app, .unitTest],
     internalDependencies: [
         .data,
-        .Features.RootFeature
+        .Features.RootFeature,
+//        .SPM.FirebaseRemoteConfig,
+//        .SPM.FirebaseAnalytics,
+//        .SPM.FirebaseCore
     ]
 )
