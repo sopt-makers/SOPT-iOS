@@ -45,11 +45,7 @@ public final class MyPageCoordinator: BaseCoordinator {
     public override func start() {
         showMyPage()
     }
-    
-    deinit {
-        print("Coor deinit")
-    }
-    
+
     // MARK: - Navigation
     
     private func showMyPage() {
