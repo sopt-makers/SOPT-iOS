@@ -10,62 +10,98 @@ import Foundation
 import Combine
 
 import Core
+import ThirdPartyLibs
+
+public enum UpdateType {
+    case forcedUpdate(AppNoticeModel)
+    case optionalUpdate(AppNoticeModel)
+    case none
+    case networkError(UpdateCheckError)
+}
+
+public enum UpdateCheckError: Error {
+    case versionFetchError
+}
+
 
 public protocol SplashUseCase {
     func getAppNotice()
-    
-    var appNoticeModel: PassthroughSubject<AppNoticeModel?, Error> { get set }
+    var needUpdate: PassthroughSubject<UpdateType, Never> { get set }
 }
 
 public class DefaultSplashUseCase {
-  
-    private let repository: SplashRepositoryInterface
-    private var cancelBag = CancelBag()
-
-    public var appNoticeModel = PassthroughSubject<AppNoticeModel?, Error>()
     
-    public init(repository: SplashRepositoryInterface) {
-        self.repository = repository
+    private var cancelBag = CancelBag()
+    var updateTask: Task<Void, Never>?
+    
+    public var needUpdate = PassthroughSubject<UpdateType, Never>()
+    
+    public init() { }
+    
+    deinit {
+        updateTask?.cancel()
+        updateTask = nil
     }
 }
 
 extension DefaultSplashUseCase: SplashUseCase {
     public func getAppNotice() {
-        repository.getAppNotice()
-        .catch({ error in
-            print(error.localizedDescription)
-            return Just(AppNoticeModel(withError: true))
-        })
-        .sink { event in
-            print("DefaultSplashUseCase : \(event)")
-        } receiveValue: { appNoticeModel in
-#if DEV || TEST
-            self.appNoticeModel.send(nil)
-            return
-#endif
-            guard appNoticeModel.withError == false else {
-                self.appNoticeModel.send(appNoticeModel)
-                return
-            }
-            guard let currentAppVersion = Bundle.appVersion else { return }
-            var appNoticeModel = appNoticeModel
-            let checkedAppVersion = self.repository.getCheckedRecommendUpdateVersion() ?? "1.0.0"
-
-            let needForceUpdate = currentAppVersion.compare(appNoticeModel.forceUpdateVersion,
-                                                            options: .numeric) == .orderedAscending
-
-            let needRecommendUpdate = checkedAppVersion.compare(appNoticeModel.recommendVersion, options: .numeric) == .orderedAscending && currentAppVersion.compare(appNoticeModel.recommendVersion, options: .numeric) == .orderedAscending
-
-            switch (needForceUpdate, needRecommendUpdate) {
-            case (true, _):
-                appNoticeModel.setForcedUpdateNotice(isForce: true)
-                self.appNoticeModel.send(appNoticeModel)
-            case (_, true):
-                appNoticeModel.setForcedUpdateNotice(isForce: false)
-                self.appNoticeModel.send(appNoticeModel)
-            default:
-                self.appNoticeModel.send(nil)
-            }
-        }.store(in: cancelBag)
+        #if DEV || PROD
+        needUpdate.send(.networkError(.versionFetchError))
+        updateTask = Task {
+                do {
+                    try await checkedUpdate()
+                } catch {
+                    print(error)
+                    needUpdate.send(.networkError(.versionFetchError))
+                }
+        }
+        #else
+        needUpdate.send(.none)
+        #endif
+    }
+    
+    /// 앱스토어에 배포된 버전을 가져온다
+    private func getAppStoreVersion() async throws -> String? {
+        guard let appId = Bundle.appId,
+              let url = URL(string: "https://itunes.apple.com/lookup?id=\(appId)" ) else { return nil }
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any]
+        guard let results = json?["results"] as? [[String: Any]],
+              let appStoreVersion = results[0]["version"] as? String else {
+            return nil
+        }
+        
+        return appStoreVersion
+    }
+    
+    private func checkedUpdate() async throws {
+        // 앱스토어 버전
+        guard let appStoreVersion = try await getAppStoreVersion() else {
+            throw UpdateCheckError.versionFetchError
+        }
+        
+        // 현재 설치된 앱의 버전
+        guard let currentAppVersion = Bundle.appVersion else {
+            throw UpdateCheckError.versionFetchError
+        }
+        
+        // 최소 지원 버전
+        let forcedUpdateData = try await RemoteConfigManager.shared.fetchJsonValue(as: .forcedUpdate, decodeType: ForceUpdateModel.self)
+        let minimumVersion = forcedUpdateData.minimumVersion
+        
+        let needForceUpdate = currentAppVersion.compare(minimumVersion,options: .numeric) == .orderedAscending
+        let needOptionalUpdate = currentAppVersion.compare(appStoreVersion, options: .numeric) == .orderedAscending
+        
+        if needForceUpdate {            // 강제 업데이트
+            needUpdate.send(.forcedUpdate(forcedUpdateData.appNotice))
+        }
+        else if needOptionalUpdate {    // 선택 업데이트
+            let optionalData = try await RemoteConfigManager.shared.fetchJsonValue(as: .optionalUpdate, decodeType: AppNoticeModel.self)
+            needUpdate.send(.optionalUpdate(optionalData))
+        }
+        else {                          // 업데이트 없음
+            needUpdate.send(.none)
+        }
     }
 }
