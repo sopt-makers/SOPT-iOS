@@ -22,7 +22,7 @@ extension AppDelegate {
             interface: SignInRepositoryInterface.self,
             implement: {
                 SignInRepository(
-                    authService: DefaultAuthService(),
+                    authService: DefaultAuthService(interceptor: AccessTokenInterceptor()),
                     userService: DefaultUserService()
                 )
             }
@@ -45,7 +45,9 @@ extension AppDelegate {
         container.register(
             interface: CoreAuthRepositoryInterface.self,
             implement: {
-                CoreAuthRepository(coreAuthService: DefaultCoreAuthService())
+                CoreAuthRepository(
+                    coreAuthService: DefaultCoreAuthService(),
+                    socialService: DefaultSocialService())
             }
         )
         
@@ -84,7 +86,7 @@ extension AppDelegate {
             interface: SettingRepositoryInterface.self,
             implement: {
                 SettingRepository(
-                    authService: DefaultAuthService(),
+                    authService: DefaultAuthService(interceptor: AccessTokenInterceptor()),
                     stampService: DefaultStampService(),
                     userService: DefaultUserService()
                 )

@@ -13,7 +13,7 @@ import UIKit
 
 final public class AppLifecycleAdapter {
     private let cancelBag = CancelBag()
-    private let authService = DefaultAuthService()
+    private let authService = DefaultAuthService(interceptor: AccessTokenInterceptor())
 }
 
 // MARK: - Private functions

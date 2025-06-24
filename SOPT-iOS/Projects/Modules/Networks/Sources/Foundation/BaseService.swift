@@ -22,6 +22,8 @@ open class BaseService<Target: TargetType> {
     
     var cancelBag = CancelBag()
     
+    private let interceptor: RequestInterceptor
+
     lazy var provider = self.defaultProvider
     
     private lazy var defaultProvider: MoyaProvider<API> = {
@@ -29,7 +31,6 @@ open class BaseService<Target: TargetType> {
         configuration.timeoutIntervalForRequest = 10
         configuration.timeoutIntervalForResource = 10
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
-        let interceptor = AlamoInterceptor()
         let sessionDelegate = BaseSessionDelegate()
         let session = Session(configuration: configuration, delegate: sessionDelegate, interceptor: interceptor)
         let provider = MoyaProvider<API>(
@@ -74,7 +75,14 @@ open class BaseService<Target: TargetType> {
     
     // MARK: - Initializers
     
-    public init() {}
+    public init(
+        interceptor: RequestInterceptor = ReissuanceInterceptor(
+            accessTokenClosure: { UserDefaultKeyList.Auth.appAccessToken ?? "" },
+            reissuance: DefaultAuthService(interceptor: AccessTokenInterceptor()).reissuance
+        )
+    ) {
+        self.interceptor = interceptor
+    }
 }
 
 // MARK: - Providers

@@ -26,6 +26,7 @@ extension DefaultAuthService: AuthService {
         return requestObjectWithNetworkErrorInCombine(.signIn(token: token))
     }
     
+    @Sendable
     public func reissuance(completion: @escaping ((Bool) -> Void)) {
         provider.request(.reissuance) { response in
             switch response {
