@@ -27,5 +27,4 @@ public extension TargetDependency.SPM {
     static let Amplitude = TargetDependency.external(name: "AmplitudeSwift")
     static let FirebaseRemoteConfig = TargetDependency.external(name: "FirebaseRemoteConfig")
     static let FirebaseCore = TargetDependency.external(name: "FirebaseCore")
-//    static let FirebaseAnalytics = TargetDependency.external(name: "FirebaseAnalytics")
 }
