@@ -8,6 +8,7 @@
 
 import Core
 import Domain
+import BaseFeatureDependency
 @_exported import AppMyPageFeatureInterface
 
 public
@@ -45,7 +46,7 @@ extension LegacyMyPageBuilder: LegacyMyPageFeatureBuildable {
         return withdrawalVC
     }
     
-    public func makeAppMyPage(userType: UserType, coordinator: MyPageCoordinatable) -> LegacyMyPagePresentable {
+    public func makeAppMyPage(userType: UserType, coordinator: Coordinator) -> LegacyMyPagePresentable {
         let useCase = DefaultAppMyPageUseCase(repository: appMyPageRepository)
         let vm = AppMyPageViewModel(useCase: useCase, coordinator: coordinator)
         let vc = AppMyPageVC(userType: userType, viewModel: vm)

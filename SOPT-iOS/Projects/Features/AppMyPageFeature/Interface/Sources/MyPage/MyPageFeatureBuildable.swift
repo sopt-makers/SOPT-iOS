@@ -8,9 +8,10 @@
 
 import UIKit
 import Core
+import BaseFeatureDependency
 
 public protocol MyPageFeatureBuildable {
-    func makeAppMyPage(userType: UserType, coordinator: MyPageCoordinatable) -> MyPagePresentable
+    func makeAppMyPage(userType: UserType, coordinator: Coordinator) -> MyPagePresentable
     func makeSentenceEditVC() -> UIViewController
     func makePrivacyPolicyVC() -> UIViewController
     func makeTermsOfServiceVC() -> UIViewController

@@ -630,8 +630,8 @@ extension ApplicationCoordinator {
 extension ApplicationCoordinator {
     
     @discardableResult
-    internal func runMyPageFlow(of userType: UserType) -> DefaultMyPageCoordinator {
-        var coordinator: DefaultMyPageCoordinator
+    internal func runMyPageFlow(of userType: UserType) -> BaseCoordinator {
+        var coordinator: BaseCoordinator
         
         switch Config.coordinatorFlag {
         case .legacy:
