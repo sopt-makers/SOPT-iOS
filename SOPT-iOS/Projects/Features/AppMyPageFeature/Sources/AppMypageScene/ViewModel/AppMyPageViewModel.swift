@@ -32,7 +32,7 @@ public final class AppMyPageViewModel: MyPageViewModelType {
     
     // MARK: - Properties
     
-    private let coordinator: Coordinator
+    private let coordinator: AnyCoordinatorObject
     private let userType: UserType = UserDefaultKeyList.Auth.getUserType()
     
     // MARK: - Inputs
