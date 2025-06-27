@@ -11,8 +11,6 @@ import BaseFeatureDependency
 import Core
 import Networks
 
-import Firebase
-
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
