@@ -7,9 +7,10 @@
 //
 
 import Core
+import BaseFeatureDependency
 
 public protocol LegacyMyPageFeatureBuildable {
-    func makeAppMyPage(userType: UserType) -> LegacyMyPagePresentable
+    func makeAppMyPage(userType: UserType, coordinator: Coordinator) -> LegacyMyPagePresentable
     func makeSentenceEditVC() -> LegacySentenceEditViewControllable
     func makePrivacyPolicyVC() -> LegacyPrivacyPolicyViewControllable
     func makeTermsOfServiceVC() -> LegacyTermsOfServiceViewControllable

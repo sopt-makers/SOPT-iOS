@@ -12,7 +12,7 @@ import AppMyPageFeatureInterface
 
 public
 final class LegacyMyPageCoordinator: DefaultMyPageCoordinator {
-    
+
     public var finishFlow: (() -> Void)?
     public var requestCoordinating: ((MyPageCoordinatorDestination) -> Void)?
     
@@ -27,7 +27,7 @@ final class LegacyMyPageCoordinator: DefaultMyPageCoordinator {
     }
     
     public override func start() {
-        var myPage = factory.makeAppMyPage(userType: userType)
+        var myPage = factory.makeAppMyPage(userType: userType, coordinator: self)
         
         myPage.vm.onNaviBackButtonTap = { [weak self] in
             self?.router.popModule()
