@@ -36,8 +36,8 @@ enum CrashlyticsPropertyKeys {
 extension CrashlyticsPropertyKeys {
     static var defaultValues: [String: Any] {
         [
-            appVersion.key: (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "",
-            buildNumber.key: (Bundle.main.infoDictionary?["CFBundleVersion"] as? String) ?? "",
+            appVersion.key: Bundle.appVersion ?? "",
+            buildNumber.key: Bundle.buildVersion ?? "",
             deviceModel.key: UIDevice.current.model,
             iOSVersion.key: UIDevice.current.systemVersion,
             userType.key: UserDefaultKeyList.Auth.getUserType().rawValue
