@@ -14,12 +14,13 @@ import Domain
 
 public protocol DailySoptuneResultViewControllable: LegacyViewControllable { }
 
-public protocol DailySoptuneResultCoordinatable {
+public protocol DailySoptuneResultRoutingTrigger {
     var onNaviBackButtonTapped: (() -> Void)? { get set }
     var onKokButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)? { get set }
     var onReceiveTodaysFortuneCardButtonTapped: ((DailySoptuneCardModel) -> Void)? { get set }
     var onProfileImageTapped: ((Int) -> Void)? { get set }
 }
 
-public typealias LegacyDailySoptuneResultPresentable = (vc: DailySoptuneResultViewControllable, vm: any ViewModelType)
-public typealias DailySoptuneResultPresentable = (vc: UIViewController, vm: any ViewModelType)
+public typealias DailySoptuneResultViewModelType = ViewModelType & DailySoptuneResultRoutingTrigger
+public typealias LegacyDailySoptuneResultPresentable = (vc: DailySoptuneResultViewControllable, vm: any DailySoptuneResultViewModelType)
+public typealias DailySoptuneResultPresentable = (vc: UIViewController, vm: any DailySoptuneResultViewModelType)
