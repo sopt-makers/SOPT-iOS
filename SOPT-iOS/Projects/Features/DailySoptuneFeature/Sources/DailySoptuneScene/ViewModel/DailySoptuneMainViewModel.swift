@@ -10,16 +10,22 @@ import Foundation
 import Combine
 
 import Core
+import BaseFeatureDependency
 import Domain
 
 import DailySoptuneFeatureInterface
 
-public final class DailySoptuneMainViewModel: ViewModelType {
+public final class DailySoptuneMainViewModel: DailySoptuneMainViewModelType {
+    
+    // MARK: - Trigger
+    
+    public var onNaviBackTap: (() -> Void)?
+    public var onReciveTodayFortuneButtonTap: ((DailySoptuneResultModel) -> Void)?
     
 	// MARK: - Properties
 
     private let useCase: DailySoptuneUseCase
-    private let coordinator: DailySoptuneMainCoordinatable
+    private let coordinator: AnyCoordinatorObject
 	private var cancelBag = CancelBag()
 	
 	// MARK: - Inputs
@@ -37,7 +43,7 @@ public final class DailySoptuneMainViewModel: ViewModelType {
 	
 	// MARK: - Initialization
 	
-    public init(useCase: DailySoptuneUseCase, coordinator: DailySoptuneMainCoordinatable) {
+    public init(useCase: DailySoptuneUseCase, coordinator: AnyCoordinatorObject) {
         self.useCase = useCase
         self.coordinator = coordinator
     }
@@ -57,7 +63,7 @@ extension DailySoptuneMainViewModel {
         input.naviBackButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.coordinator.onNaviBackTap?()
+                owner.onNaviBackTap?()
                 AmplitudeInstance.shared.track(eventType: .clickLeaveSoptuneMain)
             }.store(in: cancelBag)
         
@@ -75,7 +81,7 @@ extension DailySoptuneMainViewModel {
         useCase.dailySoptuneResult
             .withUnretained(self)
             .sink { owner, resultModel in
-                owner.coordinator.onReciveTodayFortuneButtonTap?(resultModel)
+                owner.onReciveTodayFortuneButtonTap?(resultModel)
             }
             .store(in: cancelBag)
     }
