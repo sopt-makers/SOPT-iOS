@@ -15,12 +15,7 @@ import DailySoptuneFeatureInterface
 import Domain
 import PokeFeatureInterface
 
-public final class DailySoptuneCoordinator: DefaultDailySoptuneCoordinator & DailySoptuneMainCoordinatable {
-    
-    // MARK: - Coordinatable
-    
-    public var onNaviBackTap: (() -> Void)?
-    public var onReciveTodayFortuneButtonTap: ((Domain.DailySoptuneResultModel) -> Void)?
+public final class DailySoptuneCoordinator: BaseCoordinator {
     
     // MARK: - Properties
     
@@ -51,13 +46,13 @@ public final class DailySoptuneCoordinator: DefaultDailySoptuneCoordinator & Dai
     }
     
     private func showDailySoptuneMain() {
-        let dailySoptuneMain = factory.makeDailySoptuneMainVC(coordinator: self)
+        var dailySoptuneMain = factory.makeDailySoptuneMainVC(coordinator: self)
         
-        onNaviBackTap = { [weak self] in
+        dailySoptuneMain.vm.onNaviBackTap = { [weak self] in
             self?.navigationController?.dismiss(animated: true)
         }
         
-        onReciveTodayFortuneButtonTap = { [weak self] result in
+        dailySoptuneMain.vm.onReciveTodayFortuneButtonTap = { [weak self] result in
             guard let self else { return }
             runDailySoptuneResultFlow(resultModel: result)
         }

@@ -17,14 +17,7 @@ import PokeFeatureInterface
 import WebFeature
 
 
-public final class DailySoptuneResultCoordinator: DefaultDailySoptuneCoordinator & DailySoptuneResultCoordinatable {
-    
-    // MARK: - Coordintable
-    
-    public var onNaviBackButtonTapped: (() -> Void)?
-    public var onKokButtonTapped: ((Domain.PokeUserModel) -> Core.Driver<(Domain.PokeUserModel, Domain.PokeMessageModel, isAnonymous: Bool)>)?
-    public var onReceiveTodaysFortuneCardButtonTapped: ((Domain.DailySoptuneCardModel) -> Void)?
-    public var onProfileImageTapped: ((Int) -> Void)?
+public final class DailySoptuneResultCoordinator: BaseCoordinator {
     
     // MARK: - Properties
     
@@ -55,23 +48,23 @@ public final class DailySoptuneResultCoordinator: DefaultDailySoptuneCoordinator
     }
     
     private func showDailySoptuneResult(resultModel: DailySoptuneResultModel) {
-        let dailySoptuneResult = factory.makeDailySoptuneResultVC(resultModel: resultModel, coordinator: self)
+        var dailySoptuneResult = factory.makeDailySoptuneResultVC(resultModel: resultModel, coordinator: self)
         
-        onNaviBackButtonTapped = { [weak self] in
+        dailySoptuneResult.vm.onNaviBackButtonTapped = { [weak self] in
             self?.navigationController?.dismiss(animated: true)
         }
         
-        onKokButtonTapped = { [weak self] userModel in
+        dailySoptuneResult.vm.onKokButtonTapped = { [weak self] userModel in
             guard let self else { return .empty() }
             return self.showMessageBottomSheet(userModel: userModel, on: rootController)
         }
         
-        onReceiveTodaysFortuneCardButtonTapped = { [weak self] cardModel in
+        dailySoptuneResult.vm.onReceiveTodaysFortuneCardButtonTapped = { [weak self] cardModel in
             guard let self else { return }
             self.showDailySoptuneCard(cardModel)
         }
         
-        onProfileImageTapped = { [weak self] playgroundId in
+        dailySoptuneResult.vm.onProfileImageTapped = { [weak self] playgroundId in
             guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(playgroundId)") else { return }
             
             let webView = SOPTWebView(startWith: url)
