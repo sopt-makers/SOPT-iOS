@@ -31,6 +31,8 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     private var fetchedDashBoard: HomePresentationModel.DashBoard?
     private var fetchedRecentSchedule: HomePresentationModel.RecentSchedule?
     private var fetchedSurvey: HomePresentationModel.Survey?
+    
+    var fetchTask: Task<Void, Never>?
         
     let productServiceList: [HomePresentationModel.ProductService] = [
         .init(product: .playgroundCommunity),
@@ -115,7 +117,14 @@ extension HomeForMemberViewModel {
         input.viewWillAppear
             .sink { [weak self] _ in
                 guard let self else { return }
-                Task {
+                
+                if self.fetchTask != nil { return } // 이미 실행 중이라면 return
+                
+                // 새 Task 할당
+                self.fetchTask = Task { [weak self] in
+                    guard let self else { return }
+                    defer { self.fetchTask = nil }
+                    
                     await self.fetchHomeData(output: output)
                 }
             }
