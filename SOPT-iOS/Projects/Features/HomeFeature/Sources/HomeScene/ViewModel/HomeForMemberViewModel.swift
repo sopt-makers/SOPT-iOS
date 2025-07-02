@@ -238,6 +238,8 @@ extension HomeForMemberViewModel {
             async let appService = useCase.getAppServicesAsync()
             async let playgroundNewsPosts = useCase.getPlaygroundNewsPostsAsync()
             
+            self.surveyButtonURL = try await survey.linkURL
+            
             let model = HomePresentationModel(
                 dashBoard: try await dashBoard,
                 recentSchedule: try await recentSchedule,
