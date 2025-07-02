@@ -16,7 +16,7 @@ import Domain
 import PokeFeatureInterface
 import WebFeature
 
-public final class LegacyDailySoptuneResultCoordinator: DefaultCoordinator {
+public final class LegacyDailySoptuneResultCoordinator: BaseCoordinator {
     
     public var requestCoordinating: (() -> Void)?
     public var finishFlow: (() -> Void)?
@@ -40,7 +40,7 @@ public final class LegacyDailySoptuneResultCoordinator: DefaultCoordinator {
     }
     
     private func showDailySoptuneResult(resultModel: DailySoptuneResultModel) {
-        var dailySoptuneResult = factory.makeDailySoptuneResultVC(resultModel: resultModel)
+        var dailySoptuneResult = factory.makeDailySoptuneResultVC(resultModel: resultModel, coordinator: self)
         
         dailySoptuneResult.vm.onNaviBackButtonTapped = { [weak self] in
             self?.router.dismissModule(animated: true)

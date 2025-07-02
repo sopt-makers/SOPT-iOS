@@ -17,7 +17,9 @@ import PokeFeatureInterface
 import WebFeature
 
 
-public final class DailySoptuneResultCoordinator: DefaultDailySoptuneCoordinator {
+public final class DailySoptuneResultCoordinator: BaseCoordinator {
+    
+    // MARK: - Properties
     
     public var requestCoordinating: (() -> Void)?
     public var finishFlow: (() -> Void)?
@@ -26,7 +28,7 @@ public final class DailySoptuneResultCoordinator: DefaultDailySoptuneCoordinator
     private let pokeFactory: PokeFeatureBuildable
     private let resultModel: DailySoptuneResultModel
     
-    private var navigationController: UINavigationController
+    private weak var navigationController: UINavigationController?
     private weak var rootController: UINavigationController?
 
     public init(
@@ -46,11 +48,10 @@ public final class DailySoptuneResultCoordinator: DefaultDailySoptuneCoordinator
     }
     
     private func showDailySoptuneResult(resultModel: DailySoptuneResultModel) {
-        var dailySoptuneResult = factory.makeDailySoptuneResultVC(resultModel: resultModel)
+        var dailySoptuneResult = factory.makeDailySoptuneResultVC(resultModel: resultModel, coordinator: self)
         
         dailySoptuneResult.vm.onNaviBackButtonTapped = { [weak self] in
-            self?.navigationController.dismiss(animated: true)
-            self?.finishFlow?()
+            self?.navigationController?.dismiss(animated: true)
         }
         
         dailySoptuneResult.vm.onKokButtonTapped = { [weak self] userModel in
@@ -73,7 +74,7 @@ public final class DailySoptuneResultCoordinator: DefaultDailySoptuneCoordinator
         let navController = UINavigationController(rootViewController: dailySoptuneResult.vc)
         navController.modalPresentationStyle = .overFullScreen
         rootController = navController
-        navigationController.present(navController, animated: true)
+        navigationController?.present(navController, animated: true)
     }
     
     private func showDailySoptuneCard(_ cardModel: DailySoptuneCardModel) {

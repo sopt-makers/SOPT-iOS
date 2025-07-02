@@ -725,40 +725,38 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runDailySoptuneFlow() -> DefaultDailySoptuneCoordinator {
-        var coordinator: DefaultDailySoptuneCoordinator
+    internal func runDailySoptuneFlow() -> BaseCoordinator {
+        var coordinator: BaseCoordinator
         
         switch Config.coordinatorFlag {
         case .legacy:
-            coordinator = LegacyDailySoptuneCoordinator(
+            let legacyCoordinator = LegacyDailySoptuneCoordinator(
                 router: LegacyRouter(
                     rootController: UIWindow.getRootNavigationController
                 ),
                 factory: LegacyDailySoptuneBuilder(),
                 pokeFactory: LegacyPokeBuilder()
             )
-            coordinator.finishFlow = { [weak self, weak coordinator] in
-                coordinator?.childCoordinators = []
-                self?.removeDependency(coordinator)
+            legacyCoordinator.finishFlow = { [weak self, weak legacyCoordinator] in
+                legacyCoordinator?.childCoordinators = []
+                self?.removeDependency(legacyCoordinator)
             }
             
-            coordinator.requestCoordinating = { [weak self, weak coordinator] in
+            legacyCoordinator.requestCoordinating = { [weak self, weak legacyCoordinator] in
                 self?.router.popToRootModule(animated: true)
-                coordinator?.childCoordinators = []
+                legacyCoordinator?.childCoordinators = []
             }
+            coordinator = legacyCoordinator
+            addDependency(legacyCoordinator)
+            
         case .new:
             coordinator = DailySoptuneCoordinator(
                 navigationController: UIWindow.getRootNavigationController,
                 factory: DailySoptuneBuilder(),
                 pokeFactory: PokeBuilder()
             )
-            coordinator.finishFlow = { [weak self, weak coordinator] in
-                coordinator?.childCoordinators = []
-                self?.removeDependency(coordinator)
-            }
         }
         
-        addDependency(coordinator)
         coordinator.start()
         
         return coordinator

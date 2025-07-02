@@ -9,9 +9,11 @@
 import Foundation
 
 import Domain
+import BaseFeatureDependency
 
 public protocol LegacyDailySoptuneFeatureBuildable {
-    func makeDailySoptuneResultVC(resultModel: DailySoptuneResultModel) -> LegacyDailySoptuneResultPresentable
-    func makeDailySoptuneMainVC() -> LegacyDailySoptuneMainPresentable
+    func makeDailySoptuneResultVC(resultModel: DailySoptuneResultModel,
+                                  coordinator: Coordinator) -> DailySoptuneResultPresentable
+    func makeDailySoptuneMainVC(coordinator: Coordinator) -> LegacyDailySoptuneMainPresentable
     func makeDailySoptuneCardVC(cardModel: DailySoptuneCardModel) -> LegacyDailySoptuneCardPresentable
 }
