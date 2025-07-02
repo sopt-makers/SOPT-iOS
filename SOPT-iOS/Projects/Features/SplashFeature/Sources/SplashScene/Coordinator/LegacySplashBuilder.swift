@@ -8,6 +8,7 @@
 
 import Core
 import Domain
+import BaseFeatureDependency
 @_exported import SplashFeatureInterface
 
 public
@@ -18,7 +19,7 @@ final class LegacySplashBuilder {
 }
 
 extension LegacySplashBuilder: LegacySplashFeatureViewBuildable {
-    public func makeSplash(_ coordinator: SplashCoordinatable) -> LegacySplashPresentable {
+    public func makeSplash(_ coordinator: Coordinator) -> LegacySplashPresentable {
         let useCase = DefaultSplashUseCase(repository: repository)
         let vm = SplashViewModel(useCase: useCase, coordinator: coordinator)
         let vc = SplashVC(viewModel: vm)

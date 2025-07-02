@@ -9,8 +9,9 @@
 import UIKit
 
 import Core
+import BaseFeatureDependency
 
 public protocol SplashFeatureBuildable {
-    func makeSplash(_ coordinator: SplashCoordinatable) -> SplashPresentable
+    func makeSplash(_ coordinator: Coordinator) -> SplashPresentable
     func makeNoticePopUpVC(noticeType: NoticePopUpType, content: String) -> NoticePopUpPresentable
 }
