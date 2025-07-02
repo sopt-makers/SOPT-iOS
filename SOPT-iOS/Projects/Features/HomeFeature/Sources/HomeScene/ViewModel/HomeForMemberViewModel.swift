@@ -28,10 +28,10 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     private var floatingButtonUrl: String = ""
     private var surveyButtonURL: String = ""
     
-    private var cachedDashBoard: HomePresentationModel.DashBoard?
-    private var cachedRecentSchedule: HomePresentationModel.RecentSchedule?
-    private var cachedSurvey: HomePresentationModel.Survey?
-    
+    private var fetchedDashBoard: HomePresentationModel.DashBoard?
+    private var fetchedRecentSchedule: HomePresentationModel.RecentSchedule?
+    private var fetchedSurvey: HomePresentationModel.Survey?
+        
     let productServiceList: [HomePresentationModel.ProductService] = [
         .init(product: .playgroundCommunity),
         .init(product: .group),
@@ -223,7 +223,7 @@ extension HomeForMemberViewModel {
 extension HomeForMemberViewModel {
     @MainActor
     private func fetchHomeData(output: Output) async {
-        output.isLoading.send(true)
+//        output.isLoading.send(true)
         
         do {
             async let dashBoard = fetchDashBoard()
@@ -252,31 +252,32 @@ extension HomeForMemberViewModel {
             self.onNetworkError?()
         }
         
-        output.isLoading.send(false)
+//        output.isLoading.send(false)
     }
     
+    // 각 함수들은 이미 fetch된 데이터가 있다면 통신 요청 없이 해당 데이터를 사용합니다.
     private func fetchDashBoard() async throws -> HomePresentationModel.DashBoard {
-        if let cached = cachedDashBoard { return cached }
+        if let cached = fetchedDashBoard { return cached }
         let description = try await useCase.getHomeDescriptionAsync()
         let user = try await useCase.getUserInfoAsync()
         let dashBoard = description.toPresentation(
             history: user?.historyList ?? [],
             isAllConfirm: user?.isAllConfirm ?? false
         )
-        cachedDashBoard = dashBoard
+        fetchedDashBoard = dashBoard
         return dashBoard
     }
     
     private func fetchRecentSchedule() async throws -> HomePresentationModel.RecentSchedule {
-        if let cached = cachedRecentSchedule { return cached }
+        if let cached = fetchedRecentSchedule { return cached }
         let entity = try await useCase.getRecentScheduleAsync()
         let recentSchedule = entity.toPresentation()
-        cachedRecentSchedule = recentSchedule
+        fetchedRecentSchedule = recentSchedule
         return recentSchedule
     }
     
     private func fetchSurvey() async throws -> HomePresentationModel.Survey {
-        if let cached = cachedSurvey { return cached }
+        if let cached = fetchedSurvey { return cached }
         let entity = try await useCase.getSurveyInfoAsync()
         let survey = entity.toPresentation()
         return survey
