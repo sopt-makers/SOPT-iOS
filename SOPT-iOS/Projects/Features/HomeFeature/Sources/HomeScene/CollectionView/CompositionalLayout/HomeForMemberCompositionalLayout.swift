@@ -262,12 +262,12 @@ extension HomeForMemberVC {
     private func createSurveySection() -> NSCollectionLayoutSection {
         /// item: 설문
         let surveyItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                    heightDimension: .absolute(279))
+                                                    heightDimension: .absolute(300))
         let surveyItem = NSCollectionLayoutItem(layoutSize: surveyItemSize)
         
         /// group: 설문
         let surveyGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                     heightDimension: .estimated(279))
+                                                     heightDimension: .estimated(300))
         let surveyGroup = NSCollectionLayoutGroup.vertical(layoutSize: surveyGroupSize,
                                                            subitems: [surveyItem])
         

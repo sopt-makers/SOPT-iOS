@@ -61,6 +61,7 @@ final class DefaultPostCVC: UICollectionViewCell {
         $0.textColor = DSKitAsset.Colors.white.color
         $0.font = DSKitFontFamily.Suit.bold.font(size: 16)
         $0.lineBreakMode = .byTruncatingTail
+        $0.numberOfLines = 1
     }
     
     private let postContentLabel = UILabel().then {
@@ -112,6 +113,7 @@ extension DefaultPostCVC {
         userStackView.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(18)
             make.centerY.equalToSuperview()
+            make.width.equalTo(50)
         }
         
         contentStackView.snp.makeConstraints { make in
