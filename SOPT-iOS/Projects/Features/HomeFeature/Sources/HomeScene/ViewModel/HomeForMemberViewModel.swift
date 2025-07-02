@@ -221,10 +221,7 @@ extension HomeForMemberViewModel {
 // MARK: - Fetch Home Data
 
 extension HomeForMemberViewModel {
-    @MainActor
     private func fetchHomeData(output: Output) async {
-//        output.isLoading.send(true)
-        
         do {
             async let dashBoard = fetchDashBoard()
             async let recentSchedule = fetchRecentSchedule()
@@ -240,7 +237,10 @@ extension HomeForMemberViewModel {
                 survey: try await survey
             )
             
-            output.homeItem.send(model)
+            // UI 업데이트
+            await MainActor.run {
+                output.homeItem.send(model)
+            }
         } catch let mainError as MainError {
             switch mainError {
             case .networkError(_):
@@ -251,8 +251,6 @@ extension HomeForMemberViewModel {
         } catch {
             self.onNetworkError?()
         }
-        
-//        output.isLoading.send(false)
     }
     
     // 각 함수들은 이미 fetch된 데이터가 있다면 통신 요청 없이 해당 데이터를 사용합니다.
