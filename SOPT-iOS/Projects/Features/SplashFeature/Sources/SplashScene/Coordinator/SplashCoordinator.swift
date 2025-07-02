@@ -13,22 +13,15 @@ import SplashFeatureInterface
 import Core
 import Domain
 
-public final class SplashCoordinator: DefaultCoordinator & SplashCoordinatable {
-    
-    // MARK: - SplashCoordinatable
-    
-    public var onNoticeSkipped: (() -> Void)?
-    public var onNoticeExist: ((Domain.AppNoticeModel) -> Void)?
-    public var finished: (() -> Void)?
-    
+public final class SplashCoordinator: BaseCoordinator {
     
     // MARK: - Properties
-    
-    public var finishFlow: (() -> Void)?
     
     private weak var navigationController: UINavigationController?
     private let factory: SplashFeatureBuildable
     private let cancelBag = CancelBag()
+    
+    public var finished: (() -> Void)?
     
     // MARK: - Init
     
@@ -50,13 +43,13 @@ public final class SplashCoordinator: DefaultCoordinator & SplashCoordinatable {
     // MARK: - Navigation
     
     private func showSplash() {
-        let splash = factory.makeSplash(self)
+        var splash = factory.makeSplash(self)
         
-        onNoticeExist = { [weak self] appNoticeModel in
+        splash.vm.onNoticeExist = { [weak self] appNoticeModel in
             self?.presentNoticePopUp(model: appNoticeModel)
         }
         
-        onNoticeSkipped = { [weak self] in
+        splash.vm.onNoticeSkipped = { [weak self] in
             self?.finished?()
         }
         
