@@ -214,7 +214,7 @@ extension DefaultPostCVC {
             try Task.checkCancellation()
             await animateBorderOpacity(to: 0)
         } catch {
-            return
+            gradientLayer.opacity = 0 // 취소가 감지될 경우, 현재 그라디언트를 즉시 0으로 만듦
         }
     }
     

@@ -119,7 +119,6 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
         
         homeForMember.vm.onSurveyButtonTapped = { [weak self] url in
             guard let self else { return }
-            print("qwerqwerqwer", url)
             self.delegate?.homeCoordinator(self, to: .webLink(url: url))
         }
         
