@@ -15,8 +15,8 @@ extension HomeForMemberVC {
     func startPlaygroundNewsAnimationLoop() {
         stopPlaygroundNewsAnimationLoop()
         
-        // 타이머로 3초마다 한 번씩 반복 요청
-        outlineAnimationTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { [weak self] _ in
+        // 타이머로 반복 요청
+        outlineAnimationTimer = Timer.scheduledTimer(withTimeInterval: 0, repeats: true) { [weak self] _ in
             guard let self else { return }
             self.runOutlineAnimationStep()
         }
