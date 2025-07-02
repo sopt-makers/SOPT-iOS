@@ -174,7 +174,7 @@ final class ApplicationCoordinator: BaseCoordinator {
 
 extension ApplicationCoordinator {
     private func runSplashFlow() {
-        var coordinator: DefaultCoordinator
+        var coordinator: BaseCoordinator
         
         switch Config.coordinatorFlag {
         case .legacy:
