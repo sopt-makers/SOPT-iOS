@@ -200,23 +200,38 @@ extension DefaultPostCVC {
 extension DefaultPostCVC {
     /// 0.3초간 show -> 2.4초 기다림 -> 0.3초간 hide
     func setOutlinedAnimated() async {
-        let interval: UInt64 = 2_400_000_000
+        let interval = 2.4
         
-        await animateBorderOpacity(to: 1)
-        try? await Task.sleep(nanoseconds: interval)
-        await animateBorderOpacity(to: 0)
+        do {
+            try Task.checkCancellation()
+            await animateBorderOpacity(to: 1)
+            
+            try Task.checkCancellation()
+            try await Task.sleep(for: .seconds(interval))
+            
+            try Task.checkCancellation()
+            await animateBorderOpacity(to: 0)
+        } catch {
+            return
+        }
     }
     
     private func animateBorderOpacity(to value: Float) async {
-        let animation = CABasicAnimation(keyPath: "opacity")
-        animation.fromValue = gradientLayer.presentation()?.opacity ?? gradientLayer.opacity
-        animation.toValue = value
-        animation.duration = 0.3
-        animation.timingFunction = CAMediaTimingFunction(name: .easeIn)
-        
-        gradientLayer.add(animation, forKey: "opacity")
-        gradientLayer.opacity = value
-
-        try? await Task.sleep(for: .seconds(animation.duration)) // 애니메이션 동안 sleep
+        do {
+            try Task.checkCancellation()
+            
+            let animation = CABasicAnimation(keyPath: "opacity")
+            animation.fromValue = gradientLayer.presentation()?.opacity ?? gradientLayer.opacity
+            animation.toValue = value
+            animation.duration = 0.3
+            animation.timingFunction = CAMediaTimingFunction(name: .easeIn)
+            
+            gradientLayer.add(animation, forKey: "opacity")
+            gradientLayer.opacity = value
+            
+            try await Task.sleep(for: .seconds(animation.duration)) // 애니메이션 동안 sleep
+        } catch {
+            return
+        }
     }
 }
