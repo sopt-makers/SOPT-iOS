@@ -11,7 +11,7 @@ import BaseFeatureDependency
 import Domain
 
 public protocol LegacyAttendanceFeatureBuildable {
-    func makeShowAttendanceVC() -> LegacyShowAttendanceViewControllable
+    func makeShowAttendanceVC(coordinator: Coordinator) -> LegacyShowAttendanceViewControllable
     func makeAttendanceVC(
         lectureRound: AttendanceRoundModel,
         dismissCompletion: (() -> Void)?
