@@ -38,6 +38,9 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     var playgroundNewsAnimationTask: Task<Void, Never>?
     var recentPostAnimationTask: Task<Void, Never>?
     
+    var outlineAnimationTimer: Timer?
+    var currentIndex = 0
+    
     // MARK: - UI Components
     
     private lazy var naviBar = HomeNavigationBar()
