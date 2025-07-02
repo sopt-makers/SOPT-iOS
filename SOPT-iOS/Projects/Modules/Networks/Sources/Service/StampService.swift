@@ -21,6 +21,8 @@ public protocol StampService {
     func deleteStamp(stampId: Int) -> AnyPublisher<Int, Error>
     func resetStamp() -> AnyPublisher<Int, Error>
     func getReportUrl() -> AnyPublisher<SoptampReportUrlEntity, Error>
+    
+    func getReportURLAsync() async throws -> SoptampReportUrlEntity
 }
 
 extension DefaultStampService: StampService {
@@ -46,5 +48,9 @@ extension DefaultStampService: StampService {
     
     public func getReportUrl() -> AnyPublisher<SoptampReportUrlEntity, Error> {
         return requestObjectInCombine(StampAPI.getReportUrl)
+    }
+    
+    public func getReportURLAsync() async throws -> SoptampReportUrlEntity {
+        try await requestObjectAsync(.getReportUrl)
     }
 }
