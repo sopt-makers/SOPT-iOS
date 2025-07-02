@@ -279,4 +279,23 @@ extension BaseService {
             }
         }
     }
+    
+    func requestObjectAsync<T: Decodable>(_ target: API) async throws -> T {
+        try await withCheckedThrowingContinuation { continuation in
+            let cancellable = self.provider.request(target) { response in
+                switch response {
+                case .success(let value):
+                    do {
+                        let decoder = JSONDecoder()
+                        let body = try decoder.decode(T.self, from: value.data)
+                        continuation.resume(returning: body)
+                    } catch let error {
+                        continuation.resume(throwing: error)
+                    }
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
 }
