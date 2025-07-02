@@ -283,8 +283,8 @@ extension BaseService {
     
     func requestObjectAsync<T: Decodable>(_ target: API) async throws -> T {
         try await withCheckedThrowingContinuation { continuation in
-            let cacellable = self.provider.request(target) { response in
-                self.cancellable = nil
+            let cancellable = self.provider.request(target) { response in
+                defer { self.cancellable = nil }
                 
                 switch response {
                 case .success(let value):
