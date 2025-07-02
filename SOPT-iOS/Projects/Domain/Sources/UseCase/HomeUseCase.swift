@@ -22,6 +22,14 @@ public protocol HomeUseCase {
     func checkPokeNewUser() -> AnyPublisher<Bool, Never>
     func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonModel, Never>
     func getSurveyInfo() -> AnyPublisher<HomeSurveyModel, Never>
+    
+    func getHomeDescriptionAsync() async throws -> HomeDescriptionModel
+    func getUserInfoAsync() async throws -> UserMainInfoModel?
+    func getRecentScheduleAsync() async throws -> HomeRecentScheduleModel
+    func getAppServicesAsync() async throws -> [HomeAppServicesModel]
+    func getPlaygroundNewsPostsAsync() async throws -> [HomePlaygroundNewsPostsModel]
+    func getCalendarDetailAsync() async throws -> [HomeCalendarDetailModel]
+    func getSurveyInfoAsync() async throws -> HomeSurveyModel
 }
 
 public class DefaultHomeUseCase {
@@ -45,7 +53,6 @@ extension DefaultHomeUseCase: HomeUseCase {
                 print("푸시 토큰 등록 결과: \(didSucceed)")
             }.store(in: cancelBag)
     }
-    
     
     public func getHomeDescription() -> AnyPublisher<HomeDescriptionModel, Never> {
         repository.getHomeDescription()
@@ -124,4 +131,33 @@ extension DefaultHomeUseCase: HomeUseCase {
             }
             .eraseToAnyPublisher()
     }
+    
+    public func getHomeDescriptionAsync() async throws -> HomeDescriptionModel {
+        try await repository.getHomeDescriptionAsync()
+    }
+    
+    public func getUserInfoAsync() async throws -> UserMainInfoModel? {
+        try await repository.getUserInfoAsync()
+    }
+    
+    public func getRecentScheduleAsync() async throws -> HomeRecentScheduleModel {
+        try await repository.getRecentScheduleAsync()
+    }
+    
+    public func getAppServicesAsync() async throws -> [HomeAppServicesModel] {
+        try await repository.getAppServicesAsync()
+    }
+    
+    public func getPlaygroundNewsPostsAsync() async throws -> [HomePlaygroundNewsPostsModel] {
+        try await repository.getPlaygroundNewsPostsAsync()
+    }
+    
+    public func getCalendarDetailAsync() async throws -> [HomeCalendarDetailModel] {
+        try await repository.getCalendarDetailAsync()
+    }
+
+    public func getSurveyInfoAsync() async throws -> HomeSurveyModel {
+        try await repository.getSurveyInfoAsync()
+    }
+    
 }
