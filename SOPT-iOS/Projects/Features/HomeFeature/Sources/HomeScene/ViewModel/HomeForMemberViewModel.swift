@@ -216,52 +216,28 @@ extension HomeForMemberViewModel {
             }
         }
     }
-    
+}
+
+// MARK: - Fetch Home Data
+
+extension HomeForMemberViewModel {
     @MainActor
     private func fetchHomeData(output: Output) async {
         output.isLoading.send(true)
         
         do {
-            let dashBoard: HomePresentationModel.DashBoard
-            let recentSchedule: HomePresentationModel.RecentSchedule
-            let survey: HomePresentationModel.Survey
-            
-            // 이미 저장된 값이 있으면 네트워크 요청을 생략합니다.
-            if let cachedDashBoard = cachedDashBoard,
-               let cachedRecentSchedule = cachedRecentSchedule,
-               let cachedSurvey = cachedSurvey {
-                dashBoard = cachedDashBoard
-                recentSchedule = cachedRecentSchedule
-                survey = cachedSurvey
-            } else {
-                async let dashBoardEntity = useCase.getHomeDescriptionAsync()
-                async let recentScheduleEntity = useCase.getRecentScheduleAsync()
-                async let surveyEntity = useCase.getSurveyInfoAsync()
-                async let userInfo = useCase.getUserInfoAsync()
-                
-                let user = try await userInfo
-                
-                dashBoard = try await dashBoardEntity.toPresentation(
-                    history: user?.historyList ?? [],
-                    isAllConfirm: user?.isAllConfirm ?? false
-                )
-                recentSchedule = try await recentScheduleEntity.toPresentation()
-                survey = try await surveyEntity.toPresentation()
-                
-                cachedDashBoard = dashBoard
-                cachedRecentSchedule = recentSchedule
-                cachedSurvey = survey
-            }
-            
+            async let dashBoard = fetchDashBoard()
+            async let recentSchedule = fetchRecentSchedule()
+            async let survey = fetchSurvey()
             async let appService = useCase.getAppServicesAsync()
             async let playgroundNewsPosts = useCase.getPlaygroundNewsPostsAsync()
             
             let model = HomePresentationModel(
-                dashBoard: dashBoard,
-                recentSchedule: recentSchedule,
+                dashBoard: try await dashBoard,
+                recentSchedule: try await recentSchedule,
                 appServices: try await appService.map { $0.toPresentation() },
                 playgroundNewsPosts: try await playgroundNewsPosts.map { $0.toPresentation() },
-                survey: survey
+                survey: try await survey
             )
             
             output.homeItem.send(model)
@@ -273,9 +249,36 @@ extension HomeForMemberViewModel {
                 self.onNeedSignIn?()
             }
         } catch {
-            
+            self.onNetworkError?()
         }
         
         output.isLoading.send(false)
+    }
+    
+    private func fetchDashBoard() async throws -> HomePresentationModel.DashBoard {
+        if let cached = cachedDashBoard { return cached }
+        let description = try await useCase.getHomeDescriptionAsync()
+        let user = try await useCase.getUserInfoAsync()
+        let dashBoard = description.toPresentation(
+            history: user?.historyList ?? [],
+            isAllConfirm: user?.isAllConfirm ?? false
+        )
+        cachedDashBoard = dashBoard
+        return dashBoard
+    }
+    
+    private func fetchRecentSchedule() async throws -> HomePresentationModel.RecentSchedule {
+        if let cached = cachedRecentSchedule { return cached }
+        let entity = try await useCase.getRecentScheduleAsync()
+        let recentSchedule = entity.toPresentation()
+        cachedRecentSchedule = recentSchedule
+        return recentSchedule
+    }
+    
+    private func fetchSurvey() async throws -> HomePresentationModel.Survey {
+        if let cached = cachedSurvey { return cached }
+        let entity = try await useCase.getSurveyInfoAsync()
+        let survey = entity.toPresentation()
+        return survey
     }
 }
