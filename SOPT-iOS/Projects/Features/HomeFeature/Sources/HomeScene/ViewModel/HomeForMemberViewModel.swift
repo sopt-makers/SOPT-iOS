@@ -28,6 +28,10 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     private var floatingButtonUrl: String = ""
     private var surveyButtonURL: String = ""
     
+    private var cachedDashBoard: HomePresentationModel.DashBoard?
+    private var cachedRecentSchedule: HomePresentationModel.RecentSchedule?
+    private var cachedSurvey: HomePresentationModel.Survey?
+    
     let productServiceList: [HomePresentationModel.ProductService] = [
         .init(product: .playgroundCommunity),
         .init(product: .group),
@@ -109,59 +113,14 @@ extension HomeForMemberViewModel {
             }.store(in: cancelBag)
         
         input.viewWillAppear
-            .handleEvents(receiveOutput: { _ in
-                output.isLoading.send(true)
-            })
-            .flatMap { _ in
-                self.useCase.getUserInfo()
-                    .catch{ mainError -> AnyPublisher<UserMainInfoModel?, Never> in
-                        switch mainError {
-                        case .networkError(_):
-                            self.onNetworkError?()
-                            return Empty().eraseToAnyPublisher()
-                        case .authFailed:
-                            self.onNeedSignIn?()
-                            return Empty().eraseToAnyPublisher()
-                        }
-                    }
-            }
-            .compactMap { $0 }
-            .withUnretained(self)
-            .flatMap { owner, userInfo in
-                let dashBoardPublisher = owner.useCase.getHomeDescription()
-                    .map { $0.toPresentation(history: userInfo.historyList, isAllConfirm: userInfo.isAllConfirm) }
-                
-                let recentSchedulePublisher = owner.useCase.getRecentSchedule()
-                    .map { $0.toPresentation() }
-                
-                let appServicePublisher = owner.useCase.getAppServices()
-                    .map { $0.map { $0.toPresentation() } }
-                
-                let playgroundPublisher = owner.useCase.getPlaygroundNewsPosts()
-                    .map { $0.map { $0.toPresentation() } }
-                
-                return Publishers.Zip4(dashBoardPublisher, recentSchedulePublisher, appServicePublisher, playgroundPublisher)
-            }
-            .flatMap { dashBoard, recentSchedule, appServices, playgroundNewsPosts in
-                self.useCase.getSurveyInfo()
-                    .map { survey in
-                        HomePresentationModel(
-                            dashBoard: dashBoard,
-                            recentSchedule: recentSchedule,
-                            appServices: appServices,
-                            playgroundNewsPosts: playgroundNewsPosts,
-                            survey: survey.toPresentation()
-                        )
-                    }
-            }
-            .withUnretained(self)
-            .sink { owner, data in
-                owner.surveyButtonURL = data.survey.linkURL
-                output.homeItem.send(data)
-                output.isLoading.send(false)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                Task {
+                    await self.fetchHomeData(output: output)
+                }
             }
             .store(in: cancelBag)
-        
+
         input.cellTapped
             .withUnretained(self)
             .sink { owner, item in
@@ -256,5 +215,67 @@ extension HomeForMemberViewModel {
                 self.useCase.registerPushToken()
             }
         }
+    }
+    
+    @MainActor
+    private func fetchHomeData(output: Output) async {
+        output.isLoading.send(true)
+        
+        do {
+            let dashBoard: HomePresentationModel.DashBoard
+            let recentSchedule: HomePresentationModel.RecentSchedule
+            let survey: HomePresentationModel.Survey
+            
+            // 이미 저장된 값이 있으면 네트워크 요청을 생략합니다.
+            if let cachedDashBoard = cachedDashBoard,
+               let cachedRecentSchedule = cachedRecentSchedule,
+               let cachedSurvey = cachedSurvey {
+                dashBoard = cachedDashBoard
+                recentSchedule = cachedRecentSchedule
+                survey = cachedSurvey
+            } else {
+                async let dashBoardEntity = useCase.getHomeDescriptionAsync()
+                async let recentScheduleEntity = useCase.getRecentScheduleAsync()
+                async let surveyEntity = useCase.getSurveyInfoAsync()
+                async let userInfo = useCase.getUserInfoAsync()
+                
+                let user = try await userInfo
+                
+                dashBoard = try await dashBoardEntity.toPresentation(
+                    history: user?.historyList ?? [],
+                    isAllConfirm: user?.isAllConfirm ?? false
+                )
+                recentSchedule = try await recentScheduleEntity.toPresentation()
+                survey = try await surveyEntity.toPresentation()
+                
+                cachedDashBoard = dashBoard
+                cachedRecentSchedule = recentSchedule
+                cachedSurvey = survey
+            }
+            
+            async let appService = useCase.getAppServicesAsync()
+            async let playgroundNewsPosts = useCase.getPlaygroundNewsPostsAsync()
+            
+            let model = HomePresentationModel(
+                dashBoard: dashBoard,
+                recentSchedule: recentSchedule,
+                appServices: try await appService.map { $0.toPresentation() },
+                playgroundNewsPosts: try await playgroundNewsPosts.map { $0.toPresentation() },
+                survey: survey
+            )
+            
+            output.homeItem.send(model)
+        } catch let mainError as MainError {
+            switch mainError {
+            case .networkError(_):
+                self.onNetworkError?()
+            case .authFailed:
+                self.onNeedSignIn?()
+            }
+        } catch {
+            
+        }
+        
+        output.isLoading.send(false)
     }
 }
