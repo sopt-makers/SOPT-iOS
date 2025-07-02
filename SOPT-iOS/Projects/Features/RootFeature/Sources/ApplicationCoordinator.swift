@@ -469,6 +469,11 @@ extension ApplicationCoordinator {
                 ),
                 factory: LegacyAttendanceBuilder()
             )
+            coordinator.finishFlow = { [weak self, weak coordinator] in
+                coordinator?.childCoordinators = []
+                self?.removeDependency(coordinator)
+            }
+            addDependency(coordinator)
         case .new:
             coordinator = AttendanceCoordinator(
                 navigationController: UIWindow.getRootNavigationController,
@@ -476,11 +481,6 @@ extension ApplicationCoordinator {
             )
         }
         
-        coordinator.finishFlow = { [weak self, weak coordinator] in
-            coordinator?.childCoordinators = []
-            self?.removeDependency(coordinator)
-        }
-        addDependency(coordinator)
         coordinator.start()
         
         return coordinator

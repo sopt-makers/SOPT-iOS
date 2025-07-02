@@ -29,7 +29,7 @@ final class LegacyAttendanceCoordinator: DefaultCoordinator {
     }
     
     private func showShowAttendance() {
-        var showAttendance = factory.makeShowAttendanceVC()
+        var showAttendance = factory.makeShowAttendanceVC(coordinator: self)
         showAttendance.onNaviBackTap = { [weak self] in
             self?.router.popModule()
             self?.finishFlow?()
