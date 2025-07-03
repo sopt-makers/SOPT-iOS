@@ -31,9 +31,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     private var fetchedDashBoard: HomePresentationModel.DashBoard?
     private var fetchedRecentSchedule: HomePresentationModel.RecentSchedule?
     private var fetchedSurvey: HomePresentationModel.Survey?
-    
-    var fetchTask: Task<Void, Never>?
-        
+            
     let productServiceList: [HomePresentationModel.ProductService] = [
         .init(product: .playgroundCommunity),
         .init(product: .group),
@@ -64,7 +62,6 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     // MARK: - Outputs
     
     public struct Output {
-        let homeItem = PassthroughSubject<HomePresentationModel, Never>()
         let isLoading = PassthroughSubject<Bool, Never>()
         let floatingButtonInfo = PassthroughSubject<HomeFloatingButtonPresentationModel, Never>()
     }
@@ -114,22 +111,6 @@ extension HomeForMemberViewModel {
                 owner.floatingButtonUrl = presentationModel.url
             }.store(in: cancelBag)
         
-        input.viewWillAppear
-            .sink { [weak self] _ in
-                guard let self else { return }
-                
-                if self.fetchTask != nil { return } // 이미 실행 중이라면 return
-                
-                // 새 Task 할당
-                self.fetchTask = Task { [weak self] in
-                    guard let self else { return }
-                    defer { self.fetchTask = nil }
-                    
-                    await self.fetchHomeData(output: output)
-                }
-            }
-            .store(in: cancelBag)
-
         input.cellTapped
             .withUnretained(self)
             .sink { owner, item in
@@ -230,7 +211,9 @@ extension HomeForMemberViewModel {
 // MARK: - Fetch Home Data
 
 extension HomeForMemberViewModel {
-    private func fetchHomeData(output: Output) async {
+    func fetchHomeData() async -> HomePresentationModel? {
+        let model: HomePresentationModel?
+        
         do {
             async let dashBoard = fetchDashBoard()
             async let recentSchedule = fetchRecentSchedule()
@@ -240,7 +223,7 @@ extension HomeForMemberViewModel {
             
             self.surveyButtonURL = try await survey.linkURL
             
-            let model = HomePresentationModel(
+            model = HomePresentationModel(
                 dashBoard: try await dashBoard,
                 recentSchedule: try await recentSchedule,
                 appServices: try await appService.map { $0.toPresentation() },
@@ -248,10 +231,7 @@ extension HomeForMemberViewModel {
                 survey: try await survey
             )
             
-            // UI 업데이트
-            await MainActor.run {
-                output.homeItem.send(model)
-            }
+            return model
         } catch let mainError as MainError {
             switch mainError {
             case .networkError(_):
@@ -262,6 +242,8 @@ extension HomeForMemberViewModel {
         } catch {
             self.onNetworkError?()
         }
+        
+        return nil
     }
     
     // 각 함수들은 이미 fetch된 데이터가 있다면 통신 요청 없이 해당 데이터를 사용합니다.
