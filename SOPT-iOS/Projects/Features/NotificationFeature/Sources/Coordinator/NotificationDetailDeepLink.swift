@@ -8,6 +8,7 @@
 
 import Foundation
 import BaseFeatureDependency
+import Core
 
 public struct NotificationDetailDeepLink: DeepLinkExecutable {
     public let name = "detail"
@@ -17,10 +18,15 @@ public struct NotificationDetailDeepLink: DeepLinkExecutable {
     public init() {}
     
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
-        guard let coordinator = coordinator as? LegacyNotificationCoordinator else { return nil }
         guard let notificationId = queryItems?.getQueryValue(key: "id") else { return nil }
-        
-        coordinator.showNotificationDetail(notificationId: notificationId)
+        switch Config.coordinatorFlag {
+        case .legacy:
+            guard let coordinator = coordinator as? LegacyNotificationCoordinator else { return nil }
+            coordinator.showNotificationDetail(notificationId: notificationId)
+        case .new:
+            guard let coordinator = coordinator as? NotificationCoordinator else { return nil }
+            coordinator.showNotificationDetail(notificationId: notificationId)
+        }
         
         return nil
     }
