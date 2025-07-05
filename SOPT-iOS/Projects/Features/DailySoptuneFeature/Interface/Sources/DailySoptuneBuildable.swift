@@ -7,9 +7,11 @@
 //
 
 import Domain
+import BaseFeatureDependency
 
 public protocol DailySoptuneBuildable {
-    func makeDailySoptuneResultVC(resultModel: DailySoptuneResultModel) -> DailySoptuneResultPresentable
-    func makeDailySoptuneMainVC() -> DailySoptuneMainPresentable
+    func makeDailySoptuneResultVC(resultModel: DailySoptuneResultModel,
+                                  coordinator: Coordinator) -> DailySoptuneResultPresentable
+    func makeDailySoptuneMainVC(coordinator: Coordinator) -> DailySoptuneMainPresentable
     func makeDailySoptuneCardVC(cardModel: DailySoptuneCardModel) -> DailySoptuneCardPresentable
 }

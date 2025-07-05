@@ -15,16 +15,20 @@ import DailySoptuneFeatureInterface
 import Domain
 import PokeFeatureInterface
 
-public final class DailySoptuneCoordinator: DefaultDailySoptuneCoordinator {
+public final class DailySoptuneCoordinator: BaseCoordinator {
+    
+    // MARK: - Properties
     
     public var requestCoordinating: (() -> Void)?
     public var finishFlow: (() -> Void)?
     
-    private var navigationController: UINavigationController
+    private weak var navigationController: UINavigationController?
     private let factory: DailySoptuneBuildable
     private let pokeFactory: PokeFeatureBuildable
     
     private weak var rootController: UINavigationController?
+    
+    // MARK: - Init
     
     public init(navigationController: UINavigationController,
                 factory: DailySoptuneBuildable,
@@ -35,16 +39,17 @@ public final class DailySoptuneCoordinator: DefaultDailySoptuneCoordinator {
         self.pokeFactory = pokeFactory
     }
     
+    // MARK: - Coordinator Life Cycle
+    
     public override func start() {
         showDailySoptuneMain()
     }
     
     private func showDailySoptuneMain() {
-        var dailySoptuneMain = factory.makeDailySoptuneMainVC()
+        var dailySoptuneMain = factory.makeDailySoptuneMainVC(coordinator: self)
         
         dailySoptuneMain.vm.onNaviBackTap = { [weak self] in
-            self?.navigationController.dismiss(animated: true)
-            self?.finishFlow?()
+            self?.navigationController?.dismiss(animated: true)
         }
         
         dailySoptuneMain.vm.onReciveTodayFortuneButtonTap = { [weak self] result in
@@ -55,7 +60,7 @@ public final class DailySoptuneCoordinator: DefaultDailySoptuneCoordinator {
         let navController = UINavigationController(rootViewController: dailySoptuneMain.vc)
         navController.modalPresentationStyle = .overFullScreen
         rootController = navController
-        navigationController.present(navController, animated: true)
+        navigationController?.present(navController, animated: true)
     }
     
     internal func runDailySoptuneResultFlow(resultModel: DailySoptuneResultModel) {
@@ -66,16 +71,6 @@ public final class DailySoptuneCoordinator: DefaultDailySoptuneCoordinator {
             resultModel: resultModel
         )
         
-        dailySoptuneResultCoordinator.finishFlow = { [weak self, weak dailySoptuneResultCoordinator] in
-            dailySoptuneResultCoordinator?.childCoordinators = []
-            self?.removeDependency(dailySoptuneResultCoordinator)
-        }
-        
-        dailySoptuneResultCoordinator.requestCoordinating = { [weak self] in
-            self?.finishFlow?()
-        }
-        
-        addDependency(dailySoptuneResultCoordinator)
         dailySoptuneResultCoordinator.start()
     }
 }
