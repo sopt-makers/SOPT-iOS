@@ -67,7 +67,7 @@ extension SplashViewModel {
                     owner.onOptionalNoticeExist?(appNoticeModel)
                 case .none:
                     owner.onNoticeSkipped?()
-                case .networkError(let error):
+                case .networkError(_):
                     print("업데이트 상태 확인 중 에러가 발생했습니다.")
                     owner.showNetworkAlert()
                 }

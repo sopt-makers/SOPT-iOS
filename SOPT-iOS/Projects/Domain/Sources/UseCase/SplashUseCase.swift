@@ -16,11 +16,12 @@ public enum UpdateType {
     case forcedUpdate(AppNoticeModel)
     case optionalUpdate(AppNoticeModel)
     case none
-    case networkError(UpdateCheckError)
+    case networkError(Error)
 }
 
 public enum UpdateCheckError: Error {
-    case versionFetchError
+    case appStoreFetchError
+    case projectVersionFetchError
 }
 
 
@@ -51,8 +52,18 @@ extension DefaultSplashUseCase: SplashUseCase {
                 do {
                     try await checkedUpdate()
                 } catch {
+                    switch error {
+                    case RemoteConfigError.fetchFailed:
+                        print("remoteConfig fetch 도중 오류가 발생했습니다.")
+                    case UpdateCheckError.appStoreFetchError:
+                        print("앱스토어에서 최신 버전을 불러오지 못했습니다.")
+                    case UpdateCheckError.projectVersionFetchError:
+                        print("사용자의 버전을 불러오지 못했습니다.")
+                    default:
+                        print("알 수 없는 에러가 발생했습니다.")
+                    }
                     print(error)
-                    needUpdate.send(.networkError(.versionFetchError))
+                    needUpdate.send(.networkError(error))
                 }
         }
         #else
@@ -77,12 +88,12 @@ extension DefaultSplashUseCase: SplashUseCase {
     private func checkedUpdate() async throws {
         // 앱스토어 버전
         guard let appStoreVersion = try await getAppStoreVersion() else {
-            throw UpdateCheckError.versionFetchError
+            throw UpdateCheckError.appStoreFetchError
         }
         
         // 현재 설치된 앱의 버전
         guard let currentAppVersion = Bundle.appVersion else {
-            throw UpdateCheckError.versionFetchError
+            throw UpdateCheckError.projectVersionFetchError
         }
         
         // 최소 지원 버전
