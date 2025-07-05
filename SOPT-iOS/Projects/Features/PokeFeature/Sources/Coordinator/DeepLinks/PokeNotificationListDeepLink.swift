@@ -8,6 +8,7 @@
 
 import Foundation
 import BaseFeatureDependency
+import Core
 
 public struct PokeNotificationListDeepLink: DeepLinkExecutable {
     public let name = "notification-list"
@@ -17,9 +18,14 @@ public struct PokeNotificationListDeepLink: DeepLinkExecutable {
     public init() {}
     
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
-        guard let coordinator = coordinator as? LegacyPokeCoordinator else { return nil }
-        
-        coordinator.runPokeNotificationListFlow()
+        switch Config.coordinatorFlag {
+        case .legacy:
+            guard let coordinator = coordinator as? LegacyPokeCoordinator else { return nil }
+            coordinator.runPokeNotificationListFlow()
+        case .new:
+            guard let coordinator = coordinator as? PokeCoordinator else { return nil }
+            coordinator.runPokeNotificationListFlow()
+        }
         
         return nil
     }
