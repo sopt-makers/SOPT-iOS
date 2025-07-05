@@ -10,7 +10,6 @@ import UIKit
 import Networks
 import Core
 import BaseFeatureDependency
-
 import ThirdPartyLibs
 
 @main

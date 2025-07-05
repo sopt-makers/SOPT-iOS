@@ -7,8 +7,6 @@
 
 import UIKit
 
-import FirebaseCore
-
 import BaseFeatureDependency
 import Core
 import Networks
