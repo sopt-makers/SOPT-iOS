@@ -12,13 +12,7 @@ import Core
 import Domain
 
 public
-final class LegacySplashCoordinator: DefaultCoordinator & SplashCoordinatable {
-    public var onOptionalNoticeExist: ((Domain.AppNoticeModel) -> Void)?
-    public var onNoticeExist: ((Domain.AppNoticeModel) -> Void)?
-    public var finished: (() -> Void)?
-    public var onNoticeSkipped: (() -> Void)?
-    
-    
+final class LegacySplashCoordinator: BaseCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: LegacySplashFeatureViewBuildable
@@ -35,14 +29,17 @@ final class LegacySplashCoordinator: DefaultCoordinator & SplashCoordinatable {
     }
     
     private func showSplash() {
-        let splash = factory.makeSplash(self)
-        onNoticeExist = { [weak self] appNoticeModel in
+        var splash = factory.makeSplash(self)
+        
+        splash.vm.onNoticeExist = { [weak self] appNoticeModel in
             self?.presentNoticePopUp(model: appNoticeModel, as: .forceUpdate)
         }
-        onNoticeSkipped = { [weak self] in
+        
+        splash.vm.onNoticeSkipped = { [weak self] in
             self?.finishFlow?()
         }
-        onOptionalNoticeExist = { [weak self] appNoticeModel in
+        
+        splash.vm.onOptionalNoticeExist = { [weak self] appNoticeModel in
             self?.presentNoticePopUp(model: appNoticeModel, as: .recommendUpdate)
         }
         router.setRootModule(splash.vc, animated: true)

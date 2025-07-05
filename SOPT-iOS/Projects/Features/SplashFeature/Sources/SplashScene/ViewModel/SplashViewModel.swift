@@ -14,9 +14,20 @@ import Domain
 import BaseFeatureDependency
 import SplashFeatureInterface
 
-public class SplashViewModel: ViewModelType {
+public class SplashViewModel: SplashViewModelType {
     
-    private let coordinator: SplashCoordinatable
+    // MARK: - SplashCoordinatable
+    
+    // MARK: - Trigger
+    
+    public var onNoticeSkipped: (() -> Void)?
+    public var onNoticeExist: ((AppNoticeModel) -> Void)?
+    public var onOptionalNoticeExist: ((AppNoticeModel) -> Void)?
+    public var finished: (() -> Void)?
+    
+    // MARK: - Properties
+    
+    private let coordinator: AnyCoordinatorObject
     private let useCase: SplashUseCase
     private var cancelBag = CancelBag()
     
@@ -30,7 +41,7 @@ public class SplashViewModel: ViewModelType {
     
     // MARK: - init
     
-    public init(useCase: SplashUseCase, coordinator: SplashCoordinatable) {
+    public init(useCase: SplashUseCase, coordinator: Coordinator) {
         self.useCase = useCase
         self.coordinator = coordinator
     }
@@ -51,11 +62,11 @@ extension SplashViewModel {
             .sink { owner, updateType in
                 switch updateType {
                 case .forcedUpdate(let appNoticeModel):
-                    owner.coordinator.onNoticeExist?(appNoticeModel)
+                    owner.onNoticeExist?(appNoticeModel)
                 case .optionalUpdate(let appNoticeModel):
-                    owner.coordinator.onOptionalNoticeExist?(appNoticeModel)
+                    owner.onOptionalNoticeExist?(appNoticeModel)
                 case .none:
-                    owner.coordinator.onNoticeSkipped?()
+                    owner.onNoticeSkipped?()
                 case .networkError(let error):
                     print("업데이트 상태 확인 중 에러가 발생했습니다.")
                     owner.showNetworkAlert()

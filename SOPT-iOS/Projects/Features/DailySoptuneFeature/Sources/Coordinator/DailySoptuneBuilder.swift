@@ -8,6 +8,7 @@
 
 import Core
 import Domain
+import BaseFeatureDependency
 @_exported import DailySoptuneFeatureInterface
 
 public final class DailySoptuneBuilder {
@@ -18,18 +19,19 @@ public final class DailySoptuneBuilder {
 }
 
 extension DailySoptuneBuilder: DailySoptuneBuildable {
-    public func makeDailySoptuneResultVC(resultModel: DailySoptuneResultModel) -> DailySoptuneResultPresentable {
+    public func makeDailySoptuneResultVC(resultModel: DailySoptuneResultModel,
+                                         coordinator: Coordinator) -> DailySoptuneResultPresentable {
         let useCase = DefaultDailySoptuneUseCase(repository: dailySoptuneRepository)
-        let viewModel = DailySoptuneResultViewModel(useCase: useCase)
+        let viewModel = DailySoptuneResultViewModel(useCase: useCase, coordinator: coordinator)
         let dailySoptuneResultVC = DailySoptuneResultVC(
             viewModel: viewModel,
             resultModel: resultModel)
         return (dailySoptuneResultVC, viewModel)
     }
     
-    public func makeDailySoptuneMainVC() -> DailySoptuneMainPresentable {
+    public func makeDailySoptuneMainVC(coordinator: Coordinator) -> DailySoptuneMainPresentable {
         let useCase = DefaultDailySoptuneUseCase(repository: dailySoptuneRepository)
-        let viewModel = DailySoptuneMainViewModel(useCase: useCase)
+        let viewModel = DailySoptuneMainViewModel(useCase: useCase, coordinator: coordinator)
         let dailySoptuneMainVC = DailySoptuneMainVC(viewModel: viewModel)
         return (dailySoptuneMainVC, viewModel)
     }

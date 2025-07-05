@@ -15,20 +15,31 @@ enum HomeForMemberSectionLayoutKind: Int, CaseIterable {
     case calendar
     case mainProduct
     case appService
-//    case playgroundNews
+    case playgroundNews
+    case recentPost
     case survey
     case socialLinks
-    
-    var title: String {
+}
+
+extension HomeForMemberSectionLayoutKind: HomeSectionUIConfigurable {
+    var headerTitle: String {
         switch self {
         case .appService:
             return I18N.Home.AppService.headerTitle
-//        case .playgroundNews:
-//            return I18N.Home.PlaygroundNews.headerTitle
+        case .playgroundNews:
+            return I18N.Home.PlaygroundNews.headerTitle
+        case .recentPost:
+            return I18N.Home.RecentPost.headerTitle
         default:
             return ""
         }
     }
+    
+    var shouldShowFireIcon: Bool {
+        return self == .playgroundNews
+    }
+    
+    var shouldShowViewAllContentButton: Bool {
+        return self == .recentPost
+    }
 }
-
-extension HomeForMemberSectionLayoutKind: HomeSectionKindProtocol { }

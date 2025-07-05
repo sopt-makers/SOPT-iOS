@@ -51,6 +51,12 @@ extension HomeForMemberVC {
         }
     }
     
+    func createRecentPostCellRegistration() -> RecentPostCellRegistration {
+        collectionView.createCellRegistration { cell, _, item in
+            cell.configureCell(model: item)
+        }
+    }
+    
     func createSurveyRegistration() -> SurveyCellRegistration {
         collectionView.createCellRegistration { [weak self] cell, _, item in
             guard let self else { return }
@@ -81,10 +87,9 @@ extension HomeForMemberVC {
         }
     }
     
-    func createPlaygroundNewsFooterRegistration() -> PlaygroundNewsFooterRegistration {
+    func createRecentPostFooterRegistration() -> RecentPostFooterRegistration {
         collectionView.createSupplementaryRegistration(
-            elementKind: UICollectionView.elementKindSectionFooter,
-            configure: { _, _ in }
-        )
+            elementKind: UICollectionView.elementKindSectionFooter
+        ) { _, _ in }
     }
 }

@@ -8,6 +8,7 @@
 
 import Core
 import Domain
+import BaseFeatureDependency
 @_exported import SplashFeatureInterface
 
 public final class SplashBuilder {
@@ -15,7 +16,7 @@ public final class SplashBuilder {
 }
 
 extension SplashBuilder: SplashFeatureBuildable {
-    public func makeSplash(_ coordinator: SplashCoordinatable) -> SplashPresentable {
+    public func makeSplash(_ coordinator: Coordinator) -> SplashPresentable {
         let useCase = DefaultSplashUseCase()
         let vm = SplashViewModel(useCase: useCase, coordinator: coordinator)
         let vc = SplashVC(viewModel: vm)
