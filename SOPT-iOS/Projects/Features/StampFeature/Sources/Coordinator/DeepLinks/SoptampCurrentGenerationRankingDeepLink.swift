@@ -9,6 +9,7 @@
 import Foundation
 import BaseFeatureDependency
 import Domain
+import Core
 
 public struct SoptampCurrentGenerationRankingDeepLink: DeepLinkExecutable {
     public let name = "current-generation-ranking"
@@ -18,8 +19,6 @@ public struct SoptampCurrentGenerationRankingDeepLink: DeepLinkExecutable {
     public init() {}
     
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
-        guard let coordinator = coordinator as? LegacyStampCoordinator else { return nil }
-        
         guard let currentGenerationValue = queryItems?.getQueryValue(key: "currentGeneration"),
               let currentGeneration = Int(currentGenerationValue),
               let status = queryItems?.getQueryValue(key: "status")?.uppercased(),
@@ -30,7 +29,14 @@ public struct SoptampCurrentGenerationRankingDeepLink: DeepLinkExecutable {
         
         let usersActiveGenerationStatus = UsersActiveGenerationStatusViewResponse(currentGeneration: currentGeneration, status: userStatus)
         
-        coordinator.runRankingFlow(rankingViewType: .currentGeneration(info: usersActiveGenerationStatus))
+        switch Config.coordinatorFlag {
+        case .legacy:
+            guard let coordinator = coordinator as? LegacyStampCoordinator else { return nil }
+            coordinator.runRankingFlow(rankingViewType: .currentGeneration(info: usersActiveGenerationStatus))
+        case .new:
+            guard let coordinator = coordinator as? StampCoordinator else { return nil }
+            coordinator.runRankingFlow(rankingViewType: .currentGeneration(info: usersActiveGenerationStatus))
+        }
         
         return coordinator
     }

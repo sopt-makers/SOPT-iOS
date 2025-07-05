@@ -8,6 +8,7 @@
 
 import Foundation
 import BaseFeatureDependency
+import Core
 
 public struct SoptampEntireRankingDeepLink: DeepLinkExecutable {
     public let name = "entire-ranking"
@@ -17,9 +18,14 @@ public struct SoptampEntireRankingDeepLink: DeepLinkExecutable {
     public init() {}
     
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
-        guard let coordinator = coordinator as? LegacyStampCoordinator else { return nil }
-        
-        coordinator.runRankingFlow(rankingViewType: .all)
+        switch Config.coordinatorFlag {
+        case .legacy:
+            guard let coordinator = coordinator as? LegacyStampCoordinator else { return nil }
+            coordinator.runRankingFlow(rankingViewType: .all)
+        case .new:
+            guard let coordinator = coordinator as? StampCoordinator else { return nil }
+            coordinator.runRankingFlow(rankingViewType: .all)
+        }
         
         return coordinator
     }
