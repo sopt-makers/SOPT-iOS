@@ -8,6 +8,8 @@
 
 import Foundation
 import BaseFeatureDependency
+
+// TODO: - Legacy 삭제하면서 Core 제거
 import Core
 
 public struct PokeNotificationListDeepLink: DeepLinkExecutable {
