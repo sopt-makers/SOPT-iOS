@@ -1,8 +1,8 @@
 //
-//  FirebaseConfigure.swift
-//  ThirdPartyLibs
+//  FirebaseService.swift
+//  Core
 //
-//  Created by 강윤서 on 6/24/25.
+//  Created by 강윤서 on 7/7/25.
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 

@@ -10,7 +10,6 @@ import UIKit
 import BaseFeatureDependency
 import Core
 import Networks
-import ThirdPartyLibs
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {

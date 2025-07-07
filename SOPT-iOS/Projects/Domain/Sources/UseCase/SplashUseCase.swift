@@ -10,7 +10,6 @@ import Foundation
 import Combine
 
 import Core
-import ThirdPartyLibs
 
 public enum UpdateType {
     case forcedUpdate(AppNoticeModel)
