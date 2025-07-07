@@ -13,7 +13,7 @@ import SplashFeatureInterface
 import Core
 import Domain
 
-public final class SplashCoordinator: BaseCoordinator {
+public final class SplashCoordinator: BaseCoordinator & SplashCoordinatorFinishOutput {
     
     // MARK: - Properties
     
