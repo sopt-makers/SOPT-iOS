@@ -76,9 +76,10 @@ extension DefaultSplashUseCase: SplashUseCase {
     
     private func checkedUpdateType() async throws -> UpdateType {
         async let getAppStoreVersion = repository.appStoreVersion()                // 앱 스토어 버전
-        async let getForcedUpdateData = repository.minimumVersion()                // 강제 업데이트 관련 데이터
+        async let getForcedUpdateData = repository.forcedUpdateData()              // 강제 업데이트 관련 데이터
+        async let getOptionalUpdateData = repository.optionalUpdateData()          // 선택 업데이트 관련 데이터
         
-        let (appStoreVersion, forcedUpdateData) = try await (getAppStoreVersion, getForcedUpdateData)
+        let (appStoreVersion, forcedUpdateData, optionalUpdateData) = try await (getAppStoreVersion, getForcedUpdateData, getOptionalUpdateData)
         let minimumVersion = forcedUpdateData.minimumVersion          // 최소 지원 버전
         
         // 현재 설치된 앱의 버전
@@ -95,7 +96,7 @@ extension DefaultSplashUseCase: SplashUseCase {
         let needOptionalUpdate = currentAppVersion.compare(appStoreVersion, options: .numeric) == .orderedAscending
         
         return needForceUpdate ? .forcedUpdate(forcedUpdateData.appNotice) :
-            needOptionalUpdate ? .optionalUpdate(try await RemoteConfigManager.shared.fetchJsonValue(as: .optionalUpdate, decodeType: AppNoticeModel.self)) : .none
+                needOptionalUpdate ? .optionalUpdate(optionalUpdateData) : .none
     }
     
     private func handleUpdateType(_ type: UpdateType) throws {

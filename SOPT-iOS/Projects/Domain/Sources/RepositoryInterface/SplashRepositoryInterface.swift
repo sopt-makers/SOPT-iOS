@@ -10,5 +10,6 @@ import Combine
 
 public protocol SplashRepositoryInterface {
     func appStoreVersion() async throws -> String?
-    func minimumVersion() async throws -> ForceUpdateModel
+    func forcedUpdateData() async throws -> ForceUpdateModel
+    func optionalUpdateData() async throws -> AppNoticeModel
 }

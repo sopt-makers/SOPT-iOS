@@ -1,5 +1,5 @@
 //
-//  SplashRespository.swift
+//  SplashRepository.swift
 //  Data
 //
 //  Created by 강윤서 on 7/8/25.
@@ -12,9 +12,6 @@ import Core
 import Domain
 
 public class SplashRepository {
-    
-    private let cancelBag = CancelBag()
-    
     public init() { }
 }
 
@@ -27,6 +24,7 @@ extension SplashRepository: SplashRepositoryInterface {
         let (data, _) = try await URLSession.shared.data(from: url)
         let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any]
         guard let results = json?["results"] as? [[String: Any]],
+              !results.isEmpty,
               let appStoreVersion = results[0]["version"] as? String else {
             throw UpdateCheckError.appStoreFetchError
         }
@@ -34,8 +32,13 @@ extension SplashRepository: SplashRepositoryInterface {
         return appStoreVersion
     }
     
-    /// 최소 지원 버전을 가져온다.
-    public func minimumVersion() async throws -> ForceUpdateModel {
+    /// 강제 업데이트와 관련된 데이터를 가져온다.
+    public func forcedUpdateData() async throws -> ForceUpdateModel {
         return try await RemoteConfigManager.shared.fetchJsonValue(as: .forcedUpdate, decodeType: ForceUpdateModel.self)
+    }
+    
+    /// 선택 업데이트와 관련된 데이터를 가져온다.
+    public func optionalUpdateData() async throws -> AppNoticeModel {
+        return try await RemoteConfigManager.shared.fetchJsonValue(as: .optionalUpdate, decodeType: AppNoticeModel.self)
     }
 }
