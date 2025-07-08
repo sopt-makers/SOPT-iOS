@@ -28,6 +28,12 @@ extension AppDelegate {
             }
         )
         container.register(
+            interface: SplashRepositoryInterface.self,
+            implement: {
+                SplashRepository()
+            }
+        )
+        container.register(
             interface: AppMyPageRepositoryInterface.self,
             implement: {
                 AppMyPageRepository(

@@ -12,12 +12,14 @@ import BaseFeatureDependency
 @_exported import SplashFeatureInterface
 
 public final class SplashBuilder {
+    @Injected public var repository: SplashRepositoryInterface
+    
     public init() { }
 }
 
 extension SplashBuilder: SplashFeatureBuildable {
     public func makeSplash(_ coordinator: Coordinator) -> SplashPresentable {
-        let useCase = DefaultSplashUseCase()
+        let useCase = DefaultSplashUseCase(repository: repository)
         let vm = SplashViewModel(useCase: useCase, coordinator: coordinator)
         let vc = SplashVC(viewModel: vm)
         return (vc, vm)

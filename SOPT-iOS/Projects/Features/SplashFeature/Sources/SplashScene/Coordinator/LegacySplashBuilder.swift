@@ -13,12 +13,14 @@ import BaseFeatureDependency
 
 public
 final class LegacySplashBuilder {
+    @Injected public var repository: SplashRepositoryInterface
+    
     public init() { }
 }
 
 extension LegacySplashBuilder: LegacySplashFeatureViewBuildable {
     public func makeSplash(_ coordinator: Coordinator) -> LegacySplashPresentable {
-        let useCase = DefaultSplashUseCase()
+        let useCase = DefaultSplashUseCase(repository: repository)
         let vm = SplashViewModel(useCase: useCase, coordinator: coordinator)
         let vc = SplashVC(viewModel: vm)
         return (vc, vm)
