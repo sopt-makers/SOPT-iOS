@@ -6,8 +6,6 @@
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
-import Combine
-
 public protocol SplashRepositoryInterface {
     func appStoreVersion() async throws -> String?
     func forcedUpdateData() async throws -> ForceUpdateModel

@@ -22,7 +22,7 @@ extension SplashRepository: SplashRepositoryInterface {
         guard let appId = Bundle.appId,
               let url = URL(string: "https://itunes.apple.com/lookup?id=\(appId)" ) else { return nil }
         let (data, _) = try await URLSession.shared.data(from: url)
-        let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any]
+        let json = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any]
         guard let results = json?["results"] as? [[String: Any]],
               !results.isEmpty,
               let appStoreVersion = results[0]["version"] as? String else {
