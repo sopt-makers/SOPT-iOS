@@ -31,12 +31,15 @@ public protocol SplashUseCase {
 
 public class DefaultSplashUseCase {
     
+    private let repository: SplashRepositoryInterface
     private var cancelBag = CancelBag()
     var updateTask: Task<Void, Never>?
     
     public var needUpdate = PassthroughSubject<UpdateType, Never>()
     
-    public init() { }
+    public init(repository: SplashRepositoryInterface) {
+        self.repository = repository
+    }
     
     deinit {
         updateTask?.cancel()
@@ -49,7 +52,8 @@ extension DefaultSplashUseCase: SplashUseCase {
         #if DEV || PROD
         updateTask = Task {
                 do {
-                    try await checkedUpdate()
+                    let type = try await checkedUpdateType()
+                    try handleUpdateType(type)
                 } catch {
                     switch error {
                     case RemoteConfigError.fetchFailed:
@@ -70,47 +74,40 @@ extension DefaultSplashUseCase: SplashUseCase {
         #endif
     }
     
-    /// 앱스토어에 배포된 버전을 가져온다
-    private func getAppStoreVersion() async throws -> String? {
-        guard let appId = Bundle.appId,
-              let url = URL(string: "https://itunes.apple.com/lookup?id=\(appId)" ) else { return nil }
-        let (data, _) = try await URLSession.shared.data(from: url)
-        let json = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any]
-        guard let results = json?["results"] as? [[String: Any]],
-              let appStoreVersion = results[0]["version"] as? String else {
-            return nil
-        }
+    private func checkedUpdateType() async throws -> UpdateType {
+        async let getAppStoreVersion = repository.appStoreVersion()                // 앱 스토어 버전
+        async let getForcedUpdateData = repository.minimumVersion()                // 강제 업데이트 관련 데이터
         
-        return appStoreVersion
-    }
-    
-    private func checkedUpdate() async throws {
-        // 앱스토어 버전
-        guard let appStoreVersion = try await getAppStoreVersion() else {
-            throw UpdateCheckError.appStoreFetchError
-        }
+        let (appStoreVersion, forcedUpdateData) = try await (getAppStoreVersion, getForcedUpdateData)
+        let minimumVersion = forcedUpdateData.minimumVersion          // 최소 지원 버전
         
         // 현재 설치된 앱의 버전
         guard let currentAppVersion = Bundle.appVersion else {
             throw UpdateCheckError.projectVersionFetchError
         }
         
-        // 최소 지원 버전
-        let forcedUpdateData = try await RemoteConfigManager.shared.fetchJsonValue(as: .forcedUpdate, decodeType: ForceUpdateModel.self)
-        let minimumVersion = forcedUpdateData.minimumVersion
+        // 앱 스토어 버전 옵셔널 바인딩
+        guard let appStoreVersion = appStoreVersion else {
+            throw UpdateCheckError.appStoreFetchError
+        }
         
         let needForceUpdate = currentAppVersion.compare(minimumVersion,options: .numeric) == .orderedAscending
         let needOptionalUpdate = currentAppVersion.compare(appStoreVersion, options: .numeric) == .orderedAscending
         
-        if needForceUpdate {            // 강제 업데이트
-            needUpdate.send(.forcedUpdate(forcedUpdateData.appNotice))
-        }
-        else if needOptionalUpdate {    // 선택 업데이트
-            let optionalData = try await RemoteConfigManager.shared.fetchJsonValue(as: .optionalUpdate, decodeType: AppNoticeModel.self)
+        return needForceUpdate ? .forcedUpdate(forcedUpdateData.appNotice) :
+            needOptionalUpdate ? .optionalUpdate(try await RemoteConfigManager.shared.fetchJsonValue(as: .optionalUpdate, decodeType: AppNoticeModel.self)) : .none
+    }
+    
+    private func handleUpdateType(_ type: UpdateType) throws {
+        switch type {
+        case .forcedUpdate(let appNoticeModel):
+            needUpdate.send(.forcedUpdate(appNoticeModel))
+        case .optionalUpdate(let optionalData):
             needUpdate.send(.optionalUpdate(optionalData))
-        }
-        else {                          // 업데이트 없음
+        case .none:
             needUpdate.send(.none)
+        case .networkError(let error):
+            throw error
         }
     }
 }
