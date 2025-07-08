@@ -29,7 +29,7 @@ public protocol SplashUseCase {
     var needUpdate: PassthroughSubject<UpdateType, Never> { get set }
 }
 
-public class DefaultSplashUseCase {
+public final class DefaultSplashUseCase {
     
     private let repository: SplashRepositoryInterface
     private var cancelBag = CancelBag()
