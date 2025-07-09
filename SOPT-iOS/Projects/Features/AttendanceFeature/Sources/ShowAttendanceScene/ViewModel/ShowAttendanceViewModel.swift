@@ -57,10 +57,6 @@ public final class ShowAttendanceViewModel: ShowAttendanceViewModelType {
         self.useCase = useCase
         self.coordinator = coordinator
     }
-    
-    deinit {
-        print("vm deinit")
-    }
 }
 
 extension ShowAttendanceViewModel {
