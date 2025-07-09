@@ -70,7 +70,7 @@ public final class StampCoordinator: DefaultCoordinator {
         
         missionList.vc.onCellTap = { [weak self] model, username in
             guard let self else { return }
-            self.runMissionDetailFlow(model, username)
+            self.showMissionDetail(model, username)
         }
         
         missionList.vc.onReportButtonTap = { [weak self] in
@@ -88,50 +88,119 @@ public final class StampCoordinator: DefaultCoordinator {
     }
     
     private func showGuide() {
-        let guideCoordinator = StampGuideCoordinator(
-            navigationController: rootController ?? UIWindow.getRootNavigationController,
-            factory: factory
-        )
+        let guide = factory.makeStampGuideVC()
         
-        guideCoordinator.finishFlow = { [weak self, weak guideCoordinator] in
+        guide.onNaviBackTap = { [weak self] in
             guard let self else { return }
-            self.removeDependency(guideCoordinator)
+            self.navigationController.popViewController(animated: true)
+            self.finishFlow?()
         }
         
-        addDependency(guideCoordinator)
-        guideCoordinator.start()
+        rootController?.pushViewController(guide, animated: true)
+    }
+}
+
+// MARK: - MissionDetailFlow
+
+extension StampCoordinator {
+    private func showMissionDetail(_ model: MissionListModel, _ username: String?) {
+        guard let starLevel = StarViewLevel.init(rawValue: model.level) else { return }
+        
+        var missionDetail = factory.makeListDetailVC(
+            sceneType: model.toListDetailSceneType(),
+            starLevel: starLevel,
+            missionId: model.id,
+            missionTitle: model.title,
+            otherUserName: username
+        )
+        
+        missionDetail.vc.onComplete = { [weak self] starViewLevel, handler in
+            guard let self else { return }
+            self.showMissionComplete(starViewLevel, handler)
+        }
+        
+        missionDetail.vc.onNaviBackTap = { [weak self] in
+            guard let self else { return }
+            self.rootController?.popViewController(animated: true)
+        }
+        
+        rootController?.pushViewController(missionDetail.vc, animated: true)
     }
     
-    private func runRankingFlow(rankingViewType: RankingViewType) {
-        let rankingCoordinator = RankingCoordinator(
-            navigationController: rootController ?? UIWindow.getRootNavigationController,
-            factory: factory,
-            rankingViewType: rankingViewType
+    private func showMissionComplete(_ level: StarViewLevel, _ handler: (() -> Void)?) {
+        let missionCompleted = factory.makeMissionCompletedVC(
+            starLevel: level,
+            completionHandler: handler
         )
         
-        rankingCoordinator.finishFlow = { [weak self, weak rankingCoordinator] in
-            guard let self else { return }
-            self.removeDependency(rankingCoordinator)
+        rootController?.present(missionCompleted, animated: true)
+    }
+}
+
+// MARK: - RankingFlow
+
+extension StampCoordinator {
+    public func runRankingFlow(rankingViewType: RankingViewType) {
+        switch rankingViewType {
+        case .all, .currentGeneration, .individualRankingInPart:
+            showRanking(rankingViewType: rankingViewType)
+        case .partRanking:
+            showPartRanking(rankingViewType)
         }
-        
-        addDependency(rankingCoordinator)
-        rankingCoordinator.start()
     }
     
-    private func runMissionDetailFlow(_ model: MissionListModel, _ username: String?) {
-        let missionDetailCoordinator = MissionDetailCoordinator(
-            navigationController: rootController ?? UIWindow.getRootNavigationController,
-            factory: factory,
-            model: model,
-            username: username
-        )
+    private func showRanking(rankingViewType: RankingViewType) {
+        var ranking = factory.makeRankingVC(rankingViewType: rankingViewType)
         
-        missionDetailCoordinator.finishFlow = { [weak self, weak missionDetailCoordinator] in
+        ranking.vc.onCellTap = { [weak self] (username, sentence) in
             guard let self else { return }
-            self.removeDependency(missionDetailCoordinator)
+            self.showOtherMissionList(username, sentence)
         }
         
-        addDependency(missionDetailCoordinator)
-        missionDetailCoordinator.start()
+        ranking.vc.onNaviBackTap = { [weak self] in
+            guard let self else { return }
+            self.rootController?.popViewController(animated: true)
+        }
+
+        rootController?.pushViewController(ranking.vc, animated: true)
+    }
+    
+    private func showPartRanking(_ rankingViewType: RankingViewType) {
+        var ranking = factory.makePartRankingVC(rankingViewType: rankingViewType)
+        
+        ranking.vc.onCellTap = { [weak self] part in
+            guard let self else { return }
+            self.showRanking(rankingViewType: .individualRankingInPart(part: part))
+        }
+        
+        ranking.vc.onNaviBackTap = { [weak self] in
+            guard let self else { return }
+            self.rootController?.popViewController(animated: true)
+        }
+
+        rootController?.pushViewController(ranking.vc, animated: true)
+    }
+    
+    private func showOtherMissionList(_ username: String, _ sentence: String) {
+        var otherMissionList = factory.makeMissionListVC(
+            sceneType: .ranking(userName: username, sentence: sentence)
+        )
+        
+        otherMissionList.vc.onNaviBackTap = { [weak self] in
+            guard let self else { return }
+            self.rootController?.popViewController(animated: true)
+        }
+        
+        otherMissionList.vc.onSwiped = { [weak self] in
+            guard let self else { return }
+            self.rootController?.popViewController(animated: true)
+        }
+        
+        otherMissionList.vc.onCellTap = { [weak self] model, username in
+            guard let self else { return }
+            self.showMissionDetail(model, username)
+        }
+        
+        rootController?.pushViewController(otherMissionList.vc, animated: true)
     }
 }
