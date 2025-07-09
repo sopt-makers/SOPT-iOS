@@ -34,10 +34,6 @@ public final class StampCoordinator: BaseCoordinator {
         self.factory = factory
     }
     
-    deinit {
-        print("coor deinit")
-    }
-    
     // MARK: - Coordinator Life Cycle
     
     public override func start() {

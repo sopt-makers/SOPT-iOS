@@ -60,10 +60,6 @@ public class MissionListViewModel: MissionListViewModelType {
         self.missionListsceneType = sceneType
         self.coordinator = coordinator
     }
-    
-    deinit {
-        print("missionlist vm deinit")
-    }
 }
 
 extension MissionListViewModel {
