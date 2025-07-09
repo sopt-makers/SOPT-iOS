@@ -19,6 +19,7 @@ public enum UpdateType {
 }
 
 public enum UpdateCheckError: Error {
+    case invalidAppStoreLink
     case appStoreFetchError
     case projectVersionFetchError
 }
@@ -80,16 +81,11 @@ extension DefaultSplashUseCase: SplashUseCase {
         async let getOptionalUpdateData = repository.optionalUpdateData()          // 선택 업데이트 관련 데이터
         
         let (appStoreVersion, forcedUpdateData, optionalUpdateData) = try await (getAppStoreVersion, getForcedUpdateData, getOptionalUpdateData)
-        let minimumVersion = forcedUpdateData.minimumVersion          // 최소 지원 버전
+        let minimumVersion = forcedUpdateData.minimumVersion                       // 최소 지원 버전
         
         // 현재 설치된 앱의 버전
         guard let currentAppVersion = Bundle.appVersion else {
             throw UpdateCheckError.projectVersionFetchError
-        }
-        
-        // 앱 스토어 버전 옵셔널 바인딩
-        guard let appStoreVersion = appStoreVersion else {
-            throw UpdateCheckError.appStoreFetchError
         }
         
         let needForceUpdate = currentAppVersion.compare(minimumVersion,options: .numeric) == .orderedAscending

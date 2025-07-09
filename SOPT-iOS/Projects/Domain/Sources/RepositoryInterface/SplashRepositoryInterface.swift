@@ -7,7 +7,7 @@
 //
 
 public protocol SplashRepositoryInterface {
-    func appStoreVersion() async throws -> String?
+    func appStoreVersion() async throws -> String
     func forcedUpdateData() async throws -> ForceUpdateModel
     func optionalUpdateData() async throws -> AppNoticeModel
 }

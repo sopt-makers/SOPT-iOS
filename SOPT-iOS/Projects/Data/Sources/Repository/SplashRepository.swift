@@ -18,9 +18,11 @@ public class SplashRepository {
 extension SplashRepository: SplashRepositoryInterface {
     
     /// 앱스토어에 배포된 버전을 가져온다.
-    public func appStoreVersion() async throws -> String? {
+    public func appStoreVersion() async throws -> String {
         guard let appId = Bundle.appId,
-              let url = URL(string: "https://itunes.apple.com/lookup?id=\(appId)" ) else { return nil }
+              let url = URL(string: "https://itunes.apple.com/lookup?id=\(appId)") else {
+            throw UpdateCheckError.invalidAppStoreLink
+        }
         let (data, _) = try await URLSession.shared.data(from: url)
         let json = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as? [String: Any]
         guard let results = json?["results"] as? [[String: Any]],
