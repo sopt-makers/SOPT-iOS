@@ -21,6 +21,7 @@ struct AttendanceButtonInfo {
 
 public final class ShowAttendanceViewModel: ShowAttendanceViewModelType {
     
+    // MARK: - Trigger
     // TODO: coordinating vc -> vm
     public var onAttendanceButtonTap: ((AttendanceRoundModel, (() -> Void)?) -> Void)?
     public var onNaviBackTap: (() -> Void)?
@@ -56,10 +57,6 @@ public final class ShowAttendanceViewModel: ShowAttendanceViewModelType {
     public init(useCase: ShowAttendanceUseCase, coordinator: Coordinator) {
         self.useCase = useCase
         self.coordinator = coordinator
-    }
-    
-    deinit {
-        print("vm deinit")
     }
 }
 

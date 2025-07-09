@@ -45,6 +45,8 @@ public final class AttendanceViewModel: AttendanceViewModelType {
         let attendErrorMsg = PassthroughSubject<String, Never>()
     }
     
+    // MARK: - init
+    
     public init(useCase: AttendanceUseCase, lectureRound: AttendanceRoundModel) {
         self.useCase = useCase
         self.lectureRound = lectureRound
