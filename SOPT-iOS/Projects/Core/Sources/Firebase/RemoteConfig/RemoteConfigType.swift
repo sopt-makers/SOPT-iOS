@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum RemoteConfigType: String {
+public enum RemoteConfigKey: String {
     case forcedUpdate = "forced_update_notice_iOS"
     case optionalUpdate = "optional_update_notice_iOS"
 }
