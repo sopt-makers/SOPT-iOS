@@ -21,5 +21,7 @@ let project = Project.makeModule(
         .SPM.CombineMoya,
         .SPM.lottie,
         .SPM.Amplitude,
+        .SPM.FirebaseCore,
+        .SPM.FirebaseRemoteConfig
     ]
 )

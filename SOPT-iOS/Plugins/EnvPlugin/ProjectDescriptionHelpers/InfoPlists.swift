@@ -34,7 +34,8 @@ public extension Project {
         ]),
         "UIBackgroundModes": .array([
             .string("remote-notification")
-        ])
+        ]),
+        "AppID": .string("6444594319")
     ]
     
     static let demoInfoPlist: [String: Plist.Value] = [
@@ -70,6 +71,7 @@ public extension Project {
         ]),
         "UIBackgroundModes": .array([
             .string("remote-notification")
-        ])
+        ]),
+        "AppID": .string("6444594319")
     ]
 }
