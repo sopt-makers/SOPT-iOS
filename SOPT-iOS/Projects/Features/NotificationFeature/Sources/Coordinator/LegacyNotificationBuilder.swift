@@ -8,6 +8,7 @@
 
 import Core
 import Domain
+import BaseFeatureDependency
 @_exported import NotificationFeatureInterface
 
 public
@@ -19,9 +20,9 @@ final class LegacyNotificationBuilder {
 }
 
 extension LegacyNotificationBuilder: LegacyNotificationFeatureBuildable {
-    public func makeNotificationList() -> LegacyNotificationListPresentable {
+    public func makeNotificationList(coordinator: Coordinator) -> LegacyNotificationListPresentable {
         let useCase = DefaultNotificationListUseCase(repository: notificationListRepository)
-        let vm = NotificationListViewModel(useCase: useCase)
+        let vm = NotificationListViewModel(useCase: useCase, coordinator: coordinator)
         let vc = NotificationListVC(viewModel: vm)
         return (vc, vm)
     }

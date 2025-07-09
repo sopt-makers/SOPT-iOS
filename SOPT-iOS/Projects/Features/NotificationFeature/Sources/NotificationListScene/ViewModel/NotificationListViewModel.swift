@@ -11,13 +11,18 @@ import Combine
 
 import Core
 import Domain
-
-import NotificationFeatureInterface
+import BaseFeatureDependency
 
 public class NotificationListViewModel: NotificationListViewModelType {
     
+    // MARK: - Trigger
+    
+    public var onNaviBackButtonTap: (() -> Void)?
+    public var onNotificationTap: ((String) -> Void)?
+    
     // MARK: - Properties
     
+    private let coordinator: AnyCoordinatorObject
     private let useCase: NotificationListUseCase
     private var cancelBag = CancelBag()
     
@@ -48,15 +53,11 @@ public class NotificationListViewModel: NotificationListViewModelType {
         var refreshLoading = PassthroughSubject<Bool, Never>()
     }
     
-    // MARK: - NotificationCoordinatable
-    
-    public var onNaviBackButtonTap: (() -> Void)?
-    public var onNotificationTap: ((String) -> Void)?
-    
     // MARK: - init
     
-    public init(useCase: NotificationListUseCase) {
+    public init(useCase: NotificationListUseCase, coordinator: Coordinator) {
         self.useCase = useCase
+        self.coordinator = coordinator
     }
 }
 
