@@ -10,11 +10,7 @@ import FirebaseCore
 
 public final class Firebase {}
 
-protocol FirebaseServicable {
-    static func configure()
-}
-
-extension Firebase: FirebaseServicable {
+extension Firebase {
     public static func configure() {
         FirebaseApp.configure()
     }

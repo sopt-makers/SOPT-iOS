@@ -16,8 +16,6 @@ import SplashFeatureInterface
 
 public class SplashViewModel: SplashViewModelType {
     
-    // MARK: - SplashCoordinatable
-    
     // MARK: - Trigger
     
     public var onNoticeSkipped: (() -> Void)?
