@@ -38,7 +38,7 @@ extension RemoteConfigManager {
     }
     
     /// json 타입 fetch
-    public func fetchJsonValue<T: Decodable>(as type: RemoteConfigType, decodeType: T.Type) async throws -> T {
+    public func fetchJsonValue<T: Decodable>(as type: RemoteConfigKey, decodeType: T.Type) async throws -> T {
         let status = try await config.fetchAndActivate()
         guard status == .successFetchedFromRemote || status == .successUsingPreFetchedData else {
             throw RemoteConfigError.fetchFailed
@@ -51,7 +51,7 @@ extension RemoteConfigManager {
     }
     
     /// string 타입 fetch
-    public func fetchStringValue(as type: RemoteConfigType) async throws -> String? {
+    public func fetchStringValue(as type: RemoteConfigKey) async throws -> String? {
         let status = try await config.fetchAndActivate()
         guard status == .successFetchedFromRemote || status == .successUsingPreFetchedData else {
             throw RemoteConfigError.fetchFailed
