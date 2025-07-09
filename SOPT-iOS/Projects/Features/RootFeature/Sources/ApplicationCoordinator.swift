@@ -188,6 +188,7 @@ extension ApplicationCoordinator {
                 self?.removeDependency(legacyCoordinator
                 )
             }
+            addDependency(legacyCoordinator)
             coordinator = legacyCoordinator
         case .new:
             let newCoordinator = SplashCoordinator(
@@ -202,7 +203,6 @@ extension ApplicationCoordinator {
             coordinator = newCoordinator
         }
         
-        addDependency(coordinator)
         coordinator.start()
     }
     
@@ -677,8 +677,8 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runNotificationFlow() -> DefaultNotificationCoordinator {
-        var coordinator: DefaultNotificationCoordinator
+    internal func runNotificationFlow() -> BaseCoordinator {
+        var coordinator: BaseCoordinator
         
         switch Config.coordinatorFlag {
         case .legacy:
@@ -698,6 +698,11 @@ extension ApplicationCoordinator {
                 }
             }
             
+            addDependency(legacyCoordinator)
+            legacyCoordinator.finishFlow = { [weak self, weak legacyCoordinator] in
+                legacyCoordinator?.childCoordinators = []
+                self?.removeDependency(legacyCoordinator)
+            }
             coordinator = legacyCoordinator
         case .new:
             let newCoordinator = NotificationCoordinator(
@@ -708,12 +713,6 @@ extension ApplicationCoordinator {
             coordinator = newCoordinator
         }
         
-        coordinator.finishFlow = { [weak self, weak coordinator] in
-            coordinator?.childCoordinators = []
-            self?.removeDependency(coordinator)
-        }
-        
-        addDependency(coordinator)
         coordinator.start()
         
         return coordinator
