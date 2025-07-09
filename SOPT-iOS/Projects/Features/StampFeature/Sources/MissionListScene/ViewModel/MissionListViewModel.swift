@@ -11,6 +11,7 @@ import Foundation
 
 import Core
 import Domain
+import BaseFeatureDependency
 
 public class MissionListViewModel: MissionListViewModelType {
     
@@ -28,6 +29,7 @@ public class MissionListViewModel: MissionListViewModelType {
     // MARK: - Properties
     
     private let useCase: MissionListUseCase
+    private let coordinator: AnyCoordinatorObject
     private var cancelBag = CancelBag()
     public var missionListsceneType: MissionListSceneType!
     
@@ -50,9 +52,17 @@ public class MissionListViewModel: MissionListViewModelType {
     
     // MARK: - init
     
-    public init(useCase: MissionListUseCase, sceneType: MissionListSceneType) {
+    public init(useCase: MissionListUseCase,
+                sceneType: MissionListSceneType,
+                coordinator: Coordinator
+    ) {
         self.useCase = useCase
         self.missionListsceneType = sceneType
+        self.coordinator = coordinator
+    }
+    
+    deinit {
+        print("missionlist vm deinit")
     }
 }
 

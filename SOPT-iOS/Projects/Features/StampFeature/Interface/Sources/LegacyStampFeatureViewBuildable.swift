@@ -11,7 +11,7 @@ import Domain
 import BaseFeatureDependency
 
 public protocol LegacyStampFeatureViewBuildable {
-    func makeMissionListVC(sceneType: MissionListSceneType) -> LegacyMissionListViewControllable
+    func makeMissionListVC(sceneType: MissionListSceneType, coordinator: Coordinator) -> LegacyMissionListViewControllable
     func makeListDetailVC(
         sceneType: ListDetailSceneType,
         starLevel: StarViewLevel,

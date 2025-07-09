@@ -15,11 +15,9 @@ import BaseFeatureDependency
 import StampFeatureInterface
 import SafariServices
 
-public final class StampCoordinator: DefaultCoordinator {
+public final class StampCoordinator: BaseCoordinator {
         
     // MARK: - Properties
-    
-    public var finishFlow: (() -> Void)?
     
     private let factory: StampFeatureBuildable
     private let navigationController: UINavigationController
@@ -36,6 +34,10 @@ public final class StampCoordinator: DefaultCoordinator {
         self.factory = factory
     }
     
+    deinit {
+        print("coor deinit")
+    }
+    
     // MARK: - Coordinator Life Cycle
     
     public override func start() {
@@ -45,12 +47,11 @@ public final class StampCoordinator: DefaultCoordinator {
     // MARK: - Navigation
     
     private func showMissionList(sceneType: MissionListSceneType) {
-        var missionList = factory.makeMissionListVC(sceneType: sceneType)
+        var missionList = factory.makeMissionListVC(sceneType: sceneType, coordinator: self)
         
         missionList.vc.onNaviBackTap = { [weak self] in
             guard let self else { return }
             self.navigationController.dismiss(animated: true)
-            self.finishFlow?()
         }
         
         missionList.vc.onGuideTap = { [weak self] in
@@ -93,7 +94,6 @@ public final class StampCoordinator: DefaultCoordinator {
         guide.onNaviBackTap = { [weak self] in
             guard let self else { return }
             self.navigationController.popViewController(animated: true)
-            self.finishFlow?()
         }
         
         rootController?.pushViewController(guide, animated: true)
@@ -183,7 +183,8 @@ extension StampCoordinator {
     
     private func showOtherMissionList(_ username: String, _ sentence: String) {
         var otherMissionList = factory.makeMissionListVC(
-            sceneType: .ranking(userName: username, sentence: sentence)
+            sceneType: .ranking(userName: username, sentence: sentence),
+            coordinator: self
         )
         
         otherMissionList.vc.onNaviBackTap = { [weak self] in
