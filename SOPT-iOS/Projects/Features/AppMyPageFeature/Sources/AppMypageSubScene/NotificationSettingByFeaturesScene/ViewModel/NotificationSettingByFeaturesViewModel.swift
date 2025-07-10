@@ -14,6 +14,11 @@ import Domain
 import AppMyPageFeatureInterface
 
 public final class NotificationSettingByFeaturesViewModel: NotificationSettingByFeaturesViewModelType {
+    
+    // MARK: - Properties
+    
+    private let usecase: NotificationSettingByFeaturesUsecase
+    
     // MARK: - Inputs
     
     public struct Input {
@@ -30,7 +35,7 @@ public final class NotificationSettingByFeaturesViewModel: NotificationSettingBy
         let updateSuccessed = PassthroughSubject<NotificationOptInModel, Never>()
     }
     
-    private let usecase: NotificationSettingByFeaturesUsecase
+    // MARK: - init
     
     public init(usecase: NotificationSettingByFeaturesUsecase) {
         self.usecase = usecase
