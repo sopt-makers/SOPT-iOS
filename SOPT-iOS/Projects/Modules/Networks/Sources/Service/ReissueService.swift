@@ -2,7 +2,7 @@
 //  ReissueService.swift
 //  Networks
 //
-//  Created by 장석우 on 7/11/25.
+//  Created by 장석우 on 7/5/25.
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
@@ -10,16 +10,16 @@ import Foundation
 
 import Core
 
-public protocol LegacyReissueService {
-    func reissuance(with tokens: AuthTokens, completion: @escaping ((SignInEntity?) -> Void))
+public protocol ReissueService {
+    func reissuance(with tokens: AuthTokens, completion: @escaping ((AuthTokens?) -> Void))
 }
 
-public typealias DefaultLegacyReissueService = BaseService<LegacyReissueAPI>
+public final class DefaultLegacyReissueService: BaseService<LegacyReissueAPI> { }
 
-extension DefaultLegacyReissueService: LegacyReissueService {
+extension DefaultLegacyReissueService: ReissueService {
 
     @Sendable
-    public func reissuance(with tokens: AuthTokens, completion: @escaping ((SignInEntity?) -> Void)) {
+    public func reissuance(with tokens: AuthTokens, completion: @escaping ((AuthTokens?) -> Void)) {
         
         provider.request(.reissuance(refreshToken: tokens.refreshToken)) { response in
             switch response {
