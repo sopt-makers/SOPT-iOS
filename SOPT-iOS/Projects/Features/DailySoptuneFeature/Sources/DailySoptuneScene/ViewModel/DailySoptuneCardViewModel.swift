@@ -16,6 +16,8 @@ import DailySoptuneFeatureInterface
 
 public final class DailySoptuneCardViewModel: DailySoptuneCardViewModelType {
     
+    // MARK: - Trigger
+    
     public var onGoToHomeButtonTapped: (() -> Void)?
     public var onBackButtonTapped: (() -> Void)?
 
@@ -34,9 +36,7 @@ public final class DailySoptuneCardViewModel: DailySoptuneCardViewModelType {
     
     // MARK: - Outpust
     
-    public struct Output {
-        
-    }
+    public struct Output { }
     
     // MARK: - initialization
     

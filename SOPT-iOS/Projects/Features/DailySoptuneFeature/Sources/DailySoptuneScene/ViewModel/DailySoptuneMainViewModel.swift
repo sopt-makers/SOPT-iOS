@@ -38,8 +38,7 @@ public final class DailySoptuneMainViewModel: DailySoptuneMainViewModelType {
 	
 	// MARK: - Outputs
 	
-	public struct Output {
-	}
+	public struct Output { }
 	
 	// MARK: - Initialization
 	

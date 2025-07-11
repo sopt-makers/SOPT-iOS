@@ -34,7 +34,7 @@ final class LegacyStampCoordinator: DefaultCoordinator {
     }
     
     private func showMissionList(sceneType: MissionListSceneType) {
-        var missionList = factory.makeMissionListVC(sceneType: sceneType)
+        var missionList = factory.makeMissionListVC(sceneType: sceneType, coordinator: self)
         missionList.onNaviBackTap = { [weak self] in
             self?.router.dismissModule(animated: true)
             self?.finishFlow?()

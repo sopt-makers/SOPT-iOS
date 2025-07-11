@@ -12,7 +12,12 @@ import Core
 import Domain
 
 public class WithdrawalViewModel: WithdrawalViewModelType {
+    
+    // MARK: - Trigger
+    
     public var onWithdrawal: (() -> Void)?
+    
+    // MARK: - Properties
     
     private let useCase: SettingUseCase
     private var cancelBag = CancelBag()

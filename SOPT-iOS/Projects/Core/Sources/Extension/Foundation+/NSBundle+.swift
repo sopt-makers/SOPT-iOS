@@ -8,11 +8,25 @@
 
 import Foundation
 
+public enum BundleKey: String {
+    case appVersion = "CFBundleShortVersionString"
+    case buildVersion = "CFBundleVersion"
+    case appId = "AppID"
+}
+
 public extension Bundle {
-    static var appVersion: String? {
-        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+    static func getValue<T>(for key: BundleKey, as type: T.Type) -> T? {
+        return Bundle.main.infoDictionary?[key.rawValue] as? T
     }
+    static var appVersion: String? {
+        return getValue(for: .appVersion, as: String.self)
+    }
+    
     static var buildVersion: String? {
-        Bundle.main.infoDictionary?["CFBundleVersion"] as? String
+        return getValue(for: .buildVersion, as: String.self)
+    }
+    
+    static var appId: String? {
+        return getValue(for: .appId, as: String.self)
     }
 }
