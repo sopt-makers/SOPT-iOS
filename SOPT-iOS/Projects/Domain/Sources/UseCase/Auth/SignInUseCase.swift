@@ -23,14 +23,15 @@ public protocol SignInUseCase {
     // 인증 중앙화
     func getRecentLogin() -> OAuthProvider?
     func login(with provider: OAuthProvider) -> AnyPublisher<Void, Never>
-    var sideEffect: PassthroughSubject<CoreAuthError, Never> { get } 
+    var sideEffect: PassthroughSubject<CoreAuthError, Never> { get }
 }
 
 public class DefaultSignInUseCase {
-    
+
     private let repository: SignInRepositoryInterface
     private let oauthRepository: CoreOAuthRepositoryInterface
     private let coreRepository: CoreAuthRepositoryInterface
+    private let tokenRepository: AuthTokensRepositoryInterface
     
     private var cancelBag = CancelBag()
     
@@ -40,11 +41,13 @@ public class DefaultSignInUseCase {
     public init(
         repository: SignInRepositoryInterface,
         oauthRepository: CoreOAuthRepositoryInterface,
-        coreRepository: CoreAuthRepositoryInterface
+        coreRepository: CoreAuthRepositoryInterface,
+        tokenRepository: AuthTokensRepositoryInterface
     ) {
         self.repository = repository
         self.oauthRepository = oauthRepository
         self.coreRepository = coreRepository
+        self.tokenRepository = tokenRepository
     }
 }
 
@@ -56,7 +59,7 @@ extension DefaultSignInUseCase: SignInUseCase {
         oauthRepository.getIdentityToken(from: provider)
             .map { (provider, $0) }
             .flatMap(coreRepository.login)
-            .handleEvents(receiveOutput: coreRepository.saveTokens)
+            .handleEvents(receiveOutput: tokenRepository.save)
             .mapVoid()
             .catch { [weak self] in
                 self?.sideEffect.send($0)
@@ -75,6 +78,12 @@ extension DefaultSignInUseCase: SignInUseCase {
 extension DefaultSignInUseCase {
     public func requestSignIn(token: String) {
         repository.requestSignIn(token: token)
+            .handleEvents(receiveOutput: { [weak self] model in
+                self?.tokenRepository.save(model.tokens)
+            })
+            .flatMap { _ in
+                self.repository.fetchSoptampUser()
+            }
             .sink { event in
                 switch event {
                 case .failure(let error):
