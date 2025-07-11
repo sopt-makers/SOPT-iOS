@@ -207,8 +207,13 @@ extension ApplicationCoordinator {
     }
     
     private func checkDidSignIn() {
-        let needAuth = UserDefaultKeyList.Auth.appAccessToken == nil
-        needAuth ? runSignInFlow(by: .root) : (Config.coordinatorFlag == .legacy ? runLegacyTabBarFlow() : runTabBarFlow())
+        if UserDefaultKeyList.Auth.appAccessToken == nil {
+            runSignInFlow(by: .root)
+        } else {
+            Config.coordinatorFlag == .legacy
+            ? runLegacyTabBarFlow()
+            : runTabBarFlow()
+        }
     }
 }
 
@@ -218,7 +223,9 @@ extension ApplicationCoordinator {
     func runSignInFlow(by style: CoordinatorStartingOption) {
         let coordinator = AuthCoordinator(router: router, factory: AuthBuilder())
         coordinator.finishFlow = { [weak self, weak coordinator] userType in
-            Config.coordinatorFlag == .legacy ? self?.runLegacyTabBarFlow(type: userType) : self?.runTabBarFlow()
+            Config.coordinatorFlag == .legacy
+            ? self?.runLegacyTabBarFlow(type: userType)
+            : self?.runTabBarFlow(type: userType)
             self?.removeDependency(coordinator)
         }
         addDependency(coordinator)
@@ -229,7 +236,9 @@ extension ApplicationCoordinator {
         childCoordinators = []
         let coordinator = AuthCoordinator(router: router, factory: AuthBuilder(), url: url)
         coordinator.finishFlow = { [weak self, weak coordinator] userType in
-            Config.coordinatorFlag == .legacy ? self?.runLegacyTabBarFlow(type: userType) : self?.runTabBarFlow()
+            Config.coordinatorFlag == .legacy
+            ? self?.runLegacyTabBarFlow(type: userType)
+            : self?.runTabBarFlow(type: userType)
             self?.removeDependency(coordinator)
         }
         addDependency(coordinator)
