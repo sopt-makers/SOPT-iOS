@@ -17,8 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private var appLifecycleAdapter = AppLifecycleAdapter()
 
     func application( _ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        configureAppLifecycleAdapter()
+        
         registerDependencies()
+        configureAppLifecycleAdapter()
         Firebase.configure()
         
         application.registerForRemoteNotifications()

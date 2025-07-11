@@ -18,12 +18,24 @@ extension AppDelegate {
     }
     
     func registerDependencies() {
+        
+        container.register(
+            interface: AuthTokensRepositoryInterface.self,
+            implement: {
+                let interceptor = AccessTokenInterceptor()
+                let reissueService = DefaultLegacyReissueService(interceptor: interceptor)
+                let repository = LegacyAuthTokensRepository(remote: reissueService)
+                interceptor.accessTokenClosure = { repository.fetch()?.accessToken  }
+                return repository
+            }
+        )
+        
         container.register(
             interface: SignInRepositoryInterface.self,
             implement: {
                 SignInRepository(
-                    authService: DefaultAuthService(interceptor: AccessTokenInterceptor()),
-                    userService: DefaultUserService()
+                    authService: DefaultAuthService.standard,
+                    userService: DefaultUserService.standard
                 )
             }
         )
@@ -31,7 +43,7 @@ extension AppDelegate {
         container.register(
             interface: PhoneVerifyRepositoryInterface.self,
             implement: {
-                PhoneVerifyRepository(coreAuthService: DefaultCoreAuthService())
+                PhoneVerifyRepository(coreAuthService: DefaultCoreAuthService.standard)
             }
         )
         
@@ -46,8 +58,9 @@ extension AppDelegate {
             interface: CoreAuthRepositoryInterface.self,
             implement: {
                 CoreAuthRepository(
-                    coreAuthService: DefaultCoreAuthService(),
-                    socialService: DefaultSocialService())
+                    coreAuthService: DefaultCoreAuthService.standard,
+                    socialService: DefaultSocialService.standard
+                )
             }
         )
         
@@ -57,12 +70,13 @@ extension AppDelegate {
                 SplashRepository()
             }
         )
+        
         container.register(
             interface: AppMyPageRepositoryInterface.self,
             implement: {
                 AppMyPageRepository(
-                    stampService: DefaultStampService(),
-                    userService: DefaultUserService()
+                    stampService: DefaultStampService.standard,
+                    userService: DefaultUserService.standard
                 )
             }
         )
@@ -70,7 +84,7 @@ extension AppDelegate {
             interface: NotificationListRepositoryInterface.self,
             implement: {
                 NotificationListRepository(
-                    service: DefaultNotificationService()
+                    service: DefaultNotificationService.standard
                 )
             }
         )
@@ -78,7 +92,7 @@ extension AppDelegate {
             interface: NotificationDetailRepositoryInterface.self,
             implement: {
                 NotificationDetailRepository(
-                    service: DefaultNotificationService()
+                    service: DefaultNotificationService.standard
                 )
             }
         )
@@ -86,9 +100,9 @@ extension AppDelegate {
             interface: SettingRepositoryInterface.self,
             implement: {
                 SettingRepository(
-                    authService: DefaultAuthService(interceptor: AccessTokenInterceptor()),
-                    stampService: DefaultStampService(),
-                    userService: DefaultUserService()
+                    authService: DefaultAuthService.standard,
+                    stampService: DefaultStampService.standard,
+                    userService: DefaultUserService.standard
                 )
             }
         )
@@ -96,9 +110,9 @@ extension AppDelegate {
             interface: MissionListRepositoryInterface.self,
             implement: {
                 MissionListRepository(
-                    missionService: DefaultMissionService(),
-                    rankService: DefaultRankService(),
-                    userService: DefaultUserService()
+                    missionService: DefaultMissionService.standard,
+                    rankService: DefaultRankService.standard,
+                    userService: DefaultUserService.standard
                 )
             }
         )
@@ -106,25 +120,25 @@ extension AppDelegate {
             interface: RankingRepositoryInterface.self,
             implement: {
                 RankingRepository(
-                    service: DefaultRankService()
+                    service: DefaultRankService.standard
                 )
             }
         )
         container.register(
             interface: ListDetailRepositoryInterface.self,
             implement: {
-              ListDetailRepository(
-                  stampService: DefaultStampService(),
-                  s3Service: DefaultS3Service(),
-                  mediaService: DefaultMediaService()
-              )
+                ListDetailRepository(
+                    stampService: DefaultStampService.standard,
+                    s3Service: DefaultS3Service.standard,
+                    mediaService: DefaultMediaService()
+                )
             }
         )
         container.register(
             interface: AttendanceRepositoryInterface.self,
             implement: {
                 AttendanceRepository(
-                    service: DefaultAttendanceService()
+                    service: DefaultAttendanceService.standard
                 )
             }
         )
@@ -132,7 +146,7 @@ extension AppDelegate {
             interface: ShowAttendanceRepositoryInterface.self,
             implement: {
                 ShowAttendanceRepository(
-                    service: DefaultAttendanceService()
+                    service: DefaultAttendanceService.standard
                 )
             }
         )
@@ -140,21 +154,21 @@ extension AppDelegate {
             interface: NotificationSettingRepositoryInterface.self,
             implement: {
                 NotificationSettingRepository(
-                    userService: DefaultUserService()
+                    userService: DefaultUserService.standard
                 )
             }
         )
         container.register(interface: PokeMainRepositoryInterface.self,
            implement: {
                 PokeMainRepository(
-                    service: DefaultPokeService()
+                    service: DefaultPokeService.standard
                 )
             }
         )
         container.register(interface: PokeMyFriendsRepositoryInterface.self,
            implement: {
                 PokeMyFriendsRepository(
-                    service: DefaultPokeService()
+                    service: DefaultPokeService.standard
                 )
             }
         )
@@ -162,7 +176,7 @@ extension AppDelegate {
             interface: PokeOnboardingRepositoryInterface.self,
             implement: {
                 PokeOnboardingRepository(
-                    pokeService: DefaultPokeService()
+                    pokeService: DefaultPokeService.standard
                 )
             }
         )
@@ -170,7 +184,7 @@ extension AppDelegate {
             interface: PokeNotificationRepositoryInterface.self,
             implement: {
                 PokeNotificationRepository(
-                    pokeService: DefaultPokeService()
+                    pokeService: DefaultPokeService.standard
                 )
             }
         )
@@ -178,8 +192,8 @@ extension AppDelegate {
             interface: DailySoptuneRepositoryInterface.self,
             implement: {
                 DailySoptuneRepository(
-                    fortuneService: DefaultFortuneService(), 
-                    pokeService: DefaultPokeService()
+                    fortuneService: DefaultFortuneService.standard,
+                    pokeService: DefaultPokeService.standard
                 )
             }
         )
@@ -187,18 +201,18 @@ extension AppDelegate {
             interface: HomeRepositoryInterface.self,
             implement: {
                 HomeRepository(
-                    homeService: DefaultHomeService(),
-                    calendarService: DefaultCalendarService(),
-                    userService: DefaultUserService(),
-                    stampService: DefaultStampService(),
-                    pokeService: DefaultPokeService()
+                    homeService: DefaultHomeService.standard,
+                    calendarService: DefaultCalendarService.standard,
+                    userService: DefaultUserService.standard,
+                    stampService: DefaultStampService.standard,
+                    pokeService: DefaultPokeService.standard
                 )
             }
         )
         container.register(
             interface: SoptlogRepositoryInterface.self,
             implement: {
-                SoptlogRepository(userService: DefaultUserService())
+                SoptlogRepository(userService: DefaultUserService.standard)
             }
         )
     }
