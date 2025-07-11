@@ -12,7 +12,12 @@ import Core
 import Domain
 import StampFeatureInterface
 
-public class PartRankingViewModel: ViewModelType {
+public class PartRankingViewModel: PartRankingViewModelType {
+    
+    // MARK: - Trigger
+    // TODO: coordinating vc -> vm
+    public var onCellTap: ((StampFeatureInterface.Part) -> Void)?
+    public var onNaviBackTap: (() -> Void)?
     
     private let useCase: RankingUseCase
     private let rankingViewType: RankingViewType

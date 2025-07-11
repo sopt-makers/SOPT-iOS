@@ -9,16 +9,15 @@ let xcconfigPath: ProjectDescription.Path = .relativeToRoot("xcconfigs/targets/i
 let packageSettings = PackageSettings(
     productTypes: [
         "Alamofire": .framework,
-        "SnapKit": .staticFramework,
-        "Moya": .staticFramework,
-        "Then": .staticFramework,
-        "Kingfisher": .staticFramework,
-        "Lottie": .staticFramework,
-        "AmplitudeSwift": .staticFramework,
         "GoogleSignIn": .framework,
         "GTMAppAuth": .framework,
         "AppAuth": .framework,
-        
+        "GULEnvironment": .framework,
+        "GULLogger": .framework,
+        "GULNSData": .framework,
+        "GULNetwork": .framework,
+        "GULUserDefaults": .framework,
+        "GULReachability": .framework,
     ],
     baseSettings: .settings(
         configurations: [
@@ -44,6 +43,7 @@ let package = Package(
         .package(url: "https://github.com/onevcat/Kingfisher.git", from: "8.0.0"),
         .package(url: "https://github.com/airbnb/lottie-ios", from: "4.5.0"),
         .package(url: "https://github.com/amplitude/Amplitude-Swift", from: "1.11.10"),
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "11.12.0")
         .package(url: "https://github.com/google/GoogleSignIn-iOS.git", from: "7.0.0")
     ]
 )

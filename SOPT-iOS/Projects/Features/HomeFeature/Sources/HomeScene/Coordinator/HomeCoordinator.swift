@@ -141,7 +141,8 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
                 description: I18N.Home.PopUp.needToLoginDetail,
                 customButtonTitle: I18N.Home.PopUp.login,
                 customAction: { [weak self] in
-                    self?.requestCoordinating?(.signIn)
+                    guard let self else { return }
+                    self.delegate?.homeCoordinator(self, to: .signIn)
                 }
             )
         }

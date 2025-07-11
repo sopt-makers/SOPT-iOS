@@ -9,7 +9,7 @@
 import Foundation
 
 open class BaseCoordinator: Coordinator {
-    
+    // TODO: - legacy코드 지울 때 childCoordinators 관련 코드 모두 제거
     // MARK: - Vars & Lets
     
     public var childCoordinators = [Coordinator]()

@@ -2,8 +2,8 @@
 //  PokeBuilder.swift
 //  PokeFeatureInterface
 //
-//  Created by sejin on 12/7/23.
-//  Copyright © 2023 SOPT-iOS. All rights reserved.
+//  Created by Jae Hyun Lee on 6/3/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
 import Core
@@ -20,10 +20,19 @@ public final class PokeBuilder {
 }
 
 extension PokeBuilder: PokeFeatureBuildable {
+    public func makePokeOnboarding() -> PokeFeatureInterface.PokeOnboardingPresentable {
+        let usecase = DefaultPokeOnboardingUsecase(repository: self.pokeOnboardingRepository)
+        let viewModel = PokeOnboardingViewModel(usecase: usecase)
+        let viewController = PokeOnboardingVC(viewModel: viewModel)
+        
+        return (viewController, viewModel)
+    }
+    
     public func makePokeMain(isRouteFromRoot: Bool) -> PokeFeatureInterface.PokeMainPresentable {
         let useCase = DefaultPokeMainUseCase(repository: pokeMainRepository)
         let viewModel = PokeMainViewModel(useCase: useCase, isRouteFromRoot: isRouteFromRoot)
         let pokeMainVC = PokeMainVC(viewModel: viewModel)
+        
         return (pokeMainVC, viewModel)
     }
     
@@ -35,31 +44,7 @@ extension PokeBuilder: PokeFeatureBuildable {
         return (pokeMyFriendsVC, viewModel)
     }
     
-    public func makePokeOnboarding() -> PokeFeatureInterface.PokeOnboardingPresentable {
-        let usecase = DefaultPokeOnboardingUsecase(repository: self.pokeOnboardingRepository)
-        let viewModel = PokeOnboardingViewModel(usecase: usecase)
-        let viewController = PokeOnboardingVC(viewModel: viewModel)
-        
-        return (viewController, viewModel)
-    }
-    
-    public func makePokeMessageTemplateBottomSheet(messageType: PokeMessageType) -> PokeMessageTemplatesPresentable {
-        let usecase = DefaultPokeMessageTemplateUsecase(repository: self.pokeOnboardingRepository)
-        let viewModel = PokeMessageTemplateViewModel(messageType: messageType, usecase: usecase)
-        let viewController = PokeMessageTemplateBottomSheet(viewModel: viewModel)
-        
-        return (viewController, viewModel)
-    }
-    
-    public func makePokeNotificationList() -> PokeNotificationPresentable {
-        let usecase = DefaultPokeNotificationUsecase(repository: self.pokeNotificationListRepository)
-        let viewModel = PokeNotificationViewModel(usecase: usecase)
-        let viewController = PokeNotificationViewController(viewModel: viewModel)
-        
-        return (viewController, viewModel)
-    }
-    
-    public func makePokeMyFriendsList(relation: PokeRelation) -> PokeFeatureInterface.PokeMyFriendsListPresentable {
+    public func makePokeMyFriendsList(relation: PokeFeatureInterface.PokeRelation) -> PokeFeatureInterface.PokeMyFriendsListPresentable {
         let useCase = DefaultPokeMyFriendsUseCase(repository: self.pokeMyFriendsRepository)
         let viewModel = PokeMyFriendsListViewModel(relation: relation, useCase: useCase)
         let pokeMyFriendsListVC = PokeMyFriendsListVC(viewModel: viewModel)
@@ -67,14 +52,30 @@ extension PokeBuilder: PokeFeatureBuildable {
         return (pokeMyFriendsListVC, viewModel)
     }
     
-    public func makePokeMakingFriendCompleted(friendName: String) -> PokeMakingFriendCompletedPresentable {
+    public func makePokeMessageTemplateBottomSheet(messageType: Domain.PokeMessageType) -> PokeFeatureInterface.PokeMessageTemplatesPresentable {
+        let usecase = DefaultPokeMessageTemplateUsecase(repository: self.pokeOnboardingRepository)
+        let viewModel = PokeMessageTemplateViewModel(messageType: messageType, usecase: usecase)
+        let viewController = PokeMessageTemplateBottomSheet(viewModel: viewModel)
+        
+        return (viewController, viewModel)
+    }
+    
+    public func makePokeNotificationList() -> PokeFeatureInterface.PokeNotificationPresentable {
+        let usecase = DefaultPokeNotificationUsecase(repository: self.pokeNotificationListRepository)
+        let viewModel = PokeNotificationViewModel(usecase: usecase)
+        let viewController = PokeNotificationViewController(viewModel: viewModel)
+        
+        return (viewController, viewModel)
+    }
+    
+    public func makePokeMakingFriendCompleted(friendName: String) -> any PokeFeatureInterface.PokeMakingFriendCompletedPresentable {
         let vc = PokeMakingFriendCompletedVC(friendName: friendName)
         
         return vc
     }
-
-    public func makePokeAnonymousFriendUpgrade(user: PokeUserModel) -> PokeAnonymousFriendUpgradePresentable {
-      let vc = PokeAnonymousFriendUpgradeVC(user: user)
-      return vc
+    
+    public func makePokeAnonymousFriendUpgrade(user: Domain.PokeUserModel) -> any PokeFeatureInterface.PokeAnonymousFriendUpgradePresentable {
+        let vc = PokeAnonymousFriendUpgradeVC(user: user)
+        return vc
     }
 }

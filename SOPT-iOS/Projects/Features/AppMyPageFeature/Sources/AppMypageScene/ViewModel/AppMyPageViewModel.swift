@@ -18,6 +18,8 @@ import BaseFeatureDependency
 
 public final class AppMyPageViewModel: MyPageViewModelType {
     
+    // MARK: - Trigger
+    
     public var onNaviBackButtonTap: (() -> Void)?
     public var onPolicyItemTap: (() -> Void)?
     public var onTermsOfUseItemTap: (() -> Void)?
@@ -28,7 +30,11 @@ public final class AppMyPageViewModel: MyPageViewModelType {
     public var onAlertButtonTap: ((String) -> Void)?
     public var onResetSoptampTap: (() -> Void)?
     
-    let userType: UserType = UserDefaultKeyList.Auth.getUserType()
+    // MARK: - Properties
+    
+    private let coordinator: AnyCoordinatorObject
+    private let useCase: AppMyPageUseCase
+    private let userType: UserType = UserDefaultKeyList.Auth.getUserType()
     
     // MARK: - Inputs
     
@@ -44,12 +50,11 @@ public final class AppMyPageViewModel: MyPageViewModelType {
         let deregisterPushTokenSuccess = PassthroughSubject<Bool, Never>()
     }
     
-    // MARK: - MyPageCoordinatable
+    // MARK: - init
     
-    private let useCase: AppMyPageUseCase
-    
-    public init(useCase: AppMyPageUseCase) {
+    public init(useCase: AppMyPageUseCase, coordinator: Coordinator) {
         self.useCase = useCase
+        self.coordinator = coordinator
     }
 }
 

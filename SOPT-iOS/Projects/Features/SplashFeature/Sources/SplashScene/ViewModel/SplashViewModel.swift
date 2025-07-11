@@ -16,29 +16,32 @@ import SplashFeatureInterface
 
 public class SplashViewModel: SplashViewModelType {
     
+    // MARK: - Trigger
+    
+    public var onNoticeSkipped: (() -> Void)?
+    public var onNoticeExist: ((AppNoticeModel) -> Void)?
+    public var onOptionalNoticeExist: ((AppNoticeModel) -> Void)?
+    public var finished: (() -> Void)?
+    
+    // MARK: - Properties
+    
+    private let coordinator: AnyCoordinatorObject
     private let useCase: SplashUseCase
     private var cancelBag = CancelBag()
     
     // MARK: - Inputs
     
-    public struct Input {
-    }
+    public struct Input { }
     
     // MARK: - Outputs
     
-    public struct Output {
-        var appNoticeModel = PassthroughSubject<AppNoticeModel?, Error>()
-    }
-    
-    // MARK: - SignInCoordinatable
-    
-    public var onNoticeSkipped: (() -> Void)?
-    public var onNoticeExist: ((AppNoticeModel) -> Void)?
+    public struct Output { }
     
     // MARK: - init
     
-    public init(useCase: SplashUseCase) {
+    public init(useCase: SplashUseCase, coordinator: Coordinator) {
         self.useCase = useCase
+        self.coordinator = coordinator
     }
 }
 
@@ -51,22 +54,21 @@ extension SplashViewModel {
     }
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
-        useCase.appNoticeModel
+        useCase.needUpdate
             .withUnretained(self)
-            .sink { event in
-                print("SplashViewModel - completion: \(event)")
-            } receiveValue: { owner, appNoticeModel in
-                guard let appNoticeModel = appNoticeModel else {
+            .receive(on: DispatchQueue.main)
+            .sink { owner, updateType in
+                switch updateType {
+                case .forcedUpdate(let appNoticeModel):
+                    owner.onNoticeExist?(appNoticeModel)
+                case .optionalUpdate(let appNoticeModel):
+                    owner.onOptionalNoticeExist?(appNoticeModel)
+                case .none:
                     owner.onNoticeSkipped?()
-                    return
-                }
-                
-                guard appNoticeModel.withError == false else {
+                case .networkError(_):
+                    print("업데이트 상태 확인 중 에러가 발생했습니다.")
                     owner.showNetworkAlert()
-                    return
                 }
-                
-                owner.onNoticeExist?(appNoticeModel)
             }.store(in: cancelBag)
     }
 

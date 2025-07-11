@@ -12,8 +12,7 @@ import Core
 import Domain
 
 public
-final class LegacySplashCoordinator: DefaultCoordinator {
-    
+final class LegacySplashCoordinator: BaseCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: LegacySplashFeatureViewBuildable
@@ -30,30 +29,29 @@ final class LegacySplashCoordinator: DefaultCoordinator {
     }
     
     private func showSplash() {
-        var splash = factory.makeSplash()
+        var splash = factory.makeSplash(self)
+        
         splash.vm.onNoticeExist = { [weak self] appNoticeModel in
-            self?.presentNoticePopUp(model: appNoticeModel)
+            self?.presentNoticePopUp(model: appNoticeModel, as: .forceUpdate)
         }
+        
         splash.vm.onNoticeSkipped = { [weak self] in
             self?.finishFlow?()
+        }
+        
+        splash.vm.onOptionalNoticeExist = { [weak self] appNoticeModel in
+            self?.presentNoticePopUp(model: appNoticeModel, as: .recommendUpdate)
         }
         router.setRootModule(splash.vc, animated: true)
     }
     
-    private func presentNoticePopUp(model: AppNoticeModel) {
-        guard let isForcedUpdate = model.isForced else { return }
-        
-        let popUpType: NoticePopUpType = isForcedUpdate ? .forceUpdate : .recommendUpdate
-        
+    private func presentNoticePopUp(model: AppNoticeModel, as type: NoticePopUpType) {
         let noticePopUpControllable = factory.makeNoticePopUpVC(
-            noticeType: popUpType,
+            noticeType: type,
             content: model.notice
         )
         
         noticePopUpControllable.closeButtonTappedWithCheck.sink { [weak self] didCheck in
-            if didCheck {
-                UserDefaultKeyList.AppNotice.checkedAppVersion = model.recommendVersion
-            }
             self?.router.dismissModule(animated: true)
             self?.finishFlow?()
         }.store(in: cancelBag)

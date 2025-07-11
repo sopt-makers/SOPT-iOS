@@ -21,5 +21,7 @@ public extension TargetDependency.SPM {
     static let CombineMoya = TargetDependency.external(name: "CombineMoya")
     static let lottie = TargetDependency.external(name: "Lottie")
     static let Amplitude = TargetDependency.external(name: "AmplitudeSwift")
+    static let FirebaseRemoteConfig = TargetDependency.external(name: "FirebaseRemoteConfig")
+    static let FirebaseCore = TargetDependency.external(name: "FirebaseCore")
     static let GoogleSignIn = TargetDependency.external(name: "GoogleSignIn")
 }

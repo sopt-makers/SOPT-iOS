@@ -16,27 +16,29 @@ import BaseFeatureDependency
 import TabBarFeatureInterface
 import WebFeature
 
+public protocol TabBarCoordinatorDelegate: AnyObject {
+    func tabBarCoordinator(_ coordinator: TabBarCoordinator, to destination: TabBarCoordinatorDestination)
+}
+
 public final class TabBarCoordinator: DefaultTabBarCoordinator {
     
     // MARK: - Properties
     
     public var finishFlow: (() -> Void)?
     public var requestCoordinating: ((TabBarCoordinatorDestination) -> Void)?
+    public weak var delegate: TabBarCoordinatorDelegate?
         
     private let factory: TabBarPresentable
     private var navigationController: UINavigationController
-    private let items: [UIViewController]
     
     // MARK: - Init
     
     public init(
         navigationController: UINavigationController,
-        factory: TabBarPresentable,
-        items: [UIViewController]
+        factory: TabBarPresentable
     ) {
         self.navigationController = navigationController
         self.factory = factory
-        self.items = items
     }
     
     // MARK: - Coordinator Life Cycle
@@ -52,10 +54,11 @@ public final class TabBarCoordinator: DefaultTabBarCoordinator {
     
         tabBar.vm.onTabBarItemTapped = { [weak self] index in
             // 각 탭의 코디네이터 실행
-            guard let tabType = TabType(rawValue: index) else { return }
+            guard let self = self,
+                let tabType = TabType(rawValue: index) else { return }
             switch tabType {
-            case .home: self?.requestCoordinating?(.home)
-            case .soptlog: self?.requestCoordinating?(.soptlog)
+            case .home: self.delegate?.tabBarCoordinator(self, to: .home)
+            case .soptlog: self.delegate?.tabBarCoordinator(self, to: .soptlog)
             }
         }
         
@@ -66,7 +69,8 @@ public final class TabBarCoordinator: DefaultTabBarCoordinator {
                 description: I18N.Home.PopUp.needToLoginDetail,
                 customButtonTitle: I18N.Home.PopUp.login,
                 customAction: { [weak self] in
-                    self?.requestCoordinating?(.signIn)
+                    guard let self else { return }
+                    self.delegate?.tabBarCoordinator(self, to: .signIn)
                 }
             )
         }
@@ -76,9 +80,5 @@ public final class TabBarCoordinator: DefaultTabBarCoordinator {
             let webView = SOPTWebView(startWith: url)
             self?.navigationController.pushViewController(webView, animated: true)
         }
-        
-        let navigation = UINavigationController(rootViewController: tabBar.vc)
-        CoordinatorUtils.replaceRootWindowWithAnimate(root: navigation, hideBar: true)
-        self.navigationController = navigation
     }
 }

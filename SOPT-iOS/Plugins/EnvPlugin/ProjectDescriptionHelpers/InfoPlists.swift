@@ -41,7 +41,11 @@ public extension Project {
                 "CFBundleURLName": .string("Google"),
                 "CFBundleURLSchemes": .array([.string("$(GOOGLE_IOS_REVERSED_CLIENT_ID)")])
             ])
-        ])
+        ]),
+        "UIBackgroundModes": .array([
+            .string("remote-notification")
+        ]),
+        "AppID": .string("6444594319")
     ]
     
     static let demoInfoPlist: [String: Plist.Value] = [
@@ -85,6 +89,10 @@ public extension Project {
                 "CFBundleURLName": .string("Google"),
                 "CFBundleURLSchemes": .array([.string("$(GOOGLE_IOS_REVERSED_CLIENT_ID)")])
             ])
-        ])
+        ]),
+        "UIBackgroundModes": .array([
+            .string("remote-notification")
+        ]),
+        "AppID": .string("6444594319")
     ]
 }

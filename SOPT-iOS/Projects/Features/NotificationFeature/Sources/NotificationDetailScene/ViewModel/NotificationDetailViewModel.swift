@@ -16,6 +16,10 @@ import BaseFeatureDependency
 import NotificationFeatureInterface
 
 public class NotificationDetailViewModel: NotificationDetailViewModelType {
+    
+    // MARK: - Trigger
+    
+    public var onShortCutButtonTap: ((ShortCutLink) -> Void)?
 
     // MARK: - Properties
     
@@ -37,10 +41,6 @@ public class NotificationDetailViewModel: NotificationDetailViewModelType {
     public struct Output {
         var notification = PassthroughSubject<NotificationDetailModel, Never>()
     }
-    
-    // MARK: - NotificationCoordinatable
-    
-    public var onShortCutButtonTap: ((ShortCutLink) -> Void)?
     
     // MARK: - init
   

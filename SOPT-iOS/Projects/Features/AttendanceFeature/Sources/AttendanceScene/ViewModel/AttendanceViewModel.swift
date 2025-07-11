@@ -11,8 +11,9 @@ import Foundation
 
 import Core
 import Domain
+import AttendanceFeatureInterface
 
-public final class AttendanceViewModel: ViewModelType {
+public final class AttendanceViewModel: AttendanceViewModelType {
     
     // MARK: - Properties
     
@@ -43,6 +44,8 @@ public final class AttendanceViewModel: ViewModelType {
         let attendSuccess = PassthroughSubject<Bool, Never>()
         let attendErrorMsg = PassthroughSubject<String, Never>()
     }
+    
+    // MARK: - init
     
     public init(useCase: AttendanceUseCase, lectureRound: AttendanceRoundModel) {
         self.useCase = useCase

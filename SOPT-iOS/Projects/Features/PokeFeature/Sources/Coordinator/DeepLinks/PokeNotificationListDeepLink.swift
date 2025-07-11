@@ -17,7 +17,7 @@ public struct PokeNotificationListDeepLink: DeepLinkExecutable {
     public init() {}
     
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
-        guard let coordinator = coordinator as? PokeCoordinator else { return nil }
+        guard let coordinator = coordinator as? LegacyPokeCoordinator else { return nil }
         
         coordinator.runPokeNotificationListFlow()
         

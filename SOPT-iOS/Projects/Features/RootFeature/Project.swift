@@ -19,7 +19,6 @@ let project = Project.makeModule(
         .Features.TabBar.Feature,
         .Features.Stamp.Feature,
         .Features.Attendance.Feature,
-        .Features.Notice.Feature,
         .Features.AppMyPage.Feature,
         .Features.Notification.Feature,
         .Features.Poke.Feature,

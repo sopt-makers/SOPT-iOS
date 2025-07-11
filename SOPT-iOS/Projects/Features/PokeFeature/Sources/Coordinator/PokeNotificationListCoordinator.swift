@@ -2,8 +2,8 @@
 //  PokeNotificationListCoordinator.swift
 //  PokeFeature
 //
-//  Created by Ian on 12/23/23.
-//  Copyright © 2023 SOPT-iOS. All rights reserved.
+//  Created by Jae Hyun Lee on 6/3/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
 import UIKit
@@ -15,26 +15,36 @@ import PokeFeatureInterface
 import WebFeature
 
 public final class PokeNotificationListCoordinator: DefaultCoordinator {
+    
+    // MARK: - Properties
+    
     public var finishFlow: (() -> Void)?
     
-    private let router: LegacyRouter
     private let factory: PokeFeatureBuildable
+    private let navigationController: UINavigationController
     private weak var rootController: UINavigationController?
     
-    public init(router: LegacyRouter, factory: PokeFeatureBuildable) {
-        self.router = router
+    // MARK: - Init
+    
+    public init(
+        navigationController: UINavigationController,
+        factory: PokeFeatureBuildable
+    ) {
+        self.navigationController = navigationController
         self.factory = factory
     }
     
+    // MARK: - Coordinator Life Cycle
+    
     public override func start() {
-        self.showPokeNotificationListView()
+        showPokeNotificationListView()
     }
-}
-
-extension PokeNotificationListCoordinator {
+    
+    // MARK: - Navigation
+    
     private func showPokeNotificationListView() {
-        var pokeNotiListVC = self.factory.makePokeNotificationList()
-                    
+        var pokeNotiListVC = factory.makePokeNotificationList()
+        
         pokeNotiListVC.vm.onPokeButtonTapped = { [weak self] userModel in
             guard let bottomSheet = self?.factory
                 .makePokeMessageTemplateBottomSheet(messageType: userModel.isFirstMeet ? .pokeSomeone : .pokeFriend)
@@ -42,7 +52,7 @@ extension PokeNotificationListCoordinator {
                     .viewController as? PokeMessageTemplateBottomSheet
             else { return .empty() }
             
-            let bottomSheetManager = BottomSheetManager(configuration:  .messageTemplate(minHeight: PokeMessageTemplateBottomSheet.minimumContentHeight))
+            let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate(minHeight: PokeMessageTemplateBottomSheet.minimumContentHeight))
             bottomSheetManager.present(toPresent: bottomSheet, on: self?.rootController)
             
             return bottomSheet
@@ -67,21 +77,21 @@ extension PokeNotificationListCoordinator {
         }
 
         pokeNotiListVC.vm.onProfileImageTapped = { [weak self] playgroundId in
-          guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(playgroundId)") else { return }
-
-          let webView = SOPTWebView(startWith: url)
-
-          self?.router.push(webView.viewController, transition: nil, animated: true)
+            guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(playgroundId)") else { return }
+            
+            let webView = SOPTWebView(startWith: url)
+            self?.navigationController.pushViewController(webView, animated: true)
         }
-
-        self.rootController = pokeNotiListVC.vc.asNavigationController
+        
+        let navController = UINavigationController(rootViewController: pokeNotiListVC.vc)
+        rootController = navController
         
         var willAnimate = true
-        if let top = router.topViewController, type(of: top) == type(of: pokeNotiListVC.vc) {
+        if let top = navigationController.topViewController, type(of: top) == type(of: pokeNotiListVC.vc) {
             willAnimate = false
-            router.popModule(transition: nil, animated: false)
+            navigationController.popViewController(animated: false)
         }
         
-        self.router.push(pokeNotiListVC.vc, transition: nil, animated: willAnimate)
+        navigationController.pushViewController(pokeNotiListVC.vc, animated: willAnimate)
     }
 }

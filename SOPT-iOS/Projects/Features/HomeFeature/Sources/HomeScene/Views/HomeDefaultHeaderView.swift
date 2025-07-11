@@ -21,12 +21,24 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
         $0.font = DSKitFontFamily.Suit.bold.font(size: 20)
         $0.textColor = DSKitAsset.Colors.white.color
     }
-
-    private lazy var orangeCharacterLottieView = LottieAnimationView(name: "playgroundNewsOrangeCharacter",
-                                                                     bundle: DSKitResources.bundle).then {
-        $0.loopMode = .loop
+    
+    private let fireImageView = UIImageView().then {
+        $0.image = DSKitAsset.Assets.icFire.image
     }
-        
+    
+    private let viewAllContentButton = UIButton(configuration: .plain()).then {
+        var config = UIButton.Configuration.plain()
+        config.baseForegroundColor = DSKitAsset.Colors.gray300.color
+        config.contentInsets = .zero
+        var attributedTitle = AttributedString(I18N.Home.viewAll)
+        attributedTitle.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
+        config.attributedTitle = attributedTitle
+        let chervonRightImage = DSKitAsset.Assets.iconChevronRight.image.withTintColor(DSKitAsset.Colors.gray300.color)
+        config.image = chervonRightImage
+        config.imagePlacement = .trailing
+        $0.configuration = config
+    }
+
     // MARK: - Initialization
     
     override init(frame: CGRect) {
@@ -49,50 +61,46 @@ extension HomeDefaultHeaderView {
     private func setLayout() {
         self.clipsToBounds = true
         
-        self.addSubviews(titleLabel, orangeCharacterLottieView)
+        self.addSubviews(titleLabel, fireImageView, viewAllContentButton)
         
-        titleLabel.snp.updateConstraints { make in
+        titleLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.centerY.equalToSuperview()
         }
         
-        orangeCharacterLottieView.snp.makeConstraints { make in
-            make.width.equalTo(124)
-            make.height.equalTo(95)
-            make.trailing.equalToSuperview()
-            make.top.equalToSuperview()
+        fireImageView.snp.makeConstraints { make in
+            make.size.equalTo(20)
+            make.centerY.equalToSuperview()
+            make.leading.equalTo(titleLabel.snp.trailing).offset(3)
         }
-    }
-
-    /// 플레이그라운드 뉴스 섹션일 때만 lottie에 의해서 view의 높이가 달라져, 타이틀의 레이아웃을 재설정합니다.
-    private func setTitleLabelLayoutForPlaygroundNews() {
-        titleLabel.snp.removeConstraints()
         
-        titleLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview()
-            make.bottom.equalToSuperview().inset(16)
+        viewAllContentButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview()
+            make.centerY.equalToSuperview()
+            make.height.equalTo(16)
         }
+        
+        hiddenFireIcon()
+        hiddenViewAllContentButton()
+    }
+    
+    /// 기본적으로 fire 아이콘은 hidden 처리
+    private func hiddenFireIcon() {
+        self.fireImageView.isHidden = true
+    }
+    
+    /// 기본적으로 전체보기 버튼은 hidden 처리
+    private func hiddenViewAllContentButton() {
+        self.viewAllContentButton.isHidden = true
     }
 }
 
 // MARK: - Methods
 
 extension HomeDefaultHeaderView {
-    func configureView<T: HomeSectionKindProtocol>(sectionKind: T) {
-        self.titleLabel.text = sectionKind.title
-        self.orangeCharacterLottieView.isHidden = true
-        
-        if let memberKind = sectionKind as? HomeForMemberSectionLayoutKind {
-//            let shouldShow = (memberKind == .playgroundNews)
-            let shouldShow = false
-            self.orangeCharacterLottieView.isHidden = !shouldShow
-            
-            if shouldShow {
-                self.orangeCharacterLottieView.play()
-                setTitleLabelLayoutForPlaygroundNews()
-            } else {
-                self.orangeCharacterLottieView.stop()
-            }
-        }
+    func configureView(sectionKind: some HomeSectionUIConfigurable) {
+        self.titleLabel.text = sectionKind.headerTitle
+        self.fireImageView.isHidden = !sectionKind.shouldShowFireIcon
+        self.viewAllContentButton.isHidden = !sectionKind.shouldShowViewAllContentButton
     }
 }

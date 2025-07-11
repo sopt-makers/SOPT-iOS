@@ -2,13 +2,12 @@
 //  SplashRepositoryInterface.swift
 //  Domain
 //
-//  Created by sejin on 2023/01/18.
-//  Copyright © 2023 SOPT-Stamp-iOS. All rights reserved.
+//  Created by 강윤서 on 7/8/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
-import Combine
-
 public protocol SplashRepositoryInterface {
-    func getAppNotice() -> AnyPublisher<AppNoticeModel, Error>
-    func getCheckedRecommendUpdateVersion() -> String?
+    func appStoreVersion() async throws -> String
+    func forcedUpdateData() async throws -> ForceUpdateModel
+    func optionalUpdateData() async throws -> AppNoticeModel
 }

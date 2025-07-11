@@ -13,7 +13,6 @@ public extension Dep {
         public struct Auth {}
         public struct Stamp {}
         public struct Attendance {}
-        public struct Notice {}
         public struct AppMyPage {}
         public struct Notification {}
         public struct Poke {}
@@ -88,13 +87,6 @@ public extension Dep.Features.Stamp {
 
 public extension Dep.Features.Attendance {
     static let group = "Attendance"
-    
-    static let Feature = Dep.Features.project(name: "Feature", group: group)
-    static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))
-}
-
-public extension Dep.Features.Notice {
-    static let group = "Notice"
     
     static let Feature = Dep.Features.project(name: "Feature", group: group)
     static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))

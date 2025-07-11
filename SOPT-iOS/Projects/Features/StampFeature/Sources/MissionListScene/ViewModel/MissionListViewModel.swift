@@ -11,10 +11,25 @@ import Foundation
 
 import Core
 import Domain
+import BaseFeatureDependency
 
-public class MissionListViewModel: ViewModelType {
+public class MissionListViewModel: MissionListViewModelType {
+    
+    // MARK: - Trigger
+    // TODO: coordinating vc -> vm
+    
+    public var onSwiped: (() -> Void)?
+    public var onNaviBackTap: (() -> Void)?
+    public var onPartRankingButtonTap: ((StampFeatureInterface.RankingViewType) -> Void)?
+    public var onCurrentGenerationRankingButtonTap: ((StampFeatureInterface.RankingViewType) -> Void)?
+    public var onGuideTap: (() -> Void)?
+    public var onCellTap: ((Domain.MissionListModel, String?) -> Void)?
+    public var onReportButtonTap: (() -> Void)?
+    
+    // MARK: - Properties
     
     private let useCase: MissionListUseCase
+    private let coordinator: AnyCoordinatorObject
     private var cancelBag = CancelBag()
     public var missionListsceneType: MissionListSceneType!
     
@@ -37,9 +52,13 @@ public class MissionListViewModel: ViewModelType {
     
     // MARK: - init
     
-    public init(useCase: MissionListUseCase, sceneType: MissionListSceneType) {
+    public init(useCase: MissionListUseCase,
+                sceneType: MissionListSceneType,
+                coordinator: Coordinator
+    ) {
         self.useCase = useCase
         self.missionListsceneType = sceneType
+        self.coordinator = coordinator
     }
 }
 

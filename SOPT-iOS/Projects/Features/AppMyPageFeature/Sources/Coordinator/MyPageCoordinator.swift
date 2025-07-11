@@ -16,7 +16,7 @@ public protocol MyPageCoordinatorDelegate: AnyObject {
     func myPageCoordinator(_ coordinator: MyPageCoordinator, to destination: MyPageCoordinatorDestination)
 }
 
-public final class MyPageCoordinator: DefaultMyPageCoordinator {
+public final class MyPageCoordinator: BaseCoordinator {
     
     // MARK: - Properties
     
@@ -26,7 +26,7 @@ public final class MyPageCoordinator: DefaultMyPageCoordinator {
     
     private let factory: MyPageFeatureBuildable
     private let userType: UserType
-    private let navigationController: UINavigationController
+    private weak var navigationController: UINavigationController?
     
     // MARK: - Init
     
@@ -45,15 +45,15 @@ public final class MyPageCoordinator: DefaultMyPageCoordinator {
     public override func start() {
         showMyPage()
     }
-    
+
     // MARK: - Navigation
     
     private func showMyPage() {
-        var myPage = factory.makeAppMyPage(userType: userType)
+        var myPage = factory.makeAppMyPage(userType: userType, coordinator: self)
         
         myPage.vm.onNaviBackButtonTap = { [weak self] in
-            self?.navigationController.popViewController(animated: true)
-            self?.finishFlow?()
+            guard let self else { return }
+            self.navigationController?.popViewController(animated: true)
         }
         
         myPage.vm.onShowLogout = { [weak self] in
@@ -69,19 +69,19 @@ public final class MyPageCoordinator: DefaultMyPageCoordinator {
         myPage.vm.onPolicyItemTap = { [weak self] in
             guard let self = self else { return }
             let policyVC = self.factory.makePrivacyPolicyVC()
-            self.navigationController.pushViewController(policyVC, animated: true)
+            self.navigationController?.pushViewController(policyVC, animated: true)
         }
         
         myPage.vm.onTermsOfUseItemTap = { [weak self] in
             guard let self = self else { return }
             let termsVC = self.factory.makeTermsOfServiceVC()
-            self.navigationController.pushViewController(termsVC, animated: true)
+            self.navigationController?.pushViewController(termsVC, animated: true)
         }
         
         myPage.vm.onEditOnelineSentenceItemTap = { [weak self] in
             guard let self = self else { return }
             let sentenceEditVC = self.factory.makeSentenceEditVC()
-            self.navigationController.pushViewController(sentenceEditVC, animated: true)
+            self.navigationController?.pushViewController(sentenceEditVC, animated: true)
         }
         
         myPage.vm.onWithdrawalItemTap = { [weak self] userType in
@@ -92,16 +92,17 @@ public final class MyPageCoordinator: DefaultMyPageCoordinator {
             self?.showAlertSetting(url: url)
         }
         
-        self.navigationController.pushViewController(myPage.vc, animated: true)
+        self.navigationController?.pushViewController(myPage.vc, animated: true)
     }
     
     private func showWithdrawal(userType: UserType) {
         var withdrawal = factory.makeWithdrawalVC(userType: userType)
         withdrawal.vm.onWithdrawal = { [weak self] in
-            self?.requestCoordinating?(.signInWithToast)
+            guard let self else { return }
+            self.delegate?.myPageCoordinator(self, to: .signInWithToast)
         }
         
-        self.navigationController.pushViewController(withdrawal.vc, animated: true)
+        self.navigationController?.pushViewController(withdrawal.vc, animated: true)
     }
     
     private func showAlertSetting(url: String) {

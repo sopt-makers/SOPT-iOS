@@ -260,8 +260,12 @@ public struct I18N {
         }
         
         public struct PlaygroundNews {
-            public static let headerTitle = "지금 인기 소식 🔥"
+            public static let headerTitle = "실시간 인기글"
             public static let morePosts = "다른 게시물 보러가기"
+        }
+        
+        public struct RecentPost {
+            public static let headerTitle = "최신 게시물"
         }
 
         public struct SocialLink {

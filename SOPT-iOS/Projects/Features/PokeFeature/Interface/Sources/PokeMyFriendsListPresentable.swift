@@ -6,6 +6,8 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
+
 import BaseFeatureDependency
 import Core
 import Domain
@@ -23,4 +25,5 @@ public protocol PokeMyFriendsListViewModelType: ViewModelType & PokeMyFriendsLis
     var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)? { get set }
 }
 
-public typealias PokeMyFriendsListPresentable = (vc: PokeMyFriendsListViewControllable, vm: any PokeMyFriendsListViewModelType)
+public typealias LegacyPokeMyFriendsListPresentable = (vc: PokeMyFriendsListViewControllable, vm: any PokeMyFriendsListViewModelType)
+public typealias PokeMyFriendsListPresentable = (vc: UIViewController, vm: any PokeMyFriendsListViewModelType)
