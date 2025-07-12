@@ -8,8 +8,32 @@
 
 import Foundation
 
+import Core
+
 import Alamofire
 import Moya
+
+//MARK: - ReissueAPI
+public enum ReissueAPI {
+    case reissue(AuthTokens)
+}
+
+extension ReissueAPI: BaseAPI {
+    public static var apiType: APIType = .coreAuth
+    
+    public var path: String { "/refresh/app"}
+    
+    public var method: Moya.Method { .post }
+    
+    public var task: Moya.Task {
+        switch self {
+        case .reissue(let token):
+                .requestJSONEncodable(token)
+        }
+    }
+}
+
+//MARK: - LegacyReissueAPI
 
 public enum LegacyReissueAPI {
     case reissuance(refreshToken: String)

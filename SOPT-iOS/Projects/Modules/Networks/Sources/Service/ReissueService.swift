@@ -37,3 +37,27 @@ extension DefaultLegacyReissueService: ReissueService {
         }
     }
 }
+
+public final class DefaultReissueService: BaseService<ReissueAPI> { }
+
+extension DefaultReissueService: ReissueService {
+
+    @Sendable
+    public func reissuance(with tokens: AuthTokens, completion: @escaping ((AuthTokens?) -> Void)) {
+        
+        provider.request(.reissue(tokens)) { response in
+            switch response {
+            case .success(let value):
+                do {
+                    let decoder = JSONDecoder()
+                    let body = try decoder.decode(BaseEntity<CoreLoginEntity>.self, from: value.data)
+                    completion(body.data)
+                } catch {
+                    completion(nil)
+                }
+            case .failure:
+                completion(nil)
+            }
+        }
+    }
+}
