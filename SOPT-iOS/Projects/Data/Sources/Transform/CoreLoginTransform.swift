@@ -12,7 +12,7 @@ import Domain
 import Networks
 
 extension CoreLoginEntity {
-    public func toDomain() -> CoreAuthTokens {
+    public func toDomain() -> AuthTokensModel {
         .init(accessToken: accessToken, refreshToken: refreshToken)
     }
 }

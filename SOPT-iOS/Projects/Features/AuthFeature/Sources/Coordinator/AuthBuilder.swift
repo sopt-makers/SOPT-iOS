@@ -18,6 +18,7 @@ public final class AuthBuilder: AuthFeatureViewBuildable {
     @Injected public var oauthRepository: CoreOAuthRepositoryInterface
     @Injected public var coreRepository: CoreAuthRepositoryInterface
     @Injected public var phoneRepository: PhoneVerifyRepositoryInterface
+    @Injected public var tokenRepository: AuthTokensRepositoryInterface
     
     public init() { }
     
@@ -25,7 +26,9 @@ public final class AuthBuilder: AuthFeatureViewBuildable {
         let useCase = DefaultSignInUseCase(
             repository: repository,
             oauthRepository: oauthRepository,
-            coreRepository: coreRepository)
+            coreRepository: coreRepository,
+            tokenRepository: tokenRepository
+        )
         let vm = SignInViewModel(useCase: useCase)
         let vc = SignInVC(viewModel: vm)
         return (vc, vm)
@@ -40,7 +43,11 @@ public final class AuthBuilder: AuthFeatureViewBuildable {
     }
     
     public func makeSignUp() -> SignUpPresentable {
-        let useCase = DefaultSignUpUseCase(repository: coreRepository, oAuthRepository: oauthRepository)
+        let useCase = DefaultSignUpUseCase(
+            repository: coreRepository,
+            oAuthRepository: oauthRepository,
+            tokenRepositroy: tokenRepository
+        )
         let phoneUseCase = DefaultPhoneVerifyUseCase(repository: phoneRepository)
         
         let vm = SignUpViewModel(useCase: useCase)
@@ -53,7 +60,8 @@ public final class AuthBuilder: AuthFeatureViewBuildable {
     public func makeChangeSocialAccount() -> ChangeSocialAccountPresentable {
         let useCase = DefaultChangeSocialAccountUseCase(
             repository: coreRepository,
-            oAuthRepository: oauthRepository
+            oAuthRepository: oauthRepository,
+            tokenRepository: tokenRepository
         )
         
         let phoneUseCase = DefaultPhoneVerifyUseCase(repository: phoneRepository)

@@ -15,7 +15,7 @@ import Core
 extension SignInEntity {
     public func toDomain() -> SignInModel {
         SignInModel(
-            tokens: LegacyTokensModel(
+            tokens: LegacyAuthTokensModel(
                 accessToken: self.accessToken,
                 refreshToken: self.refreshToken,
                 playgroundToken: self.playgroundToken
