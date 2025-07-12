@@ -13,7 +13,7 @@ import Domain
 
 import LegacyAuthFeatureInterface
 
-public class SignInViewModel: SignInViewModelType {
+public class LegacySignInViewModel: LegacySignInViewModelType {
     
     private let useCase: SignInUseCase
     private var cancelBag = CancelBag()
@@ -43,7 +43,7 @@ public class SignInViewModel: SignInViewModelType {
     }
 }
 
-extension SignInViewModel {
+extension LegacySignInViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)

@@ -1,10 +1,11 @@
 //
-//  AuthCoordnatorFinishOutput.swift
+//  AuthCoordinatorInterface.swift
 //  AuthFeatureInterface
 //
 //  Created by 장석우 on 7/12/25.
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
+
 
 import Foundation
 

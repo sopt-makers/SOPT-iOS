@@ -10,7 +10,7 @@ import Core
 import Domain
 import LegacyAuthFeatureInterface
 
-public class AuthBuilder: AuthFeatureBuildable {
+public class LegacyAuthBuilder: LegacyAuthFeatureBuildable {
     @Injected public var repository: SignInRepositoryInterface
     @Injected public var oauthRepository: CoreOAuthRepositoryInterface
     @Injected public var coreRepository: CoreAuthRepositoryInterface
@@ -18,15 +18,15 @@ public class AuthBuilder: AuthFeatureBuildable {
     
     public init() { }
     
-    public func makeSignIn() -> SignInPresentable {
+    public func makeSignIn() -> LegacySignInPresentable {
         let useCase = DefaultSignInUseCase(
             repository: repository,
             oauthRepository: oauthRepository,
             coreRepository: coreRepository,
             tokenRepository: tokenRepository
         )
-        let vm = SignInViewModel(useCase: useCase)
-        let vc = SignInVC()
+        let vm = LegacySignInViewModel(useCase: useCase)
+        let vc = LegacySignInVC()
         vc.viewModel = vm
         return (vc, vm)
     }
