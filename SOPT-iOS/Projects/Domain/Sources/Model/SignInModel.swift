@@ -11,10 +11,10 @@ import Foundation
 import Core
 
 public struct SignInModel {
-    public let tokens: LegacyTokensModel
+    public let tokens: LegacyAuthTokensModel
     public let status: UserType
     
-    public init(tokens: LegacyTokensModel, status: UserType) {
+    public init(tokens: LegacyAuthTokensModel, status: UserType) {
         self.tokens = tokens
         self.status = status
     }
