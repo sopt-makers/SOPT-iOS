@@ -14,7 +14,7 @@ import Networks
 
 //MARK: - AuthTokensRepository
 
-public struct AuthTokenRepository: AuthTokensRepositoryInterface {
+public struct AuthTokensRepository: AuthTokensRepositoryInterface {
     
     private let local: UserDefaults
     private let remote: ReissueService

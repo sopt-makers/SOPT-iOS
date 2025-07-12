@@ -17,6 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private var appLifecycleAdapter = AppLifecycleAdapter()
     
     func application( _ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        // AppLifeCycleAdapter에서 @Injected를 사용하기에 registerDependencies를 먼저 호출한다.
+        //
         registerDependencies()
         configureAppLifecycleAdapter()
         Firebase.configure()
