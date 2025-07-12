@@ -74,7 +74,6 @@ public struct LegacyAuthTokensRepository: AuthTokensRepositoryInterface {
     private static let accessTokenKey = "appAccessToken"
     private static let refreshTokenKey = "appRefreshToken"
     private static let playgroundTokenKey = "playgroundToken"
-    private static let isActiveUserKey = "isActiveUser"
     
     public init(
         local: UserDefaults = .standard,
@@ -117,12 +116,11 @@ public struct LegacyAuthTokensRepository: AuthTokensRepositoryInterface {
     
     @Sendable
     public func save(_ tokens: AuthTokens) {
-        guard let tokens = tokens as? SignInEntity else { return }
+        guard let tokens = tokens as? LegacyAuthTokensModel else { return }
         
         local.set(tokens.accessToken, forKey: Self.accessTokenKey)
         local.set(tokens.refreshToken, forKey: Self.refreshTokenKey)
         local.set(tokens.playgroundToken, forKey: Self.playgroundTokenKey)
-        local.set(tokens.status == .active, forKey: Self.isActiveUserKey)
     }
     
 }
