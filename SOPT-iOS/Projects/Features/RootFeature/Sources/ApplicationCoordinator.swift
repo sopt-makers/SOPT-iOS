@@ -11,6 +11,8 @@ import UIKit
 import Core
 import BaseFeatureDependency
 import SplashFeature
+import AuthFeature
+import LegacyAuthFeature
 import HomeFeature
 import AppMyPageFeature
 import NotificationFeature
@@ -22,14 +24,7 @@ import WebFeature
 import SoptlogFeature
 import TabBarFeature
 
-#if DEV || PROD
-import LegacyAuthFeature
-#else
-import AuthFeature
-#endif
-
-public
-final class ApplicationCoordinator: BaseCoordinator {
+public final class ApplicationCoordinator: BaseCoordinator {
     
     // MARK: - Properties
     
@@ -64,6 +59,20 @@ final class ApplicationCoordinator: BaseCoordinator {
     // MARK: - Coordinator Life Cycle
     
     public override func start(with option: DeepLinkOption?) {
+        
+        DIContainer.shared.register(
+            interface: DefaultAuthCoordinator.self,
+            implement: { [weak self] in
+                guard let self else { return }
+                switch FeatureFlag.auth {
+                case .legacy:
+                    return LegacyAuthCoordinator(router: self.router, factory: LegacyAuthBuilder(), url: option?.url)
+                case .new:
+                    return AuthCoordinator(router: self.router, factory: AuthBuilder(), url: option?.url)
+                }
+            }
+        )
+        
         if let option {
             switch option {
             case .signInSuccess(let url):
@@ -232,7 +241,7 @@ extension ApplicationCoordinator {
         by style: CoordinatorStartingOption,
         with url: String? = nil
     ) {
-        let coordinator = AuthCoordinator(router: router, factory: AuthBuilder(), url: url)
+        @Injected var coordinator: DefaultAuthCoordinator
         
         coordinator.finishFlow = { [weak self, weak coordinator] userType in
             Config.coordinatorFlag == .legacy
@@ -246,7 +255,7 @@ extension ApplicationCoordinator {
     
     private func runSignInSuccessFlow(with url: String) {
         childCoordinators = []
-        let coordinator = AuthCoordinator(router: router, factory: AuthBuilder(), url: url)
+        @Injected var coordinator: DefaultAuthCoordinator
         coordinator.finishFlow = { [weak self, weak coordinator] userType in
             Config.coordinatorFlag == .legacy
             ? self?.runLegacyTabBarFlow(type: userType)
