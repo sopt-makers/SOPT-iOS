@@ -10,6 +10,7 @@ import UIKit
 import Combine
 
 import Core
+import Domain
 import DSKit
 
 import SnapKit
@@ -31,72 +32,61 @@ public class NoticePopUpVC: UIViewController, LegacyNoticePopUpViewControllable,
     private lazy var backgroundDimmerView = CustomDimmerView(self)
     
     private let noticeView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.black60.color
-        $0.layer.cornerRadius = 10
+        $0.backgroundColor = DSKitAsset.Colors.gray800.color
+        $0.layer.cornerRadius = 14
     }
     
     private let noticeTitleLabel = UILabel().then {
-        $0.text = I18N.Notice.notice
-        $0.font = .Main.headline2
-        $0.textColor = DSKitAsset.Colors.white.color
-        $0.backgroundColor = DSKitAsset.Colors.black60.color
-        $0.textAlignment = .center
-        $0.layer.cornerRadius = 4
+        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 18)
+        $0.textColor = DSKitAsset.Colors.gray10.color
+        $0.textAlignment = .left
     }
     
-    private let noticeContentTextView = UITextView().then {
-        $0.text = I18N.Notice.notice
-        $0.isEditable = false
-        $0.font = .Main.body1
-        $0.textColor = DSKitAsset.Colors.white.color
-        $0.backgroundColor = .clear
-        $0.textAlignment = .center
+    private let noticeContentView = UILabel().then {
+        $0.font = DSKitFontFamily.Suit.regular.font(size: 14)
+        $0.textColor = DSKitAsset.Colors.gray100.color
+        $0.numberOfLines = 0
+        $0.textAlignment = .left
     }
     
     private let checkBoxButton = UIButton(type: .custom).then {
+        var config = UIButton.Configuration.plain()
+        config.baseForegroundColor = DSKitAsset.Colors.gray10.color
+        config.background.backgroundColor = .clear
+        config.imagePadding = 6
+        config.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
+        
+        var titleAttributed = AttributedString(I18N.Notice.didCheck)
+        titleAttributed.font = DSKitFontFamily.Suit.regular.font(size: 14)
+        titleAttributed.foregroundColor = DSKitAsset.Colors.gray10.color
+        
+        config.attributedTitle = titleAttributed
         $0.setImage(DSKitAsset.Assets.btnCheckInactive.image, for: .normal)
         $0.setImage(DSKitAsset.Assets.btnCheckActive.image, for: .selected)
-        $0.setAttributedTitle(NSAttributedString(string: I18N.Notice.didCheck,
-                                                 attributes: [.font: UIFont.SoptampFont.caption3,
-                                                              .foregroundColor: DSKitAsset.Colors.gray40.color]),
-                              for: .normal)
-        $0.setAttributedTitle(NSAttributedString(string: I18N.Notice.didCheck,
-                                                 attributes: [.font: UIFont.SoptampFont.caption3,
-                                                              .foregroundColor: DSKitAsset.Colors.white.color]),
-                              for: .selected)
-        $0.titleLabel?.adjustsFontSizeToFitWidth = true
-    }
-
-    private let updateButton = UIButton(type: .custom).then {
-        $0.setAttributedTitle(NSAttributedString(
-            string: I18N.Notice.goToUpdate,
-            attributes: [.font: UIFont.Main.caption3, .foregroundColor: DSKitAsset.Colors.black100.color]
-        ), for: .normal)
-        
-        $0.backgroundColor = DSKitAsset.Colors.white.color
-        $0.layer.cornerRadius = 10
+        $0.configuration = config
     }
     
-    private let closeButton = UIButton(type: .system).then {
-        $0.setAttributedTitle(NSAttributedString(string: I18N.Notice.close,
-                                                 attributes: [.font: UIFont.Main.caption3,
-                                                              .foregroundColor: DSKitAsset.Colors.white.color]), for: .normal)
-        $0.backgroundColor = DSKitAsset.Colors.black40.color
-        $0.layer.cornerRadius = 10
-    }
+    private let updateButton = AppCustomButton(title: I18N.Notice.goToUpdate)
+        .setConfigForState(enabledFont: DSKitFontFamily.Suit.semiBold.font(size: 16))
     
-    private lazy var bottomButtonStackView = UIStackView(arrangedSubviews: [closeButton, updateButton]).then {
+    
+    private let closeButton = AppCustomButton(title: I18N.Notice.close)
+        .setConfigForState(bgColor: DSKitAsset.Colors.gray600.color,
+                           enabledTextColor: DSKitAsset.Colors.white.color,
+                           enabledFont: DSKitFontFamily.Suit.semiBold.font(size: 16))
+    
+    private lazy var buttonStackView = UIStackView(arrangedSubviews: [closeButton, updateButton]).then {
         $0.axis = .horizontal
         $0.distribution = .fillEqually
         $0.spacing = 7
     }
     
-    private lazy var buttonStackView = UIStackView(
-        arrangedSubviews: [checkBoxButton, bottomButtonStackView])
+    private lazy var checkButtonStackView = UIStackView(
+        arrangedSubviews: [checkBoxButton, buttonStackView])
         .then {
             $0.axis = .vertical
             $0.alignment = .leading
-            $0.spacing = 10
+            $0.spacing = 20
         }
     
     // MARK: - View Life Cycle
@@ -113,9 +103,10 @@ public class NoticePopUpVC: UIViewController, LegacyNoticePopUpViewControllable,
 
 extension NoticePopUpVC {
     
-    public func setData(type: NoticePopUpType, content: String) {
+    public func setData(type: NoticePopUpType, model: AppNoticeModel) {
         self.type = type
-        self.noticeContentTextView.text = content
+        self.noticeContentView.text = model.notice
+        self.noticeTitleLabel.text = model.title
         self.changeLayout(with: type)
     }
     
@@ -163,7 +154,7 @@ extension NoticePopUpVC {
     
     private func setLayout() {
         view.addSubviews(backgroundDimmerView, noticeView)
-        noticeView.addSubviews(noticeTitleLabel, noticeContentTextView, buttonStackView)
+        noticeView.addSubviews(noticeTitleLabel, noticeContentView, checkButtonStackView)
         
         backgroundDimmerView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -171,39 +162,57 @@ extension NoticePopUpVC {
         
         noticeView.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(32)
+            make.horizontalEdges.equalToSuperview().inset(36)
         }
         
         noticeTitleLabel.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview().inset(24)
-            make.height.equalTo(34)
+            make.horizontalEdges.equalToSuperview().inset(20)
+            make.top.equalToSuperview().inset(20)
+            make.height.equalTo(28)
         }
         
-        noticeContentTextView.snp.makeConstraints { make in
-            make.top.equalTo(noticeTitleLabel.snp.bottom).offset(12)
-            make.height.equalTo(283)
-            make.leading.trailing.equalToSuperview().inset(24)
-        }
-        
-        bottomButtonStackView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
+        noticeContentView.snp.makeConstraints { make in
+            make.top.equalTo(noticeTitleLabel.snp.bottom).offset(8)
+            make.bottom.equalTo(checkButtonStackView.snp.top).offset(-24)
+            make.horizontalEdges.equalToSuperview().inset(20)
         }
         
         buttonStackView.snp.makeConstraints { make in
-            make.top.equalTo(noticeContentTextView.snp.bottom).offset(12)
-            make.leading.trailing.equalToSuperview().inset(7)
-            make.bottom.equalToSuperview().inset(12)
+            make.horizontalEdges.equalToSuperview()
         }
         
         updateButton.snp.makeConstraints { make in
-            make.height.equalTo(40)
+            make.height.equalTo(44)
         }
+        
+        closeButton.snp.makeConstraints { make in
+            make.height.equalTo(44)
+        }
+        
+        checkButtonStackViewLayout()
+    }
+    
+    private func checkButtonStackViewLayout() {
+        switch type {
+        case .forceUpdate:
+            checkButtonStackView.snp.makeConstraints { make in
+                make.horizontalEdges.equalToSuperview().inset(20)
+                make.bottom.equalToSuperview().inset(20)
+            }
+        case .recommendUpdate, .none:
+            checkButtonStackView.snp.makeConstraints { make in
+                make.horizontalEdges.equalToSuperview().inset(20)
+                make.bottom.equalToSuperview().inset(24)
+            }
+        }
+        
     }
     
     private func changeLayout(with type: NoticePopUpType) {
         switch type {
         case .forceUpdate:
             self.checkBoxButton.isHidden = true
+            self.closeButton.isHidden = true
         case .recommendUpdate:
             self.checkBoxButton.isHidden = false
         }
