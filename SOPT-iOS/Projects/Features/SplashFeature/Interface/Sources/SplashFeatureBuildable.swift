@@ -9,9 +9,10 @@
 import UIKit
 
 import Core
+import Domain
 import BaseFeatureDependency
 
 public protocol SplashFeatureBuildable {
     func makeSplash(_ coordinator: Coordinator) -> SplashPresentable
-    func makeNoticePopUpVC(noticeType: NoticePopUpType, content: String) -> NoticePopUpPresentable
+    func makeNoticePopUpVC(noticeType: NoticePopUpType, model: AppNoticeModel) -> NoticePopUpPresentable
 }
