@@ -23,7 +23,7 @@ extension MissionListVC {
     private func createSentenceSection() -> NSCollectionLayoutSection {
         let size = NSCollectionLayoutSize(widthDimension: .absolute(MissionListVC.standardWidth), heightDimension: .estimated(97))
         let item = NSCollectionLayoutItem(layoutSize: size)
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: size, subitem: item, count: 1)
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: size, repeatingSubitem: item, count: 1)
         
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .none
@@ -34,7 +34,7 @@ extension MissionListVC {
         let size = NSCollectionLayoutSize(widthDimension: .absolute(164.adjusted), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: size)
         let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(MissionListVC.standardWidth), heightDimension: .absolute(204.adjusted))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 2)
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 2)
         group.interItemSpacing = NSCollectionLayoutSpacing.fixed(8.adjusted)
         
         let section = NSCollectionLayoutSection(group: group)

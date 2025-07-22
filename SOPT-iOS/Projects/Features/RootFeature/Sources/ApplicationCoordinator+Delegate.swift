@@ -14,6 +14,27 @@ import HomeFeature
 import SoptlogFeature
 import TabBarFeature
 import AppMyPageFeature
+import NotificationFeature
+
+// MARK: - TabBarCoordinatorDelegate
+
+extension ApplicationCoordinator: TabBarCoordinatorDelegate {
+    public func tabBarCoordinator(_ coordinator: TabBarCoordinator, to destination: TabBarCoordinatorDestination) {
+        switch destination {
+        case .home:
+            self.selectedTab(.home)
+        case .soptlog:
+            self.selectedTab(.soptlog)
+        case .signIn:
+            self.runSignInFlow(by: .rootWindow(animated: true, message: nil))
+            self.removeDependency(coordinator)
+        }
+    }
+
+    private func selectedTab(_ tab: TabType) {
+        self.tabBarController?.selectedIndex = tab.rawValue
+    }
+}
 
 // MARK: - HomeCoordinatorDelegate
 
@@ -40,7 +61,7 @@ extension ApplicationCoordinator: HomeCoordinatorDelegate {
         case .calendar:
             showHomeCalendarDetail()
         case .poke(let isNewUser):
-            isNewUser ? runPokeOnboardingFlow() : runPokeFlow()
+            _ = isNewUser ? runPokeOnboardingFlow() : runPokeFlow()
         }
     }
 }
@@ -48,7 +69,7 @@ extension ApplicationCoordinator: HomeCoordinatorDelegate {
 // MARK: - SoptlogCoordinatorDelegate
 
 extension ApplicationCoordinator: SoptlogCoordinatorDelegate {
-    public func soptlogCoordinator(_ coordinator: SoptlogCoordinator, didRequest destination: SoptlogCoordinatorDestination) {
+    public func soptlogCoordinator(_ coordinator: SoptlogCoordinator, to destination: SoptlogCoordinatorDestination) {
         switch destination {
         case .dailySoptune:
             self.runDailySoptuneFlow()
@@ -56,6 +77,19 @@ extension ApplicationCoordinator: SoptlogCoordinatorDelegate {
             self.runSignInFlow(by: .rootWindow(animated: true, message: nil))
         case .webLink(let url):
             self.handleWebLink(webLink: url)
+        }
+    }
+}
+
+// MARK: - NotificationCoordinatorDelegate
+
+extension ApplicationCoordinator: NotificationCoordinatorDelegate {
+    public func notificationCoordinator(_ coordinator: NotificationCoordinator, to destination: NotificationCoordinatorDestination) {
+        switch destination {
+        case .deepLink(let url):
+            self.notificationHandler.receive(deepLink: url)
+        case .webLink(let url):
+            self.notificationHandler.receive(webLink: url)
         }
     }
 }

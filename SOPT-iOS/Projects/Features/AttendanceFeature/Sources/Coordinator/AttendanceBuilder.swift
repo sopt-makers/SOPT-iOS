@@ -8,6 +8,7 @@
 
 import Core
 import Domain
+import BaseFeatureDependency
 @_exported import AttendanceFeatureInterface
 
 public
@@ -19,9 +20,9 @@ final class AttendanceBuilder {
 }
 
 extension AttendanceBuilder: AttendanceFeatureBuildable {
-    public func makeShowAttendanceVC() -> ShowAttendancePresentable {
+    public func makeShowAttendanceVC(coordinator: Coordinator) -> ShowAttendancePresentable {
         let useCase = DefaultShowAttendanceUseCase(repository: showAttendanceRepository)
-        let viewModel = ShowAttendanceViewModel(useCase: useCase)
+        let viewModel = ShowAttendanceViewModel(useCase: useCase, coordinator: coordinator)
         let showAttendanceVC = ShowAttendanceVC(viewModel: viewModel)
         return (showAttendanceVC, viewModel)
     }

@@ -8,6 +8,7 @@
 
 import Core
 import Domain
+import BaseFeatureDependency
 @_exported import SplashFeatureInterface
 
 public final class SplashBuilder {
@@ -17,18 +18,16 @@ public final class SplashBuilder {
 }
 
 extension SplashBuilder: SplashFeatureBuildable {
-    
-    public func makeSplash() -> SplashPresentable {
+    public func makeSplash(_ coordinator: Coordinator) -> SplashPresentable {
         let useCase = DefaultSplashUseCase(repository: repository)
-        let vm = SplashViewModel(useCase: useCase)
-        let vc = SplashVC()
-        vc.viewModel = vm
+        let vm = SplashViewModel(useCase: useCase, coordinator: coordinator)
+        let vc = SplashVC(viewModel: vm)
         return (vc, vm)
     }
     
-    public func makeNoticePopUpVC(noticeType: Core.NoticePopUpType, content: String) -> NoticePopUpPresentable {
+    public func makeNoticePopUpVC(noticeType: NoticePopUpType, model: AppNoticeModel) -> NoticePopUpPresentable {
         let noticePopUpVC = NoticePopUpVC()
-        noticePopUpVC.setData(type: noticeType, content: content)
+        noticePopUpVC.setData(type: noticeType, model: model)
         noticePopUpVC.modalPresentationStyle = .overFullScreen
         return noticePopUpVC
     }

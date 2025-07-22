@@ -2,8 +2,8 @@
 //  DailySoptuneCoordinator.swift
 //  DailySoptuneFeature
 //
-//  Created by Jae Hyun Lee on 9/21/24.
-//  Copyright © 2024 SOPT-iOS. All rights reserved.
+//  Created by 강윤서 on 6/6/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
 import UIKit
@@ -15,33 +15,41 @@ import DailySoptuneFeatureInterface
 import Domain
 import PokeFeatureInterface
 
-public final class DailySoptuneCoordinator: DefaultCoordinator {
+public final class DailySoptuneCoordinator: BaseCoordinator {
+    
+    // MARK: - Properties
     
     public var requestCoordinating: (() -> Void)?
     public var finishFlow: (() -> Void)?
     
-    private let factory: DailySoptuneFeatureBuildable
-    private let pokeFactory: LegacyPokeFeatureBuildable
-    private let router: LegacyRouter
+    private weak var navigationController: UINavigationController?
+    private let factory: DailySoptuneBuildable
+    private let pokeFactory: PokeFeatureBuildable
     
     private weak var rootController: UINavigationController?
     
-    public init(router: LegacyRouter, factory: DailySoptuneFeatureBuildable, pokeFactory: LegacyPokeFeatureBuildable) {
-        self.router = router
+    // MARK: - Init
+    
+    public init(navigationController: UINavigationController,
+                factory: DailySoptuneBuildable,
+                pokeFactory: PokeFeatureBuildable
+    ) {
+        self.navigationController = navigationController
         self.factory = factory
         self.pokeFactory = pokeFactory
     }
+    
+    // MARK: - Coordinator Life Cycle
     
     public override func start() {
         showDailySoptuneMain()
     }
     
     private func showDailySoptuneMain() {
-        var dailySoptuneMain = factory.makeDailySoptuneMainVC()
+        var dailySoptuneMain = factory.makeDailySoptuneMainVC(coordinator: self)
         
         dailySoptuneMain.vm.onNaviBackTap = { [weak self] in
-            self?.router.dismissModule(animated: true)
-            self?.finishFlow?()
+            self?.navigationController?.dismiss(animated: true)
         }
         
         dailySoptuneMain.vm.onReciveTodayFortuneButtonTap = { [weak self] result in
@@ -49,30 +57,20 @@ public final class DailySoptuneCoordinator: DefaultCoordinator {
             runDailySoptuneResultFlow(resultModel: result)
         }
         
-        self.rootController = dailySoptuneMain.vc.asNavigationController
-        self.router.present(self.rootController, animated: true, modalPresentationSytle: .overFullScreen)
+        let navController = UINavigationController(rootViewController: dailySoptuneMain.vc)
+        navController.modalPresentationStyle = .overFullScreen
+        rootController = navController
+        navigationController?.present(navController, animated: true)
     }
     
     internal func runDailySoptuneResultFlow(resultModel: DailySoptuneResultModel) {
-        let dailySoptuneResultCoordinator = DailySoptuneResultCoordinator(router: LegacyRouter(
-            rootController: rootController ?? self.router.asNavigationController
-        ),
-                                                                          factory: factory,
-                                                                          pokeFactory: pokeFactory,
-                                                                          resultModel: resultModel)
+        let dailySoptuneResultCoordinator = DailySoptuneResultCoordinator(
+            navigationController: rootController ?? UIWindow.getRootNavigationController,
+            factory: factory,
+            pokeFactory: pokeFactory,
+            resultModel: resultModel
+        )
         
-        dailySoptuneResultCoordinator.finishFlow = { [weak self, weak dailySoptuneResultCoordinator] in
-            dailySoptuneResultCoordinator?.childCoordinators = []
-            self?.removeDependency(dailySoptuneResultCoordinator)
-        }
-        
-        dailySoptuneResultCoordinator.requestCoordinating = { [weak self] in
-            self?.requestCoordinating?()
-            self?.router.dismissModule(animated: true)
-            self?.finishFlow?()
-        }
-        
-        addDependency(dailySoptuneResultCoordinator)
         dailySoptuneResultCoordinator.start()
     }
 }

@@ -12,12 +12,12 @@ import Core
 import BaseFeatureDependency
 import Domain
 
-public protocol LegacyPartRankingViewControllable: LegacyViewControllable & PartRankingCoordinatable { }
-public protocol PartRankingViewControllable: UIViewController & PartRankingCoordinatable { }
-public protocol PartRankingCoordinatable {
+public protocol LegacyPartRankingViewControllable: LegacyViewControllable & PartRankingRoutingTrigger { }
+public protocol PartRankingViewControllable: UIViewController & PartRankingRoutingTrigger { }
+public protocol PartRankingRoutingTrigger {
   var onCellTap: ((_ part: Part) -> Void)? { get set }
   var onNaviBackTap: (() -> Void)? { get set }
 }
-public typealias PartRankingViewModelType = ViewModelType & PartRankingCoordinatable
+public typealias PartRankingViewModelType = ViewModelType & PartRankingRoutingTrigger
 // TODO: coordinating vc -> vm 작업에서 활용
 public typealias PartRankingPresentable = (vc: PartRankingViewControllable, vm: any PartRankingViewModelType)

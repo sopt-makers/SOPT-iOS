@@ -17,15 +17,18 @@ import BaseFeatureDependency
 
 public final class DailySoptuneResultViewModel: DailySoptuneResultViewModelType {
     
+    // MARK: - Trigger
+    
     public var onNaviBackButtonTapped: (() -> Void)?
-    public var onReceiveTodaysFortuneCardTap: ((DailySoptuneCardModel) -> Void)?
-    public var onKokButtonTapped: ((Domain.PokeUserModel) -> Core.Driver<(Domain.PokeUserModel, Domain.PokeMessageModel, isAnonymous: Bool)>)?
-    public var onReceiveTodaysFortuneCardButtonTapped: ((Domain.DailySoptuneCardModel) -> Void)?
+    public var onKokButtonTapped: ((PokeUserModel) -> Driver<(Domain.PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)?
+    public var onReceiveTodaysFortuneCardButtonTapped: ((DailySoptuneCardModel) -> Void)?
     public var onProfileImageTapped: ((Int) -> Void)?
+    
     
     // MARK: - Properties
 
     private let useCase: DailySoptuneUseCase
+    private let coordinator: AnyCoordinatorObject
     private var cancelBag = CancelBag()
     
     // MARK: - Inputs
@@ -48,8 +51,9 @@ public final class DailySoptuneResultViewModel: DailySoptuneResultViewModelType 
     
     // MARK: - Initialization
     
-    public init(useCase: DailySoptuneUseCase) {
+    public init(useCase: DailySoptuneUseCase, coordinator: Coordinator) {
         self.useCase = useCase
+        self.coordinator = coordinator
     }
 }
 

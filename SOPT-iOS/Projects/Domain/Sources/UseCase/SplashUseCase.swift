@@ -11,61 +11,100 @@ import Combine
 
 import Core
 
-public protocol SplashUseCase {
-    func getAppNotice()
-    
-    var appNoticeModel: PassthroughSubject<AppNoticeModel?, Error> { get set }
+public enum UpdateType {
+    case forcedUpdate(AppNoticeModel)
+    case optionalUpdate(AppNoticeModel)
+    case none
+    case networkError(Error)
 }
 
-public class DefaultSplashUseCase {
-  
+public enum UpdateCheckError: Error {
+    case invalidAppStoreLink
+    case appStoreFetchError
+    case projectVersionFetchError
+}
+
+
+public protocol SplashUseCase {
+    func getAppNotice()
+    var needUpdate: PassthroughSubject<UpdateType, Never> { get set }
+}
+
+public final class DefaultSplashUseCase {
+    
     private let repository: SplashRepositoryInterface
     private var cancelBag = CancelBag()
-
-    public var appNoticeModel = PassthroughSubject<AppNoticeModel?, Error>()
+    var updateTask: Task<Void, Never>?
+    
+    public var needUpdate = PassthroughSubject<UpdateType, Never>()
     
     public init(repository: SplashRepositoryInterface) {
         self.repository = repository
+    }
+    
+    deinit {
+        updateTask?.cancel()
+        updateTask = nil
     }
 }
 
 extension DefaultSplashUseCase: SplashUseCase {
     public func getAppNotice() {
-        repository.getAppNotice()
-        .catch({ error in
-            print(error.localizedDescription)
-            return Just(AppNoticeModel(withError: true))
-        })
-        .sink { event in
-            print("DefaultSplashUseCase : \(event)")
-        } receiveValue: { appNoticeModel in
-#if DEV || TEST
-            self.appNoticeModel.send(nil)
-            return
-#endif
-            guard appNoticeModel.withError == false else {
-                self.appNoticeModel.send(appNoticeModel)
-                return
-            }
-            guard let currentAppVersion = Bundle.appVersion else { return }
-            var appNoticeModel = appNoticeModel
-            let checkedAppVersion = self.repository.getCheckedRecommendUpdateVersion() ?? "1.0.0"
-
-            let needForceUpdate = currentAppVersion.compare(appNoticeModel.forceUpdateVersion,
-                                                            options: .numeric) == .orderedAscending
-
-            let needRecommendUpdate = checkedAppVersion.compare(appNoticeModel.recommendVersion, options: .numeric) == .orderedAscending && currentAppVersion.compare(appNoticeModel.recommendVersion, options: .numeric) == .orderedAscending
-
-            switch (needForceUpdate, needRecommendUpdate) {
-            case (true, _):
-                appNoticeModel.setForcedUpdateNotice(isForce: true)
-                self.appNoticeModel.send(appNoticeModel)
-            case (_, true):
-                appNoticeModel.setForcedUpdateNotice(isForce: false)
-                self.appNoticeModel.send(appNoticeModel)
-            default:
-                self.appNoticeModel.send(nil)
-            }
-        }.store(in: cancelBag)
+        #if DEV || PROD
+        updateTask = Task {
+                do {
+                    let type = try await checkedUpdateType()
+                    try handleUpdateType(type)
+                } catch {
+                    switch error {
+                    case RemoteConfigError.fetchFailed:
+                        print("remoteConfig fetch 도중 오류가 발생했습니다.")
+                    case UpdateCheckError.appStoreFetchError:
+                        print("앱스토어에서 최신 버전을 불러오지 못했습니다.")
+                    case UpdateCheckError.projectVersionFetchError:
+                        print("사용자의 버전을 불러오지 못했습니다.")
+                    default:
+                        print("알 수 없는 에러가 발생했습니다.")
+                    }
+                    print(error)
+                    needUpdate.send(.networkError(error))
+                }
+        }
+        #else
+        needUpdate.send(.none)
+        #endif
+    }
+    
+    private func checkedUpdateType() async throws -> UpdateType {
+        async let getAppStoreVersion = repository.appStoreVersion()                // 앱 스토어 버전
+        async let getForcedUpdateData = repository.forcedUpdateData()              // 강제 업데이트 관련 데이터
+        async let getOptionalUpdateData = repository.optionalUpdateData()          // 선택 업데이트 관련 데이터
+        
+        let (appStoreVersion, forcedUpdateData, optionalUpdateData) = try await (getAppStoreVersion, getForcedUpdateData, getOptionalUpdateData)
+        let minimumVersion = forcedUpdateData.minimumVersion                       // 최소 지원 버전
+        
+        // 현재 설치된 앱의 버전
+        guard let currentAppVersion = Bundle.appVersion else {
+            throw UpdateCheckError.projectVersionFetchError
+        }
+        
+        let needForceUpdate = currentAppVersion.compare(minimumVersion,options: .numeric) == .orderedAscending
+        let needOptionalUpdate = currentAppVersion.compare(appStoreVersion, options: .numeric) == .orderedAscending
+        
+        return needForceUpdate ? .forcedUpdate(forcedUpdateData.appNotice) :
+                needOptionalUpdate ? .optionalUpdate(optionalUpdateData) : .none
+    }
+    
+    private func handleUpdateType(_ type: UpdateType) throws {
+        switch type {
+        case .forcedUpdate(let appNoticeModel):
+            needUpdate.send(.forcedUpdate(appNoticeModel))
+        case .optionalUpdate(let optionalData):
+            needUpdate.send(.optionalUpdate(optionalData))
+        case .none:
+            needUpdate.send(.none)
+        case .networkError(let error):
+            throw error
+        }
     }
 }

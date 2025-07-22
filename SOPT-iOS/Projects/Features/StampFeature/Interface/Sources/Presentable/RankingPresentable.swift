@@ -12,13 +12,13 @@ import Core
 import BaseFeatureDependency
 import Domain
 
-public protocol LegacyRankingViewControllable: LegacyViewControllable & RankingCoordinatable { }
-public protocol RankingViewControllable: UIViewController & RankingCoordinatable { }
-public protocol RankingCoordinatable {
+public protocol LegacyRankingViewControllable: LegacyViewControllable & RankingRoutingTrigger { }
+public protocol RankingViewControllable: UIViewController & RankingRoutingTrigger { }
+public protocol RankingRoutingTrigger {
   var onCellTap: ((_ username: String, _ sentence: String) -> Void)? { get set }
   var onNaviBackTap: (() -> Void)? { get set }
 }
-public typealias RankingViewModelType = ViewModelType & RankingCoordinatable
+public typealias RankingViewModelType = ViewModelType & RankingRoutingTrigger
 // TODO: coordinating vc -> vm 작업에서 활용
 public typealias RankingPresentable = (vc: RankingViewControllable, vm: any RankingViewModelType)
 

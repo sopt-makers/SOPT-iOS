@@ -66,7 +66,8 @@ final class LegacyRankingCoordinator: DefaultCoordinator {
 
     private func showOtherMissionList(_ username: String, _ sentence: String) {
         var otherMissionList = factory.makeMissionListVC(
-            sceneType: .ranking(userName: username, sentence: sentence)
+            sceneType: .ranking(userName: username, sentence: sentence),
+            coordinator: self
         )
         otherMissionList.onNaviBackTap = { [weak self] in
             self?.router.popModule()

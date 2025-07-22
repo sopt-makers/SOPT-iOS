@@ -12,11 +12,13 @@ import Core
 import BaseFeatureDependency
 import Domain
 
-public protocol LegacyListDetailViewControllable: LegacyViewControllable & ListDetailCoordinatable { }
-public protocol ListDetailViewControllable: UIViewController & ListDetailCoordinatable { }
-public protocol ListDetailCoordinatable {
+// TODO: - 화면전환 트리거 책임 vc -> vm으로 변경하기
+
+public protocol LegacyListDetailViewControllable: LegacyViewControllable & ListDetailRoutingTrigger { }
+public protocol ListDetailViewControllable: UIViewController & ListDetailRoutingTrigger { }
+public protocol ListDetailRoutingTrigger {
   var onComplete: ((StarViewLevel, (() -> Void)?) -> Void)? { get set }
   var onNaviBackTap: (() -> Void)? { get set }
 }
-public typealias ListDetailViewModelType = ViewModelType & ListDetailCoordinatable
+public typealias ListDetailViewModelType = ViewModelType & ListDetailRoutingTrigger
 public typealias ListDetailPresentable = (vc: ListDetailViewControllable, vm: any ListDetailViewModelType)

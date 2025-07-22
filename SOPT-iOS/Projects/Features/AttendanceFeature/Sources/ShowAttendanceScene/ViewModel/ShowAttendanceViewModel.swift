@@ -11,7 +11,7 @@ import Combine
 
 import Core
 import Domain
-
+import BaseFeatureDependency
 import AttendanceFeatureInterface
 
 struct AttendanceButtonInfo {
@@ -21,6 +21,7 @@ struct AttendanceButtonInfo {
 
 public final class ShowAttendanceViewModel: ShowAttendanceViewModelType {
     
+    // MARK: - Trigger
     // TODO: coordinating vc -> vm
     public var onAttendanceButtonTap: ((AttendanceRoundModel, (() -> Void)?) -> Void)?
     public var onNaviBackTap: (() -> Void)?
@@ -31,6 +32,7 @@ public final class ShowAttendanceViewModel: ShowAttendanceViewModelType {
     private var cancelBag = CancelBag()
     public var sceneType: AttendanceScheduleType?
     public var lectureRound: AttendanceRoundModel = .EMPTY
+    private let coordinator: AnyCoordinatorObject
     
     // MARK: - Inputs
     
@@ -52,8 +54,9 @@ public final class ShowAttendanceViewModel: ShowAttendanceViewModelType {
     
     // MARK: - init
   
-    public init(useCase: ShowAttendanceUseCase) {
+    public init(useCase: ShowAttendanceUseCase, coordinator: Coordinator) {
         self.useCase = useCase
+        self.coordinator = coordinator
     }
 }
 
