@@ -25,6 +25,8 @@ public protocol HomeService {
     func getAppServiceAccessStatusAsync() async throws -> [HomeAppServiceAccessStatusEntity]
     func getPlaygroundNewsPostsAsync() async throws -> [HomePlaygroundNewsPostsResponseEntity]
     func getSurveyInfoAsync() async throws -> HomeSurveyResponseEntity
+    func getPopularPostsAsync() async throws -> [HomePopularPostsResponseEntity]
+    func getLatestPostsAsync() async throws -> [HomeLatestPostsResponseEntity]
 }
 
 extension DefaultHomeService: HomeService {
@@ -62,5 +64,13 @@ extension DefaultHomeService: HomeService {
     
     public func getSurveyInfoAsync() async throws -> HomeSurveyResponseEntity {
         try await requestObjectAsync(.getSurveyInfo)
+    }
+    
+    public func getPopularPostsAsync() async throws -> [HomePopularPostsResponseEntity] {
+        try await requestObjectAsync(.getPopularPosts)
+    }
+    
+    public func getLatestPostsAsync() async throws -> [HomeLatestPostsResponseEntity] {
+        try await requestObjectAsync(.getLatestPosts)
     }
 }
