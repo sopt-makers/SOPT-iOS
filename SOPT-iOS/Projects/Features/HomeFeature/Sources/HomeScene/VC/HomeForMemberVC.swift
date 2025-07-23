@@ -80,7 +80,6 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        stopPlaygroundNewsAnimationLoop()
         stopRecentPostAnimationLoop()
         cancelTasks()
     }

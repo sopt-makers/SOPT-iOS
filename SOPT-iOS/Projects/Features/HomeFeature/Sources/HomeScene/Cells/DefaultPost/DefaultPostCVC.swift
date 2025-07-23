@@ -23,6 +23,7 @@ final class DefaultPostCVC: UICollectionViewCell {
     
     private let gradientLayer = CAGradientLayer()
     private let shapeLayer = CAShapeLayer()
+    var onAnimationCompleted: (() -> Void)?
         
     // MARK: - UI & Layout
 
@@ -201,39 +202,28 @@ extension DefaultPostCVC {
 
 extension DefaultPostCVC {
     /// 0.3초간 show -> 2.4초 기다림 -> 0.3초간 hide
-    func setOutlinedAnimated() async {
+    func setOutlinedAnimated() {
         let interval = 2.4
-        
-        do {
-            try Task.checkCancellation()
-            await animateBorderOpacity(to: 1)
-            
-            try Task.checkCancellation()
-            try await Task.sleep(for: .seconds(interval))
-            
-            try Task.checkCancellation()
-            await animateBorderOpacity(to: 0)
-        } catch {
-            gradientLayer.opacity = 0 // 취소가 감지될 경우, 현재 그라디언트를 즉시 0으로 만듦
+        animateBorderOpacity(to: 1) { [weak self] in
+            guard let self = self else { return }
+            DispatchQueue.main.asyncAfter(deadline: .now() + interval) {
+                self.animateBorderOpacity(to: 0) { [weak self] in
+                    self?.onAnimationCompleted?()
+                }
+            }
         }
     }
-    
-    private func animateBorderOpacity(to value: Float) async {
-        do {
-            try Task.checkCancellation()
-            
-            let animation = CABasicAnimation(keyPath: "opacity")
-            animation.fromValue = gradientLayer.presentation()?.opacity ?? gradientLayer.opacity
-            animation.toValue = value
-            animation.duration = 0.3
-            animation.timingFunction = CAMediaTimingFunction(name: .easeIn)
-            
-            gradientLayer.add(animation, forKey: "opacity")
-            gradientLayer.opacity = value
-            
-            try await Task.sleep(for: .seconds(animation.duration)) // 애니메이션 동안 sleep
-        } catch {
-            return
-        }
+
+    private func animateBorderOpacity(to value: Float, completion: @escaping () -> Void) {
+        let animation = CABasicAnimation(keyPath: "opacity")
+        animation.fromValue = gradientLayer.presentation()?.opacity ?? gradientLayer.opacity
+        animation.toValue = value
+        animation.duration = 0.3
+        animation.timingFunction = CAMediaTimingFunction(name: .easeIn)
+        CATransaction.begin()
+        CATransaction.setCompletionBlock(completion)
+        gradientLayer.add(animation, forKey: "opacity")
+        gradientLayer.opacity = value
+        CATransaction.commit()
     }
 }

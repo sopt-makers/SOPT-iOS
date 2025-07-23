@@ -13,40 +13,25 @@ import UIKit
 extension HomeForMemberVC {
     /// Playground News 섹션의 디졸브 전환 애니메이션
     func startPlaygroundNewsAnimationLoop() {
-        stopPlaygroundNewsAnimationLoop()
-        
-        // 타이머로 반복 요청
-        outlineAnimationTimer = Timer.scheduledTimer(withTimeInterval: 0, repeats: true) { [weak self] _ in
-            guard let self else { return }
-            self.runOutlineAnimationStep()
-        }
-        
-        RunLoop.main.add(outlineAnimationTimer!, forMode: .common)
-    }
-
-    func stopPlaygroundNewsAnimationLoop() {
-        outlineAnimationTimer?.invalidate()
-        outlineAnimationTimer = nil
-        
-        playgroundNewsAnimationTask?.cancel()
-        playgroundNewsAnimationTask = nil
+        currentIndex = 0
+        runOutlineAnimationStep()
     }
 
     private func runOutlineAnimationStep() {
-        // Task가 진행 중일 경우 return
-        guard playgroundNewsAnimationTask == nil || playgroundNewsAnimationTask?.isCancelled == true else { return }
-        
         let playgroundNewsSectionIndex = HomeForMemberSectionLayoutKind.playgroundNews.rawValue
         let indexPath = IndexPath(item: currentIndex, section: playgroundNewsSectionIndex)
 
         if let cell = self.collectionView.cellForItem(at: indexPath) as? DefaultPostCVC {
-            playgroundNewsAnimationTask = Task { [weak self] in
-                await cell.setOutlinedAnimated()
-                self?.playgroundNewsAnimationTask = nil
+            cell.onAnimationCompleted = { [weak self] in
+                guard let self = self else { return }
+                self.currentIndex = (self.currentIndex + 1) % 3
+                self.runOutlineAnimationStep()
             }
+            cell.setOutlinedAnimated()
+        } else {
+            self.currentIndex = (self.currentIndex + 1) % 3
+            self.runOutlineAnimationStep()
         }
-
-        currentIndex = (currentIndex + 1) % 3
     }
 }
 
