@@ -233,14 +233,18 @@ extension HomeForMemberViewModel {
             
             return model
         } catch let mainError as MainError {
-            switch mainError {
-            case .networkError(_):
-                self.onNetworkError?()
-            case .authFailed:
-                self.onNeedSignIn?()
+            await MainActor.run {
+                switch mainError {
+                case .networkError(_):
+                    self.onNetworkError?()
+                case .authFailed:
+                    self.onNeedSignIn?()
+                }
             }
         } catch {
-            self.onNetworkError?()
+            await MainActor.run {
+                self.onNetworkError?()
+            }
         }
         
         return nil
