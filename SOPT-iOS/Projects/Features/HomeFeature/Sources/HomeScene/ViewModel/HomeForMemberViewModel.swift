@@ -18,7 +18,6 @@ import HomeFeatureInterface
 import BaseFeatureDependency
 
 public class HomeForMemberViewModel: HomeForMemberViewModelType {
-    
     // MARK: - Properties
     
     private let useCase: HomeUseCase
@@ -81,6 +80,8 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public var onExtendedFloatingButtonTapped: ((String) -> Void)?
     public var onSurveyButtonTapped: ((String) -> Void)?
     public var onSocialLinkButtonTapped: ((String) -> Void)?
+    public var onPopularPostCellTapped: ((String) -> Void)?
+    public var onLatestPostCellTapped: ((String) -> Void)?
     
     // MARK: - initialization
     
@@ -134,6 +135,10 @@ extension HomeForMemberViewModel {
                     }
                 case .socialLink(let type):
                     owner.onSocialLinkButtonTapped?(type.socialLink.serviceDomainLink)
+                case .popularPost(let model):
+                    owner.onPopularPostCellTapped?(model.webLink)
+                case .latestPost(let model):
+                    owner.onLatestPostCellTapped?(model.webLink)
                 default: break
                 }
             }
