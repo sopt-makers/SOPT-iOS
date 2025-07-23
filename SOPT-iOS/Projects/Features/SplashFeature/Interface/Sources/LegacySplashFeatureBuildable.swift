@@ -7,8 +7,10 @@
 //
 
 import Core
+import Domain
+import BaseFeatureDependency
 
 public protocol LegacySplashFeatureViewBuildable {
-    func makeSplash(_ coordinator: SplashCoordinatable) -> LegacySplashPresentable
-    func makeNoticePopUpVC(noticeType: NoticePopUpType, content: String) -> LegacyNoticePopUpViewControllable
+    func makeSplash(_ coordinator: Coordinator) -> LegacySplashPresentable
+    func makeNoticePopUpVC(noticeType: NoticePopUpType, model: AppNoticeModel) -> LegacyNoticePopUpViewControllable
 }

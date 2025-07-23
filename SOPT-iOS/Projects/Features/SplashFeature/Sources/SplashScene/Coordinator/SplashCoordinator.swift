@@ -13,22 +13,15 @@ import SplashFeatureInterface
 import Core
 import Domain
 
-public final class SplashCoordinator: DefaultCoordinator & SplashCoordinatable {
-    
-    // MARK: - SplashCoordinatable
-    
-    public var onNoticeSkipped: (() -> Void)?
-    public var onNoticeExist: ((Domain.AppNoticeModel) -> Void)?
-    public var finished: (() -> Void)?
-    
+public final class SplashCoordinator: BaseCoordinator & SplashCoordinatorFinishOutput {
     
     // MARK: - Properties
-    
-    public var finishFlow: (() -> Void)?
     
     private weak var navigationController: UINavigationController?
     private let factory: SplashFeatureBuildable
     private let cancelBag = CancelBag()
+    
+    public var finished: (() -> Void)?
     
     // MARK: - Init
     
@@ -50,37 +43,41 @@ public final class SplashCoordinator: DefaultCoordinator & SplashCoordinatable {
     // MARK: - Navigation
     
     private func showSplash() {
-        let splash = factory.makeSplash(self)
+        var splash = factory.makeSplash(self)
         
-        onNoticeExist = { [weak self] appNoticeModel in
-            self?.presentNoticePopUp(model: appNoticeModel)
+        splash.vm.onNoticeExist = { [weak self] appNoticeModel in
+            self?.presentNoticePopUp(model: appNoticeModel, as: .forceUpdate)
         }
         
-        onNoticeSkipped = { [weak self] in
+        splash.vm.onNoticeSkipped = { [weak self] in
             self?.finished?()
+        }
+        
+        splash.vm.onOptionalNoticeExist = { [weak self] appNoticeModel in
+            self?.presentNoticePopUp(model: appNoticeModel, as: .recommendUpdate)
         }
         
         navigationController?.setViewControllers([splash.vc], animated: true)
     }
     
-    private func presentNoticePopUp(model: AppNoticeModel) {
-        guard let isForcedUpdate = model.isForced else { return }
-        
-        let popUpType: NoticePopUpType = isForcedUpdate ? .forceUpdate : .recommendUpdate
-        
-        let noticePopUpVC = factory.makeNoticePopUpVC(
-            noticeType: popUpType,
-            content: model.notice
-        )
+    private func presentNoticePopUp(model: AppNoticeModel, as type: NoticePopUpType) {
+        let noticePopUpVC = factory.makeNoticePopUpVC(noticeType: type, model: model)
         
         noticePopUpVC.closeButtonTappedWithCheck.sink { [weak self] didCheck in
-            if didCheck {
-                UserDefaultKeyList.AppNotice.checkedAppVersion = model.recommendVersion
-            }
             self?.navigationController?.dismiss(animated: true)
             self?.finished?()
         }.store(in: cancelBag)
         
         navigationController?.present(noticePopUpVC, animated: false)
+    }
+    
+    public func showNetworkAlert() {
+        AlertUtils.presentAlertVC(
+            type: .titleDescription,
+            theme: .main,
+            title: I18N.Default.networkError,
+            description: I18N.Default.networkErrorDescription,
+            customButtonTitle: I18N.Default.ok
+        )
     }
 }

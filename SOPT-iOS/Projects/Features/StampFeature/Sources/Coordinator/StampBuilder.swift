@@ -10,6 +10,7 @@ import UIKit
 
 import Core
 import Domain
+import BaseFeatureDependency
 @_exported import StampFeatureInterface
 
 public
@@ -22,9 +23,9 @@ final class StampBuilder {
 }
 
 extension StampBuilder: StampFeatureBuildable {
-    public func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListPresentable {
+    public func makeMissionListVC(sceneType: MissionListSceneType, coordinator: Coordinator) -> MissionListPresentable {
         let useCase = DefaultMissionListUseCase(repository: missionListRepository)
-        let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType)
+        let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType, coordinator: coordinator)
         let missionListVC = MissionListVC(viewModel: viewModel)
         return (missionListVC, viewModel)
     }

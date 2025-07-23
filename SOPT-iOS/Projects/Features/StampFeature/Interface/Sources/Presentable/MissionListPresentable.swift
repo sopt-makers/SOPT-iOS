@@ -12,10 +12,10 @@ import Core
 import BaseFeatureDependency
 import Domain
 
-public protocol LegacyMissionListViewControllable: LegacyViewControllable & MissionListCoordinatable { }
-public protocol MissionListViewControllable: UIViewController & MissionListCoordinatable { }
+public protocol LegacyMissionListViewControllable: LegacyViewControllable & MissionListRoutingTrigger { }
+public protocol MissionListViewControllable: UIViewController & MissionListRoutingTrigger { }
 
-public protocol MissionListCoordinatable {
+public protocol MissionListRoutingTrigger {
   var onSwiped: (() -> Void)? { get set }
   var onNaviBackTap: (() -> Void)? { get set }
   var onPartRankingButtonTap: ((RankingViewType) -> Void)? { get set }
@@ -24,5 +24,6 @@ public protocol MissionListCoordinatable {
   var onCellTap: ((MissionListModel, _ username: String?) -> Void)? { get set }
   var onReportButtonTap: (() -> Void)? { get set }
 }
-public typealias MissionListViewModelType = ViewModelType & MissionListCoordinatable
+// TODO: coordinating vc -> vm 작업에서 활용
+public typealias MissionListViewModelType = ViewModelType & MissionListRoutingTrigger
 public typealias MissionListPresentable = (vc: any MissionListViewControllable, vm: any MissionListViewModelType)

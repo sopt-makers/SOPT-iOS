@@ -68,5 +68,11 @@ public extension SettingsDictionary {
         merging(["PROVISIONING_PROFILE_SPECIFIER": SettingValue(stringLiteral: "$(APP_PROVISIONING_PROFILE)")])
             .merging(["PROVISIONING_PROFILE": SettingValue(stringLiteral: "$(APP_PROVISIONING_PROFILE)")])
     }
-}
 
+    func setCrashlyticsSettings() -> SettingsDictionary {
+        merging([
+            "DEBUG_INFORMATION_FORMAT": SettingValue(stringLiteral: "dwarf-with-dsym"),
+            "ENABLE_BITCODE": SettingValue(stringLiteral: "NO")
+        ])
+    }
+}

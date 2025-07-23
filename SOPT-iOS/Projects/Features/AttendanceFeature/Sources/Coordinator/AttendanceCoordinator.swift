@@ -20,7 +20,7 @@ public final class AttendanceCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: AttendanceFeatureBuildable
-    private let navigationController: UINavigationController
+    private weak var navigationController: UINavigationController?
     
     // MARK: - Init
     
@@ -41,18 +41,17 @@ public final class AttendanceCoordinator: DefaultCoordinator {
     // MARK: - Navigation
     
     private func showShowAttendance() {
-        var showAttendance = factory.makeShowAttendanceVC()
+        var showAttendance = factory.makeShowAttendanceVC(coordinator: self)
         
         showAttendance.vc.onNaviBackTap = { [weak self] in
-            self?.navigationController.popViewController(animated: true)
-            self?.finishFlow?()
+            self?.navigationController?.popViewController(animated: true)
         }
         
         showAttendance.vc.onAttendanceButtonTap = { [weak self] lectureRound, completion in
             self?.showAttendance(lectureRound, completion)
         }
         
-        navigationController.pushViewController(showAttendance.vc, animated: true)
+        navigationController?.pushViewController(showAttendance.vc, animated: true)
     }
     
     internal func showAttendance(_ lectureRound: AttendanceRoundModel, _ dismissCompletion: (() -> Void)?) {
@@ -63,6 +62,6 @@ public final class AttendanceCoordinator: DefaultCoordinator {
         
         attendance.vc.modalPresentationStyle = .overFullScreen
         attendance.vc.modalTransitionStyle = .crossDissolve
-        navigationController.present(attendance.vc, animated: true)
+        navigationController?.present(attendance.vc, animated: true)
     }
 }

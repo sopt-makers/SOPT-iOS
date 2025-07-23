@@ -11,7 +11,7 @@ import BaseFeatureDependency
 import Domain
 
 public protocol AttendanceFeatureBuildable {
-    func makeShowAttendanceVC() -> ShowAttendancePresentable
+    func makeShowAttendanceVC(coordinator: Coordinator) -> ShowAttendancePresentable
     func makeAttendanceVC(
         lectureRound: AttendanceRoundModel,
         dismissCompletion: (() -> Void)?

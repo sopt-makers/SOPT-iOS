@@ -174,7 +174,7 @@ final class ApplicationCoordinator: BaseCoordinator {
 
 extension ApplicationCoordinator {
     private func runSplashFlow() {
-        var coordinator: DefaultCoordinator
+        var coordinator: BaseCoordinator
         
         switch Config.coordinatorFlag {
         case .legacy:
@@ -207,8 +207,13 @@ extension ApplicationCoordinator {
     }
     
     private func checkDidSignIn() {
-        let needAuth = UserDefaultKeyList.Auth.appAccessToken == nil
-        needAuth ? runSignInFlow(by: .root) : (Config.coordinatorFlag == .legacy ? runLegacyTabBarFlow() : runTabBarFlow())
+        if UserDefaultKeyList.Auth.appAccessToken == nil {
+            runSignInFlow(by: .root)
+        } else {
+            Config.coordinatorFlag == .legacy
+            ? runLegacyTabBarFlow()
+            : runTabBarFlow()
+        }
     }
 }
 
@@ -218,7 +223,9 @@ extension ApplicationCoordinator {
     func runSignInFlow(by style: CoordinatorStartingOption) {
         let coordinator = AuthCoordinator(router: router, factory: AuthBuilder())
         coordinator.finishFlow = { [weak self, weak coordinator] userType in
-            Config.coordinatorFlag == .legacy ? self?.runLegacyTabBarFlow(type: userType) : self?.runTabBarFlow()
+            Config.coordinatorFlag == .legacy
+            ? self?.runLegacyTabBarFlow(type: userType)
+            : self?.runTabBarFlow(type: userType)
             self?.removeDependency(coordinator)
         }
         addDependency(coordinator)
@@ -229,7 +236,9 @@ extension ApplicationCoordinator {
         childCoordinators = []
         let coordinator = AuthCoordinator(router: router, factory: AuthBuilder(), url: url)
         coordinator.finishFlow = { [weak self, weak coordinator] userType in
-            Config.coordinatorFlag == .legacy ? self?.runLegacyTabBarFlow(type: userType) : self?.runTabBarFlow()
+            Config.coordinatorFlag == .legacy
+            ? self?.runLegacyTabBarFlow(type: userType)
+            : self?.runTabBarFlow(type: userType)
             self?.removeDependency(coordinator)
         }
         addDependency(coordinator)
@@ -469,6 +478,11 @@ extension ApplicationCoordinator {
                 ),
                 factory: LegacyAttendanceBuilder()
             )
+            coordinator.finishFlow = { [weak self, weak coordinator] in
+                coordinator?.childCoordinators = []
+                self?.removeDependency(coordinator)
+            }
+            addDependency(coordinator)
         case .new:
             coordinator = AttendanceCoordinator(
                 navigationController: UIWindow.getRootNavigationController,
@@ -476,11 +490,6 @@ extension ApplicationCoordinator {
             )
         }
         
-        coordinator.finishFlow = { [weak self, weak coordinator] in
-            coordinator?.childCoordinators = []
-            self?.removeDependency(coordinator)
-        }
-        addDependency(coordinator)
         coordinator.start()
         
         return coordinator
@@ -491,29 +500,31 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runStampFlow() -> DefaultCoordinator {
-        var coordinator: DefaultCoordinator
+    internal func runStampFlow() -> BaseCoordinator {
+        var coordinator: BaseCoordinator
         
         switch Config.coordinatorFlag {
         case .legacy:
-            coordinator = LegacyStampCoordinator(
+            var legacyStampCoordinator = LegacyStampCoordinator(
                 router: LegacyRouter(
                     rootController: UIWindow.getRootNavigationController
                 ),
                 factory: LegacyStampBuilder()
             )
+            legacyStampCoordinator.finishFlow = { [weak self, weak legacyStampCoordinator] in
+                legacyStampCoordinator?.childCoordinators = []
+                self?.removeDependency(legacyStampCoordinator)
+            }
+            addDependency(legacyStampCoordinator)
+            
+            coordinator = legacyStampCoordinator
         case .new:
             coordinator = StampCoordinator(
                 navigationController: UIWindow.getRootNavigationController,
                 factory: StampBuilder()
             )
         }
-        
-        coordinator.finishFlow = { [weak self, weak coordinator] in
-            coordinator?.childCoordinators = []
-            self?.removeDependency(coordinator)
-        }
-        addDependency(coordinator)
+
         coordinator.start()
         
         return coordinator
