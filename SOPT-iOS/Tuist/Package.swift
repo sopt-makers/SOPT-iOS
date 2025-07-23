@@ -9,8 +9,6 @@ let xcconfigPath: ProjectDescription.Path = .relativeToRoot("xcconfigs/targets/i
 let packageSettings = PackageSettings(
     productTypes: [
         "Alamofire": .framework,
-        "Firebase": .framework,
-        "FirebaseRemoteConfig": .framework,
         "GULEnvironment": .framework,
         "GULLogger": .framework,
         "GULNSData": .framework,

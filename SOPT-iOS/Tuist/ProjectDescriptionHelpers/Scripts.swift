@@ -40,7 +40,7 @@ fi
     
     static let uploadDSYMToFirebaseScript = TargetScript.post(
       script: """
-        "$SRCROOT/../../Tuist/Dependencies/SwiftPackageManager/.build/checkouts/firebase-ios-sdk/Crashlytics/run"
+        "$SRCROOT/../../Tuist/.build/checkouts/firebase-ios-sdk/Crashlytics/run"
       """,
       name: "Upload dSYM to Firebase",
       inputPaths: [
