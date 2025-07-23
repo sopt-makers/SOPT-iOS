@@ -9,7 +9,7 @@
 import Foundation
 
 public struct HomePopularPostModel {
-    public let profileImage: String
+    public let profileImage: String?
     public let name: String
     public let generationAndPart: String
     public let rank: Int
@@ -20,7 +20,7 @@ public struct HomePopularPostModel {
     public let id: Int
 
     public init(
-        profileImage: String,
+        profileImage: String?,
         name: String,
         generationAndPart: String,
         rank: Int,

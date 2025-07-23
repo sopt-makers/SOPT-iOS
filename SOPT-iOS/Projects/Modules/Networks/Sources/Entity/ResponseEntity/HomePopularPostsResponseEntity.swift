@@ -9,7 +9,7 @@
 import Foundation
 
 public struct HomePopularPostsResponseEntity: Decodable {
-    public let profileImage: String
+    public let profileImage: String?
     public let name: String
     public let generationAndPart: String
     public let rank: Int

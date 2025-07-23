@@ -330,13 +330,8 @@ extension HomeForMemberVC {
         snapshot.appendItems([.recentSchedule(data.recentSchedule)], toSection: .calendar)
         snapshot.appendItems(self.viewModel.productServiceList.map { .productService($0) }, toSection: .mainProduct)
         snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
-        
-        // TODO: - @재현: 서버 통신 이후 수정
-        let dummyPlaygroundNews = createDummyPlaygroundNewsPosts()
-        snapshot.appendItems(dummyPlaygroundNews.map { .playgroundNewsPost($0) }, toSection: .playgroundNews)
-        let dummyRecentPosts = createDummyRecentPosts()
-        snapshot.appendItems(dummyRecentPosts.map { .recentPost($0) }, toSection: .recentPost)
-        
+        snapshot.appendItems(data.playgroundNewsPosts.map { .playgroundNewsPost($0) }, toSection: .playgroundNews)
+        snapshot.appendItems(data.recentPosts.map { .recentPost($0) }, toSection: .recentPost)
         snapshot.appendItems([.survey(data.survey)], toSection: .survey)
         snapshot.appendItems(self.viewModel.socialLinkList.map { .socialLink($0) }, toSection: .socialLinks)
 
