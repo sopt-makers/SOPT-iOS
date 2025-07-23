@@ -221,6 +221,7 @@ extension DefaultPostCVC {
                 self.animateBorderOpacity(to: 0) { [weak self] in
                     guard let self = self, !self.isOutlineAnimationCancelled else { return }
                     self.onAnimationCompleted?()
+                    cancelOutlineAnimation()
                 }
             }
         }
