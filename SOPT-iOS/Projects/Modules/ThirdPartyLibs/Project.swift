@@ -22,6 +22,8 @@ let project = Project.makeModule(
         .SPM.lottie,
         .SPM.Amplitude,
         .SPM.FirebaseCore,
-        .SPM.FirebaseRemoteConfig
+        .SPM.FirebaseRemoteConfig,
+        .SPM.FirebaseCrashlytics,
+        .SPM.FirebaseAnalytics
     ]
 )
