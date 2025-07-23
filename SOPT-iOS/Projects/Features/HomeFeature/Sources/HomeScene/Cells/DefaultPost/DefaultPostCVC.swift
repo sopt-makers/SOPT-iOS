@@ -24,6 +24,7 @@ final class DefaultPostCVC: UICollectionViewCell {
     private let gradientLayer = CAGradientLayer()
     private let shapeLayer = CAShapeLayer()
     var onAnimationCompleted: (() -> Void)?
+    private var isOutlineAnimationCancelled = false
         
     // MARK: - UI & Layout
 
@@ -201,27 +202,43 @@ extension DefaultPostCVC {
 // MARK: - Animation Methods
 
 extension DefaultPostCVC {
+    /// 애니메이션 중단 메서드
+    func cancelOutlineAnimation() {
+        isOutlineAnimationCancelled = true
+        gradientLayer.removeAllAnimations()
+        gradientLayer.opacity = 0
+        onAnimationCompleted = nil
+    }
+    
     /// 0.3초간 show -> 2.4초 기다림 -> 0.3초간 hide
     func setOutlinedAnimated() {
+        isOutlineAnimationCancelled = false
         let interval = 2.4
         animateBorderOpacity(to: 1) { [weak self] in
-            guard let self = self else { return }
+            guard let self = self, !self.isOutlineAnimationCancelled else { return }
             DispatchQueue.main.asyncAfter(deadline: .now() + interval) {
+                guard !self.isOutlineAnimationCancelled else { return }
                 self.animateBorderOpacity(to: 0) { [weak self] in
-                    self?.onAnimationCompleted?()
+                    guard let self = self, !self.isOutlineAnimationCancelled else { return }
+                    self.onAnimationCompleted?()
                 }
             }
         }
     }
 
     private func animateBorderOpacity(to value: Float, completion: @escaping () -> Void) {
+        guard !isOutlineAnimationCancelled else { return }
         let animation = CABasicAnimation(keyPath: "opacity")
         animation.fromValue = gradientLayer.presentation()?.opacity ?? gradientLayer.opacity
         animation.toValue = value
         animation.duration = 0.3
         animation.timingFunction = CAMediaTimingFunction(name: .easeIn)
         CATransaction.begin()
-        CATransaction.setCompletionBlock(completion)
+        CATransaction.setCompletionBlock {
+            if !self.isOutlineAnimationCancelled {
+                completion()
+            }
+        }
         gradientLayer.add(animation, forKey: "opacity")
         gradientLayer.opacity = value
         CATransaction.commit()

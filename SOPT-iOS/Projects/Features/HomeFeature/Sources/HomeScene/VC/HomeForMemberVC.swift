@@ -34,6 +34,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     private var isFirstAppear = true
     private var isExtendedButtonHidden: Bool = false
     private var hasStartedAnimation = false
+    var isOutlineAnimationStopped = false
     private var floatingButtonType: ExtendedFloatingButtonType = .extended
     var playgroundNewsAnimationTask: Task<Void, Never>?
     var recentPostAnimationTask: Task<Void, Never>?
@@ -82,6 +83,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
         super.viewDidDisappear(animated)
         stopRecentPostAnimationLoop()
         cancelTasks()
+        stopPlaygroundNewsAnimationLoop()
     }
 }
 

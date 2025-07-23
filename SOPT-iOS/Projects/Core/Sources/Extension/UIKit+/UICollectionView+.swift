@@ -27,4 +27,8 @@ public extension UICollectionView {
             configure(supplementaryView, indexPath)
         }
     }
+    
+    func isVisible(at indexPath: IndexPath) -> Bool {
+        return self.indexPathsForVisibleItems.contains(indexPath)
+    }
 }

@@ -13,24 +13,39 @@ import UIKit
 extension HomeForMemberVC {
     /// Playground News 섹션의 디졸브 전환 애니메이션
     func startPlaygroundNewsAnimationLoop() {
+        isOutlineAnimationStopped = false
         currentIndex = 0
         runOutlineAnimationStep()
     }
+    
+    func stopPlaygroundNewsAnimationLoop() {
+        // 현재 보여지는 cell들에 대해 애니메이션을 취소합니다.
+        isOutlineAnimationStopped = true
+        for cell in collectionView.visibleCells {
+            (cell as? DefaultPostCVC)?.cancelOutlineAnimation()
+        }
+    }
 
     private func runOutlineAnimationStep() {
+        // 실행이 종료되었다면, 재귀에서 빠져 나옵니다.
+        guard !isOutlineAnimationStopped else { return }
         let playgroundNewsSectionIndex = HomeForMemberSectionLayoutKind.playgroundNews.rawValue
         let indexPath = IndexPath(item: currentIndex, section: playgroundNewsSectionIndex)
-
-        if let cell = self.collectionView.cellForItem(at: indexPath) as? DefaultPostCVC {
+        
+        // 셀이 화면에 보이는 경우만 애니메이션을 실행합니다.
+        if collectionView.isVisible(at: indexPath),
+           let cell = self.collectionView.cellForItem(at: indexPath) as? DefaultPostCVC {
             cell.onAnimationCompleted = { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.currentIndex = (self.currentIndex + 1) % 3
                 self.runOutlineAnimationStep()
             }
             cell.setOutlinedAnimated()
         } else {
-            self.currentIndex = (self.currentIndex + 1) % 3
-            self.runOutlineAnimationStep()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                guard let self else { return }
+                self.runOutlineAnimationStep()
+            }
         }
     }
 }
