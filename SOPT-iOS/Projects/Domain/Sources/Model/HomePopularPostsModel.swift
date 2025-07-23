@@ -11,7 +11,7 @@ import Foundation
 public struct HomePopularPostModel {
     public let profileImage: String?
     public let name: String
-    public let generationAndPart: String
+    public let generationAndPart: String?
     public let rank: Int
     public let category: String
     public let title: String
@@ -22,7 +22,7 @@ public struct HomePopularPostModel {
     public init(
         profileImage: String?,
         name: String,
-        generationAndPart: String,
+        generationAndPart: String?,
         rank: Int,
         category: String,
         title: String,

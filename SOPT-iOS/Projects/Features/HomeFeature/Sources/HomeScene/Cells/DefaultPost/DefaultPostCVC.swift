@@ -188,7 +188,7 @@ extension DefaultPostCVC {
         self.categorySubPhraseView.setData(with: model.title)
         self.categoryTagView.setData(with: model.category)
         self.userNameLabel.text = model.name
-        self.userPartLabel.text = model.name
+        self.userPartLabel.text = model.generationAndPart
         if let profileImage = model.profileImage {
             self.profileImageView.setImage(with: profileImage)
         }

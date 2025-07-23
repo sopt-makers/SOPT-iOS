@@ -65,7 +65,7 @@ struct HomePresentationModel {
     struct PopularPost: Identifiable, Hashable {
         let profileImage: String?
         let name: String
-        let generationAndPart: String
+        let generationAndPart: String?
         let rank: Int
         let category: String
         let title: String
@@ -76,7 +76,7 @@ struct HomePresentationModel {
         init(
             profileImage: String?,
             name: String,
-            generationAndPart: String,
+            generationAndPart: String?,
             rank: Int,
             category: String,
             title: String,
@@ -99,7 +99,7 @@ struct HomePresentationModel {
     struct LatestPost: Identifiable, Hashable {
         let profileImage: String?
         let name: String
-        let generationAndPart: String
+        let generationAndPart: String?
         let category: String
         let title: String
         let content: String
@@ -110,7 +110,7 @@ struct HomePresentationModel {
         init(
             profileImage: String?,
             name: String,
-            generationAndPart: String,
+            generationAndPart: String?,
             category: String,
             title: String,
             content: String,

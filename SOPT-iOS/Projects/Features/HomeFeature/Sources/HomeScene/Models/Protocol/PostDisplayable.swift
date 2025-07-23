@@ -12,7 +12,7 @@ import Foundation
 protocol PostDisplayable {
     var profileImage: String? { get }
     var name: String { get }
-    var generationAndPart: String { get }
+    var generationAndPart: String? { get }
     var category: String { get }
     var title: String { get }
     var content: String { get }
