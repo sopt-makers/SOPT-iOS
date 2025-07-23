@@ -86,6 +86,13 @@ extension HomeForMemberVC {
         ) { headerView, indexPath in
             guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: indexPath.section) else { return }
             headerView.configureView(sectionKind: sectionKind)
+            
+            headerView.viewAllContentButtonTap
+                .withUnretained(self)
+                .sink { owner, _ in
+                    owner.viewAllButtonTapped.send()
+                }
+                .store(in: headerView.cancelBag)
         }
     }
     

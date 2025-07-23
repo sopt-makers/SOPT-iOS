@@ -29,6 +29,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     private lazy var extendedFloatingButtonTapped = floatingButton.actionButtonTapped
     private lazy var collapsedFloatingButtonTapped = floatingButton.gesture().mapVoid().asDriver()
     private(set) var surveyButtonTapped = PassthroughSubject<Void, Never>()
+    private(set) var viewAllButtonTapped = PassthroughSubject<Void, Never>()
     private var socialLinkButtonTapped = PassthroughSubject<HomePresentationModel.SocialLink, Never>()
     
     private var isFirstAppear = true
@@ -286,7 +287,8 @@ extension HomeForMemberVC {
             settingButtonTapped: settingButtonTapped,
             extendedFloatingButtonTapped: floatingButtonTapped.asDriver(),
             surveyButtonTapped: surveyButtonTapped.asDriver(),
-            socialLinkButtonTapped: socialLinkButtonTapped.asDriver()
+            socialLinkButtonTapped: socialLinkButtonTapped.asDriver(),
+            viewAllButtonTapped: viewAllButtonTapped.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)

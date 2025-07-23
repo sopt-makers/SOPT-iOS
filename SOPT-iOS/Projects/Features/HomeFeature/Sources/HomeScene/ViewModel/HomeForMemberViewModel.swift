@@ -56,6 +56,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         let extendedFloatingButtonTapped: Driver<Void>
         let surveyButtonTapped: Driver<Void>
         let socialLinkButtonTapped: Driver<HomePresentationModel.SocialLink>
+        let viewAllButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -82,6 +83,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public var onSocialLinkButtonTapped: ((String) -> Void)?
     public var onPopularPostCellTapped: ((String) -> Void)?
     public var onLatestPostCellTapped: ((String) -> Void)?
+    public var onViewAllContentButtonTapped: ((String) -> Void)?
     
     // MARK: - initialization
     
@@ -180,6 +182,14 @@ extension HomeForMemberViewModel {
                 owner.onSurveyButtonTapped?(owner.surveyButtonURL)
             }
             .store(in: cancelBag)
+        
+        input.viewAllButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onViewAllContentButtonTapped?(ExternalURL.Playground.main)
+            }
+            .store(in: cancelBag)
+        
         return output
     }
 }
