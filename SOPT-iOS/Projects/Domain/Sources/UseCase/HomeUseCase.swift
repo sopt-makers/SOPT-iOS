@@ -30,6 +30,8 @@ public protocol HomeUseCase {
     func getPlaygroundNewsPostsAsync() async throws -> [HomePlaygroundNewsPostsModel]
     func getCalendarDetailAsync() async throws -> [HomeCalendarDetailModel]
     func getSurveyInfoAsync() async throws -> HomeSurveyModel
+    func getPopularPostsAsync() async throws -> [HomePopularPostModel]
+    func getLatestPostsAsync() async throws -> [HomeLatestPostModel]
 }
 
 public class DefaultHomeUseCase {
@@ -160,4 +162,11 @@ extension DefaultHomeUseCase: HomeUseCase {
         try await repository.getSurveyInfoAsync()
     }
     
+    public func getPopularPostsAsync() async throws -> [HomePopularPostModel] {
+        try await repository.getPopularPostsAsync()
+    }
+    
+    public func getLatestPostsAsync() async throws -> [HomeLatestPostModel] {
+        try await repository.getLatestPostsAsync()
+    }
 }
