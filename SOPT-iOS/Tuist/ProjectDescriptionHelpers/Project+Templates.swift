@@ -52,10 +52,7 @@ public extension Project {
                     internalDependencies,
                     externalDependencies,
                     [
-                        .SPM.Inject,
-                        .SPM.FirebaseCrashlytics,
-                        .SPM.FirebaseAnalytics,
-                        .SPM.FirebaseCore
+                        .SPM.Inject
                     ]
                 ].flatMap{ $0
                 },

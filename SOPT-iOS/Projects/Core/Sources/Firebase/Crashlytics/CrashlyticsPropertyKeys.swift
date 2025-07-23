@@ -8,8 +8,6 @@
 
 import UIKit
 
-import Core
-
 enum CrashlyticsPropertyKeys {
     // MARK: - App Info
     case appVersion
