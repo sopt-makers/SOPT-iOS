@@ -28,6 +28,10 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     private var floatingButtonUrl: String = ""
     private var surveyButtonURL: String = ""
     
+    private var fetchedDashBoard: HomePresentationModel.DashBoard?
+    private var fetchedRecentSchedule: HomePresentationModel.RecentSchedule?
+    private var fetchedSurvey: HomePresentationModel.Survey?
+            
     let productServiceList: [HomePresentationModel.ProductService] = [
         .init(product: .playgroundCommunity),
         .init(product: .group),
@@ -58,7 +62,6 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     // MARK: - Outputs
     
     public struct Output {
-        let homeItem = PassthroughSubject<HomePresentationModel, Never>()
         let isLoading = PassthroughSubject<Bool, Never>()
         let floatingButtonInfo = PassthroughSubject<HomeFloatingButtonPresentationModel, Never>()
     }
@@ -107,60 +110,6 @@ extension HomeForMemberViewModel {
                 output.floatingButtonInfo.send(presentationModel)
                 owner.floatingButtonUrl = presentationModel.url
             }.store(in: cancelBag)
-        
-        input.viewWillAppear
-            .handleEvents(receiveOutput: { _ in
-                output.isLoading.send(true)
-            })
-            .flatMap { _ in
-                self.useCase.getUserInfo()
-                    .catch{ mainError -> AnyPublisher<UserMainInfoModel?, Never> in
-                        switch mainError {
-                        case .networkError(_):
-                            self.onNetworkError?()
-                            return Empty().eraseToAnyPublisher()
-                        case .authFailed:
-                            self.onNeedSignIn?()
-                            return Empty().eraseToAnyPublisher()
-                        }
-                    }
-            }
-            .compactMap { $0 }
-            .withUnretained(self)
-            .flatMap { owner, userInfo in
-                let dashBoardPublisher = owner.useCase.getHomeDescription()
-                    .map { $0.toPresentation(history: userInfo.historyList, isAllConfirm: userInfo.isAllConfirm) }
-                
-                let recentSchedulePublisher = owner.useCase.getRecentSchedule()
-                    .map { $0.toPresentation() }
-                
-                let appServicePublisher = owner.useCase.getAppServices()
-                    .map { $0.map { $0.toPresentation() } }
-                
-                let playgroundPublisher = owner.useCase.getPlaygroundNewsPosts()
-                    .map { $0.map { $0.toPresentation() } }
-                
-                return Publishers.Zip4(dashBoardPublisher, recentSchedulePublisher, appServicePublisher, playgroundPublisher)
-            }
-            .flatMap { dashBoard, recentSchedule, appServices, playgroundNewsPosts in
-                self.useCase.getSurveyInfo()
-                    .map { survey in
-                        HomePresentationModel(
-                            dashBoard: dashBoard,
-                            recentSchedule: recentSchedule,
-                            appServices: appServices,
-                            playgroundNewsPosts: playgroundNewsPosts,
-                            survey: survey.toPresentation()
-                        )
-                    }
-            }
-            .withUnretained(self)
-            .sink { owner, data in
-                owner.surveyButtonURL = data.survey.linkURL
-                output.homeItem.send(data)
-                output.isLoading.send(false)
-            }
-            .store(in: cancelBag)
         
         input.cellTapped
             .withUnretained(self)
@@ -256,5 +205,76 @@ extension HomeForMemberViewModel {
                 self.useCase.registerPushToken()
             }
         }
+    }
+}
+
+// MARK: - Fetch Home Data
+
+extension HomeForMemberViewModel {
+    func fetchHomeData() async -> HomePresentationModel? {
+        let model: HomePresentationModel?
+        
+        do {
+            async let dashBoard = fetchDashBoard()
+            async let recentSchedule = fetchRecentSchedule()
+            async let survey = fetchSurvey()
+            async let appService = useCase.getAppServicesAsync()
+            async let playgroundNewsPosts = useCase.getPlaygroundNewsPostsAsync()
+            
+            self.surveyButtonURL = try await survey.linkURL
+            
+            model = HomePresentationModel(
+                dashBoard: try await dashBoard,
+                recentSchedule: try await recentSchedule,
+                appServices: try await appService.map { $0.toPresentation() },
+                playgroundNewsPosts: try await playgroundNewsPosts.map { $0.toPresentation() },
+                survey: try await survey
+            )
+            
+            return model
+        } catch let mainError as MainError {
+            await MainActor.run {
+                switch mainError {
+                case .networkError(_):
+                    self.onNetworkError?()
+                case .authFailed:
+                    self.onNeedSignIn?()
+                }
+            }
+        } catch {
+            await MainActor.run {
+                self.onNetworkError?()
+            }
+        }
+        
+        return nil
+    }
+    
+    // 각 함수들은 이미 fetch된 데이터가 있다면 통신 요청 없이 해당 데이터를 사용합니다.
+    private func fetchDashBoard() async throws -> HomePresentationModel.DashBoard {
+        if let cached = fetchedDashBoard { return cached }
+        let description = try await useCase.getHomeDescriptionAsync()
+        let user = try await useCase.getUserInfoAsync()
+        let dashBoard = description.toPresentation(
+            history: user?.historyList ?? [],
+            isAllConfirm: user?.isAllConfirm ?? false
+        )
+        fetchedDashBoard = dashBoard
+        return dashBoard
+    }
+    
+    private func fetchRecentSchedule() async throws -> HomePresentationModel.RecentSchedule {
+        if let cached = fetchedRecentSchedule { return cached }
+        let entity = try await useCase.getRecentScheduleAsync()
+        let recentSchedule = entity.toPresentation()
+        fetchedRecentSchedule = recentSchedule
+        return recentSchedule
+    }
+    
+    private func fetchSurvey() async throws -> HomePresentationModel.Survey {
+        if let cached = fetchedSurvey { return cached }
+        let entity = try await useCase.getSurveyInfoAsync()
+        let survey = entity.toPresentation()
+        return survey
     }
 }

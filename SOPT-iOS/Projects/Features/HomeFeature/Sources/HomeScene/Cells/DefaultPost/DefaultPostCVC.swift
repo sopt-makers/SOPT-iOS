@@ -23,6 +23,8 @@ final class DefaultPostCVC: UICollectionViewCell {
     
     private let gradientLayer = CAGradientLayer()
     private let shapeLayer = CAShapeLayer()
+    var onAnimationCompleted: (() -> Void)?
+    private var isOutlineAnimationCancelled = false
         
     // MARK: - UI & Layout
 
@@ -61,6 +63,7 @@ final class DefaultPostCVC: UICollectionViewCell {
         $0.textColor = DSKitAsset.Colors.white.color
         $0.font = DSKitFontFamily.Suit.bold.font(size: 16)
         $0.lineBreakMode = .byTruncatingTail
+        $0.numberOfLines = 1
     }
     
     private let postContentLabel = UILabel().then {
@@ -112,6 +115,7 @@ extension DefaultPostCVC {
         userStackView.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(18)
             make.centerY.equalToSuperview()
+            make.width.equalTo(50)
         }
         
         contentStackView.snp.makeConstraints { make in
@@ -198,25 +202,45 @@ extension DefaultPostCVC {
 // MARK: - Animation Methods
 
 extension DefaultPostCVC {
-    /// 0.3초간 show -> 2.4초 기다림 -> 0.3초간 hide
-    func setOutlinedAnimated() async {
-        let interval: UInt64 = 2_400_000_000
-        
-        await animateBorderOpacity(to: 1)
-        try? await Task.sleep(nanoseconds: interval)
-        await animateBorderOpacity(to: 0)
+    /// 애니메이션 중단 메서드
+    func cancelOutlineAnimation() {
+        isOutlineAnimationCancelled = true
+        gradientLayer.removeAllAnimations()
+        gradientLayer.opacity = 0
+        onAnimationCompleted = nil
     }
     
-    private func animateBorderOpacity(to value: Float) async {
+    /// 0.3초간 show -> 2.4초 기다림 -> 0.3초간 hide
+    func setOutlinedAnimated() {
+        isOutlineAnimationCancelled = false
+        let interval = 2.4
+        animateBorderOpacity(to: 1) { [weak self] in
+            guard let self = self, !self.isOutlineAnimationCancelled else { return }
+            DispatchQueue.main.asyncAfter(deadline: .now() + interval) {
+                guard !self.isOutlineAnimationCancelled else { return }
+                self.animateBorderOpacity(to: 0) { [weak self] in
+                    guard let self = self, !self.isOutlineAnimationCancelled else { return }
+                    self.onAnimationCompleted?()
+                }
+            }
+        }
+    }
+
+    private func animateBorderOpacity(to value: Float, completion: @escaping () -> Void) {
+        guard !isOutlineAnimationCancelled else { return }
         let animation = CABasicAnimation(keyPath: "opacity")
         animation.fromValue = gradientLayer.presentation()?.opacity ?? gradientLayer.opacity
         animation.toValue = value
         animation.duration = 0.3
         animation.timingFunction = CAMediaTimingFunction(name: .easeIn)
-        
+        CATransaction.begin()
+        CATransaction.setCompletionBlock {
+            if !self.isOutlineAnimationCancelled {
+                completion()
+            }
+        }
         gradientLayer.add(animation, forKey: "opacity")
         gradientLayer.opacity = value
-
-        try? await Task.sleep(for: .seconds(animation.duration)) // 애니메이션 동안 sleep
+        CATransaction.commit()
     }
 }

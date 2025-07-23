@@ -49,10 +49,6 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    override func prepareForReuse() {
-        self.titleLabel.snp.removeConstraints()
-    }
 }
 
 // MARK: - UI & Layout

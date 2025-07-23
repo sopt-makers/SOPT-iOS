@@ -22,4 +22,14 @@ public protocol HomeRepositoryInterface {
     func checkPokeNewUser() -> AnyPublisher<Bool, Error>
     func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonModel, Error>
     func getSurveyInfo() -> AnyPublisher<HomeSurveyModel, Error>
+    
+    /// async
+    func getHomeDescriptionAsync() async throws -> HomeDescriptionModel
+    func getUserInfoAsync() async throws -> UserMainInfoModel?
+    func getRecentScheduleAsync() async throws -> HomeRecentScheduleModel
+    func getAppServicesAsync() async throws -> [HomeAppServicesModel]
+    func getPlaygroundNewsPostsAsync() async throws -> [HomePlaygroundNewsPostsModel]
+    func getCalendarDetailAsync() async throws -> [HomeCalendarDetailModel]
+    func getReportURLAsync() async throws -> SoptampReportUrlModel
+    func getSurveyInfoAsync() async throws -> HomeSurveyModel
 }
