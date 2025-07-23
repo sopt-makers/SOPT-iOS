@@ -18,7 +18,7 @@ struct HomePresentationModel {
     let recentSchedule: HomePresentationModel.RecentSchedule
     let appServices: [HomePresentationModel.AppService]
     let popularPosts: [HomePresentationModel.PopularPost]
-    let recentPosts: [HomePresentationModel.RecentPost]
+    let latestPosts: [HomePresentationModel.LatestPost]
     let survey: HomePresentationModel.Survey
     
     // MARK: - Item Structs
@@ -96,7 +96,7 @@ struct HomePresentationModel {
         }
     }
 
-    struct RecentPost: Identifiable, Hashable {
+    struct LatestPost: Identifiable, Hashable {
         let profileImage: String?
         let name: String
         let generationAndPart: String
@@ -148,7 +148,7 @@ struct HomePresentationModel {
 }
 
 extension HomePresentationModel.PopularPost: PostDisplayable {}
-extension HomePresentationModel.RecentPost: PostDisplayable {}
+extension HomePresentationModel.LatestPost: PostDisplayable {}
 
 // MARK: - toPresentation
 
@@ -213,8 +213,8 @@ extension HomePopularPostModel {
 }
 
 extension HomeLatestPostModel {
-    func toPresentation() -> HomePresentationModel.RecentPost {
-        return HomePresentationModel.RecentPost(
+    func toPresentation() -> HomePresentationModel.LatestPost {
+        return HomePresentationModel.LatestPost(
             profileImage: self.profileImage,
             name: self.name,
             generationAndPart: self.generationAndPart,

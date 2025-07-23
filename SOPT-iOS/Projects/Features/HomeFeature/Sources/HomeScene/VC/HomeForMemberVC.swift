@@ -213,7 +213,7 @@ extension HomeForMemberVC {
                 case .popularPost(let playgroundNews):
                     return collectionView.dequeueConfiguredReusableCell(using: playgroundNewsRegistration,
                                                                         for: indexPath, item: playgroundNews)
-                case .recentPost(let recentPost):
+                case .latestPost(let recentPost):
                     return collectionView.dequeueConfiguredReusableCell(using: recentPostRegistration,
                                                                         for: indexPath, item: recentPost)
                 case .survey(let survey):
@@ -331,7 +331,7 @@ extension HomeForMemberVC {
         snapshot.appendItems(self.viewModel.productServiceList.map { .productService($0) }, toSection: .mainProduct)
         snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
         snapshot.appendItems(data.popularPosts.map { .popularPost($0) }, toSection: .playgroundNews)
-        snapshot.appendItems(data.recentPosts.map { .recentPost($0) }, toSection: .recentPost)
+        snapshot.appendItems(data.latestPosts.map { .latestPost($0) }, toSection: .recentPost)
         snapshot.appendItems([.survey(data.survey)], toSection: .survey)
         snapshot.appendItems(self.viewModel.socialLinkList.map { .socialLink($0) }, toSection: .socialLinks)
 
@@ -394,8 +394,8 @@ extension HomeForMemberVC: UICollectionViewDelegate {
                 self.cellTapped.send(.appService(model))
             case .popularPost(let model):
                 self.cellTapped.send(.popularPost(model))
-            case .recentPost(let model):
-                self.cellTapped.send(.recentPost(model))
+            case .latestPost(let model):
+                self.cellTapped.send(.latestPost(model))
             case .socialLink(let model):
                 self.cellTapped.send(.socialLink(model))
             default: return

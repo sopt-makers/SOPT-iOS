@@ -220,7 +220,7 @@ extension HomeForMemberViewModel {
             async let survey = fetchSurvey()
             async let appService = useCase.getAppServicesAsync()
             async let popularPosts = useCase.getPopularPostsAsync()
-            async let recentPosts = useCase.getLatestPostsAsync()
+            async let latestPosts = useCase.getLatestPostsAsync()
             
             self.surveyButtonURL = try await survey.linkURL
             
@@ -229,7 +229,7 @@ extension HomeForMemberViewModel {
                 recentSchedule: try await recentSchedule,
                 appServices: try await appService.map { $0.toPresentation() },
                 popularPosts: try await popularPosts.map { $0.toPresentation() },
-                recentPosts: try await recentPosts.map { $0.toPresentation() },
+                latestPosts: try await latestPosts.map { $0.toPresentation() },
                 survey: try await survey
             )
             
