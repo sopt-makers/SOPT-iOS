@@ -17,7 +17,7 @@ struct HomePresentationModel {
     let dashBoard: HomePresentationModel.DashBoard
     let recentSchedule: HomePresentationModel.RecentSchedule
     let appServices: [HomePresentationModel.AppService]
-    let playgroundNewsPosts: [HomePresentationModel.PlaygroundNews]
+    let popularPosts: [HomePresentationModel.PopularPost]
     let recentPosts: [HomePresentationModel.RecentPost]
     let survey: HomePresentationModel.Survey
     
@@ -62,7 +62,7 @@ struct HomePresentationModel {
         let alarmBadge, iconURL, deepLink: String
     }
     
-    struct PlaygroundNews: Identifiable, Hashable {
+    struct PopularPost: Identifiable, Hashable {
         let profileImage: String?
         let name: String
         let generationAndPart: String
@@ -147,7 +147,7 @@ struct HomePresentationModel {
     }
 }
 
-extension HomePresentationModel.PlaygroundNews: PostDisplayable {}
+extension HomePresentationModel.PopularPost: PostDisplayable {}
 extension HomePresentationModel.RecentPost: PostDisplayable {}
 
 // MARK: - toPresentation
@@ -197,8 +197,8 @@ extension HomeAppServicesModel {
 }
 
 extension HomePopularPostModel {
-    func toPresentation() -> HomePresentationModel.PlaygroundNews {
-        return HomePresentationModel.PlaygroundNews(
+    func toPresentation() -> HomePresentationModel.PopularPost {
+        return HomePresentationModel.PopularPost(
             profileImage: self.profileImage,
             name: self.name,
             generationAndPart: self.generationAndPart,

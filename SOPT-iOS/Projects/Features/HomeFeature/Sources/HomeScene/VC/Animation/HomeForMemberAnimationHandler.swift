@@ -8,7 +8,7 @@
 
 import UIKit
 
-// MARK: - PlaygroundNews Section Animation
+// MARK: - PopularPost Section Animation
 
 extension HomeForMemberVC {
     /// Playground News 섹션의 디졸브 전환 애니메이션

@@ -210,7 +210,7 @@ extension HomeForMemberVC {
                 case .appService(let appService):
                     return collectionView.dequeueConfiguredReusableCell(using: appServiceRegistration,
                                                                         for: indexPath, item: appService)
-                case .playgroundNewsPost(let playgroundNews):
+                case .popularPost(let playgroundNews):
                     return collectionView.dequeueConfiguredReusableCell(using: playgroundNewsRegistration,
                                                                         for: indexPath, item: playgroundNews)
                 case .recentPost(let recentPost):
@@ -330,7 +330,7 @@ extension HomeForMemberVC {
         snapshot.appendItems([.recentSchedule(data.recentSchedule)], toSection: .calendar)
         snapshot.appendItems(self.viewModel.productServiceList.map { .productService($0) }, toSection: .mainProduct)
         snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
-        snapshot.appendItems(data.playgroundNewsPosts.map { .playgroundNewsPost($0) }, toSection: .playgroundNews)
+        snapshot.appendItems(data.popularPosts.map { .popularPost($0) }, toSection: .playgroundNews)
         snapshot.appendItems(data.recentPosts.map { .recentPost($0) }, toSection: .recentPost)
         snapshot.appendItems([.survey(data.survey)], toSection: .survey)
         snapshot.appendItems(self.viewModel.socialLinkList.map { .socialLink($0) }, toSection: .socialLinks)
@@ -392,8 +392,8 @@ extension HomeForMemberVC: UICollectionViewDelegate {
                 self.cellTapped.send(.productService(model))
             case .appService(let model):
                 self.cellTapped.send(.appService(model))
-            case .playgroundNewsPost(let model):
-                self.cellTapped.send(.playgroundNewsPost(model))
+            case .popularPost(let model):
+                self.cellTapped.send(.popularPost(model))
             case .recentPost(let model):
                 self.cellTapped.send(.recentPost(model))
             case .socialLink(let model):
