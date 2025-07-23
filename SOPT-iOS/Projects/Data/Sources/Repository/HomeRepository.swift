@@ -161,4 +161,14 @@ extension HomeRepository: HomeRepositoryInterface {
         let entity = try await homeService.getSurveyInfoAsync()
         return entity.toDomain()
     }
+    
+    public func getPopularPostsAsync() async throws -> [Domain.HomePopularPostModel] {
+        let entity = try await homeService.getPopularPostsAsync()
+        return entity.map { $0.toDomain() }
+    }
+    
+    public func getLatestPostsAsync() async throws -> [Domain.HomeLatestPostModel] {
+        let entity = try await homeService.getLatestPostsAsync()
+        return entity.map { $0.toDomain() }
+    }
 }

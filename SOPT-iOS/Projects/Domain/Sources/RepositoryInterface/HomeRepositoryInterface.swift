@@ -32,4 +32,6 @@ public protocol HomeRepositoryInterface {
     func getCalendarDetailAsync() async throws -> [HomeCalendarDetailModel]
     func getReportURLAsync() async throws -> SoptampReportUrlModel
     func getSurveyInfoAsync() async throws -> HomeSurveyModel
+    func getPopularPostsAsync() async throws -> [HomePopularPostModel]
+    func getLatestPostsAsync() async throws -> [HomeLatestPostModel]
 }
