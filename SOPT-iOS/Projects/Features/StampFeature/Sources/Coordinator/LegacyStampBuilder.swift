@@ -8,6 +8,7 @@
 
 import Core
 import Domain
+import BaseFeatureDependency
 @_exported import StampFeatureInterface
 
 public
@@ -20,9 +21,9 @@ final class LegacyStampBuilder {
 }
 
 extension LegacyStampBuilder: LegacyStampFeatureViewBuildable {
-    public func makeMissionListVC(sceneType: MissionListSceneType) -> LegacyMissionListViewControllable {
+    public func makeMissionListVC(sceneType: MissionListSceneType, coordinator: Coordinator) -> LegacyMissionListViewControllable {
         let useCase = DefaultMissionListUseCase(repository: missionListRepository)
-        let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType)
+        let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType, coordinator: coordinator)
         let missionListVC = MissionListVC(viewModel: viewModel)
         missionListVC.viewModel = viewModel
         return missionListVC

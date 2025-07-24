@@ -19,8 +19,7 @@ public struct I18N {
     }
     
     public struct Notice {
-        public static let notice = "공지사항"
-        public static let didCheck = "확인했어요!"
+        public static let didCheck = "확인했어요"
         public static let goToUpdate = "업데이트 하기"
         public static let close = "닫기"
     }

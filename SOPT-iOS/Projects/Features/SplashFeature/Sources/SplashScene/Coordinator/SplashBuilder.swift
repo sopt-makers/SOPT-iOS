@@ -25,9 +25,9 @@ extension SplashBuilder: SplashFeatureBuildable {
         return (vc, vm)
     }
     
-    public func makeNoticePopUpVC(noticeType: Core.NoticePopUpType, content: String) -> NoticePopUpPresentable {
+    public func makeNoticePopUpVC(noticeType: NoticePopUpType, model: AppNoticeModel) -> NoticePopUpPresentable {
         let noticePopUpVC = NoticePopUpVC()
-        noticePopUpVC.setData(type: noticeType, content: content)
+        noticePopUpVC.setData(type: noticeType, model: model)
         noticePopUpVC.modalPresentationStyle = .overFullScreen
         return noticePopUpVC
     }

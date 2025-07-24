@@ -34,9 +34,14 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     private var isFirstAppear = true
     private var isExtendedButtonHidden: Bool = false
     private var hasStartedAnimation = false
+    var isOutlineAnimationStopped = false
     private var floatingButtonType: ExtendedFloatingButtonType = .extended
     var playgroundNewsAnimationTask: Task<Void, Never>?
     var recentPostAnimationTask: Task<Void, Never>?
+    var fetchDataTask: Task<Void, Never>?
+    
+    var outlineAnimationTimer: Timer?
+    var currentIndex = 0
     
     // MARK: - UI Components
     
@@ -71,13 +76,14 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.viewWillAppear.send()
+        fetchData()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        stopPlaygroundNewsAnimationLoop()
         stopRecentPostAnimationLoop()
+        cancelTasks()
+        stopPlaygroundNewsAnimationLoop()
     }
 }
 
@@ -285,12 +291,6 @@ extension HomeForMemberVC {
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
-        output.homeItem
-            .withUnretained(self)
-            .sink { owner, data in
-                owner.updateUI(with: data)
-            }.store(in: cancelBag)
-        
         output.isLoading
             .withUnretained(self)
             .sink { owner, isLoading in
@@ -362,6 +362,22 @@ extension HomeForMemberVC {
             self.dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
                 self?.startPlaygroundNewsAnimationLoop()
                 self?.startRecentPostAnimationLoop()
+            }
+        }
+    }
+    
+    private func cancelTasks() {
+        self.fetchDataTask?.cancel()
+        self.fetchDataTask = nil
+    }
+    
+    private func fetchData() {
+        cancelTasks()
+        
+        fetchDataTask = Task { [weak self] in
+            guard let self else { return }
+            if let data = await self.viewModel.fetchHomeData() {
+                updateUI(with: data)
             }
         }
     }

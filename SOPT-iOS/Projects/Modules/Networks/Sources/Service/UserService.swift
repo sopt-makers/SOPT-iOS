@@ -27,6 +27,8 @@ public protocol UserService {
     func appService() -> AnyPublisher<[AppServiceEntity], Error>
     func hotBoard() -> AnyPublisher<HotBoardEntity, Error>
     func fetchSoptlogInfo() -> AnyPublisher<SoptlogResponseEntity, Error>
+    
+    func getUserMainInfoAsync() async throws -> MainEntity
 }
 
 extension DefaultUserService: UserService {
@@ -80,5 +82,9 @@ extension DefaultUserService: UserService {
     
     public func fetchSoptlogInfo() -> AnyPublisher<SoptlogResponseEntity, Error> {
         requestObjectInCombine(.fetchSoptlogInfo)
+    }
+    
+    public func getUserMainInfoAsync() async throws -> MainEntity {
+        try await requestObjectAsync(.getUserMainInfo)
     }
 }

@@ -16,6 +16,11 @@ import NotificationFeatureInterface
 
 public class NotificationListViewModel: NotificationListViewModelType {
     
+    // MARK: - Trigger
+    
+    public var onNaviBackButtonTap: (() -> Void)?
+    public var onNotificationTap: ((String) -> Void)?
+    
     // MARK: - Properties
     
     private let useCase: NotificationListUseCase
@@ -47,11 +52,6 @@ public class NotificationListViewModel: NotificationListViewModelType {
         var filterList = PassthroughSubject<[NotificationFilterType], Never>()
         var refreshLoading = PassthroughSubject<Bool, Never>()
     }
-    
-    // MARK: - NotificationCoordinatable
-    
-    public var onNaviBackButtonTap: (() -> Void)?
-    public var onNotificationTap: ((String) -> Void)?
     
     // MARK: - init
     

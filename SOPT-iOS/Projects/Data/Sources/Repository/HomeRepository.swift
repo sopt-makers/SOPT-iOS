@@ -121,4 +121,44 @@ extension HomeRepository: HomeRepositoryInterface {
             .map { $0.toDomain() }
             .eraseToAnyPublisher()
     }
+    
+    public func getHomeDescriptionAsync() async throws -> Domain.HomeDescriptionModel {
+        let entity = try await homeService.getDescriptionAsync()
+        return entity.toDomain()
+    }
+    
+    public func getUserInfoAsync() async throws -> Domain.UserMainInfoModel? {
+        let entity = try await userService.getUserMainInfoAsync()
+        return entity.toDomain()
+    }
+    
+    public func getRecentScheduleAsync() async throws -> Domain.HomeRecentScheduleModel {
+        let entity = try await calendarService.getRecentScheduleAsync()
+        return entity.toDomain()
+    }
+    
+    public func getAppServicesAsync() async throws -> [Domain.HomeAppServicesModel] {
+        let entity = try await homeService.getAppServiceAccessStatusAsync()
+        return entity.map { $0.toDomain() }
+    }
+    
+    public func getPlaygroundNewsPostsAsync() async throws -> [Domain.HomePlaygroundNewsPostsModel] {
+        let entity = try await homeService.getPlaygroundNewsPostsAsync()
+        return entity.map { $0.toDomain() }
+    }
+    
+    public func getCalendarDetailAsync() async throws -> [Domain.HomeCalendarDetailModel] {
+        let entity = try await calendarService.getCalendarDetailAsync()
+        return entity.map { $0.toDomain() }
+    }
+    
+    public func getReportURLAsync() async throws -> Domain.SoptampReportUrlModel {
+        let entity = try await stampService.getReportURLAsync()
+        return entity.toDomain()
+    }
+    
+    public func getSurveyInfoAsync() async throws -> Domain.HomeSurveyModel {
+        let entity = try await homeService.getSurveyInfoAsync()
+        return entity.toDomain()
+    }
 }

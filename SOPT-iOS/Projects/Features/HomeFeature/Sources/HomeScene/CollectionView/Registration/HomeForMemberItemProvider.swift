@@ -24,6 +24,8 @@ extension HomeForMemberVC {
             guard let self else { return }
             cell.configureCell(model: item, userType: self.viewModel.userType)
             
+            cell.cancelBag.cancel() // 이전 구독 해제
+            
             cell.attendanceButtonTap
                 .withUnretained(self)
                 .sink { owner, _ in

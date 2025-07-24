@@ -1,6 +1,7 @@
 {
-  "colors" : [
+  "images" : [
     {
+      "filename" : "Checkbox_Small.svg",
       "idiom" : "universal"
     }
   ],

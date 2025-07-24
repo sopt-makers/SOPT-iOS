@@ -87,7 +87,6 @@ final class CalendarCardCVC: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         self.cancelBag = CancelBag()
-        self.attendanceButtonTap = attendanceButton.publisher(for: .touchUpInside)
     }
 }
 

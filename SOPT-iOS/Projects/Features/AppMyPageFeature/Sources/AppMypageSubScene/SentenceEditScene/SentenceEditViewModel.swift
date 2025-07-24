@@ -12,6 +12,8 @@ import Core
 import Domain
 
 public class SentenceEditViewModel: ViewModelType {
+    
+    // MARK: - Properties
 
     private let useCase: SentenceEditUseCase
     private var cancelBag = CancelBag()

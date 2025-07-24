@@ -33,6 +33,7 @@ public final class AppMyPageViewModel: MyPageViewModelType {
     // MARK: - Properties
     
     private let coordinator: AnyCoordinatorObject
+    private let useCase: AppMyPageUseCase
     private let userType: UserType = UserDefaultKeyList.Auth.getUserType()
     
     // MARK: - Inputs
@@ -49,9 +50,7 @@ public final class AppMyPageViewModel: MyPageViewModelType {
         let deregisterPushTokenSuccess = PassthroughSubject<Bool, Never>()
     }
     
-    // MARK: - MyPageCoordinatable
-    
-    private let useCase: AppMyPageUseCase
+    // MARK: - init
     
     public init(useCase: AppMyPageUseCase, coordinator: Coordinator) {
         self.useCase = useCase

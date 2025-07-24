@@ -13,7 +13,7 @@ import Domain
 import BaseFeatureDependency
 
 public protocol StampFeatureBuildable {
-    func makeMissionListVC(sceneType: MissionListSceneType) -> MissionListPresentable
+    func makeMissionListVC(sceneType: MissionListSceneType, coordinator: Coordinator) -> MissionListPresentable
     func makeListDetailVC(
         sceneType: ListDetailSceneType,
         starLevel: StarViewLevel,
