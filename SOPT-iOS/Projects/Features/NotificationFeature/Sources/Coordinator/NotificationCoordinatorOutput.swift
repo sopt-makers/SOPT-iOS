@@ -8,6 +8,7 @@
 
 import BaseFeatureDependency
 
+// TODO: - Legacy 제거 시 함께 제거
 public protocol NotificationCoordinatorOutput: CoordinatorFinishOutput {
     var requestCoordinating: ((NotificationCoordinatorDestination) -> Void)? { get set }
 }
