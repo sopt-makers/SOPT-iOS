@@ -18,8 +18,4 @@ public struct HomePopularPostsResponseEntity: Decodable {
     public let content: String
     public let webLink: String
     public let id: Int
-
-    enum CodingKeys: String, CodingKey {
-        case profileImage, name, generationAndPart, rank, category, title, content, webLink, id
-    }
 }

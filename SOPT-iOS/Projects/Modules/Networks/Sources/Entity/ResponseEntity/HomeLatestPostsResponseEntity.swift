@@ -18,8 +18,4 @@ public struct HomeLatestPostsResponseEntity: Decodable {
     public let webLink: String
     public let id: Int
     public let isOutdated: Bool
-
-    enum CodingKeys: String, CodingKey {
-        case profileImage, name, generationAndPart, category, title, content, webLink, id, isOutdated
-    }
 }
