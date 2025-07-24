@@ -1,5 +1,5 @@
 //
-//  RecentPostFooterView.swift
+//  LatestPostFooterView.swift
 //  HomeFeature
 //
 //  Created by Jae Hyun Lee on 6/18/25.
@@ -12,7 +12,7 @@ import Combine
 import Core
 import DSKit
 
-final class RecentPostFooterView: UICollectionReusableView {
+final class LatestPostFooterView: UICollectionReusableView {
     
     // MARK: - Properties
 
@@ -53,7 +53,7 @@ final class RecentPostFooterView: UICollectionReusableView {
 
 // MARK: - UI & Layout
 
-extension RecentPostFooterView {
+extension LatestPostFooterView {
     private func setLayout() {
         self.addSubview(pageControl)
         
@@ -65,7 +65,7 @@ extension RecentPostFooterView {
 
 // MARK: - Methods
 
-extension RecentPostFooterView {
+extension LatestPostFooterView {
     private func bind() {
         currentPageSubject
             .sink { [weak self] currentPage in

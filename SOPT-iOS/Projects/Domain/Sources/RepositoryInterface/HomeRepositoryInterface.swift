@@ -16,7 +16,6 @@ public protocol HomeRepositoryInterface {
     func getUserInfo() -> AnyPublisher<UserMainInfoModel?, MainError>
     func getRecentSchedule() -> AnyPublisher<HomeRecentScheduleModel, Error>
     func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Error>
-    func getPlaygroundNewsPosts() -> AnyPublisher<[HomePlaygroundNewsPostsModel], Error>
     func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Error>
     func getReportUrl() -> AnyPublisher<SoptampReportUrlModel, Error>
     func checkPokeNewUser() -> AnyPublisher<Bool, Error>
@@ -28,7 +27,6 @@ public protocol HomeRepositoryInterface {
     func getUserInfoAsync() async throws -> UserMainInfoModel?
     func getRecentScheduleAsync() async throws -> HomeRecentScheduleModel
     func getAppServicesAsync() async throws -> [HomeAppServicesModel]
-    func getPlaygroundNewsPostsAsync() async throws -> [HomePlaygroundNewsPostsModel]
     func getCalendarDetailAsync() async throws -> [HomeCalendarDetailModel]
     func getReportURLAsync() async throws -> SoptampReportUrlModel
     func getSurveyInfoAsync() async throws -> HomeSurveyModel

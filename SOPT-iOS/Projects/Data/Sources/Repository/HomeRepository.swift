@@ -74,12 +74,6 @@ extension HomeRepository: HomeRepositoryInterface {
             .eraseToAnyPublisher()
     }
     
-    public func getPlaygroundNewsPosts() -> AnyPublisher<[Domain.HomePlaygroundNewsPostsModel], any Error> {
-        homeService.getPlaygroundNewsPosts()
-            .map { $0.map { $0.toDomain() } }
-            .eraseToAnyPublisher()
-    }
-    
     public func getHomeDescription() -> AnyPublisher<Domain.HomeDescriptionModel, any Error> {
         homeService.getDescription()
             .map { $0.toDomain() }
@@ -139,11 +133,6 @@ extension HomeRepository: HomeRepositoryInterface {
     
     public func getAppServicesAsync() async throws -> [Domain.HomeAppServicesModel] {
         let entity = try await homeService.getAppServiceAccessStatusAsync()
-        return entity.map { $0.toDomain() }
-    }
-    
-    public func getPlaygroundNewsPostsAsync() async throws -> [Domain.HomePlaygroundNewsPostsModel] {
-        let entity = try await homeService.getPlaygroundNewsPostsAsync()
         return entity.map { $0.toDomain() }
     }
     

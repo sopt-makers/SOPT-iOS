@@ -12,7 +12,7 @@ import Domain
 import Core
 import DSKit
 
-enum PlaygroundNewsCardCVCStatus {
+enum PopularPostsCVCStatus {
     case focusing
     case unfocusing
 }

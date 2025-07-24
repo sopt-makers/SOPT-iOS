@@ -47,13 +47,13 @@ extension HomeForMemberVC {
         }
     }
     
-    func createPlaygroundNewsCellRegistration() -> PlaygroundNewsCellRegistration {
+    func createPopularPostCellRegistration() -> PopularPostCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
             cell.configureCell(model: item)
         }
     }
     
-    func createRecentPostCellRegistration() -> RecentPostCellRegistration {
+    func createLatestPostCellRegistration() -> LatestPostCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
             cell.configureCell(model: item)
         }
@@ -96,7 +96,7 @@ extension HomeForMemberVC {
         }
     }
     
-    func createRecentPostFooterRegistration() -> RecentPostFooterRegistration {
+    func createLatestPostFooterRegistration() -> LatestPostFooterRegistration {
         collectionView.createSupplementaryRegistration(
             elementKind: UICollectionView.elementKindSectionFooter
         ) { _, _ in }

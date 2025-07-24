@@ -11,14 +11,14 @@ import UIKit
 // MARK: - PopularPost Section Animation
 
 extension HomeForMemberVC {
-    /// Playground News 섹션의 디졸브 전환 애니메이션
-    func startPlaygroundNewsAnimationLoop() {
+    /// PopularPost 섹션의 디졸브 전환 애니메이션
+    func startPopularPostsAnimationLoop() {
         isOutlineAnimationStopped = false
         currentIndex = 0
         runOutlineAnimationStep()
     }
     
-    func stopPlaygroundNewsAnimationLoop() {
+    func stopPopularPostsAnimationLoop() {
         // 현재 보여지는 cell들에 대해 애니메이션을 취소합니다.
         isOutlineAnimationStopped = true
         for cell in collectionView.visibleCells {
@@ -29,8 +29,8 @@ extension HomeForMemberVC {
     private func runOutlineAnimationStep() {
         // 실행이 종료되었다면, 재귀에서 빠져 나옵니다.
         guard !isOutlineAnimationStopped else { return }
-        let playgroundNewsSectionIndex = HomeForMemberSectionLayoutKind.playgroundNews.rawValue
-        let indexPath = IndexPath(item: currentIndex, section: playgroundNewsSectionIndex)
+        let popularPostsSectionIndex = HomeForMemberSectionLayoutKind.popularPosts.rawValue
+        let indexPath = IndexPath(item: currentIndex, section: popularPostsSectionIndex)
         
         // 셀이 화면에 보이는 경우만 애니메이션을 실행합니다.
         if collectionView.isVisible(at: indexPath),
@@ -53,32 +53,32 @@ extension HomeForMemberVC {
 // MARK: - Recent Post Section Animaiton
 
 extension HomeForMemberVC {
-    /// Recent Post 섹션의 페이지 변환 섹션
-    func startRecentPostAnimationLoop() {
-        guard recentPostAnimationTask == nil else { return } // Task 중복 생성 방지
+    /// Latest Post 섹션의 페이지 변환 섹션
+    func startLatestPostAnimationLoop() {
+        guard latestPostAnimationTask == nil else { return } // Task 중복 생성 방지
         
         let maxItemCount = 5 // 아이템 5개 고정
         let interval = 3.0
         
-        recentPostAnimationTask = Task { [weak self] in
+        latestPostAnimationTask = Task { [weak self] in
             guard let self else { return }
             var currentIndex = 0
 
             while !Task.isCancelled {
-                self.scrollRecentPostItem(at: currentIndex)
+                self.scrollLatestPostItem(at: currentIndex)
                 currentIndex = (currentIndex + 1) % maxItemCount
                 try? await Task.sleep(for: .seconds(interval))
             }
         }
     }
     
-    func stopRecentPostAnimationLoop() {
-        recentPostAnimationTask?.cancel()
-        recentPostAnimationTask = nil
+    func stopLatestPostAnimationLoop() {
+        latestPostAnimationTask?.cancel()
+        latestPostAnimationTask = nil
     }
     
-    private func scrollRecentPostItem(at currentIndex: Int) {
-        let sectionIndex = HomeForMemberSectionLayoutKind.recentPost.rawValue
+    private func scrollLatestPostItem(at currentIndex: Int) {
+        let sectionIndex = HomeForMemberSectionLayoutKind.latestPosts.rawValue
         let indexPath = IndexPath(item: currentIndex, section: sectionIndex)
         self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
     }

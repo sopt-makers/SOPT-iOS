@@ -16,7 +16,6 @@ public protocol HomeUseCase {
     func getUserInfo() -> AnyPublisher<UserMainInfoModel?, MainError>
     func getRecentSchedule() -> AnyPublisher<HomeRecentScheduleModel, Never>
     func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Never>
-    func getPlaygroundNewsPosts() -> AnyPublisher<[HomePlaygroundNewsPostsModel], Never>
     func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never>
     func getReportURL()
     func checkPokeNewUser() -> AnyPublisher<Bool, Never>
@@ -27,7 +26,6 @@ public protocol HomeUseCase {
     func getUserInfoAsync() async throws -> UserMainInfoModel?
     func getRecentScheduleAsync() async throws -> HomeRecentScheduleModel
     func getAppServicesAsync() async throws -> [HomeAppServicesModel]
-    func getPlaygroundNewsPostsAsync() async throws -> [HomePlaygroundNewsPostsModel]
     func getCalendarDetailAsync() async throws -> [HomeCalendarDetailModel]
     func getSurveyInfoAsync() async throws -> HomeSurveyModel
     func getPopularPostsAsync() async throws -> [HomePopularPostModel]
@@ -81,14 +79,7 @@ extension DefaultHomeUseCase: HomeUseCase {
                 return Empty<[HomeAppServicesModel], Never>()
             }.eraseToAnyPublisher()
     }
-    
-    public func getPlaygroundNewsPosts() -> AnyPublisher<[HomePlaygroundNewsPostsModel], Never> {
-        repository.getPlaygroundNewsPosts()
-            .catch { error in
-                return Empty<[HomePlaygroundNewsPostsModel], Never>()
-            }.eraseToAnyPublisher()
-    }
-    
+
     public func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never> {
         repository.getCalendarDetail()
             .catch { error in
@@ -149,11 +140,7 @@ extension DefaultHomeUseCase: HomeUseCase {
     public func getAppServicesAsync() async throws -> [HomeAppServicesModel] {
         try await repository.getAppServicesAsync()
     }
-    
-    public func getPlaygroundNewsPostsAsync() async throws -> [HomePlaygroundNewsPostsModel] {
-        try await repository.getPlaygroundNewsPostsAsync()
-    }
-    
+
     public func getCalendarDetailAsync() async throws -> [HomeCalendarDetailModel] {
         try await repository.getCalendarDetailAsync()
     }
