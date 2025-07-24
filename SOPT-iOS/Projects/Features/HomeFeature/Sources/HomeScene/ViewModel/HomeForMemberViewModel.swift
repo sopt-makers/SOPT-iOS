@@ -18,7 +18,6 @@ import HomeFeatureInterface
 import BaseFeatureDependency
 
 public class HomeForMemberViewModel: HomeForMemberViewModelType {
-    
     // MARK: - Properties
     
     private let useCase: HomeUseCase
@@ -57,6 +56,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         let extendedFloatingButtonTapped: Driver<Void>
         let surveyButtonTapped: Driver<Void>
         let socialLinkButtonTapped: Driver<HomePresentationModel.SocialLink>
+        let viewAllButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -81,6 +81,9 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public var onExtendedFloatingButtonTapped: ((String) -> Void)?
     public var onSurveyButtonTapped: ((String) -> Void)?
     public var onSocialLinkButtonTapped: ((String) -> Void)?
+    public var onPopularPostCellTapped: ((String) -> Void)?
+    public var onLatestPostCellTapped: ((String) -> Void)?
+    public var onViewAllContentButtonTapped: ((String) -> Void)?
     
     // MARK: - initialization
     
@@ -134,6 +137,10 @@ extension HomeForMemberViewModel {
                     }
                 case .socialLink(let type):
                     owner.onSocialLinkButtonTapped?(type.socialLink.serviceDomainLink)
+                case .popularPost(let model):
+                    owner.onPopularPostCellTapped?(model.webLink)
+                case .latestPost(let model):
+                    owner.onLatestPostCellTapped?(model.webLink)
                 default: break
                 }
             }
@@ -175,6 +182,14 @@ extension HomeForMemberViewModel {
                 owner.onSurveyButtonTapped?(owner.surveyButtonURL)
             }
             .store(in: cancelBag)
+        
+        input.viewAllButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onViewAllContentButtonTapped?(ExternalURL.Playground.main)
+            }
+            .store(in: cancelBag)
+        
         return output
     }
 }
@@ -219,7 +234,8 @@ extension HomeForMemberViewModel {
             async let recentSchedule = fetchRecentSchedule()
             async let survey = fetchSurvey()
             async let appService = useCase.getAppServicesAsync()
-            async let playgroundNewsPosts = useCase.getPlaygroundNewsPostsAsync()
+            async let popularPosts = useCase.getPopularPostsAsync()
+            async let latestPosts = useCase.getLatestPostsAsync()
             
             self.surveyButtonURL = try await survey.linkURL
             
@@ -227,7 +243,8 @@ extension HomeForMemberViewModel {
                 dashBoard: try await dashBoard,
                 recentSchedule: try await recentSchedule,
                 appServices: try await appService.map { $0.toPresentation() },
-                playgroundNewsPosts: try await playgroundNewsPosts.map { $0.toPresentation() },
+                popularPosts: try await popularPosts.map { $0.toPresentation() },
+                latestPosts: try await latestPosts.map { $0.toPresentation() },
                 survey: try await survey
             )
             

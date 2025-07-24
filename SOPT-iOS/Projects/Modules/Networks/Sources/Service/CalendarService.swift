@@ -14,7 +14,6 @@ import Moya
 public typealias DefaultCalendarService = BaseService<CalendarAPI>
 
 public protocol CalendarService {
-    func getRecentSchedule() -> AnyPublisher<CalendarRecentEntity, Error>
     func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailResponseEntity], Error>
     
     func getRecentScheduleAsync() async throws -> CalendarRecentEntity
@@ -22,10 +21,6 @@ public protocol CalendarService {
 }
 
 extension DefaultCalendarService: CalendarService {
-    public func getRecentSchedule() -> AnyPublisher<CalendarRecentEntity, any Error> {
-        requestObjectInCombine(.getRecentSchedule)
-    }
-    
     public func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailResponseEntity], any Error> {
         requestObjectInCombine(.getCalendarDetail)
     }

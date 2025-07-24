@@ -50,48 +50,7 @@ extension HomeRepository: HomeRepositoryInterface {
             .map { $0.map { $0.toDomain() } }
             .eraseToAnyPublisher()
     }
-    
-    public func getUserInfo() -> AnyPublisher<Domain.UserMainInfoModel?, Domain.MainError> {
-        userService.getUserMainInfo()
-            .mapError { error -> MainError in
-                guard let error = error as? APIError else {
-                    return MainError.networkError(message: error.localizedDescription)
-                }
-                
-                switch error {
-                case .network(let statusCode, _):
-                    if statusCode == 401 {
-                        return MainError.authFailed
-                    }
-                    return MainError.networkError(message: "\(statusCode) 네트워크 에러")
-                case .tokenReissuanceFailed:
-                    return MainError.authFailed
-                default:
-                    return MainError.networkError(message: error.localizedDescription)
-                }
-            }
-            .map { $0.toDomain() }
-            .eraseToAnyPublisher()
-    }
-    
-    public func getPlaygroundNewsPosts() -> AnyPublisher<[Domain.HomePlaygroundNewsPostsModel], any Error> {
-        homeService.getPlaygroundNewsPosts()
-            .map { $0.map { $0.toDomain() } }
-            .eraseToAnyPublisher()
-    }
-    
-    public func getHomeDescription() -> AnyPublisher<Domain.HomeDescriptionModel, any Error> {
-        homeService.getDescription()
-            .map { $0.toDomain() }
-            .eraseToAnyPublisher()
-    }
-    
-    public func getRecentSchedule() -> AnyPublisher<Domain.HomeRecentScheduleModel, any Error> {
-        calendarService.getRecentSchedule()
-            .map { $0.toDomain() }
-            .eraseToAnyPublisher()
-    }
-    
+
     public func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], any Error> {
         calendarService.getCalendarDetail()
             .map{ $0.map { $0.toDomain() } }
@@ -116,20 +75,30 @@ extension HomeRepository: HomeRepositoryInterface {
             .eraseToAnyPublisher()
     }
     
-    public func getSurveyInfo() -> AnyPublisher<Domain.HomeSurveyModel, any Error> {
-        homeService.getSurveyInfo()
-            .map { $0.toDomain() }
-            .eraseToAnyPublisher()
-    }
-    
     public func getHomeDescriptionAsync() async throws -> Domain.HomeDescriptionModel {
         let entity = try await homeService.getDescriptionAsync()
         return entity.toDomain()
     }
     
     public func getUserInfoAsync() async throws -> Domain.UserMainInfoModel? {
-        let entity = try await userService.getUserMainInfoAsync()
-        return entity.toDomain()
+        do {
+            let entity = try await userService.getUserMainInfoAsync()
+            return entity.toDomain()
+        } catch let error as APIError {
+            switch error {
+            case .network(let statusCode, _):
+                if statusCode == 401 {
+                    throw MainError.authFailed
+                }
+                throw MainError.networkError(message: "\(statusCode) 네트워크 에러")
+            case .tokenReissuanceFailed:
+                throw MainError.authFailed
+            default:
+                throw MainError.networkError(message: error.localizedDescription)
+            }
+        } catch {
+            throw MainError.networkError(message: error.localizedDescription)
+        }
     }
     
     public func getRecentScheduleAsync() async throws -> Domain.HomeRecentScheduleModel {
@@ -139,11 +108,6 @@ extension HomeRepository: HomeRepositoryInterface {
     
     public func getAppServicesAsync() async throws -> [Domain.HomeAppServicesModel] {
         let entity = try await homeService.getAppServiceAccessStatusAsync()
-        return entity.map { $0.toDomain() }
-    }
-    
-    public func getPlaygroundNewsPostsAsync() async throws -> [Domain.HomePlaygroundNewsPostsModel] {
-        let entity = try await homeService.getPlaygroundNewsPostsAsync()
         return entity.map { $0.toDomain() }
     }
     
@@ -160,5 +124,15 @@ extension HomeRepository: HomeRepositoryInterface {
     public func getSurveyInfoAsync() async throws -> Domain.HomeSurveyModel {
         let entity = try await homeService.getSurveyInfoAsync()
         return entity.toDomain()
+    }
+    
+    public func getPopularPostsAsync() async throws -> [Domain.HomePopularPostModel] {
+        let entity = try await homeService.getPopularPostsAsync()
+        return entity.map { $0.toDomain() }
+    }
+    
+    public func getLatestPostsAsync() async throws -> [Domain.HomeLatestPostModel] {
+        let entity = try await homeService.getLatestPostsAsync()
+        return entity.map { $0.toDomain() }
     }
 }

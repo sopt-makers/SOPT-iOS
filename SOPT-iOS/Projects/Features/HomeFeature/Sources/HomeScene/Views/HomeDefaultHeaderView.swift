@@ -15,6 +15,11 @@ import Lottie
 
 final class HomeDefaultHeaderView: UICollectionReusableView {
     
+    // MARK: - Properties
+
+    private(set) lazy var viewAllContentButtonTap = viewAllContentButton.publisher(for: .touchUpInside)
+    private(set) var cancelBag = CancelBag()
+    
     // MARK: - UI Components
     
     private let titleLabel = UILabel().then {
@@ -48,6 +53,11 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.cancelBag = CancelBag()
     }
 }
 

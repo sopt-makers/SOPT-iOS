@@ -12,7 +12,7 @@ import Domain
 import Core
 import DSKit
 
-enum PlaygroundNewsCardCVCStatus {
+enum PopularPostsCVCStatus {
     case focusing
     case unfocusing
 }
@@ -188,7 +188,7 @@ extension DefaultPostCVC {
         self.categorySubPhraseView.setData(with: model.title)
         self.categoryTagView.setData(with: model.category)
         self.userNameLabel.text = model.name
-        self.userPartLabel.text = model.name
+        self.userPartLabel.text = model.generationAndPart
         if let profileImage = model.profileImage {
             self.profileImageView.setImage(with: profileImage)
         }
@@ -221,6 +221,7 @@ extension DefaultPostCVC {
                 self.animateBorderOpacity(to: 0) { [weak self] in
                     guard let self = self, !self.isOutlineAnimationCancelled else { return }
                     self.onAnimationCompleted?()
+                    cancelOutlineAnimation()
                 }
             }
         }
