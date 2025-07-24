@@ -12,7 +12,6 @@ import Core
 
 public protocol HomeUseCase {
     func registerPushToken()
-    func getHomeDescription() -> AnyPublisher<HomeDescriptionModel, Never>
     func getRecentSchedule() -> AnyPublisher<HomeRecentScheduleModel, Never>
     func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Never>
     func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never>
@@ -52,13 +51,6 @@ extension DefaultHomeUseCase: HomeUseCase {
             }.store(in: cancelBag)
     }
     
-    public func getHomeDescription() -> AnyPublisher<HomeDescriptionModel, Never> {
-        repository.getHomeDescription()
-            .catch { error in
-                return Empty<HomeDescriptionModel, Never>()
-            }.eraseToAnyPublisher()
-    }
-
     public func getRecentSchedule() -> AnyPublisher<HomeRecentScheduleModel, Never> {
         repository.getRecentSchedule()
             .catch { error in

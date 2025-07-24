@@ -50,13 +50,7 @@ extension HomeRepository: HomeRepositoryInterface {
             .map { $0.map { $0.toDomain() } }
             .eraseToAnyPublisher()
     }
-    
-    public func getHomeDescription() -> AnyPublisher<Domain.HomeDescriptionModel, any Error> {
-        homeService.getDescription()
-            .map { $0.toDomain() }
-            .eraseToAnyPublisher()
-    }
-    
+
     public func getRecentSchedule() -> AnyPublisher<Domain.HomeRecentScheduleModel, any Error> {
         calendarService.getRecentSchedule()
             .map { $0.toDomain() }
