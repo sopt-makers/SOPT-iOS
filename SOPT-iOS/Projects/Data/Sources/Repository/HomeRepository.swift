@@ -110,12 +110,6 @@ extension HomeRepository: HomeRepositoryInterface {
             .eraseToAnyPublisher()
     }
     
-    public func getSurveyInfo() -> AnyPublisher<Domain.HomeSurveyModel, any Error> {
-        homeService.getSurveyInfo()
-            .map { $0.toDomain() }
-            .eraseToAnyPublisher()
-    }
-    
     public func getHomeDescriptionAsync() async throws -> Domain.HomeDescriptionModel {
         let entity = try await homeService.getDescriptionAsync()
         return entity.toDomain()

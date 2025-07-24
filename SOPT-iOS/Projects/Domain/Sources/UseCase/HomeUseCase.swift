@@ -20,7 +20,6 @@ public protocol HomeUseCase {
     func getReportURL()
     func checkPokeNewUser() -> AnyPublisher<Bool, Never>
     func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonModel, Never>
-    func getSurveyInfo() -> AnyPublisher<HomeSurveyModel, Never>
     
     func getHomeDescriptionAsync() async throws -> HomeDescriptionModel
     func getUserInfoAsync() async throws -> UserMainInfoModel?
@@ -112,15 +111,6 @@ extension DefaultHomeUseCase: HomeUseCase {
             .catch { error in
                 print("HomeUseCase getFloatingButtonInfo에서 문제가 발생했습니다. \(error)")
                 return Empty<HomeFloatingButtonModel, Never>()
-            }
-            .eraseToAnyPublisher()
-    }
-    
-    public func getSurveyInfo() -> AnyPublisher<HomeSurveyModel, Never> {
-        repository.getSurveyInfo()
-            .catch { error in
-                print("HomeUseCase getSurveyInfo에서 문제가 발생했습니다. \(error)")
-                return Empty<HomeSurveyModel, Never>()
             }
             .eraseToAnyPublisher()
     }

@@ -17,7 +17,6 @@ public protocol HomeService {
     func getDescription() -> AnyPublisher<HomeDescriptionEntity, Error>
     func getAppServiceAccessStatus() -> AnyPublisher<[HomeAppServiceAccessStatusEntity], Error>
     func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonResponseEntity, Error>
-    func getSurveyInfo() -> AnyPublisher<HomeSurveyResponseEntity, Error>
     
     /// async
     func getDescriptionAsync() async throws -> HomeDescriptionEntity
@@ -39,11 +38,7 @@ extension DefaultHomeService: HomeService {
     public func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonResponseEntity, any Error> {
         requestObjectInCombine(.getFABInfo)
     }
-    
-    public func getSurveyInfo() -> AnyPublisher<HomeSurveyResponseEntity, any Error> {
-        requestObjectInCombine(.getSurveyInfo)
-    }
-    
+
     public func getDescriptionAsync() async throws -> HomeDescriptionEntity {
         try await requestObjectAsync(.getDescription)
     }

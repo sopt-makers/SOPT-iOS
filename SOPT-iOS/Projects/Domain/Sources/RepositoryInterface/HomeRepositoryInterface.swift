@@ -20,7 +20,6 @@ public protocol HomeRepositoryInterface {
     func getReportUrl() -> AnyPublisher<SoptampReportUrlModel, Error>
     func checkPokeNewUser() -> AnyPublisher<Bool, Error>
     func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonModel, Error>
-    func getSurveyInfo() -> AnyPublisher<HomeSurveyModel, Error>
     
     /// async
     func getHomeDescriptionAsync() async throws -> HomeDescriptionModel
