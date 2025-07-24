@@ -12,7 +12,6 @@ import Core
 
 public protocol HomeRepositoryInterface {
     func registerPushToken(with token: String) -> AnyPublisher<Bool, Error>
-    func getRecentSchedule() -> AnyPublisher<HomeRecentScheduleModel, Error>
     func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Error>
     func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Error>
     func getReportUrl() -> AnyPublisher<SoptampReportUrlModel, Error>

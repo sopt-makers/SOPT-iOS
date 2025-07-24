@@ -51,12 +51,6 @@ extension HomeRepository: HomeRepositoryInterface {
             .eraseToAnyPublisher()
     }
 
-    public func getRecentSchedule() -> AnyPublisher<Domain.HomeRecentScheduleModel, any Error> {
-        calendarService.getRecentSchedule()
-            .map { $0.toDomain() }
-            .eraseToAnyPublisher()
-    }
-    
     public func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], any Error> {
         calendarService.getCalendarDetail()
             .map{ $0.map { $0.toDomain() } }

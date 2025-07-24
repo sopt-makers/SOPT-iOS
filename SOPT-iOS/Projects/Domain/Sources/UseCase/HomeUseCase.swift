@@ -12,7 +12,6 @@ import Core
 
 public protocol HomeUseCase {
     func registerPushToken()
-    func getRecentSchedule() -> AnyPublisher<HomeRecentScheduleModel, Never>
     func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Never>
     func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never>
     func getReportURL()
@@ -50,14 +49,7 @@ extension DefaultHomeUseCase: HomeUseCase {
                 print("푸시 토큰 등록 결과: \(didSucceed)")
             }.store(in: cancelBag)
     }
-    
-    public func getRecentSchedule() -> AnyPublisher<HomeRecentScheduleModel, Never> {
-        repository.getRecentSchedule()
-            .catch { error in
-                return Empty<HomeRecentScheduleModel, Never>()
-            }.eraseToAnyPublisher()
-    }
-    
+
     public func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Never> {
         repository.getAppServices()
             .catch { error in
