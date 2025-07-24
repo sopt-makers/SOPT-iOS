@@ -17,15 +17,13 @@ public protocol NotificationCoordinatorDelegate: AnyObject {
     func notificationCoordinator(_ coordinator: NotificationCoordinator, to destination: NotificationCoordinatorDestination)
 }
 
-public final class NotificationCoordinator: DefaultNotificationCoordinator {
+public final class NotificationCoordinator: BaseCoordinator {
     
     // MARK: - Properties
     
     public weak var delegate: NotificationCoordinatorDelegate?
-    public var requestCoordinating: ((NotificationCoordinatorDestination) -> Void)?
-    public var finishFlow: (() -> Void)?
 
-    private let navigationController: UINavigationController
+    private weak var navigationController: UINavigationController?
     private let factory: NotificationFeatureBuildable
     
     // MARK: - Init
@@ -48,18 +46,17 @@ public final class NotificationCoordinator: DefaultNotificationCoordinator {
     // MARK: - Navigation
     
     private func showNotificationList() {
-        var notificationList = factory.makeNotificationList()
+        var notificationList = factory.makeNotificationList(coordinator: self)
         
         notificationList.vm.onNaviBackButtonTap = { [weak self] in
-            self?.navigationController.popViewController(animated: true)
-            self?.finishFlow?()
+            self?.navigationController?.popViewController(animated: true)
         }
         
         notificationList.vm.onNotificationTap = { [weak self] notificationId in
             self?.showNotificationDetail(notificationId: notificationId)
         }
         
-        navigationController.pushViewController(notificationList.vc, animated: true)
+        navigationController?.pushViewController(notificationList.vc, animated: true)
     }
 
     public func showNotificationDetail(notificationId: String) {
@@ -78,6 +75,6 @@ public final class NotificationCoordinator: DefaultNotificationCoordinator {
             self.delegate?.notificationCoordinator(self, to: destination)
         }
         
-        navigationController.pushViewController(notificationDetail.vc, animated: true)
+        navigationController?.pushViewController(notificationDetail.vc, animated: true)
     }
 }

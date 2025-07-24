@@ -8,6 +8,7 @@
 
 import Core
 import Domain
+import BaseFeatureDependency
 @_exported import NotificationFeatureInterface
 
 public
@@ -19,9 +20,9 @@ final class NotificationBuilder {
 }
 
 extension NotificationBuilder: NotificationFeatureBuildable {
-    public func makeNotificationList() -> NotificationListPresentable {
+    public func makeNotificationList(coordinator: Coordinator) -> NotificationListPresentable {
         let useCase = DefaultNotificationListUseCase(repository: notificationListRepository)
-        let vm = NotificationListViewModel(useCase: useCase)
+        let vm = NotificationListViewModel(useCase: useCase, coordinator: coordinator)
         let vc = NotificationListVC(viewModel: vm)
         return (vc, vm)
     }
