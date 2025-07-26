@@ -12,55 +12,47 @@ import Core
 
 import Alamofire
 
-public final class ReissuanceInterceptor: RequestInterceptor {
+public final class ReissueInterceptor: RequestInterceptor {
     
-    public typealias AccessTokenClosure = (@Sendable () -> String)
+    public typealias AccessTokenClosure = (@Sendable () -> String?)
     
-    public typealias ReissueClosure = (@Sendable (@escaping (Bool) -> Void) -> Void)
+    public typealias RefreshClosure = (@Sendable (@escaping (Result<Void, ReissueError>) -> Void) -> Void)
     
     private let accessTokenClosure: AccessTokenClosure
     
-    private let reissuance: ReissueClosure
+    private let refreshClosure: RefreshClosure
     
     public init(
         accessTokenClosure: @escaping AccessTokenClosure,
-        reissuance: @escaping ReissueClosure
+        refreshClosure: @escaping RefreshClosure
     ) {
         self.accessTokenClosure = accessTokenClosure
-        self.reissuance = reissuance
+        self.refreshClosure = refreshClosure
     }
     
     public func adapt(_ urlRequest: URLRequest, for session: Alamofire.Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
         var adaptedRequest = urlRequest
-        validateHeader(&adaptedRequest)
+        adaptedRequest.headers["Authorization"] = accessTokenClosure()
         completion(.success(adaptedRequest))
-    }
-    
-    private func validateHeader(_ urlRequest: inout URLRequest) {
-        let headers = urlRequest.headers.map {
-            guard $0.name == "Authorization" else {
-                return $0
-            }
-            return HTTPHeader(name: $0.name, value: accessTokenClosure())
-        }
     }
     
     public func retry(
         _ request: Request,
         for session: Session,
         dueTo error: any Error,
-        completion: @escaping (RetryResult
-        ) -> Void) {
+        completion: @escaping (RetryResult) -> Void
+    ) {
         guard error.asAFError?.responseCode == 401
         else {
             completion(.doNotRetryWithError(error))
             return
         }
         
-        reissuance() { reissuanceSuccessed in
-            if reissuanceSuccessed {
+        refreshClosure() { result in
+            switch result {
+            case .success:
                 completion(.retry)
-            } else {
+            case .failure:
                 completion(.doNotRetryWithError(APIError.tokenReissuanceFailed))
             }
         }

@@ -20,6 +20,7 @@ public struct DefaultSignUpUseCase {
     
     private let repository: CoreAuthRepositoryInterface
     private let oAuthRepository: CoreOAuthRepositoryInterface
+    private let tokenRepositroy: AuthTokensRepositoryInterface
     
     private var cancelBag = CancelBag()
     
@@ -27,15 +28,21 @@ public struct DefaultSignUpUseCase {
     
     public init(
         repository: CoreAuthRepositoryInterface,
-        oAuthRepository: CoreOAuthRepositoryInterface
+        oAuthRepository: CoreOAuthRepositoryInterface,
+        tokenRepositroy: AuthTokensRepositoryInterface
     ) {
         self.repository = repository
         self.oAuthRepository = oAuthRepository
+        self.tokenRepositroy = tokenRepositroy
     }
 }
 
 extension DefaultSignUpUseCase: SignUpUseCase {
-    public func signUp(with provider: OAuthProvider, name: String?, phone: String) -> AnyPublisher<Void, Never> {
+    public func signUp(
+        with provider: OAuthProvider,
+        name: String?,
+        phone: String
+    ) -> AnyPublisher<Void, Never> {
         oAuthRepository.getIdentityToken(from: provider)
             .map { SignUpModel(name: name, phone: phone, token: $0, provider: provider)}
             .flatMap { model in
@@ -44,7 +51,7 @@ extension DefaultSignUpUseCase: SignUpUseCase {
                         self.repository.login(for: provider, with: model.token)
                     }
             }
-            .handleEvents(receiveOutput: self.repository.saveTokens)
+            .handleEvents(receiveOutput: self.tokenRepositroy.save)
             .mapVoid()
             .catch { error in
                 self.sideEffect.send(error)

@@ -20,11 +20,11 @@ import BaseFeatureDependency
 import SnapKit
 import Then
 
-public class SignInVC: UIViewController, SignInViewControllable {
+public class LegacySignInVC: UIViewController, LegacySignInViewControllable {
 
     // MARK: - Properties
 
-    public var viewModel: SignInViewModel!
+    public var viewModel: LegacySignInViewModel!
     public var skipAnimation: Bool = false
     public var accessCode: String? = nil
     public var requestState: String? = nil
@@ -83,7 +83,7 @@ public class SignInVC: UIViewController, SignInViewControllable {
 
 // MARK: - UI & Layout
 
-extension SignInVC {
+extension LegacySignInVC {
 
     private enum Metric {
         static let topInset = 151.adjustedH + logoMutableY
@@ -154,7 +154,7 @@ extension SignInVC {
 
 // MARK: - Methods
 
-extension SignInVC {
+extension LegacySignInVC {
 
     private func bindViews() {
         signInButton.publisher(for: .touchUpInside)
@@ -179,7 +179,7 @@ extension SignInVC {
             .compactMap { _ in () }
             .asDriver()
 
-        let input = SignInViewModel.Input(
+        let input = LegacySignInViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
             playgroundSignInFinished: signInFinished,
             visitorButtonTapped: visitorButtonTapped

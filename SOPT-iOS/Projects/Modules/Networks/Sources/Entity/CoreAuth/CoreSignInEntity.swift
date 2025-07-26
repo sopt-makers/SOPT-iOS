@@ -8,6 +8,8 @@
 
 import Foundation
 
+import Core
+
 public struct CoreLoginEntity: Decodable {
     public let accessToken: String
     public let refreshToken: String
@@ -17,3 +19,5 @@ public struct CoreLoginEntity: Decodable {
         self.refreshToken = refreshToken
     }
 }
+
+extension CoreLoginEntity: AuthTokens { }

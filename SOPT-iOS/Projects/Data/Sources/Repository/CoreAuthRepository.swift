@@ -39,7 +39,7 @@ extension CoreAuthRepository: CoreAuthRepositoryInterface {
     public func login(
         for provider: OAuthProvider,
         with identityToken: String
-    ) -> AnyPublisher<CoreAuthTokens, CoreAuthError> {
+    ) -> AnyPublisher<AuthTokens, CoreAuthError> {
         coreAuthService
             .login(.init(token: identityToken, authPlatform: provider.toData()))
             .compactMap { $0.data.toDomain() }
@@ -47,11 +47,6 @@ extension CoreAuthRepository: CoreAuthRepositoryInterface {
                 return CoreAuthError.loginFail
             }
             .eraseToAnyPublisher()
-    }
-    
-    public func saveTokens(_ tokens: Domain.CoreAuthTokens) {
-        UserDefaultKeyList.CoreAuth.accessToken = tokens.accessToken
-        UserDefaultKeyList.CoreAuth.refreshToken = tokens.refreshToken
     }
     
     public func signUp(_ model: Domain.SignUpModel) -> AnyPublisher<Void, CoreAuthError> {
