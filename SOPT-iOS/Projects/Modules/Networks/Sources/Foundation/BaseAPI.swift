@@ -31,8 +31,14 @@ public enum APIType {
   case calendar
 }
 
-public protocol BaseAPI: TargetType {
+public protocol BaseAPI: TargetType, AccessTokenAuthorizable {
   static var apiType: APIType { get set }
+}
+
+extension BaseAPI {
+    public var authorizationType: AuthorizationType? {
+        return .bearer
+    }
 }
 
 extension BaseAPI {
@@ -93,6 +99,7 @@ extension BaseAPI {
     return .customCodes(Array(200..<600).filter { $0 != 401 })
   }
 }
+
 
 public enum HeaderType {
   case json

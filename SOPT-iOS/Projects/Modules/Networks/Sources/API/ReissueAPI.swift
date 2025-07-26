@@ -28,7 +28,10 @@ extension ReissueAPI: BaseAPI {
     public var task: Moya.Task {
         switch self {
         case .reissue(let token):
-                .requestJSONEncodable(token)
+                .requestParameters(parameters: [
+                    "accessToken": "Bearer " + token.accessToken,
+                    "refreshToken": token.refreshToken
+                ], encoding: JSONEncoding.default)
         }
     }
 }

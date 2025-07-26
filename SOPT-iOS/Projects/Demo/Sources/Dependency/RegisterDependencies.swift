@@ -11,6 +11,7 @@ import Core
 import Domain
 import Data
 import Networks
+import Moya
 
 extension AppDelegate {
     var container: DIContainer {
@@ -30,10 +31,10 @@ extension AppDelegate {
             container.register(
                 interface: AuthTokensRepositoryInterface.self,
                 implement: {
-                    let interceptor = AccessTokenInterceptor()
-                    let reissueService = DefaultReissueService(interceptor: interceptor)
+                    let reissueService = DefaultReissueService(
+                        plugins: [ NetworkLoggerPlugin(verbose: true)]
+                    )
                     let repository = AuthTokensRepository(remote: reissueService)
-                    interceptor.accessTokenClosure = { repository.fetch()?.accessToken  }
                     return repository
                 }
             )
@@ -42,10 +43,10 @@ extension AppDelegate {
             container.register(
                 interface: AuthTokensRepositoryInterface.self,
                 implement: {
-                    let interceptor = AccessTokenInterceptor()
-                    let reissueService = DefaultLegacyReissueService(interceptor: interceptor)
+                    let reissueService = DefaultLegacyReissueService(
+                        plugins: [ NetworkLoggerPlugin(verbose: true)]
+                    )
                     let repository = LegacyAuthTokensRepository(remote: reissueService)
-                    interceptor.accessTokenClosure = { repository.fetch()?.accessToken  }
                     return repository
                 }
             )
