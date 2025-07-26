@@ -50,10 +50,7 @@ public extension Project {
                 ],
                 dependencies: [
                     internalDependencies,
-                    externalDependencies,
-                    [
-                        .SPM.Inject
-                    ]
+                    externalDependencies
                 ].flatMap{ $0
                 },
                 settings: .settings(base: settings, configurations: XCConfig.project)

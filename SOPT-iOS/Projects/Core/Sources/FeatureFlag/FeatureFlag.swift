@@ -19,7 +19,7 @@ extension FeatureFlag {
         case new // 인증 중앙화
     }
 
-    public static var auth: Auth = .legacy
+    public static var auth: Auth = .new
 }
 
 //TODO: - 추후 CoordinatorFeatureFlag 여기로 위치 변경
