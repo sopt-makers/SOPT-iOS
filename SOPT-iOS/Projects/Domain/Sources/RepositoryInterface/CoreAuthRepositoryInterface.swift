@@ -7,13 +7,13 @@
 //
 
 import Combine
+import Core
 
 public protocol CoreAuthRepositoryInterface {
-    func login(for provider: OAuthProvider, with identityToken: String) -> AnyPublisher<CoreAuthTokens, CoreAuthError>
+    func login(for provider: OAuthProvider, with identityToken: String) -> AnyPublisher<AuthTokens, CoreAuthError>
     func changeSocialAccount(_ model: SignUpModel) -> AnyPublisher<Void, CoreAuthError>
     func searchSocialAccount(_ phone: String) -> AnyPublisher<OAuthProvider, CoreAuthError>
     func signUp(_ model: SignUpModel) -> AnyPublisher<Void, CoreAuthError>
-    func saveTokens(_ tokens: CoreAuthTokens) -> Void
     func getRecentLogin() -> OAuthProvider?
     func saveRecentLogin(_ provider: OAuthProvider)
 }

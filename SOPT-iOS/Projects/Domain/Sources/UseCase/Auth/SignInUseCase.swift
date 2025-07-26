@@ -78,8 +78,9 @@ extension DefaultSignInUseCase: SignInUseCase {
 extension DefaultSignInUseCase {
     public func requestSignIn(token: String) {
         repository.requestSignIn(token: token)
-            .handleEvents(receiveOutput: { [weak self] model in
-                self?.tokenRepository.save(model.tokens)
+            .handleEvents(receiveOutput: { model in
+                self.tokenRepository.save(model.tokens)
+                UserDefaultKeyList.Auth.isActiveUser = model.status == .active
             })
             .flatMap { _ in
                 self.repository.fetchSoptampUser()

@@ -19,16 +19,37 @@ extension AppDelegate {
     
     func registerDependencies() {
         
-        container.register(
-            interface: AuthTokensRepositoryInterface.self,
-            implement: {
-                let interceptor = AccessTokenInterceptor()
-                let reissueService = DefaultLegacyReissueService(interceptor: interceptor)
-                let repository = LegacyAuthTokensRepository(remote: reissueService)
-                interceptor.accessTokenClosure = { repository.fetch()?.accessToken  }
-                return repository
-            }
-        )
+        // AuthTokensRepositoryInterface가 DIConatiner에서 resolve되는 곳은 아래와 같다.
+        // - AppLifecycleAdapter
+        // - BaseService.standard
+        // - AuthBuilder
+        // 위 객체들에서 resolve 되기 전에 register 해야하기에 최상단에 배치한다.
+        //
+        switch FeatureFlag.auth {
+        case .new:
+            container.register(
+                interface: AuthTokensRepositoryInterface.self,
+                implement: {
+                    let interceptor = AccessTokenInterceptor()
+                    let reissueService = DefaultReissueService(interceptor: interceptor)
+                    let repository = AuthTokensRepository(remote: reissueService)
+                    interceptor.accessTokenClosure = { repository.fetch()?.accessToken  }
+                    return repository
+                }
+            )
+            
+        case .legacy:
+            container.register(
+                interface: AuthTokensRepositoryInterface.self,
+                implement: {
+                    let interceptor = AccessTokenInterceptor()
+                    let reissueService = DefaultLegacyReissueService(interceptor: interceptor)
+                    let repository = LegacyAuthTokensRepository(remote: reissueService)
+                    interceptor.accessTokenClosure = { repository.fetch()?.accessToken  }
+                    return repository
+                }
+            )
+        }
         
         container.register(
             interface: SignInRepositoryInterface.self,

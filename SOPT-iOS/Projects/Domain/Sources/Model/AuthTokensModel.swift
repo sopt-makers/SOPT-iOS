@@ -9,7 +9,7 @@
 import Foundation
 import Core
 
-public struct LegacyTokensModel: AuthTokens {
+public struct LegacyAuthTokensModel: AuthTokens {
     public let accessToken: String
     public let refreshToken: String
     public let playgroundToken: String
@@ -24,3 +24,15 @@ public struct LegacyTokensModel: AuthTokens {
         self.playgroundToken = playgroundToken
     }
 }
+
+public struct AuthTokensModel {
+    public let accessToken: String
+    public let refreshToken: String
+    
+    public init(accessToken: String, refreshToken: String) {
+        self.accessToken = accessToken
+        self.refreshToken = refreshToken
+    }
+}
+
+extension AuthTokensModel: AuthTokens { }

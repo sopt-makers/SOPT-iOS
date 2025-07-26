@@ -13,8 +13,9 @@ let project = Project.makeModule(
     name: "LegacyAuthFeature",
     targets: [.unitTest, .staticFramework, .demo, .interface],
     internalDependencies: [
+        .Features.Auth.Interface
     ],
     interfaceDependencies: [
-      .Features.Web.Feature
+        .Features.Web.Feature
     ]
 )
