@@ -21,6 +21,7 @@ open class BaseService<Target: TargetType> {
     // MARK: - Properties
     
     var cancelBag = CancelBag()
+    private var cancellable: Moya.Cancellable?
     
     private let interceptor: RequestInterceptor
 
@@ -215,5 +216,96 @@ extension BaseService {
                 }
             }
         }.eraseToAnyPublisher()
+    }
+    
+    func requestObject<T: Decodable>(_ target: API, completion: @escaping (Result<T?, Error>) -> Void) {
+        provider.request(target) { response in
+            switch response {
+            case .success(let value):
+                do {
+                    let decoder = JSONDecoder()
+                    let body = try decoder.decode(T.self, from: value.data)
+                    completion(.success(body))
+                } catch let error {
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                switch error {
+                case .underlying(let error, _):
+                    if error.asAFError?.isSessionTaskError ?? false {
+                        
+                    }
+                default: break
+                }
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func requestArray<T: Decodable>(_ target: API, completion: @escaping (Result<[T], Error>) -> Void) {
+        provider.request(target) { response in
+            switch response {
+            case .success(let value):
+                do {
+                    let decoder = JSONDecoder()
+                    let body = try decoder.decode([T].self, from: value.data)
+                    completion(.success(body))
+                } catch let error {
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                switch error {
+                case .underlying(let error, _):
+                    if error.asAFError?.isSessionTaskError ?? false {
+                        
+                    }
+                default: break
+                }
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func requestObjectWithNoResult(_ target: API, completion: @escaping (Result<Int?, Error>) -> Void) {
+        provider.request(target) { response in
+            switch response {
+            case .success(let value):
+                completion(.success(value.statusCode))
+                
+            case .failure(let error):
+                switch error {
+                case .underlying(let error, _):
+                    if error.asAFError?.isSessionTaskError ?? false {
+                        
+                    }
+                default: break
+                }
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func requestObjectAsync<T: Decodable>(_ target: API) async throws -> T {
+        try await withCheckedThrowingContinuation { [weak self] continuation in
+            guard let self else { return }
+            let cancellable = self.provider.request(target) { response in
+                defer { self.cancellable = nil }
+                
+                switch response {
+                case .success(let value):
+                    do {
+                        let decoder = JSONDecoder()
+                        let body = try decoder.decode(T.self, from: value.data)
+                        continuation.resume(returning: body)
+                    } catch let error {
+                        continuation.resume(throwing: error)
+                    }
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+            
+            self.cancellable = cancellable
+        }
     }
 }

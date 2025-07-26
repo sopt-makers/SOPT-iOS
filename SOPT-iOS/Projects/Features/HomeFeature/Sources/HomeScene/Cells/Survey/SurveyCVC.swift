@@ -51,7 +51,6 @@ final class SurveyCVC: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         self.cancelBag = CancelBag()
-        surveyButtonTap = surveyButton.publisher(for: .touchUpInside)
     }
 }
 
@@ -64,6 +63,7 @@ extension SurveyCVC {
         surveyImageView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(surveyImageView.snp.width).multipliedBy(0.41)
+            make.top.equalToSuperview()
         }
         
         titleLabel.snp.makeConstraints { make in
@@ -81,6 +81,7 @@ extension SurveyCVC {
             make.top.equalTo(subTitleLabel.snp.bottom).offset(18)
             make.height.equalTo(44)
             make.centerX.equalToSuperview()
+            make.width.greaterThanOrEqualTo(182)
         }
     }
     

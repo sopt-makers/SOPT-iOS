@@ -91,7 +91,7 @@ public final class StampCoordinator: BaseCoordinator {
             guard let self else { return }
             self.navigationController.popViewController(animated: true)
         }
-        
+  
         rootController?.pushViewController(guide, animated: true)
     }
 }

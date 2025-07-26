@@ -17,8 +17,8 @@ struct HomePresentationModel {
     let dashBoard: HomePresentationModel.DashBoard
     let recentSchedule: HomePresentationModel.RecentSchedule
     let appServices: [HomePresentationModel.AppService]
-    let playgroundNewsPosts: [HomePresentationModel.PlaygroundNews]
-//    let recentPosts: [HomePresentationModel.RecentPost]     // TODO: @재현 - 서버 통신 시 해제
+    let popularPosts: [HomePresentationModel.PopularPost]
+    let latestPosts: [HomePresentationModel.LatestPost]
     let survey: HomePresentationModel.Survey
     
     // MARK: - Item Structs
@@ -62,56 +62,71 @@ struct HomePresentationModel {
         let alarmBadge, iconURL, deepLink: String
     }
     
-    struct PlaygroundNews: Identifiable, Hashable {
-        let id = UUID()
-
-        let title, category: String
+    struct PopularPost: Identifiable, Hashable {
         let profileImage: String?
-        let name: String?
+        let name: String
+        let generationAndPart: String?
+        let rank: Int
+        let category: String
+        let title: String
         let content: String
-        let isHotPost: Bool
-        
+        let webLink: String
+        let id: Int
+
         init(
-            title: String,
+            profileImage: String?,
+            name: String,
+            generationAndPart: String?,
+            rank: Int,
             category: String,
-            profileImage: String? = nil,
-            name: String? = nil,
+            title: String,
             content: String,
-            isHotPost: Bool
+            webLink: String,
+            id: Int
         ) {
-            self.title = title
-            self.category = category
             self.profileImage = profileImage
             self.name = name
+            self.generationAndPart = generationAndPart
+            self.rank = rank
+            self.category = category
+            self.title = title
             self.content = content
-            self.isHotPost = isHotPost
+            self.webLink = webLink
+            self.id = id
         }
     }
 
-    // TODO: @재현 - 서버 통신 시 모델 변경
-    struct RecentPost: Identifiable, Hashable {
-        let id = UUID()
-
-        let title, category: String
+    struct LatestPost: Identifiable, Hashable {
         let profileImage: String?
-        let name: String?
+        let name: String
+        let generationAndPart: String?
+        let category: String
+        let title: String
         let content: String
-        let isHotPost: Bool
-        
+        let webLink: String
+        let id: Int
+        let isOutdated: Bool
+
         init(
-            title: String,
+            profileImage: String?,
+            name: String,
+            generationAndPart: String?,
             category: String,
-            profileImage: String? = nil,
-            name: String? = nil,
+            title: String,
             content: String,
-            isHotPost: Bool
+            webLink: String,
+            id: Int,
+            isOutdated: Bool
         ) {
-            self.title = title
-            self.category = category
             self.profileImage = profileImage
             self.name = name
+            self.generationAndPart = generationAndPart
+            self.category = category
+            self.title = title
             self.content = content
-            self.isHotPost = isHotPost
+            self.webLink = webLink
+            self.id = id
+            self.isOutdated = isOutdated
         }
     }
     
@@ -132,8 +147,8 @@ struct HomePresentationModel {
     }
 }
 
-extension HomePresentationModel.PlaygroundNews: PostDisplayable {}
-extension HomePresentationModel.RecentPost: PostDisplayable {}
+extension HomePresentationModel.PopularPost: PostDisplayable {}
+extension HomePresentationModel.LatestPost: PostDisplayable {}
 
 // MARK: - toPresentation
 
@@ -181,15 +196,34 @@ extension HomeAppServicesModel {
     }
 }
 
-extension HomePlaygroundNewsPostsModel {
-    func toPresentation() -> HomePresentationModel.PlaygroundNews {
-        return HomePresentationModel.PlaygroundNews(
-            title: self.title,
-            category: self.category,
+extension HomePopularPostModel {
+    func toPresentation() -> HomePresentationModel.PopularPost {
+        return HomePresentationModel.PopularPost(
             profileImage: self.profileImage,
             name: self.name,
+            generationAndPart: self.generationAndPart,
+            rank: self.rank,
+            category: self.category,
+            title: self.title,
             content: self.content,
-            isHotPost: self.isHotPost
+            webLink: self.webLink,
+            id: self.id
+        )
+    }
+}
+
+extension HomeLatestPostModel {
+    func toPresentation() -> HomePresentationModel.LatestPost {
+        return HomePresentationModel.LatestPost(
+            profileImage: self.profileImage,
+            name: self.name,
+            generationAndPart: self.generationAndPart,
+            category: self.category,
+            title: self.title,
+            content: self.content,
+            webLink: self.webLink,
+            id: self.id,
+            isOutdated: self.isOutdated
         )
     }
 }

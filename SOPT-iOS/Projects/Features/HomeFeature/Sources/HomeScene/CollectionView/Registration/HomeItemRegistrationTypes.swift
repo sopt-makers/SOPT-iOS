@@ -13,12 +13,12 @@ typealias DashBoardCardCellRegistration = UICollectionView.CellRegistration<Dash
 typealias CalendarCellRegistration = UICollectionView.CellRegistration<CalendarCardCVC, HomePresentationModel.RecentSchedule>
 typealias ProductCellRegistration = UICollectionView.CellRegistration<MainProductCardCVC, HomePresentationModel.ProductService>
 typealias AppServiceCellRegistration = UICollectionView.CellRegistration<AppServiceCardCVC, HomePresentationModel.AppService>
-typealias PlaygroundNewsCellRegistration = UICollectionView.CellRegistration<DefaultPostCVC, HomePresentationModel.PlaygroundNews>
-typealias RecentPostCellRegistration = UICollectionView.CellRegistration<DefaultPostCVC, HomePresentationModel.RecentPost>
+typealias PopularPostCellRegistration = UICollectionView.CellRegistration<DefaultPostCVC, HomePresentationModel.PopularPost>
+typealias LatestPostCellRegistration = UICollectionView.CellRegistration<DefaultPostCVC, HomePresentationModel.LatestPost>
 typealias SurveyCellRegistration = UICollectionView.CellRegistration<SurveyCVC, HomePresentationModel.Survey>
 typealias SocialLinkCellRegistration = UICollectionView.CellRegistration<SocialLinkCardCVC, HomePresentationModel.SocialLink>
 
 // supplemenatry views
 typealias HeaderRegistration = UICollectionView.SupplementaryRegistration<HomeDefaultHeaderView>
-typealias RecentPostFooterRegistration = UICollectionView.SupplementaryRegistration<RecentPostFooterView>
+typealias LatestPostFooterRegistration = UICollectionView.SupplementaryRegistration<LatestPostFooterView>
 

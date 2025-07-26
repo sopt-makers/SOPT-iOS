@@ -22,7 +22,7 @@ public class NotificationDetailViewModel: NotificationDetailViewModelType {
     public var onShortCutButtonTap: ((ShortCutLink) -> Void)?
 
     // MARK: - Properties
-    
+
     private let useCase: NotificationDetailUseCase
     private var cancelBag = CancelBag()
     

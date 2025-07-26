@@ -30,7 +30,9 @@ public extension Project {
         if targets.contains(.app) {
             let bundleSuffix = name.contains("Demo") ? "alpha" : "release"
             let infoPlist = name.contains("Demo") ? Project.demoInfoPlist : Project.appInfoPlist
-            let settings = baseSettings.setProvisioning()
+            let settings = baseSettings
+                .setCrashlyticsSettings()
+                .setProvisioning()
             
             let target = Target.target(
                 name: name,
@@ -42,10 +44,18 @@ public extension Project {
                 sources: ["Sources/**/*.swift"],
                 resources: [.glob(pattern: "Resources/**", excluding: [])],
                 entitlements: "\(name).entitlements",
+                scripts: [
+                    .googleServiceInfo,
+                    .uploadDSYMToFirebaseScript
+                ],
                 dependencies: [
                     internalDependencies,
-                    externalDependencies
-                ].flatMap{ $0 },
+                    externalDependencies,
+                    [
+                        .SPM.Inject
+                    ]
+                ].flatMap{ $0
+                },
                 settings: .settings(base: settings, configurations: XCConfig.project)
             )
             
@@ -113,7 +123,7 @@ public extension Project {
                 dependencies: [
                     deps
                 ].flatMap{ $0 },
-                settings: .settings(base: baseSettings, configurations: XCConfig.demo)
+                settings: .settings(base: baseSettings.setCrashlyticsSettings(), configurations: XCConfig.demo)
             )
             
             projectTargets.append(target)

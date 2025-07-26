@@ -26,6 +26,9 @@ public protocol HomeForMemberCoordinatable {
     var onExtendedFloatingButtonTapped: ((String) -> Void)? { get set }
     var onSurveyButtonTapped: ((String) -> Void)? { get set }
     var onSocialLinkButtonTapped: ((String) -> Void)? { get set }
+    var onPopularPostCellTapped: ((String) -> Void)? { get set }
+    var onLatestPostCellTapped: ((String) -> Void)? { get set }
+    var onViewAllContentButtonTapped: ((String) -> Void)? { get set }
 }
 public typealias HomeForMemberViewModelType = ViewModelType & HomeForMemberCoordinatable
 public typealias LegacyHomeForMemberPresentable = (vc: HomeForMemberViewControllable, vm: any HomeForMemberViewModelType)

@@ -23,6 +23,8 @@ let project = Project.makeModule(
         .SPM.Amplitude,
         .SPM.GoogleSignIn,
         .SPM.FirebaseCore,
-        .SPM.FirebaseRemoteConfig
+        .SPM.FirebaseRemoteConfig,
+        .SPM.FirebaseCrashlytics,
+        .SPM.FirebaseAnalytics
     ]
 )

@@ -20,7 +20,7 @@ extension HomeForMemberVC {
                 
         static let productItemSpacing: Double = 15
         static let appServiceItemSpacing: Double = 16
-        static let playgroundNewsSectionSpacing: Double = 10
+        static let popularPostsSectionSpacing: Double = 10
         static let mainProductSectionSpacing: Double = 44
         static let socialLinkSectionSpacing: Double = 72
         
@@ -41,14 +41,14 @@ extension HomeForMemberVC {
                 return self.createMainProductSection()
             case .appService:
                 return self.createAppServiceSection()
-            case .playgroundNews:
-                return self.createPlaygroundNewsSection()
+            case .popularPosts:
+                return self.createPopularPostsSection()
             case .socialLinks:
                 return self.createSocialLinksSection()
             case .survey:
                 return self.createSurveySection()
-            case .recentPost:
-                return self.createRecentPostSection()
+            case .latestPosts:
+                return self.createLatestPostsSection()
             }
         }
     }
@@ -150,7 +150,7 @@ extension HomeForMemberVC {
         return section
     }
     
-    private func createPlaygroundNewsSection() -> NSCollectionLayoutSection {
+    private func createPopularPostsSection() -> NSCollectionLayoutSection {
         /// header: default
         let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                 heightDimension: .absolute(30))
@@ -158,22 +158,22 @@ extension HomeForMemberVC {
                                                                  elementKind: UICollectionView.elementKindSectionHeader,
                                                                  alignment: .top)
         
-        /// item: 플레이그라운드 뉴스 카드
-        let playgroundNewsItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+        /// item: 실시간 인기글
+        let popularPostsItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                             heightDimension: .absolute(122))
-        let playgroundNewsItem = NSCollectionLayoutItem(layoutSize: playgroundNewsItemSize)
+        let popularPostsItem = NSCollectionLayoutItem(layoutSize: popularPostsItemSize)
         
-        /// group: 플레이그라운드 뉴스 카드
-        let playgroundNewsGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+        /// group: 실시간 인기글
+        let popularPostsGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                              heightDimension: .estimated(122))
-        let playgroundNewsGroup = NSCollectionLayoutGroup.vertical(layoutSize: playgroundNewsGroupSize,
-                                                                    subitems: [playgroundNewsItem])
-        playgroundNewsGroup.interItemSpacing = .fixed(Metric.collectionViewDefaultSideInset)
+        let popularPostsGroup = NSCollectionLayoutGroup.vertical(layoutSize: popularPostsGroupSize,
+                                                                    subitems: [popularPostsItem])
+        popularPostsGroup.interItemSpacing = .fixed(Metric.collectionViewDefaultSideInset)
         
         /// section 지정
-        let section = NSCollectionLayoutSection(group: playgroundNewsGroup)
+        let section = NSCollectionLayoutSection(group: popularPostsGroup)
         section.boundarySupplementaryItems = [header]
-        section.interGroupSpacing = Metric.playgroundNewsSectionSpacing
+        section.interGroupSpacing = Metric.popularPostsSectionSpacing
         section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultItemSpacing,
                                                         leading: Metric.collectionViewDefaultSideInset,
                                                         bottom: Metric.defaultLineSpacing,
@@ -182,7 +182,7 @@ extension HomeForMemberVC {
     }
     
     
-    private func createRecentPostSection() -> NSCollectionLayoutSection {
+    private func createLatestPostsSection() -> NSCollectionLayoutSection {
         /// header: default
         let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                 heightDimension: .absolute(30))
@@ -194,16 +194,16 @@ extension HomeForMemberVC {
         let itemWidth = UIScreen.main.bounds.width - (Metric.collectionViewDefaultSideInset * 2)
         
         /// item: 최신 게시글
-        let recentPostItemSize = NSCollectionLayoutSize(widthDimension: .absolute(itemWidth),
+        let latestPostItemSize = NSCollectionLayoutSize(widthDimension: .absolute(itemWidth),
                                                         heightDimension: .absolute(122))
-        let recentPostItem = NSCollectionLayoutItem(layoutSize: recentPostItemSize)
+        let latestPostItem = NSCollectionLayoutItem(layoutSize: latestPostItemSize)
         
         /// group: 최신 게시글
-        let recentPostGroupSize = NSCollectionLayoutSize(widthDimension: .absolute(itemWidth),
+        let latestPostGroupSize = NSCollectionLayoutSize(widthDimension: .absolute(itemWidth),
                                                          heightDimension: .absolute(122))
-        let recentPostGroup = NSCollectionLayoutGroup.horizontal(layoutSize: recentPostGroupSize,
-                                                                 subitems: [recentPostItem])
-        recentPostGroup.interItemSpacing = .fixed(Metric.collectionViewDefaultSideInset)
+        let latestPostGroup = NSCollectionLayoutGroup.horizontal(layoutSize: latestPostGroupSize,
+                                                                 subitems: [latestPostItem])
+        latestPostGroup.interItemSpacing = .fixed(Metric.collectionViewDefaultSideInset)
         
         /// footer: page control
         let footerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
@@ -213,7 +213,7 @@ extension HomeForMemberVC {
                                                                  alignment: .bottom)
         
         /// section 지정
-        let section = NSCollectionLayoutSection(group: recentPostGroup)
+        let section = NSCollectionLayoutSection(group: latestPostGroup)
         section.boundarySupplementaryItems = [header, footer]
         section.interGroupSpacing = 20
         section.orthogonalScrollingBehavior = .groupPaging
@@ -226,7 +226,7 @@ extension HomeForMemberVC {
         section.visibleItemsInvalidationHandler  = { [weak self] (item, point, env) in
             guard let self = self,
                   let footer = self.collectionView.visibleSupplementaryViews(ofKind: UICollectionView.elementKindSectionFooter)
-                .first(where: { ($0 as? RecentPostFooterView) != nil }) as? RecentPostFooterView else { return }
+                .first(where: { ($0 as? LatestPostFooterView) != nil }) as? LatestPostFooterView else { return }
             
             let itemWidthWithInset: CGFloat = itemWidth + Metric.collectionViewDefaultSideInset
             let currentPage = Int(round(point.x / itemWidthWithInset))
@@ -262,12 +262,12 @@ extension HomeForMemberVC {
     private func createSurveySection() -> NSCollectionLayoutSection {
         /// item: 설문
         let surveyItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                    heightDimension: .absolute(279))
+                                                    heightDimension: .absolute(300))
         let surveyItem = NSCollectionLayoutItem(layoutSize: surveyItemSize)
         
         /// group: 설문
         let surveyGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                     heightDimension: .estimated(279))
+                                                     heightDimension: .estimated(300))
         let surveyGroup = NSCollectionLayoutGroup.vertical(layoutSize: surveyGroupSize,
                                                            subitems: [surveyItem])
         

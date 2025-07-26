@@ -12,16 +12,20 @@ import Core
 
 public protocol HomeUseCase {
     func registerPushToken()
-    func getHomeDescription() -> AnyPublisher<HomeDescriptionModel, Never>
-    func getUserInfo() -> AnyPublisher<UserMainInfoModel?, MainError>
-    func getRecentSchedule() -> AnyPublisher<HomeRecentScheduleModel, Never>
     func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Never>
-    func getPlaygroundNewsPosts() -> AnyPublisher<[HomePlaygroundNewsPostsModel], Never>
     func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never>
     func getReportURL()
     func checkPokeNewUser() -> AnyPublisher<Bool, Never>
     func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonModel, Never>
-    func getSurveyInfo() -> AnyPublisher<HomeSurveyModel, Never>
+    
+    func getHomeDescriptionAsync() async throws -> HomeDescriptionModel
+    func getUserInfoAsync() async throws -> UserMainInfoModel?
+    func getRecentScheduleAsync() async throws -> HomeRecentScheduleModel
+    func getAppServicesAsync() async throws -> [HomeAppServicesModel]
+    func getCalendarDetailAsync() async throws -> [HomeCalendarDetailModel]
+    func getSurveyInfoAsync() async throws -> HomeSurveyModel
+    func getPopularPostsAsync() async throws -> [HomePopularPostModel]
+    func getLatestPostsAsync() async throws -> [HomeLatestPostModel]
 }
 
 public class DefaultHomeUseCase {
@@ -45,41 +49,14 @@ extension DefaultHomeUseCase: HomeUseCase {
                 print("푸시 토큰 등록 결과: \(didSucceed)")
             }.store(in: cancelBag)
     }
-    
-    
-    public func getHomeDescription() -> AnyPublisher<HomeDescriptionModel, Never> {
-        repository.getHomeDescription()
-            .catch { error in
-                return Empty<HomeDescriptionModel, Never>()
-            }.eraseToAnyPublisher()
-    }
-    
-    public func getUserInfo() -> AnyPublisher<UserMainInfoModel?, MainError> {
-        repository.getUserInfo()
-            .eraseToAnyPublisher()
-    }
-    
-    public func getRecentSchedule() -> AnyPublisher<HomeRecentScheduleModel, Never> {
-        repository.getRecentSchedule()
-            .catch { error in
-                return Empty<HomeRecentScheduleModel, Never>()
-            }.eraseToAnyPublisher()
-    }
-    
+
     public func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Never> {
         repository.getAppServices()
             .catch { error in
                 return Empty<[HomeAppServicesModel], Never>()
             }.eraseToAnyPublisher()
     }
-    
-    public func getPlaygroundNewsPosts() -> AnyPublisher<[HomePlaygroundNewsPostsModel], Never> {
-        repository.getPlaygroundNewsPosts()
-            .catch { error in
-                return Empty<[HomePlaygroundNewsPostsModel], Never>()
-            }.eraseToAnyPublisher()
-    }
-    
+
     public func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never> {
         repository.getCalendarDetail()
             .catch { error in
@@ -116,12 +93,35 @@ extension DefaultHomeUseCase: HomeUseCase {
             .eraseToAnyPublisher()
     }
     
-    public func getSurveyInfo() -> AnyPublisher<HomeSurveyModel, Never> {
-        repository.getSurveyInfo()
-            .catch { error in
-                print("HomeUseCase getSurveyInfo에서 문제가 발생했습니다. \(error)")
-                return Empty<HomeSurveyModel, Never>()
-            }
-            .eraseToAnyPublisher()
+    public func getHomeDescriptionAsync() async throws -> HomeDescriptionModel {
+        try await repository.getHomeDescriptionAsync()
+    }
+    
+    public func getUserInfoAsync() async throws -> UserMainInfoModel? {
+        try await repository.getUserInfoAsync()
+    }
+    
+    public func getRecentScheduleAsync() async throws -> HomeRecentScheduleModel {
+        try await repository.getRecentScheduleAsync()
+    }
+    
+    public func getAppServicesAsync() async throws -> [HomeAppServicesModel] {
+        try await repository.getAppServicesAsync()
+    }
+
+    public func getCalendarDetailAsync() async throws -> [HomeCalendarDetailModel] {
+        try await repository.getCalendarDetailAsync()
+    }
+
+    public func getSurveyInfoAsync() async throws -> HomeSurveyModel {
+        try await repository.getSurveyInfoAsync()
+    }
+    
+    public func getPopularPostsAsync() async throws -> [HomePopularPostModel] {
+        try await repository.getPopularPostsAsync()
+    }
+    
+    public func getLatestPostsAsync() async throws -> [HomeLatestPostModel] {
+        try await repository.getLatestPostsAsync()
     }
 }

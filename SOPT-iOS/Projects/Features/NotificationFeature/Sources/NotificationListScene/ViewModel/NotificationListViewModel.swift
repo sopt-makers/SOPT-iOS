@@ -11,8 +11,7 @@ import Combine
 
 import Core
 import Domain
-
-import NotificationFeatureInterface
+import BaseFeatureDependency
 
 public class NotificationListViewModel: NotificationListViewModelType {
     
@@ -23,6 +22,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
     
     // MARK: - Properties
     
+    private let coordinator: AnyCoordinatorObject
     private let useCase: NotificationListUseCase
     private var cancelBag = CancelBag()
     
@@ -55,8 +55,9 @@ public class NotificationListViewModel: NotificationListViewModelType {
     
     // MARK: - init
     
-    public init(useCase: NotificationListUseCase) {
+    public init(useCase: NotificationListUseCase, coordinator: Coordinator) {
         self.useCase = useCase
+        self.coordinator = coordinator
     }
 }
 

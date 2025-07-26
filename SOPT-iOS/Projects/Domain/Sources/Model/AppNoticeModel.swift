@@ -14,6 +14,7 @@ public struct ForceUpdateModel: Decodable {
 }
 
 public struct AppNoticeModel: Decodable {
+    public let title: String
     public let notice: String
     public let imgUrl: String?
 }

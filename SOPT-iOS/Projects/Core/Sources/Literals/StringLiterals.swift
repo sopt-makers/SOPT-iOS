@@ -19,8 +19,7 @@ public struct I18N {
     }
     
     public struct Notice {
-        public static let notice = "공지사항"
-        public static let didCheck = "확인했어요!"
+        public static let didCheck = "확인했어요"
         public static let goToUpdate = "업데이트 하기"
         public static let close = "닫기"
     }
@@ -259,12 +258,12 @@ public struct I18N {
             public static let headerTitle = "SOPT 더 재밌게 즐기기!"
         }
         
-        public struct PlaygroundNews {
+        public struct PopularPosts {
             public static let headerTitle = "실시간 인기글"
             public static let morePosts = "다른 게시물 보러가기"
         }
         
-        public struct RecentPost {
+        public struct LatestPosts {
             public static let headerTitle = "최신 게시물"
         }
 

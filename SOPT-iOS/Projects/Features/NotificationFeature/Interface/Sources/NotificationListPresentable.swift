@@ -13,11 +13,11 @@ import Core
 import Domain
 
 public protocol NotificationListViewControllable: LegacyViewControllable { }
-public protocol NotificationListCoordinatable {
+public protocol NotificationListRoutingTrigger {
     var onNaviBackButtonTap: (() -> Void)? { get set }
     var onNotificationTap: ((String) -> Void)? { get set }
 }
-public typealias NotificationListViewModelType = ViewModelType & NotificationListCoordinatable
+public typealias NotificationListViewModelType = ViewModelType & NotificationListRoutingTrigger
 public typealias LegacyNotificationListPresentable = (vc: NotificationListViewControllable, vm: any NotificationListViewModelType)
 
 public typealias NotificationListPresentable = (vc: UIViewController, vm: any NotificationListViewModelType)

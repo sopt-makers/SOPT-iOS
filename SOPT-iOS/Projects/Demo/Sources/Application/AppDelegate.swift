@@ -23,7 +23,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         registerDependencies()
         configureAppLifecycleAdapter()
         Firebase.configure()
-        
         application.registerForRemoteNotifications()
         
         return true

@@ -102,6 +102,14 @@ public final class LegacyHomeCoordinator: DefaultHomeCoordinator {
             self?.requestCoordinating?(.webLink(url: url))
         }
         
+        homeForMember.vm.onPopularPostCellTapped = { [weak self] url in
+            self?.requestCoordinating?(.webLink(url: url))
+        }
+        
+        homeForMember.vm.onLatestPostCellTapped = { [weak self] url in
+            self?.requestCoordinating?(.webLink(url: url))
+        }
+        
         rootViewController = homeForMember.vc.viewController
         
         router.push(homeForMember.vc)
