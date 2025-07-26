@@ -31,7 +31,7 @@ final class LegacyNotificationCoordinator: DefaultNotificationCoordinator {
     }
     
     private func showNotifcationList() {
-        var notificiationList = factory.makeNotificationList()
+        var notificiationList = factory.makeNotificationList(coordinator: self)
         notificiationList.vm.onNaviBackButtonTap = { [weak self] in
             self?.router.popModule()
             self?.finishFlow?()

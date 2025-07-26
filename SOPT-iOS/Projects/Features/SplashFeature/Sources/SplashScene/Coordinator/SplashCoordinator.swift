@@ -61,10 +61,7 @@ public final class SplashCoordinator: BaseCoordinator & SplashCoordinatorFinishO
     }
     
     private func presentNoticePopUp(model: AppNoticeModel, as type: NoticePopUpType) {
-        let noticePopUpVC = factory.makeNoticePopUpVC(
-            noticeType: type,
-            content: model.notice
-        )
+        let noticePopUpVC = factory.makeNoticePopUpVC(noticeType: type, model: model)
         
         noticePopUpVC.closeButtonTappedWithCheck.sink { [weak self] didCheck in
             self?.navigationController?.dismiss(animated: true)

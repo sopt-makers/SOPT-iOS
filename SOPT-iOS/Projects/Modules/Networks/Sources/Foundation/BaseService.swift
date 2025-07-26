@@ -21,6 +21,7 @@ open class BaseService<Target: TargetType> {
     // MARK: - Properties
     
     var cancelBag = CancelBag()
+    private var cancellable: Moya.Cancellable?
     
     lazy var provider = self.defaultProvider
     
@@ -277,6 +278,30 @@ extension BaseService {
                 }
                 completion(.failure(error))
             }
+        }
+    }
+    
+    func requestObjectAsync<T: Decodable>(_ target: API) async throws -> T {
+        try await withCheckedThrowingContinuation { [weak self] continuation in
+            guard let self else { return }
+            let cancellable = self.provider.request(target) { response in
+                defer { self.cancellable = nil }
+                
+                switch response {
+                case .success(let value):
+                    do {
+                        let decoder = JSONDecoder()
+                        let body = try decoder.decode(T.self, from: value.data)
+                        continuation.resume(returning: body)
+                    } catch let error {
+                        continuation.resume(throwing: error)
+                    }
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+            
+            self.cancellable = cancellable
         }
     }
 }

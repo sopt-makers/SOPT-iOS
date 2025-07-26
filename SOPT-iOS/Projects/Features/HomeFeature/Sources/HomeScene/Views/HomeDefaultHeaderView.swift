@@ -15,6 +15,11 @@ import Lottie
 
 final class HomeDefaultHeaderView: UICollectionReusableView {
     
+    // MARK: - Properties
+
+    private(set) lazy var viewAllContentButtonTap = viewAllContentButton.publisher(for: .touchUpInside)
+    private(set) var cancelBag = CancelBag()
+    
     // MARK: - UI Components
     
     private let titleLabel = UILabel().then {
@@ -51,7 +56,8 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
     }
     
     override func prepareForReuse() {
-        self.titleLabel.snp.removeConstraints()
+        super.prepareForReuse()
+        self.cancelBag = CancelBag()
     }
 }
 

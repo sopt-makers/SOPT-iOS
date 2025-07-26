@@ -9,8 +9,9 @@
 import Foundation
 
 import Domain
+import BaseFeatureDependency
 
 public protocol LegacyNotificationFeatureBuildable {
-    func makeNotificationList() -> LegacyNotificationListPresentable
+    func makeNotificationList(coordinator: Coordinator) -> LegacyNotificationListPresentable
     func makeNotificationDetailVC(notificationId: String) -> LegacyNotificationDetailPresentable
 }

@@ -24,6 +24,8 @@ extension HomeForMemberVC {
             guard let self else { return }
             cell.configureCell(model: item, userType: self.viewModel.userType)
             
+            cell.cancelBag.cancel() // 이전 구독 해제
+            
             cell.attendanceButtonTap
                 .withUnretained(self)
                 .sink { owner, _ in
@@ -45,13 +47,13 @@ extension HomeForMemberVC {
         }
     }
     
-    func createPlaygroundNewsCellRegistration() -> PlaygroundNewsCellRegistration {
+    func createPopularPostCellRegistration() -> PopularPostCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
             cell.configureCell(model: item)
         }
     }
     
-    func createRecentPostCellRegistration() -> RecentPostCellRegistration {
+    func createLatestPostCellRegistration() -> LatestPostCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
             cell.configureCell(model: item)
         }
@@ -84,10 +86,17 @@ extension HomeForMemberVC {
         ) { headerView, indexPath in
             guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: indexPath.section) else { return }
             headerView.configureView(sectionKind: sectionKind)
+            
+            headerView.viewAllContentButtonTap
+                .withUnretained(self)
+                .sink { owner, _ in
+                    owner.viewAllButtonTapped.send()
+                }
+                .store(in: headerView.cancelBag)
         }
     }
     
-    func createRecentPostFooterRegistration() -> RecentPostFooterRegistration {
+    func createLatestPostFooterRegistration() -> LatestPostFooterRegistration {
         collectionView.createSupplementaryRegistration(
             elementKind: UICollectionView.elementKindSectionFooter
         ) { _, _ in }

@@ -20,8 +20,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         configureAppLifecycleAdapter()
         registerDependencies()
         Firebase.configure()
-        
+        Firebase.configureCrashlytics()
         application.registerForRemoteNotifications()
+
         return true
     }
     

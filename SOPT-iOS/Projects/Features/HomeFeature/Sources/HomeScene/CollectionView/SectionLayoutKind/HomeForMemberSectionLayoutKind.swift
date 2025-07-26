@@ -15,8 +15,8 @@ enum HomeForMemberSectionLayoutKind: Int, CaseIterable {
     case calendar
     case mainProduct
     case appService
-    case playgroundNews
-    case recentPost
+    case popularPosts
+    case latestPosts
     case survey
     case socialLinks
 }
@@ -26,20 +26,20 @@ extension HomeForMemberSectionLayoutKind: HomeSectionUIConfigurable {
         switch self {
         case .appService:
             return I18N.Home.AppService.headerTitle
-        case .playgroundNews:
-            return I18N.Home.PlaygroundNews.headerTitle
-        case .recentPost:
-            return I18N.Home.RecentPost.headerTitle
+        case .popularPosts:
+            return I18N.Home.PopularPosts.headerTitle
+        case .latestPosts:
+            return I18N.Home.LatestPosts.headerTitle
         default:
             return ""
         }
     }
     
     var shouldShowFireIcon: Bool {
-        return self == .playgroundNews
+        return self == .popularPosts
     }
     
     var shouldShowViewAllContentButton: Bool {
-        return self == .recentPost
+        return self == .latestPosts
     }
 }

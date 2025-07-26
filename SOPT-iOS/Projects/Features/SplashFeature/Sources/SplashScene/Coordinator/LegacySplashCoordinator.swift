@@ -48,7 +48,7 @@ final class LegacySplashCoordinator: BaseCoordinator {
     private func presentNoticePopUp(model: AppNoticeModel, as type: NoticePopUpType) {
         let noticePopUpControllable = factory.makeNoticePopUpVC(
             noticeType: type,
-            content: model.notice
+            model: model
         )
         
         noticePopUpControllable.closeButtonTappedWithCheck.sink { [weak self] didCheck in

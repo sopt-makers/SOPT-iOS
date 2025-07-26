@@ -26,9 +26,9 @@ extension LegacySplashBuilder: LegacySplashFeatureViewBuildable {
         return (vc, vm)
     }
     
-    public func makeNoticePopUpVC(noticeType: NoticePopUpType, content: String) -> LegacyNoticePopUpViewControllable {
+    public func makeNoticePopUpVC(noticeType: NoticePopUpType, model: AppNoticeModel) -> LegacyNoticePopUpViewControllable {
         let noticePopUpVC = NoticePopUpVC()
-        noticePopUpVC.setData(type: noticeType, content: content)
+        noticePopUpVC.setData(type: noticeType, model: model)
         noticePopUpVC.modalPresentationStyle = .overFullScreen
         return noticePopUpVC
     }
