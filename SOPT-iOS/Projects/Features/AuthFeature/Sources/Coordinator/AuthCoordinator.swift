@@ -14,12 +14,6 @@ import Core
 import DSKit
 import WebFeature
 
-public protocol AuthCoordinatorFinishOutput {
-    var finishFlow: ((UserType) -> Void)? { get set }
-}
-
-public typealias DefaultAuthCoordinator = BaseCoordinator & AuthCoordinatorFinishOutput
-
 public final class AuthCoordinator: DefaultAuthCoordinator {
 
     public var finishFlow: ((UserType) -> Void)?

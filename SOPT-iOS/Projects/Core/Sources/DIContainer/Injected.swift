@@ -10,7 +10,7 @@ import Foundation
 
 @propertyWrapper
 public class Injected<T> {
-    public let wrappedValue: T
+    public var wrappedValue: T
     
     public init() {
         self.wrappedValue = DIContainer.shared.resolve()

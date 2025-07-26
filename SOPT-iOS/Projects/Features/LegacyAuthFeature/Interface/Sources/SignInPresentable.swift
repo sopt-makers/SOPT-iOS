@@ -10,16 +10,16 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol SignInViewControllable: LegacyViewControllable {
+public protocol LegacySignInViewControllable: LegacyViewControllable {
     var skipAnimation: Bool { get set }
     var accessCode: String? { get set }
     var requestState: String? { get set }
 }
 
-public protocol SignInCoordinatable {
+public protocol LegacySignInCoordinatable {
     var onSignInSuccess: ((SiginInHandleableType) -> Void)? { get set }
     var onVisitorButtonTapped: (() -> Void)? { get set }
 }
 
-public typealias SignInViewModelType = ViewModelType & SignInCoordinatable
-public typealias SignInPresentable = (vc: SignInViewControllable, vm: any SignInViewModelType)
+public typealias LegacySignInViewModelType = ViewModelType & LegacySignInCoordinatable
+public typealias LegacySignInPresentable = (vc: LegacySignInViewControllable, vm: any LegacySignInViewModelType)

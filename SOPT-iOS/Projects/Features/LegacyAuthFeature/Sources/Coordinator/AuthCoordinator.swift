@@ -10,25 +10,21 @@ import Foundation
 
 import BaseFeatureDependency
 import LegacyAuthFeatureInterface
+import AuthFeatureInterface
 import Core
 import DSKit
 
-public protocol AuthCoordinatorFinishOutput {
-    var finishFlow: ((UserType) -> Void)? { get set }
-}
-
-public typealias DefaultAuthCoordinator = BaseCoordinator & AuthCoordinatorFinishOutput
 
 public
-final class AuthCoordinator: DefaultAuthCoordinator {
+final class LegacyAuthCoordinator: DefaultAuthCoordinator {
     
     public var finishFlow: ((UserType) -> Void)?
     
-    private let factory: AuthFeatureBuildable
+    private let factory: LegacyAuthFeatureBuildable
     private let router: LegacyRouter
     private var url: String?
     
-    public init(router: LegacyRouter, factory: AuthFeatureBuildable, url: String? = nil) {
+    public init(router: LegacyRouter, factory: LegacyAuthFeatureBuildable, url: String? = nil) {
         self.factory = factory
         self.router = router
         self.url = url
@@ -83,7 +79,7 @@ final class AuthCoordinator: DefaultAuthCoordinator {
         }
     }
     
-    private func redirectSignIn(module: inout SignInViewControllable, url: String) {
+    private func redirectSignIn(module: inout LegacySignInViewControllable, url: String) {
         module.skipAnimation = true
         for item in parseParameter(url: url) {
             if item.query == "state" {
@@ -99,7 +95,7 @@ final class AuthCoordinator: DefaultAuthCoordinator {
     }
 }
 
-extension AuthCoordinator {
+extension LegacyAuthCoordinator {
     func parseParameter(url: String) -> [(query: String, value: String)] {
         let components = URLComponents(string: url)
         let params = components?.query ?? ""
