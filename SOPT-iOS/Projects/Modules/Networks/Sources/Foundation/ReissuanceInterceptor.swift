@@ -24,8 +24,6 @@ public final class ReissueInterceptor: RequestInterceptor {
         self.refreshClosure = refreshClosure
     }
     
-    public func adapt(_ urlRequest: URLRequest, for session: Alamofire.Session, completion: @escaping (Result<URLRequest, Error>) -> Void) { }
-    
     public func retry(
         _ request: Request,
         for session: Session,

@@ -24,7 +24,7 @@ extension BaseService {
                 AccessTokenPlugin(tokenClosure: { _ in 
                     repository.fetch()?.accessToken ?? ""
                 })
-                ,NetworkLoggerPlugin(verbose: true)
+                ,NetworkLoggerPlugin()
             ],
             interceptor: ReissueInterceptor(
                 refreshClosure: repository.refresh

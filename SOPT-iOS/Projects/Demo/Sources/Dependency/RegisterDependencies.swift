@@ -32,7 +32,7 @@ extension AppDelegate {
                 interface: AuthTokensRepositoryInterface.self,
                 implement: {
                     let reissueService = DefaultReissueService(
-                        plugins: [ NetworkLoggerPlugin(verbose: true)]
+                        plugins: [ NetworkLoggerPlugin()]
                     )
                     let repository = AuthTokensRepository(remote: reissueService)
                     return repository
@@ -44,7 +44,7 @@ extension AppDelegate {
                 interface: AuthTokensRepositoryInterface.self,
                 implement: {
                     let reissueService = DefaultLegacyReissueService(
-                        plugins: [ NetworkLoggerPlugin(verbose: true)]
+                        plugins: [ NetworkLoggerPlugin()]
                     )
                     let repository = LegacyAuthTokensRepository(remote: reissueService)
                     return repository
@@ -66,7 +66,7 @@ extension AppDelegate {
             interface: PhoneVerifyRepositoryInterface.self,
             implement: {
                 PhoneVerifyRepository(
-                    coreAuthService: DefaultCoreAuthService.standard
+                    coreAuthService: DefaultCoreAuthService(plugins: [ NetworkLoggerPlugin() ])
                 )
             }
         )
@@ -84,7 +84,7 @@ extension AppDelegate {
             interface: CoreAuthRepositoryInterface.self,
             implement: {
                 CoreAuthRepository(
-                    coreAuthService: DefaultCoreAuthService.standard,
+                    coreAuthService: DefaultCoreAuthService(plugins: [ NetworkLoggerPlugin() ]),
                     socialService: DefaultSocialService.standard)
             }
         )

@@ -24,7 +24,7 @@ open class BaseService<Target: TargetType> {
     private var cancellable: Moya.Cancellable?
     
     private let interceptor: RequestInterceptor?
-    private var plugins: [PluginType]
+    private let plugins: [PluginType]
     
     lazy var provider = self.defaultProvider
     
@@ -304,6 +304,8 @@ extension BaseService {
                         continuation.resume(throwing: error)
                     }
                 case .failure(let error):
+                    print("🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏")
+                    print(target, error)
                     continuation.resume(throwing: error)
                 }
             }

@@ -23,15 +23,6 @@ extension AttendanceAPI: BaseAPI {
     
     public static var apiType: APIType = .attendance
     
-    // MARK: - Header
-    public var headers: [String: String]? {
-        switch self {
-        case .lecture, .score, .total, .lectureRound, .attend:
-            return HeaderType.jsonWithToken.value
-        default: return HeaderType.json.value
-        }
-    }
-    
     // MARK: - Path
     public var path: String {
         switch self {
