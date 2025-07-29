@@ -304,8 +304,6 @@ extension BaseService {
                         continuation.resume(throwing: error)
                     }
                 case .failure(let error):
-                    print("🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏")
-                    print(target, error)
                     continuation.resume(throwing: error)
                 }
             }
