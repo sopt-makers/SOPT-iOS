@@ -23,8 +23,9 @@ open class BaseService<Target: TargetType> {
     var cancelBag = CancelBag()
     private var cancellable: Moya.Cancellable?
     
-    private let interceptor: RequestInterceptor
-
+    private let interceptor: RequestInterceptor?
+    private let plugins: [PluginType]
+    
     lazy var provider = self.defaultProvider
     
     private lazy var defaultProvider: MoyaProvider<API> = {
@@ -37,7 +38,7 @@ open class BaseService<Target: TargetType> {
         let provider = MoyaProvider<API>(
             endpointClosure: endpointClosure,
             session: session,
-            plugins: [NetworkLoggerPlugin(verbose: true)]
+            plugins: plugins
         )
         return provider
     }()
@@ -77,8 +78,10 @@ open class BaseService<Target: TargetType> {
     // MARK: - Initializers
     
     public init(
-        interceptor: RequestInterceptor
+        plugins: [PluginType],
+        interceptor: RequestInterceptor? = nil
     ) {
+        self.plugins = plugins
         self.interceptor = interceptor
     }
 }

@@ -11,6 +11,7 @@ import Foundation
 import Core
 import Domain
 import Networks
+import Moya
 
 extension BaseService {
     
@@ -19,8 +20,13 @@ extension BaseService {
         @Injected var repository: AuthTokensRepositoryInterface
         
         return BaseService<Target>(
+            plugins: [
+                AccessTokenPlugin(tokenClosure: { _ in 
+                    repository.fetch()?.accessToken ?? ""
+                })
+                ,NetworkLoggerPlugin()
+            ],
             interceptor: ReissueInterceptor(
-                accessTokenClosure: { repository.fetch()?.accessToken },
                 refreshClosure: repository.refresh
             )
         )

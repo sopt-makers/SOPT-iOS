@@ -123,14 +123,45 @@ extension SOPTWebView {
 
 extension SOPTWebView: WKNavigationDelegate {
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        guard !self.barrier, let playgroundToken = UserDefaultKeyList.Auth.playgroundToken else {
-          return
-        }
-        
         self.barrier = true
-        self.webView.evaluateJavaScript(
-            "localStorage.setItem(\"serviceAccessToken\", \"\(playgroundToken)\")"
-        )
+        
+        switch FeatureFlag.auth {
+        case .legacy:
+            guard !self.barrier,
+                    let playgroundToken = UserDefaultKeyList.Auth.playgroundToken else {
+                return
+            }
+            
+            self.webView.evaluateJavaScript(
+                "localStorage.setItem(\"serviceAccessToken\", \"\(playgroundToken)\")"
+            )
+        case .new:
+            
+            // accessToken
+            if !self.barrier,
+                  let accessToken = UserDefaultKeyList.CoreAuth.accessToken
+            {
+                
+                self.webView.evaluateJavaScript(
+                    "localStorage.setItem(\"serviceAccessToken\", \"\(accessToken)\")"
+                )
+            }
+                
+            // refreshToken
+            if !self.barrier,
+               let refreshToken = UserDefaultKeyList.CoreAuth.refreshToken,
+               let cookie = HTTPCookie(properties: [
+                HTTPCookiePropertyKey.domain: webView.url?.host() ?? "",
+                HTTPCookiePropertyKey.name: "refresh-token",
+                HTTPCookiePropertyKey.path: "/",
+                HTTPCookiePropertyKey.value: refreshToken,
+                HTTPCookiePropertyKey.secure: "TRUE",
+                HTTPCookiePropertyKey.expires: Date().addingTimeInterval(60 * 60 * 24 * 14)
+            ]) {
+                self.webView.configuration.websiteDataStore.httpCookieStore.setCookie(cookie)
+            }
+        }
+       
         self.webView.reload()
     }
 }

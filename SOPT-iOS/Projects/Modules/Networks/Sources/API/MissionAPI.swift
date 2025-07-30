@@ -21,15 +21,6 @@ extension MissionAPI: BaseAPI {
     
     public static var apiType: APIType = .mission
     
-    // MARK: - Header
-    public var headers: [String: String]? {
-        switch self {
-        case .fetchMissionList:
-            return HeaderType.jsonWithToken.value
-        default: return HeaderType.json.value
-        }
-    }
-    
     // MARK: - Path
     public var path: String {
         switch self {

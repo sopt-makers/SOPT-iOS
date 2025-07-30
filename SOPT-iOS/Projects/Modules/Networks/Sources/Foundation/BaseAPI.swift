@@ -31,8 +31,17 @@ public enum APIType {
   case calendar
 }
 
-public protocol BaseAPI: TargetType {
+public protocol BaseAPI: TargetType, AccessTokenAuthorizable {
   static var apiType: APIType { get set }
+}
+
+extension BaseAPI {
+    public var authorizationType: AuthorizationType? {
+        
+        UserDefaultKeyList.Auth.getUserType() == .visitor
+        ? nil
+        : .bearer
+    }
 }
 
 extension BaseAPI {
@@ -86,7 +95,7 @@ extension BaseAPI {
   }
   
   public var headers: [String: String]? {
-    return HeaderType.jsonWithToken.value
+      return HeaderType.json.value
   }
   
   public var validationType: ValidationType {
@@ -94,21 +103,14 @@ extension BaseAPI {
   }
 }
 
+
 public enum HeaderType {
   case json
-  case jsonWithToken
-  case multipartWithToken
   
   public var value: [String: String] {
     switch self {
     case .json:
       return ["Content-Type": "application/json"]
-    case .jsonWithToken:
-      return ["Content-Type": "application/json",
-              "Authorization": UserDefaultKeyList.Auth.appAccessToken ?? ""]
-    case .multipartWithToken:
-      return ["Content-Type": "multipart/form-data",
-              "Authorization": UserDefaultKeyList.Auth.appAccessToken ?? ""]
     }
   }
 }

@@ -24,15 +24,7 @@ public enum StampAPI {
 extension StampAPI: BaseAPI {
   
   public static var apiType: APIType = .stamp
-  
-  // MARK: - Header
-  public var headers: [String : String]? {
-    switch self {
-    case .fetchStampListDetail, .resetStamp, .postStamp, .putStamp, .deleteStamp, .getReportUrl:
-      return HeaderType.jsonWithToken.value
-    }
-  }
-  
+
   // MARK: - Path
   public var path: String {
     switch self {

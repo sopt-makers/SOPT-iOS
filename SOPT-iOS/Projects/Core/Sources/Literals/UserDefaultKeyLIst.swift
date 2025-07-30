@@ -70,9 +70,20 @@ extension UserDefaultKeyList {
     }
 }
 
+extension UserDefaultKeyList {
+    static var accessTokenWithFeatureFlag: String? {
+        switch FeatureFlag.auth {
+        case .legacy: Self.Auth.appAccessToken
+        case .new: Self.CoreAuth.accessToken
+        }
+    }
+}
+
 extension UserDefaultKeyList.Auth {
+    
     public static func getUserType() -> UserType {
-        guard appAccessToken != nil, appAccessToken != "" else {
+        guard let accessToken = UserDefaultKeyList.accessTokenWithFeatureFlag,
+              !accessToken.isEmpty else {
             return UserType.visitor
         }
         
@@ -86,7 +97,8 @@ extension UserDefaultKeyList.Auth {
     }
     
     public static func hasAccessToken() -> Bool {
-        guard let appAccessToken = appAccessToken, !appAccessToken.isEmpty else {
+        guard let appAccessToken = UserDefaultKeyList.accessTokenWithFeatureFlag,
+              !appAccessToken.isEmpty else {
             return false
         }
         return true

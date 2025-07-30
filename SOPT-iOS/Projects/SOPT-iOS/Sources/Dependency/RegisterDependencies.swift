@@ -30,10 +30,10 @@ extension AppDelegate {
             container.register(
                 interface: AuthTokensRepositoryInterface.self,
                 implement: {
-                    let interceptor = AccessTokenInterceptor()
-                    let reissueService = DefaultReissueService(interceptor: interceptor)
+                    let reissueService = DefaultReissueService(
+                        plugins: [ NetworkLoggerPlugin()]
+                    )
                     let repository = AuthTokensRepository(remote: reissueService)
-                    interceptor.accessTokenClosure = { repository.fetch()?.accessToken  }
                     return repository
                 }
             )
@@ -42,10 +42,10 @@ extension AppDelegate {
             container.register(
                 interface: AuthTokensRepositoryInterface.self,
                 implement: {
-                    let interceptor = AccessTokenInterceptor()
-                    let reissueService = DefaultLegacyReissueService(interceptor: interceptor)
+                    let reissueService = DefaultLegacyReissueService(
+                        plugins: [ NetworkLoggerPlugin()]
+                    )
                     let repository = LegacyAuthTokensRepository(remote: reissueService)
-                    interceptor.accessTokenClosure = { repository.fetch()?.accessToken  }
                     return repository
                 }
             )
@@ -64,7 +64,7 @@ extension AppDelegate {
         container.register(
             interface: PhoneVerifyRepositoryInterface.self,
             implement: {
-                PhoneVerifyRepository(coreAuthService: DefaultCoreAuthService.standard)
+                PhoneVerifyRepository(coreAuthService: DefaultCoreAuthService(plugins: [ NetworkLoggerPlugin() ]))
             }
         )
         
@@ -79,7 +79,7 @@ extension AppDelegate {
             interface: CoreAuthRepositoryInterface.self,
             implement: {
                 CoreAuthRepository(
-                    coreAuthService: DefaultCoreAuthService.standard,
+                    coreAuthService: DefaultCoreAuthService(plugins: [ NetworkLoggerPlugin() ]),
                     socialService: DefaultSocialService.standard
                 )
             }
