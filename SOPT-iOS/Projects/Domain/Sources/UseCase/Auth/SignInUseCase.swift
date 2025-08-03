@@ -59,7 +59,10 @@ extension DefaultSignInUseCase: SignInUseCase {
         oauthRepository.getIdentityToken(from: provider)
             .map { (provider, $0) }
             .flatMap(coreRepository.login)
-            .handleEvents(receiveOutput: tokenRepository.save)
+            .handleEvents(receiveOutput: { [weak self] token in
+                self?.tokenRepository.save(token)
+                self?.coreRepository.saveRecentLogin(provider)
+            })
             .mapVoid()
             .catch { [weak self] in
                 self?.sideEffect.send($0)

@@ -74,15 +74,31 @@ extension CoreAuthRepository: CoreAuthRepositoryInterface {
         socialService
             .changeSocialAccount(model.toData())
             .mapVoid()
-            .mapError { _ in CoreAuthError.changeSocialAccountFail }
+            .mapError { error in
+                if case let .statusCode(response) = error {
+                    let response = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any]
+                    let message = response?["message"] as? String
+                    return CoreAuthError.changeSocialAccountFail(message)
+                } else {
+                    return CoreAuthError.changeSocialAccountFail(nil)
+                }
+            }
             .eraseToAnyPublisher()
     }
     
     public func searchSocialAccount(_ phone: String) -> AnyPublisher<OAuthProvider, CoreAuthError> {
         socialService
             .getSocialAccount(for: phone)
-            .compactMap { $0.data.toDomain() }
-            .mapError { _ in CoreAuthError.changeSocialAccountFail }
+            .compactMap { $0.toDomain() }
+            .mapError { error in
+                if case let .statusCode(response) = error {
+                    let response = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any]
+                    let message = response?["message"] as? String
+                    return CoreAuthError.searchSocialAccountFail(message)
+                } else {
+                    return CoreAuthError.searchSocialAccountFail(nil)
+                }
+            }
             .eraseToAnyPublisher()
     }
 }
