@@ -11,7 +11,7 @@ import Foundation
 import Domain
 import Networks
 
-extension CoreLoginEntity {
+extension AuthTokensEntity {
     public func toDomain() -> AuthTokensModel {
         .init(accessToken: accessToken, refreshToken: refreshToken)
     }

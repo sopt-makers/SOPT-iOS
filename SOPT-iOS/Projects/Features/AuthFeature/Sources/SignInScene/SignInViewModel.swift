@@ -100,32 +100,13 @@ extension SignInViewModel {
             }.store(in: self.cancelBag)
         
         useCase.sideEffect
-            .map({ $0.toastMessage})
-            .sink { toastMessage in
-                output.loginFailToastMessage.send(toastMessage)
+            .map { $0.description }
+            .sink { description in
+                output.loginFailToastMessage.send(description)
         }
         .store(in: cancelBag)
         
         
         return output
-    }
-}
-
-
-extension CoreAuthError {
-    var toastMessage: String {
-        switch self {
-            
-        case .oAuthFail(let provider):
-            "\(provider.title) 인증 시 문제가 발생했습니다."
-        case .loginFail:
-            "로그인에 문제가 발생했습니다."
-        case .signUpFail:
-            "회원가입에 문제가 발생했습니다."
-        case .changeSocialAccountFail:
-            "소셜 계정 변경에 문제가 발생했습니다."
-        case .unknown(_):
-            "알 수 없는 문제가 발생했습니다."
-        }
     }
 }

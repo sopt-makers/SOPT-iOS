@@ -42,9 +42,15 @@ extension CoreAuthRepository: CoreAuthRepositoryInterface {
     ) -> AnyPublisher<AuthTokens, CoreAuthError> {
         coreAuthService
             .login(.init(token: identityToken, authPlatform: provider.toData()))
-            .compactMap { $0.data.toDomain() }
-            .mapError { _ in
-                return CoreAuthError.loginFail
+            .compactMap { $0.toDomain() }
+            .mapError { error in
+                if case let .statusCode(response) = error {
+                    let response = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any]
+                    let message = response?["message"] as? String
+                    return CoreAuthError.loginFail(message)
+                } else {
+                    return CoreAuthError.loginFail(nil)
+                }
             }
             .eraseToAnyPublisher()
     }
@@ -52,8 +58,15 @@ extension CoreAuthRepository: CoreAuthRepositoryInterface {
     public func signUp(_ model: Domain.SignUpModel) -> AnyPublisher<Void, CoreAuthError> {
         coreAuthService
             .signUp(model.toData())
-            .mapVoid()
-            .mapError { _ in CoreAuthError.signUpFail }
+            .mapError { error in
+                if case let .statusCode(response) = error {
+                    let response = try? JSONSerialization.jsonObject(with: response.data) as? [String: Any]
+                    let message = response?["message"] as? String
+                    return CoreAuthError.signUpFail(message)
+                } else {
+                    return CoreAuthError.signUpFail(nil)
+                }
+            }
             .eraseToAnyPublisher()
     }
     
