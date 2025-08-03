@@ -13,7 +13,8 @@ import Foundation
 public struct HomeAppServiceAccessStatusEntity: Codable {
     public let serviceName: String
     public let displayAlarmBadge: Bool
-    public let alarmBadge, iconURL, deepLink: String
+    public let alarmBadge, deepLink: String
+    public let iconURL: String?
 
     enum CodingKeys: String, CodingKey {
         case serviceName, displayAlarmBadge, alarmBadge

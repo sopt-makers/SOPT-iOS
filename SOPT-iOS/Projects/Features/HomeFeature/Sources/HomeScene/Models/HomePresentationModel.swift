@@ -190,7 +190,7 @@ extension HomeAppServicesModel {
             serviceName: self.serviceName,
             displayAlarmBadge: self.displayAlarmBadge,
             alarmBadge: self.alarmBadge,
-            iconURL: self.iconURL,
+            iconURL: self.iconURL ?? "",                // TODO: - 엠티 이미지 요청 or 후기 폼 API 분리 요청하기
             deepLink: self.deepLink
         )
     }
