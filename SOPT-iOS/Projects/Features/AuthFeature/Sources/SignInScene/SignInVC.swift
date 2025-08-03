@@ -311,5 +311,12 @@ extension SignInVC {
                 }
             }
             .store(in: cancelBag)
+        
+        output.loginFailToastMessage
+            .withUnretained(self)
+            .sink { owner, message in
+                Toast.showMDSToast(type: .error, text: message)
+            }
+            .store(in: cancelBag)
     }
 }
