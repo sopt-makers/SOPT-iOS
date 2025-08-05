@@ -43,6 +43,22 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
             $0.mediaTypesRequiringUserActionForPlayback = config.mediaTypesRequiringUserActionForPlayback
         }
         
+        if FeatureFlag.auth == .new {
+            // refreshToken
+            if !self.barrier,
+               let refreshToken = UserDefaultKeyList.CoreAuth.refreshToken,
+               let cookie = HTTPCookie(properties: [
+                HTTPCookiePropertyKey.domain: url.host() ?? "",
+                HTTPCookiePropertyKey.name: "refresh-token",
+                HTTPCookiePropertyKey.path: "/",
+                HTTPCookiePropertyKey.value: refreshToken,
+                HTTPCookiePropertyKey.secure: "TRUE",
+                HTTPCookiePropertyKey.expires: Date().addingTimeInterval(60 * 60 * 24 * 14)
+               ]) {
+                configuration.websiteDataStore.httpCookieStore.setCookie(cookie)
+            }
+        }
+        
         self.webView = WKWebView(frame: .zero, configuration: configuration).then {
             $0.allowsBackForwardNavigationGestures = config.allowsBackForwardNavigationGestures
         }
@@ -141,24 +157,9 @@ extension SOPTWebView: WKNavigationDelegate {
             if !self.barrier,
                   let accessToken = UserDefaultKeyList.CoreAuth.accessToken
             {
-                
                 self.webView.evaluateJavaScript(
                     "localStorage.setItem(\"serviceAccessToken\", \"\(accessToken)\")"
                 )
-            }
-                
-            // refreshToken
-            if !self.barrier,
-               let refreshToken = UserDefaultKeyList.CoreAuth.refreshToken,
-               let cookie = HTTPCookie(properties: [
-                HTTPCookiePropertyKey.domain: webView.url?.host() ?? "",
-                HTTPCookiePropertyKey.name: "refresh-token",
-                HTTPCookiePropertyKey.path: "/",
-                HTTPCookiePropertyKey.value: refreshToken,
-                HTTPCookiePropertyKey.secure: "TRUE",
-                HTTPCookiePropertyKey.expires: Date().addingTimeInterval(60 * 60 * 24 * 14)
-            ]) {
-                self.webView.configuration.websiteDataStore.httpCookieStore.setCookie(cookie)
             }
         }
        

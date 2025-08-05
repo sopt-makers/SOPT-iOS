@@ -28,6 +28,8 @@ public class CoreOAuthRepository {
     
     private let oAuthServiceFactory: OAuthServiceFactory
     
+    private var service: OAuthService?
+    
     public init(oAuthServiceFactory: OAuthServiceFactory) {
         self.oAuthServiceFactory = oAuthServiceFactory
     }
@@ -37,10 +39,11 @@ extension CoreOAuthRepository: CoreOAuthRepositoryInterface {
     
     public func getIdentityToken(from provider: OAuthProvider) -> AnyPublisher<String, Domain.CoreAuthError> {
         let oAuthService = oAuthServiceFactory.create(provider)
+        self.service = oAuthService
         return oAuthService.getIdentityToken()
             .mapError { _ in
                 CoreAuthError.oAuthFail(provider)
-            } // oauth error의 구체화 필요시 여기서 구현
+            }
             .eraseToAnyPublisher()
     }
 }

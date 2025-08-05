@@ -50,7 +50,7 @@ extension DefaultReissueService: ReissueService {
             case .success(let value):
                 do {
                     let decoder = JSONDecoder()
-                    let body = try decoder.decode(BaseEntity<CoreLoginEntity>.self, from: value.data)
+                    let body = try decoder.decode(BaseEntity<AuthTokensEntity>.self, from: value.data)
                     completion(body.data)
                 } catch {
                     completion(nil)

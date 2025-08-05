@@ -19,8 +19,8 @@ public typealias DefaultCoreAuthService = BaseService<CoreAuthAPI>
 public protocol CoreAuthService {
     func sendVerifyCode(_ dto: SendVerificationCodeRequestEntity) -> AnyPublisher<Void, MoyaError>
     func verifyCode(_ dto: VerifyCodeRequestEntity) -> AnyPublisher<VerifyResultEntity, MoyaError>
-    func login(_ dto: CoreLoginRequestEntity) -> AnyPublisher<BaseEntity<CoreLoginEntity>, Error>
-    func signUp(_ dto: CoreSignUpRequestEntity) -> AnyPublisher<Int, Error>
+    func login(_ dto: CoreLoginRequestEntity) -> AnyPublisher<AuthTokensEntity, MoyaError>
+    func signUp(_ dto: CoreSignUpRequestEntity) -> AnyPublisher<Void, MoyaError>
 }
 
 extension DefaultCoreAuthService: CoreAuthService {
@@ -39,12 +39,19 @@ extension DefaultCoreAuthService: CoreAuthService {
             .eraseToAnyPublisher()
     }
     
-    public func login(_ dto: CoreLoginRequestEntity) -> AnyPublisher<BaseEntity<CoreLoginEntity>, Error> {
-        requestObjectInCombine(.login(dto: dto))
+    public func login(_ dto: CoreLoginRequestEntity) -> AnyPublisher<AuthTokensEntity, MoyaError> {
+        provider.requestPublisher(.login(dto: dto))
+            .filterSuccessfulStatusCodes()
+            .map(BaseEntity<AuthTokensEntity>.self)
+            .map { $0.data }
+            .eraseToAnyPublisher()
     }
     
-    public func signUp(_ dto: CoreSignUpRequestEntity) -> AnyPublisher<Int, Error> {
-        requestObjectInCombineNoResult(.signUp(dto: dto))
+    public func signUp(_ dto: CoreSignUpRequestEntity) -> AnyPublisher<Void, MoyaError> {
+        provider.requestPublisher(.signUp(dto: dto))
+            .filterSuccessfulStatusCodes()
+            .mapVoid()
+            .eraseToAnyPublisher()
     }
     
 }

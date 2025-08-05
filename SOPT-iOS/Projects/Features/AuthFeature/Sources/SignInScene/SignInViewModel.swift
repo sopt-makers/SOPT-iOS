@@ -34,6 +34,7 @@ public class SignInViewModel: SignInViewModelType {
     
     public struct Output {
         let recentLogin = PassthroughSubject<OAuthProvider?, Never>()
+        let loginFailToastMessage = PassthroughSubject<String, Never>()
     }
     
     // MARK: - SignInCoordinating
@@ -97,6 +98,14 @@ extension SignInViewModel {
             .sink { owner, _ in
                 owner.onSignUpButtonTapped?()
             }.store(in: self.cancelBag)
+        
+        useCase.sideEffect
+            .map { $0.description }
+            .sink { description in
+                output.loginFailToastMessage.send(description)
+        }
+        .store(in: cancelBag)
+        
         
         return output
     }

@@ -10,7 +10,7 @@ import Foundation
 
 import Core
 
-public struct CoreLoginEntity: Decodable {
+public struct AuthTokensEntity: Decodable {
     public let accessToken: String
     public let refreshToken: String
     
@@ -20,4 +20,4 @@ public struct CoreLoginEntity: Decodable {
     }
 }
 
-extension CoreLoginEntity: AuthTokens { }
+extension AuthTokensEntity: AuthTokens { }

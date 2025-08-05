@@ -13,6 +13,7 @@ import Foundation
 final class ASAuthorizationControllerProxy: NSObject {
     
     private let presentationWindow: UIWindow = UIWindow()
+    
     public let didComplete = PassthroughSubject<ASAuthorization, OAuthError>()
     
     private override init() {}
