@@ -48,14 +48,17 @@ extension UserDefaultKeyList {
         clearSoptampUserData()
     }
     
+    
     public static func clearUserData() {
+        // 편의상 legacy, new 분기처리 하지 않고 한번에 삭제한다.
+        
+        // legacy
         UserDefaultKeyList.Auth.appAccessToken = nil
         UserDefaultKeyList.Auth.appRefreshToken = nil
         UserDefaultKeyList.Auth.playgroundToken = nil
         UserDefaultKeyList.Auth.isActiveUser = nil
-    }
-    
-    public static func clearCoreUserData() {
+        
+        // new
         UserDefaultKeyList.CoreAuth.accessToken = nil
         UserDefaultKeyList.CoreAuth.refreshToken = nil
     }
