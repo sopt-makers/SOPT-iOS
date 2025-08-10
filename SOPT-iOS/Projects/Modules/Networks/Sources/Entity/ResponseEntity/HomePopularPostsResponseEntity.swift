@@ -8,6 +8,10 @@
 
 import Foundation
 
+public struct HomePopularPostsResponseEntityWrapper: Decodable {
+    public let popularPosts: [HomePopularPostsResponseEntity]
+}
+
 public struct HomePopularPostsResponseEntity: Decodable {
     public let profileImage: String?
     public let name: String

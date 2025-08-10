@@ -22,7 +22,7 @@ extension Config {
         #if DEV || PROD
         return .legacy
         #else
-        return .new
+        return .legacy
         #endif
     }()
 }

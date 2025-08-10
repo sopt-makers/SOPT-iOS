@@ -1,0 +1,203 @@
+//
+//  SignUpPhoneVerifiyViewModel.swift
+//  AuthFeature
+//
+//  Created by 장석우 on 12/20/24.
+//  Copyright © 2024 SOPT-iOS. All rights reserved.
+//
+
+import Combine
+import Foundation
+
+import AuthFeatureInterface
+import Domain
+import Core
+
+public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
+
+    private let useCase: PhoneVerifyUseCase
+    
+    private let phoneVerifyType: PhoneVerifyType
+    
+    @Published private var timerCancellable: Cancellable?
+    
+    // MARK: - Inputs
+    
+    public struct Input {
+        let sendButtonTapped: Driver<Void>
+        let doneButtonTapped: Driver<Void>
+        let phoneTextFieldText: Driver<String>
+        let codeTextFieldText: Driver<String>
+    }
+    
+    // MARK: - Outputs
+    
+    public struct Output {
+        let isSent = PassthroughSubject<Bool, Never>()
+        let shouldWaitForCoolTime = PassthroughSubject<Int, Never>()
+        let verifySuccess = PassthroughSubject<Void, Never>()
+        let phoneFailDescription = PassthroughSubject<String?, Never>()
+        let codeFailDescription = PassthroughSubject<String?, Never>()
+        let timeLeft = CurrentValueSubject<Int, Never>(0)
+        let phoneTextFieldText = CurrentValueSubject<String, Never>("")
+        let codeTextFieldText = CurrentValueSubject<String, Never>("")
+        let timerIsRunning = PassthroughSubject<Bool, Never>()
+        let sendButtonIsEnabled = CurrentValueSubject<Bool, Never>(false)
+        let doneButtonIsEnabled =  CurrentValueSubject<Bool, Never>(false)
+    }
+    
+    // MARK: - init
+    
+    init(
+        useCase: PhoneVerifyUseCase,
+        phoneVerifyType: PhoneVerifyType
+    ) {
+        self.useCase = useCase
+        self.phoneVerifyType = phoneVerifyType
+    }
+    
+    public func transform(from input: Input, cancelBag: CancelBag) -> Output {
+        let output = Output()
+        
+        $timerCancellable
+            .map { $0 != nil }
+            .subscribe(output.timerIsRunning)
+            .store(in: cancelBag)
+        
+        useCase.sideEffect
+            .sink { err in
+                switch err {
+                case .invalidRequest:
+                    output.phoneFailDescription.send("요청 형식이 잘못됐어요.")
+                case .invalidVerifyCode:
+                    output.codeFailDescription.send("인증번호가 올바르지 않습니다.")
+                    return
+                case .timeout:
+                    output.codeFailDescription.send("3분이 초과되었어요. 인증번호를 다시 요청해주세요.")
+                    return
+                case .userNotFound:
+                    output.phoneFailDescription.send("SOPT 활동 시 사용한 전화번호가 아니에요.")
+                case .alreadyExist:
+                    output.phoneFailDescription.send("이미 가입된 전화번호예요.")
+                case .unknown(_):
+                    output.codeFailDescription.send("알 수 없는 오류예요.")
+                }
+            }
+            .store(in: cancelBag)
+        
+        
+        // 10초가 지나기 전에 재요청한 경우
+        input.sendButtonTapped
+            .withUnretained(self)
+            .filter { owner, _ in owner.shouldWaitForCoolTime(output.timeLeft.value) }
+            .sink { owner, _ in
+                output.shouldWaitForCoolTime.send((owner.useCase.policy.coolTime))
+            }
+            .store(in: cancelBag)
+        
+        // 전송하기
+        input.sendButtonTapped
+            .withUnretained(self)
+            .filter { owner, _ in !owner.shouldWaitForCoolTime(output.timeLeft.value) }
+            .handleEvents(
+                receiveOutput: { _ in
+                    output.codeTextFieldText.send("")
+                    output.phoneFailDescription.send(nil)
+                    output.codeFailDescription.send(nil)
+                }
+            )
+            .withUnretained(self)
+            .map { owner, _ in 
+                PhoneSendModel(
+                    name: nil,
+                    phone: output.phoneTextFieldText.value,
+                    type: owner.phoneVerifyType
+            )}
+            .flatMap(useCase.send)
+            .withUnretained(self)
+            .sink { owner , _ in
+                output.isSent.send(true)
+                output.timeLeft.send(owner.useCase.policy.timeLimit)
+                owner.timerCancellable = Timer
+                    .publish(every: 1, on: .main, in: .default)
+                    .autoconnect()
+                    .scan(owner.useCase.policy.timeLimit) { counter, _ in counter - 1 }
+                    .withUnretained(self)
+                    .sink { owner, counter in
+                        guard counter >= 0 else {
+                            owner.useCase.sideEffect.send(.timeout)
+                            owner.timerCancellable = nil
+                            return
+                        }
+                        output.timeLeft.send(counter)
+                    }
+            }
+            .store(in: cancelBag)
+        
+        input.phoneTextFieldText
+            .handleEvents(receiveOutput: { _ in
+                output.phoneFailDescription.send(nil)
+            })
+            .withUnretained(self)
+            .map { $1.count >= $0.useCase.policy.phoneMaxLength && $1.allSatisfy { $0.isNumber } }
+            .sink { output.sendButtonIsEnabled.send($0) }
+            .store(in: cancelBag)
+        
+        input.phoneTextFieldText
+            .withUnretained(self)
+            .filter { $1.count >= $0.useCase.policy.phoneMaxLength }
+            .map {
+                let newValue = $1.prefix($0.useCase.policy.phoneMaxLength)
+                return String(newValue)
+            }
+            .sink { output.phoneTextFieldText.send($0) }
+            .store(in: cancelBag)
+        
+        input.codeTextFieldText
+            .withUnretained(self)
+            .filter { $1.count >= $0.useCase.policy.codeMaxLength }
+            .map {
+                let newValue = $1.prefix($0.useCase.policy.codeMaxLength)
+                return String(newValue)
+            }
+            .sink { output.codeTextFieldText.send($0) }
+            .store(in: cancelBag)
+        
+        Publishers.CombineLatest(
+            output.codeTextFieldText,
+            output.timerIsRunning
+        )
+        .map { !$0.isEmpty && $1 }
+        .sink { output.doneButtonIsEnabled.send($0) }
+        .store(in: cancelBag)
+        
+        input.doneButtonTapped
+            .withLatestFrom(output.timerIsRunning)
+            .filter { $0 }
+            .mapVoid()
+            .withUnretained(self)
+            .map { owner, _ in
+                PhoneVerifyModel(
+                    name: nil,
+                    phone: output.phoneTextFieldText.value,
+                    code: output.codeTextFieldText.value,
+                    type: owner.phoneVerifyType
+                )
+            }
+            .flatMap(useCase.verify)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.timerCancellable = nil
+                output.verifySuccess.send()
+            }
+            .store(in: cancelBag)
+        
+        return output
+    }
+
+    private func shouldWaitForCoolTime(_ currentTimeLeft: Int) -> Bool {
+        let requestInterval = useCase.policy.timeLimit - currentTimeLeft
+        let coolTime = useCase.policy.coolTime
+        return requestInterval < coolTime
+    }
+}

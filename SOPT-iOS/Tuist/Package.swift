@@ -9,6 +9,9 @@ let xcconfigPath: ProjectDescription.Path = .relativeToRoot("xcconfigs/targets/i
 let packageSettings = PackageSettings(
     productTypes: [
         "Alamofire": .framework,
+        "GoogleSignIn": .framework,
+        "GTMAppAuth": .framework,
+        "AppAuth": .framework,
         "GULEnvironment": .framework,
         "GULLogger": .framework,
         "GULNSData": .framework,
@@ -38,12 +41,9 @@ let package = Package(
         .package(url: "https://github.com/Moya/Moya.git", from: "15.0.0"),
         .package(url: "https://github.com/devxoul/Then", from: "2.0.0"),
         .package(url: "https://github.com/onevcat/Kingfisher.git", from: "8.0.0"),
-        .package(url: "https://github.com/FLEXTool/FLEX.git", from: "4.3.0"),
-        .package(url: "https://github.com/krzysztofzablocki/Inject.git", from: "1.2.4"),
-        .package(url: "https://github.com/Quick/Quick.git", from: "7.0.0"),
-        .package(url: "https://github.com/Quick/Nimble.git", from: "12.0.0"),
         .package(url: "https://github.com/airbnb/lottie-ios", from: "4.5.0"),
         .package(url: "https://github.com/amplitude/Amplitude-Swift", from: "1.11.10"),
-        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "11.14.0")
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "11.12.0"),
+        .package(url: "https://github.com/google/GoogleSignIn-iOS.git", from: "7.0.0")
     ]
 )

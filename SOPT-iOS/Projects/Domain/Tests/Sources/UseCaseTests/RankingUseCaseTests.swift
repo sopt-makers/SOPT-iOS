@@ -33,7 +33,7 @@ class DefaultRankingUseCaseTests: QuickSpec {
                     UserDefaultKeyList.User.soptampName = myUsername
                     
                     // When
-                    useCase.fetchRankingList()
+                    useCase.fetchRankingList(isCurrentGeneration: false)
                     
                     // Then
                     expect(useCase.rankingListModelFetched.value).toEventually(equal(rankingModel))

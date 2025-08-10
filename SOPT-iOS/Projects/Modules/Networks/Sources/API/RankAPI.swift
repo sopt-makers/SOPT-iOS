@@ -23,14 +23,6 @@ extension RankAPI: BaseAPI {
 
   public static var apiType: APIType = .rank
 
-  // MARK: - Header
-  public var headers: [String: String]? {
-    switch self {
-    default:
-      return HeaderType.jsonWithToken.value
-    }
-  }
-
   // MARK: - Path
   public var path: String {
     switch self {

@@ -46,6 +46,31 @@ public struct I18N {
         public static let guide = "가이드"
     }
     
+    public struct Auth {
+        public struct OAuth {
+            public static let googleLogin = "Google로 로그인"
+            public static let appleLogin = "Apple로 로그인"
+        }
+        
+        public struct PhoneVerify {
+            public static let title = "SOPT 회원인증"
+            public static let description = "이곳은 SOPT 회원만을 위한 공간이에요.\nSOPT 회원인증을 위해 전화번호를 입력해 주세요."
+            
+            public static let phoneLabel = "전화번호"
+            public static let phonePlaceholder = "01012345678"
+            public static let sendButtonTitle = "전송하기"
+            public static let resendButtonTitle = "재전송하기"
+            public static let sendSuccessToast = "인증번호가 전송되었어요."
+            
+            public static let codePlaceholder = "인증번호를 입력해주세요."
+            public static let defaultTimerText = "03:00"
+            
+            public static let helpTitle = "SOPT 회원인증에 실패하셨나요?"
+            public static let helpDescription = "번호가 바뀌었거나, 인증이 어려우신 경우 추가 정보 인증을 통해 가입을 도와드리고 있어요!"
+            public static let doneButtonTitle = "SOPT 회원 인증 완료"
+        }
+    }
+    
     public struct SignIn {
             public static let signIn = "SOPT Playground로 로그인"
             public static let notMember = "SOPT 회원이 아니에요"
@@ -60,8 +85,6 @@ public struct I18N {
             public static let findPassword = "비밀번호 찾기"
         
         public struct Refactor {
-            public static let googleLogin = "Google로 로그인"
-            public static let appleLogin = "Apple로 로그인"
             public static let playgroundLogin = "SOPT Playground로 로그인"
             public static let helpLogin = "로그인이 안 되나요?"
             public static let loginLater = "나중에 로그인할래요."

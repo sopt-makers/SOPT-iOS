@@ -13,6 +13,18 @@ import XCTest
 @testable import Domain
 
 final class MockRankingRepository: RankingRepositoryInterface {
+    func fetchRankingListModel(isCurrentGeneration: Bool) -> AnyPublisher<[Domain.RankingModel], any Error> {
+        Empty().eraseToAnyPublisher()
+    }
+    
+    func fetchPartRanking() -> AnyPublisher<[Domain.PartRankingModel], any Error> {
+        Empty().eraseToAnyPublisher()
+    }
+    
+    func fetchRankingListInPart(part: String) -> AnyPublisher<[Domain.RankingModel], any Error> {
+        Empty().eraseToAnyPublisher()
+    }
+    
     var fetchRankingListModelResponse: Result<[RankingModel], Error>!
 
     private(set) var cancelBag = CancelBag()

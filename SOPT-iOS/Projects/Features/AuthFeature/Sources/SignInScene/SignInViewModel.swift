@@ -1,0 +1,112 @@
+//
+//  SignInViewModel.swift
+//  Presentation
+//
+//  Created by devxsby on 2022/12/01.
+//  Copyright © 2022 SOPT-Stamp-iOS. All rights reserved.
+//
+
+import Combine
+
+import Core
+import Domain
+
+import AuthFeatureInterface
+
+public class SignInViewModel: SignInViewModelType {
+    
+    private let useCase: SignInUseCase
+    private var cancelBag = CancelBag()
+  
+    // MARK: - Inputs
+    
+    public struct Input {
+        let viewDidLoad: Driver<Void>
+        let viewWillAppear: Driver<Void>
+        let googleLoginButtonTapped: Driver<Void>
+        let appleLoginButtonTapped: Driver<Void>
+        let loginHelpButtonTapped: Driver<Void>
+        let visitorButtonTapped: Driver<Void>
+        let signUpButtonTapped: Driver<Void>
+    }
+    
+    // MARK: - Outputs
+    
+    public struct Output {
+        let recentLogin = PassthroughSubject<OAuthProvider?, Never>()
+        let loginFailToastMessage = PassthroughSubject<String, Never>()
+    }
+    
+    // MARK: - SignInCoordinating
+    
+    public var onSignInSuccess: (() -> Void)?
+    public var onLoginHelpButtonTapped: (() -> Void)?
+    public var onVisitorButtonTapped: (() -> Void)?
+    public var onSocialLoginFail: (() -> Void)?
+    public var onSignUpButtonTapped: (() -> Void)?
+    
+    // MARK: - init
+  
+    public init(useCase: SignInUseCase) {
+        self.useCase = useCase
+    }
+}
+
+extension SignInViewModel {
+    public func transform(from input: Input, cancelBag: CancelBag) -> Output {
+        let output = Output()
+        
+        input.viewDidLoad
+            .sink { _ in
+                UserDefaultKeyList.clearUserData()
+            }.store(in: self.cancelBag)
+        
+        input.viewWillAppear
+            .withUnretained(self)
+            .sink { owner, _ in
+                output.recentLogin.send(owner.useCase.getRecentLogin())
+            }.store(in: self.cancelBag)
+        
+        Publishers.Merge(
+            input.googleLoginButtonTapped.map { _ in OAuthProvider.google },
+            input.appleLoginButtonTapped.map { _ in  OAuthProvider.apple }
+        )
+        .withUnretained(self)
+        .flatMap { owner, provider in
+            owner.useCase.login(with: provider)
+        }
+        .withUnretained(self)
+        .sink { owner, _ in
+            owner.onSignInSuccess?()
+        }.store(in: self.cancelBag)
+          
+        
+        input.visitorButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onVisitorButtonTapped?()
+            }.store(in: self.cancelBag)
+        
+        input.loginHelpButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onLoginHelpButtonTapped?()
+            }.store(in: self.cancelBag)
+        
+        input.signUpButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onSignUpButtonTapped?()
+            }.store(in: self.cancelBag)
+        
+        useCase.sideEffect
+            .map { $0.description }
+            .sink { description in
+                output.loginFailToastMessage.send(description)
+        }
+        .store(in: cancelBag)
+        
+        
+        return output
+    }
+}

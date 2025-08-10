@@ -23,6 +23,9 @@ open class BaseService<Target: TargetType> {
     var cancelBag = CancelBag()
     private var cancellable: Moya.Cancellable?
     
+    private let interceptor: RequestInterceptor?
+    private let plugins: [PluginType]
+    
     lazy var provider = self.defaultProvider
     
     private lazy var defaultProvider: MoyaProvider<API> = {
@@ -30,13 +33,12 @@ open class BaseService<Target: TargetType> {
         configuration.timeoutIntervalForRequest = 10
         configuration.timeoutIntervalForResource = 10
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
-        let interceptor = AlamoInterceptor()
         let sessionDelegate = BaseSessionDelegate()
         let session = Session(configuration: configuration, delegate: sessionDelegate, interceptor: interceptor)
         let provider = MoyaProvider<API>(
             endpointClosure: endpointClosure,
             session: session,
-            plugins: [NetworkLoggerPlugin(verbose: true)]
+            plugins: plugins
         )
         return provider
     }()
@@ -75,7 +77,13 @@ open class BaseService<Target: TargetType> {
     
     // MARK: - Initializers
     
-    public init() {}
+    public init(
+        plugins: [PluginType],
+        interceptor: RequestInterceptor? = nil
+    ) {
+        self.plugins = plugins
+        self.interceptor = interceptor
+    }
 }
 
 // MARK: - Providers
@@ -189,7 +197,7 @@ extension BaseService {
                     } else {
                         do {
                             let decoder = JSONDecoder()
-                            let errorData = try decoder.decode(BaseEntity<Data>.self, from: error.response?.data ?? Data())
+                            let errorData = try decoder.decode(OPErrorResponse.self, from: error.response?.data ?? Data())
                             throw OPAPIError.attendanceError(errorData)
                         } catch let error {
                             promise(.failure(error))
@@ -199,7 +207,6 @@ extension BaseService {
             }
         }.eraseToAnyPublisher()
     }
-
     
     func requestObjectInCombineNoResult(_ target: API) -> AnyPublisher<Int, Error> {
         return Future { promise in

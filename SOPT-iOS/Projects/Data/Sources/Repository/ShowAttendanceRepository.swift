@@ -26,20 +26,20 @@ public class ShowAttendanceRepository {
 extension ShowAttendanceRepository: ShowAttendanceRepositoryInterface {
     public func fetchAttendanceScheduleModel() -> AnyPublisher<AttendanceScheduleModel, Error> {
         return self.attendanceService.fetchAttendanceSchedule()
-            .compactMap { $0.data?.toDomain() }
+            .compactMap { $0.data.toDomain() }
             .eraseToAnyPublisher()
     }
     
     public func fetchAttendanceScoreModel() -> AnyPublisher<Domain.AttendanceScoreModel, Error> {
         return self.attendanceService.fetchAttendanceScore()
-            .compactMap{ $0.data?.toDomain() }
+            .compactMap{ $0.data.toDomain() }
             .eraseToAnyPublisher()
     }
     
     public func fetchLectureRound(lectureId: Int) -> AnyPublisher<AttendanceRoundModel?, Error> {
         return self.attendanceService
             .fetchAttendanceRound(lectureId: lectureId)
-            .map { $0.data?.toDomain() }
+            .map { $0.data.toDomain() }
             .eraseToAnyPublisher()
     }
 }

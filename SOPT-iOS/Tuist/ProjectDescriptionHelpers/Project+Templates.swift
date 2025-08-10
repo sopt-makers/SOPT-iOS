@@ -50,10 +50,7 @@ public extension Project {
                 ],
                 dependencies: [
                     internalDependencies,
-                    externalDependencies,
-                    [
-                        .SPM.Inject
-                    ]
+                    externalDependencies
                 ].flatMap{ $0
                 },
                 settings: .settings(base: settings, configurations: XCConfig.project)
@@ -121,11 +118,7 @@ public extension Project {
                 sources: ["Demo/Sources/**/*.swift"],
                 resources: [.glob(pattern: "Demo/Resources/**", excluding: ["Demo/Resources/dummy.txt"])],
                 dependencies: [
-                    deps,
-                    [
-                        .SPM.FLEX,
-                        .SPM.Inject
-                    ]
+                    deps
                 ].flatMap{ $0 },
                 settings: .settings(base: baseSettings.setCrashlyticsSettings(), configurations: XCConfig.demo)
             )
@@ -148,12 +141,7 @@ public extension Project {
                 sources: ["Tests/Sources/**/*.swift"],
                 resources: [.glob(pattern: "Tests/Resources/**", excluding: [])],
                 dependencies: [
-                    deps,
-                    [
-                        .SPM.Nimble,
-                        .SPM.Quick,
-                        .Modules.testCore
-                    ]
+                    deps
                 ].flatMap{ $0 },
                 settings: .settings(base: SettingsDictionary().setCodeSignManual(), configurations: XCConfig.tests)
             )
@@ -176,10 +164,7 @@ public extension Project {
                 infoPlist: .default,
                 sources: ["UITests/Sources/**/*.swift"],
                 dependencies: [
-                    deps,
-                    [
-                        .Modules.testCore
-                    ]
+                    deps
                 ].flatMap{ $0 },
                 settings: .settings(base: SettingsDictionary().setCodeSignManual(), configurations: XCConfig.tests)
             )

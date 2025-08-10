@@ -47,10 +47,12 @@ extension DefaultHomeService: HomeService {
     }
     
     public func getPopularPostsAsync() async throws -> [HomePopularPostsResponseEntity] {
-        try await requestObjectAsync(.getPopularPosts)
+        let response: HomePopularPostsResponseEntityWrapper = try await requestObjectAsync(.getPopularPosts)
+        return response.popularPosts
     }
     
     public func getLatestPostsAsync() async throws -> [HomeLatestPostsResponseEntity] {
-        try await requestObjectAsync(.getLatestPosts)
+        let response: HomeLatestPostsResponseEntityWrapper = try await requestObjectAsync(.getLatestPosts)
+        return response.recentPosts
     }
 }

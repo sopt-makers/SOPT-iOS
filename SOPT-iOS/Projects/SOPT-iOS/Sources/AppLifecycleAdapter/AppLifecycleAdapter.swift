@@ -6,14 +6,13 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
-import Core
-import Networks
-
 import UIKit
+
+import Core
+import Domain
 
 final public class AppLifecycleAdapter {
     private let cancelBag = CancelBag()
-    private let authService = DefaultAuthService()
 }
 
 // MARK: - Private functions
@@ -31,7 +30,7 @@ extension AppLifecycleAdapter {
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
             .sink(receiveValue: { owner, _ in
-                owner.reissureTokens()
+                owner.reissueTokens()
             }).store(in: self.cancelBag)
     }
     
@@ -40,9 +39,9 @@ extension AppLifecycleAdapter {
 
 // MARK: - Private functions
 extension AppLifecycleAdapter {
-    private func reissureTokens() {
-        guard UserDefaultKeyList.Auth.appAccessToken != nil else { return }
-        
-        self.authService.reissuance { _  in }
+    private func reissueTokens() {
+        @Injected var tokenRepository: AuthTokensRepositoryInterface
+        guard tokenRepository.fetch() != nil else { return }
+        tokenRepository.refresh { _ in }
     }
 }

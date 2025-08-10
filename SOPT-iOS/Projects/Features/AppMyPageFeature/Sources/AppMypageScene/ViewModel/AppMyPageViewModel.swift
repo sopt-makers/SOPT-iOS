@@ -125,13 +125,12 @@ extension AppMyPageViewModel {
         }
     }
 }
-
+import WebKit
 extension AppMyPageViewModel {
     private func logout() {
-        UserDefaultKeyList.Auth.appAccessToken = nil
-        UserDefaultKeyList.Auth.appRefreshToken = nil
-        UserDefaultKeyList.Auth.playgroundToken = nil
+        UserDefaultKeyList.clearUserData()
         SFSafariViewController.DataStore.default.clearWebsiteData()
+        WKWebsiteDataStore.default().httpCookieStore.getAllCookies({_ in  })
     }
     
     private func showResetSoptampAlert() {

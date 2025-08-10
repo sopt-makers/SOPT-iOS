@@ -25,19 +25,31 @@ public enum APIType {
   case poke
   case s3
   case fortune
+  case coreAuth
+  case social
   case home
   case calendar
 }
 
-public protocol BaseAPI: TargetType {
+public protocol BaseAPI: TargetType, AccessTokenAuthorizable {
   static var apiType: APIType { get set }
+}
+
+extension BaseAPI {
+    public var authorizationType: AuthorizationType? {
+        
+        UserDefaultKeyList.Auth.getUserType() == .visitor
+        ? nil
+        : .bearer
+    }
 }
 
 extension BaseAPI {
   public var baseURL: URL {
     var base = Config.Network.baseURL
     let operationBaseURL = Config.Network.operationBaseURL
-    
+    let coreAuthBaseURL = Config.Network.coreAuthBaseURL
+      
     switch Self.apiType {
     case .attendance:
       base = operationBaseURL
@@ -65,6 +77,10 @@ extension BaseAPI {
       base += "/s3"
     case .fortune:
       base += "/fortune"
+    case .coreAuth:
+      base = coreAuthBaseURL + "/auth"
+    case .social:
+      base = coreAuthBaseURL + "/social"
     case .home:
       base += "/home"
     case .calendar:
@@ -79,7 +95,7 @@ extension BaseAPI {
   }
   
   public var headers: [String: String]? {
-    return HeaderType.jsonWithToken.value
+      return HeaderType.json.value
   }
   
   public var validationType: ValidationType {
@@ -87,21 +103,14 @@ extension BaseAPI {
   }
 }
 
+
 public enum HeaderType {
   case json
-  case jsonWithToken
-  case multipartWithToken
   
   public var value: [String: String] {
     switch self {
     case .json:
       return ["Content-Type": "application/json"]
-    case .jsonWithToken:
-      return ["Content-Type": "application/json",
-              "Authorization": UserDefaultKeyList.Auth.appAccessToken ?? ""]
-    case .multipartWithToken:
-      return ["Content-Type": "multipart/form-data",
-              "Authorization": UserDefaultKeyList.Auth.appAccessToken ?? ""]
     }
   }
 }

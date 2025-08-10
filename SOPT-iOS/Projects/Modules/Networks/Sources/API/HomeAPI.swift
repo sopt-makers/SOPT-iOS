@@ -54,12 +54,13 @@ extension HomeAPI: BaseAPI {
         }
     }
     
-    public var headers: [String : String]? {
+    public var authorizationType: AuthorizationType? {
         switch self {
         case .getAppServiceAccessStatus:
             let userType = UserDefaultKeyList.Auth.getUserType()
-            return userType == .visitor ? HeaderType.json.value : HeaderType.jsonWithToken.value
-        default: return HeaderType.jsonWithToken.value
+            return userType == .visitor ? nil : .bearer
+        default:
+            return .bearer
         }
     }
 }

@@ -1,0 +1,48 @@
+//
+//  AlamoInterceptor.swift
+//  Network
+//
+//  Created by Junho Lee on 2023/04/17.
+//  Copyright © 2023 SOPT-iOS. All rights reserved.
+//
+
+import Foundation
+
+import Core
+
+import Alamofire
+
+public final class ReissueInterceptor: RequestInterceptor {
+    
+    public typealias RefreshClosure = (@Sendable (@escaping (Result<Void, ReissueError>) -> Void) -> Void)
+
+    private let refreshClosure: RefreshClosure
+    
+    public init(
+        refreshClosure: @escaping RefreshClosure
+    ) {
+        self.refreshClosure = refreshClosure
+    }
+    
+    public func retry(
+        _ request: Request,
+        for session: Session,
+        dueTo error: any Error,
+        completion: @escaping (RetryResult) -> Void
+    ) {
+        guard error.asAFError?.responseCode == 401
+        else {
+            completion(.doNotRetryWithError(error))
+            return
+        }
+        
+        refreshClosure() { result in
+            switch result {
+            case .success:
+                completion(.retry)
+            case .failure:
+                completion(.doNotRetryWithError(APIError.tokenReissuanceFailed))
+            }
+        }
+    }
+}

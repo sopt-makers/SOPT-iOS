@@ -19,6 +19,7 @@ public class SignInRepository {
     
     private let authService: AuthService
     private let userService: UserService
+    
     private let cancelBag = CancelBag()
     
     public init(authService: AuthService, userService: UserService) {
@@ -28,38 +29,14 @@ public class SignInRepository {
 }
 
 extension SignInRepository: SignInRepositoryInterface {
-    public func requestSignIn(token: String) -> AnyPublisher<Bool, Error> {
+    
+    public func requestSignIn(token: String) -> AnyPublisher<SignInModel, Error> {
         return authService.signIn(token: token)
-            .catch ({ error in
-                guard
-                    let error = error as? APIError,
-                    case .network(let statusCode, _) = error,
-                    statusCode == 400
-                else {
-                    return self.authService.reissuance()
-                }
-                return Fail(error: error).eraseToAnyPublisher()
-            })
-            .map { entity in
-                UserDefaultKeyList.Auth.appAccessToken = entity.accessToken
-                UserDefaultKeyList.Auth.appRefreshToken = entity.refreshToken
-                UserDefaultKeyList.Auth.playgroundToken = entity.playgroundToken
-                UserDefaultKeyList.Auth.isActiveUser = entity.status == .active
-                ? true
-                : false
-                return true
-            }
-            .withUnretained(self)
-            .flatMap { owner, isSuccessed in
-                guard isSuccessed else {
-                    return Driver(Just(false))
-                }
-                return owner.fetchSoptampUser()
-            }
+            .map { $0.toDomain() }
             .eraseToAnyPublisher()
     }
     
-    private func fetchSoptampUser() -> AnyPublisher<Bool, Never> {
+    public func fetchSoptampUser() -> AnyPublisher<Bool, Never> {
         return userService.fetchSoptampUser()
             .replaceError(
                 with: .init(
