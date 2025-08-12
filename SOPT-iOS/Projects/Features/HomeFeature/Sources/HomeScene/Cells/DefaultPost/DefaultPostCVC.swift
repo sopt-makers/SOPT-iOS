@@ -42,6 +42,7 @@ final class DefaultPostCVC: UICollectionViewCell {
     private let userNameLabel = UILabel().then {
         $0.textColor = DSKitAsset.Colors.gray30.color
         $0.font = DSKitFontFamily.Suit.regular.font(size: 10)
+        $0.textAlignment = .center
     }
     
     private let userPartLabel = UILabel().then {
@@ -95,6 +96,16 @@ final class DefaultPostCVC: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        userNameLabel.numberOfLines = 1
+        userNameLabel.lineBreakMode = .byTruncatingTail
+        userNameLabel.text = nil
+        userPartLabel.isHidden = false
+        userPartLabel.text = nil
+        profileImageView.setPlaceholder()
     }
 }
 
@@ -196,13 +207,30 @@ extension DefaultPostCVC {
         self.categorySubPhraseView.setData(with: model.title)
         self.categoryTagView.setData(with: model.category)
         self.userNameLabel.text = model.name
-        self.userPartLabel.text = model.generationAndPart
+            
+        if let part = model.generationAndPart {
+            if part.isEmpty {
+                // 익명일 경우
+                self.userPartLabel.isHidden = true
+                self.userNameLabel.numberOfLines = 2
+                self.userNameLabel.lineBreakMode = .byWordWrapping
+            } else {
+                // 익명이 아닐 경우
+                self.userPartLabel.isHidden = false
+                self.userPartLabel.text = part
+                self.userNameLabel.numberOfLines = 1
+                self.userNameLabel.lineBreakMode = .byTruncatingTail
+            }
+        }
+
         if let profileImage = model.profileImage {
             self.profileImageView.setImage(with: profileImage, placeholder: DSKitAsset.Assets.iconDefaultProfile.image)
         }
         self.postTitleLabel.text = model.title
         self.postContentLabel.text = model.content
         self.postContentLabel.setLineSpacing(lineSpacing: 1)
+        
+//        setNeedsLayout()
     }
 }
 
