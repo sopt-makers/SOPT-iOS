@@ -51,8 +51,12 @@ public extension UIImageView {
                 .cacheMemoryOnly
             ],
             completionHandler: { result in
-                result.success { imageResult in
+                switch result {
+                case .success(let imageResult):
                     completion?(imageResult.image)
+                case .failure:
+                    self.image = placeholder
+                    completion?(nil)
                 }
             }
         )
