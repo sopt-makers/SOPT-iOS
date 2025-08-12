@@ -52,6 +52,7 @@ final class DefaultPostCVC: UICollectionViewCell {
     private let categoryStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 6
+        $0.alignment = .center
     }
     
     private let userStackView = UIStackView().then {
@@ -131,6 +132,13 @@ extension DefaultPostCVC {
             verticalDividerView,
             categoryTagView
         )
+        
+        verticalDividerView.snp.makeConstraints { make in
+            make.height.equalTo(7)
+        }
+        
+        verticalDividerView.setContentHuggingPriority(.defaultLow, for: .vertical)
+        verticalDividerView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         
         userStackView.addArrangedSubviews(
             profileImageView,
