@@ -299,21 +299,20 @@ extension DefaultPostCVC {
         self.categoryTagView.setData(with: model.category)
         self.userNameLabel.text = model.name ?? ""
             
-        if let part = model.generationAndPart {
-            if part.isEmpty {
-                // 익명일 경우
-                self.userPartLabel.isHidden = true
-                self.userNameLabel.numberOfLines = 2
-                self.userNameLabel.lineBreakMode = .byWordWrapping
-            } else {
-                // 익명이 아닐 경우
-                self.userPartLabel.isHidden = false
-                self.userPartLabel.text = part
-                self.userNameLabel.numberOfLines = 1
-                self.userNameLabel.lineBreakMode = .byTruncatingTail
-            }
+        let part = model.generationAndPart
+        if let part, !part.isEmpty {
+            // 익명이 아닐 경우
+            self.userPartLabel.isHidden = false
+            self.userPartLabel.text = part
+            self.userNameLabel.numberOfLines = 1
+            self.userNameLabel.lineBreakMode = .byTruncatingTail
+        } else {
+            // 익명일 경우
+            self.userPartLabel.isHidden = true
+            self.userNameLabel.numberOfLines = 2
+            self.userNameLabel.lineBreakMode = .byWordWrapping
         }
-    
+        
         switch cellType {
         case .latest:
             self.categorySubPhraseView.setData(with: "NEW")
