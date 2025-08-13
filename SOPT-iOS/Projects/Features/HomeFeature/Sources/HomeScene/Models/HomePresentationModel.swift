@@ -155,7 +155,7 @@ extension HomeAppServicesModel {
 extension HomePopularPostModel {
     // NOTE: 서버에서 post의 id값이 옵셔널로 내려오는 경우가 있어, 필드값을 조합해 ID로 반환합니다.
     var stableID: String {
-        if let id = self.id { return "latest:id:\(id)" } // id값이 있다면, 그대로 사용
+        if let id = self.id { return "popular:id:\(id)" } // id값이 있다면, 그대로 사용
         // 없다면, 카테고리와 타이틀 값을 조합해서 활용합니다.
         return "popular:category:\(self.category)title:\(self.title)"
     }
