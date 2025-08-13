@@ -52,13 +52,13 @@ final class DefaultPostCVC: UICollectionViewCell {
     
     private let userNameLabel = UILabel().then {
         $0.textColor = DSKitAsset.Colors.gray30.color
-        $0.font = DSKitFontFamily.Suit.regular.font(size: 10)
+        $0.font = DSKitFontFamily.Suit.medium.font(size: 10)
         $0.textAlignment = .center
     }
     
     private let userPartLabel = UILabel().then {
         $0.textColor = DSKitAsset.Colors.gray400.color
-        $0.font = DSKitFontFamily.Suit.regular.font(size: 10)
+        $0.font = DSKitFontFamily.Suit.medium.font(size: 10)
     }
     
     private let categoryStackView = UIStackView().then {
@@ -74,7 +74,7 @@ final class DefaultPostCVC: UICollectionViewCell {
     
     private let postTitleLabel = UILabel().then {
         $0.textColor = DSKitAsset.Colors.white.color
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 16)
+        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
         $0.lineBreakMode = .byTruncatingTail
         $0.numberOfLines = 1
     }

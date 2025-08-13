@@ -29,8 +29,8 @@ final class HomeCategoryTagLabel: UILabel {
 
 extension HomeCategoryTagLabel {
     func setUI() {
-        self.font = DSKitFontFamily.SuitV1.extraBold.font(size: 12)
-        self.textColor = DSKitAsset.Colors.secondary.color
+        self.font = DSKitFontFamily.Suit.semiBold.font(size: 11)
+        self.textColor = DSKitAsset.Colors.orange300.color
         self.textAlignment = .center
     }
 }
