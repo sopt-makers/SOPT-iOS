@@ -284,20 +284,22 @@ extension DefaultPostCVC {
 extension DefaultPostCVC {
     func configureCell(model: some PostDisplayable, index: IndexPath, cellType: PostCellType) {
         // NOTE: 사용자의 이름 값이 존재하지 않을 경우, 엠티뷰 레이아웃이 그려집니다.
-        if let name = model.name {
+        if let name = model.name, !name.isEmpty {
             self.userNameLabel.text = name
             updateVisibility(for: cellType)
         } else {
             self.emptySubLabel.text = model.title
             self.emptyTitleLabel.text = "[\(model.category)]\(model.content)"
             changeTitleLabelColor(for: model.category)
-            self.emptyImageView.setImage(with: model.profileImage ?? "")
+            self.emptyImageView.setImage(
+                with: model.profileImage ?? "",
+                placeholder: DSKitAsset.Assets.iconDefaultProfile.image
+            )
             updateVisibility(for: .empty)
             return
         }
         
         self.categoryTagView.setData(with: model.category)
-        self.userNameLabel.text = model.name ?? ""
             
         let part = model.generationAndPart
         if let part, !part.isEmpty {
