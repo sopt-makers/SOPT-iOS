@@ -17,6 +17,17 @@ enum PopularPostsCVCStatus {
     case unfocusing
 }
 
+enum PopularPostCategory: String, CaseIterable {
+    case first = "실시간 인기 1위"
+    case second = "실시간 인기 2위"
+    case third = "실시간 인기 3위"
+}
+
+enum PostCellType {
+    case popular
+    case latest
+}
+
 final class DefaultPostCVC: UICollectionViewCell {
     
     // MARK: - Properties
@@ -203,8 +214,7 @@ extension DefaultPostCVC {
 // MARK: - Methods
 
 extension DefaultPostCVC {
-    func configureCell(model: some PostDisplayable) {
-        self.categorySubPhraseView.setData(with: model.title)
+    func configureCell(model: some PostDisplayable, index: IndexPath, cellType: PostCellType) {
         self.categoryTagView.setData(with: model.category)
         self.userNameLabel.text = model.name
             
@@ -222,15 +232,22 @@ extension DefaultPostCVC {
                 self.userNameLabel.lineBreakMode = .byTruncatingTail
             }
         }
-
+    
+        switch cellType {
+        case .latest:
+            self.categorySubPhraseView.setData(with: "NEW")
+        case .popular:
+            if let category = PopularPostCategory.allCases[safe: index.row] {
+                self.categorySubPhraseView.setData(with: category.rawValue)
+            }
+        }
+        
         if let profileImage = model.profileImage {
             self.profileImageView.setImage(with: profileImage, placeholder: DSKitAsset.Assets.iconDefaultProfile.image)
         }
         self.postTitleLabel.text = model.title
         self.postContentLabel.text = model.content
         self.postContentLabel.setLineSpacing(lineSpacing: 1)
-        
-//        setNeedsLayout()
     }
 }
 
