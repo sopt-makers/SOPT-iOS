@@ -216,7 +216,7 @@ extension DefaultPostCVC {
 extension DefaultPostCVC {
     func configureCell(model: some PostDisplayable, index: IndexPath, cellType: PostCellType) {
         self.categoryTagView.setData(with: model.category)
-        self.userNameLabel.text = model.name
+        self.userNameLabel.text = model.name ?? ""
             
         if let part = model.generationAndPart {
             if part.isEmpty {
