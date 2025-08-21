@@ -110,6 +110,10 @@ public final class LegacyHomeCoordinator: DefaultHomeCoordinator {
             self?.requestCoordinating?(.webLink(url: url))
         }
         
+        homeForMember.vm.onViewAllContentButtonTapped = { [weak self] url in
+            self?.requestCoordinating?(.webLink(url: url))
+        }
+        
         rootViewController = homeForMember.vc.viewController
         
         router.push(homeForMember.vc)

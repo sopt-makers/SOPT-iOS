@@ -42,6 +42,10 @@ public final class CustomProfileImageView: UIImageView {
         self.layer.cornerRadius = self.frame.width / 2
     }
     
+    public func setPlaceholder() {
+        self.image = DSKitAsset.Assets.iconDefaultProfile.image
+    }
+    
     @discardableResult
     public func hideBorder() -> Self {
         self.layer.borderWidth = 0

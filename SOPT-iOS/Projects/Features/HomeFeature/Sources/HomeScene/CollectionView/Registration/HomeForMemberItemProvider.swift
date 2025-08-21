@@ -48,14 +48,14 @@ extension HomeForMemberVC {
     }
     
     func createPopularPostCellRegistration() -> PopularPostCellRegistration {
-        collectionView.createCellRegistration { cell, _, item in
-            cell.configureCell(model: item)
+        collectionView.createCellRegistration { cell, index, item in
+            cell.configureCell(model: item, index: index, cellType: .popular)
         }
     }
     
     func createLatestPostCellRegistration() -> LatestPostCellRegistration {
-        collectionView.createCellRegistration { cell, _, item in
-            cell.configureCell(model: item)
+        collectionView.createCellRegistration { cell, index, item in
+            cell.configureCell(model: item, index: index, cellType: .latest)
         }
     }
     

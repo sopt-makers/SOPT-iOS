@@ -15,12 +15,22 @@ public extension UIImageView {
             .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) 
         else {
             print("URL 인코딩 실패")
+            self.image = placeholder
+            completion?(nil)
             return
         }
-
-        let cache = ImageCache.default
-        if urlString == "" {
+        
+        // SVG 이미지일 경우 검사
+        if urlString.lowercased().hasSuffix(".svg") {
             self.image = placeholder
+            completion?(nil)
+            return
+        }
+        
+        let cache = ImageCache.default
+        if urlString.isEmpty {
+            self.image = placeholder
+            completion?(nil)
         } else {
             cache.retrieveImage(forKey: urlString) { result in
                 result.success { imageCache in
@@ -51,8 +61,12 @@ public extension UIImageView {
                 .cacheMemoryOnly
             ],
             completionHandler: { result in
-                result.success { imageResult in
+                switch result {
+                case .success(let imageResult):
                     completion?(imageResult.image)
+                case .failure:
+                    self.image = placeholder
+                    completion?(nil)
                 }
             }
         )

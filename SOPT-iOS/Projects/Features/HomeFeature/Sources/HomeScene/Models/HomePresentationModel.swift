@@ -64,70 +64,26 @@ struct HomePresentationModel {
     
     struct PopularPost: Identifiable, Hashable {
         let profileImage: String?
-        let name: String
+        let name: String?
         let generationAndPart: String?
         let rank: Int
         let category: String
         let title: String
         let content: String
         let webLink: String
-        let id: Int
-
-        init(
-            profileImage: String?,
-            name: String,
-            generationAndPart: String?,
-            rank: Int,
-            category: String,
-            title: String,
-            content: String,
-            webLink: String,
-            id: Int
-        ) {
-            self.profileImage = profileImage
-            self.name = name
-            self.generationAndPart = generationAndPart
-            self.rank = rank
-            self.category = category
-            self.title = title
-            self.content = content
-            self.webLink = webLink
-            self.id = id
-        }
+        let id: String
     }
 
     struct LatestPost: Identifiable, Hashable {
+        let id: String
         let profileImage: String?
-        let name: String
+        let name: String?
         let generationAndPart: String?
         let category: String
         let title: String
         let content: String
         let webLink: String
-        let id: Int
         let isOutdated: Bool
-
-        init(
-            profileImage: String?,
-            name: String,
-            generationAndPart: String?,
-            category: String,
-            title: String,
-            content: String,
-            webLink: String,
-            id: Int,
-            isOutdated: Bool
-        ) {
-            self.profileImage = profileImage
-            self.name = name
-            self.generationAndPart = generationAndPart
-            self.category = category
-            self.title = title
-            self.content = content
-            self.webLink = webLink
-            self.id = id
-            self.isOutdated = isOutdated
-        }
     }
     
     struct Survey: Identifiable, Hashable {
@@ -190,13 +146,20 @@ extension HomeAppServicesModel {
             serviceName: self.serviceName,
             displayAlarmBadge: self.displayAlarmBadge,
             alarmBadge: self.alarmBadge,
-            iconURL: self.iconURL ?? "",                // TODO: - 엠티 이미지 요청 or 후기 폼 API 분리 요청하기
+            iconURL: self.iconURL ?? "",
             deepLink: self.deepLink
         )
     }
 }
 
 extension HomePopularPostModel {
+    // NOTE: 서버에서 post의 id값이 옵셔널로 내려오는 경우가 있어, 필드값을 조합해 ID로 반환합니다.
+    var stableID: String {
+        if let id = self.id { return "popular:id:\(id)" } // id값이 있다면, 그대로 사용
+        // 없다면, 카테고리와 타이틀 값을 조합해서 활용합니다.
+        return "popular:category:\(self.category)title:\(self.title)"
+    }
+    
     func toPresentation() -> HomePresentationModel.PopularPost {
         return HomePresentationModel.PopularPost(
             profileImage: self.profileImage,
@@ -207,14 +170,22 @@ extension HomePopularPostModel {
             title: self.title,
             content: self.content,
             webLink: self.webLink,
-            id: self.id
+            id: self.stableID
         )
     }
 }
 
 extension HomeLatestPostModel {
+    // NOTE: 서버에서 post의 id값이 옵셔널로 내려오는 경우가 있어, 필드값을 조합해 ID로 반환합니다.
+    var stableID: String {
+        if let id = self.id { return "latest:id:\(id)" } // id값이 있다면, 그대로 사용
+        // 없다면, 카테고리와 타이틀 값을 조합해서 활용합니다.
+        return "latest:category:\(self.category)title:\(self.title)"
+    }
+    
     func toPresentation() -> HomePresentationModel.LatestPost {
         return HomePresentationModel.LatestPost(
+            id: self.stableID,
             profileImage: self.profileImage,
             name: self.name,
             generationAndPart: self.generationAndPart,
@@ -222,7 +193,6 @@ extension HomeLatestPostModel {
             title: self.title,
             content: self.content,
             webLink: self.webLink,
-            id: self.id,
             isOutdated: self.isOutdated
         )
     }

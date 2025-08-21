@@ -17,6 +17,18 @@ enum PopularPostsCVCStatus {
     case unfocusing
 }
 
+enum PopularPostCategory: String, CaseIterable {
+    case first = "실시간 인기 1위"
+    case second = "실시간 인기 2위"
+    case third = "실시간 인기 3위"
+}
+
+enum PostCellType {
+    case popular
+    case latest
+    case empty
+}
+
 final class DefaultPostCVC: UICollectionViewCell {
     
     // MARK: - Properties
@@ -41,17 +53,19 @@ final class DefaultPostCVC: UICollectionViewCell {
     
     private let userNameLabel = UILabel().then {
         $0.textColor = DSKitAsset.Colors.gray30.color
-        $0.font = DSKitFontFamily.Suit.regular.font(size: 10)
+        $0.font = DSKitFontFamily.Suit.medium.font(size: 10)
+        $0.textAlignment = .center
     }
     
     private let userPartLabel = UILabel().then {
         $0.textColor = DSKitAsset.Colors.gray400.color
-        $0.font = DSKitFontFamily.Suit.regular.font(size: 10)
+        $0.font = DSKitFontFamily.Suit.medium.font(size: 10)
     }
     
     private let categoryStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 6
+        $0.alignment = .center
     }
     
     private let userStackView = UIStackView().then {
@@ -61,7 +75,7 @@ final class DefaultPostCVC: UICollectionViewCell {
     
     private let postTitleLabel = UILabel().then {
         $0.textColor = DSKitAsset.Colors.white.color
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 16)
+        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
         $0.lineBreakMode = .byTruncatingTail
         $0.numberOfLines = 1
     }
@@ -77,6 +91,21 @@ final class DefaultPostCVC: UICollectionViewCell {
         $0.alignment = .leading
         $0.spacing = 6
     }
+    
+    // 엠티 뷰일 경우
+    private let emptyTitleLabel = UILabel().then {
+        $0.textColor = DSKitAsset.Colors.white.color
+        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
+        $0.lineBreakMode = .byTruncatingTail
+        $0.numberOfLines = 1
+    }
+    
+    private let emptySubLabel = UILabel().then {
+        $0.font = DSKitFontFamily.Suit.medium.font(size: 13)
+        $0.textColor = DSKitAsset.Colors.gray300.color
+    }
+    
+    private let emptyImageView = CustomProfileImageView().hideBorder()
 
     // MARK: - Initialization
     
@@ -85,6 +114,7 @@ final class DefaultPostCVC: UICollectionViewCell {
         setUI()
         setStackView()
         setLayout()
+        setEmptyViewLayout()
     }
     
     override func layoutSubviews() {
@@ -94,6 +124,21 @@ final class DefaultPostCVC: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        userNameLabel.numberOfLines = 1
+        userNameLabel.lineBreakMode = .byTruncatingTail
+        userNameLabel.text = nil
+        userPartLabel.text = nil
+        postTitleLabel.text = nil
+        postContentLabel.text = nil
+        emptySubLabel.text = nil
+        emptyTitleLabel.text = nil
+        emptyImageView.image = nil
+        profileImageView.setPlaceholder()
+        updateVisibility(for: .latest) // visible 상태는 기본적으로 latest와 같음
     }
 }
 
@@ -131,6 +176,13 @@ extension DefaultPostCVC {
             verticalDividerView,
             categoryTagView
         )
+        
+        verticalDividerView.snp.makeConstraints { make in
+            make.height.equalTo(7)
+        }
+        
+        verticalDividerView.setContentHuggingPriority(.defaultLow, for: .vertical)
+        verticalDividerView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         
         userStackView.addArrangedSubviews(
             profileImageView,
@@ -179,18 +231,103 @@ extension DefaultPostCVC {
             layer.addSublayer(gradientLayer)
         }
     }
+    
+    // 최신글이 없을 경우 띄워지는 엠티뷰입니다.
+    private func setEmptyViewLayout() {
+        self.addSubviews(emptySubLabel, emptyTitleLabel, emptyImageView)
+        
+        emptySubLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(38)
+            make.leading.equalToSuperview().inset(28)
+        }
+        
+        emptyTitleLabel.snp.makeConstraints { make in
+            make.bottom.equalToSuperview().inset(38)
+            make.leading.equalTo(emptySubLabel.snp.leading)
+        }
+        
+        emptyImageView.snp.remakeConstraints { make in
+            make.size.equalTo(64)
+            make.trailing.equalToSuperview().inset(24)
+            make.centerY.equalToSuperview()
+        }
+    }
+    
+    private func changeTitleLabelColor(for target: String) {
+        self.emptyTitleLabel.partColorChange(
+            targetString: "[\(target)]",
+            textColor: DSKitAsset.Colors.orange300.color
+        )
+    }
+    
+    private func updateVisibility(for cellType: PostCellType) {
+        switch cellType {
+        case .popular, .latest:
+            self.userStackView.isHidden = false
+            self.contentStackView.isHidden = false
+
+            self.emptyTitleLabel.isHidden = true
+            self.emptySubLabel.isHidden = true
+            self.emptyImageView.isHidden = true
+        case .empty:
+            self.emptyTitleLabel.isHidden = false
+            self.emptySubLabel.isHidden = false
+            self.emptyImageView.isHidden = false
+            
+            self.userStackView.isHidden = true
+            self.contentStackView.isHidden = true
+        }
+    }
 }
 
 // MARK: - Methods
 
 extension DefaultPostCVC {
-    func configureCell(model: some PostDisplayable) {
-        self.categorySubPhraseView.setData(with: model.title)
+    func configureCell(model: some PostDisplayable, index: IndexPath, cellType: PostCellType) {
+        // NOTE: 사용자의 이름 값이 존재하지 않을 경우, 엠티뷰 레이아웃이 그려집니다.
+        if let name = model.name, !name.isEmpty {
+            self.userNameLabel.text = name
+            updateVisibility(for: cellType)
+        } else {
+            self.emptySubLabel.text = model.title
+            self.emptyTitleLabel.text = "[\(model.category)]\(model.content)"
+            changeTitleLabelColor(for: model.category)
+            self.emptyImageView.setImage(
+                with: model.profileImage ?? "",
+                placeholder: DSKitAsset.Assets.iconDefaultProfile.image
+            )
+            updateVisibility(for: .empty)
+            return
+        }
+        
         self.categoryTagView.setData(with: model.category)
-        self.userNameLabel.text = model.name
-        self.userPartLabel.text = model.generationAndPart
+            
+        let part = model.generationAndPart
+        if let part, !part.isEmpty {
+            // 익명이 아닐 경우
+            self.userPartLabel.isHidden = false
+            self.userPartLabel.text = part
+            self.userNameLabel.numberOfLines = 1
+            self.userNameLabel.lineBreakMode = .byTruncatingTail
+        } else {
+            // 익명일 경우
+            self.userPartLabel.isHidden = true
+            self.userNameLabel.numberOfLines = 2
+            self.userNameLabel.lineBreakMode = .byWordWrapping
+        }
+        
+        switch cellType {
+        case .latest:
+            self.categorySubPhraseView.setData(with: "NEW")
+        case .popular:
+            if let category = PopularPostCategory.allCases[safe: index.row] {
+                self.categorySubPhraseView.setData(with: category.rawValue)
+            }
+        default: return
+        }
+        
         if let profileImage = model.profileImage {
-            self.profileImageView.setImage(with: profileImage)
+            self.profileImageView.setImage(with: profileImage, placeholder: DSKitAsset.Assets.iconDefaultProfile.image)
         }
         self.postTitleLabel.text = model.title
         self.postContentLabel.text = model.content

@@ -17,8 +17,8 @@ public final class GoogleOAuthService: OAuthService {
     
     public func getIdentityToken() -> AnyPublisher<String, OAuthError> {
         Future<String, OAuthError> { promise in
-            Task {
-                guard let topVC = await UIApplication.getMostTopViewController() else {
+            Task { @MainActor in
+                guard let topVC = UIApplication.getMostTopViewController() else {
                     promise(.failure(OAuthError.unknown(NSError())))
                     return
                 }

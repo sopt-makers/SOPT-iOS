@@ -11,11 +11,11 @@ import Foundation
 /// Post cell 관련 모델에서 쓰이는 공통 프로토콜입니다.
 protocol PostDisplayable {
     var profileImage: String? { get }
-    var name: String { get }
+    var name: String? { get }
     var generationAndPart: String? { get }
     var category: String { get }
     var title: String { get }
     var content: String { get }
     var webLink: String { get }
-    var id: Int { get }
+    var id: String { get } // 서버에서 내려오는 값은 Int?
 }
