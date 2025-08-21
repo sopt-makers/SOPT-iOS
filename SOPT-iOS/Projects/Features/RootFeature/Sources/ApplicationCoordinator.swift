@@ -224,7 +224,7 @@ extension ApplicationCoordinator {
     }
     
     private func checkDidSignIn() {
-        if UserDefaultKeyList.Auth.hasAccessToken() {
+        if !UserDefaultKeyList.Auth.hasAccessToken() {
             runSignInFlow(by: .root)
         } else {
             Config.coordinatorFlag == .legacy
