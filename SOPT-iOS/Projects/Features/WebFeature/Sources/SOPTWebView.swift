@@ -139,7 +139,6 @@ extension SOPTWebView {
 
 extension SOPTWebView: WKNavigationDelegate {
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        self.barrier = true
         
         switch FeatureFlag.auth {
         case .legacy:
@@ -147,22 +146,20 @@ extension SOPTWebView: WKNavigationDelegate {
                     let playgroundToken = UserDefaultKeyList.Auth.playgroundToken else {
                 return
             }
-            
+            self.barrier = true
             self.webView.evaluateJavaScript(
                 "localStorage.setItem(\"serviceAccessToken\", \"\(playgroundToken)\")"
             )
-        case .new:
             
-            // accessToken
-            if !self.barrier,
-                  let accessToken = UserDefaultKeyList.CoreAuth.accessToken
-            {
-                self.webView.evaluateJavaScript(
-                    "localStorage.setItem(\"serviceAccessToken\", \"\(accessToken)\")"
-                )
-            }
+        case .new:
+            guard !self.barrier,
+            let accessToken = UserDefaultKeyList.CoreAuth.accessToken else { return }
+            self.barrier = true
+            self.webView.evaluateJavaScript(
+                "localStorage.setItem(\"serviceAccessToken\", \"\(accessToken)\")"
+            )
         }
-       
+        
         self.webView.reload()
     }
 }
