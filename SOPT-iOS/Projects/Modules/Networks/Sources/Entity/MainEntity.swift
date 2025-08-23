@@ -17,7 +17,8 @@ public struct MainEntity: Codable {
 // MARK: - UserInfo
 
 public struct UserInfo: Codable {
-    public let status, name, profileImage: String
+    public let status, name: String
+    public let profileImage: String?
     public let historyList: [Int]
     
     enum CodingKeys: String, CodingKey {
