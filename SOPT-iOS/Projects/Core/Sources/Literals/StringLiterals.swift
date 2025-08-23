@@ -92,6 +92,7 @@ public struct I18N {
             public static let signUp = "SOPT 회원가입"
             public static let wantToKnowAccount = "로그인한 계정을 알고 싶어요."
             public static let resetSocialAccount = "소셜 계정을 재설정하고 싶어요."
+            public static let inquireToKakaoTalk = "카카오톡 채널에 문의할게요."
             public static let userNotFound = "앗! 회원 정보를 찾을 수 없어요."
             public static let userInfo = "회원 정보"
             public static let signUpFirst = "먼저 회원가입 후, 다시 로그인해주세요."

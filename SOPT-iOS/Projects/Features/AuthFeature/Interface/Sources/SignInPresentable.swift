@@ -12,7 +12,7 @@ import Core
 
 public protocol SignInViewControllable: LegacyViewControllable { }
 
-public protocol SignInCoordinatable {
+public protocol SignInRoutingTrigger {
     var onLoginHelpButtonTapped: (() -> Void)? { get set }
     var onSocialLoginFail: (() -> Void)? { get set }
     var onSignUpButtonTapped: (() -> Void)? { get set }
@@ -20,6 +20,6 @@ public protocol SignInCoordinatable {
     var onVisitorButtonTapped: (() -> Void)? { get set }
 }
 
-public typealias SignInViewModelType = ViewModelType & SignInCoordinatable
+public typealias SignInViewModelType = ViewModelType & SignInRoutingTrigger
 
 public typealias SignInPresentable = (vc: SignInViewControllable, vm: any SignInViewModelType)
