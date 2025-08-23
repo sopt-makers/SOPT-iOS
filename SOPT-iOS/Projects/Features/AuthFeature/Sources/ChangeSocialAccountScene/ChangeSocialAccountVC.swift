@@ -211,6 +211,14 @@ extension ChangeSocialAccountVC {
                 owner.navigationBar.isHidden = step != .phoneVerify
             }
             .store(in: cancelBag)
+        
+        output.errorToastMessage
+            .withUnretained(self)
+            .delay(for: .seconds(1), scheduler: RunLoop.main, options: .none)
+            .sink { owner, message in
+                Toast.showMDSToast(type: .error, text: message)
+            }
+            .store(in: cancelBag)
     }
     
 }

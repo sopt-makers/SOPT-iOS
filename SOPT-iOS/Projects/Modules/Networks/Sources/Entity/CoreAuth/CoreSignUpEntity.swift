@@ -9,18 +9,15 @@
 import Foundation
 
 public struct CoreSignUpRequestEntity: Encodable {
-    let name: String?
     let phone: String
     let token: String
     let authPlatform: PlatformType
     
     public init(
-        name: String?,
         phone: String,
         token: String,
         authPlatform: PlatformType
     ) {
-        self.name = name
         self.phone = phone
         self.token = token
         self.authPlatform = authPlatform

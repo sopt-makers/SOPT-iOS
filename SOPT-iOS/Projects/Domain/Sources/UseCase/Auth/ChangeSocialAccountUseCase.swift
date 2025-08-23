@@ -12,7 +12,7 @@ import Core
 
 public protocol ChangeSocialAccountUseCase {
     func resetSocialAccount(with provider: OAuthProvider, name: String?, phone: String) -> AnyPublisher<Void, Never>
-    var sideEffect: PassthroughSubject<Error, Never> { get }
+    var sideEffect: PassthroughSubject<CoreAuthError, Never> { get }
 }
 
 public struct DefaultChangeSocialAccountUseCase: ChangeSocialAccountUseCase {
@@ -23,7 +23,7 @@ public struct DefaultChangeSocialAccountUseCase: ChangeSocialAccountUseCase {
     
     private var cancelBag = CancelBag()
     
-    public let sideEffect = PassthroughSubject<Error, Never>()
+    public let sideEffect = PassthroughSubject<CoreAuthError, Never>()
     
     public init(
         repository: CoreAuthRepositoryInterface,
