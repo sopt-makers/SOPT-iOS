@@ -41,7 +41,7 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
         let timeLeft = CurrentValueSubject<Int, Never>(0)
         let phoneTextFieldText = CurrentValueSubject<String, Never>("")
         let codeTextFieldText = CurrentValueSubject<String, Never>("")
-        let timerIsRunning = PassthroughSubject<Bool, Never>()
+        let timerIsRunning = CurrentValueSubject<Bool, Never>(false)
         let sendButtonIsEnabled = CurrentValueSubject<Bool, Never>(false)
         let doneButtonIsEnabled =  CurrentValueSubject<Bool, Never>(false)
     }
@@ -67,18 +67,18 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
         useCase.sideEffect
             .sink { err in
                 switch err {
+                case .userNotFound:
+                    output.phoneFailDescription.send("SOPT 활동 시 사용한 전화번호가 아니에요.")
+                case .alreadyExist:
+                    output.phoneFailDescription.send("이미 가입된 전화번호예요.")
                 case .invalidRequest:
-                    output.phoneFailDescription.send("요청 형식이 잘못됐어요.")
+                    output.codeFailDescription.send("존재하지 않는 번호 인증 이력입니다")
                 case .invalidVerifyCode:
                     output.codeFailDescription.send("인증번호가 올바르지 않습니다.")
                     return
                 case .timeout:
                     output.codeFailDescription.send("3분이 초과되었어요. 인증번호를 다시 요청해주세요.")
                     return
-                case .userNotFound:
-                    output.phoneFailDescription.send("SOPT 활동 시 사용한 전화번호가 아니에요.")
-                case .alreadyExist:
-                    output.phoneFailDescription.send("이미 가입된 전화번호예요.")
                 case .unknown(_):
                     output.codeFailDescription.send("알 수 없는 오류예요.")
                 }
@@ -155,10 +155,13 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
         
         input.codeTextFieldText
             .withUnretained(self)
-            .filter { $1.count >= $0.useCase.policy.codeMaxLength }
-            .map {
-                let newValue = $1.prefix($0.useCase.policy.codeMaxLength)
-                return String(newValue)
+            .map { owner, code in
+                // code 글자수 제한보다 많이 입력할 경우, 무효화한다.
+                if code.count >= owner.useCase.policy.codeMaxLength  {
+                    let newValue = code.prefix(owner.useCase.policy.codeMaxLength)
+                    return String(newValue)
+                }
+                return code
             }
             .sink { output.codeTextFieldText.send($0) }
             .store(in: cancelBag)
