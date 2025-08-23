@@ -13,6 +13,7 @@ import Domain
 public protocol LoginHelpBottomSheetViewControllable: LegacyViewControllable { 
     var onWantToKnowLoginAccountButtonDidTap: (() -> Void)? { get set }
     var onResetSocialAccountButtonDidTap: (() -> Void)? { get set }
+    var onInquireToKakaoTalkButtonDidTap: (() -> Void)? { get set }
 }
 
 public typealias LoginHelpBottomSheetPresentable = LoginHelpBottomSheetViewControllable

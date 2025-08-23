@@ -19,10 +19,11 @@ public final class LoginHelpBottomSheetVC: UIViewController, LoginHelpBottomShee
     private static let i18n = I18N.SignIn.Refactor.self
     public var onWantToKnowLoginAccountButtonDidTap: (() -> Void)?
     public var onResetSocialAccountButtonDidTap: (() -> Void)?
+    public var onInquireToKakaoTalkButtonDidTap: (() -> Void)?
     private let cancelBag = CancelBag()
     
     public var minimumContentHeight: CGFloat {
-        return 158.adjustedH
+        return 202.adjustedH
     }
     
     // MARK: - Views
@@ -61,6 +62,18 @@ public final class LoginHelpBottomSheetVC: UIViewController, LoginHelpBottomShee
         $0.layer.masksToBounds = true
     }
     
+    private let inquireToKakaoTalkButton = UIButton().then {
+        $0.setTitleColor(DSKitAsset.Colors.gray10.color, for: .normal)
+        $0.setTitle(i18n.inquireToKakaoTalk, for: .normal)
+        $0.titleLabel?.font = DSKitFontFamily.Suit.regular.font(size: 16)
+        $0.contentHorizontalAlignment = .leading
+        $0.titleEdgeInsets = .init(top: 0, left: 10, bottom: 0, right: 0)
+        $0.setBackgroundColor(DSKitAsset.Colors.gray700.color, for: .highlighted)
+        $0.setBackgroundColor(DSKitAsset.Colors.gray800.color, for: .normal)
+        $0.layer.cornerRadius = 8
+        $0.layer.masksToBounds = true
+    }
+    
     public init() {
         super.init(nibName: nil, bundle: nil)
         
@@ -83,7 +96,8 @@ extension LoginHelpBottomSheetVC {
             warnImageView,
             titleLabel,
             wantToKnowAccountButton,
-            resetSocialAccountButton
+            resetSocialAccountButton,
+            inquireToKakaoTalkButton
         )
         
         self.warnImageView.snp.makeConstraints {
@@ -108,6 +122,12 @@ extension LoginHelpBottomSheetVC {
             $0.top.equalTo(wantToKnowAccountButton.snp.bottom).offset(4)
             $0.horizontalEdges.equalToSuperview().inset(14)
             $0.height.equalTo(wantToKnowAccountButton.snp.height)
+        }
+        
+        self.inquireToKakaoTalkButton.snp.makeConstraints {
+            $0.top.equalTo(resetSocialAccountButton.snp.bottom).offset(4)
+            $0.horizontalEdges.equalToSuperview().inset(14)
+            $0.height.equalTo(wantToKnowAccountButton.snp.height)
             $0.bottom.lessThanOrEqualTo(view.safeAreaLayoutGuide).inset(8)
         }
     }
@@ -129,6 +149,15 @@ extension LoginHelpBottomSheetVC {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onResetSocialAccountButtonDidTap?()
+            }
+            .store(in: cancelBag)
+        
+        inquireToKakaoTalkButton
+            .publisher(for: .touchUpInside)
+            .asDriver()
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onInquireToKakaoTalkButtonDidTap?()
             }
             .store(in: cancelBag)
     }

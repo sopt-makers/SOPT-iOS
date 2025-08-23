@@ -13,7 +13,6 @@ import Domain
 extension SignUpModel {
     func toData() -> CoreSignUpRequestEntity {
         return CoreSignUpRequestEntity(
-            name: name,
             phone: phone,
             token: token,
             authPlatform: provider.toData()

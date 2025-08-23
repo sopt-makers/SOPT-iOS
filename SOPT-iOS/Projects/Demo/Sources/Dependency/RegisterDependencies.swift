@@ -32,7 +32,7 @@ extension AppDelegate {
                 interface: AuthTokensRepositoryInterface.self,
                 implement: {
                     let reissueService = DefaultReissueService(
-                        plugins: [ NetworkLoggerPlugin()]
+                        plugins: [ Moya.NetworkLoggerPlugin.verbose]
                     )
                     let repository = AuthTokensRepository(remote: reissueService)
                     return repository
@@ -44,7 +44,7 @@ extension AppDelegate {
                 interface: AuthTokensRepositoryInterface.self,
                 implement: {
                     let reissueService = DefaultLegacyReissueService(
-                        plugins: [ NetworkLoggerPlugin()]
+                        plugins: [ Moya.NetworkLoggerPlugin.verbose]
                     )
                     let repository = LegacyAuthTokensRepository(remote: reissueService)
                     return repository
@@ -66,7 +66,7 @@ extension AppDelegate {
             interface: PhoneVerifyRepositoryInterface.self,
             implement: {
                 PhoneVerifyRepository(
-                    coreAuthService: DefaultCoreAuthService(plugins: [ NetworkLoggerPlugin() ])
+                    coreAuthService: DefaultCoreAuthService(plugins: [ Moya.NetworkLoggerPlugin.verbose ])
                 )
             }
         )
@@ -84,7 +84,7 @@ extension AppDelegate {
             interface: CoreAuthRepositoryInterface.self,
             implement: {
                 CoreAuthRepository(
-                    coreAuthService: DefaultCoreAuthService(plugins: [ NetworkLoggerPlugin() ]),
+                    coreAuthService: DefaultCoreAuthService(plugins: [ Moya.NetworkLoggerPlugin.verbose ]),
                     socialService: DefaultSocialService.standard)
             }
         )

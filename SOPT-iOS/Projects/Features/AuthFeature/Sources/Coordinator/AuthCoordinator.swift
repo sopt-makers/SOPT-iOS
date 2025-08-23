@@ -157,6 +157,11 @@ extension AuthCoordinator {
             self?.runSearchSocialFlow()
         }
         
+        bottomSheetVC.onInquireToKakaoTalkButtonDidTap = { 
+            bottomSheetVC.dismiss(animated: true)
+            openExternalLink(urlStr: ExternalURL.KakaoTalk.serviceProposal)
+        }
+        
         let bottomSheetManager = BottomSheetManager(
             configuration: .fixed(
                 minHeight: bottomSheetVC.minimumContentHeight,

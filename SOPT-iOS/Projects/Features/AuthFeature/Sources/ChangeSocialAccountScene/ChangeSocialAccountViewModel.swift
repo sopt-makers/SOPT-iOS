@@ -32,6 +32,7 @@ public final class ChangeSocialAccountViewModel: ChangeSocialAccountViewModelTyp
     
     public struct Output {
         let currentStep = CurrentValueSubject<Step, Never>(.phoneVerify)
+        let errorToastMessage = PassthroughSubject<String, Never>()
     }
     
     private let useCase: ChangeSocialAccountUseCase
@@ -46,6 +47,13 @@ public final class ChangeSocialAccountViewModel: ChangeSocialAccountViewModelTyp
     
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
+        
+        useCase.sideEffect
+            .map { $0.description }
+            .sink { description in
+                output.errorToastMessage.send(description)
+        }
+        .store(in: cancelBag)
         
         input.verifySuccess
             .sink { _ in
