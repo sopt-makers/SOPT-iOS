@@ -14,4 +14,5 @@ public protocol AuthTokensRepositoryInterface {
     @Sendable func refresh(completion: @escaping (Result<Void, ReissueError>) -> Void)
     func fetch() -> AuthTokens?
     func save(_ tokens: AuthTokens)
+    func delete()
 }

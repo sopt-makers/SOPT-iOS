@@ -42,6 +42,7 @@ public struct AuthTokensRepository: AuthTokensRepositoryInterface {
                 self.save(tokens)
                 completion(.success(()))
             } else {
+                self.delete()
                 completion(.failure(.expiredToken))
             }
         }
@@ -59,6 +60,11 @@ public struct AuthTokensRepository: AuthTokensRepositoryInterface {
     public func save(_ tokens: AuthTokens) {
         local.set(tokens.accessToken, forKey: Self.accessTokenKey)
         local.set(tokens.refreshToken, forKey: Self.refreshTokenKey)
+    }
+    
+    public func delete() {
+        local.removeObject(forKey: Self.accessTokenKey)
+        local.removeObject(forKey: Self.refreshTokenKey)
     }
     
 }
@@ -96,6 +102,7 @@ public struct LegacyAuthTokensRepository: AuthTokensRepositoryInterface {
                 self.save(tokens)
                 completion(.success(()))
             } else {
+                self.delete()
                 completion(.failure(.expiredToken))
             }
         }
@@ -121,6 +128,12 @@ public struct LegacyAuthTokensRepository: AuthTokensRepositoryInterface {
         local.set(tokens.accessToken, forKey: Self.accessTokenKey)
         local.set(tokens.refreshToken, forKey: Self.refreshTokenKey)
         local.set(tokens.playgroundToken, forKey: Self.playgroundTokenKey)
+    }
+    
+    public func delete() {
+        local.removeObject(forKey: Self.accessTokenKey)
+        local.removeObject(forKey: Self.refreshTokenKey)
+        local.removeObject(forKey: Self.playgroundTokenKey)
     }
     
 }

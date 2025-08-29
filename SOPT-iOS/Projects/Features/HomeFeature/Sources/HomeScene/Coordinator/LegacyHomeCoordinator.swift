@@ -103,11 +103,19 @@ public final class LegacyHomeCoordinator: DefaultHomeCoordinator {
         }
         
         homeForMember.vm.onPopularPostCellTapped = { [weak self] url in
+            #if PROD
             self?.requestCoordinating?(.webLink(url: url))
+            #else
+            self?.requestCoordinating?(.webLink(url: "https://sopt-internal-dev.pages.dev"))
+            #endif
         }
         
         homeForMember.vm.onLatestPostCellTapped = { [weak self] url in
+            #if PROD
             self?.requestCoordinating?(.webLink(url: url))
+            #else
+            self?.requestCoordinating?(.webLink(url: "https://sopt-internal-dev.pages.dev"))
+            #endif
         }
         
         homeForMember.vm.onViewAllContentButtonTapped = { [weak self] url in
