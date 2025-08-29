@@ -302,7 +302,7 @@ extension SignInVC {
                 
                 guard let oAuthProvider else { return }
                 
-                owner.recentLoginLabel.text = "로그인한 계정은 \(oAuthProvider.title)이에요."
+                owner.recentLoginLabel.text = "최근 로그인한 계정은 \(oAuthProvider.title)이에요."
                 
                 let bottomAnchor: ConstraintRelatableTarget = oAuthProvider == .apple ? owner.oAuthView.appleLoginButton.snp.top : owner.oAuthView.googleLoginButton.snp.top
                 
