@@ -12,13 +12,13 @@ import Domain
 
 public protocol SignUpViewControllable: LegacyViewControllable {}
 
-public protocol SignUpCoordinatable {
+public protocol SignUpRoutingTrigger {
     var onSignUpSuccess: (() -> Void)? { get set }
     var onLoginHelpButtonTapped: (() -> Void)? { get set }
 }
 
 public typealias PhoneVerifyViewModelType = ViewModelType
 
-public typealias SignUpViewModelType = ViewModelType & SignUpCoordinatable
+public typealias SignUpViewModelType = ViewModelType & SignUpRoutingTrigger
 
 public typealias SignUpPresentable = (vc: SignUpViewControllable, vm: any SignUpViewModelType)

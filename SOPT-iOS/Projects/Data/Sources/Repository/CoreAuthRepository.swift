@@ -35,6 +35,10 @@ extension CoreAuthRepository: CoreAuthRepositoryInterface {
     public func saveRecentLogin(_ provider: Domain.OAuthProvider) {
         UserDefaultKeyList.CoreAuth.recentLogin = provider.rawValue
     }
+    
+    public func deleteRecentLogin() {
+        UserDefaultKeyList.CoreAuth.recentLogin = nil
+    }
 
     public func login(
         for provider: OAuthProvider,

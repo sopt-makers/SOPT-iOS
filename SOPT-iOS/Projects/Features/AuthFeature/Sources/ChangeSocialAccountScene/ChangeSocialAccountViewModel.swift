@@ -32,6 +32,7 @@ public final class ChangeSocialAccountViewModel: ChangeSocialAccountViewModelTyp
     
     public struct Output {
         let currentStep = CurrentValueSubject<Step, Never>(.phoneVerify)
+        let changeSocialAccountSucceed = PassthroughSubject<Void, Never>()
         let errorToastMessage = PassthroughSubject<String, Never>()
     }
     
@@ -69,10 +70,11 @@ public final class ChangeSocialAccountViewModel: ChangeSocialAccountViewModelTyp
         .withLatestFrom(input.phone)
         .withUnretained(self)
         .flatMap { owner, output in
-            owner.useCase.resetSocialAccount(with: output.0, name: nil, phone: output.1)
+            owner.useCase.resetSocialAccount(with: output.0, phone: output.1)
         }
         .withUnretained(self)
         .sink { owner, _ in
+            output.changeSocialAccountSucceed.send(())
             owner.changeSocialAccountSucceed?()
         }
         .store(in: cancelBag)

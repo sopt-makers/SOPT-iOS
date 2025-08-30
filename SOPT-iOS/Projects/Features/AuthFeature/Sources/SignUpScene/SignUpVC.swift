@@ -211,6 +211,12 @@ extension SignUpVC {
                 owner.navigationBar.isHidden = step != .phoneVerify
             }
             .store(in: cancelBag)
+        
+        output.signUpSucceed
+            .withUnretained(self)
+            .sink { owner, _ in
+                Toast.showMDSToast(type: .success, text: "회원가입에 성공했습니다.")
+            }.store(in: cancelBag)
     }
     
 }

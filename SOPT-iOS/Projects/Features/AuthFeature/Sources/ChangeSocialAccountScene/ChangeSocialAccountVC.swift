@@ -212,9 +212,17 @@ extension ChangeSocialAccountVC {
             }
             .store(in: cancelBag)
         
+        output.changeSocialAccountSucceed
+            .withUnretained(self)
+            .delay(for: .seconds(0.5), scheduler: RunLoop.main)
+            .sink { owner, _ in
+                Toast.showMDSToast(type: .success, text: "소셜 계정 변경에 성공했습니다.")
+            }
+            .store(in: cancelBag)
+        
         output.errorToastMessage
             .withUnretained(self)
-            .delay(for: .seconds(1), scheduler: RunLoop.main, options: .none)
+            .delay(for: .seconds(0.5), scheduler: RunLoop.main)
             .sink { owner, message in
                 Toast.showMDSToast(type: .error, text: message)
             }

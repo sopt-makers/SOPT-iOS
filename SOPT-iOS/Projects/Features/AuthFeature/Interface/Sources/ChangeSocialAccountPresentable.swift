@@ -12,10 +12,10 @@ import Domain
 
 public protocol ChangeSocialAccountViewControllable: LegacyViewControllable { }
 
-public protocol ChangeSocialAccountCoordinatable {
+public protocol ChangeSocialAccountRoutingTrigger {
     var changeSocialAccountSucceed: (() -> Void)? { get set }
 }
 
-public typealias ChangeSocialAccountViewModelType = ViewModelType & ChangeSocialAccountCoordinatable
+public typealias ChangeSocialAccountViewModelType = ViewModelType & ChangeSocialAccountRoutingTrigger
 
 public typealias ChangeSocialAccountPresentable = (vc: ChangeSocialAccountViewControllable, vm: any ChangeSocialAccountViewModelType)

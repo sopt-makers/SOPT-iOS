@@ -16,4 +16,5 @@ public protocol CoreAuthRepositoryInterface {
     func signUp(_ model: SignUpModel) -> AnyPublisher<Void, CoreAuthError>
     func getRecentLogin() -> OAuthProvider?
     func saveRecentLogin(_ provider: OAuthProvider)
+    func deleteRecentLogin()
 }
