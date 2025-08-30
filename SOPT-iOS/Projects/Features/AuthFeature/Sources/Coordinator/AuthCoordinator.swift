@@ -112,6 +112,10 @@ extension AuthCoordinator {
     private func runSignUpFlow() {
         var signUpVC = self.factory.makeSignUp()
         
+        signUpVC.vm.onSignUpSuccess = { [weak self] in
+            self?.router.popToRootModule(animated: true)
+        }
+        
         signUpVC.vm.onLoginHelpButtonTapped = { [weak self] in
             guard let url = URL(string: ExternalURL.SOPT.memberVerifyGoogleForm) else { return }
             
@@ -126,8 +130,7 @@ extension AuthCoordinator {
         var changeSocialAccount = self.factory.makeChangeSocialAccount()
         
         changeSocialAccount.vm.changeSocialAccountSucceed = { [weak self] in
-            let userType = UserDefaultKeyList.Auth.getUserType() //TODO: 인증중앙화 후 로직으로 수정
-            self?.finishFlow?(userType)
+            self?.router.popToRootModule(animated: true)
         }
         
         self.router.push(changeSocialAccount.vc)

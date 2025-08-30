@@ -33,6 +33,7 @@ final class SignUpViewModel: SignUpViewModelType {
     
     struct Output {
         let currentStep = CurrentValueSubject<Step, Never>(.phoneVerify)
+        let signUpSucceed = PassthroughSubject<Void, Never>()
     }
     
     private let useCase: SignUpUseCase
@@ -68,10 +69,11 @@ final class SignUpViewModel: SignUpViewModelType {
         .withLatestFrom(input.phone)
         .withUnretained(self)
         .flatMap { owner, output in
-            owner.useCase.signUp(with: output.0, name: nil, phone: output.1)
+            owner.useCase.signUp(with: output.0, phone: output.1)
         }
         .withUnretained(self)
         .sink { owner, _ in
+            output.signUpSucceed.send(())
             owner.onSignUpSuccess?()
         }
         .store(in: cancelBag)

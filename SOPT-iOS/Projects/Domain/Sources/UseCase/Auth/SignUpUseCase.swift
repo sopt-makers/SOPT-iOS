@@ -12,7 +12,7 @@ import Foundation
 import Core
 
 public protocol SignUpUseCase {
-    func signUp(with provider: OAuthProvider, name: String?, phone: String) -> AnyPublisher<Void, Never>
+    func signUp(with provider: OAuthProvider, phone: String) -> AnyPublisher<Void, Never>
     var sideEffect: PassthroughSubject<CoreAuthError, Never> { get }
 }
 
@@ -40,18 +40,11 @@ public struct DefaultSignUpUseCase {
 extension DefaultSignUpUseCase: SignUpUseCase {
     public func signUp(
         with provider: OAuthProvider,
-        name: String?,
         phone: String
     ) -> AnyPublisher<Void, Never> {
         oAuthRepository.getIdentityToken(from: provider)
-            .map { SignUpModel(name: name, phone: phone, token: $0, provider: provider)}
-            .flatMap { model in
-                self.repository.signUp(model)
-                    .flatMap {
-                        self.repository.login(for: provider, with: model.token)
-                    }
-            }
-            .handleEvents(receiveOutput: self.tokenRepositroy.save)
+            .map { SignUpModel(phone: phone, token: $0, provider: provider)}
+            .flatMap(self.repository.signUp)
             .mapVoid()
             .catch { error in
                 self.sideEffect.send(error)
@@ -67,7 +60,7 @@ public struct StubSignUpUseCase: SignUpUseCase {
     
     public let sideEffect =  PassthroughSubject<CoreAuthError, Never>()
     
-    public func signUp(with provider: OAuthProvider, name: String?, phone: String) -> AnyPublisher<Void, Never> {
+    public func signUp(with provider: OAuthProvider, phone: String) -> AnyPublisher<Void, Never> {
         Just(()).eraseToAnyPublisher()
     }
 }

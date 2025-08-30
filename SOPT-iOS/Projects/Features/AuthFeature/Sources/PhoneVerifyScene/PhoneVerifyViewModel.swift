@@ -64,11 +64,19 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
             .subscribe(output.timerIsRunning)
             .store(in: cancelBag)
         
+        
         useCase.sideEffect
-            .sink { err in
+            .withUnretained(self)
+            .sink { owner, err in
                 switch err {
                 case .userNotFound:
-                    output.phoneFailDescription.send("SOPT 활동 시 사용한 전화번호가 아니에요.")
+                    switch owner.phoneVerifyType {
+                    case .register:
+                        output.phoneFailDescription.send("SOPT 활동 시 사용한 전화번호가 아니에요.")
+                    default:
+                        output.phoneFailDescription.send("회원 정보를 찾을 수 없어요.")
+                    }
+                    
                 case .alreadyExist:
                     output.phoneFailDescription.send("이미 가입된 전화번호예요.")
                 case .invalidRequest:

@@ -119,18 +119,7 @@ public class SignInVC: UIViewController, SignInViewControllable {
         $0.textColor = DSKitAsset.Colors.gray50.color
     }
     
-    private lazy var recentLoginToolTip = ToolTipView().then {
-        $0.layer.cornerRadius = 12
-        $0.backgroundColor = DSKitAsset.Colors.success.color
-        
-        $0.contentView.addSubview(recentLoginLabel)
-        
-        recentLoginLabel.snp.makeConstraints {
-            $0.verticalEdges.equalToSuperview().inset(10)
-            $0.horizontalEdges.equalToSuperview().inset(20)
-        }
-        $0.alpha = 0
-    }
+    private let recentLoginToolTip = ToolTipView()
     
     
     // MARK: - View Life Cycle
@@ -146,9 +135,10 @@ public class SignInVC: UIViewController, SignInViewControllable {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        self.bindViewModels()
         self.setUI()
         self.setLayout()
+        self.view.layoutIfNeeded()
+        self.bindViewModels()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -172,6 +162,11 @@ public class SignInVC: UIViewController, SignInViewControllable {
     
     private func setUI() {
         self.view.backgroundColor = DSKitAsset.Colors.soptampBlack.color
+        
+        self.recentLoginToolTip.layer.cornerRadius = 12
+        self.recentLoginToolTip.backgroundColor = DSKitAsset.Colors.success.color
+        self.recentLoginToolTip.contentView.addSubview(recentLoginLabel)
+        self.recentLoginToolTip.alpha = 0
     }
     
     private func setLayout() {
@@ -184,6 +179,13 @@ public class SignInVC: UIViewController, SignInViewControllable {
             loginLaterButton,
             recentLoginToolTip
         )
+        
+        recentLoginToolTip.addSubview(recentLoginLabel)
+        
+        recentLoginLabel.snp.makeConstraints {
+            $0.verticalEdges.equalToSuperview().inset(10)
+            $0.horizontalEdges.equalToSuperview().inset(20)
+        }
         
         orStackView.addArrangedSubviews(leftLine, orLabel, rightLine)
         
@@ -237,7 +239,7 @@ public class SignInVC: UIViewController, SignInViewControllable {
         
         recentLoginToolTip.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(oAuthView.googleLoginButton.snp.top)
+            make.bottom.equalTo(oAuthView.googleLoginButton.snp.top).offset(-19)
         }
     }
     
@@ -302,13 +304,7 @@ extension SignInVC {
                 
                 guard let oAuthProvider else { return }
                 
-                owner.recentLoginLabel.text = "로그인한 계정은 \(oAuthProvider.title)이에요."
-                
-                let bottomAnchor: ConstraintRelatableTarget = oAuthProvider == .apple ? owner.oAuthView.appleLoginButton.snp.top : owner.oAuthView.googleLoginButton.snp.top
-                
-                owner.recentLoginToolTip.snp.updateConstraints {
-                    $0.bottom.equalTo(bottomAnchor).offset(-19)
-                }
+                owner.recentLoginLabel.text = "최근 로그인한 계정은 \(oAuthProvider.title)이에요."
             }
             .store(in: cancelBag)
         

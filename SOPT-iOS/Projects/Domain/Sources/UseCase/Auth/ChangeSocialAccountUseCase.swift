@@ -11,7 +11,7 @@ import Combine
 import Core
 
 public protocol ChangeSocialAccountUseCase {
-    func resetSocialAccount(with provider: OAuthProvider, name: String?, phone: String) -> AnyPublisher<Void, Never>
+    func resetSocialAccount(with provider: OAuthProvider, phone: String) -> AnyPublisher<Void, Never>
     var sideEffect: PassthroughSubject<CoreAuthError, Never> { get }
 }
 
@@ -37,18 +37,14 @@ public struct DefaultChangeSocialAccountUseCase: ChangeSocialAccountUseCase {
         
     public func resetSocialAccount(
         with provider: OAuthProvider,
-        name: String?,
         phone: String
     ) -> AnyPublisher<Void, Never> {
         oAuthRepository.getIdentityToken(from: provider)
-            .map { SignUpModel(name: name, phone: phone, token: $0, provider: provider) }
-            .flatMap { model in
-                self.repository.changeSocialAccount(model)
-                    .flatMap {
-                        self.repository.login(for: provider, with: model.token)
-                    }
-            }
-            .handleEvents(receiveOutput: self.tokenRepository.save)
+            .map { SignUpModel(phone: phone, token: $0, provider: provider) }
+            .flatMap(repository.changeSocialAccount)
+            .handleEvents(receiveOutput: { _ in
+                repository.deleteRecentLogin()
+            })
             .mapVoid()
             .catch { error in
                 self.sideEffect.send(error)
