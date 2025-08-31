@@ -80,6 +80,7 @@ extension HomeForMemberVC {
     private func scrollLatestPostItem(at currentIndex: Int) {
         let sectionIndex = HomeForMemberSectionLayoutKind.latestPosts.rawValue
         let indexPath = IndexPath(item: currentIndex, section: sectionIndex)
+        guard self.collectionView.cellForItem(at: indexPath) != nil else { return }
         self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
     }
 }

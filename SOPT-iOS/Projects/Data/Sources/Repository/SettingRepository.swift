@@ -12,6 +12,9 @@ import Core
 import Domain
 import Networks
 
+import SafariServices
+import WebKit
+
 public class SettingRepository {
     
     private let authService: AuthService
@@ -45,14 +48,19 @@ extension SettingRepository: SettingRepositoryInterface {
     }
     
     public func withdrawal() -> AnyPublisher<Bool, Never> {
-        return userService.withdraw()
-            .handleEvents(receiveOutput: { status in
-                if status == 200 {
-                    UserDefaultKeyList.clearAllUserData()
-                }
-            })
-            .map { _ in true}
-            .replaceError(with: false)
-            .eraseToAnyPublisher()
+        UserDefaultKeyList.clearUserData()
+        SFSafariViewController.DataStore.default.clearWebsiteData()
+        WKWebsiteDataStore.default().httpCookieStore.getAllCookies({_ in  })
+        return Just(true).setFailureType(to: Never.self).eraseToAnyPublisher()
+        
+//        return userService.withdraw()
+//            .handleEvents(receiveOutput: { status in
+//                if status == 200 {
+//                    UserDefaultKeyList.clearAllUserData()
+//                }
+//            })
+//            .map { _ in true}
+//            .replaceError(with: false)
+//            .eraseToAnyPublisher()
     }
 }

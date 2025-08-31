@@ -45,6 +45,9 @@ extension DefaultSignUpUseCase: SignUpUseCase {
         oAuthRepository.getIdentityToken(from: provider)
             .map { SignUpModel(phone: phone, token: $0, provider: provider)}
             .flatMap(self.repository.signUp)
+            .handleEvents(receiveOutput: { _ in
+                repository.deleteRecentLogin()
+            })
             .mapVoid()
             .catch { error in
                 self.sideEffect.send(error)

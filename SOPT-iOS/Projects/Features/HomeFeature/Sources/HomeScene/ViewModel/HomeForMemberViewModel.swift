@@ -243,8 +243,8 @@ extension HomeForMemberViewModel {
                 dashBoard: try await dashBoard,
                 recentSchedule: try await recentSchedule,
                 appServices: try await appService.map { $0.toPresentation() },
-                popularPosts: try await popularPosts.map { $0.toPresentation() },
-                latestPosts: try await latestPosts.map { $0.toPresentation() },
+                popularPosts: (try? await popularPosts.map { $0.toPresentation() }) ?? [],
+                latestPosts: (try? await latestPosts.map { $0.toPresentation() }) ?? [],
                 survey: try await survey
             )
             
