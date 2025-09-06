@@ -208,6 +208,7 @@ extension HomeForMemberViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onViewAllContentButtonTapped?(ExternalURL.Playground.main)
+                owner.eventTracker.trackClickViewAll(sectionName: .latestPosts)
             }
             .store(in: cancelBag)
         
