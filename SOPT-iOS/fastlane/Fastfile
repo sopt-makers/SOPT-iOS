@@ -212,7 +212,7 @@ platform :ios do
       apple_id = prompt(text: "Enter your Apple ID: ")
       app_password = prompt(text: "Enter your App Password")
       sh("make update_apple_id email=#{apple_id} app_password=#{app_password}")
-      sh("tuist fetch")
+      sh("tuist install")
       sh("fastlane install_plugins")
     end
     
