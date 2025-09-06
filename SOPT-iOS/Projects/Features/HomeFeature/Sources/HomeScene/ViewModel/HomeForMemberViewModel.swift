@@ -18,6 +18,7 @@ import HomeFeatureInterface
 import BaseFeatureDependency
 
 public class HomeForMemberViewModel: HomeForMemberViewModelType {
+    
     // MARK: - Properties
     
     private let useCase: HomeUseCase
@@ -43,6 +44,8 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         .init(socialLink: .instagram),
         .init(socialLink: .youtube)
     ]
+    
+    private let eventTracker = HomeEventTracker()
     
     // MARK: - Inputs
     
@@ -125,7 +128,7 @@ extension HomeForMemberViewModel {
                     AmplitudeInstance.shared.trackWithUserType(event: .clickAllCalendar)
                 case .productService(let model):
                     owner.onMainProductCellTapped?(model.product.serviceDomainLink)
-                    owner.trackAmplitude(event: model.product.toAmplitudeEventTypeNew)
+                    owner.eventTracker.trackAmplitude(event: model.product.toAmplitudeEventTypeNew)
                 case .appService(let model):
                     if model.serviceName == "콕찌르기" {
                         owner.useCase.checkPokeNewUser()
@@ -197,12 +200,6 @@ extension HomeForMemberViewModel {
 // MARK: - Methods
 
 extension HomeForMemberViewModel {
-    private func trackAmplitude(event: AmplitudeEventType?) {
-        if let event {
-            AmplitudeInstance.shared.trackWithUserType(event: event)
-        }
-    }
-    
     private func requestAuthorizationForNotification() {
         guard self.userType != .visitor,
               UserDefaultKeyList.Auth.hasAccessToken(),
