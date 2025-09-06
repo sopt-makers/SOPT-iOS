@@ -75,12 +75,13 @@ struct HomeEventTracker {
     }
     
     func trackClickPromo(
+        sectionName: HomeAmplitudeEventPropertyValue,
         promoName: String? = nil,
         destinationURL: String? = nil,
         destinationType: HomeAmplitudeEventPropertyValue
     ) {
         let properties = AmplitudeEventPropertyBuilder<HomeAmplitudeEventPropertyValue>()
-            .add(key: .sectionName, value: .homeBanner)
+            .add(key: .sectionName, value: sectionName)
             .add(key: .promoName, value: promoName)
             .add(key: .destinationURL, value: destinationURL)
             .add(key: .destinationType, value: destinationType)

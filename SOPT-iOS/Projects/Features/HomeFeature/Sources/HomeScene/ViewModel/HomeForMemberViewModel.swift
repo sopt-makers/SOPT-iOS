@@ -184,6 +184,7 @@ extension HomeForMemberViewModel {
                 let fetchedFABInfo = owner.fetchedFABInfo
                 owner.onExtendedFloatingButtonTapped?(fetchedFABInfo?.url ?? "")
                 owner.eventTracker.trackClickPromo(
+                    sectionName: .homeFAB,
                     promoName: fetchedFABInfo?.actionButtonName,
                     destinationURL: fetchedFABInfo?.url,
                     destinationType: .app
@@ -197,6 +198,7 @@ extension HomeForMemberViewModel {
                 let survey = owner.fetchedSurvey
                 owner.onSurveyButtonTapped?(survey?.linkURL ?? "")
                 owner.eventTracker.trackClickPromo(
+                    sectionName: .homeBanner,
                     promoName: survey?.title,
                     destinationURL: survey?.linkURL,
                     destinationType: .web
