@@ -26,7 +26,6 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     
     let userType: UserType = UserDefaultKeyList.Auth.getUserType()
     private var floatingButtonUrl: String = ""
-    private var surveyButtonURL: String = ""
     
     private var fetchedDashBoard: HomePresentationModel.DashBoard?
     private var fetchedRecentSchedule: HomePresentationModel.RecentSchedule?
@@ -189,7 +188,13 @@ extension HomeForMemberViewModel {
         input.surveyButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onSurveyButtonTapped?(owner.surveyButtonURL)
+                guard let survey = owner.fetchedSurvey else { return }
+                owner.onSurveyButtonTapped?(survey.linkURL)
+                owner.eventTracker.trackClickPromo(
+                    promoName: survey.title,
+                    destinationURL: survey.linkURL,
+                    destinationType: .web
+                )
             }
             .store(in: cancelBag)
         
@@ -256,9 +261,7 @@ extension HomeForMemberViewModel {
             async let appService = useCase.getAppServicesAsync()
             async let popularPosts = useCase.getPopularPostsAsync()
             async let latestPosts = useCase.getLatestPostsAsync()
-            
-            self.surveyButtonURL = try await survey.linkURL
-            
+                        
             model = HomePresentationModel(
                 dashBoard: try await dashBoard,
                 recentSchedule: try await recentSchedule,
