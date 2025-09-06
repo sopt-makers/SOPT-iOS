@@ -21,8 +21,8 @@ struct HomeEventTracker {
     func trackClickPostMember(
         postRanking: Int,
         sectionName: HomeAmplitudeEventPropertyValue,
-        postID: Int,
-        category: Int
+        postID: Int?,
+        category: String
     ) {
         let properties = AmplitudeEventPropertyBuilder<HomeAmplitudeEventPropertyValue>()
             .add(key: .postRanking, value: postRanking)
