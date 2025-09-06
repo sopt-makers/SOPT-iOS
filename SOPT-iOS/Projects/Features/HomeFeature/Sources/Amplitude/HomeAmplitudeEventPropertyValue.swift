@@ -14,6 +14,7 @@ enum HomeAmplitudeEventPropertyValue: String, AmplitudeEventPropertyValueConvert
     case latestPosts = "latest_posts"
     case realTimeFeed = "realtime_feed"
     case homeBanner = "home_banner"
+    case homeFAB = "home_fab"
     case app = "app"
     case web = "web"
 

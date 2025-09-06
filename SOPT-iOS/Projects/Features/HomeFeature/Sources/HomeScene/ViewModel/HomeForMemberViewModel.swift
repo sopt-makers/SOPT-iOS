@@ -25,11 +25,11 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     private var cancelBag = CancelBag()
     
     let userType: UserType = UserDefaultKeyList.Auth.getUserType()
-    private var floatingButtonUrl: String = ""
     
     private var fetchedDashBoard: HomePresentationModel.DashBoard?
     private var fetchedRecentSchedule: HomePresentationModel.RecentSchedule?
     private var fetchedSurvey: HomePresentationModel.Survey?
+    private var fetchedFABInfo: HomeFloatingButtonPresentationModel?
             
     let productServiceList: [HomePresentationModel.ProductService] = [
         .init(product: .playgroundCommunity),
@@ -113,7 +113,7 @@ extension HomeForMemberViewModel {
             .sink { owner, floatingButtonModel in
                 let presentationModel = floatingButtonModel.toPresentationModel()
                 output.floatingButtonInfo.send(presentationModel)
-                owner.floatingButtonUrl = presentationModel.url
+                owner.fetchedFABInfo = presentationModel
             }.store(in: cancelBag)
         
         input.cellTapped
@@ -181,7 +181,13 @@ extension HomeForMemberViewModel {
         input.extendedFloatingButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onExtendedFloatingButtonTapped?(owner.floatingButtonUrl)
+                guard let fetchedFABInfo = owner.fetchedFABInfo else { return }
+                owner.onExtendedFloatingButtonTapped?(fetchedFABInfo.url)
+                owner.eventTracker.trackClickPromo(
+                    promoName: fetchedFABInfo.actionButtonName,
+                    destinationURL: fetchedFABInfo.url,
+                    destinationType: .app
+                )
             }
             .store(in: cancelBag)
         
