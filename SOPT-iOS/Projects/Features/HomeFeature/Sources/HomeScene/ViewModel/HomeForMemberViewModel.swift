@@ -181,12 +181,12 @@ extension HomeForMemberViewModel {
         input.extendedFloatingButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                let fetchedFABInfo = owner.fetchedFABInfo
-                owner.onExtendedFloatingButtonTapped?(fetchedFABInfo?.url ?? "")
+                guard let info = owner.fetchedFABInfo, !info.url.isEmpty else { return }
+                owner.onExtendedFloatingButtonTapped?(info.url)
                 owner.eventTracker.trackClickPromo(
                     sectionName: .homeFAB,
-                    promoName: fetchedFABInfo?.actionButtonName,
-                    destinationURL: fetchedFABInfo?.url,
+                    promoName: info.actionButtonName,
+                    destinationURL: info.url,
                     destinationType: .app
                 )
             }
@@ -195,12 +195,13 @@ extension HomeForMemberViewModel {
         input.surveyButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                let survey = owner.fetchedSurvey
-                owner.onSurveyButtonTapped?(survey?.linkURL ?? "")
+                guard let survey = owner.fetchedSurvey, !survey.linkURL.isEmpty else { return }
+
+                owner.onSurveyButtonTapped?(survey.linkURL)
                 owner.eventTracker.trackClickPromo(
                     sectionName: .homeBanner,
-                    promoName: survey?.title,
-                    destinationURL: survey?.linkURL,
+                    promoName: survey.title,
+                    destinationURL: survey.linkURL,
                     destinationType: .web
                 )
             }
