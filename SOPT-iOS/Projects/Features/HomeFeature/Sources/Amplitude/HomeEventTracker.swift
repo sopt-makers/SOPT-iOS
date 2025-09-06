@@ -36,10 +36,10 @@ struct HomeEventTracker {
     }
     
     func trackClickPost(
-        postRanking: Int,
+        postRanking: Int? = 0, // NOTE: 최신 게시물일 경우, 랭킹이 존재하지 않고 0으로 처리합니다.
         sectionName: HomeAmplitudeEventPropertyValue,
-        postID: Int,
-        category: Int
+        postID: String,
+        category: String
     ) {
         let properties = AmplitudeEventPropertyBuilder<HomeAmplitudeEventPropertyValue>()
             .add(key: .postRanking, value: postRanking)
@@ -54,7 +54,7 @@ struct HomeEventTracker {
     
     func trackClickEmpty(
         sectionName: HomeAmplitudeEventPropertyValue,
-        category: Int
+        category: String
     ) {
         let properties = AmplitudeEventPropertyBuilder<HomeAmplitudeEventPropertyValue>()
             .add(key: .sectionName, value: sectionName)

@@ -142,8 +142,15 @@ extension HomeForMemberViewModel {
                     owner.onSocialLinkButtonTapped?(type.socialLink.serviceDomainLink)
                 case .popularPost(let model):
                     owner.onPopularPostCellTapped?(model.webLink)
+                    owner.eventTracker.trackClickPost(
+                        postRanking: model.rank,
+                        sectionName: .realTimeFeed,
+                        postID: model.id,
+                        category: model.category
+                    )
                 case .latestPost(let model):
                     owner.onLatestPostCellTapped?(model.webLink)
+                    owner.trackLatestPostEvent(model: model)
                 default: break
                 }
             }
@@ -216,6 +223,22 @@ extension HomeForMemberViewModel {
             if granted {
                 self.useCase.registerPushToken()
             }
+        }
+    }
+    
+    private func trackLatestPostEvent(model: HomePresentationModel.LatestPost) {
+        // 이름 필드의 유무에 따라, 엠티 뷰의 유무를 결정하며 이벤트도 분리해 처리합니다.
+        if let name = model.name, !name.isEmpty {
+            eventTracker.trackClickPost(
+                sectionName: .latestPosts,
+                postID: model.id,
+                category: model.category
+            )
+        } else {
+            eventTracker.trackClickEmpty(
+                sectionName: .latestPosts,
+                category: model.category
+            )
         }
     }
 }
