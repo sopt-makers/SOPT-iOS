@@ -51,4 +51,16 @@ struct HomeEventTracker {
         
         AmplitudeInstance.shared.track(eventType: .clickPost, eventProperties: properties)
     }
+    
+    func trackClickEmpty(
+        sectionName: HomeAmplitudeEventPropertyValue,
+        category: Int
+    ) {
+        let properties = AmplitudeEventPropertyBuilder<HomeAmplitudeEventPropertyValue>()
+            .add(key: .sectionName, value: sectionName)
+            .add(key: .category, value: category)
+            .build()
+        
+        AmplitudeInstance.shared.track(eventType: .clickEmpty, eventProperties: properties)
+    }
 }
