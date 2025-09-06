@@ -38,7 +38,7 @@ struct HomeEventTracker {
     func trackClickPost(
         postRanking: Int? = 0, // NOTE: 최신 게시물일 경우, 랭킹이 존재하지 않고 0으로 처리합니다.
         sectionName: HomeAmplitudeEventPropertyValue,
-        postID: String,
+        postID: Int? = 0,
         category: String
     ) {
         let properties = AmplitudeEventPropertyBuilder<HomeAmplitudeEventPropertyValue>()
@@ -75,8 +75,8 @@ struct HomeEventTracker {
     }
     
     func trackClickPromo(
-        promoName: String,
-        destinationURL: String,
+        promoName: String? = "",
+        destinationURL: String? = "",
         destinationType: HomeAmplitudeEventPropertyValue
     ) {
         let properties = AmplitudeEventPropertyBuilder<HomeAmplitudeEventPropertyValue>()

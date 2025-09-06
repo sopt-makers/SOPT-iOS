@@ -181,11 +181,11 @@ extension HomeForMemberViewModel {
         input.extendedFloatingButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                guard let fetchedFABInfo = owner.fetchedFABInfo else { return }
-                owner.onExtendedFloatingButtonTapped?(fetchedFABInfo.url)
+                let fetchedFABInfo = owner.fetchedFABInfo
+                owner.onExtendedFloatingButtonTapped?(fetchedFABInfo?.url ?? "")
                 owner.eventTracker.trackClickPromo(
-                    promoName: fetchedFABInfo.actionButtonName,
-                    destinationURL: fetchedFABInfo.url,
+                    promoName: fetchedFABInfo?.actionButtonName,
+                    destinationURL: fetchedFABInfo?.url,
                     destinationType: .app
                 )
             }
@@ -194,11 +194,11 @@ extension HomeForMemberViewModel {
         input.surveyButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                guard let survey = owner.fetchedSurvey else { return }
-                owner.onSurveyButtonTapped?(survey.linkURL)
+                let survey = owner.fetchedSurvey
+                owner.onSurveyButtonTapped?(survey?.linkURL ?? "")
                 owner.eventTracker.trackClickPromo(
-                    promoName: survey.title,
-                    destinationURL: survey.linkURL,
+                    promoName: survey?.title,
+                    destinationURL: survey?.linkURL,
                     destinationType: .web
                 )
             }
@@ -322,6 +322,7 @@ extension HomeForMemberViewModel {
         if let cached = fetchedSurvey { return cached }
         let entity = try await useCase.getSurveyInfoAsync()
         let survey = entity.toPresentation()
+        fetchedSurvey = survey
         return survey
     }
 }
