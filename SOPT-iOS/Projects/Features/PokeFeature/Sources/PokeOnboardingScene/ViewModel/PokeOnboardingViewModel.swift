@@ -30,7 +30,7 @@ public final class PokeOnboardingViewModel: PokeOnboardingViewModelType {
     
     public var onNaviBackTapped: (() -> Void)?
     public var onFirstVisitInOnboarding: (() -> Void)?
-    public var onAvartarTapped: ((_ playgroundId: String) -> Void)?
+    public var onAvartarTapped: ((_ userId: String) -> Void)?
     public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)?
     public var onMyFriendsTapped: (() -> Void)?
     
@@ -79,14 +79,14 @@ extension PokeOnboardingViewModel {
                 return value
             }
             .sink(receiveValue: { [weak self] userModel, messageModel, isAnonymous in
-                self?.eventTracker.trackClickPokeEvent(clickView: .onboarding, playgroundId: userModel.playgroundId)
+                self?.eventTracker.trackClickPokeEvent(clickView: .onboarding, userId: userModel.userId)
                 self?.usecase.poke(userId: userModel.userId, message: messageModel, isAnonymous: isAnonymous)
             }).store(in: cancelBag)
         
         input.avatarTapped
             .sink(receiveValue: { [weak self] userModel in
-                self?.eventTracker.trackClickMemberProfileEvent(clickView: .onboarding, playgroundId: userModel.playgroundId)
-                self?.onAvartarTapped?(String(describing: userModel.playgroundId))
+                self?.eventTracker.trackClickMemberProfileEvent(clickView: .onboarding, userId: userModel.userId)
+                self?.onAvartarTapped?(String(describing: userModel.userId))
             }).store(in: cancelBag)
         
         input.pullToRefreshTriggered

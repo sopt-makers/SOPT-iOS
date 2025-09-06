@@ -77,15 +77,15 @@ extension PokeMyFriendsViewModel {
                 return value
             }
             .sink {[weak self] userModel, messageModel, isAnonymous in
-                self?.eventTracker.trackClickPokeEvent(clickView: .friend, playgroundId: userModel.playgroundId)
+                self?.eventTracker.trackClickPokeEvent(clickView: .friend, userId: userModel.userId)
                 self?.useCase.poke(userId: userModel.userId, message: messageModel, isAnonymous: isAnonymous)
             }.store(in: cancelBag)
         
         input.profileImageTap
             .compactMap { $0 }
             .sink { [weak self] user in
-                self?.eventTracker.trackClickMemberProfileEvent(clickView: .friend, playgroundId: user.playgroundId)
-                self?.onProfileImageTapped?(user.playgroundId)
+                self?.eventTracker.trackClickMemberProfileEvent(clickView: .friend, userId: user.userId)
+                self?.onProfileImageTapped?(user.userId)
             }.store(in: cancelBag)
         
         return output

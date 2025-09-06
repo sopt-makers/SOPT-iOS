@@ -48,8 +48,8 @@ final class LegacyPokeCoordinator: DefaultPokeCoordinator {
             self?.runPokeMyFriendsFlow()
         }
         
-        pokeMain.vm.onProfileImageTapped = { [weak self] playgroundId in
-            guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(playgroundId)") else { return }
+        pokeMain.vm.onProfileImageTapped = { [weak self] userId in
+            guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(userId)") else { return }
             
             let webView = SOPTWebView(startWith: url)
             self?.rootController?.pushViewController(webView, animated: true)

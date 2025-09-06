@@ -10,7 +10,7 @@ import Foundation
 
 public struct PokeUserEntity {
   public let userId: Int
-  public let playgroundId: Int
+//  public let playgroundId: Int
   public let profileImage: String
   public let name: String
   public let generation: Int
@@ -27,7 +27,7 @@ public struct PokeUserEntity {
 
 extension PokeUserEntity: Codable {
   public enum CodingKeys: CodingKey {
-    case userId, playgroundId, profileImage, name, generation, part, pokeNum,
+    case userId, profileImage, name, generation, part, pokeNum,
          message, relationName, mutualRelationMessage, isFirstMeet, isAlreadyPoke,
          isAnonymous, anonymousName, anonymousImage
   }
@@ -36,7 +36,6 @@ extension PokeUserEntity: Codable {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     
     self.userId = try container.decode(Int.self, forKey: .userId)
-    self.playgroundId = try container.decode(Int.self, forKey: .playgroundId)
     self.profileImage = try container.decodeIfPresent(String.self, forKey: .profileImage) ?? ""
     self.name = try container.decode(String.self, forKey: .name)
     self.generation = try container.decode(Int.self, forKey: .generation)

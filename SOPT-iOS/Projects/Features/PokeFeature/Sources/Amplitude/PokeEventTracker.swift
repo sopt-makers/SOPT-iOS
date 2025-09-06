@@ -24,22 +24,22 @@ struct PokeEventTracker {
         AmplitudeInstance.shared.track(eventType: .viewPokeFriendDetail, eventProperties: properties)
     }
         
-    func trackClickPokeEvent(clickView: PokeAmplitudeEventPropertyValue, playgroundId: Int? = nil) {
+    func trackClickPokeEvent(clickView: PokeAmplitudeEventPropertyValue, userId: Int? = nil) {
         let properties = AmplitudeEventPropertyBuilder<PokeAmplitudeEventPropertyValue>()
             .addViewType()
             .add(key: .clickViewType, value: clickView)
-            .add(key: .viewProfile, value: playgroundId)
+            .add(key: .viewProfile, value: userId)
             .removeOptional()
             .build()
         
         AmplitudeInstance.shared.track(eventType: .clickPokeIcon, eventProperties: properties)
     }
 
-    func trackClickMemberProfileEvent(clickView: PokeAmplitudeEventPropertyValue, playgroundId: Int? = nil) {
+    func trackClickMemberProfileEvent(clickView: PokeAmplitudeEventPropertyValue, userId: Int? = nil) {
         let properties = AmplitudeEventPropertyBuilder<PokeAmplitudeEventPropertyValue>()
             .addViewType()
             .add(key: .clickViewType, value: clickView)
-            .add(key: .viewProfile, value: playgroundId)
+            .add(key: .viewProfile, value: userId)
             .removeOptional()
             .build()
         

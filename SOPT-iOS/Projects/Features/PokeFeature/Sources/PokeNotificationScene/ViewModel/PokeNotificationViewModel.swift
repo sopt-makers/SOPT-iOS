@@ -71,7 +71,7 @@ extension PokeNotificationViewModel {
         
         input.profileButtonTap
           .sink { [weak self] user in
-            self?.onProfileImageTapped?(user.playgroundId)
+            self?.onProfileImageTapped?(user.userId)
           }.store(in: cancelBag)
 
         return output

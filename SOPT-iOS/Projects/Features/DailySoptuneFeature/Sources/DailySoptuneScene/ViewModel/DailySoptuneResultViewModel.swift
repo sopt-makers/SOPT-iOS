@@ -98,7 +98,7 @@ extension DailySoptuneResultViewModel {
             .compactMap { $0 }
             .withUnretained(self)
             .sink { owner, user in
-                owner.onProfileImageTapped?(user.playgroundId)
+                owner.onProfileImageTapped?(user.userId)
             }.store(in: cancelBag)
         
         return output

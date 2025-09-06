@@ -64,8 +64,8 @@ public final class DailySoptuneResultCoordinator: BaseCoordinator {
             self.showDailySoptuneCard(cardModel)
         }
         
-        dailySoptuneResult.vm.onProfileImageTapped = { [weak self] playgroundId in
-            guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(playgroundId)") else { return }
+        dailySoptuneResult.vm.onProfileImageTapped = { [weak self] userId in
+            guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(userId)") else { return }
             
             let webView = SOPTWebView(startWith: url)
             self?.rootController?.pushViewController(webView, animated: true)
