@@ -13,6 +13,9 @@ import Core
 enum HomeAmplitudeEventPropertyValue: String, AmplitudeEventPropertyValueConvertible {
     case latestPosts = "latest_posts"
     case realTimeFeed = "realtime_feed"
+    case homeBanner = "home_banner"
+    case app = "app"
+    case web = "web"
 
     func toString() -> String {
         self.rawValue
