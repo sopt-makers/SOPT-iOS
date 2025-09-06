@@ -144,7 +144,7 @@ extension HomeForMemberViewModel {
                     owner.eventTracker.trackClickPost(
                         postRanking: model.rank,
                         sectionName: .realTimeFeed,
-                        postID: model.id,
+                        postID: model.serverID,
                         category: model.category
                     )
                 case .latestPost(let model):
@@ -243,7 +243,7 @@ extension HomeForMemberViewModel {
         if let name = model.name, !name.isEmpty {
             eventTracker.trackClickPost(
                 sectionName: .latestPosts,
-                postID: model.id,
+                postID: model.serverID,
                 category: model.category
             )
         } else {
