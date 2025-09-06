@@ -66,8 +66,8 @@ extension LegacyPokeNotificationListCoordinator {
             self.rootController?.present(pokeAnonymousFriendUpgradeVC, animated: false)
         }
 
-        pokeNotiListVC.vm.onProfileImageTapped = { [weak self] playgroundId in
-          guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(playgroundId)") else { return }
+        pokeNotiListVC.vm.onProfileImageTapped = { [weak self] userId in
+          guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(userId)") else { return }
 
           let webView = SOPTWebView(startWith: url)
 

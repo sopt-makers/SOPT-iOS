@@ -145,7 +145,7 @@ extension PokeMainViewModel {
     input.profileImageTap
       .compactMap { $0.0 }
       .sink { [weak self] user in
-        self?.onProfileImageTapped?(user.playgroundId)
+        self?.onProfileImageTapped?(user.userId)
       }.store(in: cancelBag)
 
     input.profileImageTap

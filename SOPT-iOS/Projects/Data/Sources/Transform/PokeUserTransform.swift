@@ -15,7 +15,6 @@ extension PokeUserEntity {
   public func toDomain() -> PokeUserModel {
     return PokeUserModel(
       userId: userId,
-      playgroundId: playgroundId,
       profileImage: profileImage,
       name: name,
       generation: generation,

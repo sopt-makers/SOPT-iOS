@@ -44,8 +44,8 @@ final class LegacyPokeMyFriendsCoordinator: DefaultCoordinator {
             return self.showMessageBottomSheet(userModel: userModel, on: self.rootController)
         }
         
-        pokeMyFriends.vm.onProfileImageTapped = { [weak self] playgroundId in
-            guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(playgroundId)") else { return }
+        pokeMyFriends.vm.onProfileImageTapped = { [weak self] userId in
+            guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(userId)") else { return }
             
             let webView = SOPTWebView(startWith: url)
             self?.router.push(webView)
@@ -73,8 +73,8 @@ final class LegacyPokeMyFriendsCoordinator: DefaultCoordinator {
             return self.showMessageBottomSheet(userModel: userModel, on: self.rootController)
         }
         
-        pokeMyFriendsList.vm.onProfileImageTapped = { [weak self] playgroundId in
-            guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(playgroundId)") else { return }
+        pokeMyFriendsList.vm.onProfileImageTapped = { [weak self] userId in
+            guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(userId)") else { return }
             
             let webView = SOPTWebView(startWith: url)
             self?.rootController?.pushViewController(webView, animated: true)

@@ -26,7 +26,7 @@ public final class ProfileCardGroupView: UIView, PokeCompatible {
 
   let cancelBag = CancelBag()
 
-  private var friendPlaygroundId: Int?
+  private var friendUserId: Int?
 
   // MARK: - UI Components
 
