@@ -59,7 +59,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         let surveyButtonTapped: Driver<Void>
         let socialLinkButtonTapped: Driver<HomePresentationModel.SocialLink>
         let viewAllButtonTapped: Driver<Void>
-        let profileImageViewTapped: Driver<Int>
+        let profileImageViewTapped: Driver<PostInfo>
     }
     
     // MARK: - Outputs
@@ -219,8 +219,17 @@ extension HomeForMemberViewModel {
         
         input.profileImageViewTapped
             .withUnretained(self)
-            .sink { owner, userID in
-                owner.onProfileImageViewTapped?(userID)
+            .sink { owner, model in
+                if let userID = model.userID {
+                    owner.onProfileImageViewTapped?(userID)
+                    owner.eventTracker.trackClickPostMember(
+                        postRanking: model.postRanking,
+                        sectionName: model.sectionName,
+                        postID: model.postID,
+                        category: model.category
+                    )
+                }
+                
             }
             .store(in: cancelBag)
         

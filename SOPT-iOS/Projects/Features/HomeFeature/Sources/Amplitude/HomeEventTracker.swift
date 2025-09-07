@@ -19,7 +19,7 @@ struct HomeEventTracker {
     }
     
     func trackClickPostMember(
-        postRanking: Int,
+        postRanking: Int?,
         sectionName: HomeAmplitudeEventPropertyValue,
         postID: Int?,
         category: String
@@ -31,7 +31,7 @@ struct HomeEventTracker {
             .add(key: .category, value: category)
             .addViewType()
             .build()
-        
+            
         AmplitudeInstance.shared.track(eventType: .clickPostMember, eventProperties: properties)
     }
     

@@ -50,11 +50,12 @@ extension HomeForMemberVC {
     func createPopularPostCellRegistration() -> PopularPostCellRegistration {
         collectionView.createCellRegistration { cell, index, item in
             cell.configureCell(model: item, index: index, cellType: .popular)
+            cell.setPostInfo(model: item, section: .latestPosts)
             
             cell.profileImageViewTap
                 .withUnretained(self)
-                .sink { owner, userID in
-                    owner.profileImageViewTapped.send(userID)
+                .sink { owner, info in
+                    owner.profileImageViewTapped.send(info)
                 }
                 .store(in: cell.cancelBag)
         }
@@ -63,11 +64,12 @@ extension HomeForMemberVC {
     func createLatestPostCellRegistration() -> LatestPostCellRegistration {
         collectionView.createCellRegistration { cell, index, item in
             cell.configureCell(model: item, index: index, cellType: .latest)
+            cell.setPostInfo(model: item, section: .realTimeFeed)
             
             cell.profileImageViewTap
                 .withUnretained(self)
-                .sink { owner, userID in
-                    owner.profileImageViewTapped.send(userID)
+                .sink { owner, info in
+                    owner.profileImageViewTapped.send(info)
                 }
                 .store(in: cell.cancelBag)
         }
