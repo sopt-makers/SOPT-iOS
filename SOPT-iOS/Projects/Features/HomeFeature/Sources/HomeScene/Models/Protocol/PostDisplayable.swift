@@ -17,7 +17,7 @@ protocol PostDisplayable {
     var title: String { get }
     var content: String { get }
     var webLink: String { get }
-    var id: String { get } // 서버에서 내려오는 값은 Int?
+    var id: String { get }
     var postID: Int? { get }
     var userID: Int? { get }
     var ranking: Int? { get }
