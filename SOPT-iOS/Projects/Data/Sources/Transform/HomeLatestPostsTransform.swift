@@ -22,7 +22,8 @@ extension HomeLatestPostsResponseEntity {
             content: self.content,
             webLink: self.webLink,
             id: self.id,
-            isOutdated: self.isOutdated
+            isOutdated: self.isOutdated,
+            userId: self.userId
         )
     }
 }

@@ -18,6 +18,7 @@ public struct HomeLatestPostModel {
     public let webLink: String
     public let id: Int?
     public let isOutdated: Bool
+    public let userId: Int?
 
     public init(
         profileImage: String?,
@@ -28,7 +29,8 @@ public struct HomeLatestPostModel {
         content: String,
         webLink: String,
         id: Int?,
-        isOutdated: Bool
+        isOutdated: Bool,
+        userId: Int?
     ) {
         self.profileImage = profileImage
         self.name = name
@@ -39,5 +41,6 @@ public struct HomeLatestPostModel {
         self.webLink = webLink
         self.id = id
         self.isOutdated = isOutdated
+        self.userId = userId
     }
 }

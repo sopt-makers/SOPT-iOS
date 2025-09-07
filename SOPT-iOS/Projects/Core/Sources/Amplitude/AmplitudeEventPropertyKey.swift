@@ -15,4 +15,13 @@ public enum AmplitudeEventPropertyKey: String {
     // 콕 찌르기 피쳐 관련 Key
     case viewProfile = "view_profile" // 멤버 프로필 id
     case friendType = "friend_type"
+    
+    // 홈 피쳐 관련 Key
+    case postRanking = "post_ranking"
+    case sectionName = "section_name"
+    case postID = "post_id"
+    case category = "category"
+    case promoName = "promo_name"
+    case destinationURL = "destination_url"
+    case destinationType = "destination_type"
 }

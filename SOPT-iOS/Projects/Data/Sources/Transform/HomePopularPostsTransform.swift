@@ -22,7 +22,8 @@ extension HomePopularPostsResponseEntity {
             title: self.title,
             content: self.content,
             webLink: self.webLink,
-            id: self.id
+            id: self.id,
+            userId: self.userId
         )
     }
 }

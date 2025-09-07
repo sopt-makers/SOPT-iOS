@@ -22,4 +22,5 @@ public struct HomePopularPostsResponseEntity: Decodable {
     public let content: String
     public let webLink: String
     public let id: Int?
+    public let userId: Int?
 }

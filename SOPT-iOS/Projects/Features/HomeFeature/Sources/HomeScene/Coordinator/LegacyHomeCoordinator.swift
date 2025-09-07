@@ -122,6 +122,11 @@ public final class LegacyHomeCoordinator: DefaultHomeCoordinator {
             self?.requestCoordinating?(.webLink(url: url))
         }
         
+        homeForMember.vm.onProfileImageViewTapped = { [weak self] userID in
+            let url = "\(ExternalURL.Playground.main)/members/\(userID)"
+            self?.requestCoordinating?(.webLink(url: url))
+        }
+        
         rootViewController = homeForMember.vc.viewController
         
         router.push(homeForMember.vc)
