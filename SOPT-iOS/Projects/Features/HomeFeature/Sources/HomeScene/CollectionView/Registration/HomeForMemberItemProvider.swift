@@ -50,12 +50,26 @@ extension HomeForMemberVC {
     func createPopularPostCellRegistration() -> PopularPostCellRegistration {
         collectionView.createCellRegistration { cell, index, item in
             cell.configureCell(model: item, index: index, cellType: .popular)
+            
+            cell.profileImageViewTap
+                .withUnretained(self)
+                .sink { owner, userID in
+                    owner.profileImageViewTapped.send(userID)
+                }
+                .store(in: cell.cancelBag)
         }
     }
     
     func createLatestPostCellRegistration() -> LatestPostCellRegistration {
         collectionView.createCellRegistration { cell, index, item in
             cell.configureCell(model: item, index: index, cellType: .latest)
+            
+            cell.profileImageViewTap
+                .withUnretained(self)
+                .sink { owner, userID in
+                    owner.profileImageViewTapped.send(userID)
+                }
+                .store(in: cell.cancelBag)
         }
     }
     

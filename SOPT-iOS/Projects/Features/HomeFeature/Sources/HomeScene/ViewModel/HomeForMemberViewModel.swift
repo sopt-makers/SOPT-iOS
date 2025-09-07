@@ -59,6 +59,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         let surveyButtonTapped: Driver<Void>
         let socialLinkButtonTapped: Driver<HomePresentationModel.SocialLink>
         let viewAllButtonTapped: Driver<Void>
+        let profileImageViewTapped: Driver<Int>
     }
     
     // MARK: - Outputs
@@ -86,6 +87,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public var onPopularPostCellTapped: ((String) -> Void)?
     public var onLatestPostCellTapped: ((String) -> Void)?
     public var onViewAllContentButtonTapped: ((String) -> Void)?
+    public var onProfileImageViewTapped: ((Int) -> Void)?
     
     // MARK: - initialization
     
@@ -212,6 +214,13 @@ extension HomeForMemberViewModel {
             .sink { owner, _ in
                 owner.onViewAllContentButtonTapped?(ExternalURL.Playground.main)
                 owner.eventTracker.trackClickViewAll(sectionName: .latestPosts)
+            }
+            .store(in: cancelBag)
+        
+        input.profileImageViewTapped
+            .withUnretained(self)
+            .sink { owner, userID in
+                owner.onProfileImageViewTapped?(userID)
             }
             .store(in: cancelBag)
         
