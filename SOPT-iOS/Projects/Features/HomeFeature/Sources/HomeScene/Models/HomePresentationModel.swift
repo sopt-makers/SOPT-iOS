@@ -73,6 +73,7 @@ struct HomePresentationModel {
         let webLink: String
         let id: String
         let serverID: Int?
+        let userID: Int?
     }
 
     struct LatestPost: Identifiable, Hashable {
@@ -86,6 +87,7 @@ struct HomePresentationModel {
         let webLink: String
         let isOutdated: Bool
         let serverID: Int?
+        let userID: Int?
     }
     
     struct Survey: Identifiable, Hashable {
@@ -173,7 +175,8 @@ extension HomePopularPostModel {
             content: self.content,
             webLink: self.webLink,
             id: self.stableID,
-            serverID: self.id
+            serverID: self.id,
+            userID: self.userId
         )
     }
 }
@@ -197,7 +200,8 @@ extension HomeLatestPostModel {
             content: self.content,
             webLink: self.webLink,
             isOutdated: self.isOutdated,
-            serverID: self.id
+            serverID: self.id,
+            userID: self.userId
         )
     }
 }
