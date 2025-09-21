@@ -16,7 +16,7 @@ import PokeFeatureInterface
 import WebFeature
 
 public
-final class LegacyPokeMyFriendsCoordinator: DefaultCoordinator {
+final class LegacyPokeMyFriendsCoordinator: BaseCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: LegacyPokeFeatureBuildable
