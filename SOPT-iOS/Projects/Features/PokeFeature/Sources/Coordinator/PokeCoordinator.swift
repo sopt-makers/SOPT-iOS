@@ -19,8 +19,6 @@ public final class PokeCoordinator: BaseCoordinator {
 
     // MARK: - Properties
     
-    public var finishFlow: (() -> Void)?
-    
     private let factory: PokeFeatureBuildable
     private weak var navigationController: UINavigationController? // pokeMain을 prensent하는 부모 네비
     private weak var rootController: UINavigationController?        // pokeMain에서 push할 때 사용
