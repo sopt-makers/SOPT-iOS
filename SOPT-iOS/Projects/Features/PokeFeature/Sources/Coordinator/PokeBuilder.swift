@@ -8,6 +8,7 @@
 
 import Core
 import Domain
+import BaseFeatureDependency
 @_exported import PokeFeatureInterface
 
 public final class PokeBuilder {
@@ -60,9 +61,10 @@ extension PokeBuilder: PokeFeatureBuildable {
         return (viewController, viewModel)
     }
     
-    public func makePokeNotificationList() -> PokeFeatureInterface.PokeNotificationPresentable {
+    public func makePokeNotificationList(coordinator: Coordinator) -> PokeFeatureInterface.PokeNotificationPresentable {
         let usecase = DefaultPokeNotificationUsecase(repository: self.pokeNotificationListRepository)
-        let viewModel = PokeNotificationViewModel(usecase: usecase)
+        let viewModel = PokeNotificationViewModel(usecase: usecase,
+                                                  coordinator: coordinator)
         let viewController = PokeNotificationViewController(viewModel: viewModel)
         
         return (viewController, viewModel)

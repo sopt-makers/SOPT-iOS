@@ -15,6 +15,24 @@ import BaseFeatureDependency
 import PokeFeatureInterface
 
 public final class PokeNotificationViewModel: PokeNotificationViewModelType {
+    
+    // MARK: - Trigger
+    
+    public var onNaviBackTapped: (() -> Void)?
+    public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)?
+    public var onNewFriendAdded: ((_ friendName: String) -> Void)?
+    public var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)?
+    public var onProfileImageTapped: ((Int) -> Void)?
+    
+    // MARK: - Properties
+    
+    private let coordinator: AnyCoordinatorObject
+    private let usecase: PokeNotificationUsecase
+    private let cancelBag = CancelBag()
+    private let eventTracker = PokeEventTracker()
+    
+    // MARK: - Inputs
+    
     public struct Input {
         let viewDidLoaded: Driver<Void>
         let reachToBottom: Driver<Void>
@@ -22,23 +40,16 @@ public final class PokeNotificationViewModel: PokeNotificationViewModelType {
         let profileButtonTap: Driver<PokeUserModel>
     }
     
+    // MARK: - Outputs
+    
     public struct Output {
         let pokeToMeHistoryList = PassthroughSubject<[PokeUserModel], Never>()
         let pokedResult = PassthroughSubject<PokeUserModel, Never>()
     }
     
-    public var onNaviBackTapped: (() -> Void)?
-    public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)?
-    public var onNewFriendAdded: ((_ friendName: String) -> Void)?
-    public var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)?
-    public var onProfileImageTapped: ((Int) -> Void)?
-
-    private let usecase: PokeNotificationUsecase
-    private let cancelBag = CancelBag()
-    private let eventTracker = PokeEventTracker()
-    
-    init(usecase: PokeNotificationUsecase) {
+    init(usecase: PokeNotificationUsecase, coordinator: Coordinator) {
         self.usecase = usecase
+        self.coordinator = coordinator
     }
 }
 
