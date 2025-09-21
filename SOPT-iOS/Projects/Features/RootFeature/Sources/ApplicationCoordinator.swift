@@ -571,7 +571,7 @@ extension ApplicationCoordinator {
                 self?.removeDependency(legacyPokeCoordinator)
             }
             coordinator = legacyPokeCoordinator
-            
+            addDependency(coordinator)
         case .new:
             let newCoordinator = PokeCoordinator(
                 navigationController: UIWindow.getRootNavigationController,
@@ -580,8 +580,7 @@ extension ApplicationCoordinator {
             
             coordinator = newCoordinator
         }
-
-        addDependency(coordinator)
+        
         coordinator.start()
         
         return coordinator
