@@ -8,6 +8,7 @@
 
 import Core
 import Domain
+import BaseFeatureDependency
 @_exported import PokeFeatureInterface
 
 public final class LegacyPokeBuilder {
