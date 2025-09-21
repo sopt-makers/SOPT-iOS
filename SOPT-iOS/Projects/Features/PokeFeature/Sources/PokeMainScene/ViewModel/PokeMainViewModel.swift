@@ -28,7 +28,6 @@ public class PokeMainViewModel: PokeMainViewModelType {
     public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)?
     public var onNewFriendMade: ((String) -> Void)?
     public var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)?
-    public var switchToOnboarding: (() -> Void)?
     
     // MARK: - Properties
     
@@ -84,19 +83,6 @@ extension PokeMainViewModel {
                 self?.useCase.getWhoPokedToMe()
                 self?.useCase.getFriend()
                 self?.useCase.getFriendRandomUser(randomType: .all, size: 2)
-            }.store(in: cancelBag)
-        
-        // 콕찌르기 새 유저인지 판별, 새유저인 경우 PokeOnboardingVC로 전환한다.
-        // isRouteFromRoot == true일 때만 로직 실행, isRouteFromRoot는 딥링크를 통해 이동한 경우만 true (update.2025.04.08)
-        input.viewDidLoad
-            .map { [weak self] _ in
-                self?.isRouteFromRoot
-            }
-            .compactMap { $0 }
-            .filter { $0 == true }
-            .sink { [weak self] _ in
-                output.isLoading.send(true)
-                self?.useCase.checkPokeNewUser()
             }.store(in: cancelBag)
         
         input.viewDidLoad
@@ -233,14 +219,6 @@ extension PokeMainViewModel {
             .compactMap { $0 }
             .sink { message in
                 ToastUtils.showMDSToast(type: .alert, text: message)
-            }.store(in: cancelBag)
-        
-        useCase.isPokeNewUser
-            .sink { [weak self] isNewUser in
-                output.isLoading.send(false)
-                if isNewUser {
-                    self?.switchToOnboarding?()
-                }
             }.store(in: cancelBag)
     }
 }

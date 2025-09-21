@@ -82,31 +82,11 @@ public final class PokeCoordinator: BaseCoordinator {
             pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
             self.rootController?.present(pokeAnonymousFriendUpgradeVC, animated: false)
         }
-
-        pokeMain.vm.switchToOnboarding = { [weak self] in
-            guard let self = self else { return }
-            self.runPokeOnboardingFlow()
-        }
         
         let navController = UINavigationController(rootViewController: pokeMain.vc)
         navController.modalPresentationStyle = .overFullScreen
         rootController = navController
         navigationController?.present(navController, animated: true)
-    }
-    
-    internal func runPokeOnboardingFlow() {
-        let pokeOnboardingCoordinator = PokeOnboardingCoordinator(
-            navigationController: rootController ?? UIWindow.getRootNavigationController,
-            factory: factory
-        )
-        
-        pokeOnboardingCoordinator.finishFlow = { [weak self, weak pokeOnboardingCoordinator] in
-            pokeOnboardingCoordinator?.childCoordinators = []
-            self?.removeDependency(pokeOnboardingCoordinator)
-        }
-        
-        addDependency(pokeOnboardingCoordinator)
-        pokeOnboardingCoordinator.start()
     }
     
     internal func runPokeNotificationListFlow() {

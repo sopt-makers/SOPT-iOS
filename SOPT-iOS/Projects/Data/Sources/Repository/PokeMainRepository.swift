@@ -48,10 +48,4 @@ extension PokeMainRepository: PokeMainRepositoryInterface {
             .map { $0.toDomain() }
             .eraseToAnyPublisher()
     }
-    
-    public func checkPokeNewUser() -> AnyPublisher<Bool, Error> {
-        pokeService.isNewUser()
-            .map { $0.isNew }
-            .eraseToAnyPublisher()
-    }
 }
