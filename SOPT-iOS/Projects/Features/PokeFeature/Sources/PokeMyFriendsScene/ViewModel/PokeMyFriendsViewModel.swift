@@ -18,6 +18,8 @@ import BaseFeatureDependency
 public class PokeMyFriendsViewModel:
     PokeMyFriendsViewModelType {
     
+    // MARK: - Trigger
+    
     public var showFriendsListButtonTap: ((PokeRelation) -> Void)?
     public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)?
     public var onProfileImageTapped: ((Int) -> Void)?
@@ -26,6 +28,7 @@ public class PokeMyFriendsViewModel:
     // MARK: - Properties
     
     private let useCase: PokeMyFriendsUseCase
+    private let coordinator: AnyCoordinatorObject
     private var cancelBag = CancelBag()
     private var myFriends: PokeMyFriendsModel?
     private let eventTracker = PokeEventTracker()
@@ -47,8 +50,9 @@ public class PokeMyFriendsViewModel:
     
     // MARK: - initialization
     
-    public init(useCase: PokeMyFriendsUseCase) {
+    public init(useCase: PokeMyFriendsUseCase, coordinator: Coordinator) {
         self.useCase = useCase
+        self.coordinator = coordinator
     }
 }
     

@@ -44,7 +44,7 @@ public final class PokeMyFriendsCoordinator: DefaultCoordinator {
     // MARK: - Navigation
     
     private func showPokeMyFriends() {
-        var pokeMyFriends = factory.makePokeMyFriends()
+        var pokeMyFriends = factory.makePokeMyFriends(coordinator: self)
         
         pokeMyFriends.vm.showFriendsListButtonTap = { [weak self] relation in
             self?.showPokeMyFriendsList(with: relation)

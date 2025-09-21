@@ -27,9 +27,9 @@ extension LegacyPokeBuilder: LegacyPokeFeatureBuildable {
         return (pokeMainVC, viewModel)
     }
     
-    public func makePokeMyFriends() -> PokeFeatureInterface.LegacyPokeMyFriendsPresentable {
+    public func makePokeMyFriends(coordinator: Coordinator) -> PokeFeatureInterface.LegacyPokeMyFriendsPresentable {
         let useCase = DefaultPokeMyFriendsUseCase(repository: pokeMyFriendsRepository)
-        let viewModel = PokeMyFriendsViewModel(useCase: useCase)
+        let viewModel = PokeMyFriendsViewModel(useCase: useCase, coordinator: coordinator)
         let pokeMyFriendsVC = PokeMyFriendsVC(viewModel: viewModel)
         
         return (pokeMyFriendsVC, viewModel)
