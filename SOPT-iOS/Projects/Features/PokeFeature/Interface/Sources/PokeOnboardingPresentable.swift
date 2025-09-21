@@ -14,7 +14,7 @@ import Domain
 
 public protocol PokeOnboardingViewControllable: LegacyViewControllable { }
 
-public protocol PokeOnboardingCoordinatable {
+public protocol PokeOnboardingRoutingTrigger {
     var onNaviBackTapped: (() -> Void)? { get set }
     var onFirstVisitInOnboarding: (() -> Void)? { get set }
     var onAvartarTapped: ((_ userId: String) -> Void)? { get set }
@@ -22,7 +22,7 @@ public protocol PokeOnboardingCoordinatable {
     var onMyFriendsTapped: (() -> Void)? { get set }
 }
 
-public typealias PokeOnboardingViewModelType = ViewModelType & PokeOnboardingCoordinatable
+public typealias PokeOnboardingViewModelType = ViewModelType & PokeOnboardingRoutingTrigger
 public typealias LegacyPokeOnboardingPresentable = (vc: PokeOnboardingViewControllable, vm: any PokeOnboardingViewModelType)
 
 public typealias PokeOnboardingPresentable = (vc: UIViewController, vm: any PokeOnboardingViewModelType)

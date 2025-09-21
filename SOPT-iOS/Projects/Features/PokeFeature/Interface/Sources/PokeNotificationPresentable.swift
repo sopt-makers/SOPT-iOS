@@ -14,7 +14,7 @@ import Domain
 
 public protocol PokeNotificationViewControllable: LegacyViewControllable { }
 
-public protocol PokeNotificationCoordinatable {
+public protocol PokeNotificationRoutingTrigger {
     var onNaviBackTapped: (() -> Void)? { get set }
     var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)? { get set }
     var onNewFriendAdded: ((_ friendName: String) -> Void)? { get set }
@@ -22,7 +22,7 @@ public protocol PokeNotificationCoordinatable {
     var onProfileImageTapped: ((Int) -> Void)? { get set }
 }
 
-public typealias PokeNotificationViewModelType = ViewModelType & PokeNotificationCoordinatable
+public typealias PokeNotificationViewModelType = ViewModelType & PokeNotificationRoutingTrigger
 public typealias LegacyPokeNotificationPresentable = (vc: PokeNotificationViewControllable, vm: any PokeNotificationViewModelType)
 
 public typealias PokeNotificationPresentable = (vc: UIViewController, vm: any PokeNotificationViewModelType)
