@@ -555,27 +555,6 @@ extension ApplicationCoordinator {
 // MARK: - PokeFlow
 
 extension ApplicationCoordinator {
-//    @discardableResult
-//    internal func runPokeFlow() -> BaseCoordinator {
-//        var coordinator = makePokeCoordinator()
-//        
-//        addDependency(coordinator)
-//        coordinator.start()
-//        
-//        switch Config.coordinatorFlag {
-//        case .legacy:
-//            coordinator.finishFlow = { [weak self, weak coordinator] in
-//                coordinator?.childCoordinators = []
-//                self?.removeDependency(coordinator)
-//            }
-//        case .new:
-//            <#code#>
-//        }
-//        
-//        
-//        return coordinator
-//    }
-    
     @discardableResult
     internal func runPokeFlow() -> BaseCoordinator {
         var coordinator: BaseCoordinator
