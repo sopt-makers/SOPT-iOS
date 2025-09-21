@@ -16,7 +16,7 @@ import PokeFeatureInterface
 import WebFeature
 
 public final class PokeCoordinator: DefaultPokeCoordinator {
-    
+
     // MARK: - Properties
     
     public var finishFlow: (() -> Void)?
@@ -44,7 +44,8 @@ public final class PokeCoordinator: DefaultPokeCoordinator {
     // MARK: - Navigation
     
     public func showPokeMain(isRouteFromRoot: Bool) {
-        var pokeMain = factory.makePokeMain(isRouteFromRoot: isRouteFromRoot)
+        var pokeMain = factory.makePokeMain(isRouteFromRoot: isRouteFromRoot,
+                                            coordinator: self)
         
         pokeMain.vm.onNaviBackTap = { [weak self] in
             self?.navigationController.dismiss(animated: true)
@@ -63,7 +64,7 @@ public final class PokeCoordinator: DefaultPokeCoordinator {
             guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(userId)") else { return }
             
             let webView = SOPTWebView(startWith: url)
-            self?.rootController?.pushViewController(webView, animated: true)
+            self?.navigationController.pushViewController(webView, animated: true)
         }
         
         pokeMain.vm.onPokeButtonTapped = { [weak self] userModel in

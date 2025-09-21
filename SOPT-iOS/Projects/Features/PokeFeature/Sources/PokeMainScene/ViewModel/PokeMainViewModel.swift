@@ -19,6 +19,8 @@ internal typealias UserId = Int
 
 public class PokeMainViewModel: PokeMainViewModelType {
     
+    // MARK: - Trigger
+    
     public var onNaviBackTap: (() -> Void)?
     public var onPokeNotificationsTap: (() -> Void)?
     public var onMyFriendsTap: (() -> Void)?
@@ -34,6 +36,7 @@ public class PokeMainViewModel: PokeMainViewModelType {
     private let isRouteFromRoot: Bool
     private var cancelBag = CancelBag()
     private let eventTracker = PokeEventTracker()
+    private let coordinator: AnyCoordinatorObject           /// Coordinator 프로토콜이 레거시에서만 사용되기 때문
     
     // MARK: - Inputs
     
@@ -63,9 +66,10 @@ public class PokeMainViewModel: PokeMainViewModelType {
     }
     
     // MARK: - initialization
-    
-    public init(useCase: PokeMainUseCase, isRouteFromRoot: Bool = false) {
+    // TODO: - Coordinator를 AnyCoordinatorObject로 변경
+    public init(useCase: PokeMainUseCase, coordinator: Coordinator, isRouteFromRoot: Bool = false) {
         self.useCase = useCase
+        self.coordinator = coordinator
         self.isRouteFromRoot = isRouteFromRoot
     }
 }
