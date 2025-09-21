@@ -18,12 +18,8 @@ public struct PokeDeepLink: DeepLinkExecutable {
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
         
-        let pokeCoordinator = coordinator.makePokeCoordinator()
+        coordinator.runPokeFlow()
         
-        if self.isDestination == true {
-            pokeCoordinator.showPokeMain(isRouteFromRoot: true)
-        }
-        
-        return pokeCoordinator
+        return coordinator
     }
 }

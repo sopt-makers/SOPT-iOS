@@ -8,6 +8,7 @@
 
 import Core
 import Domain
+import BaseFeatureDependency
 @_exported import PokeFeatureInterface
 
 public final class LegacyPokeBuilder {
@@ -20,9 +21,11 @@ public final class LegacyPokeBuilder {
 }
 
 extension LegacyPokeBuilder: LegacyPokeFeatureBuildable {
-    public func makePokeMain(isRouteFromRoot: Bool) -> PokeFeatureInterface.LegacyPokeMainPresentable {
+    public func makePokeMain(isRouteFromRoot: Bool, coordinator: Coordinator) -> PokeFeatureInterface.LegacyPokeMainPresentable {
         let useCase = DefaultPokeMainUseCase(repository: pokeMainRepository)
-        let viewModel = PokeMainViewModel(useCase: useCase, isRouteFromRoot: isRouteFromRoot)
+        let viewModel = PokeMainViewModel(useCase: useCase,
+                                          coordinator: coordinator,
+                                          isRouteFromRoot: isRouteFromRoot)
         let pokeMainVC = PokeMainVC(viewModel: viewModel)
         return (pokeMainVC, viewModel)
     }

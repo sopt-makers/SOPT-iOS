@@ -16,7 +16,7 @@ import Domain
 import WebFeature
 
 public
-final class LegacyPokeCoordinator: DefaultPokeCoordinator {
+final class LegacyPokeCoordinator: BaseCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: LegacyPokeFeatureBuildable
@@ -33,7 +33,7 @@ final class LegacyPokeCoordinator: DefaultPokeCoordinator {
     }
     
     public func showPokeMain(isRouteFromRoot: Bool) {
-        var pokeMain = factory.makePokeMain(isRouteFromRoot: isRouteFromRoot)
+        var pokeMain = factory.makePokeMain(isRouteFromRoot: isRouteFromRoot, coordinator: self)
         
         pokeMain.vm.onNaviBackTap = { [weak self] in
             self?.router.dismissModule(animated: true)
