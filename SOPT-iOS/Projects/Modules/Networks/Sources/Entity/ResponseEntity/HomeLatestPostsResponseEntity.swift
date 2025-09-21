@@ -22,4 +22,5 @@ public struct HomeLatestPostsResponseEntity: Decodable {
     public let webLink: String
     public let id: Int?
     public let isOutdated: Bool
+    public let userId: Int?
 }

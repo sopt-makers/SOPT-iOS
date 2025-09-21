@@ -29,6 +29,15 @@ enum PostCellType {
     case empty
 }
 
+// 앰플리튜드 이벤트 트래킹을 위한 구조체입니다.
+struct PostInfo {
+    var postRanking: Int? = 0
+    let sectionName: HomeAmplitudeEventPropertyValue
+    var postID: Int? = 0
+    let category: String
+    let userID: Int?
+}
+
 final class DefaultPostCVC: UICollectionViewCell {
     
     // MARK: - Properties
@@ -37,6 +46,13 @@ final class DefaultPostCVC: UICollectionViewCell {
     private let shapeLayer = CAShapeLayer()
     var onAnimationCompleted: (() -> Void)?
     private var isOutlineAnimationCancelled = false
+    private var model: PostInfo?
+    
+    lazy var profileImageViewTap = profileImageView.gesture()
+        .compactMap { [weak self] _ in self?.model }
+        .asDriver()
+    
+    var cancelBag = CancelBag()
         
     // MARK: - UI & Layout
 
@@ -137,6 +153,8 @@ final class DefaultPostCVC: UICollectionViewCell {
         emptySubLabel.text = nil
         emptyTitleLabel.text = nil
         emptyImageView.image = nil
+        cancelBag = CancelBag()
+        model = nil
         profileImageView.setPlaceholder()
         updateVisibility(for: .latest) // visible 상태는 기본적으로 latest와 같음
     }
@@ -332,6 +350,17 @@ extension DefaultPostCVC {
         self.postTitleLabel.text = model.title
         self.postContentLabel.text = model.content
         self.postContentLabel.setLineSpacing(lineSpacing: 1)
+    }
+    
+    // 앰플리튜드 이벤트 트래킹을 위해 세팅합니다.
+    func setPostInfo(model: some PostDisplayable, section: HomeAmplitudeEventPropertyValue) {
+        self.model = PostInfo(
+            postRanking: model.ranking,
+            sectionName: section,
+            postID: model.postID,
+            category: model.category,
+            userID: model.userID
+        )
     }
 }
 

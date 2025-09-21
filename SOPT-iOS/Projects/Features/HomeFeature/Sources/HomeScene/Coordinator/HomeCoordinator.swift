@@ -142,6 +142,12 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
             self.delegate?.homeCoordinator(self, to: .webLink(url: url))
         }
         
+        homeForMember.vm.onProfileImageViewTapped = { [weak self] userID in
+            guard let self else { return }
+            let url = "\(ExternalURL.Playground.main)/members/\(userID)"
+            self.delegate?.homeCoordinator(self, to: .webLink(url: url))
+        }
+        
         rootViewController = homeForMember.vc
         navigationController.pushViewController(homeForMember.vc, animated: true)
     }

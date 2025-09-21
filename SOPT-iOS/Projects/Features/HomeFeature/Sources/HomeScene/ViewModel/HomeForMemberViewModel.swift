@@ -18,18 +18,18 @@ import HomeFeatureInterface
 import BaseFeatureDependency
 
 public class HomeForMemberViewModel: HomeForMemberViewModelType {
+    
     // MARK: - Properties
     
     private let useCase: HomeUseCase
     private var cancelBag = CancelBag()
     
     let userType: UserType = UserDefaultKeyList.Auth.getUserType()
-    private var floatingButtonUrl: String = ""
-    private var surveyButtonURL: String = ""
     
     private var fetchedDashBoard: HomePresentationModel.DashBoard?
     private var fetchedRecentSchedule: HomePresentationModel.RecentSchedule?
     private var fetchedSurvey: HomePresentationModel.Survey?
+    private var fetchedFloatingButtonInfo: HomeFloatingButtonPresentationModel?
             
     let productServiceList: [HomePresentationModel.ProductService] = [
         .init(product: .playgroundCommunity),
@@ -44,6 +44,8 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         .init(socialLink: .youtube)
     ]
     
+    private let eventTracker = HomeEventTracker()
+    
     // MARK: - Inputs
     
     public struct Input {
@@ -57,6 +59,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         let surveyButtonTapped: Driver<Void>
         let socialLinkButtonTapped: Driver<HomePresentationModel.SocialLink>
         let viewAllButtonTapped: Driver<Void>
+        let profileImageViewTapped: Driver<PostInfo>
     }
     
     // MARK: - Outputs
@@ -84,6 +87,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public var onPopularPostCellTapped: ((String) -> Void)?
     public var onLatestPostCellTapped: ((String) -> Void)?
     public var onViewAllContentButtonTapped: ((String) -> Void)?
+    public var onProfileImageViewTapped: ((Int) -> Void)?
     
     // MARK: - initialization
     
@@ -111,7 +115,7 @@ extension HomeForMemberViewModel {
             .sink { owner, floatingButtonModel in
                 let presentationModel = floatingButtonModel.toPresentationModel()
                 output.floatingButtonInfo.send(presentationModel)
-                owner.floatingButtonUrl = presentationModel.url
+                owner.fetchedFloatingButtonInfo = presentationModel
             }.store(in: cancelBag)
         
         input.cellTapped
@@ -125,7 +129,7 @@ extension HomeForMemberViewModel {
                     AmplitudeInstance.shared.trackWithUserType(event: .clickAllCalendar)
                 case .productService(let model):
                     owner.onMainProductCellTapped?(model.product.serviceDomainLink)
-                    owner.trackAmplitude(event: model.product.toAmplitudeEventTypeNew)
+                    owner.eventTracker.trackAmplitude(event: model.product.toAmplitudeEventTypeNew)
                 case .appService(let model):
                     if model.serviceName == "콕찌르기" {
                         owner.useCase.checkPokeNewUser()
@@ -139,8 +143,15 @@ extension HomeForMemberViewModel {
                     owner.onSocialLinkButtonTapped?(type.socialLink.serviceDomainLink)
                 case .popularPost(let model):
                     owner.onPopularPostCellTapped?(model.webLink)
+                    owner.eventTracker.trackClickPost(
+                        postRanking: model.rank,
+                        sectionName: .realTimeFeed,
+                        postID: model.serverID,
+                        category: model.category
+                    )
                 case .latestPost(let model):
                     owner.onLatestPostCellTapped?(model.webLink)
+                    owner.trackLatestPostEvent(model: model)
                 default: break
                 }
             }
@@ -172,14 +183,29 @@ extension HomeForMemberViewModel {
         input.extendedFloatingButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onExtendedFloatingButtonTapped?(owner.floatingButtonUrl)
+                guard let info = owner.fetchedFloatingButtonInfo, !info.url.isEmpty else { return }
+                owner.onExtendedFloatingButtonTapped?(info.url)
+                owner.eventTracker.trackClickPromo(
+                    sectionName: .homeFAB,
+                    promoName: info.actionButtonName,
+                    destinationURL: info.url,
+                    destinationType: .app
+                )
             }
             .store(in: cancelBag)
         
         input.surveyButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onSurveyButtonTapped?(owner.surveyButtonURL)
+                guard let survey = owner.fetchedSurvey, !survey.linkURL.isEmpty else { return }
+
+                owner.onSurveyButtonTapped?(survey.linkURL)
+                owner.eventTracker.trackClickPromo(
+                    sectionName: .homeBanner,
+                    promoName: survey.title,
+                    destinationURL: survey.linkURL,
+                    destinationType: .web
+                )
             }
             .store(in: cancelBag)
         
@@ -187,6 +213,23 @@ extension HomeForMemberViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onViewAllContentButtonTapped?(ExternalURL.Playground.main)
+                owner.eventTracker.trackClickViewAll(sectionName: .latestPosts)
+            }
+            .store(in: cancelBag)
+        
+        input.profileImageViewTapped
+            .withUnretained(self)
+            .sink { owner, model in
+                if let userID = model.userID {
+                    owner.onProfileImageViewTapped?(userID)
+                    owner.eventTracker.trackClickPostMember(
+                        postRanking: model.postRanking,
+                        sectionName: model.sectionName,
+                        postID: model.postID,
+                        category: model.category
+                    )
+                }
+                
             }
             .store(in: cancelBag)
         
@@ -197,12 +240,6 @@ extension HomeForMemberViewModel {
 // MARK: - Methods
 
 extension HomeForMemberViewModel {
-    private func trackAmplitude(event: AmplitudeEventType?) {
-        if let event {
-            AmplitudeInstance.shared.trackWithUserType(event: event)
-        }
-    }
-    
     private func requestAuthorizationForNotification() {
         guard self.userType != .visitor,
               UserDefaultKeyList.Auth.hasAccessToken(),
@@ -221,6 +258,22 @@ extension HomeForMemberViewModel {
             }
         }
     }
+    
+    private func trackLatestPostEvent(model: HomePresentationModel.LatestPost) {
+        // 이름 필드의 유무에 따라, 엠티 뷰의 유무를 결정하며 이벤트도 분리해 처리합니다.
+        if let name = model.name, !name.isEmpty {
+            eventTracker.trackClickPost(
+                sectionName: .latestPosts,
+                postID: model.serverID,
+                category: model.category
+            )
+        } else {
+            eventTracker.trackClickEmpty(
+                sectionName: .latestPosts,
+                category: model.category
+            )
+        }
+    }
 }
 
 // MARK: - Fetch Home Data
@@ -236,9 +289,7 @@ extension HomeForMemberViewModel {
             async let appService = useCase.getAppServicesAsync()
             async let popularPosts = useCase.getPopularPostsAsync()
             async let latestPosts = useCase.getLatestPostsAsync()
-            
-            self.surveyButtonURL = try await survey.linkURL
-            
+                        
             model = HomePresentationModel(
                 dashBoard: try await dashBoard,
                 recentSchedule: try await recentSchedule,
@@ -292,6 +343,7 @@ extension HomeForMemberViewModel {
         if let cached = fetchedSurvey { return cached }
         let entity = try await useCase.getSurveyInfoAsync()
         let survey = entity.toPresentation()
+        fetchedSurvey = survey
         return survey
     }
 }

@@ -47,7 +47,6 @@ public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultVie
     private lazy var dailySoptuneResultContentView = DailySoptuneResultContentView()
     
     // 콕 찌르기 부분
-    
     private let dailySoptuneResultPokeView = DailySoptuneResultPokeView()
     
     // 오늘의 부적 받기 버튼
@@ -76,6 +75,7 @@ public final class DailySoptuneResultVC: UIViewController, DailySoptuneResultVie
         self.setStackView()
         self.setLayout()
         self.bindViewModels()
+        self.hiddenPokeView() // NOTE: 기획의 요청에 따라 hidden 처리합니다.
     }
 }
 
@@ -160,6 +160,12 @@ private extension DailySoptuneResultVC {
             .sink { owner, updatedUser in
                 owner.dailySoptuneResultPokeView.changeUIAfterPoke(newUserModel: updatedUser)
             }.store(in: cancelBag)
+    }
+    
+    // NOTE: 기획의 요청에 따라 PokeView를 hidden합니다.
+    // 이후 PokeView가 다시 보여져야 한다면, 해당 함수를 제거해주세요.
+    func hiddenPokeView() {
+        dailySoptuneResultPokeView.isHidden = true
     }
 }
 

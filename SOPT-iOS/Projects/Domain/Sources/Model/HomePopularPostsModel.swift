@@ -18,6 +18,7 @@ public struct HomePopularPostModel {
     public let content: String
     public let webLink: String
     public let id: Int?
+    public let userId: Int?
 
     public init(
         profileImage: String?,
@@ -28,7 +29,8 @@ public struct HomePopularPostModel {
         title: String,
         content: String,
         webLink: String,
-        id: Int?
+        id: Int?,
+        userId: Int?
     ) {
         self.profileImage = profileImage
         self.name = name
@@ -39,5 +41,6 @@ public struct HomePopularPostModel {
         self.content = content
         self.webLink = webLink
         self.id = id
+        self.userId = userId
     }
 }
