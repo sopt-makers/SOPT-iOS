@@ -638,19 +638,19 @@ extension ApplicationCoordinator {
                 ),
                 factory: LegacyPokeBuilder()
             )
+            addDependency(coordinator)
+            coordinator.finishFlow = { [weak self, weak coordinator] in
+                coordinator?.childCoordinators = []
+                self?.removeDependency(coordinator)
+            }
         case .new:
             coordinator = PokeNotificationListCoordinator(
                 navigationController: UIWindow.getRootNavigationController,
                 factory: PokeBuilder()
             )
         }
-
-        coordinator.finishFlow = { [weak self, weak coordinator] in
-            coordinator?.childCoordinators = []
-            self?.removeDependency(coordinator)
-        }
         
-        addDependency(coordinator)
+        
         coordinator.start()
         
         return coordinator

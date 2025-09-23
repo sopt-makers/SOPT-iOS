@@ -21,7 +21,7 @@ public final class PokeNotificationListCoordinator: DefaultCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: PokeFeatureBuildable
-    private let navigationController: UINavigationController
+    private weak var navigationController: UINavigationController?
     private weak var rootController: UINavigationController?
     
     // MARK: - Init
@@ -43,7 +43,7 @@ public final class PokeNotificationListCoordinator: DefaultCoordinator {
     // MARK: - Navigation
     
     private func showPokeNotificationListView() {
-        var pokeNotiListVC = factory.makePokeNotificationList()
+        var pokeNotiListVC = factory.makePokeNotificationList(coordinator: self)
         
         pokeNotiListVC.vm.onPokeButtonTapped = { [weak self] userModel in
             guard let bottomSheet = self?.factory
@@ -80,18 +80,18 @@ public final class PokeNotificationListCoordinator: DefaultCoordinator {
             guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(userId)") else { return }
             
             let webView = SOPTWebView(startWith: url)
-            self?.navigationController.pushViewController(webView, animated: true)
+            self?.navigationController?.pushViewController(webView, animated: true)
         }
         
         let navController = UINavigationController(rootViewController: pokeNotiListVC.vc)
         rootController = navController
         
         var willAnimate = true
-        if let top = navigationController.topViewController, type(of: top) == type(of: pokeNotiListVC.vc) {
+        if let top = navigationController?.topViewController, type(of: top) == type(of: pokeNotiListVC.vc) {
             willAnimate = false
-            navigationController.popViewController(animated: false)
+            navigationController?.popViewController(animated: false)
         }
         
-        navigationController.pushViewController(pokeNotiListVC.vc, animated: willAnimate)
+        navigationController?.pushViewController(pokeNotiListVC.vc, animated: willAnimate)
     }
 }

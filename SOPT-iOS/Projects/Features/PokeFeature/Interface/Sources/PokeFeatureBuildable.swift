@@ -9,6 +9,7 @@
 import Foundation
 
 import Domain
+import BaseFeatureDependency
 
 public protocol PokeFeatureBuildable {
     func makePokeMain(isRouteFromRoot: Bool) -> PokeMainPresentable
@@ -16,7 +17,7 @@ public protocol PokeFeatureBuildable {
     func makePokeMyFriendsList(relation: PokeRelation) -> PokeMyFriendsListPresentable
     func makePokeOnboarding() -> PokeOnboardingPresentable
     func makePokeMessageTemplateBottomSheet(messageType: PokeMessageType) -> PokeMessageTemplatesPresentable
-    func makePokeNotificationList() -> PokeNotificationPresentable
+    func makePokeNotificationList(coordinator: Coordinator) -> PokeNotificationPresentable
     func makePokeMakingFriendCompleted(friendName: String) -> PokeMakingFriendCompletedPresentable
     func makePokeAnonymousFriendUpgrade(user: PokeUserModel) -> PokeAnonymousFriendUpgradePresentable
 }
