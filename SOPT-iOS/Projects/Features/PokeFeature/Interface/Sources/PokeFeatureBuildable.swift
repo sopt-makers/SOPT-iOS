@@ -13,7 +13,7 @@ import BaseFeatureDependency
 
 public protocol PokeFeatureBuildable {
     func makePokeMain(isRouteFromRoot: Bool) -> PokeMainPresentable
-    func makePokeMyFriends() -> PokeMyFriendsPresentable
+    func makePokeMyFriends(coordinator: Coordinator) -> PokeMyFriendsPresentable
     func makePokeMyFriendsList(relation: PokeRelation) -> PokeMyFriendsListPresentable
     func makePokeOnboarding() -> PokeOnboardingPresentable
     func makePokeMessageTemplateBottomSheet(messageType: PokeMessageType) -> PokeMessageTemplatesPresentable

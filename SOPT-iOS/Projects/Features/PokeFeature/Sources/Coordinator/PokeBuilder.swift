@@ -37,9 +37,9 @@ extension PokeBuilder: PokeFeatureBuildable {
         return (pokeMainVC, viewModel)
     }
     
-    public func makePokeMyFriends() -> PokeFeatureInterface.PokeMyFriendsPresentable {
+    public func makePokeMyFriends(coordinator: Coordinator) -> PokeFeatureInterface.PokeMyFriendsPresentable {
         let useCase = DefaultPokeMyFriendsUseCase(repository: pokeMyFriendsRepository)
-        let viewModel = PokeMyFriendsViewModel(useCase: useCase)
+        let viewModel = PokeMyFriendsViewModel(useCase: useCase, coordinator: coordinator)
         let pokeMyFriendsVC = PokeMyFriendsVC(viewModel: viewModel)
         
         return (pokeMyFriendsVC, viewModel)

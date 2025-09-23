@@ -15,11 +15,9 @@ import BaseFeatureDependency
 import PokeFeatureInterface
 import WebFeature
 
-public final class PokeMyFriendsCoordinator: DefaultCoordinator {
+public final class PokeMyFriendsCoordinator: BaseCoordinator {
     
     // MARK: - Properties
-    
-    public var finishFlow: (() -> Void)?
     
     private let factory: PokeFeatureBuildable
     private let navigationController: UINavigationController
@@ -44,7 +42,7 @@ public final class PokeMyFriendsCoordinator: DefaultCoordinator {
     // MARK: - Navigation
     
     private func showPokeMyFriends() {
-        var pokeMyFriends = factory.makePokeMyFriends()
+        var pokeMyFriends = factory.makePokeMyFriends(coordinator: self)
         
         pokeMyFriends.vm.showFriendsListButtonTap = { [weak self] relation in
             self?.showPokeMyFriendsList(with: relation)
