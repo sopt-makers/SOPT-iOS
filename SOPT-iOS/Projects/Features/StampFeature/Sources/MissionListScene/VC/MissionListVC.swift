@@ -422,7 +422,7 @@ extension MissionListVC {
     }
     
     private func configureCurrentGenerationButton(with generation: String) {
-        let attributedStr = NSMutableAttributedString(string: "\(generation)기 랭킹")
+        let attributedStr = NSMutableAttributedString(string: "개인별 랭킹")
         attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
         attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: DSKitColors.Color.black, range: NSMakeRange(0, attributedStr.length))
         self.currentGenerationRankFloatingButton.setAttributedTitle(attributedStr, for: .normal)
