@@ -91,7 +91,7 @@ public final class PokeCoordinator: BaseCoordinator {
     
     internal func runPokeNotificationListFlow() {
         let pokeNotificationListCoordinator = PokeNotificationListCoordinator(
-            navigationController: navigationController ?? UIWindow.getRootNavigationController,
+            navigationController: rootController ?? UIWindow.getRootNavigationController,
             factory: factory
         )
         
