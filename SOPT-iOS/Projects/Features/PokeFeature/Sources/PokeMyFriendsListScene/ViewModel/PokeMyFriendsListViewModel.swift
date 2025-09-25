@@ -18,6 +18,8 @@ import BaseFeatureDependency
 public class PokeMyFriendsListViewModel:
     PokeMyFriendsListViewModelType {
     
+    // MARK: - Trigger
+    
     public var onCloseButtonTap: (() -> Void)?
     public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)?
     public var onProfileImageTapped: ((Int) -> Void)?

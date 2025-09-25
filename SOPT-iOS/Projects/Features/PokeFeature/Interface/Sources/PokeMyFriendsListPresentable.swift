@@ -14,11 +14,11 @@ import Domain
 
 public protocol PokeMyFriendsListViewControllable: LegacyViewControllable { }
 
-public protocol PokeMyFriendsListCoordinatable {
+public protocol PokeMyFriendsListRoutingTrigger {
     var onCloseButtonTap: (() -> Void)? { get set }
 }
 
-public protocol PokeMyFriendsListViewModelType: ViewModelType & PokeMyFriendsListCoordinatable {
+public protocol PokeMyFriendsListViewModelType: ViewModelType & PokeMyFriendsListRoutingTrigger {
     var relation: PokeRelation { get }
     var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)? { get set }
     var onProfileImageTapped: ((Int) -> Void)? { get set }

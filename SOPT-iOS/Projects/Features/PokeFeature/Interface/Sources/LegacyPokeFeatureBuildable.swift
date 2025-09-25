@@ -12,7 +12,7 @@ import Domain
 import BaseFeatureDependency
 
 public protocol LegacyPokeFeatureBuildable {
-    func makePokeMain(isRouteFromRoot: Bool) -> LegacyPokeMainPresentable
+    func makePokeMain(isRouteFromRoot: Bool, coordinator: Coordinator) -> LegacyPokeMainPresentable
     func makePokeMyFriends(coordinator: Coordinator) -> LegacyPokeMyFriendsPresentable
     func makePokeMyFriendsList(relation: PokeRelation) -> LegacyPokeMyFriendsListPresentable
     func makePokeOnboarding() -> LegacyPokeOnboardingPresentable

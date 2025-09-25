@@ -16,7 +16,7 @@ import Domain
 import WebFeature
 
 public
-final class LegacyPokeCoordinator: DefaultPokeCoordinator {
+final class LegacyPokeCoordinator: BaseCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: LegacyPokeFeatureBuildable
@@ -33,7 +33,7 @@ final class LegacyPokeCoordinator: DefaultPokeCoordinator {
     }
     
     public func showPokeMain(isRouteFromRoot: Bool) {
-        var pokeMain = factory.makePokeMain(isRouteFromRoot: isRouteFromRoot)
+        var pokeMain = factory.makePokeMain(isRouteFromRoot: isRouteFromRoot, coordinator: self)
         
         pokeMain.vm.onNaviBackTap = { [weak self] in
             self?.router.dismissModule(animated: true)
@@ -73,31 +73,9 @@ final class LegacyPokeCoordinator: DefaultPokeCoordinator {
           pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
           self.rootController?.present(pokeAnonymousFriendUpgradeVC, animated: false)
         }
-
-        pokeMain.vm.switchToOnboarding = { [weak self] in
-            guard let self = self else { return }
-            self.runPokeOnboardingFlow()
-        }
         
         rootController = pokeMain.vc.asNavigationController
         router.present(rootController, animated: true, modalPresentationSytle: .overFullScreen)
-    }
-    
-    internal func runPokeOnboardingFlow() {
-        let pokeOnboardingCoordinator = LegacyPokeOnboardingCoordinator(
-            router: LegacyRouter(
-                rootController: rootController ?? self.router.asNavigationController
-            ),
-            factory: factory
-        )
-        
-        pokeOnboardingCoordinator.finishFlow = { [weak self, weak pokeOnboardingCoordinator] in
-            pokeOnboardingCoordinator?.childCoordinators = []
-            self?.removeDependency(pokeOnboardingCoordinator)
-        }
-        
-        addDependency(pokeOnboardingCoordinator)
-        pokeOnboardingCoordinator.start()
     }
     
     internal func runPokeNotificationListFlow() {

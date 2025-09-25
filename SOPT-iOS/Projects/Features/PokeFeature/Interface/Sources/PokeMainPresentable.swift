@@ -14,7 +14,7 @@ import Domain
 
 public protocol PokeMainViewControllable: LegacyViewControllable { }
 
-public protocol PokeMainCoordinatable {
+public protocol PokeMainRoutingTrigger {
   var onNaviBackTap: (() -> Void)? { get set }
   var onPokeNotificationsTap: (() -> Void)? { get set }
   var onMyFriendsTap: (() -> Void)? { get set }
@@ -22,10 +22,9 @@ public protocol PokeMainCoordinatable {
   var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)? { get set }
   var onNewFriendMade: ((String) -> Void)? { get set }
   var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)? { get set }
-  var switchToOnboarding: (() -> Void)? { get set }
 }
 
-public typealias PokeMainViewModelType = ViewModelType & PokeMainCoordinatable
+public typealias PokeMainViewModelType = ViewModelType & PokeMainRoutingTrigger
 public typealias LegacyPokeMainPresentable = (vc: PokeMainViewControllable, vm: any PokeMainViewModelType)
 
 public typealias PokeMainPresentable = (vc: UIViewController, vm: any PokeMainViewModelType)

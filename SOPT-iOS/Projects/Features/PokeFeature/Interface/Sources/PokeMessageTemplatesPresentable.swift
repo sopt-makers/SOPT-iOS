@@ -23,10 +23,10 @@ public protocol PokeMessageTemplatesViewControllable: UIViewController {
     func signalForClick() -> Driver<(PokeMessageModel, isAnonymous: Bool)>
 }
 
-public protocol PokeMessageTemplatesCoordinatable { }
+public protocol PokeMessageTemplatesRoutingTrigger { }
 
-public protocol PokeMessageTemplatesViewModelType: ViewModelType & PokeMessageTemplatesCoordinatable {
+public protocol PokeMessageTemplatesViewModelType: ViewModelType & PokeMessageTemplatesRoutingTrigger {
     var messageType: PokeMessageType { get }
 }
-public typealias LegacyPokeMessageTemplatesPresentable = (vc: LegacyPokeMessageTemplatesViewControllable, vm: any PokeMessageTemplatesCoordinatable)
-public typealias PokeMessageTemplatesPresentable = (vc: PokeMessageTemplatesViewControllable, vm: any PokeMessageTemplatesCoordinatable)
+public typealias LegacyPokeMessageTemplatesPresentable = (vc: LegacyPokeMessageTemplatesViewControllable, vm: any PokeMessageTemplatesRoutingTrigger)
+public typealias PokeMessageTemplatesPresentable = (vc: PokeMessageTemplatesViewControllable, vm: any PokeMessageTemplatesRoutingTrigger)

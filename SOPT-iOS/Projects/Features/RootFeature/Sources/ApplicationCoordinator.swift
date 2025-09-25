@@ -556,43 +556,32 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runPokeFlow() -> DefaultCoordinator {
-        var coordinator = makePokeCoordinator()
-        
-        addDependency(coordinator)
-        coordinator.start()
-        
-        coordinator.finishFlow = { [weak self, weak coordinator] in
-            coordinator?.childCoordinators = []
-            self?.removeDependency(coordinator)
-        }
-        
-        return coordinator
-    }
-    
-    @discardableResult
-    internal func makePokeCoordinator() -> DefaultPokeCoordinator {
-        var coordinator: DefaultPokeCoordinator
+    internal func runPokeFlow() -> BaseCoordinator {
+        var coordinator: BaseCoordinator
         
         switch Config.coordinatorFlag {
         case .legacy:
-            coordinator = LegacyPokeCoordinator(
+            let legacyPokeCoordinator = LegacyPokeCoordinator(
                 router: LegacyRouter(rootController: UIWindow.getRootNavigationController),
                 factory: LegacyPokeBuilder()
             )
+            
+            legacyPokeCoordinator.finishFlow = { [weak self, weak legacyPokeCoordinator] in
+                legacyPokeCoordinator?.childCoordinators = []
+                self?.removeDependency(legacyPokeCoordinator)
+            }
+            coordinator = legacyPokeCoordinator
+            addDependency(coordinator)
         case .new:
-            coordinator = PokeCoordinator(
+            let newCoordinator = PokeCoordinator(
                 navigationController: UIWindow.getRootNavigationController,
                 factory: PokeBuilder()
             )
-        }
-
-        coordinator.finishFlow = { [weak self, weak coordinator] in
-            coordinator?.childCoordinators = []
-            self?.removeDependency(coordinator)
+            
+            coordinator = newCoordinator
         }
         
-        addDependency(coordinator)
+        coordinator.start()
         
         return coordinator
     }

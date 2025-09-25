@@ -15,15 +15,13 @@ import BaseFeatureDependency
 import PokeFeatureInterface
 import WebFeature
 
-public final class PokeCoordinator: DefaultPokeCoordinator {
-    
+public final class PokeCoordinator: BaseCoordinator {
+
     // MARK: - Properties
     
-    public var finishFlow: (() -> Void)?
-    
     private let factory: PokeFeatureBuildable
-    private let navigationController: UINavigationController
-    private weak var rootController: UINavigationController?
+    private weak var navigationController: UINavigationController?  // pokeMain을 prensent하는 부모 네비
+    private weak var rootController: UINavigationController?        // pokeMain에서 push할 때 사용
     
     // MARK: - Init
     
@@ -44,11 +42,11 @@ public final class PokeCoordinator: DefaultPokeCoordinator {
     // MARK: - Navigation
     
     public func showPokeMain(isRouteFromRoot: Bool) {
-        var pokeMain = factory.makePokeMain(isRouteFromRoot: isRouteFromRoot)
+        var pokeMain = factory.makePokeMain(isRouteFromRoot: isRouteFromRoot,
+                                            coordinator: self)
         
         pokeMain.vm.onNaviBackTap = { [weak self] in
-            self?.navigationController.dismiss(animated: true)
-            self?.finishFlow?()
+            self?.navigationController?.dismiss(animated: true)
         }
         
         pokeMain.vm.onPokeNotificationsTap = { [weak self] in
@@ -84,36 +82,16 @@ public final class PokeCoordinator: DefaultPokeCoordinator {
             pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
             self.rootController?.present(pokeAnonymousFriendUpgradeVC, animated: false)
         }
-
-        pokeMain.vm.switchToOnboarding = { [weak self] in
-            guard let self = self else { return }
-            self.runPokeOnboardingFlow()
-        }
         
         let navController = UINavigationController(rootViewController: pokeMain.vc)
         navController.modalPresentationStyle = .overFullScreen
         rootController = navController
-        navigationController.present(navController, animated: true)
-    }
-    
-    internal func runPokeOnboardingFlow() {
-        let pokeOnboardingCoordinator = PokeOnboardingCoordinator(
-            navigationController: rootController ?? navigationController,
-            factory: factory
-        )
-        
-        pokeOnboardingCoordinator.finishFlow = { [weak self, weak pokeOnboardingCoordinator] in
-            pokeOnboardingCoordinator?.childCoordinators = []
-            self?.removeDependency(pokeOnboardingCoordinator)
-        }
-        
-        addDependency(pokeOnboardingCoordinator)
-        pokeOnboardingCoordinator.start()
+        navigationController?.present(navController, animated: true)
     }
     
     internal func runPokeNotificationListFlow() {
         let pokeNotificationListCoordinator = PokeNotificationListCoordinator(
-            navigationController: rootController ?? navigationController,
+            navigationController: rootController ?? UIWindow.getRootNavigationController,
             factory: factory
         )
         
@@ -128,7 +106,7 @@ public final class PokeCoordinator: DefaultPokeCoordinator {
     
     private func runPokeMyFriendsFlow() {
         let pokeMyFriendsCoordinator = PokeMyFriendsCoordinator(
-            navigationController: rootController ?? navigationController,
+            navigationController: rootController ?? UIWindow.getRootNavigationController,
             factory: factory
         )
         
