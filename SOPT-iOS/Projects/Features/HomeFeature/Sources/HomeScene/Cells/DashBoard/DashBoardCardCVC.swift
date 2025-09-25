@@ -90,14 +90,14 @@ extension DashBoardCardCVC {
             self.descriptionLabel.text = I18N.Home.DashBoard.UserHistory.encourage
             self.descriptionLabel.setLineSpacing(lineSpacing: 5)
             self.rightArrowWithCircleImageView.isHidden = true
-            userHistoryView.setData(userType: userType, recentHistory: nil, allHistory: nil)
+            userHistoryView.setData(recentHistory: nil, allHistory: nil)
         case .active, .inactive:
             guard let model else { return }
             self.descriptionLabel.attributedText = model.description
             self.descriptionLabel.modifyLineSpacing(lineSpacing: 5)
             self.rightArrowWithCircleImageView.isHidden = false
             guard let history = model.history else { return }
-            userHistoryView.setData(userType: userType, recentHistory: history.first, allHistory: history)
+            userHistoryView.setData(recentHistory: history.first, allHistory: history)
         }
     }
 }
