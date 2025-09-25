@@ -30,9 +30,9 @@ extension LegacyPokeBuilder: LegacyPokeFeatureBuildable {
         return (pokeMainVC, viewModel)
     }
     
-    public func makePokeMyFriends() -> PokeFeatureInterface.LegacyPokeMyFriendsPresentable {
+    public func makePokeMyFriends(coordinator: Coordinator) -> PokeFeatureInterface.LegacyPokeMyFriendsPresentable {
         let useCase = DefaultPokeMyFriendsUseCase(repository: pokeMyFriendsRepository)
-        let viewModel = PokeMyFriendsViewModel(useCase: useCase)
+        let viewModel = PokeMyFriendsViewModel(useCase: useCase, coordinator: coordinator)
         let pokeMyFriendsVC = PokeMyFriendsVC(viewModel: viewModel)
         
         return (pokeMyFriendsVC, viewModel)
@@ -54,9 +54,10 @@ extension LegacyPokeBuilder: LegacyPokeFeatureBuildable {
         return (viewController, viewModel)
     }
     
-    public func makePokeNotificationList() -> LegacyPokeNotificationPresentable {
+    public func makePokeNotificationList(coordinator: Coordinator) -> LegacyPokeNotificationPresentable {
         let usecase = DefaultPokeNotificationUsecase(repository: self.pokeNotificationListRepository)
-        let viewModel = PokeNotificationViewModel(usecase: usecase)
+        let viewModel = PokeNotificationViewModel(usecase: usecase,
+                                                  coordinator: coordinator)
         let viewController = PokeNotificationViewController(viewModel: viewModel)
         
         return (viewController, viewModel)

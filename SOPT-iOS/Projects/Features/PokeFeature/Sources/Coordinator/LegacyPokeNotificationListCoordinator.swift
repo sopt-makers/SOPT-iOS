@@ -33,7 +33,7 @@ public final class LegacyPokeNotificationListCoordinator: DefaultCoordinator {
 
 extension LegacyPokeNotificationListCoordinator {
     private func showPokeNotificationListView() {
-        var pokeNotiListVC = self.factory.makePokeNotificationList()
+        var pokeNotiListVC = self.factory.makePokeNotificationList(coordinator: self)
                     
         pokeNotiListVC.vm.onPokeButtonTapped = { [weak self] userModel in
             guard let bottomSheet = self?.factory

@@ -16,7 +16,7 @@ import PokeFeatureInterface
 import WebFeature
 
 public
-final class LegacyPokeMyFriendsCoordinator: DefaultCoordinator {
+final class LegacyPokeMyFriendsCoordinator: BaseCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: LegacyPokeFeatureBuildable
@@ -33,7 +33,7 @@ final class LegacyPokeMyFriendsCoordinator: DefaultCoordinator {
     }
     
     private func showPokeMyFriends() {
-        var pokeMyFriends = factory.makePokeMyFriends()
+        var pokeMyFriends = factory.makePokeMyFriends(coordinator: self)
         
         pokeMyFriends.vm.showFriendsListButtonTap = { [weak self] relation in
             self?.showPokeMyFriendsList(with: relation)

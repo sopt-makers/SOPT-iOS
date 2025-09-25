@@ -13,11 +13,11 @@ import BaseFeatureDependency
 
 public protocol PokeFeatureBuildable {
     func makePokeMain(isRouteFromRoot: Bool, coordinator: Coordinator) -> PokeMainPresentable
-    func makePokeMyFriends() -> PokeMyFriendsPresentable
+    func makePokeMyFriends(coordinator: Coordinator) -> PokeMyFriendsPresentable
     func makePokeMyFriendsList(relation: PokeRelation) -> PokeMyFriendsListPresentable
     func makePokeOnboarding() -> PokeOnboardingPresentable
     func makePokeMessageTemplateBottomSheet(messageType: PokeMessageType) -> PokeMessageTemplatesPresentable
-    func makePokeNotificationList() -> PokeNotificationPresentable
+    func makePokeNotificationList(coordinator: Coordinator) -> PokeNotificationPresentable
     func makePokeMakingFriendCompleted(friendName: String) -> PokeMakingFriendCompletedPresentable
     func makePokeAnonymousFriendUpgrade(user: PokeUserModel) -> PokeAnonymousFriendUpgradePresentable
 }

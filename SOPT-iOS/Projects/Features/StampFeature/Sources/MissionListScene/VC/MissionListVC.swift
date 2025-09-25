@@ -312,7 +312,7 @@ extension MissionListVC {
                 
                 self?.usersActiveGenerationStatus = generationStatus
                 self?.remakeButtonConstraint()
-                self?.configureCurrentGenerationButton(with: String(describing: generationStatus.currentGeneration))
+                self?.configurePersonalRankingButton()
             }.store(in: self.cancelBag)
         
         output.needNetworkAlert
@@ -421,8 +421,8 @@ extension MissionListVC {
         self.floatingButtonStackView.addArrangedSubviews(self.currentGenerationRankFloatingButton, self.partRankingFloatingButton)
     }
     
-    private func configureCurrentGenerationButton(with generation: String) {
-        let attributedStr = NSMutableAttributedString(string: "\(generation)기 랭킹")
+    private func configurePersonalRankingButton() {
+        let attributedStr = NSMutableAttributedString(string: "개인별 랭킹")
         attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
         attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: DSKitColors.Color.black, range: NSMakeRange(0, attributedStr.length))
         self.currentGenerationRankFloatingButton.setAttributedTitle(attributedStr, for: .normal)

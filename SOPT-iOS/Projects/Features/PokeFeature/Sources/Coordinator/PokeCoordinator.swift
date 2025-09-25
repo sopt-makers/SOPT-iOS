@@ -110,11 +110,6 @@ public final class PokeCoordinator: BaseCoordinator {
             factory: factory
         )
         
-        pokeMyFriendsCoordinator.finishFlow = { [weak self, weak pokeMyFriendsCoordinator] in
-            self?.removeDependency(pokeMyFriendsCoordinator)
-        }
-        
-        addDependency(pokeMyFriendsCoordinator)
         pokeMyFriendsCoordinator.start()
     }
     

@@ -13,11 +13,11 @@ import BaseFeatureDependency
 
 public protocol LegacyPokeFeatureBuildable {
     func makePokeMain(isRouteFromRoot: Bool, coordinator: Coordinator) -> LegacyPokeMainPresentable
-    func makePokeMyFriends() -> LegacyPokeMyFriendsPresentable
+    func makePokeMyFriends(coordinator: Coordinator) -> LegacyPokeMyFriendsPresentable
     func makePokeMyFriendsList(relation: PokeRelation) -> LegacyPokeMyFriendsListPresentable
     func makePokeOnboarding() -> LegacyPokeOnboardingPresentable
     func makePokeMessageTemplateBottomSheet(messageType: PokeMessageType) -> LegacyPokeMessageTemplatesPresentable
-    func makePokeNotificationList() -> LegacyPokeNotificationPresentable
+    func makePokeNotificationList(coordinator: Coordinator) -> LegacyPokeNotificationPresentable
     func makePokeMakingFriendCompleted(friendName: String) -> PokeMakingFriendCompletedPresentable
     func makePokeAnonymousFriendUpgrade(user: PokeUserModel) -> LegacyPokeAnonymousFriendUpgradePresentable
 }
