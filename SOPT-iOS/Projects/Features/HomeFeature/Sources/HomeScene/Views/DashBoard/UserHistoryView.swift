@@ -76,8 +76,9 @@ extension UserHistoryView {
 // MARK: - Methods
 
 extension UserHistoryView {
-    func setData(userType: UserType, recentHistory: Int?, allHistory: [Int]?) {
+    func setData(recentHistory: Int?, allHistory: [Int]?) {
         // 현재 활동 기수 여부 뷰 설정
+        let userType = UserDefaultKeyList.Auth.getUserType()
         let userTypeText = userType.makeDescription(recentHistory: recentHistory ?? 0)
         setUserTypeLabel(with: userType, text: userTypeText)
         guard userType != .visitor else { return }

@@ -327,6 +327,7 @@ extension HomeForMemberViewModel {
             history: user?.historyList ?? [],
             isAllConfirm: user?.isAllConfirm ?? false
         )
+        UserDefaultKeyList.Auth.isActiveUser = user?.userType == .active // 사용자 활동 중 여부 등록
         fetchedDashBoard = dashBoard
         return dashBoard
     }
