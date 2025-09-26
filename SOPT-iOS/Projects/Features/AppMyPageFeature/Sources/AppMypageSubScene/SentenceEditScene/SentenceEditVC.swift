@@ -68,7 +68,6 @@ extension SentenceEditVC {
     private func bindViewModels() {
         let textViewTextChanged = NotificationCenter.default
             .publisher(for: UITextView.textDidChangeNotification, object: self.textView)
-            .dropFirst()
             .map { ($0.object as? UITextView)?.text }
             .compactMap { $0 }
             .eraseToAnyPublisher()
