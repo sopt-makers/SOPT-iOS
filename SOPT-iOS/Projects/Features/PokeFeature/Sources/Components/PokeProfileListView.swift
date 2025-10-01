@@ -203,7 +203,7 @@ public final class PokeProfileListView: UIView, PokeCompatible {
     }
     
     func clearProfileImage() {
-        self.profileImageView.clearProfileImage()
+        self.profileImageView.setPlaceholder()
     }
     
     @discardableResult
