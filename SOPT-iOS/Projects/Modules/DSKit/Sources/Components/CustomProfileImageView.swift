@@ -46,6 +46,10 @@ public final class CustomProfileImageView: UIImageView {
         self.image = DSKitAsset.Assets.iconDefaultProfile.image
     }
     
+    public func clearProfileImage() {
+        self.image = DSKitAsset.Assets.iconDefaultProfile.image
+    }
+    
     @discardableResult
     public func hideBorder() -> Self {
         self.layer.borderWidth = 0

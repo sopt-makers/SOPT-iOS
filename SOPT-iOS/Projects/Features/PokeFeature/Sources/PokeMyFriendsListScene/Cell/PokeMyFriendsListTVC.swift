@@ -65,5 +65,6 @@ extension PokeMyFriendsListTVC {
     
     override func prepareForReuse() {
         self.cancelBag.cancel()
+        self.profileListView.clearProfileImage()
     }
 }

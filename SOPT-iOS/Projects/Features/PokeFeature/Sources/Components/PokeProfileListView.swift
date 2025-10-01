@@ -202,6 +202,10 @@ public final class PokeProfileListView: UIView, PokeCompatible {
         self.setData(with: newUserModel)
     }
     
+    func clearProfileImage() {
+        self.profileImageView.clearProfileImage()
+    }
+    
     @discardableResult
     func setButtonIsEnabled(to isEnabled: Bool) -> Self {
         self.kokButton.isEnabled = isEnabled
