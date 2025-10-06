@@ -155,7 +155,7 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
     public func showHomeForVisitor() {
         var homeForVisitor = factory.makeHomeForVisitor()
         
-        homeForVisitor.vm.onAppServiceCellTapped = {
+        homeForVisitor.vm.onAppServiceCellTapped = { [weak self] in
             AlertUtils.presentAlertVC(
                 type: .titleDescription,
                 title: I18N.Home.PopUp.needToLogin,
