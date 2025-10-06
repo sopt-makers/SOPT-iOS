@@ -68,7 +68,9 @@ public final class ApplicationCoordinator: BaseCoordinator {
                 case .legacy:
                     return LegacyAuthCoordinator(router: self.router, factory: LegacyAuthBuilder(), url: option?.url)
                 case .new:
-                    return AuthCoordinator(router: self.router, factory: AuthBuilder(), url: option?.url)
+                    return AuthCoordinator(navigationController: self.rootNavigationController,
+                                           factory: AuthBuilder(),
+                                           url: option?.url)
                 }
             }
         )
@@ -526,7 +528,7 @@ extension ApplicationCoordinator {
         
         switch Config.coordinatorFlag {
         case .legacy:
-            var legacyStampCoordinator = LegacyStampCoordinator(
+            let legacyStampCoordinator = LegacyStampCoordinator(
                 router: LegacyRouter(
                     rootController: UIWindow.getRootNavigationController
                 ),
