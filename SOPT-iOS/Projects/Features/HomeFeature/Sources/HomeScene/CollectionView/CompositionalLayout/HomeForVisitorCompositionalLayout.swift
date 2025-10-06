@@ -24,16 +24,16 @@ extension HomeForVisitorVC {
     }
     
     func createLayout() -> UICollectionViewCompositionalLayout {
-        return UICollectionViewCompositionalLayout { sectionIndex, env in
-            guard let sectionKind = HomeForVisitorSectionLayoutKind(rawValue: sectionIndex) else { return self.createEmptySection() }
+        return UICollectionViewCompositionalLayout { [weak self] sectionIndex, env in
+            guard let sectionKind = HomeForVisitorSectionLayoutKind(rawValue: sectionIndex) else { return self?.createEmptySection() }
             
             switch sectionKind {
             case .dashBoard:
-                return self.createDashBoardSection()
+                return self?.createDashBoardSection()
             case .mainProduct:
-                return self.createMainProductSection()
+                return self?.createMainProductSection()
             case .appService:
-                return self.createAppServiceSection()
+                return self?.createAppServiceSection()
             }
         }
     }
