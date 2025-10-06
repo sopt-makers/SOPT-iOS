@@ -58,4 +58,50 @@ public enum ViewControllerUtils {
             })
         }
     }
+    
+    /// 기존 navigationController 유지, snapshot으로 화면전환
+    public
+    static func setRootNavigationController(window: UIWindow, navigationController: UINavigationController, withAnimation: Bool) {
+        if !withAnimation {
+            window.rootViewController = navigationController
+            window.makeKeyAndVisible()
+            return
+        }
+
+        if let snapshot = window.snapshotView(afterScreenUpdates: true) {
+            navigationController.view.addSubview(snapshot)
+            window.rootViewController = navigationController
+            window.makeKeyAndVisible()
+            
+            UIView.animate(withDuration: 0.4, animations: {
+                snapshot.layer.opacity = 0
+            }, completion: { _ in
+                snapshot.removeFromSuperview()
+            })
+        }
+    }
+    
+    /// 기존 navigationController 유지, snapshot으로 화면전환 및 완료 핸들러 필요할 때 사용
+    public
+    static func setRootNavigationController(window: UIWindow, navigationController: UINavigationController, withAnimation: Bool, completion: @escaping ((UIWindow) -> Void)) {
+        if !withAnimation {
+            window.rootViewController = navigationController
+            window.makeKeyAndVisible()
+            completion(window)
+            return
+        }
+
+        if let snapshot = window.snapshotView(afterScreenUpdates: true) {
+            navigationController.view.addSubview(snapshot)
+            window.rootViewController = navigationController
+            window.makeKeyAndVisible()
+            completion(window)
+            
+            UIView.animate(withDuration: 0.4, animations: {
+                snapshot.layer.opacity = 0
+            }, completion: { _ in
+                snapshot.removeFromSuperview()
+            })
+        }
+    }
 }
