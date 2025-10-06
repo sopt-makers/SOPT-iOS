@@ -6,6 +6,8 @@
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
+
 import Foundation
 import BaseFeatureDependency
 import Core
@@ -22,4 +24,4 @@ public protocol SignInRoutingTrigger {
 
 public typealias SignInViewModelType = ViewModelType & SignInRoutingTrigger
 
-public typealias SignInPresentable = (vc: SignInViewControllable, vm: any SignInViewModelType)
+public typealias SignInPresentable = (vc: UIViewController, vm: any SignInViewModelType)

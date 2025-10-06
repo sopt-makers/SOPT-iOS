@@ -6,6 +6,8 @@
 //  Copyright © 2024 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
+
 import BaseFeatureDependency
 import Core
 import Domain
@@ -21,4 +23,4 @@ public typealias PhoneVerifyViewModelType = ViewModelType
 
 public typealias SignUpViewModelType = ViewModelType & SignUpRoutingTrigger
 
-public typealias SignUpPresentable = (vc: SignUpViewControllable, vm: any SignUpViewModelType)
+public typealias SignUpPresentable = (vc: UIViewController, vm: any SignUpViewModelType)

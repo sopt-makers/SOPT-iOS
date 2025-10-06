@@ -6,16 +6,18 @@
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
+
 import BaseFeatureDependency
 import Core
 import Domain
 
 public protocol SearchSocialAccountViewControllable: LegacyViewControllable { }
 
-public protocol SearchSocialAccountCoordinatable {
+public protocol SearchSocialAccountRoutingTrigger {
     var searchSocialAccountSucceed: ((OAuthProvider) -> Void)? { get set }
 }
 
-public typealias SearchSocialAccountViewModelType = ViewModelType & SearchSocialAccountCoordinatable
+public typealias SearchSocialAccountViewModelType = ViewModelType & SearchSocialAccountRoutingTrigger
 
-public typealias SearchSocialAccountPresentable = (vc: SearchSocialAccountViewControllable, vm: any SearchSocialAccountViewModelType)
+public typealias SearchSocialAccountPresentable = (vc: UIViewController, vm: any SearchSocialAccountViewModelType)
