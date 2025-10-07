@@ -63,6 +63,8 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     }
     
     deinit {
+        outlineAnimationTimer?.invalidate()
+        outlineAnimationTimer = nil
         cancelBag.cancel()
     }
     
