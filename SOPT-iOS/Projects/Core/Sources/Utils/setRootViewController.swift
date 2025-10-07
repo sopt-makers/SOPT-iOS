@@ -29,12 +29,11 @@ public enum ViewControllerUtils {
             return
         }
 
-        if let snapshot = window.snapshotView(afterScreenUpdates: true),
-           let completion = completion {
+        if let snapshot = window.snapshotView(afterScreenUpdates: true) {
             viewController.view.addSubview(snapshot)
             window.rootViewController = viewController
             window.makeKeyAndVisible()
-            completion(window)
+            completion?(window)
             
             UIView.animate(withDuration: 0.4, animations: {
                 snapshot.layer.opacity = 0
@@ -57,12 +56,11 @@ public enum ViewControllerUtils {
             return
         }
 
-        if let snapshot = window.snapshotView(afterScreenUpdates: true),
-           let completion = completion {
+        if let snapshot = window.snapshotView(afterScreenUpdates: true) {
             navigationController.view.addSubview(snapshot)
             window.rootViewController = navigationController
             window.makeKeyAndVisible()
-            completion(window)
+            completion?(window)
             
             UIView.animate(withDuration: 0.4, animations: {
                 snapshot.layer.opacity = 0
