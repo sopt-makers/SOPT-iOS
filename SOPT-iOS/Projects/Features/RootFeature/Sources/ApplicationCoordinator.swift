@@ -35,8 +35,8 @@ public final class ApplicationCoordinator: BaseCoordinator {
     internal let rootNavigationController: UINavigationController
     
     private weak var legacyRootController: UINavigationController?
-    private let homeNavigationController = UINavigationController()
-    private let soptlogNavigationController = UINavigationController()
+    let homeNavigationController = UINavigationController()
+    let soptlogNavigationController = UINavigationController()
     weak var tabBarController: UITabBarController?
     
     private weak var homeCoordinator: DefaultHomeCoordinator?
