@@ -25,6 +25,7 @@ public enum ViewControllerUtils {
         if !withAnimation {
             window.rootViewController = viewController
             window.makeKeyAndVisible()
+            completion?(window)
             return
         }
 
@@ -52,6 +53,7 @@ public enum ViewControllerUtils {
         if !withAnimation {
             window.rootViewController = navigationController
             window.makeKeyAndVisible()
+            completion?(window)
             return
         }
 
