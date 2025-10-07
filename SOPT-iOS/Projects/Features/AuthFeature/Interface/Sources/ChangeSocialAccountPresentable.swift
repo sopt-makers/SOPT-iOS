@@ -6,6 +6,8 @@
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
+import UIKit
+
 import BaseFeatureDependency
 import Core
 import Domain
@@ -18,4 +20,4 @@ public protocol ChangeSocialAccountRoutingTrigger {
 
 public typealias ChangeSocialAccountViewModelType = ViewModelType & ChangeSocialAccountRoutingTrigger
 
-public typealias ChangeSocialAccountPresentable = (vc: ChangeSocialAccountViewControllable, vm: any ChangeSocialAccountViewModelType)
+public typealias ChangeSocialAccountPresentable = (vc: UIViewController, vm: any ChangeSocialAccountViewModelType)

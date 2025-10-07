@@ -8,6 +8,7 @@
 
 import Foundation
 
+import UIKit
 import BaseFeatureDependency
 import AuthFeatureInterface
 import Core
@@ -19,16 +20,16 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
     public var finishFlow: ((UserType) -> Void)?
 
     private let factory: AuthFeatureViewBuildable
-    private let router: LegacyRouter
+    private let navigationController: UINavigationController
     private var url: String?
 
     public init(
-        router: LegacyRouter,
+        navigationController: UINavigationController,
         factory: AuthFeatureViewBuildable,
         url: String? = nil
     ) {
+        self.navigationController = navigationController
         self.factory = factory
-        self.router = router
         self.url = url
     }
 
@@ -60,38 +61,43 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
         
         switch style {
         case .modal:
-            router.present(
-                signIn.vc,
-                animated: false,
-                modalPresentationSytle: .fullScreen,
-                modalTransitionStyle: .crossDissolve
-            )
+            signIn.vc.modalPresentationStyle = .fullScreen
+            signIn.vc.modalTransitionStyle = .crossDissolve
+            navigationController.present(signIn.vc, animated: false)
         case .root:
-            router.replaceRootWindow(signIn.vc, withAnimation: false)
-            router.hideTitles()
+            self.navigationController.isNavigationBarHidden = true
+            self.navigationController.setViewControllers([signIn.vc], animated: false)
+            ViewControllerUtils.setRootNavigationController(window: UIWindow.keyWindowGetter!,
+                                                            navigationController: self.navigationController,
+                                                            withAnimation: false)
         case .rootWindow(let animated, let message):
+            self.navigationController.isNavigationBarHidden = true
+            self.navigationController.setViewControllers([signIn.vc], animated: false)
+            
             guard !animated else {
-                router.replaceRootWindow(signIn.vc, withAnimation: true)
-                router.hideTitles()
+                ViewControllerUtils.setRootNavigationController(window: UIWindow.keyWindowGetter!,
+                                                                navigationController: self.navigationController,
+                                                                withAnimation: true)
                 return
             }
 
             guard let message else {
-                router.replaceRootWindow(signIn.vc, withAnimation: true)
-                router.hideTitles()
+                ViewControllerUtils.setRootNavigationController(window: UIWindow.keyWindowGetter!,
+                                                          navigationController: self.navigationController,
+                                                          withAnimation: true)
                 return
             }
 
-            router.replaceRootWindow(signIn.vc, withAnimation: true) { newWindow in
+            ViewControllerUtils.setRootNavigationController(window: UIWindow.keyWindowGetter!,
+                                                      navigationController: self.navigationController,
+                                                      withAnimation: true) { newWindow in
                 Toast.show(
                     message: message,
                     view: newWindow
                 )
             }
-            router.hideTitles()
         case .push: break
         }
-        
     }
 }
 
@@ -99,54 +105,54 @@ extension AuthCoordinator {
     private func runUserNotFoundFlow() {
         var userNotFoundVC = self.factory.makeUserNotFound()
         userNotFoundVC.onLoginRetryButtonTapped = { [weak self] in
-            self?.router.popToRootModule(animated: true)
+            self?.navigationController.popToRootViewController(animated: true)
         }
         
         userNotFoundVC.onLoginHelpButtonTapped = { [weak self] in
-            self?.showLoginHelpBottomSheet(on: userNotFoundVC)
+            self?.showLoginHelpBottomSheet(on: userNotFoundVC.viewController)
         }
         
-        self.router.push(userNotFoundVC)
+        self.navigationController.pushViewController(userNotFoundVC.viewController, animated: true)
     }
     
     private func runSignUpFlow() {
         var signUpVC = self.factory.makeSignUp()
         
         signUpVC.vm.onSignUpSuccess = { [weak self] in
-            self?.router.popToRootModule(animated: true)
+            self?.navigationController.popToRootViewController(animated: true)
         }
         
         signUpVC.vm.onLoginHelpButtonTapped = { [weak self] in
             guard let url = URL(string: ExternalURL.SOPT.memberVerifyGoogleForm) else { return }
             
             let webView = SOPTWebView(startWith: url)
-            self?.router.asNavigationController.pushViewController(webView, animated: true)
+            self?.navigationController.pushViewController(webView, animated: true)
         }
         
-        self.router.push(signUpVC.vc)
+        self.navigationController.pushViewController(signUpVC.vc, animated: true)
     }
     
     private func runChangeSocialFlow() {
         var changeSocialAccount = self.factory.makeChangeSocialAccount()
         
         changeSocialAccount.vm.changeSocialAccountSucceed = { [weak self] in
-            self?.router.popToRootModule(animated: true)
+            self?.navigationController.popToRootViewController(animated: true)
         }
         
-        self.router.push(changeSocialAccount.vc)
+        self.navigationController.pushViewController(changeSocialAccount.vc, animated: true)
     }
     
     private func runSearchSocialFlow() {
         var searchSocialAccount = self.factory.makeSearchSocialAccount()
         
         searchSocialAccount.vm.searchSocialAccountSucceed = { [weak self] _ in
-            self?.router.popToRootModule(animated: true)
+            self?.navigationController.popToRootViewController(animated: true)
         }
         
-        self.router.push(searchSocialAccount.vc)
+        self.navigationController.pushViewController(searchSocialAccount.vc, animated: true)
     }
     
-    private func showLoginHelpBottomSheet(on vc: LegacyViewControllable) {
+    private func showLoginHelpBottomSheet(on vc: UIViewController) {
         guard let bottomSheetVC = self.factory.makeLoginHelpBottomSheet().viewController as? LoginHelpBottomSheetVC
         else { return Void() }
         
@@ -171,11 +177,7 @@ extension AuthCoordinator {
                 prefersGrabberVisible: false)
         )
         
-        self.router.showBottomSheet(
-            manager: bottomSheetManager,
-            toPresent: bottomSheetVC,
-            on: vc.viewController
-        )
+        bottomSheetManager.present(toPresent: bottomSheetVC, on: vc)
     }
 }
 

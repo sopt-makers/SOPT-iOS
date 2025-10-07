@@ -12,7 +12,7 @@ import Domain
 @_exported import AuthFeatureInterface
 import BaseFeatureDependency
 
-public final class AuthBuilder: AuthFeatureViewBuildable {
+public final class AuthBuilder {
     
     @Injected public var repository: SignInRepositoryInterface
     @Injected public var oauthRepository: CoreOAuthRepositoryInterface
@@ -21,7 +21,9 @@ public final class AuthBuilder: AuthFeatureViewBuildable {
     @Injected public var tokenRepository: AuthTokensRepositoryInterface
     
     public init() { }
+}
     
+extension AuthBuilder: AuthFeatureViewBuildable {
     public func makeSignIn() -> SignInPresentable {
         let useCase = DefaultSignInUseCase(
             repository: repository,
@@ -84,5 +86,4 @@ public final class AuthBuilder: AuthFeatureViewBuildable {
         let vc = SearchSocialAccountVC(viewModel: vm, phoneVerifyViewModel: phoneVM)
         return (vc, vm)
     }
-    
 }

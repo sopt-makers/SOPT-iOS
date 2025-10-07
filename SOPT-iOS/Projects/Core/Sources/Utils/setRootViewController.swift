@@ -16,11 +16,16 @@ import UIKit
           
 */
 public enum ViewControllerUtils {
+    /// viewController를 윈도우의 rootVC로 지정, snapshot으로 화면전환 시 사용
     public
-    static func setRootViewController(window: UIWindow, viewController: UIViewController, withAnimation: Bool) {
+    static func setRootViewController(window: UIWindow,
+                                      viewController: UIViewController,
+                                      withAnimation: Bool,
+                                      completion: ((UIWindow) -> Void)? = nil) {
         if !withAnimation {
             window.rootViewController = viewController
             window.makeKeyAndVisible()
+            completion?(window)
             return
         }
 
@@ -28,6 +33,7 @@ public enum ViewControllerUtils {
             viewController.view.addSubview(snapshot)
             window.rootViewController = viewController
             window.makeKeyAndVisible()
+            completion?(window)
             
             UIView.animate(withDuration: 0.4, animations: {
                 snapshot.layer.opacity = 0
@@ -37,19 +43,24 @@ public enum ViewControllerUtils {
         }
     }
     
+    /// 기존 navigationController 유지, snapshot으로 화면전환 시 사용
     public
-    static func setRootViewController(window: UIWindow, viewController: UIViewController, withAnimation: Bool, completion: @escaping ((UIWindow) -> Void)) {
+    static func setRootNavigationController(window: UIWindow,
+                                            navigationController: UINavigationController,
+                                            withAnimation: Bool,
+                                            completion: ((UIWindow) -> Void)? = nil) {
         if !withAnimation {
-            window.rootViewController = viewController
+            window.rootViewController = navigationController
             window.makeKeyAndVisible()
+            completion?(window)
             return
         }
 
         if let snapshot = window.snapshotView(afterScreenUpdates: true) {
-            viewController.view.addSubview(snapshot)
-            window.rootViewController = viewController
+            navigationController.view.addSubview(snapshot)
+            window.rootViewController = navigationController
             window.makeKeyAndVisible()
-            completion(window)
+            completion?(window)
             
             UIView.animate(withDuration: 0.4, animations: {
                 snapshot.layer.opacity = 0
