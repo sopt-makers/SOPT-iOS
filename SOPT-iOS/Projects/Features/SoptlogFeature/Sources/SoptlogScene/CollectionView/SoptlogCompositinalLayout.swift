@@ -16,14 +16,14 @@ extension SoptlogVC {
     }
     
     func createLayout() -> UICollectionViewCompositionalLayout {
-        let layout = UICollectionViewCompositionalLayout { sectionIndex, env in
-            guard let sectionKind = SoptlogSectionLayoutKind(rawValue: sectionIndex) else { return self.createEmptySection() }
+        let layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, env in
+            guard let sectionKind = SoptlogSectionLayoutKind(rawValue: sectionIndex) else { return self?.createEmptySection() }
             
             switch sectionKind {
-            case .introduce: return self.createIntroduceSection()
-            case .appService: return self.createAppServiceSection()
-            case .editProfile: return self.createEditProfileSection()
-            case .alarm: return self.createAlarmSection()
+            case .introduce: return self?.createIntroduceSection()
+            case .appService: return self?.createAppServiceSection()
+            case .editProfile: return self?.createEditProfileSection()
+            case .alarm: return self?.createAlarmSection()
             }
         }
         
