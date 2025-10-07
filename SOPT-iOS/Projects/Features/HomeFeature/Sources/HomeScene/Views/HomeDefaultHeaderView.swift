@@ -58,7 +58,7 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        self.cancelBag = CancelBag()
+        self.cancelBag.cancel()
     }
 }
 

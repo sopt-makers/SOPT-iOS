@@ -157,6 +157,7 @@ final class DefaultPostCVC: UICollectionViewCell {
         model = nil
         profileImageView.setPlaceholder()
         updateVisibility(for: .latest) // visible 상태는 기본적으로 latest와 같음
+        self.cancelBag.cancel()
     }
 }
 
