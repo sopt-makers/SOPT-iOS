@@ -104,7 +104,7 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
 
 extension AuthCoordinator {
     private func runUserNotFoundFlow() {
-        var userNotFoundVC = self.factory.makeUserNotFound()
+        let userNotFoundVC = self.factory.makeUserNotFound()
         userNotFoundVC.onLoginRetryButtonTapped = { [weak self] in
             self?.navigationController.popToRootViewController(animated: true)
         }
