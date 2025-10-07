@@ -46,6 +46,7 @@ final class LatestPostFooterView: UICollectionReusableView {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        cancelBag.cancel()
         cancelBag = CancelBag()
         bind()
     }
