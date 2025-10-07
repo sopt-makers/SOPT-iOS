@@ -43,8 +43,9 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
             self?.finishFlow?(userType)
         }
         
-        signIn.vm.onLoginHelpButtonTapped = { [weak self] in
-            self?.showLoginHelpBottomSheet(on: signIn.vc)
+        signIn.vm.onLoginHelpButtonTapped = { [weak self, weak viewController = signIn.vc] in
+            guard let viewController else { return }
+            self?.showLoginHelpBottomSheet(on: viewController)
         }
         
         signIn.vm.onVisitorButtonTapped = { [weak self] in
@@ -108,8 +109,9 @@ extension AuthCoordinator {
             self?.navigationController.popToRootViewController(animated: true)
         }
         
-        userNotFoundVC.onLoginHelpButtonTapped = { [weak self] in
-            self?.showLoginHelpBottomSheet(on: userNotFoundVC.viewController)
+        userNotFoundVC.onLoginHelpButtonTapped = { [weak self, weak viewController = userNotFoundVC.viewController] in
+            guard let viewController else { return }
+            self?.showLoginHelpBottomSheet(on: viewController)
         }
         
         self.navigationController.pushViewController(userNotFoundVC.viewController, animated: true)
