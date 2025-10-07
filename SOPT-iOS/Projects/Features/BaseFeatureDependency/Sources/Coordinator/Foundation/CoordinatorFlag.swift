@@ -20,9 +20,9 @@ public enum CoordinatorFlag {
 extension Config {
     public static let coordinatorFlag: CoordinatorFlag = {
         #if DEV || PROD
-        return .legacy
+        return .new
         #else
-        return .legacy
+        return .new
         #endif
     }()
 }
