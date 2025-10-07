@@ -33,7 +33,7 @@ public final class SoptlogCoordinator: DefaultSoptlogCoordinator {
     private let userType: UserType
     private let navigationController: UINavigationController
     
-    public private(set) var rootViewController: UIViewController?
+    public private(set) weak var rootViewController: UIViewController?
     
     // MARK: - Init
     
