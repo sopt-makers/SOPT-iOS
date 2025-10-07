@@ -71,10 +71,6 @@ public final class LegacySoptlogCoordinator: DefaultSoptlogCoordinator {
             AlertUtils.presentNetworkAlertVC()
         }
         
-        soptlog.vm.onNeedSignIn = { [weak self] in
-            self?.requestCoordinating?(.signIn)
-        }
-        
         self.rootViewController = soptlog.vc.viewController
         self.router.push(soptlog.vc)
     }

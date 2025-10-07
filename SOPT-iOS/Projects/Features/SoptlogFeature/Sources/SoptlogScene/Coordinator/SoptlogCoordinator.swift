@@ -30,7 +30,6 @@ public final class SoptlogCoordinator: DefaultSoptlogCoordinator {
     public var finishFlow: (() -> Void)?
     
     private let factory: SoptlogFeatureBuildable
-    private let userType: UserType
     private let navigationController: UINavigationController
     
     public private(set) weak var rootViewController: UIViewController?
@@ -39,23 +38,16 @@ public final class SoptlogCoordinator: DefaultSoptlogCoordinator {
     
     public init(
         navigationController: UINavigationController,
-        factory: SoptlogFeatureBuildable,
-        userType: UserType
+        factory: SoptlogFeatureBuildable
     ) {
         self.navigationController = navigationController
         self.factory = factory
-        self.userType = userType
     }
     
     // MARK: - Coordinator Life Cycle
     
     public override func start() {
-        switch userType {
-        case .visitor:
-            self.rootViewController = UIViewController()
-        case .active, .inactive:
-            showSoptlog()
-        }
+        showSoptlog()
     }
     
     // MARK: - Navigation
@@ -81,11 +73,6 @@ public final class SoptlogCoordinator: DefaultSoptlogCoordinator {
         
         soptlog.vm.onNetworkError = {
             AlertUtils.presentNetworkAlertVC()
-        }
-        
-        soptlog.vm.onNeedSignIn = { [weak self] in
-            guard let self else { return }
-            self.delegate?.soptlogCoordinator(self, to: .signIn)
         }
         
         self.rootViewController = soptlog.vc

@@ -75,9 +75,6 @@ extension ApplicationCoordinator: SoptlogCoordinatorDelegate {
         switch destination {
         case .dailySoptune:
             self.runDailySoptuneFlow()
-        case .signIn:
-            clearChildViewControllers()
-            self.runSignInFlow(by: .rootWindow(animated: true, message: nil))
         case .webLink(let url):
             self.handleWebLink(webLink: url)
         }
