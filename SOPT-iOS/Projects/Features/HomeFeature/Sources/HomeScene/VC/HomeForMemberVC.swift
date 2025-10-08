@@ -62,6 +62,12 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        outlineAnimationTimer?.invalidate()
+        outlineAnimationTimer = nil
+        cancelBag.cancel()
+    }
+    
     // MARK: - View Life Cycle
     
     public override func viewDidLoad() {

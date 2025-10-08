@@ -33,7 +33,7 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
     private let userType: UserType
     private let navigationController: UINavigationController
     
-    public private(set) var rootViewController: UIViewController?
+    public private(set) weak var rootViewController: UIViewController?
     
     // MARK: - Init
     
@@ -155,7 +155,7 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
     public func showHomeForVisitor() {
         var homeForVisitor = factory.makeHomeForVisitor()
         
-        homeForVisitor.vm.onAppServiceCellTapped = {
+        homeForVisitor.vm.onAppServiceCellTapped = { [weak self] in
             AlertUtils.presentAlertVC(
                 type: .titleDescription,
                 title: I18N.Home.PopUp.needToLogin,

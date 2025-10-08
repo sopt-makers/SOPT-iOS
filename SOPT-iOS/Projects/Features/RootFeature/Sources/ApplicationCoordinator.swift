@@ -35,8 +35,8 @@ public final class ApplicationCoordinator: BaseCoordinator {
     internal let rootNavigationController: UINavigationController
     
     private weak var legacyRootController: UINavigationController?
-    private let homeNavigationController = UINavigationController()
-    private let soptlogNavigationController = UINavigationController()
+    let homeNavigationController = UINavigationController()
+    let soptlogNavigationController = UINavigationController()
     weak var tabBarController: UITabBarController?
     
     private weak var homeCoordinator: DefaultHomeCoordinator?
@@ -342,8 +342,6 @@ extension ApplicationCoordinator {
                     switch destination {
                     case .dailySoptune:
                         self?.runDailySoptuneFlow()
-                    case .signIn:
-                        self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
                     case .webLink(let url):
                         self?.handleWebLink(webLink: url)
                     }
@@ -804,8 +802,6 @@ extension ApplicationCoordinator {
                 switch destination {
                 case .dailySoptune:
                     self?.runDailySoptuneFlow()
-                case .signIn:
-                    self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
                 case .webLink(let url):
                     self?.handleWebLink(webLink: url)
                 }
@@ -813,8 +809,7 @@ extension ApplicationCoordinator {
         case .new:
             let newCoordinator = SoptlogCoordinator(
                 navigationController: soptlogNavigationController,
-                factory: SoptlogBuilder(),
-                userType: type
+                factory: SoptlogBuilder()
             )
             newCoordinator.delegate = self
             coordinator = newCoordinator

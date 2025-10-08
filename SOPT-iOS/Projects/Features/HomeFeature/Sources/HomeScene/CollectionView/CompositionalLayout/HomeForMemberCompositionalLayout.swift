@@ -28,27 +28,27 @@ extension HomeForMemberVC {
     }
     
     func createLayout() -> UICollectionViewCompositionalLayout {
-        return UICollectionViewCompositionalLayout { sectionIndex, env in
+        return UICollectionViewCompositionalLayout { [weak self] sectionIndex, env in
             guard let sectionKind = HomeForMemberSectionLayoutKind(rawValue: sectionIndex)
-            else { return self.createEmptySection() }
+            else { return self?.createEmptySection() }
             
             switch sectionKind {
             case .dashBoard:
-                return self.createDashBoardSection()
+                return self?.createDashBoardSection()
             case .calendar:
-                return self.createCalendarSection()
+                return self?.createCalendarSection()
             case .mainProduct:
-                return self.createMainProductSection()
+                return self?.createMainProductSection()
             case .appService:
-                return self.createAppServiceSection()
+                return self?.createAppServiceSection()
             case .popularPosts:
-                return self.createPopularPostsSection()
+                return self?.createPopularPostsSection()
             case .socialLinks:
-                return self.createSocialLinksSection()
+                return self?.createSocialLinksSection()
             case .survey:
-                return self.createSurveySection()
+                return self?.createSurveySection()
             case .latestPosts:
-                return self.createLatestPostsSection()
+                return self?.createLatestPostsSection()
             }
         }
     }

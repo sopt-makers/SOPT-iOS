@@ -90,11 +90,6 @@ final class HomeCalendarDetailVC: UIViewController, HomeCalendarDetailViewContro
         super.viewWillAppear(animated)
         self.setGestureDelegate()
     }
-    
-    deinit {
-        collectionView.dataSource = nil
-        collectionView.delegate = nil
-    }
 }
 
 // MARK: - UI & Layout

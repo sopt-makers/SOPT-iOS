@@ -42,7 +42,6 @@ public class SoptlogViewModel: SoptlogViewModelType {
     public var onToolTipTapped: ((CGRect) -> Void)?
     public var onSoptuneTapped: (() -> Void)?
     public var onNetworkError: (() -> Void)?
-    public var onNeedSignIn: (() -> Void)?
     
     
     // MARK: - initialization
@@ -69,7 +68,7 @@ extension SoptlogViewModel {
                             self.onNetworkError?()
                             return Empty().eraseToAnyPublisher()
                         case .authFailed:
-                            self.onNeedSignIn?()
+                            print("인증에 실패했습니다.")
                             return Empty().eraseToAnyPublisher()
                         }
                     }

@@ -8,9 +8,10 @@
 
 import Foundation
 
+import UIKit
 import BaseFeatureDependency
 
-public protocol UserNotFoundViewControllable: LegacyViewControllable {
+public protocol UserNotFoundViewControllable: UIViewController {
     var onLoginHelpButtonTapped: (() -> Void)? { get set }
     var onLoginRetryButtonTapped: (() -> Void)? { get set }
 }

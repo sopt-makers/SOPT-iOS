@@ -35,6 +35,7 @@ final class GestureSubscription<S: Subscriber>: Subscription where S.Input == Ge
     private var subscriber: S?
     private var gestureType: GestureType
     private weak var view: UIView?
+    private var gesture: UIGestureRecognizer?
     
     init(subscriber: S, view: UIView?, gestureType: GestureType) {
         self.subscriber = subscriber
@@ -47,12 +48,25 @@ final class GestureSubscription<S: Subscriber>: Subscription where S.Input == Ge
         let gesture = gestureType.get()
         gesture.addTarget(self, action: #selector(self.handler))
         self.view?.addGestureRecognizer(gesture)
+        self.gesture = gesture
     }
     
     func request(_ demand: Subscribers.Demand) { }
     
     func cancel() {
+        removeGesture()
         self.subscriber = nil
+    }
+    
+    deinit {
+        removeGesture()
+    }
+    
+    private func removeGesture() {
+        guard let gesture = self.gesture else { return }
+        gesture.removeTarget(self, action: #selector(self.handler))
+        self.view?.removeGestureRecognizer(gesture)
+        self.gesture = nil
     }
     
     @objc

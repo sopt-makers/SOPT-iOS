@@ -32,13 +32,15 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     private lazy var naviBar = OPNavigationBar(self, type: .none)
         .addMiddleLabel(title: I18N.Soptlog.navigationTitle, font: DSKitFontFamily.Suit.medium.font(size: 16))
     
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout()).then {
-        $0.isScrollEnabled = true
-        $0.showsHorizontalScrollIndicator = false
-        $0.showsVerticalScrollIndicator = false
-        $0.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        $0.backgroundColor = .clear
-    }
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
+        collectionView.isScrollEnabled = true
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        collectionView.backgroundColor = .clear
+        return collectionView
+    }()
     
     // MARK: - Initialization
     
@@ -65,11 +67,6 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.viewWillAppear.send()
-    }
-    
-    deinit {
-        collectionView.delegate = nil
-        collectionView.dataSource = nil
     }
 }
 

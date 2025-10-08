@@ -50,6 +50,7 @@ final class SurveyCVC: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        self.cancelBag.cancel()
         self.cancelBag = CancelBag()
     }
 }

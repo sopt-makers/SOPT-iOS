@@ -26,6 +26,7 @@ extension ApplicationCoordinator: TabBarCoordinatorDelegate {
         case .soptlog:
             self.selectedTab(.soptlog)
         case .signIn:
+            clearChildViewControllers()
             self.runSignInFlow(by: .rootWindow(animated: true, message: nil))
             self.removeDependency(coordinator)
         }
@@ -46,6 +47,7 @@ extension ApplicationCoordinator: HomeCoordinatorDelegate {
         case .setting(let userType):
             runMyPageFlow(of: userType)
         case .signIn:
+            clearChildViewControllers()
             runSignInFlow(by: .rootWindow(animated: true, message: nil))
             removeDependency(coordinator)
         case .notification:
@@ -73,8 +75,6 @@ extension ApplicationCoordinator: SoptlogCoordinatorDelegate {
         switch destination {
         case .dailySoptune:
             self.runDailySoptuneFlow()
-        case .signIn:
-            self.runSignInFlow(by: .rootWindow(animated: true, message: nil))
         case .webLink(let url):
             self.handleWebLink(webLink: url)
         }
@@ -98,11 +98,19 @@ extension ApplicationCoordinator: NotificationCoordinatorDelegate {
 
 extension ApplicationCoordinator: MyPageCoordinatorDelegate {
     public func myPageCoordinator(_ coordinator: MyPageCoordinator, to destination: MyPageCoordinatorDestination) {
+        clearChildViewControllers()
         switch destination {
         case .signIn:
             self.runSignInFlow(by: .rootWindow(animated: true, message: nil))
         case .signInWithToast:
             self.runSignInFlow(by: .rootWindow(animated: true, message: I18N.Setting.Withdrawal.withdrawalSuccess))
         }
+    }
+}
+
+extension ApplicationCoordinator {
+    private func clearChildViewControllers() {
+        self.homeNavigationController.viewControllers.removeAll()
+        self.soptlogNavigationController.viewControllers.removeAll()
     }
 }
