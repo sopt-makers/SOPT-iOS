@@ -34,7 +34,7 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
     }
 
     public override func start(by style: CoordinatorStartingOption) {
-        var signIn = factory.makeSignIn()
+        var signIn = factory.makeSignIn(coordinator: self)
         
         //TODO: 딥링크 URL 자동로그인 로직
 

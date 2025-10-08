@@ -24,14 +24,14 @@ public final class AuthBuilder {
 }
     
 extension AuthBuilder: AuthFeatureViewBuildable {
-    public func makeSignIn() -> SignInPresentable {
+    public func makeSignIn(coordinator: Coordinator) -> SignInPresentable {
         let useCase = DefaultSignInUseCase(
             repository: repository,
             oauthRepository: oauthRepository,
             coreRepository: coreRepository,
             tokenRepository: tokenRepository
         )
-        let vm = SignInViewModel(useCase: useCase)
+        let vm = SignInViewModel(useCase: useCase, coordinator: coordinator)
         let vc = SignInVC(viewModel: vm)
         return (vc, vm)
     }

@@ -12,7 +12,7 @@ import BaseFeatureDependency
 import Core
 import DSKit
 
-public final class UserNotFoundVC: UIViewController, UserNotFoundViewControllable {
+public final class UserNotFoundVC: UIViewController, UserNotFoundRoutingTrigger {
 
     // MARK: - Properties
     

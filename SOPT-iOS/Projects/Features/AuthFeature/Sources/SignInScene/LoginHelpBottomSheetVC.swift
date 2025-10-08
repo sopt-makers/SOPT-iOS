@@ -14,7 +14,7 @@ import Core
 import DSKit
 import Domain
 
-public final class LoginHelpBottomSheetVC: UIViewController, LoginHelpBottomSheetViewControllable {
+public final class LoginHelpBottomSheetVC: UIViewController, LoginHelpBottomSheetRoutingTrigger {
     
     private static let i18n = I18N.SignIn.Refactor.self
     public var onWantToKnowLoginAccountButtonDidTap: (() -> Void)?
