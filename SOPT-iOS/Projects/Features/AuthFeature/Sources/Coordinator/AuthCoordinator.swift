@@ -160,18 +160,18 @@ extension AuthCoordinator {
         guard let bottomSheetVC = self.factory.makeLoginHelpBottomSheet().viewController as? LoginHelpBottomSheetVC
         else { return Void() }
         
-        bottomSheetVC.onResetSocialAccountButtonDidTap = { [weak self] in
-            bottomSheetVC.dismiss(animated: true)
+        bottomSheetVC.onResetSocialAccountButtonDidTap = { [weak self, weak bottomSheetVC] in
+            bottomSheetVC?.dismiss(animated: true)
             self?.runChangeSocialFlow()
         }
         
-        bottomSheetVC.onWantToKnowLoginAccountButtonDidTap = { [weak self] in
-            bottomSheetVC.dismiss(animated: true)
+        bottomSheetVC.onWantToKnowLoginAccountButtonDidTap = { [weak self, weak bottomSheetVC] in
+            bottomSheetVC?.dismiss(animated: true)
             self?.runSearchSocialFlow()
         }
         
-        bottomSheetVC.onInquireToKakaoTalkButtonDidTap = { 
-            bottomSheetVC.dismiss(animated: true)
+        bottomSheetVC.onInquireToKakaoTalkButtonDidTap = { [weak bottomSheetVC] in
+            bottomSheetVC?.dismiss(animated: true)
             openExternalLink(urlStr: ExternalURL.KakaoTalk.serviceProposal)
         }
         
