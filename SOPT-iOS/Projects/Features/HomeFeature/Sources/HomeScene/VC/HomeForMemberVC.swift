@@ -41,7 +41,6 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     var latestPostAnimationTask: Task<Void, Never>?
     var fetchDataTask: Task<Void, Never>?
     
-    var outlineAnimationTimer: Timer?
     var currentIndex = 0
     
     // MARK: - UI Components
@@ -63,8 +62,6 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     }
     
     deinit {
-        outlineAnimationTimer?.invalidate()
-        outlineAnimationTimer = nil
         cancelBag.cancel()
     }
     
