@@ -62,6 +62,6 @@ public final class AttendanceCoordinator: DefaultCoordinator {
         
         attendance.vc.modalPresentationStyle = .overFullScreen
         attendance.vc.modalTransitionStyle = .crossDissolve
-        navigationController?.present(attendance.vc, animated: true)
+        navigationController?.present(attendance.vc, animated: true, completion: nil)
     }
 }
