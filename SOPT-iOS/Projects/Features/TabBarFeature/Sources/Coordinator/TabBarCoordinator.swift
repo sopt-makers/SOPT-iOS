@@ -29,7 +29,7 @@ public final class TabBarCoordinator: DefaultTabBarCoordinator {
     public weak var delegate: TabBarCoordinatorDelegate?
         
     private let factory: TabBarBuilder
-    private var navigationController: UINavigationController
+    private weak var navigationController: UINavigationController?
     private let views: [UIViewController]
     private let userType: UserType
     
@@ -84,7 +84,9 @@ public final class TabBarCoordinator: DefaultTabBarCoordinator {
         tabBar.vm.onFABMenuTapped = { [weak self] url in
             guard let url = URL(string: url) else { return }
             let webView = SOPTWebView(startWith: url)
-            self?.navigationController.pushViewController(webView, animated: true)
+            self?.navigationController?.pushViewController(webView, animated: true)
         }
+        
+        self.navigationController?.setViewControllers([tabBar.vc], animated: false)
     }
 }
