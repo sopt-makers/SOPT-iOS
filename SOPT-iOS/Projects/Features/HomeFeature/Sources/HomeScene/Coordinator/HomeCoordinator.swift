@@ -31,7 +31,7 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
     
     private let factory: HomeFeatureBuildable
     private let userType: UserType
-    private let navigationController: UINavigationController
+    private weak var navigationController: UINavigationController?
     
     public private(set) weak var rootViewController: UIViewController?
     
@@ -149,7 +149,7 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
         }
         
         rootViewController = homeForMember.vc
-        navigationController.pushViewController(homeForMember.vc, animated: true)
+        navigationController?.pushViewController(homeForMember.vc, animated: true)
     }
     
     public func showHomeForVisitor() {
@@ -179,6 +179,6 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
         }
         
         rootViewController = homeForVisitor.vc
-        navigationController.pushViewController(homeForVisitor.vc, animated: true)
+        navigationController?.pushViewController(homeForVisitor.vc, animated: true)
     }
 }
