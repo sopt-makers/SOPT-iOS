@@ -273,87 +273,87 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     internal func runLegacyTabBarFlow(type: UserType? = nil, initSelectedTabIndex: Int = 0) {
-        defer {
-            bindNotification()
-        }
-        
-        self.childCoordinators = []
-        
-        let tabBarBuilder = TabBarBuilder()
-        let userType = type ?? UserDefaultKeyList.Auth.getUserType()
-
-        let homeCoordinator = runHomeFlow(type: userType)
-        guard let homeVC = homeCoordinator.rootViewController else { return }
-    
-        let soptlogCoordinator = runSoptlogFlow(type: userType)
-        guard let soptlogVC = soptlogCoordinator.rootViewController else { return }
-                
-        let (tabbarController, viewModel) = tabBarBuilder.makeTabBar(
-            with: [homeVC,
-                   soptlogVC],
-            userType: userType
-        )
-        
-        let coordinator = LegacyTabBarCoordinator(
-            router: router,
-            factory: (tabbarController, viewModel),
-            items: [
-                homeVC,
-                soptlogVC
-            ]
-        )
-        
-        self.legacyRootController = tabbarController.asNavigationController
-        self.tabBarController = tabbarController
-        
-        self.tabBarController?.selectedIndex = initSelectedTabIndex
-        
-        // 각 코디네이터 실행
-        coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
-            switch destination {
-            case .home:
-                self?.homeCoordinator?.requestCoordinating = { [weak self, weak coordinator] destination in
-                    switch destination {
-                    case .attendance:
-                        self?.runAttendanceFlow()
-                    case .setting(let userType):
-                        self?.runMyPageFlow(of: userType)
-                    case .signIn:
-                        self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
-                        self?.removeDependency(coordinator)
-                    case .notification:
-                        self?.runNotificationFlow()
-                    case .soptlog:
-                        self?.tabBarController?.selectedIndex = 1
-                    case .deepLink(let url):
-                        self?.notificationHandler.receive(deepLink: url)
-                        guard let deepLink = self?.notificationHandler.deepLink.value else { return }
-                        self?.handleDeepLink(deepLink: deepLink)
-                    case .webLink(let url):
-                        self?.handleWebLink(webLink: url)
-                    case .calendar:
-                        self?.showHomeCalendarDetail()
-                    case .poke(let isNewUser):
-                        _ = isNewUser ? self?.runPokeOnboardingFlow() : self?.runPokeFlow()
-                    }
-                }
-            case .soptlog:
-                self?.soptlogCoordinator?.requestCoordinating = { [weak self] destination in
-                    switch destination {
-                    case .dailySoptune:
-                        self?.runDailySoptuneFlow()
-                    case .webLink(let url):
-                        self?.handleWebLink(webLink: url)
-                    }
-                }
-            case .signIn:
-                self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
-                self?.removeDependency(coordinator)
-            }
-        }
-        
-        addDependency(coordinator)
-        coordinator.start()
+//        defer {
+//            bindNotification()
+//        }
+//        
+//        self.childCoordinators = []
+//        
+//        let tabBarBuilder = TabBarBuilder()
+//        let userType = type ?? UserDefaultKeyList.Auth.getUserType()
+//
+//        let homeCoordinator = runHomeFlow(type: userType)
+//        guard let homeVC = homeCoordinator.rootViewController else { return }
+//    
+//        let soptlogCoordinator = runSoptlogFlow(type: userType)
+//        guard let soptlogVC = soptlogCoordinator.rootViewController else { return }
+//                
+//        let (tabbarController, viewModel) = tabBarBuilder.makeTabBar(
+//            with: [homeVC,
+//                   soptlogVC],
+//            userType: userType
+//        )
+//        
+//        let coordinator = LegacyTabBarCoordinator(
+//            router: router,
+//            factory: (tabbarController, viewModel),
+//            items: [
+//                homeVC,
+//                soptlogVC
+//            ]
+//        )
+//        
+//        self.legacyRootController = tabbarController.asNavigationController
+//        self.tabBarController = tabbarController
+//        
+//        self.tabBarController?.selectedIndex = initSelectedTabIndex
+//        
+//        // 각 코디네이터 실행
+//        coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
+//            switch destination {
+//            case .home:
+//                self?.homeCoordinator?.requestCoordinating = { [weak self, weak coordinator] destination in
+//                    switch destination {
+//                    case .attendance:
+//                        self?.runAttendanceFlow()
+//                    case .setting(let userType):
+//                        self?.runMyPageFlow(of: userType)
+//                    case .signIn:
+//                        self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
+//                        self?.removeDependency(coordinator)
+//                    case .notification:
+//                        self?.runNotificationFlow()
+//                    case .soptlog:
+//                        self?.tabBarController?.selectedIndex = 1
+//                    case .deepLink(let url):
+//                        self?.notificationHandler.receive(deepLink: url)
+//                        guard let deepLink = self?.notificationHandler.deepLink.value else { return }
+//                        self?.handleDeepLink(deepLink: deepLink)
+//                    case .webLink(let url):
+//                        self?.handleWebLink(webLink: url)
+//                    case .calendar:
+//                        self?.showHomeCalendarDetail()
+//                    case .poke(let isNewUser):
+//                        _ = isNewUser ? self?.runPokeOnboardingFlow() : self?.runPokeFlow()
+//                    }
+//                }
+//            case .soptlog:
+//                self?.soptlogCoordinator?.requestCoordinating = { [weak self] destination in
+//                    switch destination {
+//                    case .dailySoptune:
+//                        self?.runDailySoptuneFlow()
+//                    case .webLink(let url):
+//                        self?.handleWebLink(webLink: url)
+//                    }
+//                }
+//            case .signIn:
+//                self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
+//                self?.removeDependency(coordinator)
+//            }
+//        }
+//        
+//        addDependency(coordinator)
+//        coordinator.start()
     }
 }
 
@@ -787,18 +787,18 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runSoptlogFlow(type: UserType) -> DefaultSoptlogCoordinator {
-        var coordinator: DefaultSoptlogCoordinator
+    internal func runSoptlogFlow(type: UserType) -> BaseCoordinator {
+        var coordinator: BaseCoordinator
         
         switch Config.coordinatorFlag {
         case .legacy:
-            coordinator = LegacySoptlogCoordinator(
+            let legacyCoordinator = LegacySoptlogCoordinator(
                 router: LegacyRouter(rootController: self.legacyRootController ?? self.router.asNavigationController),
                 factory: LegacySoptlogBuilder(),
                 userType: type
             )
             
-            coordinator.requestCoordinating = { [weak self] destination in
+            legacyCoordinator.requestCoordinating = { [weak self] destination in
                 switch destination {
                 case .dailySoptune:
                     self?.runDailySoptuneFlow()
@@ -806,6 +806,14 @@ extension ApplicationCoordinator {
                     self?.handleWebLink(webLink: url)
                 }
             }
+            
+            legacyCoordinator.finishFlow = { [weak self, weak legacyCoordinator] in
+                legacyCoordinator?.childCoordinators = []
+                self?.removeDependency(legacyCoordinator)
+            }
+            
+            addDependency(legacyCoordinator)
+            coordinator = legacyCoordinator
         case .new:
             let newCoordinator = SoptlogCoordinator(
                 navigationController: soptlogNavigationController,
@@ -814,13 +822,7 @@ extension ApplicationCoordinator {
             newCoordinator.delegate = self
             coordinator = newCoordinator
         }
-            
-        coordinator.finishFlow = { [weak self, weak coordinator] in
-            coordinator?.childCoordinators = []
-            self?.removeDependency(coordinator)
-        }
         
-        addDependency(coordinator)
         coordinator.start()
         
         return coordinator
