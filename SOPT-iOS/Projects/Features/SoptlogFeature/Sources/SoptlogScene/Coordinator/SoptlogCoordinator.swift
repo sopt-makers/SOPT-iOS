@@ -31,7 +31,7 @@ public final class SoptlogCoordinator: DefaultSoptlogCoordinator {
     
     private let factory: SoptlogFeatureBuildable
     private let navigationController: UINavigationController
-    
+    private weak var navigationController: UINavigationController?
     public private(set) weak var rootViewController: UIViewController?
     
     // MARK: - Init
@@ -76,7 +76,7 @@ public final class SoptlogCoordinator: DefaultSoptlogCoordinator {
         }
         
         self.rootViewController = soptlog.vc
-        navigationController.pushViewController(soptlog.vc, animated: true)
+        navigationController?.pushViewController(soptlog.vc, animated: true)
     }
     
     private func showToolTip(_ frame: CGRect) {
