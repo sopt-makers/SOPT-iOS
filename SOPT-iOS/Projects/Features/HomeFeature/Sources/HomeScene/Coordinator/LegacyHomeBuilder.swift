@@ -8,6 +8,7 @@
 
 import Core
 import Domain
+import BaseFeatureDependency
 @_exported import HomeFeatureInterface
 
 public final class LegacyHomeBuilder {
@@ -18,16 +19,16 @@ public final class LegacyHomeBuilder {
 
 extension LegacyHomeBuilder: LegacyHomeFeatureBuildable {
     
-    public func makeHomeForMember() -> LegacyHomeForMemberPresentable {
+    public func makeHomeForMember(coordinator: Coordinator) -> LegacyHomeForMemberPresentable {
         let useCase = DefaultHomeUseCase(repository: homeRepository)
-        let viewModel = HomeForMemberViewModel(useCase: useCase)
+        let viewModel = HomeForMemberViewModel(useCase: useCase, coordinator: coordinator)
         let homeForMemberVC = HomeForMemberVC(viewModel: viewModel)
         return (homeForMemberVC, viewModel)
     }
      
-    public func makeHomeForVisitor() -> LegacyHomeForVisitorPresentable {
+    public func makeHomeForVisitor(coordinator: Coordinator) -> LegacyHomeForVisitorPresentable {
         let useCase = DefaultHomeUseCase(repository: homeRepository)
-        let viewModel = HomeForVisitorViewModel(useCase: useCase)
+        let viewModel = HomeForVisitorViewModel(useCase: useCase, coordinator: coordinator)
         let homeForVisitorVC = HomeForVisitorVC(viewModel: viewModel)
         return (homeForVisitorVC, viewModel)
     }
