@@ -362,7 +362,6 @@ extension ApplicationCoordinator {
 extension ApplicationCoordinator {
     internal func runTabBarFlow(type: UserType? = nil, initSelectedTabType: TabType = .home) {
         defer { bindNotification() }
-        self.childCoordinators = []
         
         let tabBarBuilder = TabBarBuilder()
         let userType = type ?? UserDefaultKeyList.Auth.getUserType()

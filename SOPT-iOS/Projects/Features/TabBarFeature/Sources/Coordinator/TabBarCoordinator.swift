@@ -20,11 +20,10 @@ public protocol TabBarCoordinatorDelegate: AnyObject {
     func tabBarCoordinator(_ coordinator: TabBarCoordinator, to destination: TabBarCoordinatorDestination)
 }
 
-public final class TabBarCoordinator: DefaultTabBarCoordinator {
+public final class TabBarCoordinator: BaseCoordinator {
     
     // MARK: - Properties
-    
-    public var finishFlow: (() -> Void)?
+
     public var requestCoordinating: ((TabBarCoordinatorDestination) -> Void)?
     public weak var delegate: TabBarCoordinatorDelegate?
         
