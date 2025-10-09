@@ -47,10 +47,6 @@ final public class TabBarViewModel: TabBarViewModelType {
         self.userType = userType
         self.coordinator = coordinator
     }
-    
-    deinit {
-        print("tabBarViewModel deinit")
-    }
 }
 
 extension TabBarViewModel {
