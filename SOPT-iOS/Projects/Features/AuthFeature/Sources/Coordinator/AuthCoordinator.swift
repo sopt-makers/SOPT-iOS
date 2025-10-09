@@ -15,13 +15,18 @@ import Core
 import DSKit
 import WebFeature
 
-public final class AuthCoordinator: DefaultAuthCoordinator {
+public protocol AuthCoordinatorDelegate: AnyObject {
+    func authCoordinator(_ coordinator: AuthCoordinator, userType: UserType)
+}
 
+public final class AuthCoordinator: DefaultAuthCoordinator {
+    // TODO: DefaultAuthCoordinator가 BaseCoordinator만 채택하도록 변경
     public var finishFlow: ((UserType) -> Void)?
 
     private let factory: AuthFeatureViewBuildable
     private weak var navigationController: UINavigationController?
     private var url: String?
+    public weak var delegate: AuthCoordinatorDelegate?
 
     public init(
         navigationController: UINavigationController,
@@ -39,8 +44,9 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
         //TODO: 딥링크 URL 자동로그인 로직
 
         signIn.vm.onSignInSuccess = { [weak self]  in
+            guard let self else { return }
             let userType = UserDefaultKeyList.Auth.getUserType()
-            self?.finishFlow?(userType)
+            self.delegate?.authCoordinator(self, userType: userType)
         }
         
         signIn.vm.onLoginHelpButtonTapped = { [weak self, weak viewController = signIn.vc] in
@@ -49,7 +55,8 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
         }
         
         signIn.vm.onVisitorButtonTapped = { [weak self] in
-            self?.finishFlow?(.visitor)
+            guard let self else { return }
+            self.delegate?.authCoordinator(self, userType: .visitor)
         }
         
         signIn.vm.onSocialLoginFail = { [weak self] in

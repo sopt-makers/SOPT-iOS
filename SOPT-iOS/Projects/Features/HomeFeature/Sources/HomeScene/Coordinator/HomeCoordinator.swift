@@ -27,7 +27,6 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
     // MARK: - Properties
     
     public var requestCoordinating: ((HomeCoordinatorDestination) -> Void)?
-    public var finishFlow: (() -> Void)?
     
     private let factory: HomeFeatureBuildable
     private let userType: UserType

@@ -245,26 +245,41 @@ extension ApplicationCoordinator {
     ) {
         @Injected var coordinator: DefaultAuthCoordinator
         
-        coordinator.finishFlow = { [weak self, weak coordinator] userType in
-            Config.coordinatorFlag == .legacy
-            ? self?.runLegacyTabBarFlow(type: userType)
-            : self?.runTabBarFlow(type: userType)
-            self?.removeDependency(coordinator)
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator.finishFlow = { [weak self, weak coordinator] userType in
+                Config.coordinatorFlag == .legacy
+                ? self?.runLegacyTabBarFlow(type: userType)
+                : self?.runTabBarFlow(type: userType)
+                self?.removeDependency(coordinator)
+            }
+            addDependency(coordinator)
+        case .new:
+            let coordinator = coordinator as? AuthCoordinator
+            coordinator?.delegate = self
         }
-        addDependency(coordinator)
+        
         coordinator.start(by: style)
     }
     
     private func runSignInSuccessFlow(with url: String) {
         childCoordinators = []
         @Injected var coordinator: DefaultAuthCoordinator
-        coordinator.finishFlow = { [weak self, weak coordinator] userType in
-            Config.coordinatorFlag == .legacy
-            ? self?.runLegacyTabBarFlow(type: userType)
-            : self?.runTabBarFlow(type: userType)
-            self?.removeDependency(coordinator)
+        
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator.finishFlow = { [weak self, weak coordinator] userType in
+                Config.coordinatorFlag == .legacy
+                ? self?.runLegacyTabBarFlow(type: userType)
+                : self?.runTabBarFlow(type: userType)
+                self?.removeDependency(coordinator)
+            }
+            addDependency(coordinator)
+        case .new:
+            let coordinator = coordinator as? AuthCoordinator
+            coordinator?.delegate = self
         }
-        addDependency(coordinator)
+        
         coordinator.start(by: .rootWindow(animated: false, message: nil))
     }
 }
