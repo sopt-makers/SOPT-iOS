@@ -28,17 +28,23 @@ public final class TabBarCoordinator: DefaultTabBarCoordinator {
     public var requestCoordinating: ((TabBarCoordinatorDestination) -> Void)?
     public weak var delegate: TabBarCoordinatorDelegate?
         
-    private let factory: TabBarPresentable
+    private let factory: TabBarBuilder
     private var navigationController: UINavigationController
+    private let views: [UIViewController]
+    private let userType: UserType
     
     // MARK: - Init
     
     public init(
         navigationController: UINavigationController,
-        factory: TabBarPresentable
+        factory: TabBarBuilder,
+        views: [UIViewController],
+        userType: UserType
     ) {
         self.navigationController = navigationController
         self.factory = factory
+        self.views = views
+        self.userType = userType
     }
     
     // MARK: - Coordinator Life Cycle
@@ -50,8 +56,8 @@ public final class TabBarCoordinator: DefaultTabBarCoordinator {
     // MARK: - Navigation
     
     private func showTabBar() {
-        var tabBar = factory
-    
+        var tabBar = factory.makeTabBar(with: views, userType: userType, coordinator: self)
+
         tabBar.vm.onTabBarItemTapped = { [weak self] index in
             // 각 탭의 코디네이터 실행
             guard let self = self,
