@@ -10,6 +10,7 @@ import Foundation
 import Combine
 
 import Core
+import BaseFeatureDependency
 
 final public class TabBarViewModel: TabBarViewModelType {
     
@@ -17,6 +18,7 @@ final public class TabBarViewModel: TabBarViewModelType {
     
     private let cancelBag = CancelBag()
     private let userType: UserType
+    private let coordinator: AnyCoordinatorObject
     @Published private(set) var isFABTapped: Bool = false
     
     // MARK: - Inputs
@@ -41,8 +43,13 @@ final public class TabBarViewModel: TabBarViewModelType {
     
     // MARK: - initialization
     
-    public init(userType: UserType) {
+    public init(userType: UserType, coordinator: Coordinator) {
         self.userType = userType
+        self.coordinator = coordinator
+    }
+    
+    deinit {
+        print("tabBarViewModel deinit")
     }
 }
 
