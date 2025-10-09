@@ -7,8 +7,9 @@
 //
 
 import Foundation
+import BaseFeatureDependency
 
 public protocol SoptlogFeatureBuildable {
-    func makeSoptlog() -> SoptlogPresentable
+    func makeSoptlog(coordinator: Coordinator) -> SoptlogPresentable
     func makeSoptlogToolTip(_ toolTipFrame: CGRect) -> SoptlogTooltipPresentable
 }

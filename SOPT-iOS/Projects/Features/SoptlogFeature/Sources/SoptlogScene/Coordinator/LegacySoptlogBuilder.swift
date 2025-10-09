@@ -10,6 +10,7 @@ import Foundation
 
 import Core
 import Domain
+import BaseFeatureDependency
 @_exported import SoptlogFeatureInterface
 
 public final class LegacySoptlogBuilder {
@@ -19,9 +20,9 @@ public final class LegacySoptlogBuilder {
 }
 
 extension LegacySoptlogBuilder: LegacySoptlogFeatureBuildable {
-    public func makeSoptlog() -> LegacySoptlogPresentable {
+    public func makeSoptlog(coordinator: Coordinator) -> LegacySoptlogPresentable {
         let useCase = DefaultSoptlogUseCase(repository: soptlogReposiotry)
-        let viewModel = SoptlogViewModel(useCase: useCase)
+        let viewModel = SoptlogViewModel(useCase: useCase, coordinator: coordinator)
         let soptlogVC = SoptlogVC(viewModel: viewModel)
         return (soptlogVC, viewModel)
     }

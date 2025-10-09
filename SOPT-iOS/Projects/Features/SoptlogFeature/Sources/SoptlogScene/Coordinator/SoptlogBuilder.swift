@@ -10,6 +10,7 @@ import Foundation
 
 import Core
 import Domain
+import BaseFeatureDependency
 @_exported import SoptlogFeatureInterface
 
 public final class SoptlogBuilder {
@@ -19,9 +20,9 @@ public final class SoptlogBuilder {
 }
 
 extension SoptlogBuilder: SoptlogFeatureBuildable {
-    public func makeSoptlog() -> SoptlogPresentable {
+    public func makeSoptlog(coordinator: Coordinator) -> SoptlogPresentable {
         let useCase = DefaultSoptlogUseCase(repository: soptlogReposiotry)
-        let viewModel = SoptlogViewModel(useCase: useCase)
+        let viewModel = SoptlogViewModel(useCase: useCase, coordinator: coordinator)
         let soptlogVC = SoptlogVC(viewModel: viewModel)
         return (soptlogVC, viewModel)
     }
