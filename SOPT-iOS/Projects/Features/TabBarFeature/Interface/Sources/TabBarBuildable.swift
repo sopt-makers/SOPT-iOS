@@ -8,7 +8,8 @@
 
 import UIKit
 import Core
+import BaseFeatureDependency
 
 public protocol TabBarBuildable {
-    func makeTabBar(with views: [UIViewController], userType: UserType) -> TabBarPresentable
+    func makeTabBar(with views: [UIViewController], userType: UserType, coordinator: Coordinator) -> TabBarPresentable
 }
