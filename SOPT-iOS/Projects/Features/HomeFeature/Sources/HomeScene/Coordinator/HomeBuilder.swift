@@ -8,6 +8,7 @@
 
 import Core
 import Domain
+import BaseFeatureDependency
 @_exported import HomeFeatureInterface
 
 public final class HomeBuilder {
@@ -18,16 +19,16 @@ public final class HomeBuilder {
 
 extension HomeBuilder: HomeFeatureBuildable {
     
-    public func makeHomeForMember() -> HomeForMemberPresentable {
+    public func makeHomeForMember(coordinator: Coordinator) -> HomeForMemberPresentable {
         let useCase = DefaultHomeUseCase(repository: homeRepository)
-        let viewModel = HomeForMemberViewModel(useCase: useCase)
+        let viewModel = HomeForMemberViewModel(useCase: useCase, coordinator: coordinator)
         let homeForMemberVC = HomeForMemberVC(viewModel: viewModel)
         return (homeForMemberVC, viewModel)
     }
      
-    public func makeHomeForVisitor() -> HomeForVisitorPresentable {
+    public func makeHomeForVisitor(coordinator: Coordinator) -> HomeForVisitorPresentable {
         let useCase = DefaultHomeUseCase(repository: homeRepository)
-        let viewModel = HomeForVisitorViewModel(useCase: useCase)
+        let viewModel = HomeForVisitorViewModel(useCase: useCase, coordinator: coordinator)
         let homeForVisitorVC = HomeForVisitorVC(viewModel: viewModel)
         return (homeForVisitorVC, viewModel)
     }
