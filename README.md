@@ -7,7 +7,7 @@ SOPT는 IT와 벤처 창업에 뜻이 있는 대학생들이 모인 국내 최�
 
 SOPT에서 활동하고 있는 회원들도, SOPT의 열정이 되고 싶은 분들도 모두 SOPT에 대해서 더 알아갈 수 있는 서비스예요.
 
-![앱스토어 이미지](https://github.com/sopt-makers/SOPT-iOS/assets/77267404/4051a873-5ca6-4c16-b77d-0fdff1ee25d0)
+![깃헙 프로젝트 소개 페이지](https://github.com/user-attachments/assets/7d422d0d-0825-47b9-a378-4a3bbd9dce4d)
 
 
 [앱스토어에서 다운 받기](https://apps.apple.com/kr/app/sopt/id6444594319)
@@ -36,6 +36,11 @@ SOPT에서 활동하고 있는 회원들도, SOPT의 열정이 되고 싶은 분
 #### 오늘의 솝마디
 - 매일 도착하는 창업 운세, 오늘의 솝마디로 즐거운 하루를 시작해보세요
 - 오늘의 창업운을 높여줄 행운의 파트너를 콕 찌르고, 커피챗을 신청해보세요. SOPT인의 여정에 뜻밖의 인연을 가져다 줄지도 몰라요!
+
+#### 콕 찌르기
+- 콕 찌르기로 솝트 회원과 더욱 가까워져요
+- 나와 공통점이 있는 친구를 찾아 친한 친구, 단짝 친구, 그리고 천생연분이 되어보아요
+
 
 <br>
 
@@ -95,23 +100,23 @@ SOPT에서 활동하고 있는 회원들도, SOPT의 열정이 되고 싶은 분
 ---
 
 ### 📱 App Version
-| 날짜 | 버전 |
-|:--|:--|
-| 23.01 | `v1.0.0` |
-| 23.01 | `v1.0.1` |
-| 23.02 | `v1.0.2` |
-| 23.04 | `v2.0.0` |
-| 23.04 | `v2.1.0` |
-| 23.04 | `v2.1.1` |
-| 23.05 | `v2.1.2` |
-| 23.05 | `v2.1.3` |
-| 23.09 | `v2.2.0` |
-| 23.10 | `v2.2.1` |
-| 23.12 | `v2.2.2` |
-| 24.01 | `v2.3.0` |
-| 24.06 | `v2.4.0` |
-| 24.08 | `v2.5.0` |
-| 24.10 | `v2.6.0` |
+| 날짜 | 버전 | 날짜 | 버전 |
+|:--|:--|:--|:--|
+| 23.01 | `v1.0.0` | 24.10 | `v2.6.1` |
+| 23.01 | `v1.0.1` | 24.11 | `v2.6.2` |
+| 23.02 | `v1.0.2` | 25.01 | `v2.6.3` |
+| 23.04 | `v2.0.0` | 25.01 | `v2.6.4` |
+| 23.04 | `v2.1.0` | 25.03 | `v3.0.0` |
+| 23.04 | `v2.1.1` | 25.04 | `v3.0.1` |
+| 23.05 | `v2.1.2` | 25.05 | `v3.0.2` |
+| 23.05 | `v2.1.3` | 25.05 | `v3.0.3` |
+| 23.09 | `v2.2.0` | 25.05 | `v3.0.4` |
+| 23.10 | `v2.2.1` | 25.06 | `v3.0.5` |
+| 23.12 | `v2.2.2` | 25.06 | `v3.0.6` |
+| 24.01 | `v2.3.0` | 25.09 | `v4.0.0` |
+| 24.06 | `v2.4.0` |  |  |
+| 24.08 | `v2.5.0` |  |  |
+| 24.10 | `v2.6.0` |  |  |
 
 <br>
 
@@ -136,10 +141,13 @@ SOPT에서 활동하고 있는 회원들도, SOPT의 열정이 되고 싶은 분
   - [ ] Dialog
   - [x] Color
   - [x] Typography
+- [x] 콕 찌르기
+- [x] 솝트로그
+- [x] 인증중앙화(인증 방식 변경)
+- [x] Coordinator 리팩토링
+  - [x] Coordinator의 Router 의존성 제거
+  - [x] Coordinator의 deinit 방식 변경
 - [ ] WKWebView로 전환
-- [ ] 콕 찌르기
-- [ ] 캘린더
-
 
 <br>
 
@@ -156,7 +164,7 @@ SOPT에서 활동하고 있는 회원들도, SOPT의 열정이 되고 싶은 분
 - 비동기 처리를 직관적이고 편리하게 구현합니다.
 
 #### Factory Pattern과 Dependency Injection
-![DI](https://github.com/sopt-makers/SOPT-iOS/assets/77267404/d7a90edc-ceb2-4d31-8505-f672f28e203b)
+<img width="1978" height="761" alt="image" src="https://github.com/user-attachments/assets/e46d4fac-0ec4-4448-91c5-1da042ca8ed6" />
 
 - 각 Feature의 Builder가 Factory의 역할을 수행하여 뷰와 뷰모델을 추상화한 Presentable을 생성합니다.
 - 이 과정에서 VC, ViewModel, UseCase, Repository를 주입합니다.
@@ -165,8 +173,8 @@ SOPT에서 활동하고 있는 회원들도, SOPT의 열정이 되고 싶은 분
 ![image](https://github.com/sopt-makers/SOPT-iOS/assets/77208067/87495359-42d5-4f19-bdb9-a3ed299f9fba)
 
 - 화면 전환을 Coordinator가 책임집니다.
-- Coordinator는 Router에 의존하고 Router는 UINavigationController에 의존합니다.
-- VC와 ViewModel 모두 Coordinator를 참조하지 않습니다.
+- Coordinator는 UINavigationController로 직접 화면전환을 수행합니다.
+- VC → ViewModel → Coordinator의 참조 관계에 따라 VC가 해제되면 Coordinator도 메모리에서 해제됩니다.
 - 대신 Coordinator가 Factory를 참조하여 Presentable을 생성하고 런타임에 클로저 주입으로 화면 전환 시 액션을 지정합니다.
 
 #### Modular Architecture
@@ -226,9 +234,12 @@ Fastlane과 Makefile을 활용하여 번거로운 개발 환경 세팅을 자동
 |--|--|--|--|--|--|
 | [윤수빈](https://github.com/devxsby)| [이세진](https://github.com/lsj8706) | [이준호](https://github.com/L-j-h-c)| [양수빈](https://github.com/yangsubinn)| [김영인](https://github.com/0inn)| [이승호](https://github.com/elesahich) |
 | `1, 2, 3기`  | `1, 2, 3, 4기`  | `1, 2기`  |  `1기`  |  `2, 3기` | `2, 3, 4기` |
-| <img src="https://github.com/user-attachments/assets/46c2fb55-9bb5-4e52-bc38-6d7a16021332" width=120 />  | <img src="https://github.com/user-attachments/assets/75a54aa5-e456-44e3-80f1-87b39b5defed" width=120 />  | <img src="https://github.com/user-attachments/assets/49001a52-8077-4715-9f05-4d5ef196f723" width=120 />  |  <img src="https://github.com/user-attachments/assets/4fb4c616-49c3-49ee-a1dd-9ecb734bfbab" width=120 />  |  <img src="https://github.com/user-attachments/assets/0e8475e1-e8db-458c-a426-ce33834908b3" width=120 /> |   |
-|  [김민재](https://github.com/ffalswo2)   |  [강윤서](https://github.com/yungu0010)   | [김승찬](https://github.com/seungchan2)  |  [이재현](https://github.com/dlwogus0128)  |  [장석우](https://github.com/meltsplit) |  |
-| `4기`  | `5기`  | `5기`  |  `5기`  |  `5기` |  |
+| <img src="https://github.com/user-attachments/assets/46c2fb55-9bb5-4e52-bc38-6d7a16021332" width=120 />  | <img src="https://github.com/user-attachments/assets/75a54aa5-e456-44e3-80f1-87b39b5defed" width=120 />  | <img src="https://github.com/user-attachments/assets/49001a52-8077-4715-9f05-4d5ef196f723" width=120 />  |  <img src="https://github.com/user-attachments/assets/4fb4c616-49c3-49ee-a1dd-9ecb734bfbab" width=120 />  |  <img src="https://github.com/user-attachments/assets/0e8475e1-e8db-458c-a426-ce33834908b3" width=120 /> |  <img src="https://github.com/user-attachments/assets/26e5eb26-c1f4-4903-bd81-3a6a256ad917" width=120 />  |
+|  [김민재](https://github.com/ffalswo2)   |  [강윤서](https://github.com/yungu0010)   | [김승찬](https://github.com/seungchan2)  |  [이재현](https://github.com/dlwogus0128)  |  [장석우](https://github.com/meltsplit) | [최주리](https://github.com/juri123123) |
+| `4기`  | `5, 36, 37기`  | `5기`  |  `5, 36, 37기`  |  `5, 36기` | `37기` |
+| <img width="120" height="120" alt="image" src="https://github.com/user-attachments/assets/582cb185-dab3-4560-be9f-4d3ca6c47c83" /> |  |   |    |   |  |
+|  [성현주](https://github.com/hye0njuoo)   |    |  |   |  | |
+| `37기`  |   |   |    |   |  |
 
 
 <br>
