@@ -20,14 +20,11 @@ public protocol HomeCoordinatorDelegate: AnyObject {
     func homeCoordinator(_ coordinator: HomeCoordinator, to destination: HomeCoordinatorDestination)
 }
 
-public final class HomeCoordinator: DefaultHomeCoordinator {
+public final class HomeCoordinator: BaseCoordinator {
     
     public weak var delegate: HomeCoordinatorDelegate?
     
     // MARK: - Properties
-    
-    public var requestCoordinating: ((HomeCoordinatorDestination) -> Void)?
-    public var finishFlow: (() -> Void)?
     
     private let factory: HomeFeatureBuildable
     private let userType: UserType
