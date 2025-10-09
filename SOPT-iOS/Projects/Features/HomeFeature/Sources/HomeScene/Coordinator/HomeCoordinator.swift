@@ -61,7 +61,7 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
     // MARK: - Navigation
     
     public func showHomeForMember() {
-        var homeForMember = factory.makeHomeForMember()
+        var homeForMember = factory.makeHomeForMember(coordinator: self)
         
         homeForMember.vm.onDashBoardCellTapped = { [weak self] in
             guard let self else { return }
@@ -153,7 +153,7 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
     }
     
     public func showHomeForVisitor() {
-        var homeForVisitor = factory.makeHomeForVisitor()
+        var homeForVisitor = factory.makeHomeForVisitor(coordinator: self)
         
         homeForVisitor.vm.onAppServiceCellTapped = { [weak self] in
             AlertUtils.presentAlertVC(
