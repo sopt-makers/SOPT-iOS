@@ -53,7 +53,7 @@ public final class SoptlogCoordinator: DefaultSoptlogCoordinator {
     // MARK: - Navigation
     
     private func showSoptlog() {
-        var soptlog = factory.makeSoptlog()
+        var soptlog = factory.makeSoptlog(coordinator: self)
         
         soptlog.vm.onProfileEditTapped = { [weak self] in
             guard let self else { return }

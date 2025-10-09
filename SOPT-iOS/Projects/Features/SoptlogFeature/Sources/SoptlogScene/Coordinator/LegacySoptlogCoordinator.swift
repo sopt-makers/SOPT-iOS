@@ -52,7 +52,7 @@ public final class LegacySoptlogCoordinator: DefaultSoptlogCoordinator {
     // MARK: - Navigation
     
     private func showSoptlog() {
-        var soptlog = factory.makeSoptlog()
+        var soptlog = factory.makeSoptlog(coordinator: self)
         
         soptlog.vm.onProfileEditTapped = { [weak self] in
             let url = "\(ExternalURL.Playground.main)/members/edit"
