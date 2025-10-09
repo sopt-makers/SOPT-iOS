@@ -21,6 +21,7 @@ public class HomeForVisitorViewModel: HomeForVisitorViewModelType {
     // MARK: - Properties
     
     private let useCase: HomeUseCase
+    private let coordinator: AnyCoordinatorObject
     private var cancelBag = CancelBag()
     let userType: UserType = .visitor
     
@@ -54,8 +55,9 @@ public class HomeForVisitorViewModel: HomeForVisitorViewModelType {
     
     // MARK: - initialization
     
-    public init(useCase: HomeUseCase) {
+    public init(useCase: HomeUseCase, coordinator: Coordinator) {
         self.useCase = useCase
+        self.coordinator = coordinator
     }
 }
 
