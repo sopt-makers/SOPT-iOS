@@ -377,7 +377,6 @@ extension ApplicationCoordinator {
 extension ApplicationCoordinator {
     internal func runTabBarFlow(type: UserType? = nil, initSelectedTabType: TabType = .home) {
         defer { bindNotification() }
-        self.childCoordinators = []
         
         let tabBarBuilder = TabBarBuilder()
         let userType = type ?? UserDefaultKeyList.Auth.getUserType()
@@ -385,20 +384,14 @@ extension ApplicationCoordinator {
         runHomeFlow(type: userType)
         runSoptlogFlow(type: userType)
         
-        let tabBarFactory = tabBarBuilder.makeTabBar(
-            with: [homeNavigationController, soptlogNavigationController],
+        let coordinator = TabBarCoordinator(
+            navigationController: rootNavigationController,
+            factory: tabBarBuilder,
+            views: [homeNavigationController, soptlogNavigationController],
             userType: userType
         )
         
-        let coordinator = TabBarCoordinator(
-            navigationController: rootNavigationController,
-            factory: tabBarFactory
-        )
-        
         coordinator.delegate = self
-        self.rootNavigationController.setViewControllers([tabBarFactory.vc], animated: false)
-        
-        addDependency(coordinator)
         coordinator.start()
     }
 }
