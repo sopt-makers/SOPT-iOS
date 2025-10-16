@@ -86,8 +86,7 @@ final class CalendarCardCVC: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        self.cancelBag.cancel()
-        self.cancelBag = CancelBag()
+        resetSubscription()
     }
 }
 
@@ -143,5 +142,10 @@ extension CalendarCardCVC {
                                                  backgroundColor: tagType.backgroundColor)
         }
         self.attendanceButton.isHidden = (userType == .visitor || userType == .inactive)
+    }
+    
+    func resetSubscription() {
+        self.cancelBag.cancel()
+        self.cancelBag = CancelBag()
     }
 }

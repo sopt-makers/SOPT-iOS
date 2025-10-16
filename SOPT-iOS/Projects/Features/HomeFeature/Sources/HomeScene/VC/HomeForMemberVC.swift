@@ -384,10 +384,10 @@ extension HomeForMemberVC {
         }
     }
     
-    private func cancelCellSubscription() {
+    private func resetCellSubscription() {
         collectionView.visibleCells
             .compactMap { $0 as? CalendarCardCVC }
-            .forEach { $0.cancelBag.cancel() }
+            .forEach { $0.resetSubscription() }
     }
 }
 
