@@ -20,18 +20,13 @@ public protocol SoptlogCoordinatorDelegate: AnyObject {
     func soptlogCoordinator(_ coordinator: SoptlogCoordinator, to destination: SoptlogCoordinatorDestination)
 }
 
-public final class SoptlogCoordinator: DefaultSoptlogCoordinator {
-    
-    public weak var delegate: SoptlogCoordinatorDelegate?
+public final class SoptlogCoordinator: BaseCoordinator {
     
     // MARK: - Properties
     
-    public var requestCoordinating: ((SoptlogCoordinatorDestination) -> Void)?
-    public var finishFlow: (() -> Void)?
-    
     private let factory: SoptlogFeatureBuildable
-    private let navigationController: UINavigationController
-    
+    public weak var delegate: SoptlogCoordinatorDelegate?
+    private weak var navigationController: UINavigationController?
     public private(set) weak var rootViewController: UIViewController?
     
     // MARK: - Init
@@ -53,7 +48,7 @@ public final class SoptlogCoordinator: DefaultSoptlogCoordinator {
     // MARK: - Navigation
     
     private func showSoptlog() {
-        var soptlog = factory.makeSoptlog()
+        var soptlog = factory.makeSoptlog(coordinator: self)
         
         soptlog.vm.onProfileEditTapped = { [weak self] in
             guard let self else { return }
@@ -76,7 +71,7 @@ public final class SoptlogCoordinator: DefaultSoptlogCoordinator {
         }
         
         self.rootViewController = soptlog.vc
-        navigationController.pushViewController(soptlog.vc, animated: true)
+        navigationController?.pushViewController(soptlog.vc, animated: true)
     }
     
     private func showToolTip(_ frame: CGRect) {
