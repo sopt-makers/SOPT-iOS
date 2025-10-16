@@ -20,17 +20,15 @@ public protocol HomeCoordinatorDelegate: AnyObject {
     func homeCoordinator(_ coordinator: HomeCoordinator, to destination: HomeCoordinatorDestination)
 }
 
-public final class HomeCoordinator: DefaultHomeCoordinator {
+public final class HomeCoordinator: BaseCoordinator {
     
     public weak var delegate: HomeCoordinatorDelegate?
     
     // MARK: - Properties
     
-    public var requestCoordinating: ((HomeCoordinatorDestination) -> Void)?
-    
     private let factory: HomeFeatureBuildable
     private let userType: UserType
-    private let navigationController: UINavigationController
+    private weak var navigationController: UINavigationController?
     
     public private(set) weak var rootViewController: UIViewController?
     
@@ -60,7 +58,7 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
     // MARK: - Navigation
     
     public func showHomeForMember() {
-        var homeForMember = factory.makeHomeForMember()
+        var homeForMember = factory.makeHomeForMember(coordinator: self)
         
         homeForMember.vm.onDashBoardCellTapped = { [weak self] in
             guard let self else { return }
@@ -148,11 +146,11 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
         }
         
         rootViewController = homeForMember.vc
-        navigationController.pushViewController(homeForMember.vc, animated: true)
+        navigationController?.pushViewController(homeForMember.vc, animated: true)
     }
     
     public func showHomeForVisitor() {
-        var homeForVisitor = factory.makeHomeForVisitor()
+        var homeForVisitor = factory.makeHomeForVisitor(coordinator: self)
         
         homeForVisitor.vm.onAppServiceCellTapped = { [weak self] in
             AlertUtils.presentAlertVC(
@@ -178,6 +176,6 @@ public final class HomeCoordinator: DefaultHomeCoordinator {
         }
         
         rootViewController = homeForVisitor.vc
-        navigationController.pushViewController(homeForVisitor.vc, animated: true)
+        navigationController?.pushViewController(homeForVisitor.vc, animated: true)
     }
 }

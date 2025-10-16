@@ -400,18 +400,18 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runHomeFlow(type: UserType) -> DefaultHomeCoordinator {
-        var coordinator: DefaultHomeCoordinator
+    internal func runHomeFlow(type: UserType) -> BaseCoordinator {
+        var coordinator: BaseCoordinator
         
         switch Config.coordinatorFlag {
         case .legacy:
-            coordinator = LegacyHomeCoordinator(
+            let legacyCoordinator = LegacyHomeCoordinator(
                 router: LegacyRouter(rootController: self.legacyRootController ?? self.router.asNavigationController),
                 factory: LegacyHomeBuilder(),
                 userType: type
             )
             
-            coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
+            legacyCoordinator.requestCoordinating = { [weak self, weak legacyCoordinator] destination in
                 switch destination {
                 case .attendance:
                     self?.runAttendanceFlow()
@@ -419,7 +419,7 @@ extension ApplicationCoordinator {
                     self?.runMyPageFlow(of: userType)
                 case .signIn:
                     self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
-                    self?.removeDependency(coordinator)
+                    self?.removeDependency(legacyCoordinator)
                 case .notification:
                     self?.runNotificationFlow()
                 case .soptlog:
@@ -436,6 +436,8 @@ extension ApplicationCoordinator {
                     _ = isNewUser ? self?.runPokeOnboardingFlow() : self?.runPokeFlow()
                 }
             }
+            addDependency(legacyCoordinator)
+            coordinator = legacyCoordinator
         case .new:
             let newCoordinator = HomeCoordinator(
                 navigationController: homeNavigationController,
@@ -447,7 +449,6 @@ extension ApplicationCoordinator {
             coordinator = newCoordinator
         }
         
-        addDependency(coordinator)
         coordinator.start()
         return coordinator
     }

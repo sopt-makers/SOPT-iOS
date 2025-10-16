@@ -48,7 +48,7 @@ public final class LegacyHomeCoordinator: DefaultHomeCoordinator {
     }
     
     public func showHomeForMember() {
-        var homeForMember = factory.makeHomeForMember()
+        var homeForMember = factory.makeHomeForMember(coordinator: self)
         
         homeForMember.vm.onDashBoardCellTapped = { [weak self] in
             self?.requestCoordinating?(.soptlog)
@@ -133,7 +133,7 @@ public final class LegacyHomeCoordinator: DefaultHomeCoordinator {
     }
     
     public func showHomeForVisitor() {
-        var homeForVisitor = factory.makeHomeForVisitor()
+        var homeForVisitor = factory.makeHomeForVisitor(coordinator: self)
         
         homeForVisitor.vm.onAppServiceCellTapped = { [weak self] in
             AlertUtils.presentAlertVC(

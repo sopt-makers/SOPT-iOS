@@ -22,6 +22,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     // MARK: - Properties
     
     private let useCase: HomeUseCase
+    private let coordinator: AnyCoordinatorObject
     private var cancelBag = CancelBag()
     
     let userType: UserType = UserDefaultKeyList.Auth.getUserType()
@@ -91,8 +92,9 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     
     // MARK: - initialization
     
-    public init(useCase: HomeUseCase) {
+    public init(useCase: HomeUseCase, coordinator: Coordinator) {
         self.useCase = useCase
+        self.coordinator = coordinator
     }
 }
 

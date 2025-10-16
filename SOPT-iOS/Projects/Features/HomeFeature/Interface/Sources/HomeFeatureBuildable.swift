@@ -7,9 +7,10 @@
 //
 
 import Core
+import BaseFeatureDependency
 
 public protocol HomeFeatureBuildable {
-    func makeHomeForMember() -> HomeForMemberPresentable
-    func makeHomeForVisitor() -> HomeForVisitorPresentable
+    func makeHomeForMember(coordinator: Coordinator) -> HomeForMemberPresentable
+    func makeHomeForVisitor(coordinator: Coordinator) -> HomeForVisitorPresentable
     func makeHomeCalendarDetail() -> HomeCalendarDetailPresentable
 }
