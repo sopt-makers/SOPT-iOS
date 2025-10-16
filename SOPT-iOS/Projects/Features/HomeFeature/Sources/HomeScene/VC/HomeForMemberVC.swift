@@ -88,6 +88,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
         stopLatestPostAnimationLoop()
         cancelTasks()
         stopPopularPostsAnimationLoop()
+        cancelCellSubscription()
     }
 }
 
@@ -381,6 +382,12 @@ extension HomeForMemberVC {
                 updateUI(with: data)
             }
         }
+    }
+    
+    private func cancelCellSubscription() {
+        collectionView.visibleCells
+            .compactMap { $0 as? CalendarCardCVC }
+            .forEach { $0.cancelBag.cancel() }
     }
 }
 
