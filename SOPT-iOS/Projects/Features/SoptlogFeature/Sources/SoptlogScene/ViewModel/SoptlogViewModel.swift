@@ -19,6 +19,7 @@ public class SoptlogViewModel: SoptlogViewModelType {
     // MARK: - Properties
 
     private let useCase: SoptlogUseCase
+    private let coordinator: AnyCoordinatorObject
     private var cancelBag = CancelBag()
 
     // MARK: - Inputs
@@ -46,9 +47,9 @@ public class SoptlogViewModel: SoptlogViewModelType {
     
     // MARK: - initialization
     
-    public init(useCase: SoptlogUseCase, cancelBag: CancelBag = CancelBag()) {
+    public init(useCase: SoptlogUseCase, coordinator: Coordinator) {
         self.useCase = useCase
-        self.cancelBag = cancelBag
+        self.coordinator = coordinator
     }
 }
 

@@ -18,7 +18,7 @@ public protocol AttendanceService {
     func fetchAttendanceSchedule() -> AnyPublisher<BaseEntity<AttendanceScheduleEntity>, Error>
     func fetchAttendanceScore() -> AnyPublisher<BaseEntity<AttendanceScoreEntity>, Error>
     func fetchAttendanceRound(lectureId: Int) -> AnyPublisher<BaseEntity<AttendanceRoundEntity>, Error>
-    func postAttendance(lectureRoundId: Int, code: String) -> AnyPublisher<BaseEntity<String>, Error>
+    func postAttendance(lectureRoundId: Int, code: String) -> AnyPublisher<BaseEntity<AttendanceResponseEntity>, Error>
 }
 
 extension DefaultAttendanceService: AttendanceService {
@@ -35,7 +35,7 @@ extension DefaultAttendanceService: AttendanceService {
         opRequestObjectInCombine(AttendanceAPI.lectureRound(lectureId: lectureId))
     }
     
-    public func postAttendance(lectureRoundId: Int, code: String) -> AnyPublisher<BaseEntity<String>, Error> {
+    public func postAttendance(lectureRoundId: Int, code: String) -> AnyPublisher<BaseEntity<AttendanceResponseEntity>, Error> {
         opRequestObjectInCombine(AttendanceAPI.attend(lectureRoundId: lectureRoundId, code: code))
     }
 }

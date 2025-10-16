@@ -20,25 +20,30 @@ public protocol TabBarCoordinatorDelegate: AnyObject {
     func tabBarCoordinator(_ coordinator: TabBarCoordinator, to destination: TabBarCoordinatorDestination)
 }
 
-public final class TabBarCoordinator: DefaultTabBarCoordinator {
+public final class TabBarCoordinator: BaseCoordinator {
     
     // MARK: - Properties
-    
-    public var finishFlow: (() -> Void)?
+
     public var requestCoordinating: ((TabBarCoordinatorDestination) -> Void)?
     public weak var delegate: TabBarCoordinatorDelegate?
         
-    private let factory: TabBarPresentable
-    private var navigationController: UINavigationController
+    private let factory: TabBarBuilder
+    private weak var navigationController: UINavigationController?
+    private let views: [UIViewController]
+    private let userType: UserType
     
     // MARK: - Init
     
     public init(
         navigationController: UINavigationController,
-        factory: TabBarPresentable
+        factory: TabBarBuilder,
+        views: [UIViewController],
+        userType: UserType
     ) {
         self.navigationController = navigationController
         self.factory = factory
+        self.views = views
+        self.userType = userType
     }
     
     // MARK: - Coordinator Life Cycle
@@ -50,8 +55,8 @@ public final class TabBarCoordinator: DefaultTabBarCoordinator {
     // MARK: - Navigation
     
     private func showTabBar() {
-        var tabBar = factory
-    
+        var tabBar = factory.makeTabBar(with: views, userType: userType, coordinator: self)
+
         tabBar.vm.onTabBarItemTapped = { [weak self] index in
             // 각 탭의 코디네이터 실행
             guard let self = self,
@@ -78,7 +83,9 @@ public final class TabBarCoordinator: DefaultTabBarCoordinator {
         tabBar.vm.onFABMenuTapped = { [weak self] url in
             guard let url = URL(string: url) else { return }
             let webView = SOPTWebView(startWith: url)
-            self?.navigationController.pushViewController(webView, animated: true)
+            self?.navigationController?.pushViewController(webView, animated: true)
         }
+        
+        self.navigationController?.setViewControllers([tabBar.vc], animated: false)
     }
 }

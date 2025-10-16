@@ -245,26 +245,41 @@ extension ApplicationCoordinator {
     ) {
         @Injected var coordinator: DefaultAuthCoordinator
         
-        coordinator.finishFlow = { [weak self, weak coordinator] userType in
-            Config.coordinatorFlag == .legacy
-            ? self?.runLegacyTabBarFlow(type: userType)
-            : self?.runTabBarFlow(type: userType)
-            self?.removeDependency(coordinator)
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator.finishFlow = { [weak self, weak coordinator] userType in
+                Config.coordinatorFlag == .legacy
+                ? self?.runLegacyTabBarFlow(type: userType)
+                : self?.runTabBarFlow(type: userType)
+                self?.removeDependency(coordinator)
+            }
+            addDependency(coordinator)
+        case .new:
+            let coordinator = coordinator as? AuthCoordinator
+            coordinator?.delegate = self
         }
-        addDependency(coordinator)
+        
         coordinator.start(by: style)
     }
     
     private func runSignInSuccessFlow(with url: String) {
         childCoordinators = []
         @Injected var coordinator: DefaultAuthCoordinator
-        coordinator.finishFlow = { [weak self, weak coordinator] userType in
-            Config.coordinatorFlag == .legacy
-            ? self?.runLegacyTabBarFlow(type: userType)
-            : self?.runTabBarFlow(type: userType)
-            self?.removeDependency(coordinator)
+        
+        switch Config.coordinatorFlag {
+        case .legacy:
+            coordinator.finishFlow = { [weak self, weak coordinator] userType in
+                Config.coordinatorFlag == .legacy
+                ? self?.runLegacyTabBarFlow(type: userType)
+                : self?.runTabBarFlow(type: userType)
+                self?.removeDependency(coordinator)
+            }
+            addDependency(coordinator)
+        case .new:
+            let coordinator = coordinator as? AuthCoordinator
+            coordinator?.delegate = self
         }
-        addDependency(coordinator)
+        
         coordinator.start(by: .rootWindow(animated: false, message: nil))
     }
 }
@@ -362,7 +377,6 @@ extension ApplicationCoordinator {
 extension ApplicationCoordinator {
     internal func runTabBarFlow(type: UserType? = nil, initSelectedTabType: TabType = .home) {
         defer { bindNotification() }
-        self.childCoordinators = []
         
         let tabBarBuilder = TabBarBuilder()
         let userType = type ?? UserDefaultKeyList.Auth.getUserType()
@@ -370,20 +384,14 @@ extension ApplicationCoordinator {
         runHomeFlow(type: userType)
         runSoptlogFlow(type: userType)
         
-        let tabBarFactory = tabBarBuilder.makeTabBar(
-            with: [homeNavigationController, soptlogNavigationController],
+        let coordinator = TabBarCoordinator(
+            navigationController: rootNavigationController,
+            factory: tabBarBuilder,
+            views: [homeNavigationController, soptlogNavigationController],
             userType: userType
         )
         
-        let coordinator = TabBarCoordinator(
-            navigationController: rootNavigationController,
-            factory: tabBarFactory
-        )
-        
         coordinator.delegate = self
-        self.rootNavigationController.setViewControllers([tabBarFactory.vc], animated: false)
-        
-        addDependency(coordinator)
         coordinator.start()
     }
 }
@@ -788,18 +796,18 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runSoptlogFlow(type: UserType) -> DefaultSoptlogCoordinator {
-        var coordinator: DefaultSoptlogCoordinator
+    internal func runSoptlogFlow(type: UserType) -> BaseCoordinator {
+        var coordinator: BaseCoordinator
         
         switch Config.coordinatorFlag {
         case .legacy:
-            coordinator = LegacySoptlogCoordinator(
+            let legacyCoordinator = LegacySoptlogCoordinator(
                 router: LegacyRouter(rootController: self.legacyRootController ?? self.router.asNavigationController),
                 factory: LegacySoptlogBuilder(),
                 userType: type
             )
             
-            coordinator.requestCoordinating = { [weak self] destination in
+            legacyCoordinator.requestCoordinating = { [weak self] destination in
                 switch destination {
                 case .dailySoptune:
                     self?.runDailySoptuneFlow()
@@ -807,6 +815,14 @@ extension ApplicationCoordinator {
                     self?.handleWebLink(webLink: url)
                 }
             }
+            
+            legacyCoordinator.finishFlow = { [weak self, weak legacyCoordinator] in
+                legacyCoordinator?.childCoordinators = []
+                self?.removeDependency(legacyCoordinator)
+            }
+            
+            addDependency(legacyCoordinator)
+            coordinator = legacyCoordinator
         case .new:
             let newCoordinator = SoptlogCoordinator(
                 navigationController: soptlogNavigationController,
@@ -815,13 +831,7 @@ extension ApplicationCoordinator {
             newCoordinator.delegate = self
             coordinator = newCoordinator
         }
-            
-        coordinator.finishFlow = { [weak self, weak coordinator] in
-            coordinator?.childCoordinators = []
-            self?.removeDependency(coordinator)
-        }
         
-        addDependency(coordinator)
         coordinator.start()
         
         return coordinator
