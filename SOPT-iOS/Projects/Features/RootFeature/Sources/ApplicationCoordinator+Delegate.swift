@@ -10,11 +10,20 @@ import Foundation
 
 import Core
 
+import AuthFeature
 import HomeFeature
 import SoptlogFeature
 import TabBarFeature
 import AppMyPageFeature
 import NotificationFeature
+
+// MARK: - AuthCoordinatorDelegate
+
+extension ApplicationCoordinator: AuthCoordinatorDelegate {
+    public func authCoordinator(_ coordinator: AuthCoordinator, userType: UserType) {
+        self.runTabBarFlow(type: userType)
+    }
+}
 
 // MARK: - TabBarCoordinatorDelegate
 

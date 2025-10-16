@@ -11,9 +11,9 @@ import Foundation
 import UIKit
 import BaseFeatureDependency
 
-public protocol UserNotFoundViewControllable: UIViewController {
+public protocol UserNotFoundRoutingTrigger: UIViewController {
     var onLoginHelpButtonTapped: (() -> Void)? { get set }
     var onLoginRetryButtonTapped: (() -> Void)? { get set }
 }
 
-public typealias UserNotFoundPresentable = UserNotFoundViewControllable
+public typealias UserNotFoundPresentable = UserNotFoundRoutingTrigger

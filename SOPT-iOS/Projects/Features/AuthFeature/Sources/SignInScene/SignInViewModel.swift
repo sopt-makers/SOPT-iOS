@@ -11,10 +11,13 @@ import Combine
 import Core
 import Domain
 
-import AuthFeatureInterface
+import BaseFeatureDependency
 
 public class SignInViewModel: SignInViewModelType {
     
+    // MARK: - Properties
+    
+    private let coordinator: AnyCoordinatorObject
     private let useCase: SignInUseCase
     private var cancelBag = CancelBag()
   
@@ -47,8 +50,9 @@ public class SignInViewModel: SignInViewModelType {
     
     // MARK: - init
   
-    public init(useCase: SignInUseCase) {
+    public init(useCase: SignInUseCase, coordinator: Coordinator) {
         self.useCase = useCase
+        self.coordinator = coordinator
     }
 }
 

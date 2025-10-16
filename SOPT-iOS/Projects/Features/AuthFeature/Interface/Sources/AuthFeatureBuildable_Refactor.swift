@@ -7,9 +7,10 @@
 //
 
 import Foundation
+import BaseFeatureDependency
 
 public protocol AuthFeatureViewBuildable {
-    func makeSignIn() -> SignInPresentable
+    func makeSignIn(coordinator: Coordinator) -> SignInPresentable
     func makeLoginHelpBottomSheet() -> LoginHelpBottomSheetPresentable
     func makeUserNotFound() -> UserNotFoundPresentable
     func makeSignUp() -> SignUpPresentable
