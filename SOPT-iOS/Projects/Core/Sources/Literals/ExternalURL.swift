@@ -36,7 +36,7 @@ public struct ExternalURL {
         #if DEV || PROD
         public static let main = "https://playground.sopt.org"
         #else
-        public static let main = "https://sopt-internal-dev.pages.dev"
+        public static let main = "https://sopt-internal-dev.sopt.org"
         #endif
         
         public static func login(state: String = "") -> String {
