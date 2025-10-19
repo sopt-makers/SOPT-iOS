@@ -77,6 +77,7 @@ public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, L
     private let imagePlaceholderLabel = UILabel()
     private let textView = UITextView()
     private lazy var missionDateTextField = MissionDateView(frame: self.view.frame)
+    private lazy var missionInfoView = MissionInfoView(frame: self.view.frame)
     private lazy var bottomButton = STCustomButton(title: sceneType == .none ? I18N.ListDetail.missionComplete : I18N.ListDetail.editComplete)
         .setEnabled(false)
         .setColor(bgColor: DSKitAsset.Colors.white.color,
@@ -84,6 +85,9 @@ public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, L
                   textColor: DSKitAsset.Colors.black.color,
                   disableTextcolor: DSKitAsset.Colors.black.color
         )
+    private lazy var viewClapButton = STCustomButton(title: I18N.ListDetail.viewClapButtonTitle)
+        .setColor(bgColor: DSKitAsset.Colors.white.color,
+                  textColor: DSKitAsset.Colors.black.color)
     private lazy var backgroundDimmerView = CustomDimmerView(self)
     
     // MARK: - initialization
@@ -192,7 +196,7 @@ extension ListDetailVC {
             .sink { owner, successed in
                 if successed {
                     owner.reloadData(.completed)
-                    owner.showToast(message: I18N.ListDetail.editCompletedToast)
+                    ToastUtils.showMDSToast(type: .success, text: I18N.ListDetail.editCompletedToast)
                 } else {
                     AlertUtils.presentNetworkAlertVC(theme: .soptamp, animated: true)
                 }
@@ -238,7 +242,7 @@ extension ListDetailVC {
             self.missionImageView.setImage(with: imageURL.absoluteString)
         }
         self.missionDateTextField.setText(with: model.activityDate)
-        self.missionDateTextField.setIsEnabled(false)
+
         self.missionDateTextField.setTextFieldView(.inactive)
         self.textView.text = model.content
     }
@@ -475,23 +479,26 @@ extension ListDetailVC {
             self.originImage = self.missionImageView.image ?? UIImage()
             self.bottomButton.changeTitle(attributedString: I18N.ListDetail.editComplete)
                 .setEnabled(false)
-            self.missionDateTextField.setIsEnabled(true)
+            self.missionDateTextField.isHidden = false
+            self.missionInfoView.isHidden = true
+            self.viewClapButton.isHidden = true
         } else {
             self.naviBar.resetLeftButtonAction()
             self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
             self.bottomButton.changeTitle(attributedString: I18N.ListDetail.missionComplete)
+            self.missionDateTextField.isHidden = true
+            self.missionInfoView.isHidden = false
+            self.viewClapButton.isHidden = false
         }
         
         switch type {
         case .none, .edit:
-            self.scrollView.isScrollEnabled = true
             self.missionView.backgroundColor = DSKitAsset.Colors.gray800.color
             self.setTextView(.inactive)
             self.imagePlaceholderLabel.isHidden = missionImageView.image == nil ? false : true
             self.missionImageView.isUserInteractionEnabled = true
             self.bottomButton.isHidden = false
         case .completed:
-            self.scrollView.isScrollEnabled = false
             self.scrollView.setContentOffset(.zero, animated: true)
             self.naviBar.setRightButton(.addRecord)
             self.missionView.backgroundColor = DSKitAsset.Colors.gray800.color
@@ -504,6 +511,9 @@ extension ListDetailVC {
         
         if viewModel.isOtherUser {
             self.naviBar.hideRightButton()
+            self.naviBar.setTitle("작성자")
+        } else {
+            self.naviBar.setTitle("내 미션")
         }
     }
     
@@ -583,7 +593,13 @@ extension ListDetailVC {
     }
     
     private func setStackViewLayout() {
-        contentStackView.addArrangedSubviews(missionView, missionImageView, missionDateTextField, textView)
+        contentStackView.addArrangedSubviews(
+            missionView,
+            missionImageView,
+            missionDateTextField,
+            textView,
+            missionInfoView
+        )
         
         missionView.snp.makeConstraints { make in
             make.leading.top.trailing.equalToSuperview()
@@ -620,7 +636,7 @@ extension ListDetailVC {
             make.width.equalToSuperview()
         }
         
-        contentView.addSubviews(contentStackView, bottomButton)
+        contentView.addSubviews(contentStackView, bottomButton, viewClapButton)
         
         contentStackView.snp.makeConstraints { make in
             make.leading.top.trailing.equalToSuperview()
@@ -630,6 +646,14 @@ extension ListDetailVC {
             make.leading.trailing.bottom.equalToSuperview()
             make.top.equalTo(contentStackView.snp.bottom).offset(UIDevice.current.hasNotch ? 30 : 20)
             make.height.equalTo(56)
+        }
+        
+        if !viewModel.isOtherUser {
+            viewClapButton.snp.makeConstraints {
+                $0.horizontalEdges.equalToSuperview()
+                $0.top.equalTo(contentStackView.snp.bottom).offset(UIDevice.current.hasNotch ? 30 : 20)
+                $0.height.equalTo(56)
+            }
         }
     }
 }
