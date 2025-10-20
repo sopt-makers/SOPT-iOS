@@ -61,6 +61,7 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
         
         self.webView = WKWebView(frame: .zero, configuration: configuration).then {
             $0.allowsBackForwardNavigationGestures = config.allowsBackForwardNavigationGestures
+            $0.customUserAgent = "SOPT-iOS"
         }
         self.downloadManager = downloadManager
         super.init(nibName: nil, bundle: nil)
