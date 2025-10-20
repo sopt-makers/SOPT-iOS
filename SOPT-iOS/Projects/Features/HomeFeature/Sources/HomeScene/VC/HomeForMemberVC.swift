@@ -88,7 +88,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
         stopLatestPostAnimationLoop()
         cancelTasks()
         stopPopularPostsAnimationLoop()
-        resetCellSubscription()
+        cancelCellSubscription()
     }
 }
 
