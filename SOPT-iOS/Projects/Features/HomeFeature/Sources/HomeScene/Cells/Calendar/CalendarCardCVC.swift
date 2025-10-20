@@ -86,7 +86,8 @@ final class CalendarCardCVC: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        resetSubscription()
+        self.cancelBag.cancel()
+        self.cancelBag = CancelBag()
     }
 }
 
