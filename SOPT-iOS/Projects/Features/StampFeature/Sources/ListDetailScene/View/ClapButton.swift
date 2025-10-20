@@ -67,20 +67,15 @@ extension ClapButton {
         config.cornerStyle = .capsule
         
         self.configuration = config
-        self.configurationUpdateHandler = { button in
-            self.updateConfig()
+        self.configurationUpdateHandler = { [weak self] button in
+            guard let self = self else { return }
+            
+            if self.isSelected {
+                config.background.backgroundColor = DSKitAsset.Colors.gray800.color
+            } else {
+                config.background.backgroundColor = DSKitAsset.Colors.gray900.color
+            }
+            self.configuration = config
         }
-    }
-    
-    private func updateConfig() {
-        guard var config = self.configuration else { return }
-        
-        if self.isSelected {
-            config.background.backgroundColor = DSKitAsset.Colors.gray800.color
-        } else {
-            config.background.backgroundColor = DSKitAsset.Colors.gray900.color
-        }
-        
-        self.configuration = config
     }
 }

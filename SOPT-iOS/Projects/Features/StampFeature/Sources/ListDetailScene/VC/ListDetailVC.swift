@@ -88,6 +88,8 @@ public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, L
     private lazy var viewClapButton = STCustomButton(title: I18N.ListDetail.viewClapButtonTitle)
         .setColor(bgColor: DSKitAsset.Colors.white.color,
                   textColor: DSKitAsset.Colors.black.color)
+    private let clapButton = ClapButton()
+    private let clapBadge = ClapCountBadge()
     private lazy var backgroundDimmerView = CustomDimmerView(self)
     
     // MARK: - initialization
@@ -357,6 +359,18 @@ extension ListDetailVC {
         }
     }
     
+    // TODO: 이벤트 연결하기
+    private func clap() {
+        UIView.animate(withDuration: 0.8, animations: {
+            self.clapBadge.transform = CGAffineTransform(translationX: 0, y: -38)
+        }) { _ in
+            UIView.animate(withDuration: 0.8) {
+                self.clapBadge.alpha = 0
+                self.clapBadge.transform = .identity
+            }
+        }
+    }
+    
     // MARK: - @objc
     
     @objc
@@ -480,14 +494,12 @@ extension ListDetailVC {
             self.bottomButton.changeTitle(attributedString: I18N.ListDetail.editComplete)
                 .setEnabled(false)
             self.missionDateTextField.isHidden = false
-            self.missionInfoView.isHidden = true
             self.viewClapButton.isHidden = true
         } else {
             self.naviBar.resetLeftButtonAction()
             self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
             self.bottomButton.changeTitle(attributedString: I18N.ListDetail.missionComplete)
             self.missionDateTextField.isHidden = true
-            self.missionInfoView.isHidden = false
             self.viewClapButton.isHidden = false
         }
         
@@ -498,6 +510,7 @@ extension ListDetailVC {
             self.imagePlaceholderLabel.isHidden = missionImageView.image == nil ? false : true
             self.missionImageView.isUserInteractionEnabled = true
             self.bottomButton.isHidden = false
+            self.missionInfoView.isHidden = true
         case .completed:
             self.scrollView.setContentOffset(.zero, animated: true)
             self.naviBar.setRightButton(.addRecord)
@@ -507,6 +520,7 @@ extension ListDetailVC {
             self.bottomButton.isHidden = true
             self.missionImageView.isUserInteractionEnabled = false
             self.missionDateTextField.setTextFieldView(.completed)
+            self.missionInfoView.isHidden = false
         }
         
         if viewModel.isOtherUser {
@@ -636,22 +650,36 @@ extension ListDetailVC {
             make.width.equalToSuperview()
         }
         
-        contentView.addSubviews(contentStackView, bottomButton, viewClapButton)
+        contentView.addSubviews(contentStackView)
         
         contentStackView.snp.makeConstraints { make in
             make.leading.top.trailing.equalToSuperview()
         }
-        
-        bottomButton.snp.makeConstraints { make in
-            make.leading.trailing.bottom.equalToSuperview()
-            make.top.equalTo(contentStackView.snp.bottom).offset(UIDevice.current.hasNotch ? 30 : 20)
-            make.height.equalTo(56)
-        }
-        
-        if !viewModel.isOtherUser {
-            viewClapButton.snp.makeConstraints {
-                $0.horizontalEdges.equalToSuperview()
+
+        if viewModel.isOtherUser {
+            contentView.addSubviews(clapBadge, clapButton)
+            clapButton.snp.makeConstraints {
+                $0.top.equalTo(contentStackView.snp.bottom).offset(12)
+                $0.height.equalTo(54)
+                $0.centerX.equalToSuperview()
+            }
+            
+            clapBadge.snp.makeConstraints {
+                $0.top.equalTo(clapButton.snp.top)
+                $0.centerX.equalToSuperview()
+            }
+            
+        } else {
+            contentView.addSubviews(bottomButton, viewClapButton)
+            bottomButton.snp.makeConstraints {
+                $0.leading.trailing.bottom.equalToSuperview()
                 $0.top.equalTo(contentStackView.snp.bottom).offset(UIDevice.current.hasNotch ? 30 : 20)
+                $0.height.equalTo(56)
+            }
+            
+            viewClapButton.snp.makeConstraints {
+                $0.top.equalTo(contentStackView.snp.bottom).offset(UIDevice.current.hasNotch ? 30 : 20)
+                $0.horizontalEdges.equalToSuperview()
                 $0.height.equalTo(56)
             }
         }
