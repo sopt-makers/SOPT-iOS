@@ -50,9 +50,10 @@ final class MissionView: UIView {
     // MARK: - UI & Layout
     
     private func setUI() {
-        self.layer.cornerRadius = 9
+        self.backgroundColor = DSKitAsset.Colors.gray900.color
+        self.layer.cornerRadius = 10
         self.missionLabel.textColor = DSKitAsset.Colors.white.color
-        self.missionLabel.font = .SoptampFont.subtitle1
+        self.missionLabel.font = DSKitFontFamily.Suit.medium.font(size: 14)
     }
     
     private func setLayout(level: StarViewLevel) {
@@ -66,8 +67,9 @@ final class MissionView: UIView {
         }
         
         missionLabel.snp.makeConstraints { make in
-            make.top.equalTo(starView.snp.bottom).offset(8)
-            make.leading.trailing.equalToSuperview().inset(40)
+            make.top.equalTo(starView.snp.bottom).offset(6)
+            make.leading.trailing.equalToSuperview()
+            make.centerX.equalToSuperview()
         }
         
         self.snp.makeConstraints { make in
