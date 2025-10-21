@@ -99,6 +99,20 @@ public final class StampCoordinator: BaseCoordinator {
 // MARK: - MissionDetailFlow
 
 extension StampCoordinator {
+    public func runOtherMissionList(username: String, sentence: String) {
+        showOtherMissionList(username, sentence)
+    }
+
+    public func runMissionDetailById(missionId: Int, username: String?) {
+        let model = MissionListModel(
+            id: missionId,
+            title: "",
+            level: 1,
+            isCompleted: true
+        )
+        showMissionDetail(model, username)
+    }
+
     private func showMissionDetail(_ model: MissionListModel, _ username: String?) {
         guard let starLevel = StarViewLevel.init(rawValue: model.level) else { return }
         
