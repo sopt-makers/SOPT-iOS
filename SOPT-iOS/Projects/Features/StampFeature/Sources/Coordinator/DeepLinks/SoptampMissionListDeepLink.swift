@@ -10,9 +10,9 @@ import Foundation
 import BaseFeatureDependency
 import Core
 
-public struct SoptampPartMissionListDeepLink: DeepLinkExecutable {
+public struct SoptampMissionListDeepLink: DeepLinkExecutable {
     public let name = "missions"
-    public let children: [DeepLinkExecutable] = [SoptampPartMissionDetailDeepLink()]
+    public let children: [DeepLinkExecutable] = [SoptampMissionDetailDeepLink()]
     public var isDestination: Bool = false 
 
     public init() {}

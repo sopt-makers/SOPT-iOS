@@ -6,14 +6,13 @@
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
-
 import Foundation
 import BaseFeatureDependency
 import Core
 
 public struct SoptampPartRankingDeepLink: DeepLinkExecutable {
     public let name = "part-ranking"
-    public let children: [DeepLinkExecutable] = [SoptampPartMissionListDeepLink()]
+    public let children: [DeepLinkExecutable] = [SoptampMissionListDeepLink()]
     public var isDestination: Bool = false
 
     public init() {}

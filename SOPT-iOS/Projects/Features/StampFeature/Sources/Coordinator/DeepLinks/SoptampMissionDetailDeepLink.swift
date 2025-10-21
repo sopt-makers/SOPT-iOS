@@ -1,15 +1,16 @@
 //
-//  SoptampPartMissionDetailDeepLink.swift
+//  SoptampMissionDetailDeepLink.swift
 //  StampFeature
 //
-//  Created by 성현주 on 2025/10/21.
+//  Created by 성현주 on 10/21/25.
+//  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
 import Foundation
 import BaseFeatureDependency
 import Core
 
-public struct SoptampPartMissionDetailDeepLink: DeepLinkExecutable {
+public struct SoptampMissionDetailDeepLink: DeepLinkExecutable {
     public let name = "missionDetail"
     public let children: [DeepLinkExecutable] = []
     public var isDestination: Bool = true
