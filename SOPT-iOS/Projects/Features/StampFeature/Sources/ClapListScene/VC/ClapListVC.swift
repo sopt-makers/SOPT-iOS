@@ -31,16 +31,28 @@ final class ClapListVC: UIViewController, ClapListViewControllable {
 
     // MARK: - UI Components
 
-    private lazy var naviBar = STNavigationBar(type: .titleWithLeftButton)
-        .setTitle("박수 목록")
-        .setTitleTypoStyle(.SoptampFont.h2)
-        .setRightButton(.none)
+    private let backButton = UIButton().then {
+        $0.setImage(DSKitAsset.Assets.chevronLeft.image, for: .normal)
+        $0.tintColor = DSKitAsset.Colors.white.color
+    }
+
+    private let titleLabel = UILabel().then {
+        $0.text = "박수 목록"
+        $0.font = .SoptampFont.h2
+        $0.textColor = DSKitAsset.Colors.white.color
+    }
+
+    private let containerView = UIView().then {
+        $0.backgroundColor = DSKitAsset.Colors.gray900.color
+        $0.layer.cornerRadius = 20
+        $0.clipsToBounds = true
+    }
 
     private lazy var clapListCollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: self.createLayout()
     ).then {
-        $0.backgroundColor = DSKitAsset.Colors.gray950.color
+        $0.backgroundColor = .clear
         $0.showsVerticalScrollIndicator = true
         $0.delegate = self
     }
@@ -82,20 +94,35 @@ final class ClapListVC: UIViewController, ClapListViewControllable {
 extension ClapListVC {
 
     private func setUI() {
-        view.backgroundColor = DSKitAsset.Colors.gray950.color
+        view.backgroundColor = DSKitAsset.Colors.black.color.withAlphaComponent(0.8)
         navigationController?.isNavigationBarHidden = true
     }
 
     private func setLayout() {
-        view.addSubviews(naviBar, clapListCollectionView, clapListEmptyView)
+        view.addSubview(containerView)
+        containerView.addSubviews(backButton, titleLabel, clapListCollectionView, clapListEmptyView)
 
-        naviBar.snp.makeConstraints {
-            $0.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+        containerView.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(164)
+            $0.leading.trailing.equalToSuperview().inset(16)
+            $0.bottom.equalToSuperview().inset(32)
+        }
+
+        backButton.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview().inset(20)
+            $0.size.equalTo(24)
+        }
+
+        titleLabel.snp.makeConstraints {
+            $0.centerY.equalTo(backButton)
+            $0.leading.equalTo(backButton.snp.trailing).offset(12)
         }
 
         clapListCollectionView.snp.makeConstraints {
-            $0.top.equalTo(naviBar.snp.bottom).offset(12)
-            $0.leading.trailing.bottom.equalToSuperview()
+            $0.top.equalTo(backButton.snp.bottom).offset(20)
+            $0.leading.trailing.equalToSuperview().inset(8)
+            $0.bottom.equalToSuperview().inset(20)
         }
 
         clapListEmptyView.snp.makeConstraints {
@@ -109,12 +136,11 @@ extension ClapListVC {
 extension ClapListVC {
 
     private func bindViews() {
-        naviBar.leftButtonTapped
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onNaviBackTap?()
-            }
-            .store(in: cancelBag)
+        backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
+    }
+
+    @objc private func backButtonTapped() {
+        onNaviBackTap?()
     }
 
     private func bindViewModel() {
@@ -159,25 +185,7 @@ extension ClapListVC {
     }
 
     func setCollectionView(model: [ClapListModel]) {
-        if model.isEmpty {
-            self.clapListCollectionView.isHidden = true
-            self.clapListEmptyView.isHidden = false
-            self.setEmptyView()
-        } else {
-            self.clapListCollectionView.isHidden = false
-            self.clapListEmptyView.isHidden = true
-            self.applySnapshot(model: model)
-        }
-    }
-
-    private func setEmptyView() {
-        clapListEmptyView.snp.removeConstraints()
-        clapListEmptyView.removeFromSuperview()
-        self.view.addSubview(clapListEmptyView)
-        clapListEmptyView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.width.equalToSuperview()
-        }
+        self.applySnapshot(model: model)
     }
 
     private func applySnapshot(model: [ClapListModel]) {

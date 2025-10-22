@@ -25,18 +25,19 @@ final class ClapListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     // MARK: - UI Components
 
     private let profileView = UIView().then {
+        //TODO: - 실제 이미지뷰로 변경해주세요.
         $0.backgroundColor = DSKitAsset.Colors.gray700.color
-        $0.layer.cornerRadius = 20
+        $0.layer.cornerRadius = 16
     }
 
     private let nameLabel = UILabel().then {
-        $0.font = .SoptampFont.h3
+        $0.font = .SoptampFont.subtitle1
         $0.textColor = DSKitAsset.Colors.white.color
     }
 
     private let subtitleLabel = UILabel().then {
-        $0.font = .SoptampFont.subtitle2
-        $0.textColor = DSKitAsset.Colors.gray400.color
+        $0.font = .SoptampFont.caption1
+        $0.textColor = DSKitAsset.Colors.gray200.color
         $0.lineBreakMode = .byTruncatingTail
     }
 
@@ -47,6 +48,7 @@ final class ClapListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     }
 
     private let clapIcon = UIImageView().then {
+        //TODO: - 실제 박수 icon으로 변경해주세요.
         $0.image = UIImage(systemName: "hand.wave.fill")
         $0.tintColor = DSKitAsset.Colors.white.color
         $0.contentMode = .scaleAspectFit
@@ -65,8 +67,7 @@ final class ClapListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     }
 
     private func setUI() {
-        contentView.backgroundColor = DSKitAsset.Colors.gray900.color
-        contentView.layer.cornerRadius = 12
+        contentView.backgroundColor = .clear
         contentView.clipsToBounds = true
     }
 
@@ -74,14 +75,14 @@ final class ClapListCVC: UICollectionViewCell, UICollectionViewRegisterable {
         contentView.addSubviews(profileView, nameLabel, subtitleLabel, clapLabel, clapIcon)
 
         profileView.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(16)
+            $0.leading.equalToSuperview().offset(12)
             $0.centerY.equalToSuperview()
-            $0.size.equalTo(40)
+            $0.size.equalTo(32)
         }
 
         nameLabel.snp.makeConstraints {
             $0.leading.equalTo(profileView.snp.trailing).offset(12)
-            $0.top.equalToSuperview().offset(14)
+            $0.top.equalToSuperview().offset(8)
             $0.trailing.lessThanOrEqualTo(clapLabel.snp.leading).offset(-8)
         }
 
@@ -92,15 +93,15 @@ final class ClapListCVC: UICollectionViewCell, UICollectionViewRegisterable {
             $0.bottom.equalToSuperview().offset(-14)
         }
 
-        clapLabel.snp.makeConstraints {
-            $0.trailing.equalToSuperview().inset(12)
+        clapIcon.snp.makeConstraints {
+            $0.trailing.equalToSuperview().inset(16)
             $0.centerY.equalToSuperview()
+            $0.size.equalTo(24)
         }
 
-        clapIcon.snp.makeConstraints {
-            $0.trailing.equalTo(clapLabel.snp.leading).offset(-4)
-            $0.centerY.equalTo(clapLabel)
-            $0.size.equalTo(18)
+        clapLabel.snp.makeConstraints {
+            $0.trailing.equalTo(clapIcon.snp.leading).offset(-6)
+            $0.centerY.equalToSuperview()
         }
     }
 

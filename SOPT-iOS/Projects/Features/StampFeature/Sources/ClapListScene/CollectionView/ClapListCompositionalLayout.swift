@@ -24,13 +24,13 @@ extension ClapListVC {
     private func createClapListSection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(72.adjustedH)
+            heightDimension: .absolute(62.adjustedH)
         )
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
         let groupSize = NSCollectionLayoutSize(
-            widthDimension: .absolute(ClapListVC.standardWidth),
-            heightDimension: .estimated(72.adjustedH)
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .absolute(62.adjustedH)
         )
         let group = NSCollectionLayoutGroup.vertical(
             layoutSize: groupSize,
@@ -40,11 +40,11 @@ extension ClapListVC {
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = .init(
             top: 0,
-            leading: 20.adjusted,
+            leading: 0,
             bottom: 0,
-            trailing: 20.adjusted
+            trailing: 0
         )
-        section.interGroupSpacing = 10.adjustedH
+        section.interGroupSpacing = 12.adjustedH
         section.orthogonalScrollingBehavior = .none
 
         return section
