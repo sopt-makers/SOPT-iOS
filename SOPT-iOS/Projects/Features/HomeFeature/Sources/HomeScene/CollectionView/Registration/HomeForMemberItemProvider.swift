@@ -22,8 +22,10 @@ extension HomeForMemberVC {
     func createCalendarCellRegistration() -> CalendarCellRegistration {
         collectionView.createCellRegistration { [weak self] cell, _, item in
             guard let self else { return }
-            cell.configureCell(model: item, userType: self.viewModel.userType)
             
+            cell.cancelBag.cancel()
+            
+            cell.configureCell(model: item, userType: self.viewModel.userType)
             cell.attendanceButtonTap
                 .withUnretained(self)
                 .sink { owner, _ in
