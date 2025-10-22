@@ -20,7 +20,8 @@ final class ClapListViewController: UIViewController {
 
     // MARK: - Properties
 
-    private var cancelBag = Set<AnyCancellable>()
+    private var cancelBag = CancelBag()
+    private var viewModel: ClapListViewModel
     lazy var dataSource: UICollectionViewDiffableDataSource<ClapListSection, ClapListModel>! = nil
 
     // MARK: - ClapListCoordinatable
@@ -41,9 +42,10 @@ final class ClapListViewController: UIViewController {
     ).then {
         $0.backgroundColor = DSKitAsset.Colors.gray950.color
         $0.showsVerticalScrollIndicator = true
+        $0.delegate = self
     }
 
-    private let emptyView = UILabel().then {
+    private let clapListEmptyView = UILabel().then {
         $0.text = "아직 받은 박수가 없어요 👏"
         $0.textColor = DSKitAsset.Colors.gray400.color
         $0.font = .SoptampFont.subtitle1
@@ -59,11 +61,14 @@ final class ClapListViewController: UIViewController {
         self.setLayout()
         self.registerCells()
         self.setDataSource()
-        self.applyInitialSnapshot()
+        self.bindViews()
+        self.bindViewModel()
     }
 
-    // TODO: - init(viewModel:) 주입 예정
-    init() {
+    // MARK: - Init
+
+    init(viewModel: ClapListViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -82,7 +87,7 @@ extension ClapListViewController {
     }
 
     private func setLayout() {
-        view.addSubviews(naviBar, clapListCollectionView, emptyView)
+        view.addSubviews(naviBar, clapListCollectionView, clapListEmptyView)
 
         naviBar.snp.makeConstraints {
             $0.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
@@ -93,9 +98,40 @@ extension ClapListViewController {
             $0.leading.trailing.bottom.equalToSuperview()
         }
 
-        emptyView.snp.makeConstraints {
+        clapListEmptyView.snp.makeConstraints {
             $0.center.equalToSuperview()
         }
+    }
+}
+
+// MARK: - Bindings
+
+extension ClapListViewController {
+
+    private func bindViews() {
+        naviBar.leftButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNaviBackTap?()
+            }
+            .store(in: cancelBag)
+    }
+
+    private func bindViewModel() {
+        let input = ClapListViewModel.Input(
+            viewDidLoad: Driver.just(()),
+            viewWillAppear: Driver.just(())
+        )
+
+        let output = viewModel.transform(from: input, cancelBag: cancelBag)
+
+        output.$clapListModel
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] model in
+                self?.setCollectionView(model: model)
+            }
+            .store(in: cancelBag)
     }
 }
 
@@ -103,13 +139,6 @@ extension ClapListViewController {
 
 extension ClapListViewController {
 
-    // TODO: - bindView(), bindViewModel() 추후 구현
-    private func bindViews() {}
-    private func bindViewModel() {}
-
-}
-
-extension ClapListViewController {
     private func registerCells() {
         ClapListCVC.register(target: clapListCollectionView)
     }
@@ -129,18 +158,34 @@ extension ClapListViewController {
         }
     }
 
-    private func applyInitialSnapshot() {
-        let mock = [
-            ClapListModel(name: "서버황혜린", subtitle: "최대글자수최대글자수최대글자수", clapCount: 50),
-            ClapListModel(name: "서버황혜린", subtitle: "최대글자수최대글자수최대글자수", clapCount: 50),
-            ClapListModel(name: "서버황혜린", subtitle: "최대글자수최대글자수최대글자수", clapCount: 50),
-            ClapListModel(name: "서버황혜린", subtitle: "최대글자수최대글자수최대글자수", clapCount: 50)
-        ]
+    func setCollectionView(model: [ClapListModel]) {
+        if model.isEmpty {
+            self.clapListCollectionView.isHidden = true
+            self.clapListEmptyView.isHidden = false
+            self.setEmptyView()
+        } else {
+            self.clapListCollectionView.isHidden = false
+            self.clapListEmptyView.isHidden = true
+            self.applySnapshot(model: model)
+        }
+    }
 
+    private func setEmptyView() {
+        clapListEmptyView.snp.removeConstraints()
+        clapListEmptyView.removeFromSuperview()
+        self.view.addSubview(clapListEmptyView)
+        clapListEmptyView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalToSuperview()
+        }
+    }
+
+    private func applySnapshot(model: [ClapListModel]) {
         var snapshot = NSDiffableDataSourceSnapshot<ClapListSection, ClapListModel>()
         snapshot.appendSections([.main])
-        snapshot.appendItems(mock)
+        snapshot.appendItems(model)
         dataSource.apply(snapshot, animatingDifferences: false)
+        self.view.setNeedsLayout()
     }
 }
 
@@ -153,6 +198,8 @@ enum ClapListSection: CaseIterable {
 // MARK: - UICollectionViewDelegate
 
 extension ClapListViewController: UICollectionViewDelegate {
-
-
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let model = dataSource.itemIdentifier(for: indexPath) else { return }
+        onCellTap?(model.name)
+    }
 }
