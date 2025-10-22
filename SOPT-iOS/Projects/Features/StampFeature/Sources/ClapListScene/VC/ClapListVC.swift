@@ -32,7 +32,7 @@ final class ClapListVC: UIViewController, ClapListViewControllable {
     // MARK: - UI Components
 
     private let backButton = UIButton().then {
-        $0.setImage(DSKitAsset.Assets.chevronLeft.image, for: .normal)
+        $0.setImage(DSKitAsset.Assets.arrowLeft.image, for: .normal)
         $0.tintColor = DSKitAsset.Colors.white.color
     }
 
@@ -55,14 +55,6 @@ final class ClapListVC: UIViewController, ClapListViewControllable {
         $0.backgroundColor = .clear
         $0.showsVerticalScrollIndicator = true
         $0.delegate = self
-    }
-
-    private let clapListEmptyView = UILabel().then {
-        $0.text = "아직 받은 박수가 없어요 👏"
-        $0.textColor = DSKitAsset.Colors.gray400.color
-        $0.font = .SoptampFont.subtitle1
-        $0.textAlignment = .center
-        $0.isHidden = true
     }
 
     // MARK: - Life Cycle
@@ -100,7 +92,7 @@ extension ClapListVC {
 
     private func setLayout() {
         view.addSubview(containerView)
-        containerView.addSubviews(backButton, titleLabel, clapListCollectionView, clapListEmptyView)
+        containerView.addSubviews(backButton, titleLabel, clapListCollectionView)
 
         containerView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(164)
@@ -121,12 +113,8 @@ extension ClapListVC {
 
         clapListCollectionView.snp.makeConstraints {
             $0.top.equalTo(backButton.snp.bottom).offset(20)
-            $0.leading.trailing.equalToSuperview().inset(8)
+            $0.leading.trailing.equalToSuperview().inset(20)
             $0.bottom.equalToSuperview().inset(20)
-        }
-
-        clapListEmptyView.snp.makeConstraints {
-            $0.center.equalToSuperview()
         }
     }
 }
