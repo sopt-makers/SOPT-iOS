@@ -52,6 +52,7 @@ public final class StampCoordinator: BaseCoordinator {
         
         missionList.vc.onGuideTap = { [weak self] in
             guard let self else { return }
+            //self.showGuide()
             //TODO: - view 연결이후 제거
             self.showClapList()
         }
