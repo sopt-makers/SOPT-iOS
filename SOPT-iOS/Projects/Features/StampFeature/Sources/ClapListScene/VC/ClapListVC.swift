@@ -16,7 +16,7 @@ import Combine
 import SnapKit
 import Then
 
-final class ClapListViewController: UIViewController {
+final class ClapListVC: UIViewController, ClapListViewControllable {
 
     // MARK: - Properties
 
@@ -79,7 +79,7 @@ final class ClapListViewController: UIViewController {
 
 // MARK: - UI & Layouts
 
-extension ClapListViewController {
+extension ClapListVC {
 
     private func setUI() {
         view.backgroundColor = DSKitAsset.Colors.gray950.color
@@ -106,7 +106,7 @@ extension ClapListViewController {
 
 // MARK: - Bindings
 
-extension ClapListViewController {
+extension ClapListVC {
 
     private func bindViews() {
         naviBar.leftButtonTapped
@@ -137,7 +137,7 @@ extension ClapListViewController {
 
 // MARK: - CollectionView
 
-extension ClapListViewController {
+extension ClapListVC {
 
     private func registerCells() {
         ClapListCVC.register(target: clapListCollectionView)
@@ -197,7 +197,7 @@ enum ClapListSection: CaseIterable {
 
 // MARK: - UICollectionViewDelegate
 
-extension ClapListViewController: UICollectionViewDelegate {
+extension ClapListVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let model = dataSource.itemIdentifier(for: indexPath) else { return }
         onCellTap?(model.name)

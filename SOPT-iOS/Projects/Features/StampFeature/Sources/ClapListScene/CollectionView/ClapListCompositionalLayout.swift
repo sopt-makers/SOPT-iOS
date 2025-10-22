@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension ClapListViewController {
+extension ClapListVC {
 
     static let standardWidth = UIScreen.main.bounds.width - 40.adjusted
 
@@ -29,7 +29,7 @@ extension ClapListViewController {
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
         let groupSize = NSCollectionLayoutSize(
-            widthDimension: .absolute(ClapListViewController.standardWidth),
+            widthDimension: .absolute(ClapListVC.standardWidth),
             heightDimension: .estimated(72.adjustedH)
         )
         let group = NSCollectionLayoutGroup.vertical(

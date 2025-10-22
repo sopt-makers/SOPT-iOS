@@ -14,7 +14,7 @@ import Core
 import Domain
 import BaseFeatureDependency
 
-final class ClapListViewModel {
+final class ClapListViewModel: ClapListViewModelType {
 
     // MARK: - Triggers
     var onNaviBackTap: (() -> Void)?
