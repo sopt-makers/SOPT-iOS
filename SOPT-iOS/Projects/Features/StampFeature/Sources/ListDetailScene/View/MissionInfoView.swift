@@ -12,7 +12,7 @@ import UIKit
 import Core
 import DSKit
 
-public final class MissionInfoView: UIView {
+final class MissionInfoView: UIView {
     private enum Metric {
         static let height = 18
         static let contentLeadingTrailing = -8
@@ -43,7 +43,7 @@ public final class MissionInfoView: UIView {
     // MARK: - Private Variables
     private var cancelBag = CancelBag()
     
-    public override init(frame: CGRect) {
+    override init(frame: CGRect) {
         super.init(frame: frame)
 
         self.setUI()
@@ -58,13 +58,13 @@ public final class MissionInfoView: UIView {
 
 // MARK: - Public functions
 extension MissionInfoView {
-    public func setFullText(date: String, clapCount: Int, viewCount: Int) {
+    func setFullText(date: String, clapCount: Int, viewCount: Int) {
         self.dateLabel.text = date
         self.clapCountLabel.text = String(clapCount)
         self.viewCountLabel.text = String(viewCount)
     }
     
-    public func setClapText(clapCount: Int) {
+    func setClapText(clapCount: Int) {
         self.clapCountLabel.text = String(clapCount)
     }
 }

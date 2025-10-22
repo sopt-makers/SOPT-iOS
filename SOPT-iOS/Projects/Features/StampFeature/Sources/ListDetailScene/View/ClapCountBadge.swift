@@ -11,17 +11,18 @@ import UIKit
 import Core
 import DSKit
 
-public final class ClapCountBadge: UIView {
+final class ClapCountBadge: UIView {
     private let countLabel = UILabel().then {
         $0.text = "+1"
         $0.font = DSKitFontFamily.Suit.medium.font(size: 13)
         $0.textColor = DSKitAsset.Colors.white.color
     }
     
-    public init() {
+    init() {
         super.init(frame: .zero)
         
         self.setUI()
+        self.setLayout()
     }
     
     required init?(coder: NSCoder) {
@@ -35,7 +36,9 @@ extension ClapCountBadge {
     private func setUI() {
         self.layer.cornerRadius = 8
         self.backgroundColor = DSKitAsset.Colors.orange100.color
-        
+    }
+    
+    private func setLayout() {
         self.addSubview(countLabel)
         
         countLabel.snp.makeConstraints {

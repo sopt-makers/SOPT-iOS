@@ -11,8 +11,8 @@ import UIKit
 import Core
 import DSKit
 
-public final class ClapButton: UIButton {
-    public init() {
+final class ClapButton: UIButton {
+    init() {
         super.init(frame: .zero)
         
         self.setUI()
@@ -24,11 +24,11 @@ public final class ClapButton: UIButton {
 }
 
 extension ClapButton {
-    public func setEnabled(_ isEnabled: Bool) {
+    func setEnabled(_ isEnabled: Bool) {
         self.isEnabled = isEnabled
     }
     
-    public func setCount(_ count: Int) {
+    func setCount(_ count: Int) {
         self.setAttributedTitle(
             NSAttributedString(
                 string: String(count),
@@ -68,7 +68,7 @@ extension ClapButton {
         
         self.configuration = config
         self.configurationUpdateHandler = { [weak self] button in
-            guard let self = self else { return }
+            guard let self else { return }
             
             if self.isSelected {
                 config.background.backgroundColor = DSKitAsset.Colors.gray800.color

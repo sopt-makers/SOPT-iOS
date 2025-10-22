@@ -23,7 +23,7 @@ import Lottie
 import BaseFeatureDependency
 import StampFeatureInterface
 
-public enum TextViewState {
+enum TextViewState {
     case inactive
     case active
     case completed
@@ -126,9 +126,11 @@ public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, L
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self)
-        self.missionImageView.image = nil
-        self.zoomImageView.image = nil
+        if let keyboardWillHideObserver,
+           let keyboardWillShowObserver {
+            NotificationCenter.default.removeObserver(keyboardWillShowObserver)
+            NotificationCenter.default.removeObserver(keyboardWillHideObserver)
+        }
     }
 }
 
@@ -581,7 +583,7 @@ extension ListDetailVC {
             self.naviBar.hideRightButton()
             self.naviBar.setTitle(viewModel.otherUserName)
         } else {
-            self.naviBar.setTitle("내 미션")
+            self.naviBar.setTitle(I18N.ListDetail.myMission)
         }
     }
     
@@ -738,32 +740,39 @@ extension ListDetailVC {
         }
 
         if viewModel.isOtherUser {
-            contentView.addSubviews(clapBadge, clapButton)
-            clapButton.snp.makeConstraints {
-                $0.top.equalTo(contentStackView.snp.bottom).offset(12)
-                $0.height.equalTo(54)
-                $0.centerX.equalToSuperview()
-                $0.bottom.equalToSuperview()
-            }
-            
-            clapBadge.snp.makeConstraints {
-                $0.top.equalTo(clapButton.snp.top)
-                $0.centerX.equalToSuperview()
-            }
-            
+            setOtherUserLayout()
         } else {
-            contentView.addSubviews(bottomButton, viewClapButton)
-            bottomButton.snp.makeConstraints {
-                $0.leading.trailing.bottom.equalToSuperview()
-                $0.top.equalTo(contentStackView.snp.bottom).offset(UIDevice.current.hasNotch ? 30 : 20)
-                $0.height.equalTo(56)
-            }
-            
-            viewClapButton.snp.makeConstraints {
-                $0.top.equalTo(contentStackView.snp.bottom).offset(UIDevice.current.hasNotch ? 30 : 20)
-                $0.horizontalEdges.equalToSuperview()
-                $0.height.equalTo(56)
-            }
+            setMineLayout()
+        }
+    }
+    
+    private func setOtherUserLayout() {
+        contentView.addSubviews(clapBadge, clapButton)
+        clapButton.snp.makeConstraints {
+            $0.top.equalTo(contentStackView.snp.bottom).offset(12)
+            $0.height.equalTo(54)
+            $0.centerX.equalToSuperview()
+            $0.bottom.equalToSuperview()
+        }
+        
+        clapBadge.snp.makeConstraints {
+            $0.top.equalTo(clapButton.snp.top)
+            $0.centerX.equalToSuperview()
+        }
+    }
+    
+    private func setMineLayout() {
+        contentView.addSubviews(bottomButton, viewClapButton)
+        bottomButton.snp.makeConstraints {
+            $0.leading.trailing.bottom.equalToSuperview()
+            $0.top.equalTo(contentStackView.snp.bottom).offset(UIDevice.current.hasNotch ? 30 : 20)
+            $0.height.equalTo(56)
+        }
+        
+        viewClapButton.snp.makeConstraints {
+            $0.top.equalTo(contentStackView.snp.bottom).offset(UIDevice.current.hasNotch ? 30 : 20)
+            $0.horizontalEdges.equalToSuperview()
+            $0.height.equalTo(56)
         }
     }
 }

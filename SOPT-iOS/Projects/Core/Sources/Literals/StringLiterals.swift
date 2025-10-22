@@ -148,6 +148,7 @@ public struct I18N {
         public static let datePickerDoneButtonTitle = "완료"
         public static let datePickerCancelButtonTitle = "취소"
         public static let viewClapButtonTitle = "누가 박수쳤을까요?"
+        public static let myMission = "내 미션"
     }
     
     public struct Setting {
