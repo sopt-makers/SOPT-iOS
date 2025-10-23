@@ -18,7 +18,7 @@ final class StampBuilder {
     @Injected public var missionListRepository: MissionListRepositoryInterface
     @Injected public var rankingRepository: RankingRepositoryInterface
     @Injected public var listDetailRepository: ListDetailRepositoryInterface
-    
+
     public init() { }
 }
 
@@ -29,7 +29,7 @@ extension StampBuilder: StampFeatureBuildable {
         let missionListVC = MissionListVC(viewModel: viewModel)
         return (missionListVC, viewModel)
     }
-    
+
     public func makeListDetailVC(
         sceneType: ListDetailSceneType,
         starLevel: StarViewLevel,
@@ -49,7 +49,7 @@ extension StampBuilder: StampFeatureBuildable {
         let listDetailVC = ListDetailVC(viewModel: viewModel)
         return (listDetailVC, viewModel)
     }
-    
+
     public func makeMissionCompletedVC(
         starLevel: StarViewLevel,
         completionHandler: (() -> Void)?
@@ -61,7 +61,7 @@ extension StampBuilder: StampFeatureBuildable {
         missionCompletedVC.modalTransitionStyle = .crossDissolve
         return missionCompletedVC
     }
-    
+
     public func makeRankingVC(rankingViewType: RankingViewType) -> RankingPresentable {
         let useCase = DefaultRankingUseCase(repository: rankingRepository)
         let viewModel = RankingViewModel(
@@ -72,7 +72,7 @@ extension StampBuilder: StampFeatureBuildable {
         rankingVC.viewModel = viewModel
         return (rankingVC, viewModel)
     }
-    
+
     public func makePartRankingVC(rankingViewType: RankingViewType) -> PartRankingPresentable {
         let useCase = DefaultRankingUseCase(repository: rankingRepository)
         let viewModel = PartRankingViewModel(rankingViewType: rankingViewType, useCase: useCase)
@@ -80,9 +80,18 @@ extension StampBuilder: StampFeatureBuildable {
         partRankingVC.viewModel = viewModel
         return (partRankingVC, viewModel)
     }
-    
+
     public func makeStampGuideVC() -> any StampGuideViewControllable {
         let stampGuideVC = StampGuideVC()
         return stampGuideVC
+    }
+
+    public func makeClapListVC() -> ClapListPresentable {
+        let viewModel = ClapListViewModel()
+        let clapListVC = ClapListVC(viewModel: viewModel)
+        return (
+            clapListVC as any ClapListViewControllable,
+            viewModel as any ClapListViewModelType
+        )
     }
 }
