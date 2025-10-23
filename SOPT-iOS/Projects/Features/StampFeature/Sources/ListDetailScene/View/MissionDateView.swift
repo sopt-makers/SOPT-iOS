@@ -12,7 +12,7 @@ import UIKit
 import Core
 import DSKit
 
-public final class MissionDateView: UIView {
+final class MissionDateView: UIView {
     private enum Metric {
         static let contentTop = 9
         static let contentLeadingTrailing = 14
