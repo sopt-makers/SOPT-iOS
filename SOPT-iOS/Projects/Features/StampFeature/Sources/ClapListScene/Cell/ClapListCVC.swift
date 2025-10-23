@@ -20,7 +20,7 @@ final class ClapListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     // MARK: - Properties
 
     static var isFromNib: Bool = false
-    public var model: ClapListModel?
+    private var model: ClapListModel?
 
     // MARK: - UI Components
 
@@ -66,6 +66,16 @@ final class ClapListCVC: UICollectionViewCell, UICollectionViewRegisterable {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: - Configure
+
+    func setData(model: ClapListModel) {
+        nameLabel.text = model.name
+        subtitleLabel.text = model.subtitle
+        clapLabel.text = "\(model.clapCount)회"
+    }
+}
+
+extension ClapListCVC {
     private func setUI() {
         contentView.backgroundColor = .clear
         contentView.clipsToBounds = true
@@ -103,13 +113,5 @@ final class ClapListCVC: UICollectionViewCell, UICollectionViewRegisterable {
             $0.trailing.equalTo(clapIcon.snp.leading).offset(-6)
             $0.centerY.equalToSuperview()
         }
-    }
-
-    // MARK: - Configure
-
-    func setData(model: ClapListModel) {
-        nameLabel.text = model.name
-        subtitleLabel.text = model.subtitle
-        clapLabel.text = "\(model.clapCount)회"
     }
 }

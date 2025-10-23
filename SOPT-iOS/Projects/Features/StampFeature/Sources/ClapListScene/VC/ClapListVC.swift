@@ -37,7 +37,7 @@ final class ClapListVC: UIViewController, ClapListViewControllable {
     }
 
     private let titleLabel = UILabel().then {
-        $0.text = "박수 목록"
+        $0.text = I18N.MyPage.SoptampSection.clapList
         $0.font = .SoptampFont.h2
         $0.textColor = DSKitAsset.Colors.white.color
     }
@@ -96,7 +96,7 @@ extension ClapListVC {
 
         containerView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(164)
-            $0.leading.trailing.equalToSuperview().inset(16)
+            $0.directionalHorizontalEdges.equalToSuperview().inset(16)
             $0.bottom.equalToSuperview().inset(32)
         }
 

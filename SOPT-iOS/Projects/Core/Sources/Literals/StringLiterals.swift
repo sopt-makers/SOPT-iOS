@@ -363,6 +363,7 @@ public struct I18N {
             public static let title = "솝탬프 설정"
             public static let editOnelineSentence = "한 마디 편집"
             public static let resetStamp = "스탬프 초기화"
+            public static let clapList = "박수 목록"
         }
         
         public struct EtcSection {

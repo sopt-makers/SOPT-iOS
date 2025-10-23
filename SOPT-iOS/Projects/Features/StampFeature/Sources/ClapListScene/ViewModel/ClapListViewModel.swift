@@ -8,7 +8,6 @@
 
 import Foundation
 import Combine
-import Foundation
 
 import Core
 import Domain
@@ -40,7 +39,6 @@ final class ClapListViewModel: ClapListViewModelType {
 }
 
 extension ClapListViewModel {
-
     func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
 
