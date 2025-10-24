@@ -27,18 +27,9 @@ final class MissionInfoView: UIView {
         $0.image = DSKitAsset.Assets.icCommunicationEye.image
     }
 
-    // TODO: text 삭제
-    private let dateLabel = UILabel().then {
-        $0.text = "2025.12.12"
-    }
-    
-    private let clapCountLabel = UILabel().then {
-        $0.text = "999"
-    }
-    
-    private let viewCountLabel = UILabel().then {
-        $0.text = "212"
-    }
+    private let dateLabel = UILabel()
+    private let clapCountLabel = UILabel()
+    private let viewCountLabel = UILabel()
     
     // MARK: - Private Variables
     private var cancelBag = CancelBag()

@@ -52,6 +52,7 @@ public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, L
     private var originText: String = ""
     private var totalClapCount: Int = 0
     private var myClapCount: Int = 0
+    private var isAnimating: Bool = false
     
     private let deleteButtonTapped = PassthroughSubject<Bool, Never>()
     private let imageSelected = PassthroughSubject<Data, Never>()
@@ -417,6 +418,24 @@ extension ListDetailVC {
         setClapCount(total: totalClapCount + 1, mine: myClapCount + 1)
         
         // TODO: 이미 올라와있으면 안내려가게
+        
+        let transformY = self.clapBadge.transform.ty
+        let isVisible = self.clapBadge.alpha > 0.9
+        
+        // 올라가고 잇는 상태
+        if transformY < 0 && isVisible && isAnimating {
+            return
+        }
+        
+        // 사라지는 중
+        if !isVisible {
+            self.clapBadge.layer.removeAllAnimations()
+            self.clapBadge.alpha = 1
+            self.clapBadge.transform = CGAffineTransform(translationX: 0, y: -38)
+        }
+        
+        isAnimating = true
+        
         UIView.animate(withDuration: 0.4, animations: {
             self.clapBadge.transform = CGAffineTransform(translationX: 0, y: -38)
         }) { _ in
@@ -425,8 +444,10 @@ extension ListDetailVC {
             }) { _ in
                 self.clapBadge.transform = .identity
                 self.clapBadge.alpha = 1
+                self.isAnimating = false
             }
         }
+        
     }
     
     private func setClapCount(total: Int, mine: Int) {
