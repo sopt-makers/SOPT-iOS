@@ -71,4 +71,10 @@ extension ListDetailRepository: ListDetailRepositoryInterface {
       .map { $0 == 200 }
       .asDriver()
   }
+    
+  public func clap(stampId: Int, clapCount: Int) -> AnyPublisher<ClapCountModel, Error> {
+      return stampService.clap(stampId: stampId, clapCount: clapCount)
+          .map{ $0.toDomain() }
+          .eraseToAnyPublisher()
+  }
 }

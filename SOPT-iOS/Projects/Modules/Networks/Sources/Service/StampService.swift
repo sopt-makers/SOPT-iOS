@@ -21,6 +21,7 @@ public protocol StampService {
     func deleteStamp(stampId: Int) -> AnyPublisher<Int, Error>
     func resetStamp() -> AnyPublisher<Int, Error>
     func getReportUrl() -> AnyPublisher<SoptampReportUrlEntity, Error>
+    func clap(stampId: Int, clapCount: Int) -> AnyPublisher<ClapCountEntity, Error>
     
     func getReportURLAsync() async throws -> SoptampReportUrlEntity
 }
@@ -52,5 +53,9 @@ extension DefaultStampService: StampService {
     
     public func getReportURLAsync() async throws -> SoptampReportUrlEntity {
         try await requestObjectAsync(.getReportUrl)
+    }
+    
+    public func clap(stampId: Int, clapCount: Int) -> AnyPublisher<ClapCountEntity, any Error> {
+        return requestObjectInCombine(.clap(stampId: stampId, clapCount: clapCount))
     }
 }

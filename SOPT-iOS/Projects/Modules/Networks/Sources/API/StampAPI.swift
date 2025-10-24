@@ -19,6 +19,7 @@ public enum StampAPI {
   case deleteStamp(stampId: Int)
   case resetStamp
   case getReportUrl
+  case clap(stampId: Int, clapCount: Int)
 }
 
 extension StampAPI: BaseAPI {
@@ -38,13 +39,15 @@ extension StampAPI: BaseAPI {
       return "/all"
     case .getReportUrl:
       return "/report"
+    case .clap(let stampId, _):
+      return "/\(stampId)/clap"
     }
   }
   
   // MARK: - Method
   public var method: Moya.Method {
     switch self {
-    case .postStamp:
+    case .postStamp, .clap:
       return .post
     case .putStamp:
       return .put
@@ -66,6 +69,8 @@ extension StampAPI: BaseAPI {
       params["image"] = requestModel.imgURL
       params["contents"] = requestModel.content
       params["activityDate"] = requestModel.activityDate
+    case .clap(_, let clapCount):
+        params["clapCount"] = clapCount
     default: break
     }
     return params

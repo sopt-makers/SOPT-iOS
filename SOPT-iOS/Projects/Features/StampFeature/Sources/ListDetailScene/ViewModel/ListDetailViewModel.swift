@@ -23,6 +23,7 @@ public class ListDetailViewModel: ListDetailViewModelType {
     
     private let useCase: ListDetailUseCase
     private var cancelBag = CancelBag()
+    
     public var sceneType: ListDetailSceneType!
     public var starLevel: StarViewLevel!
     public var missionId: Int!
@@ -30,6 +31,10 @@ public class ListDetailViewModel: ListDetailViewModelType {
     public var stampId: Int!
     public var isOtherUser: Bool
     public var otherUserName: String!
+    
+    // TODO: 스탬프 조회 API 변경 후 init에 넣기
+    var totalClapCount: Int = 0
+    var myClapCount: Int?
     
     private var uploadedUrl: String?
     
@@ -47,6 +52,7 @@ public class ListDetailViewModel: ListDetailViewModelType {
         let bottomButtonTapped: Driver<Void>
         let rightButtonTapped: Driver<ListDetailSceneType>
         let deleteButtonTapped: Driver<Bool>
+        let clapButtonTapped: Driver<Int>
     }
     
     // MARK: - Outputs
@@ -58,6 +64,7 @@ public class ListDetailViewModel: ListDetailViewModelType {
         var deleteSuccessed = PassthroughSubject<Bool, Never>()
         var bottomButtonEnabled = PassthroughSubject<Bool, Never>()
         let isLoading = PassthroughSubject<Bool, Never>()
+        var clapSuccessed = PassthroughSubject<Result<ClapCountModel, Error>, Never>()
     }
     
     // MARK: - init
@@ -184,6 +191,12 @@ extension ListDetailViewModel {
             .sink { owner, date in
                 owner.currentDate.send(date)
             }.store(in: cancelBag)
+        
+        input.clapButtonTapped
+            .withUnretained(self)
+            .sink { owner, count in
+                owner.useCase.clap(stampId: owner.stampId, clapCount: count)
+            }.store(in: cancelBag)
 
         // 버튼 활성화 로직
         Publishers.CombineLatest3(currentImage, currentDate, currentText)
@@ -219,6 +232,7 @@ extension ListDetailViewModel {
         let listDetailModel = useCase.listDetailModel
         let editSuccess = useCase.editSuccess
         let deleteSuccess = useCase.deleteSuccess
+        let clapSuccess = useCase.clapSuccess
         
         listDetailModel.asDriver()
             .withUnretained(self)
@@ -241,6 +255,13 @@ extension ListDetailViewModel {
             .sink { owner, success in
                 output.deleteSuccessed.send(success)
             }.store(in: self.cancelBag)
+        
+        clapSuccess.asDriver()
+            .withUnretained(self)
+            .sink { owner, model in
+                output.clapSuccessed.send(.success(model))
+            }.store(in: cancelBag)
+            
     }
 }
 
