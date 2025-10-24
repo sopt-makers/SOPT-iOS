@@ -50,8 +50,10 @@ public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, L
     }
     private var originImage: UIImage = UIImage()
     private var originText: String = ""
-    private let deleteButtonTapped = PassthroughSubject<Bool, Never>()
+    private var totalClapCount: Int = 0
+    private var myClapCount: Int = 0
     
+    private let deleteButtonTapped = PassthroughSubject<Bool, Never>()
     private let imageSelected = PassthroughSubject<Data, Never>()
     private let dateSelected = PassthroughSubject<String, Never>()
     private let textEdited = PassthroughSubject<String, Never>()
@@ -144,14 +146,6 @@ extension ListDetailVC {
             .sink { owner, _ in
                 owner.onNaviBackTap?()
             }.store(in: cancelBag)
-        
-        // TODO: debounce 적용
-        clapButton
-            .publisher(for: .touchUpInside)
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.clap()
-            }.store(in: cancelBag)
     }
     
     private func bindViewModels() {
@@ -174,6 +168,17 @@ extension ListDetailVC {
             .mapVoid()
             .asDriver()
         
+        let clapButtonTapped = clapButton
+            .publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .map { owner, _ in
+                owner.clap()
+                return 1
+            }
+            .scan(0) { count, new in count + new }
+            .debounce(for: .seconds(1), scheduler: RunLoop.main)
+            .asDriver()
+        
         let input = ListDetailViewModel.Input(
             viewDidLoad: Driver.just(()),
             imageSelected: self.imageSelected.eraseToAnyPublisher(),
@@ -181,7 +186,9 @@ extension ListDetailVC {
             textEdited: textEdited.asDriver(),
             bottomButtonTapped: bottomButtonTapped,
             rightButtonTapped: rightButtonTapped,
-            deleteButtonTapped: deleteButtonTapped.asDriver())
+            deleteButtonTapped: deleteButtonTapped.asDriver(),
+            clapButtonTapped: clapButtonTapped
+        )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
@@ -251,6 +258,17 @@ extension ListDetailVC {
             .sink { owner, isLoading in
                 isLoading ? owner.showLoading() : owner.stopLoading()
             }.store(in: cancelBag)
+        
+        output.clapSuccessed
+            .withUnretained(self)
+            .sink { owner, result in
+                switch result {
+                case .success(let model):
+                    owner.setClapCount(total: model.totalClapCount, mine: model.appliedCount)
+                case .failure:
+                    owner.setClapCount(total: owner.viewModel.totalClapCount, mine: owner.viewModel.myClapCount)
+                }
+            }.store(in: cancelBag)
     }
     
     private func setData(_ model: ListDetailModel) {
@@ -264,6 +282,7 @@ extension ListDetailVC {
 
         self.missionDateTextField.setTextFieldView(.inactive)
         self.textView.text = model.content
+        self.missionInfoView.setFullText(date: model.activityDate, clapCount: model.clapCount, viewCount: model.viewCount)
     }
     
     private func reloadData(_ scenetype: ListDetailSceneType) {
@@ -381,8 +400,11 @@ extension ListDetailVC {
             self.backgroundDimmerView.alpha = 1
         }
     }
-
+    
     private func clap() {
+        setClapCount(total: totalClapCount + 1, mine: myClapCount + 1)
+        
+        // TODO: 이미 올라와있으면 안내려가게
         UIView.animate(withDuration: 0.4, animations: {
             self.clapBadge.transform = CGAffineTransform(translationX: 0, y: -38)
         }) { _ in
@@ -393,6 +415,15 @@ extension ListDetailVC {
                 self.clapBadge.alpha = 1
             }
         }
+    }
+    
+    private func setClapCount(total: Int, mine: Int) {
+        totalClapCount = total
+        myClapCount = mine
+        
+        clapButton.setCount(totalClapCount)
+        clapBadge.setCount(myClapCount)
+        missionInfoView.setClapText(clapCount: totalClapCount)
     }
     
     // MARK: - @objc
@@ -549,14 +580,10 @@ extension ListDetailVC {
             self.originImage = self.missionImageView.image ?? UIImage()
             self.bottomButton.changeTitle(attributedString: I18N.ListDetail.editComplete)
                 .setEnabled(false)
-            self.missionDateTextField.isHidden = false
-            self.viewClapButton.isHidden = true
         } else {
             self.naviBar.resetLeftButtonAction()
             self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
             self.bottomButton.changeTitle(attributedString: I18N.ListDetail.missionComplete)
-            self.missionDateTextField.isHidden = true
-            self.viewClapButton.isHidden = false
         }
         
         switch type {
@@ -567,6 +594,8 @@ extension ListDetailVC {
             self.bottomButton.isHidden = false
             self.missionInfoView.isHidden = true
             self.zoomInView.isHidden = true
+            self.viewClapButton.isHidden = true
+            self.missionDateTextField.isHidden = false
         case .completed:
             self.scrollView.setContentOffset(.zero, animated: true)
             self.naviBar.setRightButton(.addRecord)
@@ -577,13 +606,21 @@ extension ListDetailVC {
             self.missionDateTextField.setTextFieldView(.completed)
             self.missionInfoView.isHidden = false
             self.zoomInView.isHidden = false
+            self.viewClapButton.isHidden = false
+            self.missionDateTextField.isHidden = true
         }
         
         if viewModel.isOtherUser {
             self.naviBar.hideRightButton()
             self.naviBar.setTitle(viewModel.otherUserName)
+            
+            setOtherUserLayout()
+            clapButton.setCount(self.totalClapCount)
         } else {
             self.naviBar.setTitle(I18N.ListDetail.myMission)
+            
+            setMineLayout()
+            clapBadge.setCount(self.myClapCount)
         }
     }
     
@@ -627,6 +664,9 @@ extension ListDetailVC {
         self.zoomImageView.layer.cornerRadius = 10
         self.zoomImageView.clipsToBounds = true
         self.zoomImageView.contentMode = .scaleAspectFit
+        
+        self.clapButton.setCount(self.totalClapCount)
+        self.clapBadge.setCount(self.myClapCount)
     }
     
     private func setTextView(_ state: TextViewState) {
@@ -738,15 +778,12 @@ extension ListDetailVC {
         contentStackView.snp.makeConstraints { make in
             make.leading.top.trailing.equalToSuperview()
         }
-
-        if viewModel.isOtherUser {
-            setOtherUserLayout()
-        } else {
-            setMineLayout()
-        }
     }
     
     private func setOtherUserLayout() {
+        bottomButton.removeFromSuperview()
+        viewClapButton.removeFromSuperview()
+        
         contentView.addSubviews(clapBadge, clapButton)
         clapButton.snp.makeConstraints {
             $0.top.equalTo(contentStackView.snp.bottom).offset(12)
@@ -762,6 +799,9 @@ extension ListDetailVC {
     }
     
     private func setMineLayout() {
+        clapButton.removeFromSuperview()
+        clapBadge.removeFromSuperview()
+        
         contentView.addSubviews(bottomButton, viewClapButton)
         bottomButton.snp.makeConstraints {
             $0.leading.trailing.bottom.equalToSuperview()

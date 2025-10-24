@@ -17,6 +17,7 @@ public struct ListDetailModel {
   public let clapCount: Int
   public let myClapCount: Int?
   public let viewCount: Int
+  public let isMine: Bool?
   
   public init(
     image: String,
@@ -26,7 +27,8 @@ public struct ListDetailModel {
     activityDate: String,
     clapCount: Int,
     myClapCount: Int?,
-    viewCount: Int
+    viewCount: Int,
+    isMine: Bool?
   ) {
     self.image = image
     self.content = content
@@ -36,5 +38,6 @@ public struct ListDetailModel {
     self.clapCount = clapCount
     self.myClapCount = myClapCount
     self.viewCount = viewCount
+    self.isMine = isMine
   }
 }

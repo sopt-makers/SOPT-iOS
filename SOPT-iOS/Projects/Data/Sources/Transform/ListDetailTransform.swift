@@ -21,7 +21,8 @@ extension ListDetailEntity {
       activityDate: self.activityDate,
       clapCount: self.clapCount,
       myClapCount: self.myClapCount,
-      viewCount: self.viewCount
+      viewCount: self.viewCount,
+      isMine: self.mine
     )
   }
 }

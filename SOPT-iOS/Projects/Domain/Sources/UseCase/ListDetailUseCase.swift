@@ -90,7 +90,8 @@ extension DefaultListDetailUseCase: ListDetailUseCase {
                     activityDate: "",
                     clapCount: 0,
                     myClapCount: 0,
-                    viewCount: 0
+                    viewCount: 0,
+                    isMine: false
                 )
             )
             .withUnretained(self)
