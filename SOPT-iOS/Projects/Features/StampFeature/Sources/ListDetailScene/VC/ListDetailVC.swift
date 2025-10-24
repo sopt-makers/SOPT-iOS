@@ -264,7 +264,9 @@ extension ListDetailVC {
             .sink { owner, result in
                 switch result {
                 case .success(let model):
-                    owner.setClapCount(total: model.totalClapCount, mine: model.appliedCount)
+                    owner.totalClapCount = model.totalClapCount
+                    owner.myClapCount = model.appliedCount
+                    owner.setClapCount(total: owner.totalClapCount, mine: owner.myClapCount)
                 case .failure:
                     owner.setClapCount(total: owner.viewModel.totalClapCount, mine: owner.viewModel.myClapCount)
                 }
@@ -283,6 +285,12 @@ extension ListDetailVC {
         self.missionDateTextField.setTextFieldView(.inactive)
         self.textView.text = model.content
         self.missionInfoView.setFullText(date: model.activityDate, clapCount: model.clapCount, viewCount: model.viewCount)
+        
+        self.totalClapCount = model.clapCount
+        self.myClapCount = model.myClapCount ?? 0
+        
+        self.clapButton.setCount(self.totalClapCount)
+        self.clapBadge.setCount(self.myClapCount)
     }
     
     private func reloadData(_ scenetype: ListDetailSceneType) {
@@ -402,6 +410,10 @@ extension ListDetailVC {
     }
     
     private func clap() {
+        if myClapCount >= 50 {
+            return
+        }
+        
         setClapCount(total: totalClapCount + 1, mine: myClapCount + 1)
         
         // TODO: 이미 올라와있으면 안내려가게
@@ -615,12 +627,10 @@ extension ListDetailVC {
             self.naviBar.setTitle(viewModel.otherUserName)
             
             setOtherUserLayout()
-            clapButton.setCount(self.totalClapCount)
         } else {
             self.naviBar.setTitle(I18N.ListDetail.myMission)
             
             setMineLayout()
-            clapBadge.setCount(self.myClapCount)
         }
     }
     
@@ -664,9 +674,6 @@ extension ListDetailVC {
         self.zoomImageView.layer.cornerRadius = 10
         self.zoomImageView.clipsToBounds = true
         self.zoomImageView.contentMode = .scaleAspectFit
-        
-        self.clapButton.setCount(self.totalClapCount)
-        self.clapBadge.setCount(self.myClapCount)
     }
     
     private func setTextView(_ state: TextViewState) {

@@ -24,18 +24,16 @@ final class ClapButton: UIButton {
 }
 
 extension ClapButton {
-    func setEnabled(_ isEnabled: Bool) {
-        self.isEnabled = isEnabled
-    }
-    
     func setCount(_ count: Int) {
-        self.setAttributedTitle(
-            NSAttributedString(
-                string: String(count),
-                attributes: [.font: DSKitFontFamily.Suit.bold.font(size: 20), .foregroundColor: UIColor.white]
-            ),
-            for: .normal
+        let attributedString = NSAttributedString(
+            string: String(count),
+            attributes: [
+                .font: DSKitFontFamily.Suit.bold.font(size: 20),
+                .foregroundColor: UIColor.white
+            ]
         )
+        
+        self.setAttributedTitle(attributedString, for: .normal)
     }
 }
 
@@ -44,9 +42,10 @@ extension ClapButton {
 extension ClapButton {
     private func setUI() {
         let attributedString = NSAttributedString(
-            string: "999",
+            string: "0",
             attributes: [.font: DSKitFontFamily.Suit.bold.font(size: 20), .foregroundColor: UIColor.white]
         )
+        self.setAttributedTitle(attributedString, for: .normal)
         
         var config = UIButton.Configuration.bordered()
         config.image = DSKitAsset.Assets.icClap.image.withRenderingMode(.alwaysTemplate)
@@ -63,19 +62,18 @@ extension ClapButton {
         config.background.strokeWidth = 1
         config.background.strokeColor = DSKitAsset.Colors.gray700.color
         config.background.backgroundColor = DSKitAsset.Colors.gray900.color
-        config.attributedTitle = AttributedString(attributedString)
         config.cornerStyle = .capsule
         
         self.configuration = config
-        self.configurationUpdateHandler = { [weak self] button in
-            guard let self else { return }
-            
-            if self.isSelected {
-                config.background.backgroundColor = DSKitAsset.Colors.gray800.color
-            } else {
-                config.background.backgroundColor = DSKitAsset.Colors.gray900.color
-            }
-            self.configuration = config
-        }
+        //        self.configurationUpdateHandler = { button in
+        //            var updateConfig = button.configuration
+        //
+        //            if button.isSelected {
+        //                updateConfig?.background.backgroundColor = DSKitAsset.Colors.gray800.color
+        //            } else {
+        //                updateConfig?.background.backgroundColor = DSKitAsset.Colors.gray900.color
+        //            }
+        //            button.configuration = config
+        //        }
     }
 }

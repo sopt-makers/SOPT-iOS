@@ -261,13 +261,6 @@ extension ListDetailViewModel {
             .sink { owner, success in
                 output.deleteSuccessed.send(success)
             }.store(in: self.cancelBag)
-        
-        clapSuccess.asDriver()
-            .withUnretained(self)
-            .sink { owner, model in
-                output.clapSuccessed.send(.success(model))
-            }.store(in: cancelBag)
-            
     }
 }
 

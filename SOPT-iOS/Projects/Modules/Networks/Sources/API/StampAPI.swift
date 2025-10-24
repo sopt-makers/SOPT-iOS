@@ -87,7 +87,7 @@ extension StampAPI: BaseAPI {
   
   public var task: Task {
     switch self {
-    case .fetchStampListDetail, .postStamp, .putStamp:
+    case .fetchStampListDetail, .postStamp, .putStamp, .clap:
       return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
     default:
       return .requestPlain
