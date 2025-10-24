@@ -39,7 +39,12 @@ extension ListDetailRepository: ListDetailRepositoryInterface {
       return Fail(error: NSError()).eraseToAnyPublisher()
     }
     return stampService.fetchStampListDetail(missionId: missionId, username: username)
-      .map { $0.toDomain() }
+          .map {
+              let result = $0.toDomain()
+              print("stamp result: \(result.viewCount)")
+              
+              return result
+          }
       .eraseToAnyPublisher()
   }
   

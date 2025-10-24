@@ -15,7 +15,7 @@ public struct ListDetailModel {
   public let stampId: Int
   public let activityDate: String
   public let clapCount: Int
-  public let myClapCount: Int
+  public let myClapCount: Int?
   public let viewCount: Int
   
   public init(
@@ -25,7 +25,7 @@ public struct ListDetailModel {
     stampId: Int,
     activityDate: String,
     clapCount: Int,
-    myClapCount: Int,
+    myClapCount: Int?,
     viewCount: Int
   ) {
     self.image = image

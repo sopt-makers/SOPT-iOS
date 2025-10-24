@@ -212,7 +212,6 @@ extension ListDetailViewModel {
                     let isImageSelected = owner.isImageSelected(currentImage)
                     let isDateChanged = owner.isDateChanged(output.listDetailModel?.activityDate, currentDate)
                     let isTextChanged = owner.isTextChanged(output.listDetailModel?.content, currentText)
-                    print("isImageSelected: \(isImageSelected)\nisDateChanged: \(isDateChanged)\nisTextChanged\(isTextChanged)")
                     return isImageSelected || isDateChanged || isTextChanged
                 default:
                     let isImageSelected = !currentImage.isEmpty
@@ -241,8 +240,9 @@ extension ListDetailViewModel {
                 owner.stampId = model.stampId
                 owner.uploadedUrl = model.image
                 owner.totalClapCount = model.clapCount
-                owner.myClapCount = model.myClapCount
+                owner.myClapCount = model.myClapCount ?? 0
                 owner.viewcount = model.viewCount
+                print("viewCount: \(owner.viewcount)")
                 return model
             }
             .assign(to: \.self.listDetailModel, on: output)

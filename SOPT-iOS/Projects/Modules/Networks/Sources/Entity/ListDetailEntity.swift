@@ -17,9 +17,9 @@ public struct ListDetailEntity: Codable {
   public let missionID: Int
   public let activityDate: String
   public let clapCount: Int
-  public let myClapCount: Int
+  public let myClapCount: Int?
   public let viewCount: Int
-  public let mine: Bool
+  public let mine: Bool?
   
   enum CodingKeys: String, CodingKey {
     case createdAt, updatedAt, id, contents, images, activityDate, clapCount, myClapCount, viewCount, mine, missionID = "missionId"
@@ -34,9 +34,9 @@ public struct ListDetailEntity: Codable {
     missionID: Int,
     activityDate: String,
     clapCount: Int,
-    myClapCount: Int,
+    myClapCount: Int?,
     viewCount: Int,
-    mine: Bool
+    mine: Bool?
   ) {
     self.createdAt = createdAt
     self.updatedAt = updatedAt
