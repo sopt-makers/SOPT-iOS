@@ -87,7 +87,10 @@ extension DefaultListDetailUseCase: ListDetailUseCase {
                     content: "",
                     date: "",
                     stampId: 0,
-                    activityDate: ""
+                    activityDate: "",
+                    clapCount: 0,
+                    myClapCount: 0,
+                    viewCount: 0
                 )
             )
             .withUnretained(self)

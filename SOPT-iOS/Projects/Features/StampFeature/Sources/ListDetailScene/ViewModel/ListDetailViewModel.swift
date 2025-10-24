@@ -32,9 +32,9 @@ public class ListDetailViewModel: ListDetailViewModelType {
     public var isOtherUser: Bool
     public var otherUserName: String!
     
-    // TODO: 스탬프 조회 API 변경 후 init에 넣기
     var totalClapCount: Int = 0
-    var myClapCount: Int?
+    var myClapCount: Int = 0
+    var viewcount: Int = 0
     
     private var uploadedUrl: String?
     
@@ -212,6 +212,7 @@ extension ListDetailViewModel {
                     let isImageSelected = owner.isImageSelected(currentImage)
                     let isDateChanged = owner.isDateChanged(output.listDetailModel?.activityDate, currentDate)
                     let isTextChanged = owner.isTextChanged(output.listDetailModel?.content, currentText)
+                    print("isImageSelected: \(isImageSelected)\nisDateChanged: \(isDateChanged)\nisTextChanged\(isTextChanged)")
                     return isImageSelected || isDateChanged || isTextChanged
                 default:
                     let isImageSelected = !currentImage.isEmpty
@@ -239,6 +240,9 @@ extension ListDetailViewModel {
             .compactMap { owner, model in
                 owner.stampId = model.stampId
                 owner.uploadedUrl = model.image
+                owner.totalClapCount = model.clapCount
+                owner.myClapCount = model.myClapCount
+                owner.viewcount = model.viewCount
                 return model
             }
             .assign(to: \.self.listDetailModel, on: output)
