@@ -55,7 +55,7 @@ extension DefaultStampService: StampService {
         try await requestObjectAsync(.getReportUrl)
     }
     
-    public func clap(stampId: Int, clapCount: Int) -> AnyPublisher<ClapCountEntity, any Error> {
+    public func clap(stampId: Int, clapCount: Int) -> AnyPublisher<ClapCountEntity, Error> {
         return requestObjectInCombine(.clap(stampId: stampId, clapCount: clapCount))
     }
 }
