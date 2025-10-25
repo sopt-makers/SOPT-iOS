@@ -24,11 +24,7 @@ final class ClapListCVC: UICollectionViewCell, UICollectionViewRegisterable {
 
     // MARK: - UI Components
 
-    private let profileView = UIView().then {
-        //TODO: - 실제 이미지뷰로 변경해주세요.
-        $0.backgroundColor = DSKitAsset.Colors.gray700.color
-        $0.layer.cornerRadius = 16
-    }
+    private let profileView = CustomProfileImageView().hideBorder()
 
     private let nameLabel = UILabel().then {
         $0.font = .SoptampFont.subtitle1
@@ -48,8 +44,7 @@ final class ClapListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     }
 
     private let clapIcon = UIImageView().then {
-        //TODO: - 실제 박수 icon으로 변경해주세요.
-        $0.image = UIImage(systemName: "hand.wave.fill")
+        $0.image = DSKitAsset.Assets.icClap.image
         $0.tintColor = DSKitAsset.Colors.white.color
         $0.contentMode = .scaleAspectFit
     }
@@ -69,9 +64,19 @@ final class ClapListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     // MARK: - Configure
 
     func setData(model: ClapperModel) {
+        self.model = model
         nameLabel.text = model.nickname
         subtitleLabel.text = model.profileMessage
         clapLabel.text = "\(model.clapCount)회"
+
+        if !model.profileImageUrl.isEmpty {
+            profileView.setImage(
+                with: model.profileImageUrl,
+                placeholder: DSKitAsset.Assets.iconLineProfile.image
+            )
+        } else {
+            profileView.image = DSKitAsset.Assets.iconLineProfile.image
+        }
     }
 }
 
@@ -85,7 +90,7 @@ extension ClapListCVC {
         contentView.addSubviews(profileView, nameLabel, subtitleLabel, clapLabel, clapIcon)
 
         profileView.snp.makeConstraints {
-            $0.leading.equalToSuperview().offset(12)
+            $0.leading.equalToSuperview()
             $0.centerY.equalToSuperview()
             $0.size.equalTo(32)
         }
@@ -104,7 +109,7 @@ extension ClapListCVC {
         }
 
         clapIcon.snp.makeConstraints {
-            $0.trailing.equalToSuperview().inset(16)
+            $0.trailing.equalToSuperview()
             $0.centerY.equalToSuperview()
             $0.size.equalTo(24)
         }

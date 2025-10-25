@@ -34,7 +34,7 @@ final class ClapListVC: UIViewController, ClapListViewControllable {
     // MARK: - UI Components
 
     private let backButton = UIButton().then {
-        $0.setImage(DSKitAsset.Assets.arrowLeft.image, for: .normal)
+        $0.setImage(DSKitAsset.Assets.chevronLeft.image, for: .normal)
         $0.tintColor = DSKitAsset.Colors.white.color
     }
 
