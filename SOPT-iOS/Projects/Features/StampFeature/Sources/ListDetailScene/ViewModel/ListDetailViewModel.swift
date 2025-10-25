@@ -233,7 +233,6 @@ extension ListDetailViewModel {
         let listDetailModel = useCase.listDetailModel
         let editSuccess = useCase.editSuccess
         let deleteSuccess = useCase.deleteSuccess
-        let clapSuccess = useCase.clapSuccess
         
         listDetailModel.asDriver()
             .withUnretained(self)
