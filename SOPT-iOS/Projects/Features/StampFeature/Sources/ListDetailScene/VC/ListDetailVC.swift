@@ -425,12 +425,10 @@ extension ListDetailVC {
         
         setClapCount(total: totalClapCount + 1, mine: myClapCount + 1)
         
-        // TODO: 이미 올라와있으면 안내려가게
-        
         let transformY = self.clapBadge.transform.ty
         let isVisible = self.clapBadge.alpha > 0.9
         
-        // 올라가고 잇는 상태
+        // 올라가고 있는 상태
         if transformY < 0 && isVisible && isAnimating {
             return
         }
