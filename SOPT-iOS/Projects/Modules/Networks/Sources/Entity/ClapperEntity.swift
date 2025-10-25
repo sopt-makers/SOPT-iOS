@@ -15,14 +15,6 @@ public struct ClapperEntity: Decodable {
     public let clapCount: Int
 }
 
-public struct ClapperEntity: Decodable {
-    public let nickname: String
-    public let profileImageUrl: String
-    public let profileMessage: String
-    public let clapCount: Int
-}
-
-// Wrapper Entity 추가
-public struct ClapperEntity: Decodable {
+public struct ClapListEntity: Decodable {
     public let users: [ClapperEntity]
 }

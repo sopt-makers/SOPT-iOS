@@ -77,7 +77,7 @@ extension ListDetailRepository: ListDetailRepositoryInterface {
             .map{ $0.toDomain() }
             .eraseToAnyPublisher()
     }
-    public func getClapList(stampId: Int, nickname: String) -> AnyPublisher<[ClapListModel], Error> {
+    public func getClapList(stampId: Int, nickname: String) -> AnyPublisher<[ClapperModel], Error> {
         return stampService.getClapList(stampId: stampId, nickname: nickname)
             .map { $0.map { $0.toDomain() } }
             .eraseToAnyPublisher()

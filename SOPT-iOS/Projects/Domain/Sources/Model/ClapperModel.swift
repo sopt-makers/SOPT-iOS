@@ -21,3 +21,11 @@ public struct ClapperModel: Hashable {
         self.clapCount = clapCount
     }
 }
+
+public struct ClapListModel: Hashable {
+    public let users: [ClapperModel]
+
+    public init(users: [ClapperModel]) {
+        self.users = users
+    }
+}

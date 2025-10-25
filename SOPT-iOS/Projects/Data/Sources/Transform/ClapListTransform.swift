@@ -10,8 +10,8 @@ import Foundation
 import Networks
 import Domain
 
-public extension ClapListEntity {
-    func toDomain() -> ClapListModel {
+public extension ClapperEntity {
+    func toDomain() -> ClapperModel {
         return .init(
             nickname: nickname,
             profileImageUrl: profileImageUrl,

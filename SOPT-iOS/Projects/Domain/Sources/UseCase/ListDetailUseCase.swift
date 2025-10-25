@@ -27,7 +27,7 @@ public protocol ListDetailUseCase {
     var editSuccess: PassthroughSubject<Bool, Error> { get set }
     var deleteSuccess: PassthroughSubject<Bool, Error> { get set }
     var clapSuccess: PassthroughSubject<ClapCountModel, Error> { get set }
-    var clapListModel: PassthroughSubject<[ClapListModel], Error> { get set }
+    var clapListModel: PassthroughSubject<[ClapperModel], Error> { get set }
 }
 
 public class DefaultListDetailUseCase {
@@ -41,7 +41,7 @@ public class DefaultListDetailUseCase {
     public var editSuccess = PassthroughSubject<Bool, Error>()
     public var deleteSuccess = PassthroughSubject<Bool, Error>()
     public var clapSuccess = PassthroughSubject<ClapCountModel, Error>()
-    public var clapListModel = PassthroughSubject<[ClapListModel], Error>()
+    public var clapListModel = PassthroughSubject<[ClapperModel], Error>()
 
     public init(repository: ListDetailRepositoryInterface) {
         self.repository = repository

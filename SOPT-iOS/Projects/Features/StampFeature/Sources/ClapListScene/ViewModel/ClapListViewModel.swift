@@ -37,7 +37,7 @@ public class ClapListViewModel: ClapListViewModelType {
     // MARK: - Outputs
 
     public class Output: NSObject {
-        @Published var clapListModel: [ClapListModel]?
+        @Published var clapListModel: [ClapperModel]?
     }
 
     // MARK: - init
@@ -58,7 +58,6 @@ extension ClapListViewModel {
                 guard let stampId = owner.stampId,
                       let nickname = owner.nickname else { return }
                 owner.useCase.getClapList(stampId: stampId, nickname: nickname)
-                print(stampId)
             }.store(in: cancelBag)
 
         input.viewWillAppear

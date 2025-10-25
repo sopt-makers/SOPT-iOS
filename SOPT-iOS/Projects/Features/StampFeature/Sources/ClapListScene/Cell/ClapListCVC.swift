@@ -20,7 +20,7 @@ final class ClapListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     // MARK: - Properties
 
     static var isFromNib: Bool = false
-    private var model: ClapListModel?
+    private var model: ClapperModel?
 
     // MARK: - UI Components
 
@@ -68,7 +68,7 @@ final class ClapListCVC: UICollectionViewCell, UICollectionViewRegisterable {
 
     // MARK: - Configure
 
-    func setData(model: ClapListModel) {
+    func setData(model: ClapperModel) {
         nameLabel.text = model.nickname
         subtitleLabel.text = model.profileMessage
         clapLabel.text = "\(model.clapCount)회"
