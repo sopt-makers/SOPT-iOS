@@ -69,8 +69,8 @@ final class ClapListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     // MARK: - Configure
 
     func setData(model: ClapListModel) {
-        nameLabel.text = model.name
-        subtitleLabel.text = model.subtitle
+        nameLabel.text = model.nickname
+        subtitleLabel.text = model.profileMessage
         clapLabel.text = "\(model.clapCount)회"
     }
 }

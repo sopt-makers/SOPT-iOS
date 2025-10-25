@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct ClapperEntity: Decodable {
+public struct ClapListEntity: Decodable {
     public let nickname: String
     public let profileImageUrl: String
     public let profileMessage: String

@@ -59,10 +59,10 @@ extension ClapListViewModel {
 
     private func loadDummyData(to output: Output) {
         let dummyData = [
-            ClapListModel(name: "서버황혜린", subtitle: "최대글자수최대글자수최대글자수", clapCount: 50),
-            ClapListModel(name: "서버황혜린", subtitle: "최대글자수최대글자수최대글자수", clapCount: 50),
-            ClapListModel(name: "서버황혜린", subtitle: "최대글자수최대글자수최대글자수", clapCount: 50),
-            ClapListModel(name: "서버황혜린", subtitle: "최대글자수최대글자수최대글자수", clapCount: 50)
+            ClapListModel(nickname: "서버황혜린", profileImageUrl: "ㅇㅇ", profileMessage: "최대글자수최대글자수최대글자수", clapCount: 50),
+            ClapListModel(nickname: "서버황혜린", profileImageUrl: "ㅇㅇ", profileMessage: "최대글자수최대글자수최대글자수", clapCount: 50),
+            ClapListModel(nickname: "서버황혜린", profileImageUrl: "ㅇㅇ", profileMessage: "최대글자수최대글자수최대글자수", clapCount: 50),
+            ClapListModel(nickname: "서버황혜린", profileImageUrl: "ㅇㅇ", profileMessage: "최대글자수최대글자수최대글자수", clapCount: 50)
         ]
         output.clapListModel = dummyData
     }

@@ -196,6 +196,6 @@ enum ClapListSection: CaseIterable {
 extension ClapListVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let model = dataSource.itemIdentifier(for: indexPath) else { return }
-        onCellTap?(model.name)
+        onCellTap?(model.nickname)
     }
 }
