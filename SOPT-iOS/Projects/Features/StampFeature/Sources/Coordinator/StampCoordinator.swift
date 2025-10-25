@@ -52,7 +52,9 @@ public final class StampCoordinator: BaseCoordinator {
         
         missionList.vc.onGuideTap = { [weak self] in
             guard let self else { return }
-            self.showGuide()
+            //self.showGuide()
+            //TODO: - view 연결이후 제거
+            self.showClapList()
         }
         
         missionList.vc.onPartRankingButtonTap = { [weak self] rankingViewType in
@@ -199,5 +201,27 @@ extension StampCoordinator {
         }
         
         rootController?.pushViewController(otherMissionList.vc, animated: true)
+    }
+}
+
+// MARK: - ClapListFlow
+
+extension StampCoordinator {
+    public func showClapList() {
+        var clapList = factory.makeClapListVC()
+
+        clapList.vc.onNaviBackTap = { [weak self] in
+            guard let self else { return }
+            self.rootController?.popViewController(animated: true)
+        }
+
+        clapList.vc.onCellTap = { [weak self] username in
+            guard let self else { return }
+            
+            // TODO: - 추후 프로필 상세 화면 연결
+            print("\(username ?? "unknown")의 프로필 탭됨")
+        }
+
+        self.rootController?.pushViewController(clapList.vc, animated: true)
     }
 }
