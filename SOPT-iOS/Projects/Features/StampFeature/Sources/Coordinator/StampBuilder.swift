@@ -86,12 +86,12 @@ extension StampBuilder: StampFeatureBuildable {
         return stampGuideVC
     }
 
-    public func makeClapListVC() -> ClapListPresentable {
-        let viewModel = ClapListViewModel()
+    public func makeClapListVC(stampId: Int, nickname: String) -> ClapListPresentable {
+        let useCase = DefaultListDetailUseCase(repository: listDetailRepository)
+        let viewModel = ClapListViewModel(useCase: useCase)
+        viewModel.stampId = stampId
+        viewModel.nickname = nickname
         let clapListVC = ClapListVC(viewModel: viewModel)
-        return (
-            clapListVC as any ClapListViewControllable,
-            viewModel as any ClapListViewModelType
-        )
+        return (clapListVC, viewModel)
     }
 }

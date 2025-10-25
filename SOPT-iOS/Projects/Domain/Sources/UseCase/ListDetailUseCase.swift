@@ -19,27 +19,30 @@ public protocol ListDetailUseCase {
     func uploadMedia(imageData: Data, presignedUrl: String)
     func deleteStamp(stampId: Int)
     func clap(stampId: Int, clapCount: Int)
-    
+    func getClapList(stampId: Int, nickname: String)
+
     var listDetailModel: PassthroughSubject<ListDetailModel, Error> { get set }
     var mediaUploadCompleted: PassthroughSubject<Void, Error> { get set }
     var presignedURL: PassthroughSubject<PresignedUrlModel, Error> { get set }
     var editSuccess: PassthroughSubject<Bool, Error> { get set }
     var deleteSuccess: PassthroughSubject<Bool, Error> { get set }
     var clapSuccess: PassthroughSubject<ClapCountModel, Error> { get set }
+    var clapListModel: PassthroughSubject<[ClapListModel], Error> { get set }
 }
 
 public class DefaultListDetailUseCase {
-    
+
     private let repository: ListDetailRepositoryInterface
     private var cancelBag = CancelBag()
-    
+
     public var listDetailModel = PassthroughSubject<ListDetailModel, Error>()
     public var presignedURL = PassthroughSubject<PresignedUrlModel, Error>()
     public var mediaUploadCompleted = PassthroughSubject<Void, Error>()
     public var editSuccess = PassthroughSubject<Bool, Error>()
     public var deleteSuccess = PassthroughSubject<Bool, Error>()
     public var clapSuccess = PassthroughSubject<ClapCountModel, Error>()
-    
+    public var clapListModel = PassthroughSubject<[ClapListModel], Error>()
+
     public init(repository: ListDetailRepositoryInterface) {
         self.repository = repository
     }
@@ -56,7 +59,7 @@ extension DefaultListDetailUseCase: ListDetailUseCase {
             })
             .store(in: self.cancelBag)
     }
-    
+
     public func getPresignedURL() {
         self.repository.getPresignedURL()
             .withUnretained(self)
@@ -66,7 +69,7 @@ extension DefaultListDetailUseCase: ListDetailUseCase {
                 owner.presignedURL.send(presignedModel)
             }).store(in: self.cancelBag)
     }
-    
+
     public func uploadMedia(imageData: Data, presignedUrl: String) {
         self.repository
             .uploadMedia(imageData: imageData, presignedUrl: presignedUrl)
@@ -78,7 +81,7 @@ extension DefaultListDetailUseCase: ListDetailUseCase {
                 print("receivedValue: \(owner)")
             }).store(in: self.cancelBag)
     }
-    
+
     public func postStamp(stampData: ListDetailRequestModel) {
         repository.postStamp(stampData: stampData)
             .replaceError(
@@ -101,7 +104,7 @@ extension DefaultListDetailUseCase: ListDetailUseCase {
                 owner.listDetailModel.send(model)
             }.store(in: self.cancelBag)
     }
-    
+
     public func putStamp(stampData: ListDetailRequestModel) {
         repository.putStamp(stampData: stampData)
             .replaceError(with: -1)
@@ -110,7 +113,7 @@ extension DefaultListDetailUseCase: ListDetailUseCase {
                 owner.editSuccess.send(result == -1 ? false: true)
             }.store(in: self.cancelBag)
     }
-    
+
     public func deleteStamp(stampId: Int) {
         repository.deleteStamp(stampId: stampId)
             .replaceError(with: false)
@@ -119,7 +122,7 @@ extension DefaultListDetailUseCase: ListDetailUseCase {
                 owner.deleteSuccess.send(success)
             }.store(in: self.cancelBag)
     }
-    
+
     public func clap(stampId: Int, clapCount: Int) {
         repository.clap(stampId: stampId, clapCount: clapCount)
             .replaceError(
@@ -134,6 +137,17 @@ extension DefaultListDetailUseCase: ListDetailUseCase {
                 print("completion: \(event)")
             } receiveValue: { owner, model in
                 owner.clapSuccess.send(model)
+            }.store(in: self.cancelBag)
+    }
+
+    public func getClapList(stampId: Int, nickname: String) {
+        repository.getClapList(stampId: stampId, nickname: nickname)
+            .replaceError(with: [])
+            .withUnretained(self)
+            .sink { event in
+                print("completion: \(event)")
+            } receiveValue: { owner, models in
+                owner.clapListModel.send(models)
             }.store(in: self.cancelBag)
     }
 }

@@ -13,58 +13,72 @@ import Core
 import Domain
 import BaseFeatureDependency
 
-final class ClapListViewModel: ClapListViewModelType {
+public class ClapListViewModel: ClapListViewModelType {
 
     // MARK: - Triggers
-    var onNaviBackTap: (() -> Void)?
-    var onCellTap: ((String?) -> Void)?
+
+    public var onNaviBackTap: (() -> Void)?
+    public var onCellTap: ((String?) -> Void)?
 
     // MARK: - Properties
+
+    private let useCase: ListDetailUseCase
     private var cancelBag = CancelBag()
+    public var stampId: Int?
+    public var nickname: String?
 
-    // MARK: - Input
+    // MARK: - Inputs
 
-    struct Input {
+    public struct Input {
         let viewDidLoad: Driver<Void>
         let viewWillAppear: Driver<Void>
     }
 
-    // MARK: - Output
-    final class Output: NSObject {
+    // MARK: - Outputs
+
+    public class Output: NSObject {
         @Published var clapListModel: [ClapListModel]?
     }
 
-    // MARK: - Init
-    init() {}
+    // MARK: - init
+
+    public init(useCase: ListDetailUseCase) {
+        self.useCase = useCase
+    }
 }
 
 extension ClapListViewModel {
-    func transform(from input: Input, cancelBag: CancelBag) -> Output {
+    public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
+        self.bindOutput(output: output, cancelBag: cancelBag)
 
         input.viewDidLoad
             .withUnretained(self)
             .sink { owner, _ in
-                owner.loadDummyData(to: output)
+                guard let stampId = owner.stampId,
+                      let nickname = owner.nickname else { return }
+                owner.useCase.getClapList(stampId: stampId, nickname: nickname)
+                print(stampId)
             }.store(in: cancelBag)
 
         input.viewWillAppear
             .withUnretained(self)
             .sink { owner, _ in
-                owner.loadDummyData(to: output)
+                guard let stampId = owner.stampId,
+                      let nickname = owner.nickname else { return }
+                owner.useCase.getClapList(stampId: stampId, nickname: nickname)
             }.store(in: cancelBag)
 
         return output
     }
 
-    private func loadDummyData(to output: Output) {
-        let dummyData = [
-            ClapListModel(nickname: "서버황혜린", profileImageUrl: "ㅇㅇ", profileMessage: "최대글자수최대글자수최대글자수", clapCount: 50),
-            ClapListModel(nickname: "서버황혜린", profileImageUrl: "ㅇㅇ", profileMessage: "최대글자수최대글자수최대글자수", clapCount: 50),
-            ClapListModel(nickname: "서버황혜린", profileImageUrl: "ㅇㅇ", profileMessage: "최대글자수최대글자수최대글자수", clapCount: 50),
-            ClapListModel(nickname: "서버황혜린", profileImageUrl: "ㅇㅇ", profileMessage: "최대글자수최대글자수최대글자수", clapCount: 50)
-        ]
-        output.clapListModel = dummyData
+    private func bindOutput(output: Output, cancelBag: CancelBag) {
+        let fetchedClapList = self.useCase.clapListModel
+
+        fetchedClapList.asDriver()
+            .sink(receiveValue: { models in
+                output.clapListModel = models
+            })
+            .store(in: self.cancelBag)
     }
 }
-

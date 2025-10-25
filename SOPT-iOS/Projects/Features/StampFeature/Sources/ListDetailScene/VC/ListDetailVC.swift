@@ -66,8 +66,8 @@ public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, L
     
     public var onNaviBackTap: (() -> Void)?
     public var onComplete: ((StarViewLevel, (() -> Void)?) -> Void)?
-    public var onViewClapTap: (() -> Void)?
-    
+    public var onViewClapTap: ((Int, String) -> Void)?
+
     // MARK: - UI Components
     
     private lazy var naviBar = STNavigationBar(type: .titleWithLeftButton)
@@ -153,7 +153,7 @@ extension ListDetailVC {
             .publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onViewClapTap?()
+                owner.onViewClapTap?(owner.viewModel.stampId, owner.viewModel.otherUserName ?? "")
             }.store(in: cancelBag)
     }
     
