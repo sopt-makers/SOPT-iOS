@@ -223,9 +223,14 @@ extension StampCoordinator {
 
         clapList.vc.onCellTap = { [weak self] username in
             guard let self else { return }
-            print("\(username ?? "unknown")의 프로필 탭됨")
+            guard let username else { return }
+
+            self.rootController?.dismiss(animated: true) {
+                self.showOtherMissionList(username, "")
+            }
         }
 
+        clapList.vc.modalPresentationStyle = .overFullScreen
         self.rootController?.topViewController?.present(clapList.vc, animated: true)
     }
 }
