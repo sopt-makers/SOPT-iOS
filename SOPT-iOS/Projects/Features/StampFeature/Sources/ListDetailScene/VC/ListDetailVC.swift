@@ -274,7 +274,6 @@ extension ListDetailVC {
                 switch result {
                 case .success(let model):
                     owner.totalClapCount = model.totalClapCount
-                    owner.myClapCount = model.appliedCount
                     owner.setClapCount(total: owner.totalClapCount, mine: owner.myClapCount)
                 case .failure:
                     owner.setClapCount(total: owner.viewModel.totalClapCount, mine: owner.viewModel.myClapCount)
