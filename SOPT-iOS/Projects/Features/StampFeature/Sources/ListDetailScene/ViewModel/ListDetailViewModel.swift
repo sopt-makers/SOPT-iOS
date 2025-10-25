@@ -18,11 +18,13 @@ public class ListDetailViewModel: ListDetailViewModelType {
     // TODO: coordinating vc -> vm
     public var onComplete: ((Core.StarViewLevel, (() -> Void)?) -> Void)?
     public var onNaviBackTap: (() -> Void)?
+    public var onViewClapTap: (() -> Void)?
     
     // MARK: - Properties
     
     private let useCase: ListDetailUseCase
     private var cancelBag = CancelBag()
+    
     public var sceneType: ListDetailSceneType!
     public var starLevel: StarViewLevel!
     public var missionId: Int!
@@ -30,6 +32,10 @@ public class ListDetailViewModel: ListDetailViewModelType {
     public var stampId: Int!
     public var isOtherUser: Bool
     public var otherUserName: String!
+    
+    var totalClapCount: Int = 0
+    var myClapCount: Int = 0
+    var viewcount: Int = 0
     
     private var uploadedUrl: String?
     
@@ -47,6 +53,7 @@ public class ListDetailViewModel: ListDetailViewModelType {
         let bottomButtonTapped: Driver<Void>
         let rightButtonTapped: Driver<ListDetailSceneType>
         let deleteButtonTapped: Driver<Bool>
+        let clapButtonTapped: Driver<Int>
     }
     
     // MARK: - Outputs
@@ -58,6 +65,7 @@ public class ListDetailViewModel: ListDetailViewModelType {
         var deleteSuccessed = PassthroughSubject<Bool, Never>()
         var bottomButtonEnabled = PassthroughSubject<Bool, Never>()
         let isLoading = PassthroughSubject<Bool, Never>()
+        var clapSuccessed = PassthroughSubject<Result<ClapCountModel, Error>, Never>()
     }
     
     // MARK: - init
@@ -184,6 +192,12 @@ extension ListDetailViewModel {
             .sink { owner, date in
                 owner.currentDate.send(date)
             }.store(in: cancelBag)
+        
+        input.clapButtonTapped
+            .withUnretained(self)
+            .sink { owner, count in
+                owner.useCase.clap(stampId: owner.stampId, clapCount: count)
+            }.store(in: cancelBag)
 
         // 버튼 활성화 로직
         Publishers.CombineLatest3(currentImage, currentDate, currentText)
@@ -225,6 +239,12 @@ extension ListDetailViewModel {
             .compactMap { owner, model in
                 owner.stampId = model.stampId
                 owner.uploadedUrl = model.image
+                owner.totalClapCount = model.clapCount
+                owner.myClapCount = model.myClapCount ?? 0
+                owner.viewcount = model.viewCount
+                if let mine = model.isMine {
+                    owner.isOtherUser = !mine
+                }
                 return model
             }
             .assign(to: \.self.listDetailModel, on: output)

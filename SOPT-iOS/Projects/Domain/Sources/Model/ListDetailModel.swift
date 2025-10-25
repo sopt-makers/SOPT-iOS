@@ -14,18 +14,30 @@ public struct ListDetailModel {
   public let date: String
   public let stampId: Int
   public let activityDate: String
+  public let clapCount: Int
+  public let myClapCount: Int?
+  public let viewCount: Int
+  public let isMine: Bool?
   
   public init(
     image: String,
     content: String,
     date: String,
     stampId: Int,
-    activityDate: String
+    activityDate: String,
+    clapCount: Int,
+    myClapCount: Int?,
+    viewCount: Int,
+    isMine: Bool?
   ) {
     self.image = image
     self.content = content
     self.date = date
     self.stampId = stampId
     self.activityDate = activityDate
+    self.clapCount = clapCount
+    self.myClapCount = myClapCount
+    self.viewCount = viewCount
+    self.isMine = isMine
   }
 }

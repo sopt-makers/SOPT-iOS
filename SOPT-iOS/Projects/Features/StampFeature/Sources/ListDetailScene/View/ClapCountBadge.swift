@@ -30,6 +30,12 @@ final class ClapCountBadge: UIView {
     }
 }
 
+extension ClapCountBadge {
+    func setCount(_ count: Int) {
+        countLabel.text = "+\(count)"
+    }
+}
+
 // MARK: - UI & Layout
 
 extension ClapCountBadge {
