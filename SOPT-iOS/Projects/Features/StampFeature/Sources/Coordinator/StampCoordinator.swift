@@ -52,9 +52,7 @@ public final class StampCoordinator: BaseCoordinator {
         
         missionList.vc.onGuideTap = { [weak self] in
             guard let self else { return }
-            //self.showGuide()
-            //TODO: - view 연결이후 제거
-            self.showClapList()
+            self.showGuide()
         }
         
         missionList.vc.onPartRankingButtonTap = { [weak self] rankingViewType in
@@ -120,6 +118,11 @@ extension StampCoordinator {
         missionDetail.vc.onNaviBackTap = { [weak self] in
             guard let self else { return }
             self.rootController?.popViewController(animated: true)
+        }
+        
+        missionDetail.vc.onViewClapTap = { [weak self] in
+            guard let self else { return }
+            self.showClapList()
         }
         
         rootController?.pushViewController(missionDetail.vc, animated: true)
@@ -212,7 +215,7 @@ extension StampCoordinator {
 
         clapList.vc.onNaviBackTap = { [weak self] in
             guard let self else { return }
-            self.rootController?.popViewController(animated: true)
+            self.rootController?.dismiss(animated: true )
         }
 
         clapList.vc.onCellTap = { [weak self] username in
@@ -222,6 +225,6 @@ extension StampCoordinator {
             print("\(username ?? "unknown")의 프로필 탭됨")
         }
 
-        self.rootController?.pushViewController(clapList.vc, animated: true)
+        self.rootController?.topViewController?.present(clapList.vc, animated: true)
     }
 }

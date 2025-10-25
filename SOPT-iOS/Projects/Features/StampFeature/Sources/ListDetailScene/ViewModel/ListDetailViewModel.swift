@@ -18,6 +18,7 @@ public class ListDetailViewModel: ListDetailViewModelType {
     // TODO: coordinating vc -> vm
     public var onComplete: ((Core.StarViewLevel, (() -> Void)?) -> Void)?
     public var onNaviBackTap: (() -> Void)?
+    public var onViewClapTap: (() -> Void)?
     
     // MARK: - Properties
     

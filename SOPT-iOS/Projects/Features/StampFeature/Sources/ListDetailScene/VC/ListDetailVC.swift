@@ -66,6 +66,7 @@ public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, L
     
     public var onNaviBackTap: (() -> Void)?
     public var onComplete: ((StarViewLevel, (() -> Void)?) -> Void)?
+    public var onViewClapTap: (() -> Void)?
     
     // MARK: - UI Components
     
@@ -146,6 +147,13 @@ extension ListDetailVC {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNaviBackTap?()
+            }.store(in: cancelBag)
+        
+        viewClapButton
+            .publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onViewClapTap?()
             }.store(in: cancelBag)
     }
     
