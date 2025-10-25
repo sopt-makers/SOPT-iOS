@@ -22,7 +22,9 @@ public protocol StampService {
     func resetStamp() -> AnyPublisher<Int, Error>
     func getReportUrl() -> AnyPublisher<SoptampReportUrlEntity, Error>
     func clap(stampId: Int, clapCount: Int) -> AnyPublisher<ClapCountEntity, Error>
-    
+    func getClapList(stampId: Int, nickname: String) -> AnyPublisher<[ClapListEntity], Error>
+
+
     func getReportURLAsync() async throws -> SoptampReportUrlEntity
 }
 
@@ -57,5 +59,9 @@ extension DefaultStampService: StampService {
     
     public func clap(stampId: Int, clapCount: Int) -> AnyPublisher<ClapCountEntity, Error> {
         return requestObjectInCombine(.clap(stampId: stampId, clapCount: clapCount))
+    }
+
+    public func getClapList(stampId: Int, nickname: String) -> AnyPublisher<[ClapListEntity], Error> {
+        return requestObjectInCombine(.getClapList(stampId: stampId, nickname: nickname))
     }
 }

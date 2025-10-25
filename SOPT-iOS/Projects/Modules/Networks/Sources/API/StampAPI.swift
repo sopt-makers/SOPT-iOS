@@ -20,7 +20,7 @@ public enum StampAPI {
   case resetStamp
   case getReportUrl
   case clap(stampId: Int, clapCount: Int)
-    case clapList(stampId: Int, nickname: String)
+    case getClapList(stampId: Int, nickname: String)
 }
 
 extension StampAPI: BaseAPI {
@@ -42,7 +42,7 @@ extension StampAPI: BaseAPI {
       return "/report"
     case .clap(let stampId, _):
       return "/\(stampId)/clap"
-    case .clapList(let stampId, _):
+    case .getClapList(let stampId, _):
         return "/\(stampId)/clappers"
     }
   }
@@ -74,7 +74,7 @@ extension StampAPI: BaseAPI {
       params["activityDate"] = requestModel.activityDate
     case .clap(_, let clapCount):
         params["clapCount"] = clapCount
-    case .clapList(let stampId, let nickname):
+    case .getClapList(let stampId, let nickname):
           params["missionId"] = stampId
           params["nickname"] = nickname
     default: break
@@ -84,7 +84,7 @@ extension StampAPI: BaseAPI {
   
   private var parameterEncoding: ParameterEncoding {
     switch self {
-    case .fetchStampListDetail, .clapList:
+    case .fetchStampListDetail, .getClapList:
       return URLEncoding.default
     default:
       return JSONEncoding.default
@@ -93,7 +93,7 @@ extension StampAPI: BaseAPI {
   
   public var task: Task {
     switch self {
-    case .fetchStampListDetail, .postStamp, .putStamp, .clap, .clapList:
+    case .fetchStampListDetail, .postStamp, .putStamp, .clap, .getClapList:
       return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
     default:
       return .requestPlain
