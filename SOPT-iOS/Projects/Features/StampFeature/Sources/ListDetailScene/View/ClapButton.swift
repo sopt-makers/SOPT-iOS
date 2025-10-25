@@ -46,34 +46,33 @@ extension ClapButton {
             attributes: [.font: DSKitFontFamily.Suit.bold.font(size: 20), .foregroundColor: UIColor.white]
         )
         self.setAttributedTitle(attributedString, for: .normal)
-        
-        var config = UIButton.Configuration.bordered()
-        config.image = DSKitAsset.Assets.icClap.image.withRenderingMode(.alwaysTemplate)
-        config.imageColorTransformer = UIConfigurationColorTransformer { _ in
-            if self.isEnabled {
-                DSKitAsset.Colors.white.color
-            } else {
-                DSKitAsset.Colors.gray400.color
+
+        self.configuration = UIButton.Configuration.bordered()
+        self.configurationUpdateHandler = { button in
+            guard var configuration = button.configuration else { return }
+            
+            configuration.image = DSKitAsset.Assets.icClap.image.withRenderingMode(.alwaysTemplate)
+            configuration.imageColorTransformer = UIConfigurationColorTransformer { _ in
+                if self.isEnabled {
+                    DSKitAsset.Colors.white.color
+                } else {
+                    DSKitAsset.Colors.gray400.color
+                }
             }
+            configuration.imagePadding = 8
+            configuration.cornerStyle = .capsule
+            configuration.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 18, bottom: 12, trailing: 18)
+            
+            configuration.background.cornerRadius = 20
+            configuration.background.strokeWidth = 1
+            configuration.background.strokeColor = DSKitAsset.Colors.gray700.color
+            if button.isHighlighted {
+                configuration.baseBackgroundColor = DSKitAsset.Colors.gray800.color
+            } else {
+                configuration.baseBackgroundColor = DSKitAsset.Colors.gray900.color
+            }
+
+            button.configuration = configuration
         }
-        config.imagePadding = 8
-        config.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 18, bottom: 12, trailing: 18)
-        config.background.cornerRadius = 20
-        config.background.strokeWidth = 1
-        config.background.strokeColor = DSKitAsset.Colors.gray700.color
-        config.background.backgroundColor = DSKitAsset.Colors.gray900.color
-        config.cornerStyle = .capsule
-        
-        self.configuration = config
-        //        self.configurationUpdateHandler = { button in
-        //            var updateConfig = button.configuration
-        //
-        //            if button.isSelected {
-        //                updateConfig?.background.backgroundColor = DSKitAsset.Colors.gray800.color
-        //            } else {
-        //                updateConfig?.background.backgroundColor = DSKitAsset.Colors.gray900.color
-        //            }
-        //            button.configuration = config
-        //        }
     }
 }
