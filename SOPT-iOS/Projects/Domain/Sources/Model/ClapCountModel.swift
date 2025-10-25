@@ -9,12 +9,12 @@
 import Foundation
 
 public struct ClapCountModel {
-    public let stapmId: Int
+    public let stampId: Int
     public let appliedCount: Int
     public let totalClapCount: Int
     
-    public init(stapmId: Int, appliedCount: Int, totalClapCount: Int) {
-        self.stapmId = stapmId
+    public init(stampId: Int, appliedCount: Int, totalClapCount: Int) {
+        self.stampId = stampId
         self.appliedCount = appliedCount
         self.totalClapCount = totalClapCount
     }

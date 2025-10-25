@@ -9,7 +9,7 @@
 import Foundation
 
 public struct ClapCountEntity: Decodable {
-    public let stapmId: Int
+    public let stampId: Int
     public let appliedCount: Int
     public let totalClapCount: Int
 }

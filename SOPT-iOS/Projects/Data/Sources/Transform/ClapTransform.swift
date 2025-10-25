@@ -13,7 +13,7 @@ import Domain
 public extension ClapCountEntity {
     func toDomain() -> ClapCountModel {
         return .init(
-            stapmId: stapmId,
+            stampId: stampId,
             appliedCount: appliedCount,
             totalClapCount: totalClapCount
         )

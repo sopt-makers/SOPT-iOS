@@ -53,7 +53,7 @@ extension ClapButton {
             
             configuration.image = DSKitAsset.Assets.icClap.image.withRenderingMode(.alwaysTemplate)
             configuration.imageColorTransformer = UIConfigurationColorTransformer { _ in
-                if self.isEnabled {
+                if button.isEnabled {
                     DSKitAsset.Colors.white.color
                 } else {
                     DSKitAsset.Colors.gray400.color

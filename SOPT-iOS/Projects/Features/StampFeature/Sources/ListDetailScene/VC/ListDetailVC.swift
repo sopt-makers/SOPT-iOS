@@ -181,6 +181,7 @@ extension ListDetailVC {
             .publisher(for: .touchUpInside)
             .withUnretained(self)
             .map { owner, _ in
+                guard owner.myClapCount < 50 else { return 0 }
                 owner.clap()
                 return 1
             }
@@ -274,9 +275,12 @@ extension ListDetailVC {
                 switch result {
                 case .success(let model):
                     owner.totalClapCount = model.totalClapCount
+                    owner.myClapCount = owner.viewModel.myClapCount
                     owner.setClapCount(total: owner.totalClapCount, mine: owner.myClapCount)
                 case .failure:
-                    owner.setClapCount(total: owner.viewModel.totalClapCount, mine: owner.viewModel.myClapCount)
+                    owner.totalClapCount = owner.viewModel.totalClapCount
+                    owner.myClapCount = owner.viewModel.myClapCount
+                    owner.setClapCount(total: owner.totalClapCount, mine: owner.myClapCount)
                 }
             }.store(in: cancelBag)
     }
@@ -418,10 +422,6 @@ extension ListDetailVC {
     }
     
     private func clap() {
-        if myClapCount >= 50 {
-            return
-        }
-        
         setClapCount(total: totalClapCount + 1, mine: myClapCount + 1)
         
         let transformY = self.clapBadge.transform.ty

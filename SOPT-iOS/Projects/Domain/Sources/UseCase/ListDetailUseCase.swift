@@ -124,7 +124,7 @@ extension DefaultListDetailUseCase: ListDetailUseCase {
         repository.clap(stampId: stampId, clapCount: clapCount)
             .replaceError(
                 with: ClapCountModel(
-                    stapmId: 0,
+                    stampId: 0,
                     appliedCount: 0,
                     totalClapCount: 0
                 )
