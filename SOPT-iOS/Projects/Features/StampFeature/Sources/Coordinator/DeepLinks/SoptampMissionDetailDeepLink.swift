@@ -27,6 +27,9 @@ public struct SoptampMissionDetailDeepLink: DeepLinkExecutable {
               let level = Int(levelString) else {
             return nil
         }
+        guard let missionTitle = queryItems?.getQueryValue(key: "missionTitle") else {
+            return nil
+        }
 
         guard let isMineString = queryItems?.getQueryValue(key: "isMine") else {
             return nil
@@ -45,7 +48,12 @@ public struct SoptampMissionDetailDeepLink: DeepLinkExecutable {
             guard let coordinator = coordinator as? StampCoordinator else {
                 return nil
             }
-            coordinator.runMissionDetailById(missionId: missionId, level: level, username: nickname)
+            coordinator.runMissionDetailById(
+                missionId: missionId,
+                level: level,
+                missionTitle: missionTitle,
+                username: nickname
+            )
         }
         return coordinator
     }
