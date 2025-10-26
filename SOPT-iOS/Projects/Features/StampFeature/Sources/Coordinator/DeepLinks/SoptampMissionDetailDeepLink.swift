@@ -18,14 +18,21 @@ public struct SoptampMissionDetailDeepLink: DeepLinkExecutable {
     public init() {}
 
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
-        guard let idString = queryItems?.getQueryValue(key: "id"),
+        guard let idString = queryItems?.getQueryValue(key: "missionId"),
               let missionId = Int(idString) else {
             return nil
         }
 
-        let isMineString = queryItems?.getQueryValue(key: "isMine")
-        let isMine = isMineString?.lowercased() != "false"
-        
+        guard let levelString = queryItems?.getQueryValue(key: "level"),
+              let level = Int(levelString) else {
+            return nil
+        }
+
+        guard let isMineString = queryItems?.getQueryValue(key: "isMine") else {
+            return nil
+        }
+        let isMine = isMineString.lowercased() == "true"
+
         let nickname = isMine ? nil : queryItems?.getQueryValue(key: "nickname")
 
         switch Config.coordinatorFlag {
@@ -38,7 +45,7 @@ public struct SoptampMissionDetailDeepLink: DeepLinkExecutable {
             guard let coordinator = coordinator as? StampCoordinator else {
                 return nil
             }
-            coordinator.runMissionDetailById(missionId: missionId, username: nickname)
+            coordinator.runMissionDetailById(missionId: missionId, level: level, username: nickname)
         }
         return coordinator
     }

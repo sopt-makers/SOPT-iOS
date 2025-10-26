@@ -103,11 +103,11 @@ extension StampCoordinator {
         showOtherMissionList(username, sentence)
     }
 
-    public func runMissionDetailById(missionId: Int, username: String?) {
+    public func runMissionDetailById(missionId: Int, level: Int, username: String?) {
         let model = MissionListModel(
             id: missionId,
             title: "",
-            level: 1,
+            level: level,
             isCompleted: true
         )
         showMissionDetail(model, username)
