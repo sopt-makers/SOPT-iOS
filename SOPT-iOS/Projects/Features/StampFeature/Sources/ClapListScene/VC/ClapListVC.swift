@@ -22,7 +22,8 @@ final class ClapListVC: UIViewController, ClapListViewControllable {
 
     private var cancelBag = CancelBag()
     private var viewModel: ClapListViewModel
-    lazy var dataSource: UICollectionViewDiffableDataSource<ClapListSection, ClapListModel>! = nil
+    private let viewDidLoadSubject = PassthroughSubject<Void, Never>()
+    lazy var dataSource: UICollectionViewDiffableDataSource<ClapListSection, ClapperModel>! = nil
 
     // MARK: - ClapListCoordinatable
 
@@ -32,7 +33,7 @@ final class ClapListVC: UIViewController, ClapListViewControllable {
     // MARK: - UI Components
 
     private let backButton = UIButton().then {
-        $0.setImage(DSKitAsset.Assets.arrowLeft.image, for: .normal)
+        $0.setImage(DSKitAsset.Assets.chevronLeft.image, for: .normal)
         $0.tintColor = DSKitAsset.Colors.white.color
     }
 
@@ -67,6 +68,7 @@ final class ClapListVC: UIViewController, ClapListViewControllable {
         self.setDataSource()
         self.bindViews()
         self.bindViewModel()
+        self.viewDidLoadSubject.send(())
     }
 
     // MARK: - Init
@@ -133,10 +135,8 @@ extension ClapListVC {
 
     private func bindViewModel() {
         let input = ClapListViewModel.Input(
-            viewDidLoad: Driver.just(()),
-            viewWillAppear: Driver.just(())
+            viewDidLoad: viewDidLoadSubject.asDriver()
         )
-
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
 
         output.$clapListModel
@@ -172,12 +172,12 @@ extension ClapListVC {
         }
     }
 
-    func setCollectionView(model: [ClapListModel]) {
+    func setCollectionView(model: [ClapperModel]) {
         self.applySnapshot(model: model)
     }
 
-    private func applySnapshot(model: [ClapListModel]) {
-        var snapshot = NSDiffableDataSourceSnapshot<ClapListSection, ClapListModel>()
+    private func applySnapshot(model: [ClapperModel]) {
+        var snapshot = NSDiffableDataSourceSnapshot<ClapListSection, ClapperModel>()
         snapshot.appendSections([.main])
         snapshot.appendItems(model)
         dataSource.apply(snapshot, animatingDifferences: false)
@@ -196,6 +196,6 @@ enum ClapListSection: CaseIterable {
 extension ClapListVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let model = dataSource.itemIdentifier(for: indexPath) else { return }
-        onCellTap?(model.name)
+        onCellTap?(model.nickname)
     }
 }

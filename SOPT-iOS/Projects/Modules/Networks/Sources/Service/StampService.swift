@@ -22,7 +22,8 @@ public protocol StampService {
     func resetStamp() -> AnyPublisher<Int, Error>
     func getReportUrl() -> AnyPublisher<SoptampReportUrlEntity, Error>
     func clap(stampId: Int, clapCount: Int) -> AnyPublisher<ClapCountEntity, Error>
-    
+    func getClapList(stampId: Int, nickname: String) -> AnyPublisher<[ClapperEntity], Error>
+
     func getReportURLAsync() async throws -> SoptampReportUrlEntity
 }
 
@@ -30,32 +31,38 @@ extension DefaultStampService: StampService {
     public func fetchStampListDetail(missionId: Int, username: String) -> AnyPublisher<ListDetailEntity, Error> {
         requestObjectInCombine(StampAPI.fetchStampListDetail(missionId: missionId, username: username))
     }
-    
+
     public func postStamp(requestModel: ListDetailRequestEntity) -> AnyPublisher<ListDetailEntity, Error> {
         requestObjectInCombine(StampAPI.postStamp(requestModel: requestModel))
     }
-    
+
     public func putStamp( requestModel: ListDetailRequestEntity) -> AnyPublisher<StampEntity, Error> {
         requestObjectInCombine(StampAPI.putStamp(requestModel: requestModel))
     }
-    
+
     public func deleteStamp(stampId: Int) -> AnyPublisher<Int, Error> {
         return requestObjectInCombineNoResult(StampAPI.deleteStamp(stampId: stampId))
     }
-    
+
     public func resetStamp() -> AnyPublisher<Int, Error> {
         return requestObjectInCombineNoResult(StampAPI.resetStamp)
     }
-    
+
     public func getReportUrl() -> AnyPublisher<SoptampReportUrlEntity, Error> {
         return requestObjectInCombine(StampAPI.getReportUrl)
     }
-    
+
     public func getReportURLAsync() async throws -> SoptampReportUrlEntity {
         try await requestObjectAsync(.getReportUrl)
     }
-    
+
     public func clap(stampId: Int, clapCount: Int) -> AnyPublisher<ClapCountEntity, Error> {
         return requestObjectInCombine(.clap(stampId: stampId, clapCount: clapCount))
+    }
+
+    public func getClapList(stampId: Int, nickname: String) -> AnyPublisher<[ClapperEntity], Error> {
+        return requestObjectInCombine(.getClapList(stampId: stampId, nickname: nickname))
+            .map { (wrapper: ClapListEntity) in wrapper.users }
+            .eraseToAnyPublisher()
     }
 }

@@ -134,9 +134,9 @@ extension StampCoordinator {
             self.rootController?.popViewController(animated: true)
         }
 
-        missionDetail.vc.onViewClapTap = { [weak self] in
+        missionDetail.vc.onViewClapTap = { [weak self] stampId, nickname in
             guard let self else { return }
-            self.showClapList()
+            self.showClapList(stampId: stampId, nickname: nickname)
         }
 
         rootController?.pushViewController(missionDetail.vc, animated: true)
@@ -224,21 +224,27 @@ extension StampCoordinator {
 // MARK: - ClapListFlow
 
 extension StampCoordinator {
-    public func showClapList() {
-        var clapList = factory.makeClapListVC()
+    public func showClapList(stampId: Int, nickname: String) {
+        var clapList = factory.makeClapListVC(
+            stampId: stampId,
+            nickname: nickname
+        )
 
         clapList.vc.onNaviBackTap = { [weak self] in
             guard let self else { return }
-            self.rootController?.dismiss(animated: true )
+            self.rootController?.dismiss(animated: true)
         }
 
         clapList.vc.onCellTap = { [weak self] username in
             guard let self else { return }
+            guard let username else { return }
 
-            // TODO: - 추후 프로필 상세 화면 연결
-            print("\(username ?? "unknown")의 프로필 탭됨")
+            self.rootController?.dismiss(animated: true) {
+                self.showOtherMissionList(username, "")
+            }
         }
 
+        clapList.vc.modalPresentationStyle = .overFullScreen
         self.rootController?.topViewController?.present(clapList.vc, animated: true)
     }
 }

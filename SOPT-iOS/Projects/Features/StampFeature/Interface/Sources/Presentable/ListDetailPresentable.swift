@@ -19,7 +19,7 @@ public protocol ListDetailViewControllable: UIViewController & ListDetailRouting
 public protocol ListDetailRoutingTrigger {
   var onComplete: ((StarViewLevel, (() -> Void)?) -> Void)? { get set }
   var onNaviBackTap: (() -> Void)? { get set }
-  var onViewClapTap: (() -> Void)? { get set }
+  var onViewClapTap: ((Int, String) -> Void)? { get set }
 }
 public typealias ListDetailViewModelType = ViewModelType & ListDetailRoutingTrigger
 public typealias ListDetailPresentable = (vc: ListDetailViewControllable, vm: any ListDetailViewModelType)
