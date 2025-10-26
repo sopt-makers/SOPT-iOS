@@ -114,19 +114,10 @@ public final class HomeCoordinator: BaseCoordinator {
             self.delegate?.homeCoordinator(self, to: .deepLink(url: url))
         }
         
-//        homeForMember.vm.onSurveyButtonTapped = { [weak self] url in
-//            guard let self else { return }
-//            self.delegate?.homeCoordinator(self, to: .webLink(url: url))
-//        }
-
-
-        //TODO: - DeepLink 테스트이후 제거
-        homeForMember.vm.onSurveyButtonTapped = { [weak self] _ in
-                 guard let self else { return }
-            let testLink = /*"home/soptamp/entire-part-ranking/part-ranking/missions/missionDetail?part=아요&nickname=아요최주리&id=11&isMine=false&level=3"*/
-            "home/soptamp/entire-part-ranking/part-ranking/missions/missionDetail?id=226&isMine=true&nickname=아요성현주&part=아요&missionId=7&level=1"
-                 self.delegate?.homeCoordinator(self, to: .deepLink(url: testLink))
-             }
+        homeForMember.vm.onSurveyButtonTapped = { [weak self] url in
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .webLink(url: url))
+        }
 
         homeForMember.vm.onSocialLinkButtonTapped = { [weak self] url in
             guard let self else { return }
