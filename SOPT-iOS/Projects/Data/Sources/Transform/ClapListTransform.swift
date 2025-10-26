@@ -15,7 +15,7 @@ public extension ClapperEntity {
         return .init(
             nickname: nickname,
             profileImageUrl: profileImageUrl,
-            profileMessage: profileMessage,
+            profileMessage: profileMessage ?? "",
             clapCount: clapCount
         )
   }
