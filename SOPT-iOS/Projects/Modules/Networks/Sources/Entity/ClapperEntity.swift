@@ -11,7 +11,7 @@ import Foundation
 public struct ClapperEntity: Decodable {
     public let nickname: String
     public let profileImageUrl: String
-    public let profileMessage: String
+    public let profileMessage: String?
     public let clapCount: Int
 }
 
