@@ -8,15 +8,16 @@
 
 import Foundation
 
-public struct ClapListModel: Hashable {
-    public let id = UUID()
-    public let name: String
-    public let subtitle: String
+public struct ClapperModel: Hashable {
+    public let nickname: String
+    public let profileImageUrl: String
+    public let profileMessage: String
     public let clapCount: Int
 
-    public init(name: String, subtitle: String, clapCount: Int) {
-        self.name = name
-        self.subtitle = subtitle
+    public init(nickname: String, profileImageUrl: String, profileMessage: String, clapCount: Int) {
+        self.nickname = nickname
+        self.profileImageUrl = profileImageUrl
+        self.profileMessage = profileMessage
         self.clapCount = clapCount
     }
 }
