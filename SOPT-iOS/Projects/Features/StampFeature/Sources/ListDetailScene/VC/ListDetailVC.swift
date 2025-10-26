@@ -211,7 +211,6 @@ extension ListDetailVC {
                         owner.backgroundDimmerView.removeFromSuperview()
                     }
                 } else {
-                    owner.setData(model)
                     if owner.sceneType == .none {
                         owner.onComplete?(owner.starLevel) {
                             UIView.animate(withDuration: 0.2, delay: 0, animations: {
@@ -222,6 +221,7 @@ extension ListDetailVC {
                         }
                     }
                     owner.sceneType = .completed
+                    owner.setData(model)
                     owner.reloadData(owner.sceneType)
                 }
             }.store(in: self.cancelBag)
