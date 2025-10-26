@@ -23,7 +23,10 @@ public struct SoptampMissionDetailDeepLink: DeepLinkExecutable {
             return nil
         }
 
-        let nickname = queryItems?.getQueryValue(key: "nickname")
+        let isMineString = queryItems?.getQueryValue(key: "isMine")
+        let isMine = isMineString?.lowercased() != "false"
+        
+        let nickname = isMine ? nil : queryItems?.getQueryValue(key: "nickname")
 
         switch Config.coordinatorFlag {
         case .legacy:
