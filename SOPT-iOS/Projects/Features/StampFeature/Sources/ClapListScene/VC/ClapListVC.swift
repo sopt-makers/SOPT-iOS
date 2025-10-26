@@ -23,7 +23,6 @@ final class ClapListVC: UIViewController, ClapListViewControllable {
     private var cancelBag = CancelBag()
     private var viewModel: ClapListViewModel
     private let viewDidLoadSubject = PassthroughSubject<Void, Never>()
-    private let viewWillAppearSubject = PassthroughSubject<Void, Never>()
     lazy var dataSource: UICollectionViewDiffableDataSource<ClapListSection, ClapperModel>! = nil
 
     // MARK: - ClapListCoordinatable
@@ -136,17 +135,14 @@ extension ClapListVC {
 
     private func bindViewModel() {
         let input = ClapListViewModel.Input(
-            viewDidLoad: viewDidLoadSubject.asDriver(),
-            viewWillAppear: viewWillAppearSubject.asDriver()
+            viewDidLoad: viewDidLoadSubject.asDriver()
         )
-
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
 
         output.$clapListModel
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] model in
-                print("✅ 받은모델: \(model)")
                 self?.setCollectionView(model: model)
             }
             .store(in: cancelBag)

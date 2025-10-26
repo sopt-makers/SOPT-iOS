@@ -31,7 +31,6 @@ public class ClapListViewModel: ClapListViewModelType {
 
     public struct Input {
         let viewDidLoad: Driver<Void>
-        let viewWillAppear: Driver<Void>
     }
 
     // MARK: - Outputs
@@ -59,15 +58,6 @@ extension ClapListViewModel {
                       let nickname = owner.nickname else { return }
                 owner.useCase.getClapList(stampId: stampId, nickname: nickname)
             }.store(in: cancelBag)
-
-        input.viewWillAppear
-            .withUnretained(self)
-            .sink { owner, _ in
-                guard let stampId = owner.stampId,
-                      let nickname = owner.nickname else { return }
-                owner.useCase.getClapList(stampId: stampId, nickname: nickname)
-            }.store(in: cancelBag)
-
         return output
     }
 
