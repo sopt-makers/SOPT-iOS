@@ -39,7 +39,7 @@ extension ListDetailRepository: ListDetailRepositoryInterface {
       return Fail(error: NSError()).eraseToAnyPublisher()
     }
     return stampService.fetchStampListDetail(missionId: missionId, username: username)
-      .map { $0.toDomain() }
+          .map { $0.toDomain() }
       .eraseToAnyPublisher()
   }
   
@@ -70,5 +70,11 @@ extension ListDetailRepository: ListDetailRepositoryInterface {
     return stampService.deleteStamp(stampId: stampId)
       .map { $0 == 200 }
       .asDriver()
+  }
+    
+  public func clap(stampId: Int, clapCount: Int) -> AnyPublisher<ClapCountModel, Error> {
+      return stampService.clap(stampId: stampId, clapCount: clapCount)
+          .map{ $0.toDomain() }
+          .eraseToAnyPublisher()
   }
 }

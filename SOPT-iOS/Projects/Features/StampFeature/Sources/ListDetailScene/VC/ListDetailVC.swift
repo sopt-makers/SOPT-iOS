@@ -23,7 +23,7 @@ import Lottie
 import BaseFeatureDependency
 import StampFeatureInterface
 
-public enum TextViewState {
+enum TextViewState {
     case inactive
     case active
     case completed
@@ -50,8 +50,11 @@ public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, L
     }
     private var originImage: UIImage = UIImage()
     private var originText: String = ""
-    private let deleteButtonTapped = PassthroughSubject<Bool, Never>()
+    private var totalClapCount: Int = 0
+    private var myClapCount: Int = 0
+    private var isAnimating: Bool = false
     
+    private let deleteButtonTapped = PassthroughSubject<Bool, Never>()
     private let imageSelected = PassthroughSubject<Data, Never>()
     private let dateSelected = PassthroughSubject<String, Never>()
     private let textEdited = PassthroughSubject<String, Never>()
@@ -63,6 +66,7 @@ public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, L
     
     public var onNaviBackTap: (() -> Void)?
     public var onComplete: ((StarViewLevel, (() -> Void)?) -> Void)?
+    public var onViewClapTap: (() -> Void)?
     
     // MARK: - UI Components
     
@@ -77,6 +81,7 @@ public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, L
     private let imagePlaceholderLabel = UILabel()
     private let textView = UITextView()
     private lazy var missionDateTextField = MissionDateView(frame: self.view.frame)
+    private lazy var missionInfoView = MissionInfoView(frame: self.view.frame)
     private lazy var bottomButton = STCustomButton(title: sceneType == .none ? I18N.ListDetail.missionComplete : I18N.ListDetail.editComplete)
         .setEnabled(false)
         .setColor(bgColor: DSKitAsset.Colors.white.color,
@@ -84,7 +89,17 @@ public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, L
                   textColor: DSKitAsset.Colors.black.color,
                   disableTextcolor: DSKitAsset.Colors.black.color
         )
+    private let viewClapButton = STCustomButton(title: I18N.ListDetail.viewClapButtonTitle)
+        .setColor(bgColor: DSKitAsset.Colors.white.color,
+                  textColor: DSKitAsset.Colors.black.color)
+    private let clapButton = ClapButton()
+    private let clapBadge = ClapCountBadge()
     private lazy var backgroundDimmerView = CustomDimmerView(self)
+    private let zoomInView = UIView()
+    private let zoomInIcon = UIImageView()
+    private let zoomCloseButton = UIImageView()
+    private let zoomImageView = UIImageView()
+    private let zoomDimmedView = UIView()
     
     // MARK: - initialization
     
@@ -115,8 +130,11 @@ public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, L
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self)
-        self.missionImageView.image = nil
+        if let keyboardWillHideObserver,
+           let keyboardWillShowObserver {
+            NotificationCenter.default.removeObserver(keyboardWillShowObserver)
+            NotificationCenter.default.removeObserver(keyboardWillHideObserver)
+        }
     }
 }
 
@@ -129,6 +147,13 @@ extension ListDetailVC {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNaviBackTap?()
+            }.store(in: cancelBag)
+        
+        viewClapButton
+            .publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onViewClapTap?()
             }.store(in: cancelBag)
     }
     
@@ -152,6 +177,18 @@ extension ListDetailVC {
             .mapVoid()
             .asDriver()
         
+        let clapButtonTapped = clapButton
+            .publisher(for: .touchUpInside)
+            .withUnretained(self)
+            .map { owner, _ in
+                guard owner.myClapCount < 50 else { return 0 }
+                owner.clap()
+                return 1
+            }
+            .scan(0) { count, new in count + new }
+            .debounce(for: .seconds(1), scheduler: RunLoop.main)
+            .asDriver()
+        
         let input = ListDetailViewModel.Input(
             viewDidLoad: Driver.just(()),
             imageSelected: self.imageSelected.eraseToAnyPublisher(),
@@ -159,7 +196,9 @@ extension ListDetailVC {
             textEdited: textEdited.asDriver(),
             bottomButtonTapped: bottomButtonTapped,
             rightButtonTapped: rightButtonTapped,
-            deleteButtonTapped: deleteButtonTapped.asDriver())
+            deleteButtonTapped: deleteButtonTapped.asDriver(),
+            clapButtonTapped: clapButtonTapped
+        )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
@@ -192,7 +231,7 @@ extension ListDetailVC {
             .sink { owner, successed in
                 if successed {
                     owner.reloadData(.completed)
-                    owner.showToast(message: I18N.ListDetail.editCompletedToast)
+                    ToastUtils.showMDSToast(type: .success, text: I18N.ListDetail.editCompletedToast)
                 } else {
                     AlertUtils.presentNetworkAlertVC(theme: .soptamp, animated: true)
                 }
@@ -229,6 +268,21 @@ extension ListDetailVC {
             .sink { owner, isLoading in
                 isLoading ? owner.showLoading() : owner.stopLoading()
             }.store(in: cancelBag)
+        
+        output.clapSuccessed
+            .withUnretained(self)
+            .sink { owner, result in
+                switch result {
+                case .success(let model):
+                    owner.totalClapCount = model.totalClapCount
+                    owner.myClapCount = owner.viewModel.myClapCount
+                    owner.setClapCount(total: owner.totalClapCount, mine: owner.myClapCount)
+                case .failure:
+                    owner.totalClapCount = owner.viewModel.totalClapCount
+                    owner.myClapCount = owner.viewModel.myClapCount
+                    owner.setClapCount(total: owner.totalClapCount, mine: owner.myClapCount)
+                }
+            }.store(in: cancelBag)
     }
     
     private func setData(_ model: ListDetailModel) {
@@ -236,11 +290,19 @@ extension ListDetailVC {
         
         if let imageURL = URL(string: model.image) {
             self.missionImageView.setImage(with: imageURL.absoluteString)
+            self.zoomImageView.setImage(with: imageURL.absoluteString)
         }
         self.missionDateTextField.setText(with: model.activityDate)
-        self.missionDateTextField.setIsEnabled(false)
+
         self.missionDateTextField.setTextFieldView(.inactive)
         self.textView.text = model.content
+        self.missionInfoView.setFullText(date: model.activityDate, clapCount: model.clapCount, viewCount: model.viewCount)
+        
+        self.totalClapCount = model.clapCount
+        self.myClapCount = model.myClapCount ?? 0
+        
+        self.clapButton.setCount(self.totalClapCount)
+        self.clapBadge.setCount(self.myClapCount)
     }
     
     private func reloadData(_ scenetype: ListDetailSceneType) {
@@ -287,8 +349,14 @@ extension ListDetailVC {
     }
     
     private func setGesture() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(requestPhotoLibrary))
-        missionImageView.addGestureRecognizer(tapGesture)
+        let requestPhotoTapGesture = UITapGestureRecognizer(target: self, action: #selector(requestPhotoLibrary))
+        missionImageView.addGestureRecognizer(requestPhotoTapGesture)
+        
+        let zoomTabGesture = UITapGestureRecognizer(target: self, action: #selector(photoZoom))
+        zoomInView.addGestureRecognizer(zoomTabGesture)
+        
+        let closeTabGesture = UITapGestureRecognizer(target: self, action: #selector(closeZoom))
+        zoomCloseButton.addGestureRecognizer(closeTabGesture)
     }
     
     private func setDelegate() {
@@ -353,6 +421,49 @@ extension ListDetailVC {
         }
     }
     
+    private func clap() {
+        setClapCount(total: totalClapCount + 1, mine: myClapCount + 1)
+        
+        let transformY = self.clapBadge.transform.ty
+        let isVisible = self.clapBadge.alpha > 0.9
+        
+        // 올라가고 있는 상태
+        if transformY < 0 && isVisible && isAnimating {
+            return
+        }
+        
+        // 사라지는 중
+        if !isVisible {
+            self.clapBadge.layer.removeAllAnimations()
+            self.clapBadge.alpha = 1
+            self.clapBadge.transform = CGAffineTransform(translationX: 0, y: -38)
+        }
+        
+        isAnimating = true
+        
+        UIView.animate(withDuration: 0.4, animations: {
+            self.clapBadge.transform = CGAffineTransform(translationX: 0, y: -38)
+        }) { _ in
+            UIView.animate(withDuration: 0.5, animations: {
+                self.clapBadge.alpha = 0
+            }) { _ in
+                self.clapBadge.transform = .identity
+                self.clapBadge.alpha = 1
+                self.isAnimating = false
+            }
+        }
+        
+    }
+    
+    private func setClapCount(total: Int, mine: Int) {
+        totalClapCount = total
+        myClapCount = mine
+        
+        clapButton.setCount(totalClapCount)
+        clapBadge.setCount(myClapCount)
+        missionInfoView.setClapText(clapCount: totalClapCount)
+    }
+    
     // MARK: - @objc
     
     @objc
@@ -372,6 +483,8 @@ extension ListDetailVC {
     
     @objc
     private func requestPhotoLibrary() {
+        guard self.sceneType != .completed else { return }
+        
         switch PHPhotoLibrary.authorizationStatus(for: .readWrite) {
         case .authorized, .limited:
             openLibrary()
@@ -396,6 +509,35 @@ extension ListDetailVC {
             break
         }
     }
+    
+    @objc
+    private func photoZoom() {
+        self.zoomDimmedView.backgroundColor = DSKitAsset.Colors.black.color.withAlphaComponent(0.8)
+        
+        self.view.addSubviews(zoomDimmedView, zoomCloseButton, zoomImageView)
+        
+        zoomDimmedView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        zoomImageView.snp.makeConstraints {
+            $0.horizontalEdges.equalToSuperview().inset(20)
+            $0.verticalEdges.equalToSuperview().inset(109)
+        }
+        
+        zoomCloseButton.snp.makeConstraints {
+            $0.bottom.equalTo(zoomImageView.snp.top).offset(-10)
+            $0.trailing.equalTo(zoomImageView.snp.trailing)
+            $0.width.height.equalTo(24)
+        }
+    }
+    
+    @objc
+    private func closeZoom() {
+        self.zoomImageView.removeFromSuperview()
+        self.zoomCloseButton.removeFromSuperview()
+        self.zoomDimmedView.removeFromSuperview()
+    }
 }
 
 // MARK: - PHPickerViewControllerDelegate
@@ -412,6 +554,7 @@ extension ListDetailVC: PHPickerViewControllerDelegate {
                 DispatchQueue.main.async {
                     guard let selectedImage = image as? UIImage else { return }
                     self.missionImageView.image = selectedImage
+                    self.zoomImageView.image = selectedImage
                     
                     if let imageData = selectedImage.jpegData(compressionQuality: 0.9) {
                         self.imageSelected.send(imageData)
@@ -475,7 +618,6 @@ extension ListDetailVC {
             self.originImage = self.missionImageView.image ?? UIImage()
             self.bottomButton.changeTitle(attributedString: I18N.ListDetail.editComplete)
                 .setEnabled(false)
-            self.missionDateTextField.setIsEnabled(true)
         } else {
             self.naviBar.resetLeftButtonAction()
             self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
@@ -484,26 +626,37 @@ extension ListDetailVC {
         
         switch type {
         case .none, .edit:
-            self.scrollView.isScrollEnabled = true
             self.missionView.backgroundColor = DSKitAsset.Colors.gray800.color
             self.setTextView(.inactive)
             self.imagePlaceholderLabel.isHidden = missionImageView.image == nil ? false : true
-            self.missionImageView.isUserInteractionEnabled = true
             self.bottomButton.isHidden = false
+            self.missionInfoView.isHidden = true
+            self.zoomInView.isHidden = true
+            self.viewClapButton.isHidden = true
+            self.missionDateTextField.isHidden = false
         case .completed:
-            self.scrollView.isScrollEnabled = false
             self.scrollView.setContentOffset(.zero, animated: true)
             self.naviBar.setRightButton(.addRecord)
             self.missionView.backgroundColor = DSKitAsset.Colors.gray800.color
             self.setTextView(.completed)
             self.imagePlaceholderLabel.isHidden = true
             self.bottomButton.isHidden = true
-            self.missionImageView.isUserInteractionEnabled = false
             self.missionDateTextField.setTextFieldView(.completed)
+            self.missionInfoView.isHidden = false
+            self.zoomInView.isHidden = false
+            self.viewClapButton.isHidden = false
+            self.missionDateTextField.isHidden = true
         }
         
         if viewModel.isOtherUser {
             self.naviBar.hideRightButton()
+            self.naviBar.setTitle(viewModel.otherUserName)
+            
+            setOtherUserLayout()
+        } else {
+            self.naviBar.setTitle(I18N.ListDetail.myMission)
+            
+            setMineLayout()
         }
     }
     
@@ -521,19 +674,32 @@ extension ListDetailVC {
         self.missionImageView.layer.masksToBounds = true
         self.missionImageView.contentMode = .scaleAspectFill
         self.missionImageView.layer.cornerRadius = 9
+        self.missionImageView.isUserInteractionEnabled = true
         
-        self.textView.layer.cornerRadius = 12
-        self.textView.layer.borderColor = DSKitAsset.Colors.gray500.color.cgColor
-        self.textView.textContainerInset = UIEdgeInsets(top: 14, left: 10, bottom: 14, right: 14)
+        self.textView.layer.cornerRadius = 10
+        self.textView.layer.borderColor = DSKitAsset.Colors.gray20.color.cgColor
+        self.textView.textContainerInset = UIEdgeInsets(top: 16, left: 18, bottom: 16, right: 18)
         
         self.imagePlaceholderLabel.textColor = DSKitAsset.Colors.gray300.color
         self.imagePlaceholderLabel.font = .SoptampFont.subtitle2
-        self.textView.font = .SoptampFont.caption1
-        
         self.imagePlaceholderLabel.text = I18N.ListDetail.imagePlaceHolder
-        self.textView.text = I18N.ListDetail.memoPlaceHolder
         
+        self.textView.font = DSKitFontFamily.Suit.medium.font(size: 14)
+        self.textView.text = I18N.ListDetail.memoPlaceHolder
         self.textView.returnKeyType = .done
+        
+        self.zoomInView.backgroundColor = DSKitAsset.Colors.gray300.color.withAlphaComponent(0.5)
+        self.zoomInView.layer.cornerRadius = 16
+        self.zoomInView.isUserInteractionEnabled = true
+        
+        self.zoomInIcon.image = DSKitAsset.Assets.icZoomIn.image
+        
+        self.zoomCloseButton.image = DSKitAsset.Assets.icClose.image
+        self.zoomCloseButton.isUserInteractionEnabled = true
+        
+        self.zoomImageView.layer.cornerRadius = 10
+        self.zoomImageView.clipsToBounds = true
+        self.zoomImageView.contentMode = .scaleAspectFit
     }
     
     private func setTextView(_ state: TextViewState) {
@@ -583,7 +749,13 @@ extension ListDetailVC {
     }
     
     private func setStackViewLayout() {
-        contentStackView.addArrangedSubviews(missionView, missionImageView, missionDateTextField, textView)
+        contentStackView.addArrangedSubviews(
+            missionView,
+            missionImageView,
+            missionDateTextField,
+            textView,
+            missionInfoView
+        )
         
         missionView.snp.makeConstraints { make in
             make.leading.top.trailing.equalToSuperview()
@@ -592,6 +764,20 @@ extension ListDetailVC {
         missionImageView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(self.missionImageView.snp.width)
+        }
+        
+        missionImageView.addSubview(zoomInView)
+        zoomInView.addSubview(zoomInIcon)
+
+        zoomInView.snp.makeConstraints {
+            $0.bottom.equalTo(missionImageView.snp.bottom).offset(-16)
+            $0.trailing.equalTo(missionImageView.snp.trailing).offset(-16)
+            $0.width.height.equalTo(32)
+        }
+        
+        zoomInIcon.snp.makeConstraints {
+            $0.center.equalToSuperview()
+            $0.size.equalTo(20)
         }
         
         missionDateTextField.snp.makeConstraints {
@@ -620,16 +806,46 @@ extension ListDetailVC {
             make.width.equalToSuperview()
         }
         
-        contentView.addSubviews(contentStackView, bottomButton)
+        contentView.addSubviews(contentStackView)
         
         contentStackView.snp.makeConstraints { make in
             make.leading.top.trailing.equalToSuperview()
         }
+    }
+    
+    private func setOtherUserLayout() {
+        bottomButton.removeFromSuperview()
+        viewClapButton.removeFromSuperview()
         
-        bottomButton.snp.makeConstraints { make in
-            make.leading.trailing.bottom.equalToSuperview()
-            make.top.equalTo(contentStackView.snp.bottom).offset(UIDevice.current.hasNotch ? 30 : 20)
-            make.height.equalTo(56)
+        contentView.addSubviews(clapBadge, clapButton)
+        clapButton.snp.makeConstraints {
+            $0.top.equalTo(contentStackView.snp.bottom).offset(12)
+            $0.height.equalTo(54)
+            $0.centerX.equalToSuperview()
+            $0.bottom.equalToSuperview()
+        }
+        
+        clapBadge.snp.makeConstraints {
+            $0.top.equalTo(clapButton.snp.top)
+            $0.centerX.equalToSuperview()
+        }
+    }
+    
+    private func setMineLayout() {
+        clapButton.removeFromSuperview()
+        clapBadge.removeFromSuperview()
+        
+        contentView.addSubviews(bottomButton, viewClapButton)
+        bottomButton.snp.makeConstraints {
+            $0.leading.trailing.bottom.equalToSuperview()
+            $0.top.equalTo(contentStackView.snp.bottom).offset(UIDevice.current.hasNotch ? 30 : 20)
+            $0.height.equalTo(56)
+        }
+        
+        viewClapButton.snp.makeConstraints {
+            $0.top.equalTo(contentStackView.snp.bottom).offset(UIDevice.current.hasNotch ? 30 : 20)
+            $0.horizontalEdges.equalToSuperview()
+            $0.height.equalTo(56)
         }
     }
 }

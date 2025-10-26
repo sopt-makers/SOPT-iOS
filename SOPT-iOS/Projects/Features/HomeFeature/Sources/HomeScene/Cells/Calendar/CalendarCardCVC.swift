@@ -144,4 +144,9 @@ extension CalendarCardCVC {
         }
         self.attendanceButton.isHidden = (userType == .visitor || userType == .inactive)
     }
+    
+    func resetSubscription() {
+        self.cancelBag.cancel()
+        self.cancelBag = CancelBag()
+    }
 }

@@ -147,6 +147,8 @@ public struct I18N {
         public static let missionDatePlaceHolder = "날짜를 입력해주세요."
         public static let datePickerDoneButtonTitle = "완료"
         public static let datePickerCancelButtonTitle = "취소"
+        public static let viewClapButtonTitle = "누가 박수쳤을까요?"
+        public static let myMission = "내 미션"
     }
     
     public struct Setting {
@@ -363,6 +365,7 @@ public struct I18N {
             public static let title = "솝탬프 설정"
             public static let editOnelineSentence = "한 마디 편집"
             public static let resetStamp = "스탬프 초기화"
+            public static let clapList = "박수 목록"
         }
         
         public struct EtcSection {

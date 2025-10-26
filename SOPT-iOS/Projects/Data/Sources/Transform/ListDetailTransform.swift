@@ -18,7 +18,11 @@ extension ListDetailEntity {
       content: self.contents,
       date: self.updatedAt ?? self.createdAt,
       stampId: self.id,
-      activityDate: self.activityDate
+      activityDate: self.activityDate,
+      clapCount: self.clapCount,
+      myClapCount: self.myClapCount,
+      viewCount: self.viewCount,
+      isMine: self.mine
     )
   }
 }
