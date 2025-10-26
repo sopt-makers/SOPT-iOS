@@ -118,7 +118,7 @@ public final class HomeCoordinator: BaseCoordinator {
             guard let self else { return }
             self.delegate?.homeCoordinator(self, to: .webLink(url: url))
         }
-        
+
         homeForMember.vm.onSocialLinkButtonTapped = { [weak self] url in
             guard let self else { return }
             self.delegate?.homeCoordinator(self, to: .webLink(url: url))
@@ -179,3 +179,4 @@ public final class HomeCoordinator: BaseCoordinator {
         navigationController?.pushViewController(homeForVisitor.vc, animated: true)
     }
 }
+
