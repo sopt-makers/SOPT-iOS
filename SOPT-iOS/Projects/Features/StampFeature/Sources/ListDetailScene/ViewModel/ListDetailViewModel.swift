@@ -204,7 +204,8 @@ extension ListDetailViewModel {
                     eventProperties: [
                         "stampId": self.stampId ?? 0,
                         "appliedCount": count,
-                        "totalClapCount": self.totalClapCount
+                        "totalClapCount": self.totalClapCount,
+                        "receiverNick": self.otherUserName ?? ""
                     ]
                 )
             }.store(in: cancelBag)
