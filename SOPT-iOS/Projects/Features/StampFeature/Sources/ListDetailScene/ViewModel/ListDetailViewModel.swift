@@ -195,8 +195,18 @@ extension ListDetailViewModel {
         
         input.clapButtonTapped
             .withUnretained(self)
-            .sink { owner, count in
+            .sink {
+                owner,
+                count in
                 owner.useCase.clap(stampId: owner.stampId, clapCount: count)
+                AmplitudeInstance.shared.track(
+                    eventType: .clickUpdateClap,
+                    eventProperties: [
+                        "stampId": self.stampId ?? 0,
+                        "appliedCount": count,
+                        "totalClapCount": self.totalClapCount
+                    ]
+                )
             }.store(in: cancelBag)
 
         // 버튼 활성화 로직

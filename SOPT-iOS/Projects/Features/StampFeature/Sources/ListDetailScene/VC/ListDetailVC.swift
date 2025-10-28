@@ -101,6 +101,10 @@ public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, L
     private let zoomImageView = UIImageView()
     private let zoomDimmedView = UIView()
     
+    // MARK: - Amplitude property
+    
+    private var imageURL: String = ""
+
     // MARK: - initialization
     
     public init(viewModel: ListDetailViewModel) {
@@ -303,6 +307,8 @@ extension ListDetailVC {
         
         self.clapButton.setCount(self.totalClapCount)
         self.clapBadge.setCount(self.myClapCount)
+        
+        self.imageURL = model.image
     }
     
     private func reloadData(_ scenetype: ListDetailSceneType) {
@@ -530,6 +536,15 @@ extension ListDetailVC {
             $0.trailing.equalTo(zoomImageView.snp.trailing)
             $0.width.height.equalTo(24)
         }
+        
+        AmplitudeInstance.shared.track(
+            eventType: .getImageZoom,
+            eventProperties: [
+                "image": imageURL,
+                "stampId": viewModel.stampId ?? 0,
+                "missionId": viewModel.missionId ?? 0
+            ]
+        )
     }
     
     @objc

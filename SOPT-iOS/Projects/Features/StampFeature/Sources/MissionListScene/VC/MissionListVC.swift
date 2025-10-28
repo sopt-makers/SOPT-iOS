@@ -463,6 +463,14 @@ extension MissionListVC: UICollectionViewDelegate {
             guard let tappedCell = collectionView.cellForItem(at: indexPath) as? MissionListCVC,
                   let model = tappedCell.model else { return }
             onCellTap?(model, sceneType.usrename)
+            AmplitudeInstance.shared.track(
+                eventType: .clickFeedMission,
+                eventProperties: [
+                    "missionId": model.id,
+                    "missionTitle": model.title,
+                    "missionLevel": model.level
+                ]
+            )
         default:
             return
         }
