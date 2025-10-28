@@ -202,10 +202,10 @@ extension ListDetailViewModel {
                 AmplitudeInstance.shared.track(
                     eventType: .clickUpdateClap,
                     eventProperties: [
-                        "stampId": self.stampId ?? 0,
+                        "stampId": owner.stampId ?? 0,
                         "appliedCount": count,
-                        "totalClapCount": self.totalClapCount,
-                        "receiverNick": self.otherUserName ?? ""
+                        "totalClapCount": owner.totalClapCount,
+                        "receiverNick": owner.otherUserName ?? ""
                     ]
                 )
             }.store(in: cancelBag)
