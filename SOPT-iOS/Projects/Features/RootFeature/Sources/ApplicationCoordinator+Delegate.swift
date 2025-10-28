@@ -16,6 +16,7 @@ import SoptlogFeature
 import TabBarFeature
 import AppMyPageFeature
 import NotificationFeature
+import StampFeature
 
 // MARK: - AuthCoordinatorDelegate
 
@@ -115,6 +116,20 @@ extension ApplicationCoordinator: MyPageCoordinatorDelegate {
             self.runSignInFlow(by: .rootWindow(animated: true, message: nil))
         case .signInWithToast:
             self.runSignInFlow(by: .rootWindow(animated: true, message: I18N.Setting.Withdrawal.withdrawalSuccess))
+        }
+    }
+}
+
+// MARK: - StampCoordinatorDelegate
+
+extension ApplicationCoordinator: StampCoordinatorDelegate {
+    public func stampCoordinator(
+        _ coordinator: StampFeature.StampCoordinator,
+        to destination: StampFeatureInterface.StampCoordinatorDestination
+    ) {
+        switch destination {
+        case .editSentence:
+            _ = self.runEditSentenceFlow()
         }
     }
 }

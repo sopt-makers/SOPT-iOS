@@ -45,6 +45,15 @@ public final class MyPageCoordinator: BaseCoordinator {
     public override func start() {
         showMyPage()
     }
+    
+    public override func start(by style: CoordinatorStartingOption) {
+        switch style {
+        case .push:
+            showEditSentence()
+        case .root, .modal, .rootWindow:
+            break
+        }
+    }
 
     // MARK: - Navigation
     
@@ -107,5 +116,13 @@ public final class MyPageCoordinator: BaseCoordinator {
     
     private func showAlertSetting(url: String) {
         openExternalLink(urlStr: url)
+    }
+    
+    private func showEditSentence() {
+        
+        guard let navigationController = self.navigationController?.presentedViewController as? UINavigationController else { return }
+        
+        let sentenceEditVC = self.factory.makeSentenceEditVC()
+        navigationController.pushViewController(sentenceEditVC, animated: true)
     }
 }

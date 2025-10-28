@@ -549,13 +549,29 @@ extension ApplicationCoordinator {
             
             coordinator = legacyStampCoordinator
         case .new:
-            coordinator = StampCoordinator(
+            let newCoordinator = StampCoordinator(
                 navigationController: UIWindow.getRootNavigationController,
                 factory: StampBuilder()
             )
+            newCoordinator.delegate = self
+            coordinator = newCoordinator
         }
 
         coordinator.start()
+        
+        return coordinator
+    }
+    
+    internal func runEditSentenceFlow() -> BaseCoordinator {
+        var coordinator: BaseCoordinator
+        
+        coordinator = MyPageCoordinator(
+            factory: MyPageBuilder(),
+            userType: .active,
+            navigationController: UIWindow.getRootNavigationController
+        )
+
+        coordinator.start(by: .push)
         
         return coordinator
     }
