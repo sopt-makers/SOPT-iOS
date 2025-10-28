@@ -39,9 +39,6 @@ final class LegacyStampCoordinator: DefaultCoordinator {
             self?.router.dismissModule(animated: true)
             self?.finishFlow?()
         }
-        missionList.onGuideTap = { [weak self] in
-            self?.showGuide()
-        }
         missionList.onPartRankingButtonTap = { [weak self] rankingViewType in
             self?.runRankingFlow(rankingViewType: rankingViewType)
         }
@@ -59,18 +56,6 @@ final class LegacyStampCoordinator: DefaultCoordinator {
         }
         rootController = missionList.asNavigationController
         router.present(rootController, animated: true, modalPresentationSytle: .overFullScreen)
-    }
-    
-    private func showGuide() {
-        let guideCoordinator = LegacyStampGuideCoordinator(
-            router: LegacyRouter(rootController: rootController!),
-            factory: factory
-        )
-        guideCoordinator.finishFlow = { [weak self, weak guideCoordinator] in
-            self?.removeDependency(guideCoordinator)
-        }
-        addDependency(guideCoordinator)
-        guideCoordinator.start()
     }
     
     internal func runRankingFlow(rankingViewType: RankingViewType) {

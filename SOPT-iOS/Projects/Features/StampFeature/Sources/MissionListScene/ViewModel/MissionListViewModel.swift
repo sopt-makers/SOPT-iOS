@@ -22,7 +22,7 @@ public class MissionListViewModel: MissionListViewModelType {
     public var onNaviBackTap: (() -> Void)?
     public var onPartRankingButtonTap: ((StampFeatureInterface.RankingViewType) -> Void)?
     public var onCurrentGenerationRankingButtonTap: ((StampFeatureInterface.RankingViewType) -> Void)?
-    public var onGuideTap: (() -> Void)?
+    public var onEditTap: (() -> Void)?
     public var onCellTap: ((Domain.MissionListModel, String?) -> Void)?
     public var onReportButtonTap: (() -> Void)?
     

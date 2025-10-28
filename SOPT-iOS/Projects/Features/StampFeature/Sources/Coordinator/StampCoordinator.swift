@@ -15,10 +15,18 @@ import BaseFeatureDependency
 import StampFeatureInterface
 import SafariServices
 
+public protocol StampCoordinatorDelegate: AnyObject {
+    func stampCoordinator(
+        _ coordinator: StampCoordinator,
+        to destination: StampCoordinatorDestination
+    )
+}
+
 public final class StampCoordinator: BaseCoordinator {
 
     // MARK: - Properties
 
+    public weak var delegate: StampCoordinatorDelegate?
     private let factory: StampFeatureBuildable
     private let navigationController: UINavigationController
 
@@ -50,11 +58,13 @@ public final class StampCoordinator: BaseCoordinator {
             self.navigationController.dismiss(animated: true)
         }
 
-        missionList.vc.onGuideTap = { [weak self] in
+        missionList.vc.onEditTap = { [weak self] in
             guard let self else { return }
-            self.showGuide()
+        
+            self.delegate?.stampCoordinator(self, to: .editSentence)
+            
         }
-
+        
         missionList.vc.onPartRankingButtonTap = { [weak self] rankingViewType in
             guard let self else { return }
             self.runRankingFlow(rankingViewType: rankingViewType)
@@ -82,17 +92,6 @@ public final class StampCoordinator: BaseCoordinator {
         navController.modalPresentationStyle = .overFullScreen
         rootController = navController
         navigationController.present(navController, animated: true)
-    }
-
-    private func showGuide() {
-        let guide = factory.makeStampGuideVC()
-
-        guide.onNaviBackTap = { [weak self] in
-            guard let self else { return }
-            self.navigationController.popViewController(animated: true)
-        }
-
-        rootController?.pushViewController(guide, animated: true)
     }
 }
 

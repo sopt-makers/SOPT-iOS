@@ -20,7 +20,7 @@ public protocol MissionListRoutingTrigger {
   var onNaviBackTap: (() -> Void)? { get set }
   var onPartRankingButtonTap: ((RankingViewType) -> Void)? { get set }
   var onCurrentGenerationRankingButtonTap: ((RankingViewType) -> Void)? { get set }
-  var onGuideTap: (() -> Void)? { get set }
+  var onEditTap: (() -> Void)? { get set }
   var onCellTap: ((MissionListModel, _ username: String?) -> Void)? { get set }
   var onReportButtonTap: (() -> Void)? { get set }
 }

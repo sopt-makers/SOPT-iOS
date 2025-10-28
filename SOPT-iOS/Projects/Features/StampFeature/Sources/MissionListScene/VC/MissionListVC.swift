@@ -41,7 +41,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
     public var onNaviBackTap: (() -> Void)?
     public var onPartRankingButtonTap: ((RankingViewType) -> Void)?
     public var onCurrentGenerationRankingButtonTap: ((RankingViewType) -> Void)?
-    public var onGuideTap: (() -> Void)?
+    public var onEditTap: (() -> Void)?
     public var onCellTap: ((MissionListModel, String?) -> Void)?
     public var onReportButtonTap: (() -> Void)?
     
@@ -253,7 +253,7 @@ extension MissionListVC {
             .asDriver()
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onGuideTap?()
+                owner.onEditTap?()
             }.store(in: self.cancelBag)
         
         naviBar.leftButtonTapped
