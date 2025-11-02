@@ -48,7 +48,7 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
             if !self.barrier,
                let refreshToken = UserDefaultKeyList.CoreAuth.refreshToken,
                let cookie = HTTPCookie(properties: [
-                HTTPCookiePropertyKey.domain: url.host() ?? "",
+                HTTPCookiePropertyKey.domain: "." + (url.rootDomain ?? "sopt.org"),
                 HTTPCookiePropertyKey.name: "Refresh-Token",
                 HTTPCookiePropertyKey.path: "/",
                 HTTPCookiePropertyKey.value: refreshToken,

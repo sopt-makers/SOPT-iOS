@@ -10,4 +10,12 @@ public extension URL {
             return URL(string: encodedString)
         }
     }
+    
+    var rootDomain: String? {
+        guard let host = self.host() else { return nil }
+        let components = host.components(separatedBy: ".")
+        
+        guard components.count >= 2 else { return nil }
+        return components.suffix(2).joined(separator: ".")
+    }
 }
