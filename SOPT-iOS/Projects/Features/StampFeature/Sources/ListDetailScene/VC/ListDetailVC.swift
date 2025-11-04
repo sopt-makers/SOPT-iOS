@@ -133,22 +133,6 @@ public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, L
         self.hideKeyboard()
     }
     
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        if viewModel.isOtherUser {
-            AmplitudeInstance.shared.track(
-                eventType: .clickFeedMission,
-                eventProperties: [
-                    "missionId": viewModel.missionId ?? "",
-                    "missionTitle": viewModel.missionTitle ?? "",
-                    "missionLevel": viewModel.starLevel ?? "",
-                    "feedOwnerNick": viewModel.otherUserName ?? ""
-                ]
-            )
-        }
-    }
-    
     deinit {
         if let keyboardWillHideObserver,
            let keyboardWillShowObserver {
