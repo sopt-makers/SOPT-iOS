@@ -102,6 +102,18 @@ extension ListDetailViewModel {
                 owner.isOtherUser
                 ? owner.useCase.fetchListDetail(missionId: owner.missionId, username: owner.otherUserName)
                 : owner.useCase.fetchListDetail(missionId: owner.missionId, username: nil)
+                
+                if owner.isOtherUser {
+                    AmplitudeInstance.shared.track(
+                        eventType: .clickFeedMission,
+                        eventProperties: [
+                            "missionId": owner.missionId ?? "",
+                            "missionTitle": owner.missionTitle ?? "",
+                            "missionLevel": owner.starLevel ?? "",
+                            "feedOwnerNick": owner.otherUserName ?? ""
+                        ]
+                    )
+                }
             }.store(in: cancelBag)
         
         input.imageSelected
@@ -195,8 +207,18 @@ extension ListDetailViewModel {
         
         input.clapButtonTapped
             .withUnretained(self)
-            .sink { owner, count in
+            .sink {
+                owner, count in
                 owner.useCase.clap(stampId: owner.stampId, clapCount: count)
+                AmplitudeInstance.shared.track(
+                    eventType: .clickUpdateClap,
+                    eventProperties: [
+                        "stampId": owner.stampId ?? 0,
+                        "appliedCount": count,
+                        "totalClapCount": owner.totalClapCount,
+                        "receiverNick": owner.otherUserName ?? ""
+                    ]
+                )
             }.store(in: cancelBag)
 
         // 버튼 활성화 로직
