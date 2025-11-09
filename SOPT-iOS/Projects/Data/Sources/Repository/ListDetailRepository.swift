@@ -72,11 +72,13 @@ extension ListDetailRepository: ListDetailRepositoryInterface {
             .asDriver()
     }
 
-    public func clap(stampId: Int, clapCount: Int) -> AnyPublisher<ClapCountModel, Error> {
+    public func clap(stampId: Int, clapCount: Int) -> AnyPublisher<Result<ClapCountModel, Error>, Never> {
         return stampService.clap(stampId: stampId, clapCount: clapCount)
-            .map{ $0.toDomain() }
+            .map{ .success($0.toDomain()) }
+            .catch{ Just(.failure($0)) }
             .eraseToAnyPublisher()
     }
+    
     public func getClapList(stampId: Int, nickname: String) -> AnyPublisher<[ClapperModel], Error> {
         return stampService.getClapList(stampId: stampId, nickname: nickname)
             .map { $0.map { $0.toDomain() } }

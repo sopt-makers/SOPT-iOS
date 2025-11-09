@@ -273,7 +273,7 @@ extension ListDetailVC {
                 isLoading ? owner.showLoading() : owner.stopLoading()
             }.store(in: cancelBag)
         
-        output.clapSuccessed
+        output.clapResult
             .withUnretained(self)
             .sink { owner, result in
                 switch result {

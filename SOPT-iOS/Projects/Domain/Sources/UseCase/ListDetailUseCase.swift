@@ -26,7 +26,7 @@ public protocol ListDetailUseCase {
     var presignedURL: PassthroughSubject<PresignedUrlModel, Error> { get set }
     var editSuccess: PassthroughSubject<Bool, Error> { get set }
     var deleteSuccess: PassthroughSubject<Bool, Error> { get set }
-    var clapSuccess: PassthroughSubject<ClapCountModel, Error> { get set }
+    var clapResult: PassthroughSubject<Result<ClapCountModel, Error>, Never> { get set }
     var clapListModel: PassthroughSubject<[ClapperModel], Error> { get set }
 }
 
@@ -40,7 +40,7 @@ public class DefaultListDetailUseCase {
     public var mediaUploadCompleted = PassthroughSubject<Void, Error>()
     public var editSuccess = PassthroughSubject<Bool, Error>()
     public var deleteSuccess = PassthroughSubject<Bool, Error>()
-    public var clapSuccess = PassthroughSubject<ClapCountModel, Error>()
+    public var clapResult = PassthroughSubject<Result<ClapCountModel, Error>, Never>()
     public var clapListModel = PassthroughSubject<[ClapperModel], Error>()
 
     public init(repository: ListDetailRepositoryInterface) {
@@ -125,19 +125,16 @@ extension DefaultListDetailUseCase: ListDetailUseCase {
 
     public func clap(stampId: Int, clapCount: Int) {
         repository.clap(stampId: stampId, clapCount: clapCount)
-            .replaceError(
-                with: ClapCountModel(
-                    stampId: 0,
-                    appliedCount: 0,
-                    totalClapCount: 0
-                )
-            )
             .withUnretained(self)
-            .sink { event in
-                print("completion: \(event)")
-            } receiveValue: { owner, model in
-                owner.clapSuccess.send(model)
+            .sink { owner, result in
+                switch result {
+                case .success(let model):
+                    owner.clapResult.send(.success(model))
+                case .failure(let error):
+                    owner.clapResult.send(.failure(error))
+                }
             }.store(in: self.cancelBag)
+            
     }
 
     public func getClapList(stampId: Int, nickname: String) {
