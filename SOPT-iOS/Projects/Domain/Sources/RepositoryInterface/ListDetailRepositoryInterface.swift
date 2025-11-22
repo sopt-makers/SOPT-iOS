@@ -18,6 +18,6 @@ public protocol ListDetailRepositoryInterface {
     func postStamp(stampData: ListDetailRequestModel) -> AnyPublisher<ListDetailModel, Error>
     func putStamp(stampData: ListDetailRequestModel) -> Driver<Int>
     func deleteStamp(stampId: Int) -> Driver<Bool>
-    func clap(stampId: Int, clapCount: Int) -> AnyPublisher<ClapCountModel, Error>
+    func clap(stampId: Int, clapCount: Int) -> AnyPublisher<Result<ClapCountModel, Error>, Never>
     func getClapList(stampId: Int, nickname: String) -> AnyPublisher<[ClapperModel], Error>
 }

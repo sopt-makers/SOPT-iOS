@@ -65,7 +65,7 @@ public class ListDetailViewModel: ListDetailViewModelType {
         var deleteSuccessed = PassthroughSubject<Bool, Never>()
         var bottomButtonEnabled = PassthroughSubject<Bool, Never>()
         let isLoading = PassthroughSubject<Bool, Never>()
-        var clapSuccessed = PassthroughSubject<Result<ClapCountModel, Error>, Never>()
+        var clapResult = PassthroughSubject<Result<ClapCountModel, Error>, Never>()
     }
     
     // MARK: - init
@@ -255,6 +255,7 @@ extension ListDetailViewModel {
         let listDetailModel = useCase.listDetailModel
         let editSuccess = useCase.editSuccess
         let deleteSuccess = useCase.deleteSuccess
+        let clapResult = useCase.clapResult
         
         listDetailModel.asDriver()
             .withUnretained(self)
@@ -282,6 +283,12 @@ extension ListDetailViewModel {
             .withUnretained(self)
             .sink { owner, success in
                 output.deleteSuccessed.send(success)
+            }.store(in: self.cancelBag)
+        
+        clapResult.asDriver()
+            .withUnretained(self)
+            .sink { owner, result in
+                output.clapResult.send(result)
             }.store(in: self.cancelBag)
     }
 }
