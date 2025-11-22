@@ -20,6 +20,7 @@ final class SoptlogToolTipVC: UIViewController, SoptlogToolTipViewControllable {
     public var viewModel: SoptlogToolTipViewModel
     private let cancelBag = CancelBag()
     private let toolTipFrame: CGRect
+    private let arrowHeight: CGFloat = 12
     
     private var dimmingBackgroundTap = PassthroughSubject<Void, Never>()
 
@@ -91,15 +92,15 @@ extension SoptlogToolTipVC {
         view.addSubviews(toolTipView, arrowImageView)
         
         arrowImageView.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(toolTipFrame.maxY + 5)
+            make.size.equalTo(arrowHeight)
+            make.top.equalToSuperview().offset(toolTipFrame.minY - 7 - arrowHeight)
             make.centerX.equalTo(toolTipFrame.midX)
-            make.size.equalTo(12)
         }
         
         toolTipView.snp.makeConstraints { make in
-            make.top.equalTo(arrowImageView.snp.bottom)
-            make.leading.equalToSuperview().inset(68)
-            make.width.equalTo(263)
+            make.bottom.equalTo(arrowImageView.snp.top)
+            make.leading.equalTo(toolTipFrame.minX - 26)
+            make.width.equalTo(272)
             make.height.equalTo(100)
         }
         

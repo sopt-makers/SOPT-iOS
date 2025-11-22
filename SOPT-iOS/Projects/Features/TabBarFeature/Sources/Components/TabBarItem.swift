@@ -27,7 +27,7 @@ extension TabBarItemType {
         case .home:
             return I18N.Home.title
         case .soptlog:
-            return I18N.Soptlog.navigationTitle
+            return I18N.Soptlog.tapTitle
         }
     }
     

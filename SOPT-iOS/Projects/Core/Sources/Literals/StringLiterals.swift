@@ -283,7 +283,8 @@ public struct I18N {
     }
     
     public struct Soptlog {
-        public static let navigationTitle = "솝트로그"
+        public static let navigationTitle = "마이 솝트로그"
+        public static let tapTitle = "솝트로그"
         public static let editProfile = "프로필 수정"
         public static let enrollIntroduce = "프로필 수정에서 한 줄 소개 등록해보세요!"
         public static let dailyFortuneButton = "바로 확인하기"
@@ -291,10 +292,10 @@ public struct I18N {
         public static let poke = "콕찌르기"
         public static let soptamp = "솝탬프"
         public static let withSopt = "솝트와"
-        public static let toolTipTitle = "솝레벨이란?"
+        public static let toolTipTitle = "조회수"
         public static let toolTip = """
-                                    앱잼, 솝커톤, 솝텀, 모임 등 다양한
-                                    솝트 활동에 참여한 횟수를 의미해요.
+                                    솝트 전체 회원들이 내 솝탬프 미션을
+                                    조회한 횟수를 의미해요.
                                     """
     }
     
