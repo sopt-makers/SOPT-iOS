@@ -64,9 +64,11 @@ final class SoptlogBannerCVC: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: - UI & Layout
-    
+}
+
+// MARK: - UI & Layout
+
+extension SoptlogBannerCVC {    
     private func setUI() {
         contentView.backgroundColor = .clear
     }
@@ -103,8 +105,11 @@ final class SoptlogBannerCVC: UICollectionViewCell {
             make.leading.equalTo(subtitleLabel.snp.trailing)
         }
     }
-    
-    // MARK: - Configuration
+}
+
+// MARK: - Configuration
+
+extension SoptlogBannerCVC {
     
     func configure(title: String?) {
         titleLabel.text = title

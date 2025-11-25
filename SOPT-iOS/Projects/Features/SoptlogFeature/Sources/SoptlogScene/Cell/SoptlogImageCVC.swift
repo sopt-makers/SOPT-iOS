@@ -32,9 +32,11 @@ final class SoptlogImageCVC: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: - UI & Layout
-    
+}
+
+// MARK: - UI & Layout
+
+extension SoptlogImageCVC {
     private func setUI() {
         contentView.backgroundColor = .clear
     }
@@ -49,7 +51,12 @@ final class SoptlogImageCVC: UICollectionViewCell {
         }
     }
     
-    // MARK: - Configuration
+    
+}
+
+// MARK: - Configuration
+
+extension SoptlogImageCVC {
     
     func configure(image: UIImage?) {
         imageView.image = image

@@ -32,28 +32,29 @@ final class SoptlogImageFooterReusableView: UICollectionReusableView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: - UI & Layout
-    
+}
+
+// MARK: - UI & Layout
+
+extension SoptlogImageFooterReusableView {
     private func setUI() {
         backgroundColor = .clear
     }
     
     private func setLayout() {
         addSubview(imageView)
-        imageView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+        imageView.snp.remakeConstraints { make in
+            make.top.equalToSuperview().inset(32)
+            make.leading.equalToSuperview()
+            make.bottom.equalToSuperview().inset(75)
         }
     }
-    
-    // MARK: - Configuration
-    
-    func configure(image: UIImage?, topInset: CGFloat = 0, bottomInset: CGFloat = 0) {
+}
+
+// MARK: - Configuration
+
+extension SoptlogImageFooterReusableView {
+    func configure(image: UIImage?) {
         imageView.image = image
-        imageView.snp.remakeConstraints { make in
-            make.top.equalToSuperview().inset(topInset)
-            make.leading.equalToSuperview()
-            make.bottom.equalToSuperview().inset(bottomInset)
-        }
     }
 }
