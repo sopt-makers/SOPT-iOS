@@ -14,32 +14,28 @@ import Domain
 import BaseFeatureDependency
 import StampFeatureInterface
 import SafariServices
-
-public protocol StampCoordinatorDelegate: AnyObject {
-    func stampCoordinator(
-        _ coordinator: StampCoordinator,
-        to destination: StampCoordinatorDestination
-    )
-}
+import AppMyPageFeatureInterface
 
 public final class StampCoordinator: BaseCoordinator {
 
     // MARK: - Properties
 
-    public weak var delegate: StampCoordinatorDelegate?
     private let factory: StampFeatureBuildable
+    private let mypageFactory: MyPageFeatureBuildable
+    
     private let navigationController: UINavigationController
-
     private weak var rootController: UINavigationController?
 
     // MARK: - Init
 
     public init(
         navigationController: UINavigationController,
-        factory: StampFeatureBuildable
+        factory: StampFeatureBuildable,
+        mypageFactory: MyPageFeatureBuildable
     ) {
         self.navigationController = navigationController
         self.factory = factory
+        self.mypageFactory = mypageFactory
     }
 
     // MARK: - Coordinator Life Cycle
@@ -61,8 +57,8 @@ public final class StampCoordinator: BaseCoordinator {
         missionList.vc.onEditTap = { [weak self] in
             guard let self else { return }
         
-            self.delegate?.stampCoordinator(self, to: .editSentence)
-            
+            let vc = self.mypageFactory.makeSentenceEditVC()
+            rootController?.pushViewController(vc, animated: true)
         }
         
         missionList.vc.onPartRankingButtonTap = { [weak self] rankingViewType in

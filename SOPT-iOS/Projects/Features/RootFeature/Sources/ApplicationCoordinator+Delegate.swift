@@ -120,20 +120,6 @@ extension ApplicationCoordinator: MyPageCoordinatorDelegate {
     }
 }
 
-// MARK: - StampCoordinatorDelegate
-
-extension ApplicationCoordinator: StampCoordinatorDelegate {
-    public func stampCoordinator(
-        _ coordinator: StampFeature.StampCoordinator,
-        to destination: StampFeatureInterface.StampCoordinatorDestination
-    ) {
-        switch destination {
-        case .editSentence:
-            _ = self.runEditSentenceFlow()
-        }
-    }
-}
-
 extension ApplicationCoordinator {
     private func clearChildViewControllers() {
         self.homeNavigationController.viewControllers.removeAll()
