@@ -25,20 +25,16 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     private var toolTipTap = PassthroughSubject<CGRect, Never>()
     private var viewWillAppear = PassthroughSubject<Void, Never>()
     
-    private var soptlogInfo: SoptlogPresentationModel?
-    
     // MARK: - UI Components
     
     private lazy var naviBar = OPNavigationBar(self, type: .none)
         .addMiddleLabel(title: I18N.Soptlog.navigationTitle, font: DSKitFontFamily.Suit.medium.font(size: 16))
     
     private lazy var collectionView: UICollectionView = {
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
-        collectionView.isScrollEnabled = true
-        collectionView.showsHorizontalScrollIndicator = false
-        collectionView.showsVerticalScrollIndicator = false
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         collectionView.backgroundColor = .clear
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.contentInsetAdjustmentBehavior = .never
         return collectionView
     }()
     
@@ -61,7 +57,6 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
         setLayout()
         setDelegate()
         registerCells()
-        bindViewModels()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -86,8 +81,9 @@ extension SoptlogVC {
         }
         
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(naviBar.snp.bottom).offset(16)
-            make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalTo(naviBar.snp.bottom)
+            make.horizontalEdges.equalToSuperview()
+            make.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
 }
@@ -101,126 +97,168 @@ extension SoptlogVC {
     }
     
     private func registerCells() {
-        self.collectionView.register(SoptlogHeaderView.self,
-                                     forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                                     withReuseIdentifier: SoptlogHeaderView.className)
-        self.collectionView.register(IntroduceCVC.self,
-                                     forCellWithReuseIdentifier: IntroduceCVC.className)
-        self.collectionView.register(SoptlogAppServiceCVC.self,
-                                     forCellWithReuseIdentifier: SoptlogAppServiceCVC.className)
-        self.collectionView.register(EditProfileCVC.self,
-                                     forCellWithReuseIdentifier: EditProfileCVC.className)
-        self.collectionView.register(SoptlogAlarmCVC.self,
-                                     forCellWithReuseIdentifier: SoptlogAlarmCVC.className)
-    }
-    
-    private func bindViewModels() {
-        let input = SoptlogViewModel.Input(
-            viewWillAppear: self.viewWillAppear.asDriver(),
-            cellTap: cellTap.asDriver(), 
-            toolTipButtonTap: toolTipTap.asDriver())
+        // 셀 등록
+        self.collectionView.register(SoptlogMenuCVC.self, forCellWithReuseIdentifier: SoptlogMenuCVC.className)
+        self.collectionView.register(SoptlogBannerCVC.self, forCellWithReuseIdentifier: SoptlogBannerCVC.className)
+        self.collectionView.register(SoptlogImageCVC.self, forCellWithReuseIdentifier: SoptlogImageCVC.className)
         
-        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+        // Header 등록
+        self.collectionView.register(SoptlogSectionHeaderReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SoptlogSectionHeaderReusableView.className)
         
-        output.soptlogInfo
-            .withUnretained(self)
-            .subscribe(on: DispatchQueue.main)
-            .sink { owner, soptlogModel in
-                owner.soptlogInfo = soptlogModel
-                owner.collectionView.reloadData()
-            }.store(in: cancelBag)
+        // Footer 등록
+        self.collectionView.register(SoptlogImageFooterReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: SoptlogImageFooterReusableView.className)
         
-        output.isLoading
-            .withUnretained(self)
-            .sink { owner, isLoading in
-                isLoading ? owner.showLoading() : owner.stopLoading()
-            }
-            .store(in: cancelBag)
+        // Decoration view 등록
+        self.collectionView.collectionViewLayout.register(
+            SoptlogSectionBackgroundDecorationView.self,
+            forDecorationViewOfKind: SoptlogSectionBackgroundDecorationView.className
+        )
     }
 }
 
 // MARK: - UICollectionViewDelegate
 
 extension SoptlogVC: UICollectionViewDelegate {
-    
-}
-
-// MARK: - UICollectionViewDataSource
-
-extension SoptlogVC: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         cellTap.send(indexPath)
     }
+}
+
+// MARK: - UICollectionViewDataSource
     
+extension SoptlogVC: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return SoptlogSectionLayoutKind.allCases.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        guard kind == UICollectionView.elementKindSectionHeader else { return UICollectionReusableView() }
-        guard let sectionKind = SoptlogSectionLayoutKind(rawValue: indexPath.section) else { return UICollectionReusableView() }
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        guard let sectionType = SoptlogSectionLayoutKind(rawValue: section) else { return 0 }
+        return sectionType.numberOfItems
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let section = SoptlogSectionLayoutKind(rawValue: indexPath.section) else {
+            return UICollectionViewCell()
+        }
         
-        switch sectionKind {
-        case .introduce:
+        switch section {
+        case .logo:
+            return configureLogoCell(at: indexPath)
+            
+        case .soptampLog:
+            return configureSoptampLogCell(at: indexPath)
+            
+        case .pokeLog:
+            return configurePokeLogCell(at: indexPath)
+            
+        case .banner:
+            return configureBannerCell(at: indexPath)
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard let sectionType = SoptlogSectionLayoutKind(rawValue: indexPath.section) else {
+            return UICollectionReusableView()
+        }
+        
+        switch kind {
+        case UICollectionView.elementKindSectionHeader:
             guard let headerView = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
-                withReuseIdentifier: SoptlogHeaderView.className,
-                for: indexPath) as? SoptlogHeaderView else { return UICollectionReusableView() }
-            headerView.setData(model: self.soptlogInfo?.profile)
+                withReuseIdentifier: SoptlogSectionHeaderReusableView.className,
+                for: indexPath
+            ) as? SoptlogSectionHeaderReusableView else {
+                return UICollectionReusableView()
+            }
+            
+            let title = sectionType == .soptampLog ? "솝탬프 로그" : "콕찌르기 로그"
+            headerView.configure(title: title)
             return headerView
+            
+        case UICollectionView.elementKindSectionFooter:
+            guard sectionType == .banner,
+                  let footerView = collectionView.dequeueReusableSupplementaryView(
+                    ofKind: kind,
+                    withReuseIdentifier: SoptlogImageFooterReusableView.className,
+                    for: indexPath
+                  ) as? SoptlogImageFooterReusableView else {
+                return UICollectionReusableView()
+            }
+            
+            footerView.configure(image: DSKitAsset.Assets.bottomSoptlog.image)
+            return footerView
+            
         default:
             return UICollectionReusableView()
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard let sectionKind = SoptlogSectionLayoutKind(rawValue: section) else { return 0 }
-        
-        switch sectionKind {
-        case .introduce: return 1
-        case .appService: return self.soptlogInfo?.appService.count ?? 0
-        case .editProfile: return 1
-        case .alarm: return 1
+    private func configureLogoCell(at indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: SoptlogImageCVC.className,
+            for: indexPath
+        ) as? SoptlogImageCVC else {
+            return UICollectionViewCell()
         }
+        
+        cell.configure(image: DSKitAsset.Assets.mainSoptlog.image)
+        return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let sectionKind = SoptlogSectionLayoutKind(rawValue: indexPath.section) else { return UICollectionViewCell() }
-        
-        switch sectionKind {
-        case .introduce:
-            /// 한 줄 소개
-            guard let introduceCell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: IntroduceCVC.className,
-                for: indexPath) as? IntroduceCVC else { return UICollectionViewCell() }
-            introduceCell.configureCell(model: self.soptlogInfo?.introduce)
-            return introduceCell
-            
-        case .appService:
-            /// 앱 서비스
-            guard let appServiceCell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: SoptlogAppServiceCVC.className,
-                for: indexPath) as? SoptlogAppServiceCVC else { return UICollectionViewCell() }
-            appServiceCell.configureCell(model: self.soptlogInfo?.appService[safe: indexPath.row])
-            appServiceCell.toolTipButtonTapped
-                .subscribe(self.toolTipTap)
-                .store(in: cancelBag)
-            return appServiceCell
-            
-        case .editProfile:
-            /// 프로필 수정
-            guard let editProfileCell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: EditProfileCVC.className,
-                for: indexPath) as? EditProfileCVC else { return UICollectionViewCell() }
-            return editProfileCell
-            
-        case .alarm:
-            /// 솝트로그 알람
-            guard let alarmCell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: SoptlogAlarmCVC.className,
-                for: indexPath) as? SoptlogAlarmCVC else { return UICollectionViewCell() }
-            alarmCell.configureCell(model: self.soptlogInfo?.alarm)
-            return alarmCell
+    private func configureSoptampLogCell(at indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: SoptlogMenuCVC.className,
+            for: indexPath
+        ) as? SoptlogMenuCVC else {
+            return UICollectionViewCell()
         }
+        
+        let menus = SoptlogSectionModel.soptamp
+        let menuIndex = indexPath.item
+        let menu = menus[menuIndex]
+        
+        cell.configure(
+            title: menu.title,
+            value: menu.value,
+            hasTooltip: menu.hasTooltip,
+            hasChevron: menu.hasChevron
+        )
+        
+        return cell
+    }
+    
+    private func configurePokeLogCell(at indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: SoptlogMenuCVC.className,
+            for: indexPath
+        ) as? SoptlogMenuCVC else {
+            return UICollectionViewCell()
+        }
+        
+        let menus = SoptlogSectionModel.poke
+        let menuIndex = indexPath.item
+        let menu = menus[menuIndex]
+        
+        cell.configure(
+            title: menu.title,
+            value: menu.value,
+            hasTooltip: menu.hasTooltip,
+            hasChevron: menu.hasChevron
+        )
+        
+        return cell
+    }
+    
+    private func configureBannerCell(at indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: SoptlogBannerCVC.className,
+            for: indexPath
+        ) as? SoptlogBannerCVC else {
+            return UICollectionViewCell()
+        }
+        
+        cell.configure(title: "오늘의 운세는?")
+        
+        return cell
     }
 }
