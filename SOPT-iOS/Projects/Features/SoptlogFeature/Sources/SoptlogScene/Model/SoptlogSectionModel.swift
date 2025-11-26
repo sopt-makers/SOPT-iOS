@@ -8,6 +8,8 @@
 
 import Foundation
 
+import Core
+
 struct SoptlogMenuModel {
     let title: String
     let value: String
@@ -17,17 +19,17 @@ struct SoptlogMenuModel {
 
 struct SoptlogSectionModel {
     static let soptamp: [SoptlogMenuModel] = [
-        SoptlogMenuModel(title: "완료 미션", value: "999회", hasTooltip: false, hasChevron: true),
-        SoptlogMenuModel(title: "조회수", value: "999회", hasTooltip: true, hasChevron: false),
-        SoptlogMenuModel(title: "받은 박수", value: "999회", hasTooltip: false, hasChevron: false),
-        SoptlogMenuModel(title: "쳐준 박수", value: "999회", hasTooltip: false, hasChevron: false)
+        SoptlogMenuModel(title: I18N.Soptlog.Menu.completedMission, value: "999회", hasTooltip: false, hasChevron: true),
+        SoptlogMenuModel(title: I18N.Soptlog.Menu.views, value: "999회", hasTooltip: true, hasChevron: false),
+        SoptlogMenuModel(title: I18N.Soptlog.Menu.recievedClapCount, value: "999회", hasTooltip: false, hasChevron: false),
+        SoptlogMenuModel(title: I18N.Soptlog.Menu.clapCount, value: "999회", hasTooltip: false, hasChevron: false)
     ]
     
     static let poke: [SoptlogMenuModel] = [
-        SoptlogMenuModel(title: "총 콕찌르기", value: "999회", hasTooltip: false, hasChevron: true),
-        SoptlogMenuModel(title: "친한 친구", value: "999회", hasTooltip: false, hasChevron: true),
-        SoptlogMenuModel(title: "단짝 친구", value: "999회", hasTooltip: false, hasChevron: true),
-        SoptlogMenuModel(title: "천생 연분", value: "999회", hasTooltip: false, hasChevron: true)
+        SoptlogMenuModel(title: I18N.Soptlog.Menu.pokeCount, value: "999회", hasTooltip: false, hasChevron: true),
+        SoptlogMenuModel(title: I18N.Soptlog.Menu.newFriend, value: "999회", hasTooltip: false, hasChevron: true),
+        SoptlogMenuModel(title: I18N.Soptlog.Menu.bestFriend, value: "999회", hasTooltip: false, hasChevron: true),
+        SoptlogMenuModel(title: I18N.Soptlog.Menu.soulmate, value: "999회", hasTooltip: false, hasChevron: true)
     ]
 }
 

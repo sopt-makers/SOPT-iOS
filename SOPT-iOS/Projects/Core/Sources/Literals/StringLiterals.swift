@@ -297,6 +297,17 @@ public struct I18N {
                                     솝트 전체 회원들이 내 솝탬프 미션을
                                     조회한 횟수를 의미해요.
                                     """
+        public struct Menu {
+            public static let completedMission = "완료 미션"
+            public static let views = "조회수"
+            public static let recievedClapCount = "받은 박수"
+            public static let clapCount = "쳐준 박수"
+            
+            public static let pokeCount = "총 콕찌르기"
+            public static let newFriend = "친한 친구"
+            public static let bestFriend = "단짝 친구"
+            public static let soulmate = "천생 연분"
+        }
     }
     
     public struct Attendance {
