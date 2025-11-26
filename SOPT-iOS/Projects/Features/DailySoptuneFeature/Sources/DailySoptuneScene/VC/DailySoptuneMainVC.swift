@@ -44,8 +44,8 @@ public final class DailySoptuneMainVC: UIViewController, DailySoptuneMainViewCon
         $0.text = DateFormatManager.shared.transformDateFormat(to: .monthDayWeek)
 	}
 	
-	private let recieveFortune = UILabel().then {
-		$0.text = I18N.DailySoptune.recieveTodayFortune
+	private let receiveFortune = UILabel().then {
+		$0.text = I18N.DailySoptune.receiveTodayFortune
 		$0.textColor = DSKitAsset.Colors.gray100.color
         $0.font = DSKitFontFamily.Suit.bold.font(size: 18)
 	}
@@ -101,7 +101,7 @@ private extension DailySoptuneMainVC {
 	
 	func setLayout() {
         self.view.addSubviews(scrollView, backButton, checkTodayFortuneButton)
-        scrollView.addSubviews(dateLabel, recieveFortune, todayFortuneImage, titleCardsImage)
+        scrollView.addSubviews(dateLabel, receiveFortune, todayFortuneImage, titleCardsImage)
         
         scrollView.snp.makeConstraints { make in
             make.top.equalTo(backButton.snp.bottom)
@@ -120,13 +120,13 @@ private extension DailySoptuneMainVC {
 			make.centerX.equalToSuperview()
 		}
 		
-		recieveFortune.snp.makeConstraints { make in
+		receiveFortune.snp.makeConstraints { make in
             make.top.equalTo(dateLabel.snp.bottom).offset(2)
 			make.centerX.equalToSuperview()
 		}
 		
 		todayFortuneImage.snp.makeConstraints { make in
-			make.top.equalTo(recieveFortune.snp.bottom).offset(9.adjustedH)
+			make.top.equalTo(receiveFortune.snp.bottom).offset(9)
             make.centerX.equalToSuperview()
             make.height.equalTo(Metric.soptuneLogoRatio * Metric.soptuneLogoWidth)
             make.width.equalTo(Metric.soptuneLogoWidth)
@@ -139,7 +139,7 @@ private extension DailySoptuneMainVC {
 		}
 		
 		titleCardsImage.snp.makeConstraints { make in
-            make.top.equalTo(todayFortuneImage.snp.bottom).offset(14.adjustedH)
+            make.top.equalTo(todayFortuneImage.snp.bottom).offset(14)
             make.centerX.equalToSuperview()
             make.width.equalTo(Metric.cardWidth)
             make.height.equalTo(Metric.cardRatio * Metric.cardWidth)

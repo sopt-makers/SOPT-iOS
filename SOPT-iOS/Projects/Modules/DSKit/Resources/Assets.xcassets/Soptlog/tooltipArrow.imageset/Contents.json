@@ -1,8 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "tooltipArrow.svg",
-      "idiom" : "universal"
+      "filename" : "icArrow.svg",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {

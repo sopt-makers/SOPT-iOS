@@ -283,7 +283,8 @@ public struct I18N {
     }
     
     public struct Soptlog {
-        public static let navigationTitle = "솝트로그"
+        public static let navigationTitle = "마이 솝트로그"
+        public static let tapTitle = "솝트로그"
         public static let editProfile = "프로필 수정"
         public static let enrollIntroduce = "프로필 수정에서 한 줄 소개 등록해보세요!"
         public static let dailyFortuneButton = "바로 확인하기"
@@ -291,11 +292,22 @@ public struct I18N {
         public static let poke = "콕찌르기"
         public static let soptamp = "솝탬프"
         public static let withSopt = "솝트와"
-        public static let toolTipTitle = "솝레벨이란?"
+        public static let toolTipTitle = "조회수"
         public static let toolTip = """
-                                    앱잼, 솝커톤, 솝텀, 모임 등 다양한
-                                    솝트 활동에 참여한 횟수를 의미해요.
+                                    솝트 전체 회원들이 내 솝탬프 미션을
+                                    조회한 횟수를 의미해요.
                                     """
+        public struct Menu {
+            public static let completedMission = "완료 미션"
+            public static let views = "조회수"
+            public static let receivedClapCount = "받은 박수"
+            public static let clapCount = "쳐준 박수"
+            
+            public static let pokeCount = "총 콕찌르기"
+            public static let newFriend = "친한 친구"
+            public static let bestFriend = "단짝 친구"
+            public static let soulmate = "천생 연분"
+        }
     }
     
     public struct Attendance {
@@ -459,7 +471,7 @@ public struct I18N {
         public static let poke = "콕 찌르기"
         public static let pokeFortunatePerson = "행운이 2배가 될 솝트인을 찔러보세요"
         public static let receiveTodaysFortuneCard = "오늘의 부적 받기"
-		public static let recieveTodayFortune = "오늘의 운세가 도착했어요!"
+		public static let receiveTodayFortune = "오늘의 운세가 도착했어요!"
 		public static let checkTodayFortune = "오늘의 운세 확인하기"
 		public static let goHome = "홈으로 돌아가기"
         public static let dateErrorToastMessage = "앗, 오늘의 솝마디만 볼 수 있어요."
