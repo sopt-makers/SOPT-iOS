@@ -10,8 +10,13 @@ import UIKit
 
 import Core
 import DSKit
+import SnapKit
 
 final class SoptlogMenuCVC: UICollectionViewCell {
+    
+    // MARK: - Properties
+    
+    private var rightStackViewTrailingConstraint: Constraint?
     
     // MARK: - UI Components
     
@@ -114,7 +119,7 @@ extension SoptlogMenuCVC {
         }
         
         rightStackView.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(13)
+            rightStackViewTrailingConstraint = make.trailing.equalToSuperview().inset(13).constraint
             make.centerY.equalToSuperview()
         }
         
@@ -149,5 +154,7 @@ extension SoptlogMenuCVC {
         tooltipButton.isHidden = !hasTooltip
         chevronImageView.isHidden = !hasChevron
         separatorView.isHidden = !showSeparator
+        
+        rightStackViewTrailingConstraint?.update(inset: hasChevron ? 13 : 19)
     }
 }
