@@ -43,7 +43,8 @@ extension SoptlogImageFooterReusableView {
     
     private func setLayout() {
         addSubview(imageView)
-        imageView.snp.remakeConstraints { make in
+        
+        imageView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(32)
             make.leading.equalToSuperview()
             make.bottom.equalToSuperview().inset(75)
