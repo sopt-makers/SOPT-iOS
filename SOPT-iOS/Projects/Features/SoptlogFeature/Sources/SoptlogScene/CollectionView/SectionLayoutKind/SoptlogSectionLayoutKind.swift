@@ -27,8 +27,8 @@ enum SoptlogSectionLayoutKind: Int, CaseIterable {
     var numberOfItems: Int {
         switch self {
         case .logo: return 1
-        case .soptampLog: return 4
-        case .pokeLog: return 4
+        case .soptampLog: return SoptlogSectionModel.soptamp.count
+        case .pokeLog: return SoptlogSectionModel.poke.count
         case .banner: return 1
         }
     }
