@@ -171,7 +171,7 @@ extension SoptlogVC: UICollectionViewDataSource {
                 return UICollectionReusableView()
             }
             
-            let title = sectionType == .soptampLog ? "솝탬프 로그" : "콕찌르기 로그"
+            let title = sectionType.title
             headerView.configure(title: title)
             return headerView
             
