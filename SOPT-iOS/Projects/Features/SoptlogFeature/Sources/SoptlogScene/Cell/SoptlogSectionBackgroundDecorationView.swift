@@ -19,6 +19,7 @@ final class SoptlogSectionBackgroundDecorationView: UICollectionReusableView {
         $0.backgroundColor = DSKitAsset.Colors.gray900.color
         $0.layer.cornerRadius = 12
         $0.clipsToBounds = true
+        $0.isUserInteractionEnabled = false
     }
         
     // MARK: - Initialization

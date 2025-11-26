@@ -19,6 +19,7 @@ final class SoptlogSectionHeaderReusableView: UICollectionReusableView {
         let label = UILabel()
         label.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
         label.textColor = DSKitAsset.Colors.white.color
+        label.numberOfLines = 1
         return label
     }()
     
