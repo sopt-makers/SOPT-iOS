@@ -50,8 +50,6 @@ extension SoptlogImageCVC {
             make.bottom.equalToSuperview().inset(8)
         }
     }
-    
-    
 }
 
 // MARK: - Configuration

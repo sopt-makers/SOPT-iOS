@@ -126,7 +126,7 @@ private extension DailySoptuneMainVC {
 		}
 		
 		todayFortuneImage.snp.makeConstraints { make in
-			make.top.equalTo(receiveFortune.snp.bottom).offset(9.adjustedH)
+			make.top.equalTo(receiveFortune.snp.bottom).offset(9)
             make.centerX.equalToSuperview()
             make.height.equalTo(Metric.soptuneLogoRatio * Metric.soptuneLogoWidth)
             make.width.equalTo(Metric.soptuneLogoWidth)
@@ -139,7 +139,7 @@ private extension DailySoptuneMainVC {
 		}
 		
 		titleCardsImage.snp.makeConstraints { make in
-            make.top.equalTo(todayFortuneImage.snp.bottom).offset(14.adjustedH)
+            make.top.equalTo(todayFortuneImage.snp.bottom).offset(14)
             make.centerX.equalToSuperview()
             make.width.equalTo(Metric.cardWidth)
             make.height.equalTo(Metric.cardRatio * Metric.cardWidth)
