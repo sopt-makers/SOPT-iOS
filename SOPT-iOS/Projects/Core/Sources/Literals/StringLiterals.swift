@@ -300,7 +300,7 @@ public struct I18N {
         public struct Menu {
             public static let completedMission = "완료 미션"
             public static let views = "조회수"
-            public static let recievedClapCount = "받은 박수"
+            public static let receivedClapCount = "받은 박수"
             public static let clapCount = "쳐준 박수"
             
             public static let pokeCount = "총 콕찌르기"
@@ -471,7 +471,7 @@ public struct I18N {
         public static let poke = "콕 찌르기"
         public static let pokeFortunatePerson = "행운이 2배가 될 솝트인을 찔러보세요"
         public static let receiveTodaysFortuneCard = "오늘의 부적 받기"
-		public static let recieveTodayFortune = "오늘의 운세가 도착했어요!"
+		public static let receiveTodayFortune = "오늘의 운세가 도착했어요!"
 		public static let checkTodayFortune = "오늘의 운세 확인하기"
 		public static let goHome = "홈으로 돌아가기"
         public static let dateErrorToastMessage = "앗, 오늘의 솝마디만 볼 수 있어요."

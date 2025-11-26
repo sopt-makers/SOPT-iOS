@@ -21,7 +21,7 @@ struct SoptlogSectionModel {
     static let soptamp: [SoptlogMenuModel] = [
         SoptlogMenuModel(title: I18N.Soptlog.Menu.completedMission, value: "999회", hasTooltip: false, hasChevron: true),
         SoptlogMenuModel(title: I18N.Soptlog.Menu.views, value: "999회", hasTooltip: true, hasChevron: false),
-        SoptlogMenuModel(title: I18N.Soptlog.Menu.recievedClapCount, value: "999회", hasTooltip: false, hasChevron: false),
+        SoptlogMenuModel(title: I18N.Soptlog.Menu.receivedClapCount, value: "999회", hasTooltip: false, hasChevron: false),
         SoptlogMenuModel(title: I18N.Soptlog.Menu.clapCount, value: "999회", hasTooltip: false, hasChevron: false)
     ]
     

@@ -13,8 +13,6 @@ import Core
 extension SoptlogVC {
     
     func createLayout() -> UICollectionViewLayout {
-        let config = UICollectionViewCompositionalLayoutConfiguration()
-        
         let layout = UICollectionViewCompositionalLayout(sectionProvider: { [weak self] sectionIndex, _ in
             guard let self,
                   let sectionType = SoptlogSectionLayoutKind(rawValue: sectionIndex) else {
@@ -29,7 +27,7 @@ extension SoptlogVC {
             case .banner:
                 return self.createBannerSection()
             }
-        }, configuration: config)
+        })
         
         return layout
     }
