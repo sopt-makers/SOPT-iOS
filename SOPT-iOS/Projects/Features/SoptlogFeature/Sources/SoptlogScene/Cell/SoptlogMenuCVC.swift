@@ -141,11 +141,13 @@ extension SoptlogMenuCVC {
         title: String,
         value: String,
         hasTooltip: Bool,
-        hasChevron: Bool
+        hasChevron: Bool,
+        showSeparator: Bool = true
     ) {
         titleLabel.text = title
         valueLabel.text = value
         tooltipButton.isHidden = !hasTooltip
         chevronImageView.isHidden = !hasChevron
+        separatorView.isHidden = !showSeparator
     }
 }

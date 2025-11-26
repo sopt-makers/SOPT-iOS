@@ -146,10 +146,10 @@ extension SoptlogVC: UICollectionViewDataSource {
             return configureLogoCell(at: indexPath)
             
         case .soptampLog:
-            return configureSoptampLogCell(at: indexPath)
+            return configureMenuCell(at: indexPath, with: SoptlogSectionModel.soptamp)
             
         case .pokeLog:
-            return configurePokeLogCell(at: indexPath)
+            return configureMenuCell(at: indexPath, with: SoptlogSectionModel.poke)
             
         case .banner:
             return configureBannerCell(at: indexPath)
@@ -205,7 +205,7 @@ extension SoptlogVC: UICollectionViewDataSource {
         return cell
     }
     
-    private func configureSoptampLogCell(at indexPath: IndexPath) -> UICollectionViewCell {
+    private func configureMenuCell(at indexPath: IndexPath, with menus: [SoptlogMenuModel]) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: SoptlogMenuCVC.className,
             for: indexPath
@@ -213,37 +213,14 @@ extension SoptlogVC: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        let menus = SoptlogSectionModel.soptamp
-        let menuIndex = indexPath.item
-        let menu = menus[menuIndex]
-        
+        let menu = menus[indexPath.item]
+        let showSeparator = indexPath.item != menus.count - 1
         cell.configure(
             title: menu.title,
             value: menu.value,
             hasTooltip: menu.hasTooltip,
-            hasChevron: menu.hasChevron
-        )
-        
-        return cell
-    }
-    
-    private func configurePokeLogCell(at indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: SoptlogMenuCVC.className,
-            for: indexPath
-        ) as? SoptlogMenuCVC else {
-            return UICollectionViewCell()
-        }
-        
-        let menus = SoptlogSectionModel.poke
-        let menuIndex = indexPath.item
-        let menu = menus[menuIndex]
-        
-        cell.configure(
-            title: menu.title,
-            value: menu.value,
-            hasTooltip: menu.hasTooltip,
-            hasChevron: menu.hasChevron
+            hasChevron: menu.hasChevron,
+            showSeparator: showSeparator
         )
         
         return cell
