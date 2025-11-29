@@ -147,8 +147,8 @@ extension HomeForMemberVC {
         view.addSubviews(
             naviBar,
             collectionView,
-            floatingButton,
             dimmedView,
+            floatingButton,
             plusButton,
             menuCollectionView
         )
@@ -164,7 +164,7 @@ extension HomeForMemberVC {
         }
         
         floatingButton.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().inset(124)
+            make.bottom.equalTo(plusButton.snp.top).offset(-12)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(68)
         }
@@ -186,7 +186,7 @@ extension HomeForMemberVC {
     
     private func extendedFloatingButtonLayout() {
         floatingButton.snp.remakeConstraints { make in
-            make.bottom.equalToSuperview().inset(124)
+            make.bottom.equalTo(plusButton.snp.top).offset(-12)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(68)
         }
@@ -194,7 +194,7 @@ extension HomeForMemberVC {
     
     private func collapsedFloatingButtonLayout() {
         floatingButton.snp.remakeConstraints { make in
-            make.bottom.equalToSuperview().inset(124)
+            make.bottom.equalTo(plusButton.snp.top).offset(-12)
             make.trailing.equalToSuperview().inset(20)
             make.width.equalTo(127)
             make.height.equalTo(53)
