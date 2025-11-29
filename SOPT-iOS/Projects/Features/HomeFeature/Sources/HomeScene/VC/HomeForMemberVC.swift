@@ -147,8 +147,8 @@ extension HomeForMemberVC {
         view.addSubviews(
             naviBar,
             collectionView,
-            dimmedView,
             floatingButton,
+            dimmedView,
             plusButton,
             menuCollectionView
         )
