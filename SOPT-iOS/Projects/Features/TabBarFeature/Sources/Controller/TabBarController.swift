@@ -96,13 +96,13 @@ extension TabBarController {
     }
     
     private func setLayout() {
-        view.addSubviews(dimmedView, plusButton, menuCollectionView)
+        view.addSubviews(dimmedView, /*plusButton,*/ menuCollectionView)
         
-        plusButton.snp.makeConstraints { make in
-            make.size.equalTo(48)
-            make.bottom.equalToSuperview().inset(58)
-            make.centerX.equalToSuperview()
-        }
+//        plusButton.snp.makeConstraints { make in
+//            make.size.equalTo(48)
+//            make.bottom.equalToSuperview().inset(58)
+//            make.centerX.equalToSuperview()
+//        }
         
         menuCollectionView.snp.makeConstraints { make in
             make.height.equalTo(299)
