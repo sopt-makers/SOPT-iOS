@@ -382,19 +382,36 @@ extension ApplicationCoordinator {
         
         let tabBarBuilder = TabBarBuilder()
         let userType = type ?? UserDefaultKeyList.Auth.getUserType()
+        var viewControllers: [UINavigationController] = []
 
         runHomeFlow(type: userType)
-        runSoptlogFlow(type: userType)
-        runStampTabFlow()
         runPokeTabFlow()
+        runSoptlogFlow(type: userType)
+
+        switch userType {
+        case .active:
+            runStampTabFlow()
+            viewControllers = [
+                homeNavigationController,
+                stampNavigationController,
+                pokeNavigationController,
+                soptlogNavigationController
+            ]
+
+        case .inactive, .visitor:
+            viewControllers = [
+                homeNavigationController,
+                pokeNavigationController,
+                soptlogNavigationController
+            ]
+        }
 
         let coordinator = TabBarCoordinator(
             navigationController: rootNavigationController,
             factory: tabBarBuilder,
-            views: [homeNavigationController, pokeNavigationController, stampNavigationController, soptlogNavigationController],
+            views: viewControllers,
             userType: userType
         )
-        
         coordinator.delegate = self
         coordinator.start()
     }
