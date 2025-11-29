@@ -23,6 +23,7 @@ public final class StampCoordinator: BaseCoordinator {
     private let factory: StampFeatureBuildable
     private let mypageFactory: MyPageFeatureBuildable
     private let navigationController: UINavigationController
+    private weak var rootController: UINavigationController?
 
     // MARK: - Init
 
@@ -38,23 +39,42 @@ public final class StampCoordinator: BaseCoordinator {
 
     // MARK: - Coordinator Life Cycle
 
+    public func start(isRouteFromTabBar: Bool = false) {
+        showMissionList(sceneType: .default, isRouteFromTabBar: isRouteFromTabBar)
+    }
+
     public override func start() {
-        showMissionList(sceneType: .default)
+        start(isRouteFromTabBar: false)
     }
 
     // MARK: - Navigation
 
-    private func showMissionList(sceneType: MissionListSceneType) {
+    private func showMissionList(sceneType: MissionListSceneType, isRouteFromTabBar: Bool) {
         var missionList = factory.makeMissionListVC(sceneType: sceneType, coordinator: self)
 
-        missionList.vc.onNaviBackTap = { [weak self] in
-             self?.navigationController.popViewController(animated: true)
+        if isRouteFromTabBar {
+            self.rootController = self.navigationController
+            missionList.vc.onNaviBackTap = { [weak self] in
+                self?.navigationController.popViewController(animated: true)
+            }
+            self.navigationController.setViewControllers([missionList.vc], animated: false)
+        } else {
+            let navController = UINavigationController(rootViewController: missionList.vc)
+            navController.modalPresentationStyle = .overFullScreen
+            self.rootController = navController
+
+            missionList.vc.onNaviBackTap = { [weak self] in
+                guard let self else { return }
+                self.navigationController.dismiss(animated: true)
+            }
+
+            self.navigationController.present(navController, animated: true)
         }
 
         missionList.vc.onEditTap = { [weak self] in
             guard let self else { return }
             let vc = self.mypageFactory.makeSentenceEditVC()
-            self.navigationController.pushViewController(vc, animated: true)
+            self.rootController?.pushViewController(vc, animated: true)
         }
         missionList.vc.onPartRankingButtonTap = { [weak self] rankingViewType in
             guard let self else { return }
@@ -76,9 +96,8 @@ public final class StampCoordinator: BaseCoordinator {
             guard let url = UserDefaultKeyList.Soptamp.reportUrl else { return }
             let safariViewController = SFSafariViewController(url: URL(string: url)!)
             safariViewController.playgroundStyle()
-            self.navigationController.present(safariViewController, animated: true)
+            self.rootController?.present(safariViewController, animated: true)
         }
-        self.navigationController.setViewControllers([missionList.vc], animated: false)
     }
 }
 
@@ -117,7 +136,7 @@ extension StampCoordinator {
 
         missionDetail.vc.onNaviBackTap = { [weak self] in
             guard let self else { return }
-            self.navigationController.popViewController(animated: true)
+            self.rootController?.popViewController(animated: true)
         }
 
         missionDetail.vc.onViewClapTap = { [weak self] stampId, nickname in
@@ -125,7 +144,7 @@ extension StampCoordinator {
             self.showClapList(stampId: stampId, nickname: nickname)
         }
 
-        self.navigationController.pushViewController(missionDetail.vc, animated: true)
+        rootController?.pushViewController(missionDetail.vc, animated: true)
     }
 
     private func showMissionComplete(_ level: StarViewLevel, _ handler: (() -> Void)?) {
@@ -134,7 +153,7 @@ extension StampCoordinator {
             completionHandler: handler
         )
 
-        self.navigationController.present(missionCompleted, animated: true)
+        rootController?.present(missionCompleted, animated: true)
     }
 }
 
@@ -160,10 +179,10 @@ extension StampCoordinator {
 
         ranking.vc.onNaviBackTap = { [weak self] in
             guard let self else { return }
-            self.navigationController.popViewController(animated: true)
+            self.rootController?.popViewController(animated: true)
         }
 
-        self.navigationController.pushViewController(ranking.vc, animated: true)
+        rootController?.pushViewController(ranking.vc, animated: true)
     }
 
     private func showPartRanking(_ rankingViewType: RankingViewType) {
@@ -176,10 +195,10 @@ extension StampCoordinator {
 
         ranking.vc.onNaviBackTap = { [weak self] in
             guard let self else { return }
-            self.navigationController.popViewController(animated: true)
+            self.rootController?.popViewController(animated: true)
         }
 
-        self.navigationController.pushViewController(ranking.vc, animated: true)
+        rootController?.pushViewController(ranking.vc, animated: true)
     }
 
     private func showOtherMissionList(_ username: String, _ sentence: String) {
@@ -190,12 +209,12 @@ extension StampCoordinator {
 
         otherMissionList.vc.onNaviBackTap = { [weak self] in
             guard let self else { return }
-            self.navigationController.popViewController(animated: true)
+            self.rootController?.popViewController(animated: true)
         }
 
         otherMissionList.vc.onSwiped = { [weak self] in
             guard let self else { return }
-            self.navigationController.popViewController(animated: true)
+            self.rootController?.popViewController(animated: true)
         }
 
         otherMissionList.vc.onCellTap = { [weak self] model, username in
@@ -203,7 +222,7 @@ extension StampCoordinator {
             self.showMissionDetail(model, username)
         }
 
-        self.navigationController.pushViewController(otherMissionList.vc, animated: true)
+        rootController?.pushViewController(otherMissionList.vc, animated: true)
     }
 }
 
@@ -218,19 +237,19 @@ extension StampCoordinator {
 
         clapList.vc.onNaviBackTap = { [weak self] in
             guard let self else { return }
-            self.navigationController.dismiss(animated: true)
+            self.rootController?.dismiss(animated: true)
         }
 
         clapList.vc.onCellTap = { [weak self] username in
             guard let self else { return }
             guard let username else { return }
 
-            self.navigationController.dismiss(animated: true) {
+            self.rootController?.dismiss(animated: true) {
                 self.showOtherMissionList(username, "")
             }
         }
 
         clapList.vc.modalPresentationStyle = .overFullScreen
-        self.navigationController.present(clapList.vc, animated: true)
+        self.rootController?.topViewController?.present(clapList.vc, animated: true)
     }
 }

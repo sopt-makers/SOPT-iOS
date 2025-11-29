@@ -852,7 +852,7 @@ extension ApplicationCoordinator {
             factory: StampBuilder(),
             mypageFactory: MyPageBuilder()
         )
-        coordinator.start()
+        coordinator.start(isRouteFromTabBar: true)
     }
 }
 
@@ -864,6 +864,6 @@ extension ApplicationCoordinator {
             navigationController: pokeNavigationController,
             factory: PokeBuilder()
         )
-        coordinator.start()
+        coordinator.start(isRouteFromTabBar: true)
     }
 }
