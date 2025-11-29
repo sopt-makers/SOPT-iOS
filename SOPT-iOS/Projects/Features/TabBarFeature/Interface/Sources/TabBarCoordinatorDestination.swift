@@ -11,5 +11,7 @@ import Foundation
 public enum TabBarCoordinatorDestination {
     case home
     case soptlog
+    case poke
+    case soptstamp
     case signIn
 }

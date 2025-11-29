@@ -12,11 +12,16 @@ import UIKit
 import Core
 import DSKit
 
+#warning("이미지랑 타이틀 네임 변경하기!")
 extension TabBarItemType {
     private var itemImage: UIImage {
         switch self {
         case .home:
             return DSKitAsset.Assets.icHomeFilled.image.withRenderingMode(.alwaysTemplate)
+        case .soptstamp:
+            return DSKitAsset.Assets.icSoptampFilled.image.withRenderingMode(.alwaysTemplate)
+        case .poke:
+            return DSKitAsset.Assets.icPokeFilled.image.withRenderingMode(.alwaysTemplate)
         case .soptlog:
             return DSKitAsset.Assets.icUserFilled.image.withRenderingMode(.alwaysTemplate)
         }
@@ -26,6 +31,10 @@ extension TabBarItemType {
         switch self {
         case .home:
             return I18N.Home.title
+        case .soptstamp:
+            return I18N.Soptlog.soptamp
+        case .poke:
+            return I18N.Soptlog.poke
         case .soptlog:
             return I18N.Soptlog.tapTitle
         }

@@ -62,8 +62,14 @@ public final class TabBarCoordinator: BaseCoordinator {
             guard let self = self,
                 let tabType = TabType(rawValue: index) else { return }
             switch tabType {
-            case .home: self.delegate?.tabBarCoordinator(self, to: .home)
-            case .soptlog: self.delegate?.tabBarCoordinator(self, to: .soptlog)
+            case .home:
+                self.delegate?.tabBarCoordinator(self, to: .home)
+            case .poke:
+                self.delegate?.tabBarCoordinator(self, to: .poke) // TODO: create .poke destination
+            case .soptstamp:
+                self.delegate?.tabBarCoordinator(self, to: .soptstamp) // TODO: create .soptstamp destination
+            case .soptlog:
+                self.delegate?.tabBarCoordinator(self, to: .soptlog)
             }
         }
         
@@ -89,3 +95,4 @@ public final class TabBarCoordinator: BaseCoordinator {
         self.navigationController?.setViewControllers([tabBar.vc], animated: false)
     }
 }
+

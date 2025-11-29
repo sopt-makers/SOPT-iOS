@@ -37,6 +37,8 @@ public final class ApplicationCoordinator: BaseCoordinator {
     private weak var legacyRootController: UINavigationController?
     let homeNavigationController = UINavigationController()
     let soptlogNavigationController = UINavigationController()
+    let stampNavigationController = UINavigationController()
+    let pokeNavigationController = UINavigationController()
     weak var tabBarController: UITabBarController?
     
     private weak var homeCoordinator: DefaultHomeCoordinator?
@@ -383,11 +385,13 @@ extension ApplicationCoordinator {
 
         runHomeFlow(type: userType)
         runSoptlogFlow(type: userType)
-        
+        runStampTabFlow()
+        runPokeTabFlow()
+
         let coordinator = TabBarCoordinator(
             navigationController: rootNavigationController,
             factory: tabBarBuilder,
-            views: [homeNavigationController, soptlogNavigationController],
+            views: [homeNavigationController, pokeNavigationController, stampNavigationController, soptlogNavigationController],
             userType: userType
         )
         
@@ -836,5 +840,30 @@ extension ApplicationCoordinator {
         coordinator.start()
         
         return coordinator
+    }
+}
+
+// MARK: - StampTabFlow
+
+extension ApplicationCoordinator {
+    internal func runStampTabFlow() {
+        let coordinator = StampCoordinator(
+            navigationController: stampNavigationController,
+            factory: StampBuilder(),
+            mypageFactory: MyPageBuilder()
+        )
+        coordinator.start()
+    }
+}
+
+// MARK: - PokeTabFlow
+
+extension ApplicationCoordinator {
+    internal func runPokeTabFlow() {
+        let coordinator = PokeCoordinator(
+            navigationController: pokeNavigationController,
+            factory: PokeBuilder()
+        )
+        coordinator.start()
     }
 }
