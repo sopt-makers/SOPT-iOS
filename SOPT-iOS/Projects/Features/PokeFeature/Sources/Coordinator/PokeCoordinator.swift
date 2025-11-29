@@ -20,9 +20,7 @@ public final class PokeCoordinator: BaseCoordinator {
     // MARK: - Properties
     
     private let factory: PokeFeatureBuildable
-    private weak var navigationController: UINavigationController?  // pokeMain을 prensent하는 부모 네비
-    private weak var rootController: UINavigationController?        // pokeMain에서 push할 때 사용
-    
+    private weak var navigationController: UINavigationController?
     // MARK: - Init
     
     public init(
@@ -42,11 +40,9 @@ public final class PokeCoordinator: BaseCoordinator {
     // MARK: - Navigation
     
     public func showPokeMain(isRouteFromRoot: Bool) {
-        var pokeMain = factory.makePokeMain(isRouteFromRoot: isRouteFromRoot,
-                                            coordinator: self)
-        
+        var pokeMain = factory.makePokeMain(isRouteFromRoot: isRouteFromRoot, coordinator: self)
         pokeMain.vm.onNaviBackTap = { [weak self] in
-            self?.navigationController?.dismiss(animated: true)
+            self?.navigationController?.popViewController(animated: true)
         }
         
         pokeMain.vm.onPokeNotificationsTap = { [weak self] in
@@ -59,39 +55,35 @@ public final class PokeCoordinator: BaseCoordinator {
         
         pokeMain.vm.onProfileImageTapped = { [weak self] userId in
             guard let url = URL(string: "\(ExternalURL.Playground.main)/members/\(userId)") else { return }
-            
             let webView = SOPTWebView(startWith: url)
-            self?.rootController?.pushViewController(webView, animated: true)
+            self?.navigationController?.pushViewController(webView, animated: true)
         }
         
         pokeMain.vm.onPokeButtonTapped = { [weak self] userModel in
             guard let self else { return .empty() }
-            return self.showMessageBottomSheet(userModel: userModel, on: self.rootController)
+            return self.showMessageBottomSheet(userModel: userModel, on: self.navigationController)
         }
         
         pokeMain.vm.onNewFriendMade = { [weak self] friendName in
             guard let self else { return }
             let pokeMakingFriendCompletedVC = self.factory.makePokeMakingFriendCompleted(friendName: friendName).viewController
             pokeMakingFriendCompletedVC.modalPresentationStyle = .overFullScreen
-            self.rootController?.present(pokeMakingFriendCompletedVC, animated: false)
+            self.navigationController?.present(pokeMakingFriendCompletedVC, animated: false)
         }
 
         pokeMain.vm.onAnonymousFriendUpgrade = { [weak self] user in
             guard let self else { return }
             let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
             pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
-            self.rootController?.present(pokeAnonymousFriendUpgradeVC, animated: false)
+            self.navigationController?.present(pokeAnonymousFriendUpgradeVC, animated: false)
         }
-        
-        let navController = UINavigationController(rootViewController: pokeMain.vc)
-        navController.modalPresentationStyle = .overFullScreen
-        rootController = navController
-        navigationController?.present(navController, animated: true)
+        self.navigationController?.setViewControllers([pokeMain.vc], animated: false)
     }
     
     internal func runPokeNotificationListFlow() {
+        guard let navigationController = self.navigationController else { return }
         let pokeNotificationListCoordinator = PokeNotificationListCoordinator(
-            navigationController: rootController ?? UIWindow.getRootNavigationController,
+            navigationController: navigationController,
             factory: factory
         )
         
@@ -105,8 +97,10 @@ public final class PokeCoordinator: BaseCoordinator {
     }
     
     private func runPokeMyFriendsFlow() {
+        guard let navigationController = self.navigationController else { return }
+
         let pokeMyFriendsCoordinator = PokeMyFriendsCoordinator(
-            navigationController: rootController ?? UIWindow.getRootNavigationController,
+            navigationController: navigationController,
             factory: factory
         )
         
@@ -118,8 +112,8 @@ public final class PokeCoordinator: BaseCoordinator {
 
         guard let bottomSheet = self.factory
             .makePokeMessageTemplateBottomSheet(messageType: messageType)
-                .vc
-                .viewController as? PokeMessageTemplateBottomSheet
+            .vc
+            .viewController as? PokeMessageTemplateBottomSheet
         else { return .empty() }
         
         let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate(minHeight: PokeMessageTemplateBottomSheet.minimumContentHeight))
