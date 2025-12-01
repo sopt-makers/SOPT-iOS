@@ -35,6 +35,10 @@ extension ApplicationCoordinator: TabBarCoordinatorDelegate {
             self.selectedTab(.home)
         case .soptlog:
             self.selectedTab(.soptlog)
+        case .poke:
+            self.selectedTab(.poke)
+        case .soptstamp:
+            self.selectedTab(.soptstamp)
         case .signIn:
             clearChildViewControllers()
             self.runSignInFlow(by: .rootWindow(animated: true, message: nil))

@@ -10,5 +10,7 @@ import Foundation
 
 public enum TabType: Int {
     case home = 0
-    case soptlog = 1
+    case soptstamp = 1
+    case poke = 2
+    case soptlog = 3
 }

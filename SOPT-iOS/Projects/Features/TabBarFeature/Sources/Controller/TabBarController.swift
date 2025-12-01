@@ -23,6 +23,7 @@ final class TabBarController: UITabBarController {
     private let isTabBarItemSelected = PassthroughSubject<Int, Never>()
     private let isMenuCellTapped = PassthroughSubject<String, Never>()
     private lazy var isFABTapped = plusButton.publisher(for: .touchUpInside).mapVoid().asDriver()
+    private let userType: UserType
     private let cancelBag = CancelBag()
     
     // MARK: - UI Components
@@ -53,10 +54,11 @@ final class TabBarController: UITabBarController {
     
     // MARK: - Life Cycle
     
-    init(viewModel: TabBarViewModel, tabList: [UIViewController]) {
+    init(viewModel: TabBarViewModel, tabList: [UIViewController], userType: UserType) {
         self.viewModel = viewModel
         self.tabList = tabList
-        
+        self.userType = userType
+
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -96,13 +98,13 @@ extension TabBarController {
     }
     
     private func setLayout() {
-        view.addSubviews(dimmedView, plusButton, menuCollectionView)
+        view.addSubviews(dimmedView, /*plusButton,*/ menuCollectionView)
         
-        plusButton.snp.makeConstraints { make in
-            make.size.equalTo(48)
-            make.bottom.equalToSuperview().inset(58)
-            make.centerX.equalToSuperview()
-        }
+//        plusButton.snp.makeConstraints { make in
+//            make.size.equalTo(48)
+//            make.bottom.equalToSuperview().inset(58)
+//            make.centerX.equalToSuperview()
+//        }
         
         menuCollectionView.snp.makeConstraints { make in
             make.height.equalTo(299)
@@ -134,14 +136,27 @@ extension TabBarController {
     }
     
     private func configureTabBarItem() {
-        TabBarItemType.allCases.forEach {
-            tabList[$0.rawValue].tabBarItem = $0.makeTabBarItem()
-            tabList[$0.rawValue].tabBarItem.tag = $0.rawValue
-            tabList[$0.rawValue].tabBarItem.imageInsets = UIEdgeInsets(top: 5, left: 0, bottom: -5, right: 0)
-            tabList[$0.rawValue].tabBarItem.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: 3)
-            tabList[$0.rawValue].tabBarItem.setTitleTextAttributes([NSAttributedString.Key.font: DSKitFontFamily.Suit.medium.font(size: 10)], for: .normal)
+        let tabs: [TabBarItemType]
+
+        switch self.userType{
+        case .active:
+            tabs = [.home, .soptstamp, .poke, .soptlog]
+        case .inactive, .visitor:
+            tabs = [.home, .poke, .soptlog]
         }
-        
+
+        tabs.enumerated().forEach { index, tabType in
+            let viewController = tabList[index]
+            viewController.tabBarItem = tabType.makeTabBarItem()
+            viewController.tabBarItem.tag = index
+            viewController.tabBarItem.imageInsets = UIEdgeInsets(top: 5, left: 0, bottom: -5, right: 0)
+            viewController.tabBarItem.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: 3)
+            viewController.tabBarItem.setTitleTextAttributes(
+                [NSAttributedString.Key.font: DSKitFontFamily.Suit.medium.font(size: 10)],
+                for: .normal
+            )
+        }
+
         setViewControllers(tabList, animated: true)
     }
 }

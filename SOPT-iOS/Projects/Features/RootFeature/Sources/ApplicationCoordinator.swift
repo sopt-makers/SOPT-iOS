@@ -37,6 +37,8 @@ public final class ApplicationCoordinator: BaseCoordinator {
     private weak var legacyRootController: UINavigationController?
     let homeNavigationController = UINavigationController()
     let soptlogNavigationController = UINavigationController()
+    let stampNavigationController = UINavigationController()
+    let pokeNavigationController = UINavigationController()
     weak var tabBarController: UITabBarController?
     
     private weak var homeCoordinator: DefaultHomeCoordinator?
@@ -380,17 +382,36 @@ extension ApplicationCoordinator {
         
         let tabBarBuilder = TabBarBuilder()
         let userType = type ?? UserDefaultKeyList.Auth.getUserType()
+        var viewControllers: [UINavigationController] = []
 
         runHomeFlow(type: userType)
+        runPokeTabFlow()
         runSoptlogFlow(type: userType)
-        
+
+        switch userType {
+        case .active:
+            runStampTabFlow()
+            viewControllers = [
+                homeNavigationController,
+                stampNavigationController,
+                pokeNavigationController,
+                soptlogNavigationController
+            ]
+
+        case .inactive, .visitor:
+            viewControllers = [
+                homeNavigationController,
+                pokeNavigationController,
+                soptlogNavigationController
+            ]
+        }
+
         let coordinator = TabBarCoordinator(
             navigationController: rootNavigationController,
             factory: tabBarBuilder,
-            views: [homeNavigationController, soptlogNavigationController],
+            views: viewControllers,
             userType: userType
         )
-        
         coordinator.delegate = self
         coordinator.start()
     }
@@ -836,5 +857,30 @@ extension ApplicationCoordinator {
         coordinator.start()
         
         return coordinator
+    }
+}
+
+// MARK: - StampTabFlow
+
+extension ApplicationCoordinator {
+    internal func runStampTabFlow() {
+        let coordinator = StampCoordinator(
+            navigationController: stampNavigationController,
+            factory: StampBuilder(),
+            mypageFactory: MyPageBuilder()
+        )
+        coordinator.start(isRouteFromTabBar: true)
+    }
+}
+
+// MARK: - PokeTabFlow
+
+extension ApplicationCoordinator {
+    internal func runPokeTabFlow() {
+        let coordinator = PokeCoordinator(
+            navigationController: pokeNavigationController,
+            factory: PokeBuilder()
+        )
+        coordinator.start(isRouteFromTabBar: true)
     }
 }

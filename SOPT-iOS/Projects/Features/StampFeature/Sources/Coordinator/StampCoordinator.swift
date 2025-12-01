@@ -22,7 +22,6 @@ public final class StampCoordinator: BaseCoordinator {
 
     private let factory: StampFeatureBuildable
     private let mypageFactory: MyPageFeatureBuildable
-    
     private let navigationController: UINavigationController
     private weak var rootController: UINavigationController?
 
@@ -40,27 +39,43 @@ public final class StampCoordinator: BaseCoordinator {
 
     // MARK: - Coordinator Life Cycle
 
+    public func start(isRouteFromTabBar: Bool = false) {
+        showMissionList(sceneType: .default, isRouteFromTabBar: isRouteFromTabBar)
+    }
+
     public override func start() {
-        showMissionList(sceneType: .default)
+        start(isRouteFromTabBar: false)
     }
 
     // MARK: - Navigation
 
-    private func showMissionList(sceneType: MissionListSceneType) {
+    private func showMissionList(sceneType: MissionListSceneType, isRouteFromTabBar: Bool) {
         var missionList = factory.makeMissionListVC(sceneType: sceneType, coordinator: self)
 
-        missionList.vc.onNaviBackTap = { [weak self] in
-            guard let self else { return }
-            self.navigationController.dismiss(animated: true)
+        if isRouteFromTabBar {
+            self.rootController = self.navigationController
+            missionList.vc.onNaviBackTap = { [weak self] in
+                self?.navigationController.popViewController(animated: true)
+            }
+            self.navigationController.setViewControllers([missionList.vc], animated: false)
+        } else {
+            let navController = UINavigationController(rootViewController: missionList.vc)
+            navController.modalPresentationStyle = .overFullScreen
+            self.rootController = navController
+
+            missionList.vc.onNaviBackTap = { [weak self] in
+                guard let self else { return }
+                self.navigationController.dismiss(animated: true)
+            }
+
+            self.navigationController.present(navController, animated: true)
         }
 
         missionList.vc.onEditTap = { [weak self] in
             guard let self else { return }
-        
             let vc = self.mypageFactory.makeSentenceEditVC()
-            rootController?.pushViewController(vc, animated: true)
+            self.rootController?.pushViewController(vc, animated: true)
         }
-        
         missionList.vc.onPartRankingButtonTap = { [weak self] rankingViewType in
             guard let self else { return }
             self.runRankingFlow(rankingViewType: rankingViewType)
@@ -83,11 +98,6 @@ public final class StampCoordinator: BaseCoordinator {
             safariViewController.playgroundStyle()
             self.rootController?.present(safariViewController, animated: true)
         }
-
-        let navController = UINavigationController(rootViewController: missionList.vc)
-        navController.modalPresentationStyle = .overFullScreen
-        rootController = navController
-        navigationController.present(navController, animated: true)
     }
 }
 

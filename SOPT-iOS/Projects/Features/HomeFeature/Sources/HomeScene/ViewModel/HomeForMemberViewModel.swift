@@ -31,7 +31,8 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     private var fetchedRecentSchedule: HomePresentationModel.RecentSchedule?
     private var fetchedSurvey: HomePresentationModel.Survey?
     private var fetchedFloatingButtonInfo: HomeFloatingButtonPresentationModel?
-            
+    @Published private(set) var isFABTapped: Bool = false
+
     let productServiceList: [HomePresentationModel.ProductService] = [
         .init(product: .playgroundCommunity),
         .init(product: .group),
@@ -61,6 +62,8 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         let socialLinkButtonTapped: Driver<HomePresentationModel.SocialLink>
         let viewAllButtonTapped: Driver<Void>
         let profileImageViewTapped: Driver<PostInfo>
+        let isFABTapped: Driver<Void>
+        let isMenuCellTapped: Driver<String>
     }
     
     // MARK: - Outputs
@@ -89,7 +92,8 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public var onLatestPostCellTapped: ((String) -> Void)?
     public var onViewAllContentButtonTapped: ((String) -> Void)?
     public var onProfileImageViewTapped: ((Int) -> Void)?
-    
+    public var onFABMenuTapped: ((String) -> Void)?
+
     // MARK: - initialization
     
     public init(useCase: HomeUseCase, coordinator: Coordinator) {
@@ -234,7 +238,20 @@ extension HomeForMemberViewModel {
                 
             }
             .store(in: cancelBag)
-        
+        input.isFABTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.isFABTapped.toggle()
+            }
+            .store(in: cancelBag)
+
+        input.isMenuCellTapped
+            .withUnretained(self)
+            .sink { owner, url in
+                owner.onFABMenuTapped?(url)
+            }
+            .store(in: cancelBag)
+
         return output
     }
 }
