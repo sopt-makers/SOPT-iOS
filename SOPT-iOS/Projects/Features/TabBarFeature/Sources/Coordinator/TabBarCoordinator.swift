@@ -31,6 +31,7 @@ public final class TabBarCoordinator: BaseCoordinator {
     private weak var navigationController: UINavigationController?
     private let views: [UIViewController]
     private let userType: UserType
+    private let selectedTabType: TabType
     
     // MARK: - Init
     
@@ -38,12 +39,14 @@ public final class TabBarCoordinator: BaseCoordinator {
         navigationController: UINavigationController,
         factory: TabBarBuilder,
         views: [UIViewController],
-        userType: UserType
+        userType: UserType,
+        selectedTabType: TabType = .home
     ) {
         self.navigationController = navigationController
         self.factory = factory
         self.views = views
         self.userType = userType
+        self.selectedTabType = selectedTabType
     }
     
     // MARK: - Coordinator Life Cycle
@@ -92,7 +95,35 @@ public final class TabBarCoordinator: BaseCoordinator {
             self?.navigationController?.pushViewController(webView, animated: true)
         }
         
+        let tabIndex = getTabIndex(for: selectedTabType)
+        tabBar.vc.selectedIndex = tabIndex
+        
         self.navigationController?.setViewControllers([tabBar.vc], animated: false)
+    }
+    
+    private func getTabIndex(for tabType: TabType) -> Int {
+        switch userType {
+        case .active:
+            switch tabType {
+            case .home:
+                0
+            case .soptstamp:
+                1
+            case .poke:
+                2
+            case .soptlog:
+                3
+            }
+        case .visitor, .inactive:
+            switch tabType {
+            case .home, .soptstamp:
+                0
+            case .poke:
+                1
+            case .soptlog:
+                2
+            }
+        }
     }
 }
 

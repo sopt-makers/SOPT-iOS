@@ -410,7 +410,8 @@ extension ApplicationCoordinator {
             navigationController: rootNavigationController,
             factory: tabBarBuilder,
             views: viewControllers,
-            userType: userType
+            userType: userType,
+            selectedTabType: initSelectedTabType
         )
         coordinator.delegate = self
         coordinator.start()
