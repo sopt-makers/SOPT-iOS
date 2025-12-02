@@ -9,7 +9,6 @@
 import Foundation
 
 import BaseFeatureDependency
-import Core
 
 public struct HomeDeepLink: DeepLinkExecutable {
     public let name = "home"
@@ -20,7 +19,7 @@ public struct HomeDeepLink: DeepLinkExecutable {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
         
         if self.isDestination == true {
-            Config.coordinatorFlag == .legacy ? coordinator.runLegacyTabBarFlow(initSelectedTabIndex: 0) : coordinator.runTabBarFlow(initSelectedTabType: .home)
+            coordinator.runTabBarFlow(initSelectedTabType: .home)
         }
         
         return coordinator

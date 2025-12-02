@@ -14,11 +14,14 @@ public struct SoptampDeepLink: DeepLinkExecutable {
     public let name = "soptamp"
     public let children: [DeepLinkExecutable] = [SoptampEntireRankingDeepLink(), SoptampCurrentGenerationRankingDeepLink(), SoptampEntirePartRankingDeepLink()]
     public var isDestination: Bool = false
-    
+
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
         
-        let stampCoordinator = coordinator.runStampFlow()
-        return stampCoordinator
+        if self.isDestination == true {
+            coordinator.runTabBarFlow(initSelectedTabType: .soptstamp)
+        }
+        
+        return coordinator
     }
 }

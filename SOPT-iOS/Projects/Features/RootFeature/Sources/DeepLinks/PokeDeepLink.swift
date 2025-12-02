@@ -14,11 +14,13 @@ public struct PokeDeepLink: DeepLinkExecutable {
     public let name = "poke"
     public let children: [DeepLinkExecutable] = [PokeNotificationListDeepLink()]
     public var isDestination: Bool = false
-    
+
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
         
-        coordinator.runPokeFlow()
+        if self.isDestination == true {
+            coordinator.runTabBarFlow(initSelectedTabType: .poke)
+        }
         
         return coordinator
     }
