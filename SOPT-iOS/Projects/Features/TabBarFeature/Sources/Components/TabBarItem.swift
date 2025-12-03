@@ -21,7 +21,7 @@ extension TabBarItemType {
         case .soptstamp:
             return DSKitAsset.Assets.icSoptampFilled.image.withRenderingMode(.alwaysTemplate)
         case .poke:
-            return DSKitAsset.Assets.icPokeFilled.image.withRenderingMode(.alwaysTemplate)
+            return DSKitAsset.Assets.iconPokeFill.image.withRenderingMode(.alwaysTemplate)
         case .soptlog:
             return DSKitAsset.Assets.icUserFilled.image.withRenderingMode(.alwaysTemplate)
         }
