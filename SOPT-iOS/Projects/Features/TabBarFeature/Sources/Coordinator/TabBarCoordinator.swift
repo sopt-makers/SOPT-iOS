@@ -52,7 +52,12 @@ public final class TabBarCoordinator: BaseCoordinator {
     // MARK: - Coordinator Life Cycle
     
     public override func start() {
-        showTabBar()
+        if let existingTabBar = navigationController?.viewControllers.first as? UITabBarController {
+            let tabIndex = getTabIndex(for: selectedTabType)
+            existingTabBar.selectedIndex = tabIndex
+        } else {
+            showTabBar()
+        }
     }
     
     // MARK: - Navigation
