@@ -301,6 +301,9 @@ extension BaseService {
                         let body = try decoder.decode(T.self, from: value.data)
                         continuation.resume(returning: body)
                     } catch let error {
+                        if let error = error as? APIError {
+                            continuation.resume(throwing: error)
+                        }
                         continuation.resume(throwing: MoyaError.jsonMapping(value))
                     }
                 case .failure(let error):
