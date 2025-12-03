@@ -26,8 +26,8 @@ public protocol UserService {
     func optInPushNotificationInDetail(notificationSettings: DetailNotificationOptInEntity) -> AnyPublisher<DetailNotificationOptInEntity, Error>
     func appService() -> AnyPublisher<[AppServiceEntity], Error>
     func hotBoard() -> AnyPublisher<HotBoardEntity, Error>
-    func fetchSoptlogInfo() -> AnyPublisher<SoptlogResponseEntity, Error>
     
+    func fetchSoptlogInfo() async throws -> SoptlogResponseEntity
     func getUserMainInfoAsync() async throws -> MainEntity
 }
 
@@ -80,8 +80,8 @@ extension DefaultUserService: UserService {
         requestObjectWithNetworkErrorInCombine(.hotboard)
     }
     
-    public func fetchSoptlogInfo() -> AnyPublisher<SoptlogResponseEntity, Error> {
-        requestObjectInCombine(.fetchSoptlogInfo)
+    public func fetchSoptlogInfo() async throws -> SoptlogResponseEntity {
+        try await requestObjectAsync(.fetchSoptlogInfo)
     }
     
     public func getUserMainInfoAsync() async throws -> MainEntity {
