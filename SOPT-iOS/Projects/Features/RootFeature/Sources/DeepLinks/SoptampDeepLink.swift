@@ -17,11 +17,12 @@ public struct SoptampDeepLink: DeepLinkExecutable {
 
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
-        
+  
         if self.isDestination == true {
             coordinator.runTabBarFlow(initSelectedTabType: .soptstamp)
+            return coordinator
         }
         
-        return coordinator
+        return coordinator.runStampFlow() as? StampCoordinator
     }
 }

@@ -20,8 +20,9 @@ public struct PokeDeepLink: DeepLinkExecutable {
         
         if self.isDestination == true {
             coordinator.runTabBarFlow(initSelectedTabType: .poke)
+            return coordinator
         }
         
-        return coordinator
+        return coordinator.runPokeFlow() as? PokeCoordinator
     }
 }
