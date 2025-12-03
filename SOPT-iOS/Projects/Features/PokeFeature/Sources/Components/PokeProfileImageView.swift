@@ -11,7 +11,7 @@ import DSKit
 
 extension CustomProfileImageView {
     public func setImage(with url: String, relation: PokeRelation) {
-        self.setImage(with: url, placeholder: DSKitAsset.Assets.iconDefaultProfile.image)
+        self.setImage(with: url, placeholder: DSKitAsset.Assets.icDefaultProfile.image)
         self.setBorderColor(for: relation)
     }
     

@@ -53,7 +53,7 @@ public final class PKokButton: UIButton {
     }
     
     private func setIcon() {
-        let icon = DSKitAsset.Assets.iconKok.image
+        let icon = DSKitAsset.Assets.icKok.image
         self.setImage(icon.withTintColor(DSKitAsset.Colors.black.color), for: .normal)
         self.setImage(icon.withTintColor(DSKitAsset.Colors.gray500.color), for: .disabled)
     }

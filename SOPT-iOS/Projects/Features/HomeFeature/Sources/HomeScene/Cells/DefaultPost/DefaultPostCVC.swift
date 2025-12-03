@@ -313,7 +313,7 @@ extension DefaultPostCVC {
             changeTitleLabelColor(for: model.category)
             self.emptyImageView.setImage(
                 with: model.profileImage ?? "",
-                placeholder: DSKitAsset.Assets.iconDefaultProfile.image
+                placeholder: DSKitAsset.Assets.icDefaultProfile.image
             )
             updateVisibility(for: .empty)
             return
@@ -346,7 +346,7 @@ extension DefaultPostCVC {
         }
         
         if let profileImage = model.profileImage {
-            self.profileImageView.setImage(with: profileImage, placeholder: DSKitAsset.Assets.iconDefaultProfile.image)
+            self.profileImageView.setImage(with: profileImage, placeholder: DSKitAsset.Assets.icDefaultProfile.image)
         }
         self.postTitleLabel.text = model.title
         self.postContentLabel.text = model.content
