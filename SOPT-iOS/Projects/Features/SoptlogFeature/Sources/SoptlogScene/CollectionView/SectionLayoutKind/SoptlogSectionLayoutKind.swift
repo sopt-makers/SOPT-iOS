@@ -15,7 +15,7 @@ enum SoptlogSectionLayoutKind: Int, CaseIterable {
     case soptampLog
     case pokeLog
     case banner
-    
+
     var title: String {
         switch self {
         case .soptampLog: return I18N.Soptlog.soptamp
@@ -23,12 +23,12 @@ enum SoptlogSectionLayoutKind: Int, CaseIterable {
         default: return ""
         }
     }
-    
-    var numberOfItems: Int {
+
+    func numberOfItems(isPokeEmpty: Bool) -> Int {
         switch self {
         case .logo: return 1
         case .soptampLog: return SoptlogSectionModel.soptamp.count
-        case .pokeLog: return SoptlogSectionModel.poke.count
+        case .pokeLog: return isPokeEmpty ? 1 : SoptlogSectionModel.poke.count
         case .banner: return 1
         }
     }
