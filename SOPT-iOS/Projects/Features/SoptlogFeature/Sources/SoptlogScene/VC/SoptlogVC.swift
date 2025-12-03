@@ -24,6 +24,7 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     private var cellTap = PassthroughSubject<IndexPath, Never>()
     private var toolTipTap = PassthroughSubject<CGRect, Never>()
     private var viewWillAppear = PassthroughSubject<Void, Never>()
+    private var soptlogInfo: SoptlogPresentationModel?
     
     // MARK: - UI Components
     
@@ -133,7 +134,18 @@ extension SoptlogVC: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard let sectionType = SoptlogSectionLayoutKind(rawValue: section) else { return 0 }
-        return sectionType.numberOfItems
+              let info = soptlogInfo else { return 0 }
+
+        switch sectionType {
+        case .logo:
+            return 1
+        case .soptampLog:
+            return info.soptampMenus.count
+        case .pokeLog:
+            return info.pokeMenus.count
+        case .banner:
+            return 1
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
