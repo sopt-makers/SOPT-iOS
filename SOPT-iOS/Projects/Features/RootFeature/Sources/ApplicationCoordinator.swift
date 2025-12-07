@@ -835,6 +835,8 @@ extension ApplicationCoordinator {
                     self?.runDailySoptuneFlow()
                 case .webLink(let url):
                     self?.handleWebLink(webLink: url)
+                default:
+                    return
                 }
             }
             

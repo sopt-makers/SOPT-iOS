@@ -11,6 +11,7 @@ import Combine
 
 import Core
 import Domain
+import PokeFeatureInterface
 
 import BaseFeatureDependency
 
@@ -40,10 +41,12 @@ public class SoptlogViewModel: SoptlogViewModelType {
     
     // MARK: - SoptlogCoordinatable
     
-    public var onProfileEditTapped: (() -> Void)?
     public var onToolTipTapped: ((CGRect) -> Void)?
     public var onSoptuneTapped: (() -> Void)?
     public var onNetworkError: (() -> Void)?
+    public var onSoptampHomeTapped: (() -> Void)?
+    public var onPokeHomeTapped: (() -> Void)?
+    public var onPokeMyFriendsTapped: ((PokeRelation) -> Void)?
     
     
     // MARK: - initialization
@@ -75,15 +78,28 @@ extension SoptlogViewModel {
         input.cellTap
             .filter{ $0.section == 1 }
             .withUnretained(self)
-            .sink { owner, _ in
-                // TODO: - 솝탬프 화면전환
+            .sink { owner, indexPath in
+                if indexPath.row == 0 {
+                    owner.onSoptampHomeTapped?()
+                }
             }.store(in: cancelBag)
         
         input.cellTap
             .filter{ $0.section == 2 }
             .withUnretained(self)
-            .sink { owner, _ in
-                // TODO: - 콕찌르기 화면전환
+            .sink { owner, indexPath in
+                switch indexPath.row {
+                case 0:
+                    owner.onPokeHomeTapped?()
+                case 1:
+                    owner.onPokeMyFriendsTapped?(.newFriend)
+                case 2:
+                    owner.onPokeMyFriendsTapped?(.bestFriend)
+                case 3:
+                    owner.onPokeMyFriendsTapped?(.soulmate)
+                default:
+                    break
+                }
             }.store(in: cancelBag)
         
         input.cellTap
