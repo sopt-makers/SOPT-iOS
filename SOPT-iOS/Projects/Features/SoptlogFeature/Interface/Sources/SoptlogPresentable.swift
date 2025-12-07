@@ -13,7 +13,6 @@ import Core
 
 public protocol SoptlogViewControllable: LegacyViewControllable { }
 public protocol SoptlogCoordinatable {
-    var onProfileEditTapped: (() -> Void)? { get set }
     var onToolTipTapped: ((CGRect) -> Void)? { get set }
     var onSoptuneTapped: (() -> Void)? { get set }
     var onNetworkError: (() -> Void)? { get set }
