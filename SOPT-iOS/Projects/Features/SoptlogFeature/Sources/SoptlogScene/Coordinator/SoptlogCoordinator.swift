@@ -70,6 +70,11 @@ public final class SoptlogCoordinator: BaseCoordinator {
             self.delegate?.soptlogCoordinator(self, to: .pokeHome)
         }
         
+        soptlog.vm.onPokeMyFriendsTapped = { [weak self] relation in
+            guard let self else { return }
+            self.delegate?.soptlogCoordinator(self, to: .pokeMyFriends(relation: relation))
+        }
+        
         soptlog.vm.onNetworkError = {
             AlertUtils.presentNetworkAlertVC()
         }
