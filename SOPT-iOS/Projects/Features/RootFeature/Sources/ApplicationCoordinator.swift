@@ -885,4 +885,14 @@ extension ApplicationCoordinator {
         )
         coordinator.start(isRouteFromTabBar: true)
     }
+    
+    internal func runPokeMyFriendsFlow(relation: PokeRelation) {
+        
+        let pokeMyFriendsCoordinator = PokeMyFriendsCoordinator(
+            navigationController: self.pokeNavigationController,
+            factory: PokeBuilder()
+        )
+        
+        pokeMyFriendsCoordinator.start(with: relation)
+    }
 }
