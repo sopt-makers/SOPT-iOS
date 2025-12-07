@@ -414,6 +414,8 @@ extension ApplicationCoordinator {
         )
         coordinator.delegate = self
         coordinator.start()
+        
+        self.tabBarController = coordinator.tabBarController
     }
 }
 
