@@ -36,7 +36,7 @@ public final class PokeFriendsSectionHeaderView: UIView {
     }
     
     private let rightButton = UIButton().then {
-        $0.setImage(DSKitAsset.Assets.iconChevronRight.image.withTintColor(DSKitAsset.Colors.white.color),
+        $0.setImage(DSKitAsset.Assets.icChevronRight.image.withTintColor(DSKitAsset.Colors.white.color),
                     for: .normal)
     }
     

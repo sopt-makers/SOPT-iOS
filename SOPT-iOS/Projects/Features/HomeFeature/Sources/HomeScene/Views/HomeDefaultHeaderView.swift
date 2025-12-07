@@ -38,7 +38,7 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
         var attributedTitle = AttributedString(I18N.Home.viewAll)
         attributedTitle.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
         config.attributedTitle = attributedTitle
-        let chervonRightImage = DSKitAsset.Assets.iconChevronRight.image.withTintColor(DSKitAsset.Colors.gray300.color)
+        let chervonRightImage = DSKitAsset.Assets.icChevronRight.image.withTintColor(DSKitAsset.Colors.gray300.color)
             .preparingThumbnail(of: .init(width: 16, height: 16))
         config.image = chervonRightImage
         config.imagePlacement = .trailing

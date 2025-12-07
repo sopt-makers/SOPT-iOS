@@ -37,7 +37,7 @@ final class MissionDateView: UIView {
         $0.font = .SoptampFont.caption1
     }
     private let rightChevron = UIImageView().then {
-        $0.image = DSKitAsset.Assets.iconChevronRight.image.withRenderingMode(.alwaysTemplate)
+        $0.image = DSKitAsset.Assets.icChevronRight.image.withRenderingMode(.alwaysTemplate)
         $0.tintColor = DSKitAsset.Colors.gray300.color
     }
     

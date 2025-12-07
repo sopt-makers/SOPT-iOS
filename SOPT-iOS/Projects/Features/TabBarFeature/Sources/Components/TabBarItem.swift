@@ -12,7 +12,6 @@ import UIKit
 import Core
 import DSKit
 
-#warning("이미지랑 타이틀 네임 변경하기!")
 extension TabBarItemType {
     private var itemImage: UIImage {
         switch self {

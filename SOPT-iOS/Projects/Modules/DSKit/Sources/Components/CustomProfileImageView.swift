@@ -31,7 +31,7 @@ public final class CustomProfileImageView: UIImageView {
     
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.gray700.color
-        self.image = DSKitAsset.Assets.iconDefaultProfile.image
+        self.image = DSKitAsset.Assets.icDefaultProfile.image
         self.clipsToBounds = true
         self.layer.borderWidth = 2
         self.contentMode = .scaleAspectFill
@@ -43,7 +43,7 @@ public final class CustomProfileImageView: UIImageView {
     }
     
     public func setPlaceholder() {
-        self.image = DSKitAsset.Assets.iconDefaultProfile.image
+        self.image = DSKitAsset.Assets.icDefaultProfile.image
     }
     
     @discardableResult
