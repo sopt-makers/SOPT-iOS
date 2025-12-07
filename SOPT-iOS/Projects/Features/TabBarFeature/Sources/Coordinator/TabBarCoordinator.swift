@@ -26,6 +26,7 @@ public final class TabBarCoordinator: BaseCoordinator {
 
     public var requestCoordinating: ((TabBarCoordinatorDestination) -> Void)?
     public weak var delegate: TabBarCoordinatorDelegate?
+    public private(set) weak var tabBarController: UITabBarController?
         
     private let factory: TabBarBuilder
     private weak var navigationController: UINavigationController?
@@ -92,6 +93,7 @@ public final class TabBarCoordinator: BaseCoordinator {
             self?.navigationController?.pushViewController(webView, animated: true)
         }
         
+        self.tabBarController = tabBar.vc
         self.navigationController?.setViewControllers([tabBar.vc], animated: false)
     }
 }
