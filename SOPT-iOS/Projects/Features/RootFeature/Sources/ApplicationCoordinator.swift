@@ -887,6 +887,7 @@ extension ApplicationCoordinator {
     }
     
     internal func runPokeMyFriendsFlow(relation: PokeRelation) {
+        self.pokeNavigationController.popToRootViewController(animated: false)
         
         let pokeMyFriendsCoordinator = PokeMyFriendsCoordinator(
             navigationController: self.pokeNavigationController,
