@@ -65,9 +65,9 @@ public final class TabBarCoordinator: BaseCoordinator {
             case .home:
                 self.delegate?.tabBarCoordinator(self, to: .home)
             case .poke:
-                self.delegate?.tabBarCoordinator(self, to: .poke) // TODO: create .poke destination
-            case .soptstamp:
-                self.delegate?.tabBarCoordinator(self, to: .soptstamp) // TODO: create .soptstamp destination
+                self.delegate?.tabBarCoordinator(self, to: .poke)
+            case .soptamp:
+                self.delegate?.tabBarCoordinator(self, to: .soptamp)
             case .soptlog:
                 self.delegate?.tabBarCoordinator(self, to: .soptlog)
             }
