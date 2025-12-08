@@ -41,9 +41,6 @@ public final class ApplicationCoordinator: BaseCoordinator {
     let pokeNavigationController = UINavigationController()
     weak var tabBarController: UITabBarController?
     
-    private weak var homeCoordinator: DefaultHomeCoordinator?
-    private weak var soptlogCoordinator: DefaultSoptlogCoordinator?
-    
     // MARK: - Init
     
     public init(
@@ -385,6 +382,7 @@ extension ApplicationCoordinator {
         var viewControllers: [UINavigationController] = []
 
         runHomeFlow(type: userType)
+        runStampTabFlow()
         runPokeTabFlow()
         runSoptlogFlow(type: userType)
 
@@ -414,6 +412,8 @@ extension ApplicationCoordinator {
         )
         coordinator.delegate = self
         coordinator.start()
+        
+        self.tabBarController = coordinator.tabBarController
     }
 }
 
@@ -835,6 +835,8 @@ extension ApplicationCoordinator {
                     self?.runDailySoptuneFlow()
                 case .webLink(let url):
                     self?.handleWebLink(webLink: url)
+                default:
+                    return
                 }
             }
             
@@ -882,5 +884,16 @@ extension ApplicationCoordinator {
             factory: PokeBuilder()
         )
         coordinator.start(isRouteFromTabBar: true)
+    }
+    
+    internal func runPokeMyFriendsFlow(relation: PokeRelation) {
+        self.pokeNavigationController.popToRootViewController(animated: false)
+        
+        let pokeMyFriendsCoordinator = PokeMyFriendsCoordinator(
+            navigationController: self.pokeNavigationController,
+            factory: PokeBuilder()
+        )
+        
+        pokeMyFriendsCoordinator.start(with: relation)
     }
 }

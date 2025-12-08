@@ -10,13 +10,16 @@ import UIKit
 
 import BaseFeatureDependency
 import Core
+import PokeFeatureInterface
 
 public protocol SoptlogViewControllable: LegacyViewControllable { }
 public protocol SoptlogCoordinatable {
-    var onProfileEditTapped: (() -> Void)? { get set }
     var onToolTipTapped: ((CGRect) -> Void)? { get set }
     var onSoptuneTapped: (() -> Void)? { get set }
     var onNetworkError: (() -> Void)? { get set }
+    var onSoptampHomeTapped: (() -> Void)? { get set }
+    var onPokeHomeTapped: (() -> Void)? { get set }
+    var onPokeMyFriendsTapped: ((PokeRelation) -> Void)? { get set }
 }
 public typealias SoptlogViewModelType = ViewModelType & SoptlogCoordinatable
 public typealias LegacySoptlogPresentable = (vc: SoptlogViewControllable, vm: any SoptlogViewModelType)

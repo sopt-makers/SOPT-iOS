@@ -26,6 +26,7 @@ public final class TabBarCoordinator: BaseCoordinator {
 
     public var requestCoordinating: ((TabBarCoordinatorDestination) -> Void)?
     public weak var delegate: TabBarCoordinatorDelegate?
+    public private(set) weak var tabBarController: UITabBarController?
         
     private let factory: TabBarBuilder
     private weak var navigationController: UINavigationController?
@@ -65,9 +66,9 @@ public final class TabBarCoordinator: BaseCoordinator {
             case .home:
                 self.delegate?.tabBarCoordinator(self, to: .home)
             case .poke:
-                self.delegate?.tabBarCoordinator(self, to: .poke) // TODO: create .poke destination
-            case .soptstamp:
-                self.delegate?.tabBarCoordinator(self, to: .soptstamp) // TODO: create .soptstamp destination
+                self.delegate?.tabBarCoordinator(self, to: .poke)
+            case .soptamp:
+                self.delegate?.tabBarCoordinator(self, to: .soptamp)
             case .soptlog:
                 self.delegate?.tabBarCoordinator(self, to: .soptlog)
             }
@@ -92,6 +93,7 @@ public final class TabBarCoordinator: BaseCoordinator {
             self?.navigationController?.pushViewController(webView, animated: true)
         }
         
+        self.tabBarController = tabBar.vc
         self.navigationController?.setViewControllers([tabBar.vc], animated: false)
     }
 }

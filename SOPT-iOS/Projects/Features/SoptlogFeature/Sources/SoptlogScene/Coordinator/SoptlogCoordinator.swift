@@ -50,12 +50,6 @@ public final class SoptlogCoordinator: BaseCoordinator {
     private func showSoptlog() {
         var soptlog = factory.makeSoptlog(coordinator: self)
         
-        soptlog.vm.onProfileEditTapped = { [weak self] in
-            guard let self else { return }
-            let url = "\(ExternalURL.Playground.main)/members/edit"
-            self.delegate?.soptlogCoordinator(self, to: .webLink(url: url))
-        }
-        
         soptlog.vm.onToolTipTapped = { [weak self] toolTipFrame in
             guard let self else { return }
             self.showToolTip(toolTipFrame)
@@ -64,6 +58,21 @@ public final class SoptlogCoordinator: BaseCoordinator {
         soptlog.vm.onSoptuneTapped = { [weak self] in
             guard let self else { return }
             self.delegate?.soptlogCoordinator(self, to: .dailySoptune)
+        }
+        
+        soptlog.vm.onSoptampHomeTapped = { [weak self] in
+            guard let self else { return }
+            self.delegate?.soptlogCoordinator(self, to: .soptamp)
+        }
+        
+        soptlog.vm.onPokeHomeTapped = { [weak self] in
+            guard let self else { return }
+            self.delegate?.soptlogCoordinator(self, to: .pokeHome)
+        }
+        
+        soptlog.vm.onPokeMyFriendsTapped = { [weak self] relation in
+            guard let self else { return }
+            self.delegate?.soptlogCoordinator(self, to: .pokeMyFriends(relation: relation))
         }
         
         soptlog.vm.onNetworkError = {
