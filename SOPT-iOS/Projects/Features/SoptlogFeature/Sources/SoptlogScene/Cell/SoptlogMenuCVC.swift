@@ -24,6 +24,8 @@ final class SoptlogMenuCVC: UICollectionViewCell {
             owner.tooltipButton.convert(owner.tooltipButton.bounds, to: nil)
         }.asDriver()
     
+    private(set) var cancelBag = CancelBag()
+    
     // MARK: - UI Components
     
     private let containerView: UIView = {
@@ -94,6 +96,12 @@ final class SoptlogMenuCVC: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - override
+    
+    override func prepareForReuse() {
+        cancelBag.cancel()
     }
 }
 

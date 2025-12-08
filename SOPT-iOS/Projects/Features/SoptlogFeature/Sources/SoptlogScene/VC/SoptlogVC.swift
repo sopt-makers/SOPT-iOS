@@ -264,7 +264,7 @@ extension SoptlogVC: UICollectionViewDataSource {
         
         cell.toolTipButtonTapped
             .subscribe(toolTipTap)
-            .store(in: cancelBag)
+            .store(in: cell.cancelBag)
         
         return cell
     }
