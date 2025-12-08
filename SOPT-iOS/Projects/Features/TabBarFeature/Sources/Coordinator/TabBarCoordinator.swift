@@ -74,19 +74,6 @@ public final class TabBarCoordinator: BaseCoordinator {
             }
         }
         
-        tabBar.vm.showTabBarAlert = { [weak self] in
-            AlertUtils.presentAlertVC(
-                type: .titleDescription,
-                title: I18N.Home.PopUp.needToLogin,
-                description: I18N.Home.PopUp.needToLoginDetail,
-                customButtonTitle: I18N.Home.PopUp.login,
-                customAction: { [weak self] in
-                    guard let self else { return }
-                    self.delegate?.tabBarCoordinator(self, to: .signIn)
-                }
-            )
-        }
-        
         tabBar.vm.onFABMenuTapped = { [weak self] url in
             guard let url = URL(string: url) else { return }
             let webView = SOPTWebView(startWith: url)
