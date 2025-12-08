@@ -72,10 +72,10 @@ final class ClapListCVC: UICollectionViewCell, UICollectionViewRegisterable {
         if !model.profileImageUrl.isEmpty {
             profileView.setImage(
                 with: model.profileImageUrl,
-                placeholder: DSKitAsset.Assets.iconLineProfile.image
+                placeholder: DSKitAsset.Assets.icLineProfile.image
             )
         } else {
-            profileView.image = DSKitAsset.Assets.iconLineProfile.image
+            profileView.image = DSKitAsset.Assets.icLineProfile.image
         }
     }
 }

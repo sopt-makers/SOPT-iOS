@@ -699,7 +699,7 @@ extension ListDetailVC {
         self.imagePlaceholderLabel.font = .SoptampFont.subtitle2
         self.imagePlaceholderLabel.text = I18N.ListDetail.imagePlaceHolder
         
-        self.textView.font = DSKitFontFamily.Suit.medium.font(size: 14)
+        self.textView.font = DSKitFontFamily.Pretendard.medium.font(size: 14)
         self.textView.text = I18N.ListDetail.memoPlaceHolder
         self.textView.returnKeyType = .done
         

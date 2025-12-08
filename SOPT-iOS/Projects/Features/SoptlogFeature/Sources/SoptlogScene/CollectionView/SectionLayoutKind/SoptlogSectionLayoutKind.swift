@@ -15,7 +15,7 @@ enum SoptlogSectionLayoutKind: Int, CaseIterable {
     case soptampLog
     case pokeLog
     case banner
-    
+
     var title: String {
         switch self {
         case .soptampLog: return I18N.Soptlog.soptamp

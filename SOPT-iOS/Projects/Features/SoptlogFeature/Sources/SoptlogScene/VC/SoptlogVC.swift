@@ -25,6 +25,7 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     private var toolTipTap = PassthroughSubject<CGRect, Never>()
     private var viewWillAppear = PassthroughSubject<Void, Never>()
     private var soptlogInfo: SoptlogPresentationModel?
+    internal var isPokeEmpty: Bool = true
     
     // MARK: - UI Components
     
@@ -103,6 +104,7 @@ extension SoptlogVC {
         self.collectionView.register(SoptlogMenuCVC.self, forCellWithReuseIdentifier: SoptlogMenuCVC.className)
         self.collectionView.register(SoptlogBannerCVC.self, forCellWithReuseIdentifier: SoptlogBannerCVC.className)
         self.collectionView.register(SoptlogImageCVC.self, forCellWithReuseIdentifier: SoptlogImageCVC.className)
+        self.collectionView.register(SoptlogEmptyCVC.self, forCellWithReuseIdentifier: SoptlogEmptyCVC.className)
         
         // Header 등록
         self.collectionView.register(SoptlogSectionHeaderReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SoptlogSectionHeaderReusableView.className)
@@ -162,7 +164,7 @@ extension SoptlogVC: UICollectionViewDataSource {
         case .soptampLog:
             return info.soptampMenus.count
         case .pokeLog:
-            return info.pokeMenus.count
+            return isPokeEmpty ? 1 : info.pokeMenus.count
         case .banner:
             return 1
         }
@@ -182,7 +184,11 @@ extension SoptlogVC: UICollectionViewDataSource {
             return configureMenuCell(at: indexPath, with: info.soptampMenus)
             
         case .pokeLog:
-            return configureMenuCell(at: indexPath, with: info.pokeMenus)
+            if isPokeEmpty {
+                return configureEmptyCell(at: indexPath)
+            } else {
+                return configureMenuCell(at: indexPath, with: info.pokeMenus)
+            }
             
         case .banner:
             return configureBannerCell(at: indexPath, title: info.alarm.todayFortuneText)
@@ -269,6 +275,19 @@ extension SoptlogVC: UICollectionViewDataSource {
         
         cell.configure(title: title)
         
+        return cell
+    }
+    
+    private func configureEmptyCell(at indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: SoptlogEmptyCVC.className,
+            for: indexPath
+        ) as? SoptlogEmptyCVC else {
+            return UICollectionViewCell()
+        }
+
+        cell.configure(text: I18N.Soptlog.Menu.pokeEmptyDescription)
+
         return cell
     }
 }
