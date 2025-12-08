@@ -28,7 +28,7 @@ public class SoptlogViewModel: SoptlogViewModelType {
     
     public struct Input {
         let viewWillAppear: Driver<Void>
-        let cellTap: Driver<IndexPath>
+        let cellTap: Driver<SoptlogCellTapInfo>
         let toolTipButtonTap: Driver<CGRect>
     }
     
@@ -76,19 +76,20 @@ extension SoptlogViewModel {
             }.store(in: cancelBag)
         
         input.cellTap
-            .filter{ $0.section == 1 }
+            .filter{ $0.section == .soptampLog }
             .withUnretained(self)
-            .sink { owner, indexPath in
-                if indexPath.row == 0 {
+            .sink { owner, tapInfo in
+                if tapInfo.row == 0 {
                     owner.onSoptampHomeTapped?()
                 }
             }.store(in: cancelBag)
         
+        // MARK: - 서버 500 에러 해결 후 false filter 제거
         input.cellTap
-            .filter{ $0.section == 2 }
+            .filter{ $0.section == .pokeLog && false }
             .withUnretained(self)
-            .sink { owner, indexPath in
-                switch indexPath.row {
+            .sink { owner, tapInfo in
+                switch tapInfo.row {
                 case 0:
                     owner.onPokeHomeTapped?()
                 case 1:
@@ -103,7 +104,7 @@ extension SoptlogViewModel {
             }.store(in: cancelBag)
         
         input.cellTap
-            .filter{ $0.section == 3 }
+            .filter{ $0.section == .banner }
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onSoptuneTapped?()

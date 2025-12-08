@@ -21,11 +21,19 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     
     public let viewModel: SoptlogViewModel
     private let cancelBag = CancelBag()
-    private var cellTap = PassthroughSubject<IndexPath, Never>()
+    private var cellTap = PassthroughSubject<SoptlogCellTapInfo, Never>()
     private var toolTipTap = PassthroughSubject<CGRect, Never>()
     private var viewWillAppear = PassthroughSubject<Void, Never>()
     private var soptlogInfo: SoptlogPresentationModel?
     internal var isPokeEmpty: Bool = true
+    
+    private var isActiveUser: Bool {
+        UserDefaultKeyList.Auth.isActiveUser ?? false
+    }
+    
+    private var visibleSections: [SoptlogSectionLayoutKind] {
+        SoptlogSectionLayoutKind.visibleSections(isActiveUser: isActiveUser)
+    }
     
     // MARK: - UI Components
     
@@ -137,27 +145,35 @@ extension SoptlogVC {
             }
             .store(in: cancelBag)
     }
+    
+    /// 섹션 인덱스를 실제 섹션 타입으로 변환
+    func sectionType(for index: Int) -> SoptlogSectionLayoutKind? {
+        guard index >= 0 && index < visibleSections.count else { return nil }
+        return visibleSections[index]
+    }
 }
 
 // MARK: - UICollectionViewDelegate
 
 extension SoptlogVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        cellTap.send(indexPath)
+        guard let sectionType = sectionType(for: indexPath.section) else { return }
+        let tapInfo = SoptlogCellTapInfo(section: sectionType, row: indexPath.row)
+        cellTap.send(tapInfo)
     }
 }
 
 // MARK: - UICollectionViewDataSource
-    
+
 extension SoptlogVC: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return SoptlogSectionLayoutKind.allCases.count
+        return visibleSections.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard let sectionType = SoptlogSectionLayoutKind(rawValue: section),
+        guard let sectionType = sectionType(for: section),
               let info = soptlogInfo else { return 0 }
-
+        
         switch sectionType {
         case .logo:
             return 1
@@ -171,7 +187,7 @@ extension SoptlogVC: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let section = SoptlogSectionLayoutKind(rawValue: indexPath.section) else {
+        guard let section = sectionType(for: indexPath.section) else {
             return UICollectionViewCell()
         }
         guard let info = soptlogInfo else { return UICollectionViewCell() }
@@ -196,7 +212,7 @@ extension SoptlogVC: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        guard let sectionType = SoptlogSectionLayoutKind(rawValue: indexPath.section) else {
+        guard let sectionType = sectionType(for: indexPath.section) else {
             return UICollectionReusableView()
         }
         

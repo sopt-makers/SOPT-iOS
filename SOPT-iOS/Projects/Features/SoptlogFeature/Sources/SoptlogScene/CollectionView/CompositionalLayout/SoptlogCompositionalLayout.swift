@@ -14,7 +14,7 @@ extension SoptlogVC {
     func createLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout(sectionProvider: { [weak self] sectionIndex, _ in
             guard let self,
-                  let sectionType = SoptlogSectionLayoutKind(rawValue: sectionIndex) else {
+                  let sectionType = self.sectionType(for: sectionIndex) else {
                 return nil
             }
 
