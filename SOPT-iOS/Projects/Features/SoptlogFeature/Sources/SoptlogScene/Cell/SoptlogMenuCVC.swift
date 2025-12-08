@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 import Core
 import DSKit
@@ -17,6 +18,11 @@ final class SoptlogMenuCVC: UICollectionViewCell {
     // MARK: - Properties
     
     private var rightStackViewTrailingConstraint: Constraint?
+    public private(set) lazy var toolTipButtonTapped = tooltipButton.publisher(for: .touchUpInside)
+        .withUnretained(self)
+        .map { owner, _ in
+            owner.tooltipButton.convert(owner.tooltipButton.bounds, to: nil)
+        }.asDriver()
     
     // MARK: - UI Components
     

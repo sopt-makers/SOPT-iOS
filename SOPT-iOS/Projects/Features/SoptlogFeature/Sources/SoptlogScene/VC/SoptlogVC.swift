@@ -262,6 +262,10 @@ extension SoptlogVC: UICollectionViewDataSource {
             showSeparator: showSeparator
         )
         
+        cell.toolTipButtonTapped
+            .subscribe(toolTipTap)
+            .store(in: cancelBag)
+        
         return cell
     }
     
