@@ -23,13 +23,4 @@ enum SoptlogSectionLayoutKind: Int, CaseIterable {
         default: return ""
         }
     }
-
-    func numberOfItems(isPokeEmpty: Bool) -> Int {
-        switch self {
-        case .logo: return 1
-        case .soptampLog: return SoptlogSectionModel.soptamp.count
-        case .pokeLog: return isPokeEmpty ? 1 : SoptlogSectionModel.poke.count
-        case .banner: return 1
-        }
-    }
 }

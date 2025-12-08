@@ -55,7 +55,7 @@ extension UserAPI: BaseAPI {
         case .hotboard:
             return "playground/hot-post"
         case .fetchSoptlogInfo:
-            return "sopt-log"
+            return "my-sopt-log"
         }
     }
     
@@ -89,8 +89,6 @@ extension UserAPI: BaseAPI {
             params["pushToken"] = pushToken
         case .optInPushNotificationInDetail(let optInDTO):
             params = optInDTO.toDictionary()
-        case .fetchSoptlogInfo:
-            params["ko"] = "true"
         default: break
         }
         return params
@@ -98,8 +96,6 @@ extension UserAPI: BaseAPI {
     
     private var parameterEncoding: ParameterEncoding {
         switch self {
-        case .fetchSoptlogInfo:
-            return URLEncoding.default
         default:
             return JSONEncoding.default
         }
@@ -107,7 +103,7 @@ extension UserAPI: BaseAPI {
     
     public var task: Task {
         switch self {
-        case .editSentence, .registerPushToken, .optInPushNotificationInDetail, .deregisterPushToken, .fetchSoptlogInfo:
+        case .editSentence, .registerPushToken, .optInPushNotificationInDetail, .deregisterPushToken:
             return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain

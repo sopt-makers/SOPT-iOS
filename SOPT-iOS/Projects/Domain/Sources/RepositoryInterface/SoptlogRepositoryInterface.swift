@@ -11,5 +11,5 @@ import Combine
 import Core
 
 public protocol SoptlogRepositoryInterface {
-    func fetchSoptlogModel() -> AnyPublisher<SoptlogModel, MainError>
+    func fetchSoptlogModel() async throws -> SoptlogModel
 }

@@ -11,7 +11,7 @@ import Combine
 import Core
 
 public protocol SoptlogUseCase {
-    func fetchSoptlogInfo() -> AnyPublisher<SoptlogModel, MainError>
+    func fetchSoptlogInfo() async throws -> SoptlogModel
 }
 
 public class DefaultSoptlogUseCase: SoptlogUseCase {
@@ -25,8 +25,7 @@ public class DefaultSoptlogUseCase: SoptlogUseCase {
 }
 
 extension DefaultSoptlogUseCase {
-    public func fetchSoptlogInfo() -> AnyPublisher<SoptlogModel, MainError> {
-        self.repository.fetchSoptlogModel()
-            .eraseToAnyPublisher()
+    public func fetchSoptlogInfo() async throws -> SoptlogModel {
+        try await self.repository.fetchSoptlogModel()
     }
 }
