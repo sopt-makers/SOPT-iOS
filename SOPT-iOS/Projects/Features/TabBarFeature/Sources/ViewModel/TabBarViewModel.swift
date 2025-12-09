@@ -19,14 +19,11 @@ final public class TabBarViewModel: TabBarViewModelType {
     private let cancelBag = CancelBag()
     private let userType: UserType
     private let coordinator: AnyCoordinatorObject
-    @Published private(set) var isFABTapped: Bool = false
     
     // MARK: - Inputs
     
     public struct Input {
         let isTabSelectedIndex: Driver<Int>
-        let isFABTapped: Driver<Void>
-        let isMenuCellTapped: Driver<String>
     }
     
     // MARK: - Outputs
@@ -38,7 +35,6 @@ final public class TabBarViewModel: TabBarViewModelType {
     // MARK: - TabBarCoordinating
     
     public var onTabBarItemTapped: ((Int) -> Void)?
-    public var onFABMenuTapped: ((String) -> Void)?
     public var showTabBarAlert: (() -> Void)?
     
     // MARK: - initialization
@@ -63,18 +59,6 @@ extension TabBarViewModel {
                     owner.onTabBarItemTapped?(index)
                     owner.trackAmplitude(itemIndex: index)
                 }
-            }.store(in: cancelBag)
-        
-        input.isFABTapped
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.isFABTapped.toggle()
-            }.store(in: cancelBag)
-        
-        input.isMenuCellTapped
-            .withUnretained(self)
-            .sink { owner, url in
-                owner.onFABMenuTapped?(url)
             }.store(in: cancelBag)
         
         return output
