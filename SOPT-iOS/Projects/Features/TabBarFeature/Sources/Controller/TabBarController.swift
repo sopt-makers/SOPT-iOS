@@ -24,8 +24,18 @@ final class TabBarController: UITabBarController {
     private let isTabBarItemSelected = PassthroughSubject<Int, Never>()
     private let isMenuCellTapped = PassthroughSubject<String, Never>()
     private lazy var isFABTapped = plusButton.publisher(for: .touchUpInside).mapVoid().asDriver()
+    
     private let userType: UserType
     private let cancelBag = CancelBag()
+    
+    private var tabTypes: [TabBarItemType] {
+        switch userType {
+        case .active:
+            return [.home, .soptstamp, .poke, .soptlog]
+        case .inactive, .visitor:
+            return [.home, .poke, .soptlog]
+        }
+    }
     
     // MARK: - UI Components
     
@@ -142,16 +152,7 @@ extension TabBarController {
     }
     
     private func configureTabBarItem() {
-        let tabs: [TabBarItemType]
-
-        switch self.userType{
-        case .active:
-            tabs = [.home, .soptstamp, .poke, .soptlog]
-        case .inactive, .visitor:
-            tabs = [.home, .poke, .soptlog]
-        }
-
-        tabs.enumerated().forEach { index, tabType in
+        tabTypes.enumerated().forEach { index, tabType in
             let viewController = tabList[index]
             viewController.tabBarItem = tabType.makeTabBarItem()
             viewController.tabBarItem.tag = index
@@ -214,6 +215,24 @@ extension TabBarController {
     
     private func setAddTarget() {
         plusButton.addTarget(self, action: #selector(FABAnimation), for: .touchUpInside)
+    }
+    
+    private func updateBadges(with badges: [TabBarItemType: String]) {
+        guard let items = tabBar.items else { return }
+        
+        tabTypes.enumerated().forEach { index, tabType in
+            guard index < items.count else { return }
+            let item = items[index]
+            
+            if let badgeText = badges[tabType] {
+                item.badgeColor = DSKitAsset.Colors.orange400.color
+                item.setBadgeTextAttributes([
+                    .font: DSKitFontFamily.Suit.semiBold.font(size: 10),
+                    .foregroundColor: DSKitAsset.Colors.gray900.color
+                ], for: .normal)
+                item.badgeValue = badgeText
+            }
+        }
     }
 }
 
