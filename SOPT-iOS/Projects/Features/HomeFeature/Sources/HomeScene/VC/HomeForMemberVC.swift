@@ -21,16 +21,20 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     
     public let viewModel: HomeForMemberViewModel
     private(set) var cancelBag = CancelBag()
-    private var viewWillAppear = PassthroughSubject<Void, Never>()
-    private var cellTapped = PassthroughSubject<HomeForMemberItem, Never>()
-    private(set) var attendanceButtonTapped = PassthroughSubject<Void, Never>()
     
-    private var floatingButtonTapped = PassthroughSubject<Void, Never>()
-    private lazy var extendedFloatingButtonTapped = floatingButton.actionButtonTapped
+    // FAButton
     private let isMenuCellTapped = PassthroughSubject<String, Never>()
     private lazy var isFABTapped = plusButton.publisher(for: .touchUpInside).mapVoid().asDriver()
     private let fabMenuSections = FABMenuSection.allCases
+    
+    // FloatingButton
+    private var floatingButtonTapped = PassthroughSubject<Void, Never>()
+    private lazy var extendedFloatingButtonTapped = floatingButton.actionButtonTapped
     private lazy var collapsedFloatingButtonTapped = floatingButton.gesture().mapVoid().asDriver()
+    
+    private var viewWillAppear = PassthroughSubject<Void, Never>()
+    private var cellTapped = PassthroughSubject<HomeForMemberItem, Never>()
+    private(set) var attendanceButtonTapped = PassthroughSubject<Void, Never>()
     private(set) var surveyButtonTapped = PassthroughSubject<Void, Never>()
     private(set) var viewAllButtonTapped = PassthroughSubject<Void, Never>()
     private var socialLinkButtonTapped = PassthroughSubject<HomePresentationModel.SocialLink, Never>()
@@ -41,6 +45,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     private var hasStartedAnimation = false
     var isOutlineAnimationStopped = false
     private var floatingButtonType: ExtendedFloatingButtonType = .extended
+
     var latestPostAnimationTask: Task<Void, Never>?
     var fetchDataTask: Task<Void, Never>?
     
@@ -435,6 +440,7 @@ extension HomeForMemberVC {
             }
         }
     }
+    
     private func configureFABCollectionView() {
         menuCollectionView.delegate = self
         menuCollectionView.dataSource = self
@@ -465,6 +471,7 @@ extension HomeForMemberVC: UICollectionViewDelegate, UICollectionViewDataSource 
         return dataSource.snapshot().numberOfSections
 
     }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == menuCollectionView {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FABMenuCVC.className, for: indexPath) as? FABMenuCVC else { return UICollectionViewCell() }
@@ -474,6 +481,7 @@ extension HomeForMemberVC: UICollectionViewDelegate, UICollectionViewDataSource 
         }
         return UICollectionViewCell()
     }
+    
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if collectionView == menuCollectionView {
             guard let headerView = collectionView
@@ -488,6 +496,7 @@ extension HomeForMemberVC: UICollectionViewDelegate, UICollectionViewDataSource 
 
         return UICollectionReusableView()
     }
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == menuCollectionView {
             let url = fabMenuSections[indexPath.section].items[indexPath.item].url
@@ -495,6 +504,7 @@ extension HomeForMemberVC: UICollectionViewDelegate, UICollectionViewDataSource 
             FABAnimation()
             return
         }
+        
         if let selectedItem = dataSource.itemIdentifier(for: indexPath) {
             switch selectedItem {
             case .dashBoard(let model):
@@ -550,6 +560,8 @@ extension HomeForMemberVC: UICollectionViewDelegate, UICollectionViewDataSource 
         }
     }
 }
+
+// MARK: - FAButton Animation
 
 extension HomeForMemberVC {
     @objc
