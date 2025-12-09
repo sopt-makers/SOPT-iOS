@@ -468,7 +468,7 @@ extension HomeForMemberVC: UICollectionViewDelegate, UICollectionViewDataSource 
         if collectionView == menuCollectionView {
             return fabMenuSections[section].items.count
         }
-        return dataSource.snapshot().numberOfSections
+        return dataSource.snapshot().numberOfItems(inSection: HomeForMemberSectionLayoutKind(rawValue: section) ?? .dashBoard)
 
     }
     
