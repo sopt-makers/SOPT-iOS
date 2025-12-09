@@ -20,6 +20,7 @@ final class TabBarController: UITabBarController {
     private let viewModel: TabBarViewModel
     private let fabMenuSections = FABMenuSection.allCases
     
+    private let viewWillAppear = PassthroughSubject<Void, Never>()
     private let isTabBarItemSelected = PassthroughSubject<Int, Never>()
     private let isMenuCellTapped = PassthroughSubject<String, Never>()
     private lazy var isFABTapped = plusButton.publisher(for: .touchUpInside).mapVoid().asDriver()
@@ -79,6 +80,11 @@ final class TabBarController: UITabBarController {
         
         setDelegate()
         configureCollectionView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewWillAppear.send()
     }
     
     override public func viewDidLayoutSubviews() {
@@ -166,6 +172,7 @@ extension TabBarController {
 extension TabBarController {
     private func bindViewModels() {
         let input = TabBarViewModel.Input(
+            viewWillAppear: viewWillAppear.asDriver(),
             isTabSelectedIndex: isTabBarItemSelected.asDriver(),
             isFABTapped: isFABTapped,
             isMenuCellTapped: isMenuCellTapped.asDriver()
@@ -183,6 +190,13 @@ extension TabBarController {
             .withUnretained(self)
             .sink { owner, bool in
                 owner.FABAnimation(bool)
+            }.store(in: cancelBag)
+        
+        viewModel.$tabBarBadges
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, badges in
+                owner.updateBadges(with: badges)
             }.store(in: cancelBag)
     }
     
