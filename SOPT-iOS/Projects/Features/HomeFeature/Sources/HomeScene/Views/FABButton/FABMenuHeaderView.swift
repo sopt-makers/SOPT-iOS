@@ -48,7 +48,7 @@ extension FABMenuHeaderView {
 // MARK: - Methods
 
 extension FABMenuHeaderView {
-    public func configureCell(title: String) {
+    func configureCell(title: String) {
         sectionTitle.text = title
     }
 }
