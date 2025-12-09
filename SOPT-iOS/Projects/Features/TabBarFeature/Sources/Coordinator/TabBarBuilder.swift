@@ -14,12 +14,15 @@ import BaseFeatureDependency
 @_exported import TabBarFeatureInterface
 
 public final class TabBarBuilder {
+    @Injected public var homeRepository: HomeRepositoryInterface
+    
     public init() {}
 }
 
 extension TabBarBuilder: TabBarBuildable {
     public func makeTabBar(with views: [UIViewController], userType: UserType, coordinator: Coordinator) -> TabBarPresentable {
-        let viewModel = TabBarViewModel(userType: userType, coordinator: coordinator)
+        let homeUseCase = DefaultHomeUseCase(repository: homeRepository)
+        let viewModel = TabBarViewModel(userType: userType, coordinator: coordinator, homeUseCase: homeUseCase)
         let tabBarVC = TabBarController(viewModel: viewModel, tabList: views, userType: userType)
         return (tabBarVC, viewModel)
     }
