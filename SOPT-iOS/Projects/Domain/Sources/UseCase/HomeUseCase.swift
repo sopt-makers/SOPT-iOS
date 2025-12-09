@@ -33,6 +33,9 @@ public class DefaultHomeUseCase {
     private let repository: HomeRepositoryInterface
     private let cancelBag = CancelBag()
     
+    // 앱 서비스 정보 캐시
+    private var cachedAppServices: [HomeAppServicesModel]?
+    
     public init(repository: HomeRepositoryInterface) {
         self.repository = repository
     }
@@ -51,7 +54,16 @@ extension DefaultHomeUseCase: HomeUseCase {
     }
 
     public func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Never> {
-        repository.getAppServices()
+        // 캐시된 데이터가 있으면 반환
+        if let cached = cachedAppServices {
+            return Just(cached).eraseToAnyPublisher()
+        }
+        
+        // 없으면 API 호출 후 캐싱
+        return repository.getAppServices()
+            .handleEvents(receiveOutput: { [weak self] services in
+                self?.cachedAppServices = services
+            })
             .catch { error in
                 return Empty<[HomeAppServicesModel], Never>()
             }.eraseToAnyPublisher()
@@ -106,7 +118,15 @@ extension DefaultHomeUseCase: HomeUseCase {
     }
     
     public func getAppServicesAsync() async throws -> [HomeAppServicesModel] {
-        try await repository.getAppServicesAsync()
+        // 캐시된 데이터가 있으면 반환
+        if let cached = cachedAppServices {
+            return cached
+        }
+        
+        // 없으면 API 호출 후 캐싱
+        let services = try await repository.getAppServicesAsync()
+        cachedAppServices = services
+        return services
     }
 
     public func getCalendarDetailAsync() async throws -> [HomeCalendarDetailModel] {
