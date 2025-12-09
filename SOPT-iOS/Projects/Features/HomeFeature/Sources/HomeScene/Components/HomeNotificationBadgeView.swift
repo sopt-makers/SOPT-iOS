@@ -70,5 +70,3 @@ extension HomeNotificationBadgeView {
         self.titleLabel.text = text
     }
 }
-
-
