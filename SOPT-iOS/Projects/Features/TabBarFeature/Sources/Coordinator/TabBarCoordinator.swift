@@ -54,6 +54,7 @@ public final class TabBarCoordinator: BaseCoordinator {
     
     public override func start() {
         if let existingTabBar = navigationController?.viewControllers.first as? UITabBarController {
+            tabBarController = existingTabBar
             let tabIndex = selectedTabType.getTabIndex(userType: userType)
             existingTabBar.selectedIndex = tabIndex
         } else {
