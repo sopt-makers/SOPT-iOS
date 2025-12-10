@@ -32,7 +32,7 @@ public final class TabBarCoordinator: BaseCoordinator {
     private weak var navigationController: UINavigationController?
     private let views: [UIViewController]
     private let userType: UserType
-    private let selectedTabType: TabType
+    private let selectedTabType: TabBarItemType
     
     // MARK: - Init
     
@@ -41,7 +41,7 @@ public final class TabBarCoordinator: BaseCoordinator {
         factory: TabBarBuilder,
         views: [UIViewController],
         userType: UserType,
-        selectedTabType: TabType = .home
+        selectedTabType: TabBarItemType = .home
     ) {
         self.navigationController = navigationController
         self.factory = factory
@@ -54,7 +54,7 @@ public final class TabBarCoordinator: BaseCoordinator {
     
     public override func start() {
         if let existingTabBar = navigationController?.viewControllers.first as? UITabBarController {
-            let tabIndex = getTabIndex(for: selectedTabType)
+            let tabIndex = selectedTabType.getTabIndex(userType: userType)
             existingTabBar.selectedIndex = tabIndex
         } else {
             showTabBar()
@@ -101,39 +101,10 @@ public final class TabBarCoordinator: BaseCoordinator {
             self?.navigationController?.pushViewController(webView, animated: true)
         }
         
-//<<<<<<< HEAD
-        let tabIndex = getTabIndex(for: selectedTabType)
+        let tabIndex = selectedTabType.getTabIndex(userType: userType)
         tabBar.vc.selectedIndex = tabIndex
-        
-//=======
         self.tabBarController = tabBar.vc
-//>>>>>>> develop
         self.navigationController?.setViewControllers([tabBar.vc], animated: false)
-    }
-    
-    private func getTabIndex(for tabType: TabType) -> Int {
-        switch userType {
-        case .active:
-            switch tabType {
-            case .home:
-                0
-            case .soptstamp:
-                1
-            case .poke:
-                2
-            case .soptlog:
-                3
-            }
-        case .visitor, .inactive:
-            switch tabType {
-            case .home, .soptstamp:
-                0
-            case .poke:
-                1
-            case .soptlog:
-                2
-            }
-        }
     }
 }
 
