@@ -22,6 +22,7 @@ public final class PokeMyFriendsCoordinator: BaseCoordinator {
     private let factory: PokeFeatureBuildable
     private let navigationController: UINavigationController
     private weak var rootController: UINavigationController?
+    private var initialRelation: PokeRelation?
     
     // MARK: - Init
     
@@ -36,16 +37,21 @@ public final class PokeMyFriendsCoordinator: BaseCoordinator {
     // MARK: - Coordinator Life Cycle
     
     public override func start() {
-        showPokeMyFriends()
+        showPokeMyFriends(initialRelation: nil)
+    }
+    
+    public func start(with relation: PokeRelation) {
+        self.initialRelation = relation
+        showPokeMyFriends(initialRelation: relation)
     }
     
     // MARK: - Navigation
     
-    private func showPokeMyFriends() {
+    private func showPokeMyFriends(initialRelation: PokeRelation?) {
         var pokeMyFriends = factory.makePokeMyFriends(coordinator: self)
         
         pokeMyFriends.vm.showFriendsListButtonTap = { [weak self] relation in
-            self?.showPokeMyFriendsList(with: relation)
+            self?.showFriendsList(with: relation)
         }
         
         pokeMyFriends.vm.onPokeButtonTapped = { [weak self] userModel in
@@ -66,11 +72,15 @@ public final class PokeMyFriendsCoordinator: BaseCoordinator {
             pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
             self.navigationController.present(pokeAnonymousFriendUpgradeVC, animated: false)
         }
+
+        if let relation = initialRelation {
+            self.showFriendsList(with: relation)
+        }
         
         navigationController.pushViewController(pokeMyFriends.vc, animated: true)
     }
     
-    private func showPokeMyFriendsList(with relation: PokeRelation) {
+    private func showFriendsList(with relation: PokeRelation) {
         var pokeMyFriendsList = factory.makePokeMyFriendsList(relation: relation)
         
         pokeMyFriendsList.vm.onCloseButtonTap = { [weak self] in

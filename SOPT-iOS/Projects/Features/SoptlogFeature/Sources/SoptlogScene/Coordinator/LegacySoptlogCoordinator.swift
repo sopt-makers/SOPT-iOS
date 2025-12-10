@@ -54,11 +54,6 @@ public final class LegacySoptlogCoordinator: DefaultSoptlogCoordinator {
     private func showSoptlog() {
         var soptlog = factory.makeSoptlog(coordinator: self)
         
-        soptlog.vm.onProfileEditTapped = { [weak self] in
-            let url = "\(ExternalURL.Playground.main)/members/edit"
-            self?.requestCoordinating?(.webLink(url: url))
-        }
-        
         soptlog.vm.onToolTipTapped = { [weak self] toolTipFrame in
             self?.showToolTip(toolTipFrame)
         }

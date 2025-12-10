@@ -13,17 +13,17 @@ import Networks
 
 extension SoptlogResponseEntity {
     public func toDomain() -> SoptlogModel {
-        return SoptlogModel.init(userName: self.userName,
-                                 profileImage: self.profileImage,
-                                 part: self.part,
-                                 soptampRank: self.soptampRank ?? "0",
-                                 pokeCount: self.pokeCount,
-                                 soptLevel: self.soptLevel,
-                                 during: self.during,
-                                 profileMessage: self.profileMessage,
-                                 icons: self.icons,
-                                 isFortuneChecked: self.isFortuneChecked,
-                                 todayFortuneText: self.todayFortuneText,
-                                 isActive: self.isActive)
+        return SoptlogModel(
+            isActive: self.isActive,
+            isFortuneChecked: self.isFortuneChecked,
+            todayFortuneText: self.todayFortuneText,
+            soptampCount: self.soptampCount,
+            viewCount: self.viewCount,
+            myClapCount: self.myClapCount,
+            totalPokeCount: self.totalPokeCount,
+            newFriendsPokeCount: self.newFriendsPokeCount,
+            bestFriendsPokeCount: self.bestFriendsPokeCount,
+            soulmatesPokeCount: self.soulmatesPokeCount
+        )
     }
 }

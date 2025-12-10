@@ -24,23 +24,22 @@ public class SoptlogRepository {
 }
 
 extension SoptlogRepository: SoptlogRepositoryInterface {
-    public func fetchSoptlogModel() -> AnyPublisher<Domain.SoptlogModel, MainError> {
-        return self.userService.fetchSoptlogInfo()
-            .mapError{ error in
-                guard let error = error as? APIError else {
-                    return MainError.networkError(message: error.localizedDescription)
-                }
-                
-                switch error {
-                case .network(_, _):
-                    return MainError.networkError(message: "networkError: \(error.localizedDescription)")
-                case .tokenReissuanceFailed:
-                    return MainError.authFailed
-                default:
-                    return MainError.networkError(message: error.localizedDescription)
-                }
+    public func fetchSoptlogModel() async throws -> SoptlogModel {
+        do {
+            return try await self.userService.fetchSoptlogInfo().toDomain()
+        } catch(let error) {
+            guard let error = error as? APIError else {
+                throw MainError.networkError(message: error.localizedDescription)
             }
-            .map{ $0.toDomain() }
-            .eraseToAnyPublisher()
+            
+            switch error {
+            case .network(let statusCode, _):
+                throw MainError.networkError(message: "🚨 code: \(statusCode)\nnetworkError: \(error.localizedDescription)")
+            case .tokenReissuanceFailed:
+                throw MainError.authFailed
+            default:
+                throw MainError.networkError(message: error.localizedDescription)
+            }
+        }
     }
 }

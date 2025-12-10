@@ -9,31 +9,44 @@
 import Foundation
 
 public struct  SoptlogModel {
-    public let userName: String?
-    public let profileImage: String?
-    public let part: String
-    public let soptampRank: String
-    public let pokeCount: String
-    public let soptLevel: String
-    public let during: String
-    public let profileMessage: String
-    public let icons: [String]
-    public let isFortuneChecked: Bool
-    public let todayFortuneText: String
     public let isActive: Bool
     
-    public init(userName: String?, profileImage: String?, part: String, soptampRank: String, pokeCount: String, soptLevel: String, during: String, profileMessage: String, icons: [String], isFortuneChecked: Bool, todayFortuneText: String, isActive: Bool) {
-        self.userName = userName
-        self.profileImage = profileImage
-        self.part = part
-        self.soptampRank = soptampRank
-        self.pokeCount = pokeCount
-        self.soptLevel = soptLevel
-        self.during = during
-        self.profileMessage = profileMessage
-        self.icons = icons
+    /// 솝마디 상태
+    public let isFortuneChecked: Bool
+    public let todayFortuneText: String
+    
+    /// 솝탬프 정보
+    public let soptampCount: Int
+    public let viewCount: Int
+    public let myClapCount: Int
+    
+    /// 콕찌르기 정보
+    public let totalPokeCount: Int
+    public let newFriendsPokeCount: Int
+    public let bestFriendsPokeCount: Int
+    public let soulmatesPokeCount: Int
+    
+    public init(
+        isActive: Bool,
+        isFortuneChecked: Bool,
+        todayFortuneText: String,
+        soptampCount: Int,
+        viewCount: Int,
+        myClapCount: Int,
+        totalPokeCount: Int,
+        newFriendsPokeCount: Int,
+        bestFriendsPokeCount: Int,
+        soulmatesPokeCount: Int
+    ) {
+        self.isActive = isActive
         self.isFortuneChecked = isFortuneChecked
         self.todayFortuneText = todayFortuneText
-        self.isActive = isActive
+        self.soptampCount = soptampCount
+        self.viewCount = viewCount
+        self.myClapCount = myClapCount
+        self.totalPokeCount = totalPokeCount
+        self.newFriendsPokeCount = newFriendsPokeCount
+        self.bestFriendsPokeCount = bestFriendsPokeCount
+        self.soulmatesPokeCount = soulmatesPokeCount
     }
 }

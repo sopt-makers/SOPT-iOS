@@ -77,6 +77,7 @@ public final class PokeMyFriendsVC: UIViewController, PokeMyFriendsViewControlla
 
 extension PokeMyFriendsVC {
     private func setUI() {
+        self.navigationController?.navigationBar.isHidden = true
         view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
     }
     

@@ -11,17 +11,19 @@ import Combine
 
 import Core
 import Domain
+import PokeFeatureInterface
 
 import BaseFeatureDependency
 
 public class SoptlogViewModel: SoptlogViewModelType {
     
     // MARK: - Properties
-
+    
     private let useCase: SoptlogUseCase
     private let coordinator: AnyCoordinatorObject
+    private var fetchSoptlogInfoTask: Task<Void, Never>?
     private var cancelBag = CancelBag()
-
+    
     // MARK: - Inputs
     
     public struct Input {
@@ -39,10 +41,12 @@ public class SoptlogViewModel: SoptlogViewModelType {
     
     // MARK: - SoptlogCoordinatable
     
-    public var onProfileEditTapped: (() -> Void)?
     public var onToolTipTapped: ((CGRect) -> Void)?
     public var onSoptuneTapped: (() -> Void)?
     public var onNetworkError: (() -> Void)?
+    public var onSoptampHomeTapped: (() -> Void)?
+    public var onPokeHomeTapped: (() -> Void)?
+    public var onPokeMyFriendsTapped: ((PokeRelation) -> Void)?
     
     
     // MARK: - initialization
@@ -51,6 +55,11 @@ public class SoptlogViewModel: SoptlogViewModelType {
         self.useCase = useCase
         self.coordinator = coordinator
     }
+    
+    deinit {
+        self.fetchSoptlogInfoTask?.cancel()
+        self.fetchSoptlogInfoTask = nil
+    }
 }
 
 extension SoptlogViewModel {
@@ -58,36 +67,39 @@ extension SoptlogViewModel {
         let output = Output()
         
         input.viewWillAppear
-            .handleEvents(receiveOutput: { _ in
-                output.isLoading.send(true)
-            })
-            .flatMap{ _ in
-                self.useCase.fetchSoptlogInfo()
-                    .catch { error  -> AnyPublisher<SoptlogModel, Never> in
-                        switch error {
-                        case .networkError(_):
-                            self.onNetworkError?()
-                            return Empty().eraseToAnyPublisher()
-                        case .authFailed:
-                            print("인증에 실패했습니다.")
-                            return Empty().eraseToAnyPublisher()
-                        }
-                    }
-            }
-            .compactMap{ $0 }
             .withUnretained(self)
-            .sink { owner, soptlogModel in
-                let info = soptlogModel.toPresentation()
-                output.soptlogInfo.send(info)
-                output.isLoading.send(false)
+            .sink { owner, _ in
+                owner.fetchSoptlogInfoTask?.cancel()
+                owner.fetchSoptlogInfoTask = Task {
+                    await self.handleViewWillAppear(output: output)
+                }
+            }.store(in: cancelBag)
+        
+        input.cellTap
+            .filter{ $0.section == 1 }
+            .withUnretained(self)
+            .sink { owner, indexPath in
+                if indexPath.row == 0 {
+                    owner.onSoptampHomeTapped?()
+                }
             }.store(in: cancelBag)
         
         input.cellTap
             .filter{ $0.section == 2 }
             .withUnretained(self)
-            .sink { owner, _ in
-                owner.onProfileEditTapped?()
-                AmplitudeInstance.shared.trackWithUserType(event: .clickSoptlogEditProfile)
+            .sink { owner, indexPath in
+                switch indexPath.row {
+                case 0:
+                    owner.onPokeHomeTapped?()
+                case 1:
+                    owner.onPokeMyFriendsTapped?(.newFriend)
+                case 2:
+                    owner.onPokeMyFriendsTapped?(.bestFriend)
+                case 3:
+                    owner.onPokeMyFriendsTapped?(.soulmate)
+                default:
+                    break
+                }
             }.store(in: cancelBag)
         
         input.cellTap
@@ -103,7 +115,30 @@ extension SoptlogViewModel {
             .sink { owner, toolTipFrame in
                 owner.onToolTipTapped?(toolTipFrame)
             }.store(in: cancelBag)
-
+        
         return output
+    }
+}
+
+extension SoptlogViewModel {
+    private func handleViewWillAppear(output: Output) async {
+        output.isLoading.send(true)
+        
+        do {
+            let model = try await useCase.fetchSoptlogInfo()
+            let info = model.toPresentation()
+            output.soptlogInfo.send(info)
+        } catch let error as MainError {
+            switch error {
+            case .networkError(_):
+                onNetworkError?()
+            case .authFailed:
+                print("🚨 SoptlogViewModel: 인증에 실패했습니다.")
+            }
+        } catch {
+            print("🚨 SoptlogViewModel: Unknown error: \(error)")
+        }
+        
+        output.isLoading.send(false)
     }
 }

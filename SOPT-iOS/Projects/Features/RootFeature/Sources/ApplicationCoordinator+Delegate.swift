@@ -17,6 +17,7 @@ import TabBarFeature
 import AppMyPageFeature
 import NotificationFeature
 import StampFeature
+import PokeFeature
 
 // MARK: - AuthCoordinatorDelegate
 
@@ -37,8 +38,8 @@ extension ApplicationCoordinator: TabBarCoordinatorDelegate {
             self.selectedTab(.soptlog)
         case .poke:
             self.selectedTab(.poke)
-        case .soptstamp:
-            self.selectedTab(.soptstamp)
+        case .soptamp:
+            self.selectedTab(.soptamp)
         case .signIn:
             clearChildViewControllers()
             self.runSignInFlow(by: .rootWindow(animated: true, message: nil))
@@ -91,6 +92,13 @@ extension ApplicationCoordinator: SoptlogCoordinatorDelegate {
             self.runDailySoptuneFlow()
         case .webLink(let url):
             self.handleWebLink(webLink: url)
+        case .soptamp:
+            self.selectedTab(.soptamp)
+        case .pokeHome:
+            self.selectedTab(.poke)
+        case .pokeMyFriends(let relation):
+            self.selectedTab(.poke)
+            self.runPokeMyFriendsFlow(relation: relation)
         }
     }
 }

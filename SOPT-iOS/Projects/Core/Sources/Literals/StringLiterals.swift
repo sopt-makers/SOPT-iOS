@@ -302,11 +302,13 @@ public struct I18N {
             public static let views = "조회수"
             public static let receivedClapCount = "받은 박수"
             public static let clapCount = "쳐준 박수"
-            
+
             public static let pokeCount = "총 콕찌르기"
             public static let newFriend = "친한 친구"
             public static let bestFriend = "단짝 친구"
             public static let soulmate = "천생 연분"
+
+            public static let pokeEmptyDescription = "콕찌르기 기능 정비 중입니다.\n곧 사용할 수 있어요!"
         }
     }
     
