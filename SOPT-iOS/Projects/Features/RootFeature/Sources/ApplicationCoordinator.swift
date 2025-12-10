@@ -374,7 +374,7 @@ extension ApplicationCoordinator {
 // MARK: - TabBarFlow
 
 extension ApplicationCoordinator {
-    internal func runTabBarFlow(type: UserType? = nil, initSelectedTabType: TabType = .home) {
+    internal func runTabBarFlow(type: UserType? = nil, initSelectedTabType: TabBarItemType = .home) {
         defer { bindNotification() }
         
         let tabBarBuilder = TabBarBuilder()

@@ -69,7 +69,7 @@ public final class TabBarCoordinator: BaseCoordinator {
         tabBar.vm.onTabBarItemTapped = { [weak self] index in
             // 각 탭의 코디네이터 실행
             guard let self = self,
-                let tabType = TabType(rawValue: index) else { return }
+                  let tabType = TabBarItemType(rawValue: index) else { return }
             switch tabType {
             case .home:
                 self.delegate?.tabBarCoordinator(self, to: .home)
