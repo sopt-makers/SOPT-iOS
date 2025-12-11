@@ -34,8 +34,7 @@ extension PokeBuilder: PokeFeatureBuildable {
         let viewModel = PokeMainViewModel(useCase: useCase,
                                           coordinator: coordinator,
                                           isRouteFromRoot: isRouteFromRoot)
-        let pokeMainVC = PokeMainVC(viewModel: viewModel)
-        pokeMainVC.setNavigationBar(isRouteFromTabBar: isRouteFromTabBar)
+        let pokeMainVC = PokeMainVC(viewModel: viewModel, isRouteFromTabBar: isRouteFromTabBar)
         
         return (pokeMainVC, viewModel)
     }
