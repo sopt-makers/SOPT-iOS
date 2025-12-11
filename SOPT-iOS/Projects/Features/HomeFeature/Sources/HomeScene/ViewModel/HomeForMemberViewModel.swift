@@ -137,14 +137,17 @@ extension HomeForMemberViewModel {
                     owner.onMainProductCellTapped?(model.product.serviceDomainLink)
                     owner.eventTracker.trackAmplitude(event: model.product.toAmplitudeEventTypeNew)
                 case .appService(let model):
-                    if model.serviceName == "콕찌르기" {
-                        owner.useCase.checkPokeNewUser()
-                            .sink { isPokeNewUser in
-                                owner.onPoke?(isPokeNewUser)
-                            }.store(in: cancelBag)
-                    } else {
-                        owner.onAppServiceCellTapped?(model.deepLink)
-                    }
+                    owner.onAppServiceCellTapped?(model.deepLink)
+                    
+                    #warning("코드리뷰 후 삭제 or 수정 예정")
+//                    if model.serviceName == "콕찌르기" {
+//                        owner.useCase.checkPokeNewUser()
+//                            .sink { isPokeNewUser in
+//                                owner.onPoke?(isPokeNewUser)
+//                            }.store(in: cancelBag)
+//                    } else {
+//                        owner.onAppServiceCellTapped?(model.deepLink)
+//                    }
                 case .socialLink(let type):
                     owner.onSocialLinkButtonTapped?(type.socialLink.serviceDomainLink)
                 case .popularPost(let model):

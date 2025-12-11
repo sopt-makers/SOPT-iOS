@@ -9,7 +9,6 @@
 import Foundation
 
 import BaseFeatureDependency
-import Core
 
 public struct SoptlogDeepLink: DeepLinkExecutable {
     public let name = "soptlog"
@@ -20,7 +19,7 @@ public struct SoptlogDeepLink: DeepLinkExecutable {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
         
         if self.isDestination == true {
-            Config.coordinatorFlag == .legacy ? coordinator.runLegacyTabBarFlow(initSelectedTabIndex: 1) : coordinator.runTabBarFlow(initSelectedTabType: .soptlog)
+            coordinator.runTabBarFlow(initSelectedTabType: .soptlog)
         }
         
         return coordinator
