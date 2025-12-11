@@ -304,3 +304,9 @@ extension PokeMainVC {
       }.store(in: cancelBag)
   }
 }
+
+extension PokeMainVC {
+    func setNavigationBar(isRouteFromTabBar: Bool) {
+        backButton.isHidden = isRouteFromTabBar
+    }
+}

@@ -588,7 +588,7 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runPokeFlow() -> BaseCoordinator {
+    internal func runPokeFlow(isRouteFromTabBar: Bool = true) -> BaseCoordinator {
         var coordinator: BaseCoordinator
         
         switch Config.coordinatorFlag {
@@ -604,17 +604,17 @@ extension ApplicationCoordinator {
             }
             coordinator = legacyPokeCoordinator
             addDependency(coordinator)
+            
+            coordinator.start()
         case .new:
             let newCoordinator = PokeCoordinator(
                 navigationController: UIWindow.getRootNavigationController,
                 factory: PokeBuilder()
             )
-            
+            newCoordinator.start(isRouteFromTabBar: isRouteFromTabBar)
             coordinator = newCoordinator
         }
-        
-        coordinator.start()
-        
+    
         return coordinator
     }
     
