@@ -23,10 +23,7 @@ final class DashBoardCardCVC: UICollectionViewCell {
     }
     
     private let userHistoryView = UserHistoryView()
-    
-    private let rightArrowWithCircleImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.btnRightArrowWithCircle.image
-    }
+    private let profileEditView = DashBoardProfileImageView()
     
     // MARK: - initialization
     
@@ -58,7 +55,7 @@ extension DashBoardCardCVC {
         self.addSubviews(
             descriptionLabel,
             userHistoryView,
-            rightArrowWithCircleImageView
+            profileEditView
         )
 
         descriptionLabel.snp.makeConstraints { make in
@@ -72,11 +69,11 @@ extension DashBoardCardCVC {
             make.width.equalTo(250)
             make.height.equalTo(23)
         }
-        
-        rightArrowWithCircleImageView.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().inset(16)
-            make.width.height.equalTo(32)
+
+        profileEditView.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(20)
+            $0.size.equalTo(54)
         }
     }
 }
@@ -89,13 +86,14 @@ extension DashBoardCardCVC {
         case .visitor:
             self.descriptionLabel.text = I18N.Home.DashBoard.UserHistory.encourage
             self.descriptionLabel.setLineSpacing(lineSpacing: 5)
-            self.rightArrowWithCircleImageView.isHidden = true
+            self.profileEditView.isHidden = true
+            
             userHistoryView.setData(recentHistory: nil, allHistory: nil)
         case .active, .inactive:
             guard let model else { return }
             self.descriptionLabel.attributedText = model.description
             self.descriptionLabel.modifyLineSpacing(lineSpacing: 5)
-            self.rightArrowWithCircleImageView.isHidden = false
+            self.profileEditView.isHidden = false
             guard let history = model.history else { return }
             userHistoryView.setData(recentHistory: history.first, allHistory: history)
         }
