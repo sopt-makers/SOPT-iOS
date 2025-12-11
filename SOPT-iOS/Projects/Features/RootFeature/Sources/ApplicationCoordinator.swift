@@ -552,7 +552,7 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runStampFlow() -> BaseCoordinator {
+    internal func runStampFlow(isRouteFromTabBar: Bool = true) -> BaseCoordinator {
         var coordinator: BaseCoordinator
         
         switch Config.coordinatorFlag {
@@ -568,18 +568,19 @@ extension ApplicationCoordinator {
                 self?.removeDependency(legacyStampCoordinator)
             }
             addDependency(legacyStampCoordinator)
-            
             coordinator = legacyStampCoordinator
+            coordinator.start()
+            
         case .new:
-            coordinator = StampCoordinator(
+            let newCoordinator = StampCoordinator(
                 navigationController: UIWindow.getRootNavigationController,
                 factory: StampBuilder(),
                 mypageFactory: MyPageBuilder()
             )
+            newCoordinator.start(isRouteFromTabBar: false)
+            coordinator = newCoordinator
         }
 
-        coordinator.start()
-        
         return coordinator
     }
 }

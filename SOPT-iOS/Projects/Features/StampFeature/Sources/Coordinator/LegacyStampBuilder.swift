@@ -24,7 +24,7 @@ extension LegacyStampBuilder: LegacyStampFeatureViewBuildable {
     public func makeMissionListVC(sceneType: MissionListSceneType, coordinator: Coordinator) -> LegacyMissionListViewControllable {
         let useCase = DefaultMissionListUseCase(repository: missionListRepository)
         let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType, coordinator: coordinator)
-        let missionListVC = MissionListVC(viewModel: viewModel)
+        let missionListVC = MissionListVC(viewModel: viewModel, isRouteFromTabBar: false)
         missionListVC.viewModel = viewModel
         return missionListVC
     }
