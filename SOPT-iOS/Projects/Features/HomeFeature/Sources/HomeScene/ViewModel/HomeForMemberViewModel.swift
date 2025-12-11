@@ -344,7 +344,8 @@ extension HomeForMemberViewModel {
         let user = try await useCase.getUserInfoAsync()
         let dashBoard = description.toPresentation(
             history: user?.historyList ?? [],
-            isAllConfirm: user?.isAllConfirm ?? false
+            isAllConfirm: user?.isAllConfirm ?? false,
+            profileImageURL: user?.profileImage ?? nil
         )
         UserDefaultKeyList.Auth.isActiveUser = user?.userType == .active // 사용자 활동 중 여부 등록
         fetchedDashBoard = dashBoard

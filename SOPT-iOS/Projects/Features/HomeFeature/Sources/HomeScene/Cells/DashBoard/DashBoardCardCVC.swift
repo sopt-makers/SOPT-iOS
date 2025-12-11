@@ -94,6 +94,7 @@ extension DashBoardCardCVC {
             self.descriptionLabel.attributedText = model.description
             self.descriptionLabel.modifyLineSpacing(lineSpacing: 5)
             self.profileEditView.isHidden = false
+            self.profileEditView.configure(profileImageURL: model.profileImageURL)
             guard let history = model.history else { return }
             userHistoryView.setData(recentHistory: history.first, allHistory: history)
         }

@@ -60,3 +60,10 @@ extension DashBoardProfileImageView {
         }
     }
 }
+
+extension DashBoardProfileImageView {
+    func configure(profileImageURL: String?) {
+        guard let profileImageURL else { return }
+        profileImageView.setImage(with: profileImageURL)
+    }
+}

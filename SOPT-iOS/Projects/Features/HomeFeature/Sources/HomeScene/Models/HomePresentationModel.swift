@@ -29,15 +29,18 @@ struct HomePresentationModel {
         let description: NSAttributedString
         let history: [Int]?
         let isAllConfirm: Bool?
+        let profileImageURL: String?
         
         init(
             description: NSAttributedString = NSAttributedString(string: ""),
             history: [Int]? = nil,
-            isAllConfirm: Bool? = nil
+            isAllConfirm: Bool? = nil,
+            profileImageURL: String? = nil
         ) {
             self.description = description
             self.history = history
             self.isAllConfirm = isAllConfirm
+            self.profileImageURL = profileImageURL
         }
     }
     
@@ -117,7 +120,7 @@ extension HomePresentationModel.LatestPost: PostDisplayable {}
 // MARK: - toPresentation
 
 extension HomeDescriptionModel {
-    func toPresentation(history: [Int], isAllConfirm: Bool?) -> HomePresentationModel.DashBoard {
+    func toPresentation(history: [Int], isAllConfirm: Bool?, profileImageURL: String?) -> HomePresentationModel.DashBoard {
         let attrString = NSAttributedString
             .fromHTML(
                 description,
@@ -128,7 +131,8 @@ extension HomeDescriptionModel {
         return HomePresentationModel.DashBoard(
             description: attrString,
             history: history,
-            isAllConfirm: isAllConfirm
+            isAllConfirm: isAllConfirm,
+            profileImageURL: profileImageURL
         )
     }
 }
