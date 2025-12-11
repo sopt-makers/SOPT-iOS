@@ -64,6 +64,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         let profileImageViewTapped: Driver<PostInfo>
         let isFABTapped: Driver<Void>
         let isMenuCellTapped: Driver<String>
+        let editProfileTapped: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -93,6 +94,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public var onViewAllContentButtonTapped: ((String) -> Void)?
     public var onProfileImageViewTapped: ((Int) -> Void)?
     public var onFABMenuTapped: ((String) -> Void)?
+    public var onEditProfileTapped: ((String) -> Void)?
 
     // MARK: - initialization
     
@@ -249,6 +251,13 @@ extension HomeForMemberViewModel {
             .withUnretained(self)
             .sink { owner, url in
                 owner.onFABMenuTapped?(url)
+            }
+            .store(in: cancelBag)
+        
+        input.editProfileTapped
+            .withUnretained(self)
+            .sink { owner, url in
+                owner.onEditProfileTapped?(ExternalURL.Playground.editProfile)
             }
             .store(in: cancelBag)
 

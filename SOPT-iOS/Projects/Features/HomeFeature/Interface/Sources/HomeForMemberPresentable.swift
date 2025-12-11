@@ -31,6 +31,7 @@ public protocol HomeForMemberCoordinatable {
     var onViewAllContentButtonTapped: ((String) -> Void)? { get set }
     var onProfileImageViewTapped: ((Int) -> Void)? { get set }
     var onFABMenuTapped: ((String) -> Void)? { get set }
+    var onEditProfileTapped: ((String) -> Void)? { get set }
 }
 public typealias HomeForMemberViewModelType = ViewModelType & HomeForMemberCoordinatable
 public typealias LegacyHomeForMemberPresentable = (vc: HomeForMemberViewControllable, vm: any HomeForMemberViewModelType)

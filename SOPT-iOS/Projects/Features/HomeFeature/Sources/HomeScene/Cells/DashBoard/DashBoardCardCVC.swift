@@ -13,6 +13,9 @@ import DSKit
 
 final class DashBoardCardCVC: UICollectionViewCell {
     
+    lazy var profileEditTap = profileEditView.gesture()
+    var cancelBag = CancelBag()
+    
     // MARK: - UI Components
         
     private var descriptionLabel = UILabel().then {

@@ -148,6 +148,10 @@ public final class HomeCoordinator: BaseCoordinator {
             guard let self else { return }
             self.delegate?.homeCoordinator(self, to: .webLink(url: url))
         }
+        homeForMember.vm.onEditProfileTapped = { [weak self] url in
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .webLink(url: url))
+        }
 
         rootViewController = homeForMember.vc
         navigationController?.pushViewController(homeForMember.vc, animated: true)
