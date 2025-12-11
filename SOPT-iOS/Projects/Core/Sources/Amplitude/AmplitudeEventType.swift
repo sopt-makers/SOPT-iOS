@@ -33,13 +33,8 @@ public enum AmplitudeEventType: String {
     case clickNotificationItem = "click_notification_item"
     
     // 신규 홈 클릭 이벤트
-    case clickAttendanceNew = "click_attendance"
-    case clickAlarmNew = "click_alarm"
     case clickAllCalendar = "click_all_calendar"
-    case clickPlaygroundCommunityNew = "click_playground_community"
     case clickMoim = "click_moim"
-    case clickMemberNew = "click_member"
-    case clickProjectNew = "click_project"
     case clickPokeMenu = "click_poke_menu"
     case clickTodaySoptuneMenu = "click_todaysoptmadi_menu"
     case clickSoptampMenu = "click_soptamp_menu"
@@ -73,13 +68,10 @@ public enum AmplitudeEventType: String {
     case clickNaviSoptamp = "click_navi_soptamp"
     case clickNaviPoke = "click_navi_poke"
 
-    // 기존 홈 뷰 이벤트
+    // 홈 뷰 이벤트
     case viewAppHome = "view_apphome"
     case viewNotificationDetail = "view_notification_detail"
     case viewNotificationList = "view_notification_list"
-
-    // 신규 홈 뷰 이벤트
-    case viewAppHomeNew = "view_apphome"
     
     // 콕 찌르기 뷰 이벤트
     case viewPokeOnboarding = "view_poke_onboarding"

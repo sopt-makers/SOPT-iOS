@@ -111,7 +111,7 @@ extension HomeForMemberViewModel {
             .sink { owner, _ in
                 owner.useCase.getReportURL()
                 owner.requestAuthorizationForNotification()
-                AmplitudeInstance.shared.trackWithUserType(event: .viewAppHomeNew)
+                AmplitudeInstance.shared.trackWithUserType(event: .viewAppHome)
             }.store(in: cancelBag)
         
         input.viewDidLoad
@@ -135,7 +135,7 @@ extension HomeForMemberViewModel {
                     AmplitudeInstance.shared.trackWithUserType(event: .clickAllCalendar)
                 case .productService(let model):
                     owner.onMainProductCellTapped?(model.product.serviceDomainLink)
-                    owner.eventTracker.trackAmplitude(event: model.product.toAmplitudeEventTypeNew)
+                    owner.eventTracker.trackAmplitude(event: model.product.toAmplitudeEventType)
                 case .appService(let model):
                     if model.serviceName == "콕찌르기" {
                         owner.useCase.checkPokeNewUser()
@@ -167,7 +167,7 @@ extension HomeForMemberViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNotificationButtonTapped?()
-                AmplitudeInstance.shared.trackWithUserType(event: .clickAlarmNew)
+                AmplitudeInstance.shared.trackWithUserType(event: .clickAlarm)
             }
             .store(in: cancelBag)
         
@@ -182,7 +182,7 @@ extension HomeForMemberViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onAttendanceButtonTapped?()
-                AmplitudeInstance.shared.trackWithUserType(event: .clickAttendanceNew)
+                AmplitudeInstance.shared.trackWithUserType(event: .clickAttendacne)
             }
             .store(in: cancelBag)
         
