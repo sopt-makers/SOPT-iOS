@@ -10,8 +10,8 @@ import Foundation
 
 public enum TabBarItemType: Int, CaseIterable {
     case home
-    case poke
     case soptamp
+    case poke
     case soptlog
 }
 
@@ -25,27 +25,19 @@ public extension TabBarItemType {
         }
     }
     
+    /// 유저타입 별 탭 바 인덱스 매핑
     func getTabIndex(userType: UserType) -> Int {
         switch userType {
         case .active:
-            switch self {
-            case .home:
-                0
-            case .soptamp:
-                1
-            case .poke:
-                2
-            case .soptlog:
-                3
-            }
+            return self.rawValue
         case .visitor, .inactive:
             switch self {
             case .home, .soptamp:
-                0
+                return 0
             case .poke:
-                1
+                return 1
             case .soptlog:
-                2
+                return 2
             }
         }
     }
