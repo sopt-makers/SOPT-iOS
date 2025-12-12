@@ -23,10 +23,11 @@ final class StampBuilder {
 }
 
 extension StampBuilder: StampFeatureBuildable {
-    public func makeMissionListVC(sceneType: MissionListSceneType, coordinator: Coordinator) -> MissionListPresentable {
+    public func makeMissionListVC(sceneType: MissionListSceneType, isRouteFromTabBar: Bool, coordinator: Coordinator) -> MissionListPresentable {
         let useCase = DefaultMissionListUseCase(repository: missionListRepository)
         let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType, coordinator: coordinator)
-        let missionListVC = MissionListVC(viewModel: viewModel)
+        let missionListVC = MissionListVC(viewModel: viewModel, isRouteFromTabBar: isRouteFromTabBar)
+   
         return (missionListVC, viewModel)
     }
 

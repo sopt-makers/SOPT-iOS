@@ -23,6 +23,6 @@ public struct SoptampDeepLink: DeepLinkExecutable {
             return coordinator
         }
         
-        return coordinator.runStampFlow()
+        return coordinator.runStampFlow(isRouteFromTabBar: false)
     }
 }

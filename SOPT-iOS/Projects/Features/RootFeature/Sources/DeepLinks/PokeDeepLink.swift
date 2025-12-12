@@ -23,6 +23,6 @@ public struct PokeDeepLink: DeepLinkExecutable {
             return coordinator
         }
         
-        return coordinator.runPokeFlow()
+        return coordinator.runPokeFlow(isRouteFromTabBar: false)
     }
 }
