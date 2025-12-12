@@ -132,6 +132,8 @@ extension SoptlogViewModel {
         } catch let error as MainError {
             switch error {
             case .networkError(_):
+                #warning("AlertVC가 메인스레드에서 보여지지 않는 문제 발생. #789에서 해결 필요")
+                print("🚨 네트워크 에러")
                 onNetworkError?()
             case .authFailed:
                 print("🚨 SoptlogViewModel: 인증에 실패했습니다.")
