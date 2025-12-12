@@ -16,9 +16,9 @@ public struct SoptlogResponseEntity: Decodable {
     public let todayFortuneText: String
     
     /// 솝탬프 정보
-    public let soptampCount: Int
-    public let viewCount: Int
-    public let myClapCount: Int
+    public let soptampCount: Int?
+    public let viewCount: Int?
+    public let myClapCount: Int?
     
     /// 콕찌르기 정보
     public let totalPokeCount: Int

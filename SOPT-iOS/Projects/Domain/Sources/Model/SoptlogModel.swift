@@ -16,9 +16,9 @@ public struct  SoptlogModel {
     public let todayFortuneText: String
     
     /// 솝탬프 정보
-    public let soptampCount: Int
-    public let viewCount: Int
-    public let myClapCount: Int
+    public let soptampCount: Int?
+    public let viewCount: Int?
+    public let myClapCount: Int?
     
     /// 콕찌르기 정보
     public let totalPokeCount: Int
@@ -30,9 +30,9 @@ public struct  SoptlogModel {
         isActive: Bool,
         isFortuneChecked: Bool,
         todayFortuneText: String,
-        soptampCount: Int,
-        viewCount: Int,
-        myClapCount: Int,
+        soptampCount: Int?,
+        viewCount: Int?,
+        myClapCount: Int?,
         totalPokeCount: Int,
         newFriendsPokeCount: Int,
         bestFriendsPokeCount: Int,
