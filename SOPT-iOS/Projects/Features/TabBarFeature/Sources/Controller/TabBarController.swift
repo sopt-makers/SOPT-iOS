@@ -83,7 +83,7 @@ extension TabBarController {
 
         switch self.userType{
         case .active:
-            tabs = [.home, .soptstamp, .poke, .soptlog]
+            tabs = [.home, .soptamp, .poke, .soptlog]
         case .inactive, .visitor:
             tabs = [.home, .poke, .soptlog]
         }

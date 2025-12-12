@@ -32,6 +32,7 @@ public final class TabBarCoordinator: BaseCoordinator {
     private weak var navigationController: UINavigationController?
     private let views: [UIViewController]
     private let userType: UserType
+    private let selectedTabType: TabBarItemType
     
     // MARK: - Init
     
@@ -39,18 +40,26 @@ public final class TabBarCoordinator: BaseCoordinator {
         navigationController: UINavigationController,
         factory: TabBarBuilder,
         views: [UIViewController],
-        userType: UserType
+        userType: UserType,
+        selectedTabType: TabBarItemType = .home
     ) {
         self.navigationController = navigationController
         self.factory = factory
         self.views = views
         self.userType = userType
+        self.selectedTabType = selectedTabType
     }
     
     // MARK: - Coordinator Life Cycle
     
     public override func start() {
-        showTabBar()
+        if let existingTabBar = navigationController?.viewControllers.first as? UITabBarController {
+            tabBarController = existingTabBar
+            let tabIndex = selectedTabType.getTabIndex(userType: userType)
+            existingTabBar.selectedIndex = tabIndex
+        } else {
+            showTabBar()
+        }
     }
     
     // MARK: - Navigation
@@ -61,7 +70,7 @@ public final class TabBarCoordinator: BaseCoordinator {
         tabBar.vm.onTabBarItemTapped = { [weak self] index in
             // 각 탭의 코디네이터 실행
             guard let self = self,
-                let tabType = TabType(rawValue: index) else { return }
+                  let tabType = TabBarItemType(rawValue: index) else { return }
             switch tabType {
             case .home:
                 self.delegate?.tabBarCoordinator(self, to: .home)
