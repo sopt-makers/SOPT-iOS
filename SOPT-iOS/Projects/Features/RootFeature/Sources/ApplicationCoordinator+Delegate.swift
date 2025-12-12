@@ -48,7 +48,7 @@ extension ApplicationCoordinator: TabBarCoordinatorDelegate {
     }
 
     private func selectedTab(_ tab: TabBarItemType) {
-        self.tabBarController?.selectedIndex = tab.rawValue
+        self.tabBarController?.selectedIndex = tab.getTabIndex(userType: UserDefaultKeyList.Auth.getUserType())
     }
 }
 
