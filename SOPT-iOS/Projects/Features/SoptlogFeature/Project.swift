@@ -13,6 +13,6 @@ let project = Project.makeModule(
     name: "SoptlogFeature",
     targets: [.unitTest, .staticFramework, .demo, .interface],
     interfaceDependencies: [
-        .Features.Web.Feature
+        .Features.Poke.Interface
     ]
 )

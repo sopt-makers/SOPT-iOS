@@ -47,7 +47,7 @@ extension ApplicationCoordinator: TabBarCoordinatorDelegate {
         }
     }
 
-    private func selectedTab(_ tab: TabType) {
+    private func selectedTab(_ tab: TabBarItemType) {
         self.tabBarController?.selectedIndex = tab.rawValue
     }
 }
@@ -68,7 +68,7 @@ extension ApplicationCoordinator: HomeCoordinatorDelegate {
         case .notification:
             runNotificationFlow()
         case .soptlog:
-            tabBarController?.selectedIndex = TabType.soptlog.rawValue
+            tabBarController?.selectedIndex = TabBarItemType.soptlog.rawValue
         case .deepLink(let url):
             notificationHandler.receive(deepLink: url)
             guard let deepLink = self.notificationHandler.deepLink.value else { return }

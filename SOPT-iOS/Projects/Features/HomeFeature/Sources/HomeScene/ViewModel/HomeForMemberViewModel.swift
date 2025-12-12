@@ -64,6 +64,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         let profileImageViewTapped: Driver<PostInfo>
         let isFABTapped: Driver<Void>
         let isMenuCellTapped: Driver<String>
+        let editProfileTapped: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -75,7 +76,6 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     
     // MARK: - HomeForMemberCoordinating
     
-    public var onDashBoardCellTapped: (() -> Void)?
     public var onCalendarCellTapped: (() -> Void)?
     public var onAttendanceButtonTapped: (() -> Void)?
     public var onMainProductCellTapped: ((String) -> Void)?
@@ -93,6 +93,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public var onViewAllContentButtonTapped: ((String) -> Void)?
     public var onProfileImageViewTapped: ((Int) -> Void)?
     public var onFABMenuTapped: ((String) -> Void)?
+    public var onEditProfileTapped: ((String) -> Void)?
 
     // MARK: - initialization
     
@@ -128,8 +129,6 @@ extension HomeForMemberViewModel {
             .withUnretained(self)
             .sink { owner, item in
                 switch item {
-                case .dashBoard:
-                    owner.onDashBoardCellTapped?()
                 case .recentSchedule:
                     owner.onCalendarCellTapped?()
                     AmplitudeInstance.shared.trackWithUserType(event: .clickAllCalendar)
@@ -137,14 +136,17 @@ extension HomeForMemberViewModel {
                     owner.onMainProductCellTapped?(model.product.serviceDomainLink)
                     owner.eventTracker.trackAmplitude(event: model.product.toAmplitudeEventType)
                 case .appService(let model):
-                    if model.serviceName == "콕찌르기" {
-                        owner.useCase.checkPokeNewUser()
-                            .sink { isPokeNewUser in
-                                owner.onPoke?(isPokeNewUser)
-                            }.store(in: cancelBag)
-                    } else {
-                        owner.onAppServiceCellTapped?(model.deepLink)
-                    }
+                    owner.onAppServiceCellTapped?(model.deepLink)
+                    
+                    #warning("코드리뷰 후 삭제 or 수정 예정")
+//                    if model.serviceName == "콕찌르기" {
+//                        owner.useCase.checkPokeNewUser()
+//                            .sink { isPokeNewUser in
+//                                owner.onPoke?(isPokeNewUser)
+//                            }.store(in: cancelBag)
+//                    } else {
+//                        owner.onAppServiceCellTapped?(model.deepLink)
+//                    }
                 case .socialLink(let type):
                     owner.onSocialLinkButtonTapped?(type.socialLink.serviceDomainLink)
                 case .popularPost(let model):
@@ -251,6 +253,13 @@ extension HomeForMemberViewModel {
                 owner.onFABMenuTapped?(url)
             }
             .store(in: cancelBag)
+        
+        input.editProfileTapped
+            .withUnretained(self)
+            .sink { owner, url in
+                owner.onEditProfileTapped?(ExternalURL.Playground.editProfile)
+            }
+            .store(in: cancelBag)
 
         return output
     }
@@ -344,7 +353,8 @@ extension HomeForMemberViewModel {
         let user = try await useCase.getUserInfoAsync()
         let dashBoard = description.toPresentation(
             history: user?.historyList ?? [],
-            isAllConfirm: user?.isAllConfirm ?? false
+            isAllConfirm: user?.isAllConfirm ?? false,
+            profileImageURL: user?.profileImage ?? nil
         )
         UserDefaultKeyList.Auth.isActiveUser = user?.userType == .active // 사용자 활동 중 여부 등록
         fetchedDashBoard = dashBoard

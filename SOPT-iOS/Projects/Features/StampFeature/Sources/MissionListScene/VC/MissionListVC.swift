@@ -27,6 +27,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
     public var sceneType: MissionListSceneType {
         return self.viewModel.missionListsceneType
     }
+    private var isRouteFromTabBar: Bool = true
     private var cancelBag = CancelBag()
     
     private var missionTypeMenuSelected = CurrentValueSubject<MissionListFetchType, Never>(.all)
@@ -165,8 +166,12 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
         self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     
-    init(viewModel: MissionListViewModel) {
+    init(
+        viewModel: MissionListViewModel,
+        isRouteFromTabBar: Bool
+    ) {
         self.viewModel = viewModel
+        self.isRouteFromTabBar = isRouteFromTabBar
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -200,6 +205,7 @@ extension MissionListVC {
         naviBar.snp.makeConstraints { make in
             make.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)
         }
+        naviBar.setLeftButtonHidden(isRouteFromTabBar)
         
         missionListCollectionView.snp.makeConstraints { make in
             make.top.equalTo(naviBar.snp.bottom).offset(20.adjustedH)

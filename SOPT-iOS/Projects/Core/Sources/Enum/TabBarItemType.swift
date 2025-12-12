@@ -11,7 +11,7 @@ import Foundation
 public enum TabBarItemType: Int, CaseIterable {
     case home
     case poke
-    case soptstamp
+    case soptamp
     case soptlog
 }
 
@@ -22,6 +22,31 @@ public extension TabBarItemType {
         case .soptstamp: return .clickNaviSoptamp
         case .soptlog: return .clickNaviSoptlog
         case .poke: return .clickNaviPoke
+        }
+    }
+    
+    func getTabIndex(userType: UserType) -> Int {
+        switch userType {
+        case .active:
+            switch self {
+            case .home:
+                0
+            case .soptamp:
+                1
+            case .poke:
+                2
+            case .soptlog:
+                3
+            }
+        case .visitor, .inactive:
+            switch self {
+            case .home, .soptamp:
+                0
+            case .poke:
+                1
+            case .soptlog:
+                2
+            }
         }
     }
 }
