@@ -41,4 +41,19 @@ public extension TabBarItemType {
             }
         }
     }
+    
+    /// 실제 탭바 인덱스 -> TabBarItemType
+    static func from(index: Int, userType: UserType) -> TabBarItemType? {
+        switch userType {
+        case .active:
+            return TabBarItemType(rawValue: index)
+        case .visitor, .inactive:
+            switch index {
+            case 0: return .home
+            case 1: return .poke
+            case 2: return .soptlog
+            default: return nil
+            }
+        }
+    }
 }

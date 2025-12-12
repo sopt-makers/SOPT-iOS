@@ -17,10 +17,11 @@ final public class TabBarViewModel: TabBarViewModelType {
     
     // MARK: - Properties
     
-    private let cancelBag = CancelBag()
-    private let userType: UserType
     private let coordinator: AnyCoordinatorObject
+    private let cancelBag = CancelBag()
     private let homeUseCase: HomeUseCase
+    
+    private let userType: UserType
     @Published public private(set) var tabBarBadges: [TabBarItemType: String] = [:]
     
     // MARK: - Inputs
@@ -38,7 +39,7 @@ final public class TabBarViewModel: TabBarViewModelType {
     
     // MARK: - TabBarCoordinating
     
-    public var onTabBarItemTapped: ((Int) -> Void)?
+    public var onTabBarItemTapped: ((TabBarItemType) -> Void)?
     public var showTabBarAlert: (() -> Void)?
     
     // MARK: - initialization
@@ -63,8 +64,9 @@ extension TabBarViewModel {
         input.isTabSelectedIndex
             .withUnretained(self)
             .sink { owner, index in
-                owner.onTabBarItemTapped?(index)
-                owner.trackAmplitude(itemIndex: index)
+                guard let tabBar = TabBarItemType.from(index: index, userType: owner.userType) else { return }
+                owner.onTabBarItemTapped?(tabBar)
+                owner.trackAmplitude(itemType: tabBar)
             }.store(in: cancelBag)
         
         return output
@@ -74,10 +76,8 @@ extension TabBarViewModel {
 // MARK: - Methods
 
 extension TabBarViewModel {
-    private func trackAmplitude(itemIndex: Int) {
-        if let item = TabBarItemType(rawValue: itemIndex) {
-            AmplitudeInstance.shared.trackWithUserType(event: item.toAmplitudeEventType)
-        }
+    private func trackAmplitude(itemType: TabBarItemType) {
+        AmplitudeInstance.shared.trackWithUserType(event: itemType.toAmplitudeEventType)
     }
     
     private func fetchAppServiceBadges() {

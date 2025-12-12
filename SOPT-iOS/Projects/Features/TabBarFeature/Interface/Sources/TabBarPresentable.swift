@@ -13,7 +13,7 @@ import BaseFeatureDependency
 import Core
 
 public protocol TabBarCoordinatable {
-    var onTabBarItemTapped: ((Int) -> Void)? { get set }
+    var onTabBarItemTapped: ((TabBarItemType) -> Void)? { get set }
     var showTabBarAlert: (() -> Void)? { get set }
 }
 public typealias TabBarViewModelType = ViewModelType & TabBarCoordinatable

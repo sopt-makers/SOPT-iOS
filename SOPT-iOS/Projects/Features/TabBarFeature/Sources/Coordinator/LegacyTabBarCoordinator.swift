@@ -38,12 +38,12 @@ public final class LegacyTabBarCoordinator: DefaultTabBarCoordinator {
     private func showTabBar() {
         var tabBar = factory
                 
-        tabBar.vm.onTabBarItemTapped = { [weak self] index in
+        tabBar.vm.onTabBarItemTapped = { [weak self] tabType in
             // 각 탭의 코디네이터 실행
-            switch index {
-            case 0:
+            switch tabType {
+            case .home:
                 self?.requestCoordinating?(.home)
-            case 1:
+            case .soptlog:
                 self?.requestCoordinating?(.soptlog)
             default:
                 return

@@ -67,17 +67,17 @@ public final class TabBarCoordinator: BaseCoordinator {
     private func showTabBar() {
         var tabBar = factory.makeTabBar(with: views, userType: userType, coordinator: self)
 
-        tabBar.vm.onTabBarItemTapped = { [weak self] index in
+        tabBar.vm.onTabBarItemTapped = { [weak self] tabType in
             // 각 탭의 코디네이터 실행
-            guard let self = self,
-                  let tabType = TabBarItemType(rawValue: index) else { return }
+            guard let self = self else { return }
+            
             switch tabType {
             case .home:
                 self.delegate?.tabBarCoordinator(self, to: .home)
-            case .poke:
-                self.delegate?.tabBarCoordinator(self, to: .poke)
             case .soptamp:
                 self.delegate?.tabBarCoordinator(self, to: .soptamp)
+            case .poke:
+                self.delegate?.tabBarCoordinator(self, to: .poke)
             case .soptlog:
                 self.delegate?.tabBarCoordinator(self, to: .soptlog)
             }
