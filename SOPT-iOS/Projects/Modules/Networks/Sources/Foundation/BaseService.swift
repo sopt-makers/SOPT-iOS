@@ -302,8 +302,10 @@ extension BaseService {
                         continuation.resume(returning: body)
                     } catch let error {
                         if let error = error as? APIError {
+                            print("🚨 APIError 발생: \(error.localizedDescription)")
                             continuation.resume(throwing: error)
                         }
+                        print("🚨 정의되지 않은 에러 발생: \(error.localizedDescription)")
                         continuation.resume(throwing: MoyaError.jsonMapping(value))
                     }
                 case .failure(let error):
