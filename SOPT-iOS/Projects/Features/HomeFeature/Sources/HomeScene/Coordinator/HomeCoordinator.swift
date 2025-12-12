@@ -60,11 +60,6 @@ public final class HomeCoordinator: BaseCoordinator {
     public func showHomeForMember() {
         var homeForMember = factory.makeHomeForMember(coordinator: self)
         
-        homeForMember.vm.onDashBoardCellTapped = { [weak self] in
-            guard let self else { return }
-            self.delegate?.homeCoordinator(self, to: .soptlog)
-        }
-        
         homeForMember.vm.onCalendarCellTapped = { [weak self] in
             guard let self else { return }
             self.delegate?.homeCoordinator(self, to: .calendar)
@@ -144,7 +139,13 @@ public final class HomeCoordinator: BaseCoordinator {
             let url = "\(ExternalURL.Playground.main)/members/\(userID)"
             self.delegate?.homeCoordinator(self, to: .webLink(url: url))
         }
+        
         homeForMember.vm.onFABMenuTapped = { [weak self] url in
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .webLink(url: url))
+        }
+        
+        homeForMember.vm.onEditProfileTapped = { [weak self] url in
             guard let self else { return }
             self.delegate?.homeCoordinator(self, to: .webLink(url: url))
         }

@@ -17,7 +17,7 @@ extension TabBarItemType {
         switch self {
         case .home:
             return DSKitAsset.Assets.icHomeFilled.image.withRenderingMode(.alwaysTemplate)
-        case .soptstamp:
+        case .soptamp:
             return DSKitAsset.Assets.icSoptampFilled.image.withRenderingMode(.alwaysTemplate)
         case .poke:
             return DSKitAsset.Assets.icPokeFilled.image.withRenderingMode(.alwaysTemplate)
@@ -30,7 +30,7 @@ extension TabBarItemType {
         switch self {
         case .home:
             return I18N.Home.title
-        case .soptstamp:
+        case .soptamp:
             return I18N.Soptlog.soptamp
         case .poke:
             return I18N.Soptlog.poke

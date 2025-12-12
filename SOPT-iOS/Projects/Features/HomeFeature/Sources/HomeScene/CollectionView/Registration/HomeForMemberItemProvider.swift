@@ -15,7 +15,16 @@ extension HomeForMemberVC {
     func createDashBoardCellRegistration() -> DashBoardCardCellRegistration {
         collectionView.createCellRegistration { [weak self] cell, _, item in
             guard let self else { return }
+            
+            cell.cancelBag.cancel()
+            
             cell.configureCell(userType: self.viewModel.userType, model: item)
+            cell.profileEditTap
+                .withUnretained(self)
+                .sink { owner, _ in
+                    owner.profileEditTapped.send()
+                }
+                .store(in: cell.cancelBag)
         }
     }
     

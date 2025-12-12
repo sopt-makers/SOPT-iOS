@@ -57,7 +57,7 @@ extension FABMenuCVC {
 // MARK: - Methods
 
 extension FABMenuCVC {
-    public func configureCell(model: MenuSectionItem) {
+    func configureCell(model: MenuSectionItem) {
         menuTitle.text = model.title
         menuImage.image = model.icon
     }

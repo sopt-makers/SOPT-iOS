@@ -50,13 +50,10 @@ public final class StampCoordinator: BaseCoordinator {
     // MARK: - Navigation
 
     private func showMissionList(sceneType: MissionListSceneType, isRouteFromTabBar: Bool) {
-        var missionList = factory.makeMissionListVC(sceneType: sceneType, coordinator: self)
+        var missionList = factory.makeMissionListVC(sceneType: sceneType, isRouteFromTabBar: isRouteFromTabBar, coordinator: self)
 
         if isRouteFromTabBar {
             self.rootController = self.navigationController
-            missionList.vc.onNaviBackTap = { [weak self] in
-                self?.navigationController.popViewController(animated: true)
-            }
             self.navigationController.setViewControllers([missionList.vc], animated: false)
         } else {
             let navController = UINavigationController(rootViewController: missionList.vc)
@@ -204,6 +201,7 @@ extension StampCoordinator {
     private func showOtherMissionList(_ username: String, _ sentence: String) {
         var otherMissionList = factory.makeMissionListVC(
             sceneType: .ranking(userName: username, sentence: sentence),
+            isRouteFromTabBar: false,
             coordinator: self
         )
 
