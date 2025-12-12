@@ -19,9 +19,19 @@ final class TabBarController: UITabBarController {
     private let tabList: [UIViewController]
     private let viewModel: TabBarViewModel
     
+    private let viewWillAppear = PassthroughSubject<Void, Never>()
     private let isTabBarItemSelected = PassthroughSubject<Int, Never>()
     private let userType: UserType
     private let cancelBag = CancelBag()
+    
+    private var tabTypes: [TabBarItemType] {
+        switch userType {
+        case .active:
+            return [.home, .soptamp, .poke, .soptlog]
+        case .inactive, .visitor:
+            return [.home, .poke, .soptlog]
+        }
+    }
     
     // MARK: - Life Cycle
     
@@ -46,6 +56,11 @@ final class TabBarController: UITabBarController {
         configureTabBarItem()
         
         setDelegate()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewWillAppear.send()
     }
     
     override public func viewDidLayoutSubviews() {
@@ -79,16 +94,7 @@ extension TabBarController {
     }
     
     private func configureTabBarItem() {
-        let tabs: [TabBarItemType]
-
-        switch self.userType{
-        case .active:
-            tabs = [.home, .soptamp, .poke, .soptlog]
-        case .inactive, .visitor:
-            tabs = [.home, .poke, .soptlog]
-        }
-
-        tabs.enumerated().forEach { index, tabType in
+        tabTypes.enumerated().forEach { index, tabType in
             let viewController = tabList[index]
             viewController.tabBarItem = tabType.makeTabBarItem()
             viewController.tabBarItem.tag = index
@@ -109,6 +115,7 @@ extension TabBarController {
 extension TabBarController {
     private func bindViewModels() {
         let input = TabBarViewModel.Input(
+            viewWillAppear: viewWillAppear.asDriver(),
             isTabSelectedIndex: isTabBarItemSelected.asDriver()
         )
         
@@ -119,10 +126,35 @@ extension TabBarController {
             .sink { owner, index in
                 owner.selectedIndex = index
             }.store(in: cancelBag)
+        viewModel.$tabBarBadges
+        
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, badges in
+                owner.updateBadges(with: badges)
+            }.store(in: cancelBag)
     }
     
     private func setDelegate() {
         self.delegate = self
+    }
+
+    private func updateBadges(with badges: [TabBarItemType: String]) {
+        guard let items = tabBar.items else { return }
+        
+        tabTypes.enumerated().forEach { index, tabType in
+            guard index < items.count else { return }
+            let item = items[index]
+            
+            if let badgeText = badges[tabType] {
+                item.badgeColor = DSKitAsset.Colors.orange400.color
+                item.setBadgeTextAttributes([
+                    .font: DSKitFontFamily.Suit.semiBold.font(size: 10),
+                    .foregroundColor: DSKitAsset.Colors.gray900.color
+                ], for: .normal)
+                item.badgeValue = badgeText
+            }
+        }
     }
 }
 
