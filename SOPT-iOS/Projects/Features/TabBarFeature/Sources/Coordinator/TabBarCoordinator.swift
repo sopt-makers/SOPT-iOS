@@ -96,14 +96,6 @@ public final class TabBarCoordinator: BaseCoordinator {
             )
         }
         
-        tabBar.vm.onFABMenuTapped = { [weak self] url in
-            guard let url = URL(string: url) else { return }
-            let webView = SOPTWebView(startWith: url)
-            self?.navigationController?.pushViewController(webView, animated: true)
-        }
-        
-        let tabIndex = selectedTabType.getTabIndex(userType: userType)
-        tabBar.vc.selectedIndex = tabIndex
         self.tabBarController = tabBar.vc
         self.navigationController?.setViewControllers([tabBar.vc], animated: false)
     }
