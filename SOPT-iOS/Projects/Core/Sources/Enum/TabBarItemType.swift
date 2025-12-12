@@ -19,7 +19,7 @@ public extension TabBarItemType {
     var toAmplitudeEventType: AmplitudeEventType {
         switch self {
         case .home: return .clickNaviHome
-        case .soptstamp: return .clickNaviSoptamp
+        case .soptamp: return .clickNaviSoptamp
         case .soptlog: return .clickNaviSoptlog
         case .poke: return .clickNaviPoke
         }
