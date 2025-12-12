@@ -575,8 +575,8 @@ extension HomeForMemberVC {
     }
 
     private func animatePlusButton(_ isTapped: Bool) {
-        UIView.animate(withDuration: 0.6) {
-            self.plusButton.imageView?.transform = isTapped ? .init(rotationAngle: -CGFloat.pi/4) : .identity
+        UIView.animate(withDuration: 0.6) { [weak self] in
+            self?.plusButton.imageView?.transform = isTapped ? .init(rotationAngle: -CGFloat.pi/4) : .identity
         }
     }
 
@@ -586,7 +586,8 @@ extension HomeForMemberVC {
                        usingSpringWithDamping: 0.75,
                        initialSpringVelocity: 0.75,
                        options: [.curveEaseInOut],
-                       animations: {
+                       animations: { [weak self] in
+            guard let self else { return }
             let translationY = -(self.plusButton.frame.height + 120 + self.menuCollectionView.frame.height)
             self.menuCollectionView.transform = CGAffineTransform(translationX: 0, y: translationY)
         })
@@ -598,8 +599,8 @@ extension HomeForMemberVC {
                        usingSpringWithDamping: 1,
                        initialSpringVelocity: 0.8,
                        options: [.curveEaseInOut],
-                       animations: {
-            self.menuCollectionView.transform = .identity
+                       animations: { [weak self] in
+            self?.menuCollectionView.transform = .identity
         })
     }
 
