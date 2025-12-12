@@ -27,19 +27,19 @@ extension SoptlogModel {
         let soptampMenus: [SoptlogMenuModel] = [
             SoptlogMenuModel(
                 title: I18N.Soptlog.Menu.completedMission,
-                value: "\(soptampCount)회",
+                value: "\(soptampCount ?? 0)회",
                 hasTooltip: false,
                 hasChevron: true
             ),
             SoptlogMenuModel(
                 title: I18N.Soptlog.Menu.views,
-                value: "\(viewCount)회",
+                value: "\(viewCount ?? 0)회",
                 hasTooltip: true,
                 hasChevron: false
             ),
             SoptlogMenuModel(
                 title: I18N.Soptlog.Menu.receivedClapCount,
-                value: "\(myClapCount)회",
+                value: "\(myClapCount ?? 0)회",
                 hasTooltip: false,
                 hasChevron: false
             )
