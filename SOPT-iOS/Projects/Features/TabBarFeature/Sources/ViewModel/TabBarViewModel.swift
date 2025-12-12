@@ -52,13 +52,8 @@ extension TabBarViewModel {
         input.isTabSelectedIndex
             .withUnretained(self)
             .sink { owner, index in
-                if index == 1, owner.userType == .visitor {
-                    owner.showTabBarAlert?()
-                    output.selectedIndex.send(0)
-                } else {
-                    owner.onTabBarItemTapped?(index)
-                    owner.trackAmplitude(itemIndex: index)
-                }
+                owner.onTabBarItemTapped?(index)
+                owner.trackAmplitude(itemIndex: index)
             }.store(in: cancelBag)
         
         return output

@@ -475,7 +475,7 @@ public struct I18N {
         public static let receiveTodaysFortuneCard = "오늘의 부적 받기"
 		public static let receiveTodayFortune = "오늘의 운세가 도착했어요!"
 		public static let checkTodayFortune = "오늘의 운세 확인하기"
-		public static let goHome = "홈으로 돌아가기"
+		public static let goHome = "돌아가기"
         public static let dateErrorToastMessage = "앗, 오늘의 솝마디만 볼 수 있어요."
     }
 }

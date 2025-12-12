@@ -23,4 +23,23 @@ enum SoptlogSectionLayoutKind: Int, CaseIterable {
         default: return ""
         }
     }
+    
+    /// 활동 상태에 따라 표시할 섹션 목록
+    static func visibleSections(isActiveUser: Bool) -> [SoptlogSectionLayoutKind] {
+        var sections: [SoptlogSectionLayoutKind] = [.logo]
+        
+        if isActiveUser {
+            sections.append(.soptampLog)
+        }
+        
+        sections.append(.pokeLog)
+        sections.append(.banner)
+        
+        return sections
+    }
+}
+
+struct SoptlogCellTapInfo {
+    let section: SoptlogSectionLayoutKind
+    let row: Int
 }
