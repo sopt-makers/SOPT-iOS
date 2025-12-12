@@ -577,7 +577,7 @@ extension ApplicationCoordinator {
                 factory: StampBuilder(),
                 mypageFactory: MyPageBuilder()
             )
-            newCoordinator.start(isRouteFromTabBar: false)
+            newCoordinator.start(isRouteFromTabBar: isRouteFromTabBar)
             coordinator = newCoordinator
         }
 

@@ -206,13 +206,13 @@ extension STNavigationBar {
             leftButton.removeFromSuperview()
         }
     
-        titleButton.snp.remakeConstraints {
-            $0.centerY.equalToSuperview().offset(1)
+        titleButton.snp.remakeConstraints { make in
+            make.centerY.equalToSuperview().offset(1)
             
             if isHidden {
-                $0.leading.equalToSuperview().offset(20)
+                make.leading.equalToSuperview().offset(20)
             } else {
-                $0.leading.equalTo(leftButton.snp.trailing).offset(12)
+                make.leading.equalTo(leftButton.snp.trailing).offset(12)
             }
         }
     
