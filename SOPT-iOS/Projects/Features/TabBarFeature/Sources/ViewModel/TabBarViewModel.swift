@@ -21,8 +21,6 @@ final public class TabBarViewModel: TabBarViewModelType {
     private let userType: UserType
     private let coordinator: AnyCoordinatorObject
     private let homeUseCase: HomeUseCase
-    
-    @Published private(set) var isFABTapped: Bool = false
     @Published public private(set) var tabBarBadges: [TabBarItemType: String] = [:]
     
     // MARK: - Inputs
@@ -30,8 +28,6 @@ final public class TabBarViewModel: TabBarViewModelType {
     public struct Input {
         let viewWillAppear: Driver<Void>
         let isTabSelectedIndex: Driver<Int>
-        let isFABTapped: Driver<Void>
-        let isMenuCellTapped: Driver<String>
     }
     
     // MARK: - Outputs
@@ -43,7 +39,6 @@ final public class TabBarViewModel: TabBarViewModelType {
     // MARK: - TabBarCoordinating
     
     public var onTabBarItemTapped: ((Int) -> Void)?
-    public var onFABMenuTapped: ((String) -> Void)?
     public var showTabBarAlert: (() -> Void)?
     
     // MARK: - initialization
@@ -68,25 +63,8 @@ extension TabBarViewModel {
         input.isTabSelectedIndex
             .withUnretained(self)
             .sink { owner, index in
-                if index == 1, owner.userType == .visitor {
-                    owner.showTabBarAlert?()
-                    output.selectedIndex.send(0)
-                } else {
-                    owner.onTabBarItemTapped?(index)
-                    owner.trackAmplitude(itemIndex: index)
-                }
-            }.store(in: cancelBag)
-        
-        input.isFABTapped
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.isFABTapped.toggle()
-            }.store(in: cancelBag)
-        
-        input.isMenuCellTapped
-            .withUnretained(self)
-            .sink { owner, url in
-                owner.onFABMenuTapped?(url)
+                owner.onTabBarItemTapped?(index)
+                owner.trackAmplitude(itemIndex: index)
             }.store(in: cancelBag)
         
         return output
@@ -125,7 +103,7 @@ extension TabBarViewModel {
     private func mapServiceNameToTabType(_ serviceName: String) -> TabBarItemType? {
         switch serviceName {
         case "솝탬프":
-            return .soptstamp
+            return .soptamp
         case "콕찌르기":
             return .poke
         default:

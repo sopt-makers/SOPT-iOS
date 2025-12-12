@@ -96,6 +96,23 @@ extension STNavigationBar {
 //        self.leftButton.addTarget(self, action: #selector(popToPreviousVC), for: .touchUpInside)
     }
     
+    private func leftButtonLayoutForMenu() {
+        self.addSubview(leftButton)
+        
+        leftButton.snp.makeConstraints { make in
+            make.centerY.equalToSuperview().offset(1)
+            make.leading.equalToSuperview().inset(20)
+            make.width.height.equalTo(32)
+        }
+        
+        titleButton.snp.remakeConstraints { make in
+            make.centerY.equalToSuperview().offset(1)
+            make.leading.equalTo(leftButton.snp.trailing).offset(12)
+        }
+    }
+}
+
+extension STNavigationBar {
     @discardableResult
     public func setTitle(_ title: String) -> Self {
         switch self.naviType {
@@ -179,19 +196,27 @@ extension STNavigationBar {
         return self
     }
     
-    private func leftButtonLayoutForMenu() {
-        self.addSubview(leftButton)
+    @discardableResult
+    public func setLeftButtonHidden(_ isHidden: Bool) -> Self {
+        guard naviType == .title else { return self }
         
-        leftButton.snp.makeConstraints { make in
-            make.centerY.equalToSuperview().offset(1)
-            make.leading.equalToSuperview().inset(20)
-            make.width.height.equalTo(32)
+        if !isHidden {
+            addSubview(leftButton)
+        } else {
+            leftButton.removeFromSuperview()
         }
-        
+    
         titleButton.snp.remakeConstraints { make in
             make.centerY.equalToSuperview().offset(1)
-            make.leading.equalTo(leftButton.snp.trailing).offset(12)
+            
+            if isHidden {
+                make.leading.equalToSuperview().offset(20)
+            } else {
+                make.leading.equalTo(leftButton.snp.trailing).offset(12)
+            }
         }
+    
+        return self
     }
 }
 

@@ -26,7 +26,7 @@ extension LegacyPokeBuilder: LegacyPokeFeatureBuildable {
         let viewModel = PokeMainViewModel(useCase: useCase,
                                           coordinator: coordinator,
                                           isRouteFromRoot: isRouteFromRoot)
-        let pokeMainVC = PokeMainVC(viewModel: viewModel)
+        let pokeMainVC = PokeMainVC(viewModel: viewModel, isRouteFromTabBar: true)
         return (pokeMainVC, viewModel)
     }
     

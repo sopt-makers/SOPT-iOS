@@ -50,10 +50,6 @@ public final class LegacyHomeCoordinator: DefaultHomeCoordinator {
     public func showHomeForMember() {
         var homeForMember = factory.makeHomeForMember(coordinator: self)
         
-        homeForMember.vm.onDashBoardCellTapped = { [weak self] in
-            self?.requestCoordinating?(.soptlog)
-        }
-        
         homeForMember.vm.onCalendarCellTapped = { [weak self] in
             self?.requestCoordinating?(.calendar)
         }

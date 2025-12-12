@@ -45,15 +45,11 @@ public final class PokeCoordinator: BaseCoordinator {
     // MARK: - Navigation
 
     public func showPokeMain(isRouteFromRoot: Bool, isRouteFromTabBar: Bool) {
-        var pokeMain = factory.makePokeMain(isRouteFromRoot: isRouteFromRoot, coordinator: self)
+        var pokeMain = factory.makePokeMain(isRouteFromRoot: isRouteFromRoot, isRouteFromTabBar: isRouteFromTabBar,  coordinator: self)
 
         if isRouteFromTabBar {
             self.rootController = self.navigationController
-            pokeMain.vm.onNaviBackTap = { [weak self] in
-                self?.rootController?.popViewController(animated: true)
-            }
             self.navigationController?.setViewControllers([pokeMain.vc], animated: false)
-
         } else {
             let newNav = UINavigationController(rootViewController: pokeMain.vc)
             newNav.modalPresentationStyle = .overFullScreen

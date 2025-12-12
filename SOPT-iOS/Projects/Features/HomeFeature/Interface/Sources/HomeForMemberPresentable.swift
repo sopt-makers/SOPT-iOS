@@ -13,7 +13,6 @@ import Core
 
 public protocol HomeForMemberViewControllable: LegacyViewControllable { }
 public protocol HomeForMemberCoordinatable {
-    var onDashBoardCellTapped: (() -> Void)? { get set }
     var onCalendarCellTapped: (() -> Void)? { get set }
     var onAttendanceButtonTapped: (() -> Void)? { get set }
     var onMainProductCellTapped: ((String) -> Void)? { get set }
@@ -31,6 +30,7 @@ public protocol HomeForMemberCoordinatable {
     var onViewAllContentButtonTapped: ((String) -> Void)? { get set }
     var onProfileImageViewTapped: ((Int) -> Void)? { get set }
     var onFABMenuTapped: ((String) -> Void)? { get set }
+    var onEditProfileTapped: ((String) -> Void)? { get set }
 }
 public typealias HomeForMemberViewModelType = ViewModelType & HomeForMemberCoordinatable
 public typealias LegacyHomeForMemberPresentable = (vc: HomeForMemberViewControllable, vm: any HomeForMemberViewModelType)
