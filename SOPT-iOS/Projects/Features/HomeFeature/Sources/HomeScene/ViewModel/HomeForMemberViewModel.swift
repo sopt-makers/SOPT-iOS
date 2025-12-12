@@ -76,7 +76,6 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     
     // MARK: - HomeForMemberCoordinating
     
-    public var onDashBoardCellTapped: (() -> Void)?
     public var onCalendarCellTapped: (() -> Void)?
     public var onAttendanceButtonTapped: (() -> Void)?
     public var onMainProductCellTapped: ((String) -> Void)?
@@ -130,8 +129,6 @@ extension HomeForMemberViewModel {
             .withUnretained(self)
             .sink { owner, item in
                 switch item {
-                case .dashBoard:
-                    owner.onDashBoardCellTapped?()
                 case .recentSchedule:
                     owner.onCalendarCellTapped?()
                     AmplitudeInstance.shared.trackWithUserType(event: .clickAllCalendar)

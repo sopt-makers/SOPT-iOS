@@ -11,7 +11,10 @@ import UIKit
 import DSKit
 
 final class DashBoardProfileImageView: UIView {
-    let profileImageView = CustomProfileImageView().then {
+    
+    // MARK: - UI Components
+    
+    private let profileImageView = CustomProfileImageView().then {
         $0.hideBorder()
     }
     
@@ -27,6 +30,8 @@ final class DashBoardProfileImageView: UIView {
         $0.image = DSKitAsset.Assets.icPencil.image
     }
     
+    // MARK: - Initialization
+    
     override init(frame: CGRect) {
         super.init(frame: .zero)
         
@@ -36,8 +41,9 @@ final class DashBoardProfileImageView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
 }
+
+// MARK: - UI & Layout
 
 extension DashBoardProfileImageView {
     private func setLayout() {
@@ -60,6 +66,8 @@ extension DashBoardProfileImageView {
         }
     }
 }
+
+// MARK: - Methods
 
 extension DashBoardProfileImageView {
     func configure(profileImageURL: String?) {

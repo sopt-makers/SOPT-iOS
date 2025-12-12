@@ -13,8 +13,8 @@ import DSKit
 
 final class DashBoardCardCVC: UICollectionViewCell {
     
-    lazy var profileEditTap = profileEditView.gesture()
-    var cancelBag = CancelBag()
+    private(set) lazy var profileEditTap = profileEditView.gesture()
+    private(set) var cancelBag = CancelBag()
     
     // MARK: - UI Components
         
@@ -73,10 +73,10 @@ extension DashBoardCardCVC {
             make.height.equalTo(23)
         }
 
-        profileEditView.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
-            $0.trailing.equalToSuperview().inset(20)
-            $0.size.equalTo(54)
+        profileEditView.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.trailing.equalToSuperview().inset(20)
+            make.size.equalTo(54)
         }
     }
 }

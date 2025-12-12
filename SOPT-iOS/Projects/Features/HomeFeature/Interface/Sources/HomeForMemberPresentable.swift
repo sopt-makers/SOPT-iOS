@@ -13,7 +13,6 @@ import Core
 
 public protocol HomeForMemberViewControllable: LegacyViewControllable { }
 public protocol HomeForMemberCoordinatable {
-    var onDashBoardCellTapped: (() -> Void)? { get set }
     var onCalendarCellTapped: (() -> Void)? { get set }
     var onAttendanceButtonTapped: (() -> Void)? { get set }
     var onMainProductCellTapped: ((String) -> Void)? { get set }
