@@ -12,6 +12,9 @@ import DependencyPlugin
 let project = Project.makeModule(
     name: "HomeFeature",
     targets: [.unitTest, .staticFramework, .demo, .interface],
+    internalDependencies: [
+        .Features.AppMyPage.Interface
+    ],
     interfaceDependencies: [
         .Features.Web.Feature
     ]

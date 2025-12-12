@@ -12,6 +12,9 @@ import DependencyPlugin
 let project = Project.makeModule(
     name: "StampFeature",
     targets: [.unitTest, .staticFramework, .demo, .interface],
+    internalDependencies: [
+        .Features.AppMyPage.Interface
+    ],
     interfaceDependencies: [
         .Features.Web.Feature
     ]
