@@ -19,10 +19,9 @@ public extension TabBarItemType {
     var toAmplitudeEventType: AmplitudeEventType {
         switch self {
         case .home: return .clickNaviHome
-            #warning("TODO: - 엠플리튜드 연결")
-        case .soptamp: return .clickNaviHome
+        case .soptamp: return .clickNaviSoptamp
         case .soptlog: return .clickNaviSoptlog
-        case .poke: return .clickNaviHome
+        case .poke: return .clickNaviPoke
         }
     }
     
