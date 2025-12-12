@@ -35,6 +35,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     private(set) var viewAllButtonTapped = PassthroughSubject<Void, Never>()
     private var socialLinkButtonTapped = PassthroughSubject<HomePresentationModel.SocialLink, Never>()
     private(set) var profileImageViewTapped = PassthroughSubject<PostInfo, Never>()
+    private(set) var profileEditTapped = PassthroughSubject<Void, Never>()
     
     private var isFirstAppear = true
     private var isExtendedButtonHidden: Bool = false
@@ -345,7 +346,8 @@ extension HomeForMemberVC {
             viewAllButtonTapped: viewAllButtonTapped.asDriver(),
             profileImageViewTapped: profileImageViewTapped.asDriver(),
             isFABTapped: isFABTapped,
-            isMenuCellTapped: isMenuCellTapped.asDriver()
+            isMenuCellTapped: isMenuCellTapped.asDriver(),
+            editProfileTapped: profileEditTapped.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
