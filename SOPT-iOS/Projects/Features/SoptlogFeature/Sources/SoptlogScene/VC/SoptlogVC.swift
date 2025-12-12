@@ -25,7 +25,7 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     private var toolTipTap = PassthroughSubject<CGRect, Never>()
     private var viewWillAppear = PassthroughSubject<Void, Never>()
     private var soptlogInfo: SoptlogPresentationModel?
-    internal var isPokeEmpty: Bool = false
+    internal var isPokeEmpty: Bool = true
     
     private var isActiveUser: Bool {
         UserDefaultKeyList.Auth.isActiveUser ?? false
