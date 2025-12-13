@@ -383,23 +383,19 @@ extension ApplicationCoordinator {
 
         runHomeFlow(type: userType)
         runStampTabFlow()
-        runPokeTabFlow()
         runSoptlogFlow(type: userType)
 
         switch userType {
         case .active:
-            runStampTabFlow()
             viewControllers = [
                 homeNavigationController,
                 stampNavigationController,
-                pokeNavigationController,
                 soptlogNavigationController
             ]
 
         case .inactive, .visitor:
             viewControllers = [
                 homeNavigationController,
-                pokeNavigationController,
                 soptlogNavigationController
             ]
         }
@@ -899,3 +895,4 @@ extension ApplicationCoordinator {
         pokeMyFriendsCoordinator.start(with: relation)
     }
 }
+

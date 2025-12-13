@@ -27,9 +27,9 @@ final class TabBarController: UITabBarController {
     private var tabTypes: [TabBarItemType] {
         switch userType {
         case .active:
-            return [.home, .soptamp, .poke, .soptlog]
+            return [.home, .soptamp, .soptlog]
         case .inactive, .visitor:
-            return [.home, .poke, .soptlog]
+            return [.home, .soptlog]
         }
     }
     
@@ -166,3 +166,4 @@ extension TabBarController: UITabBarControllerDelegate {
         isTabBarItemSelected.send(index)
     }
 }
+

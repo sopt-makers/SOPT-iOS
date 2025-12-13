@@ -14,7 +14,6 @@ import Domain
 import DSKit
 
 import BaseFeatureDependency
-import DailySoptuneFeatureInterface
 
 final class HomeCalendarDetailVC: UIViewController, HomeCalendarDetailViewControllable {
 
