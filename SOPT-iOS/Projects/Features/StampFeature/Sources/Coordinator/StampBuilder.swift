@@ -95,4 +95,10 @@ extension StampBuilder: StampFeatureBuildable {
         let clapListVC = ClapListVC(viewModel: viewModel)
         return (clapListVC, viewModel)
     }
+    
+    public func makeAppJamRankingVC() -> AppJamRankingPresentable {
+        let viewModel = AppJamRankingViewModel()
+        let appJamRankingVC = AppJamRankingVC(viewModel: viewModel)
+        return (appJamRankingVC, viewModel)
+    }
 }

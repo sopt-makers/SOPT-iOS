@@ -14,10 +14,11 @@ import DSKit
 
 import SnapKit
 
-final class AppJamRankingVC: UIViewController {
+final class AppJamRankingVC: UIViewController, AppJamRankingViewControllable {
     
     // MARK: - Properties
     
+    private let viewModel: AppJamRankingViewModel
     private var cancelBag = CancelBag()
     private lazy var dataSource: UICollectionViewDiffableDataSource<AppJamRankingSection, AnyHashable>! = nil
     
@@ -50,6 +51,16 @@ final class AppJamRankingVC: UIViewController {
         registerCells()
         setDataSource()
         applySnapshot()
+    }
+    
+    // MARK: - Initialization
+    
+    init(viewModel: AppJamRankingViewModel) {
+        self.viewModel = viewModel
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
