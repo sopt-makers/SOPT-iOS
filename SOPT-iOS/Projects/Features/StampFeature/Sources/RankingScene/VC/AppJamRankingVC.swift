@@ -23,11 +23,22 @@ final class AppJamRankingVC: UIViewController {
     
     // MARK: - UI Components
     
+    private let naviBar = STNavigationBar(type: .titleWithLeftButton)
+        .setTitleTypoStyle(.SoptampFont.h2)
+        .setTitle(I18N.RankingList.rankingForPartTitle)
+        .setRightButton(.none)
+    
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         collectionView.backgroundColor = DSKitAsset.Colors.gray950.color
         collectionView.showsVerticalScrollIndicator = false
+        collectionView.refreshControl = refresher
         return collectionView
+    }()
+    
+    private let refresher: UIRefreshControl = {
+        let refresh = UIRefreshControl()
+        return refresh
     }()
     
     // MARK: - View Life Cycle
@@ -50,11 +61,21 @@ extension AppJamRankingVC {
     }
     
     private func setLayout() {
-        view.addSubview(collectionView)
+        view.addSubviews(naviBar, collectionView)
+        
+        naviBar.snp.makeConstraints { make in
+            make.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)
+            make.height.equalTo(56)
+        }
         
         collectionView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalTo(naviBar.snp.bottom)
+            make.directionalHorizontalEdges.bottom.equalTo(view.safeAreaLayoutGuide)
         }
+    }
+    
+    private func endRefresh() {
+        self.refresher.endRefreshing()
     }
 }
 

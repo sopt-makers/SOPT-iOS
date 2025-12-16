@@ -49,6 +49,7 @@ extension AppJamRankingVC {
             elementKind: UICollectionView.elementKindSectionHeader,
             alignment: .top
         )
+        header.contentInsets = NSDirectionalEdgeInsets(top: 16, leading: 0, bottom: 0, trailing: 0)
         
         section.boundarySupplementaryItems = [header]
         
