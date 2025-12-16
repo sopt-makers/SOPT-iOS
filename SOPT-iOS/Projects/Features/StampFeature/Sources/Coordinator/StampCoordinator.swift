@@ -203,7 +203,7 @@ extension StampCoordinator {
     private func showAppJamRanking() {
         var ranking = factory.makeAppJamRankingVC()
         
-        ranking.vc.onNaviBackTap = { [weak self] in
+        ranking.vm.onNaviBackTap = { [weak self] in
             guard let self else { return }
             self.rootController?.popViewController(animated: true)
         }

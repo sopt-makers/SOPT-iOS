@@ -34,7 +34,7 @@ final class LegacyRankingCoordinator: DefaultCoordinator {
       switch rankingViewType {
       case .all, .currentGeneration, .individualRankingInPart:
         showRanking(rankingViewType: rankingViewType)
-      case .partRanking:
+      case .partRanking, .appJamRanking:
         showPartRanking()
       }
     }
