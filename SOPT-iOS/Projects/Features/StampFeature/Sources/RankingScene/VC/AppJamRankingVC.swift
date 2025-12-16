@@ -115,7 +115,7 @@ extension AppJamRankingVC {
                     return UICollectionViewCell()
                 }
                 // TODO: 실제 데이터로 교체
-                cell.configureCell(time: "1분 전", teamName: "노바고은비")
+                cell.configureCell(missionImage: "https://picsum.photos/146/232", time: "1분 전", missionTitle: "스터디룸 청소하기", userName: "노바고은비")
                 return cell
                 
             case .ranking:

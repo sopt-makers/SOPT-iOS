@@ -17,10 +17,18 @@ final class AppJamMissionCardCVC: UICollectionViewCell {
     
     // MARK: - UI Components
     
-    private let containerView: UIView = {
+    private let missionImageView: UIImageView = {
+        let view = UIImageView()
+        view.backgroundColor = DSKitAsset.Colors.gray700.color
+        view.layer.cornerRadius = 10
+        view.clipsToBounds = true
+        return view
+    }()
+    
+    private let timeBadgeView: UIView = {
         let view = UIView()
-        view.backgroundColor = DSKitAsset.Colors.gray800.color
-        view.layer.cornerRadius = 12
+        view.backgroundColor = DSKitAsset.Colors.alpha100.color
+        view.layer.cornerRadius = 6
         return view
     }()
     
@@ -28,15 +36,29 @@ final class AppJamMissionCardCVC: UICollectionViewCell {
         let label = UILabel()
         label.font = DSKitFontFamily.Suit.semiBold.font(size: 11)
         label.textColor = DSKitAsset.Colors.gray10.color
-        label.textAlignment = .center
         return label
     }()
     
-    private let teamLabel: UILabel = {
+    private let missionTitleLabel: UILabel = {
         let label = UILabel()
-        label.font = DSKitFontFamily.Suit.medium.font(size: 12)
+        label.font = DSKitFontFamily.Suit.bold.font(size: 16)
+        label.textColor = DSKitAsset.Colors.white.color
+        label.numberOfLines = 0
+        return label
+    }()
+    
+    private let profileView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = DSKitAsset.Assets.icDefaultProfile.image
+        imageView.layer.cornerRadius = 10
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+    
+    private let userLabel: UILabel = {
+        let label = UILabel()
+        label.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
         label.textColor = DSKitAsset.Colors.gray300.color
-        label.textAlignment = .center
         return label
     }()
     
@@ -62,20 +84,39 @@ extension AppJamMissionCardCVC {
     }
     
     private func setLayout() {
-        contentView.addSubview(containerView)
-        containerView.addSubviews(timeLabel, teamLabel)
+        contentView.addSubviews(missionImageView, missionTitleLabel, profileView, userLabel)
+        missionImageView.addSubviews(timeBadgeView)
+        timeBadgeView.addSubview(timeLabel)
         
-        containerView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+        missionImageView.snp.makeConstraints { make in
+            make.directionalHorizontalEdges.top.equalToSuperview()
+            make.height.equalTo(232)
+        }
+        
+        timeBadgeView.snp.makeConstraints { make in
+            make.top.trailing.equalToSuperview().inset(8)
         }
         
         timeLabel.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+            make.top.bottom.equalToSuperview().inset(3.5)
+            make.leading.trailing.equalToSuperview().inset(4)
         }
         
-        teamLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().inset(16)
+        missionTitleLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.height.equalTo(24)
+            make.top.equalTo(missionImageView.snp.bottom).offset(8)
+        }
+        
+        profileView.snp.makeConstraints { make in
+            make.top.equalTo(missionTitleLabel.snp.bottom).offset(4)
+            make.leading.bottom.equalToSuperview()
+            make.size.equalTo(20)
+        }
+        
+        userLabel.snp.makeConstraints { make in
+            make.leading.equalTo(profileView.snp.trailing).offset(4)
+            make.centerY.equalTo(profileView.snp.centerY)
         }
     }
 }
@@ -83,9 +124,22 @@ extension AppJamMissionCardCVC {
 // MARK: - Methods
 
 extension AppJamMissionCardCVC {
-    func configureCell(time: String, teamName: String) {
+    func configureCell(
+        missionImage: String,
+        time: String,
+        missionTitle: String,
+        userName: String,
+        profileImage: String? = nil
+        
+    ) {
         timeLabel.text = time
-        teamLabel.text = teamName
+        missionTitleLabel.text = missionTitle
+        userLabel.text = userName
+        missionImageView.setImage(with: missionImage)
+        
+        if let profileURL = profileImage {
+            profileView.setImage(with: profileURL)
+        }
     }
 }
 
