@@ -12,6 +12,7 @@ public struct ExternalURL {
     
     public struct AppStore {
         public static let appStoreLink = "https://itunes.apple.com/kr/app/id6444594319"
+        public static let notionApp = "https://apps.apple.com/app/notion-notes-docs-tasks/id1232780281"
     }
     
     public struct KakaoTalk {
