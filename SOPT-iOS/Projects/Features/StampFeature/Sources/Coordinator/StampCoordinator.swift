@@ -163,6 +163,8 @@ extension StampCoordinator {
             showRanking(rankingViewType: rankingViewType)
         case .partRanking:
             showPartRanking(rankingViewType)
+        case .appJamRanking:
+            showAppJamRanking()
         }
     }
 
@@ -195,6 +197,17 @@ extension StampCoordinator {
             self.rootController?.popViewController(animated: true)
         }
 
+        rootController?.pushViewController(ranking.vc, animated: true)
+    }
+    
+    private func showAppJamRanking() {
+        var ranking = factory.makeAppJamRankingVC()
+        
+        ranking.vc.onNaviBackTap = { [weak self] in
+            guard let self else { return }
+            self.rootController?.popViewController(animated: true)
+        }
+        
         rootController?.pushViewController(ranking.vc, animated: true)
     }
 
