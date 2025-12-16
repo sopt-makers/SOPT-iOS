@@ -19,14 +19,14 @@ public extension TabBarItemType {
     var toAmplitudeEventType: AmplitudeEventType {
         switch self {
         case .home: return .clickNaviHome
-            #warning("TODO: - 엠플리튜드 연결")
-        case .soptamp: return .clickNaviHome
+        case .soptamp: return .clickNaviSoptamp
         case .soptlog: return .clickNaviSoptlog
-        case .poke: return .clickNaviHome
+        case .poke: return .clickNaviPoke
         }
     }
     
-    func getTabIndex(userType: UserType, index: Int) -> Int {
+    /// 유저타입 별 탭 바 인덱스 매핑
+    func getTabIndex(userType: UserType) -> Int {
         switch userType {
         case .active:
             return self.rawValue
@@ -38,6 +38,21 @@ public extension TabBarItemType {
                 return 1
             case .soptlog:
                 return 2
+            }
+        }
+    }
+    
+    /// 실제 탭바 인덱스 -> TabBarItemType
+    static func from(index: Int, userType: UserType) -> TabBarItemType? {
+        switch userType {
+        case .active:
+            return TabBarItemType(rawValue: index)
+        case .visitor, .inactive:
+            switch index {
+            case 0: return .home
+            case 1: return .poke
+            case 2: return .soptlog
+            default: return nil
             }
         }
     }
