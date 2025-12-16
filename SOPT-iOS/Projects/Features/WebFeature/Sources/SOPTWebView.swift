@@ -28,6 +28,7 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
     public let webView: WKWebView
     public var vc: UIViewController { self }
     private let downloadManager: WKDownloadManager
+    private let customSchemeHandler = CustomSchemeHandler()
     
     // MARK: Variables
     private let cancelbag = CancelBag()
@@ -139,6 +140,26 @@ extension SOPTWebView {
 }
 
 extension SOPTWebView: WKNavigationDelegate {
+    public func webView(
+        _ webView: WKWebView,
+        decidePolicyFor navigationAction: WKNavigationAction,
+        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+    ) {
+        guard let url = navigationAction.request.url else {
+            decisionHandler(.allow)
+            return
+        }
+        
+        // 커스텀 스킴 처리
+        if customSchemeHandler.shouldHandle(url) {
+            customSchemeHandler.handle(url)
+            decisionHandler(.cancel)
+            return
+        }
+        
+        decisionHandler(.allow)
+    }
+    
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         
         switch FeatureFlag.auth {
