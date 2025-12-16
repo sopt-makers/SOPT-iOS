@@ -1,5 +1,5 @@
 //
-//  Untitled.swift
+//  AppJamRankingCompositionalLayout.swift
 //  StampFeature
 //
 //  Created by 강윤서 on 12/16/25.

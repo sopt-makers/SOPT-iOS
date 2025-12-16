@@ -14,7 +14,7 @@ import Domain
 
 // MARK: - ViewControllable
 
-public protocol AppJamRankingViewControllable: UIViewController & ClapListRoutingTrigger { }
+public protocol AppJamRankingViewControllable: UIViewController { }
 
 // MARK: - RoutingTrigger
 
