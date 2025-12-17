@@ -27,39 +27,50 @@ final class STDoubleFloatingButton: UIView {
     
     private lazy var personalRankButton: UIButton = {
         let bt = UIButton()
+        var config = UIButton.Configuration.plain()
+        
+        config.background.backgroundColor = .clear
+        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: -15, bottom: 0, trailing: 0)
+        config.imagePadding = 10
+        config.baseForegroundColor = DSKitAsset.Colors.black.color
+        config.image = DSKitAsset.Assets.icTrophy.image
+        
+        var attributedStr = AttributedString(I18N.RankingList.personalRankingTitle)
+        attributedStr.font = .SoptampFont.h2
+        attributedStr.foregroundColor = DSKitColors.Color.black
+        attributedStr.kern = 0
+        config.attributedTitle = attributedStr
+        
+        bt.configuration = config
+        bt.layer.backgroundColor = DSKitAsset.Colors.white.color.cgColor
         bt.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
-        bt.layer.cornerRadius = 27.adjustedH
-        bt.setBackgroundColor(DSKitAsset.Colors.white.color, for: .normal)
-        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate).withTintColor(DSKitAsset.Colors.white.color), for: .normal)
-        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate).withTintColor(DSKitAsset.Colors.white.color), for: .highlighted)
-        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate).withTintColor(DSKitAsset.Colors.gray200.color), for: .selected)
-        bt.tintColor = DSKitAsset.Colors.black.color
-        bt.titleLabel?.font = .SoptampFont.h2
-        let attributedStr = NSMutableAttributedString(string: I18N.RankingList.personalRankingTitle)
-        attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
-        attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: DSKitColors.Color.black, range: NSMakeRange(0, attributedStr.length))
-        bt.setAttributedTitle(attributedStr, for: .normal)
-        bt.contentEdgeInsets = UIEdgeInsets(top: 0, left: -15, bottom: 0, right: 0)
-        bt.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+        bt.layer.cornerRadius = 27
+        
         return bt
     }()
     
     private lazy var partRankButton: UIButton = {
         let bt = UIButton()
+        var config = UIButton.Configuration.plain()
+        
+        config.background.backgroundColor = .clear
+        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: -15, bottom: 0, trailing: 0)
+        config.imagePadding = 10
+        config.baseForegroundColor = DSKitAsset.Colors.black.color
+        config.image = DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate)
+        config.baseForegroundColor = DSKitColors.Color.white
+        
+        var attributedStr = AttributedString(I18N.RankingList.partRankingTitle)
+        attributedStr.font = .SoptampFont.h2
+        attributedStr.foregroundColor = DSKitColors.Color.white
+        attributedStr.kern = 0
+        config.attributedTitle = attributedStr
+        
+        bt.configuration = config
+        bt.layer.backgroundColor = DSKitAsset.Colors.black.color.cgColor
         bt.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner]
-        bt.layer.cornerRadius = 27.adjustedH
-        bt.setBackgroundColor(DSKitAsset.Colors.black.color, for: .normal)
-        bt.setBackgroundColor(DSKitAsset.Colors.black.color.withAlphaComponent(0.8), for: .selected)
-        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate).withTintColor(DSKitAsset.Colors.gray200.color), for: .highlighted)
-        bt.tintColor = .white
-        bt.titleLabel?.font = .SoptampFont.h2
-        let attributedStr = NSMutableAttributedString(string: I18N.RankingList.partRankingTitle)
-        attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
-        attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.white, range: NSMakeRange(0, attributedStr.length))
-        bt.setAttributedTitle(attributedStr, for: .normal)
-        bt.contentEdgeInsets = UIEdgeInsets(top: 0, left: -15, bottom: 0, right: 0)
-        bt.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+        bt.layer.cornerRadius = 27
+        
         return bt
     }()
     
