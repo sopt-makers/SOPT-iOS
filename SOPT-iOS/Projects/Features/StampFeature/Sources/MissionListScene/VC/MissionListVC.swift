@@ -110,45 +110,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
     
     private let missionListEmptyView = MissionListEmptyView()
     
-    private lazy var floatingButtonStackView = UIStackView(frame: self.view.frame).then {
-        $0.axis = .horizontal
-        $0.spacing = 0.f
-    }
-    
-    private lazy var currentGenerationRankFloatingButton: UIButton = {
-        let bt = UIButton()
-        bt.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
-        bt.layer.cornerRadius = 27.adjustedH
-        bt.setBackgroundColor(DSKitAsset.Colors.white.color, for: .normal)
-        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate).withTintColor(DSKitAsset.Colors.white.color), for: .normal)
-        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate).withTintColor(DSKitAsset.Colors.white.color), for: .highlighted)
-        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate).withTintColor(DSKitAsset.Colors.gray200.color), for: .selected)
-        bt.tintColor = DSKitAsset.Colors.black.color
-        bt.titleLabel?.font = .SoptampFont.h2
-        bt.contentEdgeInsets = UIEdgeInsets(top: 0, left: -15, bottom: 0, right: 0)
-        bt.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
-        return bt
-    }()
-    
-    private lazy var partRankingFloatingButton: UIButton = {
-        let bt = UIButton()
-        bt.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner]
-        bt.layer.cornerRadius = 27.adjustedH
-        bt.setBackgroundColor(DSKitAsset.Colors.black.color, for: .normal)
-        bt.setBackgroundColor(DSKitAsset.Colors.black.color.withAlphaComponent(0.8), for: .selected)
-        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        bt.setImage(DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate).withTintColor(DSKitAsset.Colors.gray200.color), for: .highlighted)
-        bt.tintColor = .white
-        bt.titleLabel?.font = .SoptampFont.h2
-        let attributedStr = NSMutableAttributedString(string: I18N.RankingList.rankingForPartTitle)
-        let style = NSMutableParagraphStyle()
-        attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
-        attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.white, range: NSMakeRange(0, attributedStr.length))
-        bt.setAttributedTitle(attributedStr, for: .normal)
-        bt.contentEdgeInsets = UIEdgeInsets(top: 0, left: -15, bottom: 0, right: 0)
-        bt.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
-        return bt
-    }()
+    private let doubleFloatingButton = STDoubleFloatingButton()
     
     // MARK: - View Life Cycle
     
@@ -219,21 +181,11 @@ extension MissionListVC {
         
         switch sceneType {
         case .default:
-            self.view.addSubview(self.floatingButtonStackView)
+            self.view.addSubview(self.doubleFloatingButton)
             
-            self.floatingButtonStackView.snp.makeConstraints { make in
+            self.doubleFloatingButton.snp.makeConstraints { make in
                 make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-18.adjustedH)
                 make.centerX.equalToSuperview()
-            }
-            
-            self.partRankingFloatingButton.snp.makeConstraints {
-                $0.width.equalTo(143.adjusted)
-                $0.height.equalTo(54.adjustedH)
-            }
-            
-            self.currentGenerationRankFloatingButton.snp.makeConstraints {
-                $0.width.equalTo(143.adjusted)
-                $0.height.equalTo(54.adjustedH)
             }
             
         case .ranking:
@@ -272,13 +224,13 @@ extension MissionListVC {
                 owner.onNaviBackTap?()
             }.store(in: self.cancelBag)
         
-        partRankingFloatingButton.publisher(for: .touchUpInside)
+        doubleFloatingButton.partButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onPartRankingButtonTap?(.partRanking)
             }.store(in: self.cancelBag)
         
-        currentGenerationRankFloatingButton.publisher(for: .touchUpInside)
+        doubleFloatingButton.personalButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
                 guard let usersActiveGenerationStatus = owner.usersActiveGenerationStatus else { return }
@@ -321,8 +273,6 @@ extension MissionListVC {
                 guard generationStatus.status == .ACTIVE else { return }
                 
                 self?.usersActiveGenerationStatus = generationStatus
-                self?.remakeButtonConstraint()
-                self?.configurePersonalRankingButton()
             }.store(in: self.cancelBag)
         
         output.needNetworkAlert
@@ -413,8 +363,8 @@ extension MissionListVC {
     
     private func bringRankingFloatingButtonToFront() {
         self.view.subviews.forEach { view in
-            if view == self.partRankingFloatingButton {
-                self.view.bringSubviewToFront(partRankingFloatingButton)
+            if view == self.doubleFloatingButton {
+                self.view.bringSubviewToFront(doubleFloatingButton)
             }
         }
     }
@@ -425,17 +375,6 @@ extension MissionListVC {
         snapshot.appendItems(model, toSection: .missionList)
         dataSource.apply(snapshot, animatingDifferences: false)
         self.view.setNeedsLayout()
-    }
-    
-    private func remakeButtonConstraint() {
-        self.floatingButtonStackView.addArrangedSubviews(self.currentGenerationRankFloatingButton, self.partRankingFloatingButton)
-    }
-    
-    private func configurePersonalRankingButton() {
-        let attributedStr = NSMutableAttributedString(string: "개인별 랭킹")
-        attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
-        attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: DSKitColors.Color.black, range: NSMakeRange(0, attributedStr.length))
-        self.currentGenerationRankFloatingButton.setAttributedTitle(attributedStr, for: .normal)
     }
     
     private func showNetworkAlert() {
