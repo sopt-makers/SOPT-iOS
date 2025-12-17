@@ -70,6 +70,11 @@ extension MissionListRepository {
       return missionService.fetchIncompleteMissionList()
         .map { $0.toDomain() }
         .eraseToAnyPublisher()
+    // TODO: - API 연결 시 수정
+    default:
+        return missionService.fetchAllMissionList()
+          .map { $0.toDomain() }
+          .eraseToAnyPublisher()
     }
   }
   
