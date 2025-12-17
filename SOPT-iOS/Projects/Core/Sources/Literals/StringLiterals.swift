@@ -138,6 +138,7 @@ public struct I18N {
         public static let noSentenceText = "설정된 한 마디가 없습니다."
         public static let partRankingTitle = "파트별 랭킹"
         public static let personalRankingTitle = "개인별 랭킹"
+        public static let appjamRankingTitle = "앱잼팀 랭킹"
         public static let myRanking = "내 랭킹 보기"
     }
     

@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Combine
 
 import Core
 import DSKit
@@ -25,16 +24,30 @@ final class STSingleFloatingButton: UIView {
         bt.layer.cornerRadius = 27.adjustedH
         bt.backgroundColor = DSKitAsset.Colors.white.color
         bt.titleLabel?.font = .SoptampFont.h2
+        
         return bt
     }()
     
+    private let badgeView = STBadgeView().then {
+        $0.isHidden = true
+    }
+    
     // MARK: - Initialization
     
-    init(frame: CGRect, title: String) {
+    init(frame: CGRect, title: String, withImage: Bool = false, showBadge: Bool = false) {
         super.init(frame: frame)
         
         setLayout()
         setTitle(title)
+        
+        if showBadge {
+            badgeView.isHidden = false
+            badgeView.setData(with: "New")
+        }
+        
+        if withImage {
+            floatingButton.setImage(DSKitAsset.Assets.icTrophy.image, for: .normal)
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -46,12 +59,17 @@ final class STSingleFloatingButton: UIView {
 
 extension STSingleFloatingButton {
     private func setLayout() {
-        addSubview(floatingButton)
+        addSubviews(floatingButton, badgeView)
         
         floatingButton.snp.makeConstraints { make in
             make.edges.equalToSuperview()
             make.width.equalTo(143.adjusted)
             make.height.equalTo(54.adjustedH)
+        }
+        
+        badgeView.snp.makeConstraints { make in
+            make.top.equalTo(floatingButton.snp.top).offset(-10)
+            make.trailing.equalTo(floatingButton.snp.trailing).offset(-16)
         }
     }
     

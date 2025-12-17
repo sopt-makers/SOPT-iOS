@@ -112,6 +112,13 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
     
     private let doubleFloatingButton = STDoubleFloatingButton()
     
+    private let singleFloatingButton = STSingleFloatingButton(
+        frame: .zero,
+        title: I18N.RankingList.appjamRankingTitle,
+        withImage: true,
+        showBadge: true
+    )
+    
     // MARK: - View Life Cycle
     
     public override func viewDidLoad() {
@@ -181,11 +188,20 @@ extension MissionListVC {
         
         switch sceneType {
         case .default:
-            self.view.addSubview(self.doubleFloatingButton)
-            
-            self.doubleFloatingButton.snp.makeConstraints { make in
-                make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-18.adjustedH)
-                make.centerX.equalToSuperview()
+            if isAppJam {
+                self.view.addSubview(self.singleFloatingButton)
+                
+                self.singleFloatingButton.snp.makeConstraints { make in
+                    make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-18.adjustedH)
+                    make.centerX.equalToSuperview()
+                }
+            } else {
+                self.view.addSubview(self.doubleFloatingButton)
+                
+                self.doubleFloatingButton.snp.makeConstraints { make in
+                    make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-18.adjustedH)
+                    make.centerX.equalToSuperview()
+                }
             }
             
         case .ranking:
@@ -236,6 +252,12 @@ extension MissionListVC {
                 guard let usersActiveGenerationStatus = owner.usersActiveGenerationStatus else { return }
                 
                 owner.onCurrentGenerationRankingButtonTap?(.currentGeneration(info: usersActiveGenerationStatus))
+            }.store(in: self.cancelBag)
+        
+        singleFloatingButton.buttonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                // TODO: - 화면 전환 연결
             }.store(in: self.cancelBag)
         
         swipeHandler
