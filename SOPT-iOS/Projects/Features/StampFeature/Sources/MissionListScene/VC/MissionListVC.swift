@@ -388,6 +388,10 @@ extension MissionListVC {
             if view == self.doubleFloatingButton {
                 self.view.bringSubviewToFront(doubleFloatingButton)
             }
+            
+            if view == self.singleFloatingButton {
+                self.view.bringSubviewToFront(singleFloatingButton)
+            }
         }
     }
     
