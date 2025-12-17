@@ -128,6 +128,10 @@ public struct I18N {
         public static let noMission = "아직 완료한 미션이 없습니다!"
         public static let multipleTen = "x 10"
         public static let specialMission = "특별미션"
+        public static let allMission = "전체 미션"
+        public static let completeMission = "완료 미션"
+        public static let uncompleteMission = "미완료 미션"
+        public static let appjamMission = "앱잼 미션"
     }
     
     public struct RankingList {

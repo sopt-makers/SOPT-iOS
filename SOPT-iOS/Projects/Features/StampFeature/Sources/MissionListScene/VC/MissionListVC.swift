@@ -54,7 +54,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
         switch sceneType {
         case .default:
             return STNavigationBar(type: .title)
-                .setTitle("전체 미션")
+                .setTitle(I18N.MissionList.allMission)
                 .setTitleTypoStyle(.SoptampFont.h2)
                 .setTitleButtonMenu(menuItems: self.menuItems)
                 .addLeftButtonToTitleMenu()
@@ -68,9 +68,9 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
     
     private lazy var menuItems: [UIAction] = {
         var menuItems: [UIAction] = []
-        [("전체 미션", MissionListFetchType.all),
-         ("완료 미션", MissionListFetchType.complete),
-         ("미완료 미션", MissionListFetchType.incomplete)].forEach { [weak self] menuTitle, fetchType in
+        [(I18N.MissionList.allMission, MissionListFetchType.all),
+         (I18N.MissionList.completeMission, MissionListFetchType.complete),
+         (I18N.MissionList.uncompleteMission, MissionListFetchType.incomplete)].forEach { [weak self] menuTitle, fetchType in
             menuItems.append(UIAction(title: menuTitle,
                                       handler: { [weak self] _ in
                 self?.missionTypeMenuSelected.send(fetchType)
