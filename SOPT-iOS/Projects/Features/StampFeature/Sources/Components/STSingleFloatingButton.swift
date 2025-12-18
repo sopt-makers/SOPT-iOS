@@ -19,14 +19,11 @@ final class STSingleFloatingButton: UIView {
     
     // MARK: - UI Components
     
-    private let floatingButton: UIButton = {
-        let bt = UIButton()
-        bt.layer.cornerRadius = 27.adjustedH
-        bt.backgroundColor = DSKitAsset.Colors.white.color
-        bt.titleLabel?.font = .SoptampFont.h2
-        
-        return bt
-    }()
+    private let floatingButton = UIButton().then {
+        $0.layer.cornerRadius = 27.adjustedH
+        $0.backgroundColor = DSKitAsset.Colors.white.color
+        $0.titleLabel?.font = .SoptampFont.h2
+    }
     
     private let badgeView = STBadgeView().then {
         $0.isHidden = true
@@ -38,16 +35,7 @@ final class STSingleFloatingButton: UIView {
         super.init(frame: frame)
         
         setLayout()
-        setTitle(title)
-        
-        if showBadge {
-            badgeView.isHidden = false
-            badgeView.setData(with: "New")
-        }
-        
-        if withImage {
-            floatingButton.setImage(DSKitAsset.Assets.icTrophy.image, for: .normal)
-        }
+        setData(title: title, withImage: withImage, showBadge: showBadge)
     }
     
     required init?(coder: NSCoder) {
@@ -72,11 +60,20 @@ extension STSingleFloatingButton {
             make.trailing.equalTo(floatingButton.snp.trailing).offset(-16)
         }
     }
-    
-    private func setTitle(_ title: String) {
+
+    private func setData(title: String, withImage: Bool, showBadge: Bool) {
         let attributedStr = NSMutableAttributedString(string: title)
         attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
         attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: DSKitAsset.Colors.black.color, range: NSMakeRange(0, attributedStr.length))
         floatingButton.setAttributedTitle(attributedStr, for: .normal)
+        
+        if showBadge {
+            badgeView.isHidden = false
+            badgeView.setData(with: "New")
+        }
+        
+        if withImage {
+            floatingButton.setImage(DSKitAsset.Assets.icTrophy.image, for: .normal)
+        }
     }
 }

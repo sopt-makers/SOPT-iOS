@@ -22,57 +22,31 @@ final class STDoubleFloatingButton: UIView {
     
     private lazy var stackView = UIStackView().then {
         $0.axis = .horizontal
-        $0.spacing = 0.f
     }
     
-    private lazy var personalRankButton: UIButton = {
-        let bt = UIButton()
-        var config = UIButton.Configuration.plain()
+    private lazy var personalRankButton = UIButton().then {
+        let config = setButtonConfiguration(
+            text: I18N.RankingList.personalRankingTitle,
+            textColor: DSKitColors.Color.black
+        )
         
-        config.background.backgroundColor = .clear
-        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: -15, bottom: 0, trailing: 0)
-        config.imagePadding = 10
-        config.baseForegroundColor = DSKitAsset.Colors.black.color
-        config.image = DSKitAsset.Assets.icTrophy.image
-        
-        var attributedStr = AttributedString(I18N.RankingList.personalRankingTitle)
-        attributedStr.font = .SoptampFont.h2
-        attributedStr.foregroundColor = DSKitColors.Color.black
-        attributedStr.kern = 0
-        config.attributedTitle = attributedStr
-        
-        bt.configuration = config
-        bt.layer.backgroundColor = DSKitAsset.Colors.white.color.cgColor
-        bt.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
-        bt.layer.cornerRadius = 27
-        
-        return bt
-    }()
+        $0.configuration = config
+        $0.layer.backgroundColor = DSKitAsset.Colors.white.color.cgColor
+        $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
+        $0.layer.cornerRadius = 27
+    }
     
-    private lazy var partRankButton: UIButton = {
-        let bt = UIButton()
-        var config = UIButton.Configuration.plain()
+    private lazy var partRankButton = UIButton().then {
+        let config = setButtonConfiguration(
+            text: I18N.RankingList.partRankingTitle,
+            textColor: DSKitColors.Color.white
+        )
         
-        config.background.backgroundColor = .clear
-        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: -15, bottom: 0, trailing: 0)
-        config.imagePadding = 10
-        config.baseForegroundColor = DSKitAsset.Colors.black.color
-        config.image = DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate)
-        config.baseForegroundColor = DSKitColors.Color.white
-        
-        var attributedStr = AttributedString(I18N.RankingList.partRankingTitle)
-        attributedStr.font = .SoptampFont.h2
-        attributedStr.foregroundColor = DSKitColors.Color.white
-        attributedStr.kern = 0
-        config.attributedTitle = attributedStr
-        
-        bt.configuration = config
-        bt.layer.backgroundColor = DSKitAsset.Colors.black.color.cgColor
-        bt.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner]
-        bt.layer.cornerRadius = 27
-        
-        return bt
-    }()
+        $0.configuration = config
+        $0.layer.backgroundColor = DSKitAsset.Colors.black.color.cgColor
+        $0.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner]
+        $0.layer.cornerRadius = 27
+    }
     
     // MARK: - Initialization
     
@@ -107,5 +81,22 @@ extension STDoubleFloatingButton {
             make.width.equalTo(143.adjusted)
             make.height.equalTo(54.adjustedH)
         }
+    }
+    
+    private func setButtonConfiguration(text: String, textColor: UIColor) -> UIButton.Configuration {
+        var config = UIButton.Configuration.plain()
+        
+        config.background.backgroundColor = .clear
+        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: -15, bottom: 0, trailing: 0)
+        config.imagePadding = 10
+        config.image = DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate)
+        config.baseForegroundColor = textColor
+        
+        var attributedStr = AttributedString(text)
+        attributedStr.font = .SoptampFont.h2
+        attributedStr.foregroundColor = textColor
+        config.attributedTitle = attributedStr
+        
+        return config
     }
 }
