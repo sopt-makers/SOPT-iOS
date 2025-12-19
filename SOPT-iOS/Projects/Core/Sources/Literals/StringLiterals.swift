@@ -136,6 +136,15 @@ public struct I18N {
         public static let myRanking = "내 랭킹 보기"
     }
     
+    public struct AppJamRankingList {
+        public static let navigationTitle = "앱잼팀 랭킹"
+        public static let appjamMissionTitle = "따끈따끈 합숙미션 구경하기"
+        public static let appjamMissionSubTitle = "다른 팀들은 방금 이런 미션을 달성했어요"
+        
+        public static let todayRankingTitle = "오늘의 득점 랭킹"
+        public static let todayRankingSubTitle = "미션을 인증해 오늘의 순위를 뒤집어보세요!"
+    }
+    
     public struct ListDetail {
         public static let imagePlaceHolder = "달성 사진을 올려주세요"
         public static let memoPlaceHolder = "함께한 사람과 어떤 추억을 남겼는지 작성해 주세요."
