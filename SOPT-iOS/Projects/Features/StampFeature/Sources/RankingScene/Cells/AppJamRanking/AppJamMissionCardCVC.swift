@@ -11,8 +11,6 @@ import UIKit
 import Core
 import DSKit
 
-import SnapKit
-
 final class AppJamMissionCardCVC: UICollectionViewCell {
     
     // MARK: - UI Components

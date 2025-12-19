@@ -85,7 +85,11 @@ extension AppJamRankingVC {
             make.directionalHorizontalEdges.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
-    
+}
+
+// MARK: - Methods
+
+extension AppJamRankingVC {
     private func endRefresh() {
         self.refresher.endRefreshing()
     }
