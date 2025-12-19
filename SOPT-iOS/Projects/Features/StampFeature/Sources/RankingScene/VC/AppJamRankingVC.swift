@@ -20,7 +20,7 @@ final class AppJamRankingVC: UIViewController, AppJamRankingViewControllable {
     
     private let viewModel: AppJamRankingViewModel
     private var cancelBag = CancelBag()
-    private lazy var dataSource: UICollectionViewDiffableDataSource<AppJamRankingSection, AnyHashable>! = nil
+    private lazy var dataSource: UICollectionViewDiffableDataSource<AppJamRankingSection, AppJamRankingItem>! = nil
     
     // MARK: - UI Components
     
@@ -115,7 +115,7 @@ extension AppJamRankingVC {
     }
     
     private func setDataSource() {
-        dataSource = UICollectionViewDiffableDataSource<AppJamRankingSection, AnyHashable>(
+        dataSource = UICollectionViewDiffableDataSource<AppJamRankingSection, AppJamRankingItem>(
             collectionView: collectionView
         ) { [weak self] collectionView, indexPath, item in
             guard let section = AppJamRankingSection(rawValue: indexPath.section) else {
@@ -183,15 +183,15 @@ extension AppJamRankingVC {
     }
     
     private func applySnapshot() {
-        var snapshot = NSDiffableDataSourceSnapshot<AppJamRankingSection, AnyHashable>()
+        var snapshot = NSDiffableDataSourceSnapshot<AppJamRankingSection, AppJamRankingItem>()
         
         snapshot.appendSections([.missionCards, .ranking])
         
         // 임시 데이터 - TODO: 실제 데이터로 교체
-        let missionCardItems = Array(0..<5).map { "mission_\($0)" }
+        let missionCardItems = Array(0..<5).map { AppJamRankingItem.mission("mission_\($0)") }
         snapshot.appendItems(missionCardItems, toSection: .missionCards)
         
-        let rankingItems = Array(0..<8).map { "ranking_\($0)" }
+        let rankingItems = Array(0..<8).map { AppJamRankingItem.ranking("ranking_\($0)") }
         snapshot.appendItems(rankingItems, toSection: .ranking)
         
         dataSource.apply(snapshot, animatingDifferences: false)
