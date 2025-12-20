@@ -32,7 +32,8 @@ public class ListDetailViewModel: ListDetailViewModelType {
     public var stampId: Int!
     public var isOtherUser: Bool
     public var otherUserName: String!
-    
+    public var isAppjam: Bool?
+
     var totalClapCount: Int = 0
     var myClapCount: Int = 0
     var viewcount: Int = 0
@@ -73,6 +74,7 @@ public class ListDetailViewModel: ListDetailViewModelType {
     public init(
         useCase: ListDetailUseCase,
         sceneType: ListDetailSceneType,
+        isAppjam: Bool? = nil,
         starLevel: StarViewLevel,
         missionId: Int,
         missionTitle: String,
@@ -100,9 +102,9 @@ extension ListDetailViewModel {
             }
             .sink { owner, _ in
                 owner.isOtherUser
-                ? owner.useCase.fetchListDetail(missionId: owner.missionId, username: owner.otherUserName)
-                : owner.useCase.fetchListDetail(missionId: owner.missionId, username: nil)
-                
+                ? owner.useCase.fetchListDetail(isAppjam: owner.isAppjam, missionId: owner.missionId, username: owner.otherUserName)
+                : owner.useCase.fetchListDetail(isAppjam: owner.isAppjam, missionId: owner.missionId, username: nil)
+
                 if owner.isOtherUser {
                     AmplitudeInstance.shared.track(
                         eventType: .clickFeedMission,
@@ -268,6 +270,28 @@ extension ListDetailViewModel {
                 if let mine = model.isMine {
                     owner.isOtherUser = !mine
                 }
+#if DEBUG
+                if owner.isAppjam == true {
+                    print("앱잼 모드: 프로필 정보 주입")
+                    let testProfileInfo = ProfileInfo(
+                        name: "김앱잼",
+                        imageURL: nil  // 또는 실제 이미지 URL
+                    )
+
+                    return ListDetailModel(
+                        image: model.image,
+                        content: model.content,
+                        date: model.date,
+                        stampId: model.stampId,
+                        activityDate: model.activityDate,
+                        clapCount: model.clapCount,
+                        myClapCount: model.myClapCount,
+                        viewCount: model.viewCount,
+                        isMine: model.isMine,
+                        profileInfo: testProfileInfo
+                    )
+                }
+#endif
                 return model
             }
             .assign(to: \.self.listDetailModel, on: output)

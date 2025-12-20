@@ -12,7 +12,7 @@ import Combine
 import Foundation
 
 public protocol ListDetailUseCase {
-    func fetchListDetail(missionId: Int, username: String?)
+    func fetchListDetail(isAppjam: Bool?, missionId: Int, username: String?)
     func postStamp(stampData: ListDetailRequestModel)
     func putStamp(stampData: ListDetailRequestModel)
     func getPresignedURL()
@@ -49,8 +49,8 @@ public class DefaultListDetailUseCase {
 }
 
 extension DefaultListDetailUseCase: ListDetailUseCase {
-    public func fetchListDetail(missionId: Int, username: String?) {
-        repository.fetchListDetail(missionId: missionId, username: username)
+    public func fetchListDetail(isAppjam: Bool?, missionId: Int, username: String?) {
+        repository.fetchListDetail(isAppjam: isAppjam, missionId: missionId, username: username)
             .withUnretained(self)
             .sink(receiveCompletion: { event in
                 print("completion: \(event)")
