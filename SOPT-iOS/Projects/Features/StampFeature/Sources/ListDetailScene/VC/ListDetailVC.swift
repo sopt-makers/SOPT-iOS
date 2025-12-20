@@ -78,6 +78,7 @@ public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, L
     private let contentStackView = UIStackView()
     private lazy var missionView = MissionView(level: starLevel, mission: missionTitle)
     private let missionImageView = UIImageView()
+    private let profileInfoView = ProfileInfoView()
     private let imagePlaceholderLabel = UILabel()
     private let textView = UITextView()
     private lazy var missionDateTextField = MissionDateView(frame: self.view.frame)
@@ -309,8 +310,13 @@ extension ListDetailVC {
         self.clapBadge.setCount(self.myClapCount)
         
         self.imageURL = model.image
+
+        if let profileInfo = model.profileInfo {
+            showProfileInfo(profileInfo)
+        } else {
+            hideProfileInfo()
+        }
     }
-    
     private func reloadData(_ scenetype: ListDetailSceneType) {
         self.sceneType = scenetype
         self.setUI(self.sceneType)
@@ -715,6 +721,8 @@ extension ListDetailVC {
         self.zoomImageView.layer.cornerRadius = 10
         self.zoomImageView.clipsToBounds = true
         self.zoomImageView.contentMode = .scaleAspectFit
+
+        self.profileInfoView.isHidden = true
     }
     
     private func setTextView(_ state: TextViewState) {
@@ -809,6 +817,30 @@ extension ListDetailVC {
         imagePlaceholderLabel.snp.makeConstraints { make in
             make.center.equalTo(missionImageView.snp.center)
         }
+    }
+
+    private func showProfileInfo(_ info: ProfileInfo) {
+        profileInfoView.configure(name: info.name, profileImageURL: info.imageURL)
+
+        if !contentStackView.arrangedSubviews.contains(profileInfoView) {
+            contentStackView.insertArrangedSubview(profileInfoView, at: 2)
+
+            profileInfoView.snp.makeConstraints {
+                $0.leading.trailing.equalToSuperview()
+            }
+        }
+
+        profileInfoView.isHidden = false
+    }
+
+    private func hideProfileInfo() {
+        if contentStackView.arrangedSubviews.contains(profileInfoView) {
+            contentStackView.removeArrangedSubview(profileInfoView)
+            profileInfoView.removeFromSuperview()
+
+            profileInfoView.snp.removeConstraints()
+        }
+        profileInfoView.isHidden = true
     }
     
     private func setScrollViewLayout() {

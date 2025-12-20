@@ -44,7 +44,7 @@ public final class ProfileInfoView: UIView {
         nameLabel.textColor = DSKitAsset.Colors.white.color
         nameLabel.text = "닉네임"
 
-        arrowImageView.image = DSKitAsset.Assets.icArrow.image
+        arrowImageView.image = DSKitAsset.Assets.icLeftArrow.image
         arrowImageView.tintColor = DSKitAsset.Colors.white.color
         arrowImageView.contentMode = .scaleAspectFit
     }
@@ -65,8 +65,7 @@ public final class ProfileInfoView: UIView {
         arrowImageView.snp.makeConstraints {
             $0.leading.equalTo(nameLabel.snp.trailing).offset(2)
             $0.centerY.equalToSuperview()
-            $0.size.equalTo(16)
-            $0.trailing.lessThanOrEqualToSuperview()
+            $0.size.equalTo(24)
         }
 
         self.snp.makeConstraints {
