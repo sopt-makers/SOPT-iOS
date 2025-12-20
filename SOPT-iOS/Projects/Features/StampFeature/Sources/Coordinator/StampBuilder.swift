@@ -37,12 +37,14 @@ extension StampBuilder: StampFeatureBuildable {
         starLevel: StarViewLevel,
         missionId: Int,
         missionTitle: String,
-        otherUserName: String?
+        otherUserName: String?,
+        isAppjam: Bool
     ) -> ListDetailPresentable {
         let useCase = DefaultListDetailUseCase(repository: listDetailRepository)
         let viewModel = ListDetailViewModel(
             useCase: useCase,
             sceneType: sceneType,
+            isAppjam: isAppjam, 
             starLevel: starLevel,
             missionId: missionId,
             missionTitle: missionTitle,

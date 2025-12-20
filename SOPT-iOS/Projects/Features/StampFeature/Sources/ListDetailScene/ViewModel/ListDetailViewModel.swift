@@ -84,6 +84,7 @@ public class ListDetailViewModel: ListDetailViewModelType {
         self.sceneType = sceneType
         self.starLevel = starLevel
         self.missionId = missionId
+        self.isAppjam = isAppjam
         self.missionTitle = missionTitle
         self.isOtherUser = !(otherUsername == nil)
         self.otherUserName = otherUsername
@@ -272,10 +273,9 @@ extension ListDetailViewModel {
                 }
 #if DEBUG
                 if owner.isAppjam == true {
-                    print("앱잼 모드: 프로필 정보 주입")
                     let testProfileInfo = ProfileInfo(
-                        name: "김앱잼",
-                        imageURL: nil  // 또는 실제 이미지 URL
+                        name: "성앱잼",
+                        imageURL: nil
                     )
 
                     return ListDetailModel(
@@ -296,7 +296,7 @@ extension ListDetailViewModel {
             }
             .assign(to: \.self.listDetailModel, on: output)
             .store(in: self.cancelBag)
-        
+
         editSuccess.asDriver()
             .withUnretained(self)
             .sink { owner, success in
