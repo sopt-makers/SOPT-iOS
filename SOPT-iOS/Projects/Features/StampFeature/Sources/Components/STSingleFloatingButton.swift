@@ -20,7 +20,7 @@ final class STSingleFloatingButton: UIView {
     // MARK: - UI Components
     
     private let floatingButton = UIButton().then {
-        $0.layer.cornerRadius = 27.adjustedH
+        $0.layer.cornerRadius = 27
         $0.backgroundColor = DSKitAsset.Colors.white.color
         $0.titleLabel?.font = .SoptampFont.h2
     }
@@ -51,8 +51,8 @@ extension STSingleFloatingButton {
         
         floatingButton.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-            make.width.equalTo(143.adjusted)
-            make.height.equalTo(54.adjustedH)
+            make.width.equalTo(143)
+            make.height.equalTo(54)
         }
         
         badgeView.snp.makeConstraints { make in

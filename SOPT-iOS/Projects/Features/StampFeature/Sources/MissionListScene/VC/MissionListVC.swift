@@ -94,7 +94,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
         lb.numberOfLines = 2
         lb.textAlignment = .center
         lb.backgroundColor = DSKitAsset.Colors.soptampPurple100.color
-        lb.layer.cornerRadius = 9.adjustedH
+        lb.layer.cornerRadius = 9
         lb.clipsToBounds = true
         lb.setCharacterSpacing(0)
         return lb
@@ -181,7 +181,7 @@ extension MissionListVC {
         naviBar.setLeftButtonHidden(isRouteFromTabBar)
         
         missionListCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(naviBar.snp.bottom).offset(20.adjustedH)
+            make.top.equalTo(naviBar.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
@@ -192,14 +192,14 @@ extension MissionListVC {
                 self.view.addSubview(self.singleFloatingButton)
                 
                 self.singleFloatingButton.snp.makeConstraints { make in
-                    make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-18.adjustedH)
+                    make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-18)
                     make.centerX.equalToSuperview()
                 }
             } else {
                 self.view.addSubview(self.doubleFloatingButton)
                 
                 self.doubleFloatingButton.snp.makeConstraints { make in
-                    make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-18.adjustedH)
+                    make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-18)
                     make.centerX.equalToSuperview()
                 }
             }
@@ -208,13 +208,13 @@ extension MissionListVC {
             self.view.addSubview(sentenceLabel)
             
             sentenceLabel.snp.makeConstraints { make in
-                make.top.equalTo(naviBar.snp.bottom).offset(10.adjustedH)
-                make.leading.trailing.equalToSuperview().inset(20.adjusted)
-                make.height.equalTo(64.adjustedH)
+                make.top.equalTo(naviBar.snp.bottom).offset(10)
+                make.leading.trailing.equalToSuperview().inset(20)
+                make.height.equalTo(64)
             }
             
             missionListCollectionView.snp.remakeConstraints { make in
-                make.top.equalTo(sentenceLabel.snp.bottom).offset(16.adjustedH)
+                make.top.equalTo(sentenceLabel.snp.bottom).offset(16)
                 make.leading.trailing.equalToSuperview()
                 make.bottom.equalToSuperview()
             }
@@ -375,7 +375,7 @@ extension MissionListVC {
         missionListEmptyView.removeFromSuperview()
         self.view.addSubviews(missionListEmptyView)
         missionListEmptyView.snp.makeConstraints { make in
-            make.top.equalTo(naviBar.snp.bottom).offset(145.adjustedH)
+            make.top.equalTo(naviBar.snp.bottom).offset(145)
             make.centerX.equalToSuperview()
             make.width.equalToSuperview()
             make.bottom.equalToSuperview().priority(.low)
