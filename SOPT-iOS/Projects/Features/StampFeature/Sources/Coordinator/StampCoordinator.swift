@@ -121,7 +121,9 @@ extension StampCoordinator {
     }
 
     @available(*, deprecated, message: "⚠️ 앱잼 템프인지 일반 미션인지 확인했나요? isAppjam 파라미터로 분기해주세요!")
-    private func showMissionDetail(_ model: MissionListModel, _ username: String?, isAppjam: Bool = false) {        guard let starLevel = StarViewLevel.init(rawValue: model.level) else { return }
+    //TODO: - isAppjam 기본값 제거
+    private func showMissionDetail(_ model: MissionListModel, _ username: String?, isAppjam: Bool = false) {
+        guard let starLevel = StarViewLevel.init(rawValue: model.level) else { return }
 
         var missionDetail = factory.makeListDetailVC(
             sceneType: model.toListDetailSceneType(),

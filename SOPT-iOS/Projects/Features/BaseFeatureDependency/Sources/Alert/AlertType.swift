@@ -11,5 +11,6 @@ import Foundation
 public enum AlertType {
     case title
     case titleDescription
+    case titleDescriptionSingleButton 
     case networkErr
 }
