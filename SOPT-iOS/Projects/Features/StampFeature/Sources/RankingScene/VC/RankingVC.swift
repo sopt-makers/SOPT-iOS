@@ -53,19 +53,12 @@ public class RankingVC: UIViewController, LegacyRankingViewControllable, Ranking
         return rf
     }()
     
-    private lazy var showMyRankingFloatingButton: UIButton = {
-        let bt = UIButton()
-        bt.layer.cornerRadius = 27.adjustedH
-        bt.backgroundColor = DSKitAsset.Colors.white.color
-        bt.titleLabel?.font = .SoptampFont.h2
-        let attributedStr = NSMutableAttributedString(string: I18N.RankingList.myRanking)
-        let style = NSMutableParagraphStyle()
-        attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
-        attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: DSKitAsset.Colors.black.color, range: NSMakeRange(0, attributedStr.length))
-        bt.setAttributedTitle(attributedStr, for: .normal)
-        bt.isHidden = true
-        return bt
-    }()
+    private let showMyRankingFloatingButton = STSingleFloatingButton(
+        frame: .zero,
+        title: I18N.RankingList.myRanking
+    ).then {
+        $0.isHidden = true
+    }
     
     // MARK: - View Life Cycle
     private let rankingViewType: RankingViewType
@@ -125,8 +118,6 @@ extension RankingVC {
         }
         
         showMyRankingFloatingButton.snp.makeConstraints { make in
-            make.width.equalTo(143.adjusted)
-            make.height.equalTo(54.adjustedH)
             make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-18.adjustedH)
             make.centerX.equalToSuperview()
         }
@@ -150,8 +141,7 @@ extension RankingVC {
             .mapVoid()
             .asDriver()
         
-        let showRankingButtonTapped = self.showMyRankingFloatingButton
-            .publisher(for: .touchUpInside)
+        let showRankingButtonTapped = self.showMyRankingFloatingButton.buttonTapped
             .withUnretained(self)
             .filter { owner, _ in owner.rankingCollectionView.indexPathsForVisibleItems.count > 5 }
             .mapVoid()
