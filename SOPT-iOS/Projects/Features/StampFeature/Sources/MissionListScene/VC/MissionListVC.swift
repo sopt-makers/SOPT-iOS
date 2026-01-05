@@ -40,7 +40,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
     lazy var dataSource: UICollectionViewDiffableDataSource<MissionListSection, MissionListModel>! = nil
     
     // MARK: - MissionListCoordinatable
-    
+
     public var onSwiped: (() -> Void)?
     public var onNaviBackTap: (() -> Void)?
     public var onPartRankingButtonTap: ((RankingViewType) -> Void)?
@@ -48,6 +48,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
     public var onEditTap: (() -> Void)?
     public var onCellTap: ((MissionListModel, String?) -> Void)?
     public var onReportButtonTap: (() -> Void)?
+    public var onAppJamRankingButtonTap: (() -> Void)?
     
     private var usersActiveGenerationStatus: UsersActiveGenerationStatusViewResponse?
     
@@ -257,7 +258,7 @@ extension MissionListVC {
         singleFloatingButton.buttonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                // TODO: - 화면 전환 연결
+                owner.onAppJamRankingButtonTap?()
             }.store(in: self.cancelBag)
         
         swipeHandler

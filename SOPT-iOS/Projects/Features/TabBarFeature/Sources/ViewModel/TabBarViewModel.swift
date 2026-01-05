@@ -84,7 +84,7 @@ extension TabBarViewModel {
         homeUseCase.getAppServices()
             .withUnretained(self)
             .sink { owner, appServices in
-                owner.updateBadges(from: appServices)
+//                owner.updateBadges(from: appServices)
             }
             .store(in: cancelBag)
     }

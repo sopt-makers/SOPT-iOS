@@ -95,6 +95,11 @@ public final class StampCoordinator: BaseCoordinator {
             safariViewController.playgroundStyle()
             self.rootController?.present(safariViewController, animated: true)
         }
+
+        missionList.vc.onAppJamRankingButtonTap = { [weak self] in
+            guard let self else { return }
+            self.runRankingFlow(rankingViewType: .appJamRanking)
+        }
     }
 }
 

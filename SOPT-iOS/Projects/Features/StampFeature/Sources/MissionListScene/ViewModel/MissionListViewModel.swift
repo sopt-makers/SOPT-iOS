@@ -25,6 +25,7 @@ public class MissionListViewModel: MissionListViewModelType {
     public var onEditTap: (() -> Void)?
     public var onCellTap: ((Domain.MissionListModel, String?) -> Void)?
     public var onReportButtonTap: (() -> Void)?
+    public var onAppJamRankingButtonTap: (() -> Void)?
     
     // MARK: - Properties
     

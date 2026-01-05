@@ -17,16 +17,18 @@ import SnapKit
 final class AppJamRankingVC: UIViewController, AppJamRankingViewControllable {
     
     // MARK: - Properties
-    
+
     private let viewModel: AppJamRankingViewModel
     private var cancelBag = CancelBag()
     private lazy var dataSource: UICollectionViewDiffableDataSource<AppJamRankingSection, AppJamRankingItem>! = nil
+
+    private let viewWillAppearPublisher = PassthroughSubject<Void, Never>()
     
     // MARK: - UI Components
     
     private let naviBar = STNavigationBar(type: .titleWithLeftButton)
         .setTitleTypoStyle(.SoptampFont.h2)
-        .setTitle(I18N.RankingList.rankingForPartTitle)
+        .setTitle(I18N.RankingList.appjamRankingTitle)
         .setRightButton(.none)
     
     private lazy var collectionView: UICollectionView = {
@@ -43,14 +45,19 @@ final class AppJamRankingVC: UIViewController, AppJamRankingViewControllable {
     }()
     
     // MARK: - View Life Cycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
         setLayout()
         registerCells()
         setDataSource()
-        applySnapshot()
+        bindViewModel()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewWillAppearPublisher.send(())
     }
     
     // MARK: - Initialization
@@ -90,6 +97,34 @@ extension AppJamRankingVC {
 // MARK: - Methods
 
 extension AppJamRankingVC {
+    private func bindViewModel() {
+        let input = AppJamRankingViewModel.Input(
+            viewWillAppear: viewWillAppearPublisher.asDriver(),
+            refreshStarted: refresher.publisher(for: .valueChanged).mapVoid().asDriver(),
+            naviBackButtonTapped: naviBar.leftButtonTapped.asDriver()
+        )
+
+        let output = viewModel.transform(from: input, cancelBag: cancelBag)
+
+        output.$todayRankingList
+            .combineLatest(output.$recentMissionList)
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, data in
+                let (todayRanking, recentMissions) = data
+                owner.applySnapshot(todayRanking: todayRanking, recentMissions: recentMissions)
+            }.store(in: cancelBag)
+
+        output.isLoading
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, isLoading in
+                if !isLoading {
+                    owner.endRefresh()
+                }
+            }.store(in: cancelBag)
+    }
+
     private func endRefresh() {
         self.refresher.endRefreshing()
     }
@@ -118,35 +153,34 @@ extension AppJamRankingVC {
         dataSource = UICollectionViewDiffableDataSource<AppJamRankingSection, AppJamRankingItem>(
             collectionView: collectionView
         ) { [weak self] collectionView, indexPath, item in
-            guard let section = AppJamRankingSection(rawValue: indexPath.section) else {
-                return UICollectionViewCell()
-            }
-            
-            switch section {
-            case .missionCards:
+            switch item {
+            case .mission(let model):
                 guard let cell = collectionView.dequeueReusableCell(
                     withReuseIdentifier: AppJamMissionCardCVC.className,
                     for: indexPath
                 ) as? AppJamMissionCardCVC else {
                     return UICollectionViewCell()
                 }
-                // TODO: 실제 데이터로 교체
-                cell.configureCell(missionImage: "https://picsum.photos/146/232", time: "1분 전", missionTitle: "스터디룸 청소하기", userName: "노바고은비")
+                cell.configureCell(
+                    missionImage: model.imageUrl,
+                    time: model.createdAt,
+                    missionTitle: model.teamName,
+                    userName: model.userName
+                )
                 return cell
-                
-            case .ranking:
+
+            case .ranking(let model):
                 guard let cell = collectionView.dequeueReusableCell(
                     withReuseIdentifier: AppJamRankingCVC.className,
                     for: indexPath
                 ) as? AppJamRankingCVC else {
                     return UICollectionViewCell()
                 }
-                // TODO: 실제 데이터로 교체
                 cell.configureCell(
-                    rank: indexPath.row + 1,
-                    teamName: "노바",
-                    totalScore: 3000,
-                    incrementScore: 1000
+                    rank: model.rank,
+                    teamName: model.teamName,
+                    totalScore: model.totalPoints,
+                    incrementScore: model.todayPoints
                 )
                 return cell
             }
@@ -182,18 +216,20 @@ extension AppJamRankingVC {
         }
     }
     
-    private func applySnapshot() {
+    private func applySnapshot(
+        todayRanking: [AppJamRankTodayPresentationModel],
+        recentMissions: [AppJamRankRecentPresentationModel]
+    ) {
         var snapshot = NSDiffableDataSourceSnapshot<AppJamRankingSection, AppJamRankingItem>()
-        
+
         snapshot.appendSections([.missionCards, .ranking])
-        
-        // 임시 데이터 - TODO: 실제 데이터로 교체
-        let missionCardItems = Array(0..<5).map { AppJamRankingItem.mission("mission_\($0)") }
+
+        let missionCardItems = recentMissions.map { AppJamRankingItem.mission($0) }
         snapshot.appendItems(missionCardItems, toSection: .missionCards)
-        
-        let rankingItems = Array(0..<8).map { AppJamRankingItem.ranking("ranking_\($0)") }
+
+        let rankingItems = todayRanking.map { AppJamRankingItem.ranking($0) }
         snapshot.appendItems(rankingItems, toSection: .ranking)
-        
-        dataSource.apply(snapshot, animatingDifferences: false)
+
+        dataSource.apply(snapshot, animatingDifferences: true)
     }
 }
