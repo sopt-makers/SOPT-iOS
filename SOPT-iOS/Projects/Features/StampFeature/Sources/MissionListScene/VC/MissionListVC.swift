@@ -440,7 +440,6 @@ extension MissionListVC: UICollectionViewDelegate {
                   let model = tappedCell.model else { return }
             let userType = UserDefaultKeyList.Auth.getUserType()
 
-
             if model.isCompleted {
                 onCellTap?(model, sceneType.usrename)
                 return

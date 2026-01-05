@@ -95,7 +95,7 @@ extension AlertVC {
     private func setUI() {
         self.view.backgroundColor = .clear
         self.alertView.backgroundColor = alertTheme.backgroundColor
-        self.cancelButton.backgroundColor = alertTheme.cancelButtonColor(isNetworkErr: self.alertType == .networkErr || self.alertType == .titleDescriptionSingleButton)
+        self.cancelButton.backgroundColor = alertTheme.cancelButtonColor(isSingleButtonAlert: self.alertType == .networkErr || self.alertType == .titleDescriptionSingleButton)
         self.customButton.backgroundColor = alertTheme.customButtonColor
         
         self.titleLabel.font = .Main.headline2
