@@ -18,6 +18,7 @@ public class AppJamRankingViewModel: AppJamRankingViewModelType {
 
     private let useCase: AppjamRankingUseCase
     private var cancelBag = CancelBag()
+    private var fetchTask: Task<Void, Never>?
 
     // MARK: - Inputs
 
@@ -44,6 +45,10 @@ public class AppJamRankingViewModel: AppJamRankingViewModelType {
     public init(useCase: AppjamRankingUseCase) {
         self.useCase = useCase
     }
+
+    deinit {
+        fetchTask?.cancel()
+    }
 }
 
 extension AppJamRankingViewModel {
@@ -53,8 +58,9 @@ extension AppJamRankingViewModel {
         input.viewWillAppear.merge(with: input.refreshStarted)
             .withUnretained(self)
             .sink { owner, _ in
+                owner.fetchTask?.cancel()
                 output.isLoading.send(true)
-                Task { [weak owner] in
+                owner.fetchTask = Task { [weak owner] in
                     await owner?.fetchRankingData(output: output)
                 }
             }.store(in: cancelBag)
