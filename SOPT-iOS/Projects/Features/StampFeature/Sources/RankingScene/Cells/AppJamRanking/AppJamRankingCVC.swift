@@ -124,14 +124,14 @@ extension AppJamRankingCVC {
 // MARK: - Methods
 
 extension AppJamRankingCVC {
-    func configureCell(rank: Int, teamName: String, totalScore: Int, incrementScore: Int) {
-        self.rank = rank
+    func configureCell(model: AppJamRankTodayPresentationModel) {
+        self.rank = model.rank
         updateRankBadge()
         
-        rankLabel.text = "\(rank)"
-        teamNameLabel.text = teamName
-        totalScoreLabel.text = "총 \(totalScore)점"
-        incrementScoreLabel.text = "+\(incrementScore)점"
+        rankLabel.text = "\(model.rank)"
+        teamNameLabel.text = model.teamName
+        totalScoreLabel.text = "총 \(model.totalPoints)점"
+        incrementScoreLabel.text = "+\(model.todayPoints)점"
     }
     
     private func updateRankBadge() {

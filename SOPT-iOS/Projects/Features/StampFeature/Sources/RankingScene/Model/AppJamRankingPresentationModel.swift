@@ -9,6 +9,7 @@
 import Foundation
 
 import Domain
+import Core
 
 // MARK: - Today Ranking Presentation Model
 
@@ -33,7 +34,7 @@ struct AppJamRankRecentPresentationModel: Hashable {
     let missionId: Int
     let userId: Int
     let imageUrl: String
-    let createdAt: String
+    let relativeTime: String
     let userName: String
     let userProfileImage: String
     let teamName: String
@@ -44,7 +45,7 @@ struct AppJamRankRecentPresentationModel: Hashable {
         self.missionId = domainModel.missionId
         self.userId = domainModel.userId
         self.imageUrl = domainModel.imageUrl
-        self.createdAt = domainModel.createdAt
+        self.relativeTime = calculatePastTime(date: domainModel.createdAt, dateFormat: "yyyy-MM-dd'T'HH:mm:ss.SSS")
         self.userName = domainModel.userName
         self.userProfileImage = domainModel.userProfileImage
         self.teamName = domainModel.teamName

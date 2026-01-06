@@ -161,12 +161,7 @@ extension AppJamRankingVC {
                 ) as? AppJamMissionCardCVC else {
                     return UICollectionViewCell()
                 }
-                cell.configureCell(
-                    missionImage: model.imageUrl,
-                    time: model.createdAt,
-                    missionTitle: model.teamName,
-                    userName: model.userName
-                )
+                cell.configureCell(model: model)
                 return cell
 
             case .ranking(let model):
@@ -176,12 +171,7 @@ extension AppJamRankingVC {
                 ) as? AppJamRankingCVC else {
                     return UICollectionViewCell()
                 }
-                cell.configureCell(
-                    rank: model.rank,
-                    teamName: model.teamName,
-                    totalScore: model.totalPoints,
-                    incrementScore: model.todayPoints
-                )
+                cell.configureCell(model: model)
                 return cell
             }
         }
