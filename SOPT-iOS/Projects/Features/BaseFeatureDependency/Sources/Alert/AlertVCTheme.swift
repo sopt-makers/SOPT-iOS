@@ -72,12 +72,12 @@ extension AlertVC.AlertTheme {
         }
     }
     
-    func cancelButtonTitleColor(isNetworkErr: Bool) -> UIColor {
+    func cancelButtonTitleColor(isSingleButtonAlert: Bool) -> UIColor {
         switch self {
         case .main:
-            return isNetworkErr ? DSKitAsset.Colors.black100.color : DSKitAsset.Colors.white.color
+            return isSingleButtonAlert ? DSKitAsset.Colors.black100.color : DSKitAsset.Colors.white.color
         case .soptamp:
-            return isNetworkErr ? DSKitAsset.Colors.black.color : DSKitAsset.Colors.white.color
+            return isSingleButtonAlert ? DSKitAsset.Colors.black.color : DSKitAsset.Colors.white.color
         }
     }
 }

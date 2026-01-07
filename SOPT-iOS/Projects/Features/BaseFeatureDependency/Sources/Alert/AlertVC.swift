@@ -105,7 +105,7 @@ extension AlertVC {
         
         self.titleLabel.textColor = alertTheme.titleColor
         self.descriptionLabel.textColor = alertTheme.descriptionColor
-        self.cancelButton.setTitleColor(alertTheme.cancelButtonTitleColor(isNetworkErr: self.alertType == .networkErr || self.alertType == .titleDescriptionSingleButton),
+        self.cancelButton.setTitleColor(alertTheme.cancelButtonTitleColor(isSingleButtonAlert: self.alertType == .networkErr || self.alertType == .titleDescriptionSingleButton),
                                         for: .normal)
         self.customButton.setTitleColor(alertTheme.customButtonTitleColor, for: .normal)
         
