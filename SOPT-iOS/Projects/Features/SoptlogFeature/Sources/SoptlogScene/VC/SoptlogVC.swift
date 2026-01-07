@@ -27,12 +27,10 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     private var soptlogInfo: SoptlogPresentationModel?
     internal var isPokeEmpty: Bool = true
     
-    private var isActiveUser: Bool {
-        UserDefaultKeyList.Auth.isActiveUser ?? false
-    }
-    
     private var visibleSections: [SoptlogSectionLayoutKind] {
-        SoptlogSectionLayoutKind.visibleSections(isActiveUser: isActiveUser)
+        SoptlogSectionLayoutKind.visibleSections(
+            isAppjamParticipant: soptlogInfo?.isAppjamParticipant ?? false
+        )
     }
     
     // MARK: - UI Components

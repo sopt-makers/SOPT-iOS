@@ -12,6 +12,7 @@ import Core
 import Domain
 
 struct SoptlogPresentationModel {
+    let isAppjamParticipant: Bool
     let soptampMenus: [SoptlogMenuModel]
     let pokeMenus: [SoptlogMenuModel]
     let alarm: Alarm
@@ -40,6 +41,12 @@ extension SoptlogModel {
             SoptlogMenuModel(
                 title: I18N.Soptlog.Menu.receivedClapCount,
                 value: "\(myClapCount ?? 0)회",
+                hasTooltip: false,
+                hasChevron: false
+            ),
+            SoptlogMenuModel(
+                title: I18N.Soptlog.Menu.clapCount,
+                value: "\(clapCount ?? 0)회",
                 hasTooltip: false,
                 hasChevron: false
             )
@@ -73,6 +80,7 @@ extension SoptlogModel {
         ]
 
         return SoptlogPresentationModel(
+            isAppjamParticipant: isAppjamParticipant,
             soptampMenus: soptampMenus,
             pokeMenus: pokeMenus,
             alarm: SoptlogPresentationModel.Alarm(

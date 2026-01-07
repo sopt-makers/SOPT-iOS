@@ -15,11 +15,13 @@ extension SoptlogResponseEntity {
     public func toDomain() -> SoptlogModel {
         return SoptlogModel(
             isActive: self.isActive,
+            isAppjamParticipant: self.isAppjamParticipant,
             isFortuneChecked: self.isFortuneChecked,
             todayFortuneText: self.todayFortuneText,
             soptampCount: self.soptampCount,
             viewCount: self.viewCount,
             myClapCount: self.myClapCount,
+            clapCount: self.clapCount,
             totalPokeCount: self.totalPokeCount,
             newFriendsPokeCount: self.newFriendsPokeCount,
             bestFriendsPokeCount: self.bestFriendsPokeCount,

@@ -10,6 +10,7 @@ import Foundation
 
 public struct SoptlogResponseEntity: Decodable {
     public let isActive: Bool
+    public let isAppjamParticipant: Bool
     
     /// 솝마디 상태
     public let isFortuneChecked: Bool
@@ -19,6 +20,7 @@ public struct SoptlogResponseEntity: Decodable {
     public let soptampCount: Int?
     public let viewCount: Int?
     public let myClapCount: Int?
+    public let clapCount: Int?
     
     /// 콕찌르기 정보
     public let totalPokeCount: Int
