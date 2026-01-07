@@ -43,6 +43,12 @@ extension SoptlogModel {
                 value: "\(myClapCount ?? 0)회",
                 hasTooltip: false,
                 hasChevron: false
+            ),
+            SoptlogMenuModel(
+                title: I18N.Soptlog.Menu.clapCount,
+                value: "\(clapCount ?? 0)회",
+                hasTooltip: false,
+                hasChevron: false
             )
         ]
 

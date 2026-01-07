@@ -21,6 +21,7 @@ extension SoptlogResponseEntity {
             soptampCount: self.soptampCount,
             viewCount: self.viewCount,
             myClapCount: self.myClapCount,
+            clapCount: self.clapCount,
             totalPokeCount: self.totalPokeCount,
             newFriendsPokeCount: self.newFriendsPokeCount,
             bestFriendsPokeCount: self.bestFriendsPokeCount,

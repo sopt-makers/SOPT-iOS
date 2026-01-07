@@ -20,6 +20,7 @@ public struct  SoptlogModel {
     public let soptampCount: Int?
     public let viewCount: Int?
     public let myClapCount: Int?
+    public let clapCount: Int?
     
     /// 콕찌르기 정보
     public let totalPokeCount: Int
@@ -35,6 +36,7 @@ public struct  SoptlogModel {
         soptampCount: Int?,
         viewCount: Int?,
         myClapCount: Int?,
+        clapCount: Int?,
         totalPokeCount: Int,
         newFriendsPokeCount: Int,
         bestFriendsPokeCount: Int,
@@ -47,6 +49,7 @@ public struct  SoptlogModel {
         self.soptampCount = soptampCount
         self.viewCount = viewCount
         self.myClapCount = myClapCount
+        self.clapCount = clapCount
         self.totalPokeCount = totalPokeCount
         self.newFriendsPokeCount = newFriendsPokeCount
         self.bestFriendsPokeCount = bestFriendsPokeCount
