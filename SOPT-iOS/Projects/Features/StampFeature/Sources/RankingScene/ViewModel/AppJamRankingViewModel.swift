@@ -39,10 +39,11 @@ public class AppJamRankingViewModel: AppJamRankingViewModelType {
     // MARK: - AppJamCoordinatable
 
     public var onNaviBackTap: (() -> Void)?
+    public var onNetworkError: (() -> Void)?
 
     // MARK: - init
 
-    public init(useCase: AppjamRankingUseCase) {
+    init(useCase: AppjamRankingUseCase) {
         self.useCase = useCase
     }
 
@@ -85,7 +86,7 @@ extension AppJamRankingViewModel {
             output.recentMissionList = recentMissions.map { AppJamRankRecentPresentationModel(from: $0) }
             output.isLoading.send(false)
         } catch {
-            print("AppJamRankingViewModel fetch error: \(error)")
+            onNetworkError?()
             output.isLoading.send(false)
         }
     }

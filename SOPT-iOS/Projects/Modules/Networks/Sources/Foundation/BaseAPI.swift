@@ -33,7 +33,7 @@ public enum APIType {
 }
 
 public protocol BaseAPI: TargetType, AccessTokenAuthorizable {
-    static var apiType: APIType { get set }
+    static var apiType: APIType { get }
 }
 
 extension BaseAPI {

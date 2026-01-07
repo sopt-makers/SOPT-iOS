@@ -20,6 +20,7 @@ public protocol AppJamRankingViewControllable: UIViewController { }
 
 public protocol AppJamRankingRoutingTrigger {
     var onNaviBackTap: (() -> Void)? { get set }
+    var onNetworkError: (() -> Void)? { get set }
 }
 
 // MARK: - ViewModelType

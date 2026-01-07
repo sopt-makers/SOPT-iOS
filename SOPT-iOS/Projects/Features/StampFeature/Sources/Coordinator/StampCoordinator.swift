@@ -213,6 +213,11 @@ extension StampCoordinator {
             self.rootController?.popViewController(animated: true)
         }
         
+        ranking.vm.onNetworkError = { [weak self] in
+            guard let self else { return }
+            AlertUtils.presentNetworkAlertVC()
+        }
+        
         rootController?.pushViewController(ranking.vc, animated: true)
     }
 
