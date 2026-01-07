@@ -12,6 +12,7 @@ import Core
 import Domain
 
 struct SoptlogPresentationModel {
+    let isAppjamParticipant: Bool
     let soptampMenus: [SoptlogMenuModel]
     let pokeMenus: [SoptlogMenuModel]
     let alarm: Alarm
@@ -73,6 +74,7 @@ extension SoptlogModel {
         ]
 
         return SoptlogPresentationModel(
+            isAppjamParticipant: isAppjamParticipant,
             soptampMenus: soptampMenus,
             pokeMenus: pokeMenus,
             alarm: SoptlogPresentationModel.Alarm(

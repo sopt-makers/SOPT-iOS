@@ -10,6 +10,7 @@ import Foundation
 
 public struct SoptlogResponseEntity: Decodable {
     public let isActive: Bool
+    public let isAppjamParticipant: Bool
     
     /// 솝마디 상태
     public let isFortuneChecked: Bool
