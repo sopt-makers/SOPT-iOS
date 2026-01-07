@@ -39,15 +39,13 @@ extension ListDetailRepository: ListDetailRepositoryInterface {
             return Fail(error: NSError()).eraseToAnyPublisher()
         }
         if isAppjam == true {
-            //TODO: - 앱잼템프용 api로 변경
-            return stampService.fetchStampListDetail(missionId: missionId, username: username)
-                .map { $0.toDomain() }
-                .eraseToAnyPublisher()
-        } else {
-            return stampService.fetchStampListDetail(missionId: missionId, username: username)
+            return stampService.fetchAppJamStampDetail(missionId: missionId, nickname: username)
                 .map { $0.toDomain() }
                 .eraseToAnyPublisher()
         }
+        return stampService.fetchStampListDetail(missionId: missionId, username: username)
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher()
     }
 
     public func getPresignedURL() -> AnyPublisher<PresignedUrlModel, Error> {

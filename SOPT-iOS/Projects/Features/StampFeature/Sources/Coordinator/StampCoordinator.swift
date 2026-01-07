@@ -117,7 +117,7 @@ extension StampCoordinator {
             level: level,
             isCompleted: true
         )
-        showMissionDetail(model, username, isAppjam: true)
+        showMissionDetail(model, username)
     }
 
     @available(*, deprecated, message: "⚠️ 앱잼 템프인지 일반 미션인지 확인했나요? isAppjam 파라미터로 분기해주세요!")

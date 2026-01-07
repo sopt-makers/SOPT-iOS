@@ -13,6 +13,10 @@ import Networks
 
 extension ListDetailEntity {
   public func toDomain() -> ListDetailModel {
+    let profileInfo: ProfileInfo? = {
+      guard let ownerNickname else { return nil }
+      return ProfileInfo(name: ownerNickname, imageURL: ownerProfileImage)
+    }()
     return ListDetailModel(
       image: self.images.first ?? "",
       content: self.contents,
@@ -22,7 +26,8 @@ extension ListDetailEntity {
       clapCount: self.clapCount,
       myClapCount: self.myClapCount,
       viewCount: self.viewCount,
-      isMine: self.mine
+      isMine: self.isMine,
+      profileInfo: profileInfo
     )
   }
 }

@@ -271,27 +271,6 @@ extension ListDetailViewModel {
                 if let mine = model.isMine {
                     owner.isOtherUser = !mine
                 }
-#if DEBUG
-                if owner.isAppjam == true {
-                    let testProfileInfo = ProfileInfo(
-                        name: "성앱잼",
-                        imageURL: nil
-                    )
-
-                    return ListDetailModel(
-                        image: model.image,
-                        content: model.content,
-                        date: model.date,
-                        stampId: model.stampId,
-                        activityDate: model.activityDate,
-                        clapCount: model.clapCount,
-                        myClapCount: model.myClapCount,
-                        viewCount: model.viewCount,
-                        isMine: model.isMine,
-                        profileInfo: testProfileInfo
-                    )
-                }
-#endif
                 return model
             }
             .assign(to: \.self.listDetailModel, on: output)

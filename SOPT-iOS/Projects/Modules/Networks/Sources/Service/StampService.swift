@@ -16,6 +16,7 @@ public typealias DefaultStampService = BaseService<StampAPI>
 
 public protocol StampService {
     func fetchStampListDetail(missionId: Int, username: String) -> AnyPublisher<ListDetailEntity, Error>
+    func fetchAppJamStampDetail(missionId: Int, nickname: String) -> AnyPublisher<ListDetailEntity, Error>
     func postStamp(requestModel: ListDetailRequestEntity) -> AnyPublisher<ListDetailEntity, Error>
     func putStamp(requestModel: ListDetailRequestEntity) -> AnyPublisher<StampEntity, Error>
     func deleteStamp(stampId: Int) -> AnyPublisher<Int, Error>
@@ -30,6 +31,10 @@ public protocol StampService {
 extension DefaultStampService: StampService {
     public func fetchStampListDetail(missionId: Int, username: String) -> AnyPublisher<ListDetailEntity, Error> {
         requestObjectInCombine(StampAPI.fetchStampListDetail(missionId: missionId, username: username))
+    }
+
+    public func fetchAppJamStampDetail(missionId: Int, nickname: String) -> AnyPublisher<ListDetailEntity, Error> {
+        requestObjectInCombine(StampAPI.fetchAppJamStampDetail(missionId: missionId, nickname: nickname))
     }
 
     public func postStamp(requestModel: ListDetailRequestEntity) -> AnyPublisher<ListDetailEntity, Error> {

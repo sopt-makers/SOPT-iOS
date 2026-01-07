@@ -14,6 +14,7 @@ import Core
 
 public enum StampAPI {
   case fetchStampListDetail(missionId: Int, username: String)
+  case fetchAppJamStampDetail(missionId: Int, nickname: String)
   case postStamp(requestModel: ListDetailRequestEntity)
   case putStamp(requestModel: ListDetailRequestEntity)
   case deleteStamp(stampId: Int)
@@ -32,6 +33,8 @@ extension StampAPI: BaseAPI {
     switch self {
     case .fetchStampListDetail:
       return ""
+    case .fetchAppJamStampDetail:
+      return "/stamp"
     case .postStamp, .putStamp:
       return ""
     case .deleteStamp(let stampId):
@@ -67,6 +70,9 @@ extension StampAPI: BaseAPI {
     case .fetchStampListDetail(let missionId, let username):
       params["missionId"] = missionId
       params["nickname"] = username
+    case .fetchAppJamStampDetail(let missionId, let nickname):
+      params["missionId"] = missionId
+      params["nickname"] = nickname
     case .putStamp(let requestModel), .postStamp(let requestModel):
       params["missionId"] = requestModel.missionId
       params["image"] = requestModel.imgURL
@@ -84,7 +90,7 @@ extension StampAPI: BaseAPI {
   
   private var parameterEncoding: ParameterEncoding {
     switch self {
-    case .fetchStampListDetail, .getClapList:
+    case .fetchStampListDetail, .fetchAppJamStampDetail, .getClapList:
       return URLEncoding.default
     default:
       return JSONEncoding.default
@@ -93,10 +99,27 @@ extension StampAPI: BaseAPI {
   
   public var task: Task {
     switch self {
-    case .fetchStampListDetail, .postStamp, .putStamp, .clap, .getClapList:
+    case .fetchStampListDetail, .fetchAppJamStampDetail, .postStamp, .putStamp, .clap, .getClapList:
       return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
     default:
       return .requestPlain
     }
+  }
+}
+
+extension StampAPI {
+  public var baseURL: URL {
+    let base = Config.Network.baseURL
+    let path: String
+    switch self {
+    case .fetchAppJamStampDetail:
+      path = "/appjamtamp"
+    default:
+      path = "/stamp"
+    }
+    guard let url = URL(string: base + path) else {
+      fatalError("baseURL could not be configured")
+    }
+    return url
   }
 }
