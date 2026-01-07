@@ -29,7 +29,7 @@ extension RemoteConfigManager {
     private func setRemoteConfigSettings() {
         let settings = RemoteConfigSettings()
         #if DEV || PROD
-        settings.minimumFetchInterval = 0           // 서버에서 새 값을 가져오는 최소 간격
+        settings.minimumFetchInterval = 3600           // 서버에서 새 값을 가져오는 최소 간격
         #else
         settings.minimumFetchInterval = 3600 // 1시간
         #endif

@@ -747,4 +747,9 @@ extension I18N {
         ① 이 개인정보처리방침은 2022년 1월 1부터 적용됩니다.
         """
     }
+    
+    public struct ForceUpdate {
+        public static let alertTitle = "업데이트 안내"
+        public static let description = "현재 버전에서는 이동할 수 없는 링크에요.\nSOPT앱을 최신버전으로 업데이트 해주세요."
+    }
 }

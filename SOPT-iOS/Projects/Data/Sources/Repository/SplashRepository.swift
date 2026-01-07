@@ -36,7 +36,17 @@ extension SplashRepository: SplashRepositoryInterface {
     
     /// 강제 업데이트와 관련된 데이터를 가져온다.
     public func forcedUpdateData() async throws -> ForceUpdateModel {
-        return try await RemoteConfigManager.shared.fetchJsonValue(as: .forcedUpdate, decodeType: ForceUpdateModel.self)
+        do {
+            return try await RemoteConfigManager.shared.fetchJsonValue(as: .forcedUpdate, decodeType: ForceUpdateModel.self)
+        } catch let error as RemoteConfigError {
+            // valueNotFound와 decodeFailed 에러일 때만 fallback 값을 사용
+            switch error {
+            case .valueNotFound, .decodeFailed:
+                return ForceUpdateModel.fallbackValue
+            case .fetchFailed:
+                throw error
+            }
+        }
     }
     
     /// 선택 업데이트와 관련된 데이터를 가져온다.

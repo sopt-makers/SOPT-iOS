@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Core
 
 public struct ForceUpdateModel: Decodable {
     public let minimumVersion: String
@@ -17,4 +18,12 @@ public struct AppNoticeModel: Decodable {
     public let title: String
     public let notice: String
     public let imgUrl: String?
+}
+
+extension ForceUpdateModel {
+    public static let fallbackValue: ForceUpdateModel = .init(
+        minimumVersion: "4.2.3",
+        appNotice: AppNoticeModel.init(title: I18N.ForceUpdate.alertTitle,
+                                       notice: I18N.ForceUpdate.description,
+                                       imgUrl: nil))
 }

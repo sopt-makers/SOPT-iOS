@@ -94,7 +94,7 @@ extension DefaultSplashUseCase: SplashUseCase {
             throw UpdateCheckError.projectVersionFetchError
         }
         
-        let needForceUpdate = currentAppVersion.compare(minimumVersion,options: .numeric) == .orderedAscending
+        let needForceUpdate = currentAppVersion.compare(minimumVersion, options: .numeric) == .orderedAscending
         let needOptionalUpdate = currentAppVersion.compare(appStoreVersion, options: .numeric) == .orderedAscending
         
         return needForceUpdate ? .forcedUpdate(forcedUpdateData.appNotice) :
