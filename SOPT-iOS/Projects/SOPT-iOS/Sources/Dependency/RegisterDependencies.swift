@@ -238,5 +238,11 @@ extension AppDelegate {
                 SoptlogRepository(userService: DefaultUserService.standard)
             }
         )
+        container.register(
+            interface: AppjamRankingRepositoryInterface.self,
+            implement: {
+                AppjamRankingRepository(service: DefaultAppJamRankingService.standard)
+            }
+        )
     }
 }

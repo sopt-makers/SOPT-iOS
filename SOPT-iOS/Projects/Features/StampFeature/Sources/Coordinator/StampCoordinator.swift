@@ -95,6 +95,11 @@ public final class StampCoordinator: BaseCoordinator {
             safariViewController.playgroundStyle()
             self.rootController?.present(safariViewController, animated: true)
         }
+
+        missionList.vc.onAppJamRankingButtonTap = { [weak self] in
+            guard let self else { return }
+            self.runRankingFlow(rankingViewType: .appJamRanking)
+        }
     }
 }
 
@@ -206,6 +211,11 @@ extension StampCoordinator {
         ranking.vm.onNaviBackTap = { [weak self] in
             guard let self else { return }
             self.rootController?.popViewController(animated: true)
+        }
+        
+        ranking.vm.onNetworkError = { [weak self] in
+            guard let self else { return }
+            AlertUtils.presentNetworkAlertVC()
         }
         
         rootController?.pushViewController(ranking.vc, animated: true)

@@ -122,22 +122,14 @@ extension AppJamMissionCardCVC {
 // MARK: - Methods
 
 extension AppJamMissionCardCVC {
-    func configureCell(
-        missionImage: String,
-        time: String,
-        missionTitle: String,
-        userName: String,
-        profileImage: String? = nil
+    func configureCell(model: AppJamRankRecentPresentationModel) {
+        timeLabel.text = model.relativeTime
+        missionTitleLabel.text = model.teamName
+        userLabel.text = model.userName
+        missionImageView.setImage(with: model.imageUrl)
         
-    ) {
-        timeLabel.text = time
-        missionTitleLabel.text = missionTitle
-        userLabel.text = userName
-        missionImageView.setImage(with: missionImage)
-        
-        if let profileURL = profileImage {
-            profileView.setImage(with: profileURL)
+        if !model.userProfileImage.isEmpty {
+            profileView.setImage(with: model.userProfileImage)
         }
     }
 }
-

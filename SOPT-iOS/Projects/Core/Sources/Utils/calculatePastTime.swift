@@ -7,31 +7,26 @@
 
 import Foundation
 
-public func calculatePastTime(date: String) -> String {
-  
+public func calculatePastTime(date: String, dateFormat: String = "yyyy-MM-dd HH:mm:ss") -> String {
+
   let minute = 60
   let hour = minute * 60
   let day = hour * 60
   let week = day * 7
-  
+
   var message: String = ""
-  
-  let UTCDate = Date()
-  let formatter = DateFormatter()
-  formatter.timeZone = TimeZone(secondsFromGMT: 32400)
-  formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-  let defaultTimeZoneStr = formatter.string(from: UTCDate)
-  
+
   let format = DateFormatter()
-  format.dateFormat = "yyyy-MM-dd HH:mm:ss"
+  format.dateFormat = dateFormat
   format.locale = Locale(identifier: "ko_KR")
-  
+  format.timeZone = TimeZone(identifier: "Asia/Seoul")
+
   guard let tempDate = format.date(from: date) else {return ""}
-  let krTime = format.date(from: defaultTimeZoneStr)
-  
+
+  let now = Date()
+  let useTime = Int(now.timeIntervalSince(tempDate))
+
   let articleDate = format.string(from: tempDate)
-  var useTime = Int(krTime!.timeIntervalSince(tempDate))
-  useTime = useTime - 32400
   
   if useTime < minute {
     message = "방금 전"

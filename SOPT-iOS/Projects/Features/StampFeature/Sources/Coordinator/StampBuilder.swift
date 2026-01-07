@@ -18,6 +18,7 @@ final class StampBuilder {
     @Injected public var missionListRepository: MissionListRepositoryInterface
     @Injected public var rankingRepository: RankingRepositoryInterface
     @Injected public var listDetailRepository: ListDetailRepositoryInterface
+    @Injected public var appjamRankingRepository: AppjamRankingRepositoryInterface
 
     public init() { }
 }
@@ -97,7 +98,8 @@ extension StampBuilder: StampFeatureBuildable {
     }
     
     public func makeAppJamRankingVC() -> AppJamRankingPresentable {
-        let viewModel = AppJamRankingViewModel()
+        let useCase = DefaultAppjamRankingUseCase(repository: appjamRankingRepository)
+        let viewModel = AppJamRankingViewModel(useCase: useCase)
         let appJamRankingVC = AppJamRankingVC(viewModel: viewModel)
         return (appJamRankingVC, viewModel)
     }
