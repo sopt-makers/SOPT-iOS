@@ -12,6 +12,7 @@ public enum MissionListFetchType: String {
     case all
     case complete
     case incomplete
+    case appjam
     
     public var path: String {
         return self.rawValue

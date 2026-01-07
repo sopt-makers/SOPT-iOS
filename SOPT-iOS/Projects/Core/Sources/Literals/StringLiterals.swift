@@ -128,12 +128,27 @@ public struct I18N {
         public static let noMission = "아직 완료한 미션이 없습니다!"
         public static let multipleTen = "x 10"
         public static let specialMission = "특별미션"
+        public static let allMission = "전체 미션"
+        public static let completeMission = "완료 미션"
+        public static let uncompleteMission = "미완료 미션"
+        public static let appjamMission = "앱잼 미션"
     }
     
     public struct RankingList {
         public static let noSentenceText = "설정된 한 마디가 없습니다."
-        public static let rankingForPartTitle = "파트별 랭킹"
+        public static let partRankingTitle = "파트별 랭킹"
+        public static let personalRankingTitle = "개인별 랭킹"
+        public static let appjamRankingTitle = "앱잼팀 랭킹"
         public static let myRanking = "내 랭킹 보기"
+    }
+    
+    public struct AppJamRankingList {
+        public static let navigationTitle = "앱잼팀 랭킹"
+        public static let appjamMissionTitle = "따끈따끈 합숙미션 구경하기"
+        public static let appjamMissionSubTitle = "다른 팀들은 방금 이런 미션을 달성했어요"
+        
+        public static let todayRankingTitle = "오늘의 득점 랭킹"
+        public static let todayRankingSubTitle = "미션을 인증해 오늘의 순위를 뒤집어보세요!"
     }
     
     public struct ListDetail {

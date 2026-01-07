@@ -23,6 +23,7 @@ public protocol MissionListRoutingTrigger {
   var onEditTap: (() -> Void)? { get set }
   var onCellTap: ((MissionListModel, _ username: String?) -> Void)? { get set }
   var onReportButtonTap: (() -> Void)? { get set }
+    var onAppJamRankingButtonTap: (() -> Void)? { get set }
 }
 // TODO: coordinating vc -> vm 작업에서 활용
 public typealias MissionListViewModelType = ViewModelType & MissionListRoutingTrigger

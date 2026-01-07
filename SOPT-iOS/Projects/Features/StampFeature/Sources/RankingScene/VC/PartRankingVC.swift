@@ -37,7 +37,7 @@ public class PartRankingVC: UIViewController, LegacyPartRankingViewControllable,
     
     lazy var naviBar = STNavigationBar(type: .titleWithLeftButton)
         .setTitleTypoStyle(.SoptampFont.h2)
-        .setTitle(I18N.RankingList.rankingForPartTitle)
+        .setTitle(I18N.RankingList.partRankingTitle)
         .setRightButton(.none)
     
     private lazy var rankingCollectionView: UICollectionView = {

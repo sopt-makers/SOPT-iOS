@@ -13,4 +13,5 @@ public enum RankingViewType {
     case currentGeneration(info: UsersActiveGenerationStatusViewResponse)
     case partRanking
     case individualRankingInPart(part: Part)
+    case appJamRanking
 }

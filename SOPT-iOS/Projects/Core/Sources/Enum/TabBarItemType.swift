@@ -29,7 +29,15 @@ public extension TabBarItemType {
     func getTabIndex(userType: UserType) -> Int {
         switch userType {
         case .active:
-            return self.rawValue
+            switch self {
+            case .home:
+                return 0
+            case .soptamp:
+                return 1
+            case .soptlog:
+                return 2
+            default: return 0           // poke 탭이 비활성화 상태이므로 0으로 처리
+            }
         case .visitor, .inactive:
             switch self {
             case .home, .soptamp:
@@ -46,7 +54,12 @@ public extension TabBarItemType {
     static func from(index: Int, userType: UserType) -> TabBarItemType? {
         switch userType {
         case .active:
-            return TabBarItemType(rawValue: index)
+            switch index {
+            case 0: return .home
+            case 1: return .soptamp
+            case 2: return .soptlog
+            default: return nil
+            }
         case .visitor, .inactive:
             switch index {
             case 0: return .home
