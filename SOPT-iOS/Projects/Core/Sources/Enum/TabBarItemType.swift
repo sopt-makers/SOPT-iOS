@@ -63,8 +63,7 @@ public extension TabBarItemType {
         case .visitor:
             switch index {
             case 0: return .home
-            case 1: return .poke
-            case 2: return .soptlog
+            case 1: return .soptlog
             default: return nil
             }
         }
