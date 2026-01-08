@@ -395,9 +395,9 @@ extension ApplicationCoordinator {
 
         case .visitor:
             viewControllers = [
-homeNavigationController,
-// pokeNavigationController,
-soptlogNavigationController
+                homeNavigationController,
+                // pokeNavigationController,
+                soptlogNavigationController
             ]
         }
 
