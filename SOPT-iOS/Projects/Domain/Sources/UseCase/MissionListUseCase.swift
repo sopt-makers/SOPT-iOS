@@ -15,7 +15,7 @@ public protocol MissionListUseCase {
     func fetchOtherUserMissionList(userName: String)
     func fetchIsActiveGenerationUser()
     func updateCurrentSoptampUserInfo()
-    func fetchAppjamMissionList()
+    func fetchAppjamMissionList(teamNumber: String?, isCompleted: Bool?)
     
     var missionListModelsFetched: PassthroughSubject<[MissionListModel], Error> { get set }
     var usersActiveGenerationInfo: PassthroughSubject<UsersActiveGenerationStatusViewResponse, Error> { get set }
@@ -82,8 +82,8 @@ extension DefaultMissionListUseCase: MissionListUseCase {
             }).store(in: self.cancelBag)
     }
     
-    public func fetchAppjamMissionList() {
-        repository.fetchAppjamMissionList()
+    public func fetchAppjamMissionList(teamNumber: String?, isCompleted: Bool?) {
+        repository.fetchAppjamMissionList(teamNumber: teamNumber, isCompleted: isCompleted)
             .sink(receiveCompletion: { event in
                 print("completion: \(event)")
             }, receiveValue: { model in

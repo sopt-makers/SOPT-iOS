@@ -15,7 +15,7 @@ import Moya
 
 public enum MissionAPI {
     case fetchMissionList(type: MissionListFetchType)
-    case fetchAppjamMissionList
+    case fetchAppjamMissionList(teamNumber: String?, isCompleted: Bool?)
 }
 
 extension MissionAPI: BaseAPI {
@@ -42,7 +42,15 @@ extension MissionAPI: BaseAPI {
     private var bodyParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
-        default: break
+        case .fetchAppjamMissionList(let number, let isCompleted):
+            if let number {
+                params["teamNumber"] = number
+            }
+            if let isCompleted {
+                params["isCompleted"] = isCompleted
+            }
+        default:
+            break
         }
         return params
     }

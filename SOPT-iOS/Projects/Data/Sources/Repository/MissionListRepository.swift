@@ -40,8 +40,8 @@ extension MissionListRepository: MissionListRepositoryInterface {
         return fetchRankDetail(userName: userName)
     }
     
-    public func fetchAppjamMissionList() -> AnyPublisher<AppjamMissionListModel, any Error> {
-        return missionService.fetchAppjamMissionList()
+    public func fetchAppjamMissionList(teamNumber: String?, isCompleted: Bool?) -> AnyPublisher<AppjamMissionListModel, any Error> {
+        return missionService.fetchAppjamMissionList(teamNumber: teamNumber, isCompleted: isCompleted)
             .map { $0.toDomain() }
             .eraseToAnyPublisher()
         

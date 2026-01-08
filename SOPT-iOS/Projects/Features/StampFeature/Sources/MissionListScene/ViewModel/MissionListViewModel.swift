@@ -103,7 +103,7 @@ extension MissionListViewModel {
     private func fetchMissionListByType(type: MissionListFetchType) {
         switch type {
         case .appjam:
-            self.useCase.fetchAppjamMissionList()
+            self.useCase.fetchAppjamMissionList(teamNumber: nil, isCompleted: nil)
         default:
             self.useCase.fetchMissionList(type: type)
         }
