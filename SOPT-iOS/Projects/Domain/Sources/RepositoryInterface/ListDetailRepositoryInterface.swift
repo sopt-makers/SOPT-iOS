@@ -12,7 +12,7 @@ import Combine
 import Foundation
 
 public protocol ListDetailRepositoryInterface {
-    func fetchListDetail(missionId: Int, username: String?) -> AnyPublisher<ListDetailModel, Error>
+    func fetchListDetail(isAppjam: Bool?, missionId: Int, username: String?) -> AnyPublisher<ListDetailModel, Error>
     func getPresignedURL() -> AnyPublisher<PresignedUrlModel, Error>
     func uploadMedia(imageData: Data, presignedUrl: String) -> AnyPublisher<Void, Error>
     func postStamp(stampData: ListDetailRequestModel) -> AnyPublisher<ListDetailModel, Error>

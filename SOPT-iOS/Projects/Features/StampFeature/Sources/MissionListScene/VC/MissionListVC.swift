@@ -438,10 +438,35 @@ extension MissionListVC: UICollectionViewDelegate {
         case 1:
             guard let tappedCell = collectionView.cellForItem(at: indexPath) as? MissionListCVC,
                   let model = tappedCell.model else { return }
-            onCellTap?(model, sceneType.usrename)
+            let userType = UserDefaultKeyList.Auth.getUserType()
+
+            if model.isCompleted {
+                onCellTap?(model, sceneType.usrename)
+                return
+            }
+
+            switch userType {
+            case .active:
+                onCellTap?(model, sceneType.usrename)
+            case .inactive, .visitor:
+                //TODO: - 앱잼안하는 활동유저의 경우대한 분기도 추가
+                showInactiveUserAlert()
+            }
+
         default:
             return
         }
+    }
+
+    private func showInactiveUserAlert() {
+        AlertUtils.presentAlertVC(
+            type: .titleDescriptionSingleButton,
+            theme: .soptamp,
+            title: I18N.MissionList.inactiveUserAlertTitle,
+            description: I18N.MissionList.inactiveUserAlertDescription,
+            customButtonTitle: I18N.Default.ok,
+            animated: true
+        )
     }
 }
 

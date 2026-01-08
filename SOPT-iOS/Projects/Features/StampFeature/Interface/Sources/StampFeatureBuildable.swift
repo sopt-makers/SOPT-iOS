@@ -19,7 +19,8 @@ public protocol StampFeatureBuildable {
         starLevel: StarViewLevel,
         missionId: Int,
         missionTitle: String,
-        otherUserName: String?
+        otherUserName: String?,
+        isAppjam: Bool
     ) -> ListDetailPresentable
     func makeMissionCompletedVC(
         starLevel: StarViewLevel,

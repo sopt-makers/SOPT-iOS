@@ -33,14 +33,21 @@ public class ListDetailRepository {
 }
 
 extension ListDetailRepository: ListDetailRepositoryInterface {
-    public func fetchListDetail(missionId: Int, username: String?) -> AnyPublisher<ListDetailModel, Error> {
+    public func fetchListDetail(isAppjam: Bool?, missionId: Int, username: String?) -> AnyPublisher<ListDetailModel, Error> {
         let username = username ?? UserDefaultKeyList.User.soptampName
         guard let username else {
             return Fail(error: NSError()).eraseToAnyPublisher()
         }
-        return stampService.fetchStampListDetail(missionId: missionId, username: username)
-            .map { $0.toDomain() }
-            .eraseToAnyPublisher()
+        if isAppjam == true {
+            //TODO: - 앱잼템프용 api로 변경
+            return stampService.fetchStampListDetail(missionId: missionId, username: username)
+                .map { $0.toDomain() }
+                .eraseToAnyPublisher()
+        } else {
+            return stampService.fetchStampListDetail(missionId: missionId, username: username)
+                .map { $0.toDomain() }
+                .eraseToAnyPublisher()
+        }
     }
 
     public func getPresignedURL() -> AnyPublisher<PresignedUrlModel, Error> {

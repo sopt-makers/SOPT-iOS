@@ -95,7 +95,7 @@ extension AlertVC {
     private func setUI() {
         self.view.backgroundColor = .clear
         self.alertView.backgroundColor = alertTheme.backgroundColor
-        self.cancelButton.backgroundColor = alertTheme.cancelButtonColor(isNetworkErr: self.alertType == .networkErr)
+        self.cancelButton.backgroundColor = alertTheme.cancelButtonColor(isSingleButtonAlert: self.alertType == .networkErr || self.alertType == .titleDescriptionSingleButton)
         self.customButton.backgroundColor = alertTheme.customButtonColor
         
         self.titleLabel.font = .Main.headline2
@@ -105,14 +105,20 @@ extension AlertVC {
         
         self.titleLabel.textColor = alertTheme.titleColor
         self.descriptionLabel.textColor = alertTheme.descriptionColor
-        self.cancelButton.setTitleColor(alertTheme.cancelButtonTitleColor(isNetworkErr: self.alertType == .networkErr),
+        self.cancelButton.setTitleColor(alertTheme.cancelButtonTitleColor(isSingleButtonAlert: self.alertType == .networkErr || self.alertType == .titleDescriptionSingleButton),
                                         for: .normal)
         self.customButton.setTitleColor(alertTheme.customButtonTitleColor, for: .normal)
         
         self.descriptionLabel.textAlignment = .center
         self.descriptionLabel.numberOfLines = 2
-        
-        let cancelTitle = (self.alertType == .networkErr) ? I18N.Default.ok : I18N.Default.cancel
+
+        let cancelTitle: String
+        switch self.alertType {
+        case .networkErr, .titleDescriptionSingleButton:
+            cancelTitle = I18N.Default.ok
+        default:
+            cancelTitle = I18N.Default.cancel
+        }
         self.cancelButton.setTitle(cancelTitle, for: .normal)
         
         self.alertView.layer.cornerRadius = 10
@@ -177,7 +183,8 @@ extension AlertVC {
                 make.leading.equalTo(cancelButton.snp.trailing).offset(buttonSpacing)
                 make.height.equalTo(cancelButton.snp.height)
             }
-        case .networkErr:
+
+        case .titleDescriptionSingleButton, .networkErr:
             cancelButton.snp.makeConstraints { make in
                 make.leading.trailing.bottom.equalToSuperview().inset(7)
                 make.height.equalTo(38)

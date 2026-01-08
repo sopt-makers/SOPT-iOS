@@ -117,10 +117,12 @@ extension StampCoordinator {
             level: level,
             isCompleted: true
         )
-        showMissionDetail(model, username)
+        showMissionDetail(model, username, isAppjam: true)
     }
 
-    private func showMissionDetail(_ model: MissionListModel, _ username: String?) {
+    @available(*, deprecated, message: "⚠️ 앱잼 템프인지 일반 미션인지 확인했나요? isAppjam 파라미터로 분기해주세요!")
+    //TODO: - isAppjam 기본값 제거
+    private func showMissionDetail(_ model: MissionListModel, _ username: String?, isAppjam: Bool = false) {
         guard let starLevel = StarViewLevel.init(rawValue: model.level) else { return }
 
         var missionDetail = factory.makeListDetailVC(
@@ -128,7 +130,8 @@ extension StampCoordinator {
             starLevel: starLevel,
             missionId: model.id,
             missionTitle: model.title,
-            otherUserName: username
+            otherUserName: username,
+            isAppjam: isAppjam
         )
 
         missionDetail.vc.onComplete = { [weak self] starViewLevel, handler in

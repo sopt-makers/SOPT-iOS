@@ -18,7 +18,8 @@ public struct ListDetailModel {
   public let myClapCount: Int?
   public let viewCount: Int
   public let isMine: Bool?
-  
+  public let profileInfo: ProfileInfo?
+
   public init(
     image: String,
     content: String,
@@ -28,7 +29,8 @@ public struct ListDetailModel {
     clapCount: Int,
     myClapCount: Int?,
     viewCount: Int,
-    isMine: Bool?
+    isMine: Bool?,
+    profileInfo: ProfileInfo? = nil
   ) {
     self.image = image
     self.content = content
@@ -39,5 +41,17 @@ public struct ListDetailModel {
     self.myClapCount = myClapCount
     self.viewCount = viewCount
     self.isMine = isMine
+    self.profileInfo = profileInfo
   }
+}
+
+
+public struct ProfileInfo {
+    public let name: String
+    public let imageURL: String?
+
+    public init(name: String, imageURL: String?) {
+        self.name = name
+        self.imageURL = imageURL
+    }
 }
