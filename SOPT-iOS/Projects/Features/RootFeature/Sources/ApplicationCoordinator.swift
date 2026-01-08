@@ -386,14 +386,14 @@ extension ApplicationCoordinator {
         runSoptlogFlow(type: userType)
 
         switch userType {
-        case .active:
+        case .active, .inactive:
             viewControllers = [
                 homeNavigationController,
                 stampNavigationController,
                 soptlogNavigationController
             ]
 
-        case .inactive, .visitor:
+        case .visitor:
             viewControllers = [
                 homeNavigationController,
                 soptlogNavigationController

@@ -28,7 +28,7 @@ public extension TabBarItemType {
     /// 유저타입 별 탭 바 인덱스 매핑
     func getTabIndex(userType: UserType) -> Int {
         switch userType {
-        case .active:
+        case .active, .inactive:
             switch self {
             case .home:
                 return 0
@@ -38,7 +38,7 @@ public extension TabBarItemType {
                 return 2
             default: return 0           // poke 탭이 비활성화 상태이므로 0으로 처리
             }
-        case .visitor, .inactive:
+        case .visitor:
             switch self {
             case .home, .soptamp:
                 return 0
@@ -53,14 +53,14 @@ public extension TabBarItemType {
     /// 실제 탭바 인덱스 -> TabBarItemType
     static func from(index: Int, userType: UserType) -> TabBarItemType? {
         switch userType {
-        case .active:
+        case .active, .inactive:
             switch index {
             case 0: return .home
             case 1: return .soptamp
             case 2: return .soptlog
             default: return nil
             }
-        case .visitor, .inactive:
+        case .visitor:
             switch index {
             case 0: return .home
             case 1: return .poke
