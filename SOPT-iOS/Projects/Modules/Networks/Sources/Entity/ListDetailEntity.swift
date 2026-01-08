@@ -19,15 +19,33 @@ public struct ListDetailEntity: Codable {
   public let clapCount: Int
   public let myClapCount: Int?
   public let viewCount: Int
-  public let mine: Bool?
-  
+  public let isMine: Bool?
+  public let teamNumber: String?
+  public let teamName: String?
+  public let ownerNickname: String?
+  public let ownerProfileImage: String?
+
   enum CodingKeys: String, CodingKey {
-    case createdAt, updatedAt, id, contents, images, activityDate, clapCount, myClapCount, viewCount, mine, missionID = "missionId"
+    case createdAt
+    case updatedAt
+    case id
+    case contents
+    case images
+    case activityDate
+    case clapCount
+    case myClapCount
+    case viewCount
+    case isMine
+    case missionID = "missionId"
+    case teamNumber
+    case teamName
+    case ownerNickname
+    case ownerProfileImage
   }
-  
+
   public init(
     createdAt: String,
-    updatedAt: String,
+    updatedAt: String?,
     id: Int,
     contents: String,
     images: [String],
@@ -36,7 +54,11 @@ public struct ListDetailEntity: Codable {
     clapCount: Int,
     myClapCount: Int?,
     viewCount: Int,
-    mine: Bool?
+    isMine: Bool?,
+    teamNumber: String? = nil,
+    teamName: String? = nil,
+    ownerNickname: String? = nil,
+    ownerProfileImage: String? = nil
   ) {
     self.createdAt = createdAt
     self.updatedAt = updatedAt
@@ -48,7 +70,11 @@ public struct ListDetailEntity: Codable {
     self.clapCount = clapCount
     self.myClapCount = myClapCount
     self.viewCount = viewCount
-    self.mine = mine
+    self.isMine = isMine
+    self.teamNumber = teamNumber
+    self.teamName = teamName
+    self.ownerNickname = ownerNickname
+    self.ownerProfileImage = ownerProfileImage
   }
 }
 
