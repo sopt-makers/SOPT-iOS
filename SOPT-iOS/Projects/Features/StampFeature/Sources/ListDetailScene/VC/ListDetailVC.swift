@@ -837,8 +837,6 @@ extension ListDetailVC {
         if contentStackView.arrangedSubviews.contains(profileInfoView) {
             contentStackView.removeArrangedSubview(profileInfoView)
             profileInfoView.removeFromSuperview()
-
-            profileInfoView.snp.removeConstraints()
         }
         profileInfoView.isHidden = true
     }
