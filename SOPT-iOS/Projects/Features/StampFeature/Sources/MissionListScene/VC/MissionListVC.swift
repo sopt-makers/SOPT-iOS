@@ -136,8 +136,11 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.viewWillAppear.send(())
-        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+        viewWillAppear.send(())
+        navigationController?.interactivePopGestureRecognizer?.delegate = self
+        if isAppJam {
+            missionTypeMenuSelected.send(.appjam)
+        }
     }
     
     init(
