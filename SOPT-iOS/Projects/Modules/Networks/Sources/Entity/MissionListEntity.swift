@@ -12,8 +12,25 @@ public struct MissionListEntityElement: Codable {
     public let id: Int
     public let title: String
     public let level: Int
+    public let ownerName: String?
     public let profileImage: [String]?
     public let isCompleted: Bool?
+    
+    init(
+        id: Int,
+        title: String,
+        level: Int,
+        ownerName: String?,
+        profileImage: [String]?,
+        isCompleted: Bool?
+    ) {
+        self.id = id
+        self.title = title
+        self.level = level
+        self.ownerName = ownerName
+        self.profileImage = profileImage
+        self.isCompleted = isCompleted
+    }
     
     public var fetchTypeHandler: Bool? = false
     

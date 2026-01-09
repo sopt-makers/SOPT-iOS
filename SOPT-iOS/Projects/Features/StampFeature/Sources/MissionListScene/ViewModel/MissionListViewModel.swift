@@ -85,7 +85,7 @@ extension MissionListViewModel {
             .dropFirst()
             .withUnretained(self)
             .sink { owner, fetchType in
-                owner.useCase.fetchMissionList(type: fetchType)
+                owner.fetchMissionListByType(type: fetchType)
             }.store(in: cancelBag)
         
         return output
@@ -96,8 +96,16 @@ extension MissionListViewModel {
         case .ranking(let userName, _):
             self.useCase.fetchOtherUserMissionList(userName: userName)
         default:
+            fetchMissionListByType(type: type)
+        }
+    }
+    
+    private func fetchMissionListByType(type: MissionListFetchType) {
+        switch type {
+        case .appjam:
+            self.useCase.fetchAppjamMissionList(teamNumber: nil, isCompleted: nil)
+        default:
             self.useCase.fetchMissionList(type: type)
-            
         }
     }
     
@@ -109,10 +117,17 @@ extension MissionListViewModel {
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         let fetchedMissionList = self.useCase.missionListModelsFetched
+        let fetchedAppjamMissionList = self.useCase.appjamMissionListModelFetched
         
         fetchedMissionList.asDriver()
             .sink(receiveValue: { model in
                 output.missionListModel = model
+            })
+            .store(in: self.cancelBag)
+        
+        fetchedAppjamMissionList.asDriver()
+            .sink(receiveValue: { model in
+                output.missionListModel = model.missions
             })
             .store(in: self.cancelBag)
         

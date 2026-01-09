@@ -15,6 +15,7 @@ import Moya
 
 public enum MissionAPI {
     case fetchMissionList(type: MissionListFetchType)
+    case fetchAppjamMissionList(teamNumber: String?, isCompleted: Bool?)
 }
 
 extension MissionAPI: BaseAPI {
@@ -38,25 +39,54 @@ extension MissionAPI: BaseAPI {
     }
     
     // MARK: - Parameters
-    private var bodyParameters: Parameters? {
+    private var queryParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
-        default: break
+        case .fetchAppjamMissionList(let number, let isCompleted):
+            if let number {
+                params["teamNumber"] = number
+            }
+            if let isCompleted {
+                params["isCompleted"] = isCompleted
+            }
+        default:
+            break
         }
         return params
     }
-    
+
     private var parameterEncoding: ParameterEncoding {
         switch self {
+        case .fetchAppjamMissionList:
+            URLEncoding.default
         default:
-            return JSONEncoding.default
+            JSONEncoding.default
         }
     }
     
     public var task: Task {
         switch self {
+        case .fetchAppjamMissionList:
+            return .requestParameters(parameters: queryParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain
         }
     }
+}
+
+extension MissionAPI {
+  public var baseURL: URL {
+    let base = Config.Network.baseURL
+    let path: String
+    switch self {
+    case .fetchAppjamMissionList:
+      path = "/appjamtamp/mission"
+    default:
+      path = "/mission"
+    }
+    guard let url = URL(string: base + path) else {
+      fatalError("baseURL could not be configured")
+    }
+    return url
+  }
 }

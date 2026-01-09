@@ -12,6 +12,7 @@ import Core
 
 public protocol MissionListRepositoryInterface {
   func fetchMissionList(type: MissionListFetchType, userName: String?) -> AnyPublisher<[MissionListModel], Error>
+    func fetchAppjamMissionList(teamNumber: String?, isCompleted: Bool?) -> AnyPublisher<AppjamMissionListModel, Error>
   func fetchIsActiveGenerationUser() -> AnyPublisher<UsersActiveGenerationStatusViewResponse, Error>
   func fetchCurrentSoptampInfo() -> AnyPublisher<SoptampUserModel, Error>
 }

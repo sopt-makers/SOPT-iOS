@@ -18,6 +18,7 @@ public protocol MissionService {
     func fetchAllMissionList() -> AnyPublisher<MissionListEntity, Error>
     func fetchCompleteMissionList() -> AnyPublisher<MissionListEntity, Error>
     func fetchIncompleteMissionList() -> AnyPublisher<MissionListEntity, Error>
+    func fetchAppjamMissionList(teamNumber: String?, isCompleted: Bool?) -> AnyPublisher<AppjamMissionListEntity, Error>
 }
 
 extension DefaultMissionService: MissionService {
@@ -39,5 +40,10 @@ extension DefaultMissionService: MissionService {
             var newEntity = entity
             return newEntity.assignCompleteFetchType(false)
         }.eraseToAnyPublisher()
+    }
+    
+    public func fetchAppjamMissionList(teamNumber: String?, isCompleted: Bool?) -> AnyPublisher<AppjamMissionListEntity, any Error> {
+        requestObjectInCombine(.fetchAppjamMissionList(teamNumber: teamNumber, isCompleted: isCompleted))
+            .eraseToAnyPublisher()
     }
 }
