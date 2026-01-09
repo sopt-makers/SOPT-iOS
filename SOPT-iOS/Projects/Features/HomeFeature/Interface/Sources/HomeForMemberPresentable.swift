@@ -19,8 +19,8 @@ public protocol HomeForMemberCoordinatable {
     var onAppServiceCellTapped: ((String) -> Void)? { get set }
     var onNotificationButtonTapped: (() -> Void)? { get set }
     var onSettingButtonTapped: ((UserType) -> Void)? { get set }
-    var onNeedSignIn: (() -> Void)? { get set }
-    var onNetworkError: (() -> Void)? { get set }
+    var onNeedSignIn: (@MainActor () -> Void)? { get set }
+    var onNetworkError: (@MainActor () -> Void)? { get set }
     var onPoke: ((_ isNewUser: Bool) -> Void)? { get set }
     var onExtendedFloatingButtonTapped: ((String) -> Void)? { get set }
     var onSurveyButtonTapped: ((String) -> Void)? { get set }
