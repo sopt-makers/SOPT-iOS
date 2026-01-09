@@ -383,10 +383,11 @@ extension ApplicationCoordinator {
 
         runHomeFlow(type: userType)
         runStampTabFlow()
-        runSoptlogFlow(type: userType)
+        
 
         switch userType {
         case .active, .inactive:
+            runSoptlogFlow(type: userType)
             viewControllers = [
                 homeNavigationController,
                 stampNavigationController,
@@ -394,9 +395,10 @@ extension ApplicationCoordinator {
             ]
 
         case .visitor:
+            // Visitor는 빈 navigation controller 사용 (실제 화면 전환은 TabBarViewModel에서 막음)
             viewControllers = [
                 homeNavigationController,
-                // pokeNavigationController,
+                UINavigationController()
                 soptlogNavigationController
             ]
         }
