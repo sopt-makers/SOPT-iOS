@@ -59,8 +59,12 @@ extension ListDetailRepository: ListDetailRepositoryInterface {
             .eraseToAnyPublisher()
     }
 
-    public func postStamp(stampData: ListDetailRequestModel) -> AnyPublisher<ListDetailModel, Error> {
-        return stampService.postStamp(requestModel: stampData.toEntity())
+    public func postStamp(isAppjam: Bool?, stampData: ListDetailRequestModel) -> AnyPublisher<ListDetailModel, Error> {
+        return isAppjam == true ?
+        stampService.postAppJamStamp(requestModel: stampData.toEntity())
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher() :
+        stampService.postStamp(requestModel: stampData.toEntity())
             .map { $0.toDomain() }
             .eraseToAnyPublisher()
     }

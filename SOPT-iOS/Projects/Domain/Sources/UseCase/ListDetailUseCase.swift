@@ -13,7 +13,7 @@ import Foundation
 
 public protocol ListDetailUseCase {
     func fetchListDetail(isAppjam: Bool?, missionId: Int, username: String?)
-    func postStamp(stampData: ListDetailRequestModel)
+    func postStamp(isAppjam: Bool?, stampData: ListDetailRequestModel)
     func putStamp(stampData: ListDetailRequestModel)
     func getPresignedURL()
     func uploadMedia(imageData: Data, presignedUrl: String)
@@ -82,8 +82,8 @@ extension DefaultListDetailUseCase: ListDetailUseCase {
             }).store(in: self.cancelBag)
     }
 
-    public func postStamp(stampData: ListDetailRequestModel) {
-        repository.postStamp(stampData: stampData)
+    public func postStamp(isAppjam: Bool?, stampData: ListDetailRequestModel) {
+        repository.postStamp(isAppjam: isAppjam, stampData: stampData)
             .replaceError(
                 with: ListDetailModel(
                     image: "",

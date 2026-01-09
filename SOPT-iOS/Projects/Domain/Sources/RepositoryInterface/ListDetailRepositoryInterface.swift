@@ -15,7 +15,7 @@ public protocol ListDetailRepositoryInterface {
     func fetchListDetail(isAppjam: Bool?, missionId: Int, username: String?) -> AnyPublisher<ListDetailModel, Error>
     func getPresignedURL() -> AnyPublisher<PresignedUrlModel, Error>
     func uploadMedia(imageData: Data, presignedUrl: String) -> AnyPublisher<Void, Error>
-    func postStamp(stampData: ListDetailRequestModel) -> AnyPublisher<ListDetailModel, Error>
+    func postStamp(isAppjam: Bool?, stampData: ListDetailRequestModel) -> AnyPublisher<ListDetailModel, Error>
     func putStamp(stampData: ListDetailRequestModel) -> Driver<Int>
     func deleteStamp(stampId: Int) -> Driver<Bool>
     func clap(stampId: Int, clapCount: Int) -> AnyPublisher<Result<ClapCountModel, Error>, Never>

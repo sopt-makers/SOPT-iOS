@@ -16,6 +16,7 @@ public enum StampAPI {
   case fetchStampListDetail(missionId: Int, username: String)
   case fetchAppJamStampDetail(missionId: Int, nickname: String)
   case postStamp(requestModel: ListDetailRequestEntity)
+  case postAppJamStamp(requestModel: ListDetailRequestEntity)
   case putStamp(requestModel: ListDetailRequestEntity)
   case deleteStamp(stampId: Int)
   case resetStamp
@@ -33,7 +34,7 @@ extension StampAPI: BaseAPI {
     switch self {
     case .fetchStampListDetail:
       return ""
-    case .fetchAppJamStampDetail:
+    case .fetchAppJamStampDetail, .postAppJamStamp:
       return "/stamp"
     case .postStamp, .putStamp:
       return ""
@@ -53,7 +54,7 @@ extension StampAPI: BaseAPI {
   // MARK: - Method
   public var method: Moya.Method {
     switch self {
-    case .postStamp, .clap:
+    case .postStamp, .postAppJamStamp, .clap:
       return .post
     case .putStamp:
       return .put
@@ -73,7 +74,7 @@ extension StampAPI: BaseAPI {
     case .fetchAppJamStampDetail(let missionId, let nickname):
       params["missionId"] = missionId
       params["nickname"] = nickname
-    case .putStamp(let requestModel), .postStamp(let requestModel):
+    case .putStamp(let requestModel), .postStamp(let requestModel), .postAppJamStamp(let requestModel):
       params["missionId"] = requestModel.missionId
       params["image"] = requestModel.imgURL
       params["contents"] = requestModel.content
@@ -99,7 +100,7 @@ extension StampAPI: BaseAPI {
   
   public var task: Task {
     switch self {
-    case .fetchStampListDetail, .fetchAppJamStampDetail, .postStamp, .putStamp, .clap, .getClapList:
+    case .fetchStampListDetail, .fetchAppJamStampDetail, .postStamp, .postAppJamStamp, .putStamp, .clap, .getClapList:
       return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
     default:
       return .requestPlain
@@ -112,7 +113,7 @@ extension StampAPI {
     let base = Config.Network.baseURL
     let path: String
     switch self {
-    case .fetchAppJamStampDetail:
+    case .fetchAppJamStampDetail, .postAppJamStamp:
       path = "/appjamtamp"
     default:
       path = "/stamp"

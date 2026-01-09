@@ -169,7 +169,7 @@ extension ListDetailViewModel {
             .withUnretained(self)
             .sink { owner, requestModel in
                 if owner.sceneType == ListDetailSceneType.none {
-                    owner.useCase.postStamp(stampData: requestModel)
+                    owner.useCase.postStamp(isAppjam: owner.isAppjam, stampData: requestModel)
                 } else {
                     owner.useCase.putStamp(stampData: requestModel)
                 }

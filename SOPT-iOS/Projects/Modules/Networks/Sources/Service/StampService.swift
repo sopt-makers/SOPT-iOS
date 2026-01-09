@@ -18,6 +18,7 @@ public protocol StampService {
     func fetchStampListDetail(missionId: Int, username: String) -> AnyPublisher<ListDetailEntity, Error>
     func fetchAppJamStampDetail(missionId: Int, nickname: String) -> AnyPublisher<ListDetailEntity, Error>
     func postStamp(requestModel: ListDetailRequestEntity) -> AnyPublisher<ListDetailEntity, Error>
+    func postAppJamStamp(requestModel: ListDetailRequestEntity) -> AnyPublisher<ListDetailEntity, Error>
     func putStamp(requestModel: ListDetailRequestEntity) -> AnyPublisher<StampEntity, Error>
     func deleteStamp(stampId: Int) -> AnyPublisher<Int, Error>
     func resetStamp() -> AnyPublisher<Int, Error>
@@ -39,6 +40,10 @@ extension DefaultStampService: StampService {
 
     public func postStamp(requestModel: ListDetailRequestEntity) -> AnyPublisher<ListDetailEntity, Error> {
         requestObjectInCombine(StampAPI.postStamp(requestModel: requestModel))
+    }
+
+    public func postAppJamStamp(requestModel: ListDetailRequestEntity) -> AnyPublisher<ListDetailEntity, Error> {
+        requestObjectInCombine(StampAPI.postAppJamStamp(requestModel: requestModel))
     }
 
     public func putStamp( requestModel: ListDetailRequestEntity) -> AnyPublisher<StampEntity, Error> {
