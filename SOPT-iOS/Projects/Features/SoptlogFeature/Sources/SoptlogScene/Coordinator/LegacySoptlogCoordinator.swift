@@ -66,6 +66,21 @@ public final class LegacySoptlogCoordinator: DefaultSoptlogCoordinator {
             AlertUtils.presentNetworkAlertVC()
         }
         
+        soptlog.vm.onAuthFailed = { [weak self] in
+            AlertUtils.presentAlertVC(
+                type: .titleDescription,
+                title: I18N.Home.PopUp.needToLogin,
+                description: I18N.Home.PopUp.needToLoginDetail,
+                customButtonTitle: I18N.Home.PopUp.login,
+                customAction: { [weak self] in
+                    self?.requestCoordinating?(.signIn)
+                },
+                cancelAction: { [weak self] in
+                    self?.requestCoordinating?(.home)
+                }
+            )
+        }
+        
         self.rootViewController = soptlog.vc.viewController
         self.router.push(soptlog.vc)
     }

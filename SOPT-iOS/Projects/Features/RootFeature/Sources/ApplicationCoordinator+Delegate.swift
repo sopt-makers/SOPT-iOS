@@ -99,6 +99,11 @@ extension ApplicationCoordinator: SoptlogCoordinatorDelegate {
         case .pokeMyFriends(let relation):
             self.selectedTab(.poke)
             self.runPokeMyFriendsFlow(relation: relation)
+        case .home:
+            self.selectedTab(.home)
+        case .signIn:
+            clearChildViewControllers()
+            runSignInFlow(by: .rootWindow(animated: true, message: nil))
         }
     }
 }

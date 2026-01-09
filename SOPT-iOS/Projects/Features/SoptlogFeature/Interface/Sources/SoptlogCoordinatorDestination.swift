@@ -16,4 +16,6 @@ public enum SoptlogCoordinatorDestination {
     case soptamp
     case pokeHome
     case pokeMyFriends(relation: PokeRelation)
+    case home
+    case signIn
 }

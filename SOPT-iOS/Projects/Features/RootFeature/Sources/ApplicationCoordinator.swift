@@ -834,6 +834,11 @@ extension ApplicationCoordinator {
                     self?.runDailySoptuneFlow()
                 case .webLink(let url):
                     self?.handleWebLink(webLink: url)
+                case .home:
+                    self?.tabBarController?.selectedIndex = 0
+                case .signIn:
+                    self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
+                    self?.removeDependency(legacyCoordinator)
                 default:
                     return
                 }
