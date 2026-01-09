@@ -43,7 +43,6 @@ extension ApplicationCoordinator: TabBarCoordinatorDelegate {
         case .signIn:
             clearChildViewControllers()
             self.runSignInFlow(by: .rootWindow(animated: true, message: nil))
-            self.removeDependency(coordinator)
         }
     }
 
@@ -64,7 +63,6 @@ extension ApplicationCoordinator: HomeCoordinatorDelegate {
         case .signIn:
             clearChildViewControllers()
             runSignInFlow(by: .rootWindow(animated: true, message: nil))
-            removeDependency(coordinator)
         case .notification:
             runNotificationFlow()
         case .soptlog:
@@ -139,7 +137,12 @@ extension ApplicationCoordinator: MyPageCoordinatorDelegate {
 
 extension ApplicationCoordinator {
     private func clearChildViewControllers() {
+        self.tabBarController?.viewControllers = []
+        self.tabBarController = nil
+        
         self.homeNavigationController.viewControllers.removeAll()
+        self.stampNavigationController.viewControllers.removeAll()
+        self.pokeNavigationController.viewControllers.removeAll()
         self.soptlogNavigationController.viewControllers.removeAll()
     }
 }

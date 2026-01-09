@@ -384,7 +384,6 @@ extension ApplicationCoordinator {
         runHomeFlow(type: userType)
         runStampTabFlow()
         
-
         switch userType {
         case .active, .inactive:
             runSoptlogFlow(type: userType)
@@ -399,7 +398,6 @@ extension ApplicationCoordinator {
             viewControllers = [
                 homeNavigationController,
                 UINavigationController()
-                soptlogNavigationController
             ]
         }
 
@@ -624,25 +622,27 @@ extension ApplicationCoordinator {
         
         switch Config.coordinatorFlag {
         case .legacy:
-            coordinator = LegacyPokeOnboardingCoordinator(
+            let legacyCoordinator = LegacyPokeOnboardingCoordinator(
                 router: LegacyRouter(
                     rootController: UIWindow.getRootNavigationController
                 ),
                 factory: LegacyPokeBuilder()
             )
+
+            legacyCoordinator.finishFlow = { [weak self, weak legacyCoordinator] in
+                legacyCoordinator?.childCoordinators = []
+                self?.removeDependency(legacyCoordinator)
+            }
+            addDependency(legacyCoordinator)
+            coordinator = legacyCoordinator
         case .new:
-            coordinator = PokeOnboardingCoordinator(
+            let newCoordinator = PokeOnboardingCoordinator(
                 navigationController: UIWindow.getRootNavigationController,
                 factory: PokeBuilder()
             )
-        }
-
-        coordinator.finishFlow = { [weak self, weak coordinator] in
-            coordinator?.childCoordinators = []
-            self?.removeDependency(coordinator)
+            coordinator = newCoordinator
         }
         
-        addDependency(coordinator)
         coordinator.start()
         
         return coordinator
@@ -870,6 +870,7 @@ extension ApplicationCoordinator {
 
 // MARK: - StampTabFlow
 
+#warning("TODO: 앱 서비스를 탭바로만 이동하는 것이 확정될 경우, 기존 메소드(runStampFlow, runPokeFlow)의 navigationController만 변경하고, runStampTabFlow/runPokeTabFlow 메소드들은 제거합니다.")
 extension ApplicationCoordinator {
     internal func runStampTabFlow() {
         let coordinator = StampCoordinator(
@@ -889,6 +890,7 @@ extension ApplicationCoordinator {
             navigationController: pokeNavigationController,
             factory: PokeBuilder()
         )
+        
         coordinator.start(isRouteFromTabBar: true)
     }
     
