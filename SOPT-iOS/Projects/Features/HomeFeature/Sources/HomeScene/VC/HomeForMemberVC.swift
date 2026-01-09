@@ -100,6 +100,9 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     }
     
     deinit {
+        latestPostAnimationTask?.cancel()
+        fetchDataTask?.cancel()
+        
         cancelBag.cancel()
     }
     
