@@ -297,19 +297,41 @@ extension BaseService {
                 switch response {
                 case .success(let value):
                     do {
-                        let decoder = JSONDecoder()
-                        let body = try decoder.decode(T.self, from: value.data)
-                        continuation.resume(returning: body)
+                        guard let response = value.response else { 
+                            throw NSError(domain: "응답값이 비어있습니다", code: -1000)
+                        }
+                        
+                        switch response.statusCode {
+                        case 200...399:
+                            let decoder = JSONDecoder()
+                            let body = try decoder.decode(T.self, from: value.data)
+                            continuation.resume(returning: body)
+                        case 400...599:
+                            let decoder = JSONDecoder()
+                            let errorBody = try decoder.decode(ErrorResponse.self, from: value.data)
+                            let apiError = APIError.network(statusCode: response.statusCode, response: errorBody)
+                            print("🚨 APIError 발생: statusCode \(response.statusCode)")
+                            continuation.resume(throwing: apiError)
+                        default:
+                            throw NSError(domain: "알 수 없는 오류, errorCode: \(response.statusCode)", code: response.statusCode)
+                        }
                     } catch let error {
                         if let error = error as? APIError {
-                            print("🚨 APIError 발생: \(error.localizedDescription)")
+                            continuation.resume(throwing: error)
+                        } else {
+                            print("🚨 정의되지 않은 에러 발생: \(error.localizedDescription)")
                             continuation.resume(throwing: error)
                         }
-                        print("🚨 정의되지 않은 에러 발생: \(error.localizedDescription)")
-                        continuation.resume(throwing: MoyaError.jsonMapping(value))
                     }
                 case .failure(let error):
-                    continuation.resume(throwing: error)
+                    if case MoyaError.underlying(let error, _) = error,
+                       case AFError.requestRetryFailed(let retryError, _) = error,
+                       let retryError = retryError as? APIError,
+                       retryError == APIError.tokenReissuanceFailed {
+                        continuation.resume(throwing: retryError)
+                    } else {
+                        continuation.resume(throwing: error)
+                    }
                 }
             }
             
