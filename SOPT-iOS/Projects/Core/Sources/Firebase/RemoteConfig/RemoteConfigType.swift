@@ -15,4 +15,6 @@ public enum RemoteConfigKey: String {
 
 public enum RemoteConfigError: Error {
     case fetchFailed
+    case valueNotFound
+    case decodeFailed
 }

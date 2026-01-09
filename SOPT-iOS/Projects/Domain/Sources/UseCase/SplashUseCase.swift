@@ -56,18 +56,24 @@ extension DefaultSplashUseCase: SplashUseCase {
                     let type = try await checkedUpdateType()
                     try handleUpdateType(type)
                 } catch {
+                    // Remote Config 관련 에러는 업데이트 체크를 건너뜁니다.
+                    if error is RemoteConfigError {
+                        print("Remote Config 에러: \(error)")
+                        needUpdate.send(.none)
+                        return
+                    }
+                    
                     switch error {
-                    case RemoteConfigError.fetchFailed:
-                        print("remoteConfig fetch 도중 오류가 발생했습니다.")
                     case UpdateCheckError.appStoreFetchError:
                         print("앱스토어에서 최신 버전을 불러오지 못했습니다.")
+                        needUpdate.send(.none)
                     case UpdateCheckError.projectVersionFetchError:
                         print("사용자의 버전을 불러오지 못했습니다.")
+                        needUpdate.send(.none) 
                     default:
-                        print("알 수 없는 에러가 발생했습니다.")
+                        print("업데이트 체크 중 에러 발생: \(error)")
+                        needUpdate.send(.none)
                     }
-                    print(error)
-                    needUpdate.send(.networkError(error))
                 }
         }
         #else
@@ -88,7 +94,7 @@ extension DefaultSplashUseCase: SplashUseCase {
             throw UpdateCheckError.projectVersionFetchError
         }
         
-        let needForceUpdate = currentAppVersion.compare(minimumVersion,options: .numeric) == .orderedAscending
+        let needForceUpdate = currentAppVersion.compare(minimumVersion, options: .numeric) == .orderedAscending
         let needOptionalUpdate = currentAppVersion.compare(appStoreVersion, options: .numeric) == .orderedAscending
         
         return needForceUpdate ? .forcedUpdate(forcedUpdateData.appNotice) :
