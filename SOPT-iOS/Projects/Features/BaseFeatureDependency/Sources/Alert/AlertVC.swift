@@ -18,6 +18,7 @@ public class AlertVC: UIViewController, AlertViewControllable {
     // MARK: - Properties
     
     public var customAction: (() -> Void)?
+    public var cancelAction: (() -> Void)?
     
     // MARK: - UI Components
     
@@ -78,7 +79,9 @@ public class AlertVC: UIViewController, AlertViewControllable {
     
     @objc
     private func dismissCurrentVC() {
-        self.dismiss(animated: true)
+        self.dismiss(animated: true) {
+            self.cancelAction?()
+        }
     }
     
     @objc
