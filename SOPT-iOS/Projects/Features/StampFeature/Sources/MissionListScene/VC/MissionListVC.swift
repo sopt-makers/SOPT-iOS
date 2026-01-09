@@ -138,9 +138,6 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
         super.viewWillAppear(animated)
         viewWillAppear.send(())
         navigationController?.interactivePopGestureRecognizer?.delegate = self
-        if isAppJam {
-            missionTypeMenuSelected.send(.appjam)
-        }
     }
     
     init(
@@ -164,6 +161,8 @@ extension MissionListVC {
     private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
         self.view.backgroundColor = DSKitAsset.Colors.gray950.color
+        
+        if isAppJam { missionTypeMenuSelected.send(.appjam) }
         
         switch sceneType {
         case .default:

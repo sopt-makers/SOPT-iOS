@@ -22,8 +22,7 @@ public struct MissionListEntityElement: Codable {
         level: Int,
         ownerName: String?,
         profileImage: [String]?,
-        isCompleted: Bool?,
-        fetchTypeHandler: Bool? = nil
+        isCompleted: Bool?
     ) {
         self.id = id
         self.title = title
@@ -31,7 +30,6 @@ public struct MissionListEntityElement: Codable {
         self.ownerName = ownerName
         self.profileImage = profileImage
         self.isCompleted = isCompleted
-        self.fetchTypeHandler = fetchTypeHandler
     }
     
     public var fetchTypeHandler: Bool? = false

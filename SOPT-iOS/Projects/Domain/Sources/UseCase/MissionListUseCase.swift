@@ -42,7 +42,7 @@ extension DefaultMissionListUseCase: MissionListUseCase {
     public func fetchMissionList(type: MissionListFetchType) {
         repository.fetchMissionList(type: type, userName: nil)
             .sink(receiveCompletion: { event in
-                print("completion: \(event), type: \(type)")
+                print("completion: \(event)")
                 if case Subscribers.Completion.failure = event {
                     self.errorOccurred.send()
                 }
@@ -85,7 +85,9 @@ extension DefaultMissionListUseCase: MissionListUseCase {
     public func fetchAppjamMissionList(teamNumber: String?, isCompleted: Bool?) {
         repository.fetchAppjamMissionList(teamNumber: teamNumber, isCompleted: isCompleted)
             .sink(receiveCompletion: { event in
-                print("completion: \(event)")
+                if case Subscribers.Completion.failure = event {
+                    self.errorOccurred.send()
+                }
             }, receiveValue: { model in
                 self.appjamMissionListModelFetched.send(model)
             })

@@ -39,7 +39,7 @@ extension MissionAPI: BaseAPI {
     }
     
     // MARK: - Parameters
-    private var bodyParameters: Parameters? {
+    private var queryParameters: Parameters? {
         var params: Parameters = [:]
         switch self {
         case .fetchAppjamMissionList(let number, let isCompleted):
@@ -49,18 +49,6 @@ extension MissionAPI: BaseAPI {
             if let isCompleted {
                 params["isCompleted"] = isCompleted
             }
-        default:
-            break
-        }
-        return params
-    }
-
-    private var queryParameters: Parameters? {
-        var params: Parameters = [:]
-        switch self {
-        case .fetchAppjamMissionList:
-            params["teamNumber"] = ""
-            params["isCompleted"] = true
         default:
             break
         }
@@ -79,7 +67,7 @@ extension MissionAPI: BaseAPI {
     public var task: Task {
         switch self {
         case .fetchAppjamMissionList:
-            return .requestParameters(parameters: bodyParameters ?? [:], encoding: parameterEncoding)
+            return .requestParameters(parameters: queryParameters ?? [:], encoding: parameterEncoding)
         default:
             return .requestPlain
         }
