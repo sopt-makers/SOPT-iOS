@@ -79,6 +79,23 @@ public final class SoptlogCoordinator: BaseCoordinator {
             AlertUtils.presentNetworkAlertVC()
         }
         
+        soptlog.vm.onAuthFailed = { [weak self] in
+            AlertUtils.presentAlertVC(
+                type: .titleDescription,
+                title: I18N.Home.PopUp.needToLogin,
+                description: I18N.Home.PopUp.needToLoginDetail,
+                customButtonTitle: I18N.Home.PopUp.login,
+                customAction: { [weak self] in
+                    guard let self else { return }
+                    self.delegate?.soptlogCoordinator(self, to: .signIn)
+                },
+                cancelAction: { [weak self] in
+                    guard let self else { return }
+                    self.delegate?.soptlogCoordinator(self, to: .home)
+                }
+            )
+        }
+        
         self.rootViewController = soptlog.vc
         navigationController?.pushViewController(soptlog.vc, animated: true)
     }

@@ -18,6 +18,7 @@ public enum AlertUtils {
         description: String = "",
         customButtonTitle: String,
         customAction: (() -> Void)? = nil,
+        cancelAction: (() -> Void)? = nil,
         animated: Bool = false,
         completion: (() -> Void)? = nil
     ) {
@@ -25,6 +26,7 @@ public enum AlertUtils {
             .setTitle(title, description)
             .setCustomButtonTitle(customButtonTitle)
         alertVC.customAction = customAction
+        alertVC.cancelAction = cancelAction
         alertVC.modalPresentationStyle = .overFullScreen
         alertVC.modalTransitionStyle = .crossDissolve
         let vc = UIApplication.getMostTopViewController()!

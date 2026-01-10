@@ -83,6 +83,24 @@ public final class TabBarCoordinator: BaseCoordinator {
             }
         }
         
+        tabBar.vm.showTabBarAlert = { [weak self] in
+            guard let self = self else { return }
+            AlertUtils.presentAlertVC(
+                type: .titleDescription,
+                title: I18N.Home.PopUp.needToLogin,
+                description: I18N.Home.PopUp.needToLoginDetail,
+                customButtonTitle: I18N.Home.PopUp.login,
+                customAction: { [weak self] in
+                    guard let self = self else { return }
+                    self.delegate?.tabBarCoordinator(self, to: .signIn)
+                },
+                cancelAction: { [weak self] in
+                    guard let self = self else { return }
+                    self.delegate?.tabBarCoordinator(self, to: .home)
+                }
+            )
+        }
+        
         self.tabBarController = tabBar.vc
         self.navigationController?.setViewControllers([tabBar.vc], animated: false)
     }

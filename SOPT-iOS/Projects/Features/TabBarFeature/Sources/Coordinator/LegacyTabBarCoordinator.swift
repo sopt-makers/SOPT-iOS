@@ -58,6 +58,9 @@ public final class LegacyTabBarCoordinator: DefaultTabBarCoordinator {
                 customButtonTitle: I18N.Home.PopUp.login,
                 customAction: { [weak self] in
                     self?.requestCoordinating?(.signIn)
+                },
+                cancelAction: { [weak self] in
+                    self?.requestCoordinating?(.home)
                 }
             )
         }

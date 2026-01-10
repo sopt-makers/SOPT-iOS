@@ -81,24 +81,8 @@ extension HomeRepository: HomeRepositoryInterface {
     }
     
     public func getUserInfoAsync() async throws -> Domain.UserMainInfoModel? {
-        do {
-            let entity = try await userService.getUserMainInfoAsync()
-            return entity.toDomain()
-        } catch let error as APIError {
-            switch error {
-            case .network(let statusCode, _):
-                if statusCode == 401 {
-                    throw MainError.authFailed
-                }
-                throw MainError.networkError(message: "\(statusCode) 네트워크 에러")
-            case .tokenReissuanceFailed:
-                throw MainError.authFailed
-            default:
-                throw MainError.networkError(message: error.localizedDescription)
-            }
-        } catch {
-            throw MainError.networkError(message: error.localizedDescription)
-        }
+        let entity = try await userService.getUserMainInfoAsync()
+        return entity.toDomain()
     }
     
     public func getRecentScheduleAsync() async throws -> Domain.HomeRecentScheduleModel {

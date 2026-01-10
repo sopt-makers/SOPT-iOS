@@ -82,8 +82,8 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public var onAppServiceCellTapped: ((String) -> Void)?
     public var onNotificationButtonTapped: (() -> Void)?
     public var onSettingButtonTapped: ((UserType) -> Void)?
-    public var onNeedSignIn: (() -> Void)?
-    public var onNetworkError: (() -> Void)?
+    public var onNeedSignIn: (@MainActor () -> Void)?
+    public var onNetworkError: (@MainActor () -> Void)?
     public var onPoke: ((Bool) -> Void)?
     public var onExtendedFloatingButtonTapped: ((String) -> Void)?
     public var onSurveyButtonTapped: ((String) -> Void)?
@@ -329,18 +329,14 @@ extension HomeForMemberViewModel {
             
             return model
         } catch let mainError as MainError {
-            await MainActor.run {
-                switch mainError {
-                case .networkError(_):
-                    self.onNetworkError?()
-                case .authFailed:
-                    self.onNeedSignIn?()
-                }
+            switch mainError {
+            case .networkError(_):
+                await self.onNetworkError?()
+            case .authFailed:
+                await self.onNeedSignIn?()
             }
         } catch {
-            await MainActor.run {
-                self.onNetworkError?()
-            }
+            await self.onNetworkError?()
         }
         
         return nil

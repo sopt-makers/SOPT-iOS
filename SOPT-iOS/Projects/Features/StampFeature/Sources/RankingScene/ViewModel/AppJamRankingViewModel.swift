@@ -39,7 +39,7 @@ public class AppJamRankingViewModel: AppJamRankingViewModelType {
     // MARK: - AppJamCoordinatable
 
     public var onNaviBackTap: (() -> Void)?
-    public var onNetworkError: (() -> Void)?
+    public var onNetworkError: (@MainActor () -> Void)?
 
     // MARK: - init
 
