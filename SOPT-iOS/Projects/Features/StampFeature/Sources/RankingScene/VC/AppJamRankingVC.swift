@@ -23,6 +23,7 @@ final class AppJamRankingVC: UIViewController, AppJamRankingViewControllable {
     private lazy var dataSource: UICollectionViewDiffableDataSource<AppJamRankingSection, AppJamRankingItem>! = nil
 
     private let viewWillAppearPublisher = PassthroughSubject<Void, Never>()
+    private let teamCellTappedPublisher = PassthroughSubject<AppJamRankTodayPresentationModel, Never>()
     
     // MARK: - UI Components
     
@@ -50,6 +51,7 @@ final class AppJamRankingVC: UIViewController, AppJamRankingViewControllable {
         super.viewDidLoad()
         setUI()
         setLayout()
+        setDelegate()
         registerCells()
         setDataSource()
         bindViewModel()
@@ -97,11 +99,16 @@ extension AppJamRankingVC {
 // MARK: - Methods
 
 extension AppJamRankingVC {
+    private func setDelegate() {
+        collectionView.delegate = self
+    }
+    
     private func bindViewModel() {
         let input = AppJamRankingViewModel.Input(
             viewWillAppear: viewWillAppearPublisher.asDriver(),
             refreshStarted: refresher.publisher(for: .valueChanged).mapVoid().asDriver(),
-            naviBackButtonTapped: naviBar.leftButtonTapped.asDriver()
+            naviBackButtonTapped: naviBar.leftButtonTapped.asDriver(),
+            teamCellTapped: teamCellTappedPublisher.asDriver()
         )
 
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
@@ -221,5 +228,22 @@ extension AppJamRankingVC {
         snapshot.appendItems(rankingItems, toSection: .ranking)
 
         dataSource.apply(snapshot, animatingDifferences: true)
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+
+extension AppJamRankingVC: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let section = AppJamRankingSection(rawValue: indexPath.section) else { return }
+        
+        switch section {
+        case .ranking:
+            guard let item = dataSource.itemIdentifier(for: indexPath),
+                  case .ranking(let model) = item else { return }
+            teamCellTappedPublisher.send(model)
+        case .missionCards:
+            break
+        }
     }
 }

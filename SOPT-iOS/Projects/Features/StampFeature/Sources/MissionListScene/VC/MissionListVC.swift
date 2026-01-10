@@ -67,6 +67,11 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
                 .setTitle(username)
                 .setRightButton(.none)
                 .setTitleTypoStyle(.SoptampFont.h2)
+        case .appJamTeam(let teamName, _):
+            return STNavigationBar(type: .titleWithLeftButton)
+                .setTitle(teamName)
+                .setRightButton(.none)
+                .setTitleTypoStyle(.SoptampFont.h2)
         }
     }()
     
@@ -87,8 +92,13 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
     
     private lazy var sentenceLabel: SentencePaddingLabel = {
         let lb = SentencePaddingLabel()
-        if case let .ranking(_, sentence) = sceneType {
+        switch sceneType {
+        case .ranking(_, let sentence):
             lb.text = sentence
+        case .appJamTeam(let teamName, _):
+            lb.text = "\(teamName)팀이 다같이 인증한 미션"
+        default:
+            break
         }
         lb.font = .SoptampFont.subtitle1
         lb.textColor = DSKitAsset.Colors.soptampGray900.color
@@ -172,6 +182,9 @@ extension MissionListVC {
             self.sentenceLabel.backgroundColor = DSKitAsset.Colors.gray800.color
             self.sentenceLabel.textColor = DSKitAsset.Colors.white.color
             if sentence.isEmpty { self.sentenceLabel.text = I18N.RankingList.noSentenceText }
+        case .appJamTeam:
+            self.sentenceLabel.backgroundColor = DSKitAsset.Colors.gray800.color
+            self.sentenceLabel.textColor = DSKitAsset.Colors.white.color
         }
     }
     
@@ -208,6 +221,21 @@ extension MissionListVC {
             }
             
         case .ranking:
+            self.view.addSubview(sentenceLabel)
+            
+            sentenceLabel.snp.makeConstraints { make in
+                make.top.equalTo(naviBar.snp.bottom).offset(10)
+                make.leading.trailing.equalToSuperview().inset(20)
+                make.height.equalTo(64)
+            }
+            
+            missionListCollectionView.snp.remakeConstraints { make in
+                make.top.equalTo(sentenceLabel.snp.bottom).offset(16)
+                make.leading.trailing.equalToSuperview()
+                make.bottom.equalToSuperview()
+            }
+            
+        case .appJamTeam:
             self.view.addSubview(sentenceLabel)
             
             sentenceLabel.snp.makeConstraints { make in
@@ -427,6 +455,8 @@ extension MissionListVC: UICollectionViewDelegate {
                 return true
             case .ranking:
                 return true
+            case .appJamTeam:
+                return true
             }
         default:
             return false
@@ -442,14 +472,16 @@ extension MissionListVC: UICollectionViewDelegate {
                   let model = tappedCell.model else { return }
             let userType = UserDefaultKeyList.Auth.getUserType()
 
+            let username = sceneType.isAppJamTeamView ? model.ownerName : sceneType.usrename
+            
             if model.isCompleted {
-                onCellTap?(model, sceneType.usrename)
+                onCellTap?(model, username)
                 return
             }
 
             switch userType {
             case .active:
-                onCellTap?(model, sceneType.usrename)
+                onCellTap?(model, username)
             case .inactive, .visitor:
                 //TODO: - 앱잼안하는 활동유저의 경우대한 분기도 추가
                 showInactiveUserAlert()

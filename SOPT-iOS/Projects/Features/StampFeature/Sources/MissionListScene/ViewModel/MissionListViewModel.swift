@@ -95,6 +95,8 @@ extension MissionListViewModel {
         switch self.missionListsceneType {
         case .ranking(let userName, _):
             self.useCase.fetchOtherUserMissionList(userName: userName)
+        case .appJamTeam(_, let teamNumber):
+            self.useCase.fetchAppjamMissionList(teamNumber: teamNumber, isCompleted: true)
         default:
             fetchMissionListByType(type: type)
         }

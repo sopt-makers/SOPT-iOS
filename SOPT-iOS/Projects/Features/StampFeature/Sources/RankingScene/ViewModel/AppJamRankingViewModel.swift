@@ -44,6 +44,7 @@ public class AppJamRankingViewModel: AppJamRankingViewModelType {
 
     public var onNaviBackTap: (() -> Void)?
     public var onNetworkError: (@MainActor () -> Void)?
+    public var onTeamTap: ((_ teamName: String, _ teamNumber: String) -> Void)?
 
     // MARK: - init
 
@@ -74,6 +75,12 @@ extension AppJamRankingViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNaviBackTap?()
+            }.store(in: cancelBag)
+        
+        input.teamCellTapped
+            .withUnretained(self)
+            .sink { owner, model in
+                owner.onTeamTap?(model.teamName, model.teamNumber)
             }.store(in: cancelBag)
 
         return output
