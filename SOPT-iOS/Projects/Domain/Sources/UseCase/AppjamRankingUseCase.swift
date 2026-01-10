@@ -11,6 +11,7 @@ import Foundation
 public protocol AppjamRankingUseCase {
     func fetchTodayRanking(size: Int) async throws -> [AppjamRankTodayModel]
     func fetchRecentRanking(size: Int) async throws -> [AppjamRankRecentModel]
+    func fetchAppjamInfo() async throws -> AppjamInfoModel
 }
 
 public class DefaultAppjamRankingUseCase {
@@ -29,5 +30,9 @@ extension DefaultAppjamRankingUseCase: AppjamRankingUseCase {
 
     public func fetchRecentRanking(size: Int) async throws -> [AppjamRankRecentModel] {
         try await repository.fetchRecentRanking(size: size)
+    }
+    
+    public func fetchAppjamInfo() async throws -> AppjamInfoModel {
+        try await repository.fetchAppjamInfo()
     }
 }

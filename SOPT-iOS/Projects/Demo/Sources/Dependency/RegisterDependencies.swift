@@ -242,7 +242,10 @@ extension AppDelegate {
         container.register(
             interface: AppjamRankingRepositoryInterface.self,
             implement: {
-                AppjamRankingRepository(service: DefaultAppJamRankingService.standard)
+                AppjamRankingRepository(
+                    service: DefaultAppJamRankingService.standard,
+                    userService: DefaultUserService.standard
+                )
             }
         )
     }

@@ -19,6 +19,9 @@ public class AppJamRankingViewModel: AppJamRankingViewModelType {
     private let useCase: AppjamRankingUseCase
     private var cancelBag = CancelBag()
     private var fetchTask: Task<Void, Never>?
+    
+    /// 내 앱잼 정보
+    private var myAppjamInfo: AppjamInfoModel?
 
     // MARK: - Inputs
 
@@ -26,6 +29,7 @@ public class AppJamRankingViewModel: AppJamRankingViewModelType {
         let viewWillAppear: Driver<Void>
         let refreshStarted: Driver<Void>
         let naviBackButtonTapped: Driver<Void>
+        let teamCellTapped: Driver<AppJamRankTodayPresentationModel>
     }
 
     // MARK: - Outputs
@@ -79,9 +83,11 @@ extension AppJamRankingViewModel {
     private func fetchRankingData(output: Output) async {
         async let todayTask = fetchTodayRanking()
         async let recentTask = fetchRecentMissions()
+        async let appjamInfoTask = fetchAppjamInfo()
 
         do {
-            let (todayRanking, recentMissions) = try await (todayTask, recentTask)
+            let (todayRanking, recentMissions, appjamInfo) = try await (todayTask, recentTask, appjamInfoTask)
+            self.myAppjamInfo = appjamInfo
             output.todayRankingList = todayRanking.map { AppJamRankTodayPresentationModel(from: $0) }
             output.recentMissionList = recentMissions.map { AppJamRankRecentPresentationModel(from: $0) }
             output.isLoading.send(false)
@@ -97,5 +103,9 @@ extension AppJamRankingViewModel {
 
     private func fetchRecentMissions() async throws -> [Domain.AppjamRankRecentModel] {
         try await useCase.fetchRecentRanking(size: 3)
+    }
+    
+    private func fetchAppjamInfo() async throws -> Domain.AppjamInfoModel {
+        try await useCase.fetchAppjamInfo()
     }
 }
