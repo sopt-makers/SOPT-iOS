@@ -9,9 +9,9 @@
 import Foundation
 
 public struct AppjamMissionListEntity: Codable {
-    public let myTeamNumber: String
-    public let teamNumber: String
-    public let teamName: String
+    public let myTeamNumber: String?
+    public let teamNumber: String?
+    public let teamName: String?
     public let missions: MissionListEntity
     public let isAppjamJoined: Bool
 }

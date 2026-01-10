@@ -16,12 +16,14 @@ import Core
 struct AppJamRankTodayPresentationModel: Hashable {
     let rank: Int
     let teamName: String
+    let teamNumber: String
     let todayPoints: Int
     let totalPoints: Int
 
     init(from domainModel: AppjamRankTodayModel) {
         self.rank = domainModel.rank
         self.teamName = domainModel.teamName
+        self.teamNumber = domainModel.teamNumber
         self.todayPoints = domainModel.todayPoints
         self.totalPoints = domainModel.totalPoints
     }

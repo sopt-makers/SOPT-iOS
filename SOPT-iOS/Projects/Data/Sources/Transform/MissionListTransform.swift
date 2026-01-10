@@ -18,12 +18,16 @@ public extension MissionListEntity {
                 return .init(id: $0.id,
                              title: $0.title,
                              level: $0.level,
-                             isCompleted: isComplete)
+                             isCompleted: isComplete,
+                             ownerName: $0.ownerName,
+                             profileImage: $0.profileImage?.first)
             } else {
                 return .init(id: $0.id,
                              title: $0.title,
                              level: $0.level,
-                             isCompleted: $0.fetchTypeHandler!)
+                             isCompleted: $0.fetchTypeHandler!,
+                             ownerName: $0.ownerName,
+                             profileImage: $0.profileImage?.first)
             }
         }
     }

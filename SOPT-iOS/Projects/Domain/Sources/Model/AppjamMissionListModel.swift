@@ -9,16 +9,16 @@
 import Foundation
 
 public struct AppjamMissionListModel {
-    public let myTeamNumber: String
-    public let teamNumber: String
-    public let teamName: String
+    public let myTeamNumber: String?
+    public let teamNumber: String?
+    public let teamName: String?
     public let missions: [MissionListModel]
     public let isAppjamJoined: Bool
     
     public init(
-        myTeamNumber: String,
-        teamNumber: String,
-        teamName: String,
+        myTeamNumber: String?,
+        teamNumber: String?,
+        teamName: String?,
         missions: [MissionListModel],
         isAppjamJoined: Bool
     ) {
