@@ -48,6 +48,7 @@ public class MissionListViewModel: MissionListViewModelType {
         @Published var missionListModel: [MissionListModel]?
         @Published var usersActivateGenerationStatus: UsersActiveGenerationStatusViewResponse?
         @Published var reportUrl: SoptampReportUrlModel?
+        @Published var appjamInfo: AppjamMissionListModel?
         var needNetworkAlert = PassthroughSubject<Void, Never>()
     }
     
@@ -130,6 +131,7 @@ extension MissionListViewModel {
         fetchedAppjamMissionList.asDriver()
             .sink(receiveValue: { model in
                 output.missionListModel = model.missions
+                output.appjamInfo = model
             })
             .store(in: self.cancelBag)
         

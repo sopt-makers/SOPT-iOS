@@ -119,6 +119,32 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
         return cv
     }()
     
+    private lazy var appjamTeamInfoView: UIView = {
+        let containerView = UIView()
+        containerView.backgroundColor = DSKitAsset.Colors.gray800.color
+        containerView.layer.cornerRadius = 9
+        containerView.clipsToBounds = true
+        return containerView
+    }()
+    
+    private lazy var appjamTeamNameLabel: UILabel = {
+        let label = UILabel()
+        label.font = .SoptampFont.h3
+        label.textColor = DSKitAsset.Colors.gray10.color
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private lazy var appjamDescriptionLabel: UILabel = {
+        let label = UILabel()
+        label.font = .SoptampFont.caption2
+        label.textColor = DSKitAsset.Colors.gray200.color
+        label.textAlignment = .center
+        label.numberOfLines = 2
+        label.text = "내가 앱잼 미션을 인증하면\n우리 앱잼팀의 오늘 쌓은 점수와 총 점수에 더해져요!"
+        return label
+    }()
+    
     private let missionListEmptyView = MissionListEmptyView()
     
     private let doubleFloatingButton = STDoubleFloatingButton()
@@ -333,6 +359,49 @@ extension MissionListVC {
             .sink { owner, _ in
                 owner.showNetworkAlert()
             }.store(in: self.cancelBag)
+        
+        output.$appjamInfo
+            .compactMap { $0 }
+            .sink { [weak self] appjamInfo in
+                guard let self, case .default = self.sceneType else { return }
+                self.updateAppjamUI(with: appjamInfo)
+            }.store(in: self.cancelBag)
+    }
+    
+    private func updateAppjamUI(with appjamInfo: AppjamMissionListModel) {
+        // 앱잼 참여자인 경우에만 팀명과 문구 표시
+        guard appjamInfo.myTeamNumber != nil, let teamName = appjamInfo.teamName else { return }
+        
+        // 팀 이름 설정
+        appjamTeamNameLabel.text = teamName
+        
+        // 레이아웃 추가
+        if appjamTeamInfoView.superview == nil {
+            self.view.addSubview(appjamTeamInfoView)
+            appjamTeamInfoView.addSubview(appjamTeamNameLabel)
+            appjamTeamInfoView.addSubview(appjamDescriptionLabel)
+            
+            appjamTeamInfoView.snp.makeConstraints { make in
+                make.top.equalTo(naviBar.snp.bottom).offset(10)
+                make.leading.trailing.equalToSuperview().inset(18)
+            }
+            
+            appjamTeamNameLabel.snp.makeConstraints { make in
+                make.top.equalToSuperview().offset(10)
+                make.leading.trailing.equalToSuperview().inset(18)
+            }
+            
+            appjamDescriptionLabel.snp.makeConstraints { make in
+                make.top.equalTo(appjamTeamNameLabel.snp.bottom).offset(4)
+                make.leading.trailing.equalToSuperview().inset(18)
+                make.bottom.equalToSuperview().offset(-10)
+            }
+            
+            missionListCollectionView.snp.remakeConstraints { make in
+                make.top.equalTo(appjamTeamInfoView.snp.bottom).offset(16)
+                make.leading.trailing.bottom.equalToSuperview()
+            }
+        }
     }
 }
 
