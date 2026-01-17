@@ -17,11 +17,14 @@ public final class CustomSchemeHandler {
     
     private enum SchemeType: String {
         case notion
+        case nmap
         
         var appStoreURL: String? {
             switch self {
             case .notion:
                 return ExternalURL.AppStore.notionApp
+            case .nmap:
+                return ExternalURL.AppStore.naverMapApp
             }
         }
     }
