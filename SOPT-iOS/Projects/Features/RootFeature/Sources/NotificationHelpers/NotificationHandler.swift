@@ -107,4 +107,14 @@ extension NotificationHandler {
         self.webLink.send(nil)
         self.notificationLinkError.send(nil)
     }
+    
+    public func sendNotificationIfNeeded() {
+        if let wLink = self.webLink.value {
+            self.webLink.send(wLink)
+        }
+        
+        if let dLink = self.deepLink.value {
+            self.deepLink.send(dLink)
+        }
+    }
 }

@@ -81,6 +81,8 @@ public final class ApplicationCoordinator: BaseCoordinator {
                     by: .rootWindow(animated: false, message: nil),
                     with: url
                 )
+            case .universalWebLink(let url):
+                notificationHandler.receive(webLink: url)
             }
         } else {
             runSplashFlow()
@@ -105,10 +107,12 @@ public final class ApplicationCoordinator: BaseCoordinator {
         
         self.notificationHandler.webLink
             .compactMap { $0 }
+            .dropFirst()
             .receive(on: DispatchQueue.main)
             .filter { _ in
-                self.childCoordinators.contains(where: { $0 is DefaultTabBarCoordinator })
-            }.sink { [weak self] url in
+                self.tabBarController != nil
+            }
+            .sink { [weak self] url in
                 self?.handleWebLink(webLink: url)
                 self?.notificationHandler.clearNotificationRecord()
             }.store(in: cancelBag)
@@ -122,6 +126,8 @@ public final class ApplicationCoordinator: BaseCoordinator {
                 self?.handleNotificationLinkError(error: error)
                 self?.notificationHandler.clearNotificationRecord()
             }.store(in: cancelBag)
+        
+        self.notificationHandler.sendNotificationIfNeeded()
     }
     
     // MARK: - handleDeepLink
@@ -410,7 +416,7 @@ extension ApplicationCoordinator {
         )
         coordinator.delegate = self
         coordinator.start()
-        
+    
         self.tabBarController = coordinator.tabBarController
     }
 }

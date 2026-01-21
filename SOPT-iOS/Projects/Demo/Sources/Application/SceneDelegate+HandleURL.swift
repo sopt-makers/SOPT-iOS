@@ -63,4 +63,8 @@ extension SceneDelegate {
     func redirectSignInVC(url: String) {
         appCoordinator.start(with: .signInSuccess(url: url))
     }
+    
+    func handleUniversalLink(_ url: String) {
+        appCoordinator.start(with: .universalWebLink(url: url))
+    }
 }
