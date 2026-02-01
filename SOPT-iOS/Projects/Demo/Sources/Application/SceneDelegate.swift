@@ -45,6 +45,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         parseContexts(openURLContexts: URLContexts)
     }
     
+    func scene(
+        _ scene: UIScene,
+        continue userActivity: NSUserActivity
+    ) {
+        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
+              let incomingURL = userActivity.webpageURL else {
+            print("❌ Not a universal link")
+            return
+        }
+
+        handleUniversalLink(incomingURL.absoluteString)
+    }
+    
     func sceneDidDisconnect(_ scene: UIScene) {}
     
     func sceneDidBecomeActive(_ scene: UIScene) {
