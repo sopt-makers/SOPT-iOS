@@ -106,8 +106,8 @@ public final class ApplicationCoordinator: BaseCoordinator {
             }.store(in: cancelBag)
         
         self.notificationHandler.webLink
-            .compactMap { $0 }
             .dropFirst()
+            .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .filter { _ in
                 self.tabBarController != nil

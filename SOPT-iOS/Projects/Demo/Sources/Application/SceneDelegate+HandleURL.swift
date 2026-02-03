@@ -72,6 +72,7 @@ extension SceneDelegate {
         guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
               let incomingURL = userActivity.webpageURL else {
             print("❌ Not a universal link")
+            appCoordinator.start()
             return
         }
 
