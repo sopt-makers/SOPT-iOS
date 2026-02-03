@@ -38,7 +38,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.rootViewController = rootController
         window?.makeKeyAndVisible()
         
-        self.appCoordinator.start()
+        if let userActivity = connectionOptions.userActivities.first {
+            handleUniversalLinkWithUserAcitivity(userActivity)
+        } else {
+            self.appCoordinator.start()
+        }
     }
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
@@ -49,13 +53,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         _ scene: UIScene,
         continue userActivity: NSUserActivity
     ) {
-        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
-              let incomingURL = userActivity.webpageURL else {
-            print("❌ Not a universal link")
-            return
-        }
-
-        handleUniversalLink(incomingURL.absoluteString)
+        handleUniversalLinkWithUserAcitivity(userActivity)
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {}

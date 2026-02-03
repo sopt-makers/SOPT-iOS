@@ -67,4 +67,14 @@ extension SceneDelegate {
     func handleUniversalLink(_ url: String) {
         appCoordinator.start(with: .universalWebLink(url: url))
     }
+    
+    func handleUniversalLinkWithUserAcitivity(_ userActivity: NSUserActivity) {
+        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
+              let incomingURL = userActivity.webpageURL else {
+            print("❌ Not a universal link")
+            return
+        }
+
+        handleUniversalLink(incomingURL.absoluteString)
+    }
 }
