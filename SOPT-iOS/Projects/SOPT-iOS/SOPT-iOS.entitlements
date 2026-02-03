@@ -10,7 +10,7 @@
 	</array>
     <key>com.apple.developer.associated-domains</key>
     <array>
-        <string>$(APPLINK)</string>
+        <string>applinks:playground.sopt.org</string>
     </array>
 </dict>
 </plist>
