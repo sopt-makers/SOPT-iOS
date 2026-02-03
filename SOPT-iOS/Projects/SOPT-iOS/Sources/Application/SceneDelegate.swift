@@ -38,7 +38,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.makeKeyAndVisible()
         
         if let userActivity = connectionOptions.userActivities.first {
-            handleUniversalLinkWithUserAcitivity(userActivity)
+            handleUniversalLinkWithUserActivity(userActivity)
         } else {
             self.appCoordinator.start()
         }
@@ -52,7 +52,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         _ scene: UIScene,
         continue userActivity: NSUserActivity
     ) {
-        handleUniversalLinkWithUserAcitivity(userActivity)
+        handleUniversalLinkWithUserActivity(userActivity)
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {}
