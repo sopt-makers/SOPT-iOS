@@ -121,8 +121,9 @@ public final class ApplicationCoordinator: BaseCoordinator {
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .filter { _ in
-                self.childCoordinators.contains(where: { $0 is DefaultTabBarCoordinator })
-            }.sink { [weak self] error in
+                self.tabBarController != nil
+            }
+            .sink { [weak self] error in
                 self?.handleNotificationLinkError(error: error)
                 self?.notificationHandler.clearNotificationRecord()
             }.store(in: cancelBag)
