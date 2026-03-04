@@ -44,7 +44,8 @@ public extension Project {
         ]),
         "AppID": .string("6444594319"),
         "LSApplicationQueriesSchemes": .array([
-            .string("notion")
+            .string("notion"),
+            .string("nmap")
         ])
     ]
     
@@ -92,7 +93,8 @@ public extension Project {
         ]),
         "AppID": .string("6444594319"),
         "LSApplicationQueriesSchemes": .array([
-            .string("notion")
+            .string("notion"),
+            .string("nmap")
         ])
     ]
 }
