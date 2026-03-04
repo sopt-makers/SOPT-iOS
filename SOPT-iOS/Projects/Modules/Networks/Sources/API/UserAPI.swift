@@ -25,6 +25,7 @@ public enum UserAPI {
     case appService
     case hotboard
     case fetchSoptlogInfo
+    @available(*, deprecated, message: "API 문서상으로 deprecated되어 확인 필요")
     case fetchAppjamInfo
 }
 
