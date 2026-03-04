@@ -141,7 +141,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
         label.textColor = DSKitAsset.Colors.gray200.color
         label.textAlignment = .center
         label.numberOfLines = 2
-        label.text = "내가 앱잼 미션을 인증하면\n우리 앱잼팀의 오늘 쌓은 점수와 총 점수에 더해져요!"
+        label.text = I18N.MissionList.appjamMissionNotice
         return label
     }()
     
@@ -365,7 +365,7 @@ extension MissionListVC {
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
             .sink { owner, appjamInfo in
-                guard case .default = self.sceneType else { return }
+                guard case .default = owner.sceneType else { return }
                 owner.updateAppjamUI(with: appjamInfo)
             }.store(in: self.cancelBag)
     }
@@ -543,7 +543,7 @@ extension MissionListVC: UICollectionViewDelegate {
                   let model = tappedCell.model else { return }
             let userType = UserDefaultKeyList.Auth.getUserType()
 
-            let username = sceneType.isAppJamTeamView ? model.ownerName : sceneType.usrename
+            let username = sceneType.isAppJamTeamView ? model.ownerName : sceneType.username
             
             if model.isCompleted {
                 onCellTap?(model, username)

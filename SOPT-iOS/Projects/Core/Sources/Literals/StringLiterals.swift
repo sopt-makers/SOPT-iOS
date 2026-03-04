@@ -134,6 +134,7 @@ public struct I18N {
         public static let completeMission = "완료 미션"
         public static let uncompleteMission = "미완료 미션"
         public static let appjamMission = "앱잼 미션"
+        public static let appjamMissionNotice = "내가 앱잼 미션을 인증하면\n우리 앱잼팀의 오늘 쌓은 점수와 총 점수에 더해져요!"
     }
 
     public struct RankingList {
