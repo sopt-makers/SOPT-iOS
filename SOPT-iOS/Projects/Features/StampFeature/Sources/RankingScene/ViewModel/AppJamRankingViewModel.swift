@@ -26,6 +26,7 @@ public class AppJamRankingViewModel: AppJamRankingViewModelType {
         let viewWillAppear: Driver<Void>
         let refreshStarted: Driver<Void>
         let naviBackButtonTapped: Driver<Void>
+        let teamCellTapped: Driver<AppJamRankTodayPresentationModel>
     }
 
     // MARK: - Outputs
@@ -40,6 +41,7 @@ public class AppJamRankingViewModel: AppJamRankingViewModelType {
 
     public var onNaviBackTap: (() -> Void)?
     public var onNetworkError: (@MainActor () -> Void)?
+    public var onTeamTap: ((_ teamName: String, _ teamNumber: String) -> Void)?
 
     // MARK: - init
 
@@ -71,6 +73,12 @@ extension AppJamRankingViewModel {
             .sink { owner, _ in
                 owner.onNaviBackTap?()
             }.store(in: cancelBag)
+        
+        input.teamCellTapped
+            .withUnretained(self)
+            .sink { owner, model in
+                owner.onTeamTap?(model.teamName, model.teamNumber)
+            }.store(in: cancelBag)
 
         return output
     }
@@ -97,5 +105,9 @@ extension AppJamRankingViewModel {
 
     private func fetchRecentMissions() async throws -> [Domain.AppjamRankRecentModel] {
         try await useCase.fetchRecentRanking(size: 3)
+    }
+    
+    private func fetchAppjamInfo() async throws -> Domain.AppjamInfoModel {
+        try await useCase.fetchAppjamInfo()
     }
 }

@@ -16,6 +16,7 @@ extension AppjamRankToday {
         return AppjamRankTodayModel(
             rank: self.rank,
             teamName: self.teamName,
+            teamNumber: self.teamNumber,
             todayPoints: self.todayPoints,
             totalPoints: self.totalPoints
         )

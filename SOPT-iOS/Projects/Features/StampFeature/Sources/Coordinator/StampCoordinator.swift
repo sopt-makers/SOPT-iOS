@@ -221,7 +221,37 @@ extension StampCoordinator {
             AlertUtils.presentNetworkAlertVC()
         }
         
+        ranking.vm.onTeamTap = { [weak self] teamName, teamNumber in
+            guard let self else { return }
+            self.showAppJamTeamMissionList(teamName: teamName, teamNumber: teamNumber)
+        }
+        
         rootController?.pushViewController(ranking.vc, animated: true)
+    }
+    
+    private func showAppJamTeamMissionList(teamName: String, teamNumber: String) {
+        var teamMissionList = factory.makeMissionListVC(
+            sceneType: .appJamTeam(teamName: teamName, teamNumber: teamNumber),
+            isRouteFromTabBar: false,
+            coordinator: self
+        )
+        
+        teamMissionList.vc.onNaviBackTap = { [weak self] in
+            guard let self else { return }
+            self.rootController?.popViewController(animated: true)
+        }
+        
+        teamMissionList.vc.onSwiped = { [weak self] in
+            guard let self else { return }
+            self.rootController?.popViewController(animated: true)
+        }
+        
+        teamMissionList.vc.onCellTap = { [weak self] model, username in
+            guard let self else { return }
+            self.showMissionDetail(model, username, isAppjam: true)
+        }
+        
+        rootController?.pushViewController(teamMissionList.vc, animated: true)
     }
 
     private func showOtherMissionList(_ username: String, _ sentence: String) {

@@ -290,7 +290,10 @@ extension BaseService {
     
     func requestObjectAsync<T: Decodable>(_ target: API) async throws -> T {
         try await withUnsafeThrowingContinuation { [weak self] continuation in
-            guard let self else { return }
+            guard let self else {
+                continuation.resume(throwing: CancellationError())
+                return
+            }
             let cancellable = self.provider.request(target) { response in
                 defer { self.cancellable = nil }
                 

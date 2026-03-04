@@ -14,9 +14,11 @@ import Networks
 public class AppjamRankingRepository {
 
     private let appJamRankingService: AppJamRankingService
+    private let userService: UserService
 
-    public init(service: AppJamRankingService) {
+    public init(service: AppJamRankingService, userService: UserService) {
         self.appJamRankingService = service
+        self.userService = userService
     }
 }
 
@@ -29,5 +31,10 @@ extension AppjamRankingRepository: AppjamRankingRepositoryInterface {
     public func fetchRecentRanking(size: Int) async throws -> [AppjamRankRecentModel] {
         let entity = try await appJamRankingService.fetchRecentRanking(size: size)
         return entity.ranks.map { $0.toDomain() }
+    }
+    
+    public func fetchAppjamInfo() async throws -> AppjamInfoModel {
+        let entity = try await userService.fetchAppjamInfo()
+        return entity.toDomain()
     }
 }

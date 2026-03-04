@@ -15,6 +15,7 @@ public struct AppjamRankTodayResponseEntity: Decodable {
 public struct AppjamRankToday: Decodable {
     public let rank: Int
     public let teamName: String
+    public let teamNumber: String
     public let todayPoints: Int
     public let totalPoints: Int
 }

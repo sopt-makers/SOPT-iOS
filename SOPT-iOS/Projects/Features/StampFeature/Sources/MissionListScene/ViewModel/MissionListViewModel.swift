@@ -48,6 +48,7 @@ public class MissionListViewModel: MissionListViewModelType {
         @Published var missionListModel: [MissionListModel]?
         @Published var usersActivateGenerationStatus: UsersActiveGenerationStatusViewResponse?
         @Published var reportUrl: SoptampReportUrlModel?
+        @Published var appjamInfo: AppjamMissionListModel?
         var needNetworkAlert = PassthroughSubject<Void, Never>()
     }
     
@@ -95,6 +96,8 @@ extension MissionListViewModel {
         switch self.missionListsceneType {
         case .ranking(let userName, _):
             self.useCase.fetchOtherUserMissionList(userName: userName)
+        case .appJamTeam(_, let teamNumber):
+            self.useCase.fetchAppjamMissionList(teamNumber: teamNumber, isCompleted: true)
         default:
             fetchMissionListByType(type: type)
         }
@@ -128,6 +131,7 @@ extension MissionListViewModel {
         fetchedAppjamMissionList.asDriver()
             .sink(receiveValue: { model in
                 output.missionListModel = model.missions
+                output.appjamInfo = model
             })
             .store(in: self.cancelBag)
         

@@ -10,19 +10,47 @@
 public enum MissionListSceneType {
     case `default`
     case ranking(userName: String, sentence: String)
+    case appJamTeam(teamName: String, teamNumber: String)
     
     public var isRankingView: Bool {
         switch self {
         case .default: return false
-        case .ranking: return true
+        case .ranking, .appJamTeam: return true
         }
     }
     
-    public var usrename: String? {
+    public var username: String? {
         switch self {
         case .default: return nil
         case .ranking(let username, _):
             return username
+        case .appJamTeam:
+            return nil
+        }
+    }
+    
+    public var isAppJamTeamView: Bool {
+        switch self {
+        case .appJamTeam: return true
+        default: return false
+        }
+    }
+    
+    public var teamName: String? {
+        switch self {
+        case .appJamTeam(let teamName, _):
+            return teamName
+        default:
+            return nil
+        }
+    }
+    
+    public var teamNumber: String? {
+        switch self {
+        case .appJamTeam(_, let teamNumber):
+            return teamNumber
+        default:
+            return nil
         }
     }
 }

@@ -11,4 +11,5 @@ import Foundation
 public protocol AppjamRankingRepositoryInterface {
     func fetchTodayRanking(size: Int) async throws -> [AppjamRankTodayModel]
     func fetchRecentRanking(size: Int) async throws -> [AppjamRankRecentModel]
+    func fetchAppjamInfo() async throws -> AppjamInfoModel
 }

@@ -29,6 +29,7 @@ public protocol UserService {
     
     func fetchSoptlogInfo() async throws -> SoptlogResponseEntity
     func getUserMainInfoAsync() async throws -> MainEntity
+    func fetchAppjamInfo() async throws -> AppjamInfoEntity
 }
 
 extension DefaultUserService: UserService {
@@ -86,5 +87,9 @@ extension DefaultUserService: UserService {
     
     public func getUserMainInfoAsync() async throws -> MainEntity {
         try await requestObjectAsync(.getUserMainInfo)
+    }
+    
+    public func fetchAppjamInfo() async throws -> AppjamInfoEntity {
+        try await requestObjectAsync(.fetchAppjamInfo)
     }
 }

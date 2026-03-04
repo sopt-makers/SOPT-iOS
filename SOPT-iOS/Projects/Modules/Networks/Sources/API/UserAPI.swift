@@ -25,6 +25,8 @@ public enum UserAPI {
     case appService
     case hotboard
     case fetchSoptlogInfo
+    @available(*, deprecated, message: "API 문서상으로 deprecated되어 확인 필요")
+    case fetchAppjamInfo
 }
 
 extension UserAPI: BaseAPI {
@@ -56,13 +58,15 @@ extension UserAPI: BaseAPI {
             return "playground/hot-post"
         case .fetchSoptlogInfo:
             return "my-sopt-log"
+        case .fetchAppjamInfo:
+            return "appjam-info"
         }
     }
     
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .getUserMainInfo, .fetchSoptampUser, .fetchActiveGenerationStatus, .getNotificationSettingsInDetail, .appService, .hotboard, .fetchSoptlogInfo:
+        case .getUserMainInfo, .fetchSoptampUser, .fetchActiveGenerationStatus, .getNotificationSettingsInDetail, .appService, .hotboard, .fetchSoptlogInfo, .fetchAppjamInfo:
             return .get
         case .editSentence, .optInPushNotificationInDetail:
             return .patch
