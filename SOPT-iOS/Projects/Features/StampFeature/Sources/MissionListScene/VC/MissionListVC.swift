@@ -362,9 +362,11 @@ extension MissionListVC {
         
         output.$appjamInfo
             .compactMap { $0 }
-            .sink { [weak self] appjamInfo in
-                guard let self, case .default = self.sceneType else { return }
-                self.updateAppjamUI(with: appjamInfo)
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, appjamInfo in
+                guard case .default = self.sceneType else { return }
+                owner.updateAppjamUI(with: appjamInfo)
             }.store(in: self.cancelBag)
     }
     
