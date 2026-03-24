@@ -22,7 +22,7 @@ import BaseFeatureDependency
 public class MissionListVC: UIViewController, MissionListViewControllable, LegacyMissionListViewControllable {
     
     // TODO: - 화면 전환 시에 수정
-    private var isAppJam: Bool = true
+    private var isAppJam: Bool = false
     
     // MARK: - Properties
     
@@ -77,16 +77,25 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
     
     private lazy var menuItems: [UIAction] = {
         var menuItems: [UIAction] = []
-        [(I18N.MissionList.allMission, MissionListFetchType.all),
-         (I18N.MissionList.completeMission, MissionListFetchType.complete),
-         (I18N.MissionList.uncompleteMission, MissionListFetchType.incomplete),
-         (I18N.MissionList.appjamMission, MissionListFetchType.appjam)].forEach { [weak self] menuTitle, fetchType in
+        var menus: [(String, MissionListFetchType)] = []
+        
+        menus = [
+            (I18N.MissionList.allMission, MissionListFetchType.all),
+             (I18N.MissionList.completeMission, MissionListFetchType.complete),
+             (I18N.MissionList.uncompleteMission, MissionListFetchType.incomplete)
+        ]
+        if isAppJam {
+            menus.append((I18N.MissionList.appjamMission, MissionListFetchType.appjam))
+        }
+        
+        menus.forEach { [weak self] menuTitle, fetchType in
             menuItems.append(UIAction(title: menuTitle,
                                       handler: { [weak self] _ in
                 self?.missionTypeMenuSelected.send(fetchType)
                 self?.naviBar.setTitle(menuTitle)
             }))
         }
+    
         return menuItems
     }()
     
