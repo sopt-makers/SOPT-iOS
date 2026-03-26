@@ -20,7 +20,7 @@ public protocol ClapListViewControllable: UIViewController & ClapListRoutingTrig
 
 public protocol ClapListRoutingTrigger {
     var onNaviBackTap: (() -> Void)? { get set }
-    var onCellTap: ((String?) -> Void)? { get set }
+    var onCellTap: ((String?, String?) -> Void)? { get set }
 }
 
 // MARK: - ViewModelType

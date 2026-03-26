@@ -28,7 +28,7 @@ final class ClapListVC: UIViewController, ClapListViewControllable {
     // MARK: - ClapListCoordinatable
 
     public var onNaviBackTap: (() -> Void)?
-    public var onCellTap: ((String?) -> Void)?
+    public var onCellTap: ((String?, String?) -> Void)?
 
     // MARK: - UI Components
 
@@ -196,6 +196,6 @@ enum ClapListSection: CaseIterable {
 extension ClapListVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let model = dataSource.itemIdentifier(for: indexPath) else { return }
-        onCellTap?(model.nickname)
+        onCellTap?(model.nickname, model.profileMessage)
     }
 }

@@ -295,12 +295,12 @@ extension StampCoordinator {
             self.rootController?.dismiss(animated: true)
         }
 
-        clapList.vc.onCellTap = { [weak self] username in
+        clapList.vc.onCellTap = { [weak self] username, sentence in
             guard let self else { return }
             guard let username else { return }
 
             self.rootController?.dismiss(animated: true) {
-                self.showOtherMissionList(username, "")
+                self.showOtherMissionList(username, sentence ?? "")
             }
         }
 
