@@ -158,7 +158,8 @@ extension ListDetailVC {
             .publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onViewClapTap?(owner.viewModel.stampId, owner.viewModel.otherUserName ?? "")
+                owner.onViewClapTap?(owner.viewModel.stampId,
+                                     owner.viewModel.otherUserName ?? "")
             }.store(in: cancelBag)
     }
     
@@ -192,6 +193,8 @@ extension ListDetailVC {
             }
             .scan(0) { count, new in count + new }
             .debounce(for: .seconds(1), scheduler: RunLoop.main)
+            .scan((0, 0)) { (prev, newTotal) in (newTotal, newTotal - prev.0) }
+            .map{$0.1}
             .asDriver()
         
         let input = ListDetailViewModel.Input(

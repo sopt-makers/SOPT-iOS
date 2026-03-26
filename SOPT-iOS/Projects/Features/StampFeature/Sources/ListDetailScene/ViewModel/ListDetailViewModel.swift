@@ -210,8 +210,7 @@ extension ListDetailViewModel {
         
         input.clapButtonTapped
             .withUnretained(self)
-            .sink {
-                owner, count in
+            .sink { owner, count in
                 owner.useCase.clap(stampId: owner.stampId, clapCount: count)
                 AmplitudeInstance.shared.track(
                     eventType: .clickUpdateClap,
