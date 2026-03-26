@@ -70,6 +70,14 @@ final class ClapListVC: UIViewController, ClapListViewControllable {
         self.bindViewModel()
         self.viewDidLoadSubject.send(())
     }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        guard let touch = touches.first else { return }
+        if !containerView.frame.contains(touch.location(in: view)) {
+            onNaviBackTap?()
+        }
+    }
 
     // MARK: - Init
 
@@ -99,7 +107,7 @@ extension ClapListVC {
         containerView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(164)
             $0.directionalHorizontalEdges.equalToSuperview().inset(16)
-            $0.bottom.equalToSuperview().inset(32)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
 
         backButton.snp.makeConstraints {
@@ -116,7 +124,7 @@ extension ClapListVC {
         clapListCollectionView.snp.makeConstraints {
             $0.top.equalTo(backButton.snp.bottom).offset(20)
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.bottom.equalToSuperview().inset(20)
+            $0.bottom.equalToSuperview()
         }
     }
 }
