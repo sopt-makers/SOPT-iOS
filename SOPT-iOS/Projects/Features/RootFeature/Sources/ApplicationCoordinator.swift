@@ -390,6 +390,7 @@ extension ApplicationCoordinator {
             viewControllers = [
                 homeNavigationController,
                 stampNavigationController,
+                pokeNavigationController,
                 soptlogNavigationController
             ]
 
