@@ -383,7 +383,7 @@ extension ApplicationCoordinator {
 
         runHomeFlow(type: userType)
         runStampTabFlow()
-        runPokeTabFlow()        
+        runPokeTabFlow()
         
         switch userType {
         case .active, .inactive:

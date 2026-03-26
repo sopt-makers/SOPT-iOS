@@ -235,12 +235,10 @@ extension RankingVC {
         var snapshot = NSDiffableDataSourceSnapshot<RankingSection, AnyHashable>()
         snapshot.appendSections([.chart, .list])
         
-        guard model.count >= 4 else { return }
+//        guard model.count >= 4 else { return }                
         
-        guard
-            let chartCellModels = Array(model[0...2]) as? [RankingModel],
-            let rankingListModel = Array(model[3...model.count - 1]) as? [RankingModel]
-        else { return }
+        let chartCellModels = Array(model.prefix(3))
+        let rankingListModel = model.count > 3 ? Array(model[3...]) : []
         
         let chartCellModel = RankingChartModel.init(ranking: chartCellModels)
         snapshot.appendItems([chartCellModel], toSection: .chart)
