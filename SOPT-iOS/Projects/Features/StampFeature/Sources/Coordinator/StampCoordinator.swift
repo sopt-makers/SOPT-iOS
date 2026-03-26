@@ -304,6 +304,7 @@ extension StampCoordinator {
         }
 
         clapList.vc.modalPresentationStyle = .overFullScreen
+        clapList.vc.modalTransitionStyle = .crossDissolve
         self.rootController?.topViewController?.present(clapList.vc, animated: true)
     }
 }
