@@ -11,7 +11,7 @@ let packageSettings = PackageSettings(
         "Alamofire": .framework,
         "GoogleSignIn": .framework,
         "GTMAppAuth": .framework,
-        "AppAuth": .framework,
+        "AppAuth": .staticFramework,
         "GULEnvironment": .framework,
         "GULLogger": .framework,
         "GULNSData": .framework,
