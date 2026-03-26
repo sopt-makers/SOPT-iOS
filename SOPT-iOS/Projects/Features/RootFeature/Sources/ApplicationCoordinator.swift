@@ -383,6 +383,7 @@ extension ApplicationCoordinator {
 
         runHomeFlow(type: userType)
         runStampTabFlow()
+        runPokeTabFlow()        
         
         switch userType {
         case .active, .inactive:
@@ -464,7 +465,6 @@ extension ApplicationCoordinator {
                 factory: HomeBuilder(),
                 userType: type
             )
-            
             newCoordinator.delegate = self
             coordinator = newCoordinator
         }
