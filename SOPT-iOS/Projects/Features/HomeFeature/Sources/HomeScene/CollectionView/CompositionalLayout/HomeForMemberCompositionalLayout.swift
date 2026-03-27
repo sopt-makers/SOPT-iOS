@@ -39,8 +39,8 @@ extension HomeForMemberVC {
                 return self?.createCalendarSection()
             case .mainProduct:
                 return self?.createMainProductSection()
-            case .appService:
-                return self?.createAppServiceSection()
+//            case .appService:
+//                return self?.createAppServiceSection()
             case .popularPosts:
                 return self?.createPopularPostsSection()
             case .socialLinks:
