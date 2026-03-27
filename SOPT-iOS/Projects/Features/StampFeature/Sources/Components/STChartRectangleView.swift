@@ -210,7 +210,7 @@ extension STChartRectangleView {
   }
   
   public func setData(score: Int, username: String) {
-    self.usernameLabel.text = username
+    self.usernameLabel.text = username.isEmpty ? "-" : username
     self.scoreLabel.text = "\(score)점"
     self.scoreLabel.partFontChange(targetString: "점",
                                    font: DSKitFontFamily.Pretendard.medium.font(size: 12))
