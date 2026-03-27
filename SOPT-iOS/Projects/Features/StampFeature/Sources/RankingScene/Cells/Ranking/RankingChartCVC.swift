@@ -106,7 +106,7 @@ extension RankingChartCVC {
     public func setData(model: RankingChartModel) {
         
         // 데이터 바인딩을 위한 모델 순서 재정렬
-        let noDataRankingModel = RankingModel(username: "-", score: 0, sentence: "")
+        let noDataRankingModel = RankingModel(username: "", score: 0, sentence: "")
 
         let arrangedModel: [RankingModel]
 
