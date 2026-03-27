@@ -393,12 +393,12 @@ extension HomeForMemberVC {
     private func applySnapshot(with data: HomePresentationModel) {
         var snapshot = NSDiffableDataSourceSnapshot<HomeForMemberSectionLayoutKind, HomeForMemberItem>()
         
-        snapshot.appendSections([.dashBoard, .calendar, .mainProduct, .appService, .popularPosts, .latestPosts, .survey, .socialLinks])
+        snapshot.appendSections([.dashBoard, .calendar, .mainProduct, .popularPosts, .latestPosts, .survey, .socialLinks])
         
         snapshot.appendItems([.dashBoard(data.dashBoard)], toSection: .dashBoard)
         snapshot.appendItems([.recentSchedule(data.recentSchedule)], toSection: .calendar)
         snapshot.appendItems(self.viewModel.productServiceList.map { .productService($0) }, toSection: .mainProduct)
-        snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
+//        snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
         snapshot.appendItems(data.popularPosts.map { .popularPost($0) }, toSection: .popularPosts)
         snapshot.appendItems(data.latestPosts.map { .latestPost($0) }, toSection: .latestPosts)
         snapshot.appendItems([.survey(data.survey)], toSection: .survey)

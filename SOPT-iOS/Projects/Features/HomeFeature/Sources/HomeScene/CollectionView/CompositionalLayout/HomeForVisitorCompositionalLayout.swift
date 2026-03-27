@@ -32,8 +32,6 @@ extension HomeForVisitorVC {
                 return self?.createDashBoardSection()
             case .mainProduct:
                 return self?.createMainProductSection()
-            case .appService:
-                return self?.createAppServiceSection()
             }
         }
     }

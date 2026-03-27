@@ -14,7 +14,7 @@ enum HomeForMemberSectionLayoutKind: Int, CaseIterable {
     case dashBoard
     case calendar
     case mainProduct
-    case appService
+//    case appService
     case popularPosts
     case latestPosts
     case survey
@@ -24,8 +24,8 @@ enum HomeForMemberSectionLayoutKind: Int, CaseIterable {
 extension HomeForMemberSectionLayoutKind: HomeSectionUIConfigurable {
     var headerTitle: String {
         switch self {
-        case .appService:
-            return I18N.Home.AppService.headerTitle
+//        case .appService:
+//            return I18N.Home.AppService.headerTitle
         case .popularPosts:
             return I18N.Home.PopularPosts.headerTitle
         case .latestPosts:
