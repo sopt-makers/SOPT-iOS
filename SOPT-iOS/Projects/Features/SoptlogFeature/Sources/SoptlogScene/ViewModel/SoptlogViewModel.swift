@@ -87,7 +87,6 @@ extension SoptlogViewModel {
         
         // MARK: - 서버 500 에러 해결 후 false filter 제거
         input.cellTap
-            .filter{ $0.section == .pokeLog && false }
             .withUnretained(self)
             .sink { owner, tapInfo in
                 switch tapInfo.row {

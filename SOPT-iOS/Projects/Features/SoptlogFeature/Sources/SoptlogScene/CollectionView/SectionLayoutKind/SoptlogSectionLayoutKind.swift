@@ -28,10 +28,7 @@ enum SoptlogSectionLayoutKind: Int, CaseIterable {
     static func visibleSections(isAppjamParticipant: Bool) -> [SoptlogSectionLayoutKind] {
         var sections: [SoptlogSectionLayoutKind] = [.logo]
         
-        if isAppjamParticipant {
-            sections.append(.soptampLog)
-        }
-        
+        sections.append(.soptampLog)
         sections.append(.pokeLog)
         sections.append(.banner)
         
