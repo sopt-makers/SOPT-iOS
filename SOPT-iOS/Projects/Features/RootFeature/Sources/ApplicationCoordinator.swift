@@ -383,7 +383,6 @@ extension ApplicationCoordinator {
 
         runHomeFlow(type: userType)
         runStampTabFlow()
-        runPokeTabFlow()
         
         switch userType {
         case .active, .inactive:
@@ -391,7 +390,6 @@ extension ApplicationCoordinator {
             viewControllers = [
                 homeNavigationController,
                 stampNavigationController,
-                pokeNavigationController,
                 soptlogNavigationController
             ]
 
