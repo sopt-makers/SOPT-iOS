@@ -27,11 +27,8 @@ enum SoptlogSectionLayoutKind: Int, CaseIterable {
     /// 앱잼 참여 상태에 따라 표시할 섹션 목록
     static func visibleSections(isAppjamParticipant: Bool) -> [SoptlogSectionLayoutKind] {
         var sections: [SoptlogSectionLayoutKind] = [.logo]
-        
-        if isAppjamParticipant {
-            sections.append(.soptampLog)
-        }
-        
+                
+        sections.append(.soptampLog)
         sections.append(.pokeLog)
         sections.append(.banner)
         
