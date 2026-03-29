@@ -31,7 +31,7 @@ extension TodayAttendance {
     public func toDomain() -> TodayAttendanceModel {
         return .init(status: self.status,
                      attendedAt: DateFormatManager.shared.transformDateFormat(self.attendedAt,
-                                                                           from: .dateTimeDash,
+                                                                           from: .isoWithoutMillis,
                                                                            to: .time))
     }
 }
