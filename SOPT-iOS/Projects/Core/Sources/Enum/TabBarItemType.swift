@@ -34,10 +34,9 @@ public extension TabBarItemType {
                 return 0
             case .soptamp:
                 return 1
-            case .poke:
-                return 2
             case .soptlog:
-                return 3
+                return 2
+            default: return 0           // poke 탭이 비활성화 상태이므로 0으로 처리
             }
         case .visitor:
             switch self {
@@ -46,7 +45,7 @@ public extension TabBarItemType {
             case .poke:
                 return 1
             case .soptlog:
-                return 1
+                return 2
             }
         }
     }
@@ -58,8 +57,7 @@ public extension TabBarItemType {
             switch index {
             case 0: return .home
             case 1: return .soptamp
-            case 2: return .poke
-            case 3: return .soptlog
+            case 2: return .soptlog
             default: return nil
             }
         case .visitor:
