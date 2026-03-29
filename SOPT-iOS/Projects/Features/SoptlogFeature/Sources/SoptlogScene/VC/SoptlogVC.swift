@@ -298,13 +298,13 @@ extension SoptlogVC: UICollectionViewDataSource {
     
     private func configureEmptyCell(at indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: SoptlogEmptyCVC.className,
+            withReuseIdentifier: SoptlogMenuCVC.className,
             for: indexPath
-        ) as? SoptlogEmptyCVC else {
+        ) as? SoptlogMenuCVC else {
             return UICollectionViewCell()
         }
 
-        cell.configure(text: I18N.Soptlog.Menu.pokeEmptyDescription)
+//        cell.configure(text: I18N.Soptlog.Menu.pokeEmptyDescription)        
 
         return cell
     }

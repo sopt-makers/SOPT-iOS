@@ -25,6 +25,7 @@ let project = Project.makeModule(
         .SPM.FirebaseCore,
         .SPM.FirebaseRemoteConfig,
         .SPM.FirebaseCrashlytics,
-        .SPM.FirebaseAnalytics
+        .SPM.FirebaseAnalytics,        
+        .SPM.GTMAppAuth,
     ]
 )
