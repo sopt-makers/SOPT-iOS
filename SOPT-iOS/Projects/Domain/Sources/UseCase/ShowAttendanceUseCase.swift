@@ -67,7 +67,7 @@ public class DefaultShowAttendanceUseCase {
 // MARK: - Methods
 
 extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
-    
+    /// 출석 상태 조회
     public func fetchAttendanceSchedule() {
         self.repository.fetchAttendanceScheduleModel()
             .withUnretained(self)
@@ -140,9 +140,11 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
         }
         /// 출석 후 해당 정보 담기 (ex. ✓, 🅧)
         else {
-            for attendance in attendanceData {
+            for (index, attendance) in attendanceData.enumerated() {
                 let type: AttendanceStepType = (attendance.status == TodayAttendanceType.attendance.rawValue) ? .check : .unCheck
-                let title: String = (type == .unCheck) ? I18N.Attendance.unCheckAttendance : attendance.attendedAt
+                let title: String = (type == .unCheck)
+                    ? I18N.Attendance.unCheckAttendance
+                    : I18N.Attendance.nthAttendance(index + 1) 
                 
                 attendances.append(AttendanceStepModel(type: type, title: title))
             }
