@@ -101,11 +101,11 @@ extension ShowAttendanceViewModel {
                     self.sceneType = .scheduledDay
                     
                     let convertedStartDate = DateFormatManager.shared.serverTimeToString(model.startDate,
-                                                                                         from: .isoWithoutMillis,
-                                                                                         to: .monthDayWeekTime)
+                                                                                         from: .monthDayWeekTime,
+                                                                                         to: .isoWithoutMillis)
                     let convertedEndDate = DateFormatManager.shared.serverTimeToString(model.endDate,
-                                                                                       from: .isoWithoutMillis,
-                                                                                       to: .monthDayWeekTime)
+                                                                                       from: .monthDayWeekTime,
+                                                                                       to: .isoWithoutMillis)
                     let newModel = AttendanceScheduleModel(type: model.type,
                                                            id: model.id,
                                                            location: model.location,
