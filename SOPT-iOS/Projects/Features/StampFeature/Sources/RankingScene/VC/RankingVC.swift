@@ -207,7 +207,7 @@ extension RankingVC {
                     
                     chartCell.setData(model: chartCellModel)
                     chartCell.usernameTapped = { [weak self] balloonModel in
-                        guard let self else { return }
+                        guard let self, !balloonModel.username.isEmpty else { return }
                         
                         let item = balloonModel.toRankingListTapItem()
                         self.onCellTap?(item.username, item.sentence)
@@ -234,13 +234,9 @@ extension RankingVC {
     func applySnapshot(model: [RankingModel]) {
         var snapshot = NSDiffableDataSourceSnapshot<RankingSection, AnyHashable>()
         snapshot.appendSections([.chart, .list])
-        
-        guard model.count >= 4 else { return }
-        
-        guard
-            let chartCellModels = Array(model[0...2]) as? [RankingModel],
-            let rankingListModel = Array(model[3...model.count - 1]) as? [RankingModel]
-        else { return }
+
+        let chartCellModels = Array(model.prefix(3))
+        let rankingListModel = model.count > 3 ? Array(model[3...]) : []
         
         let chartCellModel = RankingChartModel.init(ranking: chartCellModels)
         snapshot.appendItems([chartCellModel], toSection: .chart)

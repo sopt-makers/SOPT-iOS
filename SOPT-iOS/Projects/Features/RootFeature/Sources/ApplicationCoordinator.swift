@@ -442,7 +442,7 @@ extension ApplicationCoordinator {
                 case .notification:
                     self?.runNotificationFlow()
                 case .soptlog:
-                    self?.tabBarController?.selectedIndex = 1
+                    self?.tabBarController?.selectedIndex = 3
                 case .deepLink(let url):
                     self?.notificationHandler.receive(deepLink: url)
                     guard let deepLink = self?.notificationHandler.deepLink.value else { return }
@@ -463,7 +463,6 @@ extension ApplicationCoordinator {
                 factory: HomeBuilder(),
                 userType: type
             )
-            
             newCoordinator.delegate = self
             coordinator = newCoordinator
         }

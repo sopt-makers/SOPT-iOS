@@ -275,10 +275,6 @@ public struct I18N {
             public static let instagram = "인스타그램"
         }
         
-        public struct AppService {
-            public static let headerTitle = "SOPT 더 재밌게 즐기기!"
-        }
-        
         public struct PopularPosts {
             public static let headerTitle = "실시간 인기글"
             public static let morePosts = "다른 게시물 보러가기"

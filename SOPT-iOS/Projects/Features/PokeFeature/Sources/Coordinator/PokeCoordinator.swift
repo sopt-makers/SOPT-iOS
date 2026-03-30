@@ -46,7 +46,7 @@ public final class PokeCoordinator: BaseCoordinator {
 
     public func showPokeMain(isRouteFromRoot: Bool, isRouteFromTabBar: Bool) {
         var pokeMain = factory.makePokeMain(isRouteFromRoot: isRouteFromRoot, isRouteFromTabBar: isRouteFromTabBar,  coordinator: self)
-
+        
         if isRouteFromTabBar {
             self.rootController = self.navigationController
             self.navigationController?.setViewControllers([pokeMain.vc], animated: false)
