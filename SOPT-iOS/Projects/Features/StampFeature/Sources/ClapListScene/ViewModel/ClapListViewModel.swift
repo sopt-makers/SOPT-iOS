@@ -18,7 +18,7 @@ public class ClapListViewModel: ClapListViewModelType {
     // MARK: - Triggers
 
     public var onNaviBackTap: (() -> Void)?
-    public var onCellTap: ((String?) -> Void)?
+    public var onCellTap: ((String?, String?) -> Void)?
 
     // MARK: - Properties
 
