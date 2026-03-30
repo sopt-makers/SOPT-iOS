@@ -104,6 +104,7 @@ extension RankingChartCVC {
     }
     
     public func setData(model: RankingChartModel) {
+        self.cancelBag = CancelBag()
         
         // 데이터 바인딩을 위한 모델 순서 재정렬
         let noDataRankingModel = RankingModel(username: "", score: 0, sentence: "")
