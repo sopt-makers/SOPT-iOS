@@ -40,12 +40,10 @@ public extension TabBarItemType {
             }
         case .visitor:
             switch self {
-            case .home, .soptamp:
+            case .home, .soptamp, .poke:
                 return 0
-            case .poke:
-                return 1
             case .soptlog:
-                return 2
+                return 1
             }
         }
     }
