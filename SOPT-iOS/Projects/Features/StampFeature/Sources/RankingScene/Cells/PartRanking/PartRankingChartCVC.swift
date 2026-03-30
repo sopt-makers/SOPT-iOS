@@ -77,9 +77,12 @@ extension PartRankingChartCVC {
     
     private func setChartData(chartRectangleModel: [PartRankingModel]) {
         for (index, rectangle) in chartStackView.arrangedSubviews.enumerated() {
-            guard let chartRectangle = rectangle as? STPartChartRectangleView else { return }
-            guard let model = chartRectangleModel[safe: index] else { return }            
-            chartRectangle.setData(rank: model.rank, partName: model.part)
+            guard let chartRectangle = rectangle as? STPartChartRectangleView else { continue }
+            if let model = chartRectangleModel[safe: index] {
+                chartRectangle.setData(rank: model.rank, partName: model.part)
+            } else {
+                chartRectangle.setData(rank: index + 1, partName: "-")
+            }
         }
     }
 }
