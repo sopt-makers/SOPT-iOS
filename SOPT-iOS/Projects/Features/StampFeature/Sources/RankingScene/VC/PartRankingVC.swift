@@ -137,6 +137,7 @@ extension PartRankingVC {
             .withUnretained(self)
             .sink(receiveValue: { owner, partRankingModels in
                 owner.applySnapshot(model: partRankingModels)
+                owner.endRefresh()
             }).store(in: cancelBag)
     }
     
