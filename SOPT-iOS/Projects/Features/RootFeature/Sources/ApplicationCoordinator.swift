@@ -92,36 +92,65 @@ public final class ApplicationCoordinator: BaseCoordinator {
     private func bindNotification() {
         self.cancelBag.cancel()
         
-        self.notificationHandler.deepLink
-            .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .filter { _ in
-                self.childCoordinators.contains(where: { $0 is DefaultTabBarCoordinator })
-            }
-            .sink { [weak self] deepLinkComponent in
-                self?.handleDeepLink(deepLink: deepLinkComponent)
-                self?.notificationHandler.clearNotificationRecord()
-            }.store(in: cancelBag)
-        
-        self.notificationHandler.webLink
-            .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .filter { _ in
-                self.childCoordinators.contains(where: { $0 is DefaultTabBarCoordinator })
-            }.sink { [weak self] url in
-                self?.handleWebLink(webLink: url)
-                self?.notificationHandler.clearNotificationRecord()
-            }.store(in: cancelBag)
-        
-        self.notificationHandler.notificationLinkError
-            .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .filter { _ in
-                self.childCoordinators.contains(where: { $0 is DefaultTabBarCoordinator })
-            }.sink { [weak self] error in
-                self?.handleNotificationLinkError(error: error)
-                self?.notificationHandler.clearNotificationRecord()
-            }.store(in: cancelBag)
+        switch Config.coordinatorFlag {
+        case .legacy:
+            self.notificationHandler.deepLink
+                .compactMap { $0 }
+                .receive(on: DispatchQueue.main)
+                .filter{ _ in
+                    self.childCoordinators.contains(where: { $0 is DefaultTabBarCoordinator })
+                }
+                .sink { [weak self] deepLinkComponent in
+                    self?.handleDeepLink(deepLink: deepLinkComponent)
+                    self?.notificationHandler.clearNotificationRecord()
+                }.store(in: cancelBag)
+            
+            self.notificationHandler.webLink
+                .compactMap { $0 }
+                .receive(on: DispatchQueue.main)
+                .filter{ _ in
+                    self.childCoordinators.contains(where: { $0 is DefaultTabBarCoordinator })
+                }
+                .sink { [weak self] url in
+                    self?.handleWebLink(webLink: url)
+                    self?.notificationHandler.clearNotificationRecord()
+                }.store(in: cancelBag)
+            
+            self.notificationHandler.notificationLinkError
+                .compactMap { $0 }
+                .receive(on: DispatchQueue.main)
+                .filter{ _ in
+                    self.childCoordinators.contains(where: { $0 is DefaultTabBarCoordinator })
+                }
+                .sink { [weak self] error in
+                    self?.handleNotificationLinkError(error: error)
+                    self?.notificationHandler.clearNotificationRecord()
+                }.store(in: cancelBag)
+        case .new:
+            self.notificationHandler.deepLink
+                .compactMap { $0 }
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] deepLinkComponent in
+                    self?.handleDeepLink(deepLink: deepLinkComponent)
+                    self?.notificationHandler.clearNotificationRecord()
+                }.store(in: cancelBag)
+            
+            self.notificationHandler.webLink
+                .compactMap { $0 }
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] url in
+                    self?.handleWebLink(webLink: url)
+                    self?.notificationHandler.clearNotificationRecord()
+                }.store(in: cancelBag)
+            
+            self.notificationHandler.notificationLinkError
+                .compactMap { $0 }
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] error in
+                    self?.handleNotificationLinkError(error: error)
+                    self?.notificationHandler.clearNotificationRecord()
+                }.store(in: cancelBag)
+        }
     }
     
     // MARK: - handleDeepLink
