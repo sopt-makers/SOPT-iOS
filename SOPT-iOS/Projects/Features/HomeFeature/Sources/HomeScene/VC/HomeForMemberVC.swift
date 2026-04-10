@@ -271,9 +271,6 @@ extension HomeForMemberVC {
                 case .productService(let productService):
                     return collectionView.dequeueConfiguredReusableCell(using: mainProductRegistration,
                                                                         for: indexPath, item: productService)
-                case .appService(let appService):
-                    return collectionView.dequeueConfiguredReusableCell(using: appServiceRegistration,
-                                                                        for: indexPath, item: appService)
                 case .popularPost(let popularPost):
                     return collectionView.dequeueConfiguredReusableCell(using: popularPostRegistration,
                                                                         for: indexPath, item: popularPost)
@@ -393,12 +390,11 @@ extension HomeForMemberVC {
     private func applySnapshot(with data: HomePresentationModel) {
         var snapshot = NSDiffableDataSourceSnapshot<HomeForMemberSectionLayoutKind, HomeForMemberItem>()
         
-        snapshot.appendSections([.dashBoard, .calendar, .mainProduct, .appService, .popularPosts, .latestPosts, .survey, .socialLinks])
+        snapshot.appendSections([.dashBoard, .calendar, .mainProduct, .popularPosts, .latestPosts, .survey, .socialLinks])
         
         snapshot.appendItems([.dashBoard(data.dashBoard)], toSection: .dashBoard)
         snapshot.appendItems([.recentSchedule(data.recentSchedule)], toSection: .calendar)
         snapshot.appendItems(self.viewModel.productServiceList.map { .productService($0) }, toSection: .mainProduct)
-        snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
         snapshot.appendItems(data.popularPosts.map { .popularPost($0) }, toSection: .popularPosts)
         snapshot.appendItems(data.latestPosts.map { .latestPost($0) }, toSection: .latestPosts)
         snapshot.appendItems([.survey(data.survey)], toSection: .survey)
@@ -417,7 +413,7 @@ extension HomeForMemberVC {
         let items: [HomeForMemberItem] = [
             .dashBoard(data.dashBoard),
             .recentSchedule(data.recentSchedule)
-        ] + data.appServices.map { .appService($0) }
+        ] 
         
         let existingItems = snapshot.itemIdentifiers.filter { items.contains($0) }
         
@@ -517,9 +513,7 @@ extension HomeForMemberVC: UICollectionViewDelegate, UICollectionViewDataSource 
             case .recentSchedule(let model):
                 self.cellTapped.send(.recentSchedule(model))
             case .productService(let model):
-                self.cellTapped.send(.productService(model))
-            case .appService(let model):
-                self.cellTapped.send(.appService(model))
+                self.cellTapped.send(.productService(model))            
             case .popularPost(let model):
                 self.cellTapped.send(.popularPost(model))
             case .latestPost(let model):

@@ -104,11 +104,25 @@ extension RankingChartCVC {
     }
     
     public func setData(model: RankingChartModel) {
+        self.cancelBag = CancelBag()
         
         // 데이터 바인딩을 위한 모델 순서 재정렬
-        let arrangedModel = [model.ranking[1], model.ranking[0], model.ranking[2]]
-        self.models = arrangedModel
+        let noDataRankingModel = RankingModel(username: "", score: 0, sentence: "")
+
+        let arrangedModel: [RankingModel]
+
+        switch model.ranking.count {
+        case 3:
+            arrangedModel = [model.ranking[1], model.ranking[0], model.ranking[2]]
+        case 2:
+            arrangedModel = [model.ranking[1], model.ranking[0], noDataRankingModel]
+        case 1:
+            arrangedModel = [noDataRankingModel, model.ranking[0], noDataRankingModel]
+        default:
+            arrangedModel = [noDataRankingModel, noDataRankingModel, noDataRankingModel]
+        }
         
+        self.models = arrangedModel
         self.setSpeechBalloonViews(balloonModels: arrangedModel)
         self.setChartData(chartRectangleModel: arrangedModel)
     }

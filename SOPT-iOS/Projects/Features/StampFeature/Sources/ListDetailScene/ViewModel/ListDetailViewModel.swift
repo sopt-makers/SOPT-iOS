@@ -270,6 +270,8 @@ extension ListDetailViewModel {
                 if let mine = model.isMine {
                     owner.isOtherUser = !mine
                 }
+                owner.currentText.send(model.content)
+                owner.currentDate.send(model.activityDate)
                 return model
             }
             .assign(to: \.self.listDetailModel, on: output)

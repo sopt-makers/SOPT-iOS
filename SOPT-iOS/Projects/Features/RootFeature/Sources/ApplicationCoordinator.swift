@@ -383,7 +383,6 @@ extension ApplicationCoordinator {
 
         runHomeFlow(type: userType)
         runStampTabFlow()
-        runPokeTabFlow()        
         
         switch userType {
         case .active, .inactive:
@@ -391,7 +390,6 @@ extension ApplicationCoordinator {
             viewControllers = [
                 homeNavigationController,
                 stampNavigationController,
-                pokeNavigationController,
                 soptlogNavigationController
             ]
 
@@ -444,7 +442,7 @@ extension ApplicationCoordinator {
                 case .notification:
                     self?.runNotificationFlow()
                 case .soptlog:
-                    self?.tabBarController?.selectedIndex = 1
+                    self?.tabBarController?.selectedIndex = 3
                 case .deepLink(let url):
                     self?.notificationHandler.receive(deepLink: url)
                     guard let deepLink = self?.notificationHandler.deepLink.value else { return }

@@ -103,7 +103,6 @@ extension ShowAttendanceViewModel {
                     let convertedStartDate = DateFormatManager.shared.serverTimeToString(model.startDate,
                                                                                          from: .monthDayWeekTime,
                                                                                          to: .isoWithoutMillis)
-                    
                     let convertedEndDate = DateFormatManager.shared.serverTimeToString(model.endDate,
                                                                                        from: .monthDayWeekTime,
                                                                                        to: .isoWithoutMillis)

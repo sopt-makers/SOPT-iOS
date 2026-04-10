@@ -13,7 +13,6 @@ import Core
 enum HomeForVisitorSectionLayoutKind: Int, CaseIterable {
     case dashBoard
     case mainProduct
-    case appService
 }
 
 extension HomeForVisitorSectionLayoutKind: HomeSectionUIConfigurable {
@@ -21,8 +20,6 @@ extension HomeForVisitorSectionLayoutKind: HomeSectionUIConfigurable {
         switch self {
         case .mainProduct:
             return I18N.Home.MainProduct.headerTitleForVisitor
-        case .appService:
-            return I18N.Home.AppService.headerTitle
         default:
             return ""
         }
