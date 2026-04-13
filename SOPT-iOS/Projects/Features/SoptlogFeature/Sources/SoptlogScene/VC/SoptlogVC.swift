@@ -25,7 +25,7 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     private var toolTipTap = PassthroughSubject<CGRect, Never>()
     private var viewWillAppear = PassthroughSubject<Void, Never>()
     private var soptlogInfo: SoptlogPresentationModel?
-    internal var isPokeEmpty: Bool = true
+    internal var isPokeEmpty: Bool = false
     
     private var visibleSections: [SoptlogSectionLayoutKind] {
         SoptlogSectionLayoutKind.visibleSections(
@@ -298,7 +298,7 @@ extension SoptlogVC: UICollectionViewDataSource {
     
     private func configureEmptyCell(at indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: SoptlogEmptyCVC.className,
+            withReuseIdentifier: SoptlogMenuCVC.className,
             for: indexPath
         ) as? SoptlogEmptyCVC else {
             return UICollectionViewCell()

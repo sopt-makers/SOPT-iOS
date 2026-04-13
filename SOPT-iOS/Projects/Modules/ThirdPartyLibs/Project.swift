@@ -24,7 +24,6 @@ let project = Project.makeModule(
         .SPM.GoogleSignIn,
         .SPM.FirebaseCore,
         .SPM.FirebaseRemoteConfig,
-        .SPM.FirebaseCrashlytics,
-        .SPM.FirebaseAnalytics
+        .SPM.FirebaseCrashlytics,        
     ]
 )

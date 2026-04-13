@@ -114,7 +114,9 @@ extension ShowAttendanceViewModel {
                                                            endDate: convertedEndDate,
                                                            message: model.message,
                                                            attendances: model.attendances)
+                    
                     output.scheduleModel = newModel
+                    
                 } else {
                     self.sceneType = .unscheduledDay
                     output.scheduleModel = model
