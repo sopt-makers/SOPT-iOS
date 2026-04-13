@@ -84,8 +84,7 @@ extension SoptlogViewModel {
                     owner.onSoptampHomeTapped?()
                 }
             }.store(in: cancelBag)
-        
-        // MARK: - 서버 500 에러 해결 후 false filter 제거
+                
         input.cellTap
             .withUnretained(self)
             .sink { owner, tapInfo in
