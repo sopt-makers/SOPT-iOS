@@ -22,6 +22,7 @@ public protocol PokeMainRoutingTrigger {
   var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)? { get set }
   var onNewFriendMade: ((String) -> Void)? { get set }
   var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)? { get set }
+  var onPokeOnboardingNeeded: ((Bool) -> Void)? { get set }
 }
 
 public typealias PokeMainViewModelType = ViewModelType & PokeMainRoutingTrigger

@@ -61,9 +61,13 @@ public final class PokeCoordinator: BaseCoordinator {
             self.navigationController?.present(newNav, animated: true)
         }
         
+        pokeMain.vm.onPokeOnboardingNeeded = { [weak self] isNeeded in
+            if isNeeded { self?.runPokeOnboardingFlow() }
+        }
+        
         pokeMain.vm.onPokeNotificationsTap = { [weak self] in
             self?.runPokeNotificationListFlow()
-        }
+        }                
         
         pokeMain.vm.onMyFriendsTap = { [weak self] in
             self?.runPokeMyFriendsFlow()
@@ -110,6 +114,17 @@ public final class PokeCoordinator: BaseCoordinator {
         
         addDependency(pokeNotificationListCoordinator)
         pokeNotificationListCoordinator.start()
+    }
+    
+    private func runPokeOnboardingFlow() {
+        guard let navigationController = self.rootController else { return }
+        
+        let pokeOnboardingCoordinator = PokeOnboardingCoordinator(
+            navigationController: navigationController,
+            factory: factory
+        )
+        
+        pokeOnboardingCoordinator.start()
     }
     
     private func runPokeMyFriendsFlow() {
