@@ -70,12 +70,13 @@ extension PokeOnboardingViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNaviBackTapped?()
+                owner.onPokeButtonTapped = nil
             }.store(in: cancelBag)
         
         input.pokeButtonTapped
             .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)> in
-                guard let self, let value = self.onPokeButtonTapped?(userModel) else { return .empty() }
                 
+                guard let self, let value = self.onPokeButtonTapped?(userModel) else {return .empty() }
                 return value
             }
             .sink(receiveValue: { [weak self] userModel, messageModel, isAnonymous in
