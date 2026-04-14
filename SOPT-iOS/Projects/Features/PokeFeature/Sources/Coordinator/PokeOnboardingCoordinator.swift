@@ -64,15 +64,15 @@ public final class PokeOnboardingCoordinator: DefaultCoordinator {
             bottomSheetManager.present(toPresent: viewController, on: self?.rootController)
         }
         
-        pokeOnboarding.vm.onPokeButtonTapped = { [weak self] userModel in
-            guard let bottomSheet = self?.factory
+        pokeOnboarding.vm.onPokeButtonTapped = { [self] userModel in
+            guard let bottomSheet = self.factory
                 .makePokeMessageTemplateBottomSheet(messageType: .pokeSomeone)
                     .vc
                     .viewController as? PokeMessageTemplateBottomSheet
             else { return .empty() }
             
             let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate(minHeight: PokeMessageTemplateBottomSheet.minimumContentHeight))
-            bottomSheetManager.present(toPresent: bottomSheet, on: self?.rootController)
+            bottomSheetManager.present(toPresent: bottomSheet, on: self.rootController)
             
             return bottomSheet
                 .signalForClick()
