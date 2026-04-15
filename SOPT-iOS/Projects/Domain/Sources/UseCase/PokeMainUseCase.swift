@@ -62,8 +62,11 @@ extension DefaultPokeMainUseCase: PokeMainUseCase {
     
     public func getFriend() {
         repository.getFriend()
-            .sink { event in
+            .sink { [weak self] event in
                 print("GetFriend State: \(event)")
+                if case .failure = event {
+                    self?.myFriend.send([])
+                }
             } receiveValue: { [weak self] friend in
                 self?.myFriend.send(friend)
             }.store(in: cancelBag)
