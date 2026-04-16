@@ -41,7 +41,7 @@ public final class PokeProfileCardView: UIView, PokeCompatible {
         imageView.backgroundColor = DSKitAsset.Colors.gray700.color
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
-        imageView.image = DSKitAsset.Assets.icDefaultProfile.image
+        imageView.image = DSKitAsset.Assets.icPokeDefaultProfile.image
         return imageView
     }()
     
@@ -119,7 +119,7 @@ public final class PokeProfileCardView: UIView, PokeCompatible {
 
     func setData(with model: PokeUserModel) {
         self.user = model
-        self.profileImageView.setImage(with: model.profileImage, placeholder: DSKitAsset.Assets.icDefaultProfile.image)
+        self.profileImageView.setImage(with: model.profileImage, placeholder: DSKitAsset.Assets.icPokeDefaultProfile.image)
         self.nameLabel.text = model.name
         self.partLabel.text = String(describing: model.generation) + "기" + " " + model.part
         self.kokButton.isEnabled = !model.isAlreadyPoke

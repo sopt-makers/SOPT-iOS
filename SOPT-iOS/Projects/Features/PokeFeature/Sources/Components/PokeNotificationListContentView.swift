@@ -39,7 +39,7 @@ final public class PokeNotificationListContentView: UIView, PokeCompatible {
   }
 
   // MARK: Left:
-  private let profileImageView = CustomProfileImageView()
+  private let profileImageView = CustomProfileImageView(placeholder: DSKitAsset.Assets.icPokeDefaultProfile.image)
 
   // MARK: Center:
   private lazy var centerContentsStackView = UIStackView().then {

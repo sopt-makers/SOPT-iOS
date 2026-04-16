@@ -13,37 +13,40 @@ import Core
 
 /// 테두리가 있는 원형 프로필 이미지 뷰
 public final class CustomProfileImageView: UIImageView {
-    
+
     // MARK: - Properties
-    
+
     public lazy var tap = self.gesture().mapVoid().asDriver()
-    
+
+    private let placeholder: UIImage
+
     // MARK: - initialization
-    
-    public init() {
+
+    public init(placeholder: UIImage = DSKitAsset.Assets.icDefaultProfile.image) {
+        self.placeholder = placeholder
         super.init(frame: .zero)
         self.setUI()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     private func setUI() {
         self.backgroundColor = DSKitAsset.Colors.gray700.color
-        self.image = DSKitAsset.Assets.icDefaultProfile.image
+        self.image = placeholder
         self.clipsToBounds = true
         self.layer.borderWidth = 2
         self.contentMode = .scaleAspectFill
     }
-    
+
     public override func layoutSubviews() {
         super.layoutSubviews()
         self.layer.cornerRadius = self.frame.width / 2
     }
-    
+
     public func setPlaceholder() {
-        self.image = DSKitAsset.Assets.icDefaultProfile.image
+        self.image = placeholder
     }
     
     @discardableResult

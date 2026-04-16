@@ -38,7 +38,7 @@ public class PokeAnonymousFriendUpgradeVC: UIViewController, LegacyPokeAnonymous
   private lazy var lottieView = LottieAnimationView(name: lottieName(user: user),
                                                bundle: DSKitResources.bundle)
 
-  private let profileImageView = CustomProfileImageView().then {
+  private let profileImageView = CustomProfileImageView(placeholder: DSKitAsset.Assets.icPokeDefaultProfile.image).then {
     $0.isHidden = true
   }
 
