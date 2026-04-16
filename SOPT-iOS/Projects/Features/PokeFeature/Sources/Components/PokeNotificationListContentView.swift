@@ -164,7 +164,7 @@ extension PokeNotificationListContentView {
       with: model.isAnonymous ? model.anonymousImage : model.profileImage,
       relation: PokeRelation(rawValue: model.relationName) ?? .nonFriend
     )
-    self.partInfoLabel.text = model.part
+    self.partInfoLabel.text = "\(model.generation)기 \(model.part)"
     self.descriptionLabel.attributedText = model.message.applyMDSFont()
     self.pokeChipView.configure(with: model.mutualRelationMessage)
     self.pokeKokButton.isEnabled = !model.isAlreadyPoke
