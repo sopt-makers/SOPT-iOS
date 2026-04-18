@@ -161,7 +161,7 @@ extension PokeNotificationListContentView {
     self.user = model
     self.userId = model.userId
     self.profileImageView.setImage(
-      with: model.isAnonymous ? model.anonymousImage : model.profileImage,
+        with: model.isAnonymous ? DSKitAsset.Assets.icPokeDefaultProfile.image.className : model.profileImage,
       relation: PokeRelation(rawValue: model.relationName) ?? .nonFriend
     )
     self.partInfoLabel.text = model.part
