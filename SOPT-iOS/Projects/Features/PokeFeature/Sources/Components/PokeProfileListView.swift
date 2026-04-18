@@ -34,7 +34,7 @@ public final class PokeProfileListView: UIView, PokeCompatible {
     
     // MARK: - UI Components
     
-    private let profileImageView = CustomProfileImageView()
+    private let profileImageView = CustomProfileImageView(placeholder: DSKitAsset.Assets.icPokeDefaultProfile.image)
     
     private lazy var kokButton = PKokButton()
     
@@ -182,7 +182,7 @@ public final class PokeProfileListView: UIView, PokeCompatible {
     func setData(with model: PokeUserModel) {
         self.user = model
         self.profileImageView.setImage(
-            with: model.isAnonymous ? model.anonymousImage : model.profileImage,
+            with: model.profileImage,
             relation: model.pokeRelation
         )
         self.partLabel.text = "\(model.generation)기 \(model.part)"

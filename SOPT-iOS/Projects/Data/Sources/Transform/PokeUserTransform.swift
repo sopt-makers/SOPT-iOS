@@ -26,8 +26,7 @@ extension PokeUserEntity {
       isFirstMeet: isFirstMeet,
       isAlreadyPoke: isAlreadyPoke,
       isAnonymous: isAnonymous,
-      anonymousName: anonymousName,
-      anonymousImage: anonymousImage
+      anonymousName: anonymousName
     )
   }
 }
