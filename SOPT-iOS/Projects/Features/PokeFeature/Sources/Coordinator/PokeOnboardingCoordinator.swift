@@ -54,8 +54,7 @@ public final class PokeOnboardingCoordinator: DefaultCoordinator {
         var pokeOnboarding = factory.makePokeOnboarding()
         
         pokeOnboarding.vm.onNaviBackTapped = { [weak self] in
-            self?.navigationController.dismiss(animated: true)
-            self?.finishFlow?()
+            self?.navigationController.dismiss(animated: true)            
         }
         
         pokeOnboarding.vm.onFirstVisitInOnboarding = { [weak self] in
