@@ -64,9 +64,8 @@ extension DefaultPokeMainUseCase: PokeMainUseCase {
         repository.getFriend()
             .sink { [weak self] event in
                 print("GetFriend State: \(event)")
-                if case .failure = event {
-                    self?.myFriend.send([])
-                }
+                // 친구 관계가 없을떄는 서버에서 에러를 응답하기 때문에 빈배열로 값을 방출함
+                if case .failure = event { self?.myFriend.send([])}
             } receiveValue: { [weak self] friend in
                 self?.myFriend.send(friend)
             }.store(in: cancelBag)
