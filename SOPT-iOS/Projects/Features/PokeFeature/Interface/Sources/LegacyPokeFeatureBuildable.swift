@@ -15,7 +15,7 @@ public protocol LegacyPokeFeatureBuildable {
     func makePokeMain(isRouteFromRoot: Bool, coordinator: Coordinator) -> LegacyPokeMainPresentable
     func makePokeMyFriends(coordinator: Coordinator) -> LegacyPokeMyFriendsPresentable
     func makePokeMyFriendsList(relation: PokeRelation) -> LegacyPokeMyFriendsListPresentable
-    func makePokeOnboarding() -> LegacyPokeOnboardingPresentable
+    func makePokeOnboarding(coordinator: AnyCoordinatorObject) -> LegacyPokeOnboardingPresentable
     func makePokeMessageTemplateBottomSheet(messageType: PokeMessageType) -> LegacyPokeMessageTemplatesPresentable
     func makePokeNotificationList(coordinator: Coordinator) -> LegacyPokeNotificationPresentable
     func makePokeMakingFriendCompleted(friendName: String) -> PokeMakingFriendCompletedPresentable

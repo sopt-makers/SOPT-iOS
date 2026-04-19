@@ -21,9 +21,9 @@ public final class PokeBuilder {
 }
 
 extension PokeBuilder: PokeFeatureBuildable {
-    public func makePokeOnboarding() -> PokeFeatureInterface.PokeOnboardingPresentable {
+    public func makePokeOnboarding(coordinator: AnyCoordinatorObject) -> PokeFeatureInterface.PokeOnboardingPresentable {
         let usecase = DefaultPokeOnboardingUsecase(repository: self.pokeOnboardingRepository)
-        let viewModel = PokeOnboardingViewModel(usecase: usecase)
+        let viewModel = PokeOnboardingViewModel(usecase: usecase, coordinator: coordinator)
         let viewController = PokeOnboardingVC(viewModel: viewModel)
         
         return (viewController, viewModel)

@@ -40,7 +40,7 @@ extension LegacyPokeOnboardingCoordinator {
     }
     
     func makePokeOnboardingView() -> LegacyPokeOnboardingPresentable {
-        var pokeOnboarding = self.factory.makePokeOnboarding()
+        var pokeOnboarding = self.factory.makePokeOnboarding(coordinator: self)
         
         pokeOnboarding.vm.onNaviBackTapped = { [weak self] in
             self?.router.dismissModule(animated: true)
