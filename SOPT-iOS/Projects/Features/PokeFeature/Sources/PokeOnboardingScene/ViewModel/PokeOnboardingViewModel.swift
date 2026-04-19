@@ -37,11 +37,13 @@ public final class PokeOnboardingViewModel: PokeOnboardingViewModelType {
     // MARK: Privates
     private let usecase: PokeOnboardingUsecase
     private let eventTracker = PokeEventTracker()
+    private let coordinator: AnyCoordinatorObject 
     
     
     // MARK: - Lifecycles
-    public init(usecase: PokeOnboardingUsecase) {
+    public init(usecase: PokeOnboardingUsecase, coordinator: AnyCoordinatorObject) {
         self.usecase = usecase
+        self.coordinator = coordinator
     }
 }
 
@@ -70,7 +72,6 @@ extension PokeOnboardingViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNaviBackTapped?()
-                owner.onPokeButtonTapped = nil
             }.store(in: cancelBag)
         
         input.pokeButtonTapped
