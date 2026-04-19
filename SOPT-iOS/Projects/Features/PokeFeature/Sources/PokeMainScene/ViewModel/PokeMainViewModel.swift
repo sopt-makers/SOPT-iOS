@@ -28,7 +28,6 @@ public class PokeMainViewModel: PokeMainViewModelType {
     public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)?
     public var onNewFriendMade: ((String) -> Void)?
     public var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)?
-    public var viewDidLoad: (() -> Void)?
     public var onPokeOnboardingNeeded: ((Bool) -> Void)?
     
     // MARK: - Properties
