@@ -51,11 +51,10 @@ public final class PokeOnboardingCoordinator: DefaultCoordinator {
     }
     
     private func makePokeOnboardingView() -> PokeOnboardingPresentable {
-        var pokeOnboarding = factory.makePokeOnboarding()
+        var pokeOnboarding = factory.makePokeOnboarding(coordinator: self)
         
         pokeOnboarding.vm.onNaviBackTapped = { [weak self] in
-            self?.navigationController.dismiss(animated: true)
-            self?.finishFlow?()
+            self?.navigationController.dismiss(animated: true)            
         }
         
         pokeOnboarding.vm.onFirstVisitInOnboarding = { [weak self] in

@@ -28,10 +28,11 @@ public class PokeMainViewModel: PokeMainViewModelType {
     public var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)?
     public var onNewFriendMade: ((String) -> Void)?
     public var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)?
+    public var onPokeOnboardingNeeded: ((Bool) -> Void)?
     
     // MARK: - Properties
     
-    private let useCase: PokeMainUseCase
+    private let useCase: PokeMainUseCase 
     private let isRouteFromRoot: Bool
     private var cancelBag = CancelBag()
     private let eventTracker = PokeEventTracker()
@@ -158,6 +159,13 @@ extension PokeMainViewModel {
     }
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
+        useCase.getIsNewUser()
+            .sink { _ in}
+            receiveValue: { [weak self] isNewUser in
+                self?.onPokeOnboardingNeeded?(isNewUser)
+            }
+            .store(in: cancelBag)
+        
         useCase.pokedToMeUser
             .compactMap { $0 }
             .sink { output.pokedToMeUser.send($0) }

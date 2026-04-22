@@ -37,11 +37,13 @@ public final class PokeOnboardingViewModel: PokeOnboardingViewModelType {
     // MARK: Privates
     private let usecase: PokeOnboardingUsecase
     private let eventTracker = PokeEventTracker()
+    private let coordinator: AnyCoordinatorObject 
     
     
     // MARK: - Lifecycles
-    public init(usecase: PokeOnboardingUsecase) {
+    public init(usecase: PokeOnboardingUsecase, coordinator: AnyCoordinatorObject) {
         self.usecase = usecase
+        self.coordinator = coordinator
     }
 }
 
@@ -74,8 +76,8 @@ extension PokeOnboardingViewModel {
         
         input.pokeButtonTapped
             .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)> in
-                guard let self, let value = self.onPokeButtonTapped?(userModel) else { return .empty() }
                 
+                guard let self, let value = self.onPokeButtonTapped?(userModel) else {return .empty() }
                 return value
             }
             .sink(receiveValue: { [weak self] userModel, messageModel, isAnonymous in

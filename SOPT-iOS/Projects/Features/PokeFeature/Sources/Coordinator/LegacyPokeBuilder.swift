@@ -38,9 +38,9 @@ extension LegacyPokeBuilder: LegacyPokeFeatureBuildable {
         return (pokeMyFriendsVC, viewModel)
     }
     
-    public func makePokeOnboarding() -> PokeFeatureInterface.LegacyPokeOnboardingPresentable {
+    public func makePokeOnboarding(coordinator: AnyCoordinatorObject) -> PokeFeatureInterface.LegacyPokeOnboardingPresentable {
         let usecase = DefaultPokeOnboardingUsecase(repository: self.pokeOnboardingRepository)
-        let viewModel = PokeOnboardingViewModel(usecase: usecase)
+        let viewModel = PokeOnboardingViewModel(usecase: usecase, coordinator: coordinator)
         let viewController = PokeOnboardingVC(viewModel: viewModel)
         
         return (viewController, viewModel)

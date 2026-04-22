@@ -29,6 +29,12 @@ extension PokeMainRepository: PokeMainRepositoryInterface {
             .eraseToAnyPublisher()
     }
     
+    public func getIsNewUser() -> AnyPublisher<Bool, Error> {
+        pokeService.isNewUser()
+            .map { $0.isNew }
+            .eraseToAnyPublisher()
+    }
+    
     public func getFriend() -> AnyPublisher<[PokeUserModel], Error> {
         pokeService.getFriend()
             .map { $0.map { $0.toDomain() } }
