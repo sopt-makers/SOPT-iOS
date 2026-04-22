@@ -14,7 +14,7 @@ import Networks
 
 extension PartRankingEntity {
   public func toDomain() -> PartRankingModel {
-    return .init(part: part, rank: rank, points: points)
+    return .init(part: part, rank: rank, points: points, pointsDecimal: pointsDecimal)
   }
 }
 

@@ -9,7 +9,8 @@
 import Foundation
 
 public struct PartRankingEntity: Decodable {
-  public let part: String
-  public let rank: Int
-  public let points: Int
+    public let part: String
+    public let rank: Int
+    public let points: Int
+    public let pointsDecimal: Double
 }
