@@ -24,7 +24,6 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     
     // FAButton
     private let isMenuCellTapped = PassthroughSubject<String, Never>()
-    private lazy var isFABTapped = plusButton.publisher(for: .touchUpInside).mapVoid().asDriver()
     private let fabMenuSections = FABMenuSection.allCases
     
     // FloatingButton
@@ -58,18 +57,6 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     var dataSource: UICollectionViewDiffableDataSource<HomeForMemberSectionLayoutKind, HomeForMemberItem>! = nil
     var collectionView: UICollectionView! = nil
     private var floatingButton = HomeFloatingButton(frame: .zero)
-
-    private let plusButton = UIButton().then {
-        $0.setImage(DSKitAsset.Assets.icFabPlus.image, for: .normal)
-        $0.backgroundColor = .white
-        $0.layer.cornerRadius = 18
-        $0.imageView?.contentMode = .center
-        $0.imageView?.clipsToBounds = false
-        $0.layer.shadowColor = UIColor.black.cgColor
-        $0.layer.shadowOpacity = 0.1
-        $0.layer.shadowOffset = CGSize(width: 0, height: 4)
-        $0.layer.shadowRadius = 10
-    }
 
     private let dimmedView = UIView().then {
         $0.backgroundColor = DSKitAsset.Colors.black100.color.withAlphaComponent(0.6)
@@ -158,7 +145,6 @@ extension HomeForMemberVC {
             collectionView,
             floatingButton,
             dimmedView,
-            plusButton,
             menuCollectionView
         )
         
@@ -173,15 +159,12 @@ extension HomeForMemberVC {
         }
         
         floatingButton.snp.makeConstraints { make in
-            make.bottom.equalTo(plusButton.snp.top).offset(-12)
+//            make.bottom.equalTo(plusButton.snp.top).offset(-12)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-20)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(68)
         }
-        plusButton.snp.makeConstraints { make in
-            make.size.equalTo(48)
-            make.trailing.equalToSuperview().inset(20)
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(20)
-        }
+       
         menuCollectionView.snp.makeConstraints { make in
             make.height.equalTo(299)
             make.top.equalTo(view.snp.bottom)
@@ -195,7 +178,6 @@ extension HomeForMemberVC {
     
     private func extendedFloatingButtonLayout() {
         floatingButton.snp.remakeConstraints { make in
-            make.bottom.equalTo(plusButton.snp.top).offset(-12)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(68)
         }
@@ -203,7 +185,6 @@ extension HomeForMemberVC {
     
     private func collapsedFloatingButtonLayout() {
         floatingButton.snp.remakeConstraints { make in
-            make.bottom.equalTo(plusButton.snp.top).offset(-12)
             make.trailing.equalToSuperview().inset(20)
             make.width.equalTo(127)
             make.height.equalTo(53)
@@ -349,8 +330,7 @@ extension HomeForMemberVC {
             surveyButtonTapped: surveyButtonTapped.asDriver(),
             socialLinkButtonTapped: socialLinkButtonTapped.asDriver(),
             viewAllButtonTapped: viewAllButtonTapped.asDriver(),
-            profileImageViewTapped: profileImageViewTapped.asDriver(),
-            isFABTapped: isFABTapped,
+            profileImageViewTapped: profileImageViewTapped.asDriver(),            
             isMenuCellTapped: isMenuCellTapped.asDriver(),
             editProfileTapped: profileEditTapped.asDriver()
         )
@@ -450,9 +430,7 @@ extension HomeForMemberVC {
         menuCollectionView.register(FABMenuHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: FABMenuHeaderView.className)
     }
 
-    private func setAddTarget() {
-        plusButton.addTarget(self, action: #selector(FABAnimation), for: .touchUpInside)
-    }
+    private func setAddTarget() {}
 }
 
 // MARK: - UICollectionViewDelegate
@@ -502,7 +480,6 @@ extension HomeForMemberVC: UICollectionViewDelegate, UICollectionViewDataSource 
         if collectionView == menuCollectionView {
             let url = fabMenuSections[indexPath.section].items[indexPath.item].url
             self.isMenuCellTapped.send(url)
-            FABAnimation()
             return
         }
         
@@ -559,59 +536,4 @@ extension HomeForMemberVC: UICollectionViewDelegate, UICollectionViewDataSource 
     }
 }
 
-// MARK: - FAButton Animation
-
-extension HomeForMemberVC {
-    @objc
-    private func FABAnimation() {
-        let isTapped = !plusButton.isSelected
-        plusButton.isSelected.toggle()
-
-        animatePlusButton(isTapped)
-        animateDimmedView(isTapped)
-        isTapped ? animateFABMenuIn() : animateFABMenuOut()
-    }
-
-    private func animatePlusButton(_ isTapped: Bool) {
-        UIView.animate(withDuration: 0.6) { [weak self] in
-            self?.plusButton.imageView?.transform = isTapped ? .init(rotationAngle: -CGFloat.pi/4) : .identity
-        }
-    }
-
-    private func animateFABMenuIn() {
-        UIView.animate(withDuration: 0.6,
-                       delay: 0,
-                       usingSpringWithDamping: 0.75,
-                       initialSpringVelocity: 0.75,
-                       options: [.curveEaseInOut],
-                       animations: { [weak self] in
-            guard let self else { return }
-            let translationY = -(self.plusButton.frame.height + 120 + self.menuCollectionView.frame.height)
-            self.menuCollectionView.transform = CGAffineTransform(translationX: 0, y: translationY)
-        })
-    }
-
-    private func animateFABMenuOut() {
-        UIView.animate(withDuration: 0.6,
-                       delay: 0,
-                       usingSpringWithDamping: 1,
-                       initialSpringVelocity: 0.8,
-                       options: [.curveEaseInOut],
-                       animations: { [weak self] in
-            self?.menuCollectionView.transform = .identity
-        })
-    }
-
-    private func animateDimmedView(_ isTapped: Bool) {
-        UIView.animate(withDuration: 0.6,
-                       delay: 0,
-                       usingSpringWithDamping: 0.75,
-                       initialSpringVelocity: 0.75,
-                       options: [.curveEaseInOut],
-                       animations: {
-            self.dimmedView.isHidden = !isTapped
-            self.dimmedView.alpha = isTapped ? 1 : 0
-        })
-    }
-}
 

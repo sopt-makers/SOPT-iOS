@@ -166,4 +166,3 @@ extension TabBarController: UITabBarControllerDelegate {
         isTabBarItemSelected.send(index)
     }
 }
-
