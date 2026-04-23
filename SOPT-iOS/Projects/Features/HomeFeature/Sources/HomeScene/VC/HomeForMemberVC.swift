@@ -159,7 +159,6 @@ extension HomeForMemberVC {
         }
         
         floatingButton.snp.makeConstraints { make in
-//            make.bottom.equalTo(plusButton.snp.top).offset(-12)
             make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-20)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(68)
