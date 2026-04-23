@@ -23,12 +23,15 @@ final public class TabBarViewModel: TabBarViewModelType {
     
     private let userType: UserType
     @Published public private(set) var tabBarBadges: [TabBarItemType: String] = [:]
+    @Published private(set) var isFABTapped: Bool = false
     
     // MARK: - Inputs
     
     public struct Input {
         let viewWillAppear: Driver<Void>
         let isTabSelectedIndex: Driver<Int>
+        let isFABTapped: Driver<Void>
+        let isMenuCellTapped: Driver<String>
     }
     
     // MARK: - Outputs
@@ -40,6 +43,7 @@ final public class TabBarViewModel: TabBarViewModelType {
     // MARK: - TabBarCoordinating
     
     public var onTabBarItemTapped: ((TabBarItemType) -> Void)?
+    public var onFABMenuTapped: ((String) -> Void)?
     public var showTabBarAlert: (() -> Void)?
     
     // MARK: - initialization
@@ -76,6 +80,18 @@ extension TabBarViewModel {
                 
                 owner.onTabBarItemTapped?(tabBar)
                 owner.trackAmplitude(itemType: tabBar)
+            }.store(in: cancelBag)
+        
+        input.isFABTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.isFABTapped.toggle()
+            }.store(in: cancelBag)
+        
+        input.isMenuCellTapped
+            .withUnretained(self)
+            .sink { owner, url in
+                owner.onFABMenuTapped?(url)
             }.store(in: cancelBag)
         
         return output
