@@ -526,7 +526,6 @@ extension HomeForMemberVC: UICollectionViewDelegate, UICollectionViewDataSource 
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        animateFAButton(scrollView)
         updateLatestPostPageControl()
     }
     
