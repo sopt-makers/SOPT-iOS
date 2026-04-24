@@ -102,7 +102,6 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
         setUI()
         setLayout()
         setDelegate()
-        setAddTarget()
         setDataSource()
         bindViews()
         bindViewModels()
@@ -329,7 +328,7 @@ extension HomeForMemberVC {
             surveyButtonTapped: surveyButtonTapped.asDriver(),
             socialLinkButtonTapped: socialLinkButtonTapped.asDriver(),
             viewAllButtonTapped: viewAllButtonTapped.asDriver(),
-            profileImageViewTapped: profileImageViewTapped.asDriver(),            
+            profileImageViewTapped: profileImageViewTapped.asDriver(),
             isMenuCellTapped: isMenuCellTapped.asDriver(),
             editProfileTapped: profileEditTapped.asDriver()
         )
@@ -428,8 +427,6 @@ extension HomeForMemberVC {
         menuCollectionView.register(FABMenuCVC.self, forCellWithReuseIdentifier: FABMenuCVC.className)
         menuCollectionView.register(FABMenuHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: FABMenuHeaderView.className)
     }
-
-    private func setAddTarget() {}
 }
 
 // MARK: - UICollectionViewDelegate
