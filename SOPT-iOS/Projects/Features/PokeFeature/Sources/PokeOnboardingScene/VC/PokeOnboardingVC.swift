@@ -142,6 +142,11 @@ extension PokeOnboardingVC {
         
         scrollView.contentSize = self.scrollContainerView.frame.size
     }
+    
+    public override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        UserDefaultKeyList.User.isVisitedPokeMainView = true
+    }
 }
 
 // MARK: - Configuring methods

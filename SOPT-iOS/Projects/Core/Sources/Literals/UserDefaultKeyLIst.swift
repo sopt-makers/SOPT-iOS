@@ -30,6 +30,7 @@ public struct UserDefaultKeyList {
         @UserDefaultWrapper<String>(key: "soptampName") public static var soptampName
         @UserDefaultWrapper<String>(key: "pushToken") public static var pushToken
         @UserDefaultWrapper<Bool>(key: "isFirstVisitToPokeView") public static var isFirstVisitToPokeOnboardingView
+        @UserDefaultWrapper<Bool>(key: "isVisitedPokeMainView") public static var isVisitedPokeMainView
     }
     
     public struct AppNotice {

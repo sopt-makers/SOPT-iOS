@@ -21,8 +21,7 @@ public protocol PokeMainUseCase {
     func getWhoPokedToMe()
     func getFriend()
     func getFriendRandomUser(randomType: PokeRandomUserType, size: Int)
-    func poke(userId: Int, message: PokeMessageModel, isAnonymous: Bool, willBeNewFriend: Bool)
-    func getIsNewUser() -> AnyPublisher<Bool, Error>
+    func poke(userId: Int, message: PokeMessageModel, isAnonymous: Bool, willBeNewFriend: Bool)    
 }
 
 public class DefaultPokeMainUseCase {
@@ -42,10 +41,6 @@ public class DefaultPokeMainUseCase {
 }
 
 extension DefaultPokeMainUseCase: PokeMainUseCase {
-    public func getIsNewUser() -> AnyPublisher<Bool, Error> {
-        repository.getIsNewUser()
-            .eraseToAnyPublisher()
-    }
     
     public func getWhoPokedToMe() {
         repository.getWhoPokeToMe()
