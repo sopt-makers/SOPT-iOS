@@ -146,7 +146,6 @@ extension PokeOnboardingVC {
     public override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         UserDefaultKeyList.User.isVisitedPokeMainView = true
-        UserDefaults.standard.synchronize()
     }
 }
 
