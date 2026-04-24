@@ -181,9 +181,6 @@ extension TabBarController {
 // MARK: - Methods
 
 extension TabBarController {
-    private func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-        return viewController.tabBarItem.tag != tabTypes.count
-    }
     
     private func bindViewModels() {
         let input = TabBarViewModel.Input(
@@ -249,6 +246,10 @@ extension TabBarController: UITabBarControllerDelegate {
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         guard let index = tabBar.items?.firstIndex(of: item) else { return }
         isTabBarItemSelected.send(index)
+    }
+    
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        return viewController.tabBarItem.tag != tabTypes.count
     }
 }
 
