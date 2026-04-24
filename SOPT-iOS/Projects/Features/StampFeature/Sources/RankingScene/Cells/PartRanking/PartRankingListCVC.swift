@@ -99,8 +99,8 @@ extension PartRankingListCVC {
     public func setData(model: PartRankingModel) {
         self.model = model
         rankLabel.text = String(model.rank)
-        partNameLabel.text = model.part
-        scoreLabel.text = "\(model.points)점"
+        partNameLabel.text = model.part        
+        scoreLabel.text = "\(String(format: "%.2f", model.pointsDecimal))점"
         scoreLabel.partFontChange(targetString: "점",
                                   font: DSKitFontFamily.Pretendard.medium.font(size: 12))
         setDefaultRanking()

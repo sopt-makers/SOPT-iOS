@@ -15,7 +15,6 @@ public protocol HomeUseCase {
     func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Never>
     func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never>
     func getReportURL()
-    func checkPokeNewUser() -> AnyPublisher<Bool, Never>
     func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonModel, Never>
     
     func getHomeDescriptionAsync() async throws -> HomeDescriptionModel
@@ -85,15 +84,6 @@ extension DefaultHomeUseCase: HomeUseCase {
             } receiveValue: { owner, resultModel in
                 UserDefaultKeyList.Soptamp.reportUrl = resultModel.reportUrl
             }.store(in: cancelBag)
-    }
-    
-    public func checkPokeNewUser() -> AnyPublisher<Bool, Never> {
-        repository.checkPokeNewUser()
-            .catch { error in
-                print("HomeUseCase checkPokeNewUser에서 문제가 발생했습니다. \(error)")
-                return Empty<Bool, Never>()
-            }
-            .eraseToAnyPublisher()
     }
     
     public func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonModel, Never> {
