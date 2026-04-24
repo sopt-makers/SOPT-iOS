@@ -181,9 +181,10 @@ extension TabBarController {
 // MARK: - Methods
 
 extension TabBarController {
-    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+    private func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         return viewController.tabBarItem.tag != tabTypes.count
     }
+    
     private func bindViewModels() {
         let input = TabBarViewModel.Input(
             viewWillAppear: viewWillAppear.asDriver(),
