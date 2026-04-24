@@ -63,12 +63,6 @@ extension HomeRepository: HomeRepositoryInterface {
             .eraseToAnyPublisher()
     }
     
-    public func checkPokeNewUser() -> AnyPublisher<Bool, any Error> {
-        pokeService.isNewUser()
-            .map{ $0.isNew }
-            .eraseToAnyPublisher()
-    }
-    
     public func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonModel, any Error> {
         homeService.getFloatingButtonInfo()
             .map{ $0.toDomain() }
