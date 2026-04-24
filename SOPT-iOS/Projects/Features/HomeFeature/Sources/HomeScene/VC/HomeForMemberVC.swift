@@ -22,11 +22,6 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     public let viewModel: HomeForMemberViewModel
     private(set) var cancelBag = CancelBag()
     
-    // FAButton
-    private let isMenuCellTapped = PassthroughSubject<String, Never>()
-    private lazy var isFABTapped = plusButton.publisher(for: .touchUpInside).mapVoid().asDriver()
-    private let fabMenuSections = FABMenuSection.allCases
-    
     // FloatingButton
     private var floatingButtonTapped = PassthroughSubject<Void, Never>()
     private lazy var extendedFloatingButtonTapped = floatingButton.actionButtonTapped
@@ -59,35 +54,6 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     var collectionView: UICollectionView! = nil
     private var floatingButton = HomeFloatingButton(frame: .zero)
 
-    private let plusButton = UIButton().then {
-        $0.setImage(DSKitAsset.Assets.icFabPlus.image, for: .normal)
-        $0.backgroundColor = .white
-        $0.layer.cornerRadius = 18
-        $0.imageView?.contentMode = .center
-        $0.imageView?.clipsToBounds = false
-        $0.layer.shadowColor = UIColor.black.cgColor
-        $0.layer.shadowOpacity = 0.1
-        $0.layer.shadowOffset = CGSize(width: 0, height: 4)
-        $0.layer.shadowRadius = 10
-    }
-
-    private let dimmedView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.black100.color.withAlphaComponent(0.6)
-        $0.isHidden = true
-    }
-
-    private lazy var menuCollectionView: UICollectionView = {
-        let layout = self.createFABLayout()
-        layout.register(FABMenuDecorationView.self, forDecorationViewOfKind: FABMenuDecorationView.className)
-
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.isScrollEnabled = false
-        collectionView.showsHorizontalScrollIndicator = false
-        collectionView.showsVerticalScrollIndicator = false
-        collectionView.backgroundColor = .clear
-        return collectionView
-    }()
-
     // MARK: - Initialization
     
     public init(viewModel: HomeForMemberViewModel) {
@@ -111,11 +77,9 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     public override func viewDidLoad() {
         super.viewDidLoad()
         configureHierarchy()
-        configureFABCollectionView()
         setUI()
         setLayout()
         setDelegate()
-        setAddTarget()
         setDataSource()
         bindViews()
         bindViewModels()
@@ -144,6 +108,7 @@ extension HomeForMemberVC {
         collectionView.showsVerticalScrollIndicator = false
         collectionView.contentInset = .zero
         collectionView.backgroundColor = .clear
+        collectionView.contentInset.bottom = 50
     }
     
     private func setUI() {
@@ -156,10 +121,7 @@ extension HomeForMemberVC {
         view.addSubviews(
             naviBar,
             collectionView,
-            floatingButton,
-            dimmedView,
-            plusButton,
-            menuCollectionView
+            floatingButton
         )
         
         naviBar.snp.makeConstraints { make in
@@ -173,29 +135,14 @@ extension HomeForMemberVC {
         }
         
         floatingButton.snp.makeConstraints { make in
-            make.bottom.equalTo(plusButton.snp.top).offset(-12)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-20)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(68)
-        }
-        plusButton.snp.makeConstraints { make in
-            make.size.equalTo(48)
-            make.trailing.equalToSuperview().inset(20)
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(20)
-        }
-        menuCollectionView.snp.makeConstraints { make in
-            make.height.equalTo(299)
-            make.top.equalTo(view.snp.bottom)
-            make.trailing.equalToSuperview().inset(20)
-            make.width.equalTo(160)
-        }
-        dimmedView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
         }
     }
     
     private func extendedFloatingButtonLayout() {
         floatingButton.snp.remakeConstraints { make in
-            make.bottom.equalTo(plusButton.snp.top).offset(-12)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(68)
         }
@@ -203,7 +150,6 @@ extension HomeForMemberVC {
     
     private func collapsedFloatingButtonLayout() {
         floatingButton.snp.remakeConstraints { make in
-            make.bottom.equalTo(plusButton.snp.top).offset(-12)
             make.trailing.equalToSuperview().inset(20)
             make.width.equalTo(127)
             make.height.equalTo(53)
@@ -349,9 +295,7 @@ extension HomeForMemberVC {
             surveyButtonTapped: surveyButtonTapped.asDriver(),
             socialLinkButtonTapped: socialLinkButtonTapped.asDriver(),
             viewAllButtonTapped: viewAllButtonTapped.asDriver(),
-            profileImageViewTapped: profileImageViewTapped.asDriver(),
-            isFABTapped: isFABTapped,
-            isMenuCellTapped: isMenuCellTapped.asDriver(),
+            profileImageViewTapped: profileImageViewTapped.asDriver(),            
             editProfileTapped: profileEditTapped.asDriver()
         )
         
@@ -441,70 +385,24 @@ extension HomeForMemberVC {
             }
         }
     }
-    
-    private func configureFABCollectionView() {
-        menuCollectionView.delegate = self
-        menuCollectionView.dataSource = self
-
-        menuCollectionView.register(FABMenuCVC.self, forCellWithReuseIdentifier: FABMenuCVC.className)
-        menuCollectionView.register(FABMenuHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: FABMenuHeaderView.className)
-    }
-
-    private func setAddTarget() {
-        plusButton.addTarget(self, action: #selector(FABAnimation), for: .touchUpInside)
-    }
 }
 
 // MARK: - UICollectionViewDelegate
 
 extension HomeForMemberVC: UICollectionViewDelegate, UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        if collectionView == menuCollectionView {
-            return fabMenuSections.count
-        }
         return dataSource.snapshot().numberOfSections
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if collectionView == menuCollectionView {
-            return fabMenuSections[section].items.count
-        }
         return dataSource.snapshot().numberOfItems(inSection: HomeForMemberSectionLayoutKind(rawValue: section) ?? .dashBoard)
-
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if collectionView == menuCollectionView {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FABMenuCVC.className, for: indexPath) as? FABMenuCVC else { return UICollectionViewCell() }
-
-            cell.configureCell(model: fabMenuSections[indexPath.section].items[indexPath.row])
-            return cell
-        }
         return UICollectionViewCell()
     }
     
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        if collectionView == menuCollectionView {
-            guard let headerView = collectionView
-                .dequeueReusableSupplementaryView(ofKind: kind,
-                                                  withReuseIdentifier: FABMenuHeaderView.className,
-                                                  for: indexPath) as? FABMenuHeaderView
-            else { return UICollectionReusableView() }
-
-            headerView.configureCell(title: fabMenuSections[indexPath.section].title)
-            return headerView
-        }
-
-        return UICollectionReusableView()
-    }
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if collectionView == menuCollectionView {
-            let url = fabMenuSections[indexPath.section].items[indexPath.item].url
-            self.isMenuCellTapped.send(url)
-            FABAnimation()
-            return
-        }
         
         if let selectedItem = dataSource.itemIdentifier(for: indexPath) {
             switch selectedItem {
@@ -526,25 +424,9 @@ extension HomeForMemberVC: UICollectionViewDelegate, UICollectionViewDataSource 
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        animateFAButton(scrollView)
         updateLatestPostPageControl()
     }
-    
-    private func animateFAButton(_ scrollView: UIScrollView) {
-        let offsetY = scrollView.contentOffset.y
-        
-        if offsetY < 130 && isExtendedButtonHidden || offsetY >= 130 && !isExtendedButtonHidden {
-            toggleFloatingButtonUI()
-        }
-    }
-    
-    /// offsetY 기준 값을 지날 때 floating button의 UI를 변경하고 애니메이션을 실행하는 메서드
-    private func toggleFloatingButtonUI() {
-        animateExtendedFloatingButtonHide(floatingButtonType)
-        isExtendedButtonHidden.toggle()
-        floatingButtonType = floatingButtonType == .extended ? .collapsed : .extended
-        floatingButton.layoutIfNeeded()
-    }
+
     
     /// Latest Post 섹션의 page control에 focusing된 값을 바꾸는 메서드
     private func updateLatestPostPageControl() {
@@ -560,59 +442,4 @@ extension HomeForMemberVC: UICollectionViewDelegate, UICollectionViewDataSource 
     }
 }
 
-// MARK: - FAButton Animation
-
-extension HomeForMemberVC {
-    @objc
-    private func FABAnimation() {
-        let isTapped = !plusButton.isSelected
-        plusButton.isSelected.toggle()
-
-        animatePlusButton(isTapped)
-        animateDimmedView(isTapped)
-        isTapped ? animateFABMenuIn() : animateFABMenuOut()
-    }
-
-    private func animatePlusButton(_ isTapped: Bool) {
-        UIView.animate(withDuration: 0.6) { [weak self] in
-            self?.plusButton.imageView?.transform = isTapped ? .init(rotationAngle: -CGFloat.pi/4) : .identity
-        }
-    }
-
-    private func animateFABMenuIn() {
-        UIView.animate(withDuration: 0.6,
-                       delay: 0,
-                       usingSpringWithDamping: 0.75,
-                       initialSpringVelocity: 0.75,
-                       options: [.curveEaseInOut],
-                       animations: { [weak self] in
-            guard let self else { return }
-            let translationY = -(self.plusButton.frame.height + 120 + self.menuCollectionView.frame.height)
-            self.menuCollectionView.transform = CGAffineTransform(translationX: 0, y: translationY)
-        })
-    }
-
-    private func animateFABMenuOut() {
-        UIView.animate(withDuration: 0.6,
-                       delay: 0,
-                       usingSpringWithDamping: 1,
-                       initialSpringVelocity: 0.8,
-                       options: [.curveEaseInOut],
-                       animations: { [weak self] in
-            self?.menuCollectionView.transform = .identity
-        })
-    }
-
-    private func animateDimmedView(_ isTapped: Bool) {
-        UIView.animate(withDuration: 0.6,
-                       delay: 0,
-                       usingSpringWithDamping: 0.75,
-                       initialSpringVelocity: 0.75,
-                       options: [.curveEaseInOut],
-                       animations: {
-            self.dimmedView.isHidden = !isTapped
-            self.dimmedView.alpha = isTapped ? 1 : 0
-        })
-    }
-}
 

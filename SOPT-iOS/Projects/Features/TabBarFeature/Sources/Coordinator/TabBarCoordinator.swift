@@ -23,11 +23,11 @@ public protocol TabBarCoordinatorDelegate: AnyObject {
 public final class TabBarCoordinator: BaseCoordinator {
     
     // MARK: - Properties
-
+    
     public var requestCoordinating: ((TabBarCoordinatorDestination) -> Void)?
     public weak var delegate: TabBarCoordinatorDelegate?
     public private(set) weak var tabBarController: UITabBarController?
-        
+    
     private let factory: TabBarBuilder
     private weak var navigationController: UINavigationController?
     private let views: [UIViewController]
@@ -66,7 +66,7 @@ public final class TabBarCoordinator: BaseCoordinator {
     
     private func showTabBar() {
         var tabBar = factory.makeTabBar(with: views, userType: userType, coordinator: self)
-
+        
         tabBar.vm.onTabBarItemTapped = { [weak self] tabType in
             // 각 탭의 코디네이터 실행
             guard let self = self else { return }
@@ -82,6 +82,13 @@ public final class TabBarCoordinator: BaseCoordinator {
                 self.delegate?.tabBarCoordinator(self, to: .soptlog)
             }
         }
+        
+        tabBar.vm.onFABMenuTapped = { [weak self] url in
+            guard let url = URL(string: url) else { return }
+            let webView = SOPTWebView(startWith: url)
+            self?.navigationController?.pushViewController(webView, animated: true)
+        }
+        
         
         tabBar.vm.showTabBarAlert = { [weak self] in
             guard let self = self else { return }
