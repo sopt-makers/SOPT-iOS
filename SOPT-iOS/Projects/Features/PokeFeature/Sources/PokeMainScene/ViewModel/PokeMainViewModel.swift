@@ -88,8 +88,9 @@ extension PokeMainViewModel {
         
         input.viewDidLoad
             .map { _ in UserDefaultKeyList.User.isVisitedPokeMainView ?? false }
-            .sink { [weak self] isVisitedPokeMainView in
-                self?.onPokeOnboardingNeeded?(!isVisitedPokeMainView)
+            .withUnretained(self)
+            .sink { owner, isVisitedPokeMainView in
+                owner.onPokeOnboardingNeeded?(!isVisitedPokeMainView)
             }
             .store(in: cancelBag)
         
