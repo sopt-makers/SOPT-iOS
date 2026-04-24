@@ -268,15 +268,18 @@ extension TabBarController {
     }
     
     private func animateDimmedView(_ isTapped: Bool) {
+        if isTapped { self.dimmedView.isHidden = false }
+        
         UIView.animate(withDuration: 0.6,
                        delay: 0,
                        usingSpringWithDamping: 0.75,
                        initialSpringVelocity: 0.75,
                        options: [.curveEaseInOut],
                        animations: {
-            self.dimmedView.isHidden = !isTapped
             self.dimmedView.alpha = isTapped ? 1 : 0
-        })
+        }) { _ in
+            if !isTapped { self.dimmedView.isHidden = true }
+        }
     }
     
     private func animateFABMenuIn() {
