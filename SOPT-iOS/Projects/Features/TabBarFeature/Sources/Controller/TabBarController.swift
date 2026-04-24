@@ -87,7 +87,6 @@ final class TabBarController: UITabBarController {
         
         setUI()
         setLayout()
-        addTargets()
         
         bindViewModels()
         
@@ -136,10 +135,6 @@ extension TabBarController {
             make.trailing.equalToSuperview().inset(20)
             make.width.equalTo(160)
         }
-    }
-    
-    private func addTargets() {
-        plusButton.addTarget(self, action: #selector(FABAnimation), for: .touchUpInside)
     }
     
     private func configureTabBar() {
