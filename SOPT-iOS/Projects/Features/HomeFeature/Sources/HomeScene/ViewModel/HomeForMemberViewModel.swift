@@ -62,7 +62,6 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         let socialLinkButtonTapped: Driver<HomePresentationModel.SocialLink>
         let viewAllButtonTapped: Driver<Void>
         let profileImageViewTapped: Driver<PostInfo>
-        let isMenuCellTapped: Driver<String>
         let editProfileTapped: Driver<Void>
     }
     
@@ -237,13 +236,6 @@ extension HomeForMemberViewModel {
                 
             }
             .store(in: cancelBag)    
-
-        input.isMenuCellTapped
-            .withUnretained(self)
-            .sink { owner, url in
-                owner.onFABMenuTapped?(url)
-            }
-            .store(in: cancelBag)
         
         input.editProfileTapped
             .withUnretained(self)
