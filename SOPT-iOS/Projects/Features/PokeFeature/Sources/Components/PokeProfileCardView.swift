@@ -119,8 +119,11 @@ public final class PokeProfileCardView: UIView, PokeCompatible {
 
     func setData(with model: PokeUserModel) {
         self.user = model
-        self.profileImageView.setImage(with: model.profileImage, placeholder: DSKitAsset.Assets.icPokeDefaultProfile.image)
-        self.nameLabel.text = model.name
+        self.profileImageView.setImage(
+            with: model.isAnonymous ? "" : model.profileImage,
+            placeholder: DSKitAsset.Assets.icDefaultProfile.image
+        )
+        self.nameLabel.text = model.isAnonymous ? model.anonymousName : model.name
         self.partLabel.text = String(describing: model.generation) + "기" + " " + model.part
         self.kokButton.isEnabled = !model.isAlreadyPoke
     }
