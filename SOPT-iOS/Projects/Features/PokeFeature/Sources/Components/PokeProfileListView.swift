@@ -182,7 +182,7 @@ public final class PokeProfileListView: UIView, PokeCompatible {
     func setData(with model: PokeUserModel) {
         self.user = model
         self.profileImageView.setImage(
-            with: model.profileImage,
+            with: model.isAnonymous ? "" : model.profileImage,
             relation: model.pokeRelation
         )
         self.partLabel.text = "\(model.generation)기 \(model.part)"
