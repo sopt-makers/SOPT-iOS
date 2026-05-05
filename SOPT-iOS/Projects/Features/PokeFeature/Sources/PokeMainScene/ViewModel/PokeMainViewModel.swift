@@ -87,15 +87,8 @@ extension PokeMainViewModel {
             }.store(in: cancelBag)
         
         input.viewDidLoad
-            .map { _ in UserDefaultKeyList.User.isVisitedPokeMainView ?? false }
-            .withUnretained(self)
-            .sink { owner, isVisitedPokeMainView in
-                owner.onPokeOnboardingNeeded?(!isVisitedPokeMainView)
-            }
-            .store(in: cancelBag)
-        
-        input.viewDidLoad
             .sink { [weak self] _ in
+                self?.useCase.getIsNewUser()
                 self?.eventTracker.trackViewEvent(with: .viewPokeMain)
             }.store(in: cancelBag)
         
@@ -167,6 +160,10 @@ extension PokeMainViewModel {
     }
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
+        
+        useCase.isNewUser
+            .sink { [weak self] isNewUser in self?.onPokeOnboardingNeeded?(isNewUser) }
+            .store(in: cancelBag)
         
         useCase.pokedToMeUser
             .compactMap { $0 }
