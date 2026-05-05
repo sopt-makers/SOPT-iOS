@@ -17,11 +17,13 @@ public protocol PokeMainUseCase {
     var pokedResponse: PassthroughSubject<PokeUserModel, Never> { get }
     var madeNewFriend: PassthroughSubject<PokeUserModel, Never> { get }
     var errorMessage: PassthroughSubject<String?, Never> { get }
+    var isNewUser: PassthroughSubject<Bool, Never> { get }
     
     func getWhoPokedToMe()
     func getFriend()
     func getFriendRandomUser(randomType: PokeRandomUserType, size: Int)
-    func poke(userId: Int, message: PokeMessageModel, isAnonymous: Bool, willBeNewFriend: Bool)    
+    func poke(userId: Int, message: PokeMessageModel, isAnonymous: Bool, willBeNewFriend: Bool)
+    func getIsNewUser()
 }
 
 public class DefaultPokeMainUseCase {
@@ -34,6 +36,7 @@ public class DefaultPokeMainUseCase {
     public let pokedResponse = PassthroughSubject<PokeUserModel, Never>()
     public let madeNewFriend = PassthroughSubject<PokeUserModel, Never>()
     public let errorMessage = PassthroughSubject<String?, Never>()
+    public let isNewUser = PassthroughSubject<Bool, Never>()
     
     public init(repository: PokeMainRepositoryInterface) {
         self.repository = repository
@@ -87,6 +90,26 @@ extension DefaultPokeMainUseCase: PokeMainUseCase {
                 if willBeNewFriend {
                     self?.madeNewFriend.send(user)
                 }
+            }.store(in: self.cancelBag)
+    }
+    
+    public func getIsNewUser() {
+    #warning("TODO: 온보딩 노출조건 변경으로 기존 유저들을 위해서 임시로 추가 추후 getIsNewUser 체크 로직 제거 필요")
+        Just(UserDefaultKeyList.User.isVisitedPokeMainView ?? false)
+            .flatMap { [weak self] isVisited in
+                guard let self = self else { return Just(false).eraseToAnyPublisher() }
+                
+                if isVisited {
+                    return Just(false)
+                        .eraseToAnyPublisher()
+                } else {
+                    return repository.getIsNewUser()
+                        .replaceError(with: false)
+                        .eraseToAnyPublisher()
+                }
+            }
+            .sink { [weak self] isNewUser in
+                self?.isNewUser.send(isNewUser)
             }.store(in: self.cancelBag)
     }
 }
