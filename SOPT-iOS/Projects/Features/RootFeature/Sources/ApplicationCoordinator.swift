@@ -482,8 +482,6 @@ extension ApplicationCoordinator {
                     self?.handleWebLink(webLink: url)
                 case .calendar:
                     self?.showHomeCalendarDetail()
-                case .poke(let isNewUser):
-                    _ = isNewUser ? self?.runPokeOnboardingFlow() : self?.runPokeFlow()
                 }
             }
             addDependency(legacyCoordinator)
