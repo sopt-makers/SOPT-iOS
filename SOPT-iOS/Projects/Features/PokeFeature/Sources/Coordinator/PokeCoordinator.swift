@@ -36,7 +36,7 @@ public final class PokeCoordinator: BaseCoordinator {
     // MARK: - Coordinator Life Cycle
 
     public func start(isRouteFromTabBar: Bool = true) {
-        showPokeMain(isRouteFromRoot: false, isRouteFromTabBar: isRouteFromTabBar)
+        showPokeMain(isRouteFromTabBar: isRouteFromTabBar)
     }
 
     public override func start() {
@@ -45,8 +45,8 @@ public final class PokeCoordinator: BaseCoordinator {
     
     // MARK: - Navigation
 
-    public func showPokeMain(isRouteFromRoot: Bool, isRouteFromTabBar: Bool) {
-        var pokeMain = factory.makePokeMain(isRouteFromRoot: isRouteFromRoot, isRouteFromTabBar: isRouteFromTabBar,  coordinator: self)
+    public func showPokeMain(isRouteFromTabBar: Bool) {
+        var pokeMain = factory.makePokeMain(isRouteFromTabBar: isRouteFromTabBar, coordinator: self)
         
         if isRouteFromTabBar {
             self.rootController = self.navigationController
