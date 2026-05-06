@@ -35,11 +35,12 @@ public final class PokeCoordinator: BaseCoordinator {
     
     // MARK: - Coordinator Life Cycle
 
-    public func start(isRouteFromTabBar: Bool = false) {
+    public func start(isRouteFromTabBar: Bool = true) {
         showPokeMain(isRouteFromRoot: false, isRouteFromTabBar: isRouteFromTabBar)
     }
+
     public override func start() {
-        start(isRouteFromTabBar: false)
+        start(isRouteFromTabBar: true)
     }
     
     // MARK: - Navigation

@@ -579,7 +579,7 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runStampFlow() -> BaseCoordinator {
+    internal func runStampFlow(isRouteFromTabBar: Bool = true) -> BaseCoordinator {
         var coordinator: BaseCoordinator
 
         switch Config.coordinatorFlag {
@@ -604,7 +604,7 @@ extension ApplicationCoordinator {
                 factory: StampBuilder(),
                 mypageFactory: MyPageBuilder()
             )
-            newCoordinator.start(isRouteFromTabBar: true)
+            newCoordinator.start(isRouteFromTabBar: isRouteFromTabBar)
             coordinator = newCoordinator
         }
 
@@ -616,7 +616,7 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runPokeFlow() -> BaseCoordinator {
+    internal func runPokeFlow(isRouteFromTabBar: Bool = true) -> BaseCoordinator {
         var coordinator: BaseCoordinator
 
         switch Config.coordinatorFlag {
@@ -639,7 +639,7 @@ extension ApplicationCoordinator {
                 navigationController: pokeNavigationController,
                 factory: PokeBuilder()
             )
-            newCoordinator.start(isRouteFromTabBar: true)
+            newCoordinator.start(isRouteFromTabBar: isRouteFromTabBar)
             coordinator = newCoordinator
         }
 
