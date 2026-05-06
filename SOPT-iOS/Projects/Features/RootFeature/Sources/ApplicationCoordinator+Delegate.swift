@@ -75,8 +75,8 @@ extension ApplicationCoordinator: HomeCoordinatorDelegate {
             handleWebLink(webLink: url)
         case .calendar:
             showHomeCalendarDetail()
-        case .poke(let isNewUser):
-            _ = isNewUser ? runPokeOnboardingFlow() : runPokeFlow()
+        case .poke:
+            selectedTab(.poke)
         }
     }
 }
