@@ -75,8 +75,6 @@ extension ApplicationCoordinator: HomeCoordinatorDelegate {
             handleWebLink(webLink: url)
         case .calendar:
             showHomeCalendarDetail()
-        case .poke:
-            selectedTab(.poke)
         }
     }
 }
