@@ -112,11 +112,12 @@ extension PokeMyFriendsViewModel {
               if let myFriends = owner.myFriends {
                 output.myFriends.send(myFriends)
               }
-              if user.isAnonymous {
-                if user.pokeNum == 5 || user.pokeNum == 6 || user.pokeNum == 11 || user.pokeNum == 12 {
-                  owner.onAnonymousFriendUpgrade?(user)
+                let isUpgrade = (user.pokeNum == 11 || user.pokeNum == 12) ||
+                                (user.isAnonymous && (user.pokeNum == 5 || user.pokeNum == 6))
+                
+                if isUpgrade {
+                    owner.onAnonymousFriendUpgrade?(user)
                 }
-              }
             }.store(in: cancelBag)
         
         useCase.pokedResponse
