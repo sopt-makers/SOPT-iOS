@@ -68,8 +68,11 @@ extension DefaultPokeMainUseCase: PokeMainUseCase {
     
     public func getFriendRandomUser(randomType: PokeRandomUserType, size: Int) {
         repository.getFriendRandomUser(randomType: randomType.rawValue, size: size)
-            .sink { event in
+            .sink { [weak self] event in
                 print("GetFriendRandomUser State: \(event)")
+                if case .failure = event {
+                    self?.friendRandomUsers.send(PokeFriendRandomUserModel(randomInfoList: []))
+                }
             } receiveValue: { [weak self] randomUsers in
                 self?.friendRandomUsers.send(randomUsers)
             }.store(in: cancelBag)
