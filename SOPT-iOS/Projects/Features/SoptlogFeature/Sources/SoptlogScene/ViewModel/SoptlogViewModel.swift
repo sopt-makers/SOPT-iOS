@@ -86,6 +86,7 @@ extension SoptlogViewModel {
             }.store(in: cancelBag)
                 
         input.cellTap
+            .filter { $0.section == .pokeLog }
             .withUnretained(self)
             .sink { owner, tapInfo in
                 switch tapInfo.row {
