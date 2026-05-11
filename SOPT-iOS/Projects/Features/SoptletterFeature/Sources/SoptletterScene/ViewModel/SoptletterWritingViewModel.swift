@@ -24,17 +24,21 @@ public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
 
     private let coordinator: AnyCoordinatorObject
     private var cancelBag = CancelBag()
+    private let maxCharCount = 250
 
     // MARK: - Inputs
 
     public struct Input {
         let viewDidLoad: Driver<Void>
         let naviBackTap: Driver<Void>
+        let textChanged: Driver<String>
     }
 
     // MARK: - Outputs
 
-    public struct Output {}
+    public struct Output {
+        let isSubmitEnabled = CurrentValueSubject<Bool, Never>(false)
+    }
 
     // MARK: - Init
 
@@ -51,6 +55,12 @@ extension SoptletterWritingViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNaviBackTap?()
+            }.store(in: cancelBag)
+
+        input.textChanged
+            .withUnretained(self)
+            .sink { owner, text in
+                output.isSubmitEnabled.send(!text.isEmpty && text.count <= owner.maxCharCount)
             }.store(in: cancelBag)
 
         return output

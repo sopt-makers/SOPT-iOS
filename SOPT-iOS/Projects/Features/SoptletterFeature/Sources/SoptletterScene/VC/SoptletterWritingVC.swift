@@ -224,10 +224,18 @@ private extension SoptletterWritingVC {
     func bindViewModels() {
         let input = SoptletterWritingViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
-            naviBackTap: naviBackTap
+            naviBackTap: naviBackTap,
+            textChanged: textChangedSubject.asDriver()
         )
 
-        let _ = self.viewModel.transform(from: input, cancelBag: cancelBag)
+        let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
+
+        output.isSubmitEnabled
+            .receive(on: RunLoop.main)
+            .withUnretained(self)
+            .sink { owner, isEnabled in
+                owner.submitButton.isEnabled = isEnabled
+            }.store(in: cancelBag)
     }
 
     @objc func submitButtonTapped() {
