@@ -32,6 +32,7 @@ public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
         let viewDidLoad: Driver<Void>
         let naviBackTap: Driver<Void>
         let textChanged: Driver<String>
+        let submitTap: Driver<Void>
     }
 
     // MARK: - Outputs
@@ -61,6 +62,13 @@ extension SoptletterWritingViewModel {
             .withUnretained(self)
             .sink { owner, text in
                 output.isSubmitEnabled.send(!text.isEmpty && text.count <= owner.maxCharCount)
+            }.store(in: cancelBag)
+
+        input.submitTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                // TODO: 실제 서버 연동 시 교체
+                owner.onSubmitSuccess?()
             }.store(in: cancelBag)
 
         return output

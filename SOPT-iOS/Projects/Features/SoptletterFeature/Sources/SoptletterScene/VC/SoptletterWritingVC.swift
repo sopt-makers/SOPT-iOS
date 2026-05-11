@@ -225,7 +225,8 @@ private extension SoptletterWritingVC {
         let input = SoptletterWritingViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
             naviBackTap: naviBackTap,
-            textChanged: textChangedSubject.asDriver()
+            textChanged: textChangedSubject.asDriver(),
+            submitTap: submitTapSubject.asDriver()
         )
 
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
