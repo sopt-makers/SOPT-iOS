@@ -53,11 +53,12 @@ extension ApplicationCoordinator: TabBarCoordinatorDelegate {
 
 // MARK: - HomeCoordinatorDelegate
 
+// TODO: - Soptletter 추가 필요
 extension ApplicationCoordinator: HomeCoordinatorDelegate {
     public func homeCoordinator(_ coordinator: HomeCoordinator, to destination: HomeCoordinatorDestination) {
         switch destination {
         case .attendance:
-            runSoptletterWritingFlow() // TODO: 테스트용 임시 연결, 제거 필요
+            runAttendanceFlow()
         case .setting(let userType):
             runMyPageFlow(of: userType)
         case .signIn:

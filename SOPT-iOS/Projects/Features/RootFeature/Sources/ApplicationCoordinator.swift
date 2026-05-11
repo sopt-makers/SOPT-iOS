@@ -577,7 +577,7 @@ extension ApplicationCoordinator {
 }
 
 // MARK: - SoptletterFlow
-
+// TODO: - 솝레터 목록뷰 완성 후 코디네이터 생명주기 관리 필요 (솝레터 메인 뷰모델이 관리)
 extension ApplicationCoordinator {
     internal func runSoptletterWritingFlow() {
         let coordinator = SoptletterCoordinator(

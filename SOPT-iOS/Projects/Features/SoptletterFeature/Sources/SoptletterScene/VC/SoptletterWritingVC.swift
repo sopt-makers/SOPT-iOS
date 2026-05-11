@@ -86,7 +86,7 @@ public final class SoptletterWritingVC: UIViewController, SoptletterViewControll
 
     private let textView = UITextView().then {
         $0.backgroundColor = .clear
-        $0.textColor = DSKitAsset.Colors.gray200.color
+        $0.textColor = DSKitAsset.Colors.gray10.color
         $0.font = DSKitFontFamily.Suit.regular.font(size: 16)
         $0.textContainerInset = .zero
         $0.textContainer.lineFragmentPadding = 0
@@ -247,6 +247,16 @@ private extension SoptletterWritingVC {
 // MARK: - UITextViewDelegate
 
 extension SoptletterWritingVC: UITextViewDelegate {
+    public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        let currentText = textView.text ?? ""
+        guard let textRange = Range(range, in: currentText) else { return true }
+        let updatedText = currentText.replacingCharacters(in: textRange, with: text)
+        if updatedText.count == maxCharCount + 1 {
+            ToastUtils.showMDSToast(type: .alert, text: I18N.Soptletter.charLimitError)
+        }
+        return updatedText.count <= maxCharCount + 1
+    }
+
     public func textViewDidChange(_ textView: UITextView) {
         guard !isSettingAttributedText else { return }
 
@@ -270,8 +280,8 @@ extension SoptletterWritingVC: UITextViewDelegate {
         inputContainerView.layer.borderColor = isOver ? DSKitAsset.Colors.error.color.cgColor : nil
 
         guard isOver else {
-            if textView.textColor != DSKitAsset.Colors.gray200.color {
-                textView.textColor = DSKitAsset.Colors.gray200.color
+            if textView.textColor != DSKitAsset.Colors.gray10.color {
+                textView.textColor = DSKitAsset.Colors.gray10.color
             }
             return
         }
@@ -279,7 +289,7 @@ extension SoptletterWritingVC: UITextViewDelegate {
         let attributed = NSMutableAttributedString(string: text)
         let normalFont = DSKitFontFamily.Suit.regular.font(size: 16)
         attributed.addAttributes([
-            .foregroundColor: DSKitAsset.Colors.gray200.color,
+            .foregroundColor: DSKitAsset.Colors.gray10.color,
             .font: normalFont
         ], range: NSRange(location: 0, length: maxCharCount))
         attributed.addAttributes([
