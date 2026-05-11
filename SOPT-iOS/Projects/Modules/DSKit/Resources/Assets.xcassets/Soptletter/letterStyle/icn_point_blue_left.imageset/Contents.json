@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "icn_point_blue_left.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

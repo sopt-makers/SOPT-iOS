@@ -492,6 +492,10 @@ public struct I18N {
 		public static let goHome = "돌아가기"
         public static let dateErrorToastMessage = "앗, 오늘의 솝마디만 볼 수 있어요."
     }
+
+    public struct Soptletter {
+        public static let navigationTitle = "솝레터 작성하기"
+    }
 }
 
 extension I18N {
