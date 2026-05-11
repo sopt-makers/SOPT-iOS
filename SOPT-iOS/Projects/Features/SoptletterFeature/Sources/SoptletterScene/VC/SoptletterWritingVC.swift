@@ -140,6 +140,7 @@ public final class SoptletterWritingVC: UIViewController, SoptletterViewControll
         setUI()
         setLayout()
         bindViewModels()
+        hideKeyboard()
     }
 }
 
