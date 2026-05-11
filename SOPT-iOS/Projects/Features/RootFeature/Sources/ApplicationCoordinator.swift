@@ -23,6 +23,7 @@ import DailySoptuneFeature
 import WebFeature
 import SoptlogFeature
 import TabBarFeature
+import SoptletterFeature
 
 public final class ApplicationCoordinator: BaseCoordinator {
     
@@ -572,6 +573,18 @@ extension ApplicationCoordinator {
         coordinator.start()
         
         return coordinator
+    }
+}
+
+// MARK: - SoptletterFlow
+
+extension ApplicationCoordinator {
+    internal func runSoptletterWritingFlow() {
+        let coordinator = SoptletterCoordinator(
+            navigationController: UIWindow.getRootNavigationController,
+            factory: SoptletterBuilder()
+        )
+        coordinator.start()
     }
 }
 
