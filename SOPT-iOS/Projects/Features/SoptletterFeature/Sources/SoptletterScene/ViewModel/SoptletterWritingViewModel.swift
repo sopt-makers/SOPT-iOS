@@ -15,9 +15,10 @@ import SoptletterFeatureInterface
 
 public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
 
-    // MARK: - Coordinatable
+    // MARK: - SoptletterCoordinatable
 
     public var onNaviBackTap: (() -> Void)?
+    public var onSubmitSuccess: (() -> Void)?
 
     // MARK: - Properties
 
