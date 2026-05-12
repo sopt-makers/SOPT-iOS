@@ -45,6 +45,11 @@ public final class SoptletterCoordinator: BaseCoordinator {
             self?.navigationController?.popViewController(animated: true)
         }
 
+        soptletterWriting.vm.onSubmitSuccess = { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+            ToastUtils.showMDSToast(type: .success, text: I18N.Soptletter.submitSuccess)
+        }
+
         navigationController?.pushViewController(soptletterWriting.vc, animated: true)
     }
 }

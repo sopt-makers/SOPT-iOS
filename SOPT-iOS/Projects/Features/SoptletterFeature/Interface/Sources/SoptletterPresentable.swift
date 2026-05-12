@@ -9,11 +9,13 @@
 import UIKit
 
 import BaseFeatureDependency
+import Core
 
 public protocol SoptletterViewControllable: LegacyViewControllable {}
 
 public protocol SoptletterCoordinatable {
     var onNaviBackTap: (() -> Void)? { get set }
+    var onSubmitSuccess: (() -> Void)? { get set }
 }
 
 public typealias SoptletterWritingViewModelType = ViewModelType & SoptletterCoordinatable
