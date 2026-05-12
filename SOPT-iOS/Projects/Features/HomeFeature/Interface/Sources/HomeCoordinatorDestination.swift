@@ -17,8 +17,7 @@ public enum HomeCoordinatorDestination {
     case attendance
     case soptlog
     case calendar
-    case poke(isNewUser: Bool)
-    
+
     case webLink(url: String)
     case deepLink(url: String)
 }

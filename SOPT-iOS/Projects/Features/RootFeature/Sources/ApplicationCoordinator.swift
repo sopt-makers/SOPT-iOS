@@ -411,8 +411,8 @@ extension ApplicationCoordinator {
         var viewControllers: [UINavigationController] = []
 
         runHomeFlow(type: userType)
-        runStampTabFlow()
-        runPokeTabFlow()
+        runStampFlow()
+        runPokeFlow()
         
         switch userType {
         case .active, .inactive:
@@ -482,8 +482,6 @@ extension ApplicationCoordinator {
                     self?.handleWebLink(webLink: url)
                 case .calendar:
                     self?.showHomeCalendarDetail()
-                case .poke(let isNewUser):
-                    _ = isNewUser ? self?.runPokeOnboardingFlow() : self?.runPokeFlow()
                 }
             }
             addDependency(legacyCoordinator)
@@ -581,7 +579,7 @@ extension ApplicationCoordinator {
     @discardableResult
     internal func runStampFlow(isRouteFromTabBar: Bool = true) -> BaseCoordinator {
         var coordinator: BaseCoordinator
-        
+
         switch Config.coordinatorFlag {
         case .legacy:
             let legacyStampCoordinator = LegacyStampCoordinator(
@@ -597,10 +595,10 @@ extension ApplicationCoordinator {
             addDependency(legacyStampCoordinator)
             coordinator = legacyStampCoordinator
             coordinator.start()
-            
+
         case .new:
             let newCoordinator = StampCoordinator(
-                navigationController: UIWindow.getRootNavigationController,
+                navigationController: stampNavigationController,
                 factory: StampBuilder(),
                 mypageFactory: MyPageBuilder()
             )
@@ -618,31 +616,31 @@ extension ApplicationCoordinator {
     @discardableResult
     internal func runPokeFlow(isRouteFromTabBar: Bool = true) -> BaseCoordinator {
         var coordinator: BaseCoordinator
-        
+
         switch Config.coordinatorFlag {
         case .legacy:
             let legacyPokeCoordinator = LegacyPokeCoordinator(
                 router: LegacyRouter(rootController: UIWindow.getRootNavigationController),
                 factory: LegacyPokeBuilder()
             )
-            
+
             legacyPokeCoordinator.finishFlow = { [weak self, weak legacyPokeCoordinator] in
                 legacyPokeCoordinator?.childCoordinators = []
                 self?.removeDependency(legacyPokeCoordinator)
             }
             coordinator = legacyPokeCoordinator
             addDependency(coordinator)
-            
+
             coordinator.start()
         case .new:
             let newCoordinator = PokeCoordinator(
-                navigationController: UIWindow.getRootNavigationController,
+                navigationController: pokeNavigationController,
                 factory: PokeBuilder()
             )
             newCoordinator.start(isRouteFromTabBar: isRouteFromTabBar)
             coordinator = newCoordinator
         }
-    
+
         return coordinator
     }
     
@@ -898,32 +896,9 @@ extension ApplicationCoordinator {
     }
 }
 
-// MARK: - StampTabFlow
-
-#warning("TODO: 앱 서비스를 탭바로만 이동하는 것이 확정될 경우, 기존 메소드(runStampFlow, runPokeFlow)의 navigationController만 변경하고, runStampTabFlow/runPokeTabFlow 메소드들은 제거합니다.")
-extension ApplicationCoordinator {
-    internal func runStampTabFlow() {
-        let coordinator = StampCoordinator(
-            navigationController: stampNavigationController,
-            factory: StampBuilder(),
-            mypageFactory: MyPageBuilder()
-        )
-        coordinator.start(isRouteFromTabBar: true)
-    }
-}
-
 // MARK: - PokeTabFlow
 
 extension ApplicationCoordinator {
-    internal func runPokeTabFlow() {
-        let coordinator = PokeCoordinator(
-            navigationController: pokeNavigationController,
-            factory: PokeBuilder()
-        )
-        
-        coordinator.start(isRouteFromTabBar: true)
-    }
-    
     internal func runPokeMyFriendsFlow(relation: PokeRelation) {
         self.pokeNavigationController.popToRootViewController(animated: false)
         

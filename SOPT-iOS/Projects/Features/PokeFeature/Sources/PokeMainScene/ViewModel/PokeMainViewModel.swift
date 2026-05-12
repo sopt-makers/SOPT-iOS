@@ -33,7 +33,6 @@ public class PokeMainViewModel: PokeMainViewModelType {
     // MARK: - Properties
     
     private let useCase: PokeMainUseCase 
-    private let isRouteFromRoot: Bool
     private var cancelBag = CancelBag()
     private let eventTracker = PokeEventTracker()
     private let coordinator: AnyCoordinatorObject           /// Coordinator 프로토콜이 레거시에서만 사용되기 때문
@@ -67,10 +66,9 @@ public class PokeMainViewModel: PokeMainViewModelType {
     
     // MARK: - initialization
     // TODO: - Coordinator를 AnyCoordinatorObject로 변경
-    public init(useCase: PokeMainUseCase, coordinator: Coordinator, isRouteFromRoot: Bool = false) {
+    public init(useCase: PokeMainUseCase, coordinator: Coordinator) {
         self.useCase = useCase
         self.coordinator = coordinator
-        self.isRouteFromRoot = isRouteFromRoot
     }
 }
 

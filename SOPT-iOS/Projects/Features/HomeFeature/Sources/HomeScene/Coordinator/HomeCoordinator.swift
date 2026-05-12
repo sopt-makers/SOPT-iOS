@@ -99,11 +99,6 @@ public final class HomeCoordinator: BaseCoordinator {
             AlertUtils.presentNetworkAlertVC()
         }
         
-        homeForMember.vm.onPoke = { [weak self] isNewUser in
-            guard let self else { return }
-            self.delegate?.homeCoordinator(self, to: .poke(isNewUser: isNewUser))
-        }
-        
         homeForMember.vm.onExtendedFloatingButtonTapped = { [weak self] url in
             guard let self else { return }
             self.delegate?.homeCoordinator(self, to: .deepLink(url: url))

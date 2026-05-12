@@ -29,11 +29,9 @@ extension PokeBuilder: PokeFeatureBuildable {
         return (viewController, viewModel)
     }
     
-    public func makePokeMain(isRouteFromRoot: Bool, isRouteFromTabBar: Bool, coordinator: Coordinator) -> PokeFeatureInterface.PokeMainPresentable {
+    public func makePokeMain(isRouteFromTabBar: Bool, coordinator: Coordinator) -> PokeFeatureInterface.PokeMainPresentable {
         let useCase = DefaultPokeMainUseCase(repository: pokeMainRepository)
-        let viewModel = PokeMainViewModel(useCase: useCase,
-                                          coordinator: coordinator,
-                                          isRouteFromRoot: isRouteFromRoot)
+        let viewModel = PokeMainViewModel(useCase: useCase, coordinator: coordinator)
         let pokeMainVC = PokeMainVC(viewModel: viewModel, isRouteFromTabBar: isRouteFromTabBar)
         
         return (pokeMainVC, viewModel)
