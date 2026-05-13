@@ -88,7 +88,7 @@ extension PokeMainViewModel {
         
         input.viewDidLoad
             .sink { [weak self] _ in
-                self?.useCase.getIsNewUser()
+                self?.useCase.checkPokeOnboardingNeeded()
                 self?.eventTracker.trackViewEvent(with: .viewPokeMain)
             }.store(in: cancelBag)
         

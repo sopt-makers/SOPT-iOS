@@ -23,7 +23,7 @@ public protocol PokeMainUseCase {
     func getFriend()
     func getFriendRandomUser(randomType: PokeRandomUserType, size: Int)
     func poke(userId: Int, message: PokeMessageModel, isAnonymous: Bool, willBeNewFriend: Bool)
-    func getIsNewUser()
+    func checkPokeOnboardingNeeded()
 }
 
 public class DefaultPokeMainUseCase {
@@ -93,23 +93,23 @@ extension DefaultPokeMainUseCase: PokeMainUseCase {
             }.store(in: self.cancelBag)
     }
     
-    public func getIsNewUser() {
+    public func checkPokeOnboardingNeeded() {
     #warning("TODO: 온보딩 노출조건 변경으로 기존 유저들을 위해서 임시로 추가 추후 getIsNewUser 체크 로직 제거 필요")
         Just(UserDefaultKeyList.User.isVisitedPokeMainView ?? false)
-            .flatMap { [weak self] isVisited in
-                guard let self = self else { return Just(false).eraseToAnyPublisher() }
-                
+            .withUnretained(self)
+            .flatMap { [weak self] owner, isVisited in
                 if isVisited {
                     return Just(false)
                         .eraseToAnyPublisher()
                 } else {
-                    return repository.getIsNewUser()
+                    return owner.repository.getIsNewUser()
                         .replaceError(with: false)
                         .eraseToAnyPublisher()
                 }
             }
-            .sink { [weak self] isNewUser in
-                self?.isNewUser.send(isNewUser)
+            .withUnretained(self)
+            .sink { [weak self] owner, isNewUser in
+                owner.isNewUser.send(isNewUser)
             }.store(in: self.cancelBag)
     }
 }
