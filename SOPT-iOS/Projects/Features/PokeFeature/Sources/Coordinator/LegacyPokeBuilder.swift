@@ -48,7 +48,7 @@ extension LegacyPokeBuilder: LegacyPokeFeatureBuildable {
     
     public func makePokeMessageTemplateBottomSheet(messageType: PokeMessageType) -> LegacyPokeMessageTemplatesPresentable {
         let usecase = DefaultPokeMessageTemplateUsecase(repository: self.pokeOnboardingRepository)
-        let viewModel = PokeMessageTemplateViewModel(messageType: messageType, usecase: usecase)
+        let viewModel = PokeMessageTemplateViewModel(messageType: messageType, usecase: usecase, config: .init(isAnonymousSelectionAvailable: false))
         let viewController = PokeMessageTemplateBottomSheet(viewModel: viewModel)
         
         return (viewController, viewModel)

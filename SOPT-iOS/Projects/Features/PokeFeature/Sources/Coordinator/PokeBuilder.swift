@@ -55,9 +55,9 @@ extension PokeBuilder: PokeFeatureBuildable {
         return (pokeMyFriendsListVC, viewModel)
     }
     
-    public func makePokeMessageTemplateBottomSheet(messageType: Domain.PokeMessageType) -> PokeFeatureInterface.PokeMessageTemplatesPresentable {
+    public func makePokeMessageTemplateBottomSheet(messageType: Domain.PokeMessageType, config: PokeMessageTemplateConfig) -> PokeFeatureInterface.PokeMessageTemplatesPresentable {
         let usecase = DefaultPokeMessageTemplateUsecase(repository: self.pokeOnboardingRepository)
-        let viewModel = PokeMessageTemplateViewModel(messageType: messageType, usecase: usecase)
+        let viewModel = PokeMessageTemplateViewModel(messageType: messageType, usecase: usecase, config: config)
         let viewController = PokeMessageTemplateBottomSheet(viewModel: viewModel)
         
         return (viewController, viewModel)
