@@ -140,9 +140,10 @@ public final class PokeCoordinator: BaseCoordinator {
     
     private func showMessageBottomSheet(userModel: PokeUserModel, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel, isAnonymous: Bool), Never> {
         let messageType: PokeMessageType = userModel.isFirstMeet ? .pokeSomeone : .pokeFriend
-
+        let messageTemplateConfig = PokeMessageTemplateConfig(isAnonymousSelectionAvailable: userModel.pokeNum < 10)
+        
         guard let bottomSheet = self.factory
-            .makePokeMessageTemplateBottomSheet(messageType: messageType)
+            .makePokeMessageTemplateBottomSheet(messageType: messageType, config: messageTemplateConfig)
             .vc
             .viewController as? PokeMessageTemplateBottomSheet
         else { return .empty() }
@@ -157,3 +158,5 @@ public final class PokeCoordinator: BaseCoordinator {
             .asDriver()
     }
 }
+
+

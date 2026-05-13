@@ -112,8 +112,10 @@ public final class PokeMyFriendsCoordinator: BaseCoordinator {
     }
     
     private func showMessageBottomSheet(userModel: PokeUserModel, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel, isAnonymous: Bool), Never> {
+        let messageTemplateConfig = PokeMessageTemplateConfig(isAnonymousSelectionAvailable: userModel.pokeNum < 10)
+        
         guard let bottomSheet = self.factory
-            .makePokeMessageTemplateBottomSheet(messageType: .pokeFriend)
+            .makePokeMessageTemplateBottomSheet(messageType: .pokeFriend, config: messageTemplateConfig)
             .vc
             .viewController as? PokeMessageTemplateBottomSheet
         else { return .empty() }
