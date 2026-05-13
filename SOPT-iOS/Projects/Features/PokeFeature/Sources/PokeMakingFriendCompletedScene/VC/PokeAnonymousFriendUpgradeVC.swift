@@ -113,7 +113,7 @@ public class PokeAnonymousFriendUpgradeVC: UIViewController, LegacyPokeAnonymous
   private func showRealIdentity() {
     titleLabel.text = "\(user.anonymousName)님의 정체는..."
     profileImageView.isHidden = false
-    profileImageView.setImage(with: user.profileImage, relation: user.pokeRelation)
+    profileImageView.setImage(with: user.profileImage, relation: user.pokeRelation, placeholder: user.isAnonymous ? DSKitAsset.Assets.icPokeDefaultProfile : DSKitAsset.Assets.icLineProfile)
     descriptionLabel.text = "\(user.generation)기 \(user.part)파트 \(user.name)"
 
     DispatchQueue.main.asyncAfter(deadline: .now() + 4) {

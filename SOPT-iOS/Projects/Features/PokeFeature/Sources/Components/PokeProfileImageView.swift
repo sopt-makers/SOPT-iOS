@@ -10,8 +10,8 @@ import UIKit
 import DSKit
 
 extension CustomProfileImageView {
-    public func setImage(with url: String, relation: PokeRelation) {
-        self.setImage(with: url, placeholder: DSKitAsset.Assets.icPokeDefaultProfile.image)
+    public func setImage(with url: String, relation: PokeRelation, placeholder: DSKitImages) {
+        self.setImage(with: url, placeholder: placeholder.image)
         self.setBorderColor(for: relation)
     }
     
