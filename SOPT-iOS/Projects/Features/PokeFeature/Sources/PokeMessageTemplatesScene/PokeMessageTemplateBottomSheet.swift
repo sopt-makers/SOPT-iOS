@@ -81,6 +81,8 @@ public final class PokeMessageTemplateBottomSheet: UIViewController, LegacyPokeM
     // MARK: Combine
     private let viewDidLoaded = PassthroughSubject<Void, Never>()
     private let messageModelSubject = PassthroughSubject<(PokeMessageModel, isAnonymous: Bool), Error>()
+    private var isAnonymousAvailable = false
+    
     private var cancelBag = CancelBag()
     
     public init(viewModel: PokeMessageTemplateViewModel) {
@@ -187,8 +189,8 @@ extension PokeMessageTemplateBottomSheet {
             .messageTemplateConfig
             .asDriver()
             .sink { [weak self] messageTemplateConfig in
-                self?.anonymousCheckboxButton.isHidden = !messageTemplateConfig.isAnonymousSelectionAvailable
-                self?.anonymousDescription.isHidden = !messageTemplateConfig.isAnonymousSelectionAvailable
+                self?.isAnonymousAvailable = messageTemplateConfig.isAnonymousSelectionAvailable
+                self?.anonymousCheckboxButton.isEnabled = messageTemplateConfig.isAnonymousSelectionAvailable
                 self?.anonymousCheckboxButton.isSelected = messageTemplateConfig.isAnonymousSelectionAvailable
             }
             .store(in: self.cancelBag)
@@ -202,10 +204,17 @@ extension PokeMessageTemplateBottomSheet {
             .receive(on: RunLoop.main)
             .sink(receiveValue: { [weak self] _ in
                 guard let self else { return }
+                guard isAnonymousAvailable else {
+                    ToastUtils.showMDSToast(
+                        type: .alert,
+                        text: "천생 연분은 실명만 남기실 수 있어요."
+                    )
+                    return
+                }
                 
                 let isSelected = anonymousCheckboxButton.isSelected
-                
-                self.anonymousCheckboxButton.isSelected.toggle()
+            
+                anonymousCheckboxButton.isSelected.toggle()
                 
                 if isSelected {
                     ToastUtils.showMDSToast(
