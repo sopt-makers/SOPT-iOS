@@ -101,7 +101,7 @@ extension PokeMyFriendsViewModel {
             .store(in: cancelBag)
         
         useCase.myFriends
-            .sink { [weak self] myFriends in
+            .sink { [weak self] myFriends in                
                 self?.myFriends = myFriends
             }.store(in: cancelBag)
         

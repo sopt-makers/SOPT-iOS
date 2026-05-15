@@ -157,6 +157,7 @@ extension PokeMessageTemplateBottomSheet {
                 .sink(receiveValue: { [weak self] value in
                     
                     let isAnonymous = self?.anonymousCheckboxButton.isSelected ?? false
+                    
                     self?.messageModelSubject.send((value, isAnonymous: isAnonymous))
                     self?.dismiss(animated: true)
                 }).store(in: self.cancelBag)

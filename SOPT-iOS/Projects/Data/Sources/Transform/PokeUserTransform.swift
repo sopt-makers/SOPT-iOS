@@ -25,7 +25,7 @@ extension PokeUserEntity {
       mutualRelationMessage: mutualRelationMessage,
       isFirstMeet: isFirstMeet,
       isAlreadyPoke: isAlreadyPoke,
-      isAnonymous: isAnonymous,
+      isAnonymous: pokeNum >= 11 ? false :isAnonymous,
       anonymousName: anonymousName
     )
   }
