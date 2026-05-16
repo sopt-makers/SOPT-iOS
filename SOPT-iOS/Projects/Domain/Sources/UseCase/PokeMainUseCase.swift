@@ -17,6 +17,7 @@ public protocol PokeMainUseCase {
     var pokedResponse: PassthroughSubject<PokeUserModel, Never> { get }
     var madeNewFriend: PassthroughSubject<PokeUserModel, Never> { get }
     var errorMessage: PassthroughSubject<String?, Never> { get }
+    var errorOccured: PassthroughSubject<Void, Never> { get }
     
     func getWhoPokedToMe()
     func getFriend()
@@ -34,6 +35,7 @@ public class DefaultPokeMainUseCase {
     public let pokedResponse = PassthroughSubject<PokeUserModel, Never>()
     public let madeNewFriend = PassthroughSubject<PokeUserModel, Never>()
     public let errorMessage = PassthroughSubject<String?, Never>()
+    public let errorOccured = PassthroughSubject<Void, Never>()
     
     public init(repository: PokeMainRepositoryInterface) {
         self.repository = repository
@@ -44,8 +46,9 @@ extension DefaultPokeMainUseCase: PokeMainUseCase {
     
     public func getWhoPokedToMe() {
         repository.getWhoPokeToMe()
-            .catch { _ in
-                Just<PokeUserModel?>(nil)
+            .catch { [weak self] error -> Just<PokeUserModel?> in
+                self?.errorOccured.send()
+                return Just(nil)
             }
             .withUnretained(self)
             .sink { event in
@@ -57,24 +60,30 @@ extension DefaultPokeMainUseCase: PokeMainUseCase {
     
     public func getFriend() {
         repository.getFriend()
-            .sink { [weak self] event in
+            .catch { [weak self] error -> Just<[PokeUserModel]> in
+                self?.errorOccured.send()
+                return Just([])
+            }
+            .withUnretained(self)
+            .sink { event in
                 print("GetFriend State: \(event)")
-                // 친구 관계가 없을떄는 서버에서 에러를 응답하기 때문에 빈배열로 값을 방출함
-                if case .failure = event { self?.myFriend.send([])}
-            } receiveValue: { [weak self] friend in
-                self?.myFriend.send(friend)
+            } receiveValue: { owner, friend in
+                owner.myFriend.send(friend)
             }.store(in: cancelBag)
     }
     
     public func getFriendRandomUser(randomType: PokeRandomUserType, size: Int) {
         repository.getFriendRandomUser(randomType: randomType.rawValue, size: size)
-            .sink { [weak self] event in
+            .catch { [weak self] error -> Just<PokeFriendRandomUserModel> in
+                
+                self?.errorOccured.send()
+                return Just(PokeFriendRandomUserModel(randomInfoList: []))
+            }
+            .withUnretained(self)
+            .sink { event in
                 print("GetFriendRandomUser State: \(event)")
-                if case .failure = event {
-                    self?.friendRandomUsers.send(PokeFriendRandomUserModel(randomInfoList: []))
-                }
-            } receiveValue: { [weak self] randomUsers in
-                self?.friendRandomUsers.send(randomUsers)
+            } receiveValue: { owner, randomUsers in
+                owner.friendRandomUsers.send(randomUsers)
             }.store(in: cancelBag)
     }
     
