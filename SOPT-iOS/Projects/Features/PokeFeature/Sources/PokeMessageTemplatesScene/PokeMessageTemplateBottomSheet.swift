@@ -208,7 +208,7 @@ extension PokeMessageTemplateBottomSheet {
                 guard isAnonymousAvailable else {
                     ToastUtils.showMDSToast(
                         type: .alert,
-                        text: "천생 연분은 실명만 남기실 수 있어요."
+                        text: "천생연분은 실명으로만 콕찌를 수 있어요."
                     )
                     return
                 }
