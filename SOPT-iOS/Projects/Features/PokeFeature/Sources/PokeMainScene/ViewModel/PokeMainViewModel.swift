@@ -228,5 +228,11 @@ extension PokeMainViewModel {
             .sink { message in
                 ToastUtils.showMDSToast(type: .alert, text: message)
             }.store(in: cancelBag)
+        
+        useCase.errorOccured
+            .throttle(for: .seconds(1), scheduler: RunLoop.main, latest: false)
+            .sink { _ in
+                AlertUtils.presentNetworkAlertVC()
+            }.store(in: cancelBag)
     }
 }
