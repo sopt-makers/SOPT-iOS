@@ -82,10 +82,6 @@ public final class LegacyHomeCoordinator: DefaultHomeCoordinator {
             AlertUtils.presentNetworkAlertVC()
         }
         
-        homeForMember.vm.onPoke = { [weak self] isNewUser in
-            self?.requestCoordinating?(.poke(isNewUser: isNewUser))
-        }
-        
         homeForMember.vm.onExtendedFloatingButtonTapped = { [weak self] url in
             self?.requestCoordinating?(.deepLink(url: url))
         }

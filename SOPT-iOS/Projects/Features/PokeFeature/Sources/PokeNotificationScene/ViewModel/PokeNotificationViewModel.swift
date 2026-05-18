@@ -107,10 +107,12 @@ extension PokeNotificationViewModel {
                   self?.onNewFriendAdded?(name)
                   return
                 }
-                if userModel.isAnonymous {
-                  if userModel.pokeNum == 5 || userModel.pokeNum == 6 || userModel.pokeNum == 11 || userModel.pokeNum == 12 {
+
+                let isUpgrade = (userModel.pokeNum == 11 || userModel.pokeNum == 12) ||
+                                (userModel.isAnonymous && (userModel.pokeNum == 5 || userModel.pokeNum == 6))
+                
+                if isUpgrade {
                     self?.onAnonymousFriendUpgrade?(userModel)
-                  }
                 }
             }).store(in: cancelBag)
         

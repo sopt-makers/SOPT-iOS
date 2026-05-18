@@ -492,6 +492,18 @@ public struct I18N {
 		public static let goHome = "돌아가기"
         public static let dateErrorToastMessage = "앗, 오늘의 솝마디만 볼 수 있어요."
     }
+
+    public struct Soptletter {
+        public static let navigationTitle = "솝레터 작성"
+        public static let descriptionText = "나와 같은 기수의 SOPT\n회원들에게 전하고 싶은 말을\n자유롭게 적어보세요."
+        public static let recipient = "익명의 무무"
+        public static let placeholder = "나와 같은 기수의 솝트인들에게 전하고 싶은 말을 자유롭게 적어보세요."
+        public static let charLimit = "0/250자"
+        public static let charLimitError = "공백 포함 250자 이하로만 작성할 수 있어요."
+        public static let submitButton = "작성 완료"
+        public static let submitSuccess = "메시지 작성을 완료했어요."
+        public static let submitFailure = "실패했습니다"
+    }
 }
 
 extension I18N {

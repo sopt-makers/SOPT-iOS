@@ -29,11 +29,9 @@ extension PokeBuilder: PokeFeatureBuildable {
         return (viewController, viewModel)
     }
     
-    public func makePokeMain(isRouteFromRoot: Bool, isRouteFromTabBar: Bool, coordinator: Coordinator) -> PokeFeatureInterface.PokeMainPresentable {
+    public func makePokeMain(isRouteFromTabBar: Bool, coordinator: Coordinator) -> PokeFeatureInterface.PokeMainPresentable {
         let useCase = DefaultPokeMainUseCase(repository: pokeMainRepository)
-        let viewModel = PokeMainViewModel(useCase: useCase,
-                                          coordinator: coordinator,
-                                          isRouteFromRoot: isRouteFromRoot)
+        let viewModel = PokeMainViewModel(useCase: useCase, coordinator: coordinator)
         let pokeMainVC = PokeMainVC(viewModel: viewModel, isRouteFromTabBar: isRouteFromTabBar)
         
         return (pokeMainVC, viewModel)
@@ -55,9 +53,9 @@ extension PokeBuilder: PokeFeatureBuildable {
         return (pokeMyFriendsListVC, viewModel)
     }
     
-    public func makePokeMessageTemplateBottomSheet(messageType: Domain.PokeMessageType) -> PokeFeatureInterface.PokeMessageTemplatesPresentable {
+    public func makePokeMessageTemplateBottomSheet(messageType: Domain.PokeMessageType, config: PokeMessageTemplateConfig) -> PokeFeatureInterface.PokeMessageTemplatesPresentable {
         let usecase = DefaultPokeMessageTemplateUsecase(repository: self.pokeOnboardingRepository)
-        let viewModel = PokeMessageTemplateViewModel(messageType: messageType, usecase: usecase)
+        let viewModel = PokeMessageTemplateViewModel(messageType: messageType, usecase: usecase, config: config)
         let viewController = PokeMessageTemplateBottomSheet(viewModel: viewModel)
         
         return (viewController, viewModel)

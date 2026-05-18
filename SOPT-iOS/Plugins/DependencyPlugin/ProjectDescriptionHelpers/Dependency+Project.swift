@@ -22,6 +22,7 @@ public extension Dep {
         public struct Soptlog {}
         public struct TabBar {}
         public struct LegacyAuth {}
+        public struct Soptletter {}
     }
     
     struct Modules {}
@@ -142,7 +143,14 @@ public extension Dep.Features.Soptlog {
 
 public extension Dep.Features.TabBar {
     static let group = "TabBar"
-    
+
+    static let Feature = Dep.Features.project(name: "Feature", group: group)
+    static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))
+}
+
+public extension Dep.Features.Soptletter {
+    static let group = "Soptletter"
+
     static let Feature = Dep.Features.project(name: "Feature", group: group)
     static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))
 }

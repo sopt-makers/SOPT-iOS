@@ -33,7 +33,6 @@ public class PokeMainViewModel: PokeMainViewModelType {
     // MARK: - Properties
     
     private let useCase: PokeMainUseCase 
-    private let isRouteFromRoot: Bool
     private var cancelBag = CancelBag()
     private let eventTracker = PokeEventTracker()
     private let coordinator: AnyCoordinatorObject           /// Coordinator 프로토콜이 레거시에서만 사용되기 때문
@@ -67,10 +66,9 @@ public class PokeMainViewModel: PokeMainViewModelType {
     
     // MARK: - initialization
     // TODO: - Coordinator를 AnyCoordinatorObject로 변경
-    public init(useCase: PokeMainUseCase, coordinator: Coordinator, isRouteFromRoot: Bool = false) {
+    public init(useCase: PokeMainUseCase, coordinator: Coordinator) {
         self.useCase = useCase
         self.coordinator = coordinator
-        self.isRouteFromRoot = isRouteFromRoot
     }
 }
 
@@ -209,10 +207,12 @@ extension PokeMainViewModel {
             .sink { [weak self] user in
                 guard let self else { return }
                 ToastUtils.showMDSToast(type: .success, text: I18N.Poke.pokeSuccess)
-                if user.isAnonymous {
-                    if user.pokeNum == 5 || user.pokeNum == 6 || user.pokeNum == 11 || user.pokeNum == 12 {
-                        onAnonymousFriendUpgrade?(user)
-                    }
+                
+                let isUpgrade = (user.pokeNum == 11 || user.pokeNum == 12) ||
+                                (user.isAnonymous && (user.pokeNum == 5 || user.pokeNum == 6))
+                
+                if isUpgrade {
+                    onAnonymousFriendUpgrade?(user)
                 }
             }.store(in: cancelBag)
         
@@ -226,6 +226,12 @@ extension PokeMainViewModel {
             .compactMap { $0 }
             .sink { message in
                 ToastUtils.showMDSToast(type: .alert, text: message)
+            }.store(in: cancelBag)
+        
+        useCase.errorOccured
+            .throttle(for: .seconds(1), scheduler: RunLoop.main, latest: false)
+            .sink { _ in
+                AlertUtils.presentNetworkAlertVC()
             }.store(in: cancelBag)
     }
 }

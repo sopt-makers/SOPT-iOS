@@ -183,7 +183,8 @@ public final class PokeProfileListView: UIView, PokeCompatible {
         self.user = model
         self.profileImageView.setImage(
             with: model.isAnonymous ? "" : model.profileImage,
-            relation: model.pokeRelation
+            relation: model.pokeRelation,
+            placeholder: model.isAnonymous ? DSKitAsset.Assets.icPokeDefaultProfile : DSKitAsset.Assets.icLineProfile
         )
         self.partLabel.text = "\(model.generation)기 \(model.part)"
         self.kokCountLabel.text = "\(model.pokeNum)콕"

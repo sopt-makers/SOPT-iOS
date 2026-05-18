@@ -53,6 +53,7 @@ extension ApplicationCoordinator: TabBarCoordinatorDelegate {
 
 // MARK: - HomeCoordinatorDelegate
 
+// TODO: - Soptletter 추가 필요
 extension ApplicationCoordinator: HomeCoordinatorDelegate {
     public func homeCoordinator(_ coordinator: HomeCoordinator, to destination: HomeCoordinatorDestination) {
         switch destination {
@@ -75,8 +76,6 @@ extension ApplicationCoordinator: HomeCoordinatorDelegate {
             handleWebLink(webLink: url)
         case .calendar:
             showHomeCalendarDetail()
-        case .poke(let isNewUser):
-            _ = isNewUser ? runPokeOnboardingFlow() : runPokeFlow()
         }
     }
 }

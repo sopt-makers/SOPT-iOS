@@ -17,19 +17,23 @@ public final class PokeMessageTemplateViewModel: PokeMessageTemplatesViewModelTy
     
     public var messageType: PokeMessageType
     
+    private let messageTemplateConfig: PokeMessageTemplateConfig
+    
     public struct Input {
         let viewDidLoaded: Driver<Void>
     }
     
     public struct Output {
         let messageTemplates = PassthroughSubject<PokeMessagesModel, Never>()
+        let messageTemplateConfig = PassthroughSubject<PokeMessageTemplateConfig, Never>()
     }
     
     private let usecase: PokeMessageTemplateUsecase
     
-    public init(messageType: PokeMessageType, usecase: PokeMessageTemplateUsecase) {
+    public init(messageType: PokeMessageType, usecase: PokeMessageTemplateUsecase, config: PokeMessageTemplateConfig) {
         self.messageType = messageType
         self.usecase = usecase
+        self.messageTemplateConfig = config
     }
 }
 
@@ -42,6 +46,7 @@ extension PokeMessageTemplateViewModel {
             .withUnretained(self)
             .sink(receiveValue: { owner, _ in
                 owner.usecase.getPokeMessageTemplates(type: owner.messageType)
+                output.messageTemplateConfig.send(owner.messageTemplateConfig)
             }).store(in: cancelBag)
         
         return output

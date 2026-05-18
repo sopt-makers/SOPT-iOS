@@ -82,7 +82,6 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public var onSettingButtonTapped: ((UserType) -> Void)?
     public var onNeedSignIn: (@MainActor () -> Void)?
     public var onNetworkError: (@MainActor () -> Void)?
-    public var onPoke: ((Bool) -> Void)?
     public var onExtendedFloatingButtonTapped: ((String) -> Void)?
     public var onSurveyButtonTapped: ((String) -> Void)?
     public var onSocialLinkButtonTapped: ((String) -> Void)?

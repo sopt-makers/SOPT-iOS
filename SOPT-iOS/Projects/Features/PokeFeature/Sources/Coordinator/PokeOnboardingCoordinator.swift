@@ -64,8 +64,10 @@ public final class PokeOnboardingCoordinator: DefaultCoordinator {
         }
         
         pokeOnboarding.vm.onPokeButtonTapped = { [weak self] userModel in
+            let messageTemplateConfig = PokeMessageTemplateConfig(isAnonymousSelectionAvailable: userModel.pokeNum < 10)
+            
             guard let bottomSheet = self?.factory
-                .makePokeMessageTemplateBottomSheet(messageType: .pokeSomeone)
+                .makePokeMessageTemplateBottomSheet(messageType: .pokeSomeone, config: messageTemplateConfig)
                     .vc
                     .viewController as? PokeMessageTemplateBottomSheet
             else { return .empty() }

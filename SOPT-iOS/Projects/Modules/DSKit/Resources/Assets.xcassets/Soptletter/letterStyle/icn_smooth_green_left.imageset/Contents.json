@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "icn_smooth_green_left.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

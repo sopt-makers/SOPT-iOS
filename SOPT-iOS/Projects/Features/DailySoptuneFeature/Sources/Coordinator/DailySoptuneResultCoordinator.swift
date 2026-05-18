@@ -97,9 +97,10 @@ public final class DailySoptuneResultCoordinator: BaseCoordinator {
     
     private func showMessageBottomSheet(userModel: PokeUserModel, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel, isAnonymous: Bool), Never> {
         let messageType: PokeMessageType = userModel.isFirstMeet ? .pokeSomeone : .pokeFriend
+        let messageTemplateConfig = PokeMessageTemplateConfig(isAnonymousSelectionAvailable: userModel.pokeNum < 10)
         
         guard let bottomSheet = self.pokeFactory
-            .makePokeMessageTemplateBottomSheet(messageType: messageType)
+            .makePokeMessageTemplateBottomSheet(messageType: messageType, config: messageTemplateConfig)
             .vc
             .viewController as? PokeMessageTemplatesViewControllable
         else { return .empty() }

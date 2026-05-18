@@ -35,17 +35,18 @@ public final class PokeCoordinator: BaseCoordinator {
     
     // MARK: - Coordinator Life Cycle
 
-    public func start(isRouteFromTabBar: Bool = false) {
-        showPokeMain(isRouteFromRoot: false, isRouteFromTabBar: isRouteFromTabBar)
+    public func start(isRouteFromTabBar: Bool = true) {
+        showPokeMain(isRouteFromTabBar: isRouteFromTabBar)
     }
+
     public override func start() {
-        start(isRouteFromTabBar: false)
+        start(isRouteFromTabBar: true)
     }
     
     // MARK: - Navigation
 
-    public func showPokeMain(isRouteFromRoot: Bool, isRouteFromTabBar: Bool) {
-        var pokeMain = factory.makePokeMain(isRouteFromRoot: isRouteFromRoot, isRouteFromTabBar: isRouteFromTabBar,  coordinator: self)
+    public func showPokeMain(isRouteFromTabBar: Bool) {
+        var pokeMain = factory.makePokeMain(isRouteFromTabBar: isRouteFromTabBar, coordinator: self)
         
         if isRouteFromTabBar {
             self.rootController = self.navigationController
@@ -140,9 +141,10 @@ public final class PokeCoordinator: BaseCoordinator {
     
     private func showMessageBottomSheet(userModel: PokeUserModel, on view: UIViewController?) -> AnyPublisher<(PokeUserModel, PokeMessageModel, isAnonymous: Bool), Never> {
         let messageType: PokeMessageType = userModel.isFirstMeet ? .pokeSomeone : .pokeFriend
-
+        let messageTemplateConfig = PokeMessageTemplateConfig(isAnonymousSelectionAvailable: userModel.pokeNum < 10)
+        
         guard let bottomSheet = self.factory
-            .makePokeMessageTemplateBottomSheet(messageType: messageType)
+            .makePokeMessageTemplateBottomSheet(messageType: messageType, config: messageTemplateConfig)
             .vc
             .viewController as? PokeMessageTemplateBottomSheet
         else { return .empty() }
@@ -157,3 +159,5 @@ public final class PokeCoordinator: BaseCoordinator {
             .asDriver()
     }
 }
+
+

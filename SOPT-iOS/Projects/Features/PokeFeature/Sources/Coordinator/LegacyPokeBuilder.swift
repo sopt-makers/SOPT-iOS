@@ -23,9 +23,7 @@ public final class LegacyPokeBuilder {
 extension LegacyPokeBuilder: LegacyPokeFeatureBuildable {
     public func makePokeMain(isRouteFromRoot: Bool, coordinator: Coordinator) -> PokeFeatureInterface.LegacyPokeMainPresentable {
         let useCase = DefaultPokeMainUseCase(repository: pokeMainRepository)
-        let viewModel = PokeMainViewModel(useCase: useCase,
-                                          coordinator: coordinator,
-                                          isRouteFromRoot: isRouteFromRoot)
+        let viewModel = PokeMainViewModel(useCase: useCase, coordinator: coordinator)
         let pokeMainVC = PokeMainVC(viewModel: viewModel, isRouteFromTabBar: true)
         return (pokeMainVC, viewModel)
     }
@@ -48,7 +46,7 @@ extension LegacyPokeBuilder: LegacyPokeFeatureBuildable {
     
     public func makePokeMessageTemplateBottomSheet(messageType: PokeMessageType) -> LegacyPokeMessageTemplatesPresentable {
         let usecase = DefaultPokeMessageTemplateUsecase(repository: self.pokeOnboardingRepository)
-        let viewModel = PokeMessageTemplateViewModel(messageType: messageType, usecase: usecase)
+        let viewModel = PokeMessageTemplateViewModel(messageType: messageType, usecase: usecase, config: .init(isAnonymousSelectionAvailable: false))
         let viewController = PokeMessageTemplateBottomSheet(viewModel: viewModel)
         
         return (viewController, viewModel)

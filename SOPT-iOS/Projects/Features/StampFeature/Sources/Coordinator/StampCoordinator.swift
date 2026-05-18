@@ -39,12 +39,12 @@ public final class StampCoordinator: BaseCoordinator {
 
     // MARK: - Coordinator Life Cycle
 
-    public func start(isRouteFromTabBar: Bool = false) {
+    public func start(isRouteFromTabBar: Bool = true) {
         showMissionList(sceneType: .default, isRouteFromTabBar: isRouteFromTabBar)
     }
 
     public override func start() {
-        start(isRouteFromTabBar: false)
+        start(isRouteFromTabBar: true)
     }
 
     // MARK: - Navigation

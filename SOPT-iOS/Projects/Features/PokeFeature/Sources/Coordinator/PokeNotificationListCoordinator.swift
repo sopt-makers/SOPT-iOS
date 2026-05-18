@@ -46,8 +46,10 @@ public final class PokeNotificationListCoordinator: DefaultCoordinator {
         var pokeNotiListVC = factory.makePokeNotificationList(coordinator: self)
         
         pokeNotiListVC.vm.onPokeButtonTapped = { [weak self] userModel in
+            let messageTemplateConfig = PokeMessageTemplateConfig(isAnonymousSelectionAvailable: userModel.pokeNum < 10)
+            
             guard let bottomSheet = self?.factory
-                .makePokeMessageTemplateBottomSheet(messageType: userModel.isFirstMeet ? .pokeSomeone : .pokeFriend)
+                .makePokeMessageTemplateBottomSheet(messageType: userModel.isFirstMeet ? .pokeSomeone : .pokeFriend, config: messageTemplateConfig)
                     .vc
                     .viewController as? PokeMessageTemplateBottomSheet
             else { return .empty() }
