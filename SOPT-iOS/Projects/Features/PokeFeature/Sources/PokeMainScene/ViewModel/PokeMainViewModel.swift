@@ -41,7 +41,6 @@ public class PokeMainViewModel: PokeMainViewModelType {
     
     public struct Input {
         let viewDidLoad: Driver<Void>
-        let naviBackButtonTap: Driver<Void>
         let pokedSectionHeaderButtonTap: Driver<Void>
         let friendSectionHeaderButtonTap: Driver<Void>
         let pokedSectionKokButtonTap: Driver<PokeUserModel?>
@@ -88,13 +87,7 @@ extension PokeMainViewModel {
             .sink { [weak self] _ in
                 self?.useCase.checkPokeOnboardingNeeded()
                 self?.eventTracker.trackViewEvent(with: .viewPokeMain)
-            }.store(in: cancelBag)
-        
-        input.naviBackButtonTap
-            .sink { [weak self] _ in
-                self?.eventTracker.trackViewEvent(with: .clickPokeQuit)
-                self?.onNaviBackTap?()
-            }.store(in: cancelBag)
+            }.store(in: cancelBag)        
         
         input.pokedSectionHeaderButtonTap
             .sink { [weak self] _ in

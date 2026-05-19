@@ -21,14 +21,9 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
     // MARK: - Properties
     
     public var viewModel: PokeMainViewModel
-    private var isRouteFromTabBar: Bool
     private var cancelBag = CancelBag()
     
     // MARK: - UI Components
-    
-    private let backButton = UIButton().then {
-        $0.setImage(DSKitAsset.Assets.xMark.image.withTintColor(DSKitAsset.Colors.gray30.color), for: .normal)
-    }
     
     private let serviceTitleLabel = UILabel().then {
         $0.font = UIFont.MDS.heading6.font
@@ -37,7 +32,7 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
     }
     
     private lazy var navigationView = UIStackView(
-        arrangedSubviews: [backButton, serviceTitleLabel]
+        arrangedSubviews: [serviceTitleLabel]
     ).then {
         $0.axis = .horizontal
         $0.spacing = 2
@@ -92,11 +87,9 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
     // MARK: - initialization
     
     public init(
-        viewModel: PokeMainViewModel,
-        isRouteFromTabBar: Bool
+        viewModel: PokeMainViewModel        
     ) {
         self.viewModel = viewModel
-        self.isRouteFromTabBar = isRouteFromTabBar
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -122,8 +115,6 @@ extension PokeMainVC {
     private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
-        
-        backButton.isHidden = isRouteFromTabBar
     }
     
     private func setDelegate() {
@@ -164,11 +155,6 @@ extension PokeMainVC {
     
     private func setLayout() {
         self.view.addSubviews(navigationView, scrollView)
-        
-        backButton.snp.makeConstraints { make in
-            make.width.equalTo(40)
-            make.height.equalTo(40)
-        }
         
         navigationView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
@@ -235,9 +221,6 @@ extension PokeMainVC {
         let input = PokeMainViewModel
             .Input(
                 viewDidLoad: Just(()).asDriver(),
-                naviBackButtonTap: self.backButton
-                    .publisher(for: .touchUpInside)
-                    .mapVoid().asDriver(),
                 pokedSectionHeaderButtonTap: pokedSectionHeaderView
                     .rightButtonTap,
                 friendSectionHeaderButtonTap: friendSectionHeaderView
