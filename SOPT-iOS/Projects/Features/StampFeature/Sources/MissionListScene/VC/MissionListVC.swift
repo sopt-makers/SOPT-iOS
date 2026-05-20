@@ -22,7 +22,7 @@ import BaseFeatureDependency
 public class MissionListVC: UIViewController, MissionListViewControllable, LegacyMissionListViewControllable {
     
     // TODO: - 화면 전환 시에 수정
-    private var isAppJam: Bool = false
+    private var isAppJam: Bool = true
     
     // MARK: - Properties
     
