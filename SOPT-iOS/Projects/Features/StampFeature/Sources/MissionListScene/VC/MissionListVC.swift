@@ -160,7 +160,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
     
     private let singleFloatingButton = STSingleFloatingButton(
         frame: .zero,
-        title: I18N.RankingList.appjamRankingTitle,
+        title: I18N.RankingList.appJamTeamStatusTitle,
         withImage: true,
         showBadge: true
     )

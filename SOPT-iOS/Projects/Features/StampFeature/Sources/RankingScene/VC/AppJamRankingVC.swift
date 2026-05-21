@@ -29,7 +29,7 @@ final class AppJamRankingVC: UIViewController, AppJamRankingViewControllable {
     
     private let naviBar = STNavigationBar(type: .titleWithLeftButton)
         .setTitleTypoStyle(.SoptampFont.h2)
-        .setTitle(I18N.RankingList.appjamRankingTitle)
+        .setTitle(I18N.RankingList.appJamTeamStatusTitle)
         .setRightButton(.none)
     
     private lazy var collectionView: UICollectionView = {
