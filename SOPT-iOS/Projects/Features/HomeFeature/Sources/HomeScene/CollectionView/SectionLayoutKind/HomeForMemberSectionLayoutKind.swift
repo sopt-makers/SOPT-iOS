@@ -23,6 +23,8 @@ enum HomeForMemberSectionLayoutKind: Int, CaseIterable {
 extension HomeForMemberSectionLayoutKind: HomeSectionUIConfigurable {
     var headerTitle: String {
         switch self {
+        case .mainProduct:
+            return I18N.Home.MainProduct.soptPlayground
         case .popularPosts:
             return I18N.Home.PopularPosts.headerTitle
         case .latestPosts:
@@ -31,12 +33,16 @@ extension HomeForMemberSectionLayoutKind: HomeSectionUIConfigurable {
             return ""
         }
     }
-    
+
     var shouldShowFireIcon: Bool {
         return self == .popularPosts
     }
-    
+
     var shouldShowViewAllContentButton: Bool {
         return self == .latestPosts
+    }
+
+    var isSubSectionHeader: Bool {
+        return self == .mainProduct
     }
 }

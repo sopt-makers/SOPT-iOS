@@ -110,5 +110,21 @@ extension HomeDefaultHeaderView {
         self.titleLabel.text = sectionKind.headerTitle
         self.fireImageView.isHidden = !sectionKind.shouldShowFireIcon
         self.viewAllContentButton.isHidden = !sectionKind.shouldShowViewAllContentButton
+
+        if sectionKind.isSubSectionHeader {
+            titleLabel.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
+            titleLabel.textColor = DSKitAsset.Colors.gray400.color
+            titleLabel.snp.remakeConstraints { make in
+                make.leading.equalToSuperview()
+                make.top.equalToSuperview().offset(12)
+            }
+        } else {
+            titleLabel.font = DSKitFontFamily.Suit.bold.font(size: 20)
+            titleLabel.textColor = DSKitAsset.Colors.white.color
+            titleLabel.snp.remakeConstraints { make in
+                make.leading.equalToSuperview()
+                make.centerY.equalToSuperview()
+            }
+        }
     }
 }
