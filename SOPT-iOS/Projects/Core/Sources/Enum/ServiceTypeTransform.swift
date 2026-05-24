@@ -9,7 +9,7 @@
 import Foundation
 
 public extension ServiceType {
-    var toAmplitudeEventType: AmplitudeEventType {
+    var toAmplitudeEventType: AmplitudeEventType? {
         switch self {
         case .officialHomepage: return .clickOfficialHomepage
         case .review: return .clickReview
@@ -20,7 +20,7 @@ public extension ServiceType {
         case .member: return .clickMember
         case .group: return .clickMoim
         case .instagram: return .clickInstagram
-        case .playgroundCommunity: return .clickPlaygroundCommunity
+        case .coffeechat: return nil
         }
     }
 }
