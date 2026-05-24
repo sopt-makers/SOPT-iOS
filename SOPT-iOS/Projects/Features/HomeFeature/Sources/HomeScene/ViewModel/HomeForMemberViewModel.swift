@@ -34,10 +34,10 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     @Published private(set) var isFABTapped: Bool = false
 
     let productServiceList: [HomePresentationModel.ProductService] = [
-        .init(product: .playgroundCommunity),
-        .init(product: .group),
         .init(product: .member),
-        .init(product: .project)
+        .init(product: .group),
+        .init(product: .project),
+        .init(product: .coffeechat)
     ]
     
     let socialLinkList: [HomePresentationModel.SocialLink] = [
