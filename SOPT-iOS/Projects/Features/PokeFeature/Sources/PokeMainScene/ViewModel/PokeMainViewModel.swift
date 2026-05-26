@@ -21,7 +21,6 @@ public class PokeMainViewModel: PokeMainViewModelType {
     
     // MARK: - Trigger
     
-    public var onNaviBackTap: (() -> Void)?
     public var onPokeNotificationsTap: (() -> Void)?
     public var onMyFriendsTap: (() -> Void)?
     public var onProfileImageTapped: ((Int) -> Void)?

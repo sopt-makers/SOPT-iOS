@@ -33,12 +33,7 @@ final class LegacyPokeCoordinator: BaseCoordinator {
     }
     
     public func showPokeMain(isRouteFromRoot: Bool) {
-        var pokeMain = factory.makePokeMain(isRouteFromRoot: isRouteFromRoot, coordinator: self)
-        
-        pokeMain.vm.onNaviBackTap = { [weak self] in
-            self?.router.dismissModule(animated: true)
-            self?.finishFlow?()
-        }
+        var pokeMain = factory.makePokeMain(isRouteFromRoot: isRouteFromRoot, coordinator: self)        
         
         pokeMain.vm.onPokeNotificationsTap = { [weak self] in
             self?.runPokeNotificationListFlow()
