@@ -7,10 +7,12 @@
 //
 
 import Foundation
+import Core
 
 public protocol DeepLinkComponentsExecutable {
     var queryItems: [URLQueryItem]? { get }
     var isEmpty: Bool { get }
+    var targetTap: TabBarItemType? { get }
     func execute(coordinator: Coordinator)
     func addDeepLink(_ deepLink: DeepLinkExecutable)
     func getQueryItemValue(name: String) -> String?

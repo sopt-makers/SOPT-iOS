@@ -75,16 +75,25 @@ extension NotificationHandler {
         
         do {
             let deepLinkData = try deepLinkParser.parse(with: deepLink)
-            let deepLinkComponents = DeepLinkComponents(deepLinkData: deepLinkData)
+            let targetTap = resolveTargetTap(deepLinkData: deepLinkData)
+                        
+            let deepLinkComponents = DeepLinkComponents(deepLinkData: deepLinkData, targetTap: targetTap)
             self.deepLink.send(deepLinkComponents)
         } catch {
             self.handleLinkError(error: error)
         }
     }
     
+    private func resolveTargetTap(deepLinkData: DeepLinkData) -> TabBarItemType? {
+        if deepLinkData.deepLinks.first?.name == PokeDeepLink.path {
+            return .poke
+        }
+        return nil
+    }
+    
     private func makeComponentsForEmptyLink(notificationId: String) -> DeepLinkComponents? {
         let deepLinkData = try? deepLinkParser.parse(with: "home/notification/detail?id=\(notificationId)")
-        return DeepLinkComponents(deepLinkData: deepLinkData)
+        return DeepLinkComponents(deepLinkData: deepLinkData, targetTap: .poke)
     }
     
     private func handleWebLink(with webLink: String?) {
