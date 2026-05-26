@@ -172,7 +172,10 @@ public final class ApplicationCoordinator: BaseCoordinator {
     
     private func handleNewDeepLink(deepLink: DeepLinkComponentsExecutable) {
         self.rootNavigationController.popToRootViewController(animated: false)
-        deepLink.execute(coordinator: self)        
+        if let targetTap = deepLink.targetTap {
+            tabBarController?.selectedIndex = targetTap.getTabIndex(userType: UserDefaultKeyList.Auth.getUserType())
+        }
+        deepLink.execute(coordinator: self)
     }
     
     // MARK: - handleWebLink
@@ -443,6 +446,7 @@ extension ApplicationCoordinator {
         coordinator.delegate = self
         coordinator.start()
         
+        
         self.tabBarController = coordinator.tabBarController
     }
 }
@@ -650,10 +654,10 @@ extension ApplicationCoordinator {
                 navigationController: pokeNavigationController,
                 factory: PokeBuilder()
             )
-            newCoordinator.start()
+            newCoordinator.start()            
             coordinator = newCoordinator
         }
-
+        
         return coordinator
     }
     
