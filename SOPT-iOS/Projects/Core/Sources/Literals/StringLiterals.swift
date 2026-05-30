@@ -277,7 +277,7 @@ public struct I18N {
         }
         
         public struct PopularPosts {
-            public static let headerTitle = "실시간 인기글"
+            public static let headerTitle = "지금 인기 소식"
             public static let morePosts = "다른 게시물 보러가기"
         }
         

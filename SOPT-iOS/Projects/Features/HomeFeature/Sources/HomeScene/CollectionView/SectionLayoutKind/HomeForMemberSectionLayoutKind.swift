@@ -39,7 +39,7 @@ extension HomeForMemberSectionLayoutKind: HomeSectionUIConfigurable {
     }
 
     var shouldShowViewAllContentButton: Bool {
-        return self == .latestPosts
+        return self == .popularPosts || self == .latestPosts
     }
 
     var isSubSectionHeader: Bool {

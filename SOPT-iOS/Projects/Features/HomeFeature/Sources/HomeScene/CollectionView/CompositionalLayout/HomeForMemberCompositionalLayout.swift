@@ -164,12 +164,12 @@ extension HomeForMemberVC {
                                                                  elementKind: UICollectionView.elementKindSectionHeader,
                                                                  alignment: .top)
         
-        /// item: 실시간 인기글
+        /// item: 지금 인기 소식
         let popularPostsItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                             heightDimension: .absolute(122))
         let popularPostsItem = NSCollectionLayoutItem(layoutSize: popularPostsItemSize)
         
-        /// group: 실시간 인기글
+        /// group: 지금 인기 소식
         let popularPostsGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                              heightDimension: .estimated(122))
         let popularPostsGroup = NSCollectionLayoutGroup.vertical(layoutSize: popularPostsGroupSize,
