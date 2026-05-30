@@ -20,7 +20,7 @@ public extension ServiceType {
         case .member: return .clickMember
         case .group: return .clickMoim
         case .instagram: return .clickInstagram
-        case .coffeechat: return nil
+        case .coffeechat: return .clickCoffeeChat
         }
     }
 }
