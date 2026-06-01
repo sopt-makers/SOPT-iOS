@@ -12,6 +12,7 @@ import Core
 
 enum HomeAmplitudeEventPropertyValue: String, AmplitudeEventPropertyValueConvertible {
     case latestPosts = "latest_posts"
+    case popularPosts = "popular_posts"
     case realTimeFeed = "realtime_feed"
     case homeBanner = "home_banner"
     case homeFAB = "home_fab"

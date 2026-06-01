@@ -27,8 +27,8 @@ extension ServiceType {
             return DSKitAsset.Assets.imgGroupLogo.image
         case .instagram:
             return DSKitAsset.Assets.imgInstagram.image
-        case .playgroundCommunity:
-            return DSKitAsset.Assets.imgPlaygroundLogo.image
+        case .coffeechat:
+            return DSKitAsset.Assets.icCoffeechat.image
         case .youtube:
             return DSKitAsset.Assets.icYoutube.image
         default:
@@ -50,8 +50,8 @@ extension ServiceType {
             return I18N.Home.MainProduct.groupAndStudy
         case .instagram:
             return I18N.Home.MainProduct.instagram
-        case .playgroundCommunity:
-            return I18N.Home.MainProduct.playground
+        case .coffeechat:
+            return I18N.Home.MainProduct.coffeechat
         case .youtube:
             return I18N.Home.SocialLink.youtube
         default:

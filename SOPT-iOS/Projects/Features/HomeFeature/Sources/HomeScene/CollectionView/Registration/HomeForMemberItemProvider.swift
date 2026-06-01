@@ -118,7 +118,7 @@ extension HomeForMemberVC {
             headerView.viewAllContentButtonTap
                 .withUnretained(self)
                 .sink { owner, _ in
-                    owner.viewAllButtonTapped.send()
+                    owner.viewAllButtonTapped.send(sectionKind)
                 }
                 .store(in: headerView.cancelBag)
         }

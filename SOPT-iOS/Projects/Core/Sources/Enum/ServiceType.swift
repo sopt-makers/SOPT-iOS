@@ -18,8 +18,8 @@ public enum ServiceType {
     case member
     case group
     case instagram
-    case playgroundCommunity
-    
+    case coffeechat
+
     public var serviceDomainLink: String {
         switch self {
         case .officialHomepage: return ExternalURL.SOPT.officialHomepage
@@ -31,7 +31,7 @@ public enum ServiceType {
         case .member: return ExternalURL.Playground.member
         case .group: return ExternalURL.Playground.group
         case .instagram: return ExternalURL.SNS.instagram
-        case .playgroundCommunity: return ExternalURL.Playground.playgroundCommunity
+        case .coffeechat: return ExternalURL.Playground.coffeechat
         }
     }
 }

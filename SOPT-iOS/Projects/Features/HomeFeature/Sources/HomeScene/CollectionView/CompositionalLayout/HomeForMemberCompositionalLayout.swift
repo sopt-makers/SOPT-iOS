@@ -96,25 +96,33 @@ extension HomeForMemberVC {
     }
     
     private func createMainProductSection() -> NSCollectionLayoutSection {
+        /// header: SOPT Playground
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                heightDimension: .absolute(30))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
+                                                                 elementKind: UICollectionView.elementKindSectionHeader,
+                                                                 alignment: .top)
+
         /// item: 프로덕트 카드
         let productItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.25),
                                                      heightDimension: .absolute(92))
         let productItem = NSCollectionLayoutItem(layoutSize: productItemSize)
-        
+
         /// group: 프로덕트 카드
         let productGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                       heightDimension: .estimated(92))
         let productGroup = NSCollectionLayoutGroup.horizontal(layoutSize: productGroupSize,
                                                               subitems: [productItem])
         productGroup.interItemSpacing = .fixed(Metric.productItemSpacing)
-        
+
         /// section 지정
         let section = NSCollectionLayoutSection(group: productGroup)
-        section.contentInsets = NSDirectionalEdgeInsets(top: Metric.defaultItemSpacing,
+        section.boundarySupplementaryItems = [header]
+        section.contentInsets = NSDirectionalEdgeInsets(top: 12,
                                                         leading: Metric.collectionViewDefaultSideInset,
                                                         bottom: Metric.mainProductSectionSpacing,
                                                         trailing: Metric.collectionViewDefaultSideInset)
-        
+
         return section
     }
     
@@ -156,12 +164,12 @@ extension HomeForMemberVC {
                                                                  elementKind: UICollectionView.elementKindSectionHeader,
                                                                  alignment: .top)
         
-        /// item: 실시간 인기글
+        /// item: 지금 인기 소식
         let popularPostsItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                             heightDimension: .absolute(122))
         let popularPostsItem = NSCollectionLayoutItem(layoutSize: popularPostsItemSize)
         
-        /// group: 실시간 인기글
+        /// group: 지금 인기 소식
         let popularPostsGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                              heightDimension: .estimated(122))
         let popularPostsGroup = NSCollectionLayoutGroup.vertical(layoutSize: popularPostsGroupSize,
