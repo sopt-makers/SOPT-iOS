@@ -9,22 +9,21 @@
 import Foundation
 import BaseFeatureDependency
 import PokeFeature
-import Core
 
 public struct PokeDeepLink: DeepLinkExecutable {
-    public static let path = "poke"
-    
-    public let name = path
+    public let name = "poke"
     public let children: [DeepLinkExecutable] = [PokeNotificationListDeepLink()]
-    public var isDestination: Bool = false    
+    public var isDestination: Bool = false
 
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
         
         if self.isDestination == true {
+            coordinator.runTabBarFlow(initSelectedTabType: .poke)
             return coordinator
         }
         
+        coordinator.runTabBarFlow(initSelectedTabType: .poke)
         return coordinator.runPokeFlow()
     }
 }

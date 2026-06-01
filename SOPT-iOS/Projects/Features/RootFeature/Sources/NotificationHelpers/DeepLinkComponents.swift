@@ -8,28 +8,25 @@
 
 import Foundation
 import BaseFeatureDependency
-import Core
 
 public class DeepLinkComponents: DeepLinkComponentsExecutable {
     private var deepLinks: [DeepLinkExecutable]
     public let queryItems: [URLQueryItem]?
-    public var targetTap: TabBarItemType?
     
     public var isEmpty: Bool {
         self.deepLinks.isEmpty
     }
     
-    public init(deepLinkData: DeepLinkData, targetTap: TabBarItemType?) {
+    public init(deepLinkData: DeepLinkData) {
         self.deepLinks = deepLinkData.deepLinks
         self.queryItems = deepLinkData.queryItems
-        self.targetTap = targetTap
     }
     
-    public convenience init?(deepLinkData: DeepLinkData?, targetTap: TabBarItemType?) {
+    public convenience init?(deepLinkData: DeepLinkData?) {
         guard let deepLinkData = deepLinkData else {
             return nil
         }
-        self.init(deepLinkData: deepLinkData, targetTap: targetTap)
+        self.init(deepLinkData: deepLinkData)
     }
     
     // deepLink 배열을 재귀적으로 돌며 각 단계의 딥링크 뷰로 이동시킨다.
