@@ -35,32 +35,16 @@ public final class PokeCoordinator: BaseCoordinator {
     
     // MARK: - Coordinator Life Cycle
 
-    public func start(isRouteFromTabBar: Bool = true) {
-        showPokeMain(isRouteFromTabBar: isRouteFromTabBar)
-    }
-
     public override func start() {
-        start(isRouteFromTabBar: true)
+        showPokeMain()
     }
     
     // MARK: - Navigation
 
-    public func showPokeMain(isRouteFromTabBar: Bool) {
-        var pokeMain = factory.makePokeMain(isRouteFromTabBar: isRouteFromTabBar, coordinator: self)
-        
-        if isRouteFromTabBar {
-            self.rootController = self.navigationController
-            self.navigationController?.setViewControllers([pokeMain.vc], animated: false)
-        } else {
-            let newNav = UINavigationController(rootViewController: pokeMain.vc)
-            newNav.modalPresentationStyle = .overFullScreen
-            self.rootController = newNav
-            pokeMain.vm.onNaviBackTap = { [weak self] in
-                self?.navigationController?.dismiss(animated: true)
-            }
-
-            self.navigationController?.present(newNav, animated: true)
-        }
+    public func showPokeMain() {
+        var pokeMain = factory.makePokeMain(coordinator: self)
+        self.rootController = self.navigationController
+        self.navigationController?.setViewControllers([pokeMain.vc], animated: false)
         
         pokeMain.vm.onPokeOnboardingNeeded = { [weak self] isNeeded in
             if isNeeded { self?.runPokeOnboardingFlow() }

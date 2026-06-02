@@ -112,7 +112,7 @@ extension ApplicationCoordinator: NotificationCoordinatorDelegate {
         switch destination {
         case .deepLink(let url):
             self.notificationHandler.receive(deepLink: url)
-            guard let deepLink = self.notificationHandler.deepLink.value else { return }
+            guard let deepLink = self.notificationHandler.deepLink.value else { return }            
             handleDeepLink(deepLink: deepLink)
         case .webLink(let url):
             self.notificationHandler.receive(webLink: url)

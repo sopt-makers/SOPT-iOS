@@ -15,7 +15,6 @@ import Domain
 public protocol PokeMainViewControllable: LegacyViewControllable { }
 
 public protocol PokeMainRoutingTrigger {
-  var onNaviBackTap: (() -> Void)? { get set }
   var onPokeNotificationsTap: (() -> Void)? { get set }
   var onMyFriendsTap: (() -> Void)? { get set }
   var onProfileImageTapped: ((Int) -> Void)? { get set }

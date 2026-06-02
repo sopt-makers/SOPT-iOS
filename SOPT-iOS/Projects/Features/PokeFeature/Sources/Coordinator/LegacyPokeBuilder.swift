@@ -24,7 +24,7 @@ extension LegacyPokeBuilder: LegacyPokeFeatureBuildable {
     public func makePokeMain(isRouteFromRoot: Bool, coordinator: Coordinator) -> PokeFeatureInterface.LegacyPokeMainPresentable {
         let useCase = DefaultPokeMainUseCase(repository: pokeMainRepository)
         let viewModel = PokeMainViewModel(useCase: useCase, coordinator: coordinator)
-        let pokeMainVC = PokeMainVC(viewModel: viewModel, isRouteFromTabBar: true)
+        let pokeMainVC = PokeMainVC(viewModel: viewModel)
         return (pokeMainVC, viewModel)
     }
     

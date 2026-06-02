@@ -172,7 +172,7 @@ public final class ApplicationCoordinator: BaseCoordinator {
     
     private func handleNewDeepLink(deepLink: DeepLinkComponentsExecutable) {
         self.rootNavigationController.popToRootViewController(animated: false)
-        deepLink.execute(coordinator: self)
+        deepLink.execute(coordinator: self)        
     }
     
     // MARK: - handleWebLink
@@ -627,7 +627,7 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runPokeFlow(isRouteFromTabBar: Bool = true) -> BaseCoordinator {
+    internal func runPokeFlow() -> BaseCoordinator {
         var coordinator: BaseCoordinator
 
         switch Config.coordinatorFlag {
@@ -650,7 +650,7 @@ extension ApplicationCoordinator {
                 navigationController: pokeNavigationController,
                 factory: PokeBuilder()
             )
-            newCoordinator.start(isRouteFromTabBar: isRouteFromTabBar)
+            newCoordinator.start()
             coordinator = newCoordinator
         }
 
