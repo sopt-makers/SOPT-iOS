@@ -10,7 +10,7 @@ import Foundation
 
 public enum TabBarItemType: Int, CaseIterable {
     case home
-    case soptamp
+//    case soptamp
     case poke
     case soptlog
 }
@@ -19,7 +19,7 @@ public extension TabBarItemType {
     var toAmplitudeEventType: AmplitudeEventType {
         switch self {
         case .home: return .clickNaviHome
-        case .soptamp: return .clickNaviSoptamp
+//        case .soptamp: return .clickNaviSoptamp
         case .soptlog: return .clickNaviSoptlog
         case .poke: return .clickNaviPoke
         }
@@ -32,16 +32,16 @@ public extension TabBarItemType {
             switch self {
             case .home:
                 return 0
-            case .soptamp:
-                return 1
+//            case .soptamp:
+//                return 1
             case .poke:
-                return 2
+                return 1
             case .soptlog:
-                return 3
+                return 2
             }
         case .visitor:
             switch self {
-            case .home, .soptamp, .poke:
+            case .home, .poke:
                 return 0
             case .soptlog:
                 return 1
@@ -55,9 +55,9 @@ public extension TabBarItemType {
         case .active, .inactive:
             switch index {
             case 0: return .home
-            case 1: return .soptamp
-            case 2: return .poke
-            case 3: return .soptlog
+//            case 1: return .soptamp
+            case 1: return .poke
+            case 2: return .soptlog
             default: return nil
             }
         case .visitor:

@@ -175,8 +175,8 @@ extension SoptlogVC: UICollectionViewDataSource {
         switch sectionType {
         case .logo:
             return 1
-        case .soptampLog:
-            return info.soptampMenus.count
+//        case .soptampLog:
+//            return info.soptampMenus.count
         case .pokeLog:
             return isPokeEmpty ? 1 : info.pokeMenus.count
         case .banner:
@@ -194,8 +194,8 @@ extension SoptlogVC: UICollectionViewDataSource {
         case .logo:
             return configureLogoCell(at: indexPath)
             
-        case .soptampLog:
-            return configureMenuCell(at: indexPath, with: info.soptampMenus)
+//        case .soptampLog:
+//            return configureMenuCell(at: indexPath, with: info.soptampMenus)
             
         case .pokeLog:
             if isPokeEmpty {

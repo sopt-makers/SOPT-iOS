@@ -74,8 +74,8 @@ public final class TabBarCoordinator: BaseCoordinator {
             switch tabType {
             case .home:
                 self.delegate?.tabBarCoordinator(self, to: .home)
-            case .soptamp:
-                self.delegate?.tabBarCoordinator(self, to: .soptamp)
+//            case .soptamp:
+//                self.delegate?.tabBarCoordinator(self, to: .soptamp)
             case .poke:
                 self.delegate?.tabBarCoordinator(self, to: .poke)
             case .soptlog:

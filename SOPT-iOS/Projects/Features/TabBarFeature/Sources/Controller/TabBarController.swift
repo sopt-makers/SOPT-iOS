@@ -31,7 +31,7 @@ final class TabBarController: UITabBarController {
     private var tabTypes: [TabBarItemType] {
         switch userType {
         case .active, .inactive:
-            return [.home, .soptamp, .poke, .soptlog]
+            return [.home, .poke, .soptlog]
         case .visitor:
             return [.home, .soptlog]
         }
