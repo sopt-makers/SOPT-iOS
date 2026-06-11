@@ -203,8 +203,8 @@ extension AppJamRankingVC {
                 )
             case .ranking:
                 headerView.configure(
-                    title: I18N.AppJamRankingList.todayRankingTitle,
-                    subtitle: I18N.AppJamRankingList.todayRankingSubTitle,
+                    title: I18N.AppJamRankingList.todayMissionAchievementBoardTitle,
+                    subtitle: I18N.AppJamRankingList.todayMissionAchievementBoardSubTitle,
                     image: DSKitAsset.Assets.icPrize.image
                 )
             }

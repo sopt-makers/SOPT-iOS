@@ -151,7 +151,7 @@ public struct I18N {
         public static let appjamMissionSubTitle = "다른 팀들은 방금 이런 미션을 달성했어요"
         
         public static let todayMissionAchievementBoardTitle = "오늘의 미션 달성 보드"
-        public static let todayRankingSubTitle = "미션을 인증해 오늘의 순위를 뒤집어보세요!"
+        public static let todayMissionAchievementBoardSubTitle = "오늘 미션 인증하고 추가 점수를 획득해보세요!"
     }
     
     public struct ListDetail {
