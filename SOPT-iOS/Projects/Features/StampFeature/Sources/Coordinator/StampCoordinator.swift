@@ -85,7 +85,8 @@ public final class StampCoordinator: BaseCoordinator {
 
         missionList.vc.onCellTap = { [weak self] model, username in
             guard let self else { return }
-            self.showMissionDetail(model, username)
+            
+            self.showMissionDetail(model, username, isAppjam: true)
         }
 
         missionList.vc.onReportButtonTap = { [weak self] in
@@ -279,7 +280,7 @@ extension StampCoordinator {
 
         otherMissionList.vc.onCellTap = { [weak self] model, username in
             guard let self else { return }
-            self.showMissionDetail(model, username)
+            self.showMissionDetail(model, username, isAppjam: true)
         }
 
         rootController?.pushViewController(otherMissionList.vc, animated: true)

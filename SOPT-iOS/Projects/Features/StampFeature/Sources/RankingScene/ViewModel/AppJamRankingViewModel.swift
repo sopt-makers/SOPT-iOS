@@ -94,9 +94,11 @@ extension AppJamRankingViewModel {
     private func fetchRankingData(output: Output) async {
         async let todayTask = fetchTodayRanking()
         async let recentTask = fetchRecentMissions()
-
+        async let appJamInfoTask = fetchAppjamInfo()
+        
         do {
-            let (todayRanking, recentMissions) = try await (todayTask, recentTask)
+            let (todayRanking, recentMissions, appJamInfo) = try await (todayTask, recentTask, appJamInfoTask)
+            
             output.todayRankingList = todayRanking.map { AppJamRankTodayPresentationModel(from: $0) }
             output.recentMissionList = recentMissions.map { AppJamRankRecentPresentationModel(from: $0) }
             output.isLoading.send(false)
