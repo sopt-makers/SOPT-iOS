@@ -301,7 +301,7 @@ extension ListDetailVC {
             self.zoomImageView.setImage(with: imageURL.absoluteString)
         }
         self.missionDateTextField.setText(with: model.activityDate)
-
+                
         self.missionDateTextField.setTextFieldView(.inactive)
         self.textView.text = model.content
         self.missionInfoView.setFullText(date: model.activityDate, clapCount: model.clapCount, viewCount: model.viewCount)
@@ -313,6 +313,9 @@ extension ListDetailVC {
         self.clapBadge.setCount(self.myClapCount)
         
         self.imageURL = model.image
+        
+        self.missionView.setStarLevel(model.starLevel)
+        self.missionView.setMissionLabelText(model.missionTitle)
 
         if let profileInfo = model.profileInfo {
             showProfileInfo(profileInfo)

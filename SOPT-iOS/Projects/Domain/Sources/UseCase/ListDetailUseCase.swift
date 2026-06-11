@@ -94,7 +94,9 @@ extension DefaultListDetailUseCase: ListDetailUseCase {
                     clapCount: 0,
                     myClapCount: 0,
                     viewCount: 0,
-                    isMine: false
+                    isMine: false,
+                    starLevel: 0,
+                    missionTitle: ""
                 )
             )
             .withUnretained(self)

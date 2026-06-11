@@ -124,7 +124,7 @@ extension StampCoordinator {
     //TODO: - isAppjam 기본값 제거
     private func showMissionDetail(_ model: MissionListModel, _ username: String?, isAppjam: Bool = false) {
         guard let starLevel = StarViewLevel.init(rawValue: model.level) else { return }
-
+        
         var missionDetail = factory.makeListDetailVC(
             sceneType: model.toListDetailSceneType(),
             starLevel: starLevel,
@@ -227,6 +227,11 @@ extension StampCoordinator {
             self.showAppJamTeamMissionList(teamName: teamName, teamNumber: teamNumber)
         }
         
+        ranking.vm.onMissionTap = { [weak self] missionId, nickname in
+            guard let self else { return }
+            self.showMissionDetailById(missionId, nickname)
+        }
+        
         rootController?.pushViewController(ranking.vc, animated: true)
     }
     
@@ -278,6 +283,37 @@ extension StampCoordinator {
         }
 
         rootController?.pushViewController(otherMissionList.vc, animated: true)
+    }
+    
+    private func showMissionDetailById(_ missionId: Int, _ nickname: String) {
+        guard let starLevel = StarViewLevel.init(rawValue: 2) else { return }
+
+        var missionDetail = factory.makeListDetailVC(
+            sceneType: .completed,
+            starLevel: starLevel,
+            missionId: missionId,
+            missionTitle: "",
+            otherUserName: nickname,
+            isAppjam: true
+        )
+
+        missionDetail.vc.onComplete = { [weak self] starViewLevel, handler in
+            guard let self else { return }
+            self.showMissionComplete(starViewLevel, handler)
+            self.rootController?.popToRootViewController(animated: true)
+        }
+
+        missionDetail.vc.onNaviBackTap = { [weak self] in
+            guard let self else { return }
+            self.rootController?.popViewController(animated: true)
+        }
+
+        missionDetail.vc.onViewClapTap = { [weak self] stampId, nickname in
+            guard let self else { return }
+            self.showClapList(stampId: stampId, nickname: nickname)
+        }
+
+        rootController?.pushViewController(missionDetail.vc, animated: true)
     }
 }
 

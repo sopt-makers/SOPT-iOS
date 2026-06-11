@@ -81,7 +81,11 @@ final class MissionView: UIView {
 // MARK: - Methods
 
 extension MissionView {
-    private func setMissionLabelText(_ mission: String) {
+    public func setStarLevel(_ starLevel: Int) {
+        let level = StarViewLevel(rawValue: starLevel) ?? .levelOne
+        defaultStarView.setStarColor(level: level)
+    }
+    public func setMissionLabelText(_ mission: String) {
         if !mission.contains("\n") && mission.count >= 24 {
             self.missionLabel.text = mission.setLineBreakAtMiddle()
         } else {
