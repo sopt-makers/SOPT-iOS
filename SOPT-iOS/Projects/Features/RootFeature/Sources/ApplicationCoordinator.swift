@@ -420,7 +420,7 @@ extension ApplicationCoordinator {
             runSoptlogFlow(type: userType)
             viewControllers = [
                 homeNavigationController,
-                stampNavigationController,
+//                stampNavigationController,
                 pokeNavigationController,
                 soptlogNavigationController
             ]

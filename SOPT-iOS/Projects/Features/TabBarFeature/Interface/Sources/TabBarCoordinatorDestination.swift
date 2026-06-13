@@ -12,6 +12,6 @@ public enum TabBarCoordinatorDestination {
     case home
     case soptlog
     case poke
-    case soptamp
+//    case soptamp
     case signIn
 }

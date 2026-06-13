@@ -18,7 +18,7 @@ public struct AppjamtampDeepLink: DeepLinkExecutable {
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
   
-        coordinator.runTabBarFlow(initSelectedTabType: .soptamp)
+//        coordinator.runTabBarFlow(initSelectedTabType: .soptamp)
         return coordinator
     }
 }

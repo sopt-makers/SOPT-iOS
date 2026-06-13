@@ -13,7 +13,7 @@ import PokeFeatureInterface
 public enum SoptlogCoordinatorDestination {
     case dailySoptune
     case webLink(url: String)
-    case soptamp
+//    case soptamp
     case pokeHome
     case pokeMyFriends(relation: PokeRelation)
     case home

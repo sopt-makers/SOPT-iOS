@@ -77,7 +77,6 @@ extension SoptlogViewModel {
             }.store(in: cancelBag)
         
         input.cellTap
-            .filter{ $0.section == .soptampLog }
             .withUnretained(self)
             .sink { owner, tapInfo in
                 if tapInfo.row == 0 {
