@@ -236,10 +236,10 @@ Fastlane과 Makefile을 활용하여 번거로운 개발 환경 세팅을 자동
 | `1, 2, 3기`  | `1, 2, 3, 4기`  | `1, 2기`  |  `1기`  |  `2, 3기` | `2, 3, 4기` |
 | <img src="https://github.com/user-attachments/assets/46c2fb55-9bb5-4e52-bc38-6d7a16021332" width=120 />  | <img src="https://github.com/user-attachments/assets/75a54aa5-e456-44e3-80f1-87b39b5defed" width=120 />  | <img src="https://github.com/user-attachments/assets/49001a52-8077-4715-9f05-4d5ef196f723" width=120 />  |  <img src="https://github.com/user-attachments/assets/4fb4c616-49c3-49ee-a1dd-9ecb734bfbab" width=120 />  |  <img src="https://github.com/user-attachments/assets/0e8475e1-e8db-458c-a426-ce33834908b3" width=120 /> |  <img src="https://github.com/user-attachments/assets/26e5eb26-c1f4-4903-bd81-3a6a256ad917" width=120 />  |
 |  [김민재](https://github.com/ffalswo2)   |  [강윤서](https://github.com/yungu0010)   | [김승찬](https://github.com/seungchan2)  |  [이재현](https://github.com/dlwogus0128)  |  [장석우](https://github.com/meltsplit) | [최주리](https://github.com/juri123123) |
-| `4기`  | `5, 36, 37기`  | `5기`  |  `5, 36, 37기`  |  `5, 36기` | `37기` |
-| <img width="120" height="120" alt="image" src="https://github.com/user-attachments/assets/582cb185-dab3-4560-be9f-4d3ca6c47c83" /> |  |   |    |   |  |
-|  [성현주](https://github.com/hye0njuoo)   |    |  |   |  | |
-| `37기`  |   |   |    |   |  |
+| `4기`  | `5, 36, 37, 38기`  | `5기`  |  `5, 36, 37기`  |  `5, 36기` | `37, 38기` |
+| <img width="120" height="120" alt="image" src="https://github.com/user-attachments/assets/582cb185-dab3-4560-be9f-4d3ca6c47c83" /> | <img src="https://github.com/user-attachments/assets/be65610b-a006-429f-9e7a-3c9828c8a521" width=120 /> |   |    |   |  |
+|  [성현주](https://github.com/hye0njuoo)   |  [권석기](https://github.com/kwonseokki)  |  |   |  | |
+| `37기`  | `38기` |   |    |   |  |
 
 
 <br>
