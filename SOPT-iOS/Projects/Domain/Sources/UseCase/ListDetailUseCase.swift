@@ -20,6 +20,7 @@ public protocol ListDetailUseCase {
     func deleteStamp(stampId: Int)
     func clap(stampId: Int, clapCount: Int)
     func getClapList(stampId: Int, nickname: String)
+    func postAppjamStamp(stampData: ListDetailRequestModel)
 
     var listDetailModel: PassthroughSubject<ListDetailModel, Error> { get set }
     var mediaUploadCompleted: PassthroughSubject<Void, Error> { get set }
@@ -80,6 +81,32 @@ extension DefaultListDetailUseCase: ListDetailUseCase {
                 owner.mediaUploadCompleted.send(())
                 print("receivedValue: \(owner)")
             }).store(in: self.cancelBag)
+    }
+    
+    public func postAppjamStamp(stampData: ListDetailRequestModel) {
+        repository
+            .postAppjamStamp(isAppjam: true, stampData: stampData)
+            .replaceError(
+                with: ListDetailModel(
+                    image: "",
+                    content: "",
+                    date: "",
+                    stampId: 0,
+                    activityDate: "",
+                    clapCount: 0,
+                    myClapCount: 0,
+                    viewCount: 0,
+                    isMine: false,
+                    starLevel: 0,
+                    missionTitle: ""
+                )
+            )
+            .withUnretained(self)
+            .sink { completion in
+                print("completion: \(completion)")
+            } receiveValue: { owner, model in
+                owner.listDetailModel.send(model)
+            }.store(in: self.cancelBag)
     }
 
     public func postStamp(isAppjam: Bool?, stampData: ListDetailRequestModel) {

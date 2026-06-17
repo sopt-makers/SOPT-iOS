@@ -553,12 +553,12 @@ extension MissionListVC: UICollectionViewDelegate {
             let userType = UserDefaultKeyList.Auth.getUserType()
 
             let username = sceneType.isAppJamTeamView ? model.ownerName : sceneType.username
-            
+                
             if model.isCompleted {
                 onCellTap?(model, username)
                 return
             }
-
+            
             switch userType {
             case .active:
                 onCellTap?(model, username)

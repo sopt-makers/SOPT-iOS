@@ -87,7 +87,7 @@ public class ListDetailViewModel: ListDetailViewModelType {
         self.isAppjam = isAppjam
         self.missionTitle = missionTitle
         self.isOtherUser = !(otherUsername == nil)
-        self.otherUserName = otherUsername
+        self.otherUserName = otherUsername ?? ""
     }
 }
 
@@ -101,7 +101,7 @@ extension ListDetailViewModel {
             .filter { owner, _ in
                 owner.sceneType == .completed
             }
-            .sink { owner, _ in
+            .sink { owner, _ in                
                 owner.isOtherUser
                 ? owner.useCase.fetchListDetail(isAppjam: owner.isAppjam, missionId: owner.missionId, username: owner.otherUserName)
                 : owner.useCase.fetchListDetail(isAppjam: owner.isAppjam, missionId: owner.missionId, username: nil)
@@ -169,6 +169,7 @@ extension ListDetailViewModel {
             .withUnretained(self)
             .sink { owner, requestModel in
                 if owner.sceneType == ListDetailSceneType.none {
+                    owner.isAppjam == true ? owner.useCase.postAppjamStamp(stampData: requestModel) :
                     owner.useCase.postStamp(isAppjam: owner.isAppjam, stampData: requestModel)
                 } else {
                     owner.useCase.putStamp(stampData: requestModel)
@@ -267,7 +268,9 @@ extension ListDetailViewModel {
                 owner.totalClapCount = model.clapCount
                 owner.myClapCount = model.myClapCount ?? 0
                 owner.viewcount = model.viewCount
-                owner.starLevel = StarViewLevel.init(rawValue: model.starLevel)                
+                if owner.starLevel == nil {
+                    owner.starLevel = StarViewLevel.init(rawValue: model.starLevel)
+                }
                 if let mine = model.isMine {
                     owner.isOtherUser = !mine
                 }

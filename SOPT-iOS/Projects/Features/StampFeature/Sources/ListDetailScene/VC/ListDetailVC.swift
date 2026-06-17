@@ -219,7 +219,7 @@ extension ListDetailVC {
                         owner.backgroundDimmerView.removeFromSuperview()
                     }
                 } else {
-                    if owner.sceneType == .none {
+                    if owner.sceneType == .none {                        
                         owner.onComplete?(owner.starLevel) {
                             UIView.animate(withDuration: 0.2, delay: 0, animations: {
                                 owner.backgroundDimmerView.alpha = 0

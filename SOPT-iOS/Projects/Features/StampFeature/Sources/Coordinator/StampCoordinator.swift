@@ -131,7 +131,7 @@ extension StampCoordinator {
             starLevel: starLevel,
             missionId: model.id,
             missionTitle: model.title,
-            otherUserName: username,
+            otherUserName: isAppjam ? model.ownerName : username,
             isAppjam: isAppjam
         )
 

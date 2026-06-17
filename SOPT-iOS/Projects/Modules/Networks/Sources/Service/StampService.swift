@@ -25,6 +25,7 @@ public protocol StampService {
     func getReportUrl() -> AnyPublisher<SoptampReportUrlEntity, Error>
     func clap(stampId: Int, clapCount: Int) -> AnyPublisher<ClapCountEntity, Error>
     func getClapList(stampId: Int, nickname: String) -> AnyPublisher<[ClapperEntity], Error>
+    func postAppJamStampRecord(requestModel: ListDetailRequestEntity) -> AnyPublisher<AppJamStampResponseEntity, Error>
 
     func getReportURLAsync() async throws -> SoptampReportUrlEntity
 }
@@ -40,6 +41,10 @@ extension DefaultStampService: StampService {
 
     public func postStamp(requestModel: ListDetailRequestEntity) -> AnyPublisher<ListDetailEntity, Error> {
         requestObjectInCombine(StampAPI.postStamp(requestModel: requestModel))
+    }
+    
+    public func postAppJamStampRecord(requestModel: ListDetailRequestEntity) -> AnyPublisher<AppJamStampResponseEntity, Error> {
+        requestObjectInCombine(StampAPI.postAppJamStamp(requestModel: requestModel))
     }
 
     public func postAppJamStamp(requestModel: ListDetailRequestEntity) -> AnyPublisher<ListDetailEntity, Error> {

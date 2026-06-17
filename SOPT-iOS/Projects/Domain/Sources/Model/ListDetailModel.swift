@@ -61,3 +61,4 @@ public struct ProfileInfo {
         self.imageURL = imageURL
     }
 }
+
