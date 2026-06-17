@@ -658,7 +658,6 @@ extension ListDetailVC {
             self.imagePlaceholderLabel.isHidden = missionImageView.image == nil ? false : true
             self.bottomButton.isHidden = false
             self.missionInfoView.isHidden = true
-            self.zoomInView.isHidden = true
             self.viewClapButton.isHidden = true
             self.missionDateTextField.isHidden = false
         case .completed:
