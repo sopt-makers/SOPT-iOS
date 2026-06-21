@@ -276,6 +276,11 @@ public struct I18N {
             public static let instagram = "인스타그램"
         }
         
+        public struct AppService {
+            public static let headerTitle = "SOPT 더 재밌게 즐기기!"
+            public static let soptletter = "솝레터"
+        }
+        
         public struct PopularPosts {
             public static let headerTitle = "지금 인기 소식"
             public static let morePosts = "다른 게시물 보러가기"
@@ -504,6 +509,21 @@ public struct I18N {
         public static let submitButton = "작성 완료"
         public static let submitSuccess = "메시지 작성을 완료했어요."
         public static let submitFailure = "실패했습니다"
+        
+        public struct Onboarding {
+            public static let descriptionText = """
+            우리 기수 회원들에게 하고 싶은 말을 남겨보세요.
+            익명으로 부담없이 마음을 전할 수 있어요.
+            추억을 남기고, 우리 기수만의 기록을 쌓아보세요.
+            """
+            public static let startButtonTitle = "솝레터 시작하기"
+            public static let goButtonTitle = "기 솝레터 바로가기"
+        }
+        
+        public struct Nickname {
+            public static let descriptionText = "기 솝레터에 입장할 준비 되셨나요?\n솝레터는 100% 익명이에요."
+            public static let myNicknameText = "나의 닉네임은"
+        }
     }
 }
 
