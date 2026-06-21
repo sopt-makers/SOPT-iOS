@@ -12,13 +12,13 @@ import Core
 
 enum SoptlogSectionLayoutKind: Int, CaseIterable {
     case logo = 0
-    case soptampLog
+//    case soptampLog
     case pokeLog
     case banner
 
     var title: String {
         switch self {
-        case .soptampLog: return I18N.Soptlog.soptamp
+//        case .soptampLog: return I18N.Soptlog.soptamp
         case .pokeLog: return I18N.Soptlog.poke
         default: return ""
         }
@@ -28,7 +28,7 @@ enum SoptlogSectionLayoutKind: Int, CaseIterable {
     static func visibleSections(isAppjamParticipant: Bool) -> [SoptlogSectionLayoutKind] {
         var sections: [SoptlogSectionLayoutKind] = [.logo]
                 
-        sections.append(.soptampLog)
+//        sections.append(.soptampLog)
         sections.append(.pokeLog)
         sections.append(.banner)
         

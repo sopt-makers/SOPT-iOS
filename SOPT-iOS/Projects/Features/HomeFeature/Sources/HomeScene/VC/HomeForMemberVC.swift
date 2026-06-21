@@ -31,7 +31,7 @@ final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
     private var cellTapped = PassthroughSubject<HomeForMemberItem, Never>()
     private(set) var attendanceButtonTapped = PassthroughSubject<Void, Never>()
     private(set) var surveyButtonTapped = PassthroughSubject<Void, Never>()
-    private(set) var viewAllButtonTapped = PassthroughSubject<Void, Never>()
+    private(set) var viewAllButtonTapped = PassthroughSubject<HomeForMemberSectionLayoutKind, Never>()
     private var socialLinkButtonTapped = PassthroughSubject<HomePresentationModel.SocialLink, Never>()
     private(set) var profileImageViewTapped = PassthroughSubject<PostInfo, Never>()
     private(set) var profileEditTapped = PassthroughSubject<Void, Never>()

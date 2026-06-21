@@ -60,10 +60,10 @@ public final class SoptlogCoordinator: BaseCoordinator {
             self.delegate?.soptlogCoordinator(self, to: .dailySoptune)
         }
         
-        soptlog.vm.onSoptampHomeTapped = { [weak self] in
-            guard let self else { return }
-            self.delegate?.soptlogCoordinator(self, to: .soptamp)
-        }
+//        soptlog.vm.onSoptampHomeTapped = { [weak self] in
+//            guard let self else { return }
+//            self.delegate?.soptlogCoordinator(self, to: .soptamp)
+//        }
         
         soptlog.vm.onPokeHomeTapped = { [weak self] in
             guard let self else { return }

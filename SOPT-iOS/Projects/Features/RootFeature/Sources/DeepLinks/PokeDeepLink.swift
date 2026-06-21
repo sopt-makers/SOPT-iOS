@@ -9,6 +9,7 @@
 import Foundation
 import BaseFeatureDependency
 import PokeFeature
+import Core
 
 public struct PokeDeepLink: DeepLinkExecutable {
     public let name = "poke"
@@ -18,11 +19,13 @@ public struct PokeDeepLink: DeepLinkExecutable {
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
         
+        let userType = UserDefaultKeyList.Auth.getUserType()
+        coordinator.tabBarController?.selectedIndex = TabBarItemType.poke.getTabIndex(userType: userType)
+        
         if self.isDestination == true {
-            coordinator.runTabBarFlow(initSelectedTabType: .poke)
             return coordinator
         }
-        
-        return coordinator.runPokeFlow(isRouteFromTabBar: false)
+                
+        return coordinator.runPokeFlow()
     }
 }

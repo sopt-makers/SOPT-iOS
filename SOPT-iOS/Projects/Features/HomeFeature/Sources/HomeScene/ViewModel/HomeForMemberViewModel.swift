@@ -34,10 +34,10 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     @Published private(set) var isFABTapped: Bool = false
 
     let productServiceList: [HomePresentationModel.ProductService] = [
-        .init(product: .playgroundCommunity),
-        .init(product: .group),
         .init(product: .member),
-        .init(product: .project)
+        .init(product: .group),
+        .init(product: .project),
+        .init(product: .coffeechat)
     ]
     
     let socialLinkList: [HomePresentationModel.SocialLink] = [
@@ -60,7 +60,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         let extendedFloatingButtonTapped: Driver<Void>
         let surveyButtonTapped: Driver<Void>
         let socialLinkButtonTapped: Driver<HomePresentationModel.SocialLink>
-        let viewAllButtonTapped: Driver<Void>
+        let viewAllButtonTapped: Driver<HomeForMemberSectionLayoutKind>
         let profileImageViewTapped: Driver<PostInfo>
         let editProfileTapped: Driver<Void>
     }
@@ -204,9 +204,10 @@ extension HomeForMemberViewModel {
         
         input.viewAllButtonTapped
             .withUnretained(self)
-            .sink { owner, _ in
-                owner.onViewAllContentButtonTapped?(ExternalURL.Playground.main)
-                owner.eventTracker.trackClickViewAll(sectionName: .latestPosts)
+            .sink { owner, sectionKind in
+                owner.onViewAllContentButtonTapped?(ExternalURL.Playground.feed)
+                let sectionName: HomeAmplitudeEventPropertyValue = sectionKind == .popularPosts ? .popularPosts : .latestPosts
+                owner.eventTracker.trackClickViewAll(sectionName: sectionName)
             }
             .store(in: cancelBag)
         

@@ -46,7 +46,7 @@ enum FABMenuSection: CaseIterable, FABMenuSectionProtocol {
         case .playground:
             return [MenuSectionItem(title: I18N.TabBar.Playground.write, 
                                     icon: DSKitAsset.Assets.icFabPencil.image, 
-                                    url: ExternalURL.Playground.feed)]
+                                    url: ExternalURL.Playground.feedUpload)]
         case .groupAndStudy:
             return [
                 MenuSectionItem(title: I18N.TabBar.GroupAndStudy.makeGroup, 

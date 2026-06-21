@@ -21,8 +21,8 @@ extension SoptlogVC {
             switch sectionType {
             case .logo:
                 return self.createLogoSection()
-            case .soptampLog:
-                return self.createMenuSection(sectionType: sectionType)
+//            case .soptampLog:
+//                return self.createMenuSection(sectionType: sectionType)
             case .pokeLog:
                 return self.isPokeEmpty ?
                 self.createEmptySection(sectionType: sectionType) :
@@ -42,7 +42,8 @@ extension SoptlogVC {
         let group = NSCollectionLayoutGroup.vertical(layoutSize: itemSize, subitems: [item])
 
         // 솝탬프 엠티뷰로도 활용하기 위함
-        let topSpacing: CGFloat = sectionType == .soptampLog ? 36 : 28
+//        let topSpacing: CGFloat = sectionType == .soptampLog ? 36 : 28
+        let topSpacing: CGFloat = 28
         let headerHeight: CGFloat = topSpacing + 28
         let headerSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
@@ -89,7 +90,8 @@ extension SoptlogVC {
         let group = NSCollectionLayoutGroup.vertical(layoutSize: itemSize, subitems: [item])
         
         // Section header
-        let topSpacing: CGFloat = sectionType == .soptampLog ? 36 : 28
+//        let topSpacing: CGFloat = sectionType == .soptampLog ? 36 : 28
+        let topSpacing: CGFloat = 28
         let headerHeight: CGFloat = topSpacing + 28  // topSpacing + 타이틀 높이
         let headerSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),

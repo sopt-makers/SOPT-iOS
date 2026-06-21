@@ -266,17 +266,18 @@ public struct I18N {
         
         public struct MainProduct {
             public static let headerTitleForVisitor = "SOPT를 더 알고 싶다면, 둘러보세요"
-            public static let playground = "Playground"
+            public static let soptPlayground = "SOPT Playground"
             public static let groupAndStudy = "모임/스터디"
             public static let member = "멤버"
             public static let project = "프로젝트"
+            public static let coffeechat = "커피솝"
             public static let homePage = "홈페이지"
             public static let activityReview = "활동후기"
             public static let instagram = "인스타그램"
         }
         
         public struct PopularPosts {
-            public static let headerTitle = "실시간 인기글"
+            public static let headerTitle = "지금 인기 소식"
             public static let morePosts = "다른 게시물 보러가기"
         }
         

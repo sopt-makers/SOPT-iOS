@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "ic_coffeechat.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

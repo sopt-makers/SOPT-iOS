@@ -127,8 +127,8 @@ extension TabBarViewModel {
     // 서비스명을 TabBarItemType으로 매핑
     private func mapServiceNameToTabType(_ serviceName: String) -> TabBarItemType? {
         switch serviceName {
-        case "솝탬프":
-            return .soptamp
+//        case "솝탬프":
+//            return .soptamp
         case "콕찌르기":
             return .poke
         default:
