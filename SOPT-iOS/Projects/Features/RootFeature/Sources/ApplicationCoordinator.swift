@@ -475,6 +475,8 @@ extension ApplicationCoordinator {
                     self?.runNotificationFlow()
                 case .soptlog:
                     self?.tabBarController?.selectedIndex = 3
+                case .soptletter:
+                    self?.runSoptletterOnboardingFlow()
                 case .deepLink(let url):
                     self?.notificationHandler.receive(deepLink: url)
                     guard let deepLink = self?.notificationHandler.deepLink.value else { return }
@@ -577,12 +579,35 @@ extension ApplicationCoordinator {
 // MARK: - SoptletterFlow
 // TODO: - 솝레터 목록뷰 완성 후 코디네이터 생명주기 관리 필요 (솝레터 메인 뷰모델이 관리)
 extension ApplicationCoordinator {
-    internal func runSoptletterWritingFlow() {
+    
+    @discardableResult
+    internal func runSoptletterOnboardingFlow() -> DefaultCoordinator {
         let coordinator = SoptletterCoordinator(
             navigationController: UIWindow.getRootNavigationController,
             factory: SoptletterBuilder()
         )
+        coordinator.finishFlow = { [weak self, weak coordinator] in
+            coordinator?.childCoordinators = []
+            self?.removeDependency(coordinator)
+        }
+        addDependency(coordinator)
+        coordinator.startOnboarding()
+        return coordinator
+    }
+    
+    @discardableResult
+    internal func runSoptletterWritingFlow() -> DefaultCoordinator {
+        let coordinator = SoptletterCoordinator(
+            navigationController: UIWindow.getRootNavigationController,
+            factory: SoptletterBuilder()
+        )
+        coordinator.finishFlow = { [weak self, weak coordinator] in
+            coordinator?.childCoordinators = []
+            self?.removeDependency(coordinator)
+        }
+        addDependency(coordinator)
         coordinator.start()
+        return coordinator
     }
 }
 
@@ -923,4 +948,3 @@ extension ApplicationCoordinator {
         pokeMyFriendsCoordinator.start(with: relation)
     }
 }
-

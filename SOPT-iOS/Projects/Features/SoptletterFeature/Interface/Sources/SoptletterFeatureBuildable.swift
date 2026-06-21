@@ -10,5 +10,7 @@ import Foundation
 import BaseFeatureDependency
 
 public protocol SoptletterFeatureBuildable {
+    func makeSoptletterOnboardingVC(coordinator: Coordinator) -> SoptletterOnboardingPresentable
+    func makeSoptletterNicknameCheckVC(coordinator: Coordinator) -> SoptletterNicknameCheckPresentable
     func makeSoptletterWritingVC(coordinator: Coordinator) -> SoptletterWritingPresentable
 }

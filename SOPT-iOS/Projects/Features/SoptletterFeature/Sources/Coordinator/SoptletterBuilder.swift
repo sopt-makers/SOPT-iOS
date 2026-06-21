@@ -15,6 +15,14 @@ public final class SoptletterBuilder {
 }
 
 extension SoptletterBuilder: SoptletterFeatureBuildable {
+    public func makeSoptletterOnboardingVC(coordinator: Coordinator) -> SoptletterOnboardingPresentable {
+        return SoptletterOnboardingVC()
+    }
+    
+    public func makeSoptletterNicknameCheckVC(coordinator: Coordinator) -> SoptletterNicknameCheckPresentable {
+        return SoptletterCheckNicknameVC()
+    }
+    
     public func makeSoptletterWritingVC(coordinator: Coordinator) -> SoptletterWritingPresentable {
         let viewModel = SoptletterWritingViewModel(coordinator: coordinator)
         let soptletterWritingVC = SoptletterWritingVC(viewModel: viewModel)
