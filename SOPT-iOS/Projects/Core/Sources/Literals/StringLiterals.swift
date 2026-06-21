@@ -504,6 +504,8 @@ public struct I18N {
         public static let submitButton = "작성 완료"
         public static let submitSuccess = "메시지 작성을 완료했어요."
         public static let submitFailure = "실패했습니다"
+        
+        public static let topicTitle = "솝레터 주제"
     }
 }
 
