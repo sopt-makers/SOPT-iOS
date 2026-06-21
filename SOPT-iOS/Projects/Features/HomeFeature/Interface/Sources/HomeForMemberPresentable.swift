@@ -17,6 +17,7 @@ public protocol HomeForMemberCoordinatable {
     var onAttendanceButtonTapped: (() -> Void)? { get set }
     var onMainProductCellTapped: ((String) -> Void)? { get set }
     var onAppServiceCellTapped: ((String) -> Void)? { get set }
+    var onSoptletterCellTapped: (() -> Void)? { get set }
     var onNotificationButtonTapped: (() -> Void)? { get set }
     var onSettingButtonTapped: ((UserType) -> Void)? { get set }
     var onNeedSignIn: (@MainActor () -> Void)? { get set }

@@ -78,6 +78,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public var onAttendanceButtonTapped: (() -> Void)?
     public var onMainProductCellTapped: ((String) -> Void)?
     public var onAppServiceCellTapped: ((String) -> Void)?
+    public var onSoptletterCellTapped: (() -> Void)?
     public var onNotificationButtonTapped: (() -> Void)?
     public var onSettingButtonTapped: ((UserType) -> Void)?
     public var onNeedSignIn: (@MainActor () -> Void)?
@@ -145,6 +146,12 @@ extension HomeForMemberViewModel {
                 case .latestPost(let model):
                     owner.onLatestPostCellTapped?(model.webLink)
                     owner.trackLatestPostEvent(model: model)
+                case .appService(let model):
+                    if model.serviceName == I18N.Home.AppService.soptletter {
+                        owner.onSoptletterCellTapped?()
+                    } else {
+                        owner.onAppServiceCellTapped?(model.deepLink)
+                    }
                 default: break
                 }
             }
@@ -287,7 +294,15 @@ extension HomeForMemberViewModel {
             async let dashBoard = fetchDashBoard()
             async let recentSchedule = fetchRecentSchedule()
             async let survey = fetchSurvey()
-            async let appService = useCase.getAppServicesAsync()
+            // TODO: - API 연결 시 수정
+//            async let appService = useCase.getAppServicesAsync()
+            async let appService = [HomeAppServicesModel(
+                serviceName: "솝레터",
+                displayAlarmBadge: true,
+                alarmBadge: "45",
+                iconURL: nil,
+                deepLink: ""
+            )]
             async let popularPosts = useCase.getPopularPostsAsync()
             async let latestPosts = useCase.getLatestPostsAsync()
                         

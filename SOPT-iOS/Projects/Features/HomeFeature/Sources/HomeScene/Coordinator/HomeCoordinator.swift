@@ -79,6 +79,11 @@ public final class HomeCoordinator: BaseCoordinator {
             guard let self else { return }
             self.delegate?.homeCoordinator(self, to: .deepLink(url: url))
         }
+
+        homeForMember.vm.onSoptletterCellTapped = { [weak self] in
+            guard let self else { return }
+            self.delegate?.homeCoordinator(self, to: .soptletter)
+        }
         
         homeForMember.vm.onMainProductCellTapped = { [weak self] url in
             guard let self else { return }
@@ -179,4 +184,3 @@ public final class HomeCoordinator: BaseCoordinator {
         navigationController?.pushViewController(homeForVisitor.vc, animated: true)
     }
 }
-

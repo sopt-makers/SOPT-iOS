@@ -24,12 +24,3 @@ public extension ServiceType {
         }
     }
 }
-
-public extension AppServiceType {
-    var toAmplitudeEventType: AmplitudeEventType {
-        switch self {
-        case .soptamp: return .clickSoptamp
-        case .poke: return .clickPoke
-        }
-    }
-}

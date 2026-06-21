@@ -65,6 +65,10 @@ public final class LegacyHomeCoordinator: DefaultHomeCoordinator {
         homeForMember.vm.onAppServiceCellTapped = { [weak self] url in
             self?.requestCoordinating?(.deepLink(url: url))
         }
+
+        homeForMember.vm.onSoptletterCellTapped = { [weak self] in
+            self?.requestCoordinating?(.soptletter)
+        }
         
         homeForMember.vm.onMainProductCellTapped = { [weak self] url in
             self?.requestCoordinating?(.webLink(url: url))

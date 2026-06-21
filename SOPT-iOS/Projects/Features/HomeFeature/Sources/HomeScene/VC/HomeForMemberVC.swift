@@ -229,6 +229,9 @@ extension HomeForMemberVC {
                 case .socialLink(let socialLink):
                     return collectionView.dequeueConfiguredReusableCell(using: socialLinkRegistration,
                                                                         for: indexPath, item: socialLink)
+                case .appService(let appService):
+                    return collectionView.dequeueConfiguredReusableCell(using: appServiceRegistration,
+                                                                        for: indexPath, item: appService)
                 }
             }
         
@@ -334,7 +337,7 @@ extension HomeForMemberVC {
     private func applySnapshot(with data: HomePresentationModel) {
         var snapshot = NSDiffableDataSourceSnapshot<HomeForMemberSectionLayoutKind, HomeForMemberItem>()
         
-        snapshot.appendSections([.dashBoard, .calendar, .mainProduct, .popularPosts, .latestPosts, .survey, .socialLinks])
+        snapshot.appendSections([.dashBoard, .calendar, .mainProduct, .appService, .popularPosts, .latestPosts, .survey, .socialLinks])
         
         snapshot.appendItems([.dashBoard(data.dashBoard)], toSection: .dashBoard)
         snapshot.appendItems([.recentSchedule(data.recentSchedule)], toSection: .calendar)
@@ -343,6 +346,7 @@ extension HomeForMemberVC {
         snapshot.appendItems(data.latestPosts.map { .latestPost($0) }, toSection: .latestPosts)
         snapshot.appendItems([.survey(data.survey)], toSection: .survey)
         snapshot.appendItems(self.viewModel.socialLinkList.map { .socialLink($0) }, toSection: .socialLinks)
+        snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
 
         dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
             // 애니메이션은 data가 apply된 이후에 실행
@@ -418,6 +422,8 @@ extension HomeForMemberVC: UICollectionViewDelegate, UICollectionViewDataSource 
                 self.cellTapped.send(.latestPost(model))
             case .socialLink(let model):
                 self.cellTapped.send(.socialLink(model))
+            case .appService(let model):
+                self.cellTapped.send(.appService(model))
             default: return
             }
         }
