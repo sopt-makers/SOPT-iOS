@@ -64,10 +64,11 @@ extension SelectTopicVC {
     }
     
     func setLayout() {
+        let safeArea = view.safeAreaLayoutGuide
         view.addSubviews(backButton, navTitleLabel, tableView)
         
         backButton.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview().inset(12)
+            make.top.equalTo(safeArea.snp.top).inset(12)
             make.leading.equalToSuperview().inset(20)
             make.size.equalTo(32)
         }
@@ -78,7 +79,7 @@ extension SelectTopicVC {
         }
         
         tableView.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(110)
+            make.top.equalTo(backButton.snp.bottom).offset(22)
             make.leading.trailing.bottom.equalToSuperview()
         }
     }

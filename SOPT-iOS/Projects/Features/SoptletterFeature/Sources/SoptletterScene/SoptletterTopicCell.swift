@@ -50,9 +50,10 @@ final class SoptletterTopicCell: UITableViewCell {
         containerView.addSubviews(titleLabel, chevronImageView)
  
         containerView.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview()
+            make.top.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(52)
+            make.bottom.equalToSuperview().inset(12)
         }
  
         titleLabel.snp.makeConstraints { make in
