@@ -27,8 +27,9 @@ final class SelectTopicVC: SelectTopicPresentable {
         "38기 회고"
     ]
     
-    private let backButton = UIButton(type: .custom).then {
+    private lazy var backButton = UIButton(type: .custom).then {
         $0.setImage(DSKitAsset.Assets.opArrowWhite.image, for: .normal)
+        $0.addTarget(self, action: #selector(backButtonTap), for: .touchUpInside)
     }
     
     private let navTitleLabel = UILabel().then {
@@ -83,16 +84,21 @@ extension SelectTopicVC {
             make.leading.trailing.bottom.equalToSuperview()
         }
     }
+    
+    @objc
+    private func backButtonTap() {
+        onNaviBackTap?()
+    }
 }
 
 // MARK: - UITableViewDataSource, UITableViewDelegate
 
 extension SelectTopicVC: UITableViewDataSource, UITableViewDelegate {
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return topics.count
     }
     
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: SoptletterTopicCell.identifier,
             for: indexPath
@@ -102,7 +108,7 @@ extension SelectTopicVC: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
     
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let title = topics[indexPath.row]
         onCellTap?(title)
