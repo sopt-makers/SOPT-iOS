@@ -12,9 +12,9 @@ import DSKit
 import Core
 import SoptletterFeatureInterface
 
-final class SoptletterCheckNicknameVC: UIViewController, SoptletterNicknameCheckViewControllable {
-    var onNaviBackTap: (() -> Void)?
-    var onGoButtonTap: (() -> Void)?
+public final class SoptletterCheckNicknameVC: UIViewController, SoptletterNicknameCheckViewControllable {
+    public var onNaviBackTap: (() -> Void)?
+    public var onGoButtonTap: (() -> Void)?
     
     // TODO: - 추후 기수 연결
     private let number: Int = 12
@@ -58,10 +58,12 @@ extension SoptletterCheckNicknameVC {
     }
     
     private func setLayout() {
+        let safeArea = view.safeAreaLayoutGuide
+        
         view.addSubviews(backButton, cardView, button)
         
         backButton.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(12)
+            $0.top.equalTo(safeArea.snp.top).offset(12)
             $0.leading.equalToSuperview().inset(20)
             $0.size.equalTo(32)
         }

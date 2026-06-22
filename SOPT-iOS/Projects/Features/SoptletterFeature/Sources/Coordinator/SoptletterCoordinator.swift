@@ -76,7 +76,7 @@ public final class SoptletterCoordinator: DefaultCoordinator {
             self?.showSoptletterWriting()
         }
         
-        rootController?.pushViewController(vc, animated: false)
+        rootController?.pushViewController(vc, animated: true)
     }
 
     private func showSoptletterWriting() {

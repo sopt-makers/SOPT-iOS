@@ -80,11 +80,13 @@ extension SoptletterOnboardingVC {
     }
     
     private func setLayout() {
+        let safeArea = view.safeAreaLayoutGuide
+        
         view.addSubviews(imageView, titleStackView, descriptionLabel, startButton, backButton)
         titleStackView.addArrangedSubviews(titleImageView, secondTitleImageView)
         
         backButton.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(12)
+            $0.top.equalTo(safeArea.snp.top).offset(12)
             $0.leading.equalToSuperview().inset(20)
             $0.size.equalTo(32)
         }
