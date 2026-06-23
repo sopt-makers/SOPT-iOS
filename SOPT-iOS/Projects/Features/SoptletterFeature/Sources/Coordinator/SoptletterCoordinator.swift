@@ -52,4 +52,21 @@ public final class SoptletterCoordinator: BaseCoordinator {
 
         navigationController?.pushViewController(soptletterWriting.vc, animated: true)
     }
+    
+    private func showSelectTopic() {
+        var vc = factory.makeSelectTopicVC(coordinator: self)
+        
+        vc.onNaviBackTap = { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }
+        
+        vc.onCellTap = { [weak self] title in
+            // 임시
+            self?.showSoptletter(title: title)
+        }
+        
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    private func showSoptletter(title: String) { }
 }

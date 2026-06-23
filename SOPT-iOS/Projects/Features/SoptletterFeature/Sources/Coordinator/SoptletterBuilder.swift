@@ -20,4 +20,9 @@ extension SoptletterBuilder: SoptletterFeatureBuildable {
         let soptletterWritingVC = SoptletterWritingVC(viewModel: viewModel)
         return (soptletterWritingVC, viewModel)
     }
+    
+    public func makeSelectTopicVC(coordinator: Coordinator) -> SelectTopicPresentable {
+        let vc = SelectTopicVC()
+        return vc
+    }
 }
