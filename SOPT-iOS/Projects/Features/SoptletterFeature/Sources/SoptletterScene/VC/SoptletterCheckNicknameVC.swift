@@ -44,7 +44,7 @@ public final class SoptletterCheckNicknameVC: UIViewController, SoptletterNickna
         $0.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         setUI()

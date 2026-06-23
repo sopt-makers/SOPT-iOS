@@ -97,6 +97,9 @@ extension DefaultSplashUseCase: SplashUseCase {
         let needForceUpdate = currentAppVersion.compare(minimumVersion, options: .numeric) == .orderedAscending
         let needOptionalUpdate = currentAppVersion.compare(appStoreVersion, options: .numeric) == .orderedAscending
         
+        #if DEBUG
+        return .none
+        #endif
         return needForceUpdate ? .forcedUpdate(forcedUpdateData.appNotice) :
                 needOptionalUpdate ? .optionalUpdate(optionalUpdateData) : .none
     }

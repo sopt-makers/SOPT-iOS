@@ -21,6 +21,7 @@ public protocol HomeUseCase {
     func getUserInfoAsync() async throws -> UserMainInfoModel?
     func getRecentScheduleAsync() async throws -> HomeRecentScheduleModel
     func getAppServicesAsync() async throws -> [HomeAppServicesModel]
+    func getHomeAppService() async throws -> [HomeAppServicesModel]
     func getCalendarDetailAsync() async throws -> [HomeCalendarDetailModel]
     func getSurveyInfoAsync() async throws -> HomeSurveyModel
     func getPopularPostsAsync() async throws -> [HomePopularPostModel]
@@ -117,6 +118,21 @@ extension DefaultHomeUseCase: HomeUseCase {
         let services = try await repository.getAppServicesAsync()
         cachedAppServices = services
         return services
+    }
+    
+    public func getHomeAppService() async throws -> [HomeAppServicesModel] {
+        // 캐시된 데이터가 있으면 반환
+        if let cached = cachedAppServices {
+            return cached
+        }
+        
+        // 없으면 API 호출 후 캐싱
+        let services = try await repository.getAppServicesAsync()
+        
+        cachedAppServices = services
+        return services.filter { model in
+            model.serviceName == "솝레터"
+        }
     }
 
     public func getCalendarDetailAsync() async throws -> [HomeCalendarDetailModel] {
