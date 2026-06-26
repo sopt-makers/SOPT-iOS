@@ -85,7 +85,8 @@ public final class StampCoordinator: BaseCoordinator {
 
         missionList.vc.onCellTap = { [weak self] model, username in
             guard let self else { return }
-            self.showMissionDetail(model, username)
+            
+            self.showMissionDetail(model, username, isAppjam: true)
         }
 
         missionList.vc.onReportButtonTap = { [weak self] in
@@ -117,20 +118,20 @@ extension StampCoordinator {
             level: level,
             isCompleted: true
         )
-        showMissionDetail(model, username)
+        showMissionDetail(model, username, isAppjam: true)
     }
 
     @available(*, deprecated, message: "⚠️ 앱잼 템프인지 일반 미션인지 확인했나요? isAppjam 파라미터로 분기해주세요!")
     //TODO: - isAppjam 기본값 제거
     private func showMissionDetail(_ model: MissionListModel, _ username: String?, isAppjam: Bool = false) {
         guard let starLevel = StarViewLevel.init(rawValue: model.level) else { return }
-
+        
         var missionDetail = factory.makeListDetailVC(
             sceneType: model.toListDetailSceneType(),
             starLevel: starLevel,
             missionId: model.id,
             missionTitle: model.title,
-            otherUserName: username,
+            otherUserName: isAppjam ? model.ownerName : username,
             isAppjam: isAppjam
         )
 
@@ -227,6 +228,11 @@ extension StampCoordinator {
             self.showAppJamTeamMissionList(teamName: teamName, teamNumber: teamNumber)
         }
         
+        ranking.vm.onMissionTap = { [weak self] missionId, nickname in
+            guard let self else { return }
+            self.showMissionDetailById(missionId, nickname)
+        }
+        
         rootController?.pushViewController(ranking.vc, animated: true)
     }
     
@@ -274,10 +280,41 @@ extension StampCoordinator {
 
         otherMissionList.vc.onCellTap = { [weak self] model, username in
             guard let self else { return }
-            self.showMissionDetail(model, username)
+            self.showMissionDetail(model, username, isAppjam: true)
         }
 
         rootController?.pushViewController(otherMissionList.vc, animated: true)
+    }
+    
+    private func showMissionDetailById(_ missionId: Int, _ nickname: String) {
+        guard let starLevel = StarViewLevel.init(rawValue: 2) else { return }
+
+        var missionDetail = factory.makeListDetailVC(
+            sceneType: .completed,
+            starLevel: starLevel,
+            missionId: missionId,
+            missionTitle: "",
+            otherUserName: nickname,
+            isAppjam: true
+        )
+
+        missionDetail.vc.onComplete = { [weak self] starViewLevel, handler in
+            guard let self else { return }
+            self.showMissionComplete(starViewLevel, handler)
+            self.rootController?.popToRootViewController(animated: true)
+        }
+
+        missionDetail.vc.onNaviBackTap = { [weak self] in
+            guard let self else { return }
+            self.rootController?.popViewController(animated: true)
+        }
+
+        missionDetail.vc.onViewClapTap = { [weak self] stampId, nickname in
+            guard let self else { return }
+            self.showClapList(stampId: stampId, nickname: nickname)
+        }
+
+        rootController?.pushViewController(missionDetail.vc, animated: true)
     }
 }
 

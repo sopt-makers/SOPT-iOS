@@ -22,7 +22,8 @@ extension AppjamRankRecent {
             userName: self.userName,
             userProfileImage: self.userProfileImage,
             teamName: self.teamName,
-            teamNumber: self.teamNumber
+            teamNumber: self.teamNumber,
+            ownerNickname: self.ownerNickname
         )
     }
 }

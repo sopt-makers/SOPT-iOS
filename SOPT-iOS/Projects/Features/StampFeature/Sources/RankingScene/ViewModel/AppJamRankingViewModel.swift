@@ -27,6 +27,7 @@ public class AppJamRankingViewModel: AppJamRankingViewModelType {
         let refreshStarted: Driver<Void>
         let naviBackButtonTapped: Driver<Void>
         let teamCellTapped: Driver<AppJamRankTodayPresentationModel>
+        let missionCellTapped: Driver<AppJamRankRecentPresentationModel>
     }
 
     // MARK: - Outputs
@@ -42,6 +43,7 @@ public class AppJamRankingViewModel: AppJamRankingViewModelType {
     public var onNaviBackTap: (() -> Void)?
     public var onNetworkError: (@MainActor () -> Void)?
     public var onTeamTap: ((_ teamName: String, _ teamNumber: String) -> Void)?
+    public var onMissionTap: ((_ missionId: Int, _ nickname: String) -> Void)?
 
     // MARK: - init
 
@@ -80,6 +82,11 @@ extension AppJamRankingViewModel {
                 owner.onTeamTap?(model.teamName, model.teamNumber)
             }.store(in: cancelBag)
 
+        input.missionCellTapped
+            .withUnretained(self)
+            .sink { owner, model in
+                owner.onMissionTap?(model.missionId, model.ownerNickname)
+            }.store(in: cancelBag)
         return output
     }
 
@@ -87,9 +94,11 @@ extension AppJamRankingViewModel {
     private func fetchRankingData(output: Output) async {
         async let todayTask = fetchTodayRanking()
         async let recentTask = fetchRecentMissions()
-
+        async let appJamInfoTask = fetchAppjamInfo()
+        
         do {
-            let (todayRanking, recentMissions) = try await (todayTask, recentTask)
+            let (todayRanking, recentMissions, appJamInfo) = try await (todayTask, recentTask, appJamInfoTask)
+            
             output.todayRankingList = todayRanking.map { AppJamRankTodayPresentationModel(from: $0) }
             output.recentMissionList = recentMissions.map { AppJamRankRecentPresentationModel(from: $0) }
             output.isLoading.send(false)

@@ -141,17 +141,17 @@ public struct I18N {
         public static let noSentenceText = "설정된 한 마디가 없습니다."
         public static let partRankingTitle = "파트별 랭킹"
         public static let personalRankingTitle = "개인별 랭킹"
-        public static let appjamRankingTitle = "앱잼팀 랭킹"
+        public static let appJamTeamStatusTitle = "앱잼팀 현황"
         public static let myRanking = "내 랭킹 보기"
     }
     
     public struct AppJamRankingList {
-        public static let navigationTitle = "앱잼팀 랭킹"
-        public static let appjamMissionTitle = "따끈따끈 합숙미션 구경하기"
+        public static let navigationTitle = "앱잼팀 현황"
+        public static let appjamMissionTitle = "따끈따끈 지금 앱잼팀은?"
         public static let appjamMissionSubTitle = "다른 팀들은 방금 이런 미션을 달성했어요"
         
-        public static let todayRankingTitle = "오늘의 득점 랭킹"
-        public static let todayRankingSubTitle = "미션을 인증해 오늘의 순위를 뒤집어보세요!"
+        public static let todayMissionAchievementBoardTitle = "오늘의 미션 달성 보드"
+        public static let todayMissionAchievementBoardSubTitle = "오늘 미션 인증하고 추가 점수를 획득해보세요!"
     }
     
     public struct ListDetail {

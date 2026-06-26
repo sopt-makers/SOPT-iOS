@@ -21,12 +21,6 @@ final class AppJamRankingCVC: UICollectionViewCell {
     
     // MARK: - UI Components
     
-    private let rankBadgeImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
-        return imageView
-    }()
-    
     private let rankLabel: UILabel = {
         let label = UILabel()
         label.font = DSKitFontFamily.Suit.bold.font(size: 16)
@@ -86,24 +80,14 @@ extension AppJamRankingCVC {
     }
     
     private func setLayout() {
-        rankBadgeImageView.addSubview(rankLabel)
+        
         scoreStackView.addArrangedSubviews(totalScoreLabel, incrementScoreLabel)
         
-        contentView.addSubviews(rankBadgeImageView, teamNameLabel, scoreStackView)
+        contentView.addSubviews(teamNameLabel, scoreStackView)
         
-        rankBadgeImageView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(12)
-            make.top.equalToSuperview().inset(12)
-            make.size.equalTo(28)
-        }
-        
-        rankLabel.snp.makeConstraints { make in
-            make.center.equalTo(rankBadgeImageView)
-        }
-        
-        teamNameLabel.snp.makeConstraints { make in
-            make.leading.equalTo(rankBadgeImageView.snp.trailing).offset(5)
-            make.centerY.equalTo(rankBadgeImageView.snp.centerY)
+        teamNameLabel.snp.makeConstraints { make in            
+            make.leading.equalTo(contentView).offset(12)
+            make.top.equalTo(contentView).offset(12)
         }
         
         scoreStackView.snp.makeConstraints { make in
@@ -126,24 +110,10 @@ extension AppJamRankingCVC {
 extension AppJamRankingCVC {
     func configureCell(model: AppJamRankTodayPresentationModel) {
         self.rank = model.rank
-        updateRankBadge()
         
         rankLabel.text = "\(model.rank)"
         teamNameLabel.text = model.teamName
         totalScoreLabel.text = "총 \(model.totalPoints)점"
         incrementScoreLabel.text = "+\(model.todayPoints)점"
-    }
-    
-    private func updateRankBadge() {
-        switch rank {
-        case 1:
-            rankBadgeImageView.image = DSKitAsset.Assets.icRankingPink.image
-        case 2:
-            rankBadgeImageView.image = DSKitAsset.Assets.icRankingGreen.image
-        case 3:
-            rankBadgeImageView.image = DSKitAsset.Assets.icRankingPurple.image
-        default:
-            rankBadgeImageView.image = DSKitAsset.Assets.icRankingGray.image
-        }
     }
 }

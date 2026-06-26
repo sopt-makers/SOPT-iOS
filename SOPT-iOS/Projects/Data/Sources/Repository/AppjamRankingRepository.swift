@@ -29,7 +29,7 @@ extension AppjamRankingRepository: AppjamRankingRepositoryInterface {
     }
 
     public func fetchRecentRanking(size: Int) async throws -> [AppjamRankRecentModel] {
-        let entity = try await appJamRankingService.fetchRecentRanking(size: size)
+        let entity = try await appJamRankingService.fetchRecentRanking(size: size)        
         return entity.ranks.map { $0.toDomain() }
     }
     

@@ -18,6 +18,8 @@ public struct AppjamRankRecentModel {
     public let userProfileImage: String
     public let teamName: String
     public let teamNumber: String
+    public let ownerNickname: String
+    
 
     public init(
         stampId: Int,
@@ -28,7 +30,8 @@ public struct AppjamRankRecentModel {
         userName: String,
         userProfileImage: String,
         teamName: String,
-        teamNumber: String
+        teamNumber: String,
+        ownerNickname: String
     ) {
         self.stampId = stampId
         self.missionId = missionId
@@ -39,5 +42,6 @@ public struct AppjamRankRecentModel {
         self.userProfileImage = userProfileImage
         self.teamName = teamName
         self.teamNumber = teamNumber
+        self.ownerNickname = ownerNickname
     }
 }

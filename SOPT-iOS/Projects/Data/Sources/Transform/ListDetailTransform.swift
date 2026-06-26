@@ -27,7 +27,9 @@ extension ListDetailEntity {
       myClapCount: self.myClapCount,
       viewCount: self.viewCount,
       isMine: self.isMine,
-      profileInfo: profileInfo
+      profileInfo: profileInfo,
+      starLevel: self.missionLevel,
+      missionTitle: self.missionTitle
     )
   }
 }
