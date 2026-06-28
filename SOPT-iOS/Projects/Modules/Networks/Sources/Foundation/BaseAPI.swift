@@ -30,6 +30,7 @@ public enum APIType {
     case home
     case calendar
     case appjamRank
+    case soptletter
 }
 
 public protocol BaseAPI: TargetType, AccessTokenAuthorizable {
@@ -88,6 +89,8 @@ extension BaseAPI {
             base += "/calendar"
         case .appjamRank:
             base += "/appjamrank"
+        case .soptletter:
+            base += "/sopt-letter"
         }
         
         guard let url = URL(string: base) else {
