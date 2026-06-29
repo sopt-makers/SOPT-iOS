@@ -75,14 +75,9 @@ public final class HomeCoordinator: BaseCoordinator {
             self.delegate?.homeCoordinator(self, to: .setting(userType: userType))
         }
         
-        homeForMember.vm.onAppServiceCellTapped = { [weak self] url in
+        homeForMember.vm.onAppServiceCellTapped = { [weak self] type in
             guard let self else { return }
-            self.delegate?.homeCoordinator(self, to: .deepLink(url: url))
-        }
-
-        homeForMember.vm.onSoptletterCellTapped = { [weak self] in
-            guard let self else { return }
-            self.delegate?.homeCoordinator(self, to: .soptletter)
+            self.delegate?.homeCoordinator(self, to: .appService(type: type))
         }
         
         homeForMember.vm.onMainProductCellTapped = { [weak self] url in

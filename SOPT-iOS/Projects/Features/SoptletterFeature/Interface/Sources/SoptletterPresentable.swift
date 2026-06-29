@@ -13,12 +13,12 @@ import Core
 
 public protocol SoptletterViewControllable: LegacyViewControllable {}
 
-public protocol SoptletterOnboardingViewControllable: AnyObject {
+public protocol SoptletterOnboardingRoutingTrigger: AnyObject {
     var onNaviBackTap: (() -> Void)? { get set }
     var onStartButtonTap: (() -> Void)? { get set }
 }
 
-public protocol SoptletterNicknameCheckViewControllable: AnyObject {
+public protocol SoptletterNicknameCheckRoutingTrigger: AnyObject {
     var onNaviBackTap: (() -> Void)? { get set }
     var onGoButtonTap: (() -> Void)? { get set }
 }
@@ -28,9 +28,11 @@ public protocol SoptletterCoordinatable {
     var onSubmitSuccess: (() -> Void)? { get set }
 }
 
-public typealias SoptletterOnboardingPresentable = UIViewController & SoptletterOnboardingViewControllable
+public typealias SoptletterOnboardingPresentable = (vc: UIViewController, vm: any SoptletterOnboardingViewModelType)
+public typealias SoptletterOnboardingViewModelType = ViewModelType & SoptletterOnboardingRoutingTrigger
 
-public typealias SoptletterNicknameCheckPresentable = UIViewController & SoptletterNicknameCheckViewControllable
+public typealias SoptletterNicknameCheckPresentable = (vc: UIViewController, vm: any SoptletterNicknameCheckViewModelType)
+public typealias SoptletterNicknameCheckViewModelType = ViewModelType & SoptletterNicknameCheckRoutingTrigger
 
 public typealias SoptletterWritingViewModelType = ViewModelType & SoptletterCoordinatable
 public typealias SoptletterWritingPresentable = (vc: UIViewController, vm: any SoptletterWritingViewModelType)

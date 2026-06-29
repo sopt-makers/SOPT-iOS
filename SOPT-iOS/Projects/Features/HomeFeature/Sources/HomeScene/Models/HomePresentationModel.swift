@@ -13,7 +13,7 @@ import Domain
 import DSKit
 
 struct HomePresentationModel {
-
+    
     let dashBoard: HomePresentationModel.DashBoard
     let recentSchedule: HomePresentationModel.RecentSchedule
     let appServices: [HomePresentationModel.AppService]
@@ -63,6 +63,9 @@ struct HomePresentationModel {
         let serviceName: String
         let displayAlarmBadge: Bool
         let alarmBadge, iconURL, deepLink: String
+        var type: AppServiceType {
+            AppServiceType(rawValue: serviceName) ?? .soptletter
+        }
     }
     
     struct PopularPost: Identifiable, Hashable {
@@ -80,7 +83,7 @@ struct HomePresentationModel {
         let ranking: Int?
         let postID: Int?
     }
-
+    
     struct LatestPost: Identifiable, Hashable {
         let id: String
         let profileImage: String?

@@ -16,11 +16,15 @@ public final class SoptletterBuilder {
 
 extension SoptletterBuilder: SoptletterFeatureBuildable {
     public func makeSoptletterOnboardingVC(coordinator: Coordinator) -> SoptletterOnboardingPresentable {
-        return SoptletterOnboardingVC()
+        let viewModel = SoptletterOnboardingViewModel(coordinator: coordinator)
+        let viewController = SoptletterOnboardingVC(viewModel: viewModel)
+        return (viewController, viewModel)
     }
     
     public func makeSoptletterNicknameCheckVC(coordinator: Coordinator) -> SoptletterNicknameCheckPresentable {
-        return SoptletterCheckNicknameVC()
+        let viewModel = SoptletterNicknameCheckViewModel(coordinator: coordinator)
+        let viewController = SoptletterCheckNicknameVC(viewModel: viewModel)
+        return (viewController, viewModel)
     }
     
     public func makeSoptletterWritingVC(coordinator: Coordinator) -> SoptletterWritingPresentable {

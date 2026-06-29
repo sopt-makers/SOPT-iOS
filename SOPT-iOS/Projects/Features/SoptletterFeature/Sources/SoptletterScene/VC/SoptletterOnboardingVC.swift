@@ -14,10 +14,10 @@ import Core
 import DSKit
 import SoptletterFeatureInterface
 
-public final class SoptletterOnboardingVC: UIViewController, SoptletterOnboardingViewControllable {
-    public var onNaviBackTap: (() -> Void)?
-    public var onStartButtonTap: (() -> Void)?
+public final class SoptletterOnboardingVC: UIViewController {
     
+    private let viewModel: SoptletterOnboardingViewModel
+ 
     private let imageView = UIImageView().then {
         $0.image = DSKitAsset.Assets.imgLetterOnboarding.image
         $0.contentMode = .scaleAspectFit
@@ -64,6 +64,16 @@ public final class SoptletterOnboardingVC: UIViewController, SoptletterOnboardin
     private lazy var backButton = UIButton().then {
         $0.setImage(DSKitAsset.Assets.xMark.image.withTintColor(DSKitAsset.Colors.gray10.color), for: .normal)
         $0.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
+    }
+    
+    public init(viewModel: SoptletterOnboardingViewModel) {
+        self.viewModel = viewModel
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     public override func viewDidLoad() {
@@ -117,11 +127,11 @@ extension SoptletterOnboardingVC {
 extension SoptletterOnboardingVC {
     @objc
     private func startButtonTapped() {
-        onStartButtonTap?()
+        viewModel.onStartButtonTap?()
     }
     
     @objc
     private func backButtonTapped() {
-        onNaviBackTap?()
+        viewModel.onNaviBackTap?()
     }
 }

@@ -12,9 +12,9 @@ import DSKit
 import Core
 import SoptletterFeatureInterface
 
-public final class SoptletterCheckNicknameVC: UIViewController, SoptletterNicknameCheckViewControllable {
-    public var onNaviBackTap: (() -> Void)?
-    public var onGoButtonTap: (() -> Void)?
+public final class SoptletterCheckNicknameVC: UIViewController {
+    
+    private let viewModel: SoptletterNicknameCheckViewModel
     
     // TODO: - 추후 기수 연결
     private let number: Int = 12
@@ -44,7 +44,17 @@ public final class SoptletterCheckNicknameVC: UIViewController, SoptletterNickna
         $0.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
     }
     
-    override func viewDidLoad() {
+    init(viewModel: SoptletterNicknameCheckViewModel) {
+        self.viewModel = viewModel
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         setUI()
@@ -82,11 +92,11 @@ extension SoptletterCheckNicknameVC {
 extension SoptletterCheckNicknameVC {
     @objc
     private func goButtonTapped() {
-        onGoButtonTap?()
+        viewModel.onGoButtonTap?()
     }
     
     @objc
     private func backButtonTapped() {
-        onNaviBackTap?()
+        viewModel.onNaviBackTap?()
     }
 }

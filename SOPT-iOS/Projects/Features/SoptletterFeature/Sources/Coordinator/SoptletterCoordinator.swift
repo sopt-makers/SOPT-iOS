@@ -13,15 +13,14 @@ import Core
 import BaseFeatureDependency
 import SoptletterFeatureInterface
 
-public final class SoptletterCoordinator: DefaultCoordinator {
+public final class SoptletterCoordinator: BaseCoordinator {
 
     // MARK: - Properties
 
     public var finishFlow: (() -> Void)?
 
     private let factory: SoptletterFeatureBuildable
-    private let navigationController: UINavigationController
-    private weak var rootController: UINavigationController?
+    private weak var navigationController: UINavigationController?
 
     // MARK: - Init
 
@@ -33,9 +32,9 @@ public final class SoptletterCoordinator: DefaultCoordinator {
         self.factory = factory
     }
     
-    private var currentNavigationController: UINavigationController {
-        rootController ?? navigationController
-    }
+//    private var currentNavigationController: UINavigationController {
+//        rootController ?? navigationController
+//    }
 
     // MARK: - Coordinator Life Cycle
 
@@ -50,52 +49,51 @@ public final class SoptletterCoordinator: DefaultCoordinator {
     // MARK: - Navigation
     private func showSoptletterOnboarding() {
         let soptletterOnboarding = factory.makeSoptletterOnboardingVC(coordinator: self)
-        let navigationController = UINavigationController(rootViewController: soptletterOnboarding)
+        let navigationController = UINavigationController(rootViewController: soptletterOnboarding.vc)
         navigationController.setNavigationBarHidden(true, animated: false)
-        rootController = navigationController
 
-        soptletterOnboarding.onStartButtonTap = { [weak self] in
-            self?.showSoptletterCheckNickname()
+        soptletterOnboarding.vm.onStartButtonTap = { [weak self] in
+            self?.showSoptletterCheckNickname(on: navigationController)
         }
         
-        soptletterOnboarding.onNaviBackTap = { [weak self] in
+        soptletterOnboarding.vm.onNaviBackTap = { [weak self] in
             self?.dismissFlow()
         }
 
-        self.navigationController.present(navigationController, animated: true)
+        self.navigationController?.present(navigationController, animated: true)
     }
     
-    private func showSoptletterCheckNickname() {
-        let vc = factory.makeSoptletterNicknameCheckVC(coordinator: self)
+    private func showSoptletterCheckNickname(on nav: UINavigationController) {
+        let checkNickname = factory.makeSoptletterNicknameCheckVC(coordinator: self)
         
-        vc.onNaviBackTap = { [weak self] in
+        checkNickname.vm.onNaviBackTap = { [weak self] in
             self?.dismissFlow()
         }
-
-        vc.onGoButtonTap = { [weak self] in
+        
+        checkNickname.vm.onGoButtonTap = { [weak self] in
             self?.showSoptletterWriting()
         }
         
-        rootController?.pushViewController(vc, animated: true)
+        nav.pushViewController(checkNickname.vc, animated: true)
     }
 
     private func showSoptletterWriting() {
         var soptletterWriting = factory.makeSoptletterWritingVC(coordinator: self)
 
         soptletterWriting.vm.onNaviBackTap = { [weak self] in
-            self?.currentNavigationController.popViewController(animated: true)
+            self?.navigationController?.popViewController(animated: true)
         }
 
         soptletterWriting.vm.onSubmitSuccess = { [weak self] in
-            self?.currentNavigationController.popViewController(animated: true)
+            self?.navigationController?.popViewController(animated: true)
             ToastUtils.showMDSToast(type: .success, text: I18N.Soptletter.submitSuccess)
         }
 
-        currentNavigationController.pushViewController(soptletterWriting.vc, animated: true)
+        navigationController?.pushViewController(soptletterWriting.vc, animated: true)
     }
 
     private func dismissFlow() {
-        rootController?.dismiss(animated: true) { [weak self] in
+        navigationController?.dismiss(animated: true) { [weak self] in
             self?.finishFlow?()
         }
     }
