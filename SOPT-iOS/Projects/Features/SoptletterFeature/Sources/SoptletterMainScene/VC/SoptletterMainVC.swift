@@ -199,7 +199,7 @@ extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let detailVC = SoptletterDetailVC()
+        let detailVC = SoptletterDetailModalVC()
         detailVC.configure(
             name: "익명의 무무",
             content: dummyData[indexPath.item].text,

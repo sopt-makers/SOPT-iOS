@@ -12,7 +12,7 @@ import Then
 
 import DSKit
 
-public final class SoptletterDetailVC: UIViewController {
+public final class SoptletterDetailModalVC: UIViewController {
 
     private let dimmedView = UIView().then {
         $0.backgroundColor = UIColor.black.withAlphaComponent(0.6)
@@ -102,7 +102,7 @@ public final class SoptletterDetailVC: UIViewController {
     }
 }
 
-private extension SoptletterDetailVC {
+private extension SoptletterDetailModalVC {
     func setUI() {
         view.backgroundColor = .clear
     }
