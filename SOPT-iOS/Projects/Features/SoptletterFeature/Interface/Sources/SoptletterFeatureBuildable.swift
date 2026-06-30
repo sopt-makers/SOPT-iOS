@@ -12,4 +12,5 @@ import BaseFeatureDependency
 public protocol SoptletterFeatureBuildable {
     func makeSoptletterWritingVC(coordinator: Coordinator) -> SoptletterWritingPresentable
     func makeSelectTopicVC(coordinator: Coordinator) -> SelectTopicPresentable
+    func makeSoptletterMainVC(coordinator: Coordinator) -> SoptletterMainPresentable
 }

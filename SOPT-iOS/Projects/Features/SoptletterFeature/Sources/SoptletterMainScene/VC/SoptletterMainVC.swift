@@ -7,13 +7,15 @@
 //
 
 import UIKit
-
-import Core
-import DSKit
+import Combine
 
 import SnapKit
 
-public final class SoptletterMainVC: UIViewController {
+import BaseFeatureDependency
+import Core
+import DSKit
+
+public final class SoptletterMainVC: UIViewController, SoptletterViewControllable {
     
     // MARK: - UI Properties
 
@@ -68,16 +70,20 @@ public final class SoptletterMainVC: UIViewController {
         SoptletterDummy(text: "안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 안녕하세요 ", textColor: DSKitAsset.Colors.gray900.color, backgroundImage: DSKitAsset.Assets.icnSmoothRedCenter.image, rotationDegree: 0),
     ]
     
+    private let viewModel: SoptletterMainViewModel
+    private let cancelBag = CancelBag()
     // MARK: - LifeCycles
 
     public override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
         setLayout()
+        bindViewModels()
         setCollectionView()
     }
 
-    public init() {
+    public init(viewModel: SoptletterMainViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -91,6 +97,15 @@ private extension SoptletterMainVC {
         view.backgroundColor = DSKitAsset.Colors.gray950.color
         navigationController?.setNavigationBarHidden(true, animated: false)
     }
+    
+    private func bindViewModels() {
+        let input = SoptletterMainViewModel.Input(
+            viewDidLoad: Just<Void>(()).asDriver()
+        )
+        
+        let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
+    }
+
 
     private func setLayout() {
         rightButtonStackView.addArrangedSubviews(downloadButton, reportButton)
