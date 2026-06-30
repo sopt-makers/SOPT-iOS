@@ -27,6 +27,7 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
     private let isAppjamtampOpen: Bool = false
     private var dataSource: UICollectionViewDiffableDataSource<MyPageSectionLayoutKind, MyPageItem>! = nil
     private var cellTapped = PassthroughSubject<MyPageItem, Never>()
+    private var refreshTriggered = PassthroughSubject<Void, Never>()
     private let cancelBag = CancelBag()
 
     private var userProfileData: MyPageProfilePresentationModel?
@@ -51,6 +52,8 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
         $0.contentInset.bottom = 36 // 마지막 섹션 자체 bottom inset(32) + 36 = 탭바까지 68pt
     }
 
+    private let refreshControl = UIRefreshControl()
+
     // MARK: - Life Cycle
 
     public override func viewDidLoad() {
@@ -62,6 +65,8 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
         setDataSource()
         applySnapshot()
         bindViewModels()
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        collectionView.refreshControl = refreshControl
     }
 
     public init(userType: UserType, viewModel: AppMyPageViewModel) {
@@ -198,8 +203,10 @@ extension AppMyPageVC: UICollectionViewDelegate {
 extension AppMyPageVC {
     private func bindViewModels() {
         let input = AppMyPageViewModel.Input(
+            viewDidLoad: Driver.just(()),
             naviBackButtonTapped: navigationBar.leftButtonTapped.asDriver(),
-            cellTapped: cellTapped.asDriver()
+            cellTapped: cellTapped.asDriver(),
+            refreshTriggered: refreshTriggered.asDriver()
         )
 
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
@@ -226,6 +233,24 @@ extension AppMyPageVC {
                 owner.soptlogData = soptlog
                 owner.reconfigureItems(in: .soptlogPreview)
             }.store(in: cancelBag)
+
+        output.fetchError
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, _ in
+                Toast.show(message: I18N.MyPage.fetchErrorToast, view: owner.view)
+            }.store(in: cancelBag)
+
+        output.fetchCompleted
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.refreshControl.endRefreshing()
+            }.store(in: cancelBag)
+    }
+
+    @objc private func handleRefresh() {
+        refreshTriggered.send()
     }
 
     private func reconfigureItems(in section: MyPageSectionLayoutKind) {

@@ -41,10 +41,12 @@ public final class AppMyPageViewModel: MyPageViewModelType {
     // MARK: - Inputs
     
     public struct Input {
+        let viewDidLoad: Driver<Void>
         let naviBackButtonTapped: Driver<Void>
         let cellTapped: Driver<MyPageItem>
+        let refreshTriggered: Driver<Void>
     }
-    
+
     // MARK: - Outputs
 
     public struct Output {
@@ -52,6 +54,8 @@ public final class AppMyPageViewModel: MyPageViewModelType {
         let deregisterPushTokenSuccess = PassthroughSubject<Bool, Never>()
         let userProfile = PassthroughSubject<MyPageProfilePresentationModel, Never>()
         let soptlogPreview = PassthroughSubject<MyPageSoptlogPreviewPresentationModel, Never>()
+        let fetchError = PassthroughSubject<Void, Never>()
+        let fetchCompleted = PassthroughSubject<Void, Never>()
     }
     
     // MARK: - init
@@ -67,15 +71,12 @@ extension AppMyPageViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
-        if userType != .visitor {
-            Task { [weak self] in
-                guard let self else { return }
-                async let profileResult = self.useCase.fetchUserMainInfo()
-                async let soptlogResult = self.useCase.fetchSoptlogPreview()
-                if let profile = try? await profileResult { output.userProfile.send(profile.toPresentation()) }
-                if let soptlog = try? await soptlogResult { output.soptlogPreview.send(soptlog.toPresentation()) }
-            }
-        }
+        Publishers.Merge(input.viewDidLoad, input.refreshTriggered)
+            .withUnretained(self)
+            .sink { owner, _ in
+                guard owner.userType != .visitor else { return }
+                owner.fetchProfileData(output: output)
+            }.store(in: cancelBag)
 
         input.naviBackButtonTapped
             .withUnretained(self)
@@ -180,5 +181,18 @@ extension AppMyPageViewModel {
             },
             animated: true
         )
+    }
+
+    private func fetchProfileData(output: Output) {
+        Task { [weak self] in
+            guard let self else { return }
+            defer { output.fetchCompleted.send(()) }
+            async let profileTask = useCase.fetchUserMainInfo()
+            async let soptlogTask = useCase.fetchSoptlogPreview()
+            var hasError = false
+            if let profile = try? await profileTask { output.userProfile.send(profile.toPresentation()) } else { hasError = true }
+            if let soptlog = try? await soptlogTask { output.soptlogPreview.send(soptlog.toPresentation()) } else { hasError = true }
+            if hasError { output.fetchError.send(()) }
+        }
     }
 }

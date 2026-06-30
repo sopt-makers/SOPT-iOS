@@ -23,8 +23,8 @@ struct MyPageSoptlogPreviewPresentationModel {
 
 extension UserMainInfoModel {
     func toPresentation() -> MyPageProfilePresentationModel {
-        let generation = historyList.last.map { "\($0)기" } ?? ""
-        return MyPageProfilePresentationModel(name: name, part: generation, profileImageURL: profileImage)
+        // part는 API 미제공 필드라 우선 숨김 처리 (별도 이슈에서 연동 예정)
+        MyPageProfilePresentationModel(name: name, part: "", profileImageURL: profileImage)
     }
 }
 
