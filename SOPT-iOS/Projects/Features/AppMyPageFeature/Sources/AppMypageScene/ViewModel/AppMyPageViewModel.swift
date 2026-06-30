@@ -46,10 +46,12 @@ public final class AppMyPageViewModel: MyPageViewModelType {
     }
     
     // MARK: - Outputs
-    
+
     public struct Output {
         let resetSuccessed = PassthroughSubject<Bool, Never>()
         let deregisterPushTokenSuccess = PassthroughSubject<Bool, Never>()
+        let userProfile = PassthroughSubject<MyPageProfilePresentationModel, Never>()
+        let soptlogPreview = PassthroughSubject<MyPageSoptlogPreviewPresentationModel, Never>()
     }
     
     // MARK: - init
@@ -65,6 +67,16 @@ extension AppMyPageViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
+        if userType != .visitor {
+            Task { [weak self] in
+                guard let self else { return }
+                async let profileResult = self.useCase.fetchUserMainInfo()
+                async let soptlogResult = self.useCase.fetchSoptlogPreview()
+                if let profile = try? await profileResult { output.userProfile.send(profile.toPresentation()) }
+                if let soptlog = try? await soptlogResult { output.soptlogPreview.send(soptlog.toPresentation()) }
+            }
+        }
+
         input.naviBackButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
