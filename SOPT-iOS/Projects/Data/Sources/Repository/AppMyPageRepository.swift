@@ -40,4 +40,16 @@ extension AppMyPageRepository: AppMyPageRepositoryInterface {
             }
             .eraseToAnyPublisher()
     }
+
+    public func fetchUserMainInfo() async throws -> UserMainInfoModel {
+        let entity = try await userService.getUserMainInfoAsync()
+        guard let model = entity.toDomain() else {
+            throw MainError.networkError(message: "프로필 정보를 불러올 수 없습니다")
+        }
+        return model
+    }
+
+    public func fetchSoptlogPreview() async throws -> SoptlogModel {
+        try await userService.fetchSoptlogInfo().toDomain()
+    }
 }
