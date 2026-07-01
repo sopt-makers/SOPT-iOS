@@ -79,12 +79,17 @@ extension SoptletterWritingViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.submitTask?.cancel()
+                let submittedText = currentText
+                output.isSubmitEnabled.send(false)
                 owner.submitTask = Task {
                     do {
-                        try await owner.useCase.writeMessage(topicId: owner.topicId, content: currentText)
+                        try await owner.useCase.writeMessage(topicId: owner.topicId, content: submittedText)
                         await MainActor.run { owner.onSubmitSuccess?() }
+                    } catch is CancellationError {
+                        return
                     } catch {
                         await MainActor.run {
+                            output.isSubmitEnabled.send(owner.useCase.isWritable(content: currentText))
                             ToastUtils.showMDSToast(type: .alert, text: I18N.Soptletter.submitFailure)
                         }
                     }

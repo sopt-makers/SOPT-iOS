@@ -20,6 +20,6 @@ public final class SoptletterRepository {
 
 extension SoptletterRepository: SoptletterRepositoryInterface {
     public func writeMessage(topicId: Int, content: String) async throws {
-        for try await _ in soptletterService.writeMessage(topicId: topicId, content: content).values { break }
+        try await soptletterService.writeMessage(topicId: topicId, content: content)
     }
 }

@@ -20,6 +20,9 @@ public final class DefaultSoptletterUseCase: SoptletterUseCase {
     }
 
     public func writeMessage(topicId: Int, content: String) async throws {
+        guard isWritable(content: content) else {
+            throw SoptletterError.invalidContent
+        }
         try await repository.writeMessage(topicId: topicId, content: content)
     }
 
