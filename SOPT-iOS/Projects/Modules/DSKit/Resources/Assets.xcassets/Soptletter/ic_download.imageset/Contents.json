@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "ic_download.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "ic_report@2x.png",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "ic_report@3x.png",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "ic_report.svg",
+      "idiom" : "universal"
     }
   ],
   "info" : {

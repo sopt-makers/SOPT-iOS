@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "Button_Floating.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "Button_Floating@2x.png",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "Button_Floating@3x.png",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "Button_Floating.svg",
+      "idiom" : "universal"
     }
   ],
   "info" : {
