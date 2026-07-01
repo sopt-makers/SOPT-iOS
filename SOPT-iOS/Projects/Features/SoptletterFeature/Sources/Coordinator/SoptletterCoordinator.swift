@@ -76,7 +76,22 @@ public final class SoptletterCoordinator: BaseCoordinator {
             print("handle soptletterMain.vm.onDownloadTap")
         }
         
+        soptletterMain.vm.onCellTap = { [weak self] in
+            self?.presentSoptletterDetail()
+        }
+        
         navigationController?.pushViewController(soptletterMain.vc, animated: true)
+    }
+    
+    private func presentSoptletterDetail() {
+        let detailVC = SoptletterDetailModalVC()
+        detailVC.configure(
+            name: "익명의 무무",
+            content: "안녕하세요",
+            date: "mm.dd",
+            likeCount: 44
+        )
+        navigationController?.present(detailVC, animated: true)
     }
     
     private func showSelectTopic() {

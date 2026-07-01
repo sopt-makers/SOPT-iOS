@@ -72,6 +72,7 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
     
     private let viewModel: SoptletterMainViewModel
     private let cancelBag = CancelBag()
+    private let postItCellTapPublisher = PassthroughSubject<Void, Never>()
     // MARK: - LifeCycles
 
     public override func viewDidLoad() {
@@ -100,10 +101,11 @@ private extension SoptletterMainVC {
     
     private func bindViewModels() {
         let input = SoptletterMainViewModel.Input(
-            viewDidLoad: Just<Void>(()).asDriver()
+            viewDidLoad: Just<Void>(()).asDriver(),
+            postItCellTap: postItCellTapPublisher.asDriver()
         )
         
-        let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
+        let output = self.viewModel.transform(from: input, cancelBag: cancelBag)                
     }
 
 
@@ -214,14 +216,7 @@ extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let detailVC = SoptletterDetailModalVC()
-        detailVC.configure(
-            name: "익명의 무무",
-            content: dummyData[indexPath.item].text,
-            date: "mm.dd",
-            likeCount: 44
-        )
-        present(detailVC, animated: true)
+        postItCellTapPublisher.send()
     }
 }
 

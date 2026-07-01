@@ -17,6 +17,7 @@ public protocol SoptletterMainCoordinatable {
     var onWriteTap: (() -> Void)? { get set }
     var onDownloadTap: (() -> Void)? { get set }
     var onReportTap: (() -> Void)? { get set }
+    var onCellTap: (() -> Void)? { get set }
 }
 
 public typealias SoptletterMainViewModelType = ViewModelType & SoptletterMainCoordinatable

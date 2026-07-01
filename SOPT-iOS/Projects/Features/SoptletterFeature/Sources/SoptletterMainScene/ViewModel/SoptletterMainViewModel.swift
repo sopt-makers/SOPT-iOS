@@ -19,6 +19,7 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     
     public struct Input {
         let viewDidLoad: Driver<Void>
+        let postItCellTap: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -31,7 +32,10 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     public var onWriteTap: (() -> Void)?
     public var onPostItTap: (() -> Void)?
     public var onDownloadTap: (() -> Void)?
-    public var onReportTap: (() -> Void)?        
+    public var onReportTap: (() -> Void)?
+    public var onCellTap: (() -> Void)?
+    
+    public init() {}
     
 }
 
@@ -45,6 +49,13 @@ extension SoptletterMainViewModel {
             .sink { owner in 
                 print("SoptletterMainViewModel View Did Load")
             }.store(in: cancelBag)
+        
+        input.postItCellTap
+            .withUnretained(self)
+            .sink { owner, _ in                
+                owner.onCellTap?()
+            }.store(in: cancelBag)
+        
         return output
     }
 }
