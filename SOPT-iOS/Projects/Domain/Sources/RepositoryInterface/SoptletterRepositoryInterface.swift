@@ -8,4 +8,6 @@
 
 public protocol SoptletterRepositoryInterface {
     func writeMessage(topicId: Int, content: String) async throws
+    func getSoptletterProfile() async throws -> SoptletterProfileModel
+    func completeOnboarding() async throws
 }

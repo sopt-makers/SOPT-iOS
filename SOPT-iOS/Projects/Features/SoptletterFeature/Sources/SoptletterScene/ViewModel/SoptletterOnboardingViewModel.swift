@@ -9,6 +9,7 @@
 import Combine
 
 import Core
+import Domain
 import BaseFeatureDependency
 import SoptletterFeatureInterface
 
@@ -18,6 +19,8 @@ public final class SoptletterOnboardingViewModel: SoptletterOnboardingViewModelT
     public var onStartButtonTap: (() -> Void)?
     
     private let coordinator: AnyCoordinatorObject
+    private let useCase: SoptletterUseCase
+    
     private var cancelBag = CancelBag()
     
     public struct Input {
@@ -27,8 +30,9 @@ public final class SoptletterOnboardingViewModel: SoptletterOnboardingViewModelT
     
     public struct Output { }
     
-    public init(coordinator: Coordinator) {
+    public init(coordinator: Coordinator, useCase: SoptletterUseCase) {
         self.coordinator = coordinator
+        self.useCase = useCase
     }
     
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
@@ -43,10 +47,23 @@ public final class SoptletterOnboardingViewModel: SoptletterOnboardingViewModelT
         input.startTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onStartButtonTap?()
+                owner.completeOnboarding()
             }.store(in: cancelBag)
         
         return output
+    }
+}
+
+private extension SoptletterOnboardingViewModel {
+    func completeOnboarding() {
+        Task {
+            do {
+                try await useCase.completeOnboarding()
+                onStartButtonTap?()
+            } catch {
+                // TODO: 에러처리
+            }
+        }
     }
 }
 

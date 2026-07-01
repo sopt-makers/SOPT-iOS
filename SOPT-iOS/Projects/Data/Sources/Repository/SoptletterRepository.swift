@@ -22,4 +22,13 @@ extension SoptletterRepository: SoptletterRepositoryInterface {
     public func writeMessage(topicId: Int, content: String) async throws {
         try await soptletterService.writeMessage(topicId: topicId, content: content)
     }
+    
+    public func getSoptletterProfile() async throws -> SoptletterProfileModel{
+        let result = try await soptletterService.getSoptletterProfile()
+        return result.toDomain()
+    }
+    
+    public func completeOnboarding() async throws {
+        try await soptletterService.completeOnboarding()
+    }
 }

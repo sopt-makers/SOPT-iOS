@@ -14,10 +14,20 @@ public typealias DefaultSoptletterService = BaseService<SoptletterAPI>
 
 public protocol SoptletterService {
     func writeMessage(topicId: Int, content: String) async throws
+    func getSoptletterProfile() async throws -> SoptletterOnboardingEntity
+    func completeOnboarding() async throws
 }
 
 extension DefaultSoptletterService: SoptletterService {
     public func writeMessage(topicId: Int, content: String) async throws {
         _ = try await requestObjectAsyncNoResult(.writeMessage(topicId: topicId, content: content))
+    }
+    
+    public func getSoptletterProfile() async throws -> SoptletterOnboardingEntity {
+        return try await requestObjectAsync(.fetchProfile)
+    }
+    
+    public func completeOnboarding() async throws {
+       _ = try await requestObjectAsyncNoResult(.completeOnboarding)
     }
 }

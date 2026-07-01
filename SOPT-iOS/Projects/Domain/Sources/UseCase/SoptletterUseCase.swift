@@ -9,6 +9,8 @@
 public protocol SoptletterUseCase {
     func writeMessage(topicId: Int, content: String) async throws
     func isWritable(content: String) -> Bool
+    func getSoptletterProfile() async throws -> SoptletterProfileModel
+    func completeOnboarding() async throws
 }
 
 public final class DefaultSoptletterUseCase: SoptletterUseCase {
@@ -28,5 +30,13 @@ public final class DefaultSoptletterUseCase: SoptletterUseCase {
 
     public func isWritable(content: String) -> Bool {
         return !content.isEmpty && content.count <= maxCharCount
+    }
+    
+    public func getSoptletterProfile() async throws -> SoptletterProfileModel {
+        return try await repository.getSoptletterProfile()
+    }
+    
+    public func completeOnboarding() async throws {
+        try await repository.completeOnboarding()
     }
 }
