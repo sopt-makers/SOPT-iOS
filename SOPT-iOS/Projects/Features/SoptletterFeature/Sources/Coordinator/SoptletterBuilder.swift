@@ -28,6 +28,8 @@ extension SoptletterBuilder: SoptletterFeatureBuildable {
         let viewModel = SoptletterNicknameCheckViewModel(coordinator: coordinator)
         let viewController = SoptletterCheckNicknameVC(viewModel: viewModel)
         return (viewController, viewModel)
+    }
+    
     public func makeSoptletterMainVC(coordinator: any BaseFeatureDependency.Coordinator) -> SoptletterMainPresentable {
         let viewModel = SoptletterMainViewModel()
         let soptletterMainVC = SoptletterMainVC(viewModel: viewModel)
