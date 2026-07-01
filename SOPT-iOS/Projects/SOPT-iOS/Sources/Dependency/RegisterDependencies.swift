@@ -247,5 +247,11 @@ extension AppDelegate {
                 )
             }
         )
+        container.register(
+            interface: SoptletterRepositoryInterface.self,
+            implement: {
+                SoptletterRepository(soptletterService: DefaultSoptletterService.standard)
+            }
+        )
     }
 }

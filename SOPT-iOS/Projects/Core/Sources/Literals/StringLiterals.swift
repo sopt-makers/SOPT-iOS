@@ -503,7 +503,7 @@ public struct I18N {
         public static let charLimitError = "공백 포함 250자 이하로만 작성할 수 있어요."
         public static let submitButton = "작성 완료"
         public static let submitSuccess = "메시지 작성을 완료했어요."
-        public static let submitFailure = "실패했습니다"
+        public static let submitFailure = "일시적인 오류가 발생했어요."
         
         public static let topicTitle = "솝레터 주제"
     }
