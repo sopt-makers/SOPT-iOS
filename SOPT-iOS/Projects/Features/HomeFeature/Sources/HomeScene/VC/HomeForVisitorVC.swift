@@ -163,6 +163,7 @@ extension HomeForVisitorVC {
         
         snapshot.appendItems([.dashBoard(HomePresentationModel.DashBoard())], toSection: .dashBoard)
         snapshot.appendItems(self.viewModel.productServiceList.map { .productService($0) }, toSection: .mainProduct)
+        snapshot.appendItems(appService.map { .appService($0) }, toSection: .appService)
         
         dataSource.apply(snapshot, animatingDifferences: true)
     }

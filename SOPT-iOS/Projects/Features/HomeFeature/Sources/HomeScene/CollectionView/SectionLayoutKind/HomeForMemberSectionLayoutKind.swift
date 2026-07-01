@@ -14,6 +14,7 @@ enum HomeForMemberSectionLayoutKind: Int, CaseIterable {
     case dashBoard
     case calendar
     case mainProduct
+    case appService
     case popularPosts
     case latestPosts
     case survey
@@ -29,6 +30,8 @@ extension HomeForMemberSectionLayoutKind: HomeSectionUIConfigurable {
             return I18N.Home.PopularPosts.headerTitle
         case .latestPosts:
             return I18N.Home.LatestPosts.headerTitle
+        case .appService:
+            return I18N.Home.AppService.headerTitle
         default:
             return ""
         }
