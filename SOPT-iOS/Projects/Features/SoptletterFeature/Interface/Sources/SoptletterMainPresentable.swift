@@ -11,7 +11,7 @@ import UIKit
 import BaseFeatureDependency
 import Core
 
-public protocol SoptletterMainCoordinatable {
+public protocol SoptletterMainRoutingTrigger {
     var onNaviBackTap: (() -> Void)? { get set }
     var onPostItTap: (() -> Void)? { get set }
     var onWriteTap: (() -> Void)? { get set }
@@ -20,5 +20,5 @@ public protocol SoptletterMainCoordinatable {
     var onCellTap: (() -> Void)? { get set }
 }
 
-public typealias SoptletterMainViewModelType = ViewModelType & SoptletterMainCoordinatable
+public typealias SoptletterMainViewModelType = ViewModelType & SoptletterMainRoutingTrigger
 public typealias SoptletterMainPresentable = (vc: UIViewController, vm: any SoptletterMainViewModelType)
