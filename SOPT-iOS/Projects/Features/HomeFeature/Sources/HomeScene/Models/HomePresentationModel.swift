@@ -13,7 +13,6 @@ import Domain
 import DSKit
 
 struct HomePresentationModel {
-    
     let dashBoard: HomePresentationModel.DashBoard
     let recentSchedule: HomePresentationModel.RecentSchedule
     let appServices: [HomePresentationModel.AppService]

@@ -612,41 +612,14 @@ extension ApplicationCoordinator {
                 navigationController: UIWindow.getRootNavigationController,
                 factory: SoptletterBuilder()
             )
-            newCoordinator.startOnboarding()
+            newCoordinator.start()
             coordinator = newCoordinator
         }
         
         return coordinator
     }
     
-    @discardableResult
-    internal func runSoptletterWritingFlow() -> BaseCoordinator {
-        var coordinator: BaseCoordinator
-        
-        switch Config.coordinatorFlag {
-        case .legacy:
-            let legacyCoordinator = SoptletterCoordinator(
-                navigationController: UIWindow.getRootNavigationController,
-                factory: SoptletterBuilder()
-            )
-            legacyCoordinator.finishFlow = { [weak self, weak legacyCoordinator] in
-                legacyCoordinator?.childCoordinators = []
-                self?.removeDependency(legacyCoordinator)
-            }
-            addDependency(legacyCoordinator)
-            coordinator = legacyCoordinator
-            coordinator.start()
-        case .new:
-            let newCoordinator = SoptletterCoordinator(
-                navigationController: stampNavigationController,
-                factory: SoptletterBuilder()
-            )
-            newCoordinator.startOnboarding()
-            coordinator = newCoordinator
-        }
-        
-        return coordinator
-    }
+    // TODO: - soptletter main flow 생성
 }
 
 // MARK: - StampFlow

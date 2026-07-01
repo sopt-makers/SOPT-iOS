@@ -7,16 +7,27 @@
 //
 
 import UIKit
+import Combine
 
 import Then
 
 import Core
 import DSKit
-import SoptletterFeatureInterface
 
-public final class SoptletterOnboardingVC: UIViewController {
+final class SoptletterOnboardingVC: UIViewController {
     
     private let viewModel: SoptletterOnboardingViewModel
+    private let cancelBag = CancelBag()
+    
+    private lazy var naviBackTap: Driver<Void> = backButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
+    
+    private lazy var startTap: Driver<Void> = startButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
  
     private let imageView = UIImageView().then {
         $0.image = DSKitAsset.Assets.imgLetterOnboarding.image
@@ -40,14 +51,25 @@ public final class SoptletterOnboardingVC: UIViewController {
     }
     
     private let descriptionLabel = UILabel().then {
-        $0.text = I18N.Soptletter.Onboarding.descriptionText
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 16)
-        $0.textColor = DSKitAsset.Colors.gray200.color
-        $0.numberOfLines = 3
-        $0.textAlignment = .center
+        let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineSpacing = 4
+            paragraphStyle.alignment = .center
+
+            let attributedString = NSAttributedString(
+                string: I18N.Soptletter.Onboarding.descriptionText,
+                attributes: [
+                    .font: DSKitFontFamily.Suit.medium.font(size: 16),
+                    .foregroundColor: DSKitAsset.Colors.gray200.color,
+                    .kern: -1.5,
+                    .paragraphStyle: paragraphStyle
+                ]
+            )
+
+            $0.attributedText = attributedString
+            $0.numberOfLines = 0
     }
     
-    private lazy var startButton = UIButton().then {
+    private let startButton = UIButton().then {
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = DSKitAsset.Colors.white.color
         config.background.cornerRadius = 12
@@ -58,15 +80,13 @@ public final class SoptletterOnboardingVC: UIViewController {
         
         config.attributedTitle = AttributedString(I18N.Soptletter.Onboarding.startButtonTitle, attributes: attributeContainer)
         $0.configuration = config
-        $0.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
     }
     
-    private lazy var backButton = UIButton().then {
+    private let backButton = UIButton().then {
         $0.setImage(DSKitAsset.Assets.xMark.image.withTintColor(DSKitAsset.Colors.gray10.color), for: .normal)
-        $0.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
     }
     
-    public init(viewModel: SoptletterOnboardingViewModel) {
+    init(viewModel: SoptletterOnboardingViewModel) {
         self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: nil)
@@ -76,11 +96,12 @@ public final class SoptletterOnboardingVC: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
         
         setUI()
         setLayout()
+        bindViewModel()
     }
 }
 
@@ -102,7 +123,7 @@ extension SoptletterOnboardingVC {
         }
         
         imageView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(158)
+            $0.top.equalTo(backButton.snp.bottom).offset(70)
             $0.centerX.equalToSuperview()
         }
         
@@ -124,14 +145,13 @@ extension SoptletterOnboardingVC {
     }
 }
 
-extension SoptletterOnboardingVC {
-    @objc
-    private func startButtonTapped() {
-        viewModel.onStartButtonTap?()
-    }
-    
-    @objc
-    private func backButtonTapped() {
-        viewModel.onNaviBackTap?()
+private extension SoptletterOnboardingVC {
+    func bindViewModel() {
+        let input = SoptletterOnboardingViewModel.Input(
+            naviBackTap: naviBackTap,
+            startTap: startTap
+        )
+        
+        let output = viewModel.transform(from: input, cancelBag: cancelBag)
     }
 }
