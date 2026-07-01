@@ -20,4 +20,5 @@ public protocol ListDetailRepositoryInterface {
     func deleteStamp(stampId: Int) -> Driver<Bool>
     func clap(stampId: Int, clapCount: Int) -> AnyPublisher<Result<ClapCountModel, Error>, Never>
     func getClapList(stampId: Int, nickname: String) -> AnyPublisher<[ClapperModel], Error>
+    func postAppjamStamp(isAppjam: Bool?, stampData: ListDetailRequestModel) -> AnyPublisher<ListDetailModel, Error>
 }

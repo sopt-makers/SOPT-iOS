@@ -104,11 +104,22 @@ extension MissionListViewModel {
     }
     
     private func fetchMissionListByType(type: MissionListFetchType) {
+//        switch type {
+//        case .appjam:
+//            self.useCase.fetchAppjamMissionList(teamNumber: nil, isCompleted: nil)
+//        default:
+//            self.useCase.fetchMissionList(type: type)
+//        }
+        // TODO: - 앱잼 기간에는 앱잼 미션만 노출 필요 추후 상단 주석 활성화
         switch type {
+        case .all:
+            self.useCase.fetchAppjamMissionList(teamNumber: nil, isCompleted: nil)
+        case .complete:
+            self.useCase.fetchAppjamMissionList(teamNumber: nil, isCompleted: true)
+        case .incomplete:
+            self.useCase.fetchAppjamMissionList(teamNumber: nil, isCompleted: false)
         case .appjam:
             self.useCase.fetchAppjamMissionList(teamNumber: nil, isCompleted: nil)
-        default:
-            self.useCase.fetchMissionList(type: type)
         }
     }
     

@@ -24,12 +24,13 @@ final class AppJamRankingVC: UIViewController, AppJamRankingViewControllable {
 
     private let viewWillAppearPublisher = PassthroughSubject<Void, Never>()
     private let teamCellTappedPublisher = PassthroughSubject<AppJamRankTodayPresentationModel, Never>()
+    private let missionCellTappedPublisher = PassthroughSubject<AppJamRankRecentPresentationModel, Never>()
     
     // MARK: - UI Components
     
     private let naviBar = STNavigationBar(type: .titleWithLeftButton)
         .setTitleTypoStyle(.SoptampFont.h2)
-        .setTitle(I18N.RankingList.appjamRankingTitle)
+        .setTitle(I18N.RankingList.appJamTeamStatusTitle)
         .setRightButton(.none)
     
     private lazy var collectionView: UICollectionView = {
@@ -108,7 +109,8 @@ extension AppJamRankingVC {
             viewWillAppear: viewWillAppearPublisher.asDriver(),
             refreshStarted: refresher.publisher(for: .valueChanged).mapVoid().asDriver(),
             naviBackButtonTapped: naviBar.leftButtonTapped.asDriver(),
-            teamCellTapped: teamCellTappedPublisher.asDriver()
+            teamCellTapped: teamCellTappedPublisher.asDriver(),
+            missionCellTapped: missionCellTappedPublisher.asDriver()
         )
 
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
@@ -203,8 +205,8 @@ extension AppJamRankingVC {
                 )
             case .ranking:
                 headerView.configure(
-                    title: I18N.AppJamRankingList.todayRankingTitle,
-                    subtitle: I18N.AppJamRankingList.todayRankingSubTitle,
+                    title: I18N.AppJamRankingList.todayMissionAchievementBoardTitle,
+                    subtitle: I18N.AppJamRankingList.todayMissionAchievementBoardSubTitle,
                     image: DSKitAsset.Assets.icPrize.image
                 )
             }
@@ -243,7 +245,9 @@ extension AppJamRankingVC: UICollectionViewDelegate {
                   case .ranking(let model) = item else { return }
             teamCellTappedPublisher.send(model)
         case .missionCards:
-            break
+            guard let item = dataSource.itemIdentifier(for: indexPath),
+                  case .mission(let model) = item else { return }            
+            missionCellTappedPublisher.send(model)
         }
     }
 }

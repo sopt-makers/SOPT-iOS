@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "Button_Floating.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

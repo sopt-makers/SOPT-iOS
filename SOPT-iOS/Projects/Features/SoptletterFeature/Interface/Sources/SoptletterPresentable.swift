@@ -33,6 +33,12 @@ public typealias SoptletterOnboardingViewModelType = ViewModelType & SoptletterO
 
 public typealias SoptletterNicknameCheckPresentable = (vc: UIViewController, vm: any SoptletterNicknameCheckViewModelType)
 public typealias SoptletterNicknameCheckViewModelType = ViewModelType & SoptletterNicknameCheckRoutingTrigger
+public protocol SelectTopicCoordinatable {
+    var onNaviBackTap: (() -> Void)? { get set }
+    var onCellTap: ((String) -> Void)? { get set }
+}
 
 public typealias SoptletterWritingViewModelType = ViewModelType & SoptletterCoordinatable
 public typealias SoptletterWritingPresentable = (vc: UIViewController, vm: any SoptletterWritingViewModelType)
+
+public typealias SelectTopicPresentable = UIViewController & SelectTopicCoordinatable

@@ -22,4 +22,5 @@ public struct AppjamRankRecent: Decodable {
     public let userProfileImage: String
     public let teamName: String
     public let teamNumber: String
+    public let ownerNickname: String
 }

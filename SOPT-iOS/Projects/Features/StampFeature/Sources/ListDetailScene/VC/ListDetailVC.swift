@@ -219,7 +219,7 @@ extension ListDetailVC {
                         owner.backgroundDimmerView.removeFromSuperview()
                     }
                 } else {
-                    if owner.sceneType == .none {
+                    if owner.sceneType == .none {                        
                         owner.onComplete?(owner.starLevel) {
                             UIView.animate(withDuration: 0.2, delay: 0, animations: {
                                 owner.backgroundDimmerView.alpha = 0
@@ -301,7 +301,7 @@ extension ListDetailVC {
             self.zoomImageView.setImage(with: imageURL.absoluteString)
         }
         self.missionDateTextField.setText(with: model.activityDate)
-
+                
         self.missionDateTextField.setTextFieldView(.inactive)
         self.textView.text = model.content
         self.missionInfoView.setFullText(date: model.activityDate, clapCount: model.clapCount, viewCount: model.viewCount)
@@ -313,6 +313,9 @@ extension ListDetailVC {
         self.clapBadge.setCount(self.myClapCount)
         
         self.imageURL = model.image
+        
+        self.missionView.setStarLevel(model.starLevel)
+        self.missionView.setMissionLabelText(model.missionTitle)
 
         if let profileInfo = model.profileInfo {
             showProfileInfo(profileInfo)
@@ -655,7 +658,6 @@ extension ListDetailVC {
             self.imagePlaceholderLabel.isHidden = missionImageView.image == nil ? false : true
             self.bottomButton.isHidden = false
             self.missionInfoView.isHidden = true
-            self.zoomInView.isHidden = true
             self.viewClapButton.isHidden = true
             self.missionDateTextField.isHidden = false
         case .completed:

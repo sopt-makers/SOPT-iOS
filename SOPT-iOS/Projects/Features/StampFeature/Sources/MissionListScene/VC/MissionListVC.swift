@@ -22,7 +22,7 @@ import BaseFeatureDependency
 public class MissionListVC: UIViewController, MissionListViewControllable, LegacyMissionListViewControllable {
     
     // TODO: - 화면 전환 시에 수정
-    private var isAppJam: Bool = false
+    private var isAppJam: Bool = true
     
     // MARK: - Properties
     
@@ -160,7 +160,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
     
     private let singleFloatingButton = STSingleFloatingButton(
         frame: .zero,
-        title: I18N.RankingList.appjamRankingTitle,
+        title: I18N.RankingList.appJamTeamStatusTitle,
         withImage: true,
         showBadge: true
     )
@@ -553,12 +553,12 @@ extension MissionListVC: UICollectionViewDelegate {
             let userType = UserDefaultKeyList.Auth.getUserType()
 
             let username = sceneType.isAppJamTeamView ? model.ownerName : sceneType.username
-            
+                
             if model.isCompleted {
                 onCellTap?(model, username)
                 return
             }
-
+            
             switch userType {
             case .active:
                 onCellTap?(model, username)

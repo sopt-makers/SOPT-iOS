@@ -341,4 +341,32 @@ extension BaseService {
             self.cancellable = cancellable
         }
     }
+
+    func requestObjectAsyncNoResult(_ target: API) async throws -> Int {
+        try await withUnsafeThrowingContinuation { [weak self] continuation in
+            guard let self else {
+                continuation.resume(throwing: CancellationError())
+                return
+            }
+            let cancellable = self.provider.request(target) { response in
+                defer { self.cancellable = nil }
+
+                switch response {
+                case .success(let value):
+                    continuation.resume(returning: value.statusCode)
+                case .failure(let error):
+                    if case MoyaError.underlying(let error, _) = error,
+                       case AFError.requestRetryFailed(let retryError, _) = error,
+                       let retryError = retryError as? APIError,
+                       retryError == APIError.tokenReissuanceFailed {
+                        continuation.resume(throwing: retryError)
+                    } else {
+                        continuation.resume(throwing: error)
+                    }
+                }
+            }
+
+            self.cancellable = cancellable
+        }
+    }
 }
