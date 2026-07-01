@@ -12,6 +12,7 @@ import Combine
 import Core
 import BaseFeatureDependency
 import SoptletterFeatureInterface
+import Domain
 
 public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     
@@ -26,6 +27,9 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     
     public struct Output {}
     
+    private let useCase: SoptletterUseCase
+    private let coordinator: AnyCoordinatorObject
+    
     private var cancelBag = CancelBag()
     
     public var onNaviBackTap: (() -> Void)?
@@ -35,8 +39,10 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     public var onReportTap: (() -> Void)?
     public var onCellTap: (() -> Void)?
     
-    public init() {}
-    
+    public init(coordinator: Coordinator, useCase: SoptletterUseCase) {
+        self.useCase = useCase
+        self.coordinator = coordinator
+    }
 }
 
 extension SoptletterMainViewModel {

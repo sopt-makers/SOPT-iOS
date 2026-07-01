@@ -33,7 +33,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
     // MARK: - Coordinator Life Cycle
 
     public override func start() {
-        showSoptletterWriting()
+        showSoptletterMain()
     }
 
     // MARK: - Navigation

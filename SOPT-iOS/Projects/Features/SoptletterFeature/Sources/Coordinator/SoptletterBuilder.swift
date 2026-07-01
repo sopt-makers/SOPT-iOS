@@ -19,7 +19,8 @@ public final class SoptletterBuilder {
 
 extension SoptletterBuilder: SoptletterFeatureBuildable {
     public func makeSoptletterMainVC(coordinator: any BaseFeatureDependency.Coordinator) -> SoptletterMainPresentable {
-        let viewModel = SoptletterMainViewModel()
+        let useCase = DefaultSoptletterUseCase(repository: soptletterRepository)
+        let viewModel = SoptletterMainViewModel(coordinator: coordinator, useCase: useCase)
         let soptletterMainVC = SoptletterMainVC(viewModel: viewModel)
         return (soptletterMainVC, viewModel)
     }
