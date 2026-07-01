@@ -20,6 +20,10 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     
     public struct Input {
         let viewDidLoad: Driver<Void>
+        let naviBackButtonTap: Driver<Void>
+        let writeButtonTap: Driver<Void>
+        let downloadButtonTap: Driver<Void>
+        let reportButtonTap: Driver<Void>
         let postItCellTap: Driver<Void>
     }
     
@@ -54,6 +58,30 @@ extension SoptletterMainViewModel {
             .withUnretained(self)
             .sink { owner in 
                 print("SoptletterMainViewModel View Did Load")
+            }.store(in: cancelBag)
+        
+        input.naviBackButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNaviBackTap?()
+            }.store(in: cancelBag)
+        
+        input.writeButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onWriteTap?()
+            }.store(in: cancelBag)
+        
+        input.downloadButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onDownloadTap?()
+            }.store(in: cancelBag)
+        
+        input.reportButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onReportTap?()
             }.store(in: cancelBag)
         
         input.postItCellTap

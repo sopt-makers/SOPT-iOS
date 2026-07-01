@@ -73,12 +73,17 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
     private let viewModel: SoptletterMainViewModel
     private let cancelBag = CancelBag()
     private let postItCellTapPublisher = PassthroughSubject<Void, Never>()
+    private let naviBackButtonTapPublisher = PassthroughSubject<Void, Never>()
+    private let writeButtonTapPublisher = PassthroughSubject<Void, Never>()
+    private let downloadTapPublisher = PassthroughSubject<Void, Never>()
+    private let reportButtonTapPublisher = PassthroughSubject<Void, Never>()
     // MARK: - LifeCycles
 
     public override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
         setLayout()
+        addTargets()
         bindViewModels()
         setCollectionView()
     }
@@ -102,7 +107,11 @@ private extension SoptletterMainVC {
     private func bindViewModels() {
         let input = SoptletterMainViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
-            postItCellTap: postItCellTapPublisher.asDriver()
+            naviBackButtonTap: naviBackButtonTapPublisher.asDriver(),
+            writeButtonTap: writeButtonTapPublisher.asDriver(),
+            downloadButtonTap: downloadTapPublisher.asDriver(),
+            reportButtonTap: reportButtonTapPublisher.asDriver(),
+            postItCellTap: postItCellTapPublisher.asDriver(),
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
@@ -213,6 +222,21 @@ extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         postItCellTapPublisher.send()
     }
+}
+
+// MARK: - Handler
+extension SoptletterMainVC {
+    private func addTargets() {
+        closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
+        writeButton.addTarget(self, action: #selector(writeButtonTapped), for: .touchUpInside)
+        downloadButton.addTarget(self, action: #selector(downloadButtonTapped), for: .touchUpInside)
+        reportButton.addTarget(self, action: #selector(reportButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc func closeButtonTapped() { naviBackButtonTapPublisher.send() }
+    @objc func writeButtonTapped() { writeButtonTapPublisher.send() }
+    @objc func downloadButtonTapped() { downloadTapPublisher.send() }
+    @objc func reportButtonTapped() { reportButtonTapPublisher.send() }
 }
 
 
