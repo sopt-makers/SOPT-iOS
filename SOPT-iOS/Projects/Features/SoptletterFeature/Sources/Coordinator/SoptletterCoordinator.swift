@@ -13,15 +13,18 @@ import Core
 import BaseFeatureDependency
 import SoptletterFeatureInterface
 
-public final class SoptletterCoordinator: DefaultCoordinator {
+public final class SoptletterCoordinator: BaseCoordinator {
 
     // MARK: - Properties
+    
+    // 임시
+    private let onboardingFinished: Bool = false
 
     public var finishFlow: (() -> Void)?
 
     private let factory: SoptletterFeatureBuildable
-    private let navigationController: UINavigationController
-    private weak var rootController: UINavigationController?
+    private weak var navigationController: UINavigationController?
+    private weak var soptletterRootController: UINavigationController?
 
     // MARK: - Init
 
@@ -32,71 +35,120 @@ public final class SoptletterCoordinator: DefaultCoordinator {
         self.navigationController = navigationController
         self.factory = factory
     }
-    
-    private var currentNavigationController: UINavigationController {
-        rootController ?? navigationController
-    }
 
     // MARK: - Coordinator Life Cycle
 
     public override func start() {
-        showSoptletterWriting()
-    }
-
-    public func startOnboarding() {
-        showSoptletterOnboarding()
+        if onboardingFinished {
+            // main routing
+        } else {
+            showSoptletterOnboarding()
+        }
     }
 
     // MARK: - Navigation
     private func showSoptletterOnboarding() {
         let soptletterOnboarding = factory.makeSoptletterOnboardingVC(coordinator: self)
-        let navigationController = UINavigationController(rootViewController: soptletterOnboarding)
-        navigationController.setNavigationBarHidden(true, animated: false)
-        rootController = navigationController
-
-        soptletterOnboarding.onStartButtonTap = { [weak self] in
+        
+        soptletterOnboarding.vm.onStartButtonTap = { [weak self] in
             self?.showSoptletterCheckNickname()
         }
         
-        soptletterOnboarding.onNaviBackTap = { [weak self] in
-            self?.dismissFlow()
+        soptletterOnboarding.vm.onNaviBackTap = { [weak self] in
+            self?.soptletterRootController?.dismiss(animated: true)
         }
-
-        self.navigationController.present(navigationController, animated: true)
+        
+        let navController = UINavigationController(rootViewController: soptletterOnboarding.vc)
+        navController.modalPresentationStyle = .fullScreen
+        navController.setNavigationBarHidden(true, animated: false)
+        soptletterRootController = navController
+        navigationController?.present(navController, animated: true)
     }
     
     private func showSoptletterCheckNickname() {
-        let vc = factory.makeSoptletterNicknameCheckVC(coordinator: self)
+        let checkNickname = factory.makeSoptletterNicknameCheckVC(coordinator: self)
         
-        vc.onNaviBackTap = { [weak self] in
-            self?.dismissFlow()
+        checkNickname.vm.onNaviBackTap = { [weak self] in
+            self?.soptletterRootController?.dismiss(animated: true)
         }
-
-        vc.onGoButtonTap = { [weak self] in
+        
+        checkNickname.vm.onGoButtonTap = { [weak self] in
             self?.showSoptletterWriting()
         }
         
-        rootController?.pushViewController(vc, animated: true)
+        soptletterRootController?.pushViewController(checkNickname.vc, animated: true)
     }
 
     private func showSoptletterWriting() {
         var soptletterWriting = factory.makeSoptletterWritingVC(coordinator: self)
 
         soptletterWriting.vm.onNaviBackTap = { [weak self] in
-            self?.currentNavigationController.popViewController(animated: true)
+            self?.soptletterRootController?.popViewController(animated: true)
         }
 
         soptletterWriting.vm.onSubmitSuccess = { [weak self] in
-            self?.currentNavigationController.popViewController(animated: true)
+            self?.soptletterRootController?.popViewController(animated: true)
             ToastUtils.showMDSToast(type: .success, text: I18N.Soptletter.submitSuccess)
         }
 
-        currentNavigationController.pushViewController(soptletterWriting.vc, animated: true)
+        soptletterRootController?.pushViewController(soptletterWriting.vc, animated: true)
     }
-
-    private func dismissFlow() {
-        rootController?.dismiss(animated: true) { [weak self] in
-            self?.finishFlow?()
+    
+    private func showSoptletterMain() {
+        var soptletterMain = factory.makeSoptletterMainVC(coordinator: self)
+        
+        soptletterMain.vm.onNaviBackTap = { [weak self] in
+            print("handle soptletterMain.vm.onNaviBackTap")
         }
+        
+        soptletterMain.vm.onWriteTap = { [weak self] in
+            print("handle soptletterMain.vm.onWriteTap")
+        }
+        
+        soptletterMain.vm.onReportTap = { [weak self] in
+            print("handle soptletterMain.vm.onReportTap")
+        }
+        
+        soptletterMain.vm.onPostItTap = { [weak self] in
+            print("handle soptletterMain.vm.onPostItTap")
+        }
+        
+        soptletterMain.vm.onDownloadTap = { [weak self] in
+            print("handle soptletterMain.vm.onDownloadTap")
+        }
+        
+        soptletterMain.vm.onCellTap = { [weak self] in
+            self?.presentSoptletterDetail()
+        }
+        
+        navigationController?.pushViewController(soptletterMain.vc, animated: true)
     }
+    
+    private func presentSoptletterDetail() {
+        let detailVC = SoptletterDetailModalVC()
+        detailVC.configure(
+            name: "익명의 무무",
+            content: "안녕하세요",
+            date: "mm.dd",
+            likeCount: 44
+        )
+        navigationController?.present(detailVC, animated: true)
+    }
+    
+    private func showSelectTopic() {
+        var vc = factory.makeSelectTopicVC(coordinator: self)
+        
+        vc.onNaviBackTap = { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }
+        
+        vc.onCellTap = { [weak self] title in
+            // 임시
+            self?.showSoptletter(title: title)
+        }
+        
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    private func showSoptletter(title: String) { }
 }

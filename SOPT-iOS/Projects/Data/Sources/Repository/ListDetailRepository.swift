@@ -58,6 +58,12 @@ extension ListDetailRepository: ListDetailRepositoryInterface {
         return mediaService.uploadMedia(imageData: imageData, to: presignedUrl)
             .eraseToAnyPublisher()
     }
+    
+    public func postAppjamStamp(isAppjam: Bool?, stampData: ListDetailRequestModel) -> AnyPublisher<ListDetailModel, Error> {
+        stampService.postAppJamStampRecord(requestModel: stampData.toEntity())
+            .map { $0.toDomain() }
+            .eraseToAnyPublisher()
+    }
 
     public func postStamp(isAppjam: Bool?, stampData: ListDetailRequestModel) -> AnyPublisher<ListDetailModel, Error> {
         return isAppjam == true ?

@@ -10,20 +10,26 @@ import UIKit
 
 import DSKit
 import Core
-import SoptletterFeatureInterface
 
-public final class SoptletterCheckNicknameVC: UIViewController, SoptletterNicknameCheckViewControllable {
-    public var onNaviBackTap: (() -> Void)?
-    public var onGoButtonTap: (() -> Void)?
+final class SoptletterCheckNicknameVC: UIViewController {
+    
+    private let viewModel: SoptletterNicknameCheckViewModel
+    private let cancelBag = CancelBag()
+    
+    private lazy var naviBackTap: Driver<Void> = backButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
+    
+    private lazy var goTap: Driver<Void> = button
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
     
     // TODO: - 추후 기수 연결
     private let number: Int = 12
     
-    private let cardView: NicknameCheckCardView = {
-        let view = NicknameCheckCardView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
+    private let cardView = NicknameCheckCardView()
     
     private lazy var button = UIButton().then {
         var config = UIButton.Configuration.filled()
@@ -36,12 +42,20 @@ public final class SoptletterCheckNicknameVC: UIViewController, SoptletterNickna
         
         config.attributedTitle = AttributedString("\(number)" + I18N.Soptletter.Onboarding.goButtonTitle, attributes: attributeContainer)
         $0.configuration = config
-        $0.addTarget(self, action: #selector(goButtonTapped), for: .touchUpInside)
     }
     
-    private lazy var backButton = UIButton().then {
+    private let backButton = UIButton().then {
         $0.setImage(DSKitAsset.Assets.xMark.image.withTintColor(DSKitAsset.Colors.gray10.color), for: .normal)
-        $0.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
+    }
+    
+    init(viewModel: SoptletterNicknameCheckViewModel) {
+        self.viewModel = viewModel
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     public override func viewDidLoad() {
@@ -49,6 +63,7 @@ public final class SoptletterCheckNicknameVC: UIViewController, SoptletterNickna
         
         setUI()
         setLayout()
+        bindViewModel()
     }
 }
 
@@ -68,7 +83,7 @@ extension SoptletterCheckNicknameVC {
             $0.size.equalTo(32)
         }
         cardView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(120)
+            $0.top.equalTo(backButton.snp.bottom).offset(32)
             $0.leading.trailing.equalToSuperview().inset(20)
         }
         button.snp.makeConstraints {
@@ -79,14 +94,12 @@ extension SoptletterCheckNicknameVC {
     }
 }
 
-extension SoptletterCheckNicknameVC {
-    @objc
-    private func goButtonTapped() {
-        onGoButtonTap?()
-    }
-    
-    @objc
-    private func backButtonTapped() {
-        onNaviBackTap?()
+private extension SoptletterCheckNicknameVC {
+    func bindViewModel() {
+        let input = SoptletterNicknameCheckViewModel.Input(
+            naviBackTap: naviBackTap,
+            goTap: goTap
+        )
+        let output = viewModel.transform(from: input, cancelBag: cancelBag)
     }
 }

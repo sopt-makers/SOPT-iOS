@@ -62,14 +62,11 @@ public final class LegacyHomeCoordinator: DefaultHomeCoordinator {
             self?.requestCoordinating?(.setting(userType: userType))
         }
         
-        homeForMember.vm.onAppServiceCellTapped = { [weak self] url in
-            self?.requestCoordinating?(.deepLink(url: url))
+        homeForMember.vm.onAppServiceCellTapped = { [weak self] type in
+//            self?.requestCoordinating?(.deepLink(url: url))
+            self?.requestCoordinating?(.appService(type: type))
         }
 
-        homeForMember.vm.onSoptletterCellTapped = { [weak self] in
-            self?.requestCoordinating?(.soptletter)
-        }
-        
         homeForMember.vm.onMainProductCellTapped = { [weak self] url in
             self?.requestCoordinating?(.webLink(url: url))
         }
@@ -86,7 +83,7 @@ public final class LegacyHomeCoordinator: DefaultHomeCoordinator {
             AlertUtils.presentNetworkAlertVC()
         }
         
-        homeForMember.vm.onExtendedFloatingButtonTapped = { [weak self] url in
+        homeForMember.vm.onExtendedFloatingButtonTapped = { [weak self] url in            
             self?.requestCoordinating?(.deepLink(url: url))
         }
         

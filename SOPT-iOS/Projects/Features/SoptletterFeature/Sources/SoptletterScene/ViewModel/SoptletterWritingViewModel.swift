@@ -10,6 +10,7 @@ import Foundation
 import Combine
 
 import Core
+import Domain
 import BaseFeatureDependency
 import SoptletterFeatureInterface
 
@@ -23,8 +24,11 @@ public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
     // MARK: - Properties
 
     private let coordinator: AnyCoordinatorObject
+    private let useCase: SoptletterUseCase
     private var cancelBag = CancelBag()
-    private let maxCharCount = 250
+    private var submitTask: Task<Void, Never>?
+    // TODO: 주제 선정 화면 연동 시 실제 topicId로 교체
+    private let topicId = 1
 
     // MARK: - Inputs
 
@@ -43,14 +47,20 @@ public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
 
     // MARK: - Init
 
-    public init(coordinator: Coordinator) {
+    public init(coordinator: Coordinator, useCase: SoptletterUseCase) {
         self.coordinator = coordinator
+        self.useCase = useCase
+    }
+
+    deinit {
+        submitTask?.cancel()
     }
 }
 
 extension SoptletterWritingViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
+        var currentText = ""
 
         input.naviBackTap
             .withUnretained(self)
@@ -61,14 +71,29 @@ extension SoptletterWritingViewModel {
         input.textChanged
             .withUnretained(self)
             .sink { owner, text in
-                output.isSubmitEnabled.send(!text.isEmpty && text.count <= owner.maxCharCount)
+                currentText = text
+                output.isSubmitEnabled.send(owner.useCase.isWritable(content: text))
             }.store(in: cancelBag)
 
         input.submitTap
             .withUnretained(self)
             .sink { owner, _ in
-                // TODO: 실제 서버 연동 시 교체
-                owner.onSubmitSuccess?()
+                owner.submitTask?.cancel()
+                let submittedText = currentText
+                output.isSubmitEnabled.send(false)
+                owner.submitTask = Task {
+                    do {
+                        try await owner.useCase.writeMessage(topicId: owner.topicId, content: submittedText)
+                        await MainActor.run { owner.onSubmitSuccess?() }
+                    } catch is CancellationError {
+                        return
+                    } catch {
+                        await MainActor.run {
+                            output.isSubmitEnabled.send(owner.useCase.isWritable(content: currentText))
+                            ToastUtils.showMDSToast(type: .alert, text: I18N.Soptletter.submitFailure)
+                        }
+                    }
+                }
             }.store(in: cancelBag)
 
         return output

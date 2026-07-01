@@ -77,8 +77,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public var onCalendarCellTapped: (() -> Void)?
     public var onAttendanceButtonTapped: (() -> Void)?
     public var onMainProductCellTapped: ((String) -> Void)?
-    public var onAppServiceCellTapped: ((String) -> Void)?
-    public var onSoptletterCellTapped: (() -> Void)?
+    public var onAppServiceCellTapped: ((AppServiceType) -> Void)?
     public var onNotificationButtonTapped: (() -> Void)?
     public var onSettingButtonTapped: ((UserType) -> Void)?
     public var onNeedSignIn: (@MainActor () -> Void)?
@@ -147,11 +146,7 @@ extension HomeForMemberViewModel {
                     owner.onLatestPostCellTapped?(model.webLink)
                     owner.trackLatestPostEvent(model: model)
                 case .appService(let model):
-                    if model.serviceName == I18N.Home.AppService.soptletter {
-                        owner.onSoptletterCellTapped?()
-                    } else {
-                        owner.onAppServiceCellTapped?(model.deepLink)
-                    }
+                    owner.onAppServiceCellTapped?(model.type)
                 default: break
                 }
             }

@@ -17,7 +17,7 @@ public enum HomeCoordinatorDestination {
     case attendance
     case soptlog
     case calendar
-    case soptletter
+    case appService(type: AppServiceType)
 
     case webLink(url: String)
     case deepLink(url: String)

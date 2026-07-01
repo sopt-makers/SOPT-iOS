@@ -7,25 +7,44 @@
 //
 
 import Core
+import Domain
 import BaseFeatureDependency
 @_exported import SoptletterFeatureInterface
 
 public final class SoptletterBuilder {
+    @Injected public var soptletterRepository: SoptletterRepositoryInterface
+
     public init() {}
 }
 
 extension SoptletterBuilder: SoptletterFeatureBuildable {
     public func makeSoptletterOnboardingVC(coordinator: Coordinator) -> SoptletterOnboardingPresentable {
-        return SoptletterOnboardingVC()
+        let viewModel = SoptletterOnboardingViewModel(coordinator: coordinator)
+        let viewController = SoptletterOnboardingVC(viewModel: viewModel)
+        return (viewController, viewModel)
     }
     
     public func makeSoptletterNicknameCheckVC(coordinator: Coordinator) -> SoptletterNicknameCheckPresentable {
-        return SoptletterCheckNicknameVC()
+        let viewModel = SoptletterNicknameCheckViewModel(coordinator: coordinator)
+        let viewController = SoptletterCheckNicknameVC(viewModel: viewModel)
+        return (viewController, viewModel)
+    }
+    
+    public func makeSoptletterMainVC(coordinator: any BaseFeatureDependency.Coordinator) -> SoptletterMainPresentable {
+        let viewModel = SoptletterMainViewModel()
+        let soptletterMainVC = SoptletterMainVC(viewModel: viewModel)
+        return (soptletterMainVC, viewModel)
     }
     
     public func makeSoptletterWritingVC(coordinator: Coordinator) -> SoptletterWritingPresentable {
-        let viewModel = SoptletterWritingViewModel(coordinator: coordinator)
+        let useCase = DefaultSoptletterUseCase(repository: soptletterRepository)
+        let viewModel = SoptletterWritingViewModel(coordinator: coordinator, useCase: useCase)
         let soptletterWritingVC = SoptletterWritingVC(viewModel: viewModel)
         return (soptletterWritingVC, viewModel)
+    }
+
+    public func makeSelectTopicVC(coordinator: Coordinator) -> SelectTopicPresentable {
+        let vc = SelectTopicVC()
+        return vc
     }
 }

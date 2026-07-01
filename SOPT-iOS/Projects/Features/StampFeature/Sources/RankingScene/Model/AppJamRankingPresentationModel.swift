@@ -41,6 +41,7 @@ struct AppJamRankRecentPresentationModel: Hashable {
     let userProfileImage: String
     let teamName: String
     let teamNumber: String
+    let ownerNickname: String
 
     init(from domainModel: AppjamRankRecentModel) {
         self.stampId = domainModel.stampId
@@ -52,5 +53,6 @@ struct AppJamRankRecentPresentationModel: Hashable {
         self.userProfileImage = domainModel.userProfileImage
         self.teamName = domainModel.teamName
         self.teamNumber = domainModel.teamNumber
+        self.ownerNickname = domainModel.ownerNickname
     }
 }
