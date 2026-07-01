@@ -105,7 +105,7 @@ private extension SoptletterMainVC {
             postItCellTap: postItCellTapPublisher.asDriver()
         )
         
-        let output = self.viewModel.transform(from: input, cancelBag: cancelBag)                
+        let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
     }
 
 
@@ -182,7 +182,7 @@ extension SoptletterMainVC {
 
 extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate {
     private func setCollectionView() {
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.register(SoptletterPostItCell.self, forCellWithReuseIdentifier: SoptletterPostItCell.identifier)
         collectionView.dataSource = self
         collectionView.delegate = self
     }
@@ -192,25 +192,20 @@ extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate
     }
 
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: SoptletterPostItCell.identifier,
+            for: indexPath
+        ) as? SoptletterPostItCell else {
+            return UICollectionViewCell()
+        }
         let dummy = dummyData[indexPath.item]
 
-        let postItView = SoptletterPostItView()
-
-        postItView.configure(
+        cell.configure(
             text: dummy.text,
             textColor: dummy.textColor,
             backgroundImage: dummy.backgroundImage,
             labelRotationAngle: CGFloat(dummy.rotationDegree)
         )
-
-        cell.clipsToBounds = false
-        cell.contentView.clipsToBounds = false
-        cell.contentView.subviews.forEach { $0.removeFromSuperview() }
-        cell.contentView.addSubview(postItView)
-        postItView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
 
         return cell
     }
