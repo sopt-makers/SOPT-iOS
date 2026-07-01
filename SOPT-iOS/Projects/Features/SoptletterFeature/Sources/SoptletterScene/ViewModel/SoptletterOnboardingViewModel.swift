@@ -47,23 +47,21 @@ public final class SoptletterOnboardingViewModel: SoptletterOnboardingViewModelT
         input.startTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.completeOnboarding()
+                Task {
+                    do {
+                        _ = try await owner.useCase.getSoptletterProfile()
+                        try await owner.useCase.completeOnboarding()
+                        
+                        await MainActor.run {
+                            owner.onStartButtonTap?()
+                        }
+                    } catch {
+                        // TODO: 에러처리
+                    }
+                }
             }.store(in: cancelBag)
         
         return output
-    }
-}
-
-private extension SoptletterOnboardingViewModel {
-    func completeOnboarding() {
-        Task {
-            do {
-                try await useCase.completeOnboarding()
-                onStartButtonTap?()
-            } catch {
-                // TODO: 에러처리
-            }
-        }
     }
 }
 

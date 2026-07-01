@@ -6,16 +6,22 @@
 //  Copyright © 2026 SOPT-iOS. All rights reserved.
 //
 
+import Combine
+
 public protocol SoptletterUseCase {
     func writeMessage(topicId: Int, content: String) async throws
     func isWritable(content: String) -> Bool
-    func getSoptletterProfile() async throws -> SoptletterProfileModel
+    func getSoptletterProfile() async throws
     func completeOnboarding() async throws
+    
+    var profileResult: CurrentValueSubject<SoptletterProfileModel, Never> { get }
 }
 
 public final class DefaultSoptletterUseCase: SoptletterUseCase {
     private let repository: SoptletterRepositoryInterface
     private let maxCharCount = 250
+    
+    public var profileResult = CurrentValueSubject<SoptletterProfileModel, Never>(.init(nickname: "", isOnboarded: false))
 
     public init(repository: SoptletterRepositoryInterface) {
         self.repository = repository
@@ -32,8 +38,9 @@ public final class DefaultSoptletterUseCase: SoptletterUseCase {
         return !content.isEmpty && content.count <= maxCharCount
     }
     
-    public func getSoptletterProfile() async throws -> SoptletterProfileModel {
-        return try await repository.getSoptletterProfile()
+    public func getSoptletterProfile() async throws {
+        let result = try await repository.getSoptletterProfile()
+        profileResult.send(result)
     }
     
     public func completeOnboarding() async throws {

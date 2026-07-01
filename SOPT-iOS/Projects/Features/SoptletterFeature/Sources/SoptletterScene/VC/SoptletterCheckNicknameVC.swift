@@ -10,6 +10,7 @@ import UIKit
 
 import DSKit
 import Core
+import Combine
 
 final class SoptletterCheckNicknameVC: UIViewController {
     
@@ -27,7 +28,7 @@ final class SoptletterCheckNicknameVC: UIViewController {
         .asDriver()
     
     // TODO: - 추후 기수 연결
-    private let number: Int = 12
+    private let number: Int = 38
     
     private let cardView = NicknameCheckCardView()
     
@@ -97,9 +98,17 @@ extension SoptletterCheckNicknameVC {
 private extension SoptletterCheckNicknameVC {
     func bindViewModel() {
         let input = SoptletterNicknameCheckViewModel.Input(
+            viewDidLoad: Just<Void>(()).asDriver(),
             naviBackTap: naviBackTap,
             goTap: goTap
         )
+        
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
+        
+        output.profileSubject
+            .withUnretained(self)
+            .sink { owner, profile in
+                owner.cardView.configure(nickName: profile.nickname, number: owner.number)
+            }.store(in: cancelBag)
     }
 }
