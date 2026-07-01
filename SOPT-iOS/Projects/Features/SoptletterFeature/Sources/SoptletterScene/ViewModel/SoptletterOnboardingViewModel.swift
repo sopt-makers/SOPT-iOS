@@ -37,7 +37,6 @@ public final class SoptletterOnboardingViewModel: SoptletterOnboardingViewModelT
     
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
-        
         input.naviBackTap
             .withUnretained(self)
             .sink { owner, _ in
@@ -64,4 +63,3 @@ public final class SoptletterOnboardingViewModel: SoptletterOnboardingViewModelT
         return output
     }
 }
-
