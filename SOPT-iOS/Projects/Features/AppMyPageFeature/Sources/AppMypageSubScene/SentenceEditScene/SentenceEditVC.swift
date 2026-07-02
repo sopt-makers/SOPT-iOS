@@ -155,7 +155,7 @@ extension SentenceEditVC {
 
 extension SentenceEditVC: UITextViewDelegate {
     public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        return text != "\n"
+        return !text.contains("\n")
     }
 
     public func textViewDidBeginEditing(_ textView: UITextView) {
