@@ -24,13 +24,14 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
         let writeButtonTap: Driver<Void>
         let downloadButtonTap: Driver<Void>
         let reportButtonTap: Driver<Void>
-        let postItCellTap: Driver<Void>
+        let postItCellTap: Driver<(messageId: Int, topicId: Int)>
     }
     
     // MARK: - Outputs
     
     public struct Output {
         let soptletterMessages = PassthroughSubject<SoptletterItemModel, Never>()
+        let soptletterGenerationTitle = PassthroughSubject<String, Never>()
     }
     
     private let useCase: SoptletterUseCase
@@ -44,7 +45,7 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     public var onPostItTap: (() -> Void)?
     public var onDownloadTap: (() -> Void)?
     public var onReportTap: (() -> Void)?
-    public var onCellTap: (() -> Void)?
+    public var onCellTap: ((Int, Int) -> Void)?
     
     public init(coordinator: Coordinator, useCase: SoptletterUseCase) {
         self.useCase = useCase
@@ -64,7 +65,10 @@ extension SoptletterMainViewModel {
                 owner.submitTask = Task {
                     do {
                         let result = try await owner.useCase.fetchSoptletterMessages(topicId: 1, cursor: nil, size: nil)
-                        await MainActor.run { output.soptletterMessages.send(result) }
+                        await MainActor.run {
+                            output.soptletterMessages.send(result)
+                            output.soptletterGenerationTitle.send(result.title)
+                        }
                     } catch is CancellationError {
                         return
                     } catch {
@@ -99,9 +103,9 @@ extension SoptletterMainViewModel {
         
         input.postItCellTap
             .withUnretained(self)
-            .sink { owner, _ in                
-                owner.onCellTap?()
-            }.store(in: cancelBag)                
+            .sink { owner, model  in
+                owner.onCellTap?(model.messageId, model.topicId)
+            }.store(in: cancelBag)
         
         return output
     }

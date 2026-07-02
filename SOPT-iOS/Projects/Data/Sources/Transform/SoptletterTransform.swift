@@ -26,6 +26,25 @@ extension SoptletterItemResponseEntity {
     }
 }
 
+extension SoptletterMessageResponseEntity {
+    func toDomain() -> SoptletterDetailMessageModel {
+        return SoptletterDetailMessageModel(
+            messageId: messageId,
+            topicId: topicId,
+            authorNickname: authorNickname,
+            content: content,
+            colorCode: colorCode,
+            rotationDegree: rotationDegree,
+            shapeType: shapeType,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            likeCount: likeCount,
+            likedByMe: likedByMe,
+            mine: mine
+        )
+    }
+}
+
 extension SoptletterMessageEntity {
     func toDomain() -> SoptletterMessageModel {
         return SoptletterMessageModel(

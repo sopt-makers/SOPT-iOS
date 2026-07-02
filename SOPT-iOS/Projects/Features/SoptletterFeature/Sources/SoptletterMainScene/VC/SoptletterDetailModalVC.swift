@@ -7,12 +7,31 @@
 //
 
 import UIKit
-import SnapKit
-import Then
+import Combine
 
+import SnapKit
+
+import BaseFeatureDependency
+import Core
 import DSKit
+import Domain
 
 public final class SoptletterDetailModalVC: UIViewController {
+    
+    private let editButton = UIButton().then {
+        $0.setImage(DSKitAsset.Assets.icSoptletterEdit.image, for: .normal)
+    }
+
+    private let deleteButton = UIButton().then {
+        $0.setImage(DSKitAsset.Assets.icSoptletterTrash.image, for: .normal)
+    }
+
+    private let editDeleteStackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.spacing = 8
+        $0.alignment = .center
+//        $0.isHidden = true
+    }
 
     private let dimmedView = UIView().then {
         $0.backgroundColor = UIColor.black.withAlphaComponent(0.6)
@@ -67,8 +86,15 @@ public final class SoptletterDetailModalVC: UIViewController {
         $0.backgroundColor = DSKitAsset.Colors.gray800.color
         $0.layer.cornerRadius = 12
     }
+    
+    private let viewModel: SoptletterDetailViewModel
+    
+    private let cancelBag = CancelBag()
+    private let editButtonTapPublisher = PassthroughSubject<Void, Never>()
+    private let deleteButtonTapPublisher = PassthroughSubject<Void, Never>()
 
-    public init() {
+    public init(viewModel: SoptletterDetailViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .overFullScreen
         modalTransitionStyle = .crossDissolve
@@ -83,6 +109,7 @@ public final class SoptletterDetailModalVC: UIViewController {
         setUI()
         setLayout()
         setAddTarget()
+        bindViewModels()
     }
 
     @discardableResult
@@ -91,14 +118,45 @@ public final class SoptletterDetailModalVC: UIViewController {
         name: String,
         content: String,
         date: String,
-        likeCount: Int
+        likeCount: Int,
+        mine: Bool
     ) -> Self {
         containerView.backgroundColor = backgroundColor
         nameLabel.text = name
         contentLabel.text = content
         dateLabel.text = date
         likeCountLabel.text = "\(likeCount)"
+        // TODO: 테스트 끝나고 주석지우기
+//        editDeleteStackView.isHidden = !mine
         return self
+    }
+}
+
+extension SoptletterDetailModalVC {
+    private func bindViewModels() {
+        let input = SoptletterDetailViewModel.Input(
+            viewDidLoad: Just<Void>(()).asDriver(),
+            editButtonTap: editButtonTapPublisher.asDriver(),
+            deleteButtonTap: deleteButtonTapPublisher.asDriver()
+        )
+        
+        let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
+        
+        output.soptletterMessage
+            .withUnretained(self)
+            .sink {
+                owner,
+                model  in
+                owner
+                    .configure(
+                        backgroundColor: UIColor(hex: model.colorCode),
+                        name: model.authorNickname,
+                        content: model.content,
+                        date: model.createdAt,
+                        likeCount: model.likeCount,
+                        mine: model.mine
+                    )
+            }.store(in: cancelBag)
     }
 }
 
@@ -108,10 +166,17 @@ private extension SoptletterDetailModalVC {
     }
 
     func setLayout() {
+        editDeleteStackView.addArrangedSubviews(editButton, deleteButton)
+        containerView.addSubview(editDeleteStackView)
         likeStackView.addArrangedSubviews(likeImageView, likeCountLabel)
         contentScrollView.addSubview(contentLabel)
         containerView.addSubviews(nameLabel, contentScrollView, dateLabel, likeStackView, confirmButton)
         view.addSubviews(dimmedView, containerView)
+
+        editDeleteStackView.snp.makeConstraints { make in
+            make.centerY.equalTo(nameLabel)
+            make.trailing.equalToSuperview().inset(20)
+        }
 
         dimmedView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -161,8 +226,18 @@ private extension SoptletterDetailModalVC {
     }
 
     func setAddTarget() {
-        confirmButton.addTarget(self, action: #selector(confirmButtonDidTap), for: .touchUpInside)
+        confirmButton.addTarget(self, action: #selector(editButtonTap), for: .touchUpInside)
         dimmedView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dimmedViewDidTap)))
+        editButton.addTarget(self, action: #selector(confirmButtonDidTap), for: .touchUpInside)
+        deleteButton.addTarget(self, action: #selector(deleteButtonTap), for: .touchUpInside)
+    }
+    
+    @objc func editButtonTap() {
+        editButtonTapPublisher.send()
+    }
+    
+    @objc func deleteButtonTap() {
+        deleteButtonTapPublisher.send()
     }
 
     @objc func confirmButtonDidTap() {

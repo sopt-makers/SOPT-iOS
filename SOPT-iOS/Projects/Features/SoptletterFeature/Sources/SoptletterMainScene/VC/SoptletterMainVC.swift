@@ -65,7 +65,7 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
     
     private let viewModel: SoptletterMainViewModel
     private let cancelBag = CancelBag()
-    private let postItCellTapPublisher = PassthroughSubject<Void, Never>()
+    private let postItCellTapPublisher = PassthroughSubject<(messageId: Int, topicId: Int), Never>()
     private let naviBackButtonTapPublisher = PassthroughSubject<Void, Never>()
     private let writeButtonTapPublisher = PassthroughSubject<Void, Never>()
     private let downloadTapPublisher = PassthroughSubject<Void, Never>()
@@ -117,8 +117,17 @@ private extension SoptletterMainVC {
                 owner.soptletterMessages = model
                 owner.collectionView.reloadData()
             }.store(in: cancelBag)
+        
+        output.soptletterGenerationTitle
+            .withUnretained(self)
+            .sink { owner, title in
+                owner.configureUI(title: title)
+            }.store(in: cancelBag)
     }
     
+    private func configureUI(title: String) {
+        titleLabel.text = title
+    }
     
     private func setLayout() {
         rightButtonStackView.addArrangedSubviews(downloadButton, reportButton)
@@ -224,7 +233,9 @@ extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        postItCellTapPublisher.send()
+        guard let soptletterMessages else { return }
+        let message = soptletterMessages.messages[indexPath.row]
+        postItCellTapPublisher.send((message.messageId, soptletterMessages.topicId))
     }
 }
 
@@ -241,13 +252,4 @@ extension SoptletterMainVC {
     @objc func writeButtonTapped() { writeButtonTapPublisher.send() }
     @objc func downloadButtonTapped() { downloadTapPublisher.send() }
     @objc func reportButtonTapped() { reportButtonTapPublisher.send() }
-}
-
-
-
-private struct SoptletterDummy {
-    let text: String
-    let textColor: UIColor
-    let backgroundImage: UIImage?
-    let rotationDegree: Int
 }

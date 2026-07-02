@@ -10,6 +10,7 @@ import UIKit
 
 import BaseFeatureDependency
 import Core
+import Domain
 
 public protocol SoptletterMainRoutingTrigger {
     var onNaviBackTap: (() -> Void)? { get set }
@@ -17,8 +18,9 @@ public protocol SoptletterMainRoutingTrigger {
     var onWriteTap: (() -> Void)? { get set }
     var onDownloadTap: (() -> Void)? { get set }
     var onReportTap: (() -> Void)? { get set }
-    var onCellTap: (() -> Void)? { get set }
+    var onCellTap: ((Int, Int) -> Void)? { get set }
 }
 
 public typealias SoptletterMainViewModelType = ViewModelType & SoptletterMainRoutingTrigger
 public typealias SoptletterMainPresentable = (vc: UIViewController, vm: any SoptletterMainViewModelType)
+

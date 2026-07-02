@@ -36,4 +36,11 @@ extension SoptletterBuilder: SoptletterFeatureBuildable {
         let vc = SelectTopicVC()
         return vc
     }
+    
+    public func makeSoptletterDetailVC(coordinator: Coordinator, messageId: Int, topicId: Int) -> SoptletterDetailPresentable {
+        let useCase = DefaultSoptletterUseCase(repository: soptletterRepository)
+        let viewModel = SoptletterDetailViewModel(useCase: useCase, messageId: messageId, topicId: topicId)
+        let vc = SoptletterDetailModalVC(viewModel: viewModel)
+        return (vc, viewModel)
+    }
 }

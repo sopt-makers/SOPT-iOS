@@ -89,36 +89,28 @@ extension SoptletterPostItCell {
         shapeType: String
     ) -> Self {
         contentLabel.text = text
-        contentLabel.textColor = textColor
-        backgroundImageView.image = backgroundImage
-        contentLabel.transform = CGAffineTransform(rotationAngle: CGFloat(labelRotationAngle) * .pi / 180)
-        backgroundImageView.transform = CGAffineTransform(rotationAngle: CGFloat(labelRotationAngle) * .pi / 180)
-        // 정방향 각도 이미지만 받아서 이미지 + 텍스트 회전
-        // 이미지 색상 변경
-        
-        // SHARP -> DSKitAsset.Assets.icnPointBlueCenter
-        // SMOOTH -> DSKitAsset.Assets.icnSmoothRedCenter
-        // CLOUD -> DSKitAsset.Assets.icnCloudRedLeft        
-        // POINT -> DSKitAsset.Assets.icnSquareSky.image
-        backgroundImageView.image = backgroundImage?.withRenderingMode(.alwaysTemplate)
-        backgroundImageView.tintColor = UIColor(hex: backgroundColorHex)
-        
-        let shapeType = SoptletterShapeMapping(rawValue: shapeType)
-        
-        switch shapeType {
-        case .sharp:
-            backgroundImageView.image = DSKitAsset.Assets.icnPointBlueCenter.image
-        case .cloud:
-            backgroundImageView.image = DSKitAsset.Assets.icnCloudRedCenter.image
-        case .smooth:
-            backgroundImageView.image = DSKitAsset.Assets.icnSmoothRedCenter.image
-        case .point:
-            backgroundImageView.image = DSKitAsset.Assets.icnSquareSky.image
-        default:
-            break
-        }
+            contentLabel.textColor = textColor
 
-          
+            let rotation = CGAffineTransform(rotationAngle: labelRotationAngle * .pi / 180)
+            contentLabel.transform = rotation
+            backgroundImageView.transform = rotation
+
+            let shape = SoptletterShapeMapping(rawValue: shapeType.uppercased()) ?? .point
+            let shapeImage: UIImage?
+
+            switch shape {
+            case .sharp:
+                shapeImage = DSKitAsset.Assets.icnPointBlueCenter.image
+            case .cloud:
+                shapeImage = DSKitAsset.Assets.icnCloudRedCenter.image
+            case .smooth:
+                shapeImage = DSKitAsset.Assets.icnSmoothRedCenter.image
+            case .point:
+                shapeImage = DSKitAsset.Assets.icnSquareSky.image
+            }
+
+            backgroundImageView.image = shapeImage?.withRenderingMode(.alwaysTemplate)
+            backgroundImageView.tintColor = UIColor(hex: backgroundColorHex)
         return self
     }
 }

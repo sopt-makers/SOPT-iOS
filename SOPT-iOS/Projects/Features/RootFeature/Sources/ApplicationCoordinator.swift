@@ -251,7 +251,7 @@ extension ApplicationCoordinator {
             coordinator = newCoordinator
         }
         
-        coordinator.start()
+        coordinator.start()        
     }
     
     private func checkDidSignIn() {

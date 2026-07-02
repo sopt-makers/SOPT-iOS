@@ -12,6 +12,7 @@ import Combine
 import Core
 import BaseFeatureDependency
 import SoptletterFeatureInterface
+import Domain
 
 public final class SoptletterCoordinator: BaseCoordinator {
 
@@ -76,22 +77,21 @@ public final class SoptletterCoordinator: BaseCoordinator {
             print("handle soptletterMain.vm.onDownloadTap")
         }
         
-        soptletterMain.vm.onCellTap = { [weak self] in
-            self?.presentSoptletterDetail()
+        soptletterMain.vm.onCellTap = { [weak self] messageId, topicId in
+            self?.presentSoptletterDetail(messageId, topicId)
         }
         
         navigationController?.pushViewController(soptletterMain.vc, animated: true)
     }
     
-    private func presentSoptletterDetail() {
-        let detailVC = SoptletterDetailModalVC()
-        detailVC.configure(
-            name: "익명의 무무",
-            content: "안녕하세요",
-            date: "mm.dd",
-            likeCount: 44
-        )
-        navigationController?.present(detailVC, animated: true)
+    private func presentSoptletterDetail(_ messageId: Int, _ topicId: Int) {
+        var soptletterDetail = factory.makeSoptletterDetailVC(coordinator: self, messageId: messageId, topicId: topicId)
+        
+        soptletterDetail.vm.onNaviBackTap = { [weak self] in
+            print("handle soptletterMain.vm.onNaviBackTap")
+        }
+        
+        navigationController?.present(soptletterDetail.vc, animated: true)
     }
     
     private func showSelectTopic() {
