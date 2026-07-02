@@ -19,7 +19,6 @@ public final class SoptletterOnboardingViewModel: SoptletterOnboardingViewModelT
     public var onStartButtonTap: (() -> Void)?
     
     private let coordinator: AnyCoordinatorObject
-    private let useCase: SoptletterUseCase
     
     private var cancelBag = CancelBag()
     
@@ -30,9 +29,8 @@ public final class SoptletterOnboardingViewModel: SoptletterOnboardingViewModelT
     
     public struct Output { }
     
-    public init(coordinator: Coordinator, useCase: SoptletterUseCase) {
+    public init(coordinator: Coordinator) {
         self.coordinator = coordinator
-        self.useCase = useCase
     }
     
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
@@ -46,18 +44,7 @@ public final class SoptletterOnboardingViewModel: SoptletterOnboardingViewModelT
         input.startTap
             .withUnretained(self)
             .sink { owner, _ in
-                Task {
-                    do {
-                        _ = try await owner.useCase.getSoptletterProfile()
-                        try await owner.useCase.completeOnboarding()
-                        
-                        await MainActor.run {
-                            owner.onStartButtonTap?()
-                        }
-                    } catch {
-                        // TODO: 에러처리
-                    }
-                }
+                owner.onStartButtonTap?()
             }.store(in: cancelBag)
         
         return output

@@ -65,6 +65,7 @@ public final class SoptletterNicknameCheckViewModel: SoptletterNicknameCheckView
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onGoButtonTap?()
+                owner.completeOnboarding()
             }.store(in: cancelBag)
         
         return output
@@ -82,6 +83,16 @@ private extension SoptletterNicknameCheckViewModel {
             }
         }
         fetchProfileTask = nil
+    }
+    
+    func completeOnboarding() {
+        Task {
+            do {
+                try await useCase.completeOnboarding()
+            } catch {
+                // TODO: 에러처리
+            }
+        }
     }
     
     func bindOutput(output: Output) {
