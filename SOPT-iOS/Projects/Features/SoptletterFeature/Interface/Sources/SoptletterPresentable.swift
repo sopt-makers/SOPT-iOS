@@ -10,6 +10,7 @@ import UIKit
 
 import BaseFeatureDependency
 import Core
+import Domain
 
 public protocol SoptletterViewControllable: LegacyViewControllable {}
 
@@ -28,17 +29,19 @@ public protocol SoptletterCoordinatable {
     var onSubmitSuccess: (() -> Void)? { get set }
 }
 
+public protocol SelectTopicCoordinatable {
+    var onNaviBackTap: (() -> Void)? { get set }
+    var onCellTap: ((SoptletterTopicModel) -> Void)? { get set }
+}
+
 public typealias SoptletterOnboardingPresentable = (vc: UIViewController, vm: any SoptletterOnboardingViewModelType)
 public typealias SoptletterOnboardingViewModelType = ViewModelType & SoptletterOnboardingRoutingTrigger
 
 public typealias SoptletterNicknameCheckPresentable = (vc: UIViewController, vm: any SoptletterNicknameCheckViewModelType)
 public typealias SoptletterNicknameCheckViewModelType = ViewModelType & SoptletterNicknameCheckRoutingTrigger
-public protocol SelectTopicCoordinatable {
-    var onNaviBackTap: (() -> Void)? { get set }
-    var onCellTap: ((String) -> Void)? { get set }
-}
 
 public typealias SoptletterWritingViewModelType = ViewModelType & SoptletterCoordinatable
 public typealias SoptletterWritingPresentable = (vc: UIViewController, vm: any SoptletterWritingViewModelType)
 
-public typealias SelectTopicPresentable = UIViewController & SelectTopicCoordinatable
+public typealias SelectTopicViewModelType = ViewModelType & SelectTopicCoordinatable
+public typealias SelectTopicPresentable = (vc: UIViewController, vm: any SelectTopicViewModelType)

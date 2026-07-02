@@ -6,14 +6,21 @@
 //  Copyright © 2026 SOPT-iOS. All rights reserved.
 //
 
+import Combine
+
 public protocol SoptletterUseCase {
     func writeMessage(topicId: Int, content: String) async throws
     func isWritable(content: String) -> Bool
+    func fetchTopics() async throws
+    
+    var topicsResult: PassthroughSubject<SoptletterTopicListModel, Never> { get }
 }
 
 public final class DefaultSoptletterUseCase: SoptletterUseCase {
     private let repository: SoptletterRepositoryInterface
     private let maxCharCount = 250
+    
+    public var topicsResult = PassthroughSubject<SoptletterTopicListModel, Never>()
 
     public init(repository: SoptletterRepositoryInterface) {
         self.repository = repository
@@ -28,5 +35,10 @@ public final class DefaultSoptletterUseCase: SoptletterUseCase {
 
     public func isWritable(content: String) -> Bool {
         return !content.isEmpty && content.count <= maxCharCount
+    }
+    
+    public func fetchTopics() async throws {
+        let result = try await repository.fetchTopics()
+        topicsResult.send(result)
     }
 }

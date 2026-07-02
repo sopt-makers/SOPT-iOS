@@ -8,4 +8,5 @@
 
 public protocol SoptletterRepositoryInterface {
     func writeMessage(topicId: Int, content: String) async throws
+    func fetchTopics() async throws -> SoptletterTopicListModel
 }
