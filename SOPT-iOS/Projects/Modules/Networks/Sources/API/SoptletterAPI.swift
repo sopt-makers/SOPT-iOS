@@ -13,6 +13,7 @@ import Moya
 public enum SoptletterAPI {
     case writeMessage(topicId: Int, content: String)
     case fetchTopics
+    case fetchTopic(topicId: Int)
 }
 
 extension SoptletterAPI: BaseAPI {
@@ -24,6 +25,8 @@ extension SoptletterAPI: BaseAPI {
             return "/topics/\(topicId)/messages"
         case .fetchTopics:
             return "/topics"
+        case .fetchTopic(let topicId):
+            return "/topics/\(topicId)"
         }
     }
 
@@ -31,7 +34,7 @@ extension SoptletterAPI: BaseAPI {
         switch self {
         case .writeMessage:
             return .post
-        case .fetchTopics:
+        case .fetchTopics, .fetchTopic:
             return .get
         }
     }
@@ -41,6 +44,8 @@ extension SoptletterAPI: BaseAPI {
         case .writeMessage(_, let content):
             return .requestParameters(parameters: ["content": content], encoding: JSONEncoding.default)
         case .fetchTopics:
+            return .requestPlain
+        case .fetchTopic:
             return .requestPlain
         }
     }

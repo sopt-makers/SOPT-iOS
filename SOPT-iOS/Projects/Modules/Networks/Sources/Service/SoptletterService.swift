@@ -15,6 +15,7 @@ public typealias DefaultSoptletterService = BaseService<SoptletterAPI>
 public protocol SoptletterService {
     func writeMessage(topicId: Int, content: String) async throws
     func fetchTopics() async throws -> SoptletterTopicListEntity
+    func fetchTopic(topicId: Int) async throws -> SoptletterTopicDetailEntity
 }
 
 extension DefaultSoptletterService: SoptletterService {
@@ -24,5 +25,9 @@ extension DefaultSoptletterService: SoptletterService {
     
     public func fetchTopics() async throws -> SoptletterTopicListEntity {
         return try await requestObjectAsync(.fetchTopics)
+    }
+    
+    public func fetchTopic(topicId: Int) async throws -> SoptletterTopicDetailEntity {
+        return try await requestObjectAsync(.fetchTopic(topicId: topicId))
     }
 }

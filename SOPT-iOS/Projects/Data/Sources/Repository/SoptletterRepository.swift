@@ -26,4 +26,8 @@ extension SoptletterRepository: SoptletterRepositoryInterface {
     public func fetchTopics() async throws -> SoptletterTopicListModel {
         return try await soptletterService.fetchTopics().toDomain()
     }
+    
+    public func fetchTopic(topicId: Int) async throws -> SoptletterTopicDetailModel {
+        return try await soptletterService.fetchTopic(topicId: topicId).toDomain()
+    }
 }

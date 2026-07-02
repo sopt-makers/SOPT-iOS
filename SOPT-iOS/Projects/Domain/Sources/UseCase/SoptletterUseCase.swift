@@ -12,8 +12,10 @@ public protocol SoptletterUseCase {
     func writeMessage(topicId: Int, content: String) async throws
     func isWritable(content: String) -> Bool
     func fetchTopics() async throws
+    func fetchTopic(topicId: Int) async throws
     
     var topicsResult: PassthroughSubject<SoptletterTopicListModel, Never> { get }
+    var selectedTopicResult: PassthroughSubject<SoptletterTopicDetailModel, Never> { get }
 }
 
 public final class DefaultSoptletterUseCase: SoptletterUseCase {
@@ -21,7 +23,8 @@ public final class DefaultSoptletterUseCase: SoptletterUseCase {
     private let maxCharCount = 250
     
     public var topicsResult = PassthroughSubject<SoptletterTopicListModel, Never>()
-
+    public var selectedTopicResult = PassthroughSubject<SoptletterTopicDetailModel, Never>()
+    
     public init(repository: SoptletterRepositoryInterface) {
         self.repository = repository
     }
@@ -40,5 +43,10 @@ public final class DefaultSoptletterUseCase: SoptletterUseCase {
     public func fetchTopics() async throws {
         let result = try await repository.fetchTopics()
         topicsResult.send(result)
+    }
+    
+    public func fetchTopic(topicId: Int) async throws {
+        let result = try await repository.fetchTopic(topicId: topicId)
+        selectedTopicResult.send(result)
     }
 }
