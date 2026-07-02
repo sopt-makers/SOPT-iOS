@@ -224,35 +224,34 @@ extension ApplicationCoordinator {
     private func runSplashFlow() {
         var coordinator: BaseCoordinator
         
-//        switch Config.coordinatorFlag {
-//        case .legacy:
-//            let legacyCoordinator = LegacySplashCoordinator(
-//                router: router,
-//                factory: LegacySplashBuilder()
-//            )
-//            
-//            legacyCoordinator.finishFlow = { [weak self, weak legacyCoordinator] in
-//                self?.checkDidSignIn()
-//                self?.removeDependency(legacyCoordinator
-//                )
-//            }
-//            addDependency(legacyCoordinator)
-//            coordinator = legacyCoordinator
-//        case .new:
-//            let newCoordinator = SplashCoordinator(
-//                navigationController: rootNavigationController,
-//                factory: SplashBuilder()
-//            )
-//            
-//            newCoordinator.finished = { [weak self] in
-//                self?.checkDidSignIn()
-//            }
-//            
-//            coordinator = newCoordinator
-//        }
-//        
-//        coordinator.start()
-        runSoptletterWritingFlow()
+        switch Config.coordinatorFlag {
+        case .legacy:
+            let legacyCoordinator = LegacySplashCoordinator(
+                router: router,
+                factory: LegacySplashBuilder()
+            )
+            
+            legacyCoordinator.finishFlow = { [weak self, weak legacyCoordinator] in
+                self?.checkDidSignIn()
+                self?.removeDependency(legacyCoordinator
+                )
+            }
+            addDependency(legacyCoordinator)
+            coordinator = legacyCoordinator
+        case .new:
+            let newCoordinator = SplashCoordinator(
+                navigationController: rootNavigationController,
+                factory: SplashBuilder()
+            )
+            
+            newCoordinator.finished = { [weak self] in
+                self?.checkDidSignIn()
+            }
+            
+            coordinator = newCoordinator
+        }
+        
+        coordinator.start()
     }
     
     private func checkDidSignIn() {
