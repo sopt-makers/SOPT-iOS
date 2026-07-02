@@ -9,13 +9,10 @@
 public protocol SoptletterUseCase {
     func writeMessage(topicId: Int, content: String) async throws
     func isWritable(content: String) -> Bool
-    func fetchSoptletters(topicId: Int, cursor: Int?, size: Int?) async throws
+    func fetchSoptletterMessages(topicId: Int, cursor: Int?, size: Int?) async throws -> SoptletterItemModel
 }
 
 public final class DefaultSoptletterUseCase: SoptletterUseCase {
-    public func fetchSoptletters(topicId: Int, cursor: Int?, size: Int?) async throws {
-        
-    }
     
     private let repository: SoptletterRepositoryInterface
     private let maxCharCount = 250
@@ -33,5 +30,9 @@ public final class DefaultSoptletterUseCase: SoptletterUseCase {
 
     public func isWritable(content: String) -> Bool {
         return !content.isEmpty && content.count <= maxCharCount
+    }
+    
+    public func fetchSoptletterMessages(topicId: Int, cursor: Int?, size: Int?) async throws -> SoptletterItemModel {
+        return try await repository.soptletterMessages(topicId: topicId, cursor: cursor, size: size)
     }
 }

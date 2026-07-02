@@ -13,7 +13,7 @@ import Networks
 
 // MARK: - Mapper (Entity -> Domain)
 
-extension SoptletterItemEntity {
+extension SoptletterItemResponseEntity {
     func toDomain() -> SoptletterItemModel {
         return SoptletterItemModel(
             topicId: topicId,

@@ -19,6 +19,10 @@ public final class SoptletterRepository {
 }
 
 extension SoptletterRepository: SoptletterRepositoryInterface {
+    public func soptletterMessages(topicId: Int, cursor: Int?, size: Int?) async throws -> Domain.SoptletterItemModel {
+        return try await soptletterService.soptletterMessages(topicId: topicId, cursor: cursor, size: size).toDomain()
+    }
+    
     public func writeMessage(topicId: Int, content: String) async throws {
         try await soptletterService.writeMessage(topicId: topicId, content: content)
     }

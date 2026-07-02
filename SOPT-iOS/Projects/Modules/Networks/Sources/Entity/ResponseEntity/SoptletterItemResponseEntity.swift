@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct SoptletterItemEntity: Decodable {
+public struct SoptletterItemResponseEntity: Decodable {
     public let topicId: Int
     public let title: String
     public let totalCount: Int

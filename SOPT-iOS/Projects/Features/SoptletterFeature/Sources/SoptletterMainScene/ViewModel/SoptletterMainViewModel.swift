@@ -29,10 +29,13 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     
     // MARK: - Outputs
     
-    public struct Output {}
+    public struct Output {
+        let soptletterMessages = PassthroughSubject<SoptletterItemModel, Never>()
+    }
     
     private let useCase: SoptletterUseCase
     private let coordinator: AnyCoordinatorObject
+    private var submitTask: Task<Void, Never>?
     
     private var cancelBag = CancelBag()
     
@@ -52,12 +55,22 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
 extension SoptletterMainViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
-        
+        self.bindOutput(output: output, cancelBag: cancelBag)
         // TODO: 솝레터 리스트 API 요청
         input.viewDidLoad
             .withUnretained(self)
-            .sink { owner in 
-                print("SoptletterMainViewModel View Did Load")
+            .sink { owner, _ in
+                owner.submitTask?.cancel()
+                owner.submitTask = Task {
+                    do {
+                        let result = try await owner.useCase.fetchSoptletterMessages(topicId: 1, cursor: nil, size: nil)
+                        await MainActor.run { output.soptletterMessages.send(result) }
+                    } catch is CancellationError {
+                        return
+                    } catch {
+                        print("개같이실패")
+                    }
+                }                
             }.store(in: cancelBag)
         
         input.naviBackButtonTap
@@ -88,8 +101,14 @@ extension SoptletterMainViewModel {
             .withUnretained(self)
             .sink { owner, _ in                
                 owner.onCellTap?()
-            }.store(in: cancelBag)
+            }.store(in: cancelBag)                
         
         return output
+    }
+}
+
+extension SoptletterMainViewModel {
+    private func bindOutput(output: Output, cancelBag: CancelBag) {
+        
     }
 }
