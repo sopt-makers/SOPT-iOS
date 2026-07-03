@@ -23,6 +23,8 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
 
     private let viewModel: AppMyPageViewModel
     private let userType: UserType
+    // TODO: 앱잼탬프 오픈 여부 API 연동 (별도 이슈에서 진행 예정)
+    private let isAppjamtampOpen: Bool = false
     private var dataSource: UICollectionViewDiffableDataSource<MyPageSectionLayoutKind, MyPageItem>! = nil
     private var cellTapped = PassthroughSubject<MyPageItem, Never>()
     private let cancelBag = CancelBag()
@@ -166,7 +168,7 @@ extension AppMyPageVC {
         let sections = makeSections(for: self.userType)
         snapshot.appendSections(sections)
         sections.forEach { section in
-            snapshot.appendItems(section.items(userType: self.userType), toSection: section)
+            snapshot.appendItems(section.items(userType: self.userType, isAppjamtampOpen: isAppjamtampOpen), toSection: section)
         }
 
         dataSource.apply(snapshot, animatingDifferences: true)

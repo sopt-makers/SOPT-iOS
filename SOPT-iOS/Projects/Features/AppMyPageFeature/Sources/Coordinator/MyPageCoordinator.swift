@@ -104,7 +104,7 @@ public final class MyPageCoordinator: BaseCoordinator {
             self?.showAlertSetting(url: url)
         }
 
-        self.navigationController?.pushViewController(myPage.vc, animated: true)
+        navigationController?.setViewControllers([myPage.vc], animated: false)
     }
 
     private func showWithdrawal(userType: UserType) {

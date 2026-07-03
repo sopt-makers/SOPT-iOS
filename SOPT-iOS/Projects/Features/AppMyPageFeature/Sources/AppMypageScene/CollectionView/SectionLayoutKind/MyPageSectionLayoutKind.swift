@@ -28,12 +28,17 @@ enum MyPageSectionLayoutKind: Int, CaseIterable {
         }
     }
 
-    func items(userType: UserType) -> [MyPageItem] {
+    func items(userType: UserType, isAppjamtampOpen: Bool) -> [MyPageItem] {
         switch self {
         case .profile:
             return [MyPageItem(type: .profileCard)]
         case .soptlogPreview:
-            return [MyPageItem(type: .soptlogSoptampPreview), MyPageItem(type: .soptlogPokePreview)]
+            var items: [MyPageItem] = []
+            if userType == .active && !isAppjamtampOpen {
+                items.append(MyPageItem(type: .soptlogSoptampPreview))
+            }
+            items.append(MyPageItem(type: .soptlogPokePreview))
+            return items
         case .soptlogCheckButton:
             return [MyPageItem(type: .soptlogCheckButton)]
         case .servicePolicy:
