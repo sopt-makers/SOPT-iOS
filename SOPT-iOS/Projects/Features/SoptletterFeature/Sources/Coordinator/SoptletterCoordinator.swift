@@ -16,9 +16,6 @@ import SoptletterFeatureInterface
 public final class SoptletterCoordinator: BaseCoordinator {
 
     // MARK: - Properties
-    
-    // 임시
-    private let onboardingFinished: Bool = false
 
     public var finishFlow: (() -> Void)?
 
@@ -39,7 +36,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
     // MARK: - Coordinator Life Cycle
 
     public override func start() {
-        if onboardingFinished {
+        if UserDefaultKeyList.User.isCompleteSoptletterOnboarding == true {
             // main routing
         } else {
             showSoptletterOnboarding()
@@ -74,6 +71,10 @@ public final class SoptletterCoordinator: BaseCoordinator {
         
         checkNickname.vm.onGoButtonTap = { [weak self] in
             self?.showSoptletterWriting()
+        }
+        
+        checkNickname.vm.showAlert = {
+            AlertUtils.presentNetworkAlertVC()
         }
         
         soptletterRootController?.pushViewController(checkNickname.vc, animated: true)

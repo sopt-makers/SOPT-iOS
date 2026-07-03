@@ -31,6 +31,7 @@ public struct UserDefaultKeyList {
         @UserDefaultWrapper<String>(key: "pushToken") public static var pushToken
         @UserDefaultWrapper<Bool>(key: "isFirstVisitToPokeView") public static var isFirstVisitToPokeOnboardingView
         @UserDefaultWrapper<Bool>(key: "isVisitedPokeMainView") public static var isVisitedPokeMainView
+        @UserDefaultWrapper<Bool>(key: "isCompleteSoptletterOnboarding") public static var isCompleteSoptletterOnboarding
     }
     
     public struct AppNotice {

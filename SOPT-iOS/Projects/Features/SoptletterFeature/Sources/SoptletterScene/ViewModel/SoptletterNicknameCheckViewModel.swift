@@ -17,6 +17,7 @@ public final class SoptletterNicknameCheckViewModel: SoptletterNicknameCheckView
     
     public var onNaviBackTap: (() -> Void)?
     public var onGoButtonTap: (() -> Void)?
+    public var showAlert: (() -> Void)?
     
     private let coordinator: AnyCoordinatorObject
     private let useCase: SoptletterUseCase
@@ -42,17 +43,25 @@ public final class SoptletterNicknameCheckViewModel: SoptletterNicknameCheckView
     
     deinit {
         fetchProfileTask?.cancel()
-        fetchProfileTask = nil
     }
     
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
-        bindOutput(output: output)
-        
+
         input.viewDidLoad
             .withUnretained(self)
             .sink { owner, _ in
-                owner.fetchProfile()
+                owner.fetchProfileTask?.cancel()
+                owner.fetchProfileTask = Task {
+                    do {
+                        let result = try await owner.useCase.getSoptletterProfile()
+                        output.profileSubject.send(result)
+                    } catch is CancellationError {
+                        return
+                    } catch {
+                        owner.showAlert?()
+                    }
+                }
             }.store(in: cancelBag)
         
         input.naviBackTap
@@ -65,42 +74,16 @@ public final class SoptletterNicknameCheckViewModel: SoptletterNicknameCheckView
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onGoButtonTap?()
-                owner.completeOnboarding()
+                Task {
+                    do {
+                        try await owner.useCase.completeOnboarding()
+                    } catch {
+                        owner.showAlert?()
+                    }
+                }
             }.store(in: cancelBag)
         
         return output
-    }
-}
-
-private extension SoptletterNicknameCheckViewModel {
-    func fetchProfile() {
-        fetchProfileTask?.cancel()
-        fetchProfileTask = Task {
-            do {
-                try await useCase.getSoptletterProfile()
-            } catch {
-                // TODO: 에러처리
-            }
-        }
-        fetchProfileTask = nil
-    }
-    
-    func completeOnboarding() {
-        Task {
-            do {
-                try await useCase.completeOnboarding()
-            } catch {
-                // TODO: 에러처리
-            }
-        }
-    }
-    
-    func bindOutput(output: Output) {
-        useCase.profileResult.asDriver()
-            .withUnretained(self)
-            .sink { owner, profile in
-                output.profileSubject.send(profile)
-            }.store(in: cancelBag)
     }
 }
 
