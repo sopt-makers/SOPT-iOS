@@ -752,6 +752,32 @@ extension ApplicationCoordinator {
     }
 }
 
+// MARK: - MyPageTabFlow
+
+extension ApplicationCoordinator {
+    internal func runMyPageTabFlow(type: UserType) {
+        let newCoordinator = MyPageCoordinator(
+            factory: MyPageBuilder(),
+            userType: type,
+            navigationController: mypageNavigationController
+        )
+        newCoordinator.delegate = self
+        newCoordinator.onShowSoptlog = { [weak self] in
+            self?.pushSoptlogInMyPageTab()
+        }
+        newCoordinator.start()
+    }
+
+    internal func pushSoptlogInMyPageTab() {
+        let soptlogCoordinator = SoptlogCoordinator(
+            navigationController: mypageNavigationController,
+            factory: SoptlogBuilder()
+        )
+        soptlogCoordinator.delegate = self
+        soptlogCoordinator.start()
+    }
+}
+
 // MARK: - NotificationFlow
 
 extension ApplicationCoordinator {
