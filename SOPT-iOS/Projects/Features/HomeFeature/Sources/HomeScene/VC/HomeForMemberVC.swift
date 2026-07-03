@@ -285,15 +285,13 @@ extension HomeForMemberVC {
     
     private func bindViewModels() {
         let noticeButtonTapped = naviBar.noticeButtonTap.mapVoid().asDriver()
-        let settingButtonTapped = naviBar.settingButtonTap.mapVoid().asDriver()
-        
+
         let input = HomeForMemberViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
             viewWillAppear: viewWillAppear.asDriver(),
             cellTapped: cellTapped.asDriver(),
             attendanceButtonTapped: attendanceButtonTapped.asDriver(),
             noticeButtonTapped: noticeButtonTapped,
-            settingButtonTapped: settingButtonTapped,
             extendedFloatingButtonTapped: floatingButtonTapped.asDriver(),
             surveyButtonTapped: surveyButtonTapped.asDriver(),
             socialLinkButtonTapped: socialLinkButtonTapped.asDriver(),

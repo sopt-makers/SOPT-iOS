@@ -58,8 +58,6 @@ extension ApplicationCoordinator: HomeCoordinatorDelegate {
         switch destination {
         case .attendance:
             runAttendanceFlow()
-        case .setting(let userType):
-            runMyPageFlow(of: userType)
         case .signIn:
             clearChildViewControllers()
             runSignInFlow(by: .rootWindow(animated: true, message: nil))

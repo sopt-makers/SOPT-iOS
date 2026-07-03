@@ -465,8 +465,6 @@ extension ApplicationCoordinator {
                 switch destination {
                 case .attendance:
                     self?.runAttendanceFlow()
-                case .setting(let userType):
-                    self?.runMyPageFlow(of: userType)
                 case .signIn:
                     self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
                     self?.removeDependency(legacyCoordinator)
@@ -748,54 +746,6 @@ extension ApplicationCoordinator {
         }
         
         
-        coordinator.start()
-
-        return coordinator
-    }
-}
-
-// MARK: - MyPageFlow
-
-extension ApplicationCoordinator {
-
-    @discardableResult
-    internal func runMyPageFlow(of userType: UserType) -> BaseCoordinator {
-        var coordinator: BaseCoordinator
-
-        switch Config.coordinatorFlag {
-        case .legacy:
-            let legacyCoordinator = LegacyMyPageCoordinator(
-                router: LegacyRouter(
-                    rootController: UIWindow.getRootNavigationController
-                ),
-                factory: LegacyMyPageBuilder(),
-                userType: userType
-            )
-            legacyCoordinator.finishFlow = { [weak self, weak legacyCoordinator] in
-                self?.removeDependency(legacyCoordinator)
-            }
-            legacyCoordinator.requestCoordinating = { [weak self, weak legacyCoordinator] destination in
-                self?.removeDependency(legacyCoordinator)
-                self?.childCoordinators = []
-                switch destination {
-                case .signIn:
-                    self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
-                case .signInWithToast:
-                    self?.runSignInFlow(by: .rootWindow(animated: true, message: I18N.Setting.Withdrawal.withdrawalSuccess))
-                }
-            }
-            coordinator = legacyCoordinator
-            addDependency(coordinator)
-        case .new:
-            let newCoordinator = MyPageCoordinator(
-                factory: MyPageBuilder(),
-                userType: userType,
-                navigationController: UIWindow.getRootNavigationController
-            )
-            newCoordinator.delegate = self
-            coordinator = newCoordinator
-        }
-
         coordinator.start()
 
         return coordinator
