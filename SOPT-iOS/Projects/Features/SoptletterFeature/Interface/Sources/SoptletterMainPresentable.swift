@@ -19,6 +19,7 @@ public protocol SoptletterMainRoutingTrigger {
     var onDownloadTap: (() -> Void)? { get set }
     var onReportTap: (() -> Void)? { get set }
     var onCellTap: ((Int, Int) -> Void)? { get set }
+    var onError: (() -> Void)? { get set }
 }
 
 public typealias SoptletterMainViewModelType = ViewModelType & SoptletterMainRoutingTrigger

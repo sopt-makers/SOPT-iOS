@@ -31,7 +31,6 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     
     public struct Output {
         let soptletterMessages = PassthroughSubject<SoptletterItemModel, Never>()
-        let soptletterGenerationTitle = PassthroughSubject<String, Never>()
     }
     
     private let useCase: SoptletterUseCase
@@ -46,6 +45,7 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     public var onDownloadTap: (() -> Void)?
     public var onReportTap: (() -> Void)?
     public var onCellTap: ((Int, Int) -> Void)?
+    public var onError: (() -> Void)?
     
     public init(coordinator: Coordinator, useCase: SoptletterUseCase) {
         self.useCase = useCase
@@ -67,12 +67,11 @@ extension SoptletterMainViewModel {
                         let result = try await owner.useCase.fetchSoptletterMessages(topicId: 1, cursor: nil, size: nil)
                         await MainActor.run {
                             output.soptletterMessages.send(result)
-                            output.soptletterGenerationTitle.send(result.title)
                         }
                     } catch is CancellationError {
                         return
                     } catch {
-                        print("개같이실패")
+                        owner.onError?()
                     }
                 }                
             }.store(in: cancelBag)

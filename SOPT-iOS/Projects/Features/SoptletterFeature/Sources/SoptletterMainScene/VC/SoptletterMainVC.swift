@@ -60,9 +60,7 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
         $0.backgroundColor = DSKitAsset.Colors.gray10.color
         $0.layer.cornerRadius = 28
     }
-    
-    // MARK: - API 연동시 실제 데이터로 변경 예정
-    
+            
     private let viewModel: SoptletterMainViewModel
     private let cancelBag = CancelBag()
     private let postItCellTapPublisher = PassthroughSubject<(messageId: Int, topicId: Int), Never>()
@@ -115,13 +113,8 @@ private extension SoptletterMainVC {
             .withUnretained(self)
             .sink { owner, model in
                 owner.soptletterMessages = model
+                owner.configureUI(model)
                 owner.collectionView.reloadData()
-            }.store(in: cancelBag)
-        
-        output.soptletterGenerationTitle
-            .withUnretained(self)
-            .sink { owner, title in
-                owner.configureUI(title: title)
             }.store(in: cancelBag)
     }
     
@@ -178,6 +171,10 @@ private extension SoptletterMainVC {
 }
 
 extension SoptletterMainVC {
+    private func configureUI(_ model: SoptletterItemModel) {
+        titleLabel.text = model.title
+    }
+    
     private func createLayout() -> UICollectionViewLayout {
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(0.5),
@@ -208,7 +205,7 @@ extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return soptletterMessages?.totalCount ?? 0
+        return soptletterMessages?.messages.count ?? 0
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

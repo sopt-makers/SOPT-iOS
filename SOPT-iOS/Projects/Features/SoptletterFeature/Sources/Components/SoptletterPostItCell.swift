@@ -88,7 +88,7 @@ extension SoptletterPostItCell {
         backgroundColorHex: String,
         shapeType: String
     ) -> Self {
-        contentLabel.text = text
+            contentLabel.text = text
             contentLabel.textColor = textColor
 
             let rotation = CGAffineTransform(rotationAngle: labelRotationAngle * .pi / 180)

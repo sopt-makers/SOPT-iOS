@@ -81,6 +81,10 @@ public final class SoptletterCoordinator: BaseCoordinator {
             self?.presentSoptletterDetail(messageId, topicId)
         }
         
+        soptletterMain.vm.onError = { [weak self] in
+            AlertUtils.presentNetworkAlertVC()
+        }
+        
         navigationController?.pushViewController(soptletterMain.vc, animated: true)
     }
     

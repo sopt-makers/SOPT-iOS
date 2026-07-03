@@ -1,17 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "icn_square_sky.svg",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "Rectangle 346793501.svg",
+      "idiom" : "universal"
     }
   ],
   "info" : {

@@ -14,9 +14,10 @@ import BaseFeatureDependency
 import SoptletterFeatureInterface
 import Domain
 
+
 public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
     
-    public var onNaviBackTap: (() -> Void)?
+    // MARK: - Input & Output
     
     public struct Input {
         let viewDidLoad: Driver<Void>
@@ -28,11 +29,17 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
         let soptletterMessage = PassthroughSubject<SoptletterDetailMessageModel, Never>()
     }
     
+    // MARK: - Properties
+    
+    public var onNaviBackTap: (() -> Void)?
+    private var submitTask: Task<Void, Never>?
+    
     private let messageId: Int
     private let topicId: Int
     private let useCase: SoptletterUseCase
     
-    private var submitTask: Task<Void, Never>?
+    
+    // MARK: - Initilizer
     
     public init(useCase: SoptletterUseCase, messageId: Int, topicId: Int) {
         self.messageId = messageId
@@ -54,7 +61,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
                     } catch is CancellationError {
                         return
                     } catch {
-                        print("개같이실패")
+                        print(error.localizedDescription)
                     }
                 }              
             }.store(in: cancelBag)

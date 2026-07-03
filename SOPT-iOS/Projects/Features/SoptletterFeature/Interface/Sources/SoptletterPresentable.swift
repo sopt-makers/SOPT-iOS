@@ -23,12 +23,12 @@ public protocol SelectTopicCoordinatable {
     var onCellTap: ((String) -> Void)? { get set }
 }
 
-public protocol SoptletterDetailCoordinatorble {
+public protocol SoptletterDetailRoutingTrigger {
     var onNaviBackTap: (() -> Void)? { get set }
 }
 
 public typealias SoptletterWritingViewModelType = ViewModelType & SoptletterCoordinatable
-public typealias SoptletterDetailViewModelType = ViewModelType & SoptletterDetailCoordinatorble
+public typealias SoptletterDetailViewModelType = ViewModelType & SoptletterDetailRoutingTrigger
 public typealias SoptletterWritingPresentable = (vc: UIViewController, vm: any SoptletterWritingViewModelType)
 public typealias SoptletterDetailPresentable = (vc: UIViewController, vm: any SoptletterDetailViewModelType)
 
