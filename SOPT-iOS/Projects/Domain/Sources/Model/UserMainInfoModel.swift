@@ -11,13 +11,13 @@ import Foundation
 import Core
 
 public struct UserMainInfoModel: Equatable {
-    public let status, name: String
+    public let status, name, part: String
     public let profileImage: String?
     public let historyList: [Int]
     public let attendanceScore: Float?
     public let announcement: String?
     public let isAllConfirm: Bool?
-    
+
     public var userType: UserType {
         switch status {
         case UserType.active.rawValue:
@@ -28,10 +28,11 @@ public struct UserMainInfoModel: Equatable {
             return .visitor
         }
     }
-    
-    public init(status: String, name: String, profileImage: String?, historyList: [Int], attendanceScore: Float?, announcement: String?, isAllConfirm: Bool?) {
+
+    public init(status: String, name: String, part: String, profileImage: String?, historyList: [Int], attendanceScore: Float?, announcement: String?, isAllConfirm: Bool?) {
         self.status = status
         self.name = name
+        self.part = part
         self.profileImage = profileImage
         self.historyList = historyList
         self.attendanceScore = attendanceScore

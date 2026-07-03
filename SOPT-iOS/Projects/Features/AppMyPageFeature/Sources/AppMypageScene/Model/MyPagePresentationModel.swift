@@ -23,8 +23,7 @@ struct MyPageSoptlogPreviewPresentationModel {
 
 extension UserMainInfoModel {
     func toPresentation() -> MyPageProfilePresentationModel {
-        // part는 API 미제공 필드라 우선 숨김 처리 (별도 이슈에서 연동 예정)
-        MyPageProfilePresentationModel(name: name, part: "", profileImageURL: profileImage)
+        MyPageProfilePresentationModel(name: name, part: part, profileImageURL: profileImage)
     }
 }
 
