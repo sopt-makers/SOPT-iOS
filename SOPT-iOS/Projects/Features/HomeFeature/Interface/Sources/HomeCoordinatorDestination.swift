@@ -15,7 +15,7 @@ public enum HomeCoordinatorDestination {
     case notification
     case setting(userType: UserType)
     case attendance
-    case soptlog
+    case mypage
     case calendar
     case appService(type: AppServiceType)
 
