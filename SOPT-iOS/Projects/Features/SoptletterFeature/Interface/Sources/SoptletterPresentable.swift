@@ -29,9 +29,10 @@ public protocol SoptletterCoordinatable {
     var onSubmitSuccess: (() -> Void)? { get set }
 }
 
-public protocol SelectTopicCoordinatable {
+public protocol SelectTopicRoutingTrigger {
     var onNaviBackTap: (() -> Void)? { get set }
     var onCellTap: ((SoptletterTopicModel) -> Void)? { get set }
+    var showAlert: (() -> Void)? { get set }
 }
 
 public typealias SoptletterOnboardingPresentable = (vc: UIViewController, vm: any SoptletterOnboardingViewModelType)
@@ -43,5 +44,5 @@ public typealias SoptletterNicknameCheckViewModelType = ViewModelType & Soptlett
 public typealias SoptletterWritingViewModelType = ViewModelType & SoptletterCoordinatable
 public typealias SoptletterWritingPresentable = (vc: UIViewController, vm: any SoptletterWritingViewModelType)
 
-public typealias SelectTopicViewModelType = ViewModelType & SelectTopicCoordinatable
+public typealias SelectTopicViewModelType = ViewModelType & SelectTopicRoutingTrigger
 public typealias SelectTopicPresentable = (vc: UIViewController, vm: any SelectTopicViewModelType)

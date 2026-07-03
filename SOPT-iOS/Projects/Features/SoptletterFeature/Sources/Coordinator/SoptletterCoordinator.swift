@@ -147,6 +147,10 @@ public final class SoptletterCoordinator: BaseCoordinator {
             self?.showSoptletterMain()
         }
         
+        selectTopic.vm.showAlert = {
+            AlertUtils.presentNetworkAlertVC()
+        }
+        
         soptletterRootController?.pushViewController(selectTopic.vc, animated: true)
     }
 }

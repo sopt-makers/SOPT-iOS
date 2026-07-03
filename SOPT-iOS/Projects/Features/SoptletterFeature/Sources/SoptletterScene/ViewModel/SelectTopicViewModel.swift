@@ -17,6 +17,7 @@ final class SelectTopicViewModel: SelectTopicViewModelType {
     
     var onCellTap: ((SoptletterTopicModel) -> Void)?
     var onNaviBackTap: (() -> Void)?
+    var showAlert: (() -> Void)?
     
     private let coordinator: AnyCoordinatorObject
     private let useCase: SoptletterUseCase
@@ -41,17 +42,23 @@ final class SelectTopicViewModel: SelectTopicViewModelType {
     
     deinit {
         fetchTopicTask?.cancel()
-        fetchTopicTask = nil
     }
     
     func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
-        bindOutput(output: output)
         
         input.viewDidLoad
             .withUnretained(self)
             .sink { owner, _ in
-                owner.fetchTopics()
+                owner.fetchTopicTask?.cancel()
+                owner.fetchTopicTask = Task {
+                    do {
+                        let result = try await owner.useCase.fetchTopics()
+                        output.topicsSubject.send(result)
+                    } catch {
+                        owner.showAlert?()
+                    }
+                }
             }.store(in: cancelBag)
         
         input.naviBackTap
@@ -67,27 +74,5 @@ final class SelectTopicViewModel: SelectTopicViewModelType {
             }.store(in: cancelBag)
         
         return output
-    }
-}
-
-private extension SelectTopicViewModel {
-    func bindOutput(output: Output) {
-        useCase.topicsResult
-            .asDriver()
-            .withUnretained(self)
-            .sink { owner, topics in
-                output.topicsSubject.send(topics)
-            }.store(in: cancelBag)
-    }
-    
-    func fetchTopics() {
-        fetchTopicTask?.cancel()
-        fetchTopicTask = Task {
-            do {
-                try await useCase.fetchTopics()
-            } catch {
-                // TODO: 에러처리
-            }
-        }
     }
 }
