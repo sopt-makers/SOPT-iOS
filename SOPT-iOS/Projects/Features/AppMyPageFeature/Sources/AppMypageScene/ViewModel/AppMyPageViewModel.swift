@@ -9,7 +9,6 @@
 import UIKit
 import Foundation
 import Combine
-import SafariServices
 
 import Core
 import Domain
@@ -28,7 +27,8 @@ public final class AppMyPageViewModel: MyPageViewModelType {
     public var onShowLogin: (() -> Void)?
     public var onShowLogout: (() -> Void)?
     public var onAlertButtonTap: ((String) -> Void)?
-    public var onResetSoptampTap: (() -> Void)?
+    public var onResetSoptampTap: ((@escaping () -> Void) -> Void)?
+    public var onLogoutTap: ((@escaping () -> Void) -> Void)?
     public var onShowSoptlog: (() -> Void)?
     public var onEditProfileTap: (() -> Void)?
     
@@ -111,7 +111,7 @@ extension AppMyPageViewModel {
             .withUnretained(self)
             .sink { owner, success in
                 if success {
-                    owner.logout()
+                    owner.useCase.logout()
                     owner.onShowLogin?()
                 }
             }.store(in: cancelBag)
@@ -136,53 +136,23 @@ extension AppMyPageViewModel {
         case .editOnelineSentence:
             self.onEditOnelineSentenceItemTap?()
         case .resetStamp:
-            self.showResetSoptampAlert()
+            self.onResetSoptampTap?({ [weak self] in
+                self?.useCase.resetStamp()
+            })
         case .withdrawal:
             self.onWithdrawalItemTap?(userType)
         case .logout:
-            self.showLogoutAlert()
+            self.onLogoutTap?({ [weak self] in
+                self?.useCase.deregisterPushToken()
+                self?.onShowLogout?()
+            })
         case .login:
             self.onShowLogin?()
         }
     }
 }
-import WebKit
-extension AppMyPageViewModel {
-    private func logout() {
-        UserDefaultKeyList.clearUserData()
-        SFSafariViewController.DataStore.default.clearWebsiteData()
-        WKWebsiteDataStore.default().httpCookieStore.getAllCookies({_ in  })
-    }
-    
-    private func showResetSoptampAlert() {
-        AlertUtils.presentAlertVC(
-            type: .titleDescription,
-            theme: .main,
-            title: I18N.MyPage.resetMissionTitle,
-            description: I18N.MyPage.resetMissionDescription,
-            customButtonTitle: I18N.MyPage.reset,
-            customAction: { [weak self] in
-                self?.useCase.resetStamp()
-            },
-            animated: true
-        )
-    }
-    
-    private func showLogoutAlert() {
-        AlertUtils.presentAlertVC(
-            type: .titleDescription,
-            theme: .main,
-            title: I18N.MyPage.logoutDialogTitle,
-            description: I18N.MyPage.logoutDialogDescription,
-            customButtonTitle: I18N.MyPage.logoutDialogGrantButtonTitle,
-            customAction: { [weak self] in
-                self?.useCase.deregisterPushToken()
-                self?.onShowLogout?()
-            },
-            animated: true
-        )
-    }
 
+extension AppMyPageViewModel {
     private func fetchProfileData(output: Output) {
         Task { [weak self] in
             guard let self else { return }

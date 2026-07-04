@@ -11,7 +11,10 @@ import Combine
 import Core
 import Domain
 import Networks
- 
+
+import SafariServices
+import WebKit
+
 public final class AppMyPageRepository {
     private let stampService: StampService
     private let userService: UserService
@@ -51,5 +54,11 @@ extension AppMyPageRepository: AppMyPageRepositoryInterface {
 
     public func fetchSoptlogPreview() async throws -> SoptlogModel {
         try await userService.fetchSoptlogInfo().toDomain()
+    }
+
+    public func logout() {
+        UserDefaultKeyList.clearUserData()
+        SFSafariViewController.DataStore.default.clearWebsiteData()
+        WKWebsiteDataStore.default().httpCookieStore.getAllCookies({ _ in })
     }
 }
