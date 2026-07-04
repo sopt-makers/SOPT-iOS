@@ -117,7 +117,10 @@ extension MyPageProfileCVC {
         nameLabel.attributedText = name.applyMDSFont(mdsFont: .heading5, color: DSKitAsset.Colors.white.color)
         partLabel.attributedText = part.applyMDSFont(mdsFont: .label4, color: DSKitAsset.Colors.gray100.color)
 
-        // TODO: 이미지 로딩 라이브러리 연동 시 profileImageURL로 실제 프로필 이미지 로드하도록 교체
-        profileImageView.image = DSKitAsset.Assets.icDefaultProfile.image
+        guard let profileImageURL else {
+            profileImageView.image = DSKitAsset.Assets.icDefaultProfile.image
+            return
+        }
+        profileImageView.setImage(with: profileImageURL, placeholder: DSKitAsset.Assets.icDefaultProfile.image)
     }
 }

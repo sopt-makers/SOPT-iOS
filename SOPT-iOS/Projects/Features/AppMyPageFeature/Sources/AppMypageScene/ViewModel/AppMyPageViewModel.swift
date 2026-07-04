@@ -9,7 +9,6 @@
 import UIKit
 import Foundation
 import Combine
-import SafariServices
 
 import Core
 import Domain
@@ -28,7 +27,8 @@ public final class AppMyPageViewModel: MyPageViewModelType {
     public var onShowLogin: (() -> Void)?
     public var onShowLogout: (() -> Void)?
     public var onAlertButtonTap: ((String) -> Void)?
-    public var onResetSoptampTap: (() -> Void)?
+    public var onResetSoptampTap: ((@escaping () -> Void) -> Void)?
+    public var onLogoutTap: ((@escaping () -> Void) -> Void)?
     public var onShowSoptlog: (() -> Void)?
     public var onEditProfileTap: (() -> Void)?
     
@@ -41,15 +41,21 @@ public final class AppMyPageViewModel: MyPageViewModelType {
     // MARK: - Inputs
     
     public struct Input {
+        let viewDidLoad: Driver<Void>
         let naviBackButtonTapped: Driver<Void>
         let cellTapped: Driver<MyPageItem>
+        let refreshTriggered: Driver<Void>
     }
-    
+
     // MARK: - Outputs
-    
+
     public struct Output {
         let resetSuccessed = PassthroughSubject<Bool, Never>()
         let deregisterPushTokenSuccess = PassthroughSubject<Bool, Never>()
+        let userProfile = PassthroughSubject<MyPageProfilePresentationModel, Never>()
+        let soptlogPreview = PassthroughSubject<MyPageSoptlogPreviewPresentationModel, Never>()
+        let fetchError = PassthroughSubject<Void, Never>()
+        let fetchCompleted = PassthroughSubject<Void, Never>()
     }
     
     // MARK: - init
@@ -65,6 +71,13 @@ extension AppMyPageViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
+        Publishers.Merge(input.viewDidLoad, input.refreshTriggered)
+            .withUnretained(self)
+            .sink { owner, _ in
+                guard owner.userType != .visitor else { return }
+                owner.fetchProfileData(output: output)
+            }.store(in: cancelBag)
+
         input.naviBackButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
@@ -98,7 +111,7 @@ extension AppMyPageViewModel {
             .withUnretained(self)
             .sink { owner, success in
                 if success {
-                    owner.logout()
+                    owner.useCase.logout()
                     owner.onShowLogin?()
                 }
             }.store(in: cancelBag)
@@ -123,50 +136,33 @@ extension AppMyPageViewModel {
         case .editOnelineSentence:
             self.onEditOnelineSentenceItemTap?()
         case .resetStamp:
-            self.showResetSoptampAlert()
+            self.onResetSoptampTap?({ [weak self] in
+                self?.useCase.resetStamp()
+            })
         case .withdrawal:
             self.onWithdrawalItemTap?(userType)
         case .logout:
-            self.showLogoutAlert()
+            self.onLogoutTap?({ [weak self] in
+                self?.useCase.deregisterPushToken()
+                self?.onShowLogout?()
+            })
         case .login:
             self.onShowLogin?()
         }
     }
 }
-import WebKit
+
 extension AppMyPageViewModel {
-    private func logout() {
-        UserDefaultKeyList.clearUserData()
-        SFSafariViewController.DataStore.default.clearWebsiteData()
-        WKWebsiteDataStore.default().httpCookieStore.getAllCookies({_ in  })
-    }
-    
-    private func showResetSoptampAlert() {
-        AlertUtils.presentAlertVC(
-            type: .titleDescription,
-            theme: .main,
-            title: I18N.MyPage.resetMissionTitle,
-            description: I18N.MyPage.resetMissionDescription,
-            customButtonTitle: I18N.MyPage.reset,
-            customAction: { [weak self] in
-                self?.useCase.resetStamp()
-            },
-            animated: true
-        )
-    }
-    
-    private func showLogoutAlert() {
-        AlertUtils.presentAlertVC(
-            type: .titleDescription,
-            theme: .main,
-            title: I18N.MyPage.logoutDialogTitle,
-            description: I18N.MyPage.logoutDialogDescription,
-            customButtonTitle: I18N.MyPage.logoutDialogGrantButtonTitle,
-            customAction: { [weak self] in
-                self?.useCase.deregisterPushToken()
-                self?.onShowLogout?()
-            },
-            animated: true
-        )
+    private func fetchProfileData(output: Output) {
+        Task { [weak self] in
+            guard let self else { return }
+            defer { output.fetchCompleted.send(()) }
+            async let profileTask = useCase.fetchUserMainInfo()
+            async let soptlogTask = useCase.fetchSoptlogPreview()
+            var hasError = false
+            if let profile = try? await profileTask { output.userProfile.send(profile.toPresentation()) } else { hasError = true }
+            if let soptlog = try? await soptlogTask { output.soptlogPreview.send(soptlog.toPresentation()) } else { hasError = true }
+            if hasError { output.fetchError.send(()) }
+        }
     }
 }

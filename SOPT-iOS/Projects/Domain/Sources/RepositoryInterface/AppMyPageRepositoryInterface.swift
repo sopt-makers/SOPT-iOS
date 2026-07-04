@@ -13,4 +13,7 @@ import Core
 public protocol AppMyPageRepositoryInterface {
     func resetStamp() -> Driver<Bool>
     func deregisterPushToken(with token: String) -> AnyPublisher<Bool, Error>
+    func fetchUserMainInfo() async throws -> UserMainInfoModel
+    func fetchSoptlogPreview() async throws -> SoptlogModel
+    func logout()
 }
