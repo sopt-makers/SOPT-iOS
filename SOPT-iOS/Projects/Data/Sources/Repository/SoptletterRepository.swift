@@ -35,6 +35,23 @@ extension SoptletterRepository: SoptletterRepositoryInterface {
         try await soptletterService.writeMessage(topicId: topicId, content: content)
     }
     
+    public func fetchTopics() async throws -> SoptletterTopicListModel {
+        return try await soptletterService.fetchTopics().toDomain()
+    }
+    
+    public func fetchTopic(topicId: Int) async throws -> SoptletterTopicDetailModel {
+        return try await soptletterService.fetchTopic(topicId: topicId).toDomain()
+    }
+    
+    public func getSoptletterProfile() async throws -> SoptletterProfileModel{
+        let result = try await soptletterService.getSoptletterProfile()
+        return result.toDomain()
+    }
+    
+    public func completeOnboarding() async throws {
+        try await soptletterService.completeOnboarding()
+    }
+    
     public func soptletterMessage(messageId: Int, topicId: Int) async throws -> SoptletterDetailMessageModel {
         return try await soptletterService.soptletterMessage(messageId: messageId, topicId: topicId).toDomain()
     }

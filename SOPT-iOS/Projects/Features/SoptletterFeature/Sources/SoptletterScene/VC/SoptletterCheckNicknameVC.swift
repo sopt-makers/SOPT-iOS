@@ -10,6 +10,7 @@ import UIKit
 
 import DSKit
 import Core
+import Combine
 
 final class SoptletterCheckNicknameVC: UIViewController {
     
@@ -27,7 +28,7 @@ final class SoptletterCheckNicknameVC: UIViewController {
         .asDriver()
     
     // TODO: - 추후 기수 연결
-    private let number: Int = 12
+    private let number: Int = 38
     
     private let cardView = NicknameCheckCardView()
     
@@ -78,28 +79,37 @@ extension SoptletterCheckNicknameVC {
         view.addSubviews(backButton, cardView, button)
         
         backButton.snp.makeConstraints {
-            $0.top.equalTo(safeArea.snp.top).offset(12)
-            $0.leading.equalToSuperview().inset(20)
-            $0.size.equalTo(32)
-        }
-        cardView.snp.makeConstraints {
-            $0.top.equalTo(backButton.snp.bottom).offset(32)
-            $0.leading.trailing.equalToSuperview().inset(20)
-        }
-        button.snp.makeConstraints {
-            $0.bottom.equalTo(view.snp.bottom).offset(-83)
-            $0.leading.trailing.equalToSuperview().inset(20)
-            $0.height.equalTo(56)
-        }
+              $0.top.equalTo(safeArea.snp.top).offset(12)
+              $0.leading.equalToSuperview().inset(20)
+              $0.size.equalTo(32)
+          }
+          cardView.snp.makeConstraints {
+              $0.top.equalTo(backButton.snp.bottom).offset(32)
+              $0.leading.trailing.equalToSuperview().inset(20)
+              $0.bottom.lessThanOrEqualTo(button.snp.top).offset(-20)
+          }
+          button.snp.makeConstraints {
+              $0.bottom.equalTo(view.snp.bottom).offset(-83)
+              $0.leading.trailing.equalToSuperview().inset(20)
+              $0.height.equalTo(56)
+          }
     }
 }
 
 private extension SoptletterCheckNicknameVC {
     func bindViewModel() {
         let input = SoptletterNicknameCheckViewModel.Input(
+            viewDidLoad: Just<Void>(()).asDriver(),
             naviBackTap: naviBackTap,
             goTap: goTap
         )
+        
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
+        
+        output.profileSubject
+            .withUnretained(self)
+            .sink { owner, profile in
+                owner.cardView.configure(nickName: profile.nickname, number: owner.number)
+            }.store(in: cancelBag)
     }
 }

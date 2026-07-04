@@ -11,10 +11,10 @@ import Foundation
 public struct HomeAppServicesModel: Codable {
     public var serviceName: String
     public var displayAlarmBadge: Bool
-    public var alarmBadge, deepLink: String
-    public var iconURL: String?
+    public var alarmBadge: String
+    public var iconURL, deepLink: String?
     
-    public init(serviceName: String, displayAlarmBadge: Bool, alarmBadge: String, iconURL: String?, deepLink: String) {
+    public init(serviceName: String, displayAlarmBadge: Bool, alarmBadge: String, iconURL: String?, deepLink: String?) {
         self.serviceName = serviceName
         self.displayAlarmBadge = displayAlarmBadge
         self.alarmBadge = alarmBadge

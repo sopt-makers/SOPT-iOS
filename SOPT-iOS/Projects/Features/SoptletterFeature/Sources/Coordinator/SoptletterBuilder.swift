@@ -25,7 +25,8 @@ extension SoptletterBuilder: SoptletterFeatureBuildable {
     }
     
     public func makeSoptletterNicknameCheckVC(coordinator: Coordinator) -> SoptletterNicknameCheckPresentable {
-        let viewModel = SoptletterNicknameCheckViewModel(coordinator: coordinator)
+        let useCase = DefaultSoptletterUseCase(repository: soptletterRepository)
+        let viewModel = SoptletterNicknameCheckViewModel(coordinator: coordinator, useCase: useCase)
         let viewController = SoptletterCheckNicknameVC(viewModel: viewModel)
         return (viewController, viewModel)
     }
@@ -45,8 +46,10 @@ extension SoptletterBuilder: SoptletterFeatureBuildable {
     }
 
     public func makeSelectTopicVC(coordinator: Coordinator) -> SelectTopicPresentable {
-        let vc = SelectTopicVC()
-        return vc
+        let useCase = DefaultSoptletterUseCase(repository: soptletterRepository)
+        let viewModel = SelectTopicViewModel(coordinator: coordinator, useCase: useCase)
+        let vc = SelectTopicVC(viewModel: viewModel)
+        return (vc, viewModel)
     }
     
     public func makeSoptletterDetailVC(coordinator: Coordinator, messageId: Int, topicId: Int) -> SoptletterDetailPresentable {

@@ -11,25 +11,27 @@ import UIKit
 import Combine
 
 import Core
+import Domain
 import DSKit
 import SoptletterFeatureInterface
 
-final class SelectTopicVC: SelectTopicPresentable {
+final class SelectTopicVC: UIViewController {
     
-    var onNaviBackTap: (() -> Void)?
-    var onCellTap: ((String) -> Void)?
+    private let viewModel: SelectTopicViewModel
+    private let cancelBag = CancelBag()
+    
+    private lazy var naviBackTap: Driver<Void> = backButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
+    private let cellTapSubject = PassthroughSubject<SoptletterTopicModel, Never>()
+    
+    private var topics: [SoptletterTopicModel] = []
     
     // MARK: - Properties
-    // 임시
-    private var topics: [String] = [
-        "12기 회고",
-        "13기 회고",
-        "38기 회고"
-    ]
     
     private lazy var backButton = UIButton(type: .custom).then {
         $0.setImage(DSKitAsset.Assets.opArrowWhite.image, for: .normal)
-        $0.addTarget(self, action: #selector(backButtonTap), for: .touchUpInside)
     }
     
     private let navTitleLabel = UILabel().then {
@@ -48,11 +50,22 @@ final class SelectTopicVC: SelectTopicPresentable {
         $0.register(SoptletterTopicCell.self, forCellReuseIdentifier: SoptletterTopicCell.identifier)
     }
     
+    init(viewModel: SelectTopicViewModel) {
+        self.viewModel = viewModel
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setUI()
         setLayout()
+        bindViewModel()
     }
     
 }
@@ -85,9 +98,22 @@ extension SelectTopicVC {
         }
     }
     
-    @objc
-    private func backButtonTap() {
-        onNaviBackTap?()
+    func bindViewModel() {
+        let input = SelectTopicViewModel.Input(
+            viewDidLoad: Just<Void>(()).asDriver(),
+            naviBackTap: naviBackTap,
+            cellTap: cellTapSubject.asDriver()
+        )
+        
+        let output = viewModel.transform(from: input, cancelBag: cancelBag)
+        
+        output.topicsSubject
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, result in
+                owner.topics = result.topics
+                owner.tableView.reloadData()
+            }.store(in: cancelBag)
     }
 }
 
@@ -104,13 +130,12 @@ extension SelectTopicVC: UITableViewDataSource, UITableViewDelegate {
             for: indexPath
         ) as? SoptletterTopicCell else { return UITableViewCell() }
         
-        cell.configure(title: topics[indexPath.row])
+        cell.configure(title: topics[indexPath.row].title)
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let title = topics[indexPath.row]
-        onCellTap?(title)
+        cellTapSubject.send(topics[indexPath.row])
     }
 }

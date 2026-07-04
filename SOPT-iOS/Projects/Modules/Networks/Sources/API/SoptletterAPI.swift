@@ -12,6 +12,10 @@ import Moya
 
 public enum SoptletterAPI {
     case writeMessage(topicId: Int, content: String)
+    case fetchTopics
+    case fetchTopic(topicId: Int)
+    case fetchProfile
+    case completeOnboarding
     case soptletterMessages(topicId: Int, cursor: Int?, size: Int?)
     case soptletterMessage(messageId: Int, topicId: Int)
     case editMessage(messageId: Int, topicId: Int, content: String)
@@ -25,6 +29,14 @@ extension SoptletterAPI: BaseAPI {
         switch self {
         case .writeMessage(let topicId, _), .soptletterMessages(let topicId, _, _):
             return "/topics/\(topicId)/messages"
+        case .fetchTopics:
+            return "/topics"
+        case .fetchTopic(let topicId):
+            return "/topics/\(topicId)"
+        case .fetchProfile:
+            return "/onboarding"
+        case .completeOnboarding:
+            return "/onboarding/complete"
         case let .soptletterMessage(messageId, topicId):
             return "/topics/\(topicId)/messages/\(messageId)"
         case let .editMessage(messageId, topicId, _):
@@ -37,6 +49,12 @@ extension SoptletterAPI: BaseAPI {
     public var method: Moya.Method {
         switch self {
         case .writeMessage:
+            return .post
+        case .fetchTopics, .fetchTopic:
+            return .get
+        case .fetchProfile:
+            return .get
+        case .completeOnboarding:
             return .post
         case .editMessage:
             return .patch
@@ -51,6 +69,11 @@ extension SoptletterAPI: BaseAPI {
         switch self {
         case .writeMessage(_, let content):
             return .requestParameters(parameters: ["content": content], encoding: JSONEncoding.default)
+        case .fetchTopics, .fetchTopic:
+            return .requestPlain
+        case .completeOnboarding, .fetchProfile:
+            return .requestPlain
+        case .soptletterMessages(topicId: let topicId, cursor: let cursor, size: let size):
         case .soptletterMessages:
             return .requestPlain
         case .soptletterMessage:
