@@ -91,6 +91,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
 
         soptletterWriting.vm.onSubmitSuccess = { [weak self] in
+            self?.soptletterMain.vm.refreshMessagesTrigger()
             self?.soptletterRootController?.popViewController(animated: true)
             ToastUtils.showMDSToast(type: .success, text: I18N.Soptletter.submitSuccess)
         }
@@ -102,12 +103,12 @@ public final class SoptletterCoordinator: BaseCoordinator {
         soptletterMain = factory.makeSoptletterMainVC(coordinator: self)
         
         soptletterMain.vm.onNaviBackTap = { [weak self] in
-            self?.navigationController?.popViewController(animated: true)
+            self?.soptletterRootController?.dismiss(animated: true)
             self?.finishFlow?()
         }
         
         soptletterMain.vm.onWriteTap = { [weak self] in
-            print("handle soptletterMain.vm.onWriteTap")
+            self?.showSoptletterWriting()
         }
         
         soptletterMain.vm.onMenuTap = { [weak self] in
@@ -134,7 +135,14 @@ public final class SoptletterCoordinator: BaseCoordinator {
             AlertUtils.presentNetworkAlertVC()
         }
         
-        navigationController?.pushViewController(soptletterMain.vc, animated: true)
+        if let soptletterRootController {
+            soptletterRootController.pushViewController(soptletterMain.vc, animated: true)
+        } else {
+            let navController = UINavigationController(rootViewController: soptletterMain.vc)
+            navController.modalPresentationStyle = .fullScreen
+            soptletterRootController = navController
+            navigationController?.present(navController, animated: true)
+        }
     }
     
     private func presentSoptletterDetail(_ messageId: Int, _ topicId: Int) {
@@ -156,14 +164,14 @@ public final class SoptletterCoordinator: BaseCoordinator {
             self?.soptletterMain.vm.refreshMessagesTrigger()
         }
         
-        navigationController?.present(soptletterDetail.vc, animated: true)
+        soptletterRootController?.present(soptletterDetail.vc, animated: true)
     }
     
     private func showSelectTopic() {
         var selectTopic = factory.makeSelectTopicVC(coordinator: self)
         
         selectTopic.vm.onNaviBackTap = { [weak self] in
-            self?.navigationController?.popViewController(animated: true)
+            self?.soptletterRootController?.popViewController(animated: true)
         }
         
         selectTopic.vm.onCellTap = { [weak self] title in
@@ -174,6 +182,6 @@ public final class SoptletterCoordinator: BaseCoordinator {
             AlertUtils.presentNetworkAlertVC()
         }
         
-        navigationController?.pushViewController(selectTopic.vc, animated: true)
+        soptletterRootController?.pushViewController(selectTopic.vc, animated: true)
     }
 }
