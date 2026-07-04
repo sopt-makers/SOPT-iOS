@@ -141,7 +141,7 @@ public final class SoptletterDetailModalVC: UIViewController {
         dateLabel.text = date
         likeCountLabel.text = "\(likeCount)"
         // TODO: 테스트 끝나고 주석지우기
-        //        editDeleteStackView.isHidden = !mine
+        // editDeleteStackView.isHidden = !mine
         return self
     }
 }
@@ -151,16 +151,17 @@ extension SoptletterDetailModalVC {
         let input = SoptletterDetailViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
             editButtonTap: editButtonTap,
-            deleteButtonTap: deleteButtonTap
+            deleteButtonTap: deleteButtonTap,
+            confirmButtonTap: confirmButtonTap
         )
         
-        deleteButton.publisher(for: .touchUpInside)
-            .withUnretained(self)
-            .sink { _ in
-                
-            }.store(in: cancelBag)
-        
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
+        
+        confirmButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.dismiss(animated: true)
+            }.store(in: cancelBag)
         
         output.soptletterMessage
             .withUnretained(self)

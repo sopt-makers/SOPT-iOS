@@ -23,6 +23,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
         let viewDidLoad: Driver<Void>
         let editButtonTap: Driver<Void>
         let deleteButtonTap: Driver<Void>
+        let confirmButtonTap: Driver<Void>
     }
     
     public struct Output {
@@ -64,7 +65,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
                         print(error.localizedDescription)
                     }
                 }              
-            }.store(in: cancelBag)
+            }.store(in: cancelBag)                        
         
         // TODO: 수정 API
         input.editButtonTap

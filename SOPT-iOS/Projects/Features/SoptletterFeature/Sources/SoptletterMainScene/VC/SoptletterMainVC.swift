@@ -70,13 +70,33 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
     private let reportButtonTapPublisher = PassthroughSubject<Void, Never>()
     
     private var soptletterMessages: SoptletterItemModel?
+    
+    private lazy var closeButtonTap: Driver<Void> = closeButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
+    
+    private lazy var writeButtonTap: Driver<Void> = writeButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
+    
+    private lazy var downloadButtonTap: Driver<Void> = downloadButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
+    
+    private lazy var reportButtonTap: Driver<Void> = reportButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
+    
     // MARK: - LifeCycles
     
     public override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
-        setLayout()
-        addTargets()
+        setLayout()        
         bindViewModels()
         setCollectionView()
     }
@@ -100,10 +120,10 @@ private extension SoptletterMainVC {
     private func bindViewModels() {
         let input = SoptletterMainViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
-            naviBackButtonTap: naviBackButtonTapPublisher.asDriver(),
-            writeButtonTap: writeButtonTapPublisher.asDriver(),
-            downloadButtonTap: downloadTapPublisher.asDriver(),
-            reportButtonTap: reportButtonTapPublisher.asDriver(),
+            naviBackButtonTap: closeButtonTap,
+            writeButtonTap: writeButtonTap,
+            downloadButtonTap: downloadButtonTap,
+            reportButtonTap: reportButtonTap,
             postItCellTap: postItCellTapPublisher.asDriver(),
         )
         
@@ -234,19 +254,4 @@ extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate
         let message = soptletterMessages.messages[indexPath.row]
         postItCellTapPublisher.send((message.messageId, soptletterMessages.topicId))
     }
-}
-
-// MARK: - Handler
-extension SoptletterMainVC {
-    private func addTargets() {
-        closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
-        writeButton.addTarget(self, action: #selector(writeButtonTapped), for: .touchUpInside)
-        downloadButton.addTarget(self, action: #selector(downloadButtonTapped), for: .touchUpInside)
-        reportButton.addTarget(self, action: #selector(reportButtonTapped), for: .touchUpInside)
-    }
-    
-    @objc func closeButtonTapped() { naviBackButtonTapPublisher.send() }
-    @objc func writeButtonTapped() { writeButtonTapPublisher.send() }
-    @objc func downloadButtonTapped() { downloadTapPublisher.send() }
-    @objc func reportButtonTapped() { reportButtonTapPublisher.send() }
 }
