@@ -336,8 +336,7 @@ extension BaseService {
                         continuation.resume(throwing: error)
                     }
                 }
-            }
-            
+            }            
             self.cancellable = cancellable
         }
     }

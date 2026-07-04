@@ -9,6 +9,7 @@
 import Combine
 
 import Core
+import Domain
 import BaseFeatureDependency
 import SoptletterFeatureInterface
 
@@ -18,6 +19,7 @@ public final class SoptletterOnboardingViewModel: SoptletterOnboardingViewModelT
     public var onStartButtonTap: (() -> Void)?
     
     private let coordinator: AnyCoordinatorObject
+    
     private var cancelBag = CancelBag()
     
     public struct Input {
@@ -33,7 +35,6 @@ public final class SoptletterOnboardingViewModel: SoptletterOnboardingViewModelT
     
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
-        
         input.naviBackTap
             .withUnretained(self)
             .sink { owner, _ in
@@ -49,4 +50,3 @@ public final class SoptletterOnboardingViewModel: SoptletterOnboardingViewModelT
         return output
     }
 }
-

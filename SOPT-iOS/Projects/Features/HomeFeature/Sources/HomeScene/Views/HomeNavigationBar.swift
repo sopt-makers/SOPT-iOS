@@ -16,26 +16,20 @@ final class HomeNavigationBar: UIView {
     // MARK: - Properties
     
     public lazy var noticeButtonTap = noticeButton.publisher(for: .touchUpInside)
-    
-    public lazy var settingButtonTap = settingButton.publisher(for: .touchUpInside)
-    
+
     // MARK: - UI Components
-    
+
     private let logoImageView = UIImageView().then {
         $0.image = DSKitAsset.Assets.imgLogo.image.withRenderingMode(.alwaysOriginal)
         $0.contentMode = .scaleToFill
     }
-    
+
     private let noticeButton = UIButton(type: .custom).then {
         $0.setImage(DSKitAsset.Assets.btnBellInactive.image, for: .normal)
     }
-    
-    private let settingButton = UIButton(type: .custom).then {
-        $0.setImage(DSKitAsset.Assets.btnSetting.image, for: .normal)
-    }
-    
+
     private lazy var rightItemsStackView = UIStackView(
-        arrangedSubviews: [noticeButton, settingButton]
+        arrangedSubviews: [noticeButton]
     ).then {
         $0.axis = .horizontal
         $0.spacing = 4

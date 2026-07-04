@@ -22,6 +22,7 @@ public protocol SoptletterOnboardingRoutingTrigger: AnyObject {
 public protocol SoptletterNicknameCheckRoutingTrigger: AnyObject {
     var onNaviBackTap: (() -> Void)? { get set }
     var onGoButtonTap: (() -> Void)? { get set }
+    var showAlert: (() -> Void)? { get set }
 }
 
 public protocol SoptletterCoordinatable {
@@ -41,8 +42,15 @@ public typealias SoptletterOnboardingViewModelType = ViewModelType & SoptletterO
 public typealias SoptletterNicknameCheckPresentable = (vc: UIViewController, vm: any SoptletterNicknameCheckViewModelType)
 public typealias SoptletterNicknameCheckViewModelType = ViewModelType & SoptletterNicknameCheckRoutingTrigger
 
+public protocol SoptletterDetailRoutingTrigger {
+    var onNaviBackTap: (() -> Void)? { get set }
+    var onError: (() -> Void)? { get set }
+}
+
 public typealias SoptletterWritingViewModelType = ViewModelType & SoptletterCoordinatable
+public typealias SoptletterDetailViewModelType = ViewModelType & SoptletterDetailRoutingTrigger
 public typealias SoptletterWritingPresentable = (vc: UIViewController, vm: any SoptletterWritingViewModelType)
+public typealias SoptletterDetailPresentable = (vc: UIViewController, vm: any SoptletterDetailViewModelType)
 
 public typealias SelectTopicViewModelType = ViewModelType & SelectTopicRoutingTrigger
 public typealias SelectTopicPresentable = (vc: UIViewController, vm: any SelectTopicViewModelType)

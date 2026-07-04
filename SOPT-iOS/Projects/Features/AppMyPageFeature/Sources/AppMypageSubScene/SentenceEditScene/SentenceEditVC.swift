@@ -37,17 +37,18 @@ public class SentenceEditVC: UIViewController, LegacySentenceEditViewControllabl
     private lazy var textView: UITextView = {
         let tv = UITextView()
         tv.backgroundColor = DSKitAsset.Colors.black80.color
-        tv.textColor = DSKitAsset.Colors.white.color
+        tv.textColor = DSKitAsset.Colors.gray60.color
         tv.font = DSKitFontFamily.Pretendard.medium.font(size: 16)
-        tv.layer.cornerRadius = 9.adjustedH
+        tv.layer.cornerRadius = 12.adjustedH
         tv.layer.borderWidth = 1.adjustedH
         tv.isEditable = true
-        tv.textContainerInset = UIEdgeInsets(top: 13, left: 16, bottom: 13, right: 16)
+        tv.textContainerInset = UIEdgeInsets(top: 16, left: 20, bottom: 16, right: 20)
         tv.delegate = self
         return tv
     }()
-    
+
     private let saveButton = AppCustomButton(title: I18N.Setting.SentenceEdit.save)
+        .setConfigForState(disabledColor: DSKitAsset.Colors.black40.color)
         .setEnabled(false)
     
     // MARK: - View Life Cycle
@@ -137,13 +138,13 @@ extension SentenceEditVC {
         }
         
         textView.snp.makeConstraints { make in
-            make.top.equalTo(naviBar.snp.bottom).offset(8.adjustedH)
+            make.top.equalTo(naviBar.snp.bottom).offset(16.adjustedH)
             make.leading.trailing.equalToSuperview().inset(20.adjusted)
-            make.height.equalTo(64.adjustedH)
+            make.height.equalTo(72.adjustedH)
         }
-        
+
         saveButton.snp.makeConstraints { make in
-            make.top.equalTo(textView.snp.bottom).offset(32.adjustedH)
+            make.top.equalTo(textView.snp.bottom).offset(44.adjustedH)
             make.leading.trailing.equalToSuperview().inset(20.adjusted)
             make.height.equalTo(56.adjustedH)
         }
@@ -154,19 +155,18 @@ extension SentenceEditVC {
 
 extension SentenceEditVC: UITextViewDelegate {
     public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        guard text != "\n" else { return false }
-        guard let str = textView.text else { return true }
-        let newLength = str.count + text.count - range.length
-        return newLength <= 42
+        return !text.contains("\n")
     }
-    
+
     public func textViewDidBeginEditing(_ textView: UITextView) {
         textView.layer.borderColor = DSKitAsset.Colors.white.color.cgColor
         textView.backgroundColor = DSKitAsset.Colors.black100.color
+        textView.textColor = DSKitAsset.Colors.white.color
     }
-    
+
     public func textViewDidEndEditing(_ textView: UITextView) {
         textView.backgroundColor = DSKitAsset.Colors.black80.color
         textView.layer.borderColor = nil
+        textView.textColor = DSKitAsset.Colors.gray60.color
     }
 }

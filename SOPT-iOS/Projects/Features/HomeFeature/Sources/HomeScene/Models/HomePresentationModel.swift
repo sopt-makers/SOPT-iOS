@@ -156,12 +156,12 @@ extension HomeRecentScheduleModel {
 extension HomeAppServicesModel {
     func toPresentation() -> HomePresentationModel.AppService {
         return HomePresentationModel.AppService(
-            id: self.deepLink,
+            id: self.deepLink ?? UUID().uuidString,
             serviceName: self.serviceName,
             displayAlarmBadge: self.displayAlarmBadge,
             alarmBadge: self.alarmBadge,
             iconURL: self.iconURL ?? "",
-            deepLink: self.deepLink
+            deepLink: self.deepLink ?? ""
         )
     }
 }
