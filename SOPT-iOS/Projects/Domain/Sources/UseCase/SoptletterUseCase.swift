@@ -8,6 +8,13 @@
 
 import Combine
 
+<<<<<<< HEAD
+public protocol SoptletterUseCase {
+    func writeMessage(topicId: Int, content: String) async throws
+    func isWritable(content: String) -> Bool
+    func fetchTopics() async throws -> SoptletterTopicListModel
+    func fetchTopic(topicId: Int) async throws -> SoptletterTopicDetailModel
+=======
 import Core
 
 public protocol SoptletterUseCase {
@@ -20,13 +27,17 @@ public protocol SoptletterUseCase {
     func fetchSoptletterMessages(topicId: Int, cursor: Int?, size: Int?) async throws -> SoptletterItemModel
     func fetchSoptletterMessage(messageId: Int, topicId: Int) async throws -> SoptletterDetailMessageModel
 >>>>>>> develop
+>>>>>>> develop
 }
 
 public final class DefaultSoptletterUseCase: SoptletterUseCase {
     
     private let repository: SoptletterRepositoryInterface
     private let maxCharCount = 250
-
+    
+    public var topicsResult = PassthroughSubject<SoptletterTopicListModel, Never>()
+    public var selectedTopicResult = PassthroughSubject<SoptletterTopicDetailModel, Never>()
+    
     public init(repository: SoptletterRepositoryInterface) {
         self.repository = repository
     }
@@ -43,6 +54,14 @@ public final class DefaultSoptletterUseCase: SoptletterUseCase {
     }
     
 <<<<<<< HEAD
+    public func fetchTopics() async throws -> SoptletterTopicListModel {
+        return try await repository.fetchTopics()
+    }
+    
+    public func fetchTopic(topicId: Int) async throws -> SoptletterTopicDetailModel {
+        return try await repository.fetchTopic(topicId: topicId)
+=======
+<<<<<<< HEAD
     public func getSoptletterProfile() async throws -> SoptletterProfileModel {
         return try await repository.getSoptletterProfile()
     }
@@ -57,6 +76,7 @@ public final class DefaultSoptletterUseCase: SoptletterUseCase {
     
     public func fetchSoptletterMessage(messageId: Int, topicId: Int) async throws -> SoptletterDetailMessageModel {
         return try await repository.soptletterMessage(messageId: messageId, topicId: topicId)
+>>>>>>> develop
 >>>>>>> develop
     }
 }

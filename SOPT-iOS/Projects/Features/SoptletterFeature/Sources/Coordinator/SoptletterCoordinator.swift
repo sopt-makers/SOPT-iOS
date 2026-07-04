@@ -71,7 +71,8 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
         
         checkNickname.vm.onGoButtonTap = { [weak self] in
-            self?.showSoptletterWriting()
+            // 임시
+            self?.showSelectTopic()
         }
         
         checkNickname.vm.showAlert = {
@@ -145,19 +146,20 @@ public final class SoptletterCoordinator: BaseCoordinator {
     }
     
     private func showSelectTopic() {
-        var vc = factory.makeSelectTopicVC(coordinator: self)
+        var selectTopic = factory.makeSelectTopicVC(coordinator: self)
         
-        vc.onNaviBackTap = { [weak self] in
-            self?.navigationController?.popViewController(animated: true)
+        selectTopic.vm.onNaviBackTap = { [weak self] in
+            self?.soptletterRootController?.popViewController(animated: true)
         }
         
-        vc.onCellTap = { [weak self] title in
-            // 임시
-            self?.showSoptletter(title: title)
+        selectTopic.vm.onCellTap = { [weak self] title in
+            self?.showSoptletterMain()
         }
         
-        navigationController?.pushViewController(vc, animated: true)
+        selectTopic.vm.showAlert = {
+            AlertUtils.presentNetworkAlertVC()
+        }
+        
+        soptletterRootController?.pushViewController(selectTopic.vc, animated: true)
     }
-    
-    private func showSoptletter(title: String) { }
 }
