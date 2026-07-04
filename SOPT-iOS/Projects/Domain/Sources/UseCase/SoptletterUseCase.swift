@@ -18,6 +18,8 @@ public protocol SoptletterUseCase {
     func fetchSoptletterMessage(messageId: Int, topicId: Int) async throws -> SoptletterDetailMessageModel
     func editMessage(messageId: Int, topicId: Int, content: String) async throws
     func deleteMessage(messageId: Int, topicId: Int) async throws
+    func likeMessage(messageId: Int, topicId: Int) async throws
+    func unlikeMessage(messageId: Int, topicId: Int) async throws
 }
 
 public final class DefaultSoptletterUseCase: SoptletterUseCase {
@@ -74,5 +76,13 @@ public final class DefaultSoptletterUseCase: SoptletterUseCase {
     
     public func deleteMessage(messageId: Int, topicId: Int) async throws {
         try await repository.deleteMessage(messageId: messageId, topicId: topicId)
+    }
+    
+    public func likeMessage(messageId: Int, topicId: Int) async throws {
+        try await repository.likeMessage(messageId: messageId, topicId: topicId)
+    }
+    
+    public func unlikeMessage(messageId: Int, topicId: Int) async throws {
+        try await repository.unlikeMessage(messageId: messageId, topicId: topicId)
     }
 }

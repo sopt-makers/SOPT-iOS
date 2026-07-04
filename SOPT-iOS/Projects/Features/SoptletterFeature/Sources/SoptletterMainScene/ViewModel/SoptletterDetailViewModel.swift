@@ -25,6 +25,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
         let deleteButtonTap: Driver<String>
         let confirmButtonTap: Driver<Void>
         let editCompleteButtonTap: Driver<String>
+        let likeButtonTap: Driver<Bool>
     }
     
     public struct Output {
@@ -56,6 +57,25 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
     
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
+        
+        input.likeButtonTap
+            .withUnretained(self)
+            .sink { owner, likeByMe in
+                owner.submitTask?.cancel()
+                owner.submitTask = Task { [weak self] in
+                    do {
+                        if likeByMe {
+                            try await owner.useCase.likeMessage(messageId: owner.messageId, topicId: owner.topicId)
+                        } else {
+                            try await owner.useCase.unlikeMessage(messageId: owner.messageId, topicId: owner.topicId)
+                        }                        
+                    } catch is CancellationError {
+                        self?.onError?()
+                    } catch {
+                        self?.onError?()
+                    }
+                }
+            }.store(in: cancelBag)
         
         input.viewDidLoad
             .withUnretained(self)

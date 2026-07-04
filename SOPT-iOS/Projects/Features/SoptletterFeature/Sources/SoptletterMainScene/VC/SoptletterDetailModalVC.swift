@@ -88,8 +88,8 @@ public final class SoptletterDetailModalVC: UIViewController {
         $0.textColor = DSKitAsset.Colors.gray300.color
     }
     
-    private let likeImageView = UIImageView().then {
-        $0.image = UIImage(systemName: "heart")
+    private let likeButton = UIButton().then {
+        $0.setImage(UIImage(systemName: "heart"), for: .normal)
         $0.tintColor = DSKitAsset.Colors.gray700.color
         $0.contentMode = .scaleAspectFit
     }
@@ -113,8 +113,7 @@ public final class SoptletterDetailModalVC: UIViewController {
         $0.layer.cornerRadius = 12
     }
     
-    private let viewModel: SoptletterDetailViewModel
-    private let cancelBag = CancelBag()
+
     
     private lazy var cancelEditButtonTap: Driver<Void> = cancelEditButton
         .publisher(for: .touchUpInside)
@@ -136,10 +135,21 @@ public final class SoptletterDetailModalVC: UIViewController {
         .mapVoid()
         .asDriver()
     
-    private var deleteButtonTapPublisher = PassthroughSubject<String, Never>()
+    private lazy var likeButtonRealTap: Driver<Void> = likeButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
     
+    private let viewModel: SoptletterDetailViewModel
+    private let cancelBag = CancelBag()
+    
+    private let likeButtonTapPublisher = PassthroughSubject<Bool, Never>()
     private let editCompleteButtonTapPublisher = PassthroughSubject<String, Never>()
     
+    private var likeCount = 0
+    private var deleteButtonTapPublisher = PassthroughSubject<String, Never>()
+    
+    private lazy var likeButtonTap: Driver<Bool> = likeButtonTapPublisher.asDriver()
     private lazy var editCompleteButtonTap: Driver<String> = editCompleteButtonTapPublisher.asDriver()
     private lazy var deleteCompleteButtonTap: Driver<String> = deleteButtonTapPublisher.asDriver()
     
@@ -168,14 +178,18 @@ public final class SoptletterDetailModalVC: UIViewController {
         content: String,
         date: String,
         likeCount: Int,
-        mine: Bool
+        mine: Bool,
+        likeByMe: Bool
     ) -> Self {
         containerView.backgroundColor = backgroundColor
         nameLabel.text = name
         contentLabel.text = content
         dateLabel.text = date.toMMDDFormat()
+        self.likeCount = likeCount
         likeCountLabel.text = "\(likeCount)"
         editDeleteStackView.isHidden = !mine
+        likeButton.setImage(likeByMe ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart"), for: .normal)
+        likeButton.isSelected = likeByMe
         return self
     }
 }
@@ -187,7 +201,8 @@ extension SoptletterDetailModalVC {
             editButtonTap: editButtonTap,
             deleteButtonTap: deleteCompleteButtonTap,
             confirmButtonTap: confirmButtonTap,
-            editCompleteButtonTap: editCompleteButtonTap
+            editCompleteButtonTap: editCompleteButtonTap,
+            likeButtonTap: likeButtonTap
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
@@ -202,6 +217,20 @@ extension SoptletterDetailModalVC {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.enterEditingMode()
+            }.store(in: cancelBag)
+        
+        likeButtonRealTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                let newLikeState = !owner.likeButton.isSelected
+                owner.likeButton.isSelected = newLikeState
+                owner.likeButton.setImage(
+                    newLikeState ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart"),
+                    for: .normal
+                )
+                owner.likeCount += newLikeState ? 1 : -1
+                owner.likeCountLabel.text = "\(owner.likeCount)"
+                owner.likeButtonTapPublisher.send(newLikeState)
             }.store(in: cancelBag)
 
         confirmButtonTap
@@ -230,7 +259,8 @@ extension SoptletterDetailModalVC {
                     content: model.content,
                     date: model.createdAt,
                     likeCount: model.likeCount,
-                    mine: model.mine
+                    mine: model.mine,
+                    likeByMe: model.likedByMe
                 )
             }.store(in: cancelBag)
         
@@ -261,7 +291,7 @@ private extension SoptletterDetailModalVC {
         editDeleteStackView.addArrangedSubviews(editButton, deleteButton)
         containerView.addSubview(editDeleteStackView)
         containerView.addSubview(cancelEditButton)
-        likeStackView.addArrangedSubviews(likeImageView, likeCountLabel)
+        likeStackView.addArrangedSubviews(likeButton, likeCountLabel)
         contentScrollView.addSubviews(contentLabel, contentTextView)
         containerView.addSubviews(nameLabel, contentScrollView, dateLabel, likeStackView, confirmButton, charCountLabel)
         view.addSubviews(dimmedView, containerView)
@@ -322,7 +352,7 @@ private extension SoptletterDetailModalVC {
             make.trailing.equalToSuperview().inset(20)
         }
         
-        likeImageView.snp.makeConstraints { make in
+        likeButton.snp.makeConstraints { make in
             make.size.equalTo(24)
         }
         
