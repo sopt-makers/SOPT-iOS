@@ -84,12 +84,60 @@ extension SoptletterPostItCell {
         text: String,
         textColor: UIColor,
         backgroundImage: UIImage?,
-        labelRotationAngle: CGFloat = 0
+        labelRotationAngle: CGFloat = 0,
+        backgroundColorHex: String,
+        shapeType: String
     ) -> Self {
-        contentLabel.text = text
-        contentLabel.textColor = textColor
-        backgroundImageView.image = backgroundImage
-        contentLabel.transform = CGAffineTransform(rotationAngle: CGFloat(labelRotationAngle) * .pi / 180)
+            contentLabel.text = text
+            contentLabel.textColor = textColor
+
+            let rotation = CGAffineTransform(rotationAngle: labelRotationAngle * .pi / 180)
+            contentLabel.transform = rotation
+            backgroundImageView.transform = rotation
+
+            let shape = SoptletterShapeMapping(rawValue: shapeType.uppercased()) ?? .point
+            let shapeImage: UIImage?
+
+            switch shape {
+            case .sharp:
+                shapeImage = DSKitAsset.Assets.icnPointBlueCenter.image
+            case .cloud:
+                shapeImage = DSKitAsset.Assets.icnCloudRedCenter.image
+            case .smooth:
+                shapeImage = DSKitAsset.Assets.icnSmoothRedCenter.image
+            case .point:
+                shapeImage = DSKitAsset.Assets.icnSquareSky.image
+            }
+
+            backgroundImageView.image = shapeImage?.withRenderingMode(.alwaysTemplate)
+            backgroundImageView.tintColor = UIColor(hex: backgroundColorHex)
         return self
+    }
+}
+
+extension UIColor {
+    convenience init(hex: String) {
+        var hexString = hex.trimmingCharacters(in: .whitespacesAndNewlines)
+        hexString = hexString.replacingOccurrences(of: "#", with: "")
+        
+        var rgb: UInt64 = 0
+        Scanner(string: hexString).scanHexInt64(&rgb)
+        
+        let r = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
+        let g = CGFloat((rgb & 0x00FF00) >> 8) / 255.0
+        let b = CGFloat(rgb & 0x0000FF) / 255.0
+        
+        self.init(red: r, green: g, blue: b, alpha: 1.0)
+    }
+}
+
+enum SoptletterShapeMapping: String {
+    case sharp = "SHARP"
+    case cloud = "CLOUD"
+    case smooth = "SMOOTH"
+    case point = "POINT"
+    
+    init(shapeStyle: String) {
+        self = SoptletterShapeMapping(rawValue: shapeStyle.uppercased()) ?? .point
     }
 }
