@@ -40,11 +40,12 @@ public final class SoptletterCoordinator: BaseCoordinator {
     // MARK: - Coordinator Life Cycle
 
     public override func start() {
-        if onboardingFinished {
-            showSoptletterMain()
-        } else {
-            showSoptletterOnboarding()
-        }
+        showSoptletterMain()
+//        if onboardingFinished {
+//            showSoptletterMain()
+//        } else {
+//            showSoptletterOnboarding()
+//        }
     }
 
     // MARK: - Navigation
@@ -126,7 +127,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
             AlertUtils.presentNetworkAlertVC()
         }
         
-        soptletterRootController?.pushViewController(soptletterMain.vc, animated: true)
+        navigationController?.pushViewController(soptletterMain.vc, animated: true)
     }
     
     private func presentSoptletterDetail(_ messageId: Int, _ topicId: Int) {
@@ -140,7 +141,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
             AlertUtils.presentNetworkAlertVC()
         }
         
-        soptletterRootController?.present(soptletterDetail.vc, animated: true)
+        navigationController?.present(soptletterDetail.vc, animated: true)
     }
     
     private func showSelectTopic() {

@@ -24,6 +24,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
         let editButtonTap: Driver<Void>
         let deleteButtonTap: Driver<Void>
         let confirmButtonTap: Driver<Void>
+        let editCompleteButtonTap: Driver<String>
     }
     
     public struct Output {
@@ -67,12 +68,21 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
                     }
                 }              
             }.store(in: cancelBag)                        
-        
-        // TODO: 수정 API
-        input.editButtonTap
-            .withUnretained(self)
-            .sink { owner, _ in
                 
+        input.editCompleteButtonTap
+            .withUnretained(self)
+            .sink { owner, content in
+                owner.submitTask?.cancel()
+                owner.submitTask = Task { [weak self] in
+                    do {
+                        try await owner.useCase.editMessage(messageId: owner.messageId, topicId: owner.topicId, content: content)
+                        await MainActor.run { ToastUtils.showMDSToast(type: .success, text: "메세지 수정을 완료했어요.") }
+                    } catch is CancellationError {
+                        return
+                    } catch {
+                        self?.onError?()
+                    }
+                }
             }
             .store(in: cancelBag)
         

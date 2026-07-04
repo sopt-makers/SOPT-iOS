@@ -10,4 +10,5 @@ public protocol SoptletterRepositoryInterface {
     func writeMessage(topicId: Int, content: String) async throws
     func soptletterMessages(topicId: Int, cursor: Int?, size: Int?) async throws -> SoptletterItemModel
     func soptletterMessage(messageId: Int, topicId: Int) async throws -> SoptletterDetailMessageModel
+    func editMessage(messageId: Int, topicId: Int, content: String) async throws
 }
