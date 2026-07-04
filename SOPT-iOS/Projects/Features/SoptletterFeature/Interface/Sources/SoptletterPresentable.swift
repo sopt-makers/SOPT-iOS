@@ -21,6 +21,7 @@ public protocol SoptletterOnboardingRoutingTrigger: AnyObject {
 public protocol SoptletterNicknameCheckRoutingTrigger: AnyObject {
     var onNaviBackTap: (() -> Void)? { get set }
     var onGoButtonTap: (() -> Void)? { get set }
+    var showAlert: (() -> Void)? { get set }
 }
 
 public protocol SoptletterCoordinatable {

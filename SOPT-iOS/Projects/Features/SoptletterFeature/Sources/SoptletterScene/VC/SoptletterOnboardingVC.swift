@@ -152,6 +152,6 @@ private extension SoptletterOnboardingVC {
             startTap: startTap
         )
         
-        let output = viewModel.transform(from: input, cancelBag: cancelBag)
+        _ = viewModel.transform(from: input, cancelBag: cancelBag)
     }
 }

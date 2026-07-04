@@ -280,15 +280,7 @@ extension HomeForMemberViewModel {
             async let dashBoard = fetchDashBoard()
             async let recentSchedule = fetchRecentSchedule()
             async let survey = fetchSurvey()
-            // TODO: - API 연결 시 수정
-//            async let appService = useCase.getAppServicesAsync()
-            async let appService = [HomeAppServicesModel(
-                serviceName: "솝레터",
-                displayAlarmBadge: true,
-                alarmBadge: "45",
-                iconURL: nil,
-                deepLink: ""
-            )]
+            async let appService = useCase.getHomeAppService()
             async let popularPosts = useCase.getPopularPostsAsync()
             async let latestPosts = useCase.getLatestPostsAsync()
                         

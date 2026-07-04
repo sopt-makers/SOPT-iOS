@@ -12,8 +12,13 @@ import Moya
 
 public enum SoptletterAPI {
     case writeMessage(topicId: Int, content: String)
+<<<<<<< HEAD
+    case fetchProfile
+    case completeOnboarding
+=======
     case soptletterMessages(topicId: Int, cursor: Int?, size: Int?)
     case soptletterMessage(messageId: Int, topicId: Int)
+>>>>>>> develop
 }
 
 extension SoptletterAPI: BaseAPI {
@@ -23,8 +28,15 @@ extension SoptletterAPI: BaseAPI {
         switch self {
         case .writeMessage(let topicId, _), .soptletterMessages(let topicId, _, _):
             return "/topics/\(topicId)/messages"
+<<<<<<< HEAD
+        case .fetchProfile:
+            return "/onboarding"
+        case .completeOnboarding:
+            return "/onboarding/complete"
+=======
         case let .soptletterMessage(messageId, topicId):
             return "/topics/\(topicId)/messages/\(messageId)"
+>>>>>>> develop
         }
     }
 
@@ -32,8 +44,15 @@ extension SoptletterAPI: BaseAPI {
         switch self {
         case .writeMessage:
             return .post
+<<<<<<< HEAD
+        case .fetchProfile:
+            return .get
+        case .completeOnboarding:
+            return .post
+=======
         case .soptletterMessages, .soptletterMessage:
             return .get
+>>>>>>> develop
         }
     }
 
@@ -41,9 +60,13 @@ extension SoptletterAPI: BaseAPI {
         switch self {
         case .writeMessage(_, let content):
             return .requestParameters(parameters: ["content": content], encoding: JSONEncoding.default)
+<<<<<<< HEAD
+        case .completeOnboarding, .fetchProfile:
+=======
         case .soptletterMessages(topicId: let topicId, cursor: let cursor, size: let size):
             return .requestPlain
         case .soptletterMessage:
+>>>>>>> develop
             return .requestPlain
         }
     }
