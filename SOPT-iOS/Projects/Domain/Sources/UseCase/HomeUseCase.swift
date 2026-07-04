@@ -120,6 +120,7 @@ extension DefaultHomeUseCase: HomeUseCase {
         return services
     }
     
+    // TODO: - 서버 명세 변경 시 tab / home appservie 변경
     public func getHomeAppService() async throws -> [HomeAppServicesModel] {
         // 캐시된 데이터가 있으면 반환
         if let cached = cachedAppServices {
