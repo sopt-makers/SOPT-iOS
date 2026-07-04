@@ -79,19 +79,20 @@ extension SoptletterCheckNicknameVC {
         view.addSubviews(backButton, cardView, button)
         
         backButton.snp.makeConstraints {
-            $0.top.equalTo(safeArea.snp.top).offset(12)
-            $0.leading.equalToSuperview().inset(20)
-            $0.size.equalTo(32)
-        }
-        cardView.snp.makeConstraints {
-            $0.top.equalTo(backButton.snp.bottom).offset(32)
-            $0.leading.trailing.equalToSuperview().inset(20)
-        }
-        button.snp.makeConstraints {
-            $0.bottom.equalTo(view.snp.bottom).offset(-83)
-            $0.leading.trailing.equalToSuperview().inset(20)
-            $0.height.equalTo(56)
-        }
+              $0.top.equalTo(safeArea.snp.top).offset(12)
+              $0.leading.equalToSuperview().inset(20)
+              $0.size.equalTo(32)
+          }
+          cardView.snp.makeConstraints {
+              $0.top.equalTo(backButton.snp.bottom).offset(32)
+              $0.leading.trailing.equalToSuperview().inset(20)
+              $0.bottom.lessThanOrEqualTo(button.snp.top).offset(-20)
+          }
+          button.snp.makeConstraints {
+              $0.bottom.equalTo(view.snp.bottom).offset(-83)
+              $0.leading.trailing.equalToSuperview().inset(20)
+              $0.height.equalTo(56)
+          }
     }
 }
 

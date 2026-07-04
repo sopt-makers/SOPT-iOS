@@ -108,6 +108,7 @@ extension SelectTopicVC {
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
         
         output.topicsSubject
+            .receive(on: DispatchQueue.main)
             .withUnretained(self)
             .sink { owner, result in
                 owner.topics = result.topics

@@ -37,11 +37,12 @@ public final class SoptletterCoordinator: BaseCoordinator {
     // MARK: - Coordinator Life Cycle
 
     public override func start() {
-        if UserDefaultKeyList.User.isCompleteSoptletterOnboarding == true {
-            // main routing
-        } else {
-            showSoptletterOnboarding()
-        }
+        showSoptletterOnboarding()
+//        if UserDefaultKeyList.User.isCompleteSoptletterOnboarding == true {
+//            showSoptletterMain()
+//        } else {
+//            showSoptletterOnboarding()
+//        }
     }
 
     // MARK: - Navigation
