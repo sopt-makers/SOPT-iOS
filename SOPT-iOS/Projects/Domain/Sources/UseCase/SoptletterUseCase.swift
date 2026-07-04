@@ -13,11 +13,17 @@ import Core
 public protocol SoptletterUseCase {
     func writeMessage(topicId: Int, content: String) async throws
     func isWritable(content: String) -> Bool
+<<<<<<< HEAD
     func getSoptletterProfile() async throws -> SoptletterProfileModel
     func completeOnboarding() async throws
+=======
+    func fetchSoptletterMessages(topicId: Int, cursor: Int?, size: Int?) async throws -> SoptletterItemModel
+    func fetchSoptletterMessage(messageId: Int, topicId: Int) async throws -> SoptletterDetailMessageModel
+>>>>>>> develop
 }
 
 public final class DefaultSoptletterUseCase: SoptletterUseCase {
+    
     private let repository: SoptletterRepositoryInterface
     private let maxCharCount = 250
 
@@ -36,6 +42,7 @@ public final class DefaultSoptletterUseCase: SoptletterUseCase {
         return !content.isEmpty && content.count <= maxCharCount
     }
     
+<<<<<<< HEAD
     public func getSoptletterProfile() async throws -> SoptletterProfileModel {
         return try await repository.getSoptletterProfile()
     }
@@ -43,5 +50,13 @@ public final class DefaultSoptletterUseCase: SoptletterUseCase {
     public func completeOnboarding() async throws {
         try await repository.completeOnboarding()
         UserDefaultKeyList.User.isCompleteSoptletterOnboarding = true
+=======
+    public func fetchSoptletterMessages(topicId: Int, cursor: Int?, size: Int?) async throws -> SoptletterItemModel {
+        return try await repository.soptletterMessages(topicId: topicId, cursor: cursor, size: size)
+    }
+    
+    public func fetchSoptletterMessage(messageId: Int, topicId: Int) async throws -> SoptletterDetailMessageModel {
+        return try await repository.soptletterMessage(messageId: messageId, topicId: topicId)
+>>>>>>> develop
     }
 }

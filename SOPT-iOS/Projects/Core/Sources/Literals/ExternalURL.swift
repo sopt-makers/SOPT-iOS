@@ -31,7 +31,12 @@ public struct ExternalURL {
     public struct SNS {
         public static let youtube = "https://m.youtube.com/@SOPTMEDIA"
         public static let instagram = "https://www.instagram.com/sopt_official"
-        
+
+    }
+
+    public struct Notion {
+        public static let privacyPolicy = "https://florentine-legend-ffc.notion.site/SOPT-0b378275554d4d65a442310e83c7c988"
+        public static let termsOfUse = "https://florentine-legend-ffc.notion.site/SOPT-69e33dccb59543dd91f5f44ed1250881"
     }
     
     public struct Playground {

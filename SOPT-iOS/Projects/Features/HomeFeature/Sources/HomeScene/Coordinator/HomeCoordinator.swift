@@ -70,11 +70,6 @@ public final class HomeCoordinator: BaseCoordinator {
             self.delegate?.homeCoordinator(self, to: .notification)
         }
         
-        homeForMember.vm.onSettingButtonTapped = { [weak self] userType in
-            guard let self else { return }
-            self.delegate?.homeCoordinator(self, to: .setting(userType: userType))
-        }
-        
         homeForMember.vm.onAppServiceCellTapped = { [weak self] type in
             guard let self else { return }
             self.delegate?.homeCoordinator(self, to: .appService(type: type))
@@ -168,11 +163,6 @@ public final class HomeCoordinator: BaseCoordinator {
         homeForVisitor.vm.onMainProductCellTapped = { [weak self] url in
             guard let self else { return }
             self.delegate?.homeCoordinator(self, to: .webLink(url: url))
-        }
-        
-        homeForVisitor.vm.onSettingButtonTapped = { [weak self] userType in
-            guard let self else { return }
-            self.delegate?.homeCoordinator(self, to: .setting(userType: userType))
         }
         
         rootViewController = homeForVisitor.vc

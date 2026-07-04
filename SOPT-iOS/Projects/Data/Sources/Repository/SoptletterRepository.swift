@@ -19,10 +19,15 @@ public final class SoptletterRepository {
 }
 
 extension SoptletterRepository: SoptletterRepositoryInterface {
+    public func soptletterMessages(topicId: Int, cursor: Int?, size: Int?) async throws -> Domain.SoptletterItemModel {
+        return try await soptletterService.soptletterMessages(topicId: topicId, cursor: cursor, size: size).toDomain()
+    }
+    
     public func writeMessage(topicId: Int, content: String) async throws {
         try await soptletterService.writeMessage(topicId: topicId, content: content)
     }
     
+<<<<<<< HEAD
     public func getSoptletterProfile() async throws -> SoptletterProfileModel{
         let result = try await soptletterService.getSoptletterProfile()
         return result.toDomain()
@@ -30,5 +35,9 @@ extension SoptletterRepository: SoptletterRepositoryInterface {
     
     public func completeOnboarding() async throws {
         try await soptletterService.completeOnboarding()
+=======
+    public func soptletterMessage(messageId: Int, topicId: Int) async throws -> SoptletterDetailMessageModel {
+        return try await soptletterService.soptletterMessage(messageId: messageId, topicId: topicId).toDomain()
+>>>>>>> develop
     }
 }

@@ -70,8 +70,8 @@ extension TabBarViewModel {
             .sink { owner, index in
                 guard let tabBar = TabBarItemType.from(index: index, userType: owner.userType) else { return }
                 
-                // Visitor가 Soptlog 탭을 선택하면 로그인 Alert 표시
-                if owner.userType == .visitor && tabBar == .soptlog {
+                // Visitor가 마이페이지 탭을 선택하면 로그인 Alert 표시
+                if owner.userType == .visitor && tabBar == .mypage {
                     output.selectedIndex.send(0) // 홈 탭 인덱스
                     owner.showTabBarAlert?()
 
