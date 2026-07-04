@@ -200,7 +200,6 @@ extension SoptletterDetailModalVC {
             .sink { owner, _ in
                 if owner.isEditingContent {
                     let editedContent = owner.contentTextView.text ?? ""
-                    owner.exitEditingMode()
                     owner.editCompleteButtonTapPublisher.send(editedContent)
                 } else {
                     owner.dismiss(animated: true)
@@ -224,6 +223,14 @@ extension SoptletterDetailModalVC {
                     likeCount: model.likeCount,
                     mine: model.mine
                 )
+            }.store(in: cancelBag)
+        
+        output.soptletterEditResult
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.exitEditingMode()
+                ToastUtils.showMDSToast(type: .success, text: "메세지 수정을 완료했어요.")
             }.store(in: cancelBag)
     }
 }

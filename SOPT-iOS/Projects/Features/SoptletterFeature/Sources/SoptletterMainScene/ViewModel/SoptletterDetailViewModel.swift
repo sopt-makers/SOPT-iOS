@@ -29,6 +29,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
     
     public struct Output {
         let soptletterMessage = PassthroughSubject<SoptletterDetailMessageModel, Never>()
+        let soptletterEditResult = PassthroughSubject<Void, Never>()
     }
     
     // MARK: - Properties
@@ -75,10 +76,10 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
                 owner.submitTask?.cancel()
                 owner.submitTask = Task { [weak self] in
                     do {
-                        try await owner.useCase.editMessage(messageId: owner.messageId, topicId: owner.topicId, content: content)
-                        await MainActor.run { ToastUtils.showMDSToast(type: .success, text: "메세지 수정을 완료했어요.") }
+                        try await owner.useCase.editMessage(messageId: owner.messageId, topicId: owner.topicId, content: content)         
+                        output.soptletterEditResult.send()
                     } catch is CancellationError {
-                        return
+                        self?.onError?()
                     } catch {
                         self?.onError?()
                     }
