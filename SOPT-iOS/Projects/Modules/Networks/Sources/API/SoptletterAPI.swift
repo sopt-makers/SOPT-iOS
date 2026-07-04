@@ -73,7 +73,6 @@ extension SoptletterAPI: BaseAPI {
             return .requestPlain
         case .completeOnboarding, .fetchProfile:
             return .requestPlain
-        case .soptletterMessages(topicId: let topicId, cursor: let cursor, size: let size):
         case .soptletterMessages:
             return .requestPlain
         case .soptletterMessage:
