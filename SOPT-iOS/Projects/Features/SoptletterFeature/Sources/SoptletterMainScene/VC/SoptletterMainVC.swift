@@ -45,6 +45,10 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
         $0.setImage(DSKitAsset.Assets.icDownload.image, for: .normal)
     }
     
+    private let menuButton = UIButton().then {
+        $0.setImage(DSKitAsset.Assets.icSoptletterSubject.image, for: .normal)
+    }
+    
     private let reportButton = UIButton().then {
         $0.setImage(DSKitAsset.Assets.icReport.image, for: .normal)
     }
@@ -79,6 +83,11 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
         .asDriver()
     
     private lazy var downloadButtonTap: Driver<Void> = downloadButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
+    
+    private lazy var menuButtonTap: Driver<Void> = menuButton
         .publisher(for: .touchUpInside)
         .mapVoid()
         .asDriver()
@@ -121,6 +130,7 @@ private extension SoptletterMainVC {
             writeButtonTap: writeButtonTap,
             downloadButtonTap: downloadButtonTap,
             reportButtonTap: reportButtonTap,
+            menuButtonTap: menuButtonTap,
             postItCellTap: postItCellTapPublisher.asDriver()
         )
         
@@ -140,7 +150,7 @@ private extension SoptletterMainVC {
     }
     
     private func setLayout() {
-        rightButtonStackView.addArrangedSubviews(downloadButton, reportButton)
+        rightButtonStackView.addArrangedSubviews(downloadButton, reportButton, menuButton)
         navigationView.addSubviews(closeButton, titleLabel, rightButtonStackView)
         view.addSubviews(collectionView, navigationView, writeButton)
         
@@ -167,6 +177,10 @@ private extension SoptletterMainVC {
         }
         
         downloadButton.snp.makeConstraints { make in
+            make.size.equalTo(24)
+        }
+        
+        menuButton.snp.makeConstraints { make in
             make.size.equalTo(24)
         }
         

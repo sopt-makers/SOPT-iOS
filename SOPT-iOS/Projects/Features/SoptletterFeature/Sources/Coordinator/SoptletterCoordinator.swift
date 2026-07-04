@@ -102,11 +102,16 @@ public final class SoptletterCoordinator: BaseCoordinator {
         soptletterMain = factory.makeSoptletterMainVC(coordinator: self)
         
         soptletterMain.vm.onNaviBackTap = { [weak self] in
-            print("handle soptletterMain.vm.onNaviBackTap")
+            self?.navigationController?.popViewController(animated: true)
+            self?.finishFlow?()
         }
         
         soptletterMain.vm.onWriteTap = { [weak self] in
             print("handle soptletterMain.vm.onWriteTap")
+        }
+        
+        soptletterMain.vm.onMenuTap = { [weak self] in
+            self?.showSelectTopic()
         }
         
         soptletterMain.vm.onReportTap = { [weak self] in
@@ -158,7 +163,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
         var selectTopic = factory.makeSelectTopicVC(coordinator: self)
         
         selectTopic.vm.onNaviBackTap = { [weak self] in
-            self?.soptletterRootController?.popViewController(animated: true)
+            self?.navigationController?.popViewController(animated: true)
         }
         
         selectTopic.vm.onCellTap = { [weak self] title in
@@ -169,6 +174,6 @@ public final class SoptletterCoordinator: BaseCoordinator {
             AlertUtils.presentNetworkAlertVC()
         }
         
-        soptletterRootController?.pushViewController(selectTopic.vc, animated: true)
+        navigationController?.pushViewController(selectTopic.vc, animated: true)
     }
 }

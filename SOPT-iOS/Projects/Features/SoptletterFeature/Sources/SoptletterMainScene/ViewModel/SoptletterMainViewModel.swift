@@ -24,6 +24,7 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
         let writeButtonTap: Driver<Void>
         let downloadButtonTap: Driver<Void>
         let reportButtonTap: Driver<Void>
+        let menuButtonTap: Driver<Void>
         let postItCellTap: Driver<(messageId: Int, topicId: Int)>
     }
     
@@ -45,6 +46,7 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     public var onPostItTap: (() -> Void)?
     public var onDownloadTap: (() -> Void)?
     public var onReportTap: (() -> Void)?
+    public var onMenuTap: (() -> Void)?
     public var onCellTap: ((Int, Int) -> Void)?
     public var onError: (() -> Void)?
     
@@ -77,6 +79,12 @@ extension SoptletterMainViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNaviBackTap?()
+            }.store(in: cancelBag)
+        
+        input.menuButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onMenuTap?()
             }.store(in: cancelBag)
         
         input.writeButtonTap
