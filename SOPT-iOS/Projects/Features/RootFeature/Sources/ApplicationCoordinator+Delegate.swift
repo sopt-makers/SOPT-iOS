@@ -53,7 +53,6 @@ extension ApplicationCoordinator: TabBarCoordinatorDelegate {
 
 // MARK: - HomeCoordinatorDelegate
 
-// TODO: - Soptletter 추가 필요
 extension ApplicationCoordinator: HomeCoordinatorDelegate {
     public func homeCoordinator(_ coordinator: HomeCoordinator, to destination: HomeCoordinatorDestination) {
         switch destination {
@@ -68,6 +67,9 @@ extension ApplicationCoordinator: HomeCoordinatorDelegate {
             runNotificationFlow()
         case .soptlog:
             tabBarController?.selectedIndex = TabBarItemType.soptlog.rawValue
+        case .appService(let type):
+            // 임시
+            runSoptletterOnboardingFlow()
         case .deepLink(let url):
             notificationHandler.receive(deepLink: url)
             guard let deepLink = self.notificationHandler.deepLink.value else { return }
