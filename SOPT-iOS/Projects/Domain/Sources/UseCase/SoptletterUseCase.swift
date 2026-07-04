@@ -12,6 +12,7 @@ public protocol SoptletterUseCase {
     func fetchSoptletterMessages(topicId: Int, cursor: Int?, size: Int?) async throws -> SoptletterItemModel
     func fetchSoptletterMessage(messageId: Int, topicId: Int) async throws -> SoptletterDetailMessageModel
     func editMessage(messageId: Int, topicId: Int, content: String) async throws
+    func deleteMessage(messageId: Int, topicId: Int) async throws
 }
 
 public final class DefaultSoptletterUseCase: SoptletterUseCase {
@@ -44,5 +45,9 @@ public final class DefaultSoptletterUseCase: SoptletterUseCase {
     
     public func editMessage(messageId: Int, topicId: Int, content: String) async throws {
         try await repository.editMessage(messageId: messageId, topicId: topicId, content: content)
+    }
+    
+    public func deleteMessage(messageId: Int, topicId: Int) async throws {
+        try await repository.deleteMessage(messageId: messageId, topicId: topicId)
     }
 }

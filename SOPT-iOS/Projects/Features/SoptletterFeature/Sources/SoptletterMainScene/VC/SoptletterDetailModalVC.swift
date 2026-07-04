@@ -136,9 +136,12 @@ public final class SoptletterDetailModalVC: UIViewController {
         .mapVoid()
         .asDriver()
     
+    private var deleteButtonTapPublisher = PassthroughSubject<String, Never>()
+    
     private let editCompleteButtonTapPublisher = PassthroughSubject<String, Never>()
-    private lazy var editCompleteButtonTap: Driver<String> = editCompleteButtonTapPublisher
-        .asDriver()
+    
+    private lazy var editCompleteButtonTap: Driver<String> = editCompleteButtonTapPublisher.asDriver()
+    private lazy var deleteCompleteButtonTap: Driver<String> = deleteButtonTapPublisher.asDriver()
     
     public init(viewModel: SoptletterDetailViewModel) {
         self.viewModel = viewModel
@@ -182,12 +185,18 @@ extension SoptletterDetailModalVC {
         let input = SoptletterDetailViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
             editButtonTap: editButtonTap,
-            deleteButtonTap: deleteButtonTap,
+            deleteButtonTap: deleteCompleteButtonTap,
             confirmButtonTap: confirmButtonTap,
             editCompleteButtonTap: editCompleteButtonTap
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
+        
+        deleteButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.deleteButtonTapPublisher.send(owner.contentLabel.text ?? "")
+            }.store(in: cancelBag)
         
         editButtonTap
             .withUnretained(self)
@@ -225,12 +234,20 @@ extension SoptletterDetailModalVC {
                 )
             }.store(in: cancelBag)
         
-        output.soptletterEditResult
+        output.soptletterEditCompleted
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
             .sink { owner, _ in
                 owner.exitEditingMode()
                 ToastUtils.showMDSToast(type: .success, text: "메세지 수정을 완료했어요.")
+            }.store(in: cancelBag)
+        
+        output.soptletterDeleteCompleted
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.dismiss(animated: true)
+                ToastUtils.showMDSToast(type: .success, text: "메세지 삭제를 완료했어요.")
             }.store(in: cancelBag)
     }
 }

@@ -17,6 +17,7 @@ public protocol SoptletterService {
     func soptletterMessages(topicId: Int, cursor: Int?, size: Int?) async throws -> SoptletterItemResponseEntity
     func soptletterMessage(messageId: Int, topicId: Int) async throws -> SoptletterMessageResponseEntity
     func editMessage(messageId: Int, topicId: Int, content: String) async throws
+    func deleteMessage(messageId: Int, topicId: Int) async throws
 }
 
 extension DefaultSoptletterService: SoptletterService {
@@ -34,5 +35,9 @@ extension DefaultSoptletterService: SoptletterService {
     
     public func editMessage(messageId: Int, topicId: Int, content: String) async throws {
         _ = try await requestObjectAsyncNoResult(.editMessage(messageId: messageId, topicId: topicId, content: content))
+    }
+    
+    public func deleteMessage(messageId: Int, topicId: Int) async throws {
+        _ = try await requestObjectAsyncNoResult(.deleteMessage(messageId: messageId, topicId: topicId))
     }
 }

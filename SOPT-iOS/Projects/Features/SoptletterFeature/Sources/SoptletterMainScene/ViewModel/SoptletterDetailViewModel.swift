@@ -22,14 +22,15 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
     public struct Input {
         let viewDidLoad: Driver<Void>
         let editButtonTap: Driver<Void>
-        let deleteButtonTap: Driver<Void>
+        let deleteButtonTap: Driver<String>
         let confirmButtonTap: Driver<Void>
         let editCompleteButtonTap: Driver<String>
     }
     
     public struct Output {
         let soptletterMessage = PassthroughSubject<SoptletterDetailMessageModel, Never>()
-        let soptletterEditResult = PassthroughSubject<Void, Never>()
+        let soptletterEditCompleted = PassthroughSubject<Void, Never>()
+        let soptletterDeleteCompleted = PassthroughSubject<Void, Never>()
     }
     
     // MARK: - Properties
@@ -77,7 +78,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
                 owner.submitTask = Task { [weak self] in
                     do {
                         try await owner.useCase.editMessage(messageId: owner.messageId, topicId: owner.topicId, content: content)         
-                        output.soptletterEditResult.send()
+                        output.soptletterEditCompleted.send()
                     } catch is CancellationError {
                         self?.onError?()
                     } catch {
@@ -86,17 +87,32 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
                 }
             }
             .store(in: cancelBag)
-        
-        // TODO: 삭제 API
+                
         input.deleteButtonTap
             .withUnretained(self)
-            .sink { owner, _ in
-                AlertUtils.presentAlertVC(type: .titleDescription, title: "솝레터 삭제하기", description: "해당 솝레터가 영구적으로 삭제되어요.\n그래도 삭제하시겠어요?", customButtonTitle: "삭제") {
-                    print("삭제")
-                }
+            .sink { owner, content in                
+                AlertUtils.presentAlertVC(type: .titleDescription, title: "솝레터 삭제하기", description: "해당 솝레터가 영구적으로 삭제되어요.\n그래도 삭제하시겠어요?", customButtonTitle: "삭제", customAction: {
+                    owner.deleteMessage(output: output, content: content)
+                })
             }
             .store(in: cancelBag)
         
         return output
+    }
+}
+
+extension SoptletterDetailViewModel {
+    private func deleteMessage(output: Output, content: String) {
+        submitTask?.cancel()
+        submitTask = Task { [weak self] in
+            do {
+                try await useCase.deleteMessage(messageId: messageId, topicId: topicId)
+                output.soptletterDeleteCompleted.send()
+            } catch is CancellationError {
+                self?.onError?()
+            } catch {
+                self?.onError?()
+            }
+        }
     }
 }

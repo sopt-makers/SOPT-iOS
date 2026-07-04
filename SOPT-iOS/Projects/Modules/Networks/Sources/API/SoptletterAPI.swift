@@ -15,6 +15,7 @@ public enum SoptletterAPI {
     case soptletterMessages(topicId: Int, cursor: Int?, size: Int?)
     case soptletterMessage(messageId: Int, topicId: Int)
     case editMessage(messageId: Int, topicId: Int, content: String)
+    case deleteMessage(messageId: Int, topicId: Int)
 }
 
 extension SoptletterAPI: BaseAPI {
@@ -28,6 +29,8 @@ extension SoptletterAPI: BaseAPI {
             return "/topics/\(topicId)/messages/\(messageId)"
         case let .editMessage(messageId, topicId, _):
             return "/topics/\(topicId)/messages/\(messageId)"
+        case let .deleteMessage(messageId, topicId):
+            return "/topics/\(topicId)/messages/\(messageId)"
         }
     }
 
@@ -39,6 +42,8 @@ extension SoptletterAPI: BaseAPI {
             return .patch
         case .soptletterMessages, .soptletterMessage:
             return .get
+        case .deleteMessage:
+            return .delete
         }
     }
 
@@ -52,6 +57,8 @@ extension SoptletterAPI: BaseAPI {
             return .requestPlain
         case let .editMessage(_, _, content):
             return .requestParameters(parameters: ["content": content], encoding: JSONEncoding.default)
+        case .deleteMessage:
+            return .requestPlain
         }
     }
 }
