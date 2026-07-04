@@ -65,9 +65,6 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
     private let cancelBag = CancelBag()
     private let postItCellTapPublisher = PassthroughSubject<(messageId: Int, topicId: Int), Never>()
     private let naviBackButtonTapPublisher = PassthroughSubject<Void, Never>()
-    private let writeButtonTapPublisher = PassthroughSubject<Void, Never>()
-    private let downloadTapPublisher = PassthroughSubject<Void, Never>()
-    private let reportButtonTapPublisher = PassthroughSubject<Void, Never>()
     
     private var soptletterMessages: SoptletterItemModel?
     
@@ -251,7 +248,7 @@ extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let soptletterMessages else { return }
-        let message = soptletterMessages.messages[indexPath.row]
+        let message = soptletterMessages.messages[indexPath.row]        
         postItCellTapPublisher.send((message.messageId, soptletterMessages.topicId))
     }
 }

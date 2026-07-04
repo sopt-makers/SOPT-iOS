@@ -30,7 +30,7 @@ public final class SoptletterDetailModalVC: UIViewController {
         $0.axis = .horizontal
         $0.spacing = 8
         $0.alignment = .center
-        //        $0.isHidden = true
+        $0.isHidden = true
     }
     
     private let dimmedView = UIView().then {
@@ -138,10 +138,9 @@ public final class SoptletterDetailModalVC: UIViewController {
         containerView.backgroundColor = backgroundColor
         nameLabel.text = name
         contentLabel.text = content
-        dateLabel.text = date
+        dateLabel.text = date.toMMDDFormat()
         likeCountLabel.text = "\(likeCount)"
-        // TODO: 테스트 끝나고 주석지우기
-        // editDeleteStackView.isHidden = !mine
+        editDeleteStackView.isHidden = !mine
         return self
     }
 }
