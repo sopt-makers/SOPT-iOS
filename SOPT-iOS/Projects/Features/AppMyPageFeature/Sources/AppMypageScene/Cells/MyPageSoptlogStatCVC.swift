@@ -68,11 +68,6 @@ extension MyPageSoptlogStatCVC {
             $0.size.equalTo(Metric.iconBackgroundSize)
         }
 
-        iconView.snp.makeConstraints {
-            $0.center.equalToSuperview()
-            $0.size.equalTo(22)
-        }
-
         titleLabel.snp.makeConstraints {
             $0.leading.equalTo(iconBackgroundView.snp.trailing).offset(14)
             $0.centerY.equalTo(iconBackgroundView)
@@ -89,8 +84,12 @@ extension MyPageSoptlogStatCVC {
 // MARK: - Methods
 
 extension MyPageSoptlogStatCVC {
-    func configure(icon: UIImage?, title: String, count: Int) {
+    func configure(icon: UIImage?, iconSize: CGFloat, title: String, count: Int) {
         iconView.image = icon
+        iconView.snp.remakeConstraints {
+            $0.center.equalToSuperview()
+            $0.size.equalTo(iconSize)
+        }
         titleLabel.attributedText = title.applyMDSFont(mdsFont: .body3, color: DSKitAsset.Colors.gray200.color)
         countLabel.attributedText = "\(count)회".applyMDSFont(mdsFont: .heading7, color: DSKitAsset.Colors.white.color)
     }

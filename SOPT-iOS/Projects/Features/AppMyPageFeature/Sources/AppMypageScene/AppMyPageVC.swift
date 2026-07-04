@@ -113,9 +113,9 @@ extension AppMyPageVC {
         let soptlogStatRegistration: MyPageSoptlogStatCellRegistration = collectionView.createCellRegistration { cell, _, item in
             switch item.type {
             case .soptlogSoptampPreview:
-                cell.configure(icon: DSKitAsset.Assets.icThumb.image, title: I18N.Soptlog.soptamp, count: 0)
+                cell.configure(icon: DSKitAsset.Assets.icThumb.image, iconSize: 21, title: I18N.Soptlog.soptamp, count: 0)
             case .soptlogPokePreview:
-                cell.configure(icon: DSKitAsset.Assets.icPokeFilled.image.withRenderingMode(.alwaysTemplate), title: I18N.Soptlog.poke, count: 0)
+                cell.configure(icon: DSKitAsset.Assets.icPokeFilled.image.withRenderingMode(.alwaysTemplate), iconSize: 24, title: I18N.Soptlog.poke, count: 0)
             default:
                 break
             }
