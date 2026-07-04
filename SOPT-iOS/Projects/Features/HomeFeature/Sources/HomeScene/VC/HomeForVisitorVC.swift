@@ -131,14 +131,9 @@ extension HomeForVisitorVC {
     }
     
     private func bindViewModels() {
-        let settingButtonTapped = naviBar.settingButtonTap
-            .mapVoid()
-            .asDriver()
-        
         let input = HomeForVisitorViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
-            cellTapped: cellTapped.asDriver(),
-            settingButtonTapped: settingButtonTapped
+            cellTapped: cellTapped.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)

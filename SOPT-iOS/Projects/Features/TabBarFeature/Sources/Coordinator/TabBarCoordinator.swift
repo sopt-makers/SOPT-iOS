@@ -78,8 +78,8 @@ public final class TabBarCoordinator: BaseCoordinator {
 //                self.delegate?.tabBarCoordinator(self, to: .soptamp)
             case .poke:
                 self.delegate?.tabBarCoordinator(self, to: .poke)
-            case .soptlog:
-                self.delegate?.tabBarCoordinator(self, to: .soptlog)
+            case .mypage:
+                self.delegate?.tabBarCoordinator(self, to: .mypage)
             }
         }
         

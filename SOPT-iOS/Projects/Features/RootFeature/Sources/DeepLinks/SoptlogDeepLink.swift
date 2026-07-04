@@ -12,16 +12,14 @@ import BaseFeatureDependency
 
 public struct SoptlogDeepLink: DeepLinkExecutable {
     public let name = "soptlog"
-    public let children: [DeepLinkExecutable] = [NotificationDeepLink(), SoptampDeepLink(), MyPageDeepLink(), AttendanceDeepLink(), PokeDeepLink(), DailySoptuneDeepLink()]
+    public let children: [DeepLinkExecutable] = []
     public var isDestination: Bool = false
-    
+
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
-        
-        if self.isDestination == true {
-            coordinator.runTabBarFlow(initSelectedTabType: .soptlog)
-        }
-        
+
+        coordinator.pushSoptlogInMyPageTab()
+
         return coordinator
     }
 }

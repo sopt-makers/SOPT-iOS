@@ -10,27 +10,39 @@ import Foundation
 import Core
 
 enum MyPageItemType: Hashable {
+    /// Profile 섹션
+    case profileCard
+
+    /// Soptlog Preview 섹션
+    case soptlogSoptampPreview
+    case soptlogPokePreview
+    case soptlogCheckButton
+
     /// Service Policy 섹션
     case privacyPolicy
     case termsOfUse
     case sendFeedback
-    
+
     /// Notification Settings 섹션
     case setNotification
-    
+
     /// Soptamp Settings 섹션
     case editOnelineSentence
     case resetStamp
-    
+
     /// Etc User 섹션
     case logout
     case withdrawal
-    
+
     /// Etc Visitor 섹션
     case login
-    
+
     var title: String {
         switch self {
+        case .profileCard, .soptlogSoptampPreview, .soptlogPokePreview:
+            return ""
+        case .soptlogCheckButton:
+            return I18N.MyPage.checkSoptlog
         case .privacyPolicy:
             return I18N.MyPage.ServicePolicySection.privacyPolicy
         case .termsOfUse:
@@ -57,7 +69,7 @@ struct MyPageItem: Hashable {
     let id = UUID()
     let type: MyPageItemType
     let hasArrow: Bool = true
-    
+
     var title: String {
         return type.title
     }

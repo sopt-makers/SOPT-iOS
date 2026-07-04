@@ -16,7 +16,7 @@ final class MyPageSectionHeaderView: UICollectionReusableView {
     
     private let sectionTitle = UILabel().then{
         $0.font = DSKitFontFamily.Suit.medium.font(size: 12)
-        $0.textColor = DSKitAsset.Colors.gray400.color
+        $0.textColor = DSKitAsset.Colors.gray80.color
     }
     
     // MARK: - Life Cycle
@@ -39,6 +39,7 @@ extension MyPageSectionHeaderView {
         
         sectionTitle.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(16)
+            make.trailing.lessThanOrEqualToSuperview().inset(8)
             make.bottom.equalToSuperview()
         }
     }
