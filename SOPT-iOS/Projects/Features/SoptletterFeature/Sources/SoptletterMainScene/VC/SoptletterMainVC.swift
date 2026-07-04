@@ -121,7 +121,7 @@ private extension SoptletterMainVC {
             writeButtonTap: writeButtonTap,
             downloadButtonTap: downloadButtonTap,
             reportButtonTap: reportButtonTap,
-            postItCellTap: postItCellTapPublisher.asDriver(),
+            postItCellTap: postItCellTapPublisher.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)

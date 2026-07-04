@@ -19,11 +19,12 @@ public final class SoptletterCoordinator: BaseCoordinator {
     // MARK: - Properties
     
     // 임시
-    private let onboardingFinished: Bool = false
+    private let onboardingFinished: Bool = true
 
     public var finishFlow: (() -> Void)?
 
     private let factory: SoptletterFeatureBuildable
+    private var soptletterMain: SoptletterMainPresentable!
     private weak var navigationController: UINavigationController?
     private weak var soptletterRootController: UINavigationController?
 
@@ -40,12 +41,11 @@ public final class SoptletterCoordinator: BaseCoordinator {
     // MARK: - Coordinator Life Cycle
 
     public override func start() {
-        showSoptletterMain()
-//        if onboardingFinished {
-//            showSoptletterMain()
-//        } else {
-//            showSoptletterOnboarding()
-//        }
+        if onboardingFinished {
+            showSoptletterMain()
+        } else {
+            showSoptletterOnboarding()
+        }
     }
 
     // MARK: - Navigation
@@ -97,7 +97,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
     }
     
     private func showSoptletterMain() {
-        var soptletterMain = factory.makeSoptletterMainVC(coordinator: self)
+        soptletterMain = factory.makeSoptletterMainVC(coordinator: self)
         
         soptletterMain.vm.onNaviBackTap = { [weak self] in
             print("handle soptletterMain.vm.onNaviBackTap")
@@ -139,6 +139,14 @@ public final class SoptletterCoordinator: BaseCoordinator {
         
         soptletterDetail.vm.onError = { [weak self] in
             AlertUtils.presentNetworkAlertVC()
+        }
+        
+        soptletterDetail.vm.onEditCompleted = { [weak self] in
+            self?.soptletterMain.vm.refreshMessagesTrigger()
+        }
+        
+        soptletterDetail.vm.onDeleteCompleted = { [weak self] in
+            self?.soptletterMain.vm.refreshMessagesTrigger()
         }
         
         navigationController?.present(soptletterDetail.vc, animated: true)
