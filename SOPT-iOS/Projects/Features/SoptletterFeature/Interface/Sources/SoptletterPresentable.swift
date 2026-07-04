@@ -40,6 +40,7 @@ public protocol SelectTopicCoordinatable {
 
 public protocol SoptletterDetailRoutingTrigger {
     var onNaviBackTap: (() -> Void)? { get set }
+    var onError: (() -> Void)? { get set }
 }
 
 public typealias SoptletterWritingViewModelType = ViewModelType & SoptletterCoordinatable

@@ -32,8 +32,9 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
     
     // MARK: - Properties
     
-    public var onNaviBackTap: (() -> Void)?
     private var submitTask: Task<Void, Never>?
+    public var onNaviBackTap: (() -> Void)?
+    public var onError: (() -> Void)?
     
     private let messageId: Int
     private let topicId: Int
@@ -55,14 +56,14 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.submitTask?.cancel()
-                owner.submitTask = Task {
+                owner.submitTask = Task { [weak self] in
                     do {
                         let result = try await owner.useCase.fetchSoptletterMessage(messageId: owner.messageId, topicId: owner.topicId)
                         await MainActor.run { output.soptletterMessage.send(result) }                        
                     } catch is CancellationError {
                         return
                     } catch {
-                        print(error.localizedDescription)
+                        self?.onError?()
                     }
                 }              
             }.store(in: cancelBag)                        

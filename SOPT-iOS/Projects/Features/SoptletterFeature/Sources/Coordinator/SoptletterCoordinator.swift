@@ -136,7 +136,11 @@ public final class SoptletterCoordinator: BaseCoordinator {
             print("handle soptletterMain.vm.onNaviBackTap")
         }
         
-        navigationController?.present(soptletterDetail.vc, animated: true)
+        soptletterDetail.vm.onError = { [weak self] in
+            AlertUtils.presentNetworkAlertVC()
+        }
+        
+        soptletterRootController?.present(soptletterDetail.vc, animated: true)
     }
     
     private func showSelectTopic() {
