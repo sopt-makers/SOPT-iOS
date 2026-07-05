@@ -72,8 +72,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
         
         checkNickname.vm.onGoButtonTap = { [weak self] in
-            // 임시
-            self?.showSelectTopic()
+            self?.showSoptletterMain()
         }
         
         checkNickname.vm.showAlert = {
