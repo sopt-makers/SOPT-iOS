@@ -122,7 +122,7 @@ extension SoptletterMainViewModel {
             do {
                 let result = try await useCase.fetchSoptletterMessages(topicId: topicId, cursor: nil, size: nil)
                 await MainActor.run {
-                    output.soptletterMessages.send(result)
+                    output.soptletterMessages.send(result)                    
                 }
             } catch is CancellationError {
                 return

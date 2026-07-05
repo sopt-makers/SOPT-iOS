@@ -117,15 +117,19 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
 
 extension SoptletterDetailViewModel {
     private func deleteMessage(output: Output, content: String) {
-        submitTask?.cancel()        
+        submitTask?.cancel()
         submitTask = Task { [weak self] in
+            guard let self else { return }
             do {
                 try await useCase.deleteMessage(messageId: messageId, topicId: topicId)
-                output.soptletterDeleteCompleted.send()
+                await MainActor.run {
+                    output.soptletterDeleteCompleted.send()
+                    self.onDeleteCompleted?()
+                }
             } catch is CancellationError {
-                self?.onError?()
+                return
             } catch {
-                self?.onError?()
+                await MainActor.run { self.onError?() }
             }
         }
     }
@@ -133,13 +137,14 @@ extension SoptletterDetailViewModel {
     public func fetchMessages(output: Output) {
         submitTask?.cancel()
         submitTask = Task { [weak self] in
+            guard let self else { return }
             do {
                 let messages = try await useCase.fetchSoptletterMessage(messageId: messageId, topicId: topicId)
                 await MainActor.run { output.soptletterMessage.send(messages) }
             } catch is CancellationError {
                 return
             } catch {
-                self?.onError?()
+                await MainActor.run { self.onError?() }
             }
         }
     }
