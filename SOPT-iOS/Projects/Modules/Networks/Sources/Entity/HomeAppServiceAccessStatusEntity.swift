@@ -10,11 +10,16 @@ import Foundation
 
 // MARK: - Entity
 
+public struct HomeAppServiceStatusEntity: Codable {
+    public let isAppjamMode: Bool
+    public let appServices: [HomeAppServiceAccessStatusEntity]
+}
+
 public struct HomeAppServiceAccessStatusEntity: Codable {
     public let serviceName: String
     public let displayAlarmBadge: Bool
     public let alarmBadge: String
-    public let iconURL, deepLink: String?
+    public let iconURL, deepLink: String
 
     enum CodingKeys: String, CodingKey {
         case serviceName, displayAlarmBadge, alarmBadge

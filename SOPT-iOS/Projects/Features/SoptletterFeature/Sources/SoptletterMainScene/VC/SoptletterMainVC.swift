@@ -64,6 +64,15 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
         $0.backgroundColor = DSKitAsset.Colors.gray10.color
         $0.layer.cornerRadius = 28
     }
+    
+    private let bannerImageButton = UIButton().then {
+        $0.setImage(DSKitAsset.Assets.imgSoptletteraBanner.image, for: .normal)
+    }
+    
+    private let placeHolderImageView = UIButton().then {
+        $0.setImage(DSKitAsset.Assets.imgSoptletterPlaceholder.image, for: .normal)
+        $0.isHidden = true
+    }
             
     private let viewModel: SoptletterMainViewModel
     private let cancelBag = CancelBag()
@@ -141,6 +150,7 @@ private extension SoptletterMainVC {
             .sink { owner, model in
                 owner.soptletterMessages = model
                 owner.configureUI(model)
+                owner.placeHolderImageView.isHidden = !model.messages.isEmpty
                 owner.collectionView.reloadData()
             }.store(in: cancelBag)
     }
@@ -152,7 +162,12 @@ private extension SoptletterMainVC {
     private func setLayout() {
         rightButtonStackView.addArrangedSubviews(downloadButton, reportButton, menuButton)
         navigationView.addSubviews(closeButton, titleLabel, rightButtonStackView)
-        view.addSubviews(collectionView, navigationView, writeButton)
+        view.addSubviews(collectionView, navigationView, writeButton, placeHolderImageView)
+        
+        placeHolderImageView.snp.makeConstraints { make in
+            make.top.equalTo(navigationView.snp.bottom).offset(86)
+            make.centerX.equalToSuperview()
+        }
         
         navigationView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()

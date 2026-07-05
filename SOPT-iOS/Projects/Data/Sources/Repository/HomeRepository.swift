@@ -46,8 +46,8 @@ extension HomeRepository: HomeRepositoryInterface {
     }
     
     public func getAppServices() -> AnyPublisher<[Domain.HomeAppServicesModel], any Error> {
-        homeService.getAppServiceAccessStatus()
-            .map { $0.map { $0.toDomain() } }
+        return homeService.getAppServiceAccessStatus()
+            .map { $0.appServices.map { $0.toDomain() } }
             .eraseToAnyPublisher()
     }
 
@@ -86,7 +86,7 @@ extension HomeRepository: HomeRepositoryInterface {
     
     public func getAppServicesAsync() async throws -> [Domain.HomeAppServicesModel] {
         let entity = try await homeService.getAppServiceAccessStatusAsync()
-        return entity.map { $0.toDomain() }
+        return entity.appServices.map { $0.toDomain() }
     }
     
     public func getCalendarDetailAsync() async throws -> [Domain.HomeCalendarDetailModel] {

@@ -318,7 +318,7 @@ extension BaseService {
                         default:
                             throw NSError(domain: "알 수 없는 오류, errorCode: \(response.statusCode)", code: response.statusCode)
                         }
-                    } catch let error {
+                    } catch let error {                        
                         if let error = error as? APIError {
                             continuation.resume(throwing: error)
                         } else {

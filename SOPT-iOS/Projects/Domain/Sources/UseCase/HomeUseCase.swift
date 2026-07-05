@@ -108,7 +108,7 @@ extension DefaultHomeUseCase: HomeUseCase {
         try await repository.getRecentScheduleAsync()
     }
     
-    public func getAppServicesAsync() async throws -> [HomeAppServicesModel] {
+    public func getAppServicesAsync() async throws -> [HomeAppServicesModel] {        
         // 캐시된 데이터가 있으면 반환
         if let cached = cachedAppServices {
             return cached
