@@ -37,11 +37,7 @@ extension SoptletterAPI: BaseAPI {
             return "/onboarding"
         case .completeOnboarding:
             return "/onboarding/complete"
-        case let .soptletterMessage(messageId, topicId):
-            return "/topics/\(topicId)/messages/\(messageId)"
-        case let .editMessage(messageId, topicId, _):
-            return "/topics/\(topicId)/messages/\(messageId)"
-        case let .deleteMessage(messageId, topicId):
+        case let .soptletterMessage(messageId, topicId), let .deleteMessage(messageId, topicId), let .editMessage(messageId, topicId, _):
             return "/topics/\(topicId)/messages/\(messageId)"
         }
     }
@@ -50,16 +46,12 @@ extension SoptletterAPI: BaseAPI {
         switch self {
         case .writeMessage:
             return .post
-        case .fetchTopics, .fetchTopic:
-            return .get
-        case .fetchProfile:
+        case .fetchTopics, .fetchTopic, .fetchProfile, .soptletterMessages, .soptletterMessage:
             return .get
         case .completeOnboarding:
             return .post
         case .editMessage:
             return .patch
-        case .soptletterMessages, .soptletterMessage:
-            return .get
         case .deleteMessage:
             return .delete
         }

@@ -173,7 +173,7 @@ public final class SoptletterDetailModalVC: UIViewController {
         containerView.backgroundColor = backgroundColor
         nameLabel.text = name
         contentLabel.text = content
-        dateLabel.text = date.toMMDDFormat()
+        dateLabel.text = DateFormatManager.shared.serverTimeToString(date, from: .dateWithDot)
         likeCountLabel.text = "\(likeCount)"
         editDeleteStackView.isHidden = !mine
         return self

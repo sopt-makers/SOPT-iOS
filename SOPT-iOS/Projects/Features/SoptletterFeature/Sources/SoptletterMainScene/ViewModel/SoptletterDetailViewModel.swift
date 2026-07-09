@@ -96,30 +96,32 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
 }
 
 extension SoptletterDetailViewModel {
-    private func deleteMessage(output: Output, content: String) {
-        submitTask?.cancel()        
-        submitTask = Task { [weak self] in
-            do {
-                try await useCase.deleteMessage(messageId: messageId, topicId: topicId)
-                output.soptletterDeleteCompleted.send()
-            } catch is CancellationError {
-                self?.onError?()
-            } catch {
-                self?.onError?()
-            }
-        }
-    }
-    
     public func fetchMessages(output: Output) {
         submitTask?.cancel()
         submitTask = Task { [weak self] in
+            guard let self else { return }
             do {
-                let messages = try await useCase.fetchSoptletterMessage(messageId: messageId, topicId: topicId)
+                let messages = try await self.useCase.fetchSoptletterMessage(messageId: self.messageId, topicId: self.topicId)
                 await MainActor.run { output.soptletterMessage.send(messages) }
             } catch is CancellationError {
                 return
             } catch {
-                self?.onError?()
+                await MainActor.run { self.onError?() }
+            }
+        }
+    }
+
+    private func deleteMessage(output: Output, content: String) {
+        submitTask?.cancel()
+        submitTask = Task { [weak self] in
+            guard let self else { return }
+            do {
+                try await self.useCase.deleteMessage(messageId: self.messageId, topicId: self.topicId)
+                output.soptletterDeleteCompleted.send()
+            } catch is CancellationError {
+                return
+            } catch {
+                await MainActor.run { self.onError?() }
             }
         }
     }
