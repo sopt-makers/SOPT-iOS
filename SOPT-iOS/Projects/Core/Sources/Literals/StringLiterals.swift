@@ -511,7 +511,7 @@ public struct I18N {
         public static let charLimit = "0/250자"
         public static let charLimitError = "공백 포함 250자 이하로만 작성할 수 있어요."
         public static let submitButton = "작성 완료"
-        public static let submitSuccess = "메시지 작성을 완료했어요."
+        public static let submitSuccess = "메세지 작성을 완료했어요."
         public static let submitFailure = "실패했습니다"
         
         public struct Onboarding {
@@ -530,6 +530,16 @@ public struct I18N {
         }
         
         public static let topicTitle = "솝레터 주제"
+
+        public struct Detail {
+            public static let confirmTitle = "확인"
+            public static let editCompleteTitle = "수정완료"
+            public static let editCompleteToast = "메세지 수정을 완료했어요."
+            public static let deleteCompleteToast = "메세지 삭제를 완료했어요."
+            public static let deleteAlertTitle = "솝레터 삭제하기"
+            public static let deleteAlertDescription = "해당 솝레터가 영구적으로 삭제되어요.\n그래도 삭제하시겠어요?"
+            public static let deleteButtonTitle = "삭제"
+        }
     }
 }
 

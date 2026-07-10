@@ -37,7 +37,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
     
     private var submitTask: Task<Void, Never>?
     public var onNaviBackTap: (() -> Void)?
-    public var onError: (() -> Void)?
+    public var onError: (@MainActor () -> Void)?
     public var onEditCompleted: (() -> Void)?
     public var onDeleteCompleted: (() -> Void)?
     
@@ -69,24 +69,23 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
                 owner.submitTask?.cancel()
                 owner.submitTask = Task { [weak self] in
                     do {
-                        try await owner.useCase.editMessage(messageId: owner.messageId, topicId: owner.topicId, content: content)         
+                        try await owner.useCase.editMessage(messageId: owner.messageId, topicId: owner.topicId, content: content)
                         output.soptletterEditCompleted.send()
                         owner.onEditCompleted?()
                     } catch is CancellationError {
-                        self?.onError?()
+                        return
                     } catch {
-                        self?.onError?()
+                        await self?.onError?()
                     }
                 }
             }
             .store(in: cancelBag)
-                
+
         input.deleteButtonTap
             .withUnretained(self)
-            .sink { owner, content in                
-                AlertUtils.presentAlertVC(type: .titleDescription, title: "솝레터 삭제하기", description: "해당 솝레터가 영구적으로 삭제되어요.\n그래도 삭제하시겠어요?", customButtonTitle: "삭제", customAction: {
+            .sink { owner, content in
+                AlertUtils.presentAlertVC(type: .titleDescription, title: I18N.Soptletter.Detail.deleteAlertTitle, description: I18N.Soptletter.Detail.deleteAlertDescription, customButtonTitle: I18N.Soptletter.Detail.deleteButtonTitle, customAction: {
                     owner.deleteMessage(output: output, content: content)
-                    owner.onDeleteCompleted?()
                 })
             }
             .store(in: cancelBag)
@@ -106,7 +105,7 @@ extension SoptletterDetailViewModel {
             } catch is CancellationError {
                 return
             } catch {
-                await MainActor.run { self.onError?() }
+                await self.onError?()
             }
         }
     }
@@ -118,10 +117,11 @@ extension SoptletterDetailViewModel {
             do {
                 try await self.useCase.deleteMessage(messageId: self.messageId, topicId: self.topicId)
                 output.soptletterDeleteCompleted.send()
+                self.onDeleteCompleted?()
             } catch is CancellationError {
                 return
             } catch {
-                await MainActor.run { self.onError?() }
+                await self.onError?()
             }
         }
     }
