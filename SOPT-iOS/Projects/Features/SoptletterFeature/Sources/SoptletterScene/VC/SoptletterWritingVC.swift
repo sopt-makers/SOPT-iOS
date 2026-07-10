@@ -24,22 +24,15 @@ public final class SoptletterWritingVC: UIViewController, SoptletterViewControll
     public let viewModel: SoptletterWritingViewModel
     private let cancelBag = CancelBag()
 
-    private let maxCharCount = 350
+    private let maxCharCount = 250
     private let textChangedSubject = PassthroughSubject<String, Never>()
     private let submitTapSubject = PassthroughSubject<Void, Never>()
     private var isSettingAttributedText = false
-    private var keyboardWillShowObserver: NSObjectProtocol?
-    private var keyboardWillHideObserver: NSObjectProtocol?
 
     private lazy var naviBackTap: Driver<Void> = backButton
         .publisher(for: .touchUpInside)
         .mapVoid()
         .asDriver()
-
-    // MARK: - UI Components (Scroll)
-
-    private let scrollView = UIScrollView()
-    private let contentView = UIView()
 
     // MARK: - UI Components (NavBar)
 
@@ -120,11 +113,11 @@ public final class SoptletterWritingVC: UIViewController, SoptletterViewControll
     private let submitButton = AppCustomButton(title: I18N.Soptletter.submitButton)
         .setEnabled(false)
         .setConfigForState(
-            bgColor: DSKitAsset.Colors.gray600.color,
-            disabledColor: DSKitAsset.Colors.gray100.color,
-            disabledTextColor: DSKitAsset.Colors.gray300.color,
+            bgColor: DSKitAsset.Colors.gray100.color,
+            disabledColor: DSKitAsset.Colors.gray600.color,
+            disabledTextColor: DSKitAsset.Colors.white.color,
             disabledFont: DSKitFontFamily.Suit.semiBold.font(size: 16),
-            enabledTextColor: DSKitAsset.Colors.white.color,
+            enabledTextColor: DSKitAsset.Colors.gray300.color,
             enabledFont: DSKitFontFamily.Suit.semiBold.font(size: 16)
         )
 
@@ -139,15 +132,6 @@ public final class SoptletterWritingVC: UIViewController, SoptletterViewControll
         fatalError("init(coder:) has not been implemented")
     }
 
-    deinit {
-        if let keyboardWillShowObserver {
-            NotificationCenter.default.removeObserver(keyboardWillShowObserver)
-        }
-        if let keyboardWillHideObserver {
-            NotificationCenter.default.removeObserver(keyboardWillHideObserver)
-        }
-    }
-
     // MARK: - View Life Cycle
 
     public override func viewDidLoad() {
@@ -156,7 +140,6 @@ public final class SoptletterWritingVC: UIViewController, SoptletterViewControll
         setUI()
         setLayout()
         bindViewModels()
-        setKeyboardObserver()
         hideKeyboard()
     }
 }
@@ -175,24 +158,13 @@ private extension SoptletterWritingVC {
         descriptionStackView.addArrangedSubview(mailBoxImageView)
         descriptionStackView.addArrangedSubview(descriptionLabel)
 
-        view.addSubview(scrollView)
-        scrollView.addSubview(contentView)
-        contentView.addSubviews(navBarView, descriptionStackView, inputContainerView, submitButton)
+        view.addSubviews(navBarView, descriptionStackView, inputContainerView, submitButton)
         navBarView.addSubviews(backButton, navTitleLabel)
         inputContainerView.addSubviews(recipientLabel, textView, placeholderLabel, charCountLabel)
 
-        scrollView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide)
-        }
-
-        contentView.snp.makeConstraints { make in
-            make.edges.equalTo(scrollView.contentLayoutGuide)
-            make.width.equalTo(scrollView.frameLayoutGuide)
-            make.height.greaterThanOrEqualTo(scrollView.frameLayoutGuide)
-        }
-
         navBarView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.leading.trailing.equalToSuperview()
             make.height.equalTo(56)
         }
 
@@ -243,34 +215,10 @@ private extension SoptletterWritingVC {
         }
 
         submitButton.snp.makeConstraints { make in
-            make.top.greaterThanOrEqualTo(inputContainerView.snp.bottom).offset(20)
             make.bottom.equalToSuperview().inset(34)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(56)
         }
-    }
-
-    func setKeyboardObserver() {
-        keyboardWillShowObserver = NotificationCenter.default.addObserver(
-            forName: UIResponder.keyboardWillShowNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            self?.scrollInputContainerToTop()
-        }
-
-        keyboardWillHideObserver = NotificationCenter.default.addObserver(
-            forName: UIResponder.keyboardWillHideNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            self?.scrollView.setContentOffset(.zero, animated: true)
-        }
-    }
-
-    func scrollInputContainerToTop() {
-        let targetOffsetY = max(0, inputContainerView.frame.minY - 10)
-        scrollView.setContentOffset(CGPoint(x: 0, y: targetOffsetY), animated: true)
     }
 
     func bindViewModels() {
@@ -320,7 +268,7 @@ extension SoptletterWritingVC: UITextViewDelegate {
     }
 
     private func updateCharCount(_ count: Int) {
-        charCountLabel.text = "\(count)/\(maxCharCount)자"
+        charCountLabel.text = "\(count)/250자"
         charCountLabel.textColor = count > maxCharCount
             ? DSKitAsset.Colors.error.color
             : DSKitAsset.Colors.gray300.color
