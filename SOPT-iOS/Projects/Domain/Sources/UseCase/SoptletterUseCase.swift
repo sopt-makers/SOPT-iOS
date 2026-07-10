@@ -21,7 +21,7 @@ public protocol SoptletterUseCase {
 public final class DefaultSoptletterUseCase: SoptletterUseCase {
     
     private let repository: SoptletterRepositoryInterface
-    private let maxCharCount = 250
+    private let maxCharCount = 350
     
     public var topicsResult = PassthroughSubject<SoptletterTopicListModel, Never>()
     public var selectedTopicResult = PassthroughSubject<SoptletterTopicDetailModel, Never>()
