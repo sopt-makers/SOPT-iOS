@@ -61,18 +61,10 @@ extension SoptletterAPI: BaseAPI {
         switch self {
         case .writeMessage(_, let content):
             return .requestParameters(parameters: ["content": content], encoding: JSONEncoding.default)
-        case .fetchTopics, .fetchTopic:
-            return .requestPlain
-        case .completeOnboarding, .fetchProfile:
-            return .requestPlain
-        case .soptletterMessages:
-            return .requestPlain
-        case .soptletterMessage:
+        case .fetchTopics, .fetchTopic, .completeOnboarding, .fetchProfile, .soptletterMessages, .soptletterMessage, .deleteMessage:
             return .requestPlain
         case let .editMessage(_, _, content):
             return .requestParameters(parameters: ["content": content], encoding: JSONEncoding.default)
-        case .deleteMessage:
-            return .requestPlain
         }
     }
 }
