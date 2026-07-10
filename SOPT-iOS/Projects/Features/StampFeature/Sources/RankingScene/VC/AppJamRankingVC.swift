@@ -246,7 +246,7 @@ extension AppJamRankingVC: UICollectionViewDelegate {
             teamCellTappedPublisher.send(model)
         case .missionCards:
             guard let item = dataSource.itemIdentifier(for: indexPath),
-                  case .mission(let model) = item else { return }            
+                  case .mission(let model) = item else { return }
             missionCellTappedPublisher.send(model)
         }
     }

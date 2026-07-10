@@ -21,5 +21,5 @@ public enum DateFormatType: String {
     case monthDayWithDot = "MM.dd"
     case monthDayWIthDash = "MM-dd"
     case time = "HH:mm"
-    case networkLogger = "dd/MM/yyyy HH:mm:ss"    
+    case networkLogger = "dd/MM/yyyy HH:mm:ss"
 }

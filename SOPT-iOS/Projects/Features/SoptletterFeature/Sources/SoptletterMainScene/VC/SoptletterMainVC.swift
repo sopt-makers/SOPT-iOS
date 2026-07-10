@@ -93,7 +93,7 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
     public override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
-        setLayout()        
+        setLayout()
         bindViewModels()
         setCollectionView()
     }
