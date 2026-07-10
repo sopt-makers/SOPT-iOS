@@ -74,6 +74,7 @@ public extension String {
 }
 
 public extension String {
+    
     func isPercentEncoded() -> Bool {
         guard let decodedString = self.removingPercentEncoding,
               let decodedData = decodedString.data(using: .utf8)

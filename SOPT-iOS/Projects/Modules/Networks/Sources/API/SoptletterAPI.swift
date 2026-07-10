@@ -18,6 +18,8 @@ public enum SoptletterAPI {
     case completeOnboarding
     case soptletterMessages(topicId: Int, cursor: Int?, size: Int?)
     case soptletterMessage(messageId: Int, topicId: Int)
+    case editMessage(messageId: Int, topicId: Int, content: String)
+    case deleteMessage(messageId: Int, topicId: Int)
 }
 
 extension SoptletterAPI: BaseAPI {
@@ -35,7 +37,7 @@ extension SoptletterAPI: BaseAPI {
             return "/onboarding"
         case .completeOnboarding:
             return "/onboarding/complete"
-        case let .soptletterMessage(messageId, topicId):
+        case let .soptletterMessage(messageId, topicId), let .deleteMessage(messageId, topicId), let .editMessage(messageId, topicId, _):
             return "/topics/\(topicId)/messages/\(messageId)"
         }
     }
@@ -44,14 +46,14 @@ extension SoptletterAPI: BaseAPI {
         switch self {
         case .writeMessage:
             return .post
-        case .fetchTopics, .fetchTopic:
-            return .get
-        case .fetchProfile:
+        case .fetchTopics, .fetchTopic, .fetchProfile, .soptletterMessages, .soptletterMessage:
             return .get
         case .completeOnboarding:
             return .post
-        case .soptletterMessages, .soptletterMessage:
-            return .get
+        case .editMessage:
+            return .patch
+        case .deleteMessage:
+            return .delete
         }
     }
 
@@ -59,14 +61,10 @@ extension SoptletterAPI: BaseAPI {
         switch self {
         case .writeMessage(_, let content):
             return .requestParameters(parameters: ["content": content], encoding: JSONEncoding.default)
-        case .fetchTopics, .fetchTopic:
+        case .fetchTopics, .fetchTopic, .completeOnboarding, .fetchProfile, .soptletterMessages, .soptletterMessage, .deleteMessage:
             return .requestPlain
-        case .completeOnboarding, .fetchProfile:
-            return .requestPlain
-        case .soptletterMessages(topicId: let topicId, cursor: let cursor, size: let size):
-            return .requestPlain
-        case .soptletterMessage:
-            return .requestPlain
+        case let .editMessage(_, _, content):
+            return .requestParameters(parameters: ["content": content], encoding: JSONEncoding.default)
         }
     }
 }

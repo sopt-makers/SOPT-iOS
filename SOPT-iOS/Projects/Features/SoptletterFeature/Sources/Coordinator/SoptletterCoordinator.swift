@@ -21,6 +21,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
     public var finishFlow: (() -> Void)?
 
     private let factory: SoptletterFeatureBuildable
+    private var soptletterMain: SoptletterMainPresentable!
     private weak var navigationController: UINavigationController?
     private weak var soptletterRootController: UINavigationController?
 
@@ -37,12 +38,11 @@ public final class SoptletterCoordinator: BaseCoordinator {
     // MARK: - Coordinator Life Cycle
 
     public override func start() {
-        showSoptletterOnboarding()
-//        if UserDefaultKeyList.User.isCompleteSoptletterOnboarding == true {
-//            showSoptletterMain()
-//        } else {
-//            showSoptletterOnboarding()
-//        }
+        if UserDefaultKeyList.User.isCompleteSoptletterOnboarding == true {
+            showSoptletterMain()
+        } else {
+            showSoptletterOnboarding()
+        }
     }
 
     // MARK: - Navigation
@@ -98,8 +98,8 @@ public final class SoptletterCoordinator: BaseCoordinator {
         soptletterRootController?.pushViewController(soptletterWriting.vc, animated: true)
     }
     
-    private func showSoptletterMain() {
-        var soptletterMain = factory.makeSoptletterMainVC(coordinator: self)
+    private func showSoptletterMain(topicId: Int = 1) {
+        soptletterMain = factory.makeSoptletterMainVC(coordinator: self, topicId: topicId)
         
         soptletterMain.vm.onNaviBackTap = { [weak self] in
             print("handle soptletterMain.vm.onNaviBackTap")
@@ -129,7 +129,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
             AlertUtils.presentNetworkAlertVC()
         }
         
-        soptletterRootController?.pushViewController(soptletterMain.vc, animated: true)
+        navigationController?.pushViewController(soptletterMain.vc, animated: true)
     }
     
     private func presentSoptletterDetail(_ messageId: Int, _ topicId: Int) {
@@ -143,7 +143,15 @@ public final class SoptletterCoordinator: BaseCoordinator {
             AlertUtils.presentNetworkAlertVC()
         }
         
-        soptletterRootController?.present(soptletterDetail.vc, animated: true)
+        soptletterDetail.vm.onEditCompleted = { [weak self] in
+            self?.soptletterMain.vm.refreshMessagesTrigger()
+        }
+        
+        soptletterDetail.vm.onDeleteCompleted = { [weak self] in
+            self?.soptletterMain.vm.refreshMessagesTrigger()
+        }
+        
+        navigationController?.present(soptletterDetail.vc, animated: true)
     }
     
     private func showSelectTopic() {
@@ -153,8 +161,8 @@ public final class SoptletterCoordinator: BaseCoordinator {
             self?.soptletterRootController?.popViewController(animated: true)
         }
         
-        selectTopic.vm.onCellTap = { [weak self] title in
-            self?.showSoptletterMain()
+        selectTopic.vm.onCellTap = { [weak self] topic in
+            self?.showSoptletterMain(topicId: topic.topicId)
         }
         
         selectTopic.vm.showAlert = {

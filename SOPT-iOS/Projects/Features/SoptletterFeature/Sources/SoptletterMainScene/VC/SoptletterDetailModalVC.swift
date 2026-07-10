@@ -30,7 +30,13 @@ public final class SoptletterDetailModalVC: UIViewController {
         $0.axis = .horizontal
         $0.spacing = 8
         $0.alignment = .center
-        //        $0.isHidden = true
+        $0.isHidden = true
+    }
+    
+    private let cancelEditButton = UIButton().then {
+        $0.setImage(UIImage(systemName: "xmark"), for: .normal)
+        $0.tintColor = DSKitAsset.Colors.gray600.color
+        $0.isHidden = true
     }
     
     private let dimmedView = UIView().then {
@@ -57,6 +63,26 @@ public final class SoptletterDetailModalVC: UIViewController {
         $0.numberOfLines = 0
     }
     
+    private let contentTextView = UITextView().then {
+        $0.font = DSKitFontFamily.Suit.regular.font(size: 16)
+        $0.textColor = DSKitAsset.Colors.gray600.color
+        $0.backgroundColor = .clear
+        $0.isScrollEnabled = false
+        $0.isEditable = false
+        $0.textContainerInset = .zero
+        $0.textContainer.lineFragmentPadding = 0
+        $0.isHidden = true
+    }
+    
+    private let charCountLabel = UILabel().then {
+        $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
+        $0.textColor = DSKitAsset.Colors.gray300.color
+        $0.isHidden = true
+    }
+
+    private let maxContentLength = 350
+    private var isEditingContent = false
+    
     private let dateLabel = UILabel().then {
         $0.font = DSKitFontFamily.Suit.medium.font(size: 16)
         $0.textColor = DSKitAsset.Colors.gray300.color
@@ -80,7 +106,7 @@ public final class SoptletterDetailModalVC: UIViewController {
     }
     
     private let confirmButton = UIButton().then {
-        $0.setTitle("확인", for: .normal)
+        $0.setTitle(I18N.Soptletter.Detail.confirmTitle, for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.titleLabel?.font = DSKitFontFamily.Suit.bold.font(size: 16)
         $0.backgroundColor = DSKitAsset.Colors.gray800.color
@@ -88,10 +114,12 @@ public final class SoptletterDetailModalVC: UIViewController {
     }
     
     private let viewModel: SoptletterDetailViewModel
-    
     private let cancelBag = CancelBag()
-    private let editButtonTapPublisher = PassthroughSubject<Void, Never>()
-    private let deleteButtonTapPublisher = PassthroughSubject<Void, Never>()
+    
+    private lazy var cancelEditButtonTap: Driver<Void> = cancelEditButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
     
     private lazy var editButtonTap: Driver<Void> = editButton
         .publisher(for: .touchUpInside)
@@ -108,6 +136,13 @@ public final class SoptletterDetailModalVC: UIViewController {
         .mapVoid()
         .asDriver()
     
+    private var deleteButtonTapPublisher = PassthroughSubject<String, Never>()
+    
+    private let editCompleteButtonTapPublisher = PassthroughSubject<String, Never>()
+    
+    private lazy var editCompleteButtonTap: Driver<String> = editCompleteButtonTapPublisher.asDriver()
+    private lazy var deleteCompleteButtonTap: Driver<String> = deleteButtonTapPublisher.asDriver()
+    
     public init(viewModel: SoptletterDetailViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -123,6 +158,7 @@ public final class SoptletterDetailModalVC: UIViewController {
         super.viewDidLoad()
         setUI()
         setLayout()
+        setDelegate()
         bindViewModels()
     }
     
@@ -138,10 +174,9 @@ public final class SoptletterDetailModalVC: UIViewController {
         containerView.backgroundColor = backgroundColor
         nameLabel.text = name
         contentLabel.text = content
-        dateLabel.text = date
+        dateLabel.text = DateFormatManager.shared.serverTimeToString(date, from: .dateWithDot)
         likeCountLabel.text = "\(likeCount)"
-        // TODO: 테스트 끝나고 주석지우기
-        // editDeleteStackView.isHidden = !mine
+        editDeleteStackView.isHidden = !mine
         return self
     }
 }
@@ -151,18 +186,42 @@ extension SoptletterDetailModalVC {
         let input = SoptletterDetailViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
             editButtonTap: editButtonTap,
-            deleteButtonTap: deleteButtonTap,
-            confirmButtonTap: confirmButtonTap
+            deleteButtonTap: deleteCompleteButtonTap,
+            confirmButtonTap: confirmButtonTap,
+            editCompleteButtonTap: editCompleteButtonTap
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
         
+        deleteButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.deleteButtonTapPublisher.send(owner.contentLabel.text ?? "")
+            }.store(in: cancelBag)
+        
+        editButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.contentDisplayMode = .editing
+            }.store(in: cancelBag)
+
         confirmButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.dismiss(animated: true)
+                if owner.isEditingContent {
+                    let editedContent = owner.contentTextView.text ?? ""
+                    owner.editCompleteButtonTapPublisher.send(editedContent)
+                } else {
+                    owner.dismiss(animated: true)
+                }
             }.store(in: cancelBag)
-        
+
+        cancelEditButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.contentDisplayMode = .viewing
+            }.store(in: cancelBag)
+
         output.soptletterMessage
             .withUnretained(self)
             .sink { owner, model  in
@@ -175,6 +234,23 @@ extension SoptletterDetailModalVC {
                     mine: model.mine
                 )
             }.store(in: cancelBag)
+
+        output.soptletterEditCompleted
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.contentLabel.text = owner.contentTextView.text
+                owner.contentDisplayMode = .viewing
+                ToastUtils.showMDSToast(type: .success, text: I18N.Soptletter.Detail.editCompleteToast)
+            }.store(in: cancelBag)
+
+        output.soptletterDeleteCompleted
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.dismiss(animated: true)
+                ToastUtils.showMDSToast(type: .success, text: I18N.Soptletter.Detail.deleteCompleteToast)
+            }.store(in: cancelBag)
     }
 }
 
@@ -186,9 +262,10 @@ private extension SoptletterDetailModalVC {
     func setLayout() {
         editDeleteStackView.addArrangedSubviews(editButton, deleteButton)
         containerView.addSubview(editDeleteStackView)
+        containerView.addSubview(cancelEditButton)
         likeStackView.addArrangedSubviews(likeImageView, likeCountLabel)
-        contentScrollView.addSubview(contentLabel)
-        containerView.addSubviews(nameLabel, contentScrollView, dateLabel, likeStackView, confirmButton)
+        contentScrollView.addSubviews(contentLabel, contentTextView)
+        containerView.addSubviews(nameLabel, contentScrollView, dateLabel, likeStackView, confirmButton, charCountLabel)
         view.addSubviews(dimmedView, containerView)
         
         editDeleteStackView.snp.makeConstraints { make in
@@ -196,6 +273,12 @@ private extension SoptletterDetailModalVC {
             make.trailing.equalToSuperview().inset(20)
         }
         
+        cancelEditButton.snp.makeConstraints { make in
+            make.centerY.equalTo(nameLabel)
+            make.trailing.equalToSuperview().inset(20)
+            make.size.equalTo(24)
+        }
+
         dimmedView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
@@ -217,9 +300,19 @@ private extension SoptletterDetailModalVC {
         }
         
         contentLabel.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-            make.width.equalTo(contentScrollView)
-        }
+             make.edges.equalToSuperview()
+             make.width.equalTo(contentScrollView)
+         }
+         
+         contentTextView.snp.makeConstraints { make in
+             make.edges.equalToSuperview()
+             make.width.equalTo(contentScrollView)
+         }
+         
+         charCountLabel.snp.makeConstraints { make in
+             make.top.equalTo(contentScrollView.snp.bottom).offset(4)
+             make.trailing.equalToSuperview().inset(20)
+         }
         
         dateLabel.snp.makeConstraints { make in
             make.top.equalTo(contentScrollView.snp.bottom).offset(16)
@@ -245,5 +338,72 @@ private extension SoptletterDetailModalVC {
     
     @objc func dimmedViewDidTap() {
         dismiss(animated: true)
+    }
+
+    func setDelegate() {
+        contentTextView.delegate = self
+    }
+}
+
+extension SoptletterDetailModalVC: UITextViewDelegate {
+    public func textViewDidChange(_ textView: UITextView) {
+        updateCharCount(textView.text.count)
+        updateConfirmButtonState(textView.text.count)
+    }
+}
+
+private extension SoptletterDetailModalVC {
+    func updateCharCount(_ count: Int) {
+        charCountLabel.text = "\(count)/\(maxContentLength)자"
+        charCountLabel.textColor = count > maxContentLength ? .red : DSKitAsset.Colors.gray300.color
+    }
+    
+    func updateConfirmButtonState(_ count: Int) {
+        let isOverLimit = count > maxContentLength
+        confirmButton.isEnabled = !isOverLimit
+        confirmButton.backgroundColor = isOverLimit ? DSKitAsset.Colors.gray100.color : DSKitAsset.Colors.gray800.color
+    }
+    
+}
+
+extension SoptletterDetailModalVC {
+
+    private enum ContentDisplayMode {
+        case viewing
+        case editing
+    }
+
+    private var contentDisplayMode: ContentDisplayMode {
+        get { isEditingContent ? .editing : .viewing }
+        set {
+            isEditingContent = (newValue == .editing)
+            apply(newValue)
+        }
+    }
+
+    private func apply(_ mode: ContentDisplayMode) {
+        let isEditing = mode == .editing
+
+        if isEditing {
+            contentTextView.text = contentLabel.text
+            updateCharCount(contentTextView.text.count)
+            updateConfirmButtonState(contentTextView.text.count)
+        } else {
+            confirmButton.isEnabled = true
+            confirmButton.backgroundColor = DSKitAsset.Colors.gray800.color
+        }
+
+        contentLabel.isHidden = isEditing
+        contentTextView.isHidden = !isEditing
+        contentTextView.isEditable = isEditing
+        charCountLabel.isHidden = !isEditing
+        dateLabel.isHidden = isEditing
+        likeStackView.isHidden = isEditing
+        editDeleteStackView.isHidden = isEditing
+        cancelEditButton.isHidden = !isEditing
+
+        confirmButton.setTitle(isEditing ? I18N.Soptletter.Detail.editCompleteTitle : I18N.Soptletter.Detail.confirmTitle, for: .normal)
+
+        isEditing ? contentTextView.becomeFirstResponder() : contentTextView.resignFirstResponder()
     }
 }

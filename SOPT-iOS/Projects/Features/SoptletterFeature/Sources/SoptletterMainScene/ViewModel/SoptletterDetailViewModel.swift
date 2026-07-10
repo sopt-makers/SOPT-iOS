@@ -22,19 +22,24 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
     public struct Input {
         let viewDidLoad: Driver<Void>
         let editButtonTap: Driver<Void>
-        let deleteButtonTap: Driver<Void>
+        let deleteButtonTap: Driver<String>
         let confirmButtonTap: Driver<Void>
+        let editCompleteButtonTap: Driver<String>
     }
     
     public struct Output {
         let soptletterMessage = PassthroughSubject<SoptletterDetailMessageModel, Never>()
+        let soptletterEditCompleted = PassthroughSubject<Void, Never>()
+        let soptletterDeleteCompleted = PassthroughSubject<Void, Never>()
     }
     
     // MARK: - Properties
     
     private var submitTask: Task<Void, Never>?
     public var onNaviBackTap: (() -> Void)?
-    public var onError: (() -> Void)?
+    public var onError: (@MainActor () -> Void)?
+    public var onEditCompleted: (() -> Void)?
+    public var onDeleteCompleted: (() -> Void)?
     
     private let messageId: Int
     private let topicId: Int
@@ -55,37 +60,69 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
         input.viewDidLoad
             .withUnretained(self)
             .sink { owner, _ in
+                owner.fetchMessages(output: output)
+            }.store(in: cancelBag)
+                
+        input.editCompleteButtonTap
+            .withUnretained(self)
+            .sink { owner, content in
                 owner.submitTask?.cancel()
                 owner.submitTask = Task { [weak self] in
                     do {
-                        let result = try await owner.useCase.fetchSoptletterMessage(messageId: owner.messageId, topicId: owner.topicId)
-                        await MainActor.run { output.soptletterMessage.send(result) }                        
+                        try await owner.useCase.editMessage(messageId: owner.messageId, topicId: owner.topicId, content: content)
+                        output.soptletterEditCompleted.send()
+                        owner.onEditCompleted?()
                     } catch is CancellationError {
                         return
                     } catch {
-                        self?.onError?()
+                        await self?.onError?()
                     }
-                }              
-            }.store(in: cancelBag)                        
-        
-        // TODO: 수정 API
-        input.editButtonTap
-            .withUnretained(self)
-            .sink { owner, _ in
-                
+                }
             }
             .store(in: cancelBag)
-        
-        // TODO: 삭제 API
+
         input.deleteButtonTap
             .withUnretained(self)
-            .sink { owner, _ in
-                AlertUtils.presentAlertVC(type: .titleDescription, title: "솝레터 삭제하기", description: "해당 솝레터가 영구적으로 삭제되어요.\n그래도 삭제하시겠어요?", customButtonTitle: "삭제") {
-                    print("삭제")
-                }
+            .sink { owner, content in
+                AlertUtils.presentAlertVC(type: .titleDescription, title: I18N.Soptletter.Detail.deleteAlertTitle, description: I18N.Soptletter.Detail.deleteAlertDescription, customButtonTitle: I18N.Soptletter.Detail.deleteButtonTitle, customAction: {
+                    owner.deleteMessage(output: output, content: content)
+                })
             }
             .store(in: cancelBag)
         
         return output
+    }
+}
+
+extension SoptletterDetailViewModel {
+    public func fetchMessages(output: Output) {
+        submitTask?.cancel()
+        submitTask = Task { [weak self] in
+            guard let self else { return }
+            do {
+                let messages = try await self.useCase.fetchSoptletterMessage(messageId: self.messageId, topicId: self.topicId)
+                await MainActor.run { output.soptletterMessage.send(messages) }
+            } catch is CancellationError {
+                return
+            } catch {
+                await self.onError?()
+            }
+        }
+    }
+
+    private func deleteMessage(output: Output, content: String) {
+        submitTask?.cancel()
+        submitTask = Task { [weak self] in
+            guard let self else { return }
+            do {
+                try await self.useCase.deleteMessage(messageId: self.messageId, topicId: self.topicId)
+                output.soptletterDeleteCompleted.send()
+                self.onDeleteCompleted?()
+            } catch is CancellationError {
+                return
+            } catch {
+                await self.onError?()
+            }
+        }
     }
 }

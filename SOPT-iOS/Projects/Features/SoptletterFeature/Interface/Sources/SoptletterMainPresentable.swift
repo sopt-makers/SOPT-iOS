@@ -20,6 +20,8 @@ public protocol SoptletterMainRoutingTrigger {
     var onReportTap: (() -> Void)? { get set }
     var onCellTap: ((Int, Int) -> Void)? { get set }
     var onError: (() -> Void)? { get set }
+    
+    func refreshMessagesTrigger()
 }
 
 public typealias SoptletterMainViewModelType = ViewModelType & SoptletterMainRoutingTrigger

@@ -65,9 +65,6 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
     private let cancelBag = CancelBag()
     private let postItCellTapPublisher = PassthroughSubject<(messageId: Int, topicId: Int), Never>()
     private let naviBackButtonTapPublisher = PassthroughSubject<Void, Never>()
-    private let writeButtonTapPublisher = PassthroughSubject<Void, Never>()
-    private let downloadTapPublisher = PassthroughSubject<Void, Never>()
-    private let reportButtonTapPublisher = PassthroughSubject<Void, Never>()
     
     private var soptletterMessages: SoptletterItemModel?
     
@@ -96,7 +93,7 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
     public override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
-        setLayout()        
+        setLayout()
         bindViewModels()
         setCollectionView()
     }
@@ -124,7 +121,7 @@ private extension SoptletterMainVC {
             writeButtonTap: writeButtonTap,
             downloadButtonTap: downloadButtonTap,
             reportButtonTap: reportButtonTap,
-            postItCellTap: postItCellTapPublisher.asDriver(),
+            postItCellTap: postItCellTapPublisher.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)

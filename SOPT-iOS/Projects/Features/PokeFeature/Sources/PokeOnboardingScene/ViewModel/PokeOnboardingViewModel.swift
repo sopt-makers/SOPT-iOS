@@ -37,7 +37,7 @@ public final class PokeOnboardingViewModel: PokeOnboardingViewModelType {
     // MARK: Privates
     private let usecase: PokeOnboardingUsecase
     private let eventTracker = PokeEventTracker()
-    private let coordinator: AnyCoordinatorObject 
+    private let coordinator: AnyCoordinatorObject
     
     
     // MARK: - Lifecycles

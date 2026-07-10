@@ -15,7 +15,7 @@ import SoptletterFeatureInterface
 import Domain
 
 public final class SoptletterMainViewModel: SoptletterMainViewModelType {
-    
+
     // MARK: - Inputs
     
     public struct Input {
@@ -36,6 +36,7 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     private let useCase: SoptletterUseCase
     private let coordinator: AnyCoordinatorObject
     private var submitTask: Task<Void, Never>?
+    private let topicId: Int
     
     private var cancelBag = CancelBag()
     
@@ -47,33 +48,29 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     public var onCellTap: ((Int, Int) -> Void)?
     public var onError: (() -> Void)?
     
-    public init(coordinator: Coordinator, useCase: SoptletterUseCase) {
+    private let refreshTriggerSubject = PassthroughSubject<Void, Never>()
+    
+    public init(coordinator: Coordinator, useCase: SoptletterUseCase, topicId: Int = 1) {
         self.useCase = useCase
         self.coordinator = coordinator
+        self.topicId = topicId
     }
 }
 
 extension SoptletterMainViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
-        self.bindOutput(output: output, cancelBag: cancelBag)
-        // TODO: 솝레터 리스트 API 요청
+        
+        refreshTriggerSubject
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.fetchMessages(output: output)
+            }.store(in: cancelBag)
+        
         input.viewDidLoad
             .withUnretained(self)
             .sink { owner, _ in
-                owner.submitTask?.cancel()
-                owner.submitTask = Task {
-                    do {
-                        let result = try await owner.useCase.fetchSoptletterMessages(topicId: 1, cursor: nil, size: nil)
-                        await MainActor.run {
-                            output.soptletterMessages.send(result)
-                        }
-                    } catch is CancellationError {
-                        return
-                    } catch {
-                        owner.onError?()
-                    }
-                }                
+                owner.fetchMessages(output: output)
             }.store(in: cancelBag)
         
         input.naviBackButtonTap
@@ -102,7 +99,7 @@ extension SoptletterMainViewModel {
         
         input.postItCellTap
             .withUnretained(self)
-            .sink { owner, model  in
+            .sink { owner, model in
                 owner.onCellTap?(model.messageId, model.topicId)
             }.store(in: cancelBag)
         
@@ -111,7 +108,23 @@ extension SoptletterMainViewModel {
 }
 
 extension SoptletterMainViewModel {
-    private func bindOutput(output: Output, cancelBag: CancelBag) {
-        
+    public func fetchMessages(output: Output) {
+        submitTask?.cancel()
+        submitTask = Task {
+            do {
+                let result = try await useCase.fetchSoptletterMessages(topicId: topicId, cursor: nil, size: nil)
+                await MainActor.run {
+                    output.soptletterMessages.send(result)
+                }
+            } catch is CancellationError {
+                return
+            } catch {
+                onError?()
+            }
+        }
+    }
+    
+    public func refreshMessagesTrigger() {
+        refreshTriggerSubject.send()
     }
 }
