@@ -73,7 +73,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
                     } catch is CancellationError {
                         return
                     } catch {
-                        await MainActor.run { self.onError?() }
+                        await self.onError?()
                     }
                 }
             }.store(in: cancelBag)
@@ -97,7 +97,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
                     } catch is CancellationError {
                         return
                     } catch {
-                        await MainActor.run { self.onError?() }
+                        await self.onError?()
                     }
                 }
             }
@@ -130,7 +130,7 @@ extension SoptletterDetailViewModel {
             } catch is CancellationError {
                 return
             } catch {
-                await MainActor.run { self.onError?() }
+                await self.onError?()
             }
         }
     }
@@ -145,7 +145,7 @@ extension SoptletterDetailViewModel {
             } catch is CancellationError {
                 return
             } catch {
-                await MainActor.run { self.onError?() }
+                await self.onError?()
             }
         }
     }

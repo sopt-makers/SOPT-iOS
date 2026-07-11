@@ -186,6 +186,7 @@ public final class SoptletterDetailModalVC: UIViewController {
         nameLabel.text = name
         contentLabel.text = content
         dateLabel.text = DateFormatManager.shared.serverTimeToString(date, from: .dateWithDot)
+        self.likeCount = likeCount
         likeCountLabel.text = "\(likeCount)"
         editDeleteStackView.isHidden = !mine
         likeButton.setImage(likeByMe ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart"), for: .normal)

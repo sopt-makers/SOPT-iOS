@@ -41,10 +41,6 @@ extension SoptletterAPI: BaseAPI {
             return "/onboarding/complete"
         case let .soptletterMessage(messageId, topicId), let .deleteMessage(messageId, topicId), let .editMessage(messageId, topicId, _):
             return "/topics/\(topicId)/messages/\(messageId)"
-        case let .editMessage(messageId, topicId, _):
-            return "/topics/\(topicId)/messages/\(messageId)"
-        case let .deleteMessage(messageId, topicId):
-            return "/topics/\(topicId)/messages/\(messageId)"
         case let .likeMessage(messageId, topicId), let .unlikeMessage(messageId, topicId):
             return "/topics/\(topicId)/messages/\(messageId)/likes"
         }
@@ -77,8 +73,6 @@ extension SoptletterAPI: BaseAPI {
             return .requestPlain
         case let .editMessage(_, _, content):
             return .requestParameters(parameters: ["content": content], encoding: JSONEncoding.default)
-        case .deleteMessage:
-            return .requestPlain
         case .likeMessage, .unlikeMessage:
             return .requestPlain
         }
