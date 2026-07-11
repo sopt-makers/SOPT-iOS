@@ -18,7 +18,7 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
 
     // MARK: - Inputs
     
-    public struct Input {        
+    public struct Input {
         let viewDidLoad: Driver<Void>
         let naviBackButtonTap: Driver<Void>
         let writeButtonTap: Driver<Void>
@@ -107,7 +107,7 @@ extension SoptletterMainViewModel {
         
         input.postItCellTap
             .withUnretained(self)
-            .sink { owner, model  in                
+            .sink { owner, model in
                 owner.onCellTap?(model.messageId, model.topicId)
             }.store(in: cancelBag)
         

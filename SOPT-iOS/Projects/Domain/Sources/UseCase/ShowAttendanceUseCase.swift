@@ -144,7 +144,7 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
                 let type: AttendanceStepType = (attendance.status == TodayAttendanceType.attendance.rawValue) ? .check : .unCheck
                 let title: String = (type == .unCheck)
                     ? I18N.Attendance.unCheckAttendance
-                    : I18N.Attendance.nthAttendance(index + 1) 
+                    : I18N.Attendance.nthAttendance(index + 1)
                 
                 attendances.append(AttendanceStepModel(type: type, title: title))
             }

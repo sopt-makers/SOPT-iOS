@@ -87,7 +87,7 @@ public final class PokeMainVC: UIViewController, PokeMainViewControllable {
     // MARK: - initialization
     
     public init(
-        viewModel: PokeMainViewModel        
+        viewModel: PokeMainViewModel
     ) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)

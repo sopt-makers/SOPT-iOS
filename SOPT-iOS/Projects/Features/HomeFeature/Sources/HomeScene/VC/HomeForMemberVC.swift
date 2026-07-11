@@ -359,7 +359,7 @@ extension HomeForMemberVC {
         let items: [HomeForMemberItem] = [
             .dashBoard(data.dashBoard),
             .recentSchedule(data.recentSchedule)
-        ] 
+        ]
         
         let existingItems = snapshot.itemIdentifiers.filter { items.contains($0) }
         

@@ -111,7 +111,7 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
     public override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
-        setLayout()        
+        setLayout()
         bindViewModels()
         setCollectionView()
     }
@@ -277,7 +277,7 @@ extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let soptletterMessages else { return }
-        let message = soptletterMessages.messages[indexPath.row]        
+        let message = soptletterMessages.messages[indexPath.row]
         postItCellTapPublisher.send((message.messageId, soptletterMessages.topicId))
     }
 }

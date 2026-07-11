@@ -71,6 +71,9 @@ public final class DefaultSoptletterUseCase: SoptletterUseCase {
     }
     
     public func editMessage(messageId: Int, topicId: Int, content: String) async throws {
+        guard isWritable(content: content) else {
+            throw SoptletterError.invalidContent
+        }
         try await repository.editMessage(messageId: messageId, topicId: topicId, content: content)
     }
     

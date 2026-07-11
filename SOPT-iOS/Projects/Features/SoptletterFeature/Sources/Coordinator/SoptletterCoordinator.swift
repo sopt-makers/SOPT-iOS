@@ -98,8 +98,8 @@ public final class SoptletterCoordinator: BaseCoordinator {
         soptletterRootController?.pushViewController(soptletterWriting.vc, animated: true)
     }
     
-    private func showSoptletterMain() {
-        soptletterMain = factory.makeSoptletterMainVC(coordinator: self)
+    private func showSoptletterMain(topicId: Int = 1) {
+        soptletterMain = factory.makeSoptletterMainVC(coordinator: self, topicId: topicId)
         
         soptletterMain.vm.onNaviBackTap = { [weak self] in
             self?.soptletterRootController?.dismiss(animated: true)
@@ -173,8 +173,8 @@ public final class SoptletterCoordinator: BaseCoordinator {
             self?.soptletterRootController?.popViewController(animated: true)
         }
         
-        selectTopic.vm.onCellTap = { [weak self] title in
-            self?.showSoptletterMain()
+        selectTopic.vm.onCellTap = { [weak self] topic in
+            self?.showSoptletterMain(topicId: topic.topicId)
         }
         
         selectTopic.vm.showAlert = {

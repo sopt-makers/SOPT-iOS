@@ -74,19 +74,6 @@ public extension String {
 }
 
 public extension String {
-    func toMMDDFormat() -> String {
-        let inputFormatter = DateFormatter()
-        inputFormatter.locale = Locale(identifier: "en_US_POSIX")
-        inputFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
-        
-        guard let date = inputFormatter.date(from: self) else {
-            return self
-        }
-        
-        let outputFormatter = DateFormatter()
-        outputFormatter.dateFormat = "MM.dd."
-        return outputFormatter.string(from: date)
-    }
     
     func isPercentEncoded() -> Bool {
         guard let decodedString = self.removingPercentEncoding,

@@ -44,7 +44,7 @@ public typealias SoptletterNicknameCheckViewModelType = ViewModelType & Soptlett
 
 public protocol SoptletterDetailRoutingTrigger {
     var onNaviBackTap: (() -> Void)? { get set }
-    var onError: (() -> Void)? { get set }
+    var onError: (@MainActor () -> Void)? { get set }
     var onEditCompleted: (() -> Void)? { get set }
     var onDeleteCompleted: (() -> Void)? { get set }
 }

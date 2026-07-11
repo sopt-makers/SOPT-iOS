@@ -106,7 +106,7 @@ public final class SoptletterDetailModalVC: UIViewController {
     }
     
     private let confirmButton = UIButton().then {
-        $0.setTitle("확인", for: .normal)
+        $0.setTitle(I18N.Soptletter.Detail.confirmTitle, for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.titleLabel?.font = DSKitFontFamily.Suit.bold.font(size: 16)
         $0.backgroundColor = DSKitAsset.Colors.gray800.color
@@ -168,6 +168,7 @@ public final class SoptletterDetailModalVC: UIViewController {
         super.viewDidLoad()
         setUI()
         setLayout()
+        setDelegate()
         bindViewModels()
     }
     
@@ -184,8 +185,7 @@ public final class SoptletterDetailModalVC: UIViewController {
         containerView.backgroundColor = backgroundColor
         nameLabel.text = name
         contentLabel.text = content
-        dateLabel.text = date.toMMDDFormat()
-        self.likeCount = likeCount
+        dateLabel.text = DateFormatManager.shared.serverTimeToString(date, from: .dateWithDot)
         likeCountLabel.text = "\(likeCount)"
         editDeleteStackView.isHidden = !mine
         likeButton.setImage(likeByMe ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart"), for: .normal)
@@ -216,7 +216,7 @@ extension SoptletterDetailModalVC {
         editButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.enterEditingMode()
+                owner.contentDisplayMode = .editing
             }.store(in: cancelBag)
         
         likeButtonRealTap
@@ -243,13 +243,13 @@ extension SoptletterDetailModalVC {
                     owner.dismiss(animated: true)
                 }
             }.store(in: cancelBag)
-        
+
         cancelEditButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.cancelEditingMode()
+                owner.contentDisplayMode = .viewing
             }.store(in: cancelBag)
-        
+
         output.soptletterMessage
             .withUnretained(self)
             .sink { owner, model  in
@@ -263,21 +263,22 @@ extension SoptletterDetailModalVC {
                     likeByMe: model.likedByMe
                 )
             }.store(in: cancelBag)
-        
+
         output.soptletterEditCompleted
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
             .sink { owner, _ in
-                owner.exitEditingMode()
-                ToastUtils.showMDSToast(type: .success, text: "메세지 수정을 완료했어요.")
+                owner.contentLabel.text = owner.contentTextView.text
+                owner.contentDisplayMode = .viewing
+                ToastUtils.showMDSToast(type: .success, text: I18N.Soptletter.Detail.editCompleteToast)
             }.store(in: cancelBag)
-        
+
         output.soptletterDeleteCompleted
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
             .sink { owner, _ in
                 owner.dismiss(animated: true)
-                ToastUtils.showMDSToast(type: .success, text: "메세지 삭제를 완료했어요.")
+                ToastUtils.showMDSToast(type: .success, text: I18N.Soptletter.Detail.deleteCompleteToast)
             }.store(in: cancelBag)
     }
 }
@@ -367,6 +368,10 @@ private extension SoptletterDetailModalVC {
     @objc func dimmedViewDidTap() {
         dismiss(animated: true)
     }
+
+    func setDelegate() {
+        contentTextView.delegate = self
+    }
 }
 
 extension SoptletterDetailModalVC: UITextViewDelegate {
@@ -388,53 +393,46 @@ private extension SoptletterDetailModalVC {
         confirmButton.backgroundColor = isOverLimit ? DSKitAsset.Colors.gray100.color : DSKitAsset.Colors.gray800.color
     }
     
-    func enterEditingMode() {
-        isEditingContent = true
-        contentTextView.text = contentLabel.text
-        contentTextView.delegate = self
-        contentLabel.isHidden = true
-        contentTextView.isHidden = false
-        contentTextView.isEditable = true
-        charCountLabel.isHidden = false
-        updateCharCount(contentTextView.text.count)        
-        updateConfirmButtonState(contentTextView.text.count)
-        contentTextView.becomeFirstResponder()
-        dateLabel.isHidden = true
-        confirmButton.setTitle("수정완료", for: .normal)
-        editDeleteStackView.isHidden = true
-        cancelEditButton.isHidden = false
-        likeStackView.isHidden = true
+}
+
+extension SoptletterDetailModalVC {
+
+    private enum ContentDisplayMode {
+        case viewing
+        case editing
     }
 
-    func exitEditingMode() {
-        isEditingContent = false
-        contentLabel.text = contentTextView.text
-        contentTextView.resignFirstResponder()
-        contentTextView.isEditable = false
-        contentTextView.isHidden = true
-        contentLabel.isHidden = false
-        charCountLabel.isHidden = true
-        dateLabel.isHidden = false
-        confirmButton.isEnabled = true
-        confirmButton.backgroundColor = DSKitAsset.Colors.gray800.color
-        confirmButton.setTitle("확인", for: .normal)
-        editDeleteStackView.isHidden = false
-        cancelEditButton.isHidden = true
-        likeStackView.isHidden = false
+    private var contentDisplayMode: ContentDisplayMode {
+        get { isEditingContent ? .editing : .viewing }
+        set {
+            isEditingContent = (newValue == .editing)
+            apply(newValue)
+        }
     }
 
-    func cancelEditingMode() {
-        isEditingContent = false
-        contentTextView.resignFirstResponder()
-        contentTextView.isEditable = false
-        contentTextView.isHidden = true
-        contentLabel.isHidden = false
-        charCountLabel.isHidden = true
-        confirmButton.setTitle("확인", for: .normal)
-        editDeleteStackView.isHidden = false
-        confirmButton.isEnabled = true
-        confirmButton.backgroundColor = DSKitAsset.Colors.gray800.color
-        cancelEditButton.isHidden = true
-        likeStackView.isHidden = false
+    private func apply(_ mode: ContentDisplayMode) {
+        let isEditing = mode == .editing
+
+        if isEditing {
+            contentTextView.text = contentLabel.text
+            updateCharCount(contentTextView.text.count)
+            updateConfirmButtonState(contentTextView.text.count)
+        } else {
+            confirmButton.isEnabled = true
+            confirmButton.backgroundColor = DSKitAsset.Colors.gray800.color
+        }
+
+        contentLabel.isHidden = isEditing
+        contentTextView.isHidden = !isEditing
+        contentTextView.isEditable = isEditing
+        charCountLabel.isHidden = !isEditing
+        dateLabel.isHidden = isEditing
+        likeStackView.isHidden = isEditing
+        editDeleteStackView.isHidden = isEditing
+        cancelEditButton.isHidden = !isEditing
+
+        confirmButton.setTitle(isEditing ? I18N.Soptletter.Detail.editCompleteTitle : I18N.Soptletter.Detail.confirmTitle, for: .normal)
+
+        isEditing ? contentTextView.becomeFirstResponder() : contentTextView.resignFirstResponder()
     }
 }
