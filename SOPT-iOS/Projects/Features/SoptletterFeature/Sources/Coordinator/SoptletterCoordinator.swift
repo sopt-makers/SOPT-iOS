@@ -100,40 +100,8 @@ public final class SoptletterCoordinator: BaseCoordinator {
     
     private func showSoptletterMain(topicId: Int = 1) {
         soptletterMain = factory.makeSoptletterMainVC(coordinator: self, topicId: topicId)
-        
-        soptletterMain.vm.onNaviBackTap = { [weak self] in
-            self?.soptletterRootController?.dismiss(animated: true)
-            self?.finishFlow?()
-        }
-        
-        soptletterMain.vm.onWriteTap = { [weak self] in
-            self?.showSoptletterWriting()
-        }
-        
-        soptletterMain.vm.onMenuTap = { [weak self] in
-            self?.showSelectTopic()
-        }
-        
-        soptletterMain.vm.onReportTap = { [weak self] in
-            print("handle soptletterMain.vm.onReportTap")
-        }
-        
-        soptletterMain.vm.onPostItTap = { [weak self] in
-            print("handle soptletterMain.vm.onPostItTap")
-        }
-        
-        soptletterMain.vm.onDownloadTap = { [weak self] in
-            print("handle soptletterMain.vm.onDownloadTap")
-        }
-        
-        soptletterMain.vm.onCellTap = { [weak self] messageId, topicId in
-            self?.presentSoptletterDetail(messageId, topicId)
-        }
-        
-        soptletterMain.vm.onError = { [weak self] in
-            AlertUtils.presentNetworkAlertVC()
-        }
-        
+        bindSoptletterMainRouting(soptletterMain)
+
         if let soptletterRootController {
             soptletterRootController.pushViewController(soptletterMain.vc, animated: true)
         } else {
@@ -141,6 +109,60 @@ public final class SoptletterCoordinator: BaseCoordinator {
             navController.modalPresentationStyle = .fullScreen
             soptletterRootController = navController
             navigationController?.present(navController, animated: true)
+        }
+    }
+
+    private func changeSoptletterTopic(to topicId: Int) {
+        guard let soptletterRootController else {
+            showSoptletterMain(topicId: topicId)
+            return
+        }
+
+        let previousMainVC = soptletterMain?.vc
+
+        soptletterMain = factory.makeSoptletterMainVC(coordinator: self, topicId: topicId)
+        bindSoptletterMainRouting(soptletterMain)
+
+        var stack = soptletterRootController.viewControllers
+        if let previousMainVC, let index = stack.firstIndex(of: previousMainVC) {
+            stack = Array(stack[0..<index])
+        }
+        stack.append(soptletterMain.vc)
+        soptletterRootController.setViewControllers(stack, animated: true)
+    }
+
+    private func bindSoptletterMainRouting(_ main: SoptletterMainPresentable) {
+        main.vm.onNaviBackTap = { [weak self] in
+            self?.soptletterRootController?.dismiss(animated: true)
+            self?.finishFlow?()
+        }
+
+        main.vm.onWriteTap = { [weak self] in
+            self?.showSoptletterWriting()
+        }
+
+        main.vm.onMenuTap = { [weak self] in
+            self?.showSelectTopic()
+        }
+
+        main.vm.onReportTap = { [weak self] in
+            print("handle soptletterMain.vm.onReportTap")
+        }
+
+        main.vm.onPostItTap = { [weak self] in
+            print("handle soptletterMain.vm.onPostItTap")
+        }
+
+        main.vm.onDownloadTap = { [weak self] in
+            print("handle soptletterMain.vm.onDownloadTap")
+        }
+
+        main.vm.onCellTap = { [weak self] messageId, topicId in
+            self?.presentSoptletterDetail(messageId, topicId)
+        }
+
+        main.vm.onError = {
+            AlertUtils.presentNetworkAlertVC()
         }
     }
     
@@ -174,7 +196,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
         
         selectTopic.vm.onCellTap = { [weak self] topic in
-            self?.showSoptletterMain(topicId: topic.topicId)
+            self?.changeSoptletterTopic(to: topic.topicId)
         }
         
         selectTopic.vm.showAlert = {
