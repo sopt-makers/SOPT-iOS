@@ -63,6 +63,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
             .sink { owner, likeByMe in
                 owner.submitTask?.cancel()
                 owner.submitTask = Task { [weak self] in
+                    guard let self = self else { return }
                     do {
                         if likeByMe {
                             try await owner.useCase.likeMessage(messageId: owner.messageId, topicId: owner.topicId)
@@ -70,9 +71,9 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
                             try await owner.useCase.unlikeMessage(messageId: owner.messageId, topicId: owner.topicId)
                         }                        
                     } catch is CancellationError {
-                        self?.onError?()
+                        return
                     } catch {
-                        self?.onError?()
+                        await MainActor.run { self.onError?() }
                     }
                 }
             }.store(in: cancelBag)
@@ -88,6 +89,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
             .sink { owner, content in
                 owner.submitTask?.cancel()
                 owner.submitTask = Task { [weak self] in
+                    guard let self = self else { return }
                     do {
                         try await owner.useCase.editMessage(messageId: owner.messageId, topicId: owner.topicId, content: content)
                         output.soptletterEditCompleted.send()
@@ -95,7 +97,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
                     } catch is CancellationError {
                         return
                     } catch {
-                        await self?.onError?()
+                        await MainActor.run { self.onError?() }
                     }
                 }
             }
@@ -133,14 +135,13 @@ extension SoptletterDetailViewModel {
         }
     }
 
-    private func deleteMessage(output: Output, content: String) {
+    public func fetchMessages(output: Output) {
         submitTask?.cancel()
         submitTask = Task { [weak self] in
             guard let self else { return }
             do {
-                try await self.useCase.deleteMessage(messageId: self.messageId, topicId: self.topicId)
-                output.soptletterDeleteCompleted.send()
-                self.onDeleteCompleted?()
+                let messages = try await useCase.fetchSoptletterMessage(messageId: messageId, topicId: topicId)
+                await MainActor.run { output.soptletterMessage.send(messages) }
             } catch is CancellationError {
                 return
             } catch {
