@@ -9,6 +9,7 @@
 import Core
 import Domain
 import BaseFeatureDependency
+import UIKit
 @_exported import SoptletterFeatureInterface
 
 public final class SoptletterBuilder {
@@ -18,6 +19,12 @@ public final class SoptletterBuilder {
 }
 
 extension SoptletterBuilder: SoptletterFeatureBuildable {
+    public func makeSoptletterPrintVC(coordinator: any Coordinator, fileName: String, uiImage: UIImage, pdfURL: URL) -> SoptletterPrintPresentable {
+        let viewModel = SoptletterPrintViewModel(coordinator: coordinator, pdfURL: pdfURL)
+        let viewController = SoptletterPrintVC(viewModel: viewModel, uiImage: uiImage, title: fileName)
+        return (viewController, viewModel)
+    }
+    
     public func makeSoptletterOnboardingVC(coordinator: Coordinator) -> SoptletterOnboardingPresentable {
         let viewModel = SoptletterOnboardingViewModel(coordinator: coordinator)
         let viewController = SoptletterOnboardingVC(viewModel: viewModel)

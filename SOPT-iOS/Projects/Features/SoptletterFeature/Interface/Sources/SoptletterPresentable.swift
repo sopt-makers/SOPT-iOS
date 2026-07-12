@@ -36,9 +36,14 @@ public protocol SelectTopicRoutingTrigger {
     var showAlert: (() -> Void)? { get set }
 }
 
+public protocol SoptletterPrintRoutingTrigger {
+    var onNaviBackTap: (() -> Void)? { get set }
+    var onPDFSaveTap: ((URL) -> Void)? { get set }
+}
+
 public typealias SoptletterOnboardingPresentable = (vc: UIViewController, vm: any SoptletterOnboardingViewModelType)
 public typealias SoptletterOnboardingViewModelType = ViewModelType & SoptletterOnboardingRoutingTrigger
-
+public typealias SoptletterPrintViewModelType = ViewModelType & SoptletterPrintRoutingTrigger
 public typealias SoptletterNicknameCheckPresentable = (vc: UIViewController, vm: any SoptletterNicknameCheckViewModelType)
 public typealias SoptletterNicknameCheckViewModelType = ViewModelType & SoptletterNicknameCheckRoutingTrigger
 
@@ -53,6 +58,6 @@ public typealias SoptletterWritingViewModelType = ViewModelType & SoptletterCoor
 public typealias SoptletterDetailViewModelType = ViewModelType & SoptletterDetailRoutingTrigger
 public typealias SoptletterWritingPresentable = (vc: UIViewController, vm: any SoptletterWritingViewModelType)
 public typealias SoptletterDetailPresentable = (vc: UIViewController, vm: any SoptletterDetailViewModelType)
-
+public typealias SoptletterPrintPresentable = (vc: UIViewController, vm: any SoptletterPrintViewModelType)
 public typealias SelectTopicViewModelType = ViewModelType & SelectTopicRoutingTrigger
 public typealias SelectTopicPresentable = (vc: UIViewController, vm: any SelectTopicViewModelType)

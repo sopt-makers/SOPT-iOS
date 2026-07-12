@@ -119,8 +119,8 @@ public final class SoptletterCoordinator: BaseCoordinator {
             print("handle soptletterMain.vm.onPostItTap")
         }
         
-        soptletterMain.vm.onDownloadTap = { [weak self] in
-            print("handle soptletterMain.vm.onDownloadTap")
+        soptletterMain.vm.onDownloadTap = { [weak self] fileName, image, pdfURL in
+            self?.showSoptletterPrint(fileName, image, pdfURL)
         }
         
         soptletterMain.vm.onCellTap = { [weak self] messageId, topicId in
@@ -139,6 +139,37 @@ public final class SoptletterCoordinator: BaseCoordinator {
             soptletterRootController = navController
             navigationController?.present(navController, animated: true)
         }
+    }
+    
+    private func showSoptletterPrint(_ fileName: String, _ uiImage: UIImage, _ pdfURL: URL) {
+        var soptletterPrint = factory.makeSoptletterPrintVC(coordinator: self, fileName: fileName, uiImage: uiImage, pdfURL: pdfURL)
+        
+        soptletterPrint.vm.onPDFSaveTap = { [weak self] pdfURL in
+            guard let self else { return }
+            let activityVC = UIActivityViewController(activityItems: [pdfURL], applicationActivities: nil)
+            
+            activityVC.completionWithItemsHandler = { [weak self] activityType, completed, returnedItems, error in
+                guard let self else { return }
+                
+                if let error {
+                    ToastUtils.showMDSToast(type: .error, text: "이미지 저장에 실패했어요.")
+                    return
+                }
+                
+                guard completed else { return }
+                
+                ToastUtils.showMDSToast(type: .success, text: "이미지 저장을 완료했어요.")
+                self.soptletterRootController?.popViewController(animated: true)
+            }
+            
+            self.soptletterRootController?.present(activityVC, animated: true)
+        }
+        
+        soptletterPrint.vm.onNaviBackTap = { [weak self] in
+            self?.soptletterRootController?.popViewController(animated: true)
+        }
+        
+        soptletterRootController?.pushViewController(soptletterPrint.vc, animated: true)
     }
     
     private func presentSoptletterDetail(_ messageId: Int, _ topicId: Int) {
