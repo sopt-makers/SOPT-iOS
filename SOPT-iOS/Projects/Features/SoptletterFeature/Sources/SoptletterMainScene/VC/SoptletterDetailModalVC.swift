@@ -139,12 +139,7 @@ public final class SoptletterDetailModalVC: UIViewController {
         .publisher(for: .touchUpInside)
         .withUnretained(self)
         .map { owner, _ in !owner.likeButton.isSelected }
-        .asDriver()
-    
-    private lazy var likeButtonTap: Driver<Bool> = likeButtonRealTap
-        .withUnretained(self)
-        .map { owner, _ in !owner.likeButton.isSelected }
-        .asDriver()
+        .asDriver()    
     
     private let viewModel: SoptletterDetailViewModel
     private let cancelBag = CancelBag()
