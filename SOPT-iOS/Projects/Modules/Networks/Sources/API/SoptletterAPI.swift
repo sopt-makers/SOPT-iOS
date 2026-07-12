@@ -26,7 +26,7 @@ public enum SoptletterAPI {
 
 extension SoptletterAPI: BaseAPI {
     public static var apiType: APIType = .soptletter
-
+    
     public var path: String {
         switch self {
         case .writeMessage(let topicId, _), .soptletterMessages(let topicId, _, _):
@@ -41,46 +41,32 @@ extension SoptletterAPI: BaseAPI {
             return "/onboarding/complete"
         case let .soptletterMessage(messageId, topicId), let .deleteMessage(messageId, topicId), let .editMessage(messageId, topicId, _):
             return "/topics/\(topicId)/messages/\(messageId)"
-        case let .editMessage(messageId, topicId, _):
-            return "/topics/\(topicId)/messages/\(messageId)"
-        case let .deleteMessage(messageId, topicId):
-            return "/topics/\(topicId)/messages/\(messageId)"
         case let .likeMessage(messageId, topicId), let .unlikeMessage(messageId, topicId):
             return "/topics/\(topicId)/messages/\(messageId)/likes"
         }
     }
-
+    
     public var method: Moya.Method {
         switch self {
-        case .writeMessage:
+        case .writeMessage, .completeOnboarding, .likeMessage:
             return .post
         case .fetchTopics, .fetchTopic, .fetchProfile, .soptletterMessages, .soptletterMessage:
             return .get
-        case .completeOnboarding:
-            return .post
         case .editMessage:
             return .patch
-        case .deleteMessage:
-            return .delete
-        case .likeMessage:
-            return .post
-        case .unlikeMessage:
+        case .deleteMessage, .unlikeMessage:
             return .delete
         }
     }
-
+    
     public var task: Moya.Task {
         switch self {
         case .writeMessage(_, let content):
-            return .requestParameters(parameters: ["content": content], encoding: JSONEncoding.default)
-        case .fetchTopics, .fetchTopic, .completeOnboarding, .fetchProfile, .soptletterMessages, .soptletterMessage, .deleteMessage:
-            return .requestPlain
+                return .requestParameters(parameters: ["content": content], encoding: JSONEncoding.default)
         case let .editMessage(_, _, content):
-            return .requestParameters(parameters: ["content": content], encoding: JSONEncoding.default)
-        case .deleteMessage:
-            return .requestPlain
-        case .likeMessage, .unlikeMessage:
-            return .requestPlain
+                return .requestParameters(parameters: ["content": content], encoding: JSONEncoding.default)
+        case .fetchTopics, .fetchTopic, .completeOnboarding, .fetchProfile, .soptletterMessages, .soptletterMessage, .deleteMessage, .likeMessage, .unlikeMessage:
+                return .requestPlain   
         }
     }
 }

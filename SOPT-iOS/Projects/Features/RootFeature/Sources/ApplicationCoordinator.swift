@@ -597,10 +597,6 @@ extension ApplicationCoordinator {
                 navigationController: UIWindow.getRootNavigationController,
                 factory: SoptletterBuilder()
             )
-            legacyCoordinator.finishFlow = { [weak self, weak legacyCoordinator] in
-                legacyCoordinator?.childCoordinators = []
-                self?.removeDependency(legacyCoordinator)
-            }
             addDependency(legacyCoordinator)
             coordinator = legacyCoordinator
             coordinator.start()

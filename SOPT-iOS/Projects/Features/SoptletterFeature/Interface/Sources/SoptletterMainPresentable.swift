@@ -24,6 +24,7 @@ public protocol SoptletterMainRoutingTrigger {
     var onDownloadConfirmed: (() -> Void)? { get set }
     
     func refreshMessagesTrigger()
+    func changeTopic(_ topicId: Int)
 }
 
 public typealias SoptletterMainViewModelType = ViewModelType & SoptletterMainRoutingTrigger

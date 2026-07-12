@@ -40,7 +40,7 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     private let useCase: SoptletterUseCase
     private let coordinator: AnyCoordinatorObject
     private var submitTask: Task<Void, Never>?
-    private let topicId: Int
+    private var topicId: Int
     
     private var cancelBag = CancelBag()
     
@@ -139,7 +139,7 @@ extension SoptletterMainViewModel {
             do {
                 let result = try await useCase.fetchSoptletterMessages(topicId: topicId, cursor: nil, size: nil)
                 await MainActor.run {
-                    output.soptletterMessages.send(result)                    
+                    output.soptletterMessages.send(result)
                 }
             } catch is CancellationError {
                 return
@@ -151,5 +151,10 @@ extension SoptletterMainViewModel {
     
     public func refreshMessagesTrigger() {
         refreshTriggerSubject.send()
+    }
+    
+    public func changeTopic(_ topicId: Int) {
+        self.topicId = topicId
+        refreshMessagesTrigger()
     }
 }

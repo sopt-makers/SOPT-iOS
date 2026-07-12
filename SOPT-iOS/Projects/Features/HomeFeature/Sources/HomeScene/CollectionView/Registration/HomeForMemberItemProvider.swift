@@ -51,7 +51,7 @@ extension HomeForMemberVC {
     }
     
     func createAppServiceCellRegistration() -> AppServiceCellRegistration {
-        collectionView.createCellRegistration { cell, _, item in            
+        collectionView.createCellRegistration { cell, _, item in
             cell.configureCell(model: item)
         }
     }
