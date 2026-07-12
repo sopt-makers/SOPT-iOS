@@ -37,7 +37,7 @@ public final class SoptletterPrintVC: UIViewController {
         $0.textColor = DSKitAsset.Colors.gray10.color
         $0.textAlignment = .left
         $0.font = DSKitFontFamily.Pretendard.bold.font(size: 18)
-        $0.text = "솝레터 출력"
+        $0.text = I18N.Soptletter.Print.printButtonTitle
     }
     
     private let cardContainerView = UIView().then {
@@ -59,14 +59,14 @@ public final class SoptletterPrintVC: UIViewController {
     }
     
     private let subtextLabel = UILabel().then {
-        $0.text = "미리보기에서는 최대 16개까지 확인할 수 있어요."
+        $0.text = I18N.Soptletter.Print.previewTitle
         $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
         $0.textColor = DSKitAsset.Colors.gray300.color
         $0.textAlignment = .center
     }
 
     private let saveButton = UIButton().then {
-        $0.setTitle("PDF 저장하기", for: .normal)
+        $0.setTitle(I18N.Soptletter.Print.savePdfButtonTitle, for: .normal)
         $0.setTitleColor(DSKitAsset.Colors.gray10.color, for: .normal)
         $0.titleLabel?.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
         $0.backgroundColor = DSKitAsset.Colors.gray600.color
@@ -86,16 +86,6 @@ public final class SoptletterPrintVC: UIViewController {
         .mapVoid()
         .asDriver()
     
-    // MARK: - LifeCycle
-
-    public override func viewDidLoad() {
-        super.viewDidLoad()
-        setUI()
-        setLayout()
-        setPreview(image: previewImage, title: cardTitle)
-        bindViewModels()
-    }
-    
     // MARK: - Initilizer
     
     public init(viewModel: SoptletterPrintViewModel, uiImage: UIImage, title: String = "nn기 솝레터") {
@@ -107,6 +97,16 @@ public final class SoptletterPrintVC: UIViewController {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - LifeCycle
+
+    public override func viewDidLoad() {
+        super.viewDidLoad()
+        setUI()
+        setLayout()
+        setPreview(image: previewImage, title: cardTitle)
+        bindViewModels()
     }
     
     // MARK: - Private

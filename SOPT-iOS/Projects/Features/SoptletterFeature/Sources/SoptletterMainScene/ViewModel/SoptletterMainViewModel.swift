@@ -39,6 +39,8 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     
     private let useCase: SoptletterUseCase
     private let coordinator: AnyCoordinatorObject
+    
+    private var soptletterTitle: String = ""
     private var submitTask: Task<Void, Never>?
     private var topicId: Int
     
@@ -46,8 +48,7 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     
     public var onNaviBackTap: (() -> Void)?
     public var onWriteTap: (() -> Void)?
-    public var onPostItTap: (() -> Void)?
-    public var onDownloadConfirmed: (() -> Void)?
+    public var onPostItTap: (() -> Void)?    
     public var onDownloadTap: ((String, UIImage, URL) -> Void)?
     public var onReportTap: (() -> Void)?
     public var onMenuTap: (() -> Void)?
@@ -59,13 +60,19 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     public init(coordinator: Coordinator, useCase: SoptletterUseCase, topicId: Int = 1) {
         self.useCase = useCase
         self.coordinator = coordinator
-        self.topicId = topicId
+        self.topicId = topicId      
     }
 }
 
 extension SoptletterMainViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
+        
+        output.soptletterMessages
+            .withUnretained(self)
+            .sink { owner, model in
+                owner.soptletterTitle = model.title
+            }.store(in: cancelBag)
         
         refreshTriggerSubject
             .withUnretained(self)
@@ -104,7 +111,7 @@ extension SoptletterMainViewModel {
                     .presentAlertVC(
                         type: .titleDescription,
                         title: "솝레터 출력하기",
-                        description: "nn기 솝레터의 모든 메세지가 하나의 이미지로\n 출력돼요. \n솝레터를 출력하여 우리 기수의 이야기를 공유해보세요!",
+                        description: "\(owner.soptletterTitle)의 모든 메세지가 하나의 이미지로\n 출력돼요. \n솝레터를 출력하여 우리 기수의 이야기를 공유해보세요!",
                         customButtonTitle: "출력", customAction: {
                             output.onDownloadConfirm.send(())
                         })

@@ -20,8 +20,7 @@ public protocol SoptletterMainRoutingTrigger {
     var onReportTap: (() -> Void)? { get set }
     var onMenuTap: (() -> Void)? { get set }
     var onCellTap: ((Int, Int) -> Void)? { get set }
-    var onError: (() -> Void)? { get set }
-    var onDownloadConfirmed: (() -> Void)? { get set }
+    var onError: (() -> Void)? { get set }    
     
     func refreshMessagesTrigger()
     func changeTopic(_ topicId: Int)

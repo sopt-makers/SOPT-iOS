@@ -524,6 +524,12 @@ public struct I18N {
             public static let goButtonTitle = "기 솝레터 바로가기"
         }
         
+        public struct Print {
+            public static let printButtonTitle = "솝레터 출력"
+            public static let previewTitle = "미리보기에서는 최대 16개까지 확인할 수 있어요."
+            public static let savePdfButtonTitle = "PDF 저장하기"
+        }
+        
         public struct Nickname {
             public static let descriptionText = "기 솝레터에 입장할 준비 되셨나요?\n솝레터는 100% 익명이에요."
             public static let myNicknameText = "나의 닉네임은"

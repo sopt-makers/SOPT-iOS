@@ -159,16 +159,17 @@ private extension SoptletterMainVC {
         
         output.onDownloadConfirm
             .withUnretained(self)
-            .sink { [weak self] owner, _ in
+            .sink { owner, _ in
                 ToastUtils.showMDSToast(type: .alert, text: "이미지 미리보기 생성 중...")
-                guard let self else { return }
-                 let previewImage = self.makeSoptletterSnapshotImage()
-                 guard let pdfURL = self.makeSoptletterPDFFileURL(fileName: self.title ?? "soptletter") else {
-                     ToastUtils.showMDSToast(type: .error, text: "이미지 미리보기 생성 실패")
-                     return
-                 }
-                
-                imagePreviewPublisher.send((owner.titleLabel.text ?? "soptletter", previewImage, pdfURL))
+
+                Task { @MainActor in                    
+                    let previewImage = owner.makeSoptletterSnapshotImage()
+                    guard let pdfURL = owner.makeSoptletterPDFFileURL(fileName: owner.title ?? "soptletter") else {
+                        ToastUtils.showMDSToast(type: .error, text: "이미지 미리보기 생성 실패")
+                        return
+                    }
+                    owner.imagePreviewPublisher.send((owner.titleLabel.text ?? "soptletter", previewImage, pdfURL))
+                }
             }.store(in: cancelBag)
     }
     
