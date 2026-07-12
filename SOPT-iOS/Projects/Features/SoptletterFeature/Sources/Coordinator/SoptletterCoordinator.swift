@@ -71,8 +71,8 @@ public final class SoptletterCoordinator: BaseCoordinator {
             self?.soptletterRootController?.dismiss(animated: true)
         }
         
-        checkNickname.vm.onGoButtonTap = { [weak self] in
-            self?.showSoptletterMain()
+        checkNickname.vm.onGoButtonTap = { [weak self]  in
+            self?.showSelectTopic()
         }
         
         checkNickname.vm.showAlert = {
