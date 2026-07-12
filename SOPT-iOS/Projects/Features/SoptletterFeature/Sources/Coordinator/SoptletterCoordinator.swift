@@ -18,8 +18,6 @@ public final class SoptletterCoordinator: BaseCoordinator {
 
     // MARK: - Properties
 
-    public var finishFlow: (() -> Void)?
-
     private let factory: SoptletterFeatureBuildable
     private var soptletterMain: SoptletterMainPresentable!
     private weak var navigationController: UINavigationController?
@@ -102,8 +100,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
         soptletterMain = factory.makeSoptletterMainVC(coordinator: self, topicId: topicId)
         
         soptletterMain.vm.onNaviBackTap = { [weak self] in
-            self?.soptletterRootController?.dismiss(animated: true)
-            self?.finishFlow?()
+            self?.soptletterRootController?.dismiss(animated: true)            
         }
         
         soptletterMain.vm.onWriteTap = { [weak self] in
@@ -174,7 +171,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
         
         selectTopic.vm.onCellTap = { [weak self] topic in
-            self?.showSoptletterMain(topicId: topic.topicId)
+            self?.changeTopicAndReturnToMain(topic.topicId)
         }
         
         selectTopic.vm.showAlert = {
@@ -182,5 +179,15 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
         
         soptletterRootController?.pushViewController(selectTopic.vc, animated: true)
+    }
+    
+    private func changeTopicAndReturnToMain(_ topicId: Int) {
+        guard let soptletterMain else {
+            showSoptletterMain(topicId: topicId)
+            return
+        }
+        
+        soptletterMain.vm.changeTopic(topicId)
+        soptletterRootController?.popToViewController(soptletterMain.vc, animated: true)
     }
 }
