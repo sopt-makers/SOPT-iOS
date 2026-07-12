@@ -32,11 +32,16 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
         let soptletterMessage = PassthroughSubject<SoptletterDetailMessageModel, Never>()
         let soptletterEditCompleted = PassthroughSubject<Void, Never>()
         let soptletterDeleteCompleted = PassthroughSubject<Void, Never>()
+        let soptletterLikeFailed = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - Properties
+        
+    private var fetchTask: Task<Void, Never>?
+    private var likeTask: Task<Void, Never>?
+    private var editTask: Task<Void, Never>?
+    private var deleteTask: Task<Void, Never>?
     
-    private var submitTask: Task<Void, Never>?
     public var onNaviBackTap: (() -> Void)?
     public var onError: (@MainActor () -> Void)?
     public var onEditCompleted: (() -> Void)?
@@ -61,18 +66,21 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
         input.likeButtonTap
             .withUnretained(self)
             .sink { owner, likeByMe in
-                owner.submitTask?.cancel()
-                owner.submitTask = Task { [weak self] in
-                    guard let self = self else { return }
+                owner.likeTask?.cancel()
+                owner.likeTask = Task { [weak self] in
+                    guard let self else { return }
                     do {
                         if likeByMe {
-                            try await owner.useCase.likeMessage(messageId: owner.messageId, topicId: owner.topicId)
+                            try await self.useCase.likeMessage(messageId: self.messageId, topicId: self.topicId)
                         } else {
-                            try await owner.useCase.unlikeMessage(messageId: owner.messageId, topicId: owner.topicId)
-                        }                        
+                            try await self.useCase.unlikeMessage(messageId: self.messageId, topicId: self.topicId)
+                        }
                     } catch is CancellationError {
                         return
                     } catch {
+                        await MainActor.run {
+                            output.soptletterLikeFailed.send(likeByMe)
+                        }
                         await self.onError?()
                     }
                 }
@@ -87,17 +95,19 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
         input.editCompleteButtonTap
             .withUnretained(self)
             .sink { owner, content in
-                owner.submitTask?.cancel()
-                owner.submitTask = Task { [weak self] in
-                    guard let self = self else { return }
+                owner.editTask?.cancel()
+                owner.editTask = Task { [weak self] in
+                    guard let self else { return }
                     do {
-                        try await owner.useCase.editMessage(messageId: owner.messageId, topicId: owner.topicId, content: content)
-                        output.soptletterEditCompleted.send()
-                        owner.onEditCompleted?()
+                        try await self.useCase.editMessage(messageId: self.messageId, topicId: self.topicId, content: content)
+                        await MainActor.run {
+                            output.soptletterEditCompleted.send()
+                            self.onEditCompleted?()
+                        }
                     } catch is CancellationError {
                         return
                     } catch {
-                        await self.onError?()
+                        await MainActor.run { self.onError?() }
                     }
                 }
             }
@@ -118,8 +128,8 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
 
 extension SoptletterDetailViewModel {
     private func deleteMessage(output: Output, content: String) {
-        submitTask?.cancel()
-        submitTask = Task { [weak self] in
+        deleteTask?.cancel()
+        deleteTask = Task { [weak self] in
             guard let self else { return }
             do {
                 try await useCase.deleteMessage(messageId: messageId, topicId: topicId)
@@ -130,14 +140,14 @@ extension SoptletterDetailViewModel {
             } catch is CancellationError {
                 return
             } catch {
-                await self.onError?()
+                await MainActor.run { self.onError?() }
             }
         }
     }
 
     public func fetchMessages(output: Output) {
-        submitTask?.cancel()
-        submitTask = Task { [weak self] in
+        fetchTask?.cancel()
+        fetchTask = Task { [weak self] in
             guard let self else { return }
             do {
                 let messages = try await useCase.fetchSoptletterMessage(messageId: messageId, topicId: topicId)
@@ -145,7 +155,7 @@ extension SoptletterDetailViewModel {
             } catch is CancellationError {
                 return
             } catch {
-                await self.onError?()
+                await MainActor.run { self.onError?() }
             }
         }
     }

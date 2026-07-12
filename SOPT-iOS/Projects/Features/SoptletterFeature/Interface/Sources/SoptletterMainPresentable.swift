@@ -23,6 +23,7 @@ public protocol SoptletterMainRoutingTrigger {
     var onError: (() -> Void)? { get set }
     
     func refreshMessagesTrigger()
+    func changeTopic(_ topicId: Int)
 }
 
 public typealias SoptletterMainViewModelType = ViewModelType & SoptletterMainRoutingTrigger

@@ -140,16 +140,19 @@ public final class SoptletterDetailModalVC: UIViewController {
         .mapVoid()
         .asDriver()
     
+    private lazy var likeButtonTap: Driver<Bool> = likeButtonRealTap
+        .withUnretained(self)
+        .map { owner, _ in !owner.likeButton.isSelected }
+        .asDriver()
+    
     private let viewModel: SoptletterDetailViewModel
     private let cancelBag = CancelBag()
-    
-    private let likeButtonTapPublisher = PassthroughSubject<Bool, Never>()
+        
     private let editCompleteButtonTapPublisher = PassthroughSubject<String, Never>()
     
     private var likeCount = 0
     private var deleteButtonTapPublisher = PassthroughSubject<String, Never>()
-    
-    private lazy var likeButtonTap: Driver<Bool> = likeButtonTapPublisher.asDriver()
+        
     private lazy var editCompleteButtonTap: Driver<String> = editCompleteButtonTapPublisher.asDriver()
     private lazy var deleteCompleteButtonTap: Driver<String> = deleteButtonTapPublisher.asDriver()
     
@@ -207,6 +210,12 @@ extension SoptletterDetailModalVC {
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
+                
+        likeButtonTap
+            .withUnretained(self)
+            .sink { owner, newLikeState in
+                owner.applyLikeState(newLikeState)
+            }.store(in: cancelBag)
         
         deleteButtonTap
             .withUnretained(self)
@@ -218,20 +227,6 @@ extension SoptletterDetailModalVC {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.contentDisplayMode = .editing
-            }.store(in: cancelBag)
-        
-        likeButtonRealTap
-            .withUnretained(self)
-            .sink { owner, _ in
-                let newLikeState = !owner.likeButton.isSelected
-                owner.likeButton.isSelected = newLikeState
-                owner.likeButton.setImage(
-                    newLikeState ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart"),
-                    for: .normal
-                )
-                owner.likeCount += newLikeState ? 1 : -1
-                owner.likeCountLabel.text = "\(owner.likeCount)"
-                owner.likeButtonTapPublisher.send(newLikeState)
             }.store(in: cancelBag)
 
         confirmButtonTap
@@ -281,10 +276,30 @@ extension SoptletterDetailModalVC {
                 owner.dismiss(animated: true)
                 ToastUtils.showMDSToast(type: .success, text: I18N.Soptletter.Detail.deleteCompleteToast)
             }.store(in: cancelBag)
+        
+        // 좋아요 API 실패 시, 실패한 목표 상태(attemptedState)의 반대로 롤백
+        output.soptletterLikeFailed
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, attemptedState in
+                owner.applyLikeState(!attemptedState)
+            }.store(in: cancelBag)
     }
 }
 
 private extension SoptletterDetailModalVC {
+    func applyLikeState(_ isLiked: Bool) {
+        guard likeButton.isSelected != isLiked else { return } // 중복 반영 방지
+        
+        likeButton.isSelected = isLiked
+        likeButton.setImage(
+            isLiked ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart"),
+            for: .normal
+        )
+        likeCount += isLiked ? 1 : -1
+        likeCountLabel.text = "\(likeCount)"
+    }
+    
     func setUI() {
         view.backgroundColor = .clear
     }
