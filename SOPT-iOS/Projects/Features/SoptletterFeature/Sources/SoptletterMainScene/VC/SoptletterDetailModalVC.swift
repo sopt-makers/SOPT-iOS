@@ -135,9 +135,10 @@ public final class SoptletterDetailModalVC: UIViewController {
         .mapVoid()
         .asDriver()
     
-    private lazy var likeButtonRealTap: Driver<Void> = likeButton
+    private lazy var likeButtonTap: Driver<Bool> = likeButton
         .publisher(for: .touchUpInside)
-        .mapVoid()
+        .withUnretained(self)
+        .map { owner, _ in !owner.likeButton.isSelected }
         .asDriver()
     
     private lazy var likeButtonTap: Driver<Bool> = likeButtonRealTap

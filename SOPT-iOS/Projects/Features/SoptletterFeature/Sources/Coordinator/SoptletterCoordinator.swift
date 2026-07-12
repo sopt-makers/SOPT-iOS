@@ -18,8 +18,6 @@ public final class SoptletterCoordinator: BaseCoordinator {
 
     // MARK: - Properties
 
-    public var finishFlow: (() -> Void)?
-
     private let factory: SoptletterFeatureBuildable
     private var soptletterMain: SoptletterMainPresentable!
     private weak var navigationController: UINavigationController?
