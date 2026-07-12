@@ -19,6 +19,14 @@ public final class SoptletterRepository {
 }
 
 extension SoptletterRepository: SoptletterRepositoryInterface {
+    public func likeMessage(messageId: Int, topicId: Int) async throws {
+        try await soptletterService.likeMessage(messageId: messageId, topicId: topicId)
+    }
+    
+    public func unlikeMessage(messageId: Int, topicId: Int) async throws {
+        try await soptletterService.unlikeMessage(messageId: messageId, topicId: topicId)
+    }
+    
     public func editMessage(messageId: Int, topicId: Int, content: String) async throws {
         try await soptletterService.editMessage(messageId: messageId, topicId: topicId, content: content)
     }

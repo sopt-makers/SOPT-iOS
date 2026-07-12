@@ -45,6 +45,10 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
         $0.setImage(DSKitAsset.Assets.icDownload.image, for: .normal)
     }
     
+    private let menuButton = UIButton().then {
+        $0.setImage(DSKitAsset.Assets.icSoptletterSubject.image, for: .normal)
+    }
+    
     private let reportButton = UIButton().then {
         $0.setImage(DSKitAsset.Assets.icReport.image, for: .normal)
     }
@@ -59,6 +63,15 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
         $0.setImage(DSKitAsset.Assets.soptletterButton.image, for: .normal)
         $0.backgroundColor = DSKitAsset.Colors.gray10.color
         $0.layer.cornerRadius = 28
+    }
+    
+    private let bannerImageButton = UIButton().then {
+        $0.setImage(DSKitAsset.Assets.imgSoptletteraBanner.image, for: .normal)
+    }
+    
+    private let placeHolderImageView = UIButton().then {
+        $0.setImage(DSKitAsset.Assets.imgSoptletterPlaceholder.image, for: .normal)
+        $0.isHidden = true
     }
             
     private let viewModel: SoptletterMainViewModel
@@ -79,6 +92,11 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
         .asDriver()
     
     private lazy var downloadButtonTap: Driver<Void> = downloadButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
+    
+    private lazy var menuButtonTap: Driver<Void> = menuButton
         .publisher(for: .touchUpInside)
         .mapVoid()
         .asDriver()
@@ -121,6 +139,7 @@ private extension SoptletterMainVC {
             writeButtonTap: writeButtonTap,
             downloadButtonTap: downloadButtonTap,
             reportButtonTap: reportButtonTap,
+            menuButtonTap: menuButtonTap,
             postItCellTap: postItCellTapPublisher.asDriver()
         )
         
@@ -131,6 +150,7 @@ private extension SoptletterMainVC {
             .sink { owner, model in
                 owner.soptletterMessages = model
                 owner.configureUI(model)
+                owner.placeHolderImageView.isHidden = !model.messages.isEmpty
                 owner.collectionView.reloadData()
             }.store(in: cancelBag)
     }
@@ -140,9 +160,14 @@ private extension SoptletterMainVC {
     }
     
     private func setLayout() {
-        rightButtonStackView.addArrangedSubviews(downloadButton, reportButton)
+        rightButtonStackView.addArrangedSubviews(downloadButton, reportButton, menuButton)
         navigationView.addSubviews(closeButton, titleLabel, rightButtonStackView)
-        view.addSubviews(collectionView, navigationView, writeButton)
+        view.addSubviews(collectionView, navigationView, writeButton, placeHolderImageView)
+        
+        placeHolderImageView.snp.makeConstraints { make in
+            make.top.equalTo(navigationView.snp.bottom).offset(86)
+            make.centerX.equalToSuperview()
+        }
         
         navigationView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
@@ -167,6 +192,10 @@ private extension SoptletterMainVC {
         }
         
         downloadButton.snp.makeConstraints { make in
+            make.size.equalTo(24)
+        }
+        
+        menuButton.snp.makeConstraints { make in
             make.size.equalTo(24)
         }
         

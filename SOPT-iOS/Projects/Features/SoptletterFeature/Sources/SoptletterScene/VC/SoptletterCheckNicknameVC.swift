@@ -108,6 +108,7 @@ private extension SoptletterCheckNicknameVC {
         
         output.profileSubject
             .withUnretained(self)
+            .receive(on: DispatchQueue.main)
             .sink { owner, profile in
                 owner.cardView.configure(nickName: profile.nickname, number: owner.number)
             }.store(in: cancelBag)

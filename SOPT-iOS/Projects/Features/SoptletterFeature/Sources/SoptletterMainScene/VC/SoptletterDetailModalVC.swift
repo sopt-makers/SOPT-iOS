@@ -88,8 +88,8 @@ public final class SoptletterDetailModalVC: UIViewController {
         $0.textColor = DSKitAsset.Colors.gray300.color
     }
     
-    private let likeImageView = UIImageView().then {
-        $0.image = UIImage(systemName: "heart")
+    private let likeButton = UIButton().then {
+        $0.setImage(UIImage(systemName: "heart"), for: .normal)
         $0.tintColor = DSKitAsset.Colors.gray700.color
         $0.contentMode = .scaleAspectFit
     }
@@ -113,8 +113,7 @@ public final class SoptletterDetailModalVC: UIViewController {
         $0.layer.cornerRadius = 12
     }
     
-    private let viewModel: SoptletterDetailViewModel
-    private let cancelBag = CancelBag()
+
     
     private lazy var cancelEditButtonTap: Driver<Void> = cancelEditButton
         .publisher(for: .touchUpInside)
@@ -136,10 +135,20 @@ public final class SoptletterDetailModalVC: UIViewController {
         .mapVoid()
         .asDriver()
     
-    private var deleteButtonTapPublisher = PassthroughSubject<String, Never>()
+    private lazy var likeButtonTap: Driver<Bool> = likeButton
+        .publisher(for: .touchUpInside)
+        .withUnretained(self)
+        .map { owner, _ in !owner.likeButton.isSelected }
+        .asDriver()    
     
+    private let viewModel: SoptletterDetailViewModel
+    private let cancelBag = CancelBag()
+        
     private let editCompleteButtonTapPublisher = PassthroughSubject<String, Never>()
     
+    private var likeCount = 0
+    private var deleteButtonTapPublisher = PassthroughSubject<String, Never>()
+        
     private lazy var editCompleteButtonTap: Driver<String> = editCompleteButtonTapPublisher.asDriver()
     private lazy var deleteCompleteButtonTap: Driver<String> = deleteButtonTapPublisher.asDriver()
     
@@ -169,14 +178,18 @@ public final class SoptletterDetailModalVC: UIViewController {
         content: String,
         date: String,
         likeCount: Int,
-        mine: Bool
+        mine: Bool,
+        likeByMe: Bool
     ) -> Self {
         containerView.backgroundColor = backgroundColor
         nameLabel.text = name
         contentLabel.text = content
         dateLabel.text = DateFormatManager.shared.serverTimeToString(date, from: .dateWithDot)
+        self.likeCount = likeCount
         likeCountLabel.text = "\(likeCount)"
         editDeleteStackView.isHidden = !mine
+        likeButton.setImage(likeByMe ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart"), for: .normal)
+        likeButton.isSelected = likeByMe
         return self
     }
 }
@@ -188,10 +201,17 @@ extension SoptletterDetailModalVC {
             editButtonTap: editButtonTap,
             deleteButtonTap: deleteCompleteButtonTap,
             confirmButtonTap: confirmButtonTap,
-            editCompleteButtonTap: editCompleteButtonTap
+            editCompleteButtonTap: editCompleteButtonTap,
+            likeButtonTap: likeButtonTap
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
+                
+        likeButtonTap
+            .withUnretained(self)
+            .sink { owner, newLikeState in
+                owner.applyLikeState(newLikeState)
+            }.store(in: cancelBag)
         
         deleteButtonTap
             .withUnretained(self)
@@ -231,7 +251,8 @@ extension SoptletterDetailModalVC {
                     content: model.content,
                     date: model.createdAt,
                     likeCount: model.likeCount,
-                    mine: model.mine
+                    mine: model.mine,
+                    likeByMe: model.likedByMe
                 )
             }.store(in: cancelBag)
 
@@ -251,10 +272,30 @@ extension SoptletterDetailModalVC {
                 owner.dismiss(animated: true)
                 ToastUtils.showMDSToast(type: .success, text: I18N.Soptletter.Detail.deleteCompleteToast)
             }.store(in: cancelBag)
+        
+        // 좋아요 API 실패 시, 실패한 목표 상태(attemptedState)의 반대로 롤백
+        output.soptletterLikeFailed
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, attemptedState in
+                owner.applyLikeState(!attemptedState)
+            }.store(in: cancelBag)
     }
 }
 
 private extension SoptletterDetailModalVC {
+    func applyLikeState(_ isLiked: Bool) {
+        guard likeButton.isSelected != isLiked else { return } // 중복 반영 방지
+        
+        likeButton.isSelected = isLiked
+        likeButton.setImage(
+            isLiked ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart"),
+            for: .normal
+        )
+        likeCount += isLiked ? 1 : -1
+        likeCountLabel.text = "\(likeCount)"
+    }
+    
     func setUI() {
         view.backgroundColor = .clear
     }
@@ -263,7 +304,7 @@ private extension SoptletterDetailModalVC {
         editDeleteStackView.addArrangedSubviews(editButton, deleteButton)
         containerView.addSubview(editDeleteStackView)
         containerView.addSubview(cancelEditButton)
-        likeStackView.addArrangedSubviews(likeImageView, likeCountLabel)
+        likeStackView.addArrangedSubviews(likeButton, likeCountLabel)
         contentScrollView.addSubviews(contentLabel, contentTextView)
         containerView.addSubviews(nameLabel, contentScrollView, dateLabel, likeStackView, confirmButton, charCountLabel)
         view.addSubviews(dimmedView, containerView)
@@ -324,7 +365,7 @@ private extension SoptletterDetailModalVC {
             make.trailing.equalToSuperview().inset(20)
         }
         
-        likeImageView.snp.makeConstraints { make in
+        likeButton.snp.makeConstraints { make in
             make.size.equalTo(24)
         }
         

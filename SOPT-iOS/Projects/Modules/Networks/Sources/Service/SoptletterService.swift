@@ -22,9 +22,19 @@ public protocol SoptletterService {
     func soptletterMessage(messageId: Int, topicId: Int) async throws -> SoptletterMessageResponseEntity
     func editMessage(messageId: Int, topicId: Int, content: String) async throws
     func deleteMessage(messageId: Int, topicId: Int) async throws
+    func likeMessage(messageId: Int, topicId: Int) async throws
+    func unlikeMessage(messageId: Int, topicId: Int) async throws
 }
 
 extension DefaultSoptletterService: SoptletterService {
+    public func likeMessage(messageId: Int, topicId: Int) async throws {
+        _ = try await requestObjectAsyncNoResult(.likeMessage(messageId: messageId, topicId: topicId))
+    }
+    
+    public func unlikeMessage(messageId: Int, topicId: Int) async throws {
+        _ = try await requestObjectAsyncNoResult(.unlikeMessage(messageId: messageId, topicId: topicId))
+    }
+    
     public func soptletterMessages(topicId: Int, cursor: Int?, size: Int?) async throws -> SoptletterItemResponseEntity {
         return try await requestObjectAsync(.soptletterMessages(topicId: topicId, cursor: cursor, size: size))
     }

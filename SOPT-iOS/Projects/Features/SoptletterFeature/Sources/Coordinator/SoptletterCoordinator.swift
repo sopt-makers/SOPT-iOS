@@ -18,8 +18,6 @@ public final class SoptletterCoordinator: BaseCoordinator {
 
     // MARK: - Properties
 
-    public var finishFlow: (() -> Void)?
-
     private let factory: SoptletterFeatureBuildable
     private var soptletterMain: SoptletterMainPresentable!
     private weak var navigationController: UINavigationController?
@@ -71,8 +69,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
             self?.soptletterRootController?.dismiss(animated: true)
         }
         
-        checkNickname.vm.onGoButtonTap = { [weak self] in
-            // 임시
+        checkNickname.vm.onGoButtonTap = { [weak self]  in
             self?.showSelectTopic()
         }
         
@@ -91,6 +88,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
 
         soptletterWriting.vm.onSubmitSuccess = { [weak self] in
+            self?.soptletterMain.vm.refreshMessagesTrigger()
             self?.soptletterRootController?.popViewController(animated: true)
             ToastUtils.showMDSToast(type: .success, text: I18N.Soptletter.submitSuccess)
         }
@@ -102,11 +100,15 @@ public final class SoptletterCoordinator: BaseCoordinator {
         soptletterMain = factory.makeSoptletterMainVC(coordinator: self, topicId: topicId)
         
         soptletterMain.vm.onNaviBackTap = { [weak self] in
-            print("handle soptletterMain.vm.onNaviBackTap")
+            self?.soptletterRootController?.dismiss(animated: true)            
         }
         
         soptletterMain.vm.onWriteTap = { [weak self] in
-            print("handle soptletterMain.vm.onWriteTap")
+            self?.showSoptletterWriting()
+        }
+        
+        soptletterMain.vm.onMenuTap = { [weak self] in
+            self?.showSelectTopic()
         }
         
         soptletterMain.vm.onReportTap = { [weak self] in
@@ -129,7 +131,14 @@ public final class SoptletterCoordinator: BaseCoordinator {
             AlertUtils.presentNetworkAlertVC()
         }
         
-        navigationController?.pushViewController(soptletterMain.vc, animated: true)
+        if let soptletterRootController {
+            soptletterRootController.pushViewController(soptletterMain.vc, animated: true)
+        } else {
+            let navController = UINavigationController(rootViewController: soptletterMain.vc)
+            navController.modalPresentationStyle = .fullScreen
+            soptletterRootController = navController
+            navigationController?.present(navController, animated: true)
+        }
     }
     
     private func presentSoptletterDetail(_ messageId: Int, _ topicId: Int) {
@@ -151,7 +160,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
             self?.soptletterMain.vm.refreshMessagesTrigger()
         }
         
-        navigationController?.present(soptletterDetail.vc, animated: true)
+        soptletterRootController?.present(soptletterDetail.vc, animated: true)
     }
     
     private func showSelectTopic() {
@@ -162,7 +171,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
         
         selectTopic.vm.onCellTap = { [weak self] topic in
-            self?.showSoptletterMain(topicId: topic.topicId)
+            self?.changeTopicAndReturnToMain(topic.topicId)
         }
         
         selectTopic.vm.showAlert = {
@@ -170,5 +179,15 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
         
         soptletterRootController?.pushViewController(selectTopic.vc, animated: true)
+    }
+    
+    private func changeTopicAndReturnToMain(_ topicId: Int) {
+        guard let soptletterMain else {
+            showSoptletterMain(topicId: topicId)
+            return
+        }
+        
+        soptletterMain.vm.changeTopic(topicId)
+        soptletterRootController?.popToViewController(soptletterMain.vc, animated: true)
     }
 }
