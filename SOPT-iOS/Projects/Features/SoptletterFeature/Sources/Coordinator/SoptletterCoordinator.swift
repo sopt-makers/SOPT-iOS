@@ -36,7 +36,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
 
     public override func start() {
         if UserDefaultKeyList.User.isCompleteSoptletterOnboarding == true {
-            showSoptletterMain(topicId: 1, isRoot: true)
+            showSoptletterMain(topicId: nil, isRoot: true)
         } else {
             showSoptletterOnboarding()
         }
@@ -95,7 +95,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
         soptletterRootController?.pushViewController(soptletterWriting.vc, animated: true)
     }
     
-    private func showSoptletterMain(topicId: Int, isRoot: Bool) {
+    private func showSoptletterMain(topicId: Int?, isRoot: Bool) {
         var soptletterMain = factory.makeSoptletterMainVC(coordinator: self, topicId: topicId, isRoot: isRoot)        
         
         soptletterMain.vm.onNaviBackTap = { [weak self] in
