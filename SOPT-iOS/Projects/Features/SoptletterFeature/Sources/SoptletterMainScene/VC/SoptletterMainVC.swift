@@ -79,6 +79,7 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
     private let postItCellTapPublisher = PassthroughSubject<(messageId: Int, topicId: Int), Never>()
     private let naviBackButtonTapPublisher = PassthroughSubject<Void, Never>()
     private let imagePreviewPublisher = PassthroughSubject<(fileName: String, image: UIImage, url: URL), Never>()
+    private let soptletterHeaderPublisher = PassthroughSubject<Void, Never>()
     
     private var soptletterMessages: SoptletterItemModel?
     private var snapshotDataSource: SnapshotPostItDataSource?
@@ -259,6 +260,17 @@ extension SoptletterMainVC {
         section.interGroupSpacing = 10
         section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 10, trailing: 16)
         
+        let headerSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(64)
+        )
+        let header = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: headerSize,
+            elementKind: UICollectionView.elementKindSectionHeader,
+            alignment: .top
+        )
+        section.boundarySupplementaryItems = [header]
+        
         return UICollectionViewCompositionalLayout(section: section)
     }
 }
@@ -266,6 +278,11 @@ extension SoptletterMainVC {
 extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate {
     private func setCollectionView() {
         collectionView.register(SoptletterPostItCell.self, forCellWithReuseIdentifier: SoptletterPostItCell.identifier)
+        collectionView.register(
+            SoptletterBannerHeaderView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: SoptletterBannerHeaderView.identifier
+        )
         collectionView.dataSource = self
         collectionView.delegate = self
     }
@@ -299,6 +316,27 @@ extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate
         guard let soptletterMessages else { return }
         let message = soptletterMessages.messages[indexPath.row]
         postItCellTapPublisher.send((message.messageId, soptletterMessages.topicId))
+    }
+    
+    public func collectionView(
+        _ collectionView: UICollectionView,
+        viewForSupplementaryElementOfKind kind: String,
+        at indexPath: IndexPath
+    ) -> UICollectionReusableView {
+        guard kind == UICollectionView.elementKindSectionHeader,
+              let headerView = collectionView.dequeueReusableSupplementaryView(
+                ofKind: kind,
+                withReuseIdentifier: SoptletterBannerHeaderView.identifier,
+                for: indexPath
+              ) as? SoptletterBannerHeaderView else {
+            return UICollectionReusableView()
+        }
+        
+        headerView.bannerView.onTap = { [weak self] in
+            self?.soptletterHeaderPublisher.send()
+        }
+        
+        return headerView
     }
 }
 
