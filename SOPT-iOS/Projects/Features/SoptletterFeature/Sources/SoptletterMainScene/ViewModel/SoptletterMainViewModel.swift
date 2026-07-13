@@ -56,7 +56,7 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     public var onReportTap: (() -> Void)?
     public var onMenuTap: (() -> Void)?
     public var onCellTap: ((Int, Int) -> Void)?
-    public var onError: (() -> Void)?
+    public var onError: (@MainActor () -> Void)?
     public var ctaTap: ((Int) -> Void)?
     
     private let refreshTriggerSubject = PassthroughSubject<Void, Never>()
@@ -162,7 +162,7 @@ extension SoptletterMainViewModel {
             } catch is CancellationError {
                 return
             } catch {
-                onError?()
+              await onError?()
             }
         }
     }
@@ -178,7 +178,7 @@ extension SoptletterMainViewModel {
             } catch is CancellationError {
                 return
             } catch {
-                onError?()
+                output.ctaInfo.send(.init(showCta: false, topicId: 0, ctaText: ""))
             }
         }
     }

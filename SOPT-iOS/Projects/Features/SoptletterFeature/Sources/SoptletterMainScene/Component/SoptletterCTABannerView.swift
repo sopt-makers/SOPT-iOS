@@ -22,7 +22,7 @@ final class SoptletterCTABannerView: UIView {
 
     private let titleLabel = UILabel().then {
         $0.textColor = .white
-        $0.font = .systemFont(ofSize: 16, weight: .semibold)
+        $0.font = DSKitFontFamily.Suit.bold.font(size: 16)
     }
 
     private let chevronImageView = UIImageView().then {
@@ -77,7 +77,7 @@ final class SoptletterCTABannerView: UIView {
 private extension SoptletterCTABannerView {
 
     func setStyle() {
-        self.backgroundColor = UIColor(red: 0.11, green: 0.11, blue: 0.12, alpha: 1.0)
+        self.backgroundColor = DSKitAsset.Colors.gray800.color
         self.layer.cornerRadius = 12
         self.layer.masksToBounds = true
         addTapGesture()
@@ -107,12 +107,5 @@ private extension SoptletterCTABannerView {
         self.snp.makeConstraints {
             heightConstraint = $0.height.equalTo(64).constraint
         }
-    }
-}
-
-
-private extension UIView {
-    func addSubviews(_ views: UIView...) {
-        views.forEach { self.addSubview($0) }
     }
 }
