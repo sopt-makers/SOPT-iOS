@@ -79,10 +79,12 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
     private let postItCellTapPublisher = PassthroughSubject<(messageId: Int, topicId: Int), Never>()
     private let naviBackButtonTapPublisher = PassthroughSubject<Void, Never>()
     private let imagePreviewPublisher = PassthroughSubject<(fileName: String, image: UIImage, url: URL), Never>()
-    private let soptletterHeaderPublisher = PassthroughSubject<Void, Never>()
+    private let soptletterHeaderPublisher = PassthroughSubject<Int, Never>()
+    private let isRoot: Bool
     
     private var soptletterMessages: SoptletterItemModel?
     private var snapshotDataSource: SnapshotPostItDataSource?
+    private var ctaModel: SoptletterCTAModel?
     
     private lazy var closeButtonTap: Driver<Void> = closeButton
         .publisher(for: .touchUpInside)
@@ -109,6 +111,9 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
         .mapVoid()
         .asDriver()
     
+    private lazy var soptletterHeaderTap: Driver<Int> = soptletterHeaderPublisher
+        .asDriver()
+    
     // MARK: - LifeCycles
     
     public override func viewDidLoad() {
@@ -118,9 +123,10 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
         bindViewModels()
         setCollectionView()
     }
-    
-    public init(viewModel: SoptletterMainViewModel) {
+
+    public init(viewModel: SoptletterMainViewModel, isRoot: Bool) {
         self.viewModel = viewModel
+        self.isRoot = isRoot
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -133,6 +139,12 @@ private extension SoptletterMainVC {
     private func setUI() {
         view.backgroundColor = DSKitAsset.Colors.gray950.color
         navigationController?.setNavigationBarHidden(true, animated: false)
+        
+        closeButton.setImage(
+            isRoot ? DSKitAsset.Assets.xClose.image : DSKitAsset.Assets.chevronLeft.image,
+            for: .normal
+        )
+        menuButton.isHidden = !isRoot
     }
     
     private func bindViewModels() {
@@ -144,7 +156,8 @@ private extension SoptletterMainVC {
             reportButtonTap: reportButtonTap,
             menuButtonTap: menuButtonTap,
             postItCellTap: postItCellTapPublisher.asDriver(),
-            imageProcessCompleted: imagePreviewPublisher.asDriver()
+            imageProcessCompleted: imagePreviewPublisher.asDriver(),
+            soptletterHeaderTap: soptletterHeaderTap.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
@@ -155,6 +168,7 @@ private extension SoptletterMainVC {
                 owner.soptletterMessages = model
                 owner.configureUI(model)
                 owner.placeHolderImageView.isHidden = !model.messages.isEmpty
+                owner.downloadButton.isHidden = model.messages.isEmpty
                 owner.collectionView.reloadData()
             }.store(in: cancelBag)
         
@@ -173,6 +187,13 @@ private extension SoptletterMainVC {
                     }
                     owner.imagePreviewPublisher.send((owner.titleLabel.text ?? "soptletter", previewImage, pdfURL))
                 }
+            }.store(in: cancelBag)
+        
+        output.ctaInfo
+            .withUnretained(self)
+            .sink { owner, model in
+                owner.ctaModel = model
+                owner.collectionView.reloadData()
             }.store(in: cancelBag)
     }
     
@@ -332,9 +353,16 @@ extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate
             return UICollectionReusableView()
         }
         
-        headerView.bannerView.onTap = { [weak self] in
-            self?.soptletterHeaderPublisher.send()
-        }
+        let shouldHideBanner = !isRoot || !(ctaModel?.showCta ?? false)
+        
+        headerView.configure(
+            ctaText: ctaModel?.ctaText ?? "",
+            isHidden: shouldHideBanner,
+            onTap: { [weak self] in
+                guard let topicId = self?.ctaModel?.topicId else { return }
+                self?.soptletterHeaderPublisher.send(topicId)
+            }
+        )
         
         return headerView
     }

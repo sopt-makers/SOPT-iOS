@@ -20,10 +20,11 @@ public protocol SoptletterUseCase {
     func deleteMessage(messageId: Int, topicId: Int) async throws
     func likeMessage(messageId: Int, topicId: Int) async throws
     func unlikeMessage(messageId: Int, topicId: Int) async throws
+    func fetchCTA() async throws -> SoptletterCTAModel
 }
 
 public final class DefaultSoptletterUseCase: SoptletterUseCase {
-    
+
     private let repository: SoptletterRepositoryInterface
     private let maxCharCount = 350
     
@@ -87,5 +88,9 @@ public final class DefaultSoptletterUseCase: SoptletterUseCase {
     
     public func unlikeMessage(messageId: Int, topicId: Int) async throws {
         try await repository.unlikeMessage(messageId: messageId, topicId: topicId)
+    }
+    
+    public func fetchCTA() async throws -> SoptletterCTAModel {
+        return try await repository.fetchCTA()
     }
 }

@@ -37,7 +37,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
 
     public override func start() {
         if UserDefaultKeyList.User.isCompleteSoptletterOnboarding == true {
-            showSoptletterMain()
+            showSoptletterMain(topicId: 1, isRoot: true)
         } else {
             showSoptletterOnboarding()
         }
@@ -80,7 +80,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
         soptletterRootController?.pushViewController(checkNickname.vc, animated: true)
     }
 
-    private func showSoptletterWriting() {
+    private func showSoptletterWriting(refreshTarget: SoptletterMainPresentable) {
         var soptletterWriting = factory.makeSoptletterWritingVC(coordinator: self)
 
         soptletterWriting.vm.onNaviBackTap = { [weak self] in
@@ -88,7 +88,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
 
         soptletterWriting.vm.onSubmitSuccess = { [weak self] in
-            self?.soptletterMain.vm.refreshMessagesTrigger()
+            refreshTarget.vm.refreshMessagesTrigger()
             self?.soptletterRootController?.popViewController(animated: true)
             ToastUtils.showMDSToast(type: .success, text: I18N.Soptletter.submitSuccess)
         }
@@ -96,15 +96,20 @@ public final class SoptletterCoordinator: BaseCoordinator {
         soptletterRootController?.pushViewController(soptletterWriting.vc, animated: true)
     }
     
-    private func showSoptletterMain(topicId: Int = 1) {
-        soptletterMain = factory.makeSoptletterMainVC(coordinator: self, topicId: topicId)
+    private func showSoptletterMain(topicId: Int, isRoot: Bool) {
+        var soptletterMain = factory.makeSoptletterMainVC(coordinator: self, topicId: topicId, isRoot: isRoot)
+        self.soptletterMain = soptletterMain
         
         soptletterMain.vm.onNaviBackTap = { [weak self] in
-            self?.soptletterRootController?.dismiss(animated: true)            
+            if isRoot {
+                self?.soptletterRootController?.dismiss(animated: true)
+            } else {
+                self?.soptletterRootController?.popViewController(animated: true)
+            }
         }
         
         soptletterMain.vm.onWriteTap = { [weak self] in
-            self?.showSoptletterWriting()
+            self?.showSoptletterWriting(refreshTarget: soptletterMain)
         }
         
         soptletterMain.vm.onMenuTap = { [weak self] in
@@ -115,20 +120,21 @@ public final class SoptletterCoordinator: BaseCoordinator {
             print("handle soptletterMain.vm.onReportTap")
         }
         
-        soptletterMain.vm.onPostItTap = { [weak self] in
-            print("handle soptletterMain.vm.onPostItTap")
-        }
-        
         soptletterMain.vm.onDownloadTap = { [weak self] fileName, image, pdfURL in
             self?.showSoptletterPrint(fileName, image, pdfURL)
         }
         
         soptletterMain.vm.onCellTap = { [weak self] messageId, topicId in
-            self?.presentSoptletterDetail(messageId, topicId)
+            self?.presentSoptletterDetail(messageId, topicId, refreshTarget: soptletterMain)
         }
         
         soptletterMain.vm.onError = { [weak self] in
             AlertUtils.presentNetworkAlertVC()
+        }
+        
+        // CTA 클릭 시에도 새 인스턴스를 push (isRoot: false)
+        soptletterMain.vm.ctaTap = { [weak self] newTopicId in
+            self?.showSoptletterMain(topicId: newTopicId, isRoot: false)
         }
         
         if let soptletterRootController {
@@ -136,7 +142,8 @@ public final class SoptletterCoordinator: BaseCoordinator {
         } else {
             let navController = UINavigationController(rootViewController: soptletterMain.vc)
             navController.modalPresentationStyle = .fullScreen
-            soptletterRootController = navController
+            navController.setNavigationBarHidden(true, animated: false)
+            self.soptletterRootController = navController
             navigationController?.present(navController, animated: true)
         }
     }
@@ -172,7 +179,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
         soptletterRootController?.pushViewController(soptletterPrint.vc, animated: true)
     }
     
-    private func presentSoptletterDetail(_ messageId: Int, _ topicId: Int) {
+    private func presentSoptletterDetail(_ messageId: Int, _ topicId: Int, refreshTarget: SoptletterMainPresentable) {
         var soptletterDetail = factory.makeSoptletterDetailVC(coordinator: self, messageId: messageId, topicId: topicId)
         
         soptletterDetail.vm.onNaviBackTap = { [weak self] in
@@ -184,11 +191,11 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
         
         soptletterDetail.vm.onEditCompleted = { [weak self] in
-            self?.soptletterMain.vm.refreshMessagesTrigger()
+            refreshTarget.vm.refreshMessagesTrigger()
         }
         
         soptletterDetail.vm.onDeleteCompleted = { [weak self] in
-            self?.soptletterMain.vm.refreshMessagesTrigger()
+            refreshTarget.vm.refreshMessagesTrigger()
         }
         
         soptletterRootController?.present(soptletterDetail.vc, animated: true)
@@ -202,7 +209,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
         
         selectTopic.vm.onCellTap = { [weak self] topic in
-            self?.changeTopicAndReturnToMain(topic.topicId)
+            self?.showSoptletterMain(topicId: topic.topicId, isRoot: false)
         }
         
         selectTopic.vm.showAlert = {
@@ -210,15 +217,5 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
         
         soptletterRootController?.pushViewController(selectTopic.vc, animated: true)
-    }
-    
-    private func changeTopicAndReturnToMain(_ topicId: Int) {
-        guard let soptletterMain else {
-            showSoptletterMain(topicId: topicId)
-            return
-        }
-        
-        soptletterMain.vm.changeTopic(topicId)
-        soptletterRootController?.popToViewController(soptletterMain.vc, animated: true)
     }
 }

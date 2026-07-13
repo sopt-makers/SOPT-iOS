@@ -28,11 +28,21 @@ final class SoptletterBannerHeaderView: UICollectionReusableView {
         addSubview(bannerView)
         bannerView.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.bottom.equalToSuperview().inset(12)
             make.directionalHorizontalEdges.equalToSuperview()
+            make.bottom.equalToSuperview().inset(12)
         }
     }
+    
+    func configure(ctaText: String, isHidden: Bool, onTap: (() -> Void)?) {
+        bannerView.configure(text: ctaText)
+        bannerView.setCollapsed(isHidden)
+        bannerView.onTap = onTap
         
+        bannerView.snp.updateConstraints { make in
+            make.bottom.equalToSuperview().inset(isHidden ? 0 : 12)
+        }
+    }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         bannerView.onTap = nil

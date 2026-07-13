@@ -21,7 +21,6 @@ final class SoptletterCTABannerView: UIView {
     }
 
     private let titleLabel = UILabel().then {
-        $0.text = "이번 기수 회고하러 가볼까요?"
         $0.textColor = .white
         $0.font = .systemFont(ofSize: 16, weight: .semibold)
     }
@@ -31,6 +30,8 @@ final class SoptletterCTABannerView: UIView {
         $0.tintColor = .white
         $0.contentMode = .scaleAspectFit
     }
+
+    private var heightConstraint: Constraint?
 
     // MARK: - Init
 
@@ -42,6 +43,17 @@ final class SoptletterCTABannerView: UIView {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Configure
+
+    func configure(text: String) {
+        titleLabel.text = text
+    }
+
+    func setCollapsed(_ collapsed: Bool) {
+        self.isHidden = collapsed
+        heightConstraint?.update(offset: collapsed ? 0 : 64)
     }
 
     // MARK: - Tap Handling
@@ -93,12 +105,11 @@ private extension SoptletterCTABannerView {
         }
 
         self.snp.makeConstraints {
-            $0.height.equalTo(64)
+            heightConstraint = $0.height.equalTo(64).constraint
         }
     }
 }
 
-// MARK: - UIView + addSubviews (프로젝트에 이미 있다면 중복 정의 제거)
 
 private extension UIView {
     func addSubviews(_ views: UIView...) {

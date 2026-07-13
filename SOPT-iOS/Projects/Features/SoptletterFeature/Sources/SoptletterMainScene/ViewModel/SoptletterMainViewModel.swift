@@ -28,12 +28,14 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
         let menuButtonTap: Driver<Void>
         let postItCellTap: Driver<(messageId: Int, topicId: Int)>
         let imageProcessCompleted: Driver<(fileName: String, image: UIImage, url: URL)>
+        let soptletterHeaderTap: Driver<Int>
     }
     
     // MARK: - Outputs
     
     public struct Output {
         let soptletterMessages = PassthroughSubject<SoptletterItemModel, Never>()
+        let ctaInfo = PassthroughSubject<SoptletterCTAModel, Never>()
         let onDownloadConfirm = PassthroughSubject<Void, Never>()
     }
     
@@ -41,7 +43,8 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     private let coordinator: AnyCoordinatorObject
     
     private var soptletterTitle: String = ""
-    private var submitTask: Task<Void, Never>?
+    private var fetchMessageTask: Task<Void, Never>?
+    private var fetchCTATask: Task<Void, Never>?
     private var topicId: Int
     
     private var cancelBag = CancelBag()
@@ -54,6 +57,7 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     public var onMenuTap: (() -> Void)?
     public var onCellTap: ((Int, Int) -> Void)?
     public var onError: (() -> Void)?
+    public var ctaTap: ((Int) -> Void)?
     
     private let refreshTriggerSubject = PassthroughSubject<Void, Never>()
     
@@ -80,10 +84,17 @@ extension SoptletterMainViewModel {
                 owner.fetchMessages(output: output)
             }.store(in: cancelBag)
         
+        input.soptletterHeaderTap
+            .withUnretained(self)
+            .sink { owner, topicId in
+                owner.ctaTap?(topicId)
+            }.store(in: cancelBag)
+        
         input.viewDidLoad
             .withUnretained(self)
             .sink { owner, _ in
                 owner.fetchMessages(output: output)
+                owner.fetchCTA(output: output)
             }.store(in: cancelBag)
         
         input.naviBackButtonTap
@@ -141,12 +152,28 @@ extension SoptletterMainViewModel {
 
 extension SoptletterMainViewModel {
     public func fetchMessages(output: Output) {
-        submitTask?.cancel()
-        submitTask = Task {
+        fetchMessageTask?.cancel()
+        fetchMessageTask = Task {
             do {
                 let result = try await useCase.fetchSoptletterMessages(topicId: topicId, cursor: nil, size: nil)
                 await MainActor.run {
                     output.soptletterMessages.send(result)
+                }
+            } catch is CancellationError {
+                return
+            } catch {
+                onError?()
+            }
+        }
+    }
+    
+    public func fetchCTA(output: Output) {
+        fetchCTATask?.cancel()
+        fetchCTATask = Task {
+            do {
+                let result = try await useCase.fetchCTA()
+                await MainActor.run {
+                    output.ctaInfo.send(result)
                 }
             } catch is CancellationError {
                 return
