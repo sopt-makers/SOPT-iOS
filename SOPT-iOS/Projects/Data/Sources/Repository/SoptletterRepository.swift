@@ -19,6 +19,10 @@ public final class SoptletterRepository {
 }
 
 extension SoptletterRepository: SoptletterRepositoryInterface {
+    public func fetchDefaultTopic() async throws -> Domain.SoptletterItemModel {
+        try await soptletterService.fetchDefaultTopic().toDomain()
+    }
+    
     public func fetchCTA() async throws -> Domain.SoptletterCTAModel {
         try await soptletterService.fetchCTA().toDomain()
     }
