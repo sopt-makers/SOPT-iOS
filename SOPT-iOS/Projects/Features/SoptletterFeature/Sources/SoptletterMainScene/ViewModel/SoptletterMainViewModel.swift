@@ -155,18 +155,10 @@ extension SoptletterMainViewModel {
         fetchMessageTask?.cancel()
         fetchMessageTask = Task {
             do {                
-                if let topicId {
-                    let result = try await useCase.fetchSoptletterMessages(topicId: topicId, cursor: nil, size: nil)
-                    await MainActor.run {
-                        output.soptletterMessages.send(result)
-                    }
-                } else {
-                    let result = try await useCase.fetchDefaultTopic()
-                    await MainActor.run {
-                        output.soptletterMessages.send(result)
-                    }
+                let result = try await useCase.fetchSoptletterMessages(topicId: topicId, cursor: nil, size: nil)
+                await MainActor.run {
+                    output.soptletterMessages.send(result)
                 }
-                
             } catch is CancellationError {
                 return
             } catch {

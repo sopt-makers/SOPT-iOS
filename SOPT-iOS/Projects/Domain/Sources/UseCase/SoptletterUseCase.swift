@@ -14,14 +14,13 @@ public protocol SoptletterUseCase {
     func fetchTopic(topicId: Int) async throws -> SoptletterTopicDetailModel
     func getSoptletterProfile() async throws -> SoptletterProfileModel
     func completeOnboarding() async throws
-    func fetchSoptletterMessages(topicId: Int, cursor: Int?, size: Int?) async throws -> SoptletterItemModel
+    func fetchSoptletterMessages(topicId: Int?, cursor: Int?, size: Int?) async throws -> SoptletterItemModel
     func fetchSoptletterMessage(messageId: Int, topicId: Int) async throws -> SoptletterDetailMessageModel
     func editMessage(messageId: Int, topicId: Int, content: String) async throws
     func deleteMessage(messageId: Int, topicId: Int) async throws
     func likeMessage(messageId: Int, topicId: Int) async throws
     func unlikeMessage(messageId: Int, topicId: Int) async throws
-    func fetchCTA() async throws -> SoptletterCTAModel
-    func fetchDefaultTopic() async throws -> SoptletterItemModel
+    func fetchCTA() async throws -> SoptletterCTAModel    
 }
 
 public final class DefaultSoptletterUseCase: SoptletterUseCase {
@@ -64,8 +63,12 @@ public final class DefaultSoptletterUseCase: SoptletterUseCase {
         UserDefaultKeyList.User.isCompleteSoptletterOnboarding = true
     }
     
-    public func fetchSoptletterMessages(topicId: Int, cursor: Int?, size: Int?) async throws -> SoptletterItemModel {
-        return try await repository.soptletterMessages(topicId: topicId, cursor: cursor, size: size)
+    public func fetchSoptletterMessages(topicId: Int?, cursor: Int?, size: Int?) async throws -> SoptletterItemModel {
+        if let topicId {
+            return try await repository.soptletterMessages(topicId: topicId, cursor: cursor, size: size)
+        } else {
+            return try await repository.fetchDefaultTopic()
+        }
     }
     
     public func fetchSoptletterMessage(messageId: Int, topicId: Int) async throws -> SoptletterDetailMessageModel {
@@ -93,9 +96,5 @@ public final class DefaultSoptletterUseCase: SoptletterUseCase {
     
     public func fetchCTA() async throws -> SoptletterCTAModel {
         return try await repository.fetchCTA()
-    }
-    
-    public func fetchDefaultTopic() async throws -> SoptletterItemModel {
-        return try await repository.fetchDefaultTopic()
     }
 }
