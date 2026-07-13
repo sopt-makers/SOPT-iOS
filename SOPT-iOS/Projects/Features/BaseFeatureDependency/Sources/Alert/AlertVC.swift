@@ -113,7 +113,7 @@ extension AlertVC {
         self.customButton.setTitleColor(alertTheme.customButtonTitleColor, for: .normal)
         
         self.descriptionLabel.textAlignment = .center
-        self.descriptionLabel.numberOfLines = 2
+        self.descriptionLabel.numberOfLines = 0
 
         let cancelTitle: String
         switch self.alertType {
@@ -131,10 +131,9 @@ extension AlertVC {
         self.customButton.layer.cornerRadius = 10
     }
     
+    
+    
     private func setLayout(_ type: AlertType) {
-        let heightRatio = (type == .title) ? 0.49 : 0.55
-        let titleOffset = (type == .title) ? -22 : -35
-        
         self.view.addSubviews(backgroundDimmerView, alertView)
         
         backgroundDimmerView.snp.makeConstraints { make in
@@ -144,31 +143,38 @@ extension AlertVC {
         alertView.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(50)
-            make.height.equalTo(alertView.snp.width).multipliedBy(heightRatio)
+            // 고정 height 비율 제거 - 내부 콘텐츠에 따라 자동으로 늘어남
         }
-        
-        self.setButtonLayout(type)
         
         alertView.addSubview(titleLabel)
         
+        let titleTopInset: CGFloat = (type == .title) ? 32 : 28
+        
         titleLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(titleTopInset)
             make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().offset(titleOffset)
+            make.leading.trailing.equalToSuperview().inset(20)
         }
+        
+        var lastLabel = titleLabel
         
         if type != .title {
             alertView.addSubview(descriptionLabel)
             
             descriptionLabel.snp.makeConstraints { make in
+                make.top.equalTo(titleLabel.snp.bottom).offset(8)  
                 make.centerX.equalToSuperview()
-                make.centerY.equalToSuperview().offset(-6)
-                make.leading.trailing.equalToSuperview().inset(7)
+                make.leading.trailing.equalToSuperview().inset(20)
             }
+            lastLabel = descriptionLabel
         }
+        
+        self.setButtonLayout(type, lastLabel: lastLabel)
     }
-    
-    private func setButtonLayout(_ type: AlertType) {
+
+    private func setButtonLayout(_ type: AlertType, lastLabel: UILabel) {
         alertView.addSubviews(cancelButton)
+        let buttonTopSpacing: CGFloat = 24
         
         switch type {
         case .title, .titleDescription:
@@ -176,6 +182,7 @@ extension AlertVC {
             let buttonSpacing: Float = 7
             
             cancelButton.snp.makeConstraints { make in
+                make.top.equalTo(lastLabel.snp.bottom).offset(buttonTopSpacing)
                 make.leading.bottom.equalToSuperview().inset(buttonSpacing)
                 make.width.equalTo(customButton.snp.width)
                 make.height.equalTo(38)
@@ -189,6 +196,7 @@ extension AlertVC {
 
         case .titleDescriptionSingleButton, .networkErr:
             cancelButton.snp.makeConstraints { make in
+                make.top.equalTo(lastLabel.snp.bottom).offset(buttonTopSpacing)
                 make.leading.trailing.bottom.equalToSuperview().inset(7)
                 make.height.equalTo(38)
             }
