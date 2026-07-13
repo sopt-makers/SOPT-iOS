@@ -135,11 +135,11 @@ public final class SoptletterDetailModalVC: UIViewController {
         .mapVoid()
         .asDriver()
     
-    private lazy var likeButtonTap: Driver<Bool> = likeButton
+    private lazy var likeButtonTap: Driver<(likeByMe: Bool, isMine:Bool)> = likeButton
         .publisher(for: .touchUpInside)
         .withUnretained(self)
-        .map { owner, _ in !owner.likeButton.isSelected }
-        .asDriver()    
+        .map { owner, _ in (!owner.likeButton.isSelected, owner.isMine) }
+        .asDriver()
     
     private let viewModel: SoptletterDetailViewModel
     private let cancelBag = CancelBag()
@@ -148,7 +148,8 @@ public final class SoptletterDetailModalVC: UIViewController {
     
     private var likeCount = 0
     private var deleteButtonTapPublisher = PassthroughSubject<String, Never>()
-        
+    private var isMine = false
+    
     private lazy var editCompleteButtonTap: Driver<String> = editCompleteButtonTapPublisher.asDriver()
     private lazy var deleteCompleteButtonTap: Driver<String> = deleteButtonTapPublisher.asDriver()
     
@@ -181,11 +182,12 @@ public final class SoptletterDetailModalVC: UIViewController {
         mine: Bool,
         likeByMe: Bool
     ) -> Self {
+        self.likeCount = likeCount
+        self.isMine = mine
         containerView.backgroundColor = backgroundColor
         nameLabel.text = name
         contentLabel.text = content
         dateLabel.text = DateFormatManager.shared.serverTimeToString(date, from: .dateWithDot)
-        self.likeCount = likeCount
         likeCountLabel.text = "\(likeCount)"
         editDeleteStackView.isHidden = !mine
         likeButton.setImage(likeByMe ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart"), for: .normal)
@@ -210,7 +212,7 @@ extension SoptletterDetailModalVC {
         likeButtonTap
             .withUnretained(self)
             .sink { owner, newLikeState in
-                owner.applyLikeState(newLikeState)
+                owner.applyLikeState(newLikeState.likeByMe)
             }.store(in: cancelBag)
         
         deleteButtonTap
