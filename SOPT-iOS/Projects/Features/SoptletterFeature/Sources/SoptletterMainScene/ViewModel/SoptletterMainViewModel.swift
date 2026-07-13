@@ -178,7 +178,9 @@ extension SoptletterMainViewModel {
             } catch is CancellationError {
                 return
             } catch {
-                output.ctaInfo.send(.init(showCta: false, topicId: 0, ctaText: ""))
+                await MainActor.run {
+                    output.ctaInfo.send(.init(showCta: false, topicId: 0, ctaText: ""))
+                }
             }
         }
     }

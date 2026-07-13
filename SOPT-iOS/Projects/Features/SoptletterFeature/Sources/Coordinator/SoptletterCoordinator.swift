@@ -19,7 +19,6 @@ public final class SoptletterCoordinator: BaseCoordinator {
     // MARK: - Properties
 
     private let factory: SoptletterFeatureBuildable
-    private var soptletterMain: SoptletterMainPresentable!
     private weak var navigationController: UINavigationController?
     private weak var soptletterRootController: UINavigationController?
 
@@ -97,8 +96,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
     }
     
     private func showSoptletterMain(topicId: Int, isRoot: Bool) {
-        var soptletterMain = factory.makeSoptletterMainVC(coordinator: self, topicId: topicId, isRoot: isRoot)
-        self.soptletterMain = soptletterMain
+        var soptletterMain = factory.makeSoptletterMainVC(coordinator: self, topicId: topicId, isRoot: isRoot)        
         
         soptletterMain.vm.onNaviBackTap = { [weak self] in
             if isRoot {
