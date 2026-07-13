@@ -13,6 +13,7 @@ let project = Project.makeModule(
     name: "SoptletterFeature",
     targets: [.unitTest, .staticFramework, .demo, .interface],
     internalDependencies: [
+        .Features.Web.Feature
     ],
     interfaceDependencies: [
         .Features.BaseFeatureDependency
