@@ -528,6 +528,8 @@ public struct I18N {
             public static let printButtonTitle = "솝레터 출력"
             public static let previewTitle = "미리보기에서는 최대 16개까지 확인할 수 있어요."
             public static let savePdfButtonTitle = "PDF 저장하기"
+            public static let saveFailure = "이미지 저장에 실패했어요."
+            public static let saveSuccess = "이미지 저장을 완료했어요."
         }
         
         public struct Nickname {

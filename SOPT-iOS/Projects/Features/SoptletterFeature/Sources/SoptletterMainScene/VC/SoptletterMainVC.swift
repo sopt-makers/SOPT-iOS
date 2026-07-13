@@ -160,9 +160,11 @@ private extension SoptletterMainVC {
         output.onDownloadConfirm
             .withUnretained(self)
             .sink { owner, _ in
-                ToastUtils.showMDSToast(type: .alert, text: "이미지 미리보기 생성 중...")
+                Task { @MainActor in
+                    ToastUtils.showMDSToast(type: .alert, text: "이미지 미리보기 생성 중...")
 
-                Task { @MainActor in                    
+                    await Task.yield()
+
                     let previewImage = owner.makeSoptletterSnapshotImage()
                     guard let pdfURL = owner.makeSoptletterPDFFileURL(fileName: owner.title ?? "soptletter") else {
                         ToastUtils.showMDSToast(type: .error, text: "이미지 미리보기 생성 실패")
@@ -303,52 +305,39 @@ extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate
 // MARK: - PDF Snapshot
 
 extension SoptletterMainVC {
-    
-    private func makeSoptletterSnapshotImage() -> UIImage {
+
+    func makeSoptletterSnapshotImage() -> UIImage {
         let allMessages = soptletterMessages?.messages ?? []
         let displayMessages = Array(allMessages.prefix(16))
-        
+
         let columns = 2
         let itemHeight: CGFloat = 160
         let itemSpacing: CGFloat = 6
         let sideInset: CGFloat = 8
         let bottomInset: CGFloat = 10
-                
+
         let width: CGFloat = view.bounds.width > 0 ? view.bounds.width : UIScreen.main.bounds.width
-        
+
         let rows = Int(ceil(Double(displayMessages.count) / Double(columns)))
         let totalHeight = CGFloat(rows) * itemHeight + CGFloat(max(rows - 1, 0)) * itemSpacing + bottomInset
-        
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(0.5),
-            heightDimension: .fractionalHeight(1.0)
-        )
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        
-        item.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4)
 
-        let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(itemHeight)
+        let layout = makePostItGridLayout(
+            itemHeight: itemHeight,
+            itemSpacing: itemSpacing,
+            sideInset: sideInset,
+            bottomInset: bottomInset
         )
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
 
-        let section = NSCollectionLayoutSection(group: group)
-        section.interGroupSpacing = itemSpacing
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: sideInset, bottom: bottomInset, trailing: sideInset)
-        
-        let layout = UICollectionViewCompositionalLayout(section: section)
-        
         let snapshotFrame = CGRect(x: 0, y: 0, width: width, height: totalHeight)
         let snapshotCollectionView = UICollectionView(frame: snapshotFrame, collectionViewLayout: layout)
         snapshotCollectionView.backgroundColor = .black
         snapshotCollectionView.isScrollEnabled = false
         snapshotCollectionView.register(SoptletterPostItCell.self, forCellWithReuseIdentifier: SoptletterPostItCell.identifier)
-        
+
         let dataSource = SnapshotPostItDataSource(messages: displayMessages)
         self.snapshotDataSource = dataSource
         snapshotCollectionView.dataSource = dataSource
-        
+
         view.addSubview(snapshotCollectionView)
         snapshotCollectionView.frame.origin = CGPoint(x: -10000, y: 0)
 
@@ -362,7 +351,7 @@ extension SoptletterMainVC {
 
         snapshotCollectionView.removeFromSuperview()
         self.snapshotDataSource = nil
-        
+
         return image
     }
 }
@@ -403,6 +392,7 @@ final class SnapshotPostItDataSource: NSObject, UICollectionViewDataSource {
     }
 }
 
+
 extension SoptletterMainVC {
     
     func makeSoptletterPDFData() -> Data {
@@ -432,26 +422,14 @@ extension SoptletterMainVC {
         }
         containerView.addSubview(pdfTitleLabel)
         pdfTitleLabel.frame = CGRect(x: 16, y: 16, width: width - 32, height: 24)
-        
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(0.5),
-            heightDimension: .fractionalHeight(1.0)
+
+        let layout = makePostItGridLayout(
+            itemHeight: itemHeight,
+            itemSpacing: itemSpacing,
+            sideInset: sideInset,
+            bottomInset: bottomInset
         )
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        item.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4)
-        
-        let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(itemHeight)
-        )
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        
-        let section = NSCollectionLayoutSection(group: group)
-        section.interGroupSpacing = itemSpacing
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: sideInset, bottom: bottomInset, trailing: sideInset)
-        
-        let layout = UICollectionViewCompositionalLayout(section: section)
-        
+
         let gridFrame = CGRect(x: 0, y: titleAreaHeight, width: width, height: gridHeight)
         let pdfCollectionView = UICollectionView(frame: gridFrame, collectionViewLayout: layout)
         pdfCollectionView.backgroundColor = .clear

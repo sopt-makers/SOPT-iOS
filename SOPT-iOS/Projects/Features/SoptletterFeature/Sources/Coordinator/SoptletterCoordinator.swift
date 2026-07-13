@@ -152,13 +152,13 @@ public final class SoptletterCoordinator: BaseCoordinator {
                 guard let self else { return }
                 
                 if let error {
-                    ToastUtils.showMDSToast(type: .error, text: "이미지 저장에 실패했어요.")
+                    ToastUtils.showMDSToast(type: .error, text: I18N.Soptletter.Print.saveFailure)
                     return
                 }
-                
+
                 guard completed else { return }
-                
-                ToastUtils.showMDSToast(type: .success, text: "이미지 저장을 완료했어요.")
+
+                ToastUtils.showMDSToast(type: .success, text: I18N.Soptletter.Print.saveSuccess)
                 self.soptletterRootController?.popViewController(animated: true)
             }
             
