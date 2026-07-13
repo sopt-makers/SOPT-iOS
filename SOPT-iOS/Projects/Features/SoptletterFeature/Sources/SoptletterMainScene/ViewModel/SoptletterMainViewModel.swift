@@ -16,7 +16,7 @@ import SoptletterFeatureInterface
 import Domain
 
 public final class SoptletterMainViewModel: SoptletterMainViewModelType {
-
+    
     // MARK: - Inputs
     
     public struct Input {
@@ -51,7 +51,7 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     
     public var onNaviBackTap: (() -> Void)?
     public var onWriteTap: (() -> Void)?
-    public var onPostItTap: (() -> Void)?    
+    public var onPostItTap: (() -> Void)?
     public var onDownloadTap: ((String, UIImage, URL) -> Void)?
     public var onReportTap: (() -> Void)?
     public var onMenuTap: (() -> Void)?
@@ -64,7 +64,7 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     public init(coordinator: Coordinator, useCase: SoptletterUseCase, topicId: Int = 1) {
         self.useCase = useCase
         self.coordinator = coordinator
-        self.topicId = topicId      
+        self.topicId = topicId
     }
 }
 
@@ -162,9 +162,14 @@ extension SoptletterMainViewModel {
             } catch is CancellationError {
                 return
             } catch {
-              await onError?()
+                // UI fallback 처리                
+                await MainActor.run {
+                    output.soptletterMessages.send(.init(topicId: 0, title: "test", totalCount: 0, nextCursor: 0, hasNext: false, messages: []))
+                    onError?()
+                }
             }
         }
+        
     }
     
     public func fetchCTA(output: Output) {

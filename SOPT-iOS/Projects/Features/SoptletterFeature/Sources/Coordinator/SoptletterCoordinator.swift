@@ -13,6 +13,7 @@ import Core
 import BaseFeatureDependency
 import SoptletterFeatureInterface
 import Domain
+import WebFeature
 
 public final class SoptletterCoordinator: BaseCoordinator {
 
@@ -115,7 +116,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
         
         soptletterMain.vm.onReportTap = { [weak self] in
-            print("handle soptletterMain.vm.onReportTap")
+            self?.showReportForm()
         }
         
         soptletterMain.vm.onDownloadTap = { [weak self] fileName, image, pdfURL in
@@ -144,6 +145,12 @@ public final class SoptletterCoordinator: BaseCoordinator {
             self.soptletterRootController = navController
             navigationController?.present(navController, animated: true)
         }
+    }
+    
+    private func showReportForm() {
+        guard let url = URL(string: "https://forms.gle/jkQWs2e6YMkg7HSg8") else { return }
+        let webView = SOPTWebView(startWith: url)
+        soptletterRootController?.pushViewController(webView, animated: true)
     }
     
     private func showSoptletterPrint(_ fileName: String, _ uiImage: UIImage, _ pdfURL: URL) {
