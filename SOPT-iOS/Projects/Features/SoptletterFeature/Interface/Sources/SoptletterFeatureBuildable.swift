@@ -8,6 +8,7 @@
 
 import Foundation
 import BaseFeatureDependency
+import UIKit
 
 public protocol SoptletterFeatureBuildable {
     func makeSoptletterOnboardingVC(coordinator: Coordinator) -> SoptletterOnboardingPresentable
@@ -16,4 +17,5 @@ public protocol SoptletterFeatureBuildable {
     func makeSelectTopicVC(coordinator: Coordinator) -> SelectTopicPresentable
     func makeSoptletterMainVC(coordinator: Coordinator, topicId: Int) -> SoptletterMainPresentable
     func makeSoptletterDetailVC(coordinator: Coordinator, messageId: Int, topicId: Int) -> SoptletterDetailPresentable
+    func makeSoptletterPrintVC(coordinator: Coordinator, fileName: String, uiImage: UIImage, pdfURL: URL) -> SoptletterPrintPresentable
 }

@@ -78,8 +78,10 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
     private let cancelBag = CancelBag()
     private let postItCellTapPublisher = PassthroughSubject<(messageId: Int, topicId: Int), Never>()
     private let naviBackButtonTapPublisher = PassthroughSubject<Void, Never>()
+    private let imagePreviewPublisher = PassthroughSubject<(fileName: String, image: UIImage, url: URL), Never>()
     
     private var soptletterMessages: SoptletterItemModel?
+    private var snapshotDataSource: SnapshotPostItDataSource?
     
     private lazy var closeButtonTap: Driver<Void> = closeButton
         .publisher(for: .touchUpInside)
@@ -140,7 +142,8 @@ private extension SoptletterMainVC {
             downloadButtonTap: downloadButtonTap,
             reportButtonTap: reportButtonTap,
             menuButtonTap: menuButtonTap,
-            postItCellTap: postItCellTapPublisher.asDriver()
+            postItCellTap: postItCellTapPublisher.asDriver(),
+            imageProcessCompleted: imagePreviewPublisher.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
@@ -152,6 +155,23 @@ private extension SoptletterMainVC {
                 owner.configureUI(model)
                 owner.placeHolderImageView.isHidden = !model.messages.isEmpty
                 owner.collectionView.reloadData()
+            }.store(in: cancelBag)
+        
+        output.onDownloadConfirm
+            .withUnretained(self)
+            .sink { owner, _ in
+                Task { @MainActor in
+                    ToastUtils.showMDSToast(type: .alert, text: "이미지 미리보기 생성 중...")
+
+                    await Task.yield()
+
+                    let previewImage = owner.makeSoptletterSnapshotImage()
+                    guard let pdfURL = owner.makeSoptletterPDFFileURL(fileName: owner.title ?? "soptletter") else {
+                        ToastUtils.showMDSToast(type: .error, text: "이미지 미리보기 생성 실패")
+                        return
+                    }
+                    owner.imagePreviewPublisher.send((owner.titleLabel.text ?? "soptletter", previewImage, pdfURL))
+                }
             }.store(in: cancelBag)
     }
     
@@ -279,5 +299,180 @@ extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate
         guard let soptletterMessages else { return }
         let message = soptletterMessages.messages[indexPath.row]
         postItCellTapPublisher.send((message.messageId, soptletterMessages.topicId))
+    }
+}
+
+// MARK: - PDF Snapshot
+
+extension SoptletterMainVC {
+
+    func makeSoptletterSnapshotImage() -> UIImage {
+        let allMessages = soptletterMessages?.messages ?? []
+        let displayMessages = Array(allMessages.prefix(16))
+
+        let columns = 2
+        let itemHeight: CGFloat = 160
+        let itemSpacing: CGFloat = 6
+        let sideInset: CGFloat = 8
+        let bottomInset: CGFloat = 10
+
+        let width: CGFloat = view.bounds.width > 0 ? view.bounds.width : UIScreen.main.bounds.width
+
+        let rows = Int(ceil(Double(displayMessages.count) / Double(columns)))
+        let totalHeight = CGFloat(rows) * itemHeight + CGFloat(max(rows - 1, 0)) * itemSpacing + bottomInset
+
+        let layout = makePostItGridLayout(
+            itemHeight: itemHeight,
+            itemSpacing: itemSpacing,
+            sideInset: sideInset,
+            bottomInset: bottomInset
+        )
+
+        let snapshotFrame = CGRect(x: 0, y: 0, width: width, height: totalHeight)
+        let snapshotCollectionView = UICollectionView(frame: snapshotFrame, collectionViewLayout: layout)
+        snapshotCollectionView.backgroundColor = .black
+        snapshotCollectionView.isScrollEnabled = false
+        snapshotCollectionView.register(SoptletterPostItCell.self, forCellWithReuseIdentifier: SoptletterPostItCell.identifier)
+
+        let dataSource = SnapshotPostItDataSource(messages: displayMessages)
+        self.snapshotDataSource = dataSource
+        snapshotCollectionView.dataSource = dataSource
+
+        view.addSubview(snapshotCollectionView)
+        snapshotCollectionView.frame.origin = CGPoint(x: -10000, y: 0)
+
+        snapshotCollectionView.reloadData()
+        snapshotCollectionView.layoutIfNeeded()
+
+        let renderer = UIGraphicsImageRenderer(bounds: snapshotCollectionView.bounds)
+        let image = renderer.image { context in
+            snapshotCollectionView.layer.render(in: context.cgContext)
+        }
+
+        snapshotCollectionView.removeFromSuperview()
+        self.snapshotDataSource = nil
+
+        return image
+    }
+}
+
+// MARK: - SnapshotPostItDataSource
+
+final class SnapshotPostItDataSource: NSObject, UICollectionViewDataSource {
+    
+    private let messages: [SoptletterMessageModel]
+    
+    init(messages: [SoptletterMessageModel]) {
+        self.messages = messages
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        messages.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: SoptletterPostItCell.identifier,
+            for: indexPath
+        ) as? SoptletterPostItCell else {
+            return UICollectionViewCell()
+        }
+        
+        let message = messages[indexPath.item]
+        cell.configure(
+            text: message.previewContent,
+            textColor: .black,
+            backgroundImage: DSKitAsset.Assets.icnPointGreenCenter.image,
+            labelRotationAngle: CGFloat(message.rotationDegree),
+            backgroundColorHex: message.colorCode,
+            shapeType: message.shapeType
+        )
+        
+        return cell
+    }
+}
+
+
+extension SoptletterMainVC {
+    
+    func makeSoptletterPDFData() -> Data {
+        let allMessages = soptletterMessages?.messages ?? []
+        
+        let columns = 2
+        let itemHeight: CGFloat = 160
+        let itemSpacing: CGFloat = 6
+        let sideInset: CGFloat = 8
+        let bottomInset: CGFloat = 10
+        let titleAreaHeight: CGFloat = 56
+        
+        let width: CGFloat = view.bounds.width > 0 ? view.bounds.width : UIScreen.main.bounds.width
+        
+        let rows = Int(ceil(Double(allMessages.count) / Double(columns)))
+        let gridHeight = CGFloat(rows) * itemHeight + CGFloat(max(rows - 1, 0)) * itemSpacing + bottomInset
+        let totalHeight = titleAreaHeight + gridHeight
+        
+        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: width, height: totalHeight))
+        containerView.backgroundColor = DSKitAsset.Colors.gray950.color
+        
+        let pdfTitleLabel = UILabel().then {
+            $0.textColor = DSKitAsset.Colors.gray10.color
+            $0.textAlignment = .left
+            $0.font = DSKitFontFamily.Pretendard.bold.font(size: 18)
+            $0.text = soptletterMessages?.title ?? titleLabel.text
+        }
+        containerView.addSubview(pdfTitleLabel)
+        pdfTitleLabel.frame = CGRect(x: 16, y: 16, width: width - 32, height: 24)
+
+        let layout = makePostItGridLayout(
+            itemHeight: itemHeight,
+            itemSpacing: itemSpacing,
+            sideInset: sideInset,
+            bottomInset: bottomInset
+        )
+
+        let gridFrame = CGRect(x: 0, y: titleAreaHeight, width: width, height: gridHeight)
+        let pdfCollectionView = UICollectionView(frame: gridFrame, collectionViewLayout: layout)
+        pdfCollectionView.backgroundColor = .clear
+        pdfCollectionView.isScrollEnabled = false
+        pdfCollectionView.register(SoptletterPostItCell.self, forCellWithReuseIdentifier: SoptletterPostItCell.identifier)
+        
+        // dataSource는 weak 참조라 강하게 들고 있어야 함 (snapshotDataSource 프로퍼티 재사용)
+        let dataSource = SnapshotPostItDataSource(messages: allMessages)
+        self.snapshotDataSource = dataSource
+        pdfCollectionView.dataSource = dataSource
+        
+        containerView.addSubview(pdfCollectionView)
+                
+        view.addSubview(containerView)
+        containerView.frame.origin = CGPoint(x: -10000, y: 0)
+        
+        pdfCollectionView.reloadData()
+        pdfCollectionView.layoutIfNeeded()
+        containerView.layoutIfNeeded()
+        
+        let pdfRenderer = UIGraphicsPDFRenderer(bounds: containerView.bounds)
+        let pdfData = pdfRenderer.pdfData { context in
+            context.beginPage()
+            containerView.layer.render(in: context.cgContext)
+        }
+        
+        containerView.removeFromSuperview()
+        self.snapshotDataSource = nil
+        
+        return pdfData
+    }
+    
+    func makeSoptletterPDFFileURL(fileName: String = "soptletter") -> URL? {
+        let pdfData = makeSoptletterPDFData()
+        let tmpURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("\(fileName)-\(UUID().uuidString).pdf")
+        
+        do {
+            try pdfData.write(to: tmpURL, options: .atomic)
+            return tmpURL
+        } catch {
+            print("PDF 저장 실패: \(error)")
+            return nil
+        }
     }
 }

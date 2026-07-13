@@ -43,6 +43,13 @@ public extension UIView {
         layer.cornerRadius = cornerRadius
         layer.maskedCorners = CACornerMask(arrayLiteral: maskedCorners)
     }
+    
+    func asImage() -> UIImage {
+        let renderer = UIGraphicsImageRenderer(bounds: bounds)
+        return renderer.image { context in
+            layer.render(in: context.cgContext)
+        }
+    }
 }
 
 class XibView: UIView {
