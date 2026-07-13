@@ -45,7 +45,7 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     private var soptletterTitle: String = ""
     private var fetchMessageTask: Task<Void, Never>?
     private var fetchCTATask: Task<Void, Never>?
-    private var topicId: Int
+    private var topicId: Int?
     
     private var cancelBag = CancelBag()
     
@@ -61,7 +61,7 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     
     private let refreshTriggerSubject = PassthroughSubject<Void, Never>()
     
-    public init(coordinator: Coordinator, useCase: SoptletterUseCase, topicId: Int = 1) {
+    public init(coordinator: Coordinator, useCase: SoptletterUseCase, topicId: Int? = nil) {
         self.useCase = useCase
         self.coordinator = coordinator
         self.topicId = topicId      
@@ -155,10 +155,19 @@ extension SoptletterMainViewModel {
         fetchMessageTask?.cancel()
         fetchMessageTask = Task {
             do {
-                let result = try await useCase.fetchSoptletterMessages(topicId: topicId, cursor: nil, size: nil)
-                await MainActor.run {
-                    output.soptletterMessages.send(result)
+                if let topicId {
+                    let result = try await useCase.fetchSoptletterMessages(topicId: topicId, cursor: nil, size: nil)
+                    await MainActor.run {
+                        output.soptletterMessages.send(result)
+                    }
+                } else {
+                    let result = try await useCase.fetchDefaultTopic()
+                    await MainActor.run {
+                        output.soptletterMessages.send(result)
+                    }
                 }
+                
+                
             } catch is CancellationError {
                 return
             } catch {

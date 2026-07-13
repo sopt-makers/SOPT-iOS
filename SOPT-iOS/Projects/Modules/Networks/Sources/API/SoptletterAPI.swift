@@ -23,6 +23,7 @@ public enum SoptletterAPI {
     case likeMessage(messageId: Int, topicId: Int)
     case unlikeMessage(messageId: Int, topicId: Int)
     case fetchCTA
+    case fetchDefaultTopic
 }
 
 extension SoptletterAPI: BaseAPI {
@@ -46,6 +47,8 @@ extension SoptletterAPI: BaseAPI {
             return "/topics/\(topicId)/messages/\(messageId)/likes"
         case .fetchCTA:
             return "/cta"
+        case .fetchDefaultTopic:
+            return "/topics/default/messages"
         }
     }
     
@@ -53,7 +56,7 @@ extension SoptletterAPI: BaseAPI {
         switch self {
         case .writeMessage, .completeOnboarding, .likeMessage:
             return .post
-        case .fetchTopics, .fetchTopic, .fetchProfile, .soptletterMessages, .soptletterMessage, .fetchCTA:
+        case .fetchTopics, .fetchTopic, .fetchProfile, .soptletterMessages, .soptletterMessage, .fetchCTA, .fetchDefaultTopic:
             return .get
         case .editMessage:
             return .patch
@@ -68,8 +71,8 @@ extension SoptletterAPI: BaseAPI {
                 return .requestParameters(parameters: ["content": content], encoding: JSONEncoding.default)
         case let .editMessage(_, _, content):
                 return .requestParameters(parameters: ["content": content], encoding: JSONEncoding.default)
-        case .fetchTopics, .fetchTopic, .completeOnboarding, .fetchProfile, .soptletterMessages, .soptletterMessage, .deleteMessage, .likeMessage, .unlikeMessage, .fetchCTA:
-                return .requestPlain   
+        case .fetchTopics, .fetchTopic, .completeOnboarding, .fetchProfile, .soptletterMessages, .soptletterMessage, .deleteMessage, .likeMessage, .unlikeMessage, .fetchCTA, .fetchDefaultTopic:
+                return .requestPlain
         }
     }
 }
