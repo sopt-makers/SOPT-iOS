@@ -21,7 +21,7 @@ extension TabBarItemType {
 //            return DSKitAsset.Assets.icSoptampFilled.image.withRenderingMode(.alwaysTemplate)
         case .poke:
             return DSKitAsset.Assets.icPokeFilled.image.withRenderingMode(.alwaysTemplate)
-        case .mypage:
+        case .soptlog:
             return DSKitAsset.Assets.icUserFilled.image.withRenderingMode(.alwaysTemplate)
         }
     }
@@ -34,8 +34,8 @@ extension TabBarItemType {
 //            return I18N.Soptlog.soptamp
         case .poke:
             return I18N.Soptlog.poke
-        case .mypage:
-            return I18N.MyPage.title
+        case .soptlog:
+            return I18N.Soptlog.tapTitle
         }
     }
     

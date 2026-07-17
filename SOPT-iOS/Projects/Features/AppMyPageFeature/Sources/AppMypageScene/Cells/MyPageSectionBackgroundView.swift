@@ -15,8 +15,8 @@ final class MyPageSectionBackgroundView: UICollectionReusableView {
     // MARK: - UI Components
     
     private let backgroundView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.black80.color
-        $0.layer.cornerRadius = 10
+        $0.backgroundColor = DSKitAsset.Colors.gray900.color
+        $0.layer.cornerRadius = 16
     }
         
     override init(frame: CGRect) {

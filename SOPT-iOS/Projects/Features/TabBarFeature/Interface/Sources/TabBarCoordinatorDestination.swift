@@ -10,7 +10,7 @@ import Foundation
 
 public enum TabBarCoordinatorDestination {
     case home
-    case mypage
+    case soptlog
     case poke
 //    case soptamp
     case signIn

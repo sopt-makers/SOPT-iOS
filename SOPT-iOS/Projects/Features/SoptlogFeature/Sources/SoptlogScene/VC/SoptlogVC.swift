@@ -35,7 +35,7 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     
     // MARK: - UI Components
     
-    private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton)
+    private lazy var naviBar = OPNavigationBar(self, type: .none)
         .addMiddleLabel(title: I18N.Soptlog.navigationTitle, font: DSKitFontFamily.Suit.medium.font(size: 16))
     
     private lazy var collectionView: UICollectionView = {

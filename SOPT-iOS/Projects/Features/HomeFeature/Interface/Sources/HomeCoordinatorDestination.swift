@@ -13,8 +13,9 @@ import Core
 public enum HomeCoordinatorDestination {
     case signIn
     case notification
+    case setting(userType: UserType)
     case attendance
-    case mypage
+    case soptlog
     case calendar
     case appService(type: AppServiceType)
 

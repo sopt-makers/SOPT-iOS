@@ -29,8 +29,6 @@ public final class AppMyPageViewModel: MyPageViewModelType {
     public var onShowLogout: (() -> Void)?
     public var onAlertButtonTap: ((String) -> Void)?
     public var onResetSoptampTap: (() -> Void)?
-    public var onShowSoptlog: (() -> Void)?
-    public var onEditProfileTap: (() -> Void)?
     
     // MARK: - Properties
     
@@ -106,12 +104,6 @@ extension AppMyPageViewModel {
     
     private func handleCellTap(item: MyPageItem) {
         switch item.type {
-        case .profileCard:
-            self.onEditProfileTap?()
-        case .soptlogSoptampPreview, .soptlogPokePreview:
-            break
-        case .soptlogCheckButton:
-            self.onShowSoptlog?()
         case .privacyPolicy:
             self.onPolicyItemTap?()
         case .termsOfUse:

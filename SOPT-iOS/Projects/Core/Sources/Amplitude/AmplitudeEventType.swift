@@ -65,7 +65,7 @@ public enum AmplitudeEventType: String {
     
     // 탭 바 클릭 이벤트
     case clickNaviHome = "click_navi_home"
-    case clickNaviMyPage = "click_navi_mypage"
+    case clickNaviSoptlog = "click_navi_soptlog"
     case clickNaviSoptamp = "click_navi_soptamp"
     case clickNaviPoke = "click_navi_poke"
 

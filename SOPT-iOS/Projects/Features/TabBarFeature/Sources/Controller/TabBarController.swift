@@ -31,9 +31,9 @@ final class TabBarController: UITabBarController {
     private var tabTypes: [TabBarItemType] {
         switch userType {
         case .active, .inactive:
-            return [.home, .poke, .mypage]
+            return [.home, .poke, .soptlog]
         case .visitor:
-            return [.home, .mypage]
+            return [.home, .soptlog]
         }
     }
     
@@ -141,7 +141,7 @@ extension TabBarController {
         UITabBar.clearShadow()
         view.tintColor = .white
         tabBar.backgroundColor = DSKitAsset.Colors.gray800.color
-
+        
         tabBar.layer.cornerRadius = 20
         tabBar.layer.masksToBounds = true
         tabBar.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]

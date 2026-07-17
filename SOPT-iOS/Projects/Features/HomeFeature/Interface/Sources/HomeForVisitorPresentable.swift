@@ -15,6 +15,7 @@ public protocol HomeForVisitorViewControllable: LegacyViewControllable { }
 public protocol HomeForVisitorCoordinatable {
     var onMainProductCellTapped: ((String) -> Void)? { get set }
     var onAppServiceCellTapped: (() -> Void)? { get set }
+    var onSettingButtonTapped: ((UserType) -> Void)? { get set }
 }
 public typealias HomeForVisitorViewModelType = ViewModelType & HomeForVisitorCoordinatable
 public typealias LegacyHomeForVisitorPresentable = (vc: HomeForVisitorViewControllable, vm: any HomeForVisitorViewModelType)

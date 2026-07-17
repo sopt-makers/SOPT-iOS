@@ -58,7 +58,12 @@ public final class LegacyHomeCoordinator: DefaultHomeCoordinator {
             self?.requestCoordinating?(.notification)
         }
         
+        homeForMember.vm.onSettingButtonTapped = { [weak self] userType in
+            self?.requestCoordinating?(.setting(userType: userType))
+        }
+        
         homeForMember.vm.onAppServiceCellTapped = { [weak self] type in
+//            self?.requestCoordinating?(.deepLink(url: url))
             self?.requestCoordinating?(.appService(type: type))
         }
 
@@ -137,6 +142,10 @@ public final class LegacyHomeCoordinator: DefaultHomeCoordinator {
         
         homeForVisitor.vm.onMainProductCellTapped = { [weak self] url in
             self?.requestCoordinating?(.webLink(url: url))
+        }
+        
+        homeForVisitor.vm.onSettingButtonTapped = { [weak self] userType in
+            self?.requestCoordinating?(.setting(userType: userType))
         }
         
         rootViewController = homeForVisitor.vc.viewController

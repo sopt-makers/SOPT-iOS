@@ -13,7 +13,7 @@ import NotificationFeature
 
 struct DeepLinkParser: NotificationLinkParser {
     private var defaultDeepLinks: [DeepLinkExecutable] {
-        return [HomeDeepLink(), SoptampDeepLink(), AppjamtampDeepLink(), PokeDeepLink(), MyPageDeepLink()]
+        return [HomeDeepLink(), SoptampDeepLink(), AppjamtampDeepLink(), PokeDeepLink(), SoptlogDeepLink()]
     }
     
     func parse(with link: String) throws -> DeepLinkData {
@@ -71,8 +71,8 @@ struct DeepLinkParser: NotificationLinkParser {
             return AppjamtampDeepLink()
         case "poke":
             return PokeDeepLink()
-        case "mypage":
-            return MyPageDeepLink()
+        case "soptlog":
+            return SoptlogDeepLink()
         default:
             return nil
         }
