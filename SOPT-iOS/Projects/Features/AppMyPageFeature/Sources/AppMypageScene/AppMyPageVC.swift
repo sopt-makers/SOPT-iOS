@@ -27,11 +27,7 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
     private let isAppjamtampOpen: Bool = false
     private var dataSource: UICollectionViewDiffableDataSource<MyPageSectionLayoutKind, MyPageItem>! = nil
     private var cellTapped = PassthroughSubject<MyPageItem, Never>()
-    private var refreshTriggered = PassthroughSubject<Void, Never>()
     private let cancelBag = CancelBag()
-
-    private var userProfileData: MyPageProfilePresentationModel?
-    private var soptlogData: MyPageSoptlogPreviewPresentationModel?
 
     // MARK: - UI Components
 
@@ -52,8 +48,6 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
         $0.contentInset.bottom = 36 // 마지막 섹션 자체 bottom inset(32) + 36 = 탭바까지 68pt
     }
 
-    private let refreshControl = UIRefreshControl()
-
     // MARK: - Life Cycle
 
     public override func viewDidLoad() {
@@ -65,8 +59,6 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
         setDataSource()
         applySnapshot()
         bindViewModels()
-        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
-        collectionView.refreshControl = refreshControl
     }
 
     public init(userType: UserType, viewModel: AppMyPageViewModel) {
@@ -112,24 +104,18 @@ extension AppMyPageVC {
         let myPageMenuRegistration = createMyPageeCellRegistration()
 
         let profileRegistration: MyPageProfileCellRegistration = collectionView.createCellRegistration { [weak self] cell, _, item in
-            guard let self else { return }
-            cell.configure(
-                name: self.userProfileData?.name ?? "",
-                part: self.userProfileData?.part ?? "",
-                profileImageURL: self.userProfileData?.profileImageURL
-            )
+            cell.configure(name: "홍길동", part: "iOS파트", profileImageURL: nil)
             cell.onEditProfileTap = { [weak self] in
                 self?.cellTapped.send(item)
             }
         }
 
-        let soptlogStatRegistration: MyPageSoptlogStatCellRegistration = collectionView.createCellRegistration { [weak self] cell, _, item in
-            guard let self else { return }
+        let soptlogStatRegistration: MyPageSoptlogStatCellRegistration = collectionView.createCellRegistration { cell, _, item in
             switch item.type {
             case .soptlogSoptampPreview:
-                cell.configure(icon: DSKitAsset.Assets.icThumb.image, iconSize: 21, title: I18N.Soptlog.soptamp, count: self.soptlogData?.soptampCount ?? 0)
+                cell.configure(icon: DSKitAsset.Assets.icThumb.image, iconSize: 21, title: I18N.Soptlog.soptamp, count: 0)
             case .soptlogPokePreview:
-                cell.configure(icon: DSKitAsset.Assets.icPokeFilled.image.withRenderingMode(.alwaysTemplate), iconSize: 24, title: I18N.Soptlog.poke, count: self.soptlogData?.totalPokeCount ?? 0)
+                cell.configure(icon: DSKitAsset.Assets.icPokeFilled.image.withRenderingMode(.alwaysTemplate), iconSize: 24, title: I18N.Soptlog.poke, count: 0)
             default:
                 break
             }
@@ -203,10 +189,8 @@ extension AppMyPageVC: UICollectionViewDelegate {
 extension AppMyPageVC {
     private func bindViewModels() {
         let input = AppMyPageViewModel.Input(
-            viewDidLoad: Driver.just(()),
             naviBackButtonTapped: navigationBar.leftButtonTapped.asDriver(),
-            cellTapped: cellTapped.asDriver(),
-            refreshTriggered: refreshTriggered.asDriver()
+            cellTapped: cellTapped.asDriver()
         )
 
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
@@ -217,46 +201,5 @@ extension AppMyPageVC {
             .sink { owner, _ in
                 Toast.show(message: I18N.MyPage.resetSuccess, view: owner.view)
             }.store(in: self.cancelBag)
-
-        output.userProfile
-            .receive(on: DispatchQueue.main)
-            .withUnretained(self)
-            .sink { owner, profile in
-                owner.userProfileData = profile
-                owner.reconfigureItems(in: .profile)
-            }.store(in: cancelBag)
-
-        output.soptlogPreview
-            .receive(on: DispatchQueue.main)
-            .withUnretained(self)
-            .sink { owner, soptlog in
-                owner.soptlogData = soptlog
-                owner.reconfigureItems(in: .soptlogPreview)
-            }.store(in: cancelBag)
-
-        output.fetchError
-            .receive(on: DispatchQueue.main)
-            .withUnretained(self)
-            .sink { owner, _ in
-                Toast.show(message: I18N.MyPage.fetchErrorToast, view: owner.view)
-            }.store(in: cancelBag)
-
-        output.fetchCompleted
-            .receive(on: DispatchQueue.main)
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.refreshControl.endRefreshing()
-            }.store(in: cancelBag)
-    }
-
-    @objc private func handleRefresh() {
-        refreshTriggered.send()
-    }
-
-    private func reconfigureItems(in section: MyPageSectionLayoutKind) {
-        var snapshot = dataSource.snapshot()
-        guard snapshot.sectionIdentifiers.contains(section) else { return }
-        snapshot.reconfigureItems(snapshot.itemIdentifiers(inSection: section))
-        dataSource.apply(snapshot, animatingDifferences: false)
     }
 }

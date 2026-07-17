@@ -17,13 +17,13 @@ public struct MainEntity: Codable {
 // MARK: - UserInfo
 
 public struct UserInfo: Codable {
-    public let status, name, part: String
+    public let status, name: String
     public let profileImage: String?
     public let historyList: [Int]
-
+    
     enum CodingKeys: String, CodingKey {
         case historyList = "generationList"
-        case status, name, profileImage, part
+        case status, name, profileImage
     }
 }
 
