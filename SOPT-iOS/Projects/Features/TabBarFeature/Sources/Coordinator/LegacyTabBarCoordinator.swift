@@ -43,8 +43,8 @@ public final class LegacyTabBarCoordinator: DefaultTabBarCoordinator {
             switch tabType {
             case .home:
                 self?.requestCoordinating?(.home)
-            case .mypage:
-                self?.requestCoordinating?(.mypage)
+            case .soptlog:
+                self?.requestCoordinating?(.soptlog)
             default:
                 return
             }

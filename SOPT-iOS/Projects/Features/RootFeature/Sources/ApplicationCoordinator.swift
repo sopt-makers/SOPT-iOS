@@ -37,7 +37,7 @@ public final class ApplicationCoordinator: BaseCoordinator {
     
     private weak var legacyRootController: UINavigationController?
     let homeNavigationController = UINavigationController()
-    let mypageNavigationController = UINavigationController()
+    let soptlogNavigationController = UINavigationController()
     let stampNavigationController = UINavigationController()
     let pokeNavigationController = UINavigationController()
     weak var tabBarController: UITabBarController?
@@ -417,15 +417,16 @@ extension ApplicationCoordinator {
         
         switch userType {
         case .active, .inactive:
-            runMyPageTabFlow(type: userType)
+            runSoptlogFlow(type: userType)
             viewControllers = [
                 homeNavigationController,
 //                stampNavigationController,
                 pokeNavigationController,
-                mypageNavigationController
+                soptlogNavigationController
             ]
 
         case .visitor:
+            // Visitor는 빈 navigation controller 사용 (실제 화면 전환은 TabBarViewModel에서 막음)
             viewControllers = [
                 homeNavigationController,
                 UINavigationController()
@@ -465,13 +466,15 @@ extension ApplicationCoordinator {
                 switch destination {
                 case .attendance:
                     self?.runAttendanceFlow()
+                case .setting(let userType):
+                    self?.runMyPageFlow(of: userType)
                 case .signIn:
                     self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
                     self?.removeDependency(legacyCoordinator)
                 case .notification:
                     self?.runNotificationFlow()
-                case .mypage:
-                    self?.tabBarController?.selectedIndex = TabBarItemType.mypage.getTabIndex(userType: UserDefaultKeyList.Auth.getUserType())
+                case .soptlog:
+                    self?.tabBarController?.selectedIndex = 3
                 case .appService(let type):
                     self?.runAppServiceFlow(type)
                 case .deepLink(let url):
@@ -743,34 +746,56 @@ extension ApplicationCoordinator {
         
         
         coordinator.start()
-
+        
         return coordinator
     }
 }
 
-// MARK: - MyPageTabFlow
+// MARK: - MyPageFlow
 
 extension ApplicationCoordinator {
-    internal func runMyPageTabFlow(type: UserType) {
-        let newCoordinator = MyPageCoordinator(
-            factory: MyPageBuilder(),
-            userType: type,
-            navigationController: mypageNavigationController
-        )
-        newCoordinator.delegate = self
-        newCoordinator.onShowSoptlog = { [weak self] in
-            self?.pushSoptlogInMyPageTab()
+    
+    @discardableResult
+    internal func runMyPageFlow(of userType: UserType) -> BaseCoordinator {
+        var coordinator: BaseCoordinator
+        
+        switch Config.coordinatorFlag {
+        case .legacy:
+            let legacyCoordinator = LegacyMyPageCoordinator(
+                router: LegacyRouter(
+                    rootController: UIWindow.getRootNavigationController
+                ),
+                factory: LegacyMyPageBuilder(),
+                userType: userType
+            )
+            legacyCoordinator.finishFlow = { [weak self, weak legacyCoordinator] in
+                self?.removeDependency(legacyCoordinator)
+            }
+            legacyCoordinator.requestCoordinating = { [weak self, weak legacyCoordinator] destination in
+                self?.removeDependency(legacyCoordinator)
+                self?.childCoordinators = []
+                switch destination {
+                case .signIn:
+                    self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
+                case .signInWithToast:
+                    self?.runSignInFlow(by: .rootWindow(animated: true, message: I18N.Setting.Withdrawal.withdrawalSuccess))
+                }
+            }
+            coordinator = legacyCoordinator
+            addDependency(coordinator)
+        case .new:
+            let newCoordinator = MyPageCoordinator(
+                factory: MyPageBuilder(),
+                userType: userType,
+                navigationController: UIWindow.getRootNavigationController
+            )
+            newCoordinator.delegate = self
+            coordinator = newCoordinator
         }
-        newCoordinator.start()
-    }
-
-    internal func pushSoptlogInMyPageTab() {
-        let soptlogCoordinator = SoptlogCoordinator(
-            navigationController: mypageNavigationController,
-            factory: SoptlogBuilder()
-        )
-        soptlogCoordinator.delegate = self
-        soptlogCoordinator.start()
+        
+        coordinator.start()
+        
+        return coordinator
     }
 }
 
@@ -903,7 +928,7 @@ extension ApplicationCoordinator {
             coordinator = legacyCoordinator
         case .new:
             let newCoordinator = SoptlogCoordinator(
-                navigationController: mypageNavigationController,
+                navigationController: soptlogNavigationController,
                 factory: SoptlogBuilder()
             )
             newCoordinator.delegate = self

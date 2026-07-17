@@ -37,6 +37,7 @@ public class HomeForVisitorViewModel: HomeForVisitorViewModelType {
     public struct Input {
         let viewDidLoad: Driver<Void>
         let cellTapped: Driver<HomeForVisitorItem>
+        let settingButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -50,6 +51,7 @@ public class HomeForVisitorViewModel: HomeForVisitorViewModelType {
     
     public var onMainProductCellTapped: ((String) -> Void)?
     public var onAppServiceCellTapped: (() -> Void)?
+    public var onSettingButtonTapped: ((UserType) -> Void)?
     
     // MARK: - initialization
     
@@ -86,6 +88,13 @@ extension HomeForVisitorViewModel {
                     owner.trackAmplitude(event: model.product.toAmplitudeEventType)
                 default: break
                 }
+            }
+            .store(in: cancelBag)
+        
+        input.settingButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onSettingButtonTapped?(owner.userType)
             }
             .store(in: cancelBag)
         

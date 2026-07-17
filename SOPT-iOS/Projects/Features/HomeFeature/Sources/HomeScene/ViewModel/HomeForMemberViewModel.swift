@@ -56,6 +56,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
         let cellTapped: Driver<HomeForMemberItem>
         let attendanceButtonTapped: Driver<Void>
         let noticeButtonTapped: Driver<Void>
+        let settingButtonTapped: Driver<Void>
         let extendedFloatingButtonTapped: Driver<Void>
         let surveyButtonTapped: Driver<Void>
         let socialLinkButtonTapped: Driver<HomePresentationModel.SocialLink>
@@ -78,6 +79,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     public var onMainProductCellTapped: ((String) -> Void)?
     public var onAppServiceCellTapped: ((AppServiceType) -> Void)?
     public var onNotificationButtonTapped: (() -> Void)?
+    public var onSettingButtonTapped: ((UserType) -> Void)?
     public var onNeedSignIn: (@MainActor () -> Void)?
     public var onNetworkError: (@MainActor () -> Void)?
     public var onExtendedFloatingButtonTapped: ((String) -> Void)?
@@ -155,6 +157,13 @@ extension HomeForMemberViewModel {
             .sink { owner, _ in
                 owner.onNotificationButtonTapped?()
                 AmplitudeInstance.shared.trackWithUserType(event: .clickAlarm)
+            }
+            .store(in: cancelBag)
+        
+        input.settingButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onSettingButtonTapped?(owner.userType)
             }
             .store(in: cancelBag)
         

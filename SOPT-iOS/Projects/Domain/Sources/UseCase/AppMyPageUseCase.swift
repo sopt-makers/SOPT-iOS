@@ -13,10 +13,7 @@ import Combine
 public protocol AppMyPageUseCase {
     func resetStamp()
     func deregisterPushToken()
-    func fetchUserMainInfo() async throws -> UserMainInfoModel
-    func fetchSoptlogPreview() async throws -> SoptlogModel
-    func logout()
-
+    
     var resetSuccess: PassthroughSubject<Bool, Error> { get }
     var deregisterPushTokenSuccess: PassthroughSubject<Bool, Never> { get }
 }
@@ -35,14 +32,6 @@ public final class DefaultAppMyPageUseCase {
 }
 
 extension DefaultAppMyPageUseCase: AppMyPageUseCase {
-    public func fetchUserMainInfo() async throws -> UserMainInfoModel {
-        try await repository.fetchUserMainInfo()
-    }
-
-    public func fetchSoptlogPreview() async throws -> SoptlogModel {
-        try await repository.fetchSoptlogPreview()
-    }
-
     public func resetStamp() {
         self.repository
             .resetStamp()
@@ -61,9 +50,5 @@ extension DefaultAppMyPageUseCase: AppMyPageUseCase {
             }.sink { [weak self] didSucceed in
                 self?.deregisterPushTokenSuccess.send(didSucceed)
             }.store(in: self.cancelBag)
-    }
-
-    public func logout() {
-        repository.logout()
     }
 }
