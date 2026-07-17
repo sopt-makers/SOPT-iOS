@@ -11,5 +11,5 @@ import Core
 import BaseFeatureDependency
 
 public protocol TabBarBuildable {
-    func makeTabBar(with views: [UIViewController], userType: UserType, coordinator: Coordinator) -> TabBarPresentable
+    func makeTabBar(with views: [UIViewController], tabTypes: [TabBarItemType], userType: UserType, coordinator: Coordinator) -> TabBarPresentable
 }

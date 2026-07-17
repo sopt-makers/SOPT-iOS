@@ -19,7 +19,9 @@ public struct SoptlogDeepLink: DeepLinkExecutable {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
         
         if self.isDestination == true {
-            coordinator.runTabBarFlow(initSelectedTabType: .soptlog)
+            Task { [weak coordinator] in
+                await coordinator?.runTabBarFlow(initSelectedTabType: .soptlog)
+            }
         }
         
         return coordinator

@@ -20,8 +20,9 @@ final public class TabBarViewModel: TabBarViewModelType {
     private let coordinator: AnyCoordinatorObject
     private let cancelBag = CancelBag()
     private let homeUseCase: HomeUseCase
-    
+
     private let userType: UserType
+    private let tabTypes: [TabBarItemType]
     @Published public private(set) var tabBarBadges: [TabBarItemType: String] = [:]
     @Published private(set) var isFABTapped: Bool = false
     
@@ -48,8 +49,9 @@ final public class TabBarViewModel: TabBarViewModelType {
     
     // MARK: - initialization
     
-    public init(userType: UserType, coordinator: Coordinator, homeUseCase: HomeUseCase) {
+    public init(userType: UserType, tabTypes: [TabBarItemType], coordinator: Coordinator, homeUseCase: HomeUseCase) {
         self.userType = userType
+        self.tabTypes = tabTypes
         self.coordinator = coordinator
         self.homeUseCase = homeUseCase
     }
@@ -68,7 +70,7 @@ extension TabBarViewModel {
         input.isTabSelectedIndex
             .withUnretained(self)
             .sink { owner, index in
-                guard let tabBar = TabBarItemType.from(index: index, userType: owner.userType) else { return }
+                guard let tabBar = TabBarItemType.from(index: index, in: owner.tabTypes) else { return }
                 
                 // Visitor가 Soptlog 탭을 선택하면 로그인 Alert 표시
                 if owner.userType == .visitor && tabBar == .soptlog {
@@ -106,33 +108,19 @@ extension TabBarViewModel {
     }
     
     private func fetchAppServiceBadges() {
-        homeUseCase.getAppServices()
-            .withUnretained(self)
-            .sink { owner, appServices in
-                owner.updateBadges(from: appServices)
-            }
-            .store(in: cancelBag)
+        Task { [weak self] in
+            guard let self, let appServices = try? await self.homeUseCase.getTabAppServicesAsync() else { return }
+            self.updateBadges(from: appServices)
+        }
     }
     
     private func updateBadges(from appServices: [HomeAppServicesModel]) {
         let badges = appServices
             .filter { $0.displayAlarmBadge }
             .compactMap { service -> (TabBarItemType, String)? in
-                mapServiceNameToTabType(service.serviceName).map { ($0, service.alarmBadge) }
+                TabBarItemType.from(tabAppServiceName: service.serviceName).map { ($0, service.alarmBadge) }
             }
-        
+
         tabBarBadges = Dictionary(uniqueKeysWithValues: badges)
-    }
-    
-    // 서비스명을 TabBarItemType으로 매핑
-    private func mapServiceNameToTabType(_ serviceName: String) -> TabBarItemType? {
-        switch serviceName {
-//        case "솝탬프":
-//            return .soptamp
-        case "콕찌르기":
-            return .poke
-        default:
-            return nil
-        }
     }
 }

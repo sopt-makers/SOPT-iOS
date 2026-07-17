@@ -19,8 +19,9 @@ public struct PokeDeepLink: DeepLinkExecutable {
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
         
-        let userType = UserDefaultKeyList.Auth.getUserType()
-        coordinator.tabBarController?.selectedIndex = TabBarItemType.poke.getTabIndex(userType: userType)
+        if let index = TabBarItemType.poke.getTabIndex(in: coordinator.activeTabTypes) {
+            coordinator.tabBarController?.selectedIndex = index
+        }
         
         if self.isDestination == true {
             return coordinator

@@ -23,7 +23,9 @@ import PokeFeature
 
 extension ApplicationCoordinator: AuthCoordinatorDelegate {
     public func authCoordinator(_ coordinator: AuthCoordinator, userType: UserType) {
-        self.runTabBarFlow(type: userType)
+        Task { [weak self] in
+            await self?.runTabBarFlow(type: userType)
+        }
     }
 }
 
@@ -38,8 +40,8 @@ extension ApplicationCoordinator: TabBarCoordinatorDelegate {
             self.selectedTab(.soptlog)
         case .poke:
             self.selectedTab(.poke)
-//        case .soptamp:
-//            self.selectedTab(.soptamp)
+        case .soptamp:
+            self.selectedTab(.soptamp)
         case .signIn:
             clearChildViewControllers()
             self.runSignInFlow(by: .rootWindow(animated: true, message: nil))
@@ -47,7 +49,8 @@ extension ApplicationCoordinator: TabBarCoordinatorDelegate {
     }
 
     private func selectedTab(_ tab: TabBarItemType) {
-        self.tabBarController?.selectedIndex = tab.getTabIndex(userType: UserDefaultKeyList.Auth.getUserType())
+        guard let index = tab.getTabIndex(in: activeTabTypes) else { return }
+        self.tabBarController?.selectedIndex = index
     }
 }
 
@@ -66,7 +69,7 @@ extension ApplicationCoordinator: HomeCoordinatorDelegate {
         case .notification:
             runNotificationFlow()
         case .soptlog:
-            tabBarController?.selectedIndex = TabBarItemType.soptlog.rawValue
+            self.selectedTab(.soptlog)
         case .appService(let type):
             // 임시
             runSoptletterOnboardingFlow()
