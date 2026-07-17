@@ -22,6 +22,7 @@ public protocol HomeRepositoryInterface {
     func getUserInfoAsync() async throws -> UserMainInfoModel?
     func getRecentScheduleAsync() async throws -> HomeRecentScheduleModel
     func getAppServicesAsync() async throws -> [HomeAppServicesModel]
+    func getTabAppServicesAsync() async throws -> [HomeAppServicesModel]
     func getCalendarDetailAsync() async throws -> [HomeCalendarDetailModel]
     func getReportURLAsync() async throws -> SoptampReportUrlModel
     func getSurveyInfoAsync() async throws -> HomeSurveyModel
