@@ -147,6 +147,8 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
     }
     
+    // MARK: - sopt-letter/report-form API 연결 필요
+    
     private func showReportForm() {
         guard let url = URL(string: "https://forms.gle/jkQWs2e6YMkg7HSg8") else { return }
         let webView = SOPTWebView(startWith: url)

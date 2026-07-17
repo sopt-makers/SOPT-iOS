@@ -238,7 +238,7 @@ extension SoptletterDetailModalVC {
                 if owner.isEditingContent {
                     let editedContent = owner.contentTextView.text ?? ""
                     guard editedContent.count <= owner.maxContentLength else {
-                        ToastUtils.showMDSToast(type: .alert, text: "공백 포함 350자 이하로만 작성할 수 있어요.")
+                        ToastUtils.showMDSToast(type: .alert, text: I18N.Soptletter.charLimitError)
                         return
                     }
                     owner.editCompleteButtonTapPublisher.send(editedContent)

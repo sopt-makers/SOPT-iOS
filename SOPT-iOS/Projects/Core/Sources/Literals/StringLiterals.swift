@@ -530,6 +530,7 @@ public struct I18N {
             public static let savePdfButtonTitle = "PDF 저장하기"
             public static let saveFailure = "이미지 저장에 실패했어요."
             public static let saveSuccess = "이미지 저장을 완료했어요."
+            public static let printSoptletter = "솝레터 출력하기"
         }
         
         public struct Nickname {
@@ -547,6 +548,7 @@ public struct I18N {
             public static let deleteAlertTitle = "솝레터 삭제하기"
             public static let deleteAlertDescription = "해당 솝레터가 영구적으로 삭제되어요.\n그래도 삭제하시겠어요?"
             public static let deleteButtonTitle = "삭제"
+            public static let cannotLikeOwnMessage = "내가 작성한 솝레터에는 좋아요를 누를 수 없어요."
         }
     }
 }

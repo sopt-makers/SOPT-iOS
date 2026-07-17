@@ -121,7 +121,7 @@ extension SoptletterMainViewModel {
                 AlertUtils
                     .presentAlertVC(
                         type: .titleDescription,
-                        title: "솝레터 출력하기",
+                        title: I18N.Soptletter.Print.printSoptletter,
                         description: "\(owner.soptletterTitle)의 모든 메세지가 하나의 이미지로 출력돼요. 솝레터를 출력하여 우리 기수의 이야기를 공유해보세요!",
                         customButtonTitle: "출력", customAction: {
                             output.onDownloadConfirm.send(())

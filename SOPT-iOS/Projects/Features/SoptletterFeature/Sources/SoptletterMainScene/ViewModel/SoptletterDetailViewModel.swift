@@ -68,7 +68,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
             .sink { owner, likeState in
                 guard !likeState.isMine else {
                     Task { @MainActor in
-                        ToastUtils.showMDSToast(type: .alert, text: "내가 작성한 솝레터에는 좋아요를 누를 수 없어요.")
+                        ToastUtils.showMDSToast(type: .alert, text: I18N.Soptletter.Detail.cannotLikeOwnMessage)
                         output.soptletterLikeFailed.send(likeState.likeByMe)
                     }
                     return

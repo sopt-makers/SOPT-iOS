@@ -131,9 +131,9 @@ extension AlertVC {
         self.customButton.layer.cornerRadius = 10
     }
     
-    
-    
     private func setLayout(_ type: AlertType) {
+        let heightRatio = (type == .title) ? 0.49 : 0.55
+        
         self.view.addSubviews(backgroundDimmerView, alertView)
         
         backgroundDimmerView.snp.makeConstraints { make in
@@ -143,7 +143,7 @@ extension AlertVC {
         alertView.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(50)
-            // 고정 height 비율 제거 - 내부 콘텐츠에 따라 자동으로 늘어남
+            make.height.greaterThanOrEqualTo(alertView.snp.width).multipliedBy(heightRatio)
         }
         
         alertView.addSubview(titleLabel)
