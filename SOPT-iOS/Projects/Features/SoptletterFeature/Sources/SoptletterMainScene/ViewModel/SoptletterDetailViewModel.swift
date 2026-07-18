@@ -25,7 +25,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
         let deleteButtonTap: Driver<String>
         let confirmButtonTap: Driver<Void>
         let editCompleteButtonTap: Driver<String>
-        let likeButtonTap: Driver<(likeByMe: Bool, isMine:Bool)>
+        let likeButtonTap: Driver<(likeByMe: Bool, isMine: Bool)>
     }
     
     public struct Output {
