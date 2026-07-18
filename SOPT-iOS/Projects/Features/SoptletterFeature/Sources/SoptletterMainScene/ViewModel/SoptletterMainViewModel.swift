@@ -16,7 +16,7 @@ import SoptletterFeatureInterface
 import Domain
 
 public final class SoptletterMainViewModel: SoptletterMainViewModelType {
-
+    
     // MARK: - Inputs
     
     public struct Input {
@@ -51,7 +51,7 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     
     public var onNaviBackTap: (() -> Void)?
     public var onWriteTap: (() -> Void)?
-    public var onPostItTap: (() -> Void)?    
+    public var onPostItTap: (() -> Void)?
     public var onDownloadTap: ((String, UIImage, URL) -> Void)?
     public var onReportTap: (() -> Void)?
     public var onMenuTap: (() -> Void)?
@@ -64,7 +64,7 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     public init(coordinator: Coordinator, useCase: SoptletterUseCase, topicId: Int? = nil) {
         self.useCase = useCase
         self.coordinator = coordinator
-        self.topicId = topicId      
+        self.topicId = topicId
     }
 }
 
@@ -121,8 +121,8 @@ extension SoptletterMainViewModel {
                 AlertUtils
                     .presentAlertVC(
                         type: .titleDescription,
-                        title: "솝레터 출력하기",
-                        description: "\(owner.soptletterTitle)의 모든 메세지가 하나의 이미지로\n 출력돼요. \n솝레터를 출력하여 우리 기수의 이야기를 공유해보세요!",
+                        title: I18N.Soptletter.Print.printSoptletter,
+                        description: "\(owner.soptletterTitle)의 모든 메세지가 하나의 이미지로 출력돼요. 솝레터를 출력하여 우리 기수의 이야기를 공유해보세요!",
                         customButtonTitle: "출력", customAction: {
                             output.onDownloadConfirm.send(())
                         })
@@ -162,9 +162,14 @@ extension SoptletterMainViewModel {
             } catch is CancellationError {
                 return
             } catch {
-              await onError?()
+                // UI fallback 처리                
+                await MainActor.run {
+                    output.soptletterMessages.send(.init(topicId: 0, title: "test", totalCount: 0, nextCursor: 0, hasNext: false, messages: []))
+                    onError?()
+                }
             }
         }
+        
     }
     
     public func fetchCTA(output: Output) {

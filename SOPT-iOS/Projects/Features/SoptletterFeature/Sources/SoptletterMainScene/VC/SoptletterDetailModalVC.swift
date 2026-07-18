@@ -135,20 +135,21 @@ public final class SoptletterDetailModalVC: UIViewController {
         .mapVoid()
         .asDriver()
     
-    private lazy var likeButtonTap: Driver<Bool> = likeButton
+    private lazy var likeButtonTap: Driver<(likeByMe: Bool, isMine:Bool)> = likeButton
         .publisher(for: .touchUpInside)
         .withUnretained(self)
-        .map { owner, _ in !owner.likeButton.isSelected }
-        .asDriver()    
+        .map { owner, _ in (!owner.likeButton.isSelected, owner.isMine) }
+        .asDriver()
     
     private let viewModel: SoptletterDetailViewModel
     private let cancelBag = CancelBag()
-        
     private let editCompleteButtonTapPublisher = PassthroughSubject<String, Never>()
     
+    private var containerViewCenterYConstraint: Constraint?
     private var likeCount = 0
     private var deleteButtonTapPublisher = PassthroughSubject<String, Never>()
-        
+    private var isMine = false
+    
     private lazy var editCompleteButtonTap: Driver<String> = editCompleteButtonTapPublisher.asDriver()
     private lazy var deleteCompleteButtonTap: Driver<String> = deleteButtonTapPublisher.asDriver()
     
@@ -163,12 +164,17 @@ public final class SoptletterDetailModalVC: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
         setLayout()
         setDelegate()
         bindViewModels()
+        addKeyboardObservers()
     }
     
     @discardableResult
@@ -181,11 +187,12 @@ public final class SoptletterDetailModalVC: UIViewController {
         mine: Bool,
         likeByMe: Bool
     ) -> Self {
+        self.likeCount = likeCount
+        self.isMine = mine
         containerView.backgroundColor = backgroundColor
         nameLabel.text = name
         contentLabel.text = content
         dateLabel.text = DateFormatManager.shared.serverTimeToString(date, from: .dateWithDot)
-        self.likeCount = likeCount
         likeCountLabel.text = "\(likeCount)"
         editDeleteStackView.isHidden = !mine
         likeButton.setImage(likeByMe ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart"), for: .normal)
@@ -210,7 +217,7 @@ extension SoptletterDetailModalVC {
         likeButtonTap
             .withUnretained(self)
             .sink { owner, newLikeState in
-                owner.applyLikeState(newLikeState)
+                owner.applyLikeState(newLikeState.likeByMe)
             }.store(in: cancelBag)
         
         deleteButtonTap
@@ -230,6 +237,10 @@ extension SoptletterDetailModalVC {
             .sink { owner, _ in
                 if owner.isEditingContent {
                     let editedContent = owner.contentTextView.text ?? ""
+                    guard editedContent.count <= owner.maxContentLength else {
+                        ToastUtils.showMDSToast(type: .alert, text: I18N.Soptletter.charLimitError)
+                        return
+                    }
                     owner.editCompleteButtonTapPublisher.send(editedContent)
                 } else {
                     owner.dismiss(animated: true)
@@ -326,7 +337,8 @@ private extension SoptletterDetailModalVC {
         
         containerView.snp.makeConstraints { make in
             make.directionalHorizontalEdges.equalToSuperview().inset(19)
-            make.center.equalToSuperview()
+            make.centerX.equalToSuperview()
+            self.containerViewCenterYConstraint = make.centerY.equalToSuperview().constraint
         }
         
         nameLabel.snp.makeConstraints { make in
@@ -401,7 +413,6 @@ private extension SoptletterDetailModalVC {
     
     func updateConfirmButtonState(_ count: Int) {
         let isOverLimit = count > maxContentLength
-        confirmButton.isEnabled = !isOverLimit
         confirmButton.backgroundColor = isOverLimit ? DSKitAsset.Colors.gray100.color : DSKitAsset.Colors.gray800.color
     }
     
@@ -446,5 +457,58 @@ extension SoptletterDetailModalVC {
         confirmButton.setTitle(isEditing ? I18N.Soptletter.Detail.editCompleteTitle : I18N.Soptletter.Detail.confirmTitle, for: .normal)
 
         isEditing ? contentTextView.becomeFirstResponder() : contentTextView.resignFirstResponder()
+    }
+}
+
+private extension SoptletterDetailModalVC {
+    func addKeyboardObservers() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow(_:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide(_:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+
+    @objc func keyboardWillShow(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue,
+              let duration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval,
+              let curveValue = userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt
+        else { return }
+
+        let keyboardHeight = keyboardFrame.cgRectValue.height
+        // containerView 하단이 키보드 위 16pt 정도 여유를 두도록 오프셋 계산
+        let containerBottomY = view.bounds.midY + (containerView.frame.height / 2)
+        let overlap = containerBottomY - (view.bounds.height - keyboardHeight) + 16
+
+        guard overlap > 0 else { return }
+
+        containerViewCenterYConstraint?.update(offset: -overlap)
+
+        let curve = UIView.AnimationOptions(rawValue: curveValue << 16)
+        UIView.animate(withDuration: duration, delay: 0, options: curve) {
+            self.view.layoutIfNeeded()
+        }
+    }
+
+    @objc func keyboardWillHide(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let duration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval,
+              let curveValue = userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt
+        else { return }
+
+        containerViewCenterYConstraint?.update(offset: 0)
+
+        let curve = UIView.AnimationOptions(rawValue: curveValue << 16)
+        UIView.animate(withDuration: duration, delay: 0, options: curve) {
+            self.view.layoutIfNeeded()
+        }
     }
 }

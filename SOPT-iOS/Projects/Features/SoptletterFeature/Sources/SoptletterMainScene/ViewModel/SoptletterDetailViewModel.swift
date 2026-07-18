@@ -25,7 +25,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
         let deleteButtonTap: Driver<String>
         let confirmButtonTap: Driver<Void>
         let editCompleteButtonTap: Driver<String>
-        let likeButtonTap: Driver<Bool>
+        let likeButtonTap: Driver<(likeByMe: Bool, isMine: Bool)>
     }
     
     public struct Output {
@@ -65,12 +65,20 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
         
         input.likeButtonTap
             .withUnretained(self)
-            .sink { owner, likeByMe in
+            .sink { owner, likeState in
+                guard !likeState.isMine else {
+                    Task { @MainActor in
+                        ToastUtils.showMDSToast(type: .alert, text: I18N.Soptletter.Detail.cannotLikeOwnMessage)
+                        output.soptletterLikeFailed.send(likeState.likeByMe)
+                    }
+                    return
+                }
+
                 owner.likeTask?.cancel()
                 owner.likeTask = Task { [weak self] in
                     guard let self else { return }
                     do {
-                        if likeByMe {
+                        if likeState.likeByMe {
                             try await self.useCase.likeMessage(messageId: self.messageId, topicId: self.topicId)
                         } else {
                             try await self.useCase.unlikeMessage(messageId: self.messageId, topicId: self.topicId)
@@ -79,7 +87,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
                         return
                     } catch {
                         await MainActor.run {
-                            output.soptletterLikeFailed.send(likeByMe)
+                            output.soptletterLikeFailed.send(likeState.likeByMe)
                         }
                         await self.onError?()
                     }
