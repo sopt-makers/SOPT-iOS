@@ -22,7 +22,6 @@ public enum UserAPI {
     case fetchActiveGenerationStatus
     case getNotificationSettingsInDetail
     case optInPushNotificationInDetail(notificationSettings: DetailNotificationOptInEntity)
-    case appService
     case hotboard
     case fetchSoptlogInfo
     @available(*, deprecated, message: "API 문서상으로 deprecated되어 확인 필요")
@@ -52,8 +51,6 @@ extension UserAPI: BaseAPI {
             return "/opt-in/detail"
         case .optInPushNotificationInDetail:
             return "/opt-in/detail"
-        case .appService:
-            return "app-service"
         case .hotboard:
             return "playground/hot-post"
         case .fetchSoptlogInfo:
@@ -66,7 +63,7 @@ extension UserAPI: BaseAPI {
     // MARK: - Method
     public var method: Moya.Method {
         switch self {
-        case .getUserMainInfo, .fetchSoptampUser, .fetchActiveGenerationStatus, .getNotificationSettingsInDetail, .appService, .hotboard, .fetchSoptlogInfo, .fetchAppjamInfo:
+        case .getUserMainInfo, .fetchSoptampUser, .fetchActiveGenerationStatus, .getNotificationSettingsInDetail, .hotboard, .fetchSoptlogInfo, .fetchAppjamInfo:
             return .get
         case .editSentence, .optInPushNotificationInDetail:
             return .patch

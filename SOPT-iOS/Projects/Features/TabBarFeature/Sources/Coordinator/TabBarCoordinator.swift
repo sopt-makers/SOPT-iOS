@@ -31,51 +31,55 @@ public final class TabBarCoordinator: BaseCoordinator {
     private let factory: TabBarBuilder
     private weak var navigationController: UINavigationController?
     private let views: [UIViewController]
+    private let tabTypes: [TabBarItemType]
     private let userType: UserType
     private let selectedTabType: TabBarItemType
-    
+
     // MARK: - Init
-    
+
     public init(
         navigationController: UINavigationController,
         factory: TabBarBuilder,
         views: [UIViewController],
+        tabTypes: [TabBarItemType],
         userType: UserType,
         selectedTabType: TabBarItemType = .home
     ) {
         self.navigationController = navigationController
         self.factory = factory
         self.views = views
+        self.tabTypes = tabTypes
         self.userType = userType
         self.selectedTabType = selectedTabType
     }
-    
+
     // MARK: - Coordinator Life Cycle
-    
+
     public override func start() {
         if let existingTabBar = navigationController?.viewControllers.first as? UITabBarController {
             tabBarController = existingTabBar
-            let tabIndex = selectedTabType.getTabIndex(userType: userType)
-            existingTabBar.selectedIndex = tabIndex
+            if let tabIndex = selectedTabType.getTabIndex(in: tabTypes) {
+                existingTabBar.selectedIndex = tabIndex
+            }
         } else {
             showTabBar()
         }
     }
-    
+
     // MARK: - Navigation
-    
+
     private func showTabBar() {
-        var tabBar = factory.makeTabBar(with: views, userType: userType, coordinator: self)
-        
+        var tabBar = factory.makeTabBar(with: views, tabTypes: tabTypes, userType: userType, coordinator: self)
+
         tabBar.vm.onTabBarItemTapped = { [weak self] tabType in
             // 각 탭의 코디네이터 실행
             guard let self = self else { return }
-            
+
             switch tabType {
             case .home:
                 self.delegate?.tabBarCoordinator(self, to: .home)
-//            case .soptamp:
-//                self.delegate?.tabBarCoordinator(self, to: .soptamp)
+            case .soptamp:
+                self.delegate?.tabBarCoordinator(self, to: .soptamp)
             case .poke:
                 self.delegate?.tabBarCoordinator(self, to: .poke)
             case .soptlog:

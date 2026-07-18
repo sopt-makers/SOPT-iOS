@@ -20,3 +20,13 @@ extension HomeAppServiceAccessStatusEntity {
                                     deepLink: deepLink)
     }
 }
+
+extension TabAppServiceEntity {
+    public func toDomain() -> HomeAppServicesModel {
+        return HomeAppServicesModel(serviceName: serviceName,
+                                    displayAlarmBadge: displayAlarmBadge,
+                                    alarmBadge: alarmBadge,
+                                    iconURL: iconURL,
+                                    deepLink: deepLink)
+    }
+}

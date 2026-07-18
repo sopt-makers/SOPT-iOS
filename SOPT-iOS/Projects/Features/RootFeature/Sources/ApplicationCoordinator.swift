@@ -41,7 +41,9 @@ public final class ApplicationCoordinator: BaseCoordinator {
     let stampNavigationController = UINavigationController()
     let pokeNavigationController = UINavigationController()
     weak var tabBarController: UITabBarController?
-    
+    /// 현재 탭바에 실제로 노출 중인 탭 구성 (tab-app-service 응답에 따라 동적으로 결정됨)
+    private(set) var activeTabTypes: [TabBarItemType] = []
+
     // MARK: - Init
     
     public init(
@@ -257,10 +259,12 @@ extension ApplicationCoordinator {
     private func checkDidSignIn() {
         if !UserDefaultKeyList.Auth.hasAccessToken() {
             runSignInFlow(by: .root)
+        } else if Config.coordinatorFlag == .legacy {
+            runLegacyTabBarFlow()
         } else {
-            Config.coordinatorFlag == .legacy
-            ? runLegacyTabBarFlow()
-            : runTabBarFlow()
+            Task { [weak self] in
+                await self?.runTabBarFlow()
+            }
         }
     }
 }
@@ -277,9 +281,13 @@ extension ApplicationCoordinator {
         switch Config.coordinatorFlag {
         case .legacy:
             coordinator.finishFlow = { [weak self, weak coordinator] userType in
-                Config.coordinatorFlag == .legacy
-                ? self?.runLegacyTabBarFlow(type: userType)
-                : self?.runTabBarFlow(type: userType)
+                if Config.coordinatorFlag == .legacy {
+                    self?.runLegacyTabBarFlow(type: userType)
+                } else {
+                    Task { [weak self] in
+                        await self?.runTabBarFlow(type: userType)
+                    }
+                }
                 self?.removeDependency(coordinator)
             }
             addDependency(coordinator)
@@ -298,9 +306,13 @@ extension ApplicationCoordinator {
         switch Config.coordinatorFlag {
         case .legacy:
             coordinator.finishFlow = { [weak self, weak coordinator] userType in
-                Config.coordinatorFlag == .legacy
-                ? self?.runLegacyTabBarFlow(type: userType)
-                : self?.runTabBarFlow(type: userType)
+                if Config.coordinatorFlag == .legacy {
+                    self?.runLegacyTabBarFlow(type: userType)
+                } else {
+                    Task { [weak self] in
+                        await self?.runTabBarFlow(type: userType)
+                    }
+                }
                 self?.removeDependency(coordinator)
             }
             addDependency(coordinator)
@@ -404,45 +416,53 @@ extension ApplicationCoordinator {
 // MARK: - TabBarFlow
 
 extension ApplicationCoordinator {
-    internal func runTabBarFlow(type: UserType? = nil, initSelectedTabType: TabBarItemType = .home) {
+    @MainActor
+    internal func runTabBarFlow(type: UserType? = nil, initSelectedTabType: TabBarItemType = .home) async {
         defer { bindNotification() }
-        
+
         let tabBarBuilder = TabBarBuilder()
         let userType = type ?? UserDefaultKeyList.Auth.getUserType()
-        var viewControllers: [UINavigationController] = []
 
         runHomeFlow(type: userType)
         runStampFlow()
         runPokeFlow()
-        
+
+        var candidates: [(type: TabBarItemType, viewController: UIViewController)] = [
+            (.home, homeNavigationController)
+        ]
+
         switch userType {
         case .active, .inactive:
             runSoptlogFlow(type: userType)
-            viewControllers = [
-                homeNavigationController,
-//                stampNavigationController,
-                pokeNavigationController,
-                soptlogNavigationController
+            // 콕찌르기/솝탬프는 tab-app-service 응답에 존재할 때만 탭으로 노출됩니다.
+            // (실제 포함 여부는 TabBarBuilder가 도메인 계층을 통해 결정합니다)
+            candidates += [
+                (.soptamp, stampNavigationController),
+                (.poke, pokeNavigationController),
+                (.soptlog, soptlogNavigationController)
             ]
 
         case .visitor:
             // Visitor는 빈 navigation controller 사용 (실제 화면 전환은 TabBarViewModel에서 막음)
-            viewControllers = [
-                homeNavigationController,
-                UINavigationController()
-            ]
+            candidates.append((.soptlog, UINavigationController()))
         }
+
+        let tabTypes = await tabBarBuilder.resolveActiveTabTypes(candidates: candidates, userType: userType)
+        let viewControllers = candidates.filter { tabTypes.contains($0.type) }.map(\.viewController)
+
+        self.activeTabTypes = tabTypes
 
         let coordinator = TabBarCoordinator(
             navigationController: rootNavigationController,
             factory: tabBarBuilder,
             views: viewControllers,
+            tabTypes: tabTypes,
             userType: userType,
             selectedTabType: initSelectedTabType
         )
         coordinator.delegate = self
         coordinator.start()
-        
+
         self.tabBarController = coordinator.tabBarController
     }
 }

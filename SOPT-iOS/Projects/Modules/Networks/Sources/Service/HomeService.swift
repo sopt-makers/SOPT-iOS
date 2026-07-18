@@ -16,10 +16,11 @@ public typealias DefaultHomeService = BaseService<HomeAPI>
 public protocol HomeService {
     func getAppServiceAccessStatus() -> AnyPublisher<HomeAppServiceStatusEntity, Error>
     func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonResponseEntity, Error>
-    
+
     /// async
     func getDescriptionAsync() async throws -> HomeDescriptionEntity
     func getAppServiceAccessStatusAsync() async throws -> HomeAppServiceStatusEntity
+    func getTabAppServiceAsync() async throws -> [TabAppServiceEntity]
     func getSurveyInfoAsync() async throws -> HomeSurveyResponseEntity
     func getPopularPostsAsync() async throws -> [HomePopularPostsResponseEntity]
     func getLatestPostsAsync() async throws -> [HomeLatestPostsResponseEntity]
@@ -29,7 +30,7 @@ extension DefaultHomeService: HomeService {
     public func getAppServiceAccessStatus() -> AnyPublisher<HomeAppServiceStatusEntity, any Error> {
         requestObjectInCombine(.getAppServiceAccessStatus)
     }
-    
+
     public func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonResponseEntity, any Error> {
         requestObjectInCombine(.getFABInfo)
     }
@@ -37,9 +38,13 @@ extension DefaultHomeService: HomeService {
     public func getDescriptionAsync() async throws -> HomeDescriptionEntity {
         try await requestObjectAsync(.getDescription)
     }
-    
+
     public func getAppServiceAccessStatusAsync() async throws -> HomeAppServiceStatusEntity {
         try await requestObjectAsync(.getAppServiceAccessStatus)
+    }
+
+    public func getTabAppServiceAsync() async throws -> [TabAppServiceEntity] {
+        try await requestObjectAsync(.getTabAppService)
     }
 
     public func getSurveyInfoAsync() async throws -> HomeSurveyResponseEntity {

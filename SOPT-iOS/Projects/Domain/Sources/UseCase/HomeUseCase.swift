@@ -21,7 +21,7 @@ public protocol HomeUseCase {
     func getUserInfoAsync() async throws -> UserMainInfoModel?
     func getRecentScheduleAsync() async throws -> HomeRecentScheduleModel
     func getAppServicesAsync() async throws -> [HomeAppServicesModel]
-    func getHomeAppService() async throws -> [HomeAppServicesModel]
+    func getTabAppServicesAsync() async throws -> [HomeAppServicesModel]
     func getCalendarDetailAsync() async throws -> [HomeCalendarDetailModel]
     func getSurveyInfoAsync() async throws -> HomeSurveyModel
     func getPopularPostsAsync() async throws -> [HomePopularPostModel]
@@ -35,6 +35,7 @@ public class DefaultHomeUseCase {
     
     // 앱 서비스 정보 캐시
     private var cachedAppServices: [HomeAppServicesModel]?
+    private var cachedTabAppServices: [HomeAppServicesModel]?
     
     public init(repository: HomeRepositoryInterface) {
         self.repository = repository
@@ -113,27 +114,23 @@ extension DefaultHomeUseCase: HomeUseCase {
         if let cached = cachedAppServices {
             return cached
         }
-        
+
         // 없으면 API 호출 후 캐싱
         let services = try await repository.getAppServicesAsync()
         cachedAppServices = services
         return services
     }
-    
-    // TODO: - 서버 명세 변경 시 tab / home appservie 변경
-    public func getHomeAppService() async throws -> [HomeAppServicesModel] {
+
+    public func getTabAppServicesAsync() async throws -> [HomeAppServicesModel] {
         // 캐시된 데이터가 있으면 반환
-        if let cached = cachedAppServices {
+        if let cached = cachedTabAppServices {
             return cached
         }
-        
+
         // 없으면 API 호출 후 캐싱
-        let services = try await repository.getAppServicesAsync()
-        
-        cachedAppServices = services
-        return services.filter { model in
-            model.serviceName == "솝레터"
-        }
+        let services = try await repository.getTabAppServicesAsync()
+        cachedTabAppServices = services
+        return services
     }
 
     public func getCalendarDetailAsync() async throws -> [HomeCalendarDetailModel] {

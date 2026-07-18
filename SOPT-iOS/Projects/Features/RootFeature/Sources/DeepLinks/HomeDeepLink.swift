@@ -19,7 +19,9 @@ public struct HomeDeepLink: DeepLinkExecutable {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
         
         if self.isDestination == true {
-            coordinator.runTabBarFlow(initSelectedTabType: .home)
+            Task { [weak coordinator] in
+                await coordinator?.runTabBarFlow(initSelectedTabType: .home)
+            }
         }
         
         return coordinator

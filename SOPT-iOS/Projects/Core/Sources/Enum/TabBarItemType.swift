@@ -8,9 +8,9 @@
 
 import Foundation
 
-public enum TabBarItemType: Int, CaseIterable {
+public enum TabBarItemType: CaseIterable {
     case home
-//    case soptamp
+    case soptamp
     case poke
     case soptlog
 }
@@ -19,53 +19,29 @@ public extension TabBarItemType {
     var toAmplitudeEventType: AmplitudeEventType {
         switch self {
         case .home: return .clickNaviHome
-//        case .soptamp: return .clickNaviSoptamp
+        case .soptamp: return .clickNaviSoptamp
         case .soptlog: return .clickNaviSoptlog
         case .poke: return .clickNaviPoke
         }
     }
-    
-    /// 유저타입 별 탭 바 인덱스 매핑
-    func getTabIndex(userType: UserType) -> Int {
-        switch userType {
-        case .active, .inactive:
-            switch self {
-            case .home:
-                return 0
-//            case .soptamp:
-//                return 1
-            case .poke:
-                return 1
-            case .soptlog:
-                return 2
-            }
-        case .visitor:
-            switch self {
-            case .home, .poke:
-                return 0
-            case .soptlog:
-                return 1
-            }
-        }
+
+    /// 실제로 탭바에 노출 중인 탭 구성(tab-app-service 응답에 따라 동적으로 달라짐) 내에서의 인덱스
+    func getTabIndex(in activeTabTypes: [TabBarItemType]) -> Int? {
+        activeTabTypes.firstIndex(of: self)
     }
-    
-    /// 실제 탭바 인덱스 -> TabBarItemType
-    static func from(index: Int, userType: UserType) -> TabBarItemType? {
-        switch userType {
-        case .active, .inactive:
-            switch index {
-            case 0: return .home
-//            case 1: return .soptamp
-            case 1: return .poke
-            case 2: return .soptlog
-            default: return nil
-            }
-        case .visitor:
-            switch index {
-            case 0: return .home
-            case 1: return .soptlog
-            default: return nil
-            }
+
+    /// 실제 탭바 인덱스 -> TabBarItemType (활성화된 탭 구성 기준)
+    static func from(index: Int, in activeTabTypes: [TabBarItemType]) -> TabBarItemType? {
+        guard activeTabTypes.indices.contains(index) else { return nil }
+        return activeTabTypes[index]
+    }
+
+    /// tab-app-service 응답의 serviceName -> TabBarItemType 매핑
+    static func from(tabAppServiceName serviceName: String) -> TabBarItemType? {
+        switch serviceName {
+        case "솝탬프": return .soptamp
+        case "콕찌르기": return .poke
+        default: return nil
         }
     }
 }

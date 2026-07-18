@@ -18,24 +18,16 @@ final class TabBarController: UITabBarController {
     
     private let tabList: [UIViewController]
     private let viewModel: TabBarViewModel
-    
+
     private let viewWillAppear = PassthroughSubject<Void, Never>()
     private let isTabBarItemSelected = PassthroughSubject<Int, Never>()
     private let isMenuCellTapped = PassthroughSubject<String, Never>()
     private let userType: UserType
+    private let tabTypes: [TabBarItemType]
     private let cancelBag = CancelBag()
     private let fabMenuSections = FABMenuSection.allCases
-    
+
     private lazy var isFABTapped = plusButton.publisher(for: .touchUpInside).mapVoid().asDriver()
-    
-    private var tabTypes: [TabBarItemType] {
-        switch userType {
-        case .active, .inactive:
-            return [.home, .poke, .soptlog]
-        case .visitor:
-            return [.home, .soptlog]
-        }
-    }
     
     // MARK: - UI Components
     
@@ -70,11 +62,12 @@ final class TabBarController: UITabBarController {
     
     // MARK: - Life Cycle
     
-    init(viewModel: TabBarViewModel, tabList: [UIViewController], userType: UserType) {
+    init(viewModel: TabBarViewModel, tabList: [UIViewController], tabTypes: [TabBarItemType], userType: UserType) {
         self.viewModel = viewModel
         self.tabList = tabList
+        self.tabTypes = tabTypes
         self.userType = userType
-        
+
         super.init(nibName: nil, bundle: nil)
     }
     
