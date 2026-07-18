@@ -412,7 +412,7 @@ private extension SoptletterDetailModalVC {
     }
     
     func updateConfirmButtonState(_ count: Int) {
-        let isOverLimit = count > maxContentLength        
+        let isOverLimit = count > maxContentLength
         confirmButton.backgroundColor = isOverLimit ? DSKitAsset.Colors.gray100.color : DSKitAsset.Colors.gray800.color
     }
     
