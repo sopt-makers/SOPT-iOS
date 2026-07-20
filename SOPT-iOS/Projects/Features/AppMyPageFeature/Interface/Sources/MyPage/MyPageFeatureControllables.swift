@@ -11,6 +11,7 @@ import Core
 
 public protocol WithdrawalViewCoordinatable {
     var onWithdrawal: (() -> Void)? { get set }
+    var backButtonDidTap: (() -> Void)? { get set }
 }
 
 public typealias WithdrawalViewModelType = ViewModelType & WithdrawalViewCoordinatable
