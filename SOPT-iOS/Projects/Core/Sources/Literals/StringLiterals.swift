@@ -409,12 +409,12 @@ public struct I18N {
             public static let login = "로그인"
         }
         
-        public static let resetMissionTitle = "미션을 초기화 하실건가요?"
-        public static let resetMissionDescription = "사진, 메모가 삭제되고\n 전체 미션이 미완료상태로 초기화됩니다."
+        public static let resetMissionTitle = "솝탬프 미션을 초기화 하실건가요?"
+        public static let resetMissionDescription = "미션에 등록된 사진, 메모가 삭제되고\n 전체 미션이 미완료 상태로 초기화됩니다."
         public static let reset = "초기화"
         public static let resetSuccess = "초기화 되었습니다"
-        public static let logoutDialogTitle = "로그아웃"
-        public static let logoutDialogDescription = "정말 로그아웃을 하실 건가요?"
+        public static let logoutDialogTitle = "로그아웃 하실 건가요?"
+        public static let logoutDialogDescription = "로그아웃을 해도 언제든 솝트에\n다시 접속할 수 있어요."
         public static let logoutDialogGrantButtonTitle = "로그아웃"
     }
     
