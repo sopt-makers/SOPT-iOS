@@ -903,8 +903,8 @@ extension ApplicationCoordinator {
             
             legacyCoordinator.requestCoordinating = { [weak self] destination in
                 switch destination {
-                case .dailySoptune:
-                    self?.runDailySoptuneFlow()
+//                case .dailySoptune:
+//                    self?.runDailySoptuneFlow()
                 case .webLink(let url):
                     self?.handleWebLink(webLink: url)
                 case .home:

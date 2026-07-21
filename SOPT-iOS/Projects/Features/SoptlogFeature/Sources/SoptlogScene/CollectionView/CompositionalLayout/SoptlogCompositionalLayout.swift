@@ -21,14 +21,14 @@ extension SoptlogVC {
             switch sectionType {
             case .logo:
                 return self.createLogoSection()
-//            case .soptampLog:
-//                return self.createMenuSection(sectionType: sectionType)
+            case .soptampLog:
+                return self.createMenuSection(sectionType: sectionType)
             case .pokeLog:
                 return self.isPokeEmpty ?
                 self.createEmptySection(sectionType: sectionType) :
                 self.createMenuSection(sectionType: sectionType)
-            case .banner:
-                return self.createBannerSection()
+//            case .banner:
+//                return self.createBannerSection()
             }
         })
 
