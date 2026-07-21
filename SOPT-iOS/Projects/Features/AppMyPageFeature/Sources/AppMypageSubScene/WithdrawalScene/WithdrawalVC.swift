@@ -24,7 +24,7 @@ public class WithdrawalVC: UIViewController, LegacyWithdrawalViewControllable {
     private let cancelBag = CancelBag()
     public var userType: UserType = .active
     
-    // MARK: - WithdrawalViewCoordiatable - Legacy
+    // MARK: - WithdrawalViewCoordiatable
     
     public var onWithdrawal: (() -> Void)?
     
@@ -138,10 +138,7 @@ extension WithdrawalVC {
             .mapVoid()
             .asDriver()
         
-        let input = WithdrawalViewModel.Input(
-            withdrawalButtonTapped: withdrawalButtonTapped,
-            backButtonTapped: naviBar.leftButtonTapped
-        )
+        let input = WithdrawalViewModel.Input(withdrawalButtonTapped: withdrawalButtonTapped)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
         output.withdrawalSuccessed
@@ -157,7 +154,7 @@ extension WithdrawalVC {
     
     private func showToastAndChangeRootView() {
         SFSafariViewController.DataStore.default.clearWebsiteData()
-        viewModel.onWithdrawal?()
+        onWithdrawal?()
     }
     
     public func showNetworkAlert() {

@@ -102,10 +102,6 @@ public final class MyPageCoordinator: BaseCoordinator {
             self.delegate?.myPageCoordinator(self, to: .signInWithToast)
         }
         
-        withdrawal.vm.backButtonDidTap = { [weak self] in
-            self?.navigationController?.popToRootViewController(animated: true)
-        }
-        
         self.navigationController?.pushViewController(withdrawal.vc, animated: true)
     }
     

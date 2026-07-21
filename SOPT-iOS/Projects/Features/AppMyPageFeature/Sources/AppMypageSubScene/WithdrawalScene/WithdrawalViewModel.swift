@@ -16,7 +16,6 @@ public class WithdrawalViewModel: WithdrawalViewModelType {
     // MARK: - Trigger
     
     public var onWithdrawal: (() -> Void)?
-    public var backButtonDidTap: (() -> Void)?
     
     // MARK: - Properties
     
@@ -27,7 +26,6 @@ public class WithdrawalViewModel: WithdrawalViewModelType {
     
     public struct Input {
         let withdrawalButtonTapped: Driver<Void>
-        let backButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -52,12 +50,6 @@ extension WithdrawalViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.withdrawal()
-            }.store(in: cancelBag)
-        
-        input.backButtonTapped
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.backButtonDidTap?()
             }.store(in: cancelBag)
     
         return output
