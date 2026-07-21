@@ -112,7 +112,6 @@ extension AlertVC {
                                         for: .normal)
         self.customButton.setTitleColor(alertTheme.customButtonTitleColor, for: .normal)
         
-        self.descriptionLabel.textAlignment = .center
         self.descriptionLabel.numberOfLines = 0
 
         let cancelTitle: String
@@ -152,7 +151,6 @@ extension AlertVC {
         
         titleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(titleTopInset)
-            make.centerX.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(20)
         }
         
@@ -162,8 +160,7 @@ extension AlertVC {
             alertView.addSubview(descriptionLabel)
             
             descriptionLabel.snp.makeConstraints { make in
-                make.top.equalTo(titleLabel.snp.bottom).offset(8)  
-                make.centerX.equalToSuperview()
+                make.top.equalTo(titleLabel.snp.bottom).offset(8)
                 make.leading.trailing.equalToSuperview().inset(20)
             }
             lastLabel = descriptionLabel
@@ -179,7 +176,7 @@ extension AlertVC {
         switch type {
         case .title, .titleDescription:
             alertView.addSubviews(customButton)
-            let buttonSpacing: Float = 7
+            let buttonSpacing: Float = 20
             
             cancelButton.snp.makeConstraints { make in
                 make.top.equalTo(lastLabel.snp.bottom).offset(buttonTopSpacing)
@@ -190,7 +187,7 @@ extension AlertVC {
             
             customButton.snp.makeConstraints { make in
                 make.trailing.bottom.equalToSuperview().inset(buttonSpacing)
-                make.leading.equalTo(cancelButton.snp.trailing).offset(buttonSpacing)
+                make.leading.equalTo(cancelButton.snp.trailing).offset(9)
                 make.height.equalTo(cancelButton.snp.height)
             }
 
