@@ -112,7 +112,6 @@ extension AlertVC {
                                         for: .normal)
         self.customButton.setTitleColor(alertTheme.customButtonTitleColor, for: .normal)
         
-        self.titleLabel.textAlignment = .center
         self.descriptionLabel.textAlignment = .center
         self.descriptionLabel.numberOfLines = 0
 
@@ -143,7 +142,7 @@ extension AlertVC {
         
         alertView.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(32)
+            make.leading.trailing.equalToSuperview().inset(50)
             make.height.greaterThanOrEqualTo(alertView.snp.width).multipliedBy(heightRatio)
         }
         
@@ -163,10 +162,9 @@ extension AlertVC {
             alertView.addSubview(descriptionLabel)
             
             descriptionLabel.snp.makeConstraints { make in
-                make.top.equalTo(titleLabel.snp.bottom).offset(4)
+                make.top.equalTo(titleLabel.snp.bottom).offset(8)  
                 make.centerX.equalToSuperview()
-                make.leading.trailing.equalToSuperview().inset(7)
-                make.height.equalTo(81)
+                make.leading.trailing.equalToSuperview().inset(20)
             }
             lastLabel = descriptionLabel
         }
@@ -176,7 +174,7 @@ extension AlertVC {
 
     private func setButtonLayout(_ type: AlertType, lastLabel: UILabel) {
         alertView.addSubviews(cancelButton)
-        let buttonTopSpacing: CGFloat = 14
+        let buttonTopSpacing: CGFloat = 24
         
         switch type {
         case .title, .titleDescription:
@@ -185,24 +183,21 @@ extension AlertVC {
             
             cancelButton.snp.makeConstraints { make in
                 make.top.equalTo(lastLabel.snp.bottom).offset(buttonTopSpacing)
-                make.leading.equalToSuperview().inset(buttonSpacing)
-                make.bottom.equalToSuperview().inset(12)
+                make.leading.bottom.equalToSuperview().inset(buttonSpacing)
                 make.width.equalTo(customButton.snp.width)
                 make.height.equalTo(38)
             }
             
             customButton.snp.makeConstraints { make in
-                make.trailing.equalToSuperview().inset(buttonSpacing)
+                make.trailing.bottom.equalToSuperview().inset(buttonSpacing)
                 make.leading.equalTo(cancelButton.snp.trailing).offset(buttonSpacing)
-                make.bottom.equalToSuperview().inset(12)
                 make.height.equalTo(cancelButton.snp.height)
             }
 
         case .titleDescriptionSingleButton, .networkErr:
             cancelButton.snp.makeConstraints { make in
                 make.top.equalTo(lastLabel.snp.bottom).offset(buttonTopSpacing)
-                make.leading.trailing.equalToSuperview().inset(7)
-                make.bottom.equalToSuperview().inset(12)
+                make.leading.trailing.bottom.equalToSuperview().inset(7)
                 make.height.equalTo(38)
             }
         }
