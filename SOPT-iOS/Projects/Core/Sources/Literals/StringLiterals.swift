@@ -381,18 +381,20 @@ public struct I18N {
     }
     
     public struct MyPage {
-        public static let navigationTitle = "마이페이지"
-        
+        public static let title = "마이페이지"
+        public static let editProfile = "프로필 수정"
+        public static let checkSoptlog = "마이 솝트로그 확인하기"
+
         public struct ServicePolicySection {
             public static let title = "서비스 이용 방침"
             public static let privacyPolicy = "개인정보 처리 방침"
             public static let termsOfUse = "서비스 이용 약관"
             public static let sendFeedback = "의견 보내기"
         }
-        
+
         public struct NotificationSection {
             public static let title = "알림 설정"
-            public static let setNotification = "알림 설정하기"
+            public static let setNotification = "알림"
         }
         
         public struct SoptampSection {

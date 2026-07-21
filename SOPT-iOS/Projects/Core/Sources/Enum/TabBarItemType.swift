@@ -12,7 +12,7 @@ public enum TabBarItemType: CaseIterable {
     case home
     case soptamp
     case poke
-    case soptlog
+    case mypage
 }
 
 public extension TabBarItemType {
@@ -20,7 +20,7 @@ public extension TabBarItemType {
         switch self {
         case .home: return .clickNaviHome
         case .soptamp: return .clickNaviSoptamp
-        case .soptlog: return .clickNaviSoptlog
+        case .mypage: return .clickNaviMyPage
         case .poke: return .clickNaviPoke
         }
     }

@@ -36,8 +36,8 @@ extension ApplicationCoordinator: TabBarCoordinatorDelegate {
         switch destination {
         case .home:
             self.selectedTab(.home)
-        case .soptlog:
-            self.selectedTab(.soptlog)
+        case .mypage:
+            self.selectedTab(.mypage)
         case .poke:
             self.selectedTab(.poke)
         case .soptamp:
@@ -61,15 +61,13 @@ extension ApplicationCoordinator: HomeCoordinatorDelegate {
         switch destination {
         case .attendance:
             runAttendanceFlow()
-        case .setting(let userType):
-            runMyPageFlow(of: userType)
         case .signIn:
             clearChildViewControllers()
             runSignInFlow(by: .rootWindow(animated: true, message: nil))
         case .notification:
             runNotificationFlow()
-        case .soptlog:
-            self.selectedTab(.soptlog)
+        case .mypage:
+            self.selectedTab(.mypage)
         case .appService(let type):
             // 임시
             runSoptletterOnboardingFlow()
@@ -149,6 +147,6 @@ extension ApplicationCoordinator {
         self.homeNavigationController.viewControllers.removeAll()
         self.stampNavigationController.viewControllers.removeAll()
         self.pokeNavigationController.viewControllers.removeAll()
-        self.soptlogNavigationController.viewControllers.removeAll()
+        self.mypageNavigationController.viewControllers.removeAll()
     }
 }

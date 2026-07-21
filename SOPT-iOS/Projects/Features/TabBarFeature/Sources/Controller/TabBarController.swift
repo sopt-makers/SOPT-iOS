@@ -134,7 +134,7 @@ extension TabBarController {
         UITabBar.clearShadow()
         view.tintColor = .white
         tabBar.backgroundColor = DSKitAsset.Colors.gray800.color
-        
+
         tabBar.layer.cornerRadius = 20
         tabBar.layer.masksToBounds = true
         tabBar.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]

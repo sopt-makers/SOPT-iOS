@@ -22,6 +22,8 @@ public protocol MyPageRoutingTrigger {
     var onShowLogout: (() -> Void)? { get set }
     var onAlertButtonTap: ((String) -> Void)? { get set }
     var onResetSoptampTap: (() -> Void)? { get set }
+    var onShowSoptlog: (() -> Void)? { get set }
+    var onEditProfileTap: (() -> Void)? { get set }
 }
 
 public typealias MyPageViewModelType = MyPageRoutingTrigger & ViewModelType
