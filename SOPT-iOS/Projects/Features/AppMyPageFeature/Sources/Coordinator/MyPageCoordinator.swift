@@ -68,6 +68,30 @@ public final class MyPageCoordinator: BaseCoordinator {
             self.delegate?.myPageCoordinator(self, to: .signIn)
         }
 
+        myPage.vm.onLogoutTap = { confirmed in
+            AlertUtils.presentAlertVC(
+                type: .titleDescription,
+                theme: .main,
+                title: I18N.MyPage.logoutDialogTitle,
+                description: I18N.MyPage.logoutDialogDescription,
+                customButtonTitle: I18N.MyPage.logoutDialogGrantButtonTitle,
+                customAction: confirmed,
+                animated: true
+            )
+        }
+
+        myPage.vm.onResetSoptampTap = { confirmed in
+            AlertUtils.presentAlertVC(
+                type: .titleDescription,
+                theme: .main,
+                title: I18N.MyPage.resetMissionTitle,
+                description: I18N.MyPage.resetMissionDescription,
+                customButtonTitle: I18N.MyPage.reset,
+                customAction: confirmed,
+                animated: true
+            )
+        }
+
         myPage.vm.onEditProfileTap = { [weak self] in
             guard let self, let url = URL(string: ExternalURL.Playground.editProfile) else { return }
             let webView = SOPTWebView(startWith: url)
