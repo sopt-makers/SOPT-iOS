@@ -18,8 +18,10 @@ public struct MyPageDeepLink: DeepLinkExecutable {
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
 
-        coordinator.runTabBarFlow(initSelectedTabType: .mypage)
-
+        Task { [weak coordinator] in
+            await coordinator?.runTabBarFlow(initSelectedTabType: .mypage)
+        }
+        
         return coordinator
     }
 }
