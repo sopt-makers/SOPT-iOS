@@ -412,7 +412,6 @@ public struct I18N {
         }
         
         public static let fetchErrorToast = "잠시 문제가 발생했습니다. 다시 시도해주세요"
-
         public static let resetMissionTitle = "솝탬프 미션을 초기화 하실 건가요?"
         public static let resetMissionDescription = "미션에 등록된 사진, 메모가 삭제되고\n전체 미션이 미완료 상태로 초기화됩니다."
         public static let reset = "초기화"
