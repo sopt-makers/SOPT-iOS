@@ -7,20 +7,21 @@
 //
 
 import Foundation
+
 import BaseFeatureDependency
-import AppMyPageFeature
-import Core
 
 public struct MyPageDeepLink: DeepLinkExecutable {
     public let name = "mypage"
-    public let children: [DeepLinkExecutable] = []
+    public let children: [DeepLinkExecutable] = [SoptlogDeepLink()]
     public var isDestination: Bool = false
-    
+
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
+
+        Task { [weak coordinator] in
+            await coordinator?.runTabBarFlow(initSelectedTabType: .mypage)
+        }
         
-        let userType = UserDefaultKeyList.Auth.getUserType()
-        let myPageCoordinator = coordinator.runMyPageFlow(of: userType)
-        return myPageCoordinator
+        return coordinator
     }
 }
