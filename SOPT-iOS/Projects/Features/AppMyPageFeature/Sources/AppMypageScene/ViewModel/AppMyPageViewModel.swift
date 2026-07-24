@@ -74,7 +74,10 @@ extension AppMyPageViewModel {
         Publishers.Merge(input.viewDidLoad, input.refreshTriggered)
             .withUnretained(self)
             .sink { owner, _ in
-                guard owner.userType != .visitor else { return }
+                guard owner.userType != .visitor else {
+                    output.fetchCompleted.send(())
+                    return
+                }
                 owner.fetchProfileData(output: output)
             }.store(in: cancelBag)
 
