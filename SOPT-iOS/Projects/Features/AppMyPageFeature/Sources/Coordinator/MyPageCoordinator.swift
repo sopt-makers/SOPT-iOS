@@ -130,15 +130,26 @@ public final class MyPageCoordinator: BaseCoordinator {
 
         navigationController?.setViewControllers([myPage.vc], animated: false)
     }
+    
+    private func showWithdrawWebView(_ formUrl: String) {
+        guard let url = URL(string: formUrl) else { return }
+        
+        guard let rootViewController = UIApplication.shared.connectedScenes
+            .compactMap({ ($0 as? UIWindowScene)?.keyWindow })
+            .first?.rootViewController else { return }
+        
+        rootViewController.present(SOPTWebView(startWith: url), animated: true)        
+    }
 
     private func showWithdrawal(userType: UserType) {
         var withdrawal = factory.makeWithdrawalVC(userType: userType)
         
         withdrawal.vc.hidesBottomBarWhenPushed = true
         
-        withdrawal.vm.onWithdrawal = { [weak self] in
+        withdrawal.vm.onWithdrawal = { [weak self] formUrl in
             guard let self else { return }
             self.delegate?.myPageCoordinator(self, to: .signInWithToast)
+            self.showWithdrawWebView(formUrl)
         }
         
         self.navigationController?.pushViewController(withdrawal.vc, animated: true)

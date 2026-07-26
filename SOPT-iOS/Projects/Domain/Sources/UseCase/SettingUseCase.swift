@@ -13,6 +13,7 @@ import Core
 public protocol SettingUseCase {
     func resetStamp()
     func withdrawal()
+    func withdrawalRequest() async throws -> String
     var resetSuccess: PassthroughSubject<Bool, Error> { get set }
     var withdrawalSuccess: PassthroughSubject<Bool, Error> { get set }
 }
@@ -44,5 +45,9 @@ extension DefaultSettingUseCase: SettingUseCase {
             .sink { success in
                 self.resetSuccess.send(success)
             }.store(in: self.cancelBag)
+    }
+    
+    public func withdrawalRequest() async throws -> String {
+        try await repository.withdrawalRequest()
     }
 }

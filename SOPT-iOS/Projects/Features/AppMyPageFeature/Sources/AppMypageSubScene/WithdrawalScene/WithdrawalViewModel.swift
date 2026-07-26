@@ -7,20 +7,24 @@
 //
 
 import Combine
+import Foundation
 
 import Core
 import Domain
+import BaseFeatureDependency
 
 public class WithdrawalViewModel: WithdrawalViewModelType {
     
     // MARK: - Trigger
     
-    public var onWithdrawal: (() -> Void)?
+    public var onWithdrawal: ((String) -> Void)?
     
     // MARK: - Properties
     
     private let useCase: SettingUseCase
     private var cancelBag = CancelBag()
+    
+    private var submitTask: Task<Void, Never>?
     
     // MARK: - Inputs
     
@@ -49,7 +53,15 @@ extension WithdrawalViewModel {
         input.withdrawalButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                owner.useCase.withdrawal()
+                AlertUtils.presentAlertVC(
+                    type: .titleDescription,
+                    theme: .main,
+                    title: I18N.MyPage.withdrawalDialogTitle,
+                    description: I18N.MyPage.withdrawalDialogDescription,
+                    customButtonTitle: I18N.MyPage.EtcSection.withdrawal,
+                    customAction: owner.withdrawRequest,
+                    animated: true
+                )
             }.store(in: cancelBag)
     
         return output
@@ -60,5 +72,20 @@ extension WithdrawalViewModel {
             .sink { success in
                 output.withdrawalSuccessed.send(success)
             }.store(in: self.cancelBag)
+    }
+    
+    private func withdrawRequest() {
+        submitTask = Task {
+            do {
+                let formUrl = try await useCase.withdrawalRequest()
+                await MainActor.run {
+                    onWithdrawal?(formUrl)
+                }
+            } catch {
+                await MainActor.run {
+                    ToastUtils.showMDSToast(type: .alert, text: I18N.Soptletter.submitFailure)
+                }
+            }
+        }
     }
 }

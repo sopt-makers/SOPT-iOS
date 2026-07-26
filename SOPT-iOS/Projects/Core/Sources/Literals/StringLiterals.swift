@@ -419,6 +419,8 @@ public struct I18N {
         public static let logoutDialogTitle = "로그아웃 하실 건가요?"
         public static let logoutDialogDescription = "로그아웃을 해도 언제든 솝트에\n다시 접속할 수 있어요."
         public static let logoutDialogGrantButtonTitle = "로그아웃"
+        public static let withdrawalDialogTitle = "정말 탈퇴하실 건가요?"
+        public static let withdrawalDialogDescription = "탈퇴하면 저장된 정보가 모두 삭제되며\n다시 복구할 수 없어요."
     }
     
     public struct NotificationSettingsByFeature {
