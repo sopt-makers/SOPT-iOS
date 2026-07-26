@@ -246,6 +246,16 @@ extension TabBarController: UITabBarControllerDelegate {
     }
 }
 
+// MARK: - TabBarHidable
+
+extension TabBarController: TabBarHidable {
+    /// 탭바와 FAB(plusButton)를 함께 보이거나 숨긴다.
+    func setTabBarHidden(_ hidden: Bool) {
+        tabBar.isHidden = hidden
+        plusButton.isHidden = hidden
+    }
+}
+
 // MARK: - Animate
 
 extension TabBarController {
