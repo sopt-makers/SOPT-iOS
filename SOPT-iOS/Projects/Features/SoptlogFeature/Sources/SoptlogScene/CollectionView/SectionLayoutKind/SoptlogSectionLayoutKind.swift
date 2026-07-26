@@ -12,25 +12,30 @@ import Core
 
 enum SoptlogSectionLayoutKind: Int, CaseIterable {
     case logo = 0
-//    case soptampLog
+    case soptampLog
     case pokeLog
-    case banner
+//    case banner
 
     var title: String {
         switch self {
-//        case .soptampLog: return I18N.Soptlog.soptamp
+        case .soptampLog: return I18N.Soptlog.soptamp
         case .pokeLog: return I18N.Soptlog.poke
         default: return ""
         }
     }
     
     /// 앱잼 참여 상태에 따라 표시할 섹션 목록
-    static func visibleSections(isAppjamParticipant: Bool) -> [SoptlogSectionLayoutKind] {
+    static func visibleSections(
+        isAppjamParticipant: Bool,
+        isActiveUser: Bool
+    ) -> [SoptlogSectionLayoutKind] {
         var sections: [SoptlogSectionLayoutKind] = [.logo]
-                
-//        sections.append(.soptampLog)
+        
+        if isActiveUser || isAppjamParticipant {
+            sections.append(.soptampLog)
+        }
         sections.append(.pokeLog)
-        sections.append(.banner)
+//        sections.append(.banner)
         
         return sections
     }

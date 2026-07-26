@@ -58,9 +58,9 @@ public final class LegacySoptlogCoordinator: DefaultSoptlogCoordinator {
             self?.showToolTip(toolTipFrame)
         }
         
-        soptlog.vm.onSoptuneTapped = { [weak self] in
-            self?.requestCoordinating?(.dailySoptune)
-        }
+//        soptlog.vm.onSoptuneTapped = { [weak self] in
+//            self?.requestCoordinating?(.dailySoptune)
+//        }
         
         soptlog.vm.onNetworkError = {
             AlertUtils.presentNetworkAlertVC()

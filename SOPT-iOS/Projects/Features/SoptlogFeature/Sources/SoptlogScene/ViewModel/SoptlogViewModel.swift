@@ -23,6 +23,9 @@ public class SoptlogViewModel: SoptlogViewModelType {
     private let coordinator: AnyCoordinatorObject
     private var fetchSoptlogInfoTask: Task<Void, Never>?
     private var cancelBag = CancelBag()
+
+    private let userType: UserType = UserDefaultKeyList.Auth.getUserType()
+    public var isActiveUser: Bool { userType == .active }
     
     // MARK: - Inputs
     
@@ -77,6 +80,7 @@ extension SoptlogViewModel {
             }.store(in: cancelBag)
         
         input.cellTap
+            .filter { $0.section == .soptampLog }
             .withUnretained(self)
             .sink { owner, tapInfo in
                 if tapInfo.row == 0 {
@@ -102,13 +106,13 @@ extension SoptlogViewModel {
                 }
             }.store(in: cancelBag)
         
-        input.cellTap
-            .filter{ $0.section == .banner }
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onSoptuneTapped?()
-                AmplitudeInstance.shared.trackWithUserType(event: .clickSoptlogSoptune)
-            }.store(in: cancelBag)
+//        input.cellTap
+//            .filter{ $0.section == .banner }
+//            .withUnretained(self)
+//            .sink { owner, _ in
+//                owner.onSoptuneTapped?()
+//                AmplitudeInstance.shared.trackWithUserType(event: .clickSoptlogSoptune)
+//            }.store(in: cancelBag)
         
         input.toolTipButtonTap
             .withUnretained(self)

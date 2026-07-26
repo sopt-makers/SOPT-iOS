@@ -29,7 +29,8 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     
     private var visibleSections: [SoptlogSectionLayoutKind] {
         SoptlogSectionLayoutKind.visibleSections(
-            isAppjamParticipant: soptlogInfo?.isAppjamParticipant ?? false
+            isAppjamParticipant: soptlogInfo?.isAppjamParticipant ?? false,
+            isActiveUser: viewModel.isActiveUser
         )
     }
     
@@ -175,12 +176,12 @@ extension SoptlogVC: UICollectionViewDataSource {
         switch sectionType {
         case .logo:
             return 1
-//        case .soptampLog:
-//            return info.soptampMenus.count
+        case .soptampLog:
+            return info.soptampMenus.count
         case .pokeLog:
             return isPokeEmpty ? 1 : info.pokeMenus.count
-        case .banner:
-            return 1
+//        case .banner:
+//            return 1
         }
     }
     
@@ -194,8 +195,8 @@ extension SoptlogVC: UICollectionViewDataSource {
         case .logo:
             return configureLogoCell(at: indexPath)
             
-//        case .soptampLog:
-//            return configureMenuCell(at: indexPath, with: info.soptampMenus)
+        case .soptampLog:
+            return configureMenuCell(at: indexPath, with: info.soptampMenus)
             
         case .pokeLog:
             if isPokeEmpty {
@@ -204,8 +205,8 @@ extension SoptlogVC: UICollectionViewDataSource {
                 return configureMenuCell(at: indexPath, with: info.pokeMenus)
             }
             
-        case .banner:
-            return configureBannerCell(at: indexPath, title: info.alarm.todayFortuneText)
+//        case .banner:
+//            return configureBannerCell(at: indexPath, title: info.alarm.todayFortuneText)
         }
     }
     
@@ -228,18 +229,18 @@ extension SoptlogVC: UICollectionViewDataSource {
             headerView.configure(title: title)
             return headerView
             
-        case UICollectionView.elementKindSectionFooter:
-            guard sectionType == .banner,
-                  let footerView = collectionView.dequeueReusableSupplementaryView(
-                    ofKind: kind,
-                    withReuseIdentifier: SoptlogImageFooterReusableView.className,
-                    for: indexPath
-                  ) as? SoptlogImageFooterReusableView else {
-                return UICollectionReusableView()
-            }
-            
-            footerView.configure(image: DSKitAsset.Assets.bottomSoptlog.image)
-            return footerView
+//        case UICollectionView.elementKindSectionFooter:
+//            guard sectionType == .banner,
+//                  let footerView = collectionView.dequeueReusableSupplementaryView(
+//                    ofKind: kind,
+//                    withReuseIdentifier: SoptlogImageFooterReusableView.className,
+//                    for: indexPath
+//                  ) as? SoptlogImageFooterReusableView else {
+//                return UICollectionReusableView()
+//            }
+//            
+//            footerView.configure(image: DSKitAsset.Assets.bottomSoptlog.image)
+//            return footerView
             
         default:
             return UICollectionReusableView()
