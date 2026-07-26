@@ -29,6 +29,7 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     
     private var visibleSections: [SoptlogSectionLayoutKind] {
         SoptlogSectionLayoutKind.visibleSections(
+            isAppjamParticipant: soptlogInfo?.isAppjamParticipant ?? false,
             isActiveUser: viewModel.isActiveUser
         )
     }
