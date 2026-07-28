@@ -17,7 +17,8 @@ public class WithdrawalViewModel: WithdrawalViewModelType {
     
     // MARK: - Trigger
     
-    public var onWithdrawal: ((String) -> Void)?
+    public var onWithdrawal: (@MainActor (String) -> Void)?
+    public var onWithdrawalConfirm: ((_ completion: @escaping ()->()) -> Void)?
     
     // MARK: - Properties
     
@@ -43,6 +44,10 @@ public class WithdrawalViewModel: WithdrawalViewModelType {
     public init(useCase: SettingUseCase) {
         self.useCase = useCase
     }
+
+    deinit {
+        submitTask?.cancel()
+    }
 }
 
 extension WithdrawalViewModel {
@@ -53,15 +58,7 @@ extension WithdrawalViewModel {
         input.withdrawalButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                AlertUtils.presentAlertVC(
-                    type: .titleDescription,
-                    theme: .main,
-                    title: I18N.MyPage.withdrawalDialogTitle,
-                    description: I18N.MyPage.withdrawalDialogDescription,
-                    customButtonTitle: I18N.MyPage.EtcSection.withdrawal,
-                    customAction: owner.withdrawRequest,
-                    animated: true
-                )
+                owner.onWithdrawalConfirm?(owner.withdrawRequest)
             }.store(in: cancelBag)
     
         return output
@@ -75,13 +72,17 @@ extension WithdrawalViewModel {
     }
     
     private func withdrawRequest() {
-        submitTask = Task {
+        submitTask?.cancel()
+        submitTask = Task { [weak self] in
+            guard let self else { return }
             do {
-                let formUrl = try await useCase.withdrawalRequest()
-                await MainActor.run {
-                    onWithdrawal?(formUrl)
-                }
+                let formUrl = try await self.useCase.withdrawalRequest()
+                guard !Task.isCancelled else { return }
+                await self.onWithdrawal?(formUrl)
+            } catch is CancellationError {
+                return
             } catch {
+                guard !Task.isCancelled else { return }
                 await MainActor.run {
                     ToastUtils.showMDSToast(type: .alert, text: I18N.Soptletter.submitFailure)
                 }

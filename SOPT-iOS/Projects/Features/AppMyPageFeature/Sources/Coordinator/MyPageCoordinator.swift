@@ -143,13 +143,24 @@ public final class MyPageCoordinator: BaseCoordinator {
 
     private func showWithdrawal(userType: UserType) {
         var withdrawal = factory.makeWithdrawalVC(userType: userType)
-        
         withdrawal.vc.hidesBottomBarWhenPushed = true
         
         withdrawal.vm.onWithdrawal = { [weak self] formUrl in
             guard let self else { return }
-            self.delegate?.myPageCoordinator(self, to: .signInWithToast)
+            self.delegate?.myPageCoordinator(self, to: .signIn)
             self.showWithdrawWebView(formUrl)
+        }
+        
+        withdrawal.vm.onWithdrawalConfirm = { completion  in
+            AlertUtils.presentAlertVC(
+                type: .titleDescription,
+                theme: .main,
+                title: I18N.MyPage.withdrawalDialogTitle,
+                description: I18N.MyPage.withdrawalDialogDescription,
+                customButtonTitle: I18N.MyPage.EtcSection.withdrawal,
+                customAction: completion,
+                animated: true
+            )
         }
         
         self.navigationController?.pushViewController(withdrawal.vc, animated: true)

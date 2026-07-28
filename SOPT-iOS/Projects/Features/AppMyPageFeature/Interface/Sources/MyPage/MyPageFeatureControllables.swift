@@ -10,7 +10,8 @@ import UIKit
 import Core
 
 public protocol WithdrawalViewCoordinatable {
-    var onWithdrawal: ((String) -> Void)? { get set }
+    var onWithdrawal: (@MainActor (String) -> Void)? { get set }
+    var onWithdrawalConfirm: ((_ completion: @escaping ()->())->Void)? { get set }
 }
 
 public typealias WithdrawalViewModelType = ViewModelType & WithdrawalViewCoordinatable
