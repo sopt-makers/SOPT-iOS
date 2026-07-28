@@ -52,7 +52,7 @@ public class WithdrawalVC: UIViewController, LegacyWithdrawalViewControllable {
     
     private let cautionLabel = UILabel().then {
         $0.text = I18N.Setting.Withdrawal.caution
-        $0.textColor = DSKitAsset.Colors.white.color
+        $0.textColor = DSKitAsset.Colors.gray50.color
         $0.textAlignment = .center
         $0.numberOfLines = 1
         $0.font = DSKitFontFamily.Suit.semiBold.font(size: 18)
@@ -73,7 +73,6 @@ public class WithdrawalVC: UIViewController, LegacyWithdrawalViewControllable {
         $0.textAlignment = .left
         $0.numberOfLines = 0
         $0.font = DSKitFontFamily.Suit.regular.font(size: 14)
-        $0.setLineSpacing(lineSpacing: 6)
     }
     
     private lazy var withdrawalButton = AppCustomButton(title: I18N.Setting.Withdrawal.withdrawal)
@@ -128,14 +127,14 @@ extension WithdrawalVC {
         }
         
         noticeCardView.snp.makeConstraints { make in
-            make.top.equalTo(naviBar.snp.bottom).offset(24)
+            make.top.equalTo(naviBar.snp.bottom).offset(16)
             make.leading.trailing.equalToSuperview().inset(20)
         }
         
         warningIconImageView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(40.adjusted)
+            make.top.equalToSuperview().offset(28)
             make.centerX.equalToSuperview()
-            make.size.equalTo(48.adjusted)
+            make.size.equalTo(64)
         }
         
         cautionLabel.snp.makeConstraints { make in
@@ -149,15 +148,14 @@ extension WithdrawalVC {
         }
         
         secondGuideLabel.snp.makeConstraints { make in
-            make.top.equalTo(guideLabel.snp.bottom).offset(4)
+            make.top.equalTo(guideLabel.snp.bottom).offset(2)
             make.leading.trailing.equalToSuperview().inset(20)
-            make.bottom.equalToSuperview().inset(40.adjusted)
+            make.bottom.equalToSuperview().inset(40)
         }
         
         withdrawalButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.height.equalTo(56.adjusted)
-            make.width.equalTo(335.adjusted)
+            make.height.equalTo(56)
+            make.horizontalEdges.equalToSuperview().inset(20)
             make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
         }
     }
