@@ -133,11 +133,14 @@ public final class MyPageCoordinator: BaseCoordinator {
 
     private func showWithdrawal(userType: UserType) {
         var withdrawal = factory.makeWithdrawalVC(userType: userType)
+        
+        withdrawal.vc.hidesBottomBarWhenPushed = true
+        
         withdrawal.vm.onWithdrawal = { [weak self] in
             guard let self else { return }
             self.delegate?.myPageCoordinator(self, to: .signInWithToast)
         }
-
+        
         self.navigationController?.pushViewController(withdrawal.vc, animated: true)
     }
 
