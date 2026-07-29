@@ -157,6 +157,7 @@ extension SoptletterMainViewModel {
         fetchMessageTask = Task {
             do {                
                 let result = try await useCase.fetchSoptletterMessages(topicId: topicId, cursor: nil, size: nil)
+                try Task.checkCancellation()
                 await MainActor.run {
                     output.soptletterMessages.send(result)
                 }
@@ -178,6 +179,7 @@ extension SoptletterMainViewModel {
         fetchCTATask = Task {
             do {
                 let result = try await useCase.fetchCTA()
+                try Task.checkCancellation()
                 await MainActor.run {
                     output.ctaInfo.send(result)
                 }
@@ -196,10 +198,19 @@ extension SoptletterMainViewModel {
         fetchReportFormTask = Task {
             do {
                 let result = try await useCase.fetchReportForm()
-                guard let url = URL(string: result.reportFormUrl) else {
+                try Task.checkCancellation()
+
+                guard
+                    let url = URL(string: result.reportFormUrl),
+                    url.scheme?.lowercased() == "https",
+                    let host = url.host,
+                    !host.isEmpty
+                else {
                     await onError?()
                     return
                 }
+
+                try Task.checkCancellation()
                 await onReportTap?(url)
             } catch is CancellationError {
                 return
