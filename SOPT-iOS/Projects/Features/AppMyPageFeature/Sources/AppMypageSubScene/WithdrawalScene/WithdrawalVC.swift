@@ -46,7 +46,7 @@ public class WithdrawalVC: UIViewController, LegacyWithdrawalViewControllable {
     
     private let warningIconImageView = UIImageView().then {
         $0.image = DSKitAsset.Assets.caution.image
-        $0.tintColor = DSKitAsset.Colors.red900.color
+        $0.tintColor = DSKitAsset.Colors.error.color
         $0.contentMode = .scaleAspectFit
     }
     
@@ -64,7 +64,6 @@ public class WithdrawalVC: UIViewController, LegacyWithdrawalViewControllable {
         $0.textAlignment = .left
         $0.numberOfLines = 0
         $0.font = DSKitFontFamily.Suit.regular.font(size: 14)
-        $0.setLineSpacing(lineSpacing: 6)
     }
     
     private let secondGuideLabel = UILabel().then {
@@ -97,16 +96,6 @@ public class WithdrawalVC: UIViewController, LegacyWithdrawalViewControllable {
         self.setUI()
         self.setLayout()
         self.bindViewModels()
-    }
-    
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        (self.tabBarController as? TabBarHidable)?.setTabBarHidden(true)
-    }
-    
-    public override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        (self.tabBarController as? TabBarHidable)?.setTabBarHidden(false)
     }
 }
 

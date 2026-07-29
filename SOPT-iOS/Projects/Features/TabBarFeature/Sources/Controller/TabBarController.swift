@@ -29,6 +29,8 @@ final class TabBarController: UITabBarController {
 
     private lazy var isFABTapped = plusButton.publisher(for: .touchUpInside).mapVoid().asDriver()
     
+    private var tabBarHiddenObservation: NSKeyValueObservation?
+    
     // MARK: - UI Components
     
     private let plusButton = UIButton().then {
@@ -87,6 +89,7 @@ final class TabBarController: UITabBarController {
         configureTabBarItem()
         
         setDelegate()
+        observeTabBarHidden()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -246,16 +249,6 @@ extension TabBarController: UITabBarControllerDelegate {
     }
 }
 
-// MARK: - TabBarHidable
-
-extension TabBarController: TabBarHidable {
-    /// 탭바와 FAB(plusButton)를 함께 보이거나 숨긴다.
-    func setTabBarHidden(_ hidden: Bool) {
-        tabBar.isHidden = hidden
-        plusButton.isHidden = hidden
-    }
-}
-
 // MARK: - Animate
 
 extension TabBarController {
@@ -395,5 +388,16 @@ extension TabBarController: UICollectionViewDelegate, UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let url = fabMenuSections[indexPath.section].items[indexPath.item].url
         self.isMenuCellTapped.send(url)
+    }
+}
+
+// MARK: - Observe TabBar
+
+extension TabBarController {
+    private func observeTabBarHidden() {
+        tabBarHiddenObservation = tabBar.observe(\.isHidden, options: [.new, .initial]) { [weak self] tabBar, change in
+            guard let isHidden = change.newValue else { return }
+            self?.plusButton.isHidden = isHidden
+        }
     }
 }
