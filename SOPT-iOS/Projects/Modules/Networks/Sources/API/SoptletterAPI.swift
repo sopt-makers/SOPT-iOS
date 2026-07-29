@@ -24,6 +24,7 @@ public enum SoptletterAPI {
     case unlikeMessage(messageId: Int, topicId: Int)
     case fetchCTA
     case fetchDefaultTopic
+    case fetchReportForm
 }
 
 extension SoptletterAPI: BaseAPI {
@@ -49,14 +50,16 @@ extension SoptletterAPI: BaseAPI {
             return "/cta"
         case .fetchDefaultTopic:
             return "/topics/default/messages"
+        case .fetchReportForm:
+            return "/report-form"
         }
     }
-    
+
     public var method: Moya.Method {
         switch self {
         case .writeMessage, .completeOnboarding, .likeMessage:
             return .post
-        case .fetchTopics, .fetchTopic, .fetchProfile, .soptletterMessages, .soptletterMessage, .fetchCTA, .fetchDefaultTopic:
+        case .fetchTopics, .fetchTopic, .fetchProfile, .soptletterMessages, .soptletterMessage, .fetchCTA, .fetchDefaultTopic, .fetchReportForm:
             return .get
         case .editMessage:
             return .patch
@@ -64,14 +67,14 @@ extension SoptletterAPI: BaseAPI {
             return .delete
         }
     }
-    
+
     public var task: Moya.Task {
         switch self {
         case .writeMessage(_, let content):
                 return .requestParameters(parameters: ["content": content], encoding: JSONEncoding.default)
         case let .editMessage(_, _, content):
                 return .requestParameters(parameters: ["content": content], encoding: JSONEncoding.default)
-        case .fetchTopics, .fetchTopic, .completeOnboarding, .fetchProfile, .soptletterMessages, .soptletterMessage, .deleteMessage, .likeMessage, .unlikeMessage, .fetchCTA, .fetchDefaultTopic:
+        case .fetchTopics, .fetchTopic, .completeOnboarding, .fetchProfile, .soptletterMessages, .soptletterMessage, .deleteMessage, .likeMessage, .unlikeMessage, .fetchCTA, .fetchDefaultTopic, .fetchReportForm:
                 return .requestPlain
         }
     }

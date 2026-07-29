@@ -26,6 +26,7 @@ public protocol SoptletterService {
     func unlikeMessage(messageId: Int, topicId: Int) async throws
     func fetchCTA() async throws -> SoptletterCTAResponse
     func fetchDefaultTopic() async throws -> SoptletterItemResponseEntity
+    func fetchReportForm() async throws -> SoptletterReportFormResponse
 }
 
 extension DefaultSoptletterService: SoptletterService {
@@ -35,6 +36,10 @@ extension DefaultSoptletterService: SoptletterService {
     
     public func fetchCTA() async throws -> SoptletterCTAResponse {
         return try await requestObjectAsync(.fetchCTA)
+    }
+
+    public func fetchReportForm() async throws -> SoptletterReportFormResponse {
+        return try await requestObjectAsync(.fetchReportForm)
     }
     
     public func likeMessage(messageId: Int, topicId: Int) async throws {

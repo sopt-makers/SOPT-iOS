@@ -20,4 +20,5 @@ public protocol SoptletterRepositoryInterface {
     func unlikeMessage(messageId: Int, topicId: Int) async throws
     func fetchCTA() async throws -> SoptletterCTAModel
     func fetchDefaultTopic() async throws -> SoptletterItemModel
+    func fetchReportForm() async throws -> SoptletterReportFormModel
 }
