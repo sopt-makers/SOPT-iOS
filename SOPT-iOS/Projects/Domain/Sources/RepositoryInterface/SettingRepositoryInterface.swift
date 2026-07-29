@@ -14,4 +14,5 @@ public protocol SettingRepositoryInterface {
     func resetStamp() -> Driver<Bool>
     func editSentence(sentence: String) -> AnyPublisher<Bool, Never>
     func withdrawal() -> AnyPublisher<Bool, Never>
+    func withdrawalRequest() async throws -> String
 }

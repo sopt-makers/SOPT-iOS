@@ -118,7 +118,7 @@ extension SOPTWebView {
             .signalForClickLeftButton()
             .sink { [weak self] _ in
                 guard self?.webView.canGoBack == true else {
-                    self?.navigationController?.popViewController(animated: true)
+                    self?.closeWebView()
                     return
                 }
                     
@@ -128,8 +128,16 @@ extension SOPTWebView {
         self.navigationBar
             .signalForClickRightButton()
             .sink { [weak self] _ in
-                self?.navigationController?.popViewController(animated: true)
+                self?.closeWebView()
             }.store(in: self.cancelbag)
+    }
+    
+    private func closeWebView() {
+        if let navigationController, navigationController.viewControllers.first !== self {
+            navigationController.popViewController(animated: true)
+        } else {
+            self.dismiss(animated: true)
+        }
     }
     
     private func setDelegate() {

@@ -19,6 +19,7 @@ public protocol UserService {
     func editSentence(sentence: String) -> AnyPublisher<EditSentenceEntity, Error>
     func getUserMainInfo() -> AnyPublisher<MainEntity, Error>
     func withdraw() -> AnyPublisher<Int, Error>
+    func withdrawRequest() async throws -> WithdrawFormEntity
     func registerPushToken(with token: String) -> AnyPublisher<Int, Error>
     func deregisterPushToken(with token: String) -> AnyPublisher<Int, Error>
     func fetchActiveGenerationStatus() -> AnyPublisher<UsersActiveGenerationStatusEntity, Error>
@@ -46,6 +47,10 @@ extension DefaultUserService: UserService {
     
     public func withdraw() -> AnyPublisher<Int, Error> {
         requestObjectInCombineNoResult(.withdrawal)
+    }
+    
+    public func withdrawRequest() async throws -> WithdrawFormEntity {
+        return try await requestObjectAsync(.withdrawalRequest)
     }
     
     public func registerPushToken(with token: String) -> AnyPublisher<Int, Error> {

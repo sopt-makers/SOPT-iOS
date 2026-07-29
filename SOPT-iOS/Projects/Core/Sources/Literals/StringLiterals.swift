@@ -204,7 +204,7 @@ public struct I18N {
         public struct Withdrawal {
             public static let withdrawal = "탈퇴하기"
             public static let caution = "탈퇴 시 유의사항"
-            public static let guide1 = "회원 탈퇴를 신청하시면 해당 이메일은 즉시 탈퇴 처리됩니다."
+            public static let guide1 = "회원 탈퇴를 신청하시면 해당 이메일은 즉시 탈퇴 처리\n됩니다."
             public static let guide2 = "탈퇴 처리 시 계정 내에서 입력했던 정보는 영구적으로 삭제되며, 복구가 어렵습니다."
             public static let withdrawalSuccess = "탈퇴처리 되었습니다"
         }
@@ -419,6 +419,8 @@ public struct I18N {
         public static let logoutDialogTitle = "로그아웃 하실 건가요?"
         public static let logoutDialogDescription = "로그아웃을 해도 언제든 솝트에\n다시 접속할 수 있어요."
         public static let logoutDialogGrantButtonTitle = "로그아웃"
+        public static let withdrawalDialogTitle = "정말 탈퇴하실 건가요?"
+        public static let withdrawalDialogDescription = "탈퇴하면 저장된 정보가 모두 삭제되며\n다시 복구할 수 없어요."
     }
     
     public struct NotificationSettingsByFeature {

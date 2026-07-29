@@ -7,20 +7,25 @@
 //
 
 import Combine
+import Foundation
 
 import Core
 import Domain
+import BaseFeatureDependency
 
 public class WithdrawalViewModel: WithdrawalViewModelType {
     
     // MARK: - Trigger
     
-    public var onWithdrawal: (() -> Void)?
+    public var onWithdrawal: (@MainActor (String) -> Void)?
+    public var onWithdrawalConfirm: ((_ completion: @escaping ()->()) -> Void)?
     
     // MARK: - Properties
     
     private let useCase: SettingUseCase
     private var cancelBag = CancelBag()
+    
+    private var submitTask: Task<Void, Never>?
     
     // MARK: - Inputs
     
@@ -39,6 +44,10 @@ public class WithdrawalViewModel: WithdrawalViewModelType {
     public init(useCase: SettingUseCase) {
         self.useCase = useCase
     }
+
+    deinit {
+        submitTask?.cancel()
+    }
 }
 
 extension WithdrawalViewModel {
@@ -49,7 +58,7 @@ extension WithdrawalViewModel {
         input.withdrawalButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                owner.useCase.withdrawal()
+                owner.onWithdrawalConfirm?(owner.withdrawRequest)
             }.store(in: cancelBag)
     
         return output
@@ -60,5 +69,24 @@ extension WithdrawalViewModel {
             .sink { success in
                 output.withdrawalSuccessed.send(success)
             }.store(in: self.cancelBag)
+    }
+    
+    private func withdrawRequest() {
+        submitTask?.cancel()
+        submitTask = Task { [weak self] in
+            guard let self else { return }
+            do {
+                let formUrl = try await self.useCase.withdrawalRequest()
+                guard !Task.isCancelled else { return }
+                await self.onWithdrawal?(formUrl)
+            } catch is CancellationError {
+                return
+            } catch {
+                guard !Task.isCancelled else { return }
+                await MainActor.run {
+                    ToastUtils.showMDSToast(type: .alert, text: I18N.Soptletter.submitFailure)
+                }
+            }
+        }
     }
 }

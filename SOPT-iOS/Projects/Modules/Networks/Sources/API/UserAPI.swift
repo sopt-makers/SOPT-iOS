@@ -17,6 +17,7 @@ public enum UserAPI {
     case editSentence(sentence: String)
     case getUserMainInfo
     case withdrawal
+    case withdrawalRequest
     case registerPushToken(token: String)
     case deregisterPushToken(token: String)
     case fetchActiveGenerationStatus
@@ -57,6 +58,8 @@ extension UserAPI: BaseAPI {
             return "my-sopt-log"
         case .fetchAppjamInfo:
             return "appjam-info"
+        case .withdrawalRequest:
+            return "/withdraw"
         }
     }
     
@@ -69,7 +72,7 @@ extension UserAPI: BaseAPI {
             return .patch
         case .withdrawal:
             return .delete
-        case .registerPushToken:
+        case .registerPushToken, .withdrawalRequest:
            return .post
         case .deregisterPushToken:
             return .delete
