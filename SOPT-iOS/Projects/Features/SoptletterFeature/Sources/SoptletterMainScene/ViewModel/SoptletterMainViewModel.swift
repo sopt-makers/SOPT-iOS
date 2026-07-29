@@ -45,6 +45,7 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     private var soptletterTitle: String = ""
     private var fetchMessageTask: Task<Void, Never>?
     private var fetchCTATask: Task<Void, Never>?
+    private var fetchReportFormTask: Task<Void, Never>?
     private var topicId: Int?
     
     private var cancelBag = CancelBag()
@@ -53,7 +54,7 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     public var onWriteTap: (() -> Void)?
     public var onPostItTap: (() -> Void)?
     public var onDownloadTap: ((String, UIImage, URL) -> Void)?
-    public var onReportTap: (() -> Void)?
+    public var onReportTap: (@MainActor (URL) -> Void)?
     public var onMenuTap: (() -> Void)?
     public var onCellTap: ((Int, Int) -> Void)?
     public var onError: (@MainActor () -> Void)?
@@ -131,7 +132,7 @@ extension SoptletterMainViewModel {
         input.reportButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onReportTap?()
+                owner.fetchReportForm()
             }.store(in: cancelBag)
         
         input.postItCellTap
@@ -156,6 +157,7 @@ extension SoptletterMainViewModel {
         fetchMessageTask = Task {
             do {                
                 let result = try await useCase.fetchSoptletterMessages(topicId: topicId, cursor: nil, size: nil)
+                try Task.checkCancellation()
                 await MainActor.run {
                     output.soptletterMessages.send(result)
                 }
@@ -177,6 +179,7 @@ extension SoptletterMainViewModel {
         fetchCTATask = Task {
             do {
                 let result = try await useCase.fetchCTA()
+                try Task.checkCancellation()
                 await MainActor.run {
                     output.ctaInfo.send(result)
                 }
@@ -190,6 +193,33 @@ extension SoptletterMainViewModel {
         }
     }
     
+    public func fetchReportForm() {
+        fetchReportFormTask?.cancel()
+        fetchReportFormTask = Task {
+            do {
+                let result = try await useCase.fetchReportForm()
+                try Task.checkCancellation()
+
+                guard
+                    let url = URL(string: result.reportFormUrl),
+                    url.scheme?.lowercased() == "https",
+                    let host = url.host,
+                    !host.isEmpty
+                else {
+                    await onError?()
+                    return
+                }
+
+                try Task.checkCancellation()
+                await onReportTap?(url)
+            } catch is CancellationError {
+                return
+            } catch {
+                await onError?()
+            }
+        }
+    }
+
     public func refreshMessagesTrigger() {
         refreshTriggerSubject.send()
     }

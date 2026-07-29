@@ -17,7 +17,7 @@ public protocol SoptletterMainRoutingTrigger {
     var onPostItTap: (() -> Void)? { get set }
     var onWriteTap: (() -> Void)? { get set }
     var onDownloadTap: ((String, UIImage, URL) -> Void)? { get set }
-    var onReportTap: (() -> Void)? { get set }
+    var onReportTap: (@MainActor (URL) -> Void)? { get set }
     var onMenuTap: (() -> Void)? { get set }
     var onCellTap: ((Int, Int) -> Void)? { get set }
     var onError: (@MainActor () -> Void)? { get set }

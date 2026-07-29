@@ -115,8 +115,9 @@ public final class SoptletterCoordinator: BaseCoordinator {
             self?.showSelectTopic()
         }
         
-        soptletterMain.vm.onReportTap = { [weak self] in
-            self?.showReportForm()
+        soptletterMain.vm.onReportTap = { [weak self] url in
+            let webView = SOPTWebView(startWith: url)
+            self?.soptletterRootController?.pushViewController(webView, animated: true)
         }
         
         soptletterMain.vm.onDownloadTap = { [weak self] fileName, image, pdfURL in
@@ -145,14 +146,6 @@ public final class SoptletterCoordinator: BaseCoordinator {
             self.soptletterRootController = navController
             navigationController?.present(navController, animated: true)
         }
-    }
-    
-    // MARK: - sopt-letter/report-form API 연결 필요
-    
-    private func showReportForm() {
-        guard let url = URL(string: "https://forms.gle/jkQWs2e6YMkg7HSg8") else { return }
-        let webView = SOPTWebView(startWith: url)
-        soptletterRootController?.pushViewController(webView, animated: true)
     }
     
     private func showSoptletterPrint(_ fileName: String, _ uiImage: UIImage, _ pdfURL: URL) {
