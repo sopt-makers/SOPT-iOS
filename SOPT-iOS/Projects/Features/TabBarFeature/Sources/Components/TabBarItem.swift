@@ -31,9 +31,9 @@ extension TabBarItemType {
         case .home:
             return I18N.Home.title
         case .soptamp:
-            return I18N.Soptlog.soptamp
+            return I18N.Soptamp.title
         case .poke:
-            return I18N.Soptlog.poke
+            return I18N.Poke.title
         case .mypage:
             return I18N.MyPage.title
         }
