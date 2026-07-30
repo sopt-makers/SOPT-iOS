@@ -107,6 +107,16 @@ extension HomeDefaultHeaderView {
 
 extension HomeDefaultHeaderView {
     func configureView(sectionKind: some HomeSectionUIConfigurable) {
+        let tintColor = sectionKind.shouldPlaceViewAllButtonNextToTitle
+            ? DSKitAsset.Colors.white.color
+            : DSKitAsset.Colors.gray300.color
+        
+        var config = viewAllContentButton.configuration
+        config?.image = DSKitAsset.Assets.icChevronRight.image
+            .withTintColor(tintColor)
+            .preparingThumbnail(of: .init(width: 16, height: 16))
+        viewAllContentButton.configuration = config
+        
         self.titleLabel.text = sectionKind.headerTitle
         self.fireImageView.isHidden = !sectionKind.shouldShowFireIcon
         self.viewAllContentButton.isHidden = !sectionKind.shouldShowViewAllContentButton
@@ -124,6 +134,17 @@ extension HomeDefaultHeaderView {
             titleLabel.snp.remakeConstraints { make in
                 make.leading.equalToSuperview()
                 make.centerY.equalToSuperview()
+            }
+        }
+        
+        if sectionKind.shouldPlaceViewAllButtonNextToTitle {
+            viewAllContentButton.setTitle("", for: .normal)
+            viewAllContentButton.tintColor = DSKitAsset.Colors.white.color
+            titleLabel.textColor = DSKitAsset.Colors.white.color
+            
+            viewAllContentButton.snp.remakeConstraints { make in
+                make.leading.equalTo(titleLabel.snp.trailing).offset(6)
+                make.centerY.equalTo(titleLabel)
             }
         }
     }
