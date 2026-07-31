@@ -107,14 +107,15 @@ extension HomeDefaultHeaderView {
 
 extension HomeDefaultHeaderView {
     func configureView(sectionKind: some HomeSectionUIConfigurable) {
-        let tintColor = sectionKind.shouldPlaceViewAllButtonNextToTitle
+        let tintColor = sectionKind.isSubSectionHeader
             ? DSKitAsset.Colors.white.color
             : DSKitAsset.Colors.gray300.color
+        let iconSize: CGFloat = sectionKind.isSubSectionHeader ? 20 : 16
         
         var config = viewAllContentButton.configuration
         config?.image = DSKitAsset.Assets.icChevronRight.image
             .withTintColor(tintColor)
-            .preparingThumbnail(of: .init(width: 16, height: 16))
+            .preparingThumbnail(of: .init(width: iconSize, height: iconSize))
         viewAllContentButton.configuration = config
         
         self.titleLabel.text = sectionKind.headerTitle
@@ -122,8 +123,19 @@ extension HomeDefaultHeaderView {
         self.viewAllContentButton.isHidden = !sectionKind.shouldShowViewAllContentButton
 
         if sectionKind.isSubSectionHeader {
+            var config = viewAllContentButton.configuration
+            config?.attributedTitle = AttributedString("")
+            viewAllContentButton.configuration = config
+            viewAllContentButton.tintColor = DSKitAsset.Colors.white.color
+            
+            titleLabel.textColor = DSKitAsset.Colors.white.color
+            
+            viewAllContentButton.snp.remakeConstraints { make in
+                make.leading.equalTo(titleLabel.snp.trailing).offset(6)
+                make.centerY.equalTo(titleLabel)
+            }
             titleLabel.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-            titleLabel.textColor = DSKitAsset.Colors.gray400.color
+            
             titleLabel.snp.remakeConstraints { make in
                 make.leading.equalToSuperview()
                 make.top.equalToSuperview().offset(12)
@@ -134,17 +146,6 @@ extension HomeDefaultHeaderView {
             titleLabel.snp.remakeConstraints { make in
                 make.leading.equalToSuperview()
                 make.centerY.equalToSuperview()
-            }
-        }
-        
-        if sectionKind.shouldPlaceViewAllButtonNextToTitle {
-            viewAllContentButton.setTitle("", for: .normal)
-            viewAllContentButton.tintColor = DSKitAsset.Colors.white.color
-            titleLabel.textColor = DSKitAsset.Colors.white.color
-            
-            viewAllContentButton.snp.remakeConstraints { make in
-                make.leading.equalTo(titleLabel.snp.trailing).offset(6)
-                make.centerY.equalTo(titleLabel)
             }
         }
     }

@@ -48,8 +48,4 @@ extension HomeForMemberSectionLayoutKind: HomeSectionUIConfigurable {
     var isSubSectionHeader: Bool {
         return self == .mainProduct
     }
-    
-    var shouldPlaceViewAllButtonNextToTitle: Bool {
-        return self == .mainProduct
-    }
 }

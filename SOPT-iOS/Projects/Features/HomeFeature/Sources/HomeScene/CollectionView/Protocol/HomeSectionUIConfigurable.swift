@@ -13,7 +13,6 @@ protocol HomeSectionUIConfigurable {
     var shouldShowFireIcon: Bool { get }
     var shouldShowViewAllContentButton: Bool { get }
     var isSubSectionHeader: Bool { get }
-    var shouldPlaceViewAllButtonNextToTitle: Bool { get }
 }
 
 extension HomeSectionUIConfigurable {
