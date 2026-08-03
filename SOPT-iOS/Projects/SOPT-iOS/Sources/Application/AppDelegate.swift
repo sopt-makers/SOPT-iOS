@@ -9,6 +9,7 @@ import UIKit
 
 import BaseFeatureDependency
 import Core
+import MDS
 import Networks
 
 @main
@@ -22,6 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //
         registerDependencies()
         configureAppLifecycleAdapter()
+        FontLoader.registerIfNeeded()
         Firebase.configure()
         Firebase.configureCrashlytics()
         application.registerForRemoteNotifications()
