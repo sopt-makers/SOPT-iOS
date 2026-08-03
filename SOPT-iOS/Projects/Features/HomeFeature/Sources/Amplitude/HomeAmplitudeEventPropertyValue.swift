@@ -18,6 +18,7 @@ enum HomeAmplitudeEventPropertyValue: String, AmplitudeEventPropertyValueConvert
     case homeFAB = "home_fab"
     case app = "app"
     case web = "web"
+    case mainProduct = "main_product"
 
     func toString() -> String {
         self.rawValue

@@ -35,4 +35,8 @@ extension HomeForVisitorSectionLayoutKind: HomeSectionUIConfigurable {
     var shouldShowViewAllContentButton: Bool {
         return false
     }
+    
+    var shouldPlaceViewAllButtonNextToTitle: Bool {
+        return false
+    }
 }

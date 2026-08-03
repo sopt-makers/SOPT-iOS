@@ -107,13 +107,35 @@ extension HomeDefaultHeaderView {
 
 extension HomeDefaultHeaderView {
     func configureView(sectionKind: some HomeSectionUIConfigurable) {
+        let tintColor = sectionKind.isSubSectionHeader
+            ? DSKitAsset.Colors.white.color
+            : DSKitAsset.Colors.gray300.color
+        let iconSize: CGFloat = sectionKind.isSubSectionHeader ? 20 : 16
+        
+        var config = viewAllContentButton.configuration
+        config?.image = DSKitAsset.Assets.icChevronRight.image
+            .withTintColor(tintColor)
+            .preparingThumbnail(of: .init(width: iconSize, height: iconSize))
+        viewAllContentButton.configuration = config
+        
         self.titleLabel.text = sectionKind.headerTitle
         self.fireImageView.isHidden = !sectionKind.shouldShowFireIcon
         self.viewAllContentButton.isHidden = !sectionKind.shouldShowViewAllContentButton
 
         if sectionKind.isSubSectionHeader {
+            var config = viewAllContentButton.configuration
+            config?.attributedTitle = AttributedString("")
+            viewAllContentButton.configuration = config
+            viewAllContentButton.tintColor = DSKitAsset.Colors.white.color
+            
+            titleLabel.textColor = DSKitAsset.Colors.white.color
+            
+            viewAllContentButton.snp.remakeConstraints { make in
+                make.leading.equalTo(titleLabel.snp.trailing).offset(6)
+                make.centerY.equalTo(titleLabel)
+            }
             titleLabel.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-            titleLabel.textColor = DSKitAsset.Colors.gray400.color
+            
             titleLabel.snp.remakeConstraints { make in
                 make.leading.equalToSuperview()
                 make.top.equalToSuperview().offset(12)

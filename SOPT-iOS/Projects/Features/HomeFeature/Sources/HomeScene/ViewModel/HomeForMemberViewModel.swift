@@ -198,8 +198,24 @@ extension HomeForMemberViewModel {
         input.viewAllButtonTapped
             .withUnretained(self)
             .sink { owner, sectionKind in
-                owner.onViewAllContentButtonTapped?(ExternalURL.Playground.feed)
-                let sectionName: HomeAmplitudeEventPropertyValue = sectionKind == .popularPosts ? .popularPosts : .latestPosts
+                switch sectionKind {
+                case .mainProduct:
+                    owner.onViewAllContentButtonTapped?(ExternalURL.Playground.main)
+                default:
+                    owner.onViewAllContentButtonTapped?(ExternalURL.Playground.feed)
+                }
+
+                let sectionName: HomeAmplitudeEventPropertyValue
+                switch sectionKind {
+                case .mainProduct:
+                    sectionName = .mainProduct
+                case .popularPosts:
+                    sectionName = .popularPosts
+                case .latestPosts:
+                    sectionName = .latestPosts
+                default:
+                    sectionName = .latestPosts
+                }
                 owner.eventTracker.trackClickViewAll(sectionName: sectionName)
             }
             .store(in: cancelBag)
