@@ -17,7 +17,7 @@ import DSKit
 import MDS
 import Domain
 
-public final class SoptletterMainVC: UIViewController, SoptletterViewControllable {
+public final class SoptletterMainVC: UIViewController {
 
     // MARK: - UI Properties
 

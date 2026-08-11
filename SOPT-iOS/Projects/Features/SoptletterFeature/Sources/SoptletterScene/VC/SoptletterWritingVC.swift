@@ -18,7 +18,7 @@ import Then
 
 import BaseFeatureDependency
 
-public final class SoptletterWritingVC: UIViewController, SoptletterViewControllable {
+public final class SoptletterWritingVC: UIViewController {
 
     // MARK: - Properties
 
