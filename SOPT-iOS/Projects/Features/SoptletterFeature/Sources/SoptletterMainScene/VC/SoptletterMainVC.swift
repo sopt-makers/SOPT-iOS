@@ -46,7 +46,7 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
     }
 
     private let menuButton = UIButton().then {
-        $0.setImage(DSKitAsset.Assets.icSoptletterSubject.image, for: .normal)
+        $0.setImage(MDSIcon.menuOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold), for: .normal)
     }
 
     private let reportButton = UIButton().then {
