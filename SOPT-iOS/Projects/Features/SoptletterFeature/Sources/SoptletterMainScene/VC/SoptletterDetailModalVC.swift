@@ -387,6 +387,16 @@ private extension SoptletterDetailModalVC {
 }
 
 extension SoptletterDetailModalVC: UITextViewDelegate {
+    public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        let currentText = textView.text ?? ""
+        guard let textRange = Range(range, in: currentText) else { return true }
+        let updatedText = currentText.replacingCharacters(in: textRange, with: text)
+        if updatedText.count == maxContentLength + 1 {
+            ToastUtils.showMDSToast(type: .alert, text: I18N.Soptletter.charLimitError)
+        }
+        return updatedText.count <= maxContentLength + 1
+    }
+
     public func textViewDidChange(_ textView: UITextView) {
         updateCharCount(textView.text.count)
         updateConfirmButtonState(textView.text.count)
