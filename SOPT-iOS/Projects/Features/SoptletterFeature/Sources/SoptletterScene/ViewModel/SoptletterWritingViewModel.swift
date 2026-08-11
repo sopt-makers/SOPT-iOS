@@ -19,7 +19,7 @@ public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
     // MARK: - SoptletterCoordinatable
 
     public var onNaviBackTap: (() -> Void)?
-    public var onSubmitSuccess: (() -> Void)?
+    public var onSubmitSuccess: (@MainActor () -> Void)?
 
     // MARK: - Properties
 
@@ -84,12 +84,12 @@ extension SoptletterWritingViewModel {
                 owner.submitTask = Task {
                     do {
                         try await owner.useCase.writeMessage(topicId: owner.topicId, content: submittedText)
-                        await MainActor.run { owner.onSubmitSuccess?() }
+                        await owner.onSubmitSuccess?()
                     } catch is CancellationError {
                         return
                     } catch {
                         await MainActor.run {
-                            output.isSubmitEnabled.send(owner.useCase.isWritable(content: currentText))
+                            output.isSubmitEnabled.send(owner.useCase.isWritable(content: submittedText))
                             ToastUtils.showMDSToast(type: .alert, text: I18N.Soptletter.submitFailure)
                         }
                     }
