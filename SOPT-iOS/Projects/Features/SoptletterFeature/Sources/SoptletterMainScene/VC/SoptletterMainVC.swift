@@ -289,12 +289,8 @@ extension SoptletterMainVC {
 
 extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate {
     private func setCollectionView() {
-        collectionView.register(SoptletterPostItCell.self, forCellWithReuseIdentifier: SoptletterPostItCell.identifier)
-        collectionView.register(
-            SoptletterBannerHeaderView.self,
-            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: SoptletterBannerHeaderView.identifier
-        )
+        SoptletterPostItCell.register(target: collectionView)
+        SoptletterBannerHeaderView.register(target: collectionView, isHeader: true)
         collectionView.dataSource = self
         collectionView.delegate = self
     }
@@ -305,7 +301,7 @@ extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate
 
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: SoptletterPostItCell.identifier,
+            withReuseIdentifier: SoptletterPostItCell.className,
             for: indexPath
         ) as? SoptletterPostItCell,
         let message = soptletterMessages?.messages[indexPath.item] else {
@@ -338,7 +334,7 @@ extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate
         guard kind == UICollectionView.elementKindSectionHeader,
               let headerView = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
-                withReuseIdentifier: SoptletterBannerHeaderView.identifier,
+                withReuseIdentifier: SoptletterBannerHeaderView.className,
                 for: indexPath
               ) as? SoptletterBannerHeaderView else {
             return UICollectionReusableView()
@@ -402,7 +398,7 @@ extension SoptletterMainVC {
         let collectionView = UICollectionView(frame: gridFrame, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         collectionView.isScrollEnabled = false
-        collectionView.register(SoptletterPostItCell.self, forCellWithReuseIdentifier: SoptletterPostItCell.identifier)
+        SoptletterPostItCell.register(target: collectionView)
 
         let dataSource = SnapshotPostItDataSource(messages: messages)
         collectionView.dataSource = dataSource
@@ -454,7 +450,7 @@ final class SnapshotPostItDataSource: NSObject, UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: SoptletterPostItCell.identifier,
+            withReuseIdentifier: SoptletterPostItCell.className,
             for: indexPath
         ) as? SoptletterPostItCell else {
             return UICollectionViewCell()

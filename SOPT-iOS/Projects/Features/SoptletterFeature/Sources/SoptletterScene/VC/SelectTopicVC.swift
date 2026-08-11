@@ -48,7 +48,7 @@ final class SelectTopicVC: UIViewController {
         $0.rowHeight = UITableView.automaticDimension
         $0.estimatedRowHeight = 46
         $0.contentInset = UIEdgeInsets(top: BaseSpacing.Base.s12, left: 0, bottom: BaseSpacing.Base.s20, right: 0)
-        $0.register(SoptletterTopicCell.self, forCellReuseIdentifier: SoptletterTopicCell.identifier)
+        SoptletterTopicCell.register(target: $0)
     }
     
     init(viewModel: SelectTopicViewModel) {
@@ -126,7 +126,7 @@ extension SelectTopicVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: SoptletterTopicCell.identifier,
+            withIdentifier: SoptletterTopicCell.className,
             for: indexPath
         ) as? SoptletterTopicCell else { return UITableViewCell() }
         

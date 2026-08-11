@@ -8,12 +8,13 @@
 
 import UIKit
 
+import Core
 import DSKit
 import MDS
 
-final class SoptletterTopicCell: UITableViewCell {
+final class SoptletterTopicCell: UITableViewCell, UITableViewRegisterable {
 
-    static let identifier = "SoptletterTopicCell"
+    static var isFromNib: Bool = false
 
     private let containerView = UIView().then {
         $0.backgroundColor = SemanticColor.Bg.Neutral.subtle

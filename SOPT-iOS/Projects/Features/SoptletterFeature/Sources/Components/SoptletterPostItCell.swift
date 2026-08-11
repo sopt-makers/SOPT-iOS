@@ -15,11 +15,11 @@ import MDS
 
 import SnapKit
 
-final class SoptletterPostItCell: UICollectionViewCell {
+final class SoptletterPostItCell: UICollectionViewCell, UICollectionViewRegisterable {
 
     // MARK: - Properties
 
-    static let identifier = "SoptletterPostItCell"
+    static var isFromNib: Bool = false
 
     private let maxNumberOfLines = 5
 

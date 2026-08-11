@@ -9,11 +9,12 @@
 import UIKit
 import SnapKit
 
+import Core
 import MDS
 
-final class SoptletterBannerHeaderView: UICollectionReusableView {
+final class SoptletterBannerHeaderView: UICollectionReusableView, UICollectionReusableViewRegisterable {
 
-    static let identifier = "SoptletterBannerHeaderView"
+    static var isFromNib: Bool = false
 
     let bannerView = SoptletterCTABannerView()
 
