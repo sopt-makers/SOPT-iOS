@@ -27,8 +27,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             interface: SignInRepositoryInterface.self,
             implement: { StubSignInRepository() }
         )
-        
-        
+        DIContainer.shared.register(
+            interface: CoreOAuthRepositoryInterface.self,
+            implement: { StubCoreOAuthRepository() }
+        )
+        DIContainer.shared.register(
+            interface: CoreAuthRepositoryInterface.self,
+            implement: { StubCoreAuthRepository() }
+        )
+        DIContainer.shared.register(
+            interface: PhoneVerifyRepositoryInterface.self,
+            implement: { StubPhoneVerifyRepository() }
+        )
+        DIContainer.shared.register(
+            interface: AuthTokensRepositoryInterface.self,
+            implement: { StubAuthTokensRepository() }
+        )
+
+
         return true
     }
     
@@ -54,7 +70,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         return self.window!.rootViewController as? UINavigationController ?? UINavigationController(rootViewController: UIViewController())
     }
     
-    lazy var authCoordinator: AuthCoordinator = AuthCoordinator(router: LegacyRouter(rootController: rootController), factory: AuthBuilder())
+    lazy var authCoordinator: AuthCoordinator = AuthCoordinator(navigationController: rootController, factory: AuthBuilder())
     
     func scene(_ scene: UIScene,
                willConnectTo session: UISceneSession,
