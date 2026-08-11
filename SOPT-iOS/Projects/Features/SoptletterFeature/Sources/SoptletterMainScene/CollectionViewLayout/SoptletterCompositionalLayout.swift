@@ -9,7 +9,6 @@
 import UIKit
 
 extension SoptletterMainVC {
-
     func makePostItGridLayout(
         itemHeight: CGFloat,
         itemSpacing: CGFloat,

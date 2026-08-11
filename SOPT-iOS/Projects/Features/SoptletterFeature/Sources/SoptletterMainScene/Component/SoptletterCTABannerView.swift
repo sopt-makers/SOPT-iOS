@@ -10,7 +10,9 @@ import UIKit
 import SnapKit
 
 import DSKit
+import MDS
 
+// TODO: - 디자인 반영 안됨
 final class SoptletterCTABannerView: UIView {
 
     // MARK: - UI
@@ -20,14 +22,11 @@ final class SoptletterCTABannerView: UIView {
         $0.contentMode = .scaleAspectFit
     }
 
-    private let titleLabel = UILabel().then {
-        $0.textColor = .white
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 16)
-    }
+    private let titleLabel = UILabel()
 
     private let chevronImageView = UIImageView().then {
         $0.image = DSKitAsset.Assets.chevronRight.image
-        $0.tintColor = .white
+        $0.tintColor = SemanticColor.Fg.Neutral.bold
         $0.contentMode = .scaleAspectFit
     }
 
@@ -49,6 +48,7 @@ final class SoptletterCTABannerView: UIView {
 
     func configure(text: String) {
         titleLabel.text = text
+        titleLabel.setTypography(Typography.heading4, textColor: SemanticColor.Fg.Neutral.bold)
     }
 
     func setCollapsed(_ collapsed: Bool) {
@@ -77,8 +77,8 @@ final class SoptletterCTABannerView: UIView {
 private extension SoptletterCTABannerView {
 
     func setStyle() {
-        self.backgroundColor = DSKitAsset.Colors.gray800.color
-        self.layer.cornerRadius = 12
+        self.backgroundColor = SemanticColor.Bg.Neutral.ghost
+        self.layer.cornerRadius = BaseRadius.Base.r12
         self.layer.masksToBounds = true
         addTapGesture()
     }
@@ -87,19 +87,19 @@ private extension SoptletterCTABannerView {
         self.addSubviews(iconImageView, titleLabel, chevronImageView)
 
         iconImageView.snp.makeConstraints {
-            $0.leading.equalToSuperview().inset(16)
+            $0.leading.equalToSuperview().inset(BaseSpacing.Base.s16)
             $0.centerY.equalToSuperview()
             $0.size.equalTo(32)
         }
 
         titleLabel.snp.makeConstraints {
-            $0.leading.equalTo(iconImageView.snp.trailing).offset(12)
+            $0.leading.equalTo(iconImageView.snp.trailing).offset(BaseSpacing.Base.s12)
             $0.centerY.equalToSuperview()
-            $0.trailing.lessThanOrEqualTo(chevronImageView.snp.leading).offset(-8)
+            $0.trailing.lessThanOrEqualTo(chevronImageView.snp.leading).offset(-BaseSpacing.Base.s8)
         }
 
         chevronImageView.snp.makeConstraints {
-            $0.trailing.equalToSuperview().inset(16)
+            $0.trailing.equalToSuperview().inset(BaseSpacing.Base.s16)
             $0.centerY.equalToSuperview()
             $0.size.equalTo(20)
         }
