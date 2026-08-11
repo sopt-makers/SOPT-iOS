@@ -48,7 +48,6 @@ public typealias SoptletterNicknameCheckPresentable = (vc: UIViewController, vm:
 public typealias SoptletterNicknameCheckViewModelType = ViewModelType & SoptletterNicknameCheckRoutingTrigger
 
 public protocol SoptletterDetailRoutingTrigger {
-    var onNaviBackTap: (() -> Void)? { get set }
     var onError: (@MainActor () -> Void)? { get set }
     var onEditCompleted: (() -> Void)? { get set }
     var onDeleteCompleted: (() -> Void)? { get set }

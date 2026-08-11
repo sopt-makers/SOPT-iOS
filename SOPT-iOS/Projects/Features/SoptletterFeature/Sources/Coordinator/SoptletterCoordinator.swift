@@ -182,19 +182,15 @@ public final class SoptletterCoordinator: BaseCoordinator {
     private func presentSoptletterDetail(_ messageId: Int, _ topicId: Int, refreshTarget: SoptletterMainPresentable) {
         var soptletterDetail = factory.makeSoptletterDetailVC(coordinator: self, messageId: messageId, topicId: topicId)
         
-        soptletterDetail.vm.onNaviBackTap = { [weak self] in
-            print("handle soptletterMain.vm.onNaviBackTap")
-        }
-        
-        soptletterDetail.vm.onError = { [weak self] in
+        soptletterDetail.vm.onError = {
             AlertUtils.presentNetworkAlertVC()
         }
-        
-        soptletterDetail.vm.onEditCompleted = { [weak self] in
+
+        soptletterDetail.vm.onEditCompleted = {
             refreshTarget.vm.refreshMessagesTrigger()
         }
-        
-        soptletterDetail.vm.onDeleteCompleted = { [weak self] in
+
+        soptletterDetail.vm.onDeleteCompleted = {
             refreshTarget.vm.refreshMessagesTrigger()
         }
         
