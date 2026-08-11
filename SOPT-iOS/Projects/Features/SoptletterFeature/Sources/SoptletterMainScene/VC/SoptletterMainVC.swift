@@ -190,7 +190,11 @@ private extension SoptletterMainVC {
             .withUnretained(self)
             .sink { owner, model in
                 owner.ctaModel = model
-                owner.collectionView.reloadData()
+                guard let headerView = owner.collectionView.supplementaryView(
+                    forElementKind: UICollectionView.elementKindSectionHeader,
+                    at: IndexPath(item: 0, section: 0)
+                ) as? SoptletterBannerHeaderView else { return }
+                owner.configureHeader(headerView)
             }.store(in: cancelBag)
     }
 
@@ -216,12 +220,12 @@ private extension SoptletterMainVC {
 
         closeButton.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(BaseSpacing.Base.s20)
-            make.bottom.equalToSuperview().inset(16)
+            make.bottom.equalToSuperview().inset(BaseSpacing.Base.s16)
             make.size.equalTo(24)
         }
 
         titleLabel.snp.makeConstraints { make in
-            make.leading.equalTo(closeButton.snp.trailing).offset(12)
+            make.leading.equalTo(closeButton.snp.trailing).offset(BaseSpacing.Base.s12)
             make.centerY.equalTo(closeButton.snp.centerY)
         }
 
@@ -340,6 +344,12 @@ extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate
             return UICollectionReusableView()
         }
 
+        configureHeader(headerView)
+
+        return headerView
+    }
+
+    private func configureHeader(_ headerView: SoptletterBannerHeaderView) {
         let shouldHideBanner = !isRoot || !(ctaModel?.showCta ?? false)
 
         headerView.configure(
@@ -350,8 +360,6 @@ extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate
                 self?.soptletterHeaderPublisher.send(topicId)
             }
         )
-
-        return headerView
     }
 }
 
