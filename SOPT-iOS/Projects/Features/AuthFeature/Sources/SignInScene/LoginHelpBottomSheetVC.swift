@@ -11,8 +11,8 @@ import Combine
 
 import BaseFeatureDependency
 import Core
-import DSKit
 import Domain
+import MDS
 
 public final class LoginHelpBottomSheetVC: UIViewController, LoginHelpBottomSheetRoutingTrigger {
     
@@ -23,62 +23,37 @@ public final class LoginHelpBottomSheetVC: UIViewController, LoginHelpBottomShee
     private let cancelBag = CancelBag()
     
     public var minimumContentHeight: CGFloat {
-        return 202.adjustedH
+        return 206.adjusted
     }
     
     // MARK: - Views
     
     private let warnImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.alertCircle.image
+        $0.image = MDSIcon.alertCircleOutlined.image.withRenderingMode(.alwaysTemplate)
+        $0.tintColor = SemanticColor.Fg.Neutral.bold
     }
-    
+
     private let titleLabel = UILabel().then {
         $0.text = i18n.helpLogin
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 20)
-        $0.textColor = DSKitAsset.Colors.gray10.color
+        $0.setTypography(Typography.title3, textColor: SemanticColor.Fg.Neutral.bold)
     }
-    
-    private let wantToKnowAccountButton = UIButton().then {
-        $0.setTitleColor(DSKitAsset.Colors.gray10.color, for: .normal)
-        $0.setTitle(i18n.wantToKnowAccount, for: .normal)
-        $0.contentHorizontalAlignment = .leading
-        $0.titleEdgeInsets = .init(top: 0, left: 10, bottom: 0, right: 0)
-        $0.titleLabel?.font = DSKitFontFamily.Suit.regular.font(size: 16)
-        $0.setBackgroundColor(DSKitAsset.Colors.gray700.color, for: .highlighted)
-        $0.setBackgroundColor(DSKitAsset.Colors.gray800.color, for: .normal)
-        $0.layer.cornerRadius = 8
-        $0.layer.masksToBounds = true
+
+    private let wantToKnowAccountButton = LoginHelpOptionButton(title: i18n.wantToKnowAccount)
+    private let resetSocialAccountButton = LoginHelpOptionButton(title: i18n.resetSocialAccount)
+    private let inquireToKakaoTalkButton = LoginHelpOptionButton(title: i18n.inquireToKakaoTalk)
+
+    private lazy var optionButtonStackView = UIStackView(
+        arrangedSubviews: [wantToKnowAccountButton, resetSocialAccountButton, inquireToKakaoTalkButton]
+    ).then {
+        $0.axis = .vertical
+        $0.spacing = BaseSpacing.Base.s4
     }
-    
-    private let resetSocialAccountButton = UIButton().then {
-        $0.setTitleColor(DSKitAsset.Colors.gray10.color, for: .normal)
-        $0.setTitle(i18n.resetSocialAccount, for: .normal)
-        $0.titleLabel?.font = DSKitFontFamily.Suit.regular.font(size: 16)
-        $0.contentHorizontalAlignment = .leading
-        $0.titleEdgeInsets = .init(top: 0, left: 10, bottom: 0, right: 0)
-        $0.setBackgroundColor(DSKitAsset.Colors.gray700.color, for: .highlighted)
-        $0.setBackgroundColor(DSKitAsset.Colors.gray800.color, for: .normal)
-        $0.layer.cornerRadius = 8
-        $0.layer.masksToBounds = true
-    }
-    
-    private let inquireToKakaoTalkButton = UIButton().then {
-        $0.setTitleColor(DSKitAsset.Colors.gray10.color, for: .normal)
-        $0.setTitle(i18n.inquireToKakaoTalk, for: .normal)
-        $0.titleLabel?.font = DSKitFontFamily.Suit.regular.font(size: 16)
-        $0.contentHorizontalAlignment = .leading
-        $0.titleEdgeInsets = .init(top: 0, left: 10, bottom: 0, right: 0)
-        $0.setBackgroundColor(DSKitAsset.Colors.gray700.color, for: .highlighted)
-        $0.setBackgroundColor(DSKitAsset.Colors.gray800.color, for: .normal)
-        $0.layer.cornerRadius = 8
-        $0.layer.masksToBounds = true
-    }
-    
+
     public init() {
         super.init(nibName: nil, bundle: nil)
-        
-        self.view.backgroundColor = DSKitAsset.Colors.gray800.color
-        
+
+        self.view.backgroundColor = SemanticColor.Bg.Neutral.ghost
+
         self.setLayout()
         self.bindAction()
     }
@@ -95,39 +70,29 @@ extension LoginHelpBottomSheetVC {
         self.view.addSubviews(
             warnImageView,
             titleLabel,
-            wantToKnowAccountButton,
-            resetSocialAccountButton,
-            inquireToKakaoTalkButton
+            optionButtonStackView
         )
-        
+
         self.warnImageView.snp.makeConstraints {
             $0.size.equalTo(24)
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(24)
-            $0.leading.equalToSuperview().inset(20)
-            
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(19)
+            $0.leading.equalToSuperview().inset(12)
         }
-        
+
         self.titleLabel.snp.makeConstraints {
             $0.centerY.equalTo(warnImageView)
-            $0.leading.equalTo(warnImageView.snp.trailing).offset(4)
+            $0.leading.equalTo(warnImageView.snp.trailing).offset(BaseSpacing.Base.s4)
         }
-        
-        self.wantToKnowAccountButton.snp.makeConstraints {
-            $0.top.equalTo(warnImageView.snp.bottom).offset(12)
-            $0.horizontalEdges.equalToSuperview().inset(14)
-            $0.height.equalTo(44)
+
+        [wantToKnowAccountButton, resetSocialAccountButton, inquireToKakaoTalkButton].forEach {
+            $0.snp.makeConstraints {
+                $0.height.equalTo(44)
+            }
         }
-        
-        self.resetSocialAccountButton.snp.makeConstraints {
-            $0.top.equalTo(wantToKnowAccountButton.snp.bottom).offset(4)
-            $0.horizontalEdges.equalToSuperview().inset(14)
-            $0.height.equalTo(wantToKnowAccountButton.snp.height)
-        }
-        
-        self.inquireToKakaoTalkButton.snp.makeConstraints {
-            $0.top.equalTo(resetSocialAccountButton.snp.bottom).offset(4)
-            $0.horizontalEdges.equalToSuperview().inset(14)
-            $0.height.equalTo(wantToKnowAccountButton.snp.height)
+
+        self.optionButtonStackView.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(BaseSpacing.Base.s12)
+            $0.horizontalEdges.equalToSuperview().inset(BaseSpacing.Base.s8)
             $0.bottom.lessThanOrEqualTo(view.safeAreaLayoutGuide).inset(8)
         }
     }
@@ -163,3 +128,29 @@ extension LoginHelpBottomSheetVC {
     }
 }
 
+private final class LoginHelpOptionButton: UIButton {
+
+    init(title: String) {
+        super.init(frame: .zero)
+
+        self.configureUI(title: title)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func configureUI(title: String) {
+        self.setAttributedTitle(
+            NSAttributedString(string: title,
+                               attributes: Typography.body2.attributedStringAttributes(foregroundColor: SemanticColor.Fg.Neutral.bold)),
+            for: .normal
+        )
+        self.contentHorizontalAlignment = .leading
+        self.titleEdgeInsets = .init(top: BaseSpacing.Base.s10, left: BaseSpacing.Base.s10, bottom: BaseSpacing.Base.s10, right: 0)
+        self.setBackgroundColor(SemanticColor.Bg.Neutral.Ghost.hover, for: .highlighted)
+        self.setBackgroundColor(.clear, for: .normal)
+        self.layer.cornerRadius = BaseRadius.Base.r8
+        self.layer.masksToBounds = true
+    }
+}

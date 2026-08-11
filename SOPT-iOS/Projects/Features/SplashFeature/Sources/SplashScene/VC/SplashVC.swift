@@ -12,6 +12,7 @@ import Combine
 import Core
 import DSKit
 import Domain
+import MDS
 
 import SnapKit
 import Then
@@ -64,7 +65,7 @@ extension SplashVC {
     }
     
     private func setUI() {
-        self.view.backgroundColor = DSKitAsset.Colors.soptampBlack.color
+        self.view.backgroundColor = SemanticColor.Bg.Layer.basement
     }
     
     private func setLayout() {

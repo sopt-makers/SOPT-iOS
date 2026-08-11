@@ -11,6 +11,7 @@ import UIKit
 import BaseFeatureDependency
 import Core
 import DSKit
+import MDS
 
 public final class UserNotFoundVC: UIViewController, UserNotFoundRoutingTrigger {
 
@@ -29,38 +30,24 @@ public final class UserNotFoundVC: UIViewController, UserNotFoundRoutingTrigger 
     }
     
     private let titleLabel = UILabel().then {
-        $0.text = i18n.userNotFound
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 24)
-        $0.textColor = .white
-        $0.partColorChange(targetString: I18N.SignIn.Refactor.userInfo, textColor: DSKitAsset.Colors.secondary.color)
+        let fullText = i18n.userNotFound
+        let attributedString = NSMutableAttributedString(
+            string: fullText,
+            attributes: Typography.title2.attributedStringAttributes(foregroundColor: SemanticColor.Fg.Neutral.bold)
+        )
+        let range = (fullText as NSString).range(of: I18N.SignIn.Refactor.userInfo)
+        attributedString.addAttribute(.foregroundColor, value: SemanticColor.Fg.Brand.default, range: range)
+        $0.attributedText = attributedString
     }
 
-    
     private let descriptionLabel = UILabel().then {
         $0.text = i18n.signUpFirst
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 18)
-        $0.textColor = .white
+        $0.setTypography(Typography.label2, textColor: SemanticColor.Fg.Neutral.subtle)
     }
 
-    
-    private let loginRetryButton = AppCustomButton(title: i18n.retryLogin)
-        .setConfigForState(enabledFont: DSKitFontFamily.Suit.semiBold.font(size: 18))
-    
-    private let loginHelpButton = UIButton(type: .system).then {
-        var config = UIButton.Configuration.plain()
-        config.baseForegroundColor = DSKitAsset.Colors.gray30.color
-        config.baseBackgroundColor = .clear
-        
-        var attributedTitle = AttributedString(i18n.helpLogin)
-        attributedTitle.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-        config.attributedTitle = attributedTitle
-        
-        config.image = DSKitAsset.Assets.chevronRight.image.withTintColor(DSKitAsset.Colors.gray30.color).withRenderingMode(.alwaysTemplate)
-        config.imagePadding = 0
-        config.imagePlacement = .trailing
-        
-        $0.configuration = config
-    }
+    private let loginRetryButton = MDSActionButton(variant: .primary, size: .large, title: i18n.retryLogin)
+
+    private let loginHelpButton = MDSTextButton(variant: .emphasis, size: .medium, title: i18n.helpLogin)
 
     
     // MARK: - View Life Cycle
@@ -82,7 +69,7 @@ public final class UserNotFoundVC: UIViewController, UserNotFoundRoutingTrigger 
 extension UserNotFoundVC {
     
     private func setUI() {
-        self.view.backgroundColor = DSKitAsset.Colors.soptampBlack.color
+        self.view.backgroundColor = SemanticColor.Bg.Layer.basement
     }
     
     private func setLayout() {
@@ -97,28 +84,27 @@ extension UserNotFoundVC {
         imageView.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.size.equalTo(194.adjusted)
-            $0.bottom.equalTo(titleLabel.snp.top).offset(-8)
+            $0.bottom.equalTo(titleLabel.snp.top).offset(-BaseSpacing.Base.s8)
         }
-        
+
         titleLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.centerY.equalToSuperview().offset(12)
         }
-        
+
         descriptionLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.top.equalTo(titleLabel.snp.bottom).offset(6)
+            $0.top.equalTo(titleLabel.snp.bottom).offset(BaseSpacing.Base.s8)
         }
         
         loginRetryButton.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.height.equalTo(48)
-            $0.bottom.equalTo(loginHelpButton.snp.top).offset(-16)
+            $0.bottom.equalTo(loginHelpButton.snp.top).offset(-BaseSpacing.Base.s24)
         }
         
         loginHelpButton.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(28.adjustedH)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(24.adjustedH)
         }
         
 
