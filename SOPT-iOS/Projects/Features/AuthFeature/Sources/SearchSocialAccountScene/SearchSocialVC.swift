@@ -11,6 +11,7 @@ import Combine
 
 import DSKit
 import Core
+import MDS
 
 import AuthFeatureInterface
 import BaseFeatureDependency
@@ -50,7 +51,7 @@ public class SearchSocialAccountVC: UIViewController, SearchSocialAccountViewCon
     private lazy var navigationBar = OPNavigationBar(
         self,
         type: .oneLeftButton,
-        backgroundColor: DSKitAsset.Colors.black100.color,
+        backgroundColor: SemanticColor.Bg.Layer.basement,
         ignoreLeftButtonAction: false
     )
    
@@ -68,7 +69,7 @@ public class SearchSocialAccountVC: UIViewController, SearchSocialAccountViewCon
     // MARK: - UI & Layout
     
     private func setUI() {
-        self.view.backgroundColor = DSKitAsset.Colors.black100.color
+        self.view.backgroundColor = SemanticColor.Bg.Layer.basement
         self.phoneVerifyView.helpViewHidden = true
     }
     
@@ -91,7 +92,6 @@ public class SearchSocialAccountVC: UIViewController, SearchSocialAccountViewCon
     }
     
     private func bind() {
-        
         let pvInput = phoneVerifyView.viewModelInput
         let pvOutput = phoneVerifyViewModel.transform(from: pvInput, cancelBag: cancelBag)
         phoneVerifyView.bindOutput(pvOutput, cancelBag: cancelBag)
@@ -102,8 +102,5 @@ public class SearchSocialAccountVC: UIViewController, SearchSocialAccountViewCon
         )
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
-        
-        
     }
-    
 }
