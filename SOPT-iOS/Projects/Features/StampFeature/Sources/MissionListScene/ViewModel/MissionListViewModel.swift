@@ -33,6 +33,7 @@ public class MissionListViewModel: MissionListViewModelType {
     private let coordinator: AnyCoordinatorObject
     private var cancelBag = CancelBag()
     public var missionListsceneType: MissionListSceneType!
+    private var isAppjamMode: Bool = false
     
     // MARK: - Inputs
     
@@ -49,6 +50,7 @@ public class MissionListViewModel: MissionListViewModelType {
         @Published var usersActivateGenerationStatus: UsersActiveGenerationStatusViewResponse?
         @Published var reportUrl: SoptampReportUrlModel?
         @Published var appjamInfo: AppjamMissionListModel?
+        @Published var isAppjamMode: Bool?
         var needNetworkAlert = PassthroughSubject<Void, Never>()
     }
     
@@ -73,6 +75,9 @@ extension MissionListViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.updateCurrentSoptampUserInfo()
+                if case .default = owner.missionListsceneType {
+                    owner.useCase.fetchIsAppjamMode()
+                }
             }.store(in: cancelBag)
         
         input.viewWillAppear
@@ -104,13 +109,16 @@ extension MissionListViewModel {
     }
     
     private func fetchMissionListByType(type: MissionListFetchType) {
-//        switch type {
-//        case .appjam:
-//            self.useCase.fetchAppjamMissionList(teamNumber: nil, isCompleted: nil)
-//        default:
-//            self.useCase.fetchMissionList(type: type)
-//        }
-        // TODO: - 앱잼 기간에는 앱잼 미션만 노출 필요 추후 상단 주석 활성화
+        guard isAppjamMode else {
+            switch type {
+            case .appjam:
+                self.useCase.fetchAppjamMissionList(teamNumber: nil, isCompleted: nil)
+            default:
+                self.useCase.fetchMissionList(type: type)
+            }
+            return
+        }
+
         switch type {
         case .all:
             self.useCase.fetchAppjamMissionList(teamNumber: nil, isCompleted: nil)
@@ -157,6 +165,14 @@ extension MissionListViewModel {
             .asDriver()
             .sink { _ in
                 output.needNetworkAlert.send()
+            }.store(in: cancelBag)
+
+        self.useCase.isAppjamModeFetched
+            .asDriver()
+            .withUnretained(self)
+            .sink { owner, isAppjamMode in
+                owner.isAppjamMode = isAppjamMode
+                output.isAppjamMode = isAppjamMode
             }.store(in: cancelBag)
     }
 }

@@ -22,9 +22,8 @@ import BaseFeatureDependency
 
 public class MissionListVC: UIViewController, MissionListViewControllable, LegacyMissionListViewControllable {
     
-    // TODO: - 화면 전환 시에 수정
-    private var isAppJam: Bool = true
-    
+    private var isAppJam: Bool = false
+
     // MARK: - Properties
     
     public var viewModel: MissionListViewModel
@@ -52,15 +51,16 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
     public var onAppJamRankingButtonTap: (() -> Void)?
     
     private var usersActiveGenerationStatus: UsersActiveGenerationStatusViewResponse?
-    
+    private var appjamInfo: AppjamMissionListModel?
+
     // MARK: - UI Components
-    
+
     lazy var naviBar: STNavigationBar = {
         switch sceneType {
         case .default:
             return STNavigationBar(type: .title)
                 .setTitle(isAppJam ? I18N.MissionList.appjamMission : I18N.MissionList.allMission)
-                .setTitleButtonMenu(menuItems: self.menuItems)
+                .setTitleButtonMenu(menuItems: self.makeMenuItems())
                 .addLeftButtonToTitleMenu()
         case .ranking(let username, _):
             return STNavigationBar(type: .titleWithLeftButton)
@@ -73,14 +73,14 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
         }
     }()
     
-    private lazy var menuItems: [UIAction] = {
+    private func makeMenuItems() -> [UIAction] {
         var menuItems: [UIAction] = []
         var menus: [(String, MissionListFetchType)] = []
-        
+
         menus = [
             (I18N.MissionList.allMission, MissionListFetchType.all),
             (I18N.MissionList.completeMission, MissionListFetchType.complete),
-             (I18N.MissionList.uncompleteMission, MissionListFetchType.incomplete)
+            (I18N.MissionList.uncompleteMission, MissionListFetchType.incomplete)
         ]
         if isAppJam {
             menus.append((I18N.MissionList.appjamMission, MissionListFetchType.appjam))
@@ -95,7 +95,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
         }
     
         return menuItems
-    }()
+    }
 
     private let sentenceContainerView = UIView().then {
         $0.layer.cornerRadius = 9
@@ -206,8 +206,6 @@ extension MissionListVC {
         self.navigationController?.isNavigationBarHidden = true
         self.view.backgroundColor = SemanticColor.Bg.Layer.basement
 
-        if isAppJam { missionTypeMenuSelected.send(.appjam) }
-
         switch sceneType {
         case .default:
             self.sentenceContainerView.backgroundColor = SemanticColor.Bg.Neutral.ghost
@@ -238,22 +236,8 @@ extension MissionListVC {
         
         switch sceneType {
         case .default:
-            if isAppJam {
-                self.view.addSubview(self.singleFloatingButton)
-                
-                self.singleFloatingButton.snp.makeConstraints { make in
-                    make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-18)
-                    make.centerX.equalToSuperview()
-                }
-            } else {
-                self.view.addSubview(self.doubleFloatingButton)
-                
-                self.doubleFloatingButton.snp.makeConstraints { make in
-                    make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-18)
-                    make.centerX.equalToSuperview()
-                }
-            }
-            
+            setFloatingButton(isAppJam: isAppJam)
+
         case .ranking:
             self.view.addSubview(sentenceContainerView)
             sentenceContainerView.addSubview(sentenceLabel)
@@ -294,6 +278,27 @@ extension MissionListVC {
                 make.top.equalTo(sentenceContainerView.snp.bottom).offset(16)
                 make.leading.trailing.equalToSuperview()
                 make.bottom.equalToSuperview()
+            }
+        }
+    }
+
+    private func setFloatingButton(isAppJam: Bool) {
+        doubleFloatingButton.removeFromSuperview()
+        singleFloatingButton.removeFromSuperview()
+
+        if isAppJam {
+            self.view.addSubview(self.singleFloatingButton)
+
+            self.singleFloatingButton.snp.makeConstraints { make in
+                make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-18)
+                make.centerX.equalToSuperview()
+            }
+        } else {
+            self.view.addSubview(self.doubleFloatingButton)
+
+            self.doubleFloatingButton.snp.makeConstraints { make in
+                make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-18)
+                make.centerX.equalToSuperview()
             }
         }
     }
@@ -385,11 +390,35 @@ extension MissionListVC {
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
             .sink { owner, appjamInfo in
+                owner.appjamInfo = appjamInfo
                 guard case .default = owner.sceneType else { return }
                 owner.updateAppjamUI(with: appjamInfo)
             }.store(in: self.cancelBag)
+
+        output.$isAppjamMode
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, isAppjamMode in
+                owner.updateAppJamMode(isAppjamMode)
+            }.store(in: self.cancelBag)
     }
-    
+
+    private func updateAppJamMode(_ isAppJam: Bool) {
+        guard case .default = sceneType, self.isAppJam != isAppJam else { return }
+        self.isAppJam = isAppJam
+
+        naviBar
+            .setTitle(isAppJam ? I18N.MissionList.appjamMission : I18N.MissionList.allMission)
+            .setTitleButtonMenu(menuItems: makeMenuItems())
+
+        setFloatingButton(isAppJam: isAppJam)
+
+        if isAppJam {
+            missionTypeMenuSelected.send(.appjam)
+        }
+    }
+
     private func updateAppjamUI(with appjamInfo: AppjamMissionListModel) {
         // 앱잼 참여자인 경우에만 팀명과 문구 표시
         guard appjamInfo.myTeamNumber != nil, let teamName = appjamInfo.teamName else { return }
@@ -573,9 +602,12 @@ extension MissionListVC: UICollectionViewDelegate {
             
             switch userType {
             case .active:
-                onCellTap?(model, username)
+                if case .default = self.sceneType, isAppJam, appjamInfo?.myTeamNumber == nil {
+                    showInactiveUserAlert()
+                } else {
+                    onCellTap?(model, username)
+                }
             case .inactive, .visitor:
-                //TODO: - 앱잼안하는 활동유저의 경우대한 분기도 추가
                 showInactiveUserAlert()
             }
 

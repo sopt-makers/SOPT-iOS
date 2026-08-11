@@ -16,13 +16,14 @@ final class LegacyStampBuilder {
     @Injected public var missionListRepository: MissionListRepositoryInterface
     @Injected public var rankingRepository: RankingRepositoryInterface
     @Injected public var listDetailRepository: ListDetailRepositoryInterface
-    
+    @Injected public var homeRepository: HomeRepositoryInterface
+
     public init() { }
 }
 
 extension LegacyStampBuilder: LegacyStampFeatureViewBuildable {
     public func makeMissionListVC(sceneType: MissionListSceneType, coordinator: Coordinator) -> LegacyMissionListViewControllable {
-        let useCase = DefaultMissionListUseCase(repository: missionListRepository)
+        let useCase = DefaultMissionListUseCase(repository: missionListRepository, homeRepository: homeRepository)
         let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType, coordinator: coordinator)
         let missionListVC = MissionListVC(viewModel: viewModel, isRouteFromTabBar: false)
         missionListVC.viewModel = viewModel
