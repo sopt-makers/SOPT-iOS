@@ -17,5 +17,5 @@ public protocol SoptletterFeatureBuildable {
     func makeSelectTopicVC(coordinator: Coordinator) -> SelectTopicPresentable
     func makeSoptletterMainVC(coordinator: Coordinator, topicId: Int?, isRoot: Bool) -> SoptletterMainPresentable
     func makeSoptletterDetailVC(coordinator: Coordinator, messageId: Int, topicId: Int) -> SoptletterDetailPresentable
-    func makeSoptletterPrintVC(coordinator: Coordinator, fileName: String, uiImage: UIImage, pdfURL: URL) -> SoptletterPrintPresentable
+    func makeSoptletterPrintVC(coordinator: Coordinator, uiImage: UIImage, pdfURL: URL) -> SoptletterPrintPresentable
 }

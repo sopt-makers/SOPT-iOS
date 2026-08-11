@@ -19,9 +19,9 @@ public final class SoptletterBuilder {
 }
 
 extension SoptletterBuilder: SoptletterFeatureBuildable {
-    public func makeSoptletterPrintVC(coordinator: any Coordinator, fileName: String, uiImage: UIImage, pdfURL: URL) -> SoptletterPrintPresentable {
+    public func makeSoptletterPrintVC(coordinator: any Coordinator, uiImage: UIImage, pdfURL: URL) -> SoptletterPrintPresentable {
         let viewModel = SoptletterPrintViewModel(coordinator: coordinator, pdfURL: pdfURL)
-        let viewController = SoptletterPrintVC(viewModel: viewModel, uiImage: uiImage, title: fileName)
+        let viewController = SoptletterPrintVC(viewModel: viewModel, uiImage: uiImage)
         return (viewController, viewModel)
     }
     

@@ -120,8 +120,8 @@ public final class SoptletterCoordinator: BaseCoordinator {
             self?.soptletterRootController?.pushViewController(webView, animated: true)
         }
         
-        soptletterMain.vm.onDownloadTap = { [weak self] fileName, image, pdfURL in
-            self?.showSoptletterPrint(fileName, image, pdfURL)
+        soptletterMain.vm.onDownloadTap = { [weak self] image, pdfURL in
+            self?.showSoptletterPrint(image, pdfURL)
         }
         
         soptletterMain.vm.onCellTap = { [weak self] messageId, topicId in
@@ -148,17 +148,17 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
     }
     
-    private func showSoptletterPrint(_ fileName: String, _ uiImage: UIImage, _ pdfURL: URL) {
-        var soptletterPrint = factory.makeSoptletterPrintVC(coordinator: self, fileName: fileName, uiImage: uiImage, pdfURL: pdfURL)
-        
+    private func showSoptletterPrint(_ uiImage: UIImage, _ pdfURL: URL) {
+        var soptletterPrint = factory.makeSoptletterPrintVC(coordinator: self, uiImage: uiImage, pdfURL: pdfURL)
+
         soptletterPrint.vm.onPDFSaveTap = { [weak self] pdfURL in
             guard let self else { return }
             let activityVC = UIActivityViewController(activityItems: [pdfURL], applicationActivities: nil)
-            
+
             activityVC.completionWithItemsHandler = { [weak self] activityType, completed, returnedItems, error in
                 guard let self else { return }
-                
-                if let error {
+
+                if error != nil {
                     ToastUtils.showMDSToast(type: .error, text: I18N.Soptletter.Print.saveFailure)
                     return
                 }

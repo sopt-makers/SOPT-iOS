@@ -74,7 +74,7 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
     private let cancelBag = CancelBag()
     private let postItCellTapPublisher = PassthroughSubject<(messageId: Int, topicId: Int), Never>()
     private let naviBackButtonTapPublisher = PassthroughSubject<Void, Never>()
-    private let imagePreviewPublisher = PassthroughSubject<(fileName: String, image: UIImage, url: URL), Never>()
+    private let imagePreviewPublisher = PassthroughSubject<(image: UIImage, url: URL), Never>()
     private let soptletterHeaderPublisher = PassthroughSubject<Int, Never>()
     private let isRoot: Bool
 
@@ -182,7 +182,7 @@ private extension SoptletterMainVC {
                         ToastUtils.showMDSToast(type: .error, text: "이미지 미리보기 생성 실패")
                         return
                     }
-                    owner.imagePreviewPublisher.send((owner.titleLabel.text ?? "soptletter", previewImage, pdfURL))
+                    owner.imagePreviewPublisher.send((previewImage, pdfURL))
                 }
             }.store(in: cancelBag)
 
@@ -363,20 +363,33 @@ extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate
 
 extension SoptletterMainVC {
 
-    func makeSoptletterSnapshotImage() -> UIImage {
-        let allMessages = soptletterMessages?.messages ?? []
-        let displayMessages = Array(allMessages.prefix(16))
-
+    private func makeSoptletterCardContainerView(
+        messages: [SoptletterMessageModel]
+    ) -> (containerView: UIView, collectionView: UICollectionView, dataSource: SnapshotPostItDataSource) {
         let columns = 2
         let itemHeight: CGFloat = 160
         let itemSpacing: CGFloat = 6
         let sideInset: CGFloat = 8
         let bottomInset: CGFloat = 10
+        let titleAreaHeight: CGFloat = 56
 
         let width: CGFloat = view.bounds.width > 0 ? view.bounds.width : UIScreen.main.bounds.width
 
-        let rows = Int(ceil(Double(displayMessages.count) / Double(columns)))
-        let totalHeight = CGFloat(rows) * itemHeight + CGFloat(max(rows - 1, 0)) * itemSpacing + bottomInset
+        let rows = Int(ceil(Double(messages.count) / Double(columns)))
+        let gridHeight = CGFloat(rows) * itemHeight + CGFloat(max(rows - 1, 0)) * itemSpacing + bottomInset
+        let totalHeight = titleAreaHeight + gridHeight
+
+        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: width, height: totalHeight))
+        containerView.backgroundColor = SemanticColor.Bg.Layer.basement
+
+        let cardTitleLabel = UILabel().then {
+            $0.textColor = SemanticColor.Fg.Neutral.bold
+            $0.textAlignment = .left
+            $0.text = soptletterMessages?.title ?? titleLabel.text
+            $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
+        }
+        containerView.addSubview(cardTitleLabel)
+        cardTitleLabel.frame = CGRect(x: 16, y: 16, width: width - 32, height: 26)
 
         let layout = makePostItGridLayout(
             itemHeight: itemHeight,
@@ -385,28 +398,40 @@ extension SoptletterMainVC {
             bottomInset: bottomInset
         )
 
-        let snapshotFrame = CGRect(x: 0, y: 0, width: width, height: totalHeight)
-        let snapshotCollectionView = UICollectionView(frame: snapshotFrame, collectionViewLayout: layout)
-        snapshotCollectionView.backgroundColor = SemanticColor.Bg.Layer.basement
-        snapshotCollectionView.isScrollEnabled = false
-        snapshotCollectionView.register(SoptletterPostItCell.self, forCellWithReuseIdentifier: SoptletterPostItCell.identifier)
+        let gridFrame = CGRect(x: 0, y: titleAreaHeight, width: width, height: gridHeight)
+        let collectionView = UICollectionView(frame: gridFrame, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
+        collectionView.isScrollEnabled = false
+        collectionView.register(SoptletterPostItCell.self, forCellWithReuseIdentifier: SoptletterPostItCell.identifier)
 
-        let dataSource = SnapshotPostItDataSource(messages: displayMessages)
+        let dataSource = SnapshotPostItDataSource(messages: messages)
+        collectionView.dataSource = dataSource
+
+        containerView.addSubview(collectionView)
+
+        return (containerView, collectionView, dataSource)
+    }
+
+    func makeSoptletterSnapshotImage() -> UIImage {
+        let allMessages = soptletterMessages?.messages ?? []
+        let displayMessages = Array(allMessages.prefix(16))
+
+        let (containerView, collectionView, dataSource) = makeSoptletterCardContainerView(messages: displayMessages)
         self.snapshotDataSource = dataSource
-        snapshotCollectionView.dataSource = dataSource
 
-        view.addSubview(snapshotCollectionView)
-        snapshotCollectionView.frame.origin = CGPoint(x: -10000, y: 0)
+        view.addSubview(containerView)
+        containerView.frame.origin = CGPoint(x: -10000, y: 0)
 
-        snapshotCollectionView.reloadData()
-        snapshotCollectionView.layoutIfNeeded()
+        collectionView.reloadData()
+        collectionView.layoutIfNeeded()
+        containerView.layoutIfNeeded()
 
-        let renderer = UIGraphicsImageRenderer(bounds: snapshotCollectionView.bounds)
+        let renderer = UIGraphicsImageRenderer(bounds: containerView.bounds)
         let image = renderer.image { context in
-            snapshotCollectionView.layer.render(in: context.cgContext)
+            containerView.layer.render(in: context.cgContext)
         }
 
-        snapshotCollectionView.removeFromSuperview()
+        containerView.removeFromSuperview()
         self.snapshotDataSource = nil
 
         return image
@@ -455,56 +480,15 @@ extension SoptletterMainVC {
     func makeSoptletterPDFData() -> Data {
         let allMessages = soptletterMessages?.messages ?? []
 
-        let columns = 2
-        let itemHeight: CGFloat = 160
-        let itemSpacing: CGFloat = 6
-        let sideInset: CGFloat = 8
-        let bottomInset: CGFloat = 10
-        let titleAreaHeight: CGFloat = 56
-
-        let width: CGFloat = view.bounds.width > 0 ? view.bounds.width : UIScreen.main.bounds.width
-
-        let rows = Int(ceil(Double(allMessages.count) / Double(columns)))
-        let gridHeight = CGFloat(rows) * itemHeight + CGFloat(max(rows - 1, 0)) * itemSpacing + bottomInset
-        let totalHeight = titleAreaHeight + gridHeight
-
-        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: width, height: totalHeight))
-        containerView.backgroundColor = SemanticColor.Bg.Layer.basement
-
-        let pdfTitleLabel = UILabel().then {
-            $0.textColor = SemanticColor.Fg.Neutral.bold
-            $0.textAlignment = .left
-            $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
-            $0.text = soptletterMessages?.title ?? titleLabel.text
-        }
-        containerView.addSubview(pdfTitleLabel)
-        pdfTitleLabel.frame = CGRect(x: 16, y: 16, width: width - 32, height: 24)
-
-        let layout = makePostItGridLayout(
-            itemHeight: itemHeight,
-            itemSpacing: itemSpacing,
-            sideInset: sideInset,
-            bottomInset: bottomInset
-        )
-
-        let gridFrame = CGRect(x: 0, y: titleAreaHeight, width: width, height: gridHeight)
-        let pdfCollectionView = UICollectionView(frame: gridFrame, collectionViewLayout: layout)
-        pdfCollectionView.backgroundColor = .clear
-        pdfCollectionView.isScrollEnabled = false
-        pdfCollectionView.register(SoptletterPostItCell.self, forCellWithReuseIdentifier: SoptletterPostItCell.identifier)
-
-        // dataSource는 weak 참조라 강하게 들고 있어야 함 (snapshotDataSource 프로퍼티 재사용)
-        let dataSource = SnapshotPostItDataSource(messages: allMessages)
+        let (containerView, collectionView, dataSource) = makeSoptletterCardContainerView(messages: allMessages)
+        // dataSource는 weak 참조라 강하게 들고 있어야 함
         self.snapshotDataSource = dataSource
-        pdfCollectionView.dataSource = dataSource
-
-        containerView.addSubview(pdfCollectionView)
 
         view.addSubview(containerView)
         containerView.frame.origin = CGPoint(x: -10000, y: 0)
 
-        pdfCollectionView.reloadData()
-        pdfCollectionView.layoutIfNeeded()
+        collectionView.reloadData()
+        collectionView.layoutIfNeeded()
         containerView.layoutIfNeeded()
 
         let pdfRenderer = UIGraphicsPDFRenderer(bounds: containerView.bounds)
