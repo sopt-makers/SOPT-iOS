@@ -27,12 +27,16 @@ public final class SoptletterWritingVC: UIViewController, SoptletterViewControll
 
     private let maxCharCount = 350
     private let textChangedSubject = PassthroughSubject<String, Never>()
-    private let submitTapSubject = PassthroughSubject<Void, Never>()
     private var isSettingAttributedText = false
     private var keyboardWillShowObserver: NSObjectProtocol?
     private var keyboardWillHideObserver: NSObjectProtocol?
 
     private lazy var naviBackTap: Driver<Void> = backButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
+
+    private lazy var submitButtonTap: Driver<Void> = submitButton
         .publisher(for: .touchUpInside)
         .mapVoid()
         .asDriver()
@@ -148,7 +152,6 @@ private extension SoptletterWritingVC {
         view.backgroundColor = SemanticColor.Bg.Layer.basement
         navigationController?.navigationBar.isHidden = true
         textView.delegate = self
-        submitButton.addTarget(self, action: #selector(submitButtonTapped), for: .touchUpInside)
     }
 
     func setLayout() {
@@ -223,6 +226,7 @@ private extension SoptletterWritingVC {
         }
 
         submitButton.snp.makeConstraints { make in
+            make.top.greaterThanOrEqualTo(inputContainerView.snp.bottom).offset(BaseSpacing.Base.s20)
             make.bottom.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(BaseSpacing.Base.s20)
         }
@@ -256,7 +260,7 @@ private extension SoptletterWritingVC {
             viewDidLoad: Just<Void>(()).asDriver(),
             naviBackTap: naviBackTap,
             textChanged: textChangedSubject.asDriver(),
-            submitTap: submitTapSubject.asDriver()
+            submitTap: submitButtonTap
         )
 
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
@@ -267,10 +271,6 @@ private extension SoptletterWritingVC {
             .sink { owner, isEnabled in
                 owner.submitButton.isEnabled = isEnabled
             }.store(in: cancelBag)
-    }
-
-    @objc func submitButtonTapped() {
-        submitTapSubject.send(())
     }
 }
 
