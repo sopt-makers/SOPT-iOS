@@ -177,9 +177,9 @@ private extension SoptletterWritingVC {
         }
 
         backButton.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview().inset(BaseSpacing.Base.s12)
+            make.top.bottom.equalToSuperview().inset(BaseSpacing.Base.s16)
             make.leading.equalToSuperview().inset(BaseSpacing.Base.s20)
-            make.width.height.equalTo(32)
+            make.width.height.equalTo(24)
         }
 
         navTitleLabel.snp.makeConstraints { make in

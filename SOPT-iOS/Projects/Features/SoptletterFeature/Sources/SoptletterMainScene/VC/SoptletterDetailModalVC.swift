@@ -29,7 +29,7 @@ public final class SoptletterDetailModalVC: UIViewController {
 
     private let editDeleteStackView = UIStackView().then {
         $0.axis = .horizontal
-        $0.spacing = BaseSpacing.Base.s8
+        $0.spacing = BaseSpacing.Base.s12
         $0.alignment = .center
         $0.isHidden = true
     }
@@ -40,7 +40,7 @@ public final class SoptletterDetailModalVC: UIViewController {
     }
 
     private let dimmedView = UIView().then {
-        $0.backgroundColor = SemanticColor.Bg.Dim.default.withAlphaComponent(0.6)
+        $0.backgroundColor = SemanticColor.Bg.Dim.default.withAlphaComponent(0.8)
     }
 
     private let containerView = UIView().then {
@@ -87,7 +87,7 @@ public final class SoptletterDetailModalVC: UIViewController {
 
     private let likeStackView = UIStackView().then {
         $0.axis = .horizontal
-        $0.spacing = BaseSpacing.Base.s4
+        $0.spacing = BaseSpacing.Base.s2
         $0.alignment = .center
     }
 
@@ -325,18 +325,18 @@ private extension SoptletterDetailModalVC {
         }
 
         containerView.snp.makeConstraints { make in
-            make.directionalHorizontalEdges.equalToSuperview().inset(19)
+            make.directionalHorizontalEdges.equalToSuperview().inset(20)
             make.centerX.equalToSuperview()
             self.containerViewCenterYConstraint = make.centerY.equalToSuperview().constraint
         }
 
         nameLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(BaseSpacing.Base.s20)
+            make.top.equalToSuperview().inset(BaseSpacing.Base.s24)
             make.leading.equalToSuperview().inset(BaseSpacing.Base.s20)
         }
 
         contentScrollView.snp.makeConstraints { make in
-            make.top.equalTo(nameLabel.snp.bottom).offset(BaseSpacing.Base.s16)
+            make.top.equalTo(nameLabel.snp.bottom).offset(BaseSpacing.Base.s14)
             make.directionalHorizontalEdges.equalToSuperview().inset(BaseSpacing.Base.s20)
             make.height.equalTo(312)
         }
@@ -352,12 +352,12 @@ private extension SoptletterDetailModalVC {
          }
 
          charCountLabel.snp.makeConstraints { make in
-             make.top.equalTo(contentScrollView.snp.bottom).offset(BaseSpacing.Base.s4)
+             make.top.equalTo(contentScrollView.snp.bottom).offset(BaseSpacing.Base.s8)
              make.trailing.equalToSuperview().inset(BaseSpacing.Base.s20)
          }
 
         dateLabel.snp.makeConstraints { make in
-            make.top.equalTo(contentScrollView.snp.bottom).offset(BaseSpacing.Base.s16)
+            make.top.equalTo(contentScrollView.snp.bottom).offset(BaseSpacing.Base.s14)
             make.leading.equalToSuperview().inset(BaseSpacing.Base.s20)
         }
 
@@ -371,9 +371,9 @@ private extension SoptletterDetailModalVC {
         }
 
         confirmButton.snp.makeConstraints { make in
-            make.top.equalTo(dateLabel.snp.bottom).offset(BaseSpacing.Base.s20)
+            make.top.equalTo(dateLabel.snp.bottom).offset(BaseSpacing.Base.s10)
             make.directionalHorizontalEdges.equalToSuperview().inset(BaseSpacing.Base.s20)
-            make.bottom.equalToSuperview().inset(BaseSpacing.Base.s24)
+            make.bottom.equalToSuperview().inset(BaseSpacing.Base.s20)
         }
     }
 

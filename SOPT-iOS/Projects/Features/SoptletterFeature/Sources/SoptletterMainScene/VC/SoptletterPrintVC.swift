@@ -131,7 +131,7 @@ public final class SoptletterPrintVC: UIViewController {
         let calculatedHeight = imageWidth * imageRatio + titleAreaHeight + 16
 
         cardContainerView.snp.remakeConstraints {
-            $0.top.equalTo(navigationView.snp.bottom).offset(24)
+            $0.top.equalTo(navigationView.snp.bottom).offset(BaseSpacing.Base.s20)
             $0.centerX.equalToSuperview()
             $0.width.equalTo(143)
             $0.height.equalTo(calculatedHeight)
@@ -146,12 +146,12 @@ public final class SoptletterPrintVC: UIViewController {
 
         navigationView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.top.equalToSuperview()
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.top).offset(56)
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(56)
         }
 
         closeButton.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(16)
+            make.leading.equalToSuperview().inset(BaseSpacing.Base.s20)
             make.bottom.equalToSuperview().inset(16)
             make.size.equalTo(24)
         }
@@ -162,7 +162,7 @@ public final class SoptletterPrintVC: UIViewController {
         }
 
         cardContainerView.snp.makeConstraints {
-            $0.top.equalTo(navigationView.snp.bottom).offset(24)
+            $0.top.equalTo(navigationView.snp.bottom).offset(BaseSpacing.Base.s20)
             $0.centerX.equalToSuperview()
             $0.width.equalTo(143)
 //            $0.height.equalTo(538)
@@ -180,13 +180,13 @@ public final class SoptletterPrintVC: UIViewController {
         }
 
         subtextLabel.snp.makeConstraints {
-            $0.bottom.equalTo(saveButton.snp.top).offset(-16)
+            $0.bottom.equalTo(saveButton.snp.top).offset(-11)
             $0.centerX.equalToSuperview()
         }
 
         saveButton.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-12)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
     }
 }

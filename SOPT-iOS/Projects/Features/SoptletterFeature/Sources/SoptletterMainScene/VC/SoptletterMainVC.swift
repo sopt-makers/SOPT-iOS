@@ -37,7 +37,7 @@ public final class SoptletterMainVC: UIViewController, SoptletterViewControllabl
 
     private let rightButtonStackView = UIStackView().then {
         $0.axis = .horizontal
-        $0.spacing = BaseSpacing.Base.s12
+        $0.spacing = BaseSpacing.Base.s16
         $0.alignment = .center
     }
 
@@ -204,7 +204,7 @@ private extension SoptletterMainVC {
         view.addSubviews(collectionView, navigationView, writeButton, placeHolderImageView)
 
         placeHolderImageView.snp.makeConstraints { make in
-            make.top.equalTo(navigationView.snp.bottom).offset(86)
+            make.top.equalTo(navigationView.snp.bottom).offset(160)
             make.centerX.equalToSuperview()
         }
 
@@ -215,7 +215,7 @@ private extension SoptletterMainVC {
         }
 
         closeButton.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(16)
+            make.leading.equalToSuperview().inset(BaseSpacing.Base.s20)
             make.bottom.equalToSuperview().inset(16)
             make.size.equalTo(24)
         }
@@ -226,7 +226,7 @@ private extension SoptletterMainVC {
         }
 
         rightButtonStackView.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(16)
+            make.trailing.equalToSuperview().inset(BaseSpacing.Base.s20)
             make.centerY.equalTo(closeButton.snp.centerY)
         }
 
@@ -243,7 +243,7 @@ private extension SoptletterMainVC {
 
         writeButton.snp.makeConstraints { make in
             make.trailing.equalTo(view.safeAreaLayoutGuide).inset(BaseSpacing.Base.s20)
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(BaseSpacing.Base.s24)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(BaseSpacing.Base.s28)
         }
     }
 }
@@ -270,7 +270,7 @@ extension SoptletterMainVC {
 
         let section = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = BaseSpacing.Base.s10
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: BaseSpacing.Base.s16, bottom: BaseSpacing.Base.s10, trailing: 16)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: BaseSpacing.Base.s16, bottom: BaseSpacing.Base.s10, trailing: BaseSpacing.Base.s10)
 
         let headerSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
