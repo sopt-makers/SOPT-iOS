@@ -141,16 +141,23 @@ private final class LoginHelpOptionButton: UIButton {
     }
 
     private func configureUI(title: String) {
-        self.setAttributedTitle(
+        var configuration = UIButton.Configuration.plain()
+        configuration.attributedTitle = AttributedString(
             NSAttributedString(string: title,
-                               attributes: Typography.body2.attributedStringAttributes(foregroundColor: SemanticColor.Fg.Neutral.bold)),
-            for: .normal
+                               attributes: Typography.body2.attributedStringAttributes(foregroundColor: SemanticColor.Fg.Neutral.bold))
         )
+        configuration.contentInsets = .init(top: BaseSpacing.Base.s10,
+                                            leading: BaseSpacing.Base.s10,
+                                            bottom: BaseSpacing.Base.s10,
+                                            trailing: 0)
+        configuration.background.cornerRadius = BaseRadius.Base.r8
+        self.configuration = configuration
+
         self.contentHorizontalAlignment = .leading
-        self.titleEdgeInsets = .init(top: BaseSpacing.Base.s10, left: BaseSpacing.Base.s10, bottom: BaseSpacing.Base.s10, right: 0)
-        self.setBackgroundColor(SemanticColor.Bg.Neutral.Ghost.hover, for: .highlighted)
-        self.setBackgroundColor(.clear, for: .normal)
-        self.layer.cornerRadius = BaseRadius.Base.r8
-        self.layer.masksToBounds = true
+        self.configurationUpdateHandler = { button in
+            button.configuration?.background.backgroundColor = button.isHighlighted
+            ? SemanticColor.Bg.Neutral.Ghost.hover
+            : .clear
+        }
     }
 }
