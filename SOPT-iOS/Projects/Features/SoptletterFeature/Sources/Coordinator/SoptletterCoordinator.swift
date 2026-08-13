@@ -128,7 +128,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
             self?.presentSoptletterDetail(messageId, topicId, refreshTarget: soptletterMain)
         }
         
-        soptletterMain.vm.onError = { [weak self] in
+        soptletterMain.vm.onError = {
             AlertUtils.presentNetworkAlertVC()
         }
         
