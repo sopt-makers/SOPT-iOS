@@ -13,7 +13,7 @@ import MDS
 
 public final class ChangeSocialOAuthView: UIView {
     
-    private static let i18n = I18N.SignIn.Refactor.self
+    private static let i18n = I18N.Auth.SocialReset.self
     
     public var viewModelInput: ChangeSocialAccountViewModel.Input.OAuth {
         .init(
@@ -25,13 +25,13 @@ public final class ChangeSocialOAuthView: UIView {
     //MARK: - Properties
 
     private let titleLabel = UILabel().then {
-        $0.text = "소셜 계정 재설정"
+        $0.text = i18n.title
         $0.setTypography(Typography.heading2, textColor: SemanticColor.Fg.Neutral.bold)
         $0.textAlignment = .center
     }
 
     private let descriptionLabel = UILabel().then {
-        $0.text = "반갑습니다 회원님\n재설정할 소셜 계정을 선택해주세요"
+        $0.text = i18n.description
         $0.setTypography(Typography.body3, textColor: SemanticColor.Fg.Neutral.subtle)
         $0.textAlignment = .center
         $0.numberOfLines = 2
@@ -63,7 +63,7 @@ public final class ChangeSocialOAuthView: UIView {
         )
 
         titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(54)
+            $0.top.equalToSuperview()
             $0.centerX.equalToSuperview()
         }
 

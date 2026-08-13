@@ -39,6 +39,10 @@ public class ChangeSocialAccountVC: UIViewController, ChangeSocialAccountViewCon
         type: .oneLeftButton,
         backgroundColor: SemanticColor.Bg.Layer.basement,
         ignoreLeftButtonAction: false
+    ).setLeftButtonImage(
+        MDSIcon.chevronLeftOutlined.image
+            .withRenderingMode(.alwaysTemplate)
+            .withTintColor(SemanticColor.Fg.Neutral.bold, renderingMode: .alwaysOriginal)
     )
 
     private let lineView = UIView().then {
@@ -55,7 +59,7 @@ public class ChangeSocialAccountVC: UIViewController, ChangeSocialAccountViewCon
 
     private let secondStepIndicator = StepIndicatorView(
         number: "2",
-        title: "소셜 계정 재설정",
+        title: I18N.Auth.SocialReset.title,
         circleTextColor: SemanticColor.Fg.Neutral.ghost,
         circleBackgroundColor: SemanticColor.Bg.Neutral.default,
         titleTextColor: SemanticColor.Fg.Neutral.ghost
@@ -125,9 +129,9 @@ extension ChangeSocialAccountVC {
         }
 
         lineView.snp.makeConstraints {
-            $0.top.equalTo(navigationBar.snp.bottom)
+            $0.top.equalTo(navigationBar.snp.bottom).offset(35)
             $0.centerX.equalToSuperview()
-            $0.width.equalTo(123)
+            $0.width.equalTo(136)
             $0.height.equalTo(1)
         }
 
@@ -146,7 +150,7 @@ extension ChangeSocialAccountVC {
         }
 
         phoneVerifyView.snp.makeConstraints {
-            $0.top.equalTo(firstStepIndicator.titleLabel.snp.bottom)
+            $0.top.equalTo(firstStepIndicator.titleLabel.snp.bottom).offset(32)
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
@@ -191,7 +195,7 @@ extension ChangeSocialAccountVC {
             .withUnretained(self)
             .delay(for: .seconds(0.5), scheduler: RunLoop.main)
             .sink { owner, _ in
-                Toast.showMDSToast(type: .success, text: "소셜 계정 변경에 성공했습니다.")
+                Toast.showMDSToast(type: .success, text: I18N.Auth.SocialReset.changeSuccessToast)
             }
             .store(in: cancelBag)
         

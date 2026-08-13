@@ -54,6 +54,10 @@ public class SignUpVC: UIViewController, SignUpViewControllable {
         type: .oneLeftButton,
         backgroundColor: SemanticColor.Bg.Layer.basement,
         ignoreLeftButtonAction: false
+    ).setLeftButtonImage(
+        MDSIcon.chevronLeftOutlined.image
+            .withRenderingMode(.alwaysTemplate)
+            .withTintColor(SemanticColor.Fg.Neutral.bold, renderingMode: .alwaysOriginal)
     )
 
     private let lineView = UIView().then {

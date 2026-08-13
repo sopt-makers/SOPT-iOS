@@ -53,6 +53,10 @@ public class SearchSocialAccountVC: UIViewController, SearchSocialAccountViewCon
         type: .oneLeftButton,
         backgroundColor: SemanticColor.Bg.Layer.basement,
         ignoreLeftButtonAction: false
+    ).setLeftButtonImage(
+        MDSIcon.chevronLeftOutlined.image
+            .withRenderingMode(.alwaysTemplate)
+            .withTintColor(SemanticColor.Fg.Neutral.bold, renderingMode: .alwaysOriginal)
     )
    
     
@@ -85,7 +89,7 @@ public class SearchSocialAccountVC: UIViewController, SearchSocialAccountViewCon
         }
 
         phoneVerifyView.snp.makeConstraints {
-            $0.top.equalTo(navigationBar.snp.bottom).offset(54)
+            $0.top.equalTo(navigationBar.snp.bottom).offset(BaseSpacing.Base.s24)
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
@@ -101,6 +105,6 @@ public class SearchSocialAccountVC: UIViewController, SearchSocialAccountViewCon
             verifySuccess: pvOutput.verifySuccess.asDriver()
         )
         
-        let output = viewModel.transform(from: input, cancelBag: cancelBag)
+        let _ = viewModel.transform(from: input, cancelBag: cancelBag)
     }
 }

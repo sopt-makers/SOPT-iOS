@@ -74,6 +74,12 @@ public struct I18N {
             public static let title = "소셜 계정 연동"
             public static let description = "반갑습니다 회원님\n소셜로그인을 진행하여 회원가입을 완료해주세요"
         }
+
+        public struct SocialReset {
+            public static let title = "소셜 계정 재설정"
+            public static let description = "반갑습니다 회원님\n재설정할 소셜 계정을 선택해주세요"
+            public static let changeSuccessToast = "소셜 계정 변경에 성공했습니다."
+        }
     }
     
     public struct SignIn {
