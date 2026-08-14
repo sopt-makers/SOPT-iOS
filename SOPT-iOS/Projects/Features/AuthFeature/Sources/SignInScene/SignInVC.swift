@@ -48,7 +48,7 @@ public class SignInVC: UIViewController, SignInViewControllable {
         $0.alpha = 0
     }
     
-    private let loginHelpButton = MDSTextButton(variant: .emphasis, size: .medium, title: i18n.helpLogin).then {
+    private let loginHelpButton = MDSTextButton(variant: .emphasis, size: .medium, title: i18n.helpLogin, icon: .chevronRightOutlined).then {
         $0.alpha = 0
     }
 
@@ -78,7 +78,7 @@ public class SignInVC: UIViewController, SignInViewControllable {
     }
 
 
-    private let loginLaterButton = MDSTextButton(variant: .emphasis, size: .medium, title: i18n.loginLater).then {
+    private let loginLaterButton = MDSTextButton(variant: .emphasis, size: .medium, title: i18n.loginLater, icon: .chevronRightOutlined).then {
         $0.alpha = 0
     }
 

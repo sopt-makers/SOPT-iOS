@@ -47,7 +47,7 @@ public final class UserNotFoundVC: UIViewController, UserNotFoundRoutingTrigger 
 
     private let loginRetryButton = MDSActionButton(variant: .primary, size: .large, title: i18n.retryLogin)
 
-    private let loginHelpButton = MDSTextButton(variant: .emphasis, size: .medium, title: i18n.helpLogin)
+    private let loginHelpButton = MDSTextButton(variant: .emphasis, size: .medium, title: i18n.helpLogin, icon: .chevronRightOutlined)
 
     
     // MARK: - View Life Cycle

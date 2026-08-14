@@ -23,14 +23,14 @@ public final class OAuthView: UIView {
         variant: .primary,
         size: .medium,
         title: i18n.googleLogin,
-        prefixIcon: MDSIcon.googleColorFilled.image
+        prefixIcon: .googleColorFilled
     )
 
     let appleLoginButton = MDSActionButton(
         variant: .primary,
         size: .medium,
         title: i18n.appleLogin,
-        prefixIcon: MDSIcon.appleFilled.image
+        prefixIcon: .appleFilled
     )
 
     override init(frame: CGRect) {
