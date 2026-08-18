@@ -57,16 +57,10 @@ public class STChartRectangleView: UIView {
     return view
   }()
 
-  private let scoreLabel: UILabel = {
-    let label = UILabel()
-    label.font = Typography.heading2.font
-    label.partFontChange(targetString: "점", font: Typography.heading4.font)
-    return label
-  }()
+  private let scoreView = RankingScoreView()
   
   private let rightChevronImageView = UIImageView().then {
-    $0.image = DSKitAsset.Assets.chevronRight.image.withRenderingMode(.alwaysTemplate)
-    $0.tintColor = DSKitAsset.Colors.gray600.color
+      $0.image = MDSIcon.chevronRightOutlined.image.withTintColor(SemanticColor.Fg.Neutral.default)
   }
   
   private lazy var usernameContainerView = UIView().then {
@@ -82,7 +76,6 @@ public class STChartRectangleView: UIView {
   private let usernameLabel: UILabel = {
     let label = UILabel()
     label.lineBreakMode = .byCharWrapping
-    label.setCharacterSpacing(0)
     return label
   }()
   
@@ -120,19 +113,21 @@ public class STChartRectangleView: UIView {
 extension STChartRectangleView {
   private func setUI() {
     self.rectangleView.backgroundColor = self.pointColor
-    self.scoreLabel.textColor = SemanticColor.Fg.Neutral.bold
     self.rightChevronImageView.tintColor = pointColor
 
     switch viewLevel {
     case .rankOne:
       rankLabel.text = "1"
-      rankLabel.setTypography(Typography.heading2, textColor: SemanticColor.Fg.Neutral.bold)
+      rankLabel.setTypography(Typography.heading2,
+                              textColor: SemanticColor.Fg.Neutral.bold)
     case .rankTwo:
       rankLabel.text = "2"
-      rankLabel.setTypography(Typography.heading2, textColor: pointColor)
+      rankLabel.setTypography(Typography.heading2,
+                              textColor: pointColor)
     case .rankThree:
       rankLabel.text = "3"
-      rankLabel.setTypography(Typography.heading2, textColor: pointColor)
+      rankLabel.setTypography(Typography.heading2,
+                              textColor: pointColor)
     }
   }
   
@@ -141,11 +136,14 @@ extension STChartRectangleView {
     
     self.usernameStackView.addArrangedSubviews(self.usernameLabel, self.rightChevronImageView)
     self.usernameStackView.snp.makeConstraints {
-      $0.leading.trailing.equalToSuperview().inset(6.f)
-      $0.top.bottom.equalToSuperview().inset(4.f)
+        $0.leading.equalToSuperview().inset(BaseSpacing.Base.s6)
+        $0.trailing.equalToSuperview().inset(BaseSpacing.Base.s2)
+        $0.directionalVerticalEdges.equalToSuperview().inset(BaseSpacing.Base.s8)
     }
     
-    self.rightChevronImageView.snp.makeConstraints { $0.width.height.equalTo(16.f) }
+    self.rightChevronImageView.snp.makeConstraints {
+        $0.size.equalTo(16)
+    }
     
     if case .rankOne = viewLevel {
       self.addSubviews(starRankView, rectangleView, usernameContainerView)
@@ -154,46 +152,40 @@ extension STChartRectangleView {
       
       starRankView.snp.makeConstraints { make in
         make.top.equalToSuperview().inset(8.adjustedH)
-        make.bottom.equalTo(rectangleView.snp.top).offset(-13.adjusted)
+        make.bottom.equalTo(rectangleView.snp.top)
         make.centerX.equalToSuperview()
         make.size.equalTo(50.adjusted)
       }
-      
-      usernameContainerView.snp.makeConstraints { make in
-        make.centerX.equalToSuperview()
-        make.height.equalTo(32.f)
-        make.centerY.equalToSuperview().inset(3)
-      }
-      
+
       rankLabel.snp.makeConstraints { make in
         make.center.equalToSuperview()
       }
     } else {
       self.addSubviews(rankLabel, rectangleView, usernameContainerView)
-      
+
       rankLabel.snp.makeConstraints { make in
-        make.bottom.equalTo(rectangleView.snp.top).offset(-8.adjusted)
+        make.bottom.equalTo(rectangleView.snp.top).offset(-2.adjusted)
         make.centerX.equalToSuperview()
       }
     }
     
-    rectangleView.addSubview(scoreLabel)
-    
-    scoreLabel.snp.makeConstraints { make in
+    rectangleView.addSubview(scoreView)
+
+    scoreView.snp.makeConstraints { make in
         make.top.equalToSuperview().offset(8)
         make.centerX.equalToSuperview()
     }
     
     rectangleView.snp.makeConstraints { make in
-      make.bottom.equalTo(usernameContainerView.snp.top).offset(-10.adjustedH)
+      make.bottom.equalTo(usernameContainerView.snp.top).offset(-8.adjustedH)
       make.leading.trailing.equalToSuperview()
       make.height.equalTo(self.viewLevel.rectangleHeight)
     }
-    
+
     usernameContainerView.snp.makeConstraints { make in
       make.centerX.equalToSuperview()
       make.bottom.equalToSuperview()
-      make.height.equalTo(32.f)
+      make.height.equalTo(34.f)
       make.width.lessThanOrEqualToSuperview()
     }
   }
@@ -207,9 +199,7 @@ extension STChartRectangleView {
   public func setData(score: Int, username: String) {
     self.usernameLabel.text = username.isEmpty ? "-" : username
     self.usernameLabel.setTypography(Typography.label3, textColor: pointColor)
-    self.scoreLabel.text = "\(score)점"
-    self.scoreLabel.partFontChange(targetString: "점",
-                                   font: Typography.heading4.font)
+    self.scoreView.setScore("\(score)")
   }
 }
 

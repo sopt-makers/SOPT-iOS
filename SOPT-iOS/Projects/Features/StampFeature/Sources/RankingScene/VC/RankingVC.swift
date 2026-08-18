@@ -11,6 +11,7 @@ import UIKit
 import Core
 import Domain
 import DSKit
+import MDS
 
 import Combine
 import SnapKit
@@ -36,14 +37,13 @@ public class RankingVC: UIViewController, LegacyRankingViewControllable, Ranking
     // MARK: - UI Components
     
     lazy var naviBar = STNavigationBar(type: .titleWithLeftButton)
-        .setTitleTypoStyle(.SoptampFont.h2)
         .setTitle("랭킹")
         .setRightButton(.none)
     
     private lazy var rankingCollectionView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
         cv.showsVerticalScrollIndicator = true
-        cv.backgroundColor = DSKitAsset.Colors.gray950.color
+        cv.backgroundColor = SemanticColor.Bg.Layer.basement
         cv.refreshControl = refresher
         return cv
     }()
@@ -53,9 +53,9 @@ public class RankingVC: UIViewController, LegacyRankingViewControllable, Ranking
         return rf
     }()
     
-    private let showMyRankingFloatingButton = STSingleFloatingButton(
-        frame: .zero,
-        title: I18N.RankingList.myRanking
+    private let showMyRankingFloatingButton = MDSFloatingButton(
+        size: .extended,
+        label: I18N.RankingList.myRanking
     ).then {
         $0.isHidden = true
     }
@@ -100,7 +100,7 @@ public class RankingVC: UIViewController, LegacyRankingViewControllable, Ranking
 extension RankingVC {
     
     private func setUI() {
-        self.view.backgroundColor = DSKitAsset.Colors.gray950.color
+        self.view.backgroundColor = SemanticColor.Bg.Layer.basement
         self.navigationController?.isNavigationBarHidden = true
     }
     
@@ -114,11 +114,11 @@ extension RankingVC {
         rankingCollectionView.snp.makeConstraints { make in
             make.top.equalTo(naviBar.snp.bottom).offset(4)
             make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
+            make.bottom.equalTo(view.safeAreaLayoutGuide)
         }
         
         showMyRankingFloatingButton.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-18.adjustedH)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(26)
             make.centerX.equalToSuperview()
         }
     }
@@ -141,7 +141,7 @@ extension RankingVC {
             .mapVoid()
             .asDriver()
         
-        let showRankingButtonTapped = self.showMyRankingFloatingButton.buttonTapped
+        let showRankingButtonTapped = self.showMyRankingFloatingButton.publisher(for: .touchUpInside)
             .withUnretained(self)
             .filter { owner, _ in owner.rankingCollectionView.indexPathsForVisibleItems.count > 5 }
             .mapVoid()

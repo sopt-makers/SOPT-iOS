@@ -48,13 +48,12 @@ public class STSpeechBalloonView: UIView {
     
     private let sentenceLabel: UILabel = {
         let label = UILabel()
-        label.font = .SoptampFont.subtitle3
         label.text = I18N.RankingList.noSentenceText
-        label.textColor = SemanticColor.Fg.Neutral.subtle
-        label.textAlignment = .center
+        label.setTypography(Typography.label3,
+                            textColor: SemanticColor.Fg.Neutral.default,
+                            alignment: .center)
         label.clipsToBounds = true
         label.sizeToFit()
-        label.setCharacterSpacing(0)
         return label
     }()
     
@@ -86,7 +85,9 @@ extension STSpeechBalloonView {
         self.backgroundView.backgroundColor = SemanticColor.Bg.Neutral.ghost
         self.balloonTailImageView.tintColor = SemanticColor.Bg.Neutral.ghost
         guard self.sentenceLabel.text != I18N.RankingList.noSentenceText else { return }
-        self.sentenceLabel.textColor = SemanticColor.Fg.Neutral.bold
+        sentenceLabel.setTypography(Typography.label3,
+                                    textColor: SemanticColor.Fg.Neutral.default,
+                                    alignment: .center)
     }
     
     private func setLayout(sentence: String) {

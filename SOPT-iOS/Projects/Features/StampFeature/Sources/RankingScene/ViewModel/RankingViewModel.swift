@@ -84,7 +84,7 @@ extension RankingViewModel {
     
     private func bindOutput(output: Output, cancelBag: CancelBag) {
         let fetchedRankingList = self.useCase.rankingListModelFetched
-        
+
         fetchedRankingList.asDriver()
             .sink(receiveValue: { model in
                 output.rankingListModel = model.uniqued()

@@ -11,7 +11,7 @@ import Combine
 
 import Core
 import Domain
-import DSKit
+import MDS
 
 import SnapKit
 
@@ -27,12 +27,10 @@ final class RankingListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     
     private let rankLabel: UILabel = {
         let label = UILabel()
-        label.font = DSKitFontFamily.Montserrat.bold.font(size: 30.adjusted)
-        label.textColor = DSKitAsset.Colors.soptampGray500.color
         label.textAlignment = .center
         return label
     }()
-    
+
     private lazy var userSentenceStackView: UIStackView = {
         let st = UIStackView()
         st.axis = .vertical
@@ -41,32 +39,22 @@ final class RankingListCVC: UICollectionViewCell, UICollectionViewRegisterable {
         st.spacing = 4
         return st
     }()
-    
+
     private let usernameLabel: UILabel = {
         let label = UILabel()
-        label.font = .SoptampFont.h3
-        label.textColor = DSKitAsset.Colors.white.color
         label.lineBreakMode = .byTruncatingTail
         label.setCharacterSpacing(0)
         return label
     }()
-    
+
     private let sentenceLabel: UILabel = {
         let label = UILabel()
-        label.font = .SoptampFont.caption1
-        label.textColor = DSKitAsset.Colors.gray300.color
         label.lineBreakMode = .byTruncatingTail
         label.setCharacterSpacing(0)
         return label
     }()
-    
-    private let scoreLabel: UILabel = {
-        let label = UILabel()
-        label.font = .SoptampFont.number2
-        label.partFontChange(targetString: "점", font: DSKitFontFamily.Pretendard.medium.font(size: 12))
-        label.textColor = DSKitAsset.Colors.soptampGray400.color
-        return label
-    }()
+
+    private let scoreView = RankingScoreView()
     
     // MARK: - View Life Cycles
     
@@ -86,28 +74,28 @@ final class RankingListCVC: UICollectionViewCell, UICollectionViewRegisterable {
 extension RankingListCVC {
     
     public func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.gray900.color
-        self.layer.cornerRadius = 8
+        self.backgroundColor = SemanticColor.Bg.Layer.default
+        self.layer.cornerRadius = BaseRadius.Base.r8
     }
     
     private func setLayout() {
-        self.addSubviews(rankLabel, userSentenceStackView, scoreLabel)
-        
+        self.addSubviews(rankLabel, userSentenceStackView, scoreView)
+
         rankLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().inset(16.adjusted)
             make.width.greaterThanOrEqualTo(53.adjusted)
         }
-        
+
         userSentenceStackView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalTo(rankLabel.snp.trailing).offset(16.adjusted)
             make.width.lessThanOrEqualTo(157.adjusted)
         }
-        
-        scoreLabel.snp.makeConstraints { make in
+
+        scoreView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().inset(20.adjusted)
+            make.trailing.equalToSuperview().inset(16.adjusted)
         }
     }
 }
@@ -120,26 +108,24 @@ extension RankingListCVC {
         self.model = model
         rankLabel.text = String(rank)
         usernameLabel.text = model.username
+        usernameLabel.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold)
         sentenceLabel.text = model.sentence
-        scoreLabel.text = "\(model.score)점"
-        scoreLabel.partFontChange(targetString: "점",
-                                  font: DSKitFontFamily.Pretendard.medium.font(size: 12))
-        
+        sentenceLabel.setTypography(Typography.body2, textColor: SemanticColor.Fg.Neutral.subtle)
+        scoreView.setScore(String(model.score))
+
         return model.isMyRanking
         ? setMyRanking()
         : setDefaultRanking()
     }
-    
+
     private func setMyRanking() {
-        self.backgroundColor = DSKitAsset.Colors.gray800.color
-        rankLabel.textColor = DSKitAsset.Colors.gray10.color
-        scoreLabel.textColor = DSKitAsset.Colors.white.color
+        self.backgroundColor = SemanticColor.Bg.Neutral.ghost
+        rankLabel.setTypography(Typography.heading1, textColor: SemanticColor.Fg.Neutral.bold)
     }
-    
+
     private func setDefaultRanking() {
-        self.backgroundColor = DSKitAsset.Colors.gray900.color
-        rankLabel.textColor = DSKitAsset.Colors.gray300.color
-        scoreLabel.textColor = DSKitAsset.Colors.white.color
+        self.backgroundColor = SemanticColor.Bg.Layer.default
+        rankLabel.setTypography(Typography.heading1, textColor: SemanticColor.Fg.Neutral.default)
     }
 }
 
