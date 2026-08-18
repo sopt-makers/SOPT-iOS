@@ -12,7 +12,7 @@ import Combine
 import SnapKit
 
 import Core
-import DSKit
+import MDS
 
 final class MissionView: UIView {
     
@@ -50,10 +50,8 @@ final class MissionView: UIView {
     // MARK: - UI & Layout
     
     private func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.gray900.color
-        self.layer.cornerRadius = 10
-        self.missionLabel.textColor = DSKitAsset.Colors.white.color
-        self.missionLabel.font = DSKitFontFamily.Suit.medium.font(size: 14)
+        self.backgroundColor = SemanticColor.Bg.Layer.default
+        self.layer.cornerRadius = BaseRadius.Base.r10
     }
     
     private func setLayout(level: StarViewLevel) {
@@ -63,17 +61,13 @@ final class MissionView: UIView {
         
         starView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalToSuperview().inset(12)
+            make.top.equalToSuperview().inset(10)
         }
         
         missionLabel.snp.makeConstraints { make in
             make.top.equalTo(starView.snp.bottom).offset(6)
-            make.leading.trailing.equalToSuperview()
             make.centerX.equalToSuperview()
-        }
-        
-        self.snp.makeConstraints { make in
-            make.bottom.equalTo(missionLabel.snp.bottom).offset(11)
+            make.bottom.equalToSuperview().inset(8)
         }
     }
 }
@@ -92,7 +86,8 @@ extension MissionView {
             self.missionLabel.text = mission
         }
 
-        self.missionLabel.modifyLineSpacing(lineSpacing: 2)
+        self.missionLabel.setTypography(Typography.body2,
+                                        textColor: SemanticColor.Fg.Neutral.bold)
     }
 }
 

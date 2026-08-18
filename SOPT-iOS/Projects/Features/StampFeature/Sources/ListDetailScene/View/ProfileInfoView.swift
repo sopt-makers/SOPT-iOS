@@ -12,14 +12,19 @@ import Core
 import SnapKit
 import Then
 import DSKit
+import MDS
 
 public final class ProfileInfoView: UIView {
 
     // MARK: - UI Components
 
     private let profileImageView = CustomProfileImageView().hideBorder()
-    private let nameLabel = UILabel()
-    private let arrowImageView = UIImageView()
+    private lazy var nameButton = MDSTextButton(
+        variant: .emphasis,
+        size: .medium,
+        title: "닉네임",
+        icon: MDSIcon.chevronRightOutlined
+    )
 
     // MARK: - Initialization
 
@@ -39,33 +44,19 @@ public final class ProfileInfoView: UIView {
         self.backgroundColor = .clear
 
         profileImageView.hideBorder()
-
-        nameLabel.font = .SoptampFont.subtitle3
-        nameLabel.textColor = DSKitAsset.Colors.white.color
-        nameLabel.text = "닉네임"
-
-        arrowImageView.image = DSKitAsset.Assets.icLeftArrow.image
-        arrowImageView.tintColor = DSKitAsset.Colors.white.color
-        arrowImageView.contentMode = .scaleAspectFit
     }
 
     private func setLayout() {
-        self.addSubviews(profileImageView, nameLabel, arrowImageView)
+        self.addSubviews(profileImageView, nameButton)
 
         profileImageView.snp.makeConstraints {
             $0.leading.centerY.equalToSuperview()
             $0.size.equalTo(22)
         }
 
-        nameLabel.snp.makeConstraints {
+        nameButton.snp.makeConstraints {
             $0.leading.equalTo(profileImageView.snp.trailing).offset(5)
             $0.centerY.equalToSuperview()
-        }
-
-        arrowImageView.snp.makeConstraints {
-            $0.leading.equalTo(nameLabel.snp.trailing).offset(2)
-            $0.centerY.equalToSuperview()
-            $0.size.equalTo(24)
         }
 
         self.snp.makeConstraints {
@@ -76,7 +67,7 @@ public final class ProfileInfoView: UIView {
 
 extension ProfileInfoView {
     public func configure(name: String, profileImageURL: String? = nil) {
-        nameLabel.text = name
+        nameButton.title = name
 
         if let imageURL = profileImageURL, !imageURL.isEmpty {
             profileImageView.setImage(with: imageURL)

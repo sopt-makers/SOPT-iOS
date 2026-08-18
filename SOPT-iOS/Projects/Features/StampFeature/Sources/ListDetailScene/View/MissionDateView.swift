@@ -10,35 +10,33 @@ import Combine
 import UIKit
 
 import Core
-import DSKit
+import MDS
 
 final class MissionDateView: UIView {
     private enum Metric {
-        static let contentTop = 9
-        static let contentLeadingTrailing = 14
-        static let contentBottom = 10
-        
         static let toolBarHeight = 44
         static let chevronLength = 20
     }
-    
+
     private enum Constant {
-        static let cornerRadius = 9.f
+        static let cornerRadius = BaseRadius.Base.r10
     }
-    
+
     private lazy var contentStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 0
     }
-    
+
     private lazy var textField = UITextField().then {
-        $0.attributedPlaceholder = self.getAttributedString(I18N.ListDetail.missionDatePlaceHolder)
-        $0.textColor = DSKitAsset.Colors.gray300.color
-        $0.font = .SoptampFont.caption1
+        $0.attributedPlaceholder = self.getAttributedString(
+            I18N.ListDetail.missionDatePlaceHolder,
+            color: SemanticColor.Fg.Neutral.ghost
+        )
+        $0.setTypography(Typography.label3,
+                         textColor: SemanticColor.Fg.Neutral.default)
     }
     private let rightChevron = UIImageView().then {
-        $0.image = DSKitAsset.Assets.icChevronRight.image.withRenderingMode(.alwaysTemplate)
-        $0.tintColor = DSKitAsset.Colors.gray300.color
+        $0.image = MDSIcon.chevronRightOutlined.image.withTintColor(SemanticColor.Fg.Neutral.subtle)
     }
     
     public var textFieldDidEdited: Driver<Void> {
@@ -55,9 +53,9 @@ final class MissionDateView: UIView {
     public override init(frame: CGRect) {
         super.init(frame: frame)
         
-        self.backgroundColor = DSKitAsset.Colors.gray900.color
+        self.backgroundColor = SemanticColor.Bg.Layer.default
         self.layer.cornerRadius = Constant.cornerRadius
-        self.layer.borderColor = DSKitAsset.Colors.gray500.color.cgColor
+        self.layer.borderColor = SemanticColor.Stroke.Neutral.Default.focused.cgColor
         
         self.initializeViews()
         self.initializeDatePicker()
@@ -92,7 +90,7 @@ final class MissionDateView: UIView {
 // MARK: - Public functions
 extension MissionDateView {
     public func setText(with dateText: String) {
-        self.textField.attributedText = self.getAttributedString(dateText)
+        self.textField.attributedText = self.getAttributedString(dateText, color: SemanticColor.Fg.Neutral.bold)
     }
     
     public func setIsEnabled(_ isEnabled: Bool) {
@@ -109,21 +107,18 @@ extension MissionDateView {
             self.layer.borderWidth = .zero
         case .active:
             self.layer.borderWidth = 1
-            self.textField.textColor = DSKitAsset.Colors.white.color
+            self.textField.textColor = SemanticColor.Fg.Neutral.bold
         case .completed:
             self.layer.borderWidth = .zero
-            self.textField.textColor = DSKitAsset.Colors.white.color
+            self.textField.textColor = SemanticColor.Fg.Neutral.bold
         }
     }
 }
 
 // MARK: - Private Extensions
 private extension MissionDateView {
-    func getAttributedString(_ text: String) -> NSAttributedString {
-        let attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: DSKitAsset.Colors.gray300.color
-        ]
-        
+    func getAttributedString(_ text: String, color: UIColor) -> NSAttributedString {
+        let attributes = Typography.label3.attributedStringAttributes(foregroundColor: color)
         return NSAttributedString(string: text, attributes: attributes)
     }
 }
@@ -138,12 +133,12 @@ extension MissionDateView {
     
     private func setupConstraints() {
         self.contentStackView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(Metric.contentTop)
-            $0.leading.trailing.equalToSuperview().inset(Metric.contentLeadingTrailing)
-            $0.bottom.equalToSuperview().inset(Metric.contentBottom)
+            $0.centerY.equalToSuperview()
+            $0.leading.trailing.equalToSuperview().inset(14)
         }
         
-        self.rightChevron.snp.makeConstraints { $0.size.equalTo(Metric.chevronLength) }
+        self.rightChevron.snp.makeConstraints { $0.size.equalTo(Metric.chevronLength)
+        }
     }
     
     private func initializeDatePicker() {
