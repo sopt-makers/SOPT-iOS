@@ -88,7 +88,6 @@ public class SignInVC: UIViewController, SignInViewControllable {
 
     private let recentLoginToolTip = ToolTipView()
     
-    
     // MARK: - View Life Cycle
     
     init(viewModel: SignInViewModel) {

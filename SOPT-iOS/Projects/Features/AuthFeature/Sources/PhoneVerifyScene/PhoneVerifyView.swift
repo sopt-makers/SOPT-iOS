@@ -6,6 +6,7 @@
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
+import Combine
 import UIKit
 
 import BaseFeatureDependency
@@ -16,6 +17,10 @@ final class PhoneVerifyView: UIView {
 
     private var isTimeLeftError = false
 
+    private let phoneTextChanged = PassthroughSubject<String, Never>()
+    private let codeTextChanged = PassthroughSubject<String, Never>()
+    private let loginHelpButtonTappedSubject = PassthroughSubject<Void, Never>()
+
     public var helpViewHidden: Bool {
         get { helpCallout.isHidden }
         set { helpCallout.isHidden = newValue }
@@ -25,14 +30,13 @@ final class PhoneVerifyView: UIView {
         return .init(
             sendButtonTapped: sendButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
             doneButtonTapped: doneButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
-            phoneTextFieldText: phoneTextField.publisher(for: .editingChanged).compactMap { $0.text }.asDriver(),
-            codeTextFieldText: codeTextField.publisher(for: .editingChanged).compactMap { $0.text }.asDriver()
+            phoneTextFieldText: phoneTextChanged.asDriver(),
+            codeTextFieldText: codeTextChanged.asDriver()
         )
     }
     
-    // TODO: 터치 영역 문의 필요 - MDSCallout이 내부 버튼에 외부 탭 클로저를 제공하지 않아 배너 전체 탭으로 유지, 추후 문의 후 수정
     public var loginHelpButtonTapped: Driver<Void> {
-        helpCallout.gesture().mapVoid().asDriver()
+        loginHelpButtonTappedSubject.asDriver()
     }
     
     private static let i18N = I18N.Auth.PhoneVerify.self
@@ -57,16 +61,6 @@ final class PhoneVerifyView: UIView {
         isRequired: true
     )
 
-    // TODO: MDSTextField가 텍스트 변경 Combine publisher(예: textDidChangePublisher)를 공개 API로 노출해야함
-    private lazy var phoneTextField: UITextField = {
-        guard let textField = phoneField.firstSubview(ofType: UITextField.self) else {
-            fatalError("phoneField 내부에서 UITextField를 찾을 수 없습니다.")
-        }
-        textField.keyboardType = .numberPad
-        textField.addToolbar()
-        return textField
-    }()
-
     private let sendButton = UIButton().then {
         $0.layer.cornerRadius = BaseRadius.Base.r8
         $0.layer.masksToBounds = true
@@ -79,17 +73,6 @@ final class PhoneVerifyView: UIView {
     ).then {
         $0.isHidden = true
     }
-
-    // TODO: MDSTextField가 textDidChangePublisher/keyboardType API를 노출하면 phoneTextField와 함께 대체
-    private lazy var codeTextField: UITextField = {
-        guard let textField = codeField.firstSubview(ofType: UITextField.self) else {
-            fatalError("codeField 내부에서 UITextField를 찾을 수 없습니다.")
-        }
-        textField.keyboardType = .numberPad
-        textField.addToolbar()
-        textField.addRightPadding(width: 68)
-        return textField
-    }()
 
     private let timeLeftLabel = UILabel().then {
         $0.text = i18N.defaultTimerText
@@ -110,6 +93,7 @@ final class PhoneVerifyView: UIView {
         
         setUI()
         setLayout()
+        setBinding()
     }
     
     required init?(coder: NSCoder) {
@@ -127,9 +111,34 @@ final class PhoneVerifyView: UIView {
             doneButton
         )
 
-        codeTextField.addSubview(timeLeftLabel)
+        codeField.addSubview(timeLeftLabel)
 
         setSendButtonTitle(Self.i18N.sendButtonTitle)
+    }
+
+    private func setBinding() {
+        [phoneField, codeField].forEach {
+            $0.keyboardType = .numberPad
+            $0.keyboardAccessoryView = makeKeyboardToolbar()
+        }
+
+        phoneField.onTextChanged = { [weak self] in self?.phoneTextChanged.send($0) }
+        codeField.onTextChanged = { [weak self] in self?.codeTextChanged.send($0) }
+        helpCallout.onButtonTap = { [weak self] in self?.loginHelpButtonTappedSubject.send() }
+    }
+
+    private func makeKeyboardToolbar() -> UIToolbar {
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        toolbar.items = [
+            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+            UIBarButtonItem(title: I18N.Auth.PhoneVerify.keyboardDoneButtonTitle, style: .done, target: self, action: #selector(dismissKeyboard))
+        ]
+        return toolbar
+    }
+
+    @objc private func dismissKeyboard() {
+        endEditing(true)
     }
     
     private func setLayout() {
@@ -144,7 +153,7 @@ final class PhoneVerifyView: UIView {
         }
 
         sendButton.snp.makeConstraints {
-            $0.centerY.equalTo(phoneTextField)
+            $0.top.equalTo(phoneField).offset(36)
             $0.trailing.equalToSuperview().inset(20)
             $0.height.equalTo(46)
             $0.width.equalTo(109)
@@ -163,12 +172,12 @@ final class PhoneVerifyView: UIView {
         }
 
         timeLeftLabel.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
+            $0.top.equalTo(codeField.snp.top).inset(10)
             $0.trailing.equalToSuperview().inset(BaseSpacing.Base.s16)
         }
 
         helpCallout.snp.makeConstraints {
-            $0.leading.trailing.equalTo(codeTextField)
+            $0.leading.trailing.equalTo(codeField)
             $0.bottom.equalTo(doneButton.snp.top).offset(-BaseSpacing.Base.s24)
         }
 
@@ -200,7 +209,7 @@ extension PhoneVerifyView {
             .asDriver()
             .withUnretained(self)
             .sink { owner, text in
-                owner.phoneTextField.text = text
+                owner.phoneField.text = text
             }
             .store(in: cancelBag)
         
@@ -208,15 +217,16 @@ extension PhoneVerifyView {
             .asDriver()
             .withUnretained(self)
             .sink { owner, text in
-                owner.codeTextField.text = text
+                owner.codeField.text = text
             }
             .store(in: cancelBag)
         
         output.timerIsRunning
             .withUnretained(self)
             .sink { owner, active in
-                self.endEditing(!active)
-                self.codeTextField.isEnabled = active
+                owner.endEditing(!active)
+                // state = .disabled로 두면 MDSTextField가 에러 메시지를 감추므로 입력만 막는다.
+                owner.codeField.isUserInteractionEnabled = active
             }
             .store(in: cancelBag)
         
@@ -295,19 +305,5 @@ extension PhoneVerifyView {
             ),
             for: .disabled
         )
-    }
-}
-
-private extension UIView {
-    func firstSubview<T: UIView>(ofType type: T.Type) -> T? {
-        for subview in subviews {
-            if let matched = subview as? T {
-                return matched
-            }
-            if let matched = subview.firstSubview(ofType: type) {
-                return matched
-            }
-        }
-        return nil
     }
 }

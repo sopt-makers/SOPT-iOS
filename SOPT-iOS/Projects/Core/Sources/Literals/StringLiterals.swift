@@ -64,6 +64,7 @@ public struct I18N {
             
             public static let codePlaceholder = "인증번호를 입력해주세요."
             public static let defaultTimerText = "03:00"
+            public static let keyboardDoneButtonTitle = "완료"
             
             public static let helpDescription = "번호가 바뀌었거나, 인증이 어려우신 경우 추가 정보 인증을 통해 가입을 도와드리고 있어요!"
             public static let inquireButtonTitle = "문의하기"
