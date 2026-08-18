@@ -8,6 +8,8 @@
 
 import UIKit
 
+import MDS
+
 extension AppJamRankingVC {
     internal func createLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { [weak self] (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
@@ -24,21 +26,26 @@ extension AppJamRankingVC {
 
     private func createMissionCardsSection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(
-            widthDimension: .absolute(146),
-            heightDimension: .absolute(288)
+            widthDimension: .absolute(143),
+            heightDimension: .absolute(300)
         )
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        
+
         let groupSize = NSCollectionLayoutSize(
-            widthDimension: .absolute(146),
-            heightDimension: .absolute(288)
+            widthDimension: .absolute(143),
+            heightDimension: .absolute(300)
         )
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        
+
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .continuous
-        section.interGroupSpacing = 10
-        section.contentInsets = NSDirectionalEdgeInsets(top: 20, leading: 20, bottom: 40, trailing: 20)
+        section.interGroupSpacing = BaseSpacing.Base.s10
+        section.contentInsets = NSDirectionalEdgeInsets(
+            top: BaseSpacing.Base.s20,
+            leading: BaseSpacing.Base.s20,
+            bottom: BaseSpacing.Base.s40,
+            trailing: BaseSpacing.Base.s20
+        )
         
         let headerSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
@@ -71,7 +78,12 @@ extension AppJamRankingVC {
         
         let section = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = 9
-        section.contentInsets = NSDirectionalEdgeInsets(top: 20, leading: 20, bottom: 56, trailing: 20)
+        section.contentInsets = NSDirectionalEdgeInsets(
+            top: BaseSpacing.Base.s20,
+            leading: BaseSpacing.Base.s20,
+            bottom: BaseSpacing.Base.s48,
+            trailing: BaseSpacing.Base.s20
+        )
         
         let headerSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),

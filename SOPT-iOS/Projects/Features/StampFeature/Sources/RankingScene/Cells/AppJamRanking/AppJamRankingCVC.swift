@@ -10,31 +10,16 @@ import UIKit
 
 import Core
 import DSKit
+import MDS
 
 import SnapKit
 
 final class AppJamRankingCVC: UICollectionViewCell {
-    
-    // MARK: - Properties
-    
-    private var rank: Int = 1
-    
+
     // MARK: - UI Components
-    
-    private let rankLabel: UILabel = {
-        let label = UILabel()
-        label.font = DSKitFontFamily.Suit.bold.font(size: 16)
-        label.textColor = DSKitAsset.Colors.white.color
-        return label
-    }()
-    
-    private let teamNameLabel: UILabel = {
-        let label = UILabel()
-        label.font = DSKitFontFamily.Suit.bold.font(size: 16)
-        label.textColor = DSKitAsset.Colors.white.color
-        return label
-    }()
-    
+
+    private let teamNameLabel = UILabel()
+
     private let scoreStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -42,20 +27,10 @@ final class AppJamRankingCVC: UICollectionViewCell {
         stackView.alignment = .trailing
         return stackView
     }()
-    
-    private let totalScoreLabel: UILabel = {
-        let label = UILabel()
-        label.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-        label.textColor = DSKitAsset.Colors.gray300.color
-        return label
-    }()
-    
-    private let incrementScoreLabel: UILabel = {
-        let label = UILabel()
-        label.font = DSKitFontFamily.Suit.bold.font(size: 20)
-        label.textColor = DSKitAsset.Colors.white.color
-        return label
-    }()
+
+    private let totalScoreLabel = UILabel()
+
+    private let incrementScoreLabel = UILabel()
     
     // MARK: - View Life Cycle
     
@@ -75,8 +50,8 @@ final class AppJamRankingCVC: UICollectionViewCell {
 
 extension AppJamRankingCVC {
     private func setUI() {
-        contentView.backgroundColor = DSKitAsset.Colors.gray900.color
-        contentView.layer.cornerRadius = 10
+        contentView.backgroundColor = SemanticColor.Bg.Layer.default
+        contentView.layer.cornerRadius = BaseRadius.Base.r10
     }
     
     private func setLayout() {
@@ -85,22 +60,15 @@ extension AppJamRankingCVC {
         
         contentView.addSubviews(teamNameLabel, scoreStackView)
         
-        teamNameLabel.snp.makeConstraints { make in            
-            make.leading.equalTo(contentView).offset(12)
-            make.top.equalTo(contentView).offset(12)
+        teamNameLabel.snp.makeConstraints { make in
+            make.leading.equalTo(contentView).offset(BaseSpacing.Base.s12)
+            make.top.equalTo(contentView).offset(BaseSpacing.Base.s12)
         }
-        
+
         scoreStackView.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(16)
-            make.bottom.equalToSuperview().inset(8)
-        }
-        
-        totalScoreLabel.snp.makeConstraints { make in
-            make.height.equalTo(20)
-        }
-        
-        incrementScoreLabel.snp.makeConstraints { make in
-            make.height.equalTo(30)
+            make.top.equalTo(teamNameLabel.snp.bottom).offset(BaseSpacing.Base.s14)
+            make.trailing.equalToSuperview().inset(BaseSpacing.Base.s16)
+            make.bottom.equalToSuperview().inset(BaseSpacing.Base.s8)
         }
     }
 }
@@ -109,11 +77,13 @@ extension AppJamRankingCVC {
 
 extension AppJamRankingCVC {
     func configureCell(model: AppJamRankTodayPresentationModel) {
-        self.rank = model.rank
-        
-        rankLabel.text = "\(model.rank)"
         teamNameLabel.text = model.teamName
+        teamNameLabel.setTypography(Typography.label2, textColor: SemanticColor.Fg.Neutral.bold)
+
         totalScoreLabel.text = "총 \(model.totalPoints)점"
+        totalScoreLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.subtle)
+
         incrementScoreLabel.text = "+\(model.todayPoints)점"
+        incrementScoreLabel.setTypography(Typography.title3, textColor: SemanticColor.Fg.Neutral.bold)
     }
 }

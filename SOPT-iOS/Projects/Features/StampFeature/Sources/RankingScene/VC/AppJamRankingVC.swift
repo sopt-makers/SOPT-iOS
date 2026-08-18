@@ -11,6 +11,7 @@ import Combine
 
 import Core
 import DSKit
+import MDS
 
 import SnapKit
 
@@ -29,13 +30,12 @@ final class AppJamRankingVC: UIViewController, AppJamRankingViewControllable {
     // MARK: - UI Components
     
     private let naviBar = STNavigationBar(type: .titleWithLeftButton)
-        .setTitleTypoStyle(.SoptampFont.h2)
         .setTitle(I18N.RankingList.appJamTeamStatusTitle)
         .setRightButton(.none)
     
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
-        collectionView.backgroundColor = DSKitAsset.Colors.gray950.color
+        collectionView.backgroundColor = SemanticColor.Bg.Layer.basement
         collectionView.showsVerticalScrollIndicator = false
         collectionView.refreshControl = refresher
         return collectionView
@@ -79,7 +79,7 @@ final class AppJamRankingVC: UIViewController, AppJamRankingViewControllable {
 
 extension AppJamRankingVC {
     private func setUI() {
-        view.backgroundColor = DSKitAsset.Colors.gray950.color
+        view.backgroundColor = SemanticColor.Bg.Layer.basement
     }
     
     private func setLayout() {

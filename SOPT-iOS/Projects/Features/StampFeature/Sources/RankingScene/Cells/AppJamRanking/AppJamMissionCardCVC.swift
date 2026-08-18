@@ -10,65 +10,53 @@ import UIKit
 
 import Core
 import DSKit
+import MDS
 
 final class AppJamMissionCardCVC: UICollectionViewCell {
-    
+
     // MARK: - UI Components
-    
+
     private let missionImageView: UIImageView = {
         let view = UIImageView()
-        view.backgroundColor = DSKitAsset.Colors.gray700.color
-        view.layer.cornerRadius = 10
+        view.backgroundColor = SemanticColor.Bg.Neutral.subtle
+        view.layer.cornerRadius = BaseRadius.Base.r12
         view.clipsToBounds = true
         return view
     }()
-    
-    private let timeBadgeView: UIView = {
-        let view = UIView()
-        view.backgroundColor = DSKitAsset.Colors.alpha100.color
-        view.layer.cornerRadius = 6
-        return view
-    }()
-    
-    private let timeLabel: UILabel = {
-        let label = UILabel()
-        label.font = DSKitFontFamily.Suit.semiBold.font(size: 11)
-        label.textColor = DSKitAsset.Colors.gray10.color
-        return label
-    }()
-    
+
+    private let timeBadge = MDSTag(
+        text: "",
+        size: .small,
+        shape: .rect,
+        variant: .default,
+        style: .solid
+    )
+
     private let missionTitleLabel: UILabel = {
         let label = UILabel()
-        label.font = DSKitFontFamily.Suit.bold.font(size: 16)
-        label.textColor = DSKitAsset.Colors.white.color
         label.numberOfLines = 0
         return label
     }()
-    
+
     private let profileView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = DSKitAsset.Assets.icDefaultProfile.image
-        imageView.layer.cornerRadius = 10
+        imageView.layer.cornerRadius = BaseRadius.Base.full
         imageView.clipsToBounds = true
         return imageView
     }()
-    
-    private let userLabel: UILabel = {
-        let label = UILabel()
-        label.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
-        label.textColor = DSKitAsset.Colors.gray300.color
-        return label
-    }()
-    
+
+    private let userLabel = UILabel()
+
     // MARK: - View Life Cycle
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+
         setUI()
         setLayout()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -80,40 +68,34 @@ extension AppJamMissionCardCVC {
     private func setUI() {
         self.backgroundColor = .clear
     }
-    
+
     private func setLayout() {
         contentView.addSubviews(missionImageView, missionTitleLabel, profileView, userLabel)
-        missionImageView.addSubviews(timeBadgeView)
-        timeBadgeView.addSubview(timeLabel)
-        
+        missionImageView.addSubview(timeBadge)
+
         missionImageView.snp.makeConstraints { make in
             make.directionalHorizontalEdges.top.equalToSuperview()
-            make.height.equalTo(232)
+            make.height.equalTo(240)
         }
-        
-        timeBadgeView.snp.makeConstraints { make in
-            make.top.trailing.equalToSuperview().inset(8)
+
+        timeBadge.snp.makeConstraints { make in
+            make.top.trailing.equalToSuperview().inset(BaseSpacing.Base.s8)
         }
-        
-        timeLabel.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview().inset(3.5)
-            make.leading.trailing.equalToSuperview().inset(4)
-        }
-        
+
         missionTitleLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.height.equalTo(24)
-            make.top.equalTo(missionImageView.snp.bottom).offset(8)
+            make.top.equalTo(missionImageView.snp.bottom).offset(BaseSpacing.Base.s8)
         }
-        
+
         profileView.snp.makeConstraints { make in
-            make.top.equalTo(missionTitleLabel.snp.bottom).offset(4)
+            make.top.equalTo(missionTitleLabel.snp.bottom).offset(BaseSpacing.Base.s4)
             make.leading.bottom.equalToSuperview()
-            make.size.equalTo(20)
+            make.size.equalTo(24)
         }
-        
+
         userLabel.snp.makeConstraints { make in
-            make.leading.equalTo(profileView.snp.trailing).offset(4)
+            make.leading.equalTo(profileView.snp.trailing).offset(BaseSpacing.Base.s4)
             make.centerY.equalTo(profileView.snp.centerY)
         }
     }
@@ -123,11 +105,16 @@ extension AppJamMissionCardCVC {
 
 extension AppJamMissionCardCVC {
     func configureCell(model: AppJamRankRecentPresentationModel) {
-        timeLabel.text = model.relativeTime
+        timeBadge.text = model.relativeTime
+
         missionTitleLabel.text = model.teamName
+        missionTitleLabel.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold)
+
         userLabel.text = model.userName
+        userLabel.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
+
         missionImageView.setImage(with: model.imageUrl)
-        
+
         if !model.userProfileImage.isEmpty {
             profileView.setImage(with: model.userProfileImage)
         }

@@ -10,31 +10,22 @@ import UIKit
 
 import Core
 import DSKit
+import MDS
 
 import SnapKit
 
 final class AppJamRankingHeaderView: UICollectionReusableView {
-    
+
     // MARK: - UI Components
-    
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.font = DSKitFontFamily.Suit.bold.font(size: 20)
-        label.textColor = DSKitAsset.Colors.white.color
-        return label
-    }()
-    
+
+    private let titleLabel = UILabel()
+
     private let titleImage: UIImageView = {
         let imageView = UIImageView()
         return imageView
     }()
-    
-    private let subtitleLabel: UILabel = {
-        let label = UILabel()
-        label.font = DSKitFontFamily.Suit.medium.font(size: 14)
-        label.textColor = DSKitAsset.Colors.gray300.color
-        return label
-    }()
+
+    private let subtitleLabel = UILabel()
     
     // MARK: - Initialization
     
@@ -60,19 +51,19 @@ extension AppJamRankingHeaderView {
         addSubviews(titleLabel, subtitleLabel, titleImage)
         
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(16)
+            make.top.equalToSuperview().inset(BaseSpacing.Base.s16)
             make.leading.equalToSuperview()
         }
-        
+
         titleImage.snp.makeConstraints { make in
             make.leading.equalTo(titleLabel.snp.trailing).offset(1)
             make.centerY.equalTo(titleLabel.snp.centerY)
         }
-        
+
         subtitleLabel.snp.makeConstraints { make in
             make.leading.equalTo(titleLabel.snp.leading)
-            make.top.equalTo(titleLabel.snp.bottom).offset(8)
-            make.bottom.equalToSuperview()
+            make.top.equalTo(titleLabel.snp.bottom).offset(BaseSpacing.Base.s6)
+            make.bottom.equalToSuperview().inset(BaseSpacing.Base.s20)
         }
     }
 }
@@ -82,7 +73,11 @@ extension AppJamRankingHeaderView {
 extension AppJamRankingHeaderView {
     func configure(title: String, subtitle: String, image: UIImage) {
         titleLabel.text = title
+        titleLabel.setTypography(Typography.heading3, textColor: SemanticColor.Fg.Neutral.bold)
+
         subtitleLabel.text = subtitle
+        subtitleLabel.setTypography(Typography.body2, textColor: SemanticColor.Fg.Neutral.subtle)
+
         titleImage.image = image
     }
 }
