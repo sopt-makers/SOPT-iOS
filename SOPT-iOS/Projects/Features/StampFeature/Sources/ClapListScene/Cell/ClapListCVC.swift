@@ -12,6 +12,7 @@ import Combine
 import Core
 import Domain
 import DSKit
+import MDS
 
 // MARK: ClapListCVC
 
@@ -26,26 +27,20 @@ final class ClapListCVC: UICollectionViewCell, UICollectionViewRegisterable {
 
     private let profileView = CustomProfileImageView().hideBorder()
 
-    private let nameLabel = UILabel().then {
-        $0.font = .SoptampFont.subtitle1
-        $0.textColor = DSKitAsset.Colors.white.color
-    }
+    private let nameLabel = UILabel()
 
     private let subtitleLabel = UILabel().then {
-        $0.font = .SoptampFont.caption1
-        $0.textColor = DSKitAsset.Colors.gray200.color
         $0.lineBreakMode = .byTruncatingTail
+        $0.numberOfLines = 1
     }
 
     private let clapLabel = UILabel().then {
-        $0.font = .SoptampFont.h3
-        $0.textColor = DSKitAsset.Colors.white.color
         $0.textAlignment = .right
     }
 
     private let clapIcon = UIImageView().then {
-        $0.image = DSKitAsset.Assets.icClap.image
-        $0.tintColor = DSKitAsset.Colors.white.color
+        $0.image = MDSIcon.clapDefaultOutlined.image
+        $0.tintColor = SemanticColor.Fg.Neutral.bold
         $0.contentMode = .scaleAspectFit
     }
 
@@ -66,8 +61,11 @@ final class ClapListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     func setData(model: ClapperModel) {
         self.model = model
         nameLabel.text = model.nickname
+        nameLabel.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold)
         subtitleLabel.text = model.profileMessage
+        subtitleLabel.setTypography(Typography.body3, textColor: SemanticColor.Fg.Neutral.subtle)
         clapLabel.text = "\(model.clapCount)회"
+        clapLabel.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold)
 
         if !model.profileImageUrl.isEmpty {
             profileView.setImage(
@@ -82,7 +80,8 @@ final class ClapListCVC: UICollectionViewCell, UICollectionViewRegisterable {
 
 extension ClapListCVC {
     private func setUI() {
-        contentView.backgroundColor = .clear
+        contentView.backgroundColor = SemanticColor.Bg.Neutral.ghost
+        contentView.layer.cornerRadius = BaseRadius.Base.r8
         contentView.clipsToBounds = true
     }
 
@@ -90,7 +89,7 @@ extension ClapListCVC {
         contentView.addSubviews(profileView, nameLabel, subtitleLabel, clapLabel, clapIcon)
 
         profileView.snp.makeConstraints {
-            $0.leading.equalToSuperview()
+            $0.leading.equalToSuperview().inset(12)
             $0.centerY.equalToSuperview()
             $0.size.equalTo(32)
         }
@@ -103,19 +102,20 @@ extension ClapListCVC {
 
         subtitleLabel.snp.makeConstraints {
             $0.leading.equalTo(nameLabel)
-            $0.top.equalTo(nameLabel.snp.bottom).offset(4)
+            $0.top.equalTo(nameLabel.snp.bottom).offset(2)
             $0.trailing.lessThanOrEqualTo(clapLabel.snp.leading).offset(-8)
-            $0.bottom.equalToSuperview().offset(-14)
+            $0.bottom.equalToSuperview().offset(-8)
         }
 
         clapIcon.snp.makeConstraints {
-            $0.trailing.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(12)
             $0.centerY.equalToSuperview()
-            $0.size.equalTo(24)
+            $0.width.equalTo(18)
+            $0.height.equalTo(20)
         }
 
         clapLabel.snp.makeConstraints {
-            $0.trailing.equalTo(clapIcon.snp.leading).offset(-6)
+            $0.trailing.equalTo(clapIcon.snp.leading).offset(-4)
             $0.centerY.equalToSuperview()
         }
     }

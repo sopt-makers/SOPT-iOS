@@ -11,6 +11,7 @@ import UIKit
 import Core
 import Domain
 import DSKit
+import MDS
 
 import Combine
 import SnapKit
@@ -33,19 +34,18 @@ final class ClapListVC: UIViewController, ClapListViewControllable {
     // MARK: - UI Components
 
     private let backButton = UIButton().then {
-        $0.setImage(DSKitAsset.Assets.chevronLeft.image, for: .normal)
-        $0.tintColor = DSKitAsset.Colors.white.color
+        $0.setImage(MDSIcon.chevronLeftOutlined.image, for: .normal)
+        $0.tintColor = SemanticColor.Fg.Neutral.bold
     }
 
     private let titleLabel = UILabel().then {
         $0.text = I18N.MyPage.SoptampSection.clapList
-        $0.font = .SoptampFont.h2
-        $0.textColor = DSKitAsset.Colors.white.color
+        $0.setTypography(Typography.title3, textColor: SemanticColor.Fg.Neutral.bold)
     }
 
     private let containerView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.gray900.color
-        $0.layer.cornerRadius = 20
+        $0.backgroundColor = SemanticColor.Bg.Neutral.ghost
+        $0.layer.cornerRadius = BaseRadius.Base.r20
         $0.clipsToBounds = true
     }
 
@@ -96,7 +96,7 @@ final class ClapListVC: UIViewController, ClapListViewControllable {
 extension ClapListVC {
 
     private func setUI() {
-        view.backgroundColor = DSKitAsset.Colors.black.color.withAlphaComponent(0.8)
+        view.backgroundColor = SemanticColor.Bg.Dim.default
         navigationController?.isNavigationBarHidden = true
     }
 
@@ -107,23 +107,23 @@ extension ClapListVC {
         containerView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(164)
             $0.directionalHorizontalEdges.equalToSuperview().inset(16)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.bottom.lessThanOrEqualTo(view.safeAreaLayoutGuide)
         }
 
         backButton.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(20)
-            $0.leading.equalToSuperview().inset(20)
+            $0.top.equalToSuperview().offset(23)
+            $0.leading.equalToSuperview().inset(8)
             $0.size.equalTo(24)
         }
 
         titleLabel.snp.makeConstraints {
-            $0.centerY.equalTo(backButton)
-            $0.leading.equalTo(backButton.snp.trailing).offset(12)
+            $0.top.equalToSuperview().inset(20)
+            $0.leading.equalTo(backButton.snp.trailing).offset(8)
         }
 
         clapListCollectionView.snp.makeConstraints {
-            $0.top.equalTo(backButton.snp.bottom).offset(20)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.top.equalTo(titleLabel.snp.bottom).offset(12)
+            $0.leading.trailing.equalToSuperview().inset(8)
             $0.bottom.equalToSuperview()
         }
     }

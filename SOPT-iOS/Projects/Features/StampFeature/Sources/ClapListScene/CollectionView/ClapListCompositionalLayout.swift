@@ -24,13 +24,13 @@ extension ClapListVC {
     private func createClapListSection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(62.adjustedH)
+            heightDimension: .absolute(60.adjustedH)
         )
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(62.adjustedH)
+            heightDimension: .absolute(60.adjustedH)
         )
         let group = NSCollectionLayoutGroup.vertical(
             layoutSize: groupSize,
