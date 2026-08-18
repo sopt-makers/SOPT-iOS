@@ -13,6 +13,7 @@ import Combine
 import Core
 import Domain
 import DSKit
+import MDS
 import SoptletterFeatureInterface
 
 final class SelectTopicVC: UIViewController {
@@ -24,6 +25,7 @@ final class SelectTopicVC: UIViewController {
         .publisher(for: .touchUpInside)
         .mapVoid()
         .asDriver()
+
     private let cellTapSubject = PassthroughSubject<SoptletterTopicModel, Never>()
     
     private var topics: [SoptletterTopicModel] = []
@@ -31,13 +33,12 @@ final class SelectTopicVC: UIViewController {
     // MARK: - Properties
     
     private lazy var backButton = UIButton(type: .custom).then {
-        $0.setImage(DSKitAsset.Assets.opArrowWhite.image, for: .normal)
+        $0.setImage(MDSIcon.chevronLeftOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold), for: .normal)
     }
     
     private let navTitleLabel = UILabel().then {
         $0.text = I18N.Soptletter.topicTitle
-        $0.textColor = DSKitAsset.Colors.gray10.color
-        $0.font = DSKitFontFamily.Pretendard.bold.font(size: 18)
+        $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
     }
     
     private let tableView = UITableView(frame: .zero, style: .plain).then {
@@ -45,9 +46,9 @@ final class SelectTopicVC: UIViewController {
         $0.separatorStyle = .none
         $0.showsVerticalScrollIndicator = false
         $0.rowHeight = UITableView.automaticDimension
-        $0.estimatedRowHeight = 52
-        $0.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 20, right: 0)
-        $0.register(SoptletterTopicCell.self, forCellReuseIdentifier: SoptletterTopicCell.identifier)
+        $0.estimatedRowHeight = 46
+        $0.contentInset = UIEdgeInsets(top: BaseSpacing.Base.s12, left: 0, bottom: BaseSpacing.Base.s20, right: 0)
+        SoptletterTopicCell.register(target: $0)
     }
     
     init(viewModel: SelectTopicViewModel) {
@@ -67,12 +68,11 @@ final class SelectTopicVC: UIViewController {
         setLayout()
         bindViewModel()
     }
-    
 }
 
 extension SelectTopicVC {
     func setUI() {
-        view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        view.backgroundColor = SemanticColor.Bg.Layer.basement
         tableView.dataSource = self
         tableView.delegate = self
     }
@@ -82,18 +82,18 @@ extension SelectTopicVC {
         view.addSubviews(backButton, navTitleLabel, tableView)
         
         backButton.snp.makeConstraints { make in
-            make.top.equalTo(safeArea.snp.top).inset(12)
-            make.leading.equalToSuperview().inset(20)
-            make.size.equalTo(32)
+            make.top.equalTo(safeArea.snp.top).inset(BaseSpacing.Base.s12)
+            make.leading.equalToSuperview().inset(BaseSpacing.Base.s20)
+            make.size.equalTo(BaseSpacing.Base.s24)
         }
-        
+
         navTitleLabel.snp.makeConstraints { make in
-            make.leading.equalTo(backButton.snp.trailing).offset(12)
+            make.leading.equalTo(backButton.snp.trailing).offset(BaseSpacing.Base.s12)
             make.centerY.equalTo(backButton)
         }
-        
+
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(backButton.snp.bottom).offset(22)
+            make.top.equalTo(backButton.snp.bottom).offset(BaseSpacing.Base.s16)
             make.leading.trailing.bottom.equalToSuperview()
         }
     }
@@ -126,7 +126,7 @@ extension SelectTopicVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: SoptletterTopicCell.identifier,
+            withIdentifier: SoptletterTopicCell.className,
             for: indexPath
         ) as? SoptletterTopicCell else { return UITableViewCell() }
         

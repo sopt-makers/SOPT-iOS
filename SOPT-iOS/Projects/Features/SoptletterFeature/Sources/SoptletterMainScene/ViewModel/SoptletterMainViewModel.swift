@@ -27,7 +27,7 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
         let reportButtonTap: Driver<Void>
         let menuButtonTap: Driver<Void>
         let postItCellTap: Driver<(messageId: Int, topicId: Int)>
-        let imageProcessCompleted: Driver<(fileName: String, image: UIImage, url: URL)>
+        let imageProcessCompleted: Driver<(image: UIImage, url: URL)>
         let soptletterHeaderTap: Driver<Int>
     }
     
@@ -53,7 +53,7 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     public var onNaviBackTap: (() -> Void)?
     public var onWriteTap: (() -> Void)?
     public var onPostItTap: (() -> Void)?
-    public var onDownloadTap: ((String, UIImage, URL) -> Void)?
+    public var onDownloadTap: ((UIImage, URL) -> Void)?
     public var onReportTap: (@MainActor (URL) -> Void)?
     public var onMenuTap: (() -> Void)?
     public var onCellTap: ((Int, Int) -> Void)?
@@ -144,7 +144,7 @@ extension SoptletterMainViewModel {
         input.imageProcessCompleted
             .withUnretained(self)
             .sink { owner, fileInfo in
-                owner.onDownloadTap?(fileInfo.fileName, fileInfo.image, fileInfo.url)
+                owner.onDownloadTap?(fileInfo.image, fileInfo.url)
             }.store(in: cancelBag)
         
         return output

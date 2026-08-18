@@ -13,6 +13,7 @@ import Then
 
 import Core
 import DSKit
+import MDS
 
 final class SoptletterOnboardingVC: UIViewController {
     
@@ -28,6 +29,8 @@ final class SoptletterOnboardingVC: UIViewController {
         .publisher(for: .touchUpInside)
         .mapVoid()
         .asDriver()
+    
+    // MARK: - UI Properties
  
     private let imageView = UIImageView().then {
         $0.image = DSKitAsset.Assets.imgLetterOnboarding.image
@@ -36,7 +39,7 @@ final class SoptletterOnboardingVC: UIViewController {
     
     private let titleStackView = UIStackView().then {
         $0.axis = .horizontal
-        $0.spacing = 10
+        $0.spacing = BaseSpacing.Base.s10
         $0.alignment = .bottom
     }
     
@@ -51,40 +54,24 @@ final class SoptletterOnboardingVC: UIViewController {
     }
     
     private let descriptionLabel = UILabel().then {
-        let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.lineSpacing = 4
-            paragraphStyle.alignment = .center
-
-            let attributedString = NSAttributedString(
-                string: I18N.Soptletter.Onboarding.descriptionText,
-                attributes: [
-                    .font: DSKitFontFamily.Suit.medium.font(size: 16),
-                    .foregroundColor: DSKitAsset.Colors.gray200.color,
-                    .kern: -1.5,
-                    .paragraphStyle: paragraphStyle
-                ]
-            )
-
-            $0.attributedText = attributedString
-            $0.numberOfLines = 0
+        $0.numberOfLines = 0
+        $0.text = I18N.Soptletter.Onboarding.descriptionText
+        $0.setTypography(Typography.body1,
+                         textColor: SemanticColor.Fg.Neutral.subtle)
+        $0.textAlignment = .center
     }
-    
-    private let startButton = UIButton().then {
-        var config = UIButton.Configuration.filled()
-        config.baseBackgroundColor = DSKitAsset.Colors.white.color
-        config.background.cornerRadius = 12
-        
-        var attributeContainer = AttributeContainer()
-        attributeContainer.font = DSKitFontFamily.Suit.semiBold.font(size: 18)
-        attributeContainer.foregroundColor = DSKitAsset.Colors.black.color
-        
-        config.attributedTitle = AttributedString(I18N.Soptletter.Onboarding.startButtonTitle, attributes: attributeContainer)
-        $0.configuration = config
-    }
-    
+
+    private let startButton = MDSActionButton(
+        variant: .primary,
+        size: .large,
+        title: I18N.Soptletter.Onboarding.startButtonTitle
+    )
+
     private let backButton = UIButton().then {
-        $0.setImage(DSKitAsset.Assets.xMark.image.withTintColor(DSKitAsset.Colors.gray10.color), for: .normal)
+        $0.setImage(MDSIcon.xCloseOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold), for: .normal)
     }
+    
+    // MARK: - Init
     
     init(viewModel: SoptletterOnboardingViewModel) {
         self.viewModel = viewModel
@@ -107,7 +94,7 @@ final class SoptletterOnboardingVC: UIViewController {
 
 extension SoptletterOnboardingVC {
     private func setUI() {
-        view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        view.backgroundColor = SemanticColor.Bg.Layer.basement
     }
     
     private func setLayout() {
@@ -117,30 +104,29 @@ extension SoptletterOnboardingVC {
         titleStackView.addArrangedSubviews(titleImageView, secondTitleImageView)
         
         backButton.snp.makeConstraints {
-            $0.top.equalTo(safeArea.snp.top).offset(12)
-            $0.leading.equalToSuperview().inset(20)
-            $0.size.equalTo(32)
+            $0.top.equalTo(safeArea.snp.top).offset(BaseSpacing.Base.s12)
+            $0.leading.equalToSuperview().inset(BaseSpacing.Base.s20)
+            $0.size.equalTo(BaseSpacing.Base.s24)
         }
-        
+
         imageView.snp.makeConstraints {
             $0.top.equalTo(backButton.snp.bottom).offset(70)
             $0.centerX.equalToSuperview()
         }
-        
+
         titleStackView.snp.makeConstraints {
-            $0.top.equalTo(imageView.snp.bottom).offset(40)
+            $0.top.equalTo(imageView.snp.bottom).offset(BaseSpacing.Base.s40)
             $0.centerX.equalToSuperview()
         }
-        
+
         descriptionLabel.snp.makeConstraints {
-            $0.top.equalTo(titleStackView.snp.bottom).offset(16)
+            $0.top.equalTo(titleStackView.snp.bottom).offset(BaseSpacing.Base.s16)
             $0.centerX.equalToSuperview()
         }
-        
+
         startButton.snp.makeConstraints {
-            $0.bottom.equalTo(view.snp.bottom).offset(-83)
-            $0.leading.trailing.equalToSuperview().inset(20)
-            $0.height.equalTo(56)
+            $0.bottom.equalTo(safeArea.snp.bottom)
+            $0.leading.trailing.equalToSuperview().inset(BaseSpacing.Base.s20)
         }
     }
 }

@@ -42,7 +42,6 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
     private var editTask: Task<Void, Never>?
     private var deleteTask: Task<Void, Never>?
     
-    public var onNaviBackTap: (() -> Void)?
     public var onError: (@MainActor () -> Void)?
     public var onEditCompleted: (() -> Void)?
     public var onDeleteCompleted: (() -> Void)?

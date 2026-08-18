@@ -11,13 +11,14 @@ import Combine
 
 import Core
 import DSKit
+import MDS
 
 import SnapKit
 import Then
 
 import BaseFeatureDependency
 
-public final class SoptletterWritingVC: UIViewController, SoptletterViewControllable {
+public final class SoptletterWritingVC: UIViewController {
 
     // MARK: - Properties
 
@@ -26,7 +27,6 @@ public final class SoptletterWritingVC: UIViewController, SoptletterViewControll
 
     private let maxCharCount = 350
     private let textChangedSubject = PassthroughSubject<String, Never>()
-    private let submitTapSubject = PassthroughSubject<Void, Never>()
     private var isSettingAttributedText = false
     private var keyboardWillShowObserver: NSObjectProtocol?
     private var keyboardWillHideObserver: NSObjectProtocol?
@@ -36,33 +36,34 @@ public final class SoptletterWritingVC: UIViewController, SoptletterViewControll
         .mapVoid()
         .asDriver()
 
-    // MARK: - UI Components (Scroll)
+    private lazy var submitButtonTap: Driver<Void> = submitButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
+
+    // MARK: - UI Components
 
     private let scrollView = UIScrollView()
     private let contentView = UIView()
-
-    // MARK: - UI Components (NavBar)
-
     private let navBarView = UIView()
 
     private let backButton = UIButton(type: .custom).then {
-        $0.setImage(DSKitAsset.Assets.opArrowWhite.image, for: .normal)
+        $0.setImage(MDSIcon.chevronLeftOutlined.image, for: .normal)
     }
 
     private let navTitleLabel = UILabel().then {
         $0.text = I18N.Soptletter.navigationTitle
-        $0.textColor = DSKitAsset.Colors.gray10.color
-        $0.font = DSKitFontFamily.Pretendard.bold.font(size: 18)
+        $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
     }
 
-    // MARK: - UI Components (Description)
+    // MARK: - UI Components
 
     private let descriptionStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.alignment = .center
         $0.spacing = 14
         $0.isLayoutMarginsRelativeArrangement = true
-        $0.layoutMargins = UIEdgeInsets(top: 0, left: 20, bottom: 4, right: 20)
+        $0.layoutMargins = UIEdgeInsets(top: 4, left: 20, bottom: 4, right: 20)
     }
 
     private let mailBoxImageView = UIImageView().then {
@@ -71,30 +72,24 @@ public final class SoptletterWritingVC: UIViewController, SoptletterViewControll
     }
 
     private let descriptionLabel = UILabel().then {
-        $0.text = I18N.Soptletter.descriptionText
-        $0.textColor = DSKitAsset.Colors.gray300.color
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
         $0.numberOfLines = 0
+        $0.setTypography(Typography.body2, textColor: SemanticColor.Fg.Neutral.bold)
     }
 
-    // MARK: - UI Components (Input Container)
-
     private let inputContainerView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.gray700.color
-        $0.layer.cornerRadius = 10
+        $0.backgroundColor = SemanticColor.Bg.Neutral.ghost
+        $0.layer.cornerRadius = BaseRadius.Base.r10
         $0.layer.borderWidth = 0
     }
 
     private let recipientLabel = UILabel().then {
         $0.text = I18N.Soptletter.recipient
-        $0.textColor = DSKitAsset.Colors.gray10.color
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
+        $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
     }
 
     private let textView = UITextView().then {
         $0.backgroundColor = .clear
-        $0.textColor = DSKitAsset.Colors.gray10.color
-        $0.font = DSKitFontFamily.Suit.regular.font(size: 16)
+        $0.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.bold)
         $0.textContainerInset = .zero
         $0.textContainer.lineFragmentPadding = 0
         $0.isScrollEnabled = false
@@ -103,30 +98,19 @@ public final class SoptletterWritingVC: UIViewController, SoptletterViewControll
     }
 
     private let placeholderLabel = UILabel().then {
-        $0.text = I18N.Soptletter.placeholder
-        $0.textColor = DSKitAsset.Colors.gray500.color
-        $0.font = DSKitFontFamily.Suit.regular.font(size: 16)
         $0.numberOfLines = 0
+        $0.text = I18N.Soptletter.placeholder
+        $0.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.ghost)
     }
 
     private let charCountLabel = UILabel().then {
         $0.text = I18N.Soptletter.charLimit
-        $0.textColor = DSKitAsset.Colors.gray300.color
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
+        $0.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.subtle)
     }
 
-    // MARK: - UI Components (Submit Button)
-
-    private let submitButton = AppCustomButton(title: I18N.Soptletter.submitButton)
-        .setEnabled(false)
-        .setConfigForState(
-            bgColor: DSKitAsset.Colors.gray600.color,
-            disabledColor: DSKitAsset.Colors.gray100.color,
-            disabledTextColor: DSKitAsset.Colors.gray300.color,
-            disabledFont: DSKitFontFamily.Suit.semiBold.font(size: 16),
-            enabledTextColor: DSKitAsset.Colors.white.color,
-            enabledFont: DSKitFontFamily.Suit.semiBold.font(size: 16)
-        )
+    private let submitButton = MDSActionButton(variant: .secondary,
+                                               size: .large,
+                                               title: I18N.Soptletter.submitButton)
 
     // MARK: - Init
 
@@ -165,10 +149,9 @@ public final class SoptletterWritingVC: UIViewController, SoptletterViewControll
 
 private extension SoptletterWritingVC {
     func setUI() {
-        view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        view.backgroundColor = SemanticColor.Bg.Layer.basement
         navigationController?.navigationBar.isHidden = true
         textView.delegate = self
-        submitButton.addTarget(self, action: #selector(submitButtonTapped), for: .touchUpInside)
     }
 
     func setLayout() {
@@ -197,13 +180,13 @@ private extension SoptletterWritingVC {
         }
 
         backButton.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview().inset(12)
-            make.leading.equalToSuperview().inset(20)
-            make.width.height.equalTo(32)
+            make.top.bottom.equalToSuperview().inset(BaseSpacing.Base.s16)
+            make.leading.equalToSuperview().inset(BaseSpacing.Base.s20)
+            make.width.height.equalTo(24)
         }
 
         navTitleLabel.snp.makeConstraints { make in
-            make.leading.equalTo(backButton.snp.trailing).offset(12)
+            make.leading.equalTo(backButton.snp.trailing).offset(BaseSpacing.Base.s12)
             make.centerY.equalTo(backButton)
         }
 
@@ -218,19 +201,19 @@ private extension SoptletterWritingVC {
         }
 
         inputContainerView.snp.makeConstraints { make in
-            make.top.equalTo(descriptionStackView.snp.bottom).offset(10)
+            make.top.equalTo(descriptionStackView.snp.bottom).offset(BaseSpacing.Base.s10)
             make.leading.trailing.equalToSuperview().inset(19)
         }
 
         recipientLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(28)
-            make.leading.trailing.equalToSuperview().inset(20)
+            make.top.equalToSuperview().inset(BaseSpacing.Base.s28)
+            make.leading.trailing.equalToSuperview().inset(BaseSpacing.Base.s20)
         }
 
         textView.snp.makeConstraints { make in
-            make.top.equalTo(recipientLabel.snp.bottom).offset(14)
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.bottom.equalTo(charCountLabel.snp.top).offset(-16)
+            make.top.equalTo(recipientLabel.snp.bottom).offset(BaseSpacing.Base.s14)
+            make.leading.trailing.equalToSuperview().inset(BaseSpacing.Base.s20)
+            make.bottom.equalTo(charCountLabel.snp.top).offset(-BaseSpacing.Base.s10)
             make.height.greaterThanOrEqualTo(120)
         }
 
@@ -239,14 +222,13 @@ private extension SoptletterWritingVC {
         }
 
         charCountLabel.snp.makeConstraints { make in
-            make.trailing.bottom.equalToSuperview().inset(20)
+            make.trailing.bottom.equalToSuperview().inset(BaseSpacing.Base.s20)
         }
 
         submitButton.snp.makeConstraints { make in
-            make.top.greaterThanOrEqualTo(inputContainerView.snp.bottom).offset(20)
-            make.bottom.equalToSuperview().inset(34)
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(56)
+            make.top.greaterThanOrEqualTo(inputContainerView.snp.bottom).offset(BaseSpacing.Base.s20)
+            make.bottom.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(BaseSpacing.Base.s20)
         }
     }
 
@@ -278,7 +260,7 @@ private extension SoptletterWritingVC {
             viewDidLoad: Just<Void>(()).asDriver(),
             naviBackTap: naviBackTap,
             textChanged: textChangedSubject.asDriver(),
-            submitTap: submitTapSubject.asDriver()
+            submitTap: submitButtonTap
         )
 
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
@@ -289,10 +271,6 @@ private extension SoptletterWritingVC {
             .sink { owner, isEnabled in
                 owner.submitButton.isEnabled = isEnabled
             }.store(in: cancelBag)
-    }
-
-    @objc func submitButtonTapped() {
-        submitTapSubject.send(())
     }
 }
 
@@ -321,31 +299,32 @@ extension SoptletterWritingVC: UITextViewDelegate {
 
     private func updateCharCount(_ count: Int) {
         charCountLabel.text = "\(count)/\(maxCharCount)자"
-        charCountLabel.textColor = count > maxCharCount
-            ? DSKitAsset.Colors.error.color
-            : DSKitAsset.Colors.gray300.color
+        let textColor = count > maxCharCount
+            ? SemanticColor.Fg.Danger.default
+            : SemanticColor.Fg.Neutral.subtle
+        charCountLabel.setTypography(Typography.label3, textColor: textColor)
     }
 
     private func updateErrorState(text: String) {
         let isOver = text.count > maxCharCount
         inputContainerView.layer.borderWidth = isOver ? 1 : 0
-        inputContainerView.layer.borderColor = isOver ? DSKitAsset.Colors.error.color.cgColor : nil
+        inputContainerView.layer.borderColor = isOver ? SemanticColor.Stroke.Danger.default.cgColor : nil
 
         guard isOver else {
-            if textView.textColor != DSKitAsset.Colors.gray10.color {
-                textView.textColor = DSKitAsset.Colors.gray10.color
+            if textView.textColor != SemanticColor.Fg.Neutral.bold {
+                textView.textColor = SemanticColor.Fg.Neutral.bold
             }
             return
         }
 
         let attributed = NSMutableAttributedString(string: text)
-        let normalFont = DSKitFontFamily.Suit.regular.font(size: 16)
+        let normalFont = Typography.body1.font
         attributed.addAttributes([
-            .foregroundColor: DSKitAsset.Colors.gray10.color,
+            .foregroundColor: SemanticColor.Fg.Neutral.bold,
             .font: normalFont
         ], range: NSRange(location: 0, length: maxCharCount))
         attributed.addAttributes([
-            .foregroundColor: DSKitAsset.Colors.error.color,
+            .foregroundColor: SemanticColor.Fg.Danger.default,
             .font: normalFont
         ], range: NSRange(location: maxCharCount, length: text.count - maxCharCount))
 

@@ -9,59 +9,58 @@
 import UIKit
 
 import DSKit
+import MDS
 import Core
 import Combine
 
 final class SoptletterCheckNicknameVC: UIViewController {
-    
+
     private let viewModel: SoptletterNicknameCheckViewModel
     private let cancelBag = CancelBag()
-    
-    private lazy var naviBackTap: Driver<Void> = backButton
+
+    private lazy var naviBackTap: Driver<Void> = naviBar.leftButtonTapped
+
+    private lazy var goTap: Driver<Void> = goButton
         .publisher(for: .touchUpInside)
         .mapVoid()
         .asDriver()
-    
-    private lazy var goTap: Driver<Void> = button
-        .publisher(for: .touchUpInside)
-        .mapVoid()
-        .asDriver()
-    
+
     // TODO: - 추후 기수 연결
     private let number: Int = 38
-    
+
     private let cardView = NicknameCheckCardView()
-    
-    private lazy var button = UIButton().then {
-        var config = UIButton.Configuration.filled()
-        config.baseBackgroundColor = DSKitAsset.Colors.white.color
-        config.background.cornerRadius = 12
-        
-        var attributeContainer = AttributeContainer()
-        attributeContainer.font = DSKitFontFamily.Suit.semiBold.font(size: 18)
-        attributeContainer.foregroundColor = DSKitAsset.Colors.black.color
-        
-        config.attributedTitle = AttributedString("\(number)" + I18N.Soptletter.Onboarding.goButtonTitle, attributes: attributeContainer)
-        $0.configuration = config
+
+    private let cardCenteringGuide = UILayoutGuide()
+
+    private lazy var goButton = MDSActionButton(
+        variant: .primary,
+        size: .large,
+        title: "\(number)" + I18N.Soptletter.Onboarding.goButtonTitle
+    )
+
+    // TODO: - MDS 전용 네비게이터가 추가되면 교체
+    private lazy var naviBar = OPNavigationBar(
+        self,
+        type: .oneLeftButton,
+        backgroundColor: SemanticColor.Bg.Layer.basement,
+        ignoreLeftButtonAction: true
+    ).then {
+        $0.setLeftButtonImage(MDSIcon.xCloseOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold))
     }
-    
-    private let backButton = UIButton().then {
-        $0.setImage(DSKitAsset.Assets.xMark.image.withTintColor(DSKitAsset.Colors.gray10.color), for: .normal)
-    }
-    
+
     init(viewModel: SoptletterNicknameCheckViewModel) {
         self.viewModel = viewModel
-        
+
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         setUI()
         setLayout()
         bindViewModel()
@@ -70,29 +69,36 @@ final class SoptletterCheckNicknameVC: UIViewController {
 
 extension SoptletterCheckNicknameVC {
     private func setUI() {
-        view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        view.backgroundColor = SemanticColor.Bg.Layer.basement
     }
-    
+
     private func setLayout() {
         let safeArea = view.safeAreaLayoutGuide
-        
-        view.addSubviews(backButton, cardView, button)
-        
-        backButton.snp.makeConstraints {
-              $0.top.equalTo(safeArea.snp.top).offset(12)
-              $0.leading.equalToSuperview().inset(20)
-              $0.size.equalTo(32)
-          }
-          cardView.snp.makeConstraints {
-              $0.top.equalTo(backButton.snp.bottom).offset(32)
-              $0.leading.trailing.equalToSuperview().inset(20)
-              $0.bottom.lessThanOrEqualTo(button.snp.top).offset(-20)
-          }
-          button.snp.makeConstraints {
-              $0.bottom.equalTo(view.snp.bottom).offset(-83)
-              $0.leading.trailing.equalToSuperview().inset(20)
-              $0.height.equalTo(56)
-          }
+
+        view.addSubviews(naviBar, cardView, goButton)
+        view.addLayoutGuide(cardCenteringGuide)
+
+        naviBar.snp.makeConstraints {
+            $0.top.equalTo(safeArea.snp.top)
+            $0.leading.trailing.equalToSuperview()
+        }
+
+        goButton.snp.makeConstraints {
+            $0.bottom.equalTo(safeArea.snp.bottom)
+            $0.leading.trailing.equalToSuperview().inset(BaseSpacing.Base.s20)
+        }
+
+        cardCenteringGuide.snp.makeConstraints {
+            $0.top.equalTo(naviBar.snp.bottom)
+            $0.bottom.equalTo(goButton.snp.top)
+            $0.leading.trailing.equalToSuperview()
+        }
+
+        cardView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(BaseSpacing.Base.s20)
+            $0.top.greaterThanOrEqualTo(naviBar.snp.bottom).offset(BaseSpacing.Base.s24)
+            $0.centerY.equalTo(cardCenteringGuide)
+        }
     }
 }
 
@@ -103,9 +109,9 @@ private extension SoptletterCheckNicknameVC {
             naviBackTap: naviBackTap,
             goTap: goTap
         )
-        
+
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
-        
+
         output.profileSubject
             .withUnretained(self)
             .receive(on: DispatchQueue.main)

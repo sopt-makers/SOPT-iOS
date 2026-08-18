@@ -9,57 +9,53 @@
 import UIKit
 
 import DSKit
+import MDS
 import Core
 
 final class NicknameCheckCardView: UIView {
     private let imageView: UIImageView = {
        let iv = UIImageView()
         iv.image = DSKitAsset.Assets.imgNicknameCheck.image
-        iv.translatesAutoresizingMaskIntoConstraints = false
         return iv
     }()
-    
+
     private let descriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "nn" + I18N.Soptletter.Nickname.descriptionText
-        label.font = DSKitFontFamily.Suit.semiBold.font(size: 18)
         label.numberOfLines = 2
+        label.text = "nn" + I18N.Soptletter.Nickname.descriptionText
+        label.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.default)
         label.textAlignment = .center
-        label.textColor = DSKitAsset.Colors.gray50.color
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+
     private let divider: UIView = {
        let view = UIView()
-        view.backgroundColor = DSKitAsset.Colors.gray600.color
-        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = SemanticColor.Stroke.Neutral.default
         return view
     }()
-    
+
     private let myNickName: UILabel = {
        let label = UILabel()
         label.text = I18N.Soptletter.Nickname.myNicknameText
-        label.textColor = DSKitAsset.Colors.gray300.color
-        label.font = DSKitFontFamily.Suit.semiBold.font(size: 20)
+        label.setTypography(Typography.title3,
+                            textColor: SemanticColor.Fg.Neutral.subtle)
         return label
     }()
-    
+
     private let userNickName: UILabel = {
         let label = UILabel()
         label.text = "익명의 김솝트"
-         label.textColor = DSKitAsset.Colors.gray30.color
-         label.font = DSKitFontFamily.Suit.semiBold.font(size: 24)
-         return label
+        label.setTypography(Typography.title2, textColor: SemanticColor.Fg.Neutral.bold)
+        return label
     }()
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+
         setUI()
         setLayout()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -67,10 +63,10 @@ final class NicknameCheckCardView: UIView {
 
 extension NicknameCheckCardView {
     private func setUI() {
-        backgroundColor = DSKitAsset.Colors.gray800.color
-        self.layer.cornerRadius = 12
+        backgroundColor = SemanticColor.Bg.Neutral.ghost
+        self.layer.cornerRadius = BaseRadius.Base.r12
     }
-    
+
     private func setLayout() {
         addSubviews(
             imageView,
@@ -79,28 +75,28 @@ extension NicknameCheckCardView {
             myNickName,
             userNickName
         )
-        
+
         imageView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(28)
+            $0.top.equalToSuperview().inset(BaseSpacing.Base.s28)
             $0.centerX.equalToSuperview()
         }
         descriptionLabel.snp.makeConstraints {
-            $0.top.equalTo(imageView.snp.bottom).offset(20)
+            $0.top.equalTo(imageView.snp.bottom).offset(BaseSpacing.Base.s20)
             $0.centerX.equalToSuperview()
         }
         divider.snp.makeConstraints {
-            $0.top.equalTo(descriptionLabel.snp.bottom).offset(16)
+            $0.top.equalTo(descriptionLabel.snp.bottom).offset(BaseSpacing.Base.s16)
             $0.height.equalTo(1)
-            $0.leading.trailing.equalToSuperview().inset(12)
+            $0.leading.trailing.equalToSuperview().inset(BaseSpacing.Base.s12)
         }
         myNickName.snp.makeConstraints {
-            $0.top.equalTo(divider.snp.bottom).offset(16)
+            $0.top.equalTo(divider.snp.bottom).offset(BaseSpacing.Base.s16)
             $0.centerX.equalToSuperview()
         }
         userNickName.snp.makeConstraints {
             $0.top.equalTo(myNickName.snp.bottom)
             $0.centerX.equalToSuperview()
-            $0.bottom.equalToSuperview().inset(34)
+            $0.bottom.equalToSuperview().inset(BaseSpacing.Base.s32)
         }
     }
 }

@@ -11,14 +11,15 @@ import UIKit
 
 import Core
 import DSKit
+import MDS
 
 import SnapKit
 
-final class SoptletterPostItCell: UICollectionViewCell {
+final class SoptletterPostItCell: UICollectionViewCell, UICollectionViewRegisterable {
 
     // MARK: - Properties
 
-    static let identifier = "SoptletterPostItCell"
+    static var isFromNib: Bool = false
 
     private let maxNumberOfLines = 5
 
@@ -28,8 +29,6 @@ final class SoptletterPostItCell: UICollectionViewCell {
     }
 
     private let contentLabel = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
-        $0.textColor = DSKitAsset.Colors.gray800.color
         $0.textAlignment = .center
         $0.numberOfLines = 5
         $0.lineBreakMode = .byTruncatingTail
@@ -73,7 +72,7 @@ extension SoptletterPostItCell {
 
         contentLabel.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.directionalHorizontalEdges.equalToSuperview().inset(24)
+            make.directionalHorizontalEdges.equalToSuperview().inset(BaseSpacing.Base.s24)
         }
     }
 }
@@ -89,7 +88,7 @@ extension SoptletterPostItCell {
         shapeType: String
     ) -> Self {
             contentLabel.text = text
-            contentLabel.textColor = textColor
+            contentLabel.setTypography(Typography.body2, textColor: textColor)
 
             let rotation = CGAffineTransform(rotationAngle: labelRotationAngle * .pi / 180)
             contentLabel.transform = rotation
@@ -115,28 +114,12 @@ extension SoptletterPostItCell {
     }
 }
 
-extension UIColor {
-    convenience init(hex: String) {
-        var hexString = hex.trimmingCharacters(in: .whitespacesAndNewlines)
-        hexString = hexString.replacingOccurrences(of: "#", with: "")
-        
-        var rgb: UInt64 = 0
-        Scanner(string: hexString).scanHexInt64(&rgb)
-        
-        let r = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
-        let g = CGFloat((rgb & 0x00FF00) >> 8) / 255.0
-        let b = CGFloat(rgb & 0x0000FF) / 255.0
-        
-        self.init(red: r, green: g, blue: b, alpha: 1.0)
-    }
-}
-
 enum SoptletterShapeMapping: String {
     case sharp = "SHARP"
     case cloud = "CLOUD"
     case smooth = "SMOOTH"
     case point = "POINT"
-    
+
     init(shapeStyle: String) {
         self = SoptletterShapeMapping(rawValue: shapeStyle.uppercased()) ?? .point
     }
