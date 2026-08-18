@@ -9,32 +9,30 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
 
 final class SignUpOAuthView: UIView {
     
-    private static let i18n = I18N.SignIn.Refactor.self
-    
+    private static let i18n = I18N.Auth.SocialLink.self
+
     public var viewModelInput: SignUpViewModel.Input.OAuth {
         .init(
             googleLoginTapped: oAuthView.googleLoginButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
             appleLoginTapped: oAuthView.appleLoginButton.publisher(for: .touchUpInside).mapVoid().asDriver()
         )
     }
-    
+
     //MARK: - Properties
 
     private let titleLabel = UILabel().then {
-        $0.text = "소셜 계정 연동"
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 24)
-        $0.textColor = DSKitAsset.Colors.gray10.color
+        $0.text = i18n.title
+        $0.setTypography(Typography.heading2, textColor: SemanticColor.Fg.Neutral.bold)
         $0.textAlignment = .center
     }
-    
+
     private let descriptionLabel = UILabel().then {
-        $0.text = "반갑습니다 회원님\n소셜로그인을 진행하여 회원가입을 완료해주세요"
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
-        $0.textColor = DSKitAsset.Colors.gray60.color
+        $0.text = i18n.description
+        $0.setTypography(Typography.body3, textColor: SemanticColor.Fg.Neutral.subtle)
         $0.textAlignment = .center
         $0.numberOfLines = 2
     }
@@ -54,28 +52,28 @@ final class SignUpOAuthView: UIView {
     
     
     private func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.black100.color
+        self.backgroundColor = SemanticColor.Bg.Layer.basement
     }
-    
+
     private func setLayout() {
         self.addSubviews(
             titleLabel,
             descriptionLabel,
             oAuthView
         )
-        
+
         titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(54)
+            $0.top.equalToSuperview()
             $0.centerX.equalToSuperview()
         }
-        
+
         descriptionLabel.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(14)
+            $0.top.equalTo(titleLabel.snp.bottom).offset(BaseSpacing.Base.s8)
             $0.centerX.equalToSuperview()
         }
-        
+
         oAuthView.snp.makeConstraints {
-            $0.top.equalTo(descriptionLabel.snp.bottom).offset(66)
+            $0.top.equalTo(descriptionLabel.snp.bottom).offset(BaseSpacing.Base.s64)
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.bottom.lessThanOrEqualToSuperview()
         }

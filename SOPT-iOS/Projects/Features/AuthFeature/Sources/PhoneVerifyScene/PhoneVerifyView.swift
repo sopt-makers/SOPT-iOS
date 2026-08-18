@@ -6,165 +6,94 @@
 //  Copyright © 2025 SOPT-iOS. All rights reserved.
 //
 
+import Combine
 import UIKit
 
 import BaseFeatureDependency
-import DSKit
 import Core
-
+import MDS
 
 final class PhoneVerifyView: UIView {
-    
+
+    private var isTimeLeftError = false
+
+    private let phoneTextChanged = PassthroughSubject<String, Never>()
+    private let codeTextChanged = PassthroughSubject<String, Never>()
+    private let loginHelpButtonTappedSubject = PassthroughSubject<Void, Never>()
+
     public var helpViewHidden: Bool {
-        get { helpView.isHidden }
-        set { helpView.isHidden = newValue }
+        get { helpCallout.isHidden }
+        set { helpCallout.isHidden = newValue }
     }
     
     public var viewModelInput: PhoneVerifyViewModel.Input {
         return .init(
             sendButtonTapped: sendButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
             doneButtonTapped: doneButton.publisher(for: .touchUpInside).mapVoid().asDriver(),
-            phoneTextFieldText: phoneTextField.publisher(for: .editingChanged).compactMap { $0.text }.asDriver(),
-            codeTextFieldText: codeTextField.publisher(for: .editingChanged).compactMap { $0.text }.asDriver()
+            phoneTextFieldText: phoneTextChanged.asDriver(),
+            codeTextFieldText: codeTextChanged.asDriver()
         )
     }
     
     public var loginHelpButtonTapped: Driver<Void> {
-        helpView.gesture().mapVoid().asDriver()
+        loginHelpButtonTappedSubject.asDriver()
     }
     
     private static let i18N = I18N.Auth.PhoneVerify.self
     
     private let titleLabel = UILabel().then {
         $0.text = i18N.title
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 24)
-        $0.textColor = DSKitAsset.Colors.gray10.color
+        $0.setTypography(Typography.heading2, textColor: SemanticColor.Fg.Neutral.bold)
         $0.textAlignment = .center
     }
-    
+
     private let descriptionLabel = UILabel().then {
         $0.text = i18N.description
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
-        $0.textColor = DSKitAsset.Colors.gray60.color
+        $0.setTypography(Typography.body3, textColor: SemanticColor.Fg.Neutral.subtle)
         $0.textAlignment = .center
         $0.numberOfLines = 2
     }
-    
-    private let phoneLabel = UILabel().then {
-        $0.text = i18N.phoneLabel
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-        $0.textColor = DSKitAsset.Colors.gray80.color
-    }
-    
-    private let phoneTextField = UITextField().then {
-        $0.placeholder = i18N.phonePlaceholder
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 16)
-        $0.keyboardType = .numberPad
-        $0.backgroundColor = DSKitAsset.Colors.gray800.color
-        $0.textColor = DSKitAsset.Colors.gray10.color
-        $0.layer.cornerRadius = 10
+
+    private let phoneField = MDSTextField(
+        variant: .default,
+        placeholder: i18N.phonePlaceholder,
+        label: i18N.phoneLabel,
+        isRequired: true
+    )
+
+    private let sendButton = UIButton().then {
+        $0.layer.cornerRadius = BaseRadius.Base.r8
         $0.layer.masksToBounds = true
-        $0.layer.borderWidth = 1
-        $0.layer.borderColor = UIColor.clear.cgColor
-        $0.addToolbar()
-        $0.addLeftPadding(width: 20)
+        $0.backgroundColor = SemanticColor.Bg.Neutral.inverse
     }
-    
-    private let phoneFailIcon = UIImageView().then {
-        $0.image = DSKitAsset.Assets.alertCircle.image.withTintColor(DSKitAsset.Colors.error.color)
-        $0.contentMode = .scaleAspectFit
+
+    private let codeField = MDSTextField(
+        variant: .default,
+        placeholder: i18N.codePlaceholder
+    ).then {
         $0.isHidden = true
     }
-    
-    private let phoneFailLabel = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
-        $0.textColor = DSKitAsset.Colors.error.color
-        $0.isHidden = true
-    }
-    
-    private let sendButton = AppImageTextButton(title: i18N.sendButtonTitle).then {
-        $0.layer.cornerRadius = 10
-        $0.layer.masksToBounds = true
-    }
-    
-    private let codeTextField = UITextField().then {
-        $0.placeholder = i18N.codePlaceholder
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 16)
-        $0.keyboardType = .numberPad
-        $0.backgroundColor = DSKitAsset.Colors.gray800.color
-        $0.layer.cornerRadius = 10
-        $0.layer.masksToBounds = true
-        $0.layer.borderWidth = 1
-        $0.layer.borderColor = UIColor.clear.cgColor
-        $0.isHidden = true
-        $0.addToolbar()
-        $0.addLeftPadding(width: 20)
-        $0.addRightPadding(width: 63)
-    }
-    
+
     private let timeLeftLabel = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
-        $0.textColor = DSKitAsset.Colors.white.color
         $0.text = i18N.defaultTimerText
+        $0.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.bold)
     }
-    
-    private let codeFailIcon = UIImageView().then {
-        $0.image = DSKitAsset.Assets.alertCircle.image.withTintColor(DSKitAsset.Colors.error.color)
-        $0.contentMode = .scaleAspectFit
-        $0.isHidden = true
-    }
-    
-    private let codeFailLabel = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
-        $0.textColor = DSKitAsset.Colors.error.color
-        $0.isHidden = true
-    }
-    
-    private let helpView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.blue400.color.withAlphaComponent(0.1)
-        $0.layer.borderColor = DSKitAsset.Colors.blue400.color.withAlphaComponent(0.6).cgColor
-        $0.layer.borderWidth = 1
-        $0.layer.cornerRadius = 10
-        $0.layer.masksToBounds = true
-    }
-    
-    private let infoIcon = UIImageView().then {
-        $0.image = DSKitAsset.Assets.infoCircle.image.withTintColor(
-            DSKitAsset.Colors.blue500.color
-        )
-        $0.contentMode = .scaleAspectFit
-    }
-    
-    private let helpTitleLabel = UILabel().then {
-        $0.text = i18N.helpTitle
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-        $0.textColor = DSKitAsset.Colors.gray30.color
-    }
-    
-    private let chevronRightIcon = UIImageView().then {
-        $0.image = DSKitAsset.Assets.chevronRight.image.withTintColor(
-            DSKitAsset.Colors.gray30.color
-        )
-        $0.contentMode = .scaleAspectFit
-    }
-    
-    private let helpDescriptionLabel = UILabel().then {
-        $0.text = i18N.helpDescription
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
-        $0.textColor = DSKitAsset.Colors.gray200.color
-        $0.numberOfLines = 0
-    }
-    
-    private let doneButton = AppImageTextButton(title: i18N.doneButtonTitle).then {
-        $0.configuration?.attributedTitle?.font = DSKitFontFamily.Suit.semiBold.font(size: 18)
-    }
+
+    private let helpCallout = MDSCallout(
+        style: .information,
+        text: i18N.helpDescription,
+        icon: .alertCircleOutlined,
+        buttonTitle: i18N.inquireButtonTitle
+    )
+
+    private let doneButton = MDSActionButton(variant: .primary, size: .large, title: i18N.doneButtonTitle)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         setUI()
         setLayout()
-        
+        setBinding()
     }
     
     required init?(coder: NSCoder) {
@@ -175,127 +104,86 @@ final class PhoneVerifyView: UIView {
         self.addSubviews(
             titleLabel,
             descriptionLabel,
-            phoneLabel,
-            phoneTextField,
-            phoneFailIcon,
-            phoneFailLabel,
+            phoneField,
             sendButton,
-            codeTextField,
-            codeFailIcon,
-            codeFailLabel,
-            helpView,
+            codeField,
+            helpCallout,
             doneButton
         )
-        
-        codeTextField.addSubview(timeLeftLabel)
-        
-        helpView.addSubviews(
-            infoIcon,
-            helpTitleLabel,
-            chevronRightIcon,
-            helpDescriptionLabel
-        )
+
+        codeField.addSubview(timeLeftLabel)
+
+        setSendButtonTitle(Self.i18N.sendButtonTitle)
+    }
+
+    private func setBinding() {
+        [phoneField, codeField].forEach {
+            $0.keyboardType = .numberPad
+            $0.keyboardAccessoryView = makeKeyboardToolbar()
+        }
+
+        phoneField.onTextChanged = { [weak self] in self?.phoneTextChanged.send($0) }
+        codeField.onTextChanged = { [weak self] in self?.codeTextChanged.send($0) }
+        helpCallout.onButtonTap = { [weak self] in self?.loginHelpButtonTappedSubject.send() }
+    }
+
+    private func makeKeyboardToolbar() -> UIToolbar {
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        toolbar.items = [
+            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+            UIBarButtonItem(title: I18N.Auth.PhoneVerify.keyboardDoneButtonTitle, style: .done, target: self, action: #selector(dismissKeyboard))
+        ]
+        return toolbar
+    }
+
+    @objc private func dismissKeyboard() {
+        endEditing(true)
     }
     
     private func setLayout() {
         titleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(54)
+            $0.top.equalToSuperview()
             $0.centerX.equalToSuperview()
         }
-        
+
         descriptionLabel.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.bottom).offset(14)
+            $0.top.equalTo(titleLabel.snp.bottom).offset(BaseSpacing.Base.s8)
             $0.centerX.equalToSuperview()
         }
-        
-        phoneLabel.snp.makeConstraints {
-            $0.top.equalTo(descriptionLabel.snp.bottom).offset(40)
-            $0.leading.trailing.equalToSuperview().inset(24)
-        }
-        
-        phoneTextField.snp.makeConstraints {
-            $0.top.equalTo(phoneLabel.snp.bottom).offset(6)
-            $0.leading.equalToSuperview().inset(24)
-            $0.height.equalTo(48)
-        }
-        
-        phoneFailIcon.snp.makeConstraints {
-            $0.top.equalTo(phoneTextField.snp.bottom).offset(8)
-            $0.leading.equalTo(phoneTextField)
-            $0.size.equalTo(14)
-        }
-        
-        phoneFailLabel.snp.makeConstraints {
-            $0.centerY.equalTo(phoneFailIcon)
-            $0.leading.equalTo(phoneFailIcon.snp.trailing).offset(4)
-            $0.trailing.equalTo(codeTextField)
-        }
-        
+
         sendButton.snp.makeConstraints {
-            $0.centerY.equalTo(phoneTextField)
-            $0.leading.equalTo(phoneTextField.snp.trailing).offset(7)
-            $0.trailing.equalToSuperview().inset(24)
-            $0.width.equalTo(110)
-            $0.height.equalTo(phoneTextField)
+            $0.top.equalTo(phoneField).offset(36)
+            $0.trailing.equalToSuperview().inset(20)
+            $0.height.equalTo(46)
+            $0.width.equalTo(109)
         }
-        
-        codeTextField.snp.makeConstraints {
-            $0.top.equalTo(phoneFailLabel.snp.bottom).offset(10)
-            $0.leading.trailing.equalToSuperview().inset(24)
-            $0.height.equalTo(phoneTextField)
+
+        phoneField.snp.makeConstraints {
+            $0.top.equalTo(descriptionLabel.snp.bottom).offset(BaseSpacing.Base.s48)
+            $0.leading.equalToSuperview().inset(20)
+            $0.trailing.equalTo(sendButton.snp.leading).offset(-BaseSpacing.Base.s8)
+        }
+
+        codeField.snp.makeConstraints {
+            $0.top.equalTo(phoneField.snp.bottom).offset(BaseSpacing.Base.s10)
+            $0.leading.trailing.equalToSuperview().inset(20)
             $0.bottom.lessThanOrEqualToSuperview()
         }
-        
+
         timeLeftLabel.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
-            $0.trailing.equalToSuperview().inset(16)
+            $0.top.equalTo(codeField.snp.top).inset(10)
+            $0.trailing.equalToSuperview().inset(BaseSpacing.Base.s16)
         }
-        
-        codeFailIcon.snp.makeConstraints {
-            $0.top.equalTo(codeTextField.snp.bottom).offset(8)
-            $0.leading.equalTo(codeTextField)
-            $0.size.equalTo(14)
+
+        helpCallout.snp.makeConstraints {
+            $0.leading.trailing.equalTo(codeField)
+            $0.bottom.equalTo(doneButton.snp.top).offset(-BaseSpacing.Base.s24)
         }
-        
-        codeFailLabel.snp.makeConstraints {
-            $0.centerY.equalTo(codeFailIcon)
-            $0.leading.equalTo(codeFailIcon.snp.trailing).offset(4)
-            $0.trailing.equalTo(codeTextField)
-        }
-        
-        helpView.snp.makeConstraints {
-            $0.top.equalTo(codeFailLabel.snp.bottom).offset(20)
-            $0.leading.trailing.equalTo(codeTextField)
-        }
-        
-        infoIcon.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(14)
-            $0.leading.equalToSuperview().inset(18)
-            $0.size.equalTo(20)
-        }
-        
-        helpTitleLabel.snp.makeConstraints {
-            $0.centerY.equalTo(infoIcon)
-            $0.leading.equalTo(infoIcon.snp.trailing).offset(10)
-        }
-        
-        chevronRightIcon.snp.makeConstraints {
-            $0.centerY.equalTo(helpTitleLabel)
-            $0.leading.equalTo(helpTitleLabel.snp.trailing)
-            $0.size.equalTo(16)
-        }
-        
-        helpDescriptionLabel.snp.makeConstraints {
-            $0.top.equalTo(helpTitleLabel.snp.bottom).offset(10)
-            $0.leading.equalTo(helpTitleLabel)
-            $0.trailing.equalToSuperview().inset(18)
-            $0.bottom.equalToSuperview().inset(14)
-        }
-        
+
         doneButton.snp.makeConstraints {
             $0.bottom.equalToSuperview()
-            $0.leading.trailing.equalToSuperview().inset(24)
-            $0.height.equalTo(56)
+            $0.leading.trailing.equalToSuperview().inset(20)
         }
     }
 }
@@ -312,8 +200,8 @@ extension PhoneVerifyView {
             .sink { owner, isSent in
                 let text = isSent ? Self.i18N.resendButtonTitle : Self.i18N.sendButtonTitle
                 ToastUtils.showMDSToast(type: .success, text: Self.i18N.sendSuccessToast)
-                owner.sendButton.updateTitle(text)
-                owner.codeTextField.isHidden = !isSent
+                owner.setSendButtonTitle(text)
+                owner.codeField.isHidden = !isSent
             }
             .store(in: cancelBag)
         
@@ -321,7 +209,7 @@ extension PhoneVerifyView {
             .asDriver()
             .withUnretained(self)
             .sink { owner, text in
-                owner.phoneTextField.text = text
+                owner.phoneField.text = text
             }
             .store(in: cancelBag)
         
@@ -329,15 +217,16 @@ extension PhoneVerifyView {
             .asDriver()
             .withUnretained(self)
             .sink { owner, text in
-                owner.codeTextField.text = text
+                owner.codeField.text = text
             }
             .store(in: cancelBag)
         
         output.timerIsRunning
             .withUnretained(self)
             .sink { owner, active in
-                self.endEditing(!active)
-                self.codeTextField.isEnabled = active
+                owner.endEditing(!active)
+                // state = .disabled로 두면 MDSTextField가 에러 메시지를 감추므로 입력만 막는다.
+                owner.codeField.isUserInteractionEnabled = active
             }
             .store(in: cancelBag)
         
@@ -359,6 +248,7 @@ extension PhoneVerifyView {
             .withUnretained(self)
             .sink { owner, isEnabled in
                 owner.sendButton.isEnabled = isEnabled
+                owner.sendButton.backgroundColor = isEnabled ? SemanticColor.Bg.Neutral.inverse : SemanticColor.Bg.Neutral.Default.disabled
             }
             .store(in: cancelBag)
         
@@ -373,6 +263,7 @@ extension PhoneVerifyView {
             .withUnretained(self)
             .sink { owner, timeLeft in
                 owner.timeLeftLabel.text = timeLeft.to_mmss
+                owner.refreshTimeLeftLabel()
             }
             .store(in: cancelBag)
         
@@ -385,16 +276,34 @@ extension PhoneVerifyView {
     }
     
     private func updateFailLabelUI(isCode: Bool, _ description: String?) {
-        let failLabel = isCode ? codeFailLabel : phoneFailLabel
-        let failIcon = isCode ? codeFailIcon : phoneFailIcon
-        let textfield = isCode ? codeTextField : phoneTextField
-        failLabel.text = description
-        failIcon.isHidden = description == nil
-        failLabel.isHidden = description == nil
-        textfield.layer.borderColor = description == nil ? UIColor.clear.cgColor : DSKitAsset.Colors.error.color.cgColor
-        
+        let field = isCode ? codeField : phoneField
+        field.errorMessage = description
+
         if isCode {
-            timeLeftLabel.textColor = description == nil ? DSKitAsset.Colors.white.color : DSKitAsset.Colors.error.color
+            isTimeLeftError = description != nil
+            refreshTimeLeftLabel()
         }
+    }
+
+    private func refreshTimeLeftLabel() {
+        let color = isTimeLeftError ? SemanticColor.Fg.Danger.default : SemanticColor.Fg.Neutral.bold
+        timeLeftLabel.setTypography(Typography.body1, textColor: color)
+    }
+
+    private func setSendButtonTitle(_ text: String) {
+        sendButton.setAttributedTitle(
+            NSAttributedString(
+                string: text,
+                attributes: Typography.label3.attributedStringAttributes(foregroundColor: SemanticColor.Fg.Neutral.inverse)
+            ),
+            for: .normal
+        )
+        sendButton.setAttributedTitle(
+            NSAttributedString(
+                string: text,
+                attributes: Typography.label3.attributedStringAttributes(foregroundColor: SemanticColor.Fg.Neutral.Default.disabled)
+            ),
+            for: .disabled
+        )
     }
 }

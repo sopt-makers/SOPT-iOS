@@ -11,6 +11,7 @@ import Combine
 
 import DSKit
 import Core
+import MDS
 
 import AuthFeatureInterface
 import BaseFeatureDependency
@@ -36,56 +37,45 @@ public class ChangeSocialAccountVC: UIViewController, ChangeSocialAccountViewCon
     private lazy var navigationBar = OPNavigationBar(
         self,
         type: .oneLeftButton,
-        backgroundColor: DSKitAsset.Colors.black100.color,
+        backgroundColor: SemanticColor.Bg.Layer.basement,
         ignoreLeftButtonAction: false
+    ).setLeftButtonImage(
+        MDSIcon.chevronLeftOutlined.image
+            .withRenderingMode(.alwaysTemplate)
+            .withTintColor(SemanticColor.Fg.Neutral.bold, renderingMode: .alwaysOriginal)
     )
-    
+
     private let lineView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.black40.color
+        $0.backgroundColor = SemanticColor.Bg.Neutral.default
     }
-    
-    private let firstCircle = UILabel().then {
-        $0.text = "1"
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 12)
-        $0.backgroundColor = DSKitAsset.Colors.blue400.color
-        $0.layer.cornerRadius = 11
-        $0.layer.masksToBounds = true
-        $0.textAlignment = .center
-    }
-    
+
+    private let firstStepIndicator = StepIndicatorView(
+        number: "1",
+        title: I18N.Auth.PhoneVerify.title,
+        circleTextColor: SemanticColor.Fg.Neutral.bold,
+        circleBackgroundColor: SemanticColor.Bg.Secondary.default,
+        titleTextColor: SemanticColor.Fg.Neutral.bold
+    )
+
+    private let secondStepIndicator = StepIndicatorView(
+        number: "2",
+        title: I18N.Auth.SocialReset.title,
+        circleTextColor: SemanticColor.Fg.Neutral.ghost,
+        circleBackgroundColor: SemanticColor.Bg.Neutral.default,
+        titleTextColor: SemanticColor.Fg.Neutral.ghost
+    )
+
     private let checkImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.check.image.withAlignmentRectInsets(.init(top: -4, left: -4, bottom: -4, right: -4))
+        $0.image = MDSIcon.checkOutlined.image.withRenderingMode(.alwaysTemplate).withAlignmentRectInsets(.init(top: -4, left: -4, bottom: -4, right: -4))
+        $0.tintColor = SemanticColor.Fg.Neutral.bold
         $0.contentMode = .scaleAspectFit
-        $0.backgroundColor = DSKitAsset.Colors.blue400.color
-        $0.layer.cornerRadius = 11
+        $0.backgroundColor = SemanticColor.Bg.Secondary.default
+        $0.layer.cornerRadius = BaseRadius.Base.full
         $0.layer.masksToBounds = true
         $0.isHidden = true
     }
-    
-    private let secondCircle = UILabel().then {
-        $0.text = "2"
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 12)
-        $0.backgroundColor = DSKitAsset.Colors.black40.color
-        $0.layer.cornerRadius = 11
-        $0.layer.masksToBounds = true
-        $0.textAlignment = .center
-    }
-    
-    private let firstLabel = UILabel().then {
-        $0.text = "SOPT 회원인증"
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 12)
-        $0.textColor = DSKitAsset.Colors.white.color
-        $0.textAlignment = .center
-    }
-    
-    private let secondLabel = UILabel().then {
-        $0.text = "소셜 계정 재설정"
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 12)
-        $0.textColor = DSKitAsset.Colors.white.color
-        $0.textAlignment = .center
-    }
-   
-    
+
+
     // MARK: - View Life Cycle
     
     public init(
@@ -117,7 +107,7 @@ public class ChangeSocialAccountVC: UIViewController, ChangeSocialAccountViewCon
 extension ChangeSocialAccountVC {
     
     private func setUI() {
-        self.view.backgroundColor = DSKitAsset.Colors.black100.color
+        self.view.backgroundColor = SemanticColor.Bg.Layer.basement
         self.phoneVerifyView.helpViewHidden = true
     }
     
@@ -126,55 +116,41 @@ extension ChangeSocialAccountVC {
         self.view.addSubviews(
             navigationBar,
             lineView,
-            firstCircle,
+            firstStepIndicator,
             checkImageView,
-            secondCircle,
-            firstLabel,
-            secondLabel,
+            secondStepIndicator,
             phoneVerifyView,
             oAuthView
         )
-        
+
         navigationBar.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             $0.leading.trailing.equalToSuperview()
         }
-        
+
         lineView.snp.makeConstraints {
-            $0.top.equalTo(navigationBar.snp.bottom)
+            $0.top.equalTo(navigationBar.snp.bottom).offset(35)
             $0.centerX.equalToSuperview()
-            $0.width.equalTo(123)
+            $0.width.equalTo(136)
             $0.height.equalTo(1)
         }
-        
-        firstCircle.snp.makeConstraints {
+
+        firstStepIndicator.snp.makeConstraints {
             $0.centerX.equalTo(lineView.snp.leading)
-            $0.centerY.equalTo(lineView)
-            $0.size.equalTo(22)
+            $0.top.equalTo(lineView.snp.centerY).offset(-11)
         }
-        
+
         checkImageView.snp.makeConstraints {
-            $0.edges.equalTo(firstCircle)
+            $0.edges.equalTo(firstStepIndicator.circleView)
         }
-        
-        secondCircle.snp.makeConstraints {
+
+        secondStepIndicator.snp.makeConstraints {
             $0.centerX.equalTo(lineView.snp.trailing)
-            $0.centerY.equalTo(lineView)
-            $0.size.equalTo(22)
+            $0.top.equalTo(lineView.snp.centerY).offset(-11)
         }
-        
-        firstLabel.snp.makeConstraints {
-            $0.top.equalTo(firstCircle.snp.bottom).offset(12)
-            $0.centerX.equalTo(firstCircle)
-        }
-        
-        secondLabel.snp.makeConstraints {
-            $0.top.equalTo(secondCircle.snp.bottom).offset(12)
-            $0.centerX.equalTo(secondCircle)
-        }
-        
+
         phoneVerifyView.snp.makeConstraints {
-            $0.top.equalTo(firstLabel.snp.bottom)
+            $0.top.equalTo(firstStepIndicator.titleLabel.snp.bottom).offset(32)
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
@@ -202,13 +178,16 @@ extension ChangeSocialAccountVC {
         output.currentStep
             .withUnretained(self)
             .sink { owner, step in
-                let bg = step == .phoneVerify ? DSKitAsset.Colors.black40.color : DSKitAsset.Colors.blue400.color
+                let bg = step == .phoneVerify ? SemanticColor.Bg.Neutral.default : SemanticColor.Bg.Secondary.default
                 owner.phoneVerifyView.isHidden = step != .phoneVerify
                 owner.oAuthView.isHidden = step != .oAuth
                 owner.checkImageView.isHidden = step == .phoneVerify
                 owner.lineView.backgroundColor = bg
-                owner.secondCircle.backgroundColor = bg
+                owner.secondStepIndicator.setCircleBackgroundColor(bg)
                 owner.navigationBar.isHidden = step != .phoneVerify
+
+                owner.firstStepIndicator.setTitleActive(step == .phoneVerify)
+                owner.secondStepIndicator.setTitleActive(step != .phoneVerify)
             }
             .store(in: cancelBag)
         
@@ -216,7 +195,7 @@ extension ChangeSocialAccountVC {
             .withUnretained(self)
             .delay(for: .seconds(0.5), scheduler: RunLoop.main)
             .sink { owner, _ in
-                Toast.showMDSToast(type: .success, text: "소셜 계정 변경에 성공했습니다.")
+                Toast.showMDSToast(type: .success, text: I18N.Auth.SocialReset.changeSuccessToast)
             }
             .store(in: cancelBag)
         

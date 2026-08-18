@@ -13,6 +13,7 @@ import SafariServices
 import DSKit
 import Core
 import Domain
+import MDS
 
 import AuthFeatureInterface
 import BaseFeatureDependency
@@ -47,80 +48,45 @@ public class SignInVC: UIViewController, SignInViewControllable {
         $0.alpha = 0
     }
     
-    private let loginHelpButton = UIButton(type: .system).then {
-        var config = UIButton.Configuration.plain()
-        config.baseForegroundColor = DSKitAsset.Colors.gray30.color
-        config.baseBackgroundColor = .clear
-        
-        var attributedTitle = AttributedString(i18n.helpLogin)
-        attributedTitle.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-        config.attributedTitle = attributedTitle
-        
-        config.image = DSKitAsset.Assets.chevronRight.image.withTintColor(DSKitAsset.Colors.gray30.color).withRenderingMode(.alwaysTemplate)
-        config.imagePadding = 0
-        config.imagePlacement = .trailing
-        
-        $0.configuration = config
+    private let loginHelpButton = MDSTextButton(variant: .emphasis, size: .medium, title: i18n.helpLogin, icon: .chevronRightOutlined).then {
         $0.alpha = 0
     }
-    
+
     private let leftLine = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.gray300.color
+        $0.backgroundColor = SemanticColor.Stroke.Neutral.subtle
     }
-    
+
     private let rightLine = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.gray300.color
+        $0.backgroundColor = SemanticColor.Stroke.Neutral.subtle
     }
-    
+
     private let orLabel = UILabel().then {
         $0.text = i18n.or
-        $0.font = DSKitFontFamily.Suit.regular.font(size: 13)
+        $0.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.ghost)
     }
-    
+
     private lazy var orStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.alignment = .center
         $0.distribution = .fill
-        $0.spacing = 8
+        $0.spacing = BaseSpacing.Base.s8
         $0.alpha = 0
     }
-    
-    private lazy var signUpButton = UIButton(type: .system).then {
-        $0.setTitle(Self.i18n.signUp, for: .normal)
-        $0.setTitleColor(DSKitAsset.Colors.white.color, for: .normal)
-        $0.setBackgroundColor(DSKitAsset.Colors.gray700.color, for: .normal)
-        $0.setBackgroundColor(DSKitAsset.Colors.gray800.color, for: .highlighted)
-        $0.titleLabel?.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
-        $0.layer.cornerRadius = 10
-        $0.layer.masksToBounds = true
+
+    private lazy var signUpButton = MDSActionButton(variant: .secondary, size: .medium, title: Self.i18n.signUp).then {
         $0.alpha = 0
     }
-    
-    
-    private let loginLaterButton = UIButton(type: .system).then {
-        var config = UIButton.Configuration.plain()
-        config.baseForegroundColor = DSKitAsset.Colors.gray30.color
-        config.baseBackgroundColor = .clear
-        
-        var attributedTitle = AttributedString(i18n.loginLater)
-        attributedTitle.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-        config.attributedTitle = attributedTitle
-        
-        config.image = DSKitAsset.Assets.chevronRight.image.withTintColor(DSKitAsset.Colors.gray30.color)
-        config.imagePadding = 0
-        config.imagePlacement = .trailing
-        
-        $0.configuration = config
+
+
+    private let loginLaterButton = MDSTextButton(variant: .emphasis, size: .medium, title: i18n.loginLater, icon: .chevronRightOutlined).then {
         $0.alpha = 0
     }
-    
+
     private let recentLoginLabel = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 13)
-        $0.textColor = DSKitAsset.Colors.gray50.color
+        $0.setTypography(Typography.body3, textColor: SemanticColor.Fg.Neutral.bold)
     }
-    
+
     private let recentLoginToolTip = ToolTipView()
-    
     
     // MARK: - View Life Cycle
     
@@ -161,10 +127,10 @@ public class SignInVC: UIViewController, SignInViewControllable {
     }
     
     private func setUI() {
-        self.view.backgroundColor = DSKitAsset.Colors.soptampBlack.color
-        
-        self.recentLoginToolTip.layer.cornerRadius = 12
-        self.recentLoginToolTip.backgroundColor = DSKitAsset.Colors.success.color
+        self.view.backgroundColor = SemanticColor.Bg.Layer.basement
+
+        self.recentLoginToolTip.layer.cornerRadius = BaseRadius.Base.r12
+        self.recentLoginToolTip.backgroundColor = SemanticColor.Bg.Secondary.default
         self.recentLoginToolTip.contentView.addSubview(recentLoginLabel)
         self.recentLoginToolTip.alpha = 0
     }
@@ -183,8 +149,8 @@ public class SignInVC: UIViewController, SignInViewControllable {
         recentLoginToolTip.addSubview(recentLoginLabel)
         
         recentLoginLabel.snp.makeConstraints {
-            $0.verticalEdges.equalToSuperview().inset(10)
-            $0.horizontalEdges.equalToSuperview().inset(20)
+            $0.verticalEdges.equalToSuperview().inset(BaseSpacing.Base.s10)
+            $0.horizontalEdges.equalToSuperview().inset(BaseSpacing.Base.s20)
         }
         
         orStackView.addArrangedSubviews(leftLine, orLabel, rightLine)
@@ -198,13 +164,12 @@ public class SignInVC: UIViewController, SignInViewControllable {
         
         oAuthView.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview().inset(20)
-            make.bottom.equalTo(loginHelpButton.snp.top).offset(-20.adjustedH)
+            make.bottom.equalTo(loginHelpButton.snp.top).offset(-BaseSpacing.Base.s24)
         }
-        
+
         loginHelpButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.height.equalTo(20.adjustedH)
-            make.bottom.equalTo(orStackView.snp.top).offset(-44.adjustedH)
+            make.bottom.equalTo(orStackView.snp.top).offset(-BaseSpacing.Base.s40)
         }
         
         leftLine.setContentHuggingPriority(.defaultLow, for: .horizontal)
@@ -223,18 +188,17 @@ public class SignInVC: UIViewController, SignInViewControllable {
         
         orStackView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(20)
-            make.bottom.equalTo(signUpButton.snp.top).inset(-16.adjustedH)
+            make.bottom.equalTo(signUpButton.snp.top).inset(-BaseSpacing.Base.s16)
         }
-        
+
         signUpButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(48)
-            make.bottom.equalTo(loginLaterButton.snp.top).offset(-16.adjustedH)
+            make.bottom.equalTo(loginLaterButton.snp.top).offset(-BaseSpacing.Base.s24)
         }
         
         loginLaterButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(28.adjustedH)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(40.adjustedH)
         }
         
         recentLoginToolTip.snp.makeConstraints { make in
@@ -303,8 +267,9 @@ extension SignInVC {
                 owner.recentLoginToolTip.isHidden = oAuthProvider == nil
                 
                 guard let oAuthProvider else { return }
-                
+
                 owner.recentLoginLabel.text = "최근 로그인한 계정은 \(oAuthProvider.title)이에요."
+                owner.recentLoginLabel.setTypography(Typography.body3, textColor: SemanticColor.Fg.Neutral.bold)
             }
             .store(in: cancelBag)
         
