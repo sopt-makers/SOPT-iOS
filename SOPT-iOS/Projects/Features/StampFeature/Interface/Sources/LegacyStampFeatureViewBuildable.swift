@@ -25,5 +25,4 @@ public protocol LegacyStampFeatureViewBuildable {
     ) -> LegacyMissionCompletedViewControllable
     func makeRankingVC(rankingViewType: RankingViewType) -> LegacyRankingViewControllable
     func makePartRankingVC(rankingViewType: RankingViewType) -> LegacyPartRankingViewControllable
-    func makeStampGuideVC() -> LegacyStampGuideViewControllable
 }

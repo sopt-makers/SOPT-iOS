@@ -72,11 +72,6 @@ extension LegacyStampBuilder: LegacyStampFeatureViewBuildable {
         return rankingVC
     }
     
-    public func makeStampGuideVC() -> LegacyStampGuideViewControllable {
-        let stampGuideVC = StampGuideVC()
-        return stampGuideVC
-    }
-
     public func makePartRankingVC(rankingViewType: RankingViewType) -> LegacyPartRankingViewControllable {
       let vc = PartRankingVC(rankingViewType: rankingViewType)
       let useCase = DefaultRankingUseCase(repository: rankingRepository)
