@@ -69,28 +69,32 @@ extension STPartChartRectangleView {
 
   private func setUI() {
     partNameLabel.text = partName
-    partNameLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.default)
+    partNameLabel.setTypography(Typography.label3,
+                                textColor: SemanticColor.Fg.Neutral.default)
     starRankView.isHidden = (rank > 3)
 
     if rank == 1 {
       rankLabel.text = "\(rank)"
-      rankLabel.setTypography(Typography.heading2, textColor: SemanticColor.Fg.Neutral.bold)
+      rankLabel.setTypography(Typography.heading2,
+                              textColor: SemanticColor.Fg.Neutral.bold)
       rectangleView.backgroundColor = DSKitAsset.Colors.soptampPink300.color
       starRankView.image = DSKitAsset.Assets.icBigStar.image.withRenderingMode(.alwaysTemplate)
     } else if rank == 2 {
       rankLabel.text = "\(rank)"
-      rankLabel.setTypography(Typography.heading2, textColor: DSKitAsset.Colors.green300.color)
+      rankLabel.setTypography(Typography.heading2,
+                              textColor: DSKitAsset.Colors.green300.color)
       rectangleView.backgroundColor = DSKitAsset.Colors.green300.color
       starRankView.image = nil
     } else if rank == 3 {
       rankLabel.text = "\(rank)"
-      rankLabel.setTypography(Typography.heading2, textColor: DSKitAsset.Colors.soptampPurple300.color)
+      rankLabel.setTypography(Typography.heading2,
+                              textColor: DSKitAsset.Colors.soptampPurple300.color)
       rectangleView.backgroundColor = DSKitAsset.Colors.soptampPurple300.color
       starRankView.image = nil
     } else {
       rankLabel.text = ""
-      rankLabel.setTypography(Typography.heading2, textColor: SemanticColor.Fg.Neutral.bold)
-      rectangleView.backgroundColor = SemanticColor.Bg.Neutral.subtle
+      rankLabel.isHidden = true
+      rectangleView.backgroundColor = SemanticColor.Bg.Neutral.default
     }
   }
 
@@ -105,19 +109,18 @@ extension STPartChartRectangleView {
     }
 
     rankLabel.snp.makeConstraints { make in
-      make.centerX.equalToSuperview()
-      make.centerY.equalToSuperview().inset(3)
+      make.center.equalToSuperview()
     }
 
     rectangleView.snp.makeConstraints { make in
-      make.bottom.equalTo(partNameLabel.snp.top).offset(-10.adjustedH)
+      make.bottom.equalTo(partNameLabel.snp.top).offset(-8.adjustedH)
       make.leading.trailing.equalToSuperview()
       make.height.equalTo(self.calculateRectangleViewHeight())
     }
 
     partNameLabel.snp.makeConstraints { make in
       make.centerX.equalToSuperview()
-      make.bottom.equalToSuperview().offset(4)
+      make.bottom.equalToSuperview()
       make.width.lessThanOrEqualToSuperview()
     }
   }

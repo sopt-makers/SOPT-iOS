@@ -11,6 +11,7 @@ import UIKit
 import Core
 import Domain
 import DSKit
+import MDS
 
 import Combine
 import SnapKit
@@ -36,14 +37,13 @@ public class PartRankingVC: UIViewController, LegacyPartRankingViewControllable,
     // MARK: - UI Components
     
     lazy var naviBar = STNavigationBar(type: .titleWithLeftButton)
-        .setTitleTypoStyle(.SoptampFont.h2)
         .setTitle(I18N.RankingList.partRankingTitle)
         .setRightButton(.none)
     
     private lazy var rankingCollectionView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
         cv.showsVerticalScrollIndicator = true
-        cv.backgroundColor = DSKitAsset.Colors.gray950.color
+        cv.backgroundColor = SemanticColor.Bg.Layer.basement
         cv.refreshControl = refresher
         return cv
     }()
@@ -88,7 +88,7 @@ public class PartRankingVC: UIViewController, LegacyPartRankingViewControllable,
 extension PartRankingVC {
     
     private func setUI() {
-        self.view.backgroundColor = DSKitAsset.Colors.gray950.color
+        self.view.backgroundColor = SemanticColor.Bg.Layer.basement
         self.navigationController?.isNavigationBarHidden = true
     }
     

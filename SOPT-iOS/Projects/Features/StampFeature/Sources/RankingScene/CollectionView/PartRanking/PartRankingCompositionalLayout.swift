@@ -33,13 +33,13 @@ extension PartRankingVC {
     }
 
     private func createListSection() -> NSCollectionLayoutSection {
-        let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(60))
+        let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(64))
         let item = NSCollectionLayoutItem(layoutSize: size)
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: size, repeatingSubitem: item, count: 1)
 
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = .init(top: 28.adjustedH, leading: 20.adjusted, bottom: 60.adjustedH, trailing: 20.adjusted)
-        section.interGroupSpacing = .init(10.adjustedH)
+        section.interGroupSpacing = .init(8.adjustedH)
         section.orthogonalScrollingBehavior = .none
 
         return section

@@ -11,7 +11,6 @@ import Combine
 
 import Core
 import Domain
-import DSKit
 
 import SnapKit
 
@@ -54,7 +53,7 @@ extension PartRankingChartCVC {
         (1...6).forEach { rank in
             let rectangleView = STPartChartRectangleView(rank: rank)
             rectangleView.snp.makeConstraints { make in
-                make.width.greaterThanOrEqualTo(40)
+                make.width.greaterThanOrEqualTo(47)
             }
             chartStackView.addArrangedSubview(rectangleView)
         }

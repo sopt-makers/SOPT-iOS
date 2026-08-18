@@ -11,7 +11,7 @@ import Combine
 
 import Core
 import Domain
-import DSKit
+import MDS
 
 import SnapKit
 
@@ -26,27 +26,17 @@ final class PartRankingListCVC: UICollectionViewCell, UICollectionViewRegisterab
     
     private let rankLabel: UILabel = {
         let label = UILabel()
-        label.font = DSKitFontFamily.Montserrat.bold.font(size: 30.adjusted)
-        label.textColor = DSKitAsset.Colors.gray300.color
         label.textAlignment = .center
         return label
     }()
-    
+
     private let partNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .SoptampFont.h3
-        label.textColor = DSKitAsset.Colors.white.color
         label.lineBreakMode = .byTruncatingTail
-        label.setCharacterSpacing(0)
         return label
     }()
-    
-    private let scoreLabel: UILabel = {
-        let label = UILabel()
-        label.font = .SoptampFont.number2
-        label.textColor = DSKitAsset.Colors.white.color
-        return label
-    }()
+
+    private let scoreView = RankingScoreView()
     
     // MARK: - View Life Cycles
     
@@ -66,28 +56,26 @@ final class PartRankingListCVC: UICollectionViewCell, UICollectionViewRegisterab
 extension PartRankingListCVC {
     
     public func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.gray900.color
-        self.layer.cornerRadius = 8
+        self.backgroundColor = SemanticColor.Bg.Layer.default
+        self.layer.cornerRadius = BaseRadius.Base.r8
     }
     
     private func setLayout() {
-        self.addSubviews(rankLabel, partNameLabel, scoreLabel)
-        
+        self.addSubviews(rankLabel, partNameLabel, scoreView)
+
         rankLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().inset(16.adjusted)
-            make.width.greaterThanOrEqualTo(53.adjusted)
         }
-        
+
         partNameLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalTo(rankLabel.snp.trailing).offset(16.adjusted)
-            make.width.lessThanOrEqualTo(157.adjusted)
         }
-        
-        scoreLabel.snp.makeConstraints { make in
+
+        scoreView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().inset(20.adjusted)
+            make.trailing.equalToSuperview().inset(16.adjusted)
         }
     }
 }
@@ -95,22 +83,21 @@ extension PartRankingListCVC {
 // MARK: - Methods
 
 extension PartRankingListCVC {
-    
     public func setData(model: PartRankingModel) {
         self.model = model
         rankLabel.text = String(model.rank)
-        partNameLabel.text = model.part        
-        scoreLabel.text = "\(String(format: "%.2f", model.pointsDecimal))점"
-        scoreLabel.partFontChange(targetString: "점",
-                                  font: DSKitFontFamily.Pretendard.medium.font(size: 12))
+        rankLabel.setTypography(Typography.heading1,
+                                textColor: SemanticColor.Fg.Neutral.default)
+        partNameLabel.text = model.part
+        partNameLabel.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold)
+        scoreView.setScore(String(format: "%.2f", model.pointsDecimal))
         setDefaultRanking()
     }
-    
+
     private func setDefaultRanking() {
-        self.backgroundColor = DSKitAsset.Colors.gray900.color
+        self.backgroundColor = SemanticColor.Bg.Layer.default
         self.layer.borderColor = nil
         self.layer.borderWidth = 0
-        rankLabel.textColor = DSKitAsset.Colors.gray300.color
-        scoreLabel.textColor = DSKitAsset.Colors.white.color
+        rankLabel.setTypography(Typography.heading1, textColor: SemanticColor.Fg.Neutral.default)
     }
 }
