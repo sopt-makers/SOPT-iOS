@@ -9,23 +9,28 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
 
 final class STSingleFloatingButton: UIView {
 
     // MARK: - Properties
-    
+
     public lazy var buttonTapped = floatingButton.gesture().mapVoid().asDriver()
-    
+
     // MARK: - UI Components
-    
+
     private let floatingButton = UIButton().then {
-        $0.layer.cornerRadius = 27
-        $0.backgroundColor = DSKitAsset.Colors.white.color
-        $0.titleLabel?.font = .SoptampFont.h2
+        $0.layer.cornerRadius = 54 / 2
+        $0.backgroundColor = SemanticColor.Bg.Neutral.inverse
     }
     
-    private let badgeView = STBadgeView().then {
+    private let badgeView = MDSTag(
+        text: "New",
+        size: .small,
+        shape: .pill,
+        variant: .primary,
+        style: .solid
+    ).then {
         $0.isHidden = true
     }
     
@@ -51,7 +56,6 @@ extension STSingleFloatingButton {
         
         floatingButton.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-            make.width.equalTo(143)
             make.height.equalTo(54)
         }
         
@@ -62,18 +66,23 @@ extension STSingleFloatingButton {
     }
 
     private func setData(title: String, withImage: Bool, showBadge: Bool) {
-        let attributedStr = NSMutableAttributedString(string: title)
-        attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
-        attributedStr.addAttribute(NSAttributedString.Key.foregroundColor, value: DSKitAsset.Colors.black.color, range: NSMakeRange(0, attributedStr.length))
-        floatingButton.setAttributedTitle(attributedStr, for: .normal)
-        
+        var config = UIButton.Configuration.plain()
+        config.background.backgroundColor = .clear
+        config.cornerStyle = .capsule
+        config.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 10, bottom: 12, trailing: 12)
+        config.imagePadding = 4
+
+        let attributes = Typography.heading4.attributedStringAttributes(foregroundColor: SemanticColor.Fg.Neutral.inverse)
+        config.attributedTitle = AttributedString(NSAttributedString(string: title, attributes: attributes))
+
+        if withImage {
+            config.image = MDSIcon.trophyOutlined.image.withTintColor(SemanticColor.Fg.Neutral.inverse)
+        }
+
+        floatingButton.configuration = config
+
         if showBadge {
             badgeView.isHidden = false
-            badgeView.setData(with: "New")
-        }
-        
-        if withImage {
-            floatingButton.setImage(DSKitAsset.Assets.icTrophy.image, for: .normal)
         }
     }
 }

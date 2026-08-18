@@ -10,13 +10,13 @@ import UIKit
 
 import Core
 import DSKit
+import MDS
 
 final class STBadgeView: UIView {
-    
+
     // MARK: - UI Components
-    
+
     private let titleLabel = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
         $0.textColor = DSKitAsset.Colors.black.color
         $0.textAlignment = .center
     }
@@ -68,5 +68,6 @@ extension STBadgeView {
 extension STBadgeView {
     func setData(with text: String) {
         self.titleLabel.text = text
+        self.titleLabel.setTypography(Typography.label4)
     }
 }

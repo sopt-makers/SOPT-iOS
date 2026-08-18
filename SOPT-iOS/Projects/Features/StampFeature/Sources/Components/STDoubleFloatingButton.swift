@@ -9,7 +9,7 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
 
 final class STDoubleFloatingButton: UIView {
 
@@ -27,25 +27,29 @@ final class STDoubleFloatingButton: UIView {
     private lazy var personalRankButton = UIButton().then {
         let config = setButtonConfiguration(
             text: I18N.RankingList.personalRankingTitle,
-            textColor: DSKitColors.Color.black
+            textColor: SemanticColor.Fg.Neutral.inverse,
+            contentInsets: NSDirectionalEdgeInsets(top: 15, leading: 17, bottom: 15, trailing: 9)
         )
-        
+
         $0.configuration = config
-        $0.layer.backgroundColor = DSKitAsset.Colors.white.color.cgColor
+        $0.layer.backgroundColor = SemanticColor.Bg.Neutral.inverse.cgColor
         $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
-        $0.layer.cornerRadius = 27
+        $0.layer.cornerRadius = 54 / 2
+        $0.clipsToBounds = true
     }
-    
+
     private lazy var partRankButton = UIButton().then {
         let config = setButtonConfiguration(
             text: I18N.RankingList.partRankingTitle,
-            textColor: DSKitColors.Color.white
+            textColor: SemanticColor.Fg.Neutral.bold,
+            contentInsets: NSDirectionalEdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 15)
         )
-        
+
         $0.configuration = config
-        $0.layer.backgroundColor = DSKitAsset.Colors.black.color.cgColor
+        $0.layer.backgroundColor = SemanticColor.Bg.Layer.default.cgColor
         $0.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner]
-        $0.layer.cornerRadius = 27
+        $0.layer.cornerRadius = 54 / 2
+        $0.clipsToBounds = true
     }
     
     // MARK: - Initialization
@@ -73,30 +77,29 @@ extension STDoubleFloatingButton {
         }
         
         personalRankButton.snp.makeConstraints { make in
-            make.width.equalTo(143.adjusted)
-            make.height.equalTo(54.adjustedH)
+            make.width.equalTo(134.adjusted)
+            make.height.equalTo(54)
         }
-        
+
         partRankButton.snp.makeConstraints { make in
-            make.width.equalTo(143.adjusted)
-            make.height.equalTo(54.adjustedH)
+            make.width.equalTo(134.adjusted)
+            make.height.equalTo(54)
         }
     }
     
-    private func setButtonConfiguration(text: String, textColor: UIColor) -> UIButton.Configuration {
+    private func setButtonConfiguration(text: String, textColor: UIColor, contentInsets: NSDirectionalEdgeInsets) -> UIButton.Configuration {
         var config = UIButton.Configuration.plain()
-        
+
         config.background.backgroundColor = .clear
-        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: -15, bottom: 0, trailing: 0)
+        config.cornerStyle = .capsule
+        config.contentInsets = contentInsets
         config.imagePadding = 10
-        config.image = DSKitAsset.Assets.icTrophy.image.withRenderingMode(.alwaysTemplate)
+        config.image = MDSIcon.trophyOutlined.image.withTintColor(textColor)
         config.baseForegroundColor = textColor
-        
-        var attributedStr = AttributedString(text)
-        attributedStr.font = .SoptampFont.h2
-        attributedStr.foregroundColor = textColor
-        config.attributedTitle = attributedStr
-        
+
+        let attributes = Typography.label1.attributedStringAttributes(foregroundColor: textColor)
+        config.attributedTitle = AttributedString(NSAttributedString(string: text, attributes: attributes))
+
         return config
     }
 }

@@ -10,6 +10,7 @@ import UIKit
 
 import Core
 import DSKit
+import MDS
 
 import SnapKit
 
@@ -30,7 +31,7 @@ public class STSpeechBalloonView: UIView {
     
     private let backgroundView: UIView = {
         let view = UIView()
-        view.layer.cornerRadius = 8
+        view.layer.cornerRadius = BaseRadius.Base.r8
         view.clipsToBounds = true
         return view
     }()
@@ -49,7 +50,7 @@ public class STSpeechBalloonView: UIView {
         let label = UILabel()
         label.font = .SoptampFont.subtitle3
         label.text = I18N.RankingList.noSentenceText
-        label.textColor = DSKitAsset.Colors.gray300.color
+        label.textColor = SemanticColor.Fg.Neutral.subtle
         label.textAlignment = .center
         label.clipsToBounds = true
         label.sizeToFit()
@@ -82,10 +83,10 @@ public class STSpeechBalloonView: UIView {
 extension STSpeechBalloonView {
     
     private func setUI() {
-        self.backgroundView.backgroundColor = DSKitAsset.Colors.gray800.color
-        self.balloonTailImageView.tintColor = DSKitAsset.Colors.gray800.color
+        self.backgroundView.backgroundColor = SemanticColor.Bg.Neutral.ghost
+        self.balloonTailImageView.tintColor = SemanticColor.Bg.Neutral.ghost
         guard self.sentenceLabel.text != I18N.RankingList.noSentenceText else { return }
-        self.sentenceLabel.textColor = DSKitAsset.Colors.white.color
+        self.sentenceLabel.textColor = SemanticColor.Fg.Neutral.bold
     }
     
     private func setLayout(sentence: String) {

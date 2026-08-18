@@ -10,6 +10,7 @@ import UIKit
 
 import Core
 import DSKit
+import MDS
 
 import SnapKit
 
@@ -48,22 +49,18 @@ public class STChartRectangleView: UIView {
     return iv
   }()
   
-  private let rankLabel: UILabel = {
-    let label = UILabel()
-    label.font = DSKitFontFamily.Montserrat.bold.font(size: 30)
-    return label
-  }()
-  
+  private let rankLabel: UILabel = UILabel()
+
   private let rectangleView: UIView = {
     let view = UIView()
-    view.layer.cornerRadius = 8
+    view.layer.cornerRadius = BaseRadius.Base.r8
     return view
   }()
-  
+
   private let scoreLabel: UILabel = {
     let label = UILabel()
-    label.font = .SoptampFont.number2
-    label.partFontChange(targetString: "점", font: DSKitFontFamily.Pretendard.medium.font(size: 12))
+    label.font = Typography.heading2.font
+    label.partFontChange(targetString: "점", font: Typography.heading4.font)
     return label
   }()
   
@@ -73,8 +70,8 @@ public class STChartRectangleView: UIView {
   }
   
   private lazy var usernameContainerView = UIView().then {
-    $0.layer.cornerRadius = 16.f
-    $0.backgroundColor = DSKitAsset.Colors.gray800.color
+    $0.layer.cornerRadius = BaseRadius.Base.full
+    $0.backgroundColor = SemanticColor.Bg.Neutral.ghost
   }
 
   private lazy var usernameStackView = UIStackView().then {
@@ -84,7 +81,6 @@ public class STChartRectangleView: UIView {
   
   private let usernameLabel: UILabel = {
     let label = UILabel()
-    label.font = .SoptampFont.subtitle3
     label.lineBreakMode = .byCharWrapping
     label.setCharacterSpacing(0)
     return label
@@ -124,20 +120,19 @@ public class STChartRectangleView: UIView {
 extension STChartRectangleView {
   private func setUI() {
     self.rectangleView.backgroundColor = self.pointColor
-    self.scoreLabel.textColor = DSKitAsset.Colors.white.color
-    self.usernameLabel.textColor = pointColor
+    self.scoreLabel.textColor = SemanticColor.Fg.Neutral.bold
     self.rightChevronImageView.tintColor = pointColor
-      
+
     switch viewLevel {
     case .rankOne:
       rankLabel.text = "1"
-      rankLabel.textColor = DSKitAsset.Colors.white.color
+      rankLabel.setTypography(Typography.heading2, textColor: SemanticColor.Fg.Neutral.bold)
     case .rankTwo:
       rankLabel.text = "2"
-      rankLabel.textColor = pointColor
+      rankLabel.setTypography(Typography.heading2, textColor: pointColor)
     case .rankThree:
       rankLabel.text = "3"
-      rankLabel.textColor = pointColor
+      rankLabel.setTypography(Typography.heading2, textColor: pointColor)
     }
   }
   
@@ -211,9 +206,10 @@ extension STChartRectangleView {
   
   public func setData(score: Int, username: String) {
     self.usernameLabel.text = username.isEmpty ? "-" : username
+    self.usernameLabel.setTypography(Typography.label3, textColor: pointColor)
     self.scoreLabel.text = "\(score)점"
     self.scoreLabel.partFontChange(targetString: "점",
-                                   font: DSKitFontFamily.Pretendard.medium.font(size: 12))
+                                   font: Typography.heading4.font)
   }
 }
 

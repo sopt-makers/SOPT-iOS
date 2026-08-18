@@ -10,6 +10,7 @@ import UIKit
 
 import Core
 import DSKit
+import MDS
 
 import SnapKit
 
@@ -30,24 +31,17 @@ public class STPartChartRectangleView: UIView {
     return iv
   }()
 
-  private let rankLabel: UILabel = {
-    let label = UILabel()
-    label.font = DSKitFontFamily.Montserrat.bold.font(size: 30)
-    return label
-  }()
+  private let rankLabel: UILabel = UILabel()
 
   private let rectangleView: UIView = {
     let view = UIView()
-    view.layer.cornerRadius = 8
+    view.layer.cornerRadius = BaseRadius.Base.r8
     return view
   }()
 
   private let partNameLabel: UILabel = {
     let label = UILabel()
-    label.font = .MDS.body3.font
-    label.textColor = DSKitAsset.Colors.white.color
     label.lineBreakMode = .byTruncatingTail
-    label.setCharacterSpacing(0)
     return label
   }()
 
@@ -74,25 +68,29 @@ public class STPartChartRectangleView: UIView {
 extension STPartChartRectangleView {
 
   private func setUI() {
-    rankLabel.text = "\(rank)"
     partNameLabel.text = partName
+    partNameLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.default)
     starRankView.isHidden = (rank > 3)
 
     if rank == 1 {
-      rankLabel.textColor = DSKitAsset.Colors.white.color
+      rankLabel.text = "\(rank)"
+      rankLabel.setTypography(Typography.heading2, textColor: SemanticColor.Fg.Neutral.bold)
       rectangleView.backgroundColor = DSKitAsset.Colors.soptampPink300.color
       starRankView.image = DSKitAsset.Assets.icBigStar.image.withRenderingMode(.alwaysTemplate)
     } else if rank == 2 {
-      rankLabel.textColor = DSKitAsset.Colors.green300.color
+      rankLabel.text = "\(rank)"
+      rankLabel.setTypography(Typography.heading2, textColor: DSKitAsset.Colors.green300.color)
       rectangleView.backgroundColor = DSKitAsset.Colors.green300.color
       starRankView.image = nil
     } else if rank == 3 {
-      rankLabel.textColor = DSKitAsset.Colors.soptampPurple300.color
+      rankLabel.text = "\(rank)"
+      rankLabel.setTypography(Typography.heading2, textColor: DSKitAsset.Colors.soptampPurple300.color)
       rectangleView.backgroundColor = DSKitAsset.Colors.soptampPurple300.color
       starRankView.image = nil
     } else {
       rankLabel.text = ""
-      rectangleView.backgroundColor = DSKitAsset.Colors.gray700.color
+      rankLabel.setTypography(Typography.heading2, textColor: SemanticColor.Fg.Neutral.bold)
+      rectangleView.backgroundColor = SemanticColor.Bg.Neutral.subtle
     }
   }
 
