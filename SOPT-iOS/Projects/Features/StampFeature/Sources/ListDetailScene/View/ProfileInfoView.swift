@@ -11,14 +11,13 @@ import UIKit
 import Core
 import SnapKit
 import Then
-import DSKit
 import MDS
 
 public final class ProfileInfoView: UIView {
 
     // MARK: - UI Components
 
-    private let profileImageView = CustomProfileImageView().hideBorder()
+    private let profileImageView = MDSAvatar(size: 22, hasStroke: false)
     private lazy var nameButton = MDSTextButton(
         variant: .emphasis,
         size: .medium,
@@ -42,8 +41,6 @@ public final class ProfileInfoView: UIView {
 
     private func setUI() {
         self.backgroundColor = .clear
-
-        profileImageView.hideBorder()
     }
 
     private func setLayout() {
@@ -72,7 +69,7 @@ extension ProfileInfoView {
         if let imageURL = profileImageURL, !imageURL.isEmpty {
             profileImageView.setImage(with: imageURL)
         } else {
-            profileImageView.setPlaceholder()
+            profileImageView.image = nil
         }
     }
 }
