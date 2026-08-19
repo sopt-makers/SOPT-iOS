@@ -384,7 +384,14 @@ extension MissionListVC {
             .sink { owner, _ in
                 owner.showNetworkAlert()
             }.store(in: self.cancelBag)
-        
+
+        output.$isLoading
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, isLoading in
+                isLoading ? owner.showLoading() : owner.stopLoading()
+            }.store(in: self.cancelBag)
+
         output.$appjamInfo
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
@@ -413,10 +420,6 @@ extension MissionListVC {
             .setTitleButtonMenu(menuItems: makeMenuItems())
 
         setFloatingButton(isAppJam: isAppJam)
-
-        if isAppJam {
-            missionTypeMenuSelected.send(.appjam)
-        }
     }
 
     private func updateAppjamUI(with appjamInfo: AppjamMissionListModel) {

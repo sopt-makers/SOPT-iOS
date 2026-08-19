@@ -105,6 +105,8 @@ extension DefaultMissionListUseCase: MissionListUseCase {
             .sink(receiveCompletion: { event in
                 if case Subscribers.Completion.failure = event {
                     self.errorOccurred.send()
+                    // 모드 조회 실패 시 일반 모드로 간주
+                    self.isAppjamModeFetched.send(false)
                 }
             }, receiveValue: { isAppjamMode in
                 self.isAppjamModeFetched.send(isAppjamMode)
