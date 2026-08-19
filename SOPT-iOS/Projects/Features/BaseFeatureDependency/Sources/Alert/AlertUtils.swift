@@ -33,6 +33,7 @@ public enum AlertUtils {
     public
     static func presentNetworkAlertVC(
         confirmAction: (() -> Void)? = nil,
+        cancelAction: (() -> Void)? = nil,
         animated: Bool = true,
         completion: (() -> Void)? = nil
     ) {
@@ -41,6 +42,7 @@ public enum AlertUtils {
             title: I18N.Default.networkError,
             description: I18N.Default.networkErrorDescription,
             customAction: confirmAction,
+            cancelAction: cancelAction,
             animated: animated,
             completion: completion
         )

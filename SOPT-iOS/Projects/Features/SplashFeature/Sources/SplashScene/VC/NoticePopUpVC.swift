@@ -90,8 +90,8 @@ extension NoticePopUpVC {
         dialog.onPrimaryTap = { [weak self] in
             self?.openAppStore()
         }
-        dialog.onSecondaryTap = { [weak self] in
-            guard let self else { return }
+        dialog.onSecondaryTap = { [weak self, weak dialog] in
+            guard let self, let dialog else { return }
             self.closeButtonTappedWithCheck.send(dialog.isCheckBoxSelected)
         }
         self.dialog = dialog

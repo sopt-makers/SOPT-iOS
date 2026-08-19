@@ -229,9 +229,8 @@ extension ListDetailVC {
             .withUnretained(self)
             .sink { owner, model in
                 if model.image.isEmpty {
-                    AlertUtils.presentNetworkAlertVC {
-                        owner.backgroundDimmerView.removeFromSuperview()
-                    }
+                    let removeDimmerView = { owner.backgroundDimmerView.removeFromSuperview() }
+                    AlertUtils.presentNetworkAlertVC(confirmAction: removeDimmerView, cancelAction: removeDimmerView)
                 } else {
                     if owner.sceneType == .none {                        
                         owner.onComplete?(owner.starLevel) {
