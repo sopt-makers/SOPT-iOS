@@ -36,7 +36,7 @@ final class PartRankingListCVC: UICollectionViewCell, UICollectionViewRegisterab
         return label
     }()
 
-    private let scoreView = RankingScoreView()
+    private let scoreView = STRankingScoreView()
     
     // MARK: - View Life Cycles
     

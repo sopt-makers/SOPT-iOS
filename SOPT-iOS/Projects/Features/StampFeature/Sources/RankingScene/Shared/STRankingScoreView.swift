@@ -1,5 +1,5 @@
 //
-//  RankingScoreView.swift
+//  STRankingScoreView.swift
 //  StampFeature
 //
 //  Copyright © 2026 SOPT-iOS. All rights reserved.
@@ -11,7 +11,7 @@ import MDS
 import SnapKit
 import Then
 
-final class RankingScoreView: UIView {
+final class STRankingScoreView: UIView {
 
     // MARK: - UI Components
 
@@ -39,7 +39,7 @@ final class RankingScoreView: UIView {
 
 // MARK: - UI & Layout
 
-extension RankingScoreView {
+extension STRankingScoreView {
     private func setUI() {
         scoreLabel.setTypography(Typography.heading2, textColor: SemanticColor.Fg.Neutral.bold)
 
@@ -58,7 +58,7 @@ extension RankingScoreView {
 
 // MARK: - Methods
 
-extension RankingScoreView {
+extension STRankingScoreView {
     func setScore(_ score: String) {
         scoreLabel.text = score
         scoreLabel.setTypography(Typography.heading2, textColor: SemanticColor.Fg.Neutral.bold)

@@ -57,7 +57,7 @@ public class STChartRectangleView: UIView {
     return view
   }()
 
-  private let scoreView = RankingScoreView()
+  private let scoreView = STRankingScoreView()
   
   private let rightChevronImageView = UIImageView().then {
       $0.image = MDSIcon.chevronRightOutlined.image.withTintColor(SemanticColor.Fg.Neutral.default)

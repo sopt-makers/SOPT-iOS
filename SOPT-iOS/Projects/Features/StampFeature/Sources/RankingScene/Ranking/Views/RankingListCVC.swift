@@ -54,7 +54,7 @@ final class RankingListCVC: UICollectionViewCell, UICollectionViewRegisterable {
         return label
     }()
 
-    private let scoreView = RankingScoreView()
+    private let scoreView = STRankingScoreView()
     
     // MARK: - View Life Cycles
     
