@@ -10,17 +10,18 @@ import UIKit
 
 import Core
 import DSKit
+import MDS
 
 import SnapKit
 
 public class STStarView: UIView {
-    
+
     // MARK: - Properties
-    
+
     private var spacing: CGFloat = 0
     private var starScale: CGFloat = 15
     private var starImageArray: [UIImageView] = []
-    private var starDefaultColor = DSKitAsset.Colors.soptampGray500.color
+    private var starDefaultColor = SemanticColor.Fg.Neutral.ghost
     
     // MARK: - UI Components
     

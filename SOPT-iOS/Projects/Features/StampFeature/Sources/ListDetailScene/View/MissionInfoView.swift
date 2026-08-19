@@ -10,21 +10,16 @@ import Combine
 import UIKit
 
 import Core
-import DSKit
+import MDS
 
 final class MissionInfoView: UIView {
-    private enum Metric {
-        static let height = 18
-        static let contentLeadingTrailing = -8
-    }
-    
     private lazy var clapStackView = UIStackView()
     private lazy var viewStackView = UIStackView()
     private let clapImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.icClapMini.image
+        $0.image = MDSIcon.clapRoundOutlined.image.withTintColor(SemanticColor.Fg.Neutral.subtle)
     }
     private let viewImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.icCommunicationEye.image
+        $0.image = MDSIcon.eyeOutlined.image.withTintColor(SemanticColor.Fg.Neutral.subtle)
     }
 
     private let dateLabel = UILabel()
@@ -53,10 +48,14 @@ extension MissionInfoView {
         self.dateLabel.text = date
         self.clapCountLabel.text = String(clapCount)
         self.viewCountLabel.text = String(viewCount)
+        self.makeText(self.dateLabel)
+        self.makeText(self.clapCountLabel)
+        self.makeText(self.viewCountLabel)
     }
-    
+
     func setClapText(clapCount: Int) {
         self.clapCountLabel.text = String(clapCount)
+        self.makeText(self.clapCountLabel)
     }
 }
 
@@ -80,38 +79,40 @@ extension MissionInfoView {
     
     private func setupConstraints() {
         self.snp.makeConstraints {
-            $0.height.equalTo(Metric.height)
+            $0.height.equalTo(18)
         }
         
         self.dateLabel.snp.makeConstraints {
-            $0.top.equalToSuperview()
-            $0.leading.equalToSuperview()
-            $0.centerY.equalToSuperview()
+            $0.centerY.leading.equalToSuperview()
         }
         
         viewStackView.snp.makeConstraints {
-            $0.top.equalToSuperview()
-            $0.trailing.equalToSuperview()
-            $0.centerY.equalToSuperview()
+            $0.centerY.trailing.equalToSuperview()
         }
         
         clapStackView.snp.makeConstraints {
-            $0.top.equalToSuperview()
-            $0.trailing.equalTo(viewStackView.snp.leading).offset(Metric.contentLeadingTrailing)
+            $0.trailing.equalTo(viewStackView.snp.leading).offset(-8)
             $0.centerY.equalToSuperview()
         }
+
+        clapImageView.snp.makeConstraints {
+            $0.size.equalTo(18)
+        }
+
+        viewImageView.snp.makeConstraints {
+            $0.size.equalTo(18)
+        }
     }
-    
 }
 
 extension MissionInfoView {
     private func makeStackView(_ stackView: UIStackView) {
         stackView.axis = .horizontal
-        stackView.spacing = 1
+        stackView.spacing = 2
     }
     
     private func makeText(_ label: UILabel) {
-        label.textColor = DSKitAsset.Colors.gray300.color
-        label.font = DSKitFontFamily.Suit.medium.font(size: 12)
+        label.setTypography(Typography.label4,
+                            textColor: SemanticColor.Fg.Neutral.subtle)
     }
 }

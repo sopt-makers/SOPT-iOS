@@ -10,33 +10,34 @@ import UIKit
 
 import Core
 import DSKit
+import MDS
 
 import SnapKit
 import Then
 
 final class STLevelTenStarView: UIView {
-    
+
     // MARK: - UI Components
-    
+
     private let starImageView = UIImageView().then {
         $0.image = DSKitAsset.Assets.icStar.image.withRenderingMode(.alwaysTemplate)
-        $0.tintColor = DSKitAsset.Colors.orange300.color
+        $0.tintColor = SemanticColor.Fg.Brand.default
     }
-    
+
     private let starMultipleTenLabel = UILabel().then {
         $0.text = I18N.MissionList.multipleTen
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-        $0.textColor = DSKitAsset.Colors.white.color
+        $0.setTypography(Typography.label3,
+                         textColor: SemanticColor.Fg.Neutral.bold)
     }
-    
+
     private let dividerView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.gray600.color
+        $0.backgroundColor = SemanticColor.Stroke.Neutral.default
     }
-    
+
     private let specialMissionLabel = UILabel().then {
         $0.text = I18N.MissionList.specialMission
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-        $0.textColor = DSKitAsset.Colors.orange300.color
+        $0.setTypography(Typography.label3,
+                         textColor: SemanticColor.Fg.Brand.default)
     }
     
     private let stackView = UIStackView().then {
@@ -81,8 +82,8 @@ extension STLevelTenStarView {
         }
         
         stackView.setCustomSpacing(2, after: starImageView)
-        stackView.setCustomSpacing(7, after: starMultipleTenLabel)
-        stackView.setCustomSpacing(7, after: dividerView)
+        stackView.setCustomSpacing(6, after: starMultipleTenLabel)
+        stackView.setCustomSpacing(6, after: dividerView)
         
         starImageView.snp.makeConstraints { make in
             make.size.equalTo(15)

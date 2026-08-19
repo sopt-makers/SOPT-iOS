@@ -10,25 +10,26 @@ import UIKit
 
 import Core
 import DSKit
+import MDS
 
 import SnapKit
 
 class MissionListEmptyView: UIView {
-    
+
     // MARK: - UI Component
-    
+
     private let emptyImage: UIImageView = {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFit
         iv.image = DSKitAsset.Assets.missilnListEmpty.image
         return iv
     }()
-    
+
     private let noMissionLabel: UILabel = {
         let label = UILabel()
         label.text = I18N.MissionList.noMission
-        label.font = .SoptampFont.subtitle2
-        label.textColor = DSKitAsset.Colors.soptampGray500.color
+        label.setTypography(Typography.body1,
+                            textColor: SemanticColor.Fg.Neutral.ghost)
         return label
     }()
     
@@ -58,7 +59,7 @@ extension MissionListEmptyView {
         }
         
         noMissionLabel.snp.makeConstraints { make in
-            make.top.equalTo(emptyImage.snp.bottom).offset(22)
+            make.top.equalTo(emptyImage.snp.bottom).offset(24)
             make.centerX.equalToSuperview()
         }
     }

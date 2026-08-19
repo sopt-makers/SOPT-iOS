@@ -28,7 +28,6 @@ public protocol StampFeatureBuildable {
     ) -> UIViewController
     func makeRankingVC(rankingViewType: RankingViewType) -> RankingPresentable
     func makePartRankingVC(rankingViewType: RankingViewType) -> PartRankingPresentable
-    func makeStampGuideVC() -> StampGuideViewControllable
     func makeClapListVC(stampId: Int, nickname: String) -> ClapListPresentable
     func makeAppJamRankingVC() -> AppJamRankingPresentable
 }

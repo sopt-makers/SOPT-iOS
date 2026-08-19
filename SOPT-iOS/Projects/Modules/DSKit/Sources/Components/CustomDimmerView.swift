@@ -9,6 +9,7 @@
 import UIKit
 
 import Core
+import MDS
 
 public class CustomDimmerView: UIView {
     
@@ -41,7 +42,7 @@ public class CustomDimmerView: UIView {
 
 extension CustomDimmerView {
     private func setViews() {
-        dimmerView.backgroundColor = .black.withAlphaComponent(0.55)
+        dimmerView.backgroundColor = SemanticColor.Bg.Dim.default
         dimmerView.frame = self.view?.frame ?? CGRect()
         blurEffectView.frame = self.view?.frame ?? CGRect()
         self.addSubviews(blurEffectView, dimmerView)

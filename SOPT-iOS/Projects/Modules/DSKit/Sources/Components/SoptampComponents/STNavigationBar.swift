@@ -11,9 +11,10 @@ import UIKit
 import SnapKit
 
 import Core
+import MDS
 
 @frozen
-public enum NaviType {
+public enum NaviType: Equatable {
     case title /// 좌측 타이틀 + 우측 버튼 (미션 리스트 뷰)
     case titleWithLeftButton /// 좌측 뒤로가기 버튼 + 좌측 타이틀 (랭킹, 글 작성 등)
 }
@@ -100,14 +101,14 @@ extension STNavigationBar {
         self.addSubview(leftButton)
         
         leftButton.snp.makeConstraints { make in
-            make.centerY.equalToSuperview().offset(1)
-            make.leading.equalToSuperview().inset(20)
-            make.width.height.equalTo(32)
+            make.centerY.equalToSuperview()
+            make.leading.equalToSuperview().inset(16)
+            make.width.height.equalTo(24)
         }
         
         titleButton.snp.remakeConstraints { make in
-            make.centerY.equalToSuperview().offset(1)
-            make.leading.equalTo(leftButton.snp.trailing).offset(12)
+            make.centerY.equalToSuperview()
+            make.leading.equalTo(leftButton.snp.trailing).offset(10)
         }
     }
 }
@@ -117,9 +118,12 @@ extension STNavigationBar {
     public func setTitle(_ title: String) -> Self {
         switch self.naviType {
         case .title:
-            self.titleButton.setAttributedTitle(title.zeroKernString(), for: .normal)
+            let attributes = Typography.title4.attributedStringAttributes(foregroundColor: SemanticColor.Fg.Neutral.bold)
+            self.titleButton.setAttributedTitle(NSAttributedString(string: title, attributes: attributes), for: .normal)
         default:
-            self.titleLabel.attributedText = title.zeroKernString()
+            self.titleLabel.text = title
+            self.titleLabel.setTypography(Typography.title4,
+                                          textColor: SemanticColor.Fg.Neutral.bold)
         }
         return self
     }
@@ -137,10 +141,10 @@ extension STNavigationBar {
             self.rightButton.isHidden = true
         case .addRecord:
             self.rightButton.isHidden = false
-            self.rightButton.setImage(DSKitAsset.Assets.icAddRecord.image.withTintColor(DSKitAsset.Colors.gray10.color), for: .normal)
+            self.rightButton.setImage(MDSIcon.drawOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold), for: .normal)
         case .delete:
             self.rightButton.isHidden = false
-            self.rightButton.setImage(DSKitAsset.Assets.icDelete.image, for: .normal)
+            self.rightButton.setImage(MDSIcon.xCloseOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold), for: .normal)
         }
         return self
     }
@@ -168,13 +172,6 @@ extension STNavigationBar {
         } else {
             self.setAddTarget()
         }
-        return self
-    }
-    
-    @discardableResult
-    public func setTitleTypoStyle(_ font: UIFont) -> Self {
-        titleButton.titleLabel?.font = font
-        titleLabel.font = font
         return self
     }
     
@@ -212,7 +209,7 @@ extension STNavigationBar {
             if isHidden {
                 make.leading.equalToSuperview().offset(20)
             } else {
-                make.leading.equalTo(leftButton.snp.trailing).offset(12)
+                make.leading.equalTo(leftButton.snp.trailing).offset(10)
             }
         }
     
@@ -245,25 +242,22 @@ extension STNavigationBar {
     private func setUI(_ type: NaviType) {
         self.naviType = type
         
-        self.backgroundColor = DSKitAsset.Colors.gray950.color
-        leftButton.setImage(DSKitAsset.Assets.icArrow.image, for: .normal)
-        
-        titleLabel.font = .SoptampFont.h2
-        titleLabel.textColor = DSKitAsset.Colors.gray10.color
-        
+        self.backgroundColor = SemanticColor.Bg.Layer.basement
+        leftButton.setImage(MDSIcon.chevronLeftOutlined.image, for: .normal)
+
         switch type {
         case .title:
             rightButton.isHidden = false
+            // TODO: 디자인 문의
             rightButton.setImage(DSKitAsset.Assets.icCommunicationEdit.image, for: .normal)
-            titleButton.setImage(DSKitAsset.Assets.icDownArrow.image, for: .normal)
-            titleButton.setTitleColor(DSKitAsset.Colors.gray10.color, for: .normal)
+            titleButton.setImage(MDSIcon.chevronDownOutlined.image, for: .normal)
             titleButton.semanticContentAttribute = .forceRightToLeft
             titleButton.titleLabel?.adjustsFontSizeToFitWidth = true
-            reportButton.setImage(DSKitAsset.Assets.icReport.image, for: .normal)
+            reportButton.setImage(MDSIcon.alertTriangleOutlined.image, for: .normal)
         case .titleWithLeftButton:
             rightButton.isHidden = true
-            leftButton.setImage(DSKitAsset.Assets.icArrow.image, for: .normal)
-            rightButton.setImage(DSKitAsset.Assets.icAddRecord.image.withTintColor(DSKitAsset.Colors.gray10.color), for: .normal)
+            leftButton.setImage(MDSIcon.chevronLeftOutlined.image, for: .normal)
+            rightButton.setImage(MDSIcon.drawOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold), for: .normal)
         }
     }
     
@@ -284,7 +278,7 @@ extension STNavigationBar {
         self.addSubviews(titleButton, rightButton, reportButton)
         
         titleButton.snp.makeConstraints { make in
-            make.centerY.equalToSuperview().offset(1)
+            make.centerY.equalToSuperview()
             make.leading.equalToSuperview().inset(20)
         }
 
@@ -308,18 +302,18 @@ extension STNavigationBar {
         leftButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview().offset(1)
             make.leading.equalToSuperview().inset(20)
-            make.width.height.equalTo(32)
+            make.width.height.equalTo(28)
         }
         
         titleLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.leading.equalTo(leftButton.snp.trailing).offset(2)
+            make.leading.equalTo(leftButton.snp.trailing).offset(6)
         }
         
         rightButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(32)
+            make.height.equalTo(28)
         }
     }
 }

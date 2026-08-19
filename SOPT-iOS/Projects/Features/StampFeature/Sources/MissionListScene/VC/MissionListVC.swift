@@ -11,6 +11,7 @@ import UIKit
 import Core
 import Domain
 import DSKit
+import MDS
 
 import Combine
 import SnapKit
@@ -59,19 +60,16 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
         case .default:
             return STNavigationBar(type: .title)
                 .setTitle(isAppJam ? I18N.MissionList.appjamMission : I18N.MissionList.allMission)
-                .setTitleTypoStyle(.SoptampFont.h2)
                 .setTitleButtonMenu(menuItems: self.menuItems)
                 .addLeftButtonToTitleMenu()
         case .ranking(let username, _):
             return STNavigationBar(type: .titleWithLeftButton)
                 .setTitle(username)
                 .setRightButton(.none)
-                .setTitleTypoStyle(.SoptampFont.h2)
         case .appJamTeam(let teamName, _):
             return STNavigationBar(type: .titleWithLeftButton)
                 .setTitle(teamName)
                 .setRightButton(.none)
-                .setTitleTypoStyle(.SoptampFont.h2)
         }
     }()
     
@@ -81,7 +79,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
         
         menus = [
             (I18N.MissionList.allMission, MissionListFetchType.all),
-             (I18N.MissionList.completeMission, MissionListFetchType.complete),
+            (I18N.MissionList.completeMission, MissionListFetchType.complete),
              (I18N.MissionList.uncompleteMission, MissionListFetchType.incomplete)
         ]
         if isAppJam {
@@ -98,9 +96,14 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
     
         return menuItems
     }()
-    
-    private lazy var sentenceLabel: SentencePaddingLabel = {
-        let lb = SentencePaddingLabel()
+
+    private let sentenceContainerView = UIView().then {
+        $0.layer.cornerRadius = 9
+        $0.clipsToBounds = true
+    }
+
+    private lazy var sentenceLabel: UILabel = {
+        let lb = UILabel()
         switch sceneType {
         case .ranking(_, let sentence):
             lb.text = sentence
@@ -109,48 +112,43 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
         default:
             break
         }
-        lb.font = .SoptampFont.subtitle1
-        lb.textColor = DSKitAsset.Colors.soptampGray900.color
+        lb.setTypography(Typography.label3,
+                         textColor: SemanticColor.Fg.Neutral.bold)
         lb.numberOfLines = 2
         lb.textAlignment = .center
-        lb.backgroundColor = DSKitAsset.Colors.soptampPurple100.color
-        lb.layer.cornerRadius = 9
-        lb.clipsToBounds = true
-        lb.setCharacterSpacing(0)
+        lb.lineBreakMode = .byTruncatingTail
         return lb
     }()
     
     private lazy var missionListCollectionView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
         cv.showsVerticalScrollIndicator = true
-        cv.backgroundColor = DSKitAsset.Colors.gray950.color
+        cv.backgroundColor = SemanticColor.Bg.Layer.basement
         cv.bounces = false
         return cv
     }()
-    
+
     private lazy var appjamTeamInfoView: UIView = {
         let containerView = UIView()
-        containerView.backgroundColor = DSKitAsset.Colors.gray800.color
-        containerView.layer.cornerRadius = 9
+        containerView.backgroundColor = SemanticColor.Bg.Neutral.ghost
+        containerView.layer.cornerRadius = BaseRadius.Base.r8
         containerView.clipsToBounds = true
         return containerView
     }()
-    
+
     private lazy var appjamTeamNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .SoptampFont.h3
-        label.textColor = DSKitAsset.Colors.gray10.color
         label.textAlignment = .center
         return label
     }()
-    
+
     private lazy var appjamDescriptionLabel: UILabel = {
         let label = UILabel()
-        label.font = .SoptampFont.caption2
-        label.textColor = DSKitAsset.Colors.gray200.color
         label.textAlignment = .center
         label.numberOfLines = 2
         label.text = I18N.MissionList.appjamMissionNotice
+        label.setTypography(Typography.label4,
+                            textColor: SemanticColor.Fg.Neutral.subtle)
         return label
     }()
     
@@ -158,6 +156,7 @@ public class MissionListVC: UIViewController, MissionListViewControllable, Legac
     
     private let doubleFloatingButton = STDoubleFloatingButton()
     
+    // TODO: - 디자인 답변 확인 필요
     private let singleFloatingButton = STSingleFloatingButton(
         frame: .zero,
         title: I18N.RankingList.appJamTeamStatusTitle,
@@ -205,21 +204,21 @@ extension MissionListVC {
     
     private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
-        self.view.backgroundColor = DSKitAsset.Colors.gray950.color
-        
+        self.view.backgroundColor = SemanticColor.Bg.Layer.basement
+
         if isAppJam { missionTypeMenuSelected.send(.appjam) }
-        
+
         switch sceneType {
         case .default:
-            self.sentenceLabel.backgroundColor = DSKitAsset.Colors.gray800.color
+            self.sentenceContainerView.backgroundColor = SemanticColor.Bg.Neutral.ghost
             self.missionListCollectionView.contentInset.bottom = 128
         case .ranking(_, let sentence):
-            self.sentenceLabel.backgroundColor = DSKitAsset.Colors.gray800.color
-            self.sentenceLabel.textColor = DSKitAsset.Colors.white.color
+            self.sentenceContainerView.backgroundColor = SemanticColor.Bg.Neutral.ghost
             if sentence.isEmpty { self.sentenceLabel.text = I18N.RankingList.noSentenceText }
+            self.sentenceLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold)
         case .appJamTeam:
-            self.sentenceLabel.backgroundColor = DSKitAsset.Colors.gray800.color
-            self.sentenceLabel.textColor = DSKitAsset.Colors.white.color
+            self.sentenceContainerView.backgroundColor = SemanticColor.Bg.Neutral.ghost
+            self.sentenceLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold)
         }
     }
     
@@ -256,31 +255,43 @@ extension MissionListVC {
             }
             
         case .ranking:
-            self.view.addSubview(sentenceLabel)
-            
-            sentenceLabel.snp.makeConstraints { make in
+            self.view.addSubview(sentenceContainerView)
+            sentenceContainerView.addSubview(sentenceLabel)
+
+            sentenceContainerView.snp.makeConstraints { make in
                 make.top.equalTo(naviBar.snp.bottom).offset(10)
                 make.leading.trailing.equalToSuperview().inset(20)
                 make.height.equalTo(64)
             }
-            
+
+            sentenceLabel.snp.makeConstraints { make in
+                make.leading.trailing.equalToSuperview().inset(16)
+                make.top.bottom.equalToSuperview().inset(7)
+            }
+
             missionListCollectionView.snp.remakeConstraints { make in
-                make.top.equalTo(sentenceLabel.snp.bottom).offset(16)
+                make.top.equalTo(sentenceContainerView.snp.bottom).offset(16)
                 make.leading.trailing.equalToSuperview()
                 make.bottom.equalToSuperview()
             }
-            
+
         case .appJamTeam:
-            self.view.addSubview(sentenceLabel)
-            
-            sentenceLabel.snp.makeConstraints { make in
+            self.view.addSubview(sentenceContainerView)
+            sentenceContainerView.addSubview(sentenceLabel)
+
+            sentenceContainerView.snp.makeConstraints { make in
                 make.top.equalTo(naviBar.snp.bottom).offset(10)
                 make.leading.trailing.equalToSuperview().inset(20)
                 make.height.equalTo(64)
             }
-            
+
+            sentenceLabel.snp.makeConstraints { make in
+                make.leading.trailing.equalToSuperview().inset(16)
+                make.top.bottom.equalToSuperview().inset(7)
+            }
+
             missionListCollectionView.snp.remakeConstraints { make in
-                make.top.equalTo(sentenceLabel.snp.bottom).offset(16)
+                make.top.equalTo(sentenceContainerView.snp.bottom).offset(16)
                 make.leading.trailing.equalToSuperview()
                 make.bottom.equalToSuperview()
             }
@@ -385,6 +396,7 @@ extension MissionListVC {
         
         // 팀 이름 설정
         appjamTeamNameLabel.text = teamName
+        appjamTeamNameLabel.setTypography(Typography.heading4, textColor: SemanticColor.Fg.Neutral.bold)
         
         // 레이아웃 추가
         if appjamTeamInfoView.superview == nil {
@@ -396,15 +408,15 @@ extension MissionListVC {
                 make.top.equalTo(naviBar.snp.bottom).offset(10)
                 make.leading.trailing.equalToSuperview().inset(18)
             }
-            
+
             appjamTeamNameLabel.snp.makeConstraints { make in
                 make.top.equalToSuperview().offset(10)
-                make.leading.trailing.equalToSuperview().inset(18)
+                make.leading.trailing.equalToSuperview().inset(16)
             }
-            
+
             appjamDescriptionLabel.snp.makeConstraints { make in
-                make.top.equalTo(appjamTeamNameLabel.snp.bottom).offset(4)
-                make.leading.trailing.equalToSuperview().inset(18)
+                make.top.equalTo(appjamTeamNameLabel.snp.bottom).offset(2)
+                make.leading.trailing.equalToSuperview().inset(16)
                 make.bottom.equalToSuperview().offset(-10)
             }
             

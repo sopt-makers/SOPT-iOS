@@ -17,6 +17,7 @@ import Kingfisher
 import Core
 import Domain
 import DSKit
+import MDS
 
 import Lottie
 
@@ -83,18 +84,32 @@ public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, L
     private let textView = UITextView()
     private lazy var missionDateTextField = MissionDateView(frame: self.view.frame)
     private lazy var missionInfoView = MissionInfoView(frame: self.view.frame)
-    private lazy var bottomButton = STCustomButton(title: sceneType == .none ? I18N.ListDetail.missionComplete : I18N.ListDetail.editComplete)
-        .setEnabled(false)
-        .setColor(bgColor: DSKitAsset.Colors.white.color,
-                  disableColor: DSKitAsset.Colors.gray300.color,
-                  textColor: DSKitAsset.Colors.black.color,
-                  disableTextcolor: DSKitAsset.Colors.black.color
-        )
-    private let viewClapButton = STCustomButton(title: I18N.ListDetail.viewClapButtonTitle)
-        .setColor(bgColor: DSKitAsset.Colors.white.color,
-                  textColor: DSKitAsset.Colors.black.color)
-    private let clapButton = ClapButton()
-    private let clapBadge = ClapCountBadge()
+    private lazy var bottomButton = MDSActionButton(
+        variant: .primary,
+        size: .large,
+        title: sceneType == .none ? I18N.ListDetail.missionComplete : I18N.ListDetail.editComplete
+    ).then {
+        $0.isEnabled = false
+    }
+    private let viewClapButton = MDSActionButton(
+        variant: .primary,
+        size: .large,
+        title: I18N.ListDetail.viewClapButtonTitle
+    )
+    private let clapButton = MDSReactionButton(
+        size: .large,
+        icon: MDSIcon.clapDefaultOutlined,
+        title: "",
+        count: 0
+    )
+    private let clapBadge = MDSTag(text: "+1",
+                                   size: .small,
+                                   shape: .pill,
+                                   variant: .primary,
+                                   style: .solid).then {
+        $0.alpha = 0
+    }
+
     private lazy var backgroundDimmerView = CustomDimmerView(self)
     private let zoomInView = UIView()
     private let zoomInIcon = UIImageView()
@@ -146,7 +161,6 @@ public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, L
 // MARK: - Methods
 
 extension ListDetailVC {
-    
     private func bindViews() {
         naviBar.leftButtonTapped
             .withUnretained(self)
@@ -268,7 +282,7 @@ extension ListDetailVC {
         output.bottomButtonEnabled
             .withUnretained(self)
             .sink { owner, buttonEnabled in
-                owner.bottomButton.setEnabled(buttonEnabled)
+                owner.bottomButton.isEnabled = buttonEnabled
             }.store(in: cancelBag)
         
         output.isLoading
@@ -308,9 +322,9 @@ extension ListDetailVC {
         
         self.totalClapCount = model.clapCount
         self.myClapCount = model.myClapCount ?? 0
-        
-        self.clapButton.setCount(self.totalClapCount)
-        self.clapBadge.setCount(self.myClapCount)
+
+        self.clapButton.count = self.totalClapCount
+        self.clapBadge.text = "+\(self.myClapCount)"
         
         self.imageURL = model.image
         
@@ -443,7 +457,7 @@ extension ListDetailVC {
         setClapCount(total: totalClapCount + 1, mine: myClapCount + 1)
         
         let transformY = self.clapBadge.transform.ty
-        let isVisible = self.clapBadge.alpha > 0.9
+        let isVisible = self.clapBadge.alpha > 0.4
         
         // 올라가고 있는 상태
         if transformY < 0 && isVisible && isAnimating {
@@ -454,7 +468,7 @@ extension ListDetailVC {
         if !isVisible {
             self.clapBadge.layer.removeAllAnimations()
             self.clapBadge.alpha = 1
-            self.clapBadge.transform = CGAffineTransform(translationX: 0, y: -38)
+            self.clapBadge.transform = .identity
         }
         
         isAnimating = true
@@ -466,7 +480,6 @@ extension ListDetailVC {
                 self.clapBadge.alpha = 0
             }) { _ in
                 self.clapBadge.transform = .identity
-                self.clapBadge.alpha = 1
                 self.isAnimating = false
             }
         }
@@ -476,9 +489,9 @@ extension ListDetailVC {
     private func setClapCount(total: Int, mine: Int) {
         totalClapCount = total
         myClapCount = mine
-        
-        clapButton.setCount(totalClapCount)
-        clapBadge.setCount(myClapCount)
+
+        clapButton.count = totalClapCount
+        clapBadge.text = "+\(myClapCount)"
         missionInfoView.setClapText(clapCount: totalClapCount)
     }
     
@@ -530,7 +543,7 @@ extension ListDetailVC {
     
     @objc
     private func photoZoom() {
-        self.zoomDimmedView.backgroundColor = DSKitAsset.Colors.black.color.withAlphaComponent(0.8)
+        self.zoomDimmedView.backgroundColor = SemanticColor.Bg.Dim.default
         
         self.view.addSubviews(zoomDimmedView, zoomCloseButton, zoomImageView)
         
@@ -643,17 +656,19 @@ extension ListDetailVC {
             self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
             self.originText = textView.text
             self.originImage = self.missionImageView.image ?? UIImage()
-            self.bottomButton.changeTitle(attributedString: I18N.ListDetail.editComplete)
-                .setEnabled(false)
+            self.bottomButton.title = I18N.ListDetail.editComplete
+            self.bottomButton.isEnabled = false
         } else {
             self.naviBar.resetLeftButtonAction()
             self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-            self.bottomButton.changeTitle(attributedString: I18N.ListDetail.missionComplete)
+            self.bottomButton.title = I18N.ListDetail.missionComplete
         }
         
         switch type {
         case .none, .edit:
-            self.missionView.backgroundColor = DSKitAsset.Colors.gray800.color
+            self.contentStackView.setCustomSpacing(16, after: self.missionView)
+            self.contentStackView.setCustomSpacing(8, after: self.missionImageView)
+            self.contentStackView.setCustomSpacing(8, after: self.missionDateTextField)
             self.setTextView(.inactive)
             self.imagePlaceholderLabel.isHidden = missionImageView.image == nil ? false : true
             self.bottomButton.isHidden = false
@@ -661,9 +676,17 @@ extension ListDetailVC {
             self.viewClapButton.isHidden = true
             self.missionDateTextField.isHidden = false
         case .completed:
+            self.contentStackView.setCustomSpacing(16, after: self.missionView)
+            // profileInfoView가 없으면 hideProfileInfo()가 arrangedSubviews에서 제거하므로,
+            // missionImageView 다음 gap을 profileInfoView 유무에 따라 다르게 준다.
+            self.contentStackView.setCustomSpacing(
+                self.profileInfoView.isHidden ? 8 : 11,
+                after: self.missionImageView
+            )
+            self.contentStackView.setCustomSpacing(11, after: self.profileInfoView)
+            self.contentStackView.setCustomSpacing(8, after: self.textView)
             self.scrollView.setContentOffset(.zero, animated: true)
             self.naviBar.setRightButton(.addRecord)
-            self.missionView.backgroundColor = DSKitAsset.Colors.gray800.color
             self.setTextView(.completed)
             self.imagePlaceholderLabel.isHidden = true
             self.bottomButton.isHidden = true
@@ -690,40 +713,38 @@ extension ListDetailVC {
         self.navigationController?.navigationBar.isHidden = true
         self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
         
-        self.view.backgroundColor = DSKitAsset.Colors.gray950.color
+        self.view.backgroundColor = SemanticColor.Bg.Layer.basement
         
         self.scrollView.keyboardDismissMode = .onDrag
         self.scrollView.showsVerticalScrollIndicator = false
         self.scrollView.contentInset = UIEdgeInsets(top: 7, left: 0, bottom: 32, right: 0)
         
-        self.missionImageView.backgroundColor = DSKitAsset.Colors.gray900.color
+        self.missionImageView.backgroundColor = SemanticColor.Bg.Layer.default
         self.missionImageView.layer.masksToBounds = true
         self.missionImageView.contentMode = .scaleAspectFill
-        self.missionImageView.layer.cornerRadius = 9
+        self.missionImageView.layer.cornerRadius = BaseRadius.Base.r10
         self.missionImageView.isUserInteractionEnabled = true
-        
-        self.textView.layer.cornerRadius = 10
-        self.textView.layer.borderColor = DSKitAsset.Colors.gray20.color.cgColor
-        self.textView.textContainerInset = UIEdgeInsets(top: 16, left: 18, bottom: 16, right: 18)
-        
-        self.imagePlaceholderLabel.textColor = DSKitAsset.Colors.gray300.color
-        self.imagePlaceholderLabel.font = .SoptampFont.subtitle2
+
+        self.textView.layer.cornerRadius = BaseRadius.Base.r10
+        self.textView.layer.borderColor = SemanticColor.Stroke.Neutral.inverse.cgColor
+        self.textView.textContainerInset = UIEdgeInsets(top: 16, left: 20, bottom: 10, right: 20)
+
         self.imagePlaceholderLabel.text = I18N.ListDetail.imagePlaceHolder
-        
-        self.textView.font = DSKitFontFamily.Pretendard.medium.font(size: 14)
+        self.imagePlaceholderLabel.setTypography(Typography.label2, textColor: SemanticColor.Fg.Neutral.ghost)
+
         self.textView.text = I18N.ListDetail.memoPlaceHolder
         self.textView.returnKeyType = .done
-        
-        self.zoomInView.backgroundColor = DSKitAsset.Colors.gray300.color.withAlphaComponent(0.5)
-        self.zoomInView.layer.cornerRadius = 16
+
+        self.zoomInView.backgroundColor = SemanticColor.Bg.Dim.default
+        self.zoomInView.layer.cornerRadius = BaseRadius.Base.r16
         self.zoomInView.isUserInteractionEnabled = true
         
-        self.zoomInIcon.image = DSKitAsset.Assets.icZoomIn.image
-        
-        self.zoomCloseButton.image = DSKitAsset.Assets.icClose.image
+        self.zoomInIcon.image = MDSIcon.zoomInOutlined.image
+
+        self.zoomCloseButton.image = MDSIcon.xCloseOutlined.image
         self.zoomCloseButton.isUserInteractionEnabled = true
         
-        self.zoomImageView.layer.cornerRadius = 10
+        self.zoomImageView.layer.cornerRadius = BaseRadius.Base.r10
         self.zoomImageView.clipsToBounds = true
         self.zoomImageView.contentMode = .scaleAspectFit
 
@@ -731,26 +752,26 @@ extension ListDetailVC {
     }
     
     private func setTextView(_ state: TextViewState) {
-        self.textView.backgroundColor = DSKitAsset.Colors.gray900.color
+        self.textView.backgroundColor = SemanticColor.Bg.Layer.default
         
         switch state {
         case .inactive:
-            self.textView.textColor = DSKitAsset.Colors.gray300.color
+            self.textView.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.ghost)
             self.textView.layer.borderWidth = .zero
             self.textView.isEditable = true
         case .active:
-            self.textView.textColor = DSKitAsset.Colors.white.color
+            self.textView.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.bold)
             self.textView.layer.borderWidth = 1
             self.textView.isEditable = true
         case .completed:
-            self.textView.textColor = DSKitAsset.Colors.white.color
+            self.textView.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.bold)
             self.textView.layer.borderWidth = .zero
             self.textView.isEditable = false
         }
-        
+
         switch sceneType {
         case .edit:
-            self.textView.textColor = DSKitAsset.Colors.white.color
+            self.textView.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.bold)
         default: return
         }
     }
@@ -758,7 +779,7 @@ extension ListDetailVC {
     private func setStackView() {
         self.contentStackView.axis = .vertical
         self.contentStackView.distribution = .fill
-        self.contentStackView.spacing = UIDevice.current.hasNotch ? 16 : 14
+        self.contentStackView.spacing = 16
     }
     
     private func setLayout() {
@@ -790,6 +811,7 @@ extension ListDetailVC {
         }
         
         missionImageView.snp.makeConstraints { make in
+            make.top.equalTo(missionView.snp.bottom).offset(16)
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(self.missionImageView.snp.width)
         }
@@ -814,7 +836,7 @@ extension ListDetailVC {
         
         textView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(self.contentStackView.snp.width).multipliedBy(0.39)
+            make.height.equalTo(120)
         }
         
         contentStackView.addSubview(imagePlaceholderLabel)
@@ -869,14 +891,14 @@ extension ListDetailVC {
         
         contentView.addSubviews(clapBadge, clapButton)
         clapButton.snp.makeConstraints {
-            $0.top.equalTo(contentStackView.snp.bottom).offset(12)
+            $0.top.equalTo(contentStackView.snp.bottom).offset(32)
             $0.height.equalTo(54)
             $0.centerX.equalToSuperview()
             $0.bottom.equalToSuperview()
         }
         
         clapBadge.snp.makeConstraints {
-            $0.top.equalTo(clapButton.snp.top)
+            $0.bottom.equalTo(clapButton.snp.top)
             $0.centerX.equalToSuperview()
         }
     }
@@ -888,12 +910,12 @@ extension ListDetailVC {
         contentView.addSubviews(bottomButton, viewClapButton)
         bottomButton.snp.makeConstraints {
             $0.leading.trailing.bottom.equalToSuperview()
-            $0.top.equalTo(contentStackView.snp.bottom).offset(UIDevice.current.hasNotch ? 30 : 20)
+            $0.top.equalTo(contentStackView.snp.bottom).offset(32)
             $0.height.equalTo(56)
         }
         
         viewClapButton.snp.makeConstraints {
-            $0.top.equalTo(contentStackView.snp.bottom).offset(UIDevice.current.hasNotch ? 30 : 20)
+            $0.top.equalTo(contentStackView.snp.bottom).offset(32)
             $0.horizontalEdges.equalToSuperview()
             $0.height.equalTo(56)
         }

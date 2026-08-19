@@ -12,6 +12,7 @@ import Combine
 import Core
 import Domain
 import DSKit
+import MDS
 
 import SnapKit
 
@@ -60,8 +61,6 @@ final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
     
     private let purposeLabel: UILabel = {
         let label = UILabel()
-        label.textColor = DSKitAsset.Colors.white.color
-        label.font = .SoptampFont.caption1D
         label.numberOfLines = 2
         return label
     }()
@@ -90,7 +89,7 @@ final class MissionListCVC: UICollectionViewCell, UICollectionViewRegisterable {
 extension MissionListCVC {
     
     public func setUI(_ type: MissionListCellType) {
-        backgroundImageView.tintColor = DSKitAsset.Colors.gray800.color
+        backgroundImageView.tintColor = SemanticColor.Bg.Neutral.ghost
         
         guard cellType.isCompleted else {
             starView.setStarColor(level: cellType.starLevel)
@@ -171,14 +170,16 @@ extension MissionListCVC {
     }
     
     private func setAttributedTextForPurpose(text: String) {
-        let attributedStr = NSMutableAttributedString(string: text)
-        let style = NSMutableParagraphStyle()
-        style.lineHeightMultiple = 1.2
+        var attributes = Typography.body2.attributedStringAttributes(
+            foregroundColor: SemanticColor.Fg.Neutral.bold,
+            alignment: .center
+        )
+        let style = (attributes[.paragraphStyle] as? NSParagraphStyle)?.mutableCopy() as? NSMutableParagraphStyle ?? NSMutableParagraphStyle()
         style.alignment = .center
         style.lineBreakMode = .byTruncatingTail
         style.lineBreakStrategy = .hangulWordPriority
-        attributedStr.addAttribute(NSAttributedString.Key.kern, value: 0, range: NSMakeRange(0, attributedStr.length))
-        attributedStr.addAttribute(NSAttributedString.Key.paragraphStyle, value: style, range: NSMakeRange(0, attributedStr.length))
-        self.purposeLabel.attributedText = attributedStr
+        attributes[.paragraphStyle] = style
+
+        self.purposeLabel.attributedText = NSAttributedString(string: text, attributes: attributes)
     }
 }
