@@ -115,10 +115,7 @@ extension SentenceEditVC {
     }
     
     public func showNetworkAlert() {
-        AlertUtils.presentNetworkAlertVC(
-            theme: .main,
-            animated: true
-        )
+        AlertUtils.presentNetworkAlertVC()
     }
 }
 

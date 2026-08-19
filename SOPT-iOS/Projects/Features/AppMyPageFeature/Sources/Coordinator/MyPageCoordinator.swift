@@ -70,25 +70,19 @@ public final class MyPageCoordinator: BaseCoordinator {
 
         myPage.vm.onLogoutTap = { confirmed in
             AlertUtils.presentAlertVC(
-                type: .titleDescription,
-                theme: .main,
+                type: .default(primary: .init(I18N.MyPage.logoutDialogGrantButtonTitle)),
                 title: I18N.MyPage.logoutDialogTitle,
                 description: I18N.MyPage.logoutDialogDescription,
-                customButtonTitle: I18N.MyPage.logoutDialogGrantButtonTitle,
-                customAction: confirmed,
-                animated: true
+                customAction: confirmed
             )
         }
 
         myPage.vm.onResetSoptampTap = { confirmed in
             AlertUtils.presentAlertVC(
-                type: .titleDescription,
-                theme: .main,
+                type: .danger(primary: .init(I18N.MyPage.reset)),
                 title: I18N.MyPage.resetMissionTitle,
                 description: I18N.MyPage.resetMissionDescription,
-                customButtonTitle: I18N.MyPage.reset,
-                customAction: confirmed,
-                animated: true
+                customAction: confirmed
             )
         }
 
@@ -153,13 +147,10 @@ public final class MyPageCoordinator: BaseCoordinator {
         
         withdrawal.vm.onWithdrawalConfirm = { completion  in
             AlertUtils.presentAlertVC(
-                type: .titleDescription,
-                theme: .main,
+                type: .danger(primary: .init(I18N.MyPage.EtcSection.withdrawal)),
                 title: I18N.MyPage.withdrawalDialogTitle,
                 description: I18N.MyPage.withdrawalDialogDescription,
-                customButtonTitle: I18N.MyPage.EtcSection.withdrawal,
-                customAction: completion,
-                animated: true
+                customAction: completion
             )
         }
         

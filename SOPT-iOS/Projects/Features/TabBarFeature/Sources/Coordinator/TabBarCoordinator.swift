@@ -97,10 +97,9 @@ public final class TabBarCoordinator: BaseCoordinator {
         tabBar.vm.showTabBarAlert = { [weak self] in
             guard let self = self else { return }
             AlertUtils.presentAlertVC(
-                type: .titleDescription,
+                type: .default(primary: .init(I18N.Home.PopUp.login)),
                 title: I18N.Home.PopUp.needToLogin,
                 description: I18N.Home.PopUp.needToLoginDetail,
-                customButtonTitle: I18N.Home.PopUp.login,
                 customAction: { [weak self] in
                     guard let self = self else { return }
                     self.delegate?.tabBarCoordinator(self, to: .signIn)

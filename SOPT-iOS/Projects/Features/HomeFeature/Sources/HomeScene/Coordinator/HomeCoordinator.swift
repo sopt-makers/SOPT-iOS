@@ -149,10 +149,9 @@ public final class HomeCoordinator: BaseCoordinator {
         
         homeForVisitor.vm.onAppServiceCellTapped = { [weak self] in
             AlertUtils.presentAlertVC(
-                type: .titleDescription,
+                type: .default(primary: .init(I18N.Home.PopUp.login)),
                 title: I18N.Home.PopUp.needToLogin,
                 description: I18N.Home.PopUp.needToLoginDetail,
-                customButtonTitle: I18N.Home.PopUp.login,
                 customAction: { [weak self] in
                     guard let self else { return }
                     self.delegate?.homeCoordinator(self, to: .signIn)

@@ -229,7 +229,7 @@ extension ListDetailVC {
             .withUnretained(self)
             .sink { owner, model in
                 if model.image.isEmpty {
-                    AlertUtils.presentNetworkAlertVC(theme: .soptamp,animated: true) {
+                    AlertUtils.presentNetworkAlertVC {
                         owner.backgroundDimmerView.removeFromSuperview()
                     }
                 } else {
@@ -255,7 +255,7 @@ extension ListDetailVC {
                     owner.reloadData(.completed)
                     ToastUtils.showMDSToast(type: .success, text: I18N.ListDetail.editCompletedToast)
                 } else {
-                    AlertUtils.presentNetworkAlertVC(theme: .soptamp, animated: true)
+                    AlertUtils.presentNetworkAlertVC()
                 }
             }.store(in: self.cancelBag)
         
@@ -275,7 +275,7 @@ extension ListDetailVC {
                 if success {
                     owner.navigationController?.popViewController(animated: true)
                 } else {
-                    AlertUtils.presentNetworkAlertVC(theme: .soptamp, animated: true)
+                    AlertUtils.presentNetworkAlertVC()
                 }
             }.store(in: self.cancelBag)
         
@@ -428,13 +428,10 @@ extension ListDetailVC {
     
     private func presentDeleteAlertVC() {
         AlertUtils.presentAlertVC(
-            type: .title,
-            theme: .soptamp,
+            type: .danger(primary: .init(I18N.Default.delete)),
             title: I18N.ListDetail.deleteTitle,
-            description: "",
-            customButtonTitle: I18N.Default.delete,
-            customAction: {
-                self.deleteButtonTapped.send(true)
+            customAction: { [weak self] in
+                self?.deleteButtonTapped.send(true)
             }
         )
     }

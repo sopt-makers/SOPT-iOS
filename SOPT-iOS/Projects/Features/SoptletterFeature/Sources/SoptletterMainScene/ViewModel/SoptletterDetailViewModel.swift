@@ -123,7 +123,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
         input.deleteButtonTap
             .withUnretained(self)
             .sink { owner, content in
-                AlertUtils.presentAlertVC(type: .titleDescription, title: I18N.Soptletter.Detail.deleteAlertTitle, description: I18N.Soptletter.Detail.deleteAlertDescription, customButtonTitle: I18N.Soptletter.Detail.deleteButtonTitle, customAction: {
+                AlertUtils.presentAlertVC(type: .danger(primary: .init(I18N.Soptletter.Detail.deleteButtonTitle)), title: I18N.Soptletter.Detail.deleteAlertTitle, description: I18N.Soptletter.Detail.deleteAlertDescription, customAction: {
                     owner.deleteMessage(output: output, content: content)
                 })
             }
