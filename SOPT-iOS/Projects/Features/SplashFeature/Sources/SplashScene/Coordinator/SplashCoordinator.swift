@@ -70,14 +70,4 @@ public final class SplashCoordinator: BaseCoordinator & SplashCoordinatorFinishO
         
         navigationController?.present(noticePopUpVC, animated: false)
     }
-    
-    public func showNetworkAlert() {
-        AlertUtils.presentAlertVC(
-            type: .titleDescription,
-            theme: .main,
-            title: I18N.Default.networkError,
-            description: I18N.Default.networkErrorDescription,
-            customButtonTitle: I18N.Default.ok
-        )
-    }
 }

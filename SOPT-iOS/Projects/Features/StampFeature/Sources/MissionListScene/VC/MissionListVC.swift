@@ -559,10 +559,7 @@ extension MissionListVC {
     }
     
     private func showNetworkAlert() {
-        AlertUtils.presentNetworkAlertVC(
-            theme: .soptamp,
-            animated: true
-        )
+        AlertUtils.presentNetworkAlertVC()
     }
 }
 
@@ -621,12 +618,9 @@ extension MissionListVC: UICollectionViewDelegate {
 
     private func showInactiveUserAlert() {
         AlertUtils.presentAlertVC(
-            type: .titleDescriptionSingleButton,
-            theme: .soptamp,
+            type: .information(),
             title: I18N.MissionList.inactiveUserAlertTitle,
-            description: I18N.MissionList.inactiveUserAlertDescription,
-            customButtonTitle: I18N.Default.ok,
-            animated: true
+            description: I18N.MissionList.inactiveUserAlertDescription
         )
     }
 }

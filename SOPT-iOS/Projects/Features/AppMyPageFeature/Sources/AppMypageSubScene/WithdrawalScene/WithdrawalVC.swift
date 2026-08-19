@@ -182,9 +182,6 @@ extension WithdrawalVC {
     }
     
     public func showNetworkAlert() {
-        AlertUtils.presentNetworkAlertVC(
-            theme: .main,
-            animated: true
-        )
+        AlertUtils.presentNetworkAlertVC()
     }
 }

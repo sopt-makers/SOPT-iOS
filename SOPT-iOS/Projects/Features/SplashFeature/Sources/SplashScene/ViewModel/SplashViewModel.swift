@@ -73,15 +73,8 @@ extension SplashViewModel {
     }
 
     private func showNetworkAlert() {
-        AlertUtils.presentAlertVC(
-            type: .titleDescription,
-            theme: .main,
-            title: I18N.Default.networkError,
-            description: I18N.Default.networkErrorDescription,
-            customButtonTitle: I18N.Default.ok,
-            customAction:{ [weak self] in
-                self?.useCase.getAppNotice()
-            }
-        )
+        AlertUtils.presentNetworkAlertVC(confirmAction: { [weak self] in
+            self?.useCase.getAppNotice()
+        })
     }
 }

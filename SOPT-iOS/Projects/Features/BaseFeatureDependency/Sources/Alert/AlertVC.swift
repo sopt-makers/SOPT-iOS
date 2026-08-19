@@ -10,84 +10,65 @@ import UIKit
 
 import SnapKit
 
-import Core
-import DSKit
+import MDS
 
-public class AlertVC: UIViewController, AlertViewControllable {
-    
+public final class AlertVC: UIViewController, AlertViewControllable {
+
     // MARK: - Properties
-    
+
     public var customAction: (() -> Void)?
     public var cancelAction: (() -> Void)?
-    
+    public var isCheckBoxSelected: Bool { dialog.isCheckBoxSelected }
+
+    private let type: AlertType
+    private let titleText: String
+    private let descriptionText: String?
+    private let checkBoxTitle: String?
+
     // MARK: - UI Components
-    
-    private lazy var backgroundDimmerView = CustomDimmerView(self)
-    private let alertView = UIView()
-    private let titleLabel = UILabel()
-    private let descriptionLabel = UILabel()
-    private let cancelButton = UIButton()
-    private let customButton = UIButton()
-    private var alertType: AlertType!
-    private var alertTheme: AlertTheme = .main
-    
+
+    private let dimmerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = SemanticColor.Bg.Dim.default
+        return view
+    }()
+
+    private lazy var dialog = MDSDialog(
+        variant: type.mdsVariant,
+        title: titleText,
+        description: descriptionText,
+        checkBoxTitle: checkBoxTitle
+    )
+
     // MARK: - Init
-    
-    public init(alertType: AlertType, alertTheme: AlertTheme = .main) {
-        self.alertType = alertType
-        self.alertTheme = alertTheme
+
+    public init(type: AlertType, title: String, description: String? = nil, checkBoxTitle: String? = nil) {
+        self.type = type
+        self.titleText = title
+        self.descriptionText = description
+        self.checkBoxTitle = checkBoxTitle
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - View Life Cycles
-    
+
     public override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
-        setLayout(alertType)
+        setLayout()
         setAddTarget()
     }
-    
-    // MARK: - Custom Method
-    
-    @discardableResult
-    public func setTitle(_ title: String, _ description: String = "") -> Self {
-        self.titleLabel.text = title
-        self.descriptionLabel.text = description
-        return self
-    }
-    
-    @discardableResult
-    public func setCustomButtonTitle(_ title: String) -> Self {
-        self.customButton.setTitle(title, for: .normal)
-        return self
-    }
-    
-    private func setAddTarget() {
-        self.cancelButton.addTarget(self, action: #selector(dismissCurrentVC), for: .touchUpInside)
-        self.customButton.addTarget(self, action: #selector(tappedCustomButton), for: .touchUpInside)
-        
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(dismissCurrentVC))
-        self.backgroundDimmerView.addGestureRecognizer(gesture)
-    }
-    
+
     // MARK: - @objc
-    
+
     @objc
     private func dismissCurrentVC() {
         self.dismiss(animated: true) {
             self.cancelAction?()
-        }
-    }
-    
-    @objc
-    private func tappedCustomButton() {
-        self.dismiss(animated: true) {
-            self.customAction?()
         }
     }
 }
@@ -97,106 +78,34 @@ public class AlertVC: UIViewController, AlertViewControllable {
 extension AlertVC {
     private func setUI() {
         self.view.backgroundColor = .clear
-        self.alertView.backgroundColor = alertTheme.backgroundColor
-        self.cancelButton.backgroundColor = alertTheme.cancelButtonColor(isSingleButtonAlert: self.alertType == .networkErr || self.alertType == .titleDescriptionSingleButton)
-        self.customButton.backgroundColor = alertTheme.customButtonColor
-        
-        self.titleLabel.font = .Main.headline2
-        self.descriptionLabel.font = .Main.body2
-        self.cancelButton.titleLabel?.font = .Main.caption3
-        self.customButton.titleLabel?.font = .Main.caption3
-        
-        self.titleLabel.textColor = alertTheme.titleColor
-        self.descriptionLabel.textColor = alertTheme.descriptionColor
-        self.cancelButton.setTitleColor(alertTheme.cancelButtonTitleColor(isSingleButtonAlert: self.alertType == .networkErr || self.alertType == .titleDescriptionSingleButton),
-                                        for: .normal)
-        self.customButton.setTitleColor(alertTheme.customButtonTitleColor, for: .normal)
-        
-        self.descriptionLabel.numberOfLines = 0
 
-        let cancelTitle: String
-        switch self.alertType {
-        case .networkErr, .titleDescriptionSingleButton:
-            cancelTitle = I18N.Default.ok
-        default:
-            cancelTitle = I18N.Default.cancel
+        dialog.onPrimaryTap = { [weak self] in
+            self?.dismiss(animated: true) {
+                self?.customAction?()
+            }
         }
-        self.cancelButton.setTitle(cancelTitle, for: .normal)
-        
-        self.alertView.layer.cornerRadius = 10
-        self.alertView.layer.masksToBounds = true
-        
-        self.cancelButton.layer.cornerRadius = 10
-        self.customButton.layer.cornerRadius = 10
+        dialog.onSecondaryTap = { [weak self] in
+            self?.dismiss(animated: true) {
+                self?.cancelAction?()
+            }
+        }
     }
-    
-    private func setLayout(_ type: AlertType) {
-        let heightRatio = (type == .title) ? 0.49 : 0.55
-        
-        self.view.addSubviews(backgroundDimmerView, alertView)
-        
-        backgroundDimmerView.snp.makeConstraints { make in
+
+    private func setLayout() {
+        self.view.addSubviews(dimmerView, dialog)
+
+        dimmerView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-        
-        alertView.snp.makeConstraints { make in
+
+        dialog.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(50)
-            make.height.greaterThanOrEqualTo(alertView.snp.width).multipliedBy(heightRatio)
-        }
-        
-        alertView.addSubview(titleLabel)
-        
-        let titleTopInset: CGFloat = (type == .title) ? 32 : 28
-        
-        titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(titleTopInset)
             make.leading.trailing.equalToSuperview().inset(20)
         }
-        
-        var lastLabel = titleLabel
-        
-        if type != .title {
-            alertView.addSubview(descriptionLabel)
-            
-            descriptionLabel.snp.makeConstraints { make in
-                make.top.equalTo(titleLabel.snp.bottom).offset(8)
-                make.leading.trailing.equalToSuperview().inset(20)
-            }
-            lastLabel = descriptionLabel
-        }
-        
-        self.setButtonLayout(type, lastLabel: lastLabel)
     }
 
-    private func setButtonLayout(_ type: AlertType, lastLabel: UILabel) {
-        alertView.addSubviews(cancelButton)
-        let buttonTopSpacing: CGFloat = 24
-        
-        switch type {
-        case .title, .titleDescription:
-            alertView.addSubviews(customButton)
-            let buttonSpacing: Float = 20
-            
-            cancelButton.snp.makeConstraints { make in
-                make.top.equalTo(lastLabel.snp.bottom).offset(buttonTopSpacing)
-                make.leading.bottom.equalToSuperview().inset(buttonSpacing)
-                make.width.equalTo(customButton.snp.width)
-                make.height.equalTo(38)
-            }
-            
-            customButton.snp.makeConstraints { make in
-                make.trailing.bottom.equalToSuperview().inset(buttonSpacing)
-                make.leading.equalTo(cancelButton.snp.trailing).offset(9)
-                make.height.equalTo(cancelButton.snp.height)
-            }
-
-        case .titleDescriptionSingleButton, .networkErr:
-            cancelButton.snp.makeConstraints { make in
-                make.top.equalTo(lastLabel.snp.bottom).offset(buttonTopSpacing)
-                make.leading.trailing.bottom.equalToSuperview().inset(7)
-                make.height.equalTo(38)
-            }
-        }
+    private func setAddTarget() {
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(dismissCurrentVC))
+        self.dimmerView.addGestureRecognizer(gesture)
     }
 }

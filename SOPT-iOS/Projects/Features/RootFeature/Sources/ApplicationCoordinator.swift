@@ -207,13 +207,11 @@ public final class ApplicationCoordinator: BaseCoordinator {
     private func handleNotificationLinkError(error: NotificationLinkError) {
         switch error {
         case NotificationLinkError.linkNotFound:
-            AlertUtils.presentAlertVC(type: .networkErr, title: I18N.DeepLink.updateAlertTitle,
-                                      description: I18N.DeepLink.updateAlertDescription,
-                                      customButtonTitle: I18N.DeepLink.updateAlertButtonTitle)
+            AlertUtils.presentAlertVC(type: .information(), title: I18N.DeepLink.updateAlertTitle,
+                                      description: I18N.DeepLink.updateAlertDescription)
         case NotificationLinkError.expiredLink:
-            AlertUtils.presentAlertVC(type: .networkErr, title: I18N.DeepLink.expiredLinkTitle,
-                                      description: I18N.DeepLink.expiredLinkDesription,
-                                      customButtonTitle: I18N.DeepLink.updateAlertButtonTitle)
+            AlertUtils.presentAlertVC(type: .information(), title: I18N.DeepLink.expiredLinkTitle,
+                                      description: I18N.DeepLink.expiredLinkDesription)
         default:
             break
         }

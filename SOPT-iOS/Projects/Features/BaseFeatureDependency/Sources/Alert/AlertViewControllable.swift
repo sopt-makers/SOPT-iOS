@@ -9,13 +9,3 @@
 import Core
 
 public protocol AlertViewControllable: LegacyViewControllable { }
-
-public protocol AlertViewBuildable {
-    func makeAlertVC(type: AlertType,
-                     theme: AlertVC.AlertTheme,
-                     title: String,
-                     description: String,
-                     customButtonTitle: String,
-                     customAction: (() -> Void)?) -> AlertViewControllable
-    func makeNetworkAlertVC(theme: AlertVC.AlertTheme) -> AlertViewControllable
-}
