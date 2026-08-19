@@ -44,23 +44,6 @@ public protocol LegacyRouterProtocol: LegacyViewControllable {
     
     func showTitles()
     func hideTitles()
-    
-    func presentAlertVC(
-        type: AlertType,
-        theme: AlertVC.AlertTheme,
-        title: String,
-        description: String,
-        customButtonTitle: String,
-        customAction: (() -> Void)?,
-        animated: Bool,
-        completion: (() -> Void)?
-    )
-    
-    func presentNetworkAlertVC(
-        theme: AlertVC.AlertTheme,
-        animated: Bool,
-        completion: (() -> Void)?
-    )
 }
 
 /// RouterProtocol을 채택하여 Coordinator가 모르는 화면전환의 기능을 수행합니다. RootController를 가지고 다양한 기능을 수행합니다.
@@ -272,41 +255,6 @@ final class LegacyRouter: NSObject, LegacyRouterProtocol {
         self.rootController = rootController
         self.completions = [:]
         super.init()
-    }
-}
-
-// MARK: - Alert
-
-extension LegacyRouter {
-    public func presentAlertVC(
-        type: AlertType,
-        theme: AlertVC.AlertTheme = .main,
-        title: String,
-        description: String = "",
-        customButtonTitle: String,
-        customAction: (() -> Void)? = nil,
-        animated: Bool = false,
-        completion: (() -> Void)? = nil
-    ) {
-        let alertVC = AlertVC(alertType: type, alertTheme: theme)
-            .setTitle(title, description)
-            .setCustomButtonTitle(customButtonTitle)
-        alertVC.customAction = customAction
-        alertVC.modalPresentationStyle = .overFullScreen
-        alertVC.modalTransitionStyle = .crossDissolve
-        present(alertVC, animated: animated, completion: completion)
-    }
-    
-    public func presentNetworkAlertVC(
-        theme: AlertVC.AlertTheme = .main,
-        animated: Bool = false,
-        completion: (() -> Void)? = nil
-    ) {
-        let alertVC = AlertVC(alertType: .networkErr, alertTheme: theme)
-            .setTitle(I18N.Default.networkError, I18N.Default.networkErrorDescription)
-        alertVC.modalPresentationStyle = .overFullScreen
-        alertVC.modalTransitionStyle = .crossDissolve
-        present(alertVC, animated: animated, completion: completion)
     }
 }
 
