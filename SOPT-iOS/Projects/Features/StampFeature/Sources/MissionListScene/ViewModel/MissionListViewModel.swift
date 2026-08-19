@@ -33,6 +33,8 @@ public class MissionListViewModel: MissionListViewModelType {
     private let coordinator: AnyCoordinatorObject
     private var cancelBag = CancelBag()
     public var missionListsceneType: MissionListSceneType!
+    private var isAppjamMode: Bool?
+    private var missionTypeSelected: CurrentValueSubject<MissionListFetchType, Never>!
     
     // MARK: - Inputs
     
@@ -49,7 +51,9 @@ public class MissionListViewModel: MissionListViewModelType {
         @Published var usersActivateGenerationStatus: UsersActiveGenerationStatusViewResponse?
         @Published var reportUrl: SoptampReportUrlModel?
         @Published var appjamInfo: AppjamMissionListModel?
+        @Published var isAppjamMode: Bool?
         var needNetworkAlert = PassthroughSubject<Void, Never>()
+        @Published var isLoading: Bool = false
     }
     
     // MARK: - init
@@ -66,6 +70,8 @@ public class MissionListViewModel: MissionListViewModelType {
 
 extension MissionListViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
+        self.missionTypeSelected = input.missionTypeSelected
+
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
@@ -73,6 +79,10 @@ extension MissionListViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.updateCurrentSoptampUserInfo()
+                if case .default = owner.missionListsceneType {
+                    output.isLoading = true
+                    owner.useCase.fetchIsAppjamMode()
+                }
             }.store(in: cancelBag)
         
         input.viewWillAppear
@@ -104,13 +114,20 @@ extension MissionListViewModel {
     }
     
     private func fetchMissionListByType(type: MissionListFetchType) {
-//        switch type {
-//        case .appjam:
-//            self.useCase.fetchAppjamMissionList(teamNumber: nil, isCompleted: nil)
-//        default:
-//            self.useCase.fetchMissionList(type: type)
-//        }
-        // TODO: - 앱잼 기간에는 앱잼 미션만 노출 필요 추후 상단 주석 활성화
+        // 앱잼 모드 확인 전에는 일반/앱잼 여부를 판단할 수 없으므로 조회하지 않음.
+        // 모드 응답 도착 시 bindOutput에서 다시 호출됨.
+        guard let isAppjamMode else { return }
+
+        guard isAppjamMode else {
+            switch type {
+            case .appjam:
+                self.useCase.fetchAppjamMissionList(teamNumber: nil, isCompleted: nil)
+            default:
+                self.useCase.fetchMissionList(type: type)
+            }
+            return
+        }
+
         switch type {
         case .all:
             self.useCase.fetchAppjamMissionList(teamNumber: nil, isCompleted: nil)
@@ -157,6 +174,18 @@ extension MissionListViewModel {
             .asDriver()
             .sink { _ in
                 output.needNetworkAlert.send()
+            }.store(in: cancelBag)
+
+        self.useCase.isAppjamModeFetched
+            .asDriver()
+            .withUnretained(self)
+            .sink { owner, isAppjamMode in
+                owner.isAppjamMode = isAppjamMode
+                output.isAppjamMode = isAppjamMode
+
+                guard case .default = owner.missionListsceneType else { return }
+                owner.fetchMissionListByType(type: owner.missionTypeSelected.value)
+                output.isLoading = false
             }.store(in: cancelBag)
     }
 }
