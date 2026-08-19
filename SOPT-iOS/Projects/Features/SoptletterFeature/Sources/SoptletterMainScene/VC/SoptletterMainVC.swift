@@ -59,7 +59,7 @@ public final class SoptletterMainVC: UIViewController {
         $0.clipsToBounds = false
     }
 
-    private let writeButton = MDSFloatingButton(size: .default, icon: MDSIcon.writeOutlined.image)
+    private let writeButton = MDSFloatingButton(size: .default, icon: MDSIcon.writeOutlined)
 
     private let bannerImageButton = UIButton().then {
         $0.setImage(DSKitAsset.Assets.imgSoptletteraBanner.image, for: .normal)
