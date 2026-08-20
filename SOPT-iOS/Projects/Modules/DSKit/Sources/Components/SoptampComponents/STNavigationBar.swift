@@ -188,7 +188,7 @@ extension STNavigationBar {
     
     @discardableResult
     public func addLeftButtonToTitleMenu() -> Self {
-        leftButton.setImage(DSKitAsset.Assets.icClose.image, for: .normal)
+        leftButton.setImage(MDSIcon.xCloseOutlined.image, for: .normal)
         leftButtonLayoutForMenu()
         return self
     }
@@ -248,8 +248,7 @@ extension STNavigationBar {
         switch type {
         case .title:
             rightButton.isHidden = false
-            // TODO: 디자인 문의
-            rightButton.setImage(DSKitAsset.Assets.icCommunicationEdit.image, for: .normal)
+            rightButton.setImage(MDSIcon.writeOutlined.image, for: .normal)
             titleButton.setImage(MDSIcon.chevronDownOutlined.image, for: .normal)
             titleButton.semanticContentAttribute = .forceRightToLeft
             titleButton.titleLabel?.adjustsFontSizeToFitWidth = true
