@@ -161,7 +161,7 @@ extension AppJamRankingVC {
     private func setDataSource() {
         dataSource = UICollectionViewDiffableDataSource<AppJamRankingSection, AppJamRankingItem>(
             collectionView: collectionView
-        ) { [weak self] collectionView, indexPath, item in
+        ) { collectionView, indexPath, item in
             switch item {
             case .mission(let model):
                 guard let cell = collectionView.dequeueReusableCell(
@@ -185,7 +185,7 @@ extension AppJamRankingVC {
             }
         }
         
-        dataSource.supplementaryViewProvider = { [weak self] collectionView, kind, indexPath in
+        dataSource.supplementaryViewProvider = { collectionView, kind, indexPath in
             guard kind == UICollectionView.elementKindSectionHeader,
                   let headerView = collectionView.dequeueReusableSupplementaryView(
                     ofKind: kind,

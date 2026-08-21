@@ -11,7 +11,6 @@ import Combine
 
 import Core
 import Domain
-import DSKit
 import MDS
 
 // MARK: ClapListCVC
@@ -25,7 +24,7 @@ final class ClapListCVC: UICollectionViewCell, UICollectionViewRegisterable {
 
     // MARK: - UI Components
 
-    private let profileView = CustomProfileImageView().hideBorder()
+    private let profileView = MDSAvatar(size: 32, hasStroke: false)
 
     private let nameLabel = UILabel()
 
@@ -68,12 +67,9 @@ final class ClapListCVC: UICollectionViewCell, UICollectionViewRegisterable {
         clapLabel.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold)
 
         if !model.profileImageUrl.isEmpty {
-            profileView.setImage(
-                with: model.profileImageUrl,
-                placeholder: DSKitAsset.Assets.icLineProfile.image
-            )
+            profileView.setImage(with: model.profileImageUrl)
         } else {
-            profileView.image = DSKitAsset.Assets.icLineProfile.image
+            profileView.image = nil
         }
     }
 }

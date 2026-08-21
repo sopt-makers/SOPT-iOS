@@ -41,7 +41,7 @@ final class AppJamMissionCardCVC: UICollectionViewCell {
     private let profileView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = DSKitAsset.Assets.icDefaultProfile.image
-        imageView.layer.cornerRadius = BaseRadius.Base.full
+        imageView.layer.cornerRadius = BaseRadius.Base.r12
         imageView.clipsToBounds = true
         return imageView
     }()
