@@ -81,7 +81,7 @@ public final class AttendanceVC: UIViewController, LegacyAttendanceViewControlla
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = SemanticColor.Fg.Neutral.bold
-        label.setTypography(Typography.title3)
+        label.font = Typography.title3.font
         return label
     }()
     
@@ -90,7 +90,7 @@ public final class AttendanceVC: UIViewController, LegacyAttendanceViewControlla
         let label = UILabel()
         label.text = I18N.Attendance.inputCodeDescription
         label.textColor = SemanticColor.Fg.Neutral.default
-        label.setTypography(Typography.body1)
+        label.font = Typography.body1.font
         return label
     }()
     
@@ -120,7 +120,7 @@ public final class AttendanceVC: UIViewController, LegacyAttendanceViewControlla
         let label = UILabel()
         label.text = I18N.Attendance.codeMismatch
         label.textColor = SemanticColor.Fg.Danger.default
-        label.setTypography(Typography.label3)
+        label.font = Typography.label3.font
         label.isHidden = true
         return label
     }()
@@ -270,6 +270,7 @@ extension AttendanceVC {
             .withUnretained(self)
             .sink { owner, title in
                 owner.titleLabel.text = title + I18N.Attendance.take
+                owner.titleLabel.setTypography(Typography.title3)
             }
             .store(in: self.cancelBag)
         

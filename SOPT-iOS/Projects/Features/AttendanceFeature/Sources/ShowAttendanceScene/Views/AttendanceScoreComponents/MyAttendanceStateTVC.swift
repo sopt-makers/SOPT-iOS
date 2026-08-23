@@ -26,14 +26,12 @@ final class MyAttendanceStateTVC: UITableViewCell {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.setTypography(Typography.label3)
         label.textColor = SemanticColor.Fg.Neutral.bold
         return label
     }()
     
     private let dateLabel: UILabel = {
         let label = UILabel()
-        label.setTypography(Typography.label4)
         label.textColor = SemanticColor.Fg.Neutral.subtle
         return label
     }()
@@ -87,7 +85,11 @@ extension MyAttendanceStateTVC {
         guard let status = AttendanceStateType(rawValue: model.status.lowercased()) else { return }
         
         stateImageView.image = status.image
+        
         titleLabel.text = model.name
+        titleLabel.setTypography(Typography.label3)
+        
         dateLabel.text = model.date
+        dateLabel.setTypography(Typography.label4)
     }
 }

@@ -16,7 +16,6 @@ final class HomeCalendarDetailCVC: UICollectionViewCell {
     // MARK: UI Components
     
     private let circleView = UIView().then {
-//        $0.backgroundColor = SemanticColor.Fg.Neutral.ghost
         $0.layer.cornerRadius = 7.5
     }
     
@@ -25,14 +24,14 @@ final class HomeCalendarDetailCVC: UICollectionViewCell {
     }
     
     private let dateLabel = UILabel().then {
-        $0.setTypography(Typography.label4)
+        $0.font = Typography.label4.font
         $0.textColor = SemanticColor.Fg.Neutral.subtle
     }
 
     private let homeSquareTagView = MDSTag(text: "", size: .small, shape: .rect, variant: .secondary, style: .subtle)
     
     private let calendarTitleLabel = UILabel().then {
-        $0.setTypography(Typography.title4)
+        $0.font = Typography.title4.font
         $0.textColor = SemanticColor.Fg.Neutral.bold
     }
     
@@ -94,12 +93,17 @@ extension HomeCalendarDetailCVC {
     func configureCell(_ model: HomeCalendarDetailPresentationModel?) {
         guard let model else { return }
         dateLabel.text = model.date
+        dateLabel.setTypography(Typography.label4)
+        
         calendarTitleLabel.text = model.title
+        calendarTitleLabel.setTypography(Typography.title4)
+        
         if let tagType = CalenderCategoryTagType(rawValue: model.type) {
             self.homeSquareTagView.text = tagType.text
             // TODO: - MDS 수정 후 적용
 //            self.homeSquareTagView.variant = tagType.tagType
         }
+        
         circleView.backgroundColor = model.isRecentSchedule ? SemanticColor.Fg.Neutral.bold : SemanticColor.Fg.Neutral.ghost
     }
 }

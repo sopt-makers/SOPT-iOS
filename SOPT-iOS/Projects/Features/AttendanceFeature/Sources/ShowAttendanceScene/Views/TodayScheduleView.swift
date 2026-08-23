@@ -42,7 +42,6 @@ final class TodayScheduleView: UIView {
     
     private let dateLabel: UILabel = {
         let label = UILabel()
-        label.setTypography(Typography.label3)
         label.textColor = SemanticColor.Fg.Neutral.subtle
         return label
     }()
@@ -58,14 +57,12 @@ final class TodayScheduleView: UIView {
     private let placeLabel: UILabel = {
         let label = UILabel()
         label.textColor = SemanticColor.Fg.Neutral.subtle
-        label.setTypography(Typography.label3)
         return label
     }()
     
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = SemanticColor.Fg.Neutral.bold
-        label.setTypography(Typography.title4)
         label.numberOfLines = 0
         return label
     }()
@@ -73,7 +70,6 @@ final class TodayScheduleView: UIView {
     private let subtitleLabel: UILabel = {
         let label = UILabel()
         label.textColor = SemanticColor.Fg.Neutral.subtle
-        label.setTypography(Typography.label3)
         return label
     }()
     
@@ -187,9 +183,16 @@ extension TodayScheduleView {
     func setData(date: String, place: String, todaySchedule: String, description: String?) {
 
         dateLabel.text = date
+        dateLabel.setTypography(Typography.label3)
+        
         placeLabel.text = place
+        placeLabel.setTypography(Typography.label3)
+        
         titleLabel.text = I18N.Attendance.today + todaySchedule + I18N.Attendance.dayIs
+        titleLabel.setTypography(Typography.title4)
+        
         subtitleLabel.text = description
+        subtitleLabel.setTypography(Typography.label3)
         subtitleLabel.isHidden = ((description?.isEmpty) == nil || description == "")
         
         checkNoAttendanceSession()

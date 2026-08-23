@@ -138,7 +138,7 @@ final class OPAttendanceStepView: UIView {
 
     private let stepTitleLabel: UILabel = {
         let label = UILabel()
-        label.setTypography(Typography.label4)
+        label.font = Typography.label4.font
         return label
     }()
     
@@ -165,6 +165,7 @@ extension OPAttendanceStepView {
     private func setUI() {
         stepTitleLabel.textColor = type.textColor
         stepTitleLabel.text = title
+        stepTitleLabel.setTypography(Typography.label4)
 
         if type.isCircleStyle {
             stepImageView.isHidden = true
