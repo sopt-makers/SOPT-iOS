@@ -10,6 +10,7 @@ import UIKit
 
 import Core
 import DSKit
+import MDS
 
 import Combine
 import SnapKit
@@ -71,7 +72,7 @@ public final class AttendanceVC: UIViewController, LegacyAttendanceViewControlla
     private let closeButton: UIButton = {
         let button = UIButton()
         var config = UIButton.Configuration.plain()
-        config.image = DSKitAsset.Assets.opClose.image.withTintColor(DSKitAsset.Colors.gray300.color)
+        config.image = MDSIcon.xCloseOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold)
         button.configuration = config
         return button
     }()
@@ -79,8 +80,8 @@ public final class AttendanceVC: UIViewController, LegacyAttendanceViewControlla
     /// 출석 제목
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = DSKitAsset.Colors.gray10.color
-        label.font = .Attendance.h1
+        label.textColor = SemanticColor.Fg.Neutral.bold
+        label.setTypography(Typography.title3)
         return label
     }()
     
@@ -88,8 +89,8 @@ public final class AttendanceVC: UIViewController, LegacyAttendanceViewControlla
     private let subtitleLabel: UILabel = {
         let label = UILabel()
         label.text = I18N.Attendance.inputCodeDescription
-        label.textColor = DSKitAsset.Colors.gray300.color
-        label.font = .Main.caption1
+        label.textColor = SemanticColor.Fg.Neutral.default
+        label.setTypography(Typography.body1)
         return label
     }()
     
@@ -118,19 +119,27 @@ public final class AttendanceVC: UIViewController, LegacyAttendanceViewControlla
     private let alertLabel: UILabel = {
         let label = UILabel()
         label.text = I18N.Attendance.codeMismatch
-        label.textColor = DSKitAsset.Colors.error.color
-        label.font = .Main.body2
+        label.textColor = SemanticColor.Fg.Danger.default
+        label.setTypography(Typography.label3)
         label.isHidden = true
         return label
     }()
     
     /// 출석하기 버튼
-    private let attendanceButton: OPCustomButton = {
-        let button = OPCustomButton()
-        button.setTitle(I18N.Attendance.takeAttendance, for: .normal)
-        button.titleLabel!.font = .Attendance.h2
+    private let attendanceButton: MDSActionButton = {
+        let button = MDSActionButton(
+            variant: .primary,
+            size: .medium,
+            title: I18N.Attendance.takeAttendance,
+            prefixIcon: nil,
+            prefixIconTint: .automatic,
+            suffixIcon: nil,
+            suffixIconTint: .automatic
+        )
+        button.isEnabled = false
         return button
     }()
+    
     
     
     // MARK: - Init

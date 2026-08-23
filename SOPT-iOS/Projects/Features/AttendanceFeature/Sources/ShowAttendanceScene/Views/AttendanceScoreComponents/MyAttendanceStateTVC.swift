@@ -9,7 +9,8 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
+
 import Domain
 
 /*
@@ -20,19 +21,20 @@ final class MyAttendanceStateTVC: UITableViewCell {
     
     // MARK: - UI Components
     
+    // TODO: - 결석, 지각 결정되면 MDSTag로 변경
     private let stateImageView = UIImageView()
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
-        label.textColor = DSKitAsset.Colors.gray10.color
+        label.setTypography(Typography.label3)
+        label.textColor = SemanticColor.Fg.Neutral.bold
         return label
     }()
     
     private let dateLabel: UILabel = {
         let label = UILabel()
-        label.font = .Main.body2
-        label.textColor = DSKitAsset.Colors.gray100.color
+        label.setTypography(Typography.label4)
+        label.textColor = SemanticColor.Fg.Neutral.subtle
         return label
     }()
     

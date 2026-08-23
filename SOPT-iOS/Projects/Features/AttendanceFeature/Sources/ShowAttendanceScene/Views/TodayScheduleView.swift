@@ -10,7 +10,7 @@ import UIKit
 
 import Core
 import Domain
-import DSKit
+import MDS
 
 /*
  출석 조회하기 뷰의 상단 오늘의 일정을 보여주는 뷰 입니다.
@@ -34,42 +34,46 @@ final class TodayScheduleView: UIView {
 
     private let dateImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.image = MDSIcon.calendarFilled.image
+        imageView.tintColor = SemanticColor.Fg.Neutral.subtle
         imageView.contentMode = .scaleToFill
         return imageView
     }()
     
     private let dateLabel: UILabel = {
         let label = UILabel()
-        label.font = .Main.body2
-        label.textColor = DSKitAsset.Colors.gray300.color
+        label.setTypography(Typography.label3)
+        label.textColor = SemanticColor.Fg.Neutral.subtle
         return label
     }()
     
     private let placeImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.image = MDSIcon.locationFilled.image
+        imageView.tintColor = SemanticColor.Fg.Neutral.subtle
         imageView.contentMode = .scaleToFill
         return imageView
     }()
     
     private let placeLabel: UILabel = {
         let label = UILabel()
-        label.textColor = DSKitAsset.Colors.gray300.color
-        label.font = .Main.body2
+        label.textColor = SemanticColor.Fg.Neutral.subtle
+        label.setTypography(Typography.label3)
         return label
     }()
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = DSKitAsset.Colors.gray10.color
-        label.font = DSKitFontFamily.Suit.regular.font(size: 18)
+        label.textColor = SemanticColor.Fg.Neutral.bold
+        label.setTypography(Typography.title4)
         label.numberOfLines = 0
         return label
     }()
     
     private let subtitleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = DSKitAsset.Colors.gray100.color
-        label.font = .Main.body2
+        label.textColor = SemanticColor.Fg.Neutral.subtle
+        label.setTypography(Typography.label3)
         return label
     }()
     
@@ -139,9 +143,9 @@ final class TodayScheduleView: UIView {
 extension TodayScheduleView {
     
     private func initContentView() {
-        self.backgroundColor = DSKitAsset.Colors.gray800.color
+        self.backgroundColor = SemanticColor.Bg.Neutral.ghost
         self.clipsToBounds = true
-        self.layer.cornerRadius = 16
+        self.layer.cornerRadius = BaseRadius.Base.r12
     }
     
     private func initLayout(_ type: AttendanceScheduleType) {
@@ -181,14 +185,10 @@ extension TodayScheduleView {
 extension TodayScheduleView {
     
     func setData(date: String, place: String, todaySchedule: String, description: String?) {
-        
-        setDefaultLayout()
-        
+
         dateLabel.text = date
         placeLabel.text = place
         titleLabel.text = I18N.Attendance.today + todaySchedule + I18N.Attendance.dayIs
-        titleLabel.partFontChange(targetString: todaySchedule,
-                                  font: DSKitFontFamily.Suit.bold.font(size: 18))
         subtitleLabel.text = description
         subtitleLabel.isHidden = ((description?.isEmpty) == nil || description == "")
         
@@ -202,12 +202,7 @@ extension TodayScheduleView {
     
     private func addUnscheduledTitle() {
         titleLabel.text = I18N.Attendance.today + I18N.Attendance.unscheduledDay + I18N.Attendance.dayIs
-        titleLabel.font = DSKitFontFamily.Suit.medium.font(size: 16)
-    }
-        
-    private func setDefaultLayout() {
-        dateImageView.image = DSKitAsset.Assets.opDate.image
-        placeImageView.image = DSKitAsset.Assets.opPlace.image
+        titleLabel.setTypography(Typography.title5)
     }
     
     private func checkNoAttendanceSession() {

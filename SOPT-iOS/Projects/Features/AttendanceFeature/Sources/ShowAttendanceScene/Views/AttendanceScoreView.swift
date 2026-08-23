@@ -9,7 +9,8 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
+
 import Domain
 
 /*
@@ -37,9 +38,9 @@ final class AttendanceScoreView: UIView {
     
     private lazy var myScoreContainerStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [attendanceScoreView, tardyScoreView, absentScoreView, participateScoreView])
-        stackView.backgroundColor = DSKitAsset.Colors.gray700.color
+        stackView.backgroundColor = SemanticColor.Bg.Neutral.subtle
         stackView.clipsToBounds = true
-        stackView.layer.cornerRadius = 8
+        stackView.layer.cornerRadius = BaseRadius.Base.r10
         stackView.axis = .horizontal
         stackView.spacing = -10
         stackView.distribution = .fillEqually
@@ -57,8 +58,8 @@ final class AttendanceScoreView: UIView {
     
     private let attendanceScoreDescriptiopnLabel: UILabel = {
         let label = UILabel()
-        label.font = .Main.body2
-        label.textColor = DSKitAsset.Colors.gray300.color
+        label.setTypography(Typography.title5)
+        label.textColor = SemanticColor.Fg.Neutral.subtle
         return label
     }()
     
@@ -90,9 +91,9 @@ final class AttendanceScoreView: UIView {
 extension AttendanceScoreView {
     
     private func configureContentView() {
-        self.backgroundColor = DSKitAsset.Colors.gray800.color
+        self.backgroundColor = SemanticColor.Bg.Neutral.ghost
         self.clipsToBounds = true
-        self.layer.cornerRadius = 16
+        self.layer.cornerRadius = BaseRadius.Base.r12
     }
     
     private func setLayout() {

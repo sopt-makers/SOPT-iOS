@@ -8,7 +8,7 @@
 
 import UIKit
 
-import DSKit
+import MDS
 
 public enum LineType {
     case check
@@ -17,9 +17,9 @@ public enum LineType {
     var color: UIColor {
         switch self {
         case .check:
-            return DSKitAsset.Colors.gray10.color
+            return SemanticColor.Fg.Neutral.bold
         case .unCheck:
-            return DSKitAsset.Colors.gray400.color
+            return SemanticColor.Fg.Neutral.subtle
         }
     }
 }
