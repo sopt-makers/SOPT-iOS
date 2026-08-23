@@ -107,4 +107,19 @@ public enum AmplitudeEventType: String {
     case clickAllrankingMyranking = "click_allranking_myranking"
     case clickClapperlist = "click_clapperlist"
     
+    // 솝레터 이벤트
+    case viewSoptletterOnboarding = "view_soptletter_onboarding"
+    case viewSoptletterNickname = "view_soptletter_nickname"
+    case clickSoptletterStartButton = "click_soptletter_start_button"
+    case viewSoptletterMain = "view_soptletter_main"
+    case clickWriteSoptletter = "click_write_soptletter"
+    case clickDoneWriteSoptletter = "click_done_write_soptletter"
+    case clickSoptletterDetail = "click_soptletter_detail"
+    case clickEditSoptletter = "click_edit_soptletter"
+    case clickDoneEditSoptletter = "click_done_edit_soptletter"
+    case clickSoptletterLikeButton = "click_soptletter_like_button"
+    case clickDeleteSoptletter = "click_delete_soptletter"
+    case clickExportSoptletter = "click_export_soptletter"
+    case clickDoneExportSoptletter = "click_done_export_soptletter"
+    case clickQuitSoptletter = "click_quit_soptletter"
 }

@@ -51,6 +51,8 @@ public final class SoptletterNicknameCheckViewModel: SoptletterNicknameCheckView
         input.viewDidLoad
             .withUnretained(self)
             .sink { owner, _ in
+                AmplitudeInstance.shared.trackWithUserType(event: .viewSoptletterNickname)
+                
                 owner.fetchProfileTask?.cancel()
                 owner.fetchProfileTask = Task {
                     do {
@@ -81,6 +83,8 @@ public final class SoptletterNicknameCheckViewModel: SoptletterNicknameCheckView
                         owner.showAlert?()
                     }
                 }
+                
+                AmplitudeInstance.shared.trackWithUserType(event: .clickSoptletterStartButton)
             }.store(in: cancelBag)
         
         return output

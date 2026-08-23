@@ -25,7 +25,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
         let deleteButtonTap: Driver<String>
         let confirmButtonTap: Driver<Void>
         let editCompleteButtonTap: Driver<String>
-        let likeButtonTap: Driver<(likeByMe: Bool, isMine: Bool)>
+        let likeButtonTap: Driver<(likeByMe: Bool, isMine: Bool)>        
     }
     
     public struct Output {
@@ -61,6 +61,12 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
     
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
+        
+        input.editButtonTap
+            .withUnretained(self)
+            .sink { owner in
+                AmplitudeInstance.shared.trackWithUserType(event: .clickEditSoptletter)
+            }.store(in: cancelBag)
         
         input.likeButtonTap
             .withUnretained(self)
@@ -116,6 +122,8 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
                     } catch {
                         await MainActor.run { self.onError?() }
                     }
+                    
+                    AmplitudeInstance.shared.trackWithUserType(event: .clickDoneEditSoptletter)
                 }
             }
             .store(in: cancelBag)
@@ -126,6 +134,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
                 AlertUtils.presentAlertVC(type: .danger(primary: .init(I18N.Soptletter.Detail.deleteButtonTitle)), title: I18N.Soptletter.Detail.deleteAlertTitle, description: I18N.Soptletter.Detail.deleteAlertDescription, customAction: {
                     owner.deleteMessage(output: output, content: content)
                 })
+                AmplitudeInstance.shared.trackWithUserType(event: .clickDeleteSoptletter)
             }
             .store(in: cancelBag)
         

@@ -25,6 +25,7 @@ public final class SoptletterOnboardingViewModel: SoptletterOnboardingViewModelT
     public struct Input {
         let naviBackTap: Driver<Void>
         let startTap: Driver<Void>
+        let viewDidLoad: Driver<Void>
     }
     
     public struct Output { }
@@ -44,7 +45,13 @@ public final class SoptletterOnboardingViewModel: SoptletterOnboardingViewModelT
         input.startTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onStartButtonTap?()
+                owner.onStartButtonTap?()                
+            }.store(in: cancelBag)
+        
+        input.viewDidLoad
+            .withUnretained(self)
+            .sink { owner, _ in
+                AmplitudeInstance.shared.trackWithUserType(event: .viewSoptletterOnboarding)
             }.store(in: cancelBag)
         
         return output

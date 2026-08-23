@@ -44,7 +44,8 @@ final public class SoptletterPrintViewModel: SoptletterPrintViewModelType {
             .pdfSaveButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onPDFSaveTap?(owner.pdfURL)                
+                owner.onPDFSaveTap?(owner.pdfURL)
+                AmplitudeInstance.shared.trackWithUserType(event: .clickDoneExportSoptletter)
             }.store(in: cancelBag)
         
         input
