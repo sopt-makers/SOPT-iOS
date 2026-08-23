@@ -102,6 +102,7 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
 extension NotificationListVC {
     private func setUI() {
         view.backgroundColor = SemanticColor.Bg.Layer.basement
+        naviBar.rightButton.isEnabled = false
     }
     
     private func setLayout() {

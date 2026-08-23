@@ -74,11 +74,15 @@ public final class NotificationDetailVC: UIViewController, NotificationDetailVie
         return textView
     }()
     
-    private let shortCutButton = MDSActionButton(
-        variant: .primary,
-        size: .large,
-        title: I18N.Notification.shortcut
-    )
+    private let shortCutButton: MDSActionButton = {
+        let button = MDSActionButton(
+            variant: .primary,
+            size: .large,
+            title: I18N.Notification.shortcut
+        )
+        button.isHidden = true
+        return button
+    }()
     
     // MARK: - initialization
     

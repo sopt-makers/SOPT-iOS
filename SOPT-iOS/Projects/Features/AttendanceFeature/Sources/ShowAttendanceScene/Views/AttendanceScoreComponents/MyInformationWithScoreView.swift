@@ -76,18 +76,21 @@ extension MyInformationWithScoreView {
         let subText = I18N.Attendance.scoreIs
         
         let attributedString = NSMutableAttributedString(string: mainText + pointedText + subText)
-        
-        attributedString.addAttributes([NSAttributedString.Key.font: Typography.title4,
-                                        NSAttributedString.Key.foregroundColor: SemanticColor.Fg.Neutral.bold],
-                                       range: NSRange(location: 0, length: mainText.count))
-        
-        attributedString.addAttributes([NSAttributedString.Key.font: Typography.title4,
-                                        NSAttributedString.Key.foregroundColor: SemanticColor.Fg.Brand.default],
-                                       range: NSRange(location: mainText.count, length: pointedText.count))
-        
-        attributedString.addAttributes([NSAttributedString.Key.font: Typography.title4,
-                                        NSAttributedString.Key.foregroundColor: SemanticColor.Fg.Neutral.bold],
-                                       range: NSRange(location: mainText.count + pointedText.count, length: subText.count))
+
+        attributedString.addAttributes(
+            Typography.title4.attributedStringAttributes(foregroundColor: SemanticColor.Fg.Neutral.bold),
+            range: NSRange(location: 0, length: mainText.count)
+        )
+
+        attributedString.addAttributes(
+            Typography.title4.attributedStringAttributes(foregroundColor: SemanticColor.Fg.Brand.default),
+            range: NSRange(location: mainText.count, length: pointedText.count)
+        )
+
+        attributedString.addAttributes(
+            Typography.title4.attributedStringAttributes(foregroundColor: SemanticColor.Fg.Neutral.bold),
+            range: NSRange(location: mainText.count + pointedText.count, length: subText.count)
+        )
         
         currentScoreLabel.attributedText = attributedString
     }
