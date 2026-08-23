@@ -29,8 +29,8 @@ public enum AmplitudeEventType: String {
     case clickPlusButton = "click_plus_button"
     case clickPlaygroundCommunity = "click_playground_community"
     case clickHotboard = "click_hotboard"
-    case clickShortcutButton = "click_link.btn"
-    case clickReadAllButton = "click_allread.btn"
+    case clickShortcutButton = "click_link_button"
+    case clickReadAllButton = "click_allread_button"
     case clickNotificationItem = "click_notification_item"
     case clickCoffeeChat = "click_playground_coffee_chat"        // 먼저 배포된 안드로이드 컨벤션에 맞춤. 앰플리튜드 tf 개설 후 click_으로 통일하여 사용할 예정
     
