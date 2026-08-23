@@ -18,6 +18,13 @@ struct HomeEventTracker {
         }
     }
     
+    func trackAppService(serviceType: AppServiceType) {
+        switch serviceType {
+        case .soptletter:
+            AmplitudeInstance.shared.track(eventType: .clickSoptletterMenu)
+        }
+    }
+    
     func trackClickPostMember(
         postRanking: Int?,
         sectionName: HomeAmplitudeEventPropertyValue,

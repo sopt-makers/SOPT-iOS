@@ -127,7 +127,7 @@ extension HomeForMemberViewModel {
                 case .recentSchedule:
                     owner.onCalendarCellTapped?()
                     AmplitudeInstance.shared.trackWithUserType(event: .clickAllCalendar)
-                case .productService(let model):
+                case .productService(let model):                    
                     owner.onMainProductCellTapped?(model.product.serviceDomainLink)
                     owner.eventTracker.trackAmplitude(event: model.product.toAmplitudeEventType)
                 case .socialLink(let type):
@@ -140,11 +140,13 @@ extension HomeForMemberViewModel {
                         postID: model.serverID,
                         category: model.category
                     )
+                    AmplitudeInstance.shared.track(eventType: .clickHotboard)
                 case .latestPost(let model):
                     owner.onLatestPostCellTapped?(model.webLink)
                     owner.trackLatestPostEvent(model: model)
                 case .appService(let model):
                     owner.onAppServiceCellTapped?(model.type)
+                    owner.eventTracker.trackAppService(serviceType: model.type)
                 default: break
                 }
             }
@@ -177,6 +179,7 @@ extension HomeForMemberViewModel {
                     destinationURL: info.url,
                     destinationType: .app
                 )
+                owner.eventTracker.trackAmplitude(event: .clickToastButton)
             }
             .store(in: cancelBag)
         
