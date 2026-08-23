@@ -35,9 +35,9 @@ public enum AmplitudeEventType: String {
     
     // 신규 홈 클릭 이벤트
     case clickAllCalendar = "click_all_calendar"
-    case clickMoim = "click_moim"
+    case clickMoim = "click_playground_group"
     case clickPokeMenu = "click_poke_menu"
-    case clickTodaySoptuneMenu = "click_todaysoptmadi_menu"
+    case clickTodaySoptuneMenu = "click_todaysoptmadi"
     case clickSoptampMenu = "click_soptamp_menu"
     case clickPostMember = "click_post_member"
     case clickPost = "click_post"
