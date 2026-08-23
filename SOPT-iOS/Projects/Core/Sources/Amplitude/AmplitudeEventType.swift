@@ -122,4 +122,17 @@ public enum AmplitudeEventType: String {
     case clickExportSoptletter = "click_export_soptletter"
     case clickDoneExportSoptletter = "click_done_export_soptletter"
     case clickQuitSoptletter = "click_quit_soptletter"
+    
+    // 마이페이지 이벤트
+    case viewMypageMain = "view_mypage_main"
+    case clickProfileEditButton = "click_profile_edit_button"
+    case clickMypageSoptlog = "click_mypage_soptlog"
+    case viewSoptlogMain = "view_soptlog_main"
+    case clickMypageFeedback = "click_mypage_feedback"
+    case clickMypageNotification = "click_mypage_notification"
+    case clickMypageEditStatusmessage = "click_mypage_edit_statusmessage"
+    case clickDoneEditStatusmessage = "click_done_edit_statusmessage"
+    case clickMypageResetStamp = "click_mypage_reset_stamp"
+    case clickDoneLogout = "click_done_logout"
+    case clickMypageQuit = "click_mypage_quit"
 }

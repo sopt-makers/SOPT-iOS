@@ -77,6 +77,7 @@ extension SoptlogViewModel {
                 owner.fetchSoptlogInfoTask = Task {
                     await self.handleViewWillAppear(output: output)
                 }
+                AmplitudeInstance.shared.trackWithUserType(event: .viewSoptlogMain)
             }.store(in: cancelBag)
         
         input.cellTap

@@ -79,6 +79,7 @@ extension AppMyPageViewModel {
                     return
                 }
                 owner.fetchProfileData(output: output)
+                AmplitudeInstance.shared.trackWithUserType(event: .viewMypageMain)
             }.store(in: cancelBag)
 
         input.naviBackButtonTapped
@@ -124,30 +125,38 @@ extension AppMyPageViewModel {
         switch item.type {
         case .profileCard:
             self.onEditProfileTap?()
+            AmplitudeInstance.shared.trackWithUserType(event: .clickProfileEditButton)
         case .soptlogSoptampPreview, .soptlogPokePreview:
             break
         case .soptlogCheckButton:
             self.onShowSoptlog?()
+            AmplitudeInstance.shared.trackWithUserType(event: .clickMypageSoptlog)
         case .privacyPolicy:
             self.onPolicyItemTap?()
         case .termsOfUse:
             self.onTermsOfUseItemTap?()
         case .sendFeedback:
             openExternalLink(urlStr: ExternalURL.KakaoTalk.serviceProposal)
+            AmplitudeInstance.shared.trackWithUserType(event: .clickMypageFeedback)
         case .setNotification:
             self.onAlertButtonTap?(UIApplication.openSettingsURLString)
+            AmplitudeInstance.shared.trackWithUserType(event: .clickMypageNotification)
         case .editOnelineSentence:
             self.onEditOnelineSentenceItemTap?()
+            AmplitudeInstance.shared.trackWithUserType(event: .clickMypageEditStatusmessage)
         case .resetStamp:
             self.onResetSoptampTap?({ [weak self] in
                 self?.useCase.resetStamp()
             })
+            AmplitudeInstance.shared.trackWithUserType(event: .clickMypageResetStamp)
         case .withdrawal:
             self.onWithdrawalItemTap?(userType)
+            AmplitudeInstance.shared.trackWithUserType(event: .clickMypageQuit)
         case .logout:
             self.onLogoutTap?({ [weak self] in
                 self?.useCase.deregisterPushToken()
                 self?.onShowLogout?()
+                AmplitudeInstance.shared.trackWithUserType(event: .clickDoneLogout)
             })
         case .login:
             self.onShowLogin?()
