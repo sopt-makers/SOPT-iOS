@@ -108,6 +108,7 @@ extension PokeOnboardingViewModel {
             .asDriver()
             .sink(receiveValue: { values in
                 output.randomAcquaintance.send(values)
+                AmplitudeInstance.shared.trackWithUserType(event: .viewPokeOnboardingFragment)
             }).store(in: cancelBag)
         
         self.usecase

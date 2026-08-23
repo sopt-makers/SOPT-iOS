@@ -121,6 +121,8 @@ extension PokeMainViewModel {
             }
             .sink { [weak self] userModel, messageModel, isAnonymous in
                 self?.useCase.poke(userId: userModel.userId, message: messageModel, isAnonymous: isAnonymous, willBeNewFriend: false)
+                self?.eventTracker.trackSendMessageEvent(isAnonymous: isAnonymous, message: messageModel)
+
             }.store(in: cancelBag)
         
         input.profileImageTap

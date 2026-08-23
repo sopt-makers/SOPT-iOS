@@ -39,6 +39,9 @@ final class LegacyNotificationCoordinator: DefaultNotificationCoordinator {
         notificiationList.vm.onNotificationTap = { [weak self] notificationId in
             self?.showNotificationDetail(notificationId: notificationId)
         }
+        
+        AmplitudeInstance.shared.trackWithUserType(event: .clickAlarm)
+        
         router.push(notificiationList.vc)
     }
     

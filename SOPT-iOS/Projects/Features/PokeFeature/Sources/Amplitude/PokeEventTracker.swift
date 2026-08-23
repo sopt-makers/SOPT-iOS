@@ -9,10 +9,26 @@
 import Foundation
 import Core
 import PokeFeatureInterface
+import Domain
 
 struct PokeEventTracker {
     func trackViewEvent(with viewEvent: AmplitudeEventType) {
         AmplitudeInstance.shared.trackWithUserType(event: viewEvent)
+    }
+    
+    func trackSendMessageEvent(isAnonymous: Bool, message: PokeMessageModel) {
+        AmplitudeInstance.shared.track(eventType: .clickPokeSendMessage, eventProperties: [
+            "message_type": "poke",
+            "message_id": message.messageId,
+            "is_anonymous": isAnonymous
+        ])
+        
+        if isAnonymous {
+            AmplitudeInstance.shared.track(eventType: .clickPokeAnonymity, eventProperties: [
+                "message_type": "poke",
+                "is_anonymous": isAnonymous
+            ])
+        }
     }
     
     func trackViewFriendsListEvent(friendType: PokeRelation) {
@@ -23,7 +39,7 @@ struct PokeEventTracker {
         
         AmplitudeInstance.shared.track(eventType: .viewPokeFriendDetail, eventProperties: properties)
     }
-        
+    
     func trackClickPokeEvent(clickView: PokeAmplitudeEventPropertyValue, userId: Int? = nil) {
         let properties = AmplitudeEventPropertyBuilder<PokeAmplitudeEventPropertyValue>()
             .addViewType()
@@ -34,7 +50,7 @@ struct PokeEventTracker {
         
         AmplitudeInstance.shared.track(eventType: .clickPokeIcon, eventProperties: properties)
     }
-
+    
     func trackClickMemberProfileEvent(clickView: PokeAmplitudeEventPropertyValue, userId: Int? = nil) {
         let properties = AmplitudeEventPropertyBuilder<PokeAmplitudeEventPropertyValue>()
             .addViewType()
