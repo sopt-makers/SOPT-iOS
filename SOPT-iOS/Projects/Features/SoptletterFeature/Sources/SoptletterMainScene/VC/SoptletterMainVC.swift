@@ -30,7 +30,6 @@ public final class SoptletterMainVC: UIViewController {
     }
 
     private let titleLabel = UILabel().then {
-        $0.text = "nn기 솝레터"
         $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
         $0.textAlignment = .left
     }
