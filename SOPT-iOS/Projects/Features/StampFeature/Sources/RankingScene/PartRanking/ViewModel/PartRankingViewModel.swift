@@ -56,6 +56,7 @@ extension PartRankingViewModel {
             .merge(with: input.refreshStarted)
             .sink { [weak self] _ in
                 self?.useCase.fetchPartRanking()
+                AmplitudeInstance.shared.trackWithUserType(event: .viewAllranking)
             }.store(in: cancelBag)
         
         return output

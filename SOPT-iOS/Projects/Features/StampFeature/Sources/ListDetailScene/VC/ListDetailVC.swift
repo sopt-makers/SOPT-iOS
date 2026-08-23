@@ -174,6 +174,7 @@ extension ListDetailVC {
             .sink { owner, _ in
                 owner.onViewClapTap?(owner.viewModel.stampId,
                                      owner.viewModel.otherUserName ?? "")
+                AmplitudeInstance.shared.trackWithUserType(event: .clickClapperlist)
             }.store(in: cancelBag)
     }
     
@@ -557,15 +558,8 @@ extension ListDetailVC {
             $0.trailing.equalTo(zoomImageView.snp.trailing)
             $0.width.height.equalTo(24)
         }
-        
-        AmplitudeInstance.shared.track(
-            eventType: .getImageZoom,
-            eventProperties: [
-                "image": imageURL,
-                "stampId": viewModel.stampId ?? 0,
-                "missionId": viewModel.missionId ?? 0
-            ]
-        )
+                
+        AmplitudeInstance.shared.trackWithUserType(event: .getGetImageZoom)
     }
     
     @objc

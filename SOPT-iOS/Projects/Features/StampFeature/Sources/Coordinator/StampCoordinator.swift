@@ -147,7 +147,7 @@ extension StampCoordinator {
         }
 
         missionDetail.vc.onViewClapTap = { [weak self] stampId, nickname in
-            guard let self else { return }
+            guard let self else { return }            
             self.showClapList(stampId: stampId, nickname: nickname)
         }
 

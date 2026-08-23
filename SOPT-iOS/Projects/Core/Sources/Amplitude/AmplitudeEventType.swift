@@ -97,7 +97,14 @@ public enum AmplitudeEventType: String {
     
     // 박수 이벤트
     case clickUpdateClap = "click_update_clap"
-    case getImageZoom = "get_image_zoom"
+    case getGetImageZoom = "click_get_image_zoom"
     case clickClappersList = "click_clappersList"
     case clickFeedMission = "click_feed_mission"
+    
+    // 솝탬프 이벤트
+    case viewAllranking = "view_allranking"
+    case viewPartRanking = "view_partdetailranking"
+    case clickAllrankingMyranking = "click_allranking_myranking"
+    case clickClapperlist = "click_clapperlist"
+    
 }

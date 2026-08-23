@@ -71,12 +71,14 @@ extension RankingViewModel {
                 default:
                     return
                 }
+                AmplitudeInstance.shared.trackWithUserType(event: .viewAllranking)
             }.store(in: self.cancelBag)
         
         input.showMyRankingButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.findMyRanking()
+                AmplitudeInstance.shared.trackWithUserType(event: .clickAllrankingMyranking)
             }.store(in: self.cancelBag)
         
         return output

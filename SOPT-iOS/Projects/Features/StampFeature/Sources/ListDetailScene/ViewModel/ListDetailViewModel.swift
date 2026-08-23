@@ -107,15 +107,7 @@ extension ListDetailViewModel {
                 : owner.useCase.fetchListDetail(isAppjam: owner.isAppjam, missionId: owner.missionId, username: nil)
 
                 if owner.isOtherUser {
-                    AmplitudeInstance.shared.track(
-                        eventType: .clickFeedMission,
-                        eventProperties: [
-                            "missionId": owner.missionId ?? "",
-                            "missionTitle": owner.missionTitle ?? "",
-                            "missionLevel": owner.starLevel ?? "",
-                            "feedOwnerNick": owner.otherUserName ?? ""
-                        ]
-                    )
+                    AmplitudeInstance.shared.trackWithUserType(event: .clickFeedMission)
                 }
             }.store(in: cancelBag)
         
@@ -167,7 +159,7 @@ extension ListDetailViewModel {
                 return Just(requestModel.updateImgUrl(to: presignedUrl)).asDriver()
             }
             .withUnretained(self)
-            .sink { owner, requestModel in
+            .sink { owner, requestModel in                
                 if owner.sceneType == ListDetailSceneType.none {
                     owner.isAppjam == true ? owner.useCase.postAppjamStamp(stampData: requestModel) :
                     owner.useCase.postStamp(isAppjam: owner.isAppjam, stampData: requestModel)
