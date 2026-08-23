@@ -10,12 +10,13 @@ import UIKit
 
 import Core
 import DSKit
-import Domain
+import MDS
 
 import Combine
 import SnapKit
 import Then
 
+import Domain
 import BaseFeatureDependency
 import NotificationFeatureInterface
 
@@ -41,15 +42,15 @@ public final class NotificationDetailVC: UIViewController, NotificationDetailVie
     
     private let contentView: UIView = {
         let view = UIView()
-        view.backgroundColor = DSKitAsset.Colors.gray800.color
+        view.backgroundColor = SemanticColor.Bg.Neutral.ghost
         view.layer.cornerRadius = 10
         return view
     }()
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = .Attendance.h1
-        label.textColor = DSKitAsset.Colors.gray30.color
+        label.font = Typography.title4.font
+        label.textColor = SemanticColor.Fg.Neutral.bold
         label.textAlignment = .left
         label.numberOfLines = 1
         return label
@@ -57,14 +58,14 @@ public final class NotificationDetailVC: UIViewController, NotificationDetailVie
     
     private let dividerView: UIView = {
         let view = UIView()
-        view.backgroundColor = DSKitAsset.Colors.gray600.color
+        view.backgroundColor = SemanticColor.Stroke.Neutral.subtle
         return view
     }()
     
     private let textView: UITextView = {
         let textView = UITextView()
-        textView.font = .Main.body1
-        textView.textColor = DSKitAsset.Colors.gray50.color
+        textView.font = Typography.body1.font
+        textView.textColor = SemanticColor.Fg.Neutral.bold
         textView.backgroundColor = .clear
         textView.isEditable = false
         textView.showsVerticalScrollIndicator = false
@@ -73,24 +74,11 @@ public final class NotificationDetailVC: UIViewController, NotificationDetailVie
         return textView
     }()
     
-    private let shortCutButton: UIButton = {
-        var config = UIButton.Configuration.filled()
-        config.baseBackgroundColor = DSKitAsset.Colors.gray10.color
-        config.image = DSKitAsset.Assets.btnArrowRight.image.withTintColor(DSKitAsset.Colors.black100.color)
-        config.background.cornerRadius = 10
-        config.imagePlacement = .trailing
-        config.contentInsets = .init(top: 0, leading: 16, bottom: 0, trailing: 0)
-        
-        var attributeContainer = AttributeContainer()
-        attributeContainer.font = DSKitFontFamily.Suit.bold.font(size: 18)
-        attributeContainer.foregroundColor = DSKitAsset.Colors.gray950.color
-        
-        config.attributedTitle = AttributedString(I18N.Notification.shortcut, attributes: attributeContainer)
-        
-        let button = UIButton(configuration: config)
-        button.isHidden = true
-        return button
-    }()
+    private let shortCutButton = MDSActionButton(
+        variant: .primary,
+        size: .large,
+        title: I18N.Notification.shortcut
+    )
     
     // MARK: - initialization
     
@@ -122,7 +110,7 @@ public final class NotificationDetailVC: UIViewController, NotificationDetailVie
 
 extension NotificationDetailVC {
     private func setUI() {
-        view.backgroundColor = DSKitAsset.Colors.black100.color
+        view.backgroundColor = SemanticColor.Bg.Layer.basement
     }
     
     private func setLayout() {
@@ -197,7 +185,11 @@ extension NotificationDetailVC {
     
     private func setData(with notification: NotificationDetailModel) {
         self.titleLabel.text = notification.title
+        self.titleLabel.setTypography(Typography.title4)
+        
         self.textView.text = notification.content
+        self.textView.setTypography(Typography.body1)
+        
         self.shortCutButton.isHidden = !notification.hasLink
     }
 }

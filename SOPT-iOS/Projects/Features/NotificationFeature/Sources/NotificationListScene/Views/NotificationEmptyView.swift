@@ -12,6 +12,7 @@ import SnapKit
 
 import Core
 import DSKit
+import MDS
 
 final class NotificationEmptyView: UIView {
     
@@ -26,8 +27,9 @@ final class NotificationEmptyView: UIView {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = I18N.Notification.emptyNotification
+        // TODO: - 피그마 적용 후 변경
         label.font = .Attendance.h1
-        label.textColor = DSKitAsset.Colors.gray80.color
+        label.textColor = SemanticColor.Fg.Neutral.ghost
         label.textAlignment = .center
         return label
     }()

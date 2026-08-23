@@ -11,6 +11,7 @@ import UIKit
 import Core
 import Domain
 import DSKit
+import MDS
 
 import Combine
 
@@ -33,10 +34,11 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
     
     // MARK: - UI Components
     
+    // TODO: - MDS 적용 후 반영
     private lazy var naviBar = OPNavigationBar(self, type: .bothButtons, ignoreLeftButtonAction: true)
         .addMiddleLabel(title: I18N.Notification.notification)
         .addRightButton(with: nil)
-        .addRightButton(with: I18N.Notification.readAll, titleColor: DSKitAsset.Colors.orange100.color)
+        .addRightButton(with: I18N.Notification.readAll, titleColor: SemanticColor.Fg.Neutral.Default.disabled)
     
     private lazy var notificationFilterCollectionView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createFilterCollectionViewLayout())
@@ -99,7 +101,7 @@ public final class NotificationListVC: UIViewController, NotificationListViewCon
 
 extension NotificationListVC {
     private func setUI() {
-        view.backgroundColor = DSKitAsset.Colors.gray950.color
+        view.backgroundColor = SemanticColor.Bg.Layer.basement
     }
     
     private func setLayout() {
@@ -225,6 +227,13 @@ extension NotificationListVC {
         output.refreshLoading
             .sink { [weak self] needLoading in
                 needLoading ? self?.refreshControl.beginRefreshing() : self?.refreshControl.endRefreshing()
+            }
+            .store(in: cancelBag)
+
+        output.isAllRead
+            .sink { [weak self] isAllRead in
+                self?.naviBar.rightButton.setTitleColor(isAllRead ? SemanticColor.Fg.Neutral.Default.disabled : SemanticColor.Fg.Brand.default, for: .normal)
+                self?.naviBar.rightButton.isEnabled = !isAllRead
             }
             .store(in: cancelBag)
     }

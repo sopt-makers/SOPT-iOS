@@ -9,7 +9,7 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
 
 final class NotificationListCVC: UICollectionViewCell {
     
@@ -17,16 +17,16 @@ final class NotificationListCVC: UICollectionViewCell {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = .Main.body1
-        label.textColor = DSKitAsset.Colors.gray100.color
+        label.font = Typography.title5.font
+        label.textColor = SemanticColor.Fg.Neutral.default
         label.textAlignment = .left
         return label
     }()
     
     private let timeLabel: UILabel = {
         let label = UILabel()
-        label.font = .Main.caption1
-        label.textColor = DSKitAsset.Colors.gray100.color
+        label.font = Typography.label4.font
+        label.textColor = SemanticColor.Fg.Neutral.ghost
         label.textAlignment = .right
         return label
     }()
@@ -41,8 +41,8 @@ final class NotificationListCVC: UICollectionViewCell {
     
     private let descriptionLabel: UILabel = {
         let label = UILabel()
-        label.font = .Main.body1
-        label.textColor = DSKitAsset.Colors.gray100.color
+        label.font = Typography.body2.font
+        label.textColor = SemanticColor.Fg.Neutral.subtle
         label.textAlignment = .left
         label.numberOfLines = 2
         return label
@@ -73,7 +73,7 @@ final class NotificationListCVC: UICollectionViewCell {
 
 extension NotificationListCVC {
     private func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.black100.color
+        self.backgroundColor = .clear
     }
     
     private func setLayout() {
@@ -92,9 +92,15 @@ extension NotificationListCVC {
 
 extension NotificationListCVC {
     func initCell(title: String, time: String, description: String?, isRead: Bool) {
-        self.titleLabel.text = title
-        self.timeLabel.text = time
-        self.descriptionLabel.text = description
-        self.backgroundColor = isRead ? DSKitAsset.Colors.gray950.color : DSKitAsset.Colors.gray800.color
+        titleLabel.text = title
+        titleLabel.setTypography(Typography.title5)
+        
+        timeLabel.text = time
+        timeLabel.setTypography(Typography.label4)
+        
+        descriptionLabel.text = description
+        descriptionLabel.setTypography(Typography.body2)
+        
+        self.backgroundColor = isRead ? .clear : SemanticColor.Bg.Neutral.ghost
     }
 }
