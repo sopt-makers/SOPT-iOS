@@ -27,5 +27,5 @@ extension PokeRelation {
         case .soulmate:
             return "soulmate"
         }
-    }
+    }        
 }

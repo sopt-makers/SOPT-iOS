@@ -16,16 +16,16 @@ struct PokeEventTracker {
         AmplitudeInstance.shared.trackWithUserType(event: viewEvent)
     }
     
-    func trackSendMessageEvent(isAnonymous: Bool, message: PokeMessageModel) {
+    func trackSendMessageEvent(isAnonymous: Bool, messageType: String, message: PokeMessageModel) {
         AmplitudeInstance.shared.track(eventType: .clickPokeSendMessage, eventProperties: [
-            "message_type": "poke",
+            "message_type": messageType,
             "message_id": message.messageId,
             "is_anonymous": isAnonymous
         ])
         
         if isAnonymous {
             AmplitudeInstance.shared.track(eventType: .clickPokeAnonymity, eventProperties: [
-                "message_type": "poke",
+                "message_type": messageType,
                 "is_anonymous": isAnonymous
             ])
         }
