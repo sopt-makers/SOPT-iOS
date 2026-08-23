@@ -26,6 +26,7 @@ public enum AmplitudeEventType: String {
     case clickInstagram = "click_instagram"
     case clickYoutube = "click_youtube"    
     case clickFaq = "click_faq"
+    case clickPlusButton = "click_plus_button"
     case clickPlaygroundCommunity = "click_playground_community"
     case clickHotboard = "click_hotboard"
     case clickShortcutButton = "click_link.btn"
