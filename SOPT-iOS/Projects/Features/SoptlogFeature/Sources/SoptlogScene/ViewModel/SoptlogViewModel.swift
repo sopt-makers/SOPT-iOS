@@ -112,7 +112,6 @@ extension SoptlogViewModel {
 //            .withUnretained(self)
 //            .sink { owner, _ in
 //                owner.onSoptuneTapped?()
-//                AmplitudeInstance.shared.trackWithUserType(event: .clickSoptlogSoptune)
 //            }.store(in: cancelBag)
         
         input.toolTipButtonTap

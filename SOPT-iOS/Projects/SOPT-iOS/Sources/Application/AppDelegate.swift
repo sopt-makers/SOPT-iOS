@@ -16,16 +16,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private var appLifecycleAdapter = AppLifecycleAdapter()
     
+    static var didLaunchFromRemoteNotification = false
+    
     func application( _ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         // AppLifeCycleAdapter에서 @Injected를 사용하기에 registerDependencies를 먼저 호출한다.
         //
+        if launchOptions?[.remoteNotification] != nil {
+            AppDelegate.didLaunchFromRemoteNotification = true
+        }
         registerDependencies()
         configureAppLifecycleAdapter()
         Firebase.configure()
         Firebase.configureCrashlytics()
         application.registerForRemoteNotifications()
-
+        
         return true
     }
     

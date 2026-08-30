@@ -52,22 +52,19 @@ extension DailySoptuneCardViewModel {
         
         input.viewDidLoad
             .withUnretained(self)
-            .sink { owner, _ in
-                AmplitudeInstance.shared.track(eventType: .viewSoptuenCard)
+            .sink { owner, _ in                
             }.store(in: cancelBag)
         
         input.goToHomeButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onGoToHomeButtonTapped?()
-                AmplitudeInstance.shared.track(eventType: .clickDoneHome)
+                owner.onGoToHomeButtonTapped?()                
             }.store(in: cancelBag)
         
         input.backButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onBackButtonTapped?()
-                AmplitudeInstance.shared.track(eventType: .clickLeaveSoptuneCard)
+                owner.onBackButtonTapped?()                
             }.store(in: cancelBag)
         
         return output

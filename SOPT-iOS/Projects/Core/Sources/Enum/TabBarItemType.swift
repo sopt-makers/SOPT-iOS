@@ -21,7 +21,7 @@ public extension TabBarItemType {
         case .home: return .clickNaviHome
         case .soptamp: return .clickNaviSoptamp
         case .mypage: return .clickNaviMyPage
-        case .poke: return .clickNaviPoke
+        case .poke: return .clickNaviPoke        
         }
     }
 

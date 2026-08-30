@@ -33,6 +33,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let scene = (scene as? UIWindowScene) else { return }
         
         configureAPNs()
+        notificationHandler.isColdStart = AppDelegate.didLaunchFromRemoteNotification
         
         window = UIWindow(windowScene: scene)
         window?.rootViewController = rootController

@@ -15,36 +15,27 @@ public enum AmplitudeEventType: String {
     
     // 클릭 이벤트
     case clickAlarm = "click_alarm"
-    case clickMyPage = "click_mypage"
     case clickAttendacne = "click_attendance"
     case clickToastButton = "click_toast_button"
-    case clickGroup = "click_group"
     case clickProject = "click_project"
     case clickMember = "click_member"
-    case clickOfficialHomepage = "click_homepage"
-    case clickSoptamp = "click_soptamp"
+    case clickOfficialHomepage = "click_homepage"    
     case clickInstagram = "click_instagram"
     case clickYoutube = "click_youtube"    
     case clickFaq = "click_faq"
     case clickPlusButton = "click_plus_button"
-    case clickPlaygroundCommunity = "click_playground_community"
     case clickHotboard = "click_hotboard"
-    case clickShortcutButton = "click_link_button"
-    case clickReadAllButton = "click_allread_button"
+    case clickLink = "click_link_button"
+    case clickReadAll = "click_allread_button"
     case clickNotificationItem = "click_notification_item"
     case clickCoffeeChat = "click_playground_coffee_chat"        // 먼저 배포된 안드로이드 컨벤션에 맞춤. 앰플리튜드 tf 개설 후 click_으로 통일하여 사용할 예정
     
     // 신규 홈 클릭 이벤트
     case clickAllCalendar = "click_all_calendar"
     case clickPlaygroudGroup = "click_playground_group"
-    case clickPokeMenu = "click_poke_menu"
-    case clickTodaySoptmadi = "click_todaysoptmadi"
     case clickSoptampMenu = "click_soptamp_menu"
-    case clickPostMember = "click_post_member"
-    case clickPost = "click_post"
+    case clickPostMember = "click_post_member"    
     case clickEmpty = "click_empty"
-    case clickViewAll = "click_view_all"
-    case clickPromo = "click_promo"
     case clickSoptletterMenu = "click_soptletter_menu"
     
     // 콕 찌르기 클릭 이벤트
@@ -56,22 +47,12 @@ public enum AmplitudeEventType: String {
     case clickPokeSendMessage = "click_poke_send_message"
     case clickPokeAnonymity = "click_poke_anonymity"
     
-    // 솝마디 클릭 이벤트
-    case clickCheckTodaySoptune = "click_check_todaysoptmadi"
-    case clickLeaveSoptuneMain = "click_leave_soptmadi_title"
-    case clickSoptuneRamdomPeople = "click_randomepeople"
-    case clickGetSoptuneCard = "click_get_charmcard"
-    case clickLeaveSoptuneResult = "click_leave_soptmadi_todays"
-    case clickDoneHome = "click_done_home"
-    case clickLeaveSoptuneCard = "click_done_soptmadi_charmcard"
-    case clickAnonymity = "click_anonymity"
-    case sendChoice = "send_choice"
-    
     // 탭 바 클릭 이벤트
     case clickNaviHome = "click_navi_home"
     case clickNaviMyPage = "click_navi_mypage"
     case clickNaviSoptamp = "click_navi_soptamp"
     case clickNaviPoke = "click_navi_poke"
+    case clickNaviAppjamtamp = "click_navi_appjamtamp"
 
     // 홈 뷰 이벤트
     case viewAppHome = "view_apphome"
@@ -84,16 +65,7 @@ public enum AmplitudeEventType: String {
     case viewPokeMain = "view_poke_main"
     case viewPokeAlarmDetail = "view_poke_alarm_detail"
     case viewPokeFriend = "view_poke_friend"
-    case viewPokeFriendDetail = "view_poke_friend_detail"
-    
-    // 솝마디 뷰 이벤트
-    case viewSoptuneMain = "view_soptmadi_title"
-    case viewSoptuneResult = "view_soptmadi_todays"
-    case viewSoptuenCard = "view_soptmadi_charmcard"
-    
-    // 솝트로그 뷰 이벤트
-    case clickSoptlogEditProfile = "click_soptlog_editprofile"
-    case clickSoptlogSoptune = "click_soptlog_soptmadi"
+    case viewPokeFriendDetail = "view_poke_friend_detail"            
     
     // 박수 이벤트
     case clickUpdateClap = "click_update_clap"
@@ -103,9 +75,11 @@ public enum AmplitudeEventType: String {
     
     // 솝탬프 이벤트
     case viewAllranking = "view_allranking"
-    case viewPartRanking = "view_partdetailranking"
+    case viewPartRanking = "view_partranking"
     case clickAllrankingMyranking = "click_allranking_myranking"
     case clickClapperlist = "click_clapperlist"
+    case clickPartrankingMyranking = "click_partranking_myranking"
+    
     
     // 솝레터 이벤트
     case viewSoptletterOnboarding = "view_soptletter_onboarding"

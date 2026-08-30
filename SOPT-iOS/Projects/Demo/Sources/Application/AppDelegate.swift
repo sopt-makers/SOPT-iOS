@@ -15,6 +15,8 @@ import BaseFeatureDependency
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private var appLifecycleAdapter = AppLifecycleAdapter()
+    
+    static var didLaunchFromRemoteNotification = false
 
     func application( _ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         

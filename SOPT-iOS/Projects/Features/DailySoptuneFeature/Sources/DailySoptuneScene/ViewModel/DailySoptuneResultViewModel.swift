@@ -71,26 +71,22 @@ extension DailySoptuneResultViewModel {
         input.naviBackButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onNaviBackButtonTapped?()
-                AmplitudeInstance.shared.track(eventType: .clickLeaveSoptuneResult)
+                owner.onNaviBackButtonTapped?()                
             }.store(in: cancelBag)
         
         input.receiveTodaysFortuneCardTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.useCase.getTodaysFortuneCard()
-                AmplitudeInstance.shared.track(eventType: .clickGetSoptuneCard)
+                owner.useCase.getTodaysFortuneCard()                
             }.store(in: cancelBag)
         
         input.kokButtonTap
             .compactMap { $0 }
             .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)> in
-                guard let self, let value = self.onKokButtonTapped?(userModel) else { return .empty() }
-                AmplitudeInstance.shared.track(eventType: .clickSoptuneRamdomPeople)
+                guard let self, let value = self.onKokButtonTapped?(userModel) else { return .empty() }                
                 return value
             }
-            .sink { [weak self] userModel, messageModel, isAnonymous in
-                AmplitudeInstance.shared.track(eventType: .sendChoice, eventProperties: ["index": messageModel.messageId, "message": messageModel.content, "isAnonymous": isAnonymous])
+            .sink { [weak self] userModel, messageModel, isAnonymous in                
                 self?.useCase.poke(userId: userModel.userId, message: messageModel, isAnonymous: isAnonymous)
             }.store(in: cancelBag)
         

@@ -21,7 +21,7 @@ struct HomeEventTracker {
     func trackAppService(serviceType: AppServiceType) {
         switch serviceType {
         case .soptletter:
-            AmplitudeInstance.shared.track(eventType: .clickSoptletterMenu)
+            AmplitudeInstance.shared.trackWithUserType(event: .clickSoptampMenu)            
         }
     }
     
@@ -40,24 +40,7 @@ struct HomeEventTracker {
             .build()
             
         AmplitudeInstance.shared.track(eventType: .clickPostMember, eventProperties: properties)
-    }
-    
-    func trackClickPost(
-        postRanking: Int? = 0, // NOTE: 최신 게시물일 경우, 랭킹이 존재하지 않고 0으로 처리합니다.
-        sectionName: HomeAmplitudeEventPropertyValue,
-        postID: Int? = 0,
-        category: String
-    ) {
-        let properties = AmplitudeEventPropertyBuilder<HomeAmplitudeEventPropertyValue>()
-            .add(key: .postRanking, value: postRanking)
-            .add(key: .sectionName, value: sectionName)
-            .add(key: .postID, value: postID)
-            .add(key: .category, value: category)
-            .addViewType()
-            .build()
-        
-        AmplitudeInstance.shared.track(eventType: .clickPost, eventProperties: properties)
-    }
+    }        
     
     func trackClickEmpty(
         sectionName: HomeAmplitudeEventPropertyValue,
@@ -69,32 +52,5 @@ struct HomeEventTracker {
             .build()
         
         AmplitudeInstance.shared.track(eventType: .clickEmpty, eventProperties: properties)
-    }
-    
-    func trackClickViewAll(
-        sectionName: HomeAmplitudeEventPropertyValue
-    ) {
-        let properties = AmplitudeEventPropertyBuilder<HomeAmplitudeEventPropertyValue>()
-            .add(key: .sectionName, value: sectionName)
-            .build()
-        
-        AmplitudeInstance.shared.track(eventType: .clickViewAll, eventProperties: properties)
-    }
-    
-    func trackClickPromo(
-        sectionName: HomeAmplitudeEventPropertyValue,
-        promoName: String? = nil,
-        destinationURL: String? = nil,
-        destinationType: HomeAmplitudeEventPropertyValue
-    ) {
-        let properties = AmplitudeEventPropertyBuilder<HomeAmplitudeEventPropertyValue>()
-            .add(key: .sectionName, value: sectionName)
-            .add(key: .promoName, value: promoName)
-            .add(key: .destinationURL, value: destinationURL)
-            .add(key: .destinationType, value: destinationType)
-            .build()
-        
-        AmplitudeInstance.shared.track(eventType: .clickPromo, eventProperties: properties)
-    }
-    
+    }        
 }

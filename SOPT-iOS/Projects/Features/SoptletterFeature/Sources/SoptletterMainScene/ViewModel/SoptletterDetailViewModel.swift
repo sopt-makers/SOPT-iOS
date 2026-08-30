@@ -71,6 +71,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
         input.likeButtonTap
             .withUnretained(self)
             .sink { owner, likeState in
+                AmplitudeInstance.shared.trackWithUserType(event: .clickSoptletterLikeButton)
                 guard !likeState.isMine else {
                     Task { @MainActor in
                         ToastUtils.showMDSToast(type: .alert, text: I18N.Soptletter.Detail.cannotLikeOwnMessage)
@@ -81,6 +82,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
 
                 owner.likeTask?.cancel()
                 owner.likeTask = Task { [weak self] in
+                    AmplitudeInstance.shared.trackWithUserType(event: .clickSoptletterLikeButton)
                     guard let self else { return }
                     do {
                         if likeState.likeByMe {
@@ -108,6 +110,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
         input.editCompleteButtonTap
             .withUnretained(self)
             .sink { owner, content in
+                AmplitudeInstance.shared.trackWithUserType(event: .clickDoneEditSoptletter)
                 owner.editTask?.cancel()
                 owner.editTask = Task { [weak self] in
                     guard let self else { return }
@@ -122,8 +125,6 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
                     } catch {
                         await MainActor.run { self.onError?() }
                     }
-                    
-                    AmplitudeInstance.shared.trackWithUserType(event: .clickDoneEditSoptletter)
                 }
             }
             .store(in: cancelBag)

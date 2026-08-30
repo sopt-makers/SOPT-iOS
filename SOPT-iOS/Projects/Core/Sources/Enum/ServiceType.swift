@@ -34,8 +34,7 @@ public enum ServiceType {
     }
 }
 
-public enum TabServiceType: String {
-    case soptamp = "SOPTAMP"
+public enum TabServiceType: String {    
     case poke = "POKE"
 }
 

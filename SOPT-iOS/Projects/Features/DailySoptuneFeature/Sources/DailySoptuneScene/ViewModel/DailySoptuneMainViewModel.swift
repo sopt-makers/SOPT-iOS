@@ -55,22 +55,19 @@ extension DailySoptuneMainViewModel {
         
         input.viewDidLoad
             .withUnretained(self)
-            .sink { owner, _ in
-                AmplitudeInstance.shared.track(eventType: .viewSoptuneMain)
+            .sink { owner, _ in                
             }.store(in: cancelBag)
         
         input.naviBackButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onNaviBackTap?()
-                AmplitudeInstance.shared.track(eventType: .clickLeaveSoptuneMain)
+                owner.onNaviBackTap?()                
             }.store(in: cancelBag)
         
         input.receiveTodayFortuneButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.useCase.getDailySoptuneResult(date: DateFormatManager.shared.transformDateFormat(to: .dateWithDash))
-                AmplitudeInstance.shared.track(eventType: .clickCheckTodaySoptune)
+                owner.useCase.getDailySoptuneResult(date: DateFormatManager.shared.transformDateFormat(to: .dateWithDash))                
             }.store(in: cancelBag)
         
 		return output

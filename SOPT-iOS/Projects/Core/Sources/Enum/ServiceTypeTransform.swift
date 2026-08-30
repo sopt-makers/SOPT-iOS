@@ -26,8 +26,7 @@ public extension ServiceType {
 
 public extension TabServiceType {
     var toAmplitudeEventType: AmplitudeEventType {
-        switch self {
-        case .soptamp: return .clickSoptamp
+        switch self {        
         case .poke: return .clickPoke
         }
     }
