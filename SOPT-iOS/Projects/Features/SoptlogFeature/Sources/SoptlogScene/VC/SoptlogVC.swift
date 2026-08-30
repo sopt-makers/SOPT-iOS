@@ -128,6 +128,7 @@ extension SoptlogVC {
 
     private func bindViewModels() {
         let input = SoptlogViewModel.Input(
+            viewDidLoad: Driver.just(()),
             viewWillAppear: viewWillAppear.asDriver(),
             cellTap: cellTap.asDriver(),
             toolTipButtonTap: toolTipTap.asDriver()

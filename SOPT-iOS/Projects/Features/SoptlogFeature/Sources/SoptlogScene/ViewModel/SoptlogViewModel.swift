@@ -30,6 +30,7 @@ public class SoptlogViewModel: SoptlogViewModelType {
     // MARK: - Inputs
     
     public struct Input {
+        let viewDidLoad: Driver<Void>
         let viewWillAppear: Driver<Void>
         let cellTap: Driver<SoptlogCellTapInfo>
         let toolTipButtonTap: Driver<CGRect>
@@ -70,6 +71,12 @@ extension SoptlogViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         
+        input.viewDidLoad
+            .withUnretained(self)
+            .sink { owner, _ in
+                AmplitudeInstance.shared.trackWithUserType(event: .viewSoptlogMain)
+            }.store(in: cancelBag)
+        
         input.viewWillAppear
             .withUnretained(self)
             .sink { owner, _ in
@@ -77,7 +84,6 @@ extension SoptlogViewModel {
                 owner.fetchSoptlogInfoTask = Task {
                     await self.handleViewWillAppear(output: output)
                 }
-                AmplitudeInstance.shared.trackWithUserType(event: .viewSoptlogMain)
             }.store(in: cancelBag)
         
         input.cellTap

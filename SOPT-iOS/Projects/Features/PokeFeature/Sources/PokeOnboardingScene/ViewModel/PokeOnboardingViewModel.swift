@@ -55,7 +55,7 @@ extension PokeOnboardingViewModel {
         input.viewDidLoaded
             .withUnretained(self)
             .sink(receiveValue: { [weak self] _ in
-                AmplitudeInstance.shared.trackWithUserType(event: .viewPokeOnboarding)
+                AmplitudeInstance.shared.trackWithUserType(event: .viewPokeOnboardingFragment)
                 self?.usecase.getRandomAcquaintances(randomUserType: .all)
             }).store(in: cancelBag)
         
@@ -63,7 +63,7 @@ extension PokeOnboardingViewModel {
             .map { _ in UserDefaultKeyList.User.isFirstVisitToPokeOnboardingView ?? true }
             .sink(receiveValue: { [weak self] isFirstVisit in
                 guard isFirstVisit else { return }
-                
+                AmplitudeInstance.shared.trackWithUserType(event: .viewPokeOnboarding)
                 UserDefaultKeyList.User.isFirstVisitToPokeOnboardingView = false
                 self?.onFirstVisitInOnboarding?()
             }).store(in: cancelBag)
@@ -108,7 +108,6 @@ extension PokeOnboardingViewModel {
             .asDriver()
             .sink(receiveValue: { values in
                 output.randomAcquaintance.send(values)
-                AmplitudeInstance.shared.trackWithUserType(event: .viewPokeOnboardingFragment)
             }).store(in: cancelBag)
         
         self.usecase

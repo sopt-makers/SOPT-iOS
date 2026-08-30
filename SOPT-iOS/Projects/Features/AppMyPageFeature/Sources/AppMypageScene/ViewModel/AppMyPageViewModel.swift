@@ -71,6 +71,12 @@ extension AppMyPageViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
+        input.viewDidLoad
+            .withUnretained(self)
+            .sink { owner, _ in
+                AmplitudeInstance.shared.trackWithUserType(event: .viewMypageMain)
+            }.store(in: cancelBag)
+        
         Publishers.Merge(input.viewDidLoad, input.refreshTriggered)
             .withUnretained(self)
             .sink { owner, _ in
@@ -79,7 +85,6 @@ extension AppMyPageViewModel {
                     return
                 }
                 owner.fetchProfileData(output: output)
-                AmplitudeInstance.shared.trackWithUserType(event: .viewMypageMain)
             }.store(in: cancelBag)
 
         input.naviBackButtonTapped
