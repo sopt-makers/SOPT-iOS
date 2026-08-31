@@ -83,6 +83,8 @@ extension PokeOnboardingViewModel {
             .sink(receiveValue: { [weak self] userModel, messageModel, isAnonymous in
                 self?.eventTracker.trackClickPokeEvent(clickView: .onboarding, userId: userModel.userId)
                 self?.usecase.poke(userId: userModel.userId, message: messageModel, isAnonymous: isAnonymous)
+                let messageType = userModel.pokeRelation == .nonFriend ? "poke_someone" : "poke_friend"
+                self?.eventTracker.trackSendMessageEvent(isAnonymous: isAnonymous, messageType: messageType, message: messageModel)
             }).store(in: cancelBag)
         
         input.avatarTapped

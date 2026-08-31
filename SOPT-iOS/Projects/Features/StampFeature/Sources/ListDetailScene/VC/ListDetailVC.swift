@@ -559,7 +559,7 @@ extension ListDetailVC {
             $0.width.height.equalTo(24)
         }
                 
-        AmplitudeInstance.shared.trackWithUserType(event: .getGetImageZoom)
+        AmplitudeInstance.shared.trackWithUserType(event: .clickGetImageZoom)
     }
     
     @objc

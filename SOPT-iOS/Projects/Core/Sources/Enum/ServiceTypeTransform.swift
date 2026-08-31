@@ -17,7 +17,7 @@ public extension ServiceType {
         case .youtube: return .clickYoutube
         case .attendance: return .clickAttendacne
         case .member: return .clickMember
-        case .group: return .clickPlaygroudGroup
+        case .group: return .clickPlaygroundGroup
         case .instagram: return .clickInstagram
         case .coffeechat: return .clickCoffeeChat
         }

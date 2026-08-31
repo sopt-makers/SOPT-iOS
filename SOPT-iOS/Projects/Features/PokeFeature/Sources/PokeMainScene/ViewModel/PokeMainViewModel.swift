@@ -109,6 +109,8 @@ extension PokeMainViewModel {
             .sink { [weak self] userModel, messageModel, isAnonymous in
                 self?.eventTracker.trackClickPokeEvent(clickView: .pokeMainAlarm)
                 self?.useCase.poke(userId: userModel.userId, message: messageModel, isAnonymous: isAnonymous, willBeNewFriend: userModel.isFirstMeet)
+                let messageType = userModel.pokeRelation == .nonFriend ? "poke_someone" : "poke_friend"
+                self?.eventTracker.trackSendMessageEvent(isAnonymous: isAnonymous, messageType: messageType, message: messageModel)
             }.store(in: cancelBag)
         
         // 먼저 찌르기

@@ -50,7 +50,7 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
         
         let notifiactionLinkType = payload.webLink != nil ? "web" : payload.hasDeepLink ? "deep_link" : "none"
         AmplitudeInstance.shared.trackWithUserType(event: .clickPush, otherProperties: [
-            "notificationId": payload.id,
+            "notification_id": payload.id,
             "notification_link_type": notifiactionLinkType,
             "notification_launch_type": launchType
         ])

@@ -81,7 +81,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
                 }
 
                 owner.likeTask?.cancel()
-                owner.likeTask = Task { [weak self] in                    
+                owner.likeTask = Task { [weak self] in
                     guard let self else { return }
                     do {
                         if likeState.likeByMe {

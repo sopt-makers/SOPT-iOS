@@ -27,7 +27,7 @@ public extension Amplitude {
         let userType = UserDefaultKeyList.Auth.getUserType()
         var eventProperties = otherProperties ?? [:]
         eventProperties[AmplitudeEventPropertyKey.viewType.rawValue] = userType.rawValue.lowercased()
-        AmplitudeInstance.shared.track(eventType: eventType, eventProperties: eventProperties, options: nil)                
+        AmplitudeInstance.shared.track(eventType: eventType, eventProperties: eventProperties, options: nil)
     }
     
     func addPushNotificationAuthorizationIdentity(isAuthorized: Bool) {
