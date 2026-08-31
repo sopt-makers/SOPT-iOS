@@ -135,15 +135,9 @@ extension NotificationDetailViewModel {
     }
     
     private func makeDeepLinkTypeLiteral(with shortCutLink: ShortCutLink) -> String {
-        var type: String = ""
-        if !shortCutLink.url.isEmpty {
-            type = "web"
-        } else if shortCutLink.isDeepLink {
-            type = "deep_link"
-        } else {
-            type = "none"
+        if shortCutLink.isDeepLink {
+            return "deep_link"
         }
-        
-        return type
+        return shortCutLink.url.isEmpty ? "none" : "web"
     }
 }

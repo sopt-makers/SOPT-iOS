@@ -71,8 +71,8 @@ extension NotificationListViewModel {
         input.viewDidLoad
             .withUnretained(self)
             .sink { owner, _ in
-                output.filterList.send(owner.filterList)
-                AmplitudeInstance.shared.track(eventType: .viewNotificationList)
+                output.filterList.send(owner.filterList)                
+                AmplitudeInstance.shared.trackWithUserType(event: .viewNotificationList)
             }.store(in: cancelBag)
         
         input.requestNotifications
@@ -108,7 +108,7 @@ extension NotificationListViewModel {
             .throttle(for: 1, scheduler: DispatchQueue.main, latest: true)
             .withUnretained(self)
             .sink { owner, _ in
-                owner.useCase.readAllNotifications()                
+                owner.useCase.readAllNotifications()
                 AmplitudeInstance.shared.trackWithUserType(event: .clickReadAll)
             }.store(in: cancelBag)
         

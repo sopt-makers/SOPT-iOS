@@ -204,6 +204,7 @@ extension AppMyPageVC {
     private func bindViewModels() {
         let input = AppMyPageViewModel.Input(
             viewDidLoad: Driver.just(()),
+            viewWillAppear: Driver.just(()),
             naviBackButtonTapped: navigationBar.leftButtonTapped.asDriver(),
             cellTapped: cellTapped.asDriver(),
             refreshTriggered: refreshTriggered.asDriver()

@@ -81,8 +81,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
                 }
 
                 owner.likeTask?.cancel()
-                owner.likeTask = Task { [weak self] in
-                    AmplitudeInstance.shared.trackWithUserType(event: .clickSoptletterLikeButton)
+                owner.likeTask = Task { [weak self] in                    
                     guard let self else { return }
                     do {
                         if likeState.likeByMe {
@@ -110,12 +109,12 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
         input.editCompleteButtonTap
             .withUnretained(self)
             .sink { owner, content in
-                AmplitudeInstance.shared.trackWithUserType(event: .clickDoneEditSoptletter)
                 owner.editTask?.cancel()
                 owner.editTask = Task { [weak self] in
                     guard let self else { return }
                     do {
                         try await self.useCase.editMessage(messageId: self.messageId, topicId: self.topicId, content: content)
+                        AmplitudeInstance.shared.trackWithUserType(event: .clickDoneEditSoptletter)
                         await MainActor.run {
                             output.soptletterEditCompleted.send()
                             self.onEditCompleted?()

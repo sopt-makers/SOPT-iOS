@@ -71,15 +71,10 @@ extension SoptlogViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         
-        input.viewDidLoad
-            .withUnretained(self)
-            .sink { owner, _ in
-                AmplitudeInstance.shared.trackWithUserType(event: .viewSoptlogMain)
-            }.store(in: cancelBag)
-        
         input.viewWillAppear
             .withUnretained(self)
             .sink { owner, _ in
+                AmplitudeInstance.shared.trackWithUserType(event: .viewSoptlogMain)
                 owner.fetchSoptlogInfoTask?.cancel()
                 owner.fetchSoptlogInfoTask = Task {
                     await self.handleViewWillAppear(output: output)

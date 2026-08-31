@@ -21,7 +21,7 @@ struct HomeEventTracker {
     func trackAppService(serviceType: AppServiceType) {
         switch serviceType {
         case .soptletter:
-            AmplitudeInstance.shared.trackWithUserType(event: .clickSoptampMenu)            
+            AmplitudeInstance.shared.trackWithUserType(event: .clickSoptletterMenu)            
         }
     }
     

@@ -42,6 +42,7 @@ public final class AppMyPageViewModel: MyPageViewModelType {
     
     public struct Input {
         let viewDidLoad: Driver<Void>
+        let viewWillAppear: Driver<Void>
         let naviBackButtonTapped: Driver<Void>
         let cellTapped: Driver<MyPageItem>
         let refreshTriggered: Driver<Void>
@@ -71,7 +72,7 @@ extension AppMyPageViewModel {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
         
-        input.viewDidLoad
+        input.viewWillAppear
             .withUnretained(self)
             .sink { owner, _ in
                 AmplitudeInstance.shared.trackWithUserType(event: .viewMypageMain)

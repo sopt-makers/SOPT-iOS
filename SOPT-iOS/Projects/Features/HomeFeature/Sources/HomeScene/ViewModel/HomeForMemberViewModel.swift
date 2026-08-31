@@ -174,8 +174,8 @@ extension HomeForMemberViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 guard let survey = owner.fetchedSurvey, !survey.linkURL.isEmpty else { return }
-
-                owner.onSurveyButtonTapped?(survey.linkURL)                
+                AmplitudeInstance.shared.trackWithUserType(event: .clickSurveyButton)
+                owner.onSurveyButtonTapped?(survey.linkURL)
             }
             .store(in: cancelBag)
         
