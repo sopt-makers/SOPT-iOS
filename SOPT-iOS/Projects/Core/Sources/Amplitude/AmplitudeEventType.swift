@@ -34,17 +34,17 @@ public enum AmplitudeEventType: String {
     // 신규 홈 클릭 이벤트
     case clickAllCalendar = "click_all_calendar"
     case clickPlaygroundGroup = "click_playground_group"
-    case clickSoptampMenu = "click_soptamp_menu"
     case clickPostMember = "click_post_member"    
     case clickEmpty = "click_empty"
+    case clickPost = "click_post"
     case clickSoptletterMenu = "click_soptletter_menu"
     
     // 콕 찌르기 클릭 이벤트
     case clickPoke = "click_poke"
+    case clickSoptamp = "click_soptamp"
     case clickMemberProfile = "click_memberprofile"
     case clickPokeIcon = "click_poke_icon"
-    case clickPokeAlarmDetail = "click_poke_alarm_detail"
-    case clickPokeQuit = "click_poke_quit"
+    case clickPokeAlarmDetail = "click_poke_alarm_detail"    
     case clickPokeSendMessage = "click_poke_send_message"
     case clickPokeAnonymity = "click_poke_anonymity"
     

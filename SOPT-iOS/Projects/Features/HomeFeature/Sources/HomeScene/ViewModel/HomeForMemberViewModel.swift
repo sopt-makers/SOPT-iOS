@@ -251,7 +251,22 @@ extension HomeForMemberViewModel {
             }
         }
     }
-        
+
+    private func trackLatestPostEvent(model: HomePresentationModel.LatestPost) {
+        // 이름 필드의 유무에 따라, 엠티 뷰의 유무를 결정하며 이벤트도 분리해 처리합니다.
+        if let name = model.name, !name.isEmpty {
+            eventTracker.trackClickPost(
+                sectionName: .latestPosts,
+                postID: model.serverID,
+                category: model.category
+            )
+        } else {
+            eventTracker.trackClickEmpty(
+                sectionName: .latestPosts,
+                category: model.category
+            )
+        }
+    }
 }
 
 // MARK: - Fetch Home Data

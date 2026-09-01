@@ -73,7 +73,7 @@ extension SoptlogViewModel {
         
         input.viewWillAppear
             .withUnretained(self)
-            .sink { owner, _ in
+            .sink { owner, _ in                
                 AmplitudeInstance.shared.trackWithUserType(event: .viewSoptlogMain)
                 owner.fetchSoptlogInfoTask?.cancel()
                 owner.fetchSoptlogInfoTask = Task {

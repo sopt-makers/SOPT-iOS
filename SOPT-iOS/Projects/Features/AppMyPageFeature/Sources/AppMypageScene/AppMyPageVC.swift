@@ -28,6 +28,7 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
     private var dataSource: UICollectionViewDiffableDataSource<MyPageSectionLayoutKind, MyPageItem>! = nil
     private var cellTapped = PassthroughSubject<MyPageItem, Never>()
     private var refreshTriggered = PassthroughSubject<Void, Never>()
+    private var viewWillAppear = PassthroughSubject<Void, Never>()
     private let cancelBag = CancelBag()
 
     private var userProfileData: MyPageProfilePresentationModel?
@@ -67,6 +68,11 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
         bindViewModels()
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         collectionView.refreshControl = refreshControl
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewWillAppear.send(())
     }
 
     public init(userType: UserType, viewModel: AppMyPageViewModel) {
@@ -204,7 +210,7 @@ extension AppMyPageVC {
     private func bindViewModels() {
         let input = AppMyPageViewModel.Input(
             viewDidLoad: Driver.just(()),
-            viewWillAppear: Driver.just(()),
+            viewWillAppear: viewWillAppear.asDriver(),
             naviBackButtonTapped: navigationBar.leftButtonTapped.asDriver(),
             cellTapped: cellTapped.asDriver(),
             refreshTriggered: refreshTriggered.asDriver()

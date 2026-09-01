@@ -134,7 +134,6 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
                 AlertUtils.presentAlertVC(type: .danger(primary: .init(I18N.Soptletter.Detail.deleteButtonTitle)), title: I18N.Soptletter.Detail.deleteAlertTitle, description: I18N.Soptletter.Detail.deleteAlertDescription, customAction: {
                     owner.deleteMessage(output: output, content: content)
                 })
-                AmplitudeInstance.shared.trackWithUserType(event: .clickDeleteSoptletter)
             }
             .store(in: cancelBag)
         
@@ -149,6 +148,7 @@ extension SoptletterDetailViewModel {
             guard let self else { return }
             do {
                 try await useCase.deleteMessage(messageId: messageId, topicId: topicId)
+                AmplitudeInstance.shared.trackWithUserType(event: .clickDeleteSoptletter)
                 await MainActor.run {
                     output.soptletterDeleteCompleted.send()
                     self.onDeleteCompleted?()

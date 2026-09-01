@@ -52,5 +52,22 @@ struct HomeEventTracker {
             .build()
         
         AmplitudeInstance.shared.track(eventType: .clickEmpty, eventProperties: properties)
-    }        
+    }
+ 
+    func trackClickPost(
+        postRanking: Int? = 0, // NOTE: 최신 게시물일 경우, 랭킹이 존재하지 않고 0으로 처리합니다.
+        sectionName: HomeAmplitudeEventPropertyValue,
+        postID: Int? = 0,
+        category: String
+    ) {
+        let properties = AmplitudeEventPropertyBuilder<HomeAmplitudeEventPropertyValue>()
+            .add(key: .postRanking, value: postRanking)
+            .add(key: .sectionName, value: sectionName)
+            .add(key: .postID, value: postID)
+            .add(key: .category, value: category)
+            .addViewType()
+            .build()
+        
+        AmplitudeInstance.shared.track(eventType: .clickPost, eventProperties: properties)
+    }
 }

@@ -50,7 +50,7 @@ struct PokeEventTracker {
         
         AmplitudeInstance.shared.track(eventType: .clickPokeIcon, eventProperties: properties)
     }
-    
+
     func trackClickMemberProfileEvent(clickView: PokeAmplitudeEventPropertyValue, userId: Int? = nil) {
         let properties = AmplitudeEventPropertyBuilder<PokeAmplitudeEventPropertyValue>()
             .addViewType()

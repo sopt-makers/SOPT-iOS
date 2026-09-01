@@ -159,7 +159,7 @@ extension ListDetailViewModel {
                 return Just(requestModel.updateImgUrl(to: presignedUrl)).asDriver()
             }
             .withUnretained(self)
-            .sink { owner, requestModel in                
+            .sink { owner, requestModel in
                 if owner.sceneType == ListDetailSceneType.none {
                     owner.isAppjam == true ? owner.useCase.postAppjamStamp(stampData: requestModel) :
                     owner.useCase.postStamp(isAppjam: owner.isAppjam, stampData: requestModel)
