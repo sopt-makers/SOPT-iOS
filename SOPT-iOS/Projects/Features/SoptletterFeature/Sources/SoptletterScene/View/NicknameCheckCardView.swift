@@ -104,6 +104,10 @@ extension NicknameCheckCardView {
 extension NicknameCheckCardView {
     func configure(nickName: String, number: Int) {
         descriptionLabel.text = String(number) + I18N.Soptletter.Nickname.descriptionText
+        descriptionLabel.setTypography(Typography.title4,
+                                       textColor: SemanticColor.Fg.Neutral.default,
+                                       alignment: .center)
         userNickName.text = nickName
-    }
+        userNickName.setTypography(Typography.title2, textColor: SemanticColor.Fg.Neutral.bold)
+   }
 }

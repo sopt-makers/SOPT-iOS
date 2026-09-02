@@ -11,6 +11,6 @@ import Networks
 
 extension SoptletterOnboardingEntity {
     func toDomain() -> SoptletterProfileModel {
-        .init(nickname: nickname, isOnboarded: isOnboarded)
+        .init(nickname: nickname, isOnboarded: isOnboarded, currentGeneration: currentGeneration)
     }
 }
