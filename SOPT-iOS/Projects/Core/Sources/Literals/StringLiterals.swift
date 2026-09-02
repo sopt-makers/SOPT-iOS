@@ -312,7 +312,6 @@ public struct I18N {
         public static let tapTitle = "솝트로그"
         public static let editProfile = "프로필 수정"
         public static let enrollIntroduce = "프로필 수정에서 한 줄 소개 등록해보세요!"
-        public static let dailyFortuneButton = "바로 확인하기"
         public static let soptlevel = "솝레벨"
         public static let poke = "콕찌르기 로그"
         public static let soptamp = "솝탬프 로그"
@@ -498,16 +497,6 @@ public struct I18N {
         public static let emptyViewDescription = "아직 없어요 T.T\n나와 비슷한 친구가 생길 때까지 기다려주세요"
       }
       public static let emptyViewDescription = "아직 없어요 T.T\n더 많은 찌르기로 달성해보세요"
-    }
-    
-    public struct DailySoptune {
-        public static let poke = "콕 찌르기"
-        public static let pokeFortunatePerson = "행운이 2배가 될 솝트인을 찔러보세요"
-        public static let receiveTodaysFortuneCard = "오늘의 부적 받기"
-		public static let receiveTodayFortune = "오늘의 운세가 도착했어요!"
-		public static let checkTodayFortune = "오늘의 운세 확인하기"
-		public static let goHome = "돌아가기"
-        public static let dateErrorToastMessage = "앗, 오늘의 솝마디만 볼 수 있어요."
     }
 
     public struct Soptletter {

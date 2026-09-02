@@ -12,10 +12,6 @@ public struct SoptlogResponseEntity: Decodable {
     public let isActive: Bool
     public let isAppjamParticipant: Bool
     
-    /// 솝마디 상태
-    public let isFortuneChecked: Bool
-    public let todayFortuneText: String
-    
     /// 솝탬프 정보
     public let soptampCount: Int?
     public let viewCount: Int?

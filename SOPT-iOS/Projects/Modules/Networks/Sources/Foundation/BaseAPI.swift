@@ -24,7 +24,6 @@ public enum APIType {
     case description
     case poke
     case s3
-    case fortune
     case coreAuth
     case social
     case home
@@ -77,8 +76,6 @@ extension BaseAPI {
             base += "/poke"
         case .s3:
             base += "/s3"
-        case .fortune:
-            base += "/fortune"
         case .coreAuth:
             base = coreAuthBaseURL + "/auth"
         case .social:
