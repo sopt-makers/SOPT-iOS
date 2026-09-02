@@ -49,8 +49,7 @@ public final class NotificationDetailVC: UIViewController, NotificationDetailVie
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = Typography.title4.font
-        label.textColor = SemanticColor.Fg.Neutral.bold
+        label.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
         label.textAlignment = .left
         label.numberOfLines = 1
         return label
@@ -64,8 +63,7 @@ public final class NotificationDetailVC: UIViewController, NotificationDetailVie
     
     private let textView: UITextView = {
         let textView = UITextView()
-        textView.font = Typography.body1.font
-        textView.textColor = SemanticColor.Fg.Neutral.bold
+        textView.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.bold)
         textView.backgroundColor = .clear
         textView.isEditable = false
         textView.showsVerticalScrollIndicator = false

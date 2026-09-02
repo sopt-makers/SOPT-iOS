@@ -17,16 +17,14 @@ final class NotificationListCVC: UICollectionViewCell {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = Typography.title5.font
-        label.textColor = SemanticColor.Fg.Neutral.default
+        label.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.default)
         label.textAlignment = .left
         return label
     }()
     
     private let timeLabel: UILabel = {
         let label = UILabel()
-        label.font = Typography.label4.font
-        label.textColor = SemanticColor.Fg.Neutral.ghost
+        label.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.ghost)
         label.textAlignment = .right
         return label
     }()
@@ -41,8 +39,7 @@ final class NotificationListCVC: UICollectionViewCell {
     
     private let descriptionLabel: UILabel = {
         let label = UILabel()
-        label.font = Typography.body2.font
-        label.textColor = SemanticColor.Fg.Neutral.subtle
+        label.setTypography(Typography.body2, textColor: SemanticColor.Fg.Neutral.subtle)
         label.textAlignment = .left
         label.numberOfLines = 2
         return label

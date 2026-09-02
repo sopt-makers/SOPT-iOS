@@ -80,8 +80,7 @@ public final class AttendanceVC: UIViewController, LegacyAttendanceViewControlla
     /// 출석 제목
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = SemanticColor.Fg.Neutral.bold
-        label.font = Typography.title3.font
+        label.setTypography(Typography.title3, textColor: SemanticColor.Fg.Neutral.bold)
         return label
     }()
     
@@ -89,8 +88,7 @@ public final class AttendanceVC: UIViewController, LegacyAttendanceViewControlla
     private let subtitleLabel: UILabel = {
         let label = UILabel()
         label.text = I18N.Attendance.inputCodeDescription
-        label.textColor = SemanticColor.Fg.Neutral.default
-        label.font = Typography.body1.font
+        label.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.default)
         return label
     }()
     
@@ -119,8 +117,7 @@ public final class AttendanceVC: UIViewController, LegacyAttendanceViewControlla
     private let alertLabel: UILabel = {
         let label = UILabel()
         label.text = I18N.Attendance.codeMismatch
-        label.textColor = SemanticColor.Fg.Danger.default
-        label.font = Typography.label3.font
+        label.setTypography(Typography.label3, textColor: SemanticColor.Fg.Danger.default)
         label.isHidden = true
         return label
     }()

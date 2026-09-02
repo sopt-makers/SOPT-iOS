@@ -24,15 +24,13 @@ final class HomeCalendarDetailCVC: UICollectionViewCell {
     }
     
     private let dateLabel = UILabel().then {
-        $0.font = Typography.label4.font
-        $0.textColor = SemanticColor.Fg.Neutral.subtle
+        $0.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
     }
 
     private let homeSquareTagView = MDSTag(text: "", size: .small, shape: .rect, variant: .secondary, style: .subtle)
     
     private let calendarTitleLabel = UILabel().then {
-        $0.font = Typography.title4.font
-        $0.textColor = SemanticColor.Fg.Neutral.bold
+        $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
     }
     
     // MARK: - Initialization

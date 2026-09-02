@@ -138,7 +138,7 @@ final class OPAttendanceStepView: UIView {
 
     private let stepTitleLabel: UILabel = {
         let label = UILabel()
-        label.font = Typography.label4.font
+        label.setTypography(Typography.label4)
         return label
     }()
     
