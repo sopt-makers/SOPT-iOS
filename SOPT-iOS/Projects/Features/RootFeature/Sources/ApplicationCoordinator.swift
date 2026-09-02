@@ -19,7 +19,6 @@ import NotificationFeature
 import StampFeature
 import PokeFeature
 import AttendanceFeature
-import DailySoptuneFeature
 import WebFeature
 import SoptlogFeature
 import TabBarFeature
@@ -394,8 +393,6 @@ extension ApplicationCoordinator {
 //            case .soptlog:
 //                self?.soptlogCoordinator?.requestCoordinating = { [weak self] destination in
 //                    switch destination {
-//                    case .dailySoptune:
-//                        self?.runDailySoptuneFlow()
 //                    case .webLink(let url):
 //                        self?.handleWebLink(webLink: url)
 //                    }
@@ -842,48 +839,6 @@ extension ApplicationCoordinator {
     
 }
 
-// MARK: - DailySoptuneFlow
-
-extension ApplicationCoordinator {
-    @discardableResult
-    internal func runDailySoptuneFlow() -> BaseCoordinator {
-        var coordinator: BaseCoordinator
-        
-        switch Config.coordinatorFlag {
-        case .legacy:
-            let legacyCoordinator = LegacyDailySoptuneCoordinator(
-                router: LegacyRouter(
-                    rootController: UIWindow.getRootNavigationController
-                ),
-                factory: LegacyDailySoptuneBuilder(),
-                pokeFactory: LegacyPokeBuilder()
-            )
-            legacyCoordinator.finishFlow = { [weak self, weak legacyCoordinator] in
-                legacyCoordinator?.childCoordinators = []
-                self?.removeDependency(legacyCoordinator)
-            }
-            
-            legacyCoordinator.requestCoordinating = { [weak self, weak legacyCoordinator] in
-                self?.router.popToRootModule(animated: true)
-                legacyCoordinator?.childCoordinators = []
-            }
-            coordinator = legacyCoordinator
-            addDependency(legacyCoordinator)
-            
-        case .new:
-            coordinator = DailySoptuneCoordinator(
-                navigationController: UIWindow.getRootNavigationController,
-                factory: DailySoptuneBuilder(),
-                pokeFactory: PokeBuilder()
-            )
-        }
-        
-        coordinator.start()
-        
-        return coordinator
-    }
-}
-
 // MARK: - SoptlogFlow
 
 extension ApplicationCoordinator {
@@ -901,8 +856,6 @@ extension ApplicationCoordinator {
             
             legacyCoordinator.requestCoordinating = { [weak self] destination in
                 switch destination {
-//                case .dailySoptune:
-//                    self?.runDailySoptuneFlow()
                 case .webLink(let url):
                     self?.handleWebLink(webLink: url)
                 case .home:

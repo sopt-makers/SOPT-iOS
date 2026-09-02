@@ -88,8 +88,6 @@ extension ApplicationCoordinator: HomeCoordinatorDelegate {
 extension ApplicationCoordinator: SoptlogCoordinatorDelegate {
     public func soptlogCoordinator(_ coordinator: SoptlogCoordinator, to destination: SoptlogCoordinatorDestination) {
         switch destination {
-//        case .dailySoptune:
-//            self.runDailySoptuneFlow()
         case .webLink(let url):
             self.handleWebLink(webLink: url)
         case .soptamp:

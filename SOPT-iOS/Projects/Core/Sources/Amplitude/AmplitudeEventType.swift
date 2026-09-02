@@ -37,7 +37,6 @@ public enum AmplitudeEventType: String {
     case clickAllCalendar = "click_all_calendar"
     case clickMoim = "click_moim"
     case clickPokeMenu = "click_poke_menu"
-    case clickTodaySoptuneMenu = "click_todaysoptmadi_menu"
     case clickSoptampMenu = "click_soptamp_menu"
     case clickPostMember = "click_post_member"
     case clickPost = "click_post"
@@ -51,18 +50,7 @@ public enum AmplitudeEventType: String {
     case clickPokeIcon = "click_poke_icon"
     case clickPokeAlarmDetail = "click_poke_alarm_detail"
     case clickPokeQuit = "click_poke_quit"
-    
-    // 솝마디 클릭 이벤트
-    case clickCheckTodaySoptune = "click_check_todaysoptmadi"
-    case clickLeaveSoptuneMain = "click_leave_soptmadi_title"
-    case clickSoptuneRamdomPeople = "click_randomepeople"
-    case clickGetSoptuneCard = "click_get_charmcard"
-    case clickLeaveSoptuneResult = "click_leave_soptmadi_todays"
-    case clickDoneHome = "click_done_home"
-    case clickLeaveSoptuneCard = "click_done_soptmadi_charmcard"
-    case clickAnonymity = "click_anonymity"
-    case sendChoice = "send_choice"
-    
+
     // 탭 바 클릭 이벤트
     case clickNaviHome = "click_navi_home"
     case clickNaviMyPage = "click_navi_mypage"
@@ -80,16 +68,10 @@ public enum AmplitudeEventType: String {
     case viewPokeAlarmDetail = "view_poke_alarm_detail"
     case viewPokeFriend = "view_poke_friend"
     case viewPokeFriendDetail = "view_poke_friend_detail"
-    
-    // 솝마디 뷰 이벤트
-    case viewSoptuneMain = "view_soptmadi_title"
-    case viewSoptuneResult = "view_soptmadi_todays"
-    case viewSoptuenCard = "view_soptmadi_charmcard"
-    
+
     // 솝트로그 뷰 이벤트
     case clickSoptlogEditProfile = "click_soptlog_editprofile"
-    case clickSoptlogSoptune = "click_soptlog_soptmadi"
-    
+
     // 박수 이벤트
     case clickUpdateClap = "click_update_clap"
     case getImageZoom = "get_image_zoom"

@@ -27,8 +27,6 @@ extension SoptlogVC {
                 return self.isPokeEmpty ?
                 self.createEmptySection(sectionType: sectionType) :
                 self.createMenuSection(sectionType: sectionType)
-//            case .banner:
-//                return self.createBannerSection()
             }
         })
 
@@ -119,28 +117,6 @@ extension SoptlogVC {
         section.boundarySupplementaryItems = [header]
         section.decorationItems = [backgroundDecoration]
         section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
-        
-        return section
-    }
-    
-    private func createBannerSection() -> NSCollectionLayoutSection {
-        // 배너 아이템
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(76))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        let group = NSCollectionLayoutGroup.vertical(layoutSize: itemSize, subitems: [item])
-        
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 38, leading: 0, bottom: 0, trailing: 0)
-        
-        // Footer
-        let footerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(200))
-        let footer = NSCollectionLayoutBoundarySupplementaryItem(
-            layoutSize: footerSize,
-            elementKind: UICollectionView.elementKindSectionFooter,
-            alignment: .bottom
-        )
-        footer.pinToVisibleBounds = false
-        section.boundarySupplementaryItems = [footer]
         
         return section
     }

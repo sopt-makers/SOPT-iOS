@@ -11,11 +11,7 @@ import Foundation
 public struct  SoptlogModel {
     public let isActive: Bool
     public let isAppjamParticipant: Bool
-    
-    /// 솝마디 상태
-    public let isFortuneChecked: Bool
-    public let todayFortuneText: String
-    
+
     /// 솝탬프 정보
     public let soptampCount: Int?
     public let viewCount: Int?
@@ -31,8 +27,6 @@ public struct  SoptlogModel {
     public init(
         isActive: Bool,
         isAppjamParticipant: Bool,
-        isFortuneChecked: Bool,
-        todayFortuneText: String,
         soptampCount: Int?,
         viewCount: Int?,
         myClapCount: Int?,
@@ -44,8 +38,6 @@ public struct  SoptlogModel {
     ) {
         self.isActive = isActive
         self.isAppjamParticipant = isAppjamParticipant
-        self.isFortuneChecked = isFortuneChecked
-        self.todayFortuneText = todayFortuneText
         self.soptampCount = soptampCount
         self.viewCount = viewCount
         self.myClapCount = myClapCount
