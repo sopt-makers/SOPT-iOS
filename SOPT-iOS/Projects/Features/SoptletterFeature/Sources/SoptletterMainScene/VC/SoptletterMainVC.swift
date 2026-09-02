@@ -197,10 +197,6 @@ private extension SoptletterMainVC {
             }.store(in: cancelBag)
     }
 
-    private func configureUI(title: String) {
-        titleLabel.text = title
-    }
-
     private func setLayout() {
         rightButtonStackView.addArrangedSubviews(downloadButton, reportButton, menuButton)
         navigationView.addSubviews(closeButton, titleLabel, rightButtonStackView)
