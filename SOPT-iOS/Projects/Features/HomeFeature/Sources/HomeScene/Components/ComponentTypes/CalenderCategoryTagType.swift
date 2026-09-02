@@ -9,7 +9,7 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
 
 enum CalenderCategoryTagType: String {
     case event = "EVENT"
@@ -30,25 +30,14 @@ enum CalenderCategoryTagType: String {
         }
     }
     
-    var textColor: UIColor {
+    var tagType: MDSTag.Variant {
         switch self {
         case .event:
-            return DSKitAsset.Colors.success.color
+                .secondary
         case .seminar, .jointSeminar:
-            return DSKitAsset.Colors.secondary.color
+                .primary
         case .break:
-            return DSKitAsset.Colors.information.color
-        }
-    }
-    
-    var backgroundColor: UIColor {
-        switch self {
-        case .event:
-            return DSKitAsset.Colors.success.color.withAlphaComponent(0.2)
-        case .seminar, .jointSeminar:
-            return DSKitAsset.Colors.secondary.color.withAlphaComponent(0.2)
-        case .break:
-            return DSKitAsset.Colors.information.color.withAlphaComponent(0.2)
+                .default
         }
     }
 }

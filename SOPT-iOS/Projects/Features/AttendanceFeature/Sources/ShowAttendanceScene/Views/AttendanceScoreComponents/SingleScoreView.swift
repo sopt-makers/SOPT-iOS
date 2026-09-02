@@ -9,7 +9,7 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
 
 /*
  (전체: 00회)를 표현하는 단일 영역 뷰입니다. 
@@ -21,15 +21,13 @@ final class SingleScoreView: UIView {
     
     private let singleScoreTitleLabel: UILabel = {
         let label = UILabel()
-        label.font = .Main.caption1
-        label.textColor = DSKitAsset.Colors.gray300.color
+        label.textColor = SemanticColor.Fg.Neutral.subtle
         return label
     }()
     
     private let singleScoreCountLabel: UILabel = {
         let label = UILabel()
-        label.font = .Main.body2
-        label.textColor = DSKitAsset.Colors.gray50.color
+        label.textColor = SemanticColor.Fg.Neutral.bold
         return label
     }()
     
@@ -70,6 +68,7 @@ extension SingleScoreView {
     
     private func updateScoreTypeLabel(_ type: AttendanceStateType) {
         singleScoreTitleLabel.text = type.korean
+        singleScoreTitleLabel.setTypography(Typography.label4)
     }
 }
 
@@ -80,5 +79,6 @@ extension SingleScoreView {
     func setData(_ count: Int, _ type: AttendanceStateType) {
         setDefaultLayout(type)
         singleScoreCountLabel.text = "\(count)회"
+        singleScoreCountLabel.setTypography(Typography.label3)
     }
 }
