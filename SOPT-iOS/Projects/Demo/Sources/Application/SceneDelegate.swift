@@ -32,7 +32,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
         
-        configureAPNs()        
+        configureAPNs()
         notificationHandler.isColdStart = connectionOptions.notificationResponse != nil
         
         window = UIWindow(windowScene: scene)

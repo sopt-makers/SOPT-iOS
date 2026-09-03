@@ -11,7 +11,7 @@ import Foundation
 public extension ServiceType {
     var toAmplitudeEventType: AmplitudeEventType? {
         switch self {
-        case .officialHomepage: return .clickOfficialHomepage        
+        case .officialHomepage: return .clickOfficialHomepage
         case .project: return .clickProject
         case .faq: return .clickFaq
         case .youtube: return .clickYoutube
@@ -27,7 +27,6 @@ public extension ServiceType {
 public extension TabServiceType {
     var toAmplitudeEventType: AmplitudeEventType {
         switch self {
-        case .soptamp: return .clickSoptamp
         case .poke: return .clickPoke
         }
     }

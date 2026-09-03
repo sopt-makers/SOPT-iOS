@@ -19,10 +19,11 @@ public enum AmplitudeEventType: String {
     case clickToastButton = "click_toast_button"
     case clickProject = "click_project"
     case clickMember = "click_member"
-    case clickOfficialHomepage = "click_homepage"    
+    case clickOfficialHomepage = "click_homepage"
     case clickInstagram = "click_instagram"
-    case clickYoutube = "click_youtube"    
+    case clickYoutube = "click_youtube"
     case clickFaq = "click_faq"
+    case clickPlaygroundCommunity = "click_playground_community"
     case clickPlusButton = "click_plus_button"
     case clickHotboard = "click_hotboard"
     case clickLink = "click_link_button"
@@ -34,17 +35,14 @@ public enum AmplitudeEventType: String {
     // 신규 홈 클릭 이벤트
     case clickAllCalendar = "click_all_calendar"
     case clickPlaygroundGroup = "click_playground_group"
-    case clickPostMember = "click_post_member"    
-    case clickEmpty = "click_empty"
-    case clickPost = "click_post"
+    case clickPostMember = "click_post_member"
     case clickSoptletterMenu = "click_soptletter_menu"
     
     // 콕 찌르기 클릭 이벤트
-    case clickPoke = "click_poke"
-    case clickSoptamp = "click_soptamp"
+    case clickPoke = "click_poke"    
     case clickMemberProfile = "click_memberprofile"
     case clickPokeIcon = "click_poke_icon"
-    case clickPokeAlarmDetail = "click_poke_alarm_detail"    
+    case clickPokeAlarmDetail = "click_poke_alarm_detail"
     case clickPokeSendMessage = "click_poke_send_message"
     case clickPokeAnonymity = "click_poke_anonymity"
     
@@ -56,7 +54,7 @@ public enum AmplitudeEventType: String {
     case clickNaviAppjamtamp = "click_navi_appjamtamp"
 
     // 홈 뷰 이벤트
-    case viewAppHome = "view_apphome"    
+    case viewAppHome = "view_apphome"
     case viewNotificationList = "view_notification_list"
     
     // 콕 찌르기 뷰 이벤트
@@ -65,7 +63,7 @@ public enum AmplitudeEventType: String {
     case viewPokeMain = "view_poke_main"
     case viewPokeAlarmDetail = "view_poke_alarm_detail"
     case viewPokeFriend = "view_poke_friend"
-    case viewPokeFriendDetail = "view_poke_friend_detail"            
+    case viewPokeFriendDetail = "view_poke_friend_detail"
     
     // 박수 이벤트
     case clickUpdateClap = "click_update_clap"

@@ -21,7 +21,7 @@ struct HomeEventTracker {
     func trackAppService(serviceType: AppServiceType) {
         switch serviceType {
         case .soptletter:
-            AmplitudeInstance.shared.trackWithUserType(event: .clickSoptletterMenu)            
+            AmplitudeInstance.shared.trackWithUserType(event: .clickSoptletterMenu)
         }
     }
     
@@ -40,34 +40,26 @@ struct HomeEventTracker {
             .build()
             
         AmplitudeInstance.shared.track(eventType: .clickPostMember, eventProperties: properties)
-    }        
-    
-    func trackClickEmpty(
-        sectionName: HomeAmplitudeEventPropertyValue,
-        category: String
-    ) {
-        let properties = AmplitudeEventPropertyBuilder<HomeAmplitudeEventPropertyValue>()
-            .add(key: .sectionName, value: sectionName)
-            .add(key: .category, value: category)
-            .build()
-        
-        AmplitudeInstance.shared.track(eventType: .clickEmpty, eventProperties: properties)
     }
- 
-    func trackClickPost(
-        postRanking: Int? = 0, // NOTE: 최신 게시물일 경우, 랭킹이 존재하지 않고 0으로 처리합니다.
-        sectionName: HomeAmplitudeEventPropertyValue,
-        postID: Int? = 0,
-        category: String
-    ) {
+    
+    func trackPlaygroundCommunityBySection(kind: HomeForMemberSectionLayoutKind) {
+        var sectionName = ""
+        
+        switch kind {
+        case .mainProduct:
+            sectionName = "playground_home"
+        case .popularPosts:
+            sectionName = "popular_posts"
+        case .latestPosts:
+            sectionName = "latest_posts"
+        default:
+            return
+        }
+        
         let properties = AmplitudeEventPropertyBuilder<HomeAmplitudeEventPropertyValue>()
-            .add(key: .postRanking, value: postRanking)
-            .add(key: .sectionName, value: sectionName)
-            .add(key: .postID, value: postID)
-            .add(key: .category, value: category)
-            .addViewType()
+            .add(key: "section_name", value: sectionName)
             .build()
         
-        AmplitudeInstance.shared.track(eventType: .clickPost, eventProperties: properties)
+        AmplitudeInstance.shared.trackWithUserType(event: .clickPlaygroundCommunity, otherProperties: properties)
     }
 }

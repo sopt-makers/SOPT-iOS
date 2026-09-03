@@ -136,7 +136,7 @@ extension HomeForMemberViewModel {
                     owner.onPopularPostCellTapped?(model.webLink)
                     AmplitudeInstance.shared.trackWithUserType(event: .clickHotboard)
                 case .latestPost(let model):
-                    owner.onLatestPostCellTapped?(model.webLink)                    
+                    owner.onLatestPostCellTapped?(model.webLink)
                 case .appService(let model):
                     owner.onAppServiceCellTapped?(model.type)
                     owner.eventTracker.trackAppService(serviceType: model.type)
@@ -188,18 +188,8 @@ extension HomeForMemberViewModel {
                 default:
                     owner.onViewAllContentButtonTapped?(ExternalURL.Playground.feed)
                 }
-
-                let sectionName: HomeAmplitudeEventPropertyValue
-                switch sectionKind {
-                case .mainProduct:
-                    sectionName = .mainProduct
-                case .popularPosts:
-                    sectionName = .popularPosts
-                case .latestPosts:
-                    sectionName = .latestPosts
-                default:
-                    sectionName = .latestPosts
-                }                
+                
+                owner.eventTracker.trackPlaygroundCommunityBySection(kind: sectionKind)
             }
             .store(in: cancelBag)
         
@@ -252,21 +242,6 @@ extension HomeForMemberViewModel {
         }
     }
 
-    private func trackLatestPostEvent(model: HomePresentationModel.LatestPost) {
-        // 이름 필드의 유무에 따라, 엠티 뷰의 유무를 결정하며 이벤트도 분리해 처리합니다.
-        if let name = model.name, !name.isEmpty {
-            eventTracker.trackClickPost(
-                sectionName: .latestPosts,
-                postID: model.serverID,
-                category: model.category
-            )
-        } else {
-            eventTracker.trackClickEmpty(
-                sectionName: .latestPosts,
-                category: model.category
-            )
-        }
-    }
 }
 
 // MARK: - Fetch Home Data

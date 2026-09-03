@@ -21,7 +21,7 @@ public enum ServiceType {
 
     public var serviceDomainLink: String {
         switch self {
-        case .officialHomepage: return ExternalURL.SOPT.officialHomepage        
+        case .officialHomepage: return ExternalURL.SOPT.officialHomepage
         case .project: return ExternalURL.Playground.project
         case .faq: return ExternalURL.SOPT.faq
         case .youtube: return ExternalURL.SNS.youtube
@@ -35,7 +35,6 @@ public enum ServiceType {
 }
 
 public enum TabServiceType: String {
-    case soptamp = "SOPTAMP"
     case poke = "POKE"
 }
 
