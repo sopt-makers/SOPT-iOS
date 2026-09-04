@@ -42,6 +42,7 @@ public final class AppMyPageViewModel: MyPageViewModelType {
     
     public struct Input {
         let viewDidLoad: Driver<Void>
+        let viewWillAppear: Driver<Void>
         let naviBackButtonTapped: Driver<Void>
         let cellTapped: Driver<MyPageItem>
         let refreshTriggered: Driver<Void>
@@ -70,6 +71,12 @@ extension AppMyPageViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         self.bindOutput(output: output, cancelBag: cancelBag)
+        
+        input.viewWillAppear
+            .withUnretained(self)
+            .sink { owner, _ in
+                AmplitudeInstance.shared.trackWithUserType(event: .viewMypageMain)
+            }.store(in: cancelBag)
         
         Publishers.Merge(input.viewDidLoad, input.refreshTriggered)
             .withUnretained(self)
@@ -124,30 +131,38 @@ extension AppMyPageViewModel {
         switch item.type {
         case .profileCard:
             self.onEditProfileTap?()
+            AmplitudeInstance.shared.trackWithUserType(event: .clickProfileEditButton)
         case .soptlogSoptampPreview, .soptlogPokePreview:
             break
         case .soptlogCheckButton:
             self.onShowSoptlog?()
+            AmplitudeInstance.shared.trackWithUserType(event: .clickMypageSoptlog)
         case .privacyPolicy:
             self.onPolicyItemTap?()
         case .termsOfUse:
             self.onTermsOfUseItemTap?()
         case .sendFeedback:
             openExternalLink(urlStr: ExternalURL.KakaoTalk.serviceProposal)
+            AmplitudeInstance.shared.trackWithUserType(event: .clickMypageFeedback)
         case .setNotification:
             self.onAlertButtonTap?(UIApplication.openSettingsURLString)
+            AmplitudeInstance.shared.trackWithUserType(event: .clickMypageNotification)
         case .editOnelineSentence:
             self.onEditOnelineSentenceItemTap?()
+            AmplitudeInstance.shared.trackWithUserType(event: .clickMypageEditStatusmessage)
         case .resetStamp:
             self.onResetSoptampTap?({ [weak self] in
                 self?.useCase.resetStamp()
             })
+            AmplitudeInstance.shared.trackWithUserType(event: .clickMypageResetStamp)
         case .withdrawal:
             self.onWithdrawalItemTap?(userType)
+            AmplitudeInstance.shared.trackWithUserType(event: .clickMypageQuit)
         case .logout:
             self.onLogoutTap?({ [weak self] in
                 self?.useCase.deregisterPushToken()
                 self?.onShowLogout?()
+                AmplitudeInstance.shared.trackWithUserType(event: .clickDoneLogout)
             })
         case .login:
             self.onShowLogin?()

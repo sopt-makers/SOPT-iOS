@@ -73,7 +73,7 @@ public class Toast {
         let toastHeight = 64.f
         let toastStartingInset = window.safeAreaInsets.top + toastHeight
         
-        // 3단 animate로 구현 
+        // 3단 animate로 구현
         // toast의 넓이가 계산된 이후에 y 위치 변화를 해야 애니메이션이 자연스럽게 나온다. (completion 시점에 y 위치 변화 시켜야 함)
         
         UIView.animate(withDuration: 0.0) {

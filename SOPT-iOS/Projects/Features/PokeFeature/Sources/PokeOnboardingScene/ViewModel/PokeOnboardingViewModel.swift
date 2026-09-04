@@ -55,7 +55,7 @@ extension PokeOnboardingViewModel {
         input.viewDidLoaded
             .withUnretained(self)
             .sink(receiveValue: { [weak self] _ in
-                AmplitudeInstance.shared.trackWithUserType(event: .viewPokeOnboarding)
+                AmplitudeInstance.shared.trackWithUserType(event: .viewPokeOnboardingFragment)
                 self?.usecase.getRandomAcquaintances(randomUserType: .all)
             }).store(in: cancelBag)
         
@@ -63,7 +63,7 @@ extension PokeOnboardingViewModel {
             .map { _ in UserDefaultKeyList.User.isFirstVisitToPokeOnboardingView ?? true }
             .sink(receiveValue: { [weak self] isFirstVisit in
                 guard isFirstVisit else { return }
-                
+                AmplitudeInstance.shared.trackWithUserType(event: .viewPokeOnboarding)
                 UserDefaultKeyList.User.isFirstVisitToPokeOnboardingView = false
                 self?.onFirstVisitInOnboarding?()
             }).store(in: cancelBag)
@@ -83,6 +83,8 @@ extension PokeOnboardingViewModel {
             .sink(receiveValue: { [weak self] userModel, messageModel, isAnonymous in
                 self?.eventTracker.trackClickPokeEvent(clickView: .onboarding, userId: userModel.userId)
                 self?.usecase.poke(userId: userModel.userId, message: messageModel, isAnonymous: isAnonymous)
+                let messageType = userModel.pokeRelation == .nonFriend ? "poke_someone" : "poke_friend"
+                self?.eventTracker.trackSendMessageEvent(isAnonymous: isAnonymous, messageType: messageType, message: messageModel)
             }).store(in: cancelBag)
         
         input.avatarTapped

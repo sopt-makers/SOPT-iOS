@@ -134,17 +134,12 @@ extension HomeForMemberViewModel {
                     owner.onSocialLinkButtonTapped?(type.socialLink.serviceDomainLink)
                 case .popularPost(let model):
                     owner.onPopularPostCellTapped?(model.webLink)
-                    owner.eventTracker.trackClickPost(
-                        postRanking: model.rank,
-                        sectionName: .realTimeFeed,
-                        postID: model.serverID,
-                        category: model.category
-                    )
+                    AmplitudeInstance.shared.trackWithUserType(event: .clickHotboard)
                 case .latestPost(let model):
                     owner.onLatestPostCellTapped?(model.webLink)
-                    owner.trackLatestPostEvent(model: model)
                 case .appService(let model):
                     owner.onAppServiceCellTapped?(model.type)
+                    owner.eventTracker.trackAppService(serviceType: model.type)
                 default: break
                 }
             }
@@ -171,12 +166,7 @@ extension HomeForMemberViewModel {
             .sink { owner, _ in
                 guard let info = owner.fetchedFloatingButtonInfo, !info.url.isEmpty else { return }
                 owner.onExtendedFloatingButtonTapped?(info.url)
-                owner.eventTracker.trackClickPromo(
-                    sectionName: .homeFAB,
-                    promoName: info.actionButtonName,
-                    destinationURL: info.url,
-                    destinationType: .app
-                )
+                owner.eventTracker.trackAmplitude(event: .clickToastButton)
             }
             .store(in: cancelBag)
         
@@ -184,14 +174,8 @@ extension HomeForMemberViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 guard let survey = owner.fetchedSurvey, !survey.linkURL.isEmpty else { return }
-
+                AmplitudeInstance.shared.trackWithUserType(event: .clickSurveyButton)
                 owner.onSurveyButtonTapped?(survey.linkURL)
-                owner.eventTracker.trackClickPromo(
-                    sectionName: .homeBanner,
-                    promoName: survey.title,
-                    destinationURL: survey.linkURL,
-                    destinationType: .web
-                )
             }
             .store(in: cancelBag)
         
@@ -204,19 +188,8 @@ extension HomeForMemberViewModel {
                 default:
                     owner.onViewAllContentButtonTapped?(ExternalURL.Playground.feed)
                 }
-
-                let sectionName: HomeAmplitudeEventPropertyValue
-                switch sectionKind {
-                case .mainProduct:
-                    sectionName = .mainProduct
-                case .popularPosts:
-                    sectionName = .popularPosts
-                case .latestPosts:
-                    sectionName = .latestPosts
-                default:
-                    sectionName = .latestPosts
-                }
-                owner.eventTracker.trackClickViewAll(sectionName: sectionName)
+                
+                owner.eventTracker.trackPlaygroundCommunityBySection(kind: sectionKind)
             }
             .store(in: cancelBag)
         
@@ -234,7 +207,7 @@ extension HomeForMemberViewModel {
                 }
                 
             }
-            .store(in: cancelBag)    
+            .store(in: cancelBag)
         
         input.editProfileTapped
             .withUnretained(self)
@@ -268,22 +241,7 @@ extension HomeForMemberViewModel {
             }
         }
     }
-    
-    private func trackLatestPostEvent(model: HomePresentationModel.LatestPost) {
-        // 이름 필드의 유무에 따라, 엠티 뷰의 유무를 결정하며 이벤트도 분리해 처리합니다.
-        if let name = model.name, !name.isEmpty {
-            eventTracker.trackClickPost(
-                sectionName: .latestPosts,
-                postID: model.serverID,
-                category: model.category
-            )
-        } else {
-            eventTracker.trackClickEmpty(
-                sectionName: .latestPosts,
-                category: model.category
-            )
-        }
-    }
+
 }
 
 // MARK: - Fetch Home Data

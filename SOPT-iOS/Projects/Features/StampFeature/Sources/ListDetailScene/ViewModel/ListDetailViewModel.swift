@@ -101,21 +101,13 @@ extension ListDetailViewModel {
             .filter { owner, _ in
                 owner.sceneType == .completed
             }
-            .sink { owner, _ in                
+            .sink { owner, _ in
                 owner.isOtherUser
                 ? owner.useCase.fetchListDetail(isAppjam: owner.isAppjam, missionId: owner.missionId, username: owner.otherUserName)
                 : owner.useCase.fetchListDetail(isAppjam: owner.isAppjam, missionId: owner.missionId, username: nil)
 
                 if owner.isOtherUser {
-                    AmplitudeInstance.shared.track(
-                        eventType: .clickFeedMission,
-                        eventProperties: [
-                            "missionId": owner.missionId ?? "",
-                            "missionTitle": owner.missionTitle ?? "",
-                            "missionLevel": owner.starLevel ?? "",
-                            "feedOwnerNick": owner.otherUserName ?? ""
-                        ]
-                    )
+                    AmplitudeInstance.shared.trackWithUserType(event: .clickFeedMission)
                 }
             }.store(in: cancelBag)
         

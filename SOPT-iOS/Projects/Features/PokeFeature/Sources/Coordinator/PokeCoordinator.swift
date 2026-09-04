@@ -52,7 +52,7 @@ public final class PokeCoordinator: BaseCoordinator {
         
         pokeMain.vm.onPokeNotificationsTap = { [weak self] in
             self?.runPokeNotificationListFlow()
-        }                
+        }
         
         pokeMain.vm.onMyFriendsTap = { [weak self] in
             self?.runPokeMyFriendsFlow()

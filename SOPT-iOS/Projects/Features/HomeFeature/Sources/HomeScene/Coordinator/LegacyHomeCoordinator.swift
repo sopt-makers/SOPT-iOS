@@ -78,7 +78,7 @@ public final class LegacyHomeCoordinator: DefaultHomeCoordinator {
             AlertUtils.presentNetworkAlertVC()
         }
         
-        homeForMember.vm.onExtendedFloatingButtonTapped = { [weak self] url in            
+        homeForMember.vm.onExtendedFloatingButtonTapped = { [weak self] url in
             self?.requestCoordinating?(.deepLink(url: url))
         }
         

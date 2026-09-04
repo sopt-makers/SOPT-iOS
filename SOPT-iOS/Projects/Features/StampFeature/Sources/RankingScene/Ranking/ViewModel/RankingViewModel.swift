@@ -58,6 +58,17 @@ extension RankingViewModel {
         
         self.bindOutput(output: output, cancelBag: cancelBag)
         
+        input.viewDidLoad
+            .withUnretained(self)
+            .sink { owner, _ in
+                switch owner.rankingViewType {
+                case .all:
+                    AmplitudeInstance.shared.trackWithUserType(event: .viewAllranking)
+                default:
+                    break
+                }
+            }.store(in: cancelBag)
+        
         input.viewDidLoad.merge(with: input.refreshStarted)
             .withUnretained(self)
             .sink { owner, _ in
@@ -77,6 +88,14 @@ extension RankingViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.findMyRanking()
+                switch owner.rankingViewType {
+                case .all:
+                    AmplitudeInstance.shared.trackWithUserType(event: .clickAllrankingMyranking)
+                case .individualRankingInPart:
+                    AmplitudeInstance.shared.trackWithUserType(event: .clickPartrankingMyranking)
+                default:
+                    break
+                }
             }.store(in: self.cancelBag)
         
         return output

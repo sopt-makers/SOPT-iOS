@@ -55,6 +55,7 @@ extension SentenceEditViewModel {
             .withUnretained(self)
             .sink { owner, sentence in
                 owner.useCase.editSentence(sentence: sentence)
+                AmplitudeInstance.shared.trackWithUserType(event: .clickDoneEditStatusmessage)
             }.store(in: self.cancelBag)
     
         return output

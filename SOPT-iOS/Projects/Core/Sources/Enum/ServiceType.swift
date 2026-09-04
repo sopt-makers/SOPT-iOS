@@ -10,7 +10,6 @@ import Foundation
 
 public enum ServiceType {
     case officialHomepage
-    case review
     case project
     case faq
     case youtube
@@ -23,7 +22,6 @@ public enum ServiceType {
     public var serviceDomainLink: String {
         switch self {
         case .officialHomepage: return ExternalURL.SOPT.officialHomepage
-        case .review: return ExternalURL.SOPT.review
         case .project: return ExternalURL.Playground.project
         case .faq: return ExternalURL.SOPT.faq
         case .youtube: return ExternalURL.SNS.youtube
@@ -37,7 +35,6 @@ public enum ServiceType {
 }
 
 public enum TabServiceType: String {
-    case soptamp = "SOPTAMP"
     case poke = "POKE"
 }
 

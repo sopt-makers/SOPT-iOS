@@ -67,8 +67,10 @@ extension NotificationDetailViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 guard let shortCutLink = owner.makeShortCutLink() else { return }
+                let notificationLinkType = owner.makeDeepLinkTypeLiteral(with: shortCutLink)
+                
                 owner.onShortCutButtonTap?(shortCutLink)
-                owner.trackAmplitudeShortcutButtonTapped(with: owner.notificationId)
+                owner.trackAmplitudeShortcutButtonTapped(with: owner.notificationId, notificationLinkType: notificationLinkType)
             }.store(in: cancelBag)
 
         return output
@@ -104,7 +106,21 @@ extension NotificationDetailViewModel {
         return nil
     }
     
-    private func trackAmplitudeShortcutButtonTapped(with notificationId: String) {
-        AmplitudeInstance.shared.track(eventType: .clickShortcutButton, eventProperties: ["notification_id": notificationId])
+    private func trackAmplitudeShortcutButtonTapped(with notificationId: String, notificationLinkType: String) {
+        AmplitudeInstance.shared
+            .trackWithUserType(
+                event: .clickLink,
+                otherProperties: [
+                    "notification_id": notificationId,
+                    "notification_link_type" : notificationLinkType
+                ]
+            )
+    }
+
+    private func makeDeepLinkTypeLiteral(with shortCutLink: ShortCutLink) -> String {
+        if shortCutLink.isDeepLink {
+            return "deep_link"
+        }
+        return shortCutLink.url.isEmpty ? "none" : "web"
     }
 }

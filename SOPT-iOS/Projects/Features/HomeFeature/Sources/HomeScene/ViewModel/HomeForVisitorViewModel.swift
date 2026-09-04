@@ -27,7 +27,6 @@ public class HomeForVisitorViewModel: HomeForVisitorViewModelType {
     
     let productServiceList: [HomePresentationModel.ProductService] = [
         .init(product: .officialHomepage),
-        .init(product: .review),
         .init(product: .project),
         .init(product: .instagram)
     ]

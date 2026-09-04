@@ -22,6 +22,8 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
     private let deepLinkParser = DeepLinkParser()
     private let webLinkParser = WebLinkParser()
     
+    public var isColdStart: Bool = false
+    
     public override init() {}
     
     public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
@@ -42,10 +44,16 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
         print("APNs 푸시 알림 페이로드: \(userInfo)")
         guard let payload = NotificationPayload(dictionary: userInfo) else { return }
         
-        AmplitudeInstance.shared.track(eventType: .clickPush, eventProperties: ["notificationId": payload.id,
-                                                                                "leadtime": "",
-                                                                                "contain_deeplink": payload.hasDeepLink,
-                                                                                "deeplink_url": payload.deepLink ?? "없음"])
+        let launchType = isColdStart ? "cold_start" : "warm_start"
+        print(launchType, "런치타입")
+        isColdStart = false
+        
+        let notifiactionLinkType = payload.webLink != nil ? "web" : payload.hasDeepLink ? "deep_link" : "none"
+        AmplitudeInstance.shared.trackWithUserType(event: .clickPush, otherProperties: [
+            "notification_id": payload.id,
+            "notification_link_type": notifiactionLinkType,
+            "notification_launch_type": launchType
+        ])
         guard payload.hasLink else {
             self.deepLink.send(makeComponentsForEmptyLink(notificationId: payload.id))
             return

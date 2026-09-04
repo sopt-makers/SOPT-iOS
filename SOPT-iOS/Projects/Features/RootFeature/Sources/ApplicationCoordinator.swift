@@ -173,7 +173,7 @@ public final class ApplicationCoordinator: BaseCoordinator {
     
     private func handleNewDeepLink(deepLink: DeepLinkComponentsExecutable) {
         self.rootNavigationController.popToRootViewController(animated: false)
-        deepLink.execute(coordinator: self)        
+        deepLink.execute(coordinator: self)
     }
     
     // MARK: - handleWebLink
@@ -329,24 +329,24 @@ extension ApplicationCoordinator {
 //        defer {
 //            bindNotification()
 //        }
-//        
+//
 //        self.childCoordinators = []
-//        
+//
 //        let tabBarBuilder = TabBarBuilder()
 //        let userType = type ?? UserDefaultKeyList.Auth.getUserType()
 //
 //        let homeCoordinator = runHomeFlow(type: userType)
 //        guard let homeVC = homeCoordinator.rootViewController else { return }
-//    
+//
 //        let soptlogCoordinator = runSoptlogFlow(type: userType)
 //        guard let soptlogVC = soptlogCoordinator.rootViewController else { return }
-//                
+//
 //        let (tabbarController, viewModel) = tabBarBuilder.makeTabBar(
 //            with: [homeVC,
 //                   soptlogVC],
 //            userType: userType
 //        )
-//        
+//
 //        let coordinator = LegacyTabBarCoordinator(
 //            router: router,
 //            factory: (tabbarController, viewModel),
@@ -355,12 +355,12 @@ extension ApplicationCoordinator {
 //                soptlogVC
 //            ]
 //        )
-//        
+//
 //        self.legacyRootController = tabbarController.asNavigationController
 //        self.tabBarController = tabbarController
-//        
+//
 //        self.tabBarController?.selectedIndex = initSelectedTabIndex
-//        
+//
 //        // 각 코디네이터 실행
 //        coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
 //            switch destination {
@@ -402,7 +402,7 @@ extension ApplicationCoordinator {
 //                self?.removeDependency(coordinator)
 //            }
 //        }
-//        
+//
 //        addDependency(coordinator)
 //        coordinator.start()
     }

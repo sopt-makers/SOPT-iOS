@@ -66,12 +66,6 @@ public final class NotificationCoordinator: BaseCoordinator {
             guard let self else { return }
             let url = link.url
             let destination: NotificationCoordinatorDestination = link.isDeepLink ? .deepLink(url: url) : .webLink(url: url)
-            AmplitudeInstance.shared.track(eventType: .viewNotificationDetail, eventProperties: [
-                "notification_id": notificationId,
-                "open_method": link.isDeepLink ? "푸시알림" : "알림센터",
-                "contain_deeplink": link.isDeepLink
-            ])
-            
             self.delegate?.notificationCoordinator(self, to: destination)
         }
         
