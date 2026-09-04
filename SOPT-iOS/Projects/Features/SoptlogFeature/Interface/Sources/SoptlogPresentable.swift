@@ -15,7 +15,6 @@ import PokeFeatureInterface
 public protocol SoptlogViewControllable: LegacyViewControllable { }
 public protocol SoptlogCoordinatable {
     var onToolTipTapped: ((CGRect) -> Void)? { get set }
-    var onSoptuneTapped: (() -> Void)? { get set }
     var onNetworkError: (@MainActor () -> Void)? { get set }
     var onAuthFailed: (@MainActor () -> Void)? { get set }
     var onSoptampHomeTapped: (() -> Void)? { get set }

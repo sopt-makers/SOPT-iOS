@@ -14,7 +14,6 @@ enum SoptlogSectionLayoutKind: Int, CaseIterable {
     case logo = 0
     case soptampLog
     case pokeLog
-//    case banner
 
     var title: String {
         switch self {
@@ -35,8 +34,7 @@ enum SoptlogSectionLayoutKind: Int, CaseIterable {
             sections.append(.soptampLog)
         }
         sections.append(.pokeLog)
-//        sections.append(.banner)
-        
+
         return sections
     }
 }

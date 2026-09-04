@@ -109,7 +109,6 @@ extension SoptlogVC {
     private func registerCells() {
         // 셀 등록
         self.collectionView.register(SoptlogMenuCVC.self, forCellWithReuseIdentifier: SoptlogMenuCVC.className)
-        self.collectionView.register(SoptlogBannerCVC.self, forCellWithReuseIdentifier: SoptlogBannerCVC.className)
         self.collectionView.register(SoptlogImageCVC.self, forCellWithReuseIdentifier: SoptlogImageCVC.className)
         self.collectionView.register(SoptlogEmptyCVC.self, forCellWithReuseIdentifier: SoptlogEmptyCVC.className)
         
@@ -181,8 +180,6 @@ extension SoptlogVC: UICollectionViewDataSource {
             return info.soptampMenus.count
         case .pokeLog:
             return isPokeEmpty ? 1 : info.pokeMenus.count
-//        case .banner:
-//            return 1
         }
     }
     
@@ -205,9 +202,6 @@ extension SoptlogVC: UICollectionViewDataSource {
             } else {
                 return configureMenuCell(at: indexPath, with: info.pokeMenus)
             }
-            
-//        case .banner:
-//            return configureBannerCell(at: indexPath, title: info.alarm.todayFortuneText)
         }
     }
     
@@ -229,20 +223,7 @@ extension SoptlogVC: UICollectionViewDataSource {
             let title = sectionType.title
             headerView.configure(title: title)
             return headerView
-            
-//        case UICollectionView.elementKindSectionFooter:
-//            guard sectionType == .banner,
-//                  let footerView = collectionView.dequeueReusableSupplementaryView(
-//                    ofKind: kind,
-//                    withReuseIdentifier: SoptlogImageFooterReusableView.className,
-//                    for: indexPath
-//                  ) as? SoptlogImageFooterReusableView else {
-//                return UICollectionReusableView()
-//            }
-//
-//            footerView.configure(image: DSKitAsset.Assets.bottomSoptlog.image)
-//            return footerView
-            
+
         default:
             return UICollectionReusableView()
         }
@@ -281,19 +262,6 @@ extension SoptlogVC: UICollectionViewDataSource {
         cell.toolTipButtonTapped
             .subscribe(toolTipTap)
             .store(in: cell.cancelBag)
-        
-        return cell
-    }
-    
-    private func configureBannerCell(at indexPath: IndexPath, title: String) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: SoptlogBannerCVC.className,
-            for: indexPath
-        ) as? SoptlogBannerCVC else {
-            return UICollectionViewCell()
-        }
-        
-        cell.configure(title: title)
         
         return cell
     }

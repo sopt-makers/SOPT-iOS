@@ -55,11 +55,6 @@ public final class SoptlogCoordinator: BaseCoordinator {
             self.showToolTip(toolTipFrame)
         }
         
-//        soptlog.vm.onSoptuneTapped = { [weak self] in
-//            guard let self else { return }
-//            self.delegate?.soptlogCoordinator(self, to: .dailySoptune)
-//        }
-        
         soptlog.vm.onSoptampHomeTapped = { [weak self] in
             guard let self else { return }
             self.delegate?.soptlogCoordinator(self, to: .soptamp)

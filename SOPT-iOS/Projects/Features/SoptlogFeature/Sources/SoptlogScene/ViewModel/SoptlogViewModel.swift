@@ -46,7 +46,6 @@ public class SoptlogViewModel: SoptlogViewModelType {
     // MARK: - SoptlogCoordinatable
     
     public var onToolTipTapped: ((CGRect) -> Void)?
-    public var onSoptuneTapped: (() -> Void)?
     public var onNetworkError: (@MainActor () -> Void)?
     public var onAuthFailed: (@MainActor () -> Void)?
     public var onSoptampHomeTapped: (() -> Void)?
@@ -107,14 +106,7 @@ extension SoptlogViewModel {
                     break
                 }
             }.store(in: cancelBag)
-        
-//        input.cellTap
-//            .filter{ $0.section == .banner }
-//            .withUnretained(self)
-//            .sink { owner, _ in
-//                owner.onSoptuneTapped?()
-//            }.store(in: cancelBag)
-        
+
         input.toolTipButtonTap
             .withUnretained(self)
             .sink { owner, toolTipFrame in
