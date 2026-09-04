@@ -45,7 +45,7 @@ public final class SoptletterOnboardingViewModel: SoptletterOnboardingViewModelT
         input.startTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onStartButtonTap?()                
+                owner.onStartButtonTap?()
             }.store(in: cancelBag)
         
         input.viewDidLoad

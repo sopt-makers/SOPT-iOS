@@ -31,7 +31,7 @@ public class PokeMainViewModel: PokeMainViewModelType {
     
     // MARK: - Properties
     
-    private let useCase: PokeMainUseCase 
+    private let useCase: PokeMainUseCase
     private var cancelBag = CancelBag()
     private let eventTracker = PokeEventTracker()
     private let coordinator: AnyCoordinatorObject           /// Coordinator 프로토콜이 레거시에서만 사용되기 때문
@@ -86,7 +86,7 @@ extension PokeMainViewModel {
             .sink { [weak self] _ in
                 self?.useCase.checkPokeOnboardingNeeded()
                 self?.eventTracker.trackViewEvent(with: .viewPokeMain)
-            }.store(in: cancelBag)        
+            }.store(in: cancelBag)
         
         input.pokedSectionHeaderButtonTap
             .sink { [weak self] _ in

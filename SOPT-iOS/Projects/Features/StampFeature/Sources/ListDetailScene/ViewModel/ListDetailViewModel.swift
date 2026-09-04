@@ -101,7 +101,7 @@ extension ListDetailViewModel {
             .filter { owner, _ in
                 owner.sceneType == .completed
             }
-            .sink { owner, _ in                
+            .sink { owner, _ in
                 owner.isOtherUser
                 ? owner.useCase.fetchListDetail(isAppjam: owner.isAppjam, missionId: owner.missionId, username: owner.otherUserName)
                 : owner.useCase.fetchListDetail(isAppjam: owner.isAppjam, missionId: owner.missionId, username: nil)

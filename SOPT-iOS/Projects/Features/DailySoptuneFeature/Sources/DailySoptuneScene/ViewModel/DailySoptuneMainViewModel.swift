@@ -55,19 +55,19 @@ extension DailySoptuneMainViewModel {
         
         input.viewDidLoad
             .withUnretained(self)
-            .sink { owner, _ in                
+            .sink { owner, _ in
             }.store(in: cancelBag)
         
         input.naviBackButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onNaviBackTap?()                
+                owner.onNaviBackTap?()
             }.store(in: cancelBag)
         
         input.receiveTodayFortuneButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.useCase.getDailySoptuneResult(date: DateFormatManager.shared.transformDateFormat(to: .dateWithDash))                
+                owner.useCase.getDailySoptuneResult(date: DateFormatManager.shared.transformDateFormat(to: .dateWithDash))
             }.store(in: cancelBag)
         
 		return output

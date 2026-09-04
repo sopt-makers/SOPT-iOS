@@ -197,9 +197,9 @@ extension RankingVC {
             cellProvider: { [weak self] collectionView, indexPath, itemIdentifier in
                 switch RankingSection.type(indexPath.section) {
                 case .chart:
-                    guard 
+                    guard
                         let chartCell = collectionView.dequeueReusableCell(
-                            withReuseIdentifier: RankingChartCVC.className, 
+                            withReuseIdentifier: RankingChartCVC.className,
                             for: indexPath
                         ) as? RankingChartCVC,
                         let chartCellModel = itemIdentifier as? RankingChartModel
@@ -220,7 +220,7 @@ extension RankingVC {
                             withReuseIdentifier: RankingListCVC.className,
                             for: indexPath
                         ) as? RankingListCVC,
-                        let rankingListCellModel = itemIdentifier as? RankingModel 
+                        let rankingListCellModel = itemIdentifier as? RankingModel
                     else { return UICollectionViewCell() }
                     
                     rankingListCell.setData(model: rankingListCellModel, rank: indexPath.row + 1 + 3)

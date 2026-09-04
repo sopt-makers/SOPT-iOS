@@ -296,7 +296,7 @@ extension HomeForMemberVC {
             surveyButtonTapped: surveyButtonTapped.asDriver(),
             socialLinkButtonTapped: socialLinkButtonTapped.asDriver(),
             viewAllButtonTapped: viewAllButtonTapped.asDriver(),
-            profileImageViewTapped: profileImageViewTapped.asDriver(),            
+            profileImageViewTapped: profileImageViewTapped.asDriver(),
             editProfileTapped: profileEditTapped.asDriver()
         )
         
@@ -413,7 +413,7 @@ extension HomeForMemberVC: UICollectionViewDelegate, UICollectionViewDataSource 
             case .recentSchedule(let model):
                 self.cellTapped.send(.recentSchedule(model))
             case .productService(let model):
-                self.cellTapped.send(.productService(model))            
+                self.cellTapped.send(.productService(model))
             case .popularPost(let model):
                 self.cellTapped.send(.popularPost(model))
             case .latestPost(let model):

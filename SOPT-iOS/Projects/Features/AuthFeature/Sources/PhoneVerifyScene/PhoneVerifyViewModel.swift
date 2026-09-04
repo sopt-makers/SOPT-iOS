@@ -115,7 +115,7 @@ public class PhoneVerifyViewModel: PhoneVerifyViewModelType {
                 }
             )
             .withUnretained(self)
-            .map { owner, _ in 
+            .map { owner, _ in
                 PhoneSendModel(
                     name: nil,
                     phone: output.phoneTextFieldText.value,

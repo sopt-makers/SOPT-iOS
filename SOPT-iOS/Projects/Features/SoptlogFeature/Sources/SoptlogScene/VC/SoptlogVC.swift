@@ -239,7 +239,7 @@ extension SoptlogVC: UICollectionViewDataSource {
 //                  ) as? SoptlogImageFooterReusableView else {
 //                return UICollectionReusableView()
 //            }
-//            
+//
 //            footerView.configure(image: DSKitAsset.Assets.bottomSoptlog.image)
 //            return footerView
             

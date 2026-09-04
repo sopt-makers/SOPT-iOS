@@ -39,7 +39,7 @@ public enum AmplitudeEventType: String {
     case clickSoptletterMenu = "click_soptletter_menu"
     
     // 콕 찌르기 클릭 이벤트
-    case clickPoke = "click_poke"    
+    case clickPoke = "click_poke"
     case clickMemberProfile = "click_memberprofile"
     case clickPokeIcon = "click_poke_icon"
     case clickPokeAlarmDetail = "click_poke_alarm_detail"

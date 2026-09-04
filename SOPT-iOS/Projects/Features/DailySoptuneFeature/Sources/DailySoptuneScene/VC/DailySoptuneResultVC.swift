@@ -142,7 +142,7 @@ private extension DailySoptuneResultVC {
                 naviBackButtonTap: self.backButton
                     .publisher(for: .touchUpInside)
                     .mapVoid().asDriver(),
-                receiveTodaysFortuneCardTap: receiveTodaysFortuneButtonTap, 
+                receiveTodaysFortuneCardTap: receiveTodaysFortuneButtonTap,
                 kokButtonTap: dailySoptuneResultPokeView.kokButtonTap,
                 profileImageTap: dailySoptuneResultPokeView.profileTap
             )

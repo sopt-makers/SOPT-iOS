@@ -140,7 +140,7 @@ extension PokeNotificationViewController {
         self.tableView
             .publisher(for: \.contentOffset)
             .map { [weak self] offset in
-                guard 
+                guard
                     offset.y > 0,
                     let tableView = self?.tableView,
                     tableView.contentOffset.y >= tableView.contentSize.height - tableView.frame.size.height
@@ -177,7 +177,7 @@ extension PokeNotificationViewController {
             .pokedResult
             .asDriver()
             .sink(receiveValue: { [weak self] pokedResult in
-                guard 
+                guard
                     let pokedUserIndex = self?.userModels.firstIndex(where: { $0.userId == pokedResult.userId })
                 else { return }
                 

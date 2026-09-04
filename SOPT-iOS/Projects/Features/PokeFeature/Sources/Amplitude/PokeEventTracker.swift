@@ -21,7 +21,7 @@ struct PokeEventTracker {
             "message_type": messageType,
             "message_id": message.messageId,
             "is_anonymous": isAnonymous
-        ])        
+        ])
         
         if isAnonymous {
             AmplitudeInstance.shared.trackWithUserType(event: .clickPokeAnonymity, otherProperties: [

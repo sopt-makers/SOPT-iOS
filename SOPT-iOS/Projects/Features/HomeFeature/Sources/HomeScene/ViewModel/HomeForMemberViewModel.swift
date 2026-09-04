@@ -207,7 +207,7 @@ extension HomeForMemberViewModel {
                 }
                 
             }
-            .store(in: cancelBag)    
+            .store(in: cancelBag)
         
         input.editProfileTapped
             .withUnretained(self)

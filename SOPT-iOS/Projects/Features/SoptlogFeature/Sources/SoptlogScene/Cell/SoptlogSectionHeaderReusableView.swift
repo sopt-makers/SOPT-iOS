@@ -55,7 +55,7 @@ extension SoptlogSectionHeaderReusableView {
 
 // MARK: - Configuration
 
-extension SoptlogSectionHeaderReusableView {    
+extension SoptlogSectionHeaderReusableView {
     func configure(title: String) {
         titleLabel.text = title
     }

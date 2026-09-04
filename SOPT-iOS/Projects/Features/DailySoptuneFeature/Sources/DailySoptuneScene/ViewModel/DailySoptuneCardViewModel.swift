@@ -52,19 +52,19 @@ extension DailySoptuneCardViewModel {
         
         input.viewDidLoad
             .withUnretained(self)
-            .sink { owner, _ in                
+            .sink { owner, _ in
             }.store(in: cancelBag)
         
         input.goToHomeButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onGoToHomeButtonTapped?()                
+                owner.onGoToHomeButtonTapped?()
             }.store(in: cancelBag)
         
         input.backButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onBackButtonTapped?()                
+                owner.onBackButtonTapped?()
             }.store(in: cancelBag)
         
         return output

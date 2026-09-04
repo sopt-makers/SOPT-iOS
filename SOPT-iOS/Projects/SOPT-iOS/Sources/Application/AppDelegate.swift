@@ -47,7 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 // MARK: - Sentry & FCM
 
-extension AppDelegate {    
+extension AppDelegate {
     private func configureAppLifecycleAdapter() {
         self.appLifecycleAdapter.prepare()
     }

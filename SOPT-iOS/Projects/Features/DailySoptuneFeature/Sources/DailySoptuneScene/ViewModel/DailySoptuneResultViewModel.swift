@@ -71,22 +71,22 @@ extension DailySoptuneResultViewModel {
         input.naviBackButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onNaviBackButtonTapped?()                
+                owner.onNaviBackButtonTapped?()
             }.store(in: cancelBag)
         
         input.receiveTodaysFortuneCardTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.useCase.getTodaysFortuneCard()                
+                owner.useCase.getTodaysFortuneCard()
             }.store(in: cancelBag)
         
         input.kokButtonTap
             .compactMap { $0 }
             .flatMap { [weak self] userModel -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)> in
-                guard let self, let value = self.onKokButtonTapped?(userModel) else { return .empty() }                
+                guard let self, let value = self.onKokButtonTapped?(userModel) else { return .empty() }
                 return value
             }
-            .sink { [weak self] userModel, messageModel, isAnonymous in                
+            .sink { [weak self] userModel, messageModel, isAnonymous in
                 self?.useCase.poke(userId: userModel.userId, message: messageModel, isAnonymous: isAnonymous)
             }.store(in: cancelBag)
         

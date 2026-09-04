@@ -45,7 +45,7 @@ extension StampBuilder: StampFeatureBuildable {
         let viewModel = ListDetailViewModel(
             useCase: useCase,
             sceneType: sceneType,
-            isAppjam: isAppjam, 
+            isAppjam: isAppjam,
             starLevel: starLevel,
             missionId: missionId,
             missionTitle: missionTitle,

@@ -15,7 +15,7 @@ public protocol HomeRepositoryInterface {
     func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Error>
     func getIsAppjamMode() -> AnyPublisher<Bool, Error>
     func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Error>
-    func getReportUrl() -> AnyPublisher<SoptampReportUrlModel, Error>    
+    func getReportUrl() -> AnyPublisher<SoptampReportUrlModel, Error>
     func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonModel, Error>
     
     /// async

@@ -37,7 +37,7 @@ extension ServiceType {
     var title: String {
         switch self {
         case .officialHomepage:
-            return I18N.Home.MainProduct.homePage        
+            return I18N.Home.MainProduct.homePage
         case .project:
             return I18N.Home.MainProduct.project
         case .member:

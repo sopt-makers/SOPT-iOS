@@ -68,7 +68,7 @@ final class SoptlogBannerCVC: UICollectionViewCell {
 
 // MARK: - UI & Layout
 
-extension SoptlogBannerCVC {    
+extension SoptlogBannerCVC {
     private func setUI() {
         contentView.backgroundColor = .clear
     }

@@ -161,7 +161,7 @@ extension SoptletterMainViewModel {
     public func fetchMessages(output: Output) {
         fetchMessageTask?.cancel()
         fetchMessageTask = Task {
-            do {                
+            do {
                 let result = try await useCase.fetchSoptletterMessages(topicId: topicId, cursor: nil, size: nil)
                 try Task.checkCancellation()
                 await MainActor.run {
@@ -170,7 +170,7 @@ extension SoptletterMainViewModel {
             } catch is CancellationError {
                 return
             } catch {
-                // UI fallback 처리                
+                // UI fallback 처리
                 await MainActor.run {
                     output.soptletterMessages.send(.init(topicId: 0, title: "test", totalCount: 0, nextCursor: 0, hasNext: false, messages: []))
                     onError?()
