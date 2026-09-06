@@ -12,6 +12,9 @@ jobs:
   build:
     runs-on: macos-15
     timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: SOPT-iOS
     env:
       SCHEME: SOPT-iOS-DEV
     steps:
@@ -28,6 +31,7 @@ jobs:
         with:
           install: true
           cache: true
+          working_directory: SOPT-iOS
 
       - name: Cache Tuist / SPM artifacts
         uses: actions/cache@v4
@@ -35,7 +39,7 @@ jobs:
           path: |
             Tuist/.build
             ~/Library/Caches/tuist
-          key: ${{ runner.os }}-tuist-${{ hashFiles('Tuist/Package.resolved') }}
+          key: ${{ runner.os }}-tuist-${{ hashFiles('SOPT-iOS/Tuist/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-tuist-
 
@@ -58,6 +62,6 @@ jobs:
           xcodebuild build \
             -workspace SOPT-iOS.xcworkspace \
             -scheme "$SCHEME" \
-            -destination "platform=iOS Simulator" \
+            -destination "generic/platform=iOS Simulator" \
             -skipMacroValidation \
             CODE_SIGNING_ALLOWED=NO
