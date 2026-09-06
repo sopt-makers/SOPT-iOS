@@ -83,6 +83,11 @@ public final class ApplicationCoordinator: BaseCoordinator {
                     by: .rootWindow(animated: false, message: nil),
                     with: url
                 )
+            case .universalWebLink(let url):
+                // 링크는 webLink(CurrentValueSubject)에 담아두고 평소대로 부팅합니다.
+                // 탭바가 뜬 뒤 bindNotification()이 구독하는 시점에 현재값이 재생되어 웹뷰가 열립니다.
+                notificationHandler.receive(webLink: url)
+                runSplashFlow()
             }
         } else {
             runSplashFlow()

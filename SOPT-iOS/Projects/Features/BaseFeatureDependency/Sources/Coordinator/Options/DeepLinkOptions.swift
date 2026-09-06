@@ -11,10 +11,11 @@ import Foundation
 /// Coordinator에서 DeepLinkOption의 종류를 지정하는 enum입니다.
 public enum DeepLinkOption {
     case signInSuccess(url: String)
+    case universalWebLink(url: String)
     
     public var url: String {
         switch self {
-        case .signInSuccess(let url):
+        case .signInSuccess(let url), .universalWebLink(let url):
             return url
         }
     }
