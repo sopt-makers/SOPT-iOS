@@ -1,0 +1,64 @@
+name: Build Check
+
+on:
+  pull_request:
+    branches: [develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 30
+    env:
+      SCHEME: SOPT-iOS-DEV
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "26.3"
+
+      - name: Install mise (Tuist)
+        uses: jdx/mise-action@v2
+        with:
+          version: latest
+          install: true
+          cache: true
+
+      - name: Cache Tuist / SPM artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            Tuist/.build
+            ~/Library/Caches/tuist
+          key: ${{ runner.os }}-tuist-${{ hashFiles('Tuist/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-tuist-
+
+      - name: Fetch private configs
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.PRIVATES_TOKEN }}
+        run: |
+          echo "GITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN" > .env
+          make download-privates
+
+      - name: Resolve dependencies
+        run: tuist install
+
+      - name: Generate project
+        run: tuist generate --no-open
+
+      - name: Build
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -workspace SOPT-iOS.xcworkspace \
+            -scheme "$SCHEME" \
+            -destination "platform=iOS Simulator" \
+            -skipMacroValidation \
+            CODE_SIGNING_ALLOWED=NO
