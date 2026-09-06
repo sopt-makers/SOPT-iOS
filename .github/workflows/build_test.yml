@@ -12,6 +12,9 @@ jobs:
   build:
     runs-on: macos-15
     timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: SOPT-iOS
     env:
       SCHEME: SOPT-iOS-DEV
     steps:
@@ -35,7 +38,7 @@ jobs:
           path: |
             Tuist/.build
             ~/Library/Caches/tuist
-          key: ${{ runner.os }}-tuist-${{ hashFiles('Tuist/Package.resolved') }}
+          key: ${{ runner.os }}-tuist-${{ hashFiles('SOPT-iOS/Tuist/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-tuist-
 
