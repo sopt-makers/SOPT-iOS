@@ -31,6 +31,7 @@ jobs:
         with:
           install: true
           cache: true
+          working_directory: SOPT-iOS
 
       - name: Cache Tuist / SPM artifacts
         uses: actions/cache@v4
