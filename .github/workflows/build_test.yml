@@ -26,7 +26,6 @@ jobs:
       - name: Install mise (Tuist)
         uses: jdx/mise-action@v2
         with:
-          version: latest
           install: true
           cache: true
 
