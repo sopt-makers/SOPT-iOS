@@ -44,25 +44,25 @@ enum FABMenuSection: CaseIterable, FABMenuSectionProtocol {
     var items: [MenuSectionItem] {
         switch self {
         case .playground:
-            return [MenuSectionItem(title: I18N.TabBar.Playground.write, 
-                                    icon: DSKitAsset.Assets.icFabPencil.image, 
+            return [MenuSectionItem(title: I18N.TabBar.Playground.write,
+                                    icon: DSKitAsset.Assets.icFabPencil.image,
                                     url: ExternalURL.Playground.feedUpload)]
         case .groupAndStudy:
             return [
-                MenuSectionItem(title: I18N.TabBar.GroupAndStudy.makeGroup, 
-                                icon: DSKitAsset.Assets.icFabGroup.image, 
+                MenuSectionItem(title: I18N.TabBar.GroupAndStudy.makeGroup,
+                                icon: DSKitAsset.Assets.icFabGroup.image,
                                 url: ExternalURL.Playground.makeGroup),
                 MenuSectionItem(title: I18N.TabBar.GroupAndStudy.makeLightGroup,
-                                icon: DSKitAsset.Assets.icFabBolt.image, 
+                                icon: DSKitAsset.Assets.icFabBolt.image,
                                 url: ExternalURL.Playground.makeLightGroup),
                 MenuSectionItem(title: I18N.TabBar.GroupAndStudy.writeFeed,
-                                icon: DSKitAsset.Assets.icFabFire.image, 
+                                icon: DSKitAsset.Assets.icFabFire.image,
                                 url: ExternalURL.Playground.makeGroupFeed)
             ]
         case .homepage:
             return [
-                MenuSectionItem(title: I18N.TabBar.Homepage.reviewUpload, 
-                                icon: DSKitAsset.Assets.icFabHomepage.image, 
+                MenuSectionItem(title: I18N.TabBar.Homepage.reviewUpload,
+                                icon: DSKitAsset.Assets.icFabHomepage.image,
                                 url: ExternalURL.Playground.blog),
             ]
         }

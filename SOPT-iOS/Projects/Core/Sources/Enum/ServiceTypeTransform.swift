@@ -12,13 +12,12 @@ public extension ServiceType {
     var toAmplitudeEventType: AmplitudeEventType? {
         switch self {
         case .officialHomepage: return .clickOfficialHomepage
-        case .review: return .clickReview
         case .project: return .clickProject
         case .faq: return .clickFaq
         case .youtube: return .clickYoutube
         case .attendance: return .clickAttendacne
         case .member: return .clickMember
-        case .group: return .clickMoim
+        case .group: return .clickPlaygroundGroup
         case .instagram: return .clickInstagram
         case .coffeechat: return .clickCoffeeChat
         }
@@ -28,7 +27,6 @@ public extension ServiceType {
 public extension TabServiceType {
     var toAmplitudeEventType: AmplitudeEventType {
         switch self {
-        case .soptamp: return .clickSoptamp
         case .poke: return .clickPoke
         }
     }

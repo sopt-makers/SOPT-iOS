@@ -94,6 +94,7 @@ extension SoptletterWritingViewModel {
                         }
                     }
                 }
+                AmplitudeInstance.shared.trackWithUserType(event: .clickDoneWriteSoptletter)
             }.store(in: cancelBag)
 
         return output

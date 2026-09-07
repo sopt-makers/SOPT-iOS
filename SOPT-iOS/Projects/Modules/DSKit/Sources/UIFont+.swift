@@ -40,7 +40,7 @@ extension UIFont {
     
     public var font: UIFont {
       switch self {
-      case .heading1: 
+      case .heading1:
         return DSKitFontFamily.Suit.bold.font(size: 48)
       case .heading1_5:
         return DSKitFontFamily.Suit.bold.font(size: 40)
@@ -99,7 +99,7 @@ extension UIFont {
     
     public var lineHeight: CGFloat {
       switch self {
-      case .heading1: 
+      case .heading1:
         return 72.f
       case .heading1_5:
         return 72.f

@@ -135,7 +135,8 @@ private extension SoptletterOnboardingVC {
     func bindViewModel() {
         let input = SoptletterOnboardingViewModel.Input(
             naviBackTap: naviBackTap,
-            startTap: startTap
+            startTap: startTap,
+            viewDidLoad: Just<Void>(()).asDriver()
         )
         
         _ = viewModel.transform(from: input, cancelBag: cancelBag)

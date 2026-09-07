@@ -167,7 +167,7 @@ extension DefaultShowAttendanceUseCase: ShowAttendanceUseCase {
                 else if attendances[safe:0]?.type == AttendanceStepType.unCheck {
                     attendances.append(AttendanceStepModel(type: .absent, title: I18N.Attendance.absent))
                 }
-            } 
+            }
             /// 2차 출석인 경우
             else {
                 /// 1차 결석일 때, 지각

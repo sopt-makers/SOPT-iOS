@@ -13,7 +13,7 @@ import Core
 public struct SoptampMissionListDeepLink: DeepLinkExecutable {
     public let name = "missions"
     public let children: [DeepLinkExecutable] = [SoptampMissionDetailDeepLink()]
-    public var isDestination: Bool = false 
+    public var isDestination: Bool = false
 
     public init() {}
 

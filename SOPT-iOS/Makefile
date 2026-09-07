@@ -39,6 +39,7 @@ XCCONFIG_PATHS = \
     xcconfigs/Base/Targets Extension.xcconfig \
     xcconfigs/Base/Targets Framework.xcconfig \
     xcconfigs/Base/Targets StaticLibrary.xcconfig \
+    xcconfigs/targets iOS-Base.xcconfig \
     xcconfigs/targets iOS-Demo.xcconfig \
     xcconfigs/targets iOS-Framework.xcconfig \
     xcconfigs/targets iOS-StaticFramework.xcconfig \

@@ -16,7 +16,7 @@ import UIKit
           요 값들은 나중에 Identifier에 잘 써먹을 수 있습니다 ^__^
 */
 
-extension NSObject {    
+extension NSObject {
     public static var className: String {
         NSStringFromClass(self.classForCoder()).components(separatedBy: ".").last!
     }

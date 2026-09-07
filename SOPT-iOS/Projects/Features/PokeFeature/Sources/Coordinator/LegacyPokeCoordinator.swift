@@ -33,7 +33,7 @@ final class LegacyPokeCoordinator: BaseCoordinator {
     }
     
     public func showPokeMain(isRouteFromRoot: Bool) {
-        var pokeMain = factory.makePokeMain(isRouteFromRoot: isRouteFromRoot, coordinator: self)        
+        var pokeMain = factory.makePokeMain(isRouteFromRoot: isRouteFromRoot, coordinator: self)
         
         pokeMain.vm.onPokeNotificationsTap = { [weak self] in
             self?.runPokeNotificationListFlow()

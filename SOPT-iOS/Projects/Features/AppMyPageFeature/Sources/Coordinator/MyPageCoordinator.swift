@@ -132,7 +132,7 @@ public final class MyPageCoordinator: BaseCoordinator {
             .compactMap({ ($0 as? UIWindowScene)?.keyWindow })
             .first?.rootViewController else { return }
         
-        rootViewController.present(SOPTWebView(startWith: url), animated: true)        
+        rootViewController.present(SOPTWebView(startWith: url), animated: true)
     }
 
     private func showWithdrawal(userType: UserType) {

@@ -174,6 +174,7 @@ extension ListDetailVC {
             .sink { owner, _ in
                 owner.onViewClapTap?(owner.viewModel.stampId,
                                      owner.viewModel.otherUserName ?? "")
+                AmplitudeInstance.shared.trackWithUserType(event: .clickClapperlist)
             }.store(in: cancelBag)
     }
     
@@ -232,7 +233,7 @@ extension ListDetailVC {
                     let removeDimmerView = { owner.backgroundDimmerView.removeFromSuperview() }
                     AlertUtils.presentNetworkAlertVC(confirmAction: removeDimmerView, cancelAction: removeDimmerView)
                 } else {
-                    if owner.sceneType == .none {                        
+                    if owner.sceneType == .none {
                         owner.onComplete?(owner.starLevel) {
                             UIView.animate(withDuration: 0.2, delay: 0, animations: {
                                 owner.backgroundDimmerView.alpha = 0
@@ -557,15 +558,8 @@ extension ListDetailVC {
             $0.trailing.equalTo(zoomImageView.snp.trailing)
             $0.width.height.equalTo(24)
         }
-        
-        AmplitudeInstance.shared.track(
-            eventType: .getImageZoom,
-            eventProperties: [
-                "image": imageURL,
-                "stampId": viewModel.stampId ?? 0,
-                "missionId": viewModel.missionId ?? 0
-            ]
-        )
+                
+        AmplitudeInstance.shared.trackWithUserType(event: .clickGetImageZoom)
     }
     
     @objc

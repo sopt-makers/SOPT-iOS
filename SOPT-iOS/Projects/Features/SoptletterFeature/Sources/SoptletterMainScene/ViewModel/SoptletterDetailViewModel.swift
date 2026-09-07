@@ -62,9 +62,16 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
         
+        input.editButtonTap
+            .withUnretained(self)
+            .sink { owner in
+                AmplitudeInstance.shared.trackWithUserType(event: .clickEditSoptletter)
+            }.store(in: cancelBag)
+        
         input.likeButtonTap
             .withUnretained(self)
             .sink { owner, likeState in
+                AmplitudeInstance.shared.trackWithUserType(event: .clickSoptletterLikeButton)
                 guard !likeState.isMine else {
                     Task { @MainActor in
                         ToastUtils.showMDSToast(type: .alert, text: I18N.Soptletter.Detail.cannotLikeOwnMessage)
@@ -107,6 +114,7 @@ public final class SoptletterDetailViewModel: SoptletterDetailViewModelType {
                     guard let self else { return }
                     do {
                         try await self.useCase.editMessage(messageId: self.messageId, topicId: self.topicId, content: content)
+                        AmplitudeInstance.shared.trackWithUserType(event: .clickDoneEditSoptletter)
                         await MainActor.run {
                             output.soptletterEditCompleted.send()
                             self.onEditCompleted?()
@@ -140,6 +148,7 @@ extension SoptletterDetailViewModel {
             guard let self else { return }
             do {
                 try await useCase.deleteMessage(messageId: messageId, topicId: topicId)
+                AmplitudeInstance.shared.trackWithUserType(event: .clickDeleteSoptletter)
                 await MainActor.run {
                     output.soptletterDeleteCompleted.send()
                     self.onDeleteCompleted?()

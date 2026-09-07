@@ -53,6 +53,12 @@ extension PartRankingViewModel {
         self.bindOutput(output: output, cancelBag: cancelBag)
         
         input.viewDidLoad
+            .withUnretained(self)
+            .sink { owner, _ in
+                AmplitudeInstance.shared.trackWithUserType(event: .viewPartRanking)
+            }.store(in: cancelBag)
+        
+        input.viewDidLoad
             .merge(with: input.refreshStarted)
             .sink { [weak self] _ in
                 self?.useCase.fetchPartRanking()

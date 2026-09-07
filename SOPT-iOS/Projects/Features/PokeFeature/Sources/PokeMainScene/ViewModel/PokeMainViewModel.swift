@@ -31,7 +31,7 @@ public class PokeMainViewModel: PokeMainViewModelType {
     
     // MARK: - Properties
     
-    private let useCase: PokeMainUseCase 
+    private let useCase: PokeMainUseCase
     private var cancelBag = CancelBag()
     private let eventTracker = PokeEventTracker()
     private let coordinator: AnyCoordinatorObject           /// Coordinator 프로토콜이 레거시에서만 사용되기 때문
@@ -86,7 +86,7 @@ extension PokeMainViewModel {
             .sink { [weak self] _ in
                 self?.useCase.checkPokeOnboardingNeeded()
                 self?.eventTracker.trackViewEvent(with: .viewPokeMain)
-            }.store(in: cancelBag)        
+            }.store(in: cancelBag)
         
         input.pokedSectionHeaderButtonTap
             .sink { [weak self] _ in
@@ -109,6 +109,8 @@ extension PokeMainViewModel {
             .sink { [weak self] userModel, messageModel, isAnonymous in
                 self?.eventTracker.trackClickPokeEvent(clickView: .pokeMainAlarm)
                 self?.useCase.poke(userId: userModel.userId, message: messageModel, isAnonymous: isAnonymous, willBeNewFriend: userModel.isFirstMeet)
+                let messageType = userModel.pokeRelation == .nonFriend ? "poke_someone" : "poke_friend"
+                self?.eventTracker.trackSendMessageEvent(isAnonymous: isAnonymous, messageType: messageType, message: messageModel)
             }.store(in: cancelBag)
         
         // 먼저 찌르기
@@ -121,6 +123,9 @@ extension PokeMainViewModel {
             }
             .sink { [weak self] userModel, messageModel, isAnonymous in
                 self?.useCase.poke(userId: userModel.userId, message: messageModel, isAnonymous: isAnonymous, willBeNewFriend: false)
+                let messageType = userModel.pokeRelation == .nonFriend ? "poke_someone" : "poke_friend"
+                self?.eventTracker.trackSendMessageEvent(isAnonymous: isAnonymous, messageType: messageType, message: messageModel)
+
             }.store(in: cancelBag)
         
         input.profileImageTap

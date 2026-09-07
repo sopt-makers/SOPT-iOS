@@ -39,6 +39,9 @@ final class LegacyNotificationCoordinator: DefaultNotificationCoordinator {
         notificiationList.vm.onNotificationTap = { [weak self] notificationId in
             self?.showNotificationDetail(notificationId: notificationId)
         }
+        
+        AmplitudeInstance.shared.trackWithUserType(event: .clickAlarm)
+        
         router.push(notificiationList.vc)
     }
     
@@ -48,12 +51,6 @@ final class LegacyNotificationCoordinator: DefaultNotificationCoordinator {
             let url = link.url
             
             let destination: NotificationCoordinatorDestination = link.isDeepLink ? .deepLink(url: url) : .webLink(url: url)
-            AmplitudeInstance.shared.track(eventType: .viewNotificationDetail, eventProperties: [
-                "notification_id": notificationId,
-                "open_method": link.isDeepLink ? "푸시알림" : "알림센터",
-                "contain_deeplink": link.isDeepLink
-            ])
-            
             self?.requestCoordinating?(destination)
         }
         

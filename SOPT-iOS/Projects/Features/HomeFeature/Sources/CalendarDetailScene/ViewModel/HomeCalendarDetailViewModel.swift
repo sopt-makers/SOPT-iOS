@@ -31,7 +31,7 @@ public class HomeCalendarDetailViewModel: HomeCalendarDetailViewModelType {
     
     // MARK: - Outputs
     
-    public struct Output { 
+    public struct Output {
         let calendarDetailModel = PassthroughSubject<[HomeCalendarDetailPresentationModel], Never>()
     }
     

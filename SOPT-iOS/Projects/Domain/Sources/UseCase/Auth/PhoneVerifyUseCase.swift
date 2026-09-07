@@ -61,7 +61,7 @@ public struct DefaultPhoneVerifyUseCase: PhoneVerifyUseCase {
     
     public func verify(_ model: PhoneVerifyModel) -> AnyPublisher<Void, Never> {
         return repository.verify(model)
-            .catch { 
+            .catch {
                 sideEffect.send($0)
                 return Empty<Void, Never>()
             }.eraseToAnyPublisher()
