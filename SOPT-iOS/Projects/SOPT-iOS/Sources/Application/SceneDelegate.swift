@@ -37,7 +37,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.rootViewController = rootController
         window?.makeKeyAndVisible()
         
-        if let userActivity = connectionOptions.userActivities.first {
+        if let userActivity = connectionOptions.userActivities.first(where: {
+            $0.activityType == NSUserActivityTypeBrowsingWeb && $0.webpageURL != nil
+        }) {
             handleUniversalLinkWithUserActivity(userActivity, isInitialLaunch: true)
         } else {
             self.appCoordinator.start()
