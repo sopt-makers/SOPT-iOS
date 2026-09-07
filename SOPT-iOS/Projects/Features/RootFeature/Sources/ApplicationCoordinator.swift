@@ -60,6 +60,11 @@ public final class ApplicationCoordinator: BaseCoordinator {
     // MARK: - Coordinator Life Cycle
     
     public override func start(with option: DeepLinkOption?) {
+        // AuthCoordinator의 url은 로그인 콜백 전용 - 유니버설 링크 X
+        let signInCallbackURL: String? = {
+            guard case .signInSuccess(let url) = option else { return nil }
+            return url
+        }()
         
         DIContainer.shared.register(
             interface: DefaultAuthCoordinator.self,
@@ -67,11 +72,11 @@ public final class ApplicationCoordinator: BaseCoordinator {
                 guard let self else { return }
                 switch FeatureFlag.auth {
                 case .legacy:
-                    return LegacyAuthCoordinator(router: self.router, factory: LegacyAuthBuilder(), url: option?.url)
+                    return LegacyAuthCoordinator(router: self.router, factory: LegacyAuthBuilder(), url: signInCallbackURL)
                 case .new:
                     return AuthCoordinator(navigationController: self.rootNavigationController,
                                            factory: AuthBuilder(),
-                                           url: option?.url)
+                                           url: signInCallbackURL)
                 }
             }
         )

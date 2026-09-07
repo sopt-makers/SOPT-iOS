@@ -12,11 +12,4 @@ import Foundation
 public enum DeepLinkOption {
     case signInSuccess(url: String)
     case universalWebLink(url: String)
-    
-    public var url: String {
-        switch self {
-        case .signInSuccess(let url), .universalWebLink(let url):
-            return url
-        }
-    }
 }
