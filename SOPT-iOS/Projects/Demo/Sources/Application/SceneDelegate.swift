@@ -39,11 +39,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.rootViewController = rootController
         window?.makeKeyAndVisible()
         
-        self.appCoordinator.start()
+        if let userActivity = connectionOptions.userActivities.first(where: {
+            $0.activityType == NSUserActivityTypeBrowsingWeb && $0.webpageURL != nil
+        }) {
+            handleUniversalLinkWithUserActivity(userActivity, isInitialLaunch: true)
+        } else {
+            self.appCoordinator.start()
+        }
     }
-    
+
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         parseContexts(openURLContexts: URLContexts)
+    }
+
+    func scene(
+        _ scene: UIScene,
+        continue userActivity: NSUserActivity
+    ) {
+        handleUniversalLinkWithUserActivity(userActivity, isInitialLaunch: false)
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {}
