@@ -38,7 +38,7 @@ jobs:
         with:
           path: |
             Tuist/.build
-            ~/Library/Caches/tuist
+            ~/.cache/swifterpm
           key: ${{ runner.os }}-tuist-${{ hashFiles('SOPT-iOS/Tuist/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-tuist-
@@ -51,7 +51,12 @@ jobs:
           make download-privates
 
       - name: Resolve dependencies
-        run: tuist install
+        run: |
+          tuist install || {
+            echo "⚠️ Resolve failed, clearing swifterpm artifact cache and retrying..."
+            rm -rf ~/.cache/swifterpm/artifacts
+            tuist install
+          }
 
       - name: Generate project
         run: tuist generate --no-open
