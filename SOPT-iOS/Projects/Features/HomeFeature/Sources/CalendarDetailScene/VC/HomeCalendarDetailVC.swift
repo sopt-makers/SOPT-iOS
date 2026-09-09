@@ -12,6 +12,7 @@ import Combine
 import Core
 import Domain
 import DSKit
+import MDS
 
 import BaseFeatureDependency
 
@@ -25,6 +26,7 @@ final class HomeCalendarDetailVC: UIViewController, HomeCalendarDetailViewContro
     
     // MARK: UI Components
     
+    // TODO: - MDS 적용 후 변경
     private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton,
                                                backgroundColor: DSKitAsset.Colors.semanticBackground.color)
         .addMiddleLabel(title: I18N.Home.CalendarDetail.navigationTitle, font: DSKitFontFamily.Suit.medium.font(size: 16))
@@ -41,13 +43,11 @@ final class HomeCalendarDetailVC: UIViewController, HomeCalendarDetailViewContro
         $0.backgroundColor = .clear
     }
     
-    private let attendanceButton = AppCustomButton(title: I18N.Home.CalendarDetail.attendance)
-                                    .changeCornerRadius(radius: 12)
-                                    .setConfigForState(enabledFont: DSKitFontFamily.Suit.semiBold.font(size: 18))
+    private let attendanceButton = MDSActionButton(variant: .primary, size: .large, title: I18N.Home.CalendarDetail.attendance)
     
     private let gradientView = UIView().then {
         let gradientLayer = CAGradientLayer()
-        gradientLayer.colors = [DSKitAsset.Colors.black.color.withAlphaComponent(0.0).cgColor, DSKitAsset.Colors.black.color.cgColor]
+        gradientLayer.colors = [SemanticColor.Bg.Layer.basement.withAlphaComponent(0.0).cgColor, SemanticColor.Bg.Layer.basement.cgColor]
         gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
         gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
         $0.layer.addSublayer(gradientLayer)
@@ -95,7 +95,7 @@ final class HomeCalendarDetailVC: UIViewController, HomeCalendarDetailViewContro
 
 extension HomeCalendarDetailVC {
     private func setUI() {
-        view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        view.backgroundColor = SemanticColor.Bg.Layer.basement
         self.navigationController?.isNavigationBarHidden = true
     }
     

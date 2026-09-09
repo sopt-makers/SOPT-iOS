@@ -50,6 +50,7 @@ public final class ShowAttendanceVC: UIViewController, LegacyShowAttendanceViewC
     
     private let contentView = UIView()
     
+    // TODO: - MDS 적용 후 변경
     private lazy var navibar = OPNavigationBar(self, type: .oneLeftButton, ignoreLeftButtonAction: true)
         .addMiddleLabel(title: I18N.Attendance.attendance)
     

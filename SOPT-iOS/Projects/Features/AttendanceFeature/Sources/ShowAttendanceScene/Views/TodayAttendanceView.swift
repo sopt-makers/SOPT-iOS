@@ -17,6 +17,8 @@ import DSKit
  오늘의 n차 출석현황을 보여주는 프로그래스 뷰 입니다.
  */
 
+// TODO: - 피그마에 결석, 지각 case 추가되면 변경
+
 final class TodayAttendanceView: UIView {
     
     private enum Metric {

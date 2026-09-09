@@ -138,9 +138,9 @@ extension CalendarCardCVC {
         self.dateLabel.text = model.date
         self.scheduleTitleLabel.text = model.title
         if let tagType = CalenderCategoryTagType(rawValue: model.type) {
-            self.scheduleCategoryTagView.setData(title: tagType.text,
-                                                 titleColor: tagType.textColor,
-                                                 backgroundColor: tagType.backgroundColor)
+//            self.scheduleCategoryTagView.setData(title: tagType.text,
+//                                                 titleColor: tagType.textColor,
+//                                                 backgroundColor: tagType.backgroundColor)
         }
         self.attendanceButton.isHidden = (userType == .visitor || userType == .inactive)
     }
