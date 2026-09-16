@@ -13,7 +13,6 @@ import Core
 
 public enum APIType {
     case attendance
-    case auth
     case mission
     case rank
     case stamp
@@ -54,8 +53,6 @@ extension BaseAPI {
         switch Self.apiType {
         case .attendance:
             base = operationBaseURL
-        case .auth:
-            base += "/auth"
         case .mission:
             base += "/mission"
         case .rank:
