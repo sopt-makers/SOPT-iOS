@@ -591,7 +591,7 @@ extension MissionListVC: UICollectionViewDelegate {
         case 1:
             guard let tappedCell = collectionView.cellForItem(at: indexPath) as? MissionListCVC,
                   let model = tappedCell.model else { return }
-            let userType = UserDefaultKeyList.Auth.getUserType()
+            let userType = UserDefaultKeyList.CoreAuth.getUserType()
 
             let username = sceneType.isAppJamTeamView ? model.ownerName : sceneType.username
                 

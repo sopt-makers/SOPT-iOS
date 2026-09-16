@@ -39,7 +39,7 @@ public protocol BaseAPI: TargetType, AccessTokenAuthorizable {
 extension BaseAPI {
     public var authorizationType: AuthorizationType? {
         
-        UserDefaultKeyList.Auth.getUserType() == .visitor
+        UserDefaultKeyList.CoreAuth.getUserType() == .visitor
         ? nil
         : .bearer
     }

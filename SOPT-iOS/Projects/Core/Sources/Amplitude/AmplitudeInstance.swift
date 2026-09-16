@@ -24,7 +24,7 @@ public extension Amplitude {
     
     func trackWithUserType(event: AmplitudeEventType, otherProperties: [String: Any]? = nil) {
         let eventType: String = event.rawValue
-        let userType = UserDefaultKeyList.Auth.getUserType()
+        let userType = UserDefaultKeyList.CoreAuth.getUserType()
         var eventProperties = otherProperties ?? [:]
         eventProperties[AmplitudeEventPropertyKey.viewType.rawValue] = userType.rawValue.lowercased()
         AmplitudeInstance.shared.track(eventType: eventType, eventProperties: eventProperties, options: nil)

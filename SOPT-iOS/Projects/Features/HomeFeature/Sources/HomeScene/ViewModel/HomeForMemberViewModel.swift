@@ -25,7 +25,7 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     private let coordinator: AnyCoordinatorObject
     private var cancelBag = CancelBag()
     
-    let userType: UserType = UserDefaultKeyList.Auth.getUserType()
+    let userType: UserType = UserDefaultKeyList.CoreAuth.getUserType()
     
     private var fetchedDashBoard: HomePresentationModel.DashBoard?
     private var fetchedRecentSchedule: HomePresentationModel.RecentSchedule?
@@ -225,7 +225,7 @@ extension HomeForMemberViewModel {
 extension HomeForMemberViewModel {
     private func requestAuthorizationForNotification() {
         guard self.userType != .visitor,
-              UserDefaultKeyList.Auth.hasAccessToken(),
+              UserDefaultKeyList.CoreAuth.hasAccessToken(),
               UserDefaultKeyList.User.hasPushToken()
         else { return }
         
@@ -292,7 +292,7 @@ extension HomeForMemberViewModel {
             isAllConfirm: user?.isAllConfirm ?? false,
             profileImageURL: user?.profileImage ?? nil
         )
-        UserDefaultKeyList.Auth.isActiveUser = user?.userType == .active // 사용자 활동 중 여부 등록
+        UserDefaultKeyList.CoreAuth.isActiveUser = user?.userType == .active // 사용자 활동 중 여부 등록
         fetchedDashBoard = dashBoard
         return dashBoard
     }

@@ -45,7 +45,7 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
 
         signIn.vm.onSignInSuccess = { [weak self]  in
             guard let self else { return }
-            let userType = UserDefaultKeyList.Auth.getUserType()
+            let userType = UserDefaultKeyList.CoreAuth.getUserType()
             self.delegate?.authCoordinator(self, userType: userType)
         }
         

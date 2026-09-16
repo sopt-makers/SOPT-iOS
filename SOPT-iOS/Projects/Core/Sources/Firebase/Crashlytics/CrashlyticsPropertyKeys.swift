@@ -38,7 +38,7 @@ extension CrashlyticsPropertyKeys {
             buildNumber.key: Bundle.buildVersion ?? "",
             deviceModel.key: UIDevice.current.model,
             iOSVersion.key: UIDevice.current.systemVersion,
-            userType.key: UserDefaultKeyList.Auth.getUserType().rawValue
+            userType.key: UserDefaultKeyList.CoreAuth.getUserType().rawValue
         ]
     }
 }

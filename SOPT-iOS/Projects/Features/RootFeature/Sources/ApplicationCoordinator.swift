@@ -12,7 +12,6 @@ import Core
 import BaseFeatureDependency
 import SplashFeature
 import AuthFeature
-import LegacyAuthFeature
 import HomeFeature
 import AppMyPageFeature
 import NotificationFeature
@@ -259,7 +258,7 @@ extension ApplicationCoordinator {
     }
     
     private func checkDidSignIn() {
-        if !UserDefaultKeyList.Auth.hasAccessToken() {
+        if !UserDefaultKeyList.CoreAuth.hasAccessToken() {
             runSignInFlow(by: .root)
         } else if Config.coordinatorFlag == .legacy {
             runLegacyTabBarFlow()
@@ -338,7 +337,7 @@ extension ApplicationCoordinator {
 //        self.childCoordinators = []
 //
 //        let tabBarBuilder = TabBarBuilder()
-//        let userType = type ?? UserDefaultKeyList.Auth.getUserType()
+//        let userType = type ?? UserDefaultKeyList.CoreAuth.getUserType()
 //
 //        let homeCoordinator = runHomeFlow(type: userType)
 //        guard let homeVC = homeCoordinator.rootViewController else { return }
@@ -421,7 +420,7 @@ extension ApplicationCoordinator {
         defer { bindNotification() }
 
         let tabBarBuilder = TabBarBuilder()
-        let userType = type ?? UserDefaultKeyList.Auth.getUserType()
+        let userType = type ?? UserDefaultKeyList.CoreAuth.getUserType()
 
         runHomeFlow(type: userType)
         runStampFlow()
