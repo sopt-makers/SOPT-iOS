@@ -77,8 +77,8 @@ extension UserDefaultKeyList.CoreAuth {
     }
     
     public static func hasAccessToken() -> Bool {
-        guard let appAccessToken = UserDefaultKeyList.CoreAuth.accessToken,
-              !appAccessToken.isEmpty else {
+        guard let accessToken = UserDefaultKeyList.CoreAuth.accessToken,
+              !accessToken.isEmpty else {
             return false
         }
         return true
