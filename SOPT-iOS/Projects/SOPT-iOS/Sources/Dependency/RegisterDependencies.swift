@@ -38,15 +38,6 @@ extension AppDelegate {
             }
         )
         container.register(
-            interface: SignInRepositoryInterface.self,
-            implement: {
-                SignInRepository(
-                    authService: DefaultAuthService.standard,
-                    userService: DefaultUserService.standard
-                )
-            }
-        )
-        container.register(
             interface: PhoneVerifyRepositoryInterface.self,
             implement: {
                 PhoneVerifyRepository(coreAuthService: DefaultCoreAuthService(plugins: [ Moya.NetworkLoggerPlugin.verbose ]))
@@ -102,7 +93,6 @@ extension AppDelegate {
             interface: SettingRepositoryInterface.self,
             implement: {
                 SettingRepository(
-                    authService: DefaultAuthService.standard,
                     stampService: DefaultStampService.standard,
                     userService: DefaultUserService.standard
                 )
