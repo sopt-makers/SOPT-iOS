@@ -70,14 +70,9 @@ public final class ApplicationCoordinator: BaseCoordinator {
             interface: DefaultAuthCoordinator.self,
             implement: { [weak self] in
                 guard let self else { return }
-                switch FeatureFlag.auth {
-                case .legacy:
-                    return LegacyAuthCoordinator(router: self.router, factory: LegacyAuthBuilder(), url: signInCallbackURL)
-                case .new:
                     return AuthCoordinator(navigationController: self.rootNavigationController,
                                            factory: AuthBuilder(),
                                            url: signInCallbackURL)
-                }
             }
         )
         

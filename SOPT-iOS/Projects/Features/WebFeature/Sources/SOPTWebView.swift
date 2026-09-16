@@ -44,20 +44,18 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
             $0.mediaTypesRequiringUserActionForPlayback = config.mediaTypesRequiringUserActionForPlayback
         }
         
-        if FeatureFlag.auth == .new {
-            // refreshToken
-            if !self.barrier,
-               let refreshToken = UserDefaultKeyList.CoreAuth.refreshToken,
-               let cookie = HTTPCookie(properties: [
-                HTTPCookiePropertyKey.domain: "." + (url.rootDomain ?? "sopt.org"),
-                HTTPCookiePropertyKey.name: "Refresh-Token",
-                HTTPCookiePropertyKey.path: "/",
-                HTTPCookiePropertyKey.value: refreshToken,
-                HTTPCookiePropertyKey.secure: "TRUE",
-                HTTPCookiePropertyKey.expires: Date().addingTimeInterval(60 * 60 * 24 * 14)
-               ]) {
-                configuration.websiteDataStore.httpCookieStore.setCookie(cookie)
-            }
+        // refreshToken
+        if !self.barrier,
+           let refreshToken = UserDefaultKeyList.CoreAuth.refreshToken,
+           let cookie = HTTPCookie(properties: [
+            HTTPCookiePropertyKey.domain: "." + (url.rootDomain ?? "sopt.org"),
+            HTTPCookiePropertyKey.name: "Refresh-Token",
+            HTTPCookiePropertyKey.path: "/",
+            HTTPCookiePropertyKey.value: refreshToken,
+            HTTPCookiePropertyKey.secure: "TRUE",
+            HTTPCookiePropertyKey.expires: Date().addingTimeInterval(60 * 60 * 24 * 14)
+           ]) {
+            configuration.websiteDataStore.httpCookieStore.setCookie(cookie)
         }
         
         self.webView = WKWebView(frame: .zero, configuration: configuration).then {
@@ -121,7 +119,7 @@ extension SOPTWebView {
                     self?.closeWebView()
                     return
                 }
-                    
+                
                 self?.webView.goBack()
             }.store(in: self.cancelbag)
         
@@ -169,26 +167,12 @@ extension SOPTWebView: WKNavigationDelegate {
     }
     
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        
-        switch FeatureFlag.auth {
-        case .legacy:
-            guard !self.barrier,
-                    let playgroundToken = UserDefaultKeyList.Auth.playgroundToken else {
-                return
-            }
-            self.barrier = true
-            self.webView.evaluateJavaScript(
-                "localStorage.setItem(\"serviceAccessToken\", \"\(playgroundToken)\")"
-            )
-            
-        case .new:
-            guard !self.barrier,
-            let accessToken = UserDefaultKeyList.CoreAuth.accessToken else { return }
-            self.barrier = true
-            self.webView.evaluateJavaScript(
-                "localStorage.setItem(\"serviceAccessToken\", \"\(accessToken)\")"
-            )
-        }
+        guard !self.barrier,
+              let accessToken = UserDefaultKeyList.CoreAuth.accessToken else { return }
+        self.barrier = true
+        self.webView.evaluateJavaScript(
+            "localStorage.setItem(\"serviceAccessToken\", \"\(accessToken)\")"
+        )
         
         self.webView.reload()
     }
