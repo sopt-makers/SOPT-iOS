@@ -91,13 +91,7 @@ public final class PokeCoordinator: BaseCoordinator {
             navigationController: navigationController,
             factory: factory
         )
-        
-        pokeNotificationListCoordinator.finishFlow = { [weak self, weak pokeNotificationListCoordinator] in
-            pokeNotificationListCoordinator?.childCoordinators = []
-            self?.removeDependency(pokeNotificationListCoordinator)
-        }
-        
-        addDependency(pokeNotificationListCoordinator)
+
         pokeNotificationListCoordinator.start()
     }
     
