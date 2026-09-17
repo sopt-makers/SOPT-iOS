@@ -12,7 +12,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol PokeOnboardingViewControllable: LegacyViewControllable { }
+public protocol PokeOnboardingViewControllable: ViewControllable { }
 
 public protocol PokeOnboardingRoutingTrigger {
     var onNaviBackTapped: (() -> Void)? { get set }

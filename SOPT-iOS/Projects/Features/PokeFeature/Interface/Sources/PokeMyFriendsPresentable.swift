@@ -12,7 +12,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol PokeMyFriendsViewControllable: LegacyViewControllable { }
+public protocol PokeMyFriendsViewControllable: ViewControllable { }
 
 public protocol PokeMyFriendsRoutingTrigger {
     var showFriendsListButtonTap: ((PokeRelation) -> Void)? { get set }

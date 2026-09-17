@@ -11,7 +11,7 @@ import UIKit
 import BaseFeatureDependency
 import Core
 
-public protocol MyPageViewControllable: LegacyViewControllable { }
+public protocol MyPageViewControllable: ViewControllable { }
 public protocol MyPageRoutingTrigger {
     var onNaviBackButtonTap: (() -> Void)? { get set }
     var onPolicyItemTap: (() -> Void)? { get set }

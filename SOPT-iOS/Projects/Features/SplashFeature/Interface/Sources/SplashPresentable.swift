@@ -12,7 +12,7 @@ import Core
 import Domain
 import BaseFeatureDependency
 
-public protocol SplashViewControllable: LegacyViewControllable { }
+public protocol SplashViewControllable: ViewControllable { }
 
 public protocol SplashRoutingTrigger {
     var onNoticeSkipped: (() -> Void)? { get set }

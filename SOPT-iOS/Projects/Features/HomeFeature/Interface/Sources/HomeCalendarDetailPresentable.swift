@@ -11,7 +11,7 @@ import UIKit
 import BaseFeatureDependency
 import Core
 
-public protocol HomeCalendarDetailViewControllable: LegacyViewControllable {}
+public protocol HomeCalendarDetailViewControllable: ViewControllable {}
 public protocol HomeCalendarDetailCoordinatable {
     var onNaviBackButtonTap: (() -> Void)? { get set }
     var onAttendanceButtonTap: (() -> Void)? { get set }

@@ -12,7 +12,7 @@ import BaseFeatureDependency
 import Core
 import PokeFeatureInterface
 
-public protocol SoptlogViewControllable: LegacyViewControllable { }
+public protocol SoptlogViewControllable: ViewControllable { }
 public protocol SoptlogCoordinatable {
     var onToolTipTapped: ((CGRect) -> Void)? { get set }
     var onNetworkError: (@MainActor () -> Void)? { get set }

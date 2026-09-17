@@ -11,7 +11,7 @@ import UIKit
 import BaseFeatureDependency
 import Core
 
-public protocol HomeForMemberViewControllable: LegacyViewControllable { }
+public protocol HomeForMemberViewControllable: ViewControllable { }
 public protocol HomeForMemberCoordinatable {
     var onCalendarCellTapped: (() -> Void)? { get set }
     var onAttendanceButtonTapped: (() -> Void)? { get set }

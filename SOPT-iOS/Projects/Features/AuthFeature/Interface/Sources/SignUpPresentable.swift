@@ -12,7 +12,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol SignUpViewControllable: LegacyViewControllable {}
+public protocol SignUpViewControllable: ViewControllable {}
 
 public protocol SignUpRoutingTrigger {
     var onSignUpSuccess: (() -> Void)? { get set }

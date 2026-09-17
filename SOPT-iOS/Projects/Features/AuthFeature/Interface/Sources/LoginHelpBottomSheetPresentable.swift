@@ -10,7 +10,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol LoginHelpBottomSheetRoutingTrigger: LegacyViewControllable {
+public protocol LoginHelpBottomSheetRoutingTrigger: ViewControllable {
     var onWantToKnowLoginAccountButtonDidTap: (() -> Void)? { get set }
     var onResetSocialAccountButtonDidTap: (() -> Void)? { get set }
     var onInquireToKakaoTalkButtonDidTap: (() -> Void)? { get set }
