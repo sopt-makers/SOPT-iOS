@@ -8,7 +8,6 @@
 
 import Foundation
 import BaseFeatureDependency
-import Core
 
 public struct SoptampPartRankingDeepLink: DeepLinkExecutable {
     public let name = "part-ranking"
@@ -30,14 +29,8 @@ public struct SoptampPartRankingDeepLink: DeepLinkExecutable {
             return coordinator
         }
 
-        switch Config.coordinatorFlag {
-        case .legacy:
-            guard let coordinator = coordinator as? LegacyStampCoordinator else { return nil }
-            coordinator.runRankingFlow(rankingViewType: .individualRankingInPart(part: part))
-        case .new:
-            guard let coordinator = coordinator as? StampCoordinator else { return nil }
-            coordinator.runRankingFlow(rankingViewType: .individualRankingInPart(part: part))
-        }
+        guard let coordinator = coordinator as? StampCoordinator else { return nil }
+        coordinator.runRankingFlow(rankingViewType: .individualRankingInPart(part: part))
 
         return coordinator
     }
