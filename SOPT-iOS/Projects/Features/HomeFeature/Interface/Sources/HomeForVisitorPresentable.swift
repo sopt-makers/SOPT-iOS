@@ -17,6 +17,5 @@ public protocol HomeForVisitorCoordinatable {
     var onAppServiceCellTapped: (() -> Void)? { get set }
 }
 public typealias HomeForVisitorViewModelType = ViewModelType & HomeForVisitorCoordinatable
-public typealias LegacyHomeForVisitorPresentable = (vc: HomeForVisitorViewControllable, vm: any HomeForVisitorViewModelType)
 
 public typealias HomeForVisitorPresentable = (vc: UIViewController, vm: any HomeForVisitorViewModelType)

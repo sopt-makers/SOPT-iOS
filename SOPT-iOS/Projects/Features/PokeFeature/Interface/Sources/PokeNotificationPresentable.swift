@@ -23,6 +23,5 @@ public protocol PokeNotificationRoutingTrigger {
 }
 
 public typealias PokeNotificationViewModelType = ViewModelType & PokeNotificationRoutingTrigger
-public typealias LegacyPokeNotificationPresentable = (vc: PokeNotificationViewControllable, vm: any PokeNotificationViewModelType)
 
 public typealias PokeNotificationPresentable = (vc: UIViewController, vm: any PokeNotificationViewModelType)

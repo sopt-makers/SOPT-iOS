@@ -28,5 +28,4 @@ public protocol MyPageRoutingTrigger {
 }
 
 public typealias MyPageViewModelType = MyPageRoutingTrigger & ViewModelType
-public typealias LegacyMyPagePresentable = (vc: MyPageViewControllable, vm: any MyPageViewModelType)
 public typealias MyPagePresentable = (vc: UIViewController, vm: any MyPageViewModelType)

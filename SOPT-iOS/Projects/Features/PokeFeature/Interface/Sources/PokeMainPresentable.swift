@@ -25,6 +25,5 @@ public protocol PokeMainRoutingTrigger {
 }
 
 public typealias PokeMainViewModelType = ViewModelType & PokeMainRoutingTrigger
-public typealias LegacyPokeMainPresentable = (vc: PokeMainViewControllable, vm: any PokeMainViewModelType)
 
 public typealias PokeMainPresentable = (vc: UIViewController, vm: any PokeMainViewModelType)

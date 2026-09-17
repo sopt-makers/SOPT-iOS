@@ -22,6 +22,5 @@ public protocol PokeMyFriendsRoutingTrigger {
 }
 
 public typealias PokeMyFriendsViewModelType = ViewModelType & PokeMyFriendsRoutingTrigger
-public typealias LegacyPokeMyFriendsPresentable = (vc: PokeMyFriendsViewControllable, vm: any PokeMyFriendsViewModelType)
 
 public typealias PokeMyFriendsPresentable = (vc: UIViewController, vm: any PokeMyFriendsViewModelType)

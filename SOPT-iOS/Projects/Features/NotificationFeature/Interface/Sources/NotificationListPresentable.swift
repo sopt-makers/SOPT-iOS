@@ -18,6 +18,4 @@ public protocol NotificationListRoutingTrigger {
     var onNotificationTap: ((String) -> Void)? { get set }
 }
 public typealias NotificationListViewModelType = ViewModelType & NotificationListRoutingTrigger
-public typealias LegacyNotificationListPresentable = (vc: NotificationListViewControllable, vm: any NotificationListViewModelType)
-
 public typealias NotificationListPresentable = (vc: UIViewController, vm: any NotificationListViewModelType)

@@ -31,6 +31,5 @@ public protocol HomeForMemberCoordinatable {
     var onEditProfileTapped: ((String) -> Void)? { get set }
 }
 public typealias HomeForMemberViewModelType = ViewModelType & HomeForMemberCoordinatable
-public typealias LegacyHomeForMemberPresentable = (vc: HomeForMemberViewControllable, vm: any HomeForMemberViewModelType)
 
 public typealias HomeForMemberPresentable = (vc: UIViewController, vm: any HomeForMemberViewModelType)

@@ -17,6 +17,5 @@ public protocol HomeCalendarDetailCoordinatable {
     var onAttendanceButtonTap: (() -> Void)? { get set }
 }
 public typealias HomeCalendarDetailViewModelType = ViewModelType & HomeCalendarDetailCoordinatable
-public typealias LegacyHomeCalendarDetailPresentable = (vc: HomeCalendarDetailViewControllable, vm: any HomeCalendarDetailViewModelType)
 
 public typealias HomeCalendarDetailPresentable = (vc: UIViewController, vm: any HomeCalendarDetailViewModelType)

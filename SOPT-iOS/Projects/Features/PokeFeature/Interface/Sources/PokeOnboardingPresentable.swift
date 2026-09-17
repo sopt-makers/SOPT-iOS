@@ -23,7 +23,6 @@ public protocol PokeOnboardingRoutingTrigger {
 }
 
 public typealias PokeOnboardingViewModelType = ViewModelType & PokeOnboardingRoutingTrigger
-public typealias LegacyPokeOnboardingPresentable = (vc: PokeOnboardingViewControllable, vm: any PokeOnboardingViewModelType)
 
 public typealias PokeOnboardingPresentable = (vc: UIViewController, vm: any PokeOnboardingViewModelType)
 

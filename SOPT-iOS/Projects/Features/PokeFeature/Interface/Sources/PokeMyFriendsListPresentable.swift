@@ -25,5 +25,4 @@ public protocol PokeMyFriendsListViewModelType: ViewModelType & PokeMyFriendsLis
     var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)? { get set }
 }
 
-public typealias LegacyPokeMyFriendsListPresentable = (vc: PokeMyFriendsListViewControllable, vm: any PokeMyFriendsListViewModelType)
 public typealias PokeMyFriendsListPresentable = (vc: UIViewController, vm: any PokeMyFriendsListViewModelType)
