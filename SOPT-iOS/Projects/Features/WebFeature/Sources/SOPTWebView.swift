@@ -58,6 +58,16 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
             configuration.websiteDataStore.httpCookieStore.setCookie(cookie)
         }
         
+        if let accessToken = UserDefaultKeyList.CoreAuth.accessToken {
+            let escaped = accessToken.replacingOccurrences(of: "\"", with: "\\\"")
+            let script = WKUserScript(
+                source: "localStorage.setItem(\"serviceAccessToken\", \"\(escaped)\");",
+                injectionTime: .atDocumentStart,
+                forMainFrameOnly: true
+            )
+            configuration.userContentController.addUserScript(script)
+        }
+        
         self.webView = WKWebView(frame: .zero, configuration: configuration).then {
             $0.allowsBackForwardNavigationGestures = config.allowsBackForwardNavigationGestures
             $0.customUserAgent = "SOPT-iOS"
@@ -172,17 +182,6 @@ extension SOPTWebView: WKNavigationDelegate {
         }
         
         decisionHandler(.allow)
-    }
-    
-    public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        guard !self.barrier,
-              let accessToken = UserDefaultKeyList.CoreAuth.accessToken else { return }
-        self.barrier = true
-        self.webView.evaluateJavaScript(
-            "localStorage.setItem(\"serviceAccessToken\", \"\(accessToken)\")"
-        )
-        
-        self.webView.reload()
     }
 }
 
