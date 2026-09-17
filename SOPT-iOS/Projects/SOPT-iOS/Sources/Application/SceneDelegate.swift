@@ -8,7 +8,6 @@
 import UIKit
 
 import Core
-import BaseFeatureDependency
 import RootFeature
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -23,7 +22,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     lazy var appCoordinator: ApplicationCoordinator = ApplicationCoordinator(
         rootNavigationController: rootController,
-        router: LegacyRouter(rootController: rootController),
         notificationHandler: self.notificationHandler
     )
     
