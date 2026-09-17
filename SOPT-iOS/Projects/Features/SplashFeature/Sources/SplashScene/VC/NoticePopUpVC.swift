@@ -18,7 +18,7 @@ import SnapKit
 import BaseFeatureDependency
 import SplashFeatureInterface
 
-public class NoticePopUpVC: UIViewController, LegacyNoticePopUpViewControllable, NoticePopUpViewControllable {
+public class NoticePopUpVC: UIViewController, NoticePopUpViewControllable {
 
     // MARK: - Properties
 

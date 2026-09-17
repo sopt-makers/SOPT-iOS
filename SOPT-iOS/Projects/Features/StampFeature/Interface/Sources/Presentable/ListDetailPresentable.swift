@@ -14,7 +14,6 @@ import Domain
 
 // TODO: - 화면전환 트리거 책임 vc -> vm으로 변경하기
 
-public protocol LegacyListDetailViewControllable: LegacyViewControllable & ListDetailRoutingTrigger { }
 public protocol ListDetailViewControllable: UIViewController & ListDetailRoutingTrigger { }
 public protocol ListDetailRoutingTrigger {
   var onComplete: ((StarViewLevel, (() -> Void)?) -> Void)? { get set }

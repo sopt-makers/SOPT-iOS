@@ -12,7 +12,6 @@ import Core
 import BaseFeatureDependency
 import Domain
 
-public protocol LegacyRankingViewControllable: LegacyViewControllable & RankingRoutingTrigger { }
 public protocol RankingViewControllable: UIViewController & RankingRoutingTrigger { }
 public protocol RankingRoutingTrigger {
   var onCellTap: ((_ username: String, _ sentence: String) -> Void)? { get set }

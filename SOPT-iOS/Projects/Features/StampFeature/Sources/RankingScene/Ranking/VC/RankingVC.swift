@@ -20,7 +20,7 @@ import Then
 import StampFeatureInterface
 import BaseFeatureDependency
 
-public class RankingVC: UIViewController, LegacyRankingViewControllable, RankingViewControllable {
+public class RankingVC: UIViewController, RankingViewControllable {
     
     // MARK: - Properties
     

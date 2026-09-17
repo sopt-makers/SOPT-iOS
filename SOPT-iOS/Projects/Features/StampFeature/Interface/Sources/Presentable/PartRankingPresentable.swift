@@ -12,7 +12,6 @@ import Core
 import BaseFeatureDependency
 import Domain
 
-public protocol LegacyPartRankingViewControllable: LegacyViewControllable & PartRankingRoutingTrigger { }
 public protocol PartRankingViewControllable: UIViewController & PartRankingRoutingTrigger { }
 public protocol PartRankingRoutingTrigger {
   var onCellTap: ((_ part: Part) -> Void)? { get set }

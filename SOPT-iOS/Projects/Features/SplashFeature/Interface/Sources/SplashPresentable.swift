@@ -25,5 +25,4 @@ public protocol SplashCoordinatorFinishOutput {
 }
 
 public typealias SplashViewModelType = SplashRoutingTrigger & ViewModelType
-public typealias LegacySplashPresentable = (vc: SplashViewControllable, vm: any SplashViewModelType)
 public typealias SplashPresentable = (vc: UIViewController, vm: any SplashViewModelType)

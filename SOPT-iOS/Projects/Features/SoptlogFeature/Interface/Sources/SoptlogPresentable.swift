@@ -22,6 +22,5 @@ public protocol SoptlogCoordinatable {
     var onPokeMyFriendsTapped: ((PokeRelation) -> Void)? { get set }
 }
 public typealias SoptlogViewModelType = ViewModelType & SoptlogCoordinatable
-public typealias LegacySoptlogPresentable = (vc: SoptlogViewControllable, vm: any SoptlogViewModelType)
 
 public typealias SoptlogPresentable = (vc: UIViewController, vm: any SoptlogViewModelType)

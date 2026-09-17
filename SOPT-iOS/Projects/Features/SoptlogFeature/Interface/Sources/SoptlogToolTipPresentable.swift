@@ -17,6 +17,5 @@ public protocol SoptlogToolTipCoordinatable {
     var onDimmingBackgroundTap: (() -> Void)? { get set }
 }
 public typealias SoptlogToolTipViewModelType = ViewModelType & SoptlogToolTipCoordinatable
-public typealias LegacySoptlogTooltipPresentable = (vc: SoptlogToolTipViewControllable, vm: any SoptlogToolTipViewModelType)
 
 public typealias SoptlogTooltipPresentable = (vc: UIViewController, vm: any SoptlogToolTipViewModelType)
