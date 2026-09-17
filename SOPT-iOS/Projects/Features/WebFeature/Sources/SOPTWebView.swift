@@ -65,10 +65,14 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
             $0.backgroundColor = DSKitAsset.Colors.black100.color
             $0.scrollView.backgroundColor = DSKitAsset.Colors.black100.color
             
+            #if DEBUG
+            if #available(iOS 16.4, *) {
+                $0.isInspectable = true
+            }
+            #endif
         }
         self.downloadManager = downloadManager
         super.init(nibName: nil, bundle: nil)
-        
         DispatchQueue.main.async {
             let request = URLRequest(url: url)
             self.webView.load(request)
