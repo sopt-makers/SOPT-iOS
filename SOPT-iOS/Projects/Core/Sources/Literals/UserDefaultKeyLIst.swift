@@ -14,15 +14,7 @@ public struct UserDefaultKeyList {
         @UserDefaultWrapper<String>(key: "accessToken") public static var accessToken
         @UserDefaultWrapper<String>(key: "refreshToken") public static var refreshToken
         @UserDefaultWrapper<String>(key: "recentLogin") public static var recentLogin
-    }
-    
-    public struct Auth {
-        @UserDefaultWrapper<String>(key: "appAccessToken") public static var appAccessToken
-        @UserDefaultWrapper<String>(key: "appRefreshToken") public static var appRefreshToken
-        @UserDefaultWrapper<String>(key: "playgroundToken") public static var playgroundToken
         @UserDefaultWrapper<Bool>(key: "isActiveUser") public static var isActiveUser
-        
-        @UserDefaultWrapper<String>(key: "requestState") public static var requestState
     }
     
     public struct User {
@@ -52,17 +44,9 @@ extension UserDefaultKeyList {
     
     
     public static func clearUserData() {
-        // 편의상 legacy, new 분기처리 하지 않고 한번에 삭제한다.
-        
-        // legacy
-        UserDefaultKeyList.Auth.appAccessToken = nil
-        UserDefaultKeyList.Auth.appRefreshToken = nil
-        UserDefaultKeyList.Auth.playgroundToken = nil
-        UserDefaultKeyList.Auth.isActiveUser = nil
-        
-        // new
         UserDefaultKeyList.CoreAuth.accessToken = nil
         UserDefaultKeyList.CoreAuth.refreshToken = nil
+        UserDefaultKeyList.CoreAuth.isActiveUser = nil
     }
     
     public static func clearPushToken() {
@@ -75,19 +59,10 @@ extension UserDefaultKeyList {
     }
 }
 
-extension UserDefaultKeyList {
-    static var accessTokenWithFeatureFlag: String? {
-        switch FeatureFlag.auth {
-        case .legacy: Self.Auth.appAccessToken
-        case .new: Self.CoreAuth.accessToken
-        }
-    }
-}
-
-extension UserDefaultKeyList.Auth {
+extension UserDefaultKeyList.CoreAuth {
     
     public static func getUserType() -> UserType {
-        guard let accessToken = UserDefaultKeyList.accessTokenWithFeatureFlag,
+        guard let accessToken = UserDefaultKeyList.CoreAuth.accessToken,
               !accessToken.isEmpty else {
             return UserType.visitor
         }
@@ -98,12 +73,12 @@ extension UserDefaultKeyList.Auth {
     }
     
     public static func getUserActivation() -> Bool {
-        UserDefaultKeyList.Auth.isActiveUser ?? false
+        UserDefaultKeyList.CoreAuth.isActiveUser ?? false
     }
     
     public static func hasAccessToken() -> Bool {
-        guard let appAccessToken = UserDefaultKeyList.accessTokenWithFeatureFlag,
-              !appAccessToken.isEmpty else {
+        guard let accessToken = UserDefaultKeyList.CoreAuth.accessToken,
+              !accessToken.isEmpty else {
             return false
         }
         return true

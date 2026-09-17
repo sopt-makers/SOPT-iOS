@@ -20,7 +20,6 @@ public extension Dep {
         public struct Home {}
         public struct Soptlog {}
         public struct TabBar {}
-        public struct LegacyAuth {}
         public struct Soptletter {}
     }
     
@@ -59,13 +58,6 @@ public extension Dep.Features {
 
 public extension Dep.Features.Spalsh {
     static let group = "Splash"
-    
-    static let Feature = Dep.Features.project(name: "Feature", group: group)
-    static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))
-}
-
-public extension Dep.Features.LegacyAuth {
-    static let group = "LegacyAuth"
     
     static let Feature = Dep.Features.project(name: "Feature", group: group)
     static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))

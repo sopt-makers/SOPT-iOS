@@ -24,10 +24,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application( _ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         DIContainer.shared.register(
-            interface: SignInRepositoryInterface.self,
-            implement: { StubSignInRepository() }
-        )
-        DIContainer.shared.register(
             interface: CoreOAuthRepositoryInterface.self,
             implement: { StubCoreOAuthRepository() }
         )

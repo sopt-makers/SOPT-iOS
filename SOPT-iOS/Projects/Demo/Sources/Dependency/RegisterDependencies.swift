@@ -26,42 +26,16 @@ extension AppDelegate {
         // - AuthBuilder
         // 위 객체들에서 resolve 되기 전에 register해야하기에 최상단에 배치한다.
         //
-        switch FeatureFlag.auth {
-        case .new:
-            container.register(
-                interface: AuthTokensRepositoryInterface.self,
-                implement: {
-                    let reissueService = DefaultReissueService(
-                        plugins: [ Moya.NetworkLoggerPlugin.verbose]
-                    )
-                    let repository = AuthTokensRepository(remote: reissueService)
-                    return repository
-                }
-            )
-            
-        case .legacy:
-            container.register(
-                interface: AuthTokensRepositoryInterface.self,
-                implement: {
-                    let reissueService = DefaultLegacyReissueService(
-                        plugins: [ Moya.NetworkLoggerPlugin.verbose]
-                    )
-                    let repository = LegacyAuthTokensRepository(remote: reissueService)
-                    return repository
-                }
-            )
-        }
-        
         container.register(
-            interface: SignInRepositoryInterface.self,
+            interface: AuthTokensRepositoryInterface.self,
             implement: {
-                SignInRepository(
-                    authService: DefaultAuthService.standard,
-                    userService: DefaultUserService.standard
+                let reissueService = DefaultReissueService(
+                    plugins: [ Moya.NetworkLoggerPlugin.verbose]
                 )
+                let repository = AuthTokensRepository(remote: reissueService)
+                return repository
             }
         )
-        
         container.register(
             interface: PhoneVerifyRepositoryInterface.self,
             implement: {
@@ -70,7 +44,6 @@ extension AppDelegate {
                 )
             }
         )
-        
         container.register(
             interface: CoreOAuthRepositoryInterface.self,
             implement: {
@@ -79,7 +52,6 @@ extension AppDelegate {
                 )
             }
         )
-        
         container.register(
             interface: CoreAuthRepositoryInterface.self,
             implement: {
@@ -88,7 +60,6 @@ extension AppDelegate {
                     socialService: DefaultSocialService.standard)
             }
         )
-        
         container.register(
             interface: SplashRepositoryInterface.self,
             implement: {
@@ -124,7 +95,6 @@ extension AppDelegate {
             interface: SettingRepositoryInterface.self,
             implement: {
                 SettingRepository(
-                    authService: DefaultAuthService.standard,
                     stampService: DefaultStampService.standard,
                     userService: DefaultUserService.standard
                 )

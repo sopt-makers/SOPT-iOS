@@ -13,20 +13,6 @@ import Core
 import Domain
 import AuthFeatureInterface
 
-struct StubSignInRepository: SignInRepositoryInterface {
-    func requestSignIn(token: String) -> AnyPublisher<SignInModel, Error> {
-        let model = SignInModel(
-            tokens: LegacyAuthTokensModel(accessToken: "stub", refreshToken: "stub", playgroundToken: "stub"),
-            status: .active
-        )
-        return Just(model).setFailureType(to: Error.self).eraseToAnyPublisher()
-    }
-
-    func fetchSoptampUser() -> AnyPublisher<Bool, Never> {
-        Just(true).eraseToAnyPublisher()
-    }
-}
-
 struct StubCoreOAuthRepository: CoreOAuthRepositoryInterface {
     func getIdentityToken(from provider: OAuthProvider) -> AnyPublisher<String, CoreAuthError> {
         Just("stub-identity-token").setFailureType(to: CoreAuthError.self).eraseToAnyPublisher()

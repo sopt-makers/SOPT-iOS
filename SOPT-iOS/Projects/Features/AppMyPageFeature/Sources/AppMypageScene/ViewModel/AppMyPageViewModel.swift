@@ -36,7 +36,7 @@ public final class AppMyPageViewModel: MyPageViewModelType {
     
     private let coordinator: AnyCoordinatorObject
     private let useCase: AppMyPageUseCase
-    private let userType: UserType = UserDefaultKeyList.Auth.getUserType()
+    private let userType: UserType = UserDefaultKeyList.CoreAuth.getUserType()
     
     // MARK: - Inputs
     

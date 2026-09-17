@@ -24,7 +24,7 @@ public class SoptlogViewModel: SoptlogViewModelType {
     private var fetchSoptlogInfoTask: Task<Void, Never>?
     private var cancelBag = CancelBag()
 
-    private let userType: UserType = UserDefaultKeyList.Auth.getUserType()
+    private let userType: UserType = UserDefaultKeyList.CoreAuth.getUserType()
     public var isActiveUser: Bool { userType == .active }
     
     // MARK: - Inputs

@@ -14,7 +14,6 @@ let project = Project.makeModule(
     targets: [.unitTest, .staticFramework, .demo],
     internalDependencies: [
         .Features.Spalsh.Feature,
-        .Features.LegacyAuth.Feature,
         .Features.Auth.Feature,
         .Features.TabBar.Feature,
         .Features.Stamp.Feature,
