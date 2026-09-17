@@ -1,5 +1,5 @@
 //
-//  PokeMaingFriendCompletedPresentable.swift
+//  PokeMakingFriendCompletedPresentable.swift
 //  PokeFeatureInterface
 //
 //  Created by sejin on 12/25/23.
@@ -10,4 +10,4 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol PokeMakingFriendCompletedPresentable: LegacyViewControllable { }
+public protocol PokeMakingFriendCompletedPresentable: ViewControllable { }

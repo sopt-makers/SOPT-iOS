@@ -14,12 +14,9 @@ import BaseFeatureDependency
 import PokeFeatureInterface
 import WebFeature
 
-public final class PokeOnboardingCoordinator: DefaultCoordinator {
+public final class PokeOnboardingCoordinator: BaseCoordinator {
     
     // MARK: - Properties
-    
-    public var finishFlow: (() -> Void)?
-    
     private let factory: PokeFeatureBuildable
     private let navigationController: UINavigationController
     private weak var rootController: UINavigationController?

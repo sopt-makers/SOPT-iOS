@@ -12,7 +12,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol PokeMainViewControllable: LegacyViewControllable { }
+public protocol PokeMainViewControllable: ViewControllable { }
 
 public protocol PokeMainRoutingTrigger {
   var onPokeNotificationsTap: (() -> Void)? { get set }
@@ -25,6 +25,5 @@ public protocol PokeMainRoutingTrigger {
 }
 
 public typealias PokeMainViewModelType = ViewModelType & PokeMainRoutingTrigger
-public typealias LegacyPokeMainPresentable = (vc: PokeMainViewControllable, vm: any PokeMainViewModelType)
 
 public typealias PokeMainPresentable = (vc: UIViewController, vm: any PokeMainViewModelType)

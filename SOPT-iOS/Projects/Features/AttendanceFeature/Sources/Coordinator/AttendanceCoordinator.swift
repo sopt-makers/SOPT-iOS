@@ -13,12 +13,10 @@ import Domain
 import BaseFeatureDependency
 import AttendanceFeatureInterface
 
-public final class AttendanceCoordinator: DefaultCoordinator {
+public final class AttendanceCoordinator: BaseCoordinator {
     
     // MARK: - Properties
-    
-    public var finishFlow: (() -> Void)?
-    
+        
     private let factory: AttendanceFeatureBuildable
     private weak var navigationController: UINavigationController?
     

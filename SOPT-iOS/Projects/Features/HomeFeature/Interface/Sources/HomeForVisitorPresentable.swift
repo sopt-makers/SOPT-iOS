@@ -11,12 +11,11 @@ import UIKit
 import BaseFeatureDependency
 import Core
 
-public protocol HomeForVisitorViewControllable: LegacyViewControllable { }
+public protocol HomeForVisitorViewControllable: ViewControllable { }
 public protocol HomeForVisitorCoordinatable {
     var onMainProductCellTapped: ((String) -> Void)? { get set }
     var onAppServiceCellTapped: (() -> Void)? { get set }
 }
 public typealias HomeForVisitorViewModelType = ViewModelType & HomeForVisitorCoordinatable
-public typealias LegacyHomeForVisitorPresentable = (vc: HomeForVisitorViewControllable, vm: any HomeForVisitorViewModelType)
 
 public typealias HomeForVisitorPresentable = (vc: UIViewController, vm: any HomeForVisitorViewModelType)

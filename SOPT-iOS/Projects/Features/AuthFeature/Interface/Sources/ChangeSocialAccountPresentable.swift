@@ -12,7 +12,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol ChangeSocialAccountViewControllable: LegacyViewControllable { }
+public protocol ChangeSocialAccountViewControllable: ViewControllable { }
 
 public protocol ChangeSocialAccountRoutingTrigger {
     var changeSocialAccountSucceed: (() -> Void)? { get set }

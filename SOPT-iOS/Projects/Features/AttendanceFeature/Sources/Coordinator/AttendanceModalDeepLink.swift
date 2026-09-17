@@ -10,9 +10,6 @@ import Foundation
 import BaseFeatureDependency
 import Domain
 
-// TODO: - Legacy 삭제하면서 Core 제거
-import Core
-
 public struct AttendanceModalDeepLink: DeepLinkExecutable {
     public let name = "attendance-modal"
     public let children: [DeepLinkExecutable] = []
@@ -30,16 +27,9 @@ public struct AttendanceModalDeepLink: DeepLinkExecutable {
         }
         
         let attendanceRoundModel = AttendanceRoundModel(subLectureId: subLectureId, round: round)
-        
-        switch Config.coordinatorFlag {
-        case .legacy:
-            guard let coordinator = coordinator as? LegacyAttendanceCoordinator else { return nil }
-            coordinator.showAttendance(attendanceRoundModel, nil)
-        case .new:
-            guard let coordinator = coordinator as? AttendanceCoordinator else { return nil }
-            coordinator.showAttendance(attendanceRoundModel, nil)
-        }
-        
+        guard let coordinator = coordinator as? AttendanceCoordinator else { return nil }
+        coordinator.showAttendance(attendanceRoundModel, nil)
+    
         return coordinator
     }
 }

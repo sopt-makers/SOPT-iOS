@@ -12,7 +12,6 @@ import Core
 import BaseFeatureDependency
 import Domain
 
-public protocol LegacyMissionListViewControllable: LegacyViewControllable & MissionListRoutingTrigger { }
 public protocol MissionListViewControllable: UIViewController & MissionListRoutingTrigger { }
 
 public protocol MissionListRoutingTrigger {

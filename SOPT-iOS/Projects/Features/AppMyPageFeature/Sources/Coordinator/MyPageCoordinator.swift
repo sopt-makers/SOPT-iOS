@@ -22,7 +22,6 @@ public final class MyPageCoordinator: BaseCoordinator {
     // MARK: - Properties
 
     public weak var delegate: MyPageCoordinatorDelegate?
-    public var finishFlow: (() -> Void)?
     public var requestCoordinating: ((MyPageCoordinatorDestination) -> Void)?
     public var onShowSoptlog: (() -> Void)?
 

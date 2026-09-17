@@ -12,11 +12,6 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol LegacyPokeMessageTemplatesViewControllable: LegacyViewControllable {
-    var minimumContentHeight: CGFloat { get }
-    
-    func signalForClick() -> Driver<(PokeMessageModel, isAnonymous: Bool)>
-}
 public protocol PokeMessageTemplatesViewControllable: UIViewController {
     var minimumContentHeight: CGFloat { get }
     
@@ -28,5 +23,5 @@ public protocol PokeMessageTemplatesRoutingTrigger { }
 public protocol PokeMessageTemplatesViewModelType: ViewModelType & PokeMessageTemplatesRoutingTrigger {
     var messageType: PokeMessageType { get }
 }
-public typealias LegacyPokeMessageTemplatesPresentable = (vc: LegacyPokeMessageTemplatesViewControllable, vm: any PokeMessageTemplatesRoutingTrigger)
+
 public typealias PokeMessageTemplatesPresentable = (vc: PokeMessageTemplatesViewControllable, vm: any PokeMessageTemplatesRoutingTrigger)

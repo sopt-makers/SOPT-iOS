@@ -16,7 +16,7 @@ import Core
 import BaseFeatureDependency
 import AppMyPageFeatureInterface
 
-public class WithdrawalVC: UIViewController, LegacyWithdrawalViewControllable {
+public class WithdrawalVC: UIViewController {
     
     // MARK: - Properties
     

@@ -11,7 +11,7 @@ import UIKit
 import BaseFeatureDependency
 import Core
 
-public protocol HomeForMemberViewControllable: LegacyViewControllable { }
+public protocol HomeForMemberViewControllable: ViewControllable { }
 public protocol HomeForMemberCoordinatable {
     var onCalendarCellTapped: (() -> Void)? { get set }
     var onAttendanceButtonTapped: (() -> Void)? { get set }
@@ -31,6 +31,5 @@ public protocol HomeForMemberCoordinatable {
     var onEditProfileTapped: ((String) -> Void)? { get set }
 }
 public typealias HomeForMemberViewModelType = ViewModelType & HomeForMemberCoordinatable
-public typealias LegacyHomeForMemberPresentable = (vc: HomeForMemberViewControllable, vm: any HomeForMemberViewModelType)
 
 public typealias HomeForMemberPresentable = (vc: UIViewController, vm: any HomeForMemberViewModelType)

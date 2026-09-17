@@ -8,7 +8,6 @@
 
 import Foundation
 import BaseFeatureDependency
-import Core
 
 public struct SoptampMissionDetailDeepLink: DeepLinkExecutable {
     public let name = "missionDetail"
@@ -38,23 +37,15 @@ public struct SoptampMissionDetailDeepLink: DeepLinkExecutable {
 
         let nickname = isMine ? nil : queryItems?.getQueryValue(key: "nickname")
 
-        switch Config.coordinatorFlag {
-        case .legacy:
-            guard let coordinator = coordinator as? LegacyStampCoordinator else {
-                return nil
-            }
 
-        case .new:
-            guard let coordinator = coordinator as? StampCoordinator else {
-                return nil
-            }
-            coordinator.runMissionDetailById(
-                missionId: missionId,
-                level: level,
-                missionTitle: missionTitle,
-                username: nickname
-            )
-        }
+        guard let coordinator = coordinator as? StampCoordinator else { return nil }
+        coordinator.runMissionDetailById(
+            missionId: missionId,
+            level: level,
+            missionTitle: missionTitle,
+            username: nickname
+        )
+        
         return coordinator
     }
 }
