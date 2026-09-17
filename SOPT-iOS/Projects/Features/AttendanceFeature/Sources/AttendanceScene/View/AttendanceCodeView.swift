@@ -8,6 +8,8 @@
 
 import UIKit
 
+import MDS
+
 /*
  5자리 출석 숫자코드 입력 부분 뷰
  */
@@ -78,7 +80,7 @@ extension AttendanceCodeView {
     /// 숫자 코드 초기화하는 메서드
     func setCodeTextFieldEmpty() {
         codeTextFields.forEach {
-            $0.updateUI(text: "")
+            $0.updateUI(text: "", isError: true)
         }
         codeTextFields[safe: 0]?.becomeFirstResponder()
     }

@@ -9,11 +9,13 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
 
 /*
  상단 이름, 현재 출석 점수, 인포 버튼이 있는 뷰입니다.
  */
+
+// TODO: - info 버튼 유무 확인
 
 final class MyInformationWithScoreView: UIView {
     
@@ -21,8 +23,7 @@ final class MyInformationWithScoreView: UIView {
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.font = .Main.body2
-        label.textColor = DSKitAsset.Colors.gray300.color
+        label.textColor = SemanticColor.Fg.Neutral.subtle
         return label
     }()
     
@@ -65,6 +66,8 @@ extension MyInformationWithScoreView {
     
     func setData(name: String, part: String, generation: Int, count: Double) {
         nameLabel.text = "\(generation)기 \(part) \(name)"
+        nameLabel.setTypography(Typography.title5)
+        
         chageFontAndColor(with: "\(doubleToString(count))점")
     }
     
@@ -73,18 +76,21 @@ extension MyInformationWithScoreView {
         let subText = I18N.Attendance.scoreIs
         
         let attributedString = NSMutableAttributedString(string: mainText + pointedText + subText)
-        
-        attributedString.addAttributes([NSAttributedString.Key.font: UIFont.Main.body0,
-                                        NSAttributedString.Key.foregroundColor: DSKitAsset.Colors.gray10.color],
-                                       range: NSRange(location: 0, length: mainText.count))
-        
-        attributedString.addAttributes([NSAttributedString.Key.font: UIFont.Main.headline1,
-                                        NSAttributedString.Key.foregroundColor: DSKitAsset.Colors.secondary.color],
-                                       range: NSRange(location: mainText.count, length: pointedText.count))
-        
-        attributedString.addAttributes([NSAttributedString.Key.font: UIFont.Main.body0,
-                                        NSAttributedString.Key.foregroundColor: DSKitAsset.Colors.gray10.color],
-                                       range: NSRange(location: mainText.count + pointedText.count, length: subText.count))
+
+        attributedString.addAttributes(
+            Typography.title4.attributedStringAttributes(foregroundColor: SemanticColor.Fg.Neutral.bold),
+            range: NSRange(location: 0, length: mainText.count)
+        )
+
+        attributedString.addAttributes(
+            Typography.title4.attributedStringAttributes(foregroundColor: SemanticColor.Fg.Brand.default),
+            range: NSRange(location: mainText.count, length: pointedText.count)
+        )
+
+        attributedString.addAttributes(
+            Typography.title4.attributedStringAttributes(foregroundColor: SemanticColor.Fg.Neutral.bold),
+            range: NSRange(location: mainText.count + pointedText.count, length: subText.count)
+        )
         
         currentScoreLabel.attributedText = attributedString
     }

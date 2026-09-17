@@ -41,7 +41,7 @@ public final class OPNavigationBar: UIView {
     
     private let titleLabel = UILabel()
     private let leftButton = UIButton(type: .custom)
-    private let rightButton = UIButton(type: .custom)
+    public let rightButton = UIButton(type: .custom)
 
     // MARK: - initialization
     
