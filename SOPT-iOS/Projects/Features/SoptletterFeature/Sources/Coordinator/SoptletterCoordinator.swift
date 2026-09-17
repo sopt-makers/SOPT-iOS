@@ -31,6 +31,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
     ) {
         self.navigationController = navigationController
         self.factory = factory
+        super.init()
     }
 
     // MARK: - Coordinator Life Cycle
