@@ -58,13 +58,31 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
             configuration.websiteDataStore.httpCookieStore.setCookie(cookie)
         }
         
+        if let accessToken = UserDefaultKeyList.CoreAuth.accessToken {
+            let escaped = accessToken.replacingOccurrences(of: "\"", with: "\\\"")
+            let script = WKUserScript(
+                source: "localStorage.setItem(\"serviceAccessToken\", \"\(escaped)\");",
+                injectionTime: .atDocumentStart,
+                forMainFrameOnly: true
+            )
+            configuration.userContentController.addUserScript(script)
+        }
+        
         self.webView = WKWebView(frame: .zero, configuration: configuration).then {
             $0.allowsBackForwardNavigationGestures = config.allowsBackForwardNavigationGestures
             $0.customUserAgent = "SOPT-iOS"
+            $0.isOpaque = true
+            $0.backgroundColor = DSKitAsset.Colors.black100.color
+            $0.scrollView.backgroundColor = DSKitAsset.Colors.black100.color
+            
+            #if DEBUG
+            if #available(iOS 16.4, *) {
+                $0.isInspectable = true
+            }
+            #endif
         }
         self.downloadManager = downloadManager
         super.init(nibName: nil, bundle: nil)
-        
         DispatchQueue.main.async {
             let request = URLRequest(url: url)
             self.webView.load(request)
@@ -164,17 +182,6 @@ extension SOPTWebView: WKNavigationDelegate {
         }
         
         decisionHandler(.allow)
-    }
-    
-    public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        guard !self.barrier,
-              let accessToken = UserDefaultKeyList.CoreAuth.accessToken else { return }
-        self.barrier = true
-        self.webView.evaluateJavaScript(
-            "localStorage.setItem(\"serviceAccessToken\", \"\(accessToken)\")"
-        )
-        
-        self.webView.reload()
     }
 }
 
