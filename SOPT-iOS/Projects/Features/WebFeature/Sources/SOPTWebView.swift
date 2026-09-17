@@ -71,7 +71,7 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
         self.webView = WKWebView(frame: .zero, configuration: configuration).then {
             $0.allowsBackForwardNavigationGestures = config.allowsBackForwardNavigationGestures
             $0.customUserAgent = "SOPT-iOS"
-            $0.isOpaque = false
+            $0.isOpaque = true
             $0.backgroundColor = DSKitAsset.Colors.black100.color
             $0.scrollView.backgroundColor = DSKitAsset.Colors.black100.color
             
