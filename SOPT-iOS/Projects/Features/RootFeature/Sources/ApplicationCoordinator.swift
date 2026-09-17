@@ -26,14 +26,12 @@ import SoptletterFeature
 public final class ApplicationCoordinator: BaseCoordinator {
     
     // MARK: - Properties
-    
-    private let router: LegacyRouter
+
     private var cancelBag = CancelBag()
     let notificationHandler: NotificationHandler
-    
+
     internal let rootNavigationController: UINavigationController
-    
-    private weak var legacyRootController: UINavigationController?
+
     let homeNavigationController = UINavigationController()
     let mypageNavigationController = UINavigationController()
     let stampNavigationController = UINavigationController()
@@ -46,13 +44,11 @@ public final class ApplicationCoordinator: BaseCoordinator {
     
     public init(
         rootNavigationController: UINavigationController,
-        router: LegacyRouter,
         notificationHandler: NotificationHandler
     ) {
         self.rootNavigationController = rootNavigationController
-        self.router = router
         self.notificationHandler = notificationHandler
-        
+
         super.init()
     }
     
@@ -66,7 +62,7 @@ public final class ApplicationCoordinator: BaseCoordinator {
         }()
         
         DIContainer.shared.register(
-            interface: DefaultAuthCoordinator.self,
+            interface: BaseCoordinator.self,
             implement: { [weak self] in
                 guard let self else { return }
                     return AuthCoordinator(navigationController: self.rootNavigationController,
@@ -97,108 +93,42 @@ public final class ApplicationCoordinator: BaseCoordinator {
     
     private func bindNotification() {
         self.cancelBag.cancel()
-        
-        switch Config.coordinatorFlag {
-        case .legacy:
-            self.notificationHandler.deepLink
-                .compactMap { $0 }
-                .receive(on: DispatchQueue.main)
-                .filter{ _ in
-                    self.childCoordinators.contains(where: { $0 is DefaultTabBarCoordinator })
-                }
-                .sink { [weak self] deepLinkComponent in
-                    self?.handleDeepLink(deepLink: deepLinkComponent)
-                    self?.notificationHandler.clearNotificationRecord()
-                }.store(in: cancelBag)
-            
-            self.notificationHandler.webLink
-                .compactMap { $0 }
-                .receive(on: DispatchQueue.main)
-                .filter{ _ in
-                    self.childCoordinators.contains(where: { $0 is DefaultTabBarCoordinator })
-                }
-                .sink { [weak self] url in
-                    self?.handleWebLink(webLink: url)
-                    self?.notificationHandler.clearNotificationRecord()
-                }.store(in: cancelBag)
-            
-            self.notificationHandler.notificationLinkError
-                .compactMap { $0 }
-                .receive(on: DispatchQueue.main)
-                .filter{ _ in
-                    self.childCoordinators.contains(where: { $0 is DefaultTabBarCoordinator })
-                }
-                .sink { [weak self] error in
-                    self?.handleNotificationLinkError(error: error)
-                    self?.notificationHandler.clearNotificationRecord()
-                }.store(in: cancelBag)
-        case .new:
-            self.notificationHandler.deepLink
-                .compactMap { $0 }
-                .receive(on: DispatchQueue.main)
-                .sink { [weak self] deepLinkComponent in
-                    self?.handleDeepLink(deepLink: deepLinkComponent)
-                    self?.notificationHandler.clearNotificationRecord()
-                }.store(in: cancelBag)
-            
-            self.notificationHandler.webLink
-                .compactMap { $0 }
-                .receive(on: DispatchQueue.main)
-                .sink { [weak self] url in
-                    self?.handleWebLink(webLink: url)
-                    self?.notificationHandler.clearNotificationRecord()
-                }.store(in: cancelBag)
-            
-            self.notificationHandler.notificationLinkError
-                .compactMap { $0 }
-                .receive(on: DispatchQueue.main)
-                .sink { [weak self] error in
-                    self?.handleNotificationLinkError(error: error)
-                    self?.notificationHandler.clearNotificationRecord()
-                }.store(in: cancelBag)
-        }
+
+        self.notificationHandler.deepLink
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] deepLinkComponent in
+                self?.handleDeepLink(deepLink: deepLinkComponent)
+                self?.notificationHandler.clearNotificationRecord()
+            }.store(in: cancelBag)
+
+        self.notificationHandler.webLink
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] url in
+                self?.handleWebLink(webLink: url)
+                self?.notificationHandler.clearNotificationRecord()
+            }.store(in: cancelBag)
+
+        self.notificationHandler.notificationLinkError
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] error in
+                self?.handleNotificationLinkError(error: error)
+                self?.notificationHandler.clearNotificationRecord()
+            }.store(in: cancelBag)
     }
     
     // MARK: - handleDeepLink
     
     func handleDeepLink(deepLink: DeepLinkComponentsExecutable) {
-        switch Config.coordinatorFlag {
-        case .legacy:
-            handleLegacyDeepLink(deepLink: deepLink)
-        case .new:
-            handleNewDeepLink(deepLink: deepLink)
-        }
-    }
-    
-    private func handleLegacyDeepLink(deepLink: DeepLinkComponentsExecutable) {
-        self.legacyRootController?.dismiss(animated: false)
-        deepLink.execute(coordinator: self)
-    }
-    
-    private func handleNewDeepLink(deepLink: DeepLinkComponentsExecutable) {
         self.rootNavigationController.popToRootViewController(animated: false)
         deepLink.execute(coordinator: self)
     }
-    
+
     // MARK: - handleWebLink
-    
+
     func handleWebLink(webLink: String) {
-        switch Config.coordinatorFlag {
-        case .legacy:
-            handleLegacyWebLink(webLink: webLink)
-        case .new:
-            handleNewWebLink(webLink: webLink)
-        }
-    }
-    
-    private func handleLegacyWebLink(webLink: String) {
-        self.router.dismissModule(animated: false)
-        guard let url = URL(string: webLink) else { return }
-        let webView = SOPTWebView(startWith: url)
-        router.push(webView)
-    }
-    
-    private func handleNewWebLink(webLink: String) {
         self.rootNavigationController.dismiss(animated: true)
         guard let url = URL(string: webLink) else { return }
         let webView = SOPTWebView(startWith: url)
@@ -225,43 +155,21 @@ public final class ApplicationCoordinator: BaseCoordinator {
 
 extension ApplicationCoordinator {
     private func runSplashFlow() {
-        var coordinator: BaseCoordinator
-        
-        switch Config.coordinatorFlag {
-        case .legacy:
-            let legacyCoordinator = LegacySplashCoordinator(
-                router: router,
-                factory: LegacySplashBuilder()
-            )
-            
-            legacyCoordinator.finishFlow = { [weak self, weak legacyCoordinator] in
-                self?.checkDidSignIn()
-                self?.removeDependency(legacyCoordinator
-                )
-            }
-            addDependency(legacyCoordinator)
-            coordinator = legacyCoordinator
-        case .new:
-            let newCoordinator = SplashCoordinator(
-                navigationController: rootNavigationController,
-                factory: SplashBuilder()
-            )
-            
-            newCoordinator.finished = { [weak self] in
-                self?.checkDidSignIn()
-            }
-            
-            coordinator = newCoordinator
+        let coordinator = SplashCoordinator(
+            navigationController: rootNavigationController,
+            factory: SplashBuilder()
+        )
+
+        coordinator.finished = { [weak self] in
+            self?.checkDidSignIn()
         }
-        
+
         coordinator.start()
     }
-    
+
     private func checkDidSignIn() {
         if !UserDefaultKeyList.CoreAuth.hasAccessToken() {
             runSignInFlow(by: .root)
-        } else if Config.coordinatorFlag == .legacy {
-            runLegacyTabBarFlow()
         } else {
             Task { [weak self] in
                 await self?.runTabBarFlow()
@@ -277,138 +185,12 @@ extension ApplicationCoordinator {
         by style: CoordinatorStartingOption,
         with url: String? = nil
     ) {
-        @Injected var coordinator: DefaultAuthCoordinator
-        
-        switch Config.coordinatorFlag {
-        case .legacy:
-            coordinator.finishFlow = { [weak self, weak coordinator] userType in
-                if Config.coordinatorFlag == .legacy {
-                    self?.runLegacyTabBarFlow(type: userType)
-                } else {
-                    Task { [weak self] in
-                        await self?.runTabBarFlow(type: userType)
-                    }
-                }
-                self?.removeDependency(coordinator)
-            }
-            addDependency(coordinator)
-        case .new:
-            let coordinator = coordinator as? AuthCoordinator
-            coordinator?.delegate = self
-        }
-        
+        @Injected var coordinator: BaseCoordinator
+
+        let authCoordinator = coordinator as? AuthCoordinator
+        authCoordinator?.delegate = self
+
         coordinator.start(by: style)
-    }
-    
-    private func runSignInSuccessFlow(with url: String) {
-        childCoordinators = []
-        @Injected var coordinator: DefaultAuthCoordinator
-        
-        switch Config.coordinatorFlag {
-        case .legacy:
-            coordinator.finishFlow = { [weak self, weak coordinator] userType in
-                if Config.coordinatorFlag == .legacy {
-                    self?.runLegacyTabBarFlow(type: userType)
-                } else {
-                    Task { [weak self] in
-                        await self?.runTabBarFlow(type: userType)
-                    }
-                }
-                self?.removeDependency(coordinator)
-            }
-            addDependency(coordinator)
-        case .new:
-            let coordinator = coordinator as? AuthCoordinator
-            coordinator?.delegate = self
-        }
-        
-        coordinator.start(by: .rootWindow(animated: false, message: nil))
-    }
-}
-
-// MARK: - LegacyTabBarFlow
-
-extension ApplicationCoordinator {
-    internal func runLegacyTabBarFlow(type: UserType? = nil, initSelectedTabIndex: Int = 0) {
-//        defer {
-//            bindNotification()
-//        }
-//
-//        self.childCoordinators = []
-//
-//        let tabBarBuilder = TabBarBuilder()
-//        let userType = type ?? UserDefaultKeyList.CoreAuth.getUserType()
-//
-//        let homeCoordinator = runHomeFlow(type: userType)
-//        guard let homeVC = homeCoordinator.rootViewController else { return }
-//
-//        let soptlogCoordinator = runSoptlogFlow(type: userType)
-//        guard let soptlogVC = soptlogCoordinator.rootViewController else { return }
-//
-//        let (tabbarController, viewModel) = tabBarBuilder.makeTabBar(
-//            with: [homeVC,
-//                   soptlogVC],
-//            userType: userType
-//        )
-//
-//        let coordinator = LegacyTabBarCoordinator(
-//            router: router,
-//            factory: (tabbarController, viewModel),
-//            items: [
-//                homeVC,
-//                soptlogVC
-//            ]
-//        )
-//
-//        self.legacyRootController = tabbarController.asNavigationController
-//        self.tabBarController = tabbarController
-//
-//        self.tabBarController?.selectedIndex = initSelectedTabIndex
-//
-//        // 각 코디네이터 실행
-//        coordinator.requestCoordinating = { [weak self, weak coordinator] destination in
-//            switch destination {
-//            case .home:
-//                self?.homeCoordinator?.requestCoordinating = { [weak self, weak coordinator] destination in
-//                    switch destination {
-//                    case .attendance:
-//                        self?.runAttendanceFlow()
-//                    case .setting(let userType):
-//                        self?.runMyPageFlow(of: userType)
-//                    case .signIn:
-//                        self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
-//                        self?.removeDependency(coordinator)
-//                    case .notification:
-//                        self?.runNotificationFlow()
-//                    case .soptlog:
-//                        self?.tabBarController?.selectedIndex = 1
-//                    case .deepLink(let url):
-//                        self?.notificationHandler.receive(deepLink: url)
-//                        guard let deepLink = self?.notificationHandler.deepLink.value else { return }
-//                        self?.handleDeepLink(deepLink: deepLink)
-//                    case .webLink(let url):
-//                        self?.handleWebLink(webLink: url)
-//                    case .calendar:
-//                        self?.showHomeCalendarDetail()
-//                    case .poke(let isNewUser):
-//                        _ = isNewUser ? self?.runPokeOnboardingFlow() : self?.runPokeFlow()
-//                    }
-//                }
-//            case .soptlog:
-//                self?.soptlogCoordinator?.requestCoordinating = { [weak self] destination in
-//                    switch destination {
-//                    case .webLink(let url):
-//                        self?.handleWebLink(webLink: url)
-//                    }
-//                }
-//            case .signIn:
-//                self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
-//                self?.removeDependency(coordinator)
-//            }
-//        }
-//
-//        addDependency(coordinator)
-//        coordinator.start()
     }
 }
 
@@ -471,53 +253,13 @@ extension ApplicationCoordinator {
 extension ApplicationCoordinator {
     @discardableResult
     internal func runHomeFlow(type: UserType) -> BaseCoordinator {
-        var coordinator: BaseCoordinator
-        
-        switch Config.coordinatorFlag {
-        case .legacy:
-            let legacyCoordinator = LegacyHomeCoordinator(
-                router: LegacyRouter(rootController: self.legacyRootController ?? self.router.asNavigationController),
-                factory: LegacyHomeBuilder(),
-                userType: type
-            )
-            
-            legacyCoordinator.requestCoordinating = { [weak self, weak legacyCoordinator] destination in
-                switch destination {
-                case .attendance:
-                    self?.runAttendanceFlow()
-                case .signIn:
-                    self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
-                    self?.removeDependency(legacyCoordinator)
-                case .notification:
-                    self?.runNotificationFlow()
-                case .mypage:
-                    if let index = TabBarItemType.mypage.getTabIndex(in: self?.activeTabTypes ?? []) {
-                        self?.tabBarController?.selectedIndex = index
-                    }
-                case .appService(let type):
-                    self?.runAppServiceFlow(type)
-                case .deepLink(let url):
-                    self?.notificationHandler.receive(deepLink: url)
-                    guard let deepLink = self?.notificationHandler.deepLink.value else { return }
-                    self?.handleDeepLink(deepLink: deepLink)
-                case .webLink(let url):
-                    self?.handleWebLink(webLink: url)
-                case .calendar:
-                    self?.showHomeCalendarDetail()
-                }
-            }
-            addDependency(legacyCoordinator)
-            coordinator = legacyCoordinator
-        case .new:
-            let newCoordinator = HomeCoordinator(
-                navigationController: homeNavigationController,
-                factory: HomeBuilder(),
-                userType: type
-            )
-            newCoordinator.delegate = self
-            coordinator = newCoordinator
-        }
-        
+        let coordinator = HomeCoordinator(
+            navigationController: homeNavigationController,
+            factory: HomeBuilder(),
+            userType: type
+        )
+        coordinator.delegate = self
+
         coordinator.start()
         return coordinator
     }
@@ -527,33 +269,12 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     public func showHomeCalendarDetail() {
-        switch Config.coordinatorFlag {
-        case .legacy: showLegacyHomeCalendarDetail()
-        case .new: showNewHomeCalendarDetail()
-        }
-    }
-    
-    public func showLegacyHomeCalendarDetail() {
-        var homeCalendarDetail = LegacyHomeBuilder().makeHomeCalendarDetail()
-        
-        homeCalendarDetail.vm.onNaviBackButtonTap = { [weak self] in
-            self?.router.popModule()
-        }
-        
-        homeCalendarDetail.vm.onAttendanceButtonTap = { [weak self] in
-            self?.runAttendanceFlow()
-        }
-
-        UIWindow.getRootNavigationController.pushViewController(homeCalendarDetail.vc.viewController, animated: true)
-    }
-    
-    public func showNewHomeCalendarDetail() {
         var homeCalendarDetail = HomeBuilder().makeHomeCalendarDetail()
-        
+
         homeCalendarDetail.vm.onNaviBackButtonTap = { [weak self] in
             self?.rootNavigationController.popViewController(animated: true)
         }
-        
+
         homeCalendarDetail.vm.onAttendanceButtonTap = { [weak self] in
             self?.runAttendanceFlow()
         }
@@ -566,31 +287,14 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runAttendanceFlow() -> DefaultCoordinator {
-        var coordinator: DefaultCoordinator
-        
-        switch Config.coordinatorFlag {
-        case .legacy:
-            coordinator = LegacyAttendanceCoordinator(
-                router: LegacyRouter(
-                    rootController: UIWindow.getRootNavigationController
-                ),
-                factory: LegacyAttendanceBuilder()
-            )
-            coordinator.finishFlow = { [weak self, weak coordinator] in
-                coordinator?.childCoordinators = []
-                self?.removeDependency(coordinator)
-            }
-            addDependency(coordinator)
-        case .new:
-            coordinator = AttendanceCoordinator(
-                navigationController: UIWindow.getRootNavigationController,
-                factory: AttendanceBuilder()
-            )
-        }
-        
+    internal func runAttendanceFlow() -> BaseCoordinator {
+        let coordinator = AttendanceCoordinator(
+            navigationController: UIWindow.getRootNavigationController,
+            factory: AttendanceBuilder()
+        )
+
         coordinator.start()
-        
+
         return coordinator
     }
 }
@@ -611,26 +315,12 @@ extension ApplicationCoordinator {
     
     @discardableResult
     internal func runSoptletterOnboardingFlow() -> BaseCoordinator {
-        var coordinator: BaseCoordinator
-        
-        switch Config.coordinatorFlag {
-        case .legacy:
-            let legacyCoordinator = SoptletterCoordinator(
-                navigationController: UIWindow.getRootNavigationController,
-                factory: SoptletterBuilder()
-            )
-            addDependency(legacyCoordinator)
-            coordinator = legacyCoordinator
-            coordinator.start()
-        case .new:
-            let newCoordinator = SoptletterCoordinator(
-                navigationController: UIWindow.getRootNavigationController,
-                factory: SoptletterBuilder()
-            )
-            newCoordinator.start()
-            coordinator = newCoordinator
-        }
-        
+        let coordinator = SoptletterCoordinator(
+            navigationController: UIWindow.getRootNavigationController,
+            factory: SoptletterBuilder()
+        )
+        coordinator.start()
+
         return coordinator
     }
     
@@ -642,33 +332,12 @@ extension ApplicationCoordinator {
 extension ApplicationCoordinator {
     @discardableResult
     internal func runStampFlow(isRouteFromTabBar: Bool = true) -> BaseCoordinator {
-        var coordinator: BaseCoordinator
-
-        switch Config.coordinatorFlag {
-        case .legacy:
-            let legacyStampCoordinator = LegacyStampCoordinator(
-                router: LegacyRouter(
-                    rootController: UIWindow.getRootNavigationController
-                ),
-                factory: LegacyStampBuilder()
-            )
-            legacyStampCoordinator.finishFlow = { [weak self, weak legacyStampCoordinator] in
-                legacyStampCoordinator?.childCoordinators = []
-                self?.removeDependency(legacyStampCoordinator)
-            }
-            addDependency(legacyStampCoordinator)
-            coordinator = legacyStampCoordinator
-            coordinator.start()
-
-        case .new:
-            let newCoordinator = StampCoordinator(
-                navigationController: stampNavigationController,
-                factory: StampBuilder(),
-                mypageFactory: MyPageBuilder()
-            )
-            newCoordinator.start(isRouteFromTabBar: isRouteFromTabBar)
-            coordinator = newCoordinator
-        }
+        let coordinator = StampCoordinator(
+            navigationController: stampNavigationController,
+            factory: StampBuilder(),
+            mypageFactory: MyPageBuilder()
+        )
+        coordinator.start(isRouteFromTabBar: isRouteFromTabBar)
 
         return coordinator
     }
@@ -679,91 +348,33 @@ extension ApplicationCoordinator {
 extension ApplicationCoordinator {
     @discardableResult
     internal func runPokeFlow() -> BaseCoordinator {
-        var coordinator: BaseCoordinator
-
-        switch Config.coordinatorFlag {
-        case .legacy:
-            let legacyPokeCoordinator = LegacyPokeCoordinator(
-                router: LegacyRouter(rootController: UIWindow.getRootNavigationController),
-                factory: LegacyPokeBuilder()
-            )
-
-            legacyPokeCoordinator.finishFlow = { [weak self, weak legacyPokeCoordinator] in
-                legacyPokeCoordinator?.childCoordinators = []
-                self?.removeDependency(legacyPokeCoordinator)
-            }
-            coordinator = legacyPokeCoordinator
-            addDependency(coordinator)
-
-            coordinator.start()
-        case .new:
-            let newCoordinator = PokeCoordinator(
-                navigationController: pokeNavigationController,
-                factory: PokeBuilder()
-            )
-            newCoordinator.start()
-            coordinator = newCoordinator
-        }
-
-        return coordinator
-    }
-    
-    @discardableResult
-    internal func runPokeOnboardingFlow() -> DefaultCoordinator {
-        var coordinator: DefaultCoordinator
-        
-        switch Config.coordinatorFlag {
-        case .legacy:
-            let legacyCoordinator = LegacyPokeOnboardingCoordinator(
-                router: LegacyRouter(
-                    rootController: UIWindow.getRootNavigationController
-                ),
-                factory: LegacyPokeBuilder()
-            )
-
-            legacyCoordinator.finishFlow = { [weak self, weak legacyCoordinator] in
-                legacyCoordinator?.childCoordinators = []
-                self?.removeDependency(legacyCoordinator)
-            }
-            addDependency(legacyCoordinator)
-            coordinator = legacyCoordinator
-        case .new:
-            let newCoordinator = PokeOnboardingCoordinator(
-                navigationController: UIWindow.getRootNavigationController,
-                factory: PokeBuilder()
-            )
-            coordinator = newCoordinator
-        }
-        
+        let coordinator = PokeCoordinator(
+            navigationController: pokeNavigationController,
+            factory: PokeBuilder()
+        )
         coordinator.start()
-        
+
         return coordinator
     }
-    
-    internal func runPokeNotificationListFlow() -> DefaultCoordinator {
-        var coordinator: DefaultCoordinator
-        
-        switch Config.coordinatorFlag {
-        case .legacy:
-            coordinator = LegacyPokeNotificationListCoordinator(
-                router: LegacyRouter(
-                    rootController: UIWindow.getRootNavigationController
-                ),
-                factory: LegacyPokeBuilder()
-            )
-            addDependency(coordinator)
-            coordinator.finishFlow = { [weak self, weak coordinator] in
-                coordinator?.childCoordinators = []
-                self?.removeDependency(coordinator)
-            }
-        case .new:
-            coordinator = PokeNotificationListCoordinator(
-                navigationController: UIWindow.getRootNavigationController,
-                factory: PokeBuilder()
-            )
-        }
-        
-        
+
+    @discardableResult
+    internal func runPokeOnboardingFlow() -> BaseCoordinator {
+        let coordinator = PokeOnboardingCoordinator(
+            navigationController: UIWindow.getRootNavigationController,
+            factory: PokeBuilder()
+        )
+
+        coordinator.start()
+
+        return coordinator
+    }
+
+    internal func runPokeNotificationListFlow() -> BaseCoordinator {
+        let coordinator = PokeNotificationListCoordinator(
+            navigationController: UIWindow.getRootNavigationController,
+            factory: PokeBuilder()
+        )
+
         coordinator.start()
 
         return coordinator
@@ -801,46 +412,17 @@ extension ApplicationCoordinator {
 extension ApplicationCoordinator {
     @discardableResult
     internal func runNotificationFlow() -> BaseCoordinator {
-        var coordinator: BaseCoordinator
-        
-        switch Config.coordinatorFlag {
-        case .legacy:
-            let legacyCoordinator = LegacyNotificationCoordinator(
-                router: LegacyRouter(
-                    rootController: UIWindow.getRootNavigationController
-                ),
-                factory: LegacyNotificationBuilder()
-            )
-            
-            legacyCoordinator.requestCoordinating = { [weak self] destination in
-                switch destination {
-                case .deepLink(let url):
-                    self?.notificationHandler.receive(deepLink: url)
-                case .webLink(let url):
-                    self?.notificationHandler.receive(webLink: url)
-                }
-            }
-            
-            addDependency(legacyCoordinator)
-            legacyCoordinator.finishFlow = { [weak self, weak legacyCoordinator] in
-                legacyCoordinator?.childCoordinators = []
-                self?.removeDependency(legacyCoordinator)
-            }
-            coordinator = legacyCoordinator
-        case .new:
-            let newCoordinator = NotificationCoordinator(
-                navigationController: UIWindow.getRootNavigationController,
-                factory: NotificationBuilder()
-            )
-            newCoordinator.delegate = self
-            coordinator = newCoordinator
-        }
-        
+        let coordinator = NotificationCoordinator(
+            navigationController: UIWindow.getRootNavigationController,
+            factory: NotificationBuilder()
+        )
+        coordinator.delegate = self
+
         coordinator.start()
-        
+
         return coordinator
     }
-    
+
 }
 
 // MARK: - SoptlogFlow
@@ -848,48 +430,14 @@ extension ApplicationCoordinator {
 extension ApplicationCoordinator {
     @discardableResult
     internal func runSoptlogFlow(type: UserType) -> BaseCoordinator {
-        var coordinator: BaseCoordinator
-        
-        switch Config.coordinatorFlag {
-        case .legacy:
-            let legacyCoordinator = LegacySoptlogCoordinator(
-                router: LegacyRouter(rootController: self.legacyRootController ?? self.router.asNavigationController),
-                factory: LegacySoptlogBuilder(),
-                userType: type
-            )
-            
-            legacyCoordinator.requestCoordinating = { [weak self] destination in
-                switch destination {
-                case .webLink(let url):
-                    self?.handleWebLink(webLink: url)
-                case .home:
-                    self?.tabBarController?.selectedIndex = 0
-                case .signIn:
-                    self?.runSignInFlow(by: .rootWindow(animated: true, message: nil))
-                    self?.removeDependency(legacyCoordinator)
-                default:
-                    return
-                }
-            }
-            
-            legacyCoordinator.finishFlow = { [weak self, weak legacyCoordinator] in
-                legacyCoordinator?.childCoordinators = []
-                self?.removeDependency(legacyCoordinator)
-            }
-            
-            addDependency(legacyCoordinator)
-            coordinator = legacyCoordinator
-        case .new:
-            let newCoordinator = SoptlogCoordinator(
-                navigationController: mypageNavigationController,
-                factory: SoptlogBuilder()
-            )
-            newCoordinator.delegate = self
-            coordinator = newCoordinator
-        }
-        
+        let coordinator = SoptlogCoordinator(
+            navigationController: mypageNavigationController,
+            factory: SoptlogBuilder()
+        )
+        coordinator.delegate = self
+
         coordinator.start()
-        
+
         return coordinator
     }
 }
