@@ -299,10 +299,15 @@ extension HomeForMemberViewModel {
     
     private func fetchRecentSchedule() async throws -> HomePresentationModel.RecentSchedule {
         if let cached = fetchedRecentSchedule { return cached }
-        let entity = try await useCase.getRecentScheduleAsync()
-        let recentSchedule = entity.toPresentation()
-        fetchedRecentSchedule = recentSchedule
-        return recentSchedule
+        do {
+           let entity = try await useCase.getRecentScheduleAsync()
+           let recentSchedule = entity.toPresentation()
+           fetchedRecentSchedule = recentSchedule
+           return recentSchedule
+        } catch {
+            // TODO: 임시로 모든 실패를 일정 없음 으로 처리/통합서버 이후 404로 처리하기
+            return HomePresentationModel.RecentSchedule(date: "", type: "", title: "일정 없음")
+        }
     }
     
     private func fetchSurvey() async throws -> HomePresentationModel.Survey {
