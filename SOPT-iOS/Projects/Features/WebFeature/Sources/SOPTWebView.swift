@@ -75,7 +75,7 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
             $0.backgroundColor = DSKitAsset.Colors.black100.color
             $0.scrollView.backgroundColor = DSKitAsset.Colors.black100.color
             
-            #if DEBUG
+            #if DEBUG || QA
             if #available(iOS 16.4, *) {
                 $0.isInspectable = true
             }
