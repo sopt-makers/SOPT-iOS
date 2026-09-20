@@ -86,7 +86,7 @@ public final class StampCoordinator: BaseCoordinator {
         missionList.vc.onCellTap = { [weak self] model, username in
             guard let self else { return }
             
-            self.showMissionDetail(model, username, isAppjam: true)
+            self.showMissionDetail(model, username, isAppjam: false)
         }
 
         missionList.vc.onReportButtonTap = { [weak self] in
@@ -118,7 +118,7 @@ extension StampCoordinator {
             level: level,
             isCompleted: true
         )
-        showMissionDetail(model, username, isAppjam: true)
+        showMissionDetail(model, username, isAppjam: false)
     }
 
     @available(*, deprecated, message: "⚠️ 앱잼 템프인지 일반 미션인지 확인했나요? isAppjam 파라미터로 분기해주세요!")
@@ -280,7 +280,7 @@ extension StampCoordinator {
 
         otherMissionList.vc.onCellTap = { [weak self] model, username in
             guard let self else { return }
-            self.showMissionDetail(model, username, isAppjam: true)
+            self.showMissionDetail(model, username, isAppjam: false)
         }
 
         rootController?.pushViewController(otherMissionList.vc, animated: true)
