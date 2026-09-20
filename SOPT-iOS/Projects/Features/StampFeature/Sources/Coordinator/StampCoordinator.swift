@@ -137,8 +137,10 @@ extension StampCoordinator {
 
         missionDetail.vc.onComplete = { [weak self] starViewLevel, handler in
             guard let self else { return }
-            self.showMissionComplete(starViewLevel, handler)
-            self.rootController?.popToRootViewController(animated: true)
+            self.showMissionComplete(starViewLevel) { [weak self] in
+                handler?()
+                self?.rootController?.popToRootViewController(animated: true)
+            }
         }
 
         missionDetail.vc.onNaviBackTap = { [weak self] in
@@ -300,8 +302,10 @@ extension StampCoordinator {
 
         missionDetail.vc.onComplete = { [weak self] starViewLevel, handler in
             guard let self else { return }
-            self.showMissionComplete(starViewLevel, handler)
-            self.rootController?.popToRootViewController(animated: true)
+            self.showMissionComplete(starViewLevel) { [weak self] in
+                handler?()
+                self?.rootController?.popToRootViewController(animated: true)
+            }
         }
 
         missionDetail.vc.onNaviBackTap = { [weak self] in
