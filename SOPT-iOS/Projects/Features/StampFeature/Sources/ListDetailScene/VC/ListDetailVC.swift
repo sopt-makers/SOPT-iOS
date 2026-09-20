@@ -329,7 +329,9 @@ extension ListDetailVC {
         self.imageURL = model.image
         
         self.missionView.setStarLevel(model.starLevel)
-        self.missionView.setMissionLabelText(model.missionTitle)
+        if !model.missionTitle.isEmpty {
+            self.missionView.setMissionLabelText(model.missionTitle)
+        }
 
         if let profileInfo = model.profileInfo {
             showProfileInfo(profileInfo)

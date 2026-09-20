@@ -24,8 +24,8 @@ public struct ListDetailEntity: Codable {
   public let teamName: String?
   public let ownerNickname: String?
   public let ownerProfileImage: String?
-  public let missionLevel: Int
-    public let missionTitle: String
+  public let missionLevel: Int?
+    public let missionTitle: String?
 
   enum CodingKeys: String, CodingKey {
     case createdAt
@@ -63,8 +63,8 @@ public struct ListDetailEntity: Codable {
     teamName: String? = nil,
     ownerNickname: String? = nil,
     ownerProfileImage: String? = nil,
-    missionLevel: Int,
-    missionTitle: String
+    missionLevel: Int?,
+    missionTitle: String?
   ) {
     self.createdAt = createdAt
     self.updatedAt = updatedAt
