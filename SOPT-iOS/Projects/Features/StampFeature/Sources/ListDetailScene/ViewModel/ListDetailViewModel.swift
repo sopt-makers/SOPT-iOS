@@ -29,7 +29,7 @@ public class ListDetailViewModel: ListDetailViewModelType {
     public var starLevel: StarViewLevel!
     public var missionId: Int!
     public var missionTitle: String!
-    public var stampId: Int!
+    public var stampId: Int?
     public var isOtherUser: Bool
     public var otherUserName: String!
     public var isAppjam: Bool?
@@ -37,6 +37,7 @@ public class ListDetailViewModel: ListDetailViewModelType {
     var totalClapCount: Int = 0
     var myClapCount: Int = 0
     var viewcount: Int = 0
+    var isAppjamMode: Bool? { UserDefaultKeyList.User.isAppjam }
     
     private var uploadedUrl: String?
     
@@ -186,7 +187,8 @@ extension ListDetailViewModel {
             .removeDuplicates()
             .withUnretained(self)
             .sink { owner, _ in
-                owner.useCase.deleteStamp(stampId: owner.stampId)
+                guard let stampId = owner.stampId else { return }
+                owner.useCase.deleteStamp(stampId: stampId)
             }.store(in: self.cancelBag)
         
         input.textEdited
@@ -204,11 +206,12 @@ extension ListDetailViewModel {
         input.clapButtonTapped
             .withUnretained(self)
             .sink { owner, count in
-                owner.useCase.clap(stampId: owner.stampId, clapCount: count)
+                guard let stampId = owner.stampId else { return }
+                owner.useCase.clap(stampId: stampId, clapCount: count)
                 AmplitudeInstance.shared.track(
                     eventType: .clickUpdateClap,
                     eventProperties: [
-                        "stampId": owner.stampId ?? 0,
+                        "stampId": stampId,
                         "appliedCount": count,
                         "totalClapCount": owner.totalClapCount,
                         "receiverNick": owner.otherUserName ?? ""

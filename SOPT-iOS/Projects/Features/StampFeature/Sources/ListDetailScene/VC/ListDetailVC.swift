@@ -54,6 +54,7 @@ public class ListDetailVC: UIViewController, ListDetailViewControllable {
     private var totalClapCount: Int = 0
     private var myClapCount: Int = 0
     private var isAnimating: Bool = false
+    private var isAppjamtampOpen: Bool = false
     
     private let deleteButtonTapped = PassthroughSubject<Bool, Never>()
     private let imageSelected = PassthroughSubject<Data, Never>()

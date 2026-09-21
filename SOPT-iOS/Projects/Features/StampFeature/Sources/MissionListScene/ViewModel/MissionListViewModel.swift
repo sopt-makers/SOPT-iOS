@@ -81,7 +81,10 @@ extension MissionListViewModel {
                 owner.useCase.updateCurrentSoptampUserInfo()
                 if case .default = owner.missionListsceneType {
                     output.isLoading = true
-                    owner.useCase.fetchIsAppjamMode()
+                    let isAppjamMode = owner.useCase.fetchIsAppjamMode()
+                    owner.isAppjamMode = isAppjamMode
+                    output.isAppjamMode = isAppjamMode
+                    output.isLoading = false
                 }
             }.store(in: cancelBag)
         
@@ -174,18 +177,6 @@ extension MissionListViewModel {
             .asDriver()
             .sink { _ in
                 output.needNetworkAlert.send()
-            }.store(in: cancelBag)
-
-        self.useCase.isAppjamModeFetched
-            .asDriver()
-            .withUnretained(self)
-            .sink { owner, isAppjamMode in
-                owner.isAppjamMode = isAppjamMode
-                output.isAppjamMode = isAppjamMode
-
-                guard case .default = owner.missionListsceneType else { return }
-                owner.fetchMissionListByType(type: owner.missionTypeSelected.value)
-                output.isLoading = false
             }.store(in: cancelBag)
     }
 }

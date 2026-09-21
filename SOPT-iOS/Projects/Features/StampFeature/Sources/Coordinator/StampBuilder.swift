@@ -19,14 +19,13 @@ final class StampBuilder {
     @Injected public var rankingRepository: RankingRepositoryInterface
     @Injected public var listDetailRepository: ListDetailRepositoryInterface
     @Injected public var appjamRankingRepository: AppjamRankingRepositoryInterface
-    @Injected public var homeRepository: HomeRepositoryInterface
 
     public init() { }
 }
 
 extension StampBuilder: StampFeatureBuildable {
     public func makeMissionListVC(sceneType: MissionListSceneType, isRouteFromTabBar: Bool, coordinator: Coordinator) -> MissionListPresentable {
-        let useCase = DefaultMissionListUseCase(repository: missionListRepository, homeRepository: homeRepository)
+        let useCase = DefaultMissionListUseCase(repository: missionListRepository)
         let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType, coordinator: coordinator)
         let missionListVC = MissionListVC(viewModel: viewModel, isRouteFromTabBar: isRouteFromTabBar)
    

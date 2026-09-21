@@ -16,19 +16,17 @@ public protocol MissionListUseCase {
     func fetchIsActiveGenerationUser()
     func updateCurrentSoptampUserInfo()
     func fetchAppjamMissionList(teamNumber: String?, isCompleted: Bool?)
-    func fetchIsAppjamMode()
+    func fetchIsAppjamMode() -> Bool
 
     var missionListModelsFetched: PassthroughSubject<[MissionListModel], Error> { get set }
     var usersActiveGenerationInfo: PassthroughSubject<UsersActiveGenerationStatusViewResponse, Error> { get set }
     var appjamMissionListModelFetched: PassthroughSubject<AppjamMissionListModel, Error> { get set }
-    var isAppjamModeFetched: PassthroughSubject<Bool, Error> { get set }
     var errorOccurred: PassthroughSubject<Void, Never> { get set }
 }
 
 public class DefaultMissionListUseCase {
 
-    private let repository: MissionListRepositoryInterface
-    private let homeRepository: HomeRepositoryInterface
+    private let missionRepository: MissionListRepositoryInterface
     private var cancelBag = CancelBag()
     public var missionListModelsFetched = PassthroughSubject<[MissionListModel], Error>()
     public var usersActiveGenerationInfo = PassthroughSubject<UsersActiveGenerationStatusViewResponse, Error>()
@@ -36,16 +34,15 @@ public class DefaultMissionListUseCase {
     public var isAppjamModeFetched = PassthroughSubject<Bool, Error>()
     public var errorOccurred = PassthroughSubject<Void, Never>()
 
-    public init(repository: MissionListRepositoryInterface, homeRepository: HomeRepositoryInterface) {
-        self.repository = repository
-        self.homeRepository = homeRepository
+    public init(repository: MissionListRepositoryInterface) {
+        self.missionRepository = repository
     }
 }
 
 extension DefaultMissionListUseCase: MissionListUseCase {
     
     public func fetchMissionList(type: MissionListFetchType) {
-        repository.fetchMissionList(type: type, userName: nil)
+        missionRepository.fetchMissionList(type: type, userName: nil)
             .sink(receiveCompletion: { event in
                 print("completion: \(event)")
                 if case Subscribers.Completion.failure = event {
@@ -58,7 +55,7 @@ extension DefaultMissionListUseCase: MissionListUseCase {
     }
     
     public func fetchIsActiveGenerationUser() {
-        self.repository
+        self.missionRepository
             .fetchIsActiveGenerationUser()
             .sink(receiveCompletion: { event in
                 print("completion: \(event)")
@@ -68,7 +65,7 @@ extension DefaultMissionListUseCase: MissionListUseCase {
     }
     
     public func fetchOtherUserMissionList(userName: String) {
-        repository.fetchMissionList(type: .complete, userName: userName)
+        missionRepository.fetchMissionList(type: .complete, userName: userName)
             .sink(receiveCompletion: { event in
                 print("completion: \(event)")
             }, receiveValue: { model in
@@ -78,7 +75,7 @@ extension DefaultMissionListUseCase: MissionListUseCase {
     }
     
     public func updateCurrentSoptampUserInfo() {
-        repository.fetchCurrentSoptampInfo()
+        missionRepository.fetchCurrentSoptampInfo()
             .sink(receiveCompletion: {
                 print("completion: \($0)")
             }, receiveValue: { info in
@@ -88,7 +85,7 @@ extension DefaultMissionListUseCase: MissionListUseCase {
     }
     
     public func fetchAppjamMissionList(teamNumber: String?, isCompleted: Bool?) {
-        repository.fetchAppjamMissionList(teamNumber: teamNumber, isCompleted: isCompleted)
+        missionRepository.fetchAppjamMissionList(teamNumber: teamNumber, isCompleted: isCompleted)
             .sink(receiveCompletion: { event in
                 if case Subscribers.Completion.failure = event {
                     self.errorOccurred.send()
@@ -100,18 +97,9 @@ extension DefaultMissionListUseCase: MissionListUseCase {
 
     }
 
-    public func fetchIsAppjamMode() {
-        homeRepository.getIsAppjamMode()
-            .sink(receiveCompletion: { event in
-                if case Subscribers.Completion.failure = event {
-                    self.errorOccurred.send()
-                    // 모드 조회 실패 시 일반 모드로 간주
-                    self.isAppjamModeFetched.send(false)
-                }
-            }, receiveValue: { isAppjamMode in
-                self.isAppjamModeFetched.send(isAppjamMode)
-            })
-            .store(in: cancelBag)
+    public func fetchIsAppjamMode() -> Bool {
+        guard let isAppjamMode = UserDefaultKeyList.User.isAppjam else { return false }
+        return isAppjamMode
     }
 }
 

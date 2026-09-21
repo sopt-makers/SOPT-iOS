@@ -24,6 +24,7 @@ public struct UserDefaultKeyList {
         @UserDefaultWrapper<Bool>(key: "isFirstVisitToPokeView") public static var isFirstVisitToPokeOnboardingView
         @UserDefaultWrapper<Bool>(key: "isVisitedPokeMainView") public static var isVisitedPokeMainView
         @UserDefaultWrapper<Bool>(key: "isCompleteSoptletterOnboarding") public static var isCompleteSoptletterOnboarding
+        @UserDefaultWrapper<Bool>(key: "isAppjam") public static var isAppjam
     }
     
     public struct AppNotice {
@@ -91,5 +92,10 @@ extension UserDefaultKeyList.User {
             return false
         }
         return true
+    }
+    
+    public static func getAppjamMode() -> Bool {
+        guard let isAppjam = isAppjam else { return false }
+        return isAppjam
     }
 }

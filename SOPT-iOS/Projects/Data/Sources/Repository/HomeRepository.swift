@@ -51,10 +51,9 @@ extension HomeRepository: HomeRepositoryInterface {
             .eraseToAnyPublisher()
     }
 
-    public func getIsAppjamMode() -> AnyPublisher<Bool, any Error> {
-        return homeService.getAppServiceAccessStatus()
-            .map { $0.isAppjamMode }
-            .eraseToAnyPublisher()
+    public func getIsAppjamMode() -> Bool {
+        guard let isAppjam = UserDefaultKeyList.User.isAppjam else { return false }
+        return isAppjam
     }
 
     public func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], any Error> {
@@ -92,6 +91,7 @@ extension HomeRepository: HomeRepositoryInterface {
     
     public func getAppServicesAsync() async throws -> [Domain.HomeAppServicesModel] {
         let entity = try await homeService.getAppServiceAccessStatusAsync()
+        UserDefaultKeyList.User.isAppjam = entity.isAppjamMode
         return entity.appServices.map { $0.toDomain() }
     }
 
