@@ -74,18 +74,21 @@ extension STPartChartRectangleView {
     starRankView.isHidden = (rank > 3)
 
     if rank == 1 {
+      rankLabel.isHidden = false
       rankLabel.text = "\(rank)"
       rankLabel.setTypography(Typography.heading2,
                               textColor: SemanticColor.Fg.Neutral.bold)
       rectangleView.backgroundColor = DSKitAsset.Colors.soptampPink300.color
       starRankView.image = DSKitAsset.Assets.icBigStar.image.withRenderingMode(.alwaysTemplate)
     } else if rank == 2 {
+      rankLabel.isHidden = false
       rankLabel.text = "\(rank)"
       rankLabel.setTypography(Typography.heading2,
                               textColor: DSKitAsset.Colors.green300.color)
       rectangleView.backgroundColor = DSKitAsset.Colors.green300.color
       starRankView.image = nil
     } else if rank == 3 {
+      rankLabel.isHidden = false
       rankLabel.text = "\(rank)"
       rankLabel.setTypography(Typography.heading2,
                               textColor: DSKitAsset.Colors.soptampPurple300.color)
