@@ -39,7 +39,7 @@ final class ClapListVC: UIViewController, ClapListViewControllable {
     }
 
     private let titleLabel = UILabel().then {
-        $0.text = I18N.MyPage.SoptampSection.clapList
+        $0.text = I18N.ListDetail.clapList
         $0.setTypography(Typography.title3, textColor: SemanticColor.Fg.Neutral.bold)
     }
 
@@ -47,6 +47,11 @@ final class ClapListVC: UIViewController, ClapListViewControllable {
         $0.backgroundColor = SemanticColor.Bg.Neutral.ghost
         $0.layer.cornerRadius = BaseRadius.Base.r20
         $0.clipsToBounds = true
+    }
+    
+    private let emptyClapListLabel = UILabel().then {
+        $0.setTypography(Typography.body2, textColor: SemanticColor.Fg.Neutral.subtle)
+        $0.text = I18N.ListDetail.emptyClapList
     }
 
     private lazy var clapListCollectionView = UICollectionView(
@@ -107,7 +112,7 @@ extension ClapListVC {
         containerView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(164)
             $0.directionalHorizontalEdges.equalToSuperview().inset(16)
-            $0.bottom.lessThanOrEqualTo(view.safeAreaLayoutGuide)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
 
         backButton.snp.makeConstraints {
@@ -125,6 +130,15 @@ extension ClapListVC {
             $0.top.equalTo(titleLabel.snp.bottom).offset(12)
             $0.leading.trailing.equalToSuperview().inset(8)
             $0.bottom.equalToSuperview()
+        }
+    }
+    
+    private func setEmptyView() {
+        containerView.addSubview(emptyClapListLabel)
+        
+        emptyClapListLabel.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(236)
+            $0.centerX.equalToSuperview()
         }
     }
 }
@@ -151,7 +165,11 @@ extension ClapListVC {
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] model in
-                self?.setCollectionView(model: model)
+                if model.isEmpty {
+                    self?.setEmptyView()
+                } else {
+                    self?.setCollectionView(model: model)
+                }
             }
             .store(in: cancelBag)
     }
