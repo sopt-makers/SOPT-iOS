@@ -250,7 +250,7 @@ extension ListDetailVC {
                     owner.reloadData(owner.sceneType)
                 }
             }.store(in: self.cancelBag)
-        
+
         output.editSuccessed
             .withUnretained(self)
             .sink { owner, successed in
@@ -842,17 +842,19 @@ extension ListDetailVC {
     }
 
     private func showProfileInfo(_ info: ProfileInfo) {
-        profileInfoView.configure(name: info.name, profileImageURL: info.imageURL)
-
-        if !contentStackView.arrangedSubviews.contains(profileInfoView) {
-            contentStackView.insertArrangedSubview(profileInfoView, at: 2)
-
-            profileInfoView.snp.makeConstraints {
-                $0.leading.trailing.equalToSuperview()
+        if isAppjamtampOpen {
+            profileInfoView.configure(name: info.name, profileImageURL: info.imageURL)
+            
+            if !contentStackView.arrangedSubviews.contains(profileInfoView) {
+                contentStackView.insertArrangedSubview(profileInfoView, at: 2)
+                
+                profileInfoView.snp.makeConstraints {
+                    $0.leading.trailing.equalToSuperview()
+                }
             }
+            
+            profileInfoView.isHidden = false
         }
-
-        profileInfoView.isHidden = false
     }
 
     private func hideProfileInfo() {
