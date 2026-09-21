@@ -172,8 +172,11 @@ extension ListDetailVC {
             .publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onViewClapTap?(owner.viewModel.stampId,
-                                     owner.viewModel.otherUserName ?? "")
+                guard let stampId = owner.viewModel.stampId else { return }
+                let nickname = owner.viewModel.isOtherUser
+                    ? owner.viewModel.otherUserName ?? ""
+                    : (UserDefaultKeyList.User.soptampName ?? "")
+                owner.onViewClapTap?(stampId, nickname)
                 AmplitudeInstance.shared.trackWithUserType(event: .clickClapperlist)
             }.store(in: cancelBag)
     }
