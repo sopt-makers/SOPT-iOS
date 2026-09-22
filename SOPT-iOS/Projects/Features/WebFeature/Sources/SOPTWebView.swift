@@ -74,7 +74,11 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
             $0.isOpaque = true
             $0.backgroundColor = DSKitAsset.Colors.black100.color
             $0.scrollView.backgroundColor = DSKitAsset.Colors.black100.color
-            
+            if #available(iOS 15.0, *) {
+                $0.underPageBackgroundColor = DSKitAsset.Colors.black100.color
+            }
+            $0.alpha = 0
+
             #if DEBUG || QA
             if #available(iOS 16.4, *) {
                 $0.isInspectable = true
@@ -155,6 +159,13 @@ extension SOPTWebView {
             self.dismiss(animated: true)
         }
     }
+
+    private func revealWebView() {
+        guard self.webView.alpha == 0 else { return }
+        UIView.animate(withDuration: 0.2) {
+            self.webView.alpha = 1
+        }
+    }
     
     private func setDelegate() {
         self.webView.scrollView.delegate = self
@@ -173,15 +184,27 @@ extension SOPTWebView: WKNavigationDelegate {
             decisionHandler(.allow)
             return
         }
-        
+
         // 커스텀 스킴 처리
         if customSchemeHandler.shouldHandle(url) {
             customSchemeHandler.handle(url)
             decisionHandler(.cancel)
             return
         }
-        
+
         decisionHandler(.allow)
+    }
+
+    public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        self.revealWebView()
+    }
+
+    public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        self.revealWebView()
+    }
+
+    public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        self.revealWebView()
     }
 }
 
