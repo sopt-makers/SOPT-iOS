@@ -263,8 +263,8 @@ extension ListDetailViewModel {
                 owner.totalClapCount = model.clapCount
                 owner.myClapCount = model.myClapCount ?? 0
                 owner.viewcount = model.viewCount
-                if owner.starLevel == nil {
-                    owner.starLevel = StarViewLevel.init(rawValue: model.starLevel)
+                if let level = StarViewLevel.init(rawValue: model.starLevel) {
+                    owner.starLevel = level
                 }
                 if let mine = model.isMine {
                     owner.isOtherUser = !mine
