@@ -644,7 +644,7 @@ extension ListDetailVC {
     private func setUI(_ type: ListDetailSceneType) {
         if type == .edit {
             self.naviBar
-                .setRightButton(.delete)
+                .setRightButton(.trash)
                 .resetLeftButtonAction {
                     self.resetData()
                     self.reloadData(.completed)
