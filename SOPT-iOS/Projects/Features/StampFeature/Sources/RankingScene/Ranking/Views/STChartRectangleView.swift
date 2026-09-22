@@ -62,9 +62,8 @@ public class STChartRectangleView: UIView {
     }
     
     private lazy var usernameContainerView = UIView().then {
-        $0.layer.cornerRadius = BaseRadius.Base.full
-        $0.backgroundColor = .red
-//        $0.backgroundColor = SemanticColor.Bg.Neutral.ghost
+        $0.layer.cornerRadius = 17
+        $0.backgroundColor = SemanticColor.Bg.Neutral.ghost
     }
     
     private lazy var usernameStackView = UIStackView().then {
