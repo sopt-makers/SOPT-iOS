@@ -85,7 +85,7 @@ public class SignUpVC: UIViewController, SignUpViewControllable {
         $0.tintColor = SemanticColor.Fg.Neutral.bold
         $0.contentMode = .scaleAspectFit
         $0.backgroundColor = SemanticColor.Bg.Secondary.default
-        $0.layer.cornerRadius = 11 // firstStepIndicator.circleView(22x22)와 동일한 높이의 절반
+        $0.layer.cornerRadius = 22 / 2
         $0.layer.masksToBounds = true
         $0.isHidden = true
     }
