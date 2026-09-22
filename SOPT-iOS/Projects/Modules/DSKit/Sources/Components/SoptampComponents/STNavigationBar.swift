@@ -24,6 +24,8 @@ public enum RightButtonType {
     case none
     case addRecord
     case delete
+    case trash
+    case edit
 }
 
 public class STNavigationBar: UIView {
@@ -145,6 +147,12 @@ extension STNavigationBar {
         case .delete:
             self.rightButton.isHidden = false
             self.rightButton.setImage(MDSIcon.xCloseOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold), for: .normal)
+        case .trash:
+            self.rightButton.isHidden = false
+            self.rightButton.setImage(MDSIcon.trashOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold), for: .normal)
+        case .edit:
+            self.rightButton.isHidden = false
+            self.rightButton.setImage(MDSIcon.editOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold), for: .normal)
         }
         return self
     }

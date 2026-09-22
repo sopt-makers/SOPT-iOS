@@ -81,7 +81,9 @@ extension MissionListViewModel {
                 owner.useCase.updateCurrentSoptampUserInfo()
                 if case .default = owner.missionListsceneType {
                     output.isLoading = true
-                    owner.useCase.fetchIsAppjamMode()
+                    let isAppjamMode = owner.useCase.fetchIsAppjamMode()
+                    owner.isAppjamMode = isAppjamMode
+                    output.isAppjamMode = isAppjamMode
                 }
             }.store(in: cancelBag)
         
@@ -153,6 +155,7 @@ extension MissionListViewModel {
         fetchedMissionList.asDriver()
             .sink(receiveValue: { model in
                 output.missionListModel = model
+                output.isLoading = false
             })
             .store(in: self.cancelBag)
         
@@ -160,6 +163,7 @@ extension MissionListViewModel {
             .sink(receiveValue: { model in
                 output.missionListModel = model.missions
                 output.appjamInfo = model
+                output.isLoading = false
             })
             .store(in: self.cancelBag)
         
@@ -168,23 +172,13 @@ extension MissionListViewModel {
             .asDriver()
             .sink { usersActivateGenerationStatus in
                 output.usersActivateGenerationStatus = usersActivateGenerationStatus
+                output.isLoading = false
             }.store(in: cancelBag)
         
         self.useCase.errorOccurred
             .asDriver()
             .sink { _ in
                 output.needNetworkAlert.send()
-            }.store(in: cancelBag)
-
-        self.useCase.isAppjamModeFetched
-            .asDriver()
-            .withUnretained(self)
-            .sink { owner, isAppjamMode in
-                owner.isAppjamMode = isAppjamMode
-                output.isAppjamMode = isAppjamMode
-
-                guard case .default = owner.missionListsceneType else { return }
-                owner.fetchMissionListByType(type: owner.missionTypeSelected.value)
                 output.isLoading = false
             }.store(in: cancelBag)
     }

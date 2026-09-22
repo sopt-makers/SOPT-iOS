@@ -58,6 +58,7 @@ public class RankingVC: UIViewController, RankingViewControllable {
         label: I18N.RankingList.myRanking
     ).then {
         $0.isHidden = true
+        $0.layer.cornerRadius = 24
     }
     
     // MARK: - View Life Cycle
@@ -118,7 +119,7 @@ extension RankingVC {
         }
         
         showMyRankingFloatingButton.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(26)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-38)
             make.centerX.equalToSuperview()
         }
     }

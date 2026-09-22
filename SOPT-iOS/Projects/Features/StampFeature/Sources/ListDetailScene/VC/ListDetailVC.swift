@@ -54,6 +54,7 @@ public class ListDetailVC: UIViewController, ListDetailViewControllable {
     private var totalClapCount: Int = 0
     private var myClapCount: Int = 0
     private var isAnimating: Bool = false
+    private var isAppjamtampOpen: Bool = false
     
     private let deleteButtonTapped = PassthroughSubject<Bool, Never>()
     private let imageSelected = PassthroughSubject<Data, Never>()
@@ -147,6 +148,8 @@ public class ListDetailVC: UIViewController, ListDetailViewControllable {
         self.setGesture()
         self.setDelegate()
         self.hideKeyboard()
+        
+        self.isAppjamtampOpen = self.viewModel.isAppjam ?? false
     }
     
     deinit {
@@ -172,8 +175,11 @@ extension ListDetailVC {
             .publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onViewClapTap?(owner.viewModel.stampId,
-                                     owner.viewModel.otherUserName ?? "")
+                guard let stampId = owner.viewModel.stampId else { return }
+                let nickname = owner.viewModel.isOtherUser
+                    ? owner.viewModel.otherUserName ?? ""
+                    : (UserDefaultKeyList.User.soptampName ?? "")
+                owner.onViewClapTap?(stampId, nickname)
                 AmplitudeInstance.shared.trackWithUserType(event: .clickClapperlist)
             }.store(in: cancelBag)
     }
@@ -247,7 +253,7 @@ extension ListDetailVC {
                     owner.reloadData(owner.sceneType)
                 }
             }.store(in: self.cancelBag)
-        
+
         output.editSuccessed
             .withUnretained(self)
             .sink { owner, successed in
@@ -329,7 +335,9 @@ extension ListDetailVC {
         self.imageURL = model.image
         
         self.missionView.setStarLevel(model.starLevel)
-        self.missionView.setMissionLabelText(model.missionTitle)
+        if !model.missionTitle.isEmpty {
+            self.missionView.setMissionLabelText(model.missionTitle)
+        }
 
         if let profileInfo = model.profileInfo {
             showProfileInfo(profileInfo)
@@ -638,7 +646,7 @@ extension ListDetailVC {
     private func setUI(_ type: ListDetailSceneType) {
         if type == .edit {
             self.naviBar
-                .setRightButton(.delete)
+                .setRightButton(.trash)
                 .resetLeftButtonAction {
                     self.resetData()
                     self.reloadData(.completed)
@@ -837,17 +845,19 @@ extension ListDetailVC {
     }
 
     private func showProfileInfo(_ info: ProfileInfo) {
-        profileInfoView.configure(name: info.name, profileImageURL: info.imageURL)
-
-        if !contentStackView.arrangedSubviews.contains(profileInfoView) {
-            contentStackView.insertArrangedSubview(profileInfoView, at: 2)
-
-            profileInfoView.snp.makeConstraints {
-                $0.leading.trailing.equalToSuperview()
+        if isAppjamtampOpen {
+            profileInfoView.configure(name: info.name, profileImageURL: info.imageURL)
+            
+            if !contentStackView.arrangedSubviews.contains(profileInfoView) {
+                contentStackView.insertArrangedSubview(profileInfoView, at: 2)
+                
+                profileInfoView.snp.makeConstraints {
+                    $0.leading.trailing.equalToSuperview()
+                }
             }
+            
+            profileInfoView.isHidden = false
         }
-
-        profileInfoView.isHidden = false
     }
 
     private func hideProfileInfo() {

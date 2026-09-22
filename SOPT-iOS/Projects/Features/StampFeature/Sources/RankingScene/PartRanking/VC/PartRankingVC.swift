@@ -21,7 +21,6 @@ import StampFeatureInterface
 import BaseFeatureDependency
 
 public class PartRankingVC: UIViewController, PartRankingViewControllable {
-    
     // MARK: - Properties
     
     public var viewModel: PartRankingViewModel!
@@ -33,12 +32,13 @@ public class PartRankingVC: UIViewController, PartRankingViewControllable {
     
     public var onCellTap: ((Part) -> Void)?
     public var onNaviBackTap: (() -> Void)?
+    public var onRightButtonTap: (() -> Void)?
     
     // MARK: - UI Components
     
     lazy var naviBar = STNavigationBar(type: .titleWithLeftButton)
         .setTitle(I18N.RankingList.partRankingTitle)
-        .setRightButton(.none)
+        .setRightButton(.edit)
     
     private lazy var rankingCollectionView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
@@ -117,6 +117,12 @@ extension PartRankingVC {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNaviBackTap?()
+            }.store(in: cancelBag)
+        
+        naviBar.rightButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onRightButtonTap?()
             }.store(in: cancelBag)
     }
     

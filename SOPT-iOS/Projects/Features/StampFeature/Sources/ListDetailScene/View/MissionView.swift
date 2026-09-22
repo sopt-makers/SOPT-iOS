@@ -55,6 +55,9 @@ final class MissionView: UIView {
     }
     
     private func setLayout(level: StarViewLevel) {
+        defaultStarView.removeFromSuperview()
+        levelTenStarView.removeFromSuperview()
+        
         let starView = level == .levelTen ? levelTenStarView : defaultStarView
         
         self.addSubviews([starView, missionLabel])
@@ -76,8 +79,12 @@ final class MissionView: UIView {
 
 extension MissionView {
     public func setStarLevel(_ starLevel: Int) {
-        let level = StarViewLevel(rawValue: starLevel) ?? .levelOne
-        defaultStarView.setStarColor(level: level)
+        guard let level = StarViewLevel(rawValue: starLevel) else { return }
+        
+        setLayout(level: level)
+        if level != .levelTen {
+            defaultStarView.setStarColor(level: level)
+        }
     }
     public func setMissionLabelText(_ mission: String) {
         if !mission.contains("\n") && mission.count >= 24 {

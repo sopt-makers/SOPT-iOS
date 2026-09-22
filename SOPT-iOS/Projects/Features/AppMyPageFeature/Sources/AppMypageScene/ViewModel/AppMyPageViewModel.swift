@@ -37,6 +37,7 @@ public final class AppMyPageViewModel: MyPageViewModelType {
     private let coordinator: AnyCoordinatorObject
     private let useCase: AppMyPageUseCase
     private let userType: UserType = UserDefaultKeyList.CoreAuth.getUserType()
+    var isAppjamMode: Bool? { UserDefaultKeyList.User.isAppjam }
     
     // MARK: - Inputs
     

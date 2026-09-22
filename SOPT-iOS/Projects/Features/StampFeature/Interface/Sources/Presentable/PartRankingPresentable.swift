@@ -14,8 +14,9 @@ import Domain
 
 public protocol PartRankingViewControllable: UIViewController & PartRankingRoutingTrigger { }
 public protocol PartRankingRoutingTrigger {
-  var onCellTap: ((_ part: Part) -> Void)? { get set }
-  var onNaviBackTap: (() -> Void)? { get set }
+    var onCellTap: ((_ part: Part) -> Void)? { get set }
+    var onNaviBackTap: (() -> Void)? { get set }
+    var onRightButtonTap: (() -> Void)? { get set }
 }
 public typealias PartRankingViewModelType = ViewModelType & PartRankingRoutingTrigger
 // TODO: coordinating vc -> vm 작업에서 활용
