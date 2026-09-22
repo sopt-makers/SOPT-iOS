@@ -211,6 +211,12 @@ extension StampCoordinator {
             self.rootController?.popViewController(animated: true)
         }
 
+        ranking.vc.onRightButtonTap = { [weak self] in
+            guard let self else { return }
+            let vc = self.mypageFactory.makeSentenceEditVC()
+            self.rootController?.pushViewController(vc, animated: true)
+        }
+        
         ranking.vc.hidesBottomBarWhenPushed = true
         rootController?.pushViewController(ranking.vc, animated: true)
     }

@@ -18,6 +18,7 @@ public class PartRankingViewModel: PartRankingViewModelType {
     // TODO: coordinating vc -> vm
     public var onCellTap: ((StampFeatureInterface.Part) -> Void)?
     public var onNaviBackTap: (() -> Void)?
+    public var onRightButtonTap: (() -> Void)?
     
     private let useCase: RankingUseCase
     private let rankingViewType: RankingViewType
