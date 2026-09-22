@@ -19,10 +19,10 @@ public struct SoptampDeepLink: DeepLinkExecutable {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
   
         if self.isDestination == true {
-//            coordinator.runTabBarFlow(initSelectedTabType: .soptamp)
-            return coordinator
+            Task { [weak coordinator] in
+                await coordinator?.runTabBarFlow(initSelectedTabType: .soptamp)
+            }
         }
-        
-        return coordinator.runStampFlow(isRouteFromTabBar: false)
+        return coordinator
     }
 }
