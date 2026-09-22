@@ -153,6 +153,7 @@ extension StampCoordinator {
             self.showClapList(stampId: stampId, nickname: nickname)
         }
 
+        missionDetail.vc.hidesBottomBarWhenPushed = true
         rootController?.pushViewController(missionDetail.vc, animated: true)
     }
 
@@ -193,6 +194,7 @@ extension StampCoordinator {
             self.rootController?.popViewController(animated: true)
         }
 
+        ranking.vc.hidesBottomBarWhenPushed = true
         rootController?.pushViewController(ranking.vc, animated: true)
     }
 
@@ -209,6 +211,7 @@ extension StampCoordinator {
             self.rootController?.popViewController(animated: true)
         }
 
+        ranking.vc.hidesBottomBarWhenPushed = true
         rootController?.pushViewController(ranking.vc, animated: true)
     }
     
@@ -317,7 +320,8 @@ extension StampCoordinator {
             guard let self else { return }
             self.showClapList(stampId: stampId, nickname: nickname)
         }
-
+        
+        missionDetail.vc.hidesBottomBarWhenPushed = true
         rootController?.pushViewController(missionDetail.vc, animated: true)
     }
 }
