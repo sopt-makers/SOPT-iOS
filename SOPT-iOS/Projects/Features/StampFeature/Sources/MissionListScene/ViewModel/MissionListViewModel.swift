@@ -84,7 +84,6 @@ extension MissionListViewModel {
                     let isAppjamMode = owner.useCase.fetchIsAppjamMode()
                     owner.isAppjamMode = isAppjamMode
                     output.isAppjamMode = isAppjamMode
-                    output.isLoading = false
                 }
             }.store(in: cancelBag)
         
@@ -156,6 +155,7 @@ extension MissionListViewModel {
         fetchedMissionList.asDriver()
             .sink(receiveValue: { model in
                 output.missionListModel = model
+                output.isLoading = false
             })
             .store(in: self.cancelBag)
         
@@ -163,6 +163,7 @@ extension MissionListViewModel {
             .sink(receiveValue: { model in
                 output.missionListModel = model.missions
                 output.appjamInfo = model
+                output.isLoading = false
             })
             .store(in: self.cancelBag)
         
@@ -171,12 +172,14 @@ extension MissionListViewModel {
             .asDriver()
             .sink { usersActivateGenerationStatus in
                 output.usersActivateGenerationStatus = usersActivateGenerationStatus
+                output.isLoading = false
             }.store(in: cancelBag)
         
         self.useCase.errorOccurred
             .asDriver()
             .sink { _ in
                 output.needNetworkAlert.send()
+                output.isLoading = false
             }.store(in: cancelBag)
     }
 }

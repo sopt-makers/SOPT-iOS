@@ -148,6 +148,8 @@ public class ListDetailVC: UIViewController, ListDetailViewControllable {
         self.setGesture()
         self.setDelegate()
         self.hideKeyboard()
+        
+        self.isAppjamtampOpen = self.viewModel.isAppjam ?? false
     }
     
     deinit {
