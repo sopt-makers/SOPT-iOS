@@ -26,7 +26,7 @@ public protocol MissionListUseCase {
 
 public class DefaultMissionListUseCase {
 
-    private let missionRepository: MissionListRepositoryInterface
+    private let repository: MissionListRepositoryInterface
     private var cancelBag = CancelBag()
     public var missionListModelsFetched = PassthroughSubject<[MissionListModel], Error>()
     public var usersActiveGenerationInfo = PassthroughSubject<UsersActiveGenerationStatusViewResponse, Error>()
@@ -35,14 +35,14 @@ public class DefaultMissionListUseCase {
     public var errorOccurred = PassthroughSubject<Void, Never>()
 
     public init(repository: MissionListRepositoryInterface) {
-        self.missionRepository = repository
+        self.repository = repository
     }
 }
 
 extension DefaultMissionListUseCase: MissionListUseCase {
     
     public func fetchMissionList(type: MissionListFetchType) {
-        missionRepository.fetchMissionList(type: type, userName: nil)
+        repository.fetchMissionList(type: type, userName: nil)
             .sink(receiveCompletion: { event in
                 print("completion: \(event)")
                 if case Subscribers.Completion.failure = event {
@@ -55,7 +55,7 @@ extension DefaultMissionListUseCase: MissionListUseCase {
     }
     
     public func fetchIsActiveGenerationUser() {
-        self.missionRepository
+        self.repository
             .fetchIsActiveGenerationUser()
             .sink(receiveCompletion: { event in
                 print("completion: \(event)")
@@ -65,7 +65,7 @@ extension DefaultMissionListUseCase: MissionListUseCase {
     }
     
     public func fetchOtherUserMissionList(userName: String) {
-        missionRepository.fetchMissionList(type: .complete, userName: userName)
+        repository.fetchMissionList(type: .complete, userName: userName)
             .sink(receiveCompletion: { event in
                 print("completion: \(event)")
             }, receiveValue: { model in
@@ -75,7 +75,7 @@ extension DefaultMissionListUseCase: MissionListUseCase {
     }
     
     public func updateCurrentSoptampUserInfo() {
-        missionRepository.fetchCurrentSoptampInfo()
+        repository.fetchCurrentSoptampInfo()
             .sink(receiveCompletion: {
                 print("completion: \($0)")
             }, receiveValue: { info in
@@ -85,7 +85,7 @@ extension DefaultMissionListUseCase: MissionListUseCase {
     }
     
     public func fetchAppjamMissionList(teamNumber: String?, isCompleted: Bool?) {
-        missionRepository.fetchAppjamMissionList(teamNumber: teamNumber, isCompleted: isCompleted)
+        repository.fetchAppjamMissionList(teamNumber: teamNumber, isCompleted: isCompleted)
             .sink(receiveCompletion: { event in
                 if case Subscribers.Completion.failure = event {
                     self.errorOccurred.send()
