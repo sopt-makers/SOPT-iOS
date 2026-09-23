@@ -146,7 +146,7 @@ public final class MyPageCoordinator: BaseCoordinator {
         
         withdrawal.vm.onWithdrawalConfirm = { completion  in
             AlertUtils.presentAlertVC(
-                type: .danger(primary: .init(I18N.MyPage.EtcSection.withdrawal)),
+                type: .default(primary: .init(I18N.MyPage.EtcSection.withdrawal)),
                 title: I18N.MyPage.withdrawalDialogTitle,
                 description: I18N.MyPage.withdrawalDialogDescription,
                 customAction: completion
