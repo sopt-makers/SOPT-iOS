@@ -12,6 +12,7 @@ import Core
 import DSKit
 
 // MARK: - PokeOnboardingBottomSheet
+// TODO: - mds 적용 전 지면 
 public class PokeOnboardingBottomSheet: UIViewController {
   private enum Metric {
     static let contentTop = 24.f
