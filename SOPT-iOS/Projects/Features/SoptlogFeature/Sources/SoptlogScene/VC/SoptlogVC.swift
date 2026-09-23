@@ -12,6 +12,7 @@ import Combine
 import Core
 import Domain
 import DSKit
+import MDS
 
 import BaseFeatureDependency
 
@@ -27,7 +28,7 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     private var soptlogInfo: SoptlogPresentationModel?
     internal var isPokeEmpty: Bool = false
     
-    private var visibleSections: [SoptlogSectionLayoutKind] {
+    var visibleSections: [SoptlogSectionLayoutKind] {
         SoptlogSectionLayoutKind.visibleSections(
             isAppjamParticipant: soptlogInfo?.isAppjamParticipant ?? false,
             isActiveUser: viewModel.isActiveUser
@@ -36,6 +37,7 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     
     // MARK: - UI Components
     
+    // TODO: MDS 반영 후 수정
     private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton)
         .addMiddleLabel(title: I18N.Soptlog.navigationTitle, font: DSKitFontFamily.Suit.medium.font(size: 16))
     
@@ -80,7 +82,7 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
 extension SoptlogVC {
     private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
-        view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        view.backgroundColor = SemanticColor.Bg.Layer.basement
     }
     
     private func setLayout() {
@@ -223,6 +225,18 @@ extension SoptlogVC: UICollectionViewDataSource {
             let title = sectionType.title
             headerView.configure(title: title)
             return headerView
+
+        case UICollectionView.elementKindSectionFooter:
+            guard let footerView = collectionView.dequeueReusableSupplementaryView(
+                ofKind: kind,
+                withReuseIdentifier: SoptlogImageFooterReusableView.className,
+                for: indexPath
+            ) as? SoptlogImageFooterReusableView else {
+                return UICollectionReusableView()
+            }
+
+            footerView.configure(image: DSKitAsset.Assets.bottomSoptlog.image)
+            return footerView
 
         default:
             return UICollectionReusableView()

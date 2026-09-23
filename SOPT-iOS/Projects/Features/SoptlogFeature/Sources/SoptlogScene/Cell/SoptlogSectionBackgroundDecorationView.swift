@@ -9,15 +9,15 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
 
 final class SoptlogSectionBackgroundDecorationView: UICollectionReusableView {
     
     // MARK: - UI Components
     
     private let backgroundView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.gray900.color
-        $0.layer.cornerRadius = 12
+        $0.backgroundColor = SemanticColor.Bg.Neutral.default
+        $0.layer.cornerRadius = BaseRadius.Base.r12
         $0.clipsToBounds = true
         $0.isUserInteractionEnabled = false
     }

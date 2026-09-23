@@ -12,6 +12,9 @@ import Core
 
 extension SoptlogVC {
     func createLayout() -> UICollectionViewLayout {
+        let configuration = UICollectionViewCompositionalLayoutConfiguration()
+        configuration.boundarySupplementaryItems = [createImageFooter()]
+
         let layout = UICollectionViewCompositionalLayout(sectionProvider: { [weak self] sectionIndex, _ in
             guard let self,
                   let sectionType = self.sectionType(for: sectionIndex) else {
@@ -28,9 +31,21 @@ extension SoptlogVC {
                 self.createEmptySection(sectionType: sectionType) :
                 self.createMenuSection(sectionType: sectionType)
             }
-        })
+        }, configuration: configuration)
 
         return layout
+    }
+    
+    private func createImageFooter() -> NSCollectionLayoutBoundarySupplementaryItem {
+        let footerSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(180)
+        )
+        return NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: footerSize,
+            elementKind: UICollectionView.elementKindSectionFooter,
+            alignment: .bottom
+        )
     }
     
     private func createEmptySection(sectionType: SoptlogSectionLayoutKind) -> NSCollectionLayoutSection {
