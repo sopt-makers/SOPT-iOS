@@ -26,7 +26,6 @@ final class SoptlogVC: UIViewController, SoptlogViewControllable {
     private var toolTipTap = PassthroughSubject<CGRect, Never>()
     private var viewWillAppear = PassthroughSubject<Void, Never>()
     private var soptlogInfo: SoptlogPresentationModel?
-    internal var isPokeEmpty: Bool = false
     
     var visibleSections: [SoptlogSectionLayoutKind] {
         SoptlogSectionLayoutKind.visibleSections(
@@ -112,7 +111,6 @@ extension SoptlogVC {
         // 셀 등록
         self.collectionView.register(SoptlogMenuCVC.self, forCellWithReuseIdentifier: SoptlogMenuCVC.className)
         self.collectionView.register(SoptlogImageCVC.self, forCellWithReuseIdentifier: SoptlogImageCVC.className)
-        self.collectionView.register(SoptlogEmptyCVC.self, forCellWithReuseIdentifier: SoptlogEmptyCVC.className)
         
         // Header 등록
         self.collectionView.register(SoptlogSectionHeaderReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SoptlogSectionHeaderReusableView.className)
@@ -181,7 +179,7 @@ extension SoptlogVC: UICollectionViewDataSource {
         case .soptampLog:
             return info.soptampMenus.count
         case .pokeLog:
-            return isPokeEmpty ? 1 : info.pokeMenus.count
+            return info.pokeMenus.count
         }
     }
     
@@ -199,11 +197,7 @@ extension SoptlogVC: UICollectionViewDataSource {
             return configureMenuCell(at: indexPath, with: info.soptampMenus)
             
         case .pokeLog:
-            if isPokeEmpty {
-                return configureEmptyCell(at: indexPath)
-            } else {
-                return configureMenuCell(at: indexPath, with: info.pokeMenus)
-            }
+            return configureMenuCell(at: indexPath, with: info.pokeMenus)
         }
     }
     
@@ -277,19 +271,6 @@ extension SoptlogVC: UICollectionViewDataSource {
             .subscribe(toolTipTap)
             .store(in: cell.cancelBag)
         
-        return cell
-    }
-    
-    private func configureEmptyCell(at indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: SoptlogMenuCVC.className,
-            for: indexPath
-        ) as? SoptlogEmptyCVC else {
-            return UICollectionViewCell()
-        }
-
-        cell.configure(text: I18N.Soptlog.Menu.pokeEmptyDescription)
-
         return cell
     }
 }
