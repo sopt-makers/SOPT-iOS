@@ -12,6 +12,7 @@ import Core
 import DSKit
 import SnapKit
 
+// TODO: - 사용 여부 확인 후 제거
 final class SoptlogEmptyCVC: UICollectionViewCell {
 
     // MARK: - UI Components
