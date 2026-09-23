@@ -16,7 +16,7 @@ final class SoptlogSectionBackgroundDecorationView: UICollectionReusableView {
     // MARK: - UI Components
     
     private let backgroundView = UIView().then {
-        $0.backgroundColor = SemanticColor.Bg.Neutral.default
+        $0.backgroundColor = SemanticColor.Bg.Layer.default
         $0.layer.cornerRadius = BaseRadius.Base.r12
         $0.clipsToBounds = true
         $0.isUserInteractionEnabled = false
