@@ -635,6 +635,28 @@ extension ListDetailVC: UITextViewDelegate {
     
     public func textViewDidChange(_ textView: UITextView) {
         self.textEdited.send(textView.text)
+        
+        /// 입력된 글자를 전부 받아옵니다
+        let fullText = textView.text ?? ""
+        ///  지원안될 때 폰트를 설정합니다 (시스템폰트로 설정)
+        let fallbackFont = UIFont.systemFont(ofSize: 16)
+        let suitFont = MDS.Typography.body1.font
+        ///  입력중일때 폰트 컬러를 설정합니다.
+        let color = SemanticColor.Fg.Neutral.bold
+
+        /// 입력된 글자를 스타일 설정 가능한 attributed string으로 초기화합니다
+        let attrStr = NSMutableAttributedString(string: fullText)
+        /// 전체 글자를 돌면서 폰트 지원이 안되면 fallback으로 설정합니다
+        /// 글자별로 폰트 지원이 안될때, 지원이 될때 별로 스타일을 설정합니다
+        for (index, char) in fullText.enumerated() {
+            let range = NSRange(location: index, length: 1)
+            let fontToUse = String(char).canBeRendered(by: suitFont) ? suitFont : fallbackFont
+            attrStr.addAttribute(.font, value: fontToUse, range: range)
+            attrStr.addAttribute(.foregroundColor, value: color, range: range)
+        }
+
+        /// 최종적으로 글자를 할당합니다
+        textView.attributedText = attrStr
     }
 }
 

@@ -126,4 +126,10 @@ public extension String {
         
         return result
     }
+    
+    /// SUIT로 렌더링되지 않는 폰트를 글리프로 리턴합니다.
+    func canBeRendered(by font: UIFont) -> Bool {
+        let cfFont = CTFontCreateWithName(font.fontName as CFString, font.pointSize, nil)
+        return CTFontGetGlyphWithName(cfFont, self as CFString) != 0
+    }
 }
