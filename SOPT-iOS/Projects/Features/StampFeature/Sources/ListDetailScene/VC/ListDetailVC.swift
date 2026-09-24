@@ -60,17 +60,12 @@ public class ListDetailVC: UIViewController, ListDetailViewControllable {
     private let imageSelected = PassthroughSubject<Data, Never>()
     private let dateSelected = PassthroughSubject<String, Never>()
     private let textEdited = PassthroughSubject<String, Never>()
-    
+    private let naviBackButtonTapped = PassthroughSubject<Void, Never>()
+    private let viewClapTapped = PassthroughSubject<(Int, String), Never>()
     let completeButtonTapped = PassthroughSubject<Void, Never>()
     private var keyboardWillShowObserver: NSObjectProtocol?
     private var keyboardWillHideObserver: NSObjectProtocol?
     
-    // MARK: - ListDetailCoordinatable
-    
-    public var onNaviBackTap: (() -> Void)?
-    public var onComplete: ((StarViewLevel, (() -> Void)?) -> Void)?
-    public var onViewClapTap: ((Int, String) -> Void)?
-
     // MARK: - UI Components
     
     private lazy var naviBar = STNavigationBar(type: .titleWithLeftButton)
@@ -169,7 +164,7 @@ extension ListDetailVC {
         naviBar.leftButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onNaviBackTap?()
+                owner.naviBackButtonTapped.send(())
             }.store(in: cancelBag)
         
         viewClapButton
@@ -180,7 +175,7 @@ extension ListDetailVC {
                 let nickname = owner.viewModel.isOtherUser
                     ? owner.viewModel.otherUserName ?? ""
                     : (UserDefaultKeyList.User.soptampName ?? "")
-                owner.onViewClapTap?(stampId, nickname)
+                owner.viewClapTapped.send((stampId, nickname))
                 AmplitudeInstance.shared.trackWithUserType(event: .clickClapperlist)
             }.store(in: cancelBag)
     }
@@ -227,7 +222,9 @@ extension ListDetailVC {
             completeButtonTapped: completeButtonTapped.asDriver(),
             rightButtonTapped: rightButtonTapped,
             deleteButtonTapped: deleteButtonTapped.asDriver(),
-            clapButtonTapped: clapButtonTapped
+            clapButtonTapped: clapButtonTapped.asDriver(),
+            naviBackButtonTapped: naviBackButtonTapped.asDriver(),
+            viewClapListTapped: viewClapTapped.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -241,7 +238,7 @@ extension ListDetailVC {
                     AlertUtils.presentNetworkAlertVC(confirmAction: removeDimmerView, cancelAction: removeDimmerView)
                 } else {
                     if owner.sceneType == .none {
-                        owner.onComplete?(owner.starLevel) {
+                        owner.viewModel.onComplete?(owner.starLevel) {
                             UIView.animate(withDuration: 0.2, delay: 0, animations: {
                                 owner.backgroundDimmerView.alpha = 0
                             }) { _ in
