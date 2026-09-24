@@ -308,19 +308,19 @@ extension MissionListVC {
             .asDriver()
             .withUnretained(self)
             .sink { owner, _ in
-                self.editButtonTapped.send(())
+                owner.editButtonTapped.send(())
             }.store(in: self.cancelBag)
         
         naviBar.leftButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                self.naviBackButtonTapped.send(())
+                owner.naviBackButtonTapped.send(())
             }.store(in: self.cancelBag)
         
         doubleFloatingButton.partButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                self.partRankingButtonTapped.send(.partRanking)
+                owner.partRankingButtonTapped.send(.partRanking)
             }.store(in: self.cancelBag)
         
         doubleFloatingButton.personalButtonTapped

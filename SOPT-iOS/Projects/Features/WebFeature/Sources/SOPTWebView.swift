@@ -29,6 +29,7 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
     public var vc: UIViewController { self }
     private let downloadManager: WKDownloadManager
     private let customSchemeHandler = CustomSchemeHandler()
+    private let startURL: URL
     
     // MARK: Variables
     private let cancelbag = CancelBag()
@@ -39,6 +40,8 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
         startWith url: URL,
         downloadManager: WKDownloadManager = .default
     ) {
+        self.startURL = url
+        
         let configuration = WKWebViewConfiguration().then {
             $0.allowsInlineMediaPlayback = config.allowsInlineMediaPlayback
             $0.mediaTypesRequiringUserActionForPlayback = config.mediaTypesRequiringUserActionForPlayback
@@ -87,10 +90,6 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
         }
         self.downloadManager = downloadManager
         super.init(nibName: nil, bundle: nil)
-        DispatchQueue.main.async {
-            let request = URLRequest(url: url)
-            self.webView.load(request)
-        }
     }
     
     public required init?(coder: NSCoder) {
@@ -107,6 +106,7 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
         self.setupConstraints()
         self.setupNavigationButtonActions()
         self.setDelegate()
+        self.webView.load(URLRequest(url: self.startURL))
     }
     
     public override func viewWillAppear(_ animated: Bool) {

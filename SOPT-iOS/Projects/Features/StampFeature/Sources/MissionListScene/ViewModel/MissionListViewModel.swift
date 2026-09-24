@@ -108,6 +108,7 @@ extension MissionListViewModel {
             }.store(in: cancelBag)
         
         input.swipeHandler
+            .first()
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onSwiped?()
