@@ -16,7 +16,6 @@ import BaseFeatureDependency
 public class MissionListViewModel: MissionListViewModelType {
     
     // MARK: - Trigger
-    // TODO: coordinating vc -> vm
     
     public var onSwiped: (() -> Void)?
     public var onNaviBackTap: (() -> Void)?
@@ -42,6 +41,13 @@ public class MissionListViewModel: MissionListViewModelType {
         let viewDidLoad: Driver<Void>
         let viewWillAppear: Driver<Void>
         let missionTypeSelected: CurrentValueSubject<MissionListFetchType, Never>
+        let swipeHandler: Driver<Void>
+        let naviBackButtonTapped: Driver<Void>
+        let partRankingButtonTapped: CurrentValueSubject<StampFeatureInterface.RankingViewType, Never>
+        let currentGenerationRankingButtonTapped: CurrentValueSubject<StampFeatureInterface.RankingViewType, Never>
+        let editButtonTapped: Driver<Void>
+        let reportButtonTapped: Driver<Void>
+        let appjamRankingButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -99,6 +105,50 @@ extension MissionListViewModel {
             .withUnretained(self)
             .sink { owner, fetchType in
                 owner.fetchMissionListByType(type: fetchType)
+            }.store(in: cancelBag)
+        
+        input.swipeHandler
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onSwiped?()
+            }.store(in: cancelBag)
+        
+        input.naviBackButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNaviBackTap?()
+            }.store(in: cancelBag)
+        
+        input.partRankingButtonTapped
+            .dropFirst()
+            .withUnretained(self)
+            .sink { owner, rankingViewType in
+                owner.onPartRankingButtonTap?(rankingViewType)
+            }.store(in: cancelBag)
+        
+        input.currentGenerationRankingButtonTapped
+            .dropFirst()
+            .withUnretained(self)
+            .sink { owner, rankingViewType in
+                owner.onCurrentGenerationRankingButtonTap?(rankingViewType)
+            }.store(in: cancelBag)
+        
+        input.editButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onEditTap?()
+            }.store(in: cancelBag)
+        
+        input.reportButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onReportButtonTap?()
+            }.store(in: cancelBag)
+        
+        input.appjamRankingButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onAppJamRankingButtonTap?()
             }.store(in: cancelBag)
         
         return output

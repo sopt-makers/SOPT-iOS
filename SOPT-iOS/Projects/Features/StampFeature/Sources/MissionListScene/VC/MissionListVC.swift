@@ -36,19 +36,15 @@ public class MissionListVC: UIViewController, MissionListViewControllable {
     private var missionTypeMenuSelected = CurrentValueSubject<MissionListFetchType, Never>(.all)
     private var viewWillAppear = PassthroughSubject<Void, Never>()
     private let swipeHandler = PassthroughSubject<Void, Never>()
+    private let naviBackButtonTapped = PassthroughSubject<Void, Never>()
+    private let partRankingButtonTapped = CurrentValueSubject<RankingViewType, Never>(.all)
+    private let currentGenerationRankingButtonTapped = CurrentValueSubject<RankingViewType, Never>(.all)
+    private let editButtonTapped = PassthroughSubject<Void, Never>()
+    private let cellTapped = PassthroughSubject<(MissionListModel, String?), Never>()
+    private let reportButtonTapped = PassthroughSubject<Void, Never>()
+    private let appjamRankingButtonTapped = PassthroughSubject<Void, Never>()
     
     lazy var dataSource: UICollectionViewDiffableDataSource<MissionListSection, MissionListModel>! = nil
-    
-    // MARK: - MissionListCoordinatable
-
-    public var onSwiped: (() -> Void)?
-    public var onNaviBackTap: (() -> Void)?
-    public var onPartRankingButtonTap: ((RankingViewType) -> Void)?
-    public var onCurrentGenerationRankingButtonTap: ((RankingViewType) -> Void)?
-    public var onEditTap: (() -> Void)?
-    public var onCellTap: ((MissionListModel, String?) -> Void)?
-    public var onReportButtonTap: (() -> Void)?
-    public var onAppJamRankingButtonTap: (() -> Void)?
     
     private var usersActiveGenerationStatus: UsersActiveGenerationStatusViewResponse?
     private var appjamInfo: AppjamMissionListModel?
@@ -308,24 +304,23 @@ extension MissionListVC {
 
 extension MissionListVC {
     private func bindViews() {
-        
         naviBar.rightButtonTapped
             .asDriver()
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onEditTap?()
+                self.editButtonTapped.send(())
             }.store(in: self.cancelBag)
         
         naviBar.leftButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onNaviBackTap?()
+                self.naviBackButtonTapped.send(())
             }.store(in: self.cancelBag)
         
         doubleFloatingButton.partButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onPartRankingButtonTap?(.partRanking)
+                self.partRankingButtonTapped.send(.partRanking)
             }.store(in: self.cancelBag)
         
         doubleFloatingButton.personalButtonTapped
@@ -333,20 +328,13 @@ extension MissionListVC {
             .sink { owner, _ in
                 guard let usersActiveGenerationStatus = owner.usersActiveGenerationStatus else { return }
                 
-                owner.onCurrentGenerationRankingButtonTap?(.currentGeneration(info: usersActiveGenerationStatus))
+                self.currentGenerationRankingButtonTapped.send(.currentGeneration(info: usersActiveGenerationStatus))
             }.store(in: self.cancelBag)
         
         singleFloatingButton.buttonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onAppJamRankingButtonTap?()
-            }.store(in: self.cancelBag)
-        
-        swipeHandler
-            .first()
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onSwiped?()
+                self.appjamRankingButtonTapped.send(())
             }.store(in: self.cancelBag)
     }
     
@@ -354,7 +342,14 @@ extension MissionListVC {
         let input = MissionListViewModel.Input(
             viewDidLoad: Driver<Void>.just(()),
             viewWillAppear: viewWillAppear.asDriver(),
-            missionTypeSelected: missionTypeMenuSelected
+            missionTypeSelected: missionTypeMenuSelected,
+            swipeHandler: swipeHandler.asDriver(),
+            naviBackButtonTapped: naviBackButtonTapped.asDriver(),
+            partRankingButtonTapped: partRankingButtonTapped,
+            currentGenerationRankingButtonTapped: currentGenerationRankingButtonTapped,
+            editButtonTapped: editButtonTapped.asDriver(),
+            reportButtonTapped: reportButtonTapped.asDriver(),
+            appjamRankingButtonTapped: appjamRankingButtonTapped.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -362,7 +357,7 @@ extension MissionListVC {
         naviBar.reportButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onReportButtonTap?()
+                owner.reportButtonTapped.send(())
             }.store(in: cancelBag)
         
         output.$missionListModel
@@ -596,7 +591,7 @@ extension MissionListVC: UICollectionViewDelegate {
             let username = sceneType.isAppJamTeamView ? model.ownerName : sceneType.username
                 
             if model.isCompleted {
-                onCellTap?(model, username)
+                viewModel.onCellTap?(model, username)
                 return
             }
             
@@ -605,7 +600,7 @@ extension MissionListVC: UICollectionViewDelegate {
                 if case .default = self.sceneType, isAppJam, appjamInfo?.myTeamNumber == nil {
                     showInactiveUserAlert()
                 } else {
-                    onCellTap?(model, username)
+                    viewModel.onCellTap?(model, username)
                 }
             case .inactive, .visitor:
                 showInactiveUserAlert()
