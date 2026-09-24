@@ -61,6 +61,7 @@ public class ListDetailVC: UIViewController, ListDetailViewControllable {
     private let dateSelected = PassthroughSubject<String, Never>()
     private let textEdited = PassthroughSubject<String, Never>()
     
+    let completeButtonTapped = PassthroughSubject<Void, Never>()
     private var keyboardWillShowObserver: NSObjectProtocol?
     private var keyboardWillHideObserver: NSObjectProtocol?
     
@@ -85,7 +86,7 @@ public class ListDetailVC: UIViewController, ListDetailViewControllable {
     private let textView = UITextView()
     private lazy var missionDateTextField = MissionDateView(frame: self.view.frame)
     private lazy var missionInfoView = MissionInfoView(frame: self.view.frame)
-    private lazy var bottomButton = MDSActionButton(
+    private lazy var completeButton = MDSActionButton(
         variant: .primary,
         size: .large,
         title: sceneType == .none ? I18N.ListDetail.missionComplete : I18N.ListDetail.editComplete
@@ -193,7 +194,7 @@ extension ListDetailVC {
             }
             .asDriver()
         
-        let bottomButtonTapped = bottomButton
+        let completeButtonTapped = completeButton
             .publisher(for: .touchUpInside)
             .withUnretained(self)
             .map { owner, _ in
@@ -223,7 +224,7 @@ extension ListDetailVC {
             imageSelected: self.imageSelected.eraseToAnyPublisher(),
             dateSelected: dateSelected.asDriver(),
             textEdited: textEdited.asDriver(),
-            bottomButtonTapped: bottomButtonTapped,
+            completeButtonTapped: completeButtonTapped.asDriver(),
             rightButtonTapped: rightButtonTapped,
             deleteButtonTapped: deleteButtonTapped.asDriver(),
             clapButtonTapped: clapButtonTapped
@@ -285,10 +286,10 @@ extension ListDetailVC {
                 }
             }.store(in: self.cancelBag)
         
-        output.bottomButtonEnabled
+        output.completeButtonEnabled
             .withUnretained(self)
             .sink { owner, buttonEnabled in
-                owner.bottomButton.isEnabled = buttonEnabled
+                owner.completeButton.isEnabled = buttonEnabled
             }.store(in: cancelBag)
         
         output.isLoading
@@ -654,12 +655,12 @@ extension ListDetailVC {
             self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
             self.originText = textView.text
             self.originImage = self.missionImageView.image ?? UIImage()
-            self.bottomButton.title = I18N.ListDetail.editComplete
-            self.bottomButton.isEnabled = false
+            self.completeButton.title = I18N.ListDetail.editComplete
+            self.completeButton.isEnabled = false
         } else {
             self.naviBar.resetLeftButtonAction()
             self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-            self.bottomButton.title = I18N.ListDetail.missionComplete
+            self.completeButton.title = I18N.ListDetail.missionComplete
         }
         
         switch type {
@@ -669,7 +670,7 @@ extension ListDetailVC {
             self.contentStackView.setCustomSpacing(8, after: self.missionDateTextField)
             self.setTextView(.inactive)
             self.imagePlaceholderLabel.isHidden = missionImageView.image == nil ? false : true
-            self.bottomButton.isHidden = false
+            self.completeButton.isHidden = false
             self.missionInfoView.isHidden = true
             self.viewClapButton.isHidden = true
             self.missionDateTextField.isHidden = false
@@ -687,7 +688,7 @@ extension ListDetailVC {
             self.naviBar.setRightButton(.addRecord)
             self.setTextView(.completed)
             self.imagePlaceholderLabel.isHidden = true
-            self.bottomButton.isHidden = true
+            self.completeButton.isHidden = true
             self.missionDateTextField.setTextFieldView(.completed)
             self.missionInfoView.isHidden = false
             self.zoomInView.isHidden = false
@@ -886,7 +887,7 @@ extension ListDetailVC {
     }
     
     private func setOtherUserLayout() {
-        bottomButton.removeFromSuperview()
+        completeButton.removeFromSuperview()
         viewClapButton.removeFromSuperview()
         
         contentView.addSubviews(clapBadge, clapButton)
@@ -907,8 +908,8 @@ extension ListDetailVC {
         clapButton.removeFromSuperview()
         clapBadge.removeFromSuperview()
         
-        contentView.addSubviews(bottomButton, viewClapButton)
-        bottomButton.snp.makeConstraints {
+        contentView.addSubviews(completeButton, viewClapButton)
+        completeButton.snp.makeConstraints {
             $0.leading.trailing.bottom.equalToSuperview()
             $0.top.equalTo(contentStackView.snp.bottom).offset(32)
             $0.height.equalTo(56)
