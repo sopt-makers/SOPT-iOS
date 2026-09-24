@@ -26,6 +26,7 @@ final class AppJamRankingVC: UIViewController, AppJamRankingViewControllable {
     private let viewWillAppearPublisher = PassthroughSubject<Void, Never>()
     private let teamCellTappedPublisher = PassthroughSubject<AppJamRankTodayPresentationModel, Never>()
     private let missionCellTappedPublisher = PassthroughSubject<AppJamRankRecentPresentationModel, Never>()
+    private let naviBackButtonTapped = PassthroughSubject<Void, Never>()
     
     // MARK: - UI Components
     
@@ -55,6 +56,7 @@ final class AppJamRankingVC: UIViewController, AppJamRankingViewControllable {
         setDelegate()
         registerCells()
         setDataSource()
+        bindView()
         bindViewModel()
     }
 
@@ -104,11 +106,19 @@ extension AppJamRankingVC {
         collectionView.delegate = self
     }
     
+    private func bindView() {
+        naviBar.leftButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                self.naviBackButtonTapped.send(())
+            }.store(in: self.cancelBag)
+    }
+    
     private func bindViewModel() {
         let input = AppJamRankingViewModel.Input(
             viewWillAppear: viewWillAppearPublisher.asDriver(),
             refreshStarted: refresher.publisher(for: .valueChanged).mapVoid().asDriver(),
-            naviBackButtonTapped: naviBar.leftButtonTapped.asDriver(),
+            naviBackButtonTapped: naviBackButtonTapped.asDriver(),
             teamCellTapped: teamCellTappedPublisher.asDriver(),
             missionCellTapped: missionCellTappedPublisher.asDriver()
         )
