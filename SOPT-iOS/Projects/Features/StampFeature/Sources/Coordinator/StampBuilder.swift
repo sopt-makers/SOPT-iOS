@@ -72,16 +72,20 @@ extension StampBuilder: StampFeatureBuildable {
             rankingViewType: rankingViewType,
             useCase: useCase
         )
-        let rankingVC = RankingVC(rankingViewType: rankingViewType)
-        rankingVC.viewModel = viewModel
+        let rankingVC = RankingVC(
+            rankingViewType: rankingViewType,
+            viewModel: viewModel
+        )
         return (rankingVC, viewModel)
     }
 
     public func makePartRankingVC(rankingViewType: RankingViewType) -> PartRankingPresentable {
         let useCase = DefaultRankingUseCase(repository: rankingRepository)
         let viewModel = PartRankingViewModel(rankingViewType: rankingViewType, useCase: useCase)
-        let partRankingVC = PartRankingVC(rankingViewType: rankingViewType)
-        partRankingVC.viewModel = viewModel
+        let partRankingVC = PartRankingVC(
+            rankingViewType: rankingViewType,
+            viewModel: viewModel
+        )
         return (partRankingVC, viewModel)
     }
 

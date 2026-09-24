@@ -31,6 +31,8 @@ public class ClapListViewModel: ClapListViewModelType {
 
     public struct Input {
         let viewDidLoad: Driver<Void>
+        let naviBackButtonTapped: Driver<Void>
+        let cellTapped: Driver<(String, String)>
     }
 
     // MARK: - Outputs
@@ -58,6 +60,21 @@ extension ClapListViewModel {
                       let nickname = owner.nickname else { return }
                 owner.useCase.getClapList(stampId: stampId, nickname: nickname)
             }.store(in: cancelBag)
+
+        input.naviBackButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNaviBackTap?()
+            }
+            .store(in: cancelBag)
+
+        input.cellTapped
+            .withUnretained(self)
+            .sink { owner, tapped in
+                owner.onCellTap?(tapped.0, tapped.1)
+            }
+            .store(in: cancelBag)
+
         return output
     }
 

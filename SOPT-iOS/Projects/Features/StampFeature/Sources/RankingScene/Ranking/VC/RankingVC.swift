@@ -24,19 +24,17 @@ public class RankingVC: UIViewController, RankingViewControllable {
     
     // MARK: - Properties
     
-    public var viewModel: RankingViewModel!
+    public var viewModel: RankingViewModel
     private var cancelBag = CancelBag()
     
+    private let naviBackButtonTapped = PassthroughSubject<Void, Never>()
+    private let cellTapped = PassthroughSubject<(String, String), Never>()
+    
     lazy var dataSource: UICollectionViewDiffableDataSource<RankingSection, AnyHashable>! = nil
-    
-    // MARK: - RankingCoordinatable
-    
-    public var onCellTap: ((String, String) -> Void)?
-    public var onNaviBackTap: (() -> Void)?
-    
+        
     // MARK: - UI Components
     
-    lazy var naviBar = STNavigationBar(type: .titleWithLeftButton)
+    private lazy var naviBar = STNavigationBar(type: .titleWithLeftButton)
         .setTitle("랭킹")
         .setRightButton(.none)
     
@@ -64,8 +62,12 @@ public class RankingVC: UIViewController, RankingViewControllable {
     // MARK: - View Life Cycle
     private let rankingViewType: RankingViewType
     
-    init(rankingViewType: RankingViewType) {
+    init(
+        rankingViewType: RankingViewType,
+        viewModel: RankingViewModel
+    ) {
         self.rankingViewType = rankingViewType
+        self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: nil)
         
@@ -133,7 +135,7 @@ extension RankingVC {
         naviBar.leftButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onNaviBackTap?()
+                owner.naviBackButtonTapped.send(())
             }.store(in: cancelBag)
     }
     
@@ -151,7 +153,9 @@ extension RankingVC {
         let input = RankingViewModel.Input(
             viewDidLoad: Driver.just(()),
             refreshStarted: refreshStarted,
-            showMyRankingButtonTapped: showRankingButtonTapped
+            showMyRankingButtonTapped: showRankingButtonTapped,
+            cellTapped: cellTapped.asDriver(),
+            naviBackButtonTapped: naviBackButtonTapped.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -211,7 +215,7 @@ extension RankingVC {
                         guard let self, !balloonModel.username.isEmpty else { return }
                         
                         let item = balloonModel.toRankingListTapItem()
-                        self.onCellTap?(item.username, item.sentence)
+                        self.cellTapped.send((item.username, item.sentence))
                     }
                     return chartCell
                     
@@ -257,7 +261,7 @@ extension RankingVC: UICollectionViewDelegate {
         
         guard let tappedCell = collectionView.cellForItem(at: indexPath) as? RankingListTappable,
               let item = tappedCell.getModelItem() else { return }
-        self.onCellTap?(item.username, item.sentence)
+        self.cellTapped.send((item.username, item.sentence))
     }
 }
 
