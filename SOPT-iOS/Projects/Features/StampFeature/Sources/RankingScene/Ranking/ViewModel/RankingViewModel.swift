@@ -15,7 +15,7 @@ import StampFeatureInterface
 public class RankingViewModel: RankingViewModelType {
     
     // MARK: - Trigger
-    // TODO: coordinating vc -> vm
+    
     public var onCellTap: ((String, String) -> Void)?
     public var onNaviBackTap: (() -> Void)?
     
@@ -32,6 +32,8 @@ public class RankingViewModel: RankingViewModelType {
         let viewDidLoad: Driver<Void>
         let refreshStarted: Driver<Void>
         let showMyRankingButtonTapped: Driver<Void>
+        let cellTapped: CurrentValueSubject<(String, String), Never>
+        let naviBackButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -97,6 +99,22 @@ extension RankingViewModel {
                     break
                 }
             }.store(in: self.cancelBag)
+        
+        
+        input.cellTapped
+            .dropFirst()
+            .withUnretained(self)
+            .sink { owner, item in
+                let (userName, sentence) = item
+                owner.onCellTap?(userName, sentence)
+            }.store(in: self.cancelBag)
+        
+        input.naviBackButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNaviBackTap?()
+            }.store(in: self.cancelBag)
+        
         
         return output
     }
