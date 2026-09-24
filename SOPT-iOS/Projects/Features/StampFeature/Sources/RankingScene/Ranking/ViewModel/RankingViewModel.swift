@@ -32,7 +32,7 @@ public class RankingViewModel: RankingViewModelType {
         let viewDidLoad: Driver<Void>
         let refreshStarted: Driver<Void>
         let showMyRankingButtonTapped: Driver<Void>
-        let cellTapped: CurrentValueSubject<(String, String), Never>
+        let cellTapped: Driver<(String, String)>
         let naviBackButtonTapped: Driver<Void>
     }
     
@@ -102,7 +102,6 @@ extension RankingViewModel {
         
         
         input.cellTapped
-            .dropFirst()
             .withUnretained(self)
             .sink { owner, item in
                 let (userName, sentence) = item

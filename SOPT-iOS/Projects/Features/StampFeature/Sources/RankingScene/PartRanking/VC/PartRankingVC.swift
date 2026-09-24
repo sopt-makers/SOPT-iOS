@@ -29,7 +29,7 @@ public class PartRankingVC: UIViewController, PartRankingViewControllable {
     
     lazy var dataSource: UICollectionViewDiffableDataSource<RankingSection, AnyHashable>! = nil
     
-    private let cellTapped = CurrentValueSubject<Part, Never>(.ios)
+    private let cellTapped = PassthroughSubject<Part, Never>()
     private let naviBackButtonTapped = PassthroughSubject<Void, Never>()
     private let rightButtonTapped = PassthroughSubject<Void, Never>()
         
@@ -137,7 +137,7 @@ extension PartRankingVC {
         let input = PartRankingViewModel.Input(
             viewDidLoad: Driver.just(()),
             refreshStarted: refreshStarted,
-            cellTapped: cellTapped,
+            cellTapped: cellTapped.asDriver(),
             naviBackButtonTapped: naviBackButtonTapped.asDriver(),
             rightButtonTapped: rightButtonTapped.asDriver()
         )

@@ -28,7 +28,7 @@ public class RankingVC: UIViewController, RankingViewControllable {
     private var cancelBag = CancelBag()
     
     private let naviBackButtonTapped = PassthroughSubject<Void, Never>()
-    private let cellTapped = CurrentValueSubject<(String, String), Never>(("", ""))
+    private let cellTapped = PassthroughSubject<(String, String), Never>()
     
     lazy var dataSource: UICollectionViewDiffableDataSource<RankingSection, AnyHashable>! = nil
         
@@ -154,7 +154,7 @@ extension RankingVC {
             viewDidLoad: Driver.just(()),
             refreshStarted: refreshStarted,
             showMyRankingButtonTapped: showRankingButtonTapped,
-            cellTapped: cellTapped,
+            cellTapped: cellTapped.asDriver(),
             naviBackButtonTapped: naviBackButtonTapped.asDriver()
         )
         

@@ -28,7 +28,7 @@ public class PartRankingViewModel: PartRankingViewModelType {
     public struct Input {
         let viewDidLoad: Driver<Void>
         let refreshStarted: Driver<Void>
-        let cellTapped: CurrentValueSubject<StampFeatureInterface.Part, Never>
+        let cellTapped: Driver<StampFeatureInterface.Part>
         let naviBackButtonTapped: Driver<Void>
         let rightButtonTapped: Driver<Void>
     }
@@ -68,7 +68,6 @@ extension PartRankingViewModel {
             }.store(in: cancelBag)
         
         input.cellTapped
-            .dropFirst()
             .withUnretained(self)
             .sink { owner, part in
                 owner.onCellTap?(part)
