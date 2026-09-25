@@ -9,9 +9,10 @@
 import UIKit
 import Combine
 
-import Core
-import DSKit
 import SnapKit
+
+import Core
+import MDS
 
 final class SoptlogMenuCVC: UICollectionViewCell {
     
@@ -52,37 +53,35 @@ final class SoptlogMenuCVC: UICollectionViewCell {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-        label.textColor = DSKitAsset.Colors.white.color
+        label.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold)
         return label
     }()
     
     private let tooltipButton: UIButton = {
         let button = UIButton()
-        button.setImage(DSKitAsset.Assets.icInfo.image, for: .normal)
-        button.tintColor = DSKitAsset.Colors.gray100.color
+        button.setImage(MDSIcon.alertCircleOutlined.image, for: .normal)
+        button.tintColor = SemanticColor.Fg.Neutral.default
         button.isHidden = true
         return button
     }()
     
     private let valueLabel: UILabel = {
         let label = UILabel()
-        label.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-        label.textColor = DSKitAsset.Colors.white.color
+        label.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold)
         return label
     }()
     
     private let chevronImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = DSKitAsset.Assets.chevronRight.image
-        imageView.tintColor = DSKitAsset.Colors.gray200.color
+        imageView.image = MDSIcon.chevronRightOutlined.image
+        imageView.tintColor = SemanticColor.Fg.Neutral.default
         imageView.isHidden = true
         return imageView
     }()
     
     private let separatorView: UIView = {
         let view = UIView()
-        view.backgroundColor = DSKitAsset.Colors.gray700.color
+        view.backgroundColor = SemanticColor.Stroke.Neutral.ghost
         return view
     }()
     
@@ -164,7 +163,9 @@ extension SoptlogMenuCVC {
         showSeparator: Bool = true
     ) {
         titleLabel.text = title
+        titleLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold)
         valueLabel.text = value
+        valueLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold)
         tooltipButton.isHidden = !hasTooltip
         chevronImageView.isHidden = !hasChevron
         separatorView.isHidden = !showSeparator

@@ -9,9 +9,10 @@
 import UIKit
 import Combine
 
-import Core
-import DSKit
 import SnapKit
+
+import Core
+import MDS
 
 final class SoptlogToolTipVC: UIViewController, SoptlogToolTipViewControllable {
     
@@ -27,20 +28,29 @@ final class SoptlogToolTipVC: UIViewController, SoptlogToolTipViewControllable {
     // MARK: - UI Components
     
     private let infoImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.icInfo.image.withTintColor(DSKitAsset.Colors.white.color)
+        $0.image = MDSIcon.alertCircleOutlined.image
     }
     
     private let dismissButton = UIButton().then {
-        $0.setImage(DSKitAsset.Assets.icCloseWhite.image, for: .normal)
+        $0.setImage(MDSIcon.xCloseOutlined.image, for: .normal)
     }
     
-    private let arrowImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.tooltipArrow.image
+    private lazy var arrowView = UIView().then {
+        let path = UIBezierPath()
+        path.move(to: .zero)
+        path.addLine(to: CGPoint(x: self.arrowHeight, y: 0))
+        path.addLine(to: CGPoint(x: self.arrowHeight / 2, y: self.arrowHeight))
+        path.close()
+
+        let shape = CAShapeLayer()
+        shape.path = path.cgPath
+        shape.fillColor = SemanticColor.Bg.Neutral.default.cgColor
+        $0.layer.addSublayer(shape)
     }
     
     private let toolTipView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.gray600.color
-        $0.layer.cornerRadius = 12
+        $0.backgroundColor = SemanticColor.Bg.Neutral.default
+        $0.layer.cornerRadius = BaseRadius.Base.r12
     }
     
     private let toolTipTitleStackView = UIStackView().then {
@@ -51,14 +61,13 @@ final class SoptlogToolTipVC: UIViewController, SoptlogToolTipViewControllable {
     
     private let infoTitleLabel = UILabel().then {
         $0.text = I18N.Soptlog.toolTipTitle
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
+        $0.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold)
     }
     
     private let infoContentsLabel = UILabel().then {
         $0.text = I18N.Soptlog.toolTip
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 13)
+        $0.setTypography(Typography.body3, textColor: SemanticColor.Fg.Neutral.bold)
         $0.numberOfLines = 0
-        $0.setLineSpacing(lineSpacing: 4)
     }
     
     init(viewModel: SoptlogToolTipViewModel, toolTipFrame: CGRect) {
@@ -83,25 +92,25 @@ final class SoptlogToolTipVC: UIViewController, SoptlogToolTipViewControllable {
 
 extension SoptlogToolTipVC {
     private func setUI() {
-        self.view.backgroundColor = DSKitAsset.Colors.black100.color.withAlphaComponent(0.6)
+        self.view.backgroundColor = SemanticColor.Bg.Layer.basement.withAlphaComponent(0.65)
     }
     
     private func setLayout() {
         setStackView()
         toolTipView.addSubviews(toolTipTitleStackView, infoContentsLabel)
-        view.addSubviews(toolTipView, arrowImageView)
+        view.addSubviews(toolTipView, arrowView)
         
-        arrowImageView.snp.makeConstraints { make in
+        arrowView.snp.makeConstraints { make in
             make.size.equalTo(arrowHeight)
             make.top.equalToSuperview().offset(toolTipFrame.minY - 7 - arrowHeight)
             make.centerX.equalTo(toolTipFrame.midX)
         }
         
         toolTipView.snp.makeConstraints { make in
-            make.bottom.equalTo(arrowImageView.snp.top)
+            make.bottom.equalTo(arrowView.snp.top)
             make.leading.equalTo(toolTipFrame.minX - 26)
             make.width.equalTo(272)
-            make.height.equalTo(100)
+            make.height.equalTo(94)
         }
         
         infoImageView.snp.makeConstraints { make in
@@ -114,13 +123,13 @@ extension SoptlogToolTipVC {
         
         toolTipTitleStackView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(16)
-            make.leading.trailing.equalToSuperview().inset(18)
-            make.height.equalTo(20)
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.height.equalTo(18)
         }
         
         infoContentsLabel.snp.makeConstraints { make in
             make.top.equalTo(toolTipTitleStackView.snp.bottom).offset(8)
-            make.leading.trailing.equalToSuperview().inset(18)
+            make.leading.trailing.equalToSuperview().inset(16)
             make.bottom.equalToSuperview().inset(16)
         }
     }

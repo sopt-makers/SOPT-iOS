@@ -201,6 +201,7 @@ public struct I18N {
             public static let sentenceEdit = "한 마디 편집"
             public static let save = "저장"
             public static let sentenceEditSuccess = "한 마디가 변경되었습니다."
+            public static let noSentenceText = "설정된 한 마디가 없습니다."
         }
         
         public struct NicknameEdit {

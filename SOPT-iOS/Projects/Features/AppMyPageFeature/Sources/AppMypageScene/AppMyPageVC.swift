@@ -15,6 +15,8 @@ import Then
 
 import Core
 import DSKit
+import MDS
+
 import BaseFeatureDependency
 
 public final class AppMyPageVC: UIViewController, MyPageViewControllable {
@@ -35,6 +37,7 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
 
     // MARK: - UI Components
 
+    // TODO: - mds 반영 후 수정
     private lazy var navigationBar = OPNavigationBar(
         self,
         type: .none,
@@ -91,7 +94,7 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
 extension AppMyPageVC {
     private func setUI() {
         self.navigationController?.navigationBar.isHidden = true
-        self.view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        self.view.backgroundColor = SemanticColor.Bg.Layer.basement
     }
 
     private func setLayout() {
@@ -116,7 +119,7 @@ extension AppMyPageVC {
     }
 
     private func setDataSource() {
-        let myPageMenuRegistration = createMyPageeCellRegistration()
+        let myPageMenuRegistration = createMyPageCellRegistration()
 
         let profileRegistration: MyPageProfileCellRegistration = collectionView.createCellRegistration { [weak self] cell, _, item in
             guard let self else { return }

@@ -13,7 +13,5 @@ import BaseFeatureDependency
 public protocol MyPageFeatureBuildable {
     func makeAppMyPage(userType: UserType, coordinator: Coordinator) -> MyPagePresentable
     func makeSentenceEditVC() -> UIViewController
-    func makePrivacyPolicyVC() -> UIViewController
-    func makeTermsOfServiceVC() -> UIViewController
     func makeWithdrawalVC(userType: UserType) -> WithdrawalPresentable
 }
