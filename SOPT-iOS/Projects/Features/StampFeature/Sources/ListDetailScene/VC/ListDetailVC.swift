@@ -635,6 +635,33 @@ extension ListDetailVC: UITextViewDelegate {
     
     public func textViewDidChange(_ textView: UITextView) {
         self.textEdited.send(textView.text)
+        
+        /// 입력된 글자를 전부 받아옵니다
+        let fullText = textView.text ?? ""
+        ///  지원안될 때 폰트를 설정합니다 (시스템폰트로 설정)
+        let fallbackFont = UIFont.systemFont(ofSize: 16)
+        let suitFont = MDS.Typography.body1.font
+        ///  입력중일때 폰트 컬러를 설정합니다.
+        let color = SemanticColor.Fg.Neutral.bold
+
+        /// 입력된 글자를 스타일 설정 가능한 attributed string으로 초기화합니다
+        let attrStr = NSMutableAttributedString(string: fullText)
+        
+        /// 전체 글자를 돌면서 폰트 지원이 안되면 fallback으로 설정합니다
+        /// 조합 문자(이모지 등)는 UTF-16 코드유닛 길이가 1을 초과할 수 있으므로 오프셋을 직접 누적합니다
+        var utf16Offset = 0
+        for char in fullText {
+            let charString = String(char)
+            let length = charString.utf16.count
+            let range = NSRange(location: utf16Offset, length: length)
+            let fontToUse = charString.canBeRendered(by: suitFont) ? suitFont : fallbackFont
+            attrStr.addAttribute(.font, value: fontToUse, range: range)
+            attrStr.addAttribute(.foregroundColor, value: color, range: range)
+            utf16Offset += length
+        }
+
+        /// 최종적으로 글자를 할당합니다
+        textView.attributedText = attrStr
     }
 }
 
