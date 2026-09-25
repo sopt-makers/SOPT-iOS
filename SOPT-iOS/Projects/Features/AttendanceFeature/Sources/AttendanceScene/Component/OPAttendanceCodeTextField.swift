@@ -9,19 +9,31 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
 
 @frozen
 public enum AttendanceCodeState {
     case empty
     case fill
+    case error
     
     var backgroundColor: UIColor {
         switch self {
+        case .empty, .fill:
+            return SemanticColor.Bg.Neutral.subtle
+        case .error:
+            return SemanticColor.Bg.Neutral.ghost
+        }
+    }
+    
+    var strokeColor: UIColor {
+        switch self {
         case .empty:
-            return DSKitAsset.Colors.gray700.color
+            return SemanticColor.Stroke.Neutral.default
         case .fill:
-            return DSKitAsset.Colors.gray600.color
+            return SemanticColor.Fg.Neutral.bold
+        case .error:
+            return SemanticColor.Stroke.Danger.default
         }
     }
 }
@@ -62,10 +74,12 @@ extension OPAttendanceCodeTextField {
             .asDriver()
     }
     
-    public func updateUI(text: String?) {
-        let state: AttendanceCodeState = (text == "") ? .empty : .fill
+    public func updateUI(text: String?, isError: Bool = false) {
+        let state: AttendanceCodeState = isError ? .error : ((text == "") ? .empty : .fill)
         
         backgroundColor = state.backgroundColor
+        layer.borderColor = state.strokeColor.cgColor
+        
         self.text = text
     }
     
@@ -82,12 +96,15 @@ extension OPAttendanceCodeTextField {
     private func setUI() {
         backgroundColor = AttendanceCodeState.empty.backgroundColor
         
-        textColor = DSKitAsset.Colors.gray50.color
+        textColor = SemanticColor.Fg.Neutral.bold
+        // TODO: - 적용 후 변경
         font = .Main.headline2
         textAlignment = .center
         tintColor = .clear
         
-        layer.cornerRadius = 8
+        layer.cornerRadius = BaseRadius.Base.r10
+        layer.borderWidth = 1
+        layer.borderColor = AttendanceCodeState.empty.strokeColor.cgColor
         
         keyboardType = .numberPad
         textContentType = .oneTimeCode
