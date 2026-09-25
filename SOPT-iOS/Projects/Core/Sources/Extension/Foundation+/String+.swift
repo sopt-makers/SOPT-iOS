@@ -127,9 +127,25 @@ public extension String {
         return result
     }
     
-    /// SUIT로 렌더링되지 않는 폰트를 글리프로 리턴합니다.
+    /// 해당 폰트가 글자를 렌더링할 수 있는 글리프를 가지고 있는지 확인합니다.
     func canBeRendered(by font: UIFont) -> Bool {
+        /// 해당 글자의 UIFont를 CTFont로 변환한다.
         let cfFont = CTFontCreateWithName(font.fontName as CFString, font.pointSize, nil)
-        return CTFontGetGlyphWithName(cfFont, self as CFString) != 0
+        /// 해당 문자열을 UTF-16 코드우닛 배열로 변환한다.
+        let utf16Chars = Array(self.utf16)
+        /// 빈 문자열일 때는 검사할 것이 없으므로 가드 처리
+        guard !utf16Chars.isEmpty else { return true }
+        
+        /// 각 UTF-16 코드유닛을 폰트의 cmap 배열에서 찾아 대응하는 글리프 ID를 배열에 채운다.
+        var glyphs = [CGGlyph](repeating: 0, count: utf16Chars.count)
+        guard CTFontGetGlyphsForCharacters(cfFont, utf16Chars, &glyphs, utf16Chars.count) else { return false }
+
+        /// 매핑이 됐어도 실제로 그릴 내용이 있는 글리프인지 한번 더 검증한다.
+        /// 실제 벡터path를 가져와 path가 비어있는지 값을 리턴한다.
+        return glyphs.allSatisfy { glyph in
+            guard glyph != 0,
+                  let path = CTFontCreatePathForGlyph(cfFont, glyph, nil) else { return false }
+            return !path.isEmpty
+        }
     }
 }
