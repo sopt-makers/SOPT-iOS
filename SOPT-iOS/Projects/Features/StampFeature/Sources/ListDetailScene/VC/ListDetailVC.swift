@@ -646,13 +646,18 @@ extension ListDetailVC: UITextViewDelegate {
 
         /// 입력된 글자를 스타일 설정 가능한 attributed string으로 초기화합니다
         let attrStr = NSMutableAttributedString(string: fullText)
+        
         /// 전체 글자를 돌면서 폰트 지원이 안되면 fallback으로 설정합니다
-        /// 글자별로 폰트 지원이 안될때, 지원이 될때 별로 스타일을 설정합니다
-        for (index, char) in fullText.enumerated() {
-            let range = NSRange(location: index, length: 1)
-            let fontToUse = String(char).canBeRendered(by: suitFont) ? suitFont : fallbackFont
+        /// 조합 문자(이모지 등)는 UTF-16 코드유닛 길이가 1을 초과할 수 있으므로 오프셋을 직접 누적합니다
+        var utf16Offset = 0
+        for char in fullText {
+            let charString = String(char)
+            let length = charString.utf16.count
+            let range = NSRange(location: utf16Offset, length: length)
+            let fontToUse = charString.canBeRendered(by: suitFont) ? suitFont : fallbackFont
             attrStr.addAttribute(.font, value: fontToUse, range: range)
             attrStr.addAttribute(.foregroundColor, value: color, range: range)
+            utf16Offset += length
         }
 
         /// 최종적으로 글자를 할당합니다
