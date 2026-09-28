@@ -7,7 +7,6 @@
 //
 
 import Core
-import DSKit
 import MDS
 
 import UIKit

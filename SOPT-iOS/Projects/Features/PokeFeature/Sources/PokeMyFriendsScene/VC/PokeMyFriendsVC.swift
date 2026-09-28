@@ -39,7 +39,7 @@ public final class PokeMyFriendsVC: UIViewController, PokeMyFriendsViewControlla
     }
     
     private let contentStackView = UIStackView().then {
-        $0.backgroundColor = DSKitAsset.Colors.gray900.color
+        $0.backgroundColor = SemanticColor.Bg.Layer.basement
         $0.axis = .vertical
         $0.spacing = 8
     }
