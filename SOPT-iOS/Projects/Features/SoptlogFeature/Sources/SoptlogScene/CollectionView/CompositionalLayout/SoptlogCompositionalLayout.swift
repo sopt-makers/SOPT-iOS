@@ -12,6 +12,9 @@ import Core
 
 extension SoptlogVC {
     func createLayout() -> UICollectionViewLayout {
+        let configuration = UICollectionViewCompositionalLayoutConfiguration()
+        configuration.boundarySupplementaryItems = [createImageFooter()]
+
         let layout = UICollectionViewCompositionalLayout(sectionProvider: { [weak self] sectionIndex, _ in
             guard let self,
                   let sectionType = self.sectionType(for: sectionIndex) else {
@@ -24,55 +27,25 @@ extension SoptlogVC {
             case .soptampLog:
                 return self.createMenuSection(sectionType: sectionType)
             case .pokeLog:
-                return self.isPokeEmpty ?
-                self.createEmptySection(sectionType: sectionType) :
-                self.createMenuSection(sectionType: sectionType)
+                return self.createMenuSection(sectionType: sectionType)
             }
-        })
+        }, configuration: configuration)
 
         return layout
     }
     
-    private func createEmptySection(sectionType: SoptlogSectionLayoutKind) -> NSCollectionLayoutSection {
-        // 엠티뷰 크기
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(199))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        let group = NSCollectionLayoutGroup.vertical(layoutSize: itemSize, subitems: [item])
-
-        // 솝탬프 엠티뷰로도 활용하기 위함
-//        let topSpacing: CGFloat = sectionType == .soptampLog ? 36 : 28
-        let topSpacing: CGFloat = 28
-        let headerHeight: CGFloat = topSpacing + 28
-        let headerSize = NSCollectionLayoutSize(
+    private func createImageFooter() -> NSCollectionLayoutBoundarySupplementaryItem {
+        let footerSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(headerHeight)
+            heightDimension: .estimated(180)
         )
-        let header = NSCollectionLayoutBoundarySupplementaryItem(
-            layoutSize: headerSize,
-            elementKind: UICollectionView.elementKindSectionHeader,
-            alignment: .top
+        return NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: footerSize,
+            elementKind: UICollectionView.elementKindSectionFooter,
+            alignment: .bottom
         )
-        header.pinToVisibleBounds = false
-
-        // 헤더 제외한 배경
-        let backgroundDecoration = NSCollectionLayoutDecorationItem.background(
-            elementKind: SoptlogSectionBackgroundDecorationView.className
-        )
-        backgroundDecoration.contentInsets = NSDirectionalEdgeInsets(
-            top: headerHeight,
-            leading: 0,
-            bottom: 0,
-            trailing: 0
-        )
-
-        let section = NSCollectionLayoutSection(group: group)
-        section.boundarySupplementaryItems = [header]
-        section.decorationItems = [backgroundDecoration]
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
-
-        return section
     }
-    
+       
     private func createLogoSection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(240))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)

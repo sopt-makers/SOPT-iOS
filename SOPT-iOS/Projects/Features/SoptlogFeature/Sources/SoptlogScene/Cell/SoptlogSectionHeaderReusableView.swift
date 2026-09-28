@@ -9,7 +9,7 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
 
 final class SoptlogSectionHeaderReusableView: UICollectionReusableView {
     
@@ -17,8 +17,7 @@ final class SoptlogSectionHeaderReusableView: UICollectionReusableView {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
-        label.textColor = DSKitAsset.Colors.white.color
+        label.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
         label.numberOfLines = 1
         return label
     }()
@@ -58,5 +57,6 @@ extension SoptlogSectionHeaderReusableView {
 extension SoptlogSectionHeaderReusableView {
     func configure(title: String) {
         titleLabel.text = title
+        titleLabel.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
     }
 }

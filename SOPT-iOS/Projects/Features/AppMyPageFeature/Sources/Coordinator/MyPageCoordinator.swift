@@ -78,7 +78,7 @@ public final class MyPageCoordinator: BaseCoordinator {
 
         myPage.vm.onResetSoptampTap = { confirmed in
             AlertUtils.presentAlertVC(
-                type: .danger(primary: .init(I18N.MyPage.reset)),
+                type: .default(primary: .init(I18N.MyPage.reset)),
                 title: I18N.MyPage.resetMissionTitle,
                 description: I18N.MyPage.resetMissionDescription,
                 customAction: confirmed
@@ -146,7 +146,7 @@ public final class MyPageCoordinator: BaseCoordinator {
         
         withdrawal.vm.onWithdrawalConfirm = { completion  in
             AlertUtils.presentAlertVC(
-                type: .danger(primary: .init(I18N.MyPage.EtcSection.withdrawal)),
+                type: .default(primary: .init(I18N.MyPage.EtcSection.withdrawal)),
                 title: I18N.MyPage.withdrawalDialogTitle,
                 description: I18N.MyPage.withdrawalDialogDescription,
                 customAction: completion
