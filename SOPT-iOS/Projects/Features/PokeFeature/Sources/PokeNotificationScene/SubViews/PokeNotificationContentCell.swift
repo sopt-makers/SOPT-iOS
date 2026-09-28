@@ -11,7 +11,7 @@ import Combine
 import UIKit
 
 import Core
-import DSKit
+import MDS
 import Domain
 
 public final class PokeNotificationContentCell: UITableViewCell {
@@ -25,10 +25,6 @@ public final class PokeNotificationContentCell: UITableViewCell {
     lazy var profileImageTap = notificationListContentView.profileImageTap
 
     private lazy var notificationListContentView = PokeNotificationListContentView(frame: self.frame)
-  
-    private lazy var dividerView = UIView().then {
-      $0.backgroundColor = DSKitAsset.Colors.gray700.color
-    }
     
     // MARK: - View LifeCycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -37,8 +33,7 @@ public final class PokeNotificationContentCell: UITableViewCell {
         self.initializeViews()
         self.setupConstraints()
         
-        // TBD: 읽은 알림 안읽은 알림 backgroundColor 처리
-        self.contentView.backgroundColor = DSKitAsset.Colors.gray900.color
+        self.contentView.backgroundColor = SemanticColor.Bg.Layer.basement
     }
     
     required init?(coder: NSCoder) {
@@ -54,18 +49,13 @@ public final class PokeNotificationContentCell: UITableViewCell {
 
 extension PokeNotificationContentCell {
     private func initializeViews() {
-      self.contentView.addSubviews(self.notificationListContentView, self.dividerView)
+      self.contentView.addSubviews(self.notificationListContentView)
     }
     
     private func setupConstraints() {
         self.notificationListContentView.snp.makeConstraints {
             $0.top.bottom.equalToSuperview().inset(Metric.contentTopBottom)
             $0.leading.trailing.equalToSuperview().inset(Metric.contentLeadingTrailing)
-        }
-      
-        self.dividerView.snp.makeConstraints {
-          $0.height.equalTo(Metric.bottomSeperatorHeight)
-          $0.leading.trailing.bottom.equalToSuperview()
         }
     }
 }

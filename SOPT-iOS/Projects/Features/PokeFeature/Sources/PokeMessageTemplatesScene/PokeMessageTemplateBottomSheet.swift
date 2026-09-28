@@ -9,10 +9,11 @@
 import UIKit
 import Combine
 
-import BaseFeatureDependency
 import Core
-import DSKit
 import Domain
+import MDS
+
+import BaseFeatureDependency
 
 public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessageTemplatesViewControllable {
     
@@ -50,10 +51,8 @@ public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessage
     }
     
     private let messegeTemplateTitleLabel = UILabel().then {
-        $0.attributedText = "함께 보낼 메시지를 골라주세요".applyMDSFont(
-            mdsFont: .heading5,
-            color: DSKitAsset.Colors.gray30.color
-        )
+        $0.text = I18N.Poke.MessaeBottomSheet.title
+        $0.setTypography(Typography.title3, textColor: SemanticColor.Fg.Neutral.bold)
     }
     
     private let anonymousStackView = UIStackView().then {
@@ -61,18 +60,18 @@ public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessage
         $0.spacing = Metric.anonymousStackViewSpacing
     }
     
+    // TODO: 피그마 적용 후 변경
     private let anonymousCheckboxButton = UIButton().then {
         $0.layer.cornerRadius = 5
-        $0.setImage(DSKitAsset.Assets.check.image, for: .selected)
-        $0.setBackgroundColor(DSKitAsset.Colors.gray500.color, for: .normal)
-        $0.setBackgroundColor(DSKitAsset.Colors.blue40.color, for: .selected)
+        $0.setImage(MDSIcon.checkOutlined.image, for: .selected)
+//        $0.setBackgroundColor(DSKitAsset.Colors.gray500.color, for: .normal)
+//        $0.setBackgroundColor(DSKitAsset.Colors.blue40.color, for: .selected)
     }
     
     private let anonymousDescription = UILabel().then {
-        $0.attributedText = "익명".applyMDSFont(
-            mdsFont: .title6,
-            color: DSKitAsset.Colors.gray10.color
-        )
+        $0.text = I18N.Poke.MessaeBottomSheet.anonymous
+        // TODO: 피그마 적용 후 변경
+//        $0.setTypography(<#T##style: MDSFont##MDSFont#>)
     }
     
     // MARK: - Variables
@@ -90,7 +89,7 @@ public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessage
         
         super.init(nibName: nil, bundle: nil)
         
-        self.view.backgroundColor = DSKitAsset.Colors.gray800.color
+        self.view.backgroundColor = SemanticColor.Bg.Neutral.ghost
         
         self.initializeViews()
         self.setupConstraints()
@@ -149,6 +148,7 @@ extension PokeMessageTemplateBottomSheet {
 extension PokeMessageTemplateBottomSheet {
     func configure(with messagesModel: PokeMessagesModel) {
         self.messegeTemplateTitleLabel.text = messagesModel.header
+        self.messegeTemplateTitleLabel.setTypography(Typography.label2, textColor: SemanticColor.Fg.Neutral.bold)
         messagesModel.messages.forEach {
             let bottomsheetContentView = PokeBottomSheetMessageView(frame: self.view.frame)
             bottomsheetContentView.configure(with: $0)
@@ -208,7 +208,7 @@ extension PokeMessageTemplateBottomSheet {
                 guard isAnonymousAvailable else {
                     ToastUtils.showMDSToast(
                         type: .alert,
-                        text: "천생연분은 실명으로만 콕찌를 수 있어요."
+                        text: I18N.Poke.MessaeBottomSheet.onlyReal
                     )
                     return
                 }
@@ -220,7 +220,7 @@ extension PokeMessageTemplateBottomSheet {
                 if isSelected {
                     ToastUtils.showMDSToast(
                         type: .alert,
-                        text: "익명 해제 시, 상대방이 나를 알 수 있어요."
+                        text: I18N.Poke.MessaeBottomSheet.revealNotice
                     )
                 }
             }).store(in: self.cancelBag)

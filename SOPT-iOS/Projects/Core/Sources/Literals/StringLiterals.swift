@@ -504,6 +504,13 @@ public struct I18N {
             public static let description = "나도 찔러서 답장을 해보세요"
         }
         
+        public struct MessaeBottomSheet {
+            public static let title = "함께 보낼 메시지를 골라주세요"
+            public static let anonymous = "익명"
+            public static let onlyReal = "천생연분은 실명으로만 콕찌를 수 있어요."
+            public static let revealNotice = "익명 해제 시, 상대방이 나를 알 수 있어요."
+        }
+        
       public static let emptyViewDescription = "아직 없어요 T.T\n더 많은 찌르기로 달성해보세요"
     }
 
