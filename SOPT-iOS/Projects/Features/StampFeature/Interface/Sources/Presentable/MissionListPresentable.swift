@@ -12,7 +12,7 @@ import Core
 import BaseFeatureDependency
 import Domain
 
-public protocol MissionListViewControllable: UIViewController & MissionListRoutingTrigger { }
+public protocol MissionListViewControllable: ViewControllable { }
 
 public protocol MissionListRoutingTrigger {
   var onSwiped: (() -> Void)? { get set }
@@ -24,6 +24,6 @@ public protocol MissionListRoutingTrigger {
   var onReportButtonTap: (() -> Void)? { get set }
     var onAppJamRankingButtonTap: (() -> Void)? { get set }
 }
-// TODO: coordinating vc -> vm 작업에서 활용
+
 public typealias MissionListViewModelType = ViewModelType & MissionListRoutingTrigger
-public typealias MissionListPresentable = (vc: any MissionListViewControllable, vm: any MissionListViewModelType)
+public typealias MissionListPresentable = (vc: UIViewController, vm: any MissionListViewModelType)

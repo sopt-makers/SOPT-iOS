@@ -152,7 +152,7 @@ extension STNavigationBar {
             self.rightButton.setImage(MDSIcon.trashOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold), for: .normal)
         case .edit:
             self.rightButton.isHidden = false
-            self.rightButton.setImage(MDSIcon.editOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold), for: .normal)
+            self.rightButton.setImage(MDSIcon.writeOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold), for: .normal)
         }
         return self
     }

@@ -14,7 +14,7 @@ import Domain
 
 // MARK: - ViewControllable
 
-public protocol ClapListViewControllable: UIViewController & ClapListRoutingTrigger { }
+public protocol ClapListViewControllable: ViewControllable { }
 
 // MARK: - RoutingTrigger
 
@@ -30,6 +30,6 @@ public typealias ClapListViewModelType = ViewModelType & ClapListRoutingTrigger
 // MARK: - Presentable
 
 public typealias ClapListPresentable = (
-    vc: any ClapListViewControllable,
+    vc: UIViewController,
     vm: any ClapListViewModelType
 )

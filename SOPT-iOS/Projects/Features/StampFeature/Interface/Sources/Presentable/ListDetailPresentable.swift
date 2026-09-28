@@ -12,13 +12,12 @@ import Core
 import BaseFeatureDependency
 import Domain
 
-// TODO: - 화면전환 트리거 책임 vc -> vm으로 변경하기
 
-public protocol ListDetailViewControllable: UIViewController & ListDetailRoutingTrigger { }
+public protocol ListDetailViewControllable: ViewControllable { }
 public protocol ListDetailRoutingTrigger {
   var onComplete: ((StarViewLevel, (() -> Void)?) -> Void)? { get set }
   var onNaviBackTap: (() -> Void)? { get set }
-  var onViewClapTap: ((Int, String) -> Void)? { get set }
+  var onViewClapListTap: ((Int, String) -> Void)? { get set }
 }
 public typealias ListDetailViewModelType = ViewModelType & ListDetailRoutingTrigger
-public typealias ListDetailPresentable = (vc: ListDetailViewControllable, vm: any ListDetailViewModelType)
+public typealias ListDetailPresentable = (vc: UIViewController, vm: any ListDetailViewModelType)

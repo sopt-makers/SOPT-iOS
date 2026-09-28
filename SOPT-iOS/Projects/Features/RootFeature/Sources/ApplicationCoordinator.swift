@@ -411,14 +411,14 @@ extension ApplicationCoordinator {
 
 extension ApplicationCoordinator {
     @discardableResult
-    internal func runNotificationFlow() -> BaseCoordinator {
+    internal func runNotificationFlow(animated: Bool = true) -> BaseCoordinator {
         let coordinator = NotificationCoordinator(
             navigationController: UIWindow.getRootNavigationController,
             factory: NotificationBuilder()
         )
         coordinator.delegate = self
 
-        coordinator.start()
+        coordinator.start(animated: animated)
 
         return coordinator
     }

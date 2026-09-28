@@ -15,10 +15,9 @@ import Domain
 public class ListDetailViewModel: ListDetailViewModelType {
     
     // MARK: - Trigger
-    // TODO: coordinating vc -> vm
     public var onComplete: ((Core.StarViewLevel, (() -> Void)?) -> Void)?
     public var onNaviBackTap: (() -> Void)?
-    public var onViewClapTap: ((Int, String) -> Void)?
+    public var onViewClapListTap: ((Int, String) -> Void)?
 
     // MARK: - Properties
     
@@ -52,10 +51,12 @@ public class ListDetailViewModel: ListDetailViewModelType {
         let imageSelected: Driver<Data>
         let dateSelected: Driver<String>
         let textEdited: Driver<String>
-        let bottomButtonTapped: Driver<Void>
+        let completeButtonTapped: Driver<Void>
         let rightButtonTapped: Driver<ListDetailSceneType>
         let deleteButtonTapped: Driver<Bool>
         let clapButtonTapped: Driver<Int>
+        let naviBackButtonTapped: Driver<Void>
+        let viewClapListTapped: Driver<(Int, String)>
     }
     
     // MARK: - Outputs
@@ -65,7 +66,7 @@ public class ListDetailViewModel: ListDetailViewModelType {
         var editSuccessed = PassthroughSubject<Bool, Never>()
         var showDeleteAlert = PassthroughSubject<Bool, Never>()
         var deleteSuccessed = PassthroughSubject<Bool, Never>()
-        var bottomButtonEnabled = PassthroughSubject<Bool, Never>()
+        var completeButtonEnabled = PassthroughSubject<Bool, Never>()
         let isLoading = PassthroughSubject<Bool, Never>()
         var clapResult = PassthroughSubject<Result<ClapCountModel, Error>, Never>()
     }
@@ -141,7 +142,7 @@ extension ListDetailViewModel {
             }).store(in: self.cancelBag)
 
         
-        input.bottomButtonTapped
+        input.completeButtonTapped
             .withUnretained(self)
             .map { owner, _ in
                 return ListDetailRequestModel(
@@ -242,7 +243,22 @@ extension ListDetailViewModel {
                 }
             }
             .sink { isEdited in
-                output.bottomButtonEnabled.send(isEdited)
+                output.completeButtonEnabled.send(isEdited)
+            }
+            .store(in: cancelBag)
+        
+        input.naviBackButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNaviBackTap?()
+            }
+            .store(in: cancelBag)
+        
+        input.viewClapListTapped
+            .withUnretained(self)
+            .sink { owner, currentState in
+                let (stampId, nickname) = currentState
+                owner.onViewClapListTap?(stampId, nickname)
             }
             .store(in: cancelBag)
         

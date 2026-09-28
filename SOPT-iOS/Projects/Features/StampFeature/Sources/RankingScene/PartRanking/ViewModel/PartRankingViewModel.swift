@@ -15,7 +15,6 @@ import StampFeatureInterface
 public class PartRankingViewModel: PartRankingViewModelType {
     
     // MARK: - Trigger
-    // TODO: coordinating vc -> vm
     public var onCellTap: ((StampFeatureInterface.Part) -> Void)?
     public var onNaviBackTap: (() -> Void)?
     public var onRightButtonTap: (() -> Void)?
@@ -29,6 +28,9 @@ public class PartRankingViewModel: PartRankingViewModelType {
     public struct Input {
         let viewDidLoad: Driver<Void>
         let refreshStarted: Driver<Void>
+        let cellTapped: Driver<StampFeatureInterface.Part>
+        let naviBackButtonTapped: Driver<Void>
+        let rightButtonTapped: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -63,6 +65,24 @@ extension PartRankingViewModel {
             .merge(with: input.refreshStarted)
             .sink { [weak self] _ in
                 self?.useCase.fetchPartRanking()
+            }.store(in: cancelBag)
+        
+        input.cellTapped
+            .withUnretained(self)
+            .sink { owner, part in
+                owner.onCellTap?(part)
+            }.store(in: cancelBag)
+        
+        input.naviBackButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNaviBackTap?()
+            }.store(in: cancelBag)
+        
+        input.rightButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onRightButtonTap?()
             }.store(in: cancelBag)
         
         return output
