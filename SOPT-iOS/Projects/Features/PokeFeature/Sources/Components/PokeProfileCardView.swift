@@ -114,7 +114,9 @@ public final class PokeProfileCardView: UIView, PokeCompatible {
             self.profileImageView.image = nil
         }
         self.nameLabel.text = model.isAnonymous ? model.anonymousName : model.name
+        self.nameLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold)
         self.partLabel.text = String(describing: model.generation) + "기" + " " + model.part
+        self.partLabel.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
         self.kokButton.isEnabled = !model.isAlreadyPoke
     }
     

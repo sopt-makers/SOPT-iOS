@@ -8,6 +8,7 @@
 
 import UIKit
 
+import MDS
 import DSKit
 import Domain
 import Core
@@ -16,11 +17,12 @@ public extension PokeRelation {
     var color: UIColor {
         switch self {
         case .nonFriend, .newFriend:
-            return DSKitAsset.Colors.success.color
+            return SemanticColor.Stroke.Secondary.default
+            // TODO: - MDS 반영 후 적용
         case .bestFriend:
             return DSKitAsset.Colors.information.color
         case .soulmate:
-            return DSKitAsset.Colors.secondary.color
+            return SemanticColor.Stroke.Brand.default
         }
     }
     
