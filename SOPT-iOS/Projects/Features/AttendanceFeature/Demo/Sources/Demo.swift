@@ -71,7 +71,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 /// - hasAttendance: 출석 점수 반영되는 날
 /// - noAttendance: 일정은 있지만 출석 점수 반영 안 되는 날
 /// - noSession: 일정 없는 날
-private let sessionType: SessionType = .noAttendance
+private let sessionType: SessionType = .hasAttendance
 
 struct StubShowAttendanceRepository: ShowAttendanceRepositoryInterface {
     func fetchAttendanceScheduleModel() -> AnyPublisher<AttendanceScheduleModel, Error> {

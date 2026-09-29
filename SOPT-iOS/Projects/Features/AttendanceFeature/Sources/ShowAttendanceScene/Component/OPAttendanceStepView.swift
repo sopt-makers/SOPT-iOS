@@ -10,7 +10,6 @@ import UIKit
 
 import Core
 import Domain
-import DSKit
 import MDS
 
 /*
@@ -20,49 +19,41 @@ import MDS
 
 extension AttendanceStepType {
 
-    /// Figma 상 `none`, `check` 상태는 MDS 토큰(원 + 체크 아이콘)으로 그려지고,
-    /// 나머지 상태는 디자인이 확정되기 전까지 기존 레거시 이미지 에셋을 그대로 사용합니다.
-    var isCircleStyle: Bool {
-        switch self {
-        case .none, .check:
-            return true
-        case .unCheck, .tardy, .done, .absent:
-            return false
-        }
-    }
-
     var circleFillColor: UIColor {
         switch self {
-        case .check:
-            return .clear
-        default:
+        case .check, .unCheck:
+            return SemanticColor.Bg.Neutral.inverse
+        case .none, .tardy, .done, .absent:
             return SemanticColor.Bg.Neutral.subtle
         }
     }
 
     var circleBorderColor: UIColor {
         switch self {
-        case .check:
-            return SemanticColor.Stroke.Neutral.inverse
-        default:
+        case .none, .check, .unCheck:
             return SemanticColor.Stroke.Neutral.default
+        case .tardy, .done, .absent:
+            return SemanticColor.Stroke.Neutral.inverse
         }
     }
 
-    var image: UIImage {
+    var icon: UIImage? {
         switch self {
         case .none:
-            return DSKitAsset.Assets.opAttendBefore.image
-        case .check:
-            return DSKitAsset.Assets.opAttendYes.image
-        case .unCheck:
-            return DSKitAsset.Assets.opAttendNo.image
-        case .tardy:
-            return DSKitAsset.Assets.opAttendLate.image
-        case .done:
-            return DSKitAsset.Assets.opAttendDone.image
-        case .absent:
-            return DSKitAsset.Assets.opAttendAbsent.image
+            return nil
+        case .check, .done:
+            return MDSIcon.checkOutlined.image
+        default:
+            return nil
+        }
+    }
+
+    var iconTintColor: UIColor {
+        switch self {
+        case .none, .check, .unCheck:
+            return SemanticColor.Stroke.Neutral.default
+        case .tardy, .done, .absent:
+            return SemanticColor.Fg.Neutral.bold
         }
     }
 
@@ -75,13 +66,8 @@ extension AttendanceStepType {
         }
     }
 
-    var shadow: Bool {
-        switch self {
-        case .none:
-            return false
-        default:
-            return true
-        }
+    var hasShadow: Bool {
+        self != .none
     }
 }
 
@@ -89,8 +75,9 @@ final class OPAttendanceStepView: UIView {
     
     private enum Metric {
         static let stepImageSize = 24.f
-        static let circleBorderWidth = 1.5.f
-        static let checkIconSize = 16.f
+        static let circleBorderWidth = 1.f
+        static let iconSize = 16.f
+        static let iconCenterYOffset = 1.f
 
         static let stackViewWidth = 47.f
     }
@@ -110,28 +97,15 @@ final class OPAttendanceStepView: UIView {
         return stackView
     }()
 
-    /// 상태별 아이콘을 표시하는 24x24 고정 컨테이너. `.none`/`.check`는 원+체크 아이콘(MDS),
-    /// 그 외 상태는 레거시 이미지 에셋을 겹쳐 놓고 하나만 보여줍니다.
-    private let stepIconContainerView = UIView()
-
-    private let stepImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
-        return imageView
-    }()
-
     private let stepCircleView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = Metric.stepImageSize / 2
         view.layer.borderWidth = Metric.circleBorderWidth
-        view.clipsToBounds = true
         return view
     }()
 
-    private let stepCheckImageView: UIImageView = {
+    private let stepIconImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = MDSIcon.checkOutlined.image
-        imageView.tintColor = SemanticColor.Fg.Neutral.bold
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
@@ -167,57 +141,40 @@ extension OPAttendanceStepView {
         stepTitleLabel.text = title
         stepTitleLabel.setTypography(Typography.label4)
 
-        if type.isCircleStyle {
-            stepImageView.isHidden = true
-            stepCircleView.isHidden = false
-            stepCircleView.backgroundColor = type.circleFillColor
-            stepCircleView.layer.borderColor = type.circleBorderColor.cgColor
-            stepCheckImageView.isHidden = type != .check
-        } else {
-            stepCircleView.isHidden = true
-            stepCheckImageView.isHidden = true
-            stepImageView.isHidden = false
-            stepImageView.image = type.image
-            if type.shadow {
-                stepImageView.layer.applyShadow(
-                    color: .white,
-                    alpha: 0.3,
-                    x: 0,
-                    y: 0,
-                    blur: 16,
-                    spread: 0
-                )
-            }
+        stepCircleView.backgroundColor = type.circleFillColor
+        stepCircleView.layer.borderColor = type.circleBorderColor.cgColor
+        stepIconImageView.image = type.icon?.withRenderingMode(.alwaysTemplate)
+        stepIconImageView.tintColor = type.iconTintColor
+        if type.hasShadow {
+            stepCircleView.layer.applyShadow(
+                color: .white,
+                alpha: 0.25,
+                x: 0,
+                y: 0,
+                blur: 12,
+                spread: 0
+            )
         }
     }
 
     private func setLayout() {
-        stepCircleView.addSubview(stepCheckImageView)
-        stepIconContainerView.addSubviews(stepImageView, stepCircleView)
+        stepCircleView.addSubview(stepIconImageView)
 
         stepStackView.addArrangedSubviews(
-            stepIconContainerView,
+            stepCircleView,
             stepTitleLabel
         )
 
         addSubview(stepStackView)
 
-        stepIconContainerView.snp.makeConstraints {
-            $0.height.equalTo(Metric.stepImageSize)
-            $0.width.equalTo(Metric.stepImageSize)
-        }
-
-        stepImageView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-
         stepCircleView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.size.equalTo(Metric.stepImageSize)
         }
 
-        stepCheckImageView.snp.makeConstraints {
-            $0.center.equalToSuperview()
-            $0.width.height.equalTo(Metric.checkIconSize)
+        stepIconImageView.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.centerY.equalToSuperview().offset(Metric.iconCenterYOffset)
+            $0.width.height.equalTo(Metric.iconSize)
         }
 
         stepStackView.snp.makeConstraints {
