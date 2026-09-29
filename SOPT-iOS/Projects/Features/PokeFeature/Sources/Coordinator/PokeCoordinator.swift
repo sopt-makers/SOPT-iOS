@@ -52,7 +52,7 @@ public final class PokeCoordinator: BaseCoordinator {
         
         pokeMain.vm.onPokeNotificationsTap = { [weak self] in
             self?.runPokeNotificationListFlow()
-        }                
+        }
         
         pokeMain.vm.onMyFriendsTap = { [weak self] in
             self?.runPokeMyFriendsFlow()
@@ -91,13 +91,7 @@ public final class PokeCoordinator: BaseCoordinator {
             navigationController: navigationController,
             factory: factory
         )
-        
-        pokeNotificationListCoordinator.finishFlow = { [weak self, weak pokeNotificationListCoordinator] in
-            pokeNotificationListCoordinator?.childCoordinators = []
-            self?.removeDependency(pokeNotificationListCoordinator)
-        }
-        
-        addDependency(pokeNotificationListCoordinator)
+
         pokeNotificationListCoordinator.start()
     }
     

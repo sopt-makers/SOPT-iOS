@@ -69,7 +69,7 @@ extension DefaultSplashUseCase: SplashUseCase {
                         needUpdate.send(.none)
                     case UpdateCheckError.projectVersionFetchError:
                         print("사용자의 버전을 불러오지 못했습니다.")
-                        needUpdate.send(.none) 
+                        needUpdate.send(.none)
                     default:
                         print("업데이트 체크 중 에러 발생: \(error)")
                         needUpdate.send(.none)

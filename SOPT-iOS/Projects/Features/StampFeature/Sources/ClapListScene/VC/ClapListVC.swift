@@ -25,11 +25,8 @@ final class ClapListVC: UIViewController, ClapListViewControllable {
     private var viewModel: ClapListViewModel
     private let viewDidLoadSubject = PassthroughSubject<Void, Never>()
     lazy var dataSource: UICollectionViewDiffableDataSource<ClapListSection, ClapperModel>! = nil
-
-    // MARK: - ClapListCoordinatable
-
-    public var onNaviBackTap: (() -> Void)?
-    public var onCellTap: ((String?, String?) -> Void)?
+    private var cellTapped = PassthroughSubject<(String, String), Never>()
+    private var naviBackButtonTapped = PassthroughSubject<Void, Never>()
 
     // MARK: - UI Components
 
@@ -39,7 +36,7 @@ final class ClapListVC: UIViewController, ClapListViewControllable {
     }
 
     private let titleLabel = UILabel().then {
-        $0.text = I18N.MyPage.SoptampSection.clapList
+        $0.text = I18N.ListDetail.clapList
         $0.setTypography(Typography.title3, textColor: SemanticColor.Fg.Neutral.bold)
     }
 
@@ -47,6 +44,11 @@ final class ClapListVC: UIViewController, ClapListViewControllable {
         $0.backgroundColor = SemanticColor.Bg.Neutral.ghost
         $0.layer.cornerRadius = BaseRadius.Base.r20
         $0.clipsToBounds = true
+    }
+    
+    private let emptyClapListLabel = UILabel().then {
+        $0.setTypography(Typography.body2, textColor: SemanticColor.Fg.Neutral.subtle)
+        $0.text = I18N.ListDetail.emptyClapList
     }
 
     private lazy var clapListCollectionView = UICollectionView(
@@ -75,7 +77,7 @@ final class ClapListVC: UIViewController, ClapListViewControllable {
         super.touchesBegan(touches, with: event)
         guard let touch = touches.first else { return }
         if !containerView.frame.contains(touch.location(in: view)) {
-            onNaviBackTap?()
+            naviBackButtonTapped.send(())
         }
     }
 
@@ -107,7 +109,7 @@ extension ClapListVC {
         containerView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(164)
             $0.directionalHorizontalEdges.equalToSuperview().inset(16)
-            $0.bottom.lessThanOrEqualTo(view.safeAreaLayoutGuide)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
 
         backButton.snp.makeConstraints {
@@ -127,6 +129,15 @@ extension ClapListVC {
             $0.bottom.equalToSuperview()
         }
     }
+    
+    private func setEmptyView() {
+        containerView.addSubview(emptyClapListLabel)
+        
+        emptyClapListLabel.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(236)
+            $0.centerX.equalToSuperview()
+        }
+    }
 }
 
 // MARK: - Bindings
@@ -138,12 +149,14 @@ extension ClapListVC {
     }
 
     @objc private func backButtonTapped() {
-        onNaviBackTap?()
+        naviBackButtonTapped.send(())
     }
 
     private func bindViewModel() {
         let input = ClapListViewModel.Input(
-            viewDidLoad: viewDidLoadSubject.asDriver()
+            viewDidLoad: viewDidLoadSubject.asDriver(),
+            naviBackButtonTapped: naviBackButtonTapped.asDriver(),
+            cellTapped: cellTapped.asDriver()
         )
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
 
@@ -151,7 +164,11 @@ extension ClapListVC {
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] model in
-                self?.setCollectionView(model: model)
+                if model.isEmpty {
+                    self?.setEmptyView()
+                } else {
+                    self?.setCollectionView(model: model)
+                }
             }
             .store(in: cancelBag)
     }
@@ -204,6 +221,6 @@ enum ClapListSection: CaseIterable {
 extension ClapListVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let model = dataSource.itemIdentifier(for: indexPath) else { return }
-        onCellTap?(model.nickname, model.profileMessage)
+        cellTapped.send((model.nickname, model.profileMessage))
     }
 }

@@ -14,12 +14,9 @@ import BaseFeatureDependency
 import PokeFeatureInterface
 import WebFeature
 
-public final class PokeOnboardingCoordinator: DefaultCoordinator {
+public final class PokeOnboardingCoordinator: BaseCoordinator {
     
     // MARK: - Properties
-    
-    public var finishFlow: (() -> Void)?
-    
     private let factory: PokeFeatureBuildable
     private let navigationController: UINavigationController
     private weak var rootController: UINavigationController?
@@ -54,7 +51,7 @@ public final class PokeOnboardingCoordinator: DefaultCoordinator {
         var pokeOnboarding = factory.makePokeOnboarding(coordinator: self)
         
         pokeOnboarding.vm.onNaviBackTapped = { [weak self] in
-            self?.navigationController.dismiss(animated: true)            
+            self?.navigationController.dismiss(animated: true)
         }
         
         pokeOnboarding.vm.onFirstVisitInOnboarding = { [weak self] in

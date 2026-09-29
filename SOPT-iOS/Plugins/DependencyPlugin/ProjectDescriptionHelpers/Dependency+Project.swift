@@ -16,12 +16,10 @@ public extension Dep {
         public struct AppMyPage {}
         public struct Notification {}
         public struct Poke {}
-        public struct DailySoptune {}
         public struct Web {}
         public struct Home {}
         public struct Soptlog {}
         public struct TabBar {}
-        public struct LegacyAuth {}
         public struct Soptletter {}
     }
     
@@ -65,13 +63,6 @@ public extension Dep.Features.Spalsh {
     static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))
 }
 
-public extension Dep.Features.LegacyAuth {
-    static let group = "LegacyAuth"
-    
-    static let Feature = Dep.Features.project(name: "Feature", group: group)
-    static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))
-}
-
 public extension Dep.Features.Auth {
     static let group = "Auth"
     
@@ -109,13 +100,6 @@ public extension Dep.Features.Notification {
 
 public extension Dep.Features.Poke {
     static let group = "Poke"
-    
-    static let Feature = Dep.Features.project(name: "Feature", group: group)
-    static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))
-}
-
-public extension Dep.Features.DailySoptune {
-    static let group = "DailySoptune"
     
     static let Feature = Dep.Features.project(name: "Feature", group: group)
     static let Interface = Dep.project(target: "\(group)FeatureInterface", path: .relativeToFeature("\(group)Feature"))

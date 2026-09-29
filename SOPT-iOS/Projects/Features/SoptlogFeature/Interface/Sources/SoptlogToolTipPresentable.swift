@@ -11,12 +11,11 @@ import UIKit
 import BaseFeatureDependency
 import Core
 
-public protocol SoptlogToolTipViewControllable: LegacyViewControllable { }
+public protocol SoptlogToolTipViewControllable: ViewControllable { }
 public protocol SoptlogToolTipCoordinatable {
     var onDismissButtonTap: (() -> Void)? { get set }
     var onDimmingBackgroundTap: (() -> Void)? { get set }
 }
 public typealias SoptlogToolTipViewModelType = ViewModelType & SoptlogToolTipCoordinatable
-public typealias LegacySoptlogTooltipPresentable = (vc: SoptlogToolTipViewControllable, vm: any SoptlogToolTipViewModelType)
 
 public typealias SoptlogTooltipPresentable = (vc: UIViewController, vm: any SoptlogToolTipViewModelType)

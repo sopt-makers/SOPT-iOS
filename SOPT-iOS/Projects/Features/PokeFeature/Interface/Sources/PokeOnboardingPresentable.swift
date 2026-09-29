@@ -12,7 +12,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol PokeOnboardingViewControllable: LegacyViewControllable { }
+public protocol PokeOnboardingViewControllable: ViewControllable { }
 
 public protocol PokeOnboardingRoutingTrigger {
     var onNaviBackTapped: (() -> Void)? { get set }
@@ -23,7 +23,6 @@ public protocol PokeOnboardingRoutingTrigger {
 }
 
 public typealias PokeOnboardingViewModelType = ViewModelType & PokeOnboardingRoutingTrigger
-public typealias LegacyPokeOnboardingPresentable = (vc: PokeOnboardingViewControllable, vm: any PokeOnboardingViewModelType)
 
 public typealias PokeOnboardingPresentable = (vc: UIViewController, vm: any PokeOnboardingViewModelType)
 

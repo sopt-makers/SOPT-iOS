@@ -14,11 +14,9 @@ import BaseFeatureDependency
 import PokeFeatureInterface
 import WebFeature
 
-public final class PokeNotificationListCoordinator: DefaultCoordinator {
+public final class PokeNotificationListCoordinator: BaseCoordinator {
     
     // MARK: - Properties
-    
-    public var finishFlow: (() -> Void)?
     
     private let factory: PokeFeatureBuildable
     private weak var navigationController: UINavigationController?

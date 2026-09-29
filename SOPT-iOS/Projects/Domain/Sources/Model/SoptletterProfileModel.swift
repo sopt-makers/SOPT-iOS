@@ -9,9 +9,11 @@
 public struct SoptletterProfileModel {
     public let nickname: String
     public let isOnboarded: Bool
+    public let currentGeneration: Int
     
-    public init(nickname: String, isOnboarded: Bool) {
+    public init(nickname: String, isOnboarded: Bool, currentGeneration: Int) {
         self.nickname = nickname
         self.isOnboarded = isOnboarded
+        self.currentGeneration = currentGeneration
     }
 }

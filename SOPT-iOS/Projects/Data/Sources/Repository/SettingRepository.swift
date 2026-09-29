@@ -17,13 +17,11 @@ import WebKit
 
 public class SettingRepository {
     
-    private let authService: AuthService
     private let stampService: StampService
     private let userService: UserService
     private let cancelBag = CancelBag()
-    
-    public init(authService: AuthService, stampService: StampService, userService: UserService) {
-        self.authService = authService
+
+    public init(stampService: StampService, userService: UserService) {
         self.stampService = stampService
         self.userService = userService
     }

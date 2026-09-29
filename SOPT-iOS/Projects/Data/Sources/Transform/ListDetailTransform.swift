@@ -28,8 +28,8 @@ extension ListDetailEntity {
       viewCount: self.viewCount,
       isMine: self.isMine,
       profileInfo: profileInfo,
-      starLevel: self.missionLevel,
-      missionTitle: self.missionTitle
+      starLevel: self.missionLevel ?? 0,
+      missionTitle: self.missionTitle ?? ""
     )
   }
 }

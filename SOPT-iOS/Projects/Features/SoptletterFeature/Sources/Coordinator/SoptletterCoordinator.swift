@@ -31,6 +31,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
     ) {
         self.navigationController = navigationController
         self.factory = factory
+        super.init()
     }
 
     // MARK: - Coordinator Life Cycle
@@ -97,7 +98,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
     }
     
     private func showSoptletterMain(topicId: Int?, isRoot: Bool) {
-        var soptletterMain = factory.makeSoptletterMainVC(coordinator: self, topicId: topicId, isRoot: isRoot)        
+        var soptletterMain = factory.makeSoptletterMainVC(coordinator: self, topicId: topicId, isRoot: isRoot)
         
         soptletterMain.vm.onNaviBackTap = { [weak self] in
             if isRoot {

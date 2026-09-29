@@ -12,7 +12,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol PokeMyFriendsViewControllable: LegacyViewControllable { }
+public protocol PokeMyFriendsViewControllable: ViewControllable { }
 
 public protocol PokeMyFriendsRoutingTrigger {
     var showFriendsListButtonTap: ((PokeRelation) -> Void)? { get set }
@@ -22,6 +22,5 @@ public protocol PokeMyFriendsRoutingTrigger {
 }
 
 public typealias PokeMyFriendsViewModelType = ViewModelType & PokeMyFriendsRoutingTrigger
-public typealias LegacyPokeMyFriendsPresentable = (vc: PokeMyFriendsViewControllable, vm: any PokeMyFriendsViewModelType)
 
 public typealias PokeMyFriendsPresentable = (vc: UIViewController, vm: any PokeMyFriendsViewModelType)

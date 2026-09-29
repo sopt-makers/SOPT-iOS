@@ -16,8 +16,6 @@ extension SoptlogResponseEntity {
         return SoptlogModel(
             isActive: self.isActive,
             isAppjamParticipant: self.isAppjamParticipant,
-            isFortuneChecked: self.isFortuneChecked,
-            todayFortuneText: self.todayFortuneText,
             soptampCount: self.soptampCount,
             viewCount: self.viewCount,
             myClapCount: self.myClapCount,

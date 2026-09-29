@@ -12,7 +12,7 @@ import Core
 import Domain
 import BaseFeatureDependency
 
-public protocol SplashViewControllable: LegacyViewControllable { }
+public protocol SplashViewControllable: ViewControllable { }
 
 public protocol SplashRoutingTrigger {
     var onNoticeSkipped: (() -> Void)? { get set }
@@ -25,5 +25,4 @@ public protocol SplashCoordinatorFinishOutput {
 }
 
 public typealias SplashViewModelType = SplashRoutingTrigger & ViewModelType
-public typealias LegacySplashPresentable = (vc: SplashViewControllable, vm: any SplashViewModelType)
 public typealias SplashPresentable = (vc: UIViewController, vm: any SplashViewModelType)

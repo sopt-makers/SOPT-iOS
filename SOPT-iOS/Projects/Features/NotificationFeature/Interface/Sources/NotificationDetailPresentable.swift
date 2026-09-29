@@ -12,7 +12,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol NotificationDetailViewControllable: LegacyViewControllable { }
+public protocol NotificationDetailViewControllable: ViewControllable { }
 
 public protocol NotificationDetailRoutingTrigger {
     var onShortCutButtonTap: ((ShortCutLink) -> Void)? { get set }
@@ -21,6 +21,5 @@ public protocol NotificationDetailRoutingTrigger {
 public typealias ShortCutLink = (url: String, isDeepLink: Bool)
 
 public typealias NotificationDetailViewModelType = ViewModelType & NotificationDetailRoutingTrigger
-public typealias LegacyNotificationDetailPresentable = (vc: NotificationDetailViewControllable, vm: any NotificationDetailViewModelType)
 
 public typealias NotificationDetailPresentable = (vc: UIViewController, vm: any NotificationDetailViewModelType)

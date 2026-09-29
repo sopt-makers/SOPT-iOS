@@ -14,7 +14,6 @@ let project = Project.makeModule(
     targets: [.unitTest, .staticFramework, .demo],
     internalDependencies: [
         .Features.Spalsh.Feature,
-        .Features.LegacyAuth.Feature,
         .Features.Auth.Feature,
         .Features.TabBar.Feature,
         .Features.Stamp.Feature,
@@ -22,7 +21,6 @@ let project = Project.makeModule(
         .Features.AppMyPage.Feature,
         .Features.Notification.Feature,
         .Features.Poke.Feature,
-        .Features.DailySoptune.Feature,
         .Features.Home.Feature,
         .Features.Soptlog.Feature,
         .Features.Soptletter.Feature

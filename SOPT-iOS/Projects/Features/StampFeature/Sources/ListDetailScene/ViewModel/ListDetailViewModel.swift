@@ -15,10 +15,9 @@ import Domain
 public class ListDetailViewModel: ListDetailViewModelType {
     
     // MARK: - Trigger
-    // TODO: coordinating vc -> vm
     public var onComplete: ((Core.StarViewLevel, (() -> Void)?) -> Void)?
     public var onNaviBackTap: (() -> Void)?
-    public var onViewClapTap: ((Int, String) -> Void)?
+    public var onViewClapListTap: ((Int, String) -> Void)?
 
     // MARK: - Properties
     
@@ -29,7 +28,7 @@ public class ListDetailViewModel: ListDetailViewModelType {
     public var starLevel: StarViewLevel!
     public var missionId: Int!
     public var missionTitle: String!
-    public var stampId: Int!
+    public var stampId: Int?
     public var isOtherUser: Bool
     public var otherUserName: String!
     public var isAppjam: Bool?
@@ -37,6 +36,7 @@ public class ListDetailViewModel: ListDetailViewModelType {
     var totalClapCount: Int = 0
     var myClapCount: Int = 0
     var viewcount: Int = 0
+    var isAppjamMode: Bool? { UserDefaultKeyList.User.isAppjam }
     
     private var uploadedUrl: String?
     
@@ -51,10 +51,12 @@ public class ListDetailViewModel: ListDetailViewModelType {
         let imageSelected: Driver<Data>
         let dateSelected: Driver<String>
         let textEdited: Driver<String>
-        let bottomButtonTapped: Driver<Void>
+        let completeButtonTapped: Driver<Void>
         let rightButtonTapped: Driver<ListDetailSceneType>
         let deleteButtonTapped: Driver<Bool>
         let clapButtonTapped: Driver<Int>
+        let naviBackButtonTapped: Driver<Void>
+        let viewClapListTapped: Driver<(Int, String)>
     }
     
     // MARK: - Outputs
@@ -64,7 +66,7 @@ public class ListDetailViewModel: ListDetailViewModelType {
         var editSuccessed = PassthroughSubject<Bool, Never>()
         var showDeleteAlert = PassthroughSubject<Bool, Never>()
         var deleteSuccessed = PassthroughSubject<Bool, Never>()
-        var bottomButtonEnabled = PassthroughSubject<Bool, Never>()
+        var completeButtonEnabled = PassthroughSubject<Bool, Never>()
         let isLoading = PassthroughSubject<Bool, Never>()
         var clapResult = PassthroughSubject<Result<ClapCountModel, Error>, Never>()
     }
@@ -101,21 +103,13 @@ extension ListDetailViewModel {
             .filter { owner, _ in
                 owner.sceneType == .completed
             }
-            .sink { owner, _ in                
+            .sink { owner, _ in
                 owner.isOtherUser
                 ? owner.useCase.fetchListDetail(isAppjam: owner.isAppjam, missionId: owner.missionId, username: owner.otherUserName)
                 : owner.useCase.fetchListDetail(isAppjam: owner.isAppjam, missionId: owner.missionId, username: nil)
 
                 if owner.isOtherUser {
-                    AmplitudeInstance.shared.track(
-                        eventType: .clickFeedMission,
-                        eventProperties: [
-                            "missionId": owner.missionId ?? "",
-                            "missionTitle": owner.missionTitle ?? "",
-                            "missionLevel": owner.starLevel ?? "",
-                            "feedOwnerNick": owner.otherUserName ?? ""
-                        ]
-                    )
+                    AmplitudeInstance.shared.trackWithUserType(event: .clickFeedMission)
                 }
             }.store(in: cancelBag)
         
@@ -148,7 +142,7 @@ extension ListDetailViewModel {
             }).store(in: self.cancelBag)
 
         
-        input.bottomButtonTapped
+        input.completeButtonTapped
             .withUnretained(self)
             .map { owner, _ in
                 return ListDetailRequestModel(
@@ -194,7 +188,8 @@ extension ListDetailViewModel {
             .removeDuplicates()
             .withUnretained(self)
             .sink { owner, _ in
-                owner.useCase.deleteStamp(stampId: owner.stampId)
+                guard let stampId = owner.stampId else { return }
+                owner.useCase.deleteStamp(stampId: stampId)
             }.store(in: self.cancelBag)
         
         input.textEdited
@@ -212,11 +207,12 @@ extension ListDetailViewModel {
         input.clapButtonTapped
             .withUnretained(self)
             .sink { owner, count in
-                owner.useCase.clap(stampId: owner.stampId, clapCount: count)
+                guard let stampId = owner.stampId else { return }
+                owner.useCase.clap(stampId: stampId, clapCount: count)
                 AmplitudeInstance.shared.track(
                     eventType: .clickUpdateClap,
                     eventProperties: [
-                        "stampId": owner.stampId ?? 0,
+                        "stampId": stampId,
                         "appliedCount": count,
                         "totalClapCount": owner.totalClapCount,
                         "receiverNick": owner.otherUserName ?? ""
@@ -247,7 +243,22 @@ extension ListDetailViewModel {
                 }
             }
             .sink { isEdited in
-                output.bottomButtonEnabled.send(isEdited)
+                output.completeButtonEnabled.send(isEdited)
+            }
+            .store(in: cancelBag)
+        
+        input.naviBackButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onNaviBackTap?()
+            }
+            .store(in: cancelBag)
+        
+        input.viewClapListTapped
+            .withUnretained(self)
+            .sink { owner, currentState in
+                let (stampId, nickname) = currentState
+                owner.onViewClapListTap?(stampId, nickname)
             }
             .store(in: cancelBag)
         
@@ -268,8 +279,8 @@ extension ListDetailViewModel {
                 owner.totalClapCount = model.clapCount
                 owner.myClapCount = model.myClapCount ?? 0
                 owner.viewcount = model.viewCount
-                if owner.starLevel == nil {
-                    owner.starLevel = StarViewLevel.init(rawValue: model.starLevel)
+                if let level = StarViewLevel.init(rawValue: model.starLevel) {
+                    owner.starLevel = level
                 }
                 if let mine = model.isMine {
                     owner.isOtherUser = !mine

@@ -24,12 +24,13 @@ public class SoptlogViewModel: SoptlogViewModelType {
     private var fetchSoptlogInfoTask: Task<Void, Never>?
     private var cancelBag = CancelBag()
 
-    private let userType: UserType = UserDefaultKeyList.Auth.getUserType()
+    private let userType: UserType = UserDefaultKeyList.CoreAuth.getUserType()
     public var isActiveUser: Bool { userType == .active }
     
     // MARK: - Inputs
     
     public struct Input {
+        let viewDidLoad: Driver<Void>
         let viewWillAppear: Driver<Void>
         let cellTap: Driver<SoptlogCellTapInfo>
         let toolTipButtonTap: Driver<CGRect>
@@ -45,7 +46,6 @@ public class SoptlogViewModel: SoptlogViewModelType {
     // MARK: - SoptlogCoordinatable
     
     public var onToolTipTapped: ((CGRect) -> Void)?
-    public var onSoptuneTapped: (() -> Void)?
     public var onNetworkError: (@MainActor () -> Void)?
     public var onAuthFailed: (@MainActor () -> Void)?
     public var onSoptampHomeTapped: (() -> Void)?
@@ -73,6 +73,7 @@ extension SoptlogViewModel {
         input.viewWillAppear
             .withUnretained(self)
             .sink { owner, _ in
+                AmplitudeInstance.shared.trackWithUserType(event: .viewSoptlogMain)
                 owner.fetchSoptlogInfoTask?.cancel()
                 owner.fetchSoptlogInfoTask = Task {
                     await self.handleViewWillAppear(output: output)
@@ -105,15 +106,7 @@ extension SoptlogViewModel {
                     break
                 }
             }.store(in: cancelBag)
-        
-//        input.cellTap
-//            .filter{ $0.section == .banner }
-//            .withUnretained(self)
-//            .sink { owner, _ in
-//                owner.onSoptuneTapped?()
-//                AmplitudeInstance.shared.trackWithUserType(event: .clickSoptlogSoptune)
-//            }.store(in: cancelBag)
-        
+
         input.toolTipButtonTap
             .withUnretained(self)
             .sink { owner, toolTipFrame in

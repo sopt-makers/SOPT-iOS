@@ -88,8 +88,6 @@ extension ApplicationCoordinator: HomeCoordinatorDelegate {
 extension ApplicationCoordinator: SoptlogCoordinatorDelegate {
     public func soptlogCoordinator(_ coordinator: SoptlogCoordinator, to destination: SoptlogCoordinatorDestination) {
         switch destination {
-//        case .dailySoptune:
-//            self.runDailySoptuneFlow()
         case .webLink(let url):
             self.handleWebLink(webLink: url)
         case .soptamp:
@@ -115,7 +113,7 @@ extension ApplicationCoordinator: NotificationCoordinatorDelegate {
         switch destination {
         case .deepLink(let url):
             self.notificationHandler.receive(deepLink: url)
-            guard let deepLink = self.notificationHandler.deepLink.value else { return }            
+            guard let deepLink = self.notificationHandler.deepLink.value else { return }
             handleDeepLink(deepLink: deepLink)
         case .webLink(let url):
             self.notificationHandler.receive(webLink: url)

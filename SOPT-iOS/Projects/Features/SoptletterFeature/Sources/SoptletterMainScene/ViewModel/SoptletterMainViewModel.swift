@@ -96,12 +96,14 @@ extension SoptletterMainViewModel {
             .sink { owner, _ in
                 owner.fetchMessages(output: output)
                 owner.fetchCTA(output: output)
+                AmplitudeInstance.shared.trackWithUserType(event: .viewSoptletterMain)
             }.store(in: cancelBag)
         
         input.naviBackButtonTap
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNaviBackTap?()
+                AmplitudeInstance.shared.trackWithUserType(event: .clickQuitSoptletter)
             }.store(in: cancelBag)
         
         input.menuButtonTap
@@ -114,6 +116,7 @@ extension SoptletterMainViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onWriteTap?()
+                AmplitudeInstance.shared.trackWithUserType(event: .clickWriteSoptletter)
             }.store(in: cancelBag)
         
         input.downloadButtonTap
@@ -127,6 +130,8 @@ extension SoptletterMainViewModel {
                         customAction: {
                             output.onDownloadConfirm.send(())
                         })
+                
+                AmplitudeInstance.shared.trackWithUserType(event: .clickExportSoptletter)
             }.store(in: cancelBag)
         
         input.reportButtonTap
@@ -139,6 +144,7 @@ extension SoptletterMainViewModel {
             .withUnretained(self)
             .sink { owner, model in
                 owner.onCellTap?(model.messageId, model.topicId)
+                AmplitudeInstance.shared.trackWithUserType(event: .clickSoptletterDetail)
             }.store(in: cancelBag)
         
         input.imageProcessCompleted
@@ -155,7 +161,7 @@ extension SoptletterMainViewModel {
     public func fetchMessages(output: Output) {
         fetchMessageTask?.cancel()
         fetchMessageTask = Task {
-            do {                
+            do {
                 let result = try await useCase.fetchSoptletterMessages(topicId: topicId, cursor: nil, size: nil)
                 try Task.checkCancellation()
                 await MainActor.run {
@@ -164,7 +170,7 @@ extension SoptletterMainViewModel {
             } catch is CancellationError {
                 return
             } catch {
-                // UI fallback 처리                
+                // UI fallback 처리
                 await MainActor.run {
                     output.soptletterMessages.send(.init(topicId: 0, title: "test", totalCount: 0, nextCursor: 0, hasNext: false, messages: []))
                     onError?()

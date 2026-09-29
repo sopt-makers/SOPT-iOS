@@ -30,7 +30,7 @@ enum TextViewState {
     case completed
 }
 
-public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, ListDetailViewControllable {
+public class ListDetailVC: UIViewController, ListDetailViewControllable {
     
     // MARK: - Properties
     
@@ -54,21 +54,18 @@ public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, L
     private var totalClapCount: Int = 0
     private var myClapCount: Int = 0
     private var isAnimating: Bool = false
+    private var isAppjamtampOpen: Bool = false
     
     private let deleteButtonTapped = PassthroughSubject<Bool, Never>()
     private let imageSelected = PassthroughSubject<Data, Never>()
     private let dateSelected = PassthroughSubject<String, Never>()
     private let textEdited = PassthroughSubject<String, Never>()
-    
+    private let naviBackButtonTapped = PassthroughSubject<Void, Never>()
+    private let viewClapTapped = PassthroughSubject<(Int, String), Never>()
+    let completeButtonTapped = PassthroughSubject<Void, Never>()
     private var keyboardWillShowObserver: NSObjectProtocol?
     private var keyboardWillHideObserver: NSObjectProtocol?
     
-    // MARK: - ListDetailCoordinatable
-    
-    public var onNaviBackTap: (() -> Void)?
-    public var onComplete: ((StarViewLevel, (() -> Void)?) -> Void)?
-    public var onViewClapTap: ((Int, String) -> Void)?
-
     // MARK: - UI Components
     
     private lazy var naviBar = STNavigationBar(type: .titleWithLeftButton)
@@ -84,7 +81,7 @@ public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, L
     private let textView = UITextView()
     private lazy var missionDateTextField = MissionDateView(frame: self.view.frame)
     private lazy var missionInfoView = MissionInfoView(frame: self.view.frame)
-    private lazy var bottomButton = MDSActionButton(
+    private lazy var completeButton = MDSActionButton(
         variant: .primary,
         size: .large,
         title: sceneType == .none ? I18N.ListDetail.missionComplete : I18N.ListDetail.editComplete
@@ -147,6 +144,8 @@ public class ListDetailVC: UIViewController, LegacyListDetailViewControllable, L
         self.setGesture()
         self.setDelegate()
         self.hideKeyboard()
+        
+        self.isAppjamtampOpen = self.viewModel.isAppjam ?? false
     }
     
     deinit {
@@ -165,15 +164,19 @@ extension ListDetailVC {
         naviBar.leftButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onNaviBackTap?()
+                owner.naviBackButtonTapped.send(())
             }.store(in: cancelBag)
         
         viewClapButton
             .publisher(for: .touchUpInside)
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onViewClapTap?(owner.viewModel.stampId,
-                                     owner.viewModel.otherUserName ?? "")
+                guard let stampId = owner.viewModel.stampId else { return }
+                let nickname = owner.viewModel.isOtherUser
+                    ? owner.viewModel.otherUserName ?? ""
+                    : (UserDefaultKeyList.User.soptampName ?? "")
+                owner.viewClapTapped.send((stampId, nickname))
+                AmplitudeInstance.shared.trackWithUserType(event: .clickClapperlist)
             }.store(in: cancelBag)
     }
     
@@ -186,7 +189,7 @@ extension ListDetailVC {
             }
             .asDriver()
         
-        let bottomButtonTapped = bottomButton
+        let completeButtonTapped = completeButton
             .publisher(for: .touchUpInside)
             .withUnretained(self)
             .map { owner, _ in
@@ -216,10 +219,12 @@ extension ListDetailVC {
             imageSelected: self.imageSelected.eraseToAnyPublisher(),
             dateSelected: dateSelected.asDriver(),
             textEdited: textEdited.asDriver(),
-            bottomButtonTapped: bottomButtonTapped,
+            completeButtonTapped: completeButtonTapped.asDriver(),
             rightButtonTapped: rightButtonTapped,
             deleteButtonTapped: deleteButtonTapped.asDriver(),
-            clapButtonTapped: clapButtonTapped
+            clapButtonTapped: clapButtonTapped.asDriver(),
+            naviBackButtonTapped: naviBackButtonTapped.asDriver(),
+            viewClapListTapped: viewClapTapped.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -232,8 +237,8 @@ extension ListDetailVC {
                     let removeDimmerView = { owner.backgroundDimmerView.removeFromSuperview() }
                     AlertUtils.presentNetworkAlertVC(confirmAction: removeDimmerView, cancelAction: removeDimmerView)
                 } else {
-                    if owner.sceneType == .none {                        
-                        owner.onComplete?(owner.starLevel) {
+                    if owner.sceneType == .none {
+                        owner.viewModel.onComplete?(owner.starLevel) {
                             UIView.animate(withDuration: 0.2, delay: 0, animations: {
                                 owner.backgroundDimmerView.alpha = 0
                             }) { _ in
@@ -246,7 +251,7 @@ extension ListDetailVC {
                     owner.reloadData(owner.sceneType)
                 }
             }.store(in: self.cancelBag)
-        
+
         output.editSuccessed
             .withUnretained(self)
             .sink { owner, successed in
@@ -278,10 +283,10 @@ extension ListDetailVC {
                 }
             }.store(in: self.cancelBag)
         
-        output.bottomButtonEnabled
+        output.completeButtonEnabled
             .withUnretained(self)
             .sink { owner, buttonEnabled in
-                owner.bottomButton.isEnabled = buttonEnabled
+                owner.completeButton.isEnabled = buttonEnabled
             }.store(in: cancelBag)
         
         output.isLoading
@@ -328,7 +333,9 @@ extension ListDetailVC {
         self.imageURL = model.image
         
         self.missionView.setStarLevel(model.starLevel)
-        self.missionView.setMissionLabelText(model.missionTitle)
+        if !model.missionTitle.isEmpty {
+            self.missionView.setMissionLabelText(model.missionTitle)
+        }
 
         if let profileInfo = model.profileInfo {
             showProfileInfo(profileInfo)
@@ -557,15 +564,8 @@ extension ListDetailVC {
             $0.trailing.equalTo(zoomImageView.snp.trailing)
             $0.width.height.equalTo(24)
         }
-        
-        AmplitudeInstance.shared.track(
-            eventType: .getImageZoom,
-            eventProperties: [
-                "image": imageURL,
-                "stampId": viewModel.stampId ?? 0,
-                "missionId": viewModel.missionId ?? 0
-            ]
-        )
+                
+        AmplitudeInstance.shared.trackWithUserType(event: .clickGetImageZoom)
     }
     
     @objc
@@ -635,6 +635,33 @@ extension ListDetailVC: UITextViewDelegate {
     
     public func textViewDidChange(_ textView: UITextView) {
         self.textEdited.send(textView.text)
+        
+        /// 입력된 글자를 전부 받아옵니다
+        let fullText = textView.text ?? ""
+        ///  지원안될 때 폰트를 설정합니다 (시스템폰트로 설정)
+        let fallbackFont = UIFont.systemFont(ofSize: 16)
+        let suitFont = MDS.Typography.body1.font
+        ///  입력중일때 폰트 컬러를 설정합니다.
+        let color = SemanticColor.Fg.Neutral.bold
+
+        /// 입력된 글자를 스타일 설정 가능한 attributed string으로 초기화합니다
+        let attrStr = NSMutableAttributedString(string: fullText)
+        
+        /// 전체 글자를 돌면서 폰트 지원이 안되면 fallback으로 설정합니다
+        /// 조합 문자(이모지 등)는 UTF-16 코드유닛 길이가 1을 초과할 수 있으므로 오프셋을 직접 누적합니다
+        var utf16Offset = 0
+        for char in fullText {
+            let charString = String(char)
+            let length = charString.utf16.count
+            let range = NSRange(location: utf16Offset, length: length)
+            let fontToUse = charString.canBeRendered(by: suitFont) ? suitFont : fallbackFont
+            attrStr.addAttribute(.font, value: fontToUse, range: range)
+            attrStr.addAttribute(.foregroundColor, value: color, range: range)
+            utf16Offset += length
+        }
+
+        /// 최종적으로 글자를 할당합니다
+        textView.attributedText = attrStr
     }
 }
 
@@ -644,7 +671,7 @@ extension ListDetailVC {
     private func setUI(_ type: ListDetailSceneType) {
         if type == .edit {
             self.naviBar
-                .setRightButton(.delete)
+                .setRightButton(.trash)
                 .resetLeftButtonAction {
                     self.resetData()
                     self.reloadData(.completed)
@@ -652,12 +679,12 @@ extension ListDetailVC {
             self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
             self.originText = textView.text
             self.originImage = self.missionImageView.image ?? UIImage()
-            self.bottomButton.title = I18N.ListDetail.editComplete
-            self.bottomButton.isEnabled = false
+            self.completeButton.title = I18N.ListDetail.editComplete
+            self.completeButton.isEnabled = false
         } else {
             self.naviBar.resetLeftButtonAction()
             self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-            self.bottomButton.title = I18N.ListDetail.missionComplete
+            self.completeButton.title = I18N.ListDetail.missionComplete
         }
         
         switch type {
@@ -667,7 +694,7 @@ extension ListDetailVC {
             self.contentStackView.setCustomSpacing(8, after: self.missionDateTextField)
             self.setTextView(.inactive)
             self.imagePlaceholderLabel.isHidden = missionImageView.image == nil ? false : true
-            self.bottomButton.isHidden = false
+            self.completeButton.isHidden = false
             self.missionInfoView.isHidden = true
             self.viewClapButton.isHidden = true
             self.missionDateTextField.isHidden = false
@@ -685,7 +712,7 @@ extension ListDetailVC {
             self.naviBar.setRightButton(.addRecord)
             self.setTextView(.completed)
             self.imagePlaceholderLabel.isHidden = true
-            self.bottomButton.isHidden = true
+            self.completeButton.isHidden = true
             self.missionDateTextField.setTextFieldView(.completed)
             self.missionInfoView.isHidden = false
             self.zoomInView.isHidden = false
@@ -843,17 +870,19 @@ extension ListDetailVC {
     }
 
     private func showProfileInfo(_ info: ProfileInfo) {
-        profileInfoView.configure(name: info.name, profileImageURL: info.imageURL)
-
-        if !contentStackView.arrangedSubviews.contains(profileInfoView) {
-            contentStackView.insertArrangedSubview(profileInfoView, at: 2)
-
-            profileInfoView.snp.makeConstraints {
-                $0.leading.trailing.equalToSuperview()
+        if isAppjamtampOpen {
+            profileInfoView.configure(name: info.name, profileImageURL: info.imageURL)
+            
+            if !contentStackView.arrangedSubviews.contains(profileInfoView) {
+                contentStackView.insertArrangedSubview(profileInfoView, at: 2)
+                
+                profileInfoView.snp.makeConstraints {
+                    $0.leading.trailing.equalToSuperview()
+                }
             }
+            
+            profileInfoView.isHidden = false
         }
-
-        profileInfoView.isHidden = false
     }
 
     private func hideProfileInfo() {
@@ -882,7 +911,7 @@ extension ListDetailVC {
     }
     
     private func setOtherUserLayout() {
-        bottomButton.removeFromSuperview()
+        completeButton.removeFromSuperview()
         viewClapButton.removeFromSuperview()
         
         contentView.addSubviews(clapBadge, clapButton)
@@ -903,8 +932,8 @@ extension ListDetailVC {
         clapButton.removeFromSuperview()
         clapBadge.removeFromSuperview()
         
-        contentView.addSubviews(bottomButton, viewClapButton)
-        bottomButton.snp.makeConstraints {
+        contentView.addSubviews(completeButton, viewClapButton)
+        completeButton.snp.makeConstraints {
             $0.leading.trailing.bottom.equalToSuperview()
             $0.top.equalTo(contentStackView.snp.bottom).offset(32)
             $0.height.equalTo(56)

@@ -8,21 +8,23 @@
 
 import UIKit
 
-import DSKit
+import Then
+
+import MDS
 
 final class MyPageSoptlogCheckButtonCVC: UICollectionViewCell {
 
     // MARK: - UI Components
 
-    private let titleLabel = UILabel().then {
-        $0.textAlignment = .center
+    private let button = MDSActionButton(variant: .secondary, size: .small).then {
+        $0.isUserInteractionEnabled = false
     }
 
     // MARK: - View Life Cycle
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setUI()
+        
         setLayout()
     }
 
@@ -32,25 +34,18 @@ final class MyPageSoptlogCheckButtonCVC: UICollectionViewCell {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        self.titleLabel.text = nil
+        self.button.title = nil
     }
 }
 
 // MARK: - UI & Layout
 
 extension MyPageSoptlogCheckButtonCVC {
-    private func setUI() {
-        contentView.backgroundColor = .clear
-        contentView.layer.cornerRadius = 18
-        contentView.layer.borderWidth = 1
-        contentView.layer.borderColor = DSKitAsset.Colors.gray100.color.cgColor
-    }
-
     private func setLayout() {
-        contentView.addSubview(titleLabel)
+        contentView.addSubview(button)
 
-        titleLabel.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+        button.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
     }
 }
@@ -59,10 +54,6 @@ extension MyPageSoptlogCheckButtonCVC {
 
 extension MyPageSoptlogCheckButtonCVC {
     func configureCell(model: MyPageItem) {
-        self.titleLabel.attributedText = model.title.applyMDSFont(
-            mdsFont: .label3,
-            color: DSKitAsset.Colors.gray100.color,
-            alignment: .center
-        )
+        button.title = model.title
     }
 }

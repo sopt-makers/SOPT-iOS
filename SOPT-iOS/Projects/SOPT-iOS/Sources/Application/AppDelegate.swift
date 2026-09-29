@@ -19,13 +19,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application( _ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         // AppLifeCycleAdapter에서 @Injected를 사용하기에 registerDependencies를 먼저 호출한다.
-        //
         registerDependencies()
         configureAppLifecycleAdapter()
         Firebase.configure()
         Firebase.configureCrashlytics()
         application.registerForRemoteNotifications()
-
         return true
     }
     
@@ -49,7 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 // MARK: - Sentry & FCM
 
-extension AppDelegate {    
+extension AppDelegate {
     private func configureAppLifecycleAdapter() {
         self.appLifecycleAdapter.prepare()
     }

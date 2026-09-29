@@ -6,6 +6,9 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
+// NOTE: 현재 코드에서 사용되지 않는 화면(기능별 알림 설정)입니다.
+// 추후 재사용 가능성이 있어 삭제하지 않고 남겨둡니다.
+
 import Combine
 import Foundation
 

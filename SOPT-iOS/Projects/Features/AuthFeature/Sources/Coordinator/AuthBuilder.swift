@@ -14,7 +14,6 @@ import BaseFeatureDependency
 
 public final class AuthBuilder {
     
-    @Injected public var repository: SignInRepositoryInterface
     @Injected public var oauthRepository: CoreOAuthRepositoryInterface
     @Injected public var coreRepository: CoreAuthRepositoryInterface
     @Injected public var phoneRepository: PhoneVerifyRepositoryInterface
@@ -26,7 +25,6 @@ public final class AuthBuilder {
 extension AuthBuilder: AuthFeatureViewBuildable {
     public func makeSignIn(coordinator: Coordinator) -> SignInPresentable {
         let useCase = DefaultSignInUseCase(
-            repository: repository,
             oauthRepository: oauthRepository,
             coreRepository: coreRepository,
             tokenRepository: tokenRepository

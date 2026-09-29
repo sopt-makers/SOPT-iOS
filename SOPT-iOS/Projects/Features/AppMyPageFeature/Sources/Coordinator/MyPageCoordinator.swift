@@ -22,7 +22,6 @@ public final class MyPageCoordinator: BaseCoordinator {
     // MARK: - Properties
 
     public weak var delegate: MyPageCoordinatorDelegate?
-    public var finishFlow: (() -> Void)?
     public var requestCoordinating: ((MyPageCoordinatorDestination) -> Void)?
     public var onShowSoptlog: (() -> Void)?
 
@@ -79,7 +78,7 @@ public final class MyPageCoordinator: BaseCoordinator {
 
         myPage.vm.onResetSoptampTap = { confirmed in
             AlertUtils.presentAlertVC(
-                type: .danger(primary: .init(I18N.MyPage.reset)),
+                type: .default(primary: .init(I18N.MyPage.reset)),
                 title: I18N.MyPage.resetMissionTitle,
                 description: I18N.MyPage.resetMissionDescription,
                 customAction: confirmed
@@ -132,7 +131,7 @@ public final class MyPageCoordinator: BaseCoordinator {
             .compactMap({ ($0 as? UIWindowScene)?.keyWindow })
             .first?.rootViewController else { return }
         
-        rootViewController.present(SOPTWebView(startWith: url), animated: true)        
+        rootViewController.present(SOPTWebView(startWith: url), animated: true)
     }
 
     private func showWithdrawal(userType: UserType) {
@@ -147,7 +146,7 @@ public final class MyPageCoordinator: BaseCoordinator {
         
         withdrawal.vm.onWithdrawalConfirm = { completion  in
             AlertUtils.presentAlertVC(
-                type: .danger(primary: .init(I18N.MyPage.EtcSection.withdrawal)),
+                type: .default(primary: .init(I18N.MyPage.EtcSection.withdrawal)),
                 title: I18N.MyPage.withdrawalDialogTitle,
                 description: I18N.MyPage.withdrawalDialogDescription,
                 customAction: completion

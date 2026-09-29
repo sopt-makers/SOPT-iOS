@@ -12,7 +12,7 @@ import Core
 import MDS
 
 /*
- (전체: 00회)를 표현하는 단일 영역 뷰입니다. 
+ (전체: 00회)를 표현하는 단일 영역 뷰입니다.
  */
 
 final class SingleScoreView: UIView {

@@ -8,7 +8,6 @@
 import UIKit
 
 import Core
-import BaseFeatureDependency
 import RootFeature
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -23,7 +22,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     lazy var appCoordinator: ApplicationCoordinator = ApplicationCoordinator(
         rootNavigationController: rootController,
-        router: LegacyRouter(rootController: rootController),
         notificationHandler: self.notificationHandler
     )
     
@@ -33,16 +31,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let scene = (scene as? UIWindowScene) else { return }
         
         configureAPNs()
+        notificationHandler.isColdStart = connectionOptions.notificationResponse != nil
         
         window = UIWindow(windowScene: scene)
         window?.rootViewController = rootController
         window?.makeKeyAndVisible()
         
-        self.appCoordinator.start()
+        if let userActivity = connectionOptions.userActivities.first(where: {
+            $0.activityType == NSUserActivityTypeBrowsingWeb && $0.webpageURL != nil
+        }) {
+            handleUniversalLinkWithUserActivity(userActivity, isInitialLaunch: true)
+        } else {
+            self.appCoordinator.start()
+        }
     }
-    
+
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         parseContexts(openURLContexts: URLContexts)
+    }
+
+    func scene(
+        _ scene: UIScene,
+        continue userActivity: NSUserActivity
+    ) {
+        handleUniversalLinkWithUserActivity(userActivity, isInitialLaunch: false)
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {}

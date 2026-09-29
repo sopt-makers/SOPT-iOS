@@ -8,12 +8,11 @@
 
 import Foundation
 import BaseFeatureDependency
-import Core
 
 public struct SoptampMissionListDeepLink: DeepLinkExecutable {
     public let name = "missions"
     public let children: [DeepLinkExecutable] = [SoptampMissionDetailDeepLink()]
-    public var isDestination: Bool = false 
+    public var isDestination: Bool = false
 
     public init() {}
 
@@ -24,14 +23,10 @@ public struct SoptampMissionListDeepLink: DeepLinkExecutable {
         }
 
         let sentence = queryItems?.getQueryValue(key: "sentence") ?? ""
-
-        switch Config.coordinatorFlag {
-        case .legacy:
-            guard let coordinator = coordinator as? LegacyStampCoordinator else { return nil }
-        case .new:
-            guard let coordinator = coordinator as? StampCoordinator else { return nil }
-            coordinator.runOtherMissionList(username: username, sentence: sentence)
-        }
+        
+        guard let coordinator = coordinator as? StampCoordinator else { return nil }
+        coordinator.runOtherMissionList(username: username, sentence: sentence)
+        
         return coordinator
     }
 }

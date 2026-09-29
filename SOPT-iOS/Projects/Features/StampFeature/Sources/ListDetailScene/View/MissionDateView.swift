@@ -148,6 +148,7 @@ extension MissionDateView {
             $0.locale = Locale(identifier: "ko-kr")
             $0.preferredDatePickerStyle = .wheels
             $0.maximumDate = Date()
+            $0.minimumDate = Calendar.current.date(byAdding: .month, value: -6, to: Date())
         }
         
         datePicker

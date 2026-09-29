@@ -16,7 +16,7 @@ public class AmplitudeEventPropertyBuilder<Value: AmplitudeEventPropertyValueCon
     /// ViewType 은 UserType과 같다.
     public func addViewType() -> Self {
         let key: AmplitudeEventPropertyKey = .viewType
-        let userType = UserDefaultKeyList.Auth.getUserType()
+        let userType = UserDefaultKeyList.CoreAuth.getUserType()
         let value = userType.rawValue.lowercased()
         self.eventProperties[key.rawValue] = value
         return self

@@ -14,30 +14,6 @@ public protocol ReissueService {
     func reissuance(with tokens: AuthTokens, completion: @escaping ((AuthTokens?) -> Void))
 }
 
-public final class DefaultLegacyReissueService: BaseService<LegacyReissueAPI> { }
-
-extension DefaultLegacyReissueService: ReissueService {
-
-    @Sendable
-    public func reissuance(with tokens: AuthTokens, completion: @escaping ((AuthTokens?) -> Void)) {
-        
-        provider.request(.reissuance(refreshToken: tokens.refreshToken)) { response in
-            switch response {
-            case .success(let value):
-                do {
-                    let decoder = JSONDecoder()
-                    let body = try decoder.decode(SignInEntity.self, from: value.data)
-                    completion(body)
-                } catch {
-                    completion(nil)
-                }
-            case .failure:
-                completion(nil)
-            }
-        }
-    }
-}
-
 public final class DefaultReissueService: BaseService<ReissueAPI> { }
 
 extension DefaultReissueService: ReissueService {

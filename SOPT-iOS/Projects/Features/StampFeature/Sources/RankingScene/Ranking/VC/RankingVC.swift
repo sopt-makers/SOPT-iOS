@@ -20,23 +20,21 @@ import Then
 import StampFeatureInterface
 import BaseFeatureDependency
 
-public class RankingVC: UIViewController, LegacyRankingViewControllable, RankingViewControllable {
+public class RankingVC: UIViewController, RankingViewControllable {
     
     // MARK: - Properties
     
-    public var viewModel: RankingViewModel!
+    public var viewModel: RankingViewModel
     private var cancelBag = CancelBag()
     
+    private let naviBackButtonTapped = PassthroughSubject<Void, Never>()
+    private let cellTapped = PassthroughSubject<(String, String), Never>()
+    
     lazy var dataSource: UICollectionViewDiffableDataSource<RankingSection, AnyHashable>! = nil
-    
-    // MARK: - RankingCoordinatable
-    
-    public var onCellTap: ((String, String) -> Void)?
-    public var onNaviBackTap: (() -> Void)?
-    
+        
     // MARK: - UI Components
     
-    lazy var naviBar = STNavigationBar(type: .titleWithLeftButton)
+    private lazy var naviBar = STNavigationBar(type: .titleWithLeftButton)
         .setTitle("랭킹")
         .setRightButton(.none)
     
@@ -58,13 +56,18 @@ public class RankingVC: UIViewController, LegacyRankingViewControllable, Ranking
         label: I18N.RankingList.myRanking
     ).then {
         $0.isHidden = true
+        $0.layer.cornerRadius = 24
     }
     
     // MARK: - View Life Cycle
     private let rankingViewType: RankingViewType
     
-    init(rankingViewType: RankingViewType) {
+    init(
+        rankingViewType: RankingViewType,
+        viewModel: RankingViewModel
+    ) {
         self.rankingViewType = rankingViewType
+        self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: nil)
         
@@ -118,7 +121,7 @@ extension RankingVC {
         }
         
         showMyRankingFloatingButton.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(26)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-38)
             make.centerX.equalToSuperview()
         }
     }
@@ -132,7 +135,7 @@ extension RankingVC {
         naviBar.leftButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onNaviBackTap?()
+                owner.naviBackButtonTapped.send(())
             }.store(in: cancelBag)
     }
     
@@ -150,7 +153,9 @@ extension RankingVC {
         let input = RankingViewModel.Input(
             viewDidLoad: Driver.just(()),
             refreshStarted: refreshStarted,
-            showMyRankingButtonTapped: showRankingButtonTapped
+            showMyRankingButtonTapped: showRankingButtonTapped,
+            cellTapped: cellTapped.asDriver(),
+            naviBackButtonTapped: naviBackButtonTapped.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -197,9 +202,9 @@ extension RankingVC {
             cellProvider: { [weak self] collectionView, indexPath, itemIdentifier in
                 switch RankingSection.type(indexPath.section) {
                 case .chart:
-                    guard 
+                    guard
                         let chartCell = collectionView.dequeueReusableCell(
-                            withReuseIdentifier: RankingChartCVC.className, 
+                            withReuseIdentifier: RankingChartCVC.className,
                             for: indexPath
                         ) as? RankingChartCVC,
                         let chartCellModel = itemIdentifier as? RankingChartModel
@@ -210,7 +215,7 @@ extension RankingVC {
                         guard let self, !balloonModel.username.isEmpty else { return }
                         
                         let item = balloonModel.toRankingListTapItem()
-                        self.onCellTap?(item.username, item.sentence)
+                        self.cellTapped.send((item.username, item.sentence))
                     }
                     return chartCell
                     
@@ -220,7 +225,7 @@ extension RankingVC {
                             withReuseIdentifier: RankingListCVC.className,
                             for: indexPath
                         ) as? RankingListCVC,
-                        let rankingListCellModel = itemIdentifier as? RankingModel 
+                        let rankingListCellModel = itemIdentifier as? RankingModel
                     else { return UICollectionViewCell() }
                     
                     rankingListCell.setData(model: rankingListCellModel, rank: indexPath.row + 1 + 3)
@@ -256,7 +261,7 @@ extension RankingVC: UICollectionViewDelegate {
         
         guard let tappedCell = collectionView.cellForItem(at: indexPath) as? RankingListTappable,
               let item = tappedCell.getModelItem() else { return }
-        self.onCellTap?(item.username, item.sentence)
+        self.cellTapped.send((item.username, item.sentence))
     }
 }
 

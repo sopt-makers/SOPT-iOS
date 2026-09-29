@@ -73,7 +73,7 @@ extension NotificationListViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 output.filterList.send(owner.filterList)
-                AmplitudeInstance.shared.track(eventType: .viewNotificationList)
+                AmplitudeInstance.shared.trackWithUserType(event: .viewNotificationList)
             }.store(in: cancelBag)
         
         input.requestNotifications
@@ -111,7 +111,7 @@ extension NotificationListViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.readAllNotifications()
-                AmplitudeInstance.shared.track(eventType: .clickReadAllButton)
+                AmplitudeInstance.shared.trackWithUserType(event: .clickReadAll)
             }.store(in: cancelBag)
         
         input.categoryCellTapped

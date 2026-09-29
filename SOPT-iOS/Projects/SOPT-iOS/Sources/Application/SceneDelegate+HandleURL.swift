@@ -63,4 +63,24 @@ extension SceneDelegate {
     func redirectSignInVC(url: String) {
         appCoordinator.start(with: .signInSuccess(url: url))
     }
+    
+    /// 유니버설 링크로 진입한 UserActivity를 처리합니다.
+    /// 그 외 UserActivity(상태 복원 등)면 콜드 스타트일 때만 평소대로 앱을 시작합니다.
+    func handleUniversalLinkWithUserActivity(_ userActivity: NSUserActivity, isInitialLaunch: Bool = false) {
+        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
+              let incomingURL = userActivity.webpageURL else {
+            if isInitialLaunch {
+                appCoordinator.start()
+            }
+            return
+        }
+
+        let url = incomingURL.absoluteString
+        if isInitialLaunch {
+            appCoordinator.start(with: .universalWebLink(url: url))
+        } else {
+            // 이미 실행 중이면 코디네이터를 다시 시작하지 않고 링크만 흘려보냅니다.
+            notificationHandler.receive(webLink: url)
+        }
+    }
 }

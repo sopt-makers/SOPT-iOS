@@ -16,10 +16,8 @@ extension ServiceType {
         switch self {
         case .officialHomepage:
             return DSKitAsset.Assets.imgHomepage.image
-        case .review:
-            return DSKitAsset.Assets.imgReviewLogo.image
         case .project:
-            let userType = UserDefaultKeyList.Auth.getUserType()
+            let userType = UserDefaultKeyList.CoreAuth.getUserType()
             return userType == .visitor ? DSKitAsset.Assets.imgProjectLogo.image : DSKitAsset.Assets.imgActiveProjectLogo.image
         case .member:
             return DSKitAsset.Assets.imgUserLogo.image
@@ -40,8 +38,6 @@ extension ServiceType {
         switch self {
         case .officialHomepage:
             return I18N.Home.MainProduct.homePage
-        case .review:
-            return I18N.Home.MainProduct.activityReview
         case .project:
             return I18N.Home.MainProduct.project
         case .member:

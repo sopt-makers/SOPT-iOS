@@ -13,5 +13,5 @@ public extension SFSafariViewController {
         preferredBarTintColor = .black
         preferredControlTintColor = .white
         dismissButtonStyle = .cancel
-    }    
+    }
 }

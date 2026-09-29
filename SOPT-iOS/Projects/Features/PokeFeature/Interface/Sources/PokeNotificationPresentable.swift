@@ -12,7 +12,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol PokeNotificationViewControllable: LegacyViewControllable { }
+public protocol PokeNotificationViewControllable: ViewControllable { }
 
 public protocol PokeNotificationRoutingTrigger {
     var onNaviBackTapped: (() -> Void)? { get set }
@@ -23,6 +23,5 @@ public protocol PokeNotificationRoutingTrigger {
 }
 
 public typealias PokeNotificationViewModelType = ViewModelType & PokeNotificationRoutingTrigger
-public typealias LegacyPokeNotificationPresentable = (vc: PokeNotificationViewControllable, vm: any PokeNotificationViewModelType)
 
 public typealias PokeNotificationPresentable = (vc: UIViewController, vm: any PokeNotificationViewModelType)

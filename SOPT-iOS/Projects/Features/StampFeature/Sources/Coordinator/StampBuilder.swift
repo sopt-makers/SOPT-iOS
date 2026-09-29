@@ -19,14 +19,13 @@ final class StampBuilder {
     @Injected public var rankingRepository: RankingRepositoryInterface
     @Injected public var listDetailRepository: ListDetailRepositoryInterface
     @Injected public var appjamRankingRepository: AppjamRankingRepositoryInterface
-    @Injected public var homeRepository: HomeRepositoryInterface
 
     public init() { }
 }
 
 extension StampBuilder: StampFeatureBuildable {
     public func makeMissionListVC(sceneType: MissionListSceneType, isRouteFromTabBar: Bool, coordinator: Coordinator) -> MissionListPresentable {
-        let useCase = DefaultMissionListUseCase(repository: missionListRepository, homeRepository: homeRepository)
+        let useCase = DefaultMissionListUseCase(repository: missionListRepository)
         let viewModel = MissionListViewModel(useCase: useCase, sceneType: sceneType, coordinator: coordinator)
         let missionListVC = MissionListVC(viewModel: viewModel, isRouteFromTabBar: isRouteFromTabBar)
    
@@ -45,7 +44,7 @@ extension StampBuilder: StampFeatureBuildable {
         let viewModel = ListDetailViewModel(
             useCase: useCase,
             sceneType: sceneType,
-            isAppjam: isAppjam, 
+            isAppjam: isAppjam,
             starLevel: starLevel,
             missionId: missionId,
             missionTitle: missionTitle,
@@ -73,16 +72,20 @@ extension StampBuilder: StampFeatureBuildable {
             rankingViewType: rankingViewType,
             useCase: useCase
         )
-        let rankingVC = RankingVC(rankingViewType: rankingViewType)
-        rankingVC.viewModel = viewModel
+        let rankingVC = RankingVC(
+            rankingViewType: rankingViewType,
+            viewModel: viewModel
+        )
         return (rankingVC, viewModel)
     }
 
     public func makePartRankingVC(rankingViewType: RankingViewType) -> PartRankingPresentable {
         let useCase = DefaultRankingUseCase(repository: rankingRepository)
         let viewModel = PartRankingViewModel(rankingViewType: rankingViewType, useCase: useCase)
-        let partRankingVC = PartRankingVC(rankingViewType: rankingViewType)
-        partRankingVC.viewModel = viewModel
+        let partRankingVC = PartRankingVC(
+            rankingViewType: rankingViewType,
+            viewModel: viewModel
+        )
         return (partRankingVC, viewModel)
     }
 

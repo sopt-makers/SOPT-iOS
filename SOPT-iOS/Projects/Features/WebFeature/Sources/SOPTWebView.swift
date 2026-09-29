@@ -29,6 +29,7 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
     public var vc: UIViewController { self }
     private let downloadManager: WKDownloadManager
     private let customSchemeHandler = CustomSchemeHandler()
+    private let startURL: URL
     
     // MARK: Variables
     private let cancelbag = CancelBag()
@@ -39,38 +40,56 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
         startWith url: URL,
         downloadManager: WKDownloadManager = .default
     ) {
+        self.startURL = url
+        
         let configuration = WKWebViewConfiguration().then {
             $0.allowsInlineMediaPlayback = config.allowsInlineMediaPlayback
             $0.mediaTypesRequiringUserActionForPlayback = config.mediaTypesRequiringUserActionForPlayback
         }
         
-        if FeatureFlag.auth == .new {
-            // refreshToken
-            if !self.barrier,
-               let refreshToken = UserDefaultKeyList.CoreAuth.refreshToken,
-               let cookie = HTTPCookie(properties: [
-                HTTPCookiePropertyKey.domain: "." + (url.rootDomain ?? "sopt.org"),
-                HTTPCookiePropertyKey.name: "Refresh-Token",
-                HTTPCookiePropertyKey.path: "/",
-                HTTPCookiePropertyKey.value: refreshToken,
-                HTTPCookiePropertyKey.secure: "TRUE",
-                HTTPCookiePropertyKey.expires: Date().addingTimeInterval(60 * 60 * 24 * 14)
-               ]) {
-                configuration.websiteDataStore.httpCookieStore.setCookie(cookie)
-            }
+        // refreshToken
+        if !self.barrier,
+           let refreshToken = UserDefaultKeyList.CoreAuth.refreshToken,
+           let cookie = HTTPCookie(properties: [
+            HTTPCookiePropertyKey.domain: "." + (url.rootDomain ?? "sopt.org"),
+            HTTPCookiePropertyKey.name: "Refresh-Token",
+            HTTPCookiePropertyKey.path: "/",
+            HTTPCookiePropertyKey.value: refreshToken,
+            HTTPCookiePropertyKey.secure: "TRUE",
+            HTTPCookiePropertyKey.expires: Date().addingTimeInterval(60 * 60 * 24 * 14)
+           ]) {
+            configuration.websiteDataStore.httpCookieStore.setCookie(cookie)
+        }
+        
+        if let accessToken = UserDefaultKeyList.CoreAuth.accessToken {
+            let escaped = accessToken.replacingOccurrences(of: "\"", with: "\\\"")
+            let script = WKUserScript(
+                source: "localStorage.setItem(\"serviceAccessToken\", \"\(escaped)\");",
+                injectionTime: .atDocumentStart,
+                forMainFrameOnly: true
+            )
+            configuration.userContentController.addUserScript(script)
         }
         
         self.webView = WKWebView(frame: .zero, configuration: configuration).then {
             $0.allowsBackForwardNavigationGestures = config.allowsBackForwardNavigationGestures
             $0.customUserAgent = "SOPT-iOS"
+            $0.isOpaque = true
+            $0.backgroundColor = DSKitAsset.Colors.black100.color
+            $0.scrollView.backgroundColor = DSKitAsset.Colors.black100.color
+            if #available(iOS 15.0, *) {
+                $0.underPageBackgroundColor = DSKitAsset.Colors.black100.color
+            }
+            $0.alpha = 0
+
+            #if DEBUG || QA
+            if #available(iOS 16.4, *) {
+                $0.isInspectable = true
+            }
+            #endif
         }
         self.downloadManager = downloadManager
         super.init(nibName: nil, bundle: nil)
-        
-        DispatchQueue.main.async {
-            let request = URLRequest(url: url)
-            self.webView.load(request)
-        }
     }
     
     public required init?(coder: NSCoder) {
@@ -87,6 +106,7 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
         self.setupConstraints()
         self.setupNavigationButtonActions()
         self.setDelegate()
+        self.webView.load(URLRequest(url: self.startURL))
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -121,7 +141,7 @@ extension SOPTWebView {
                     self?.closeWebView()
                     return
                 }
-                    
+                
                 self?.webView.goBack()
             }.store(in: self.cancelbag)
         
@@ -137,6 +157,13 @@ extension SOPTWebView {
             navigationController.popViewController(animated: true)
         } else {
             self.dismiss(animated: true)
+        }
+    }
+
+    private func revealWebView() {
+        guard self.webView.alpha == 0 else { return }
+        UIView.animate(withDuration: 0.2) {
+            self.webView.alpha = 1
         }
     }
     
@@ -157,40 +184,27 @@ extension SOPTWebView: WKNavigationDelegate {
             decisionHandler(.allow)
             return
         }
-        
+
         // 커스텀 스킴 처리
         if customSchemeHandler.shouldHandle(url) {
             customSchemeHandler.handle(url)
             decisionHandler(.cancel)
             return
         }
-        
+
         decisionHandler(.allow)
     }
-    
+
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        
-        switch FeatureFlag.auth {
-        case .legacy:
-            guard !self.barrier,
-                    let playgroundToken = UserDefaultKeyList.Auth.playgroundToken else {
-                return
-            }
-            self.barrier = true
-            self.webView.evaluateJavaScript(
-                "localStorage.setItem(\"serviceAccessToken\", \"\(playgroundToken)\")"
-            )
-            
-        case .new:
-            guard !self.barrier,
-            let accessToken = UserDefaultKeyList.CoreAuth.accessToken else { return }
-            self.barrier = true
-            self.webView.evaluateJavaScript(
-                "localStorage.setItem(\"serviceAccessToken\", \"\(accessToken)\")"
-            )
-        }
-        
-        self.webView.reload()
+        self.revealWebView()
+    }
+
+    public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        self.revealWebView()
+    }
+
+    public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        self.revealWebView()
     }
 }
 

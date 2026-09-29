@@ -19,9 +19,7 @@ public protocol AuthCoordinatorDelegate: AnyObject {
     func authCoordinator(_ coordinator: AuthCoordinator, userType: UserType)
 }
 
-public final class AuthCoordinator: DefaultAuthCoordinator {
-    // TODO: DefaultAuthCoordinator가 BaseCoordinator만 채택하도록 변경
-    public var finishFlow: ((UserType) -> Void)?
+public final class AuthCoordinator: BaseCoordinator {
 
     private let factory: AuthFeatureViewBuildable
     private weak var navigationController: UINavigationController?
@@ -45,7 +43,7 @@ public final class AuthCoordinator: DefaultAuthCoordinator {
 
         signIn.vm.onSignInSuccess = { [weak self]  in
             guard let self else { return }
-            let userType = UserDefaultKeyList.Auth.getUserType()
+            let userType = UserDefaultKeyList.CoreAuth.getUserType()
             self.delegate?.authCoordinator(self, userType: userType)
         }
         

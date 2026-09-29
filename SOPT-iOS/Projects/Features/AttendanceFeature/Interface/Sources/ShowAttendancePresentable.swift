@@ -1,5 +1,5 @@
 //
-//  LegacyShowAttendanceViewControllable.swift
+//  ShowAttendanceViewControllable.swift
 //  AttendanceFeature
 //
 //  Created by Jae Hyun Lee on 6/3/25.
@@ -12,7 +12,6 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol LegacyShowAttendanceViewControllable: LegacyViewControllable & ShowAttendanceCoordinatable { }
 public protocol ShowAttendanceViewControllable: UIViewController & ShowAttendanceCoordinatable { }
 public protocol ShowAttendanceCoordinatable {
     var onAttendanceButtonTap: ((AttendanceRoundModel, (() -> Void)?) -> Void)? { get set }

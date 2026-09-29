@@ -12,7 +12,5 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol LegacyAttendanceViewControllable: LegacyViewControllable { }
-
 public typealias AttendanceViewModelType = ViewModelType
 public typealias AttendancePresentable = (vc: UIViewController, vm: any AttendanceViewModelType)

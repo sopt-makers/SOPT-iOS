@@ -97,8 +97,8 @@ extension PokeMyFriendsListVC {
     private func bindViewModel() {
         let input = PokeMyFriendsListViewModel.Input(viewDidLoad: Just(()).asDriver(),
                                                      closeButtonTap: self.headerView.rightButtonTap,
-                                                     reachToBottom: self.reachToBottomSubject.asDriver(), 
-                                                     pokeButtonTap: self.kokButtonTap.asDriver(), 
+                                                     reachToBottom: self.reachToBottomSubject.asDriver(),
+                                                     pokeButtonTap: self.kokButtonTap.asDriver(),
                                                      profileImageTap: self.profileImageTap.asDriver())
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
@@ -123,8 +123,8 @@ extension PokeMyFriendsListVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: PokeMyFriendsListTVC.className, for: indexPath) 
-                as? PokeMyFriendsListTVC 
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: PokeMyFriendsListTVC.className, for: indexPath)
+                as? PokeMyFriendsListTVC
         else {
             return UITableViewCell()
         }

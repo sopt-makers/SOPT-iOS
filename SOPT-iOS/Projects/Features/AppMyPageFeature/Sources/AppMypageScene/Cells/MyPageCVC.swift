@@ -8,18 +8,18 @@
 
 import UIKit
 
-import DSKit
+import MDS
 
 final class MyPageCVC: UICollectionViewCell {
     
     // MARK: - UI Components
     
     private let titleLabel = UILabel().then {
-        $0.textColor = DSKitAsset.Colors.white.color
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 16)
+        $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
     }
     private let arrowImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.btnArrowRight.image
+        $0.image = MDSIcon.chevronRightOutlined.image.withRenderingMode(.alwaysTemplate)
+        $0.tintColor = SemanticColor.Fg.Neutral.subtle
     }
     
     // MARK: - View Life Cycle
@@ -58,6 +58,7 @@ extension MyPageCVC {
         
         arrowImageView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
+            make.size.equalTo(32)
             make.trailing.equalToSuperview().inset(8)
         }
     }
@@ -68,6 +69,7 @@ extension MyPageCVC {
 extension MyPageCVC {
     func configureCell(model: MyPageItem) {
         self.titleLabel.text = model.title
+        self.titleLabel.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold)
         self.arrowImageView.isHidden = !model.hasArrow
     }
 }

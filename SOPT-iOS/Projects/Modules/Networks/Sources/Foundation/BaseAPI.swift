@@ -13,7 +13,6 @@ import Core
 
 public enum APIType {
     case attendance
-    case auth
     case mission
     case rank
     case stamp
@@ -24,7 +23,6 @@ public enum APIType {
     case description
     case poke
     case s3
-    case fortune
     case coreAuth
     case social
     case home
@@ -40,7 +38,7 @@ public protocol BaseAPI: TargetType, AccessTokenAuthorizable {
 extension BaseAPI {
     public var authorizationType: AuthorizationType? {
         
-        UserDefaultKeyList.Auth.getUserType() == .visitor
+        UserDefaultKeyList.CoreAuth.getUserType() == .visitor
         ? nil
         : .bearer
     }
@@ -55,8 +53,6 @@ extension BaseAPI {
         switch Self.apiType {
         case .attendance:
             base = operationBaseURL
-        case .auth:
-            base += "/auth"
         case .mission:
             base += "/mission"
         case .rank:
@@ -77,8 +73,6 @@ extension BaseAPI {
             base += "/poke"
         case .s3:
             base += "/s3"
-        case .fortune:
-            base += "/fortune"
         case .coreAuth:
             base = coreAuthBaseURL + "/auth"
         case .social:

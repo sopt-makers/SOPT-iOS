@@ -20,7 +20,7 @@ import Domain
 import PokeFeatureInterface
 import BaseFeatureDependency
 
-public class PokeAnonymousFriendUpgradeVC: UIViewController, LegacyPokeAnonymousFriendUpgradePresentable, PokeAnonymousFriendUpgradePresentable  {
+public class PokeAnonymousFriendUpgradeVC: UIViewController, PokeAnonymousFriendUpgradePresentable  {
 
   // MARK: - Properties
 

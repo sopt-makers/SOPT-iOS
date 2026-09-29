@@ -10,9 +10,6 @@ import Foundation
 import BaseFeatureDependency
 import Domain
 
-// TODO: - Legacy 삭제하면서 Core 제거
-import Core
-
 public struct SoptampCurrentGenerationRankingDeepLink: DeepLinkExecutable {
     public let name = "current-generation-ranking"
     public let children: [DeepLinkExecutable] = []
@@ -31,14 +28,8 @@ public struct SoptampCurrentGenerationRankingDeepLink: DeepLinkExecutable {
         
         let usersActiveGenerationStatus = UsersActiveGenerationStatusViewResponse(currentGeneration: currentGeneration, status: userStatus)
         
-        switch Config.coordinatorFlag {
-        case .legacy:
-            guard let coordinator = coordinator as? LegacyStampCoordinator else { return nil }
-            coordinator.runRankingFlow(rankingViewType: .currentGeneration(info: usersActiveGenerationStatus))
-        case .new:
-            guard let coordinator = coordinator as? StampCoordinator else { return nil }
-            coordinator.runRankingFlow(rankingViewType: .currentGeneration(info: usersActiveGenerationStatus))
-        }
+        guard let coordinator = coordinator as? StampCoordinator else { return nil }
+        coordinator.runRankingFlow(rankingViewType: .currentGeneration(info: usersActiveGenerationStatus))
         
         return coordinator
     }

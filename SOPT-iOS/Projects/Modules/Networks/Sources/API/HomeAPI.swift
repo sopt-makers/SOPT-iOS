@@ -60,7 +60,7 @@ extension HomeAPI: BaseAPI {
     public var authorizationType: AuthorizationType? {
         switch self {
         case .getAppServiceAccessStatus:
-            let userType = UserDefaultKeyList.Auth.getUserType()
+            let userType = UserDefaultKeyList.CoreAuth.getUserType()
             return userType == .visitor ? nil : .bearer
         default:
             return .bearer

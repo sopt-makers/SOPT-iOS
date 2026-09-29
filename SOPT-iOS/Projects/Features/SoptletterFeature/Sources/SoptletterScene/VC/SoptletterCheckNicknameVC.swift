@@ -25,9 +25,6 @@ final class SoptletterCheckNicknameVC: UIViewController {
         .mapVoid()
         .asDriver()
 
-    // TODO: - 추후 기수 연결
-    private let number: Int = 38
-
     private let cardView = NicknameCheckCardView()
 
     private let cardCenteringGuide = UILayoutGuide()
@@ -35,7 +32,7 @@ final class SoptletterCheckNicknameVC: UIViewController {
     private lazy var goButton = MDSActionButton(
         variant: .primary,
         size: .large,
-        title: "\(number)" + I18N.Soptletter.Onboarding.goButtonTitle
+        title: I18N.Soptletter.Onboarding.goButtonTitle
     )
 
     // TODO: - MDS 전용 네비게이터가 추가되면 교체
@@ -116,7 +113,8 @@ private extension SoptletterCheckNicknameVC {
             .withUnretained(self)
             .receive(on: DispatchQueue.main)
             .sink { owner, profile in
-                owner.cardView.configure(nickName: profile.nickname, number: owner.number)
+                owner.cardView.configure(nickName: profile.nickname, number: profile.currentGeneration)
+                owner.goButton.title = "\(profile.currentGeneration)" + I18N.Soptletter.Onboarding.goButtonTitle
             }.store(in: cancelBag)
     }
 }

@@ -8,4 +8,4 @@
 
 import Core
 
-public protocol AlertViewControllable: LegacyViewControllable { }
+public protocol AlertViewControllable: ViewControllable { }

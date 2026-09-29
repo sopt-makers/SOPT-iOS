@@ -11,5 +11,4 @@ import UIKit
 import BaseFeatureDependency
 import Core
 
-public protocol LegacyPokeAnonymousFriendUpgradePresentable: LegacyViewControllable { }
 public protocol PokeAnonymousFriendUpgradePresentable: UIViewController { }

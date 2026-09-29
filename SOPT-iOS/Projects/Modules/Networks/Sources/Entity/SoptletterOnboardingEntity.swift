@@ -9,4 +9,5 @@
 public struct SoptletterOnboardingEntity: Decodable {
     public let nickname: String
     public let isOnboarded: Bool
+    public let currentGeneration: Int
 }

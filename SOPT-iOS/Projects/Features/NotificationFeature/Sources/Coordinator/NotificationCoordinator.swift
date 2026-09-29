@@ -40,12 +40,16 @@ public final class NotificationCoordinator: BaseCoordinator {
     // MARK: - Coordinator Life Cycle
 
     public override func start() {
-        showNotificationList()
+        start(animated: true)
+    }
+    
+    public func start(animated: Bool) {
+        showNotificationList(animated: animated)
     }
 
     // MARK: - Navigation
     
-    private func showNotificationList() {
+    private func showNotificationList(animated: Bool) {
         var notificationList = factory.makeNotificationList(coordinator: self)
         
         notificationList.vm.onNaviBackButtonTap = { [weak self] in
@@ -56,7 +60,7 @@ public final class NotificationCoordinator: BaseCoordinator {
             self?.showNotificationDetail(notificationId: notificationId)
         }
         
-        navigationController?.pushViewController(notificationList.vc, animated: true)
+        navigationController?.pushViewController(notificationList.vc, animated: animated)
     }
 
     public func showNotificationDetail(notificationId: String) {
@@ -66,12 +70,6 @@ public final class NotificationCoordinator: BaseCoordinator {
             guard let self else { return }
             let url = link.url
             let destination: NotificationCoordinatorDestination = link.isDeepLink ? .deepLink(url: url) : .webLink(url: url)
-            AmplitudeInstance.shared.track(eventType: .viewNotificationDetail, eventProperties: [
-                "notification_id": notificationId,
-                "open_method": link.isDeepLink ? "푸시알림" : "알림센터",
-                "contain_deeplink": link.isDeepLink
-            ])
-            
             self.delegate?.notificationCoordinator(self, to: destination)
         }
         

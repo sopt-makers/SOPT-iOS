@@ -21,7 +21,7 @@ extension BaseService {
         
         return BaseService<Target>(
             plugins: [
-                AccessTokenPlugin(tokenClosure: { _ in 
+                AccessTokenPlugin(tokenClosure: { _ in
                     repository.fetch()?.accessToken ?? ""
                 })
                 ,Moya.NetworkLoggerPlugin.verbose

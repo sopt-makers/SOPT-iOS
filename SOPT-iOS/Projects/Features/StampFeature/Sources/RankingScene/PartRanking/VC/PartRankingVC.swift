@@ -20,25 +20,24 @@ import Then
 import StampFeatureInterface
 import BaseFeatureDependency
 
-public class PartRankingVC: UIViewController, LegacyPartRankingViewControllable, PartRankingViewControllable {
+public class PartRankingVC: UIViewController, PartRankingViewControllable {
     
     // MARK: - Properties
     
-    public var viewModel: PartRankingViewModel!
+    public var viewModel: PartRankingViewModel
     private var cancelBag = CancelBag()
     
     lazy var dataSource: UICollectionViewDiffableDataSource<RankingSection, AnyHashable>! = nil
     
-    // MARK: - RankingCoordinatable
-    
-    public var onCellTap: ((Part) -> Void)?
-    public var onNaviBackTap: (() -> Void)?
-    
+    private let cellTapped = PassthroughSubject<Part, Never>()
+    private let naviBackButtonTapped = PassthroughSubject<Void, Never>()
+    private let rightButtonTapped = PassthroughSubject<Void, Never>()
+        
     // MARK: - UI Components
     
-    lazy var naviBar = STNavigationBar(type: .titleWithLeftButton)
+    private lazy var naviBar = STNavigationBar(type: .titleWithLeftButton)
         .setTitle(I18N.RankingList.partRankingTitle)
-        .setRightButton(.none)
+        .setRightButton(.edit)
     
     private lazy var rankingCollectionView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
@@ -56,8 +55,12 @@ public class PartRankingVC: UIViewController, LegacyPartRankingViewControllable,
     // MARK: - View Life Cycle
     private let rankingViewType: RankingViewType
     
-    init(rankingViewType: RankingViewType) {
+    init(
+        rankingViewType: RankingViewType,
+        viewModel: PartRankingViewModel
+    ) {
         self.rankingViewType = rankingViewType
+        self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: nil)
         
@@ -116,7 +119,13 @@ extension PartRankingVC {
         naviBar.leftButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onNaviBackTap?()
+                owner.naviBackButtonTapped.send(())
+            }.store(in: cancelBag)
+        
+        naviBar.rightButtonTapped
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.rightButtonTapped.send(())
             }.store(in: cancelBag)
     }
     
@@ -127,7 +136,10 @@ extension PartRankingVC {
         
         let input = PartRankingViewModel.Input(
             viewDidLoad: Driver.just(()),
-            refreshStarted: refreshStarted
+            refreshStarted: refreshStarted,
+            cellTapped: cellTapped.asDriver(),
+            naviBackButtonTapped: naviBackButtonTapped.asDriver(),
+            rightButtonTapped: rightButtonTapped.asDriver()
         )
         
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
@@ -192,6 +204,6 @@ extension PartRankingVC: UICollectionViewDelegate {
         guard let tappedCell = collectionView.cellForItem(at: indexPath) as? PartRankingListCVC,
               let model = tappedCell.model else { return }
         guard let part = Part(rawValue: model.part) else { return }
-        self.onCellTap?(part)
+        self.cellTapped.send(part)
     }
 }

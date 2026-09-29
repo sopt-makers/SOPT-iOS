@@ -127,7 +127,7 @@ extension HomeCalendarDetailVC {
     }
     
     private func setAttendanceButtonVisibility() {
-        let userType = UserDefaultKeyList.Auth.getUserType()
+        let userType = UserDefaultKeyList.CoreAuth.getUserType()
         self.attendanceButton.isHidden = (userType == .inactive)
     }
 }

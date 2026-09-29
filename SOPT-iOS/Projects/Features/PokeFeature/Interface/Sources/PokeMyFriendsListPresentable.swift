@@ -12,7 +12,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol PokeMyFriendsListViewControllable: LegacyViewControllable { }
+public protocol PokeMyFriendsListViewControllable: ViewControllable { }
 
 public protocol PokeMyFriendsListRoutingTrigger {
     var onCloseButtonTap: (() -> Void)? { get set }
@@ -25,5 +25,4 @@ public protocol PokeMyFriendsListViewModelType: ViewModelType & PokeMyFriendsLis
     var onAnonymousFriendUpgrade: ((PokeUserModel) -> Void)? { get set }
 }
 
-public typealias LegacyPokeMyFriendsListPresentable = (vc: PokeMyFriendsListViewControllable, vm: any PokeMyFriendsListViewModelType)
 public typealias PokeMyFriendsListPresentable = (vc: UIViewController, vm: any PokeMyFriendsListViewModelType)

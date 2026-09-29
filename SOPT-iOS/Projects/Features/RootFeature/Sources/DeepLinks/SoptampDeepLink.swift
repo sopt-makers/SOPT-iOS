@@ -9,6 +9,7 @@
 import Foundation
 import BaseFeatureDependency
 import StampFeature
+import Core
 
 public struct SoptampDeepLink: DeepLinkExecutable {
     public let name = "soptamp"
@@ -18,11 +19,15 @@ public struct SoptampDeepLink: DeepLinkExecutable {
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
   
-        if self.isDestination == true {
-//            coordinator.runTabBarFlow(initSelectedTabType: .soptamp)
-            return coordinator
+        if let index = TabBarItemType.soptamp.getTabIndex(in: coordinator.activeTabTypes) {
+            coordinator.tabBarController?.selectedIndex = index
         }
         
-        return coordinator.runStampFlow(isRouteFromTabBar: false)
+        if self.isDestination == true {
+            Task { [weak coordinator] in
+                await coordinator?.runTabBarFlow(initSelectedTabType: .soptamp)
+            }
+        }
+        return coordinator.runStampFlow()
     }
 }

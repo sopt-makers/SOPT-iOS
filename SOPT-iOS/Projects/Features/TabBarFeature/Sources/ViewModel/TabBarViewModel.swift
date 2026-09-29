@@ -88,6 +88,9 @@ extension TabBarViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.isFABTapped.toggle()
+                if owner.isFABTapped {
+                    AmplitudeInstance.shared.trackWithUserType(event: .clickPlusButton)
+                }
             }.store(in: cancelBag)
         
         input.isMenuCellTapped

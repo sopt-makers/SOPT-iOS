@@ -10,9 +10,9 @@ import Core
 
 public extension UserDefaultKeyList {
     static func setInactiveUserForTest() {
-        UserDefaultKeyList.Auth.appAccessToken = TestConfig.appAccessToken
-        UserDefaultKeyList.Auth.appRefreshToken = TestConfig.appRefreshToken
-        UserDefaultKeyList.Auth.isActiveUser = false
+        UserDefaultKeyList.CoreAuth.accessToken = TestConfig.appAccessToken
+        UserDefaultKeyList.CoreAuth.refreshToken = TestConfig.appRefreshToken
+        UserDefaultKeyList.CoreAuth.isActiveUser = false
         UserDefaultKeyList.User.soptampName = "Test Name"
         UserDefaultKeyList.User.sentence = "Test Sentence"
     }

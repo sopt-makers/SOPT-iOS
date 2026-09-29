@@ -12,7 +12,7 @@ import Foundation
 import BaseFeatureDependency
 import Core
 
-public protocol SignInViewControllable: LegacyViewControllable { }
+public protocol SignInViewControllable: ViewControllable { }
 
 public protocol SignInRoutingTrigger {
     var onLoginHelpButtonTapped: (() -> Void)? { get set }

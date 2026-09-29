@@ -11,7 +11,6 @@ import Foundation
 import PokeFeatureInterface
 
 public enum SoptlogCoordinatorDestination {
-//    case dailySoptune
     case webLink(url: String)
     case soptamp
     case pokeHome

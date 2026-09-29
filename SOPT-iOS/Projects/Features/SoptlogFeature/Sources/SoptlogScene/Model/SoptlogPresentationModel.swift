@@ -15,12 +15,9 @@ struct SoptlogPresentationModel {
     let isAppjamParticipant: Bool
     let soptampMenus: [SoptlogMenuModel]
     let pokeMenus: [SoptlogMenuModel]
-    let alarm: Alarm
+    let alarm: Alarm?
 
-    struct Alarm {
-        let isFortuneChecked: Bool
-        let todayFortuneText: String
-    }
+    struct Alarm { }
 }
 
 extension SoptlogModel {
@@ -83,10 +80,7 @@ extension SoptlogModel {
             isAppjamParticipant: isAppjamParticipant,
             soptampMenus: soptampMenus,
             pokeMenus: pokeMenus,
-            alarm: SoptlogPresentationModel.Alarm(
-                isFortuneChecked: isFortuneChecked,
-                todayFortuneText: todayFortuneText
-            )
+            alarm: nil
         )
     }
 }

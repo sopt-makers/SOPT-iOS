@@ -300,7 +300,7 @@ extension BaseService {
                 switch response {
                 case .success(let value):
                     do {
-                        guard let response = value.response else { 
+                        guard let response = value.response else {
                             throw NSError(domain: "응답값이 비어있습니다", code: -1000)
                         }
                         
@@ -336,7 +336,7 @@ extension BaseService {
                         continuation.resume(throwing: error)
                     }
                 }
-            }            
+            }
             self.cancellable = cancellable
         }
     }
