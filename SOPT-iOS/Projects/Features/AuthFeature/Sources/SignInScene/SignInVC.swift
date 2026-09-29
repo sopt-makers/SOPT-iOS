@@ -146,7 +146,7 @@ public class SignInVC: UIViewController, SignInViewControllable {
         )
         
         // TODO: 회원가입 로직 완성 전까지 임시로 삭제
-        #if !DEV||PROD
+        #if !DEV || !PROD
             self.view.addSubview(signUpButton)
         #endif
         
