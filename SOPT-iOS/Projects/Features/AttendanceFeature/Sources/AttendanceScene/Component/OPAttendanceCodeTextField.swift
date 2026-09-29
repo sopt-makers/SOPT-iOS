@@ -94,17 +94,12 @@ extension OPAttendanceCodeTextField {
 
 extension OPAttendanceCodeTextField {
     private func setUI() {
-        backgroundColor = AttendanceCodeState.empty.backgroundColor
-        
-        textColor = SemanticColor.Fg.Neutral.bold
-        // TODO: - 적용 후 변경
-        font = .Main.headline2
-        textAlignment = .center
-        tintColor = .clear
+        backgroundColor = SemanticColor.Bg.Neutral.ghost
+        setTypography(Typography.label1, textColor: SemanticColor.Fg.Neutral.bold, alignment: .center)
         
         layer.cornerRadius = BaseRadius.Base.r10
         layer.borderWidth = 1
-        layer.borderColor = AttendanceCodeState.empty.strokeColor.cgColor
+        layer.borderColor = SemanticColor.Stroke.Neutral.default.cgColor
         
         keyboardType = .numberPad
         textContentType = .oneTimeCode

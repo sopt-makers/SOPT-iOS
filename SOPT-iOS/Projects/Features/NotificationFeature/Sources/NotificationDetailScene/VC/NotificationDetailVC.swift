@@ -43,7 +43,7 @@ public final class NotificationDetailVC: UIViewController, NotificationDetailVie
     private let contentView: UIView = {
         let view = UIView()
         view.backgroundColor = SemanticColor.Bg.Neutral.ghost
-        view.layer.cornerRadius = 10
+        view.layer.cornerRadius = BaseRadius.Base.r12
         return view
     }()
     

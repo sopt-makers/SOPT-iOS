@@ -34,9 +34,9 @@ final class TodayScheduleView: UIView {
 
     private let dateImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = MDSIcon.calendarFilled.image
+        imageView.image = MDSIcon.calendarFilled.image.withRenderingMode(.alwaysTemplate)
         imageView.tintColor = SemanticColor.Fg.Neutral.subtle
-        imageView.contentMode = .scaleToFill
+        imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
@@ -48,9 +48,9 @@ final class TodayScheduleView: UIView {
     
     private let placeImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = MDSIcon.locationFilled.image
+        imageView.image = MDSIcon.locationFilled.image.withRenderingMode(.alwaysTemplate)
         imageView.tintColor = SemanticColor.Fg.Neutral.subtle
-        imageView.contentMode = .scaleToFill
+        imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
@@ -76,7 +76,7 @@ final class TodayScheduleView: UIView {
     private lazy var dateStackView: UIStackView = {
        let stackView = UIStackView(arrangedSubviews: [dateImageView, dateLabel])
         stackView.axis = .horizontal
-        stackView.spacing = 2
+        stackView.spacing = 8
         stackView.alignment = .leading
         return stackView
     }()
@@ -84,7 +84,7 @@ final class TodayScheduleView: UIView {
     private lazy var placeStackView: UIStackView = {
        let stackView = UIStackView(arrangedSubviews: [placeImageView, placeLabel])
         stackView.axis = .horizontal
-        stackView.spacing = 2
+        stackView.spacing = 8
         stackView.alignment = .leading
         return stackView
     }()
@@ -92,15 +92,15 @@ final class TodayScheduleView: UIView {
     private lazy var dateAndPlaceStackView: UIStackView = {
        let stackView = UIStackView(arrangedSubviews: [dateStackView, placeStackView])
         stackView.axis = .vertical
-        stackView.spacing = 7
+        stackView.spacing = 8
         stackView.alignment = .leading
         return stackView
     }()
     
     private lazy var todayInfoStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [dateAndPlaceStackView, titleLabel])
+        let stackView = UIStackView(arrangedSubviews: [titleLabel, dateAndPlaceStackView])
         stackView.axis = .vertical
-        stackView.spacing = 8
+        stackView.spacing = 16
         stackView.alignment = .leading
         stackView.setCustomSpacing(15, after: dateAndPlaceStackView)
         return stackView
@@ -148,13 +148,18 @@ extension TodayScheduleView {
         addSubview(containerStackView)
         
         containerStackView.snp.makeConstraints {
-            $0.edges.equalToSuperview().inset(32)
+            $0.verticalEdges.equalToSuperview().inset(16)
+            $0.horizontalEdges.equalToSuperview().inset(24)
         }
         
         todayAttendanceView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
         }
-        
+
+        [dateImageView, placeImageView].forEach {
+            $0.snp.makeConstraints { $0.size.equalTo(16) }
+        }
+
         if case .unscheduledDay = type {
             isHiddenScheduledLayout(true)
         }

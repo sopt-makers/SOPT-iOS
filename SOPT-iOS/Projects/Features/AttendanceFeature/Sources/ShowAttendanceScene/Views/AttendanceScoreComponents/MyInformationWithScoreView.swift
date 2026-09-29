@@ -12,10 +12,8 @@ import Core
 import MDS
 
 /*
- 상단 이름, 현재 출석 점수, 인포 버튼이 있는 뷰입니다.
+ 상단 이름, 현재 출석 점수이 있는 뷰입니다.
  */
-
-// TODO: - info 버튼 유무 확인
 
 final class MyInformationWithScoreView: UIView {
     

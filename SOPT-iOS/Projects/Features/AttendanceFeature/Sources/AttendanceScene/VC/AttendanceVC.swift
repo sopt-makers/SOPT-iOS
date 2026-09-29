@@ -9,7 +9,6 @@
 import UIKit
 
 import Core
-import DSKit
 import MDS
 
 import Combine
@@ -180,9 +179,9 @@ public final class AttendanceVC: UIViewController, LegacyAttendanceViewControlla
 extension AttendanceVC {
     
     private func setUI() {
-        view.backgroundColor = .black.withAlphaComponent(0.85)
-        attendanceStackView.backgroundColor = DSKitAsset.Colors.gray800.color
-        attendanceStackView.layer.cornerRadius = 10
+        view.backgroundColor = SemanticColor.Bg.Dim.default
+        attendanceStackView.backgroundColor = SemanticColor.Bg.Neutral.ghost
+        attendanceStackView.layer.cornerRadius = BaseRadius.Base.r12
         attendanceCodeView.codeTextFields.first?.becomeFirstResponder()
     }
     

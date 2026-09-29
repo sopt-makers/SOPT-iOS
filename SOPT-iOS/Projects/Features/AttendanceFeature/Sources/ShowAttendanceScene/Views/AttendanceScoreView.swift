@@ -99,20 +99,20 @@ extension AttendanceScoreView {
         addSubviews(myInfoContainerView, myScoreContainerStackView, myAttendanceStateStackView)
         
         myInfoContainerView.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(32)
-            $0.leading.trailing.equalToSuperview().inset(32)
+            $0.top.equalToSuperview().offset(24)
+            $0.leading.trailing.equalToSuperview().inset(24)
             $0.height.equalTo(50)
         }
         
         myScoreContainerStackView.snp.makeConstraints {
-            $0.top.equalTo(myInfoContainerView.snp.bottom).offset(32)
-            $0.leading.trailing.equalToSuperview().inset(32)
+            $0.top.equalTo(myInfoContainerView.snp.bottom).offset(16)
+            $0.leading.trailing.equalToSuperview().inset(24)
             $0.height.equalTo(88)
         }
         
         myAttendanceStateStackView.snp.makeConstraints {
-            $0.top.equalTo(myScoreContainerStackView.snp.bottom).offset(32)
-            $0.leading.trailing.bottom.equalToSuperview().inset(32)
+            $0.top.equalTo(myScoreContainerStackView.snp.bottom).offset(28)
+            $0.leading.trailing.bottom.equalToSuperview().inset(24)
         }
     }
 }
