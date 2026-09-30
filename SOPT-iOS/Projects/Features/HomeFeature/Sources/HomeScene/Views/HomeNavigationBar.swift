@@ -10,6 +10,7 @@ import UIKit
 
 import Core
 import DSKit
+import MDS
 
 final class HomeNavigationBar: UIView {
 
@@ -18,14 +19,14 @@ final class HomeNavigationBar: UIView {
     public lazy var noticeButtonTap = noticeButton.publisher(for: .touchUpInside)
 
     // MARK: - UI Components
-
+    // TODO: - mds 이미지 추가 필요
     private let logoImageView = UIImageView().then {
         $0.image = DSKitAsset.Assets.imgLogo.image.withRenderingMode(.alwaysOriginal)
         $0.contentMode = .scaleToFill
     }
 
     private let noticeButton = UIButton(type: .custom).then {
-        $0.setImage(DSKitAsset.Assets.btnBellInactive.image, for: .normal)
+        $0.setImage(MDSIcon.bellActiveFilled.image, for: .normal)
     }
 
     private lazy var rightItemsStackView = UIStackView(
@@ -53,7 +54,7 @@ final class HomeNavigationBar: UIView {
 
 extension HomeNavigationBar {
     private func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.black100.color
+        self.backgroundColor = SemanticColor.Bg.Layer.basement
     }
     
     private func setLayout() {
@@ -87,8 +88,8 @@ extension HomeNavigationBar {
     
     @discardableResult
     public func changeNoticeButtonStyle(isActive: Bool) -> Self {
-        let activeImage = DSKitAsset.Assets.btnBellActive.image
-        let inactiveImage = DSKitAsset.Assets.btnBellInactive.image
+        let activeImage = MDSIcon.bellActiveFilled.image
+        let inactiveImage = MDSIcon.bellFilled.image
         self.noticeButton.setImage(isActive ? activeImage : inactiveImage, for: .normal)
         return self
     }

@@ -9,7 +9,7 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
 
 final class DashBoardCardCVC: UICollectionViewCell {
     
@@ -19,10 +19,8 @@ final class DashBoardCardCVC: UICollectionViewCell {
     // MARK: - UI Components
         
     private var descriptionLabel = UILabel().then {
-        $0.textColor = DSKitAsset.Colors.white.color
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 18)
+        $0.setTypography(Typography.heading4, textColor: SemanticColor.Fg.Neutral.bold, alignment: .left)
         $0.numberOfLines = 2
-        $0.textAlignment = .left
     }
     
     private let userHistoryView = UserHistoryView()
@@ -50,8 +48,8 @@ final class DashBoardCardCVC: UICollectionViewCell {
 
 extension DashBoardCardCVC {
     private func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.gray800.color
-        self.layer.cornerRadius = 8
+        self.backgroundColor = SemanticColor.Bg.Neutral.ghost
+        self.layer.cornerRadius = BaseRadius.Base.r8
     }
     
     private func setLayout() {
@@ -88,14 +86,13 @@ extension DashBoardCardCVC {
         switch userType {
         case .visitor:
             self.descriptionLabel.text = I18N.Home.DashBoard.UserHistory.encourage
-            self.descriptionLabel.setLineSpacing(lineSpacing: 5)
+            self.descriptionLabel.setTypography(Typography.heading4, textColor: SemanticColor.Fg.Neutral.bold, alignment: .left)
             self.profileEditView.isHidden = true
             
             userHistoryView.setData(recentHistory: nil, allHistory: nil)
         case .active, .inactive:
             guard let model else { return }
             self.descriptionLabel.attributedText = model.description
-            self.descriptionLabel.modifyLineSpacing(lineSpacing: 5)
             self.profileEditView.isHidden = false
             self.profileEditView.configure(profileImageURL: model.profileImageURL)
             guard let history = model.history else { return }

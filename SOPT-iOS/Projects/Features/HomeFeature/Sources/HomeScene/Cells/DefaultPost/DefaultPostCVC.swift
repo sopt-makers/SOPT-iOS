@@ -11,16 +11,28 @@ import UIKit
 import Domain
 import Core
 import DSKit
+import MDS
 
 enum PopularPostsCVCStatus {
     case focusing
     case unfocusing
 }
 
-enum PopularPostCategory: String, CaseIterable {
-    case first = "실시간 인기 1위"
-    case second = "실시간 인기 2위"
-    case third = "실시간 인기 3위"
+enum PopularPostCategory: CaseIterable {
+    case first
+    case second
+    case third
+    
+    var title: String {
+        switch self {
+        case .first:
+            I18N.Home.PopularPosts.firstPost
+        case .second:
+            I18N.Home.PopularPosts.secondPost
+        case .third:
+            I18N.Home.PopularPosts.thirdPost
+        }
+    }
 }
 
 enum PostCellType {
@@ -56,26 +68,22 @@ final class DefaultPostCVC: UICollectionViewCell {
         
     // MARK: - UI & Layout
 
-    private let categorySubPhraseView = HomeCategoryTagLabel().setTitleColor(DSKitAsset.Colors.orange300.color)
+    private let categorySubPhraseView = HomeCategoryTagLabel().setTitleColor(SemanticColor.Fg.Brand.default)
 
-    private let verticalDividerView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.icVerticalDivider.image
-        $0.contentMode = .scaleAspectFit
+    private let verticalDividerView = UIView().then {
+        $0.backgroundColor = SemanticColor.Stroke.Neutral.default
     }
     
-    private let categoryTagView = HomeCategoryTagLabel().setTitleColor(DSKitAsset.Colors.orange300.color)
+    private let categoryTagView = HomeCategoryTagLabel().setTitleColor(SemanticColor.Fg.Brand.default)
     
-    private let profileImageView = CustomProfileImageView().hideBorder()
+    private let profileImageView = MDSAvatar(size: 48, hasStroke: false)
     
     private let userNameLabel = UILabel().then {
-        $0.textColor = DSKitAsset.Colors.gray30.color
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 10)
-        $0.textAlignment = .center
+        $0.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.bold, alignment: .center)
     }
     
     private let userPartLabel = UILabel().then {
-        $0.textColor = DSKitAsset.Colors.gray400.color
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 10)
+        $0.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
     }
     
     private let categoryStackView = UIStackView().then {
@@ -90,38 +98,34 @@ final class DefaultPostCVC: UICollectionViewCell {
     }
     
     private let postTitleLabel = UILabel().then {
-        $0.textColor = DSKitAsset.Colors.white.color
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
+        $0.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold)
         $0.lineBreakMode = .byTruncatingTail
         $0.numberOfLines = 1
     }
     
     private let postContentLabel = UILabel().then {
-        $0.textColor = DSKitAsset.Colors.gray400.color
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 12)
+        $0.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
         $0.numberOfLines = 2
     }
     
     private let contentStackView = UIStackView().then {
         $0.axis = .vertical
         $0.alignment = .leading
-        $0.spacing = 6
+        $0.spacing = 4
     }
     
     // 엠티 뷰일 경우
     private let emptyTitleLabel = UILabel().then {
-        $0.textColor = DSKitAsset.Colors.white.color
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
+        $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
         $0.lineBreakMode = .byTruncatingTail
         $0.numberOfLines = 1
     }
     
     private let emptySubLabel = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 13)
-        $0.textColor = DSKitAsset.Colors.gray300.color
+        $0.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
     }
     
-    private let emptyImageView = CustomProfileImageView().hideBorder()
+    private let emptyImageView = MDSAvatar(size: 48, hasStroke: false)
 
     // MARK: - Initialization
     
@@ -155,7 +159,7 @@ final class DefaultPostCVC: UICollectionViewCell {
         emptyImageView.image = nil
         cancelBag = CancelBag()
         model = nil
-        profileImageView.setPlaceholder()
+        profileImageView.image = nil
         updateVisibility(for: .latest) // visible 상태는 기본적으로 latest와 같음
         self.cancelBag.cancel()
     }
@@ -165,8 +169,8 @@ final class DefaultPostCVC: UICollectionViewCell {
 
 extension DefaultPostCVC {
     private func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.gray800.color
-        self.layer.cornerRadius = 12
+        self.backgroundColor = SemanticColor.Bg.Layer.default
+        self.layer.cornerRadius = BaseRadius.Base.r12
     }
 
     private func setLayout() {
@@ -197,6 +201,7 @@ extension DefaultPostCVC {
         )
         
         verticalDividerView.snp.makeConstraints { make in
+            make.width.equalTo(1)
             make.height.equalTo(7)
         }
         
@@ -219,6 +224,7 @@ extension DefaultPostCVC {
         )
     }
     
+    // TODO: - 피그마 반영 후 수정 - 요청 상태
     /// Border가 있는 경우, gradient가 존재합니다.
     private func setGradientBorder() {
         let borderWidth: CGFloat = 1
@@ -275,7 +281,7 @@ extension DefaultPostCVC {
     private func changeTitleLabelColor(for target: String) {
         self.emptyTitleLabel.partColorChange(
             targetString: "[\(target)]",
-            textColor: DSKitAsset.Colors.orange300.color
+            textColor: SemanticColor.Fg.Brand.default
         )
     }
     
@@ -306,15 +312,14 @@ extension DefaultPostCVC {
         // NOTE: 사용자의 이름 값이 존재하지 않을 경우, 엠티뷰 레이아웃이 그려집니다.
         if let name = model.name, !name.isEmpty {
             self.userNameLabel.text = name
+            self.userNameLabel.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.bold, alignment: .center)
             updateVisibility(for: cellType)
         } else {
             self.emptySubLabel.text = model.title
+            self.emptySubLabel.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
             self.emptyTitleLabel.text = "[\(model.category)]\(model.content)"
+            self.emptyTitleLabel.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
             changeTitleLabelColor(for: model.category)
-            self.emptyImageView.setImage(
-                with: model.profileImage ?? "",
-                placeholder: DSKitAsset.Assets.icDefaultProfile.image
-            )
             updateVisibility(for: .empty)
             return
         }
@@ -326,6 +331,7 @@ extension DefaultPostCVC {
             // 익명이 아닐 경우
             self.userPartLabel.isHidden = false
             self.userPartLabel.text = part
+            self.userPartLabel.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
             self.userNameLabel.numberOfLines = 1
             self.userNameLabel.lineBreakMode = .byTruncatingTail
         } else {
@@ -340,17 +346,19 @@ extension DefaultPostCVC {
             self.categorySubPhraseView.setData(with: "NEW")
         case .popular:
             if let category = PopularPostCategory.allCases[safe: index.row] {
-                self.categorySubPhraseView.setData(with: category.rawValue)
+                self.categorySubPhraseView.setData(with: category.title)
             }
         default: return
         }
         
         if let profileImage = model.profileImage {
-            self.profileImageView.setImage(with: profileImage, placeholder: DSKitAsset.Assets.icDefaultProfile.image)
+            self.profileImageView.setImage(with: profileImage)
         }
         self.postTitleLabel.text = model.title
-        self.postContentLabel.text = model.content
-        self.postContentLabel.setLineSpacing(lineSpacing: 1)
+        self.postTitleLabel.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold)
+        // content가 줄바꿈으로 시작하는 경우 방지
+        self.postContentLabel.text = model.content.trimmingCharacters(in: .whitespacesAndNewlines)
+        self.postContentLabel.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
     }
     
     // 앰플리튜드 이벤트 트래킹을 위해 세팅합니다.
