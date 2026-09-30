@@ -61,12 +61,13 @@ public extension DateFormatManager {
     
     /// 시작 날짜와 종료 날짜 입력 받아 원하는 포맷으로 변경 후 문자열로 반환
     func formatTimeInterval(start: String, end: String) -> String {
-        setFormat(.monthDayWeekFullTime)
-    
+        setFormat(.isoWithoutMillis)
+
         guard let startDate = stringToDate(start),
               let endDate = stringToDate(end)
         else { return "" }
-        
+
+        setFormat(.monthDayWeekFullTime)
         let startString = dateToString(startDate)
         
         setFormat(.time)
