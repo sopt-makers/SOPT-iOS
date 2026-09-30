@@ -9,7 +9,7 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
 
 final public class PokeChipView: UIView {
     
@@ -29,13 +29,11 @@ final public class PokeChipView: UIView {
     // MARK: SubViews
     private let contentView = UIView().then {
         $0.layer.cornerRadius = 4.f
-        $0.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        $0.backgroundColor = SemanticColor.Bg.Neutral.subtle
     }
     private lazy var contentStackView = UIStackView(frame: self.frame)
     private let titleLabel = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 11)
-        $0.textColor = DSKitAsset.Colors.gray100.color
-        $0.textAlignment = .center
+        $0.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle, alignment: .center)
         $0.lineBreakMode = .byTruncatingTail
     }
     
@@ -68,5 +66,6 @@ final public class PokeChipView: UIView {
 extension PokeChipView {
     public func configure(with text: String) {
         self.titleLabel.text = text
+        self.titleLabel.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle, alignment: .center)
     }
 }

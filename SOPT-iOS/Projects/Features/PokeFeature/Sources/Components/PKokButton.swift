@@ -1,6 +1,6 @@
 //
 //  PKokButton.swift
-//  DSKit
+//  PokeFeature
 //
 //  Created by Jae Hyun Lee on 10/3/24.
 //  Copyright © 2024 SOPT-iOS. All rights reserved.
@@ -9,6 +9,8 @@
 import UIKit
 
 import Core
+import DSKit
+import MDS
 
 public final class PKokButton: UIButton {
     
@@ -48,13 +50,14 @@ public final class PKokButton: UIButton {
     }
     
     private func changeUI(with isEnabled: Bool) {
-        let backgroundColor = isEnabled ? DSKitAsset.Colors.gray10.color : DSKitAsset.Colors.gray700.color
+        let backgroundColor = isEnabled ? SemanticColor.Bg.Neutral.inverse : SemanticColor.Bg.Neutral.Bold.disabled
         self.backgroundColor = backgroundColor
     }
     
     private func setIcon() {
+        // TODO: - MDS에 추가하기
         let icon = DSKitAsset.Assets.icKok.image
-        self.setImage(icon.withTintColor(DSKitAsset.Colors.black.color), for: .normal)
-        self.setImage(icon.withTintColor(DSKitAsset.Colors.gray500.color), for: .disabled)
+        self.setImage(icon.withTintColor(SemanticColor.Fg.Neutral.inverse), for: .normal)
+        self.setImage(icon.withTintColor(SemanticColor.Fg.Neutral.Default.disabled), for: .disabled)
     }
 }

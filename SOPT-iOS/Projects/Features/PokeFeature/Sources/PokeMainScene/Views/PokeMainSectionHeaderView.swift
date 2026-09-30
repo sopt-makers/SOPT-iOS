@@ -9,7 +9,7 @@
 import UIKit
 import Combine
 
-import DSKit
+import MDS
 import Core
 
 public final class PokeMainSectionHeaderView: UIView {
@@ -21,12 +21,11 @@ public final class PokeMainSectionHeaderView: UIView {
     // MARK: - UI Components
     
     private let titleLabel = UILabel().then {
-        $0.font = UIFont.MDS.title6.font
-        $0.textColor = DSKitAsset.Colors.gray30.color
+        $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
     }
     
     private let rightButton = UIButton().then {
-        $0.setImage(DSKitAsset.Assets.btnArrowRight.image.withTintColor(DSKitAsset.Colors.gray300.color),
+        $0.setImage(MDSIcon.chevronRightOutlined.image.withTintColor(SemanticColor.Fg.Neutral.subtle),
                     for: .normal)
     }
     
@@ -34,6 +33,7 @@ public final class PokeMainSectionHeaderView: UIView {
     
     init(title: String) {
         self.titleLabel.text = title
+        self.titleLabel.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
         super.init(frame: .zero)
         self.setUI()
         self.setLayout()
@@ -46,9 +46,7 @@ public final class PokeMainSectionHeaderView: UIView {
 
 extension PokeMainSectionHeaderView {
     private func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.gray900.color
-        self.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        self.layer.cornerRadius = 12
+        self.backgroundColor = .clear
     }
     
     private func setLayout() {

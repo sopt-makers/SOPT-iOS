@@ -15,10 +15,13 @@ import Then
 
 import Core
 import DSKit
+import MDS
 import Domain
 
 import PokeFeatureInterface
 import BaseFeatureDependency
+
+// TODO: 피그마 지면 반영 후 적용
 
 public class PokeAnonymousFriendUpgradeVC: UIViewController, PokeAnonymousFriendUpgradePresentable  {
 
@@ -38,7 +41,7 @@ public class PokeAnonymousFriendUpgradeVC: UIViewController, PokeAnonymousFriend
   private lazy var lottieView = LottieAnimationView(name: lottieName(user: user),
                                                bundle: DSKitResources.bundle)
 
-  private let profileImageView = CustomProfileImageView(placeholder: DSKitAsset.Assets.icPokeDefaultProfile.image).then {
+  private let profileImageView = MDSAvatar(size: 160).then {
     $0.isHidden = true
   }
 
@@ -113,7 +116,7 @@ public class PokeAnonymousFriendUpgradeVC: UIViewController, PokeAnonymousFriend
   private func showRealIdentity() {
     titleLabel.text = "\(user.anonymousName)님의 정체는..."
     profileImageView.isHidden = false
-    profileImageView.setImage(with: user.profileImage, relation: user.pokeRelation, placeholder: user.isAnonymous ? DSKitAsset.Assets.icPokeDefaultProfile : DSKitAsset.Assets.icLineProfile)
+    profileImageView.setImage(with: user.profileImage, relation: user.pokeRelation)
     descriptionLabel.text = "\(user.generation)기 \(user.part)파트 \(user.name)"
 
     DispatchQueue.main.asyncAfter(deadline: .now() + 4) {

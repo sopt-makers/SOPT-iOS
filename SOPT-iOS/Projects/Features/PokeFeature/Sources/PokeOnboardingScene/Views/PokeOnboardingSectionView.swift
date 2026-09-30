@@ -10,13 +10,12 @@ import Combine
 import UIKit
 
 import Core
-import DSKit
 import Domain
+import MDS
 
 public final class PokeOnboardingSectionView: UIView {
   private enum Metric {
-    static let containerCornerRadius = 8.f
-    static let containerTopBottom = 8.f
+      static let containerTopBottom = 16.f
     static let contentVerticalSpacing = 8.f
     
     static let containerLeadingTrailing = 12.f
@@ -32,6 +31,7 @@ public final class PokeOnboardingSectionView: UIView {
   // MARK: - Views
   private let containerView = UIStackView().then {
     $0.axis = .vertical
+      $0.spacing = 8
   }
   
   private let sectionTitleLabel = UILabel()
@@ -66,10 +66,8 @@ public final class PokeOnboardingSectionView: UIView {
 extension PokeOnboardingSectionView {
   public func configure(with randomUserInfoModel: PokeRandomUserInfoModel) {
     self.randomUserInfoModel = randomUserInfoModel
-    self.sectionTitleLabel.attributedText = randomUserInfoModel.randomTitle.applyMDSFont(
-      mdsFont: .heading7,
-      color: DSKitAsset.Colors.gray30.color
-    )
+      self.sectionTitleLabel.text = randomUserInfoModel.randomTitle
+      self.sectionTitleLabel.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold)
     self.sectionItemStackView.removeAllSubViews()
     
     let splitedArray: [[PokeUserModel]] = self.splitArrayIntoSizeTwoChunks(originArray: randomUserInfoModel.userInfoList)
@@ -108,8 +106,8 @@ extension PokeOnboardingSectionView {
 
 extension PokeOnboardingSectionView {
   private func initialize() {
-    self.layer.cornerRadius = Metric.containerCornerRadius
-    self.backgroundColor = DSKitAsset.Colors.gray900.color
+      self.layer.cornerRadius = BaseRadius.Base.r8
+      self.backgroundColor = SemanticColor.Bg.Layer.default
     
     self.addSubview(self.containerView)
 
@@ -129,7 +127,7 @@ extension PokeOnboardingSectionView {
       $0.height.equalTo(Metric.titleLabelHeight)
     }
   }
-  
+    
   private func splitArrayIntoSizeTwoChunks(originArray: [PokeUserModel]) -> [[PokeUserModel]] {
     var result: [[PokeUserModel]] = []
     var currentIndex = 0
