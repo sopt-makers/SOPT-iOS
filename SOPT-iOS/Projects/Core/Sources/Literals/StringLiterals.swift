@@ -292,6 +292,10 @@ public struct I18N {
         public struct PopularPosts {
             public static let headerTitle = "지금 인기 소식"
             public static let morePosts = "다른 게시물 보러가기"
+            
+            public static let firstPost = "실시간 인기 1위"
+            public static let secondPost = "실시간 인기 2위"
+            public static let thirdPost = "실시간 인기 3위"
         }
         
         public struct LatestPosts {
@@ -378,7 +382,7 @@ public struct I18N {
         public static let giveFeedback = "피드백 남기기"
         
         public static let inputCodeDescription = "출석 코드 다섯 자리를 입력해주세요."
-        public static let codeMismatch = "코드가 일치하지 않아요!"
+        public static let codeMismatch = "코드가 일치하지 않아요"
         public static let takeAttendance = "출석하기"
         public static let take = "하기"
         

@@ -9,7 +9,7 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
 
 final class UserHistoryView: UIView {
     
@@ -18,16 +18,14 @@ final class UserHistoryView: UIView {
     private let numberOfHistoryToShow: Int = 5
     
     // MARK: - UI Components
-    
-    private let userTypeLabel = UILabel().then {
-        $0.backgroundColor = DSKitAsset.Colors.black40.color
-        $0.textColor = DSKitAsset.Colors.white.color
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 12)
-        $0.text = I18N.Home.DashBoard.UserHistory.encourage
-        $0.layer.cornerRadius = 12
-        $0.textAlignment = .center
-        $0.clipsToBounds = true
-    }
+
+    private let userTypeTag = MDSTag(
+        text: "",
+        size: .small,
+        shape: .pill,
+        variant: .primary,
+        style: .solid
+    )
     
     private var historyStackView = UIStackView().then {
         $0.axis = .horizontal
@@ -57,18 +55,18 @@ extension UserHistoryView {
     
     private func setLayout() {
         self.addSubviews(
-            userTypeLabel,
+            userTypeTag,
             historyStackView
         )
         
-        userTypeLabel.snp.makeConstraints { make in
+        userTypeTag.snp.makeConstraints { make in
             make.leading.top.bottom.equalToSuperview()
             make.width.equalTo(82)
         }
         
         historyStackView.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
-            make.leading.equalTo(userTypeLabel.snp.trailing).offset(8)
+            make.leading.equalTo(userTypeTag.snp.trailing).offset(8)
         }
     }
 }
@@ -87,9 +85,10 @@ extension UserHistoryView {
     }
     
     private func setUserTypeLabel(with userType: UserType, text: String) {
-        self.userTypeLabel.text = text
-        self.userTypeLabel.textColor = userType == .active ? DSKitAsset.Colors.black100.color : DSKitAsset.Colors.white.color
-        self.userTypeLabel.backgroundColor = userType == .active ? DSKitAsset.Colors.orange100.color : DSKitAsset.Colors.black40.color
+        self.userTypeTag.text = text
+        // TODO: - 수료 tag 반영 후 수정
+//        self.userTypeLabel.textColor = userType == .active ? DSKitAsset.Colors.black100.color : DSKitAsset.Colors.white.color
+//        self.userTypeLabel.backgroundColor = userType == .active ? DSKitAsset.Colors.orange100.color : DSKitAsset.Colors.black40.color
     }
     
     private func resetHistoryView() {
@@ -115,7 +114,7 @@ extension UserHistoryView {
         if remaining > 0 {
             let remainingItemView = UserHistoryItemView()
                 .setData(index: 0, history: "+\(remaining)")
-                .setBackgroundColor(with: DSKitAsset.Colors.gray800.color)
+                .setBackgroundColor(with: SemanticColor.Bg.Neutral.ghost)
             self.historyStackView.addArrangedSubview(remainingItemView)
         }
     }
