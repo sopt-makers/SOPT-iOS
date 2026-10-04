@@ -68,7 +68,7 @@ public final class PokeMyFriendsCoordinator: BaseCoordinator {
         
         pokeMyFriends.vm.onAnonymousFriendUpgrade = { [weak self] user in
             guard let self else { return }
-            let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
+            let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user)
             pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
             self.navigationController.present(pokeAnonymousFriendUpgradeVC, animated: false)
         }
@@ -101,7 +101,7 @@ public final class PokeMyFriendsCoordinator: BaseCoordinator {
         
         pokeMyFriendsList.vm.onAnonymousFriendUpgrade = { [weak self] user in
             guard let self else { return }
-            let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
+            let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user)
             pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
             self.navigationController.present(pokeAnonymousFriendUpgradeVC, animated: false)
         }
@@ -116,8 +116,7 @@ public final class PokeMyFriendsCoordinator: BaseCoordinator {
         
         guard let bottomSheet = self.factory
             .makePokeMessageTemplateBottomSheet(messageType: .pokeFriend, config: messageTemplateConfig)
-            .vc
-            .viewController as? PokeMessageTemplateBottomSheet
+            .vc as? PokeMessageTemplateBottomSheet
         else { return .empty() }
         
         let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate(minHeight: PokeMessageTemplateBottomSheet.minimumContentHeight))

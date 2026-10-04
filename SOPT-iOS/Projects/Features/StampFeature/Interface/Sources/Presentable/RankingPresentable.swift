@@ -12,7 +12,6 @@ import Core
 import BaseFeatureDependency
 import Domain
 
-public protocol RankingViewControllable: ViewControllable { }
 public protocol RankingRoutingTrigger {
   var onCellTap: ((_ username: String, _ sentence: String) -> Void)? { get set }
   var onNaviBackTap: (() -> Void)? { get set }

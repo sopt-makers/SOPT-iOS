@@ -12,7 +12,6 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol NotificationListViewControllable: ViewControllable { }
 public protocol NotificationListRoutingTrigger {
     var onNaviBackButtonTap: (() -> Void)? { get set }
     var onNotificationTap: ((String) -> Void)? { get set }

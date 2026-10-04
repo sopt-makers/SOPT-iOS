@@ -116,12 +116,12 @@ extension AuthCoordinator {
             self?.navigationController?.popToRootViewController(animated: true)
         }
         
-        userNotFoundVC.onLoginHelpButtonTapped = { [weak self, weak viewController = userNotFoundVC.viewController] in
+        userNotFoundVC.onLoginHelpButtonTapped = { [weak self, weak viewController = userNotFoundVC] in
             guard let viewController else { return }
             self?.showLoginHelpBottomSheet(on: viewController)
         }
         
-        self.navigationController?.pushViewController(userNotFoundVC.viewController, animated: true)
+        self.navigationController?.pushViewController(userNotFoundVC, animated: true)
     }
     
     private func runSignUpFlow() {
@@ -162,7 +162,7 @@ extension AuthCoordinator {
     }
     
     private func showLoginHelpBottomSheet(on vc: UIViewController) {
-        guard let bottomSheetVC = self.factory.makeLoginHelpBottomSheet().viewController as? LoginHelpBottomSheetVC
+        guard let bottomSheetVC = self.factory.makeLoginHelpBottomSheet() as? LoginHelpBottomSheetVC
         else { return Void() }
         
         bottomSheetVC.onResetSocialAccountButtonDidTap = { [weak self, weak bottomSheetVC] in

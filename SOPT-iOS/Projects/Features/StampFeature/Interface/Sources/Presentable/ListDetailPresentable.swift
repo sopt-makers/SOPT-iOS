@@ -12,8 +12,6 @@ import Core
 import BaseFeatureDependency
 import Domain
 
-
-public protocol ListDetailViewControllable: ViewControllable { }
 public protocol ListDetailRoutingTrigger {
   var onComplete: ((StarViewLevel, (() -> Void)?) -> Void)? { get set }
   var onNaviBackTap: (() -> Void)? { get set }

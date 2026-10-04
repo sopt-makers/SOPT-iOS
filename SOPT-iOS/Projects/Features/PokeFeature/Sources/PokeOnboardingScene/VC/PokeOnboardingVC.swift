@@ -16,7 +16,7 @@ import DSKit
 
 import SnapKit
 
-public final class PokeOnboardingVC: UIViewController, PokeOnboardingViewControllable {
+public final class PokeOnboardingVC: UIViewController {
     // MARK: - Constants
     private enum Metric {
         static let navigationbarHeight = 44.f

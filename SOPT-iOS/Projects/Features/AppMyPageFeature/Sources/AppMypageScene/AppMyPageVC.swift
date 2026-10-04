@@ -19,7 +19,7 @@ import MDS
 
 import BaseFeatureDependency
 
-public final class AppMyPageVC: UIViewController, MyPageViewControllable {
+public final class AppMyPageVC: UIViewController {
 
     // MARK: - Properties
 

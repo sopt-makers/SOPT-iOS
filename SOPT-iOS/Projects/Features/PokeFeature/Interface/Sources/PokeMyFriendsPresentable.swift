@@ -12,8 +12,6 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol PokeMyFriendsViewControllable: ViewControllable { }
-
 public protocol PokeMyFriendsRoutingTrigger {
     var showFriendsListButtonTap: ((PokeRelation) -> Void)? { get set }
     var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)? { get set }

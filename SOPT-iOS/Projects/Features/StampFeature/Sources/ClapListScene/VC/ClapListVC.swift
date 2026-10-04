@@ -17,7 +17,7 @@ import Combine
 import SnapKit
 import Then
 
-final class ClapListVC: UIViewController, ClapListViewControllable {
+final class ClapListVC: UIViewController {
 
     // MARK: - Properties
 

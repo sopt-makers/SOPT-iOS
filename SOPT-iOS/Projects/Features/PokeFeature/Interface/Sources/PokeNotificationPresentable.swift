@@ -12,8 +12,6 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol PokeNotificationViewControllable: ViewControllable { }
-
 public protocol PokeNotificationRoutingTrigger {
     var onNaviBackTapped: (() -> Void)? { get set }
     var onPokeButtonTapped: ((PokeUserModel) -> Driver<(PokeUserModel, PokeMessageModel, isAnonymous: Bool)>)? { get set }

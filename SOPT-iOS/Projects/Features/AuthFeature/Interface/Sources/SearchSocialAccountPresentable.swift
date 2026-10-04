@@ -12,8 +12,6 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol SearchSocialAccountViewControllable: ViewControllable { }
-
 public protocol SearchSocialAccountRoutingTrigger {
     var searchSocialAccountSucceed: ((OAuthProvider) -> Void)? { get set }
 }
