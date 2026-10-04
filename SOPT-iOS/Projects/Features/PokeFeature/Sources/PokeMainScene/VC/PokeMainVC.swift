@@ -16,7 +16,7 @@ import DSKit
 import BaseFeatureDependency
 import PokeFeatureInterface
 
-public final class PokeMainVC: UIViewController, PokeMainViewControllable {
+public final class PokeMainVC: UIViewController {
     
     // MARK: - Properties
     

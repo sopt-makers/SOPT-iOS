@@ -14,7 +14,7 @@ import SnapKit
 import Core
 import MDS
 
-final class SoptlogToolTipVC: UIViewController, SoptlogToolTipViewControllable {
+final class SoptlogToolTipVC: UIViewController {
     
     // MARK: - Properties
     

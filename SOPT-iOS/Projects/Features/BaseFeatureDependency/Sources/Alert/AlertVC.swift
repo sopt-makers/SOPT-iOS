@@ -12,7 +12,7 @@ import SnapKit
 
 import MDS
 
-public final class AlertVC: UIViewController, AlertViewControllable {
+public final class AlertVC: UIViewController {
 
     // MARK: - Properties
 

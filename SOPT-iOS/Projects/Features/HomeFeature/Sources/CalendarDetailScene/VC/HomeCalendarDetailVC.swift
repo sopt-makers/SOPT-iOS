@@ -15,7 +15,7 @@ import DSKit
 
 import BaseFeatureDependency
 
-final class HomeCalendarDetailVC: UIViewController, HomeCalendarDetailViewControllable {
+final class HomeCalendarDetailVC: UIViewController {
 
     // MARK: Properties
     

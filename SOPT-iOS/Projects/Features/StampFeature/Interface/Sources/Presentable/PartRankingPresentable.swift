@@ -12,7 +12,6 @@ import Core
 import BaseFeatureDependency
 import Domain
 
-public protocol PartRankingViewControllable: ViewControllable { }
 public protocol PartRankingRoutingTrigger {
     var onCellTap: ((_ part: Part) -> Void)? { get set }
     var onNaviBackTap: (() -> Void)? { get set }

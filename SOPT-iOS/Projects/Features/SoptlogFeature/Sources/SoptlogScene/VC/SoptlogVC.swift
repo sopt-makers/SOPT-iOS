@@ -16,7 +16,7 @@ import MDS
 
 import BaseFeatureDependency
 
-final class SoptlogVC: UIViewController, SoptlogViewControllable {
+final class SoptlogVC: UIViewController {
     
     // MARK: - Properties
     

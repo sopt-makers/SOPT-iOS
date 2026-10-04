@@ -20,7 +20,7 @@ import Then
 import StampFeatureInterface
 import BaseFeatureDependency
 
-public class MissionListVC: UIViewController, MissionListViewControllable {
+public class MissionListVC: UIViewController {
     
     private var isAppJam: Bool = false
 

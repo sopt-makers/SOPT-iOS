@@ -12,8 +12,6 @@ import Core
 import BaseFeatureDependency
 import Domain
 
-public protocol MissionListViewControllable: ViewControllable { }
-
 public protocol MissionListRoutingTrigger {
   var onSwiped: (() -> Void)? { get set }
   var onNaviBackTap: (() -> Void)? { get set }

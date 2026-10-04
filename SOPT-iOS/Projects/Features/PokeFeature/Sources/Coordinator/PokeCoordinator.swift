@@ -71,14 +71,14 @@ public final class PokeCoordinator: BaseCoordinator {
         
         pokeMain.vm.onNewFriendMade = { [weak self] friendName in
             guard let self else { return }
-            let pokeMakingFriendCompletedVC = self.factory.makePokeMakingFriendCompleted(friendName: friendName).viewController
+            let pokeMakingFriendCompletedVC = self.factory.makePokeMakingFriendCompleted(friendName: friendName)
             pokeMakingFriendCompletedVC.modalPresentationStyle = .overFullScreen
             self.rootController?.present(pokeMakingFriendCompletedVC, animated: false)
         }
 
         pokeMain.vm.onAnonymousFriendUpgrade = { [weak self] user in
             guard let self else { return }
-            let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
+            let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user)
             pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
             self.rootController?.present(pokeAnonymousFriendUpgradeVC, animated: false)
         }
@@ -123,8 +123,7 @@ public final class PokeCoordinator: BaseCoordinator {
         
         guard let bottomSheet = self.factory
             .makePokeMessageTemplateBottomSheet(messageType: messageType, config: messageTemplateConfig)
-            .vc
-            .viewController as? PokeMessageTemplateBottomSheet
+            .vc as? PokeMessageTemplateBottomSheet
         else { return .empty() }
         
         let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate(minHeight: PokeMessageTemplateBottomSheet.minimumContentHeight))

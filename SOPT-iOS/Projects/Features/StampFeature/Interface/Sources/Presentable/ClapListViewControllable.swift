@@ -12,10 +12,6 @@ import Core
 import BaseFeatureDependency
 import Domain
 
-// MARK: - ViewControllable
-
-public protocol ClapListViewControllable: ViewControllable { }
-
 // MARK: - RoutingTrigger
 
 public protocol ClapListRoutingTrigger {
