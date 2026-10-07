@@ -1,0 +1,125 @@
+@import "@necto/bridge/theme.css";
+@import "@necto/bridge/components.css";
+
+.necto-body {
+  padding: var(--necto-space-3);
+}
+
+.toolbar {
+  display: flex;
+  gap: var(--necto-space-2);
+  margin-bottom: var(--necto-space-2);
+}
+
+.toolbar input[type="search"],
+.toolbar #add-key,
+.toolbar #add-value {
+  flex: 1;
+  min-width: 0;
+}
+
+.status {
+  color: var(--necto-text-secondary);
+  min-height: 1.2em;
+  margin: 0 0 var(--necto-space-2);
+}
+
+.entries {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--necto-space-4);
+}
+
+.entries th,
+.entries td {
+  text-align: left;
+  padding: var(--necto-space-1) var(--necto-space-2);
+  border-bottom: 1px solid var(--necto-border);
+  vertical-align: middle;
+}
+
+.entries .key {
+  font-family: var(--necto-font-mono);
+}
+
+.entries .missing .key {
+  color: var(--necto-text-tertiary);
+}
+
+.entries .actions {
+  white-space: nowrap;
+  display: flex;
+  gap: var(--necto-space-1);
+}
+
+.entries .value-input {
+  width: 100%;
+}
+
+.tabs {
+  display: flex;
+  gap: var(--necto-space-1);
+  margin-bottom: var(--necto-space-2);
+}
+
+.tab.selected {
+  background: var(--necto-selected);
+  border-color: var(--necto-border-strong);
+}
+
+.entries .properties {
+  font-family: var(--necto-font-mono);
+  word-break: break-all;
+  color: var(--necto-text-secondary);
+}
+
+.status:empty {
+  display: none;
+}
+
+.current-screen {
+  padding: var(--necto-space-3);
+  border: 1px solid var(--necto-border);
+  border-radius: var(--necto-radius-panel);
+  margin-bottom: var(--necto-space-3);
+}
+
+.current-label {
+  color: var(--necto-text-secondary);
+  font-size: var(--necto-size-caption);
+}
+
+.current-name {
+  font-family: var(--necto-font-mono);
+  font-size: var(--necto-size-title);
+  margin: var(--necto-space-1) 0;
+  word-break: break-all;
+}
+
+.current-detail {
+  color: var(--necto-text-secondary);
+  word-break: break-all;
+}
+
+.hint {
+  color: var(--necto-text-secondary);
+  margin: 0 0 var(--necto-space-2);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--necto-space-2);
+  margin-bottom: var(--necto-space-4);
+}
+
+.form-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--necto-space-1);
+  color: var(--necto-text-secondary);
+}
+
+.form-grid .form-actions {
+  grid-column: 1 / -1;
+}

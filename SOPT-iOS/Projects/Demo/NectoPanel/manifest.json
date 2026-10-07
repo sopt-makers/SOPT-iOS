@@ -1,0 +1,595 @@
+{
+  "schemaVersion": 1,
+  "id": "sopt-debug",
+  "name": "SOPT Debug",
+  "description": "SOPT-iOS 디버깅 도구 모음",
+  "version": "1.0.0",
+  "author": "SOPT iOS",
+  "icon": {
+    "systemName": "ladybug"
+  },
+  "assets": [
+    "index.html",
+    "assets"
+  ],
+  "allowedOrigins": [
+    "self"
+  ],
+  "operations": [
+    {
+      "id": "userdefaults.list",
+      "title": "List UserDefaults",
+      "description": "UserDefaults.standard의 앱 키 목록과 값을 읽는다. 고정 키는 값이 없어도 포함한다.",
+      "kind": "once",
+      "binding": {
+        "name": "necto.device.userdefaults.list",
+        "version": 1
+      },
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "entries": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "exists": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "key",
+                "type",
+                "value",
+                "exists"
+              ],
+              "additionalProperties": true
+            }
+          }
+        },
+        "required": [
+          "entries"
+        ],
+        "additionalProperties": true
+      },
+      "timeoutMs": 3000
+    },
+    {
+      "id": "userdefaults.set",
+      "title": "Set UserDefaults value",
+      "description": "key의 값을 type(bool, number, string)에 맞게 변환해 저장한다.",
+      "kind": "once",
+      "binding": {
+        "name": "necto.device.userdefaults.set",
+        "version": 1
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "bool",
+              "number",
+              "string"
+            ]
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "type",
+          "value"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ok"
+        ],
+        "additionalProperties": true
+      },
+      "timeoutMs": 3000
+    },
+    {
+      "id": "userdefaults.remove",
+      "title": "Remove UserDefaults key",
+      "description": "key를 UserDefaults에서 삭제한다.",
+      "kind": "once",
+      "binding": {
+        "name": "necto.device.userdefaults.remove",
+        "version": 1
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ok"
+        ],
+        "additionalProperties": true
+      },
+      "timeoutMs": 3000
+    },
+    {
+      "id": "amplitude.list",
+      "title": "List Amplitude events",
+      "description": "앱 실행 이후 Amplitude로 track된 이벤트를 최근 500개까지 읽는다.",
+      "kind": "once",
+      "binding": {
+        "name": "necto.device.amplitude.list",
+        "version": 1
+      },
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "time": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "properties": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "time",
+                "name",
+                "properties"
+              ],
+              "additionalProperties": true
+            }
+          }
+        },
+        "required": [
+          "events"
+        ],
+        "additionalProperties": true
+      },
+      "timeoutMs": 3000
+    },
+    {
+      "id": "amplitude.observe",
+      "title": "Observe Amplitude events",
+      "description": "Amplitude 이벤트가 track될 때마다 받는다.",
+      "kind": "stream",
+      "binding": {
+        "name": "necto.device.amplitude.observe",
+        "version": 1
+      },
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number"
+              },
+              "time": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "properties": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "time",
+              "name",
+              "properties"
+            ],
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "event"
+        ],
+        "additionalProperties": true
+      },
+      "timeoutMs": 0
+    },
+    {
+      "id": "amplitude.clear",
+      "title": "Clear Amplitude events",
+      "description": "앱 안에 기록된 이벤트 목록을 비운다. 이미 전송된 이벤트에는 영향이 없다.",
+      "kind": "once",
+      "binding": {
+        "name": "necto.device.amplitude.clear",
+        "version": 1
+      },
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ok"
+        ],
+        "additionalProperties": true
+      },
+      "timeoutMs": 3000
+    },
+    {
+      "id": "screen.current",
+      "title": "Current screen",
+      "description": "가장 최근에 화면에 나타난 ViewController를 읽는다. 아직 없으면 null.",
+      "kind": "once",
+      "binding": {
+        "name": "necto.device.screen.current",
+        "version": 1
+      },
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "screen": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "number"
+                  },
+                  "time": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "module": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "id",
+                  "time",
+                  "name",
+                  "module",
+                  "title",
+                  "path"
+                ],
+                "additionalProperties": true
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "screen"
+        ],
+        "additionalProperties": true
+      },
+      "timeoutMs": 3000
+    },
+    {
+      "id": "screen.history",
+      "title": "Screen history",
+      "description": "화면 전환 기록을 최근 100개까지 읽는다.",
+      "kind": "once",
+      "binding": {
+        "name": "necto.device.screen.history",
+        "version": 1
+      },
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "screens": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "time": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "module": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "time",
+                "name",
+                "module",
+                "title",
+                "path"
+              ],
+              "additionalProperties": true
+            }
+          }
+        },
+        "required": [
+          "screens"
+        ],
+        "additionalProperties": true
+      },
+      "timeoutMs": 3000
+    },
+    {
+      "id": "screen.observe",
+      "title": "Observe screens",
+      "description": "화면이 바뀔 때마다 받는다.",
+      "kind": "stream",
+      "binding": {
+        "name": "necto.device.screen.observe",
+        "version": 1
+      },
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "screen": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number"
+              },
+              "time": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "module": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "path": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "id",
+              "time",
+              "name",
+              "module",
+              "title",
+              "path"
+            ],
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "screen"
+        ],
+        "additionalProperties": true
+      },
+      "timeoutMs": 0
+    },
+    {
+      "id": "link.deeplink",
+      "title": "Open deep link",
+      "description": "알림을 거치지 않고 NotificationHandler의 딥링크 처리만 바로 호출한다. 예: home/notification/detail?id=596",
+      "kind": "once",
+      "binding": {
+        "name": "necto.device.link.deeplink",
+        "version": 1
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "deepLink": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "deepLink"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ok"
+        ],
+        "additionalProperties": true
+      },
+      "timeoutMs": 5000
+    },
+    {
+      "id": "link.weblink",
+      "title": "Open web link",
+      "description": "알림을 거치지 않고 NotificationHandler의 웹링크 처리만 바로 호출한다.",
+      "kind": "once",
+      "binding": {
+        "name": "necto.device.link.weblink",
+        "version": 1
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "webLink": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "webLink"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ok"
+        ],
+        "additionalProperties": true
+      },
+      "timeoutMs": 5000
+    },
+    {
+      "id": "push.send",
+      "title": "Send test push",
+      "description": "apns 파일과 같은 userInfo(aps.alert, id, category, deepLink, webLink)를 담은 로컬 알림을 delaySeconds 뒤에 띄운다. 알림 권한이 필요하다. 백그라운드나 콜드 스타트를 시험하려면 지연을 늘리고 앱을 닫는다.",
+      "kind": "once",
+      "binding": {
+        "name": "necto.device.push.send",
+        "version": 1
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "deepLink": {
+            "type": "string"
+          },
+          "webLink": {
+            "type": "string"
+          },
+          "delaySeconds": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "title",
+          "body",
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "delaySeconds": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "ok"
+        ],
+        "additionalProperties": true
+      },
+      "timeoutMs": 10000
+    }
+  ]
+}
