@@ -477,13 +477,13 @@ public struct I18N {
       }
       
       public struct Onboarding {
-        public static let title = "익명 콕 찌르기 기능이 추가되었어요!"
+        public static let title = "아는 사람을 콕 찔러서 친구를 맺어보세요"
         public static let description = """
             친구 단계가 올라가면 익명 친구에 대한 힌트를 알 수 있어요.
             친구와 천생연분 단계가 되면 어떤 일이 일어날까요?
             더욱 재밌어진 콕찌르기를 만나보세요!
             """
-        public static let footerPullToRefreshDescription = "화면을 당기면 다른 친구들을 볼 수 있어요"
+        public static let footerPullToRefreshDescription = "아는 사람이 없나요?\n화면을 당기면 다른 친구들을 볼 수 있어요"
       }
       
       public struct MyFriends {
@@ -496,6 +496,20 @@ public struct I18N {
         }
         public static let emptyViewDescription = "아직 없어요 T.T\n나와 비슷한 친구가 생길 때까지 기다려주세요"
       }
+        
+        public struct Notification {
+            public static let naviTitle = "찌르기 알림"
+            public static let title = "누가 나를 찔렀어요"
+            public static let description = "나도 찔러서 답장을 해보세요"
+        }
+        
+        public struct MessaeBottomSheet {
+            public static let title = "함께 보낼 메시지를 골라주세요"
+            public static let anonymous = "익명"
+            public static let onlyReal = "천생연분은 실명으로만 콕찌를 수 있어요."
+            public static let revealNotice = "익명 해제 시, 상대방이 나를 알 수 있어요."
+        }
+        
       public static let emptyViewDescription = "아직 없어요 T.T\n더 많은 찌르기로 달성해보세요"
     }
 

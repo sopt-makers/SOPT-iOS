@@ -13,7 +13,7 @@ import Combine
 
 import Core
 import Domain
-import DSKit
+import MDS
 
 import BaseFeatureDependency
 import PokeFeatureInterface
@@ -32,7 +32,6 @@ public final class PokeMyFriendsListVC: UIViewController {
     // MARK: - UI Components
     
     private let headerView = PokeFriendsSectionHeaderView()
-        .setRightButtonImage(with: DSKitAsset.Assets.xClose.image)
     
     private let tableView = UITableView()
     
@@ -63,7 +62,7 @@ public final class PokeMyFriendsListVC: UIViewController {
 extension PokeMyFriendsListVC {
     private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
-        view.backgroundColor = DSKitAsset.Colors.gray800.color
+        view.backgroundColor = SemanticColor.Bg.Layer.basement
         tableView.backgroundColor = .clear
         headerView.setTitle(viewModel.relation.title)
         headerView.setDescription(viewModel.relation.friendBaselineDescription)

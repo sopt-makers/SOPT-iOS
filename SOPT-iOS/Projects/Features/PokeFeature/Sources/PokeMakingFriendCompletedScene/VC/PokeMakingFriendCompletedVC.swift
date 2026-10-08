@@ -19,6 +19,7 @@ import DSKit
 import PokeFeatureInterface
 import BaseFeatureDependency
 
+// TODO: 피그마 지면 반영 후 변경
 public class PokeMakingFriendCompletedVC: UIViewController, PokeMakingFriendCompletedPresentable  {
     
     // MARK: - Properties

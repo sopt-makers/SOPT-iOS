@@ -13,6 +13,7 @@ import BaseFeatureDependency
 import Core
 import Domain
 import DSKit
+import MDS
 
 import SnapKit
 
@@ -27,27 +28,26 @@ public final class PokeNotificationViewController: UIViewController {
     }
     
     // MARK: - Views
+    // TODO: - mds 반영 후 적용
     private lazy var navigationBar = OPNavigationBar(
         self,
         type: .oneLeftButton,
         backgroundColor: DSKitAsset.Colors.gray950.color
     )
-        .addMiddleLabel(title: "찌르기 알림", font: UIFont.MDS.body2.font)
-        .setLeftButtonImage(DSKitAsset.Assets.chevronLeft.image.withTintColor(DSKitAsset.Colors.gray30.color))
+        .addMiddleLabel(title: I18N.Poke.Notification.naviTitle, font: UIFont.MDS.body2.font)
+        .setLeftButtonImage(MDSIcon.chevronLeftOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold))
     
     private let headerView = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 8.f
     }
     private let titleLabel = UILabel().then {
-        $0.text = "누가 나를 찔렀어요"
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 18)
-        $0.textColor = DSKitAsset.Colors.gray30.color
+        $0.text = I18N.Poke.Notification.title
+        $0.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold)
     }
     private let descriptionLabel = UILabel().then {
-        $0.text = "나도 찔러서 답장을 해보세요"
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-        $0.textColor = DSKitAsset.Colors.gray200.color
+        $0.text = I18N.Poke.Notification.description
+        $0.setTypography(Typography.body2, textColor: SemanticColor.Fg.Neutral.default)
     }
     
     // MARK: TableViews
@@ -60,7 +60,7 @@ public final class PokeNotificationViewController: UIViewController {
             PokeNotificationContentCell.self,
             forCellReuseIdentifier: PokeNotificationContentCell.className
         )
-        $0.backgroundColor = DSKitAsset.Colors.gray950.color
+        $0.backgroundColor = .clear
         $0.estimatedRowHeight = 88.f
     }
     

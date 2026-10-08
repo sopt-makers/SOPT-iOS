@@ -11,7 +11,7 @@ import UIKit
 public final class PokeCarouselFlowLayout: UICollectionViewFlowLayout {
   private enum Metric {
     static let contentleadingTrailing = 20.f
-    static let collectionViewHeight = 586.f
+    static let collectionViewHeight = 608.f
     
     static let lineSpacing = 40.f
   }

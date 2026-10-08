@@ -9,8 +9,8 @@
 import UIKit
 import Combine
 
-import DSKit
 import Core
+import MDS
 
 public final class PokeFriendsSectionHeaderView: UIView {
     
@@ -21,22 +21,19 @@ public final class PokeFriendsSectionHeaderView: UIView {
     // MARK: - UI Components
     
     private let titleLabel = UILabel().then {
-        $0.font = UIFont.MDS.heading6.font
-        $0.textColor = DSKitAsset.Colors.gray10.color
+        $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
     }
     
     private let descriptionLabel = UILabel().then {
-        $0.font = UIFont.MDS.label4.font
-        $0.textColor = DSKitAsset.Colors.gray200.color
+        $0.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
     }
     
     private let friendsCountLabel = UILabel().then {
-        $0.font = UIFont.MDS.body3R.font
-        $0.textColor = DSKitAsset.Colors.white.color
+        $0.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold)
     }
     
     private let rightButton = UIButton().then {
-        $0.setImage(DSKitAsset.Assets.icChevronRight.image.withTintColor(DSKitAsset.Colors.white.color),
+        $0.setImage(MDSIcon.chevronRightOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold),
                     for: .normal)
     }
     
@@ -89,23 +86,21 @@ extension PokeFriendsSectionHeaderView {
     @discardableResult
     public func setTitle(_ title: String) -> Self {
         self.titleLabel.text = title
+        self.titleLabel.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
         return self
     }
     
     @discardableResult
     public func setDescription(_ description: String) -> Self {
         self.descriptionLabel.text = description
+        self.descriptionLabel.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
         return self
     }
     
     @discardableResult
     public func setFriendsCount(_ count: Int) -> Self {
         self.friendsCountLabel.text = "\(count)명"
+        self.friendsCountLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold)
         return self
     }
-    
-    @discardableResult
-    public func setRightButtonImage(with image: UIImage) -> Self {
-        self.rightButton.setImage(image, for: .normal)
-        return self
-    }}
+}

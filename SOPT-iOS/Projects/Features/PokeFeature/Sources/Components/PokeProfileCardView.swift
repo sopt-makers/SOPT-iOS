@@ -8,7 +8,7 @@
 
 import UIKit
 
-import DSKit
+import MDS
 import Core
 import Domain
 
@@ -35,36 +35,26 @@ public final class PokeProfileCardView: UIView, PokeCompatible {
     
     // MARK: - UI Components
     
-    private let profileImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.layer.cornerRadius = 60
-        imageView.backgroundColor = DSKitAsset.Colors.gray700.color
-        imageView.clipsToBounds = true
-        imageView.contentMode = .scaleAspectFill
-        imageView.image = DSKitAsset.Assets.icPokeDefaultProfile.image
-        return imageView
-    }()
+    private let profileImageView = MDSAvatar(size: 120, hasStroke: false)
     
     private let kokButton = PKokButton()
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.textColor = DSKitAsset.Colors.gray30.color
-        label.font = UIFont.MDS.body3.font
+        label.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold)
         return label
     }()
     
     private let partLabel: UILabel = {
         let label = UILabel()
-        label.textColor = DSKitAsset.Colors.gray300.color
-        label.font = UIFont.MDS.label5.font
+        label.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
         return label
     }()
     
     private lazy var labelStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [nameLabel, partLabel])
         stackView.axis = .vertical
-        stackView.spacing = 2
+        stackView.spacing = 4
         stackView.alignment = .center
         return stackView
     }()
@@ -72,7 +62,7 @@ public final class PokeProfileCardView: UIView, PokeCompatible {
     private lazy var containerStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [profileImageView, labelStackView])
         stackView.axis = .vertical
-        stackView.spacing = 8
+        stackView.spacing = 10
         stackView.alignment = .center
         return stackView
     }()
@@ -92,12 +82,11 @@ public final class PokeProfileCardView: UIView, PokeCompatible {
     
     private func setLayout() {
         self.addSubviews(containerStackView, kokButton)
-        
+
         profileImageView.snp.makeConstraints { make in
-            make.height.equalTo(120)
-            make.width.equalTo(120)
+            make.size.equalTo(120)
         }
-        
+
         labelStackView.snp.makeConstraints { make in
             make.height.equalTo(38)
         }
@@ -119,12 +108,15 @@ public final class PokeProfileCardView: UIView, PokeCompatible {
 
     func setData(with model: PokeUserModel) {
         self.user = model
-        self.profileImageView.setImage(
-            with: model.isAnonymous ? "" : model.profileImage,
-            placeholder: DSKitAsset.Assets.icDefaultProfile.image
-        )
+        if !model.isAnonymous && !model.profileImage.isEmpty {
+            self.profileImageView.setImage(with: model.profileImage)
+        } else {
+            self.profileImageView.image = nil
+        }
         self.nameLabel.text = model.isAnonymous ? model.anonymousName : model.name
+        self.nameLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold)
         self.partLabel.text = String(describing: model.generation) + "기" + " " + model.part
+        self.partLabel.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
         self.kokButton.isEnabled = !model.isAlreadyPoke
     }
     
