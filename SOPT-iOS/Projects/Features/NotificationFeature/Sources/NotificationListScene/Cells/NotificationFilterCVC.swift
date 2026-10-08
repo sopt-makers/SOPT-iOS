@@ -9,7 +9,7 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
 
 final class NotificationFilterCVC: UICollectionViewCell {
     
@@ -25,20 +25,13 @@ final class NotificationFilterCVC: UICollectionViewCell {
     
     // MARK: - UI Components
     
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-        label.textColor = DSKitAsset.Colors.white.color
-        label.textAlignment = .center
-        return label
-    }()
+    private let chip = MDSChip(size: .small, type: .solid, prefixIcon: nil, suffixIcon: nil)
     
     // MARK: - initialization
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.setUI()
-        self.setLayout()
     }
     
     required init?(coder: NSCoder) {
@@ -54,24 +47,18 @@ final class NotificationFilterCVC: UICollectionViewCell {
 // MARK: - UI & Layouts
 
 extension NotificationFilterCVC {
-    private func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.black60.color
-        self.layer.borderWidth = 1
-    }
-    
-    private func setLayout() {
-        self.addSubviews(titleLabel)
 
-        titleLabel.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(14)
-            make.centerY.equalToSuperview()
+    private func setUI() {
+        self.addSubviews(chip)
+        
+        chip.isUserInteractionEnabled = false
+        chip.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
     }
     
     func setSelectionStyle(isSelected: Bool) {
-        self.backgroundColor = isSelected ? DSKitAsset.Colors.gray700.color : DSKitAsset.Colors.gray800.color
-        self.titleLabel.textColor = isSelected ? DSKitAsset.Colors.white.color : DSKitAsset.Colors.gray300.color
-        self.layer.borderColor = isSelected ? DSKitAsset.Colors.gray100.color.cgColor : DSKitAsset.Colors.gray700.color.cgColor
+        chip.isSelected = isSelected
     }
 }
 
@@ -79,7 +66,7 @@ extension NotificationFilterCVC {
 
 extension NotificationFilterCVC {
     func initCell(type: NotificationFilterType) {
-        self.titleLabel.text = type.rawValue
-        self.filterType = type
+        chip.chipTitle = type.rawValue
+        filterType = type
     }
 }

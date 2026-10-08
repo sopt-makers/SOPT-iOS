@@ -12,6 +12,7 @@ import Domain
 import Core
 import DSKit
 
+// TODO: - 피그마 반영 전 - 요청
 final class SurveyCVC: UICollectionViewCell {
     
     // MARK: - Properties

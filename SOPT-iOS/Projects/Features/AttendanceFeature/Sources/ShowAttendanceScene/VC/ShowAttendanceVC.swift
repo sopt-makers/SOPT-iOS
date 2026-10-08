@@ -13,6 +13,7 @@ import Combine
 import Core
 import Domain
 import DSKit
+import MDS
 
 import SnapKit
 
@@ -50,6 +51,7 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     
     private let contentView = UIView()
     
+    // TODO: - MDS 적용 후 변경
     private lazy var navibar = OPNavigationBar(self, type: .oneLeftButton, ignoreLeftButtonAction: true)
         .addMiddleLabel(title: I18N.Attendance.attendance)
     
@@ -72,9 +74,8 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     
     private let attendanceGradientView: AttendanceGradientView = .init(frame: CGRect(x: 0, y: 0, width: 500, height: 200))
     
-    private let attendanceButton: OPCustomButton = {
-        let button = OPCustomButton()
-        button.titleLabel!.font = .Attendance.h1
+    private let attendanceButton: MDSActionButton = {
+        let button = MDSActionButton(variant: .primary, size: .large)
         button.isHidden = true
         button.isEnabled = false
         return button
@@ -88,6 +89,7 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     
     private lazy var infoButton: UIButton = {
         let button = UIButton(type: .system)
+        button.tintColor = SemanticColor.Fg.Neutral.bold
         button.addTarget(self, action: #selector(infoButtonDidTap), for: .touchUpInside)
         return button
     }()
@@ -126,8 +128,8 @@ extension ShowAttendanceVC {
     
     private func setUI() {
         self.navigationController?.navigationBar.isHidden = true
-        self.view.backgroundColor = DSKitAsset.Colors.gray950.color
-        containerScrollView.backgroundColor = DSKitAsset.Colors.gray950.color
+        self.view.backgroundColor = SemanticColor.Bg.Layer.basement
+        containerScrollView.backgroundColor = SemanticColor.Bg.Layer.basement
     }
     
     private func setLayout() {
@@ -179,8 +181,8 @@ extension ShowAttendanceVC {
         
         infoButton.snp.makeConstraints {
             $0.top.equalToSuperview().inset(58)
-            $0.trailing.equalToSuperview().inset(32)
-            $0.width.height.equalTo(24)
+            $0.trailing.equalToSuperview().inset(24)
+            $0.width.height.equalTo(22)
         }
     }
 }
@@ -238,6 +240,7 @@ extension ShowAttendanceVC {
                 if owner.sceneType == .scheduledDay {
                     owner.headerScheduleView.scheduleType = .scheduledDay
                     owner.setScheduledData(model)
+                    // TODO: - 출석 점수 미반영일(NO_ATTENDANCE)에도 버튼 노출 중. 숨김 여부 기획 확인 필요
                     owner.attendanceButton.isHidden = false
                     owner.attendanceGradientView.isHidden = false
                 } else {
@@ -253,7 +256,7 @@ extension ShowAttendanceVC {
             .withUnretained(self)
             .sink { owner, model in
                 guard let model else { return }
-                owner.infoButton.setImage(DSKitAsset.Assets.opInfo.image, for: .normal)
+                owner.infoButton.setImage(MDSIcon.infoCircleOutlined.image, for: .normal)
                 owner.setScoreData(model)
                 owner.endRefresh()
             }.store(in: self.cancelBag)
@@ -309,7 +312,7 @@ extension ShowAttendanceVC {
     
     private func setAttendanceButton(title: String, isEnabled: Bool) {
         attendanceButton.isEnabled = isEnabled
-        isEnabled ? attendanceButton.setTitle(title, for: .normal) : attendanceButton.setTitle(title, for: .disabled)
+        attendanceButton.title = title
     }
     
     @objc

@@ -10,7 +10,7 @@ import UIKit
 
 import Core
 import Domain
-import DSKit
+import MDS
 
 struct HomePresentationModel {
     let dashBoard: HomePresentationModel.DashBoard
@@ -123,13 +123,19 @@ extension HomePresentationModel.LatestPost: PostDisplayable {}
 
 extension HomeDescriptionModel {
     func toPresentation(history: [Int], isAllConfirm: Bool?, profileImageURL: String?) -> HomePresentationModel.DashBoard {
-        let attrString = NSAttributedString
+        let attrString = NSMutableAttributedString(attributedString: NSAttributedString
             .fromHTML(
                 description,
-                defaultFont: DSKitFontFamily.Suit.medium.font(size: 18),
-                boldFont: DSKitFontFamily.Suit.bold.font(size: 18),
-                defaultColor: DSKitAsset.Colors.white.color
-            )
+                defaultFont: Typography.body1.font,
+                boldFont: Typography.heading4.font,
+                defaultColor: SemanticColor.Fg.Neutral.bold
+            ))
+        var typographyAttributes = Typography.heading4.attributedStringAttributes(
+            foregroundColor: SemanticColor.Fg.Neutral.bold,
+            alignment: .left
+        )
+        typographyAttributes[.font] = nil
+        attrString.addAttributes(typographyAttributes, range: NSRange(location: 0, length: attrString.length))
         return HomePresentationModel.DashBoard(
             description: attrString,
             history: history,

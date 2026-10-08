@@ -51,6 +51,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
         var notificationList = PassthroughSubject<[NotificationListModel], Never>()
         var filterList = PassthroughSubject<[NotificationFilterType], Never>()
         var refreshLoading = PassthroughSubject<Bool, Never>()
+        var isAllRead = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - init
@@ -94,6 +95,7 @@ extension NotificationListViewModel {
                 owner.onNotificationTap?(notification.notificationId)
                 owner.read(index: index)
                 output.notificationList.send(self.notifications)
+                output.isAllRead.send(owner.notifications.allSatisfy { $0.isRead })
                 AmplitudeInstance.shared.track(eventType: .clickNotificationItem,
                                                eventProperties: [
                                                 "notification_id": notification.notificationId,
@@ -146,11 +148,12 @@ extension NotificationListViewModel {
                 owner.removeDuplicatesAndUpdateNotifications(contentsOf: notificationList)
                 let filtered = owner.filterNotifications(owner.notifications, by: owner.selectedCategory)
                 output.notificationList.send(filtered)
+                output.isAllRead.send(owner.notifications.allSatisfy { $0.isRead })
                 owner.endPaging(isEmptyResponse: notificationList.isEmpty)
-                
+
                 output.refreshLoading.send(false)
             }.store(in: cancelBag)
-        
+
         useCase.readSuccess
             .asDriver()
             .withUnretained(self)
@@ -163,6 +166,7 @@ extension NotificationListViewModel {
                         return notification
                     }
                     output.notificationList.send(owner.notifications)
+                    output.isAllRead.send(true)
                 }
             }.store(in: cancelBag)
     }
