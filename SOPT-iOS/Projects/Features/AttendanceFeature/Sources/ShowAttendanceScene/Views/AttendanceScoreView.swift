@@ -9,7 +9,8 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
+
 import Domain
 
 /*
@@ -37,9 +38,9 @@ final class AttendanceScoreView: UIView {
     
     private lazy var myScoreContainerStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [attendanceScoreView, tardyScoreView, absentScoreView, participateScoreView])
-        stackView.backgroundColor = DSKitAsset.Colors.gray700.color
+        stackView.backgroundColor = SemanticColor.Bg.Neutral.subtle
         stackView.clipsToBounds = true
-        stackView.layer.cornerRadius = 8
+        stackView.layer.cornerRadius = BaseRadius.Base.r10
         stackView.axis = .horizontal
         stackView.spacing = -10
         stackView.distribution = .fillEqually
@@ -57,8 +58,7 @@ final class AttendanceScoreView: UIView {
     
     private let attendanceScoreDescriptiopnLabel: UILabel = {
         let label = UILabel()
-        label.font = .Main.body2
-        label.textColor = DSKitAsset.Colors.gray300.color
+        label.textColor = SemanticColor.Fg.Neutral.subtle
         return label
     }()
     
@@ -90,29 +90,29 @@ final class AttendanceScoreView: UIView {
 extension AttendanceScoreView {
     
     private func configureContentView() {
-        self.backgroundColor = DSKitAsset.Colors.gray800.color
+        self.backgroundColor = SemanticColor.Bg.Neutral.ghost
         self.clipsToBounds = true
-        self.layer.cornerRadius = 16
+        self.layer.cornerRadius = BaseRadius.Base.r12
     }
     
     private func setLayout() {
         addSubviews(myInfoContainerView, myScoreContainerStackView, myAttendanceStateStackView)
         
         myInfoContainerView.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(32)
-            $0.leading.trailing.equalToSuperview().inset(32)
+            $0.top.equalToSuperview().offset(24)
+            $0.leading.trailing.equalToSuperview().inset(24)
             $0.height.equalTo(50)
         }
         
         myScoreContainerStackView.snp.makeConstraints {
-            $0.top.equalTo(myInfoContainerView.snp.bottom).offset(32)
-            $0.leading.trailing.equalToSuperview().inset(32)
+            $0.top.equalTo(myInfoContainerView.snp.bottom).offset(16)
+            $0.leading.trailing.equalToSuperview().inset(24)
             $0.height.equalTo(88)
         }
         
         myAttendanceStateStackView.snp.makeConstraints {
-            $0.top.equalTo(myScoreContainerStackView.snp.bottom).offset(32)
-            $0.leading.trailing.bottom.equalToSuperview().inset(32)
+            $0.top.equalTo(myScoreContainerStackView.snp.bottom).offset(28)
+            $0.leading.trailing.bottom.equalToSuperview().inset(24)
         }
     }
 }
@@ -146,6 +146,7 @@ extension AttendanceScoreView {
     
     func setMyAttendanceTableData(_ model: [AttendanceModel]) {
         attendanceScoreDescriptiopnLabel.text = I18N.Attendance.myAttendance
+        attendanceScoreDescriptiopnLabel.setTypography(Typography.title5)
 
         attendanceModelList = model
         updateTableviewHeight()
