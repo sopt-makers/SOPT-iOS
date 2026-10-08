@@ -11,9 +11,8 @@
   margin-bottom: var(--necto-space-2);
 }
 
-.toolbar input[type="search"],
-.toolbar #add-key,
-.toolbar #add-value {
+/* 툴바 안의 입력칸은 남는 폭을 나눠 쓰고, 선택 상자와 버튼은 내용 크기를 유지한다. */
+.toolbar input {
   flex: 1;
   min-width: 0;
 }
