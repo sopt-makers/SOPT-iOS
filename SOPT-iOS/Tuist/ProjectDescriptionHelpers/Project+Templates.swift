@@ -33,7 +33,13 @@ public extension Project {
             let settings = baseSettings
                 .setCrashlyticsSettings()
                 .setProvisioning()
-            
+
+            var appResources: [ResourceFileElement] = [.glob(pattern: "Resources/**", excluding: [])]
+            if name.contains("Demo") {
+                // Necto 플러그인 패널은 폴더 구조(index.html, assets/)를 유지해야 해서 폴더 참조로 넣는다.
+                appResources.append(.folderReference(path: "NectoPanel"))
+            }
+
             let target = Target.target(
                 name: name,
                 destinations: [.iPhone],
@@ -42,7 +48,7 @@ public extension Project {
                 deploymentTargets: deploymentTarget,
                 infoPlist: .extendingDefault(with: infoPlist),
                 sources: ["Sources/**/*.swift"],
-                resources: [.glob(pattern: "Resources/**", excluding: [])],
+                resources: .resources(appResources),
                 entitlements: "\(name).entitlements",
                 scripts: [
                     .googleServiceInfo,

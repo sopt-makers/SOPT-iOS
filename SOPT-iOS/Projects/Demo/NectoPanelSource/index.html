@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="color-scheme" content="light dark" />
+    <title>SOPT Debug</title>
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <div class="necto-app">
+      <div class="necto-body">
+        <nav class="tabs" id="tabs">
+          <button type="button" class="necto-button tab" data-tab="userdefaults">UserDefaults</button>
+          <button type="button" class="necto-button tab" data-tab="amplitude">Amplitude</button>
+          <button type="button" class="necto-button tab" data-tab="screen">Screen</button>
+          <button type="button" class="necto-button tab" data-tab="link">Link</button>
+        </nav>
+
+        <section id="tab-userdefaults" class="tab-panel">
+          <p id="userdefaults-status" class="status"></p>
+          <div class="toolbar">
+            <input id="ud-filter" class="necto-input" type="search" placeholder="키 검색" />
+            <button type="button" class="necto-button" id="ud-refresh">새로고침</button>
+          </div>
+          <table class="entries">
+            <thead>
+              <tr><th>키</th><th>타입</th><th>값</th><th></th></tr>
+            </thead>
+            <tbody id="ud-rows"></tbody>
+          </table>
+          <h3 class="necto-section-title">키 추가 / 덮어쓰기</h3>
+          <form id="ud-add" class="toolbar">
+            <input id="ud-add-key" class="necto-input" placeholder="key" required />
+            <select id="ud-add-type" class="necto-input">
+              <option value="bool">bool</option>
+              <option value="number">number</option>
+              <option value="string">string</option>
+            </select>
+            <input id="ud-add-value" class="necto-input" placeholder="value" required />
+            <button type="submit" class="necto-button">저장</button>
+          </form>
+        </section>
+
+        <section id="tab-amplitude" class="tab-panel" hidden>
+          <p id="amplitude-status" class="status"></p>
+          <div class="toolbar">
+            <input id="amp-filter" class="necto-input" type="search" placeholder="이벤트 이름 / 프로퍼티 검색" />
+            <button type="button" class="necto-button" id="amp-clear">비우기</button>
+          </div>
+          <table class="entries">
+            <thead>
+              <tr><th>시간</th><th>이벤트</th><th>프로퍼티</th></tr>
+            </thead>
+            <tbody id="amp-rows"></tbody>
+          </table>
+        </section>
+
+        <section id="tab-screen" class="tab-panel" hidden>
+          <p id="screen-status" class="status"></p>
+          <div class="current-screen">
+            <div class="current-label">현재 화면</div>
+            <div id="screen-name" class="current-name">-</div>
+            <div id="screen-detail" class="current-detail"></div>
+          </div>
+          <h3 class="necto-section-title">전환 기록</h3>
+          <table class="entries">
+            <thead>
+              <tr><th>시간</th><th>화면</th><th>모듈</th><th>제목</th></tr>
+            </thead>
+            <tbody id="screen-rows"></tbody>
+          </table>
+        </section>
+
+        <section id="tab-link" class="tab-panel" hidden>
+          <p id="link-status" class="status"></p>
+
+          <h3 class="necto-section-title">푸시 보내기</h3>
+          <p class="hint">
+            apns 파일을 끌어넣는 것과 같은 페이로드의 로컬 알림을 띄워요. 앱이 포그라운드면 배너가 뜨고,
+            탭하면 실제 푸시와 같은 경로로 처리돼요. 백그라운드나 콜드 스타트를 보려면 지연을 늘리고 앱을 닫으세요.
+          </p>
+          <form id="push-form" class="form-grid">
+            <label>title <input id="push-title" class="necto-input" required /></label>
+            <label>body <input id="push-body" class="necto-input" required /></label>
+            <label>id <input id="push-id" class="necto-input" required /></label>
+            <label>category <input id="push-category" class="necto-input" /></label>
+            <label>deepLink <input id="push-deeplink" class="necto-input" placeholder="home/notification/detail?id=596" /></label>
+            <label>webLink <input id="push-weblink" class="necto-input" placeholder="https://..." /></label>
+            <label>지연
+              <select id="push-delay" class="necto-input">
+                <option value="1">1초</option>
+                <option value="5">5초</option>
+                <option value="10">10초</option>
+                <option value="30">30초</option>
+              </select>
+            </label>
+            <div class="form-actions">
+              <button type="submit" class="necto-button">보내기</button>
+            </div>
+          </form>
+
+          <h3 class="necto-section-title">링크만 열기</h3>
+          <p class="hint">알림 배너 없이 링크 처리만 바로 호출해요.</p>
+          <form id="deeplink-form" class="toolbar">
+            <input id="open-deeplink" class="necto-input" placeholder="deepLink (예: home/notification/detail?id=596)" required />
+            <button type="submit" class="necto-button">딥링크 열기</button>
+          </form>
+          <form id="weblink-form" class="toolbar">
+            <input id="open-weblink" class="necto-input" placeholder="webLink (https://...)" required />
+            <button type="submit" class="necto-button">웹링크 열기</button>
+          </form>
+        </section>
+      </div>
+    </div>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
