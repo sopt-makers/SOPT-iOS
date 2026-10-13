@@ -76,6 +76,17 @@ public final class SoptletterWritingVC: UIViewController {
         $0.text = I18N.Soptletter.descriptionText
         $0.setTypography(Typography.body2, textColor: SemanticColor.Fg.Neutral.bold)
     }
+    
+    private let selectTopicContainerView = UIView().then {
+        $0.backgroundColor = SemanticColor.Bg.Neutral.ghost
+        $0.layer.cornerRadius = BaseRadius.Base.r10
+        $0.layer.borderWidth = 0
+    }
+    
+    private let selectTopicLabel = UILabel().then {
+        $0.text = I18N.Soptletter.selectTopicText
+        $0.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.subtle)
+    }
 
     private let inputContainerView = UIView().then {
         $0.backgroundColor = SemanticColor.Bg.Neutral.ghost
@@ -140,6 +151,7 @@ public final class SoptletterWritingVC: UIViewController {
 
         setUI()
         setLayout()
+        setGesture()
         bindViewModels()
         setKeyboardObserver()
         hideKeyboard()
@@ -160,8 +172,9 @@ private extension SoptletterWritingVC {
 
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
-        contentView.addSubviews(navBarView, descriptionStackView, inputContainerView, submitButton)
+        contentView.addSubviews(navBarView, descriptionStackView, selectTopicContainerView, inputContainerView, submitButton)
         navBarView.addSubviews(backButton, navTitleLabel)
+        selectTopicContainerView.addSubview(selectTopicLabel)
         inputContainerView.addSubviews(recipientLabel, textView, placeholderLabel, charCountLabel)
 
         scrollView.snp.makeConstraints { make in
@@ -199,9 +212,19 @@ private extension SoptletterWritingVC {
             make.width.equalTo(96)
             make.height.equalTo(80)
         }
+        
+        selectTopicContainerView.snp.makeConstraints { make in
+            make.top.equalTo(descriptionStackView.snp.bottom).offset(BaseSpacing.Base.s12)
+            make.leading.trailing.equalToSuperview().inset(19)
+        }
+        
+        selectTopicLabel.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview().inset(BaseSpacing.Base.s10)
+            make.leading.trailing.equalToSuperview().inset(BaseSpacing.Base.s20)
+        }
 
         inputContainerView.snp.makeConstraints { make in
-            make.top.equalTo(descriptionStackView.snp.bottom).offset(BaseSpacing.Base.s10)
+            make.top.equalTo(selectTopicContainerView.snp.bottom).offset(BaseSpacing.Base.s10)
             make.leading.trailing.equalToSuperview().inset(19)
         }
 
@@ -232,6 +255,11 @@ private extension SoptletterWritingVC {
         }
     }
 
+    func setGesture() {
+        let selectTopicTapGesture = UITapGestureRecognizer(target: self, action: #selector(selectTopicTap))
+        selectTopicContainerView.addGestureRecognizer(selectTopicTapGesture)
+    }
+    
     func setKeyboardObserver() {
         keyboardWillShowObserver = NotificationCenter.default.addObserver(
             forName: UIResponder.keyboardWillShowNotification,
@@ -271,6 +299,10 @@ private extension SoptletterWritingVC {
             .sink { owner, isEnabled in
                 owner.submitButton.isEnabled = isEnabled
             }.store(in: cancelBag)
+    }
+    
+    @objc func selectTopicTap() {
+        
     }
 }
 
