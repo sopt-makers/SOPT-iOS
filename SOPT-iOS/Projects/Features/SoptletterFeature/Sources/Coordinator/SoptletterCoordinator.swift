@@ -22,6 +22,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
     private let factory: SoptletterFeatureBuildable
     private weak var navigationController: UINavigationController?
     private weak var soptletterRootController: UINavigationController?
+    private weak var soptletterMainController: UINavigationController?
 
     // MARK: - Init
 
@@ -135,7 +136,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
         var soptletterMain = factory.makeSoptletterMainVC(coordinator: self, topicId: topicId)
 
         soptletterMain.vm.onNaviBackTap = { [weak self] in
-            self?.soptletterRootController?.popViewController(animated: true)
+            self?.soptletterMainController?.dismiss(animated: true)
         }
         
         soptletterMain.vm.onWriteTap = { [weak self] in
@@ -144,7 +145,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
 
         soptletterMain.vm.onReportTap = { [weak self] url in
             let webView = SOPTWebView(startWith: url)
-            self?.soptletterRootController?.pushViewController(webView, animated: true)
+            self?.soptletterMainController?.pushViewController(webView, animated: true)
         }
         
         soptletterMain.vm.onDownloadTap = { [weak self] image, pdfURL in
@@ -159,8 +160,11 @@ public final class SoptletterCoordinator: BaseCoordinator {
             AlertUtils.presentNetworkAlertVC()
         }
                 
-        soptletterRootController?.present(soptletterMain.vc, animated: true)
-        
+        let navController = UINavigationController(rootViewController: soptletterMain.vc)
+        navController.modalPresentationStyle = .fullScreen
+        navController.setNavigationBarHidden(true, animated: false)
+        soptletterMainController = navController
+        soptletterRootController?.present(navController, animated: true)
     }
     
     private func showSoptletterPrint(_ uiImage: UIImage, _ pdfURL: URL) {
@@ -181,17 +185,17 @@ public final class SoptletterCoordinator: BaseCoordinator {
                 guard completed else { return }
 
                 ToastUtils.showMDSToast(type: .success, text: I18N.Soptletter.Print.saveSuccess)
-                self.soptletterRootController?.popViewController(animated: true)
+                self.soptletterMainController?.popViewController(animated: true)
             }
             
-            self.soptletterRootController?.present(activityVC, animated: true)
+            self.soptletterMainController?.present(activityVC, animated: true)
         }
         
         soptletterPrint.vm.onNaviBackTap = { [weak self] in
-            self?.soptletterRootController?.popViewController(animated: true)
+            self?.soptletterMainController?.popViewController(animated: true)
         }
         
-        soptletterRootController?.pushViewController(soptletterPrint.vc, animated: true)
+        soptletterMainController?.pushViewController(soptletterPrint.vc, animated: true)
     }
     
     private func presentSoptletterDetail(_ messageId: Int, _ topicId: Int, refreshTarget: SoptletterMainPresentable) {
@@ -209,6 +213,6 @@ public final class SoptletterCoordinator: BaseCoordinator {
             refreshTarget.vm.refreshMessagesTrigger()
         }
         
-        soptletterRootController?.present(soptletterDetail.vc, animated: true)
+        soptletterMainController?.present(soptletterDetail.vc, animated: true)
     }
 }
