@@ -50,7 +50,7 @@ final class SoptletterTopicCell: UITableViewCell, UITableViewRegisterable {
     private lazy var alarmIcon = UIView().then {
         $0.layer.cornerRadius = 6 / 2
         $0.clipsToBounds = true
-        $0.backgroundColor = .green
+        $0.backgroundColor = DSKitAsset.Colors.green400.color
     }
     
     private let chevronImageView = UIImageView().then {
