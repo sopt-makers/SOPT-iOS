@@ -93,7 +93,11 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
         
         selectTopic.vm.onCellTap = { [weak self] topic in
-            self?.showSoptletterMain(topicId: topic.topicId, isRoot: false)
+            self?.showSoptletterMain(topicId: topic.topicId)
+        }
+        
+        selectTopic.vm.onWriteButtonTap = { [weak self] in
+            // TODO: 작성하기 연결
         }
         
         selectTopic.vm.showAlert = {

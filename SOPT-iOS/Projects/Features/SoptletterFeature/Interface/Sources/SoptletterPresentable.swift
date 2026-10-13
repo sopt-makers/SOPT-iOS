@@ -70,6 +70,7 @@ public protocol SelectTopicRoutingTrigger {
     var onNaviBackTap: (() -> Void)? { get set }
     var onCellTap: ((SoptletterTopicModel) -> Void)? { get set }
     var showAlert: (() -> Void)? { get set }
+    var onWriteButtonTap: (() -> Void)? { get set }
 }
 
 public typealias SelectTopicViewModelType = ViewModelType & SelectTopicRoutingTrigger

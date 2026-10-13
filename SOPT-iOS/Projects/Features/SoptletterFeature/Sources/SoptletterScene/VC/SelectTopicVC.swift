@@ -28,6 +28,11 @@ final class SelectTopicVC: UIViewController {
 
     private let cellTapSubject = PassthroughSubject<SoptletterTopicModel, Never>()
     
+    private lazy var writeButtonTap: Driver<Void> = writeButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
+    
     private var topics: [SoptletterTopicModel] = []
     
     // MARK: - Properties
@@ -51,7 +56,7 @@ final class SelectTopicVC: UIViewController {
         SoptletterTopicCell.register(target: $0)
     }
     
-    private let writeFloatingButton = MDSFloatingButton(size: .default, icon: MDSIcon.writeOutlined)
+    private let writeButton = MDSFloatingButton(size: .default, icon: MDSIcon.writeOutlined)
     
     init(viewModel: SelectTopicViewModel) {
         self.viewModel = viewModel
@@ -81,7 +86,7 @@ extension SelectTopicVC {
     
     func setLayout() {
         let safeArea = view.safeAreaLayoutGuide
-        view.addSubviews(backButton, navTitleLabel, tableView, writeFloatingButton)
+        view.addSubviews(backButton, navTitleLabel, tableView, writeButton)
         
         backButton.snp.makeConstraints { make in
             make.top.equalTo(safeArea.snp.top).inset(BaseSpacing.Base.s12)
@@ -99,7 +104,7 @@ extension SelectTopicVC {
             make.leading.trailing.bottom.equalToSuperview()
         }
         
-        writeFloatingButton.snp.makeConstraints { make in
+        writeButton.snp.makeConstraints { make in
             make.trailing.equalTo(view.safeAreaLayoutGuide).inset(BaseSpacing.Base.s20)
             make.bottom.equalTo(view.safeAreaLayoutGuide).inset(BaseSpacing.Base.s28)
         }
@@ -109,7 +114,8 @@ extension SelectTopicVC {
         let input = SelectTopicViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
             naviBackTap: naviBackTap,
-            cellTap: cellTapSubject.asDriver()
+            cellTap: cellTapSubject.asDriver(),
+            writeButtonTap: writeButtonTap.asDriver()
         )
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
