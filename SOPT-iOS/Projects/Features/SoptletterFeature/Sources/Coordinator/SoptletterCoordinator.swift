@@ -38,7 +38,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
 
     public override func start() {
         if UserDefaultKeyList.User.isCompleteSoptletterOnboarding == true {
-            showSoptletterMain(topicId: nil, isRoot: true)
+            showSelectTopicMain(isRoot: true)
         } else {
             showSoptletterOnboarding()
         }
@@ -71,7 +71,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
         
         checkNickname.vm.onGoButtonTap = { [weak self]  in
-            self?.showSelectTopic()
+            self?.showSelectTopicMain(isRoot: true)
         }
         
         checkNickname.vm.showAlert = {
@@ -112,10 +112,10 @@ public final class SoptletterCoordinator: BaseCoordinator {
             self?.showSoptletterWriting(refreshTarget: soptletterMain)
         }
         
-        soptletterMain.vm.onMenuTap = { [weak self] in
-            self?.showSelectTopic()
-        }
-        
+//        soptletterMain.vm.onMenuTap = { [weak self] in
+//            self?.showSelectTopicMain()
+//        }
+//        
         soptletterMain.vm.onReportTap = { [weak self] url in
             let webView = SOPTWebView(startWith: url)
             self?.soptletterRootController?.pushViewController(webView, animated: true)
@@ -198,11 +198,15 @@ public final class SoptletterCoordinator: BaseCoordinator {
         soptletterRootController?.present(soptletterDetail.vc, animated: true)
     }
     
-    private func showSelectTopic() {
+    private func showSelectTopicMain(isRoot: Bool) {
         var selectTopic = factory.makeSelectTopicVC(coordinator: self)
         
         selectTopic.vm.onNaviBackTap = { [weak self] in
-            self?.soptletterRootController?.popViewController(animated: true)
+            if isRoot {
+                self?.soptletterRootController?.dismiss(animated: true)
+            } else {
+                self?.soptletterRootController?.popViewController(animated: true)
+            }
         }
         
         selectTopic.vm.onCellTap = { [weak self] topic in
@@ -213,6 +217,14 @@ public final class SoptletterCoordinator: BaseCoordinator {
             AlertUtils.presentNetworkAlertVC()
         }
         
-        soptletterRootController?.pushViewController(selectTopic.vc, animated: true)
+        if let soptletterRootController {
+            soptletterRootController.pushViewController(selectTopic.vc, animated: true)
+        } else {
+            let navController = UINavigationController(rootViewController: selectTopic.vc)
+            navController.modalPresentationStyle = .fullScreen
+            navController.setNavigationBarHidden(true, animated: false)
+            soptletterRootController = navController
+            navigationController?.present(navController, animated: true)
+        }
     }
 }
