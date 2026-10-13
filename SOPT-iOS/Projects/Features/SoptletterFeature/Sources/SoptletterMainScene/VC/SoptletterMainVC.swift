@@ -44,10 +44,6 @@ public final class SoptletterMainVC: UIViewController {
         $0.setImage(MDSIcon.downloadOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold), for: .normal)
     }
 
-    private let menuButton = UIButton().then {
-        $0.setImage(MDSIcon.menuOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold), for: .normal)
-    }
-
     private let reportButton = UIButton().then {
         $0.setImage(MDSIcon.alertTriangleOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold), for: .normal)
     }
@@ -60,10 +56,6 @@ public final class SoptletterMainVC: UIViewController {
 
     private let writeButton = MDSFloatingButton(size: .default, icon: MDSIcon.writeOutlined)
 
-    private let bannerImageButton = UIButton().then {
-        $0.setImage(DSKitAsset.Assets.imgSoptletteraBanner.image, for: .normal)
-    }
-
     private let placeHolderImageView = UIButton().then {
         $0.setImage(DSKitAsset.Assets.imgSoptletterPlaceholder.image, for: .normal)
         $0.isHidden = true
@@ -75,11 +67,9 @@ public final class SoptletterMainVC: UIViewController {
     private let naviBackButtonTapPublisher = PassthroughSubject<Void, Never>()
     private let imagePreviewPublisher = PassthroughSubject<(image: UIImage, url: URL), Never>()
     private let soptletterHeaderPublisher = PassthroughSubject<Int, Never>()
-    private let isRoot: Bool
 
     private var soptletterMessages: SoptletterItemModel?
     private var snapshotDataSource: SnapshotPostItDataSource?
-    private var ctaModel: SoptletterCTAModel?
 
     private lazy var closeButtonTap: Driver<Void> = closeButton
         .publisher(for: .touchUpInside)
@@ -92,11 +82,6 @@ public final class SoptletterMainVC: UIViewController {
         .asDriver()
 
     private lazy var downloadButtonTap: Driver<Void> = downloadButton
-        .publisher(for: .touchUpInside)
-        .mapVoid()
-        .asDriver()
-
-    private lazy var menuButtonTap: Driver<Void> = menuButton
         .publisher(for: .touchUpInside)
         .mapVoid()
         .asDriver()
@@ -119,9 +104,8 @@ public final class SoptletterMainVC: UIViewController {
         setCollectionView()
     }
 
-    public init(viewModel: SoptletterMainViewModel, isRoot: Bool) {
+    public init(viewModel: SoptletterMainViewModel) {
         self.viewModel = viewModel
-        self.isRoot = isRoot
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -134,13 +118,6 @@ private extension SoptletterMainVC {
     private func setUI() {
         view.backgroundColor = SemanticColor.Bg.Layer.basement
         navigationController?.setNavigationBarHidden(true, animated: false)
-
-        closeButton.setImage(
-            (isRoot ? MDSIcon.xCloseOutlined.image : MDSIcon.chevronLeftOutlined.image)
-                .withTintColor(SemanticColor.Fg.Neutral.bold),
-            for: .normal
-        )
-        menuButton.isHidden = !isRoot
     }
 
     private func bindViewModels() {
@@ -150,10 +127,8 @@ private extension SoptletterMainVC {
             writeButtonTap: writeButtonTap,
             downloadButtonTap: downloadButtonTap,
             reportButtonTap: reportButtonTap,
-            menuButtonTap: menuButtonTap,
             postItCellTap: postItCellTapPublisher.asDriver(),
-            imageProcessCompleted: imagePreviewPublisher.asDriver(),
-            soptletterHeaderTap: soptletterHeaderTap.asDriver()
+            imageProcessCompleted: imagePreviewPublisher.asDriver()
         )
 
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
@@ -184,21 +159,10 @@ private extension SoptletterMainVC {
                     owner.imagePreviewPublisher.send((previewImage, pdfURL))
                 }
             }.store(in: cancelBag)
-
-        output.ctaInfo
-            .withUnretained(self)
-            .sink { owner, model in
-                owner.ctaModel = model
-                guard let headerView = owner.collectionView.supplementaryView(
-                    forElementKind: UICollectionView.elementKindSectionHeader,
-                    at: IndexPath(item: 0, section: 0)
-                ) as? SoptletterBannerHeaderView else { return }
-                owner.configureHeader(headerView)
-            }.store(in: cancelBag)
     }
 
     private func setLayout() {
-        rightButtonStackView.addArrangedSubviews(downloadButton, reportButton, menuButton)
+        rightButtonStackView.addArrangedSubviews(downloadButton, reportButton)
         navigationView.addSubviews(closeButton, titleLabel, rightButtonStackView)
         view.addSubviews(collectionView, navigationView, writeButton, placeHolderImageView)
 
@@ -229,7 +193,7 @@ private extension SoptletterMainVC {
             make.centerY.equalTo(closeButton.snp.centerY)
         }
 
-        [downloadButton, menuButton, reportButton].forEach {
+        [downloadButton, reportButton].forEach {
             $0.snp.makeConstraints { make in
                 make.size.equalTo(24)
             }
@@ -271,17 +235,6 @@ extension SoptletterMainVC {
         section.interGroupSpacing = BaseSpacing.Base.s10
         section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: BaseSpacing.Base.s16, bottom: BaseSpacing.Base.s10, trailing: BaseSpacing.Base.s10)
 
-        let headerSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(64)
-        )
-        let header = NSCollectionLayoutBoundarySupplementaryItem(
-            layoutSize: headerSize,
-            elementKind: UICollectionView.elementKindSectionHeader,
-            alignment: .top
-        )
-        section.boundarySupplementaryItems = [header]
-
         return UICollectionViewCompositionalLayout(section: section)
     }
 }
@@ -289,7 +242,6 @@ extension SoptletterMainVC {
 extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate {
     private func setCollectionView() {
         SoptletterPostItCell.register(target: collectionView)
-        SoptletterBannerHeaderView.register(target: collectionView, isHeader: true)
         collectionView.dataSource = self
         collectionView.delegate = self
     }
@@ -323,38 +275,6 @@ extension SoptletterMainVC: UICollectionViewDataSource, UICollectionViewDelegate
         guard let soptletterMessages else { return }
         let message = soptletterMessages.messages[indexPath.row]
         postItCellTapPublisher.send((message.messageId, soptletterMessages.topicId))
-    }
-
-    public func collectionView(
-        _ collectionView: UICollectionView,
-        viewForSupplementaryElementOfKind kind: String,
-        at indexPath: IndexPath
-    ) -> UICollectionReusableView {
-        guard kind == UICollectionView.elementKindSectionHeader,
-              let headerView = collectionView.dequeueReusableSupplementaryView(
-                ofKind: kind,
-                withReuseIdentifier: SoptletterBannerHeaderView.className,
-                for: indexPath
-              ) as? SoptletterBannerHeaderView else {
-            return UICollectionReusableView()
-        }
-
-        configureHeader(headerView)
-
-        return headerView
-    }
-
-    private func configureHeader(_ headerView: SoptletterBannerHeaderView) {
-        let shouldHideBanner = !isRoot || !(ctaModel?.showCta ?? false)
-
-        headerView.configure(
-            ctaText: ctaModel?.ctaText ?? "",
-            isHidden: shouldHideBanner,
-            onTap: { [weak self] in
-                guard let topicId = self?.ctaModel?.topicId else { return }
-                self?.soptletterHeaderPublisher.send(topicId)
-            }
-        )
     }
 }
 

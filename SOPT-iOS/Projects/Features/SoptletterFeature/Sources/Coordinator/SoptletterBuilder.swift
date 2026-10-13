@@ -38,10 +38,10 @@ extension SoptletterBuilder: SoptletterFeatureBuildable {
         return (viewController, viewModel)
     }
     
-    public func makeSoptletterMainVC(coordinator: any BaseFeatureDependency.Coordinator, topicId: Int?, isRoot: Bool) -> SoptletterMainPresentable {
+    public func makeSoptletterMainVC(coordinator: any BaseFeatureDependency.Coordinator, topicId: Int?) -> SoptletterMainPresentable {
         let useCase = DefaultSoptletterUseCase(repository: soptletterRepository)
         let viewModel = SoptletterMainViewModel(coordinator: coordinator, useCase: useCase, topicId: topicId)
-        let soptletterMainVC = SoptletterMainVC(viewModel: viewModel, isRoot: isRoot)
+        let soptletterMainVC = SoptletterMainVC(viewModel: viewModel)
         return (soptletterMainVC, viewModel)
     }
     

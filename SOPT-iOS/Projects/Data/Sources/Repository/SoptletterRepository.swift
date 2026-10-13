@@ -23,10 +23,6 @@ extension SoptletterRepository: SoptletterRepositoryInterface {
         try await soptletterService.fetchDefaultTopic().toDomain()
     }
     
-    public func fetchCTA() async throws -> Domain.SoptletterCTAModel {
-        try await soptletterService.fetchCTA().toDomain()
-    }
-
     public func fetchReportForm() async throws -> Domain.SoptletterReportFormModel {
         try await soptletterService.fetchReportForm().toDomain()
     }
