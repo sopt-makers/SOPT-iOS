@@ -44,10 +44,6 @@ public final class SoptletterMainVC: UIViewController {
         $0.setImage(MDSIcon.downloadOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold), for: .normal)
     }
 
-    private let menuButton = UIButton().then {
-        $0.setImage(MDSIcon.menuOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold), for: .normal)
-    }
-
     private let reportButton = UIButton().then {
         $0.setImage(MDSIcon.alertTriangleOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold), for: .normal)
     }
@@ -96,11 +92,6 @@ public final class SoptletterMainVC: UIViewController {
         .mapVoid()
         .asDriver()
 
-    private lazy var menuButtonTap: Driver<Void> = menuButton
-        .publisher(for: .touchUpInside)
-        .mapVoid()
-        .asDriver()
-
     private lazy var reportButtonTap: Driver<Void> = reportButton
         .publisher(for: .touchUpInside)
         .mapVoid()
@@ -140,7 +131,6 @@ private extension SoptletterMainVC {
                 .withTintColor(SemanticColor.Fg.Neutral.bold),
             for: .normal
         )
-        menuButton.isHidden = !isRoot
     }
 
     private func bindViewModels() {
@@ -150,7 +140,6 @@ private extension SoptletterMainVC {
             writeButtonTap: writeButtonTap,
             downloadButtonTap: downloadButtonTap,
             reportButtonTap: reportButtonTap,
-            menuButtonTap: menuButtonTap,
             postItCellTap: postItCellTapPublisher.asDriver(),
             imageProcessCompleted: imagePreviewPublisher.asDriver(),
             soptletterHeaderTap: soptletterHeaderTap.asDriver()
@@ -198,7 +187,7 @@ private extension SoptletterMainVC {
     }
 
     private func setLayout() {
-        rightButtonStackView.addArrangedSubviews(downloadButton, reportButton, menuButton)
+        rightButtonStackView.addArrangedSubviews(downloadButton, reportButton)
         navigationView.addSubviews(closeButton, titleLabel, rightButtonStackView)
         view.addSubviews(collectionView, navigationView, writeButton, placeHolderImageView)
 
@@ -229,7 +218,7 @@ private extension SoptletterMainVC {
             make.centerY.equalTo(closeButton.snp.centerY)
         }
 
-        [downloadButton, menuButton, reportButton].forEach {
+        [downloadButton, reportButton].forEach {
             $0.snp.makeConstraints { make in
                 make.size.equalTo(24)
             }

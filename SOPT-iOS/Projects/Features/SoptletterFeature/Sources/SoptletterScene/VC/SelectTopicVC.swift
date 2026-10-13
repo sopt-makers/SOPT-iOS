@@ -51,6 +51,8 @@ final class SelectTopicVC: UIViewController {
         SoptletterTopicCell.register(target: $0)
     }
     
+    private let writeFloatingButton = MDSFloatingButton(size: .default, icon: MDSIcon.writeOutlined)
+    
     init(viewModel: SelectTopicViewModel) {
         self.viewModel = viewModel
         
@@ -79,7 +81,7 @@ extension SelectTopicVC {
     
     func setLayout() {
         let safeArea = view.safeAreaLayoutGuide
-        view.addSubviews(backButton, navTitleLabel, tableView)
+        view.addSubviews(backButton, navTitleLabel, tableView, writeFloatingButton)
         
         backButton.snp.makeConstraints { make in
             make.top.equalTo(safeArea.snp.top).inset(BaseSpacing.Base.s12)
@@ -95,6 +97,11 @@ extension SelectTopicVC {
         tableView.snp.makeConstraints { make in
             make.top.equalTo(backButton.snp.bottom).offset(BaseSpacing.Base.s16)
             make.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        writeFloatingButton.snp.makeConstraints { make in
+            make.trailing.equalTo(view.safeAreaLayoutGuide).inset(BaseSpacing.Base.s20)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(BaseSpacing.Base.s28)
         }
     }
     

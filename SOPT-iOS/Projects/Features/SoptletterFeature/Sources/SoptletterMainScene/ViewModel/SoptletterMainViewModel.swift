@@ -25,7 +25,6 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
         let writeButtonTap: Driver<Void>
         let downloadButtonTap: Driver<Void>
         let reportButtonTap: Driver<Void>
-        let menuButtonTap: Driver<Void>
         let postItCellTap: Driver<(messageId: Int, topicId: Int)>
         let imageProcessCompleted: Driver<(image: UIImage, url: URL)>
         let soptletterHeaderTap: Driver<Int>
@@ -104,12 +103,6 @@ extension SoptletterMainViewModel {
             .sink { owner, _ in
                 owner.onNaviBackTap?()
                 AmplitudeInstance.shared.trackWithUserType(event: .clickQuitSoptletter)
-            }.store(in: cancelBag)
-        
-        input.menuButtonTap
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onMenuTap?()
             }.store(in: cancelBag)
         
         input.writeButtonTap

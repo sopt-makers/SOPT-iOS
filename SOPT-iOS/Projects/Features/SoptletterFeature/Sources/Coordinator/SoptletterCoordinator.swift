@@ -80,6 +80,36 @@ public final class SoptletterCoordinator: BaseCoordinator {
         
         soptletterRootController?.pushViewController(checkNickname.vc, animated: true)
     }
+    
+    private func showSelectTopicMain(isRoot: Bool) {
+        var selectTopic = factory.makeSelectTopicVC(coordinator: self)
+        
+        selectTopic.vm.onNaviBackTap = { [weak self] in
+            if isRoot {
+                self?.soptletterRootController?.dismiss(animated: true)
+            } else {
+                self?.soptletterRootController?.popViewController(animated: true)
+            }
+        }
+        
+        selectTopic.vm.onCellTap = { [weak self] topic in
+            self?.showSoptletterMain(topicId: topic.topicId, isRoot: false)
+        }
+        
+        selectTopic.vm.showAlert = {
+            AlertUtils.presentNetworkAlertVC()
+        }
+        
+        if let soptletterRootController {
+            soptletterRootController.pushViewController(selectTopic.vc, animated: true)
+        } else {
+            let navController = UINavigationController(rootViewController: selectTopic.vc)
+            navController.modalPresentationStyle = .fullScreen
+            navController.setNavigationBarHidden(true, animated: false)
+            soptletterRootController = navController
+            navigationController?.present(navController, animated: true)
+        }
+    }
 
     private func showSoptletterWriting(refreshTarget: SoptletterMainPresentable) {
         var soptletterWriting = factory.makeSoptletterWritingVC(coordinator: self)
@@ -99,23 +129,11 @@ public final class SoptletterCoordinator: BaseCoordinator {
     
     private func showSoptletterMain(topicId: Int?, isRoot: Bool) {
         var soptletterMain = factory.makeSoptletterMainVC(coordinator: self, topicId: topicId, isRoot: isRoot)
-        
-        soptletterMain.vm.onNaviBackTap = { [weak self] in
-            if isRoot {
-                self?.soptletterRootController?.dismiss(animated: true)
-            } else {
-                self?.soptletterRootController?.popViewController(animated: true)
-            }
-        }
-        
+
         soptletterMain.vm.onWriteTap = { [weak self] in
             self?.showSoptletterWriting(refreshTarget: soptletterMain)
         }
-        
-//        soptletterMain.vm.onMenuTap = { [weak self] in
-//            self?.showSelectTopicMain()
-//        }
-//        
+
         soptletterMain.vm.onReportTap = { [weak self] url in
             let webView = SOPTWebView(startWith: url)
             self?.soptletterRootController?.pushViewController(webView, animated: true)
@@ -132,12 +150,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
         soptletterMain.vm.onError = {
             AlertUtils.presentNetworkAlertVC()
         }
-        
-        // CTA 클릭 시에도 새 인스턴스를 push (isRoot: false)
-        soptletterMain.vm.ctaTap = { [weak self] newTopicId in
-            self?.showSoptletterMain(topicId: newTopicId, isRoot: false)
-        }
-        
+                
         if let soptletterRootController {
             soptletterRootController.pushViewController(soptletterMain.vc, animated: true)
         } else {
@@ -196,35 +209,5 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
         
         soptletterRootController?.present(soptletterDetail.vc, animated: true)
-    }
-    
-    private func showSelectTopicMain(isRoot: Bool) {
-        var selectTopic = factory.makeSelectTopicVC(coordinator: self)
-        
-        selectTopic.vm.onNaviBackTap = { [weak self] in
-            if isRoot {
-                self?.soptletterRootController?.dismiss(animated: true)
-            } else {
-                self?.soptletterRootController?.popViewController(animated: true)
-            }
-        }
-        
-        selectTopic.vm.onCellTap = { [weak self] topic in
-            self?.showSoptletterMain(topicId: topic.topicId, isRoot: false)
-        }
-        
-        selectTopic.vm.showAlert = {
-            AlertUtils.presentNetworkAlertVC()
-        }
-        
-        if let soptletterRootController {
-            soptletterRootController.pushViewController(selectTopic.vc, animated: true)
-        } else {
-            let navController = UINavigationController(rootViewController: selectTopic.vc)
-            navController.modalPresentationStyle = .fullScreen
-            navController.setNavigationBarHidden(true, animated: false)
-            soptletterRootController = navController
-            navigationController?.present(navController, animated: true)
-        }
     }
 }
