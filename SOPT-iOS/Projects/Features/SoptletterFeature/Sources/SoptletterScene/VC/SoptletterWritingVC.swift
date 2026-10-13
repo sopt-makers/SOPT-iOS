@@ -73,6 +73,7 @@ public final class SoptletterWritingVC: UIViewController {
 
     private let descriptionLabel = UILabel().then {
         $0.numberOfLines = 0
+        $0.text = I18N.Soptletter.descriptionText
         $0.setTypography(Typography.body2, textColor: SemanticColor.Fg.Neutral.bold)
     }
 
@@ -155,8 +156,7 @@ private extension SoptletterWritingVC {
     }
 
     func setLayout() {
-        descriptionStackView.addArrangedSubview(mailBoxImageView)
-        descriptionStackView.addArrangedSubview(descriptionLabel)
+        descriptionStackView.addArrangedSubviews(mailBoxImageView, descriptionLabel)
 
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
