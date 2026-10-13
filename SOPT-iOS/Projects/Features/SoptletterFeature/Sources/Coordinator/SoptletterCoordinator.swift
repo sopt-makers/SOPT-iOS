@@ -127,9 +127,13 @@ public final class SoptletterCoordinator: BaseCoordinator {
         soptletterRootController?.pushViewController(soptletterWriting.vc, animated: true)
     }
     
-    private func showSoptletterMain(topicId: Int?, isRoot: Bool) {
-        var soptletterMain = factory.makeSoptletterMainVC(coordinator: self, topicId: topicId, isRoot: isRoot)
+    private func showSoptletterMain(topicId: Int?) {
+        var soptletterMain = factory.makeSoptletterMainVC(coordinator: self, topicId: topicId)
 
+        soptletterMain.vm.onNaviBackTap = { [weak self] in
+            self?.soptletterRootController?.popViewController(animated: true)
+        }
+        
         soptletterMain.vm.onWriteTap = { [weak self] in
             self?.showSoptletterWriting(refreshTarget: soptletterMain)
         }
@@ -151,15 +155,8 @@ public final class SoptletterCoordinator: BaseCoordinator {
             AlertUtils.presentNetworkAlertVC()
         }
                 
-        if let soptletterRootController {
-            soptletterRootController.pushViewController(soptletterMain.vc, animated: true)
-        } else {
-            let navController = UINavigationController(rootViewController: soptletterMain.vc)
-            navController.modalPresentationStyle = .fullScreen
-            navController.setNavigationBarHidden(true, animated: false)
-            self.soptletterRootController = navController
-            navigationController?.present(navController, animated: true)
-        }
+        soptletterRootController?.present(soptletterMain.vc, animated: true)
+        
     }
     
     private func showSoptletterPrint(_ uiImage: UIImage, _ pdfURL: URL) {
