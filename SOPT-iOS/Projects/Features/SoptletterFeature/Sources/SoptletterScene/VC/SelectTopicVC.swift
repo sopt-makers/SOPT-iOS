@@ -130,7 +130,13 @@ extension SelectTopicVC: UITableViewDataSource, UITableViewDelegate {
             for: indexPath
         ) as? SoptletterTopicCell else { return UITableViewCell() }
         
-        cell.configure(title: topics[indexPath.row].title)
+        cell.configure(
+            title: topics[indexPath.row].title,
+            description: "디스크립션션션션션션",
+            isHot: true,
+            isNew: true,
+            count: 10
+        )
         return cell
     }
     
