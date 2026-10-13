@@ -33,7 +33,6 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     
     public struct Output {
         let soptletterMessages = PassthroughSubject<SoptletterItemModel, Never>()
-        let ctaInfo = PassthroughSubject<SoptletterCTAModel, Never>()
         let onDownloadConfirm = PassthroughSubject<Void, Never>()
     }
     
@@ -88,7 +87,6 @@ extension SoptletterMainViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.fetchMessages(output: output)
-                owner.fetchCTA(output: output)
                 AmplitudeInstance.shared.trackWithUserType(event: .viewSoptletterMain)
             }.store(in: cancelBag)
         
@@ -166,26 +164,7 @@ extension SoptletterMainViewModel {
         }
         
     }
-    
-    public func fetchCTA(output: Output) {
-        fetchCTATask?.cancel()
-        fetchCTATask = Task {
-            do {
-                let result = try await useCase.fetchCTA()
-                try Task.checkCancellation()
-                await MainActor.run {
-                    output.ctaInfo.send(result)
-                }
-            } catch is CancellationError {
-                return
-            } catch {
-                await MainActor.run {
-                    output.ctaInfo.send(.init(showCta: false, topicId: 0, ctaText: ""))
-                }
-            }
-        }
-    }
-    
+
     public func fetchReportForm() {
         fetchReportFormTask?.cancel()
         fetchReportFormTask = Task {

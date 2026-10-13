@@ -70,7 +70,6 @@ public final class SoptletterMainVC: UIViewController {
 
     private var soptletterMessages: SoptletterItemModel?
     private var snapshotDataSource: SnapshotPostItDataSource?
-    private var ctaModel: SoptletterCTAModel?
 
     private lazy var closeButtonTap: Driver<Void> = closeButton
         .publisher(for: .touchUpInside)
