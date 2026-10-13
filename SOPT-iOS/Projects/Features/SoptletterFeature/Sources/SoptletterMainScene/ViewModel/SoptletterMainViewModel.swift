@@ -27,7 +27,6 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
         let reportButtonTap: Driver<Void>
         let postItCellTap: Driver<(messageId: Int, topicId: Int)>
         let imageProcessCompleted: Driver<(image: UIImage, url: URL)>
-        let soptletterHeaderTap: Driver<Int>
     }
     
     // MARK: - Outputs
@@ -84,11 +83,6 @@ extension SoptletterMainViewModel {
                 owner.fetchMessages(output: output)
             }.store(in: cancelBag)
         
-        input.soptletterHeaderTap
-            .withUnretained(self)
-            .sink { owner, topicId in
-                owner.ctaTap?(topicId)
-            }.store(in: cancelBag)
         
         input.viewDidLoad
             .withUnretained(self)

@@ -56,10 +56,6 @@ public final class SoptletterMainVC: UIViewController {
 
     private let writeButton = MDSFloatingButton(size: .default, icon: MDSIcon.writeOutlined)
 
-    private let bannerImageButton = UIButton().then {
-        $0.setImage(DSKitAsset.Assets.imgSoptletteraBanner.image, for: .normal)
-    }
-
     private let placeHolderImageView = UIButton().then {
         $0.setImage(DSKitAsset.Assets.imgSoptletterPlaceholder.image, for: .normal)
         $0.isHidden = true
@@ -133,8 +129,7 @@ private extension SoptletterMainVC {
             downloadButtonTap: downloadButtonTap,
             reportButtonTap: reportButtonTap,
             postItCellTap: postItCellTapPublisher.asDriver(),
-            imageProcessCompleted: imagePreviewPublisher.asDriver(),
-            soptletterHeaderTap: soptletterHeaderTap.asDriver()
+            imageProcessCompleted: imagePreviewPublisher.asDriver()
         )
 
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
@@ -240,17 +235,6 @@ extension SoptletterMainVC {
         let section = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = BaseSpacing.Base.s10
         section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: BaseSpacing.Base.s16, bottom: BaseSpacing.Base.s10, trailing: BaseSpacing.Base.s10)
-
-        let headerSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(64)
-        )
-        let header = NSCollectionLayoutBoundarySupplementaryItem(
-            layoutSize: headerSize,
-            elementKind: UICollectionView.elementKindSectionHeader,
-            alignment: .top
-        )
-        section.boundarySupplementaryItems = [header]
 
         return UICollectionViewCompositionalLayout(section: section)
     }
