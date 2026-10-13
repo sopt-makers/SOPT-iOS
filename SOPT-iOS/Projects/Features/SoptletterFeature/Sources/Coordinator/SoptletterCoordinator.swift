@@ -98,7 +98,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
         
         selectTopic.vm.onWriteButtonTap = { [weak self] in
-            // TODO: 작성하기 연결
+            self?.showSoptletterWriting(on: self?.soptletterRootController)
         }
         
         selectTopic.vm.showAlert = {
@@ -116,20 +116,23 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
     }
 
-    private func showSoptletterWriting(refreshTarget: SoptletterMainPresentable) {
+    private func showSoptletterWriting(
+        on controller: UINavigationController?,
+        onSubmitSuccess: (() -> Void)? = nil
+    ) {
         var soptletterWriting = factory.makeSoptletterWritingVC(coordinator: self)
-
-        soptletterWriting.vm.onNaviBackTap = { [weak self] in
-            self?.soptletterRootController?.popViewController(animated: true)
+        
+        soptletterWriting.vm.onNaviBackTap = { [weak controller] in
+            controller?.popViewController(animated: true)
         }
 
-        soptletterWriting.vm.onSubmitSuccess = { [weak self] in
-            refreshTarget.vm.refreshMessagesTrigger()
-            self?.soptletterRootController?.popViewController(animated: true)
+        soptletterWriting.vm.onSubmitSuccess = { [weak controller] in
+            onSubmitSuccess?()
+            controller?.popViewController(animated: true)
             ToastUtils.showMDSToast(type: .success, text: I18N.Soptletter.submitSuccess)
         }
 
-        soptletterRootController?.pushViewController(soptletterWriting.vc, animated: true)
+        controller?.pushViewController(soptletterWriting.vc, animated: true)
     }
     
     private func showSoptletterMain(topicId: Int?) {
@@ -140,7 +143,9 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
         
         soptletterMain.vm.onWriteTap = { [weak self] in
-            self?.showSoptletterWriting(refreshTarget: soptletterMain)
+            self?.showSoptletterWriting(on: self?.soptletterMainController) {
+                soptletterMain.vm.refreshMessagesTrigger()
+            }
         }
 
         soptletterMain.vm.onReportTap = { [weak self] url in
