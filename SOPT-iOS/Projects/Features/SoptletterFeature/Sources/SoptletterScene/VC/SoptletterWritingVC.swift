@@ -40,6 +40,11 @@ public final class SoptletterWritingVC: UIViewController {
         .publisher(for: .touchUpInside)
         .mapVoid()
         .asDriver()
+    
+    private lazy var selectTopicTap: Driver<Void> = selectTopicContainerView
+        .gesture(.tap())
+        .mapVoid()
+        .asDriver()
 
     // MARK: - UI Components
 
@@ -151,7 +156,6 @@ public final class SoptletterWritingVC: UIViewController {
 
         setUI()
         setLayout()
-        setGesture()
         bindViewModels()
         setKeyboardObserver()
         hideKeyboard()
@@ -254,11 +258,6 @@ private extension SoptletterWritingVC {
             make.leading.trailing.equalToSuperview().inset(BaseSpacing.Base.s20)
         }
     }
-
-    func setGesture() {
-        let selectTopicTapGesture = UITapGestureRecognizer(target: self, action: #selector(selectTopicTap))
-        selectTopicContainerView.addGestureRecognizer(selectTopicTapGesture)
-    }
     
     func setKeyboardObserver() {
         keyboardWillShowObserver = NotificationCenter.default.addObserver(
@@ -288,7 +287,8 @@ private extension SoptletterWritingVC {
             viewDidLoad: Just<Void>(()).asDriver(),
             naviBackTap: naviBackTap,
             textChanged: textChangedSubject.asDriver(),
-            submitTap: submitButtonTap
+            submitTap: submitButtonTap,
+            selectTopicTap: selectTopicTap
         )
 
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
