@@ -90,7 +90,7 @@ extension PokeNotificationViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = DSKitAsset.Colors.gray950.color
+        self.view.backgroundColor = SemanticColor.Bg.Layer.basement
         self.navigationController?.navigationBar.isHidden = true
         
         self.initializeViews()

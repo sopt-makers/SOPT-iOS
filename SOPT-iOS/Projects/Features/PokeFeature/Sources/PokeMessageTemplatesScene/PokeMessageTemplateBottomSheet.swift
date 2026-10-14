@@ -48,11 +48,11 @@ public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessage
     }
     
     private let messegeTemplateTitleLabel = UILabel().then {
-        $0.text = I18N.Poke.MessaeBottomSheet.title
+        $0.text = I18N.Poke.MessageBottomSheet.title
         $0.setTypography(Typography.title3, textColor: SemanticColor.Fg.Neutral.bold)
     }
 
-    private let anonymousCheckbox = MDSCheckbox(size: .large, title: I18N.Poke.MessaeBottomSheet.anonymous).then {
+    private let anonymousCheckbox = MDSCheckbox(size: .large, title: I18N.Poke.MessageBottomSheet.anonymous).then {
         $0.isUserInteractionEnabled = false
     }
     
@@ -186,7 +186,7 @@ extension PokeMessageTemplateBottomSheet {
                 guard isAnonymousAvailable else {
                     ToastUtils.showMDSToast(
                         type: .alert,
-                        text: I18N.Poke.MessaeBottomSheet.onlyReal
+                        text: I18N.Poke.MessageBottomSheet.onlyReal
                     )
                     return
                 }
@@ -198,7 +198,7 @@ extension PokeMessageTemplateBottomSheet {
                 if isSelected {
                     ToastUtils.showMDSToast(
                         type: .alert,
-                        text: I18N.Poke.MessaeBottomSheet.revealNotice
+                        text: I18N.Poke.MessageBottomSheet.revealNotice
                     )
                 }
             }).store(in: self.cancelBag)

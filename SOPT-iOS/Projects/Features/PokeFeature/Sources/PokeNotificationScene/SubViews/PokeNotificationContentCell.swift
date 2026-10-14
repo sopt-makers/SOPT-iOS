@@ -33,6 +33,7 @@ public final class PokeNotificationContentCell: UITableViewCell {
         self.initializeViews()
         self.setupConstraints()
         
+        // TBD: 읽은 알림 안읽은 알림 backgroundColor 처리
         self.contentView.backgroundColor = SemanticColor.Bg.Layer.basement
     }
     
