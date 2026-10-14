@@ -299,11 +299,17 @@ private extension SoptletterWritingVC {
             .sink { owner, isEnabled in
                 owner.submitButton.isEnabled = isEnabled
             }.store(in: cancelBag)
+
+        output.selectedTopicTitle
+            .compactMap { $0 }
+            .receive(on: RunLoop.main)
+            .withUnretained(self)
+            .sink { owner, title in
+                owner.selectTopicLabel.text = title
+                owner.selectTopicLabel.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.subtle)
+            }.store(in: cancelBag)
     }
-    
-    @objc func selectTopicTap() {
-        
-    }
+
 }
 
 // MARK: - UITextViewDelegate
