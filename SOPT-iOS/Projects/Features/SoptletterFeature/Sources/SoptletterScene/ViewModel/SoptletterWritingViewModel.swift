@@ -20,6 +20,7 @@ public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
 
     public var onNaviBackTap: (() -> Void)?
     public var onSubmitSuccess: (@MainActor () -> Void)?
+    public var onSelectTopicTap: (() -> Void)?
 
     // MARK: - Properties
 
@@ -29,6 +30,8 @@ public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
     private var submitTask: Task<Void, Never>?
     // TODO: 주제 선정 화면 연동 시 실제 topicId로 교체
     private let topicId = 1
+    private let textSubject = CurrentValueSubject<String, Never>("")
+    private let selectedTopicSubject = CurrentValueSubject<SoptletterTopicModel?, Never>(nil)
 
     // MARK: - Inputs
 
@@ -37,12 +40,14 @@ public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
         let naviBackTap: Driver<Void>
         let textChanged: Driver<String>
         let submitTap: Driver<Void>
+        let selectTopicTap: Driver<Void>
     }
 
     // MARK: - Outputs
 
     public struct Output {
         let isSubmitEnabled = CurrentValueSubject<Bool, Never>(false)
+        let selectedTopicTitle = CurrentValueSubject<String?, Never>(nil)
     }
 
     // MARK: - Init
@@ -55,12 +60,24 @@ public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
     deinit {
         submitTask?.cancel()
     }
+
+    public var selectedTopicId: Int? {
+        selectedTopicSubject.value?.topicId
+    }
+
+    public func selectTopic(_ topic: SoptletterTopicModel) {
+        selectedTopicSubject.send(topic)
+        print("[VM] selectTopic:", topic.topicId)
+    }
+
+    private func canSubmit(text: String, topic: SoptletterTopicModel?) -> Bool {
+        useCase.isWritable(content: text) && topic != nil
+    }
 }
 
 extension SoptletterWritingViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
-        var currentText = ""
 
         input.naviBackTap
             .withUnretained(self)
@@ -71,15 +88,25 @@ extension SoptletterWritingViewModel {
         input.textChanged
             .withUnretained(self)
             .sink { owner, text in
-                currentText = text
-                output.isSubmitEnabled.send(owner.useCase.isWritable(content: text))
+                owner.textSubject.send(text)
             }.store(in: cancelBag)
+
+        Publishers.CombineLatest(textSubject, selectedTopicSubject)
+            .withUnretained(self)
+            .sink { owner, state in
+                output.isSubmitEnabled.send(owner.canSubmit(text: state.0, topic: state.1))
+            }.store(in: cancelBag)
+
+        selectedTopicSubject
+            .map { $0?.title }
+            .sink { output.selectedTopicTitle.send($0) }
+            .store(in: cancelBag)
 
         input.submitTap
             .withUnretained(self)
             .sink { owner, _ in
                 owner.submitTask?.cancel()
-                let submittedText = currentText
+                let submittedText = owner.textSubject.value
                 output.isSubmitEnabled.send(false)
                 owner.submitTask = Task {
                     do {
@@ -89,12 +116,20 @@ extension SoptletterWritingViewModel {
                         return
                     } catch {
                         await MainActor.run {
-                            output.isSubmitEnabled.send(owner.useCase.isWritable(content: submittedText))
+                            output.isSubmitEnabled.send(
+                                owner.canSubmit(text: submittedText, topic: owner.selectedTopicSubject.value)
+                            )
                             ToastUtils.showMDSToast(type: .alert, text: I18N.Soptletter.submitFailure)
                         }
                     }
                 }
                 AmplitudeInstance.shared.trackWithUserType(event: .clickDoneWriteSoptletter)
+            }.store(in: cancelBag)
+        
+        input.selectTopicTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onSelectTopicTap?()
             }.store(in: cancelBag)
 
         return output
