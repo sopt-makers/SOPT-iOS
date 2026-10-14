@@ -51,7 +51,7 @@ final class SelectTopicVC: UIViewController {
         $0.separatorStyle = .none
         $0.showsVerticalScrollIndicator = false
         $0.rowHeight = UITableView.automaticDimension
-        $0.estimatedRowHeight = 46
+        $0.estimatedRowHeight = 68
         $0.contentInset = UIEdgeInsets(top: BaseSpacing.Base.s12, left: 0, bottom: BaseSpacing.Base.s20, right: 0)
         SoptletterTopicCell.register(target: $0)
     }
