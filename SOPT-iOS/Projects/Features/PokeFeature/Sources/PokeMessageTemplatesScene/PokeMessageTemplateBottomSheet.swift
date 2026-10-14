@@ -27,9 +27,6 @@ public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessage
         
         static let scrollViewTop = 12.f
         
-        static let anonymousStackViewSpacing = 8.f
-        static let anonymousCheckboxLength = 22.f
-        
         static let contentStackViewSpacing = 4.f
     }
     

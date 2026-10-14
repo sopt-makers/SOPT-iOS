@@ -56,7 +56,13 @@ public final class PokeOnboardingCoordinator: BaseCoordinator {
         
         pokeOnboarding.vm.onFirstVisitInOnboarding = { [weak self] in
             let viewController = PokeOnboardingBottomSheet()
-            let bottomSheetManager = BottomSheetManager(configuration: .onboarding(minHeight: PokeOnboardingBottomSheet.minHeight))
+            // 고정 높이 대신 콘텐츠 제약(패딩)으로 높이 계산
+            let height = viewController.view.systemLayoutSizeFitting(
+                CGSize(width: UIScreen.main.bounds.width, height: UIView.layoutFittingCompressedSize.height),
+                withHorizontalFittingPriority: .required,
+                verticalFittingPriority: .fittingSizeLevel
+            ).height
+            let bottomSheetManager = BottomSheetManager(configuration: .fixed(minHeight: height, prefersGrabberVisible: true))
             bottomSheetManager.present(toPresent: viewController, on: self?.rootController)
         }
         

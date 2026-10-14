@@ -24,8 +24,6 @@ public class PokeOnboardingBottomSheet: UIViewController {
     
     static let onboardingImageHeight = 180.f
     
-    static let descriptionTop = 8.f
-    
     static let doneButtonTop = 20.f
     static let doneButtonLeadingTrailng = 16.f
   }
