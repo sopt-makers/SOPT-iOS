@@ -12,7 +12,7 @@ import Core
 import DSKit
 import MDS
 
-final class SoptletterTopicCell: UITableViewCell, UITableViewRegisterable {
+final class SoptletterTopicListCell: UITableViewCell, UITableViewRegisterable {
 
     static var isFromNib: Bool = false
 
@@ -50,7 +50,7 @@ final class SoptletterTopicCell: UITableViewCell, UITableViewRegisterable {
     private lazy var alarmIcon = UIView().then {
         $0.layer.cornerRadius = 6 / 2
         $0.clipsToBounds = true
-        $0.backgroundColor = .green
+        $0.backgroundColor = DSKitAsset.Colors.green400.color
     }
     
     private let chevronImageView = UIImageView().then {
@@ -67,7 +67,7 @@ final class SoptletterTopicCell: UITableViewCell, UITableViewRegisterable {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     private func setUI() {
         backgroundColor = .clear
         selectionStyle = .none

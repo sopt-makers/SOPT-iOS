@@ -131,8 +131,25 @@ public final class SoptletterCoordinator: BaseCoordinator {
             controller?.popViewController(animated: true)
             ToastUtils.showMDSToast(type: .success, text: I18N.Soptletter.submitSuccess)
         }
+        
+        soptletterWriting.vm.onSelectTopicTap = { [weak self, weak controller, weak viewModel = soptletterWriting.vm] in
+            self?.showSelectTopicBottomSheet(
+                on: controller,
+                selectedTopicId: viewModel?.selectedTopicId
+            )
+        }
 
         controller?.pushViewController(soptletterWriting.vc, animated: true)
+    }
+    
+    private func showSelectTopicBottomSheet(
+        on view: UIViewController?,
+        selectedTopicId: Int?
+    ) {
+        let selectTopicBottomSheetVC = SelectTopicBottomSheet()
+        selectTopicBottomSheetVC.modalPresentationStyle = .overFullScreen
+        selectTopicBottomSheetVC.modalTransitionStyle = .crossDissolve
+        view?.present(selectTopicBottomSheetVC, animated: true)
     }
     
     private func showSoptletterMain(topicId: Int?) {
