@@ -132,10 +132,10 @@ public final class SoptletterCoordinator: BaseCoordinator {
             ToastUtils.showMDSToast(type: .success, text: I18N.Soptletter.submitSuccess)
         }
         
-        soptletterWriting.vm.onSelectTopicTap = { [weak self, weak controller] in
+        soptletterWriting.vm.onSelectTopicTap = { [weak self, weak controller, weak viewModel = soptletterWriting.vm] in
             self?.showSelectTopicBottomSheet(
                 on: controller,
-                selectedTopicId: soptletterWriting.vm.selectedTopicId
+                selectedTopicId: viewModel?.selectedTopicId
             )
         }
 

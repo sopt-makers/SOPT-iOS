@@ -35,7 +35,7 @@ public typealias SoptletterNicknameCheckPresentable = (vc: UIViewController, vm:
 
 // SoptletterWriting
 
-public protocol SoptletterWritingRoutingTrigger {
+public protocol SoptletterWritingRoutingTrigger: AnyObject {
     var onNaviBackTap: (() -> Void)? { get set }
     var onSubmitSuccess: (@MainActor () -> Void)? { get set }
     var onSelectTopicTap: (() -> Void)? { get set }
