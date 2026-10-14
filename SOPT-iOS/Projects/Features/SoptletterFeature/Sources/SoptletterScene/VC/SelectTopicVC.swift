@@ -53,7 +53,7 @@ final class SelectTopicVC: UIViewController {
         $0.rowHeight = UITableView.automaticDimension
         $0.estimatedRowHeight = 68
         $0.contentInset = UIEdgeInsets(top: BaseSpacing.Base.s12, left: 0, bottom: BaseSpacing.Base.s20, right: 0)
-        SoptletterTopicCell.register(target: $0)
+        SoptletterTopicListCell.register(target: $0)
     }
     
     private let writeButton = MDSFloatingButton(size: .default, icon: MDSIcon.writeOutlined)
@@ -139,9 +139,9 @@ extension SelectTopicVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: SoptletterTopicCell.className,
+            withIdentifier: SoptletterTopicListCell.className,
             for: indexPath
-        ) as? SoptletterTopicCell else { return UITableViewCell() }
+        ) as? SoptletterTopicListCell else { return UITableViewCell() }
         
         cell.configure(
             title: topics[indexPath.row].title,
