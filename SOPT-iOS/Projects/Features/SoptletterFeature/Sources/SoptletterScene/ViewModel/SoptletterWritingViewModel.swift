@@ -117,7 +117,7 @@ extension SoptletterWritingViewModel {
                     } catch {
                         await MainActor.run {
                             output.isSubmitEnabled.send(
-                                owner.canSubmit(text: submittedText, topic: owner.selectedTopicSubject.value)
+                                owner.canSubmit(text: owner.textSubject.value, topic: owner.selectedTopicSubject.value)
                             )
                             ToastUtils.showMDSToast(type: .alert, text: I18N.Soptletter.submitFailure)
                         }
