@@ -38,6 +38,9 @@ public typealias SoptletterNicknameCheckPresentable = (vc: UIViewController, vm:
 public protocol SoptletterWritingRoutingTrigger {
     var onNaviBackTap: (() -> Void)? { get set }
     var onSubmitSuccess: (@MainActor () -> Void)? { get set }
+    var onSelectTopicTap: (() -> Void)? { get set }
+    var selectedTopicId: Int? { get }
+    func selectTopic(_ topic: SoptletterTopicModel)
 }
 
 public typealias SoptletterWritingViewModelType = ViewModelType & SoptletterWritingRoutingTrigger
