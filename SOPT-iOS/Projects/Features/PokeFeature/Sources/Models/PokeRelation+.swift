@@ -18,7 +18,7 @@ public extension PokeRelation {
         switch self {
         case .nonFriend, .newFriend:
             return SemanticColor.Stroke.Secondary.default
-            // TODO: - MDS 반영 후 적용
+            // TODO: - MDS 컬러 추가 후 적용 -> 추후
         case .bestFriend:
             return DSKitAsset.Colors.information.color
         case .soulmate:
