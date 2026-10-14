@@ -10,7 +10,9 @@ import UIKit
 
 import Core
 import DSKit
+import MDS
 
+// TODO: - 피그마 반영 전 - 요청
 final class SocialLinkCardCVC: UICollectionViewCell {
     
     // MARK: - UI Components

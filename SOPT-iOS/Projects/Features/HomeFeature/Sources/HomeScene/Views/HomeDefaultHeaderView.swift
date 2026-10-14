@@ -10,6 +10,7 @@ import UIKit
 
 import Core
 import DSKit
+import MDS
 
 import Lottie
 
@@ -23,14 +24,14 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
     // MARK: - UI Components
     
     private let titleLabel = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 20)
-        $0.textColor = DSKitAsset.Colors.white.color
+        $0.setTypography(Typography.heading3, textColor: SemanticColor.Fg.Neutral.bold)
     }
     
+    // TODO: - mds 이미지 추가 후 변경
     private let fireImageView = UIImageView().then {
         $0.image = DSKitAsset.Assets.icFire.image
     }
-    
+    // TODO: - 피그마 반영 후 변경
     private let viewAllContentButton = UIButton(configuration: .plain()).then {
         var config = UIButton.Configuration.plain()
         config.baseForegroundColor = DSKitAsset.Colors.gray300.color
@@ -106,6 +107,7 @@ extension HomeDefaultHeaderView {
 // MARK: - Methods
 
 extension HomeDefaultHeaderView {
+    // TODO: - 피그마 반영 후 변경
     func configureView(sectionKind: some HomeSectionUIConfigurable) {
         let tintColor = sectionKind.isSubSectionHeader
             ? DSKitAsset.Colors.white.color
@@ -119,6 +121,10 @@ extension HomeDefaultHeaderView {
         viewAllContentButton.configuration = config
         
         self.titleLabel.text = sectionKind.headerTitle
+        self.titleLabel.setTypography(
+            sectionKind.isSubSectionHeader ? Typography.label3 : Typography.heading3,
+            textColor: SemanticColor.Fg.Neutral.bold
+        )
         self.fireImageView.isHidden = !sectionKind.shouldShowFireIcon
         self.viewAllContentButton.isHidden = !sectionKind.shouldShowViewAllContentButton
 
@@ -128,21 +134,16 @@ extension HomeDefaultHeaderView {
             viewAllContentButton.configuration = config
             viewAllContentButton.tintColor = DSKitAsset.Colors.white.color
             
-            titleLabel.textColor = DSKitAsset.Colors.white.color
-            
             viewAllContentButton.snp.remakeConstraints { make in
                 make.leading.equalTo(titleLabel.snp.trailing).offset(6)
                 make.centerY.equalTo(titleLabel)
             }
-            titleLabel.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-            
+
             titleLabel.snp.remakeConstraints { make in
                 make.leading.equalToSuperview()
                 make.top.equalToSuperview().offset(12)
             }
         } else {
-            titleLabel.font = DSKitFontFamily.Suit.bold.font(size: 20)
-            titleLabel.textColor = DSKitAsset.Colors.white.color
             titleLabel.snp.remakeConstraints { make in
                 make.leading.equalToSuperview()
                 make.centerY.equalToSuperview()

@@ -10,7 +10,7 @@ import UIKit
 
 import Core
 import Domain
-import DSKit
+import MDS
 
 /*
  출석 조회하기 뷰의 상단 오늘의 일정을 보여주는 뷰 입니다.
@@ -34,49 +34,49 @@ final class TodayScheduleView: UIView {
 
     private let dateImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleToFill
+        imageView.image = MDSIcon.calendarFilled.image.withRenderingMode(.alwaysTemplate)
+        imageView.tintColor = SemanticColor.Fg.Neutral.subtle
+        imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
     private let dateLabel: UILabel = {
         let label = UILabel()
-        label.font = .Main.body2
-        label.textColor = DSKitAsset.Colors.gray300.color
+        label.textColor = SemanticColor.Fg.Neutral.subtle
         return label
     }()
     
     private let placeImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleToFill
+        imageView.image = MDSIcon.locationFilled.image.withRenderingMode(.alwaysTemplate)
+        imageView.tintColor = SemanticColor.Fg.Neutral.subtle
+        imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
     private let placeLabel: UILabel = {
         let label = UILabel()
-        label.textColor = DSKitAsset.Colors.gray300.color
-        label.font = .Main.body2
+        label.textColor = SemanticColor.Fg.Neutral.subtle
         return label
     }()
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = DSKitAsset.Colors.gray10.color
-        label.font = DSKitFontFamily.Suit.regular.font(size: 18)
+        label.textColor = SemanticColor.Fg.Neutral.bold
         label.numberOfLines = 0
         return label
     }()
     
     private let subtitleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = DSKitAsset.Colors.gray100.color
-        label.font = .Main.body2
+        label.textColor = SemanticColor.Fg.Neutral.subtle
         return label
     }()
     
     private lazy var dateStackView: UIStackView = {
        let stackView = UIStackView(arrangedSubviews: [dateImageView, dateLabel])
         stackView.axis = .horizontal
-        stackView.spacing = 2
+        stackView.spacing = 8
         stackView.alignment = .leading
         return stackView
     }()
@@ -84,7 +84,7 @@ final class TodayScheduleView: UIView {
     private lazy var placeStackView: UIStackView = {
        let stackView = UIStackView(arrangedSubviews: [placeImageView, placeLabel])
         stackView.axis = .horizontal
-        stackView.spacing = 2
+        stackView.spacing = 8
         stackView.alignment = .leading
         return stackView
     }()
@@ -92,15 +92,15 @@ final class TodayScheduleView: UIView {
     private lazy var dateAndPlaceStackView: UIStackView = {
        let stackView = UIStackView(arrangedSubviews: [dateStackView, placeStackView])
         stackView.axis = .vertical
-        stackView.spacing = 7
+        stackView.spacing = 8
         stackView.alignment = .leading
         return stackView
     }()
     
     private lazy var todayInfoStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [dateAndPlaceStackView, titleLabel])
+        let stackView = UIStackView(arrangedSubviews: [titleLabel, dateAndPlaceStackView])
         stackView.axis = .vertical
-        stackView.spacing = 8
+        stackView.spacing = 16
         stackView.alignment = .leading
         stackView.setCustomSpacing(15, after: dateAndPlaceStackView)
         return stackView
@@ -139,22 +139,27 @@ final class TodayScheduleView: UIView {
 extension TodayScheduleView {
     
     private func initContentView() {
-        self.backgroundColor = DSKitAsset.Colors.gray800.color
+        self.backgroundColor = SemanticColor.Bg.Neutral.ghost
         self.clipsToBounds = true
-        self.layer.cornerRadius = 16
+        self.layer.cornerRadius = BaseRadius.Base.r12
     }
     
     private func initLayout(_ type: AttendanceScheduleType) {
         addSubview(containerStackView)
         
         containerStackView.snp.makeConstraints {
-            $0.edges.equalToSuperview().inset(32)
+            $0.verticalEdges.equalToSuperview().inset(16)
+            $0.horizontalEdges.equalToSuperview().inset(24)
         }
         
         todayAttendanceView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
         }
-        
+
+        [dateImageView, placeImageView].forEach {
+            $0.snp.makeConstraints { $0.size.equalTo(16) }
+        }
+
         if case .unscheduledDay = type {
             isHiddenScheduledLayout(true)
         }
@@ -181,15 +186,18 @@ extension TodayScheduleView {
 extension TodayScheduleView {
     
     func setData(date: String, place: String, todaySchedule: String, description: String?) {
-        
-        setDefaultLayout()
-        
+
         dateLabel.text = date
+        dateLabel.setTypography(Typography.label3)
+        
         placeLabel.text = place
+        placeLabel.setTypography(Typography.label3)
+        
         titleLabel.text = I18N.Attendance.today + todaySchedule + I18N.Attendance.dayIs
-        titleLabel.partFontChange(targetString: todaySchedule,
-                                  font: DSKitFontFamily.Suit.bold.font(size: 18))
+        titleLabel.setTypography(Typography.title4)
+        
         subtitleLabel.text = description
+        subtitleLabel.setTypography(Typography.label3)
         subtitleLabel.isHidden = ((description?.isEmpty) == nil || description == "")
         
         checkNoAttendanceSession()
@@ -202,12 +210,7 @@ extension TodayScheduleView {
     
     private func addUnscheduledTitle() {
         titleLabel.text = I18N.Attendance.today + I18N.Attendance.unscheduledDay + I18N.Attendance.dayIs
-        titleLabel.font = DSKitFontFamily.Suit.medium.font(size: 16)
-    }
-        
-    private func setDefaultLayout() {
-        dateImageView.image = DSKitAsset.Assets.opDate.image
-        placeImageView.image = DSKitAsset.Assets.opPlace.image
+        titleLabel.setTypography(Typography.title5)
     }
     
     private func checkNoAttendanceSession() {

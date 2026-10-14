@@ -9,7 +9,9 @@
 import UIKit
 
 import DSKit
+import MDS
 
+// TODO: - 피그마 화살표로 표기되어 있음 - 확인 요청 상태
 final class DashBoardProfileImageView: UIView {
     
     // MARK: - UI Components

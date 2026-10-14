@@ -11,6 +11,7 @@ import Combine
 
 import Core
 import DSKit
+import MDS
 
 final class LatestPostFooterView: UICollectionReusableView {
     
@@ -21,6 +22,7 @@ final class LatestPostFooterView: UICollectionReusableView {
     
     // MARK: - UI Components
     
+    // TODO: - 피그마 반영 후 수정
     private let pageControl = UIPageControl().then {
         $0.currentPageIndicatorTintColor = DSKitAsset.Colors.white.color
         $0.numberOfPages = 5

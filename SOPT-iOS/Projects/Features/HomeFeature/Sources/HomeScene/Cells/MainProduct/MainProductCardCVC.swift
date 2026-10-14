@@ -9,21 +9,19 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
 
 final class MainProductCardCVC: UICollectionViewCell {
     
     // MARK: - UI Components
         
     private let titleLabel = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
-        $0.textColor = DSKitAsset.Colors.gray200.color
-        $0.textAlignment = .center
+        $0.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.subtle, alignment: .center)
     }
     
     private let logoBackgroundView = UIView().then {
-        $0.layer.cornerRadius = 8.f
-        $0.backgroundColor = DSKitAsset.Colors.gray800.color
+        $0.layer.cornerRadius = BaseRadius.Base.r8
+        $0.backgroundColor = SemanticColor.Bg.Neutral.ghost
     }
     
     private let logoImageView = UIImageView().then {
@@ -72,6 +70,7 @@ extension MainProductCardCVC {
 extension MainProductCardCVC {
     func configureCell(model: ServiceType) {
         self.titleLabel.text = model.title
+        self.titleLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.subtle, alignment: .center)
         self.logoImageView.image = model.icon
     }
 }

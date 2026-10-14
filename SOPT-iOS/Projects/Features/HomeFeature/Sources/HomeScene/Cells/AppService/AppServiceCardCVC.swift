@@ -9,29 +9,33 @@
 import UIKit
 
 import Core
-import DSKit
 import Domain
+import MDS
 
 final class AppServiceCardCVC: UICollectionViewCell {
     
     // MARK: - UI Components
         
     private let titleLabel = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
-        $0.textColor = DSKitAsset.Colors.gray200.color
-        $0.textAlignment = .center
+        $0.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.subtle, alignment: .center)
     }
     
     private let logoBackgroundView = UIView().then {
         $0.layer.cornerRadius = 40.f
-        $0.backgroundColor = DSKitAsset.Colors.gray800.color
+        $0.backgroundColor = SemanticColor.Bg.Neutral.ghost
     }
     
     private let logoImageView = UIImageView().then {
         $0.contentMode = .scaleAspectFit
     }
     
-    private let notificationBadgeView = HomeNotificationBadgeView()
+    private let notificationBadgeView = MDSTag(
+        text: "",
+        size: .small,
+        shape: .pill,
+        variant: .primary,
+        style: .solid
+    )
     
     // MARK: - Initialization
     
@@ -81,7 +85,7 @@ extension AppServiceCardCVC {
         self.logoImageView.setImage(with: model.iconURL)
         self.titleLabel.text = model.serviceName
         if model.displayAlarmBadge && !model.alarmBadge.isEmpty {
-            self.notificationBadgeView.setData(with: model.alarmBadge)
+            self.notificationBadgeView.text = model.alarmBadge
         } else {
             self.notificationBadgeView.isHidden = true
         }
