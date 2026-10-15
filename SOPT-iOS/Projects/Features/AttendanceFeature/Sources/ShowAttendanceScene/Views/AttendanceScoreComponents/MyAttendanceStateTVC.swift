@@ -29,15 +29,9 @@ final class MyAttendanceStateTVC: UITableViewCell {
         return label
     }()
     
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        return label
-    }()
+    private let titleLabel = UILabel()
     
-    private let dateLabel: UILabel = {
-        let label = UILabel()
-        return label
-    }()
+    private let dateLabel = UILabel()
     
     // MARK: - Initialization
     

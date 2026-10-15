@@ -19,10 +19,7 @@ final class MyInformationWithScoreView: UIView {
     
     // MARK: - UI Components
     
-    private let nameLabel: UILabel = {
-        let label = UILabel()
-        return label
-    }()
+    private let nameLabel = UILabel()
     
     private let currentScoreLabel = UILabel()
     

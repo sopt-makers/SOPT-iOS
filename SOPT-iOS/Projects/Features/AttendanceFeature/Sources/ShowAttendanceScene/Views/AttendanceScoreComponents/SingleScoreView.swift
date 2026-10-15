@@ -19,15 +19,8 @@ final class SingleScoreView: UIView {
     
     // MARK: - UI Components
     
-    private let singleScoreTitleLabel: UILabel = {
-        let label = UILabel()
-        return label
-    }()
-    
-    private let singleScoreCountLabel: UILabel = {
-        let label = UILabel()
-        return label
-    }()
+    private let singleScoreTitleLabel = UILabel()
+    private let singleScoreCountLabel = UILabel()
     
     // MARK: - Initialization
 

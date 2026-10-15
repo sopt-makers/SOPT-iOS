@@ -79,11 +79,7 @@ final class OPAttendanceStepView: UIView {
         return imageView
     }()
 
-    private let stepTitleLabel: UILabel = {
-        let label = UILabel()
-        label.setTypography(Typography.label4)
-        return label
-    }()
+    private let stepTitleLabel = UILabel()
     
     // MARK: - Init
     

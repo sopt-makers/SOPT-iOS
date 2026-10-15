@@ -56,10 +56,7 @@ final class AttendanceScoreView: UIView {
         return stackView
     }()
     
-    private let attendanceScoreDescriptiopnLabel: UILabel = {
-        let label = UILabel()
-        return label
-    }()
+    private let attendanceScoreDescriptiopnLabel = UILabel()
     
     private lazy var attendanceTableView: UITableView = {
         let tableView = UITableView()
