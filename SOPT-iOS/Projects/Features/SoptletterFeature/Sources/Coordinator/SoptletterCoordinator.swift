@@ -44,6 +44,10 @@ public final class SoptletterCoordinator: BaseCoordinator {
             showSoptletterOnboarding()
         }
     }
+    
+    public func startWithMessageDetail(topicId: Int, messageId: Int) {
+        showSoptletterMain(topicId: topicId, messageId: messageId)
+    }
 
     // MARK: - Navigation
     private func showSoptletterOnboarding() {
@@ -171,7 +175,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
         controller?.present(selectTopicBottomSheet.vc, animated: true)
     }
     
-    private func showSoptletterMain(topicId: Int?) {
+    private func showSoptletterMain(topicId: Int?, messageId: Int? = nil) {
         var soptletterMain = factory.makeSoptletterMainVC(coordinator: self, topicId: topicId)
 
         soptletterMain.vm.onNaviBackTap = { [weak self] in
@@ -206,6 +210,12 @@ public final class SoptletterCoordinator: BaseCoordinator {
         navController.setNavigationBarHidden(true, animated: false)
         soptletterMainController = navController
         soptletterRootController?.present(navController, animated: true)
+        
+        let deeplinkController = soptletterRootController ?? navigationController
+        deeplinkController?.present(navController, animated: true) { [weak self] in
+        guard let self, let messageId, let topicId else { return }
+            self.presentSoptletterDetail(messageId, topicId, refreshTarget: soptletterMain)
+        }
     }
     
     private func showSoptletterPrint(_ uiImage: UIImage, _ pdfURL: URL) {
