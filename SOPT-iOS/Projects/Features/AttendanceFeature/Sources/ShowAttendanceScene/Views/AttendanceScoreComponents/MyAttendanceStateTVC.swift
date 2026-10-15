@@ -21,11 +21,6 @@ final class MyAttendanceStateTVC: UITableViewCell {
     
     // MARK: - UI Components
     
-    // TODO: - MDSTag 변경 후 적용
-//    private let stateTag: MDSTag = {
-//        let tag = MDSTag(text: "", size: .small, shape: .rect, variant: .default, style: .solid)
-//        return tag
-//    }()
     private let stateLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
