@@ -28,8 +28,6 @@ public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
     private let useCase: SoptletterUseCase
     private var cancelBag = CancelBag()
     private var submitTask: Task<Void, Never>?
-    // TODO: 주제 선정 화면 연동 시 실제 topicId로 교체
-    private let topicId = 1
     private let textSubject = CurrentValueSubject<String, Never>("")
     private let selectedTopicSubject = CurrentValueSubject<SoptletterTopicModel?, Never>(nil)
 
@@ -67,7 +65,6 @@ public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
 
     public func selectTopic(_ topic: SoptletterTopicModel) {
         selectedTopicSubject.send(topic)
-        print("[VM] selectTopic:", topic.topicId)
     }
 
     private func canSubmit(text: String, topic: SoptletterTopicModel?) -> Bool {
@@ -105,12 +102,14 @@ extension SoptletterWritingViewModel {
         input.submitTap
             .withUnretained(self)
             .sink { owner, _ in
+                guard let topicId = owner.selectedTopicId else { return }
+                
                 owner.submitTask?.cancel()
                 let submittedText = owner.textSubject.value
                 output.isSubmitEnabled.send(false)
                 owner.submitTask = Task {
                     do {
-                        try await owner.useCase.writeMessage(topicId: owner.topicId, content: submittedText)
+                        try await owner.useCase.writeMessage(topicId: topicId, content: submittedText)
                         await owner.onSubmitSuccess?()
                     } catch is CancellationError {
                         return
