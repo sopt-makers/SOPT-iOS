@@ -209,7 +209,6 @@ public final class SoptletterCoordinator: BaseCoordinator {
         navController.modalPresentationStyle = .fullScreen
         navController.setNavigationBarHidden(true, animated: false)
         soptletterMainController = navController
-        soptletterRootController?.present(navController, animated: true)
         
         let deeplinkController = soptletterRootController ?? navigationController
         deeplinkController?.present(navController, animated: true) { [weak self] in
