@@ -8,6 +8,8 @@
 
 import UIKit
 
+import Combine
+
 import Core
 import Domain
 import DSKit
@@ -18,11 +20,22 @@ final class SelectTopicBottomSheet: UIViewController {
     
     // MARK: - Properties
 
+    private let viewModel: SelectTopicBottomSheetViewModel
+    private let cancelBag = CancelBag()
     private var topics: [SoptletterTopicModel] = []
-    
     private var selectedIndex: Int?
     
-    private var didScrollToSelectedRow = false
+    private lazy var naviBackTap: Driver<Void> = backButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
+
+    private let cellTapSubject = PassthroughSubject<SoptletterTopicModel, Never>()
+    
+    private lazy var confirmButtonTap: Driver<Void> = confirmButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
     
     // MARK: - UI Components
     
@@ -36,7 +49,6 @@ final class SelectTopicBottomSheet: UIViewController {
     
     private lazy var backButton = UIButton(type: .custom).then {
         $0.setImage(MDSIcon.chevronLeftOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold), for: .normal)
-        $0.addTarget(self, action: #selector(dismissSelf), for: .touchUpInside)
     }
     
     private let titleLabel = UILabel().then {
@@ -55,24 +67,52 @@ final class SelectTopicBottomSheet: UIViewController {
     
     private lazy var confirmButton = MDSActionButton(variant: .primary, size: .large, title: "선택 완료").then {
         $0.isEnabled = false
-        $0.addTarget(self, action: #selector(confirmButtonTap), for: .touchUpInside)
     }
     
+    init(viewModel : SelectTopicBottomSheetViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setUI()
         setLayout()
+        bindViewModels()
     }
     
-    @objc private func dismissSelf() {
-        dismiss(animated: true)
-    }
-    
-    @objc private func confirmButtonTap() {
-        // TODO: 서버 연결하면서 구현
+    func bindViewModels() {
+        let input = SelectTopicBottomSheetViewModel.Input(
+            viewDidLoad: Just<Void>(()).asDriver(),
+            naviBackTap: naviBackTap,
+            cellTap: cellTapSubject.asDriver(),
+            confirmButtonTap: confirmButtonTap.asDriver()
+        )
+        
+        let output = viewModel.transform(from: input, cancelBag: cancelBag)
+        
+        output.topicsSubject
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, result in
+                owner.topics = result.topics
+                owner.tableView.reloadData()
+            }.store(in: cancelBag)
+        
+        output.initialSelectedIndex
+            .receive(on: DispatchQueue.main)
+            .withUnretained(self)
+            .sink { owner, index in
+                owner.selectedIndex = index
+                owner.confirmButton.isEnabled = true
+                owner.tableView.reloadData()
+                owner.tableView.scrollToRow(at: IndexPath(row: index, section: 0), at: .none, animated: false)
+            }.store(in: cancelBag)
     }
 }
 
@@ -140,9 +180,9 @@ extension SelectTopicBottomSheet: UITableViewDataSource, UITableViewDelegate {
         
         cell.configure(
             title: topics[indexPath.row].title,
-            description: "디스크립션션션션션션",
-            isHot: true,
-            isNew: false,
+            description: topics[indexPath.row].subtitle ?? "",
+            isHot: topics[indexPath.row].isHot,
+            isNew: topics[indexPath.row].isNew,
             isSelected: indexPath.row == selectedIndex
         )
 
@@ -152,6 +192,7 @@ extension SelectTopicBottomSheet: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let previousIndex = selectedIndex
         selectedIndex = indexPath.row
+        cellTapSubject.send(topics[selectedIndex ?? 0])
         let targets = [previousIndex, indexPath.row]
             .compactMap { $0 }
             .map { IndexPath(row: $0, section: 0) }
