@@ -11,13 +11,14 @@ import UIKit
 import Core
 import Domain
 import DSKit
+import MDS
 
 /*
  오늘의 n차 출석현황 프로그래스 뷰 내부의 단일 출석여부를 나타내는 뷰입니다.
  */
 
 extension AttendanceStepType {
-    
+
     var image: UIImage {
         switch self {
         case .none:
@@ -34,23 +35,18 @@ extension AttendanceStepType {
             return DSKitAsset.Assets.opAttendAbsent.image
         }
     }
-    
+
     var textColor: UIColor {
         switch self {
         case .none:
-            return DSKitAsset.Colors.gray500.color
+            return SemanticColor.Fg.Neutral.subtle
         case .check, .unCheck, .tardy, .done, .absent:
-            return DSKitAsset.Colors.gray10.color
+            return SemanticColor.Fg.Neutral.bold
         }
     }
-    
-    var shadow: Bool {
-        switch self {
-        case .none:
-            return false
-        default:
-            return true
-        }
+
+    var hasShadow: Bool {
+        self != .none
     }
 }
 
@@ -58,17 +54,17 @@ final class OPAttendanceStepView: UIView {
     
     private enum Metric {
         static let stepImageSize = 24.f
-        
+
         static let stackViewWidth = 47.f
     }
-    
+
     // MARK: - Properties
-    
+
     private var type: AttendanceStepType
     private var title: String?
-    
+
     // MARK: - UI Components
-    
+
     private let stepStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.spacing = 12
@@ -76,18 +72,14 @@ final class OPAttendanceStepView: UIView {
         stackView.alignment = .center
         return stackView
     }()
-    
+
     private let stepImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
-    
-    private let stepTitleLabel: UILabel = {
-        let label = UILabel()
-        label.font = .Main.caption1
-        return label
-    }()
+
+    private let stepTitleLabel = UILabel()
     
     // MARK: - Init
     
@@ -110,10 +102,11 @@ final class OPAttendanceStepView: UIView {
 
 extension OPAttendanceStepView {
     private func setUI() {
-        stepTitleLabel.textColor = type.textColor
         stepTitleLabel.text = title
+        stepTitleLabel.setTypography(Typography.label4, textColor: type.textColor)
+
         stepImageView.image = type.image
-        if type.shadow {
+        if type.hasShadow {
             stepImageView.layer.applyShadow(
                 color: .white,
                 alpha: 0.3,
@@ -124,20 +117,19 @@ extension OPAttendanceStepView {
             )
         }
     }
-    
+
     private func setLayout() {
         stepStackView.addArrangedSubviews(
             stepImageView,
             stepTitleLabel
         )
-        
+
         addSubview(stepStackView)
-        
+
         stepImageView.snp.makeConstraints {
-            $0.height.equalTo(Metric.stepImageSize)
-            $0.width.equalTo(Metric.stepImageSize)
+            $0.size.equalTo(Metric.stepImageSize)
         }
-        
+
         stepStackView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
