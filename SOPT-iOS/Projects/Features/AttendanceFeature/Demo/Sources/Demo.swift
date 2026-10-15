@@ -73,6 +73,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 /// - noSession: 일정 없는 날
 private let sessionType: SessionType = .hasAttendance
 
+/// 오늘 출석 결과 (hasAttendance일 때만 사용, "ATTENDANCE" / "ABSENT")
+/// - []: 출석 전
+/// - ["ATTENDANCE"]: 1차만 진행
+/// - ["ATTENDANCE", "ATTENDANCE"]: 출석 완료
+/// - ["ATTENDANCE", "ABSENT"] 또는 ["ABSENT", "ATTENDANCE"]: 지각
+/// - ["ABSENT", "ABSENT"]: 결석
+private let todayAttendanceStatuses: [String] = ["ATTENDANCE", "ATTENDANCE"]
+
 struct StubShowAttendanceRepository: ShowAttendanceRepositoryInterface {
     func fetchAttendanceScheduleModel() -> AnyPublisher<AttendanceScheduleModel, Error> {
         let model: AttendanceScheduleModel
@@ -119,7 +127,7 @@ struct StubShowAttendanceRepository: ShowAttendanceRepositoryInterface {
             startDate: "2026-10-03T14:00:00",
             endDate: "2026-10-03T18:00:00",
             message: "",
-            attendances: [.init(status: "ATTENDANCE", attendedAt: "2026-10-03T14:10:00")]
+            attendances: todayAttendanceStatuses.map { TodayAttendanceModel(status: $0, attendedAt: "2026-10-03T14:10:00") }
         )
     }
 

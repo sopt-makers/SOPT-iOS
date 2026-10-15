@@ -10,50 +10,29 @@ import UIKit
 
 import Core
 import Domain
+import DSKit
 import MDS
 
 /*
  오늘의 n차 출석현황 프로그래스 뷰 내부의 단일 출석여부를 나타내는 뷰입니다.
  */
-// TODO: - 피그마에 결석, 지각 case 추가되면 변경
 
 extension AttendanceStepType {
 
-    var circleFillColor: UIColor {
-        switch self {
-        case .check, .unCheck:
-            return SemanticColor.Bg.Neutral.inverse
-        case .none, .tardy, .done, .absent:
-            return SemanticColor.Bg.Neutral.subtle
-        }
-    }
-
-    var circleBorderColor: UIColor {
-        switch self {
-        case .none, .check, .unCheck:
-            return SemanticColor.Stroke.Neutral.default
-        case .tardy, .done, .absent:
-            return SemanticColor.Stroke.Neutral.inverse
-        }
-    }
-
-    var icon: UIImage? {
+    var image: UIImage {
         switch self {
         case .none:
-            return nil
-        case .check, .done:
-            return MDSIcon.checkOutlined.image
-        default:
-            return nil
-        }
-    }
-
-    var iconTintColor: UIColor {
-        switch self {
-        case .none, .check, .unCheck:
-            return SemanticColor.Stroke.Neutral.default
-        case .tardy, .done, .absent:
-            return SemanticColor.Fg.Neutral.bold
+            return DSKitAsset.Assets.opAttendBefore.image
+        case .check:
+            return DSKitAsset.Assets.opAttendYes.image
+        case .unCheck:
+            return DSKitAsset.Assets.opAttendNo.image
+        case .tardy:
+            return DSKitAsset.Assets.opAttendLate.image
+        case .done:
+            return DSKitAsset.Assets.opAttendDone.image
+        case .absent:
+            return DSKitAsset.Assets.opAttendAbsent.image
         }
     }
 
@@ -75,9 +54,6 @@ final class OPAttendanceStepView: UIView {
     
     private enum Metric {
         static let stepImageSize = 24.f
-        static let circleBorderWidth = 1.f
-        static let iconSize = 16.f
-        static let iconCenterYOffset = 1.f
 
         static let stackViewWidth = 47.f
     }
@@ -97,16 +73,9 @@ final class OPAttendanceStepView: UIView {
         return stackView
     }()
 
-    private let stepCircleView: UIView = {
-        let view = UIView()
-        view.layer.cornerRadius = Metric.stepImageSize / 2
-        view.layer.borderWidth = Metric.circleBorderWidth
-        return view
-    }()
-
-    private let stepIconImageView: UIImageView = {
+    private let stepImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
 
@@ -141,40 +110,29 @@ extension OPAttendanceStepView {
         stepTitleLabel.text = title
         stepTitleLabel.setTypography(Typography.label4)
 
-        stepCircleView.backgroundColor = type.circleFillColor
-        stepCircleView.layer.borderColor = type.circleBorderColor.cgColor
-        stepIconImageView.image = type.icon?.withRenderingMode(.alwaysTemplate)
-        stepIconImageView.tintColor = type.iconTintColor
+        stepImageView.image = type.image
         if type.hasShadow {
-            stepCircleView.layer.applyShadow(
+            stepImageView.layer.applyShadow(
                 color: .white,
-                alpha: 0.25,
+                alpha: 0.3,
                 x: 0,
                 y: 0,
-                blur: 12,
+                blur: 16,
                 spread: 0
             )
         }
     }
 
     private func setLayout() {
-        stepCircleView.addSubview(stepIconImageView)
-
         stepStackView.addArrangedSubviews(
-            stepCircleView,
+            stepImageView,
             stepTitleLabel
         )
 
         addSubview(stepStackView)
 
-        stepCircleView.snp.makeConstraints {
+        stepImageView.snp.makeConstraints {
             $0.size.equalTo(Metric.stepImageSize)
-        }
-
-        stepIconImageView.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.centerY.equalToSuperview().offset(Metric.iconCenterYOffset)
-            $0.width.height.equalTo(Metric.iconSize)
         }
 
         stepStackView.snp.makeConstraints {
