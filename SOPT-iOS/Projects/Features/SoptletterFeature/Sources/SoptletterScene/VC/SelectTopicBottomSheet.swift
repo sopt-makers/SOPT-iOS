@@ -18,15 +18,7 @@ final class SelectTopicBottomSheet: UIViewController {
     
     // MARK: - Properties
 
-    private var topics: [SoptletterTopicModel] = [
-        .init(topicId: 1, title: "제목", isDefault: true, createdAt: ""),
-        .init(topicId: 2, title: "제목", isDefault: true, createdAt: ""),
-        .init(topicId: 3, title: "제목", isDefault: true, createdAt: ""),
-        .init(topicId: 4, title: "제목", isDefault: true, createdAt: ""),
-        .init(topicId: 5, title: "제목", isDefault: true, createdAt: ""),
-        .init(topicId: 6, title: "제목", isDefault: true, createdAt: ""),
-        .init(topicId: 7, title: "제목", isDefault: true, createdAt: "")
-    ]
+    private var topics: [SoptletterTopicModel] = []
     
     private var selectedIndex: Int?
     
