@@ -40,10 +40,7 @@ final class TodayScheduleView: UIView {
         return imageView
     }()
     
-    private let dateLabel: UILabel = {
-        let label = UILabel()
-        return label
-    }()
+    private let dateLabel = UILabel()
     
     private let placeImageView: UIImageView = {
         let imageView = UIImageView()
@@ -53,10 +50,7 @@ final class TodayScheduleView: UIView {
         return imageView
     }()
     
-    private let placeLabel: UILabel = {
-        let label = UILabel()
-        return label
-    }()
+    private let placeLabel = UILabel()
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -64,10 +58,7 @@ final class TodayScheduleView: UIView {
         return label
     }()
     
-    private let subtitleLabel: UILabel = {
-        let label = UILabel()
-        return label
-    }()
+    private let subtitleLabel = UILabel()
     
     private lazy var dateStackView: UIStackView = {
        let stackView = UIStackView(arrangedSubviews: [dateImageView, dateLabel])
@@ -111,11 +102,11 @@ final class TodayScheduleView: UIView {
             todayAttendanceView
         ])
         stackView.axis = .vertical
-        stackView.spacing = 24
+        stackView.spacing = 28
         stackView.alignment = .leading
         return stackView
     }()
-    
+
     // MARK: - Initialization
 
     init(type: AttendanceScheduleType) {
@@ -206,7 +197,7 @@ extension TodayScheduleView {
     
     private func addUnscheduledTitle() {
         titleLabel.text = I18N.Attendance.today + I18N.Attendance.unscheduledDay + I18N.Attendance.dayIs
-        titleLabel.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
+        titleLabel.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold)
     }
     
     private func checkNoAttendanceSession() {

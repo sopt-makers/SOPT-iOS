@@ -255,7 +255,7 @@ extension ShowAttendanceVC {
             .withUnretained(self)
             .sink { owner, model in
                 guard let model else { return }
-                owner.infoButton.setImage(MDSIcon.infoCircleOutlined.image, for: .normal)
+                owner.infoButton.setImage(MDSIcon.alertCircleOutlined.image, for: .normal)
                 owner.setScoreData(model)
                 owner.endRefresh()
             }.store(in: self.cancelBag)

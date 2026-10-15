@@ -48,7 +48,7 @@ extension MyInformationWithScoreView {
         }
         
         currentScoreLabel.snp.makeConstraints {
-            $0.top.equalTo(nameLabel.snp.bottom).offset(8)
+            $0.top.equalTo(nameLabel.snp.bottom).offset(14)
             $0.leading.equalToSuperview()
         }
     }
