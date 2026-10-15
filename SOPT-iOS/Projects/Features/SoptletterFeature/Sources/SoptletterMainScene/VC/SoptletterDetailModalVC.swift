@@ -177,7 +177,7 @@ public final class SoptletterDetailModalVC: UIViewController {
         contentLabel.text = content
         contentLabel.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.ghost)
 
-        dateLabel.text = DateFormatManager.shared.serverTimeToString(date, from: .dateWithDot)
+        dateLabel.text = DateFormatManager.shared.serverTimeToString(date, from: .monthDayWithDot)
         dateLabel.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.subtle)
 
         likeCountLabel.text = "\(likeCount)"
@@ -293,7 +293,7 @@ private extension SoptletterDetailModalVC {
         )
         likeCount += isLiked ? 1 : -1
         likeCountLabel.text = "\(likeCount)"
-        likeCountLabel.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
+        likeCountLabel.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.subtle)
     }
 
     func setUI() {

@@ -44,6 +44,10 @@ public final class SoptletterCoordinator: BaseCoordinator {
             showSoptletterOnboarding()
         }
     }
+    
+    public func startWithMessageDetail(topicId: Int, messageId: Int) {
+        showSoptletterMain(topicId: topicId, messageId: messageId)
+    }
 
     // MARK: - Navigation
     private func showSoptletterOnboarding() {
@@ -120,7 +124,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
         on controller: UINavigationController?,
         onSubmitSuccess: (() -> Void)? = nil
     ) {
-        var soptletterWriting = factory.makeSoptletterWritingVC(coordinator: self)
+        let soptletterWriting = factory.makeSoptletterWritingVC(coordinator: self)
         
         soptletterWriting.vm.onNaviBackTap = { [weak controller] in
             controller?.popViewController(animated: true)
@@ -136,23 +140,42 @@ public final class SoptletterCoordinator: BaseCoordinator {
             self?.showSelectTopicBottomSheet(
                 on: controller,
                 selectedTopicId: viewModel?.selectedTopicId
-            )
+            ) { topic in
+                viewModel?.selectTopic(topic)
+            }
         }
 
         controller?.pushViewController(soptletterWriting.vc, animated: true)
     }
     
     private func showSelectTopicBottomSheet(
-        on view: UIViewController?,
-        selectedTopicId: Int?
+        on controller: UIViewController?,
+        selectedTopicId: Int?,
+        onConfirm: @escaping (SoptletterTopicModel) -> Void
     ) {
-        let selectTopicBottomSheetVC = SelectTopicBottomSheet()
-        selectTopicBottomSheetVC.modalPresentationStyle = .overFullScreen
-        selectTopicBottomSheetVC.modalTransitionStyle = .crossDissolve
-        view?.present(selectTopicBottomSheetVC, animated: true)
+        let selectTopicBottomSheet = factory.makeSelectTopicBottomSheet(coordinator: self)
+        selectTopicBottomSheet.vc.modalPresentationStyle = .overFullScreen
+        selectTopicBottomSheet.vc.modalTransitionStyle = .crossDissolve
+        
+        selectTopicBottomSheet.vm.selectedTopicId = selectedTopicId
+        
+        selectTopicBottomSheet.vm.onNaviBackTap = { [weak controller] in
+            controller?.dismiss(animated: true)
+        }
+        
+        selectTopicBottomSheet.vm.showAlert = {
+            AlertUtils.presentNetworkAlertVC()
+        }
+        
+        selectTopicBottomSheet.vm.onConFirmButtonTap = { [weak controller] topic in
+            onConfirm(topic)
+            controller?.dismiss(animated: true)
+        }
+        
+        controller?.present(selectTopicBottomSheet.vc, animated: true)
     }
     
-    private func showSoptletterMain(topicId: Int?) {
+    private func showSoptletterMain(topicId: Int?, messageId: Int? = nil) {
         var soptletterMain = factory.makeSoptletterMainVC(coordinator: self, topicId: topicId)
 
         soptletterMain.vm.onNaviBackTap = { [weak self] in
@@ -186,7 +209,12 @@ public final class SoptletterCoordinator: BaseCoordinator {
         navController.modalPresentationStyle = .fullScreen
         navController.setNavigationBarHidden(true, animated: false)
         soptletterMainController = navController
-        soptletterRootController?.present(navController, animated: true)
+        
+        let deeplinkController = soptletterRootController ?? navigationController
+        deeplinkController?.present(navController, animated: true) { [weak self] in
+        guard let self, let messageId, let topicId else { return }
+            self.presentSoptletterDetail(messageId, topicId, refreshTarget: soptletterMain)
+        }
     }
     
     private func showSoptletterPrint(_ uiImage: UIImage, _ pdfURL: URL) {

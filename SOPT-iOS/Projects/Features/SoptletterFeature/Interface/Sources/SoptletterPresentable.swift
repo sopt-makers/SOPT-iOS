@@ -78,3 +78,15 @@ public protocol SelectTopicRoutingTrigger {
 
 public typealias SelectTopicViewModelType = ViewModelType & SelectTopicRoutingTrigger
 public typealias SelectTopicPresentable = (vc: UIViewController, vm: any SelectTopicViewModelType)
+
+// SoptletterTopicBottomSheet
+
+public protocol SelectTopicBottomSheetRoutingTrigger: AnyObject {
+    var onNaviBackTap: (() -> Void)? { get set }
+    var onConFirmButtonTap: ((SoptletterTopicModel) -> Void)? { get set }
+    var showAlert: (() -> Void)? { get set }
+    var selectedTopicId: Int? { get set }
+}
+
+public typealias SelectTopicBottomSheetViewModelType = ViewModelType & SelectTopicBottomSheetRoutingTrigger
+public typealias SelectTopicBottomSheetPresentable = (vc: UIViewController, vm: any SelectTopicBottomSheetViewModelType)

@@ -20,7 +20,11 @@ extension SoptletterTopicEntity {
         .init(
             topicId: topicId,
             title: title,
+            subtitle: subtitle,
             isDefault: isDefault,
+            isNew: isNew,
+            isHot: isHot,
+            unreadCount: unreadCount,
             createdAt: createdAt
         )
     }

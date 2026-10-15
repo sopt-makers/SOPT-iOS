@@ -145,10 +145,10 @@ extension SelectTopicVC: UITableViewDataSource, UITableViewDelegate {
         
         cell.configure(
             title: topics[indexPath.row].title,
-            description: "디스크립션션션션션션",
-            isHot: true,
-            isNew: true,
-            count: 10
+            description: topics[indexPath.row].subtitle ?? "",
+            isHot: topics[indexPath.row].isHot,
+            isNew: topics[indexPath.row].isNew,
+            count: topics[indexPath.row].unreadCount
         )
         return cell
     }

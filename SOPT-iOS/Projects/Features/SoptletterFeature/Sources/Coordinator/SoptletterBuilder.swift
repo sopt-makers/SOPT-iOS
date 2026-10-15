@@ -65,4 +65,11 @@ extension SoptletterBuilder: SoptletterFeatureBuildable {
         let vc = SoptletterDetailModalVC(viewModel: viewModel)
         return (vc, viewModel)
     }
+    
+    public func makeSelectTopicBottomSheet(coordinator: any Coordinator) -> SelectTopicBottomSheetPresentable {
+        let useCase = DefaultSoptletterUseCase(repository: soptletterRepository)
+        let viewModel = SelectTopicBottomSheetViewModel(coordinator: coordinator, useCase: useCase)
+        let vc = SelectTopicBottomSheet(viewModel: viewModel)
+        return (vc, viewModel)
+    }
 }
