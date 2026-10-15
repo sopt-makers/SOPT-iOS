@@ -32,9 +32,6 @@ public class NotificationListViewModel: NotificationListViewModelType {
     private var selectedCategory: NotificationFilterType = .all
     var page = 0
     var isPaging = false
-    /// 아직 불러오지 않은 페이지에 안 읽은 알림이 있을 수 있는지 여부.
-    /// 마지막 페이지(빈 응답)까지 불러왔거나 전체 읽음에 성공하면 false가 된다.
-    private var mayHaveUnreadInNextPages = true
     
     // MARK: - Inputs
     
@@ -98,7 +95,7 @@ extension NotificationListViewModel {
                 owner.onNotificationTap?(notification.notificationId)
                 owner.read(index: index)
                 output.notificationList.send(self.notifications)
-                output.isAllRead.send(owner.isAllRead)
+                output.isAllRead.send(owner.notifications.allSatisfy { $0.isRead })
                 AmplitudeInstance.shared.track(eventType: .clickNotificationItem,
                                                eventProperties: [
                                                 "notification_id": notification.notificationId,
@@ -134,7 +131,6 @@ extension NotificationListViewModel {
                 if !owner.isPaging {
                     owner.notifications.removeAll()
                     owner.page = 0
-                    owner.mayHaveUnreadInNextPages = true
                     owner.useCase.getNotificationList(page: owner.page)
                     return
                 }
@@ -150,10 +146,9 @@ extension NotificationListViewModel {
             .withUnretained(self)
             .sink { owner, notificationList in
                 owner.removeDuplicatesAndUpdateNotifications(contentsOf: notificationList)
-                if notificationList.isEmpty { owner.mayHaveUnreadInNextPages = false }
                 let filtered = owner.filterNotifications(owner.notifications, by: owner.selectedCategory)
                 output.notificationList.send(filtered)
-                output.isAllRead.send(owner.isAllRead)
+                output.isAllRead.send(owner.notifications.allSatisfy { $0.isRead })
                 owner.endPaging(isEmptyResponse: notificationList.isEmpty)
 
                 output.refreshLoading.send(false)
@@ -165,7 +160,6 @@ extension NotificationListViewModel {
             .sink { owner, readSuccess in
                 print("모든 알림 읽음 처리: \(readSuccess)")
                 if readSuccess {
-                    owner.mayHaveUnreadInNextPages = false
                     owner.notifications = owner.notifications.map {
                         var notification = $0
                         notification.isRead = true
@@ -192,10 +186,6 @@ extension NotificationListViewModel {
         if isEmptyResponse && self.page > 0 {
             self.page -= 1
         }
-    }
-    
-    private var isAllRead: Bool {
-        !mayHaveUnreadInNextPages && notifications.allSatisfy { $0.isRead }
     }
     
     private func read(index: Int) {
