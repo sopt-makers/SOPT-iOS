@@ -42,7 +42,6 @@ final class TodayScheduleView: UIView {
     
     private let dateLabel: UILabel = {
         let label = UILabel()
-        label.textColor = SemanticColor.Fg.Neutral.subtle
         return label
     }()
     
@@ -56,20 +55,17 @@ final class TodayScheduleView: UIView {
     
     private let placeLabel: UILabel = {
         let label = UILabel()
-        label.textColor = SemanticColor.Fg.Neutral.subtle
         return label
     }()
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = SemanticColor.Fg.Neutral.bold
         label.numberOfLines = 0
         return label
     }()
     
     private let subtitleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = SemanticColor.Fg.Neutral.subtle
         return label
     }()
     
@@ -188,16 +184,16 @@ extension TodayScheduleView {
     func setData(date: String, place: String, todaySchedule: String, description: String?) {
 
         dateLabel.text = date
-        dateLabel.setTypography(Typography.label3)
+        dateLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.subtle)
         
         placeLabel.text = place
-        placeLabel.setTypography(Typography.label3)
+        placeLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.subtle)
         
         titleLabel.text = I18N.Attendance.today + todaySchedule + I18N.Attendance.dayIs
-        titleLabel.setTypography(Typography.title4)
+        titleLabel.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
         
         subtitleLabel.text = description
-        subtitleLabel.setTypography(Typography.label3)
+        subtitleLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.subtle)
         subtitleLabel.isHidden = ((description?.isEmpty) == nil || description == "")
         
         checkNoAttendanceSession()
@@ -210,7 +206,7 @@ extension TodayScheduleView {
     
     private func addUnscheduledTitle() {
         titleLabel.text = I18N.Attendance.today + I18N.Attendance.unscheduledDay + I18N.Attendance.dayIs
-        titleLabel.setTypography(Typography.title5)
+        titleLabel.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
     }
     
     private func checkNoAttendanceSession() {

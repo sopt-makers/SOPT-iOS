@@ -106,9 +106,8 @@ final class OPAttendanceStepView: UIView {
 
 extension OPAttendanceStepView {
     private func setUI() {
-        stepTitleLabel.textColor = type.textColor
         stepTitleLabel.text = title
-        stepTitleLabel.setTypography(Typography.label4)
+        stepTitleLabel.setTypography(Typography.label4, textColor: type.textColor)
 
         stepImageView.image = type.image
         if type.hasShadow {

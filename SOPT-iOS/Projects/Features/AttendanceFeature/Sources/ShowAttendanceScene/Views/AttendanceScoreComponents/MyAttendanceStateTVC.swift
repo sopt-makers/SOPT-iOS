@@ -31,13 +31,11 @@ final class MyAttendanceStateTVC: UITableViewCell {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = SemanticColor.Fg.Neutral.bold
         return label
     }()
     
     private let dateLabel: UILabel = {
         let label = UILabel()
-        label.textColor = SemanticColor.Fg.Neutral.subtle
         return label
     }()
     
@@ -94,9 +92,9 @@ extension MyAttendanceStateTVC {
         stateLabel.setTypography(Typography.label4, textColor: status.tagTextColor)
         
         titleLabel.text = model.name
-        titleLabel.setTypography(Typography.label3)
+        titleLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold)
         
         dateLabel.text = model.date
-        dateLabel.setTypography(Typography.label4)
+        dateLabel.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
     }
 }

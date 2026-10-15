@@ -310,6 +310,7 @@ extension AttendanceVC {
             .withUnretained(self)
             .sink { owner, errorMsg in
                 owner.alertLabel.text = errorMsg
+                owner.alertLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Danger.default)
                 owner.alertLabel.isHidden = false
                 owner.attendanceCodeView.setCodeTextFieldEmpty()
             }

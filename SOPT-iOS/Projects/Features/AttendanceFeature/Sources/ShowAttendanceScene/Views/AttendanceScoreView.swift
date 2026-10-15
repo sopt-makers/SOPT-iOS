@@ -58,7 +58,6 @@ final class AttendanceScoreView: UIView {
     
     private let attendanceScoreDescriptiopnLabel: UILabel = {
         let label = UILabel()
-        label.textColor = SemanticColor.Fg.Neutral.subtle
         return label
     }()
     
@@ -146,7 +145,7 @@ extension AttendanceScoreView {
     
     func setMyAttendanceTableData(_ model: [AttendanceModel]) {
         attendanceScoreDescriptiopnLabel.text = I18N.Attendance.myAttendance
-        attendanceScoreDescriptiopnLabel.setTypography(Typography.title5)
+        attendanceScoreDescriptiopnLabel.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.subtle)
 
         attendanceModelList = model
         updateTableviewHeight()

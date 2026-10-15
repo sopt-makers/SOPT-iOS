@@ -21,7 +21,6 @@ final class MyInformationWithScoreView: UIView {
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.textColor = SemanticColor.Fg.Neutral.subtle
         return label
     }()
     
@@ -64,7 +63,7 @@ extension MyInformationWithScoreView {
     
     func setData(name: String, part: String, generation: Int, count: Double) {
         nameLabel.text = "\(generation)기 \(part) \(name)"
-        nameLabel.setTypography(Typography.title5)
+        nameLabel.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.subtle)
         
         chageFontAndColor(with: "\(doubleToString(count))점")
     }
