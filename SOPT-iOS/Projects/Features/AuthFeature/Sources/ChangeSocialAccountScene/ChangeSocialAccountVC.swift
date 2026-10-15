@@ -20,7 +20,7 @@ import SnapKit
 import Then
 
 
-public class ChangeSocialAccountVC: UIViewController, ChangeSocialAccountViewControllable {
+public class ChangeSocialAccountVC: UIViewController {
     
     //MARK: - Properties
     

@@ -9,7 +9,7 @@
 import UIKit
 
 extension AppMyPageVC {
-    func createMyPageeCellRegistration() -> MyPageCellRegistration {
+    func createMyPageCellRegistration() -> MyPageCellRegistration {
         collectionView.createCellRegistration { cell, _, item in
             cell.configureCell(model: item)
         }

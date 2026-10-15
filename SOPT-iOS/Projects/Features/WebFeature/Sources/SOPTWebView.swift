@@ -29,6 +29,7 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
     public var vc: UIViewController { self }
     private let downloadManager: WKDownloadManager
     private let customSchemeHandler = CustomSchemeHandler()
+    private let startURL: URL
     
     // MARK: Variables
     private let cancelbag = CancelBag()
@@ -39,6 +40,8 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
         startWith url: URL,
         downloadManager: WKDownloadManager = .default
     ) {
+        self.startURL = url
+        
         let configuration = WKWebViewConfiguration().then {
             $0.allowsInlineMediaPlayback = config.allowsInlineMediaPlayback
             $0.mediaTypesRequiringUserActionForPlayback = config.mediaTypesRequiringUserActionForPlayback
@@ -74,7 +77,11 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
             $0.isOpaque = true
             $0.backgroundColor = DSKitAsset.Colors.black100.color
             $0.scrollView.backgroundColor = DSKitAsset.Colors.black100.color
-            
+            if #available(iOS 15.0, *) {
+                $0.underPageBackgroundColor = DSKitAsset.Colors.black100.color
+            }
+            $0.alpha = 0
+
             #if DEBUG || QA
             if #available(iOS 16.4, *) {
                 $0.isInspectable = true
@@ -83,10 +90,6 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
         }
         self.downloadManager = downloadManager
         super.init(nibName: nil, bundle: nil)
-        DispatchQueue.main.async {
-            let request = URLRequest(url: url)
-            self.webView.load(request)
-        }
     }
     
     public required init?(coder: NSCoder) {
@@ -103,6 +106,7 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
         self.setupConstraints()
         self.setupNavigationButtonActions()
         self.setDelegate()
+        self.webView.load(URLRequest(url: self.startURL))
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -155,6 +159,13 @@ extension SOPTWebView {
             self.dismiss(animated: true)
         }
     }
+
+    private func revealWebView() {
+        guard self.webView.alpha == 0 else { return }
+        UIView.animate(withDuration: 0.2) {
+            self.webView.alpha = 1
+        }
+    }
     
     private func setDelegate() {
         self.webView.scrollView.delegate = self
@@ -173,15 +184,27 @@ extension SOPTWebView: WKNavigationDelegate {
             decisionHandler(.allow)
             return
         }
-        
+
         // 커스텀 스킴 처리
         if customSchemeHandler.shouldHandle(url) {
             customSchemeHandler.handle(url)
             decisionHandler(.cancel)
             return
         }
-        
+
         decisionHandler(.allow)
+    }
+
+    public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        self.revealWebView()
+    }
+
+    public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        self.revealWebView()
+    }
+
+    public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        self.revealWebView()
     }
 }
 

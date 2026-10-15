@@ -12,10 +12,6 @@ import Core
 import BaseFeatureDependency
 import Domain
 
-// MARK: - ViewControllable
-
-public protocol AppJamRankingViewControllable: UIViewController { }
-
 // MARK: - RoutingTrigger
 
 public protocol AppJamRankingRoutingTrigger {
@@ -32,6 +28,6 @@ public typealias AppJamRankingViewModelType = ViewModelType & AppJamRankingRouti
 // MARK: - Presentable
 
 public typealias AppJamRankingPresentable = (
-    vc: any AppJamRankingViewControllable,
+    vc: UIViewController,
     vm: any AppJamRankingViewModelType
 )

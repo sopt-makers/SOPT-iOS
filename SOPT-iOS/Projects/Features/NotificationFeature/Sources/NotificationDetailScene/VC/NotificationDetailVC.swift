@@ -19,7 +19,7 @@ import Then
 import BaseFeatureDependency
 import NotificationFeatureInterface
 
-public final class NotificationDetailVC: UIViewController, NotificationDetailViewControllable {
+public final class NotificationDetailVC: UIViewController {
     
     // MARK: - Properties
     

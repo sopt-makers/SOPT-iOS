@@ -21,4 +21,3 @@ public protocol PokeFeatureBuildable {
     func makePokeMakingFriendCompleted(friendName: String) -> PokeMakingFriendCompletedPresentable
     func makePokeAnonymousFriendUpgrade(user: PokeUserModel) -> PokeAnonymousFriendUpgradePresentable
 }
-

@@ -12,7 +12,7 @@ import SnapKit
 import Then
 
 import Core
-import DSKit
+import MDS
 
 final class MyPageSoptlogStatCVC: UICollectionViewCell {
 
@@ -25,13 +25,13 @@ final class MyPageSoptlogStatCVC: UICollectionViewCell {
     // MARK: - UI Components
 
     private let iconBackgroundView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.gray700.color
+        $0.backgroundColor = SemanticColor.Bg.Neutral.subtle
         $0.layer.cornerRadius = Metric.iconBackgroundSize / 2
     }
 
     private let iconView = UIImageView().then {
         $0.contentMode = .scaleAspectFit
-        $0.tintColor = DSKitAsset.Colors.white.color
+        $0.tintColor = SemanticColor.Fg.Neutral.bold
     }
 
     private let titleLabel = UILabel()
@@ -90,7 +90,9 @@ extension MyPageSoptlogStatCVC {
             $0.center.equalToSuperview()
             $0.size.equalTo(iconSize)
         }
-        titleLabel.attributedText = title.applyMDSFont(mdsFont: .body3, color: DSKitAsset.Colors.gray200.color)
-        countLabel.attributedText = "\(count)회".applyMDSFont(mdsFont: .heading7, color: DSKitAsset.Colors.white.color)
+        titleLabel.text = title
+        countLabel.text = "\(count)회"
+        titleLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.default)
+        countLabel.setTypography(Typography.label2, textColor: SemanticColor.Fg.Neutral.bold)
     }
 }

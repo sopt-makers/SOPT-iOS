@@ -17,7 +17,7 @@ import Combine
 import BaseFeatureDependency
 import NotificationFeatureInterface
 
-public final class NotificationListVC: UIViewController, NotificationListViewControllable {
+public final class NotificationListVC: UIViewController {
 
     // MARK: - Properties
     

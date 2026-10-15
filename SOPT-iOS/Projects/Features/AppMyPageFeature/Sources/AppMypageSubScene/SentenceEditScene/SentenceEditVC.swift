@@ -8,12 +8,13 @@
 
 import UIKit
 
-import Core
-import DSKit
-
 import Combine
 import SnapKit
 import Then
+
+import Core
+import DSKit
+import MDS
 
 import BaseFeatureDependency
 import AppMyPageFeatureInterface
@@ -27,6 +28,7 @@ public class SentenceEditVC: UIViewController {
     
     // MARK: - UI Components
     
+    // TODO: - mds 적용 후 수정
     private lazy var naviBar = OPNavigationBar(
             self,
             type: .oneLeftButton,
@@ -34,23 +36,21 @@ public class SentenceEditVC: UIViewController {
         )
         .addMiddleLabel(title: I18N.Setting.SentenceEdit.sentenceEdit)
     
-    private lazy var textView: UITextView = {
-        let tv = UITextView()
-        tv.backgroundColor = DSKitAsset.Colors.black80.color
-        tv.textColor = DSKitAsset.Colors.gray60.color
-        tv.font = DSKitFontFamily.Pretendard.medium.font(size: 16)
-        tv.layer.cornerRadius = 12.adjustedH
-        tv.layer.borderWidth = 1.adjustedH
-        tv.isEditable = true
-        tv.textContainerInset = UIEdgeInsets(top: 16, left: 20, bottom: 16, right: 20)
-        tv.delegate = self
+    private lazy var textView: MDSTextArea = {
+        let tv = MDSTextArea(
+            variant: .default,
+            placeholder: I18N.Setting.SentenceEdit.noSentenceText
+        )
+        tv.returnKeyType = .done
         return tv
     }()
-
-    private let saveButton = AppCustomButton(title: I18N.Setting.SentenceEdit.save)
-        .setConfigForState(disabledColor: DSKitAsset.Colors.black40.color)
-        .setEnabled(false)
     
+    private let saveButton = MDSActionButton(
+        variant: .primary,
+        size: .large,
+        title: I18N.Setting.SentenceEdit.save
+    )
+
     // MARK: - View Life Cycle
     
     public override func viewDidLoad() {
@@ -67,12 +67,15 @@ public class SentenceEditVC: UIViewController {
 extension SentenceEditVC {
     
     private func bindViewModels() {
-        let textViewTextChanged = NotificationCenter.default
-            .publisher(for: UITextView.textDidChangeNotification, object: self.textView)
-            .map { ($0.object as? UITextView)?.text }
-            .compactMap { $0 }
-            .eraseToAnyPublisher()
-            .asDriver()
+        let textChanged = PassthroughSubject<String, Never>()
+
+        self.textView.onTextChanged = { [weak self] text in
+            guard let self else { return }
+            if text.contains("\n") {
+                self.textView.text = text.replacingOccurrences(of: "\n", with: "")
+            }
+            textChanged.send(self.textView.text ?? "")
+        }
         
         let saveButtonTapped = self.saveButton
             .publisher(for: .touchUpInside)
@@ -83,7 +86,7 @@ extension SentenceEditVC {
             .filter { !$0.isEmpty }
             .asDriver()
         
-        let input = SentenceEditViewModel.Input(textChanged: textViewTextChanged,
+        let input = SentenceEditViewModel.Input(textChanged: textChanged.asDriver(),
                                                 saveButtonTapped: saveButtonTapped)
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
         
@@ -91,9 +94,12 @@ extension SentenceEditVC {
             .assign(to: self.saveButton.kf.isEnabled, on: self.saveButton)
             .store(in: self.cancelBag)
         
+        // MDSTextArea.text는 String?이라 KeyPath assign이 맞지 않는다.
         output.$defaultText
-            .assign(to: self.textView.kf.text, on: self.textView)
-            .store(in: self.cancelBag)
+            .withUnretained(self)
+            .sink { owner, text in
+                owner.textView.text = text
+            }.store(in: self.cancelBag)
         
         output.editSuccessed
             .withUnretained(self)
@@ -145,25 +151,5 @@ extension SentenceEditVC {
             make.leading.trailing.equalToSuperview().inset(20.adjusted)
             make.height.equalTo(56.adjustedH)
         }
-    }
-}
-
-// MARK: - TextViewDelegate
-
-extension SentenceEditVC: UITextViewDelegate {
-    public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        return !text.contains("\n")
-    }
-
-    public func textViewDidBeginEditing(_ textView: UITextView) {
-        textView.layer.borderColor = DSKitAsset.Colors.white.color.cgColor
-        textView.backgroundColor = DSKitAsset.Colors.black100.color
-        textView.textColor = DSKitAsset.Colors.white.color
-    }
-
-    public func textViewDidEndEditing(_ textView: UITextView) {
-        textView.backgroundColor = DSKitAsset.Colors.black80.color
-        textView.layer.borderColor = nil
-        textView.textColor = DSKitAsset.Colors.gray60.color
     }
 }

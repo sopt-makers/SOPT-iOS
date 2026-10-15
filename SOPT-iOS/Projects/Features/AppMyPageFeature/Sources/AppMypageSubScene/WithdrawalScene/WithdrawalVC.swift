@@ -12,6 +12,7 @@ import SafariServices
 import Combine
 
 import Core
+import MDS
 
 import BaseFeatureDependency
 import AppMyPageFeatureInterface
@@ -30,6 +31,7 @@ public class WithdrawalVC: UIViewController {
     
     // MARK: - UI Components
 
+    // TODO: - mds 반영 후 수정
     private lazy var naviBar = OPNavigationBar(
             self,
             type: .oneLeftButton,
@@ -39,44 +41,40 @@ public class WithdrawalVC: UIViewController {
     
     
     private let noticeCardView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.gray800.color
-        $0.layer.cornerRadius = 12
+        $0.backgroundColor = SemanticColor.Bg.Neutral.ghost
+        $0.layer.cornerRadius = BaseRadius.Base.r12
         $0.clipsToBounds = true
     }
     
     private let warningIconImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.caution.image
-        $0.tintColor = DSKitAsset.Colors.error.color
+        $0.image = MDSIcon.alertTriangleFilled.image.withRenderingMode(.alwaysTemplate)
+        $0.tintColor = SemanticColor.Fg.Danger.default
         $0.contentMode = .scaleAspectFit
     }
     
     private let cautionLabel = UILabel().then {
         $0.text = I18N.Setting.Withdrawal.caution
-        $0.textColor = DSKitAsset.Colors.gray50.color
-        $0.textAlignment = .center
+        $0.setTypography(Typography.title3, textColor: SemanticColor.Fg.Neutral.bold, alignment: .center)
         $0.numberOfLines = 1
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 18)
     }
     
     private let guideLabel = UILabel().then {
         $0.text = I18N.Setting.Withdrawal.guide1
-        $0.textColor = DSKitAsset.Colors.gray60.color
-        $0.textAlignment = .left
+        $0.setTypography(Typography.body2, textColor: SemanticColor.Fg.Neutral.subtle, alignment: .left)
         $0.numberOfLines = 0
-        $0.font = DSKitFontFamily.Suit.regular.font(size: 14)
     }
     
     private let secondGuideLabel = UILabel().then {
         $0.text = I18N.Setting.Withdrawal.guide2
-        $0.textColor = DSKitAsset.Colors.gray60.color
-        $0.textAlignment = .left
+        $0.setTypography(Typography.body2, textColor: SemanticColor.Fg.Neutral.subtle, alignment: .left)
         $0.numberOfLines = 0
-        $0.font = DSKitFontFamily.Suit.regular.font(size: 14)
     }
     
-    private lazy var withdrawalButton = AppCustomButton(title: I18N.Setting.Withdrawal.withdrawal)
-        .setEnabled(true)
-        .setConfigForState(enabledTextColor: DSKitAsset.Colors.error.color)
+    private lazy var withdrawalButton = MDSActionButton(
+        variant: .danger,
+        size: .large,
+        title: I18N.Setting.Withdrawal.withdrawal
+    )
     
     init(viewModel: WithdrawalViewModel!, userType: UserType, onWithdrawal: (() -> Void)? = nil) {
         self.viewModel = viewModel
@@ -104,7 +102,7 @@ public class WithdrawalVC: UIViewController {
 extension WithdrawalVC {
     
     private func setUI() {
-        self.view.backgroundColor = DSKitAsset.Colors.black100.color
+        self.view.backgroundColor = SemanticColor.Bg.Layer.basement
     }
     
     private func setLayout() {

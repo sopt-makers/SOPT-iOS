@@ -12,8 +12,6 @@ import Foundation
 import BaseFeatureDependency
 import Core
 
-public protocol SignInViewControllable: ViewControllable { }
-
 public protocol SignInRoutingTrigger {
     var onLoginHelpButtonTapped: (() -> Void)? { get set }
     var onSocialLoginFail: (() -> Void)? { get set }

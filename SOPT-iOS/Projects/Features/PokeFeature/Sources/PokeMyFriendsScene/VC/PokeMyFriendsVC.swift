@@ -19,7 +19,7 @@ import MDS
 import BaseFeatureDependency
 import PokeFeatureInterface
 
-public final class PokeMyFriendsVC: UIViewController, PokeMyFriendsViewControllable {
+public final class PokeMyFriendsVC: UIViewController {
     
     // MARK: - Properties
     

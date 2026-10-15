@@ -97,7 +97,8 @@ extension HomeRepository: HomeRepositoryInterface {
 
     public func getTabAppServicesAsync() async throws -> [Domain.HomeAppServicesModel] {
         let entity = try await homeService.getTabAppServiceAsync()
-        return entity.map { $0.toDomain() }
+        UserDefaultKeyList.User.isAppjam = entity.isAppjamMode
+        return entity.appServices.map { $0.toDomain() }
     }
 
     public func getCalendarDetailAsync() async throws -> [Domain.HomeCalendarDetailModel] {

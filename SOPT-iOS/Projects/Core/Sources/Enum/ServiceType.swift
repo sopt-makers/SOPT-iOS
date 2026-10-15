@@ -11,7 +11,6 @@ import Foundation
 public enum ServiceType {
     case officialHomepage
     case project
-    case faq
     case youtube
     case attendance
     case member
@@ -23,7 +22,6 @@ public enum ServiceType {
         switch self {
         case .officialHomepage: return ExternalURL.SOPT.officialHomepage
         case .project: return ExternalURL.Playground.project
-        case .faq: return ExternalURL.SOPT.faq
         case .youtube: return ExternalURL.SNS.youtube
         case .attendance: return ""
         case .member: return ExternalURL.Playground.member
@@ -32,10 +30,6 @@ public enum ServiceType {
         case .coffeechat: return ExternalURL.Playground.coffeechat
         }
     }
-}
-
-public enum TabServiceType: String {
-    case poke = "POKE"
 }
 
 public enum AppServiceType: String {

@@ -18,7 +18,7 @@ public struct NotificationDeepLink: DeepLinkExecutable {
     public func execute(with coordinator: Coordinator, queryItems: [URLQueryItem]?) -> Coordinator? {
         guard let coordinator = coordinator as? ApplicationCoordinator else { return nil }
         
-        let notificationCoordinator = coordinator.runNotificationFlow()
+        let notificationCoordinator = coordinator.runNotificationFlow(animated: self.isDestination)
         return notificationCoordinator
     }
 }
