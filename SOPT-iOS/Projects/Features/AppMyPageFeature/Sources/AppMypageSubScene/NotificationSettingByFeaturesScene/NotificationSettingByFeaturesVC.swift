@@ -21,7 +21,7 @@ import DSKit
 
 import BaseFeatureDependency
 
-public final class NotificationSettingByFeaturesVC: UIViewController, NotificationSettingByFeaturesViewControllable {
+public final class NotificationSettingByFeaturesVC: UIViewController {
     private enum Metric {
         static let navigationbarHeight = 44.f
         

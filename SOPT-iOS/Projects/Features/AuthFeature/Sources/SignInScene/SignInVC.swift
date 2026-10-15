@@ -21,7 +21,7 @@ import BaseFeatureDependency
 import SnapKit
 import Then
 
-public class SignInVC: UIViewController, SignInViewControllable {
+public class SignInVC: UIViewController {
     
     // MARK: - Properties
     
@@ -141,10 +141,14 @@ public class SignInVC: UIViewController, SignInViewControllable {
             oAuthView,
             loginHelpButton,
             orStackView,
-            signUpButton,
             loginLaterButton,
             recentLoginToolTip
         )
+        
+        // TODO: 회원가입 로직 완성 전까지 임시로 삭제
+        #if !PROD && !DEV
+            self.view.addSubview(signUpButton)
+        #endif
         
         recentLoginToolTip.addSubview(recentLoginLabel)
         
@@ -186,20 +190,33 @@ public class SignInVC: UIViewController, SignInViewControllable {
         orLabel.setContentHuggingPriority(.required, for: .horizontal)
         orLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         
-        orStackView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.bottom.equalTo(signUpButton.snp.top).inset(-BaseSpacing.Base.s16)
-        }
 
-        signUpButton.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.bottom.equalTo(loginLaterButton.snp.top).offset(-BaseSpacing.Base.s24)
-        }
+        #if !PROD && !DEV
+            orStackView.snp.makeConstraints { make in
+                make.leading.trailing.equalToSuperview().inset(20)
+                make.bottom.equalTo(signUpButton.snp.top).inset(-BaseSpacing.Base.s16)
+            }
         
-        loginLaterButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(40.adjustedH)
-        }
+            signUpButton.snp.makeConstraints { make in
+                make.leading.trailing.equalToSuperview().inset(20)
+                make.bottom.equalTo(loginLaterButton.snp.top).offset(-BaseSpacing.Base.s24)
+            }
+            
+            loginLaterButton.snp.makeConstraints { make in
+                make.centerX.equalToSuperview()
+                make.bottom.equalTo(view.safeAreaLayoutGuide).inset(40.adjustedH)
+            }
+        #else
+            orStackView.snp.makeConstraints { make in
+                make.leading.trailing.equalToSuperview().inset(20)
+                make.bottom.equalToSuperview().inset(104.adjustedH)
+            }
+        
+            loginLaterButton.snp.makeConstraints { make in
+                make.centerX.equalToSuperview()
+                make.top.equalTo(orStackView.snp.bottom).offset(BaseSpacing.Base.s16)
+            }
+        #endif
         
         recentLoginToolTip.snp.makeConstraints { make in
             make.centerX.equalToSuperview()

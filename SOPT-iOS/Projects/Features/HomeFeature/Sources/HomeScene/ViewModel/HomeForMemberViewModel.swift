@@ -198,14 +198,7 @@ extension HomeForMemberViewModel {
             .sink { owner, model in
                 if let userID = model.userID {
                     owner.onProfileImageViewTapped?(userID)
-                    owner.eventTracker.trackClickPostMember(
-                        postRanking: model.postRanking,
-                        sectionName: model.sectionName,
-                        postID: model.postID,
-                        category: model.category
-                    )
                 }
-                
             }
             .store(in: cancelBag)
         

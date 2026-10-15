@@ -20,7 +20,7 @@ import Then
 import BaseFeatureDependency
 import SplashFeatureInterface
 
-public class SplashVC: UIViewController, SplashViewControllable {
+public class SplashVC: UIViewController {
     
     // MARK: - Properties
     

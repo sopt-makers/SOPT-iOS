@@ -6,80 +6,81 @@
 //  Copyright © 2023 SOPT-iOS. All rights reserved.
 //
 
+// NOTE: 2026.10.11 앰플리튜드 v2 기준으로 정리된 이벤트목록입니다.
+
 import Foundation
 
 public enum AmplitudeEventType: String {
-    // 푸시 알림 이벤트
-    case receivedPush = "received_push"
-    case clickPush = "click_push"
     
-    // 클릭 이벤트
+    // MARK: 홈 화면
+    case viewAppHome = "view_apphome"
     case clickAlarm = "click_alarm"
     case clickAttendacne = "click_attendance"
-    case clickToastButton = "click_toast_button"
-    case clickProject = "click_project"
-    case clickMember = "click_member"
-    case clickOfficialHomepage = "click_homepage"
-    case clickInstagram = "click_instagram"
-    case clickYoutube = "click_youtube"
-    case clickFaq = "click_faq"
-    case clickPlaygroundCommunity = "click_playground_community"
-    case clickPlusButton = "click_plus_button"
-    case clickHotboard = "click_hotboard"
-    case clickLink = "click_link_button"
-    case clickReadAll = "click_allread_button"
-    case clickNotificationItem = "click_notification_item"
-    case clickCoffeeChat = "click_playground_coffee_chat"
-    case clickSurveyButton = "click_survey_button"
-    
-    // 신규 홈 클릭 이벤트
     case clickAllCalendar = "click_all_calendar"
+    
+    case clickPlaygroundMember = "click_playground_member"
     case clickPlaygroundGroup = "click_playground_group"
-    case clickPostMember = "click_post_member"
+    case clickPlaygroundProject = "click_playground_project"
+    case clickCoffeeChat = "click_playground_coffee_chat"
+    case clickPlaygroundCommunity = "click_playground_community"
+    
     case clickSoptletterMenu = "click_soptletter_menu"
     
-    // 콕 찌르기 클릭 이벤트
-    case clickPoke = "click_poke"
-    case clickMemberProfile = "click_memberprofile"
-    case clickPokeIcon = "click_poke_icon"
-    case clickPokeAlarmDetail = "click_poke_alarm_detail"
-    case clickPokeSendMessage = "click_poke_send_message"
-    case clickPokeAnonymity = "click_poke_anonymity"
+    case clickHotboard = "click_hotboard"
     
-    // 탭 바 클릭 이벤트
+    case clickOfficialHomepage = "click_homepage"
+    case clickYoutube = "click_youtube"
+    case clickInstagram = "click_instagram"
+    case clickSurveyButton = "click_survey_button"
+    
+    case clickToastButton = "click_toast_button"
+    
+    
+    // MARK: GNB
     case clickNaviHome = "click_navi_home"
     case clickNaviMyPage = "click_navi_mypage"
     case clickNaviSoptamp = "click_navi_soptamp"
     case clickNaviPoke = "click_navi_poke"
     case clickNaviAppjamtamp = "click_navi_appjamtamp"
+    case clickPlusButton = "click_plus_button"
 
-    // 홈 뷰 이벤트
-    case viewAppHome = "view_apphome"
-    case viewNotificationList = "view_notification_list"
     
-    // 콕 찌르기 뷰 이벤트
+    // MARK: 푸시 알림
+    case clickLink = "click_link_button"
+    case clickReadAll = "click_allread_button"
+    case clickNotificationItem = "click_notification_item"
+    case viewNotificationList = "view_notification_list"
+    case receivedPush = "received_push"
+    case clickPush = "click_push"
+    case viewNotificationDetail = "view_notification_detail"
+    
+    
+    // MARK: 콕찌르기
+    case clickPokeIcon = "click_poke_icon"
+    case clickMemberProfile = "click_memberprofile"
+    case clickPokeAlarmDetail = "click_poke_alarm_detail"
     case viewPokeOnboarding = "view_poke_onboarding"
     case viewPokeOnboardingFragment = "view_poke_onboarding_fragment"
     case viewPokeMain = "view_poke_main"
-    case viewPokeAlarmDetail = "view_poke_alarm_detail"
     case viewPokeFriend = "view_poke_friend"
     case viewPokeFriendDetail = "view_poke_friend_detail"
+    case viewPokeAlarmDetail = "view_poke_alarm_detail"
+    case clickPokeSendMessage = "click_poke_send_message"
+    case clickPokeAnonymity = "click_poke_anonymity"
     
-    // 박수 이벤트
+    
+    // MARK: 솝탬프
     case clickUpdateClap = "click_update_clap"
     case clickGetImageZoom = "click_get_image_zoom"
-    case clickClappersList = "click_clappersList"
     case clickFeedMission = "click_feed_mission"
-    
-    // 솝탬프 이벤트
     case viewAllranking = "view_allranking"
     case viewPartRanking = "view_partranking"
     case clickAllrankingMyranking = "click_allranking_myranking"
-    case clickClapperlist = "click_clapperlist"
     case clickPartrankingMyranking = "click_partranking_myranking"
+    case clickClapperlist = "click_clapperlist"
+
     
-    
-    // 솝레터 이벤트
+    // MARK: 솝레터
     case viewSoptletterOnboarding = "view_soptletter_onboarding"
     case viewSoptletterNickname = "view_soptletter_nickname"
     case clickSoptletterStartButton = "click_soptletter_start_button"
@@ -95,7 +96,7 @@ public enum AmplitudeEventType: String {
     case clickDoneExportSoptletter = "click_done_export_soptletter"
     case clickQuitSoptletter = "click_quit_soptletter"
     
-    // 마이페이지 이벤트
+    // MARK: 마이페이지 이벤트
     case viewMypageMain = "view_mypage_main"
     case clickProfileEditButton = "click_profile_edit_button"
     case clickMypageSoptlog = "click_mypage_soptlog"
