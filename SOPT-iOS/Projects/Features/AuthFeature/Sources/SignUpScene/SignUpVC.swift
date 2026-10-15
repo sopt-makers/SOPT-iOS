@@ -19,7 +19,7 @@ import BaseFeatureDependency
 import SnapKit
 import Then
 
-public class SignUpVC: UIViewController, SignUpViewControllable {
+public class SignUpVC: UIViewController {
     
     //MARK: - Properties
     

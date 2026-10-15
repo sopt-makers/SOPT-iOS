@@ -15,7 +15,7 @@ import MDS
 
 import BaseFeatureDependency
 
-final class HomeForMemberVC: UIViewController, HomeForMemberViewControllable {
+final class HomeForMemberVC: UIViewController {
     
     // MARK: - Properties
     

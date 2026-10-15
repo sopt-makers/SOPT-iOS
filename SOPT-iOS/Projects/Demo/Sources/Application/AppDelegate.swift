@@ -10,6 +10,12 @@ import UIKit
 import Networks
 import Core
 import BaseFeatureDependency
+#if DEBUG
+import NectoDefaultPlugins
+import NectoProcessMetrics
+import NectoSDK
+import NectoURLSessionCapture
+#endif
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,6 +24,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application( _ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+        #if DEBUG
+        NectoSessionInjector.install()
+        ScreenTracker.shared.install()
+        NectoSDK.register(URLSessionNetworkPlugin())
+        NectoSDK.register(ProcessPerformancePlugin())
+        NectoSDK.register(NectoUIControlPlugin())
+        NectoSDK.register(SOPTDebugPlugin())
+        AmplitudeInstance.onTrack = { eventType, properties in
+            AmplitudeEventRecorder.shared.record(eventType: eventType, properties: properties)
+        }
+        NectoSDK.start()
+        #endif
+
         // AppLifeCycleAdapter에서 @Injected를 사용하기에 registerDependencies를 먼저 호출한다.
         registerDependencies()
         configureAppLifecycleAdapter()

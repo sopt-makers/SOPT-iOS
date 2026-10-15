@@ -16,7 +16,7 @@ import MDS
 
 import BaseFeatureDependency
 
-final class HomeCalendarDetailVC: UIViewController, HomeCalendarDetailViewControllable {
+final class HomeCalendarDetailVC: UIViewController {
 
     // MARK: Properties
     

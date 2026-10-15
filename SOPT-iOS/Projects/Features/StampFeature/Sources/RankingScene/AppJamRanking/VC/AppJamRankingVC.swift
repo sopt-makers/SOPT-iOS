@@ -15,7 +15,7 @@ import MDS
 
 import SnapKit
 
-final class AppJamRankingVC: UIViewController, AppJamRankingViewControllable {
+final class AppJamRankingVC: UIViewController {
     
     // MARK: - Properties
 

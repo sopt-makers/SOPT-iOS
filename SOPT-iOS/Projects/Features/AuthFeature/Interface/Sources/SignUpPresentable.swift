@@ -12,8 +12,6 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol SignUpViewControllable: ViewControllable {}
-
 public protocol SignUpRoutingTrigger {
     var onSignUpSuccess: (() -> Void)? { get set }
     var onLoginHelpButtonTapped: (() -> Void)? { get set }

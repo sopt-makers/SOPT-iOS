@@ -48,8 +48,7 @@ public final class PokeNotificationListCoordinator: BaseCoordinator {
             
             guard let bottomSheet = self?.factory
                 .makePokeMessageTemplateBottomSheet(messageType: userModel.isFirstMeet ? .pokeSomeone : .pokeFriend, config: messageTemplateConfig)
-                    .vc
-                    .viewController as? PokeMessageTemplateBottomSheet
+                    .vc as? PokeMessageTemplateBottomSheet
             else { return .empty() }
             
             let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate(minHeight: PokeMessageTemplateBottomSheet.minimumContentHeight))
@@ -64,14 +63,14 @@ public final class PokeNotificationListCoordinator: BaseCoordinator {
         pokeNotiListVC.vm.onNewFriendAdded = { [weak self] friendName in
             guard let self else { return }
             
-            let pokeMakingFriendCompletedVC = self.factory.makePokeMakingFriendCompleted(friendName: friendName).viewController
+            let pokeMakingFriendCompletedVC = self.factory.makePokeMakingFriendCompleted(friendName: friendName)
             pokeMakingFriendCompletedVC.modalPresentationStyle = .overFullScreen
             self.rootController?.present(pokeMakingFriendCompletedVC, animated: false)
         }
 
         pokeNotiListVC.vm.onAnonymousFriendUpgrade = { [weak self] user in
             guard let self else { return }
-            let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user).viewController
+            let pokeAnonymousFriendUpgradeVC = self.factory.makePokeAnonymousFriendUpgrade(user: user)
             pokeAnonymousFriendUpgradeVC.modalPresentationStyle = .overFullScreen
             self.rootController?.present(pokeAnonymousFriendUpgradeVC, animated: false)
         }

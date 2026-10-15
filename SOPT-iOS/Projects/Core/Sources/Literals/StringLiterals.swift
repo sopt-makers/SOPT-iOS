@@ -506,6 +506,7 @@ public struct I18N {
     public struct Soptletter {
         public static let navigationTitle = "솝레터 작성"
         public static let descriptionText = "나와 같은 기수의 SOPT\n회원들에게 전하고 싶은 말을\n자유롭게 적어보세요."
+        public static let selectTopicText = "주제 선택"
         public static let recipient = "익명의 무무"
         public static let placeholder = "나와 같은 기수의 솝트인들에게 전하고 싶은 말을 자유롭게 적어보세요."
         public static let charLimit = "0/350자"

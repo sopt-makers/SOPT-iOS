@@ -28,6 +28,11 @@ final class SelectTopicVC: UIViewController {
 
     private let cellTapSubject = PassthroughSubject<SoptletterTopicModel, Never>()
     
+    private lazy var writeButtonTap: Driver<Void> = writeButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
+    
     private var topics: [SoptletterTopicModel] = []
     
     // MARK: - Properties
@@ -46,10 +51,12 @@ final class SelectTopicVC: UIViewController {
         $0.separatorStyle = .none
         $0.showsVerticalScrollIndicator = false
         $0.rowHeight = UITableView.automaticDimension
-        $0.estimatedRowHeight = 46
+        $0.estimatedRowHeight = 68
         $0.contentInset = UIEdgeInsets(top: BaseSpacing.Base.s12, left: 0, bottom: BaseSpacing.Base.s20, right: 0)
-        SoptletterTopicCell.register(target: $0)
+        SoptletterTopicListCell.register(target: $0)
     }
+    
+    private let writeButton = MDSFloatingButton(size: .default, icon: MDSIcon.writeOutlined)
     
     init(viewModel: SelectTopicViewModel) {
         self.viewModel = viewModel
@@ -79,7 +86,7 @@ extension SelectTopicVC {
     
     func setLayout() {
         let safeArea = view.safeAreaLayoutGuide
-        view.addSubviews(backButton, navTitleLabel, tableView)
+        view.addSubviews(backButton, navTitleLabel, tableView, writeButton)
         
         backButton.snp.makeConstraints { make in
             make.top.equalTo(safeArea.snp.top).inset(BaseSpacing.Base.s12)
@@ -96,13 +103,19 @@ extension SelectTopicVC {
             make.top.equalTo(backButton.snp.bottom).offset(BaseSpacing.Base.s16)
             make.leading.trailing.bottom.equalToSuperview()
         }
+        
+        writeButton.snp.makeConstraints { make in
+            make.trailing.equalTo(view.safeAreaLayoutGuide).inset(BaseSpacing.Base.s20)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(BaseSpacing.Base.s28)
+        }
     }
     
     func bindViewModel() {
         let input = SelectTopicViewModel.Input(
             viewDidLoad: Just<Void>(()).asDriver(),
             naviBackTap: naviBackTap,
-            cellTap: cellTapSubject.asDriver()
+            cellTap: cellTapSubject.asDriver(),
+            writeButtonTap: writeButtonTap.asDriver()
         )
         
         let output = viewModel.transform(from: input, cancelBag: cancelBag)
@@ -126,11 +139,17 @@ extension SelectTopicVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: SoptletterTopicCell.className,
+            withIdentifier: SoptletterTopicListCell.className,
             for: indexPath
-        ) as? SoptletterTopicCell else { return UITableViewCell() }
+        ) as? SoptletterTopicListCell else { return UITableViewCell() }
         
-        cell.configure(title: topics[indexPath.row].title)
+        cell.configure(
+            title: topics[indexPath.row].title,
+            description: "디스크립션션션션션션",
+            isHot: true,
+            isNew: true,
+            count: 10
+        )
         return cell
     }
     

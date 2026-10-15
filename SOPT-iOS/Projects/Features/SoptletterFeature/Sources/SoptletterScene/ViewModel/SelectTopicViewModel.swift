@@ -18,6 +18,7 @@ final class SelectTopicViewModel: SelectTopicViewModelType {
     var onCellTap: ((SoptletterTopicModel) -> Void)?
     var onNaviBackTap: (() -> Void)?
     var showAlert: (() -> Void)?
+    var onWriteButtonTap: (() -> Void)?
     
     private let coordinator: AnyCoordinatorObject
     private let useCase: SoptletterUseCase
@@ -29,6 +30,7 @@ final class SelectTopicViewModel: SelectTopicViewModelType {
         let viewDidLoad: Driver<Void>
         let naviBackTap: Driver<Void>
         let cellTap: Driver<SoptletterTopicModel>
+        let writeButtonTap: Driver<Void>
     }
     
     public struct Output {
@@ -71,6 +73,12 @@ final class SelectTopicViewModel: SelectTopicViewModelType {
             .withUnretained(self)
             .sink { owner, topic in
                 owner.onCellTap?(topic)
+            }.store(in: cancelBag)
+        
+        input.writeButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onWriteButtonTap?()
             }.store(in: cancelBag)
         
         return output
