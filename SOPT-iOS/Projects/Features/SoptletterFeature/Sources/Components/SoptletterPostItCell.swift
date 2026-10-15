@@ -72,7 +72,7 @@ extension SoptletterPostItCell {
 
         contentLabel.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.directionalHorizontalEdges.equalToSuperview().inset(BaseSpacing.Base.s24)
+            make.directionalHorizontalEdges.equalToSuperview().inset(BaseSpacing.Base.s14)
         }
     }
 }
