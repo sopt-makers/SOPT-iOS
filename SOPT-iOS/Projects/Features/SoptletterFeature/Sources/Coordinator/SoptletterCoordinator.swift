@@ -97,8 +97,10 @@ public final class SoptletterCoordinator: BaseCoordinator {
             }
         }
         
-        selectTopic.vm.onCellTap = { [weak self] topic in
-            self?.showSoptletterMain(topicId: topic.topicId)
+        selectTopic.vm.onCellTap = { [weak self, weak viewModel = selectTopic.vm] topic in
+            self?.showSoptletterMain(topicId: topic.topicId) {
+                viewModel?.refreshTopicTrigger()
+            }
         }
         
         selectTopic.vm.onWriteButtonTap = { [weak self] in
@@ -175,11 +177,16 @@ public final class SoptletterCoordinator: BaseCoordinator {
         controller?.present(selectTopicBottomSheet.vc, animated: true)
     }
     
-    private func showSoptletterMain(topicId: Int?, messageId: Int? = nil) {
+    private func showSoptletterMain(
+        topicId: Int?, messageId: Int? = nil,
+        onDismiss: (() -> Void)? = nil
+    ) {
         var soptletterMain = factory.makeSoptletterMainVC(coordinator: self, topicId: topicId)
 
         soptletterMain.vm.onNaviBackTap = { [weak self] in
-            self?.soptletterMainController?.dismiss(animated: true)
+            self?.soptletterMainController?.dismiss(animated: true) {
+                onDismiss?()
+            }
         }
         
         soptletterMain.vm.onWriteTap = { [weak self] in

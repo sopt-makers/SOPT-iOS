@@ -231,6 +231,8 @@ extension TabBarController {
                     .foregroundColor: DSKitAsset.Colors.gray900.color
                 ], for: .normal)
                 item.badgeValue = badgeText
+            } else {
+                item.badgeValue = nil
             }
         }
     }

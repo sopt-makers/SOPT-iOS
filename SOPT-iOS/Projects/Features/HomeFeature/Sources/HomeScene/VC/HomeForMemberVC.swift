@@ -361,14 +361,15 @@ extension HomeForMemberVC {
             .recentSchedule(data.recentSchedule)
         ]
         
+        snapshot.deleteItems(snapshot.itemIdentifiers(inSection: .appService))
+        snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
+        
         let existingItems = snapshot.itemIdentifiers.filter { items.contains($0) }
         
-        if !existingItems.isEmpty {
-            snapshot.reconfigureItems(existingItems)
-            self.dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
-                self?.startPopularPostsAnimationLoop()
-                self?.startLatestPostAnimationLoop()
-            }
+        snapshot.reconfigureItems(existingItems)
+        self.dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
+            self?.startPopularPostsAnimationLoop()
+            self?.startLatestPostAnimationLoop()
         }
     }
     
