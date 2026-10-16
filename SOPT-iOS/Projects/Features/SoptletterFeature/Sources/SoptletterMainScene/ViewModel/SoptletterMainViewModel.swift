@@ -195,9 +195,4 @@ extension SoptletterMainViewModel {
     public func refreshMessagesTrigger() {
         refreshTriggerSubject.send()
     }
-    
-    public func changeTopic(_ topicId: Int) {
-        self.topicId = topicId
-        refreshMessagesTrigger()
-    }
 }
