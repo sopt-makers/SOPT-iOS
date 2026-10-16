@@ -74,6 +74,8 @@ public protocol SelectTopicRoutingTrigger {
     var onCellTap: ((SoptletterTopicModel) -> Void)? { get set }
     var showAlert: (() -> Void)? { get set }
     var onWriteButtonTap: (() -> Void)? { get set }
+    
+    func refreshTopicTrigger()
 }
 
 public typealias SelectTopicViewModelType = ViewModelType & SelectTopicRoutingTrigger
