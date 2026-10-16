@@ -52,6 +52,7 @@ public final class SoptletterDetailModalVC: UIViewController {
 
     private let contentScrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = true
+        $0.indicatorStyle = .black
     }
 
     private let contentLabel = UILabel().then {
@@ -341,13 +342,13 @@ private extension SoptletterDetailModalVC {
         }
 
         contentLabel.snp.makeConstraints { make in
-             make.edges.equalToSuperview()
-             make.width.equalTo(contentScrollView)
+            make.edges.equalToSuperview()
+            make.width.equalTo(contentScrollView.frameLayoutGuide).offset(-BaseSpacing.Base.s16)
          }
 
          contentTextView.snp.makeConstraints { make in
              make.edges.equalToSuperview()
-             make.width.equalTo(contentScrollView)
+             make.width.equalTo(contentScrollView.frameLayoutGuide).offset(-BaseSpacing.Base.s16)
          }
 
          charCountLabel.snp.makeConstraints { make in
