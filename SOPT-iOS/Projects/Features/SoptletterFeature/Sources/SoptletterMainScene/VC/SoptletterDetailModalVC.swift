@@ -59,8 +59,7 @@ public final class SoptletterDetailModalVC: UIViewController {
     }
 
     private let contentTextView = UITextView().then {
-        $0.font = Typography.body1.font
-        $0.textColor = SemanticColor.Fg.Neutral.ghost
+        $0.setTypographyUsingLineSpacing(Typography.body1, textColor: SemanticColor.Fg.Neutral.ghost)
         $0.backgroundColor = .clear
         $0.isScrollEnabled = false
         $0.isEditable = false
@@ -400,6 +399,8 @@ extension SoptletterDetailModalVC: UITextViewDelegate {
     public func textViewDidChange(_ textView: UITextView) {
         updateCharCount(textView.text.count)
         updateConfirmButtonState(textView.text.count)
+        
+        contentTextView.applyFontFallback(font: Typography.body1.font, color: SemanticColor.Fg.Neutral.ghost)
     }
 }
 
@@ -436,6 +437,7 @@ extension SoptletterDetailModalVC {
 
         if isEditing {
             contentTextView.text = contentLabel.text
+            contentTextView.setTypographyUsingLineSpacing(Typography.body1, textColor: SemanticColor.Fg.Neutral.ghost)
             updateCharCount(contentTextView.text.count)
             updateConfirmButtonState(contentTextView.text.count)
         } else {
