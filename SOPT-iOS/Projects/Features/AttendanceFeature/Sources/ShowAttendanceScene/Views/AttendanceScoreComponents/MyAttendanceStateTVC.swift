@@ -21,11 +21,6 @@ final class MyAttendanceStateTVC: UITableViewCell {
     
     // MARK: - UI Components
     
-    // TODO: - MDSTag 변경 후 적용
-//    private let stateTag: MDSTag = {
-//        let tag = MDSTag(text: "", size: .small, shape: .rect, variant: .default, style: .solid)
-//        return tag
-//    }()
     private let stateLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -34,17 +29,9 @@ final class MyAttendanceStateTVC: UITableViewCell {
         return label
     }()
     
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = SemanticColor.Fg.Neutral.bold
-        return label
-    }()
+    private let titleLabel = UILabel()
     
-    private let dateLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = SemanticColor.Fg.Neutral.subtle
-        return label
-    }()
+    private let dateLabel = UILabel()
     
     // MARK: - Initialization
     
@@ -99,9 +86,9 @@ extension MyAttendanceStateTVC {
         stateLabel.setTypography(Typography.label4, textColor: status.tagTextColor)
         
         titleLabel.text = model.name
-        titleLabel.setTypography(Typography.label3)
+        titleLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold)
         
         dateLabel.text = model.date
-        dateLabel.setTypography(Typography.label4)
+        dateLabel.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
     }
 }

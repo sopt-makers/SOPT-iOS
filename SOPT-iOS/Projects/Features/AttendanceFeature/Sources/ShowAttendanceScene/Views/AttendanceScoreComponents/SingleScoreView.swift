@@ -19,17 +19,8 @@ final class SingleScoreView: UIView {
     
     // MARK: - UI Components
     
-    private let singleScoreTitleLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = SemanticColor.Fg.Neutral.subtle
-        return label
-    }()
-    
-    private let singleScoreCountLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = SemanticColor.Fg.Neutral.bold
-        return label
-    }()
+    private let singleScoreTitleLabel = UILabel()
+    private let singleScoreCountLabel = UILabel()
     
     // MARK: - Initialization
 
@@ -68,7 +59,7 @@ extension SingleScoreView {
     
     private func updateScoreTypeLabel(_ type: AttendanceStateType) {
         singleScoreTitleLabel.text = type.korean
-        singleScoreTitleLabel.setTypography(Typography.label4)
+        singleScoreTitleLabel.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
     }
 }
 
@@ -79,6 +70,6 @@ extension SingleScoreView {
     func setData(_ count: Int, _ type: AttendanceStateType) {
         setDefaultLayout(type)
         singleScoreCountLabel.text = "\(count)회"
-        singleScoreCountLabel.setTypography(Typography.label3)
+        singleScoreCountLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold)
     }
 }

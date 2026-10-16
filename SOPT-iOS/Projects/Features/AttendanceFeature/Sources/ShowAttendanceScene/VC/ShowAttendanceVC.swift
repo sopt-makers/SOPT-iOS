@@ -240,7 +240,6 @@ extension ShowAttendanceVC {
                 if owner.sceneType == .scheduledDay {
                     owner.headerScheduleView.scheduleType = .scheduledDay
                     owner.setScheduledData(model)
-                    // TODO: - 출석 점수 미반영일(NO_ATTENDANCE)에도 버튼 노출 중. 숨김 여부 기획 확인 필요
                     owner.attendanceButton.isHidden = false
                     owner.attendanceGradientView.isHidden = false
                 } else {
@@ -256,7 +255,7 @@ extension ShowAttendanceVC {
             .withUnretained(self)
             .sink { owner, model in
                 guard let model else { return }
-                owner.infoButton.setImage(MDSIcon.infoCircleOutlined.image, for: .normal)
+                owner.infoButton.setImage(MDSIcon.alertCircleOutlined.image, for: .normal)
                 owner.setScoreData(model)
                 owner.endRefresh()
             }.store(in: self.cancelBag)

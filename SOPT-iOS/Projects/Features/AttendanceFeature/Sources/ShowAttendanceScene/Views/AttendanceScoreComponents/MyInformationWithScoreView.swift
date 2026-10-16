@@ -19,11 +19,7 @@ final class MyInformationWithScoreView: UIView {
     
     // MARK: - UI Components
     
-    private let nameLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = SemanticColor.Fg.Neutral.subtle
-        return label
-    }()
+    private let nameLabel = UILabel()
     
     private let currentScoreLabel = UILabel()
     
@@ -52,7 +48,7 @@ extension MyInformationWithScoreView {
         }
         
         currentScoreLabel.snp.makeConstraints {
-            $0.top.equalTo(nameLabel.snp.bottom).offset(8)
+            $0.top.equalTo(nameLabel.snp.bottom).offset(14)
             $0.leading.equalToSuperview()
         }
     }
@@ -64,7 +60,7 @@ extension MyInformationWithScoreView {
     
     func setData(name: String, part: String, generation: Int, count: Double) {
         nameLabel.text = "\(generation)기 \(part) \(name)"
-        nameLabel.setTypography(Typography.title5)
+        nameLabel.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.subtle)
         
         chageFontAndColor(with: "\(doubleToString(count))점")
     }

@@ -46,7 +46,6 @@ public final class AttendanceVC: UIViewController {
     /// 출석하기 모달 뷰
     private let attendanceStackView: UIStackView = {
         let stackView = UIStackView()
-        stackView.spacing = Metric.baseSpacing
         stackView.alignment = .center
         stackView.axis = .vertical
         stackView.layoutMargins = UIEdgeInsets(top: Metric.contentInset, left: 0, bottom: Metric.contentInset, right: 0)
@@ -212,13 +211,12 @@ extension AttendanceVC {
         }
         
         attendanceStackView.setCustomSpacing(-Metric.contentInset, after: topStackView)
-        attendanceStackView.setCustomSpacing(Metric.baseInset / 2, after: titleLabel)
-        attendanceStackView.setCustomSpacing(Metric.baseInset, after: subtitleLabel)
+        attendanceStackView.setCustomSpacing(BaseSpacing.Base.s8, after: titleLabel)
+        attendanceStackView.setCustomSpacing(BaseSpacing.Base.s28, after: subtitleLabel)
         attendanceStackView.setCustomSpacing(Metric.customSpacing, after: attattendanceCodeStackView)
         
         attendanceButton.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(Metric.contentInset)
-            $0.height.equalTo(Metric.bottomButtonHeight)
         }
         
         attendanceStackView.snp.makeConstraints {
@@ -310,6 +308,7 @@ extension AttendanceVC {
             .withUnretained(self)
             .sink { owner, errorMsg in
                 owner.alertLabel.text = errorMsg
+                owner.alertLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Danger.default)
                 owner.alertLabel.isHidden = false
                 owner.attendanceCodeView.setCodeTextFieldEmpty()
             }
