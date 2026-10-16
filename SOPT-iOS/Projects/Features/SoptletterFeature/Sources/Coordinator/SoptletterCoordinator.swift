@@ -97,9 +97,9 @@ public final class SoptletterCoordinator: BaseCoordinator {
             }
         }
         
-        selectTopic.vm.onCellTap = { [weak self] topic in
+        selectTopic.vm.onCellTap = { [weak self, weak viewModel = selectTopic.vm] topic in
             self?.showSoptletterMain(topicId: topic.topicId) {
-                selectTopic.vm.refreshTopicTrigger()
+                viewModel?.refreshTopicTrigger()
             }
         }
         

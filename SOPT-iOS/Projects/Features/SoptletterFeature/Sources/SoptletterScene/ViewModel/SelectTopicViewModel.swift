@@ -92,6 +92,7 @@ final class SelectTopicViewModel: SelectTopicViewModelType {
         fetchTopicTask = Task {
             do {
                 let result = try await useCase.fetchTopics()
+                guard !Task.isCancelled else { return }
                 output.topicsSubject.send(result)
             } catch {
                 showAlert?()

@@ -69,7 +69,7 @@ public typealias SoptletterPrintPresentable = (vc: UIViewController, vm: any Sop
 
 // SoptletterTopic
 
-public protocol SelectTopicRoutingTrigger {
+public protocol SelectTopicRoutingTrigger: AnyObject {
     var onNaviBackTap: (() -> Void)? { get set }
     var onCellTap: ((SoptletterTopicModel) -> Void)? { get set }
     var showAlert: (() -> Void)? { get set }
