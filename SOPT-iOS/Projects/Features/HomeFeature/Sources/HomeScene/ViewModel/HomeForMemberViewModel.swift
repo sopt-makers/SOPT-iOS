@@ -247,7 +247,7 @@ extension HomeForMemberViewModel {
             async let dashBoard = fetchDashBoard()
             async let recentSchedule = fetchRecentSchedule()
             async let survey = fetchSurvey()
-            async let appService = useCase.getAppServicesAsync()
+            async let appService = useCase.getAppServicesForMember()
             async let popularPosts = useCase.getPopularPostsAsync()
             async let latestPosts = useCase.getLatestPostsAsync()
                         
