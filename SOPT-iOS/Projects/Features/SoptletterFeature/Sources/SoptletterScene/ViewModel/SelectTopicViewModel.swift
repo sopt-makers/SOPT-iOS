@@ -53,6 +53,7 @@ final class SelectTopicViewModel: SelectTopicViewModelType {
         input.viewDidLoad
             .withUnretained(self)
             .sink { owner, _ in
+                AmplitudeInstance.shared.trackWithUserType(event: .viewSoptletterTopicList)
                 owner.fetchTopics(output: output)
             }.store(in: cancelBag)
         
@@ -66,11 +67,13 @@ final class SelectTopicViewModel: SelectTopicViewModelType {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNaviBackTap?()
+                AmplitudeInstance.shared.trackWithUserType(event: .clickQuitSoptletter)
             }.store(in: cancelBag)
         
         input.cellTap
             .withUnretained(self)
             .sink { owner, topic in
+                AmplitudeInstance.shared.trackWithUserType(event: .clickSoptletterTopic)
                 owner.onCellTap?(topic)
             }.store(in: cancelBag)
         

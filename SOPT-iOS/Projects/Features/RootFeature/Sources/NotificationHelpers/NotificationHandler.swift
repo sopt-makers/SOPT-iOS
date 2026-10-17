@@ -29,9 +29,19 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
     public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
         let userInfo = notification.request.content.userInfo
         print("APNs 푸시 알림 페이로드: \(userInfo)")
+        
         if let payload = NotificationPayload(dictionary: userInfo) {
-            AmplitudeInstance.shared.track(eventType: .receivedPush, eventProperties: ["notificationId": payload.id,
-                                                                                       "admin_category": payload.category ?? "없음"])
+            let notifiactionLinkType = payload.webLink != nil ? "web" : payload.hasDeepLink ? "deep_link" : "none"
+            var properties: [String: Any] = [
+                "notification_id": payload.id,
+                "notification_link_type": notifiactionLinkType
+            ]
+            
+            if let pushType = payload.pushType {
+                properties["notification_product_type"] = pushType
+            }
+            
+            AmplitudeInstance.shared.trackWithUserType(event: .receivedPush, otherProperties: properties)
         }
         
         return([.badge, .banner, .list, .sound])
@@ -49,11 +59,16 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
         isColdStart = false
         
         let notifiactionLinkType = payload.webLink != nil ? "web" : payload.hasDeepLink ? "deep_link" : "none"
-        AmplitudeInstance.shared.trackWithUserType(event: .clickPush, otherProperties: [
+        var properties: [String: Any] = [
             "notification_id": payload.id,
             "notification_link_type": notifiactionLinkType,
             "notification_launch_type": launchType
-        ])
+        ]
+        if let pushType = payload.pushType {
+            properties["notification_product_type"] = pushType
+        }
+        AmplitudeInstance.shared.trackWithUserType(event: .clickPush, otherProperties: properties)
+    
         guard payload.hasLink else {
             self.deepLink.send(makeComponentsForEmptyLink(notificationId: payload.id))
             return
