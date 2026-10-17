@@ -95,6 +95,8 @@ public enum AmplitudeEventType: String {
     case clickExportSoptletter = "click_export_soptletter"
     case clickDoneExportSoptletter = "click_done_export_soptletter"
     case clickQuitSoptletter = "click_quit_soptletter"
+    case viewSoptletterTopicList = "view_soptletter_topic_list"
+    case clickSoptletterTopic = "click_soptletter_topic"
     
     // MARK: 마이페이지 이벤트
     case viewMypageMain = "view_mypage_main"
