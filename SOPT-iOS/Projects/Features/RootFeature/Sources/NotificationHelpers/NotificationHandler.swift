@@ -31,7 +31,7 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
         print("APNs 푸시 알림 페이로드: \(userInfo)")
         
         if let payload = NotificationPayload(dictionary: userInfo) {
-            let notifiactionLinkType = payload.webLink != nil ? "web" : payload.hasDeepLink ? "deep_link" : "none"
+            let notifiactionLinkType = payload.hasWebLink ? "web" : payload.hasDeepLink ? "deep_link" : "none"
             var properties: [String: Any] = [
                 "notification_id": payload.id,
                 "notification_link_type": notifiactionLinkType
@@ -58,7 +58,7 @@ public final class NotificationHandler: NSObject, UNUserNotificationCenterDelega
         print(launchType, "런치타입")
         isColdStart = false
         
-        let notifiactionLinkType = payload.webLink != nil ? "web" : payload.hasDeepLink ? "deep_link" : "none"
+        let notifiactionLinkType = payload.hasWebLink ? "web" : payload.hasDeepLink ? "deep_link" : "none"
         var properties: [String: Any] = [
             "notification_id": payload.id,
             "notification_link_type": notifiactionLinkType,
