@@ -8,15 +8,14 @@
 
 import UIKit
 
-import DSKit
+import MDS
 
 final class MyPageSectionHeaderView: UICollectionReusableView {
       
     // MARK: - UI Components
     
     private let sectionTitle = UILabel().then{
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 12)
-        $0.textColor = DSKitAsset.Colors.gray80.color
+        $0.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
     }
     
     // MARK: - Life Cycle
@@ -50,6 +49,7 @@ extension MyPageSectionHeaderView {
 extension MyPageSectionHeaderView {
     public func configureCell(title: String) {
         sectionTitle.text = title
+        sectionTitle.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
     }
 }
 

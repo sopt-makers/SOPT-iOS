@@ -9,31 +9,28 @@
 import UIKit
 
 import Then
-import DSKit
+import MDS
 
 final class HomeCalendarDetailCVC: UICollectionViewCell {
     
     // MARK: UI Components
     
     private let circleView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.gray500.color
         $0.layer.cornerRadius = 7.5
     }
     
     private let stickView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.gray500.color
+        $0.backgroundColor = SemanticColor.Stroke.Neutral.default
     }
     
     private let dateLabel = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
-        $0.textColor = DSKitAsset.Colors.gray300.color
+        $0.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
     }
-    
-    private let homeSquareTagView = HomeSquareTagView()
+
+    private let homeSquareTagView = MDSTag(text: "", size: .small, shape: .rect, variant: .secondary, style: .subtle)
     
     private let calendarTitleLabel = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 18)
-        $0.textColor = DSKitAsset.Colors.gray10.color
+        $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
     }
     
     // MARK: - Initialization
@@ -94,12 +91,17 @@ extension HomeCalendarDetailCVC {
     func configureCell(_ model: HomeCalendarDetailPresentationModel?) {
         guard let model else { return }
         dateLabel.text = model.date
+        dateLabel.setTypography(Typography.label4)
+        
         calendarTitleLabel.text = model.title
+        calendarTitleLabel.setTypography(Typography.title4)
+        
         if let tagType = CalenderCategoryTagType(rawValue: model.type) {
-            self.homeSquareTagView.setData(title: tagType.text,
-                                                 titleColor: tagType.textColor,
-                                                 backgroundColor: tagType.backgroundColor)
+            self.homeSquareTagView.text = tagType.text
+            // TODO: - MDS 수정 후 적용
+//            self.homeSquareTagView.variant = tagType.tagType
         }
-        circleView.backgroundColor = model.isRecentSchedule ? DSKitAsset.Colors.white.color : DSKitAsset.Colors.gray500.color
+        
+        circleView.backgroundColor = model.isRecentSchedule ? SemanticColor.Fg.Neutral.bold : SemanticColor.Fg.Neutral.ghost
     }
 }

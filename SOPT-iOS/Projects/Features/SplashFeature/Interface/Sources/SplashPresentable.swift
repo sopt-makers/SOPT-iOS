@@ -12,8 +12,6 @@ import Core
 import Domain
 import BaseFeatureDependency
 
-public protocol SplashViewControllable: ViewControllable { }
-
 public protocol SplashRoutingTrigger {
     var onNoticeSkipped: (() -> Void)? { get set }
     var onOptionalNoticeExist: ((AppNoticeModel) -> Void)? { get set }

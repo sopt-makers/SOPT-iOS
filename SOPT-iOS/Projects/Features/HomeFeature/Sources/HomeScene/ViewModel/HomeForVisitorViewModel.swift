@@ -63,15 +63,16 @@ extension HomeForVisitorViewModel {
         let output = Output()
         
         input.viewDidLoad
-            .handleEvents(receiveOutput: {
-                output.isLoading.send(true)
-            })
-            .flatMap(useCase.getAppServices)
             .withUnretained(self)
-            .sink { owner, appServiceModel in
-                let appService = appServiceModel.map { $0.toPresentation() }
-                output.appService.send(appService)
-                output.isLoading.send(false)
+            .sink { owner, _ in
+                output.isLoading.send(true)
+                Task {
+                    let appServiceModel = (try? await owner.useCase.getAppServicesForVisitor()) ?? []
+                    await MainActor.run {
+                        output.appService.send(appServiceModel.map { $0.toPresentation() })
+                        output.isLoading.send(false)
+                    }
+                }
             }.store(in: cancelBag)
         
         input.cellTapped

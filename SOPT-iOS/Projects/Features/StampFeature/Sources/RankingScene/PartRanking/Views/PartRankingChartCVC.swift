@@ -48,7 +48,7 @@ final class PartRankingChartCVC: UICollectionViewCell, UICollectionViewRegistera
 extension PartRankingChartCVC {
     
     private func setChartViews() {
-        self.addSubviews(chartStackView)
+        self.contentView.addSubviews(chartStackView)
         
         (1...6).forEach { rank in
             let rectangleView = STPartChartRectangleView(rank: rank)

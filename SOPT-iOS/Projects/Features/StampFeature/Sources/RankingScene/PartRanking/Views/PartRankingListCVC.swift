@@ -90,7 +90,7 @@ extension PartRankingListCVC {
                                 textColor: SemanticColor.Fg.Neutral.default)
         partNameLabel.text = model.part
         partNameLabel.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold)
-        scoreView.setScore(String(format: "%.2f", model.pointsDecimal))
+        scoreView.setScore(String(Int(model.pointsDecimal)))
         setDefaultRanking()
     }
 

@@ -29,16 +29,6 @@ extension MyPageBuilder: MyPageFeatureBuildable {
         return sentenceEditVC
     }
 
-    public func makePrivacyPolicyVC() -> UIViewController {
-        let privacyPolicyVC = PrivacyPolicyVC()
-        return privacyPolicyVC
-    }
-
-    public func makeTermsOfServiceVC() -> UIViewController {
-        let termsOfServiceVC = TermsOfServiceVC()
-        return termsOfServiceVC
-    }
-
     public func makeWithdrawalVC(userType: UserType) -> WithdrawalPresentable {
         let useCase = DefaultSettingUseCase(repository: settingRepository)
         let viewModel = WithdrawalViewModel(useCase: useCase)

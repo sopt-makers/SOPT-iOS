@@ -13,19 +13,13 @@ import SnapKit
 import Then
 
 import Core
-import DSKit
+import MDS
 
 final class MyPageProfileCVC: UICollectionViewCell {
 
     // MARK: - UI Components
-
-    private let profileImageView = UIImageView().then {
-        $0.backgroundColor = DSKitAsset.Colors.gray700.color
-        $0.image = DSKitAsset.Assets.icDefaultProfile.image
-        $0.contentMode = .scaleAspectFill
-        $0.clipsToBounds = true
-        $0.layer.cornerRadius = 40
-    }
+    
+    private let profileImageView = MDSAvatar(size: 80, hasStroke: false)
 
     private let nameLabel = UILabel()
 
@@ -42,16 +36,12 @@ final class MyPageProfileCVC: UICollectionViewCell {
         $0.spacing = 16
         $0.alignment = .center
     }
-
-    private let editProfileButton = UIButton().then {
-        $0.setAttributedTitle(
-            I18N.MyPage.editProfile.applyMDSFont(mdsFont: .body3, color: DSKitAsset.Colors.gray100.color, alignment: .center),
-            for: .normal
-        )
-        $0.layer.cornerRadius = 8
-        $0.layer.borderWidth = 1
-        $0.layer.borderColor = UIColor(hex: "#BABABA").cgColor
-    }
+    
+    private let editProfileButton = MDSActionButton(
+        variant: .secondary,
+        size: .small,
+        title: I18N.MyPage.editProfile
+    )
 
     // MARK: - Properties
 
@@ -114,13 +104,15 @@ extension MyPageProfileCVC {
 
 extension MyPageProfileCVC {
     func configure(name: String, part: String, profileImageURL: String?) {
-        nameLabel.attributedText = name.applyMDSFont(mdsFont: .heading5, color: DSKitAsset.Colors.white.color)
-        partLabel.attributedText = part.applyMDSFont(mdsFont: .label4, color: DSKitAsset.Colors.gray100.color)
+        nameLabel.text = name
+        nameLabel.setTypography(Typography.heading3, textColor: SemanticColor.Fg.Neutral.bold)
+        partLabel.text = part
+        partLabel.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.default)
 
-        guard let profileImageURL else {
-            profileImageView.image = DSKitAsset.Assets.icDefaultProfile.image
-            return
+        if let imageURL = profileImageURL, !imageURL.isEmpty {
+            profileImageView.setImage(with: imageURL)
+        } else {
+            profileImageView.image = nil
         }
-        profileImageView.setImage(with: profileImageURL, placeholder: DSKitAsset.Assets.icDefaultProfile.image)
     }
 }

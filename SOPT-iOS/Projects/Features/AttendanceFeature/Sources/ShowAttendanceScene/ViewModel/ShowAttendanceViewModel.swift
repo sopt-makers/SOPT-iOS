@@ -99,24 +99,8 @@ extension ShowAttendanceViewModel {
             .sink(receiveValue: { model in
                 if model.type != SessionType.noSession.rawValue {
                     self.sceneType = .scheduledDay
-                    
-                    let convertedStartDate = DateFormatManager.shared.serverTimeToString(model.startDate,
-                                                                                         from: .monthDayWeekTime,
-                                                                                         to: .isoWithoutMillis)
-                    let convertedEndDate = DateFormatManager.shared.serverTimeToString(model.endDate,
-                                                                                       from: .monthDayWeekTime,
-                                                                                       to: .isoWithoutMillis)
-                    let newModel = AttendanceScheduleModel(type: model.type,
-                                                           id: model.id,
-                                                           location: model.location,
-                                                           name: model.name,
-                                                           startDate: convertedStartDate,
-                                                           endDate: convertedEndDate,
-                                                           message: model.message,
-                                                           attendances: model.attendances)
-                    
-                    output.scheduleModel = newModel
-                    
+                    output.scheduleModel = model
+
                 } else {
                     self.sceneType = .unscheduledDay
                     output.scheduleModel = model

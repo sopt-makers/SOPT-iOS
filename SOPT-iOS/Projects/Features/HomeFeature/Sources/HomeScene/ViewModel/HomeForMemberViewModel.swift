@@ -198,14 +198,7 @@ extension HomeForMemberViewModel {
             .sink { owner, model in
                 if let userID = model.userID {
                     owner.onProfileImageViewTapped?(userID)
-                    owner.eventTracker.trackClickPostMember(
-                        postRanking: model.postRanking,
-                        sectionName: model.sectionName,
-                        postID: model.postID,
-                        category: model.category
-                    )
                 }
-                
             }
             .store(in: cancelBag)
         
@@ -254,7 +247,7 @@ extension HomeForMemberViewModel {
             async let dashBoard = fetchDashBoard()
             async let recentSchedule = fetchRecentSchedule()
             async let survey = fetchSurvey()
-            async let appService = useCase.getAppServicesAsync()
+            async let appService = useCase.getAppServicesForMember()
             async let popularPosts = useCase.getPopularPostsAsync()
             async let latestPosts = useCase.getLatestPostsAsync()
                         
@@ -299,10 +292,15 @@ extension HomeForMemberViewModel {
     
     private func fetchRecentSchedule() async throws -> HomePresentationModel.RecentSchedule {
         if let cached = fetchedRecentSchedule { return cached }
-        let entity = try await useCase.getRecentScheduleAsync()
-        let recentSchedule = entity.toPresentation()
-        fetchedRecentSchedule = recentSchedule
-        return recentSchedule
+        do {
+           let entity = try await useCase.getRecentScheduleAsync()
+           let recentSchedule = entity.toPresentation()
+           fetchedRecentSchedule = recentSchedule
+           return recentSchedule
+        } catch {
+            // TODO: 임시로 모든 실패를 일정 없음 으로 처리/통합서버 이후 404로 처리하기
+            return HomePresentationModel.RecentSchedule(date: "", type: "", title: "일정 없음")
+        }
     }
     
     private func fetchSurvey() async throws -> HomePresentationModel.Survey {

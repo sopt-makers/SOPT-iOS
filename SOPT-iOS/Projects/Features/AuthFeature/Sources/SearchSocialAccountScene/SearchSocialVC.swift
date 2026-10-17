@@ -19,7 +19,7 @@ import BaseFeatureDependency
 import SnapKit
 import Then
 
-public class SearchSocialAccountVC: UIViewController, SearchSocialAccountViewControllable {
+public class SearchSocialAccountVC: UIViewController {
     
     //MARK: - Properties
     

@@ -12,9 +12,7 @@ import Core
 
 public protocol HomeRepositoryInterface {
     func registerPushToken(with token: String) -> AnyPublisher<Bool, Error>
-    func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Error>
-    func getIsAppjamMode() -> AnyPublisher<Bool, Error>
-    func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Error>
+    func getIsAppjamMode() -> Bool
     func getReportUrl() -> AnyPublisher<SoptampReportUrlModel, Error>
     func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonModel, Error>
     

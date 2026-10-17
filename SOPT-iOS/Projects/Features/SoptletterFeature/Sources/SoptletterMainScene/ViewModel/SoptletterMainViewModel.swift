@@ -25,17 +25,14 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
         let writeButtonTap: Driver<Void>
         let downloadButtonTap: Driver<Void>
         let reportButtonTap: Driver<Void>
-        let menuButtonTap: Driver<Void>
         let postItCellTap: Driver<(messageId: Int, topicId: Int)>
         let imageProcessCompleted: Driver<(image: UIImage, url: URL)>
-        let soptletterHeaderTap: Driver<Int>
     }
     
     // MARK: - Outputs
     
     public struct Output {
         let soptletterMessages = PassthroughSubject<SoptletterItemModel, Never>()
-        let ctaInfo = PassthroughSubject<SoptletterCTAModel, Never>()
         let onDownloadConfirm = PassthroughSubject<Void, Never>()
     }
     
@@ -85,17 +82,11 @@ extension SoptletterMainViewModel {
                 owner.fetchMessages(output: output)
             }.store(in: cancelBag)
         
-        input.soptletterHeaderTap
-            .withUnretained(self)
-            .sink { owner, topicId in
-                owner.ctaTap?(topicId)
-            }.store(in: cancelBag)
         
         input.viewDidLoad
             .withUnretained(self)
             .sink { owner, _ in
                 owner.fetchMessages(output: output)
-                owner.fetchCTA(output: output)
                 AmplitudeInstance.shared.trackWithUserType(event: .viewSoptletterMain)
             }.store(in: cancelBag)
         
@@ -103,13 +94,6 @@ extension SoptletterMainViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNaviBackTap?()
-                AmplitudeInstance.shared.trackWithUserType(event: .clickQuitSoptletter)
-            }.store(in: cancelBag)
-        
-        input.menuButtonTap
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onMenuTap?()
             }.store(in: cancelBag)
         
         input.writeButtonTap
@@ -179,26 +163,7 @@ extension SoptletterMainViewModel {
         }
         
     }
-    
-    public func fetchCTA(output: Output) {
-        fetchCTATask?.cancel()
-        fetchCTATask = Task {
-            do {
-                let result = try await useCase.fetchCTA()
-                try Task.checkCancellation()
-                await MainActor.run {
-                    output.ctaInfo.send(result)
-                }
-            } catch is CancellationError {
-                return
-            } catch {
-                await MainActor.run {
-                    output.ctaInfo.send(.init(showCta: false, topicId: 0, ctaText: ""))
-                }
-            }
-        }
-    }
-    
+
     public func fetchReportForm() {
         fetchReportFormTask?.cancel()
         fetchReportFormTask = Task {
@@ -228,10 +193,5 @@ extension SoptletterMainViewModel {
 
     public func refreshMessagesTrigger() {
         refreshTriggerSubject.send()
-    }
-    
-    public func changeTopic(_ topicId: Int) {
-        self.topicId = topicId
-        refreshMessagesTrigger()
     }
 }

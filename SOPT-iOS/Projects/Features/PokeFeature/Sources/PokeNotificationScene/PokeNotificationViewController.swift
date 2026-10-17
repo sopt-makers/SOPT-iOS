@@ -16,7 +16,7 @@ import DSKit
 
 import SnapKit
 
-public final class PokeNotificationViewController: UIViewController, PokeNotificationViewControllable {
+public final class PokeNotificationViewController: UIViewController {
     private enum Metric {
         static let navigationbarHeight = 44.f
         

@@ -15,16 +15,17 @@ import Then
 
 import Core
 import DSKit
+import MDS
+
 import BaseFeatureDependency
 
-public final class AppMyPageVC: UIViewController, MyPageViewControllable {
+public final class AppMyPageVC: UIViewController {
 
     // MARK: - Properties
 
     private let viewModel: AppMyPageViewModel
     private let userType: UserType
-    // TODO: 앱잼탬프 오픈 여부 API 연동 (별도 이슈에서 진행 예정)
-    private let isAppjamtampOpen: Bool = false
+    private var isAppjamtampOpen: Bool = false
     private var dataSource: UICollectionViewDiffableDataSource<MyPageSectionLayoutKind, MyPageItem>! = nil
     private var cellTapped = PassthroughSubject<MyPageItem, Never>()
     private var refreshTriggered = PassthroughSubject<Void, Never>()
@@ -36,6 +37,7 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
 
     // MARK: - UI Components
 
+    // TODO: - mds 반영 후 수정
     private lazy var navigationBar = OPNavigationBar(
         self,
         type: .none,
@@ -64,14 +66,16 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
         setLayout()
         setRegister()
         setDataSource()
-        applySnapshot()
         bindViewModels()
+        applySnapshot()
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         collectionView.refreshControl = refreshControl
     }
-    
+
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        isAppjamtampOpen = viewModel.isAppjamMode ?? false
+        applySnapshot()
         viewWillAppear.send(())
     }
 
@@ -90,7 +94,7 @@ public final class AppMyPageVC: UIViewController, MyPageViewControllable {
 extension AppMyPageVC {
     private func setUI() {
         self.navigationController?.navigationBar.isHidden = true
-        self.view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        self.view.backgroundColor = SemanticColor.Bg.Layer.basement
     }
 
     private func setLayout() {
@@ -115,7 +119,7 @@ extension AppMyPageVC {
     }
 
     private func setDataSource() {
-        let myPageMenuRegistration = createMyPageeCellRegistration()
+        let myPageMenuRegistration = createMyPageCellRegistration()
 
         let profileRegistration: MyPageProfileCellRegistration = collectionView.createCellRegistration { [weak self] cell, _, item in
             guard let self else { return }

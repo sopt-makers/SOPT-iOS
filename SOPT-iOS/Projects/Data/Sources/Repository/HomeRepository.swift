@@ -45,24 +45,11 @@ extension HomeRepository: HomeRepositoryInterface {
             .eraseToAnyPublisher()
     }
     
-    public func getAppServices() -> AnyPublisher<[Domain.HomeAppServicesModel], any Error> {
-        return homeService.getAppServiceAccessStatus()
-            .map { $0.appServices.map { $0.toDomain() } }
-            .eraseToAnyPublisher()
+    public func getIsAppjamMode() -> Bool {
+        guard let isAppjam = UserDefaultKeyList.User.isAppjam else { return false }
+        return isAppjam
     }
 
-    public func getIsAppjamMode() -> AnyPublisher<Bool, any Error> {
-        return homeService.getAppServiceAccessStatus()
-            .map { $0.isAppjamMode }
-            .eraseToAnyPublisher()
-    }
-
-    public func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], any Error> {
-        calendarService.getCalendarDetail()
-            .map{ $0.map { $0.toDomain() } }
-            .eraseToAnyPublisher()
-    }
-    
     public func getReportUrl() -> AnyPublisher<Domain.SoptampReportUrlModel, any Error> {
         stampService.getReportUrl()
             .map { $0.toDomain() }
@@ -92,12 +79,14 @@ extension HomeRepository: HomeRepositoryInterface {
     
     public func getAppServicesAsync() async throws -> [Domain.HomeAppServicesModel] {
         let entity = try await homeService.getAppServiceAccessStatusAsync()
+        UserDefaultKeyList.User.isAppjam = entity.isAppjamMode
         return entity.appServices.map { $0.toDomain() }
     }
 
     public func getTabAppServicesAsync() async throws -> [Domain.HomeAppServicesModel] {
         let entity = try await homeService.getTabAppServiceAsync()
-        return entity.map { $0.toDomain() }
+        UserDefaultKeyList.User.isAppjam = entity.isAppjamMode
+        return entity.appServices.map { $0.toDomain() }
     }
 
     public func getCalendarDetailAsync() async throws -> [Domain.HomeCalendarDetailModel] {

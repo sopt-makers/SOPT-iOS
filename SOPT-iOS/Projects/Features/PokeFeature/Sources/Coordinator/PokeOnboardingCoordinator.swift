@@ -65,8 +65,7 @@ public final class PokeOnboardingCoordinator: BaseCoordinator {
             
             guard let bottomSheet = self?.factory
                 .makePokeMessageTemplateBottomSheet(messageType: .pokeSomeone, config: messageTemplateConfig)
-                    .vc
-                    .viewController as? PokeMessageTemplateBottomSheet
+                    .vc as? PokeMessageTemplateBottomSheet
             else { return .empty() }
             
             let bottomSheetManager = BottomSheetManager(configuration: .messageTemplate(minHeight: PokeMessageTemplateBottomSheet.minimumContentHeight))

@@ -58,7 +58,7 @@ final class RankingChartCVC: UICollectionViewCell, UICollectionViewRegisterable 
 extension RankingChartCVC {
     
     private func setChartViews() {
-        self.addSubviews(chartStackView)
+        self.contentView.addSubviews(chartStackView)
         
         [RectangleViewRank.rankTwo, RectangleViewRank.rankOne, RectangleViewRank.rankThree].forEach { level in
             let rectangleView = STChartRectangleView.init(level: level)

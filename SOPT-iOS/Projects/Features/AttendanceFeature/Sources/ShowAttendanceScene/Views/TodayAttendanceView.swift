@@ -10,7 +10,6 @@ import UIKit
 
 import Core
 import Domain
-import DSKit
 
 /*
  출석 조회하기 뷰의 상단 오늘의 일정 중

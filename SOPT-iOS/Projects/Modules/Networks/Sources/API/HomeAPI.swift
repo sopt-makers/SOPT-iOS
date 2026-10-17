@@ -31,7 +31,7 @@ extension HomeAPI: BaseAPI {
         case .getAppServiceAccessStatus:
             return "/app-service"
         case .getTabAppService:
-            return "/tab-app-service"
+            return "/tab-app-service-info"
         case .getFABInfo:
             return "/floating-button"
         case .getSurveyInfo:

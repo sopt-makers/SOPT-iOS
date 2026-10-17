@@ -22,6 +22,7 @@ final class STDoubleFloatingButton: UIView {
     
     private lazy var stackView = UIStackView().then {
         $0.axis = .horizontal
+        $0.distribution = .fillEqually
     }
     
     private lazy var personalRankButton = UIButton().then {
@@ -77,12 +78,12 @@ extension STDoubleFloatingButton {
         }
         
         personalRankButton.snp.makeConstraints { make in
-            make.width.equalTo(134.adjusted)
+            make.width.greaterThanOrEqualTo(134.adjusted)
             make.height.equalTo(54)
         }
 
         partRankButton.snp.makeConstraints { make in
-            make.width.equalTo(134.adjusted)
+            make.width.greaterThanOrEqualTo(134.adjusted)
             make.height.equalTo(54)
         }
     }
