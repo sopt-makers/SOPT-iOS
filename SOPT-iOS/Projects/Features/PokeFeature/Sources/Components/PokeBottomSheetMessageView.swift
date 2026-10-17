@@ -10,9 +10,8 @@ import Combine
 import UIKit
 
 import Core
-import DSKit
+import MDS
 import Domain
-
 
 // MARK: - PokeBottomSheetMessageView
 final public class PokeBottomSheetMessageView: UIView {
@@ -25,8 +24,8 @@ final public class PokeBottomSheetMessageView: UIView {
     }
     
     private enum Constant {
-        static let contentClickedStateBackgroundColor = DSKitAsset.Colors.gray700.color
-        static let contentNormalStateBackgroundColor = DSKitAsset.Colors.gray800.color
+        static let contentClickedStateBackgroundColor = SemanticColor.Bg.Neutral.Ghost.hover
+        static let contentNormalStateBackgroundColor = SemanticColor.Bg.Neutral.ghost
     }
     
     // MARK: - Private variables
@@ -47,8 +46,7 @@ final public class PokeBottomSheetMessageView: UIView {
 
     private let contentView = UIView()
     private let leftTitleLabel = UILabel().then {
-        $0.textColor = DSKitAsset.Colors.gray10.color
-        $0.textAlignment = .left
+        $0.setTypography(Typography.label2, textColor: SemanticColor.Fg.Neutral.bold, alignment: .left)
         $0.numberOfLines = 1
     }
     
@@ -60,7 +58,7 @@ final public class PokeBottomSheetMessageView: UIView {
     override public init(frame: CGRect) {
         super.init(frame: frame)
         
-        self.backgroundColor = DSKitAsset.Colors.gray800.color
+        self.backgroundColor = SemanticColor.Bg.Neutral.ghost
         
         self.initializeViews()
         self.setupConstraints()
@@ -97,10 +95,8 @@ extension PokeBottomSheetMessageView {
 extension PokeBottomSheetMessageView {
     public func configure(with messageModel: PokeMessageModel) {
         self.messageModel = messageModel
-        self.leftTitleLabel.attributedText = messageModel.content.applyMDSFont(
-          mdsFont: .body2,
-          color: DSKitAsset.Colors.gray30.color
-        )
+        self.leftTitleLabel.text = messageModel.content
+        self.leftTitleLabel.setTypography(Typography.label2, textColor: SemanticColor.Fg.Neutral.bold, alignment: .left)
     }
     
     public func signalForClick() ->Driver<PokeMessageModel> {

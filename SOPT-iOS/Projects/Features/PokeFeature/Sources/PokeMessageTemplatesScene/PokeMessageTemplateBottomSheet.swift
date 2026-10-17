@@ -9,10 +9,11 @@
 import UIKit
 import Combine
 
-import BaseFeatureDependency
 import Core
-import DSKit
 import Domain
+import MDS
+
+import BaseFeatureDependency
 
 public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessageTemplatesViewControllable {
     
@@ -25,9 +26,6 @@ public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessage
         static let contentLeadingTrailng = 20.f
         
         static let scrollViewTop = 12.f
-        
-        static let anonymousStackViewSpacing = 8.f
-        static let anonymousCheckboxLength = 22.f
         
         static let contentStackViewSpacing = 4.f
     }
@@ -50,30 +48,15 @@ public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessage
     }
     
     private let messegeTemplateTitleLabel = UILabel().then {
-        $0.attributedText = "함께 보낼 메시지를 골라주세요".applyMDSFont(
-            mdsFont: .heading5,
-            color: DSKitAsset.Colors.gray30.color
-        )
+        $0.text = I18N.Poke.MessageBottomSheet.title
+        $0.setTypography(Typography.title3, textColor: SemanticColor.Fg.Neutral.bold)
+    }
+
+    private let anonymousCheckbox = MDSCheckbox(size: .large, title: I18N.Poke.MessageBottomSheet.anonymous).then {
+        $0.isUserInteractionEnabled = false
     }
     
-    private let anonymousStackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = Metric.anonymousStackViewSpacing
-    }
-    
-    private let anonymousCheckboxButton = UIButton().then {
-        $0.layer.cornerRadius = 5
-        $0.setImage(DSKitAsset.Assets.check.image, for: .selected)
-        $0.setBackgroundColor(DSKitAsset.Colors.gray500.color, for: .normal)
-        $0.setBackgroundColor(DSKitAsset.Colors.blue40.color, for: .selected)
-    }
-    
-    private let anonymousDescription = UILabel().then {
-        $0.attributedText = "익명".applyMDSFont(
-            mdsFont: .title6,
-            color: DSKitAsset.Colors.gray10.color
-        )
-    }
+    private let anonymousCheckboxContainer = UIView()
     
     // MARK: - Variables
     private let viewModel: PokeMessageTemplateViewModel
@@ -90,7 +73,7 @@ public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessage
         
         super.init(nibName: nil, bundle: nil)
         
-        self.view.backgroundColor = DSKitAsset.Colors.gray800.color
+        self.view.backgroundColor = SemanticColor.Bg.Neutral.ghost
         
         self.initializeViews()
         self.setupConstraints()
@@ -109,14 +92,11 @@ extension PokeMessageTemplateBottomSheet {
     private func initializeViews() {
         self.view.addSubviews(
             self.messegeTemplateTitleLabel,
-            self.anonymousStackView,
+            self.anonymousCheckboxContainer,
             self.scrollView
         )
         
-        self.anonymousStackView.addArrangedSubviews(
-            self.anonymousCheckboxButton,
-            self.anonymousDescription
-        )
+        self.anonymousCheckboxContainer.addSubview(self.anonymousCheckbox)
         
         self.scrollView.addSubview(self.scrollContainerStackView)
     }
@@ -127,12 +107,14 @@ extension PokeMessageTemplateBottomSheet {
             $0.leading.trailing.equalToSuperview().inset(Metric.contentLeadingTrailng)
         }
         
-        self.anonymousStackView.snp.makeConstraints {
+        self.anonymousCheckbox.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        self.anonymousCheckboxContainer.snp.makeConstraints {
             $0.trailing.equalToSuperview().inset(Metric.contentLeadingTrailng)
             $0.centerY.equalTo(self.messegeTemplateTitleLabel.snp.centerY)
         }
-        
-        self.anonymousCheckboxButton.snp.makeConstraints { $0.size.equalTo(Metric.anonymousCheckboxLength) }
         
         self.scrollView.snp.makeConstraints {
             $0.top.equalTo(self.messegeTemplateTitleLabel.snp.bottom).offset(Metric.scrollViewTop)
@@ -149,15 +131,14 @@ extension PokeMessageTemplateBottomSheet {
 extension PokeMessageTemplateBottomSheet {
     func configure(with messagesModel: PokeMessagesModel) {
         self.messegeTemplateTitleLabel.text = messagesModel.header
+        self.messegeTemplateTitleLabel.setTypography(Typography.label2, textColor: SemanticColor.Fg.Neutral.bold)
         messagesModel.messages.forEach {
             let bottomsheetContentView = PokeBottomSheetMessageView(frame: self.view.frame)
             bottomsheetContentView.configure(with: $0)
             bottomsheetContentView
                 .signalForClick()
                 .sink(receiveValue: { [weak self] value in
-                    
-                    let isAnonymous = self?.anonymousCheckboxButton.isSelected ?? false
-                    
+                    let isAnonymous = self?.anonymousCheckbox.isSelected ?? false
                     self?.messageModelSubject.send((value, isAnonymous: isAnonymous))
                     self?.dismiss(animated: true)
                 }).store(in: self.cancelBag)
@@ -191,36 +172,33 @@ extension PokeMessageTemplateBottomSheet {
             .asDriver()
             .sink { [weak self] messageTemplateConfig in
                 self?.isAnonymousAvailable = messageTemplateConfig.isAnonymousSelectionAvailable
-                self?.anonymousCheckboxButton.isEnabled = messageTemplateConfig.isAnonymousSelectionAvailable
-                self?.anonymousCheckboxButton.isSelected = messageTemplateConfig.isAnonymousSelectionAvailable
+                self?.anonymousCheckbox.isEnabled = messageTemplateConfig.isAnonymousSelectionAvailable
+                self?.anonymousCheckbox.isSelected = messageTemplateConfig.isAnonymousSelectionAvailable
             }
             .store(in: self.cancelBag)
     }
     
     private func initializeButtonActions() {
-        self.anonymousStackView
+        self.anonymousCheckboxContainer
             .gesture()
-            .map { _ in }
-            .merge(with: self.anonymousCheckboxButton.publisher(for: .touchUpInside).map { _ in })
-            .receive(on: RunLoop.main)
             .sink(receiveValue: { [weak self] _ in
                 guard let self else { return }
                 guard isAnonymousAvailable else {
                     ToastUtils.showMDSToast(
                         type: .alert,
-                        text: "천생연분은 실명으로만 콕찌를 수 있어요."
+                        text: I18N.Poke.MessageBottomSheet.onlyReal
                     )
                     return
                 }
                 
-                let isSelected = anonymousCheckboxButton.isSelected
+                let isSelected = anonymousCheckbox.isSelected
             
-                anonymousCheckboxButton.isSelected.toggle()
+                anonymousCheckbox.isSelected.toggle()
                 
                 if isSelected {
                     ToastUtils.showMDSToast(
                         type: .alert,
-                        text: "익명 해제 시, 상대방이 나를 알 수 있어요."
+                        text: I18N.Poke.MessageBottomSheet.revealNotice
                     )
                 }
             }).store(in: self.cancelBag)

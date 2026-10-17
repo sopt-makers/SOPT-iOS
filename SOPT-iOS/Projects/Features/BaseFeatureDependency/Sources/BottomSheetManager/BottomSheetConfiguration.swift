@@ -54,19 +54,6 @@ extension BottomSheetConfiguration {
       )
     }
   
-  public static func onboarding(minHeight: CGFloat) -> Self {
-    return .init(
-      prefersScrollingExpandsWhenScrolledToEdge: true,
-      preferredCornerRadius: 20.f,
-      detents: [
-        .custom { context in
-          max(context.maximumDetentValue * 0.55, minHeight)
-        }
-      ]
-    )
-  }
-  
-  
   public static func messageTemplate(minHeight: CGFloat) -> Self {
     .init(
       prefersScrollingExpandsWhenScrolledToEdge: true,
