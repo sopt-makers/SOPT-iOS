@@ -32,19 +32,16 @@ jobs:
       run:
         working-directory: SOPT-iOS
     env:
-      # App Store Connect API 키 (fastlane의 asc_api_key에서 사용)
-      APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}
-      APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
-      APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
-      # 인증서 저장소(match)
-      MATCH_GIT_PRIVATE_KEY: ${{ secrets.MATCH_GIT_PRIVATE_KEY }}
-      MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-      MATCH_PASSPHRASE: ${{ secrets.MATCH_PASSPHRASE }}
+      # 빌드번호(Time.new.strftime("%Y.%m%d.%H%M"))가 로컬(KST)과 같은 기준으로 만들어지도록 시간대를 고정합니다.
+      TZ: Asia/Seoul
       # 입력값은 셸에 직접 끼워 넣지 않고 환경변수로 받습니다.
+      # (App Store Connect / match 자격 증명은 노출 범위를 줄이기 위해 업로드 단계의 env에만 둡니다.)
       TARGET: ${{ inputs.target }}
       VERSION: ${{ inputs.version }}
     steps:
       - name: Validate inputs
+        # 체크아웃 전에 실행되므로 job 기본값(SOPT-iOS)이 아직 존재하지 않습니다. 워크스페이스 루트에서 실행합니다.
+        working-directory: .
         run: |
           if [ -n "$VERSION" ] && ! echo "$VERSION" | grep -Eq '^[0-9]+(\.[0-9]+){0,2}$'; then
             echo "::error::버전 형식이 올바르지 않습니다. 예: 2.3.0 (입력값: $VERSION)"
@@ -100,6 +97,13 @@ jobs:
 
       - name: Upload app (production)
         if: ${{ inputs.target == 'app' || inputs.target == 'both' }}
+        env:
+          APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}
+          APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
+          MATCH_GIT_PRIVATE_KEY: ${{ secrets.MATCH_GIT_PRIVATE_KEY }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_PASSPHRASE: ${{ secrets.MATCH_PASSPHRASE }}
         run: |
           if [ -n "$VERSION" ]; then
             bundle exec fastlane upload_testflight version:"$VERSION"
@@ -109,6 +113,13 @@ jobs:
 
       - name: Upload demo app
         if: ${{ inputs.target == 'demo' || inputs.target == 'both' }}
+        env:
+          APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}
+          APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
+          MATCH_GIT_PRIVATE_KEY: ${{ secrets.MATCH_GIT_PRIVATE_KEY }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_PASSPHRASE: ${{ secrets.MATCH_PASSPHRASE }}
         run: |
           if [ -n "$VERSION" ]; then
             bundle exec fastlane upload_testflight_demo version:"$VERSION"
