@@ -333,7 +333,10 @@ extension SoptletterWritingVC: UITextViewDelegate {
         updateCharCount(text.count)
         updateErrorState(text: text)
         textChangedSubject.send(text)
-        textView.applyFontFallback(font: Typography.body1.font, color: SemanticColor.Fg.Neutral.bold)
+        
+        if text.count <= maxCharCount {
+            textView.applyFontFallback(font: Typography.body1.font, color: SemanticColor.Fg.Neutral.bold)
+        }
     }
 
     private func updateCharCount(_ count: Int) {
