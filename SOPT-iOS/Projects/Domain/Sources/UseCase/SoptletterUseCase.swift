@@ -13,6 +13,7 @@ public protocol SoptletterUseCase {
     func fetchTopics() async throws -> SoptletterTopicListModel
     func fetchTopic(topicId: Int) async throws -> SoptletterTopicDetailModel
     func getSoptletterProfile() async throws -> SoptletterProfileModel
+    func getSoptletterNickName() async throws -> String
     func completeOnboarding() async throws
     func fetchSoptletterMessages(topicId: Int?, cursor: Int?, size: Int?) async throws -> SoptletterItemModel
     func fetchSoptletterMessage(messageId: Int, topicId: Int) async throws -> SoptletterDetailMessageModel
@@ -56,6 +57,11 @@ public final class DefaultSoptletterUseCase: SoptletterUseCase {
     
     public func getSoptletterProfile() async throws -> SoptletterProfileModel {
         return try await repository.getSoptletterProfile()
+    }
+    
+    public func getSoptletterNickName() async throws -> String {
+        if let stored = repository.getSoptletterNickName(), !stored.isEmpty { return stored }
+        return try await repository.getSoptletterProfile().nickname
     }
     
     public func completeOnboarding() async throws {

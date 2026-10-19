@@ -28,6 +28,7 @@ public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
     private let useCase: SoptletterUseCase
     private var cancelBag = CancelBag()
     private var submitTask: Task<Void, Never>?
+    private var fetchNickNameTask: Task<Void, Never>?
     private let textSubject = CurrentValueSubject<String, Never>("")
     private let selectedTopicSubject = CurrentValueSubject<SoptletterTopicModel?, Never>(nil)
 
@@ -44,6 +45,7 @@ public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
     // MARK: - Outputs
 
     public struct Output {
+        let nickName = CurrentValueSubject<String, Never>("")
         let isSubmitEnabled = CurrentValueSubject<Bool, Never>(false)
         let selectedTopicTitle = CurrentValueSubject<String?, Never>(nil)
     }
@@ -57,6 +59,7 @@ public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
 
     deinit {
         submitTask?.cancel()
+        fetchNickNameTask?.cancel()
     }
 
     public var selectedTopicId: Int? {
@@ -76,6 +79,22 @@ extension SoptletterWritingViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
 
+        input.viewDidLoad
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.fetchNickNameTask?.cancel()
+                owner.fetchNickNameTask = Task {
+                    do {
+                        let nickName = try await owner.useCase.getSoptletterNickName()
+                        output.nickName.send(nickName)
+                    } catch is CancellationError {
+                        return
+                    } catch {
+                        // 실패하면 빈 값을 유지한다. 저장되지 않았으므로 다음 진입 때 다시 시도된다.
+                    }
+                }
+            }.store(in: cancelBag)
+        
         input.naviBackTap
             .withUnretained(self)
             .sink { owner, _ in
