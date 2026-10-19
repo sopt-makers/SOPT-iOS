@@ -100,7 +100,6 @@ public final class SoptletterWritingVC: UIViewController {
     }
 
     private let recipientLabel = UILabel().then {
-        $0.text = I18N.Soptletter.recipient
         $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
     }
 
@@ -293,6 +292,14 @@ private extension SoptletterWritingVC {
 
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
 
+        output.nickName
+            .receive(on: RunLoop.main)
+            .withUnretained(self)
+            .sink { owner, nickName in
+                owner.recipientLabel.text = nickName
+                owner.recipientLabel.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
+            }.store(in: cancelBag)
+
         output.isSubmitEnabled
             .receive(on: RunLoop.main)
             .withUnretained(self)
@@ -333,6 +340,10 @@ extension SoptletterWritingVC: UITextViewDelegate {
         updateCharCount(text.count)
         updateErrorState(text: text)
         textChangedSubject.send(text)
+        
+        if text.count <= maxCharCount {
+            textView.applyFontFallback(font: Typography.body1.font, color: SemanticColor.Fg.Neutral.bold)
+        }
     }
 
     private func updateCharCount(_ count: Int) {

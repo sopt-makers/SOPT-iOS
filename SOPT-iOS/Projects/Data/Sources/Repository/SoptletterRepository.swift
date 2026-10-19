@@ -61,7 +61,12 @@ extension SoptletterRepository: SoptletterRepositoryInterface {
     
     public func getSoptletterProfile() async throws -> SoptletterProfileModel{
         let result = try await soptletterService.getSoptletterProfile()
+        UserDefaultKeyList.User.soptletterName = result.nickname
         return result.toDomain()
+    }
+    
+    public func getSoptletterNickName()-> String? {
+        return UserDefaultKeyList.User.soptletterName ?? nil
     }
     
     public func completeOnboarding() async throws {
