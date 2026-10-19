@@ -14,9 +14,7 @@ final class DashBoardProfileImageView: UIView {
     
     // MARK: - UI Components
     
-    private let profileImageView = CustomProfileImageView().then {
-        $0.hideBorder()
-    }
+    private let profileImageView = MDSAvatar(size: 56, hasStroke: false)
     
     private let editBackgroundView = UIView().then {
         $0.backgroundColor = SemanticColor.Bg.Neutral.default
@@ -51,7 +49,7 @@ extension DashBoardProfileImageView {
         editBackgroundView.addSubview(editImageView)
         
         profileImageView.snp.makeConstraints {
-            $0.size.equalTo(54)
+            $0.edges.equalToSuperview()
         }
         
         editBackgroundView.snp.makeConstraints {

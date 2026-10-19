@@ -74,7 +74,7 @@ extension DashBoardCardCVC {
         profileEditView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.trailing.equalToSuperview().inset(20)
-            make.size.equalTo(54)
+            make.size.equalTo(56)
         }
     }
 }
