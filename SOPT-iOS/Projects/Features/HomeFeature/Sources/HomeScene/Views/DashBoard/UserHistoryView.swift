@@ -86,9 +86,11 @@ extension UserHistoryView {
     
     private func setUserTypeLabel(with userType: UserType, text: String) {
         self.userTypeTag.text = text
-        // TODO: - 수료 tag 반영 후 수정
-//        self.userTypeLabel.textColor = userType == .active ? DSKitAsset.Colors.black100.color : DSKitAsset.Colors.white.color
-//        self.userTypeLabel.backgroundColor = userType == .active ? DSKitAsset.Colors.orange100.color : DSKitAsset.Colors.black40.color
+        if userType == .active {
+            userTypeTag.variant = .primary
+        } else {
+            userTypeTag.variant = .default
+        }
     }
     
     private func resetHistoryView() {

@@ -10,16 +10,14 @@
 import UIKit
 
 import DSKit
+import MDS
 
 final class FABMenuCVC: UICollectionViewCell {
     
     // MARK: - UI Componets
     
     private let menuImage = UIImageView()
-    private let menuTitle = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
-        $0.textColor = DSKitAsset.Colors.gray950.color
-    }
+    private let menuTitle = UILabel()
     
     // MARK: - Life Cycle
     
@@ -59,6 +57,8 @@ extension FABMenuCVC {
 extension FABMenuCVC {
     func configureCell(model: MenuSectionItem) {
         menuTitle.text = model.title
+        menuTitle.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.inverse)
         menuImage.image = model.icon
     }
 }
+

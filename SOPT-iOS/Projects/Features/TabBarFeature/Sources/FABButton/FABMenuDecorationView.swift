@@ -9,14 +9,14 @@
 
 import UIKit
 
-import DSKit
+import MDS
 
 final class FABMenuDecorationView: UICollectionReusableView {
     
     // MARK: - UI Components
     private let backgroundView = UIView().then {
-        $0.backgroundColor = .white
-        $0.layer.cornerRadius = 16
+        $0.backgroundColor = SemanticColor.Bg.Neutral.inverse
+        $0.layer.cornerRadius = BaseRadius.Base.r12
     }
         
     override init(frame: CGRect) {

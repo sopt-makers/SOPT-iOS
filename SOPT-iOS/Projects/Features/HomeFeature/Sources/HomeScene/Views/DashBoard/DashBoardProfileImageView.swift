@@ -8,10 +8,8 @@
 
 import UIKit
 
-import DSKit
 import MDS
 
-// TODO: - 피그마 화살표로 표기되어 있음 - 확인 요청 상태
 final class DashBoardProfileImageView: UIView {
     
     // MARK: - UI Components
@@ -21,15 +19,15 @@ final class DashBoardProfileImageView: UIView {
     }
     
     private let editBackgroundView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.gray600.color
-        $0.layer.borderColor = DSKitAsset.Colors.gray800.color.cgColor
+        $0.backgroundColor = SemanticColor.Bg.Neutral.default
+        $0.layer.borderColor = SemanticColor.Bg.Neutral.ghost.cgColor
         $0.layer.borderWidth = 2.5
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 8
     }
     
     private let editImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.icPencil.image
+        $0.image = MDSIcon.writeOutlined.image.withRenderingMode(.alwaysTemplate)
     }
     
     // MARK: - Initialization

@@ -223,8 +223,8 @@ extension DefaultPostCVC {
             postContentLabel
         )
     }
-    
-    // TODO: - 피그마 반영 후 수정 - 요청 상태
+
+    // gradient 토큰 따로 존재하지 않아 기존 유지
     /// Border가 있는 경우, gradient가 존재합니다.
     private func setGradientBorder() {
         let borderWidth: CGFloat = 1

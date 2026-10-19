@@ -22,16 +22,14 @@ final class LatestPostFooterView: UICollectionReusableView {
     
     // MARK: - UI Components
     
-    // TODO: - 피그마 반영 후 수정
     private let pageControl = UIPageControl().then {
-        $0.currentPageIndicatorTintColor = DSKitAsset.Colors.white.color
         $0.numberOfPages = 5
         $0.currentPage = 0
         $0.isUserInteractionEnabled = false
         $0.preferredIndicatorImage = DSKitAsset.Assets.imgIndicator.image
         $0.preferredCurrentPageIndicatorImage = DSKitAsset.Assets.imgIndicator.image
-        $0.pageIndicatorTintColor = DSKitAsset.Colors.gray700.color
-        $0.currentPageIndicatorTintColor = DSKitAsset.Colors.gray50.color
+        $0.pageIndicatorTintColor = SemanticColor.Fg.Neutral.subtle
+        $0.currentPageIndicatorTintColor = SemanticColor.Bg.Neutral.inverse
     }
     
     // MARK: - Initialization
