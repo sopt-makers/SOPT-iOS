@@ -66,7 +66,7 @@ extension SoptletterRepository: SoptletterRepositoryInterface {
     }
     
     public func getSoptletterNickName()-> String? {
-        return UserDefaultKeyList.User.soptletterName  ?? I18N.Soptletter.recipient
+        return UserDefaultKeyList.User.soptletterName ?? nil
     }
     
     public func completeOnboarding() async throws {

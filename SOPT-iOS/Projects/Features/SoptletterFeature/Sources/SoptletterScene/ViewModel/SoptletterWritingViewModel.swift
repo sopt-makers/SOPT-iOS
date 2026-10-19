@@ -45,7 +45,7 @@ public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
     // MARK: - Outputs
 
     public struct Output {
-        let nickName = CurrentValueSubject<String, Never>("")
+        let nickName = CurrentValueSubject<String, Never>(I18N.Soptletter.recipient)
         let isSubmitEnabled = CurrentValueSubject<Bool, Never>(false)
         let selectedTopicTitle = CurrentValueSubject<String?, Never>(nil)
     }
@@ -89,9 +89,7 @@ extension SoptletterWritingViewModel {
                         output.nickName.send(nickName)
                     } catch is CancellationError {
                         return
-                    } catch {
-                        // 실패하면 빈 값을 유지한다. 저장되지 않았으므로 다음 진입 때 다시 시도된다.
-                    }
+                    } catch { }
                 }
             }.store(in: cancelBag)
         
