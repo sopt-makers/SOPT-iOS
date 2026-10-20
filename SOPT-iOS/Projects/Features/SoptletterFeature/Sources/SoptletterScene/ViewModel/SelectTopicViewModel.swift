@@ -24,6 +24,7 @@ final class SelectTopicViewModel: SelectTopicViewModelType {
     private let useCase: SoptletterUseCase
     private var cancelBag = CancelBag()
     
+    private let refreshTriggerSubject = PassthroughSubject<Void, Never>()
     private var fetchTopicTask: Task<Void, Never>?
     
     public struct Input {
@@ -52,26 +53,27 @@ final class SelectTopicViewModel: SelectTopicViewModelType {
         input.viewDidLoad
             .withUnretained(self)
             .sink { owner, _ in
-                owner.fetchTopicTask?.cancel()
-                owner.fetchTopicTask = Task {
-                    do {
-                        let result = try await owner.useCase.fetchTopics()
-                        output.topicsSubject.send(result)
-                    } catch {
-                        owner.showAlert?()
-                    }
-                }
+                AmplitudeInstance.shared.trackWithUserType(event: .viewSoptletterTopicList)
+                owner.fetchTopics(output: output)
+            }.store(in: cancelBag)
+        
+        refreshTriggerSubject
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.fetchTopics(output: output)
             }.store(in: cancelBag)
         
         input.naviBackTap
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNaviBackTap?()
+                AmplitudeInstance.shared.trackWithUserType(event: .clickQuitSoptletter)
             }.store(in: cancelBag)
         
         input.cellTap
             .withUnretained(self)
             .sink { owner, topic in
+                AmplitudeInstance.shared.trackWithUserType(event: .clickSoptletterTopic)
                 owner.onCellTap?(topic)
             }.store(in: cancelBag)
         
@@ -82,5 +84,22 @@ final class SelectTopicViewModel: SelectTopicViewModelType {
             }.store(in: cancelBag)
         
         return output
+    }
+    
+    func refreshTopicTrigger() {
+        refreshTriggerSubject.send()
+    }
+    
+    private func fetchTopics(output: Output) {
+        fetchTopicTask?.cancel()
+        fetchTopicTask = Task {
+            do {
+                let result = try await useCase.fetchTopics()
+                guard !Task.isCancelled else { return }
+                output.topicsSubject.send(result)
+            } catch {
+                showAlert?()
+            }
+        }
     }
 }

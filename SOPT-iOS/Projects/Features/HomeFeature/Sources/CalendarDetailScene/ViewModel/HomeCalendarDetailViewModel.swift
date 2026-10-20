@@ -53,11 +53,17 @@ extension HomeCalendarDetailViewModel {
         let output = Output()
         
         input.viewDidLoad
-            .flatMap(useCase.getCalendarDetail)
             .withUnretained(self)
-            .sink { owner, calendarDetailModel in
-                let calendarDetailInfo = calendarDetailModel.map{ $0.toPresentation() }
-                output.calendarDetailModel.send(calendarDetailInfo)
+            .sink { owner, _ in
+                Task {
+                    do {
+                        let model = try await owner.useCase.getCalendarDetailAsync()
+                        let info = model.map { $0.toPresentation() }
+                        await MainActor.run {
+                            output.calendarDetailModel.send(info)
+                        }
+                    } 
+                }
             }.store(in: cancelBag)
         
         input.naviBackButtonTap

@@ -69,12 +69,26 @@ public typealias SoptletterPrintPresentable = (vc: UIViewController, vm: any Sop
 
 // SoptletterTopic
 
-public protocol SelectTopicRoutingTrigger {
+public protocol SelectTopicRoutingTrigger: AnyObject {
     var onNaviBackTap: (() -> Void)? { get set }
     var onCellTap: ((SoptletterTopicModel) -> Void)? { get set }
     var showAlert: (() -> Void)? { get set }
     var onWriteButtonTap: (() -> Void)? { get set }
+    
+    func refreshTopicTrigger()
 }
 
 public typealias SelectTopicViewModelType = ViewModelType & SelectTopicRoutingTrigger
 public typealias SelectTopicPresentable = (vc: UIViewController, vm: any SelectTopicViewModelType)
+
+// SoptletterTopicBottomSheet
+
+public protocol SelectTopicBottomSheetRoutingTrigger: AnyObject {
+    var onNaviBackTap: (() -> Void)? { get set }
+    var onConFirmButtonTap: ((SoptletterTopicModel) -> Void)? { get set }
+    var showAlert: (() -> Void)? { get set }
+    var selectedTopicId: Int? { get set }
+}
+
+public typealias SelectTopicBottomSheetViewModelType = ViewModelType & SelectTopicBottomSheetRoutingTrigger
+public typealias SelectTopicBottomSheetPresentable = (vc: UIViewController, vm: any SelectTopicBottomSheetViewModelType)

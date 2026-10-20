@@ -52,6 +52,7 @@ public final class SoptletterDetailModalVC: UIViewController {
 
     private let contentScrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = true
+        $0.indicatorStyle = .black
     }
 
     private let contentLabel = UILabel().then {
@@ -59,8 +60,7 @@ public final class SoptletterDetailModalVC: UIViewController {
     }
 
     private let contentTextView = UITextView().then {
-        $0.font = Typography.body1.font
-        $0.textColor = SemanticColor.Fg.Neutral.ghost
+        $0.setTypographyUsingLineSpacing(Typography.body1, textColor: SemanticColor.Fg.Neutral.ghost)
         $0.backgroundColor = .clear
         $0.isScrollEnabled = false
         $0.isEditable = false
@@ -177,7 +177,7 @@ public final class SoptletterDetailModalVC: UIViewController {
         contentLabel.text = content
         contentLabel.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.ghost)
 
-        dateLabel.text = DateFormatManager.shared.serverTimeToString(date, from: .dateWithDot)
+        dateLabel.text = DateFormatManager.shared.serverTimeToString(date, from: .monthDayWithDot)
         dateLabel.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.subtle)
 
         likeCountLabel.text = "\(likeCount)"
@@ -293,7 +293,7 @@ private extension SoptletterDetailModalVC {
         )
         likeCount += isLiked ? 1 : -1
         likeCountLabel.text = "\(likeCount)"
-        likeCountLabel.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
+        likeCountLabel.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.subtle)
     }
 
     func setUI() {
@@ -342,13 +342,13 @@ private extension SoptletterDetailModalVC {
         }
 
         contentLabel.snp.makeConstraints { make in
-             make.edges.equalToSuperview()
-             make.width.equalTo(contentScrollView)
+            make.edges.equalToSuperview()
+            make.width.equalTo(contentScrollView.frameLayoutGuide).offset(-BaseSpacing.Base.s16)
          }
 
          contentTextView.snp.makeConstraints { make in
              make.edges.equalToSuperview()
-             make.width.equalTo(contentScrollView)
+             make.width.equalTo(contentScrollView.frameLayoutGuide).offset(-BaseSpacing.Base.s16)
          }
 
          charCountLabel.snp.makeConstraints { make in
@@ -400,6 +400,8 @@ extension SoptletterDetailModalVC: UITextViewDelegate {
     public func textViewDidChange(_ textView: UITextView) {
         updateCharCount(textView.text.count)
         updateConfirmButtonState(textView.text.count)
+        
+        contentTextView.applyFontFallback(font: Typography.body1.font, color: SemanticColor.Fg.Neutral.ghost)
     }
 }
 
@@ -436,6 +438,7 @@ extension SoptletterDetailModalVC {
 
         if isEditing {
             contentTextView.text = contentLabel.text
+            contentTextView.setTypographyUsingLineSpacing(Typography.body1, textColor: SemanticColor.Fg.Neutral.ghost)
             updateCharCount(contentTextView.text.count)
             updateConfirmButtonState(contentTextView.text.count)
         } else {

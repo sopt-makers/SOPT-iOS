@@ -94,7 +94,6 @@ extension SoptletterMainViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNaviBackTap?()
-                AmplitudeInstance.shared.trackWithUserType(event: .clickQuitSoptletter)
             }.store(in: cancelBag)
         
         input.writeButtonTap
@@ -194,10 +193,5 @@ extension SoptletterMainViewModel {
 
     public func refreshMessagesTrigger() {
         refreshTriggerSubject.send()
-    }
-    
-    public func changeTopic(_ topicId: Int) {
-        self.topicId = topicId
-        refreshMessagesTrigger()
     }
 }

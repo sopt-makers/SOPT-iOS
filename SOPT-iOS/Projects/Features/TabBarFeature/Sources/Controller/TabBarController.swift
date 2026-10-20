@@ -224,6 +224,8 @@ extension TabBarController {
                     .foregroundColor: SemanticColor.Fg.Neutral.inverse
                 ], for: .normal)
                 item.badgeValue = badgeText
+            } else {
+                item.badgeValue = nil
             }
         }
     }
