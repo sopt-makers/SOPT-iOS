@@ -196,8 +196,14 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
         
         soptletterMain.vm.onWriteTap = { [weak self] in
-            self?.showSoptletterWriting(on: self?.soptletterMainController) { _ in
-                soptletterMain.vm.refreshMessagesTrigger()
+            self?.showSoptletterWriting(on: self?.soptletterMainController) { selectedTopicId in
+                guard let selectedTopicId, selectedTopicId != topicId else {
+                    soptletterMain.vm.refreshMessagesTrigger()
+                    return
+                }
+                self?.soptletterMainController?.dismiss(animated: false) {
+                    self?.showSoptletterMain(topicId: selectedTopicId, onDismiss: onDismiss)
+                }
             }
         }
 
