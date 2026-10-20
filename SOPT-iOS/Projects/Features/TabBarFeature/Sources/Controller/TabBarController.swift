@@ -219,9 +219,8 @@ extension TabBarController {
             
             if let badgeText = badges[tabType] {
                 item.badgeColor = SemanticColor.Bg.Brand.default
-                // TODO: - 피그마 반영 후 적용 - 요청
                 item.setBadgeTextAttributes([
-                    .font: DSKitFontFamily.Suit.semiBold.font(size: 10),
+                    .font: Typography.label4,
                     .foregroundColor: SemanticColor.Fg.Neutral.inverse
                 ], for: .normal)
                 item.badgeValue = badgeText
