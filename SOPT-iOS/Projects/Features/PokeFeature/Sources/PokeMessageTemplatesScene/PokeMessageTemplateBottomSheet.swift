@@ -28,6 +28,7 @@ public final class PokeMessageTemplateBottomSheet: UIViewController, PokeMessage
         static let scrollViewTop = 12.f
         
         static let contentStackViewSpacing = 4.f
+        static let titleToCheckboxSpacing = 8.f
     }
     
     public static let minimumContentHeight = 366.f
@@ -104,7 +105,8 @@ extension PokeMessageTemplateBottomSheet {
     private func setupConstraints() {
         self.messegeTemplateTitleLabel.snp.makeConstraints {
             $0.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).inset(Metric.contentTop)
-            $0.leading.trailing.equalToSuperview().inset(Metric.contentLeadingTrailng)
+            $0.leading.equalToSuperview().inset(Metric.contentLeadingTrailng)
+            $0.trailing.lessThanOrEqualTo(self.anonymousCheckboxContainer.snp.leading).offset(-Metric.titleToCheckboxSpacing)
         }
         
         self.anonymousCheckbox.snp.makeConstraints {
@@ -131,7 +133,7 @@ extension PokeMessageTemplateBottomSheet {
 extension PokeMessageTemplateBottomSheet {
     func configure(with messagesModel: PokeMessagesModel) {
         self.messegeTemplateTitleLabel.text = messagesModel.header
-        self.messegeTemplateTitleLabel.setTypography(Typography.label2, textColor: SemanticColor.Fg.Neutral.bold)
+        self.messegeTemplateTitleLabel.setTypography(Typography.title3, textColor: SemanticColor.Fg.Neutral.bold)
         messagesModel.messages.forEach {
             let bottomsheetContentView = PokeBottomSheetMessageView(frame: self.view.frame)
             bottomsheetContentView.configure(with: $0)

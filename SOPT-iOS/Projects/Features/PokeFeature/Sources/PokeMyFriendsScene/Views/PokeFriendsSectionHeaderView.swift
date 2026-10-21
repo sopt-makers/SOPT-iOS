@@ -103,4 +103,10 @@ extension PokeFriendsSectionHeaderView {
         self.friendsCountLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold)
         return self
     }
+    
+    @discardableResult
+    public func setRightButtonImage(with image: UIImage) -> Self {
+        self.rightButton.setImage(image, for: .normal)
+        return self
+    }
 }

@@ -29,18 +29,25 @@ public final class PokeProfileListView: UIView, PokeCompatible {
             owner.user
         }).asDriver()
     
+    private enum Metric {
+        static let profileAvatarLength = 48.f
+    }
+    
     var viewType: ProfileListType
+    
+    private var nameTypography: MDSFont {
+        viewType == .main ? Typography.label3 : Typography.title5
+    }
     var user: PokeUserModel?
     
     // MARK: - UI Components
     
-    private lazy var profileImageView = MDSAvatar(size: viewType == .main ? 40 : 50)
+    private lazy var profileImageView = MDSAvatar(size: Metric.profileAvatarLength)
     
     private lazy var kokButton = PKokButton()
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold)
         return label
     }()
     
@@ -90,14 +97,13 @@ public final class PokeProfileListView: UIView, PokeCompatible {
     
     private func setLayoutWithMainType() {
         self.snp.makeConstraints { make in
-            make.height.equalTo(44)
+            make.height.equalTo(Metric.profileAvatarLength)
         }
         
         profileImageView.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.centerY.equalToSuperview()
-            make.width.equalTo(40)
-            make.height.equalTo(40)
+            make.size.equalTo(Metric.profileAvatarLength)
         }
         
         nameLabel.snp.makeConstraints { make in
@@ -133,14 +139,13 @@ public final class PokeProfileListView: UIView, PokeCompatible {
     
     private func setLayoutWithDefaultType() {
         self.snp.makeConstraints { make in
-            make.height.equalTo(70)
+            make.height.equalTo(68)
         }
         
         profileImageView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().inset(20)
-            make.width.equalTo(50)
-            make.height.equalTo(50)
+            make.size.equalTo(Metric.profileAvatarLength)
         }
         
         nameLabel.snp.makeConstraints { make in
@@ -190,11 +195,11 @@ public final class PokeProfileListView: UIView, PokeCompatible {
         self.partLabel.isHidden = model.isAnonymous
         if model.isAnonymous {
             self.nameLabel.text = model.anonymousName
-            self.nameLabel.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold)
+            self.nameLabel.setTypography(self.nameTypography, textColor: SemanticColor.Fg.Neutral.bold)
             return
         }
         self.nameLabel.text = model.name
-        self.nameLabel.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold)
+        self.nameLabel.setTypography(self.nameTypography, textColor: SemanticColor.Fg.Neutral.bold)
     }
     
     func changeUIAfterPoke(newUserModel: PokeUserModel) {

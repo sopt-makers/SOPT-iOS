@@ -28,6 +28,9 @@ public final class PokeOnboardingVC: UIViewController {
         
         static let collectionViewHeight = 608.f
         
+        static let pageIndicatorTop = 14.f
+        static let pageIndicatorHeight = 8.f
+        
         static let bottomDescriptionLabelTop = 24.f
         static let bottomDescriptionLabelBottom = 2.f
     }
@@ -82,6 +85,12 @@ public final class PokeOnboardingVC: UIViewController {
     
     // MARK: Sections
     private let refreshControl = UIRefreshControl()
+    private let pageIndicator = UIPageControl().then {
+        $0.currentPage = 0
+        $0.isUserInteractionEnabled = false
+        $0.currentPageIndicatorTintColor = SemanticColor.Fg.Neutral.bold
+        $0.pageIndicatorTintColor = SemanticColor.Fg.Neutral.ghost
+    }
     
     // MARK: - Variables
     private let viewModel: PokeOnboardingViewModel
@@ -150,6 +159,7 @@ extension PokeOnboardingVC {
             }
         }
 
+        pageIndicator.numberOfPages = self.contentModels.count
         collectionView.reloadData()
     }
 }
@@ -164,6 +174,7 @@ extension PokeOnboardingVC {
         scrollContainerView.addSubviews(
             pokeTitleLabel,
             collectionView,
+            pageIndicator,
             contentFooterDescriptionLabel
         )
     }
@@ -197,8 +208,14 @@ extension PokeOnboardingVC {
             $0.height.equalTo(Metric.collectionViewHeight)
         }
         
+        pageIndicator.snp.makeConstraints {
+            $0.top.equalTo(collectionView.snp.bottom).offset(Metric.pageIndicatorTop)
+            $0.centerX.equalToSuperview()
+            $0.height.equalTo(Metric.pageIndicatorHeight)
+        }
+        
         contentFooterDescriptionLabel.snp.makeConstraints {
-            $0.top.equalTo(collectionView.snp.bottom).offset(Metric.bottomDescriptionLabelTop)
+            $0.top.equalTo(pageIndicator.snp.bottom).offset(Metric.bottomDescriptionLabelTop)
             $0.centerX.equalToSuperview()
             $0.bottom.equalToSuperview().offset(-Metric.bottomDescriptionLabelBottom)
         }
@@ -211,13 +228,12 @@ extension PokeOnboardingVC: UICollectionViewDelegateFlowLayout {
         withVelocity velocity: CGPoint,
         targetContentOffset: UnsafeMutablePointer<CGPoint>
     ) {
-        let pageWidth = collectionView.bounds.width
-        - Metric.containerViewLeadingTrailing * 2
-        - self.flowLayout.minimumLineSpacing
-        - Metric.containerViewLeadingTrailing * 2
+        let pageWidth = self.flowLayout.itemSize.width + self.flowLayout.minimumLineSpacing
+        guard pageWidth > 0, !self.contentModels.isEmpty else { return }
         
-        let targetXContentOffset = targetContentOffset.pointee.x
-        self.currentPage = Int(targetXContentOffset / pageWidth)
+        let page = Int(round(targetContentOffset.pointee.x / pageWidth))
+        self.currentPage = min(max(page, 0), self.contentModels.count - 1)
+        self.pageIndicator.currentPage = self.currentPage
     }
 }
 extension PokeOnboardingVC: UICollectionViewDataSource {

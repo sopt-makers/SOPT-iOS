@@ -14,16 +14,15 @@ import Domain
 
 final public class PokeNotificationListContentView: UIView, PokeCompatible {
   private enum Metrics {
-    static let contentDefaultSpacing = 8.f
-    static let leftToCenterContentPadding = 12.f
-    static let profileAvatarLength = 50.f
+    static let contentDefaultSpacing = 12.f
+    static let profileAvatarLength = 48.f
 
-    static let centerToRightContentPadding = 8.f
+    static let centerToRightContentPadding = 14.f
     static let centerTopContentPadding = 8.f
 
     static let centerSeperateContentsMinHeight = 22.f
 
-    static let centerContentPaddingAfterDescription = 4.f
+    static let centerContentPaddingAfterDescription = 8.f
   }
 
   private enum Constant {
@@ -34,8 +33,15 @@ final public class PokeNotificationListContentView: UIView, PokeCompatible {
   // MARK: - ContentStack
   private lazy var contentStackView = UIStackView().then {
     $0.axis = .horizontal
-    $0.spacing = Metrics.contentDefaultSpacing
+    $0.spacing = Metrics.centerToRightContentPadding
     $0.alignment = .center
+  }
+
+  // MARK: Left + Center
+  private lazy var leftContentsStackView = UIStackView().then {
+    $0.axis = .horizontal
+    $0.spacing = Metrics.contentDefaultSpacing
+    $0.alignment = .top
   }
 
   // MARK: Left:
@@ -54,7 +60,7 @@ final public class PokeNotificationListContentView: UIView, PokeCompatible {
 
   // Center-Top
   private let nameLabel = UILabel().then {
-      $0.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold, alignment: .left)
+      $0.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold, alignment: .left)
     $0.setContentCompressionResistancePriority(.required, for: .horizontal)
   }
   private let partInfoLabel = UILabel().then {
@@ -67,7 +73,7 @@ final public class PokeNotificationListContentView: UIView, PokeCompatible {
   }
 
   // Center-bottom
-  private lazy var pokeChipView = PokeChipView(frame: self.frame)
+  private let pokeChipView = MDSTag(size: .small, shape: .rect, variant: .default, style: .subtle)
 
   // MARK: Right:
   private let pokeKokButton = PKokButton()
@@ -116,9 +122,13 @@ extension PokeNotificationListContentView {
     self.addSubview(self.contentStackView)
 
     self.contentStackView.addArrangedSubviews(
-      self.profileImageView,
-      self.centerContentsStackView,
+      self.leftContentsStackView,
       self.pokeKokButton
+    )
+
+    self.leftContentsStackView.addArrangedSubviews(
+      self.profileImageView,
+      self.centerContentsStackView
     )
 
     self.centerContentsStackView.addArrangedSubviews(
@@ -130,11 +140,6 @@ extension PokeNotificationListContentView {
     self.centerTopContentsStackView.addArrangedSubviews(
       self.nameLabel,
       self.partInfoLabel
-    )
-
-    self.contentStackView.setCustomSpacing(
-      Metrics.leftToCenterContentPadding,
-      after: self.centerContentsStackView
     )
 
     self.centerContentsStackView.setCustomSpacing(
@@ -164,7 +169,7 @@ extension PokeNotificationListContentView {
       self.partInfoLabel.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle, alignment: .left)
       self.descriptionLabel.text = model.message
       self.descriptionLabel.setTypography(Typography.body2, textColor: SemanticColor.Fg.Neutral.bold)
-    self.pokeChipView.configure(with: model.mutualRelationMessage)
+    self.pokeChipView.text = model.mutualRelationMessage
     self.pokeKokButton.isEnabled = !model.isAlreadyPoke
     // 익명이면 데이터 숨김처리
     self.pokeChipView.isHidden = model.isAnonymous
@@ -174,12 +179,12 @@ extension PokeNotificationListContentView {
       return
     }
     self.nameLabel.text = model.name
-      self.nameLabel.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold, alignment: .left)
+      self.nameLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold, alignment: .left)
   }
 
   func configureAnonymous(model: PokeUserModel) {
     self.nameLabel.text = model.anonymousName
-      self.nameLabel.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold, alignment: .left)
+      self.nameLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold, alignment: .left)
   }
 
   func setData(with model: PokeUserModel) {

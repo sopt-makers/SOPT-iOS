@@ -32,6 +32,7 @@ public final class PokeMyFriendsListVC: UIViewController {
     // MARK: - UI Components
     
     private let headerView = PokeFriendsSectionHeaderView()
+        .setRightButtonImage(with: MDSIcon.xCloseOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold))
     
     private let tableView = UITableView()
     
@@ -62,7 +63,7 @@ public final class PokeMyFriendsListVC: UIViewController {
 extension PokeMyFriendsListVC {
     private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
-        view.backgroundColor = SemanticColor.Bg.Layer.basement
+        view.backgroundColor = SemanticColor.Bg.Neutral.ghost
         tableView.backgroundColor = .clear
         headerView.setTitle(viewModel.relation.title)
         headerView.setDescription(viewModel.relation.friendBaselineDescription)

@@ -16,11 +16,11 @@ import Domain
 // MARK: - PokeBottomSheetMessageView
 final public class PokeBottomSheetMessageView: UIView {
     private enum Metrics {
-        static let containerLeadingTrailing = 20.f
+        static let containerLeadingTrailing = BaseSpacing.Base.s20
         static let maximumContainerHeight = 50.f
         
-        static let contentLeadingTrailing = 8.f
-        static let contentTopBottom = 12.f
+        static let contentLeadingTrailing = BaseSpacing.Base.s8
+        static let contentTopBottom = BaseSpacing.Base.s12
     }
     
     private enum Constant {
@@ -31,8 +31,8 @@ final public class PokeBottomSheetMessageView: UIView {
     // MARK: - Private variables
     private let containerStackView = UIStackView().then {
         $0.axis = .horizontal
-        $0.spacing = 0.f
-        $0.layer.cornerRadius = 14.f
+        $0.spacing = BaseSpacing.Base.s0
+        $0.layer.cornerRadius = BaseRadius.Base.r6
     }
     
     private lazy var longPressGestureRecognzier = UILongPressGestureRecognizer().then {

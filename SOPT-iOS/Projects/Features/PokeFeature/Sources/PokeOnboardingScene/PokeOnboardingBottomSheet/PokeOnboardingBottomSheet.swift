@@ -21,6 +21,7 @@ public class PokeOnboardingBottomSheet: UIViewController {
         static let contentLeadingTrailng = 20.f
         
         static let titleLabelTop = 12.f
+        static let imageToDescriptionSpacing = 8.f
         
         static let onboardingImageHeight = 180.f
         
@@ -34,8 +35,8 @@ public class PokeOnboardingBottomSheet: UIViewController {
     }
     
     private let titleLabel = UILabel().then {
-        $0.text = I18N.Poke.Onboarding.title
-        $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
+        $0.text = I18N.Poke.Onboarding.bottomSheetTitle
+        $0.setTypography(Typography.title3, textColor: SemanticColor.Fg.Neutral.bold)
     }
     
     private let onboardingImageView = UIImageView().then {
@@ -92,6 +93,7 @@ extension PokeOnboardingBottomSheet {
             self.onboardingImageView,
             self.onboardingDescriptionLabel
         )
+        self.contentStackView.setCustomSpacing(Metric.imageToDescriptionSpacing, after: self.onboardingImageView)
     }
     
     private func setupConstraints() {

@@ -477,12 +477,13 @@ public struct I18N {
       }
       
       public struct Onboarding {
-        public static let title = "솝트에 콕 찌르기가 생겼어요!"
+        public static let title = "아는 사람을 콕 찔러서 친구를 맺어보세요"
+        public static let bottomSheetTitle = "솝트에 콕 찌르기가 생겼어요!"
         public static let description = """
             서로 찌르면 친구가 될 수 있어요. 친구와 자주 찌를수록
             전송할 수 있는 메시지 문구가 다양해져요.
             """
-        public static let footerPullToRefreshDescription = "아는 사람이 없나요?\n화면을 당기면 다른 친구들을 볼 수 있어요"
+        public static let footerPullToRefreshDescription = "화면을 밑으로 당기면 다른 친구를 볼 수 있어요"
       }
       
       public struct MyFriends {

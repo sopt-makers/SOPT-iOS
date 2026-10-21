@@ -28,11 +28,10 @@ public final class PokeNotificationViewController: UIViewController {
     }
     
     // MARK: - Views
-    // TODO: - mds 반영 후 적용
     private lazy var navigationBar = OPNavigationBar(
         self,
         type: .oneLeftButton,
-        backgroundColor: DSKitAsset.Colors.gray950.color
+        backgroundColor: SemanticColor.Bg.Layer.basement
     )
         .addMiddleLabel(title: I18N.Poke.Notification.naviTitle, font: UIFont.MDS.body2.font)
         .setLeftButtonImage(MDSIcon.chevronLeftOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold))

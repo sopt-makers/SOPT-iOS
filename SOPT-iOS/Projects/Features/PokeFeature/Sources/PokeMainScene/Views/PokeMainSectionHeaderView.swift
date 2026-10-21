@@ -21,7 +21,7 @@ public final class PokeMainSectionHeaderView: UIView {
     // MARK: - UI Components
     
     private let titleLabel = UILabel().then {
-        $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
+        $0.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold)
     }
     
     private let rightButton = UIButton().then {
@@ -33,7 +33,7 @@ public final class PokeMainSectionHeaderView: UIView {
     
     init(title: String) {
         self.titleLabel.text = title
-        self.titleLabel.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
+        self.titleLabel.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold)
         super.init(frame: .zero)
         self.setUI()
         self.setLayout()
