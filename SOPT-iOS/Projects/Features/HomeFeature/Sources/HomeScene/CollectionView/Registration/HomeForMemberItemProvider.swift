@@ -127,6 +127,9 @@ extension HomeForMemberVC {
     func createLatestPostFooterRegistration() -> LatestPostFooterRegistration {
         collectionView.createSupplementaryRegistration(
             elementKind: UICollectionView.elementKindSectionFooter
-        ) { _, _ in }
+        ) { [weak self] footer, indexPath in
+            guard let self else { return }
+            footer.configure(numberOfPages: self.collectionView.numberOfItems(inSection: indexPath.section))
+        }
     }
 }

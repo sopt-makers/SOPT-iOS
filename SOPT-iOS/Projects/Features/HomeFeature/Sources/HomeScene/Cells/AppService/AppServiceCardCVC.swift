@@ -72,7 +72,7 @@ extension AppServiceCardCVC {
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(logoBackgroundView.snp.bottom).offset(8)
+            make.top.equalTo(logoBackgroundView.snp.bottom).offset(6)
             make.centerX.equalToSuperview()
         }
     }

@@ -23,12 +23,11 @@ final class LatestPostFooterView: UICollectionReusableView {
     // MARK: - UI Components
     
     private let pageControl = UIPageControl().then {
-        $0.numberOfPages = 5
         $0.currentPage = 0
         $0.isUserInteractionEnabled = false
         $0.preferredIndicatorImage = DSKitAsset.Assets.imgIndicator.image
         $0.preferredCurrentPageIndicatorImage = DSKitAsset.Assets.imgIndicator.image
-        $0.pageIndicatorTintColor = SemanticColor.Fg.Neutral.subtle
+        $0.pageIndicatorTintColor = SemanticColor.Bg.Neutral.subtle
         $0.currentPageIndicatorTintColor = SemanticColor.Bg.Neutral.inverse
     }
     
@@ -74,6 +73,10 @@ extension LatestPostFooterView {
                 self.pageControl.currentPage = currentPage
             }
             .store(in: cancelBag)
+    }
+    
+    func configure(numberOfPages: Int) {
+        pageControl.numberOfPages = numberOfPages
     }
     
     func updatePage(currentPage: Int) {

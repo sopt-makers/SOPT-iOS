@@ -33,7 +33,7 @@ final class HomeNavigationBar: UIView {
         arrangedSubviews: [noticeButton]
     ).then {
         $0.axis = .horizontal
-        $0.spacing = 4
+        $0.spacing = 10
         $0.distribution = .fillEqually
     }
     
@@ -61,7 +61,7 @@ extension HomeNavigationBar {
         self.addSubviews(logoImageView, rightItemsStackView)
         
         self.snp.makeConstraints { make in
-            make.height.equalTo(40)
+            make.height.equalTo(46)
         }
         
         logoImageView.snp.makeConstraints { make in

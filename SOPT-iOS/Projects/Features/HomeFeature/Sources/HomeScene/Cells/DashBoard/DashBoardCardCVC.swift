@@ -60,7 +60,7 @@ extension DashBoardCardCVC {
         )
 
         descriptionLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(18)
+            make.top.equalToSuperview().inset(16)
             make.leading.equalToSuperview().inset(16)
         }
         

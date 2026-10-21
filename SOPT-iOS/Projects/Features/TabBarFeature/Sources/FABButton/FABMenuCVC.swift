@@ -8,8 +8,6 @@
 
 
 import UIKit
-
-import DSKit
 import MDS
 
 final class FABMenuCVC: UICollectionViewCell {
@@ -45,7 +43,7 @@ extension FABMenuCVC {
         }
         
         menuTitle.snp.makeConstraints { make in
-            make.leading.equalTo(menuImage.snp.trailing).offset(6)
+            make.leading.equalTo(menuImage.snp.trailing).offset(8)
             make.top.equalToSuperview().inset(10)
             make.bottom.equalToSuperview()
         }

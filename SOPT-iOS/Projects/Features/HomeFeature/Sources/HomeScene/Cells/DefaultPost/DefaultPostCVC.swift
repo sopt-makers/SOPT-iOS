@@ -98,7 +98,7 @@ final class DefaultPostCVC: UICollectionViewCell {
     }
     
     private let postTitleLabel = UILabel().then {
-        $0.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold)
+        $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
         $0.lineBreakMode = .byTruncatingTail
         $0.numberOfLines = 1
     }
@@ -176,20 +176,15 @@ extension DefaultPostCVC {
     private func setLayout() {
         self.addSubviews(userStackView, contentStackView)
 
-        profileImageView.snp.makeConstraints { make in
-            make.size.equalTo(50)
-        }
-        
         userStackView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(18)
+            make.leading.equalToSuperview().inset(20)
             make.centerY.equalToSuperview()
-            make.width.equalTo(50)
         }
         
         contentStackView.snp.makeConstraints { make in
             make.leading.equalTo(userStackView.snp.trailing).offset(16)
-            make.trailing.equalToSuperview().inset(22)
-            make.top.equalToSuperview().inset(21)
+            make.trailing.equalToSuperview().inset(20)
+            make.top.equalToSuperview().inset(20)
         }
     }
     
@@ -355,7 +350,7 @@ extension DefaultPostCVC {
             self.profileImageView.setImage(with: profileImage)
         }
         self.postTitleLabel.text = model.title
-        self.postTitleLabel.setTypography(Typography.title5, textColor: SemanticColor.Fg.Neutral.bold)
+        self.postTitleLabel.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
         // content가 줄바꿈으로 시작하는 경우 방지
         self.postContentLabel.text = model.content.trimmingCharacters(in: .whitespacesAndNewlines)
         self.postContentLabel.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)

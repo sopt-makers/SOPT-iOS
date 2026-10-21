@@ -10,7 +10,6 @@ import UIKit
 import Combine
 
 import Core
-import DSKit
 import MDS
 
 final class TabBarController: UITabBarController {
@@ -220,7 +219,7 @@ extension TabBarController {
             if let badgeText = badges[tabType] {
                 item.badgeColor = SemanticColor.Bg.Brand.default
                 item.setBadgeTextAttributes([
-                    .font: Typography.label4,
+                    .font: Typography.label4.font,
                     .foregroundColor: SemanticColor.Fg.Neutral.inverse
                 ], for: .normal)
                 item.badgeValue = badgeText

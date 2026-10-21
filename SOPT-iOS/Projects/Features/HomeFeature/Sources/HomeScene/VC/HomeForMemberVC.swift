@@ -126,7 +126,7 @@ extension HomeForMemberVC {
         
         naviBar.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-            make.height.equalTo(40)
+            make.height.equalTo(46)
         }
         
         collectionView.snp.makeConstraints { make in
