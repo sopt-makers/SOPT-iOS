@@ -29,7 +29,9 @@ public extension UILabel {
         for character in fullText {
             let characterString = String(character)
             let length = characterString.utf16.count
-            if !characterString.canBeRendered(by: baseFont) {
+            /// 공백·줄바꿈은 윤곽선이 없어 `canBeRendered`가 false를 반환하므로, 폴백 대상에서 제외합니다.
+            let hasNoOutline = character.isWhitespace || character.isNewline
+            if !hasNoOutline, !characterString.canBeRendered(by: baseFont) {
                 attributedString.addAttribute(.font, value: fallbackFont, range: NSRange(location: utf16Offset, length: length))
             }
             utf16Offset += length
