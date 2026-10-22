@@ -87,7 +87,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
     }
     
     private func showSelectTopicMain(isRoot: Bool) {
-        var selectTopic = factory.makeSelectTopicVC(coordinator: self)
+        let selectTopic = factory.makeSelectTopicVC(coordinator: self)
         
         selectTopic.vm.onNaviBackTap = { [weak self] in
             if isRoot {
