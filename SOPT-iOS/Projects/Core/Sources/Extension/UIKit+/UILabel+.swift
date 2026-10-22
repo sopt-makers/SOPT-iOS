@@ -9,6 +9,35 @@ import UIKit
 
 public extension UILabel {
 
+    /// 라벨의 글자 중 현재 `font`가 렌더링하지 못하는 글자(일부 이모지·특수문자 등)에만 `fallbackFont`를 적용합니다.
+    /// 기존 `attributedText`의 줄 간격, 자간, 글자색은 유지하고 폰트만 바꿉니다.
+    /// `text`나 `setTypography`로 내용을 다시 설정하면 폴백이 사라지므로, 설정한 뒤에 호출합니다.
+    /// - Parameter fallbackFont: `font`가 지원하지 않는 글자에 쓸 폰트입니다. nil이면 `font`와 같은 크기의 시스템 폰트를 사용합니다.
+    func applyFontFallback(fallbackFont: UIFont? = nil) {
+        let fullText = text ?? ""
+        guard !fullText.isEmpty else { return }
+
+        let baseFont = font ?? UIFont.systemFont(ofSize: UIFont.labelFontSize)
+        let fallbackFont = fallbackFont ?? UIFont.systemFont(ofSize: baseFont.pointSize)
+
+        let attributedString = NSMutableAttributedString(
+            attributedString: attributedText ?? NSAttributedString(string: fullText, attributes: [.font: baseFont])
+        )
+
+        /// 조합 문자(이모지 등)는 UTF-16 코드유닛 길이가 1을 초과할 수 있으므로 오프셋을 직접 누적합니다.
+        var utf16Offset = 0
+        for character in fullText {
+            let characterString = String(character)
+            let length = characterString.utf16.count
+            if !characterString.canBeRendered(by: baseFont) {
+                attributedString.addAttribute(.font, value: fallbackFont, range: NSRange(location: utf16Offset, length: length))
+            }
+            utf16Offset += length
+        }
+
+        attributedText = attributedString
+    }
+
     /// 행간 조정 메서드
     func setLineSpacing(lineSpacing: CGFloat) {
         if let text = self.text {
