@@ -157,11 +157,8 @@ extension SoptletterMainViewModel {
             } catch is CancellationError {
                 return
             } catch {
-                // UI fallback 처리
-                await MainActor.run {
-                    output.soptletterMessages.send(.init(topicId: 0, title: "test", totalCount: 0, nextCursor: 0, hasNext: false, messages: []))
-                    onError?()
-                }
+                initialTopic = nil
+                await onError?()
             }
         }
         
