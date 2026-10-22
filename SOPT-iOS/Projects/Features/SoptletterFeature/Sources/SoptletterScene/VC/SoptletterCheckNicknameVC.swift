@@ -27,8 +27,6 @@ final class SoptletterCheckNicknameVC: UIViewController {
 
     private let cardView = NicknameCheckCardView()
 
-    private let cardCenteringGuide = UILayoutGuide()
-
     private lazy var goButton = MDSActionButton(
         variant: .primary,
         size: .large,
@@ -73,7 +71,6 @@ extension SoptletterCheckNicknameVC {
         let safeArea = view.safeAreaLayoutGuide
 
         view.addSubviews(naviBar, cardView, goButton)
-        view.addLayoutGuide(cardCenteringGuide)
 
         naviBar.snp.makeConstraints {
             $0.top.equalTo(safeArea.snp.top)
@@ -85,15 +82,9 @@ extension SoptletterCheckNicknameVC {
             $0.leading.trailing.equalToSuperview().inset(BaseSpacing.Base.s20)
         }
 
-        cardCenteringGuide.snp.makeConstraints {
-            $0.top.equalTo(naviBar.snp.bottom)
-            $0.bottom.equalTo(goButton.snp.top)
-            $0.leading.trailing.equalToSuperview()
-        }
-
         cardView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(BaseSpacing.Base.s20)
-            $0.top.greaterThanOrEqualTo(naviBar.snp.bottom).offset(22)
+            $0.top.equalTo(naviBar.snp.bottom).offset(22)
         }
     }
 }
