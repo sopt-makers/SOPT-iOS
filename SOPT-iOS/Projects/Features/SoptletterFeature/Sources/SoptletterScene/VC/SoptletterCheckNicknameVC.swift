@@ -93,8 +93,7 @@ extension SoptletterCheckNicknameVC {
 
         cardView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(BaseSpacing.Base.s20)
-            $0.top.greaterThanOrEqualTo(naviBar.snp.bottom).offset(BaseSpacing.Base.s24)
-            $0.centerY.equalTo(cardCenteringGuide)
+            $0.top.greaterThanOrEqualTo(naviBar.snp.bottom).offset(22)
         }
     }
 }
