@@ -12,7 +12,7 @@ import UIKit
 import BaseFeatureDependency
 import Core
 import Domain
-import DSKit
+import MDS
 
 import SnapKit
 
@@ -26,12 +26,12 @@ public final class PokeOnboardingVC: UIViewController {
         static let containerViewTop = 7.f
         static let containerViewLeadingTrailing = 20.f
         
-        static let collectionViewHeight = 586.f
+        static let collectionViewHeight = 608.f
         
         static let pageIndicatorTop = 14.f
-        static let pageIndicatorHeight = 10.f
+        static let pageIndicatorHeight = 8.f
         
-        static let bottomDescriptionLabelTop = 10.f
+        static let bottomDescriptionLabelTop = 24.f
         static let bottomDescriptionLabelBottom = 2.f
     }
     
@@ -53,12 +53,11 @@ public final class PokeOnboardingVC: UIViewController {
     }
     
     private let scrollContainerView = UIView()
+    
     // MARK: Title
     private let pokeTitleLabel = UILabel().then {
-        $0.attributedText = I18N.Poke.Onboarding.title.applyMDSFont(
-            mdsFont: .title5,
-            color: DSKitAsset.Colors.gray30.color
-        )
+        $0.text = I18N.Poke.Onboarding.title
+        $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
     }
     
     private lazy var collectionView = UICollectionView(
@@ -79,24 +78,24 @@ public final class PokeOnboardingVC: UIViewController {
     private let flowLayout = PokeCarouselFlowLayout()
     
     private let contentFooterDescriptionLabel = UILabel().then {
-        $0.attributedText = I18N.Poke.Onboarding.footerPullToRefreshDescription.applyMDSFont(
-            mdsFont: .title7,
-            color: DSKitAsset.Colors.gray200.color,
-            alignment: .center
-        )
+        $0.text = I18N.Poke.Onboarding.footerPullToRefreshDescription
+        $0.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.subtle, alignment: .center)
         $0.numberOfLines = Constant.numberOfFooterDesciprionLines
     }
     
     // MARK: Sections
     private let refreshControl = UIRefreshControl()
     private let pageIndicator = UIPageControl().then {
-        $0.numberOfPages = 3
         $0.currentPage = 0
+        $0.isUserInteractionEnabled = false
+        $0.currentPageIndicatorTintColor = SemanticColor.Fg.Neutral.bold
+        $0.pageIndicatorTintColor = SemanticColor.Fg.Neutral.ghost
     }
     
     // MARK: - Variables
     private let viewModel: PokeOnboardingViewModel
     private var contentModels: [PokeRandomUserInfoModel] = []
+    private var currentPage = 0
     private var cancelBag = CancelBag()
     
     
@@ -123,7 +122,7 @@ extension PokeOnboardingVC {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = DSKitAsset.Colors.gray950.color
+        view.backgroundColor = SemanticColor.Bg.Layer.basement
         navigationController?.navigationBar.isHidden = true
         
         initializeViews()
@@ -159,7 +158,7 @@ extension PokeOnboardingVC {
                 self.contentModels.append(newModel)
             }
         }
-        
+
         pageIndicator.numberOfPages = self.contentModels.count
         collectionView.reloadData()
     }
@@ -211,8 +210,8 @@ extension PokeOnboardingVC {
         
         pageIndicator.snp.makeConstraints {
             $0.top.equalTo(collectionView.snp.bottom).offset(Metric.pageIndicatorTop)
-            $0.height.equalTo(Metric.pageIndicatorHeight)
             $0.centerX.equalToSuperview()
+            $0.height.equalTo(Metric.pageIndicatorHeight)
         }
         
         contentFooterDescriptionLabel.snp.makeConstraints {
@@ -229,15 +228,12 @@ extension PokeOnboardingVC: UICollectionViewDelegateFlowLayout {
         withVelocity velocity: CGPoint,
         targetContentOffset: UnsafeMutablePointer<CGPoint>
     ) {
-        let pageWidth = collectionView.bounds.width
-        - Metric.containerViewLeadingTrailing * 2
-        - self.flowLayout.minimumLineSpacing
-        - Metric.containerViewLeadingTrailing * 2
+        let pageWidth = self.flowLayout.itemSize.width + self.flowLayout.minimumLineSpacing
+        guard pageWidth > 0, !self.contentModels.isEmpty else { return }
         
-        let targetXContentOffset = targetContentOffset.pointee.x
-        let newPage = Int(targetXContentOffset / pageWidth)
-        
-        self.pageIndicator.currentPage = newPage
+        let page = Int(round(targetContentOffset.pointee.x / pageWidth))
+        self.currentPage = min(max(page, 0), self.contentModels.count - 1)
+        self.pageIndicator.currentPage = self.currentPage
     }
 }
 extension PokeOnboardingVC: UICollectionViewDataSource {
@@ -304,7 +300,7 @@ extension PokeOnboardingVC {
             .pokedResult
             .withUnretained(self)
             .sink(receiveValue: { owner, pokedResult in
-                let currentIndex = owner.pageIndicator.currentPage
+                let currentIndex = owner.currentPage
                 guard owner.contentModels.count > currentIndex else { return }
                 owner.contentModels[currentIndex].updateAfterPoked(with: pokedResult)
                 owner.collectionView.reloadData()
@@ -322,7 +318,7 @@ extension PokeOnboardingVC {
             .debounce(for: 0.5, scheduler: RunLoop.main)
             .withUnretained(self)
             .sink(receiveValue: { owner, index in
-                let currentIndex = owner.pageIndicator.currentPage
+                let currentIndex = owner.currentPage
                 let currentModel = owner.contentModels[safe: currentIndex]?.randomType ?? .all
                 owner.pullToRefreshTriggered.send(currentModel)
             }).store(in: self.cancelBag)

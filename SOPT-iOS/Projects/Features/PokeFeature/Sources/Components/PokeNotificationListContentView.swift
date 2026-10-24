@@ -7,23 +7,22 @@
 //
 
 import Core
-import DSKit
+import MDS
 
 import UIKit
 import Domain
 
 final public class PokeNotificationListContentView: UIView, PokeCompatible {
   private enum Metrics {
-    static let contentDefaultSpacing = 8.f
-    static let leftToCenterContentPadding = 12.f
-    static let profileAvatarLength = 50.f
+    static let contentDefaultSpacing = 12.f
+    static let profileAvatarLength = 48.f
 
-    static let centerToRightContentPadding = 8.f
+    static let centerToRightContentPadding = 14.f
     static let centerTopContentPadding = 8.f
 
     static let centerSeperateContentsMinHeight = 22.f
 
-    static let centerContentPaddingAfterDescription = 4.f
+    static let centerContentPaddingAfterDescription = 8.f
   }
 
   private enum Constant {
@@ -34,12 +33,19 @@ final public class PokeNotificationListContentView: UIView, PokeCompatible {
   // MARK: - ContentStack
   private lazy var contentStackView = UIStackView().then {
     $0.axis = .horizontal
-    $0.spacing = Metrics.contentDefaultSpacing
+    $0.spacing = Metrics.centerToRightContentPadding
     $0.alignment = .center
   }
 
+  // MARK: Left + Center
+  private lazy var leftContentsStackView = UIStackView().then {
+    $0.axis = .horizontal
+    $0.spacing = Metrics.contentDefaultSpacing
+    $0.alignment = .top
+  }
+
   // MARK: Left:
-  private let profileImageView = CustomProfileImageView(placeholder: DSKitAsset.Assets.icPokeDefaultProfile.image)
+  private let profileImageView = MDSAvatar(size: Metrics.profileAvatarLength)
 
   // MARK: Center:
   private lazy var centerContentsStackView = UIStackView().then {
@@ -54,15 +60,11 @@ final public class PokeNotificationListContentView: UIView, PokeCompatible {
 
   // Center-Top
   private let nameLabel = UILabel().then {
-    $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
-    $0.textColor = DSKitAsset.Colors.gray30.color
-    $0.textAlignment = .left
+      $0.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold, alignment: .left)
     $0.setContentCompressionResistancePriority(.required, for: .horizontal)
   }
   private let partInfoLabel = UILabel().then {
-    $0.font = DSKitFontFamily.Suit.semiBold.font(size: 11)
-    $0.textColor = DSKitAsset.Colors.gray300.color
-    $0.textAlignment = .left
+      $0.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle, alignment: .left)
   }
 
   // Center-middle
@@ -71,7 +73,7 @@ final public class PokeNotificationListContentView: UIView, PokeCompatible {
   }
 
   // Center-bottom
-  private lazy var pokeChipView = PokeChipView(frame: self.frame)
+  private let pokeChipView = MDSTag(size: .small, shape: .rect, variant: .default, style: .subtle)
 
   // MARK: Right:
   private let pokeKokButton = PKokButton()
@@ -88,7 +90,7 @@ final public class PokeNotificationListContentView: UIView, PokeCompatible {
             owner.user
         }).asDriver()
 
-  lazy var profileImageTap = profileImageView.tap
+  lazy var profileImageTap = profileImageView.gesture()
         .withUnretained(self)
         .filter({ owner, _ in
             owner.user?.isAnonymous == false
@@ -120,9 +122,13 @@ extension PokeNotificationListContentView {
     self.addSubview(self.contentStackView)
 
     self.contentStackView.addArrangedSubviews(
-      self.profileImageView,
-      self.centerContentsStackView,
+      self.leftContentsStackView,
       self.pokeKokButton
+    )
+
+    self.leftContentsStackView.addArrangedSubviews(
+      self.profileImageView,
+      self.centerContentsStackView
     )
 
     self.centerContentsStackView.addArrangedSubviews(
@@ -134,11 +140,6 @@ extension PokeNotificationListContentView {
     self.centerTopContentsStackView.addArrangedSubviews(
       self.nameLabel,
       self.partInfoLabel
-    )
-
-    self.contentStackView.setCustomSpacing(
-      Metrics.leftToCenterContentPadding,
-      after: self.centerContentsStackView
     )
 
     self.centerContentsStackView.setCustomSpacing(
@@ -162,12 +163,13 @@ extension PokeNotificationListContentView {
     self.userId = model.userId
     self.profileImageView.setImage(
         with: model.isAnonymous ? "" : model.profileImage,
-        relation: PokeRelation(rawValue: model.relationName) ?? .nonFriend,
-        placeholder: model.isAnonymous ? DSKitAsset.Assets.icPokeDefaultProfile : DSKitAsset.Assets.icLineProfile
+        relation: PokeRelation(rawValue: model.relationName) ?? .nonFriend
     )
     self.partInfoLabel.text = "\(model.generation)기 \(model.part)"
-    self.descriptionLabel.attributedText = model.message.applyMDSFont()
-    self.pokeChipView.configure(with: model.mutualRelationMessage)
+      self.partInfoLabel.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle, alignment: .left)
+      self.descriptionLabel.text = model.message
+      self.descriptionLabel.setTypography(Typography.body2, textColor: SemanticColor.Fg.Neutral.bold)
+    self.pokeChipView.text = model.mutualRelationMessage
     self.pokeKokButton.isEnabled = !model.isAlreadyPoke
     // 익명이면 데이터 숨김처리
     self.pokeChipView.isHidden = model.isAnonymous
@@ -177,10 +179,12 @@ extension PokeNotificationListContentView {
       return
     }
     self.nameLabel.text = model.name
+      self.nameLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold, alignment: .left)
   }
 
   func configureAnonymous(model: PokeUserModel) {
     self.nameLabel.text = model.anonymousName
+      self.nameLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold, alignment: .left)
   }
 
   func setData(with model: PokeUserModel) {
@@ -200,46 +204,4 @@ extension PokeNotificationListContentView {
       .asDriver()
   }
 
-}
-
-// NOTE(@승호): MDSFont 적용하고 DSKit으로 옮기고 적용하기.
-private extension String {
-  func applyMDSFont() -> NSMutableAttributedString {
-    self.applyMDSFont(
-      height: 22.f,
-      font: DSKitFontFamily.Suit.medium.font(size: 14),
-      color: DSKitAsset.Colors.gray30.color,
-      letterSpacing: 0.f
-    )
-  }
-
-  func applyMDSFont(
-    height: CGFloat,
-    font: UIFont,
-    color: UIColor,
-    letterSpacing: CGFloat,
-    alignment: NSTextAlignment = .left,
-    lineBreakMode: NSLineBreakMode = .byTruncatingTail
-  ) -> NSMutableAttributedString {
-    let paragraphStyle = NSMutableParagraphStyle()
-    paragraphStyle.lineBreakMode = lineBreakMode
-    paragraphStyle.minimumLineHeight = height
-    paragraphStyle.alignment = alignment
-
-    if lineBreakMode == .byWordWrapping {
-      paragraphStyle.lineBreakStrategy = .hangulWordPriority
-    }
-
-    let attributes: [NSAttributedString.Key: Any] = [
-      .foregroundColor: color,
-      .font: font,
-      .kern: letterSpacing,
-      .paragraphStyle: paragraphStyle,
-      .baselineOffset: (paragraphStyle.minimumLineHeight - font.lineHeight) / 4
-    ]
-
-    let attrText = NSMutableAttributedString(string: self)
-    attrText.addAttributes(attributes, range: NSRange(location: 0, length: self.utf16.count))
-    return attrText
-  }
 }

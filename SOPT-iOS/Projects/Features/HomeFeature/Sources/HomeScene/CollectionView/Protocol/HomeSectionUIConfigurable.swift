@@ -12,4 +12,9 @@ protocol HomeSectionUIConfigurable {
     var headerTitle: String { get }
     var shouldShowFireIcon: Bool { get }
     var shouldShowViewAllContentButton: Bool { get }
+    var isSubSectionHeader: Bool { get }
+}
+
+extension HomeSectionUIConfigurable {
+    var isSubSectionHeader: Bool { return false }
 }

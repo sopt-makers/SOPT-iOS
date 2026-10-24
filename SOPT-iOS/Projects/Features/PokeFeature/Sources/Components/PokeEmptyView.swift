@@ -8,21 +8,20 @@
 
 import UIKit
 
-import DSKit
 import Core
+import DSKit
+import MDS
 
 public final class PokeEmptyView: UIView {
     
     // MARK: - UI Components
-    
+    // TODO: - mds 이미지 적용 후 변경
     private let emptyImageView = UIImageView().then {
         $0.image = DSKitAsset.Assets.pokeEmptyGraphic.image
     }
     
     private let descriptionLabel = UILabel().then {
-        $0.font = UIFont.MDS.label4.font
-        $0.textColor = DSKitAsset.Colors.gray300.color
-        $0.textAlignment = .center
+        $0.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle, alignment: .center)
         $0.numberOfLines = 2
     }
     
@@ -73,6 +72,7 @@ extension PokeEmptyView {
     @discardableResult
     public func setText(with text: String) -> Self {
         self.descriptionLabel.text = text
+        self.descriptionLabel.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle, alignment: .center)
         return self
     }
 }

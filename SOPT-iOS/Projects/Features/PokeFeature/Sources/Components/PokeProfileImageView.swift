@@ -7,18 +7,19 @@
 //
 
 import UIKit
-import DSKit
 
-extension CustomProfileImageView {
-    public func setImage(with url: String, relation: PokeRelation, placeholder: DSKitImages) {
-        self.setImage(with: url, placeholder: placeholder.image)
-        self.setBorderColor(for: relation)
+import MDS
+
+extension MDSAvatar {
+    func setImage(with url: String, relation: PokeRelation) {
+        self.setImage(with: url)
+        self.setStroke(for: relation)
     }
     
     @discardableResult
-    public func setBorderColor(for relation: PokeRelation) -> Self {
-        self.layer.borderWidth = relation == .nonFriend ? 0 : 2
-        self.layer.borderColor = relation.color.cgColor
+    func setStroke(for relation: PokeRelation) -> Self {
+        self.hasStroke = relation != .nonFriend
+        self.strokeColor = relation.color
         return self
     }
 }

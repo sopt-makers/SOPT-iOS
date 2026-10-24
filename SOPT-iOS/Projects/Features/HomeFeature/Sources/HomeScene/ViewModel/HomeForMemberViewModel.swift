@@ -181,7 +181,12 @@ extension HomeForMemberViewModel {
         input.viewAllButtonTapped
             .withUnretained(self)
             .sink { owner, sectionKind in
-                owner.onViewAllContentButtonTapped?(ExternalURL.Playground.feed)
+                switch sectionKind {
+                case .mainProduct:
+                    owner.onViewAllContentButtonTapped?(ExternalURL.Playground.main)
+                default:
+                    owner.onViewAllContentButtonTapped?(ExternalURL.Playground.feed)
+                }
                 
                 owner.eventTracker.trackPlaygroundCommunityBySection(kind: sectionKind)
             }
