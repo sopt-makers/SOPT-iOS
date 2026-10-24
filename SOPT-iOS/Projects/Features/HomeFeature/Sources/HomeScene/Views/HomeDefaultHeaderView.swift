@@ -19,6 +19,7 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
     // MARK: - Properties
 
     private(set) lazy var viewAllContentButtonTap = viewAllContentButton.publisher(for: .touchUpInside)
+        .merge(with: subSectionButton.publisher(for: .touchUpInside))
     private(set) var cancelBag = CancelBag()
     
     // MARK: - UI Components
@@ -36,6 +37,13 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
         variant: .default,
         size: .small,
         title: I18N.Home.viewAll,
+        icon: MDSIcon.chevronRightOutlined
+    )
+
+    private let subSectionButton = MDSTextButton(
+        variant: .emphasis,
+        size: .medium,
+        title: "",
         icon: MDSIcon.chevronRightOutlined
     )
 
@@ -63,7 +71,7 @@ extension HomeDefaultHeaderView {
     private func setLayout() {
         self.clipsToBounds = true
         
-        self.addSubviews(titleLabel, fireImageView, viewAllContentButton)
+        self.addSubviews(titleLabel, fireImageView, viewAllContentButton, subSectionButton)
         
         titleLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview()
@@ -81,6 +89,11 @@ extension HomeDefaultHeaderView {
             make.trailing.equalToSuperview()
             make.centerY.equalToSuperview()
             make.height.equalTo(16)
+        }
+        
+        subSectionButton.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
         
         hiddenFireIcon()
@@ -106,5 +119,9 @@ extension HomeDefaultHeaderView {
         self.titleLabel.setTypography(Typography.heading3, textColor: SemanticColor.Fg.Neutral.bold)
         self.fireImageView.isHidden = !sectionKind.shouldShowFireIcon
         self.viewAllContentButton.isHidden = !sectionKind.shouldShowViewAllContentButton
+
+        self.titleLabel.isHidden = sectionKind.isSubSectionHeader
+        self.subSectionButton.isHidden = !sectionKind.isSubSectionHeader
+        self.subSectionButton.title = sectionKind.headerTitle
     }
 }

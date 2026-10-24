@@ -17,7 +17,6 @@ extension HomeForMemberVC {
         static let defaultItemSpacing: Double = 16
         static let defaultGroupSpacing: Double = 12
         static let defaultLineSpacing: Double = 56
-                
         static let productItemSpacing: Double = 15
         static let appServiceItemSpacing: Double = 16
         static let popularPostsSectionSpacing: Double = 10
@@ -98,25 +97,32 @@ extension HomeForMemberVC {
     }
     
     private func createMainProductSection() -> NSCollectionLayoutSection {
+        /// header: SOPT Playground
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                heightDimension: .absolute(30))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
+                                                                 elementKind: UICollectionView.elementKindSectionHeader,
+                                                                 alignment: .top)
         /// item: 프로덕트 카드
         let productItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.25),
                                                      heightDimension: .absolute(92))
         let productItem = NSCollectionLayoutItem(layoutSize: productItemSize)
-
+        
         /// group: 프로덕트 카드
         let productGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                       heightDimension: .estimated(92))
         let productGroup = NSCollectionLayoutGroup.horizontal(layoutSize: productGroupSize,
                                                               subitems: [productItem])
         productGroup.interItemSpacing = .fixed(Metric.productItemSpacing)
-
+        
         /// section 지정
         let section = NSCollectionLayoutSection(group: productGroup)
+        section.boundarySupplementaryItems = [header]
         section.contentInsets = NSDirectionalEdgeInsets(top: 12,
                                                         leading: Metric.collectionViewDefaultSideInset,
                                                         bottom: Metric.mainProductSectionSpacing,
                                                         trailing: Metric.collectionViewDefaultSideInset)
-
+        
         return section
     }
     
@@ -137,7 +143,7 @@ extension HomeForMemberVC {
         let appServiceGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                          heightDimension: .estimated(106))
         let appServiceGroup = NSCollectionLayoutGroup.horizontal(layoutSize: appServiceGroupSize,
-                                                               subitems: [appServiceItem])
+                                                                 subitems: [appServiceItem])
         appServiceGroup.interItemSpacing = .fixed(Metric.appServiceItemSpacing)
         
         /// section 지정
@@ -160,14 +166,14 @@ extension HomeForMemberVC {
         
         /// item: 지금 인기 소식
         let popularPostsItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                            heightDimension: .absolute(122))
+                                                          heightDimension: .absolute(122))
         let popularPostsItem = NSCollectionLayoutItem(layoutSize: popularPostsItemSize)
         
         /// group: 지금 인기 소식
         let popularPostsGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                             heightDimension: .estimated(122))
+                                                           heightDimension: .estimated(122))
         let popularPostsGroup = NSCollectionLayoutGroup.vertical(layoutSize: popularPostsGroupSize,
-                                                                    subitems: [popularPostsItem])
+                                                                 subitems: [popularPostsItem])
         popularPostsGroup.interItemSpacing = .fixed(Metric.collectionViewDefaultSideInset)
         
         /// section 지정
@@ -236,7 +242,7 @@ extension HomeForMemberVC {
         
         return section
     }
-
+    
     private func createSocialLinksSection() -> NSCollectionLayoutSection {
         /// item: 소셜 링크 카드
         let socialLinkItemSize = NSCollectionLayoutSize(widthDimension: .absolute(97),
@@ -247,7 +253,7 @@ extension HomeForMemberVC {
         let socialLinkGroupSize = NSCollectionLayoutSize(widthDimension: .absolute(97),
                                                          heightDimension: .absolute(40))
         let socialLinkGroup = NSCollectionLayoutGroup.vertical(layoutSize: socialLinkGroupSize,
-                                                            subitems: [socialLinkItem])
+                                                               subitems: [socialLinkItem])
         
         /// section 지정
         let section = NSCollectionLayoutSection(group: socialLinkGroup)
