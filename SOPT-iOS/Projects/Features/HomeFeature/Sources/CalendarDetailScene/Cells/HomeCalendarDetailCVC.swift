@@ -98,8 +98,7 @@ extension HomeCalendarDetailCVC {
         
         if let tagType = CalenderCategoryTagType(rawValue: model.type) {
             self.homeSquareTagView.text = tagType.text
-            // TODO: - MDS 수정 후 적용
-//            self.homeSquareTagView.variant = tagType.tagType
+            self.homeSquareTagView.variant = tagType.tagType
         }
         
         circleView.backgroundColor = model.isRecentSchedule ? SemanticColor.Fg.Neutral.bold : SemanticColor.Fg.Neutral.ghost

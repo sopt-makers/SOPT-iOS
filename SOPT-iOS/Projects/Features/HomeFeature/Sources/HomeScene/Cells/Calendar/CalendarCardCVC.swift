@@ -10,7 +10,7 @@ import UIKit
 
 import Domain
 import Core
-import DSKit
+import MDS
 
 final class CalendarCardCVC: UICollectionViewCell {
     
@@ -22,52 +22,36 @@ final class CalendarCardCVC: UICollectionViewCell {
     // MARK: - UI Components
 
     private let dateLabel = UILabel().then {
-        $0.textColor = DSKitAsset.Colors.gray400.color
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
+        $0.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.subtle)
     }
     
-    private let scheduleCategoryTagView = HomeSquareTagView()
+    private let scheduleCategoryTagView = MDSTag(text: "", size: .small, shape: .rect, variant: .secondary, style: .subtle)
     
     private let scheduleTitleLabel = UILabel().then {
-        $0.textColor = DSKitAsset.Colors.white.color
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
+        $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
     }
         
     private let rightArrowImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.chevronRight.image.withTintColor(DSKitAsset.Colors.white.color)
+        $0.image = MDSIcon.chevronRightOutlined.image.withRenderingMode(.alwaysTemplate)
+        $0.tintColor = SemanticColor.Fg.Neutral.bold
         $0.contentMode = .scaleAspectFit
     }
     
     private let titleStackView = UIStackView().then {
         $0.axis = .horizontal
+        $0.alignment = .center
     }
     
-    private let attendanceButton = UIButton(type: .custom).then {
-        $0.configuration = UIButton.Configuration.filled()
-        $0.configurationUpdateHandler = { button in
-            guard var configuration = button.configuration else { return }
-            /// 타이틀 설정
-            var attributedTitle = AttributedString(I18N.Home.DashBoard.Attendance.attendance)
-            var attributes = AttributeContainer()
-            attributes.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-            attributes.foregroundColor = DSKitAsset.Colors.black.color
-            attributedTitle.setAttributes(attributes)
-            configuration.attributedTitle = attributedTitle
-            
-            /// 이미지 설정
-            configuration.image = DSKitAsset.Assets.icCheckCircleFilled.image
-            configuration.imagePadding = 4
-            
-            /// 백그라운드 설정
-            configuration.baseBackgroundColor = DSKitAsset.Colors.white.color
-            configuration.background.cornerRadius = 5
-            
-            button.configuration = configuration
-        }
-    }
+    private let attendanceButton = MDSActionButton(
+        variant: .primary,
+        size: .small,
+        title: I18N.Home.DashBoard.Attendance.attendance,
+        prefixIcon: .checkCircleFilled
+    )
     
     private let scheduleStackView = UIStackView().then {
         $0.axis = .horizontal
+        $0.alignment = .center
         $0.spacing = 8
     }
     
@@ -95,8 +79,8 @@ final class CalendarCardCVC: UICollectionViewCell {
 
 extension CalendarCardCVC {
     private func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.gray800.color
-        self.layer.cornerRadius = 8
+        self.backgroundColor = SemanticColor.Bg.Neutral.ghost
+        self.layer.cornerRadius = BaseRadius.Base.r8
     }
     
     private func setLayout() {
@@ -110,9 +94,13 @@ extension CalendarCardCVC {
             make.leading.equalToSuperview().inset(16)
         }
         
+        rightArrowImageView.snp.makeConstraints { make in
+            make.size.equalTo(20)
+        }
+        
         attendanceButton.snp.makeConstraints { make in
-            make.width.equalTo(73)
-            make.top.bottom.trailing.equalToSuperview().inset(10)
+            make.centerY.equalToSuperview()
+            make.trailing.equalToSuperview().inset(10)
         }
     }
     
@@ -136,11 +124,12 @@ extension CalendarCardCVC {
     func configureCell(model: HomePresentationModel.RecentSchedule,
                        userType: UserType) {
         self.dateLabel.text = model.date
+        self.dateLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.subtle)
         self.scheduleTitleLabel.text = model.title
+        self.scheduleTitleLabel.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
         if let tagType = CalenderCategoryTagType(rawValue: model.type) {
-//            self.scheduleCategoryTagView.setData(title: tagType.text,
-//                                                 titleColor: tagType.textColor,
-//                                                 backgroundColor: tagType.backgroundColor)
+            self.scheduleCategoryTagView.text = tagType.text
+            self.scheduleCategoryTagView.variant = tagType.tagType
         }
         self.attendanceButton.isHidden = (userType == .visitor || userType == .inactive)
     }

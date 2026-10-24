@@ -12,7 +12,6 @@ import UserNotifications
 
 import Core
 import Domain
-import DSKit
 
 import HomeFeatureInterface
 import BaseFeatureDependency
@@ -182,12 +181,7 @@ extension HomeForMemberViewModel {
         input.viewAllButtonTapped
             .withUnretained(self)
             .sink { owner, sectionKind in
-                switch sectionKind {
-                case .mainProduct:
-                    owner.onViewAllContentButtonTapped?(ExternalURL.Playground.main)
-                default:
-                    owner.onViewAllContentButtonTapped?(ExternalURL.Playground.feed)
-                }
+                owner.onViewAllContentButtonTapped?(ExternalURL.Playground.feed)
                 
                 owner.eventTracker.trackPlaygroundCommunityBySection(kind: sectionKind)
             }

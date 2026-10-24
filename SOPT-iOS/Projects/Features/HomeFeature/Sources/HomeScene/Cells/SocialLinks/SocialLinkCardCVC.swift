@@ -9,7 +9,7 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
 
 final class SocialLinkCardCVC: UICollectionViewCell {
     
@@ -19,10 +19,7 @@ final class SocialLinkCardCVC: UICollectionViewCell {
         $0.contentMode = .scaleAspectFit
     }
     
-    private let socialLinkTitleLabel = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
-        $0.textColor = DSKitAsset.Colors.gray100.color
-    }
+    private let socialLinkTitleLabel = UILabel()
     
     private let contentStackView = UIStackView().then {
         $0.axis = .horizontal
@@ -48,8 +45,8 @@ final class SocialLinkCardCVC: UICollectionViewCell {
 
 extension SocialLinkCardCVC {
     private func setUI() {
-        self.layer.cornerRadius = 8
-        self.backgroundColor = DSKitAsset.Colors.gray800.color
+        self.layer.cornerRadius = BaseRadius.Base.r8
+        self.backgroundColor = SemanticColor.Bg.Neutral.ghost
     }
     
     private func setLayout() {
@@ -66,7 +63,6 @@ extension SocialLinkCardCVC {
         contentStackView.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(8)
             make.centerY.equalToSuperview()
-            make.height.equalTo(24)
         }
     }
     
@@ -82,11 +78,12 @@ extension SocialLinkCardCVC {
 
 extension SocialLinkCardCVC {
     func configureCell(type: ServiceType) {
-        self.socialLinkImageView.image = type.icon.withTintColor(DSKitAsset.Colors.gray100.color)
+        self.socialLinkImageView.image = type.icon.withTintColor(SemanticColor.Fg.Neutral.default)
         if type == .instagram { // 인스타그램인 경우, 인스타로 축약
             self.socialLinkTitleLabel.text = I18N.Home.SocialLink.instagram
         } else {
             self.socialLinkTitleLabel.text = type.title
         }
+        self.socialLinkTitleLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.default)
     }
 }

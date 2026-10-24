@@ -11,7 +11,7 @@ import Combine
 
 import Core
 import Domain
-import DSKit
+import MDS
 
 import BaseFeatureDependency
 
@@ -113,7 +113,7 @@ extension HomeForMemberVC {
     
     private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
-        view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        view.backgroundColor = SemanticColor.Bg.Layer.basement
         self.floatingButton.isHidden = true
     }
     
@@ -126,7 +126,7 @@ extension HomeForMemberVC {
         
         naviBar.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-            make.height.equalTo(40)
+            make.height.equalTo(46)
         }
         
         collectionView.snp.makeConstraints { make in

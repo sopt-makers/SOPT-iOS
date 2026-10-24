@@ -9,7 +9,7 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
 
 final class HomeCategoryTagLabel: UILabel {
     
@@ -29,9 +29,7 @@ final class HomeCategoryTagLabel: UILabel {
 
 extension HomeCategoryTagLabel {
     func setUI() {
-        self.font = DSKitFontFamily.Suit.semiBold.font(size: 11)
-        self.textColor = DSKitAsset.Colors.orange300.color
-        self.textAlignment = .center
+        self.setTypography(Typography.label4, textColor: SemanticColor.Fg.Brand.default, alignment: .center)
     }
 }
 
@@ -40,6 +38,7 @@ extension HomeCategoryTagLabel {
 extension HomeCategoryTagLabel {
     func setData(with text: String) {
         self.text = text
+        self.setTypography(Typography.label4, textColor: SemanticColor.Fg.Brand.default, alignment: .center)
     }
     
     @discardableResult

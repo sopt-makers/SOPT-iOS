@@ -9,33 +9,32 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
 
 final class UserHistoryItemView: UIView {
     
     // MARK: - Properties
     
     private let historyViewColors: [UIColor] = [
-        DSKitAsset.Colors.gray600.color,
-        DSKitAsset.Colors.gray700.color,
-        DSKitAsset.Colors.gray800.color,
-        DSKitAsset.Colors.gray800.color,
-        DSKitAsset.Colors.gray800.color
+        SemanticColor.Bg.Neutral.default,
+        SemanticColor.Bg.Neutral.subtle,
+        SemanticColor.Bg.Neutral.ghost,
+        SemanticColor.Bg.Neutral.ghost,
+        SemanticColor.Bg.Neutral.ghost
     ]
     
     private let historyViewTextColor: [UIColor] = [
-        DSKitAsset.Colors.white.color,
-        DSKitAsset.Colors.gray10.color,
-        DSKitAsset.Colors.gray100.color,
-        DSKitAsset.Colors.gray200.color,
-        DSKitAsset.Colors.gray300.color
+        SemanticColor.Fg.Neutral.bold,
+        SemanticColor.Fg.Neutral.bold,
+        SemanticColor.Fg.Neutral.default,
+        SemanticColor.Fg.Neutral.subtle,
+        SemanticColor.Fg.Neutral.subtle
     ]
     
     // MARK: - UI Components
     
     private let historyLabel = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 12)
-        $0.textAlignment = .center
+        $0.setTypography(Typography.label4, alignment: .center)
     }
     
     // MARK: - Initialization
@@ -84,8 +83,9 @@ extension UserHistoryItemView {
 extension UserHistoryItemView {
     @discardableResult
     func setData(index: Int, history: String) -> Self {
-        self.historyLabel.textColor = historyViewTextColor[safe: index]
         self.historyLabel.text = history
+        let textColor = historyViewTextColor[safe: index]
+        self.historyLabel.setTypography(Typography.label4, textColor: textColor, alignment: .center)
         
         self.backgroundColor = historyViewColors[safe: index]
         return self

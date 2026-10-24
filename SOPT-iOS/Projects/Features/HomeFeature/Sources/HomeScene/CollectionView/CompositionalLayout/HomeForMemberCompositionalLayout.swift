@@ -98,13 +98,6 @@ extension HomeForMemberVC {
     }
     
     private func createMainProductSection() -> NSCollectionLayoutSection {
-        /// header: SOPT Playground
-        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                heightDimension: .absolute(30))
-        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
-                                                                 elementKind: UICollectionView.elementKindSectionHeader,
-                                                                 alignment: .top)
-
         /// item: 프로덕트 카드
         let productItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.25),
                                                      heightDimension: .absolute(92))
@@ -119,7 +112,6 @@ extension HomeForMemberVC {
 
         /// section 지정
         let section = NSCollectionLayoutSection(group: productGroup)
-        section.boundarySupplementaryItems = [header]
         section.contentInsets = NSDirectionalEdgeInsets(top: 12,
                                                         leading: Metric.collectionViewDefaultSideInset,
                                                         bottom: Metric.mainProductSectionSpacing,
