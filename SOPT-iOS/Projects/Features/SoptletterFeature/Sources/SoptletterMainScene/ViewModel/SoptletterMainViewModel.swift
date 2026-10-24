@@ -44,11 +44,13 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     private var fetchCTATask: Task<Void, Never>?
     private var fetchReportFormTask: Task<Void, Never>?
     private var topicId: Int?
-    
+
+    private var initialTopic: (topicId: Int, title: String)?
+
     private var cancelBag = CancelBag()
     
     public var onNaviBackTap: (() -> Void)?
-    public var onWriteTap: (() -> Void)?
+    public var onWriteTap: ((_ topicId: Int?, _ title: String?) -> Void)?
     public var onPostItTap: (() -> Void)?
     public var onDownloadTap: ((UIImage, URL) -> Void)?
     public var onReportTap: (@MainActor (URL) -> Void)?
@@ -94,13 +96,12 @@ extension SoptletterMainViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNaviBackTap?()
-                AmplitudeInstance.shared.trackWithUserType(event: .clickQuitSoptletter)
             }.store(in: cancelBag)
         
         input.writeButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onWriteTap?()
+                owner.onWriteTap?(owner.initialTopic?.topicId, owner.initialTopic?.title)
                 AmplitudeInstance.shared.trackWithUserType(event: .clickWriteSoptletter)
             }.store(in: cancelBag)
         
@@ -150,16 +151,14 @@ extension SoptletterMainViewModel {
                 let result = try await useCase.fetchSoptletterMessages(topicId: topicId, cursor: nil, size: nil)
                 try Task.checkCancellation()
                 await MainActor.run {
+                    initialTopic = (topicId: result.topicId, title: result.title)
                     output.soptletterMessages.send(result)
                 }
             } catch is CancellationError {
                 return
             } catch {
-                // UI fallback 처리
-                await MainActor.run {
-                    output.soptletterMessages.send(.init(topicId: 0, title: "test", totalCount: 0, nextCursor: 0, hasNext: false, messages: []))
-                    onError?()
-                }
+                initialTopic = nil
+                await onError?()
             }
         }
         
@@ -194,10 +193,5 @@ extension SoptletterMainViewModel {
 
     public func refreshMessagesTrigger() {
         refreshTriggerSubject.send()
-    }
-    
-    public func changeTopic(_ topicId: Int) {
-        self.topicId = topicId
-        refreshMessagesTrigger()
     }
 }

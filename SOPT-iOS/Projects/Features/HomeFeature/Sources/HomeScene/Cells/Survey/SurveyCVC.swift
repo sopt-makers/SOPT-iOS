@@ -11,6 +11,7 @@ import UIKit
 import Domain
 import Core
 import DSKit
+import MDS
 
 final class SurveyCVC: UICollectionViewCell {
     
@@ -23,19 +24,14 @@ final class SurveyCVC: UICollectionViewCell {
         $0.image = DSKitAsset.Assets.imgGirlSurvey.image
     }
     
-    private let titleLabel = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 20)
-        $0.textColor = DSKitAsset.Colors.white.color
-    }
+    private let titleLabel = UILabel()
     
     private let subTitleLabel = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 14)
-        $0.textColor = DSKitAsset.Colors.white.color
         $0.numberOfLines = 2
         $0.textAlignment = .center
     }
     
-    private lazy var surveyButton = AppCustomButton()
+    private lazy var surveyButton = MDSActionButton(variant: .primary, size: .medium)
 
     // MARK: - Initialization
     
@@ -73,14 +69,13 @@ extension SurveyCVC {
         }
         
         subTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(10)
+            make.top.equalTo(titleLabel.snp.bottom).offset(8)
             make.leading.trailing.equalToSuperview()
             make.centerX.equalToSuperview()
         }
         
         surveyButton.snp.makeConstraints { make in
-            make.top.equalTo(subTitleLabel.snp.bottom).offset(18)
-            make.height.equalTo(44)
+            make.top.equalTo(subTitleLabel.snp.bottom).offset(20)
             make.centerX.equalToSuperview()
             make.width.greaterThanOrEqualTo(182)
         }
@@ -100,18 +95,14 @@ extension SurveyCVC {
 extension SurveyCVC {
     func configureCell(model: HomePresentationModel.Survey) {
         self.titleLabel.text = model.title
+        self.titleLabel.setTypography(Typography.title3, textColor: SemanticColor.Fg.Neutral.bold)
         configureSubTitleLabel(with: model.subTitle)
-        self.surveyButton.setTitle(model.actionButtonName)
-            .setConfigForState(
-                bgColor: DSKitAsset.Colors.orange400.color,
-                enabledTextColor: DSKitAsset.Colors.gray950.color,
-                enabledFont: DSKitFontFamily.Suit.semiBold.font(size: 14)
-            )
-            .changeInset(top: 12, leading: 20, bottom: 12, trailing: 20)
+        self.surveyButton.title = model.actionButtonName
     }
     
     func configureSubTitleLabel(with text: String) {
         self.subTitleLabel.text = text
+        self.subTitleLabel.setTypography(Typography.body2, textColor: SemanticColor.Fg.Neutral.bold)
         // 피그마 기준, 20자를 넘으면 긴 문장으로 판단해서 두 줄로 보여줍니다.
         if text.count > 20 {
             updateSubTitleLayout()

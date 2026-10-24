@@ -44,6 +44,10 @@ public final class SoptletterCoordinator: BaseCoordinator {
             showSoptletterOnboarding()
         }
     }
+    
+    public func startWithMessageDetail(topicId: Int, messageId: Int) {
+        showSoptletterMain(topicId: topicId, messageId: messageId)
+    }
 
     // MARK: - Navigation
     private func showSoptletterOnboarding() {
@@ -83,7 +87,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
     }
     
     private func showSelectTopicMain(isRoot: Bool) {
-        var selectTopic = factory.makeSelectTopicVC(coordinator: self)
+        let selectTopic = factory.makeSelectTopicVC(coordinator: self)
         
         selectTopic.vm.onNaviBackTap = { [weak self] in
             if isRoot {
@@ -93,12 +97,19 @@ public final class SoptletterCoordinator: BaseCoordinator {
             }
         }
         
-        selectTopic.vm.onCellTap = { [weak self] topic in
-            self?.showSoptletterMain(topicId: topic.topicId)
+        selectTopic.vm.onCellTap = { [weak self, weak viewModel = selectTopic.vm] topic in
+            self?.showSoptletterMain(topicId: topic.topicId) {
+                viewModel?.refreshTopicTrigger()
+            }
         }
         
-        selectTopic.vm.onWriteButtonTap = { [weak self] in
-            self?.showSoptletterWriting(on: self?.soptletterRootController)
+        selectTopic.vm.onWriteButtonTap = { [weak self, weak viewModel = selectTopic.vm] in
+            self?.showSoptletterWriting(on: self?.soptletterRootController) { topicId in
+                guard let topicId else { return }
+                self?.showSoptletterMain(topicId: topicId) {
+                    viewModel?.refreshTopicTrigger()
+                }
+            }
         }
         
         selectTopic.vm.showAlert = {
@@ -117,18 +128,25 @@ public final class SoptletterCoordinator: BaseCoordinator {
     }
 
     private func showSoptletterWriting(
+        initialTopicId: Int? = nil,
+        initialTopicTitle: String? = nil,
         on controller: UINavigationController?,
-        onSubmitSuccess: (() -> Void)? = nil
+        onSubmitSuccess: ((_ topicId: Int?) -> Void)? = nil
     ) {
-        var soptletterWriting = factory.makeSoptletterWritingVC(coordinator: self)
+        let soptletterWriting = factory.makeSoptletterWritingVC(
+            coordinator: self,
+            initialTopicId: initialTopicId,
+            initialTopicTitle: initialTopicTitle
+        )
         
         soptletterWriting.vm.onNaviBackTap = { [weak controller] in
             controller?.popViewController(animated: true)
         }
 
-        soptletterWriting.vm.onSubmitSuccess = { [weak controller] in
-            onSubmitSuccess?()
+        soptletterWriting.vm.onSubmitSuccess = { [weak controller, weak viewModel = soptletterWriting.vm] in
+            let topicId = viewModel?.selectedTopicId
             controller?.popViewController(animated: true)
+            onSubmitSuccess?(topicId)
             ToastUtils.showMDSToast(type: .success, text: I18N.Soptletter.submitSuccess)
         }
         
@@ -136,32 +154,66 @@ public final class SoptletterCoordinator: BaseCoordinator {
             self?.showSelectTopicBottomSheet(
                 on: controller,
                 selectedTopicId: viewModel?.selectedTopicId
-            )
+            ) { topic in
+                viewModel?.selectTopic(topic)
+            }
         }
 
         controller?.pushViewController(soptletterWriting.vc, animated: true)
     }
     
     private func showSelectTopicBottomSheet(
-        on view: UIViewController?,
-        selectedTopicId: Int?
+        on controller: UIViewController?,
+        selectedTopicId: Int?,
+        onConfirm: @escaping (SoptletterTopicModel) -> Void
     ) {
-        let selectTopicBottomSheetVC = SelectTopicBottomSheet()
-        selectTopicBottomSheetVC.modalPresentationStyle = .overFullScreen
-        selectTopicBottomSheetVC.modalTransitionStyle = .crossDissolve
-        view?.present(selectTopicBottomSheetVC, animated: true)
+        let selectTopicBottomSheet = factory.makeSelectTopicBottomSheet(coordinator: self)
+        selectTopicBottomSheet.vc.modalPresentationStyle = .overFullScreen
+        selectTopicBottomSheet.vc.modalTransitionStyle = .crossDissolve
+        
+        selectTopicBottomSheet.vm.selectedTopicId = selectedTopicId
+        
+        selectTopicBottomSheet.vm.onNaviBackTap = { [weak controller] in
+            controller?.dismiss(animated: true)
+        }
+        
+        selectTopicBottomSheet.vm.showAlert = {
+            AlertUtils.presentNetworkAlertVC()
+        }
+        
+        selectTopicBottomSheet.vm.onConFirmButtonTap = { [weak controller] topic in
+            onConfirm(topic)
+            controller?.dismiss(animated: true)
+        }
+        
+        controller?.present(selectTopicBottomSheet.vc, animated: true)
     }
     
-    private func showSoptletterMain(topicId: Int?) {
+    private func showSoptletterMain(
+        topicId: Int?, messageId: Int? = nil,
+        onDismiss: (() -> Void)? = nil
+    ) {
         var soptletterMain = factory.makeSoptletterMainVC(coordinator: self, topicId: topicId)
 
         soptletterMain.vm.onNaviBackTap = { [weak self] in
-            self?.soptletterMainController?.dismiss(animated: true)
+            self?.soptletterMainController?.dismiss(animated: true) {
+                onDismiss?()
+            }
         }
         
-        soptletterMain.vm.onWriteTap = { [weak self] in
-            self?.showSoptletterWriting(on: self?.soptletterMainController) {
-                soptletterMain.vm.refreshMessagesTrigger()
+        soptletterMain.vm.onWriteTap = { [weak self] initialTopicId, initialTopicTitle in
+            self?.showSoptletterWriting(
+                initialTopicId: initialTopicId,
+                initialTopicTitle: initialTopicTitle,
+                on: self?.soptletterMainController
+            ) { selectedTopicId in
+                guard let selectedTopicId, selectedTopicId != topicId else {
+                    soptletterMain.vm.refreshMessagesTrigger()
+                    return
+                }
+                self?.soptletterMainController?.dismiss(animated: false) {
+                    self?.showSoptletterMain(topicId: selectedTopicId, onDismiss: onDismiss)
+                }
             }
         }
 
@@ -186,7 +238,12 @@ public final class SoptletterCoordinator: BaseCoordinator {
         navController.modalPresentationStyle = .fullScreen
         navController.setNavigationBarHidden(true, animated: false)
         soptletterMainController = navController
-        soptletterRootController?.present(navController, animated: true)
+        
+        let deeplinkController = soptletterRootController ?? navigationController
+        deeplinkController?.present(navController, animated: true) { [weak self] in
+        guard let self, let messageId, let topicId else { return }
+            self.presentSoptletterDetail(messageId, topicId, refreshTarget: soptletterMain)
+        }
     }
     
     private func showSoptletterPrint(_ uiImage: UIImage, _ pdfURL: URL) {

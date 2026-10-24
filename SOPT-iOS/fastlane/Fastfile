@@ -15,6 +15,36 @@
 
 default_platform(:ios)
 
+# App Store Connect API 키로 인증합니다. (Apple ID 로그인 + 2단계 인증 코드 입력이 필요 없습니다.)
+#
+# [CI (GitHub Actions)] 레포 시크릿을 환경변수로 넘겨 사용합니다.
+#   APP_STORE_CONNECT_API_KEY_KEY_ID    : Key ID
+#   APP_STORE_CONNECT_API_KEY_ISSUER_ID : Issuer ID
+#   APP_STORE_CONNECT_API_KEY_CONTENT   : .p8 내용 (base64 인코딩 값 또는 원본 텍스트)
+#
+# [로컬] 환경변수가 없으면 아래 값을 사용합니다.
+#   ASC_KEY_ID / ASC_ISSUER_ID / ASC_KEY_PATH (.p8 파일 경로, 저장소에 커밋하지 않습니다)
+def asc_api_key
+  content = ENV["APP_STORE_CONNECT_API_KEY_CONTENT"]
+
+  if content && !content.empty?
+    app_store_connect_api_key(
+      key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
+      issuer_id: ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"],
+      key_content: content,
+      is_key_content_base64: !content.include?("BEGIN PRIVATE KEY"), # 원본 텍스트면 false, base64면 true
+      in_house: false
+    )
+  else
+    app_store_connect_api_key(
+      key_id: ENV["ASC_KEY_ID"],
+      issuer_id: ENV["ASC_ISSUER_ID"],
+      key_filepath: ENV["ASC_KEY_PATH"],
+      in_house: false
+    )
+  end
+end
+
 platform :ios do
   
   ### Demo
@@ -35,6 +65,8 @@ platform :ios do
   desc "Demo App Testflight Upload"
   lane :upload_testflight_demo do |version|
     version = version[:version]
+
+    setup_ci # CI에서만 임시 키체인을 만들어 줍니다. (로컬에서는 아무 일도 하지 않습니다)
 
     match(
       type: "appstore",
@@ -58,7 +90,10 @@ platform :ios do
       scheme: "SOPT-iOS-Demo"
     )
 
-    upload_to_testflight(skip_waiting_for_build_processing: true)
+    upload_to_testflight(
+      api_key: asc_api_key,
+      skip_waiting_for_build_processing: true
+    )
   end
 
   ### Release
@@ -79,6 +114,8 @@ platform :ios do
   desc "Prod App Testflight Upload"
   lane :upload_testflight do |version|
     version = version[:version]
+
+    setup_ci # CI에서만 임시 키체인을 만들어 줍니다. (로컬에서는 아무 일도 하지 않습니다)
 
     match(
       type: "appstore",
@@ -102,13 +139,9 @@ platform :ios do
       scheme: "SOPT-iOS-PROD"
     )
 
-    upload_to_testflight(skip_waiting_for_build_processing: true)
-
-    sentry_upload_dif(
-      auth_token: ENV["SENTRY_AUTH_TOKEN"], # Do not use if using api_key
-      org_slug: 'sopt-1a',
-      project_slug: 'sopt-ios',
-      path: './BuildOutputs/Prod' # Optional. Defaults to '.' when no value is provided. Path(s) can be a string, a comma-separated string, or an array of strings.
+    upload_to_testflight(
+      api_key: asc_api_key,
+      skip_waiting_for_build_processing: true
     )
   end
 

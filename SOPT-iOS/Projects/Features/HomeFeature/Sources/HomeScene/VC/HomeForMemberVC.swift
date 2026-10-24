@@ -11,7 +11,7 @@ import Combine
 
 import Core
 import Domain
-import DSKit
+import MDS
 
 import BaseFeatureDependency
 
@@ -113,7 +113,7 @@ extension HomeForMemberVC {
     
     private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
-        view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        view.backgroundColor = SemanticColor.Bg.Layer.basement
         self.floatingButton.isHidden = true
     }
     
@@ -126,7 +126,7 @@ extension HomeForMemberVC {
         
         naviBar.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-            make.height.equalTo(40)
+            make.height.equalTo(46)
         }
         
         collectionView.snp.makeConstraints { make in
@@ -361,14 +361,15 @@ extension HomeForMemberVC {
             .recentSchedule(data.recentSchedule)
         ]
         
+        snapshot.deleteItems(snapshot.itemIdentifiers(inSection: .appService))
+        snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
+        
         let existingItems = snapshot.itemIdentifiers.filter { items.contains($0) }
         
-        if !existingItems.isEmpty {
-            snapshot.reconfigureItems(existingItems)
-            self.dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
-                self?.startPopularPostsAnimationLoop()
-                self?.startLatestPostAnimationLoop()
-            }
+        snapshot.reconfigureItems(existingItems)
+        self.dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
+            self?.startPopularPostsAnimationLoop()
+            self?.startLatestPostAnimationLoop()
         }
     }
     

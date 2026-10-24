@@ -101,7 +101,7 @@ extension SelectTopicDropDownCell {
         newBadge.isHidden = !isNew
         
         checkIcon.isHidden = !isSelected
-        contentView.backgroundColor = isSelected ? SemanticColor.Bg.Neutral.ghost : .clear
+        contentView.backgroundColor = isSelected ? SemanticColor.Bg.Neutral.Ghost.pressed : .clear
         contentView.layer.cornerRadius = 8
     }
 }

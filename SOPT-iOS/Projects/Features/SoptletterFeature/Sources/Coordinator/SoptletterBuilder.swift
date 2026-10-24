@@ -45,9 +45,14 @@ extension SoptletterBuilder: SoptletterFeatureBuildable {
         return (soptletterMainVC, viewModel)
     }
     
-    public func makeSoptletterWritingVC(coordinator: Coordinator) -> SoptletterWritingPresentable {
+    public func makeSoptletterWritingVC(coordinator: Coordinator, initialTopicId: Int?, initialTopicTitle: String?) -> SoptletterWritingPresentable {
         let useCase = DefaultSoptletterUseCase(repository: soptletterRepository)
-        let viewModel = SoptletterWritingViewModel(coordinator: coordinator, useCase: useCase)
+        let viewModel = SoptletterWritingViewModel(
+            coordinator: coordinator,
+            useCase: useCase,
+            initialTopicId: initialTopicId,
+            initialTopicTitle: initialTopicTitle
+        )
         let soptletterWritingVC = SoptletterWritingVC(viewModel: viewModel)
         return (soptletterWritingVC, viewModel)
     }
@@ -63,6 +68,13 @@ extension SoptletterBuilder: SoptletterFeatureBuildable {
         let useCase = DefaultSoptletterUseCase(repository: soptletterRepository)
         let viewModel = SoptletterDetailViewModel(useCase: useCase, messageId: messageId, topicId: topicId)
         let vc = SoptletterDetailModalVC(viewModel: viewModel)
+        return (vc, viewModel)
+    }
+    
+    public func makeSelectTopicBottomSheet(coordinator: any Coordinator) -> SelectTopicBottomSheetPresentable {
+        let useCase = DefaultSoptletterUseCase(repository: soptletterRepository)
+        let viewModel = SelectTopicBottomSheetViewModel(coordinator: coordinator, useCase: useCase)
+        let vc = SelectTopicBottomSheet(viewModel: viewModel)
         return (vc, viewModel)
     }
 }

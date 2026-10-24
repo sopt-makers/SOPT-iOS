@@ -10,7 +10,7 @@ import UIKit
 import Combine
 
 import Core
-import DSKit
+import MDS
 
 final class TabBarController: UITabBarController {
     
@@ -34,19 +34,15 @@ final class TabBarController: UITabBarController {
     // MARK: - UI Components
     
     private let plusButton = UIButton().then {
-        $0.setImage(DSKitAsset.Assets.icFabPlus.image, for: .normal)
-        $0.backgroundColor = .white
-        $0.layer.cornerRadius = 18
+        $0.setImage(MDSIcon.plusOutlined.image, for: .normal)
+        $0.backgroundColor = SemanticColor.Bg.Neutral.inverse
+        $0.layer.cornerRadius = BaseRadius.Base.r16
         $0.imageView?.contentMode = .center
         $0.imageView?.clipsToBounds = false
-        $0.layer.shadowColor = UIColor.black.cgColor
-        $0.layer.shadowOpacity = 0.1
-        $0.layer.shadowOffset = CGSize(width: 0, height: 4)
-        $0.layer.shadowRadius = 10
     }
     
     private let dimmedView = UIView().then{
-        $0.backgroundColor = DSKitAsset.Colors.black100.color.withAlphaComponent(0.6)
+        $0.backgroundColor = SemanticColor.Bg.Dim.default
         $0.isHidden = true
     }
     
@@ -135,12 +131,8 @@ extension TabBarController {
     
     private func configureTabBar() {
         UITabBar.clearShadow()
-        view.tintColor = .white
-        tabBar.backgroundColor = DSKitAsset.Colors.gray800.color
-
-        tabBar.layer.cornerRadius = 20
-        tabBar.layer.masksToBounds = true
-        tabBar.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        view.tintColor = SemanticColor.Fg.Neutral.bold
+        tabBar.backgroundColor = SemanticColor.Bg.Neutral.ghost
     }
     
     private func configureTabBarHeight() {
@@ -165,7 +157,7 @@ extension TabBarController {
             viewController.tabBarItem.imageInsets = UIEdgeInsets(top: 5, left: 0, bottom: -5, right: 0)
             viewController.tabBarItem.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: 3)
             viewController.tabBarItem.setTitleTextAttributes(
-                [NSAttributedString.Key.font: DSKitFontFamily.Suit.medium.font(size: 10)],
+                [NSAttributedString.Key.font: Typography.label4.font],
                 for: .normal
             )
         }
@@ -225,12 +217,14 @@ extension TabBarController {
             let item = items[index]
             
             if let badgeText = badges[tabType] {
-                item.badgeColor = DSKitAsset.Colors.orange400.color
+                item.badgeColor = SemanticColor.Bg.Brand.default
                 item.setBadgeTextAttributes([
-                    .font: DSKitFontFamily.Suit.semiBold.font(size: 10),
-                    .foregroundColor: DSKitAsset.Colors.gray900.color
+                    .font: Typography.label4.font,
+                    .foregroundColor: SemanticColor.Fg.Neutral.inverse
                 ], for: .normal)
                 item.badgeValue = badgeText
+            } else {
+                item.badgeValue = nil
             }
         }
     }

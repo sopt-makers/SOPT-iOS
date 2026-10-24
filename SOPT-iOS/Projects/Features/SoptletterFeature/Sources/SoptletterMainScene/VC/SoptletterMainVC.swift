@@ -233,7 +233,7 @@ extension SoptletterMainVC {
 
         let section = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = BaseSpacing.Base.s10
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: BaseSpacing.Base.s16, bottom: BaseSpacing.Base.s10, trailing: BaseSpacing.Base.s10)
+        section.contentInsets = NSDirectionalEdgeInsets(top: BaseSpacing.Base.s10, leading: BaseSpacing.Base.s16, bottom: BaseSpacing.Base.s10, trailing: BaseSpacing.Base.s10)
 
         return UICollectionViewCompositionalLayout(section: section)
     }

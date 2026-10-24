@@ -28,10 +28,9 @@ public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
     private let useCase: SoptletterUseCase
     private var cancelBag = CancelBag()
     private var submitTask: Task<Void, Never>?
-    // TODO: 주제 선정 화면 연동 시 실제 topicId로 교체
-    private let topicId = 1
+    private var fetchNickNameTask: Task<Void, Never>?
     private let textSubject = CurrentValueSubject<String, Never>("")
-    private let selectedTopicSubject = CurrentValueSubject<SoptletterTopicModel?, Never>(nil)
+    private let selectedTopicSubject: CurrentValueSubject<(topicId: Int, title: String)?, Never>
 
     // MARK: - Inputs
 
@@ -46,19 +45,31 @@ public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
     // MARK: - Outputs
 
     public struct Output {
+        let nickName = CurrentValueSubject<String, Never>(I18N.Soptletter.recipient)
         let isSubmitEnabled = CurrentValueSubject<Bool, Never>(false)
         let selectedTopicTitle = CurrentValueSubject<String?, Never>(nil)
     }
 
     // MARK: - Init
 
-    public init(coordinator: Coordinator, useCase: SoptletterUseCase) {
+    public init(
+        coordinator: Coordinator,
+        useCase: SoptletterUseCase,
+        initialTopicId: Int? = nil,
+        initialTopicTitle: String? = nil
+    ) {
         self.coordinator = coordinator
         self.useCase = useCase
+        if let initialTopicId, let initialTopicTitle {
+            self.selectedTopicSubject = CurrentValueSubject((topicId: initialTopicId, title: initialTopicTitle))
+        } else {
+            self.selectedTopicSubject = CurrentValueSubject(nil)
+        }
     }
 
     deinit {
         submitTask?.cancel()
+        fetchNickNameTask?.cancel()
     }
 
     public var selectedTopicId: Int? {
@@ -66,11 +77,10 @@ public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
     }
 
     public func selectTopic(_ topic: SoptletterTopicModel) {
-        selectedTopicSubject.send(topic)
-        print("[VM] selectTopic:", topic.topicId)
+        selectedTopicSubject.send((topicId: topic.topicId, title: topic.title))
     }
 
-    private func canSubmit(text: String, topic: SoptletterTopicModel?) -> Bool {
+    private func canSubmit(text: String, topic: (topicId: Int, title: String)?) -> Bool {
         useCase.isWritable(content: text) && topic != nil
     }
 }
@@ -79,6 +89,20 @@ extension SoptletterWritingViewModel {
     public func transform(from input: Input, cancelBag: CancelBag) -> Output {
         let output = Output()
 
+        input.viewDidLoad
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.fetchNickNameTask?.cancel()
+                owner.fetchNickNameTask = Task {
+                    do {
+                        let nickName = try await owner.useCase.getSoptletterNickName()
+                        output.nickName.send(nickName)
+                    } catch is CancellationError {
+                        return
+                    } catch { }
+                }
+            }.store(in: cancelBag)
+        
         input.naviBackTap
             .withUnretained(self)
             .sink { owner, _ in
@@ -105,12 +129,14 @@ extension SoptletterWritingViewModel {
         input.submitTap
             .withUnretained(self)
             .sink { owner, _ in
+                guard let topicId = owner.selectedTopicId else { return }
+                
                 owner.submitTask?.cancel()
                 let submittedText = owner.textSubject.value
                 output.isSubmitEnabled.send(false)
                 owner.submitTask = Task {
                     do {
-                        try await owner.useCase.writeMessage(topicId: owner.topicId, content: submittedText)
+                        try await owner.useCase.writeMessage(topicId: topicId, content: submittedText)
                         await owner.onSubmitSuccess?()
                     } catch is CancellationError {
                         return

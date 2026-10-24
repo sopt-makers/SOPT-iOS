@@ -15,7 +15,7 @@ import Domain
 public protocol SoptletterMainRoutingTrigger {
     var onNaviBackTap: (() -> Void)? { get set }
     var onPostItTap: (() -> Void)? { get set }
-    var onWriteTap: (() -> Void)? { get set }
+    var onWriteTap: ((_ topicId: Int?, _ title: String?) -> Void)? { get set }
     var onDownloadTap: ((UIImage, URL) -> Void)? { get set }
     var onReportTap: (@MainActor (URL) -> Void)? { get set }
     var onMenuTap: (() -> Void)? { get set }
@@ -23,7 +23,6 @@ public protocol SoptletterMainRoutingTrigger {
     var onError: (@MainActor () -> Void)? { get set }
     
     func refreshMessagesTrigger()
-    func changeTopic(_ topicId: Int)
 }
 
 public typealias SoptletterMainViewModelType = ViewModelType & SoptletterMainRoutingTrigger

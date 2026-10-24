@@ -10,6 +10,7 @@ import UIKit
 
 import Core
 import DSKit
+import MDS
 
 import Lottie
 
@@ -23,27 +24,20 @@ final class HomeDefaultHeaderView: UICollectionReusableView {
     // MARK: - UI Components
     
     private let titleLabel = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 20)
-        $0.textColor = DSKitAsset.Colors.white.color
+        $0.setTypography(Typography.heading3, textColor: SemanticColor.Fg.Neutral.bold)
     }
     
+    // TODO: - mds 이미지 추가 후 변경
     private let fireImageView = UIImageView().then {
         $0.image = DSKitAsset.Assets.icFire.image
     }
-    
-    private let viewAllContentButton = UIButton(configuration: .plain()).then {
-        var config = UIButton.Configuration.plain()
-        config.baseForegroundColor = DSKitAsset.Colors.gray300.color
-        config.contentInsets = .zero
-        var attributedTitle = AttributedString(I18N.Home.viewAll)
-        attributedTitle.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
-        config.attributedTitle = attributedTitle
-        let chervonRightImage = DSKitAsset.Assets.icChevronRight.image.withTintColor(DSKitAsset.Colors.gray300.color)
-            .preparingThumbnail(of: .init(width: 16, height: 16))
-        config.image = chervonRightImage
-        config.imagePlacement = .trailing
-        $0.configuration = config
-    }
+
+    private let viewAllContentButton = MDSTextButton(
+        variant: .default,
+        size: .small,
+        title: I18N.Home.viewAll,
+        icon: MDSIcon.chevronRightOutlined
+    )
 
     // MARK: - Initialization
     
@@ -74,6 +68,7 @@ extension HomeDefaultHeaderView {
         titleLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.centerY.equalToSuperview()
+            make.trailing.lessThanOrEqualTo(viewAllContentButton.snp.leading).offset(-8)
         }
         
         fireImageView.snp.makeConstraints { make in
@@ -107,46 +102,9 @@ extension HomeDefaultHeaderView {
 
 extension HomeDefaultHeaderView {
     func configureView(sectionKind: some HomeSectionUIConfigurable) {
-        let tintColor = sectionKind.isSubSectionHeader
-            ? DSKitAsset.Colors.white.color
-            : DSKitAsset.Colors.gray300.color
-        let iconSize: CGFloat = sectionKind.isSubSectionHeader ? 20 : 16
-        
-        var config = viewAllContentButton.configuration
-        config?.image = DSKitAsset.Assets.icChevronRight.image
-            .withTintColor(tintColor)
-            .preparingThumbnail(of: .init(width: iconSize, height: iconSize))
-        viewAllContentButton.configuration = config
-        
         self.titleLabel.text = sectionKind.headerTitle
+        self.titleLabel.setTypography(Typography.heading3, textColor: SemanticColor.Fg.Neutral.bold)
         self.fireImageView.isHidden = !sectionKind.shouldShowFireIcon
         self.viewAllContentButton.isHidden = !sectionKind.shouldShowViewAllContentButton
-
-        if sectionKind.isSubSectionHeader {
-            var config = viewAllContentButton.configuration
-            config?.attributedTitle = AttributedString("")
-            viewAllContentButton.configuration = config
-            viewAllContentButton.tintColor = DSKitAsset.Colors.white.color
-            
-            titleLabel.textColor = DSKitAsset.Colors.white.color
-            
-            viewAllContentButton.snp.remakeConstraints { make in
-                make.leading.equalTo(titleLabel.snp.trailing).offset(6)
-                make.centerY.equalTo(titleLabel)
-            }
-            titleLabel.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
-            
-            titleLabel.snp.remakeConstraints { make in
-                make.leading.equalToSuperview()
-                make.top.equalToSuperview().offset(12)
-            }
-        } else {
-            titleLabel.font = DSKitFontFamily.Suit.bold.font(size: 20)
-            titleLabel.textColor = DSKitAsset.Colors.white.color
-            titleLabel.snp.remakeConstraints { make in
-                make.leading.equalToSuperview()
-                make.centerY.equalToSuperview()
-            }
-        }
     }
 }
