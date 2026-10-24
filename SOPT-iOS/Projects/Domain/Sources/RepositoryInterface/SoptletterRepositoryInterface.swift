@@ -11,6 +11,7 @@ public protocol SoptletterRepositoryInterface {
     func fetchTopics() async throws -> SoptletterTopicListModel
     func fetchTopic(topicId: Int) async throws -> SoptletterTopicDetailModel
     func getSoptletterProfile() async throws -> SoptletterProfileModel
+    func getSoptletterNickName() -> String?
     func completeOnboarding() async throws
     func soptletterMessages(topicId: Int, cursor: Int?, size: Int?) async throws -> SoptletterItemModel
     func soptletterMessage(messageId: Int, topicId: Int) async throws -> SoptletterDetailMessageModel

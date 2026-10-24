@@ -103,8 +103,13 @@ public final class SoptletterCoordinator: BaseCoordinator {
             }
         }
         
-        selectTopic.vm.onWriteButtonTap = { [weak self] in
-            self?.showSoptletterWriting(on: self?.soptletterRootController)
+        selectTopic.vm.onWriteButtonTap = { [weak self, weak viewModel = selectTopic.vm] in
+            self?.showSoptletterWriting(on: self?.soptletterRootController) { topicId in
+                guard let topicId else { return }
+                self?.showSoptletterMain(topicId: topicId) {
+                    viewModel?.refreshTopicTrigger()
+                }
+            }
         }
         
         selectTopic.vm.showAlert = {
@@ -124,7 +129,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
 
     private func showSoptletterWriting(
         on controller: UINavigationController?,
-        onSubmitSuccess: (() -> Void)? = nil
+        onSubmitSuccess: ((_ topicId: Int?) -> Void)? = nil
     ) {
         let soptletterWriting = factory.makeSoptletterWritingVC(coordinator: self)
         
@@ -132,9 +137,10 @@ public final class SoptletterCoordinator: BaseCoordinator {
             controller?.popViewController(animated: true)
         }
 
-        soptletterWriting.vm.onSubmitSuccess = { [weak controller] in
-            onSubmitSuccess?()
+        soptletterWriting.vm.onSubmitSuccess = { [weak controller, weak viewModel = soptletterWriting.vm] in
+            let topicId = viewModel?.selectedTopicId
             controller?.popViewController(animated: true)
+            onSubmitSuccess?(topicId)
             ToastUtils.showMDSToast(type: .success, text: I18N.Soptletter.submitSuccess)
         }
         
@@ -190,8 +196,14 @@ public final class SoptletterCoordinator: BaseCoordinator {
         }
         
         soptletterMain.vm.onWriteTap = { [weak self] in
-            self?.showSoptletterWriting(on: self?.soptletterMainController) {
-                soptletterMain.vm.refreshMessagesTrigger()
+            self?.showSoptletterWriting(on: self?.soptletterMainController) { selectedTopicId in
+                guard let selectedTopicId, selectedTopicId != topicId else {
+                    soptletterMain.vm.refreshMessagesTrigger()
+                    return
+                }
+                self?.soptletterMainController?.dismiss(animated: false) {
+                    self?.showSoptletterMain(topicId: selectedTopicId, onDismiss: onDismiss)
+                }
             }
         }
 
