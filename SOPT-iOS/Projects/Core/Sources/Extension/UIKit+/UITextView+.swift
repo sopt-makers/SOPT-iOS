@@ -38,7 +38,9 @@ public extension UITextView {
             let characterString = String(character)
             let length = characterString.utf16.count
             let range = NSRange(location: utf16Offset, length: length)
-            let fontToUse = characterString.canBeRendered(by: font) ? font : fallbackFont
+            /// 공백·줄바꿈은 윤곽선이 없어 `canBeRendered`가 false를 반환하므로, 폴백 대상에서 제외합니다. 
+            let hasNoOutline = character.isWhitespace || character.isNewline
+            let fontToUse = hasNoOutline || characterString.canBeRendered(by: font) ? font : fallbackFont
             attributedString.addAttribute(.font, value: fontToUse, range: range)
             attributedString.addAttribute(.foregroundColor, value: color, range: range)
             utf16Offset += length

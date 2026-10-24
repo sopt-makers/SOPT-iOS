@@ -122,8 +122,16 @@ public final class ApplicationCoordinator: BaseCoordinator {
     // MARK: - handleDeepLink
     
     func handleDeepLink(deepLink: DeepLinkComponentsExecutable) {
-        self.rootNavigationController.popToRootViewController(animated: false)
-        deepLink.execute(coordinator: self)
+        if rootNavigationController.presentedViewController != nil {
+            rootNavigationController.dismiss(animated: false) { [weak self] in
+                guard let self else { return }
+                self.rootNavigationController.popToRootViewController(animated: false)
+                deepLink.execute(coordinator: self)
+            }
+        } else {
+            rootNavigationController.popToRootViewController(animated: false)
+            deepLink.execute(coordinator: self)
+        }
     }
 
     // MARK: - handleWebLink

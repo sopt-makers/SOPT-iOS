@@ -30,7 +30,7 @@ public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
     private var submitTask: Task<Void, Never>?
     private var fetchNickNameTask: Task<Void, Never>?
     private let textSubject = CurrentValueSubject<String, Never>("")
-    private let selectedTopicSubject = CurrentValueSubject<SoptletterTopicModel?, Never>(nil)
+    private let selectedTopicSubject: CurrentValueSubject<(topicId: Int, title: String)?, Never>
 
     // MARK: - Inputs
 
@@ -52,9 +52,19 @@ public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
 
     // MARK: - Init
 
-    public init(coordinator: Coordinator, useCase: SoptletterUseCase) {
+    public init(
+        coordinator: Coordinator,
+        useCase: SoptletterUseCase,
+        initialTopicId: Int? = nil,
+        initialTopicTitle: String? = nil
+    ) {
         self.coordinator = coordinator
         self.useCase = useCase
+        if let initialTopicId, let initialTopicTitle {
+            self.selectedTopicSubject = CurrentValueSubject((topicId: initialTopicId, title: initialTopicTitle))
+        } else {
+            self.selectedTopicSubject = CurrentValueSubject(nil)
+        }
     }
 
     deinit {
@@ -67,10 +77,10 @@ public final class SoptletterWritingViewModel: SoptletterWritingViewModelType {
     }
 
     public func selectTopic(_ topic: SoptletterTopicModel) {
-        selectedTopicSubject.send(topic)
+        selectedTopicSubject.send((topicId: topic.topicId, title: topic.title))
     }
 
-    private func canSubmit(text: String, topic: SoptletterTopicModel?) -> Bool {
+    private func canSubmit(text: String, topic: (topicId: Int, title: String)?) -> Bool {
         useCase.isWritable(content: text) && topic != nil
     }
 }

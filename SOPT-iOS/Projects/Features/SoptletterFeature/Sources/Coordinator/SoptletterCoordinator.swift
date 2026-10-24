@@ -87,7 +87,7 @@ public final class SoptletterCoordinator: BaseCoordinator {
     }
     
     private func showSelectTopicMain(isRoot: Bool) {
-        var selectTopic = factory.makeSelectTopicVC(coordinator: self)
+        let selectTopic = factory.makeSelectTopicVC(coordinator: self)
         
         selectTopic.vm.onNaviBackTap = { [weak self] in
             if isRoot {
@@ -128,10 +128,16 @@ public final class SoptletterCoordinator: BaseCoordinator {
     }
 
     private func showSoptletterWriting(
+        initialTopicId: Int? = nil,
+        initialTopicTitle: String? = nil,
         on controller: UINavigationController?,
         onSubmitSuccess: ((_ topicId: Int?) -> Void)? = nil
     ) {
-        let soptletterWriting = factory.makeSoptletterWritingVC(coordinator: self)
+        let soptletterWriting = factory.makeSoptletterWritingVC(
+            coordinator: self,
+            initialTopicId: initialTopicId,
+            initialTopicTitle: initialTopicTitle
+        )
         
         soptletterWriting.vm.onNaviBackTap = { [weak controller] in
             controller?.popViewController(animated: true)
@@ -195,8 +201,12 @@ public final class SoptletterCoordinator: BaseCoordinator {
             }
         }
         
-        soptletterMain.vm.onWriteTap = { [weak self] in
-            self?.showSoptletterWriting(on: self?.soptletterMainController) { selectedTopicId in
+        soptletterMain.vm.onWriteTap = { [weak self] initialTopicId, initialTopicTitle in
+            self?.showSoptletterWriting(
+                initialTopicId: initialTopicId,
+                initialTopicTitle: initialTopicTitle,
+                on: self?.soptletterMainController
+            ) { selectedTopicId in
                 guard let selectedTopicId, selectedTopicId != topicId else {
                     soptletterMain.vm.refreshMessagesTrigger()
                     return

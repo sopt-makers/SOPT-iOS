@@ -15,7 +15,7 @@ import Domain
 public protocol SoptletterMainRoutingTrigger {
     var onNaviBackTap: (() -> Void)? { get set }
     var onPostItTap: (() -> Void)? { get set }
-    var onWriteTap: (() -> Void)? { get set }
+    var onWriteTap: ((_ topicId: Int?, _ title: String?) -> Void)? { get set }
     var onDownloadTap: ((UIImage, URL) -> Void)? { get set }
     var onReportTap: (@MainActor (URL) -> Void)? { get set }
     var onMenuTap: (() -> Void)? { get set }

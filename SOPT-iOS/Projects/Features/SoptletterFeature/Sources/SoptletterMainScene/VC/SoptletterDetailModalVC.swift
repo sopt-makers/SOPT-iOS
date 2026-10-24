@@ -55,19 +55,17 @@ public final class SoptletterDetailModalVC: UIViewController {
         $0.indicatorStyle = .black
     }
 
-    private let contentLabel = UILabel().then {
-        $0.numberOfLines = 0
-    }
-
     private let contentTextView = UITextView().then {
         $0.setTypographyUsingLineSpacing(Typography.body1, textColor: SemanticColor.Fg.Neutral.ghost)
         $0.backgroundColor = .clear
         $0.isScrollEnabled = false
         $0.isEditable = false
+        $0.isSelectable = false
         $0.textContainerInset = .zero
         $0.textContainer.lineFragmentPadding = 0
-        $0.isHidden = true
     }
+
+    private var originalContent = ""
 
     private let charCountLabel = UILabel().then {
         $0.isHidden = true
@@ -174,8 +172,9 @@ public final class SoptletterDetailModalVC: UIViewController {
         nameLabel.text = name
         nameLabel.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.ghost)
 
-        contentLabel.text = content
-        contentLabel.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.ghost)
+        originalContent = content
+        contentTextView.text = content
+        applyContentStyle()
 
         dateLabel.text = DateFormatManager.shared.serverTimeToString(date, from: .monthDayWithDot)
         dateLabel.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.subtle)
@@ -215,7 +214,7 @@ extension SoptletterDetailModalVC {
         deleteButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.deleteButtonTapPublisher.send(owner.contentLabel.text ?? "")
+                owner.deleteButtonTapPublisher.send(owner.originalContent)
             }.store(in: cancelBag)
 
         editButtonTap
@@ -258,8 +257,7 @@ extension SoptletterDetailModalVC {
             .receive(on: DispatchQueue.main)
             .withUnretained(self)
             .sink { owner, _ in
-                owner.contentLabel.text = owner.contentTextView.text
-                owner.contentLabel.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.ghost)
+                owner.originalContent = owner.contentTextView.text ?? ""
                 owner.contentDisplayMode = .viewing
                 ToastUtils.showMDSToast(type: .success, text: I18N.Soptletter.Detail.editCompleteToast)
             }.store(in: cancelBag)
@@ -305,7 +303,7 @@ private extension SoptletterDetailModalVC {
         containerView.addSubview(editDeleteStackView)
         containerView.addSubview(cancelEditButton)
         likeStackView.addArrangedSubviews(likeButton, likeCountLabel)
-        contentScrollView.addSubviews(contentLabel, contentTextView)
+        contentScrollView.addSubview(contentTextView)
         containerView.addSubviews(nameLabel, contentScrollView, dateLabel, likeStackView, confirmButton, charCountLabel)
         view.addSubviews(dimmedView, containerView)
 
@@ -340,11 +338,6 @@ private extension SoptletterDetailModalVC {
             make.directionalHorizontalEdges.equalToSuperview().inset(BaseSpacing.Base.s20)
             make.height.equalTo(312)
         }
-
-        contentLabel.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-            make.width.equalTo(contentScrollView.frameLayoutGuide).offset(-BaseSpacing.Base.s16)
-         }
 
          contentTextView.snp.makeConstraints { make in
              make.edges.equalToSuperview()
@@ -416,6 +409,12 @@ private extension SoptletterDetailModalVC {
         confirmButton.isEnabled = count <= maxContentLength
     }
 
+    /// 본문 타이포를 적용하고, SUIT가 렌더링하지 못하는 글자에는 폴백 폰트를 적용합니다.
+    func applyContentStyle() {
+        contentTextView.setTypographyUsingLineSpacing(Typography.body1, textColor: SemanticColor.Fg.Neutral.ghost)
+        contentTextView.applyFontFallback(font: Typography.body1.font, color: SemanticColor.Fg.Neutral.ghost)
+    }
+
 }
 
 extension SoptletterDetailModalVC {
@@ -437,16 +436,15 @@ extension SoptletterDetailModalVC {
         let isEditing = mode == .editing
 
         if isEditing {
-            contentTextView.text = contentLabel.text
-            contentTextView.setTypographyUsingLineSpacing(Typography.body1, textColor: SemanticColor.Fg.Neutral.ghost)
             updateCharCount(contentTextView.text.count)
             updateConfirmButtonState(contentTextView.text.count)
         } else {
             confirmButton.isEnabled = true
+            contentTextView.text = originalContent
+            applyContentStyle()
         }
 
-        contentLabel.isHidden = isEditing
-        contentTextView.isHidden = !isEditing
+        contentTextView.isSelectable = isEditing
         contentTextView.isEditable = isEditing
         charCountLabel.isHidden = !isEditing
         dateLabel.isHidden = isEditing
