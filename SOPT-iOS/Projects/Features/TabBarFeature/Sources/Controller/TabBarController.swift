@@ -34,7 +34,7 @@ final class TabBarController: UITabBarController {
     // MARK: - UI Components
     
     private let plusButton = UIButton().then {
-        $0.setImage(MDSIcon.plusOutlined.image, for: .normal)
+        $0.setImage(MDSIcon.plusOutlined.image.withTintColor(SemanticColor.Fg.Neutral.inverse, renderingMode: .alwaysOriginal), for: .normal)
         $0.backgroundColor = SemanticColor.Bg.Neutral.inverse
         $0.layer.cornerRadius = BaseRadius.Base.r16
         $0.imageView?.contentMode = .center
