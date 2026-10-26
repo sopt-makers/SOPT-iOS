@@ -209,6 +209,10 @@ extension DefaultPostCVC {
             userPartLabel
         )
         
+        profileImageView.snp.makeConstraints { make in
+            make.size.equalTo(48)
+        }
+
         userStackView.setCustomSpacing(5, after: profileImageView)
         userStackView.setCustomSpacing(1, after: userNameLabel)
         
