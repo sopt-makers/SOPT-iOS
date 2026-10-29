@@ -33,9 +33,13 @@ Features 간 직접 의존은 금지하고, 다른 Feature 호출은 `Interface`
 
 ```bash
 cd SOPT-iOS
+make download-privates   # 비공개 설정(Config.swift 등) 다운로드
 tuist install
 tuist generate --no-open
 ```
+
+- `make download-privates`는 비공개 설정 저장소에 접근 가능한 GitHub 액세스 토큰이 필요하다. 처음 실행하면 토큰 입력을 요청하고, `.env`에 `GITHUB_ACCESS_TOKEN`으로 저장된다. (CI는 `PRIVATES_TOKEN` 시크릿을 사용)
+- 이 단계를 건너뛰면 빌드에 필요한 비공개 설정과 `Config.swift`가 없어 빌드가 실패한다.
 
 - 워크스페이스: `SOPT-iOS/SOPT-iOS.xcworkspace`
 - `SOPT-iOS` 스킴: 운영(prod) 서버
