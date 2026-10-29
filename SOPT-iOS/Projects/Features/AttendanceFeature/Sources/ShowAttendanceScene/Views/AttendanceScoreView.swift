@@ -57,6 +57,11 @@ final class AttendanceScoreView: UIView {
     }()
     
     private let attendanceScoreDescriptiopnLabel = UILabel()
+
+    var onInfoButtonTap: (() -> Void)? {
+        get { myInfoContainerView.onInfoButtonTap }
+        set { myInfoContainerView.onInfoButtonTap = newValue }
+    }
     
     private lazy var attendanceTableView: UITableView = {
         let tableView = UITableView()
@@ -97,7 +102,6 @@ extension AttendanceScoreView {
         myInfoContainerView.snp.makeConstraints {
             $0.top.equalToSuperview().offset(24)
             $0.leading.trailing.equalToSuperview().inset(24)
-            $0.height.equalTo(50)
         }
         
         myScoreContainerStackView.snp.makeConstraints {

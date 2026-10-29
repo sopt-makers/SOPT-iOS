@@ -80,13 +80,6 @@ public final class ShowAttendanceVC: UIViewController{
         return rf
     }()
     
-    private lazy var infoButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.tintColor = SemanticColor.Fg.Neutral.bold
-        button.addTarget(self, action: #selector(infoButtonDidTap), for: .touchUpInside)
-        return button
-    }()
-    
     // MARK: - Initialization
     
     public init(viewModel: ShowAttendanceViewModel) {
@@ -97,6 +90,7 @@ public final class ShowAttendanceVC: UIViewController{
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     
     // MARK: - View Life Cycle
     
@@ -113,6 +107,18 @@ public final class ShowAttendanceVC: UIViewController{
         super.viewWillAppear(animated)
         self.viewWillAppear.send(())
     }
+    
+    private var viewWillAppear = PassthroughSubject<Void, Never>()
+    private var naviBackButtonTap = PassthroughSubject<Void, Never>()
+    private lazy var refreshStarted = refresher
+        .publisher(for: .valueChanged)
+        .mapVoid()
+        .asDriver()
+    
+    private lazy var attendanceButtonTap = attendanceButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
 }
 
 // MARK: - UI & Layout
@@ -129,7 +135,6 @@ extension ShowAttendanceVC {
         view.addSubviews(navibar, containerScrollView, attendanceGradientView, attendanceButtonStackView)
         containerScrollView.addSubview(contentView)
         contentView.addSubviews(headerScheduleView, attendanceScoreView)
-        attendanceScoreView.addSubview(infoButton)
         
         navibar.snp.makeConstraints {
             $0.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
@@ -170,12 +175,6 @@ extension ShowAttendanceVC {
         
         attendanceButton.snp.makeConstraints {
             $0.height.equalTo(56)
-        }
-        
-        infoButton.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(58)
-            $0.trailing.equalToSuperview().inset(24)
-            $0.width.height.equalTo(22)
         }
     }
 }
@@ -242,7 +241,6 @@ extension ShowAttendanceVC {
             .withUnretained(self)
             .sink { owner, model in
                 guard let model else { return }
-                owner.infoButton.setImage(MDSIcon.alertCircleOutlined.image, for: .normal)
                 owner.setScoreData(model)
                 owner.endRefresh()
             }.store(in: self.cancelBag)
@@ -303,8 +301,7 @@ extension ShowAttendanceVC {
     
     @objc
     private func infoButtonDidTap() {
-        
-        showToast(message: I18N.Attendance.infoButtonToastMessage)
+        ToastUtils.showMDSToast(type: .default, text: I18N.Attendance.infoButtonToastMessage)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
             let safariViewController = SFSafariViewController(url: URL(string: "https://sopt.org/rules")!)
