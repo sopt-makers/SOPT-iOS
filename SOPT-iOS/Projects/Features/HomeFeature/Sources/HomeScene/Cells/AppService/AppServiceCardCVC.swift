@@ -84,6 +84,7 @@ extension AppServiceCardCVC {
     func configureCell(model: HomePresentationModel.AppService) {
         self.logoImageView.setImage(with: model.iconURL)
         self.titleLabel.text = model.serviceName
+        self.titleLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.subtle, alignment: .center)
         if model.displayAlarmBadge && !model.alarmBadge.isEmpty {
             self.notificationBadgeView.text = model.alarmBadge
         } else {
