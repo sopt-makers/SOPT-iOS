@@ -21,7 +21,7 @@ import AttendanceFeatureInterface
 import BaseFeatureDependency
 import SafariServices
 
-public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControllable {
+public final class ShowAttendanceVC: UIViewController{
     
     // MARK: - Properties
     
@@ -31,13 +31,6 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     public var sceneType: AttendanceScheduleType {
         return self.viewModel.sceneType ?? .unscheduledDay
     }
-    
-    private var viewWillAppear = PassthroughSubject<Void, Never>()
-    
-    // MARK: - ShowAttendanceCoordinatable
-    
-    public var onAttendanceButtonTap: ((AttendanceRoundModel, (() -> Void)?) -> Void)?
-    public var onNaviBackTap: (() -> Void)?
     
     // MARK: - UI Components
     
@@ -195,30 +188,24 @@ extension ShowAttendanceVC {
         navibar.leftButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onNaviBackTap?()
+                owner.naviBackButtonTap.send()
             }.store(in: cancelBag)
+
+        attendanceScoreView.onInfoButtonTap = { [weak self] in
+            self?.infoButtonDidTap()
+        }
     }
     
     private func bindViewModels() {
-        
-        let viewWillAppear = viewWillAppear.asDriver()
-        let refreshStarted = refresher.publisher(for: .valueChanged)
-            .mapVoid()
-            .asDriver()
-        
-        attendanceButton.publisher(for: .touchUpInside)
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onAttendanceButtonTap?(owner.viewModel.lectureRound) {
-                    owner.viewWillAppear.send(())
-                }
-            }
-            .store(in: self.cancelBag)
-        
-        let input = ShowAttendanceViewModel.Input(viewWillAppear: viewWillAppear,
-                                                  refreshStarted: refreshStarted)
+        let input = ShowAttendanceViewModel.Input(
+            viewWillAppear: viewWillAppear.asDriver(),
+            naviBackButtonTap: naviBackButtonTap.asDriver(),
+            refreshStarted: refreshStarted,
+            attendanceButtonTap: attendanceButtonTap
+        )
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
-        
+
+                
         output.$todayAttendances
             .combineLatest(output.$takenAttendanceType)
             .withUnretained(self)

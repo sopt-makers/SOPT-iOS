@@ -22,7 +22,6 @@ struct AttendanceButtonInfo {
 public final class ShowAttendanceViewModel: ShowAttendanceViewModelType {
     
     // MARK: - Trigger
-    // TODO: coordinating vc -> vm
     public var onAttendanceButtonTap: ((AttendanceRoundModel, (() -> Void)?) -> Void)?
     public var onNaviBackTap: (() -> Void)?
 
@@ -38,7 +37,9 @@ public final class ShowAttendanceViewModel: ShowAttendanceViewModelType {
     
     public struct Input {
         let viewWillAppear: Driver<Void>
+        let naviBackButtonTap: Driver<Void>
         let refreshStarted: Driver<Void>
+        let attendanceButtonTap: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -76,6 +77,10 @@ extension ShowAttendanceViewModel {
             }
             .store(in: cancelBag)
         
+        input.naviBackButtonTap
+            .sink { [weak self] in self?.onNaviBackTap?() }
+            .store(in: cancelBag)
+
         input.refreshStarted
             .withUnretained(self)
             .sink { owner, _ in
@@ -83,6 +88,17 @@ extension ShowAttendanceViewModel {
                 owner.useCase.fetchAttendanceScore()
             }
         .store(in: self.cancelBag)
+        
+        input.attendanceButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onAttendanceButtonTap?(owner.lectureRound) {
+                    output.isLoading.send(true)
+                    owner.useCase.fetchAttendanceSchedule()
+                    owner.useCase.fetchAttendanceScore()
+                }
+            }
+            .store(in: cancelBag)
         
         return output
     }
