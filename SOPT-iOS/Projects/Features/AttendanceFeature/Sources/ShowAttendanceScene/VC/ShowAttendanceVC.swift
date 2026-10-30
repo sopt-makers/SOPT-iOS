@@ -19,9 +19,8 @@ import SnapKit
 
 import AttendanceFeatureInterface
 import BaseFeatureDependency
-import SafariServices
 
-public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControllable {
+public final class ShowAttendanceVC: UIViewController {
     
     // MARK: - Properties
     
@@ -33,11 +32,17 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     }
     
     private var viewWillAppear = PassthroughSubject<Void, Never>()
+    private var naviBackButtonTap = PassthroughSubject<Void, Never>()
+    private var infoButtonTap = PassthroughSubject<Void, Never>()
+    private lazy var refreshStarted = refresher
+        .publisher(for: .valueChanged)
+        .mapVoid()
+        .asDriver()
     
-    // MARK: - ShowAttendanceCoordinatable
-    
-    public var onAttendanceButtonTap: ((AttendanceRoundModel, (() -> Void)?) -> Void)?
-    public var onNaviBackTap: (() -> Void)?
+    private lazy var attendanceButtonTap = attendanceButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
     
     // MARK: - UI Components
     
@@ -87,13 +92,6 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
         return rf
     }()
     
-    private lazy var infoButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.tintColor = SemanticColor.Fg.Neutral.bold
-        button.addTarget(self, action: #selector(infoButtonDidTap), for: .touchUpInside)
-        return button
-    }()
-    
     // MARK: - Initialization
     
     public init(viewModel: ShowAttendanceViewModel) {
@@ -136,7 +134,6 @@ extension ShowAttendanceVC {
         view.addSubviews(navibar, containerScrollView, attendanceGradientView, attendanceButtonStackView)
         containerScrollView.addSubview(contentView)
         contentView.addSubviews(headerScheduleView, attendanceScoreView)
-        attendanceScoreView.addSubview(infoButton)
         
         navibar.snp.makeConstraints {
             $0.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
@@ -178,12 +175,6 @@ extension ShowAttendanceVC {
         attendanceButton.snp.makeConstraints {
             $0.height.equalTo(56)
         }
-        
-        infoButton.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(58)
-            $0.trailing.equalToSuperview().inset(24)
-            $0.width.height.equalTo(22)
-        }
     }
 }
 
@@ -195,30 +186,31 @@ extension ShowAttendanceVC {
         navibar.leftButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onNaviBackTap?()
+                owner.naviBackButtonTap.send()
             }.store(in: cancelBag)
+
+        attendanceScoreView.onInfoButtonTap = { [weak self] in
+            self?.infoButtonTap.send()
+        }
     }
     
     private func bindViewModels() {
-        
-        let viewWillAppear = viewWillAppear.asDriver()
-        let refreshStarted = refresher.publisher(for: .valueChanged)
-            .mapVoid()
-            .asDriver()
-        
-        attendanceButton.publisher(for: .touchUpInside)
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onAttendanceButtonTap?(owner.viewModel.lectureRound) {
-                    owner.viewWillAppear.send(())
-                }
+        let input = ShowAttendanceViewModel.Input(
+            viewWillAppear: viewWillAppear.asDriver(),
+            naviBackButtonTap: naviBackButtonTap.asDriver(),
+            refreshStarted: refreshStarted,
+            attendanceButtonTap: attendanceButtonTap,
+            infoButtonTap: infoButtonTap.asDriver()
+        )
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+
+        output.showInfoToast
+            .sink { _ in
+                ToastUtils.showMDSToast(type: .default, text: I18N.Attendance.infoButtonToastMessage)
             }
             .store(in: self.cancelBag)
-        
-        let input = ShowAttendanceViewModel.Input(viewWillAppear: viewWillAppear,
-                                                  refreshStarted: refreshStarted)
-        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
-        
+
+                
         output.$todayAttendances
             .combineLatest(output.$takenAttendanceType)
             .withUnretained(self)
@@ -255,7 +247,6 @@ extension ShowAttendanceVC {
             .withUnretained(self)
             .sink { owner, model in
                 guard let model else { return }
-                owner.infoButton.setImage(MDSIcon.alertCircleOutlined.image, for: .normal)
                 owner.setScoreData(model)
                 owner.endRefresh()
             }.store(in: self.cancelBag)
@@ -314,17 +305,6 @@ extension ShowAttendanceVC {
         attendanceButton.title = title
     }
     
-    @objc
-    private func infoButtonDidTap() {
-        
-        showToast(message: I18N.Attendance.infoButtonToastMessage)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-            let safariViewController = SFSafariViewController(url: URL(string: "https://sopt.org/rules")!)
-            safariViewController.playgroundStyle()
-            self?.present(safariViewController, animated: true)
-        }
-    }
 }
 
 // MARK: - UIGestureRecognizerDelegate

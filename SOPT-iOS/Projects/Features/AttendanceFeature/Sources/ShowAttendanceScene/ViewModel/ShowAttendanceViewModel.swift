@@ -22,9 +22,9 @@ struct AttendanceButtonInfo {
 public final class ShowAttendanceViewModel: ShowAttendanceViewModelType {
     
     // MARK: - Trigger
-    // TODO: coordinating vc -> vm
     public var onAttendanceButtonTap: ((AttendanceRoundModel, (() -> Void)?) -> Void)?
     public var onNaviBackTap: (() -> Void)?
+    public var onInfoButtonTap: (() -> Void)?
 
     // MARK: - Properties
     
@@ -38,7 +38,10 @@ public final class ShowAttendanceViewModel: ShowAttendanceViewModelType {
     
     public struct Input {
         let viewWillAppear: Driver<Void>
+        let naviBackButtonTap: Driver<Void>
         let refreshStarted: Driver<Void>
+        let attendanceButtonTap: Driver<Void>
+        let infoButtonTap: Driver<Void>
     }
     
     // MARK: - Outputs
@@ -50,6 +53,7 @@ public final class ShowAttendanceViewModel: ShowAttendanceViewModelType {
         @Published var takenAttendanceType: TakenAttendanceType?
         var attendanceButtonInfo = PassthroughSubject<AttendanceButtonInfo, Never>()
         var isLoading = PassthroughSubject<Bool, Never>()
+        var showInfoToast = PassthroughSubject<Void, Never>()
     }
     
     // MARK: - init
@@ -76,6 +80,10 @@ extension ShowAttendanceViewModel {
             }
             .store(in: cancelBag)
         
+        input.naviBackButtonTap
+            .sink { [weak self] in self?.onNaviBackTap?() }
+            .store(in: cancelBag)
+
         input.refreshStarted
             .withUnretained(self)
             .sink { owner, _ in
@@ -84,6 +92,25 @@ extension ShowAttendanceViewModel {
             }
         .store(in: self.cancelBag)
         
+        input.attendanceButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                owner.onAttendanceButtonTap?(owner.lectureRound) { [weak owner] in
+                    output.isLoading.send(true)
+                    owner?.useCase.fetchAttendanceSchedule()
+                    owner?.useCase.fetchAttendanceScore()
+                }
+            }
+            .store(in: cancelBag)
+
+        input.infoButtonTap
+            .withUnretained(self)
+            .sink { owner, _ in
+                output.showInfoToast.send()
+                owner.onInfoButtonTap?()
+            }
+            .store(in: cancelBag)
+
         return output
     }
   

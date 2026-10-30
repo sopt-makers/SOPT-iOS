@@ -12,11 +12,10 @@ import BaseFeatureDependency
 import Core
 import Domain
 
-public protocol ShowAttendanceViewControllable: UIViewController & ShowAttendanceCoordinatable { }
 public protocol ShowAttendanceCoordinatable {
     var onAttendanceButtonTap: ((AttendanceRoundModel, (() -> Void)?) -> Void)? { get set }
     var onNaviBackTap: (() -> Void)? { get set }
+    var onInfoButtonTap: (() -> Void)? { get set }
 }
 public typealias ShowAttendanceViewModelType = ViewModelType & ShowAttendanceCoordinatable
-// TODO: coordinating vc -> vm 위임 시 활용
-public typealias ShowAttendancePresentable = (vc: ShowAttendanceViewControllable, vm: any ShowAttendanceViewModelType)
+public typealias ShowAttendancePresentable = (vc: UIViewController, vm: any ShowAttendanceViewModelType)

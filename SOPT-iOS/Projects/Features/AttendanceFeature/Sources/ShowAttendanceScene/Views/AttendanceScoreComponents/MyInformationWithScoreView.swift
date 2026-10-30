@@ -22,7 +22,19 @@ final class MyInformationWithScoreView: UIView {
     private let nameLabel = UILabel()
     
     private let currentScoreLabel = UILabel()
-    
+
+    private lazy var infoButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.tintColor = SemanticColor.Fg.Neutral.bold
+        button.setImage(MDSIcon.alertCircleOutlined.image, for: .normal)
+        button.addTarget(self, action: #selector(infoButtonDidTap), for: .touchUpInside)
+        return button
+    }()
+
+    // MARK: - Properties
+
+    var onInfoButtonTap: (() -> Void)?
+
     // MARK: - Initialization
     
     override init(frame: CGRect) {
@@ -41,15 +53,22 @@ extension MyInformationWithScoreView {
     
     private func setLayout() {
         
-        addSubviews(nameLabel, currentScoreLabel)
-        
+        addSubviews(nameLabel, currentScoreLabel, infoButton)
+
         nameLabel.snp.makeConstraints {
             $0.top.leading.equalToSuperview()
         }
-        
+
         currentScoreLabel.snp.makeConstraints {
             $0.top.equalTo(nameLabel.snp.bottom).offset(14)
             $0.leading.equalToSuperview()
+            $0.bottom.equalToSuperview()
+        }
+
+        infoButton.snp.makeConstraints {
+            $0.centerY.equalTo(currentScoreLabel)
+            $0.trailing.equalToSuperview()
+            $0.size.equalTo(22)
         }
     }
 }
@@ -89,6 +108,11 @@ extension MyInformationWithScoreView {
         currentScoreLabel.attributedText = attributedString
     }
     
+    @objc
+    private func infoButtonDidTap() {
+        onInfoButtonTap?()
+    }
+
     private func doubleToString(_ number: Double) -> String {
         if number.truncatingRemainder(dividingBy: 1) == 0 {
             return(String(format: "%.0f", number))
