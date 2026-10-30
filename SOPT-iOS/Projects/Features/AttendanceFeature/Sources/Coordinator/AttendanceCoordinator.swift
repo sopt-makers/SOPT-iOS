@@ -7,9 +7,11 @@
 //
 
 import UIKit
+import SafariServices
 
 import Core
 import Domain
+import DSKit
 import BaseFeatureDependency
 import AttendanceFeatureInterface
 
@@ -49,7 +51,20 @@ public final class AttendanceCoordinator: BaseCoordinator {
             self?.showAttendance(lectureRound, completion)
         }
         
+        showAttendance.vm.onInfoButtonTap = { [weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self?.showRules()
+            }
+        }
+
         navigationController?.pushViewController(showAttendance.vc, animated: true)
+    }
+
+    private func showRules() {
+        guard let url = URL(string: "https://sopt.org/rules") else { return }
+        let safariViewController = SFSafariViewController(url: url)
+        safariViewController.playgroundStyle()
+        navigationController?.present(safariViewController, animated: true)
     }
     
     internal func showAttendance(_ lectureRound: AttendanceRoundModel, _ dismissCompletion: (() -> Void)?) {

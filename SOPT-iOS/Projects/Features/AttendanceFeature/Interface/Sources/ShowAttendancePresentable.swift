@@ -15,6 +15,7 @@ import Domain
 public protocol ShowAttendanceCoordinatable {
     var onAttendanceButtonTap: ((AttendanceRoundModel, (() -> Void)?) -> Void)? { get set }
     var onNaviBackTap: (() -> Void)? { get set }
+    var onInfoButtonTap: (() -> Void)? { get set }
 }
 public typealias ShowAttendanceViewModelType = ViewModelType & ShowAttendanceCoordinatable
 public typealias ShowAttendancePresentable = (vc: UIViewController, vm: any ShowAttendanceViewModelType)

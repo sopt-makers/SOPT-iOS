@@ -19,9 +19,8 @@ import SnapKit
 
 import AttendanceFeatureInterface
 import BaseFeatureDependency
-import SafariServices
 
-public final class ShowAttendanceVC: UIViewController{
+public final class ShowAttendanceVC: UIViewController {
     
     // MARK: - Properties
     
@@ -31,6 +30,19 @@ public final class ShowAttendanceVC: UIViewController{
     public var sceneType: AttendanceScheduleType {
         return self.viewModel.sceneType ?? .unscheduledDay
     }
+    
+    private var viewWillAppear = PassthroughSubject<Void, Never>()
+    private var naviBackButtonTap = PassthroughSubject<Void, Never>()
+    private var infoButtonTap = PassthroughSubject<Void, Never>()
+    private lazy var refreshStarted = refresher
+        .publisher(for: .valueChanged)
+        .mapVoid()
+        .asDriver()
+    
+    private lazy var attendanceButtonTap = attendanceButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
     
     // MARK: - UI Components
     
@@ -91,7 +103,6 @@ public final class ShowAttendanceVC: UIViewController{
         fatalError("init(coder:) has not been implemented")
     }
     
-    
     // MARK: - View Life Cycle
     
     public override func viewDidLoad() {
@@ -107,18 +118,6 @@ public final class ShowAttendanceVC: UIViewController{
         super.viewWillAppear(animated)
         self.viewWillAppear.send(())
     }
-    
-    private var viewWillAppear = PassthroughSubject<Void, Never>()
-    private var naviBackButtonTap = PassthroughSubject<Void, Never>()
-    private lazy var refreshStarted = refresher
-        .publisher(for: .valueChanged)
-        .mapVoid()
-        .asDriver()
-    
-    private lazy var attendanceButtonTap = attendanceButton
-        .publisher(for: .touchUpInside)
-        .mapVoid()
-        .asDriver()
 }
 
 // MARK: - UI & Layout
@@ -191,7 +190,7 @@ extension ShowAttendanceVC {
             }.store(in: cancelBag)
 
         attendanceScoreView.onInfoButtonTap = { [weak self] in
-            self?.infoButtonDidTap()
+            self?.infoButtonTap.send()
         }
     }
     
@@ -200,9 +199,16 @@ extension ShowAttendanceVC {
             viewWillAppear: viewWillAppear.asDriver(),
             naviBackButtonTap: naviBackButtonTap.asDriver(),
             refreshStarted: refreshStarted,
-            attendanceButtonTap: attendanceButtonTap
+            attendanceButtonTap: attendanceButtonTap,
+            infoButtonTap: infoButtonTap.asDriver()
         )
         let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+
+        output.showInfoToast
+            .sink { _ in
+                ToastUtils.showMDSToast(type: .default, text: I18N.Attendance.infoButtonToastMessage)
+            }
+            .store(in: self.cancelBag)
 
                 
         output.$todayAttendances
@@ -299,16 +305,6 @@ extension ShowAttendanceVC {
         attendanceButton.title = title
     }
     
-    @objc
-    private func infoButtonDidTap() {
-        ToastUtils.showMDSToast(type: .default, text: I18N.Attendance.infoButtonToastMessage)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-            let safariViewController = SFSafariViewController(url: URL(string: "https://sopt.org/rules")!)
-            safariViewController.playgroundStyle()
-            self?.present(safariViewController, animated: true)
-        }
-    }
 }
 
 // MARK: - UIGestureRecognizerDelegate
