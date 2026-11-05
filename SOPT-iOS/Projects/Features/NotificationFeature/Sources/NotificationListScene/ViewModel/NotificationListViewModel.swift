@@ -194,7 +194,7 @@ extension NotificationListViewModel {
     
     private func read(notificationId: String) {
         guard let index = notifications.firstIndex(where: { $0.notificationId == notificationId }) else { return }
-            notifications[index].isRead = true
+        notifications[index].isRead = true
     }
     
     private func filterNotifications(_ notifications: [NotificationListModel], by category: NotificationFilterType) -> [NotificationListModel] {
