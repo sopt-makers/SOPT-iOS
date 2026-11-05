@@ -169,7 +169,7 @@ extension NotificationListViewModel {
                         notification.isRead = true
                         return notification
                     }
-                    output.notificationList.send(owner.notifications)
+                    output.notificationList.send(owner.filterNotifications(owner.notifications, by: owner.selectedCategory))
                     output.isAllRead.send(true)
                 }
             }.store(in: cancelBag)
