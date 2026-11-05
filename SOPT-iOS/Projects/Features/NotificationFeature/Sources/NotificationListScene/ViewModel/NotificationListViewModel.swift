@@ -169,7 +169,7 @@ extension NotificationListViewModel {
                         notification.isRead = true
                         return notification
                     }
-                    output.notificationList.send(owner.notifications)
+                    output.notificationList.send(owner.filterNotifications(owner.notifications, by: owner.selectedCategory))
                     output.isAllRead.send(true)
                 }
             }.store(in: cancelBag)
@@ -194,7 +194,7 @@ extension NotificationListViewModel {
     
     private func read(notificationId: String) {
         guard let index = notifications.firstIndex(where: { $0.notificationId == notificationId }) else { return }
-            notifications[index].isRead = true
+        notifications[index].isRead = true
     }
     
     private func filterNotifications(_ notifications: [NotificationListModel], by category: NotificationFilterType) -> [NotificationListModel] {
