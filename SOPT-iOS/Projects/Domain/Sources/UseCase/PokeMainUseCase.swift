@@ -106,10 +106,9 @@ extension DefaultPokeMainUseCase: PokeMainUseCase {
     }
     
     public func checkPokeOnboardingNeeded() {
-    #warning("TODO: 온보딩 노출조건 변경으로 기존 유저들을 위해서 임시로 추가 추후 getIsNewUser 체크 로직 제거 필요")
         Just(UserDefaultKeyList.User.isVisitedPokeMainView ?? false)
             .withUnretained(self)
-            .flatMap { [weak self] owner, isVisited in
+            .flatMap { owner, isVisited in
                 if isVisited {
                     return Just(false)
                         .eraseToAnyPublisher()
@@ -120,7 +119,7 @@ extension DefaultPokeMainUseCase: PokeMainUseCase {
                 }
             }
             .withUnretained(self)
-            .sink { [weak self] owner, isNewUser in
+            .sink { owner, isNewUser in
                 owner.isNewUser.send(isNewUser)
             }.store(in: self.cancelBag)
     }

@@ -13,14 +13,14 @@ import Combine
 import Core
 import Domain
 import DSKit
+import MDS
 
 import SnapKit
 
 import AttendanceFeatureInterface
 import BaseFeatureDependency
-import SafariServices
 
-public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControllable {
+public final class ShowAttendanceVC: UIViewController {
     
     // MARK: - Properties
     
@@ -32,11 +32,17 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     }
     
     private var viewWillAppear = PassthroughSubject<Void, Never>()
+    private var naviBackButtonTap = PassthroughSubject<Void, Never>()
+    private var infoButtonTap = PassthroughSubject<Void, Never>()
+    private lazy var refreshStarted = refresher
+        .publisher(for: .valueChanged)
+        .mapVoid()
+        .asDriver()
     
-    // MARK: - ShowAttendanceCoordinatable
-    
-    public var onAttendanceButtonTap: ((AttendanceRoundModel, (() -> Void)?) -> Void)?
-    public var onNaviBackTap: (() -> Void)?
+    private lazy var attendanceButtonTap = attendanceButton
+        .publisher(for: .touchUpInside)
+        .mapVoid()
+        .asDriver()
     
     // MARK: - UI Components
     
@@ -50,6 +56,7 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     
     private let contentView = UIView()
     
+    // TODO: - MDS 적용 후 변경
     private lazy var navibar = OPNavigationBar(self, type: .oneLeftButton, ignoreLeftButtonAction: true)
         .addMiddleLabel(title: I18N.Attendance.attendance)
     
@@ -72,9 +79,8 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
     
     private let attendanceGradientView: AttendanceGradientView = .init(frame: CGRect(x: 0, y: 0, width: 500, height: 200))
     
-    private let attendanceButton: OPCustomButton = {
-        let button = OPCustomButton()
-        button.titleLabel!.font = .Attendance.h1
+    private let attendanceButton: MDSActionButton = {
+        let button = MDSActionButton(variant: .primary, size: .large)
         button.isHidden = true
         button.isEnabled = false
         return button
@@ -84,12 +90,6 @@ public final class ShowAttendanceVC: UIViewController, ShowAttendanceViewControl
         let rf = UIRefreshControl()
         rf.tintColor = .gray
         return rf
-    }()
-    
-    private lazy var infoButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.addTarget(self, action: #selector(infoButtonDidTap), for: .touchUpInside)
-        return button
     }()
     
     // MARK: - Initialization
@@ -126,15 +126,14 @@ extension ShowAttendanceVC {
     
     private func setUI() {
         self.navigationController?.navigationBar.isHidden = true
-        self.view.backgroundColor = DSKitAsset.Colors.gray950.color
-        containerScrollView.backgroundColor = DSKitAsset.Colors.gray950.color
+        self.view.backgroundColor = SemanticColor.Bg.Layer.basement
+        containerScrollView.backgroundColor = SemanticColor.Bg.Layer.basement
     }
     
     private func setLayout() {
         view.addSubviews(navibar, containerScrollView, attendanceGradientView, attendanceButtonStackView)
         containerScrollView.addSubview(contentView)
         contentView.addSubviews(headerScheduleView, attendanceScoreView)
-        attendanceScoreView.addSubview(infoButton)
         
         navibar.snp.makeConstraints {
             $0.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
@@ -176,12 +175,6 @@ extension ShowAttendanceVC {
         attendanceButton.snp.makeConstraints {
             $0.height.equalTo(56)
         }
-        
-        infoButton.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(58)
-            $0.trailing.equalToSuperview().inset(32)
-            $0.width.height.equalTo(24)
-        }
     }
 }
 
@@ -193,30 +186,31 @@ extension ShowAttendanceVC {
         navibar.leftButtonTapped
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onNaviBackTap?()
+                owner.naviBackButtonTap.send()
             }.store(in: cancelBag)
+
+        attendanceScoreView.onInfoButtonTap = { [weak self] in
+            self?.infoButtonTap.send()
+        }
     }
     
     private func bindViewModels() {
-        
-        let viewWillAppear = viewWillAppear.asDriver()
-        let refreshStarted = refresher.publisher(for: .valueChanged)
-            .mapVoid()
-            .asDriver()
-        
-        attendanceButton.publisher(for: .touchUpInside)
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onAttendanceButtonTap?(owner.viewModel.lectureRound) {
-                    owner.viewWillAppear.send(())
-                }
+        let input = ShowAttendanceViewModel.Input(
+            viewWillAppear: viewWillAppear.asDriver(),
+            naviBackButtonTap: naviBackButtonTap.asDriver(),
+            refreshStarted: refreshStarted,
+            attendanceButtonTap: attendanceButtonTap,
+            infoButtonTap: infoButtonTap.asDriver()
+        )
+        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
+
+        output.showInfoToast
+            .sink { _ in
+                ToastUtils.showMDSToast(type: .default, text: I18N.Attendance.infoButtonToastMessage)
             }
             .store(in: self.cancelBag)
-        
-        let input = ShowAttendanceViewModel.Input(viewWillAppear: viewWillAppear,
-                                                  refreshStarted: refreshStarted)
-        let output = self.viewModel.transform(from: input, cancelBag: self.cancelBag)
-        
+
+                
         output.$todayAttendances
             .combineLatest(output.$takenAttendanceType)
             .withUnretained(self)
@@ -253,7 +247,6 @@ extension ShowAttendanceVC {
             .withUnretained(self)
             .sink { owner, model in
                 guard let model else { return }
-                owner.infoButton.setImage(DSKitAsset.Assets.opInfo.image, for: .normal)
                 owner.setScoreData(model)
                 owner.endRefresh()
             }.store(in: self.cancelBag)
@@ -309,20 +302,9 @@ extension ShowAttendanceVC {
     
     private func setAttendanceButton(title: String, isEnabled: Bool) {
         attendanceButton.isEnabled = isEnabled
-        isEnabled ? attendanceButton.setTitle(title, for: .normal) : attendanceButton.setTitle(title, for: .disabled)
+        attendanceButton.title = title
     }
     
-    @objc
-    private func infoButtonDidTap() {
-        
-        showToast(message: I18N.Attendance.infoButtonToastMessage)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-            let safariViewController = SFSafariViewController(url: URL(string: "https://sopt.org/rules")!)
-            safariViewController.playgroundStyle()
-            self?.present(safariViewController, animated: true)
-        }
-    }
 }
 
 // MARK: - UIGestureRecognizerDelegate

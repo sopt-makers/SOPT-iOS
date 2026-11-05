@@ -11,18 +11,19 @@ import UIKit
 
 import Core
 import DSKit
+import MDS
 
 extension TabBarItemType {
     private var itemImage: UIImage {
         switch self {
         case .home:
-            return DSKitAsset.Assets.icHomeFilled.image.withRenderingMode(.alwaysTemplate)
+            return MDSIcon.homeFilled.image.withRenderingMode(.alwaysTemplate)
         case .soptamp:
             return DSKitAsset.Assets.icSoptampFilled.image.withRenderingMode(.alwaysTemplate)
         case .poke:
             return DSKitAsset.Assets.icPokeFilled.image.withRenderingMode(.alwaysTemplate)
         case .mypage:
-            return DSKitAsset.Assets.icUserFilled.image.withRenderingMode(.alwaysTemplate)
+            return MDSIcon.userFilled.image.withRenderingMode(.alwaysTemplate)
         }
     }
     

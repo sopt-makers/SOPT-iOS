@@ -9,7 +9,8 @@
 import UIKit
 
 import Core
-import DSKit
+import MDS
+
 import Domain
 
 /*
@@ -20,21 +21,17 @@ final class MyAttendanceStateTVC: UITableViewCell {
     
     // MARK: - UI Components
     
-    private let stateImageView = UIImageView()
-    
-    private let titleLabel: UILabel = {
+    private let stateLabel: UILabel = {
         let label = UILabel()
-        label.font = DSKitFontFamily.Suit.semiBold.font(size: 16)
-        label.textColor = DSKitAsset.Colors.gray10.color
+        label.textAlignment = .center
+        label.layer.cornerRadius = BaseRadius.Base.r4
+        label.layer.masksToBounds = true
         return label
     }()
     
-    private let dateLabel: UILabel = {
-        let label = UILabel()
-        label.font = .Main.body2
-        label.textColor = DSKitAsset.Colors.gray100.color
-        return label
-    }()
+    private let titleLabel = UILabel()
+    
+    private let dateLabel = UILabel()
     
     // MARK: - Initialization
     
@@ -58,16 +55,16 @@ extension MyAttendanceStateTVC {
     }
     
     private func setLayout() {
-        addSubviews(stateImageView, titleLabel, dateLabel)
+        addSubviews(stateLabel, titleLabel, dateLabel)
         
-        stateImageView.snp.makeConstraints {
+        stateLabel.snp.makeConstraints {
             $0.leading.centerY.equalToSuperview()
             $0.width.equalTo(34)
             $0.height.equalTo(20)
         }
         
         titleLabel.snp.makeConstraints {
-            $0.leading.equalTo(stateImageView.snp.trailing).offset(8)
+            $0.leading.equalTo(stateLabel.snp.trailing).offset(8)
             $0.centerY.equalToSuperview()
         }
         
@@ -84,8 +81,14 @@ extension MyAttendanceStateTVC {
     func setData(model: AttendanceModel) {
         guard let status = AttendanceStateType(rawValue: model.status.lowercased()) else { return }
         
-        stateImageView.image = status.image
+        stateLabel.text = status.korean
+        stateLabel.backgroundColor = status.tagBackgroundColor
+        stateLabel.setTypography(Typography.label4, textColor: status.tagTextColor)
+        
         titleLabel.text = model.name
+        titleLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold)
+        
         dateLabel.text = model.date
+        dateLabel.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
     }
 }

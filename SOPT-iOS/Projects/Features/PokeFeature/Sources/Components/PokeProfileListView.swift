@@ -8,7 +8,7 @@
 
 import UIKit
 
-import DSKit
+import MDS
 import Core
 import Domain
 
@@ -20,7 +20,7 @@ public final class PokeProfileListView: UIView, PokeCompatible {
         .withUnretained(self)
         .map{ owner, _ in owner.user}
         .asDriver()
-    lazy var profileImageTap: Driver<PokeUserModel?> = profileImageView.tap
+    lazy var profileImageTap: Driver<PokeUserModel?> = profileImageView.gesture()
         .withUnretained(self)
         .filter({ owner, _ in
             owner.user?.isAnonymous == false
@@ -29,39 +29,43 @@ public final class PokeProfileListView: UIView, PokeCompatible {
             owner.user
         }).asDriver()
     
+    private enum Metric {
+        static let profileAvatarLength = 48.f
+    }
+    
     var viewType: ProfileListType
+    
+    private var nameTypography: MDSFont {
+        viewType == .main ? Typography.label3 : Typography.title5
+    }
     var user: PokeUserModel?
     
     // MARK: - UI Components
     
-    private let profileImageView = CustomProfileImageView(placeholder: DSKitAsset.Assets.icPokeDefaultProfile.image)
+    private lazy var profileImageView = MDSAvatar(size: Metric.profileAvatarLength)
     
     private lazy var kokButton = PKokButton()
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.textColor = DSKitAsset.Colors.gray30.color
-        label.font = UIFont.MDS.heading7.font
         return label
     }()
     
     private let partLabel: UILabel = {
         let label = UILabel()
-        label.textColor = DSKitAsset.Colors.gray300.color
-        label.font = UIFont.MDS.label5.font
+        label.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
         return label
     }()
     
     private let kokCountLabel: UILabel = {
         let label = UILabel()
-        label.textColor = DSKitAsset.Colors.gray30.color
-        label.font = UIFont.MDS.heading7.font
+        label.setTypography(Typography.label2, textColor: SemanticColor.Fg.Neutral.bold)
         return label
     }()
     
     private let dividerView: UIView = {
         let view = UIView()
-        view.backgroundColor = DSKitAsset.Colors.gray800.color
+        view.backgroundColor = SemanticColor.Stroke.Neutral.subtle
         view.isHidden = true
         return view
     }()
@@ -93,14 +97,13 @@ public final class PokeProfileListView: UIView, PokeCompatible {
     
     private func setLayoutWithMainType() {
         self.snp.makeConstraints { make in
-            make.height.equalTo(44)
+            make.height.equalTo(Metric.profileAvatarLength)
         }
         
         profileImageView.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.centerY.equalToSuperview()
-            make.width.equalTo(40)
-            make.height.equalTo(40)
+            make.size.equalTo(Metric.profileAvatarLength)
         }
         
         nameLabel.snp.makeConstraints { make in
@@ -136,14 +139,13 @@ public final class PokeProfileListView: UIView, PokeCompatible {
     
     private func setLayoutWithDefaultType() {
         self.snp.makeConstraints { make in
-            make.height.equalTo(70)
+            make.height.equalTo(68)
         }
         
         profileImageView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().inset(20)
-            make.width.equalTo(50)
-            make.height.equalTo(50)
+            make.size.equalTo(Metric.profileAvatarLength)
         }
         
         nameLabel.snp.makeConstraints { make in
@@ -183,18 +185,21 @@ public final class PokeProfileListView: UIView, PokeCompatible {
         self.user = model
         self.profileImageView.setImage(
             with: model.isAnonymous ? "" : model.profileImage,
-            relation: model.pokeRelation,
-            placeholder: model.isAnonymous ? DSKitAsset.Assets.icPokeDefaultProfile : DSKitAsset.Assets.icLineProfile
+            relation: model.pokeRelation
         )
         self.partLabel.text = "\(model.generation)기 \(model.part)"
+        self.partLabel.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.subtle)
         self.kokCountLabel.text = "\(model.pokeNum)콕"
+        self.kokCountLabel.setTypography(Typography.label2, textColor: SemanticColor.Fg.Neutral.bold)
         self.kokButton.isEnabled = !model.isAlreadyPoke
         self.partLabel.isHidden = model.isAnonymous
         if model.isAnonymous {
             self.nameLabel.text = model.anonymousName
+            self.nameLabel.setTypography(self.nameTypography, textColor: SemanticColor.Fg.Neutral.bold)
             return
         }
         self.nameLabel.text = model.name
+        self.nameLabel.setTypography(self.nameTypography, textColor: SemanticColor.Fg.Neutral.bold)
     }
     
     func changeUIAfterPoke(newUserModel: PokeUserModel) {
@@ -204,7 +209,7 @@ public final class PokeProfileListView: UIView, PokeCompatible {
     }
     
     func clearProfileImage() {
-        self.profileImageView.setPlaceholder()
+        self.profileImageView.image = nil
     }
     
     @discardableResult
@@ -222,12 +227,6 @@ public final class PokeProfileListView: UIView, PokeCompatible {
     @discardableResult
     func setDividerViewIsHidden(to isHidden: Bool) -> Self {
         self.dividerView.isHidden = isHidden
-        return self
-    }
-    
-    @discardableResult
-    func setDividerViewColor(with color: UIColor) -> Self {
-        self.dividerView.backgroundColor = color
         return self
     }
 }

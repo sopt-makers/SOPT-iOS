@@ -11,6 +11,7 @@ import Combine
 
 import Core
 import DSKit
+import MDS
 
 final class LatestPostFooterView: UICollectionReusableView {
     
@@ -22,14 +23,12 @@ final class LatestPostFooterView: UICollectionReusableView {
     // MARK: - UI Components
     
     private let pageControl = UIPageControl().then {
-        $0.currentPageIndicatorTintColor = DSKitAsset.Colors.white.color
-        $0.numberOfPages = 5
         $0.currentPage = 0
         $0.isUserInteractionEnabled = false
         $0.preferredIndicatorImage = DSKitAsset.Assets.imgIndicator.image
         $0.preferredCurrentPageIndicatorImage = DSKitAsset.Assets.imgIndicator.image
-        $0.pageIndicatorTintColor = DSKitAsset.Colors.gray700.color
-        $0.currentPageIndicatorTintColor = DSKitAsset.Colors.gray50.color
+        $0.pageIndicatorTintColor = SemanticColor.Bg.Neutral.subtle
+        $0.currentPageIndicatorTintColor = SemanticColor.Bg.Neutral.inverse
     }
     
     // MARK: - Initialization
@@ -74,6 +73,10 @@ extension LatestPostFooterView {
                 self.pageControl.currentPage = currentPage
             }
             .store(in: cancelBag)
+    }
+    
+    func configure(numberOfPages: Int) {
+        pageControl.numberOfPages = numberOfPages
     }
     
     func updatePage(currentPage: Int) {

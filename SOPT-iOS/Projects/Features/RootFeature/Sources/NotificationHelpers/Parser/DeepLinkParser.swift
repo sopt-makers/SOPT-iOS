@@ -73,6 +73,8 @@ struct DeepLinkParser: NotificationLinkParser {
             return PokeDeepLink()
         case "mypage":
             return MyPageDeepLink()
+        case "soptletter":
+            return SoptletterDeepLink()
         default:
             return nil
         }

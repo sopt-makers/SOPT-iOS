@@ -290,8 +290,12 @@ public struct I18N {
         }
         
         public struct PopularPosts {
-            public static let headerTitle = "지금 인기 소식"
+            public static let headerTitle = "실시간 인기글"
             public static let morePosts = "다른 게시물 보러가기"
+            
+            public static let firstPost = "실시간 인기 1위"
+            public static let secondPost = "실시간 인기 2위"
+            public static let thirdPost = "실시간 인기 3위"
         }
         
         public struct LatestPosts {
@@ -378,7 +382,7 @@ public struct I18N {
         public static let giveFeedback = "피드백 남기기"
         
         public static let inputCodeDescription = "출석 코드 다섯 자리를 입력해주세요."
-        public static let codeMismatch = "코드가 일치하지 않아요!"
+        public static let codeMismatch = "코드가 일치하지 않아요"
         public static let takeAttendance = "출석하기"
         public static let take = "하기"
         
@@ -477,13 +481,13 @@ public struct I18N {
       }
       
       public struct Onboarding {
-        public static let title = "익명 콕 찌르기 기능이 추가되었어요!"
+        public static let title = "아는 사람을 콕 찔러서 친구를 맺어보세요"
+        public static let bottomSheetTitle = "솝트에 콕 찌르기가 생겼어요!"
         public static let description = """
-            친구 단계가 올라가면 익명 친구에 대한 힌트를 알 수 있어요.
-            친구와 천생연분 단계가 되면 어떤 일이 일어날까요?
-            더욱 재밌어진 콕찌르기를 만나보세요!
+            서로 찌르면 친구가 될 수 있어요. 친구와 자주 찌를수록
+            전송할 수 있는 메시지 문구가 다양해져요.
             """
-        public static let footerPullToRefreshDescription = "화면을 당기면 다른 친구들을 볼 수 있어요"
+        public static let footerPullToRefreshDescription = "화면을 밑으로 당기면 다른 친구를 볼 수 있어요"
       }
       
       public struct MyFriends {
@@ -496,12 +500,27 @@ public struct I18N {
         }
         public static let emptyViewDescription = "아직 없어요 T.T\n나와 비슷한 친구가 생길 때까지 기다려주세요"
       }
+        
+        public struct Notification {
+            public static let naviTitle = "찌르기 알림"
+            public static let title = "누가 나를 찔렀어요"
+            public static let description = "나도 찔러서 답장을 해보세요"
+        }
+        
+        public struct MessageBottomSheet {
+            public static let title = "함께 보낼 메시지를 골라주세요"
+            public static let anonymous = "익명"
+            public static let onlyReal = "천생연분은 실명으로만 콕찌를 수 있어요."
+            public static let revealNotice = "익명 해제 시, 상대방이 나를 알 수 있어요."
+        }
+        
       public static let emptyViewDescription = "아직 없어요 T.T\n더 많은 찌르기로 달성해보세요"
     }
 
     public struct Soptletter {
         public static let navigationTitle = "솝레터 작성"
         public static let descriptionText = "나와 같은 기수의 SOPT\n회원들에게 전하고 싶은 말을\n자유롭게 적어보세요."
+        public static let selectTopicText = "주제 선택"
         public static let recipient = "익명의 무무"
         public static let placeholder = "나와 같은 기수의 솝트인들에게 전하고 싶은 말을 자유롭게 적어보세요."
         public static let charLimit = "0/350자"

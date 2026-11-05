@@ -57,7 +57,8 @@ extension HomeForMemberVC {
     func startLatestPostAnimationLoop() {
         guard latestPostAnimationTask == nil else { return } // Task 중복 생성 방지
         
-        let maxItemCount = 5 // 아이템 5개 고정
+        let maxItemCount = collectionView.numberOfItems(inSection: HomeForMemberSectionLayoutKind.latestPosts.rawValue)
+        guard maxItemCount > 0 else { return }
         let interval = 3.0
         
         latestPostAnimationTask = Task { [weak self] in

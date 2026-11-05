@@ -33,6 +33,11 @@ public struct NotificationPayload: Codable {
         return true
     }
     
+    public var pushType: String? {
+        guard let deepLink, let components = URLComponents(string: deepLink) else { return nil }
+        return components.queryItems?.first { $0.name == "pushType" }?.value
+    }
+    
     public init?(dictionary: [AnyHashable: Any]) {
         do {
             self = try JSONDecoder().decode(NotificationPayload.self, from: JSONSerialization.data(withJSONObject: dictionary))

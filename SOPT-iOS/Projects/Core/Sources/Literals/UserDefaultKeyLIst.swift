@@ -20,6 +20,7 @@ public struct UserDefaultKeyList {
     public struct User {
         @UserDefaultWrapper<String>(key: "sentence") public static var sentence
         @UserDefaultWrapper<String>(key: "soptampName") public static var soptampName
+        @UserDefaultWrapper<String>(key: "soptletterName") public static var soptletterName
         @UserDefaultWrapper<String>(key: "pushToken") public static var pushToken
         @UserDefaultWrapper<Bool>(key: "isFirstVisitToPokeView") public static var isFirstVisitToPokeOnboardingView
         @UserDefaultWrapper<Bool>(key: "isVisitedPokeMainView") public static var isVisitedPokeMainView
@@ -41,6 +42,7 @@ extension UserDefaultKeyList {
         clearUserData()
         clearPushToken()
         clearSoptampUserData()
+        clearSoptletteUserrData()
     }
     
     
@@ -58,6 +60,10 @@ extension UserDefaultKeyList {
     public static func clearSoptampUserData() {
         UserDefaultKeyList.User.soptampName = nil
         UserDefaultKeyList.User.sentence = nil
+    }
+    
+    public static func clearSoptletteUserrData() {
+        UserDefaultKeyList.User.soptletterName = nil
     }
 }
 

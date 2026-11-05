@@ -8,7 +8,7 @@
 
 import UIKit
 
-import DSKit
+import MDS
 
 import SnapKit
 
@@ -35,6 +35,6 @@ class AttendanceGradientView: UIView {
     // MARK: - UI
     
     func setUI() {
-        createGradientLayer(colors: [.clear, DSKitAsset.Colors.gray950.color], direction: .vertical)
+        createGradientLayer(colors: [.clear, SemanticColor.Bg.Layer.basement], direction: .vertical)
     }
 }

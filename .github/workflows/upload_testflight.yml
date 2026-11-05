@@ -1,0 +1,128 @@
+name: Upload TestFlight
+
+# 수동 실행 전용 워크플로입니다. (Actions 탭 → Upload TestFlight → Run workflow)
+# develop 브랜치 기준으로 빌드해서 TestFlight에 올립니다.
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "업로드 대상"
+        type: choice
+        required: true
+        default: app
+        options:
+          - app    # 운영 앱 (upload_testflight)
+          - demo   # 데모 앱 (upload_testflight_demo)
+          - both   # 둘 다 (앱 → 데모 순서)
+      version:
+        description: "마케팅 버전 (예: 2.3.0). 비워두면 빌드 번호만 올립니다."
+        type: string
+        required: false
+        default: ""
+
+concurrency:
+  group: upload-testflight
+  cancel-in-progress: false
+
+jobs:
+  upload:
+    runs-on: macos-15
+    timeout-minutes: 90
+    defaults:
+      run:
+        working-directory: SOPT-iOS
+    env:
+      # 빌드번호(Time.new.strftime("%Y.%m%d.%H%M"))가 로컬(KST)과 같은 기준으로 만들어지도록 시간대를 고정합니다.
+      TZ: Asia/Seoul
+      # 입력값은 셸에 직접 끼워 넣지 않고 환경변수로 받습니다.
+      # (App Store Connect / match 자격 증명은 노출 범위를 줄이기 위해 업로드 단계의 env에만 둡니다.)
+      TARGET: ${{ inputs.target }}
+      VERSION: ${{ inputs.version }}
+    steps:
+      - name: Validate inputs
+        # 체크아웃 전에 실행되므로 job 기본값(SOPT-iOS)이 아직 존재하지 않습니다. 워크스페이스 루트에서 실행합니다.
+        working-directory: .
+        run: |
+          if [ -n "$VERSION" ] && ! echo "$VERSION" | grep -Eq '^[0-9]+(\.[0-9]+){0,2}$'; then
+            echo "::error::버전 형식이 올바르지 않습니다. 예: 2.3.0 (입력값: $VERSION)"
+            exit 1
+          fi
+
+      - name: Checkout (develop)
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "26.3"
+
+      - name: Install mise (Tuist)
+        uses: jdx/mise-action@v2
+        with:
+          install: true
+          cache: true
+          working_directory: SOPT-iOS
+
+      - name: Setup Ruby (fastlane)
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+          working-directory: SOPT-iOS
+
+      - name: Cache Tuist / SPM artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            Tuist/.build
+            ~/Library/Caches/tuist
+          key: ${{ runner.os }}-tuist-${{ hashFiles('SOPT-iOS/Tuist/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-tuist-
+
+      - name: Fetch private configs
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.PRIVATES_TOKEN }}
+        run: |
+          echo "GITHUB_ACCESS_TOKEN=$GITHUB_ACCESS_TOKEN" > .env
+          make download-privates
+
+      - name: Resolve dependencies
+        run: tuist install
+
+      - name: Generate project
+        run: tuist generate --no-open
+
+      - name: Upload app (production)
+        if: ${{ inputs.target == 'app' || inputs.target == 'both' }}
+        env:
+          APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}
+          APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
+          MATCH_GIT_PRIVATE_KEY: ${{ secrets.MATCH_GIT_PRIVATE_KEY }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_PASSPHRASE: ${{ secrets.MATCH_PASSPHRASE }}
+        run: |
+          if [ -n "$VERSION" ]; then
+            bundle exec fastlane upload_testflight version:"$VERSION"
+          else
+            bundle exec fastlane upload_testflight
+          fi
+
+      - name: Upload demo app
+        if: ${{ inputs.target == 'demo' || inputs.target == 'both' }}
+        env:
+          APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}
+          APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
+          MATCH_GIT_PRIVATE_KEY: ${{ secrets.MATCH_GIT_PRIVATE_KEY }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_PASSPHRASE: ${{ secrets.MATCH_PASSPHRASE }}
+        run: |
+          if [ -n "$VERSION" ]; then
+            bundle exec fastlane upload_testflight_demo version:"$VERSION"
+          else
+            bundle exec fastlane upload_testflight_demo
+          fi

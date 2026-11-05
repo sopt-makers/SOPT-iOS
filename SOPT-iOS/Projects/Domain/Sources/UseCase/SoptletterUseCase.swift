@@ -13,6 +13,7 @@ public protocol SoptletterUseCase {
     func fetchTopics() async throws -> SoptletterTopicListModel
     func fetchTopic(topicId: Int) async throws -> SoptletterTopicDetailModel
     func getSoptletterProfile() async throws -> SoptletterProfileModel
+    func getSoptletterNickName() async throws -> String
     func completeOnboarding() async throws
     func fetchSoptletterMessages(topicId: Int?, cursor: Int?, size: Int?) async throws -> SoptletterItemModel
     func fetchSoptletterMessage(messageId: Int, topicId: Int) async throws -> SoptletterDetailMessageModel
@@ -20,7 +21,6 @@ public protocol SoptletterUseCase {
     func deleteMessage(messageId: Int, topicId: Int) async throws
     func likeMessage(messageId: Int, topicId: Int) async throws
     func unlikeMessage(messageId: Int, topicId: Int) async throws
-    func fetchCTA() async throws -> SoptletterCTAModel
     func fetchReportForm() async throws -> SoptletterReportFormModel
 }
 
@@ -59,6 +59,11 @@ public final class DefaultSoptletterUseCase: SoptletterUseCase {
         return try await repository.getSoptletterProfile()
     }
     
+    public func getSoptletterNickName() async throws -> String {
+        if let stored = repository.getSoptletterNickName(), !stored.isEmpty { return stored }
+        return try await repository.getSoptletterProfile().nickname
+    }
+    
     public func completeOnboarding() async throws {
         try await repository.completeOnboarding()
         UserDefaultKeyList.User.isCompleteSoptletterOnboarding = true
@@ -93,10 +98,6 @@ public final class DefaultSoptletterUseCase: SoptletterUseCase {
     
     public func unlikeMessage(messageId: Int, topicId: Int) async throws {
         try await repository.unlikeMessage(messageId: messageId, topicId: topicId)
-    }
-    
-    public func fetchCTA() async throws -> SoptletterCTAModel {
-        return try await repository.fetchCTA()
     }
 
     public func fetchReportForm() async throws -> SoptletterReportFormModel {

@@ -146,7 +146,7 @@ public class SignInVC: UIViewController {
         )
         
         // TODO: 회원가입 로직 완성 전까지 임시로 삭제
-        #if !DEV || !PROD
+        #if !PROD && !DEV
             self.view.addSubview(signUpButton)
         #endif
         
@@ -191,7 +191,7 @@ public class SignInVC: UIViewController {
         orLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         
 
-        #if !DEV||PROD
+        #if !PROD && !DEV
             orStackView.snp.makeConstraints { make in
                 make.leading.trailing.equalToSuperview().inset(20)
                 make.bottom.equalTo(signUpButton.snp.top).inset(-BaseSpacing.Base.s16)

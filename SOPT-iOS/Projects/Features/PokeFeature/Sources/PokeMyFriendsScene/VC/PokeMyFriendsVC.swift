@@ -14,6 +14,7 @@ import Combine
 import Core
 import Domain
 import DSKit
+import MDS
 
 import BaseFeatureDependency
 import PokeFeatureInterface
@@ -27,9 +28,10 @@ public final class PokeMyFriendsVC: UIViewController {
     
     // MARK: - UI Components
     
+    // TODO: - mds 적용 후 반영
     private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton)
         .addMiddleLabel(title: I18N.Poke.MyFriends.myFriends, font: UIFont.MDS.body2.font)
-        .setLeftButtonImage(DSKitAsset.Assets.chevronLeft.image.withTintColor(DSKitAsset.Colors.gray30.color))
+        .setLeftButtonImage(MDSIcon.chevronLeftOutlined.image.withTintColor(SemanticColor.Fg.Neutral.bold))
  
     private lazy var scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
@@ -37,7 +39,7 @@ public final class PokeMyFriendsVC: UIViewController {
     }
     
     private let contentStackView = UIStackView().then {
-        $0.backgroundColor = DSKitAsset.Colors.gray900.color
+        $0.backgroundColor = SemanticColor.Bg.Layer.basement
         $0.axis = .vertical
         $0.spacing = 8
     }
@@ -78,7 +80,7 @@ public final class PokeMyFriendsVC: UIViewController {
 extension PokeMyFriendsVC {
     private func setUI() {
         self.navigationController?.navigationBar.isHidden = true
-        view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        view.backgroundColor = .clear
     }
     
     private func setStackView() {

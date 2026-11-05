@@ -40,6 +40,11 @@ public final class SoptletterWritingVC: UIViewController {
         .publisher(for: .touchUpInside)
         .mapVoid()
         .asDriver()
+    
+    private lazy var selectTopicTap: Driver<Void> = selectTopicContainerView
+        .gesture(.tap())
+        .mapVoid()
+        .asDriver()
 
     // MARK: - UI Components
 
@@ -73,7 +78,19 @@ public final class SoptletterWritingVC: UIViewController {
 
     private let descriptionLabel = UILabel().then {
         $0.numberOfLines = 0
+        $0.text = I18N.Soptletter.descriptionText
         $0.setTypography(Typography.body2, textColor: SemanticColor.Fg.Neutral.bold)
+    }
+    
+    private let selectTopicContainerView = UIView().then {
+        $0.backgroundColor = SemanticColor.Bg.Neutral.ghost
+        $0.layer.cornerRadius = BaseRadius.Base.r10
+        $0.layer.borderWidth = 0
+    }
+    
+    private let selectTopicLabel = UILabel().then {
+        $0.text = I18N.Soptletter.selectTopicText
+        $0.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.subtle)
     }
 
     private let inputContainerView = UIView().then {
@@ -83,7 +100,6 @@ public final class SoptletterWritingVC: UIViewController {
     }
 
     private let recipientLabel = UILabel().then {
-        $0.text = I18N.Soptletter.recipient
         $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
     }
 
@@ -155,13 +171,13 @@ private extension SoptletterWritingVC {
     }
 
     func setLayout() {
-        descriptionStackView.addArrangedSubview(mailBoxImageView)
-        descriptionStackView.addArrangedSubview(descriptionLabel)
+        descriptionStackView.addArrangedSubviews(mailBoxImageView, descriptionLabel)
 
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
-        contentView.addSubviews(navBarView, descriptionStackView, inputContainerView, submitButton)
+        contentView.addSubviews(navBarView, descriptionStackView, selectTopicContainerView, inputContainerView, submitButton)
         navBarView.addSubviews(backButton, navTitleLabel)
+        selectTopicContainerView.addSubview(selectTopicLabel)
         inputContainerView.addSubviews(recipientLabel, textView, placeholderLabel, charCountLabel)
 
         scrollView.snp.makeConstraints { make in
@@ -199,9 +215,19 @@ private extension SoptletterWritingVC {
             make.width.equalTo(96)
             make.height.equalTo(80)
         }
+        
+        selectTopicContainerView.snp.makeConstraints { make in
+            make.top.equalTo(descriptionStackView.snp.bottom).offset(BaseSpacing.Base.s12)
+            make.leading.trailing.equalToSuperview().inset(19)
+        }
+        
+        selectTopicLabel.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview().inset(BaseSpacing.Base.s10)
+            make.leading.trailing.equalToSuperview().inset(BaseSpacing.Base.s20)
+        }
 
         inputContainerView.snp.makeConstraints { make in
-            make.top.equalTo(descriptionStackView.snp.bottom).offset(BaseSpacing.Base.s10)
+            make.top.equalTo(selectTopicContainerView.snp.bottom).offset(BaseSpacing.Base.s10)
             make.leading.trailing.equalToSuperview().inset(19)
         }
 
@@ -231,7 +257,7 @@ private extension SoptletterWritingVC {
             make.leading.trailing.equalToSuperview().inset(BaseSpacing.Base.s20)
         }
     }
-
+    
     func setKeyboardObserver() {
         keyboardWillShowObserver = NotificationCenter.default.addObserver(
             forName: UIResponder.keyboardWillShowNotification,
@@ -260,10 +286,19 @@ private extension SoptletterWritingVC {
             viewDidLoad: Just<Void>(()).asDriver(),
             naviBackTap: naviBackTap,
             textChanged: textChangedSubject.asDriver(),
-            submitTap: submitButtonTap
+            submitTap: submitButtonTap,
+            selectTopicTap: selectTopicTap
         )
 
         let output = self.viewModel.transform(from: input, cancelBag: cancelBag)
+
+        output.nickName
+            .receive(on: RunLoop.main)
+            .withUnretained(self)
+            .sink { owner, nickName in
+                owner.recipientLabel.text = nickName
+                owner.recipientLabel.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
+            }.store(in: cancelBag)
 
         output.isSubmitEnabled
             .receive(on: RunLoop.main)
@@ -271,7 +306,17 @@ private extension SoptletterWritingVC {
             .sink { owner, isEnabled in
                 owner.submitButton.isEnabled = isEnabled
             }.store(in: cancelBag)
+
+        output.selectedTopicTitle
+            .compactMap { $0 }
+            .receive(on: RunLoop.main)
+            .withUnretained(self)
+            .sink { owner, title in
+                owner.selectTopicLabel.text = title
+                owner.selectTopicLabel.setTypography(Typography.body1, textColor: SemanticColor.Fg.Neutral.subtle)
+            }.store(in: cancelBag)
     }
+
 }
 
 // MARK: - UITextViewDelegate
@@ -295,6 +340,10 @@ extension SoptletterWritingVC: UITextViewDelegate {
         updateCharCount(text.count)
         updateErrorState(text: text)
         textChangedSubject.send(text)
+        
+        if text.count <= maxCharCount {
+            textView.applyFontFallback(font: Typography.body1.font, color: SemanticColor.Fg.Neutral.bold)
+        }
     }
 
     private func updateCharCount(_ count: Int) {

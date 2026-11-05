@@ -12,15 +12,14 @@ import Core
 
 public protocol HomeUseCase {
     func registerPushToken()
-    func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Never>
-    func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never>
+    func getAppServicesForVisitor() async throws -> [HomeAppServicesModel]
     func getReportURL()
     func getFloatingButtonInfo() -> AnyPublisher<HomeFloatingButtonModel, Never>
     
     func getHomeDescriptionAsync() async throws -> HomeDescriptionModel
     func getUserInfoAsync() async throws -> UserMainInfoModel?
     func getRecentScheduleAsync() async throws -> HomeRecentScheduleModel
-    func getAppServicesAsync() async throws -> [HomeAppServicesModel]
+    func getAppServicesForMember() async throws -> [HomeAppServicesModel]
     func getTabAppServicesAsync() async throws -> [HomeAppServicesModel]
     func getCalendarDetailAsync() async throws -> [HomeCalendarDetailModel]
     func getSurveyInfoAsync() async throws -> HomeSurveyModel
@@ -33,9 +32,8 @@ public class DefaultHomeUseCase {
     private let repository: HomeRepositoryInterface
     private let cancelBag = CancelBag()
     
-    // 앱 서비스 정보 캐시
+    // Visitor일때만 앱 서비스 정보 캐시
     private var cachedAppServices: [HomeAppServicesModel]?
-    private var cachedTabAppServices: [HomeAppServicesModel]?
     
     public init(repository: HomeRepositoryInterface) {
         self.repository = repository
@@ -54,28 +52,16 @@ extension DefaultHomeUseCase: HomeUseCase {
             }.store(in: cancelBag)
     }
 
-    public func getAppServices() -> AnyPublisher<[HomeAppServicesModel], Never> {
-        // 캐시된 데이터가 있으면 반환
+    public func getAppServicesForVisitor() async throws -> [HomeAppServicesModel] {
+        // 캐시가 있다면 캐시로 사용
         if let cached = cachedAppServices {
-            return Just(cached).eraseToAnyPublisher()
+            return cached
         }
-        
-        // 없으면 API 호출 후 캐싱
-        return repository.getAppServices()
-            .handleEvents(receiveOutput: { [weak self] services in
-                self?.cachedAppServices = services
-            })
-            .catch { error in
-                return Empty<[HomeAppServicesModel], Never>()
-            }.eraseToAnyPublisher()
-    }
 
-    public func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], Never> {
-        repository.getCalendarDetail()
-            .catch { error in
-                return Empty<[HomeCalendarDetailModel], Never>()
-            }
-            .eraseToAnyPublisher()
+        // 없으면 API 호출 후 캐싱
+        let services = try await repository.getAppServicesAsync()
+        cachedAppServices = services
+        return services
     }
     
     public func getReportURL() {
@@ -109,28 +95,12 @@ extension DefaultHomeUseCase: HomeUseCase {
         try await repository.getRecentScheduleAsync()
     }
     
-    public func getAppServicesAsync() async throws -> [HomeAppServicesModel] {
-        // 캐시된 데이터가 있으면 반환
-        if let cached = cachedAppServices {
-            return cached
-        }
-
-        // 없으면 API 호출 후 캐싱
-        let services = try await repository.getAppServicesAsync()
-        cachedAppServices = services
-        return services
+    public func getAppServicesForMember() async throws -> [HomeAppServicesModel] {
+        try await repository.getAppServicesAsync()
     }
 
     public func getTabAppServicesAsync() async throws -> [HomeAppServicesModel] {
-        // 캐시된 데이터가 있으면 반환
-        if let cached = cachedTabAppServices {
-            return cached
-        }
-
-        // 없으면 API 호출 후 캐싱
-        let services = try await repository.getTabAppServicesAsync()
-        cachedTabAppServices = services
-        return services
+        try await repository.getTabAppServicesAsync()
     }
 
     public func getCalendarDetailAsync() async throws -> [HomeCalendarDetailModel] {

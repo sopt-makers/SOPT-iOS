@@ -7,7 +7,7 @@
 //
 
 import Core
-import DSKit
+import MDS
 
 import UIKit
 
@@ -22,14 +22,13 @@ internal final class PokeOnboardingNavigationBar: UIView {
     
     // MARK: LeftButton
     private let leftButton = UIButton().then {
-        $0.setImage(DSKitAsset.Assets.icClose.image.withRenderingMode(.alwaysTemplate), for: .normal)
-        $0.tintColor = .white
+        $0.setImage(MDSIcon.xCloseOutlined.image.withRenderingMode(.alwaysTemplate), for: .normal)
+        $0.tintColor = SemanticColor.Fg.Neutral.bold
     }
     
     private let leftTitleLabel = UILabel().then {
-        $0.text = "콕 찌르기"
-        $0.textColor = DSKitAsset.Colors.gray30.color
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 18)
+        $0.text = I18N.Poke.poke
+        $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
     }
     
     private let contentSpacingView = UILabel().then {

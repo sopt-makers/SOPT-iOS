@@ -15,7 +15,7 @@ public struct HomeLatestPostsResponseEntityWrapper: Decodable {
 public struct HomeLatestPostsResponseEntity: Decodable {
     public let profileImage: String?
     public let name: String?
-    public let generationAndPart: String
+    public let generationAndPart: String?
     public let category: String
     public let title: String
     public let content: String

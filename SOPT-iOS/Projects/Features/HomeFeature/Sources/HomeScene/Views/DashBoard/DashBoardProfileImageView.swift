@@ -8,26 +8,24 @@
 
 import UIKit
 
-import DSKit
+import MDS
 
 final class DashBoardProfileImageView: UIView {
     
     // MARK: - UI Components
     
-    private let profileImageView = CustomProfileImageView().then {
-        $0.hideBorder()
-    }
+    private let profileImageView = MDSAvatar(size: 56, hasStroke: false)
     
     private let editBackgroundView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.gray600.color
-        $0.layer.borderColor = DSKitAsset.Colors.gray800.color.cgColor
-        $0.layer.borderWidth = 2.5
+        $0.backgroundColor = SemanticColor.Bg.Neutral.default
+        $0.layer.borderColor = SemanticColor.Stroke.Neutral.ghost.cgColor
+        $0.layer.borderWidth = 2
         $0.clipsToBounds = true
-        $0.layer.cornerRadius = 8
+        $0.layer.cornerRadius = 7
     }
     
     private let editImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.icPencil.image
+        $0.image = MDSIcon.writeOutlined.image.withRenderingMode(.alwaysTemplate)
     }
     
     // MARK: - Initialization
@@ -51,12 +49,12 @@ extension DashBoardProfileImageView {
         editBackgroundView.addSubview(editImageView)
         
         profileImageView.snp.makeConstraints {
-            $0.size.equalTo(54)
+            $0.edges.equalToSuperview()
         }
         
         editBackgroundView.snp.makeConstraints {
-            $0.size.equalTo(17)
-            $0.bottom.equalTo(profileImageView.snp.bottom).offset(-2.5)
+            $0.size.equalTo(14)
+            $0.bottom.equalTo(profileImageView.snp.bottom).offset(-2)
             $0.trailing.equalTo(profileImageView.snp.trailing).offset(2)
         }
         

@@ -26,7 +26,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
     private let useCase: NotificationListUseCase
     private var cancelBag = CancelBag()
     
-    let filterList: [NotificationFilterType] = [.all, .notice, .news]
+    let filterList: [NotificationFilterType] = [.all, .officialNotice, .generalNotice, .news]
     var notifications: [NotificationListModel] = [] // 리스트 뷰에서 snapshot을 사용하기 때문에 중복된 모델이 있으면 안 된다.
     
     private var selectedCategory: NotificationFilterType = .all
@@ -51,6 +51,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
         var notificationList = PassthroughSubject<[NotificationListModel], Never>()
         var filterList = PassthroughSubject<[NotificationFilterType], Never>()
         var refreshLoading = PassthroughSubject<Bool, Never>()
+        var isAllRead = PassthroughSubject<Bool, Never>()
     }
     
     // MARK: - init
@@ -90,10 +91,15 @@ extension NotificationListViewModel {
         input.cellTapped
             .withUnretained(self)
             .sink { owner, index in
-                let notification = owner.notifications[index]
+                let filtered = owner.filterNotifications(owner.notifications, by: owner.selectedCategory)
+                guard filtered.indices.contains(index) else { return }
+                let notification = filtered[index]
+                
                 owner.onNotificationTap?(notification.notificationId)
-                owner.read(index: index)
-                output.notificationList.send(self.notifications)
+                owner.read(notificationId: notification.notificationId)
+                output.notificationList.send(owner.filterNotifications(owner.notifications, by: owner.selectedCategory))
+                output.isAllRead.send(owner.notifications.allSatisfy { $0.isRead })
+                
                 AmplitudeInstance.shared.track(eventType: .clickNotificationItem,
                                                eventProperties: [
                                                 "notification_id": notification.notificationId,
@@ -146,11 +152,12 @@ extension NotificationListViewModel {
                 owner.removeDuplicatesAndUpdateNotifications(contentsOf: notificationList)
                 let filtered = owner.filterNotifications(owner.notifications, by: owner.selectedCategory)
                 output.notificationList.send(filtered)
+                output.isAllRead.send(owner.notifications.allSatisfy { $0.isRead })
                 owner.endPaging(isEmptyResponse: notificationList.isEmpty)
-                
+
                 output.refreshLoading.send(false)
             }.store(in: cancelBag)
-        
+
         useCase.readSuccess
             .asDriver()
             .withUnretained(self)
@@ -162,7 +169,8 @@ extension NotificationListViewModel {
                         notification.isRead = true
                         return notification
                     }
-                    output.notificationList.send(owner.notifications)
+                    output.notificationList.send(owner.filterNotifications(owner.notifications, by: owner.selectedCategory))
+                    output.isAllRead.send(true)
                 }
             }.store(in: cancelBag)
     }
@@ -184,17 +192,23 @@ extension NotificationListViewModel {
         }
     }
     
-    private func read(index: Int) {
-        self.notifications[index].isRead = true
+    private func read(notificationId: String) {
+        guard let index = notifications.firstIndex(where: { $0.notificationId == notificationId }) else { return }
+        notifications[index].isRead = true
     }
     
     private func filterNotifications(_ notifications: [NotificationListModel], by category: NotificationFilterType) -> [NotificationListModel] {
         switch category {
         case .all: return notifications
-        case .notice:
+        case .officialNotice:
             return notifications.filter {
                 guard let category = $0.category else { return false }
-                return category == NotificationFilterType.notice.serverKey
+                return category == NotificationFilterType.officialNotice.serverKey
+            }
+        case .generalNotice:
+            return notifications.filter {
+                guard let category = $0.category else { return false }
+                return category == NotificationFilterType.generalNotice.serverKey
             }
         case .news:
             return notifications.filter {

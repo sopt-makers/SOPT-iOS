@@ -15,6 +15,7 @@ import Then
 
 import Core
 import DSKit
+import MDS
 
 import PokeFeatureInterface
 import BaseFeatureDependency
@@ -24,14 +25,15 @@ public class PokeMakingFriendCompletedVC: UIViewController, PokeMakingFriendComp
     // MARK: - Properties
     
     private let friendName: String
-  
+    
     // MARK: - UI Components
     
     private let lottieView = LottieAnimationView(name: "highfive",
                                                  bundle: DSKitResources.bundle)
     
     private let descriptionLabel = UILabel().then {
-      $0.numberOfLines = 3
+        $0.textAlignment = .center
+        $0.numberOfLines = 3
     }
     
     private lazy var containerStackView = UIStackView(arrangedSubviews: [lottieView, descriptionLabel]).then {
@@ -60,7 +62,7 @@ public class PokeMakingFriendCompletedVC: UIViewController, PokeMakingFriendComp
     }
     
     // MARK: - Method
-
+    
     private func setLottie() {
         lottieView.loopMode = .repeat(2)
         lottieView.contentMode = .scaleAspectFit
@@ -75,12 +77,10 @@ public class PokeMakingFriendCompletedVC: UIViewController, PokeMakingFriendComp
 
 extension PokeMakingFriendCompletedVC {
     private func setUI() {
-        self.view.backgroundColor = DSKitAsset.Colors.gray950.color.withAlphaComponent(0.8)
+        self.view.backgroundColor = SemanticColor.Bg.Layer.basement
         setLottie()
-      self.descriptionLabel.attributedText = I18N.Poke.makingFriendCompleted(name: self.friendName).applyMDSFont(
-        mdsFont: .title5, color: DSKitAsset.Colors.gray10.color,
-        alignment: .center
-      )
+        self.descriptionLabel.text = I18N.Poke.makingFriendCompleted(name: self.friendName)
+        self.descriptionLabel.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
     }
     
     private func setLayout() {

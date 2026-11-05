@@ -9,7 +9,6 @@
 import UIKit
 
 import Core
-import DSKit
 import Domain
 
 final class PokeMyFriendsListTVC: UITableViewCell {
@@ -24,7 +23,6 @@ final class PokeMyFriendsListTVC: UITableViewCell {
     
     private let profileListView = PokeProfileListView(viewType: .default)
         .setDividerViewIsHidden(to: false)
-        .setDividerViewColor(with: DSKitAsset.Colors.gray700.color)
     
     // MARK: - Initialization
     

@@ -13,7 +13,6 @@ import UIKit
 import Core
 import DSKit
 
-
 struct MenuSectionItem {
     var title: String
     var icon: UIImage

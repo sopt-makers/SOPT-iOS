@@ -45,23 +45,11 @@ extension HomeRepository: HomeRepositoryInterface {
             .eraseToAnyPublisher()
     }
     
-    public func getAppServices() -> AnyPublisher<[Domain.HomeAppServicesModel], any Error> {
-        return homeService.getAppServiceAccessStatus()
-            .map { $0.appServices.map { $0.toDomain() } }
-            .eraseToAnyPublisher()
-    }
-
     public func getIsAppjamMode() -> Bool {
         guard let isAppjam = UserDefaultKeyList.User.isAppjam else { return false }
         return isAppjam
     }
 
-    public func getCalendarDetail() -> AnyPublisher<[HomeCalendarDetailModel], any Error> {
-        calendarService.getCalendarDetail()
-            .map{ $0.map { $0.toDomain() } }
-            .eraseToAnyPublisher()
-    }
-    
     public func getReportUrl() -> AnyPublisher<Domain.SoptampReportUrlModel, any Error> {
         stampService.getReportUrl()
             .map { $0.toDomain() }

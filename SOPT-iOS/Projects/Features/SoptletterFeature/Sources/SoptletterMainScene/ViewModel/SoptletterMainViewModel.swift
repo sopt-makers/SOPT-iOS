@@ -25,17 +25,14 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
         let writeButtonTap: Driver<Void>
         let downloadButtonTap: Driver<Void>
         let reportButtonTap: Driver<Void>
-        let menuButtonTap: Driver<Void>
         let postItCellTap: Driver<(messageId: Int, topicId: Int)>
         let imageProcessCompleted: Driver<(image: UIImage, url: URL)>
-        let soptletterHeaderTap: Driver<Int>
     }
     
     // MARK: - Outputs
     
     public struct Output {
         let soptletterMessages = PassthroughSubject<SoptletterItemModel, Never>()
-        let ctaInfo = PassthroughSubject<SoptletterCTAModel, Never>()
         let onDownloadConfirm = PassthroughSubject<Void, Never>()
     }
     
@@ -47,11 +44,13 @@ public final class SoptletterMainViewModel: SoptletterMainViewModelType {
     private var fetchCTATask: Task<Void, Never>?
     private var fetchReportFormTask: Task<Void, Never>?
     private var topicId: Int?
-    
+
+    private var initialTopic: (topicId: Int, title: String)?
+
     private var cancelBag = CancelBag()
     
     public var onNaviBackTap: (() -> Void)?
-    public var onWriteTap: (() -> Void)?
+    public var onWriteTap: ((_ topicId: Int?, _ title: String?) -> Void)?
     public var onPostItTap: (() -> Void)?
     public var onDownloadTap: ((UIImage, URL) -> Void)?
     public var onReportTap: (@MainActor (URL) -> Void)?
@@ -85,17 +84,11 @@ extension SoptletterMainViewModel {
                 owner.fetchMessages(output: output)
             }.store(in: cancelBag)
         
-        input.soptletterHeaderTap
-            .withUnretained(self)
-            .sink { owner, topicId in
-                owner.ctaTap?(topicId)
-            }.store(in: cancelBag)
         
         input.viewDidLoad
             .withUnretained(self)
             .sink { owner, _ in
                 owner.fetchMessages(output: output)
-                owner.fetchCTA(output: output)
                 AmplitudeInstance.shared.trackWithUserType(event: .viewSoptletterMain)
             }.store(in: cancelBag)
         
@@ -103,19 +96,12 @@ extension SoptletterMainViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.onNaviBackTap?()
-                AmplitudeInstance.shared.trackWithUserType(event: .clickQuitSoptletter)
-            }.store(in: cancelBag)
-        
-        input.menuButtonTap
-            .withUnretained(self)
-            .sink { owner, _ in
-                owner.onMenuTap?()
             }.store(in: cancelBag)
         
         input.writeButtonTap
             .withUnretained(self)
             .sink { owner, _ in
-                owner.onWriteTap?()
+                owner.onWriteTap?(owner.initialTopic?.topicId, owner.initialTopic?.title)
                 AmplitudeInstance.shared.trackWithUserType(event: .clickWriteSoptletter)
             }.store(in: cancelBag)
         
@@ -165,40 +151,19 @@ extension SoptletterMainViewModel {
                 let result = try await useCase.fetchSoptletterMessages(topicId: topicId, cursor: nil, size: nil)
                 try Task.checkCancellation()
                 await MainActor.run {
+                    initialTopic = (topicId: result.topicId, title: result.title)
                     output.soptletterMessages.send(result)
                 }
             } catch is CancellationError {
                 return
             } catch {
-                // UI fallback 처리
-                await MainActor.run {
-                    output.soptletterMessages.send(.init(topicId: 0, title: "test", totalCount: 0, nextCursor: 0, hasNext: false, messages: []))
-                    onError?()
-                }
+                initialTopic = nil
+                await onError?()
             }
         }
         
     }
-    
-    public func fetchCTA(output: Output) {
-        fetchCTATask?.cancel()
-        fetchCTATask = Task {
-            do {
-                let result = try await useCase.fetchCTA()
-                try Task.checkCancellation()
-                await MainActor.run {
-                    output.ctaInfo.send(result)
-                }
-            } catch is CancellationError {
-                return
-            } catch {
-                await MainActor.run {
-                    output.ctaInfo.send(.init(showCta: false, topicId: 0, ctaText: ""))
-                }
-            }
-        }
-    }
-    
+
     public func fetchReportForm() {
         fetchReportFormTask?.cancel()
         fetchReportFormTask = Task {
@@ -228,10 +193,5 @@ extension SoptletterMainViewModel {
 
     public func refreshMessagesTrigger() {
         refreshTriggerSubject.send()
-    }
-    
-    public func changeTopic(_ topicId: Int) {
-        self.topicId = topicId
-        refreshMessagesTrigger()
     }
 }

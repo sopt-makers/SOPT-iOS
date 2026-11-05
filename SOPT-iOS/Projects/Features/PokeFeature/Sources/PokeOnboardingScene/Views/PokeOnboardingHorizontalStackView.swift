@@ -17,7 +17,7 @@ public final class PokeOnboardingHorizontalStackView: UIView {
   // MARK: - Views
   private let stackView = UIStackView().then {
     $0.axis = .horizontal
-    $0.spacing = 0.f
+    $0.spacing = 3
     $0.alignment = .leading
     $0.distribution = .fillEqually
   }

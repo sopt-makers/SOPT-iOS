@@ -11,7 +11,7 @@ import Combine
 
 import Core
 import Domain
-import DSKit
+import MDS
 
 import BaseFeatureDependency
 import PokeFeatureInterface
@@ -26,9 +26,8 @@ public final class PokeMainVC: UIViewController {
     // MARK: - UI Components
     
     private let serviceTitleLabel = UILabel().then {
-        $0.font = UIFont.MDS.heading6.font
-        $0.textColor = DSKitAsset.Colors.gray30.color
         $0.text = I18N.Poke.poke
+        $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
     }
     
     private lazy var navigationView = UIStackView(
@@ -65,8 +64,7 @@ public final class PokeMainVC: UIViewController {
     // 내 친구의 친구를 찔러보세요 부분
     private let recommendPokeLabel = UILabel().then {
         $0.text = I18N.Poke.pokeNearbyFriends
-        $0.textColor = DSKitAsset.Colors.gray30.color
-        $0.font = UIFont.MDS.title5.font
+        $0.setTypography(Typography.title4, textColor: SemanticColor.Fg.Neutral.bold)
     }
     
     private let firstProfileCardGroupView = ProfileCardGroupView(frame: .zero)
@@ -75,10 +73,8 @@ public final class PokeMainVC: UIViewController {
     
     // 리프레시
     private let refreshGuideLabel = UILabel().then {
-        $0.font = UIFont.MDS.title7.font
-        $0.textColor = DSKitAsset.Colors.gray200.color
         $0.text = I18N.Poke.refreshGuide
-        $0.textAlignment = .center
+        $0.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.subtle, alignment: .center)
         $0.numberOfLines = 2
     }
     
@@ -114,7 +110,7 @@ public final class PokeMainVC: UIViewController {
 extension PokeMainVC {
     private func setUI() {
         self.navigationController?.isNavigationBarHidden = true
-        view.backgroundColor = DSKitAsset.Colors.semanticBackground.color
+        view.backgroundColor = SemanticColor.Bg.Layer.basement
     }
     
     private func setDelegate() {
@@ -136,9 +132,9 @@ extension PokeMainVC {
     
     private func makeSectionGroupView(header: PokeMainSectionHeaderView, content: UIView) -> UIView {
         let view = UIView()
-        view.backgroundColor = DSKitAsset.Colors.gray900.color
+        view.backgroundColor = SemanticColor.Bg.Layer.default
         view.addSubviews(header, content)
-        view.layer.cornerRadius = 12
+        view.layer.cornerRadius = BaseRadius.Base.r12
         
         header.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()

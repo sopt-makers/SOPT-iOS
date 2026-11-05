@@ -13,6 +13,10 @@ public struct SoptletterTopicListEntity: Decodable {
 public struct SoptletterTopicEntity: Decodable {
     public let topicId: Int
     public let title: String
+    public let subtitle: String?
     public let isDefault: Bool
+    public let isNew: Bool
+    public let isHot: Bool
+    public let unreadCount: Int
     public let createdAt: String
 }

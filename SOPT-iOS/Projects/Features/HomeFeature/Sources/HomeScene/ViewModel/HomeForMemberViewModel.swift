@@ -12,7 +12,6 @@ import UserNotifications
 
 import Core
 import Domain
-import DSKit
 
 import HomeFeatureInterface
 import BaseFeatureDependency
@@ -198,14 +197,7 @@ extension HomeForMemberViewModel {
             .sink { owner, model in
                 if let userID = model.userID {
                     owner.onProfileImageViewTapped?(userID)
-                    owner.eventTracker.trackClickPostMember(
-                        postRanking: model.postRanking,
-                        sectionName: model.sectionName,
-                        postID: model.postID,
-                        category: model.category
-                    )
                 }
-                
             }
             .store(in: cancelBag)
         
@@ -254,7 +246,7 @@ extension HomeForMemberViewModel {
             async let dashBoard = fetchDashBoard()
             async let recentSchedule = fetchRecentSchedule()
             async let survey = fetchSurvey()
-            async let appService = useCase.getAppServicesAsync()
+            async let appService = useCase.getAppServicesForMember()
             async let popularPosts = useCase.getPopularPostsAsync()
             async let latestPosts = useCase.getLatestPostsAsync()
                         

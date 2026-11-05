@@ -9,7 +9,6 @@
 import UIKit
 import Combine
 
-import DSKit
 import Core
 import Domain
 
@@ -61,7 +60,7 @@ public final class PokeFriendsSectionGroupView: UIView {
 
 extension PokeFriendsSectionGroupView {
     private func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.gray950.color
+        self.backgroundColor = .clear
     }
     
     private func makeContents() {

@@ -24,4 +24,6 @@ public enum AmplitudeEventPropertyKey: String {
     case promoName = "promo_name"
     case destinationURL = "destination_url"
     case destinationType = "destination_type"
+    
+    case notificationProductType = "notification_product_type"
 }

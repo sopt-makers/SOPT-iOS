@@ -9,16 +9,13 @@
 
 import UIKit
 
-import DSKit
+import MDS
 
 final class FABMenuHeaderView: UICollectionReusableView {
       
     // MARK: - UI Components
     
-    private let sectionTitle = UILabel().then{
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 12)
-        $0.textColor = DSKitAsset.Colors.gray950.color
-    }
+    private let sectionTitle = UILabel()
     
     // MARK: - Life Cycle
     override init(frame: CGRect) {
@@ -50,5 +47,6 @@ extension FABMenuHeaderView {
 extension FABMenuHeaderView {
     func configureCell(title: String) {
         sectionTitle.text = title
+        sectionTitle.setTypography(Typography.label4, textColor: SemanticColor.Fg.Neutral.ghost)
     }
 }

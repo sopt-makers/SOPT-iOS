@@ -10,7 +10,7 @@ import UIKit
 import Combine
 
 import Core
-import DSKit
+import MDS
 import Domain
 
 public final class ProfileCardGroupView: UIView, PokeCompatible {
@@ -31,8 +31,7 @@ public final class ProfileCardGroupView: UIView, PokeCompatible {
   // MARK: - UI Components
 
   private let groupNameLabel = UILabel().then {
-    $0.textColor = DSKitAsset.Colors.gray30.color
-    $0.font = UIFont.MDS.title7.font
+      $0.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold)
   }
 
   private let emptyFriendView = PokeEmptyView().setText(with: I18N.Poke.emptyFriendDescription)
@@ -62,8 +61,8 @@ public final class ProfileCardGroupView: UIView, PokeCompatible {
 
 extension ProfileCardGroupView {
   private func setUI() {
-    self.backgroundColor = DSKitAsset.Colors.gray900.color
-    self.layer.cornerRadius = 8
+      self.backgroundColor = SemanticColor.Bg.Layer.default
+      self.layer.cornerRadius = BaseRadius.Base.r8
   }
 
   private func setLayout() {
@@ -101,6 +100,7 @@ extension ProfileCardGroupView {
 
   func setData(with model: PokeRandomInfoListModel) {
     self.groupNameLabel.text = model.randomTitle
+      self.groupNameLabel.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.bold)
     let randomUsers = model.userInfoList.prefix(2)
 
     handleProfileCardCount(count: randomUsers.count)

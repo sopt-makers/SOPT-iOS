@@ -89,6 +89,7 @@ extension SoptletterPostItCell {
     ) -> Self {
             contentLabel.text = text
             contentLabel.setTypography(Typography.body2, textColor: textColor)
+            contentLabel.applyFontFallback()
 
             let rotation = CGAffineTransform(rotationAngle: labelRotationAngle * .pi / 180)
             contentLabel.transform = rotation

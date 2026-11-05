@@ -1,0 +1,15 @@
+{
+  "name": "sopt-debug-panel",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@necto/bridge": "https://github.com/toss/necto/releases/download/0.2.0/necto-bridge-0.2.0.tgz"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}

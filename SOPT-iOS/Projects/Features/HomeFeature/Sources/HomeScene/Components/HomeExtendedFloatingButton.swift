@@ -9,7 +9,9 @@
 import UIKit
 import Combine
 
+import Core
 import DSKit
+import MDS
 
 final class HomeFloatingButton: UIView {
 
@@ -24,41 +26,37 @@ final class HomeFloatingButton: UIView {
     // MARK: - UI Components
     
     private let serviceBackgroundView = UIView().then {
-        $0.backgroundColor = DSKitAsset.Colors.orange500.color
-        $0.layer.cornerRadius = 21
+        $0.backgroundColor = SemanticColor.Bg.Brand.default
     }
     
     private let serviceImageView = UIImageView()
     
     private let extendedTitle = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.bold.font(size: 16)
-        $0.textColor = DSKitAsset.Colors.gray950.color
+        $0.lineBreakMode = .byTruncatingTail
     }
     
     private let extendedSubTitle = UILabel().then {
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 12)
-        $0.textColor = DSKitAsset.Colors.orange700.color
+        $0.lineBreakMode = .byTruncatingTail
     }
     
     private let actionButton = UIButton().then {
-        $0.setTitleColor(DSKitAsset.Colors.white.color, for: .normal)
-        $0.titleLabel?.font = DSKitFontFamily.Suit.medium.font(size: 13)
-        $0.backgroundColor = DSKitAsset.Colors.black.color
+        $0.setTitleColor(SemanticColor.Fg.Neutral.bold, for: .normal)
+        $0.titleLabel?.font = Typography.label4.font
+        $0.backgroundColor = SemanticColor.Bg.Layer.default
         $0.clipsToBounds = true
     }
     
     private let collapsedTitle = UILabel().then {
-        $0.textColor = DSKitAsset.Colors.orange800.color
-        $0.font = DSKitFontFamily.Suit.medium.font(size: 12)
+        $0.setTypography(Typography.label4, textColor: DSKitAsset.Colors.orange800.color)
     }
     
     private let collapsedSubTitle = UILabel().then {
-        $0.textColor = DSKitAsset.Colors.gray900.color
-        $0.font = DSKitFontFamily.Suit.semiBold.font(size: 14)
+        $0.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.inverse)
     }
     
     private let collapsedRightChevronImageView = UIImageView().then {
-        $0.image = DSKitAsset.Assets.btnRightChevron.image
+        $0.image = MDSIcon.chevronRightOutlined.image.withRenderingMode(.alwaysTemplate)
+        $0.tintColor = SemanticColor.Fg.Neutral.inverse
     }
     
     // MARK: - Initialization
@@ -81,7 +79,7 @@ final class HomeFloatingButton: UIView {
         let buttonHeight = self.bounds.height
         self.layer.cornerRadius = buttonHeight / 2
         
-        self.actionButton.layer.cornerRadius = 16
+        self.actionButton.layer.cornerRadius = self.actionButton.bounds.height / 2
         
         let backgroundHeight = self.serviceBackgroundView.bounds.height
         self.serviceBackgroundView.layer.cornerRadius = backgroundHeight / 2
@@ -92,15 +90,15 @@ final class HomeFloatingButton: UIView {
 
 extension HomeFloatingButton {
     private func setUI() {
-        self.backgroundColor = DSKitAsset.Colors.orange400.color
-        self.layer.applyShadow(color: DSKitAsset.Colors.shadow.color, alpha: 0.7, y: 4, blur: 40)
+        self.backgroundColor = SemanticColor.Bg.Brand.default
+        self.layer.applyShadow(color: SemanticColor.Bg.Layer.basement, alpha: 0.7, y: 4, blur: 20)
     }
     
     private func setExpendedLayout() {
         self.addSubviews(serviceBackgroundView, serviceImageView, extendedSubTitle, extendedTitle, actionButton)
         
         serviceBackgroundView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(13)
+            make.leading.equalToSuperview().inset(8)
             make.size.equalTo(42)
             make.centerY.equalToSuperview()
         }
@@ -111,18 +109,22 @@ extension HomeFloatingButton {
         }
         
         extendedTitle.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(15)
+            make.top.equalToSuperview().inset(14)
             make.leading.equalTo(serviceBackgroundView.snp.trailing).offset(8)
+            make.trailing.lessThanOrEqualTo(actionButton.snp.leading).offset(-18)
         }
         
         extendedSubTitle.snp.makeConstraints { make in
             make.leading.equalTo(extendedTitle.snp.leading)
-            make.top.equalTo(extendedTitle.snp.bottom).offset(4)
+            make.top.equalTo(extendedTitle.snp.bottom).offset(2)
+            make.trailing.lessThanOrEqualTo(actionButton.snp.leading).offset(-18)
         }
         
         actionButton.snp.makeConstraints { make in
-            make.top.bottom.trailing.equalToSuperview().inset(18)
+            make.trailing.equalToSuperview().inset(18)
+            make.centerY.equalToSuperview()
             make.width.equalTo(70)
+            make.height.equalTo(28)
         }
     }
     
@@ -190,11 +192,15 @@ extension HomeFloatingButton {
         
         // 확장 버튼 속성
         extendedTitle.text = model.extenedFloatingButton.title
+        extendedTitle.setTypography(Typography.heading4, textColor: SemanticColor.Fg.Neutral.inverse)
         extendedSubTitle.text = model.extenedFloatingButton.subTitle
+        extendedSubTitle.setTypography(Typography.label4, textColor: DSKitAsset.Colors.orange700.color)
         actionButton.setTitle(model.actionButtonName, for: .normal)
         
         // 접힘 버튼 속성
         collapsedTitle.text = model.collapsedFloatingButton.subTitle
+        collapsedTitle.setTypography(Typography.label4, textColor: DSKitAsset.Colors.orange800.color)
         collapsedSubTitle.text = model.actionButtonName
+        collapsedSubTitle.setTypography(Typography.label3, textColor: SemanticColor.Fg.Neutral.inverse)
     }
 }

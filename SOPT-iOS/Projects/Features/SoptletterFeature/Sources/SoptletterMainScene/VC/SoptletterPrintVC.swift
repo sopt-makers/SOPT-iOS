@@ -138,7 +138,6 @@ public final class SoptletterPrintVC: UIViewController {
         navigationView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.top.equalTo(view.safeAreaLayoutGuide)
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(56)
         }
         
         closeButton.snp.makeConstraints { make in
@@ -171,7 +170,7 @@ public final class SoptletterPrintVC: UIViewController {
 
         saveButton.snp.makeConstraints {
             $0.directionalHorizontalEdges.equalToSuperview().inset(BaseSpacing.Base.s20)
-        $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
     }
 }

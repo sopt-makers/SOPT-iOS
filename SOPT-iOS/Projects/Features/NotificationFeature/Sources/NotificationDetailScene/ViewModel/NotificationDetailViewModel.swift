@@ -61,6 +61,7 @@ extension NotificationDetailViewModel {
             .withUnretained(self)
             .sink { owner, _ in
                 owner.useCase.getNotificationDetail(notificationId: owner.notificationId)
+                AmplitudeInstance.shared.trackWithUserType(event: .viewNotificationDetail)
             }.store(in: cancelBag)
 
         input.shortCutButtonTap

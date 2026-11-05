@@ -27,4 +27,5 @@ public extension TargetDependency.SPM {
     static let FirebaseAnalytics = TargetDependency.external(name: "FirebaseAnalytics")
     static let GoogleSignIn = TargetDependency.external(name: "GoogleSignIn")
     static let MDS = TargetDependency.external(name: "MDS")
+    static let NectoSDK = TargetDependency.external(name: "NectoSDK")
 }

@@ -23,10 +23,6 @@ extension SoptletterRepository: SoptletterRepositoryInterface {
         try await soptletterService.fetchDefaultTopic().toDomain()
     }
     
-    public func fetchCTA() async throws -> Domain.SoptletterCTAModel {
-        try await soptletterService.fetchCTA().toDomain()
-    }
-
     public func fetchReportForm() async throws -> Domain.SoptletterReportFormModel {
         try await soptletterService.fetchReportForm().toDomain()
     }
@@ -65,7 +61,12 @@ extension SoptletterRepository: SoptletterRepositoryInterface {
     
     public func getSoptletterProfile() async throws -> SoptletterProfileModel{
         let result = try await soptletterService.getSoptletterProfile()
+        UserDefaultKeyList.User.soptletterName = result.nickname
         return result.toDomain()
+    }
+    
+    public func getSoptletterNickName()-> String? {
+        return UserDefaultKeyList.User.soptletterName ?? nil
     }
     
     public func completeOnboarding() async throws {
