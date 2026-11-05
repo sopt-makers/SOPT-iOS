@@ -91,11 +91,15 @@ extension NotificationListViewModel {
         input.cellTapped
             .withUnretained(self)
             .sink { owner, index in
-                let notification = owner.notifications[index]
+                let filtered = owner.filterNotifications(owner.notifications, by: owner.selectedCategory)
+                guard filtered.indices.contains(index) else { return }
+                let notification = filtered[index]
+                
                 owner.onNotificationTap?(notification.notificationId)
-                owner.read(index: index)
-                output.notificationList.send(self.notifications)
+                owner.read(notificationId: notification.notificationId)
+                output.notificationList.send(owner.filterNotifications(owner.notifications, by: owner.selectedCategory))
                 output.isAllRead.send(owner.notifications.allSatisfy { $0.isRead })
+                
                 AmplitudeInstance.shared.track(eventType: .clickNotificationItem,
                                                eventProperties: [
                                                 "notification_id": notification.notificationId,
@@ -188,8 +192,9 @@ extension NotificationListViewModel {
         }
     }
     
-    private func read(index: Int) {
-        self.notifications[index].isRead = true
+    private func read(notificationId: String) {
+        guard let index = notifications.firstIndex(where: { $0.notificationId == notificationId }) else { return }
+            notifications[index].isRead = true
     }
     
     private func filterNotifications(_ notifications: [NotificationListModel], by category: NotificationFilterType) -> [NotificationListModel] {
