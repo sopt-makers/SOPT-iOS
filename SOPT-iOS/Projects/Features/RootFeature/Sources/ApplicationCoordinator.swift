@@ -202,6 +202,19 @@ extension ApplicationCoordinator {
     }
 }
 
+// MARK: - 프로필 설정 완료 후 웹뷰를 닫음
+
+extension ApplicationCoordinator {
+    public func handleProfileComplete() {
+        UserDefaultKeyList.User.needProfileSetup = false
+        rootNavigationController.dismiss(animated: false)
+        rootNavigationController.popToRootViewController(animated: false)
+        Task { [weak self] in
+            await self?.runTabBarFlow(type: UserDefaultKeyList.CoreAuth.getUserType())
+        }
+    }
+}
+
 // MARK: - TabBarFlow
 
 extension ApplicationCoordinator {
