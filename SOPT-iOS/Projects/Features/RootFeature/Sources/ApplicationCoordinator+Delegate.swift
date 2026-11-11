@@ -24,7 +24,7 @@ import WebFeature
 
 extension ApplicationCoordinator: AuthCoordinatorDelegate {
     public func authCoordinator(_ coordinator: AuthCoordinator, userType: UserType) {
-        if UserDefaultKeyList.User.needProfileSetup == true {
+        if userType != .visitor && UserDefaultKeyList.User.needProfileSetup == true {
             runProfileSetupFlow()
         } else {
             Task { @MainActor [weak self] in

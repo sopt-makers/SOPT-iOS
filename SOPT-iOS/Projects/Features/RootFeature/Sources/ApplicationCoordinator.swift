@@ -221,7 +221,8 @@ extension ApplicationCoordinator {
     }
     
     public func handleProfileComplete() {
-        guard UserDefaultKeyList.User.needProfileSetup == true else { return }
+        guard UserDefaultKeyList.CoreAuth.hasAccessToken(),
+              UserDefaultKeyList.User.needProfileSetup == true else { return }
         UserDefaultKeyList.User.needProfileSetup = false
         rootNavigationController.popToRootViewController(animated: false)
         Task { @MainActor [weak self] in
