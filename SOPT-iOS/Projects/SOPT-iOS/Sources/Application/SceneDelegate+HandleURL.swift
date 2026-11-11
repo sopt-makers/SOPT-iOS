@@ -21,12 +21,12 @@ extension SceneDelegate {
             print("path: \(context.url.path)")
             print("query: \(String(describing: context.url.query))")
             print("components: \(context.url.pathComponents)")
-
+            
             if context.url.scheme == URLHandler.sopt {
                 handleSoptURL(url: context.url)
                 continue
             }
-
+            
             guard let _url = URLContexts.first?.url,
                   context.url.host() ?? "" == URLHandler.makers else {
                 return
@@ -73,11 +73,11 @@ extension SceneDelegate {
             return
         }
     }
-
+    
     func redirectSignInVC(url: String) {
         appCoordinator.start(with: .signInSuccess(url: url))
     }
-    
+
     /// 유니버설 링크로 진입한 UserActivity를 처리합니다.
     /// 그 외 UserActivity(상태 복원 등)면 콜드 스타트일 때만 평소대로 앱을 시작합니다.
     func handleUniversalLinkWithUserActivity(_ userActivity: NSUserActivity, isInitialLaunch: Bool = false) {
