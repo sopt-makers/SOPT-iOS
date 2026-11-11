@@ -44,8 +44,8 @@ extension UserDefaultKeyList {
         clearPushToken()
         clearSoptampUserData()
         clearSoptletteUserrData()
+        clearProfileSetupFlag()
     }
-    
     
     public static func clearUserData() {
         UserDefaultKeyList.CoreAuth.accessToken = nil
@@ -58,17 +58,22 @@ extension UserDefaultKeyList {
         UserDefaultKeyList.User.needProfileSetup = nil
     }
     
-    public static func clearPushToken() {
+    private static func clearPushToken() {
         UserDefaultKeyList.User.pushToken = nil
     }
 
-    public static func clearSoptampUserData() {
+    private static func clearSoptampUserData() {
         UserDefaultKeyList.User.soptampName = nil
         UserDefaultKeyList.User.sentence = nil
     }
     
-    public static func clearSoptletteUserrData() {
+    private static func clearAppjamtampUserData() {
+        UserDefaultKeyList.User.isAppjam = nil
+    }
+    
+    private static func clearSoptletteUserrData() {
         UserDefaultKeyList.User.soptletterName = nil
+        UserDefaultKeyList.User.isCompleteSoptletterOnboarding = nil
     }
 }
 
