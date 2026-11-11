@@ -12,4 +12,5 @@ public enum URLHandler: String {
     case playgroundLogin = "oauth2redirect"
     
     public static let makers = "org.sopt.makers.iOS"
+    public static let sopt = "sopt"
 }

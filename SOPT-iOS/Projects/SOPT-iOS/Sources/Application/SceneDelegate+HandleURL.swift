@@ -21,7 +21,12 @@ extension SceneDelegate {
             print("path: \(context.url.path)")
             print("query: \(String(describing: context.url.query))")
             print("components: \(context.url.pathComponents)")
-            
+
+            if context.url.scheme == URLHandler.sopt {
+                handleSoptURL(url: context.url)
+                continue
+            }
+
             guard let _url = URLContexts.first?.url,
                   context.url.host() ?? "" == URLHandler.makers else {
                 return
@@ -60,6 +65,15 @@ extension SceneDelegate {
         }
     }
     
+    private func handleSoptURL(url: URL) {
+        switch (url.host(), url.path) {
+        case ("profile", "/complete"):
+            appCoordinator.handleProfileComplete()
+        default:
+            return
+        }
+    }
+
     func redirectSignInVC(url: String) {
         appCoordinator.start(with: .signInSuccess(url: url))
     }
