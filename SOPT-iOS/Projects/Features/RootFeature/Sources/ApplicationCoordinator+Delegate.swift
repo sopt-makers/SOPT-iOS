@@ -27,7 +27,9 @@ extension ApplicationCoordinator: AuthCoordinatorDelegate {
         if UserDefaultKeyList.User.needProfileSetup == true {
             runProfileSetupFlow()
         } else {
-            Task { await runTabBarFlow(type: userType) }
+            Task { @MainActor [weak self] in
+                await self?.runTabBarFlow(type: userType)
+            }
         }
     }
 }

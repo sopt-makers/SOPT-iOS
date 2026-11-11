@@ -210,6 +210,13 @@ extension ApplicationCoordinator {
     func runProfileSetupFlow() {
         guard let url = URL(string: ExternalURL.Playground.editProfile) else { return }
         let webView = SOPTWebView(startWith: url)
+        // 프로필 등록을 끝내지 않고 닫은 경우 빈 화면(스플래시/로그인)에 머무르지 않고 홈으로 이동
+        webView.onClose = { [weak self] in
+            guard UserDefaultKeyList.User.needProfileSetup == true else { return }
+            Task { @MainActor [weak self] in
+                await self?.runTabBarFlow(type: UserDefaultKeyList.CoreAuth.getUserType())
+            }
+        }
         self.rootNavigationController.pushViewController(webView, animated: true)
     }
     

@@ -42,7 +42,7 @@ public final class AuthCoordinator: BaseCoordinator {
         //TODO: 딥링크 URL 자동로그인 로직
 
         signIn.vm.onSignInSuccess = { [weak self]  in
-            guard let self else { return }            
+            guard let self else { return }
             let userType = UserDefaultKeyList.CoreAuth.getUserType()
             self.delegate?.authCoordinator(self, userType: userType)
         }
