@@ -18,6 +18,7 @@ public struct UserDefaultKeyList {
     }
     
     public struct User {
+        @UserDefaultWrapper<Bool>(key: "needProfileSetup") public static var needProfileSetup
         @UserDefaultWrapper<String>(key: "sentence") public static var sentence
         @UserDefaultWrapper<String>(key: "soptampName") public static var soptampName
         @UserDefaultWrapper<String>(key: "soptletterName") public static var soptletterName
@@ -43,8 +44,8 @@ extension UserDefaultKeyList {
         clearPushToken()
         clearSoptampUserData()
         clearSoptletteUserrData()
+        clearProfileSetupFlag()
     }
-    
     
     public static func clearUserData() {
         UserDefaultKeyList.CoreAuth.accessToken = nil
@@ -53,17 +54,26 @@ extension UserDefaultKeyList {
         UserDefaultKeyList.User.isAppjam = nil
     }
     
-    public static func clearPushToken() {
+    public static func clearProfileSetupFlag() {
+        UserDefaultKeyList.User.needProfileSetup = nil
+    }
+    
+    private static func clearPushToken() {
         UserDefaultKeyList.User.pushToken = nil
     }
 
-    public static func clearSoptampUserData() {
+    private static func clearSoptampUserData() {
         UserDefaultKeyList.User.soptampName = nil
         UserDefaultKeyList.User.sentence = nil
     }
     
-    public static func clearSoptletteUserrData() {
+    private static func clearAppjamtampUserData() {
+        UserDefaultKeyList.User.isAppjam = nil
+    }
+    
+    private static func clearSoptletteUserrData() {
         UserDefaultKeyList.User.soptletterName = nil
+        UserDefaultKeyList.User.isCompleteSoptletterOnboarding = nil
     }
 }
 
@@ -94,6 +104,10 @@ extension UserDefaultKeyList.CoreAuth {
 }
 
 extension UserDefaultKeyList.User {
+    public static func getNeedProfileSetup() -> Bool {
+        needProfileSetup ?? false
+    }
+    
     public static func hasPushToken() -> Bool {
         guard let pushToken = pushToken, !pushToken.isEmpty else {
             return false

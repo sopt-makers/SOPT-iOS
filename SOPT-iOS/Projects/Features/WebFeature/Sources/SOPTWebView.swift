@@ -27,6 +27,7 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
     private lazy var navigationBar = WebViewNavigationBar(frame: self.view.frame)
     public let webView: WKWebView
     public var vc: UIViewController { self }
+    public var onClose: (() -> Void)?
     private let downloadManager: WKDownloadManager
     private let customSchemeHandler = CustomSchemeHandler()
     private let startURL: URL
@@ -112,6 +113,13 @@ public final class SOPTWebView: UIViewController, SOPTWebViewControllable {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.setGestureDelegate()
+    }
+
+    public override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        if isMovingFromParent || isBeingDismissed {
+            onClose?()
+        }
     }
 }
 

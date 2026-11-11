@@ -58,6 +58,7 @@ extension AppMyPageRepository: AppMyPageRepositoryInterface {
 
     public func logout() {
         UserDefaultKeyList.clearUserData()
+        UserDefaultKeyList.clearProfileSetupFlag()
         SFSafariViewController.DataStore.default.clearWebsiteData()
         WKWebsiteDataStore.default().httpCookieStore.getAllCookies({ _ in })
     }

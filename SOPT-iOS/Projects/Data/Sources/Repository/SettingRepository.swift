@@ -46,7 +46,7 @@ extension SettingRepository: SettingRepositoryInterface {
     }
     
     public func withdrawal() -> AnyPublisher<Bool, Never> {
-        UserDefaultKeyList.clearUserData()
+        UserDefaultKeyList.clearAllUserData()
         SFSafariViewController.DataStore.default.clearWebsiteData()
         WKWebsiteDataStore.default().httpCookieStore.getAllCookies { cookies in
             cookies.forEach { cookie in

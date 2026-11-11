@@ -128,6 +128,7 @@ extension AuthCoordinator {
         var signUpVC = self.factory.makeSignUp()
         
         signUpVC.vm.onSignUpSuccess = { [weak self] in
+            UserDefaultKeyList.User.needProfileSetup = true
             self?.navigationController?.popToRootViewController(animated: true)
         }
         
