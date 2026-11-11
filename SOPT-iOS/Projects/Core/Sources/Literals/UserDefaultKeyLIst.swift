@@ -52,6 +52,7 @@ extension UserDefaultKeyList {
         UserDefaultKeyList.CoreAuth.refreshToken = nil
         UserDefaultKeyList.CoreAuth.isActiveUser = nil
         UserDefaultKeyList.User.isAppjam = nil
+        UserDefaultKeyList.User.needProfileSetup = nil
     }
     
     public static func clearPushToken() {
