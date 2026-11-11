@@ -178,6 +178,8 @@ extension ApplicationCoordinator {
     private func checkDidSignIn() {
         if !UserDefaultKeyList.CoreAuth.hasAccessToken() {
             runSignInFlow(by: .root)
+        } else if UserDefaultKeyList.User.getNeedProfileSetup() {
+            runProfileSetupFlow()
         } else {
             Task { [weak self] in
                 await self?.runTabBarFlow()
@@ -205,11 +207,17 @@ extension ApplicationCoordinator {
 // MARK: - 프로필 설정 완료 후 웹뷰를 닫음
 
 extension ApplicationCoordinator {
+    func runProfileSetupFlow() {
+        guard let url = URL(string: ExternalURL.Playground.editProfile) else { return }
+        let webView = SOPTWebView(startWith: url)
+        self.rootNavigationController.pushViewController(webView, animated: true)
+    }
+    
     public func handleProfileComplete() {
+        guard UserDefaultKeyList.User.needProfileSetup == true else { return }
         UserDefaultKeyList.User.needProfileSetup = false
-        rootNavigationController.dismiss(animated: false)
         rootNavigationController.popToRootViewController(animated: false)
-        Task { [weak self] in
+        Task { @MainActor [weak self] in
             await self?.runTabBarFlow(type: UserDefaultKeyList.CoreAuth.getUserType())
         }
     }

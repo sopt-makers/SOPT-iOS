@@ -18,13 +18,16 @@ import AppMyPageFeature
 import NotificationFeature
 import StampFeature
 import PokeFeature
+import WebFeature
 
 // MARK: - AuthCoordinatorDelegate
 
 extension ApplicationCoordinator: AuthCoordinatorDelegate {
     public func authCoordinator(_ coordinator: AuthCoordinator, userType: UserType) {
-        Task { [weak self] in
-            await self?.runTabBarFlow(type: userType)
+        if UserDefaultKeyList.User.needProfileSetup == true {
+            runProfileSetupFlow()
+        } else {
+            Task { await runTabBarFlow(type: userType) }
         }
     }
 }

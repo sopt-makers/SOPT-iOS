@@ -96,6 +96,10 @@ extension UserDefaultKeyList.CoreAuth {
 }
 
 extension UserDefaultKeyList.User {
+    public static func getNeedProfileSetup() -> Bool {
+        needProfileSetup ?? false
+    }
+    
     public static func hasPushToken() -> Bool {
         guard let pushToken = pushToken, !pushToken.isEmpty else {
             return false

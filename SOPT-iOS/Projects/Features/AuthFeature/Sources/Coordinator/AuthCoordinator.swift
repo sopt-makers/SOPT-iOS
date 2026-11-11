@@ -42,12 +42,7 @@ public final class AuthCoordinator: BaseCoordinator {
         //TODO: 딥링크 URL 자동로그인 로직
 
         signIn.vm.onSignInSuccess = { [weak self]  in
-            guard let self else { return }
-            if UserDefaultKeyList.User.needProfileSetup == true {
-                self.runProfileSetupFlow()
-                return
-            }
-            
+            guard let self else { return }            
             let userType = UserDefaultKeyList.CoreAuth.getUserType()
             self.delegate?.authCoordinator(self, userType: userType)
         }
@@ -115,12 +110,6 @@ public final class AuthCoordinator: BaseCoordinator {
 }
 
 extension AuthCoordinator {
-    private func runProfileSetupFlow() {
-        guard let url = URL(string: ExternalURL.Playground.editProfile) else { return }
-        let webView = SOPTWebView(startWith: url)
-        self.navigationController?.pushViewController(webView, animated: true)
-    }
-    
     private func runUserNotFoundFlow() {
         let userNotFoundVC = self.factory.makeUserNotFound()
         userNotFoundVC.onLoginRetryButtonTapped = { [weak self] in
