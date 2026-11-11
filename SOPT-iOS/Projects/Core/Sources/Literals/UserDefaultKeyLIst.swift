@@ -18,6 +18,7 @@ public struct UserDefaultKeyList {
     }
     
     public struct User {
+        @UserDefaultWrapper<Bool>(key: "needProfileSetup") public static var needProfileSetup
         @UserDefaultWrapper<String>(key: "sentence") public static var sentence
         @UserDefaultWrapper<String>(key: "soptampName") public static var soptampName
         @UserDefaultWrapper<String>(key: "soptletterName") public static var soptletterName
