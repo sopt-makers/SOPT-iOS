@@ -344,7 +344,9 @@ extension HomeForMemberVC {
         snapshot.appendItems(data.latestPosts.map { .latestPost($0) }, toSection: .latestPosts)
         snapshot.appendItems([.survey(data.survey)], toSection: .survey)
         snapshot.appendItems(self.viewModel.socialLinkList.map { .socialLink($0) }, toSection: .socialLinks)
-        snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
+        if viewModel.isActiveUser {
+            snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
+        }
 
         dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
             // 애니메이션은 data가 apply된 이후에 실행
@@ -362,7 +364,9 @@ extension HomeForMemberVC {
         ]
         
         snapshot.deleteItems(snapshot.itemIdentifiers(inSection: .appService))
-        snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
+        if viewModel.isActiveUser {
+            snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
+        }
         
         let existingItems = snapshot.itemIdentifiers.filter { items.contains($0) }
         

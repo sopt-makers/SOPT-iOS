@@ -26,6 +26,10 @@ public class HomeForMemberViewModel: HomeForMemberViewModelType {
     
     let userType: UserType = UserDefaultKeyList.CoreAuth.getUserType()
     
+    var isActiveUser: Bool {
+        UserDefaultKeyList.CoreAuth.getUserActivation()
+    }
+    
     private var fetchedDashBoard: HomePresentationModel.DashBoard?
     private var fetchedRecentSchedule: HomePresentationModel.RecentSchedule?
     private var fetchedSurvey: HomePresentationModel.Survey?
