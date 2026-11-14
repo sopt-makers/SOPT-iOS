@@ -333,11 +333,6 @@ extension HomeForMemberVC {
         }
     }
     
-    /// 앱 서비스 섹션은 활동 중인 유저에게만 노출
-    var isActiveUser: Bool {
-        UserDefaultKeyList.CoreAuth.isActiveUser ?? false
-    }
-    
     private func applySnapshot(with data: HomePresentationModel) {
         var snapshot = NSDiffableDataSourceSnapshot<HomeForMemberSectionLayoutKind, HomeForMemberItem>()
         
@@ -350,7 +345,7 @@ extension HomeForMemberVC {
         snapshot.appendItems(data.latestPosts.map { .latestPost($0) }, toSection: .latestPosts)
         snapshot.appendItems([.survey(data.survey)], toSection: .survey)
         snapshot.appendItems(self.viewModel.socialLinkList.map { .socialLink($0) }, toSection: .socialLinks)
-        if isActiveUser {
+        if viewModel.isActiveUser {
             snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
         }
 
@@ -370,7 +365,7 @@ extension HomeForMemberVC {
         ]
         
         snapshot.deleteItems(snapshot.itemIdentifiers(inSection: .appService))
-        if isActiveUser {
+        if viewModel.isActiveUser {
             snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
         }
         
