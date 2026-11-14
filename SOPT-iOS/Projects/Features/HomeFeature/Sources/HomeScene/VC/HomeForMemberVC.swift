@@ -317,6 +317,7 @@ extension HomeForMemberVC {
     }
     
     private func updateUI(with data: HomePresentationModel) {
+        collectionView.collectionViewLayout.invalidateLayout() 
         if isFirstAppear {
             applySnapshot(with: data)
             isFirstAppear = false
@@ -332,6 +333,11 @@ extension HomeForMemberVC {
         }
     }
     
+    /// 앱 서비스 섹션은 활동 중인 유저에게만 노출
+    var isActiveUser: Bool {
+        UserDefaultKeyList.CoreAuth.isActiveUser ?? false
+    }
+    
     private func applySnapshot(with data: HomePresentationModel) {
         var snapshot = NSDiffableDataSourceSnapshot<HomeForMemberSectionLayoutKind, HomeForMemberItem>()
         
@@ -344,7 +350,9 @@ extension HomeForMemberVC {
         snapshot.appendItems(data.latestPosts.map { .latestPost($0) }, toSection: .latestPosts)
         snapshot.appendItems([.survey(data.survey)], toSection: .survey)
         snapshot.appendItems(self.viewModel.socialLinkList.map { .socialLink($0) }, toSection: .socialLinks)
-        snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
+        if isActiveUser {
+            snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
+        }
 
         dataSource.apply(snapshot, animatingDifferences: true) { [weak self] in
             // 애니메이션은 data가 apply된 이후에 실행
@@ -362,7 +370,9 @@ extension HomeForMemberVC {
         ]
         
         snapshot.deleteItems(snapshot.itemIdentifiers(inSection: .appService))
-        snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
+        if isActiveUser {
+            snapshot.appendItems(data.appServices.map { .appService($0) }, toSection: .appService)
+        }
         
         let existingItems = snapshot.itemIdentifiers.filter { items.contains($0) }
         
