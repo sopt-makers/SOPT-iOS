@@ -178,6 +178,8 @@ extension ApplicationCoordinator {
     private func checkDidSignIn() {
         if !UserDefaultKeyList.CoreAuth.hasAccessToken() {
             runSignInFlow(by: .root)
+        } else if UserDefaultKeyList.User.getNeedProfileSetup() {
+            runProfileSetupFlow()
         } else {
             Task { [weak self] in
                 await self?.runTabBarFlow()
@@ -199,6 +201,33 @@ extension ApplicationCoordinator {
         authCoordinator?.delegate = self
 
         coordinator.start(by: style)
+    }
+}
+
+// MARK: - 프로필 설정 완료 후 웹뷰를 닫음
+
+extension ApplicationCoordinator {
+    func runProfileSetupFlow() {
+        guard let url = URL(string: ExternalURL.Playground.editProfile) else { return }
+        let webView = SOPTWebView(startWith: url)
+        // 프로필 등록을 끝내지 않고 닫은 경우 빈 화면(스플래시/로그인)에 머무르지 않고 홈으로 이동
+        webView.onClose = { [weak self] in
+            guard UserDefaultKeyList.User.needProfileSetup == true else { return }
+            Task { @MainActor [weak self] in
+                await self?.runTabBarFlow(type: UserDefaultKeyList.CoreAuth.getUserType())
+            }
+        }
+        self.rootNavigationController.pushViewController(webView, animated: true)
+    }
+    
+    public func handleProfileComplete() {
+        guard UserDefaultKeyList.CoreAuth.hasAccessToken(),
+              UserDefaultKeyList.User.needProfileSetup == true else { return }
+        UserDefaultKeyList.User.needProfileSetup = false
+        rootNavigationController.popToRootViewController(animated: false)
+        Task { @MainActor [weak self] in
+            await self?.runTabBarFlow(type: UserDefaultKeyList.CoreAuth.getUserType())
+        }
     }
 }
 

@@ -39,7 +39,7 @@ extension HomeForMemberVC {
             case .mainProduct:
                 return self?.createMainProductSection()
             case .appService:
-                return self?.createAppServiceSection()
+                return (self?.viewModel.isActiveUser ?? false) ? self?.createAppServiceSection() : self?.createEmptySection()
             case .popularPosts:
                 return self?.createPopularPostsSection()
             case .socialLinks:

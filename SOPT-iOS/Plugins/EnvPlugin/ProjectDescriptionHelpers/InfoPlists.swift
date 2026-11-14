@@ -35,6 +35,11 @@ public extension Project {
             ]),
             .dictionary([
                 "CFBundleTypeRole": .string("Editor"),
+                "CFBundleURLName": .string("sopt"),
+                "CFBundleURLSchemes": .array([.string("sopt")])
+            ]),
+            .dictionary([
+                "CFBundleTypeRole": .string("Editor"),
                 "CFBundleURLName": .string("Google"),
                 "CFBundleURLSchemes": .array([.string("$(GOOGLE_IOS_REVERSED_CLIENT_ID)")])
             ])
@@ -81,6 +86,11 @@ public extension Project {
                 "CFBundleTypeRole": .string("Editor"),
                 "CFBundleURLName": .string("sopt-makers"),
                 "CFBundleURLSchemes": .array([.string("sopt-makers")])
+            ]),
+            .dictionary([
+                "CFBundleTypeRole": .string("Editor"),
+                "CFBundleURLName": .string("sopt"),
+                "CFBundleURLSchemes": .array([.string("sopt")])
             ]),
             .dictionary([
                 "CFBundleTypeRole": .string("Editor"),
