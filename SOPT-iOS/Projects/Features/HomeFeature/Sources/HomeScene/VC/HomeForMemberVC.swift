@@ -317,7 +317,6 @@ extension HomeForMemberVC {
     }
     
     private func updateUI(with data: HomePresentationModel) {
-        collectionView.collectionViewLayout.invalidateLayout() 
         if isFirstAppear {
             applySnapshot(with: data)
             isFirstAppear = false
