@@ -26,7 +26,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
     private let useCase: NotificationListUseCase
     private var cancelBag = CancelBag()
     
-    let filterList: [NotificationFilterType] = [.all, .officialNotice, .generalNotice, .news]
+    let filterList: [NotificationFilterType] = [.all, .notice, .news]
     var notifications: [NotificationListModel] = [] // 리스트 뷰에서 snapshot을 사용하기 때문에 중복된 모델이 있으면 안 된다.
     
     private var selectedCategory: NotificationFilterType = .all
@@ -200,15 +200,10 @@ extension NotificationListViewModel {
     private func filterNotifications(_ notifications: [NotificationListModel], by category: NotificationFilterType) -> [NotificationListModel] {
         switch category {
         case .all: return notifications
-        case .officialNotice:
+        case .notice:
             return notifications.filter {
                 guard let category = $0.category else { return false }
-                return category == NotificationFilterType.officialNotice.serverKey
-            }
-        case .generalNotice:
-            return notifications.filter {
-                guard let category = $0.category else { return false }
-                return category == NotificationFilterType.generalNotice.serverKey
+                return category == NotificationFilterType.notice.serverKey
             }
         case .news:
             return notifications.filter {
