@@ -56,8 +56,14 @@ public final class NotificationCoordinator: BaseCoordinator {
             self?.navigationController?.popViewController(animated: true)
         }
         
-        notificationList.vm.onNotificationTap = { [weak self] notificationId in
-            self?.showNotificationDetail(notificationId: notificationId)
+        notificationList.vm.onNotificationTap = { [weak self] notificationId, notificationType in
+            switch notificationType {
+            case .general:
+                self?.showNotificationDetail(notificationId: notificationId)
+            case .official:
+                self?.showOfficialNotificationDetail(notificationId: notificationId)
+            }
+            
         }
         
         navigationController?.pushViewController(notificationList.vc, animated: animated)
@@ -74,5 +80,17 @@ public final class NotificationCoordinator: BaseCoordinator {
         }
         
         navigationController?.pushViewController(notificationDetail.vc, animated: true)
+    }
+    
+    public func showOfficialNotificationDetail(notificationId: String) {
+        var officialNotificationDetail = factory.makeOfficialNotificationDetailVC(notificationId: notificationId)
+        
+        officialNotificationDetail.vm.onZoomInButtonTap = { [weak self] imageUrl in
+            guard let self else { return }
+            let view = self.factory.makeImageZoomInVC(imageUrl: imageUrl)
+            self.navigationController?.present(view, animated: true)
+        }
+        
+        navigationController?.pushViewController(officialNotificationDetail.vc, animated: true)
     }
 }
