@@ -179,7 +179,22 @@ extension NotificationListViewModel {
     }
     
     private func removeDuplicatesAndUpdateNotifications(contentsOf notifications: [NotificationListModel]) {
-        let temp = self.notifications + notifications
+        var incoming = notifications
+        // TODO: 임시 Mock, 서버 연결하면서 제거 
+        #if DEBUG
+        if page == 0 {
+            incoming.insert(NotificationListModel(
+                notificationId: "mock-official-1",
+                userId: 1,
+                title: "공식 공지 테스트",
+                content: "공식 공지 본문 테스트입니다.",
+                category: NotificationFilterType.officialNotice.serverKey,
+                isRead: false,
+                createdAt: "2026-11-19T10:00:00"
+            ), at: 0)
+        }
+        #endif
+        let temp = self.notifications + incoming
         self.notifications = temp.uniqued()
     }
     
