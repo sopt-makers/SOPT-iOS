@@ -18,35 +18,34 @@ import NotificationFeatureInterface
 
 final class ImageZoomInVC: UIViewController {
     private let imageUrl: String
-        
+
     private lazy var hostingController = UIHostingController(
         rootView: ImageZoomInView(
             imageUrl: imageUrl,
             onClose: { [weak self] in self?.dismiss(animated: true) }
         )
     )
-    
+
     // MARK: - initialization
-    
+
     init(imageUrl: String) {
         self.imageUrl = imageUrl
         super.init(nibName: nil, bundle: nil)
     }
-    
-    
+
     required init?(coder: NSCoder) { fatalError() }
-    
+
     // MARK: - Life Cycle
-    
-    public override func viewDidLoad() {
+
+    override func viewDidLoad() {
         super.viewDidLoad()
         addChild(hostingController)
         view.addSubview(hostingController.view)
         hostingController.didMove(toParent: self)
-        
+
         view.backgroundColor = .clear
-        hostingController.view.backgroundColor = .clear 
-        
+        hostingController.view.backgroundColor = .clear
+
         hostingController.view.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }

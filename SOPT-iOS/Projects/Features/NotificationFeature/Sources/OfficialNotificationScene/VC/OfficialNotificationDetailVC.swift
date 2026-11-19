@@ -21,30 +21,30 @@ final class OfficialNotificationDetailVC: UIViewController {
     // MARK: - UI Components
     private lazy var naviBar = OPNavigationBar(self, type: .oneLeftButton)
         .addMiddleLabel(title: I18N.Notification.notification)
-    
+
     private let hostingController: UIHostingController<OfficialNotificationDetailView>
-    
+
     // MARK: - initialization
-    
-    public init(
+
+    init(
         rootView: OfficialNotificationDetailView
     ) {
         self.hostingController = UIHostingController(rootView: rootView)
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) { fatalError() }
-    
+
     // MARK: - Life Cycle
-    
-    public override func viewDidLoad() {
+
+    override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(naviBar)
         addChild(hostingController)
         view.addSubview(hostingController.view)
         hostingController.didMove(toParent: self)
         view.backgroundColor = SemanticColor.Bg.Layer.basement
-        
+
         naviBar.snp.makeConstraints { make in
             make.top.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
         }

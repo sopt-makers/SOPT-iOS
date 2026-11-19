@@ -19,7 +19,7 @@ public enum NotificationDetailType {
 
 public protocol NotificationListRoutingTrigger {
     var onNaviBackButtonTap: (() -> Void)? { get set }
-    var onNotificationTap: ((_ notificaionId: String, _ notificationType:  NotificationDetailType) -> Void)? { get set }
+    var onNotificationTap: ((_ notificationId: String, _ notificationType: NotificationDetailType) -> Void)? { get set }
 }
 public typealias NotificationListViewModelType = ViewModelType & NotificationListRoutingTrigger
 public typealias NotificationListPresentable = (vc: UIViewController, vm: any NotificationListViewModelType)

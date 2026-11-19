@@ -61,7 +61,7 @@ public final class NotificationCoordinator: BaseCoordinator {
             case .general:
                 self?.showNotificationDetail(notificationId: notificationId)
             case .official:
-                self?.showOfficailNotificationDetail(notificationId: notificationId)
+                self?.showOfficialNotificationDetail(notificationId: notificationId)
             }
             
         }
@@ -82,7 +82,7 @@ public final class NotificationCoordinator: BaseCoordinator {
         navigationController?.pushViewController(notificationDetail.vc, animated: true)
     }
     
-    public func showOfficailNotificationDetail(notificationId: String) {
+    public func showOfficialNotificationDetail(notificationId: String) {
         var officialNotificationDetail = factory.makeOfficialNotificationDetailVC(notificationId: notificationId)
         
         officialNotificationDetail.vm.onZoomInButtonTap = { [weak self] imageUrl in

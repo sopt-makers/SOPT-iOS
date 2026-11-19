@@ -180,7 +180,7 @@ extension NotificationListViewModel {
     
     private func removeDuplicatesAndUpdateNotifications(contentsOf notifications: [NotificationListModel]) {
         var incoming = notifications
-        // TODO: 임시 Mock, 서버 연결하면서 제거 
+        // TODO: 임시 Mock, 서버 연결하면서 제거
         #if DEBUG
         if page == 0 {
             incoming.insert(NotificationListModel(

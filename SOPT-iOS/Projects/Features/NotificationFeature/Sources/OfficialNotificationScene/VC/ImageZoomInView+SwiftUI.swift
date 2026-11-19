@@ -13,21 +13,20 @@ import MDS
 struct ImageZoomInView: View {
     let imageUrl: String
     let onClose: () -> Void
-    
+
     var body: some View {
         ZStack(alignment: .topTrailing) {
             Color(uiColor: SemanticColor.Bg.Dim.default)
                 .ignoresSafeArea()
-            
+
             imageSection
                 .padding(.horizontal, 20)
                 .frame(maxHeight: .infinity)
-            
+
             closeButton
                 .padding(.top, 21)
                 .padding(.trailing, 20)
         }
-        
     }
 }
 
@@ -36,8 +35,9 @@ extension ImageZoomInView {
         Rectangle()
             .fill(Color(uiColor: SemanticColor.Bg.Neutral.subtle))
             .aspectRatio(contentMode: .fit)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
     }
-    
+
     private var closeButton: some View {
         Button(action: onClose) {
             Image(uiImage: MDSIcon.xCloseOutlined.image)
