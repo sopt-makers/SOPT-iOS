@@ -10,7 +10,7 @@ import Foundation
 
 enum NotificationFilterType: String {
     case all = "전체 알림"
-    case officialNotice = "전체 공지"
+    case officialNotice = "공식 공지"
     case generalNotice = "일반 알림"
     case news = "소식"
     
