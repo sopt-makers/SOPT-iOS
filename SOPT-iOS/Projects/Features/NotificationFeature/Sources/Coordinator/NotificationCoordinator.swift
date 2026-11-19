@@ -81,4 +81,16 @@ public final class NotificationCoordinator: BaseCoordinator {
         
         navigationController?.pushViewController(notificationDetail.vc, animated: true)
     }
+    
+    public func showOfficailNotificationDetail(notificationId: String) {
+        var officialNotificationDetail = factory.makeOfficialNotificationDetailVC(notificationId: notificationId)
+        
+        officialNotificationDetail.vm.onZoomInButtonTap = { [weak self] imageUrl in
+            guard let self else { return }
+            let view = self.factory.makeImageZoomInVC(imageUrl: imageUrl)
+            self.navigationController?.present(view, animated: true)
+        }
+        
+        navigationController?.pushViewController(officialNotificationDetail.vc, animated: true)
+    }
 }
