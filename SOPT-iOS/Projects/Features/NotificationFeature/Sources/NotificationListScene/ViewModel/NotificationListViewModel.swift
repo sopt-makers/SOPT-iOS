@@ -18,7 +18,7 @@ public class NotificationListViewModel: NotificationListViewModelType {
     // MARK: - Trigger
     
     public var onNaviBackButtonTap: (() -> Void)?
-    public var onNotificationTap: ((String) -> Void)?
+    public var onNotificationTap: ((String, NotificationDetailType) -> Void)?
     
     // MARK: - Properties
     
@@ -94,8 +94,11 @@ extension NotificationListViewModel {
                 let filtered = owner.filterNotifications(owner.notifications, by: owner.selectedCategory)
                 guard filtered.indices.contains(index) else { return }
                 let notification = filtered[index]
+                let notificationType: NotificationDetailType =
+                    notification.category == NotificationFilterType.officialNotice.serverKey ? .official : .general
                 
-                owner.onNotificationTap?(notification.notificationId)
+                
+                owner.onNotificationTap?(notification.notificationId, notificationType)
                 owner.read(notificationId: notification.notificationId)
                 output.notificationList.send(owner.filterNotifications(owner.notifications, by: owner.selectedCategory))
                 output.isAllRead.send(owner.notifications.allSatisfy { $0.isRead })
