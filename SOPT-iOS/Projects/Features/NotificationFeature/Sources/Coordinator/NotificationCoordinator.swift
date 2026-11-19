@@ -56,8 +56,14 @@ public final class NotificationCoordinator: BaseCoordinator {
             self?.navigationController?.popViewController(animated: true)
         }
         
-        notificationList.vm.onNotificationTap = { [weak self] notificationId in
-            self?.showNotificationDetail(notificationId: notificationId)
+        notificationList.vm.onNotificationTap = { [weak self] notificationId, notificationType in
+            switch notificationType {
+            case .general:
+                self?.showNotificationDetail(notificationId: notificationId)
+            case .official:
+                self?.showOfficailNotificationDetail(notificationId: notificationId)
+            }
+            
         }
         
         navigationController?.pushViewController(notificationList.vc, animated: animated)
