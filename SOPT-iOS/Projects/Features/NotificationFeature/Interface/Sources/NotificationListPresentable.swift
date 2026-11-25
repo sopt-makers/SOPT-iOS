@@ -12,9 +12,14 @@ import BaseFeatureDependency
 import Core
 import Domain
 
+public enum NotificationDetailType {
+    case official
+    case general
+}
+
 public protocol NotificationListRoutingTrigger {
     var onNaviBackButtonTap: (() -> Void)? { get set }
-    var onNotificationTap: ((String) -> Void)? { get set }
+    var onNotificationTap: ((_ notificationId: String, _ notificationType: NotificationDetailType) -> Void)? { get set }
 }
 public typealias NotificationListViewModelType = ViewModelType & NotificationListRoutingTrigger
 public typealias NotificationListPresentable = (vc: UIViewController, vm: any NotificationListViewModelType)

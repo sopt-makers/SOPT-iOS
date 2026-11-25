@@ -148,19 +148,19 @@ extension NotificationDetailVC {
         contentView.addSubviews(titleLabel, dividerView, textView)
         
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(24)
-            make.leading.trailing.equalToSuperview().inset(12)
+            make.top.equalToSuperview().inset(20)
+            make.leading.trailing.equalToSuperview().inset(20)
         }
         
         dividerView.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(14)
-            make.leading.trailing.equalToSuperview().inset(12)
+            make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(1)
         }
         
         textView.snp.makeConstraints { make in
-            make.top.equalTo(dividerView.snp.bottom).offset(24)
-            make.leading.trailing.equalToSuperview().inset(12)
+            make.top.equalTo(dividerView.snp.bottom).offset(14)
+            make.leading.trailing.equalToSuperview().inset(20)
             make.bottom.equalToSuperview().inset(24)
         }
     }
