@@ -142,12 +142,11 @@ struct FooterView: View {
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
             
-            ActionButtonView(
+            MDSActionButtonView(
                 title: "공지 확인하기",
                 variant: .primary,
                 size: .large
             ) { }
-                .frame(height: 56)
                 .padding(.horizontal, 20)
             
             Text("버튼을 누르면 확인한 멤버로 표시됩니다.")

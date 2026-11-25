@@ -11,13 +11,13 @@ import UIKit
 
 import MDS
 
-struct ActionButtonView: UIViewRepresentable {
+struct MDSActionButtonView: UIViewRepresentable {
 
     // MARK: - Properties
 
     let title: String
-    var variant: MDSActionButton.Variant
-    var size: MDSActionButton.Size
+    let variant: MDSActionButton.Variant
+    let size: MDSActionButton.Size
     let action: () -> Void
 
     // MARK: - UIViewRepresentable
@@ -33,6 +33,11 @@ struct ActionButtonView: UIViewRepresentable {
         // 같은 identifier의 액션은 교체되므로 중복 등록되지 않음
         let tapAction = UIAction(identifier: .init("ActionButtonView.tap")) { _ in action() }
         button.addAction(tapAction, for: .touchUpInside)
+    }
+
+    func sizeThatFits(_ proposal: ProposedViewSize, uiView: MDSActionButton, context: Context) -> CGSize? {
+        let fittingSize = uiView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+        return CGSize(width: proposal.width ?? fittingSize.width, height: fittingSize.height)
     }
 }
 
