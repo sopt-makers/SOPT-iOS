@@ -17,19 +17,24 @@ struct OfficialNotificationDetailView: View {
 
     // TODO: mds font 적용
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                textSection
-                ImagesListView(
-                    imageUrls: viewModel.imageUrls,
-                    onZoomTap: { viewModel.onZoomInButtonTap?($0) }
-                )
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    textSection
+                    ImagesListView(
+                        imageUrls: viewModel.imageUrls,
+                        onZoomTap: { viewModel.onZoomInButtonTap?($0) }
+                    )
+                    openLinkButton
+                }
+                .padding(20)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color(SemanticColor.Bg.Neutral.ghost), in: RoundedRectangle(cornerRadius: 10))
+                .padding(.horizontal, 20)
+                .padding(.top, 20)
             }
-            .padding(20)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(SemanticColor.Bg.Neutral.ghost), in: RoundedRectangle(cornerRadius: 10))
-            .padding(.horizontal, 20)
-            .padding(.top, 20)
+            
+            FooterView()
         }
         .background(Color(SemanticColor.Bg.Layer.basement))
     }
@@ -69,6 +74,22 @@ extension OfficialNotificationDetailView {
             .foregroundColor(Color(uiColor: SemanticColor.Fg.Neutral.bold))
             .font(.system(size: 16))
     }
+    
+    private var openLinkButton: some View {
+        Button(action: { }) {
+            HStack(spacing: 4) {
+                Image(uiImage: MDSIcon.arrowUpRightOutlined.image)
+                    .resizable()
+                    .frame(width: 16, height: 16)
+                Text("https://www.sopt.org")
+                    .tint(Color(uiColor: SemanticColor.Fg.Neutral.bold))
+                    .font(.system(size: 14))
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+        }
+        .background(Color(uiColor: SemanticColor.Bg.Neutral.subtle), in: RoundedRectangle(cornerRadius: 8))
+    }
 }
 
 struct ImagesListView: View {
@@ -107,5 +128,65 @@ struct ImagesListView: View {
                 .frame(width: 20, height: 20)
         }
         .frame(width: 32, height: 32)
+    }
+}
+
+struct FooterView: View {
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                checkedMemberCountText
+                Spacer()
+                checkMemberButton
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 16)
+            
+            MDSActionButtonView(
+                title: "공지 확인하기",
+                variant: .primary,
+                size: .large
+            ) { }
+                .padding(.horizontal, 20)
+            
+            Text("버튼을 누르면 확인한 멤버로 표시됩니다.")
+                .font(.system(size: 14))
+                .foregroundStyle(Color(uiColor: SemanticColor.Fg.Neutral.subtle))
+                .frame(height: 22)
+                .padding(.top, 8)
+               
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 136)
+        .overlay(alignment: .top) {
+            Rectangle()
+                .fill(Color(uiColor: SemanticColor.Stroke.Neutral.subtle))
+                .frame(height: 1)
+        }
+    }
+    
+    private var checkedMemberCountText: some View {
+        let count = Text("4명")
+            .foregroundColor(Color(uiColor: DSKitAsset.Colors.blue300.color))
+
+        return Text("\(count)이 확인했어요")
+            .foregroundColor(Color(uiColor: SemanticColor.Fg.Neutral.bold))
+            .font(.system(size: 14))
+    }
+    
+    private var checkMemberButton: some View {
+        Button(action: {}) {
+            HStack(spacing: 2) {
+                Text("확인한 멤버 보기")
+                    .font(.system(size: 14))
+                    .foregroundStyle(Color(uiColor: DSKitAsset.Colors.gray200.color))
+                
+                Image(uiImage: MDSIcon.chevronRightOutlined.image)
+                    .renderingMode(.template)
+                    .resizable()
+                    .frame(width: 16, height: 16)
+                    .foregroundStyle(Color(uiColor: DSKitAsset.Colors.gray200.color))
+            }
+        }
     }
 }
